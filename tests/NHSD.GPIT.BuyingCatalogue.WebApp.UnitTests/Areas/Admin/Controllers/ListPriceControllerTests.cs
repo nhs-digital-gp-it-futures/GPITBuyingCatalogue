@@ -115,131 +115,18 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
 
         [Theory]
         [CommonAutoData]
-        public static async Task Post_AddListPrice_NoPrice_AddsModelStateError(
-            CatalogueItem catalogueItem,
-            [Frozen] Mock<ISolutionsService> mockSolutionsService,
-            ListPriceController listPriceController)
-        {
-            var solutionId = catalogueItem.Id;
-            var editListPriceModel = new EditListPriceModel
-            {
-                SolutionName = catalogueItem.Name,
-                Price = null,
-                SelectedProvisioningType = ProvisioningType.Patient.ToString(),
-                Unit = "per patient",
-            };
-
-            mockSolutionsService
-                .Setup(s => s.GetSolution(catalogueItem.Id))
-                .ReturnsAsync(catalogueItem);
-
-            var actual = (await listPriceController.AddListPrice(solutionId, editListPriceModel)).As<ViewResult>();
-
-            actual.ViewData.ModelState.IsValid.Should().BeFalse();
-            actual.ViewData.ModelState.ErrorCount.Should().Be(1);
-            actual.ViewData.ModelState.FirstOrDefault().Key.Should().BeEquivalentTo(nameof(EditListPriceModel.Price));
-        }
-
-        [Theory]
-        [CommonAutoData]
-        public static async Task Post_AddListPrice_DuplicateListPriceExists_AddsModelStateError(
-            CatalogueItem catalogueItem,
-            [Frozen] Mock<ISolutionsService> mockSolutionsService,
-            ListPriceController listPriceController)
-        {
-            var solutionId = catalogueItem.Id;
-            var existingListPriceItem = catalogueItem.CataloguePrices.First();
-            existingListPriceItem.ProvisioningType = ProvisioningType.Patient;
-            existingListPriceItem.TimeUnit = TimeUnit.PerYear;
-
-            var editListPriceModel = new EditListPriceModel
-            {
-                SolutionName = catalogueItem.Name,
-                Price = existingListPriceItem.Price.ToString(),
-                SelectedProvisioningType = existingListPriceItem.ProvisioningType.ToString(),
-                Unit = existingListPriceItem.PricingUnit.Description,
-            };
-
-            mockSolutionsService
-                .Setup(s => s.GetSolution(catalogueItem.Id))
-                .ReturnsAsync(catalogueItem);
-
-            var actual = (await listPriceController.AddListPrice(solutionId, editListPriceModel)).As<ViewResult>();
-
-            actual.ViewData.ModelState.IsValid.Should().BeFalse();
-            actual.ViewData.ModelState.ErrorCount.Should().Be(1);
-            actual.ViewData.ModelState.FirstOrDefault().Key.Should().BeEquivalentTo("duplicate");
-        }
-
-        [Theory]
-        [CommonAutoData]
-        public static async Task Post_AddListPrice_DeclarativeNoTimeUnit_AddsModelStateError(
-            CatalogueItem catalogueItem,
-            [Frozen] Mock<ISolutionsService> mockSolutionsService,
-            ListPriceController listPriceController)
-        {
-            var solutionId = catalogueItem.Id;
-            var editListPriceModel = new EditListPriceModel
-            {
-                SolutionName = catalogueItem.Name,
-                Price = "3.21",
-                SelectedProvisioningType = ProvisioningType.Declarative.ToString(),
-                DeclarativeTimeUnit = null,
-                Unit = "per patient",
-            };
-
-            mockSolutionsService
-                .Setup(s => s.GetSolution(catalogueItem.Id))
-                .ReturnsAsync(catalogueItem);
-
-            var actual = (await listPriceController.AddListPrice(solutionId, editListPriceModel)).As<ViewResult>();
-
-            actual.ViewData.ModelState.IsValid.Should().BeFalse();
-            actual.ViewData.ModelState.ErrorCount.Should().Be(1);
-            actual.ViewData.ModelState.FirstOrDefault().Key.Should().BeEquivalentTo(nameof(EditListPriceModel.DeclarativeTimeUnit));
-        }
-
-        [Theory]
-        [CommonAutoData]
-        public static async Task Post_AddListPrice_OnDemandNoTimeUnit_AddsModelStateError(
-            CatalogueItem catalogueItem,
-            [Frozen] Mock<ISolutionsService> mockSolutionsService,
-            ListPriceController listPriceController)
-        {
-            var solutionId = catalogueItem.Id;
-            var editListPriceModel = new EditListPriceModel
-            {
-                SolutionName = catalogueItem.Name,
-                Price = "3.21",
-                SelectedProvisioningType = ProvisioningType.OnDemand.ToString(),
-                OnDemandTimeUnit = null,
-                Unit = "per patient",
-            };
-
-            mockSolutionsService
-                .Setup(s => s.GetSolution(catalogueItem.Id))
-                .ReturnsAsync(catalogueItem);
-
-            var actual = (await listPriceController.AddListPrice(solutionId, editListPriceModel)).As<ViewResult>();
-
-            actual.ViewData.ModelState.IsValid.Should().BeFalse();
-            actual.ViewData.ModelState.ErrorCount.Should().Be(1);
-            actual.ViewData.ModelState.FirstOrDefault().Key.Should().BeEquivalentTo(nameof(EditListPriceModel.OnDemandTimeUnit));
-        }
-
-        [Theory]
-        [CommonAutoData]
         public static async Task Post_AddListPrice_ModelStateValid_RedirectsToManageListPrices(
             CatalogueItem catalogueItem,
             [Frozen] Mock<ISolutionsService> mockSolutionsService,
             ListPriceController listPriceController)
         {
+            const decimal price = 3.21M;
             var solutionId = catalogueItem.Id;
             var editListPriceModel = new EditListPriceModel
             {
                 SolutionName = catalogueItem.Name,
-                Price = "3.21",
-                SelectedProvisioningType = ProvisioningType.Patient.ToString(),
+                Price = price,
+                SelectedProvisioningType = ProvisioningType.Patient,
                 Unit = "per patient",
             };
 
@@ -305,144 +192,12 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
 
         [Theory]
         [CommonAutoData]
-        public static async Task Post_EditListPrice_NoPrice_AddsModelStateError(
-            CatalogueItem catalogueItem,
-            [Frozen] Mock<ISolutionsService> mockSolutionsService,
-            ListPriceController listPriceController)
-        {
-            var solutionId = catalogueItem.Id;
-            var cataloguePriceId = catalogueItem
-                .CataloguePrices
-                .First()
-                .CataloguePriceId;
-
-            var editListPriceModel = new EditListPriceModel
-            {
-                CataloguePriceId = cataloguePriceId,
-                SolutionName = catalogueItem.Name,
-                Price = null,
-                SelectedProvisioningType = ProvisioningType.Patient.ToString(),
-                Unit = "per patient",
-            };
-
-            mockSolutionsService
-                .Setup(s => s.GetSolution(catalogueItem.Id))
-                .ReturnsAsync(catalogueItem);
-
-            var actual = (await listPriceController.EditListPrice(solutionId, cataloguePriceId, editListPriceModel)).As<ViewResult>();
-
-            actual.ViewData.ModelState.IsValid.Should().BeFalse();
-            actual.ViewData.ModelState.ErrorCount.Should().Be(1);
-            actual.ViewData.ModelState.FirstOrDefault().Key.Should().BeEquivalentTo(nameof(EditListPriceModel.Price));
-        }
-
-        [Theory]
-        [CommonAutoData]
-        public static async Task Post_EditListPrice_DuplicateListPriceExists_AddsModelStateError(
-            CatalogueItem catalogueItem,
-            [Frozen] Mock<ISolutionsService> mockSolutionsService,
-            ListPriceController listPriceController)
-        {
-            var solutionId = catalogueItem.Id;
-            var existingListPriceItem = catalogueItem.CataloguePrices.First();
-            existingListPriceItem.ProvisioningType = ProvisioningType.Patient;
-            existingListPriceItem.TimeUnit = TimeUnit.PerYear;
-
-            var editListPriceModel = new EditListPriceModel
-            {
-                CataloguePriceId = existingListPriceItem.CataloguePriceId,
-                SolutionName = catalogueItem.Name,
-                Price = existingListPriceItem.Price.ToString(),
-                SelectedProvisioningType = existingListPriceItem.ProvisioningType.ToString(),
-                Unit = existingListPriceItem.PricingUnit.Description,
-            };
-
-            mockSolutionsService
-                .Setup(s => s.GetSolution(catalogueItem.Id))
-                .ReturnsAsync(catalogueItem);
-
-            var actual = (await listPriceController.EditListPrice(solutionId, existingListPriceItem.CataloguePriceId, editListPriceModel)).As<ViewResult>();
-
-            actual.ViewData.ModelState.IsValid.Should().BeFalse();
-            actual.ViewData.ModelState.ErrorCount.Should().Be(1);
-            actual.ViewData.ModelState.FirstOrDefault().Key.Should().BeEquivalentTo("duplicate");
-        }
-
-        [Theory]
-        [CommonAutoData]
-        public static async Task Post_EditListPrice_DeclarativeNoTimeUnit_AddsModelStateError(
-            CatalogueItem catalogueItem,
-            [Frozen] Mock<ISolutionsService> mockSolutionsService,
-            ListPriceController listPriceController)
-        {
-            var solutionId = catalogueItem.Id;
-            var cataloguePriceId = catalogueItem
-                .CataloguePrices
-                .First()
-                .CataloguePriceId;
-
-            var editListPriceModel = new EditListPriceModel
-            {
-                CataloguePriceId = cataloguePriceId,
-                SolutionName = catalogueItem.Name,
-                Price = "3.21",
-                SelectedProvisioningType = ProvisioningType.Declarative.ToString(),
-                DeclarativeTimeUnit = null,
-                Unit = "per patient",
-            };
-
-            mockSolutionsService
-                .Setup(s => s.GetSolution(catalogueItem.Id))
-                .ReturnsAsync(catalogueItem);
-
-            var actual = (await listPriceController.EditListPrice(solutionId, cataloguePriceId, editListPriceModel)).As<ViewResult>();
-
-            actual.ViewData.ModelState.IsValid.Should().BeFalse();
-            actual.ViewData.ModelState.ErrorCount.Should().Be(1);
-            actual.ViewData.ModelState.FirstOrDefault().Key.Should().BeEquivalentTo(nameof(EditListPriceModel.DeclarativeTimeUnit));
-        }
-
-        [Theory]
-        [CommonAutoData]
-        public static async Task Post_EditListPrice_OnDemandNoTimeUnit_AddsModelStateError(
-            CatalogueItem catalogueItem,
-            [Frozen] Mock<ISolutionsService> mockSolutionsService,
-            ListPriceController listPriceController)
-        {
-            var solutionId = catalogueItem.Id;
-            var cataloguePriceId = catalogueItem
-                .CataloguePrices
-                .First()
-                .CataloguePriceId;
-
-            var editListPriceModel = new EditListPriceModel
-            {
-                CataloguePriceId = cataloguePriceId,
-                SolutionName = catalogueItem.Name,
-                Price = "3.21",
-                SelectedProvisioningType = ProvisioningType.OnDemand.ToString(),
-                OnDemandTimeUnit = null,
-                Unit = "per patient",
-            };
-
-            mockSolutionsService
-                .Setup(s => s.GetSolution(catalogueItem.Id))
-                .ReturnsAsync(catalogueItem);
-
-            var actual = (await listPriceController.EditListPrice(solutionId, cataloguePriceId, editListPriceModel)).As<ViewResult>();
-
-            actual.ViewData.ModelState.IsValid.Should().BeFalse();
-            actual.ViewData.ModelState.ErrorCount.Should().Be(1);
-            actual.ViewData.ModelState.FirstOrDefault().Key.Should().BeEquivalentTo(nameof(EditListPriceModel.OnDemandTimeUnit));
-        }
-
-        [Theory]
-        [CommonAutoData]
         public static async Task Post_EditListPrice_ModelStateValid_RedirectsToManageListPrices(
             CatalogueItem catalogueItem,
             [Frozen] Mock<ISolutionsService> mockSolutionsService,
             ListPriceController listPriceController)
         {
+            const decimal price = 3.21M;
             var solutionId = catalogueItem.Id;
             var cataloguePriceId = catalogueItem
                 .CataloguePrices
@@ -453,8 +208,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
             {
                 CataloguePriceId = cataloguePriceId,
                 SolutionName = catalogueItem.Name,
-                Price = "3.21",
-                SelectedProvisioningType = ProvisioningType.Patient.ToString(),
+                Price = price,
+                SelectedProvisioningType = ProvisioningType.Patient,
                 Unit = "per patient",
             };
 

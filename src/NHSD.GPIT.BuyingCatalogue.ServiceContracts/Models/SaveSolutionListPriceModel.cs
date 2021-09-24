@@ -6,7 +6,7 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.Models
     {
         public int CataloguePriceId { get; init; }
 
-        public decimal Price { get; init; }
+        public decimal? Price { get; init; }
 
         public ProvisioningType ProvisioningType { get; init; }
 

@@ -1,7 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using System.Globalization;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
@@ -25,10 +23,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.ListPriceModels
             : this(catalogueItem)
         {
             CataloguePriceId = cataloguePrice.CataloguePriceId;
-            Price = cataloguePrice.Price.ToString();
+            Price = cataloguePrice.Price;
             Unit = cataloguePrice.PricingUnit.Description;
             UnitDefinition = cataloguePrice.PricingUnit.Definition;
-            SelectedProvisioningType = cataloguePrice.ProvisioningType.ToString();
+            SelectedProvisioningType = cataloguePrice.ProvisioningType;
 
             if (cataloguePrice.ProvisioningType == ProvisioningType.Declarative)
             {
@@ -59,18 +57,15 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.ListPriceModels
 
         public string SolutionName { get; init; }
 
-        [StringLength(100)]
-        [RegularExpression(@"^\d+.?\d{0,4}$", ErrorMessage = "Price must be a number and supports a max of up to 4 decimal places.")]
-        public string Price { get; init; }
+        public decimal? Price { get; init; }
 
-        [Required]
         [StringLength(100)]
         public string Unit { get; init; }
 
         [StringLength(1000)]
         public string UnitDefinition { get; init; }
 
-        public string SelectedProvisioningType { get; init; }
+        public ProvisioningType? SelectedProvisioningType { get; init; }
 
         public TimeUnit? DeclarativeTimeUnit { get; init; }
 
@@ -83,24 +78,17 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.ListPriceModels
                 Definition = UnitDefinition,
             };
 
-        public bool TryGetProvisioningType(out ProvisioningType provisioningType)
-        {
-            if (!Enum.TryParse(SelectedProvisioningType, out provisioningType))
-                return false;
-
-            return true;
-        }
-
         public TimeUnit? GetTimeUnit(ProvisioningType provisioningType)
         {
             if (provisioningType == ProvisioningType.Patient)
                 return TimeUnit.PerYear;
 
-            return provisioningType == ProvisioningType.Declarative
-                ? DeclarativeTimeUnit.Value
-                : OnDemandTimeUnit.Value;
-        }
+            if (provisioningType == ProvisioningType.Declarative && DeclarativeTimeUnit.HasValue)
+                return DeclarativeTimeUnit.Value;
+            else if (provisioningType == ProvisioningType.OnDemand && OnDemandTimeUnit.HasValue)
+                return OnDemandTimeUnit.Value;
 
-        public bool TryParsePrice(out decimal price) => decimal.TryParse(Price, NumberStyles.Currency, CultureInfo.CurrentCulture, out price);
+            return null;
+        }
     }
 }

@@ -62,7 +62,7 @@ namespace NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.TagHelpers.Radios
                         .Select(p => p.GetValue(Value, null))
                         .FirstOrDefault();
 
-                    return radioCheckedValue is not null && Equals(radioCheckedValue, For.Model);
+                    return radioCheckedValue is not null && Equals(radioCheckedValue, For.Model?.ToString());
                 }
 
                 var tags = new List<string>(2)
@@ -80,6 +80,8 @@ namespace NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.TagHelpers.Radios
                     input,
                     childContent,
                     tags);
+
+                TagHelperFunctions.TellParentTagIfThisTagIsInError(ViewContext, context, For);
             }
 
             output.Content

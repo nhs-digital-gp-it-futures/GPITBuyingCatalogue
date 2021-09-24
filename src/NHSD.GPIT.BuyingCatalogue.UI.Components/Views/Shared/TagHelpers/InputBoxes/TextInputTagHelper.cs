@@ -12,8 +12,6 @@ namespace NHSD.GPIT.BuyingCatalogue.UI.Components.TagHelpers
     {
         public const string TagHelperName = "nhs-input";
 
-        private const int DefaultMaxLength = 500;
-
         private readonly IHtmlGenerator htmlGenerator;
 
         public TextInputTagHelper(IHtmlGenerator htmlGenerator)
@@ -36,6 +34,11 @@ namespace NHSD.GPIT.BuyingCatalogue.UI.Components.TagHelpers
 
         [HtmlAttributeName(TagHelperConstants.CharacterCountName)]
         public bool CharacterCountEnabled { get; set; } = false;
+
+        [HtmlAttributeName(TagHelperConstants.MaxCharacterLength)]
+        public int? MaximumCharacterLength { get; set; }
+
+        public int DefaultMaxLength => MaximumCharacterLength ?? 500;
 
         public override void Process(TagHelperContext context, TagHelperOutput output)
         {

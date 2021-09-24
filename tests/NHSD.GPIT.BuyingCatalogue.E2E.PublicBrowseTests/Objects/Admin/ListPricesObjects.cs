@@ -25,6 +25,8 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Objects.Admin
 
         internal static By UnitSummaryError => By.Id("Unit-error");
 
+        internal static By ProvisioningTypeSummaryError => By.Id("edit-list-price-error");
+
         internal static By DeleteListPriceCancelLink => By.LinkText("Cancel");
     }
 }

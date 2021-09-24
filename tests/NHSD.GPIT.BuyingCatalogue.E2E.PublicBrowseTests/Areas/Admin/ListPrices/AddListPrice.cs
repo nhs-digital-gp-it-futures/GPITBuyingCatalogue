@@ -145,7 +145,8 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.ListPrices
         public void AddListPrice_NoInput_ThrowsError()
         {
             const string expectedPriceSummaryErrorMessage = "A valid price must be entered.";
-            const string expectedUnitSummaryErrorMessage = "The Unit field is required.";
+            const string expectedUnitSummaryErrorMessage = "A unit must be entered.";
+            const string expectedProvisioningTypeSummaryErrorMessage = "Error: A provisioning type must be selected.";
 
             CommonActions.ClickSave();
 
@@ -177,6 +178,13 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.ListPrices
                 .ElementShowingCorrectErrorMessage(
                     ListPricesObjects.UnitSummaryError,
                     expectedUnitSummaryErrorMessage)
+                .Should()
+                .BeTrue();
+
+            CommonActions
+                .ElementShowingCorrectErrorMessage(
+                    ListPricesObjects.ProvisioningTypeSummaryError,
+                    expectedProvisioningTypeSummaryErrorMessage)
                 .Should()
                 .BeTrue();
         }

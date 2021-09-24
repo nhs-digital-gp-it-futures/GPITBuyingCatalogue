@@ -1,5 +1,4 @@
-﻿using System.Globalization;
-using FluentAssertions;
+﻿using FluentAssertions;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.Test.Framework.AutoFixtureCustomisations;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.ListPriceModels;
@@ -41,24 +40,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Models.ListPric
         }
 
         [Theory]
-        [CommonInlineAutoData(ProvisioningType.Patient)]
-        [CommonInlineAutoData(ProvisioningType.Declarative)]
-        [CommonInlineAutoData(ProvisioningType.OnDemand)]
-        public static void GetProvisioningType_SetsDetailsAsExpected(
-            ProvisioningType provisioningType,
-            CatalogueItem catalogueItem)
-        {
-            var editListPriceModel = new EditListPriceModel(catalogueItem)
-            {
-                SelectedProvisioningType = provisioningType.ToString(),
-            };
-
-            editListPriceModel.TryGetProvisioningType(out var actualProvisioningType);
-
-            actualProvisioningType.Should().Be(provisioningType);
-        }
-
-        [Theory]
         [CommonInlineAutoData(ProvisioningType.Patient, TimeUnit.PerMonth, TimeUnit.PerMonth, TimeUnit.PerYear)]
         [CommonInlineAutoData(ProvisioningType.Declarative, TimeUnit.PerMonth, TimeUnit.PerYear, TimeUnit.PerMonth)]
         [CommonInlineAutoData(ProvisioningType.OnDemand, TimeUnit.PerMonth, TimeUnit.PerYear, TimeUnit.PerYear)]
@@ -71,7 +52,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Models.ListPric
         {
             var editListPriceModel = new EditListPriceModel(catalogueItem)
             {
-                SelectedProvisioningType = provisioningType.ToString(),
+                SelectedProvisioningType = provisioningType,
                 DeclarativeTimeUnit = declarativeTimeUnit,
                 OnDemandTimeUnit = onDemandTimeUnit,
             };
@@ -79,41 +60,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Models.ListPric
             var actualTimeUnit = editListPriceModel.GetTimeUnit(provisioningType);
 
             actualTimeUnit.Should().Be(expectedTimeUnit);
-        }
-
-        [Theory]
-        [CommonAutoData]
-        public static void TryParsePrice_WithValidPrice_ParsesSuccessfully(
-            CatalogueItem catalogueItem)
-        {
-            const decimal expectedPrice = 3.12M;
-
-            var editListPriceModel = new EditListPriceModel(catalogueItem)
-            {
-                Price = expectedPrice.ToString(CultureInfo.CurrentCulture),
-            };
-
-            var result = editListPriceModel.TryParsePrice(out var actualPrice);
-
-            result.Should().BeTrue();
-            actualPrice.Should().Be(expectedPrice);
-        }
-
-        [Theory]
-        [CommonAutoData]
-        public static void TryParsePrice_WithInvalidPrice_DoesNotParse(
-            CatalogueItem catalogueItem)
-        {
-            var invalidPrice = string.Empty;
-
-            var editListPriceModel = new EditListPriceModel(catalogueItem)
-            {
-                Price = invalidPrice,
-            };
-
-            var result = editListPriceModel.TryParsePrice(out _);
-
-            result.Should().BeFalse();
         }
     }
 }
