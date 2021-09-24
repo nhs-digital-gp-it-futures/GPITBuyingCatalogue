@@ -274,18 +274,12 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Controllers
         [CommonAutoData]
         public static async Task Get_Capabilities_ValidSolutionForId_ReturnsExpectedViewResult(
             [Frozen] Mock<ISolutionsService> mockService,
+            SolutionsController controller,
             CatalogueItem mockCatalogueItem)
         {
             var capabilitiesViewModel = new CapabilitiesViewModel(mockCatalogueItem);
-            var mockMapper = new Mock<IMapper>();
             mockService.Setup(s => s.GetSolutionOverview(mockCatalogueItem.Id))
                 .ReturnsAsync(mockCatalogueItem);
-            var controller = new SolutionsController(
-                Mock.Of<IMapper>(),
-                mockService.Object,
-                Mock.Of<IMemoryCache>(),
-                Mock.Of<ISolutionsFilterService>(),
-                new FilterCacheKeySettings());
 
             var actual = (await controller.Capabilities(mockCatalogueItem.Id)).As<ViewResult>();
 
