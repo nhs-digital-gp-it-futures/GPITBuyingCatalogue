@@ -122,7 +122,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers
             if (solution is null)
                 return BadRequest($"No Catalogue Item found for Id: {solutionId}");
 
-            return View(mapper.Map<CatalogueItem, CapabilitiesViewModel>(solution));
+            return View(new CapabilitiesViewModel(solution));
         }
 
         [HttpGet("{solutionId}/additional-services/{additionalServiceId}/capabilities")]
@@ -135,13 +135,11 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers
             if (solution is null)
                 return BadRequest($"No Catalogue Item found for Id: {solutionId}");
 
-            var viewModel = mapper.Map<CatalogueItem, CapabilitiesViewModel>(solution);
-
-            viewModel.Name = solution.CatalogueItemName(additionalServiceId);
-
-            viewModel.Description = solution.AdditionalServiceDescription(additionalServiceId);
-
-            return View(viewModel);
+            return View(new CapabilitiesViewModel(solution)
+            {
+                Name = solution.CatalogueItemName(additionalServiceId),
+                Description = solution.AdditionalServiceDescription(additionalServiceId),
+            });
         }
 
         [HttpGet("{solutionId}/capability/{capabilityId}")]
