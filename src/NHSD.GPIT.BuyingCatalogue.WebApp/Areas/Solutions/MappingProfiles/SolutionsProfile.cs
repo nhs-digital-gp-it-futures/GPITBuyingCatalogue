@@ -132,20 +132,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.MappingProfiles
                         dest.SetPaginationFooter();
                     });
 
-            CreateMap<CatalogueItem, SolutionDescriptionModel>()
-                .ForMember(
-                    dest => dest.Description,
-                    opt => opt.MapFrom(src => src.Solution == null ? null : src.Solution.FullDescription))
-                .ForMember(dest => dest.Frameworks, opt => opt.MapFrom(src => src.Frameworks()))
-                .ForMember(dest => dest.IsFoundation, opt => opt.MapFrom(src => src.IsFoundation().ToYesNo()))
-                .ForMember(
-                    dest => dest.Summary,
-                    opt => opt.MapFrom(src => src.Solution == null ? null : src.Solution.Summary))
-                .ForMember(
-                    dest => dest.SupplierName,
-                    opt => opt.MapFrom(src => src.Supplier == null ? null : src.Supplier.Name))
-                .IncludeBase<CatalogueItem, SolutionDisplayBaseModel>();
-
             CreateMap<CatalogueItem, HostingTypesModel>()
                 .BeforeMap(
                 (src, dest) =>
