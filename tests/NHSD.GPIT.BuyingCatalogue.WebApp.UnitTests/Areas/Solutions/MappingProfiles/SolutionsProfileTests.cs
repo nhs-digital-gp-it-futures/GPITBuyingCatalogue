@@ -42,54 +42,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.MappingProf
 
         [Theory]
         [CommonAutoData]
-        public void Map_CatalogueItemToListPriceModel_ResultAsExpected(
-           CatalogueItem catalogueItem)
-        {
-            var expected = catalogueItem.CataloguePrices.Count(c => c.CataloguePriceType == CataloguePriceType.Flat);
-            expected.Should().BeGreaterThan(0);
-
-            var actual = mapper.Map<CatalogueItem, ListPriceModel>(catalogueItem);
-
-            actual.FlatListPrices.Count.Should().Be(expected);
-            actual.PaginationFooter.Should().BeEquivalentTo(new PaginationFooterModel
-            {
-                Previous = new SectionModel
-                {
-                    Action = "Capabilities",
-                    Controller = "Solutions",
-                    Name = "Capabilities",
-                    Show = true,
-                },
-
-                Next = new SectionModel
-                {
-                    Action = "AdditionalServices",
-                    Controller = "Solutions",
-                    Name = "Additional Services",
-                    Show = true,
-                },
-            });
-            actual.Section.Should().Be("List price");
-            actual.SolutionId.Should().Be(catalogueItem.Id);
-            actual.SolutionName.Should().Be(catalogueItem.Name);
-        }
-
-        [Theory]
-        [CommonAutoData]
-        public void Map_CataloguePriceToPriceViewModel_ResultAsExpected(CataloguePrice cataloguePrice)
-        {
-            cataloguePrice.CurrencyCode = "USD";
-            var expected = $"{cataloguePrice.PricingUnit.Description} {cataloguePrice.TimeUnit?.Description()}";
-
-            var actual = mapper.Map<CataloguePrice, PriceViewModel>(cataloguePrice);
-
-            actual.CurrencyCode.Should().Be(CurrencyCodeSigns.Code[cataloguePrice.CurrencyCode]);
-            actual.Price.Should().Be(Math.Round(cataloguePrice.Price.Value, 2));
-            actual.Unit.Should().Be(expected);
-        }
-
-        [Theory]
-        [CommonAutoData]
         public void Map_CatalogueItemToHostingTypesModel_ResultAsExpected(
             CatalogueItem catalogueItem)
         {

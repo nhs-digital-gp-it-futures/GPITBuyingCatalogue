@@ -41,9 +41,11 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.PublicBrowse.Solution
             var prices = PublicBrowsePages.SolutionAction.GetPrices();
 
             await using var context = GetEndToEndDbContext();
-            var dbPrices = await context.CataloguePrices.Where(s => s.CatalogueItemId == new CatalogueItemId(99999, "001")).ToListAsync();
+            var dbPrices = await context.CataloguePrices
+                .Where(s => s.CatalogueItemId == new CatalogueItemId(99999, "001"))
+                .Select(cp => $"£{cp.Price}").ToListAsync();
 
-            prices.Should().Contain(dbPrices.Select(s => s.Price.ToString()));
+            prices.Should().BeEquivalentTo(dbPrices);
         }
     }
 }

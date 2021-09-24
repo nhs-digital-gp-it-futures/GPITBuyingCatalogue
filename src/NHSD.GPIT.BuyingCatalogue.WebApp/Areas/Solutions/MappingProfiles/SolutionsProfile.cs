@@ -74,36 +74,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.MappingProfiles
                 .ForMember(dest => dest.HybridHostingType, opt => opt.Ignore())
                 .ForMember(dest => dest.OnPremise, opt => opt.Ignore())
                 .IncludeBase<CatalogueItem, SolutionDisplayBaseModel>();
-
-            CreateMap<CatalogueItem, ListPriceModel>()
-                .ForMember(
-                    dest => dest.FlatListPrices,
-                    opt =>
-                    {
-                        opt.PreCondition(src => src.CataloguePrices != null);
-                        opt.MapFrom(src => src.CataloguePrices.Where(p => p.CataloguePriceType == CataloguePriceType.Flat));
-                    })
-                .IncludeBase<CatalogueItem, SolutionDisplayBaseModel>();
-
-            CreateMap<CataloguePrice, PriceViewModel>()
-                .ForMember(
-                    dest => dest.CurrencyCode,
-                    opt => opt.MapFrom(
-                        src => CurrencyCodeSigns.Code.ContainsKey(src.CurrencyCode)
-                            ? CurrencyCodeSigns.Code[src.CurrencyCode]
-                            : null))
-                .ForMember(
-                    dest => dest.Price,
-                    opt =>
-                    {
-                        opt.PreCondition(src => src.Price != null);
-                        opt.MapFrom(src => Math.Round(src.Price.Value, 2));
-                    })
-                .ForMember(
-                    dest => dest.Unit,
-                    opt => opt.MapFrom(
-                        src =>
-                            $"{(src.PricingUnit == null ? string.Empty : src.PricingUnit.Description)} {(src.TimeUnit == null ? string.Empty : src.TimeUnit.Value.Description())}"));
         }
     }
 }
