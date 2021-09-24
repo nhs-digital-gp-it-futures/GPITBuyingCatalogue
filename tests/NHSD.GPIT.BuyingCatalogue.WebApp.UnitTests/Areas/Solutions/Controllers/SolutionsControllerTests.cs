@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
 using AutoFixture.Xunit2;
@@ -376,66 +377,39 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Controllers
         [Theory]
         [CommonAutoData]
         public static async Task Get_CheckEpics_ValidId_ResultAsExpected(
-            CatalogueItemId catalogueItemId,
-            int capabilityId,
-            CatalogueItemCapability itemCapability,
-            string solutionName)
+            CatalogueItem solution,
+            [Frozen] Mock<ISolutionsService> mockSolutionsService,
+            SolutionsController controller)
         {
-            itemCapability.CapabilityId = capabilityId;
+            var catalogueItemId = solution.Id;
+            var capabilityItem = solution.CatalogueItemCapabilities.First();
+            var capabilityId = capabilityItem.Capability.Id;
+            var capability = solution.CatalogueItemCapability(capabilityId);
 
-            var mockCatalogueItem = new Mock<CatalogueItem>();
-            mockCatalogueItem.SetupGet(c => c.Name)
-                .Returns(solutionName);
-            mockCatalogueItem.Setup(c => c.CatalogueItemCapability(capabilityId))
-                .Returns(itemCapability);
+            var expectedModel = new SolutionCheckEpicsModel(capability)
+                .WithSolutionName(solution.Name);
 
-            var mockService = new Mock<ISolutionsService>();
-            mockService.Setup(s => s.GetSolutionCapability(catalogueItemId, capabilityId))
-                .ReturnsAsync(mockCatalogueItem.Object);
+            mockSolutionsService
+                .Setup(s => s.GetSolutionCapability(catalogueItemId, capabilityId))
+                .ReturnsAsync(solution);
 
-            var mockSolutionCheckEpicsModel = new Mock<SolutionCheckEpicsModel>();
-            mockSolutionCheckEpicsModel.Setup(s => s.WithSolutionName(solutionName))
-                .Returns(mockSolutionCheckEpicsModel.Object);
-
-            var mockMapper = new Mock<IMapper>();
-            mockMapper.Setup(m => m.Map<CatalogueItemCapability, SolutionCheckEpicsModel>(itemCapability))
-                .Returns(mockSolutionCheckEpicsModel.Object);
-
-            var actual = (await new SolutionsController(
-                mockMapper.Object,
-                mockService.Object,
-                Mock.Of<IMemoryCache>(),
-                Mock.Of<ISolutionsFilterService>(),
-                new FilterCacheKeySettings()).CheckEpics(catalogueItemId, capabilityId)).As<ViewResult>();
-
-            mockService.Verify(s => s.GetSolutionCapability(catalogueItemId, capabilityId));
-            mockCatalogueItem.Verify(c => c.CatalogueItemCapability(capabilityId));
-            mockMapper.Verify(
-                m => m.Map<CatalogueItemCapability, SolutionCheckEpicsModel>(itemCapability));
-            mockCatalogueItem.VerifyGet(c => c.Name);
-            mockSolutionCheckEpicsModel.Verify(m => m.WithSolutionName(solutionName));
+            var actual = (await controller.CheckEpics(catalogueItemId, capabilityId)).As<ViewResult>();
 
             actual.Should().NotBeNull();
             actual.ViewName.Should().BeNullOrEmpty();
-            actual.Model.Should().Be(mockSolutionCheckEpicsModel.Object);
+            actual.Model.Should().BeEquivalentTo(expectedModel);
         }
 
         [Theory]
         [CommonAutoData]
         public static async Task Get_CheckEpics_NullSolutionForCapabilityId_ReturnsBadRequestResult(
             CatalogueItemId catalogueItemId,
-            int capabilityId)
+            int capabilityId,
+            [Frozen] Mock<ISolutionsService> mockSolutionsService,
+            SolutionsController controller)
         {
-            var mockService = new Mock<ISolutionsService>();
-            mockService.Setup(s => s.GetSolutionCapability(catalogueItemId, capabilityId))
+            mockSolutionsService.Setup(s => s.GetSolutionCapability(catalogueItemId, capabilityId))
                 .ReturnsAsync(default(CatalogueItem));
-
-            var controller = new SolutionsController(
-                Mock.Of<IMapper>(),
-                mockService.Object,
-                Mock.Of<IMemoryCache>(),
-                Mock.Of<ISolutionsFilterService>(),
-                new FilterCacheKeySettings());
 
             var actual = (await controller.CheckEpics(catalogueItemId, capabilityId)).As<BadRequestObjectResult>();
 
@@ -458,52 +432,31 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Controllers
         [CommonAutoData]
         public static async Task Get_CheckEpicsAdditionalServices_ValidIds_ResultAsExpected(
             CatalogueItemId catalogueItemId,
-            CatalogueItemId catalogueItemIdAdditional,
-            int capabilityId,
-            CatalogueItemCapability itemCapability,
-            string solutionName)
+            CatalogueItem additionalSolution,
+            [Frozen] Mock<ISolutionsService> mockSolutionsService,
+            SolutionsController controller)
         {
-            itemCapability.CapabilityId = capabilityId;
+            var catalogueItemIdAdditional = additionalSolution.Id;
+            var capabilityItem = additionalSolution.CatalogueItemCapabilities.First();
+            var capabilityId = capabilityItem.Capability.Id;
+            var capability = additionalSolution.CatalogueItemCapability(capabilityId);
 
-            var mockCatalogueItem = new Mock<CatalogueItem>();
-            mockCatalogueItem.SetupGet(c => c.Name)
-                .Returns(solutionName);
-            mockCatalogueItem.Setup(c => c.CatalogueItemCapability(capabilityId))
-                .Returns(itemCapability);
-            var mockService = new Mock<ISolutionsService>();
-            mockService.Setup(
-                    s => s.GetAdditionalServiceCapability(catalogueItemIdAdditional, capabilityId))
-                .ReturnsAsync(mockCatalogueItem.Object);
+            var expectedModel = new SolutionCheckEpicsModel(capability)
+                .WithItems(catalogueItemId, catalogueItemIdAdditional, additionalSolution.Name);
 
-            var mockSolutionCheckEpicsModel = new Mock<SolutionCheckEpicsModel>();
-            mockSolutionCheckEpicsModel.Setup(
-                    s => s.WithItems(catalogueItemId, catalogueItemIdAdditional, solutionName))
-                .Returns(mockSolutionCheckEpicsModel.Object);
-            var mockMapper = new Mock<IMapper>();
-            mockMapper.Setup(m => m.Map<CatalogueItemCapability, SolutionCheckEpicsModel>(itemCapability))
-                .Returns(mockSolutionCheckEpicsModel.Object);
+            mockSolutionsService
+                .Setup(s => s.GetAdditionalServiceCapability(catalogueItemIdAdditional, capabilityId))
+                .ReturnsAsync(additionalSolution);
 
-            var solutionDetailsController =
-                new SolutionsController(
-                    mockMapper.Object,
-                    mockService.Object,
-                    Mock.Of<IMemoryCache>(),
-                    Mock.Of<ISolutionsFilterService>(),
-                    new FilterCacheKeySettings());
+            var actual = (await controller.CheckEpicsAdditionalServices(
+                    catalogueItemId,
+                    catalogueItemIdAdditional,
+                    capabilityId))
+                .As<ViewResult>();
 
-            await solutionDetailsController
-                .CheckEpicsAdditionalServices(catalogueItemId, catalogueItemIdAdditional, capabilityId);
-
-            mockService.Verify(
-                s => s.GetAdditionalServiceCapability(catalogueItemIdAdditional, capabilityId));
-            mockCatalogueItem.Verify(c => c.CatalogueItemCapability(capabilityId));
-            mockMapper.Verify(
-                m => m.Map<CatalogueItemCapability, SolutionCheckEpicsModel>(itemCapability));
-            mockCatalogueItem.VerifyGet(c => c.Name);
-            mockSolutionCheckEpicsModel.Verify(
-                s => s.WithItems(catalogueItemId, catalogueItemIdAdditional, solutionName));
-            mockSolutionCheckEpicsModel.Verify(
-                m => m.WithItems(catalogueItemId, catalogueItemIdAdditional, solutionName));
+            actual.Should().NotBeNull();
+            actual.ViewName.Should().Be("CheckEpics");
+            actual.Model.Should().BeEquivalentTo(expectedModel);
         }
 
         [Theory]
@@ -511,20 +464,15 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Controllers
         public static async Task Get_CheckEpicsAdditionalServices_NullSolutionForCapabilityId_ReturnsBadRequestResult(
             CatalogueItemId catalogueItemId,
             CatalogueItemId catalogueItemIdAdditional,
-            int capabilityId)
+            int capabilityId,
+            [Frozen] Mock<ISolutionsService> mockSolutionsService,
+            SolutionsController controller)
         {
-            var mockService = new Mock<ISolutionsService>();
-            mockService.Setup(s => s.GetSolutionCapability(catalogueItemId, capabilityId))
+            mockSolutionsService
+                .Setup(s => s.GetAdditionalServiceCapability(catalogueItemIdAdditional, capabilityId))
                 .ReturnsAsync(default(CatalogueItem));
 
-            var solutionDetailsController = new SolutionsController(
-                Mock.Of<IMapper>(),
-                mockService.Object,
-                Mock.Of<IMemoryCache>(),
-                Mock.Of<ISolutionsFilterService>(),
-                new FilterCacheKeySettings());
-
-            var actual = (await solutionDetailsController
+            var actual = (await controller
                     .CheckEpicsAdditionalServices(catalogueItemId, catalogueItemIdAdditional, capabilityId))
                 .As<BadRequestObjectResult>();
 

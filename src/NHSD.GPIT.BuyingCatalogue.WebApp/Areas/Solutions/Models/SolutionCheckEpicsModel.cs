@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Linq;
+using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models;
 
@@ -6,6 +8,20 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models
 {
     public class SolutionCheckEpicsModel : INoNavModel
     {
+        public SolutionCheckEpicsModel()
+        {
+        }
+
+        public SolutionCheckEpicsModel(CatalogueItemCapability solutionCapability)
+        {
+            Description = solutionCapability.Capability?.Description;
+            Name = solutionCapability.Capability?.Name;
+            SolutionId = solutionCapability.CatalogueItemId;
+            NhsDefined = GetEpics(solutionCapability.Capability, false);
+            SupplierDefined = GetEpics(solutionCapability.Capability, true);
+            LastReviewed = solutionCapability.LastUpdated;
+        }
+
         public CatalogueItemId CatalogueItemIdAdditional { get; set; }
 
         public string Description { get; set; }
@@ -46,5 +62,12 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models
 
             return this;
         }
+
+        private static string[] GetEpics(Capability capability, bool supplierDefined) =>
+            capability?
+                .Epics?
+                .Where(e => e.IsActive && e.SupplierDefined == supplierDefined)
+                .Select(epic => epic.Name)
+                .ToArray();
     }
 }
