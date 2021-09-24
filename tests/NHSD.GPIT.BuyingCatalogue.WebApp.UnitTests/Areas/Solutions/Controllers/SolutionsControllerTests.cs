@@ -293,29 +293,26 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Controllers
 
         [Theory]
         [CommonAutoData]
-        public static async Task Get_Capabilities_ValidSolutionForId_ReturnsExpectedViewResult(CatalogueItemId id)
+        public static async Task Get_Capabilities_ValidSolutionForId_ReturnsExpectedViewResult(
+            [Frozen] Mock<ISolutionsService> mockService,
+            CatalogueItem mockCatalogueItem)
         {
-            var mockCapabilitiesViewModel = new Mock<CapabilitiesViewModel>().Object;
-            var mockCatalogueItem = new Mock<CatalogueItem>().Object;
-
-            var mockService = new Mock<ISolutionsService>();
+            var capabilitiesViewModel = new CapabilitiesViewModel(mockCatalogueItem);
             var mockMapper = new Mock<IMapper>();
-            mockService.Setup(s => s.GetSolutionOverview(id))
+            mockService.Setup(s => s.GetSolutionOverview(mockCatalogueItem.Id))
                 .ReturnsAsync(mockCatalogueItem);
-            mockMapper.Setup(m => m.Map<CatalogueItem, CapabilitiesViewModel>(mockCatalogueItem))
-                .Returns(mockCapabilitiesViewModel);
             var controller = new SolutionsController(
-                mockMapper.Object,
+                Mock.Of<IMapper>(),
                 mockService.Object,
                 Mock.Of<IMemoryCache>(),
                 Mock.Of<ISolutionsFilterService>(),
                 new FilterCacheKeySettings());
 
-            var actual = (await controller.Capabilities(id)).As<ViewResult>();
+            var actual = (await controller.Capabilities(mockCatalogueItem.Id)).As<ViewResult>();
 
             actual.Should().NotBeNull();
             actual.ViewName.Should().BeNullOrEmpty();
-            actual.Model.Should().Be(mockCapabilitiesViewModel);
+            actual.Model.Should().BeEquivalentTo(capabilitiesViewModel);
         }
 
         [Theory]

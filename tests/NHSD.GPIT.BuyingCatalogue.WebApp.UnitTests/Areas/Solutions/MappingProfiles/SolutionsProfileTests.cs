@@ -11,7 +11,6 @@ using Newtonsoft.Json;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.Framework.Constants;
-using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.Test.Framework.AutoFixtureCustomisations;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.MappingProfiles;
@@ -71,36 +70,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.MappingProf
                         .ToList());
             actual.SolutionId.Should().Be(catalogueItemCapability.CatalogueItemId);
             actual.SolutionName.Should().BeNullOrEmpty();
-        }
-
-        [Theory]
-        [CommonAutoData]
-        public void Map_CatalogueItemToCapabilitiesViewModel_ResultAsExpected(
-            CatalogueItem catalogueItem)
-        {
-            var actual = mapper.Map<CatalogueItem, CapabilitiesViewModel>(catalogueItem);
-
-            actual.PaginationFooter.Should().BeEquivalentTo(new PaginationFooterModel
-            {
-                FullWidth = true,
-                Next = new SectionModel
-                {
-                    Action = nameof(SolutionsController.ListPrice),
-                    Controller = typeof(SolutionsController).ControllerName(),
-                    Name = "List price",
-                    Show = true,
-                },
-                Previous = new SectionModel
-                {
-                    Action = nameof(SolutionsController.Features),
-                    Controller = typeof(SolutionsController).ControllerName(),
-                    Name = nameof(SolutionsController.Features),
-                    Show = true,
-                },
-            });
-            actual.Section.Should().Be(nameof(SolutionsController.Capabilities));
-            actual.SolutionId.Should().Be(catalogueItem.Id);
-            actual.SolutionName.Should().Be(catalogueItem.Name);
         }
 
         [Theory]
@@ -374,7 +343,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.MappingProf
             mockCatalogueItem.Verify(c => c.Features());
             actual.Features.Should().BeEquivalentTo(expected);
         }
-
 
         private static IList<CatalogueItem> GetAllCatalogueItems()
         {
