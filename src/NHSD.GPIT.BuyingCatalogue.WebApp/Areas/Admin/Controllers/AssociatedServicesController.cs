@@ -55,9 +55,47 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
         }
 
         [HttpGet("add-associated-service")]
-        public IActionResult AddAssociatedServices(CatalogueItemId solutionId)
+        public async Task<IActionResult> AddAssociatedService(CatalogueItemId solutionId)
         {
-            throw new NotImplementedException("To be implemented in Story 15028");
+            var solution = await solutionsService.GetSolution(solutionId);
+            if (solution is null)
+                return BadRequest($"No Solution found for Id: {solutionId}");
+
+            return View(new AddAssociatedServiceModel(solution));
+        }
+
+        [HttpGet("edit-associated-service/{associatedServiceId}")]
+        public async Task<IActionResult> EditAssociatedService(CatalogueItemId solutionId, CatalogueItemId associatedServiceId)
+        {
+            var solution = await solutionsService.GetSolution(solutionId);
+            if (solution is null)
+                return BadRequest($"No Solution found for Id: {solutionId}");
+
+            var associatedService = await associatedServicesService.GetAssociatedService(associatedServiceId);
+            if (associatedService is null)
+                return BadRequest($"No Associated Service found for Id: {associatedServiceId}");
+
+            return View(new EditAssociatedServiceModel(solution, associatedService));
+        }
+
+        [HttpGet("delete-associated-service/{associatedServiceId}")]
+        public async Task<IActionResult> DeleteAssociatedService(CatalogueItemId solutionId, CatalogueItemId associatedServiceId)
+        {
+            var associatedService = await associatedServicesService.GetAssociatedService(associatedServiceId);
+            if (associatedService is null)
+                return BadRequest($"No Associated Service found for Id: {associatedServiceId}");
+
+            return View(new DeleteAssociatedServiceModel(solutionId, associatedService));
+        }
+
+        [HttpPost("delete-associated-service/{associatedServiceId}")]
+        public IActionResult DeleteAssociatedService(CatalogueItemId solutionId, CatalogueItemId associatedServiceId, DeleteAssociatedServiceModel model)
+        {
+            associatedServicesService.DeleteAssociatedService(associatedServiceId);
+
+            return RedirectToAction(
+                nameof(AssociatedServices),
+                new { solutionId });
         }
     }
 }

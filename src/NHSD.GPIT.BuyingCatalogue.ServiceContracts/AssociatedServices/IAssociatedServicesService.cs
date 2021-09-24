@@ -9,6 +9,10 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.AssociatedServices
     {
         Task<List<CatalogueItem>> GetAssociatedServicesForSupplier(int? supplierId);
 
+        Task<CatalogueItem> GetAssociatedService(CatalogueItemId associatedServiceId);
+
+        Task DeleteAssociatedService(CatalogueItemId associatedServiceId);
+
         Task RelateAssociatedServicesToSolution(CatalogueItemId solutionId, IEnumerable<CatalogueItemId> associatedServices);
     }
 }

@@ -1,0 +1,41 @@
+﻿@using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers;
+@using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
+@model NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.AssociatedServices.AddAssociatedServiceModel;
+@{
+    Layout = "~/Views/Shared/Layouts/_NoBannersLayout.cshtml";
+    ViewData["Title"] = "Associated Service information";
+}
+<partial name="Partials/_BackLink" model="Model" />
+<div class="nhsuk-grid-row">    
+    <div class="nhsuk-grid-column-two-thirds">
+        <nhs-page-title title="Associated Service information"
+                        caption="@Model.Solution.Name"
+                        advice="Provide information about the Associated Service." />
+
+        <nhs-table>
+            <nhs-table-column>Section</nhs-table-column>
+            <nhs-table-column>Mandatory</nhs-table-column>
+            <nhs-table-column>Status</nhs-table-column>
+            <nhs-table-column></nhs-table-column>
+            <nhs-table-row-container>
+                <nhs-table-cell>Details</nhs-table-cell>
+                <nhs-table-cell>Yes</nhs-table-cell>
+                <nhs-table-cell><nhs-tag colour="Green" text="Completed" /></nhs-table-cell>
+                <nhs-table-cell><a href="#">Edit</a></nhs-table-cell>
+            </nhs-table-row-container>
+            <nhs-table-row-container>
+                <nhs-table-cell>Price</nhs-table-cell>
+                <nhs-table-cell>Yes</nhs-table-cell>
+                <nhs-table-cell><nhs-tag colour="Green" text="Completed" /></nhs-table-cell>
+                <nhs-table-cell><a href="#">Edit</a></nhs-table-cell>
+            </nhs-table-row-container>
+        </nhs-table>
+        
+        <vc:nhs-secondary-button text="Continue"
+                                 use-primary-colour="true"
+                                 url="@Url.Action(
+                                     nameof(AssociatedServicesController.AssociatedServices),
+                                     typeof(AssociatedServicesController).ControllerName(),
+                                     new { SolutionId = Model.Solution.Id })" /><br />
+    </div>
+</div>

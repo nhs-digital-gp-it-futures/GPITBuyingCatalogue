@@ -6,16 +6,14 @@
     ViewData["Title"] = "Associated Services";
 }
 <partial name="Partials/_BackLink" model="Model" />
-<div class="nhsuk-grid-row">
-    <nhs-validation-summary RadioId="Frameworks[0].Selected" />
-
+<div class="nhsuk-grid-row">    
     <div class="nhsuk-grid-column-two-thirds">
         <nhs-page-title title="Associated Services"
                         caption="@Model.Solution.Name"
                         advice="Select any services that help implement or optimise the live operation of your Catalogue Solution." />
 
         <vc:nhs-action-link url="@Url.Action(
-            nameof(AssociatedServicesController.AddAssociatedServices),
+            nameof(AssociatedServicesController.AddAssociatedService),
             typeof(AssociatedServicesController).ControllerName(),
             new { SolutionId = Model.Solution.Id })" text=" Add Associated Services" />
 
@@ -62,9 +60,10 @@
                                 @Model.SelectableAssociatedServices[i].OrderGuidance
                             </nhs-table-cell>
                             <nhs-table-cell>
-                                <a href="#">
-                                    Edit
-                                </a>
+                                <a asp-action="EditAssociatedService" asp-controller="AssociatedServices" 
+                                   asp-route-solutionId="@Model.Solution.Id"
+                                   asp-route-associatedServiceId="@Model.SelectableAssociatedServices[i].CatalogueItemId"
+                                   class="nhsuk-breadcrumb__link">Edit</a>
                             </nhs-table-cell>
                         </nhs-table-row-container>
                     }
