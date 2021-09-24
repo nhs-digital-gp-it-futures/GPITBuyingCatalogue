@@ -132,12 +132,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.MappingProfiles
                         dest.SetPaginationFooter();
                     });
 
-            CreateMap<CatalogueItem, ImplementationTimescalesModel>()
-                .ForMember(
-                    dest => dest.Description,
-                    opt => opt.MapFrom(src => src.Solution == null ? null : src.Solution.ImplementationDetail))
-                .IncludeBase<CatalogueItem, SolutionDisplayBaseModel>();
-
             CreateMap<CatalogueItemCapability, SolutionCheckEpicsModel>()
                 .ForMember(dest => dest.CatalogueItemIdAdditional, opt => opt.Ignore())
                 .ForMember(

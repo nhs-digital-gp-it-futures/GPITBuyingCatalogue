@@ -775,10 +775,12 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Controllers
         [Theory]
         [CommonAutoData]
         public static async Task Get_ImplementationTimescales_ValidId_GetsSolutionFromService(
+            [Frozen] CatalogueItemId id,
             [Frozen] Mock<ISolutionsService> mockService,
-            SolutionsController controller,
-            CatalogueItemId id)
+            SolutionsController controller)
         {
+            mockService.Setup(s => s.GetSolutionOverview(id)).ReturnsAsync((CatalogueItem)null);
+
             await controller.Implementation(id);
 
             mockService.Verify(s => s.GetSolutionOverview(id));
@@ -802,50 +804,21 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Controllers
 
         [Theory]
         [CommonAutoData]
-        public static async Task Get_ImplementationTimescales_ValidSolutionForId_MapsToModel(CatalogueItemId id)
+        public static async Task Get_ImplementationTimescales_ValidSolutionForId_ReturnsExpectedViewResult(
+            [Frozen] CatalogueItem solution,
+            [Frozen] Mock<ISolutionsService> mockService,
+            SolutionsController controller)
         {
-            var mockCatalogueItem = new Mock<CatalogueItem>().Object;
-            var mockService = new Mock<ISolutionsService>();
-            var mockMapper = new Mock<IMapper>();
-            mockService.Setup(s => s.GetSolutionOverview(id))
-                .ReturnsAsync(mockCatalogueItem);
-            var controller = new SolutionsController(
-                mockMapper.Object,
-                mockService.Object,
-                Mock.Of<IMemoryCache>(),
-                Mock.Of<ISolutionsFilterService>(),
-                new FilterCacheKeySettings());
+            var implementationTimescalesModel = new ImplementationTimescalesModel(solution);
 
-            await controller.Implementation(id);
+            mockService.Setup(s => s.GetSolutionOverview(solution.Id))
+                .ReturnsAsync(solution);
 
-            mockMapper.Verify(m => m.Map<CatalogueItem, ImplementationTimescalesModel>(mockCatalogueItem));
-        }
-
-        [Theory]
-        [CommonAutoData]
-        public static async Task Get_ImplementationTimescales_ValidSolutionForId_ReturnsExpectedViewResult(CatalogueItemId id)
-        {
-            var mockSolutionImplementationTimescalesModel = new Mock<ImplementationTimescalesModel>().Object;
-            var mockCatalogueItem = new Mock<CatalogueItem>().Object;
-
-            var mockService = new Mock<ISolutionsService>();
-            var mockMapper = new Mock<IMapper>();
-            mockService.Setup(s => s.GetSolutionOverview(id))
-                .ReturnsAsync(mockCatalogueItem);
-            mockMapper.Setup(m => m.Map<CatalogueItem, ImplementationTimescalesModel>(mockCatalogueItem))
-                .Returns(mockSolutionImplementationTimescalesModel);
-            var controller = new SolutionsController(
-                mockMapper.Object,
-                mockService.Object,
-                Mock.Of<IMemoryCache>(),
-                Mock.Of<ISolutionsFilterService>(),
-                new FilterCacheKeySettings());
-
-            var actual = (await controller.Implementation(id)).As<ViewResult>();
+            var actual = (await controller.Implementation(solution.Id)).As<ViewResult>();
 
             actual.Should().NotBeNull();
             actual.ViewName.Should().BeNullOrEmpty();
-            actual.Model.Should().Be(mockSolutionImplementationTimescalesModel);
+            actual.Model.Should().BeEquivalentTo(implementationTimescalesModel);
         }
 
         [Theory]

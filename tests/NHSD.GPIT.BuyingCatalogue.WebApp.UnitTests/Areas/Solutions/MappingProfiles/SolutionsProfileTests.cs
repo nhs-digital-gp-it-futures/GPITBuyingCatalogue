@@ -184,38 +184,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.MappingProf
 
         [Theory]
         [CommonAutoData]
-        public void Map_CatalogueItemToImplementationTimescalesModel_ResultAsExpected(
-            CatalogueItem catalogueItem)
-        {
-            var actual = mapper.Map<CatalogueItem, ImplementationTimescalesModel>(catalogueItem);
-
-            actual.Description.Should().Be(catalogueItem.Solution.ImplementationDetail);
-            actual.PaginationFooter.Should()
-                .BeEquivalentTo(
-                    new PaginationFooterModel
-                    {
-                        Next = new SectionModel
-                        {
-                            Action = nameof(SolutionsController.ClientApplicationTypes),
-                            Controller = "Solutions",
-                            Name = "Client application type",
-                            Show = true,
-                        },
-                        Previous = new SectionModel
-                        {
-                            Action = nameof(SolutionsController.Interoperability),
-                            Controller = "Solutions",
-                            Name = "Interoperability",
-                            Show = true,
-                        },
-                    });
-            actual.Section.Should().Be("Implementation");
-            actual.SolutionId.Should().Be(catalogueItem.Id);
-            actual.SolutionName.Should().Be(catalogueItem.Name);
-        }
-
-        [Theory]
-        [CommonAutoData]
         public void Map_CatalogueItemToSolutionDescriptionModel_ResultAsExpected(
             CatalogueItem catalogueItem)
         {
