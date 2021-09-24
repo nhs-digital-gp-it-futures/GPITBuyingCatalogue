@@ -175,10 +175,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.MappingProfiles
                     opt => opt.MapFrom(src => src.Supplier == null ? null : src.Supplier.Name))
                 .IncludeBase<CatalogueItem, SolutionDisplayBaseModel>();
 
-            CreateMap<CatalogueItem, SolutionFeaturesModel>()
-                .ForMember(dest => dest.Features, opt => opt.MapFrom(src => src.Features()))
-                .IncludeBase<CatalogueItem, SolutionDisplayBaseModel>();
-
             CreateMap<CatalogueItem, HostingTypesModel>()
                 .BeforeMap(
                 (src, dest) =>

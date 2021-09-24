@@ -294,56 +294,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.MappingProf
             mockCatalogueItem.Verify(c => c.HasSupplierDetails());
         }
 
-        [Theory]
-        [CommonAutoData]
-        public void Map_CatalogueItemToSolutionFeaturesModel_ResultAsExpected(
-            CatalogueItem catalogueItem)
-        {
-            var actual = mapper.Map<CatalogueItem, SolutionFeaturesModel>(catalogueItem);
-
-            var features = JsonConvert.DeserializeObject<string[]>(catalogueItem.Solution.Features);
-
-            actual.Features.Should().BeEquivalentTo(features);
-            actual.PaginationFooter.Should()
-                .BeEquivalentTo(
-                    new PaginationFooterModel
-                    {
-                        Previous = new SectionModel
-                        {
-                            Action = "Description",
-                            Controller = "Solutions",
-                            Name = "Description",
-                            Show = true,
-                        },
-
-                        // TODO: Update Next to Capabilities once Capabilities page implemented
-                        Next = new SectionModel
-                        {
-                            Action = "Capabilities",
-                            Controller = "Solutions",
-                            Name = "Capabilities",
-                            Show = true,
-                        },
-                    });
-            actual.Section.Should().Be("Features");
-            actual.SolutionId.Should().Be(catalogueItem.Id);
-            actual.SolutionName.Should().Be(catalogueItem.Name);
-        }
-
-        [Theory]
-        [AutoData]
-        public void Map_CatalogueItemToSolutionFeaturesModel_SetsFeaturesAsExpected(string[] expected)
-        {
-            var mockCatalogueItem = new Mock<CatalogueItem>();
-            mockCatalogueItem.Setup(c => c.Features())
-                .Returns(expected);
-
-            var actual = mapper.Map<CatalogueItem, SolutionFeaturesModel>(mockCatalogueItem.Object);
-
-            mockCatalogueItem.Verify(c => c.Features());
-            actual.Features.Should().BeEquivalentTo(expected);
-        }
-
         private static IList<CatalogueItem> GetAllCatalogueItems()
         {
             var fixture = new Fixture();
