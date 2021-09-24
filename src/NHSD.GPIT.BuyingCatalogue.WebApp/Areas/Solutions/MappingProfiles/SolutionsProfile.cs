@@ -37,20 +37,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.MappingProfiles
 
         public SolutionsProfile()
         {
-            CreateMap<CatalogueItem, CapabilitiesViewModel>()
-                .ForMember(dest => dest.CapabilitiesHeading, opt => opt.MapFrom(src => "Capabilities met"))
-                .ForMember(dest => dest.Name, opt => opt.Ignore())
-                .ForMember(dest => dest.Description, opt => opt.Ignore())
-                .ForMember(
-                    dest => dest.RowViewModels,
-                    opt =>
-                    {
-                        opt.PreCondition(src => src.CatalogueItemCapabilities != null);
-                        opt.MapFrom(src => src.CatalogueItemCapabilities);
-                    })
-                .IncludeBase<CatalogueItem, SolutionDisplayBaseModel>()
-                .AfterMap((_, dest) => dest.PaginationFooter.FullWidth = true);
-
             CreateMap<CatalogueItem, ClientApplicationTypesModel>()
                 .ForMember(dest => dest.ApplicationTypes, opt => opt.Ignore())
                 .ForMember(
@@ -238,15 +224,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.MappingProfiles
                     opt => opt.MapFrom(
                         src =>
                             $"{(src.PricingUnit == null ? string.Empty : src.PricingUnit.Description)} {(src.TimeUnit == null ? string.Empty : src.TimeUnit.Value.Description())}"));
-
-            CreateMap<CatalogueItemCapability, RowViewModel>()
-                .ForMember(
-                    dest => dest.Heading,
-                    opt => opt.MapFrom(src => src.Capability == null ? null : src.Capability.Name))
-                .ForMember(
-                    dest => dest.Description,
-                    opt => opt.MapFrom(src => src.Capability == null ? null : src.Capability.Description))
-                .ForMember(dest => dest.CheckEpicsUrl, opt => opt.MapFrom(src => "capability/" + src.CapabilityId));
         }
 
         private static List<string> GetEpics(Capability capability, bool supplierDefined) =>

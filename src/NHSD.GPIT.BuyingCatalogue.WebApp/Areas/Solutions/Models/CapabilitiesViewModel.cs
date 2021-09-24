@@ -1,11 +1,22 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
+using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models
 {
     public class CapabilitiesViewModel : SolutionDisplayBaseModel, INoNavModel
     {
-        public string CapabilitiesHeading { get; set; }
+        public CapabilitiesViewModel(CatalogueItem solution)
+        {
+            RowViewModels = solution.CatalogueItemCapabilities.Select(cic => new RowViewModel(cic)).ToList();
+        }
+
+        public CapabilitiesViewModel()
+        {
+        }
+
+        public string CapabilitiesHeading { get; set; } = "Capabilities met";
 
         public override int Index => 2;
 
@@ -13,6 +24,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models
 
         public string Description { get; set; }
 
-        public IList<RowViewModel> RowViewModels { get; set; } = new List<RowViewModel>();
+        public IList<RowViewModel> RowViewModels { get; } = new List<RowViewModel>();
     }
 }
