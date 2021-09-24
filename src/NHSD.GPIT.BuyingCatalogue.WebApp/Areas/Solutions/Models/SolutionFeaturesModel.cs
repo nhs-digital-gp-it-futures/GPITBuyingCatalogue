@@ -2,7 +2,12 @@
 {
     public class SolutionFeaturesModel : SolutionDisplayBaseModel
     {
-        public string[] Features { get; set; }
+        public SolutionFeaturesModel(string[] features)
+        {
+            Features = features;
+        }
+
+        public string[] Features { get; }
 
         public override int Index => 1;
     }
