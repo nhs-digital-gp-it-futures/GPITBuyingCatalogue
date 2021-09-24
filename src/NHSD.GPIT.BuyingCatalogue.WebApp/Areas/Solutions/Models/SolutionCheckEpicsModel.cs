@@ -6,7 +6,7 @@ using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models
 {
-    public class SolutionCheckEpicsModel : INoNavModel
+    public sealed class SolutionCheckEpicsModel : INoNavModel
     {
         public SolutionCheckEpicsModel()
         {
@@ -38,13 +38,13 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models
 
         public string[] SupplierDefined { get; set; }
 
-        public virtual bool HasNhsDefined() => NhsDefined != null && NhsDefined.Length > 0;
+        public bool HasNhsDefined() => NhsDefined != null && NhsDefined.Length > 0;
 
         public bool HasNoEpics() => !HasNhsDefined() && !HasSupplierDefined();
 
-        public virtual bool HasSupplierDefined() => SupplierDefined != null && SupplierDefined.Length > 0;
+        public bool HasSupplierDefined() => SupplierDefined != null && SupplierDefined.Length > 0;
 
-        public virtual SolutionCheckEpicsModel WithItems(
+        public SolutionCheckEpicsModel WithItems(
             CatalogueItemId catalogueItemId,
             CatalogueItemId catalogueItemIdAdditional,
             string solutionName)
@@ -55,7 +55,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models
             return WithSolutionName(solutionName);
         }
 
-        public virtual SolutionCheckEpicsModel WithSolutionName(string solutionName)
+        public SolutionCheckEpicsModel WithSolutionName(string solutionName)
         {
             if (!string.IsNullOrWhiteSpace(solutionName))
                 SolutionName = solutionName;

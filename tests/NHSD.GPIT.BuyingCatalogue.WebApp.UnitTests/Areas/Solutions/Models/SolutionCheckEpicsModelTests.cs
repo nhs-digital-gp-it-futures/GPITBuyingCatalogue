@@ -1,6 +1,9 @@
-﻿using AutoFixture.Xunit2;
+﻿using System;
+using System.Linq;
+using AutoFixture;
+using AutoFixture.Xunit2;
 using FluentAssertions;
-using Moq;
+using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.Test.Framework.AutoFixtureCustomisations;
 using NHSD.GPIT.BuyingCatalogue.Test.Framework.TestData;
@@ -70,43 +73,52 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Models
             model.HasSupplierDefined().Should().BeFalse();
         }
 
-        [Fact]
-        public static void HasNoEpics_NoNhsOrSupplierDefinedEpics_ReturnsTrue()
+        [Theory]
+        [CommonAutoData]
+        public static void HasNoEpics_NoNhsOrSupplierDefinedEpics_ReturnsTrue(
+            CatalogueItemCapability solutionCapability)
         {
-            var model = new Mock<SolutionCheckEpicsModel> { CallBase = true };
-            model.Setup(m => m.HasNhsDefined())
-                .Returns(false);
-            model.Setup(m => m.HasSupplierDefined())
-                .Returns(false);
+            solutionCapability.Capability.Epics = Array.Empty<Epic>();
 
-            model.Object.HasNoEpics().Should().BeTrue();
+            var model = new SolutionCheckEpicsModel(solutionCapability);
 
-            model.Verify(m => m.HasNhsDefined());
-            model.Verify(m => m.HasSupplierDefined());
+            model.HasNoEpics().Should().BeTrue();
         }
 
-        [Fact]
-        public static void HasNoEpics_HasNhsDefinedEpicsOnly_ReturnsFalse()
+        [Theory]
+        [CommonAutoData]
+        public static void HasNoEpics_HasNhsDefinedEpicsOnly_ReturnsFalse(
+            CatalogueItemCapability solutionCapability)
         {
-            var model = new Mock<SolutionCheckEpicsModel> { CallBase = true };
-            model.Setup(m => m.HasNhsDefined())
-                .Returns(true);
-            model.Setup(m => m.HasSupplierDefined())
-                .Returns(false);
+            var epics = new Fixture()
+                .Build<Epic>()
+                .With(e => e.SupplierDefined, false)
+                .CreateMany();
 
-            model.Object.HasNoEpics().Should().BeFalse();
+            solutionCapability.Capability.Epics = epics.ToList();
+            var model = new SolutionCheckEpicsModel(solutionCapability);
+
+            model.HasSupplierDefined().Should().BeFalse();
+            model.HasNhsDefined().Should().BeTrue();
+            model.HasNoEpics().Should().BeFalse();
         }
 
-        [Fact]
-        public static void HasNoEpics_HasSupplierDefinedEpicsOnly_ReturnsFalse()
+        [Theory]
+        [CommonAutoData]
+        public static void HasNoEpics_HasSupplierDefinedEpicsOnly_ReturnsFalse(
+            CatalogueItemCapability solutionCapability)
         {
-            var model = new Mock<SolutionCheckEpicsModel> { CallBase = true };
-            model.Setup(m => m.HasNhsDefined())
-                .Returns(false);
-            model.Setup(m => m.HasSupplierDefined())
-                .Returns(true);
+            var epics = new Fixture()
+                .Build<Epic>()
+                .With(e => e.SupplierDefined, true)
+                .CreateMany();
 
-            model.Object.HasNoEpics().Should().BeFalse();
+            solutionCapability.Capability.Epics = epics.ToList();
+            var model = new SolutionCheckEpicsModel(solutionCapability);
+
+            model.HasSupplierDefined().Should().BeTrue();
+            model.HasNhsDefined().Should().BeFalse();
+            model.HasNoEpics().Should().BeFalse();
         }
 
         [Theory]
@@ -120,25 +132,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Models
 
             var actual = model.WithItems(catalogueItemId, catalogueItemIdAdditional, solutionName);
 
-            model.CatalogueItemIdAdditional.Should().Be(catalogueItemIdAdditional);
-        }
-
-        [Theory]
-        [CommonAutoData]
-        public static void WithItems_ReturnsFromSetSolutionName(
-            CatalogueItemId catalogueItemId,
-            CatalogueItemId catalogueItemIdAdditional,
-            string solutionName)
-        {
-            var model = new Mock<SolutionCheckEpicsModel> { CallBase = true };
-            var expected = new Mock<SolutionCheckEpicsModel>().Object;
-            model.Setup(m => m.WithSolutionName(solutionName))
-                .Returns(expected);
-
-            var actual = model.Object.WithItems(catalogueItemId, catalogueItemIdAdditional, solutionName);
-
-            model.Verify(m => m.WithSolutionName(solutionName));
-            actual.Should().Be(expected);
+            actual.CatalogueItemIdAdditional.Should().Be(catalogueItemIdAdditional);
         }
 
         [Theory]
@@ -149,7 +143,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Models
 
             var actual = model.WithSolutionName(solutionName);
 
-            model.SolutionName.Should().Be(solutionName);
+            actual.SolutionName.Should().Be(solutionName);
             actual.Should().BeEquivalentTo(new SolutionCheckEpicsModel { SolutionName = solutionName });
         }
 
