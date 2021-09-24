@@ -50,19 +50,19 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
             {
                 new CataloguePrice
                 {
+                    CataloguePriceId = -1,
                     CatalogueItemId = new CatalogueItemId(99999, "001"),
                     CataloguePriceType = CataloguePriceType.Flat,
                     PricingUnit = new PricingUnit
                     {
                         Id = -1,
                         TierName = "patient",
-                        Name = "patient",
                         Description = "per patient",
                     },
                     CurrencyCode = "GBP",
                     Price = 100.01M,
                     ProvisioningType = ProvisioningType.Patient,
-                    TimeUnit = TimeUnit.PerMonth,
+                    TimeUnit = TimeUnit.PerYear,
                     LastUpdated = DateTime.UtcNow,
                 },
                 new CataloguePrice
@@ -73,7 +73,6 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
                     {
                         Id = -2,
                         TierName = "thing",
-                        Name = "thing",
                         Description = "per thing",
                     },
                     CurrencyCode = "GBP",

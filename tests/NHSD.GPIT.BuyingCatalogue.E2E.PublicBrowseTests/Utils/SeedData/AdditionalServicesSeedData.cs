@@ -122,7 +122,6 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
                             PricingUnit = new PricingUnit
                             {
                                 Id = 6,
-                                Name = "Add Pricing Patient",
                                 TierName = "Test Tier",
                                 Description = "per test patient",
                             },
@@ -140,7 +139,6 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
                             PricingUnit = new PricingUnit
                             {
                                 Id = 7,
-                                Name = "Add Pricing On Demand",
                                 TierName = "Test Tier",
                                 Description = "per test on demand",
                             },
@@ -158,7 +156,6 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
                             PricingUnit = new PricingUnit
                             {
                                 Id = 8,
-                                Name = "Add Pri Declarative",
                                 TierName = "Test Tier",
                                 Description = "per test declarative",
                             },
@@ -229,7 +226,6 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
                             PricingUnit = new PricingUnit
                             {
                                 Id = 9,
-                                Name = "Add NC Pri Patient",
                                 TierName = "Test Tier",
                                 Description = "per test declarative",
                             },
