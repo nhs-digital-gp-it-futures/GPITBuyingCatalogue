@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
@@ -149,8 +148,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers
             if (solution is null)
                 return BadRequest($"No Catalogue Item found for Id: {solutionId} with Capability Id: {capabilityId}");
 
-            var model = mapper.Map<CatalogueItemCapability, SolutionCheckEpicsModel>(
-                solution.CatalogueItemCapability(capabilityId));
+            var solutionCapability = solution.CatalogueItemCapability(capabilityId);
+            var model = new SolutionCheckEpicsModel(solutionCapability);
 
             return View(model.WithSolutionName(solution.Name));
         }
@@ -168,8 +167,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers
             if (solution is null)
                 return BadRequest($"No Catalogue Item found for Id: {solutionId} with Capability Id: {capabilityId}");
 
-            var model = mapper.Map<CatalogueItemCapability, SolutionCheckEpicsModel>(
-                solution.CatalogueItemCapability(capabilityId));
+            var solutionCapability = solution.CatalogueItemCapability(capabilityId);
+            var model = new SolutionCheckEpicsModel(solutionCapability);
 
             return View(
                 "CheckEpics",

@@ -132,29 +132,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.MappingProfiles
                         dest.SetPaginationFooter();
                     });
 
-            CreateMap<CatalogueItemCapability, SolutionCheckEpicsModel>()
-                .ForMember(dest => dest.CatalogueItemIdAdditional, opt => opt.Ignore())
-                .ForMember(
-                    dest => dest.Description,
-                    opt => opt.MapFrom(src => src.Capability == null ? null : src.Capability.Description))
-                .ForMember(
-                    dest => dest.Name,
-                    opt => opt.MapFrom(src => src.Capability == null ? null : src.Capability.Name))
-                .ForMember(dest => dest.SolutionId, opt => opt.MapFrom(src => src.CatalogueItemId))
-                .ForMember(dest => dest.SolutionName, opt => opt.Ignore())
-                .ForMember(
-                    dest => dest.NhsDefined,
-                    opt => opt.MapFrom(
-                        (src) =>
-                            GetEpics(src.Capability, false)))
-                .ForMember(
-                    dest => dest.SupplierDefined,
-                    opt => opt.MapFrom(
-                        (src) =>
-                            GetEpics(src.Capability, true)))
-                .ForMember(
-                    dest => dest.LastReviewed, opt => opt.MapFrom(src => src.LastUpdated.ToLongDateString()));
-
             CreateMap<CatalogueItem, SolutionDescriptionModel>()
                 .ForMember(
                     dest => dest.Description,
@@ -215,11 +192,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.MappingProfiles
                         src =>
                             $"{(src.PricingUnit == null ? string.Empty : src.PricingUnit.Description)} {(src.TimeUnit == null ? string.Empty : src.TimeUnit.Value.Description())}"));
         }
-
-        private static List<string> GetEpics(Capability capability, bool supplierDefined) =>
-            capability?.Epics == null ?
-                new List<string>() :
-                capability.Epics.Where(e => e.IsActive && e.SupplierDefined == supplierDefined).Select(epic => epic.Name).ToList();
 
         private static IDictionary<string, ListViewModel> GetBrowserBasedItems(ClientApplication clientApplication)
         {

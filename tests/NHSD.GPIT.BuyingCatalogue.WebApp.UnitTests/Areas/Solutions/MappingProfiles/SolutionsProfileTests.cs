@@ -7,7 +7,6 @@ using AutoMapper;
 using FluentAssertions;
 using Microsoft.Extensions.Configuration;
 using Moq;
-using Newtonsoft.Json;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.Framework.Constants;
@@ -46,30 +45,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.MappingProf
         public void Mapper_Configuration_Valid()
         {
             mapperConfiguration.AssertConfigurationIsValid();
-        }
-
-        [Theory]
-        [CommonAutoData]
-        public void Map_CatalogueItemCapabilityToSolutionCheckEpicsModel_ResultAsExpected(
-            CatalogueItemCapability catalogueItemCapability)
-        {
-            var actual = mapper.Map<CatalogueItemCapability, SolutionCheckEpicsModel>(catalogueItemCapability);
-
-            actual.CatalogueItemIdAdditional.SupplierId.Should().Be(0);
-            actual.Description.Should().Be(catalogueItemCapability.Capability?.Description);
-            actual.Name.Should().Be(catalogueItemCapability.Capability?.Name);
-            actual.NhsDefined.Should()
-                .BeEquivalentTo(
-                    catalogueItemCapability.Capability?.Epics?.Where(e => e.IsActive && !e.SupplierDefined)
-                        .Select(epic => epic.Name)
-                        .ToList());
-            actual.SupplierDefined.Should()
-                .BeEquivalentTo(
-                    catalogueItemCapability.Capability?.Epics?.Where(e => e.IsActive && e.SupplierDefined)
-                        .Select(epic => epic.Name)
-                        .ToList());
-            actual.SolutionId.Should().Be(catalogueItemCapability.CatalogueItemId);
-            actual.SolutionName.Should().BeNullOrEmpty();
         }
 
         [Theory]
