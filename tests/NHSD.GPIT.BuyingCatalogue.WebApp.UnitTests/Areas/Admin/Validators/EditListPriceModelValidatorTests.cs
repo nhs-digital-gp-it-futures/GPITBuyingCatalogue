@@ -180,7 +180,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators
         [CommonAutoData]
         public static async Task Validate_DuplicatePrice_SetsModelError(
             CatalogueItem solution,
-            [Frozen] Mock<ISolutionsService> solutionsService,
+            [Frozen] Mock<ISolutionsService> mockSolutionsService,
             EditListPriceModelValidator validator)
         {
             var cataloguePrice = solution.CataloguePrices.First();
@@ -194,7 +194,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators
                 SelectedProvisioningType = cataloguePrice.ProvisioningType,
             };
 
-            solutionsService
+            mockSolutionsService
                 .Setup(s => s.GetSolution(solution.Id))
                 .ReturnsAsync(solution);
 
