@@ -152,7 +152,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators
 
             result
                 .ShouldHaveValidationErrorFor(m => m.DeclarativeTimeUnit)
-                .WithErrorMessage("A time unit must be specified.");
+                .WithErrorMessage(EditListPriceModelValidator.TimeUnitErrorMessage);
         }
 
         [Theory]
@@ -173,7 +173,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators
 
             result
                 .ShouldHaveValidationErrorFor(m => m.OnDemandTimeUnit)
-                .WithErrorMessage("A time unit must be specified.");
+                .WithErrorMessage(EditListPriceModelValidator.TimeUnitErrorMessage);
         }
 
         [Theory]

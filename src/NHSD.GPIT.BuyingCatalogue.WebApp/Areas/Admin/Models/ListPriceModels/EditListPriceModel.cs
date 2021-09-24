@@ -79,16 +79,12 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.ListPriceModels
             };
 
         public TimeUnit? GetTimeUnit(ProvisioningType provisioningType)
-        {
-            if (provisioningType == ProvisioningType.Patient)
-                return TimeUnit.PerYear;
-
-            if (provisioningType == ProvisioningType.Declarative && DeclarativeTimeUnit.HasValue)
-                return DeclarativeTimeUnit.Value;
-            else if (provisioningType == ProvisioningType.OnDemand && OnDemandTimeUnit.HasValue)
-                return OnDemandTimeUnit.Value;
-
-            return null;
-        }
+            => provisioningType switch
+            {
+                ProvisioningType.Patient => TimeUnit.PerYear,
+                ProvisioningType.Declarative when DeclarativeTimeUnit.HasValue => DeclarativeTimeUnit.Value,
+                ProvisioningType.OnDemand when OnDemandTimeUnit.HasValue => OnDemandTimeUnit.Value,
+                _ => null,
+            };
     }
 }

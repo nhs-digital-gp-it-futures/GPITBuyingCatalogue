@@ -64,12 +64,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
         [HttpPost("add-list-price")]
         public async Task<IActionResult> AddListPrice(CatalogueItemId solutionId, EditListPriceModel model)
         {
-            var solution = await solutionsService.GetSolution(solutionId);
-
             if (!ModelState.IsValid)
                 return View("EditListPrice", model);
 
-            var provisioningType = model.SelectedProvisioningType.Value;
+            var provisioningType = model.SelectedProvisioningType!.Value;
             var saveSolutionListPriceModel = new SaveSolutionListPriceModel
             {
                 Price = model.Price,
@@ -103,12 +101,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
         [HttpPost("{listPriceId}")]
         public async Task<IActionResult> EditListPrice(CatalogueItemId solutionId, int listPriceId, EditListPriceModel model)
         {
-            var solution = await solutionsService.GetSolution(solutionId);
-
             if (!ModelState.IsValid)
                 return View("EditListPrice", model);
 
-            var provisioningType = model.SelectedProvisioningType.Value;
+            var provisioningType = model.SelectedProvisioningType!.Value;
             var saveSolutionListPriceModel = new SaveSolutionListPriceModel
             {
                 CataloguePriceId = listPriceId,
@@ -140,6 +136,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
         [HttpPost("{listPriceId}/delete")]
         public async Task<IActionResult> DeleteListPrice(CatalogueItemId solutionId, int listPriceId, DeleteListPriceModel model)
         {
+            _ = model;
+
             await solutionsService.DeleteSolutionListPrice(solutionId, listPriceId);
 
             return RedirectToAction(nameof(Index), new { solutionId });

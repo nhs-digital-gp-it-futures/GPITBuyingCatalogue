@@ -74,8 +74,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Validators
             return !catalogue.CataloguePrices.Any(cp =>
                   cp.PricingUnit.Description == model.Unit
                   && cp.Price == model.Price
-                  && cp.ProvisioningType == model.SelectedProvisioningType.Value
-                  && cp.TimeUnit == model.GetTimeUnit(model.SelectedProvisioningType.Value));
+                  && cp.ProvisioningType == model.SelectedProvisioningType!.Value
+                  && cp.TimeUnit == model.GetTimeUnit(model.SelectedProvisioningType!.Value));
         }
     }
 }
