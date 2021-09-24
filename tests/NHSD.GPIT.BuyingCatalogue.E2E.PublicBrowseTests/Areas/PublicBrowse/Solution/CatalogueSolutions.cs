@@ -264,7 +264,9 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.PublicBrowse.Solution
 
             CommonActions.ClickSave();
 
-            Driver.FindElements(CommonSelectors.BreadcrumbItem).Count.Should().Be(2);
+            Driver.Url.Should().Contain($"selectedframework={gpitFramework.Id}");
+
+            Wait.Until(driver => driver.FindElements(CommonSelectors.BreadcrumbItem)).Count.Should().Be(2);
         }
 
         [Fact]
