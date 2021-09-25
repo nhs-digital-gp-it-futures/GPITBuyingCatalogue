@@ -178,12 +178,12 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers
         [HttpGet("{solutionId}/client-application-types")]
         public async Task<IActionResult> ClientApplicationTypes(CatalogueItemId solutionId)
         {
-            var solution = await solutionsService.GetSolutionOverview(solutionId);
+            var item = await solutionsService.GetSolutionOverview(solutionId);
 
-            if (solution is null)
+            if (item is null)
                 return BadRequest($"No Catalogue Item found for Id: {solutionId}");
 
-            var model = mapper.Map<CatalogueItem, ClientApplicationTypesModel>(solution);
+            var model = new ClientApplicationTypesModel(item.Solution);
 
             return View(model);
         }

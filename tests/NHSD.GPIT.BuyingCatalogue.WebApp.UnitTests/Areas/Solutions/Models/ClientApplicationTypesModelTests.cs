@@ -1,8 +1,10 @@
 ﻿using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Reflection;
+using AutoFixture.Xunit2;
 using FluentAssertions;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions;
+using NHSD.GPIT.BuyingCatalogue.Test.Framework.AutoFixtureCustomisations;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models;
 using Xunit;
 
@@ -51,33 +53,27 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Models
         }
 
         [Theory]
-        [InlineData("some-value")]
-        [InlineData("some-VALUE")]
-        public static void HasApplicationType_ValueValid_ReturnsYes(string valid)
+        [CommonInlineAutoData("some-value")]
+        [CommonInlineAutoData("some-VALUE")]
+        public static void HasApplicationType_ValueValid_ReturnsYes(
+            string valid,
+            [Frozen] ClientApplication clientApplication,
+            ClientApplicationTypesModel model)
         {
-            var model = new ClientApplicationTypesModel
-            {
-                ClientApplication = new ClientApplication
-                {
-                    ClientApplicationTypes = new HashSet<string> { valid },
-                },
-            };
+            clientApplication.ClientApplicationTypes = new HashSet<string> { valid };
 
             var actual = model.HasApplicationType("SOME-value");
 
             actual.Should().Be("Yes");
         }
 
-        [Fact]
-        public static void HasApplicationType_ValueNotValid_ReturnsNo()
+        [Theory]
+        [CommonAutoData]
+        public static void HasApplicationType_ValueNotValid_ReturnsNo(
+            [Frozen] ClientApplication clientApplication,
+            ClientApplicationTypesModel model)
         {
-            var model = new ClientApplicationTypesModel
-            {
-                ClientApplication = new ClientApplication
-                {
-                    ClientApplicationTypes = new HashSet<string> { "valid" },
-                },
-            };
+            clientApplication.ClientApplicationTypes = new HashSet<string> { "valid" };
 
             var actual = model.HasApplicationType("SOME-value");
 
