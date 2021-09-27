@@ -5,36 +5,36 @@ using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models
 {
-    public class SolutionDescriptionModel : SolutionDisplayBaseModel
+    public sealed class SolutionDescriptionModel : SolutionDisplayBaseModel
     {
         public SolutionDescriptionModel()
         {
         }
 
-        public SolutionDescriptionModel(CatalogueItem solution)
+        public SolutionDescriptionModel(Solution solution)
+            : base(solution)
         {
-            SolutionId = solution.Id;
-            SolutionName = solution.Name;
+            Description = solution.FullDescription;
+            Summary = solution.Summary;
 
-            Description = solution.Solution?.FullDescription;
-            Frameworks = solution.Frameworks().ToArray();
-            IsFoundation = solution.IsFoundation().ToYesNo();
-            Summary = solution.Solution?.Summary;
-            SupplierName = solution.Supplier.Name;
+            var item = solution.CatalogueItem;
+            Frameworks = item.Frameworks().ToArray();
+            IsFoundation = item.IsFoundation().ToYesNo();
+            SupplierName = item.Supplier.Name;
         }
 
-        public string Description { get; set; }
+        public string Description { get; init; }
 
         [UIHint("TableListCell")]
-        public string[] Frameworks { get; set; }
+        public string[] Frameworks { get; init; }
 
-        public string IsFoundation { get; set; }
+        public string IsFoundation { get; }
 
         public override int Index => 0;
 
-        public string Summary { get; set; }
+        public string Summary { get; init; }
 
-        public string SupplierName { get; set; }
+        public string SupplierName { get; }
 
         public string FrameworkTitle() => Frameworks is not null && Frameworks.Any() && Frameworks.Length > 1
             ? "Frameworks"

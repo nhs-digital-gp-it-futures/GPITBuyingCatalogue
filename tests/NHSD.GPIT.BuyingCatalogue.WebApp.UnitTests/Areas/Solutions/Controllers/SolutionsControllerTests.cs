@@ -500,14 +500,15 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Controllers
         public static async Task Get_Description_ValidSolutionForId_ReturnsExpectedViewResult(
             [Frozen] Mock<ISolutionsService> mockService,
             SolutionsController controller,
-            CatalogueItem solution)
+            [Frozen] Solution solution,
+            CatalogueItem catalogueItem)
         {
             var solutionDescriptionModel = new SolutionDescriptionModel(solution);
 
-            mockService.Setup(s => s.GetSolutionOverview(solution.Id))
-                .ReturnsAsync(solution);
+            mockService.Setup(s => s.GetSolutionOverview(catalogueItem.Id))
+                .ReturnsAsync(catalogueItem);
 
-            var actual = (await controller.Description(solution.Id)).As<ViewResult>();
+            var actual = (await controller.Description(catalogueItem.Id)).As<ViewResult>();
 
             actual.Should().NotBeNull();
             actual.ViewName.Should().BeNullOrEmpty();
