@@ -1,4 +1,5 @@
 ﻿using System;
+using EnumsNET;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 
 namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Extensions
@@ -15,5 +16,7 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Extensions
                 _ => throw new ArgumentOutOfRangeException(nameof(provisioningType)),
             };
         }
+
+        public static string Name(this ProvisioningType provisioningType) => provisioningType.AsString(EnumFormat.DisplayName);
     }
 }

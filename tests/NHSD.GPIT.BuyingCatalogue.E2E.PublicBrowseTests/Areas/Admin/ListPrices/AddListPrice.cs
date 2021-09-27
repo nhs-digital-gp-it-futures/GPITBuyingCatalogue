@@ -144,9 +144,9 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.ListPrices
         [Fact]
         public void AddListPrice_NoInput_ThrowsError()
         {
-            const string expectedPriceSummaryErrorMessage = "A valid price must be entered.";
-            const string expectedUnitSummaryErrorMessage = "A unit must be entered.";
-            const string expectedProvisioningTypeSummaryErrorMessage = "Error: A provisioning type must be selected.";
+            const string expectedPriceSummaryErrorMessage = "Enter a price";
+            const string expectedUnitSummaryErrorMessage = "Enter a unit";
+            const string expectedProvisioningTypeSummaryErrorMessage = "Error: Select a provisioning type";
 
             CommonActions.ClickSave();
 
