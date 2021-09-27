@@ -10,6 +10,37 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
     {
         public static List<CatalogueItem> GetCatalogueSolutionItems()
         {
+            var hosting = new Hosting
+            {
+                HybridHostingType = new HybridHostingType
+                {
+                    HostingModel = "Hosting environment description",
+                    Link = "External URL link",
+                    RequiresHscn = "Link to HSCN or N3 network required to access service",
+                    Summary = "Summary description",
+                },
+                OnPremise = new OnPremise
+                {
+                    HostingModel = "Hosting environment description",
+                    Link = "External URL link",
+                    RequiresHscn = "Link to HSCN or N3 network required to access service",
+                    Summary = "Summary description",
+                },
+                PrivateCloud = new PrivateCloud
+                {
+                    HostingModel = "Hosting environment description",
+                    Link = "External URL link",
+                    RequiresHscn = "Link to HSCN or N3 network required to access service",
+                    Summary = "Summary description",
+                },
+                PublicCloud = new PublicCloud
+                {
+                    Link = "External URL link",
+                    RequiresHscn = "Link to HSCN or N3 network required to access service",
+                    Summary = "Summary description",
+                },
+            };
+
             var catalogueItems = new List<CatalogueItem>
             {
                 new CatalogueItem
@@ -24,8 +55,8 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
                         CatalogueItemId = new CatalogueItemId(99999, "001"),
                         AboutUrl = "https://test.com",
                         Summary = "SUMMARY - DFOCVC Solution",
-                        Features = @"[""Digital Online Consultation"",""Video Consultation"", ""Fully interopable with all major GP IT solutions"", ""Compliant with all relevant ISO standards""]",
-                        Hosting = @"{""PublicCloud"":{""Summary"":""Summary description"",""Link"":""External URL link"",""RequiresHSCN"":""Link to HSCN or N3 network required to access service""},""PrivateCloud"":{""Summary"":""Summary description"",""Link"":""External URL link"",""HostingModel"":""Hosting environment description"",""RequiresHSCN"":""Link to HSCN or N3 network required to access service""},""HybridHostingType"":{""Summary"":""Summary description"",""Link"":""External URL link"",""HostingModel"":""Hosting environment description"",""RequiresHSCN"":""Link to HSCN or N3 network required to access service""},""OnPremise"":{""Summary"":""Summary description"",""Link"":""External URL link"",""HostingModel"":""Hosting environment description"",""RequiresHSCN"":""Link to HSCN or N3 network required to access service""}}",
+                        Features = @"[""Digital Online Consultation"",""Video Consultation"", ""Fully interoperable with all major GP IT solutions"", ""Compliant with all relevant ISO standards""]",
+                        Hosting = hosting,
                         ClientApplication = @"{
                             ""ClientApplicationTypes"": [
                                 ""browser-based"",
@@ -201,8 +232,8 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
                         CatalogueItemId = new CatalogueItemId(99999, "003"),
                         AboutUrl = "https://test.com",
                         Summary = "SUMMARY - GPIT Solution",
-                        Features = @"[""Digital Online Consultation"",""Video Consultation"", ""Fully interopable with all major GP IT solutions"", ""Compliant with all relevant ISO standards""]",
-                        Hosting = @"{""PublicCloud"":{""Summary"":""Summary description"",""Link"":""External URL link"",""RequiresHSCN"":""Link to HSCN or N3 network required to access service""},""PrivateCloud"":{""Summary"":""Summary description"",""Link"":""External URL link"",""HostingModel"":""Hosting environment description"",""RequiresHSCN"":""Link to HSCN or N3 network required to access service""},""HybridHostingType"":{""Summary"":""Summary description"",""Link"":""External URL link"",""HostingModel"":""Hosting environment description"",""RequiresHSCN"":""Link to HSCN or N3 network required to access service""},""OnPremise"":{""Summary"":""Summary description"",""Link"":""External URL link"",""HostingModel"":""Hosting environment description"",""RequiresHSCN"":""Link to HSCN or N3 network required to access service""}}",
+                        Features = @"[""Digital Online Consultation"",""Video Consultation"", ""Fully interoperable with all major GP IT solutions"", ""Compliant with all relevant ISO standards""]",
+                        Hosting = hosting,
                         ClientApplication = @"{
                             ""ClientApplicationTypes"": [
                                 ""browser-based"",
@@ -309,8 +340,8 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
                         CatalogueItemId = new CatalogueItemId(99999, "004"),
                         AboutUrl = "https://test.com",
                         Summary = "SUMMARY - GPIT Solution 2",
-                        Features = @"[""Digital Online Consultation"",""Video Consultation"", ""Fully interopable with all major GP IT solutions"", ""Compliant with all relevant ISO standards""]",
-                        Hosting = @"{""PublicCloud"":{""Summary"":""Summary description"",""Link"":""External URL link"",""RequiresHSCN"":""Link to HSCN or N3 network required to access service""},""PrivateCloud"":{""Summary"":""Summary description"",""Link"":""External URL link"",""HostingModel"":""Hosting environment description"",""RequiresHSCN"":""Link to HSCN or N3 network required to access service""},""HybridHostingType"":{""Summary"":""Summary description"",""Link"":""External URL link"",""HostingModel"":""Hosting environment description"",""RequiresHSCN"":""Link to HSCN or N3 network required to access service""},""OnPremise"":{""Summary"":""Summary description"",""Link"":""External URL link"",""HostingModel"":""Hosting environment description"",""RequiresHSCN"":""Link to HSCN or N3 network required to access service""}}",
+                        Features = @"[""Digital Online Consultation"",""Video Consultation"", ""Fully interoperable with all major GP IT solutions"", ""Compliant with all relevant ISO standards""]",
+                        Hosting = hosting,
                         ClientApplication = @"{
                             ""ClientApplicationTypes"": [
                                 ""browser-based"",
@@ -432,8 +463,8 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
                         CatalogueItemId = new CatalogueItemId(99999, "006"),
                         AboutUrl = "https://test.com",
                         Summary = "SUMMARY - DFOCVC Solution",
-                        Features = @"[""Digital Online Consultation"",""Video Consultation"", ""Fully interopable with all major GP IT solutions"", ""Compliant with all relevant ISO standards""]",
-                        Hosting = @"{""PublicCloud"":{""Summary"":""Summary description"",""Link"":""External URL link"",""RequiresHSCN"":""Link to HSCN or N3 network required to access service""},""PrivateCloud"":{""Summary"":""Summary description"",""Link"":""External URL link"",""HostingModel"":""Hosting environment description"",""RequiresHSCN"":""Link to HSCN or N3 network required to access service""},""HybridHostingType"":{""Summary"":""Summary description"",""Link"":""External URL link"",""HostingModel"":""Hosting environment description"",""RequiresHSCN"":""Link to HSCN or N3 network required to access service""},""OnPremise"":{""Summary"":""Summary description"",""Link"":""External URL link"",""HostingModel"":""Hosting environment description"",""RequiresHSCN"":""Link to HSCN or N3 network required to access service""}}",
+                        Features = @"[""Digital Online Consultation"",""Video Consultation"", ""Fully interoperable with all major GP IT solutions"", ""Compliant with all relevant ISO standards""]",
+                        Hosting = hosting,
                         ClientApplication = @"{
                             ""ClientApplicationTypes"": [
                                 ""browser-based"",
@@ -559,8 +590,8 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
                         CatalogueItemId = new CatalogueItemId(99998, "001"),
                         AboutUrl = "https://test.com",
                         Summary = "SUMMARY - E2E With Contact Multiple Prices",
-                        Features = @"[""Digital Online Consultation"",""Video Consultation"", ""Fully interopable with all major GP IT solutions"", ""Compliant with all relevant ISO standards""]",
-                        Hosting = @"{""PublicCloud"":{""Summary"":""Summary description"",""Link"":""External URL link"",""RequiresHSCN"":""Link to HSCN or N3 network required to access service""},""PrivateCloud"":{""Summary"":""Summary description"",""Link"":""External URL link"",""HostingModel"":""Hosting environment description"",""RequiresHSCN"":""Link to HSCN or N3 network required to access service""},""HybridHostingType"":{""Summary"":""Summary description"",""Link"":""External URL link"",""HostingModel"":""Hosting environment description"",""RequiresHSCN"":""Link to HSCN or N3 network required to access service""},""OnPremise"":{""Summary"":""Summary description"",""Link"":""External URL link"",""HostingModel"":""Hosting environment description"",""RequiresHSCN"":""Link to HSCN or N3 network required to access service""}}",
+                        Features = @"[""Digital Online Consultation"",""Video Consultation"", ""Fully interoperable with all major GP IT solutions"", ""Compliant with all relevant ISO standards""]",
+                        Hosting = hosting,
                         ClientApplication = @"{
                             ""ClientApplicationTypes"": [
                                 ""browser-based"",
@@ -727,8 +758,8 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
                         CatalogueItemId = new CatalogueItemId(99999, "008"),
                         AboutUrl = "https://test.com",
                         Summary = "SUMMARY - E2E With Contact With Single Price",
-                        Features = @"[""Digital Online Consultation"",""Video Consultation"", ""Fully interopable with all major GP IT solutions"", ""Compliant with all relevant ISO standards""]",
-                        Hosting = @"{""PublicCloud"":{""Summary"":""Summary description"",""Link"":""External URL link"",""RequiresHSCN"":""Link to HSCN or N3 network required to access service""},""PrivateCloud"":{""Summary"":""Summary description"",""Link"":""External URL link"",""HostingModel"":""Hosting environment description"",""RequiresHSCN"":""Link to HSCN or N3 network required to access service""},""HybridHostingType"":{""Summary"":""Summary description"",""Link"":""External URL link"",""HostingModel"":""Hosting environment description"",""RequiresHSCN"":""Link to HSCN or N3 network required to access service""},""OnPremise"":{""Summary"":""Summary description"",""Link"":""External URL link"",""HostingModel"":""Hosting environment description"",""RequiresHSCN"":""Link to HSCN or N3 network required to access service""}}",
+                        Features = @"[""Digital Online Consultation"",""Video Consultation"", ""Fully interoperable with all major GP IT solutions"", ""Compliant with all relevant ISO standards""]",
+                        Hosting = hosting,
                         ClientApplication = @"{
                             ""ClientApplicationTypes"": [
                                 ""browser-based"",
@@ -849,15 +880,15 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
             return catalogueItems;
         }
 
-        private static List<CatalogueItem> GetGeneratedCatalogueSolutionItems(int count = 100)
+        private static IEnumerable<CatalogueItem> GetGeneratedCatalogueSolutionItems(int count = 100)
         {
-            int defaultStart = 400;
+            const int defaultStart = 400;
 
             var catalogueItems = new List<CatalogueItem>();
 
             for (int i = defaultStart; i < (defaultStart + count); i++)
             {
-                catalogueItems.Add(GenerateCatalogueSolution.Generate(new EntityFramework.Ordering.Models.CatalogueItemId(99998, i.ToString())));
+                catalogueItems.Add(GenerateCatalogueSolution.Generate(new CatalogueItemId(99998, i.ToString())));
             }
 
             return catalogueItems;

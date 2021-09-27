@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using AutoFixture;
@@ -13,10 +12,8 @@ using Moq;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Users.Models;
-using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.AssociatedServices;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions;
-using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Users;
 using NHSD.GPIT.BuyingCatalogue.Test.Framework.AutoFixtureCustomisations;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models;
@@ -761,7 +758,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
 
             var actual = (await controller.PublicCloud(catalogueItemId)).As<ViewResult>();
 
-            var hosting = catalogueItem.Solution?.GetHosting();
+            var hosting = catalogueItem.Solution?.Hosting;
             mockService.Verify(s => s.GetSolution(catalogueItemId));
             actual.ViewName.Should().BeNull();
             actual.Model.Should().BeEquivalentTo(new PublicCloudModel(hosting?.PublicCloud));
@@ -834,7 +831,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
 
             var actual = (await controller.PublicCloud(catalogueItemId)).As<ViewResult>();
 
-            var hosting = catalogueItem.Solution?.GetHosting();
+            var hosting = catalogueItem.Solution?.Hosting;
 
             mockService.Verify(s => s.GetSolution(catalogueItemId));
             actual.ViewName.Should().BeNull();
@@ -870,7 +867,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
 
             var actual = (await controller.PrivateCloud(catalogueItemId)).As<ViewResult>();
 
-            var hosting = catalogueItem.Solution?.GetHosting();
+            var hosting = catalogueItem.Solution?.Hosting;
             mockService.Verify(s => s.GetSolution(catalogueItemId));
             actual.ViewName.Should().BeNull();
             actual.Model.Should().BeEquivalentTo(new PrivateCloudModel(hosting?.PrivateCloud));
@@ -943,7 +940,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
 
             var actual = (await controller.PrivateCloud(catalogueItemId)).As<ViewResult>();
 
-            var hosting = catalogueItem.Solution?.GetHosting();
+            var hosting = catalogueItem.Solution?.Hosting;
 
             mockService.Verify(s => s.GetSolution(catalogueItemId));
             actual.ViewName.Should().BeNull();
@@ -979,7 +976,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
 
             var actual = (await controller.Hybrid(catalogueItemId)).As<ViewResult>();
 
-            var hosting = catalogueItem.Solution?.GetHosting();
+            var hosting = catalogueItem.Solution?.Hosting;
             mockService.Verify(s => s.GetSolution(catalogueItemId));
             actual.ViewName.Should().BeNull();
             actual.Model.Should().BeEquivalentTo(new HybridModel(hosting?.HybridHostingType));
@@ -1052,7 +1049,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
 
             var actual = (await controller.Hybrid(catalogueItemId)).As<ViewResult>();
 
-            var hosting = catalogueItem.Solution?.GetHosting();
+            var hosting = catalogueItem.Solution?.Hosting;
 
             mockService.Verify(s => s.GetSolution(catalogueItemId));
             actual.ViewName.Should().BeNull();
@@ -1088,7 +1085,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
 
             var actual = (await controller.OnPremise(catalogueItemId)).As<ViewResult>();
 
-            var hosting = catalogueItem.Solution?.GetHosting();
+            var hosting = catalogueItem.Solution?.Hosting;
             mockService.Verify(s => s.GetSolution(catalogueItemId));
             actual.ViewName.Should().BeNull();
             actual.Model.Should().BeEquivalentTo(new OnPremiseModel(hosting?.OnPremise));
@@ -1161,7 +1158,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
 
             var actual = (await controller.OnPremise(catalogueItemId)).As<ViewResult>();
 
-            var hosting = catalogueItem.Solution?.GetHosting();
+            var hosting = catalogueItem.Solution?.Hosting;
 
             mockService.Verify(s => s.GetSolution(catalogueItemId));
             actual.ViewName.Should().BeNull();

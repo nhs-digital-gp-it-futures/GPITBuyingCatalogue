@@ -211,10 +211,11 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers
         [HttpGet("{solutionId}/hosting-type")]
         public async Task<IActionResult> HostingType(CatalogueItemId solutionId)
         {
-            var solution = await solutionsService.GetSolutionOverview(solutionId);
-            if (solution is null)
+            var item = await solutionsService.GetSolutionOverview(solutionId);
+            if (item is null)
                 return BadRequest($"No Catalogue Item found for Id: {solutionId}");
-            return View(mapper.Map<CatalogueItem, HostingTypesModel>(solution));
+
+            return View(new HostingTypesModel(item.Solution?.Hosting ?? new Hosting()));
         }
 
         [HttpGet("{solutionId}/implementation")]

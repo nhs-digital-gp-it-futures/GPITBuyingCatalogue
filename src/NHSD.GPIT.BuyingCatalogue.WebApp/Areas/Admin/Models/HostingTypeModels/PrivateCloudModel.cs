@@ -1,12 +1,11 @@
 ﻿using System.ComponentModel.DataAnnotations;
-using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions;
+using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.HostingTypeModels
 {
     public sealed class PrivateCloudModel : BaseCloudModel
     {
         public PrivateCloudModel()
-            : base()
         {
         }
 

@@ -6,7 +6,6 @@ using Newtonsoft.Json;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.Framework.Constants;
-using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models;
 
@@ -58,22 +57,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.MappingProfiles
 
                         dest.SetPaginationFooter();
                     });
-
-            CreateMap<CatalogueItem, HostingTypesModel>()
-                .BeforeMap(
-                (src, dest) =>
-                {
-                    var hosting = src.Solution.GetHosting() ?? new Hosting();
-                    dest.PublicCloud = hosting.PublicCloud;
-                    dest.PrivateCloud = hosting.PrivateCloud;
-                    dest.HybridHostingType = hosting.HybridHostingType;
-                    dest.OnPremise = hosting.OnPremise;
-                })
-                .ForMember(dest => dest.PublicCloud, opt => opt.Ignore())
-                .ForMember(dest => dest.PrivateCloud, opt => opt.Ignore())
-                .ForMember(dest => dest.HybridHostingType, opt => opt.Ignore())
-                .ForMember(dest => dest.OnPremise, opt => opt.Ignore())
-                .IncludeBase<CatalogueItem, SolutionDisplayBaseModel>();
 
             CreateMap<CatalogueItem, ListPriceModel>()
                 .ForMember(
