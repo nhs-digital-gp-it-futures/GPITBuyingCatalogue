@@ -42,38 +42,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.MappingProf
 
         [Theory]
         [CommonAutoData]
-        public void Map_CatalogueItemToClientApplicationTypesModel_ResultAsExpected(
-            CatalogueItem catalogueItem)
-        {
-            var actual = mapper.Map<CatalogueItem, ClientApplicationTypesModel>(catalogueItem);
-
-            actual.PaginationFooter.Should()
-                .BeEquivalentTo(
-                    new PaginationFooterModel
-                    {
-                        FullWidth = true,
-                        Next = new SectionModel
-                        {
-                            Action = "HostingType",
-                            Controller = "Solutions",
-                            Name = "Hosting type",
-                            Show = true,
-                        },
-                        Previous = new SectionModel
-                        {
-                            Action = "Implementation",
-                            Controller = "Solutions",
-                            Name = "Implementation",
-                            Show = true,
-                        },
-                    });
-            actual.Section.Should().Be("Client application type");
-            actual.SolutionId.Should().Be(catalogueItem.Id);
-            actual.SolutionName.Should().Be(catalogueItem.Name);
-        }
-
-        [Theory]
-        [CommonAutoData]
         public void Map_CatalogueItemToListPriceModel_ResultAsExpected(
            CatalogueItem catalogueItem)
         {
