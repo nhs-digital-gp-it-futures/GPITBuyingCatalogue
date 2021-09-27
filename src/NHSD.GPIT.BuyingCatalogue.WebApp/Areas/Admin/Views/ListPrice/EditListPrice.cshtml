@@ -54,15 +54,15 @@
                     </nhs-radio-button>
                 </nhs-radio-button-container>
             </nhs-fieldset-form-label>
-            <nhs-input asp-for="Price"
-                       label-text="Price"
-                       label-hint="Provide the list price in £s to a maximum of 4 decimal places."
-                       character-count="true"
-                       max-character-length="100"/>
+            <nhs-bookended-input asp-for="Price"
+                                 label-text="Price"
+                                 label-hint="Provide the list price in £s to a maximum of 4 decimal places."
+                                 Prefix="£" />
+
             <nhs-input asp-for="Unit"
                        label-text="Unit"
-                       label-hint="For example, per day, per practice, per patient per year."
-                       character-count="true" />
+                       label-hint="For example, per day, per practice, per patient per year." />
+
             <nhs-textarea asp-for="UnitDefinition"
                           label-text="Unit definition (optional)"
                           label-hint="For example, if the unit is per day, between what hours?"
