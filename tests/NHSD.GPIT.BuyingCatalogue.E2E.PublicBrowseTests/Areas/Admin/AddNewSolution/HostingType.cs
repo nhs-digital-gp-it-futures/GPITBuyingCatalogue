@@ -3,10 +3,10 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using FluentAssertions;
 using Microsoft.EntityFrameworkCore;
-using Newtonsoft.Json;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Objects.Marketing;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Utils;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.TestBases;
+using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers;
@@ -54,7 +54,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.AddNewSolution
 
             var summary = TextGenerators.TextInputAddText(HostingTypesObjects.HostingType_Summary, 500);
             var link = TextGenerators.UrlInputAddText(HostingTypesObjects.HostingType_Link, 1000);
-            var expected = new ServiceContracts.Solutions.PublicCloud
+            var expected = new PublicCloud
             {
                 Link = link,
                 Summary = summary,
@@ -65,9 +65,8 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.AddNewSolution
             CommonActions.ClickSave();
 
             await using var context = GetEndToEndDbContext();
-            var hosting = (await context.Solutions.SingleAsync(s => s.CatalogueItemId == SolutionId)).Hosting;
+            var actual = (await context.Solutions.SingleAsync(s => s.CatalogueItemId == SolutionId)).Hosting;
 
-            var actual = JsonConvert.DeserializeObject<ServiceContracts.Solutions.Hosting>(hosting);
             actual.PublicCloud.Should().BeEquivalentTo(expected, opt => opt.Excluding(p => p.RequiresHscn));
         }
 
@@ -82,7 +81,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.AddNewSolution
             var summary = TextGenerators.TextInputAddText(HostingTypesObjects.HostingType_Summary, 500);
             var link = TextGenerators.UrlInputAddText(HostingTypesObjects.HostingType_Link, 1000);
             var hostingModel = TextGenerators.TextInputAddText(HostingTypesObjects.HostingType_HostingModel, 1000);
-            var expected = new ServiceContracts.Solutions.PrivateCloud
+            var expected = new PrivateCloud
             {
                 HostingModel = hostingModel,
                 Link = link,
@@ -93,9 +92,8 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.AddNewSolution
             CommonActions.ClickSave();
 
             await using var context = GetEndToEndDbContext();
-            var hosting = (await context.Solutions.SingleAsync(s => s.CatalogueItemId == SolutionId)).Hosting;
+            var actual = (await context.Solutions.SingleAsync(s => s.CatalogueItemId == SolutionId)).Hosting;
 
-            var actual = JsonConvert.DeserializeObject<ServiceContracts.Solutions.Hosting>(hosting);
             actual.PrivateCloud.Should().BeEquivalentTo(expected, opt => opt.Excluding(p => p.RequiresHscn));
         }
 
@@ -110,7 +108,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.AddNewSolution
             var summary = TextGenerators.TextInputAddText(HostingTypesObjects.HostingType_Summary, 500);
             var link = TextGenerators.UrlInputAddText(HostingTypesObjects.HostingType_Link, 1000);
             var hostingModel = TextGenerators.TextInputAddText(HostingTypesObjects.HostingType_HostingModel, 1000);
-            var expected = new ServiceContracts.Solutions.HybridHostingType
+            var expected = new HybridHostingType
             {
                 HostingModel = hostingModel,
                 Link = link,
@@ -122,9 +120,8 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.AddNewSolution
             CommonActions.ClickSave();
 
             await using var context = GetEndToEndDbContext();
-            var hosting = (await context.Solutions.SingleAsync(s => s.CatalogueItemId == SolutionId)).Hosting;
+            var actual = (await context.Solutions.SingleAsync(s => s.CatalogueItemId == SolutionId)).Hosting;
 
-            var actual = JsonConvert.DeserializeObject<ServiceContracts.Solutions.Hosting>(hosting);
             actual.HybridHostingType.Should().BeEquivalentTo(expected, opt => opt.Excluding(h => h.RequiresHscn));
         }
 
@@ -139,7 +136,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.AddNewSolution
             var summary = TextGenerators.TextInputAddText(HostingTypesObjects.HostingType_Summary, 500);
             var link = TextGenerators.UrlInputAddText(HostingTypesObjects.HostingType_Link, 1000);
             var hostingModel = TextGenerators.TextInputAddText(HostingTypesObjects.HostingType_HostingModel, 1000);
-            var expected = new ServiceContracts.Solutions.OnPremise
+            var expected = new OnPremise
             {
                 Summary = summary,
                 Link = link,
@@ -151,9 +148,8 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.AddNewSolution
             CommonActions.ClickSave();
 
             await using var context = GetEndToEndDbContext();
-            var hosting = (await context.Solutions.SingleAsync(s => s.CatalogueItemId == SolutionId)).Hosting;
+            var actual = (await context.Solutions.SingleAsync(s => s.CatalogueItemId == SolutionId)).Hosting;
 
-            var actual = JsonConvert.DeserializeObject<ServiceContracts.Solutions.Hosting>(hosting);
             actual.OnPremise.Should().BeEquivalentTo(expected, opt => opt.Excluding(p => p.RequiresHscn));
         }
 

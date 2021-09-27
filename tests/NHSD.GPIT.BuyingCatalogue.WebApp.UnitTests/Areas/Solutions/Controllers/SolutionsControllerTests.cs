@@ -613,50 +613,21 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Controllers
 
         [Theory]
         [CommonAutoData]
-        public static async Task Get_HostingType_ValidSolutionForId_MapsToModel(CatalogueItemId id)
+        public static async Task Get_HostingType_ValidSolutionForId_ReturnsExpectedViewResult(
+            CatalogueItemId id,
+            [Frozen] Solution solution,
+            CatalogueItem catalogueItem,
+            [Frozen] Mock<ISolutionsService> solutionsServiceMock,
+            SolutionsController controller)
         {
-            var mockCatalogueItem = new Mock<CatalogueItem>().Object;
-            var mockService = new Mock<ISolutionsService>();
-            var mockMapper = new Mock<IMapper>();
-            mockService.Setup(s => s.GetSolutionOverview(id))
-                .ReturnsAsync(mockCatalogueItem);
-            var controller = new SolutionsController(
-                mockMapper.Object,
-                mockService.Object,
-                Mock.Of<IMemoryCache>(),
-                Mock.Of<ISolutionsFilterService>(),
-                new FilterCacheKeySettings());
-
-            await controller.HostingType(id);
-
-            mockMapper.Verify(m => m.Map<CatalogueItem, HostingTypesModel>(mockCatalogueItem));
-        }
-
-        [Theory]
-        [CommonAutoData]
-        public static async Task Get_HostingType_ValidSolutionForId_ReturnsExpectedViewResult(CatalogueItemId id)
-        {
-            var mockSolutionHostingTypeModel = new Mock<HostingTypesModel>().Object;
-            var mockCatalogueItem = new Mock<CatalogueItem>().Object;
-
-            var mockService = new Mock<ISolutionsService>();
-            var mockMapper = new Mock<IMapper>();
-            mockService.Setup(s => s.GetSolutionOverview(id))
-                .ReturnsAsync(mockCatalogueItem);
-            mockMapper.Setup(m => m.Map<CatalogueItem, HostingTypesModel>(mockCatalogueItem))
-                .Returns(mockSolutionHostingTypeModel);
-            var controller = new SolutionsController(
-                mockMapper.Object,
-                mockService.Object,
-                Mock.Of<IMemoryCache>(),
-                Mock.Of<ISolutionsFilterService>(),
-                new FilterCacheKeySettings());
+            var expectedModel = new HostingTypesModel(solution.Hosting);
+            solutionsServiceMock.Setup(s => s.GetSolutionOverview(id)).ReturnsAsync(catalogueItem);
 
             var actual = (await controller.HostingType(id)).As<ViewResult>();
 
             actual.Should().NotBeNull();
             actual.ViewName.Should().BeNullOrEmpty();
-            actual.Model.Should().Be(mockSolutionHostingTypeModel);
+            actual.Model.Should().BeEquivalentTo(expectedModel);
         }
 
         [Theory]

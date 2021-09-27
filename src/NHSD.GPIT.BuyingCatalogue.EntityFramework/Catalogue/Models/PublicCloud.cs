@@ -1,7 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
-using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Enums;
 
-namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions
+namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models
 {
     public sealed class PublicCloud
     {
@@ -13,9 +12,5 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions
 
         [StringLength(500)]
         public string Summary { get; set; }
-
-        public TaskProgress Status() => string.IsNullOrEmpty(Summary)
-            ? TaskProgress.NotStarted
-            : TaskProgress.Completed;
     }
 }

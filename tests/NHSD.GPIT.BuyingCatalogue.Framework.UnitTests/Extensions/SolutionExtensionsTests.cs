@@ -50,38 +50,13 @@ namespace NHSD.GPIT.BuyingCatalogue.Framework.UnitTests.Extensions
         [Fact]
         public static void SolutionExtension_ReturnsFeaturesWhenSet()
         {
-            var features = new string[3] { "Feature 1", "Feature 2", "Feature 3" };
+            var features = new[] { "Feature 1", "Feature 2", "Feature 3" };
             var json = JsonConvert.SerializeObject(features);
             var solution = new Solution { Features = json };
 
             var result = solution.GetFeatures();
 
             result.Should().BeEquivalentTo(features);
-        }
-
-        [Theory]
-        [InlineData(null)]
-        [InlineData("")]
-        [InlineData(" ")]
-        public static void SolutionExtension_ReturnsDefaultHostingWhenNotSet(string hosting)
-        {
-            var solution = new Solution { Hosting = hosting };
-
-            var result = solution.GetHosting();
-
-            result.Should().BeEquivalentTo(new Hosting());
-        }
-
-        [Fact]
-        public static void SolutionExtension_ReturnsHostingWhenSet()
-        {
-            var hosting = new Hosting { HybridHostingType = new HybridHostingType { Summary = "Hybrid Summary" } };
-            var json = JsonConvert.SerializeObject(hosting);
-            var solution = new Solution { Hosting = json };
-
-            var result = solution.GetHosting();
-
-            result.Should().BeEquivalentTo(hosting);
         }
     }
 }

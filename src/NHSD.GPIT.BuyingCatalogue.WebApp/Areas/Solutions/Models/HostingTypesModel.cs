@@ -1,16 +1,24 @@
-﻿using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions;
+﻿using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models
 {
     public class HostingTypesModel : SolutionDisplayBaseModel
     {
-        public PublicCloud PublicCloud { get; set; }
+        public HostingTypesModel(Hosting hosting)
+        {
+            HybridHostingType = hosting.HybridHostingType;
+            OnPremise = hosting.OnPremise;
+            PrivateCloud = hosting.PrivateCloud;
+            PublicCloud = hosting.PublicCloud;
+        }
 
-        public PrivateCloud PrivateCloud { get; set; }
+        public HybridHostingType HybridHostingType { get; }
 
-        public HybridHostingType HybridHostingType { get; set; }
+        public OnPremise OnPremise { get; }
 
-        public OnPremise OnPremise { get; set; }
+        public PrivateCloud PrivateCloud { get; }
+
+        public PublicCloud PublicCloud { get; }
 
         public override int Index => 9;
     }

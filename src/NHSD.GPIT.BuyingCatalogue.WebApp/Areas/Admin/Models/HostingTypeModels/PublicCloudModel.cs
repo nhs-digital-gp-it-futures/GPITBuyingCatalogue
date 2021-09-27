@@ -1,11 +1,10 @@
-﻿using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions;
+﻿using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.HostingTypeModels
 {
     public sealed class PublicCloudModel : BaseCloudModel
     {
         public PublicCloudModel()
-            : base()
         {
         }
 

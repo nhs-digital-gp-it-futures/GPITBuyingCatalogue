@@ -22,10 +22,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models
             if (catalogueItem is null)
                 throw new ArgumentNullException(nameof(catalogueItem));
 
-            Hosting = catalogueItem.Solution?.GetHosting() ?? new Hosting();
+            Hosting = catalogueItem.Solution?.Hosting ?? new Hosting();
 
             SolutionName = catalogueItem.Name;
-            ExistingHostingTypes = Hosting?.AvailableHosting ?? Array.Empty<HostingType>();
+            ExistingHostingTypes = Hosting?.AvailableHosting() ?? Array.Empty<HostingType>();
             HostingTypesToAdd = Enum.GetValues<HostingType>().Except(ExistingHostingTypes).ToList();
             HostingTypesToAddRadioItems = HostingTypesToAdd.Select(t => new { Text = t.AsString(EnumFormat.DisplayName), Value = t.ToString() });
             ExistingHostingTypesCount = ExistingHostingTypes.Count;

@@ -2,7 +2,6 @@
 using System.Linq;
 using AutoMapper;
 using FluentAssertions;
-using Microsoft.Extensions.Configuration;
 using Moq;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Extensions;
