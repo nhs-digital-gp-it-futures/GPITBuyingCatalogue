@@ -19,14 +19,6 @@ namespace NHSD.GPIT.BuyingCatalogue.Framework.Extensions
             ? System.Array.Empty<string>()
             : JsonConvert.DeserializeObject<string[]>(solution.Features);
 
-        public static Hosting GetHosting(this Solution solution)
-        {
-            if (string.IsNullOrWhiteSpace(solution.Hosting))
-                return new Hosting();
-
-            return JsonConvert.DeserializeObject<Hosting>(solution.Hosting);
-        }
-
         public static List<Integration> GetIntegrations(this Solution solution)
         {
             if (string.IsNullOrWhiteSpace(solution.Integrations))

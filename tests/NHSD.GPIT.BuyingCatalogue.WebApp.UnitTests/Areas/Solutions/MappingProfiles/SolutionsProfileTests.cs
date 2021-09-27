@@ -2,7 +2,6 @@
 using System.Linq;
 using AutoMapper;
 using FluentAssertions;
-using Microsoft.Extensions.Configuration;
 using Moq;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Extensions;
@@ -86,36 +85,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.MappingProf
             actual.CurrencyCode.Should().Be(CurrencyCodeSigns.Code[cataloguePrice.CurrencyCode]);
             actual.Price.Should().Be(Math.Round(cataloguePrice.Price.Value, 2));
             actual.Unit.Should().Be(expected);
-        }
-
-        [Theory]
-        [CommonAutoData]
-        public void Map_CatalogueItemToHostingTypesModel_ResultAsExpected(
-            CatalogueItem catalogueItem)
-        {
-            var actual = mapper.Map<CatalogueItem, HostingTypesModel>(catalogueItem);
-            actual.PaginationFooter.Should()
-                .BeEquivalentTo(
-                    new PaginationFooterModel
-                    {
-                        Previous = new SectionModel
-                        {
-                            Action = "ClientApplicationTypes",
-                            Controller = "Solutions",
-                            Name = "Client application type",
-                            Show = true,
-                        },
-                        Next = new SectionModel
-                        {
-                            Action = "Description",
-                            Controller = "Solutions",
-                            Name = "Service Level Agreement",
-                            Show = true,
-                        },
-                    });
-            actual.Section.Should().Be("Hosting type");
-            actual.SolutionId.Should().Be(catalogueItem.Id);
-            actual.SolutionName.Should().Be(catalogueItem.Name);
         }
 
         [Fact]

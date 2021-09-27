@@ -481,7 +481,7 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.UnitTests.Models.BuyingCatal
         [CommonAutoData]
         public static void HasHosting_SolutionHasHosting_ReturnsTrue(CatalogueItem catalogueItem)
         {
-            catalogueItem.Solution.Hosting.Should().NotBeNullOrWhiteSpace();
+            catalogueItem.Solution.Hosting.Should().NotBeNull();
 
             var actual = catalogueItem.HasHosting();
 
@@ -489,10 +489,10 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.UnitTests.Models.BuyingCatal
         }
 
         [Theory]
-        [MemberData(nameof(InvalidStringData.TestData), MemberType = typeof(InvalidStringData))]
-        public static void HasHosting_SolutionHasInvalidHosting_ReturnsFalse(string invalid)
+        [CommonAutoData]
+        public static void HasHosting_SolutionHasInvalidHosting_ReturnsFalse(CatalogueItem catalogueItem)
         {
-            var catalogueItem = new CatalogueItem { Solution = new Solution { Hosting = invalid } };
+            catalogueItem.Solution.Hosting = null;
 
             var actual = catalogueItem.HasHosting();
 

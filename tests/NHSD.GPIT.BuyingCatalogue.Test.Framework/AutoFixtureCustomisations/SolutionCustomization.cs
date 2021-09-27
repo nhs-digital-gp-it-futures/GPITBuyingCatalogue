@@ -47,7 +47,6 @@ namespace NHSD.GPIT.BuyingCatalogue.Test.Framework.AutoFixtureCustomisations
                                         .Create())
                                 .Create()))
                     .With(s => s.Features, JsonConvert.SerializeObject(fixture.Create<string[]>()))
-                    .With(s => s.Hosting, JsonConvert.SerializeObject(fixture.Create<Hosting>()))
                     .With(
                         s => s.Integrations,
                         JsonConvert.SerializeObject(

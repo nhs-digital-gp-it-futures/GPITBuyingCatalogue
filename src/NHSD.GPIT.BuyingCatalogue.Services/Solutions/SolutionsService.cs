@@ -356,7 +356,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
         public async Task<Hosting> GetHosting(CatalogueItemId solutionId)
         {
             var solution = await solutionRepository.SingleAsync(s => s.CatalogueItemId == solutionId);
-            return solution.GetHosting();
+            return solution.Hosting ?? new Hosting();
         }
 
         public async Task SaveHosting(CatalogueItemId solutionId, Hosting hosting)
@@ -364,7 +364,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
             hosting.ValidateNotNull(nameof(hosting));
 
             var solution = await solutionRepository.SingleAsync(s => s.CatalogueItemId == solutionId);
-            solution.Hosting = JsonConvert.SerializeObject(hosting);
+            solution.Hosting = hosting;
             await solutionRepository.SaveChangesAsync();
         }
 
