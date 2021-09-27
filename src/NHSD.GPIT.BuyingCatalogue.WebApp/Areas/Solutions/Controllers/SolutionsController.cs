@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
@@ -149,8 +148,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers
             if (solution is null)
                 return BadRequest($"No Catalogue Item found for Id: {solutionId} with Capability Id: {capabilityId}");
 
-            var model = mapper.Map<CatalogueItemCapability, SolutionCheckEpicsModel>(
-                solution.CatalogueItemCapability(capabilityId));
+            var solutionCapability = solution.CatalogueItemCapability(capabilityId);
+            var model = new SolutionCheckEpicsModel(solutionCapability);
 
             return View(model.WithSolutionName(solution.Name));
         }
@@ -168,8 +167,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers
             if (solution is null)
                 return BadRequest($"No Catalogue Item found for Id: {solutionId} with Capability Id: {capabilityId}");
 
-            var model = mapper.Map<CatalogueItemCapability, SolutionCheckEpicsModel>(
-                solution.CatalogueItemCapability(capabilityId));
+            var solutionCapability = solution.CatalogueItemCapability(capabilityId);
+            var model = new SolutionCheckEpicsModel(solutionCapability);
 
             return View(
                 "CheckEpics",
@@ -179,12 +178,12 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers
         [HttpGet("{solutionId}/client-application-types")]
         public async Task<IActionResult> ClientApplicationTypes(CatalogueItemId solutionId)
         {
-            var solution = await solutionsService.GetSolutionOverview(solutionId);
+            var item = await solutionsService.GetSolutionOverview(solutionId);
 
-            if (solution is null)
+            if (item is null)
                 return BadRequest($"No Catalogue Item found for Id: {solutionId}");
 
-            var model = mapper.Map<CatalogueItem, ClientApplicationTypesModel>(solution);
+            var model = new ClientApplicationTypesModel(item.Solution);
 
             return View(model);
         }
@@ -192,13 +191,11 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers
         [HttpGet("{solutionId}")]
         public async Task<IActionResult> Description(CatalogueItemId solutionId)
         {
-            var solution = await solutionsService.GetSolutionOverview(solutionId);
-            if (solution is null)
+            var item = await solutionsService.GetSolutionOverview(solutionId);
+            if (item is null)
                 return BadRequest($"No Catalogue Item found for Id: {solutionId}");
 
-            var model = mapper.Map<CatalogueItem, SolutionDescriptionModel>(solution);
-
-            return View(model);
+            return View(new SolutionDescriptionModel(item.Solution));
         }
 
         [HttpGet("{solutionId}/features")]
@@ -208,7 +205,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers
             if (solution is null)
                 return BadRequest($"No Catalogue Item found for Id: {solutionId}");
 
-            return View(mapper.Map<CatalogueItem, SolutionFeaturesModel>(solution));
+            return View(new SolutionFeaturesModel(solution.Features()));
         }
 
         [HttpGet("{solutionId}/hosting-type")]
@@ -226,7 +223,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers
             var solution = await solutionsService.GetSolutionOverview(solutionId);
             if (solution is null)
                 return BadRequest($"No Catalogue Item found for Id: {solutionId}");
-            return View(mapper.Map<CatalogueItem, ImplementationTimescalesModel>(solution));
+            return View(new ImplementationTimescalesModel(solution));
         }
 
         [HttpGet("{solutionId}/interoperability")]

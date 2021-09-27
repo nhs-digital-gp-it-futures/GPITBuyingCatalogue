@@ -1,11 +1,17 @@
-﻿using System;
-using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
+﻿using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models
 {
-    public class ImplementationTimescalesModel : SolutionDisplayBaseModel
+    public sealed class ImplementationTimescalesModel : SolutionDisplayBaseModel
     {
-        public string Description { get; set; }
+        public ImplementationTimescalesModel(CatalogueItem solution)
+        {
+            SolutionId = solution.Id;
+            SolutionName = solution.Name;
+            Description = solution.Solution.ImplementationDetail;
+        }
+
+        public string Description { get; }
 
         public override int Index => 7;
     }

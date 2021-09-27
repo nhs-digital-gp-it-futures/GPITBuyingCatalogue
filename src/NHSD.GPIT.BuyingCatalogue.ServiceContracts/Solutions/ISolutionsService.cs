@@ -59,5 +59,11 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions
         Task<IList<Framework>> GetAllFrameworks();
 
         Task<bool> SupplierHasSolutionName(int supplierId, string solutionName);
+
+        Task SaveSolutionListPrice(CatalogueItemId solutionId, SaveSolutionListPriceModel model);
+
+        Task UpdateSolutionListPrice(CatalogueItemId solutionId, SaveSolutionListPriceModel model);
+
+        Task DeleteSolutionListPrice(CatalogueItemId solutionId, int cataloguePriceId);
     }
 }

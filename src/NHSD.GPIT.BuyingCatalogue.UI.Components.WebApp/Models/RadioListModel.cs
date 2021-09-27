@@ -6,6 +6,8 @@ namespace NHSD.GPIT.BuyingCatalogue.UI.Components.WebApp.Models
     {
         public string SelectedItem { get; set; }
 
+        public string SelectedConditionalItem { get; set; }
+
         public List<RadioListOptions> ListOptions { get; set; }
 
         public List<RadioListOptions> ConditionalOptions { get; set; }

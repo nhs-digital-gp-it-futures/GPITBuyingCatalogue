@@ -122,17 +122,19 @@
     <nhs-fieldset-form-label asp-for="@Model"
                              label-text="Radio list with Conditional Options">
         <nhs-radio-button-container>
-            <nhs-radio-button asp-for="SelectedItem"
+            <nhs-radio-button asp-for="SelectedConditionalItem"
                               value="@Model.ConditionalOptions[0]"
                               value-name="Value"
-                              display-name="Name">
-                <nhs-input asp-for="SelectedItem"
+                              display-name="Name"
+                              index="0">
+                <nhs-input asp-for="SelectedConditionalItem"
                            label-text="Conditional Text Input" />
             </nhs-radio-button>
-            <nhs-radio-button asp-for="SelectedItem"
+            <nhs-radio-button asp-for="SelectedConditionalItem"
                               value="@Model.ConditionalOptions[1]"
                               value-name="Value"
-                              display-name="Name">
+                              display-name="Name"
+                              index="1">
                 <p>This is some text put inside the conditional area</p>
             </nhs-radio-button>
         </nhs-radio-button-container>
@@ -144,32 +146,30 @@
         <div class="app-tabs__container bc-code-snippet">
             <span class="vs-light-theme-blue">&lt;</span><span class="vs-light-theme-purple">nhs-fieldset-form-label</span><br />
             <span class="vs-light-theme-purple first-layer">asp-for</span><span class="vs-light-theme-blue">="@@Model"&nbsp;</span><br />
-            <span class="vs-light-theme-purple first-layer">label-text</span><span class="vs-light-theme-blue">="This is a Radio List from a List"&nbsp;</span><br />
-            <span class="vs-light-theme-purple first-layer">label-hint</span><span class="vs-light-theme-blue">="And a Hint"&nbsp;</span>
-            <span class="vs-light-theme-blue">&gt;</span><br />
+            <span class="vs-light-theme-purple first-layer">label-text</span><span class="vs-light-theme-blue">="Radio list with Conditional Options"</span><span class="vs-light-theme-blue">&gt;</span><br />
 
             <span class="vs-light-theme-blue first-layer">&lt;</span><span class="vs-light-theme-purple">nhs-radio-button-container</span><span class="vs-light-theme-blue">&gt;</span><br />
 
             <span class="vs-light-theme-blue second-layer">&lt;</span><span class="vs-light-theme-purple">nhs-radio-button</span><br />
-            <span class="vs-light-theme-purple third-layer">asp-for</span><span class="vs-light-theme-blue">="SelectedItem"&nbsp;</span><br />
+            <span class="vs-light-theme-purple third-layer">asp-for</span><span class="vs-light-theme-blue">="SelectedConditionalItem"&nbsp;</span><br />
             <span class="vs-light-theme-purple third-layer">value</span><span class="vs-light-theme-blue">="@@Model.ConditionalOptions[0]"&nbsp;</span><br />
             <span class="vs-light-theme-purple third-layer">value-name</span><span class="vs-light-theme-blue">="Value"&nbsp;</span><br />
-            <span class="vs-light-theme-purple third-layer">display-name</span><span class="vs-light-theme-blue">="Name"&nbsp;</span>
-            <span class="vs-light-theme-blue">&gt;</span><br />
+            <span class="vs-light-theme-purple third-layer">display-name</span><span class="vs-light-theme-blue">="Name"&nbsp;</span><br />
+            <span class="vs-light-theme-purple third-layer">index</span><span class="vs-light-theme-blue">="0"</span><span class="vs-light-theme-blue">&gt;</span><br />
 
             <span class="vs-light-theme-blue fourth-layer">&lt;</span><span class="vs-light-theme-purple">nhs-input</span><br />
-            <span class="vs-light-theme-purple fifth-layer">asp-for</span><span class="vs-light-theme-blue">="SelectedItem"</span><br />
+            <span class="vs-light-theme-purple fifth-layer">asp-for</span><span class="vs-light-theme-blue">="SelectedConditionalItem"</span><br />
             <span class="vs-light-theme-purple fifth-layer">label-text</span><span class="vs-light-theme-blue">="Conditional Text Input"</span>
             <span class="vs-light-theme-blue">/&gt;</span><br />
 
             <span class="vs-light-theme-blue second-layer">&lt;/</span><span class="vs-light-theme-purple">nhs-radio-button</span><span class="vs-light-theme-blue">&gt;</span><br />
 
             <span class="vs-light-theme-blue second-layer">&lt;</span><span class="vs-light-theme-purple">nhs-radio-button</span><br />
-            <span class="vs-light-theme-purple third-layer">asp-for</span><span class="vs-light-theme-blue">="SelectedItem"&nbsp;</span><br />
+            <span class="vs-light-theme-purple third-layer">asp-for</span><span class="vs-light-theme-blue">="SelectedConditionalItem"&nbsp;</span><br />
             <span class="vs-light-theme-purple third-layer">value</span><span class="vs-light-theme-blue">="@@Model.ConditionalOptions[0]"&nbsp;</span><br />
             <span class="vs-light-theme-purple third-layer">value-name</span><span class="vs-light-theme-blue">="Value"&nbsp;</span><br />
-            <span class="vs-light-theme-purple third-layer">display-name</span><span class="vs-light-theme-blue">="Name"&nbsp;</span>
-            <span class="vs-light-theme-blue">&gt;</span><br />
+            <span class="vs-light-theme-purple third-layer">display-name</span><span class="vs-light-theme-blue">="Name"&nbsp;</span><br />
+            <span class="vs-light-theme-purple third-layer">index</span><span class="vs-light-theme-blue">="1"</span><span class="vs-light-theme-blue">&gt;</span><br />
 
             <span class="vs-light-theme-blue fourth-layer">&lt;</span><span class="vs-light-theme-purple">p</span><span class="vs-light-theme-blue">&gt;</span>
             <span>This is some text put inside the conditional area</span>

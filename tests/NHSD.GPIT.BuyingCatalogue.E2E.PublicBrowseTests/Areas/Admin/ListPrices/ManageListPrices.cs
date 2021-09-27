@@ -8,7 +8,7 @@ using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers;
 using Xunit;
 
-namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin
+namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.ListPrices
 {
     public sealed class ManageListPrices : AuthorityTestBase, IClassFixture<LocalWebApplicationFactory>
     {
@@ -44,12 +44,12 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin
                 .BeTrue();
 
             CommonActions
-                .ElementIsDisplayed(ManageListPricesObjects.ContinueLink)
+                .ElementIsDisplayed(ListPricesObjects.ContinueLink)
                 .Should()
                 .BeTrue();
 
             CommonActions
-                .ElementIsDisplayed(ManageListPricesObjects.ListPriceTable)
+                .ElementIsDisplayed(ListPricesObjects.ListPriceTable)
                 .Should()
                 .BeTrue();
         }
@@ -60,18 +60,31 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin
             CommonActions.ClickGoBackLink();
 
             CommonActions
-            .PageLoadedCorrectGetIndex(
-                typeof(CatalogueSolutionsController),
-                nameof(CatalogueSolutionsController.ManageCatalogueSolution))
-            .Should()
-            .BeTrue();
+                .PageLoadedCorrectGetIndex(
+                    typeof(CatalogueSolutionsController),
+                    nameof(CatalogueSolutionsController.ManageCatalogueSolution))
+                .Should()
+                .BeTrue();
+        }
+
+        [Fact]
+        public void Index_ClickAddPrice_ExpectedResult()
+        {
+            CommonActions.ClickLinkElement(CommonObjects.ActionLink);
+
+            CommonActions
+                .PageLoadedCorrectGetIndex(
+                    typeof(ListPriceController),
+                    nameof(ListPriceController.AddListPrice))
+                .Should()
+                .BeTrue();
         }
 
         [Fact]
         public void Index_ClickContinue_ExpectedResult()
         {
             CommonActions
-                .ClickLinkElement(ManageListPricesObjects.ContinueLink);
+                .ClickLinkElement(ListPricesObjects.ContinueLink);
 
             CommonActions
             .PageLoadedCorrectGetIndex(

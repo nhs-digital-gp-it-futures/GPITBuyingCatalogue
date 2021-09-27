@@ -1,0 +1,29 @@
+﻿@model NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.ListPriceModels.DeleteListPriceModel
+@{
+    ViewData["Title"] = $"Delete {Model.SolutionName} list price?";
+}
+
+<partial name="Partials/_BackLink" model="Model" />
+<div class="nhsuk-grid-row">
+    <div class="nhsuk-grid-column-two-thirds">
+        <nhs-validation-summary />
+        <nhs-page-title title="@ViewData["Title"]"
+                        advice="Confirm you want to delete the list price." />
+        <div class="nhsuk-grid-row">
+            <div class="nhsuk-grid-column-two-thirds">
+                <form method="post">
+                    <input type="hidden" asp-for="SolutionName" />
+                    <input type="hidden" asp-for="BackLinkText" />
+                    <input type="hidden" asp-for="BackLink" />
+                    <div>
+                        <nhs-submit-button text="Delete" />
+                    </div>
+                    <div>
+                        <vc:nhs-backlink url="@Model.BackLink" text="Cancel" />
+                    </div>
+                </form>
+
+            </div>
+        </div>
+    </div>
+</div>
