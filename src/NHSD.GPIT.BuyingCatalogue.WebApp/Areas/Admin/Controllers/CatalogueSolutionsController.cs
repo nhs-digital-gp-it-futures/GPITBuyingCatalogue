@@ -4,11 +4,11 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.AssociatedServices;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions;
-using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Users;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.BrowserBasedModels;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.ClientApplicationTypeModels;
@@ -190,10 +190,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
 
             Hosting hosting = new Hosting
             {
-                PublicCloud = catalogueItem.Solution?.GetHosting()?.PublicCloud,
-                PrivateCloud = catalogueItem.Solution?.GetHosting()?.PrivateCloud,
-                HybridHostingType = catalogueItem.Solution?.GetHosting()?.HybridHostingType,
-                OnPremise = catalogueItem.Solution?.GetHosting()?.OnPremise,
+                PublicCloud = catalogueItem.Solution?.Hosting?.PublicCloud,
+                PrivateCloud = catalogueItem.Solution?.Hosting?.PrivateCloud,
+                HybridHostingType = catalogueItem.Solution?.Hosting?.HybridHostingType,
+                OnPremise = catalogueItem.Solution?.Hosting?.OnPremise,
             };
 
             await solutionsService.SaveHosting(solutionId, hosting);
@@ -233,7 +233,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
             if (catalogueItem is null)
                 return BadRequest($"No Solution found for Id: {solutionId}");
 
-            var model = new PublicCloudModel(catalogueItem.Solution.GetHosting().PublicCloud);
+            var model = new PublicCloudModel(catalogueItem.Solution.Hosting?.PublicCloud);
             return View(model);
         }
 
@@ -258,7 +258,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
             if (catalogueItem is null)
                 return BadRequest($"No Solution found for Id: {solutionId}");
 
-            var model = new PrivateCloudModel(catalogueItem.Solution.GetHosting().PrivateCloud);
+            var model = new PrivateCloudModel(catalogueItem.Solution.Hosting?.PrivateCloud);
             return View(model);
         }
 
@@ -283,7 +283,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
             if (catalogueItem is null)
                 return BadRequest($"No Solution found for Id: {solutionId}");
 
-            var model = new HybridModel(catalogueItem.Solution.GetHosting().HybridHostingType);
+            var model = new HybridModel(catalogueItem.Solution.Hosting?.HybridHostingType);
             return View(model);
         }
 
@@ -308,7 +308,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
             if (catalogueItem is null)
                 return BadRequest($"No Solution found for Id: {solutionId}");
 
-            var model = new OnPremiseModel(catalogueItem.Solution.GetHosting().OnPremise);
+            var model = new OnPremiseModel(catalogueItem.Solution.Hosting?.OnPremise);
             return View(model);
         }
 

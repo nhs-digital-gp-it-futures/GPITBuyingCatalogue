@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using System.Text.Json;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
@@ -21,6 +22,12 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Configuration
             builder.Property(s => s.FullDescription).HasMaxLength(3000);
             builder.Property(s => s.ImplementationDetail).HasMaxLength(1100);
             builder.Property(s => s.IntegrationsUrl).HasMaxLength(1000);
+
+            builder.Property(s => s.Hosting)
+                .HasConversion(
+                    h => JsonSerializer.Serialize(h, null),
+                    h => JsonSerializer.Deserialize<Hosting>(h, new JsonSerializerOptions { PropertyNameCaseInsensitive = true }));
+
             builder.Property(s => s.RoadMap).HasMaxLength(1000);
             builder.Property(s => s.ServiceLevelAgreement).HasMaxLength(1000);
             builder.Property(s => s.Summary).HasMaxLength(350);

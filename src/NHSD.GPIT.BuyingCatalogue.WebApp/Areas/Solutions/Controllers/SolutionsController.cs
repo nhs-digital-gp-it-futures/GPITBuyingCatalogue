@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Threading.Tasks;
-using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Caching.Memory;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
@@ -17,7 +16,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers
     [Route("catalogue-solutions")]
     public sealed class SolutionsController : Controller
     {
-        private readonly IMapper mapper;
         private readonly ISolutionsService solutionsService;
         private readonly ISolutionsFilterService solutionsFilterService;
         private readonly IMemoryCache memoryCache;
@@ -25,13 +23,11 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers
         private readonly MemoryCacheEntryOptions memoryCacheOptions;
 
         public SolutionsController(
-            IMapper mapper,
             ISolutionsService solutionsService,
             IMemoryCache memoryCache,
             ISolutionsFilterService solutionsFilterService,
             FilterCacheKeySettings filterCacheKey)
         {
-            this.mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
             this.solutionsService = solutionsService ?? throw new ArgumentNullException(nameof(solutionsService));
             this.memoryCache = memoryCache ?? throw new ArgumentNullException(nameof(memoryCache));
             this.solutionsFilterService = solutionsFilterService ?? throw new ArgumentNullException(nameof(solutionsFilterService));
@@ -211,10 +207,11 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers
         [HttpGet("{solutionId}/hosting-type")]
         public async Task<IActionResult> HostingType(CatalogueItemId solutionId)
         {
-            var solution = await solutionsService.GetSolutionOverview(solutionId);
-            if (solution is null)
+            var item = await solutionsService.GetSolutionOverview(solutionId);
+            if (item is null)
                 return BadRequest($"No Catalogue Item found for Id: {solutionId}");
-            return View(mapper.Map<CatalogueItem, HostingTypesModel>(solution));
+
+            return View(new HostingTypesModel(item.Solution?.Hosting ?? new Hosting()));
         }
 
         [HttpGet("{solutionId}/implementation")]
@@ -238,10 +235,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers
         [HttpGet("{solutionId}/list-price")]
         public async Task<IActionResult> ListPrice(CatalogueItemId solutionId)
         {
-            var solution = await solutionsService.GetSolutionOverview(solutionId);
-            if (solution is null)
+            var item = await solutionsService.GetSolutionOverview(solutionId);
+            if (item is null)
                 return BadRequest($"No Catalogue Item found for Id: {solutionId}");
-            return View(mapper.Map<CatalogueItem, ListPriceModel>(solution));
+            return View(new ListPriceModel(item));
         }
 
         [HttpGet("{solutionId}/supplier-details")]

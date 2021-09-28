@@ -38,8 +38,8 @@
                                       index="1">
                         <nhs-select asp-for="DeclarativeTimeUnit"
                                     asp-items="timeUnitsSelectList"
-                                    label-text="Time unit"
-                                    label-hint="Provide the time unit for how this Catalogue Solution will be billed." />
+                                    label-text="Unit of time"
+                                    label-hint="Provide the unit of time for how this Catalogue Solution will be billed." />
                     </nhs-radio-button>
 
                     <nhs-radio-button asp-for="SelectedProvisioningType"
@@ -49,20 +49,20 @@
                                       index="2">
                         <nhs-select asp-for="OnDemandTimeUnit"
                                     asp-items="timeUnitsSelectList"
-                                    label-text="Time unit"
-                                    label-hint="Provide the time unit for how this Catalogue Solution will be billed." />
+                                    label-text="Unit of time"
+                                    label-hint="Provide the unit of time for how this Catalogue Solution will be billed." />
                     </nhs-radio-button>
                 </nhs-radio-button-container>
             </nhs-fieldset-form-label>
-            <nhs-input asp-for="Price"
-                       label-text="Price"
-                       label-hint="Provide the list price in £s to a maximum of 4 decimal places."
-                       character-count="true"
-                       max-character-length="100"/>
+            <nhs-bookended-input asp-for="Price"
+                                 label-text="Price"
+                                 label-hint="Provide the list price in £s to a maximum of 4 decimal places."
+                                 Prefix="£" />
+
             <nhs-input asp-for="Unit"
                        label-text="Unit"
-                       label-hint="For example, per day, per practice, per patient per year."
-                       character-count="true" />
+                       label-hint="For example, per day, per practice, per patient per year." />
+
             <nhs-textarea asp-for="UnitDefinition"
                           label-text="Unit definition (optional)"
                           label-hint="For example, if the unit is per day, between what hours?"
