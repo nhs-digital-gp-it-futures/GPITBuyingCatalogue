@@ -50,7 +50,27 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators
 
             result
                 .ShouldHaveValidationErrorFor(m => m.Price)
-                .WithErrorMessage("A valid price must be entered.");
+                .WithErrorMessage("Enter a price");
+        }
+
+        [Theory]
+        [CommonAutoData]
+        public static async Task Validate_NegativePriceValue_SetsModelErrorForPrice(
+            CatalogueItem solution,
+            EditListPriceModelValidator validator)
+        {
+            var model = new EditListPriceModel(solution)
+            {
+                Price = -3.21M,
+                Unit = "per patient",
+                SelectedProvisioningType = ProvisioningType.Patient,
+            };
+
+            var result = await validator.TestValidateAsync(model);
+
+            result
+                .ShouldHaveValidationErrorFor(m => m.Price)
+                .WithErrorMessage("Price cannot be negative");
         }
 
         [Theory]
@@ -70,7 +90,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators
 
             result
                 .ShouldHaveValidationErrorFor(m => m.Price)
-                .WithErrorMessage("Price supports up to 4 decimal places.");
+                .WithErrorMessage("Price must be to a maximum of 4 decimal places");
         }
 
         [Theory]
@@ -90,7 +110,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators
 
             result
                 .ShouldHaveValidationErrorFor(m => m.Unit)
-                .WithErrorMessage("A unit must be entered.");
+                .WithErrorMessage("Enter a unit");
         }
 
         [Theory]
@@ -111,7 +131,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators
 
             result
                 .ShouldHaveValidationErrorFor(m => m.UnitDefinition)
-                .WithErrorMessage("Unit Definition can only be up to 1,000 characters.");
+                .WithErrorMessage("Unit definition must be to a maximum of 1,000 characters");
         }
 
         [Theory]
@@ -131,7 +151,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators
 
             result
                 .ShouldHaveValidationErrorFor(m => m.SelectedProvisioningType)
-                .WithErrorMessage("A provisioning type must be selected.");
+                .WithErrorMessage("Select a provisioning type");
         }
 
         [Theory]
@@ -202,7 +222,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators
 
             result
                 .ShouldHaveValidationErrorFor(m => m)
-                .WithErrorMessage("A list price with these details already exists for this Catalogue Solution.");
+                .WithErrorMessage("A list price with these details already exists for this Catalogue Solution");
         }
     }
 }

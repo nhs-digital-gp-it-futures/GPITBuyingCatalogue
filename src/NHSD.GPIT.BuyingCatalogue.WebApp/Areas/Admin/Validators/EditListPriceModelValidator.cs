@@ -11,7 +11,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Validators
 {
     public sealed class EditListPriceModelValidator : AbstractValidator<EditListPriceModel>
     {
-        internal const string TimeUnitErrorMessage = "A time unit must be specified.";
+        internal const string TimeUnitErrorMessage = "Select a unit of time";
         private readonly ISolutionsService solutionsService;
 
         public EditListPriceModelValidator(ISolutionsService solutionsService)
@@ -21,24 +21,26 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Validators
             RuleFor(p => p.Price)
                 .Cascade(CascadeMode.Stop)
                 .NotNull()
-                .WithMessage("A valid price must be entered.")
+                .WithMessage("Enter a price")
+                .GreaterThan(0)
+                .WithMessage("Price cannot be negative")
                 .Must(p => Regex.IsMatch(p.ToString(), @"^\d+.?\d{0,4}$"))
-                .WithMessage("Price supports up to 4 decimal places.");
+                .WithMessage("Price must be to a maximum of 4 decimal places");
 
             RuleFor(p => p.Unit)
                 .Cascade(CascadeMode.Stop)
                 .NotEmpty()
-                .WithMessage("A unit must be entered.");
+                .WithMessage("Enter a unit");
 
             RuleFor(p => p.UnitDefinition)
                 .MaximumLength(1000)
-                .WithMessage("Unit Definition can only be up to 1,000 characters.")
+                .WithMessage("Unit definition must be to a maximum of 1,000 characters")
                 .When(p => !string.IsNullOrWhiteSpace(p.UnitDefinition));
 
             RuleFor(p => p.SelectedProvisioningType)
                 .Cascade(CascadeMode.Stop)
                 .NotNull()
-                .WithMessage("A provisioning type must be selected.");
+                .WithMessage("Select a provisioning type");
 
             RuleFor(p => p.DeclarativeTimeUnit)
                 .Cascade(CascadeMode.Stop)
@@ -56,7 +58,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Validators
                 .Cascade(CascadeMode.Stop)
                 .NotNull()
                 .MustAsync(NotBeDuplicateOfAnExistingPrice)
-                .WithMessage("A list price with these details already exists for this Catalogue Solution.")
+                .WithMessage("A list price with these details already exists for this Catalogue Solution")
                 .When(TheModelIsPopulated);
         }
 
