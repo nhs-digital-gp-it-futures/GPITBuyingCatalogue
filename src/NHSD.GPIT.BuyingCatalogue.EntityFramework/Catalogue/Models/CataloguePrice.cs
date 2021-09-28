@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using NHSD.GPIT.BuyingCatalogue.EntityFramework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 
 namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models
@@ -39,6 +40,11 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models
         public override string ToString()
         {
             return $"£{Price.Value:F} {PricingUnit?.Description}".Trim();
+        }
+
+        public string ToPriceUnitString()
+        {
+            return $"{PricingUnit.Description} {TimeUnit.Value.Description()}".Trim();
         }
     }
 }
