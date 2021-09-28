@@ -34,7 +34,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Validators
 
             RuleFor(p => p.UnitDefinition)
                 .MaximumLength(1000)
-                .WithMessage("Unit Definition must be to a maximum of 1,000 characters")
+                .WithMessage("Unit definition must be to a maximum of 1,000 characters")
                 .When(p => !string.IsNullOrWhiteSpace(p.UnitDefinition));
 
             RuleFor(p => p.SelectedProvisioningType)
