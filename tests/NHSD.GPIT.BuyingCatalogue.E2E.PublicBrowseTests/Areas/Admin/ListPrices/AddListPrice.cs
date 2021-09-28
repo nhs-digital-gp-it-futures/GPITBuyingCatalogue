@@ -8,6 +8,7 @@ using NHSD.GPIT.BuyingCatalogue.E2ETests.Objects.Common;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Utils;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.TestBases;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
+using NHSD.GPIT.BuyingCatalogue.EntityFramework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers;
 using Xunit;
@@ -106,7 +107,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.ListPrices
         [Fact]
         public void AddListPrice_DeclarativeProvisioningType_SelectListDisplayed()
         {
-            const string provisioningType = "Declarative";
+            var provisioningType = ProvisioningType.Declarative.Name();
 
             CommonActions
                 .ElementIsDisplayed(ListPricesObjects.DeclarativeTimeInput)
@@ -125,7 +126,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.ListPrices
         [Fact]
         public void AddListPrice_OnDemandProvisioningType_SelectListDisplayed()
         {
-            const string provisioningType = "On Demand";
+            var provisioningType = ProvisioningType.OnDemand.Name();
 
             CommonActions
                 .ElementIsDisplayed(ListPricesObjects.OnDemandTimeInput)
@@ -192,7 +193,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.ListPrices
         [Fact]
         public void AddListPrice_ValidInput_ExpectedResult()
         {
-            const string provisioningType = "Patient";
+            var provisioningType = ProvisioningType.Patient.Name();
 
             CommonActions
                 .ClickRadioButtonWithText(provisioningType);
@@ -219,7 +220,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.ListPrices
             var catalogueItemPrice = (await GetCataloguePrice()).First();
 
             CommonActions
-                .ClickRadioButtonWithText(catalogueItemPrice.ProvisioningType.ToString());
+                .ClickRadioButtonWithText(catalogueItemPrice.ProvisioningType.Name());
 
             CommonActions
                 .ElementAddValue(ListPricesObjects.PriceInput, catalogueItemPrice.Price.ToString());

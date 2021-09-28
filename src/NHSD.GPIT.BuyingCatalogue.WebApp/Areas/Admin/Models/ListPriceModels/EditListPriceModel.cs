@@ -2,6 +2,7 @@
 using System.ComponentModel.DataAnnotations;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
+using NHSD.GPIT.BuyingCatalogue.EntityFramework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Models;
 
@@ -46,9 +47,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.ListPriceModels
 
         public static IEnumerable<SelectListItem> ProvisioningTypeListItems => new SelectListItem[]
         {
-            new("Patient", ProvisioningType.Patient.ToString()),
-            new("Declarative", ProvisioningType.Declarative.ToString()),
-            new("On Demand", ProvisioningType.OnDemand.ToString()),
+            new(ProvisioningType.Patient.Name(), ProvisioningType.Patient.ToString()),
+            new(ProvisioningType.Declarative.Name(), ProvisioningType.Declarative.ToString()),
+            new(ProvisioningType.OnDemand.Name(), ProvisioningType.OnDemand.ToString()),
         };
 
         public int? CataloguePriceId { get; init; }
