@@ -25,6 +25,9 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
         private const char CapabilitiesDelimiter = '|';
         private const char CapabilitiesStartingCharacter = 'C';
         private const char EpicStartingCharacter = 'E';
+        private const char SupplierStartingCharacter = 'S';
+        private const char SupplierMarkCharacter = 'X';
+        private const char DFOCVCMarkCharacter = 'D';
 
         private readonly MemoryCacheEntryOptions memoryCacheOptions;
 
@@ -218,32 +221,6 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
             return response;
         }
 
-        private static Dictionary<string, List<string>> DecodeCapabilitiesFilter(string capabilities)
-        {
-            var output = new Dictionary<string, List<string>>();
-
-            var splitCapabilities = capabilities.Split(CapabilitiesDelimiter);
-
-            foreach (var capability in splitCapabilities)
-            {
-                if (capability == FoundationCapabilitiesKey || !capability.Contains(EpicStartingCharacter))
-                {
-                    output.Add(capability, new List<string>());
-                }
-                else
-                {
-                    var list = new List<string>();
-
-                    var epics = capability.Split(EpicStartingCharacter);
-
-                    list.AddRange(epics.Where(e => !e.StartsWith(CapabilitiesStartingCharacter)).Select(epic => $"{epics[0]}{EpicStartingCharacter}{epic}"));
-                    output.Add(epics[0], list);
-                }
-            }
-
-            return output;
-        }
-
         /// <summary>
         /// loop through the capabilities and epics and generates an EF where clause from the list.
         /// </summary>
@@ -287,5 +264,50 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
 
             return selectedEpics.Aggregate(epicPredicateBuilder, (current, epic) => current.And(ci => ci.CatalogueItemEpics.Any(cie => cie.EpicId == epic)));
         }
+
+        private static Dictionary<string, List<string>> DecodeCapabilitiesFilter(string capabilities)
+        {
+            var output = new Dictionary<string, List<string>>();
+
+            var splitCapabilities = capabilities.Split(CapabilitiesDelimiter);
+
+            foreach (var capability in splitCapabilities)
+            {
+                if (capability == FoundationCapabilitiesKey || !capability.Contains(EpicStartingCharacter))
+                {
+                    output.Add(capability, new List<string>());
+                }
+                else
+                {
+                    var epics = capability
+                        .Split(SupplierStartingCharacter)
+                        .SelectMany(s => s.Split(EpicStartingCharacter))
+                        .ToList();
+
+                    var list = epics
+                    .Where(s => !s.StartsWith(CapabilitiesStartingCharacter))
+                    .Select(s =>
+                    {
+                        if (s.Contains(DFOCVCMarkCharacter))
+                            return DecodeDFOCVCEpic(s);
+                        else if (s.Contains(SupplierMarkCharacter))
+                            return DecodeSupplierDefinedEpic(s);
+                        else
+                            return DecodeNormalEpic(epics[0], s);
+                    })
+                    .ToList();
+
+                    output.Add(epics[0], list);
+                }
+            }
+
+            return output;
+        }
+
+        private static string DecodeNormalEpic(string capabilityId, string encodedEpic) => $"{capabilityId}E{encodedEpic}";
+
+        private static string DecodeDFOCVCEpic(string encodedEpic) => $"E000{encodedEpic.Substring(0, 2)}";
+
+        private static string DecodeSupplierDefinedEpic(string encodedEpic) => ("S0" + encodedEpic).Replace("_", "E0").Replace("X", "X0");
     }
 }
