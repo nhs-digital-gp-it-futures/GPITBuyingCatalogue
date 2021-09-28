@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Diagnostics.CodeAnalysis;
 using System.Threading.Tasks;
-using AutoMapper;
 using FluentValidation.AspNetCore;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Diagnostics;
@@ -97,13 +96,11 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp
 
             ServicesStartup.Configure(services);
 
-            services.ConfigureAutoMapper();
-
             services.AddRazorPages();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env, IMapper mapper, ILogger<Startup> logger)
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env, ILogger<Startup> logger)
         {
             app.UseResponseCompression();
 
@@ -150,8 +147,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp
                 // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
                 app.UseHsts();
             }
-
-            mapper.ConfigurationProvider.AssertConfigurationIsValid();
 
             app.UseSession();
 

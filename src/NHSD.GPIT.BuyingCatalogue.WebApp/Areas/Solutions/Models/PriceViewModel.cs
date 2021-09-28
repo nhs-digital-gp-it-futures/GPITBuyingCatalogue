@@ -1,11 +1,19 @@
-﻿namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models
+﻿using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
+
+namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models
 {
-    public class PriceViewModel
+    public sealed class PriceViewModel
     {
-        public string CurrencyCode { get; set; }
+        public PriceViewModel(CataloguePrice cp)
+        {
+            Price = cp.Price;
+            Unit = cp.ToPriceUnitString();
+        }
 
-        public decimal? Price { get; set; }
+        public string CurrencyCode { get; init; } = "£";
 
-        public string Unit { get; set; }
+        public decimal? Price { get; init; }
+
+        public string Unit { get; init; }
     }
 }

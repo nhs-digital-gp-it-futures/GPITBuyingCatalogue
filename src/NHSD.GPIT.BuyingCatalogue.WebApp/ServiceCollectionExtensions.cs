@@ -1,7 +1,6 @@
 ﻿using System;
 using System.IO.Compression;
 using System.Threading.Tasks;
-using AutoMapper;
 using MailKit;
 using MailKit.Net.Smtp;
 using Microsoft.AspNetCore.Authentication.Cookies;
@@ -43,11 +42,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp
                         "organisationFunction",
                         new[] { OrganisationFunction.Authority.DisplayName }));
             });
-        }
-
-        public static void ConfigureAutoMapper(this IServiceCollection services)
-        {
-            services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
         }
 
         public static void ConfigureCookies(this IServiceCollection services, IConfiguration configuration)
