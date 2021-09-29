@@ -7,8 +7,10 @@
     "sourceMap": true,
     "target": "es6",
     "outDir": "wwwroot/js",
+    "rootDir": "./scripts",
     "lib": [
-      "es2019", "dom"
+      "es2019",
+      "dom"
     ]
   },
   "include": [
