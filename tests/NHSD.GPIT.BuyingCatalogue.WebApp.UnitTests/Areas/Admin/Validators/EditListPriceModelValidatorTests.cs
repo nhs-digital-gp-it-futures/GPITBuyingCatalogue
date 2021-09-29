@@ -177,7 +177,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators
 
         [Theory]
         [CommonAutoData]
-        public static async Task Validate_ProvisioningTypeOnDemandWithNoTimeUnit_SetsModelErrorForProvisioningType(
+        public static async Task Validate_ProvisioningTypeOnDemandWithNoTimeUnit_NoValidationError(
             CatalogueItem solution,
             EditListPriceModelValidator validator)
         {
@@ -192,8 +192,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators
             var result = await validator.TestValidateAsync(model);
 
             result
-                .ShouldHaveValidationErrorFor(m => m.OnDemandTimeUnit)
-                .WithErrorMessage(EditListPriceModelValidator.TimeUnitErrorMessage);
+                .ShouldNotHaveValidationErrorFor(m => m.OnDemandTimeUnit);
         }
 
         [Theory]
@@ -223,6 +222,65 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators
             result
                 .ShouldHaveValidationErrorFor(m => m)
                 .WithErrorMessage("A list price with these details already exists for this Catalogue Solution");
+        }
+
+        [Theory]
+        [CommonAutoData]
+        public static async Task Validate_DuplicatePriceIsCurrentPrice_NoValidationError(
+            CatalogueItem solution,
+            [Frozen] Mock<ISolutionsService> mockSolutionsService,
+            EditListPriceModelValidator validator)
+        {
+            var cataloguePrice = solution.CataloguePrices.First();
+            cataloguePrice.ProvisioningType = ProvisioningType.Patient;
+            cataloguePrice.TimeUnit = TimeUnit.PerYear;
+
+            var model = new EditListPriceModel(solution)
+            {
+                CataloguePriceId = cataloguePrice.CataloguePriceId,
+                Price = cataloguePrice.Price,
+                Unit = cataloguePrice.PricingUnit.Description,
+                SelectedProvisioningType = cataloguePrice.ProvisioningType,
+            };
+
+            mockSolutionsService
+                .Setup(s => s.GetSolution(solution.Id))
+                .ReturnsAsync(solution);
+
+            var result = await validator.TestValidateAsync(model);
+
+            result
+                .ShouldNotHaveValidationErrorFor(m => m);
+        }
+
+        [Theory]
+        [CommonAutoData]
+        public static async Task Validate_DuplicateOnDemandWithNoTimeUnit_NoValidationError(
+            CatalogueItem solution,
+            [Frozen] Mock<ISolutionsService> mockSolutionsService,
+            EditListPriceModelValidator validator)
+        {
+            var cataloguePrice = solution.CataloguePrices.First();
+            cataloguePrice.ProvisioningType = ProvisioningType.OnDemand;
+            cataloguePrice.TimeUnit = null;
+
+            var model = new EditListPriceModel(solution)
+            {
+                CataloguePriceId = cataloguePrice.CataloguePriceId,
+                Price = cataloguePrice.Price,
+                Unit = cataloguePrice.PricingUnit.Description,
+                SelectedProvisioningType = cataloguePrice.ProvisioningType,
+                OnDemandTimeUnit = null,
+            };
+
+            mockSolutionsService
+                .Setup(s => s.GetSolution(solution.Id))
+                .ReturnsAsync(solution);
+
+            var result = await validator.TestValidateAsync(model);
+
+            result
+                .ShouldNotHaveValidationErrorFor(m => m);
         }
     }
 }

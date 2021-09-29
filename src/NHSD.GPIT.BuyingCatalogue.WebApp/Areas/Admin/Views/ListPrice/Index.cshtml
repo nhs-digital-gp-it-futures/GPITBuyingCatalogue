@@ -26,7 +26,6 @@
             <nhs-table-column>Provisioning type</nhs-table-column>
             <nhs-table-column>Price</nhs-table-column>
             <nhs-table-column>Unit</nhs-table-column>
-            <nhs-table-column>Volume</nhs-table-column>
             <nhs-table-column></nhs-table-column>
 
             @foreach (var cataloguePrice in Model.CataloguePrices)
@@ -35,7 +34,6 @@
                     <nhs-table-cell>@cataloguePrice.ProvisioningType.Name()</nhs-table-cell>
                     <nhs-table-cell>@CurrencyCodeSigns.Code[cataloguePrice.CurrencyCode]@cataloguePrice.Price</nhs-table-cell>
                     <nhs-table-cell>@cataloguePrice.PricingUnit.Description</nhs-table-cell>
-                    <nhs-table-cell>N/A</nhs-table-cell>
                     <nhs-table-cell>
                         <a asp-action="EditListPrice" asp-controller="ListPrice" asp-route-solutionId="@Model.CatalogueItemId" asp-route-listPriceId="@cataloguePrice.CataloguePriceId">Edit</a>
                     </nhs-table-cell>
