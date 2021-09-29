@@ -113,11 +113,11 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers
         [HttpGet("{solutionId}/capabilities")]
         public async Task<IActionResult> Capabilities(CatalogueItemId solutionId)
         {
-            var solution = await solutionsService.GetSolutionOverview(solutionId);
-            if (solution is null)
+            var item = await solutionsService.GetSolutionOverview(solutionId);
+            if (item is null)
                 return BadRequest($"No Catalogue Item found for Id: {solutionId}");
 
-            return View(new CapabilitiesViewModel(solution));
+            return View(new CapabilitiesViewModel(item));
         }
 
         [HttpGet("{solutionId}/additional-services/{additionalServiceId}/capabilities")]
@@ -125,29 +125,29 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers
             CatalogueItemId solutionId,
             CatalogueItemId additionalServiceId)
         {
-            var solution = await solutionsService.GetSolutionAdditionalServiceCapabilities(solutionId);
+            var item = await solutionsService.GetSolutionAdditionalServiceCapabilities(solutionId);
 
-            if (solution is null)
+            if (item is null)
                 return BadRequest($"No Catalogue Item found for Id: {solutionId}");
 
-            return View(new CapabilitiesViewModel(solution)
+            return View(new CapabilitiesViewModel(item)
             {
-                Name = solution.CatalogueItemName(additionalServiceId),
-                Description = solution.AdditionalServiceDescription(additionalServiceId),
+                Name = item.CatalogueItemName(additionalServiceId),
+                Description = item.AdditionalServiceDescription(additionalServiceId),
             });
         }
 
         [HttpGet("{solutionId}/capability/{capabilityId}")]
         public async Task<IActionResult> CheckEpics(CatalogueItemId solutionId, int capabilityId)
         {
-            var solution = await solutionsService.GetSolutionCapability(solutionId, capabilityId);
-            if (solution is null)
+            var item = await solutionsService.GetSolutionCapability(solutionId, capabilityId);
+            if (item is null)
                 return BadRequest($"No Catalogue Item found for Id: {solutionId} with Capability Id: {capabilityId}");
 
-            var solutionCapability = solution.CatalogueItemCapability(capabilityId);
+            var solutionCapability = item.CatalogueItemCapability(capabilityId);
             var model = new SolutionCheckEpicsModel(solutionCapability);
 
-            return View(model.WithSolutionName(solution.Name));
+            return View(model.WithSolutionName(item.Name));
         }
 
         [HttpGet("{solutionId}/additional-services/{additionalServiceId}/capability/{capabilityId}")]
@@ -156,19 +156,19 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers
             CatalogueItemId additionalServiceId,
             int capabilityId)
         {
-            var solution = await solutionsService.GetAdditionalServiceCapability(
+            var item = await solutionsService.GetAdditionalServiceCapability(
                 additionalServiceId,
                 capabilityId);
 
-            if (solution is null)
+            if (item is null)
                 return BadRequest($"No Catalogue Item found for Id: {solutionId} with Capability Id: {capabilityId}");
 
-            var solutionCapability = solution.CatalogueItemCapability(capabilityId);
+            var solutionCapability = item.CatalogueItemCapability(capabilityId);
             var model = new SolutionCheckEpicsModel(solutionCapability);
 
             return View(
                 "CheckEpics",
-                model.WithItems(solutionId, additionalServiceId, solution.Name));
+                model.WithItems(solutionId, additionalServiceId, item.Name));
         }
 
         [HttpGet("{solutionId}/client-application-types")]
@@ -197,11 +197,11 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers
         [HttpGet("{solutionId}/features")]
         public async Task<IActionResult> Features(CatalogueItemId solutionId)
         {
-            var solution = await solutionsService.GetSolutionOverview(solutionId);
-            if (solution is null)
+            var item = await solutionsService.GetSolutionOverview(solutionId);
+            if (item is null)
                 return BadRequest($"No Catalogue Item found for Id: {solutionId}");
 
-            return View(new SolutionFeaturesModel(solution.Features()));
+            return View(new SolutionFeaturesModel(item.Features()));
         }
 
         [HttpGet("{solutionId}/hosting-type")]
@@ -211,25 +211,25 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers
             if (item is null)
                 return BadRequest($"No Catalogue Item found for Id: {solutionId}");
 
-            return View(new HostingTypesModel(item.Solution?.Hosting ?? new Hosting()));
+            return View(new HostingTypesModel(item));
         }
 
         [HttpGet("{solutionId}/implementation")]
         public async Task<IActionResult> Implementation(CatalogueItemId solutionId)
         {
-            var solution = await solutionsService.GetSolutionOverview(solutionId);
-            if (solution is null)
+            var item = await solutionsService.GetSolutionOverview(solutionId);
+            if (item is null)
                 return BadRequest($"No Catalogue Item found for Id: {solutionId}");
-            return View(new ImplementationTimescalesModel(solution));
+            return View(new ImplementationTimescalesModel(item));
         }
 
         [HttpGet("{solutionId}/interoperability")]
         public async Task<IActionResult> Interoperability(CatalogueItemId solutionId)
         {
-            var solution = await solutionsService.GetSolutionOverview(solutionId);
-            if (solution is null)
+            var item = await solutionsService.GetSolutionOverview(solutionId);
+            if (item is null)
                 return BadRequest($"No Catalogue Item found for Id: {solutionId}");
-            return View(new InteroperabilityModel(solution));
+            return View(new InteroperabilityModel(item));
         }
 
         [HttpGet("{solutionId}/list-price")]
@@ -244,11 +244,11 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers
         [HttpGet("{solutionId}/supplier-details")]
         public async Task<IActionResult> SupplierDetails(CatalogueItemId solutionId)
         {
-            var solution = await solutionsService.GetSolutionOverview(solutionId);
-            if (solution is null)
+            var item = await solutionsService.GetSolutionOverview(solutionId);
+            if (item is null)
                 return BadRequest($"No Catalogue Item found for Id: {solutionId}");
 
-            return View(new SolutionSupplierDetailsModel(solution));
+            return View(new SolutionSupplierDetailsModel(item));
         }
     }
 }

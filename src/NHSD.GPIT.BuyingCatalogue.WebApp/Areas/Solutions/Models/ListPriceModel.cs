@@ -7,14 +7,13 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models
     public sealed class ListPriceModel : SolutionDisplayBaseModel
     {
         public ListPriceModel()
+            : base()
         {
         }
 
         public ListPriceModel(CatalogueItem item)
+            : base(item)
         {
-            SolutionId = item.Id;
-            SolutionName = item.Name;
-
             FlatListPrices = item.CataloguePrices.Select(cp => new PriceViewModel(cp)).ToList();
         }
 

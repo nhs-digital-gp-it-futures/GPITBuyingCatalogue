@@ -13,6 +13,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models
         }
 
         public InteroperabilityModel(CatalogueItem catalogueItem)
+            : base(catalogueItem)
         {
             if (catalogueItem is null)
                 throw new ArgumentNullException(nameof(catalogueItem));
