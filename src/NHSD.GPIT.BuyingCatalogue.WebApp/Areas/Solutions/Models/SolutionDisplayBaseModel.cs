@@ -15,6 +15,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models
         private const string KeyDescription = "Description";
 
         private static readonly string ControllerName = typeof(SolutionsController).ControllerName();
+
         private static readonly List<Func<CatalogueItem, bool>> ShowSectionFunctions = new()
         {
             { _ => true },
@@ -134,6 +135,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models
         {
             SolutionId = catalogueItem.Id;
             SolutionName = catalogueItem.Name;
+            PublicationStatus = catalogueItem.PublishedStatus;
 
             SetVisibleSections(catalogueItem);
             SetPaginationFooter();
@@ -152,6 +154,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models
         public CatalogueItemId SolutionId { get; set; }
 
         public string SolutionName { get; set; }
+
+        public PublicationStatus PublicationStatus { get; }
 
         public virtual IList<SectionModel> GetSections()
         {
@@ -181,6 +185,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models
         }
 
         public void SetShowTrue(int index) => sections[index].Show = true;
+
+        public bool IsInRemediation() => PublicationStatus == PublicationStatus.InRemediation;
 
         private void SetVisibleSections(CatalogueItem solution)
         {

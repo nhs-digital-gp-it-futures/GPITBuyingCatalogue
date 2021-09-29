@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using AutoFixture.Xunit2;
 using FluentAssertions;
 using Moq;
+using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.Test.Framework.AutoFixtureCustomisations;
@@ -145,6 +147,21 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Models
 
             model.VerifyGet(m => m.Section);
             actual.Should().Be(expected);
+        }
+
+        [Theory]
+        [CommonInlineAutoData(PublicationStatus.Published, false)]
+        [CommonInlineAutoData(PublicationStatus.InRemediation, true)]
+        public static void IsInRemediation(
+            PublicationStatus publicationStatus,
+            bool expected,
+            CatalogueItem item)
+        {
+            item.PublishedStatus = publicationStatus;
+
+            var model = new TestSolutionDisplayBaseModel(item);
+
+            model.IsInRemediation().Should().Be(expected);
         }
     }
 }

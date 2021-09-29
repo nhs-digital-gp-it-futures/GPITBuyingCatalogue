@@ -1,10 +1,13 @@
-﻿namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models
+﻿using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
+
+namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models
 {
     public class SolutionFeaturesModel : SolutionDisplayBaseModel
     {
-        public SolutionFeaturesModel(string[] features)
+        public SolutionFeaturesModel(CatalogueItem item)
+            : base(item)
         {
-            Features = features;
+            Features = item.Features();
         }
 
         public string[] Features { get; }
