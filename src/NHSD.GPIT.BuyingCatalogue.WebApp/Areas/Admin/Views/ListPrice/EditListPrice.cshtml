@@ -19,7 +19,7 @@
             <input type="hidden" asp-for="SolutionName" />
             <input type="hidden" asp-for="BackLinkText" />
             <input type="hidden" asp-for="BackLink" />
-            <nhs-fieldset-form-label id="@nameof(Model.SelectedProvisioningType)" asp-for="@Model" label-text="Provisioning Type">
+            <nhs-fieldset-form-label id="@nameof(Model.SelectedProvisioningType)" asp-for="@Model" label-text="Provisioning type">
                 <nhs-radio-button-container>
                     @{
                         var provisioningTypes = new SelectList(EditListPriceModel.ProvisioningTypeListItems, "Value", "Text").ToList();
@@ -61,7 +61,7 @@
 
             <nhs-input asp-for="Unit"
                        label-text="Unit"
-                       label-hint="For example, per day, per practice, per patient per year." />
+                       label-hint="For example, per consultation, per practice, per licence." />
 
             <nhs-textarea asp-for="UnitDefinition"
                           label-text="Unit definition (optional)"
