@@ -8,6 +8,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models
     public class CapabilitiesViewModel : SolutionDisplayBaseModel, INoNavModel
     {
         public CapabilitiesViewModel(CatalogueItem solution)
+            : base(solution)
         {
             RowViewModels = solution.CatalogueItemCapabilities.Select(cic => new RowViewModel(cic)).ToList();
         }

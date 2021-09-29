@@ -130,7 +130,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models
             LastReviewed = solution.LastUpdated;
         }
 
-        private SolutionDisplayBaseModel(CatalogueItem catalogueItem)
+        protected SolutionDisplayBaseModel(CatalogueItem catalogueItem)
         {
             SolutionId = catalogueItem.Id;
             SolutionName = catalogueItem.Name;
