@@ -6,5 +6,7 @@
 
 <div data-test-id="enable-user-confirmation-page">
     <partial name="Partials/_BackLink" model="Model" />
-    <nhs-page-title title="@ViewData["Title"]" advice="The user account has been successfully reactivated." />
+    <nhs-page-title title="@ViewData["Title"]"
+                    caption="@Model.Organisation.Name"
+                    advice="The user account has been successfully reactivated." />
 </div>

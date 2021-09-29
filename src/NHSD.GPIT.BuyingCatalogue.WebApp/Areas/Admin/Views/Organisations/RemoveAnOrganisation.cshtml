@@ -7,14 +7,17 @@
     <partial name="Partials/_BackLink" model="Model" />
     <div class="nhsuk-grid-row">
         <div class="nhsuk-grid-column-two-thirds">
-            <nhs-page-title title="Remove organisation" advice="This organisation will no longer be able to act on behalf of @Model.RelatedOrganisation.Name." />
+            <nhs-page-title title="Remove organisation"
+                            caption="@Model.CurrentOrganisation.Name"
+                            advice="This organisation will no longer be able to act on behalf of @Model.RelatedOrganisation.Name." />
             <form method="POST">
                 <input type="hidden" asp-for="@Model.RelatedOrganisation.Id" />
-                <input type="hidden" asp-for="@Model.OrganisationId" />
+                <input type="hidden" asp-for="@Model.CurrentOrganisation.Id" />
+                <input type="hidden" asp-for="@Model.CurrentOrganisation.Name" />
                 <div data-test-id="submit-button">
                     <nhs-submit-button text="Remove organisation" />
                 </div>
-                <a asp-area="Admin" asp-controller="Organisations" asp-action="Details" asp-route-organisationId="@Model.OrganisationId">Cancel</a>
+                <a asp-area="Admin" asp-controller="Organisations" asp-action="Details" asp-route-organisationId="@Model.CurrentOrganisation.Id">Cancel</a>
             </form>
         </div>
     </div>

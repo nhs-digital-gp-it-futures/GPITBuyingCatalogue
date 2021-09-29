@@ -5,7 +5,9 @@
 
 <div data-test-id="edit-organisation-page">
     <partial name="Partials/_BackLink" model="Model" />
-    <nhs-page-title title="Edit @Model.Organisation.Name" advice="Change the Organisation End User Agreement status for this organisation." />
+    <nhs-page-title title="Edit End User Agreement status" 
+                    caption="@Model.Organisation.Name"
+                    advice="Change the Organisation End User Agreement status for this organisation." />
     <nhs-summary-list>
         <nhs-summary-list-row label-text="ODS code">
             <p>

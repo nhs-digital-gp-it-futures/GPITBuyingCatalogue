@@ -10,10 +10,12 @@
         </div>
         <div class="nhsuk-grid-column-full">
             <nhs-page-title title="@ViewData["Title"]"
+                            caption="@Model.SolutionName"
                             advice="Let buyers know about any hardware requirements for your Catalogue Solution." />
             <form method="post">
                 <input type="hidden" asp-for="@Model.SolutionId" />
                 <input type="hidden" asp-for="@Model.BackLink" />
+                <input type="hidden" asp-for="@Model.SolutionName" />
                 <nhs-textarea asp-for="Description"
                               label-text="Hardware requirements (optional)"
                               label-hint="Provide information on any additional hardware that is required for your mobile or tablet Catalogue Solution to function." />

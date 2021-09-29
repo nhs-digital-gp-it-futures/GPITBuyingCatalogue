@@ -11,6 +11,7 @@
             <div class="nhsuk-grid-column-two-thirds">
                 <nhs-validation-summary RadioId="SelectedApplicationType"/>
                 <nhs-page-title title="Add an application type"
+                                caption="@Model.SolutionName"
                                 advice="@(anyApplicationTypes ? "Select an application type that supports your Catalogue Solution. You can add other options later." : "All application types already added.")" />
                 <form method="post">
                     <input type="hidden" asp-for="@Model.ApplicationTypesAvailableForSelection" value="@anyApplicationTypes" />

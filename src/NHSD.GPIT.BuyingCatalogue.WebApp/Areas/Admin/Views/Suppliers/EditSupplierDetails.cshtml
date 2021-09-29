@@ -1,13 +1,14 @@
 ﻿@model NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.SupplierModels.EditSupplierDetailsModel
 @{
-    ViewData["Title"] = Model.Title;
+    ViewData["Title"] = "Supplier details";
 }
 
 <partial name="Partials/_BackLink" model="Model" />
 <div class="nhsuk-grid-row">
     <div class="nhsuk-grid-column-two-thirds">
         <nhs-validation-summary />
-        <nhs-page-title title="@Model.Title"
+        <nhs-page-title title="@ViewData["Title"]"
+                        caption="@Model.SupplierName"
                         advice="Provide the following details about the supplier." />
 
         <form method="post">
@@ -26,6 +27,7 @@
 
             <input type="hidden" asp-for="BackLink"/>
             <input type="hidden" asp-for="BackLinkText" />
+            <input type="hidden" asp-for="SupplierDisplayName" />
 
             <nhs-submit-button text="Save and continue"/>
         </form>

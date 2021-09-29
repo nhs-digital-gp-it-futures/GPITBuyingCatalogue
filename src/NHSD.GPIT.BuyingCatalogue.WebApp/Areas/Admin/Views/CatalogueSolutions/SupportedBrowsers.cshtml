@@ -11,10 +11,12 @@
         <div class="nhsuk-grid-column-full">
             <nhs-validation-summary RadioId="MobileResponsive"/>
             <nhs-page-title title="Browser-based application – supported browsers"
+                            caption="@Model.SolutionName"
                             advice="Let buyers know which types of browser will work with your Catalogue Solution." />
             <form method="post">
                 <input type="hidden" asp-for="@Model.SolutionId" />
                 <input type="hidden" asp-for="@Model.BackLink" />
+                <input type="hidden" asp-for="@Model.SolutionName" />
                 <nhs-fieldset-form-label asp-for="@Model"
                                          label-text="Supported browser types"
                                          label-hint="Select all the types of browser that are supported by your Catalogue Solution.">

@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
+using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Models;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.InteroperabilityModels
@@ -25,11 +25,14 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.InteroperabilityMo
             };
         }
 
-        public AddGpConnectIntegrationModel(CatalogueItemId solutionId)
+        public AddGpConnectIntegrationModel(CatalogueItem solution)
             : this()
         {
-            BackLink = $"/admin/catalogue-solutions/manage/{solutionId}/interoperability";
+            BackLink = $"/admin/catalogue-solutions/manage/{solution.Id}/interoperability";
+            SolutionName = solution.Name;
         }
+
+        public string SolutionName { get; }
 
         public IEnumerable<object> IntegrationTypes { get; }
 

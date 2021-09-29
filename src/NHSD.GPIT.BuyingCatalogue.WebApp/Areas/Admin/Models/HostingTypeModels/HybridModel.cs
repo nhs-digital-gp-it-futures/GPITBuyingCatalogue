@@ -9,12 +9,13 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.HostingTypeModels
         {
         }
 
-        public HybridModel(HybridHostingType model)
+        public HybridModel(CatalogueItem solution)
+            : base(solution)
         {
-            Summary = model?.Summary;
-            Link = model?.Link;
-            RequiresHscn = model?.RequiresHscn;
-            HostingModel = model?.HostingModel;
+            Summary = solution.Solution.Hosting?.HybridHostingType?.Summary;
+            Link = solution.Solution.Hosting?.HybridHostingType?.Link;
+            RequiresHscn = solution.Solution.Hosting?.HybridHostingType?.RequiresHscn;
+            HostingModel = solution.Solution.Hosting?.HybridHostingType?.HostingModel;
         }
 
         [Required]
