@@ -8,10 +8,15 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.SupplierModels
     {
         public EditContactModel()
         {
-            Title = "Add a contact";
         }
 
-        public EditContactModel(SupplierContact contact)
+        public EditContactModel(Supplier supplier)
+        {
+            Title = "Add a contact";
+            SupplierName = supplier.Name;
+        }
+
+        public EditContactModel(SupplierContact contact, Supplier supplier)
         {
             ContactId = contact.Id;
             SupplierId = contact.SupplierId;
@@ -21,7 +26,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.SupplierModels
             PhoneNumber = contact.PhoneNumber;
             Department = contact.Department;
 
-            Title = $"{FirstName} {LastName} details";
+            Title = $"{FirstName} {LastName} contact details";
+            SupplierName = supplier.Name;
         }
 
         public int ContactId { get; }
@@ -50,5 +56,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.SupplierModels
         public string Department { get; init; }
 
         public string Title { get; }
+
+        public string SupplierName { get; }
     }
 }

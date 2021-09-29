@@ -9,13 +9,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.SupplierModels
     {
         public EditSupplierModel()
         {
-            Title = "Supplier information";
         }
 
         public EditSupplierModel(Supplier supplier)
         {
-            Title = $"{supplier.Name} information";
-
             DetailsStatus =
                 !string.IsNullOrWhiteSpace(supplier.Name)
                 && !string.IsNullOrWhiteSpace(supplier.LegalName);
@@ -41,8 +38,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.SupplierModels
         public bool AddressStatus { get; }
 
         public bool ContactsStatus { get; }
-
-        public string Title { get; }
 
         public int SupplierId { get; }
 

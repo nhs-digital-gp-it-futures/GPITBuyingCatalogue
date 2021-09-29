@@ -75,10 +75,11 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Organisations
 
         public async Task<List<Organisation>> GetUnrelatedOrganisations(int organisationId)
         {
-            // TODO - should be able to combine this into a single query
-            var allOrganisations = await GetAllOrganisations();
-            var relatedOrganisations = await GetRelatedOrganisations(organisationId);
-            return allOrganisations.Where(o => relatedOrganisations.All(ro => ro.Id != o.Id)).OrderBy(o => o.Name).ToList();
+            return await dbContext.Organisations
+                 .Where(o =>
+                    o.Id != organisationId
+                    && !o.RelatedOrganisationRelatedOrganisationNavigations.Any(roron => roron.OrganisationId == organisationId))
+                 .ToListAsync();
         }
 
         public async Task<List<Organisation>> GetRelatedOrganisations(int organisationId)

@@ -18,6 +18,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.ListPriceModels
         {
             SolutionId = catalogueItem.Id;
             SolutionName = catalogueItem.Name;
+            Title = "Add list price";
         }
 
         public EditListPriceModel(CatalogueItem catalogueItem, CataloguePrice cataloguePrice)
@@ -28,6 +29,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.ListPriceModels
             Unit = cataloguePrice.PricingUnit.Description;
             UnitDefinition = cataloguePrice.PricingUnit.Definition;
             SelectedProvisioningType = cataloguePrice.ProvisioningType;
+            Title = "Edit list price";
 
             if (cataloguePrice.ProvisioningType == ProvisioningType.Declarative)
             {
@@ -87,5 +89,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.ListPriceModels
                 ProvisioningType.OnDemand when OnDemandTimeUnit.HasValue => OnDemandTimeUnit.Value,
                 _ => null,
             };
+
+        public string Title { get; }
     }
 }

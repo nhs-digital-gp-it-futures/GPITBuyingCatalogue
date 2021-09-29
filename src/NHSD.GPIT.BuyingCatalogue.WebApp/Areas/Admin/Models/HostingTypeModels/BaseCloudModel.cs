@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Models;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.HostingTypeModels
@@ -10,6 +11,14 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.HostingTypeModels
             BackLink = "./";
             BackLinkText = "Go back";
         }
+
+        public BaseCloudModel(CatalogueItem solution)
+            : this()
+        {
+            SolutionName = solution.Name;
+        }
+
+        public string SolutionName { get; }
 
         [StringLength(1000)]
         [Url]

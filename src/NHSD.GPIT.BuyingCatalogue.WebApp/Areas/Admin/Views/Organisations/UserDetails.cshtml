@@ -7,13 +7,9 @@
 <partial name="Partials/_BackLink" model="Model" />
 <div class="nhsuk-grid-row" data-test-id="view-user-page">
     <div class="nhsuk-grid-column-two-thirds">
-        <nhs-page-title title="@Model.User.GetDisplayName() details" />
+        <nhs-page-title title="@Model.User.GetDisplayName() details"
+                        caption="@Model.Organisation.Name"/>
         <nhs-summary-list>
-            <nhs-summary-list-row label-text="Organisation name">
-                <p data-test-id="organisation-name">
-                    @Model.Organisation.Name
-                </p>
-            </nhs-summary-list-row>
             <nhs-summary-list-row label-text="Name">
                 <p data-test-id="user-name">
                     @Model.User.GetDisplayName()

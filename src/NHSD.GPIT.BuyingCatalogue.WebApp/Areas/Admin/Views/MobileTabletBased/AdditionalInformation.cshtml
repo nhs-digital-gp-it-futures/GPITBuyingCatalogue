@@ -12,10 +12,12 @@
         <div class="nhsuk-grid-column-full">
             <nhs-validation-summary />
             <nhs-page-title title="@ViewData["Title"]"
+                            caption="@Model.SolutionName"
                             advice="Let buyers know any additional information about your Catalogue Solution." />
             <form method="post">
                 <input type="hidden" asp-for="@Model.SolutionId" />
                 <input type="hidden" asp-for="@Model.BackLink" />
+                <input type="hidden" asp-for="@Model.SolutionName" />
                 <nhs-textarea asp-for="AdditionalInformation"
                               label-text="Additional information (optional)"
                               label-hint="Provide additional information about your mobile or tablet Catalogue Solution." />

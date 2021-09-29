@@ -9,12 +9,13 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.HostingTypeModels
         {
         }
 
-        public OnPremiseModel(OnPremise model)
+        public OnPremiseModel(CatalogueItem solution)
+            : base(solution)
         {
-            Summary = model?.Summary;
-            Link = model?.Link;
-            RequiresHscn = model?.RequiresHscn;
-            HostingModel = model?.HostingModel;
+            Summary = solution.Solution.Hosting?.OnPremise?.Summary;
+            Link = solution.Solution.Hosting?.OnPremise?.Link;
+            RequiresHscn = solution.Solution.Hosting?.OnPremise?.RequiresHscn;
+            HostingModel = solution.Solution.Hosting?.OnPremise?.HostingModel;
         }
 
         [Required]

@@ -63,7 +63,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
             if (solution is null)
                 return BadRequest($"No Solution found for Id: {solutionId}");
 
-            return View(new AddIm1IntegrationModel(solutionId));
+            return View(new AddIm1IntegrationModel(solution));
         }
 
         [HttpPost("manage/{solutionId}/interoperability/add-im1-integration")]
@@ -94,7 +94,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
             if (solution is null)
                 return BadRequest($"No Solution found for Id: {solutionId}");
 
-            return View(new AddGpConnectIntegrationModel(solutionId));
+            return View(new AddGpConnectIntegrationModel(solution));
         }
 
         [HttpPost("manage/{solutionId}/interoperability/add-gp-connect-integration")]
