@@ -585,12 +585,11 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Controllers
         [CommonAutoData]
         public static async Task Get_HostingType_ValidSolutionForId_ReturnsExpectedViewResult(
             CatalogueItemId id,
-            [Frozen] Solution solution,
             CatalogueItem catalogueItem,
             [Frozen] Mock<ISolutionsService> solutionsServiceMock,
             SolutionsController controller)
         {
-            var expectedModel = new HostingTypesModel(solution.Hosting);
+            var expectedModel = new HostingTypesModel(catalogueItem);
             solutionsServiceMock.Setup(s => s.GetSolutionOverview(id)).ReturnsAsync(catalogueItem);
 
             var actual = (await controller.HostingType(id)).As<ViewResult>();

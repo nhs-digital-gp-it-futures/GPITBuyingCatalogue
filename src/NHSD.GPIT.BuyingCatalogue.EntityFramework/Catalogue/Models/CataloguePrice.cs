@@ -44,7 +44,7 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models
 
         public string ToPriceUnitString()
         {
-            return $"{PricingUnit.Description} {TimeUnit.Value.Description()}".Trim();
+            return $"{PricingUnit?.Description ?? string.Empty} {(TimeUnit.HasValue ? TimeUnit.Value.Description() : string.Empty)}".Trim();
         }
     }
 }

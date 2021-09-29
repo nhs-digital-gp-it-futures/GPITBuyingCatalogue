@@ -160,15 +160,17 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp
             services.AddSingleton(domainNameSettings);
         }
 
-        public static void ConfigureConsentCookieSettings(this IServiceCollection services, IConfiguration configuration)
+        public static IServiceCollection ConfigureConsentCookieSettings(this IServiceCollection services, IConfiguration configuration)
         {
             var cookieExpiration = configuration.GetSection("cookieExpiration").Get<CookieExpirationSettings>();
             cookieExpiration.ConsentExpiration = configuration.GetValue<TimeSpan>(Cookies.BuyingCatalogueConsentExpiration);
 
             services.AddSingleton(cookieExpiration);
+
+            return services;
         }
 
-        public static void ConfigureValidationSettings(this IServiceCollection services, IConfiguration configuration)
+        public static IServiceCollection ConfigureValidationSettings(this IServiceCollection services, IConfiguration configuration)
         {
             var validationSettings = new ValidationSettings
             {
@@ -176,9 +178,11 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp
             };
 
             services.AddSingleton(validationSettings);
+
+            return services;
         }
 
-        public static void ConfigureCacheKeySettings(this IServiceCollection services, IConfiguration configuration)
+        public static IServiceCollection ConfigureCacheKeySettings(this IServiceCollection services, IConfiguration configuration)
         {
             var filterCacheKeySettings = new FilterCacheKeySettings
             {
@@ -186,6 +190,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp
             };
 
             services.AddSingleton(filterCacheKeySettings);
+
+            return services;
         }
 
         public static void ConfigureIdentity(this IServiceCollection services)
@@ -215,10 +221,20 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp
             services.AddScoped<IPasswordResetCallback, PasswordResetCallback>();
         }
 
-        public static void ConfigureOrderMessageSettings(this IServiceCollection services, IConfiguration configuration)
+        public static IServiceCollection ConfigureAnalyticsSettings(this IServiceCollection services, IConfiguration configuration)
+        {
+            var analyticsSettings = configuration.GetSection(AnalyticsSettings.Key).Get<AnalyticsSettings>();
+            services.AddSingleton(analyticsSettings);
+
+            return services;
+        }
+
+        public static IServiceCollection ConfigureOrderMessageSettings(this IServiceCollection services, IConfiguration configuration)
         {
             var orderMessageSettings = configuration.GetSection("orderMessage").Get<OrderMessageSettings>();
             services.AddSingleton(orderMessageSettings);
+
+            return services;
         }
 
         public static void ConfigureRegistration(this IServiceCollection services, IConfiguration configuration)
