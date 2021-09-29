@@ -58,6 +58,12 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.ListPriceModels
 
         public string SolutionName { get; init; }
 
+        public ProvisioningType? SelectedProvisioningType { get; init; }
+
+        public TimeUnit? DeclarativeTimeUnit { get; init; }
+
+        public TimeUnit? OnDemandTimeUnit { get; init; }
+
         public decimal? Price { get; init; }
 
         [StringLength(100)]
@@ -65,12 +71,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.ListPriceModels
 
         [StringLength(1000)]
         public string UnitDefinition { get; init; }
-
-        public ProvisioningType? SelectedProvisioningType { get; init; }
-
-        public TimeUnit? DeclarativeTimeUnit { get; init; }
-
-        public TimeUnit? OnDemandTimeUnit { get; init; }
 
         public PricingUnit GetPricingUnit()
             => new()
