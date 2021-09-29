@@ -48,12 +48,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Validators
                 .WithMessage(TimeUnitErrorMessage)
                 .When(p => Equals(p.SelectedProvisioningType, ProvisioningType.Declarative));
 
-            RuleFor(p => p.OnDemandTimeUnit)
-                .Cascade(CascadeMode.Stop)
-                .NotNull()
-                .WithMessage(TimeUnitErrorMessage)
-                .When(p => Equals(p.SelectedProvisioningType, ProvisioningType.OnDemand));
-
             RuleFor(p => p)
                 .Cascade(CascadeMode.Stop)
                 .NotNull()
@@ -64,8 +58,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Validators
 
         private static bool TheModelIsPopulated(EditListPriceModel model)
             => model.Unit is not null
-               && model.SelectedProvisioningType.HasValue
-               && model.GetTimeUnit(model.SelectedProvisioningType.Value) is not null;
+               && model.SelectedProvisioningType.HasValue;
 
         private async Task<bool> NotBeDuplicateOfAnExistingPrice(
             EditListPriceModel model,
@@ -73,11 +66,16 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Validators
         {
             var catalogue = await solutionsService.GetSolution(model.SolutionId);
 
-            return !catalogue.CataloguePrices.Any(cp =>
-                  cp.PricingUnit.Description == model.Unit
-                  && cp.Price == model.Price
-                  && cp.ProvisioningType == model.SelectedProvisioningType!.Value
-                  && cp.TimeUnit == model.GetTimeUnit(model.SelectedProvisioningType!.Value));
+            var duplicatePrices = catalogue.DuplicateListPrices(
+                model.SelectedProvisioningType!.Value,
+                model.Price,
+                model.Unit,
+                model.GetTimeUnit(model.SelectedProvisioningType!.Value));
+
+            if (model.CataloguePriceId is not null)
+                duplicatePrices = duplicatePrices.Where(cp => cp.CataloguePriceId != model.CataloguePriceId);
+
+            return !duplicatePrices.Any();
         }
     }
 }
