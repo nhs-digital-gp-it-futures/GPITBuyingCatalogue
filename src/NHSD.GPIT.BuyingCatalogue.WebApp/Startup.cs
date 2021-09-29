@@ -70,13 +70,11 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp
 
             services.ConfigureIdentity();
 
-            services.ConfigureValidationSettings(Configuration);
-
-            services.ConfigureCacheKeySettings(Configuration);
-
-            services.ConfigureOrderMessageSettings(Configuration);
-
-            services.ConfigureConsentCookieSettings(Configuration);
+            services.ConfigureValidationSettings(Configuration)
+                .ConfigureCacheKeySettings(Configuration)
+                .ConfigureOrderMessageSettings(Configuration)
+                .ConfigureConsentCookieSettings(Configuration)
+                .ConfigureAnalyticsSettings(Configuration);
 
             services.ConfigureCookies(Configuration);
 
