@@ -12,6 +12,7 @@ WORKDIR /src
 COPY ["src/NHSD.GPIT.BuyingCatalogue.WebApp/NHSD.GPIT.BuyingCatalogue.WebApp.csproj", "src/NHSD.GPIT.BuyingCatalogue.WebApp/"]
 RUN dotnet restore "src/NHSD.GPIT.BuyingCatalogue.WebApp/NHSD.GPIT.BuyingCatalogue.WebApp.csproj"
 COPY . .
+RUN apt-get update && apt-get install -y nodejs
 WORKDIR "/src/src/NHSD.GPIT.BuyingCatalogue.WebApp"
 RUN dotnet build "NHSD.GPIT.BuyingCatalogue.WebApp.csproj" -c Release -o /app/build
 
