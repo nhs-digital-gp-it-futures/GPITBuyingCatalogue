@@ -1,14 +1,14 @@
 ﻿@model NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.AddSolutionModel
 @{
     Layout = "~/Views/Shared/Layouts/_NoBannersLayout.cshtml";
-    ViewData["Title"] = "Add a Solution page";
+    ViewBag.Title = "Add a Solution";
 }
 <partial name="Partials/_BackLink" model="Model"/>
 <div class="nhsuk-grid-row">
     <nhs-validation-summary RadioId="Frameworks[0].Selected"/>
 
     <div class="nhsuk-grid-column-two-thirds">
-        <nhs-page-title title="Add a solution"
+        <nhs-page-title title="@ViewBag.Title"
             advice="Provide the following information about your Catalogue Solution." />
 
         <h2>Solution details</h2>

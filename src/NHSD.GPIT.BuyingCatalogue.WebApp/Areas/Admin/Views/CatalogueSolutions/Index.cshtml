@@ -4,7 +4,7 @@
 @using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models
 @model NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.CatalogueSolutionsModel
 @{
-    ViewData["Title"] = "Manage Catalogue Solutions";
+    ViewBag.Title = "Manage Catalogue Solutions";
 
     ViewBag.HeadingTitles = new[] { "Solution ID", "Solution name", "Supplier", "Last updated", "Status", string.Empty, };
 }
@@ -21,7 +21,7 @@
 }
 <div class="nhsuk-grid-row">
     <div class="nhsuk-grid-column-full">
-        <nhs-page-title title="Manage Catalogue Solutions"
+        <nhs-page-title title="@ViewBag.Title"
                         advice="Add a new solution or edit one that's already been published." />
 
         <vc:nhs-action-link text="Add a solution"

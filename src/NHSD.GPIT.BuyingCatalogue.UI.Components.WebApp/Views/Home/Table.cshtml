@@ -1,9 +1,9 @@
 ﻿@model NHSD.GPIT.BuyingCatalogue.UI.Components.WebApp.Models.TableModel
 @{
-    ViewData["Title"] = "Tables";
+    ViewBag.Title = "Tables";
 }
 
-<nhs-page-title title="Tables"
+<nhs-page-title title="@ViewBag.Title"
                 caption="Tag Helper"
                 advice="Used for grouping different pieces of information into a single table of values"
                 additional-advice="This page is rendered from Table.cshtml using the TableModel.

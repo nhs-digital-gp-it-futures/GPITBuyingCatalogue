@@ -1,13 +1,13 @@
 ﻿@model NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.AdditionalServices.SelectFlatOnDemandQuantityModel;
 @{
-    ViewData["Title"] = Model.Title;
+    ViewBag.Title = Model.Title;
 }
 
 <div data-test-id="order-item-provisiontype-page">
     <partial name="Partials/_BackLink" model="Model" />
     <div class="nhsuk-grid-row">
         <nhs-validation-summary RadioId="EstimationPeriod"/>
-        <nhs-page-title title="Quantity of @Model.SolutionName for @Model.CallOffId"
+        <nhs-page-title title="@ViewBag.Title"
                         advice="Enter the quantity you think you'll need and over what period" />
         <div class="nhsuk-grid-column-full">
             <form method="post">

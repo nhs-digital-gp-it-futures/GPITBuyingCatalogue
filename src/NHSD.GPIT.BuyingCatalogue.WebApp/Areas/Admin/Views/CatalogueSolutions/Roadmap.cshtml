@@ -1,6 +1,6 @@
 ﻿@model NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.RoadmapModel
 @{
-    ViewData["Title"] = "Manage development plans";
+    ViewBag.Title = "Development plans";
 }
 
 <vc:nhs-backlink text="Go back"
@@ -10,7 +10,7 @@
 <div class="nhsuk-grid-row">
     <div class="nhsuk-grid-column-two-thirds">
 
-        <nhs-page-title title="Development plans"
+        <nhs-page-title title="@ViewBag.Title"
             caption="@Model.SolutionName"
             advice="Let buyers know about any future development plans for your Catalogue Solution."/>
 

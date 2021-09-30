@@ -1,9 +1,9 @@
 ﻿@model NHSD.GPIT.BuyingCatalogue.UI.Components.WebApp.Models.ButtonsModel
 @{
-    ViewData["Title"] = "Buttons";
+    ViewBag.Title = "Buttons";
 }
 
-<nhs-page-title title="Buttons"
+<nhs-page-title title="@ViewBag.Title"
                 advice="Use buttons to help users carry out an action on a page like starting an application or saving their progress."
                 caption="View Components"
                 additional-advice="This page is rendered from Buttons.cshtml using the ButtonsModel" />

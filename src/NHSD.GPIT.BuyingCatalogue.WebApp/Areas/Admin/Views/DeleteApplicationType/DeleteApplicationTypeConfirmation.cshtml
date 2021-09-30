@@ -1,6 +1,6 @@
 ﻿@model NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.DeleteApplicationTypeModels.DeleteApplicationTypeConfirmationModel;
 @{
-    ViewData["Title"] = $"Delete {Model.ApplicationType} application?";
+    ViewBag.Title = $"Delete {Model.ApplicationType} application?";
 }
 
 <div class="nhsuk-width-container">
@@ -11,12 +11,10 @@
 
         <div class="nhsuk-grid-column-full">
             <nhs-validation-summary />
-            <nhs-page-title title="@ViewData["Title"]"
+            <nhs-page-title title="@ViewBag.Title"
+                            caption="@Model.SolutionName"
                             advice="Confirm you want to delete this client application type" />
             <form method="post">
-                <input type="hidden" asp-for="@Model.BackLink" />
-                <input type="hidden" asp-for="@Model.BackLinkText" />
-                <input type="hidden" asp-for="@Model.ApplicationType" />
                 <nhs-submit-button text="Delete application type" />
                 <vc:nhs-backlink url="@Model.BackLink" text="Cancel" />
             </form>

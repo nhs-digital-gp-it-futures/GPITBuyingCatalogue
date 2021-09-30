@@ -231,7 +231,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
         {
             var supplier = await suppliersService.GetSupplier(supplierId);
 
-            var model = new EditContactModel
+            var model = new EditContactModel(supplier)
             {
                 BackLinkText = "Go back",
                 BackLink = Url.Action(
@@ -280,7 +280,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
 
             var contact = supplier.SupplierContacts.Single(sc => sc.Id == contactId);
 
-            var model = new EditContactModel(contact)
+            var model = new EditContactModel(contact, supplier)
             {
                 BackLinkText = "Go back",
                 BackLink = Url.Action(

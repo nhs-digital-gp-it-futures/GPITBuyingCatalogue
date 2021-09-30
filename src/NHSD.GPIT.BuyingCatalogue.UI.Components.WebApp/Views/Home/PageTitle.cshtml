@@ -1,9 +1,9 @@
 ﻿@model NHSD.GPIT.BuyingCatalogue.UI.Components.WebApp.Models.BlankModel
 @{
-    ViewData["Title"] = "Page Titles";
+    ViewBag.Title = "Page titles";
 }
 
-<nhs-page-title title="Page Titles"
+<nhs-page-title title="@ViewBag.Title"
                 caption="Tag Helper"
                 advice="Help users understand which page they're on"
                 additional-advice="This page is rendered from PageTitle.cshtml using the BlankModel." />

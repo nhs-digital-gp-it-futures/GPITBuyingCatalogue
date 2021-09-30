@@ -23,9 +23,14 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
         }
 
         [HttpGet("manage/{solutionId}/client-application-type/delete/{applicationType}")]
-        public IActionResult DeleteApplicationTypeConfirmation(CatalogueItemId solutionId, ClientApplicationType applicationType)
+        public async Task<IActionResult> DeleteApplicationTypeConfirmation(CatalogueItemId solutionId, ClientApplicationType applicationType)
         {
-            return View(new DeleteApplicationTypeConfirmationModel(solutionId, applicationType));
+            var solution = await solutionsService.GetSolution(solutionId);
+
+            if (solution is null)
+                return BadRequest($"No Solution found for Id: {solutionId}");
+
+            return View(new DeleteApplicationTypeConfirmationModel(solution, applicationType));
         }
 
         [HttpPost("manage/{solutionId}/client-application-type/delete/{applicationType}")]

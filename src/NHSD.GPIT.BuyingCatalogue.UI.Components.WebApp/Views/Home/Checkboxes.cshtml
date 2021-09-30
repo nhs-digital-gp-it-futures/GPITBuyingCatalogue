@@ -1,9 +1,9 @@
 ﻿@model NHSD.GPIT.BuyingCatalogue.UI.Components.WebApp.Models.CheckBoxModel
 @{
-    ViewData["Title"] = "Checkboxes";
+    ViewBag.Title = "Checkboxes";
 }
 
-<nhs-page-title title="Checkboxes"
+<nhs-page-title title="@ViewBag.Title"
                 advice="Use buttons to help users carry out an action on a page like starting an application or saving their progress."
                 caption="Tag Helpers"
                 additional-advice="This page is rendered from Checkboxes.cshtml using the CheckBoxModel.

@@ -233,7 +233,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
             if (catalogueItem is null)
                 return BadRequest($"No Solution found for Id: {solutionId}");
 
-            var model = new PublicCloudModel(catalogueItem.Solution.Hosting?.PublicCloud);
+            var model = new PublicCloudModel(catalogueItem);
             return View(model);
         }
 
@@ -258,7 +258,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
             if (catalogueItem is null)
                 return BadRequest($"No Solution found for Id: {solutionId}");
 
-            var model = new PrivateCloudModel(catalogueItem.Solution.Hosting?.PrivateCloud);
+            var model = new PrivateCloudModel(catalogueItem);
             return View(model);
         }
 
@@ -283,7 +283,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
             if (catalogueItem is null)
                 return BadRequest($"No Solution found for Id: {solutionId}");
 
-            var model = new HybridModel(catalogueItem.Solution.Hosting?.HybridHostingType);
+            var model = new HybridModel(catalogueItem);
             return View(model);
         }
 
@@ -308,7 +308,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
             if (catalogueItem is null)
                 return BadRequest($"No Solution found for Id: {solutionId}");
 
-            var model = new OnPremiseModel(catalogueItem.Solution.Hosting?.OnPremise);
+            var model = new OnPremiseModel(catalogueItem);
             return View(model);
         }
 

@@ -1,7 +1,7 @@
 ﻿@using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models
 @model NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.AssociatedServices.SelectAssociatedServiceModel;
 @{
-    ViewData["Title"] = Model.Title;
+    ViewBag.Title = Model.Title;
 }
 
 <div data-test-id="associated-service-select-page">
@@ -9,7 +9,8 @@
     <div class="nhsuk-grid-row">
         <div class="nhsuk-grid-column-two-thirds">
             <nhs-validation-summary RadioId="SelectedSolutionId"/>
-            <nhs-page-title title="@Model.Title" advice="These are the Associated Services provided by this supplier. Select the one you want to purchase from the list." />
+            <nhs-page-title title="@ViewBag.Title"
+                            advice="These are the Associated Services provided by this supplier. Select the one you want to purchase from the list." />
             <form method="post">
                 <input type="hidden" asp-for="@Model.BackLink" />
                 <input type="hidden" asp-for="@Model.BackLinkText" />

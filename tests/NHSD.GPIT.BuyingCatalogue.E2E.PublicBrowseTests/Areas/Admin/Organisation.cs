@@ -109,7 +109,6 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin
             await using var context = GetEndToEndDbContext();
             var organisationName = (await context.Organisations.SingleAsync(s => s.Id == OrganisationId)).Name;
 
-            AdminPages.UserDetails.GetOrganisationName().Should().BeEquivalentTo(organisationName);
             AdminPages.UserDetails.GetUserName().Should().BeEquivalentTo($"{user.FirstName} {user.LastName}");
             AdminPages.UserDetails.GetContactDetails().Should().BeEquivalentTo(user.PhoneNumber);
             AdminPages.UserDetails.GetEmailAddress().Should().BeEquivalentTo(user.Email);

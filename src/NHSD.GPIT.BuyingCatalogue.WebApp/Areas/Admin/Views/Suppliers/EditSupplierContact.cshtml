@@ -3,18 +3,18 @@
 
 @model NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.SupplierModels.EditContactModel
 @{
-    ViewData["Title"] = Model.Title;
+    ViewBag.Title = Model.Title;
 }
 
 <partial name="Partials/_BackLink" model="Model" />
 <div class="nhsuk-grid-row">
     <div class="nhsuk-grid-column-two-thirds">
         <nhs-validation-summary />
+        <nhs-page-title title="@ViewBag.Title"
+                        caption="@Model.SupplierName"
+                        advice="Provide information for this contact." />
         <form method="post">
-            <nhs-fieldset-form-container asp-for="@Model"
-                                         label-text="@Model.Title"
-                                         label-hint="Provide information for this contact."
-                                         size="ExtraLarge">
+            <nhs-fieldset-form-container asp-for="@Model">
                 <nhs-input asp-for="FirstName"
                            label-text="First name" />
                 <nhs-input asp-for="LastName"
@@ -29,6 +29,8 @@
             <br />
             <input type="hidden" asp-for="BackLink" />
             <input type="hidden" asp-for="BackLinkText" />
+            <input type="hidden" asp-for="SupplierName" />
+            <input type="hidden" asp-for="Title" />
             <nhs-submit-button text="Save and continue" />
         </form>
         @if (Model.ContactId > 0)

@@ -1,6 +1,6 @@
 ﻿@model NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.OrderingParty.OrderingPartyModel;
 @{
-    ViewData["Title"] = Model.Title;
+    ViewBag.Title = Model.Title;
 }
 
 <div data-test-id="ordering-party-page">
@@ -14,7 +14,8 @@
                 <input type="hidden" asp-for="@Model.Title" />
                 <input type="hidden" asp-for="@Model.OrganisationName" />
                 <nhs-validation-summary />
-                <nhs-page-title title="@Model.Title" advice="Check the organisation information and edit details for the primary contact for this order." />
+                <nhs-page-title title="@ViewBag.Title"
+                                advice="Check the organisation information and edit details for the primary contact for this order." />
 
                 <nhs-summary-list>
                     <nhs-summary-list-row label-text="Organisation name">

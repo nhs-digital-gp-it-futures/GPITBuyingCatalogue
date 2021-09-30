@@ -1,9 +1,9 @@
 ﻿@model NHSD.GPIT.BuyingCatalogue.UI.Components.WebApp.Models.BlankModel
 @{
-    ViewData["Title"] = "Details and Expanders";
+    ViewBag.Title = "Details and Expanders";
 }
 
-<nhs-page-title title="Details and Expanders"
+<nhs-page-title title="@ViewBag.Title"
                 caption="Tag Helper"
                 advice="Make a complex topic easier to digest by letting users reveal more detailed information only if they need it."
                 additional-advice="This page is rendered from DetailsAndExpanders.cshtml using the BlankModel." />

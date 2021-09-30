@@ -18,7 +18,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models
             BackLinkText = "Go back";
             ClientApplication = catalogueItem?.Solution?.GetClientApplication() ?? new ClientApplication();
             SolutionId = catalogueItem?.Id;
+            SolutionName = catalogueItem?.Name;
         }
+
+        public string SolutionName { get; }
 
         public ClientApplication ClientApplication { get; set; }
 

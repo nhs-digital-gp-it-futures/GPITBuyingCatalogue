@@ -1,13 +1,14 @@
 ﻿@model NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.AdditionalServices.SelectFlatDeclarativeQuantityModel;
 @{
-    ViewData["Title"] = Model.Title;
+    ViewBag.Title = Model.Title;
 }
 
 <div data-test-id="order-item-provisiontype-page">
     <partial name="Partials/_BackLink" model="Model" />
     <div class="nhsuk-grid-row">
         <nhs-validation-summary />
-        <nhs-page-title title="@Model.Title" advice="Enter the total amount you think you'll need." />
+        <nhs-page-title title="@ViewBag.Title"
+                        advice="Enter the total amount you think you'll need." />
         <div class="nhsuk-grid-column-full">
             <form method="post">
                 <input type="hidden" asp-for="@Model.BackLink" />

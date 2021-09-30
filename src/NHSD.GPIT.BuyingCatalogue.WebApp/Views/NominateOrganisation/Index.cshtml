@@ -1,13 +1,14 @@
 ﻿@using NHSD.GPIT.BuyingCatalogue.WebApp.Models
 @{
-    ViewData["Title"] = "Buying Catalogue";
+    ViewBag.Title = "Nominate an organisation to create orders on your behalf";
     var backLinkModel = new NavBaseModel{ BackLink = "/", BackLinkText = "Go back" };
 }
 
 <partial name="Partials/_BackLink" model="@backLinkModel" />
 <div class="nhsuk-grid-row">
     <div class="nhsuk-grid-column-two-thirds">
-        <nhs-page-title title="Nominate an organisation to create orders on your behalf" advice="Get support procuring IT systems from the Buying Catalogue." />
+        <nhs-page-title title="@ViewBag.Title"
+                        advice="Get support procuring IT systems from the Buying Catalogue." />
         <p>
             You can nominate an organisation to create orders from the Buying Catalogue on your behalf using the link below.
         </p>
