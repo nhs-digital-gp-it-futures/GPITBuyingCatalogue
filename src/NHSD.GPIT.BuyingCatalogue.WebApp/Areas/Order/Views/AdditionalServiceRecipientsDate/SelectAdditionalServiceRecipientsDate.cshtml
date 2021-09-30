@@ -1,6 +1,6 @@
 ﻿@model NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.AdditionalServiceRecipientsDate.SelectAdditionalServiceRecipientsDateModel;
 @{
-    ViewData["Title"] = Model.Title;
+    ViewBag.Title = Model.Title;
 }
 
 <div data-test-id="planned-delivery-date-page">
@@ -10,7 +10,7 @@
         <div class="nhsuk-grid-column-two-thirds">
             <nhs-validation-summary />
 
-            <nhs-page-title title="@Model.Title"
+            <nhs-page-title title="@ViewBag.Title"
                             advice="The date entered will be applied to all the organisations you’ll be ordering for. We’ve included the commencement date for this Call-off Agreement, but if your planned delivery date is different, you can change it here."
                             additional-advice="You'll be able to alter the planned delivery date for individual organisations later if required." />
         </div>

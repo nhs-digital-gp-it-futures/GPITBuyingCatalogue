@@ -77,11 +77,11 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.ListPriceModels
         public string Title { get; init; }
 
         public PricingUnit GetPricingUnit()
-                    => new()
-                    {
-                        Description = Unit,
-                        Definition = UnitDefinition,
-                    };
+            => new()
+            {
+                Description = Unit,
+                Definition = UnitDefinition,
+            };
 
         public TimeUnit? GetTimeUnit(ProvisioningType provisioningType)
             => provisioningType switch

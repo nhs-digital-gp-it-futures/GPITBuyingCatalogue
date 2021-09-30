@@ -1,6 +1,6 @@
 ﻿@using NHSD.GPIT.BuyingCatalogue.WebApp.Models
 @{
-    ViewData["Title"] = "Buying Catalogue";
+    ViewBag.Title = "Privacy policy and cookies on the Buying Catalogue";
     var backLinkModel = new NavBaseModel{ BackLink = "/", BackLinkText = "Go back to homepage" };
 }
 
@@ -8,7 +8,8 @@
 
 <div class="nhsuk-grid-row">
     <div class="nhsuk-grid-column-two-thirds">
-        <nhs-page-title title="Privacy policy and cookies on the Buying Catalogue" advice="A description of the information NHS Digital collects as part of our operation of the Buying Catalogue website. We want you to understand why we hold and process this information, and your choices." />
+        <nhs-page-title title="@ViewBag.Title"
+                        advice="A description of the information NHS Digital collects as part of our operation of the Buying Catalogue website. We want you to understand why we hold and process this information, and your choices." />
 
         <p>This page covers the information we collect about you as part of our operation of the Buying Catalogue website. We want you to understand why we hold and process this information, and your choices.</p>
 

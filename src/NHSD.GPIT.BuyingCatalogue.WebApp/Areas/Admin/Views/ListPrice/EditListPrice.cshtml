@@ -4,14 +4,14 @@
 @model EditListPriceModel
 
 @{
-    ViewData["Title"] = Model.Title;
+    ViewBag.Title = Model.Title;
 }
 
 <partial name="Partials/_BackLink" model="Model" />
 <div class="nhsuk-grid-row">
     <div class="nhsuk-grid-column-two-thirds">
         <nhs-validation-summary />
-        <nhs-page-title title="@Model.Title"
+        <nhs-page-title title="@ViewBag.Title"
                         caption="@Model.SolutionName"
                         advice="Provide the following information about the pricing model for your Catalogue Solution." />
 

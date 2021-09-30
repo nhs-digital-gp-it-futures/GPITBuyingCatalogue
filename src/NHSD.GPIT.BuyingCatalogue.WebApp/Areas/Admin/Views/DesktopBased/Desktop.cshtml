@@ -2,7 +2,7 @@
 @using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers;
 @model NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.DesktopBasedModels.DesktopBasedModel
 @{
-    ViewData["Title"] = "Desktop application";
+    ViewBag.Title = "Desktop application";
 }
 
 <div class="nhsuk-width-container">
@@ -11,7 +11,7 @@
             <partial name="Partials/_BackLink" model="Model" />
         </div>
         <div class="nhsuk-grid-column-full">
-            <nhs-page-title title="Desktop application"
+            <nhs-page-title title="@ViewBag.Title"
                             caption="@Model.SolutionName"
                             advice="Provide information about your desktop Catalogue Solution." />
 

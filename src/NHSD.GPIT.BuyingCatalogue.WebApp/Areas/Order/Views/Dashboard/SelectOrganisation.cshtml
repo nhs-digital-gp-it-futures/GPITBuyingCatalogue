@@ -1,6 +1,6 @@
 ﻿@model NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.Dashboard.SelectOrganisationModel;
 @{
-    ViewData["Title"] = Model.Title;
+    ViewBag.Title = Model.Title;
 }
 
 <div data-test-id="organisation-select-page">
@@ -8,7 +8,8 @@
     <div class="nhsuk-grid-row">
         <div class="nhsuk-grid-column-two-thirds">
             <nhs-validation-summary RadioId="SelectedOrganisation" />
-            <nhs-page-title title="@Model.Title" advice="Select the organisation you want to act on behalf of." />
+            <nhs-page-title title="@ViewBag.Title"
+                            advice="Select the organisation you want to act on behalf of." />
         </div>
         <div class="nhsuk-grid-column-full">
             <form method="post">

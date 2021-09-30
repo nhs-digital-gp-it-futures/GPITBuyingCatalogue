@@ -1,6 +1,6 @@
 ﻿@model NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.BrowserBasedModels.AdditionalInformationModel;
 @{
-    ViewData["Title"] = "Browser-based application – additional information";
+    ViewBag.Title = "Browser-based application – additional information";
 }
 
 <div class="nhsuk-width-container">
@@ -11,7 +11,7 @@
 
         <div class="nhsuk-grid-column-full">
             <nhs-validation-summary />
-            <nhs-page-title title="Browser-based application – additional information"
+            <nhs-page-title title="@ViewBag.Title"
                             caption="@Model.SolutionName"
                             advice="Let buyers know any additional information about your Catalogue Solution." />
             <form method="post">

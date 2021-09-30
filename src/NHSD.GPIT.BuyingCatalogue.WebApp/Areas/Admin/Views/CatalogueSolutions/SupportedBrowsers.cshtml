@@ -1,6 +1,6 @@
 ﻿@model NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.BrowserBasedModels.SupportedBrowsersModel;
 @{
-    ViewData["Title"] = "Browser-based application – suppported browsers";
+    ViewBag.Title = "Browser-based application – suppported browsers";
 }
 
 <div class="nhsuk-width-container">
@@ -10,7 +10,7 @@
         </div>
         <div class="nhsuk-grid-column-full">
             <nhs-validation-summary RadioId="MobileResponsive"/>
-            <nhs-page-title title="Browser-based application – supported browsers"
+            <nhs-page-title title="@ViewBag.Title"
                             caption="@Model.SolutionName"
                             advice="Let buyers know which types of browser will work with your Catalogue Solution." />
             <form method="post">

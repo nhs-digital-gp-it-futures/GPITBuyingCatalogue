@@ -1,6 +1,6 @@
 ﻿@model NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.AddUserModel
 @{
-    ViewData["Title"] = "Add new user";
+    ViewBag.Title = "Add new user";
 }
 
 <div data-test-id="add-user-page">
@@ -8,7 +8,7 @@
     <div class="nhsuk-grid-row">
         <div class="nhsuk-grid-column-two-thirds">
             <nhs-validation-summary />
-            <nhs-page-title title="Add new user"
+            <nhs-page-title title="@ViewBag.Title"
                             caption="@Model.Organisation.Name"
                             advice="Provide the following information to make a new user account." />
             <form method="post">

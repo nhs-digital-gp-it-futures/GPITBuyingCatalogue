@@ -1,7 +1,7 @@
 ﻿@using System.Linq
 @model NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.HostingTypeModels.HostingTypeSelectionModel
 @{
-    ViewData["Title"] = "Add a Hosting Type page";
+    ViewBag.Title = "Add a Hosting Type";
     var anyHostingTypes = Model.HostingTypesToAdd.Any();
 }
 
@@ -9,7 +9,7 @@
 <div class="nhsuk-grid-row">
     <div class="nhsuk-grid-column-two-thirds">
         <nhs-validation-summary RadioId="SelectedHostingType"/>
-                <nhs-page-title title="Add a hosting type"
+                <nhs-page-title title="@ViewBag.Title"
                                 advice="@(anyHostingTypes ? "Select a hosting type that supports your Catalogue Solution. You can add other options later." : "All hosting types already added.")" />
         <form method="post">
             <input type="hidden" asp-for="@Model.HostingTypesAvailableForSelection" value="@anyHostingTypes" />

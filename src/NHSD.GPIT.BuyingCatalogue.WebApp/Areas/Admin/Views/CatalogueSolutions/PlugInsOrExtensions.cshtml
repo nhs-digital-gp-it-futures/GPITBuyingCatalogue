@@ -1,6 +1,6 @@
 ﻿@model NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.BrowserBasedModels.PlugInsOrExtensionsModel;
 @{
-    ViewData["Title"] = "Browser-based application – plug-ins or extensions required";
+    ViewBag.Title = "Browser-based application – plug-ins or extensions required";
 }
 
 <div class="nhsuk-width-container">
@@ -10,7 +10,7 @@
         </div>
         <div class="nhsuk-grid-column-full">
             <nhs-validation-summary RadioId="PlugInsRequired"/>
-            <nhs-page-title title="Browser-based application – plug-ins or extensions required"
+            <nhs-page-title title="@ViewBag.Title"
                             caption="@Model.SolutionName"
                             advice="Let buyers know if any plug-ins or extensions are needed to use your Catalogue Solution." />
             <form method="post">

@@ -12,10 +12,12 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.HostingTypeModels
         public PrivateCloudModel(CatalogueItem solution)
             : base(solution)
         {
-            Summary = solution.Solution.Hosting?.PrivateCloud?.Summary;
-            Link = solution.Solution.Hosting?.PrivateCloud?.Link;
-            RequiresHscn = solution.Solution.Hosting?.PrivateCloud?.RequiresHscn;
-            HostingModel = solution.Solution.Hosting?.PrivateCloud?.HostingModel;
+            var hostingType = solution.Solution.Hosting?.PrivateCloud;
+
+            Summary = hostingType?.Summary;
+            Link = hostingType?.Link;
+            RequiresHscn = hostingType?.RequiresHscn;
+            HostingModel = hostingType?.HostingModel;
         }
 
         [Required(ErrorMessage = "Enter data centre model information")]

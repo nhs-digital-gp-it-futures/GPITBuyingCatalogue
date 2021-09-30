@@ -78,7 +78,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Organisations
             return await dbContext.Organisations
                  .Where(o =>
                     o.Id != organisationId
-                    && !o.RelatedOrganisationRelatedOrganisationNavigations.Any(roron => roron.OrganisationId == organisationId))
+                    && o.RelatedOrganisationRelatedOrganisationNavigations.All(roron => roron.OrganisationId != organisationId))
                  .ToListAsync();
         }
 

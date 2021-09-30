@@ -1,6 +1,6 @@
 ﻿@model NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.InteroperabilityModels.AddIm1IntegrationModel;
 @{
-    ViewData["Title"] = "Add an IM1 integration";
+    ViewBag.Title = "Add an IM1 integration";
 }
 
 <div class="nhsuk-width-container">
@@ -8,7 +8,7 @@
     <div class="nhsuk-grid-row">
         <div class="nhsuk-grid-column-two-thirds">
             <nhs-validation-summary />
-            <nhs-page-title title="@ViewData["Title"]"
+            <nhs-page-title title="@ViewBag.Title"
                             caption="@Model.SolutionName"
                             advice="Provide the following information about the NHS assured integrations your Catalogue Solution works with." />
 

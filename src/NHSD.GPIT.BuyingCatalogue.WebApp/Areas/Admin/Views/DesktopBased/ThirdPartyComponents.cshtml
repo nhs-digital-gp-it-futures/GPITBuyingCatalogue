@@ -1,6 +1,6 @@
 ﻿@model NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.DesktopBasedModels.ThirdPartyComponentsModel;
 @{
-    ViewData["Title"] = "Desktop application – third-party components and device capabilities";
+    ViewBag.Title = "Desktop application – third-party components and device capabilities";
 }
 
 <div class="nhsuk-width-container">
@@ -11,7 +11,7 @@
 
         <div class="nhsuk-grid-column-full">
             <nhs-validation-summary />
-            <nhs-page-title title="@ViewData["Title"]"
+            <nhs-page-title title="@ViewBag.Title"
                             caption="@Model.SolutionName"
                             advice="Let buyers know about any third-party components or device capabilities needed for your Catalogue Solution." />
             <form method="post">

@@ -3,14 +3,14 @@
 @using EnumsNET
 @model NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.HostingTypeSectionModel;
 @{
-    ViewData["Title"] = "Catalogue Solution hosting type";
+    ViewBag.Title = "Hosting Type";
 }
 
 <partial name="Partials/_BackLink" model="Model" />
 <div class="nhsuk-grid-row">
     <div class="nhsuk-grid-column-two-thirds">
         <nhs-validation-summary />
-        <nhs-page-title title="Hosting Type"
+        <nhs-page-title title="@ViewBag.Title"
                         caption="@Model.SolutionName"
                         advice="Let buyers know how your Catalogue Solution can be hosted. You must add at least one." />
 

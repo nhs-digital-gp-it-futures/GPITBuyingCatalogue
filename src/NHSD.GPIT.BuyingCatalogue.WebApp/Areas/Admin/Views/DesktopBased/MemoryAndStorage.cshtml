@@ -1,6 +1,6 @@
 ﻿@model NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.DesktopBasedModels.MemoryAndStorageModel;
 @{
-    ViewData["Title"] = "Desktop application – memory, storage, processing and resolution";
+    ViewBag.Title = "Desktop application – memory, storage, processing and resolution";
 }
 
 <div class="nhsuk-width-container">
@@ -11,7 +11,7 @@
 
         <div class="nhsuk-grid-column-full">
             <nhs-validation-summary />
-            <nhs-page-title title="@ViewData["Title"]"
+            <nhs-page-title title="@ViewBag.Title"
                             caption="@Model.SolutionName"
                             advice="Let buyers know the minimum requirements for your Catalogue Solution to function." />
             <form method="post">

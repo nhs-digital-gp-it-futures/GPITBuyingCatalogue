@@ -1,11 +1,12 @@
 ﻿@model NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.AddUserConfirmationModel
 @{
-    ViewData["Title"] = $"{Model.Name} account added";
+    ViewBag.Title = $"{Model.Name} account added";
 }
 
 <div data-test-id="add-user-confirmation-page">
     <partial name="Partials/_BackLink" model="Model" />
     <div data-test-id="add-user-confirmation-page-title">
-        <nhs-page-title title="@Model.Name account added" advice="The user has been sent an email so they can set their password." />
+        <nhs-page-title title="@ViewBag.Title"
+                        advice="The user has been sent an email so they can set their password." />
     </div>
 </div>
