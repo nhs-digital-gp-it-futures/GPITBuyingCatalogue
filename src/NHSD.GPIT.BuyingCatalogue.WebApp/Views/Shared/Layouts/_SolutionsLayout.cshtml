@@ -1,13 +1,11 @@
 @using NHSD.GPIT.BuyingCatalogue.Framework.Settings
 @using NHSD.GPIT.BuyingCatalogue.Framework.Constants
-@using NHSD.GPIT.BuyingCatalogue.WebApp.Controllers 
+@using NHSD.GPIT.BuyingCatalogue.WebApp.Controllers
 @using NHSD.GPIT.BuyingCatalogue.Framework.Extensions
-@using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers 
+@using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers
 @inject CookieExpirationSettings CookieExpirationSettings
 @model NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models.SolutionDisplayBaseModel
-@{
-    ViewBag.Title = $"Solution {Model.Section}";
-}
+@{ ViewBag.Title = $"Solution {Model.Section}"; }
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -16,8 +14,7 @@
 <body>
     @if ((bool?)Context.Items[Cookies.ShowConsentCookie] == true)
     {
-        <partial name="Partials/_CookieConsentPartial" />
-    }
+<partial name="Partials/_CookieConsentPartial" />}
     <partial name="Partials/_BetaBanner" />
     <partial name="Headers/_Header" model="@("_Navigation")" />
 
@@ -34,7 +31,7 @@
                 <li class="nhsuk-breadcrumb__item">
                     <a class="nhsuk-breadcrumb__link"
                        data-test-id="catalogue-solutions-crumb"
-                       asp-action="@nameof(SolutionsController.Index)"                       
+                       asp-action="@nameof(SolutionsController.Index)"
                        asp-controller="@typeof(SolutionsController).ControllerName()"
                        asp-area="@typeof(SolutionsController).AreaName()">Catalogue Solutions</a>
                 </li>
@@ -62,6 +59,18 @@
                 </div>
             </div>
 
+            @if (Model.IsInRemediation())
+            {
+                <div class="nhsuk-grid-row">
+                    <div class="nhsuk-grid-column-two-thirds">
+                        <nhs-warning-callout label-text="Solution in remediation" style="margin-top:0px">
+                            <p>This Catalogue Solution is in remediation while the supplier works to meet compliance with the required standards.</p>
+                            <p>It can still be ordered while the work is carried out, however if this situation is not remedied within an agreed timeframe the Solution will be suspended from the Buying Catalogue.</p>
+                        </nhs-warning-callout>
+                    </div>
+                </div>
+            }
+
             <nav class="nhsuk-contents-list" role="navigation" aria-label="Pages in this guide">
                 <h2 class="nhsuk-u-visually-hidden">Contents</h2>
                 <ol class="nhsuk-contents-list__list">
@@ -77,9 +86,9 @@
                         {
                             <li class="nhsuk-contents-list__item">
                                 <a asp-action="@sectionModel.Action"
-                                   asp-controller="@sectionModel.Controller"
-                                   asp-route-solutionId="@sectionModel.Id"
-                                   class="nhsuk-contents-list__link">
+                                    asp-controller="@sectionModel.Controller"
+                                    asp-route-solutionId="@sectionModel.Id"
+                                    class="nhsuk-contents-list__link">
                                     @sectionModel.Name
                                 </a>
                             </li>
@@ -94,23 +103,16 @@
                 Solution information last reviewed: @Model.LastReviewed.ToLongDateString()
             </nhs-endnote>
 
-            <nhs-page-link-pagination
-                next-url="@Url.Action(
+            <nhs-page-link-pagination next-url="@Url.Action(
                         Model.PaginationFooter?.Next?.Action,
                         Model.PaginationFooter?.Next?.Controller,
-                        new 
-                        { 
-                            solutionId = Model.PaginationFooter?.Next?.Id
-                        })"
-                next-subtext="@Model.PaginationFooter?.Next?.Name"
-                previous-url="@Url.Action(
+                        new { solutionId = Model.PaginationFooter?.Next?.Id })"
+                        next-subtext="@Model.PaginationFooter?.Next?.Name"
+                        previous-url="@Url.Action(
                         Model.PaginationFooter?.Previous?.Action,
                         Model.PaginationFooter?.Previous?.Controller,
-                        new 
-                        { 
-                            solutionId = Model.PaginationFooter?.Previous?.Id
-                        })"
-                previous-subtext="@Model.PaginationFooter?.Previous?.Name"/>
+                        new { solutionId = Model.PaginationFooter?.Previous?.Id })"
+                        previous-subtext="@Model.PaginationFooter?.Previous?.Name" />
         </main>
     </div>
 

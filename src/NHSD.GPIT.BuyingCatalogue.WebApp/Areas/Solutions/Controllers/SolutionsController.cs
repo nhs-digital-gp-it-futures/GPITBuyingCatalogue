@@ -201,7 +201,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers
             if (item is null)
                 return BadRequest($"No Catalogue Item found for Id: {solutionId}");
 
-            return View(new SolutionFeaturesModel(item.Features()));
+            return View(new SolutionFeaturesModel(item));
         }
 
         [HttpGet("{solutionId}/hosting-type")]

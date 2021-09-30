@@ -543,7 +543,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Controllers
 
             actual.Should().NotBeNull();
             actual.ViewName.Should().BeNullOrEmpty();
-            actual.Model.Should().BeEquivalentTo(new SolutionFeaturesModel(item.Features()));
+            actual.Model.Should().BeEquivalentTo(new SolutionFeaturesModel(item));
         }
 
         [Theory]
