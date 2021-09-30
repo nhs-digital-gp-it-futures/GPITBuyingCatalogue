@@ -74,12 +74,14 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.ListPriceModels
         [StringLength(1000)]
         public string UnitDefinition { get; init; }
 
+        public string Title { get; init; }
+
         public PricingUnit GetPricingUnit()
-            => new()
-            {
-                Description = Unit,
-                Definition = UnitDefinition,
-            };
+                    => new()
+                    {
+                        Description = Unit,
+                        Definition = UnitDefinition,
+                    };
 
         public TimeUnit? GetTimeUnit(ProvisioningType provisioningType)
             => provisioningType switch
@@ -89,7 +91,5 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.ListPriceModels
                 ProvisioningType.OnDemand when OnDemandTimeUnit.HasValue => OnDemandTimeUnit.Value,
                 _ => null,
             };
-
-        public string Title { get; init; }
     }
 }
