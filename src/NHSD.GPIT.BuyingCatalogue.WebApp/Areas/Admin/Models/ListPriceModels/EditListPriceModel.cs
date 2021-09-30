@@ -90,6 +90,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.ListPriceModels
                 _ => null,
             };
 
-        public string Title { get; }
+        public string Title { get; init; }
     }
 }

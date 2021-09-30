@@ -23,7 +23,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
         }
 
         [HttpGet("manage/{solutionId}/client-application-type/delete/{applicationType}")]
-        public async Task<IActionResult> DeleteApplicationTypeConfirmationAsync(CatalogueItemId solutionId, ClientApplicationType applicationType)
+        public async Task<IActionResult> DeleteApplicationTypeConfirmation(CatalogueItemId solutionId, ClientApplicationType applicationType)
         {
             var solution = await solutionsService.GetSolution(solutionId);
 

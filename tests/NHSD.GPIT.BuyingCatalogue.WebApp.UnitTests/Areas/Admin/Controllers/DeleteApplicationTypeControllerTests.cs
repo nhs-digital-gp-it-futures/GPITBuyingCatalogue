@@ -43,15 +43,18 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
 
         [Theory]
         [CommonAutoData]
-        public static void Get_DeleteApplicationTypeConfirmation_ValidId_ReturnsViewWithExpectedModel(
+        public static async Task Get_DeleteApplicationTypeConfirmation_ValidId_ReturnsViewWithExpectedModel(
          CatalogueItem catalogueItem,
          ClientApplicationType clientApplicationType,
+         [Frozen] Mock<ISolutionsService> mockService,
          DeleteApplicationTypeController controller)
         {
-            var actual = controller.DeleteApplicationTypeConfirmation(catalogueItem.Id, clientApplicationType).As<ViewResult>();
+            mockService.Setup(s => s.GetSolution(It.IsAny<CatalogueItemId>())).ReturnsAsync(catalogueItem);
+
+            var actual = (await controller.DeleteApplicationTypeConfirmation(catalogueItem.Id, clientApplicationType)).As<ViewResult>();
 
             actual.ViewName.Should().BeNull();
-            actual.Model.Should().BeEquivalentTo(new DeleteApplicationTypeConfirmationModel(catalogueItem.Id, clientApplicationType));
+            actual.Model.Should().BeEquivalentTo(new DeleteApplicationTypeConfirmationModel(catalogueItem, clientApplicationType));
         }
 
         [Theory]

@@ -55,8 +55,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.SupplierModels
         [Required(ErrorMessage = "Enter a department name")]
         public string Department { get; init; }
 
-        public string Title { get; }
+        public string Title { get; init; }
 
-        public string SupplierName { get; }
+        public string SupplierName { get; init; }
     }
 }
