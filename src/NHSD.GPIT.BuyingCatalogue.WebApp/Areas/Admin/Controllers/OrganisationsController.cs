@@ -242,6 +242,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
         public async Task<IActionResult> AddAnOrganisation(int organisationId)
         {
             var organisation = await organisationsService.GetOrganisation(organisationId);
+
+            if (organisation is null)
+                return BadRequest($"No Organisation found for Id: {organisationId}");
+
             var availableOrganisations = await organisationsService.GetUnrelatedOrganisations(organisationId);
 
             return View(new AddAnOrganisationModel(organisation, availableOrganisations));
@@ -264,9 +268,17 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
         [HttpGet("removeproxy/{organisationId}/{relatedOrganisationId}")]
         public async Task<IActionResult> RemoveAnOrganisation(int organisationId, int relatedOrganisationId)
         {
+            var currentOrganisation = await organisationsService.GetOrganisation(organisationId);
+
+            if (currentOrganisation is null)
+                return BadRequest($"No Organisation found for Id: {organisationId}");
+
             var relatedOrganisation = await organisationsService.GetOrganisation(relatedOrganisationId);
 
-            return View(new RemoveAnOrganisationModel(organisationId, relatedOrganisation));
+            if (relatedOrganisation is null)
+                return BadRequest($"No Organisation found for Id: {relatedOrganisationId}");
+
+            return View(new RemoveAnOrganisationModel(currentOrganisation, relatedOrganisation));
         }
 
         [HttpPost("removeproxy/{organisationId}/{relatedOrganisationId}")]

@@ -3,12 +3,12 @@
 @model NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.AssociatedServices.AddAssociatedServiceModel;
 @{
     Layout = "~/Views/Shared/Layouts/_NoBannersLayout.cshtml";
-    ViewData["Title"] = "Associated Service information";
+    ViewBag.Title = "Associated Service information";
 }
 <partial name="Partials/_BackLink" model="Model" />
 <div class="nhsuk-grid-row">    
     <div class="nhsuk-grid-column-two-thirds">
-        <nhs-page-title title="Associated Service information"
+        <nhs-page-title title="@ViewBag.Title"
                         caption="@Model.Solution.Name"
                         advice="Provide information about the Associated Service." />
 

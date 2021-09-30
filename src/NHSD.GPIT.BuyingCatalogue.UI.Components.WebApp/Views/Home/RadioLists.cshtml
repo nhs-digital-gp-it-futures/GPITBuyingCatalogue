@@ -1,9 +1,9 @@
 ﻿@model NHSD.GPIT.BuyingCatalogue.UI.Components.WebApp.Models.RadioListModel
 @{
-    ViewData["Title"] = "Radio Lists";
+    ViewBag.Title = "Radio lists";
 }
 
-<nhs-page-title title="Radio Lists"
+<nhs-page-title title="@ViewBag.Title"
                 advice="Allow The Selection of a single item from a list of objects"
                 caption="Tag Helpers"
                 additional-advice="This page is rendered from RadioLists.cshtml using the RadioListModel." />

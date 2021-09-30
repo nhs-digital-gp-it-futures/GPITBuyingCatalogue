@@ -3,14 +3,15 @@
 
 @model NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.SupplierModels.DeleteContactModel
 @{
-    ViewData["Title"] = $"Delete {Model.FirstName} {Model.LastName} contact details?";
+    ViewBag.Title = $"Delete {Model.FirstName} {Model.LastName} contact details?";
 }
 
 <partial name="Partials/_BackLink" model="Model" />
 <div class="nhsuk-grid-row">
     <div class="nhsuk-grid-column-two-thirds">
         <nhs-validation-summary />
-        <nhs-page-title title="@ViewData["Title"]"
+        <nhs-page-title title="@ViewBag.Title"
+                        caption="@Model.SupplierName"
                         advice="Confirm you want to delete these contact details." />
         <div class="nhsuk-grid-row">
             <div class="nhsuk-grid-column-two-thirds">

@@ -1,15 +1,24 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Models;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.HostingTypeModels
 {
-    public class BaseCloudModel : NavBaseModel
+    public abstract class BaseCloudModel : NavBaseModel
     {
-        public BaseCloudModel()
+        protected BaseCloudModel()
         {
             BackLink = "./";
             BackLinkText = "Go back";
         }
+
+        protected BaseCloudModel(CatalogueItem solution)
+            : this()
+        {
+            SolutionName = solution.Name;
+        }
+
+        public string SolutionName { get; }
 
         [StringLength(1000)]
         [Url]

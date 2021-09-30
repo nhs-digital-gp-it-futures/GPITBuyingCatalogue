@@ -2,7 +2,7 @@
 @using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers;
 @model NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.AdditionalServiceRecipients.SelectAdditionalServiceRecipientsModel;
 @{
-    ViewData["Title"] = Model.Title;
+    ViewBag.Title = Model.Title;
 }
 
 <div data-test-id="solution-recipients-page">
@@ -11,7 +11,8 @@
 
         <div class="nhsuk-grid-column-two-thirds">
             <nhs-validation-summary />
-            <nhs-page-title title="@Model.Title" advice="These are all the possible Service Recipients for this Call-off Ordering Party. Select those you’ll be ordering this Additional Service for." />
+            <nhs-page-title title="@ViewBag.Title"
+                            advice="These are all the possible Service Recipients for this Call-off Ordering Party. Select those you’ll be ordering this Additional Service for." />
         </div>
 
         <div class="nhsuk-grid-column-full">

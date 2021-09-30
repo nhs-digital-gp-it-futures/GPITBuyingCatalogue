@@ -1,7 +1,7 @@
 ﻿@using NHSD.GPIT.BuyingCatalogue.EntityFramework.Organisations.Models
 @model NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.AddAnOrganisationModel
 @{
-    ViewData["Title"] = "Buying Catalogue – Admin";
+    ViewBag.Title = "Add a related organisation";
 }
 
 <div data-test-id="add-proxy-organisation-page">
@@ -9,7 +9,8 @@
     <div class="nhsuk-grid-row">
         <div class="nhsuk-grid-column-two-thirds">
             <nhs-page-title
-                title="Add organisation to @Model.Organisation.Name"
+                title="@ViewBag.Title"
+                caption="@Model.Organisation.Name"
                 advice="@Model.Organisation.Name will then be able to create orders on this organisation's behalf." />
             <form method="post">
                 <input type="hidden" asp-for="@Model.Organisation.Id" />

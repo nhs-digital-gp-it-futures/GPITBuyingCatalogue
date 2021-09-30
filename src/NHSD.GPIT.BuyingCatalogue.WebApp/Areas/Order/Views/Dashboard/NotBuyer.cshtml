@@ -1,8 +1,8 @@
 ﻿@using NHSD.GPIT.BuyingCatalogue.WebApp.Models;
 @{
-    ViewData["Title"] = "You're not logged in as a buyer";
+    ViewBag.Title = "You're not logged in as a buyer";
     var backLinkModel = new NavBaseModel{ BackLink = "/", BackLinkText = "Go to Home Page" };
 }
 
 <partial name="Partials/_BackLink" model="@backLinkModel" />
-<nhs-page-title title="@ViewData["Title"]" advice="Only users with a buyer account can create and manage orders on the Buying Catalogue." />
+<nhs-page-title title="@ViewBag.Title" advice="Only users with a buyer account can create and manage orders on the Buying Catalogue." />

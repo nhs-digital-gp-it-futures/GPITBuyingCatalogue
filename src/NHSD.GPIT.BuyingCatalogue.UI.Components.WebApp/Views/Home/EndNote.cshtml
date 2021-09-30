@@ -1,9 +1,9 @@
 ﻿@model NHSD.GPIT.BuyingCatalogue.UI.Components.WebApp.Models.BlankModel
 @{
-    ViewData["Title"] = "End Note";
+    ViewBag.Title = "End note";
 }
 
-<nhs-page-title title="End Note"
+<nhs-page-title title="@ViewBag.Title"
                 advice="Used to impart extra information related to the content above it. For Example, telling the user when the page was last updated"
                 caption="Tag Helpers"
                 additional-advice="This page is rendered from EndNote.cshtml using the BlankModel" />

@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Text.Json;
 using AutoFixture.Xunit2;
 using FluentAssertions;
-using Newtonsoft.Json;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Enums;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions;
@@ -41,7 +41,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Models
             ClientApplication clientApplication)
         {
             clientApplication.ClientApplicationTypes = new HashSet<string> { "browser-based" };
-            catalogueItem.Solution.ClientApplication = JsonConvert.SerializeObject(clientApplication);
+            catalogueItem.Solution.ClientApplication = JsonSerializer.Serialize(clientApplication);
 
             var model = new ClientApplicationTypeSectionModel(catalogueItem);
 
@@ -70,7 +70,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Models
             clientApplication.BrowsersSupported = null;
             clientApplication.NativeDesktopOperatingSystemsDescription = null;
             clientApplication.MobileConnectionDetails = null;
-            catalogueItem.Solution.ClientApplication = JsonConvert.SerializeObject(clientApplication);
+            catalogueItem.Solution.ClientApplication = JsonSerializer.Serialize(clientApplication);
 
             var model = new ClientApplicationTypeSectionModel(catalogueItem);
 
@@ -88,7 +88,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Models
             clientApplication.ClientApplicationTypes = new HashSet<string> { "browser-based", "native-mobile", "native-desktop" };
             clientApplication.NativeDesktopOperatingSystemsDescription = null;
             clientApplication.MobileConnectionDetails = null;
-            catalogueItem.Solution.ClientApplication = JsonConvert.SerializeObject(clientApplication);
+            catalogueItem.Solution.ClientApplication = JsonSerializer.Serialize(clientApplication);
 
             var model = new ClientApplicationTypeSectionModel(catalogueItem);
 
@@ -106,7 +106,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Models
             clientApplication.ClientApplicationTypes = new HashSet<string> { "browser-based", "native-mobile", "native-desktop" };
             clientApplication.BrowsersSupported = null;
             clientApplication.MobileConnectionDetails = null;
-            catalogueItem.Solution.ClientApplication = JsonConvert.SerializeObject(clientApplication);
+            catalogueItem.Solution.ClientApplication = JsonSerializer.Serialize(clientApplication);
 
             var model = new ClientApplicationTypeSectionModel(catalogueItem);
 
@@ -124,7 +124,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Models
             clientApplication.ClientApplicationTypes = new HashSet<string> { "browser-based", "native-mobile", "native-desktop" };
             clientApplication.BrowsersSupported = null;
             clientApplication.NativeDesktopOperatingSystemsDescription = null;
-            catalogueItem.Solution.ClientApplication = JsonConvert.SerializeObject(clientApplication);
+            catalogueItem.Solution.ClientApplication = JsonSerializer.Serialize(clientApplication);
 
             var model = new ClientApplicationTypeSectionModel(catalogueItem);
 

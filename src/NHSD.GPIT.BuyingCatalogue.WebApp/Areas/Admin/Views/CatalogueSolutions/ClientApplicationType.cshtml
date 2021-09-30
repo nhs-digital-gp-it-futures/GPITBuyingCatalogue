@@ -4,7 +4,7 @@
 @using EnumsNET
 @model NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.ClientApplicationTypeSectionModel;
 @{
-    ViewData["Title"] = "Client application type";
+    ViewBag.Title = "Client application type";
 }
 <div class="nhsuk-width-container">
     <div class="nhsuk-grid-row">
@@ -13,7 +13,8 @@
         </div>
         <div class="nhsuk-grid-column-two-thirds">
             <nhs-validation-summary />
-            <nhs-page-title title="Client application type" caption="@Model.SolutionName"
+            <nhs-page-title title="@ViewBag.Title"
+                            caption="@Model.SolutionName"
                             advice="Let buyers know which types of application will work with your Catalogue Solution." />
 
             @*TODO: Update Action Link to Add Client application type*@

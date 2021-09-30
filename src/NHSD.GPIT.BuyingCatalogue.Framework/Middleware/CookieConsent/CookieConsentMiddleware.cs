@@ -3,6 +3,7 @@ using System.Text.Json;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using NHSD.GPIT.BuyingCatalogue.Framework.Constants;
+using NHSD.GPIT.BuyingCatalogue.Framework.Serialization;
 using NHSD.GPIT.BuyingCatalogue.Framework.Settings;
 
 namespace NHSD.GPIT.BuyingCatalogue.Framework.Middleware.CookieConsent
@@ -59,9 +60,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Framework.Middleware.CookieConsent
             CookieData cookieData;
             try
             {
-                cookieData = JsonSerializer.Deserialize<CookieData>(
-                    input,
-                    new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
+                cookieData = JsonDeserializer.Deserialize<CookieData>(input);
             }
             catch (JsonException)
             {

@@ -3,7 +3,7 @@
 @using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
 @model NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.AssociatedServices.EditAssociatedServiceModel;
 @{
-    ViewData["Title"] = Model.Title;
+    ViewBag.Title = Model.Title;
 }
 
 <div data-test-id="order-item-page">
@@ -11,7 +11,7 @@
     <div class="nhsuk-grid-row">
         <div class="nhsuk-grid-column-two-thirds">
             <nhs-validation-summary RadioId="EstimationPeriod" />
-            <nhs-page-title title="@Model.Title"
+            <nhs-page-title title="@ViewBag.Title"
                             advice="Provide the price you've agreed with the supplier and the quantity you want to order." />
         </div>
         <form method="post">
