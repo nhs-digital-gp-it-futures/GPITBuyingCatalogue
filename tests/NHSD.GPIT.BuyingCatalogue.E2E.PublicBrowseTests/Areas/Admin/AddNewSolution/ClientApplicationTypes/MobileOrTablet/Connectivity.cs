@@ -50,7 +50,9 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.AddNewSolution.ClientAp
             await using var context = GetEndToEndDbContext();
             var solution = await context.Solutions.SingleAsync(s => s.CatalogueItemId == SolutionId);
 
-            var mobileConnectionDetails = JsonSerializer.Deserialize<ServiceContracts.Solutions.ClientApplication>(solution.ClientApplication)?.MobileConnectionDetails;
+            var mobileConnectionDetails = JsonSerializer.Deserialize<ServiceContracts.Solutions.ClientApplication>(
+                solution.ClientApplication, new JsonSerializerOptions { PropertyNameCaseInsensitive = true })
+                ?.MobileConnectionDetails;
 
             mobileConnectionDetails.Should().NotBeNull();
 

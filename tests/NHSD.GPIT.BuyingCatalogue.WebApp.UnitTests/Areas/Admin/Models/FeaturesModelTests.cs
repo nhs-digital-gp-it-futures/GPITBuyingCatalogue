@@ -2,9 +2,9 @@
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Reflection;
+using System.Text.Json;
 using AutoFixture.Xunit2;
 using FluentAssertions;
-using Newtonsoft.Json;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Enums;
 using NHSD.GPIT.BuyingCatalogue.Test.Framework.AutoFixtureCustomisations;
@@ -64,7 +64,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Models
             CatalogueItem catalogueItem,
             FeaturesModel expected)
         {
-            catalogueItem.Solution.Features = JsonConvert.SerializeObject(expected.AllFeatures);
+            catalogueItem.Solution.Features = JsonSerializer.Serialize(expected.AllFeatures);
             expected.SolutionId = catalogueItem.Id;
             expected.SolutionName = catalogueItem.Name;
 

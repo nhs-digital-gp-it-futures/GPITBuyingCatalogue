@@ -27,7 +27,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Session
         public T GetObject<T>(string key)
         {
             var value = session.GetString(key);
-            return value is null ? default : JsonSerializer.Deserialize<T>(value, new JsonSerializerOptions { ReferenceHandler = ReferenceHandler.Preserve });
+            return value is null ? default : JsonSerializer.Deserialize<T>(value, new JsonSerializerOptions { ReferenceHandler = ReferenceHandler.Preserve, PropertyNameCaseInsensitive = true });
         }
 
         public void SetObject(string key, object value)

@@ -1,10 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text.Json;
 using System.Threading.Tasks;
 using EnumsNET;
 using Microsoft.EntityFrameworkCore;
-using Newtonsoft.Json;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
@@ -205,7 +205,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
         public async Task SaveSolutionFeatures(CatalogueItemId solutionId, string[] features)
         {
             var solution = await solutionRepository.SingleAsync(s => s.CatalogueItemId == solutionId);
-            solution.Features = JsonConvert.SerializeObject(features);
+            solution.Features = JsonSerializer.Serialize(features);
             await solutionRepository.SaveChangesAsync();
         }
 
@@ -234,7 +234,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
             clientApplication.ValidateNotNull(nameof(clientApplication));
 
             var solution = await solutionRepository.SingleAsync(s => s.CatalogueItemId == solutionId);
-            solution.ClientApplication = JsonConvert.SerializeObject(clientApplication);
+            solution.ClientApplication = JsonSerializer.Serialize(clientApplication);
             await solutionRepository.SaveChangesAsync();
         }
 

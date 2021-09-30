@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Text.Json;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
-using Newtonsoft.Json;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
@@ -42,7 +42,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
 
             integrations.Add(integration);
 
-            solution.Integrations = JsonConvert.SerializeObject(integrations);
+            solution.Integrations = JsonSerializer.Serialize(integrations);
 
             await dbContext.SaveChangesAsync();
         }

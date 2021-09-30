@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Text.Json;
 using System.Threading.Tasks;
 using AutoFixture;
 using AutoFixture.AutoMoq;
@@ -6,7 +7,6 @@ using AutoFixture.Idioms;
 using AutoFixture.Xunit2;
 using FluentAssertions;
 using Microsoft.EntityFrameworkCore;
-using Newtonsoft.Json;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
@@ -54,7 +54,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Solutions
            Integration newIntegration,
            InteroperabilityService service)
         {
-            solution.Integrations = JsonConvert.SerializeObject(currentIntegrations);
+            solution.Integrations = JsonSerializer.Serialize(currentIntegrations);
             solution.AdditionalServices.Clear();
 
             context.Solutions.Add(solution);

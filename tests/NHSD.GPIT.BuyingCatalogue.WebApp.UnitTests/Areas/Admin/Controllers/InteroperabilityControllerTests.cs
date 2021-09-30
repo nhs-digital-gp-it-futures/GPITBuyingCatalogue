@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Text.Json;
 using System.Threading.Tasks;
 using AutoFixture;
 using AutoFixture.AutoMoq;
@@ -8,7 +9,6 @@ using FluentAssertions;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
-using Newtonsoft.Json;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
@@ -50,7 +50,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
             [Frozen] Mock<ISolutionsService> mockService,
             InteroperabilityController controller)
         {
-            catalogueItem.Solution.Integrations = JsonConvert.SerializeObject(integrations);
+            catalogueItem.Solution.Integrations = JsonSerializer.Serialize(integrations);
 
             mockService.Setup(s => s.GetSolution(catalogueItem.Id))
                 .ReturnsAsync(catalogueItem);
@@ -101,7 +101,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
             [Frozen] Mock<ISolutionsService> mockService,
             InteroperabilityController controller)
         {
-            catalogueItem.Solution.Integrations = JsonConvert.SerializeObject(integrations);
+            catalogueItem.Solution.Integrations = JsonSerializer.Serialize(integrations);
 
             mockService.Setup(s => s.GetSolution(catalogueItem.Id))
                 .ReturnsAsync(catalogueItem);
@@ -166,7 +166,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
            [Frozen] Mock<ISolutionsService> mockService,
            InteroperabilityController controller)
         {
-            catalogueItem.Solution.Integrations = JsonConvert.SerializeObject(integrations);
+            catalogueItem.Solution.Integrations = JsonSerializer.Serialize(integrations);
 
             mockService.Setup(s => s.GetSolution(catalogueItem.Id))
                 .ReturnsAsync(catalogueItem);

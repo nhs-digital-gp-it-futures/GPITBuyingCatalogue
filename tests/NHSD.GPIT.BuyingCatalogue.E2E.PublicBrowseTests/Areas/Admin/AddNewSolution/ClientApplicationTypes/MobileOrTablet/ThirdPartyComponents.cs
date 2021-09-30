@@ -48,7 +48,9 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.AddNewSolution.ClientAp
 
             var solution = await context.Solutions.SingleOrDefaultAsync(s => s.CatalogueItemId == SolutionId);
 
-            var thirdPartyComponents = JsonSerializer.Deserialize<ServiceContracts.Solutions.ClientApplication>(solution.ClientApplication)?.MobileThirdParty;
+            var thirdPartyComponents = JsonSerializer.Deserialize<ServiceContracts.Solutions.ClientApplication>(
+                solution.ClientApplication, new JsonSerializerOptions { PropertyNameCaseInsensitive = true })
+                ?.MobileThirdParty;
 
             thirdPartyComponents.Should().NotBeNull();
 

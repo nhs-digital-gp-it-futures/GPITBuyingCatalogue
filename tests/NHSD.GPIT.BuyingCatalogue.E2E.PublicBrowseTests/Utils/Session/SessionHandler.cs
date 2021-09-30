@@ -50,7 +50,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.Session
                 default :
                 JsonSerializer.Deserialize<T>(
                     value,
-                    new JsonSerializerOptions { ReferenceHandler = ReferenceHandler.Preserve });
+                    new JsonSerializerOptions { ReferenceHandler = ReferenceHandler.Preserve, PropertyNameCaseInsensitive = true });
         }
 
         public CreateOrderItemModel GetOrderStateFromSession(string key)

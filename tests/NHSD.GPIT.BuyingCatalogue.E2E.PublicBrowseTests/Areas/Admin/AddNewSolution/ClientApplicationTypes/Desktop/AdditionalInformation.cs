@@ -44,7 +44,9 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.AddNewSolution.ClientAp
             await using var context = GetEndToEndDbContext();
             var solution = await context.Solutions.SingleAsync(s => s.CatalogueItemId == SolutionId);
 
-            var additionalInformation = JsonSerializer.Deserialize<ServiceContracts.Solutions.ClientApplication>(solution.ClientApplication)?.NativeDesktopAdditionalInformation;
+            var additionalInformation = JsonSerializer.Deserialize<ServiceContracts.Solutions.ClientApplication>(
+                solution.ClientApplication, new JsonSerializerOptions { PropertyNameCaseInsensitive = true })
+                ?.NativeDesktopAdditionalInformation;
 
             additionalInformation.Should().NotBeNull();
             additionalInformation.Should().Be(expectedInformation);

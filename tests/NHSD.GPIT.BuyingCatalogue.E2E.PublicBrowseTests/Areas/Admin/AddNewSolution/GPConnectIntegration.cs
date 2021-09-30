@@ -60,7 +60,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.AddNewSolution
 
             integrations.Should().NotBeNullOrWhiteSpace();
 
-            var integrationsList = JsonSerializer.Deserialize<List<Integration>>(integrations);
+            var integrationsList = JsonSerializer.Deserialize<List<Integration>>(integrations, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
 
             integrationsList.Should().HaveCount(1);
 

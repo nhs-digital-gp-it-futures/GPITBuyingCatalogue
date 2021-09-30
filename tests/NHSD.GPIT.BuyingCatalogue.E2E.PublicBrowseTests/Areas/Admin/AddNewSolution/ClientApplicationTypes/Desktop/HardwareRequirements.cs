@@ -44,7 +44,9 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.AddNewSolution.ClientAp
             await using var context = GetEndToEndDbContext();
             var solution = await context.Solutions.SingleAsync(s => s.CatalogueItemId == SolutionId);
 
-            var hardwareRequirements = JsonSerializer.Deserialize<ServiceContracts.Solutions.ClientApplication>(solution.ClientApplication)?.NativeDesktopHardwareRequirements;
+            var hardwareRequirements = JsonSerializer.Deserialize<ServiceContracts.Solutions.ClientApplication>(
+                solution.ClientApplication, new JsonSerializerOptions { PropertyNameCaseInsensitive = true })
+                ?.NativeDesktopHardwareRequirements;
 
             hardwareRequirements.Should().NotBeNull();
             hardwareRequirements.Should().Be(expectedRequirements);

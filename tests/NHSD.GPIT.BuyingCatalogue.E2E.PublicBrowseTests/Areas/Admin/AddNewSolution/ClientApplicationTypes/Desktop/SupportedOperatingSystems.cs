@@ -46,7 +46,9 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.AddNewSolution.ClientAp
 
             var solution = await context.Solutions.SingleOrDefaultAsync(s => s.CatalogueItemId == SolutionId);
 
-            var mobileOperatingSystems = JsonSerializer.Deserialize<ServiceContracts.Solutions.ClientApplication>(solution.ClientApplication)?.NativeDesktopOperatingSystemsDescription;
+            var mobileOperatingSystems = JsonSerializer.Deserialize<ServiceContracts.Solutions.ClientApplication>(
+                solution.ClientApplication, new JsonSerializerOptions { PropertyNameCaseInsensitive = true })
+                ?.NativeDesktopOperatingSystemsDescription;
 
             mobileOperatingSystems.Should().NotBeNull();
             mobileOperatingSystems.Should().Be(description);

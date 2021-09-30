@@ -48,7 +48,9 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.AddNewSolution.ClientAp
 
             var solution = await context.Solutions.SingleOrDefaultAsync(s => s.CatalogueItemId == SolutionId);
 
-            var memoryAndStorage = JsonSerializer.Deserialize<ServiceContracts.Solutions.ClientApplication>(solution.ClientApplication)?.MobileMemoryAndStorage;
+            var memoryAndStorage = JsonSerializer.Deserialize<ServiceContracts.Solutions.ClientApplication>(
+                solution.ClientApplication, new JsonSerializerOptions { PropertyNameCaseInsensitive = true })
+                ?.MobileMemoryAndStorage;
 
             memoryAndStorage.Should().NotBeNull();
             memoryAndStorage.MinimumMemoryRequirement.Should().Be(memorySize);
