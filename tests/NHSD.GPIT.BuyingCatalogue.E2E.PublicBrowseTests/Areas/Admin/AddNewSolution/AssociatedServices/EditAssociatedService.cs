@@ -45,7 +45,8 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.AddNewSolution
 
             CommonActions.ElementIsDisplayed(CommonSelectors.Header1).Should().BeTrue();
             CommonActions.GoBackLinkDisplayed().Should().BeTrue();
-            CommonActions.ElementIsDisplayed(CommonSelectors.ContinueButton).Should().BeTrue();
+            CommonActions.ElementIsDisplayed(Objects.Admin.AssociatedServices.AssociatedServices.AddAssociatedServiceContinueButton).Should().BeTrue();
+            CommonActions.ElementIsDisplayed(Objects.Admin.AssociatedServices.AssociatedServices.AssociatedServiceDashboardTable).Should().BeTrue();
         }
 
         [Fact]

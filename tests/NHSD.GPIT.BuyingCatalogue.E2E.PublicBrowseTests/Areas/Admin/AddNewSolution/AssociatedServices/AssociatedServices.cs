@@ -6,7 +6,6 @@ using Microsoft.EntityFrameworkCore;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Objects.Common;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Utils;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.TestBases;
-using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers;
@@ -18,6 +17,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.AddNewSolution.Associat
     {
         private const string TargetServiceId = "99999--S-999";
         private static readonly CatalogueItemId SolutionId = new(99999, "001");
+        private static readonly CatalogueItemId SolutionIdNoAssociatedServices = new(99997, "001");
 
         private static readonly Dictionary<string, string> Parameters = new()
         {
@@ -45,7 +45,31 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.AddNewSolution.Associat
 
             CommonActions.ElementIsDisplayed(CommonSelectors.Header1).Should().BeTrue();
             CommonActions.ElementIsDisplayed(CommonSelectors.ActionLink).Should().BeTrue();
+            CommonActions.ElementIsDisplayed(Objects.Admin.AssociatedServices.AssociatedServices.AssociatedServicesTable).Should().BeTrue();
+            CommonActions.GoBackLinkDisplayed().Should().BeTrue();
+            CommonActions.SaveButtonDisplayed().Should().BeTrue();
+        }
 
+        [Fact]
+        public async Task AssociatedServices_NoServices_TableNotDisplayed()
+        {
+            var args = new Dictionary<string, string>
+            {
+                { nameof(SolutionId), SolutionIdNoAssociatedServices.ToString() },
+            };
+
+            NavigateToUrl(typeof(AssociatedServicesController), nameof(AssociatedServicesController.AssociatedServices), parameters: args);
+
+            await using var context = GetEndToEndDbContext();
+            var solutionName = (await context.CatalogueItems.SingleAsync(s => s.Id == SolutionIdNoAssociatedServices)).Name;
+
+            CommonActions.PageTitle()
+                .Should()
+                .BeEquivalentTo($"Associated Services - {solutionName}".FormatForComparison());
+
+            CommonActions.ElementIsDisplayed(CommonSelectors.Header1).Should().BeTrue();
+            CommonActions.ElementIsDisplayed(CommonSelectors.ActionLink).Should().BeTrue();
+            CommonActions.ElementIsDisplayed(Objects.Admin.AssociatedServices.AssociatedServices.AssociatedServicesTable).Should().BeFalse();
             CommonActions.GoBackLinkDisplayed().Should().BeTrue();
             CommonActions.SaveButtonDisplayed().Should().BeTrue();
         }
@@ -92,24 +116,12 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.AddNewSolution.Associat
         [Fact]
         public async Task AssociatedServices_NoServices_Save_Saves_And_NavigatesToCorrectPage()
         {
-            await using var context = GetEndToEndDbContext();
-            var solution = await context.CatalogueItems.Include(c => c.SupplierServiceAssociations).SingleAsync(s => s.Id == SolutionId);
-            solution.SupplierServiceAssociations.Clear();
+            var args = new Dictionary<string, string>
+            {
+                { nameof(SolutionId), SolutionIdNoAssociatedServices.ToString() },
+            };
 
-            var associatedServices = await context.CatalogueItems
-                .Include(c => c.Supplier)
-                .Include(c => c.AssociatedService)
-                .Where(
-                    c => c.SupplierId == solution.SupplierId
-                        && c.CatalogueItemType == CatalogueItemType.AssociatedService)
-                .ToListAsync();
-
-            foreach (var associatedService in associatedServices)
-                context.CatalogueItems.Remove(associatedService);
-
-            await context.SaveChangesAsync();
-
-            NavigateToUrl(typeof(AssociatedServicesController), nameof(AssociatedServicesController.AssociatedServices), parameters: Parameters);
+            NavigateToUrl(typeof(AssociatedServicesController), nameof(AssociatedServicesController.AssociatedServices), parameters: args);
 
             CommonActions.ClickSave();
 
@@ -119,7 +131,8 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.AddNewSolution.Associat
                 .Should()
                 .BeTrue();
 
-            solution = await context.CatalogueItems.Include(c => c.SupplierServiceAssociations).SingleAsync(s => s.Id == SolutionId);
+            await using var context = GetEndToEndDbContext();
+            var solution = await context.CatalogueItems.Include(c => c.SupplierServiceAssociations).SingleAsync(s => s.Id == SolutionId);
 
             solution.SupplierServiceAssociations.Should().BeEmpty();
         }

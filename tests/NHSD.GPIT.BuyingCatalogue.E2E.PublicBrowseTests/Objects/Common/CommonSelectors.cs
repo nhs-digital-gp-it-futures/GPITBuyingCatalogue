@@ -12,8 +12,6 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Objects.Common
 
         internal static By GoBackLink => By.ClassName("nhsuk-back-link__link");
 
-        internal static By ContinueButton => By.ClassName("nhsuk-button");
-
         internal static By RadioButtonItems => By.CssSelector(".nhsuk-radios__item");
 
         internal static By RadioButtons => By.ClassName("nhsuk-radios");
