@@ -44,5 +44,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Objects.PublicBrowse
         internal static By CatalogueSolutionPage => ByExtensions.DataTestId("solutions-list-body");
 
         internal static By CapabilityName => ByExtensions.DataTestId("capability-name");
+
+        internal static By InRemediationNotice => By.ClassName("nhsuk-warning-callout");
     }
 }
