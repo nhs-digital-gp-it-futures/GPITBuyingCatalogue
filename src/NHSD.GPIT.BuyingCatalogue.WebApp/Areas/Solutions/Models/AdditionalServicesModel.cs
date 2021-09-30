@@ -6,10 +6,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models
 {
     public sealed class AdditionalServicesModel : SolutionDisplayBaseModel
     {
-        public AdditionalServicesModel(CatalogueItem solution)
-            : base(solution.Solution)
+        public AdditionalServicesModel(CatalogueItem catalogueItem)
+            : base(catalogueItem)
         {
-            Services = solution.Supplier.CatalogueItems
+            Services = catalogueItem.Supplier.CatalogueItems
                 .Where(ci => ci.CatalogueItemType == CatalogueItemType.AdditionalService)
                 .OrderBy(ci => ci.Name)
                 .Select(ci => new AdditionalServiceModel(ci))
