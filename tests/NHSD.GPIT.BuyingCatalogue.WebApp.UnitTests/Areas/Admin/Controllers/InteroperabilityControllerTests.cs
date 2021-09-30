@@ -110,7 +110,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
 
             mockService.Verify(s => s.GetSolution(catalogueItem.Id));
             actual.ViewName.Should().BeNull();
-            actual.Model.Should().BeEquivalentTo(new AddIm1IntegrationModel(catalogueItem.Id));
+            actual.Model.Should().BeEquivalentTo(new AddIm1IntegrationModel(catalogueItem));
         }
 
         [Theory]
@@ -175,7 +175,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
 
             mockService.Verify(s => s.GetSolution(catalogueItem.Id));
             actual.ViewName.Should().BeNull();
-            actual.Model.Should().BeEquivalentTo(new AddGpConnectIntegrationModel(catalogueItem.Id));
+            actual.Model.Should().BeEquivalentTo(new AddGpConnectIntegrationModel(catalogueItem));
         }
 
         [Theory]
