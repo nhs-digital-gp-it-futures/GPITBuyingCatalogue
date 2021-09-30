@@ -1,6 +1,6 @@
 ﻿using System;
-using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
@@ -10,21 +10,20 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
 {
     public sealed class OrderDescriptionService : IOrderDescriptionService
     {
-        private readonly IDbRepository<Order, BuyingCatalogueDbContext> orderRepository;
+        private readonly BuyingCatalogueDbContext dbContext;
 
-        public OrderDescriptionService(
-            IDbRepository<Order, BuyingCatalogueDbContext> orderRepository)
+        public OrderDescriptionService(BuyingCatalogueDbContext dbContext)
         {
-            this.orderRepository = orderRepository ?? throw new ArgumentNullException(nameof(orderRepository));
+            this.dbContext = dbContext ?? throw new ArgumentNullException(nameof(dbContext));
         }
 
         public async Task SetOrderDescription(CallOffId callOffId, string description)
         {
             description.ValidateNotNullOrWhiteSpace(nameof(description));
 
-            var order = (await orderRepository.GetAllAsync(o => o.Id == callOffId.Id)).Single();
+            var order = await dbContext.Orders.SingleAsync(o => o.Id == callOffId.Id);
             order.Description = description;
-            await orderRepository.SaveChangesAsync();
+            await dbContext.SaveChangesAsync();
         }
     }
 }

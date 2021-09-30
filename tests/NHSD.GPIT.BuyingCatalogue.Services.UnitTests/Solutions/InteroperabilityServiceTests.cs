@@ -1,5 +1,8 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
+using AutoFixture;
+using AutoFixture.AutoMoq;
+using AutoFixture.Idioms;
 using AutoFixture.Xunit2;
 using FluentAssertions;
 using Microsoft.EntityFrameworkCore;
@@ -15,6 +18,16 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Solutions
 {
     public static class InteroperabilityServiceTests
     {
+        [Fact]
+        public static void Constructors_VerifyGuardClauses()
+        {
+            var fixture = new Fixture().Customize(new AutoMoqCustomization());
+            var assertion = new GuardClauseAssertion(fixture);
+            var constructors = typeof(InteroperabilityService).GetConstructors();
+
+            assertion.Verify(constructors);
+        }
+
         [Theory]
         [InMemoryDbAutoData]
         public static async Task SaveIntegrationLink_UpdatesDatabase(

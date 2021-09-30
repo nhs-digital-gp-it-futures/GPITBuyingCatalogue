@@ -54,8 +54,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
                 order.OrderingPartyContact,
                 model.Contact);
 
-            // TODO: Update naming (only sets contact now)
-            await orderingPartyService.SetOrderingParty(order, contact);
+            await orderingPartyService.SetOrderingPartyContact(order, contact);
 
             return RedirectToAction(
                 nameof(OrderController.Order),

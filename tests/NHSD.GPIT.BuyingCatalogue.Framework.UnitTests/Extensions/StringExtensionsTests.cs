@@ -51,5 +51,31 @@ namespace NHSD.GPIT.BuyingCatalogue.Framework.UnitTests.Extensions
                 .Message.Should()
                 .Be("This method is valid only for numbers from 1 to 10");
         }
+
+        [Theory]
+        [InlineData("abc", "abc")]
+        [InlineData(" abc", "abc")]
+        [InlineData("abc ", "abc")]
+        [InlineData("a b c", "abc")]
+        public static void FormatForComparison_ValidInputs_ResultAsExpected(string input, string expected)
+        {
+            input.FormatForComparison().Should().Be(expected);
+        }
+
+        [Theory]
+        [InlineData("abc", "abc", true)]
+        [InlineData(" abc", "abc", true)]
+        [InlineData("abc ", "abc", true)]
+        [InlineData("a b c", "abc", true)]
+        [InlineData("abc", "abc ", true)]
+        [InlineData("abc", " abc", true)]
+        [InlineData("abc", "a b c", true)]
+        [InlineData("abc", "A B C", true)]
+        [InlineData("abc", "abcd", false)]
+        public static void EqualsIgnoreWhiteSpace_ValidInputs_ResultAsExpected(string input1, string input2, bool expected)
+        {
+            var actual = input1.EqualsIgnoreWhiteSpace(input2);
+            actual.Should().Be(expected);
+        }
     }
 }
