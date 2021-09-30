@@ -36,10 +36,10 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.AddNewSolution.ClientAp
         }
 
         [Theory]
-        [InlineData(ClientApplicationType.BrowserBased, "browser-based")]
-        [InlineData(ClientApplicationType.MobileTablet, "mobile or tablet")]
-        [InlineData(ClientApplicationType.Desktop, "desktop")]
-        public void DeleteClientApplicationType_CorrectlyDisplayed(ClientApplicationType clientApplicationType, string applicationTypeDisplayName)
+        [InlineData(ClientApplicationType.BrowserBased)]
+        [InlineData(ClientApplicationType.MobileTablet)]
+        [InlineData(ClientApplicationType.Desktop)]
+        public void DeleteClientApplicationType_CorrectlyDisplayed(ClientApplicationType clientApplicationType)
         {
             var queryParam = new Dictionary<string, string>
             {
