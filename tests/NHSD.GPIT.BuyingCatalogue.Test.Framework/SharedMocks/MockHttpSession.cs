@@ -50,18 +50,6 @@ namespace NHSD.GPIT.BuyingCatalogue.Test.Framework.SharedMocks
             sessionStorage[key] = value;
         }
 
-        public bool TryGetValue(string key, out byte[] value)
-        {
-            if (sessionStorage.ContainsKey(key))
-            {
-                value = sessionStorage[key];
-                return true;
-            }
-            else
-            {
-                value = null;
-                return false;
-            }
-        }
+        public bool TryGetValue(string key, out byte[] value) => sessionStorage.TryGetValue(key, out value);
     }
 }

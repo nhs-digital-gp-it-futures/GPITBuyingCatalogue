@@ -5,7 +5,6 @@ using AutoFixture.AutoMoq;
 using AutoFixture.Idioms;
 using AutoFixture.Xunit2;
 using FluentAssertions;
-using Microsoft.EntityFrameworkCore;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.Services.Orders;
@@ -47,11 +46,12 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Orders
 
             await service.DeleteOrderItem(order.CallOffId, orderItem2.CatalogueItemId);
 
-            var updatedOrder = await context.Orders.AsAsyncEnumerable().FirstOrDefaultAsync();
+            var updatedOrder = await context.Orders.FirstOrDefaultAsync();
 
-            updatedOrder.OrderItems.Should().Contain(x => x.CatalogueItemId == orderItem1.CatalogueItemId);
-            updatedOrder.OrderItems.Should().NotContain(x => x.CatalogueItemId == orderItem2.CatalogueItemId);
-            updatedOrder.OrderItems.Should().Contain(x => x.CatalogueItemId == orderItem3.CatalogueItemId);
+            updatedOrder.Should().NotBeNull();
+            updatedOrder.OrderItems.Should().Contain(o => o.CatalogueItemId == orderItem1.CatalogueItemId);
+            updatedOrder.OrderItems.Should().NotContain(o => o.CatalogueItemId == orderItem2.CatalogueItemId);
+            updatedOrder.OrderItems.Should().Contain(o => o.CatalogueItemId == orderItem3.CatalogueItemId);
             updatedOrder.FundingSourceOnlyGms.Should().Be(fundingSource);
         }
 
@@ -74,7 +74,8 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Orders
 
             var updatedOrder = await context.Orders.AsAsyncEnumerable().FirstOrDefaultAsync();
 
-            updatedOrder.OrderItems.Should().NotContain(x => x.CatalogueItemId == orderItem.CatalogueItemId);
+            updatedOrder.Should().NotBeNull();
+            updatedOrder.OrderItems.Should().NotContain(o => o.CatalogueItemId == orderItem.CatalogueItemId);
             updatedOrder.FundingSourceOnlyGms.Should().BeNull();
         }
     }

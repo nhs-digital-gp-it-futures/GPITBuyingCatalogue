@@ -90,7 +90,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
 
         public async Task<Order> CreateOrder(string description, string odsCode)
         {
-            var orderingParty = await dbContext.Organisations.SingleAsync(x => x.OdsCode == odsCode);
+            var orderingParty = await dbContext.Organisations.SingleAsync(o => o.OdsCode == odsCode);
 
             var order = new Order
             {

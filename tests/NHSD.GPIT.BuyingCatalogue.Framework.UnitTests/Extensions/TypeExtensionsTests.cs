@@ -26,11 +26,11 @@ namespace NHSD.GPIT.BuyingCatalogue.Framework.UnitTests.Extensions
         }
 
         [Area("Solutions")]
-        internal static class TestController
+        private static class TestController
         {
         }
 
-        internal static class TestControllerNoAttribute
+        private static class TestControllerNoAttribute
         {
         }
     }

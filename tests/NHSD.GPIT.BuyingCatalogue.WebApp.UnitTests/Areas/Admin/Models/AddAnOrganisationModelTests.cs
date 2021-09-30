@@ -19,7 +19,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Models
 
             actual.Organisation.Should().Be(organisation);
             actual.AvailableOrganisations.Should().BeEquivalentTo(availableOrganisations);
-            actual.SelectedOrganisation.Should().Be(default(int));
+            actual.SelectedOrganisation.Should().Be(default);
             actual.BackLinkText.Should().Be("Go back to previous page");
             actual.BackLink.Should().Be($"/admin/organisations/{organisation.Id}");
         }

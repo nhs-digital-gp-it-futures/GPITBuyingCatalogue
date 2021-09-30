@@ -64,7 +64,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
             return View(new AddAssociatedServiceModel(solution));
         }
 
-        [HttpGet("edit-associated-service/{associatedServiceId}")]
+        [HttpGet("{associatedServiceId}/edit-associated-service")]
         public async Task<IActionResult> EditAssociatedService(CatalogueItemId solutionId, CatalogueItemId associatedServiceId)
         {
             var solution = await solutionsService.GetSolution(solutionId);
@@ -78,7 +78,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
             return View(new EditAssociatedServiceModel(solution, associatedService));
         }
 
-        [HttpGet("delete-associated-service/{associatedServiceId}")]
+        [HttpGet("{associatedServiceId}/delete-associated-service")]
         public async Task<IActionResult> DeleteAssociatedService(CatalogueItemId solutionId, CatalogueItemId associatedServiceId)
         {
             var associatedService = await associatedServicesService.GetAssociatedService(associatedServiceId);
@@ -88,7 +88,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
             return View(new DeleteAssociatedServiceModel(solutionId, associatedService));
         }
 
-        [HttpPost("delete-associated-service/{associatedServiceId}")]
+        [HttpPost("{associatedServiceId}/delete-associated-service")]
         public IActionResult DeleteAssociatedService(CatalogueItemId solutionId, CatalogueItemId associatedServiceId, DeleteAssociatedServiceModel model)
         {
             associatedServicesService.DeleteAssociatedService(associatedServiceId);
