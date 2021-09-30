@@ -1,10 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text.Json;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
+using NHSD.GPIT.BuyingCatalogue.Framework.Serialization;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers;
 
@@ -124,9 +124,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models
         {
             ClientApplication = solution.ClientApplication == null
                 ? new ClientApplication()
-                : JsonSerializer.Deserialize<ClientApplication>(
-                    solution.ClientApplication,
-                    new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
+                : JsonDeserializer.Deserialize<ClientApplication>(solution.ClientApplication);
 
             LastReviewed = solution.LastUpdated;
         }

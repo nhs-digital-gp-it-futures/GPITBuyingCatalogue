@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text.Json;
 using System.Threading.Tasks;
 using FluentAssertions;
 using Microsoft.EntityFrameworkCore;
@@ -9,6 +8,7 @@ using NHSD.GPIT.BuyingCatalogue.E2ETests.Utils;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.TestBases;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
+using NHSD.GPIT.BuyingCatalogue.Framework.Serialization;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers;
 using Xunit;
 
@@ -62,7 +62,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.AddNewSolution
 
             integrations.Should().NotBeNullOrWhiteSpace();
 
-            var integrationsList = JsonSerializer.Deserialize<List<Integration>>(integrations, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
+            var integrationsList = JsonDeserializer.Deserialize<List<Integration>>(integrations);
 
             integrationsList.Should().HaveCount(1);
 

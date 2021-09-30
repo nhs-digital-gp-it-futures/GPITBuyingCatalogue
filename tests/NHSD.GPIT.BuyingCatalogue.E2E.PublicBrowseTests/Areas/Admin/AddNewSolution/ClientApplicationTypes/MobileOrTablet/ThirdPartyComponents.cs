@@ -7,6 +7,7 @@ using Microsoft.EntityFrameworkCore;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Utils;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.TestBases;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
+using NHSD.GPIT.BuyingCatalogue.Framework.Serialization;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers;
 using Xunit;
 
@@ -48,8 +49,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.AddNewSolution.ClientAp
 
             var solution = await context.Solutions.SingleOrDefaultAsync(s => s.CatalogueItemId == SolutionId);
 
-            var thirdPartyComponents = JsonSerializer.Deserialize<ServiceContracts.Solutions.ClientApplication>(
-                solution.ClientApplication, new JsonSerializerOptions { PropertyNameCaseInsensitive = true })
+            var thirdPartyComponents = JsonDeserializer.Deserialize<ServiceContracts.Solutions.ClientApplication>(solution.ClientApplication)
                 ?.MobileThirdParty;
 
             thirdPartyComponents.Should().NotBeNull();
