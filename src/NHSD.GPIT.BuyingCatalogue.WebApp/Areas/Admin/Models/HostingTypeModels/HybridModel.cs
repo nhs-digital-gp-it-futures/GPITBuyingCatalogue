@@ -12,10 +12,12 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.HostingTypeModels
         public HybridModel(CatalogueItem solution)
             : base(solution)
         {
-            Summary = solution.Solution.Hosting?.HybridHostingType?.Summary;
-            Link = solution.Solution.Hosting?.HybridHostingType?.Link;
-            RequiresHscn = solution.Solution.Hosting?.HybridHostingType?.RequiresHscn;
-            HostingModel = solution.Solution.Hosting?.HybridHostingType?.HostingModel;
+            var hostingType = solution.Solution.Hosting?.HybridHostingType;
+
+            Summary = hostingType?.Summary;
+            Link = hostingType?.Link;
+            RequiresHscn = hostingType?.RequiresHscn;
+            HostingModel = hostingType?.HostingModel;
         }
 
         [Required]

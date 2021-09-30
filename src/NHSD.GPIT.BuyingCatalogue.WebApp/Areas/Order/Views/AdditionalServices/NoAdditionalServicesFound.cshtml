@@ -1,7 +1,8 @@
 ﻿@model NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.AdditionalServices.NoAdditionalServicesFoundModel;
 @{
-    ViewData["Title"] = Model.Title;
+    ViewBag.Title = Model.Title;
 }
 
 <partial name="Partials/_BackLink" model="Model" />
-<nhs-page-title title="@Model.Title" advice="There are no Additional Services offered by this supplier. Go back to the Additional Services dashboard and select continue to complete the section." />
+<nhs-page-title title="@ViewBag.Title"
+                advice="There are no Additional Services offered by this supplier. Go back to the Additional Services dashboard and select continue to complete the section." />

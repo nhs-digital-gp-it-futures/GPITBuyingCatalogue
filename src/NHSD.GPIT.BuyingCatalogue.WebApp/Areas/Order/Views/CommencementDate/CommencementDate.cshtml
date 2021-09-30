@@ -1,13 +1,13 @@
 ﻿@model NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.CommencementDate.CommencementDateModel;
 @{
-    ViewData["Title"] = Model.Title;
+    ViewBag.Title = Model.Title;
 }
 
 <partial name="Partials/_BackLink" model="Model" />
 <div class="nhsuk-grid-row">
     <div class="nhsuk-grid-column-two-thirds">
         <nhs-validation-summary />
-        <nhs-page-title title="@Model.Title"
+        <nhs-page-title title="@ViewBag.Title"
                         advice="Enter the date that this Call-off Agreement will begin." />
         <form method="post">
             <input type="hidden" asp-for="@Model.BackLink" />

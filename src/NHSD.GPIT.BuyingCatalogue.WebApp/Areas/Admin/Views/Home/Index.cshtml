@@ -2,13 +2,13 @@
 @using NHSD.GPIT.BuyingCatalogue.Framework.Extensions
 @using CatalogueSolutionsController = NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers.CatalogueSolutionsController
 @{
-    ViewData["Title"] = "Admin landing page";
+    ViewBag.Title = "Buying Catalogue admin";
 }
 
 <div class="nhsuk-grid-row">
     <div class="nhsuk-grid-column-two-thirds">
 
-        <nhs-page-title title="Buying Catalogue admin"
+        <nhs-page-title title="@ViewBag.Title"
                         advice="Manage organisations, user accounts and solutions on the Buying Catalogue." />
 
         <hr>

@@ -3,15 +3,15 @@
 
 @model NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.SupplierModels.ManageSuppliersModel
 @{
-    ViewData["Title"] = "Manage Suppliers";
+    ViewBag.Title = "Manage suppliers";
 }
 
 @section Scripts{
     <script type="text/javascript" src="@Url.Content("~/js/SupplierManagement.min.js")" asp-append-version="true"></script>
 }
 
-<nhs-page-title title="Manage supplier organisations"
-                advice="Add a new supplier organisation or edit the details for one that's already been created." />
+<nhs-page-title title="@ViewBag.Title"
+                advice="Add a new supplier or edit the details for one that's already been created." />
 
 <vc:nhs-action-link url="@Url.Action(
                         nameof(SuppliersController.AddSupplierDetails),

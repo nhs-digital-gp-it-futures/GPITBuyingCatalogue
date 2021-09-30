@@ -4,15 +4,15 @@ using NHSD.GPIT.BuyingCatalogue.WebApp.Models;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.HostingTypeModels
 {
-    public class BaseCloudModel : NavBaseModel
+    public abstract class BaseCloudModel : NavBaseModel
     {
-        public BaseCloudModel()
+        protected BaseCloudModel()
         {
             BackLink = "./";
             BackLinkText = "Go back";
         }
 
-        public BaseCloudModel(CatalogueItem solution)
+        protected BaseCloudModel(CatalogueItem solution)
             : this()
         {
             SolutionName = solution.Name;

@@ -1,13 +1,13 @@
 ﻿@model NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.SupplierModels.EditSupplierDetailsModel
 @{
-    ViewData["Title"] = "Supplier details";
+    ViewBag.Title = "Supplier details";
 }
 
 <partial name="Partials/_BackLink" model="Model" />
 <div class="nhsuk-grid-row">
     <div class="nhsuk-grid-column-two-thirds">
         <nhs-validation-summary />
-        <nhs-page-title title="@ViewData["Title"]"
+        <nhs-page-title title="@ViewBag.Title"
                         caption="@Model.SupplierDisplayName"
                         advice="Provide the following details about the supplier." />
 

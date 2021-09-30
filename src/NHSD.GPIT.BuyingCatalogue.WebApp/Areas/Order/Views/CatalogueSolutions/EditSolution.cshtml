@@ -2,7 +2,7 @@
 @using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers;
 @model NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.CatalogueSolutions.EditSolutionModel;
 @{
-    ViewData["Title"] = Model.Title;
+    ViewBag.Title = Model.Title;
 }
 
 <div data-test-id="order-item-page">
@@ -10,7 +10,8 @@
     <div class="nhsuk-grid-row">
         <div class="nhsuk-grid-column-two-thirds">
             <nhs-validation-summary />
-            <nhs-page-title title="@Model.Title" advice="The information we have about this order has been included, but can be changed if required." />
+            <nhs-page-title title="@ViewBag.Title" 
+                            advice="The information we have about this order has been included, but can be changed if required." />
         </div>
         <form method="post">
             <input type="hidden" asp-for="@Model.BackLink" />

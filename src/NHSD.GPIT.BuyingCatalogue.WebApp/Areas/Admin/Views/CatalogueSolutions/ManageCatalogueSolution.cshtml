@@ -2,7 +2,7 @@
 @using NHSD.GPIT.BuyingCatalogue.Framework.Extensions
 @model NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.ManageCatalogueSolutionModel;
 @{
-    ViewData["Title"] = Model.Solution.Name;
+    ViewBag.Title = Model.Solution.Name;
 }
 
 @section Breadcrumbs {
@@ -22,7 +22,7 @@
 
 <div class="nhsuk-grid-row">
     <div class="nhsuk-grid-column-full">
-        <nhs-page-title title="@Model.Solution.Name"
+        <nhs-page-title title="@ViewBag.Title"
                         caption="@Model.Solution.Supplier.Name"
                         advice="Explain what your Catalogue Solution is for and how it works. This information will be published on the Buying Catalogue to help buyers understand if it meets their needs." />
         @if (!string.IsNullOrWhiteSpace(Model.LastUpdatedByName))

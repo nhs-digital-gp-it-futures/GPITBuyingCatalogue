@@ -6,14 +6,14 @@
 @model NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.ListPriceModels.ManageListPricesModel
 
 @{
-    ViewData["Title"] = "Manage List Prices";
+    ViewBag.Title = "List price";
 }
 
 <partial name="Partials/_BackLink" model="Model" />
 <div class="nhsuk-grid-row">
     <div class="nhsuk-grid-column-two-thirds">
         <nhs-validation-summary />
-        <nhs-page-title title="List price"
+        <nhs-page-title title="@ViewBag.Title"
                         caption="@Model.CatalogueName"
                         advice="Provide details of how much your Catalogue Solution costs. You must add at least one price type." />
 
