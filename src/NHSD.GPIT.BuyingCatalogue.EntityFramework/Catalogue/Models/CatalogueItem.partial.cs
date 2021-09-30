@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using Newtonsoft.Json;
+using System.Text.Json;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 
 namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models
@@ -14,7 +14,7 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models
             ?? new CatalogueItemCapability { CatalogueItemId = Id };
 
         public virtual string[] Features() =>
-            HasFeatures() ? JsonConvert.DeserializeObject<string[]>(Solution.Features) : null;
+            HasFeatures() ? JsonSerializer.Deserialize<string[]>(Solution.Features, new JsonSerializerOptions { PropertyNameCaseInsensitive = true }) : null;
 
         public MarketingContact FirstContact() =>
             Solution?.MarketingContacts?.FirstOrDefault() ?? new MarketingContact();

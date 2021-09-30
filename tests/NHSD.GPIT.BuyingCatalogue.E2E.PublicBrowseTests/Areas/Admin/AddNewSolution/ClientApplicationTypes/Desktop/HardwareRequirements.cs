@@ -7,6 +7,7 @@ using Microsoft.EntityFrameworkCore;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Utils;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.TestBases;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
+using NHSD.GPIT.BuyingCatalogue.Framework.Serialization;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers;
 using Xunit;
 
@@ -44,7 +45,8 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.AddNewSolution.ClientAp
             await using var context = GetEndToEndDbContext();
             var solution = await context.Solutions.SingleAsync(s => s.CatalogueItemId == SolutionId);
 
-            var hardwareRequirements = JsonSerializer.Deserialize<ServiceContracts.Solutions.ClientApplication>(solution.ClientApplication)?.NativeDesktopHardwareRequirements;
+            var hardwareRequirements = JsonDeserializer.Deserialize<ServiceContracts.Solutions.ClientApplication>(solution.ClientApplication)
+                ?.NativeDesktopHardwareRequirements;
 
             hardwareRequirements.Should().NotBeNull();
             hardwareRequirements.Should().Be(expectedRequirements);
