@@ -16,6 +16,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.AddNewSolution
 {
     public sealed class AssociatedServices : AuthorityTestBase, IClassFixture<LocalWebApplicationFactory>
     {
+        private const string TargetServiceId = "99999--S-999";
         private static readonly CatalogueItemId SolutionId = new(99999, "001");
 
         private static readonly Dictionary<string, string> Parameters = new()
@@ -121,6 +122,26 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.AddNewSolution
             solution = await context.CatalogueItems.Include(c => c.SupplierServiceAssociations).SingleAsync(s => s.Id == SolutionId);
 
             solution.SupplierServiceAssociations.Should().BeEmpty();
+        }
+
+        [Fact]
+        public void AssociatedServices_ClickAddAssociatedService_ExpectedResult()
+        {
+            CommonActions.ClickLinkElement(CommonSelectors.ActionLink);
+
+            CommonActions.PageLoadedCorrectGetIndex(typeof(AssociatedServicesController), nameof(AssociatedServicesController.AddAssociatedService))
+                .Should()
+                .BeTrue();
+        }
+
+        [Fact]
+        public void AssociatedServices_ClickEditLink_ExpectedResult()
+        {
+            CommonActions.ClickLinkElement(Objects.Admin.AssociatedServices.AssociatedServices.EditLink, TargetServiceId);
+
+            CommonActions.PageLoadedCorrectGetIndex(typeof(AssociatedServicesController), nameof(AssociatedServicesController.EditAssociatedService))
+                .Should()
+                .BeTrue();
         }
     }
 }
