@@ -476,5 +476,14 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
 
             await dbContext.SaveChangesAsync();
         }
+
+        public async Task SavePublicationStatus(CatalogueItemId solutionId, PublicationStatus publicationStatus)
+        {
+            var solution = await GetSolution(solutionId);
+
+            solution.PublishedStatus = publicationStatus;
+
+            await dbContext.SaveChangesAsync();
+        }
     }
 }
