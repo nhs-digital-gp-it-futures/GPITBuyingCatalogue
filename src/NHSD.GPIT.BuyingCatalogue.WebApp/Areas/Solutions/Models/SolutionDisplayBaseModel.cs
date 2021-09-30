@@ -119,21 +119,17 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models
         {
         }
 
-        protected SolutionDisplayBaseModel(Solution solution)
-            : this(solution.CatalogueItem)
-        {
-            ClientApplication = solution.ClientApplication == null
-                ? new ClientApplication()
-                : JsonDeserializer.Deserialize<ClientApplication>(solution.ClientApplication);
-
-            LastReviewed = solution.LastUpdated;
-        }
-
         protected SolutionDisplayBaseModel(CatalogueItem catalogueItem)
         {
             SolutionId = catalogueItem.Id;
             SolutionName = catalogueItem.Name;
             PublicationStatus = catalogueItem.PublishedStatus;
+
+            ClientApplication = catalogueItem.Solution.ClientApplication == null
+                ? new ClientApplication()
+                : JsonDeserializer.Deserialize<ClientApplication>(catalogueItem.Solution.ClientApplication);
+
+            LastReviewed = catalogueItem.Solution.LastUpdated;
 
             SetVisibleSections(catalogueItem);
             SetPaginationFooter();
@@ -185,6 +181,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models
         public void SetShowTrue(int index) => sections[index].Show = true;
 
         public bool IsInRemediation() => PublicationStatus == PublicationStatus.InRemediation;
+
+        public bool IsSuspended() => PublicationStatus == PublicationStatus.Suspended;
 
         private void SetVisibleSections(CatalogueItem solution)
         {

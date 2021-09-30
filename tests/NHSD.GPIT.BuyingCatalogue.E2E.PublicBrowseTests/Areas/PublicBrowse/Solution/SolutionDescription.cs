@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using FluentAssertions;
 using Microsoft.EntityFrameworkCore;
+using NHSD.GPIT.BuyingCatalogue.E2ETests.Objects.Common;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Utils;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.TestBases;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
@@ -54,6 +55,51 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.PublicBrowse.Solution
                 .ElementExists(Objects.PublicBrowse.SolutionObjects.InRemediationNotice)
                 .Should()
                 .BeFalse();
+        }
+
+        [Fact]
+        public async Task Description_IsSuspended_SuspendedNoticeDisplayed()
+        {
+            await using var context = GetEndToEndDbContext();
+            var solution = await context.CatalogueItems.SingleAsync(ci => ci.Id == SolutionId);
+            solution.PublishedStatus = PublicationStatus.Suspended;
+            await context.SaveChangesAsync();
+
+            Driver.Navigate().Refresh();
+
+            CommonActions
+                .ElementExists(Objects.PublicBrowse.SolutionObjects.SolutionSuspendedNotice)
+                .Should()
+                .BeTrue();
+
+            CommonActions
+                .ElementExists(Objects.PublicBrowse.SolutionObjects.SolutionNavigationMenu)
+                .Should()
+                .BeFalse();
+
+            CommonActions
+                .ElementExists(CommonSelectors.PaginationNext)
+                .Should()
+                .BeFalse();
+        }
+
+        [Fact]
+        public void Description_NotSuspended_SuspendedNoticeNotDisplayed()
+        {
+            CommonActions
+                .ElementExists(Objects.PublicBrowse.SolutionObjects.SolutionSuspendedNotice)
+                .Should()
+                .BeFalse();
+
+            CommonActions
+                .ElementExists(Objects.PublicBrowse.SolutionObjects.SolutionNavigationMenu)
+                .Should()
+                .BeTrue();
+
+            CommonActions
+                .ElementExists(CommonSelectors.PaginationNext)
+                .Should()
+                .BeTrue();
         }
 
         public void Dispose()

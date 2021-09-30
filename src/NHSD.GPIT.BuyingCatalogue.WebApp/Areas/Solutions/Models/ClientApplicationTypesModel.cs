@@ -13,8 +13,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models
         private const string KeyNativeDesktop = "native-desktop";
         private const string KeyNativeMobile = "native-mobile";
 
-        public ClientApplicationTypesModel(Solution solution)
-            : base(solution)
+        public ClientApplicationTypesModel(CatalogueItem catalogueItem)
+            : base(catalogueItem)
         {
             BrowserBasedApplication = GetBrowserBasedApplication(ClientApplication);
             NativeDesktopApplication = GetNativeDesktopApplication(ClientApplication);
