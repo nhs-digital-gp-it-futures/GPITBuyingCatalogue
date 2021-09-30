@@ -55,9 +55,9 @@
                 </nhs-table-row-container>
                 <nhs-table-row-container>
                     <nhs-table-cell>Description</nhs-table-cell>
-                    <nhs-table-cell>Yes</nhs-table-cell>                    
+                    <nhs-table-cell>Yes</nhs-table-cell>
                     <nhs-table-cell>
-                        <nhs-tag status-enum="@Model.DescriptionStatus()"/>
+                        <nhs-tag status-enum="@Model.DescriptionStatus()" />
                     </nhs-table-cell>
                     <nhs-table-cell>
                         <a asp-action="Description" asp-controller="CatalogueSolutions"
@@ -66,9 +66,9 @@
                 </nhs-table-row-container>
                 <nhs-table-row-container>
                     <nhs-table-cell>Features</nhs-table-cell>
-                    <nhs-table-cell>No</nhs-table-cell>                    
+                    <nhs-table-cell>No</nhs-table-cell>
                     <nhs-table-cell>
-                        <nhs-tag status-enum="@Model.FeaturesStatus()"/>
+                        <nhs-tag status-enum="@Model.FeaturesStatus()" />
                     </nhs-table-cell>
                     <nhs-table-cell>
                         <a asp-action="Features" asp-route-solutionId="@Model.Solution.Id">Edit</a>
@@ -110,9 +110,9 @@
                 </nhs-table-row-container>
                 <nhs-table-row-container>
                     <nhs-table-cell>Interoperability</nhs-table-cell>
-                    <nhs-table-cell>No</nhs-table-cell>                    
+                    <nhs-table-cell>No</nhs-table-cell>
                     <nhs-table-cell>
-                        <nhs-tag status-enum="@Model.InteroperabilityStatus()"/>
+                        <nhs-tag status-enum="@Model.InteroperabilityStatus()" />
                     </nhs-table-cell>
                     <nhs-table-cell>
                         <a asp-action="@nameof(InteroperabilityController.Interoperability)"
@@ -122,9 +122,9 @@
                 </nhs-table-row-container>
                 <nhs-table-row-container>
                     <nhs-table-cell>Implementation</nhs-table-cell>
-                    <nhs-table-cell>No</nhs-table-cell>                    
+                    <nhs-table-cell>No</nhs-table-cell>
                     <nhs-table-cell>
-                        <nhs-tag status-enum="@Model.ImplementationStatus()"/>
+                        <nhs-tag status-enum="@Model.ImplementationStatus()" />
                     </nhs-table-cell>
                     <nhs-table-cell>
                         <a asp-action="Implementation" asp-controller="CatalogueSolutions"
@@ -135,7 +135,7 @@
                     <nhs-table-cell>Client application type</nhs-table-cell>
                     <nhs-table-cell>Yes</nhs-table-cell>                    
                     <nhs-table-cell>
-                        <nhs-tag status-enum="@Model.ClientApplicationTypeStatus()"/>
+                        <nhs-tag status-enum="@Model.ClientApplicationTypeStatus()" />
                     </nhs-table-cell>
                     <nhs-table-cell>
                         <a asp-action="ClientApplicationType" asp-controller="CatalogueSolutions" asp-route-solutionId="@Model.Solution.Id">Edit</a>
@@ -145,7 +145,7 @@
                     <nhs-table-cell>Hosting type</nhs-table-cell>
                     <nhs-table-cell>Yes</nhs-table-cell>                    
                     <nhs-table-cell>
-                        <nhs-tag status-enum="@Model.HostingTypeStatus()"/>
+                        <nhs-tag status-enum="@Model.HostingTypeStatus()" />
                     </nhs-table-cell>
                     <nhs-table-cell>
                         <a asp-action="HostingType" asp-controller="CatalogueSolutions" asp-route-solutionId="@Model.Solution.Id">Edit</a>
@@ -159,9 +159,9 @@
                 </nhs-table-row-container>
                 <nhs-table-row-container>
                     <nhs-table-cell>Development plans</nhs-table-cell>
-                    <nhs-table-cell>No</nhs-table-cell>                    
+                    <nhs-table-cell>No</nhs-table-cell>
                     <nhs-table-cell>
-                        <nhs-tag status-enum="@Model.RoadmapStatus()"/>
+                        <nhs-tag status-enum="@Model.RoadmapStatus()" />
                     </nhs-table-cell>
                     <nhs-table-cell>
                         <a asp-action="Roadmap" asp-route-solutionId="@Model.Solution.Id">Edit</a>
@@ -176,17 +176,22 @@
             </nhs-table>
         </nhs-fieldset-form-container>
 
-        <nhs-fieldset-form-label asp-for="@Model"
-                                 label-text="What would you like to do with this Catalogue Solution?"
-                                 label-hint="Select one option."
-                                 size="Large">
-            <nhs-radio-buttons asp-for="SelectedOption"
-                               values="Model.PublicationStatuses.Cast<object>()"
-                               value-name="EnumMemberName"
-                               display-name="Name" />
-        </nhs-fieldset-form-label>
+        <form method="post" asp-action="SetPublicationStatus" asp-route-solutionId="@Model.Solution.Id">
+            <input type="hidden" asp-for="Solution" />
+            <input type="hidden" asp-for="BackLink" />
+            <input type="hidden" asp-for="BackLinkText" />
+            <nhs-fieldset-form-label asp-for="@Model"
+                                     label-text="What would you like to do with this Catalogue Solution?"
+                                     label-hint="Select one option."
+                                     size="Large">
+                <nhs-radio-buttons asp-for="SelectedPublicationStatus"
+                                   values="Model.PublicationStatuses.Cast<object>()"
+                                   value-name="Value"
+                                   display-name="Text" />
+            </nhs-fieldset-form-label>
 
-        <nhs-submit-button text="Continue" />
+            <nhs-submit-button text="Continue" />
+        </form>
     </div>
 </div>
 

@@ -65,5 +65,7 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions
         Task UpdateSolutionListPrice(CatalogueItemId solutionId, SaveSolutionListPriceModel model);
 
         Task DeleteSolutionListPrice(CatalogueItemId solutionId, int cataloguePriceId);
+
+        Task SavePublicationStatus(CatalogueItemId solutionId, PublicationStatus publicationStatus);
     }
 }
