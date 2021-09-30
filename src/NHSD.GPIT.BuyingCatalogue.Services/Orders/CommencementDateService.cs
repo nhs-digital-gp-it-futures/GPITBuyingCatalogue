@@ -12,8 +12,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
     {
         private readonly BuyingCatalogueDbContext dbContext;
 
-        public CommencementDateService(
-            BuyingCatalogueDbContext dbContext)
+        public CommencementDateService(BuyingCatalogueDbContext dbContext)
         {
             this.dbContext = dbContext ?? throw new ArgumentNullException(nameof(dbContext));
         }

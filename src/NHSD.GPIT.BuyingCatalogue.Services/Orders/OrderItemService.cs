@@ -108,10 +108,11 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
 
         public async Task DeleteOrderItem(CallOffId callOffId, CatalogueItemId catalogueItemId)
         {
-            var order = await orderService.GetOrder(callOffId);
-
-            if (order is null)
-                throw new ArgumentNullException(nameof(catalogueItemId));
+            var order = await dbContext.Orders
+                .Where(o => o.Id == callOffId.Id)
+                .Include(o => o.OrderItems)
+                .Include(o => o.OrderItems).ThenInclude(i => i.CatalogueItem).ThenInclude(a => a.AdditionalService)
+                .SingleAsync();
 
             order.DeleteOrderItemAndUpdateProgress(catalogueItemId);
 

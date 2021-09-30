@@ -1,5 +1,5 @@
-﻿using FluentAssertions;
-using Newtonsoft.Json;
+﻿using System.Text.Json;
+using FluentAssertions;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions;
@@ -26,7 +26,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Framework.UnitTests.Extensions
         public static void SolutionExtension_ReturnsClientApplicationWhenSet()
         {
             var clientApplication = new ClientApplication { AdditionalInformation = "Additional Information" };
-            var json = JsonConvert.SerializeObject(clientApplication);
+            var json = JsonSerializer.Serialize(clientApplication);
             var solution = new Solution { ClientApplication = json };
 
             var result = solution.GetClientApplication();
@@ -51,7 +51,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Framework.UnitTests.Extensions
         public static void SolutionExtension_ReturnsFeaturesWhenSet()
         {
             var features = new[] { "Feature 1", "Feature 2", "Feature 3" };
-            var json = JsonConvert.SerializeObject(features);
+            var json = JsonSerializer.Serialize(features);
             var solution = new Solution { Features = json };
 
             var result = solution.GetFeatures();
