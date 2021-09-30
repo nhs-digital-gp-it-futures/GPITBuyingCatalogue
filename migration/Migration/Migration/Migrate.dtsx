@@ -12,8 +12,8 @@
   DTS:ObjectName="Migrate"
   DTS:PackageType="5"
   DTS:ProtectionLevel="0"
-  DTS:VersionBuild="296"
-  DTS:VersionGUID="{B9048340-F19F-417D-8BF2-75DA71ABED25}">
+  DTS:VersionBuild="297"
+  DTS:VersionGUID="{8421A377-3717-4A36-A8AC-DCF99FBEA30E}">
   <DTS:Property
     DTS:Name="PackageFormatVersion">8</DTS:Property>
   <DTS:ConnectionManagers>
@@ -2878,8 +2878,13 @@ ORDER BY PrimaryOrganisationId;</property>
                         <externalMetadataColumn
                           refId="Package\Create Pricing Lookup Table\Add Deployed Units to Lookup Table\Get Deployed Pricing Units.Outputs[OLE DB Source Output].ExternalColumns[Description]"
                           dataType="wstr"
-                          length="40"
+                          length="100"
                           name="Description" />
+                        <externalMetadataColumn
+                          refId="Package\Create Pricing Lookup Table\Add Deployed Units to Lookup Table\Get Deployed Pricing Units.Outputs[OLE DB Source Output].ExternalColumns[Definition]"
+                          dataType="wstr"
+                          length="1000"
+                          name="Definition" />
                       </externalMetadataColumns>
                     </output>
                     <output
@@ -17550,8 +17555,13 @@ where [refTable].[Id] = ?</property>
                     <externalMetadataColumn
                       refId="Package\Migrate Pricing Units\Save Pricing Units.Inputs[OLE DB Destination Input].ExternalColumns[Description]"
                       dataType="wstr"
-                      length="40"
+                      length="100"
                       name="Description" />
+                    <externalMetadataColumn
+                      refId="Package\Migrate Pricing Units\Save Pricing Units.Inputs[OLE DB Destination Input].ExternalColumns[Definition]"
+                      dataType="wstr"
+                      length="1000"
+                      name="Definition" />
                   </externalMetadataColumns>
                 </input>
               </inputs>
@@ -24365,7 +24375,7 @@ where [refTable].[OriginalId] = ?</property>
                   containsID="true"
                   dataType="System.String"
                   description="Specifies the list of lineage identifiers that map to the parameters that the SQL statement in the SQLCommand property uses. Entries in the list are separated by semicolons."
-                  name="ParameterMap">#{Package\Migrate Users\271:invalid};</property>
+                  name="ParameterMap">#{Package\Migrate Users\267:invalid};</property>
                 <property
                   dataType="System.Int32"
                   description="Specifies the column code page to use when code page information is unavailable from the data source."
@@ -26444,18 +26454,6 @@ where [refTable].[OriginalId] = ?</property>
       <GraphLayout
         Capacity="16" xmlns="clr-namespace:Microsoft.SqlServer.IntegrationServices.Designer.Model.Serialization;assembly=Microsoft.SqlServer.IntegrationServices.Graph" xmlns:mssgle="clr-namespace:Microsoft.SqlServer.Graph.LayoutEngine;assembly=Microsoft.SqlServer.Graph" xmlns:assembly="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:mssgm="clr-namespace:Microsoft.SqlServer.Graph.Model;assembly=Microsoft.SqlServer.Graph">
         <NodeLayout
-          Size="161,42"
-          Id="Package\Create Pricing Lookup Table\Stage Pricing Units\Get Pricing Units"
-          TopLeft="273,7.5" />
-        <NodeLayout
-          Size="233,42"
-          Id="Package\Create Pricing Lookup Table\Stage Pricing Units\Lookup Existing Lookup Entries"
-          TopLeft="116,210.5" />
-        <NodeLayout
-          Size="245,42"
-          Id="Package\Create Pricing Lookup Table\Stage Pricing Units\Add Pricing Units to Lookup Table"
-          TopLeft="110,312.5" />
-        <NodeLayout
           Size="127,42"
           Id="Package\Create Pricing Lookup Table\Stage Pricing Units\Inner Join"
           TopLeft="169,108.5" />
@@ -26463,6 +26461,64 @@ where [refTable].[OriginalId] = ?</property>
           Size="190,42"
           Id="Package\Create Pricing Lookup Table\Stage Pricing Units\Get Used Pricing Units"
           TopLeft="18.5,7.5" />
+        <NodeLayout
+          Size="233,42"
+          Id="Package\Create Pricing Lookup Table\Stage Pricing Units\Lookup Existing Lookup Entries"
+          TopLeft="116,210.5" />
+        <NodeLayout
+          Size="161,42"
+          Id="Package\Create Pricing Lookup Table\Stage Pricing Units\Get Pricing Units"
+          TopLeft="273,7.5" />
+        <NodeLayout
+          Size="245,42"
+          Id="Package\Create Pricing Lookup Table\Stage Pricing Units\Add Pricing Units to Lookup Table"
+          TopLeft="110,312.5" />
+        <EdgeLayout
+          Id="Package\Create Pricing Lookup Table\Stage Pricing Units.Paths[Merge Join Output]"
+          TopLeft="232.5,150.5">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="0,60"
+              Start="0,0"
+              End="0,52.5">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,52.5" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <EdgeLayout
+          Id="Package\Create Pricing Lookup Table\Stage Pricing Units.Paths[Lookup No Match Output]"
+          TopLeft="232.5,252.5">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="0,60"
+              Start="0,0"
+              End="0,52.5">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,52.5" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <mssgm:EdgeLabel
+              BoundingBox="-55.80638671875,20.4453125,111.6127734375,11.609375"
+              RelativePosition="Any" />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
         <EdgeLayout
           Id="Package\Create Pricing Lookup Table\Stage Pricing Units.Paths[OLE DB Source Output1]"
           TopLeft="113.5,49.5">
@@ -26529,52 +26585,6 @@ where [refTable].[OriginalId] = ?</property>
           </EdgeLayout.Curve>
           <EdgeLayout.Labels>
             <EdgeLabelCollection />
-          </EdgeLayout.Labels>
-        </EdgeLayout>
-        <EdgeLayout
-          Id="Package\Create Pricing Lookup Table\Stage Pricing Units.Paths[Merge Join Output]"
-          TopLeft="232.5,150.5">
-          <EdgeLayout.Curve>
-            <mssgle:Curve
-              StartConnector="{assembly:Null}"
-              EndConnector="0,60"
-              Start="0,0"
-              End="0,52.5">
-              <mssgle:Curve.Segments>
-                <mssgle:SegmentCollection
-                  Capacity="5">
-                  <mssgle:LineSegment
-                    End="0,52.5" />
-                </mssgle:SegmentCollection>
-              </mssgle:Curve.Segments>
-            </mssgle:Curve>
-          </EdgeLayout.Curve>
-          <EdgeLayout.Labels>
-            <EdgeLabelCollection />
-          </EdgeLayout.Labels>
-        </EdgeLayout>
-        <EdgeLayout
-          Id="Package\Create Pricing Lookup Table\Stage Pricing Units.Paths[Lookup No Match Output]"
-          TopLeft="232.5,252.5">
-          <EdgeLayout.Curve>
-            <mssgle:Curve
-              StartConnector="{assembly:Null}"
-              EndConnector="0,60"
-              Start="0,0"
-              End="0,52.5">
-              <mssgle:Curve.Segments>
-                <mssgle:SegmentCollection
-                  Capacity="5">
-                  <mssgle:LineSegment
-                    End="0,52.5" />
-                </mssgle:SegmentCollection>
-              </mssgle:Curve.Segments>
-            </mssgle:Curve>
-          </EdgeLayout.Curve>
-          <EdgeLayout.Labels>
-            <mssgm:EdgeLabel
-              BoundingBox="-55.80638671875,20.4453125,111.6127734375,11.609375"
-              RelativePosition="Any" />
           </EdgeLayout.Labels>
         </EdgeLayout>
       </GraphLayout>
@@ -29710,10 +29720,6 @@ where [refTable].[OriginalId] = ?</property>
           Id="Package\Migrate Pricing Units\Save Pricing Units"
           TopLeft="159,315.5" />
         <NodeLayout
-          Size="127,42"
-          Id="Package\Migrate Pricing Units\Inner Join"
-          TopLeft="180,111.5" />
-        <NodeLayout
           Size="217,42"
           Id="Package\Migrate Pricing Units\Get Production Pricing Units"
           TopLeft="266,5.5" />
@@ -29725,6 +29731,44 @@ where [refTable].[OriginalId] = ?</property>
           Size="200,42"
           Id="Package\Migrate Pricing Units\Get Lookup Pricing Units"
           TopLeft="5.5,5.5" />
+        <NodeLayout
+          Size="127,42"
+          Id="Package\Migrate Pricing Units\Inner Join"
+          TopLeft="180,111.5" />
+        <EdgeLayout
+          Id="Package\Migrate Pricing Units.Paths[OLE DB Source Output1]"
+          TopLeft="374.5,47.5">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="-111.166666666667,64"
+              Start="0,0"
+              End="-111.166666666667,56.5">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,33.9222395023328" />
+                  <mssgle:CubicBezierSegment
+                    Point1="0,33.9222395023328"
+                    Point2="0,37.9222395023328"
+                    Point3="-4,37.9222395023328" />
+                  <mssgle:LineSegment
+                    End="-107.166666666667,37.9222395023328" />
+                  <mssgle:CubicBezierSegment
+                    Point1="-107.166666666667,37.9222395023328"
+                    Point2="-111.166666666667,37.9222395023328"
+                    Point3="-111.166666666667,41.9222395023328" />
+                  <mssgle:LineSegment
+                    End="-111.166666666667,56.5" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
         <EdgeLayout
           Id="Package\Migrate Pricing Units.Paths[OLE DB Source Output]"
           TopLeft="105.5,47.5">
@@ -29803,40 +29847,6 @@ where [refTable].[OriginalId] = ?</property>
             <mssgm:EdgeLabel
               BoundingBox="-55.80638671875,20.4453125,111.6127734375,11.609375"
               RelativePosition="Any" />
-          </EdgeLayout.Labels>
-        </EdgeLayout>
-        <EdgeLayout
-          Id="Package\Migrate Pricing Units.Paths[OLE DB Source Output1]"
-          TopLeft="374.5,47.5">
-          <EdgeLayout.Curve>
-            <mssgle:Curve
-              StartConnector="{assembly:Null}"
-              EndConnector="-111.166666666667,64"
-              Start="0,0"
-              End="-111.166666666667,56.5">
-              <mssgle:Curve.Segments>
-                <mssgle:SegmentCollection
-                  Capacity="5">
-                  <mssgle:LineSegment
-                    End="0,33.9222395023328" />
-                  <mssgle:CubicBezierSegment
-                    Point1="0,33.9222395023328"
-                    Point2="0,37.9222395023328"
-                    Point3="-4,37.9222395023328" />
-                  <mssgle:LineSegment
-                    End="-107.166666666667,37.9222395023328" />
-                  <mssgle:CubicBezierSegment
-                    Point1="-107.166666666667,37.9222395023328"
-                    Point2="-111.166666666667,37.9222395023328"
-                    Point3="-111.166666666667,41.9222395023328" />
-                  <mssgle:LineSegment
-                    End="-111.166666666667,56.5" />
-                </mssgle:SegmentCollection>
-              </mssgle:Curve.Segments>
-            </mssgle:Curve>
-          </EdgeLayout.Curve>
-          <EdgeLayout.Labels>
-            <EdgeLabelCollection />
           </EdgeLayout.Labels>
         </EdgeLayout>
       </GraphLayout>
