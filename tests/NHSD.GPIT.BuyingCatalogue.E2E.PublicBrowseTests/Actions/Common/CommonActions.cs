@@ -48,6 +48,11 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Actions.Common
                 .FindElement(By.TagName("input"))
                 .Click();
 
+        internal IEnumerable<string> GetRadioButtonsOptions() =>
+            Driver
+                .FindElements(CommonSelectors.RadioButtonItems)
+                .Select(e => e.Text);
+
         internal IEnumerable<string> GetTableRowCells(int cellIndex = 0)
         {
             return Driver.FindElements(CommonSelectors.TableRow)
