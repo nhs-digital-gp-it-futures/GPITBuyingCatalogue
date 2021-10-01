@@ -6,8 +6,10 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
+using NHSD.GPIT.BuyingCatalogue.Framework.Constants;
 using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.AssociatedServices;
+using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Caching;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.BrowserBasedModels;
@@ -22,15 +24,20 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
     [Route("admin/catalogue-solutions")]
     public sealed class CatalogueSolutionsController : Controller
     {
+        private static readonly string[] FilterCacheKeys = new string[] { FrameworkFilterKeys.GenericCacheKey };
+
         private readonly ISolutionsService solutionsService;
         private readonly IAssociatedServicesService associatedServicesService;
+        private readonly IFilterCache filterCache;
 
         public CatalogueSolutionsController(
             ISolutionsService solutionsService,
-            IAssociatedServicesService associatedServicesService)
+            IAssociatedServicesService associatedServicesService,
+            IFilterCache filterCache)
         {
             this.solutionsService = solutionsService ?? throw new ArgumentNullException(nameof(solutionsService));
             this.associatedServicesService = associatedServicesService ?? throw new ArgumentNullException(nameof(associatedServicesService));
+            this.filterCache = filterCache ?? throw new ArgumentNullException(nameof(filterCache));
         }
 
         [HttpGet]
@@ -78,7 +85,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
             var solution = await solutionsService.GetSolution(solutionId);
             var associatedServices = await associatedServicesService.GetAssociatedServicesForSupplier(solution.SupplierId);
 
-            var model = new ManageCatalogueSolutionModel(solution)
+            var model = new ManageCatalogueSolutionModel()
+                .WithSolution(solution)
                 .WithAssociatedServices(associatedServices);
 
             if (solution.Solution.LastUpdatedBy.HasValue)
@@ -90,6 +98,35 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
             }
 
             return View(model);
+        }
+
+        [HttpPost("manage/{solutionId}")]
+        public async Task<IActionResult> SetPublicationStatus(CatalogueItemId solutionId, ManageCatalogueSolutionModel model)
+        {
+            var solution = await solutionsService.GetSolution(solutionId);
+            if (!ModelState.IsValid)
+            {
+                var associatedServices = await associatedServicesService.GetAssociatedServicesForSupplier(solution.SupplierId);
+
+                return View("ManageCatalogueSolution", model
+                    .WithSolution(solution)
+                    .WithAssociatedServices(associatedServices));
+            }
+
+            if (model.SelectedPublicationStatus != solution.PublishedStatus)
+            {
+                await solutionsService.SavePublicationStatus(solutionId, model.SelectedPublicationStatus);
+                var frameworkIds = FilterCacheKeys
+                    .Concat(solution
+                        .Solution?
+                        .FrameworkSolutions?
+                        .Select(f => f.FrameworkId))
+                    .ToList();
+
+                filterCache.Remove(frameworkIds);
+            }
+
+            return RedirectToAction(nameof(Index));
         }
 
         [HttpGet("manage/{solutionId}/description")]
@@ -549,25 +586,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
                     new { solutionId }),
                 _ => RedirectToAction(nameof(ClientApplicationType), new { solutionId }),
             };
-        }
-
-        [HttpPost("manage/{solutionId}/publication-status")]
-        public async Task<IActionResult> SetPublicationStatus(CatalogueItemId solutionId, ManageCatalogueSolutionModel model)
-        {
-            var solution = await solutionsService.GetSolution(solutionId);
-            if (!ModelState.IsValid)
-            {
-                var associatedServices = await associatedServicesService.GetAssociatedServicesForSupplier(solution.SupplierId);
-
-                return View("ManageCatalogueSolution", model
-                    .WithSolution(solution)
-                    .WithAssociatedServices(associatedServices));
-            }
-
-            if (model.SelectedPublicationStatus != solution.PublishedStatus)
-                await solutionsService.SavePublicationStatus(solutionId, model.SelectedPublicationStatus);
-
-            return RedirectToAction(nameof(Index));
         }
     }
 }
