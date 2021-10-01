@@ -133,11 +133,9 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin
         [Fact]
         public async Task ManageCatalogueSolution_SetPublicationStatus()
         {
-            await using (var context = GetEndToEndDbContext())
-            {
-                (await context.CatalogueItems.SingleAsync(c => c.Id == SolutionId)).PublishedStatus = PublicationStatus.Draft;
-                await context.SaveChangesAsync();
-            }
+            await using var context = GetEndToEndDbContext();
+            (await context.CatalogueItems.SingleAsync(c => c.Id == SolutionId)).PublishedStatus = PublicationStatus.Draft;
+            await context.SaveChangesAsync();
 
             Driver.Navigate().Refresh();
 
@@ -150,16 +148,14 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin
                 .PageLoadedCorrectGetIndex(
                     typeof(CatalogueSolutionsController),
                     nameof(CatalogueSolutionsController.Index))
-                    .Should()
+                .Should()
                 .BeTrue();
 
-            await using (var context = GetEndToEndDbContext())
-            {
-                var publishedStatus = (await context.CatalogueItems.SingleAsync(c => c.Id == SolutionId)).PublishedStatus;
-                publishedStatus
-                    .Should()
-                    .Be(PublicationStatus.Published);
-            }
+            await using var updatedContext = GetEndToEndDbContext();
+            var publishedStatus = (await updatedContext.CatalogueItems.SingleAsync(c => c.Id == SolutionId)).PublishedStatus;
+            publishedStatus
+                .Should()
+                .Be(PublicationStatus.Published);
         }
 
         public void Dispose()
