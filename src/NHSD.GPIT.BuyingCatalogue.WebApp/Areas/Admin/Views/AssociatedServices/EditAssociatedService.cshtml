@@ -21,7 +21,13 @@
                 <nhs-table-cell>Details</nhs-table-cell>
                 <nhs-table-cell>Yes</nhs-table-cell>
                 <nhs-table-cell><nhs-tag colour="Green" text="Completed" /></nhs-table-cell>
-                <nhs-table-cell><a href="#">Edit</a></nhs-table-cell>
+                <nhs-table-cell><a asp-action="@nameof(AssociatedServicesController.EditAssociatedServiceDetails)"
+                   asp-controller="@typeof(AssociatedServicesController).ControllerName()"
+                   asp-route-solutionId="@Model.Solution.Id"
+                   asp-route-associatedServiceId="@Model.AssociatedService.Id"
+                   style="white-space: nowrap;">
+                    Edit
+                </a></nhs-table-cell>
             </nhs-table-row-container>
             <nhs-table-row-container>
                 <nhs-table-cell>Price</nhs-table-cell>

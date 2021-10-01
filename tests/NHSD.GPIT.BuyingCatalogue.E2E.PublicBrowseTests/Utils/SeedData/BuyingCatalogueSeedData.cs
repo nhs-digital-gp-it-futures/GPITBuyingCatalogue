@@ -67,7 +67,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
                 },
                 new CataloguePrice
                 {
-                    CatalogueItemId = new CatalogueItemId(99999, "-S-999"),
+                    CatalogueItemId = new CatalogueItemId(99999, "S-999"),
                     CataloguePriceType = CataloguePriceType.Flat,
                     PricingUnit = new PricingUnit
                     {

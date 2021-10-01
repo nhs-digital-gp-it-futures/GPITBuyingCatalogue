@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Routing;
 using Moq;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
+using NHSD.GPIT.BuyingCatalogue.Framework.Constants;
 
 namespace NHSD.GPIT.BuyingCatalogue.Test.Framework.AutoFixtureCustomisations
 {
@@ -56,6 +57,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Test.Framework.AutoFixtureCustomisations
             var claims = new[]
             {
                 new Claim("primaryOrganisationId", organisationId.ToString()),
+                new Claim(Claims.UserId, 1.ToString()),
             };
 
             return new ClaimsPrincipal(new ClaimsIdentity(claims, "mock"));

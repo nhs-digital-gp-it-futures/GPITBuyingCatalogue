@@ -15,7 +15,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.AddNewSolution
     public sealed class EditAssociatedService : AuthorityTestBase, IClassFixture<LocalWebApplicationFactory>
     {
         private static readonly CatalogueItemId SolutionId = new(99999, "001");
-        private static readonly CatalogueItemId AssociatedServiceId = new(99999, "-S-999");
+        private static readonly CatalogueItemId AssociatedServiceId = new(99999, "S-999");
 
         private static readonly Dictionary<string, string> Parameters = new()
         {

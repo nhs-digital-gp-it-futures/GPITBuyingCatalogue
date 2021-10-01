@@ -15,7 +15,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.AddNewSolution.Associat
 {
     public sealed class AssociatedServices : AuthorityTestBase, IClassFixture<LocalWebApplicationFactory>
     {
-        private const string TargetServiceId = "99999--S-999";
+        private const string TargetServiceId = "99999-S-999";
         private static readonly CatalogueItemId SolutionId = new(99999, "001");
         private static readonly CatalogueItemId SolutionIdNoAssociatedServices = new(99997, "001");
 
@@ -110,7 +110,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.AddNewSolution.Associat
 
             var savedRelatedService = solution.SupplierServiceAssociations.Single();
 
-            savedRelatedService.AssociatedServiceId.Should().BeEquivalentTo(CatalogueItemId.ParseExact("99999--S-999"));
+            savedRelatedService.AssociatedServiceId.Should().BeEquivalentTo(CatalogueItemId.ParseExact("99999-S-999"));
         }
 
         [Fact]

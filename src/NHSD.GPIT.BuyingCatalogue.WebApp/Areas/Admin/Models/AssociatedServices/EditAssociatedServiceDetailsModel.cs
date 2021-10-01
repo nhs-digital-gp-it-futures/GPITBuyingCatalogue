@@ -4,20 +4,23 @@ using NHSD.GPIT.BuyingCatalogue.WebApp.Models;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.AssociatedServices
 {
-    public sealed class AddAssociatedServiceModel : NavBaseModel
+    public sealed class EditAssociatedServiceDetailsModel : NavBaseModel
     {
-        public AddAssociatedServiceModel()
+        public EditAssociatedServiceDetailsModel()
         {
         }
 
-        public AddAssociatedServiceModel(CatalogueItem catalogueItem)
+        public EditAssociatedServiceDetailsModel(CatalogueItem solution, CatalogueItem associatedServiceItem)
         {
-            BackLink = $"/admin/catalogue-solutions/manage/{catalogueItem.Id}/associated-services";
+            BackLink = $"/admin/catalogue-solutions/manage/{solution.Id}/associated-services/{associatedServiceItem.Id}/edit-associated-service/";
             BackLinkText = "Go back";
-            Solution = catalogueItem;
+            AssociatedService = associatedServiceItem;
+            Name = associatedServiceItem.Name;
+            Description = associatedServiceItem.AssociatedService.Description;
+            OrderGuidance = associatedServiceItem.AssociatedService.OrderGuidance;
         }
 
-        public CatalogueItem Solution { get; }
+        public CatalogueItem AssociatedService { get; }
 
         [Required(ErrorMessage = "Enter a name")]
         [StringLength(300)]

@@ -13,7 +13,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
             {
                 new()
                 {
-                    Id = new CatalogueItemId(99999, "-S-999"),
+                    Id = new CatalogueItemId(99999, "S-999"),
                     Name = "Associated Service For Test",
                     CatalogueItemType = CatalogueItemType.AssociatedService,
                     Created = DateTime.UtcNow,
@@ -28,7 +28,22 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
                 },
                 new()
                 {
-                    Id = new CatalogueItemId(99998, "-S-997"),
+                    Id = new CatalogueItemId(99999, "S-998"),
+                    Name = "Duplicate Associated Service For Test",
+                    CatalogueItemType = CatalogueItemType.AssociatedService,
+                    Created = DateTime.UtcNow,
+                    PublishedStatus = PublicationStatus.Published,
+                    SupplierId = 99999,
+                    AssociatedService = new AssociatedService
+                    {
+                        Description = "This is the description of the Associated Service",
+                        OrderGuidance = "This is how to order",
+                        LastUpdated = DateTime.UtcNow,
+                    },
+                },
+                new()
+                {
+                    Id = new CatalogueItemId(99998, "S-997"),
                     Name = "E2E Multiple Prices Associated Service",
                     CatalogueItemType = CatalogueItemType.AssociatedService,
                     Created = DateTime.UtcNow,
@@ -45,7 +60,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
                         new()
                         {
                             CataloguePriceId = 10,
-                            CatalogueItemId = new CatalogueItemId(99998, "-S-997"),
+                            CatalogueItemId = new CatalogueItemId(99998, "S-997"),
                             ProvisioningType = ProvisioningType.Patient,
                             CataloguePriceType = CataloguePriceType.Flat,
                             PricingUnit = new PricingUnit
@@ -62,7 +77,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
                         new()
                         {
                             CataloguePriceId = 11,
-                            CatalogueItemId = new CatalogueItemId(99998, "-S-997"),
+                            CatalogueItemId = new CatalogueItemId(99998, "S-997"),
                             ProvisioningType = ProvisioningType.OnDemand,
                             CataloguePriceType = CataloguePriceType.Flat,
                             PricingUnit = new PricingUnit
@@ -79,7 +94,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
                         new()
                         {
                             CataloguePriceId = 12,
-                            CatalogueItemId = new CatalogueItemId(99998, "-S-997"),
+                            CatalogueItemId = new CatalogueItemId(99998, "S-997"),
                             ProvisioningType = ProvisioningType.Declarative,
                             CataloguePriceType = CataloguePriceType.Flat,
                             PricingUnit = new PricingUnit
@@ -97,7 +112,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
                 },
                 new()
                 {
-                    Id = new CatalogueItemId(99998, "-S-998"),
+                    Id = new CatalogueItemId(99998, "S-998"),
                     Name = "E2E Single Price Associated Service",
                     CatalogueItemType = CatalogueItemType.AssociatedService,
                     Created = DateTime.UtcNow,
@@ -114,7 +129,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
                         new()
                         {
                             CataloguePriceId = 13,
-                            CatalogueItemId = new CatalogueItemId(99998, "-S-998"),
+                            CatalogueItemId = new CatalogueItemId(99998, "S-998"),
                             ProvisioningType = ProvisioningType.Patient,
                             CataloguePriceType = CataloguePriceType.Flat,
                             PricingUnit = new PricingUnit
@@ -132,7 +147,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
                 },
                 new()
                 {
-                    Id = new CatalogueItemId(99998, "-S-999"),
+                    Id = new CatalogueItemId(99998, "S-999"),
                     Name = "E2E Single Price Added Associated Service",
                     CatalogueItemType = CatalogueItemType.AssociatedService,
                     Created = DateTime.UtcNow,
@@ -149,7 +164,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
                         new()
                         {
                             CataloguePriceId = 14,
-                            CatalogueItemId = new CatalogueItemId(99998, "-S-999"),
+                            CatalogueItemId = new CatalogueItemId(99998, "S-999"),
                             ProvisioningType = ProvisioningType.Patient,
                             CataloguePriceType = CataloguePriceType.Flat,
                             PricingUnit = new PricingUnit

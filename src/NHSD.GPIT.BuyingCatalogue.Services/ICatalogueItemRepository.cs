@@ -9,6 +9,8 @@ namespace NHSD.GPIT.BuyingCatalogue.Services
     {
         Task<CatalogueItemId> GetLatestCatalogueItemIdFor(int supplierId);
 
+        Task<CatalogueItemId> GetLatestAssociatedServiceCatalogueItemIdFor(int supplierId);
+
         Task<bool> SupplierHasSolutionName(int supplierId, string solutionName);
     }
 }

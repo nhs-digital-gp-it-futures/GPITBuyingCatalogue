@@ -490,7 +490,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
 
             var price = context.CatalogueItems
                 .Include(c => c.CataloguePrices).ThenInclude(s => s.PricingUnit)
-                .Single(c => c.Id == new CatalogueItemId(99998, "-S-999"))
+                .Single(c => c.Id == new CatalogueItemId(99998, "S-999"))
                 .CataloguePrices.First();
 
             var addedSolution = new OrderItem
@@ -501,7 +501,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
                 Created = DateTime.UtcNow,
                 OrderId = orderId,
                 EstimationPeriod = TimeUnit.PerMonth,
-                CatalogueItem = context.CatalogueItems.Single(c => c.Id == new CatalogueItemId(99998, "-S-999")),
+                CatalogueItem = context.CatalogueItems.Single(c => c.Id == new CatalogueItemId(99998, "S-999")),
             };
 
             order.AddOrUpdateOrderItem(addedSolution);
@@ -548,7 +548,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
 
             var price = context.CatalogueItems
                 .Include(c => c.CataloguePrices).ThenInclude(s => s.PricingUnit)
-                .Single(c => c.Id == new CatalogueItemId(99998, "-S-999"))
+                .Single(c => c.Id == new CatalogueItemId(99998, "S-999"))
                 .CataloguePrices.First();
 
             var addedSolution = new OrderItem
@@ -559,7 +559,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
                 Created = DateTime.UtcNow,
                 OrderId = orderId,
                 EstimationPeriod = TimeUnit.PerMonth,
-                CatalogueItem = context.CatalogueItems.Single(c => c.Id == new CatalogueItemId(99998, "-S-999")),
+                CatalogueItem = context.CatalogueItems.Single(c => c.Id == new CatalogueItemId(99998, "S-999")),
             };
 
             order.FundingSourceOnlyGms = true;
@@ -608,7 +608,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
 
             var price = context.CatalogueItems
                 .Include(c => c.CataloguePrices).ThenInclude(s => s.PricingUnit)
-                .Single(c => c.Id == new CatalogueItemId(99998, "-S-999"))
+                .Single(c => c.Id == new CatalogueItemId(99998, "S-999"))
                 .CataloguePrices.First();
 
             var addedSolution = new OrderItem
@@ -619,7 +619,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
                 Created = DateTime.UtcNow,
                 OrderId = orderId,
                 EstimationPeriod = TimeUnit.PerMonth,
-                CatalogueItem = context.CatalogueItems.Single(c => c.Id == new CatalogueItemId(99998, "-S-999")),
+                CatalogueItem = context.CatalogueItems.Single(c => c.Id == new CatalogueItemId(99998, "S-999")),
             };
 
             order.FundingSourceOnlyGms = true;

@@ -16,15 +16,25 @@ namespace NHSD.GPIT.BuyingCatalogue.Services
 
         public async Task<CatalogueItemId> GetLatestCatalogueItemIdFor(int supplierId)
         {
-            var catalogueSolution = await DbSet
-                .Where(i => i.CatalogueItemType == CatalogueItemType.Solution && i.SupplierId == supplierId)
-                .OrderByDescending(i => i.Id)
-                .FirstOrDefaultAsync();
+            var catalogueSolution = await GetLatestCatalogueItem(supplierId, CatalogueItemType.Solution);
 
             return catalogueSolution?.Id ?? new CatalogueItemId(supplierId, "000");
         }
 
+        public async Task<CatalogueItemId> GetLatestAssociatedServiceCatalogueItemIdFor(int supplierId)
+        {
+            var associatedService = await GetLatestCatalogueItem(supplierId, CatalogueItemType.AssociatedService);
+
+            return associatedService?.Id ?? new CatalogueItemId(supplierId, "S-000");
+        }
+
         public Task<bool> SupplierHasSolutionName(int supplierId, string solutionName) =>
             DbSet.AnyAsync(i => i.SupplierId == supplierId && i.Name == solutionName);
+
+        private async Task<CatalogueItem> GetLatestCatalogueItem(int supplierId, CatalogueItemType catalogueItemType) =>
+            await DbSet
+                .Where(i => i.CatalogueItemType == catalogueItemType && i.SupplierId == supplierId)
+                .OrderByDescending(i => i.Id)
+                .FirstOrDefaultAsync();
     }
 }

@@ -76,7 +76,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering.AssociatedServices
 
             const string expectedCatalogueItemName = "E2E Multiple Prices Associated Service";
 
-            var expectedCatalogueItemId = new CatalogueItemId(99998, "-S-997");
+            var expectedCatalogueItemId = new CatalogueItemId(99998, "S-997");
 
             CommonActions.ClickRadioButtonWithText(expectedCatalogueItemName);
 
@@ -100,7 +100,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering.AssociatedServices
 
             const string expectedCatalogueItemName = "E2E Single Price Associated Service";
 
-            var expectedCatalogueItemId = new CatalogueItemId(99998, "-S-998");
+            var expectedCatalogueItemId = new CatalogueItemId(99998, "S-998");
 
             CommonActions.ClickRadioButtonWithText(expectedCatalogueItemName);
 

@@ -53,5 +53,9 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Objects.Common
         internal static By PaginationPreviousSubText => By.CssSelector("a.nhsuk-pagination__link--prev span.nhsuk-pagination__page");
 
         internal static By PaginationNextSubText => By.CssSelector("a.nhsuk-pagination__link--next span.nhsuk-pagination__page");
+
+        internal static By Name => By.Id("Name");
+
+        internal static By OrderGuidance => By.Id("OrderGuidance");
     }
 }

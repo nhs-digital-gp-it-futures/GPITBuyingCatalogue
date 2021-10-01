@@ -1,10 +1,12 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using FluentAssertions;
 using Microsoft.EntityFrameworkCore;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Objects.Common;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Utils;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.TestBases;
+using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers;
@@ -34,16 +36,18 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.AddNewSolution
         public async Task AddAssociatedService_CorrectlyDisplayed()
         {
             await using var context = GetEndToEndDbContext();
-            var solutionName = (await context.CatalogueItems.SingleAsync(s => s.Id == SolutionId)).Name;
+            var supplierName = (await context.CatalogueItems.Include(ci => ci.Supplier).SingleAsync(s => s.Id == SolutionId)).Supplier.Name;
 
             CommonActions.PageTitle()
                 .Should()
-                .BeEquivalentTo($"Associated Service information - {solutionName}".FormatForComparison());
+                .BeEquivalentTo($"Associated Service information - {supplierName}".FormatForComparison());
 
             CommonActions.ElementIsDisplayed(CommonSelectors.Header1).Should().BeTrue();
+            CommonActions.ElementIsDisplayed(CommonSelectors.Name).Should().BeTrue();
+            CommonActions.ElementIsDisplayed(CommonSelectors.Description).Should().BeTrue();
+            CommonActions.ElementIsDisplayed(CommonSelectors.OrderGuidance).Should().BeTrue();
+            CommonActions.ElementIsDisplayed(CommonSelectors.SubmitButton).Should().BeTrue();
             CommonActions.GoBackLinkDisplayed().Should().BeTrue();
-            CommonActions.ElementIsDisplayed(Objects.Admin.AssociatedServices.AssociatedServices.AddAssociatedServiceContinueButton).Should().BeTrue();
-            CommonActions.ElementIsDisplayed(Objects.Admin.AssociatedServices.AssociatedServices.AssociatedServiceDashboardTable).Should().BeTrue();
         }
 
         [Fact]
@@ -59,15 +63,83 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.AddNewSolution
         }
 
         [Fact]
-        public void AddAssociatedService_ClickContinueButton_NavigatesToCorrectPage()
+        public async Task AddAssociatedService_CompleteAssociatedService()
         {
-            CommonActions.ClickLinkElement(Objects.Admin.AssociatedServices.AssociatedServices.AddAssociatedServiceContinueButton);
+            var name = TextGenerators.TextInputAddText(CommonSelectors.Name, 300);
+            var description = TextGenerators.TextInputAddText(CommonSelectors.Description, 1000);
+            var orderGuidance = TextGenerators.TextInputAddText(CommonSelectors.OrderGuidance, 1000);
+
+            CommonActions.ClickSave();
 
             CommonActions.PageLoadedCorrectGetIndex(
-                    typeof(AssociatedServicesController),
-                    nameof(AssociatedServicesController.AssociatedServices))
+                typeof(AssociatedServicesController),
+                nameof(AssociatedServicesController.EditAssociatedService))
                 .Should()
                 .BeTrue();
+
+            var id = Driver.Url.Split('/')[^2];
+
+            await using var context = GetEndToEndDbContext();
+
+            var associatedServiceItem = await context
+                .CatalogueItems
+                .Include(ci => ci.AssociatedService)
+                .SingleAsync(ci => ci.Id == CatalogueItemId.ParseExact(id));
+
+            associatedServiceItem.Name.Should().Be(name);
+
+            associatedServiceItem
+                .AssociatedService
+                .Description
+                .Should().Be(description);
+
+            associatedServiceItem
+                .AssociatedService
+                .OrderGuidance
+                .Should().Be(orderGuidance);
+        }
+
+        [Fact]
+        public async Task AddAssociatedService_NameAlreadyExists()
+        {
+            await using var context = GetEndToEndDbContext();
+
+            var associatedService = await context
+                .CatalogueItems
+                .Where(ci => ci.CatalogueItemType == CatalogueItemType.AssociatedService)
+                .FirstAsync(ci => ci.SupplierId == SolutionId.SupplierId);
+
+            CommonActions.ElementAddValue(CommonSelectors.Name, associatedService.Name);
+
+            TextGenerators.TextInputAddText(CommonSelectors.Description, 1000);
+            TextGenerators.TextInputAddText(CommonSelectors.OrderGuidance, 1000);
+
+            CommonActions.ClickSave();
+
+            CommonActions.PageLoadedCorrectGetIndex(
+                typeof(AssociatedServicesController),
+                nameof(AssociatedServicesController.AddAssociatedService))
+                .Should()
+                .BeTrue();
+
+            CommonActions.ErrorSummaryDisplayed().Should().BeTrue();
+            CommonActions.ErrorSummaryLinksExist().Should().BeTrue();
+            CommonActions.ElementShowingCorrectErrorMessage(CommonSelectors.Name, "Associated Service name already exists. Enter a different name.");
+        }
+
+        [Fact]
+        public void AddAssociatedService_MandatoryDataMissing()
+        {
+            CommonActions.ClickSave();
+
+            CommonActions.PageLoadedCorrectGetIndex(
+                typeof(AssociatedServicesController),
+                nameof(AssociatedServicesController.AddAssociatedService))
+                .Should()
+                .BeTrue();
+
+            CommonActions.ErrorSummaryDisplayed().Should().BeTrue();
+            CommonActions.ErrorSummaryLinksExist().Should().BeTrue();
         }
     }
 }
