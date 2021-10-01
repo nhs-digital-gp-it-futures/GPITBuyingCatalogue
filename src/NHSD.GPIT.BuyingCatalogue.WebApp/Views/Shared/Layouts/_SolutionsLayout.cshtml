@@ -70,49 +70,53 @@
                     </div>
                 </div>
             }
-
-            <nav class="nhsuk-contents-list" role="navigation" aria-label="Pages in this guide">
-                <h2 class="nhsuk-u-visually-hidden">Contents</h2>
-                <ol class="nhsuk-contents-list__list">
-                    @foreach (var sectionModel in Model.GetSections())
-                    {
-                        @if (sectionModel.Selected)
+            @if (!Model.IsSuspended())
+            {
+                <nav class="nhsuk-contents-list" role="navigation" aria-label="Pages in this guide">
+                    <h2 class="nhsuk-u-visually-hidden">Contents</h2>
+                    <ol class="nhsuk-contents-list__list">
+                        @foreach (var sectionModel in Model.GetSections())
                         {
-                            <li class="nhsuk-contents-list__item" aria-current="page">
-                                <span class="nhsuk-contents-list__current">@sectionModel.Name</span>
-                            </li>
+                            @if (sectionModel.Selected)
+                            {
+                                <li class="nhsuk-contents-list__item" aria-current="page">
+                                    <span class="nhsuk-contents-list__current">@sectionModel.Name</span>
+                                </li>
+                            }
+                            else
+                            {
+                                <li class="nhsuk-contents-list__item">
+                                    <a asp-action="@sectionModel.Action"
+                                        asp-controller="@sectionModel.Controller"
+                                        asp-route-solutionId="@sectionModel.Id"
+                                        class="nhsuk-contents-list__link">
+                                        @sectionModel.Name
+                                    </a>
+                                </li>
+                            }
                         }
-                        else
-                        {
-                            <li class="nhsuk-contents-list__item">
-                                <a asp-action="@sectionModel.Action"
-                                    asp-controller="@sectionModel.Controller"
-                                    asp-route-solutionId="@sectionModel.Id"
-                                    class="nhsuk-contents-list__link">
-                                    @sectionModel.Name
-                                </a>
-                            </li>
-                        }
-                    }
-                </ol>
-            </nav>
+                    </ol>
+                </nav>
+            }
 
             @RenderBody()
 
             <nhs-endnote>
                 Solution information last reviewed: @Model.LastReviewed.ToLongDateString()
             </nhs-endnote>
-
-            <nhs-page-link-pagination next-url="@Url.Action(
-                        Model.PaginationFooter?.Next?.Action,
-                        Model.PaginationFooter?.Next?.Controller,
-                        new { solutionId = Model.PaginationFooter?.Next?.Id })"
-                        next-subtext="@Model.PaginationFooter?.Next?.Name"
-                        previous-url="@Url.Action(
-                        Model.PaginationFooter?.Previous?.Action,
-                        Model.PaginationFooter?.Previous?.Controller,
-                        new { solutionId = Model.PaginationFooter?.Previous?.Id })"
-                        previous-subtext="@Model.PaginationFooter?.Previous?.Name" />
+            @if (!Model.IsSuspended())
+            {
+                <nhs-page-link-pagination next-url="@Url.Action(
+                    Model.PaginationFooter?.Next?.Action,
+                    Model.PaginationFooter?.Next?.Controller,
+                    new { solutionId = Model.PaginationFooter?.Next?.Id })"
+                next-subtext="@Model.PaginationFooter?.Next?.Name"
+                previous-url="@Url.Action(
+                    Model.PaginationFooter?.Previous?.Action,
+                    Model.PaginationFooter?.Previous?.Controller,
+                    new { solutionId = Model.PaginationFooter?.Previous?.Id })"
+                previous-subtext="@Model.PaginationFooter?.Previous?.Name" />
+            }
         </main>
     </div>
 

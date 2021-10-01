@@ -11,16 +11,17 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models
         {
         }
 
-        public SolutionDescriptionModel(Solution solution)
-            : base(solution)
+        public SolutionDescriptionModel(CatalogueItem catalogueItem)
+            : base(catalogueItem)
         {
+            var solution = catalogueItem.Solution;
+
             Description = solution.FullDescription;
             Summary = solution.Summary;
 
-            var item = solution.CatalogueItem;
-            Frameworks = item.Frameworks().ToArray();
-            IsFoundation = item.IsFoundation().ToYesNo();
-            SupplierName = item.Supplier.Name;
+            Frameworks = catalogueItem.Frameworks().ToArray();
+            IsFoundation = catalogueItem.IsFoundation().ToYesNo();
+            SupplierName = catalogueItem.Supplier.Name;
         }
 
         public string Description { get; init; }

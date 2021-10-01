@@ -6,11 +6,11 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models
 {
     public sealed class AssociatedServicesModel : SolutionDisplayBaseModel
     {
-        public AssociatedServicesModel(Solution solution)
-            : base(solution)
+        public AssociatedServicesModel(CatalogueItem catalogueItem)
+            : base(catalogueItem)
         {
             // TODO: make use of new nav property on catalogue item once merged
-            Services = solution.CatalogueItem.Supplier.CatalogueItems
+            Services = catalogueItem.Supplier.CatalogueItems
                 .Where(c => c.CatalogueItemType == CatalogueItemType.AssociatedService)
                 .OrderBy(c => c.Name)
                 .Select(c => new AssociatedServiceModel(c.AssociatedService))
