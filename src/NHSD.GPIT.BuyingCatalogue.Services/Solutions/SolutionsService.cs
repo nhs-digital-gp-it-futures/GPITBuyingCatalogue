@@ -318,11 +318,11 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
 
             model.SetSolutionId();
 
-            var marketingContacts = await marketingContactRepository.GetAllAsync(x => x.SolutionId == model.SolutionId);
+            var marketingContacts = await dbContext.MarketingContacts.Where(c => c.SolutionId == model.SolutionId).ToListAsync();
 
             if (!marketingContacts.Any())
             {
-                marketingContactRepository.AddAll(model.ValidContacts());
+                dbContext.MarketingContacts.AddRange(model.ValidContacts());
             }
             else
             {
@@ -332,15 +332,15 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
                         continue;
 
                     if (newContact.IsEmpty())
-                        marketingContactRepository.Remove(contact);
+                        dbContext.MarketingContacts.Remove(contact);
                     else
                         contact.UpdateFrom(newContact);
                 }
 
-                marketingContactRepository.AddAll(model.NewAndValidContacts());
+                dbContext.MarketingContacts.AddRange(model.NewAndValidContacts());
             }
 
-            await marketingContactRepository.SaveChangesAsync();
+            await dbContext.SaveChangesAsync();
         }
 
         public Task<List<CatalogueItem>> GetSupplierSolutions(int? supplierId)
