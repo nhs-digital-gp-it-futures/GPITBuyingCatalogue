@@ -3,6 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
+using AutoFixture;
+using AutoFixture.AutoMoq;
+using AutoFixture.Idioms;
 using AutoFixture.Xunit2;
 using EnumsNET;
 using FluentAssertions;
@@ -21,6 +24,16 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Solutions
 {
     public static class SolutionsServiceTests
     {
+        [Fact]
+        public static void Constructors_VerifyGuardClauses()
+        {
+            var fixture = new Fixture().Customize(new AutoMoqCustomization());
+            var assertion = new GuardClauseAssertion(fixture);
+            var constructors = typeof(SolutionsService).GetConstructors();
+
+            assertion.Verify(constructors);
+        }
+
         [Fact]
         public static async Task SaveSupplierContacts_ModelNull_ThrowsException()
         {
@@ -610,6 +623,24 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Solutions
             updatedClientApplication.NativeMobileAdditionalInformation.Should().BeNull();
             updatedClientApplication.NativeMobileFirstDesign.Should().BeNull();
             updatedClientApplication.NativeMobileHardwareRequirements.Should().BeNull();
+        }
+
+        [Theory]
+        [InMemoryDbAutoData]
+        public static async Task SavePublicationStatus_Updates_PublicationStatus(
+            [Frozen] BuyingCatalogueDbContext context,
+            CatalogueItem solution,
+            SolutionsService service)
+        {
+            solution.PublishedStatus = PublicationStatus.Draft;
+            await context.CatalogueItems.AddAsync(solution);
+            await context.SaveChangesAsync();
+
+            await service.SavePublicationStatus(solution.Id, PublicationStatus.Published);
+
+            var updatedSolution = await context.CatalogueItems.SingleAsync(c => c.Id == solution.Id);
+
+            updatedSolution.PublishedStatus.Should().Be(PublicationStatus.Published);
         }
     }
 }
