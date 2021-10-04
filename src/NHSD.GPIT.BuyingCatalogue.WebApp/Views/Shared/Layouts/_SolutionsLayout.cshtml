@@ -12,7 +12,7 @@
     <partial name="Partials/_HeadIncludes" />
 </head>
 <body>
-    @if ((bool?)Context.Items[Cookies.ShowConsentCookie] == true)
+    @if ((bool?)Context.Items[Cookies.ShowCookieBanner] == true)
     {
 <partial name="Partials/_CookieConsentPartial" />}
     <partial name="Partials/_BetaBanner" />

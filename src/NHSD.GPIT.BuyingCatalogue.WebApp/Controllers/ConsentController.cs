@@ -18,20 +18,26 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Controllers
         }
 
         [HttpGet]
-        public IActionResult DismissCookieBanner()
+        public IActionResult AcceptCookies(bool agreeToAnalytics)
+        {
+            return SetCookie(agreeToAnalytics);
+        }
+
+        private IActionResult SetCookie(bool useAnalytics)
         {
             var cookieDataString = JsonSerializer.Serialize(
-                    new CookieData
-                    {
-                        CreationDate = DateTime.UtcNow.Ticks,
-                    });
+                new CookieData
+                {
+                    Analytics = useAnalytics,
+                    CreationDate = DateTime.UtcNow.Ticks,
+                });
 
             Response.Cookies.Append(
                 Cookies.BuyingCatalogueConsent,
                 cookieDataString,
                 new CookieOptions
                 {
-                    Expires = DateTime.Now.Add(cookieExpiration.ConsentExpiration),
+                    Expires = DateTime.UtcNow.Add(cookieExpiration.ConsentExpiration),
                     HttpOnly = true,
                     Secure = true,
                     SameSite = SameSiteMode.Strict,
