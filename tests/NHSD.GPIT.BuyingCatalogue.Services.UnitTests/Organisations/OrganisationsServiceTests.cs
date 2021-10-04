@@ -6,7 +6,6 @@ using AutoFixture.AutoMoq;
 using AutoFixture.Idioms;
 using AutoFixture.Xunit2;
 using FluentAssertions;
-using Moq;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Organisations.Models;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Organisations;
@@ -38,7 +37,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Organisations
             OrganisationsService service)
         {
             organisation.OdsCode = odsOrganisation.OdsCode;
-            await context.Organisations.AddAsync(organisation);
+            context.Organisations.Add(organisation);
             await context.SaveChangesAsync();
 
             (int orgId, var error) = await service.AddOdsOrganisation(odsOrganisation, agreementSigned);

@@ -36,7 +36,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.Catalogu
 
             var model = new EditSolutionModel(odsCode, state);
 
-            model.OrderItem.ServiceRecipients.ForEach(x => x.Quantity.Should().Be(state.Quantity));
+            model.OrderItem.ServiceRecipients.ForEach(oi => oi.Quantity.Should().Be(state.Quantity));
         }
 
         [Theory]
@@ -57,7 +57,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.Catalogu
 
             var model = new EditSolutionModel(odsCode, state);
 
-            model.OrderItem.ServiceRecipients.ForEach(x => x.DeliveryDate.Should().Be(state.PlannedDeliveryDate));
+            model.OrderItem.ServiceRecipients.ForEach(oi => oi.DeliveryDate.Should().Be(state.PlannedDeliveryDate));
         }
 
         [Theory]

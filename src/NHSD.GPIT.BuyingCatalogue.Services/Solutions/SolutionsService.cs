@@ -322,7 +322,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
 
             if (!marketingContacts.Any())
             {
-                await dbContext.MarketingContacts.AddRangeAsync(model.ValidContacts());
+                dbContext.MarketingContacts.AddRange(model.ValidContacts());
             }
             else
             {
@@ -337,7 +337,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
                         contact.UpdateFrom(newContact);
                 }
 
-                await dbContext.MarketingContacts.AddRangeAsync(model.NewAndValidContacts());
+                dbContext.MarketingContacts.AddRange(model.NewAndValidContacts());
             }
 
             await dbContext.SaveChangesAsync();

@@ -44,7 +44,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Organisations
                 PrimaryRoleId = odsOrganisation.PrimaryRoleId,
             };
 
-            await dbContext.Organisations.AddAsync(organisation);
+            dbContext.Organisations.Add(organisation);
             await dbContext.SaveChangesAsync();
 
             return (organisation.Id, null);

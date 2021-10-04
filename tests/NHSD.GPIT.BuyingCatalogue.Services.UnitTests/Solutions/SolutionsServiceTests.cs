@@ -58,7 +58,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Solutions
             SupplierContactsModel model)
         {
             solution.Solution.MarketingContacts.Clear();
-            await context.CatalogueItems.AddAsync(solution);
+            context.CatalogueItems.Add(solution);
             await context.SaveChangesAsync();
 
             model.SolutionId = solution.Id;
@@ -77,7 +77,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Solutions
             SolutionsService service)
         {
             solution.Solution.MarketingContacts.Clear();
-            await context.CatalogueItems.AddAsync(solution);
+            context.CatalogueItems.Add(solution);
             await context.SaveChangesAsync();
 
             supplierContactsModel.SolutionId = solution.Id;
@@ -102,7 +102,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Solutions
             SupplierContactsModel supplierContactsModel,
             SolutionsService service)
         {
-            await context.CatalogueItems.AddAsync(solution);
+            context.CatalogueItems.Add(solution);
             await context.SaveChangesAsync();
 
             supplierContactsModel.Contacts = await context.MarketingContacts.AsAsyncEnumerable().Where(mc => mc.SolutionId == solution.Id).ToArrayAsync();
@@ -136,7 +136,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Solutions
             string updatedEmail,
             SolutionsService service)
         {
-            await context.CatalogueItems.AddAsync(solution);
+            context.CatalogueItems.Add(solution);
             await context.SaveChangesAsync();
 
             model.Contacts = await context.MarketingContacts.AsAsyncEnumerable().Where(mc => mc.SolutionId == solution.Id).ToArrayAsync();
@@ -165,7 +165,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Solutions
             SupplierContactsModel model,
             SolutionsService service)
         {
-            await context.CatalogueItems.AddAsync(solution);
+            context.CatalogueItems.Add(solution);
             await context.SaveChangesAsync();
 
             await service.SaveSupplierContacts(model);
@@ -633,7 +633,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Solutions
             SolutionsService service)
         {
             solution.PublishedStatus = PublicationStatus.Draft;
-            await context.CatalogueItems.AddAsync(solution);
+            context.CatalogueItems.Add(solution);
             await context.SaveChangesAsync();
 
             await service.SavePublicationStatus(solution.Id, PublicationStatus.Published);
