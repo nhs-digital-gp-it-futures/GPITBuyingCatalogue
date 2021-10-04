@@ -19,43 +19,47 @@ namespace NHSD.GPIT.BuyingCatalogue.Framework.Middleware.CookieConsent
 
         public async Task Invoke(HttpContext context, CookieExpirationSettings cookieExpirationSettings)
         {
-            var showConsent = ShowCookieConsent(context.Request, cookieExpirationSettings.BuyingCatalogueCookiePolicyDate);
+            var (showBanner, useAnalytics) = ExtractCookieData(context.Request, cookieExpirationSettings.BuyingCatalogueCookiePolicyDate);
 
-            if (context.Items.TryGetValue(Cookies.ShowConsentCookie, out _))
-            {
-                context.Items[Cookies.ShowConsentCookie] = showConsent;
-            }
-            else
-            {
-                context.Items.Add(Cookies.ShowConsentCookie, showConsent);
-            }
+            context.Items[Cookies.ShowCookieBanner] = showBanner;
+
+            if (!showBanner)
+                context.Items[Cookies.UseAnalytics] = useAnalytics;
 
             await next.Invoke(context);
         }
 
-        private static bool ShowCookieConsent(HttpRequest httpRequest, DateTime? buyingCatalogueCookiePolicyDate)
+        private static (bool ShowBanner, bool? UseAnalytics) ExtractCookieData(
+            HttpRequest httpRequest,
+            DateTime? buyingCatalogueCookiePolicyDate)
         {
             if (httpRequest is null)
-                return false;
+                return (false, false);
 
             if (!httpRequest.Cookies.TryGetValue(Cookies.BuyingCatalogueConsent, out var consentCookieValue))
-                return true;
+                return (true, null);
+
+            var cookieData = ExtractCookieData(consentCookieValue);
+
+            if (!cookieData.Analytics.HasValue)
+                return (true, null);
 
             if (!buyingCatalogueCookiePolicyDate.HasValue)
-                return false;
+                return (false, cookieData.Analytics);
 
-            return buyingCatalogueCookiePolicyDate.Value <= DateTime.UtcNow
-                && ExtractCookieCreationDate(consentCookieValue) is var creationDate
-                && creationDate < buyingCatalogueCookiePolicyDate.Value;
+            var showBanner = buyingCatalogueCookiePolicyDate.Value <= DateTime.UtcNow
+                && new DateTime(cookieData.CreationDate.GetValueOrDefault()) < buyingCatalogueCookiePolicyDate.Value;
+
+            return (showBanner, cookieData.Analytics);
         }
 
-        private static DateTime ExtractCookieCreationDate(string input)
+        private static CookieData ExtractCookieData(string input)
         {
             // Will force banner to be displayed and cookie rewritten with correct data when banner is dismissed again
-            static DateTime ForceBannerDisplay() => DateTime.MinValue;
+            var forceBannerDisplay = new CookieData { CreationDate = 0 };
 
             if (input is null)
-                return ForceBannerDisplay();
+                return forceBannerDisplay;
 
             CookieData cookieData;
             try
@@ -64,14 +68,10 @@ namespace NHSD.GPIT.BuyingCatalogue.Framework.Middleware.CookieConsent
             }
             catch (JsonException)
             {
-                return ForceBannerDisplay();
+                return forceBannerDisplay;
             }
 
-            var ticks = cookieData?.CreationDate.GetValueOrDefault() ?? 0;
-            if (ticks < 1)
-                return ForceBannerDisplay();
-
-            return new DateTime(ticks);
+            return cookieData;
         }
     }
 }

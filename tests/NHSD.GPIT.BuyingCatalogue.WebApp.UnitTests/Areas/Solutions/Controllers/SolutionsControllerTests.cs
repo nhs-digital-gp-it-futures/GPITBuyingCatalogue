@@ -251,13 +251,15 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Controllers
         public static async Task Get_Capabilities_ValidSolutionForId_ReturnsExpectedViewResult(
             [Frozen] Mock<ISolutionsService> mockService,
             SolutionsController controller,
-            CatalogueItem mockCatalogueItem)
+            CatalogueItem catalogueItem)
         {
-            var capabilitiesViewModel = new CapabilitiesViewModel(mockCatalogueItem);
-            mockService.Setup(s => s.GetSolutionOverview(mockCatalogueItem.Id))
-                .ReturnsAsync(mockCatalogueItem);
+            catalogueItem.PublishedStatus = PublicationStatus.Published;
 
-            var actual = (await controller.Capabilities(mockCatalogueItem.Id)).As<ViewResult>();
+            var capabilitiesViewModel = new CapabilitiesViewModel(catalogueItem);
+            mockService.Setup(s => s.GetSolutionOverview(catalogueItem.Id))
+                .ReturnsAsync(catalogueItem);
+
+            var actual = (await controller.Capabilities(catalogueItem.Id)).As<ViewResult>();
 
             actual.Should().NotBeNull();
             actual.ViewName.Should().BeNullOrEmpty();
@@ -682,6 +684,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Controllers
             CatalogueItem item,
             CatalogueItemId id)
         {
+            item.PublishedStatus = PublicationStatus.Published;
             var mockSolutionListPriceModel = new ListPriceModel(item);
 
             mockService.Setup(s => s.GetSolutionOverview(id))
@@ -735,6 +738,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Controllers
             CatalogueItemId id,
             CatalogueItem catalogueItem)
         {
+            catalogueItem.PublishedStatus = PublicationStatus.Published;
             catalogueItem.Solution.Integrations = GetIntegrationsJson();
 
             var expectedViewData = new InteroperabilityModel(catalogueItem);
@@ -790,6 +794,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Controllers
             CatalogueItemId id,
             CatalogueItem item)
         {
+            item.PublishedStatus = PublicationStatus.Published;
             var expectedSolutionSupplierDetailsModel = new SolutionSupplierDetailsModel(item);
 
             mockService.Setup(s => s.GetSolutionOverview(id))
