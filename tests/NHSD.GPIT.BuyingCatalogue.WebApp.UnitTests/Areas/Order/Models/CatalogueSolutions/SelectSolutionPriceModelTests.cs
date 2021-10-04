@@ -20,6 +20,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.Catalogu
             string solutionName,
             List<CataloguePrice> prices)
         {
+            prices.ForEach(cp => cp.CurrencyCode = "GBP");
             var model = new SelectSolutionPriceModel(odsCode, callOffId, solutionName, prices);
 
             model.BackLink.Should().Be($"/order/organisation/{odsCode}/order/{callOffId}/catalogue-solutions/select/solution");
