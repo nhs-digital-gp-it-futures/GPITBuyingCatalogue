@@ -6,5 +6,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Framework.Middleware.CookieConsent
     public sealed class CookieData
     {
         public long? CreationDate { get; set; }
+
+        public bool? Analytics { get; set; }
     }
 }
