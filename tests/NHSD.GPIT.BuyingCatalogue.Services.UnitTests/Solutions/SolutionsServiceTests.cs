@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
 using AutoFixture.Xunit2;
@@ -35,164 +36,130 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Solutions
             actual.ParamName.Should().Be("model");
         }
 
-        // TODO: fix
-        [Fact(Skip = "Broken")]
-        public static async Task SaveSupplierContacts_ModelValid_CallsSetSolutionIdOnModel()
+        [Theory]
+        [InMemoryDbAutoData]
+        public static async Task SaveSupplierContacts_ModelValid_CallsSetSolutionIdOnModel(
+            [Frozen] BuyingCatalogueDbContext context,
+            CatalogueItem solution,
+            SolutionsService service,
+            SupplierContactsModel model)
         {
-            var mockModel = new Mock<SupplierContactsModel>();
-            var service = new SolutionsService(
-                Mock.Of<BuyingCatalogueDbContext>(),
-                Mock.Of<IDbRepository<MarketingContact, BuyingCatalogueDbContext>>(),
-                Mock.Of<IDbRepository<Solution, BuyingCatalogueDbContext>>(),
-                Mock.Of<IDbRepository<Supplier, BuyingCatalogueDbContext>>(),
-                Mock.Of<ICatalogueItemRepository>());
+            solution.Solution.MarketingContacts.Clear();
+            await context.CatalogueItems.AddAsync(solution);
+            await context.SaveChangesAsync();
 
-            await service.SaveSupplierContacts(mockModel.Object);
+            model.SolutionId = solution.Id;
 
-            mockModel.Verify(m => m.SetSolutionId());
+            await service.SaveSupplierContacts(model);
+
+            model.Contacts.Select(c => c.SolutionId).Should().AllBeEquivalentTo(model.SolutionId);
         }
 
         [Theory]
-        [CommonAutoData]
-        public static async Task SaveSupplierContacts_Retrieves_ContactsForSolutionId(
-            [Frozen] CatalogueItemId catalogueItemId,
-            MarketingContact contact,
-            SupplierContactsModel supplierContactsModel,
-            [Frozen] Mock<IDbRepository<MarketingContact, BuyingCatalogueDbContext>> mockMarketingContactRepository,
-            SolutionsService service)
-        {
-            // Parameter included to freeze value for marketing contact and supplier contacts model
-            _ = catalogueItemId;
-
-            void TestPredicate(Expression<Func<MarketingContact, bool>> expression)
-            {
-                var predicate = expression.Compile();
-                var result = predicate(contact);
-
-                result.Should().BeTrue();
-            }
-
-            mockMarketingContactRepository.Setup(r => r.GetAllAsync(It.IsAny<Expression<Func<MarketingContact, bool>>>()))
-                .Callback<Expression<Func<MarketingContact, bool>>>(TestPredicate);
-
-            await service.SaveSupplierContacts(supplierContactsModel);
-
-            mockMarketingContactRepository.Verify(r => r.GetAllAsync(It.IsAny<Expression<Func<MarketingContact, bool>>>()));
-        }
-
-        [Theory]
-        [CommonAutoData]
+        [InMemoryDbAutoData]
         public static async Task SaveSupplierContacts_NoContactsInDatabase_AddsValidContactsToRepository(
-            [Frozen] MarketingContact[] validContacts,
+            [Frozen] BuyingCatalogueDbContext context,
+            CatalogueItem solution,
             SupplierContactsModel supplierContactsModel,
-            [Frozen] Mock<IDbRepository<MarketingContact, BuyingCatalogueDbContext>> mockMarketingContactRepository,
             SolutionsService service)
         {
-            mockMarketingContactRepository.Setup(r => r.GetAllAsync(It.IsAny<Expression<Func<MarketingContact, bool>>>()))
-                .ReturnsAsync(Array.Empty<MarketingContact>());
+            solution.Solution.MarketingContacts.Clear();
+            await context.CatalogueItems.AddAsync(solution);
+            await context.SaveChangesAsync();
+
+            supplierContactsModel.SolutionId = solution.Id;
 
             await service.SaveSupplierContacts(supplierContactsModel);
 
-            mockMarketingContactRepository.Verify(r => r.AddAll(validContacts));
+            var newContacts = await context.MarketingContacts.AsAsyncEnumerable().Where(mc => mc.SolutionId == solution.Id).ToArrayAsync();
+
+            newContacts.Length.Should().Be(supplierContactsModel.Contacts.Length);
+            newContacts.Should().BeEquivalentTo(supplierContactsModel.Contacts, config => config
+                .Excluding(mc => mc.SolutionId)
+                .Excluding(mc => mc.LastUpdated)
+                .Excluding(mc => mc.LastUpdatedBy)
+                .Excluding(mc => mc.LastUpdatedByUser));
         }
 
         [Theory]
-        [CommonAutoData]
+        [InMemoryDbAutoData]
         public static async Task SaveSupplierContacts_ContactsInDatabase_RemovesEmptyContactsFromDatabase(
-            MarketingContact[] savedModels,
+            [Frozen] BuyingCatalogueDbContext context,
+            CatalogueItem solution,
             SupplierContactsModel supplierContactsModel,
-            [Frozen] Mock<IDbRepository<MarketingContact, BuyingCatalogueDbContext>> mockMarketingContactRepository,
             SolutionsService service)
         {
-            supplierContactsModel.Contacts = new[]
-            {
-                new MarketingContact
-                {
-                    Id = savedModels[0].Id,
-                    Department = "Department",
-                },
-                new MarketingContact
-                {
-                    Id = savedModels[1].Id,
-                },
-            };
+            await context.CatalogueItems.AddAsync(solution);
+            await context.SaveChangesAsync();
 
-            mockMarketingContactRepository.Setup(r => r.GetAllAsync(It.IsAny<Expression<Func<MarketingContact, bool>>>()))
-                .ReturnsAsync(savedModels);
+            supplierContactsModel.Contacts = await context.MarketingContacts.AsAsyncEnumerable().Where(mc => mc.SolutionId == solution.Id).ToArrayAsync();
+
+            supplierContactsModel.Contacts[0].FirstName = null;
+            supplierContactsModel.Contacts[0].LastName = null;
+            supplierContactsModel.Contacts[0].Department = null;
+            supplierContactsModel.Contacts[0].PhoneNumber = null;
+            supplierContactsModel.Contacts[0].Email = null;
+
+            supplierContactsModel.SolutionId = solution.Id;
 
             await service.SaveSupplierContacts(supplierContactsModel);
 
-            mockMarketingContactRepository.Verify(r => r.Remove(It.Is<MarketingContact>(c => c.Id == savedModels[1].Id)));
-        }
+            var updatedContacts = await context.MarketingContacts.AsAsyncEnumerable().Where(mc => mc.SolutionId == solution.Id).ToArrayAsync();
 
-        // TODO: fix
-        [Fact(Skip = "Broken")]
-        public static async Task SaveSupplierContacts_ContactsInDatabase_UpdatesNonEmptyContacts()
-        {
-            var savedModel = new Mock<MarketingContact> { CallBase = true, };
-            savedModel.Object.Id = 42;
-            var savedModels = new[] { savedModel.Object, };
-
-            var mockModel = new Mock<SupplierContactsModel>();
-            var mockNewContact = new Mock<MarketingContact>();
-            mockNewContact.Setup(c => c.IsEmpty())
-                .Returns(false);
-            mockModel.Setup(m => m.ContactFor(savedModels[0].Id))
-                .Returns(mockNewContact.Object);
-
-            var mockMarketingContactRepository = new Mock<IDbRepository<MarketingContact, BuyingCatalogueDbContext>>();
-            mockMarketingContactRepository.Setup(r => r.GetAllAsync(It.IsAny<Expression<Func<MarketingContact, bool>>>()))
-                .ReturnsAsync(savedModels);
-
-            var service = new SolutionsService(
-                Mock.Of<BuyingCatalogueDbContext>(),
-                mockMarketingContactRepository.Object,
-                Mock.Of<IDbRepository<Solution, BuyingCatalogueDbContext>>(),
-                Mock.Of<IDbRepository<Supplier, BuyingCatalogueDbContext>>(),
-                Mock.Of<ICatalogueItemRepository>());
-
-            await service.SaveSupplierContacts(mockModel.Object);
-
-            mockNewContact.Verify(c => c.IsEmpty());
-            savedModel.Verify(r => r.UpdateFrom(mockNewContact.Object));
-        }
-
-        // TODO: fix
-        [Fact(Skip = "Broken")]
-        public static async Task SaveSupplierContacts_AddsNewAndValidContacts_ToRepository()
-        {
-            var mockModel = new Mock<SupplierContactsModel>();
-            var newAndValidContacts = new Mock<IList<MarketingContact>>().Object;
-            mockModel.Setup(m => m.NewAndValidContacts())
-                .Returns(newAndValidContacts);
-
-            var mockMarketingContactRepository = new Mock<IDbRepository<MarketingContact, BuyingCatalogueDbContext>>();
-            mockMarketingContactRepository.Setup(r => r.GetAllAsync(It.IsAny<Expression<Func<MarketingContact, bool>>>()))
-                .ReturnsAsync(new[] { new MarketingContact() });
-
-            var service = new SolutionsService(
-                Mock.Of<BuyingCatalogueDbContext>(),
-                mockMarketingContactRepository.Object,
-                Mock.Of<IDbRepository<Solution, BuyingCatalogueDbContext>>(),
-                Mock.Of<IDbRepository<Supplier, BuyingCatalogueDbContext>>(),
-                Mock.Of<ICatalogueItemRepository>());
-
-            await service.SaveSupplierContacts(mockModel.Object);
-
-            mockModel.Verify(m => m.NewAndValidContacts());
-            mockMarketingContactRepository.Verify(r => r.AddAll(newAndValidContacts));
+            updatedContacts.Length.Should().Be(2);
+            updatedContacts[0].Id.Should().Be(supplierContactsModel.Contacts[1].Id);
+            updatedContacts[1].Id.Should().Be(supplierContactsModel.Contacts[2].Id);
         }
 
         [Theory]
-        [CommonAutoData]
-        public static async Task SaveSupplierContacts_CallsSaveChangesAsync_OnRepository(
-            SupplierContactsModel supplierContactsModel,
-            [Frozen] Mock<IDbRepository<MarketingContact, BuyingCatalogueDbContext>> mockMarketingContactRepository,
+        [InMemoryDbAutoData]
+        public static async Task SaveSupplierContacts_ContactsInDatabase_UpdatesNonEmptyContacts(
+            [Frozen] BuyingCatalogueDbContext context,
+            CatalogueItem solution,
+            SupplierContactsModel model,
+            string updatedFirstName,
+            string updatedLastName,
+            string updatedPhoneNumber,
+            string updatedEmail,
             SolutionsService service)
         {
-            await service.SaveSupplierContacts(supplierContactsModel);
+            await context.CatalogueItems.AddAsync(solution);
+            await context.SaveChangesAsync();
 
-            mockMarketingContactRepository.Verify(r => r.SaveChangesAsync());
+            model.Contacts = await context.MarketingContacts.AsAsyncEnumerable().Where(mc => mc.SolutionId == solution.Id).ToArrayAsync();
+
+            model.Contacts[0].FirstName = updatedFirstName;
+            model.Contacts[0].LastName = updatedLastName;
+            model.Contacts[0].PhoneNumber = updatedPhoneNumber;
+            model.Contacts[0].Email = updatedEmail;
+            model.SolutionId = solution.Id;
+
+            await service.SaveSupplierContacts(model);
+
+            var updatedContacts = await context.MarketingContacts.AsAsyncEnumerable().Where(mc => mc.SolutionId == solution.Id).ToArrayAsync();
+
+            updatedContacts[0].FirstName.Should().Be(updatedFirstName);
+            updatedContacts[0].LastName.Should().Be(updatedLastName);
+            updatedContacts[0].PhoneNumber.Should().Be(updatedPhoneNumber);
+            updatedContacts[0].Email.Should().Be(updatedEmail);
+        }
+
+        [Theory]
+        [InMemoryDbAutoData]
+        public static async Task SaveSupplierContacts_AddsNewAndValidContacts_ToDatabase(
+            [Frozen] BuyingCatalogueDbContext context,
+            CatalogueItem solution,
+            SupplierContactsModel model,
+            SolutionsService service)
+        {
+            await context.CatalogueItems.AddAsync(solution);
+            await context.SaveChangesAsync();
+
+            await service.SaveSupplierContacts(model);
+
+            var marketingContacts = await context.MarketingContacts.AsAsyncEnumerable().Where(c => c.SolutionId == model.SolutionId).ToListAsync();
+
+            marketingContacts.Should().BeEquivalentTo(model.ValidContacts());
         }
 
         [Theory]

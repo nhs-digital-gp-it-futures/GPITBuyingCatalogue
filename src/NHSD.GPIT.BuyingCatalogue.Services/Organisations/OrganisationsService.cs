@@ -29,9 +29,9 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Organisations
 
         public async Task<(int OrganisationId, string Error)> AddOdsOrganisation(OdsOrganisation odsOrganisation, bool agreementSigned)
         {
-            var persistedOrganisation = await organisationRepository.GetAllAsync(o => o.OdsCode == odsOrganisation.OdsCode);
+            var persistedOrganisation = await dbContext.Organisations.FirstOrDefaultAsync(o => o.OdsCode == odsOrganisation.OdsCode);
 
-            if (persistedOrganisation.Any())
+            if (persistedOrganisation is not null)
                 return (0, $"The organisation with ODS code {odsOrganisation.OdsCode} already exists.");
 
             var organisation = new Organisation
@@ -44,9 +44,8 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Organisations
                 PrimaryRoleId = odsOrganisation.PrimaryRoleId,
             };
 
-            organisationRepository.Add(organisation);
-
-            await organisationRepository.SaveChangesAsync();
+            await dbContext.Organisations.AddAsync(organisation);
+            await dbContext.SaveChangesAsync();
 
             return (organisation.Id, null);
         }

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Threading.Tasks;
 using AutoFixture;
 using AutoFixture.AutoMoq;
@@ -28,16 +29,17 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Organisations
         }
 
         [Theory]
-        [CommonAutoData]
+        [InMemoryDbAutoData]
         public static async Task AddOdsOrganisation_OrganisationAlreadyExists_ReturnsError(
+            [Frozen] BuyingCatalogueDbContext context,
             OdsOrganisation odsOrganisation,
             bool agreementSigned,
             Organisation organisation,
-            [Frozen] Mock<IDbRepository<Organisation, BuyingCatalogueDbContext>> repositoryMock,
             OrganisationsService service)
         {
-            repositoryMock.Setup(r => r.GetAllAsync(o => o.OdsCode == odsOrganisation.OdsCode))
-                .ReturnsAsync(new[] { organisation });
+            organisation.OdsCode = odsOrganisation.OdsCode;
+            await context.Organisations.AddAsync(organisation);
+            await context.SaveChangesAsync();
 
             (int orgId, var error) = await service.AddOdsOrganisation(odsOrganisation, agreementSigned);
 
@@ -45,30 +47,20 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Organisations
             error.Should().Be($"The organisation with ODS code {odsOrganisation.OdsCode} already exists.");
         }
 
-        // TODO: Convert to use in-memory DB (required for identity column)
-        [Theory(Skip = "Requires in-memory DB")]
-        [CommonAutoData]
+        [Theory]
+        [InMemoryDbAutoData]
         public static async Task AddOdsOrganisation_OrganisationCreated(
+            [Frozen] BuyingCatalogueDbContext context,
             OdsOrganisation odsOrganisation,
             bool agreementSigned,
-            [Frozen] Mock<IDbRepository<Organisation, BuyingCatalogueDbContext>> repositoryMock,
             OrganisationsService service)
         {
-            repositoryMock.Setup(r => r.GetAllAsync(o => o.OdsCode == odsOrganisation.OdsCode))
-                .ReturnsAsync(Array.Empty<Organisation>());
-
-            Organisation newOrganisation = null;
-
-            repositoryMock.Setup(s => s.Add(It.IsAny<Organisation>()))
-                .Callback<Organisation>(o => newOrganisation = o);
-
             (int orgId, var error) = await service.AddOdsOrganisation(odsOrganisation, agreementSigned);
 
             orgId.Should().NotBe(0);
             error.Should().BeNull();
 
-            repositoryMock.Verify(v => v.Add(It.IsAny<Organisation>()), Times.Once);
-            repositoryMock.Verify(v => v.SaveChangesAsync(), Times.Once);
+            var newOrganisation = await context.Organisations.SingleAsync(o => o.Id == orgId);
 
             newOrganisation.Address.Should().BeEquivalentTo(odsOrganisation.Address);
             newOrganisation.Id.Should().Be(orgId);
