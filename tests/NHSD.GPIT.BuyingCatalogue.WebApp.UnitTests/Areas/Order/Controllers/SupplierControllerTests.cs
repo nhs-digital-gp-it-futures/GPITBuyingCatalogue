@@ -163,7 +163,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers
                 new OrderCustomization(),
                 new CallOffIdCustomization(),
                 new CatalogueItemIdCustomization(),
-                new ControllerBaseCustomization(),
+                new ControllerCustomization(),
                 new IgnoreCircularReferenceCustomisation()));
 
             var odsCode = fixture.Create<string>();

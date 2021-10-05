@@ -3,7 +3,7 @@
 @inject CookieExpirationSettings CookieExpirationSettings
 @model NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.INoNavModel
 @{
-    ViewBag.Title = $"Solution {Model.Name}";
+    ViewBag.Title = $"{Model.Name}";
 }
 <!DOCTYPE html>
 <html lang="en">
@@ -11,7 +11,7 @@
     <partial name="Partials/_HeadIncludes" />
 </head>
 <body>
-    @if ((bool?)Context.Items[Cookies.ShowConsentCookie] == true)
+    @if ((bool?)Context.Items[Cookies.ShowCookieBanner] == true)
     {
         <partial name="Partials/_CookieConsentPartial" />
     }
@@ -23,7 +23,7 @@
             @await RenderSectionAsync("BackLink", true)
             <div class="nhsuk-grid-row">
                 <div class="nhsuk-grid-column-two-thirds">
-                    <nhs-page-title title="@Model.Name"
+                    <nhs-page-title title="@ViewBag.Title"
                                     caption="@Model.SolutionName" />
                 </div>
             </div>

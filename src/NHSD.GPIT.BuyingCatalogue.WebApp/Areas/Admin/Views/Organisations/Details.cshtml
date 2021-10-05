@@ -1,12 +1,14 @@
 ﻿@model NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.DetailsModel
 @using NHSD.GPIT.BuyingCatalogue.Framework.Extensions
 @{
-    ViewData["Title"] = "Buying Catalogue – Admin";
+    ViewBag.Title = "Organisation details";
 }
 
 <div data-test-id="organisation-page">
     <partial name="Partials/_BackLink" model="Model" />
-    <nhs-page-title title="@Model.Organisation.Name" advice="These are the details for the organisation and its users." />
+    <nhs-page-title title="@ViewBag.Title"
+                    caption="@Model.Organisation.Name"
+                    advice="These are the details for the organisation and its users." />
     <nhs-summary-list>
         <nhs-summary-list-row label-text="ODS code">
             <p data-test-id="org-page-ods-code">

@@ -1,6 +1,6 @@
 ﻿@model NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.MobileTabletBasedModels.ThirdPartyComponentsModel;
 @{
-    ViewData["Title"] = "Mobile or tablet application – third-party components and device capabilities";
+    ViewBag.Title = "Mobile or tablet application – third-party components and device capabilities";
 }
 
 <div class="nhsuk-width-container">
@@ -11,11 +11,13 @@
 
         <div class="nhsuk-grid-column-full">
             <nhs-validation-summary />
-            <nhs-page-title title="@ViewData["Title"]"
+            <nhs-page-title title="@ViewBag.Title"
+                            caption="@Model.SolutionName"
                             advice="Let buyers know about any third-party components or device capabilities needed for your Catalogue Solution." />
             <form method="post">
                 <input type="hidden" asp-for="@Model.SolutionId" />
                 <input type="hidden" asp-for="@Model.BackLink" />
+                <input type="hidden" asp-for="@Model.SolutionName" />
 
                 <nhs-textarea asp-for="ThirdPartyComponents"
                               label-text="Third-party components (optional)"

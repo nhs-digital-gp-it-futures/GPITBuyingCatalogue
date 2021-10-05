@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Text.Json;
 using AutoFixture;
-using Newtonsoft.Json;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions;
 
@@ -19,7 +19,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Test.Framework.AutoFixtureCustomisations
             fixture.Customize<Solution>(
                 c => c.With(
                         s => s.ClientApplication,
-                        JsonConvert.SerializeObject(
+                        JsonSerializer.Serialize(
                             fixture
                                 .Build<ClientApplication>()
                                 .With(
@@ -46,10 +46,10 @@ namespace NHSD.GPIT.BuyingCatalogue.Test.Framework.AutoFixtureCustomisations
                                         .With(m => m.OperatingSystems, new HashSet<string> { "andrOID", "Apple ios" })
                                         .Create())
                                 .Create()))
-                    .With(s => s.Features, JsonConvert.SerializeObject(fixture.Create<string[]>()))
+                    .With(s => s.Features, JsonSerializer.Serialize(fixture.Create<string[]>()))
                     .With(
                         s => s.Integrations,
-                        JsonConvert.SerializeObject(
+                        JsonSerializer.Serialize(
                             fixture
                             .Build<Integration[]>()
                             .CreateMany<Integration>())));

@@ -1,8 +1,9 @@
 ﻿@using NHSD.GPIT.BuyingCatalogue.WebApp.Models
 @{
-    ViewData["Title"] = ViewData["BadUrl"];
+    ViewBag.Title = ViewData["BadUrl"];
     var backLinkModel = new NavBaseModel{ BackLink = "/", BackLinkText = "Go to homepage" };
 }
 
 <partial name="Partials/_BackLink" model="@backLinkModel" />
-<nhs-page-title title="@ViewData["BadUrl"]" advice="Please check it is valid and try again" />
+<nhs-page-title title="@ViewBag.Title"
+                advice="Please check it is valid and try again" />

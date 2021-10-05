@@ -8,17 +8,15 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.SupplierModels
     {
         public EditSupplierDetailsModel()
         {
-            Title = "Supplier details";
         }
 
         public EditSupplierDetailsModel(Supplier supplier)
         {
-            Title = $"{supplier.Name} details";
-
             SupplierName = supplier.Name;
             SupplierLegalName = supplier.LegalName;
             AboutSupplier = supplier.Summary;
             SupplierWebsite = supplier.SupplierUrl;
+            SupplierDisplayName = supplier.Name;
         }
 
         [Required(ErrorMessage = "Enter a supplier name")]
@@ -36,6 +34,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.SupplierModels
         [StringLength(1000)]
         public string SupplierWebsite { get; init; }
 
-        public string Title { get; }
+        public string SupplierDisplayName { get; }
     }
 }

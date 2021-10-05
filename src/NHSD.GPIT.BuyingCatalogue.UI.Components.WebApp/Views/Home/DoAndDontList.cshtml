@@ -1,9 +1,9 @@
 ﻿@model NHSD.GPIT.BuyingCatalogue.UI.Components.WebApp.Models.DoDontModel
 @{
-    ViewData["Title"] = "Do and Dont Lists";
+    ViewBag.Title = "Do and Dont lists";
 }
 
-<nhs-page-title title="Do and Dont Lists"
+<nhs-page-title title="@ViewBag.Title"
                 advice="Use Do and Don't lists to help users understand more easily what they should and shouldn't do."
                 caption="View Components"
                 additional-advice="This page is rendered from DoAndDontList.cshtml using the DoDontModel.

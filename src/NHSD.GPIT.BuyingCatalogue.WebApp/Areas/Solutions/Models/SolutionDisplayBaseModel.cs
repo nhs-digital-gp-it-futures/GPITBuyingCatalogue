@@ -1,10 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text.Json;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
+using NHSD.GPIT.BuyingCatalogue.Framework.Serialization;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers;
 
@@ -15,6 +15,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models
         private const string KeyDescription = "Description";
 
         private static readonly string ControllerName = typeof(SolutionsController).ControllerName();
+
         private static readonly List<Func<CatalogueItem, bool>> ShowSectionFunctions = new()
         {
             { _ => true },
@@ -118,22 +119,17 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models
         {
         }
 
-        protected SolutionDisplayBaseModel(Solution solution)
-            : this(solution.CatalogueItem)
-        {
-            ClientApplication = solution.ClientApplication == null
-                ? new ClientApplication()
-                : JsonSerializer.Deserialize<ClientApplication>(
-                    solution.ClientApplication,
-                    new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
-
-            LastReviewed = solution.LastUpdated;
-        }
-
         protected SolutionDisplayBaseModel(CatalogueItem catalogueItem)
         {
             SolutionId = catalogueItem.Id;
             SolutionName = catalogueItem.Name;
+            PublicationStatus = catalogueItem.PublishedStatus;
+
+            ClientApplication = catalogueItem.Solution.ClientApplication == null
+                ? new ClientApplication()
+                : JsonDeserializer.Deserialize<ClientApplication>(catalogueItem.Solution.ClientApplication);
+
+            LastReviewed = catalogueItem.Solution.LastUpdated;
 
             SetVisibleSections(catalogueItem);
             SetPaginationFooter();
@@ -152,6 +148,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models
         public CatalogueItemId SolutionId { get; set; }
 
         public string SolutionName { get; set; }
+
+        public PublicationStatus PublicationStatus { get; }
 
         public virtual IList<SectionModel> GetSections()
         {
@@ -181,6 +179,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models
         }
 
         public void SetShowTrue(int index) => sections[index].Show = true;
+
+        public bool IsInRemediation() => PublicationStatus == PublicationStatus.InRemediation;
+
+        public bool IsSuspended() => PublicationStatus == PublicationStatus.Suspended;
 
         private void SetVisibleSections(CatalogueItem solution)
         {

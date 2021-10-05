@@ -29,9 +29,9 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Organisations
 
         public async Task<(int OrganisationId, string Error)> AddOdsOrganisation(OdsOrganisation odsOrganisation, bool agreementSigned)
         {
-            var persistedOrganisation = await organisationRepository.GetAllAsync(o => o.OdsCode == odsOrganisation.OdsCode);
+            var persistedOrganisation = await dbContext.Organisations.FirstOrDefaultAsync(o => o.OdsCode == odsOrganisation.OdsCode);
 
-            if (persistedOrganisation.Any())
+            if (persistedOrganisation is not null)
                 return (0, $"The organisation with ODS code {odsOrganisation.OdsCode} already exists.");
 
             var organisation = new Organisation
@@ -44,9 +44,8 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Organisations
                 PrimaryRoleId = odsOrganisation.PrimaryRoleId,
             };
 
-            organisationRepository.Add(organisation);
-
-            await organisationRepository.SaveChangesAsync();
+            dbContext.Organisations.Add(organisation);
+            await dbContext.SaveChangesAsync();
 
             return (organisation.Id, null);
         }
@@ -75,10 +74,11 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Organisations
 
         public async Task<List<Organisation>> GetUnrelatedOrganisations(int organisationId)
         {
-            // TODO - should be able to combine this into a single query
-            var allOrganisations = await GetAllOrganisations();
-            var relatedOrganisations = await GetRelatedOrganisations(organisationId);
-            return allOrganisations.Where(o => relatedOrganisations.All(ro => ro.Id != o.Id)).OrderBy(o => o.Name).ToList();
+            return await dbContext.Organisations
+                 .Where(o =>
+                    o.Id != organisationId
+                    && o.RelatedOrganisationRelatedOrganisationNavigations.All(roron => roron.OrganisationId != organisationId))
+                 .ToListAsync();
         }
 
         public async Task<List<Organisation>> GetRelatedOrganisations(int organisationId)

@@ -1,7 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
+using NHSD.GPIT.BuyingCatalogue.EntityFramework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Enums;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.AssociatedServices;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Models;
@@ -10,16 +11,30 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models
 {
     public sealed class ManageCatalogueSolutionModel : NavBaseModel
     {
-        public CatalogueItem Solution { get; set; }
+        public ManageCatalogueSolutionModel()
+        {
+        }
 
-        public IReadOnlyList<CatalogueItem> AssociatedServices { get; init; }
+        public ManageCatalogueSolutionModel(CatalogueItem solution)
+        {
+            Solution = solution;
+            SelectedPublicationStatus = Solution.PublishedStatus;
+            PublicationStatuses = Solution
+                .PublishedStatus
+                .GetAvailablePublicationStatuses()
+                .Select(p => new SelectListItem(p.Description(), p.EnumMemberName()))
+                .ToList();
+        }
+
+        public CatalogueItem Solution { get; private set; }
+
+        public IReadOnlyList<CatalogueItem> AssociatedServices { get; private set; }
 
         public string LastUpdatedByName { get; set; }
 
-        public PublicationStatus SelectedOption { get; set; }
+        public PublicationStatus SelectedPublicationStatus { get; init; }
 
-        public IList<PublicationStatus> PublicationStatuses { get; }
-            = Enum.GetValues<PublicationStatus>().ToList();
+        public IReadOnlyList<SelectListItem> PublicationStatuses { get; init; }
 
         public TaskProgress DescriptionStatus() => new DescriptionModel(Solution).Status();
 
@@ -39,5 +54,19 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models
 
         public TaskProgress AssociatedServicesStatus() =>
             new AssociatedServicesModel(Solution, AssociatedServices).Status();
+
+        public ManageCatalogueSolutionModel WithSolution(CatalogueItem solution)
+        {
+            Solution = solution;
+
+            return this;
+        }
+
+        public ManageCatalogueSolutionModel WithAssociatedServices(List<CatalogueItem> associatedServices)
+        {
+            AssociatedServices = associatedServices;
+
+            return this;
+        }
     }
 }

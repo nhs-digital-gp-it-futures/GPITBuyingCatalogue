@@ -36,10 +36,10 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.AddNewSolution.ClientAp
         }
 
         [Theory]
-        [InlineData(ClientApplicationType.BrowserBased, "browser-based")]
-        [InlineData(ClientApplicationType.MobileTablet, "mobile or tablet")]
-        [InlineData(ClientApplicationType.Desktop, "desktop")]
-        public void DeleteClientApplicationType_CorrectlyDisplayed(ClientApplicationType clientApplicationType, string applicationTypeDisplayName)
+        [InlineData(ClientApplicationType.BrowserBased)]
+        [InlineData(ClientApplicationType.MobileTablet)]
+        [InlineData(ClientApplicationType.Desktop)]
+        public void DeleteClientApplicationType_CorrectlyDisplayed(ClientApplicationType clientApplicationType)
         {
             var queryParam = new Dictionary<string, string>
             {
@@ -49,7 +49,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.AddNewSolution.ClientAp
 
             NavigateToUrl(typeof(DeleteApplicationTypeController), nameof(DeleteApplicationTypeController.DeleteApplicationTypeConfirmation), parameters: queryParam);
 
-            CommonActions.ElementTextEqualTo(CommonSelectors.Header1, $"Delete {applicationTypeDisplayName} application?").Should().BeTrue();
+            CommonActions.ElementIsDisplayed(CommonSelectors.Header1).Should().BeTrue();
             CommonActions.GoBackLinkDisplayed().Should().BeTrue();
             CommonActions.SaveButtonDisplayed().Should().BeTrue();
             CommonActions.ElementIsDisplayed(ClientApplicationObjects.DeleteClientApplicationCancelLink);

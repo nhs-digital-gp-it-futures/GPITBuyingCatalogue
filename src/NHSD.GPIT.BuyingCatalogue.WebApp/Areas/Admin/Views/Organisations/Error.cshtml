@@ -1,9 +1,9 @@
 ﻿@model NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.AddAnOrganisationErrorModel
 @{
-    ViewData["Title"] = "Error";
+    ViewBag.Title = "Error";
 }
 
 <div data-test-id="create-org-error-page">
     <partial name="Partials/_BackLink" model="Model" />
-    <nhs-page-title title="@ViewData["Title"]" advice="@Model.Error" />
+    <nhs-page-title title="@ViewBag.Title" advice="@Model.Error" />
 </div>

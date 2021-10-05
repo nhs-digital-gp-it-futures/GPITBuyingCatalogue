@@ -1,11 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text.Json;
 using System.Threading.Tasks;
 using EnumsNET;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Caching.Memory;
-using Newtonsoft.Json;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
@@ -17,68 +16,24 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
 {
     public sealed class SolutionsService : ISolutionsService
     {
-        private const string FuturesFrameworkShortName = "GP IT Futures";
-        private const string DfocvcShortName = "DFOCVC";
-
         private readonly BuyingCatalogueDbContext dbContext;
         private readonly IDbRepository<MarketingContact, BuyingCatalogueDbContext> marketingContactRepository;
         private readonly IDbRepository<Solution, BuyingCatalogueDbContext> solutionRepository;
         private readonly IDbRepository<Supplier, BuyingCatalogueDbContext> supplierRepository;
         private readonly ICatalogueItemRepository catalogueItemRepository;
-        private readonly IMemoryCache memoryCache;
 
         public SolutionsService(
             BuyingCatalogueDbContext dbContext,
             IDbRepository<MarketingContact, BuyingCatalogueDbContext> marketingContactRepository,
             IDbRepository<Solution, BuyingCatalogueDbContext> solutionRepository,
             IDbRepository<Supplier, BuyingCatalogueDbContext> supplierRepository,
-            ICatalogueItemRepository catalogueItemRepository,
-            IMemoryCache memoryCache)
+            ICatalogueItemRepository catalogueItemRepository)
         {
             this.dbContext = dbContext ?? throw new ArgumentNullException(nameof(dbContext));
             this.marketingContactRepository = marketingContactRepository ?? throw new ArgumentNullException(nameof(marketingContactRepository));
             this.solutionRepository = solutionRepository ?? throw new ArgumentNullException(nameof(solutionRepository));
             this.supplierRepository = supplierRepository ?? throw new ArgumentNullException(nameof(supplierRepository));
             this.catalogueItemRepository = catalogueItemRepository ?? throw new ArgumentNullException(nameof(catalogueItemRepository));
-            this.memoryCache = memoryCache ?? throw new ArgumentNullException(nameof(memoryCache));
-        }
-
-        public Task<List<CatalogueItem>> GetFuturesFoundationSolutions()
-        {
-            return dbContext.CatalogueItems
-                .Include(i => i.Solution)
-                .Include(i => i.CatalogueItemCapabilities).ThenInclude(cic => cic.Capability)
-                .Include(i => i.Supplier)
-                .Where(i => i.CatalogueItemType == CatalogueItemType.Solution
-                    && i.PublishedStatus == PublicationStatus.Published
-                    && i.Solution.FrameworkSolutions.Any(x => x.IsFoundation)
-                    && i.Solution.FrameworkSolutions.Any(fs => fs.Framework.ShortName == FuturesFrameworkShortName))
-                .ToListAsync();
-        }
-
-        public async Task<List<CatalogueItem>> GetFuturesSolutionsByCapabilities(string[] capabilities)
-        {
-            var solutions = await dbContext.CatalogueItems
-                .Include(i => i.Solution)
-                .Include(s => s.CatalogueItemCapabilities).ThenInclude(cic => cic.Capability)
-                .Include(i => i.Supplier)
-                .Where(i => i.CatalogueItemType == CatalogueItemType.Solution
-                    && i.PublishedStatus == PublicationStatus.Published
-                    && i.Solution.FrameworkSolutions.Any(fs => fs.Framework.ShortName == FuturesFrameworkShortName))
-                .ToListAsync();
-
-            // TODO - Refactor this. Should be possible to include in the above expression
-            if (capabilities?.Length > 0)
-            {
-                solutions = solutions.Where(
-                        solution => capabilities.All(
-                            capability =>
-                                solution.CatalogueItemCapabilities.Any(
-                                    x => x.Capability.CapabilityRef == capability)))
-                    .ToList();
-            }
-
-            return solutions;
         }
 
         public Task<CatalogueItem> GetSolutionListPrices(CatalogueItemId solutionId)
@@ -236,25 +191,6 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
             return solution;
         }
 
-        public Task<List<CatalogueItem>> GetDFOCVCSolutions()
-        {
-            return dbContext.CatalogueItems
-                .Include(i => i.Solution)
-                .Include(i => i.CatalogueItemCapabilities).ThenInclude(cic => cic.Capability)
-                .Include(i => i.Supplier)
-                .Where(i => i.CatalogueItemType == CatalogueItemType.Solution
-                    && i.PublishedStatus == PublicationStatus.Published
-                    && i.Solution.FrameworkSolutions.Any(fs => fs.Framework.ShortName == DfocvcShortName))
-                .ToListAsync();
-        }
-
-        public Task<List<Capability>> GetFuturesCapabilities()
-        {
-            return dbContext.Capabilities.Where(c => c.Category.Name == FuturesFrameworkShortName)
-                .OrderBy(c => c.Name)
-                .ToListAsync();
-        }
-
         public async Task SaveSolutionDescription(CatalogueItemId solutionId, string summary, string description, string link)
         {
             summary.ValidateNotNullOrWhiteSpace(nameof(summary));
@@ -269,7 +205,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
         public async Task SaveSolutionFeatures(CatalogueItemId solutionId, string[] features)
         {
             var solution = await solutionRepository.SingleAsync(s => s.CatalogueItemId == solutionId);
-            solution.Features = JsonConvert.SerializeObject(features);
+            solution.Features = JsonSerializer.Serialize(features);
             await solutionRepository.SaveChangesAsync();
         }
 
@@ -298,7 +234,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
             clientApplication.ValidateNotNull(nameof(clientApplication));
 
             var solution = await solutionRepository.SingleAsync(s => s.CatalogueItemId == solutionId);
-            solution.ClientApplication = JsonConvert.SerializeObject(clientApplication);
+            solution.ClientApplication = JsonSerializer.Serialize(clientApplication);
             await solutionRepository.SaveChangesAsync();
         }
 
@@ -368,8 +304,6 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
             await solutionRepository.SaveChangesAsync();
         }
 
-        public Task<Supplier> GetSupplier(int supplierId) => supplierRepository.SingleAsync(s => s.Id == supplierId);
-
         public async Task SaveSupplierDescriptionAndLink(int supplierId, string description, string link)
         {
             var supplier = await supplierRepository.SingleAsync(s => s.Id == supplierId);
@@ -384,11 +318,11 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
 
             model.SetSolutionId();
 
-            var marketingContacts = await marketingContactRepository.GetAllAsync(x => x.SolutionId == model.SolutionId);
+            var marketingContacts = await dbContext.MarketingContacts.Where(c => c.SolutionId == model.SolutionId).ToListAsync();
 
             if (!marketingContacts.Any())
             {
-                marketingContactRepository.AddAll(model.ValidContacts());
+                dbContext.MarketingContacts.AddRange(model.ValidContacts());
             }
             else
             {
@@ -398,15 +332,15 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
                         continue;
 
                     if (newContact.IsEmpty())
-                        marketingContactRepository.Remove(contact);
+                        dbContext.MarketingContacts.Remove(contact);
                     else
                         contact.UpdateFrom(newContact);
                 }
 
-                marketingContactRepository.AddAll(model.NewAndValidContacts());
+                dbContext.MarketingContacts.AddRange(model.NewAndValidContacts());
             }
 
-            await marketingContactRepository.SaveChangesAsync();
+            await dbContext.SaveChangesAsync();
         }
 
         public Task<List<CatalogueItem>> GetSupplierSolutions(int? supplierId)
@@ -539,6 +473,15 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
                 .SingleAsync(p => p.CataloguePriceId == cataloguePriceId && p.CatalogueItemId == solutionId);
 
             dbContext.CataloguePrices.Remove(cataloguePrice);
+
+            await dbContext.SaveChangesAsync();
+        }
+
+        public async Task SavePublicationStatus(CatalogueItemId solutionId, PublicationStatus publicationStatus)
+        {
+            var solution = await GetSolution(solutionId);
+
+            solution.PublishedStatus = publicationStatus;
 
             await dbContext.SaveChangesAsync();
         }

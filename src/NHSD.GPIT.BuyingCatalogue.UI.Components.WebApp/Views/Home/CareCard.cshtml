@@ -1,9 +1,9 @@
 ﻿@model NHSD.GPIT.BuyingCatalogue.UI.Components.WebApp.Models.CareCardModel
 @{
-    ViewData["Title"] = "Card Cards";
+    ViewBag.Title = "Card cards";
 }
 
-<nhs-page-title title="Care Cards"
+<nhs-page-title title="@ViewBag.Title"
                 advice="Use care cards to help users identify and understand the sort of care they need, who to contact and how quickly."
                 caption="View Components"
                 additional-advice="This page is rendered from CareCare.cshtml using the CareCardModel.

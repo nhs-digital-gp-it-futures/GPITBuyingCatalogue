@@ -1,9 +1,12 @@
 ﻿using System.Collections.Generic;
+using System.Text.Json;
 using System.Threading.Tasks;
+using AutoFixture;
+using AutoFixture.AutoMoq;
+using AutoFixture.Idioms;
 using AutoFixture.Xunit2;
 using FluentAssertions;
 using Microsoft.EntityFrameworkCore;
-using Newtonsoft.Json;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
@@ -15,6 +18,16 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Solutions
 {
     public static class InteroperabilityServiceTests
     {
+        [Fact]
+        public static void Constructors_VerifyGuardClauses()
+        {
+            var fixture = new Fixture().Customize(new AutoMoqCustomization());
+            var assertion = new GuardClauseAssertion(fixture);
+            var constructors = typeof(InteroperabilityService).GetConstructors();
+
+            assertion.Verify(constructors);
+        }
+
         [Theory]
         [InMemoryDbAutoData]
         public static async Task SaveIntegrationLink_UpdatesDatabase(
@@ -41,7 +54,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Solutions
            Integration newIntegration,
            InteroperabilityService service)
         {
-            solution.Integrations = JsonConvert.SerializeObject(currentIntegrations);
+            solution.Integrations = JsonSerializer.Serialize(currentIntegrations);
             solution.AdditionalServices.Clear();
 
             context.Solutions.Add(solution);

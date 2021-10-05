@@ -1,9 +1,9 @@
 ﻿@model NHSD.GPIT.BuyingCatalogue.UI.Components.WebApp.Models.TextInputModel
 @{
-    ViewData["Title"] = "Text Input";
+    ViewBag.Title = "Text Input";
 }
 
-<nhs-page-title title="Text Input"
+<nhs-page-title title="@ViewBag.Title"
                 advice="Allow for the Input of a Small amount of Data"
                 caption="Tag Helpers"
                 additional-advice="This page is rendered from TextInput.cshtml using the TextInputModel." />

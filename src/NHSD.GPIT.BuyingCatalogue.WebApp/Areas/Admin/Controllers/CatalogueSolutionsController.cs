@@ -33,24 +33,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
             this.associatedServicesService = associatedServicesService ?? throw new ArgumentNullException(nameof(associatedServicesService));
         }
 
-        [HttpGet("manage/{solutionId}/features")]
-        public async Task<IActionResult> Features(CatalogueItemId solutionId)
-        {
-            var solution = await solutionsService.GetSolution(solutionId);
-            if (solution is null)
-                return BadRequest($"No Solution found for Id: {solutionId}");
-
-            return View(new FeaturesModel().FromCatalogueItem(solution));
-        }
-
-        [HttpPost("manage/{solutionId}/features")]
-        public async Task<IActionResult> Features(CatalogueItemId solutionId, FeaturesModel model)
-        {
-            await solutionsService.SaveSolutionFeatures(solutionId, model.AllFeatures);
-
-            return RedirectToAction(nameof(ManageCatalogueSolution), new { solutionId });
-        }
-
         [HttpGet]
         public async Task<IActionResult> Index()
         {
@@ -72,21 +54,40 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
             return View(model);
         }
 
+        [HttpGet("manage/{solutionId}/features")]
+        public async Task<IActionResult> Features(CatalogueItemId solutionId)
+        {
+            var solution = await solutionsService.GetSolution(solutionId);
+            if (solution is null)
+                return BadRequest($"No Solution found for Id: {solutionId}");
+
+            return View(new FeaturesModel().FromCatalogueItem(solution));
+        }
+
+        [HttpPost("manage/{solutionId}/features")]
+        public async Task<IActionResult> Features(CatalogueItemId solutionId, FeaturesModel model)
+        {
+            await solutionsService.SaveSolutionFeatures(solutionId, model.AllFeatures);
+
+            return RedirectToAction(nameof(ManageCatalogueSolution), new { solutionId });
+        }
+
         [HttpGet("manage/{solutionId}")]
         public async Task<IActionResult> ManageCatalogueSolution(CatalogueItemId solutionId)
         {
             var solution = await solutionsService.GetSolution(solutionId);
             var associatedServices = await associatedServicesService.GetAssociatedServicesForSupplier(solution.SupplierId);
 
-            var model = new ManageCatalogueSolutionModel { Solution = solution, AssociatedServices = associatedServices };
+            var model = new ManageCatalogueSolutionModel(solution)
+                .WithAssociatedServices(associatedServices);
 
-            if (!solution.Solution.LastUpdatedBy.HasValue)
-                return View(model);
+            if (solution.Solution.LastUpdatedBy.HasValue)
+            {
+                var lastUpdatedBy = solution.Solution.LastUpdatedByUser;
 
-            var lastUpdatedBy = solution.Solution.LastUpdatedByUser;
-
-            if (lastUpdatedBy is not null)
-                model.LastUpdatedByName = $"{lastUpdatedBy.FirstName} {lastUpdatedBy.LastName}";
+                if (lastUpdatedBy is not null)
+                    model.LastUpdatedByName = $"{lastUpdatedBy.FirstName} {lastUpdatedBy.LastName}";
+            }
 
             return View(model);
         }
@@ -233,7 +234,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
             if (catalogueItem is null)
                 return BadRequest($"No Solution found for Id: {solutionId}");
 
-            var model = new PublicCloudModel(catalogueItem.Solution.Hosting?.PublicCloud);
+            var model = new PublicCloudModel(catalogueItem);
             return View(model);
         }
 
@@ -258,7 +259,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
             if (catalogueItem is null)
                 return BadRequest($"No Solution found for Id: {solutionId}");
 
-            var model = new PrivateCloudModel(catalogueItem.Solution.Hosting?.PrivateCloud);
+            var model = new PrivateCloudModel(catalogueItem);
             return View(model);
         }
 
@@ -283,7 +284,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
             if (catalogueItem is null)
                 return BadRequest($"No Solution found for Id: {solutionId}");
 
-            var model = new HybridModel(catalogueItem.Solution.Hosting?.HybridHostingType);
+            var model = new HybridModel(catalogueItem);
             return View(model);
         }
 
@@ -308,7 +309,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
             if (catalogueItem is null)
                 return BadRequest($"No Solution found for Id: {solutionId}");
 
-            var model = new OnPremiseModel(catalogueItem.Solution.Hosting?.OnPremise);
+            var model = new OnPremiseModel(catalogueItem);
             return View(model);
         }
 
@@ -548,6 +549,25 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
                     new { solutionId }),
                 _ => RedirectToAction(nameof(ClientApplicationType), new { solutionId }),
             };
+        }
+
+        [HttpPost("manage/{solutionId}/publication-status")]
+        public async Task<IActionResult> SetPublicationStatus(CatalogueItemId solutionId, ManageCatalogueSolutionModel model)
+        {
+            var solution = await solutionsService.GetSolution(solutionId);
+            if (!ModelState.IsValid)
+            {
+                var associatedServices = await associatedServicesService.GetAssociatedServicesForSupplier(solution.SupplierId);
+
+                return View("ManageCatalogueSolution", model
+                    .WithSolution(solution)
+                    .WithAssociatedServices(associatedServices));
+            }
+
+            if (model.SelectedPublicationStatus != solution.PublishedStatus)
+                await solutionsService.SavePublicationStatus(solutionId, model.SelectedPublicationStatus);
+
+            return RedirectToAction(nameof(Index));
         }
     }
 }

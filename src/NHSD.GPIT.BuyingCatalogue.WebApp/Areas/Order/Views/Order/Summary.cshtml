@@ -5,7 +5,7 @@
 @using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
 @model NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.Order.SummaryModel;
 @{
-    ViewData["Title"] = Model.Title;
+    ViewBag.Title = Model.Title;
     var itemId = 0;
 }
 <style>
@@ -23,7 +23,7 @@
 <div class="nhsuk-grid-row">
     <div class="nhsuk-grid-column-two-thirds">
         <nhs-validation-summary />
-        <nhs-page-title title="@Model.Title"
+        <nhs-page-title title="@ViewBag.Title"
                         advice="@Model.AdviceText" />
 
         @if (Model.Order.OrderStatus == OrderStatus.Complete)

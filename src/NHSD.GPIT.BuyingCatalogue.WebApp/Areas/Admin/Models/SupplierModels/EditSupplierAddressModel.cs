@@ -24,6 +24,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.SupplierModels
             Country = supplier.Address?.Country;
 
             BackLinkText = "Go back";
+            SupplierName = supplier.Name;
         }
 
         // All in all the below gives us 405 characters max, with the DB column only taking 500 including the JSON notation. should help us not blow the buffers.
@@ -57,5 +58,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.SupplierModels
         [Required(ErrorMessage = "Enter a country")]
         [StringLength(60)]// longest country name in the world is 56 characters - The United Kingdom of Great Britain and Northern Ireland.
         public string Country { get; init; }
+
+        public string SupplierName { get; }
     }
 }

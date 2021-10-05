@@ -1,9 +1,9 @@
 ﻿@model NHSD.GPIT.BuyingCatalogue.UI.Components.WebApp.Models.BlankModel
 @{
-    ViewData["Title"] = "Tags";
+    ViewBag.Title = "Tags";
 }
 
-<nhs-page-title title="Tags"
+<nhs-page-title title="@ViewBag.Title"
                 caption="Tag Helper"
                 advice="when it's possible for something to have more than 1 status and it's useful for the user to know about that status."
                 additional-advice="This page is rendered from Tags.cshtml using the BlankModel." />

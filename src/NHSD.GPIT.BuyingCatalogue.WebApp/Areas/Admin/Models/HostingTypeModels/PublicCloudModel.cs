@@ -8,11 +8,14 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.HostingTypeModels
         {
         }
 
-        public PublicCloudModel(PublicCloud model)
+        public PublicCloudModel(CatalogueItem solution)
+            : base(solution)
         {
-            Summary = model?.Summary;
-            Link = model?.Link;
-            RequiresHscn = model?.RequiresHscn;
+            var hostingType = solution.Solution.Hosting?.PublicCloud;
+
+            Summary = hostingType?.Summary;
+            Link = hostingType?.Link;
+            RequiresHscn = hostingType?.RequiresHscn;
         }
     }
 }

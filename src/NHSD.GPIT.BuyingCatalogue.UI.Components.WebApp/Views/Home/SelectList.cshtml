@@ -1,9 +1,9 @@
 ﻿@model NHSD.GPIT.BuyingCatalogue.UI.Components.WebApp.Models.SelectListModel
 @{
-    ViewData["Title"] = "Select List";
+    ViewBag.Title = "Select list";
 }
 
-<nhs-page-title title="Select List"
+<nhs-page-title title="@ViewBag.Title"
                 advice="Allow The Selection of a single item from a list of objects"
                 caption="Tag Helpers"
                 additional-advice="This page is rendered from SelectList.cshtml using the SelectListModel." />

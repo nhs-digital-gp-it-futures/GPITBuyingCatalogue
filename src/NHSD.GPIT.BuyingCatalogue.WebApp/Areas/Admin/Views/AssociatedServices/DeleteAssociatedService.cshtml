@@ -1,0 +1,21 @@
+﻿@model NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.AssociatedServices.DeleteAssociatedServiceModel;
+@{
+    ViewBag.Title = $"Delete {Model.AssociatedService.Name}?";
+}
+
+<div class="nhsuk-width-container">
+    <div class="nhsuk-grid-row">
+        <div class="nhsuk-grid-column-full nhsuk-u-margin-bottom-3">
+            <partial name="Partials/_BackLink" model="Model" />
+        </div>
+        <div class="nhsuk-grid-column-full">
+            <nhs-validation-summary />
+            <nhs-page-title title="@ViewBag.Title"
+                            advice="Confirm you want to delete this Associated Service." />
+            <form method="post">
+                <nhs-submit-button text="Delete" />
+                <vc:nhs-backlink url="@Model.BackLink" text="Cancel" />
+            </form>
+        </div>
+    </div>
+</div>

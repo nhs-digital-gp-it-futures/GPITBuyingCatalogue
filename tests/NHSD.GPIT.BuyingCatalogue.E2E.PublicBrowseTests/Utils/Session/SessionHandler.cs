@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Session;
 using Microsoft.Extensions.Caching.Distributed;
 using Microsoft.Extensions.Logging;
+using NHSD.GPIT.BuyingCatalogue.Framework.Serialization;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Models;
 using OpenQA.Selenium;
 
@@ -48,9 +49,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.Session
             var value = Session.GetString(key);
             return value is null ?
                 default :
-                JsonSerializer.Deserialize<T>(
-                    value,
-                    new JsonSerializerOptions { ReferenceHandler = ReferenceHandler.Preserve });
+                JsonDeserializer.Deserialize<T>(value, ReferenceHandler.Preserve);
         }
 
         public CreateOrderItemModel GetOrderStateFromSession(string key)

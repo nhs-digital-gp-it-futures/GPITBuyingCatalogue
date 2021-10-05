@@ -1,13 +1,14 @@
 ﻿@model NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.DeleteCatalogueSolution.DeleteSolutionModel;
 @{
-    ViewData["Title"] = Model.Title;
+    ViewBag.Title = Model.Title;
 }
 
 <div data-test-id="delete-catalogue-page">
     <partial name="Partials/_BackLink" model="Model" />
     <div class="nhsuk-grid-row">
         <div class="nhsuk-grid-column-two-thirds">
-            <nhs-page-title title="@Model.Title" advice="This Catalogue Solution will be deleted from all the Service Recipients in your order along with any of its Additional Services." />
+            <nhs-page-title title="@ViewBag.Title"
+                            advice="This Catalogue Solution will be deleted from all the Service Recipients in your order along with any of its Additional Services." />
             <form method="post">
                 <input type="hidden" asp-for="@Model.BackLink" />
                 <input type="hidden" asp-for="@Model.BackLinkText" />

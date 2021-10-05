@@ -2,10 +2,10 @@
 @using NHSD.GPIT.BuyingCatalogue.Framework.Extensions
 @model NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.ListOrganisationsModel
 @{
-    ViewData["Title"] = "Manage Buyer Organisations and Users";
+    ViewBag.Title = "Manage Buyer Organisations and Users";
 }
 <div data-test-id="organisations">
-    <nhs-page-title title="Manage buyer organisations and users"
+    <nhs-page-title title="@ViewBag.Title"
                     advice="Add a new buyer organisation or edit the details and user accounts for one that's already been created." />
 
     <div data-test-id="add-org-button">

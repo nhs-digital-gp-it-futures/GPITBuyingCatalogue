@@ -55,7 +55,8 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
                 .Include(i => i.Solution)
                 .Include(i => i.Supplier)
                 .Include(i => i.CatalogueItemCapabilities).ThenInclude(cic => cic.Capability)
-                .Where(i => i.CatalogueItemType == CatalogueItemType.Solution && i.PublishedStatus == PublicationStatus.Published);
+                .Where(i => i.CatalogueItemType == CatalogueItemType.Solution &&
+                    (i.PublishedStatus != PublicationStatus.Draft && i.PublishedStatus != PublicationStatus.Unpublished));
 
             if (!string.IsNullOrWhiteSpace(frameworkId) && frameworkId != AllSolutionsFrameworkKey)
                 query = query.Where(ci => ci.Solution.FrameworkSolutions.Any(fs => fs.FrameworkId == frameworkId));

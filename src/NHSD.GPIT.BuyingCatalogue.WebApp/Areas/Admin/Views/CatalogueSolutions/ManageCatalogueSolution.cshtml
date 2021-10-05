@@ -2,7 +2,7 @@
 @using NHSD.GPIT.BuyingCatalogue.Framework.Extensions
 @model NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.ManageCatalogueSolutionModel;
 @{
-    ViewData["Title"] = Model.Solution.Name;
+    ViewBag.Title = Model.Solution.Name;
 }
 
 @section Breadcrumbs {
@@ -22,7 +22,7 @@
 
 <div class="nhsuk-grid-row">
     <div class="nhsuk-grid-column-full">
-        <nhs-page-title title="@Model.Solution.Name"
+        <nhs-page-title title="@ViewBag.Title"
                         caption="@Model.Solution.Supplier.Name"
                         advice="Explain what your Catalogue Solution is for and how it works. This information will be published on the Buying Catalogue to help buyers understand if it meets their needs." />
         @if (!string.IsNullOrWhiteSpace(Model.LastUpdatedByName))
@@ -42,7 +42,7 @@
                                      size="Large"
                                      label-hint="Provide as much information as possible for buyers. You can save your progress at any point, but a Catalogue Solution Listing page cannot be published until all mandatory fields have been completed.">
 
-            <nhs-table>
+            <nhs-table data-test-id="manage-solution-table">
                 <nhs-table-column>Section</nhs-table-column>
                 <nhs-table-column>Mandatory</nhs-table-column>
                 <nhs-table-column>Status</nhs-table-column>
@@ -55,9 +55,9 @@
                 </nhs-table-row-container>
                 <nhs-table-row-container>
                     <nhs-table-cell>Description</nhs-table-cell>
-                    <nhs-table-cell>Yes</nhs-table-cell>                    
+                    <nhs-table-cell>Yes</nhs-table-cell>
                     <nhs-table-cell>
-                        <nhs-tag status-enum="@Model.DescriptionStatus()"/>
+                        <nhs-tag status-enum="@Model.DescriptionStatus()" />
                     </nhs-table-cell>
                     <nhs-table-cell>
                         <a asp-action="Description" asp-controller="CatalogueSolutions"
@@ -66,22 +66,22 @@
                 </nhs-table-row-container>
                 <nhs-table-row-container>
                     <nhs-table-cell>Features</nhs-table-cell>
-                    <nhs-table-cell>No</nhs-table-cell>                    
+                    <nhs-table-cell>No</nhs-table-cell>
                     <nhs-table-cell>
-                        <nhs-tag status-enum="@Model.FeaturesStatus()"/>
+                        <nhs-tag status-enum="@Model.FeaturesStatus()" />
                     </nhs-table-cell>
                     <nhs-table-cell>
                         <a asp-action="Features" asp-route-solutionId="@Model.Solution.Id">Edit</a>
                     </nhs-table-cell>
                 </nhs-table-row-container>
                 <nhs-table-row-container>
-                    <nhs-table-cell>Capabilities</nhs-table-cell>
+                    <nhs-table-cell>Capabilities and Epics</nhs-table-cell>
                     <nhs-table-cell>Yes</nhs-table-cell>
                     <nhs-table-cell><nhs-tag colour="Green" text="Completed" /></nhs-table-cell>
                     <nhs-table-cell><a href="#">Edit</a></nhs-table-cell>
                 </nhs-table-row-container>
                 <nhs-table-row-container>
-                    <nhs-table-cell>List Price</nhs-table-cell>
+                    <nhs-table-cell>List price</nhs-table-cell>
                     <nhs-table-cell>Yes</nhs-table-cell>
                     <nhs-table-cell>
                         <nhs-tag status-enum="@Model.ListPriceStatus()" />
@@ -110,9 +110,9 @@
                 </nhs-table-row-container>
                 <nhs-table-row-container>
                     <nhs-table-cell>Interoperability</nhs-table-cell>
-                    <nhs-table-cell>No</nhs-table-cell>                    
+                    <nhs-table-cell>No</nhs-table-cell>
                     <nhs-table-cell>
-                        <nhs-tag status-enum="@Model.InteroperabilityStatus()"/>
+                        <nhs-tag status-enum="@Model.InteroperabilityStatus()" />
                     </nhs-table-cell>
                     <nhs-table-cell>
                         <a asp-action="@nameof(InteroperabilityController.Interoperability)"
@@ -122,9 +122,9 @@
                 </nhs-table-row-container>
                 <nhs-table-row-container>
                     <nhs-table-cell>Implementation</nhs-table-cell>
-                    <nhs-table-cell>No</nhs-table-cell>                    
+                    <nhs-table-cell>No</nhs-table-cell>
                     <nhs-table-cell>
-                        <nhs-tag status-enum="@Model.ImplementationStatus()"/>
+                        <nhs-tag status-enum="@Model.ImplementationStatus()" />
                     </nhs-table-cell>
                     <nhs-table-cell>
                         <a asp-action="Implementation" asp-controller="CatalogueSolutions"
@@ -132,20 +132,20 @@
                     </nhs-table-cell>
                 </nhs-table-row-container>
                 <nhs-table-row-container>
-                    <nhs-table-cell>Client Application Type</nhs-table-cell>
+                    <nhs-table-cell>Client application type</nhs-table-cell>
                     <nhs-table-cell>Yes</nhs-table-cell>                    
                     <nhs-table-cell>
-                        <nhs-tag status-enum="@Model.ClientApplicationTypeStatus()"/>
+                        <nhs-tag status-enum="@Model.ClientApplicationTypeStatus()" />
                     </nhs-table-cell>
                     <nhs-table-cell>
                         <a asp-action="ClientApplicationType" asp-controller="CatalogueSolutions" asp-route-solutionId="@Model.Solution.Id">Edit</a>
                     </nhs-table-cell>
                 </nhs-table-row-container>
                 <nhs-table-row-container>
-                    <nhs-table-cell>Hosting Type</nhs-table-cell>
+                    <nhs-table-cell>Hosting type</nhs-table-cell>
                     <nhs-table-cell>Yes</nhs-table-cell>                    
                     <nhs-table-cell>
-                        <nhs-tag status-enum="@Model.HostingTypeStatus()"/>
+                        <nhs-tag status-enum="@Model.HostingTypeStatus()" />
                     </nhs-table-cell>
                     <nhs-table-cell>
                         <a asp-action="HostingType" asp-controller="CatalogueSolutions" asp-route-solutionId="@Model.Solution.Id">Edit</a>
@@ -159,9 +159,9 @@
                 </nhs-table-row-container>
                 <nhs-table-row-container>
                     <nhs-table-cell>Development plans</nhs-table-cell>
-                    <nhs-table-cell>No</nhs-table-cell>                    
+                    <nhs-table-cell>No</nhs-table-cell>
                     <nhs-table-cell>
-                        <nhs-tag status-enum="@Model.RoadmapStatus()"/>
+                        <nhs-tag status-enum="@Model.RoadmapStatus()" />
                     </nhs-table-cell>
                     <nhs-table-cell>
                         <a asp-action="Roadmap" asp-route-solutionId="@Model.Solution.Id">Edit</a>
@@ -176,17 +176,22 @@
             </nhs-table>
         </nhs-fieldset-form-container>
 
-        <nhs-fieldset-form-label asp-for="@Model"
-                                 label-text="What would you like to do with this Catalogue Solution?"
-                                 label-hint="Select one option."
-                                 size="Large">
-            <nhs-radio-buttons asp-for="SelectedOption"
-                               values="Model.PublicationStatuses.Cast<object>()"
-                               value-name="EnumMemberName"
-                               display-name="Name" />
-        </nhs-fieldset-form-label>
+        <form method="post" asp-action="SetPublicationStatus" asp-route-solutionId="@Model.Solution.Id">
+            <input type="hidden" asp-for="Solution" />
+            <input type="hidden" asp-for="BackLink" />
+            <input type="hidden" asp-for="BackLinkText" />
+            <nhs-fieldset-form-label asp-for="@Model"
+                                     label-text="What would you like to do with this Catalogue Solution?"
+                                     label-hint="Select one option."
+                                     size="Large">
+                <nhs-radio-buttons asp-for="SelectedPublicationStatus"
+                                   values="Model.PublicationStatuses.Cast<object>()"
+                                   value-name="Value"
+                                   display-name="Text" />
+            </nhs-fieldset-form-label>
 
-        <nhs-submit-button text="Continue" />
+            <nhs-submit-button text="Continue" />
+        </form>
     </div>
 </div>
 

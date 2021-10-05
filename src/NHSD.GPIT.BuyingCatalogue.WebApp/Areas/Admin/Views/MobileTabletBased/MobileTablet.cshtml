@@ -2,7 +2,7 @@
 @using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers;
 @model NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.MobileTabletBasedModels.MobileTabletBasedModel
 @{
-    ViewData["Title"] = "Mobile or tablet application";
+    ViewBag.Title = "Mobile or tablet application";
 }
 
 <div class="nhsuk-width-container">
@@ -11,7 +11,8 @@
             <partial name="Partials/_BackLink" model="Model" />
         </div>
         <div class="nhsuk-grid-column-full">
-            <nhs-page-title title="Mobile or tablet application"
+            <nhs-page-title title="@ViewBag.Title"
+                            caption="@Model.SolutionName"
                             advice="Provide information about your mobile or tablet Catalogue Solution." />
 
             <nhs-table>

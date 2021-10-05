@@ -1,8 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
+using System.Text.Json;
 using FluentAssertions;
-using Newtonsoft.Json;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.Test.Framework.AutoFixtureCustomisations;
 using NHSD.GPIT.BuyingCatalogue.Test.Framework.TestData;
@@ -123,7 +122,7 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.UnitTests.Models.BuyingCatal
             CatalogueItem catalogueItem,
             string[] expected)
         {
-            catalogueItem.Solution.Features = JsonConvert.SerializeObject(expected);
+            catalogueItem.Solution.Features = JsonSerializer.Serialize(expected);
 
             var actual = catalogueItem.Features();
 

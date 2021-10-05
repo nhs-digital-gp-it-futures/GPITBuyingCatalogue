@@ -1,6 +1,6 @@
 ﻿@model NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.Supplier.SupplierModel;
 @{
-    ViewData["Title"] = Model.Title;
+    ViewBag.Title = Model.Title;
 }
 
 <div data-test-id="supplier-page">
@@ -9,7 +9,8 @@
     <div class="nhsuk-grid-row">
         <div class="nhsuk-grid-column-two-thirds">
             <nhs-validation-summary />
-            <nhs-page-title title="@Model.Title" advice="Check the supplier information and edit details for the primary contact for this order." />
+            <nhs-page-title title="@ViewBag.Title" 
+                            advice="Check the supplier information and edit details for the primary contact for this order." />
 
             <nhs-inset-text>
                 <p>

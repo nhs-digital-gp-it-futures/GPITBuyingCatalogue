@@ -6,6 +6,8 @@
 
         public const string BuyingCatalogueConsentExpiration = "cookieExpiration:buyingcatalogue-cookie-consent-expiration";
 
-        public const string ShowConsentCookie = "ShowConsentCookie";
+        public const string ShowCookieBanner = nameof(ShowCookieBanner);
+
+        public const string UseAnalytics = nameof(UseAnalytics);
     }
 }

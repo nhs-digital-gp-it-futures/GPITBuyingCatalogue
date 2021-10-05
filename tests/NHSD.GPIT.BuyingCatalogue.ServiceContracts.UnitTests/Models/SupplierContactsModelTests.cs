@@ -31,26 +31,14 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.UnitTests.Models
             actual.Should().BeNull();
         }
 
-        // TODO: convert to declarative AutoFixture test
-        [Fact]
-        public static void SetSolutionId_Sets_SolutionIdOnContacts()
+        [Theory]
+        [CommonAutoData]
+        public static void SetSolutionId_Sets_SolutionIdOnContacts(
+            SupplierContactsModel model)
         {
-            var fixture = new Fixture();
-            fixture.Behaviors.Remove(new ThrowingRecursionBehavior());
-            fixture.Behaviors.Add(new OmitOnRecursionBehavior());
-            fixture
-                .Customize(new OrderCustomization())
-                .Customize(new CatalogueItemIdCustomization())
-                .Customize(new CallOffIdCustomization());
-
-            var model = fixture.Create<SupplierContactsModel>();
-
             model.SetSolutionId();
 
-            foreach (var contact in model.Contacts)
-            {
-                contact.SolutionId.Should().Be(model.SolutionId);
-            }
+            model.Contacts.Select(c => c.SolutionId).Should().AllBeEquivalentTo(model.SolutionId);
         }
 
         [Fact]

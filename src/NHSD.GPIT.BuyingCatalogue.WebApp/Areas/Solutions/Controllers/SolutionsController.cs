@@ -97,7 +97,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers
             if (item is null)
                 return BadRequest($"No Catalogue Item found for Id: {solutionId}");
 
-            return View(new AssociatedServicesModel(item.Solution));
+            if (item.PublishedStatus == PublicationStatus.Suspended)
+                return RedirectToAction(nameof(Description), new { solutionId });
+
+            return View(new AssociatedServicesModel(item));
         }
 
         [HttpGet("{solutionId}/additional-services")]
@@ -106,6 +109,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers
             var item = await solutionsService.GetSolutionWithAllAdditionalServices(solutionId);
             if (item is null)
                 return BadRequest($"No Catalogue Item found for Id: {solutionId}");
+
+            if (item.PublishedStatus == PublicationStatus.Suspended)
+                return RedirectToAction(nameof(Description), new { solutionId });
 
             return View(new AdditionalServicesModel(item));
         }
@@ -116,6 +122,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers
             var item = await solutionsService.GetSolutionOverview(solutionId);
             if (item is null)
                 return BadRequest($"No Catalogue Item found for Id: {solutionId}");
+
+            if (item.PublishedStatus == PublicationStatus.Suspended)
+                return RedirectToAction(nameof(Description), new { solutionId });
 
             return View(new CapabilitiesViewModel(item));
         }
@@ -130,6 +139,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers
             if (item is null)
                 return BadRequest($"No Catalogue Item found for Id: {solutionId}");
 
+            if (item.PublishedStatus == PublicationStatus.Suspended)
+                return RedirectToAction(nameof(Description), new { solutionId });
+
             return View(new CapabilitiesViewModel(item)
             {
                 Name = item.CatalogueItemName(additionalServiceId),
@@ -143,6 +155,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers
             var item = await solutionsService.GetSolutionCapability(solutionId, capabilityId);
             if (item is null)
                 return BadRequest($"No Catalogue Item found for Id: {solutionId} with Capability Id: {capabilityId}");
+
+            if (item.PublishedStatus == PublicationStatus.Suspended)
+                return RedirectToAction(nameof(Description), new { solutionId });
 
             var solutionCapability = item.CatalogueItemCapability(capabilityId);
             var model = new SolutionCheckEpicsModel(solutionCapability);
@@ -163,6 +178,11 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers
             if (item is null)
                 return BadRequest($"No Catalogue Item found for Id: {solutionId} with Capability Id: {capabilityId}");
 
+            var solution = await solutionsService.GetSolutionOverview(solutionId);
+
+            if (solution.PublishedStatus == PublicationStatus.Suspended)
+                return RedirectToAction(nameof(Description), new { solutionId });
+
             var solutionCapability = item.CatalogueItemCapability(capabilityId);
             var model = new SolutionCheckEpicsModel(solutionCapability);
 
@@ -179,7 +199,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers
             if (item is null)
                 return BadRequest($"No Catalogue Item found for Id: {solutionId}");
 
-            var model = new ClientApplicationTypesModel(item.Solution);
+            if (item.PublishedStatus == PublicationStatus.Suspended)
+                return RedirectToAction(nameof(Description), new { solutionId });
+
+            var model = new ClientApplicationTypesModel(item);
 
             return View(model);
         }
@@ -191,7 +214,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers
             if (item is null)
                 return BadRequest($"No Catalogue Item found for Id: {solutionId}");
 
-            return View(new SolutionDescriptionModel(item.Solution));
+            return View(new SolutionDescriptionModel(item));
         }
 
         [HttpGet("{solutionId}/features")]
@@ -201,7 +224,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers
             if (item is null)
                 return BadRequest($"No Catalogue Item found for Id: {solutionId}");
 
-            return View(new SolutionFeaturesModel(item.Features()));
+            if (item.PublishedStatus == PublicationStatus.Suspended)
+                return RedirectToAction(nameof(Description), new { solutionId });
+
+            return View(new SolutionFeaturesModel(item));
         }
 
         [HttpGet("{solutionId}/hosting-type")]
@@ -210,6 +236,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers
             var item = await solutionsService.GetSolutionOverview(solutionId);
             if (item is null)
                 return BadRequest($"No Catalogue Item found for Id: {solutionId}");
+
+            if (item.PublishedStatus == PublicationStatus.Suspended)
+                return RedirectToAction(nameof(Description), new { solutionId });
 
             return View(new HostingTypesModel(item));
         }
@@ -220,6 +249,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers
             var item = await solutionsService.GetSolutionOverview(solutionId);
             if (item is null)
                 return BadRequest($"No Catalogue Item found for Id: {solutionId}");
+
+            if (item.PublishedStatus == PublicationStatus.Suspended)
+                return RedirectToAction(nameof(Description), new { solutionId });
+
             return View(new ImplementationTimescalesModel(item));
         }
 
@@ -229,6 +262,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers
             var item = await solutionsService.GetSolutionOverview(solutionId);
             if (item is null)
                 return BadRequest($"No Catalogue Item found for Id: {solutionId}");
+
+            if (item.PublishedStatus == PublicationStatus.Suspended)
+                return RedirectToAction(nameof(Description), new { solutionId });
+
             return View(new InteroperabilityModel(item));
         }
 
@@ -238,6 +275,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers
             var item = await solutionsService.GetSolutionOverview(solutionId);
             if (item is null)
                 return BadRequest($"No Catalogue Item found for Id: {solutionId}");
+
+            if (item.PublishedStatus == PublicationStatus.Suspended)
+                return RedirectToAction(nameof(Description), new { solutionId });
+
             return View(new ListPriceModel(item));
         }
 
@@ -247,6 +288,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers
             var item = await solutionsService.GetSolutionOverview(solutionId);
             if (item is null)
                 return BadRequest($"No Catalogue Item found for Id: {solutionId}");
+
+            if (item.PublishedStatus == PublicationStatus.Suspended)
+                return RedirectToAction(nameof(Description), new { solutionId });
 
             return View(new SolutionSupplierDetailsModel(item));
         }

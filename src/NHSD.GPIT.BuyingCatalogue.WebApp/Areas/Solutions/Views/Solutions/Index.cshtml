@@ -6,7 +6,7 @@
 @model NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models.SolutionsModel;
 @{
     Layout = "~/Views/Shared/Layouts/_AllBannersLayout.cshtml";
-    ViewData["Title"] = "Find Buying Catalogue Solutions";
+    ViewBag.Title = "Find Buying Catalogue Solutions";
     var backLinkModel = new NavBaseModel { BackLink = "/", BackLinkText = "Go back" };
 
     string sortText = Model.Options.Sort switch
@@ -66,7 +66,7 @@
 
 <div class="nhsuk-grid-row">
     <div class="nhsuk-grid-column-full">
-        <nhs-page-title title="@ViewData["Title"]"
+        <nhs-page-title title="@ViewBag.Title"
                         advice="Search for Catalogue Solutions that match the needs of your organisation." />
         <div id="filter-container">
             <partial name="_FilterNoJavascript" model="@Model" />

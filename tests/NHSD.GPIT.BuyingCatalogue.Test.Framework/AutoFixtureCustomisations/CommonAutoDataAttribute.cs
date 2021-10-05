@@ -7,7 +7,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Test.Framework.AutoFixtureCustomisations
     public sealed class CommonAutoDataAttribute : AutoDataAttribute
     {
         // TODO: move specific test customizations out of CommonAutoDataAttribute
-        // (HostingTypeSectionModelCustomization, ClientApplicationTypeSectionModelCustomization)
+        // (HostingTypeSectionModelCustomization, ClientApplicationTypeSectionModelCustomization, CataloguePriceCustomization)
         public CommonAutoDataAttribute()
             : base(() => new Fixture().Customize(
                 new CompositeCustomization(
@@ -16,11 +16,13 @@ namespace NHSD.GPIT.BuyingCatalogue.Test.Framework.AutoFixtureCustomisations
                     new CallOffIdCustomization(),
                     new OrderCustomization(),
                     new CatalogueItemIdCustomization(),
+                    new ControllerCustomization(),
                     new ControllerBaseCustomization(),
                     new IgnoreCircularReferenceCustomisation(),
                     new SolutionCustomization(),
                     new HostingTypeSectionModelCustomization(),
                     new OrganisationCustomization(),
+                    new CataloguePriceCustomization(),
                     new ClientApplicationTypeSectionModelCustomization())))
         {
         }
