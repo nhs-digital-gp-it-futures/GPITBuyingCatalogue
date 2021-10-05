@@ -1,7 +1,6 @@
-﻿@model NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.AssociatedServices.AddAssociatedServiceModel;
+﻿@model NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.AssociatedServices.EditAssociatedServiceDetailsModel;
 @{
-    Layout = "~/Views/Shared/Layouts/_NoBannersLayout.cshtml";
-    ViewBag.Title = "Associated Service information";
+    ViewBag.Title = "Associated Service details";
 }
 
 <partial name="Partials/_BackLink" model="Model" />
@@ -9,7 +8,7 @@
     <div class="nhsuk-grid-column-two-thirds">
         <nhs-validation-summary />
         <nhs-page-title title="@ViewBag.Title"
-                        caption="@Model.Solution.Supplier.Name"
+                        caption="@Model.AssociatedService.Supplier.Name"
                         advice="Give buyers as much detail as possible about your Catalogue Solution." />
 
         <form method="post">
@@ -21,7 +20,7 @@
                           label-text="Associated Service description"
                           label-hint="Describe how this Associated Service helps implement or optimise the live operation of your Catalogue Solution."
                           character-count="true"
-                          maxlength="1000"/>
+                          maxlength="1000" />
             <nhs-textarea asp-for="OrderGuidance"
                           label-text="Order guidance"
                           label-hint="Help buyers understand how they should order the Associated Services buy providing typical order volumes and implementation timescales."

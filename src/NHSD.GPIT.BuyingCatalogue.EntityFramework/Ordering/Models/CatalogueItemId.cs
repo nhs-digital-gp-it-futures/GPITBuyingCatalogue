@@ -96,5 +96,13 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models
 
             return new CatalogueItemId(SupplierId, (itemId + 1).ToString("D3"));
         }
+
+        public CatalogueItemId NextAssociatedServiceId()
+        {
+            if (!int.TryParse(ItemId.Replace("S-", string.Empty), out var itemId))
+                throw new FormatException();
+
+            return new CatalogueItemId(SupplierId, $"S-{itemId + 1:D3}");
+        }
     }
 }
