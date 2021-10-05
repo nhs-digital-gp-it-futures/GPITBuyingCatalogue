@@ -129,12 +129,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp
                         context =>
                         {
                             var error = context.Features.Get<IExceptionHandlerFeature>();
+
                             if (error != null)
                             {
-                                var errorMessage = error.Error.FullErrorMessage();
-
-                                // TODO - AppInsights isn't picking up LogError for some reason
-                                logger.LogInformation(error.Error, errorMessage);
+                                logger.LogError(error.Error, error.Error.FullErrorMessage());
                             }
 
                             context.Response.Redirect("/Home/Error");
