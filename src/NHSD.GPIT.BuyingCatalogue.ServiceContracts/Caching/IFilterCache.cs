@@ -5,7 +5,7 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.Caching
 {
     public interface IFilterCache
     {
-        bool TryGet(string filterKey, out string content);
+        string Get(string filterKey);
 
         void Set(string filterKey, string content, DateTime expiration);
 

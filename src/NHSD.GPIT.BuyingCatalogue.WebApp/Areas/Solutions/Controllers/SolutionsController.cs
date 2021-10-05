@@ -61,8 +61,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers
         public async Task<IActionResult> LoadCatalogueSolutionsFilter([FromQuery] string selectedFramework)
         {
             var cacheKey = selectedFramework ?? FrameworkFilterKeys.GenericCacheKey;
+            var html = filterCache.Get(cacheKey);
 
-            if (filterCache.TryGet(cacheKey, out string html))
+            if (html is not null)
                 return Content(html);
 
             var frameworks = await solutionsFilterService.GetAllFrameworksAndCountForFilter();

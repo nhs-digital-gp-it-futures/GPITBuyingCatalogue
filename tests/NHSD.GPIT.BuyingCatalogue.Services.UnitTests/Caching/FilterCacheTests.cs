@@ -59,11 +59,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Caching
             memoryCache.Setup(m => m.TryGetValue(cacheKey, out cacheContent))
                 .Returns(true);
 
-            var result = filterCache.TryGet(filterKey, out var actualContent);
-
-            result
-                .Should()
-                .BeTrue();
+            var actualContent = filterCache.Get(filterKey);
 
             actualContent
                 .Should()
@@ -72,7 +68,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Caching
 
         [Theory]
         [CommonAutoData]
-        public static void TryGet_WithInvalidKey_ReturnsFalse(
+        public static void TryGet_WithInvalidKey_ReturnsNull(
             string filterKey,
             [Frozen] Mock<IMemoryCache> memoryCache,
             FilterCache filterCache)
@@ -81,11 +77,11 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Caching
             memoryCache.Setup(m => m.TryGetValue(It.IsAny<string>(), out cacheContent))
                 .Returns(false);
 
-            var result = filterCache.TryGet(filterKey, out var actualContent);
+            var actualContent = filterCache.Get(filterKey);
 
-            result
+            actualContent
                 .Should()
-                .BeFalse();
+                .BeNull();
         }
     }
 }

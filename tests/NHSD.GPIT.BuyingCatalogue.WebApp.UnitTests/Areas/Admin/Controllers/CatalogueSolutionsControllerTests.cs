@@ -1843,10 +1843,11 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
         [CommonAutoData]
         public static async Task Post_SetPublicationStatus_SamePublicationStatus_DoesNotCallSavePublicationStatus(
             CatalogueItem solution,
+            ManageCatalogueSolutionModel manageCatalogueSolutionModel,
             [Frozen] Mock<ISolutionsService> mockSolutionService,
             CatalogueSolutionsController controller)
         {
-            var manageCatalogueSolutionModel = new ManageCatalogueSolutionModel { SelectedPublicationStatus = solution.PublishedStatus };
+            manageCatalogueSolutionModel.SelectedPublicationStatus = solution.PublishedStatus;
 
             mockSolutionService.Setup(s => s.GetSolution(solution.Id))
                 .ReturnsAsync(solution);
@@ -1863,10 +1864,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
             [Frozen] Mock<ISolutionsService> mockSolutionService,
             CatalogueSolutionsController controller)
         {
-            var newPublicationStatus = PublicationStatus.Published;
             solution.PublishedStatus = PublicationStatus.Draft;
 
-            var manageCatalogueSolutionModel = new ManageCatalogueSolutionModel { SelectedPublicationStatus = newPublicationStatus };
+            var manageCatalogueSolutionModel = new ManageCatalogueSolutionModel { SelectedPublicationStatus = PublicationStatus.Published };
 
             mockSolutionService.Setup(s => s.GetSolution(solution.Id))
                 .ReturnsAsync(solution);
@@ -1884,10 +1884,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
             [Frozen] Mock<IFilterCache> mockFilterCache,
             CatalogueSolutionsController controller)
         {
-            var newPublicationStatus = PublicationStatus.Published;
             solution.PublishedStatus = PublicationStatus.Draft;
 
-            var manageCatalogueSolutionModel = new ManageCatalogueSolutionModel { SelectedPublicationStatus = newPublicationStatus };
+            var manageCatalogueSolutionModel = new ManageCatalogueSolutionModel { SelectedPublicationStatus = PublicationStatus.Published };
 
             mockSolutionService.Setup(s => s.GetSolution(solution.Id))
                 .ReturnsAsync(solution);

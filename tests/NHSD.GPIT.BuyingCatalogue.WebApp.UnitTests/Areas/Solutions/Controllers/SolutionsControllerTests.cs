@@ -3,13 +3,15 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
+using AutoFixture;
+using AutoFixture.AutoMoq;
+using AutoFixture.Idioms;
 using AutoFixture.Xunit2;
 using FluentAssertions;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
-using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Caching;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Models;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Models.FilterModels;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions;
@@ -24,48 +26,13 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Controllers
     public static class SolutionsControllerTests
     {
         [Fact]
-        public static void Class_AreaAttribute_ExpectedAreaName()
+        public static void Constructors_VerifyGuardClauses()
         {
-            typeof(SolutionsController)
-                .GetCustomAttribute<AreaAttribute>()
-                .RouteValue.Should()
-                .Be("Solutions");
-        }
+            var fixture = new Fixture().Customize(new AutoMoqCustomization());
+            var assertion = new GuardClauseAssertion(fixture);
+            var constructors = typeof(SolutionsController).GetConstructors();
 
-        [Fact]
-        public static void Constructor_NullService_ThrowsException()
-        {
-            Assert.Throws<ArgumentNullException>(() => _ =
-            new SolutionsController(
-                null,
-                Mock.Of<IFilterCache>(),
-                Mock.Of<ISolutionsFilterService>()))
-                .ParamName.Should()
-                .Be("solutionsService");
-        }
-
-        [Fact]
-        public static void Constructor_NullCache_ThrowsException()
-        {
-            Assert.Throws<ArgumentNullException>(() => _ =
-            new SolutionsController(
-                Mock.Of<ISolutionsService>(),
-                null,
-                Mock.Of<ISolutionsFilterService>()))
-                .ParamName.Should()
-                .Be("filterCache");
-        }
-
-        [Fact]
-        public static void Constructor_NullFilterService_ThrowsException()
-        {
-            Assert.Throws<ArgumentNullException>(() => _ =
-            new SolutionsController(
-                Mock.Of<ISolutionsService>(),
-                Mock.Of<IFilterCache>(),
-                null))
-                .ParamName.Should()
-                .Be("solutionsFilterService");
+            assertion.Verify(constructors);
         }
 
         [Theory]

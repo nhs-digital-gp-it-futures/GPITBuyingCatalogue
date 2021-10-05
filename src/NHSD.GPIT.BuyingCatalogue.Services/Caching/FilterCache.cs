@@ -6,7 +6,7 @@ using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Caching;
 
 namespace NHSD.GPIT.BuyingCatalogue.Services.Caching
 {
-    public class FilterCache : IFilterCache
+    public sealed class FilterCache : IFilterCache
     {
         private readonly IMemoryCache memoryCache;
         private readonly FilterCacheKeySettings filterCacheKeySettings;
@@ -33,8 +33,12 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Caching
         public void Set(string filterKey, string content, DateTime expiration)
             => memoryCache.Set(GetCacheKey(filterKey), content, expiration);
 
-        public bool TryGet(string filterKey, out string content)
-            => memoryCache.TryGetValue(GetCacheKey(filterKey), out content);
+        public string Get(string filterKey)
+        {
+            memoryCache.TryGetValue(GetCacheKey(filterKey), out string content);
+
+            return content;
+        }
 
         private string GetCacheKey(string filterKey) => $"{filterCacheKeySettings.FilterCacheKey}{filterKey}";
     }
