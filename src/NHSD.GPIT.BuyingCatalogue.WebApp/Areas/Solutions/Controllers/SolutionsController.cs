@@ -1,11 +1,11 @@
 ﻿using System;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Caching.Memory;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
+using NHSD.GPIT.BuyingCatalogue.Framework.Constants;
 using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
-using NHSD.GPIT.BuyingCatalogue.Framework.Settings;
+using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Caching;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Models;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models;
@@ -18,21 +18,16 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers
     {
         private readonly ISolutionsService solutionsService;
         private readonly ISolutionsFilterService solutionsFilterService;
-        private readonly IMemoryCache memoryCache;
-        private readonly FilterCacheKeySettings filterCacheKey;
-        private readonly MemoryCacheEntryOptions memoryCacheOptions;
+        private readonly IFilterCache filterCache;
 
         public SolutionsController(
             ISolutionsService solutionsService,
-            IMemoryCache memoryCache,
-            ISolutionsFilterService solutionsFilterService,
-            FilterCacheKeySettings filterCacheKey)
+            IFilterCache filterCache,
+            ISolutionsFilterService solutionsFilterService)
         {
             this.solutionsService = solutionsService ?? throw new ArgumentNullException(nameof(solutionsService));
-            this.memoryCache = memoryCache ?? throw new ArgumentNullException(nameof(memoryCache));
+            this.filterCache = filterCache ?? throw new ArgumentNullException(nameof(filterCache));
             this.solutionsFilterService = solutionsFilterService ?? throw new ArgumentNullException(nameof(solutionsFilterService));
-            this.filterCacheKey = filterCacheKey ?? throw new ArgumentNullException(nameof(filterCacheKey));
-            memoryCacheOptions = new MemoryCacheEntryOptions().SetAbsoluteExpiration(DateTime.Now.AddSeconds(60));
         }
 
         [HttpGet]
@@ -54,7 +49,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers
             {
                 CatalogueItems = solutions.Items,
                 Options = solutions.Options,
-                SelectedFramework = selectedFramework ?? "All",
+                SelectedFramework = selectedFramework ?? FrameworkFilterKeys.GenericCacheKey,
                 CategoryFilters = categories.CategoryFilters,
                 FoundationCapabilities = categories.FoundationCapabilities,
                 CountOfSolutionsWithFoundationCapability = categories.CountOfCatalogueItemsWithFoundationCapabilities,
@@ -65,9 +60,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers
         [HttpGet("filter")]
         public async Task<IActionResult> LoadCatalogueSolutionsFilter([FromQuery] string selectedFramework)
         {
-            var cacheKey = $"{filterCacheKey.FilterCacheKey}{selectedFramework ?? "All"}";
+            var cacheKey = selectedFramework ?? FrameworkFilterKeys.GenericCacheKey;
+            var html = filterCache.Get(cacheKey);
 
-            if (memoryCache.TryGetValue(cacheKey, out string html))
+            if (html is not null)
                 return Content(html);
 
             var frameworks = await solutionsFilterService.GetAllFrameworksAndCountForFilter();
@@ -78,14 +74,14 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers
                 "_FilterJavascript",
                 new SolutionsModel(frameworks)
                 {
-                    SelectedFramework = selectedFramework ?? "All",
+                    SelectedFramework = cacheKey,
                     CategoryFilters = categories.CategoryFilters,
                     FoundationCapabilities = categories.FoundationCapabilities,
                     CountOfSolutionsWithFoundationCapability = categories.CountOfCatalogueItemsWithFoundationCapabilities,
                 },
                 true);
 
-            memoryCache.Set(cacheKey, result, memoryCacheOptions);
+            filterCache.Set(cacheKey, result, DateTime.Now.AddSeconds(60));
 
             return Content(result);
         }
