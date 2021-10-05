@@ -11,30 +11,15 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models
 {
     public sealed class ManageCatalogueSolutionModel : NavBaseModel
     {
-        public ManageCatalogueSolutionModel()
-        {
-        }
-
-        public ManageCatalogueSolutionModel(CatalogueItem solution)
-        {
-            Solution = solution;
-            SelectedPublicationStatus = Solution.PublishedStatus;
-            PublicationStatuses = Solution
-                .PublishedStatus
-                .GetAvailablePublicationStatuses()
-                .Select(p => new SelectListItem(p.Description(), p.EnumMemberName()))
-                .ToList();
-        }
-
         public CatalogueItem Solution { get; private set; }
 
         public IReadOnlyList<CatalogueItem> AssociatedServices { get; private set; }
 
+        public IReadOnlyList<SelectListItem> PublicationStatuses { get; private set; }
+
         public string LastUpdatedByName { get; set; }
 
-        public PublicationStatus SelectedPublicationStatus { get; init; }
-
-        public IReadOnlyList<SelectListItem> PublicationStatuses { get; init; }
+        public PublicationStatus SelectedPublicationStatus { get; set; }
 
         public TaskProgress DescriptionStatus() => new DescriptionModel(Solution).Status();
 
@@ -58,6 +43,12 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models
         public ManageCatalogueSolutionModel WithSolution(CatalogueItem solution)
         {
             Solution = solution;
+            SelectedPublicationStatus = Solution.PublishedStatus;
+            PublicationStatuses = Solution
+                .PublishedStatus
+                .GetAvailablePublicationStatuses()
+                .Select(p => new SelectListItem(p.Description(), p.EnumMemberName()))
+                .ToList();
 
             return this;
         }
