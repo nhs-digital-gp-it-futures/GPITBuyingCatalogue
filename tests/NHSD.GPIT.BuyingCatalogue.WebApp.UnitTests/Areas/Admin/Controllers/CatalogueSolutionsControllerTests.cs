@@ -1903,10 +1903,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
             [Frozen] Mock<ISolutionsService> mockSolutionService,
             CatalogueSolutionsController controller)
         {
-            var newPublicationStatus = PublicationStatus.Published;
             solution.PublishedStatus = PublicationStatus.Draft;
 
-            var manageCatalogueSolutionModel = new ManageCatalogueSolutionModel { SelectedPublicationStatus = newPublicationStatus };
+            var manageCatalogueSolutionModel = new ManageCatalogueSolutionModel { SelectedPublicationStatus = PublicationStatus.Published };
 
             mockSolutionService.Setup(s => s.GetSolution(solution.Id))
                 .ReturnsAsync(solution);
