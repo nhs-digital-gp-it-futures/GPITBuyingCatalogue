@@ -113,14 +113,14 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
                     .WithAssociatedServices(associatedServices));
             }
 
-            if (model.SelectedPublicationStatus != solution.PublishedStatus)
-            {
-                await solutionsService.SavePublicationStatus(solutionId, model.SelectedPublicationStatus);
-                var frameworkIds = FilterCacheKeys.Concat(
-                    solution.Solution.FrameworkSolutions.Select(f => f.FrameworkId));
+            if (model.SelectedPublicationStatus == solution.PublishedStatus)
+                return RedirectToAction(nameof(Index));
 
-                filterCache.Remove(frameworkIds);
-            }
+            await solutionsService.SavePublicationStatus(solutionId, model.SelectedPublicationStatus);
+            var frameworkIds = FilterCacheKeys.Concat(
+                solution.Solution.FrameworkSolutions.Select(f => f.FrameworkId));
+
+            filterCache.Remove(frameworkIds);
 
             return RedirectToAction(nameof(Index));
         }
