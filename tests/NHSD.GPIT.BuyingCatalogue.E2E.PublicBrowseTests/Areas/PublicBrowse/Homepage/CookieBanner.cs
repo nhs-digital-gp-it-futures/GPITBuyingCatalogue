@@ -44,6 +44,9 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.PublicBrowse.Homepage
                 .BeTrue();
 
             CommonActions.ElementIsDisplayed(Objects.Common.CookieBanner.Banner).Should().BeFalse();
+
+            CommonActions.ElementExists(Objects.Common.CookieBanner.AdobeAnalyticsScript).Should().BeTrue();
+            CommonActions.ElementExists(Objects.Common.CookieBanner.AdobeAnalyticsDataScript).Should().BeTrue();
             CommonActions.ElementExists(Objects.Common.CookieBanner.HotjarScript).Should().BeTrue();
 
             Driver.Manage().Cookies.GetCookieNamed(Cookies.BuyingCatalogueConsent).Should().NotBeNull();
@@ -64,6 +67,9 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.PublicBrowse.Homepage
                 .BeTrue();
 
             CommonActions.ElementIsDisplayed(Objects.Common.CookieBanner.Banner).Should().BeFalse();
+
+            CommonActions.ElementExists(Objects.Common.CookieBanner.AdobeAnalyticsScript).Should().BeFalse();
+            CommonActions.ElementExists(Objects.Common.CookieBanner.AdobeAnalyticsDataScript).Should().BeFalse();
             CommonActions.ElementExists(Objects.Common.CookieBanner.HotjarScript).Should().BeFalse();
 
             Driver.Manage().Cookies.GetCookieNamed(Cookies.BuyingCatalogueConsent).Should().NotBeNull();
@@ -80,6 +86,9 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.PublicBrowse.Homepage
                 nameof(SolutionsController.Index));
 
             CommonActions.ElementIsDisplayed(Objects.Common.CookieBanner.Banner).Should().BeTrue();
+
+            CommonActions.ElementExists(Objects.Common.CookieBanner.AdobeAnalyticsScript).Should().BeFalse();
+            CommonActions.ElementExists(Objects.Common.CookieBanner.AdobeAnalyticsDataScript).Should().BeFalse();
             CommonActions.ElementExists(Objects.Common.CookieBanner.HotjarScript).Should().BeFalse();
         }
 
@@ -89,6 +98,9 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.PublicBrowse.Homepage
             AddConsentCookie(new CookieData { CreationDate = DateTime.UtcNow.Ticks });
 
             CommonActions.ElementIsDisplayed(Objects.Common.CookieBanner.Banner).Should().BeTrue();
+
+            CommonActions.ElementExists(Objects.Common.CookieBanner.AdobeAnalyticsScript).Should().BeFalse();
+            CommonActions.ElementExists(Objects.Common.CookieBanner.AdobeAnalyticsDataScript).Should().BeFalse();
             CommonActions.ElementExists(Objects.Common.CookieBanner.HotjarScript).Should().BeFalse();
         }
 
