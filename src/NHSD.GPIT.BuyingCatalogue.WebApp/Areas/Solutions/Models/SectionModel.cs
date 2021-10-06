@@ -6,7 +6,7 @@
 
         public string Controller { get; set; }
 
-        public string Id { get; set; }
+        public string SolutionId { get; set; }
 
         public string Name { get; set; }
 

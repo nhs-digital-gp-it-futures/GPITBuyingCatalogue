@@ -1,6 +1,5 @@
 ﻿using System.Linq;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
-using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Models;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.AdditionalServices
@@ -32,14 +31,15 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.AdditionalServices
             OdsCode = odsCode;
             OrderItem = state;
 
-            // TODO: Legacy appears to order based on recipient name, unless some recipients have info missing in which case they appear at the top
-            OrderItem.ServiceRecipients = OrderItem.ServiceRecipients.Where(m => m.Selected).ToList();
+            OrderItem.ServiceRecipients = OrderItem.ServiceRecipients.Where(oir => oir.Selected).ToList();
 
             foreach (var recipient in OrderItem.ServiceRecipients.Where(r => r.Quantity is null))
                 recipient.Quantity = state.Quantity;
 
             foreach (var recipient in OrderItem.ServiceRecipients.Where(r => r.DeliveryDate is null))
                 recipient.DeliveryDate = state.PlannedDeliveryDate;
+
+            OrderItem.ServiceRecipients = OrderItem.ServiceRecipients.OrderBy(oir => oir.IsComplete).ThenBy(oir => oir.Name).ToList();
         }
 
         public CreateOrderItemModel OrderItem { get; set; }

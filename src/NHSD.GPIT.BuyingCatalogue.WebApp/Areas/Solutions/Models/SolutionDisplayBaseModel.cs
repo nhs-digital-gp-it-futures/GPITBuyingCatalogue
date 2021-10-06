@@ -155,8 +155,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models
         {
             var sectionsToShow = new List<SectionModel>(sections.Where(s => s.Show));
 
-            // TODO: what is ID in section model? Should it be CatalogueItemId?
-            sectionsToShow.ForEach(s => s.Id = SolutionId.ToString());
+            sectionsToShow.ForEach(s => s.SolutionId = SolutionId.ToString());
 
             if (sectionsToShow.FirstOrDefault(s => s.Name.EqualsIgnoreCase(Section)) is { } sectionModel)
                 sectionModel.Selected = true;

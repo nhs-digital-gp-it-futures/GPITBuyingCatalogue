@@ -87,8 +87,7 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework
         {
             foreach (var entry in ChangeTracker.Entries())
             {
-                // TODO: Don't like this option of not having an identityService but a lot of tests will require fixing up
-                if (entry.Entity is not IAudited auditedEntity || identityService is null)
+                if (entry.Entity is not IAudited auditedEntity)
                     continue;
 
                 (int userId, string userName) = identityService.GetUserInfo();

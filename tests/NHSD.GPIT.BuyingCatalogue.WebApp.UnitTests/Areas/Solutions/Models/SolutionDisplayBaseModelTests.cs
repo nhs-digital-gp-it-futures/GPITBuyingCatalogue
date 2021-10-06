@@ -123,7 +123,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Models
             }
 
             var expected = new List<SectionModel>(SectionModels.Where(s => s.Show));
-            expected.ForEach(s => s.Id = solutionId.ToString());
+            expected.ForEach(s => s.SolutionId = solutionId.ToString());
             expected.Single(s => s.Name.EqualsIgnoreCase(model.Section)).Selected = true;
 
             var actual = model.GetSections();
