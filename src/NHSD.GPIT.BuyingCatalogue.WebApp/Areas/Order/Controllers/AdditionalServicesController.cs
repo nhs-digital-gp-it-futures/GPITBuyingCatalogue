@@ -277,7 +277,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
             state.AgreedPrice = model.OrderItem.AgreedPrice;
             state.ServiceRecipients = model.OrderItem.ServiceRecipients;
 
-            // TODO - handle errors
             await orderItemService.Create(callOffId, state);
 
             orderSessionService.ClearSession(callOffId);
