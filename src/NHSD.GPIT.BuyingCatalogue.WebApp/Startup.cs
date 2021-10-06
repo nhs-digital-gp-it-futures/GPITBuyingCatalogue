@@ -132,7 +132,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp
 
                             if (exceptionHandlerFeature != null)
                             {
-                                logger.LogError($"Exception occured: {exceptionHandlerFeature.Error}");
+                                logger.LogError("Exception occured {Error}:", exceptionHandlerFeature.Error);
                             }
 
                             context.Response.Redirect("/Home/Error");
