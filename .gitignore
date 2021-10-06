@@ -358,4 +358,7 @@ MigrationBackup/
 # Minified css file
 **/css/*.min.css
 
+#Minified js files
+**/js/*.min.js
+
 _remote_state.tf
