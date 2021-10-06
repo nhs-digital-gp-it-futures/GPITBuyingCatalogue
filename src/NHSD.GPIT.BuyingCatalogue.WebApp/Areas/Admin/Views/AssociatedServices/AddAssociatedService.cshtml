@@ -1,7 +1,7 @@
 ﻿@model NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.AssociatedServices.AddAssociatedServiceModel;
 @{
     Layout = "~/Views/Shared/Layouts/_NoBannersLayout.cshtml";
-    ViewBag.Title = "Associated Service information";
+    ViewBag.Title = "Associated Service details";
 }
 
 <partial name="Partials/_BackLink" model="Model" />
@@ -10,13 +10,17 @@
         <nhs-validation-summary />
         <nhs-page-title title="@ViewBag.Title"
                         caption="@Model.Solution.Supplier.Name"
-                        advice="Give buyers as much detail as possible about your Catalogue Solution." />
+                        advice="Provide the following details for the Associated Service." />
+
+        <nhs-inset-text>Any changes to these details will be visible to anyone ordering this Associated Service in future.</nhs-inset-text>
 
         <form method="post">
             <input type="hidden" asp-for="@Model.BackLink" />
 
             <nhs-input asp-for="Name"
-                       label-text="Associated Service name" />
+                       label-text="Associated Service name"
+                       character-count="true"
+                       max-character-length="300"/>
             <nhs-textarea asp-for="Description"
                           label-text="Associated Service description"
                           label-hint="Describe how this Associated Service helps implement or optimise the live operation of your Catalogue Solution."
@@ -24,7 +28,7 @@
                           maxlength="1000"/>
             <nhs-textarea asp-for="OrderGuidance"
                           label-text="Order guidance"
-                          label-hint="Help buyers understand how they should order the Associated Services buy providing typical order volumes and implementation timescales."
+                          label-hint="Help buyers understand how they should order the Associated Services by providing typical order volumes and implementation timescales."
                           character-count="true"
                           maxlength="1000" />
             <nhs-submit-button text="Save and continue" />
