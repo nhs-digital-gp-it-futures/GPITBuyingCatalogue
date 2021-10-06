@@ -40,7 +40,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.AddNewSolution
 
             CommonActions.PageTitle()
                 .Should()
-                .BeEquivalentTo($"Associated Service information - {supplierName}".FormatForComparison());
+                .BeEquivalentTo($"Associated Service details - {supplierName}".FormatForComparison());
 
             CommonActions.ElementIsDisplayed(CommonSelectors.Header1).Should().BeTrue();
             CommonActions.ElementIsDisplayed(CommonSelectors.Name).Should().BeTrue();
