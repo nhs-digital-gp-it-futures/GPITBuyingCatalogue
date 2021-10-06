@@ -1,5 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
+using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Models;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.HostingTypeModels
@@ -15,8 +16,11 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.HostingTypeModels
         protected BaseCloudModel(CatalogueItem solution)
             : this()
         {
+            SolutionId = solution.Id;
             SolutionName = solution.Name;
         }
+
+        public CatalogueItemId SolutionId { get; }
 
         public string SolutionName { get; }
 
@@ -35,5 +39,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.HostingTypeModels
             get => !string.IsNullOrWhiteSpace(RequiresHscn);
             set => RequiresHscn = value ? "End user devices must be connected to HSCN/N3" : null;
         }
+
+        public bool IsNewHostingType { get; init; } = false;
     }
 }

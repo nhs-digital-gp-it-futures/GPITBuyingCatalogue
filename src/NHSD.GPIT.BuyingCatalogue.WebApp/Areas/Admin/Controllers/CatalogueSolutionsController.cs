@@ -257,17 +257,21 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
 
             return model.SelectedHostingType is null
                 ? RedirectToAction(nameof(HostingType), new { solutionId })
-                : RedirectToAction(model.SelectedHostingType.ToString(), new { solutionId });
+                : RedirectToAction(model.SelectedHostingType.ToString(), new { solutionId, isNewHostingType = true });
         }
 
         [HttpGet("manage/{solutionId}/hosting-type/hosting-type-public-cloud")]
-        public async Task<IActionResult> PublicCloud(CatalogueItemId solutionId)
+        public async Task<IActionResult> PublicCloud(CatalogueItemId solutionId, [FromQuery]bool? isNewHostingType = false)
         {
             var catalogueItem = await solutionsService.GetSolution(solutionId);
             if (catalogueItem is null)
                 return BadRequest($"No Solution found for Id: {solutionId}");
 
-            var model = new PublicCloudModel(catalogueItem);
+            var model = new PublicCloudModel(catalogueItem)
+            {
+                IsNewHostingType = isNewHostingType.GetValueOrDefault(),
+                BackLink = Url.Action(nameof(HostingType), new { solutionId }),
+            };
             return View(model);
         }
 
@@ -286,13 +290,17 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
         }
 
         [HttpGet("manage/{solutionId}/hosting-type/hosting-type-private-cloud")]
-        public async Task<IActionResult> PrivateCloud(CatalogueItemId solutionId)
+        public async Task<IActionResult> PrivateCloud(CatalogueItemId solutionId, [FromQuery] bool? isNewHostingType = false)
         {
             var catalogueItem = await solutionsService.GetSolution(solutionId);
             if (catalogueItem is null)
                 return BadRequest($"No Solution found for Id: {solutionId}");
 
-            var model = new PrivateCloudModel(catalogueItem);
+            var model = new PrivateCloudModel(catalogueItem)
+            {
+                IsNewHostingType = isNewHostingType.GetValueOrDefault(),
+                BackLink = Url.Action(nameof(HostingType), new { solutionId }),
+            };
             return View(model);
         }
 
@@ -311,13 +319,17 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
         }
 
         [HttpGet("manage/{solutionId}/hosting-type/hosting-type-hybrid")]
-        public async Task<IActionResult> Hybrid(CatalogueItemId solutionId)
+        public async Task<IActionResult> Hybrid(CatalogueItemId solutionId, [FromQuery] bool? isNewHostingType = false)
         {
             var catalogueItem = await solutionsService.GetSolution(solutionId);
             if (catalogueItem is null)
                 return BadRequest($"No Solution found for Id: {solutionId}");
 
-            var model = new HybridModel(catalogueItem);
+            var model = new HybridModel(catalogueItem)
+            {
+                IsNewHostingType = isNewHostingType.GetValueOrDefault(),
+                BackLink = Url.Action(nameof(HostingType), new { solutionId }),
+            };
             return View(model);
         }
 
@@ -336,13 +348,17 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
         }
 
         [HttpGet("manage/{solutionId}/hosting-type/hosting-type-on-premise")]
-        public async Task<IActionResult> OnPremise(CatalogueItemId solutionId)
+        public async Task<IActionResult> OnPremise(CatalogueItemId solutionId, [FromQuery] bool? isNewHostingType = false)
         {
             var catalogueItem = await solutionsService.GetSolution(solutionId);
             if (catalogueItem is null)
                 return BadRequest($"No Solution found for Id: {solutionId}");
 
-            var model = new OnPremiseModel(catalogueItem);
+            var model = new OnPremiseModel(catalogueItem)
+            {
+                IsNewHostingType = isNewHostingType.GetValueOrDefault(),
+                BackLink = Url.Action(nameof(HostingType), new { solutionId }),
+            };
             return View(model);
         }
 
@@ -354,6 +370,57 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
 
             var hosting = await solutionsService.GetHosting(solutionId);
             hosting.OnPremise = new OnPremise { Summary = model.Summary, HostingModel = model.HostingModel, Link = model.Link, RequiresHscn = model.RequiresHscn };
+
+            await solutionsService.SaveHosting(solutionId, hosting);
+
+            return RedirectToAction(nameof(HostingType), new { solutionId });
+        }
+
+        [HttpGet("manage/{solutionId}/hosting-type/delete-hosting-type/{hostingType}")]
+        public async Task<IActionResult> DeleteHostingType(CatalogueItemId solutionId, HostingType hostingType)
+        {
+            var solution = await solutionsService.GetSolution(solutionId);
+
+            var backlinkActionName = hostingType switch
+            {
+                ServiceContracts.Solutions.HostingType.Hybrid => nameof(Hybrid),
+                ServiceContracts.Solutions.HostingType.OnPremise => nameof(OnPremise),
+                ServiceContracts.Solutions.HostingType.PrivateCloud => nameof(PrivateCloud),
+                ServiceContracts.Solutions.HostingType.PublicCloud => nameof(PublicCloud),
+                _ => throw new NotImplementedException(),
+            };
+
+            var model = new DeleteHostingTypeConfirmationModel(solution, hostingType)
+            {
+                BackLink = Url.Action(backlinkActionName, new { solutionId }),
+            };
+
+            return View(model);
+        }
+
+        [HttpPost("manage/{solutionId}/hosting-type/delete-hosting-type/{hostingType}")]
+        public async Task<IActionResult> DeleteHostingType(CatalogueItemId solutionId, HostingType hostingType, DeleteHostingTypeConfirmationModel model)
+        {
+            if (!ModelState.IsValid)
+                return View(model);
+
+            var solution = await solutionsService.GetSolution(solutionId);
+            var hosting = solution.Solution.Hosting;
+            switch (model.HostingType)
+            {
+                case ServiceContracts.Solutions.HostingType.Hybrid:
+                    hosting.HybridHostingType = new();
+                    break;
+                case ServiceContracts.Solutions.HostingType.OnPremise:
+                    hosting.OnPremise = new();
+                    break;
+                case ServiceContracts.Solutions.HostingType.PrivateCloud:
+                    hosting.PrivateCloud = new();
+                    break;
+                case ServiceContracts.Solutions.HostingType.PublicCloud:
+                    hosting.PublicCloud = new();
+                    break;
+            }
 
             await solutionsService.SaveHosting(solutionId, hosting);
 
