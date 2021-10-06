@@ -128,11 +128,11 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp
                     builder.Run(
                         context =>
                         {
-                            var error = context.Features.Get<IExceptionHandlerFeature>();
+                            var exceptionHandlerFeature = context.Features.Get<IExceptionHandlerFeature>();
 
-                            if (error != null)
+                            if (exceptionHandlerFeature != null)
                             {
-                                logger.LogError(error.Error, error.Error.FullErrorMessage());
+                                logger.LogError($"Exception occured: {exceptionHandlerFeature.Error}");
                             }
 
                             context.Response.Redirect("/Home/Error");
