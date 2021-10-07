@@ -42,7 +42,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
         {
             var state = orderSessionService.GetOrderStateFromSession(callOffId);
 
-            (DateTime? date, var error) = model.ToDateTime();
+            (DateTime? date, var error) = model.ValidateAndGetDeliveryDate();
 
             if (error is not null)
                 ModelState.AddModelError("Day", error);

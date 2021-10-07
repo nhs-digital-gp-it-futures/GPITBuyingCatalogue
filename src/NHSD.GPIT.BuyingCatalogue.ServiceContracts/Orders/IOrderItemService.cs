@@ -8,7 +8,7 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.Orders
 {
     public interface IOrderItemService
     {
-        Task<AggregateValidationResult> Create(CallOffId callOffId, CreateOrderItemModel model);
+        Task Create(CallOffId callOffId, CreateOrderItemModel model);
 
         Task<List<OrderItem>> GetOrderItems(CallOffId callOffId, CatalogueItemType? catalogueItemType);
 

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Globalization;
+using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Constants;
 
 namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.Models
 {
@@ -31,12 +32,12 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.Models
             {
                 if (!deliveryDate.HasValue)
                 {
-                    if (int.TryParse(Year, out int yearInt)
-                        && int.TryParse(Month, out int monthInt)
-                        && int.TryParse(Day, out int dayInt))
+                    try
                     {
-                        if (yearInt != 0 && monthInt != 0 && dayInt != 0)
-                            deliveryDate = new DateTime(yearInt, monthInt, dayInt);
+                        deliveryDate = DateTime.ParseExact($"{Day}/{Month}/{Year}", "d/M/yyyy", CultureInfo.InvariantCulture);
+                    }
+                    catch (FormatException)
+                    {
                     }
                 }
 
@@ -64,24 +65,18 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.Models
 
         public bool IsComplete => Quantity.HasValue && DeliveryDate.HasValue;
 
-        public (DateTime? Date, string Error) ToDateTime(DateTime? commencementDate)
+        public string ValidateDeliveryDate(DateTime? commencementDate)
         {
-            try
-            {
-                var date = DateTime.ParseExact($"{Day}/{Month}/{Year}", "d/M/yyyy", CultureInfo.InvariantCulture);
+            if (!DeliveryDate.HasValue)
+                return "Planned delivery date must be a real date";
 
-                if (date.ToUniversalTime() <= DateTime.UtcNow)
-                    return (null, "Planned delivery date must be in the future");
+            if (DeliveryDate.Value.ToUniversalTime() <= DateTime.UtcNow)
+                return "Planned delivery date must be in the future";
 
-                if (commencementDate.HasValue && date.ToUniversalTime() > commencementDate.Value.AddMonths(42))
-                    return (null, "Planned delivery date must be within 42 months from the commencement date for this Call-off Agreement");
+            if (commencementDate.HasValue && DeliveryDate.Value.ToUniversalTime() > commencementDate.Value.AddMonths(ValidationConstants.MaxDeliveryMonthsFromCommencement))
+                return $"Planned delivery date must be within {ValidationConstants.MaxDeliveryMonthsFromCommencement} months from the commencement date for this Call-off Agreement";
 
-                return (date, null);
-            }
-            catch (FormatException)
-            {
-                return (null, "Planned delivery date must be a real date");
-            }
+            return null;
         }
     }
 }

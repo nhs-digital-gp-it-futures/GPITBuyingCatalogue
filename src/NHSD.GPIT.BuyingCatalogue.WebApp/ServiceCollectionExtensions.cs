@@ -170,18 +170,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp
             return services;
         }
 
-        public static IServiceCollection ConfigureValidationSettings(this IServiceCollection services, IConfiguration configuration)
-        {
-            var validationSettings = new ValidationSettings
-            {
-                MaxDeliveryDateWeekOffset = configuration.GetValue<int>("MaxDeliveryDateWeekOffset"),
-            };
-
-            services.AddSingleton(validationSettings);
-
-            return services;
-        }
-
         public static IServiceCollection ConfigureCacheKeySettings(this IServiceCollection services, IConfiguration configuration)
         {
             var filterCacheKeySettings = new FilterCacheKeySettings
