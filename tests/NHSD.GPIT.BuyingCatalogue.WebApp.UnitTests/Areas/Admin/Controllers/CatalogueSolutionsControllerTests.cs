@@ -803,7 +803,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
 
             mockService.Verify(s => s.GetSolution(catalogueItemId));
             actual.ViewName.Should().BeNull();
-            actual.Model.Should().BeEquivalentTo(new PublicCloudModel(catalogueItem));
+            actual.Model.Should().BeEquivalentTo(new PublicCloudModel(catalogueItem), opt => opt.Excluding(member => member.BackLink));
         }
 
         [Theory]
@@ -872,7 +872,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
 
             mockService.Verify(s => s.GetSolution(catalogueItemId));
             actual.ViewName.Should().BeNull();
-            actual.Model.Should().BeEquivalentTo(new PublicCloudModel(catalogueItem));
+            actual.Model.Should().BeEquivalentTo(new PublicCloudModel(catalogueItem), opt => opt.Excluding(member => member.BackLink));
         }
 
         [Theory]
@@ -906,7 +906,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
 
             mockService.Verify(s => s.GetSolution(catalogueItemId));
             actual.ViewName.Should().BeNull();
-            actual.Model.Should().BeEquivalentTo(new PrivateCloudModel(catalogueItem));
+            actual.Model.Should().BeEquivalentTo(new PrivateCloudModel(catalogueItem), opt => opt.Excluding(member => member.BackLink));
         }
 
         [Theory]
@@ -976,7 +976,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
 
             mockService.Verify(s => s.GetSolution(catalogueItemId));
             actual.ViewName.Should().BeNull();
-            actual.Model.Should().BeEquivalentTo(new PrivateCloudModel(catalogueItem));
+            actual.Model.Should().BeEquivalentTo(new PrivateCloudModel(catalogueItem), opt => opt.Excluding(member => member.BackLink));
         }
 
         [Theory]
@@ -1010,7 +1010,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
 
             mockService.Verify(s => s.GetSolution(catalogueItemId));
             actual.ViewName.Should().BeNull();
-            actual.Model.Should().BeEquivalentTo(new HybridModel(catalogueItem));
+            actual.Model.Should().BeEquivalentTo(new HybridModel(catalogueItem), opt => opt.Excluding(member => member.BackLink));
         }
 
         [Theory]
@@ -1080,7 +1080,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
 
             mockService.Verify(s => s.GetSolution(catalogueItemId));
             actual.ViewName.Should().BeNull();
-            actual.Model.Should().BeEquivalentTo(new HybridModel(catalogueItem));
+            actual.Model.Should().BeEquivalentTo(new HybridModel(catalogueItem), opt => opt.Excluding(member => member.BackLink));
         }
 
         [Theory]
@@ -1114,7 +1114,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
 
             mockService.Verify(s => s.GetSolution(catalogueItemId));
             actual.ViewName.Should().BeNull();
-            actual.Model.Should().BeEquivalentTo(new OnPremiseModel(catalogueItem));
+            actual.Model.Should().BeEquivalentTo(new OnPremiseModel(catalogueItem), opt => opt.Excluding(member => member.BackLink));
         }
 
         [Theory]
@@ -1184,7 +1184,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
 
             mockService.Verify(s => s.GetSolution(catalogueItemId));
             actual.ViewName.Should().BeNull();
-            actual.Model.Should().BeEquivalentTo(new OnPremiseModel(catalogueItem));
+            actual.Model.Should().BeEquivalentTo(new OnPremiseModel(catalogueItem), opt => opt.Excluding(member => member.BackLink));
         }
 
         [Theory]
@@ -2002,6 +2002,177 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
             actual.Should().NotBeNull();
             actual.ViewName.Should().Be(nameof(CatalogueSolutionsController.ManageCatalogueSolution));
             actual.Model.Should().BeEquivalentTo(manageCatalogueSolutionModel);
+        }
+
+        [Theory]
+        [CommonInlineAutoData(HostingType.Hybrid)]
+        [CommonInlineAutoData(HostingType.OnPremise)]
+        [CommonInlineAutoData(HostingType.PrivateCloud)]
+        [CommonInlineAutoData(HostingType.PublicCloud)]
+        public static async Task Get_DeleteHostingType_ReturnsModel(
+            HostingType hostingType,
+            CatalogueItem catalogueItem,
+            [Frozen] Mock<ISolutionsService> solutionsService,
+            CatalogueSolutionsController controller)
+        {
+            var expectedModel = new DeleteHostingTypeConfirmationModel
+            {
+                HostingType = hostingType,
+                SolutionId = catalogueItem.Id,
+                SolutionName = catalogueItem.Name,
+                BackLinkText = "Go back",
+            };
+
+            solutionsService.Setup(s => s.GetSolution(catalogueItem.Id))
+                .ReturnsAsync(catalogueItem);
+
+            var result = await controller.DeleteHostingType(catalogueItem.Id, hostingType);
+
+            result.Should().NotBeNull();
+            var viewResult = result.As<ViewResult>();
+            viewResult.Should().NotBeNull();
+
+            var model = result.As<ViewResult>().Model.As<DeleteHostingTypeConfirmationModel>();
+            model.Should().NotBeNull();
+            model.Should().BeEquivalentTo(expectedModel, opts => opts.Excluding(m => m.BackLink));
+        }
+
+        [Theory]
+        [CommonAutoData]
+        public static async Task Post_DeleteHostingType_InvalidModel_ReturnsViewWithModel(
+            HostingType hostingType,
+            CatalogueItem catalogueItem,
+            [Frozen] Mock<ISolutionsService> solutionsService,
+            CatalogueSolutionsController controller)
+        {
+            controller.ModelState.AddModelError("some-key", "some-error");
+
+            var model = new DeleteHostingTypeConfirmationModel
+            {
+                HostingType = hostingType,
+                SolutionId = catalogueItem.Id,
+                SolutionName = catalogueItem.Name,
+            };
+
+            solutionsService.Setup(s => s.GetSolution(catalogueItem.Id))
+                   .ReturnsAsync(catalogueItem);
+
+            var result = await controller.DeleteHostingType(catalogueItem.Id, hostingType, model);
+
+            result.Should().NotBeNull();
+            result.As<ViewResult>().Should().NotBeNull();
+            result.As<ViewResult>().Model.Should().BeEquivalentTo(model);
+        }
+
+        [Theory]
+        [CommonAutoData]
+        public static async Task Post_DeleteHybridHostingType_ValidModel_DeletesHostingType(
+            CatalogueItem catalogueItem,
+            [Frozen] Mock<ISolutionsService> solutionsService,
+            CatalogueSolutionsController controller)
+        {
+            const HostingType hostingType = HostingType.Hybrid;
+            var model = new DeleteHostingTypeConfirmationModel
+            {
+                HostingType = hostingType,
+                SolutionId = catalogueItem.Id,
+                SolutionName = catalogueItem.Name,
+            };
+
+            solutionsService.Setup(s => s.GetSolution(catalogueItem.Id))
+                   .ReturnsAsync(catalogueItem);
+
+            await controller.DeleteHostingType(catalogueItem.Id, hostingType, model);
+
+            solutionsService.Verify(s => s.SaveHosting(
+                catalogueItem.Id,
+                It.Is<Hosting>(hosting => hosting.HybridHostingType.HostingModel == null
+                    && hosting.HybridHostingType.Link == null
+                    && hosting.HybridHostingType.RequiresHscn == null
+                    && hosting.HybridHostingType.Summary == null)));
+        }
+
+        [Theory]
+        [CommonAutoData]
+        public static async Task Post_DeleteOnPremiseHostingType_ValidModel_DeletesHostingType(
+            CatalogueItem catalogueItem,
+            [Frozen] Mock<ISolutionsService> solutionsService,
+            CatalogueSolutionsController controller)
+        {
+            const HostingType hostingType = HostingType.OnPremise;
+            var model = new DeleteHostingTypeConfirmationModel
+            {
+                HostingType = hostingType,
+                SolutionId = catalogueItem.Id,
+                SolutionName = catalogueItem.Name,
+            };
+
+            solutionsService.Setup(s => s.GetSolution(catalogueItem.Id))
+                   .ReturnsAsync(catalogueItem);
+
+            await controller.DeleteHostingType(catalogueItem.Id, hostingType, model);
+
+            solutionsService.Verify(s => s.SaveHosting(
+                catalogueItem.Id,
+                It.Is<Hosting>(hosting => hosting.OnPremise.HostingModel == null
+                    && hosting.OnPremise.Link == null
+                    && hosting.OnPremise.RequiresHscn == null
+                    && hosting.OnPremise.Summary == null)));
+        }
+
+        [Theory]
+        [CommonAutoData]
+        public static async Task Post_DeletePrivateCloudHostingType_ValidModel_DeletesHostingType(
+            CatalogueItem catalogueItem,
+            [Frozen] Mock<ISolutionsService> solutionsService,
+            CatalogueSolutionsController controller)
+        {
+            const HostingType hostingType = HostingType.PrivateCloud;
+            var model = new DeleteHostingTypeConfirmationModel
+            {
+                HostingType = hostingType,
+                SolutionId = catalogueItem.Id,
+                SolutionName = catalogueItem.Name,
+            };
+
+            solutionsService.Setup(s => s.GetSolution(catalogueItem.Id))
+                   .ReturnsAsync(catalogueItem);
+
+            await controller.DeleteHostingType(catalogueItem.Id, hostingType, model);
+
+            solutionsService.Verify(s => s.SaveHosting(
+                catalogueItem.Id,
+                It.Is<Hosting>(hosting => hosting.PrivateCloud.HostingModel == null
+                    && hosting.PrivateCloud.Link == null
+                    && hosting.PrivateCloud.RequiresHscn == null
+                    && hosting.PrivateCloud.Summary == null)));
+        }
+
+        [Theory]
+        [CommonAutoData]
+        public static async Task Post_DeletePublicCloudHostingType_ValidModel_DeletesHostingType(
+            CatalogueItem catalogueItem,
+            [Frozen] Mock<ISolutionsService> solutionsService,
+            CatalogueSolutionsController controller)
+        {
+            const HostingType hostingType = HostingType.PublicCloud;
+            var model = new DeleteHostingTypeConfirmationModel
+            {
+                HostingType = hostingType,
+                SolutionId = catalogueItem.Id,
+                SolutionName = catalogueItem.Name,
+            };
+
+            solutionsService.Setup(s => s.GetSolution(catalogueItem.Id))
+                   .ReturnsAsync(catalogueItem);
+
+            await controller.DeleteHostingType(catalogueItem.Id, hostingType, model);
+
+            solutionsService.Verify(s => s.SaveHosting(
+                catalogueItem.Id,
+                It.Is<Hosting>(hosting => hosting.PublicCloud.Link == null
+                    && hosting.PublicCloud.RequiresHscn == null
+                    && hosting.PublicCloud.Summary == null)));
         }
     }
 }
