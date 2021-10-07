@@ -30,25 +30,25 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
         {
             var suppliers = await suppliersService.GetAllActiveSuppliers();
 
-            var model = new AddSolutionModel().WithSelectListItems(suppliers);
+            var model = new SolutionModel().WithSelectListItems(suppliers).WithAddSolution();
 
             model.Frameworks = (await solutionsService.GetAllFrameworks())
                 .Select(f => new FrameworkModel { Name = $"{f.ShortName} Framework", FrameworkId = f.Id }).ToList();
 
-            return View(model);
+            return View("Details", model);
         }
 
         [HttpPost]
-        public async Task<IActionResult> Index(AddSolutionModel model)
+        public async Task<IActionResult> Index(SolutionModel model)
         {
             if (await solutionsService.GetSolutionByName(model.SolutionName) is not null)
-                ModelState.AddModelError(nameof(AddSolutionModel.SolutionName), "A solution with this name already exists");
+                ModelState.AddModelError(nameof(SolutionModel.SolutionName), "A solution with this name already exists");
 
             if (!ModelState.IsValid)
             {
                 var suppliers = await suppliersService.GetAllActiveSuppliers();
 
-                return View(model.WithSelectListItems(suppliers));
+                return View("Details", model.WithSelectListItems(suppliers).WithAddSolution());
             }
 
             var catalogueItemId = await solutionsService.AddCatalogueSolution(new CreateSolutionModel

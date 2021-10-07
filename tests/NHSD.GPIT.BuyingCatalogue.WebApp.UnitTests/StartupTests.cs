@@ -51,7 +51,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests
         [InlineData(typeof(IPasswordService), typeof(PasswordService))]
         [InlineData(typeof(IPasswordValidator<AspNetUser>), typeof(PasswordValidator))]
         [InlineData(typeof(IUserClaimsPrincipalFactory<AspNetUser>), typeof(UserClaimsPrincipalFactoryEx))]
-        [InlineData(typeof(IValidator<AddSolutionModel>), typeof(AddSolutionModelValidator))]
+        [InlineData(typeof(IValidator<SolutionModel>), typeof(SolutionModelValidator))]
         public void ContainsTheExpectedServiceInstances_B(Type requiredInterface, Type expectedType)
         {
             var webHost = Microsoft.AspNetCore.WebHost.CreateDefaultBuilder().UseStartup<StartupTest>().Build();
