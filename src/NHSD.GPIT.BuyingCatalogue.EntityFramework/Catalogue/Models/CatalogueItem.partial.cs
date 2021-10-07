@@ -7,6 +7,13 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models
 {
     public partial class CatalogueItem
     {
+        public bool IsBrowsable => PublishedStatus switch
+        {
+            PublicationStatus.Published => true,
+            PublicationStatus.InRemediation => true,
+            _ => false,
+        };
+
         public virtual CatalogueItemCapability CatalogueItemCapability(
             int capabilityId) =>
             CatalogueItemCapabilities?.FirstOrDefault(
