@@ -40,7 +40,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
         [HttpPost]
         public async Task<IActionResult> SelectAdditionalServiceRecipientsDate(string odsCode, CallOffId callOffId, SelectAdditionalServiceRecipientsDateModel model)
         {
-            (DateTime? date, var error) = model.ToDateTime();
+            (DateTime? date, var error) = model.ValidateAndGetDeliveryDate();
 
             if (error != null)
                 ModelState.AddModelError("Day", error);

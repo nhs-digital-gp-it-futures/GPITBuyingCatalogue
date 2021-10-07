@@ -238,7 +238,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
 
             for (int i = 0; i < model.OrderItem.ServiceRecipients.Count; i++)
             {
-                var (_, error) = model.OrderItem.ServiceRecipients[i].ToDateTime(state.CommencementDate);
+                var error = model.OrderItem.ServiceRecipients[i].ValidateDeliveryDate(state.CommencementDate);
 
                 if (error is not null)
                     ModelState.AddModelError($"OrderItem.ServiceRecipients[{i}].Day", error);
