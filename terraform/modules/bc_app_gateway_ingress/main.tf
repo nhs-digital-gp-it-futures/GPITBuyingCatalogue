@@ -35,7 +35,7 @@ resource "azurerm_application_gateway" "app_gateway" {
     path                                = "/"
     port                                = 80
     protocol                            = "Http"
-    request_timeout                     = 5
+    request_timeout                     = 10
     pick_host_name_from_backend_address = true
   }
 
