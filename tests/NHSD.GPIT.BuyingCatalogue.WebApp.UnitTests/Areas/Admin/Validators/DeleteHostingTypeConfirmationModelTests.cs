@@ -39,9 +39,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators
             DeleteHostingTypeConfirmationModelValidator validator)
         {
             catalogueItem.PublishedStatus = PublicationStatus.Published;
-            catalogueItem.Solution.Hosting.HybridHostingType = new();
-            catalogueItem.Solution.Hosting.OnPremise = new();
-            catalogueItem.Solution.Hosting.PrivateCloud = new();
+            catalogueItem.Solution.Hosting.HybridHostingType = new HybridHostingType();
+            catalogueItem.Solution.Hosting.OnPremise = new OnPremise();
+            catalogueItem.Solution.Hosting.PrivateCloud = new PrivateCloud();
 
             var model = new DeleteHostingTypeConfirmationModel
             {
@@ -85,9 +85,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators
             DeleteHostingTypeConfirmationModelValidator validator)
         {
             catalogueItem.PublishedStatus = PublicationStatus.Unpublished;
-            catalogueItem.Solution.Hosting.HybridHostingType = new();
-            catalogueItem.Solution.Hosting.OnPremise = new();
-            catalogueItem.Solution.Hosting.PrivateCloud = new();
+            catalogueItem.Solution.Hosting.HybridHostingType = new HybridHostingType();
+            catalogueItem.Solution.Hosting.OnPremise = new OnPremise();
+            catalogueItem.Solution.Hosting.PrivateCloud = new PrivateCloud();
 
             var model = new DeleteHostingTypeConfirmationModel
             {

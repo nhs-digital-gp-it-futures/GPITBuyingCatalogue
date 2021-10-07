@@ -40,6 +40,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.HostingTypeModels
             set => RequiresHscn = value ? "End user devices must be connected to HSCN/N3" : null;
         }
 
-        public bool IsNewHostingType { get; init; } = false;
+        public bool IsNewHostingType { get; init; }
     }
 }

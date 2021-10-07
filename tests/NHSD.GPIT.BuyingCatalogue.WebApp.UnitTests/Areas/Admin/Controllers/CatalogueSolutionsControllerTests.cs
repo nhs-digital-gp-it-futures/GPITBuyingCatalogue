@@ -2005,7 +2005,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
             [Frozen] Mock<ISolutionsService> solutionsService,
             CatalogueSolutionsController controller)
         {
-            var hostingType = HostingType.Hybrid;
+            const HostingType hostingType = HostingType.Hybrid;
             var model = new DeleteHostingTypeConfirmationModel
             {
                 HostingType = hostingType,
@@ -2016,7 +2016,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
             solutionsService.Setup(s => s.GetSolution(catalogueItem.Id))
                    .ReturnsAsync(catalogueItem);
 
-            var result = await controller.DeleteHostingType(catalogueItem.Id, hostingType, model);
+            await controller.DeleteHostingType(catalogueItem.Id, hostingType, model);
 
             solutionsService.Verify(s => s.SaveHosting(
                 catalogueItem.Id,
@@ -2033,7 +2033,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
             [Frozen] Mock<ISolutionsService> solutionsService,
             CatalogueSolutionsController controller)
         {
-            var hostingType = HostingType.OnPremise;
+            const HostingType hostingType = HostingType.OnPremise;
             var model = new DeleteHostingTypeConfirmationModel
             {
                 HostingType = hostingType,
@@ -2044,7 +2044,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
             solutionsService.Setup(s => s.GetSolution(catalogueItem.Id))
                    .ReturnsAsync(catalogueItem);
 
-            var result = await controller.DeleteHostingType(catalogueItem.Id, hostingType, model);
+            await controller.DeleteHostingType(catalogueItem.Id, hostingType, model);
 
             solutionsService.Verify(s => s.SaveHosting(
                 catalogueItem.Id,
@@ -2061,7 +2061,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
             [Frozen] Mock<ISolutionsService> solutionsService,
             CatalogueSolutionsController controller)
         {
-            var hostingType = HostingType.PrivateCloud;
+            const HostingType hostingType = HostingType.PrivateCloud;
             var model = new DeleteHostingTypeConfirmationModel
             {
                 HostingType = hostingType,
@@ -2072,7 +2072,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
             solutionsService.Setup(s => s.GetSolution(catalogueItem.Id))
                    .ReturnsAsync(catalogueItem);
 
-            var result = await controller.DeleteHostingType(catalogueItem.Id, hostingType, model);
+            await controller.DeleteHostingType(catalogueItem.Id, hostingType, model);
 
             solutionsService.Verify(s => s.SaveHosting(
                 catalogueItem.Id,
@@ -2089,7 +2089,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
             [Frozen] Mock<ISolutionsService> solutionsService,
             CatalogueSolutionsController controller)
         {
-            var hostingType = HostingType.PublicCloud;
+            const HostingType hostingType = HostingType.PublicCloud;
             var model = new DeleteHostingTypeConfirmationModel
             {
                 HostingType = hostingType,
@@ -2100,7 +2100,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
             solutionsService.Setup(s => s.GetSolution(catalogueItem.Id))
                    .ReturnsAsync(catalogueItem);
 
-            var result = await controller.DeleteHostingType(catalogueItem.Id, hostingType, model);
+            await controller.DeleteHostingType(catalogueItem.Id, hostingType, model);
 
             solutionsService.Verify(s => s.SaveHosting(
                 catalogueItem.Id,

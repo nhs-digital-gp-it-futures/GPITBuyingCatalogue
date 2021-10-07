@@ -272,6 +272,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
                 IsNewHostingType = isNewHostingType.GetValueOrDefault(),
                 BackLink = Url.Action(nameof(HostingType), new { solutionId }),
             };
+
             return View(model);
         }
 
@@ -301,6 +302,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
                 IsNewHostingType = isNewHostingType.GetValueOrDefault(),
                 BackLink = Url.Action(nameof(HostingType), new { solutionId }),
             };
+
             return View(model);
         }
 
@@ -330,6 +332,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
                 IsNewHostingType = isNewHostingType.GetValueOrDefault(),
                 BackLink = Url.Action(nameof(HostingType), new { solutionId }),
             };
+
             return View(model);
         }
 
@@ -359,6 +362,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
                 IsNewHostingType = isNewHostingType.GetValueOrDefault(),
                 BackLink = Url.Action(nameof(HostingType), new { solutionId }),
             };
+
             return View(model);
         }
 
@@ -387,7 +391,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
                 ServiceContracts.Solutions.HostingType.OnPremise => nameof(OnPremise),
                 ServiceContracts.Solutions.HostingType.PrivateCloud => nameof(PrivateCloud),
                 ServiceContracts.Solutions.HostingType.PublicCloud => nameof(PublicCloud),
-                _ => throw new NotImplementedException(),
+                _ => throw new ArgumentOutOfRangeException(nameof(hostingType)),
             };
 
             var model = new DeleteHostingTypeConfirmationModel(solution, hostingType)
@@ -406,20 +410,22 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
 
             var solution = await solutionsService.GetSolution(solutionId);
             var hosting = solution.Solution.Hosting;
-            switch (model.HostingType)
+            switch (hostingType)
             {
                 case ServiceContracts.Solutions.HostingType.Hybrid:
-                    hosting.HybridHostingType = new();
+                    hosting.HybridHostingType = new HybridHostingType();
                     break;
                 case ServiceContracts.Solutions.HostingType.OnPremise:
-                    hosting.OnPremise = new();
+                    hosting.OnPremise = new OnPremise();
                     break;
                 case ServiceContracts.Solutions.HostingType.PrivateCloud:
-                    hosting.PrivateCloud = new();
+                    hosting.PrivateCloud = new PrivateCloud();
                     break;
                 case ServiceContracts.Solutions.HostingType.PublicCloud:
-                    hosting.PublicCloud = new();
+                    hosting.PublicCloud = new PublicCloud();
                     break;
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(hostingType));
             }
 
             await solutionsService.SaveHosting(solutionId, hosting);
