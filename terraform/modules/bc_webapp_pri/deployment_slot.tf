@@ -41,6 +41,13 @@ resource "azurerm_app_service_slot" "slot" {
       headers    = []
     }
 
+    ip_restriction {
+      name       = "PRIMARY_VPN"
+      ip_address = var.primary_vpn
+      priority   = 210
+      headers    = []
+    }
+
     scm_use_main_ip_restriction = false
   }
   identity {
