@@ -52,7 +52,7 @@ namespace NHSD.GPIT.BuyingCatalogue.UI.Components.TagHelpers
 
             var classes = new List<string> { TagHelperConstants.NhsCheckBoxChildConditionalClass };
 
-            if (!isSelected) 
+            if (!isSelected)
                 classes.Add(TagHelperConstants.NhsCheckBoxChildConditionalHiddenClass);
 
             if (!childContent.IsEmptyOrWhiteSpace)
