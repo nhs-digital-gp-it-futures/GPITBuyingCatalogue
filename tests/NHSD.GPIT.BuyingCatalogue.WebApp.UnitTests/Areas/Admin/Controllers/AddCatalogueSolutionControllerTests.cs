@@ -29,18 +29,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
     public static class AddCatalogueSolutionControllerTests
     {
         [Fact]
-        public static void ClassIsCorrectlyDecorated()
-        {
-            typeof(AddCatalogueSolutionController).Should()
-                .BeDecoratedWith<AuthorizeAttribute>(x => x.Policy == "AdminOnly");
-
-            typeof(AddCatalogueSolutionController).Should().BeDecoratedWith<AreaAttribute>(x => x.RouteValue == "Admin");
-
-            typeof(AddCatalogueSolutionController).Should()
-                .BeDecoratedWith<RouteAttribute>(x => x.Template == "admin/catalogue-solutions/add-solution");
-        }
-
-        [Fact]
         public static void Constructors_VerifyGuardClauses()
         {
             var fixture = new Fixture().Customize(new AutoMoqCustomization());

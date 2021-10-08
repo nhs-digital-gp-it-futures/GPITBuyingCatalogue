@@ -202,7 +202,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.CreateBuyer
             {
                 UsersRepositoryMock = new Mock<IDbRepository<AspNetUser, BuyingCatalogueDbContext>>();
                 UsersRepositoryMock
-                    .Setup(x => x.GetAllAsync(It.IsAny<Expression<Func<AspNetUser, bool>>>()))
+                    .Setup(r => r.GetAllAsync(It.IsAny<Expression<Func<AspNetUser, bool>>>()))
                     .ReturnsAsync(() => new[] { ApplicationUserByEmail });
 
                 ApplicationUserValidator = new AspNetUserValidator(UsersRepositoryMock.Object);
