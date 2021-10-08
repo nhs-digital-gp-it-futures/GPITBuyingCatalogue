@@ -68,7 +68,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.Catalogu
 
             model.SelectionPrompt.Should().Be("Deselect all");
             model.SelectionParameter.Should().Be("none");
-            model.ServiceRecipients.ForEach(x => x.Selected.Should().Be(true));
+            model.ServiceRecipients.ForEach(r => r.Selected.Should().Be(true));
         }
 
         [Theory]
@@ -81,7 +81,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.Catalogu
 
             model.SelectionPrompt.Should().Be("Select all");
             model.SelectionParameter.Should().Be("all");
-            model.ServiceRecipients.ForEach(x => x.Selected.Should().Be(false));
+            model.ServiceRecipients.ForEach(r => r.Selected.Should().Be(false));
         }
     }
 }

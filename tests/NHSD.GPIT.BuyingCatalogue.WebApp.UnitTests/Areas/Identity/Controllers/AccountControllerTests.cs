@@ -17,12 +17,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Identity.Controllers
     public static class AccountControllerTests
     {
         [Fact]
-        public static void ClassIsCorrectlyDecorated()
-        {
-            typeof(AccountController).Should().BeDecoratedWith<AreaAttribute>(x => x.RouteValue == "Identity");
-        }
-
-        [Fact]
         public static void Constructor_AllServicesPresent_Success()
         {
             _ = new AccountController(

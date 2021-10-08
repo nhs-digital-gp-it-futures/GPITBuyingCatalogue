@@ -34,7 +34,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Models
         [CommonAutoData]
         public static void HasContacts_ValidContacts_ReturnsTrue(SolutionSupplierDetailsModel model)
         {
-            model.Contacts.Any(x => x != null).Should().BeTrue();
+            model.Contacts.Any(c => c != null).Should().BeTrue();
 
             model.HasContacts().Should().BeTrue();
         }
