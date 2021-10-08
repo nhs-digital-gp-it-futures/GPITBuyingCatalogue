@@ -10,7 +10,9 @@ using NHSD.GPIT.BuyingCatalogue.Framework.Constants;
 using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.AssociatedServices;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Caching;
+using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Models;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions;
+using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Suppliers;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.BrowserBasedModels;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.ClientApplicationTypeModels;
@@ -29,15 +31,18 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
         private readonly ISolutionsService solutionsService;
         private readonly IAssociatedServicesService associatedServicesService;
         private readonly IFilterCache filterCache;
+        private readonly ISuppliersService suppliersService;
 
         public CatalogueSolutionsController(
             ISolutionsService solutionsService,
             IAssociatedServicesService associatedServicesService,
-            IFilterCache filterCache)
+            IFilterCache filterCache,
+            ISuppliersService suppliersService)
         {
             this.solutionsService = solutionsService ?? throw new ArgumentNullException(nameof(solutionsService));
             this.associatedServicesService = associatedServicesService ?? throw new ArgumentNullException(nameof(associatedServicesService));
             this.filterCache = filterCache ?? throw new ArgumentNullException(nameof(filterCache));
+            this.suppliersService = suppliersService ?? throw new ArgumentNullException(nameof(suppliersService));
         }
 
         [HttpGet]
@@ -123,6 +128,58 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
             filterCache.Remove(frameworkIds);
 
             return RedirectToAction(nameof(Index));
+        }
+
+        [HttpGet("manage/{solutionId}/details")]
+        public async Task<IActionResult> Details(CatalogueItemId solutionId)
+        {
+            var solution = await solutionsService.GetSolution(solutionId);
+
+            if (solution is null)
+                return BadRequest($"No Solution found for Id: {solutionId}");
+
+            var suppliers = await suppliersService.GetAllActiveSuppliers();
+
+            var model = new SolutionModel(solution).WithSelectListItems(suppliers).WithEditSolution();
+
+            model.Frameworks = (await solutionsService.GetAllFrameworks())
+                .Select(f =>
+                {
+                    FrameworkSolution sol = solution.Solution.FrameworkSolutions.FirstOrDefault(fs => fs.FrameworkId == f.Id);
+                    return new FrameworkModel
+                    {
+                        Name = $"{f.ShortName} Framework",
+                        FrameworkId = f.Id,
+                        Selected = sol is not null,
+                        IsFoundation = sol?.IsFoundation ?? false,
+                    };
+                }).ToList();
+
+            return View(model);
+        }
+
+        [HttpPost("manage/{solutionId}/details")]
+        public async Task<IActionResult> Details(CatalogueItemId solutionId, SolutionModel model)
+        {
+            var existingSolution = await solutionsService.GetSolutionByName(model.SolutionName);
+
+            if (existingSolution is not null && existingSolution.Id != solutionId)
+                ModelState.AddModelError(nameof(SolutionModel.SolutionName), "A solution with this name already exists");
+
+            if (!ModelState.IsValid)
+            {
+                var suppliers = await suppliersService.GetAllActiveSuppliers();
+
+                return View(model.WithSelectListItems(suppliers).WithEditSolution());
+            }
+
+            await solutionsService.SaveSolutionDetails(
+                solutionId,
+                model.SolutionName,
+                model.SupplierId ?? default,
+                model.Frameworks);
+
+            return RedirectToAction(nameof(ManageCatalogueSolution), new { solutionId });
         }
 
         [HttpGet("manage/{solutionId}/description")]

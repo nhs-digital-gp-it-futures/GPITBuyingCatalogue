@@ -14,6 +14,7 @@ using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Users.Models;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Caching;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions;
+using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Suppliers;
 using NHSD.GPIT.BuyingCatalogue.Test.Framework.AutoFixtureCustomisations;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models;
@@ -234,6 +235,71 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
             model.Summary.Should().BeEquivalentTo("XYZ Summary");
             model.Description.Should().BeEquivalentTo("XYZ description");
             model.Link.Should().BeEquivalentTo("Fake url");
+        }
+
+        [Theory]
+        [CommonAutoData]
+        public static async Task Post_Details_RedirectsToManageCatalogueSolution(
+            CatalogueItemId catalogueItemId,
+            SolutionModel model,
+            [Frozen] Mock<ISolutionsService> mockService,
+            CatalogueSolutionsController controller)
+        {
+            mockService.Setup(s => s.GetSolutionByName(It.IsAny<string>())).Returns(Task.FromResult(new CatalogueItem { Id = catalogueItemId }));
+
+            var actual = (await controller.Details(catalogueItemId, model)).As<RedirectToActionResult>();
+
+            actual.ActionName.Should().Be(nameof(CatalogueSolutionsController.ManageCatalogueSolution));
+            actual.ControllerName.Should().BeNull();
+            actual.RouteValues["solutionId"].Should().Be(catalogueItemId);
+        }
+
+        [Theory]
+        [CommonAutoData]
+        public static async Task Post_EditDetails_InvalidModel_ReturnsViewWithModel(
+            [Frozen] CatalogueItemId id,
+            CatalogueSolutionsController controller)
+        {
+            var solutionModel = new SolutionModel();
+            controller.ModelState.AddModelError("some-property", "some-error");
+
+            var actual = (await controller.Details(id, solutionModel)).As<ViewResult>();
+
+            actual.Should().NotBeNull();
+            actual.ViewName.Should().BeNull();
+            actual.Model.Should().Be(solutionModel);
+        }
+
+        [Theory]
+        [CommonAutoData]
+        public static async Task Post_EditDetails_ValidModel_CallsSaveSolutionDescriptionOnService(
+            [Frozen] CatalogueItemId id,
+            SolutionModel model,
+            [Frozen] Mock<ISolutionsService> mockSolutionService,
+            CatalogueSolutionsController controller)
+        {
+            mockSolutionService.Setup(m => m.GetSolutionByName(It.IsAny<string>())).Returns(Task.FromResult(new CatalogueItem { Id = id }));
+
+            await controller.Details(id, model);
+
+            mockSolutionService.Verify(s => s.SaveSolutionDetails(id, model.SolutionName, model.SupplierId ?? default, model.Frameworks));
+        }
+
+        [Theory]
+        [CommonAutoData]
+        public static async Task Post_EditDetails_ValidModel_RedirectsToExpectedAction(
+            [Frozen] CatalogueItemId id,
+            SolutionModel model,
+            [Frozen] Mock<ISolutionsService> mockSolutionService,
+            CatalogueSolutionsController controller)
+        {
+            mockSolutionService.Setup(m => m.GetSolutionByName(It.IsAny<string>())).Returns(Task.FromResult(new CatalogueItem { Id = id }));
+
+            var actual = (await controller.Details(id, model)).As<RedirectToActionResult>();
+
+            actual.Should().NotBeNull();
+            actual.ActionName.Should().Be(nameof(CatalogueSolutionsController.ManageCatalogueSolution));
+            actual.RouteValues["solutionId"].Should().Be(id);
         }
 
         [Theory]

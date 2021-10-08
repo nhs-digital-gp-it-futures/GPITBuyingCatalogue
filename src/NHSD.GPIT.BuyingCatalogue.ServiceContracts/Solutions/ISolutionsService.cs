@@ -22,6 +22,8 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions
 
         Task<CatalogueItem> GetSolutionWithAllAdditionalServices(CatalogueItemId solutionId);
 
+        Task SaveSolutionDetails(CatalogueItemId id, string solutionName, int supplierId, IList<FrameworkModel> selectedFrameworks);
+
         Task SaveSolutionDescription(CatalogueItemId solutionId, string summary, string description, string link);
 
         Task SaveSolutionFeatures(CatalogueItemId solutionId, string[] features);

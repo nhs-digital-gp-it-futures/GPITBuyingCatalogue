@@ -55,7 +55,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp
             services.AddFluentValidation(
                     options =>
                     {
-                        options.RegisterValidatorsFromAssemblyContaining<AddSolutionModelValidator>();
+                        options.RegisterValidatorsFromAssemblyContaining<SolutionModelValidator>();
                     });
 
             services.AddApplicationInsightsTelemetry();

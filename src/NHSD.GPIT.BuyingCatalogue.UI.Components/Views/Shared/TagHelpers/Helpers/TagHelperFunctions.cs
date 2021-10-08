@@ -104,7 +104,8 @@ namespace NHSD.GPIT.BuyingCatalogue.UI.Components.TagHelpers
             TagHelperContext context,
             TagBuilder input,
             TagHelperContent childContent,
-            IEnumerable<string> classes)
+            IEnumerable<string> classes,
+            bool isSelected = false)
         {
             var childContainer = TagHelperBuilders.GetChildContentConditionalBuilder(input, classes);
 
@@ -115,7 +116,7 @@ namespace NHSD.GPIT.BuyingCatalogue.UI.Components.TagHelpers
             childContainer.Attributes.TryGetValue("id", out string containerId);
 
             input.MergeAttribute(TagHelperConstants.AriaControls, containerId);
-            input.MergeAttribute(TagHelperConstants.AriaExpanded, "false");
+            input.MergeAttribute(TagHelperConstants.AriaExpanded, isSelected.ToString());
 
             TellParentThisHasConditionalChildContent(context);
         }
