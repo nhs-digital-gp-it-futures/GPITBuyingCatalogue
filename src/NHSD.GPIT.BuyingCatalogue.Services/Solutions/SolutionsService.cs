@@ -191,6 +191,40 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
             return solution;
         }
 
+        public async Task SaveSolutionDetails(CatalogueItemId id, string solutionName, int supplierId, IList<FrameworkModel> selectedFrameworks)
+        {
+            var data = await GetCatalogueItem(id);
+
+            data.Name = solutionName;
+            data.SupplierId = supplierId;
+
+            var frameworks = data.Solution.FrameworkSolutions.ToList();
+            frameworks.RemoveAll(f => selectedFrameworks.Any(sf => f.FrameworkId == sf.FrameworkId && sf.Selected == false));
+
+            foreach (var framework in selectedFrameworks.Where(x => x.Selected))
+            {
+                var existingFramework = frameworks.FirstOrDefault(fs => fs.FrameworkId == framework.FrameworkId);
+
+                if (existingFramework is null)
+                {
+                    frameworks.Add(new FrameworkSolution
+                    {
+                        FrameworkId = framework.FrameworkId,
+                        IsFoundation = framework.IsFoundation,
+                        LastUpdated = DateTime.UtcNow,
+                    });
+                }
+                else
+                {
+                    existingFramework.IsFoundation = framework.IsFoundation;
+                    existingFramework.LastUpdated = DateTime.UtcNow;
+                }
+            }
+
+            data.Solution.FrameworkSolutions = frameworks;
+            await dbContext.SaveChangesAsync();
+        }
+
         public async Task SaveSolutionDescription(CatalogueItemId solutionId, string summary, string description, string link)
         {
             summary.ValidateNotNullOrWhiteSpace(nameof(summary));
@@ -485,5 +519,10 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
 
             await dbContext.SaveChangesAsync();
         }
+
+        private async Task<CatalogueItem> GetCatalogueItem(CatalogueItemId id) => await dbContext.CatalogueItems
+            .Include(s => s.Solution)
+            .Include(s => s.Solution.FrameworkSolutions)
+            .SingleAsync(s => s.Id == id);
     }
 }

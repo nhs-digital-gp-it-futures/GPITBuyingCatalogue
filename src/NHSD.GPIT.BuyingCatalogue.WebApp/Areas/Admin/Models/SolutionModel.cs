@@ -8,12 +8,19 @@ using NHSD.GPIT.BuyingCatalogue.WebApp.Models;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models
 {
-    public sealed class AddSolutionModel : NavBaseModel
+    public sealed class SolutionModel : NavBaseModel
     {
-        public AddSolutionModel()
+        public SolutionModel()
         {
             BackLink = "/admin/catalogue-solutions";
             BackLinkText = "Go back";
+        }
+
+        public SolutionModel(CatalogueItem solution)
+        {
+            SupplierId = solution.SupplierId;
+            SolutionName = solution.Name;
+            SupplierName = solution.Supplier.Name;
         }
 
         public int? SupplierId { get; set; }
@@ -26,12 +33,30 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models
 
         public IEnumerable<SelectListItem> SuppliersSelectList { get; set; } = new List<SelectListItem>();
 
-        public AddSolutionModel WithSelectListItems(IList<Supplier> suppliers)
+        public string Heading { get; set; }
+
+        public string Description { get; set; }
+
+        public SolutionModel WithSelectListItems(IList<Supplier> suppliers)
         {
             SuppliersSelectList = suppliers == null || !suppliers.Any()
             ? System.Array.Empty<SelectListItem>()
             : suppliers.Select(s => new SelectListItem($"{s.Name} ({s.Id})", s.Id.ToString(CultureInfo.InvariantCulture)));
 
+            return this;
+        }
+
+        public SolutionModel WithAddSolution()
+        {
+            Heading = "Add a solution";
+            Description = "Provide the following information about your Catalogue Solution.";
+            return this;
+        }
+
+        public SolutionModel WithEditSolution()
+        {
+            Heading = "Details";
+            Description = "These are the current details for this Catalogue Solution.";
             return this;
         }
     }

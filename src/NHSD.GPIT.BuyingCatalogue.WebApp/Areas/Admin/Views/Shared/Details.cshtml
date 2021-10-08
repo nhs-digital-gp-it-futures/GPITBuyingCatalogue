@@ -1,4 +1,4 @@
-﻿@model NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.AddSolutionModel
+﻿@model NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.SolutionModel
 @{
     Layout = "~/Views/Shared/Layouts/_NoBannersLayout.cshtml";
     ViewBag.Title = "Add a Solution";
@@ -8,8 +8,9 @@
     <nhs-validation-summary RadioId="Frameworks[0].Selected"/>
 
     <div class="nhsuk-grid-column-two-thirds">
-        <nhs-page-title title="@ViewBag.Title"
-            advice="Provide the following information about your Catalogue Solution." />
+        <nhs-page-title title="@Model.Heading"
+                        caption="@Model.SolutionName"
+                        advice="@Model.Description" />
 
         <h2>Solution details</h2>
         <form method="post">
@@ -28,7 +29,7 @@
                     {
                         @if (Model.Frameworks[i].Name == "GP IT Futures Framework")
                         {
-                            <nhs-checkbox asp-for="Frameworks[i].Selected"
+                            <nhs-checkbox asp-for="@Model.Frameworks[i].Selected"
                                           label-text="@Model.Frameworks[i].Name"
                                           hidden-input="@Model.Frameworks[i].FrameworkId"
                                           data-test-id="framework-names">
@@ -47,7 +48,6 @@
                                           hidden-input="@Model.Frameworks[i].FrameworkId"
                                           data-test-id="framework-names" />
                         }
-
                     }
                 </nhs-checkbox-container>
             </nhs-fieldset-form-label>

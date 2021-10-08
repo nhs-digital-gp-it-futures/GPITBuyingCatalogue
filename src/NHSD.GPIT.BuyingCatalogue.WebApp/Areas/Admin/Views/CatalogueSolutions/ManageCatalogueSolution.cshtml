@@ -51,7 +51,8 @@
                     <nhs-table-cell>Details</nhs-table-cell>
                     <nhs-table-cell>Yes</nhs-table-cell>
                     <nhs-table-cell><nhs-tag colour="Green" text="Completed" /></nhs-table-cell>
-                    <nhs-table-cell><a href="#">Edit</a></nhs-table-cell>
+                    <nhs-table-cell><a asp-action="Details" asp-controller="CatalogueSolutions"
+                        asp-route-solutionId="@Model.Solution.Id">Edit</a></nhs-table-cell>
                 </nhs-table-row-container>
                 <nhs-table-row-container>
                     <nhs-table-cell>Description</nhs-table-cell>

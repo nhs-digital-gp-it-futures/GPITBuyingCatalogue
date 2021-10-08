@@ -12,27 +12,27 @@ using Xunit;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators
 {
-    public static class AddSolutionModelValidatorTests
+    public static class SolutionModelValidatorTests
     {
         [Theory]
         [CommonAutoData]
         public static void Validate_FrameworkNotValid_SetsModelErrorForListFrameworkModel(
-            AddSolutionModelValidator validator,
-            AddSolutionModel model)
+            SolutionModelValidator validator,
+            SolutionModel model)
         {
             model.Frameworks = new List<FrameworkModel> { new() };
 
             var result = validator.TestValidate(model);
 
-            result.ShouldHaveValidationErrorFor($"{nameof(AddSolutionModel.Frameworks)}[0].Selected")
+            result.ShouldHaveValidationErrorFor($"{nameof(SolutionModel.Frameworks)}[0].Selected")
                 .WithErrorMessage("Select the framework(s) your solution is available from");
         }
 
         [Theory]
         [CommonAutoData]
         public static async Task Validate_FrameworkValid_NoErrorForFrameworkModel(
-            AddSolutionModel model,
-            AddSolutionModelValidator validator)
+            SolutionModel model,
+            SolutionModelValidator validator)
         {
             model.Frameworks = new List<FrameworkModel> { new() { Selected = true } };
 
@@ -45,8 +45,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators
         [CommonAutoData]
         public static async Task Validate_EmptySupplierId_SetsModelErrorForSupplierId(
             [Frozen] Mock<ISolutionsService> mockSolutionsService,
-            AddSolutionModel model,
-            AddSolutionModelValidator validator)
+            SolutionModel model,
+            SolutionModelValidator validator)
         {
             model.SupplierId = null;
 
@@ -62,8 +62,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators
         [Theory]
         [CommonAutoData]
         public static async Task Validate_ValidSupplierId_NoModelErrorForSupplierId(
-            AddSolutionModel model,
-            AddSolutionModelValidator validator)
+            SolutionModel model,
+            SolutionModelValidator validator)
         {
             var result = await validator.TestValidateAsync(model);
 
@@ -72,27 +72,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators
 
         [Theory]
         [CommonAutoData]
-        public static async Task ValidateAsync_SolutionNameValidation_ChecksSolutionNameUnique(
-            [Frozen] Mock<ISolutionsService> mockSolutionsService,
-            AddSolutionModel model,
-            AddSolutionModelValidator validator)
-        {
-            mockSolutionsService
-                .Setup(s => s.SupplierHasSolutionName(model.SupplierId.Value, model.SolutionName))
-                .ReturnsAsync(false);
-
-            await validator.TestValidateAsync(model);
-
-            mockSolutionsService
-                .Verify(s => s.SupplierHasSolutionName(model.SupplierId.Value, model.SolutionName));
-        }
-
-        [Theory]
-        [CommonAutoData]
         public static async Task Validate_SolutionNameNotValid_SetsModelErrorWithoutServiceCall(
             [Frozen] Mock<ISolutionsService> mockSolutionsService,
-            AddSolutionModel model,
-            AddSolutionModelValidator validator)
+            SolutionModel model,
+            SolutionModelValidator validator)
         {
             model.SolutionName = string.Empty;
 
@@ -110,8 +93,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators
         [CommonAutoData]
         public static async Task Validate_SolutionNameTooLong_SetsModelErrorWithoutServiceCall(
             [Frozen] Mock<ISolutionsService> mockSolutionsService,
-            AddSolutionModel model,
-            AddSolutionModelValidator validator)
+            SolutionModel model,
+            SolutionModelValidator validator)
         {
             model.SolutionName = new string('Z', 256);
 
@@ -127,28 +110,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators
 
         [Theory]
         [CommonAutoData]
-        public static async Task Validate_SolutionNameNotUniqueForSupplierId_SetsModelError(
-            [Frozen] Mock<ISolutionsService> mockSolutionsService,
-            AddSolutionModel model,
-            AddSolutionModelValidator validator)
-        {
-            mockSolutionsService
-                .Setup(s => s.SupplierHasSolutionName(model.SupplierId.Value, model.SolutionName))
-                .ReturnsAsync(true);
-
-            var result = await validator.TestValidateAsync(model);
-
-            result
-                .ShouldHaveValidationErrorFor(m => m.SolutionName)
-                .WithErrorMessage("Solution name already exists. Enter a different solution name");
-        }
-
-        [Theory]
-        [CommonAutoData]
         public static async Task Validate_SolutionNameUniqueForSupplierId_NoErrorForSupplierName(
             [Frozen] Mock<ISolutionsService> mockSolutionsService,
-            AddSolutionModel model,
-            AddSolutionModelValidator validator)
+            SolutionModel model,
+            SolutionModelValidator validator)
         {
             mockSolutionsService
                 .Setup(s => s.SupplierHasSolutionName(model.SupplierId.Value, model.SolutionName))
