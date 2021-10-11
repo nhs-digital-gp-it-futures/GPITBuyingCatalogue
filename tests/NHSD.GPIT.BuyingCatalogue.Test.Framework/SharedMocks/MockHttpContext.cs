@@ -53,7 +53,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Test.Framework.SharedMocks
         private void UpdateRequestCookieCollectionMock()
         {
             requestCookieCollectionMock
-                .Setup(r => r.TryGetValue(Cookies.BuyingCatalogueConsent, out cookieContent))
+                .Setup(r => r.TryGetValue(CatalogueCookies.BuyingCatalogueConsent, out cookieContent))
                 .Returns(true);
         }
     }

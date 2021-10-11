@@ -16,6 +16,8 @@ namespace NHSD.GPIT.BuyingCatalogue.Framework.Identity
         {
             const string specialCharacters = "!@#$%^&*";
 
+            password ??= string.Empty;
+
             if (password.Length < 10)
             {
                 return Task.FromResult(

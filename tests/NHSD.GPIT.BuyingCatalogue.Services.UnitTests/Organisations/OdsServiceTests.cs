@@ -87,7 +87,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Organisations
 
             var service = new OdsService(settings, memoryCacheMock.Object);
 
-            var (org, error) = await service.GetOrganisationByOdsCode(odsCode);
+            (OdsOrganisation org, string error) = await service.GetOrganisationByOdsCode(odsCode);
 
             error.Should().BeNull();
             org.Should().BeEquivalentTo(organisation);
@@ -129,13 +129,13 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Organisations
 
             var settings = new OdsSettings
             {
-                ApiBaseUrl = "https://spineservice",
+                ApiBaseUrl = new Uri("https://spineservice"),
                 BuyerOrganisationRoleIds = new[] { "RO98", "RO177", "RO213", "RO272" },
             };
 
             var service = new OdsService(settings, memoryCacheMock.Object);
 
-            var (org, error) = await service.GetOrganisationByOdsCode(OdsCode);
+            (OdsOrganisation org, string error) = await service.GetOrganisationByOdsCode(OdsCode);
 
             error.Should().BeNull();
             org.Should().BeOfType<OdsOrganisation>();
@@ -161,13 +161,13 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Organisations
 
             var settings = new OdsSettings
             {
-                ApiBaseUrl = "https://spineservice",
+                ApiBaseUrl = new Uri("https://spineservice"),
                 BuyerOrganisationRoleIds = new[] { "X123" },
             };
 
             var service = new OdsService(settings, memoryCacheMock.Object);
 
-            var (org, error) = await service.GetOrganisationByOdsCode(OdsCode);
+            (OdsOrganisation org, string error) = await service.GetOrganisationByOdsCode(OdsCode);
 
             error.Should().Be("Not a buyer organisation");
             org.Should().BeNull();
@@ -191,12 +191,12 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Organisations
 
             var settings = new OdsSettings
             {
-                ApiBaseUrl = "https://spineservice",
+                ApiBaseUrl = new Uri("https://spineservice"),
             };
 
             var service = new OdsService(settings, memoryCacheMock.Object);
 
-            var (org, error) = await service.GetOrganisationByOdsCode(OdsCode);
+            (OdsOrganisation org, string error) = await service.GetOrganisationByOdsCode(OdsCode);
 
             error.Should().Be("Organisation not found");
             org.Should().BeNull();
@@ -261,7 +261,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Organisations
 
             var settings = new OdsSettings
             {
-                ApiBaseUrl = "https://spineservice",
+                ApiBaseUrl = new Uri("https://spineservice"),
                 GetChildOrganisationSearchLimit = 2,
                 GpPracticeRoleId = "RO177",
             };
@@ -289,8 +289,8 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Organisations
 
             using var httpTest = new HttpTest();
             httpTest.RespondWith(status: 200, body: jsonPageOne)
-            .RespondWith(status: 200, body: jsonPageTwo)
-            .RespondWith(status: 200, body: jsonPageThree);
+                .RespondWith(status: 200, body: jsonPageTwo)
+                .RespondWith(status: 200, body: jsonPageThree);
 
             var memoryCacheMock = new Mock<IMemoryCache>();
 
@@ -303,7 +303,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Organisations
 
             var settings = new OdsSettings
             {
-                ApiBaseUrl = "https://spineservice",
+                ApiBaseUrl = new Uri("https://spineservice"),
                 GetChildOrganisationSearchLimit = 1,
                 GpPracticeRoleId = "RO177",
             };
@@ -341,7 +341,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Organisations
 
             var settings = new OdsSettings
             {
-                ApiBaseUrl = "https://spineservice",
+                ApiBaseUrl = new Uri("https://spineservice"),
                 GetChildOrganisationSearchLimit = 3,
                 GpPracticeRoleId = "RO177",
             };
@@ -373,7 +373,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Organisations
 
             var settings = new OdsSettings
             {
-                ApiBaseUrl = "https://spineservice",
+                ApiBaseUrl = new Uri("https://spineservice"),
                 GetChildOrganisationSearchLimit = 3,
                 GpPracticeRoleId = "RO177",
             };

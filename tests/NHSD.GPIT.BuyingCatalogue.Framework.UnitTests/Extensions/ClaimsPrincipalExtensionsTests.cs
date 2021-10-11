@@ -11,6 +11,15 @@ namespace NHSD.GPIT.BuyingCatalogue.Framework.UnitTests.Extensions
     public static class ClaimsPrincipalExtensionsTests
     {
         [Fact]
+        public static void GetPrimaryOrganisationName_NullPrincipal_ThrowsException()
+        {
+            ClaimsPrincipal user = null;
+
+            // ReSharper disable once ExpressionIsAlwaysNull
+            Assert.Throws<ArgumentNullException>(() => user.GetPrimaryOrganisationName());
+        }
+
+        [Fact]
         public static void GetPrimaryOrganisationName_GetsValue()
         {
             var user = CreatePrincipal("primaryOrganisationName", "HULL CCJ");
@@ -18,6 +27,15 @@ namespace NHSD.GPIT.BuyingCatalogue.Framework.UnitTests.Extensions
             var result = user.GetPrimaryOrganisationName();
 
             Assert.Equal("HULL CCJ", result);
+        }
+
+        [Fact]
+        public static void GetPrimaryOdsCode_NullPrincipal_ThrowsException()
+        {
+            ClaimsPrincipal user = null;
+
+            // ReSharper disable once ExpressionIsAlwaysNull
+            Assert.Throws<ArgumentNullException>(() => user.GetPrimaryOdsCode());
         }
 
         [Fact]
@@ -31,16 +49,34 @@ namespace NHSD.GPIT.BuyingCatalogue.Framework.UnitTests.Extensions
         }
 
         [Fact]
+        public static void GetSecondaryOdsCode_NullPrincipal_ThrowsException()
+        {
+            ClaimsPrincipal user = null;
+
+            // ReSharper disable once ExpressionIsAlwaysNull
+            Assert.Throws<ArgumentNullException>(() => user.GetSecondaryOdsCodes());
+        }
+
+        [Fact]
         public static void GetSecondaryOdsCode_GetsValues()
         {
             var user = CreatePrincipal("secondaryOrganisationOdsCode", new[] { "3CY", "3BY", "ABC" });
 
             var result = user.GetSecondaryOdsCodes();
 
-            Assert.Equal(3, result.Length);
+            Assert.Equal(3, result.Count);
             Assert.Contains(result, s => s.EqualsIgnoreCase("3CY"));
             Assert.Contains(result, s => s.EqualsIgnoreCase("3BY"));
             Assert.Contains(result, s => s.EqualsIgnoreCase("ABC"));
+        }
+
+        [Fact]
+        public static void GetUserDisplayName_NullPrincipal_ThrowsException()
+        {
+            ClaimsPrincipal user = null;
+
+            // ReSharper disable once ExpressionIsAlwaysNull
+            Assert.Throws<ArgumentNullException>(() => user.GetUserDisplayName());
         }
 
         [Fact]
@@ -83,6 +119,15 @@ namespace NHSD.GPIT.BuyingCatalogue.Framework.UnitTests.Extensions
             var user = CreatePrincipal("UnrelatedClaim", "True");
 
             Assert.False(user.IsBuyer());
+        }
+
+        [Fact]
+        public static void UserId_NullPrincipal_ThrowsException()
+        {
+            ClaimsPrincipal user = null;
+
+            // ReSharper disable once ExpressionIsAlwaysNull
+            Assert.Throws<ArgumentNullException>(() => user.UserId());
         }
 
         [Fact]

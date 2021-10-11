@@ -19,12 +19,18 @@ namespace NHSD.GPIT.BuyingCatalogue.Framework.Middleware.CookieConsent
 
         public async Task Invoke(HttpContext context, CookieExpirationSettings cookieExpirationSettings)
         {
+            if (context is null)
+                throw new ArgumentNullException(nameof(context));
+
+            if (cookieExpirationSettings is null)
+                throw new ArgumentNullException(nameof(cookieExpirationSettings));
+
             var (showBanner, useAnalytics) = ExtractCookieData(context.Request, cookieExpirationSettings.BuyingCatalogueCookiePolicyDate);
 
-            context.Items[Cookies.ShowCookieBanner] = showBanner;
+            context.Items[CatalogueCookies.ShowCookieBanner] = showBanner;
 
             if (!showBanner)
-                context.Items[Cookies.UseAnalytics] = useAnalytics;
+                context.Items[CatalogueCookies.UseAnalytics] = useAnalytics;
 
             await next.Invoke(context);
         }
@@ -36,7 +42,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Framework.Middleware.CookieConsent
             if (httpRequest is null)
                 return (false, false);
 
-            if (!httpRequest.Cookies.TryGetValue(Cookies.BuyingCatalogueConsent, out var consentCookieValue))
+            if (!httpRequest.Cookies.TryGetValue(CatalogueCookies.BuyingCatalogueConsent, out var consentCookieValue))
                 return (true, null);
 
             var cookieData = ExtractCookieData(consentCookieValue);

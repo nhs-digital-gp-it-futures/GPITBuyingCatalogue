@@ -30,7 +30,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Controllers
 
             controller.AcceptCookies(agreeToAnalytics);
 
-            appendedCookieData.CookieName.Should().Be(Cookies.BuyingCatalogueConsent);
+            appendedCookieData.CookieName.Should().Be(CatalogueCookies.BuyingCatalogueConsent);
         }
 
         [Theory]

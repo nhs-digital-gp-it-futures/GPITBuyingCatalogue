@@ -35,10 +35,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
 
             var solution = await dbContext.Solutions.SingleAsync(s => s.CatalogueItemId == catalogueItemId);
 
-            var integrations = solution.GetIntegrations();
-
-            if (integrations is null)
-                integrations = new List<Integration>();
+            var integrations = solution.GetIntegrations() ?? new List<Integration>();
 
             integrations.Add(integration);
 

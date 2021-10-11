@@ -11,7 +11,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Framework.Extensions
         };
 
         public static bool EqualsIgnoreCase(this string input, string toCompare) =>
-            input.Equals(toCompare, StringComparison.InvariantCultureIgnoreCase);
+            string.Equals(input, toCompare, StringComparison.OrdinalIgnoreCase);
 
         public static string ToEnglish(this int number)
         {

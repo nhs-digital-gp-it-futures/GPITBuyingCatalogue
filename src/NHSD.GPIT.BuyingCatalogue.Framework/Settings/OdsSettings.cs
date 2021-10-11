@@ -1,13 +1,15 @@
-﻿using System.Diagnostics.CodeAnalysis;
+﻿using System;
+using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 
 namespace NHSD.GPIT.BuyingCatalogue.Framework.Settings
 {
     [ExcludeFromCodeCoverage(Justification = "Class currently only contains automatic properties")]
     public sealed class OdsSettings
     {
-        public string ApiBaseUrl { get; set; }
+        public Uri ApiBaseUrl { get; init; }
 
-        public string[] BuyerOrganisationRoleIds { get; set; }
+        public IReadOnlyList<string> BuyerOrganisationRoleIds { get; init; }
 
         public string GpPracticeRoleId { get; set; }
 

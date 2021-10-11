@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Threading.Tasks;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Email;
 
 namespace NHSD.GPIT.BuyingCatalogue.Framework.Extensions
@@ -11,6 +12,9 @@ namespace NHSD.GPIT.BuyingCatalogue.Framework.Extensions
             EmailAddress recipient,
             params object[] formatItems)
         {
+            if (service is null)
+                throw new ArgumentNullException(nameof(service));
+
             await service.SendEmailAsync(new EmailMessage(messageTemplate, new[] { recipient }, null, formatItems));
         }
     }
