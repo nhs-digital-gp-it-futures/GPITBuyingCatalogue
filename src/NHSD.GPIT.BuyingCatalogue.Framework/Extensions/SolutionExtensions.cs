@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.Framework.Serialization;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions;
@@ -9,22 +10,32 @@ namespace NHSD.GPIT.BuyingCatalogue.Framework.Extensions
     {
         public static ClientApplication GetClientApplication(this Solution solution)
         {
-            if (string.IsNullOrWhiteSpace(solution.ClientApplication))
-                return new ClientApplication();
+            if (solution is null)
+                throw new ArgumentNullException(nameof(solution));
 
-            return JsonDeserializer.Deserialize<ClientApplication>(solution.ClientApplication);
+            return string.IsNullOrWhiteSpace(solution.ClientApplication)
+                ? new ClientApplication()
+                : JsonDeserializer.Deserialize<ClientApplication>(solution.ClientApplication);
         }
 
-        public static string[] GetFeatures(this Solution solution) => string.IsNullOrWhiteSpace(solution.Features)
-            ? System.Array.Empty<string>()
-            : JsonDeserializer.Deserialize<string[]>(solution.Features);
-
-        public static List<Integration> GetIntegrations(this Solution solution)
+        public static IEnumerable<string> GetFeatures(this Solution solution)
         {
-            if (string.IsNullOrWhiteSpace(solution.Integrations))
-                return new List<Integration>();
+            if (solution is null)
+                throw new ArgumentNullException(nameof(solution));
 
-            return JsonDeserializer.Deserialize<List<Integration>>(solution.Integrations);
+            return string.IsNullOrWhiteSpace(solution.Features)
+                ? Array.Empty<string>()
+                : JsonDeserializer.Deserialize<string[]>(solution.Features);
+        }
+
+        public static ICollection<Integration> GetIntegrations(this Solution solution)
+        {
+            if (solution is null)
+                throw new ArgumentNullException(nameof(solution));
+
+            return string.IsNullOrWhiteSpace(solution.Integrations)
+                ? new List<Integration>()
+                : JsonDeserializer.Deserialize<List<Integration>>(solution.Integrations);
         }
     }
 }

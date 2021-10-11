@@ -33,7 +33,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Controllers
                 });
 
             Response.Cookies.Append(
-                Cookies.BuyingCatalogueConsent,
+                CatalogueCookies.BuyingCatalogueConsent,
                 cookieDataString,
                 new CookieOptions
                 {

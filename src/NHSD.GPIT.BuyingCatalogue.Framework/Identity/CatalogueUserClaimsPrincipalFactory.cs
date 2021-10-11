@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Globalization;
 using System.Security.Claims;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Identity;
@@ -8,11 +9,11 @@ using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Organisations;
 
 namespace NHSD.GPIT.BuyingCatalogue.Framework.Identity
 {
-    public sealed class UserClaimsPrincipalFactoryEx : UserClaimsPrincipalFactory<AspNetUser>
+    public sealed class CatalogueUserClaimsPrincipalFactory : UserClaimsPrincipalFactory<AspNetUser>
     {
         private readonly IOrganisationsService organisationService;
 
-        public UserClaimsPrincipalFactoryEx(
+        public CatalogueUserClaimsPrincipalFactory(
             UserManager<AspNetUser> userManager,
             IOptions<IdentityOptions> optionsAccessor,
             IOrganisationsService organisationService)
@@ -27,17 +28,17 @@ namespace NHSD.GPIT.BuyingCatalogue.Framework.Identity
 
             var id = await base.GenerateClaimsAsync(user);
 
-            id.AddClaim(new Claim(Constants.Claims.UserDisplayName, $"{user.FirstName} {user.LastName}"));
-            id.AddClaim(new Claim(Constants.Claims.UserId, user.Id.ToString()));
-            id.AddClaim(new Claim(Constants.Claims.OrganisationFunction, user.OrganisationFunction));
+            id.AddClaim(new Claim(Constants.CatalogueClaims.UserDisplayName, $"{user.FirstName} {user.LastName}"));
+            id.AddClaim(new Claim(Constants.CatalogueClaims.UserId, user.Id.ToString(CultureInfo.InvariantCulture)));
+            id.AddClaim(new Claim(Constants.CatalogueClaims.OrganisationFunction, user.OrganisationFunction));
 
             var organisation = await organisationService.GetOrganisation(user.PrimaryOrganisationId);
-            id.AddClaim(new Claim(Constants.Claims.PrimaryOrganisationOdsCode, organisation.OdsCode));
+            id.AddClaim(new Claim(Constants.CatalogueClaims.PrimaryOrganisationOdsCode, organisation.OdsCode));
 
             var relatedOrganisations = await organisationService.GetRelatedOrganisations(user.PrimaryOrganisationId);
 
             foreach (var relatedOrganisation in relatedOrganisations)
-                id.AddClaim(new Claim(Constants.Claims.SecondaryOrganisationOdsCode, relatedOrganisation.OdsCode));
+                id.AddClaim(new Claim(Constants.CatalogueClaims.SecondaryOrganisationOdsCode, relatedOrganisation.OdsCode));
 
             return id;
         }

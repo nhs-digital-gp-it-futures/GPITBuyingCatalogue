@@ -1,4 +1,6 @@
-﻿using System.Globalization;
+﻿using System;
+using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Security.Claims;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Identity;
@@ -9,37 +11,54 @@ namespace NHSD.GPIT.BuyingCatalogue.Framework.Extensions
     {
         public static string GetPrimaryOrganisationName(this ClaimsPrincipal user)
         {
-            return GetClaimValue(user, Constants.Claims.PrimaryOrganisationName);
+            if (user is null)
+                throw new ArgumentNullException(nameof(user));
+
+            return GetClaimValue(user, Constants.CatalogueClaims.PrimaryOrganisationName);
         }
 
         public static string GetUserDisplayName(this ClaimsPrincipal user)
         {
-            return GetClaimValue(user, Constants.Claims.UserDisplayName);
+            if (user is null)
+                throw new ArgumentNullException(nameof(user));
+
+            return GetClaimValue(user, Constants.CatalogueClaims.UserDisplayName);
         }
 
         public static string GetPrimaryOdsCode(this ClaimsPrincipal user)
         {
-            return GetClaimValue(user, Constants.Claims.PrimaryOrganisationOdsCode);
+            if (user is null)
+                throw new ArgumentNullException(nameof(user));
+
+            return GetClaimValue(user, Constants.CatalogueClaims.PrimaryOrganisationOdsCode);
         }
 
-        public static string[] GetSecondaryOdsCodes(this ClaimsPrincipal user)
+        public static IReadOnlyList<string> GetSecondaryOdsCodes(this ClaimsPrincipal user)
         {
-            return user.Claims.Where(c => c.Type.EqualsIgnoreCase(Constants.Claims.SecondaryOrganisationOdsCode)).Select(c => c.Value).ToArray();
+            if (user is null)
+                throw new ArgumentNullException(nameof(user));
+
+            return user.Claims.Where(c => c.Type.EqualsIgnoreCase(Constants.CatalogueClaims.SecondaryOrganisationOdsCode))
+                .Select(c => c.Value)
+                .ToList();
         }
 
         public static bool IsAdmin(this ClaimsPrincipal user)
         {
-            return GetClaimValue(user, Constants.Claims.OrganisationFunction).Equals(OrganisationFunction.Authority.DisplayName);
+            return HasOrganisationClaim(user, OrganisationFunction.Authority.DisplayName);
         }
 
         public static bool IsBuyer(this ClaimsPrincipal user)
         {
-            return GetClaimValue(user, Constants.Claims.OrganisationFunction).Equals(OrganisationFunction.Buyer.DisplayName);
+            return HasOrganisationClaim(user, OrganisationFunction.Buyer.DisplayName);
         }
 
         public static int UserId(this ClaimsPrincipal user)
         {
-            var idValue = GetClaimValue(user, Constants.Claims.UserId);
+            if (user is null)
+                throw new ArgumentNullException(nameof(user));
+
+            var idValue = GetClaimValue(user, Constants.CatalogueClaims.UserId);
 
             return int.Parse(idValue, NumberStyles.Integer, CultureInfo.InvariantCulture);
         }
@@ -50,5 +69,8 @@ namespace NHSD.GPIT.BuyingCatalogue.Framework.Extensions
 
             return claim is not null ? claim.Value : string.Empty;
         }
+
+        private static bool HasOrganisationClaim(ClaimsPrincipal user, string displayName) =>
+            GetClaimValue(user, Constants.CatalogueClaims.OrganisationFunction).EqualsIgnoreCase(displayName);
     }
 }

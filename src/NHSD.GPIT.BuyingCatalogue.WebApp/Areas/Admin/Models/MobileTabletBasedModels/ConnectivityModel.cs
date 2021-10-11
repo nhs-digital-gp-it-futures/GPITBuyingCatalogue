@@ -35,7 +35,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.MobileTabletBasedM
 
         public string SelectedConnectionSpeed { get; set; }
 
-        public List<SelectListItem> ConnectionSpeeds { get; set; }
+        public IReadOnlyList<SelectListItem> ConnectionSpeeds { get; set; }
 
         public ConnectionTypeModel[] ConnectionTypes { get; set; }
 
