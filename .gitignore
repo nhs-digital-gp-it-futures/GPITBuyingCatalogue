@@ -356,10 +356,10 @@ MigrationBackup/
 */\.terraform/
 
 # Generated css file
-**/css/*.css
+**/wwwroot/css/*.css
 
 # Generated js files
-**/js/*.js
-**/js/*.js.map
+**/wwwroot/js/*.js
+**/wwwroot/js/*.js.map
 
 _remote_state.tf
