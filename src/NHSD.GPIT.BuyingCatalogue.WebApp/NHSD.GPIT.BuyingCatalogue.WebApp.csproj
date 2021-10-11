@@ -76,7 +76,7 @@
   </ItemGroup>
 
   <Target Name="PreBuild" BeforeTargets="PreBuildEvent" Condition="'$(Configuration)' == 'Release'">
-    <Exec Command="call npm install&#xD;&#xA;call gulp sass" />
+    <Exec Command="npm install&#xD;&#xA;gulp sass" />
   </Target>
 
 </Project>
