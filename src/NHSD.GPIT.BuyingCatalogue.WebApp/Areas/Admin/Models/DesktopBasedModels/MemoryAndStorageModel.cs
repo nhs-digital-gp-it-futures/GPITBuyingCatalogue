@@ -37,7 +37,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.DesktopBasedModels
         [Required(ErrorMessage = "Select a minimum memory size")]
         public string SelectedMemorySize { get; set; }
 
-        public List<SelectListItem> MemorySizes { get; set; }
+        public IReadOnlyList<SelectListItem> MemorySizes { get; init; }
 
         [Required(ErrorMessage = "Enter storage space information")]
         [StringLength(300)]
@@ -47,7 +47,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.DesktopBasedModels
         [StringLength(300)]
         public string ProcessingPower { get; set; }
 
-        public List<SelectListItem> Resolutions { get; set; }
+        public IReadOnlyList<SelectListItem> Resolutions { get; init; }
 
         public string SelectedResolution { get; set; }
     }

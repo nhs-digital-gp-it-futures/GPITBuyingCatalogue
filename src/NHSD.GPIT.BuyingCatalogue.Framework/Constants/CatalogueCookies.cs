@@ -1,6 +1,6 @@
 ﻿namespace NHSD.GPIT.BuyingCatalogue.Framework.Constants
 {
-    public static class Cookies
+    public static class CatalogueCookies
     {
         public const string BuyingCatalogueConsent = "buyingcatalogue-cookie-consent";
 

@@ -49,7 +49,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.PublicBrowse.Homepage
             CommonActions.ElementExists(Objects.Common.CookieBanner.AdobeAnalyticsDataScript).Should().BeTrue();
             CommonActions.ElementExists(Objects.Common.CookieBanner.HotjarScript).Should().BeTrue();
 
-            Driver.Manage().Cookies.GetCookieNamed(Cookies.BuyingCatalogueConsent).Should().NotBeNull();
+            Driver.Manage().Cookies.GetCookieNamed(CatalogueCookies.BuyingCatalogueConsent).Should().NotBeNull();
         }
 
         [Fact]
@@ -72,7 +72,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.PublicBrowse.Homepage
             CommonActions.ElementExists(Objects.Common.CookieBanner.AdobeAnalyticsDataScript).Should().BeFalse();
             CommonActions.ElementExists(Objects.Common.CookieBanner.HotjarScript).Should().BeFalse();
 
-            Driver.Manage().Cookies.GetCookieNamed(Cookies.BuyingCatalogueConsent).Should().NotBeNull();
+            Driver.Manage().Cookies.GetCookieNamed(CatalogueCookies.BuyingCatalogueConsent).Should().NotBeNull();
         }
 
         [Fact]
@@ -112,7 +112,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.PublicBrowse.Homepage
         private void AddConsentCookie(CookieData cookieData)
         {
             var cookieContent = JsonSerializer.Serialize(cookieData, new JsonSerializerOptions { IgnoreNullValues = true });
-            var cookie = new Cookie(Cookies.BuyingCatalogueConsent, HttpUtility.UrlEncode(cookieContent));
+            var cookie = new Cookie(CatalogueCookies.BuyingCatalogueConsent, HttpUtility.UrlEncode(cookieContent));
 
             Driver.Manage().Cookies.AddCookie(cookie);
         }

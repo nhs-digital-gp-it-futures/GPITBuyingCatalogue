@@ -1,4 +1,5 @@
-﻿using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
+﻿using System;
+using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Enums;
 
 namespace NHSD.GPIT.BuyingCatalogue.Framework.Extensions
@@ -7,6 +8,9 @@ namespace NHSD.GPIT.BuyingCatalogue.Framework.Extensions
     {
         public static TaskProgress Status(this HybridHostingType hybridHostingType)
         {
+            if (hybridHostingType is null)
+                throw new ArgumentNullException(nameof(hybridHostingType));
+
             if (string.IsNullOrEmpty(hybridHostingType.Summary) || string.IsNullOrEmpty(hybridHostingType.HostingModel))
                 return TaskProgress.NotStarted;
 

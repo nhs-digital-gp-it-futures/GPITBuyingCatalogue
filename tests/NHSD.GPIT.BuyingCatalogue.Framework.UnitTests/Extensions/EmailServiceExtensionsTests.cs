@@ -1,4 +1,6 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Threading.Tasks;
+using AutoFixture.Xunit2;
 using FluentAssertions;
 using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Email;
@@ -9,6 +11,18 @@ namespace NHSD.GPIT.BuyingCatalogue.Framework.UnitTests.Extensions
 {
     public static class EmailServiceExtensionsTests
     {
+        [Theory]
+        [AutoData]
+        public static void SendEmailAsync_NullService_ThrowsException(
+            EmailMessageTemplate messageTemplate,
+            EmailAddress recipient)
+        {
+            MockEmailService service = null;
+
+            // ReSharper disable once ExpressionIsAlwaysNull
+            Assert.ThrowsAsync<ArgumentNullException>(() => service.SendEmailAsync(messageTemplate, recipient));
+        }
+
         [Fact]
         public static async Task SendEmailAsync_MessageHasExpectedRecipient()
         {

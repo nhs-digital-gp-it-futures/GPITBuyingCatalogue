@@ -173,7 +173,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
                     {
                         User = new ClaimsPrincipal(
                             new ClaimsIdentity(
-                                new Claim[] { new(Framework.Constants.Claims.UserId, userId.ToString()) })),
+                                new Claim[] { new(Framework.Constants.CatalogueClaims.UserId, userId.ToString()) })),
                     },
                 },
             };

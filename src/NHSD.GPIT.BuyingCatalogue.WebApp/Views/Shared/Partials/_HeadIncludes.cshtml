@@ -26,7 +26,7 @@
 <meta name="robots" content="noindex">
 <meta name="googlebot" content="noindex">
 
-@if (Context.Items.TryGetValue(Cookies.UseAnalytics, out var useAnalytics) && useAnalytics is true)
+@if (Context.Items.TryGetValue(CatalogueCookies.UseAnalytics, out var useAnalytics) && useAnalytics is true)
 {
     <!-- Hotjar tracking code -->
     <script id="hotjar">

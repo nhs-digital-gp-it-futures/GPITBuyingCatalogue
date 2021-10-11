@@ -50,7 +50,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests
         [InlineData(typeof(IPasswordResetCallback), typeof(PasswordResetCallback))]
         [InlineData(typeof(IPasswordService), typeof(PasswordService))]
         [InlineData(typeof(IPasswordValidator<AspNetUser>), typeof(PasswordValidator))]
-        [InlineData(typeof(IUserClaimsPrincipalFactory<AspNetUser>), typeof(UserClaimsPrincipalFactoryEx))]
+        [InlineData(typeof(IUserClaimsPrincipalFactory<AspNetUser>), typeof(CatalogueUserClaimsPrincipalFactory))]
         [InlineData(typeof(IValidator<SolutionModel>), typeof(SolutionModelValidator))]
         public void ContainsTheExpectedServiceInstances_B(Type requiredInterface, Type expectedType)
         {

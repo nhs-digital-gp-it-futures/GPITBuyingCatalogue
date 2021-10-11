@@ -10,7 +10,7 @@
 </head>
 <body>
     <a class="nhsuk-skip-link" href="#maincontent">Skip to main content</a>
-    @if ((bool?)Context.Items[Cookies.ShowCookieBanner] == true)
+    @if ((bool?)Context.Items[CatalogueCookies.ShowCookieBanner] == true)
     {
         <partial name="Partials/_CookieConsentPartial" />
     }
