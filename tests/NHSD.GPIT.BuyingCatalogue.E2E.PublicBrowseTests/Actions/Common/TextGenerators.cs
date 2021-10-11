@@ -42,7 +42,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Actions.Common
         /// <summary>
         /// Generates a Valid random Email for TextArea's or TextInputs to the Target Length.
         /// </summary>
-        /// <param name="targetField">the field which to add the random Email</param>
+        /// <param name="targetField">the field which to add the random Email.</param>
         /// <param name="numChars">number of characters in random Email.</param>
         /// <returns>random Email String.</returns>
         public string EmailInputAddText(By targetField, int numChars)
