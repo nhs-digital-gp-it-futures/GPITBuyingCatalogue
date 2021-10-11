@@ -29,18 +29,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
     public static class AddCatalogueSolutionControllerTests
     {
         [Fact]
-        public static void ClassIsCorrectlyDecorated()
-        {
-            typeof(AddCatalogueSolutionController).Should()
-                .BeDecoratedWith<AuthorizeAttribute>(x => x.Policy == "AdminOnly");
-
-            typeof(AddCatalogueSolutionController).Should().BeDecoratedWith<AreaAttribute>(x => x.RouteValue == "Admin");
-
-            typeof(AddCatalogueSolutionController).Should()
-                .BeDecoratedWith<RouteAttribute>(x => x.Template == "admin/catalogue-solutions/add-solution");
-        }
-
-        [Fact]
         public static void Constructors_VerifyGuardClauses()
         {
             var fixture = new Fixture().Customize(new AutoMoqCustomization());
@@ -64,8 +52,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
 
             mockService.Verify(s => s.GetAllActiveSuppliers());
             actual.Should().NotBeNull();
-            actual.ViewName.Should().BeNull();
-            actual.Model.As<AddSolutionModel>()
+            actual.ViewName.Should().Be("Details");
+            actual.Model.As<SolutionModel>()
                 .SuppliersSelectList.Should()
                 .BeEquivalentTo(suppliers.Select(s => new SelectListItem($"{s.Name} ({s.Id})", s.Id.ToString(CultureInfo.InvariantCulture))));
         }
@@ -73,7 +61,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
         [Theory]
         [CommonAutoData]
         public static async Task Post_Index_ModelStateValid_AddsExpectedCatalogueItem(
-            AddSolutionModel model,
+            SolutionModel model,
             Mock<ISolutionsService> mockService,
             Mock<ISuppliersService> mockSuppliersService,
             int userId)
@@ -101,7 +89,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
         [Theory]
         [CommonAutoData]
         public static async Task Post_Index_SolutionNameAlreadyExists_ThrowsError(
-            AddSolutionModel model,
+            SolutionModel model,
             CatalogueItem existingSolution,
             List<Supplier> suppliers,
             [Frozen] Mock<ISolutionsService> mockService,
@@ -125,13 +113,13 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
             actual.Should().NotBeNull();
             actual.ViewData.ModelState.IsValid.Should().BeFalse();
             actual.ViewData.ModelState.ErrorCount.Should().Be(1);
-            actual.ViewData.ModelState.FirstOrDefault().Key.Should().BeEquivalentTo(nameof(AddSolutionModel.SolutionName));
+            actual.ViewData.ModelState.FirstOrDefault().Key.Should().BeEquivalentTo(nameof(SolutionModel.SolutionName));
         }
 
         [Theory]
         [CommonAutoData]
         public static async Task Post_Index_ModelStateValid_RedirectsToManageCatalogueSolutions(
-            AddSolutionModel model,
+            SolutionModel model,
             Mock<ISolutionsService> mockService,
             Mock<ISuppliersService> mockSuppliersService)
         {
@@ -150,7 +138,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
         [Theory]
         [CommonAutoData]
         public static async Task Post_Index_ModelStateNotValid_GetsSuppliers_ReturnsViewWithModel(
-            AddSolutionModel model,
+            SolutionModel model,
             [Frozen] Mock<ISolutionsService> mockService,
             [Frozen] Mock<ISuppliersService> mockSuppliersService,
             AddCatalogueSolutionController controller,
@@ -168,7 +156,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
 
             mockSuppliersService.Verify(s => s.GetAllActiveSuppliers());
             actual.Should().NotBeNull();
-            actual.ViewName.Should().BeNull();
+            actual.ViewName.Should().Be("Details");
             actual.Model.Should().BeEquivalentTo(model.WithSelectListItems(suppliers));
         }
 

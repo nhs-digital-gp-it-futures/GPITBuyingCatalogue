@@ -745,5 +745,24 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.UnitTests.Models.BuyingCatal
 
             actual.Should().BeEquivalentTo(expected);
         }
+
+        [Theory]
+        [CommonInlineAutoData(PublicationStatus.Published, true)]
+        [CommonInlineAutoData(PublicationStatus.InRemediation, true)]
+        [CommonInlineAutoData(PublicationStatus.Draft, false)]
+        [CommonInlineAutoData(PublicationStatus.Suspended, false)]
+        [CommonInlineAutoData(PublicationStatus.Unpublished, false)]
+        public static void IsBrowsable_WithPublicationStatus_ReturnsExpectedResult(
+            PublicationStatus publicationStatus,
+            bool expectedResult,
+            CatalogueItem catalogueItem)
+        {
+            catalogueItem.PublishedStatus = publicationStatus;
+
+            catalogueItem
+                .IsBrowsable
+                .Should()
+                .Be(expectedResult);
+        }
     }
 }

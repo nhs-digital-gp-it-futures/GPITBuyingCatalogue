@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using EnumsNET;
 using FluentAssertions;
 using Microsoft.EntityFrameworkCore;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Objects.Marketing;
@@ -12,7 +13,7 @@ using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers;
 using Xunit;
 
-namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.AddNewSolution
+namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.AddNewSolution.HostingTypes
 {
     public sealed class HostingType : AuthorityTestBase, IClassFixture<LocalWebApplicationFactory>, IDisposable
     {
@@ -151,6 +152,24 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.AddNewSolution
             var actual = (await context.Solutions.SingleAsync(s => s.CatalogueItemId == SolutionId)).Hosting;
 
             actual.OnPremise.Should().BeEquivalentTo(expected, opt => opt.Excluding(p => p.RequiresHscn));
+        }
+
+        [Theory]
+        [InlineData(ServiceContracts.Solutions.HostingType.Hybrid)]
+        [InlineData(ServiceContracts.Solutions.HostingType.OnPremise)]
+        [InlineData(ServiceContracts.Solutions.HostingType.PrivateCloud)]
+        [InlineData(ServiceContracts.Solutions.HostingType.PublicCloud)]
+        public void HostingType_Add_DoesNotContainDeleteLink(ServiceContracts.Solutions.HostingType hostingType)
+        {
+            AdminPages.CommonActions.ClickAddHostingTypeLink();
+            CommonActions.ClickRadioButtonWithText(hostingType.AsString(EnumFormat.DisplayName));
+
+            CommonActions.ClickSave();
+
+            CommonActions
+                .ElementIsDisplayed(HostingTypesObjects.DeleteHostingTypeButton)
+                .Should()
+                .BeFalse();
         }
 
         public void Dispose()

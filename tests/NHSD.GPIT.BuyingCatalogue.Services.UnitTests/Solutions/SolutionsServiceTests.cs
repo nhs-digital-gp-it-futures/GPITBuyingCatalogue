@@ -9,6 +9,7 @@ using AutoFixture.Idioms;
 using AutoFixture.Xunit2;
 using EnumsNET;
 using FluentAssertions;
+using Microsoft.EntityFrameworkCore;
 using Moq;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
@@ -189,6 +190,30 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Solutions
             var actual = await Assert.ThrowsAsync<ArgumentException>(() => service.SaveSolutionDescription(new CatalogueItemId(100000, "001"), summary, "Description", "Link"));
 
             actual.ParamName.Should().Be("summary");
+        }
+
+        [Theory]
+        [InMemoryDbAutoData]
+        public static async Task SaveSolutionDetails_CallsSaveChangesAsync_OnRepository(
+            [Frozen] BuyingCatalogueDbContext context,
+            SolutionsService service,
+            Solution solution)
+        {
+            const string expectedSolutionName = "Expected Name";
+            const int expectedSupplierId = 247;
+
+            context.Solutions.Add(solution);
+            await context.SaveChangesAsync();
+
+            await service.SaveSolutionDetails(solution.CatalogueItemId, expectedSolutionName, expectedSupplierId, new List<FrameworkModel>());
+
+            var dbSolution = await context.CatalogueItems
+                .Include(s => s.Solution)
+                .Include(s => s.Solution.FrameworkSolutions)
+                .SingleAsync(s => s.Id == solution.CatalogueItemId);
+
+            dbSolution.Name.Should().BeEquivalentTo(expectedSolutionName);
+            dbSolution.SupplierId.Should().Be(expectedSupplierId);
         }
 
         [Fact]
@@ -638,7 +663,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Solutions
 
             await service.SavePublicationStatus(solution.Id, PublicationStatus.Published);
 
-            var updatedSolution = await context.CatalogueItems.SingleAsync(c => c.Id == solution.Id);
+            var updatedSolution = await context.CatalogueItems.AsQueryable().SingleAsync(c => c.Id == solution.Id);
 
             updatedSolution.PublishedStatus.Should().Be(PublicationStatus.Published);
         }

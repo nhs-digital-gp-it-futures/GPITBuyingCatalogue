@@ -105,7 +105,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.CreateBuyer
             }
             else
             {
-                var user = (await usersRepository.GetAllAsync(x => x.NormalizedEmail == email.ToUpper())).FirstOrDefault();
+                var user = (await usersRepository.GetAllAsync(u => u.NormalizedEmail == email.ToUpperInvariant())).FirstOrDefault();
 
                 if (user is not null &&
                     string.Equals(user.Email, email, StringComparison.OrdinalIgnoreCase))

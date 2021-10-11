@@ -10,7 +10,9 @@ using NHSD.GPIT.BuyingCatalogue.Framework.Constants;
 using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.AssociatedServices;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Caching;
+using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Models;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions;
+using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Suppliers;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.BrowserBasedModels;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.ClientApplicationTypeModels;
@@ -29,15 +31,18 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
         private readonly ISolutionsService solutionsService;
         private readonly IAssociatedServicesService associatedServicesService;
         private readonly IFilterCache filterCache;
+        private readonly ISuppliersService suppliersService;
 
         public CatalogueSolutionsController(
             ISolutionsService solutionsService,
             IAssociatedServicesService associatedServicesService,
-            IFilterCache filterCache)
+            IFilterCache filterCache,
+            ISuppliersService suppliersService)
         {
             this.solutionsService = solutionsService ?? throw new ArgumentNullException(nameof(solutionsService));
             this.associatedServicesService = associatedServicesService ?? throw new ArgumentNullException(nameof(associatedServicesService));
             this.filterCache = filterCache ?? throw new ArgumentNullException(nameof(filterCache));
+            this.suppliersService = suppliersService ?? throw new ArgumentNullException(nameof(suppliersService));
         }
 
         [HttpGet]
@@ -123,6 +128,58 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
             filterCache.Remove(frameworkIds);
 
             return RedirectToAction(nameof(Index));
+        }
+
+        [HttpGet("manage/{solutionId}/details")]
+        public async Task<IActionResult> Details(CatalogueItemId solutionId)
+        {
+            var solution = await solutionsService.GetSolution(solutionId);
+
+            if (solution is null)
+                return BadRequest($"No Solution found for Id: {solutionId}");
+
+            var suppliers = await suppliersService.GetAllActiveSuppliers();
+
+            var model = new SolutionModel(solution).WithSelectListItems(suppliers).WithEditSolution();
+
+            model.Frameworks = (await solutionsService.GetAllFrameworks())
+                .Select(f =>
+                {
+                    FrameworkSolution sol = solution.Solution.FrameworkSolutions.FirstOrDefault(fs => fs.FrameworkId == f.Id);
+                    return new FrameworkModel
+                    {
+                        Name = $"{f.ShortName} Framework",
+                        FrameworkId = f.Id,
+                        Selected = sol is not null,
+                        IsFoundation = sol?.IsFoundation ?? false,
+                    };
+                }).ToList();
+
+            return View(model);
+        }
+
+        [HttpPost("manage/{solutionId}/details")]
+        public async Task<IActionResult> Details(CatalogueItemId solutionId, SolutionModel model)
+        {
+            var existingSolution = await solutionsService.GetSolutionByName(model.SolutionName);
+
+            if (existingSolution is not null && existingSolution.Id != solutionId)
+                ModelState.AddModelError(nameof(SolutionModel.SolutionName), "A solution with this name already exists");
+
+            if (!ModelState.IsValid)
+            {
+                var suppliers = await suppliersService.GetAllActiveSuppliers();
+
+                return View(model.WithSelectListItems(suppliers).WithEditSolution());
+            }
+
+            await solutionsService.SaveSolutionDetails(
+                solutionId,
+                model.SolutionName,
+                model.SupplierId ?? default,
+                model.Frameworks);
+
+            return RedirectToAction(nameof(ManageCatalogueSolution), new { solutionId });
         }
 
         [HttpGet("manage/{solutionId}/description")]
@@ -257,17 +314,22 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
 
             return model.SelectedHostingType is null
                 ? RedirectToAction(nameof(HostingType), new { solutionId })
-                : RedirectToAction(model.SelectedHostingType.ToString(), new { solutionId });
+                : RedirectToAction(model.SelectedHostingType.ToString(), new { solutionId, isNewHostingType = true });
         }
 
         [HttpGet("manage/{solutionId}/hosting-type/hosting-type-public-cloud")]
-        public async Task<IActionResult> PublicCloud(CatalogueItemId solutionId)
+        public async Task<IActionResult> PublicCloud(CatalogueItemId solutionId, [FromQuery]bool? isNewHostingType = false)
         {
             var catalogueItem = await solutionsService.GetSolution(solutionId);
             if (catalogueItem is null)
                 return BadRequest($"No Solution found for Id: {solutionId}");
 
-            var model = new PublicCloudModel(catalogueItem);
+            var model = new PublicCloudModel(catalogueItem)
+            {
+                IsNewHostingType = isNewHostingType.GetValueOrDefault(),
+                BackLink = Url.Action(nameof(HostingType), new { solutionId }),
+            };
+
             return View(model);
         }
 
@@ -286,13 +348,18 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
         }
 
         [HttpGet("manage/{solutionId}/hosting-type/hosting-type-private-cloud")]
-        public async Task<IActionResult> PrivateCloud(CatalogueItemId solutionId)
+        public async Task<IActionResult> PrivateCloud(CatalogueItemId solutionId, [FromQuery] bool? isNewHostingType = false)
         {
             var catalogueItem = await solutionsService.GetSolution(solutionId);
             if (catalogueItem is null)
                 return BadRequest($"No Solution found for Id: {solutionId}");
 
-            var model = new PrivateCloudModel(catalogueItem);
+            var model = new PrivateCloudModel(catalogueItem)
+            {
+                IsNewHostingType = isNewHostingType.GetValueOrDefault(),
+                BackLink = Url.Action(nameof(HostingType), new { solutionId }),
+            };
+
             return View(model);
         }
 
@@ -311,13 +378,18 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
         }
 
         [HttpGet("manage/{solutionId}/hosting-type/hosting-type-hybrid")]
-        public async Task<IActionResult> Hybrid(CatalogueItemId solutionId)
+        public async Task<IActionResult> Hybrid(CatalogueItemId solutionId, [FromQuery] bool? isNewHostingType = false)
         {
             var catalogueItem = await solutionsService.GetSolution(solutionId);
             if (catalogueItem is null)
                 return BadRequest($"No Solution found for Id: {solutionId}");
 
-            var model = new HybridModel(catalogueItem);
+            var model = new HybridModel(catalogueItem)
+            {
+                IsNewHostingType = isNewHostingType.GetValueOrDefault(),
+                BackLink = Url.Action(nameof(HostingType), new { solutionId }),
+            };
+
             return View(model);
         }
 
@@ -336,13 +408,18 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
         }
 
         [HttpGet("manage/{solutionId}/hosting-type/hosting-type-on-premise")]
-        public async Task<IActionResult> OnPremise(CatalogueItemId solutionId)
+        public async Task<IActionResult> OnPremise(CatalogueItemId solutionId, [FromQuery] bool? isNewHostingType = false)
         {
             var catalogueItem = await solutionsService.GetSolution(solutionId);
             if (catalogueItem is null)
                 return BadRequest($"No Solution found for Id: {solutionId}");
 
-            var model = new OnPremiseModel(catalogueItem);
+            var model = new OnPremiseModel(catalogueItem)
+            {
+                IsNewHostingType = isNewHostingType.GetValueOrDefault(),
+                BackLink = Url.Action(nameof(HostingType), new { solutionId }),
+            };
+
             return View(model);
         }
 
@@ -354,6 +431,59 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
 
             var hosting = await solutionsService.GetHosting(solutionId);
             hosting.OnPremise = new OnPremise { Summary = model.Summary, HostingModel = model.HostingModel, Link = model.Link, RequiresHscn = model.RequiresHscn };
+
+            await solutionsService.SaveHosting(solutionId, hosting);
+
+            return RedirectToAction(nameof(HostingType), new { solutionId });
+        }
+
+        [HttpGet("manage/{solutionId}/hosting-type/delete-hosting-type/{hostingType}")]
+        public async Task<IActionResult> DeleteHostingType(CatalogueItemId solutionId, HostingType hostingType)
+        {
+            var solution = await solutionsService.GetSolution(solutionId);
+
+            var backlinkActionName = hostingType switch
+            {
+                ServiceContracts.Solutions.HostingType.Hybrid => nameof(Hybrid),
+                ServiceContracts.Solutions.HostingType.OnPremise => nameof(OnPremise),
+                ServiceContracts.Solutions.HostingType.PrivateCloud => nameof(PrivateCloud),
+                ServiceContracts.Solutions.HostingType.PublicCloud => nameof(PublicCloud),
+                _ => throw new ArgumentOutOfRangeException(nameof(hostingType)),
+            };
+
+            var model = new DeleteHostingTypeConfirmationModel(solution, hostingType)
+            {
+                BackLink = Url.Action(backlinkActionName, new { solutionId }),
+            };
+
+            return View(model);
+        }
+
+        [HttpPost("manage/{solutionId}/hosting-type/delete-hosting-type/{hostingType}")]
+        public async Task<IActionResult> DeleteHostingType(CatalogueItemId solutionId, HostingType hostingType, DeleteHostingTypeConfirmationModel model)
+        {
+            if (!ModelState.IsValid)
+                return View(model);
+
+            var solution = await solutionsService.GetSolution(solutionId);
+            var hosting = solution.Solution.Hosting;
+            switch (hostingType)
+            {
+                case ServiceContracts.Solutions.HostingType.Hybrid:
+                    hosting.HybridHostingType = new HybridHostingType();
+                    break;
+                case ServiceContracts.Solutions.HostingType.OnPremise:
+                    hosting.OnPremise = new OnPremise();
+                    break;
+                case ServiceContracts.Solutions.HostingType.PrivateCloud:
+                    hosting.PrivateCloud = new PrivateCloud();
+                    break;
+                case ServiceContracts.Solutions.HostingType.PublicCloud:
+                    hosting.PublicCloud = new PublicCloud();
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(hostingType));
+            }
 
             await solutionsService.SaveHosting(solutionId, hosting);
 

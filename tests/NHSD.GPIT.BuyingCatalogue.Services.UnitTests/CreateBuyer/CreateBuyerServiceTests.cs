@@ -196,7 +196,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.CreateBuyer
                 t.Token.Equals(expectedToken, StringComparison.Ordinal)
                 && AspNetUserEditableInformationComparer.Instance.Equals(expectedUser, t.User);
 
-            context.EmailServiceMock.Verify(x => x.SendEmailAsync(It.IsAny<EmailMessage>()));
+            context.EmailServiceMock.Verify(s => s.SendEmailAsync(It.IsAny<EmailMessage>()));
         }
 
         [Fact]
@@ -348,7 +348,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.CreateBuyer
                 UsersRepositoryMock.Setup(r => r.Add(It.IsAny<AspNetUser>()));
 
                 PasswordServiceMock = new Mock<IPasswordService>();
-                PasswordServiceMock.Setup(x => x.GeneratePasswordResetTokenAsync(It.IsAny<string>()))
+                PasswordServiceMock.Setup(s => s.GeneratePasswordResetTokenAsync(It.IsAny<string>()))
                     .ReturnsAsync(new PasswordResetToken("123", AspNetUserBuilder.Create().Build()));
 
                 EmailServiceMock = new Mock<IEmailService>();

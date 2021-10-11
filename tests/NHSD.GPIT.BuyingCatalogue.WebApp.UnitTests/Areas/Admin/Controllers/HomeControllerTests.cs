@@ -22,14 +22,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
     public static class HomeControllerTests
     {
         [Fact]
-        public static void ClassIsCorrectlyDecorated()
-        {
-            typeof(HomeController).Should().BeDecoratedWith<AuthorizeAttribute>(x => x.Policy == "AdminOnly");
-            typeof(HomeController).Should().BeDecoratedWith<AreaAttribute>(x => x.RouteValue == "Admin");
-            typeof(HomeController).Should().BeDecoratedWith<RouteAttribute>(x => x.Template == "admin");
-        }
-
-        [Fact]
         public static void Constructors_VerifyGuardClauses()
         {
             var fixture = new Fixture().Customize(new AutoMoqCustomization());
@@ -37,16 +29,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
             var constructors = typeof(HomeController).GetConstructors();
 
             assertion.Verify(constructors);
-        }
-
-        [Fact]
-        public static void Get_BuyerOrganisations_RouteAttribute_ExpectedTemplate()
-        {
-            typeof(HomeController)
-                .GetMethod(nameof(HomeController.BuyerOrganisations))
-                .GetCustomAttribute<HttpGetAttribute>()
-                .Template.Should()
-                .Be("buyer-organisations");
         }
 
         [Theory]

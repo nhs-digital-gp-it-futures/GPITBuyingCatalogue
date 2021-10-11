@@ -1,4 +1,7 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.AspNetCore.Mvc.ViewFeatures;
 using Microsoft.AspNetCore.Razor.TagHelpers;
@@ -43,7 +46,14 @@ namespace NHSD.GPIT.BuyingCatalogue.UI.Components.TagHelpers
             var label = GetCheckboxLabelBuilder();
             var input = GetCheckboxInputBuilder();
 
+            bool isSelected = input.Attributes.TryGetValue("checked", out string _);
+
             var childContent = await output.GetChildContentAsync();
+
+            var classes = new List<string> { TagHelperConstants.NhsCheckBoxChildConditionalClass };
+
+            if (!isSelected)
+                classes.Add(TagHelperConstants.NhsCheckBoxChildConditionalHiddenClass);
 
             if (!childContent.IsEmptyOrWhiteSpace)
             {
@@ -52,7 +62,8 @@ namespace NHSD.GPIT.BuyingCatalogue.UI.Components.TagHelpers
                     context,
                     input,
                     childContent,
-                    new[] { TagHelperConstants.NhsCheckBoxChildConditionalClass, TagHelperConstants.NhsCheckBoxChildConditionalHiddenClass });
+                    classes,
+                    isSelected);
             }
 
             output.Content.AppendHtml(input);

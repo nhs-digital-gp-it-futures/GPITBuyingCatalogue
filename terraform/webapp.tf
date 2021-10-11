@@ -18,7 +18,7 @@ module "webapp" {
   auth_pwd         = azurerm_key_vault_secret.sqladminpassword.value
   cert_name        = var.certname
   webapp_cname_url = local.gw_webappURL  
-  aspnet_environment = "Development"
+  aspnet_environment = var.environment
   sqlserver_name = module.sql_server_pri.sql_server_name
   sqlserver_rg = azurerm_resource_group.sql-server.name
   instrumentation_key = azurerm_application_insights.appinsights.instrumentation_key

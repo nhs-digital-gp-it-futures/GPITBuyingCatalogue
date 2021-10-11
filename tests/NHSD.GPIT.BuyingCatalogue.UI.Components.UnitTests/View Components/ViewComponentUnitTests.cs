@@ -39,7 +39,7 @@ namespace NHSD.GPIT.BuyingCatalogue.UI.Components.UnitTests.View_Components
             var viewComponent = new NhsActionLinkViewComponent { ViewComponentContext = viewComponentContext };
 
             _ = new ViewComponentTester<NhsActionLinkViewComponent>(viewComponent)
-                .Invocation(x => () => x.InvokeAsync(url, text))
+                .Invocation(c => () => c.InvokeAsync(url, text))
                 .ExpectingViewName("ActionLink")
                 .ExpectingModel<ActionLinkModel>(model =>
                 {
