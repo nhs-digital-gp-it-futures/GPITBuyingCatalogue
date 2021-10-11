@@ -135,10 +135,11 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Suppliers
             context.AspNetUsers.Add(user);
             await context.SaveChangesAsync();
 
+            newContact.AssignedCatalogueItems.Clear();
             newContact.Id = default;
             newContact.SupplierId = default;
             newContact.LastUpdatedBy = user.Id;
-            newContact.LastUpdatedByUser = user;
+            newContact.LastUpdatedByUser = null;
             await service.AddSupplierContact(supplier.Id, newContact);
 
             var actual = await context.Suppliers.AsAsyncEnumerable().SingleAsync(s => s.Id == supplier.Id);
