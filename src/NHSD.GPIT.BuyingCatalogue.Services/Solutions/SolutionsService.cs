@@ -48,8 +48,9 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
         {
             return dbContext.CatalogueItems
                 .Include(i => i.Solution)
+                .Include(i => i.CatalogueItemContacts)
                 .Include(i => i.CatalogueItemCapabilities).ThenInclude(sc => sc.Capability)
-                .Include(i => i.Supplier)
+                .Include(i => i.Supplier).ThenInclude(s => s.SupplierContacts)
                 .Include(i => i.Solution).ThenInclude(s => s.FrameworkSolutions).ThenInclude(fs => fs.Framework)
                 .Include(i => i.Solution).ThenInclude(s => s.MarketingContacts)
                 .Include(i => i.CataloguePrices).ThenInclude(cp => cp.PricingUnit)

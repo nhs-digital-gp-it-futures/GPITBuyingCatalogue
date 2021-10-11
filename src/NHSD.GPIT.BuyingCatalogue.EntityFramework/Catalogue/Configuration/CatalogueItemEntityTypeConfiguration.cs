@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
@@ -39,6 +40,13 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Configuration
                 .HasForeignKey(i => i.SupplierId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK_CatalogueItems_Supplier");
+
+            builder.HasMany(i => i.CatalogueItemContacts)
+                .WithMany(s => s.AssignedCatalogueItems)
+                .UsingEntity<Dictionary<string, object>>(
+                    "CatalogueItemContacts",
+                    right => right.HasOne<SupplierContact>().WithMany().HasForeignKey("SupplierContactId"),
+                    left => left.HasOne<CatalogueItem>().WithMany().HasForeignKey("CatalogueItemId"));
 
             builder.HasIndex(i => new { i.SupplierId, i.Name }, "AK_CatalogueItems_Supplier_Name")
                 .IsUnique();
