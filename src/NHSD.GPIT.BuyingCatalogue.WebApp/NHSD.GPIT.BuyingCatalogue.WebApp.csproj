@@ -68,15 +68,15 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="wwwroot\css\" />
-  </ItemGroup>
-
-  <ItemGroup>
     <ProjectReference Include="..\NHSD.GPIT.BuyingCatalogue.EntityFramework\NHSD.GPIT.BuyingCatalogue.EntityFramework.csproj" />
     <ProjectReference Include="..\NHSD.GPIT.BuyingCatalogue.Framework\NHSD.GPIT.BuyingCatalogue.Framework.csproj" />
     <ProjectReference Include="..\NHSD.GPIT.BuyingCatalogue.ServiceContracts\NHSD.GPIT.BuyingCatalogue.ServiceContracts.csproj" />
     <ProjectReference Include="..\NHSD.GPIT.BuyingCatalogue.Services\NHSD.GPIT.BuyingCatalogue.Services.csproj" />
     <ProjectReference Include="..\NHSD.GPIT.BuyingCatalogue.UI.Components\NHSD.GPIT.BuyingCatalogue.UI.Components.csproj" />
   </ItemGroup>
+
+  <Target Name="PreBuild" BeforeTargets="PreBuildEvent" Condition="'$(Configuration)' == 'Release'">
+    <Exec Command="call npm install&#xD;&#xA;call gulp sass" />
+  </Target>
 
 </Project>
