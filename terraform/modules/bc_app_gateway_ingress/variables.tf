@@ -45,3 +45,7 @@ variable "app_service_hostname" {
 variable "app_dns_url" {
   type = string
 }
+
+variable "core_env" {
+  type = string
+}

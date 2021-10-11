@@ -114,3 +114,11 @@ variable "docker_registry_server_password" {
 variable "create_slot" {
   type = string
 }
+
+variable "create_host_binding" {
+  type = string
+}
+
+variable "ssl_thumbprint" {
+  type = string
+}
