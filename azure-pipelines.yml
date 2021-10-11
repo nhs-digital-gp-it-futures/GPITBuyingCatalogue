@@ -5,6 +5,8 @@ variables:
     value: '5.0.x'
   - name: MSBUILDSINGLELOADCONTEXT
     value: '1'
+  - name: buildConfiguration
+    value: Release
   - group: dev-acr-secrets
 
 trigger:
@@ -63,14 +65,14 @@ jobs:
     inputs:
       command: build
       projects: '**/*Tests.csproj'
-      arguments: '--no-restore'
+      arguments: '--no-restore --configuration $(buildConfiguration)'
 
   - task: DotNetCoreCLI@2
     displayName: 'Run unit tests'
     inputs:
       command: test
       projects: '**/*UnitTests.csproj'
-      arguments: '-v n --no-build --collect "Code coverage"'
+      arguments: '-v n --no-build --configuration $(buildConfiguration) --collect "Code coverage"'
 
   - task: DockerInstaller@0
     inputs:
@@ -81,7 +83,7 @@ jobs:
     inputs:
       command: test
       projects: '**/*E2ETests.csproj'
-      arguments: '-v n --no-build'
+      arguments: '-v n --no-build --configuration $(buildConfiguration)'
 
   - task: Docker@2
     displayName: 'Docker: Build and Push'
