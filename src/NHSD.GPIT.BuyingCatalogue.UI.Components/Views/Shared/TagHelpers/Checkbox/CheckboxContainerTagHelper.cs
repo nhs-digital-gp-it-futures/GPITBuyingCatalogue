@@ -5,7 +5,7 @@ using NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.TagHelpers;
 namespace NHSD.GPIT.BuyingCatalogue.UI.Components.TagHelpers
 {
     [HtmlTargetElement(TagHelperName)]
-    [RestrictChildren(CheckboxTagHelper.TagHelperName)]
+    [RestrictChildren(CheckboxTagHelper.TagHelperName, TagHelperConstants.Input)]
     public sealed class CheckboxContainerTagHelper : TagHelper
     {
         public const string TagHelperName = "nhs-checkbox-container";

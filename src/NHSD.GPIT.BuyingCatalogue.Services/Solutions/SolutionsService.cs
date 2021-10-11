@@ -470,6 +470,21 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
             await dbContext.SaveChangesAsync();
         }
 
+        public async Task SaveContacts(CatalogueItemId solutionId, IList<SupplierContact> supplierContacts)
+        {
+            var solution = await GetSolution(solutionId);
+
+            var staleContacts = solution.CatalogueItemContacts.Except(supplierContacts);
+            foreach (var staleContact in staleContacts.ToList())
+            {
+                solution.CatalogueItemContacts.Remove(staleContact);
+            }
+
+            solution.CatalogueItemContacts = supplierContacts;
+
+            await dbContext.SaveChangesAsync();
+        }
+
         private async Task<CatalogueItem> GetCatalogueItem(CatalogueItemId id) => await dbContext.CatalogueItems
             .Include(s => s.Solution)
             .Include(s => s.Solution.FrameworkSolutions)

@@ -2164,5 +2164,83 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
                     && hosting.PublicCloud.RequiresHscn == null
                     && hosting.PublicCloud.Summary == null)));
         }
+
+        [Theory]
+        [CommonAutoData]
+        public static async Task Get_EditSupplierDetails_ReturnsModel(
+            CatalogueItem catalogueItem,
+            [Frozen] Mock<ISolutionsService> solutionsService,
+            CatalogueSolutionsController controller)
+        {
+            solutionsService.Setup(s => s.GetSolution(catalogueItem.Id))
+                .ReturnsAsync(catalogueItem);
+
+            var result = (await controller.EditSupplierDetails(catalogueItem.Id)).As<ViewResult>();
+            var model = result.Model.As<EditSupplierDetailsModel>();
+
+            result.Should().NotBeNull();
+            model.Should().NotBeNull();
+            model.SupplierName.Should().Be(catalogueItem.Supplier.Name);
+            model.AvailableSupplierContacts.Should().HaveCount(catalogueItem.Supplier.SupplierContacts.Count);
+        }
+
+        [Theory]
+        [CommonAutoData]
+        public static async Task Post_EditSupplierDetails_InvalidModel_ReturnsViewWithModel(
+            EditSupplierDetailsModel model,
+            CatalogueItem catalogueItem,
+            [Frozen] Mock<ISolutionsService> solutionsService,
+            CatalogueSolutionsController controller)
+        {
+            controller.ModelState.AddModelError("some-key", "some-error");
+
+            solutionsService.Setup(s => s.GetSolution(catalogueItem.Id))
+                .ReturnsAsync(catalogueItem);
+
+            var result = (await controller.EditSupplierDetails(catalogueItem.Id, model)).As<ViewResult>();
+
+            result.Should().NotBeNull();
+            result.Model.Should().BeEquivalentTo(model);
+        }
+
+        [Theory]
+        [CommonAutoData]
+        public static async Task Post_EditSupplierDetails_ValidModel_ReturnsRedirectToActionResult(
+            EditSupplierDetailsModel model,
+            CatalogueItem catalogueItem,
+            [Frozen] Mock<ISolutionsService> solutionsService,
+            CatalogueSolutionsController controller)
+        {
+            solutionsService.Setup(s => s.GetSolution(catalogueItem.Id))
+                .ReturnsAsync(catalogueItem);
+
+            var result = (await controller.EditSupplierDetails(catalogueItem.Id, model)).As<RedirectToActionResult>();
+
+            result.Should().NotBeNull();
+            result.ActionName.Should().Be(nameof(CatalogueSolutionsController.ManageCatalogueSolution));
+        }
+
+        [Theory]
+        [CommonAutoData]
+        public static async Task Post_EditSupplierDetails_ValidModel_SavesContacts(
+            EditSupplierDetailsModel model,
+            CatalogueItem catalogueItem,
+            [Frozen] Mock<ISolutionsService> solutionsService,
+            CatalogueSolutionsController controller)
+        {
+            var filteredSelectedContacts = model.AvailableSupplierContacts.Where(sc => sc.Selected).ToList();
+            var expectedContacts = catalogueItem.Supplier.SupplierContacts.Join(
+                filteredSelectedContacts,
+                outer => outer.Id,
+                inner => inner.Id,
+                (supplierContact, availableSupplierContact) => supplierContact).ToList();
+
+            solutionsService.Setup(s => s.GetSolution(catalogueItem.Id))
+                .ReturnsAsync(catalogueItem);
+
+            _ = await controller.EditSupplierDetails(catalogueItem.Id, model);
+
+            solutionsService.Verify(s => s.SaveContacts(catalogueItem.Id, expectedContacts));
+        }
     }
 }

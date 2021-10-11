@@ -37,6 +37,9 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Actions.Common
         internal void ClickFirstCheckbox() =>
             Driver.FindElements(By.CssSelector("input[type=checkbox]")).First().Click();
 
+        internal void ClickAllCheckboxes() =>
+            Driver.FindElements(By.CssSelector("input[type=checkbox")).ToList().ForEach(element => element.Click());
+
         internal void ClickSection(By targetField, string section) =>
             Driver.FindElements(targetField)
                 .Single(s => s.Text.Contains(section)).FindElement(By.TagName("a"))

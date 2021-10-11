@@ -63,5 +63,7 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions
         Task<bool> SupplierHasSolutionName(int supplierId, string solutionName);
 
         Task SavePublicationStatus(CatalogueItemId solutionId, PublicationStatus publicationStatus);
+
+        Task SaveContacts(CatalogueItemId solutionId, IList<SupplierContact> supplierContacts);
     }
 }
