@@ -1,6 +1,8 @@
-﻿using System;
-using System.Linq;
+﻿using System.Linq;
 using System.Threading.Tasks;
+using AutoFixture;
+using AutoFixture.AutoMoq;
+using AutoFixture.Idioms;
 using AutoFixture.Xunit2;
 using FluentAssertions;
 using Microsoft.AspNetCore.Authorization;
@@ -8,6 +10,7 @@ using Microsoft.AspNetCore.Mvc;
 using Moq;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
+using NHSD.GPIT.BuyingCatalogue.ServiceContracts.ListPrices;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Models;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions;
 using NHSD.GPIT.BuyingCatalogue.Test.Framework.AutoFixtureCustomisations;
@@ -28,10 +31,13 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
         }
 
         [Fact]
-        public static void Constructor_NullSolutionsService_ThrowsException()
+        public static void Constructors_VerifyGuardClauses()
         {
-            Assert.Throws<ArgumentNullException>(() =>
-                _ = new ListPriceController(null));
+            var fixture = new Fixture().Customize(new AutoMoqCustomization());
+            var assertion = new GuardClauseAssertion(fixture);
+            var constructors = typeof(ListPriceController).GetConstructors();
+
+            assertion.Verify(constructors);
         }
 
         [Theory]
@@ -86,14 +92,15 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
                 .Setup(s => s.GetSolution(catalogueItemId))
                 .ReturnsAsync(catalogueItem);
 
-            var actual = (await listPriceController.AddListPrice(catalogueItemId)).As<ViewResult>();
+            var actual = await listPriceController.AddListPrice(catalogueItemId);
 
             mockSolutionsService.Verify(s => s.GetSolution(catalogueItemId));
-            actual.ViewName.Should().NotBeNull();
+            actual.Should().NotBeNull();
+            actual.Should().BeOfType<ViewResult>();
 
-            var model = actual.Model.As<EditListPriceModel>();
-            model.SolutionId.Should().Be(catalogueItem.Id);
-            model.SolutionName.Should().Be(catalogueItem.Name);
+            var model = actual.As<ViewResult>().Model.As<EditListPriceModel>();
+            model.ItemId.Should().Be(catalogueItem.Id);
+            model.ItemName.Should().Be(catalogueItem.Name);
             model.BackLinkText.Should().Be("Go back");
         }
 
@@ -118,13 +125,13 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
         public static async Task Post_AddListPrice_ModelStateValid_RedirectsToManageListPrices(
             CatalogueItem catalogueItem,
             [Frozen] Mock<ISolutionsService> mockSolutionsService,
+            [Frozen] Mock<IListPricesService> mockListPricesService,
             ListPriceController listPriceController)
         {
             const decimal price = 3.21M;
             var solutionId = catalogueItem.Id;
-            var editListPriceModel = new EditListPriceModel
+            var editListPriceModel = new EditListPriceModel(catalogueItem)
             {
-                SolutionName = catalogueItem.Name,
                 Price = price,
                 SelectedProvisioningType = ProvisioningType.Patient,
                 Unit = "per patient",
@@ -134,13 +141,14 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
                 .Setup(s => s.GetSolution(catalogueItem.Id))
                 .ReturnsAsync(catalogueItem);
 
-            var actual = (await listPriceController.AddListPrice(solutionId, editListPriceModel)).As<RedirectToActionResult>();
+            var actual = await listPriceController.AddListPrice(solutionId, editListPriceModel);
 
-            mockSolutionsService.Verify(s => s.SaveSolutionListPrice(catalogueItem.Id, It.IsAny<SaveSolutionListPriceModel>()));
+            mockListPricesService.Verify(s => s.SaveListPrice(catalogueItem.Id, It.IsAny<SaveListPriceModel>()));
 
             actual.Should().NotBeNull();
-            actual.ControllerName.Should().BeNull();
-            actual.ActionName.Should().Be(nameof(ListPriceController.Index));
+            actual.Should().BeOfType<RedirectToActionResult>();
+            actual.As<RedirectToActionResult>().ControllerName.Should().BeNull();
+            actual.As<RedirectToActionResult>().ActionName.Should().Be(nameof(ListPriceController.Index));
         }
 
         [Theory]
@@ -159,13 +167,14 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
                 .Setup(s => s.GetSolution(catalogueItem.Id))
                 .ReturnsAsync(catalogueItem);
 
-            var actual = (await listPriceController.EditListPrice(catalogueItem.Id, cataloguePriceId)).As<ViewResult>();
+            var actual = await listPriceController.EditListPrice(catalogueItem.Id, cataloguePriceId);
 
             mockSolutionsService.Verify(s => s.GetSolution(catalogueItem.Id));
-            actual.ViewName.Should().NotBeNull();
+            actual.Should().NotBeNull();
+            actual.As<ViewResult>().Model.Should().BeOfType<EditListPriceModel>();
 
-            var model = actual.Model.As<EditListPriceModel>();
-            model.SolutionName.Should().Be(catalogueItem.Name);
+            var model = actual.As<ViewResult>().Model.As<EditListPriceModel>();
+            model.ItemName.Should().Be(catalogueItem.Name);
             model.CataloguePriceId.Should().Be(cataloguePriceId);
             model.BackLinkText.Should().Be("Go back");
         }
@@ -183,11 +192,12 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
                .Setup(s => s.GetSolution(catalogueItem.Id))
                .ReturnsAsync(catalogueItem);
 
-            var actual = (await listPriceController.EditListPrice(catalogueItem.Id, cataloguePriceId)).As<RedirectToActionResult>();
+            var actual = await listPriceController.EditListPrice(catalogueItem.Id, cataloguePriceId);
 
             actual.Should().NotBeNull();
-            actual.ControllerName.Should().BeNull();
-            actual.ActionName.Should().Be(nameof(ListPriceController.Index));
+            actual.Should().BeOfType<RedirectToActionResult>();
+            actual.As<RedirectToActionResult>().ControllerName.Should().BeNull();
+            actual.As<RedirectToActionResult>().ActionName.Should().Be(nameof(ListPriceController.Index));
         }
 
         [Theory]
@@ -195,6 +205,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
         public static async Task Post_EditListPrice_ModelStateValid_RedirectsToManageListPrices(
             CatalogueItem catalogueItem,
             [Frozen] Mock<ISolutionsService> mockSolutionsService,
+            [Frozen] Mock<IListPricesService> mockListPricesService,
             ListPriceController listPriceController)
         {
             const decimal price = 3.21M;
@@ -204,10 +215,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
                 .First()
                 .CataloguePriceId;
 
-            var editListPriceModel = new EditListPriceModel
+            var editListPriceModel = new EditListPriceModel(catalogueItem)
             {
                 CataloguePriceId = cataloguePriceId,
-                SolutionName = catalogueItem.Name,
                 Price = price,
                 SelectedProvisioningType = ProvisioningType.Patient,
                 Unit = "per patient",
@@ -217,13 +227,14 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
                 .Setup(s => s.GetSolution(catalogueItem.Id))
                 .ReturnsAsync(catalogueItem);
 
-            var actual = (await listPriceController.EditListPrice(solutionId, cataloguePriceId, editListPriceModel)).As<RedirectToActionResult>();
+            var actual = await listPriceController.EditListPrice(solutionId, cataloguePriceId, editListPriceModel);
 
-            mockSolutionsService.Verify(s => s.UpdateSolutionListPrice(catalogueItem.Id, It.IsAny<SaveSolutionListPriceModel>()));
+            mockListPricesService.Verify(s => s.UpdateListPrice(catalogueItem.Id, It.IsAny<SaveListPriceModel>()));
 
             actual.Should().NotBeNull();
-            actual.ControllerName.Should().BeNull();
-            actual.ActionName.Should().Be(nameof(ListPriceController.Index));
+            actual.Should().BeOfType<RedirectToActionResult>();
+            actual.As<RedirectToActionResult>().ControllerName.Should().BeNull();
+            actual.As<RedirectToActionResult>().ActionName.Should().Be(nameof(ListPriceController.Index));
         }
     }
 }

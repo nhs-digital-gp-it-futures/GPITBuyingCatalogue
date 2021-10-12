@@ -10,11 +10,11 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.ListPriceModels
         }
 
         public DeleteListPriceModel(
-            CatalogueItem solution)
+            CatalogueItem item)
         {
-            SolutionName = solution.Name;
+            ItemName = item.Name;
         }
 
-        public string SolutionName { get; init; }
+        public string ItemName { get; init; }
     }
 }

@@ -45,6 +45,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.AssociatedServices
             return dbContext.CatalogueItems
                 .Include(i => i.AssociatedService)
                 .Include(i => i.Supplier)
+                .Include(i => i.CataloguePrices).ThenInclude(cp => cp.PricingUnit)
                 .Where(i => i.Id == associatedServiceId)
                 .FirstOrDefaultAsync();
         }
