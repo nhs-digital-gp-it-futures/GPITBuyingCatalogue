@@ -43,7 +43,7 @@ resource "azurerm_app_service_slot" "slot" {
 
     ip_restriction {
       name       = "PRIMARY_VPN"
-      ip_address = var.primary_vpn
+      ip_address = "${var.primary_vpn}/32"
       priority   = 210
       headers    = []
     }
