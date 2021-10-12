@@ -270,7 +270,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
             if (cataloguePrice is null)
                 return RedirectToAction(nameof(ManageListPrices), new { solutionId, associatedServiceId });
 
-            var editListPriceModel = new EditListPriceModel(associatedService, cataloguePrice)
+            var editListPriceModel = new EditListPriceModel(associatedService, cataloguePrice, solutionId)
             {
                 BackLink = Url.Action(nameof(ManageListPrices), new { solutionId, associatedServiceId }),
                 BackLinkText = "Go back",
