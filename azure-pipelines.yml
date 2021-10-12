@@ -61,6 +61,7 @@ jobs:
       arguments: '-v n'
 
   - task: Npm@1
+    displayName: 'Run npm install'
     inputs:
       command: 'install'
       workingDir: 'src/NHSD.GPIT.BuyingCatalogue.WebApp'
@@ -73,6 +74,7 @@ jobs:
       arguments: '--no-restore --configuration $(buildConfiguration)'
 
   - task: gulp@0
+    displayName: 'Run gulp min'
     inputs:
       gulpFile: 'src/NHSD.GPIT.BuyingCatalogue.WebApp/gulpfile.js'
       targets: 'min'      
