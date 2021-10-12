@@ -4,7 +4,7 @@ using AutoFixture.Xunit2;
 using FluentValidation.TestHelper;
 using Moq;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
-using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions;
+using NHSD.GPIT.BuyingCatalogue.ServiceContracts.ListPrices;
 using NHSD.GPIT.BuyingCatalogue.Test.Framework.AutoFixtureCustomisations;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.ListPriceModels;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Validators;
@@ -17,10 +17,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators
         [Theory]
         [CommonAutoData]
         public static async Task Validate_ValidModel_NoValidationErrors(
-            CatalogueItem solution,
+            CatalogueItem item,
             EditListPriceModelValidator validator)
         {
-            var model = new EditListPriceModel(solution)
+            var model = new EditListPriceModel(item)
             {
                 Price = 3.21M,
                 Unit = "per patient",
@@ -36,10 +36,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators
         [Theory]
         [CommonAutoData]
         public static async Task Validate_PriceNotEntered_SetsModelErrorForPrice(
-            CatalogueItem solution,
+            CatalogueItem item,
             EditListPriceModelValidator validator)
         {
-            var model = new EditListPriceModel(solution)
+            var model = new EditListPriceModel(item)
             {
                 Price = null,
                 Unit = "per patient",
@@ -56,10 +56,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators
         [Theory]
         [CommonAutoData]
         public static async Task Validate_NegativePriceValue_SetsModelErrorForPrice(
-            CatalogueItem solution,
+            CatalogueItem item,
             EditListPriceModelValidator validator)
         {
-            var model = new EditListPriceModel(solution)
+            var model = new EditListPriceModel(item)
             {
                 Price = -3.21M,
                 Unit = "per patient",
@@ -76,10 +76,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators
         [Theory]
         [CommonAutoData]
         public static async Task Validate_PriceExceedsDecimalPlaces_SetsModelErrorForPrice(
-            CatalogueItem solution,
+            CatalogueItem item,
             EditListPriceModelValidator validator)
         {
-            var model = new EditListPriceModel(solution)
+            var model = new EditListPriceModel(item)
             {
                 Price = 3.21145M,
                 Unit = "per patient",
@@ -96,10 +96,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators
         [Theory]
         [CommonAutoData]
         public static async Task Validate_UnitNotValid_SetsModelErrorForUnit(
-            CatalogueItem solution,
+            CatalogueItem item,
             EditListPriceModelValidator validator)
         {
-            var model = new EditListPriceModel(solution)
+            var model = new EditListPriceModel(item)
             {
                 Price = 3.21M,
                 Unit = null,
@@ -116,10 +116,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators
         [Theory]
         [CommonAutoData]
         public static async Task Validate_UnitDefinitionExceedsCharacterCount_SetsModelErrorForUnitDefinition(
-            CatalogueItem solution,
+            CatalogueItem item,
             EditListPriceModelValidator validator)
         {
-            var model = new EditListPriceModel(solution)
+            var model = new EditListPriceModel(item)
             {
                 Price = 3.21M,
                 Unit = "per patient",
@@ -137,10 +137,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators
         [Theory]
         [CommonAutoData]
         public static async Task Validate_ProvisioningTypeNull_SetsModelErrorForProvisioningType(
-            CatalogueItem solution,
+            CatalogueItem item,
             EditListPriceModelValidator validator)
         {
-            var model = new EditListPriceModel(solution)
+            var model = new EditListPriceModel(item)
             {
                 Price = 3.21M,
                 Unit = "per patient",
@@ -157,10 +157,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators
         [Theory]
         [CommonAutoData]
         public static async Task Validate_ProvisioningTypeDeclarativeWithNoTimeUnit_SetsModelErrorForProvisioningType(
-            CatalogueItem solution,
+            CatalogueItem item,
             EditListPriceModelValidator validator)
         {
-            var model = new EditListPriceModel(solution)
+            var model = new EditListPriceModel(item)
             {
                 Price = 3.21M,
                 Unit = "per patient",
@@ -178,10 +178,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators
         [Theory]
         [CommonAutoData]
         public static async Task Validate_ProvisioningTypeOnDemandWithNoTimeUnit_NoValidationError(
-            CatalogueItem solution,
+            CatalogueItem item,
             EditListPriceModelValidator validator)
         {
-            var model = new EditListPriceModel(solution)
+            var model = new EditListPriceModel(item)
             {
                 Price = 3.21M,
                 Unit = "per patient",
@@ -198,24 +198,24 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators
         [Theory]
         [CommonAutoData]
         public static async Task Validate_DuplicatePrice_SetsModelError(
-            CatalogueItem solution,
-            [Frozen] Mock<ISolutionsService> mockSolutionsService,
+            CatalogueItem item,
+            [Frozen] Mock<IListPricesService> mockListPricesService,
             EditListPriceModelValidator validator)
         {
-            var cataloguePrice = solution.CataloguePrices.First();
+            var cataloguePrice = item.CataloguePrices.First();
             cataloguePrice.ProvisioningType = ProvisioningType.Patient;
             cataloguePrice.TimeUnit = TimeUnit.PerYear;
 
-            var model = new EditListPriceModel(solution)
+            var model = new EditListPriceModel(item)
             {
                 Price = cataloguePrice.Price,
                 Unit = cataloguePrice.PricingUnit.Description,
                 SelectedProvisioningType = cataloguePrice.ProvisioningType,
             };
 
-            mockSolutionsService
-                .Setup(s => s.GetSolution(solution.Id))
-                .ReturnsAsync(solution);
+            mockListPricesService
+                .Setup(s => s.GetCatalogueItemWithPrices(item.Id))
+                .ReturnsAsync(item);
 
             var result = await validator.TestValidateAsync(model);
 
@@ -227,15 +227,15 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators
         [Theory]
         [CommonAutoData]
         public static async Task Validate_DuplicatePriceIsCurrentPrice_NoValidationError(
-            CatalogueItem solution,
-            [Frozen] Mock<ISolutionsService> mockSolutionsService,
+            CatalogueItem item,
+            [Frozen] Mock<IListPricesService> mockListPricesService,
             EditListPriceModelValidator validator)
         {
-            var cataloguePrice = solution.CataloguePrices.First();
+            var cataloguePrice = item.CataloguePrices.First();
             cataloguePrice.ProvisioningType = ProvisioningType.Patient;
             cataloguePrice.TimeUnit = TimeUnit.PerYear;
 
-            var model = new EditListPriceModel(solution)
+            var model = new EditListPriceModel(item)
             {
                 CataloguePriceId = cataloguePrice.CataloguePriceId,
                 Price = cataloguePrice.Price,
@@ -243,9 +243,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators
                 SelectedProvisioningType = cataloguePrice.ProvisioningType,
             };
 
-            mockSolutionsService
-                .Setup(s => s.GetSolution(solution.Id))
-                .ReturnsAsync(solution);
+            mockListPricesService
+                .Setup(s => s.GetCatalogueItemWithPrices(item.Id))
+                .ReturnsAsync(item);
 
             var result = await validator.TestValidateAsync(model);
 
@@ -256,15 +256,15 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators
         [Theory]
         [CommonAutoData]
         public static async Task Validate_DuplicateOnDemandWithNoTimeUnit_NoValidationError(
-            CatalogueItem solution,
-            [Frozen] Mock<ISolutionsService> mockSolutionsService,
+            CatalogueItem item,
+            [Frozen] Mock<IListPricesService> mockListPricesService,
             EditListPriceModelValidator validator)
         {
-            var cataloguePrice = solution.CataloguePrices.First();
+            var cataloguePrice = item.CataloguePrices.First();
             cataloguePrice.ProvisioningType = ProvisioningType.OnDemand;
             cataloguePrice.TimeUnit = null;
 
-            var model = new EditListPriceModel(solution)
+            var model = new EditListPriceModel(item)
             {
                 CataloguePriceId = cataloguePrice.CataloguePriceId,
                 Price = cataloguePrice.Price,
@@ -273,9 +273,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators
                 OnDemandTimeUnit = null,
             };
 
-            mockSolutionsService
-                .Setup(s => s.GetSolution(solution.Id))
-                .ReturnsAsync(solution);
+            mockListPricesService
+                .Setup(s => s.GetCatalogueItemWithPrices(item.Id))
+                .ReturnsAsync(item);
 
             var result = await validator.TestValidateAsync(model);
 

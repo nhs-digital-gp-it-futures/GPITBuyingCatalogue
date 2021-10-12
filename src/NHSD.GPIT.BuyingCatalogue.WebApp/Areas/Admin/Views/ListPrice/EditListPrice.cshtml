@@ -12,15 +12,16 @@
     <div class="nhsuk-grid-column-two-thirds">
         <nhs-validation-summary />
         <nhs-page-title title="@ViewBag.Title"
-                        caption="@Model.SolutionName"
+                        caption="@Model.ItemName"
                         advice="Provide the following information about the pricing model for your Catalogue Solution." />
 
         <form method="post">
             <input type="hidden" asp-for="CataloguePriceId" />
-            <input type="hidden" asp-for="SolutionName" />
+            <input type="hidden" asp-for="ItemName" />
             <input type="hidden" asp-for="BackLinkText" />
             <input type="hidden" asp-for="BackLink" />
             <input type="hidden" asp-for="Title" />
+            <input type="hidden" asp-for="ItemId" />
             <nhs-fieldset-form-label id="@nameof(Model.SelectedProvisioningType)" asp-for="@Model" label-text="Provisioning type">
                 <nhs-radio-button-container>
                     @{
@@ -76,7 +77,7 @@
             <vc:nhs-delete-button url="@Url.Action(
                                           nameof(ListPriceController.DeleteListPrice),
                                           typeof(ListPriceController).ControllerName(),
-                                          new {solutionId = Model.SolutionId, listPriceId = Model.CataloguePriceId})"
+                                          new {solutionId = Model.ItemId, listPriceId = Model.CataloguePriceId})"
                                   text="Delete price" />
         }
     </div>

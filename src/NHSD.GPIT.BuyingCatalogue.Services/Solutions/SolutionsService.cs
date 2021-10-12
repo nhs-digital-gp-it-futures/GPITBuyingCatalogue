@@ -461,57 +461,6 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
         public Task<bool> SupplierHasSolutionName(int supplierId, string solutionName) =>
             catalogueItemRepository.SupplierHasSolutionName(supplierId, solutionName);
 
-        public async Task SaveSolutionListPrice(CatalogueItemId solutionId, SaveSolutionListPriceModel model)
-        {
-            var solution = await GetSolution(solutionId);
-
-            var cataloguePrice = new CataloguePrice
-            {
-                CataloguePriceType = CataloguePriceType.Flat,
-                Price = model.Price,
-                PricingUnit = model.PricingUnit,
-                ProvisioningType = model.ProvisioningType,
-                TimeUnit = model.TimeUnit,
-                CurrencyCode = "GBP",
-                LastUpdated = DateTime.UtcNow,
-            };
-
-            solution.CataloguePrices.Add(cataloguePrice);
-            await dbContext.SaveChangesAsync();
-        }
-
-        public async Task UpdateSolutionListPrice(CatalogueItemId solutionId, SaveSolutionListPriceModel model)
-        {
-            var solutionPrice = await dbContext
-                .CataloguePrices
-                .Include(p => p.CatalogueItem)
-                .Include(p => p.PricingUnit)
-                .SingleAsync(p => p.CataloguePriceId == model.CataloguePriceId && p.CatalogueItemId == solutionId);
-
-            solutionPrice.Price = model.Price;
-            solutionPrice.ProvisioningType = model.ProvisioningType;
-            solutionPrice.TimeUnit = model.TimeUnit;
-            solutionPrice.LastUpdated = DateTime.UtcNow;
-            solutionPrice.PricingUnit.TierName = model.PricingUnit.TierName;
-            solutionPrice.PricingUnit.Description = model.PricingUnit.Description;
-            solutionPrice.PricingUnit.Definition = model.PricingUnit.Definition;
-
-            await dbContext.SaveChangesAsync();
-        }
-
-        public async Task DeleteSolutionListPrice(CatalogueItemId solutionId, int cataloguePriceId)
-        {
-            var cataloguePrice = await dbContext
-                .CataloguePrices
-                .Include(p => p.CatalogueItem)
-                .Include(p => p.PricingUnit)
-                .SingleAsync(p => p.CataloguePriceId == cataloguePriceId && p.CatalogueItemId == solutionId);
-
-            dbContext.CataloguePrices.Remove(cataloguePrice);
-
-            await dbContext.SaveChangesAsync();
-        }
-
         public async Task SavePublicationStatus(CatalogueItemId solutionId, PublicationStatus publicationStatus)
         {
             var solution = await GetSolution(solutionId);

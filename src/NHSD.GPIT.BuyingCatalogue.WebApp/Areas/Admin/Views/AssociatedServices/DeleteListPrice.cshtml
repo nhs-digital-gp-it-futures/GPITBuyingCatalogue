@@ -1,7 +1,5 @@
 ﻿@model NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.ListPriceModels.DeleteListPriceModel
-@{
-    ViewBag.Title = "Delete list price?";
-}
+@{ ViewBag.Title = $"Delete list price for {Model.ItemName}?"; }
 
 <partial name="Partials/_BackLink" model="Model" />
 <div class="nhsuk-grid-row">
@@ -9,7 +7,7 @@
         <nhs-validation-summary />
         <nhs-page-title title="@ViewBag.Title"
                         caption="@Model.ItemName"
-                        advice="Confirm you want to delete the list price." />
+                        advice="Confirm you want to delete the price for this Associated Service." />
         <div class="nhsuk-grid-row">
             <div class="nhsuk-grid-column-two-thirds">
                 <form method="post">
@@ -20,7 +18,7 @@
                         <nhs-submit-button text="Delete" />
                     </div>
                     <div>
-                        <a href="@Model.BackLink">Cancel</a>
+                        <vc:nhs-backlink url="@Model.BackLink" text="Cancel" />
                     </div>
                 </form>
 

@@ -1,9 +1,11 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
 using FluentValidation;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
+using NHSD.GPIT.BuyingCatalogue.ServiceContracts.ListPrices;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.ListPriceModels;
 
@@ -12,11 +14,11 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Validators
     public sealed class EditListPriceModelValidator : AbstractValidator<EditListPriceModel>
     {
         internal const string TimeUnitErrorMessage = "Select a unit of time";
-        private readonly ISolutionsService solutionsService;
+        private readonly IListPricesService listPriceService;
 
-        public EditListPriceModelValidator(ISolutionsService solutionsService)
+        public EditListPriceModelValidator(IListPricesService listPriceService)
         {
-            this.solutionsService = solutionsService;
+            this.listPriceService = listPriceService ?? throw new ArgumentNullException(nameof(listPriceService));
 
             RuleFor(p => p.Price)
                 .Cascade(CascadeMode.Stop)
@@ -64,9 +66,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Validators
             EditListPriceModel model,
             CancellationToken cancellationToken)
         {
-            var catalogue = await solutionsService.GetSolution(model.SolutionId);
+            var catalogue = await listPriceService.GetCatalogueItemWithPrices(model.ItemId);
 
-            var duplicatePrices = catalogue.DuplicateListPrices(
+            var duplicatePrices = catalogue!.DuplicateListPrices(
                 model.SelectedProvisioningType!.Value,
                 model.Price,
                 model.Unit,
