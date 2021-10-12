@@ -75,8 +75,4 @@
     <ProjectReference Include="..\NHSD.GPIT.BuyingCatalogue.UI.Components\NHSD.GPIT.BuyingCatalogue.UI.Components.csproj" />
   </ItemGroup>
 
-  <Target Name="PreBuild" BeforeTargets="PreBuildEvent" Condition="'$(Configuration)' == 'Release'">
-    <Exec Command="npm install&#xD;&#xA;gulp sass" />
-  </Target>
-
 </Project>

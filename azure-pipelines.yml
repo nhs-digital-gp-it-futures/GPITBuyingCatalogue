@@ -60,6 +60,18 @@ jobs:
       nugetConfigPath: 'NuGet.config'
       arguments: '-v n'
 
+  - task: Npm@1
+    inputs:
+      command: 'install'
+      workingDir: 'src/NHSD.GPIT.BuyingCatalogue.WebApp'
+
+  - task: gulp@0
+    inputs:
+      gulpFile: 'src/NHSD.GPIT.BuyingCatalogue.WebApp/gulpfile.js'
+      targets: 'min'
+      #gulpjs: 'content/node_modules/gulp/bin/gulp.js'
+      workingDirectory: 'src/NHSD.GPIT.BuyingCatalogue.WebApp'
+      
   - task: DotNetCoreCLI@2
     displayName: 'Run dotnet build'
     inputs:

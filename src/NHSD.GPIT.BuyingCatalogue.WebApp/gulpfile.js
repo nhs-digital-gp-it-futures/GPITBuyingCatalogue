@@ -2,8 +2,7 @@
 "use strict";
 const gulp = require("gulp"),
     concat = require("gulp-concat"),
-    cssmin = require("gulp-cssmin"),
-    htmlmin = require("gulp-htmlmin"),
+    cssmin = require("gulp-cssmin"),   
     terser = require('gulp-terser'),
     merge = require("merge-stream"),
     del = require("del"),
@@ -42,16 +41,6 @@ gulp.task("min:css", function () {
         return gulp.src(bundle.inputFiles, { base: "." })
             .pipe(concat(bundle.outputFileName))
             .pipe(cssmin())
-            .pipe(gulp.dest("."));
-    });
-    return merge(tasks);
-});
-
-gulp.task("min:html", function () {
-    const tasks = getBundles(regex.html).map(function (bundle) {
-        return gulp.src(bundle.inputFiles, { base: "." })
-            .pipe(concat(bundle.outputFileName))
-            .pipe(htmlmin({ collapseWhitespace: true, minifyCSS: true, minifyJS: true }))
             .pipe(gulp.dest("."));
     });
     return merge(tasks);
