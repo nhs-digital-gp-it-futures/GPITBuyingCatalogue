@@ -40,6 +40,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models
         public TaskProgress AssociatedServicesStatus() =>
             new AssociatedServicesModel(Solution, AssociatedServices).Status();
 
+        public TaskProgress SupplierDetailsStatus() => new EditSupplierDetailsModel(Solution).Status();
+
         public ManageCatalogueSolutionModel WithSolution(CatalogueItem solution)
         {
             Solution = solution;

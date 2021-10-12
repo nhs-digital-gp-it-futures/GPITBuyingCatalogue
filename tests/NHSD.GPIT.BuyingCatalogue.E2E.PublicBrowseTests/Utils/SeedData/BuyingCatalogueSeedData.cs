@@ -798,6 +798,16 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
                             Email = "Clark.Kent@TheDailyPlanet.Test",
                             PhoneNumber = "123456789",
                         },
+                        new()
+                        {
+                            Id = 4,
+                            SupplierId = 99998,
+                            FirstName = "Bruce",
+                            LastName = "Wayne",
+                            Department = "Crime",
+                            Email = "Bruce.Wayne@WayneEnterprises.Test",
+                            PhoneNumber = "123456789",
+                        },
                     },
                     IsActive = true,
                 },
