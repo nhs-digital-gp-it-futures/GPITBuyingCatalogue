@@ -60,6 +60,11 @@ jobs:
       nugetConfigPath: 'NuGet.config'
       arguments: '-v n'
 
+  - task: NodeTool@0
+    displayName: 'Install Node.js'
+    inputs:
+      versionSpec: '14.x'
+ 
   - task: Npm@1
     displayName: 'Run npm install'
     inputs:
