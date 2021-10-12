@@ -1,0 +1,40 @@
+﻿@model NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.EditSupplierDetailsModel
+@{
+    ViewBag.Title = "Supplier details";
+}
+
+<partial name="Partials/_BackLink" model="Model" />
+<div class="nhsuk-grid-row">
+    <div class="nhsuk-grid-column-two-thirds">
+        <nhs-validation-summary />
+        <nhs-page-title title="@ViewBag.Title"
+                        caption="@Model.SupplierName"
+                        advice="Select contacts for this Catalogue Solution" />
+
+        <h2>About supplier</h2>
+        <p>
+            @Model.SupplierSummary
+        </p>
+        <form method="post">
+            <input type="hidden" asp-for="@Model.BackLink" />
+            <input type="hidden" asp-for="@Model.BackLinkText" />
+            <input type="hidden" asp-for="@Model.SupplierName" />
+            <input type="hidden" asp-for="@Model.SupplierSummary" />
+            <nhs-fieldset-form-label asp-for="@Model"
+                                     label-text="Supplier contacts"
+                                     label-hint="Select up to two contacts">
+                <nhs-checkbox-container>
+                    @for (int i = 0; i < Model.AvailableSupplierContacts.Count; i++)
+                    {
+                        <input type="hidden" asp-for="@Model.AvailableSupplierContacts[i].DisplayName" />
+                        <nhs-checkbox asp-for="@Model.AvailableSupplierContacts[i].Selected"
+                                      label-text="@Model.AvailableSupplierContacts[i].DisplayName"
+                                      hidden-input="@Model.AvailableSupplierContacts[i].Id" />
+                    }
+                </nhs-checkbox-container>
+            </nhs-fieldset-form-label>
+
+            <nhs-submit-button text="Save and Continue" />
+        </form>
+    </div>
+</div>
