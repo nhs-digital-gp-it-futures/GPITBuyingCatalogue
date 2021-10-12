@@ -29,7 +29,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.ListPriceModels
             Unit = cataloguePrice.PricingUnit.Description;
             UnitDefinition = cataloguePrice.PricingUnit.Definition;
             SelectedProvisioningType = cataloguePrice.ProvisioningType;
-            Title = "Edit list price";
+            Title = $"{catalogueItem.Name} price";
 
             if (cataloguePrice.ProvisioningType == ProvisioningType.Declarative)
             {

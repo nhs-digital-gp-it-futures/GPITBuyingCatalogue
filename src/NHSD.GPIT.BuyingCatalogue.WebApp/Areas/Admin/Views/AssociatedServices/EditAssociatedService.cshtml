@@ -20,7 +20,7 @@
             <nhs-table-row-container>
                 <nhs-table-cell>Details</nhs-table-cell>
                 <nhs-table-cell>Yes</nhs-table-cell>
-                <nhs-table-cell><nhs-tag colour="Green" text="Completed" /></nhs-table-cell>
+                <nhs-table-cell><nhs-tag status-enum="@Model.DetailsStatus()" /></nhs-table-cell>
                 <nhs-table-cell><a asp-action="@nameof(AssociatedServicesController.EditAssociatedServiceDetails)"
                    asp-controller="@typeof(AssociatedServicesController).ControllerName()"
                    asp-route-solutionId="@Model.Solution.Id"
@@ -32,7 +32,7 @@
             <nhs-table-row-container>
                 <nhs-table-cell>Price</nhs-table-cell>
                 <nhs-table-cell>Yes</nhs-table-cell>
-                <nhs-table-cell><nhs-tag colour="Green" text="Completed" /></nhs-table-cell>
+                <nhs-table-cell><nhs-tag status-enum="@Model.ListPriceStatus()" /></nhs-table-cell>
                 <nhs-table-cell><a asp-action="@nameof(AssociatedServicesController.ManageListPrices)"
                    asp-controller="@typeof(AssociatedServicesController).ControllerName()"
                    asp-route-solutionId="@Model.Solution.Id"
