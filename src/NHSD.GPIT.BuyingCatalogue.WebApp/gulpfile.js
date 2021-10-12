@@ -36,7 +36,7 @@ gulp.task("min:js", async function () {
     return merge(tasks);
 });
 
-gulp.task("min:css", function () {
+gulp.task("min:css", async function () {
     const tasks = getBundles(regex.css).map(function (bundle) {
         return gulp.src(bundle.inputFiles, { base: "." })
             .pipe(concat(bundle.outputFileName))
