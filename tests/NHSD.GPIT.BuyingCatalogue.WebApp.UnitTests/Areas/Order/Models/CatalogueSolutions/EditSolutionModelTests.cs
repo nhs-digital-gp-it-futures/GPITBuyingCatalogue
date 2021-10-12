@@ -1,5 +1,4 @@
 ﻿using System.Linq;
-using AutoFixture;
 using FluentAssertions;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Models;
@@ -74,24 +73,15 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.Catalogu
         }
 
         [Theory]
-        [InlineData(ProvisioningType.Declarative, "/order/organisation/{0}/order/{1}/catalogue-solutions/select/solution/price/flat/declarative")]
-        [InlineData(ProvisioningType.OnDemand, "/order/organisation/{0}/order/{1}/catalogue-solutions/select/solution/price/flat/ondemand")]
-        [InlineData(ProvisioningType.Patient, "/order/organisation/{0}/order/{1}/catalogue-solutions/select/solution/price/recipients/date")]
+        [CommonInlineAutoData(ProvisioningType.Declarative, "/order/organisation/{0}/order/{1}/catalogue-solutions/select/solution/price/flat/declarative")]
+        [CommonInlineAutoData(ProvisioningType.OnDemand, "/order/organisation/{0}/order/{1}/catalogue-solutions/select/solution/price/flat/ondemand")]
+        [CommonInlineAutoData(ProvisioningType.Patient, "/order/organisation/{0}/order/{1}/catalogue-solutions/select/solution/price/recipients/date")]
         public static void WhenEditingNewSolution_BackLinkCorrectlySet(
             ProvisioningType provisioningType,
-            string expectedBackLink)
+            string expectedBackLink,
+            string odsCode,
+            CreateOrderItemModel state)
         {
-            Fixture fixture = new Fixture();
-
-            var odsCode = fixture.Create<string>();
-            fixture
-                .Customize(new OrderCustomization())
-                .Customize(new CatalogueItemIdCustomization())
-                .Customize(new IgnoreCircularReferenceCustomisation())
-                .Customize(new CallOffIdCustomization());
-
-            var state = fixture.Create<CreateOrderItemModel>();
-
             state.IsNewSolution = true;
             state.CataloguePrice.ProvisioningType = provisioningType;
 
