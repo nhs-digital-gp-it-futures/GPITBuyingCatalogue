@@ -713,5 +713,38 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
                 _ => RedirectToAction(nameof(ClientApplicationType), new { solutionId }),
             };
         }
+
+        [HttpGet("manage/{solutionId}/supplier-details")]
+        public async Task<IActionResult> EditSupplierDetails(CatalogueItemId solutionId)
+        {
+            var catalogueItem = await solutionsService.GetSolution(solutionId);
+
+            var model = new EditSupplierDetailsModel(catalogueItem)
+            {
+                BackLink = Url.Action(nameof(ManageCatalogueSolution), new { solutionId }),
+                BackLinkText = "Go back",
+            };
+
+            return View(model);
+        }
+
+        [HttpPost("manage/{solutionId}/supplier-details")]
+        public async Task<IActionResult> EditSupplierDetails(CatalogueItemId solutionId, EditSupplierDetailsModel model)
+        {
+            if (!ModelState.IsValid)
+                return View(model);
+
+            var solution = await solutionsService.GetSolution(solutionId);
+            var filteredSelectedContacts = model.AvailableSupplierContacts.Where(sc => sc.Selected).ToList();
+            var selectedContacts = solution.Supplier.SupplierContacts.Join(
+                filteredSelectedContacts,
+                outer => outer.Id,
+                inner => inner.Id,
+                (supplierContact, _) => supplierContact).ToList();
+
+            await solutionsService.SaveContacts(solutionId, selectedContacts);
+
+            return RedirectToAction(nameof(ManageCatalogueSolution), new { solutionId });
+        }
     }
 }

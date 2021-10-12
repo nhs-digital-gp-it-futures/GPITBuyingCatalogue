@@ -171,8 +171,13 @@
                 <nhs-table-row-container>
                     <nhs-table-cell>Supplier details</nhs-table-cell>
                     <nhs-table-cell>Yes</nhs-table-cell>
-                    <nhs-table-cell><nhs-tag colour="Green" text="Completed" /></nhs-table-cell>
-                    <nhs-table-cell><a href="#">Edit</a></nhs-table-cell>
+                    <nhs-table-cell>
+                        <nhs-tag status-enum="@Model.SupplierDetailsStatus()" />
+                    </nhs-table-cell>
+                    <nhs-table-cell>
+                        <a asp-action="EditSupplierDetails"
+                           asp-route-solutionId="@Model.Solution.Id">Edit</a>
+                    </nhs-table-cell>
                 </nhs-table-row-container>
             </nhs-table>
         </nhs-fieldset-form-container>
