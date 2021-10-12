@@ -16,8 +16,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.ListPriceModels
 
         public EditListPriceModel(CatalogueItem catalogueItem)
         {
-            SolutionId = catalogueItem.Id;
-            SolutionName = catalogueItem.Name;
+            ItemId = catalogueItem.Id;
+            ItemName = catalogueItem.Name;
             Title = "Add list price";
         }
 
@@ -41,6 +41,12 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.ListPriceModels
             }
         }
 
+        public EditListPriceModel(CatalogueItem catalogueItem, CataloguePrice cataloguePrice, CatalogueItemId relatedCatalogueItemId)
+            : this(catalogueItem, cataloguePrice)
+        {
+            RelatedCatalogueItemId = relatedCatalogueItemId;
+        }
+
         public static IEnumerable<SelectListItem> TimeUnitSelectListItems => new SelectListItem[]
         {
             new("per month", TimeUnit.PerMonth.ToString()),
@@ -56,9 +62,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.ListPriceModels
 
         public int? CataloguePriceId { get; init; }
 
-        public CatalogueItemId SolutionId { get; init; }
+        public CatalogueItemId ItemId { get; init; }
 
-        public string SolutionName { get; init; }
+        public string ItemName { get; init; }
 
         public ProvisioningType? SelectedProvisioningType { get; init; }
 
@@ -75,6 +81,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.ListPriceModels
         public string UnitDefinition { get; init; }
 
         public string Title { get; init; }
+
+        public CatalogueItemId RelatedCatalogueItemId { get; }
 
         public PricingUnit GetPricingUnit()
             => new()

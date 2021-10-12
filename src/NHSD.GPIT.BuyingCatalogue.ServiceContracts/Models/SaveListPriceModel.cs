@@ -2,7 +2,7 @@
 
 namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.Models
 {
-    public sealed class SaveSolutionListPriceModel
+    public sealed class SaveListPriceModel
     {
         public int CataloguePriceId { get; init; }
 

@@ -62,12 +62,6 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions
 
         Task<bool> SupplierHasSolutionName(int supplierId, string solutionName);
 
-        Task SaveSolutionListPrice(CatalogueItemId solutionId, SaveSolutionListPriceModel model);
-
-        Task UpdateSolutionListPrice(CatalogueItemId solutionId, SaveSolutionListPriceModel model);
-
-        Task DeleteSolutionListPrice(CatalogueItemId solutionId, int cataloguePriceId);
-
         Task SavePublicationStatus(CatalogueItemId solutionId, PublicationStatus publicationStatus);
     }
 }
