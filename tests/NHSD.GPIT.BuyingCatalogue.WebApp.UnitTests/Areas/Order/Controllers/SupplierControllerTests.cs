@@ -153,23 +153,15 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers
         }
 
         [Theory]
-        [InlineData(null)]
-        [InlineData("")]
-        [InlineData(" ")]
-        public static async Task Get_SupplierSearchSelect_NoSearch_ReturnsExpectedResult(string search)
+        [CommonInlineAutoData(null)]
+        [CommonInlineAutoData("")]
+        [CommonInlineAutoData(" ")]
+        public static async Task Get_SupplierSearchSelect_NoSearch_ReturnsExpectedResult(
+            string search,
+            string odsCode,
+            CallOffId callOffId,
+            SupplierController controller)
         {
-            var fixture = new Fixture().Customize(new CompositeCustomization(
-                new AutoMoqCustomization(),
-                new OrderCustomization(),
-                new CallOffIdCustomization(),
-                new CatalogueItemIdCustomization(),
-                new ControllerCustomization(),
-                new IgnoreCircularReferenceCustomisation()));
-
-            var odsCode = fixture.Create<string>();
-            var callOffId = fixture.Create<CallOffId>();
-            var controller = fixture.Create<SupplierController>();
-
             var expectedViewData = new NoSupplierFoundModel(odsCode, callOffId);
 
             var actualResult = await controller.SupplierSearchSelect(odsCode, callOffId, search);
