@@ -2233,7 +2233,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
                 filteredSelectedContacts,
                 outer => outer.Id,
                 inner => inner.Id,
-                (supplierContact, availableSupplierContact) => supplierContact).ToList();
+                (supplierContact, _) => supplierContact).ToList();
 
             solutionsService.Setup(s => s.GetSolution(catalogueItem.Id))
                 .ReturnsAsync(catalogueItem);

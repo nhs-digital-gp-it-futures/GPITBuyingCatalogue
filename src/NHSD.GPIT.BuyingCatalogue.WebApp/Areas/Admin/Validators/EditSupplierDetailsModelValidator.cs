@@ -16,8 +16,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Validators
                 .WithMessage("You can only select up to two supplier contacts");
         }
 
-        private static bool HaveAtLeastOneSelectedContact(IReadOnlyList<AvailableSupplierContact> availableSupplierContacts) => availableSupplierContacts.Any(c => c.Selected);
+        private static bool HaveAtLeastOneSelectedContact(IReadOnlyList<AvailableSupplierContact> availableSupplierContacts)
+            => availableSupplierContacts.Any(c => c.Selected);
 
-        private static bool HaveNoMoreThanTwoSelectedContacts(IReadOnlyList<AvailableSupplierContact> availableSupplierContacts) => availableSupplierContacts.Count(c => c.Selected) <= 2;
+        private static bool HaveNoMoreThanTwoSelectedContacts(IReadOnlyList<AvailableSupplierContact> availableSupplierContacts)
+            => availableSupplierContacts.Count(c => c.Selected) <= 2;
     }
 }
