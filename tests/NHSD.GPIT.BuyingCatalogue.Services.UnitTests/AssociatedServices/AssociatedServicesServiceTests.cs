@@ -1,6 +1,9 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using AutoFixture;
+using AutoFixture.AutoMoq;
+using AutoFixture.Idioms;
 using AutoFixture.Xunit2;
 using FluentAssertions;
 using Microsoft.EntityFrameworkCore;
@@ -14,6 +17,16 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Solutions
 {
     public static class AssociatedServicesServiceTests
     {
+        [Fact]
+        public static void Constructors_VerifyGuardClauses()
+        {
+            var fixture = new Fixture().Customize(new AutoMoqCustomization());
+            var assertion = new GuardClauseAssertion(fixture);
+            var constructors = typeof(AssociatedServicesService).GetConstructors();
+
+            assertion.Verify(constructors);
+        }
+
         [Theory]
         [InMemoryDbAutoData]
         public static async Task RelateAssociatedServicesToSolution_UpdatesDatabase(

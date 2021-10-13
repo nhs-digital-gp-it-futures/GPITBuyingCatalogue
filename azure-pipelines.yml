@@ -60,12 +60,30 @@ jobs:
       nugetConfigPath: 'NuGet.config'
       arguments: '-v n'
 
+  - task: NodeTool@0
+    displayName: 'Install Node.js'
+    inputs:
+      versionSpec: '14.x'
+ 
+  - task: Npm@1
+    displayName: 'Run npm install'
+    inputs:
+      command: 'install'
+      workingDir: 'src/NHSD.GPIT.BuyingCatalogue.WebApp'
+      
   - task: DotNetCoreCLI@2
     displayName: 'Run dotnet build'
     inputs:
       command: build
       projects: '**/*Tests.csproj'
       arguments: '--no-restore --configuration $(buildConfiguration)'
+
+  - task: gulp@0
+    displayName: 'Run gulp min'
+    inputs:
+      gulpFile: 'src/NHSD.GPIT.BuyingCatalogue.WebApp/gulpfile.js'
+      targets: 'min'      
+      workingDirectory: 'src/NHSD.GPIT.BuyingCatalogue.WebApp'
 
   - task: DotNetCoreCLI@2
     displayName: 'Run unit tests'
@@ -74,16 +92,16 @@ jobs:
       projects: '**/*UnitTests.csproj'
       arguments: '-v n --no-build --configuration $(buildConfiguration) --collect "Code coverage"'
 
-  - task: DockerInstaller@0
-    inputs:
-      dockerVersion: $(dockerVersion)
-
   - task: DotNetCoreCLI@2
     displayName: 'Run E2E Tests'
     inputs:
       command: test
       projects: '**/*E2ETests.csproj'
       arguments: '-v n --no-build --configuration $(buildConfiguration)'
+
+  - task: DockerInstaller@0
+    inputs:
+      dockerVersion: $(dockerVersion)
 
   - task: Docker@2
     displayName: 'Docker: Build and Push'
