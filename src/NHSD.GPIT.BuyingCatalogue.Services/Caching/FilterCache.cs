@@ -24,6 +24,9 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Caching
 
         public void Remove(IEnumerable<string> filterKeys)
         {
+            if (filterKeys is null)
+                throw new ArgumentNullException(nameof(filterKeys));
+
             foreach (var filterKey in filterKeys)
             {
                 Remove(filterKey);
