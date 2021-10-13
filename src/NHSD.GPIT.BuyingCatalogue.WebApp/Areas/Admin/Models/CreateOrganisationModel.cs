@@ -1,4 +1,5 @@
-﻿using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Organisations;
+﻿using System;
+using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Organisations;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Models;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models
@@ -11,6 +12,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models
 
         public CreateOrganisationModel(OdsOrganisation organisation)
         {
+            if (organisation is null)
+                throw new ArgumentNullException(nameof(organisation));
+
             OdsOrganisation = organisation;
             BackLink = $"/admin/organisations/find/select?ods={organisation.OdsCode}";
         }

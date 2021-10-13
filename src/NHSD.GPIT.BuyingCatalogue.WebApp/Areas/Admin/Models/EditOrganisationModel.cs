@@ -1,4 +1,5 @@
-﻿using NHSD.GPIT.BuyingCatalogue.EntityFramework.Addresses.Models;
+﻿using System;
+using NHSD.GPIT.BuyingCatalogue.EntityFramework.Addresses.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Organisations.Models;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Models;
 
@@ -12,6 +13,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models
 
         public EditOrganisationModel(Organisation organisation)
         {
+            if (organisation is null)
+                throw new ArgumentNullException(nameof(organisation));
+
             CatalogueAgreementSigned = organisation.CatalogueAgreementSigned;
             BackLink = $"/admin/organisations/{organisation.Id}";
             Organisation = organisation;
