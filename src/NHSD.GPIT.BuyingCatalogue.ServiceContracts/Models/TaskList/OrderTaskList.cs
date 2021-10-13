@@ -6,20 +6,20 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.Models.TaskList
     {
         public TaskProgress DescriptionStatus { get; set; } = TaskProgress.NotStarted;
 
-        public TaskProgress OrderingPartyStatus { get; set; }
+        public TaskProgress OrderingPartyStatus { get; set; } = TaskProgress.CannotStart;
 
-        public TaskProgress SupplierStatus { get; set; }
+        public TaskProgress SupplierStatus { get; set; } = TaskProgress.CannotStart;
 
-        public TaskProgress CommencementDateStatus { get; set; }
+        public TaskProgress CommencementDateStatus { get; set; } = TaskProgress.CannotStart;
 
-        public TaskProgress CatalogueSolutionsStatus { get; set; }
+        public TaskProgress CatalogueSolutionsStatus { get; set; } = TaskProgress.CannotStart;
 
-        public TaskProgress AdditionalServiceStatus { get; set; }
+        public TaskProgress AdditionalServiceStatus { get; set; } = TaskProgress.CannotStart;
 
-        public TaskProgress AssociatedServiceStatus { get; set; }
+        public TaskProgress AssociatedServiceStatus { get; set; } = TaskProgress.CannotStart;
 
-        public TaskProgress FundingSourceStatus { get; set; }
+        public TaskProgress FundingSourceStatus { get; set; } = TaskProgress.CannotStart;
 
-        public TaskProgress ReviewAndCompleteStatus { get; set; }
+        public TaskProgress ReviewAndCompleteStatus { get; set; } = TaskProgress.CannotStart;
     }
 }
