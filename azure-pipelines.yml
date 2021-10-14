@@ -90,7 +90,7 @@ jobs:
     inputs:
       command: test
       projects: '**/*UnitTests.csproj'
-      arguments: '-v n --no-build --configuration $(buildConfiguration) --collect "Code coverage"'
+      arguments: '-v n --no-build --configuration $(buildConfiguration)'
 
   - task: DotNetCoreCLI@2
     displayName: 'Run E2E Tests'
