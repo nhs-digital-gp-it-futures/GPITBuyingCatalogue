@@ -38,15 +38,18 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.CreateBuyer
 
         public async Task<Result<int>> Create(int primaryOrganisationId, string firstName, string lastName, string phoneNumber, string emailAddress)
         {
+            if (string.IsNullOrWhiteSpace(emailAddress))
+                throw new ArgumentException($"{nameof(emailAddress)} must be provided.", nameof(emailAddress));
+
             var aspNetUser = new AspNetUser
             {
                 FirstName = firstName,
                 LastName = lastName,
                 PhoneNumber = phoneNumber,
                 UserName = emailAddress,
-                NormalizedUserName = emailAddress.ToUpper(),
+                NormalizedUserName = emailAddress.ToUpperInvariant(),
                 Email = emailAddress,
-                NormalizedEmail = emailAddress.ToUpper(),
+                NormalizedEmail = emailAddress.ToUpperInvariant(),
                 PrimaryOrganisationId = primaryOrganisationId,
                 OrganisationFunction = OrganisationFunction.Buyer.DisplayName,
                 SecurityStamp = Guid.NewGuid().ToString(),

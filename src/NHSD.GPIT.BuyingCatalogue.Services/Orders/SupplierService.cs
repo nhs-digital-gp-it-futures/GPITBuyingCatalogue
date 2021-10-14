@@ -1,11 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
+using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Orders;
 
 namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
@@ -31,11 +33,16 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
             CatalogueItemType cIType =
                 catalogueItemType ?? CatalogueItemType.Solution;
 
-            IQueryable<CatalogueItem> query =
-                dbContext.CatalogueItems.Where(ci => ci.Supplier.Name.Contains(searchString) && ci.CatalogueItemType == cIType);
+            // EF Core cannot translate Contains(string, StringComparison). However, as this is executed by the DB the
+            // DB collation rules will apply so a case-insensitive comparison will occur.
+#pragma warning disable CA1307
+            Expression<Func<CatalogueItem, bool>> searchPredicate = ci => ci.Supplier.Name.Contains(searchString) && ci.CatalogueItemType == cIType;
+#pragma warning restore CA1307
+
+            IQueryable<CatalogueItem> query = dbContext.CatalogueItems.Where(searchPredicate);
 
             if (publicationStatus is not null)
-                query.Where(ci => ci.PublishedStatus == publicationStatus);
+                query = query.Where(ci => ci.PublishedStatus == publicationStatus);
 
             return query.Select(ci => ci.Supplier)
                 .Distinct()
@@ -65,6 +72,9 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
 
         public async Task AddOrUpdateOrderSupplierContact(CallOffId callOffId, Contact contact)
         {
+            if (contact is null)
+                throw new ArgumentNullException(nameof(contact));
+
             var order = await orderService.GetOrder(callOffId);
 
             switch (order.SupplierContact)

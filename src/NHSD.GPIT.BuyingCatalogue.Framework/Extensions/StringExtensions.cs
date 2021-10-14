@@ -10,6 +10,22 @@ namespace NHSD.GPIT.BuyingCatalogue.Framework.Extensions
             "one", "two", "three", "four", "five", "six", "seven", "eight", "nine", "ten",
         };
 
+        public static bool ContainsIgnoreCase(this string input, char value)
+        {
+            if (input is null)
+                throw new ArgumentNullException(nameof(input));
+
+            return input.Contains(value, StringComparison.OrdinalIgnoreCase);
+        }
+
+        public static bool ContainsIgnoreCase(this string input, string value)
+        {
+            if (input is null)
+                throw new ArgumentNullException(nameof(input));
+
+            return input.Contains(value, StringComparison.OrdinalIgnoreCase);
+        }
+
         public static bool EqualsIgnoreCase(this string input, string toCompare) =>
             string.Equals(input, toCompare, StringComparison.OrdinalIgnoreCase);
 

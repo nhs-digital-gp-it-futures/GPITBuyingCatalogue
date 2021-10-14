@@ -1,7 +1,11 @@
-﻿using AutoFixture;
+﻿using System;
+using System.Threading.Tasks;
+using AutoFixture;
 using AutoFixture.AutoMoq;
 using AutoFixture.Idioms;
+using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.Services.Orders;
+using NHSD.GPIT.BuyingCatalogue.Test.Framework.AutoFixtureCustomisations;
 using Xunit;
 
 namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Orders
@@ -16,6 +20,24 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Orders
             var constructors = typeof(OrderingPartyService).GetConstructors();
 
             assertion.Verify(constructors);
+        }
+
+        [Theory]
+        [CommonAutoData]
+        public static Task SetOrderingPartyContact_NullOrder_ThrowsException(
+            Contact contact,
+            OrderingPartyService service)
+        {
+            return Assert.ThrowsAsync<ArgumentNullException>(() => service.SetOrderingPartyContact(null, contact));
+        }
+
+        [Theory]
+        [CommonAutoData]
+        public static Task SetOrderingPartyContact_NullContact_ThrowsException(
+            Order order,
+            OrderingPartyService service)
+        {
+            return Assert.ThrowsAsync<ArgumentNullException>(() => service.SetOrderingPartyContact(order, null));
         }
     }
 }

@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Text.Json;
 using System.Threading.Tasks;
 using AutoFixture;
@@ -43,6 +44,13 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Solutions
 
             var updatedSolution = await context.Solutions.SingleAsync();
             updatedSolution.IntegrationsUrl.Should().Be(integrationLink);
+        }
+
+        [Theory]
+        [InMemoryDbAutoData]
+        public static Task AddIntegration_NullIntegration_ThrowsException(InteroperabilityService service)
+        {
+            return Assert.ThrowsAsync<ArgumentNullException>(() => service.AddIntegration(default, null));
         }
 
         [Theory]

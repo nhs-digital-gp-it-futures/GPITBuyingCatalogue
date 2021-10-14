@@ -14,8 +14,6 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Identity
     /// </summary>
     public sealed class PasswordService : IPasswordService
     {
-        public const string InvalidTokenCode = "InvalidToken";
-
         private readonly IEmailService emailService;
         private readonly IdentityOptions identityOptions = new();
         private readonly PasswordResetSettings settings;
@@ -72,7 +70,9 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Identity
         /// <exception cref="ArgumentNullException"><paramref name="callback"/> is <see langref="null"/>.</exception>
         public async Task SendResetEmailAsync(AspNetUser user, Uri callback)
         {
-            user.ValidateNotNull(nameof(user));
+            if (user is null)
+                throw new ArgumentNullException(nameof(user));
+
             callback.ValidateNotNull(nameof(callback));
 
             await emailService.SendEmailAsync(

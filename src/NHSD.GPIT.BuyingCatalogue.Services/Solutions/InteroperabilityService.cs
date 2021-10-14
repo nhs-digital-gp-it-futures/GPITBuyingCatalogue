@@ -29,7 +29,8 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
 
         public async Task AddIntegration(CatalogueItemId catalogueItemId, Integration integration)
         {
-            integration.ValidateNotNull(nameof(integration));
+            if (integration is null)
+                throw new ArgumentNullException(nameof(integration));
 
             integration.Id = Guid.NewGuid();
 
