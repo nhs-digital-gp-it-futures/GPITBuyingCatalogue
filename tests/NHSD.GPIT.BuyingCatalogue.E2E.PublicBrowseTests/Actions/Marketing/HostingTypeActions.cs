@@ -15,7 +15,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Actions.Marketing
         {
             var checkbox = Driver.FindElement(CommonSelectors.Checkbox);
             checkbox.Click();
-            return bool.Parse(checkbox.GetProperty("checked"));
+            return bool.Parse(checkbox.GetDomProperty("checked"));
         }
     }
 }
