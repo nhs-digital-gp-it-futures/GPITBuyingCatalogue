@@ -2,7 +2,6 @@
 using FluentAssertions;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Extensions;
-using NHSD.GPIT.BuyingCatalogue.Test.Framework.AutoFixtureCustomisations;
 using Xunit;
 
 namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.UnitTests.Extensions
@@ -10,7 +9,7 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.UnitTests.Extensions
     public static class PublicationStatusTests
     {
         [Theory]
-        [CommomMemberAutoData(nameof(PublicationStatusesTestCases))]
+        [MemberData(nameof(PublicationStatusesTestCases))]
         public static void GetAvailablePublicationStatuses(
             PublicationStatus publicationStatus,
             IList<PublicationStatus> expectedPublicationStatuses)
@@ -21,58 +20,71 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.UnitTests.Extensions
         }
 
         public static IEnumerable<object[]> PublicationStatusesTestCases()
-            => new object[][]
+        {
+            yield return new object[]
             {
-                new object[]
+                PublicationStatus.Draft,
+                new List<PublicationStatus>(2)
                 {
                     PublicationStatus.Draft,
-                    new List<PublicationStatus>(2)
-                    {
-                       PublicationStatus.Draft,
-                       PublicationStatus.Published,
-                    },
-                },
-                new object[]
-                {
                     PublicationStatus.Published,
-                    new List<PublicationStatus>(3)
-                    {
-                       PublicationStatus.Published,
-                       PublicationStatus.InRemediation,
-                       PublicationStatus.Unpublished,
-                    },
-                },
-                new object[]
-                {
-                    PublicationStatus.InRemediation,
-                    new List<PublicationStatus>(4)
-                    {
-                       PublicationStatus.Published,
-                       PublicationStatus.InRemediation,
-                       PublicationStatus.Suspended,
-                       PublicationStatus.Unpublished,
-                    },
-                },
-                new object[]
-                {
-                    PublicationStatus.Suspended,
-                    new List<PublicationStatus>(4)
-                    {
-                       PublicationStatus.Published,
-                       PublicationStatus.InRemediation,
-                       PublicationStatus.Suspended,
-                       PublicationStatus.Unpublished,
-                    },
-                },
-                new object[]
-                {
-                    PublicationStatus.Unpublished,
-                    new List<PublicationStatus>(2)
-                    {
-                       PublicationStatus.Published,
-                       PublicationStatus.Unpublished,
-                    },
                 },
             };
+
+            yield return new object[]
+            {
+                PublicationStatus.Draft,
+                new List<PublicationStatus>(2)
+                {
+                    PublicationStatus.Draft,
+                    PublicationStatus.Published,
+                },
+            };
+
+            yield return new object[]
+            {
+                PublicationStatus.Published,
+                new List<PublicationStatus>(3)
+                {
+                    PublicationStatus.Published,
+                    PublicationStatus.InRemediation,
+                    PublicationStatus.Unpublished,
+                },
+            };
+
+            yield return new object[]
+            {
+                PublicationStatus.InRemediation,
+                new List<PublicationStatus>(4)
+                {
+                    PublicationStatus.Published,
+                    PublicationStatus.InRemediation,
+                    PublicationStatus.Suspended,
+                    PublicationStatus.Unpublished,
+                },
+            };
+
+            yield return new object[]
+            {
+                PublicationStatus.Suspended,
+                new List<PublicationStatus>(4)
+                {
+                    PublicationStatus.Published,
+                    PublicationStatus.InRemediation,
+                    PublicationStatus.Suspended,
+                    PublicationStatus.Unpublished,
+                },
+            };
+
+            yield return new object[]
+            {
+                PublicationStatus.Unpublished,
+                new List<PublicationStatus>(2)
+                {
+                    PublicationStatus.Published,
+                    PublicationStatus.Unpublished,
+                },
+            };
+        }
     }
 }
