@@ -18,7 +18,9 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
 
         public Task SetOrderingPartyContact(Order order, Contact contact)
         {
-            order.ValidateNotNull(nameof(order));
+            if (order is null)
+                throw new ArgumentNullException(nameof(order));
+
             contact.ValidateNotNull(nameof(contact));
 
             order.OrderingPartyContact = contact;

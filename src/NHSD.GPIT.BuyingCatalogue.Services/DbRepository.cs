@@ -23,6 +23,9 @@ namespace NHSD.GPIT.BuyingCatalogue.Services
 
         public override void AddAll(IList<T> items)
         {
+            if (items is null)
+                throw new ArgumentNullException(nameof(items));
+
             foreach (var item in items)
             {
                 DbSet.Add(item);

@@ -21,6 +21,9 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.ListPrices
 
         public async Task SaveListPrice(CatalogueItemId itemId, SaveListPriceModel model)
         {
+            if (model is null)
+                throw new ArgumentNullException(nameof(model));
+
             var catalogueItem = await GetCatalogueItem(itemId);
 
             var cataloguePrice = new CataloguePrice
@@ -40,6 +43,9 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.ListPrices
 
         public async Task UpdateListPrice(CatalogueItemId itemId, SaveListPriceModel model)
         {
+            if (model is null)
+                throw new ArgumentNullException(nameof(model));
+
             var listPrice = await dbContext
                 .CataloguePrices
                 .Include(p => p.PricingUnit)

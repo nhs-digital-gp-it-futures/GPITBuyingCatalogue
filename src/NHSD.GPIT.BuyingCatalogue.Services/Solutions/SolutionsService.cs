@@ -17,20 +17,17 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
     public sealed class SolutionsService : ISolutionsService
     {
         private readonly BuyingCatalogueDbContext dbContext;
-        private readonly IDbRepository<MarketingContact, BuyingCatalogueDbContext> marketingContactRepository;
         private readonly IDbRepository<Solution, BuyingCatalogueDbContext> solutionRepository;
         private readonly IDbRepository<Supplier, BuyingCatalogueDbContext> supplierRepository;
         private readonly ICatalogueItemRepository catalogueItemRepository;
 
         public SolutionsService(
             BuyingCatalogueDbContext dbContext,
-            IDbRepository<MarketingContact, BuyingCatalogueDbContext> marketingContactRepository,
             IDbRepository<Solution, BuyingCatalogueDbContext> solutionRepository,
             IDbRepository<Supplier, BuyingCatalogueDbContext> supplierRepository,
             ICatalogueItemRepository catalogueItemRepository)
         {
             this.dbContext = dbContext ?? throw new ArgumentNullException(nameof(dbContext));
-            this.marketingContactRepository = marketingContactRepository ?? throw new ArgumentNullException(nameof(marketingContactRepository));
             this.solutionRepository = solutionRepository ?? throw new ArgumentNullException(nameof(solutionRepository));
             this.supplierRepository = supplierRepository ?? throw new ArgumentNullException(nameof(supplierRepository));
             this.catalogueItemRepository = catalogueItemRepository ?? throw new ArgumentNullException(nameof(catalogueItemRepository));
@@ -76,9 +73,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
             return await dbContext.CatalogueItems
                 .Include(ci => ci.Solution)
                 .Include(ci => ci.CatalogueItemCapabilities).ThenInclude(cic => cic.Capability).ThenInclude(c => c.Epics)
-                .Where(
-                    c => c.Id == catalogueItemId
-                        && c.CatalogueItemCapabilities.Any(sc => sc.CapabilityId == capabilityId))
+                .Where(c => c.Id == catalogueItemId && c.CatalogueItemCapabilities.Any(sc => sc.CapabilityId == capabilityId))
                 .FirstOrDefaultAsync();
         }
 
@@ -282,48 +277,6 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
             await SaveClientApplication(solutionId, clientApplication);
         }
 
-        public ClientApplication RemoveClientApplicationType(ClientApplication clientApplication, ClientApplicationType clientApplicationType)
-        {
-            if (clientApplication.ClientApplicationTypes != null)
-            {
-                if (clientApplication.ClientApplicationTypes.Contains(clientApplicationType.AsString(EnumFormat.EnumMemberValue)))
-                    clientApplication.ClientApplicationTypes.Remove(clientApplicationType.AsString(EnumFormat.EnumMemberValue));
-            }
-
-            if (clientApplicationType == ClientApplicationType.BrowserBased)
-            {
-                clientApplication.AdditionalInformation = null;
-                clientApplication.BrowsersSupported = null;
-                clientApplication.HardwareRequirements = null;
-                clientApplication.MinimumConnectionSpeed = null;
-                clientApplication.MinimumDesktopResolution = null;
-                clientApplication.MobileFirstDesign = null;
-                clientApplication.MobileResponsive = null;
-                clientApplication.Plugins = null;
-            }
-            else if (clientApplicationType == ClientApplicationType.Desktop)
-            {
-                clientApplication.NativeDesktopAdditionalInformation = null;
-                clientApplication.NativeDesktopHardwareRequirements = null;
-                clientApplication.NativeDesktopMemoryAndStorage = null;
-                clientApplication.NativeDesktopMinimumConnectionSpeed = null;
-                clientApplication.NativeDesktopOperatingSystemsDescription = null;
-                clientApplication.NativeDesktopThirdParty = null;
-            }
-            else
-            {
-                clientApplication.MobileConnectionDetails = null;
-                clientApplication.MobileMemoryAndStorage = null;
-                clientApplication.MobileOperatingSystems = null;
-                clientApplication.MobileThirdParty = null;
-                clientApplication.NativeMobileAdditionalInformation = null;
-                clientApplication.NativeMobileFirstDesign = null;
-                clientApplication.NativeMobileHardwareRequirements = null;
-            }
-
-            return clientApplication;
-        }
-
         public async Task<Hosting> GetHosting(CatalogueItemId solutionId)
         {
             var solution = await solutionRepository.SingleAsync(s => s.CatalogueItemId == solutionId);
@@ -349,7 +302,8 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
 
         public async Task SaveSupplierContacts(SupplierContactsModel model)
         {
-            model.ValidateNotNull(nameof(model));
+            if (model is null)
+                throw new ArgumentNullException(nameof(model));
 
             model.SetSolutionId();
 
@@ -411,7 +365,9 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
 
         public async Task<CatalogueItemId> AddCatalogueSolution(CreateSolutionModel model)
         {
-            model.ValidateNotNull(nameof(CreateSolutionModel));
+            if (model is null)
+                throw new ArgumentNullException(nameof(model));
+
             model.Frameworks.ValidateNotNull(nameof(CreateSolutionModel.Frameworks));
 
             var latestCatalogueItemId = await catalogueItemRepository.GetLatestCatalogueItemIdFor(model.SupplierId);
@@ -483,6 +439,51 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
             solution.CatalogueItemContacts = supplierContacts;
 
             await dbContext.SaveChangesAsync();
+        }
+
+        internal static ClientApplication RemoveClientApplicationType(ClientApplication clientApplication, ClientApplicationType clientApplicationType)
+        {
+            if (clientApplication is null)
+                throw new ArgumentNullException(nameof(clientApplication));
+
+            if (clientApplication.ClientApplicationTypes is not null)
+            {
+                if (clientApplication.ClientApplicationTypes.Contains(clientApplicationType.AsString(EnumFormat.EnumMemberValue)))
+                    clientApplication.ClientApplicationTypes.Remove(clientApplicationType.AsString(EnumFormat.EnumMemberValue));
+            }
+
+            if (clientApplicationType == ClientApplicationType.BrowserBased)
+            {
+                clientApplication.AdditionalInformation = null;
+                clientApplication.BrowsersSupported = null;
+                clientApplication.HardwareRequirements = null;
+                clientApplication.MinimumConnectionSpeed = null;
+                clientApplication.MinimumDesktopResolution = null;
+                clientApplication.MobileFirstDesign = null;
+                clientApplication.MobileResponsive = null;
+                clientApplication.Plugins = null;
+            }
+            else if (clientApplicationType == ClientApplicationType.Desktop)
+            {
+                clientApplication.NativeDesktopAdditionalInformation = null;
+                clientApplication.NativeDesktopHardwareRequirements = null;
+                clientApplication.NativeDesktopMemoryAndStorage = null;
+                clientApplication.NativeDesktopMinimumConnectionSpeed = null;
+                clientApplication.NativeDesktopOperatingSystemsDescription = null;
+                clientApplication.NativeDesktopThirdParty = null;
+            }
+            else
+            {
+                clientApplication.MobileConnectionDetails = null;
+                clientApplication.MobileMemoryAndStorage = null;
+                clientApplication.MobileOperatingSystems = null;
+                clientApplication.MobileThirdParty = null;
+                clientApplication.NativeMobileAdditionalInformation = null;
+                clientApplication.NativeMobileFirstDesign = null;
+                clientApplication.NativeMobileHardwareRequirements = null;
+            }
+
+            return clientApplication;
         }
 
         private async Task<CatalogueItem> GetCatalogueItem(CatalogueItemId id) => await dbContext.CatalogueItems

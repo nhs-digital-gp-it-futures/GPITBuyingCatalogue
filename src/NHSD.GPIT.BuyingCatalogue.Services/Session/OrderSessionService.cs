@@ -46,6 +46,9 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Session
 
         public void SetOrderStateToSession(CreateOrderItemModel model)
         {
+            if (model is null)
+                throw new ArgumentNullException(nameof(model));
+
             sessionService.SetObject(model.CallOffId.ToString(), model);
         }
 
@@ -55,6 +58,9 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Session
             IEnumerable<CatalogueItemId> solutionIds,
             OrderItemRecipientModel associatedOrderRecipient)
         {
+            if (order is null)
+                throw new ArgumentNullException(nameof(order));
+
             var model = GetOrderStateFromSession(order.CallOffId);
 
             if (model is not null)
@@ -156,6 +162,9 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Session
 
         public CreateOrderItemModel SetPrice(CallOffId callOffId, CataloguePrice cataloguePrice)
         {
+            if (cataloguePrice is null)
+                throw new ArgumentNullException(nameof(cataloguePrice));
+
             var state = GetOrderStateFromSession(callOffId);
 
             state.AgreedPrice = cataloguePrice.Price;

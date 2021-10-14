@@ -32,6 +32,9 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
 
         public async Task Create(CallOffId callOffId, CreateOrderItemModel model)
         {
+            if (model is null)
+                throw new ArgumentNullException(nameof(model));
+
             var order = await orderService.GetOrder(callOffId);
 
             var catalogueItemId = model.CatalogueItemId;

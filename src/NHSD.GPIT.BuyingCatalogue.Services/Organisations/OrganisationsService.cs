@@ -29,6 +29,9 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Organisations
 
         public async Task<(int OrganisationId, string Error)> AddOdsOrganisation(OdsOrganisation odsOrganisation, bool agreementSigned)
         {
+            if (odsOrganisation is null)
+                throw new ArgumentNullException(nameof(odsOrganisation));
+
             var persistedOrganisation = await dbContext.Organisations.FirstOrDefaultAsync(o => o.OdsCode == odsOrganisation.OdsCode);
 
             if (persistedOrganisation is not null)
@@ -40,7 +43,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Organisations
                 CatalogueAgreementSigned = agreementSigned,
                 LastUpdated = DateTime.UtcNow,
                 Name = odsOrganisation.OrganisationName,
-                OdsCode = odsOrganisation.OdsCode.ToUpper(),
+                OdsCode = odsOrganisation.OdsCode.ToUpperInvariant(),
                 PrimaryRoleId = odsOrganisation.PrimaryRoleId,
             };
 

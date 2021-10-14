@@ -2,6 +2,9 @@
 using System.Collections.Generic;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
+using AutoFixture;
+using AutoFixture.AutoMoq;
+using AutoFixture.Idioms;
 using FluentAssertions;
 using Moq;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework;
@@ -14,6 +17,7 @@ using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Errors;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Identity;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Results;
 using NHSD.GPIT.BuyingCatalogue.Services.CreateBuyer;
+using NHSD.GPIT.BuyingCatalogue.Test.Framework.AutoFixtureCustomisations;
 using NHSD.GPIT.BuyingCatalogue.Test.Framework.Builders;
 using NHSD.GPIT.BuyingCatalogue.Test.Framework.Comparers;
 using NHSD.GPIT.BuyingCatalogue.Test.Framework.SharedMocks;
@@ -24,79 +28,28 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.CreateBuyer
     public static class CreateBuyerServiceTests
     {
         [Fact]
-        public static void Constructor_NullApplicationUserValidator_ThrowsException()
+        public static void Constructors_VerifyGuardClauses()
         {
-            Assert.Throws<ArgumentNullException>(() => _ = new CreateBuyerService(
-                Mock.Of<IDbRepository<AspNetUser, BuyingCatalogueDbContext>>(),
-                Mock.Of<IPasswordService>(),
-                Mock.Of<IPasswordResetCallback>(),
-                Mock.Of<IEmailService>(),
-                new RegistrationSettings(),
-                null));
+            var fixture = new Fixture().Customize(new AutoMoqCustomization());
+            var assertion = new GuardClauseAssertion(fixture);
+            var constructors = typeof(CreateBuyerService).GetConstructors();
+
+            assertion.Verify(constructors);
+        }
+
+        [Theory]
+        [CommonInlineAutoData(null)]
+        [CommonInlineAutoData("")]
+        [CommonInlineAutoData("\t")]
+        public static Task Create_NullOrEmptyEmailAddress_ThrowsException(
+            string emailAddress,
+            CreateBuyerService service)
+        {
+            return Assert.ThrowsAsync<ArgumentException>(() => service.Create(1, "a", "b", "c", emailAddress));
         }
 
         [Fact]
-        public static void Constructor_NullUserRepository_ThrowsException()
-        {
-            Assert.Throws<ArgumentNullException>(() => _ = new CreateBuyerService(
-                  null,
-                  Mock.Of<IPasswordService>(),
-                  Mock.Of<IPasswordResetCallback>(),
-                  Mock.Of<IEmailService>(),
-                  new RegistrationSettings(),
-                  Mock.Of<IAspNetUserValidator>()));
-        }
-
-        [Fact]
-        public static void Constructor_NullPasswordService_ThrowsException()
-        {
-            Assert.Throws<ArgumentNullException>(() => _ = new CreateBuyerService(
-                  Mock.Of<IDbRepository<AspNetUser, BuyingCatalogueDbContext>>(),
-                  null,
-                  Mock.Of<IPasswordResetCallback>(),
-                  Mock.Of<IEmailService>(),
-                  new RegistrationSettings(),
-                  Mock.Of<IAspNetUserValidator>()));
-        }
-
-        [Fact]
-        public static void Constructor_NullPasswordCallback_ThrowsException()
-        {
-            Assert.Throws<ArgumentNullException>(() => _ = new CreateBuyerService(
-                  Mock.Of<IDbRepository<AspNetUser, BuyingCatalogueDbContext>>(),
-                  Mock.Of<IPasswordService>(),
-                  null,
-                  Mock.Of<IEmailService>(),
-                  new RegistrationSettings(),
-                  Mock.Of<IAspNetUserValidator>()));
-        }
-
-        [Fact]
-        public static void Constructor_NullEmailServiceCallback_ThrowsException()
-        {
-            Assert.Throws<ArgumentNullException>(() => _ = new CreateBuyerService(
-                  Mock.Of<IDbRepository<AspNetUser, BuyingCatalogueDbContext>>(),
-                  Mock.Of<IPasswordService>(),
-                  Mock.Of<IPasswordResetCallback>(),
-                  null,
-                  new RegistrationSettings(),
-                  Mock.Of<IAspNetUserValidator>()));
-        }
-
-        [Fact]
-        public static void Constructor_NullRegistrationServiceCallback_ThrowsException()
-        {
-            Assert.Throws<ArgumentNullException>(() => _ = new CreateBuyerService(
-                  Mock.Of<IDbRepository<AspNetUser, BuyingCatalogueDbContext>>(),
-                  Mock.Of<IPasswordService>(),
-                  Mock.Of<IPasswordResetCallback>(),
-                  Mock.Of<IEmailService>(),
-                  null,
-                  Mock.Of<IAspNetUserValidator>()));
-        }
-
-        [Fact]
-        public static async Task CreateAsync_SuccessfulApplicationUserValidation_ReturnsSuccess()
+        public static async Task Create_SuccessfulApplicationUserValidation_ReturnsSuccess()
         {
             var context = CreateBuyerServiceTestContext.Setup();
 
@@ -109,7 +62,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.CreateBuyer
         }
 
         [Fact]
-        public static async Task CreateAsync_ApplicationUserValidation_CalledOnce()
+        public static async Task Create_ApplicationUserValidation_CalledOnce()
         {
             var context = CreateBuyerServiceTestContext.Setup();
             var sut = context.CreateBuyerService;
@@ -132,7 +85,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.CreateBuyer
         }
 
         [Fact]
-        public static async Task CreateAsync_SuccessfulApplicationUserValidation_UserRepository_CalledOnce()
+        public static async Task Create_SuccessfulApplicationUserValidation_UserRepository_CalledOnce()
         {
             var context = CreateBuyerServiceTestContext.Setup();
             var sut = context.CreateBuyerService;
@@ -155,7 +108,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.CreateBuyer
         }
 
         [Fact]
-        public static async Task CreateAsync_ApplicationUserValidationFails_ReturnFailureResult()
+        public static async Task Create_ApplicationUserValidationFails_ReturnFailureResult()
         {
             var context = CreateBuyerServiceTestContext.Setup();
             context.AspNetUserValidatorResult = Result.Failure(new List<ErrorDetails>());
@@ -169,7 +122,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.CreateBuyer
         }
 
         [Fact]
-        public static async Task CreateBuyerAsync_NewApplicationUser_SendsEmail()
+        public static async Task Create_NewApplicationUser_SendsEmail()
         {
             const string expectedToken = "TokenMcToken";
             const int primaryOrganisationId = 27;
@@ -191,10 +144,6 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.CreateBuyer
 
             var sut = context.CreateBuyerService;
             await sut.Create(primaryOrganisationId, "Test", "Smith", "0123456789", "a.b@c.com");
-
-            Expression<Func<PasswordResetToken, bool>> expected = t =>
-                t.Token.Equals(expectedToken, StringComparison.Ordinal)
-                && AspNetUserEditableInformationComparer.Instance.Equals(expectedUser, t.User);
 
             context.EmailServiceMock.Verify(s => s.SendEmailAsync(It.IsAny<EmailMessage>()));
         }

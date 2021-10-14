@@ -36,7 +36,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Suppliers
         {
             var actual = await Assert.ThrowsAsync<ArgumentNullException>(() => service.AddSupplier(null));
 
-            actual.ParamName.Should().Be(nameof(EditSupplierModel));
+            actual.ParamName.Should().Be("model");
         }
 
         [Theory]

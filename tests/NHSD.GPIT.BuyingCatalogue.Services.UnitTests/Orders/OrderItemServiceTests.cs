@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using System.Threading.Tasks;
 using AutoFixture;
 using AutoFixture.AutoMoq;
@@ -77,6 +78,13 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Orders
             updatedOrder.Should().NotBeNull();
             updatedOrder.OrderItems.Should().NotContain(o => o.CatalogueItemId == orderItem.CatalogueItemId);
             updatedOrder.FundingSourceOnlyGms.Should().BeNull();
+        }
+
+        [Theory]
+        [InMemoryDbAutoData]
+        public static Task Create_NullModel_ThrowsException(OrderItemService service)
+        {
+            return Assert.ThrowsAsync<ArgumentNullException>(() => service.Create(default, null));
         }
     }
 }
