@@ -20,7 +20,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators
         {
             var result = await validator.TestValidateAsync(model);
 
-            result.ShouldNotHaveValidationErrorFor(m => m.AvailableSupplierContacts);
+            result.ShouldNotHaveValidationErrorFor(EditSupplierDetailsModelValidator.ErrorElementName);
         }
 
         [Theory]
@@ -33,7 +33,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators
 
             var result = await validator.TestValidateAsync(model);
 
-            result.ShouldHaveValidationErrorFor(m => m.AvailableSupplierContacts)
+            result.ShouldHaveValidationErrorFor(EditSupplierDetailsModelValidator.ErrorElementName)
                 .WithErrorMessage("Select a supplier contact");
         }
 
@@ -50,7 +50,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators
 
             var result = await validator.TestValidateAsync(model);
 
-            result.ShouldHaveValidationErrorFor(m => m.AvailableSupplierContacts)
+            result.ShouldHaveValidationErrorFor(EditSupplierDetailsModelValidator.ErrorElementName)
                 .WithErrorMessage("You can only select up to two supplier contacts");
         }
     }
