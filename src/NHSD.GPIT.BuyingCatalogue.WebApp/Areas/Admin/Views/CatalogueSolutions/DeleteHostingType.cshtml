@@ -1,6 +1,7 @@
-﻿@model NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.HostingTypeModels.DeleteHostingTypeConfirmationModel
+﻿@using EnumsNET;
+@model NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.HostingTypeModels.DeleteHostingTypeConfirmationModel
 @{
-    ViewBag.Title = "Delete hosting type?";
+    ViewBag.Title = $"Delete {Model.HostingType.AsString(EnumFormat.DisplayName)!.ToLowerInvariant()}?";
 }
 
 <partial name="Partials/_BackLink" model="Model" />

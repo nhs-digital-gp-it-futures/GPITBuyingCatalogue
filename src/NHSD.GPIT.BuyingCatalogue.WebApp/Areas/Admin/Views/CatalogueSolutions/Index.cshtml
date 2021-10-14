@@ -81,9 +81,10 @@
     static NhsTagsTagHelper.TagColour GetTagColour(NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.CatalogueModel item) =>
         item.PublishedStatusId switch
         {
-            PublicationStatus.Draft => NhsTagsTagHelper.TagColour.Red,
+            PublicationStatus.Draft => NhsTagsTagHelper.TagColour.White,
+            PublicationStatus.InRemediation => NhsTagsTagHelper.TagColour.Yellow,
+            PublicationStatus.Suspended => NhsTagsTagHelper.TagColour.Red,
             PublicationStatus.Published => NhsTagsTagHelper.TagColour.Green,
-            PublicationStatus.Suspended => NhsTagsTagHelper.TagColour.Yellow,
-            PublicationStatus.Unpublished or _ => NhsTagsTagHelper.TagColour.DarkBlue,
+            PublicationStatus.Unpublished or _ => NhsTagsTagHelper.TagColour.Grey,
         };
 }
