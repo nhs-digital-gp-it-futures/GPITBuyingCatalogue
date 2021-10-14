@@ -1,4 +1,5 @@
-﻿using MimeKit;
+﻿using System;
+using MimeKit;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Email;
 
 namespace NHSD.GPIT.BuyingCatalogue.Services.Email
@@ -14,7 +15,12 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Email
         /// <param name="address">The receiving <see cref="EmailAddress"/> instance.</param>
         /// <returns>the corresponding <see cref="MailboxAddress"/>.</returns>
         public static MailboxAddress AsMailboxAddress(this EmailAddress address)
-            => new(address.DisplayName, address.Address);
+        {
+            if (address is null)
+                throw new ArgumentNullException(nameof(address));
+
+            return new MailboxAddress(address.DisplayName, address.Address);
+        }
 
         /// <summary>
         /// Returns the receiver as a <see cref="MimeMessage"/>.
@@ -26,6 +32,9 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Email
             this EmailMessage emailMessage,
             string emailSubjectPrefix = null)
         {
+            if (emailMessage is null)
+                throw new ArgumentNullException(nameof(emailMessage));
+
             var bodyBuilder = new BodyBuilder
             {
                 HtmlBody = emailMessage.HtmlBody?.ToString(),

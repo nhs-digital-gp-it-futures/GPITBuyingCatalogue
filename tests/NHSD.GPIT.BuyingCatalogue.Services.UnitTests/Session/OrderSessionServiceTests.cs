@@ -1,4 +1,5 @@
-﻿using AutoFixture;
+﻿using System;
+using AutoFixture;
 using AutoFixture.AutoMoq;
 using AutoFixture.Idioms;
 using FluentAssertions;
@@ -109,6 +110,20 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Session
             actual.AgreedPrice.Should().Be(price.Price);
             actual.CataloguePrice.Should().BeEquivalentTo(price);
             actual.CurrencySymbol.Should().Be(CurrencyCodeSigns.Code[price.CurrencyCode]);
+        }
+
+        [Theory]
+        [CommonAutoData]
+        public static void SetOrderStateToSession_NullModel_ThrowsException(OrderSessionService service)
+        {
+            Assert.Throws<ArgumentNullException>(() => service.SetOrderStateToSession(null));
+        }
+
+        [Theory]
+        [CommonAutoData]
+        public static void SetPrice_NullCataloguePrice_ThrowsException(OrderSessionService service)
+        {
+            Assert.Throws<ArgumentNullException>(() => service.SetPrice(default, null));
         }
 
         private static IHttpContextAccessor GetAccessor()

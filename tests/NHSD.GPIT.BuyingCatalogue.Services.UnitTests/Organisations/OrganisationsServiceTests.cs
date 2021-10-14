@@ -29,6 +29,13 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Organisations
 
         [Theory]
         [InMemoryDbAutoData]
+        public static Task AddOdsOrganisation_NullOdsOrganisation_ThrowsException(OrganisationsService service)
+        {
+            return Assert.ThrowsAsync<ArgumentNullException>(() => service.AddOdsOrganisation(null, true));
+        }
+
+        [Theory]
+        [InMemoryDbAutoData]
         public static async Task AddOdsOrganisation_OrganisationAlreadyExists_ReturnsError(
             [Frozen] BuyingCatalogueDbContext context,
             OdsOrganisation odsOrganisation,

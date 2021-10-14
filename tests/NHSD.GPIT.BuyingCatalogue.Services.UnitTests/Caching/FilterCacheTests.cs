@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using AutoFixture.Xunit2;
 using FluentAssertions;
 using Microsoft.Extensions.Caching.Memory;
@@ -64,6 +65,14 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Caching
             actualContent
                 .Should()
                 .Be(content);
+        }
+
+        [Theory]
+        [CommonAutoData]
+        public static void Remove_IEnumerableString_NullEnumerable_ThrowsException(
+            FilterCache filterCache)
+        {
+             Assert.Throws<ArgumentNullException>(() => filterCache.Remove((IEnumerable<string>)null));
         }
 
         [Theory]
