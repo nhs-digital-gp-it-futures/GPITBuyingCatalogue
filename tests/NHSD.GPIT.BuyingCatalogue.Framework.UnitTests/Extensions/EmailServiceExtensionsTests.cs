@@ -13,14 +13,14 @@ namespace NHSD.GPIT.BuyingCatalogue.Framework.UnitTests.Extensions
     {
         [Theory]
         [AutoData]
-        public static void SendEmailAsync_NullService_ThrowsException(
+        public static Task SendEmailAsync_NullService_ThrowsException(
             EmailMessageTemplate messageTemplate,
             EmailAddress recipient)
         {
             MockEmailService service = null;
 
             // ReSharper disable once ExpressionIsAlwaysNull
-            Assert.ThrowsAsync<ArgumentNullException>(() => service.SendEmailAsync(messageTemplate, recipient));
+            return Assert.ThrowsAsync<ArgumentNullException>(() => service.SendEmailAsync(messageTemplate, recipient));
         }
 
         [Fact]

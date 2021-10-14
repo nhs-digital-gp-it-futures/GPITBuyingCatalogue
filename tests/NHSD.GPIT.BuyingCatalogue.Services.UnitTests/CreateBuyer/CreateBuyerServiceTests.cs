@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq.Expressions;
 using System.Threading.Tasks;
 using AutoFixture;
 using AutoFixture.AutoMoq;
@@ -148,23 +147,12 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.CreateBuyer
             context.EmailServiceMock.Verify(s => s.SendEmailAsync(It.IsAny<EmailMessage>()));
         }
 
-        [Fact]
-        public static void SendInitialEmailAsync_NullUser_ThrowsException()
+        [Theory]
+        [CommonAutoData]
+        public static Task SendInitialEmailAsync_NullUser_ThrowsException(
+            CreateBuyerService service)
         {
-            static async Task SendEmail()
-            {
-                var createBuyerService = new CreateBuyerService(
-                    Mock.Of<IDbRepository<AspNetUser, BuyingCatalogueDbContext>>(),
-                    Mock.Of<IPasswordService>(),
-                    Mock.Of<IPasswordResetCallback>(),
-                    Mock.Of<IEmailService>(),
-                    new RegistrationSettings(),
-                    Mock.Of<IAspNetUserValidator>());
-
-                await createBuyerService.SendInitialEmailAsync(null);
-            }
-
-            Assert.ThrowsAsync<ArgumentNullException>(SendEmail);
+            return Assert.ThrowsAsync<ArgumentNullException>(() => service.SendInitialEmailAsync(null));
         }
 
         [Fact]
@@ -327,7 +315,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.CreateBuyer
 
             public static CreateBuyerServiceTestContext Setup()
             {
-                return new();
+                return new CreateBuyerServiceTestContext();
             }
         }
     }

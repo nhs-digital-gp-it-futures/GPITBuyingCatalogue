@@ -17,21 +17,21 @@ namespace NHSD.GPIT.BuyingCatalogue.Framework.UnitTests.Middleware.CookieConsent
     {
         [Theory]
         [CommonAutoData]
-        public static void Invoke_NullHttpContext_ThrowsException(
+        public static Task Invoke_NullHttpContext_ThrowsException(
             CookieExpirationSettings cookieExpirationSettings,
             CookieConsentMiddleware middleware)
         {
-            Assert.ThrowsAsync<ArgumentNullException>(() => middleware.Invoke(null, cookieExpirationSettings));
+            return Assert.ThrowsAsync<ArgumentNullException>(() => middleware.Invoke(null, cookieExpirationSettings));
         }
 
         [Theory]
         [CommonAutoData]
-        public static void Invoke_NullCookieExpirationSettings_ThrowsException(
+        public static Task Invoke_NullCookieExpirationSettings_ThrowsException(
             CookieConsentMiddleware middleware)
         {
             var httpContextMock = new MockHttpContext();
 
-            Assert.ThrowsAsync<ArgumentNullException>(() => middleware.Invoke(httpContextMock.HttpContext, null));
+            return Assert.ThrowsAsync<ArgumentNullException>(() => middleware.Invoke(httpContextMock.HttpContext, null));
         }
 
         [Theory]
