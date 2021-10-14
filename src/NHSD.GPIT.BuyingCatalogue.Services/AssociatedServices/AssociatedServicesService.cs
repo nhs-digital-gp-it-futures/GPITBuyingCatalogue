@@ -6,7 +6,6 @@ using Microsoft.EntityFrameworkCore;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
-using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.AssociatedServices;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Models.AssociatedServices;
 
@@ -80,7 +79,11 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.AssociatedServices
             CatalogueItem solution,
             AssociatedServicesDetailsModel model)
         {
-            model.ValidateNotNull(nameof(AssociatedServicesDetailsModel));
+            if (solution is null)
+                throw new ArgumentNullException(nameof(solution));
+
+            if (model is null)
+                throw new ArgumentNullException(nameof(model));
 
             var latestAssociatedServiceCatalogueItemId = await catalogueItemRepository.GetLatestAssociatedServiceCatalogueItemIdFor(solution.SupplierId);
             var catalogueItemId = latestAssociatedServiceCatalogueItemId.NextAssociatedServiceId();
@@ -111,7 +114,8 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.AssociatedServices
             CatalogueItemId associatedServiceId,
             AssociatedServicesDetailsModel model)
         {
-            model.ValidateNotNull(nameof(AssociatedServicesDetailsModel));
+            if (model is null)
+                throw new ArgumentNullException(nameof(model));
 
             var associatedService = await dbContext.CatalogueItems
                 .Include(i => i.AssociatedService)

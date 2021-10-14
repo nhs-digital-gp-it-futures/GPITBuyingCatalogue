@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -15,6 +16,15 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Email
         private static EmailMessageTemplate BasicTemplate => new(new EmailAddressTemplate("sender@somedomain.nhs.test"));
 
         private static ICollection<EmailAddress> SingleRecipient => new[] { new EmailAddress("recipient@somedomain.nhs.test") };
+
+        [Fact]
+        public static void AsMailboxAddress_NullAddress_ThrowsException()
+        {
+            EmailAddress address = null;
+
+            // ReSharper disable once ExpressionIsAlwaysNull
+            Assert.Throws<ArgumentNullException>(() => address.AsMailboxAddress());
+        }
 
         [Fact]
         public static void AsMailboxAddress_ReturnsExpectedType()
@@ -48,6 +58,15 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Email
 
             mailboxAddress.Should().BeOfType<MailboxAddress>();
             mailboxAddress.Address.Should().Be(address);
+        }
+
+        [Fact]
+        public static void AsMimeMessage_NullMessage_ThrowsException()
+        {
+            EmailMessage message = null;
+
+            // ReSharper disable once ExpressionIsAlwaysNull
+            Assert.Throws<ArgumentNullException>(() => message.AsMimeMessage());
         }
 
         [Fact]

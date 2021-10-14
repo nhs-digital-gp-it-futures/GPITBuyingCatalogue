@@ -1,4 +1,5 @@
-﻿using System.Text.Json;
+﻿using System;
+using System.Text.Json;
 using System.Text.Json.Serialization;
 using Microsoft.AspNetCore.Http;
 using NHSD.GPIT.BuyingCatalogue.Framework.Serialization;
@@ -12,7 +13,11 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Session
 
         public SessionService(IHttpContextAccessor accessor)
         {
-            session = accessor.HttpContext.Session;
+            if (accessor is null)
+                throw new ArgumentNullException(nameof(accessor));
+
+            session = accessor.HttpContext?.Session
+                ?? throw new InvalidOperationException("HttpContext or HttpContext.Session is null");
         }
 
         public string GetString(string key)

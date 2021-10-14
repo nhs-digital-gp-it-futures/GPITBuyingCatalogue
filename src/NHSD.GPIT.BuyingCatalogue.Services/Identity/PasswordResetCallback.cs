@@ -1,7 +1,6 @@
 ﻿using System;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Routing;
-using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.Framework.Settings;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Identity;
 
@@ -22,8 +21,10 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Identity
 
         public Uri GetPasswordResetCallback(PasswordResetToken token)
         {
-            token.ValidateNotNull(nameof(token));
+            if (token is null)
+                throw new ArgumentNullException(nameof(token));
 
+            // ReSharper disable once Mvc.AreaNotResolved
             var action = generator.GetUriByAction(
                 accessor.HttpContext,
                 "ResetPassword",

@@ -6,7 +6,6 @@ using Microsoft.EntityFrameworkCore;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Addresses.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
-using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Models;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Suppliers;
 
@@ -15,14 +14,10 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Suppliers
     public sealed class SuppliersService : ISuppliersService
     {
         private readonly BuyingCatalogueDbContext dbContext;
-        private readonly IDbRepository<Supplier, BuyingCatalogueDbContext> supplierRepository;
 
-        public SuppliersService(
-            BuyingCatalogueDbContext dbContext,
-            IDbRepository<Supplier, BuyingCatalogueDbContext> supplierRepository)
+        public SuppliersService(BuyingCatalogueDbContext dbContext)
         {
             this.dbContext = dbContext ?? throw new ArgumentNullException(nameof(dbContext));
-            this.supplierRepository = supplierRepository ?? throw new ArgumentNullException(nameof(supplierRepository));
         }
 
         public async Task<IReadOnlyList<Supplier>> GetAllSuppliers()
@@ -63,7 +58,8 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Suppliers
 
         public async Task<Supplier> AddSupplier(EditSupplierModel model)
         {
-            model.ValidateNotNull(nameof(EditSupplierModel));
+            if (model is null)
+                throw new ArgumentNullException(nameof(model));
 
             var latestSupplier = await dbContext.Suppliers.OrderByDescending(s => s.Id).Take(1).SingleAsync();
 
@@ -97,6 +93,9 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Suppliers
 
         public async Task<Supplier> EditSupplierDetails(int supplierId, EditSupplierModel updatedSupplier)
         {
+            if (updatedSupplier is null)
+                throw new ArgumentNullException(nameof(updatedSupplier));
+
             var supplier = await GetSupplier(supplierId);
 
             supplier.Name = updatedSupplier.SupplierName;
@@ -133,6 +132,9 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Suppliers
 
         public async Task<Supplier> EditSupplierContact(int supplierId, int contactId, SupplierContact updatedContact)
         {
+            if (updatedContact is null)
+                throw new ArgumentNullException(nameof(updatedContact));
+
             var supplier = await GetSupplier(supplierId);
 
             var contact = supplier.SupplierContacts.Single(sc => sc.Id == contactId);
