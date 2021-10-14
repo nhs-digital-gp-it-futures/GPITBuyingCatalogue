@@ -7,17 +7,17 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Validators
 {
     public sealed class EditSupplierDetailsModelValidator : AbstractValidator<EditSupplierDetailsModel>
     {
-        internal static readonly string AvailableSupplierContactsName = $"{nameof(EditSupplierDetailsModel.AvailableSupplierContacts)}[0].{nameof(AvailableSupplierContact.Selected)}";
+        internal static readonly string ErrorElementName = $"edit-supplier-details";
 
         public EditSupplierDetailsModelValidator()
         {
             RuleFor(m => m.AvailableSupplierContacts)
                 .Must(HaveAtLeastOneSelectedContact)
                 .WithMessage("Select a supplier contact")
-                .OverridePropertyName(AvailableSupplierContactsName)
+                .OverridePropertyName(ErrorElementName)
                 .Must(HaveNoMoreThanTwoSelectedContacts)
                 .WithMessage("You can only select up to two supplier contacts")
-                .OverridePropertyName(AvailableSupplierContactsName);
+                .OverridePropertyName(ErrorElementName);
         }
 
         private static bool HaveAtLeastOneSelectedContact(IReadOnlyList<AvailableSupplierContact> availableSupplierContacts)
