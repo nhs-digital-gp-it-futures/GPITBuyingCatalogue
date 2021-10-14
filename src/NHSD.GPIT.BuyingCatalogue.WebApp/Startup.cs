@@ -44,7 +44,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp
                 options.Filters.Add(typeof(ActionArgumentNullFilter));
                 options.Filters.Add(typeof(OrdersActionFilter));
                 options.Filters.Add<SerilogMvcLoggingAttribute>();
-            });
+            }).AddControllersAsServices();
 
             services.AddMvc(
                     options =>
