@@ -97,7 +97,7 @@ jobs:
     inputs:
       command: test
       projects: '**/*E2ETests.csproj'
-      arguments: '-v n --no-build --configuration $(buildConfiguration) -- xunit.parallelizeAssembly=true'
+      arguments: '-v n --no-build --configuration $(buildConfiguration) -- xunit.parallelizeTestCollections=true'
 
   - task: DockerInstaller@0
     inputs:
