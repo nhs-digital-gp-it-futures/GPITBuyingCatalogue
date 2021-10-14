@@ -62,7 +62,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Identity
         [InlineData(null)]
         [InlineData("")]
         [InlineData("\t")]
-        public static void GeneratePasswordResetTokenAsync_EmptyOrWhiteSpaceEmailAddress_ThrowsException(string emailAddress)
+        public static Task GeneratePasswordResetTokenAsync_EmptyOrWhiteSpaceEmailAddress_ThrowsException(string emailAddress)
         {
             Task GeneratePasswordResetTokenAsync()
             {
@@ -74,7 +74,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Identity
                 return service.GeneratePasswordResetTokenAsync(emailAddress);
             }
 
-            Assert.ThrowsAsync<ArgumentException>(GeneratePasswordResetTokenAsync);
+            return Assert.ThrowsAsync<ArgumentException>(GeneratePasswordResetTokenAsync);
         }
 
         [Fact]
@@ -118,7 +118,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Identity
         }
 
         [Fact]
-        public static void SendResetEmailAsync_NullUser_ThrowsException()
+        public static Task SendResetEmailAsync_NullUser_ThrowsException()
         {
             static Task SendResetEmailAsync()
             {
@@ -130,11 +130,11 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Identity
                 return service.SendResetEmailAsync(null, new Uri("https://www.google.co.uk/"));
             }
 
-            Assert.ThrowsAsync<ArgumentNullException>(SendResetEmailAsync);
+            return Assert.ThrowsAsync<ArgumentNullException>(SendResetEmailAsync);
         }
 
         [Fact]
-        public static void SendResetEmailAsync_NullCallback_ThrowsException()
+        public static Task SendResetEmailAsync_NullCallback_ThrowsException()
         {
             static Task SendResetEmailAsync()
             {
@@ -146,7 +146,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Identity
                 return service.SendResetEmailAsync(AspNetUserBuilder.Create().Build(), null);
             }
 
-            Assert.ThrowsAsync<ArgumentNullException>(SendResetEmailAsync);
+            return Assert.ThrowsAsync<ArgumentNullException>(SendResetEmailAsync);
         }
 
         [Fact]

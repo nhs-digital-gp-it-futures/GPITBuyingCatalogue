@@ -60,14 +60,14 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Organisations
         }
 
         [Theory]
-        [InlineData("")]
-        [InlineData(" ")]
-        [InlineData(null)]
-        public static void GetOrganisationByOdsCode_NoOdsCode_ThrowsException(string odsCode)
+        [CommonInlineAutoData("")]
+        [CommonInlineAutoData(" ")]
+        [CommonInlineAutoData(null)]
+        public static Task GetOrganisationByOdsCode_NoOdsCode_ThrowsException(
+            string odsCode,
+            OdsService service)
         {
-            var serviceMock = new Mock<IOdsService>();
-
-            _ = Assert.ThrowsAsync<ArgumentNullException>(() => _ = serviceMock.Object.GetOrganisationByOdsCode(odsCode));
+            return Assert.ThrowsAsync<ArgumentException>(() => service.GetOrganisationByOdsCode(odsCode));
         }
 
         [Theory]
@@ -204,14 +204,14 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Organisations
         }
 
         [Theory]
-        [InlineData("")]
-        [InlineData(" ")]
-        [InlineData(null)]
-        public static void GetServiceRecipientsByParentOdsCode_NoOdsCode_ThrowsException(string odsCode)
+        [CommonInlineAutoData("")]
+        [CommonInlineAutoData(" ")]
+        [CommonInlineAutoData(null)]
+        public static Task GetServiceRecipientsByParentOdsCode_NoOdsCode_ThrowsException(
+            string odsCode,
+            OdsService service)
         {
-            var serviceMock = new Mock<IOdsService>();
-
-            _ = Assert.ThrowsAsync<ArgumentNullException>(() => _ = serviceMock.Object.GetServiceRecipientsByParentOdsCode(odsCode));
+            return Assert.ThrowsAsync<ArgumentException>(() => service.GetServiceRecipientsByParentOdsCode(odsCode));
         }
 
         [Theory]
