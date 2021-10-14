@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using System;
+using System.ComponentModel.DataAnnotations;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Models;
 
@@ -13,6 +14,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.SupplierModels
 
         public EditSupplierAddressModel(Supplier supplier)
         {
+            if (supplier is null)
+                throw new ArgumentNullException(nameof(supplier));
+
             AddressLine1 = supplier.Address?.Line1;
             AddressLine2 = supplier.Address?.Line2;
             AddressLine3 = supplier.Address?.Line3;
