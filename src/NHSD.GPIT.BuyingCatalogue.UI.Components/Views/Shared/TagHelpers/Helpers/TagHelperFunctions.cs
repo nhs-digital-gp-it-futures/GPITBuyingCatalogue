@@ -44,6 +44,11 @@ namespace NHSD.GPIT.BuyingCatalogue.UI.Components.TagHelpers
                    || GetCustomAttribute<PasswordAttribute>(aspFor) != null;
         }
 
+        public static bool CheckIfModelStateHasAnyErrors(ViewContext viewContext, params ModelExpression[] modelExpressions)
+        {
+            return modelExpressions.Any(me => CheckIfModelStateHasErrors(viewContext, me));
+        }
+
         public static bool CheckIfModelStateHasErrors(ViewContext viewContext, ModelExpression aspFor, string validationName = null)
         {
             var modelState = viewContext.ViewData?.ModelState;
