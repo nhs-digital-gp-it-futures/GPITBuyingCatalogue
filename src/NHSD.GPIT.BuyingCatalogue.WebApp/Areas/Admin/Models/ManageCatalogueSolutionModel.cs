@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Enums;
+using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.AdditionalServices;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.AssociatedServices;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Models;
 
@@ -14,6 +15,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models
         public CatalogueItem Solution { get; private set; }
 
         public IReadOnlyList<CatalogueItem> AssociatedServices { get; private set; }
+
+        public IReadOnlyList<CatalogueItem> AdditionalServices { get; private set; }
 
         public IReadOnlyList<SelectListItem> PublicationStatuses { get; private set; }
 
@@ -40,6 +43,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models
         public TaskProgress AssociatedServicesStatus() =>
             new AssociatedServicesModel(Solution, AssociatedServices).Status();
 
+        public TaskProgress AdditionalServicesStatus() =>
+            new AdditionalServicesModel(Solution, AdditionalServices).Status();
+
         public TaskProgress SupplierDetailsStatus() => new EditSupplierDetailsModel(Solution).Status();
 
         public ManageCatalogueSolutionModel WithSolution(CatalogueItem solution)
@@ -58,6 +64,13 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models
         public ManageCatalogueSolutionModel WithAssociatedServices(List<CatalogueItem> associatedServices)
         {
             AssociatedServices = associatedServices;
+
+            return this;
+        }
+
+        public ManageCatalogueSolutionModel WithAdditionalServices(List<CatalogueItem> additionalServices)
+        {
+            AdditionalServices = additionalServices;
 
             return this;
         }

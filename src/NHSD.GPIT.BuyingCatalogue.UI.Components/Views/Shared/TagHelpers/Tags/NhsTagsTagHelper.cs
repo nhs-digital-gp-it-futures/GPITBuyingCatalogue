@@ -1,4 +1,7 @@
-﻿using Microsoft.AspNetCore.Razor.TagHelpers;
+﻿using System;
+using EnumsNET;
+using Microsoft.AspNetCore.Razor.TagHelpers;
+using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Enums;
 using NHSD.GPIT.BuyingCatalogue.UI.Components.TagHelpers;
 
@@ -49,7 +52,7 @@ namespace NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.TagHelpers.Tags
         public TagColour ChosenTagColour { get; set; }
 
         [HtmlAttributeName(TagStatusEnum)]
-        public TaskProgress? TagStatus { get; set; }
+        public Enum TagStatus { get; set; }
 
         public override void Process(TagHelperContext context, TagHelperOutput output)
         {
@@ -87,12 +90,9 @@ namespace NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.TagHelpers.Tags
             output.Content.Append(TagText);
         }
 
-        private (TagColour SelectedColourClass, string TagText) GetStatusFromEnum()
+        private static (TagColour SelectedColourClass, string TagText) GetTaskProgressStatus(TaskProgress progress)
         {
-            if (TagStatus is null)
-                return (TagColour.Grey, "Not started");
-
-            var selectedColourClass = TagStatus.Value switch
+            var selectedColourClass = progress switch
             {
                 TaskProgress.NotStarted => TagColour.Grey,
                 TaskProgress.CannotStart => TagColour.Grey,
@@ -102,7 +102,7 @@ namespace NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.TagHelpers.Tags
                 _ => TagColour.Grey,
             };
 
-            var tagText = TagStatus.Value switch
+            var tagText = progress switch
             {
                 TaskProgress.NotStarted => "Not started",
                 TaskProgress.CannotStart => "Cannot start yet",
@@ -113,6 +113,32 @@ namespace NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.TagHelpers.Tags
             };
 
             return (selectedColourClass, tagText);
+        }
+
+        private static (TagColour SelectedColourClass, string TagText) GetPublicationStatus(PublicationStatus publicationStatus)
+        {
+            var selectedColourClass = publicationStatus switch
+            {
+                PublicationStatus.Draft => TagColour.White,
+                PublicationStatus.InRemediation => TagColour.Yellow,
+                PublicationStatus.Suspended => TagColour.Red,
+                PublicationStatus.Published => TagColour.Green,
+                PublicationStatus.Unpublished or _ => TagColour.Grey,
+            };
+
+            var tagText = publicationStatus.AsString(EnumFormat.DisplayName);
+
+            return (selectedColourClass, tagText);
+        }
+
+        private (TagColour SelectedColourClass, string TagText) GetStatusFromEnum()
+        {
+            return TagStatus switch
+            {
+                TaskProgress progress => GetTaskProgressStatus(progress),
+                PublicationStatus publicationStatus => GetPublicationStatus(publicationStatus),
+                _ => throw new ArgumentOutOfRangeException(nameof(PublicationStatus)),
+            };
         }
     }
 }

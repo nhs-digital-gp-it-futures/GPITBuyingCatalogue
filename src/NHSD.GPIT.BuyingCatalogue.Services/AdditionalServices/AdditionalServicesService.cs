@@ -19,6 +19,13 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.AdditionalServices
             this.dbContext = dbContext ?? throw new ArgumentNullException(nameof(dbContext));
         }
 
+        public Task<List<CatalogueItem>> GetAdditionalServicesBySolutionId(CatalogueItemId catalogueItemId)
+            => dbContext.CatalogueItems
+                .Include(i => i.AdditionalService)
+                .Where(i => i.AdditionalService.SolutionId == catalogueItemId && i.CatalogueItemType == CatalogueItemType.AdditionalService)
+                .OrderBy(i => i.Name)
+                .ToListAsync();
+
         public Task<List<CatalogueItem>> GetAdditionalServicesBySolutionIds(IEnumerable<CatalogueItemId> solutionIds)
         {
             return dbContext.CatalogueItems

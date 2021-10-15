@@ -8,6 +8,7 @@ using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.Framework.Constants;
 using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
+using NHSD.GPIT.BuyingCatalogue.ServiceContracts.AdditionalServices;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.AssociatedServices;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Caching;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Models;
@@ -30,17 +31,20 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
 
         private readonly ISolutionsService solutionsService;
         private readonly IAssociatedServicesService associatedServicesService;
+        private readonly IAdditionalServicesService additionalServicesService;
         private readonly IFilterCache filterCache;
         private readonly ISuppliersService suppliersService;
 
         public CatalogueSolutionsController(
             ISolutionsService solutionsService,
             IAssociatedServicesService associatedServicesService,
+            IAdditionalServicesService additionalServicesService,
             IFilterCache filterCache,
             ISuppliersService suppliersService)
         {
             this.solutionsService = solutionsService ?? throw new ArgumentNullException(nameof(solutionsService));
             this.associatedServicesService = associatedServicesService ?? throw new ArgumentNullException(nameof(associatedServicesService));
+            this.additionalServicesService = additionalServicesService ?? throw new ArgumentNullException(nameof(additionalServicesService));
             this.filterCache = filterCache ?? throw new ArgumentNullException(nameof(filterCache));
             this.suppliersService = suppliersService ?? throw new ArgumentNullException(nameof(suppliersService));
         }
@@ -89,10 +93,12 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
         {
             var solution = await solutionsService.GetSolution(solutionId);
             var associatedServices = await associatedServicesService.GetAssociatedServicesForSupplier(solution.SupplierId);
+            var additionalServices = await additionalServicesService.GetAdditionalServicesBySolutionId(solutionId);
 
             var model = new ManageCatalogueSolutionModel()
                 .WithSolution(solution)
-                .WithAssociatedServices(associatedServices);
+                .WithAssociatedServices(associatedServices)
+                .WithAdditionalServices(additionalServices);
 
             if (solution.Solution.LastUpdatedBy.HasValue)
             {
@@ -112,10 +118,12 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
             if (!ModelState.IsValid)
             {
                 var associatedServices = await associatedServicesService.GetAssociatedServicesForSupplier(solution.SupplierId);
+                var additionalServices = await additionalServicesService.GetAdditionalServicesBySolutionId(solutionId);
 
                 return View("ManageCatalogueSolution", model
                     .WithSolution(solution)
-                    .WithAssociatedServices(associatedServices));
+                    .WithAssociatedServices(associatedServices)
+                    .WithAdditionalServices(additionalServices));
             }
 
             if (model.SelectedPublicationStatus == solution.PublishedStatus)
