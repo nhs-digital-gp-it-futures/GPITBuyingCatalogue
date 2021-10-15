@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using System;
+using System.ComponentModel.DataAnnotations;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Models;
 
@@ -12,6 +13,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.SupplierModels
 
         public EditSupplierDetailsModel(Supplier supplier)
         {
+            if (supplier is null)
+                throw new ArgumentNullException(nameof(supplier));
+
             SupplierName = supplier.Name;
             SupplierLegalName = supplier.LegalName;
             AboutSupplier = supplier.Summary;
