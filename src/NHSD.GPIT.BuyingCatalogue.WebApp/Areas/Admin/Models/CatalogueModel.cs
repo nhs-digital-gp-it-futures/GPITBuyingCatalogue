@@ -1,6 +1,5 @@
 ﻿using System;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
-using NHSD.GPIT.BuyingCatalogue.EntityFramework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models
@@ -14,8 +13,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models
             CatalogueItemId = catalogueItem.Id.ToString();
             Name = catalogueItem.Name;
             LastUpdated = catalogueItem.Solution?.LastUpdated ?? DateTime.MinValue;
-            PublishedStatus = catalogueItem.PublishedStatus.Name();
-            PublishedStatusId = catalogueItem.PublishedStatus;
+            PublishedStatus = catalogueItem.PublishedStatus;
             Supplier = catalogueItem.Supplier?.Name ?? string.Empty;
         }
 
@@ -25,9 +23,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models
 
         public DateTime LastUpdated { get; set; }
 
-        public string PublishedStatus { get; set; }
-
-        public PublicationStatus PublishedStatusId { get; set; }
+        public PublicationStatus PublishedStatus { get; set; }
 
         public string Supplier { get; set; }
     }

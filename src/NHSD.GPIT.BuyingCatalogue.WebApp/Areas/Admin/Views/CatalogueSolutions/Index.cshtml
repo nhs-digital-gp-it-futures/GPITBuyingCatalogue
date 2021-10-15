@@ -1,7 +1,5 @@
 ﻿@using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
 @using NHSD.GPIT.BuyingCatalogue.Framework.Extensions
-@using NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.TagHelpers.Tags;
-@using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models
 @model NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.CatalogueSolutionsModel
 @{
     ViewBag.Title = "Manage Catalogue Solutions";
@@ -61,30 +59,16 @@
                 <nhs-table-cell>@item.Supplier</nhs-table-cell>
                 <nhs-table-cell>@(item.LastUpdated == DateTime.MinValue ? string.Empty : item.LastUpdated.ToString("dd/MM/yyy"))</nhs-table-cell>
                 <nhs-table-cell>
-                    <nhs-tag text="@item.PublishedStatus" colour="@GetTagColour(item)" />
+                    <nhs-tag status-enum="@item.PublishedStatus" />
                 </nhs-table-cell>
                 <nhs-table-cell>
                     <a asp-action="@nameof(CatalogueSolutionsController.ManageCatalogueSolution)"
                        asp-controller="@typeof(CatalogueSolutionsController).ControllerName()"
                        asp-route-solutionId="@item.CatalogueItemId"
-                       style="white-space: nowrap;">
-                        Edit
-                    </a>
+                       style="white-space: nowrap;">Edit</a>
                 </nhs-table-cell>
             </nhs-table-row-container>
             }
         </nhs-table>
     </div>
 </div>
-
-@{
-    static NhsTagsTagHelper.TagColour GetTagColour(NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.CatalogueModel item) =>
-        item.PublishedStatusId switch
-        {
-            PublicationStatus.Draft => NhsTagsTagHelper.TagColour.White,
-            PublicationStatus.InRemediation => NhsTagsTagHelper.TagColour.Yellow,
-            PublicationStatus.Suspended => NhsTagsTagHelper.TagColour.Red,
-            PublicationStatus.Published => NhsTagsTagHelper.TagColour.Green,
-            PublicationStatus.Unpublished or _ => NhsTagsTagHelper.TagColour.Grey,
-        };
-}
