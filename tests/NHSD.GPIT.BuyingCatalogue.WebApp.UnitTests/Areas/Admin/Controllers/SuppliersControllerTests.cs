@@ -92,7 +92,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
         public static void Get_AddSupplierDetails_ReturnsViewWithExpectedViewModel(
             SuppliersController controller)
         {
-            var expectedResult = new EditSupplierDetailsModel()
+            var expectedResult = new EditSupplierDetailsModel
             {
                 BackLink = "testUrl",
                 BackLinkText = "Go back",

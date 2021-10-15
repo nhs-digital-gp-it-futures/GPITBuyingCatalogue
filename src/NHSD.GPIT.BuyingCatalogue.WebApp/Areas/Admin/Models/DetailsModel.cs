@@ -15,10 +15,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models
 
         public DetailsModel(Organisation organisation, List<AspNetUser> users, List<Organisation> relatedOrganisations)
         {
-            if (organisation is null)
-                throw new ArgumentNullException(nameof(organisation));
-
-            Organisation = organisation;
+            Organisation = organisation ?? throw new ArgumentNullException(nameof(organisation));
             CatalogueAgreementText = organisation.CatalogueAgreementSigned ? "Organisation End User Agreement has been signed" : "Organisation End User Agreement has not been signed";
             Users = users;
             RelatedOrganisations = relatedOrganisations;

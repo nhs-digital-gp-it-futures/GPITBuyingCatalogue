@@ -13,12 +13,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models
 
         public EditOrganisationModel(Organisation organisation)
         {
-            if (organisation is null)
-                throw new ArgumentNullException(nameof(organisation));
-
+            Organisation = organisation ?? throw new ArgumentNullException(nameof(organisation));
             CatalogueAgreementSigned = organisation.CatalogueAgreementSigned;
             BackLink = $"/admin/organisations/{organisation.Id}";
-            Organisation = organisation;
             OrganisationAddress = organisation.Address;
         }
 

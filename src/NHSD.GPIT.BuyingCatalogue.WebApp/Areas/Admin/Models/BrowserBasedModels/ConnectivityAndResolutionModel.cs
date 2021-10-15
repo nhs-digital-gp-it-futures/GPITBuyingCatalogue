@@ -7,10 +7,9 @@ using NHSD.GPIT.BuyingCatalogue.Framework.Constants;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.BrowserBasedModels
 {
-    public class ConnectivityAndResolutionModel : ApplicationTypeBaseModel
+    public sealed class ConnectivityAndResolutionModel : ApplicationTypeBaseModel
     {
         public ConnectivityAndResolutionModel()
-            : base()
         {
         }
 
