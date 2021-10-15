@@ -447,5 +447,46 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
 
             mockSuppliersService.Verify(s => s.EditSupplierContact(supplier.Id, supplier.SupplierContacts.First().Id, It.IsAny<SupplierContact>()), Times.Once());
         }
+
+        [Theory]
+        [CommonAutoData]
+        public static async Task Get_DeleteSupplierContact_ReturnsViewWithExpectedViewModel(
+            Supplier supplier,
+            [Frozen] Mock<ISuppliersService> mockSuppliersService,
+            SuppliersController controller)
+        {
+            mockSuppliersService.Setup(s => s.GetSupplier(supplier.Id)).ReturnsAsync(supplier);
+
+            var expectedResult = new DeleteContactModel(supplier.SupplierContacts.First(), supplier.Name)
+            {
+                BackLink = "testUrl",
+                BackLinkText = "Go back",
+            };
+
+            var actual = (await controller.DeleteSupplierContact(supplier.Id, supplier.SupplierContacts.First().Id)).As<ViewResult>();
+
+            actual.Should().NotBeNull();
+            actual.ViewName.Should().BeNull();
+            actual.Model.Should().BeEquivalentTo(expectedResult);
+        }
+
+        [Theory]
+        [CommonAutoData]
+        public static async Task Post_DeleteSupplierContact_EditsContact_RedirectsCorrectly(
+            DeleteContactModel model,
+            [Frozen] Mock<ISuppliersService> mockSuppliersService,
+            Supplier supplier,
+            SuppliersController controller)
+        {
+            mockSuppliersService.Setup(s => s.DeleteSupplierContact(supplier.Id, It.IsAny<int>())).ReturnsAsync(supplier);
+
+            var actual = (await controller.DeleteSupplierContact(supplier.Id, supplier.SupplierContacts.First().Id, model)).As<RedirectToActionResult>();
+
+            actual.ActionName.Should().Be(nameof(SuppliersController.ManageSupplierContacts));
+            actual.ControllerName.Should().Be(typeof(SuppliersController).ControllerName());
+            actual.RouteValues["supplierId"].Should().Be(supplier.Id);
+
+            mockSuppliersService.Verify(s => s.DeleteSupplierContact(supplier.Id, supplier.SupplierContacts.First().Id), Times.Once());
+        }
     }
 }
