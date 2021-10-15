@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System.Linq;
+using System.Threading.Tasks;
 using AutoFixture;
 using AutoFixture.AutoMoq;
 using AutoFixture.Idioms;
@@ -44,10 +45,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
         [Theory]
         [CommonAutoData]
         public static async Task Get_DeleteApplicationTypeConfirmation_ValidId_ReturnsViewWithExpectedModel(
-         CatalogueItem catalogueItem,
-         ClientApplicationType clientApplicationType,
-         [Frozen] Mock<ISolutionsService> mockService,
-         DeleteApplicationTypeController controller)
+            CatalogueItem catalogueItem,
+            ClientApplicationType clientApplicationType,
+            [Frozen] Mock<ISolutionsService> mockService,
+            DeleteApplicationTypeController controller)
         {
             mockService.Setup(s => s.GetSolution(It.IsAny<CatalogueItemId>())).ReturnsAsync(catalogueItem);
 
@@ -55,6 +56,23 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
 
             actual.ViewName.Should().BeNull();
             actual.Model.Should().BeEquivalentTo(new DeleteApplicationTypeConfirmationModel(catalogueItem, clientApplicationType));
+        }
+
+        [Theory]
+        [CommonAutoData]
+        public static async Task Get_DeleteApplicationTypeConfirmation_InvalidId_ReturnsBadRequest(
+            CatalogueItem catalogueItem,
+            ClientApplicationType clientApplicationType,
+            [Frozen] Mock<ISolutionsService> mockService,
+            DeleteApplicationTypeController controller)
+        {
+            mockService.Setup(s => s.GetSolution(It.IsAny<CatalogueItemId>())).ReturnsAsync((CatalogueItem)null);
+
+            var actual = (await controller.DeleteApplicationTypeConfirmation(catalogueItem.Id, clientApplicationType)).As<BadRequestObjectResult>();
+
+            actual.Should().NotBeNull();
+            actual.Value.Should().BeOfType<string>();
+            actual.Value.As<string>().Should().Be($"No Solution found for Id: {catalogueItem.Id}");
         }
 
         [Theory]
@@ -75,6 +93,28 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
             actual.ActionName.Should().Be(nameof(CatalogueSolutionsController.ClientApplicationType));
             actual.ControllerName.Should().Be(typeof(CatalogueSolutionsController).ControllerName());
             actual.RouteValues["solutionId"].Should().Be(catalogueItemId);
+        }
+
+        [Theory]
+        [CommonAutoData]
+        public static async Task Post_DeleteApplicationTypeConfirmation_InvalidModelState_ReturnsView(
+            string errorKey,
+            string errorMessage,
+            CatalogueItemId catalogueItemId,
+            ClientApplicationType clientApplicationType,
+            DeleteApplicationTypeConfirmationModel model,
+            DeleteApplicationTypeController controller)
+        {
+            controller.ModelState.AddModelError(errorKey, errorMessage);
+
+            var actual = (await controller.DeleteApplicationTypeConfirmation(catalogueItemId, clientApplicationType, model)).As<ViewResult>();
+
+            actual.Should().NotBeNull();
+            actual.ViewName.Should().BeNull();
+            actual.ViewData.ModelState.IsValid.Should().BeFalse();
+            actual.ViewData.ModelState.ErrorCount.Should().Be(1);
+            actual.ViewData.ModelState.Keys.Single().Should().Be(errorKey);
+            actual.ViewData.ModelState.Values.Single().Errors.Single().ErrorMessage.Should().Be(errorMessage);
         }
     }
 }

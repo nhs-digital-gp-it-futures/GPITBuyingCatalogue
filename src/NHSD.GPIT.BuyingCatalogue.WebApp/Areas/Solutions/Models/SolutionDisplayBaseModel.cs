@@ -121,6 +121,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models
 
         protected SolutionDisplayBaseModel(CatalogueItem catalogueItem)
         {
+            if (catalogueItem is null)
+                throw new ArgumentNullException(nameof(catalogueItem));
+
             SolutionId = catalogueItem.Id;
             SolutionName = catalogueItem.Name;
             PublicationStatus = catalogueItem.PublishedStatus;

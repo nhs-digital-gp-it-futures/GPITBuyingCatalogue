@@ -1,4 +1,5 @@
-﻿using FluentAssertions;
+﻿using System;
+using FluentAssertions;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.Test.Framework.AutoFixtureCustomisations;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models;
@@ -14,6 +15,14 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Models
             typeof(InteroperabilityModel)
                 .Should()
                 .BeAssignableTo<SolutionDisplayBaseModel>();
+        }
+
+        [Fact]
+        public static void FromCatalogueItem_NullCatalogueItem_ThrowsException()
+        {
+            var actual = Assert.Throws<ArgumentNullException>(() => new InteroperabilityModel((CatalogueItem)null));
+
+            actual.ParamName.Should().Be("catalogueItem");
         }
 
         [Theory]
@@ -35,8 +44,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Models
         public static void TextDescriptionsProvided_NoIntegration_ReturnsDefaultText(
             InteroperabilityModel model)
         {
-            model.IM1Integrations = new Integration[0];
-            model.GpConnectIntegrations = new Integration[0];
+            model.IM1Integrations = Array.Empty<Integration>();
+            model.GpConnectIntegrations = Array.Empty<Integration>();
 
             var actual = model.TextDescriptionsProvided();
 
