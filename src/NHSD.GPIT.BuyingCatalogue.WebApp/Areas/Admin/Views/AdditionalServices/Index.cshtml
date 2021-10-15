@@ -42,7 +42,11 @@
                             <nhs-tag status-enum="@additionalService.PublishedStatus"></nhs-tag>
                         </nhs-table-cell>
                         <nhs-table-cell>
-                            <a href="#" class="nhsuk-breadcrumb__link">Edit</a>
+                            <a asp-controller="@typeof(AdditionalServicesController).ControllerName()"
+                               asp-action="@nameof(AdditionalServicesController.EditAdditionalService)"
+                               asp-route-solutionId="@Model.ItemId"
+                               asp-route-additionalServiceId="@additionalService.Id"
+                               class="nhsuk-breadcrumb__link">Edit</a>
                         </nhs-table-cell>
                     </nhs-table-row-container>
                 }
