@@ -3,14 +3,14 @@ using OpenQA.Selenium;
 
 namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Objects.Admin.AssociatedServices
 {
-    public static class AssociatedServices
+    internal static class AssociatedServices
     {
-        public static By EditLink => ByExtensions.DataTestId("edit-link");
+        internal static By EditLink => ByExtensions.DataTestId("edit-link");
 
-        public static By AddAssociatedServiceContinueButton => By.LinkText("Continue");
+        internal static By AddAssociatedServiceContinueButton => By.LinkText("Continue");
 
-        public static By AssociatedServicesTable => ByExtensions.DataTestId("associated-services-table");
+        internal static By AssociatedServicesTable => ByExtensions.DataTestId("associated-services-table");
 
-        public static By AssociatedServiceDashboardTable => ByExtensions.DataTestId("associated-service-dashboard-table");
+        internal static By AssociatedServiceDashboardTable => ByExtensions.DataTestId("associated-service-dashboard-table");
     }
 }

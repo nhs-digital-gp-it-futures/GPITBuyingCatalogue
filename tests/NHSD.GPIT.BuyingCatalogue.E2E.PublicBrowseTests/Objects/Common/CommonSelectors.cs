@@ -59,5 +59,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Objects.Common
         internal static By Name => By.Id("Name");
 
         internal static By OrderGuidance => By.Id("OrderGuidance");
+
+        internal static By ContinueButton => By.LinkText("Continue");
     }
 }
