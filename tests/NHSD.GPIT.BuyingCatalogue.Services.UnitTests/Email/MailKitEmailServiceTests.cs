@@ -99,7 +99,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Email
         }
 
         [Fact]
-        public static void SendEmailAsync_ExceptionConnected_DoesDisconnect()
+        public static async Task SendEmailAsync_ExceptionConnected_DoesDisconnect()
         {
             var mockTransport = new Mock<IMailTransport>();
             mockTransport.Setup(t => t.IsConnected).Returns(true);
@@ -117,7 +117,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Email
                 new SmtpSettings(),
                 Mock.Of<ILogWrapper<MailKitEmailService>>());
 
-            Assert.ThrowsAsync<ServiceNotAuthenticatedException>(() => service.SendEmailAsync(message));
+            await Assert.ThrowsAsync<ServiceNotAuthenticatedException>(() => service.SendEmailAsync(message));
 
             mockTransport.Verify(
                 t => t.DisconnectAsync(
@@ -127,7 +127,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Email
         }
 
         [Fact]
-        public static void SendEmailAsync_ExceptionNotConnected_DoesNotDisconnect()
+        public static async Task SendEmailAsync_ExceptionNotConnected_DoesNotDisconnect()
         {
             var mockTransport = new Mock<IMailTransport>();
             mockTransport.Setup(
@@ -144,7 +144,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Email
                 new SmtpSettings(),
                 Mock.Of<ILogWrapper<MailKitEmailService>>());
 
-            Assert.ThrowsAsync<ServiceNotConnectedException>(() => service.SendEmailAsync(message));
+            await Assert.ThrowsAsync<ServiceNotConnectedException>(() => service.SendEmailAsync(message));
 
             mockTransport.Verify(
                 t => t.DisconnectAsync(
@@ -154,14 +154,14 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Email
         }
 
         [Fact]
-        public static void SendEmailAsync_NullEmailMessage_ThrowsException()
+        public static Task SendEmailAsync_NullEmailMessage_ThrowsException()
         {
             var emailService = new MailKitEmailService(
                 Mock.Of<IMailTransport>(),
                 new SmtpSettings(),
                 Mock.Of<ILogWrapper<MailKitEmailService>>());
 
-            Assert.ThrowsAsync<ArgumentNullException>(() => emailService.SendEmailAsync(null!));
+            return Assert.ThrowsAsync<ArgumentNullException>(() => emailService.SendEmailAsync(null!));
         }
 
         [Fact]
@@ -283,7 +283,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Email
         }
 
         [Fact]
-        public static void SendEmailAsync_Exception_LogsError()
+        public static async Task SendEmailAsync_Exception_LogsError()
         {
             const string formatErrorMessage =
                 "SendEmailAsync: Failed: {server}:{port} with auth required {isRequired} and U:{user}, Sending Message {@mimeMessage}";
@@ -305,7 +305,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Email
                 settings,
                 mockLogger.Object);
 
-            Assert.ThrowsAsync<SmtpFailedRecipientException>(() => service.SendEmailAsync(message));
+            await Assert.ThrowsAsync<SmtpFailedRecipientException>(() => service.SendEmailAsync(message));
             mockLogger.Verify(
                 l => l.LogError(
                     exception,
