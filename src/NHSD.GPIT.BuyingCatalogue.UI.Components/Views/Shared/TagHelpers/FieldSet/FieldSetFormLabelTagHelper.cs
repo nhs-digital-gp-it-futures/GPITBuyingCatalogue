@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc.ViewFeatures;
 using Microsoft.AspNetCore.Razor.TagHelpers;
 using NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.TagHelpers.DetailsAndExpander;
 using NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.TagHelpers.Radios;
+using NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.TagHelpers.TimeInput;
 using static NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.TagHelpers.FieldSet.FieldSetTagHelperBuilders;
 
 namespace NHSD.GPIT.BuyingCatalogue.UI.Components.TagHelpers
@@ -15,7 +16,8 @@ namespace NHSD.GPIT.BuyingCatalogue.UI.Components.TagHelpers
         YesNoRadioButtonTagHelper.TagHelperName,
         NhsDateInputTagHelper.TagHelperName,
         RadioButtonContainerTagHelper.TagHelperName,
-        DetailsTagHelper.TagHelperName)]
+        DetailsTagHelper.TagHelperName,
+        NhsTimeRangeInputTagHelper.TagHelperName)]
     public sealed class FieldSetFormLabelTagHelper : TagHelper
     {
         public const string TagHelperName = "nhs-fieldset-form-label";
@@ -62,9 +64,11 @@ namespace NHSD.GPIT.BuyingCatalogue.UI.Components.TagHelpers
 
             var fieldsetheading = GetFieldSetLegendHeadingBuilder(SelectedSize, LabelText);
 
-            var hint = TagHelperBuilders.GetLabelHintBuilder(For, LabelHint, formName);
-
             var content = await output.GetChildContentAsync();
+
+            var labelHint = parentChildContext.IsTimeInput ? TimeInputConstants.TimeInputHint : LabelHint;
+
+            var hint = TagHelperBuilders.GetLabelHintBuilder(For, labelHint, formName);
 
             var errorMessage = BuildErrorMessage();
 

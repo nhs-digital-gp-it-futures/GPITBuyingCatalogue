@@ -5,5 +5,7 @@
         public bool ChildInError { get; set; }
 
         public string ErrorMessage { get; set; }
+
+        public bool IsTimeInput { get; set; }
     }
 }

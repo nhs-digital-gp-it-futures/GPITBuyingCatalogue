@@ -1,0 +1,137 @@
+﻿@model NHSD.GPIT.BuyingCatalogue.UI.Components.WebApp.Models.TimeInputModel
+@{
+    ViewBag.Title = "Time Input";
+}
+
+<nhs-page-title title="@ViewBag.Title"
+                advice="Use time input to help users enter a time or time range using a 24 hour format like 12:00 or 09:00."
+                caption="Tag Helpers"
+                additional-advice="This page is rendered from TimeInput.cshtml using the TimeInputModel" />
+
+<p>There are two types Time Input, Single Time Input and Time Range.</p>
+<p>Both types of input had a pre-defined hard coded hint on how to input the time, so for this component, the label-hint is not overridable.</p>
+
+<nhs-inset-text>
+    <p>Custom Model Binding is provided through the TimeInputModelBinder</p>
+    <p>You can apply it to the model with [BindProperty(BinderType = typeof(ModelBinders.TimeInputModelBinder))]</p>
+</nhs-inset-text>
+
+<nhs-fieldset-form-container asp-for="@Model"
+                             label-text="Time Input"
+                             size="ExtraLarge">
+
+    <nhs-time-input asp-for="SingleFrom"
+                    label-text="This is a time input" />
+</nhs-fieldset-form-container>
+
+<nhs-fieldset-form-container asp-for="@Model"
+                             label-text="Code Example for the above Time Input"
+                             size="Medium">
+    <div class="app-tabs__container bc-code-snippet">
+        <span class="vs-light-theme-blue ">&lt;</span><span class="vs-light-theme-purple">nhs-input</span><br />
+        <span class="vs-light-theme-purple first-layer">asp-for</span><span class="vs-light-theme-blue">="SingleFrom"&nbsp;</span><br />
+        <span class="vs-light-theme-purple first-layer">label-text</span><span class="vs-light-theme-blue">="This is a time input" </span><br />
+        <span class="vs-light-theme-blue ">/&gt;</span>
+    </div>
+</nhs-fieldset-form-container>
+
+<nhs-table label-text="Attributes">
+    <nhs-table-column>Attribute</nhs-table-column>
+    <nhs-table-column>Functionality</nhs-table-column>
+    <nhs-table-column>Required</nhs-table-column>
+    <nhs-table-row-container>
+        <nhs-table-cell>asp-for</nhs-table-cell>
+        <nhs-table-cell>
+            <p>This is a reference to the field that the input will load and save its value too/from.</p>
+            <p>This is required to be a DateTime Object. If you attempt to use anything besides a Datetime, it will throw an exception.</p>
+            <p>The DateTime will store the time the user has input, but will set the date part as the current date, so you will need to make sure you throw away the date part when saving.</p>
+        </nhs-table-cell>
+        <nhs-table-cell>
+            <nhs-tag text="Yes" colour="Red" />
+        </nhs-table-cell>
+    </nhs-table-row-container>
+    <nhs-table-row-container>
+        <nhs-table-cell>label-text</nhs-table-cell>
+        <nhs-table-cell>
+            <p>Setting this attribute will set the title of the input.</p>
+            <p>If not set, no label will be displayed.</p>
+        </nhs-table-cell>
+        <nhs-table-cell>
+            <nhs-tag text="No" colour="Green" />
+        </nhs-table-cell>
+    </nhs-table-row-container>
+</nhs-table>
+
+<nhs-fieldset-form-container asp-for="@Model"
+                             label-text="Time Range"
+                             size="ExtraLarge">
+
+    <nhs-fieldset-form-label asp-for="@Model"
+                             label-text="This is a time range input">
+        <nhs-time-range-input asp-for="@Model"
+                              asp-for-from="From"
+                              asp-for-until="Until" />
+    </nhs-fieldset-form-label>
+</nhs-fieldset-form-container>
+
+<nhs-fieldset-form-container asp-for="@Model"
+                             label-text="Code Example for the above Time Range Input"
+                             size="Medium">
+    <div class="app-tabs__container bc-code-snippet">
+        <span class="vs-light-theme-blue">&lt;</span><span class="vs-light-theme-purple">nhs-fieldset-form-label</span><br />
+        <span class="vs-light-theme-purple first-layer">asp-for</span><span class="vs-light-theme-blue">="@@Model"&nbsp;</span><br />
+        <span class="vs-light-theme-purple first-layer">label-text</span><span class="vs-light-theme-blue">="This is a time range input"&nbsp;</span>
+        <span class="vs-light-theme-blue">&gt;</span><br />
+
+        <span class="vs-light-theme-blue first-layer">&lt;</span><span class="vs-light-theme-purple">nhs-time-range-input</span><br />
+        <span class="vs-light-theme-purple second-layer">asp-for</span><span class="vs-light-theme-blue">="@@Model"&nbsp;</span><br />
+        <span class="vs-light-theme-purple second-layer">asp-for-from</span><span class="vs-light-theme-blue">="From"&nbsp;</span><br />
+        <span class="vs-light-theme-purple second-layer">asp-for-until</span><span class="vs-light-theme-blue">="Until"&nbsp;</span>
+        <span class="vs-light-theme-blue">/&gt;</span><br />
+
+        <span class="vs-light-theme-blue">&lt;/</span><span class="vs-light-theme-purple">nhs-fieldset-form-label</span>
+        <span class="vs-light-theme-blue">&gt;</span>
+    </div>
+</nhs-fieldset-form-container>
+
+<p>Label Text is handed by the &lt;nhs-fieldset-label&gt; Tag Helper. You can read more about the fieldsets requirements here:</p>
+
+<vc:nhs-action-link url="fieldsets" text="Read more about Fieldsets" />
+
+<nhs-table label-text="Attributes">
+    <nhs-table-column>Attribute</nhs-table-column>
+    <nhs-table-column>Functionality</nhs-table-column>
+    <nhs-table-column>Required</nhs-table-column>
+
+    <nhs-table-row-container>
+        <nhs-table-cell>asp-for</nhs-table-cell>
+        <nhs-table-cell>
+            <p>This needs to be set a full reference to the model. so should always be @@Model.</p>
+        </nhs-table-cell>
+        <nhs-table-cell>
+            <nhs-tag text="Yes" colour="Red" />
+        </nhs-table-cell>
+    </nhs-table-row-container>
+    <nhs-table-row-container>
+        <nhs-table-cell>asp-for-from</nhs-table-cell>
+        <nhs-table-cell>
+            <p>This is a reference to the field that the input will load and save the from value too/from.</p>
+            <p>This is required to be a DateTime Object. If you attempt to use anything besides a Datetime, it will throw an exception.</p>
+            <p>The DateTime will store the time the user has input, but will set the date part as the current date, so you will need to make sure you throw away the date part when saving.</p>
+        </nhs-table-cell>
+        <nhs-table-cell>
+            <nhs-tag text="Yes" colour="Red" />
+        </nhs-table-cell>
+    </nhs-table-row-container>
+    <nhs-table-row-container>
+        <nhs-table-cell>asp-for-until</nhs-table-cell>
+        <nhs-table-cell>
+            <p>This is a reference to the field that the input will load and save the until value too/from.</p>
+            <p>This is required to be a DateTime Object. If you attempt to use anything besides a Datetime, it will throw an exception.</p>
+            <p>The DateTime will store the time the user has input, but will set the date part as the current date, so you will need to make sure you throw away the date part when saving.</p>
+        </nhs-table-cell>
+        <nhs-table-cell>
+            <nhs-tag text="Yes" colour="Red" />
+        </nhs-table-cell>
+    </nhs-table-row-container>
+</nhs-table>
