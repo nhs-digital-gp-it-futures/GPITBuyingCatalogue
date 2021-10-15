@@ -21,6 +21,9 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Actions.Common
         internal void ClickGoBackLink() =>
             Driver.FindElement(CommonSelectors.GoBackLink).Click();
 
+        internal void ClickContinue() =>
+            Driver.FindElement(CommonSelectors.ContinueButton).Click();
+
         internal void ClickLinkElement(By targetElement) =>
             Driver.FindElement(targetElement).Click();
 
@@ -129,6 +132,9 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Actions.Common
 
         internal bool SaveButtonDisplayed() =>
             ElementIsDisplayed(CommonSelectors.SubmitButton);
+
+        internal bool ContinueButtonDisplayed() =>
+            ElementIsDisplayed(CommonSelectors.ContinueButton);
 
         internal bool GoBackLinkDisplayed() =>
             ElementIsDisplayed(CommonSelectors.GoBackLink);
