@@ -33,8 +33,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.AssociatedServices
                 .Include(c => c.AssociatedService)
                 .Where(
                     c => c.SupplierId == supplierId.GetValueOrDefault()
-                        && c.CatalogueItemType == CatalogueItemType.AssociatedService
-                        && c.PublishedStatus == PublicationStatus.Published)
+                        && c.CatalogueItemType == CatalogueItemType.AssociatedService)
                 .OrderBy(c => c.Name)
                 .ToListAsync();
         }
@@ -125,6 +124,15 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.AssociatedServices
             associatedService.Name = model.Name;
             associatedService.AssociatedService.Description = model.Description;
             associatedService.AssociatedService.OrderGuidance = model.OrderGuidance;
+
+            await dbContext.SaveChangesAsync();
+        }
+
+        public async Task SavePublicationStatus(CatalogueItemId associatedServiceId, PublicationStatus publicationStatus)
+        {
+            var solution = await GetAssociatedService(associatedServiceId);
+
+            solution.PublishedStatus = publicationStatus;
 
             await dbContext.SaveChangesAsync();
         }

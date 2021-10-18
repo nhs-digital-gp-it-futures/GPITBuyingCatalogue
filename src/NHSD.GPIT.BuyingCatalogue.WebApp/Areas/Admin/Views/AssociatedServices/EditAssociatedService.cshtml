@@ -41,12 +41,23 @@
             </nhs-table-row-container>
         </nhs-table>
 
-        <vc:nhs-secondary-button text="Continue"
-                                 use-primary-colour="true"
-                                 url="@Url.Action(
-                                     nameof(AssociatedServicesController.AssociatedServices),
-                                     typeof(AssociatedServicesController).ControllerName(),
-                                     new { SolutionId = Model.Solution.Id })" /><br />
+        <form method="post" asp-action="SetPublicationStatus" asp-route-solutionId="@Model.Solution.Id" asp-route-associatedServiceId="@Model.AssociatedService.Id" >
+            <input type="hidden" asp-for="Solution" />
+            <input type="hidden" asp-for="AssociatedService" />
+            <input type="hidden" asp-for="BackLink" />
+            <input type="hidden" asp-for="BackLinkText" />
+            <nhs-fieldset-form-label asp-for="@Model"
+                                     label-text="What would you like to do with this Associated Service?"
+                                     label-hint="Select one option."
+                                     size="Large">
+                <nhs-radio-buttons asp-for="SelectedPublicationStatus"
+                                   values="Model.PublicationStatuses.Cast<object>()"
+                                   value-name="Value"
+                                   display-name="Text" />
+            </nhs-fieldset-form-label>
+
+            <nhs-submit-button text="Continue" />
+        </form>
 
         <vc:nhs-delete-button url="@Url.Action(
                                                nameof(AssociatedServicesController.DeleteAssociatedService),

@@ -19,7 +19,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Models
         {
             var expected = catalogueItem
                 .PublishedStatus
-                .GetAvailablePublicationStatuses()
+                .GetAvailablePublicationStatuses(catalogueItem.CatalogueItemType)
                 .Select(p => new SelectListItem(p.Description(), p.EnumMemberName()))
                 .ToList();
 
