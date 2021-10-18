@@ -621,5 +621,99 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
             actual.As<RedirectToActionResult>().ControllerName.Should().BeNull();
             actual.As<RedirectToActionResult>().ActionName.Should().Be(nameof(AssociatedServicesController.ManageListPrices));
         }
+
+        [Theory]
+        [CommonAutoData]
+        public static async Task Post_SetPublicationStatus_SamePublicationStatus_DoesNotCallSavePublicationStatus(
+            CatalogueItem catalogueItem,
+            EditAssociatedServiceModel model,
+            [Frozen] Mock<ISolutionsService> mockSolutionService,
+            [Frozen] Mock<IAssociatedServicesService> mockAssociatedServicesService,
+            AssociatedServicesController controller)
+        {
+            model.SelectedPublicationStatus = catalogueItem.PublishedStatus;
+
+            mockSolutionService.Setup(s => s.GetSolution(catalogueItem.Id))
+                .ReturnsAsync(catalogueItem);
+
+            mockAssociatedServicesService.Setup(s => s.GetAssociatedService(catalogueItem.Id))
+                .ReturnsAsync(catalogueItem);
+
+            await controller.SetPublicationStatus(catalogueItem.Id, catalogueItem.Id, model);
+
+            mockSolutionService.Verify(s => s.SavePublicationStatus(catalogueItem.Id, model.SelectedPublicationStatus), Times.Never);
+        }
+
+        [Theory]
+        [CommonAutoData]
+        public static async Task Post_SetPublicationStatus_CallsSavePublicationStatus(
+            CatalogueItem catalogueItem,
+            [Frozen] Mock<ISolutionsService> mockSolutionService,
+            [Frozen] Mock<IAssociatedServicesService> mockAssociatedServicesService,
+            AssociatedServicesController controller)
+        {
+            catalogueItem.PublishedStatus = PublicationStatus.Draft;
+
+            var model = new EditAssociatedServiceModel { SelectedPublicationStatus = PublicationStatus.Published };
+
+            mockSolutionService.Setup(s => s.GetSolution(catalogueItem.Id))
+                .ReturnsAsync(catalogueItem);
+
+            mockAssociatedServicesService.Setup(s => s.GetAssociatedService(catalogueItem.Id))
+                .ReturnsAsync(catalogueItem);
+
+            await controller.SetPublicationStatus(catalogueItem.Id, catalogueItem.Id, model);
+
+            mockAssociatedServicesService.Verify(s => s.SavePublicationStatus(catalogueItem.Id, model.SelectedPublicationStatus));
+        }
+
+        [Theory]
+        [CommonAutoData]
+        public static async Task Post_SetPublicationStatus_ReturnsRedirectToActionResult(
+            CatalogueItem catalogueItem,
+            [Frozen] Mock<ISolutionsService> mockSolutionService,
+            [Frozen] Mock<IAssociatedServicesService> mockAssociatedServicesService,
+            AssociatedServicesController controller)
+        {
+            catalogueItem.PublishedStatus = PublicationStatus.Draft;
+
+            var model = new EditAssociatedServiceModel { SelectedPublicationStatus = PublicationStatus.Published };
+
+            mockSolutionService.Setup(s => s.GetSolution(catalogueItem.Id))
+                .ReturnsAsync(catalogueItem);
+
+            mockAssociatedServicesService.Setup(s => s.GetAssociatedService(catalogueItem.Id))
+                .ReturnsAsync(catalogueItem);
+
+            var actual = (await controller.SetPublicationStatus(catalogueItem.Id, catalogueItem.Id, model)).As<RedirectToActionResult>();
+
+            actual.Should().NotBeNull();
+            actual.ActionName.Should().Be(nameof(AssociatedServicesController.AssociatedServices));
+        }
+
+        [Theory]
+        [CommonAutoData]
+        public static async Task Post_SetPublicationStatus_InvalidModel_ReturnsViewWithModel(
+            CatalogueItem catalogueItem,
+            [Frozen] Mock<ISolutionsService> mockSolutionService,
+            [Frozen] Mock<IAssociatedServicesService> mockAssociatedServicesService,
+            AssociatedServicesController controller)
+        {
+            controller.ModelState.AddModelError("some-key", "some-error");
+
+            var model = new EditAssociatedServiceModel(catalogueItem, catalogueItem);
+
+            mockSolutionService.Setup(s => s.GetSolution(catalogueItem.Id))
+                .ReturnsAsync(catalogueItem);
+
+            mockAssociatedServicesService.Setup(s => s.GetAssociatedService(catalogueItem.Id))
+                .ReturnsAsync(catalogueItem);
+
+            var actual = (await controller.SetPublicationStatus(catalogueItem.Id, catalogueItem.Id, model)).As<ViewResult>();
+
+            actual.Should().NotBeNull();
+            actual.ViewName.Should().Be(nameof(AssociatedServicesController.EditAssociatedService));
+            actual.Model.Should().BeEquivalentTo(model);
+        }
     }
 }

@@ -324,5 +324,25 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
 
             return RedirectToAction(nameof(ManageListPrices), new { solutionId, associatedServiceId });
         }
+
+        [HttpPost("{associatedServiceId}/edit-associated-service")]
+        public async Task<IActionResult> SetPublicationStatus(CatalogueItemId solutionId, CatalogueItemId associatedServiceId, EditAssociatedServiceModel model)
+        {
+            var associatedService = await associatedServicesService.GetAssociatedService(associatedServiceId);
+            if (!ModelState.IsValid)
+            {
+                var solution = await solutionsService.GetSolution(solutionId);
+                return View(
+                    "EditAssociatedService",
+                    new EditAssociatedServiceModel(solution, associatedService));
+            }
+
+            if (model.SelectedPublicationStatus == associatedService.PublishedStatus)
+                return RedirectToAction(nameof(AssociatedServices), new { solutionId });
+
+            await associatedServicesService.SavePublicationStatus(associatedServiceId, model.SelectedPublicationStatus);
+
+            return RedirectToAction(nameof(AssociatedServices), new { solutionId });
+        }
     }
 }

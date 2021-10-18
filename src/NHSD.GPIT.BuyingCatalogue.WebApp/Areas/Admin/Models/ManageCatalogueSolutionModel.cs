@@ -54,7 +54,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models
             SelectedPublicationStatus = Solution.PublishedStatus;
             PublicationStatuses = Solution
                 .PublishedStatus
-                .GetAvailablePublicationStatuses()
+                .GetAvailablePublicationStatuses(solution.CatalogueItemType)
                 .Select(p => new SelectListItem(p.Description(), p.EnumMemberName()))
                 .ToList();
 

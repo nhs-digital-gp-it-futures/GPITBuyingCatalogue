@@ -21,7 +21,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Models.Associat
             {
                 Name = s.Name,
                 Description = s.AssociatedService.Description,
-                OrderGuidance = s.AssociatedService.OrderGuidance,
+                PublishedStatus = s.PublishedStatus,
                 CatalogueItemId = s.AssociatedService.CatalogueItemId,
                 Selected = false,
             }).ToList();
@@ -51,7 +51,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Models.Associat
             {
                 Name = s.Name,
                 Description = s.AssociatedService.Description,
-                OrderGuidance = s.AssociatedService.OrderGuidance,
+                PublishedStatus = s.PublishedStatus,
                 CatalogueItemId = s.AssociatedService.CatalogueItemId,
                 Selected = true,
             }).ToList();
