@@ -4,6 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
+using NHSD.GPIT.BuyingCatalogue.EntityFramework.ValueGenerators;
 
 namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Configuration
 {
@@ -15,7 +16,8 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Configuration
 
             builder.Property(i => i.Id)
                 .HasMaxLength(14)
-                .HasConversion(id => id.ToString(), id => CatalogueItemId.ParseExact(id));
+                .HasConversion(id => id.ToString(), id => CatalogueItemId.ParseExact(id))
+                .HasValueGenerator<CatalogueItemIdValueGenerator>();
 
             builder.Property(i => i.CatalogueItemType)
                 .HasConversion<int>()

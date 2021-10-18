@@ -370,9 +370,6 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
 
             model.Frameworks.ValidateNotNull(nameof(CreateSolutionModel.Frameworks));
 
-            var latestCatalogueItemId = await catalogueItemRepository.GetLatestCatalogueItemIdFor(model.SupplierId);
-            var catalogueItemId = latestCatalogueItemId.NextSolutionId();
-
             var dateTimeNow = DateTime.UtcNow;
 
             var frameworkSolutions = new List<FrameworkSolution>();
@@ -388,9 +385,8 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
                 });
             }
 
-            catalogueItemRepository.Add(new CatalogueItem
+            var catalogueItem = new CatalogueItem
             {
-                Id = catalogueItemId,
                 CatalogueItemType = CatalogueItemType.Solution,
                 Solution =
                         new Solution
@@ -402,11 +398,13 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
                 Name = model.Name,
                 PublishedStatus = PublicationStatus.Draft,
                 SupplierId = model.SupplierId,
-            });
+            };
+
+            catalogueItemRepository.Add(catalogueItem);
 
             await catalogueItemRepository.SaveChangesAsync();
 
-            return catalogueItemId;
+            return catalogueItem.Id;
         }
 
         public async Task<IList<EntityFramework.Catalogue.Models.Framework>> GetAllFrameworks()

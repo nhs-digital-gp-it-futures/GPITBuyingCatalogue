@@ -358,22 +358,6 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Solutions
 
         [Theory]
         [CommonAutoData]
-        public static async Task AddCatalogueSolution_ModelValid_GetsLatestCatalogueItemId(
-            CreateSolutionModel model,
-            [Frozen] Mock<ICatalogueItemRepository> catalogueItemRepositoryMock,
-            SolutionsService service)
-        {
-            catalogueItemRepositoryMock
-                .Setup(c => c.GetLatestCatalogueItemIdFor(model.SupplierId))
-                .ReturnsAsync(new CatalogueItemId(model.SupplierId, "045"));
-
-            await service.AddCatalogueSolution(model);
-
-            catalogueItemRepositoryMock.Verify(c => c.GetLatestCatalogueItemIdFor(model.SupplierId));
-        }
-
-        [Theory]
-        [CommonAutoData]
         public static async Task AddCatalogueSolution_ModelValid_AddsCatalogueItemToRepository(
             CreateSolutionModel model,
             [Frozen] Mock<ICatalogueItemRepository> catalogueItemRepositoryMock,
@@ -381,17 +365,12 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Solutions
         {
             var catalogueItemId = new CatalogueItemId(model.SupplierId, "045");
 
-            catalogueItemRepositoryMock
-                .Setup(c => c.GetLatestCatalogueItemIdFor(model.SupplierId))
-                .ReturnsAsync(catalogueItemId);
-
             await service.AddCatalogueSolution(model);
 
             catalogueItemRepositoryMock.Verify(
                 repository => repository.Add(
                     It.Is<CatalogueItem>(
                         c =>
-                            c.Id == catalogueItemId.NextSolutionId() &&
                             c.CatalogueItemType == CatalogueItemType.Solution &&
                             c.Solution.LastUpdated > DateTime.UtcNow.AddMinutes(-2) &&
                             c.Solution.LastUpdatedBy == model.UserId &&

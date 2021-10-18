@@ -2,6 +2,7 @@
 using System.Threading.Tasks;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
+using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Models.AdditionalServices;
 
 namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.AdditionalServices
 {
@@ -12,5 +13,9 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.AdditionalServices
         Task<List<CatalogueItem>> GetAdditionalServicesBySolutionId(CatalogueItemId catalogueItemId);
 
         Task<List<CatalogueItem>> GetAdditionalServicesBySolutionIds(IEnumerable<CatalogueItemId> solutionIds);
+
+        Task<CatalogueItemId> AddAdditionalService(CatalogueItem solution, AdditionalServicesDetailsModel model);
+
+        Task EditAdditionalService(CatalogueItemId catalogueItemId, CatalogueItemId additionalServiceId, AdditionalServicesDetailsModel model);
     }
 }

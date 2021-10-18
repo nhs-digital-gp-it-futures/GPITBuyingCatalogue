@@ -1,4 +1,6 @@
-﻿@model NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.AdditionalServices.EditAdditionalServiceModel;
+﻿@using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers;
+@using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
+@model NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.AdditionalServices.EditAdditionalServiceModel;
 @{
     ViewBag.Title = $"{Model.AdditionalService.Name} information";
 }
@@ -19,7 +21,12 @@
                 <nhs-table-cell>Yes</nhs-table-cell>
                 <nhs-table-cell><nhs-tag status-enum="@Model.DetailsStatus()" /></nhs-table-cell>
                 <nhs-table-cell>
-                    <a href="#">Edit</a>
+                    <a asp-controller="@typeof(AdditionalServicesController).ControllerName()"
+                       asp-action="@nameof(AdditionalServicesController.EditAdditionalServiceDetails)"
+                       asp-route-solutionId="@Model.Solution.Id"
+                       asp-route-additionalServiceId="@Model.AdditionalService.Id">
+                        Edit
+                    </a>
                 </nhs-table-cell>
             </nhs-table-row-container>
             <nhs-table-row-container>
@@ -46,6 +53,5 @@
         <br />
 
         <vc:nhs-delete-button url="#" text="Delete Associated Service" />
-
     </div>
 </div>

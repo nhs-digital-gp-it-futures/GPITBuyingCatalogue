@@ -11,7 +11,10 @@
                         caption="@Model.ItemName"
                         advice="Add any services that provide extra functionality to your Catalogue Solution." />
 
-        <vc:nhs-action-link url="#" text=" Add an Additional Service" />
+        <vc:nhs-action-link url="@Url.Action(
+            nameof(AdditionalServicesController.AddAdditionalService),
+            typeof(AdditionalServicesController).ControllerName(),
+            new { solutionId = Model.ItemId })" text=" Add an Additional Service" />
 
         <p>
             Use the link to add information on each of the Additional Services available with your Catalogue Solution.
