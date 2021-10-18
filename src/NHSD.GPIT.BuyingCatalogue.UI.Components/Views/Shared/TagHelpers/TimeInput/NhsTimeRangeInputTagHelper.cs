@@ -12,8 +12,6 @@ namespace NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.TagHelpers.TimeIn
     public sealed class NhsTimeRangeInputTagHelper : TagHelper
     {
         public const string TagHelperName = "nhs-time-range-input";
-        public const string FromName = "from";
-        public const string UntilName = "Until";
         public const string ForFromName = "asp-for-from";
         public const string ForUntilName = "asp-for-until";
 
@@ -58,13 +56,13 @@ namespace NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.TagHelpers.TimeIn
 
             var id = TagBuilder.CreateSanitizedId(TagHelperFunctions.GetModelKebabNameFromFor(For), "_");
 
-            List<TagHelperAttribute> attritbues = new List<TagHelperAttribute>
+            var attributes = new List<TagHelperAttribute>
             {
-                new TagHelperAttribute(TagHelperConstants.Id, id),
-                new TagHelperAttribute(TagHelperConstants.Class, TimeInputConstants.TimeInputClass),
+                new(TagHelperConstants.Id, id),
+                new(TagHelperConstants.Class, TimeInputConstants.TimeInputClass),
             };
 
-            attritbues.ForEach(a => output.Attributes.Add(a));
+            attributes.ForEach(a => output.Attributes.Add(a));
 
             output.Content
                 .AppendHtml(from)
@@ -82,6 +80,16 @@ namespace NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.TagHelpers.TimeIn
             builder.AddCssClass(TimeInputItemClass);
 
             return builder;
+        }
+
+        private static void TellParentThisIsATimeInput(TagHelperContext context)
+        {
+            if (!context.Items.TryGetValue(typeof(ParentChildContext), out object pChildContext))
+                return;
+
+            ParentChildContext parentChildContext = (ParentChildContext)pChildContext;
+
+            parentChildContext.IsTimeInput = true;
         }
 
         private TagBuilder BuildInputItem(ModelExpression modelExpression, string labelText)
@@ -109,7 +117,9 @@ namespace NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.TagHelpers.TimeIn
 
         private TagBuilder BuildTimeInput(ModelExpression modelExpression)
         {
-            var value = (DateTime?)modelExpression.Model == DateTime.MinValue || modelExpression.Model is null ? string.Empty : ((DateTime?)modelExpression.Model).Value.ToString("HH:mm");
+            var value = (DateTime?)modelExpression.Model == DateTime.MinValue || modelExpression.Model is null
+                ? string.Empty
+                : ((DateTime?)modelExpression.Model).Value.ToString("HH:mm");
 
             var builder = htmlGenerator.GenerateTextBox(
                 ViewContext,
@@ -127,16 +137,6 @@ namespace NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.TagHelpers.TimeIn
                 builder.AddCssClass(TagHelperConstants.NhsValidationInputError);
 
             return builder;
-        }
-
-        private void TellParentThisIsATimeInput(TagHelperContext context)
-        {
-            if (!context.Items.TryGetValue(typeof(ParentChildContext), out object pChildContext))
-                return;
-
-            ParentChildContext parentChildContext = (ParentChildContext)pChildContext;
-
-            parentChildContext.IsTimeInput = true;
         }
     }
 }
