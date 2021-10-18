@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System.Linq;
+using System.Threading.Tasks;
 using AutoFixture;
 using AutoFixture.AutoMoq;
 using AutoFixture.Idioms;
@@ -71,6 +72,28 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers
             actualResult.As<RedirectToActionResult>().ControllerName.Should().Be(typeof(OrderController).ControllerName());
             actualResult.As<RedirectToActionResult>().RouteValues.Should().BeEquivalentTo(new RouteValueDictionary { { "odsCode", odsCode }, { "callOffId", callOffId } });
             fundingSourceServiceMock.Verify(o => o.SetFundingSource(callOffId, model.FundingSourceOnlyGms.EqualsIgnoreCase("Yes")), Times.Once);
+        }
+
+        [Theory]
+        [CommonAutoData]
+        public static async Task Post_FundingSource_InvalidModelState_ReturnsView(
+            string errorKey,
+            string errorMessage,
+            string odsCode,
+            CallOffId callOffId,
+            FundingSourceModel model,
+            FundingSourceController controller)
+        {
+            controller.ModelState.AddModelError(errorKey, errorMessage);
+
+            var actualResult = (await controller.FundingSource(odsCode, callOffId, model)).As<ViewResult>();
+
+            actualResult.Should().NotBeNull();
+            actualResult.ViewName.Should().BeNull();
+            actualResult.ViewData.ModelState.IsValid.Should().BeFalse();
+            actualResult.ViewData.ModelState.ErrorCount.Should().Be(1);
+            actualResult.ViewData.ModelState.Keys.Single().Should().Be(errorKey);
+            actualResult.ViewData.ModelState.Values.Single().Errors.Single().ErrorMessage.Should().Be(errorMessage);
         }
     }
 }
