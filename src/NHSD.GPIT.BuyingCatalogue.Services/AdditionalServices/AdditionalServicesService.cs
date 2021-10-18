@@ -19,11 +19,12 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.AdditionalServices
             this.dbContext = dbContext ?? throw new ArgumentNullException(nameof(dbContext));
         }
 
+        public Task<CatalogueItem> GetAdditionalService(CatalogueItemId catalogueItemId, CatalogueItemId additionalServiceId)
+            => BaseQuery(catalogueItemId)
+                .SingleAsync(i => i.Id == additionalServiceId);
+
         public Task<List<CatalogueItem>> GetAdditionalServicesBySolutionId(CatalogueItemId catalogueItemId)
-            => dbContext.CatalogueItems
-                .Include(i => i.AdditionalService)
-                .Where(i => i.AdditionalService.SolutionId == catalogueItemId && i.CatalogueItemType == CatalogueItemType.AdditionalService)
-                .OrderBy(i => i.Name)
+            => BaseQuery(catalogueItemId)
                 .ToListAsync();
 
         public Task<List<CatalogueItem>> GetAdditionalServicesBySolutionIds(IEnumerable<CatalogueItemId> solutionIds)
@@ -38,5 +39,11 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.AdditionalServices
                 .OrderBy(i => i.Name)
                 .ToListAsync();
         }
+
+        private IQueryable<CatalogueItem> BaseQuery(CatalogueItemId catalogueItemId) => dbContext.CatalogueItems
+                .Include(i => i.AdditionalService)
+                .Include(i => i.CatalogueItemCapabilities)
+                .Where(i => i.AdditionalService.SolutionId == catalogueItemId && i.CatalogueItemType == CatalogueItemType.AdditionalService)
+                .OrderBy(i => i.Name);
     }
 }

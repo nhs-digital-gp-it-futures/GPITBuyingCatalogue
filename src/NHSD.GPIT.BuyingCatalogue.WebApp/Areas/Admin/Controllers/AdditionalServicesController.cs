@@ -36,5 +36,24 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
 
             return View(new AdditionalServicesModel(solution, additionalServices));
         }
+
+        [HttpGet("{additionalServiceId}/edit-additional-service")]
+        public async Task<IActionResult> EditAdditionalService(CatalogueItemId solutionId, CatalogueItemId additionalServiceId)
+        {
+            var solution = await solutionsService.GetSolution(solutionId);
+            if (solution is null)
+                return BadRequest($"No Solution found for Id: {solutionId}");
+
+            var additionalService = await additionalServicesService.GetAdditionalService(solutionId, additionalServiceId);
+            if (additionalService is null)
+                return BadRequest($"No Additional Service with Id {additionalServiceId} found for Solution {solutionId}");
+
+            var model = new EditAdditionalServiceModel(solution, additionalService)
+            {
+                BackLink = Url.Action(nameof(Index), new { solutionId }),
+            };
+
+            return View(model);
+        }
     }
 }
