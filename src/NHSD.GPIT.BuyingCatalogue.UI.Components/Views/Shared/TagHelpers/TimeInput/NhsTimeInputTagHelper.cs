@@ -47,7 +47,9 @@ namespace NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.TagHelpers.TimeIn
 
         private TagBuilder GetInputBuilder()
         {
-            var value = (DateTime?)For.Model == DateTime.MinValue || For.Model is null ? string.Empty : ((DateTime?)For.Model).Value.ToString("HH:mm");
+            var value = (DateTime?)For.Model == DateTime.MinValue || For.Model is null
+                ? string.Empty
+                : ((DateTime?)For.Model).Value.ToString("HH:mm");
 
             var builder = htmlGenerator.GenerateTextBox(
                 ViewContext,
