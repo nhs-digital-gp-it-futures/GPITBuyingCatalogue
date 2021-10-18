@@ -7,6 +7,8 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.AdditionalServices
 {
     public interface IAdditionalServicesService
     {
+        Task<CatalogueItem> GetAdditionalService(CatalogueItemId catalogueItemId, CatalogueItemId additionalServiceId);
+
         Task<List<CatalogueItem>> GetAdditionalServicesBySolutionId(CatalogueItemId catalogueItemId);
 
         Task<List<CatalogueItem>> GetAdditionalServicesBySolutionIds(IEnumerable<CatalogueItemId> solutionIds);

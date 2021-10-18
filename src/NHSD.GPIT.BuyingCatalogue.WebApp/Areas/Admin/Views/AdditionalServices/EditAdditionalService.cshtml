@@ -1,0 +1,51 @@
+﻿@model NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.AdditionalServices.EditAdditionalServiceModel;
+@{
+    ViewBag.Title = $"{Model.AdditionalService.Name} information";
+}
+<partial name="Partials/_BackLink" model="Model" />
+<div class="nhsuk-grid-row">
+    <div class="nhsuk-grid-column-two-thirds">
+        <nhs-page-title title="@ViewBag.Title"
+                        caption="@Model.Solution.Name"
+                        advice="Provide information about the Additional Service." />
+
+        <nhs-table data-test-id="additional-service-dashboard-table">
+            <nhs-table-column>Section</nhs-table-column>
+            <nhs-table-column>Mandatory</nhs-table-column>
+            <nhs-table-column>Status</nhs-table-column>
+            <nhs-table-column></nhs-table-column>
+            <nhs-table-row-container>
+                <nhs-table-cell>Details</nhs-table-cell>
+                <nhs-table-cell>Yes</nhs-table-cell>
+                <nhs-table-cell><nhs-tag status-enum="@Model.DetailsStatus()" /></nhs-table-cell>
+                <nhs-table-cell>
+                    <a href="#">Edit</a>
+                </nhs-table-cell>
+            </nhs-table-row-container>
+            <nhs-table-row-container>
+                <nhs-table-cell>Capabilities</nhs-table-cell>
+                <nhs-table-cell>Yes</nhs-table-cell>
+                <nhs-table-cell><nhs-tag status-enum="@Model.CapabilitiesStatus()" /></nhs-table-cell>
+                <nhs-table-cell>
+                    <a href="#">Edit</a>
+                </nhs-table-cell>
+            </nhs-table-row-container>
+            <nhs-table-row-container>
+                <nhs-table-cell>Price</nhs-table-cell>
+                <nhs-table-cell>Yes</nhs-table-cell>
+                <nhs-table-cell><nhs-tag status-enum="@Model.ListPriceStatus()" /></nhs-table-cell>
+                <nhs-table-cell>
+                    <a href="#">Edit</a>
+                </nhs-table-cell>
+            </nhs-table-row-container>
+        </nhs-table>
+
+        <vc:nhs-secondary-button text="Continue"
+                                 use-primary-colour="true"
+                                 url="@Model.BackLink" />
+        <br />
+
+        <vc:nhs-delete-button url="#" text="Delete Associated Service" />
+
+    </div>
+</div>
