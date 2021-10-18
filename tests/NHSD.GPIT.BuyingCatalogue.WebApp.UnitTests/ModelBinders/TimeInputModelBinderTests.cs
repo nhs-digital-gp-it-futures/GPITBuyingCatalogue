@@ -83,7 +83,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.ModelBinders
         [Fact]
         public static async Task TimeInputModelBinder_ReturnsSuccessWithDateTime()
         {
-            var correctValue = "12:58";
+            const string correctValue = "12:58";
 
             DateTime.TryParseExact(
                 correctValue,

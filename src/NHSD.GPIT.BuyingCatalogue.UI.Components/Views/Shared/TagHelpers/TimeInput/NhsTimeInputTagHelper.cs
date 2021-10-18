@@ -32,7 +32,7 @@ namespace NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.TagHelpers.TimeIn
 
             var formGroup = TagHelperBuilders.GetFormGroupBuilder();
             var label = TagHelperBuilders.GetLabelBuilder(ViewContext, For, htmlGenerator, null, LabelText);
-            var hint = TagHelperBuilders.GetLabelHintBuilder(For, TimeInputConstants.TimeInputHint, null);
+            var hint = TagHelperBuilders.GetLabelHintBuilder(For, TimeInputConstants.TimeInputHint);
             var validation = TagHelperBuilders.GetValidationBuilder(ViewContext, For, htmlGenerator);
             var input = GetInputBuilder();
 
