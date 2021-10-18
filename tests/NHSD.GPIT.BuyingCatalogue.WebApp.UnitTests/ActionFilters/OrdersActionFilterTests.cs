@@ -73,7 +73,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.ActionFilters
         [Fact]
         public async Task UserNotBuyer_Returns_BadRequest()
         {
-            var requestPath = "/order/organisation/ABC";
+            const string requestPath = "/order/organisation/ABC";
             httpRequestMock.Setup(r => r.Path).Returns(requestPath);
 
             httpContextMock.Setup(c => c.User).Returns(new ClaimsPrincipal(
@@ -136,7 +136,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.ActionFilters
         [Fact]
         public async Task OrderDoesntMatch_UsersPrimaryOrSecondaryOdsCodes_ReturnsNotFoundResult()
         {
-            var odsCode = "MNO";
+            const string odsCode = "MNO";
             var requestPath = $"/order/organisation/{odsCode}/edit";
 
             httpRequestMock.Setup(r => r.Path).Returns(requestPath);

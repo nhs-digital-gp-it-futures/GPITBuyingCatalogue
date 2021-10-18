@@ -20,7 +20,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Models
         [Fact]
         public static void FromCatalogueItem_NullCatalogueItem_ThrowsException()
         {
-            var actual = Assert.Throws<ArgumentNullException>(() => new InteroperabilityModel((CatalogueItem)null));
+            var actual = Assert.Throws<ArgumentNullException>(() => new InteroperabilityModel(null));
 
             actual.ParamName.Should().Be("catalogueItem");
         }
