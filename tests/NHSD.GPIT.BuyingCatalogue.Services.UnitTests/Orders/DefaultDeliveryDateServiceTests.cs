@@ -42,10 +42,11 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Orders
             await service.SetDefaultDeliveryDate(order.CallOffId, order.DefaultDeliveryDates.First().CatalogueItemId, deliveryDate);
 
             var actual = await context.Orders
-                .Include(o => o.DefaultDeliveryDates.Where(d => d.CatalogueItemId == order.DefaultDeliveryDates.First().CatalogueItemId))
+                .Include(o => o.DefaultDeliveryDates)
                 .SingleOrDefaultAsync();
 
-            actual.DefaultDeliveryDates.Single().Should().Be(deliveryDate);
+            actual.DefaultDeliveryDates.Single(d => d.CatalogueItemId == order.DefaultDeliveryDates.First().CatalogueItemId)
+                .DeliveryDate.Should().Be(deliveryDate);
         }
     }
 }
