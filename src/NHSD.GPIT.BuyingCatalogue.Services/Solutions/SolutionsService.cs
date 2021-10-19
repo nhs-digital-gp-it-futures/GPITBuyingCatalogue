@@ -19,18 +19,15 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
         private readonly BuyingCatalogueDbContext dbContext;
         private readonly IDbRepository<Solution, BuyingCatalogueDbContext> solutionRepository;
         private readonly IDbRepository<Supplier, BuyingCatalogueDbContext> supplierRepository;
-        private readonly ICatalogueItemRepository catalogueItemRepository;
 
         public SolutionsService(
             BuyingCatalogueDbContext dbContext,
             IDbRepository<Solution, BuyingCatalogueDbContext> solutionRepository,
-            IDbRepository<Supplier, BuyingCatalogueDbContext> supplierRepository,
-            ICatalogueItemRepository catalogueItemRepository)
+            IDbRepository<Supplier, BuyingCatalogueDbContext> supplierRepository)
         {
             this.dbContext = dbContext ?? throw new ArgumentNullException(nameof(dbContext));
             this.solutionRepository = solutionRepository ?? throw new ArgumentNullException(nameof(solutionRepository));
             this.supplierRepository = supplierRepository ?? throw new ArgumentNullException(nameof(supplierRepository));
-            this.catalogueItemRepository = catalogueItemRepository ?? throw new ArgumentNullException(nameof(catalogueItemRepository));
         }
 
         public Task<CatalogueItem> GetSolutionListPrices(CatalogueItemId solutionId)
@@ -197,7 +194,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
             var frameworks = data.Solution.FrameworkSolutions.ToList();
             frameworks.RemoveAll(f => selectedFrameworks.Any(sf => f.FrameworkId == sf.FrameworkId && sf.Selected == false));
 
-            foreach (var framework in selectedFrameworks.Where(x => x.Selected))
+            foreach (var framework in selectedFrameworks.Where(fm => fm.Selected))
             {
                 var existingFramework = frameworks.FirstOrDefault(fs => fs.FrameworkId == framework.FrameworkId);
 
@@ -370,7 +367,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
 
             model.Frameworks.ValidateNotNull(nameof(CreateSolutionModel.Frameworks));
 
-            var latestCatalogueItemId = await catalogueItemRepository.GetLatestCatalogueItemIdFor(model.SupplierId);
+            var latestCatalogueItemId = await GetLatestCatalogueItemIdFor(model.SupplierId);
             var catalogueItemId = latestCatalogueItemId.NextSolutionId();
 
             var dateTimeNow = DateTime.UtcNow;
@@ -388,7 +385,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
                 });
             }
 
-            catalogueItemRepository.Add(new CatalogueItem
+            dbContext.CatalogueItems.Add(new CatalogueItem
             {
                 Id = catalogueItemId,
                 CatalogueItemType = CatalogueItemType.Solution,
@@ -404,7 +401,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
                 SupplierId = model.SupplierId,
             });
 
-            await catalogueItemRepository.SaveChangesAsync();
+            await dbContext.SaveChangesAsync();
 
             return catalogueItemId;
         }
@@ -415,7 +412,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
         }
 
         public Task<bool> SupplierHasSolutionName(int supplierId, string solutionName) =>
-            catalogueItemRepository.SupplierHasSolutionName(supplierId, solutionName);
+            dbContext.CatalogueItems.AnyAsync(i => i.SupplierId == supplierId && i.Name == solutionName);
 
         public async Task SavePublicationStatus(CatalogueItemId solutionId, PublicationStatus publicationStatus)
         {
@@ -490,5 +487,14 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
             .Include(s => s.Solution)
             .Include(s => s.Solution.FrameworkSolutions)
             .SingleAsync(s => s.Id == id);
+
+        private async Task<CatalogueItemId> GetLatestCatalogueItemIdFor(int supplierId)
+        {
+            var catalogueSolution = await dbContext.CatalogueItems.Where(i => i.CatalogueItemType == CatalogueItemType.Solution && i.SupplierId == supplierId)
+                .OrderByDescending(i => i.Id)
+                .FirstOrDefaultAsync();
+
+            return catalogueSolution?.Id ?? new CatalogueItemId(supplierId, "000");
+        }
     }
 }

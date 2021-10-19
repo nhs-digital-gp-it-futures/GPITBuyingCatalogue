@@ -14,14 +14,11 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.AssociatedServices
     public sealed class AssociatedServicesService : IAssociatedServicesService
     {
         private readonly BuyingCatalogueDbContext dbContext;
-        private readonly ICatalogueItemRepository catalogueItemRepository;
 
         public AssociatedServicesService(
-            BuyingCatalogueDbContext dbContext,
-            ICatalogueItemRepository catalogueItemRepository)
+            BuyingCatalogueDbContext dbContext)
         {
             this.dbContext = dbContext ?? throw new ArgumentNullException(nameof(dbContext));
-            this.catalogueItemRepository = catalogueItemRepository ?? throw new ArgumentNullException(nameof(catalogueItemRepository));
         }
 
         public Task<List<CatalogueItem>> GetAssociatedServicesForSupplier(int? supplierId)
@@ -84,7 +81,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.AssociatedServices
             if (model is null)
                 throw new ArgumentNullException(nameof(model));
 
-            var latestAssociatedServiceCatalogueItemId = await catalogueItemRepository.GetLatestAssociatedServiceCatalogueItemIdFor(solution.SupplierId);
+            var latestAssociatedServiceCatalogueItemId = await GetLatestAssociatedServiceCatalogueItemIdFor(solution.SupplierId);
             var catalogueItemId = latestAssociatedServiceCatalogueItemId.NextAssociatedServiceId();
 
             var associatedService = new CatalogueItem
@@ -135,6 +132,15 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.AssociatedServices
             solution.PublishedStatus = publicationStatus;
 
             await dbContext.SaveChangesAsync();
+        }
+
+        private async Task<CatalogueItemId> GetLatestAssociatedServiceCatalogueItemIdFor(int supplierId)
+        {
+            var associatedService = await dbContext.CatalogueItems.Where(i => i.CatalogueItemType == CatalogueItemType.AssociatedService && i.SupplierId == supplierId)
+                .OrderByDescending(i => i.Id)
+                .FirstOrDefaultAsync();
+
+            return associatedService?.Id ?? new CatalogueItemId(supplierId, "S-000");
         }
     }
 }

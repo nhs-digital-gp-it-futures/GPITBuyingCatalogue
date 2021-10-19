@@ -177,8 +177,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Solutions
             var service = new SolutionsService(
                 Mock.Of<BuyingCatalogueDbContext>(),
                 Mock.Of<IDbRepository<Solution, BuyingCatalogueDbContext>>(),
-                Mock.Of<IDbRepository<Supplier, BuyingCatalogueDbContext>>(),
-                Mock.Of<ICatalogueItemRepository>());
+                Mock.Of<IDbRepository<Supplier, BuyingCatalogueDbContext>>());
 
             var actual = await Assert.ThrowsAsync<ArgumentException>(() => service.SaveSolutionDescription(
                 new CatalogueItemId(100000, "001"),
@@ -357,67 +356,35 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Solutions
         }
 
         [Theory]
-        [CommonAutoData]
-        public static async Task AddCatalogueSolution_ModelValid_GetsLatestCatalogueItemId(
+        [InMemoryDbAutoData]
+        public static async Task AddCatalogueSolution_ModelValid_AddsCatalogueItemToDatabase(
+            [Frozen] BuyingCatalogueDbContext context,
+            CatalogueItem catalogueItem,
             CreateSolutionModel model,
-            [Frozen] Mock<ICatalogueItemRepository> catalogueItemRepositoryMock,
             SolutionsService service)
         {
-            catalogueItemRepositoryMock
-                .Setup(c => c.GetLatestCatalogueItemIdFor(model.SupplierId))
-                .ReturnsAsync(new CatalogueItemId(model.SupplierId, "045"));
+            model.SupplierId = catalogueItem.SupplierId;
 
             await service.AddCatalogueSolution(model);
 
-            catalogueItemRepositoryMock.Verify(c => c.GetLatestCatalogueItemIdFor(model.SupplierId));
+            var actual = await context.CatalogueItems.AsAsyncEnumerable().SingleAsync();
+
+            actual.Name.Should().Be(model.Name);
         }
 
         [Theory]
-        [CommonAutoData]
-        public static async Task AddCatalogueSolution_ModelValid_AddsCatalogueItemToRepository(
-            CreateSolutionModel model,
-            [Frozen] Mock<ICatalogueItemRepository> catalogueItemRepositoryMock,
+        [InMemoryDbAutoData]
+        public static async Task SupplierHasSolutionName_Returns_FromDatabase(
+            [Frozen] BuyingCatalogueDbContext context,
+            CatalogueItem catalogueItem,
             SolutionsService service)
         {
-            var catalogueItemId = new CatalogueItemId(model.SupplierId, "045");
+            context.CatalogueItems.Add(catalogueItem);
+            await context.SaveChangesAsync();
 
-            catalogueItemRepositoryMock
-                .Setup(c => c.GetLatestCatalogueItemIdFor(model.SupplierId))
-                .ReturnsAsync(catalogueItemId);
+            var actual = await service.SupplierHasSolutionName(catalogueItem.SupplierId, catalogueItem.Name);
 
-            await service.AddCatalogueSolution(model);
-
-            catalogueItemRepositoryMock.Verify(
-                repository => repository.Add(
-                    It.Is<CatalogueItem>(
-                        c =>
-                            c.Id == catalogueItemId.NextSolutionId() &&
-                            c.CatalogueItemType == CatalogueItemType.Solution &&
-                            c.Solution.LastUpdated > DateTime.UtcNow.AddMinutes(-2) &&
-                            c.Solution.LastUpdatedBy == model.UserId &&
-                            c.Name == model.Name &&
-                            c.PublishedStatus == PublicationStatus.Draft &&
-                            c.SupplierId == model.SupplierId)));
-        }
-
-        [Theory]
-        [CommonAutoData]
-        public static async Task SupplierHasSolutionName_Returns_FromRepository(
-            int supplierId,
-            string solutionName,
-            [Frozen] Mock<ICatalogueItemRepository> mockCatalogueItemRepository,
-            SolutionsService service)
-        {
-            var expected = DateTime.Now.Ticks % 2 == 0;
-
-            mockCatalogueItemRepository
-                .Setup(c => c.SupplierHasSolutionName(supplierId, solutionName))
-                .ReturnsAsync(expected);
-
-            var actual = await service.SupplierHasSolutionName(supplierId, solutionName);
-
-            mockCatalogueItemRepository.Verify(c => c.SupplierHasSolutionName(supplierId, solutionName));
-            actual.Should().Be(expected);
+            actual.Should().BeTrue();
         }
 
         [Theory]
