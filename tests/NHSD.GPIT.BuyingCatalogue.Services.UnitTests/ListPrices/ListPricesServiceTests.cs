@@ -112,12 +112,13 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.ListPrices
             ListPricesService service)
         {
             context.CatalogueItems.Add(catalogueItem);
-
             await context.SaveChangesAsync();
 
-            await service.DeleteListPrice(catalogueItem.Id, catalogueItem.CataloguePrices.First().CataloguePriceId);
+            var cataloguePriceIdToRemove = catalogueItem.CataloguePrices.First().CataloguePriceId;
 
-            var actual = await context.CataloguePrices.AsAsyncEnumerable().AnyAsync(cp => cp.CataloguePriceId == catalogueItem.CataloguePrices.First().CataloguePriceId);
+            await service.DeleteListPrice(catalogueItem.Id, cataloguePriceIdToRemove);
+
+            var actual = await context.CataloguePrices.AsAsyncEnumerable().AnyAsync(cp => cp.CataloguePriceId == cataloguePriceIdToRemove);
 
             actual.Should().BeFalse();
         }
