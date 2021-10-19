@@ -688,6 +688,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
                     CatalogueItemEpics = new List<CatalogueItemEpic>
                     {
                         new() { CapabilityId = 46, EpicId = "C46E6", LastUpdated = DateTime.UtcNow, StatusId = 1 },
+                        new() { CapabilityId = 46, EpicId = "C46E1", LastUpdated = DateTime.UtcNow, StatusId = 1 },
                     },
                     PublishedStatus = PublicationStatus.Published,
                     CataloguePrices = new List<CataloguePrice>
