@@ -4,7 +4,6 @@ using System.Linq;
 using System.Threading.Tasks;
 using LinqKit;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Caching.Memory;
 using MoreLinq;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
@@ -17,8 +16,6 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
 {
     public sealed class SolutionsFilterService : ISolutionsFilterService
     {
-        private const string FrameworkCacheKey = "framework-filter";
-        private const string CategoryCacheKey = "category-filter";
         private const string FoundationCapabilitiesKey = "FC";
         private const string AllSolutionsFrameworkKey = "All";
         private const int UndefinedCategory = 0;
@@ -30,20 +27,10 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
         private const char SupplierMarkCharacter = 'X';
         private const char DfocvcMarkCharacter = 'D';
 
-        private readonly MemoryCacheEntryOptions memoryCacheOptions;
-
         private readonly BuyingCatalogueDbContext dbContext;
-        private readonly IMemoryCache memoryCache;
 
-        public SolutionsFilterService(
-            BuyingCatalogueDbContext dbContext,
-            IMemoryCache memoryCache)
-        {
+        public SolutionsFilterService(BuyingCatalogueDbContext dbContext) =>
             this.dbContext = dbContext ?? throw new ArgumentNullException(nameof(dbContext));
-            this.memoryCache = memoryCache ?? throw new ArgumentNullException(nameof(memoryCache));
-
-            memoryCacheOptions = new MemoryCacheEntryOptions().SetAbsoluteExpiration(DateTime.Now.AddSeconds(60));
-        }
 
         public async Task<PagedList<CatalogueItem>> GetAllSolutionsFiltered(
             PageOptions options,
@@ -56,8 +43,11 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
                 .Include(i => i.Solution)
                 .Include(i => i.Supplier)
                 .Include(i => i.CatalogueItemCapabilities).ThenInclude(cic => cic.Capability)
-                .Where(i => i.CatalogueItemType == CatalogueItemType.Solution &&
-                    (i.PublishedStatus != PublicationStatus.Draft && i.PublishedStatus != PublicationStatus.Unpublished));
+                .Where(i =>
+                i.CatalogueItemType == CatalogueItemType.Solution
+                && (i.PublishedStatus != PublicationStatus.Draft
+                    && i.PublishedStatus != PublicationStatus.Unpublished)
+                && i.Supplier.IsActive);
 
             if (!string.IsNullOrWhiteSpace(frameworkId) && frameworkId != AllSolutionsFrameworkKey)
                 query = query.Where(ci => ci.Solution.FrameworkSolutions.Any(fs => fs.FrameworkId == frameworkId));
@@ -89,9 +79,6 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
 
         public async Task<Dictionary<EntityFramework.Catalogue.Models.Framework, int>> GetAllFrameworksAndCountForFilter()
         {
-            if (memoryCache.TryGetValue(FrameworkCacheKey, out List<KeyValuePair<EntityFramework.Catalogue.Models.Framework, int>> value))
-                return value.ToDictionary(r => r.Key, r => r.Value);
-
             var allSolutionsCount = await dbContext.CatalogueItems.AsNoTracking()
                 .Where(ci => ci.PublishedStatus == PublicationStatus.Published && ci.CatalogueItemType == CatalogueItemType.Solution)
                 .CountAsync();
@@ -116,23 +103,21 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
                     },
                     allSolutionsCount));
 
-            memoryCache.Set(FrameworkCacheKey, results, memoryCacheOptions);
-
             return results.ToDictionary(r => r.Key, r => r.Value);
         }
 
         public async Task<CategoryFilterModel> GetAllCategoriesAndCountForFilter(string frameworkId = null)
         {
-            if (memoryCache.TryGetValue($"{CategoryCacheKey}-{frameworkId ?? AllSolutionsFrameworkKey}", out CategoryFilterModel value))
-                return value;
-
             var query = dbContext.CatalogueItems.AsNoTracking()
                 .Include(ci => ci.CatalogueItemCapabilities)
                 .ThenInclude(cic => cic.Capability)
                 .ThenInclude(c => c.Category)
                 .Include(ci => ci.CatalogueItemEpics)
                 .ThenInclude(cie => cie.Epic)
-                .Where(ci => ci.PublishedStatus == PublicationStatus.Published && ci.CatalogueItemType == CatalogueItemType.Solution);
+                .Where(ci =>
+                ci.PublishedStatus == PublicationStatus.Published
+                && ci.CatalogueItemType == CatalogueItemType.Solution
+                && ci.Supplier.IsActive);
 
             if (!string.IsNullOrWhiteSpace(frameworkId) && frameworkId != AllSolutionsFrameworkKey)
                 query = query.Where(ci => ci.Solution.FrameworkSolutions.Any(fs => fs.FrameworkId == frameworkId));
@@ -178,6 +163,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
 
             var epics = results.SelectMany(ci => ci.CatalogueItemEpics)
                 .Select(cie => cie.Epic)
+                .Where(e => e.CompliancyLevel == CompliancyLevel.May)
                 .DistinctBy(e => e.Id)
                 .ToList();
 
@@ -200,11 +186,13 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
                     cap => cap.Epics.AddRange(
                         epics.Where(e => e.CapabilityId == cap.CapabilityId)
                             .Select(e => new EpicsFilter
-                             {
-                                 Id = e.Id,
-                                 Name = e.Name,
-                                 Count = results.Count(ci => ci.CatalogueItemEpics.Any(cie => cie.EpicId == e.Id)),
-                             }))));
+                            {
+                                Id = e.Id,
+                                Name = e.Name,
+                                Count = results.Count(ci => ci.CatalogueItemEpics.Any(cie => cie.EpicId == e.Id)),
+                            })
+                            .OrderByDescending(e => e.Count)
+                            .ThenBy(e => e.Name))));
 
             var response = new CategoryFilterModel
             {
@@ -212,8 +200,6 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
                 FoundationCapabilities = foundationCapabilitiesFilter,
                 CountOfCatalogueItemsWithFoundationCapabilities = countOfCatalogueItemsWithAllFoundationCapabilities,
             };
-
-            memoryCache.Set($"{CategoryCacheKey}-{frameworkId ?? AllSolutionsFrameworkKey}", response, memoryCacheOptions);
 
             return response;
         }
