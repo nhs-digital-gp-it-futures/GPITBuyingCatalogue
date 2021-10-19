@@ -167,7 +167,9 @@ jobs:
   
 - job: createBuildArtifact
   displayName: Create Build Artifact
-     
+  pool:
+    vmImage: 'ubuntu-latest'  
+    
   steps:
   - task: CopyFiles@2
     displayName: Build Artifact - Code
