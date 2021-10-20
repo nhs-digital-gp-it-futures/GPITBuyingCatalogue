@@ -21,12 +21,13 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Models
         [Theory]
         [CommonAutoData]
         public static void ValidCatalogueItem_PropertiesCorrectlySet(
-            CatalogueItem catalogueItem)
+            AdditionalService additionalService)
         {
+            var catalogueItem = additionalService.CatalogueItem;
             var model = new AdditionalServiceModel(catalogueItem);
 
             model.SolutionId.Should().Be(catalogueItem.Id);
-            model.Description.Should().Be(catalogueItem.AdditionalService.FullDescription);
+            model.Description.Should().Be(additionalService.FullDescription);
             model.Name.Should().Be(catalogueItem.Name);
             model.Prices.Should().BeEquivalentTo(catalogueItem.CataloguePrices.Select(cp => cp.ToString()).ToList());
         }

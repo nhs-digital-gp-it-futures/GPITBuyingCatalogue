@@ -7,6 +7,7 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models
     {
         public Capability()
         {
+            CatalogueItemCapabilities = new HashSet<CatalogueItemCapability>();
             Epics = new HashSet<Epic>();
         }
 

@@ -93,8 +93,6 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Session
            CreateOrderItemModel model,
            CataloguePrice price)
         {
-            price.CurrencyCode = "GBP";
-
             var service = new OrderSessionService(
                 new SessionService(GetAccessor()),
                 mockOrderItemService.Object,

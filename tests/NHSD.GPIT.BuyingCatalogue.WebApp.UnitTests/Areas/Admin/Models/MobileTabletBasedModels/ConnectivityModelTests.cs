@@ -14,13 +14,14 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Models.MobileTa
         [Theory]
         [CommonAutoData]
         public static void FromCatalogueItem_ValidCatalogueItem_PropertiesSetAsExpected(
-            CatalogueItem catalogueItem)
+            Solution solution)
         {
+            var catalogueItem = solution.CatalogueItem;
             var actual = new ConnectivityModel(catalogueItem);
 
             actual.ConnectionSpeeds.Should().BeEquivalentTo(Framework.Constants.SelectLists.ConnectionSpeeds);
 
-            var mobileConnectionDetails = catalogueItem.Solution.GetClientApplication().MobileConnectionDetails;
+            var mobileConnectionDetails = solution.GetClientApplication().MobileConnectionDetails;
 
             actual.SelectedConnectionSpeed.Should().Be(mobileConnectionDetails.MinimumConnectionSpeed);
             actual.Description.Should().Be(mobileConnectionDetails.Description);

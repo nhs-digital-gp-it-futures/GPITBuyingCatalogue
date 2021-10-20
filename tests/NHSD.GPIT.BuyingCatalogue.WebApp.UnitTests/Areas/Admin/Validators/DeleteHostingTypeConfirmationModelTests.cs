@@ -16,11 +16,12 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators
         [Theory]
         [CommonAutoData]
         public static async Task Validate_WhenPublishedSolutionHasMultipleHostingTypes_NoValidationErrors(
-            CatalogueItem catalogueItem,
+            Solution solution,
             DeleteHostingTypeConfirmationModel model,
             [Frozen] Mock<ISolutionsService> solutionsService,
             DeleteHostingTypeConfirmationModelValidator validator)
         {
+            var catalogueItem = solution.CatalogueItem;
             catalogueItem.PublishedStatus = PublicationStatus.Published;
 
             solutionsService.Setup(s => s.GetSolution(model.SolutionId))
@@ -34,14 +35,15 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators
         [Theory]
         [CommonAutoData]
         public static async Task Validate_WhenPublishedSolutionHasOneHostingType_SetsModelError(
-            CatalogueItem catalogueItem,
+            Solution solution,
             [Frozen] Mock<ISolutionsService> solutionsService,
             DeleteHostingTypeConfirmationModelValidator validator)
         {
+            var catalogueItem = solution.CatalogueItem;
             catalogueItem.PublishedStatus = PublicationStatus.Published;
-            catalogueItem.Solution.Hosting.HybridHostingType = new HybridHostingType();
-            catalogueItem.Solution.Hosting.OnPremise = new OnPremise();
-            catalogueItem.Solution.Hosting.PrivateCloud = new PrivateCloud();
+            solution.Hosting.HybridHostingType = new HybridHostingType();
+            solution.Hosting.OnPremise = new OnPremise();
+            solution.Hosting.PrivateCloud = new PrivateCloud();
 
             var model = new DeleteHostingTypeConfirmationModel
             {
@@ -62,11 +64,12 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators
         [Theory]
         [CommonAutoData]
         public static async Task Validate_WhenUnpublishedSolutionHasMultipleHostingTypes_NoValidationErrors(
-            CatalogueItem catalogueItem,
+            Solution solution,
             DeleteHostingTypeConfirmationModel model,
             [Frozen] Mock<ISolutionsService> solutionsService,
             DeleteHostingTypeConfirmationModelValidator validator)
         {
+            var catalogueItem = solution.CatalogueItem;
             catalogueItem.PublishedStatus = PublicationStatus.Unpublished;
 
             solutionsService.Setup(s => s.GetSolution(model.SolutionId))
@@ -80,14 +83,15 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators
         [Theory]
         [CommonAutoData]
         public static async Task Validate_WhenUnpublishedSolutionHasOneHostingType_NoValidationErrors(
-            CatalogueItem catalogueItem,
+            Solution solution,
             [Frozen] Mock<ISolutionsService> solutionsService,
             DeleteHostingTypeConfirmationModelValidator validator)
         {
+            var catalogueItem = solution.CatalogueItem;
             catalogueItem.PublishedStatus = PublicationStatus.Unpublished;
-            catalogueItem.Solution.Hosting.HybridHostingType = new HybridHostingType();
-            catalogueItem.Solution.Hosting.OnPremise = new OnPremise();
-            catalogueItem.Solution.Hosting.PrivateCloud = new PrivateCloud();
+            solution.Hosting.HybridHostingType = new HybridHostingType();
+            solution.Hosting.OnPremise = new OnPremise();
+            solution.Hosting.PrivateCloud = new PrivateCloud();
 
             var model = new DeleteHostingTypeConfirmationModel
             {

@@ -175,24 +175,26 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
         [CommonAutoData]
         public static async Task Get_ManageSolution_ReturnsViewWithExpectedModel(
             [Frozen] AspNetUser aspNetUser,
-            CatalogueItem expected,
+            Solution expected,
             int userId,
             [Frozen] Mock<ISolutionsService> mockSolutionService,
             CatalogueSolutionsController controller)
         {
-            expected.Solution.LastUpdatedBy = userId;
+            expected.LastUpdatedBy = userId;
+            expected.LastUpdatedByUser = aspNetUser;
             aspNetUser.Id = userId;
+            var expectedCatalogueItem = expected.CatalogueItem;
 
-            mockSolutionService.Setup(s => s.GetSolution(expected.Id))
-                .ReturnsAsync(expected);
+            mockSolutionService.Setup(s => s.GetSolution(expectedCatalogueItem.Id))
+                .ReturnsAsync(expectedCatalogueItem);
 
-            var actual = (await controller.ManageCatalogueSolution(expected.Id)).As<ViewResult>();
+            var actual = (await controller.ManageCatalogueSolution(expectedCatalogueItem.Id)).As<ViewResult>();
 
-            mockSolutionService.Verify(s => s.GetSolution(expected.Id));
+            mockSolutionService.Verify(s => s.GetSolution(expectedCatalogueItem.Id));
             actual.Should().NotBeNull();
             actual.ViewName.Should().BeNull();
             var model = actual.Model.As<ManageCatalogueSolutionModel>();
-            model.Solution.Should().BeEquivalentTo(expected);
+            model.Solution.Should().BeEquivalentTo(expectedCatalogueItem);
             model.LastUpdatedByName.Should().BeEquivalentTo($"{aspNetUser.FirstName} {aspNetUser.LastName}");
         }
 
@@ -766,12 +768,12 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
         [CommonAutoData]
         public static async Task Get_PublicCloud_GetsSolutionFromService(
             CatalogueItemId catalogueItemId,
-            CatalogueItem catalogueItem,
+            Solution solution,
             [Frozen] Mock<ISolutionsService> mockService,
             CatalogueSolutionsController controller)
         {
             mockService.Setup(s => s.GetSolution(catalogueItemId))
-                .ReturnsAsync(catalogueItem);
+                .ReturnsAsync(solution.CatalogueItem);
 
             await controller.PublicCloud(catalogueItemId);
 
@@ -781,11 +783,12 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
         [Theory]
         [CommonAutoData]
         public static async Task Get_PublicCloud_ValidId_ReturnsViewWithExpectedModel(
-            CatalogueItem catalogueItem,
+            Solution solution,
             CatalogueItemId catalogueItemId,
             [Frozen] Mock<ISolutionsService> mockService,
             CatalogueSolutionsController controller)
         {
+            var catalogueItem = solution.CatalogueItem;
             mockService.Setup(s => s.GetSolution(catalogueItemId))
                 .ReturnsAsync(catalogueItem);
 
@@ -850,11 +853,12 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
         [Theory]
         [CommonAutoData]
         public static async Task Post_PublicCloud_InvalidId_ReturnsBadRequestResult(
-            CatalogueItem catalogueItem,
+            Solution solution,
             CatalogueItemId catalogueItemId,
             [Frozen] Mock<ISolutionsService> mockService,
             CatalogueSolutionsController controller)
         {
+            var catalogueItem = solution.CatalogueItem;
             mockService.Setup(s => s.GetSolution(catalogueItemId))
                 .ReturnsAsync(catalogueItem);
 
@@ -869,12 +873,12 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
         [CommonAutoData]
         public static async Task Get_PrivateCloud_GetsSolutionFromService(
             CatalogueItemId catalogueItemId,
-            CatalogueItem catalogueItem,
+            Solution solution,
             [Frozen] Mock<ISolutionsService> mockService,
             CatalogueSolutionsController controller)
         {
             mockService.Setup(s => s.GetSolution(catalogueItemId))
-                .ReturnsAsync(catalogueItem);
+                .ReturnsAsync(solution.CatalogueItem);
 
             await controller.PrivateCloud(catalogueItemId);
 
@@ -884,11 +888,12 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
         [Theory]
         [CommonAutoData]
         public static async Task Get_PrivateCloud_ValidId_ReturnsViewWithExpectedModel(
-            CatalogueItem catalogueItem,
+            Solution solution,
             CatalogueItemId catalogueItemId,
             [Frozen] Mock<ISolutionsService> mockService,
             CatalogueSolutionsController controller)
         {
+            var catalogueItem = solution.CatalogueItem;
             mockService.Setup(s => s.GetSolution(catalogueItemId))
                 .ReturnsAsync(catalogueItem);
 
@@ -954,11 +959,12 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
         [Theory]
         [CommonAutoData]
         public static async Task Post_PrivateCloud_InvalidId_ReturnsBadRequestResult(
-            CatalogueItem catalogueItem,
+            Solution solution,
             CatalogueItemId catalogueItemId,
             [Frozen] Mock<ISolutionsService> mockService,
             CatalogueSolutionsController controller)
         {
+            var catalogueItem = solution.CatalogueItem;
             mockService.Setup(s => s.GetSolution(catalogueItemId))
                 .ReturnsAsync(catalogueItem);
 
@@ -973,12 +979,12 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
         [CommonAutoData]
         public static async Task Get_HybridCloud_GetsSolutionFromService(
             CatalogueItemId catalogueItemId,
-            CatalogueItem catalogueItem,
+            Solution solution,
             [Frozen] Mock<ISolutionsService> mockService,
             CatalogueSolutionsController controller)
         {
             mockService.Setup(s => s.GetSolution(catalogueItemId))
-                .ReturnsAsync(catalogueItem);
+                .ReturnsAsync(solution.CatalogueItem);
 
             await controller.Hybrid(catalogueItemId);
 
@@ -988,11 +994,12 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
         [Theory]
         [CommonAutoData]
         public static async Task Get_HybridCloud_ValidId_ReturnsViewWithExpectedModel(
-            CatalogueItem catalogueItem,
+            Solution solution,
             CatalogueItemId catalogueItemId,
             [Frozen] Mock<ISolutionsService> mockService,
             CatalogueSolutionsController controller)
         {
+            var catalogueItem = solution.CatalogueItem;
             mockService.Setup(s => s.GetSolution(catalogueItemId))
                 .ReturnsAsync(catalogueItem);
 
@@ -1058,11 +1065,12 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
         [Theory]
         [CommonAutoData]
         public static async Task Post_HybridCloud_InvalidId_ReturnsBadRequestResult(
-            CatalogueItem catalogueItem,
+            Solution solution,
             CatalogueItemId catalogueItemId,
             [Frozen] Mock<ISolutionsService> mockService,
             CatalogueSolutionsController controller)
         {
+            var catalogueItem = solution.CatalogueItem;
             mockService.Setup(s => s.GetSolution(catalogueItemId))
                 .ReturnsAsync(catalogueItem);
 
@@ -1077,12 +1085,12 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
         [CommonAutoData]
         public static async Task Get_OnPremiseCloud_GetsSolutionFromService(
             CatalogueItemId catalogueItemId,
-            CatalogueItem catalogueItem,
+            Solution solution,
             [Frozen] Mock<ISolutionsService> mockService,
             CatalogueSolutionsController controller)
         {
             mockService.Setup(s => s.GetSolution(catalogueItemId))
-                .ReturnsAsync(catalogueItem);
+                .ReturnsAsync(solution.CatalogueItem);
 
             await controller.OnPremise(catalogueItemId);
 
@@ -1092,11 +1100,12 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
         [Theory]
         [CommonAutoData]
         public static async Task Get_OnPremise_ValidId_ReturnsViewWithExpectedModel(
-            CatalogueItem catalogueItem,
+            Solution solution,
             CatalogueItemId catalogueItemId,
             [Frozen] Mock<ISolutionsService> mockService,
             CatalogueSolutionsController controller)
         {
+            var catalogueItem = solution.CatalogueItem;
             mockService.Setup(s => s.GetSolution(catalogueItemId))
                 .ReturnsAsync(catalogueItem);
 
@@ -1162,11 +1171,12 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
         [Theory]
         [CommonAutoData]
         public static async Task Post_OnPremise_InvalidId_ReturnsBadRequestResult(
-            CatalogueItem catalogueItem,
+            Solution solution,
             CatalogueItemId catalogueItemId,
             [Frozen] Mock<ISolutionsService> mockService,
             CatalogueSolutionsController controller)
         {
+            var catalogueItem = solution.CatalogueItem;
             mockService.Setup(s => s.GetSolution(catalogueItemId))
                 .ReturnsAsync(catalogueItem);
 
@@ -1783,10 +1793,11 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
         [Theory]
         [CommonAutoData]
         public static async Task Get_ClientApplicationType_GetsSolutionFromService(
-            CatalogueItem catalogueItem,
+            Solution solution,
             [Frozen] Mock<ISolutionsService> mockService,
             CatalogueSolutionsController catalogueSolutionsController)
         {
+            var catalogueItem = solution.CatalogueItem;
             mockService.Setup(s => s.GetSolution(catalogueItem.Id))
                 .ReturnsAsync(catalogueItem);
 
@@ -1798,11 +1809,12 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
         [Theory]
         [CommonAutoData]
         public static async Task Get_ClientApplicationType_ValidId_ReturnsViewWithExpectedModel(
-            CatalogueItem catalogueItem,
+            Solution solution,
             CatalogueItemId catalogueItemId,
             [Frozen] Mock<ISolutionsService> mockService,
             CatalogueSolutionsController controller)
         {
+            var catalogueItem = solution.CatalogueItem;
             mockService.Setup(s => s.GetSolution(catalogueItemId))
                 .ReturnsAsync(catalogueItem);
 
@@ -1831,11 +1843,12 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
         [Theory]
         [CommonAutoData]
         public static async Task Post_ClientApplicationType_InvalidId_ReturnsBadRequestResult(
-            CatalogueItem catalogueItem,
+            Solution solution,
             CatalogueItemId catalogueItemId,
             [Frozen] Mock<ISolutionsService> mockService,
             CatalogueSolutionsController controller)
         {
+            var catalogueItem = solution.CatalogueItem;
             mockService.Setup(s => s.GetSolution(catalogueItemId))
                 .ReturnsAsync(catalogueItem);
 
@@ -1850,12 +1863,12 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
         [CommonAutoData]
         public static async Task Get_AddApplicationType_GetsSolutionFromService(
             CatalogueItemId catalogueItemId,
-            CatalogueItem catalogueItem,
+            Solution solution,
             [Frozen] Mock<ISolutionsService> mockService,
             CatalogueSolutionsController controller)
         {
             mockService.Setup(s => s.GetSolution(catalogueItemId))
-                .ReturnsAsync(catalogueItem);
+                .ReturnsAsync(solution.CatalogueItem);
 
             await controller.AddApplicationType(catalogueItemId);
 
@@ -1865,11 +1878,12 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
         [Theory]
         [CommonAutoData]
         public static async Task Get_AddApplicationType_ValidId_ReturnsViewWithExpectedModel(
-            CatalogueItem catalogueItem,
+            Solution solution,
             CatalogueItemId catalogueItemId,
             [Frozen] Mock<ISolutionsService> mockService,
             CatalogueSolutionsController controller)
         {
+            var catalogueItem = solution.CatalogueItem;
             mockService.Setup(s => s.GetSolution(catalogueItemId))
                 .ReturnsAsync(catalogueItem);
 
@@ -1916,38 +1930,40 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
         [Theory]
         [CommonAutoData]
         public static async Task Post_SetPublicationStatus_CallsSavePublicationStatus(
-            CatalogueItem solution,
+            Solution solution,
             [Frozen] Mock<ISolutionsService> mockSolutionService,
             CatalogueSolutionsController controller)
         {
-            solution.PublishedStatus = PublicationStatus.Draft;
+            var catalogueItem = solution.CatalogueItem;
+            catalogueItem.PublishedStatus = PublicationStatus.Draft;
 
             var manageCatalogueSolutionModel = new ManageCatalogueSolutionModel { SelectedPublicationStatus = PublicationStatus.Published };
 
-            mockSolutionService.Setup(s => s.GetSolution(solution.Id))
-                .ReturnsAsync(solution);
+            mockSolutionService.Setup(s => s.GetSolution(catalogueItem.Id))
+                .ReturnsAsync(catalogueItem);
 
-            await controller.SetPublicationStatus(solution.Id, manageCatalogueSolutionModel);
+            await controller.SetPublicationStatus(catalogueItem.Id, manageCatalogueSolutionModel);
 
-            mockSolutionService.Verify(s => s.SavePublicationStatus(solution.Id, manageCatalogueSolutionModel.SelectedPublicationStatus));
+            mockSolutionService.Verify(s => s.SavePublicationStatus(catalogueItem.Id, manageCatalogueSolutionModel.SelectedPublicationStatus));
         }
 
         [Theory]
         [CommonAutoData]
         public static async Task Post_SetPublicationStatus_ClearsFilterCache(
-            CatalogueItem solution,
+            Solution solution,
             [Frozen] Mock<ISolutionsService> mockSolutionService,
             [Frozen] Mock<IFilterCache> mockFilterCache,
             CatalogueSolutionsController controller)
         {
-            solution.PublishedStatus = PublicationStatus.Draft;
+            var catalogueItem = solution.CatalogueItem;
+            catalogueItem.PublishedStatus = PublicationStatus.Draft;
 
             var manageCatalogueSolutionModel = new ManageCatalogueSolutionModel { SelectedPublicationStatus = PublicationStatus.Published };
 
-            mockSolutionService.Setup(s => s.GetSolution(solution.Id))
-                .ReturnsAsync(solution);
+            mockSolutionService.Setup(s => s.GetSolution(catalogueItem.Id))
+                .ReturnsAsync(catalogueItem);
 
-            await controller.SetPublicationStatus(solution.Id, manageCatalogueSolutionModel);
+            await controller.SetPublicationStatus(catalogueItem.Id, manageCatalogueSolutionModel);
 
             mockFilterCache.Verify(f => f.Remove(It.IsAny<IEnumerable<string>>()));
         }
@@ -1955,18 +1971,19 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
         [Theory]
         [CommonAutoData]
         public static async Task Post_SetPublicationStatus_ReturnsRedirectToActionResult(
-            CatalogueItem solution,
+            Solution solution,
             [Frozen] Mock<ISolutionsService> mockSolutionService,
             CatalogueSolutionsController controller)
         {
-            solution.PublishedStatus = PublicationStatus.Draft;
+            var catalogueItem = solution.CatalogueItem;
+            catalogueItem.PublishedStatus = PublicationStatus.Draft;
 
             var manageCatalogueSolutionModel = new ManageCatalogueSolutionModel { SelectedPublicationStatus = PublicationStatus.Published };
 
-            mockSolutionService.Setup(s => s.GetSolution(solution.Id))
-                .ReturnsAsync(solution);
+            mockSolutionService.Setup(s => s.GetSolution(catalogueItem.Id))
+                .ReturnsAsync(catalogueItem);
 
-            var actual = (await controller.SetPublicationStatus(solution.Id, manageCatalogueSolutionModel)).As<RedirectToActionResult>();
+            var actual = (await controller.SetPublicationStatus(catalogueItem.Id, manageCatalogueSolutionModel)).As<RedirectToActionResult>();
 
             actual.Should().NotBeNull();
             actual.ActionName.Should().Be(nameof(CatalogueSolutionsController.Index));
@@ -2057,11 +2074,13 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
         [Theory]
         [CommonAutoData]
         public static async Task Post_DeleteHybridHostingType_ValidModel_DeletesHostingType(
-            CatalogueItem catalogueItem,
+            Solution solution,
             [Frozen] Mock<ISolutionsService> solutionsService,
             CatalogueSolutionsController controller)
         {
             const HostingType hostingType = HostingType.Hybrid;
+
+            var catalogueItem = solution.CatalogueItem;
             var model = new DeleteHostingTypeConfirmationModel
             {
                 HostingType = hostingType,
@@ -2085,11 +2104,13 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
         [Theory]
         [CommonAutoData]
         public static async Task Post_DeleteOnPremiseHostingType_ValidModel_DeletesHostingType(
-            CatalogueItem catalogueItem,
+            Solution solution,
             [Frozen] Mock<ISolutionsService> solutionsService,
             CatalogueSolutionsController controller)
         {
             const HostingType hostingType = HostingType.OnPremise;
+
+            var catalogueItem = solution.CatalogueItem;
             var model = new DeleteHostingTypeConfirmationModel
             {
                 HostingType = hostingType,
@@ -2113,11 +2134,13 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
         [Theory]
         [CommonAutoData]
         public static async Task Post_DeletePrivateCloudHostingType_ValidModel_DeletesHostingType(
-            CatalogueItem catalogueItem,
+            Solution solution,
             [Frozen] Mock<ISolutionsService> solutionsService,
             CatalogueSolutionsController controller)
         {
             const HostingType hostingType = HostingType.PrivateCloud;
+
+            var catalogueItem = solution.CatalogueItem;
             var model = new DeleteHostingTypeConfirmationModel
             {
                 HostingType = hostingType,
@@ -2141,11 +2164,13 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
         [Theory]
         [CommonAutoData]
         public static async Task Post_DeletePublicCloudHostingType_ValidModel_DeletesHostingType(
-            CatalogueItem catalogueItem,
+            Solution solution,
             [Frozen] Mock<ISolutionsService> solutionsService,
             CatalogueSolutionsController controller)
         {
             const HostingType hostingType = HostingType.PublicCloud;
+
+            var catalogueItem = solution.CatalogueItem;
             var model = new DeleteHostingTypeConfirmationModel
             {
                 HostingType = hostingType,
