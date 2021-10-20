@@ -2,9 +2,9 @@
 
 namespace NHSD.GPIT.BuyingCatalogue.Test.Framework.AutoFixtureCustomisations
 {
-    public sealed class CommomMemberAutoDataAttribute : MemberAutoDataAttribute
+    public sealed class CommonMemberAutoDataAttribute : MemberAutoDataAttribute
     {
-        public CommomMemberAutoDataAttribute(string memberName, params object[] parameters)
+        public CommonMemberAutoDataAttribute(string memberName, params object[] parameters)
             : base(new CommonAutoDataAttribute(), memberName, parameters)
         {
         }

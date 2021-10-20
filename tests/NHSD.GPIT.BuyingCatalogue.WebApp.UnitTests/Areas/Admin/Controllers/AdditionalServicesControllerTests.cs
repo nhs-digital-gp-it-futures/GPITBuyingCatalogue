@@ -246,21 +246,21 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
         [Theory]
         [CommonAutoData]
         public static async Task Get_EditAdditionalServiceDetails_ValidIds_ReturnsModel(
-            CatalogueItem catalogueItem,
-            CatalogueItem additionalService,
+            AdditionalService additionalService,
             [Frozen] Mock<ISolutionsService> solutionsService,
             [Frozen] Mock<IAdditionalServicesService> additionalServicesService,
             AdditionalServicesController controller)
         {
-            var expectedModel = new EditAdditionalServiceDetailsModel(catalogueItem, additionalService);
+            var catalogueItem = additionalService.CatalogueItem;
+            var expectedModel = new EditAdditionalServiceDetailsModel(catalogueItem, catalogueItem);
 
             solutionsService.Setup(s => s.GetSolution(catalogueItem.Id))
                 .ReturnsAsync(catalogueItem);
 
-            additionalServicesService.Setup(s => s.GetAdditionalService(catalogueItem.Id, additionalService.Id))
-                .ReturnsAsync(additionalService);
+            additionalServicesService.Setup(s => s.GetAdditionalService(catalogueItem.Id, catalogueItem.Id))
+                .ReturnsAsync(catalogueItem);
 
-            var result = await controller.EditAdditionalServiceDetails(catalogueItem.Id, additionalService.Id);
+            var result = await controller.EditAdditionalServiceDetails(catalogueItem.Id, catalogueItem.Id);
 
             result.As<ViewResult>().Should().NotBeNull();
             result.As<ViewResult>().Model.Should().BeEquivalentTo(expectedModel, opt => opt.Excluding(m => m.BackLink));

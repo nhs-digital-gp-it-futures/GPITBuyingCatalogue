@@ -13,7 +13,9 @@ namespace NHSD.GPIT.BuyingCatalogue.Test.Framework.AutoFixtureCustomisations
 
             fixture.Customize<Order>(order => order
                 .With(o => o.Id, callOffId.Id)
+                .Without(o => o.DefaultDeliveryDates)
                 .Without(o => o.IsDeleted)
+                .Without(o => o.LastUpdatedByUser)
                 .Without(o => o.OrderStatus));
         }
     }

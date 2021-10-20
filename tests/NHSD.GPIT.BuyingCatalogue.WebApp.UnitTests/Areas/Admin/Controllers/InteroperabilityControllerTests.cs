@@ -35,12 +35,13 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
         [Theory]
         [CommonAutoData]
         public static async Task Get_Interoperability_ValidId_ReturnsViewWithExpectedModel(
-            CatalogueItem catalogueItem,
+            Solution solution,
             List<Integration> integrations,
             [Frozen] Mock<ISolutionsService> mockService,
             InteroperabilityController controller)
         {
-            catalogueItem.Solution.Integrations = JsonSerializer.Serialize(integrations);
+            var catalogueItem = solution.CatalogueItem;
+            solution.Integrations = JsonSerializer.Serialize(integrations);
 
             mockService.Setup(s => s.GetSolution(catalogueItem.Id))
                 .ReturnsAsync(catalogueItem);
@@ -86,12 +87,13 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
         [Theory]
         [CommonAutoData]
         public static async Task Get_AddIm1Integration_ValidId_ReturnsViewWithExpectedModel(
-            CatalogueItem catalogueItem,
+            Solution solution,
             List<Integration> integrations,
             [Frozen] Mock<ISolutionsService> mockService,
             InteroperabilityController controller)
         {
-            catalogueItem.Solution.Integrations = JsonSerializer.Serialize(integrations);
+            var catalogueItem = solution.CatalogueItem;
+            solution.Integrations = JsonSerializer.Serialize(integrations);
 
             mockService.Setup(s => s.GetSolution(catalogueItem.Id))
                 .ReturnsAsync(catalogueItem);
@@ -151,12 +153,13 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
         [Theory]
         [CommonAutoData]
         public static async Task Get_AddGpConnectIntegration_ValidId_ReturnsViewWithExpectedModel(
-           CatalogueItem catalogueItem,
+           Solution solution,
            List<Integration> integrations,
            [Frozen] Mock<ISolutionsService> mockService,
            InteroperabilityController controller)
         {
-            catalogueItem.Solution.Integrations = JsonSerializer.Serialize(integrations);
+            var catalogueItem = solution.CatalogueItem;
+            solution.Integrations = JsonSerializer.Serialize(integrations);
 
             mockService.Setup(s => s.GetSolution(catalogueItem.Id))
                 .ReturnsAsync(catalogueItem);

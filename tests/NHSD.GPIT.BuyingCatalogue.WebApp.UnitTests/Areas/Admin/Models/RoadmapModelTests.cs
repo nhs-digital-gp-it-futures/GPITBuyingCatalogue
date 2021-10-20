@@ -31,10 +31,12 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Models
         [Theory]
         [CommonAutoData]
         public static void FromCatalogueItem_ValidCatalogueItem_PropertiesSetAsExpected(
-            CatalogueItem catalogueItem,
+            Solution solution,
             RoadmapModel expected)
         {
-            expected.Link = catalogueItem.Solution.RoadMap;
+            var catalogueItem = solution.CatalogueItem;
+
+            expected.Link = solution.RoadMap;
             expected.SolutionId = catalogueItem.Id;
             expected.SolutionName = catalogueItem.Name;
 

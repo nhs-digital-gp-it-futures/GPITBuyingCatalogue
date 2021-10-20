@@ -15,13 +15,15 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Models
         [Theory]
         [CommonAutoData]
         public static void FromCatalogueItem_ValidCatalogueItem_PropertiesSetAsExpected(
-            CatalogueItem catalogueItem,
+            Solution solution,
             DescriptionModel expected)
         {
-            expected.Summary = catalogueItem.Solution?.Summary;
-            expected.Description = catalogueItem.Solution?.FullDescription;
-            expected.Link = catalogueItem.Solution.AboutUrl;
-            expected.SolutionName = catalogueItem?.Name;
+            var catalogueItem = solution.CatalogueItem;
+
+            expected.Summary = solution.Summary;
+            expected.Description = solution.FullDescription;
+            expected.Link = solution.AboutUrl;
+            expected.SolutionName = catalogueItem.Name;
 
             var actual = new DescriptionModel(catalogueItem);
 

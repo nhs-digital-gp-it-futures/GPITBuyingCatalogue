@@ -13,11 +13,12 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Models.MobileTa
         [Theory]
         [CommonAutoData]
         public static void FromCatalogueItem_ValidCatalogueItem_PropertiesSetAsExpected(
-            CatalogueItem catalogueItem)
+            Solution solution)
         {
+            var catalogueItem = solution.CatalogueItem;
             var actual = new AdditionalInformationModel(catalogueItem);
 
-            actual.AdditionalInformation.Should().Be(catalogueItem.Solution.GetClientApplication().NativeMobileAdditionalInformation);
+            actual.AdditionalInformation.Should().Be(solution.GetClientApplication().NativeMobileAdditionalInformation);
             actual.BackLink.Should().Be($"/admin/catalogue-solutions/manage/{catalogueItem.Id}/client-application-type/mobiletablet");
         }
 

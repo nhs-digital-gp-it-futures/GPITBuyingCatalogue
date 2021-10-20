@@ -21,11 +21,12 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Models.Interope
         [Theory]
         [CommonAutoData]
         public static void FromCatalogueItem_ValidCatalogueItem_PropertiesSetAsExpected(
-            CatalogueItem catalogueItem,
+            Solution solution,
             InteroperabilityModel expected)
         {
+            var catalogueItem = solution.CatalogueItem;
             expected.SolutionName = catalogueItem.Name;
-            expected.Link = catalogueItem.Solution.IntegrationsUrl;
+            expected.Link = solution.IntegrationsUrl;
 
             var actual = new InteroperabilityModel(catalogueItem);
 

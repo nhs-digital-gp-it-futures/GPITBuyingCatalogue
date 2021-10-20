@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using AutoFixture.Xunit2;
 using FluentValidation.TestHelper;
@@ -28,13 +29,13 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators
         [Theory]
         [CommonAutoData]
         public static async Task Validate_NameNotEntered_HasError(
-            CatalogueItem catalogueItem,
-            CatalogueItem additionalService,
+            Solution solution,
+            AdditionalService additionalService,
             EditAdditionalServiceDetailsModelValidator validator)
         {
-            additionalService.Name = null;
+            additionalService.CatalogueItem.Name = null;
 
-            var model = new EditAdditionalServiceDetailsModel(catalogueItem, additionalService);
+            var model = new EditAdditionalServiceDetailsModel(solution.CatalogueItem, additionalService.CatalogueItem);
 
             var result = await validator.TestValidateAsync(model);
 
@@ -45,13 +46,13 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators
         [Theory]
         [CommonAutoData]
         public static async Task Validate_DescriptionNotEntered_HasError(
-            CatalogueItem catalogueItem,
-            CatalogueItem additionalService,
+            Solution solution,
+            AdditionalService additionalService,
             EditAdditionalServiceDetailsModelValidator validator)
         {
-            additionalService.AdditionalService.FullDescription = null;
+            additionalService.FullDescription = null;
 
-            var model = new EditAdditionalServiceDetailsModel(catalogueItem, additionalService);
+            var model = new EditAdditionalServiceDetailsModel(solution.CatalogueItem, additionalService.CatalogueItem);
 
             var result = await validator.TestValidateAsync(model);
 
@@ -62,15 +63,16 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators
         [Theory]
         [CommonAutoData]
         public static async Task Validate_ExistingServiceName_HasError(
-            CatalogueItem catalogueItem,
-            CatalogueItem additionalService,
+            Solution solution,
             [Frozen] Mock<ISuppliersService> suppliersService,
             EditAdditionalServiceDetailsModelValidator validator)
         {
-            suppliersService.Setup(s => s.GetAllSolutionsForSupplier(catalogueItem.Supplier.Id))
-                .ReturnsAsync(new List<CatalogueItem> { additionalService });
+            var additionalService = solution.AdditionalServices.First();
+            var additionalServiceCatalogueItem = additionalService.CatalogueItem;
+            suppliersService.Setup(s => s.GetAllSolutionsForSupplier(additionalServiceCatalogueItem.Supplier.Id))
+                .ReturnsAsync(new List<CatalogueItem> { additionalServiceCatalogueItem });
 
-            var model = new EditAdditionalServiceDetailsModel(catalogueItem, additionalService);
+            var model = new EditAdditionalServiceDetailsModel(solution.CatalogueItem, additionalServiceCatalogueItem);
 
             var result = await validator.TestValidateAsync(model);
 
