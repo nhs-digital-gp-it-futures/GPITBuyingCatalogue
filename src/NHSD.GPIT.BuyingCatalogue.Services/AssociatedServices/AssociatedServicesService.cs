@@ -14,14 +14,10 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.AssociatedServices
     public sealed class AssociatedServicesService : IAssociatedServicesService
     {
         private readonly BuyingCatalogueDbContext dbContext;
-        private readonly ICatalogueItemRepository catalogueItemRepository;
 
-        public AssociatedServicesService(
-            BuyingCatalogueDbContext dbContext,
-            ICatalogueItemRepository catalogueItemRepository)
+        public AssociatedServicesService(BuyingCatalogueDbContext dbContext)
         {
             this.dbContext = dbContext ?? throw new ArgumentNullException(nameof(dbContext));
-            this.catalogueItemRepository = catalogueItemRepository ?? throw new ArgumentNullException(nameof(catalogueItemRepository));
         }
 
         public Task<List<CatalogueItem>> GetAssociatedServicesForSupplier(int? supplierId)
@@ -84,12 +80,8 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.AssociatedServices
             if (model is null)
                 throw new ArgumentNullException(nameof(model));
 
-            var latestAssociatedServiceCatalogueItemId = await catalogueItemRepository.GetLatestAssociatedServiceCatalogueItemIdFor(solution.SupplierId);
-            var catalogueItemId = latestAssociatedServiceCatalogueItemId.NextAssociatedServiceId();
-
             var associatedService = new CatalogueItem
             {
-                Id = catalogueItemId,
                 Name = model.Name,
                 AssociatedService = new AssociatedService
                 {
@@ -106,7 +98,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.AssociatedServices
             dbContext.Add(associatedService);
             await dbContext.SaveChangesAsync();
 
-            return catalogueItemId;
+            return associatedService.Id;
         }
 
         public async Task EditDetails(

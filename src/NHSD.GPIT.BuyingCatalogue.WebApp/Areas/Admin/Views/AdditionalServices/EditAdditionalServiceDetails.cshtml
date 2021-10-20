@@ -1,0 +1,33 @@
+﻿@model NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.AdditionalServices.EditAdditionalServiceDetailsModel;
+@{
+    ViewBag.Title = Model.Title;
+}
+
+<partial name="Partials/_BackLink" model="Model" />
+<div class="nhsuk-grid-row">
+    <div class="nhsuk-grid-column-two-thirds">
+        <nhs-validation-summary />
+        <nhs-page-title title="@ViewBag.Title"
+                        caption="@Model.SupplierName"
+                        advice="Provide details about the Additional Service." />
+
+        <form method="post">
+            <input type="hidden" asp-for="Id" />
+            <input type="hidden" asp-for="Title" />
+            <input type="hidden" asp-for="BackLink" />
+            <input type="hidden" asp-for="SupplierId" />
+            <input type="hidden" asp-for="SupplierName" />
+
+            <nhs-input asp-for="Name"
+                       label-text="Additional Service name"
+                       character-count="true"
+                       max-character-length="300" />
+            <nhs-textarea asp-for="Description"
+                          label-text="Additional Service description"
+                          label-hint="Describe the extra functionality provided by the Additional Service."
+                          character-count="true"
+                          maxlength="1000" />
+            <nhs-submit-button text="Save and continue" />
+        </form>
+    </div>
+</div>

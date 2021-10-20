@@ -104,5 +104,17 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models
 
             return new CatalogueItemId(SupplierId, $"S-{itemId + 1:D3}");
         }
+
+        public CatalogueItemId NextAdditionalServiceId()
+        {
+            var catalogueItemId = ItemId[..ItemId.IndexOf('-')];
+            var additionalServiceId = ItemId[(ItemId.IndexOf('A') + 1)..];
+
+            if (!int.TryParse(additionalServiceId, out var itemId))
+                throw new FormatException();
+
+            var newItemId = $"{catalogueItemId}-A{itemId + 1:D2}";
+            return new CatalogueItemId(SupplierId, newItemId);
+        }
     }
 }
