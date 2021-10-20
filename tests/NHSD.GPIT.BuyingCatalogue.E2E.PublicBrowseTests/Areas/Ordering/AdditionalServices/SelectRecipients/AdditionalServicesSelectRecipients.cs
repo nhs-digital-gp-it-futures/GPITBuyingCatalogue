@@ -16,7 +16,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering.AdditionalServices
     {
         private const string OdsCode = "03F";
         private static readonly CallOffId CallOffId = new(90007, 1);
-        private static readonly CatalogueItemId CatalogueItemId = new(99998, "001A999");
+        private static readonly CatalogueItemId CatalogueItemId = new(99998, "001A99");
 
         private static readonly Dictionary<string, string> Parameters =
             new() { { nameof(OdsCode), OdsCode }, { nameof(CallOffId), CallOffId.ToString() } };

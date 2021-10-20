@@ -14,7 +14,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
             {
                 new()
                 {
-                    Id = new CatalogueItemId(99999, "001A999"),
+                    Id = new CatalogueItemId(99999, "001A99"),
                     Name = "Additional service",
                     CatalogueItemType = CatalogueItemType.AdditionalService,
                     Created = DateTime.UtcNow,
@@ -31,7 +31,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
                     {
                         new()
                         {
-                            CatalogueItemId = new CatalogueItemId(99999, "001A999"),
+                            CatalogueItemId = new CatalogueItemId(99999, "001A99"),
                             CapabilityId = 2,
                             LastUpdated = DateTime.UtcNow,
                             StatusId = 1,
@@ -41,21 +41,21 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
                     {
                         new()
                         {
-                            CatalogueItemId = new CatalogueItemId(99999, "001A999"),
+                            CatalogueItemId = new CatalogueItemId(99999, "001A99"),
                             CapabilityId = 2,
                             EpicId = "C2E1",
                             StatusId = 1,
                         },
                         new()
                         {
-                            CatalogueItemId = new CatalogueItemId(99999, "001A999"),
+                            CatalogueItemId = new CatalogueItemId(99999, "001A99"),
                             CapabilityId = 2,
                             EpicId = "C2E2",
                             StatusId = 1,
                         },
                         new()
                         {
-                            CatalogueItemId = new CatalogueItemId(99999, "001A999"),
+                            CatalogueItemId = new CatalogueItemId(99999, "001A99"),
                             CapabilityId = 2,
                             EpicId = "E123456",
                             StatusId = 1,
@@ -64,7 +64,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
                 },
                 new()
                 {
-                    Id = new CatalogueItemId(99998, "001A999"),
+                    Id = new CatalogueItemId(99998, "001A99"),
                     Name = "E2E Multiple Prices Additional Service",
                     CatalogueItemType = CatalogueItemType.AdditionalService,
                     Created = DateTime.UtcNow,
@@ -81,7 +81,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
                     {
                         new()
                         {
-                            CatalogueItemId = new CatalogueItemId(99998, "001A999"),
+                            CatalogueItemId = new CatalogueItemId(99998, "001A99"),
                             CapabilityId = 2,
                             LastUpdated = DateTime.UtcNow,
                             StatusId = 1,
@@ -91,21 +91,21 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
                     {
                         new()
                         {
-                            CatalogueItemId = new CatalogueItemId(99998, "001A999"),
+                            CatalogueItemId = new CatalogueItemId(99998, "001A99"),
                             CapabilityId = 27,
                             EpicId = "C27E4",
                             StatusId = 1,
                         },
                         new()
                         {
-                            CatalogueItemId = new CatalogueItemId(99998, "001A999"),
+                            CatalogueItemId = new CatalogueItemId(99998, "001A99"),
                             CapabilityId = 27,
                             EpicId = "C27E5",
                             StatusId = 1,
                         },
                         new()
                         {
-                            CatalogueItemId = new CatalogueItemId(99998, "001A999"),
+                            CatalogueItemId = new CatalogueItemId(99998, "001A99"),
                             CapabilityId = 27,
                             EpicId = "C27E6",
                             StatusId = 1,
@@ -116,7 +116,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
                         new()
                         {
                             CataloguePriceId = 6,
-                            CatalogueItemId = new CatalogueItemId(99998, "001A999"),
+                            CatalogueItemId = new CatalogueItemId(99998, "001A99"),
                             ProvisioningType = ProvisioningType.Patient,
                             CataloguePriceType = CataloguePriceType.Flat,
                             PricingUnit = new PricingUnit
@@ -133,7 +133,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
                         new()
                         {
                             CataloguePriceId = 7,
-                            CatalogueItemId = new CatalogueItemId(99998, "001A999"),
+                            CatalogueItemId = new CatalogueItemId(99998, "001A99"),
                             ProvisioningType = ProvisioningType.OnDemand,
                             CataloguePriceType = CataloguePriceType.Flat,
                             PricingUnit = new PricingUnit
@@ -150,7 +150,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
                         new()
                         {
                             CataloguePriceId = 8,
-                            CatalogueItemId = new CatalogueItemId(99998, "001A999"),
+                            CatalogueItemId = new CatalogueItemId(99998, "001A99"),
                             ProvisioningType = ProvisioningType.Declarative,
                             CataloguePriceType = CataloguePriceType.Flat,
                             PricingUnit = new PricingUnit

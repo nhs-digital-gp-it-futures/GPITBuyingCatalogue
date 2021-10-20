@@ -34,9 +34,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Validators
         {
             var allSolutions = await suppliersService.GetAllSolutionsForSupplier(model.SupplierId);
 
-            return model.Id is not null
-                ? allSolutions.All(s => s.Id != model.Id && !string.Equals(s.Name, model.Name, StringComparison.CurrentCultureIgnoreCase))
-                : allSolutions.All(s => !string.Equals(s.Name, model.Name, StringComparison.CurrentCultureIgnoreCase));
+            if (model.Id is not null)
+                allSolutions = allSolutions.Where(s => s.Id != model.Id).ToList();
+
+            return !allSolutions.Any(s => string.Equals(s.Name, model.Name, StringComparison.CurrentCultureIgnoreCase));
         }
     }
 }
