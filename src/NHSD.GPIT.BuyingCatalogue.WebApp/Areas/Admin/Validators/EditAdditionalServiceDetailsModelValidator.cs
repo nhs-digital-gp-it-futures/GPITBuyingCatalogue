@@ -3,18 +3,18 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using FluentValidation;
-using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Suppliers;
+using NHSD.GPIT.BuyingCatalogue.ServiceContracts.AdditionalServices;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.AdditionalServices;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Validators
 {
     public sealed class EditAdditionalServiceDetailsModelValidator : AbstractValidator<EditAdditionalServiceDetailsModel>
     {
-        private readonly ISuppliersService suppliersService;
+        private readonly IAdditionalServicesService additionalServicesService;
 
-        public EditAdditionalServiceDetailsModelValidator(ISuppliersService suppliersService)
+        public EditAdditionalServiceDetailsModelValidator(IAdditionalServicesService additionalServicesService)
         {
-            this.suppliersService = suppliersService;
+            this.additionalServicesService = additionalServicesService;
 
             RuleFor(m => m)
                 .MustAsync(NotBeADuplicateService)
@@ -23,7 +23,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Validators
 
             RuleFor(m => m.Name)
                 .NotEmpty()
-                .WithMessage("Enter an Additional Service name");
+                .WithMessage("Enter an Additional Service name")
+                .NotEqual(m => m.CatalogueItemName)
+                .WithMessage("Additional Service name cannot be the same as its Catalogue Solution");
 
             RuleFor(m => m.Description)
                 .NotEmpty()
@@ -32,7 +34,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Validators
 
         private async Task<bool> NotBeADuplicateService(EditAdditionalServiceDetailsModel model, CancellationToken cancellationToken)
         {
-            var allSolutions = await suppliersService.GetAllSolutionsForSupplier(model.SupplierId);
+            var allSolutions = await additionalServicesService.GetAdditionalServicesBySolutionId(model.CatalogueItemId);
 
             if (model.Id is not null)
                 allSolutions = allSolutions.Where(s => s.Id != model.Id).ToList();

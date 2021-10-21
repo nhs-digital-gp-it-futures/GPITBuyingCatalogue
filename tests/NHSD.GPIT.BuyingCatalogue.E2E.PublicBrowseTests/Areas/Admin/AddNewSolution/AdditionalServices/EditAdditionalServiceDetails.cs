@@ -82,8 +82,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.AddNewSolution.Addition
         {
             await using var context = GetEndToEndDbContext();
             var catalogueItems = await context.CatalogueItems
-                .Where(ci => ci.SupplierId == AdditionalServiceId.SupplierId
-                && ci.Id != AdditionalServiceId)
+                .Where(ci => ci.AdditionalService.Solution.CatalogueItemId == SolutionId && ci.Id != AdditionalServiceId)
                 .ToListAsync();
 
             var name = catalogueItems.OrderBy(_ => Guid.NewGuid()).First().Name;
@@ -91,6 +90,28 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.AddNewSolution.Addition
             CommonActions.ClearInputElement(CommonSelectors.Name);
 
             CommonActions.ElementAddValue(CommonSelectors.Name, name);
+
+            CommonActions.ClickSave();
+
+            CommonActions.PageLoadedCorrectGetIndex(
+                typeof(AdditionalServicesController),
+                nameof(AdditionalServicesController.EditAdditionalServiceDetails))
+                .Should().BeTrue();
+
+            CommonActions.ErrorSummaryDisplayed().Should().BeTrue();
+            CommonActions.ErrorSummaryLinksExist().Should().BeTrue();
+            CommonActions.ElementShowingCorrectErrorMessage(CommonSelectors.Name, "Additional Service name already exists. Enter a different name.");
+        }
+
+        [Fact]
+        public async Task EditAdditionalServiceDetails_DuplicateSolutionName()
+        {
+            await using var context = GetEndToEndDbContext();
+            var catalogueItem = await context.CatalogueItems.SingleAsync(ci => ci.Id == SolutionId);
+
+            CommonActions.ClearInputElement(CommonSelectors.Name);
+
+            CommonActions.ElementAddValue(CommonSelectors.Name, catalogueItem.Name);
 
             CommonActions.ClickSave();
 

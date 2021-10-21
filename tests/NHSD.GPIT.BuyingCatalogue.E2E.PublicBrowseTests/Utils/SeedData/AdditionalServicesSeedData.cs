@@ -64,6 +64,56 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
                 },
                 new()
                 {
+                    Id = new CatalogueItemId(99999, "001A98"),
+                    Name = "Additional service 2",
+                    CatalogueItemType = CatalogueItemType.AdditionalService,
+                    Created = DateTime.UtcNow,
+                    PublishedStatus = PublicationStatus.Published,
+                    SupplierId = 99999,
+                    AdditionalService = new AdditionalService
+                    {
+                        Summary = "This is the summary of the Additional Service 2",
+                        FullDescription = "This is the description of the Additional Service 2",
+                        LastUpdated = DateTime.UtcNow,
+                        Solution = catalogueSolutions.Single(s => s.Id == new CatalogueItemId(99999, "001")).Solution,
+                    },
+                    CatalogueItemCapabilities = new List<CatalogueItemCapability>
+                    {
+                        new()
+                        {
+                            CatalogueItemId = new CatalogueItemId(99999, "001A98"),
+                            CapabilityId = 2,
+                            LastUpdated = DateTime.UtcNow,
+                            StatusId = 1,
+                        },
+                    },
+                    CatalogueItemEpics = new List<CatalogueItemEpic>
+                    {
+                        new()
+                        {
+                            CatalogueItemId = new CatalogueItemId(99999, "001A98"),
+                            CapabilityId = 2,
+                            EpicId = "C2E1",
+                            StatusId = 1,
+                        },
+                        new()
+                        {
+                            CatalogueItemId = new CatalogueItemId(99999, "001A98"),
+                            CapabilityId = 2,
+                            EpicId = "C2E2",
+                            StatusId = 1,
+                        },
+                        new()
+                        {
+                            CatalogueItemId = new CatalogueItemId(99999, "001A98"),
+                            CapabilityId = 2,
+                            EpicId = "E123456",
+                            StatusId = 1,
+                        },
+                    },
+                },
+                new()
+                {
                     Id = new CatalogueItemId(99998, "001A99"),
                     Name = "E2E Multiple Prices Additional Service",
                     CatalogueItemType = CatalogueItemType.AdditionalService,
