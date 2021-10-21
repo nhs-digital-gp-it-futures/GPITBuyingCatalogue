@@ -155,11 +155,12 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Models
         public static void IsInRemediation(
             PublicationStatus publicationStatus,
             bool expected,
-            CatalogueItem item)
+            Solution solution)
         {
-            item.PublishedStatus = publicationStatus;
+            var catalogueItem = solution.CatalogueItem;
+            catalogueItem.PublishedStatus = publicationStatus;
 
-            var model = new TestSolutionDisplayBaseModel(item);
+            var model = new TestSolutionDisplayBaseModel(catalogueItem);
 
             model.IsInRemediation().Should().Be(expected);
         }

@@ -14,12 +14,12 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Models.BrowserB
         [Theory]
         [CommonAutoData]
         public static void FromCatalogueItem_ValidCatalogueItem_PropertiesSetAsExpected(
-            CatalogueItem catalogueItem)
+            Solution solution)
         {
-            var actual = new ConnectivityAndResolutionModel(catalogueItem);
+            var actual = new ConnectivityAndResolutionModel(solution.CatalogueItem);
 
-            actual.SelectedConnectionSpeed.Should().Be(catalogueItem.Solution.GetClientApplication().MinimumConnectionSpeed);
-            actual.SelectedScreenResolution.Should().Be(catalogueItem.Solution.GetClientApplication().MinimumDesktopResolution);
+            actual.SelectedConnectionSpeed.Should().Be(solution.GetClientApplication().MinimumConnectionSpeed);
+            actual.SelectedScreenResolution.Should().Be(solution.GetClientApplication().MinimumDesktopResolution);
             actual.ConnectionSpeeds.Should().BeEquivalentTo(SelectLists.ConnectionSpeeds);
             actual.ScreenResolutions.Should().BeEquivalentTo(SelectLists.ScreenResolutions);
             actual.BackLink.Should().Be("./");

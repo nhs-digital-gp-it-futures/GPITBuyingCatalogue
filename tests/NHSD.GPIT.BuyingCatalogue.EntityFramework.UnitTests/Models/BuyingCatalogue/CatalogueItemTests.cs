@@ -96,22 +96,22 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.UnitTests.Models.BuyingCatal
 
         [Theory]
         [CommonAutoData]
-        public static void Features_NullFeatures_ReturnsNull(CatalogueItem catalogueItem)
+        public static void Features_NullFeatures_ReturnsNull(Solution solution)
         {
-            catalogueItem.Solution.Features = null;
+            solution.Features = null;
 
-            var actual = catalogueItem.Features();
+            var actual = solution.CatalogueItem.Features();
 
             actual.Should().BeNull();
         }
 
         [Theory]
         [CommonAutoData]
-        public static void Features_EmptyFeatures_ReturnsNull(CatalogueItem catalogueItem)
+        public static void Features_EmptyFeatures_ReturnsNull(Solution solution)
         {
-            catalogueItem.Solution.Features = string.Empty;
+            solution.Features = string.Empty;
 
-            var actual = catalogueItem.Features();
+            var actual = solution.CatalogueItem.Features();
 
             actual.Should().BeNull();
         }
@@ -119,35 +119,35 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.UnitTests.Models.BuyingCatal
         [Theory]
         [CommonAutoData]
         public static void Features_SolutionHasValidFeatures_ReturnsFeatures(
-            CatalogueItem catalogueItem,
+            Solution solution,
             string[] expected)
         {
-            catalogueItem.Solution.Features = JsonSerializer.Serialize(expected);
+            solution.Features = JsonSerializer.Serialize(expected);
 
-            var actual = catalogueItem.Features();
-
-            actual.Should().BeEquivalentTo(expected);
-        }
-
-        [Theory]
-        [CommonAutoData]
-        public static void FirstContact_ValidModel_ReturnsFirstContact(CatalogueItem catalogueItem)
-        {
-            var expected = catalogueItem.Solution.MarketingContacts.First();
-
-            var actual = catalogueItem.FirstContact();
+            var actual = solution.CatalogueItem.Features();
 
             actual.Should().BeEquivalentTo(expected);
         }
 
         [Theory]
         [CommonAutoData]
-        public static void FirstContact_NoContactsInSolution_ReturnsEmptyObject(CatalogueItem catalogueItem)
+        public static void FirstContact_ValidModel_ReturnsFirstContact(Solution solution)
         {
-            catalogueItem.Solution.MarketingContacts = null;
+            var expected = solution.MarketingContacts.First();
+
+            var actual = solution.CatalogueItem.FirstContact();
+
+            actual.Should().BeEquivalentTo(expected);
+        }
+
+        [Theory]
+        [CommonAutoData]
+        public static void FirstContact_NoContactsInSolution_ReturnsEmptyObject(Solution solution)
+        {
+            solution.MarketingContacts = null;
             var expected = new MarketingContact();
 
-            var actual = catalogueItem.FirstContact();
+            var actual = solution.CatalogueItem.FirstContact();
 
             actual.Should().BeEquivalentTo(expected);
         }
@@ -167,34 +167,34 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.UnitTests.Models.BuyingCatal
         [Theory]
         [CommonAutoData]
         public static void Frameworks_SolutionHasValidFrameworksSet_ReturnsFrameworkNames(
-            CatalogueItem catalogueItem)
+            Solution solution)
         {
-            var expected = catalogueItem.Solution.FrameworkSolutions.Select(f => f.Framework.ShortName).ToList();
+            var expected = solution.FrameworkSolutions.Select(f => f.Framework.ShortName).ToList();
             expected.Count.Should().BeGreaterThan(1);
 
-            var actual = catalogueItem.Frameworks();
+            var actual = solution.CatalogueItem.Frameworks();
 
             actual.Should().BeEquivalentTo(expected);
         }
 
         [Theory]
         [CommonAutoData]
-        public static void Frameworks_SolutionHasNullFrameworks_ReturnsEmptyList(CatalogueItem catalogueItem)
+        public static void Frameworks_SolutionHasNullFrameworks_ReturnsEmptyList(Solution solution)
         {
-            catalogueItem.Solution.FrameworkSolutions = null;
+            solution.FrameworkSolutions = null;
 
-            var actual = catalogueItem.Frameworks();
+            var actual = solution.CatalogueItem.Frameworks();
 
             actual.Should().BeEmpty();
         }
 
         [Theory]
         [CommonAutoData]
-        public static void Frameworks_FrameworkSolutionNull_ReturnsEmptyList(CatalogueItem catalogueItem)
+        public static void Frameworks_FrameworkSolutionNull_ReturnsEmptyList(Solution solution)
         {
-            catalogueItem.Solution.FrameworkSolutions = null;
+            solution.FrameworkSolutions = null;
 
-            var actual = catalogueItem.Frameworks();
+            var actual = solution.CatalogueItem.Frameworks();
 
             actual.Should().BeEmpty();
         }
@@ -212,11 +212,11 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.UnitTests.Models.BuyingCatal
 
         [Theory]
         [CommonAutoData]
-        public static void HasAdditionalServices_SolutionCapabilitiesNotEmpty_ReturnsTrue(CatalogueItem catalogueItem)
+        public static void HasAdditionalServices_SolutionCapabilitiesNotEmpty_ReturnsTrue(Solution solution)
         {
-            catalogueItem.Solution.AdditionalServices.Should().NotBeNullOrEmpty();
+            solution.AdditionalServices.Should().NotBeNullOrEmpty();
 
-            var actual = catalogueItem.HasAdditionalServices();
+            var actual = solution.CatalogueItem.HasAdditionalServices();
 
             actual.Should().BeTrue();
         }
@@ -256,11 +256,11 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.UnitTests.Models.BuyingCatal
 
         [Theory]
         [CommonAutoData]
-        public static void HasAssociatedServices_AssociatedServiceNotNull_ReturnsTrue(CatalogueItem catalogueItem)
+        public static void HasAssociatedServices_AssociatedServiceNotNull_ReturnsTrue(AssociatedService associatedService)
         {
-            catalogueItem.AssociatedService.Should().NotBeNull();
+            associatedService.Should().NotBeNull();
 
-            var actual = catalogueItem.HasAssociatedServices();
+            var actual = associatedService.CatalogueItem.HasAssociatedServices();
 
             actual.Should().BeTrue();
         }
@@ -382,11 +382,11 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.UnitTests.Models.BuyingCatal
 
         [Theory]
         [CommonAutoData]
-        public static void HasClientApplication_SolutionHasClientApplication_ReturnsTrue(CatalogueItem catalogueItem)
+        public static void HasClientApplication_SolutionHasClientApplication_ReturnsTrue(Solution solution)
         {
-            catalogueItem.Solution.ClientApplication.Should().NotBeNullOrWhiteSpace();
+            solution.ClientApplication.Should().NotBeNullOrWhiteSpace();
 
-            var actual = catalogueItem.HasClientApplication();
+            var actual = solution.CatalogueItem.HasClientApplication();
 
             actual.Should().BeTrue();
         }
@@ -414,11 +414,11 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.UnitTests.Models.BuyingCatal
 
         [Theory]
         [CommonAutoData]
-        public static void HasDevelopmentPlans_SolutionHasDevelopmentPlans_ReturnsTrue(CatalogueItem catalogueItem)
+        public static void HasDevelopmentPlans_SolutionHasDevelopmentPlans_ReturnsTrue(Solution solution)
         {
-            catalogueItem.Solution.RoadMap.Should().NotBeNullOrWhiteSpace();
+            solution.RoadMap.Should().NotBeNullOrWhiteSpace();
 
-            var actual = catalogueItem.HasDevelopmentPlans();
+            var actual = solution.CatalogueItem.HasDevelopmentPlans();
 
             actual.Should().BeTrue();
         }
@@ -446,11 +446,11 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.UnitTests.Models.BuyingCatal
 
         [Theory]
         [CommonAutoData]
-        public static void HasFeatures_SolutionHasFeatures_ReturnsTrue(CatalogueItem catalogueItem)
+        public static void HasFeatures_SolutionHasFeatures_ReturnsTrue(Solution solution)
         {
-            catalogueItem.Solution.Features.Should().NotBeNullOrWhiteSpace();
+            solution.Features.Should().NotBeNullOrWhiteSpace();
 
-            var actual = catalogueItem.HasFeatures();
+            var actual = solution.CatalogueItem.HasFeatures();
 
             actual.Should().BeTrue();
         }
@@ -478,22 +478,22 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.UnitTests.Models.BuyingCatal
 
         [Theory]
         [CommonAutoData]
-        public static void HasHosting_SolutionHasHosting_ReturnsTrue(CatalogueItem catalogueItem)
+        public static void HasHosting_SolutionHasHosting_ReturnsTrue(Solution solution)
         {
-            catalogueItem.Solution.Hosting.Should().NotBeNull();
+            solution.Hosting.Should().NotBeNull();
 
-            var actual = catalogueItem.HasHosting();
+            var actual = solution.CatalogueItem.HasHosting();
 
             actual.Should().BeTrue();
         }
 
         [Theory]
         [CommonAutoData]
-        public static void HasHosting_SolutionHasInvalidHosting_ReturnsFalse(CatalogueItem catalogueItem)
+        public static void HasHosting_SolutionHasInvalidHosting_ReturnsFalse(Solution solution)
         {
-            catalogueItem.Solution.Hosting = null;
+            solution.Hosting = null;
 
-            var actual = catalogueItem.HasHosting();
+            var actual = solution.CatalogueItem.HasHosting();
 
             actual.Should().BeFalse();
         }
@@ -510,11 +510,11 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.UnitTests.Models.BuyingCatal
 
         [Theory]
         [CommonAutoData]
-        public static void HasImplementationDetail_SolutionHasImplementationDetail_ReturnsTrue(CatalogueItem catalogueItem)
+        public static void HasImplementationDetail_SolutionHasImplementationDetail_ReturnsTrue(Solution solution)
         {
-            catalogueItem.Solution.ImplementationDetail.Should().NotBeNullOrWhiteSpace();
+            solution.ImplementationDetail.Should().NotBeNullOrWhiteSpace();
 
-            var actual = catalogueItem.HasImplementationDetail();
+            var actual = solution.CatalogueItem.HasImplementationDetail();
 
             actual.Should().BeTrue();
         }
@@ -542,11 +542,11 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.UnitTests.Models.BuyingCatal
 
         [Theory]
         [CommonAutoData]
-        public static void HasInteroperability_SolutionHasIntegration_ReturnsTrue(CatalogueItem catalogueItem)
+        public static void HasInteroperability_SolutionHasIntegration_ReturnsTrue(Solution solution)
         {
-            catalogueItem.Solution.Integrations.Should().NotBeNullOrWhiteSpace();
+            solution.Integrations.Should().NotBeNullOrWhiteSpace();
 
-            var actual = catalogueItem.HasInteroperability();
+            var actual = solution.CatalogueItem.HasInteroperability();
 
             actual.Should().BeTrue();
         }
@@ -605,11 +605,11 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.UnitTests.Models.BuyingCatal
 
         [Theory]
         [CommonAutoData]
-        public static void HasServiceLevelAgreement_SolutionHasServiceLevelAgreement_ReturnsTrue(CatalogueItem catalogueItem)
+        public static void HasServiceLevelAgreement_SolutionHasServiceLevelAgreement_ReturnsTrue(Solution solution)
         {
-            catalogueItem.Solution.ServiceLevelAgreement.Should().NotBeNullOrWhiteSpace();
+            solution.ServiceLevelAgreement.Should().NotBeNullOrWhiteSpace();
 
-            var actual = catalogueItem.HasServiceLevelAgreement();
+            var actual = solution.CatalogueItem.HasServiceLevelAgreement();
 
             actual.Should().BeTrue();
         }
@@ -668,34 +668,34 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.UnitTests.Models.BuyingCatal
 
         [Theory]
         [CommonAutoData]
-        public static void IsFoundation_OneSolutionIsFoundation_ReturnsTrue(CatalogueItem catalogueItem)
+        public static void IsFoundation_OneSolutionIsFoundation_ReturnsTrue(Solution solution)
         {
-            catalogueItem.Solution.FrameworkSolutions = new List<FrameworkSolution> { new() { IsFoundation = true } };
+            solution.FrameworkSolutions = new List<FrameworkSolution> { new() { IsFoundation = true } };
 
-            var actual = catalogueItem.IsFoundation();
+            var actual = solution.CatalogueItem.IsFoundation();
 
             actual.Should().BeTrue();
         }
 
         [Theory]
         [CommonAutoData]
-        public static void IsFoundation_NoSolutionIsFoundation_ReturnsFalse(CatalogueItem catalogueItem)
+        public static void IsFoundation_NoSolutionIsFoundation_ReturnsFalse(Solution solution)
         {
-            catalogueItem.Solution.FrameworkSolutions.Should().NotBeEmpty();
-            catalogueItem.Solution.FrameworkSolutions.ToList().ForEach(f => f.IsFoundation = false);
+            solution.FrameworkSolutions.Should().NotBeEmpty();
+            solution.FrameworkSolutions.ToList().ForEach(f => f.IsFoundation = false);
 
-            var actual = catalogueItem.IsFoundation();
+            var actual = solution.CatalogueItem.IsFoundation();
 
             actual.Should().BeFalse();
         }
 
         [Theory]
         [CommonAutoData]
-        public static void IsFoundation_NullFrameworkSolutions_ReturnsNull(CatalogueItem catalogueItem)
+        public static void IsFoundation_NullFrameworkSolutions_ReturnsNull(Solution solution)
         {
-            catalogueItem.Solution.FrameworkSolutions = null;
+            solution.FrameworkSolutions = null;
 
-            var actual = catalogueItem.IsFoundation();
+            var actual = solution.CatalogueItem.IsFoundation();
 
             actual.Should().BeNull();
         }
@@ -713,23 +713,23 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.UnitTests.Models.BuyingCatal
 
         [Theory]
         [CommonAutoData]
-        public static void SecondContact_ValidModel_ReturnsSecondContact(CatalogueItem catalogueItem)
+        public static void SecondContact_ValidModel_ReturnsSecondContact(Solution solution)
         {
-            var expected = catalogueItem.Solution.MarketingContacts.Skip(1).First();
+            var expected = solution.MarketingContacts.Skip(1).First();
 
-            var actual = catalogueItem.SecondContact();
+            var actual = solution.CatalogueItem.SecondContact();
 
             actual.Should().BeEquivalentTo(expected);
         }
 
         [Theory]
         [CommonAutoData]
-        public static void SecondContact_NoContactsInSolution_ReturnsEmptyObject(CatalogueItem catalogueItem)
+        public static void SecondContact_NoContactsInSolution_ReturnsEmptyObject(Solution solution)
         {
-            catalogueItem.Solution.MarketingContacts = null;
+            solution.MarketingContacts = null;
             var expected = new MarketingContact();
 
-            var actual = catalogueItem.SecondContact();
+            var actual = solution.CatalogueItem.SecondContact();
 
             actual.Should().BeEquivalentTo(expected);
         }

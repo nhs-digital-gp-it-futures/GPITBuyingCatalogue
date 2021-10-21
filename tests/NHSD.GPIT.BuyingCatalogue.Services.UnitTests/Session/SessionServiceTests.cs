@@ -2,7 +2,6 @@
 using AutoFixture;
 using AutoFixture.AutoMoq;
 using AutoFixture.Idioms;
-using AutoFixture.Xunit2;
 using FluentAssertions;
 using Microsoft.AspNetCore.Http;
 using Moq;
@@ -80,14 +79,19 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Session
         [CommonAutoData]
         public static void Objects_StoredAndRetrieved_FromSession(
             string key,
-            CatalogueItem solution)
+            CatalogueItem catalogueItem)
         {
+            // Clear circular references
+            catalogueItem.CatalogueItemCapabilities.Clear();
+            catalogueItem.CataloguePrices.Clear();
+            catalogueItem.Supplier.CatalogueItems.Clear();
+
             var service = new SessionService(GetAccessor());
 
-            service.SetObject(key, solution);
+            service.SetObject(key, catalogueItem);
 
             var actual = service.GetObject<CatalogueItem>(key);
-            actual.Should().BeEquivalentTo(solution);
+            actual.Should().BeEquivalentTo(catalogueItem);
         }
 
         private static IHttpContextAccessor GetAccessor()

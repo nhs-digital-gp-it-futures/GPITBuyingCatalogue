@@ -15,13 +15,13 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Models.Addition
         public static void DetailsStatus_WithDetails_ReturnsCompleted(
             string additionalServiceName,
             string additionalServiceDescription,
-            CatalogueItem catalogueItem,
-            CatalogueItem additionalService)
+            Solution solution,
+            AdditionalService additionalService)
         {
-            additionalService.Name = additionalServiceName;
-            additionalService.AdditionalService.FullDescription = additionalServiceDescription;
+            additionalService.CatalogueItem.Name = additionalServiceName;
+            additionalService.FullDescription = additionalServiceDescription;
 
-            var model = new EditAdditionalServiceModel(catalogueItem, additionalService);
+            var model = new EditAdditionalServiceModel(solution.CatalogueItem, additionalService.CatalogueItem);
 
             model.DetailsStatus().Should().Be(TaskProgress.Completed);
         }
@@ -29,13 +29,13 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Models.Addition
         [Theory]
         [CommonAutoData]
         public static void DetailsStatus_WithNoDetails_ReturnsNotStarted(
-            CatalogueItem catalogueItem,
-            CatalogueItem additionalService)
+            Solution solution,
+            AdditionalService additionalService)
         {
-            additionalService.Name = null;
-            additionalService.AdditionalService.FullDescription = null;
+            additionalService.CatalogueItem.Name = null;
+            additionalService.FullDescription = null;
 
-            var model = new EditAdditionalServiceModel(catalogueItem, additionalService);
+            var model = new EditAdditionalServiceModel(solution.CatalogueItem, additionalService.CatalogueItem);
 
             model.DetailsStatus().Should().Be(TaskProgress.NotStarted);
         }

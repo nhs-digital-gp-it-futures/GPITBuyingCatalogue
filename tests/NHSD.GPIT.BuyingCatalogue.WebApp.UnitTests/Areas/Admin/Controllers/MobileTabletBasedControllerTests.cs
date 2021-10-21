@@ -47,12 +47,13 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
         [Theory]
         [CommonAutoData]
         public static async Task Get_MobileTablet_ValidId_ReturnsViewWithExpectedModel(
-         CatalogueItem catalogueItem,
-         List<Integration> integrations,
-         [Frozen] Mock<ISolutionsService> mockService,
-         MobileTabletBasedController controller)
+            Solution solution,
+            List<Integration> integrations,
+            [Frozen] Mock<ISolutionsService> mockService,
+            MobileTabletBasedController controller)
         {
-            catalogueItem.Solution.Integrations = JsonSerializer.Serialize(integrations);
+            var catalogueItem = solution.CatalogueItem;
+            solution.Integrations = JsonSerializer.Serialize(integrations);
 
             mockService.Setup(s => s.GetSolution(catalogueItem.Id))
                 .ReturnsAsync(catalogueItem);
@@ -82,12 +83,13 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
         [Theory]
         [CommonAutoData]
         public static async Task Get_OperatingSystems_ValidId_ReturnsViewWithExpectedModel(
-           CatalogueItem catalogueItem,
+           Solution solution,
            List<Integration> integrations,
            [Frozen] Mock<ISolutionsService> mockService,
            MobileTabletBasedController controller)
         {
-            catalogueItem.Solution.Integrations = JsonSerializer.Serialize(integrations);
+            var catalogueItem = solution.CatalogueItem;
+            solution.Integrations = JsonSerializer.Serialize(integrations);
 
             mockService.Setup(s => s.GetSolution(catalogueItem.Id))
                 .ReturnsAsync(catalogueItem);
@@ -145,12 +147,13 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
         [Theory]
         [CommonAutoData]
         public static async Task Get_Connectivity_ValidId_ReturnsViewWithExpectedModel(
-           CatalogueItem catalogueItem,
+           Solution solution,
            List<Integration> integrations,
            [Frozen] Mock<ISolutionsService> mockService,
            MobileTabletBasedController controller)
         {
-            catalogueItem.Solution.Integrations = JsonSerializer.Serialize(integrations);
+            var catalogueItem = solution.CatalogueItem;
+            solution.Integrations = JsonSerializer.Serialize(integrations);
 
             mockService.Setup(s => s.GetSolution(catalogueItem.Id))
                 .ReturnsAsync(catalogueItem);
@@ -210,12 +213,13 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
         [Theory]
         [CommonAutoData]
         public static async Task Get_MemoryAndStorage_ValidId_ReturnsViewWithExpectedModel(
-           CatalogueItem catalogueItem,
+           Solution solution,
            List<Integration> integrations,
            [Frozen] Mock<ISolutionsService> mockService,
            MobileTabletBasedController controller)
         {
-            catalogueItem.Solution.Integrations = JsonSerializer.Serialize(integrations);
+            var catalogueItem = solution.CatalogueItem;
+            solution.Integrations = JsonSerializer.Serialize(integrations);
 
             mockService.Setup(s => s.GetSolution(catalogueItem.Id))
                 .ReturnsAsync(catalogueItem);
@@ -269,12 +273,13 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
         [Theory]
         [CommonAutoData]
         public static async Task Get_ThirdPartyComponents_ValidId_ReturnsViewWithExpectedModel(
-            CatalogueItem catalogueItem,
+            Solution solution,
             List<Integration> integrations,
             [Frozen] Mock<ISolutionsService> mockService,
             MobileTabletBasedController controller)
         {
-            catalogueItem.Solution.Integrations = JsonSerializer.Serialize(integrations);
+            var catalogueItem = solution.CatalogueItem;
+            solution.Integrations = JsonSerializer.Serialize(integrations);
 
             mockService.Setup(s => s.GetSolution(catalogueItem.Id))
                 .ReturnsAsync(catalogueItem);
@@ -328,12 +333,13 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
         [Theory]
         [CommonAutoData]
         public static async Task Get_HardwareRequirements_ValidId_ReturnsViewWithExpectedModel(
-             CatalogueItem catalogueItem,
+             Solution solution,
              List<Integration> integrations,
              [Frozen] Mock<ISolutionsService> mockService,
              MobileTabletBasedController controller)
         {
-            catalogueItem.Solution.Integrations = JsonSerializer.Serialize(integrations);
+            var catalogueItem = solution.CatalogueItem;
+            solution.Integrations = JsonSerializer.Serialize(integrations);
 
             mockService.Setup(s => s.GetSolution(catalogueItem.Id))
                 .ReturnsAsync(catalogueItem);
@@ -386,12 +392,13 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
         [Theory]
         [CommonAutoData]
         public static async Task Get_AdditionalInformation_ValidId_ReturnsViewWithExpectedModel(
-               CatalogueItem catalogueItem,
-               List<Integration> integrations,
-               [Frozen] Mock<ISolutionsService> mockService,
-               MobileTabletBasedController controller)
+            Solution solution,
+            List<Integration> integrations,
+            [Frozen] Mock<ISolutionsService> mockService,
+            MobileTabletBasedController controller)
         {
-            catalogueItem.Solution.Integrations = JsonSerializer.Serialize(integrations);
+            var catalogueItem = solution.CatalogueItem;
+            solution.Integrations = JsonSerializer.Serialize(integrations);
 
             mockService.Setup(s => s.GetSolution(catalogueItem.Id))
                 .ReturnsAsync(catalogueItem);

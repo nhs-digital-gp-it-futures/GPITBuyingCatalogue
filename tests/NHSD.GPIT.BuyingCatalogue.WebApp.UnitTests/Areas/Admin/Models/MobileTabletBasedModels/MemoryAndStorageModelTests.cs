@@ -13,13 +13,14 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Models.MobileTa
         [Theory]
         [CommonAutoData]
         public static void FromCatalogueItem_ValidCatalogueItem_PropertiesSetAsExpected(
-            CatalogueItem catalogueItem)
+            Solution solution)
         {
+            var catalogueItem = solution.CatalogueItem;
             var actual = new MemoryAndStorageModel(catalogueItem);
 
             actual.MemorySizes.Should().BeEquivalentTo(Framework.Constants.SelectLists.MemorySizes);
 
-            var mobileMemoryAndStorage = catalogueItem.Solution.GetClientApplication().MobileMemoryAndStorage;
+            var mobileMemoryAndStorage = solution.GetClientApplication().MobileMemoryAndStorage;
 
             actual.SelectedMemorySize.Should().Be(mobileMemoryAndStorage.MinimumMemoryRequirement);
             actual.Description.Should().Be(mobileMemoryAndStorage.Description);

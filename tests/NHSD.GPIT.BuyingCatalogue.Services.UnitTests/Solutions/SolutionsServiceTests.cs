@@ -48,15 +48,15 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Solutions
         [InMemoryDbAutoData]
         public static async Task SaveSupplierContacts_ModelValid_CallsSetSolutionIdOnModel(
             [Frozen] BuyingCatalogueDbContext context,
-            CatalogueItem solution,
+            Solution solution,
             SolutionsService service,
             SupplierContactsModel model)
         {
-            solution.Solution.MarketingContacts.Clear();
-            context.CatalogueItems.Add(solution);
+            solution.MarketingContacts.Clear();
+            context.Solutions.Add(solution);
             await context.SaveChangesAsync();
 
-            model.SolutionId = solution.Id;
+            model.SolutionId = solution.CatalogueItemId;
 
             await service.SaveSupplierContacts(model);
 
@@ -67,19 +67,22 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Solutions
         [InMemoryDbAutoData]
         public static async Task SaveSupplierContacts_NoContactsInDatabase_AddsValidContactsToRepository(
             [Frozen] BuyingCatalogueDbContext context,
-            CatalogueItem solution,
+            Solution solution,
             SupplierContactsModel supplierContactsModel,
             SolutionsService service)
         {
-            solution.Solution.MarketingContacts.Clear();
-            context.CatalogueItems.Add(solution);
+            solution.MarketingContacts.Clear();
+            context.Solutions.Add(solution);
             await context.SaveChangesAsync();
 
-            supplierContactsModel.SolutionId = solution.Id;
+            supplierContactsModel.SolutionId = solution.CatalogueItemId;
 
             await service.SaveSupplierContacts(supplierContactsModel);
 
-            var newContacts = await context.MarketingContacts.AsAsyncEnumerable().Where(mc => mc.SolutionId == solution.Id).ToArrayAsync();
+            var newContacts = await context.MarketingContacts
+                .AsAsyncEnumerable()
+                .Where(mc => mc.SolutionId == solution.CatalogueItemId)
+                .ToArrayAsync();
 
             newContacts.Length.Should().Be(supplierContactsModel.Contacts.Length);
             newContacts.Should().BeEquivalentTo(supplierContactsModel.Contacts, config => config
@@ -93,14 +96,17 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Solutions
         [InMemoryDbAutoData]
         public static async Task SaveSupplierContacts_ContactsInDatabase_RemovesEmptyContactsFromDatabase(
             [Frozen] BuyingCatalogueDbContext context,
-            CatalogueItem solution,
+            Solution solution,
             SupplierContactsModel supplierContactsModel,
             SolutionsService service)
         {
-            context.CatalogueItems.Add(solution);
+            context.Solutions.Add(solution);
             await context.SaveChangesAsync();
 
-            supplierContactsModel.Contacts = await context.MarketingContacts.AsAsyncEnumerable().Where(mc => mc.SolutionId == solution.Id).ToArrayAsync();
+            supplierContactsModel.Contacts = await context.MarketingContacts
+                .AsAsyncEnumerable()
+                .Where(mc => mc.SolutionId == solution.CatalogueItemId)
+                .ToArrayAsync();
 
             supplierContactsModel.Contacts[0].FirstName = null;
             supplierContactsModel.Contacts[0].LastName = null;
@@ -108,11 +114,14 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Solutions
             supplierContactsModel.Contacts[0].PhoneNumber = null;
             supplierContactsModel.Contacts[0].Email = null;
 
-            supplierContactsModel.SolutionId = solution.Id;
+            supplierContactsModel.SolutionId = solution.CatalogueItemId;
 
             await service.SaveSupplierContacts(supplierContactsModel);
 
-            var updatedContacts = await context.MarketingContacts.AsAsyncEnumerable().Where(mc => mc.SolutionId == solution.Id).ToArrayAsync();
+            var updatedContacts = await context.MarketingContacts
+                .AsAsyncEnumerable()
+                .Where(mc => mc.SolutionId == solution.CatalogueItemId)
+                .ToArrayAsync();
 
             updatedContacts.Length.Should().Be(2);
             updatedContacts[0].Id.Should().Be(supplierContactsModel.Contacts[1].Id);
@@ -123,7 +132,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Solutions
         [InMemoryDbAutoData]
         public static async Task SaveSupplierContacts_ContactsInDatabase_UpdatesNonEmptyContacts(
             [Frozen] BuyingCatalogueDbContext context,
-            CatalogueItem solution,
+            Solution solution,
             SupplierContactsModel model,
             string updatedFirstName,
             string updatedLastName,
@@ -131,20 +140,26 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Solutions
             string updatedEmail,
             SolutionsService service)
         {
-            context.CatalogueItems.Add(solution);
+            context.Solutions.Add(solution);
             await context.SaveChangesAsync();
 
-            model.Contacts = await context.MarketingContacts.AsAsyncEnumerable().Where(mc => mc.SolutionId == solution.Id).ToArrayAsync();
+            model.Contacts = await context.MarketingContacts
+                .AsAsyncEnumerable()
+                .Where(mc => mc.SolutionId == solution.CatalogueItemId)
+                .ToArrayAsync();
 
             model.Contacts[0].FirstName = updatedFirstName;
             model.Contacts[0].LastName = updatedLastName;
             model.Contacts[0].PhoneNumber = updatedPhoneNumber;
             model.Contacts[0].Email = updatedEmail;
-            model.SolutionId = solution.Id;
+            model.SolutionId = solution.CatalogueItemId;
 
             await service.SaveSupplierContacts(model);
 
-            var updatedContacts = await context.MarketingContacts.AsAsyncEnumerable().Where(mc => mc.SolutionId == solution.Id).ToArrayAsync();
+            var updatedContacts = await context.MarketingContacts
+                .AsAsyncEnumerable()
+                .Where(mc => mc.SolutionId == solution.CatalogueItemId)
+                .ToArrayAsync();
 
             updatedContacts[0].FirstName.Should().Be(updatedFirstName);
             updatedContacts[0].LastName.Should().Be(updatedLastName);
@@ -177,7 +192,8 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Solutions
             var service = new SolutionsService(
                 Mock.Of<BuyingCatalogueDbContext>(),
                 Mock.Of<IDbRepository<Solution, BuyingCatalogueDbContext>>(),
-                Mock.Of<IDbRepository<Supplier, BuyingCatalogueDbContext>>());
+                Mock.Of<IDbRepository<Supplier, BuyingCatalogueDbContext>>(),
+                Mock.Of<ICatalogueItemRepository>());
 
             var actual = await Assert.ThrowsAsync<ArgumentException>(() => service.SaveSolutionDescription(
                 new CatalogueItemId(100000, "001"),
@@ -356,35 +372,46 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Solutions
         }
 
         [Theory]
-        [InMemoryDbAutoData]
-        public static async Task AddCatalogueSolution_ModelValid_AddsCatalogueItemToDatabase(
-            [Frozen] BuyingCatalogueDbContext context,
-            CatalogueItem catalogueItem,
+        [CommonAutoData]
+        public static async Task AddCatalogueSolution_ModelValid_AddsCatalogueItemToRepository(
             CreateSolutionModel model,
+            [Frozen] Mock<ICatalogueItemRepository> catalogueItemRepositoryMock,
             SolutionsService service)
         {
-            model.SupplierId = catalogueItem.SupplierId;
+            var catalogueItemId = new CatalogueItemId(model.SupplierId, "045");
 
             await service.AddCatalogueSolution(model);
 
-            var actual = await context.CatalogueItems.AsAsyncEnumerable().SingleAsync();
-
-            actual.Name.Should().Be(model.Name);
+            catalogueItemRepositoryMock.Verify(
+                repository => repository.Add(
+                    It.Is<CatalogueItem>(
+                        c =>
+                            c.CatalogueItemType == CatalogueItemType.Solution &&
+                            c.Solution.LastUpdated > DateTime.UtcNow.AddMinutes(-2) &&
+                            c.Solution.LastUpdatedBy == model.UserId &&
+                            c.Name == model.Name &&
+                            c.PublishedStatus == PublicationStatus.Draft &&
+                            c.SupplierId == model.SupplierId)));
         }
 
         [Theory]
-        [InMemoryDbAutoData]
-        public static async Task SupplierHasSolutionName_Returns_FromDatabase(
-            [Frozen] BuyingCatalogueDbContext context,
-            CatalogueItem catalogueItem,
+        [CommonAutoData]
+        public static async Task SupplierHasSolutionName_Returns_FromRepository(
+            int supplierId,
+            string solutionName,
+            [Frozen] Mock<ICatalogueItemRepository> mockCatalogueItemRepository,
             SolutionsService service)
         {
-            context.CatalogueItems.Add(catalogueItem);
-            await context.SaveChangesAsync();
+            var expected = DateTime.Now.Ticks % 2 == 0;
 
-            var actual = await service.SupplierHasSolutionName(catalogueItem.SupplierId, catalogueItem.Name);
+            mockCatalogueItemRepository
+                .Setup(c => c.SupplierHasSolutionName(supplierId, solutionName))
+                .ReturnsAsync(expected);
 
-            actual.Should().BeTrue();
+            var actual = await service.SupplierHasSolutionName(supplierId, solutionName);
+
+            mockCatalogueItemRepository.Verify(c => c.SupplierHasSolutionName(supplierId, solutionName));
+            actual.Should().Be(expected);
         }
 
         [Theory]

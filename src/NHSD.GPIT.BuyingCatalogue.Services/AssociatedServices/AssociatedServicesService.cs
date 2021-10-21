@@ -15,8 +15,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.AssociatedServices
     {
         private readonly BuyingCatalogueDbContext dbContext;
 
-        public AssociatedServicesService(
-            BuyingCatalogueDbContext dbContext)
+        public AssociatedServicesService(BuyingCatalogueDbContext dbContext)
         {
             this.dbContext = dbContext ?? throw new ArgumentNullException(nameof(dbContext));
         }
@@ -81,12 +80,8 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.AssociatedServices
             if (model is null)
                 throw new ArgumentNullException(nameof(model));
 
-            var latestAssociatedServiceCatalogueItemId = await GetLatestAssociatedServiceCatalogueItemIdFor(solution.SupplierId);
-            var catalogueItemId = latestAssociatedServiceCatalogueItemId.NextAssociatedServiceId();
-
             var associatedService = new CatalogueItem
             {
-                Id = catalogueItemId,
                 Name = model.Name,
                 AssociatedService = new AssociatedService
                 {
@@ -103,7 +98,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.AssociatedServices
             dbContext.Add(associatedService);
             await dbContext.SaveChangesAsync();
 
-            return catalogueItemId;
+            return associatedService.Id;
         }
 
         public async Task EditDetails(
@@ -132,15 +127,6 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.AssociatedServices
             solution.PublishedStatus = publicationStatus;
 
             await dbContext.SaveChangesAsync();
-        }
-
-        private async Task<CatalogueItemId> GetLatestAssociatedServiceCatalogueItemIdFor(int supplierId)
-        {
-            var associatedService = await dbContext.CatalogueItems.Where(i => i.CatalogueItemType == CatalogueItemType.AssociatedService && i.SupplierId == supplierId)
-                .OrderByDescending(i => i.Id)
-                .FirstOrDefaultAsync();
-
-            return associatedService?.Id ?? new CatalogueItemId(supplierId, "S-000");
         }
     }
 }

@@ -13,13 +13,14 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Models.DesktopB
         [Theory]
         [CommonAutoData]
         public static void FromCatalogueItem_ValidCatalogueItem_PropertiesSetAsExpected(
-            CatalogueItem catalogueItem)
+            Solution solution)
         {
+            var catalogueItem = solution.CatalogueItem;
             var actual = new MemoryAndStorageModel(catalogueItem);
 
             actual.MemorySizes.Should().BeEquivalentTo(Framework.Constants.SelectLists.MemorySizes);
 
-            var desktopMemoryAndStorage = catalogueItem.Solution.GetClientApplication().NativeDesktopMemoryAndStorage;
+            var desktopMemoryAndStorage = solution.GetClientApplication().NativeDesktopMemoryAndStorage;
 
             actual.SelectedMemorySize.Should().Be(desktopMemoryAndStorage.MinimumMemoryRequirement);
             actual.StorageSpace.Should().Be(desktopMemoryAndStorage.StorageRequirementsDescription);

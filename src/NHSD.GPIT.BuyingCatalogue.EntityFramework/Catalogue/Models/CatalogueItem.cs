@@ -8,9 +8,10 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models
     {
         public CatalogueItem()
         {
+            CatalogueItemCapabilities = new HashSet<CatalogueItemCapability>();
+            CatalogueItemContacts = new HashSet<SupplierContact>();
             CataloguePrices = new HashSet<CataloguePrice>();
             SupplierServiceAssociations = new HashSet<SupplierServiceAssociation>();
-            CatalogueItemContacts = new HashSet<SupplierContact>();
         }
 
         public CatalogueItemId Id { get; set; }

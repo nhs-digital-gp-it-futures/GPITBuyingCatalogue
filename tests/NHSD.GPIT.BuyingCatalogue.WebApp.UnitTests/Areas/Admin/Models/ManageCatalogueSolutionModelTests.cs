@@ -78,8 +78,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Models
 
         [Theory]
         [CommonAutoData]
-        public static void StatusInteroperability_Returns_FromInteroperabilityModel(CatalogueItem catalogueItem)
+        public static void StatusInteroperability_Returns_FromInteroperabilityModel(Solution solution)
         {
+            var catalogueItem = solution.CatalogueItem;
+
             var expected = new InteroperabilityModel(catalogueItem).Status();
             var model = new ManageCatalogueSolutionModel().WithSolution(catalogueItem);
 

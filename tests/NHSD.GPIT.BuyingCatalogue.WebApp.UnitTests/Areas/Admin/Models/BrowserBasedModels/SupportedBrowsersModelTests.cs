@@ -25,14 +25,14 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Models.BrowserB
         [Theory]
         [CommonAutoData]
         public static void FromCatalogueItem_ValidCatalogueItem_PropertiesSetAsExpected(
-            CatalogueItem catalogueItem)
+            Solution solution)
         {
-            var actual = new SupportedBrowsersModel(catalogueItem);
+            var actual = new SupportedBrowsersModel(solution.CatalogueItem);
 
             actual.Browsers.Should().BeEquivalentTo(ExpectedSupportedBrowsers, config => config
                 .Excluding(m => m.Checked));
 
-            actual.MobileResponsive.Should().Be(catalogueItem.Solution.GetClientApplication().MobileResponsive.ToYesNo());
+            actual.MobileResponsive.Should().Be(solution.GetClientApplication().MobileResponsive.ToYesNo());
 
             actual.BackLink.Should().Be("./");
             actual.BackLinkText.Should().Be("Go back");
