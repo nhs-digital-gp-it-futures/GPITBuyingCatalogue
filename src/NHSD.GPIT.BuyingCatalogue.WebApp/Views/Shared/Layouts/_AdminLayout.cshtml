@@ -9,7 +9,7 @@
     @await RenderSectionAsync("Scripts", false)
 </head>
 <body>
-    @if ((bool?)Context.Items[Cookies.ShowCookieBanner] == true)
+    @if ((bool?)Context.Items[CatalogueCookies.ShowCookieBanner] == true)
     {
         <partial name="Partials/_CookieConsentPartial" />
     }

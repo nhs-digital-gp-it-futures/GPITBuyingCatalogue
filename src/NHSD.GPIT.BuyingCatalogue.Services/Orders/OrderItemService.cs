@@ -17,29 +17,25 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
     public sealed class OrderItemService : IOrderItemService
     {
         private readonly BuyingCatalogueDbContext dbContext;
-        private readonly ICreateOrderItemValidator orderItemValidator;
         private readonly IServiceRecipientService serviceRecipientService;
         private readonly IOrderService orderService;
 
         public OrderItemService(
             BuyingCatalogueDbContext dbContext,
-            ICreateOrderItemValidator orderItemValidator,
             IServiceRecipientService serviceRecipientService,
             IOrderService orderService)
         {
             this.dbContext = dbContext ?? throw new ArgumentNullException(nameof(dbContext));
-            this.orderItemValidator = orderItemValidator ?? throw new ArgumentNullException(nameof(orderItemValidator));
             this.serviceRecipientService = serviceRecipientService ?? throw new ArgumentNullException(nameof(serviceRecipientService));
             this.orderService = orderService ?? throw new ArgumentNullException(nameof(orderService));
         }
 
-        public async Task<AggregateValidationResult> Create(CallOffId callOffId, CreateOrderItemModel model)
+        public async Task Create(CallOffId callOffId, CreateOrderItemModel model)
         {
-            var order = await orderService.GetOrder(callOffId);
+            if (model is null)
+                throw new ArgumentNullException(nameof(model));
 
-            var aggregateValidationResult = orderItemValidator.Validate(order, model, model.CatalogueItemType);
-            if (!aggregateValidationResult.Success)
-                return aggregateValidationResult;
+            var order = await orderService.GetOrder(callOffId);
 
             var catalogueItemId = model.CatalogueItemId;
             var catalogueItem = await dbContext.FindAsync<CatalogueItem>(catalogueItemId);
@@ -69,8 +65,6 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
                 dbContext.DefaultDeliveryDates.Remove(defaultDeliveryDate);
 
             await dbContext.SaveChangesAsync();
-
-            return aggregateValidationResult;
         }
 
         public async Task<List<OrderItem>> GetOrderItems(CallOffId callOffId, CatalogueItemType? catalogueItemType)

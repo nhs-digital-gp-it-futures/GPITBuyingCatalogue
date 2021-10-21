@@ -65,6 +65,8 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework
 
         public DbSet<Order> Orders { get; set; }
 
+        public DbSet<PricingUnit> PricingUnits { get; set; }
+
         public DbSet<ServiceRecipient> ServiceRecipients { get; set; }
 
         public DbSet<Solution> Solutions { get; set; }

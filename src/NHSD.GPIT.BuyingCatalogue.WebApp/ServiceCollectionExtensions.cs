@@ -163,21 +163,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp
         public static IServiceCollection ConfigureConsentCookieSettings(this IServiceCollection services, IConfiguration configuration)
         {
             var cookieExpiration = configuration.GetSection("cookieExpiration").Get<CookieExpirationSettings>();
-            cookieExpiration.ConsentExpiration = configuration.GetValue<TimeSpan>(Cookies.BuyingCatalogueConsentExpiration);
+            cookieExpiration.ConsentExpiration = configuration.GetValue<TimeSpan>(CatalogueCookies.BuyingCatalogueConsentExpiration);
 
             services.AddSingleton(cookieExpiration);
-
-            return services;
-        }
-
-        public static IServiceCollection ConfigureValidationSettings(this IServiceCollection services, IConfiguration configuration)
-        {
-            var validationSettings = new ValidationSettings
-            {
-                MaxDeliveryDateWeekOffset = configuration.GetValue<int>("MaxDeliveryDateWeekOffset"),
-            };
-
-            services.AddSingleton(validationSettings);
 
             return services;
         }
@@ -196,7 +184,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp
 
         public static void ConfigureIdentity(this IServiceCollection services)
         {
-            services.AddTransient<IUserClaimsPrincipalFactory<AspNetUser>, UserClaimsPrincipalFactoryEx>();
+            services.AddTransient<IUserClaimsPrincipalFactory<AspNetUser>, CatalogueUserClaimsPrincipalFactory>();
 
             services.AddIdentity<AspNetUser, AspNetRole>(o =>
                 {

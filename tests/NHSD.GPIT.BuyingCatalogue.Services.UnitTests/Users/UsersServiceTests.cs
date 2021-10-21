@@ -45,7 +45,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Users
             };
 
             var mockUsersRepository = new Mock<IDbRepository<AspNetUser, BuyingCatalogueDbContext>>();
-            mockUsersRepository.Setup(x => x.GetAllAsync(It.IsAny<Expression<Func<AspNetUser, bool>>>()))
+            mockUsersRepository.Setup(r => r.GetAllAsync(It.IsAny<Expression<Func<AspNetUser, bool>>>()))
                 .ReturnsAsync(users);
 
             var service = new UsersService(
@@ -53,7 +53,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Users
 
             await service.GetAllUsersForOrganisation(27);
 
-            mockUsersRepository.Verify(x => x.GetAllAsync(It.IsAny<Expression<Func<AspNetUser, bool>>>()));
+            mockUsersRepository.Verify(r => r.GetAllAsync(It.IsAny<Expression<Func<AspNetUser, bool>>>()));
         }
 
         [Theory]

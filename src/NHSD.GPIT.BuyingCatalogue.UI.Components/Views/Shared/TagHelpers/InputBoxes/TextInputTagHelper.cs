@@ -38,7 +38,7 @@ namespace NHSD.GPIT.BuyingCatalogue.UI.Components.TagHelpers
         [HtmlAttributeName(TagHelperConstants.MaxCharacterLength)]
         public int? MaximumCharacterLength { get; set; }
 
-        public int DefaultMaxLength => MaximumCharacterLength ?? 500;
+        private int DefaultMaxLength => MaximumCharacterLength ?? 500;
 
         public override void Process(TagHelperContext context, TagHelperOutput output)
         {

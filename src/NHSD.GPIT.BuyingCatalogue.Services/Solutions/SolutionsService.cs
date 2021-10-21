@@ -17,23 +17,17 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
     public sealed class SolutionsService : ISolutionsService
     {
         private readonly BuyingCatalogueDbContext dbContext;
-        private readonly IDbRepository<MarketingContact, BuyingCatalogueDbContext> marketingContactRepository;
         private readonly IDbRepository<Solution, BuyingCatalogueDbContext> solutionRepository;
         private readonly IDbRepository<Supplier, BuyingCatalogueDbContext> supplierRepository;
-        private readonly ICatalogueItemRepository catalogueItemRepository;
 
         public SolutionsService(
             BuyingCatalogueDbContext dbContext,
-            IDbRepository<MarketingContact, BuyingCatalogueDbContext> marketingContactRepository,
             IDbRepository<Solution, BuyingCatalogueDbContext> solutionRepository,
-            IDbRepository<Supplier, BuyingCatalogueDbContext> supplierRepository,
-            ICatalogueItemRepository catalogueItemRepository)
+            IDbRepository<Supplier, BuyingCatalogueDbContext> supplierRepository)
         {
             this.dbContext = dbContext ?? throw new ArgumentNullException(nameof(dbContext));
-            this.marketingContactRepository = marketingContactRepository ?? throw new ArgumentNullException(nameof(marketingContactRepository));
             this.solutionRepository = solutionRepository ?? throw new ArgumentNullException(nameof(solutionRepository));
             this.supplierRepository = supplierRepository ?? throw new ArgumentNullException(nameof(supplierRepository));
-            this.catalogueItemRepository = catalogueItemRepository ?? throw new ArgumentNullException(nameof(catalogueItemRepository));
         }
 
         public Task<CatalogueItem> GetSolutionListPrices(CatalogueItemId solutionId)
@@ -48,8 +42,9 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
         {
             return dbContext.CatalogueItems
                 .Include(i => i.Solution)
+                .Include(i => i.CatalogueItemContacts)
                 .Include(i => i.CatalogueItemCapabilities).ThenInclude(sc => sc.Capability)
-                .Include(i => i.Supplier)
+                .Include(i => i.Supplier).ThenInclude(s => s.SupplierContacts)
                 .Include(i => i.Solution).ThenInclude(s => s.FrameworkSolutions).ThenInclude(fs => fs.Framework)
                 .Include(i => i.Solution).ThenInclude(s => s.MarketingContacts)
                 .Include(i => i.CataloguePrices).ThenInclude(cp => cp.PricingUnit)
@@ -75,9 +70,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
             return await dbContext.CatalogueItems
                 .Include(ci => ci.Solution)
                 .Include(ci => ci.CatalogueItemCapabilities).ThenInclude(cic => cic.Capability).ThenInclude(c => c.Epics)
-                .Where(
-                    c => c.Id == catalogueItemId
-                        && c.CatalogueItemCapabilities.Any(sc => sc.CapabilityId == capabilityId))
+                .Where(c => c.Id == catalogueItemId && c.CatalogueItemCapabilities.Any(sc => sc.CapabilityId == capabilityId))
                 .FirstOrDefaultAsync();
         }
 
@@ -121,8 +114,8 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
                .Include(i => i.Solution).ThenInclude(s => s.MarketingContacts)
                .Include(s => s.CatalogueItemEpics)
                .Include(i => i.CataloguePrices)
-               .Include(i => i.Supplier).ThenInclude(s => s.CatalogueItems.Where(c => c.CatalogueItemType == CatalogueItemType.AssociatedService || c.CatalogueItemType == CatalogueItemType.AssociatedService)).ThenInclude(c => c.AssociatedService)
-               .Include(i => i.Supplier).ThenInclude(s => s.CatalogueItems.Where(c => c.CatalogueItemType == CatalogueItemType.AssociatedService || c.CatalogueItemType == CatalogueItemType.AssociatedService)).ThenInclude(c => c.CataloguePrices).ThenInclude(cp => cp.PricingUnit)
+               .Include(i => i.Supplier).ThenInclude(s => s.CatalogueItems.Where(c => c.CatalogueItemType == CatalogueItemType.AssociatedService && c.PublishedStatus == PublicationStatus.Published)).ThenInclude(c => c.AssociatedService)
+               .Include(i => i.Supplier).ThenInclude(s => s.CatalogueItems.Where(c => c.CatalogueItemType == CatalogueItemType.AssociatedService && c.PublishedStatus == PublicationStatus.Published)).ThenInclude(c => c.CataloguePrices).ThenInclude(cp => cp.PricingUnit)
                .Where(i => i.Id == solutionId)
                .SingleOrDefaultAsync();
 
@@ -191,6 +184,40 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
             return solution;
         }
 
+        public async Task SaveSolutionDetails(CatalogueItemId id, string solutionName, int supplierId, IList<FrameworkModel> selectedFrameworks)
+        {
+            var data = await GetCatalogueItem(id);
+
+            data.Name = solutionName;
+            data.SupplierId = supplierId;
+
+            var frameworks = data.Solution.FrameworkSolutions.ToList();
+            frameworks.RemoveAll(f => selectedFrameworks.Any(sf => f.FrameworkId == sf.FrameworkId && sf.Selected == false));
+
+            foreach (var framework in selectedFrameworks.Where(x => x.Selected))
+            {
+                var existingFramework = frameworks.FirstOrDefault(fs => fs.FrameworkId == framework.FrameworkId);
+
+                if (existingFramework is null)
+                {
+                    frameworks.Add(new FrameworkSolution
+                    {
+                        FrameworkId = framework.FrameworkId,
+                        IsFoundation = framework.IsFoundation,
+                        LastUpdated = DateTime.UtcNow,
+                    });
+                }
+                else
+                {
+                    existingFramework.IsFoundation = framework.IsFoundation;
+                    existingFramework.LastUpdated = DateTime.UtcNow;
+                }
+            }
+
+            data.Solution.FrameworkSolutions = frameworks;
+            await dbContext.SaveChangesAsync();
+        }
+
         public async Task SaveSolutionDescription(CatalogueItemId solutionId, string summary, string description, string link)
         {
             summary.ValidateNotNullOrWhiteSpace(nameof(summary));
@@ -247,48 +274,6 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
             await SaveClientApplication(solutionId, clientApplication);
         }
 
-        public ClientApplication RemoveClientApplicationType(ClientApplication clientApplication, ClientApplicationType clientApplicationType)
-        {
-            if (clientApplication.ClientApplicationTypes != null)
-            {
-                if (clientApplication.ClientApplicationTypes.Contains(clientApplicationType.AsString(EnumFormat.EnumMemberValue)))
-                    clientApplication.ClientApplicationTypes.Remove(clientApplicationType.AsString(EnumFormat.EnumMemberValue));
-            }
-
-            if (clientApplicationType == ClientApplicationType.BrowserBased)
-            {
-                clientApplication.AdditionalInformation = null;
-                clientApplication.BrowsersSupported = null;
-                clientApplication.HardwareRequirements = null;
-                clientApplication.MinimumConnectionSpeed = null;
-                clientApplication.MinimumDesktopResolution = null;
-                clientApplication.MobileFirstDesign = null;
-                clientApplication.MobileResponsive = null;
-                clientApplication.Plugins = null;
-            }
-            else if (clientApplicationType == ClientApplicationType.Desktop)
-            {
-                clientApplication.NativeDesktopAdditionalInformation = null;
-                clientApplication.NativeDesktopHardwareRequirements = null;
-                clientApplication.NativeDesktopMemoryAndStorage = null;
-                clientApplication.NativeDesktopMinimumConnectionSpeed = null;
-                clientApplication.NativeDesktopOperatingSystemsDescription = null;
-                clientApplication.NativeDesktopThirdParty = null;
-            }
-            else
-            {
-                clientApplication.MobileConnectionDetails = null;
-                clientApplication.MobileMemoryAndStorage = null;
-                clientApplication.MobileOperatingSystems = null;
-                clientApplication.MobileThirdParty = null;
-                clientApplication.NativeMobileAdditionalInformation = null;
-                clientApplication.NativeMobileFirstDesign = null;
-                clientApplication.NativeMobileHardwareRequirements = null;
-            }
-
-            return clientApplication;
-        }
-
         public async Task<Hosting> GetHosting(CatalogueItemId solutionId)
         {
             var solution = await solutionRepository.SingleAsync(s => s.CatalogueItemId == solutionId);
@@ -314,7 +299,8 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
 
         public async Task SaveSupplierContacts(SupplierContactsModel model)
         {
-            model.ValidateNotNull(nameof(model));
+            if (model is null)
+                throw new ArgumentNullException(nameof(model));
 
             model.SetSolutionId();
 
@@ -376,11 +362,10 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
 
         public async Task<CatalogueItemId> AddCatalogueSolution(CreateSolutionModel model)
         {
-            model.ValidateNotNull(nameof(CreateSolutionModel));
-            model.Frameworks.ValidateNotNull(nameof(CreateSolutionModel.Frameworks));
+            if (model is null)
+                throw new ArgumentNullException(nameof(model));
 
-            var latestCatalogueItemId = await catalogueItemRepository.GetLatestCatalogueItemIdFor(model.SupplierId);
-            var catalogueItemId = latestCatalogueItemId.NextSolutionId();
+            model.Frameworks.ValidateNotNull(nameof(CreateSolutionModel.Frameworks));
 
             var dateTimeNow = DateTime.UtcNow;
 
@@ -397,9 +382,8 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
                 });
             }
 
-            catalogueItemRepository.Add(new CatalogueItem
+            var catalogueItem = new CatalogueItem
             {
-                Id = catalogueItemId,
                 CatalogueItemType = CatalogueItemType.Solution,
                 Solution =
                         new Solution
@@ -411,11 +395,13 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
                 Name = model.Name,
                 PublishedStatus = PublicationStatus.Draft,
                 SupplierId = model.SupplierId,
-            });
+            };
 
-            await catalogueItemRepository.SaveChangesAsync();
+            dbContext.CatalogueItems.Add(catalogueItem);
 
-            return catalogueItemId;
+            await dbContext.SaveChangesAsync();
+
+            return catalogueItem.Id;
         }
 
         public async Task<IList<EntityFramework.Catalogue.Models.Framework>> GetAllFrameworks()
@@ -424,58 +410,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
         }
 
         public Task<bool> SupplierHasSolutionName(int supplierId, string solutionName) =>
-            catalogueItemRepository.SupplierHasSolutionName(supplierId, solutionName);
-
-        public async Task SaveSolutionListPrice(CatalogueItemId solutionId, SaveSolutionListPriceModel model)
-        {
-            var solution = await GetSolution(solutionId);
-
-            var cataloguePrice = new CataloguePrice
-            {
-                CataloguePriceType = CataloguePriceType.Flat,
-                Price = model.Price,
-                PricingUnit = model.PricingUnit,
-                ProvisioningType = model.ProvisioningType,
-                TimeUnit = model.TimeUnit,
-                CurrencyCode = "GBP",
-                LastUpdated = DateTime.UtcNow,
-            };
-
-            solution.CataloguePrices.Add(cataloguePrice);
-            await dbContext.SaveChangesAsync();
-        }
-
-        public async Task UpdateSolutionListPrice(CatalogueItemId solutionId, SaveSolutionListPriceModel model)
-        {
-            var solutionPrice = await dbContext
-                .CataloguePrices
-                .Include(p => p.CatalogueItem)
-                .Include(p => p.PricingUnit)
-                .SingleAsync(p => p.CataloguePriceId == model.CataloguePriceId && p.CatalogueItemId == solutionId);
-
-            solutionPrice.Price = model.Price;
-            solutionPrice.ProvisioningType = model.ProvisioningType;
-            solutionPrice.TimeUnit = model.TimeUnit;
-            solutionPrice.LastUpdated = DateTime.UtcNow;
-            solutionPrice.PricingUnit.TierName = model.PricingUnit.TierName;
-            solutionPrice.PricingUnit.Description = model.PricingUnit.Description;
-            solutionPrice.PricingUnit.Definition = model.PricingUnit.Definition;
-
-            await dbContext.SaveChangesAsync();
-        }
-
-        public async Task DeleteSolutionListPrice(CatalogueItemId solutionId, int cataloguePriceId)
-        {
-            var cataloguePrice = await dbContext
-                .CataloguePrices
-                .Include(p => p.CatalogueItem)
-                .Include(p => p.PricingUnit)
-                .SingleAsync(p => p.CataloguePriceId == cataloguePriceId && p.CatalogueItemId == solutionId);
-
-            dbContext.CataloguePrices.Remove(cataloguePrice);
-
-            await dbContext.SaveChangesAsync();
-        }
+            dbContext.CatalogueItems.AnyAsync(i => i.SupplierId == supplierId && i.Name == solutionName);
 
         public async Task SavePublicationStatus(CatalogueItemId solutionId, PublicationStatus publicationStatus)
         {
@@ -485,5 +420,70 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
 
             await dbContext.SaveChangesAsync();
         }
+
+        public async Task SaveContacts(CatalogueItemId solutionId, IList<SupplierContact> supplierContacts)
+        {
+            var solution = await GetSolution(solutionId);
+
+            var staleContacts = solution.CatalogueItemContacts.Except(supplierContacts);
+            foreach (var staleContact in staleContacts.ToList())
+            {
+                solution.CatalogueItemContacts.Remove(staleContact);
+            }
+
+            solution.CatalogueItemContacts = supplierContacts;
+
+            await dbContext.SaveChangesAsync();
+        }
+
+        internal static ClientApplication RemoveClientApplicationType(ClientApplication clientApplication, ClientApplicationType clientApplicationType)
+        {
+            if (clientApplication is null)
+                throw new ArgumentNullException(nameof(clientApplication));
+
+            if (clientApplication.ClientApplicationTypes is not null)
+            {
+                if (clientApplication.ClientApplicationTypes.Contains(clientApplicationType.AsString(EnumFormat.EnumMemberValue)))
+                    clientApplication.ClientApplicationTypes.Remove(clientApplicationType.AsString(EnumFormat.EnumMemberValue));
+            }
+
+            if (clientApplicationType == ClientApplicationType.BrowserBased)
+            {
+                clientApplication.AdditionalInformation = null;
+                clientApplication.BrowsersSupported = null;
+                clientApplication.HardwareRequirements = null;
+                clientApplication.MinimumConnectionSpeed = null;
+                clientApplication.MinimumDesktopResolution = null;
+                clientApplication.MobileFirstDesign = null;
+                clientApplication.MobileResponsive = null;
+                clientApplication.Plugins = null;
+            }
+            else if (clientApplicationType == ClientApplicationType.Desktop)
+            {
+                clientApplication.NativeDesktopAdditionalInformation = null;
+                clientApplication.NativeDesktopHardwareRequirements = null;
+                clientApplication.NativeDesktopMemoryAndStorage = null;
+                clientApplication.NativeDesktopMinimumConnectionSpeed = null;
+                clientApplication.NativeDesktopOperatingSystemsDescription = null;
+                clientApplication.NativeDesktopThirdParty = null;
+            }
+            else
+            {
+                clientApplication.MobileConnectionDetails = null;
+                clientApplication.MobileMemoryAndStorage = null;
+                clientApplication.MobileOperatingSystems = null;
+                clientApplication.MobileThirdParty = null;
+                clientApplication.NativeMobileAdditionalInformation = null;
+                clientApplication.NativeMobileFirstDesign = null;
+                clientApplication.NativeMobileHardwareRequirements = null;
+            }
+
+            return clientApplication;
+        }
+
+        private async Task<CatalogueItem> GetCatalogueItem(CatalogueItemId id) => await dbContext.CatalogueItems
+            .Include(s => s.Solution)
+            .Include(s => s.Solution.FrameworkSolutions)
+            .SingleAsync(s => s.Id == id);
     }
 }

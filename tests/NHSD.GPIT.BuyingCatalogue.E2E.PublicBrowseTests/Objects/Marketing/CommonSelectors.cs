@@ -33,7 +33,5 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Objects.Marketing
         internal static By StorageDescriptionTextArea => By.Id("StorageDescription");
 
         internal static By MinimumCpuTextArea => By.Id("MinimumCpu");
-
-        internal static By Header => By.TagName("h2");
     }
 }

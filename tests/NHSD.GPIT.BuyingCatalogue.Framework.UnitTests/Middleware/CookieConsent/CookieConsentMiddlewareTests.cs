@@ -17,14 +17,33 @@ namespace NHSD.GPIT.BuyingCatalogue.Framework.UnitTests.Middleware.CookieConsent
     {
         [Theory]
         [CommonAutoData]
+        public static Task Invoke_NullHttpContext_ThrowsException(
+            CookieExpirationSettings cookieExpirationSettings,
+            CookieConsentMiddleware middleware)
+        {
+            return Assert.ThrowsAsync<ArgumentNullException>(() => middleware.Invoke(null, cookieExpirationSettings));
+        }
+
+        [Theory]
+        [CommonAutoData]
+        public static Task Invoke_NullCookieExpirationSettings_ThrowsException(
+            CookieConsentMiddleware middleware)
+        {
+            var httpContextMock = new MockHttpContext();
+
+            return Assert.ThrowsAsync<ArgumentNullException>(() => middleware.Invoke(httpContextMock.HttpContext, null));
+        }
+
+        [Theory]
+        [CommonAutoData]
         public static async Task Invoke_NullRequest_SetsExpectedItems(
             CookieExpirationSettings cookieExpirationSettings,
             CookieConsentMiddleware middleware)
         {
             var expectedItems = new Dictionary<object, object>(2)
             {
-                { Cookies.ShowCookieBanner, false },
-                { Cookies.UseAnalytics, false },
+                { CatalogueCookies.ShowCookieBanner, false },
+                { CatalogueCookies.UseAnalytics, false },
             };
 
             var httpContextMock = new MockHttpContext(false, false);
@@ -42,7 +61,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Framework.UnitTests.Middleware.CookieConsent
         {
             var expectedItems = new Dictionary<object, object>(1)
             {
-                { Cookies.ShowCookieBanner, true },
+                { CatalogueCookies.ShowCookieBanner, true },
             };
 
             var httpContextMock = new MockHttpContext(true, false);
@@ -61,7 +80,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Framework.UnitTests.Middleware.CookieConsent
         {
             var expectedItems = new Dictionary<object, object>(1)
             {
-                { Cookies.ShowCookieBanner, true },
+                { CatalogueCookies.ShowCookieBanner, true },
             };
 
             await middleware.Invoke(httpContextMock.HttpContext, cookieExpirationSettings);
@@ -78,7 +97,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Framework.UnitTests.Middleware.CookieConsent
         {
             var expectedItems = new Dictionary<object, object>(1)
             {
-                { Cookies.ShowCookieBanner, true },
+                { CatalogueCookies.ShowCookieBanner, true },
             };
 
             httpContextMock.CookieContent = string.Empty;
@@ -98,7 +117,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Framework.UnitTests.Middleware.CookieConsent
         {
             var expectedItems = new Dictionary<object, object>(1)
             {
-                { Cookies.ShowCookieBanner, true },
+                { CatalogueCookies.ShowCookieBanner, true },
             };
 
             cookieData.Analytics = null;
@@ -119,8 +138,8 @@ namespace NHSD.GPIT.BuyingCatalogue.Framework.UnitTests.Middleware.CookieConsent
         {
             var expectedItems = new Dictionary<object, object>(2)
             {
-                { Cookies.ShowCookieBanner, false },
-                { Cookies.UseAnalytics, cookieData.Analytics },
+                { CatalogueCookies.ShowCookieBanner, false },
+                { CatalogueCookies.UseAnalytics, cookieData.Analytics },
             };
 
             httpContextMock.SetCookieData(cookieData);
@@ -141,8 +160,8 @@ namespace NHSD.GPIT.BuyingCatalogue.Framework.UnitTests.Middleware.CookieConsent
         {
             var expectedItems = new Dictionary<object, object>(2)
             {
-                { Cookies.ShowCookieBanner, false },
-                { Cookies.UseAnalytics, cookieData.Analytics },
+                { CatalogueCookies.ShowCookieBanner, false },
+                { CatalogueCookies.UseAnalytics, cookieData.Analytics },
             };
 
             httpContextMock.SetCookieData(cookieData);
@@ -163,7 +182,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Framework.UnitTests.Middleware.CookieConsent
         {
             var expectedItems = new Dictionary<object, object>(1)
             {
-                { Cookies.ShowCookieBanner, true },
+                { CatalogueCookies.ShowCookieBanner, true },
             };
 
             cookieData.CreationDate = DateTime.UtcNow.AddSeconds(-10).Ticks;

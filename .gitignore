@@ -355,10 +355,11 @@ MigrationBackup/
 # Terraform State files
 */\.terraform/
 
-# Minified css file
-**/css/*.min.css
+# Generated css file
+**/wwwroot/css/*.css
 
-#Minified js files
-**/js/*.min.js
+# Generated js files
+**/wwwroot/js/*.js
+**/wwwroot/js/*.js.map
 
 _remote_state.tf

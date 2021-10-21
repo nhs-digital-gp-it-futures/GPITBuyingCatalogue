@@ -1,5 +1,4 @@
 ﻿using System;
-using EnumsNET;
 using FluentAssertions;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.Test.Framework.AutoFixtureCustomisations;
@@ -36,9 +35,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Models
 
         [Theory]
         [CommonAutoData]
-        public static void Constructor_ValidSupplierLastUpdated_SetAsLastUpdated(CatalogueItem catalogueItem)
+        public static void Constructor_ValidSupplierLastUpdated_SetAsLastUpdated(Solution solution)
         {
-            var expected = catalogueItem.Solution.LastUpdated;
+            var catalogueItem = solution.CatalogueItem;
+            var expected = solution.LastUpdated;
             expected.Should().BeAfter(DateTime.MinValue);
 
             var actual = new CatalogueModel(catalogueItem);
@@ -63,16 +63,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Models
         {
             var actual = new CatalogueModel(catalogueItem);
 
-            actual.PublishedStatus.Should().Be(catalogueItem.PublishedStatus.AsString(EnumFormat.DisplayName));
-        }
-
-        [Theory]
-        [CommonAutoData]
-        public static void Constructor_SetsExpected_PublishedStatusId(CatalogueItem catalogueItem)
-        {
-            var actual = new CatalogueModel(catalogueItem);
-
-            actual.PublishedStatusId.Should().Be(catalogueItem.PublishedStatus);
+            actual.PublishedStatus.Should().Be(catalogueItem.PublishedStatus);
         }
 
         [Theory]

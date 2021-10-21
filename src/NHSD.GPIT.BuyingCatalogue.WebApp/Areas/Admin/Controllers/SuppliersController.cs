@@ -137,7 +137,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
             var model = new EditSupplierDetailsModel(supplier)
             {
                 BackLinkText = "Go back",
-                BackLink = Url.Action(nameof(EditSupplier), typeof(SuppliersController).ControllerName(), new { supplierId = supplierId }),
+                BackLink = Url.Action(nameof(EditSupplier), typeof(SuppliersController).ControllerName(), new { supplierId }),
             };
 
             return View(model);

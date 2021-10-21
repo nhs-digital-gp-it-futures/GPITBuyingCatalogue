@@ -43,7 +43,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Framework.UnitTests.Identity
 
             userManager.Object.Options = identityOptions;
 
-            var factory = new UserClaimsPrincipalFactoryEx(
+            var factory = new CatalogueUserClaimsPrincipalFactory(
                 userManager.Object,
                 options.Object,
                 orgService.Object);

@@ -20,11 +20,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Models
         [Theory]
         [CommonAutoData]
         public static void HasServices_ValidServices_ReturnsTrue(
-            [Frozen] AssociatedService service,
-            CatalogueItem catalogueItem)
+            AssociatedService service,
+            Solution solution)
         {
-            service.CatalogueItem.AssociatedService = service;
-            service.CatalogueItem.CatalogueItemType = CatalogueItemType.AssociatedService;
+            var catalogueItem = solution.CatalogueItem;
             catalogueItem.Supplier.CatalogueItems.Add(service.CatalogueItem);
 
             var model = new AssociatedServicesModel(catalogueItem);
@@ -35,8 +34,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Models
 
         [Theory]
         [CommonAutoData]
-        public static void HasServices_NoService_ReturnsFalse(CatalogueItem catalogueItem)
+        public static void HasServices_NoService_ReturnsFalse(Solution solution)
         {
+            var catalogueItem = solution.CatalogueItem;
             catalogueItem.Supplier.CatalogueItems.Clear();
 
             var model = new AssociatedServicesModel(catalogueItem);

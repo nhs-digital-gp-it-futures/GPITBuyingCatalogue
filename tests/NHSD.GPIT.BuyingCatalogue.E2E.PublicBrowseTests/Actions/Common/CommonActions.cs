@@ -21,6 +21,9 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Actions.Common
         internal void ClickGoBackLink() =>
             Driver.FindElement(CommonSelectors.GoBackLink).Click();
 
+        internal void ClickContinue() =>
+            Driver.FindElement(CommonSelectors.ContinueButton).Click();
+
         internal void ClickLinkElement(By targetElement) =>
             Driver.FindElement(targetElement).Click();
 
@@ -36,6 +39,9 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Actions.Common
 
         internal void ClickFirstCheckbox() =>
             Driver.FindElements(By.CssSelector("input[type=checkbox]")).First().Click();
+
+        internal void ClickAllCheckboxes() =>
+            Driver.FindElements(By.CssSelector("input[type=checkbox")).ToList().ForEach(element => element.Click());
 
         internal void ClickSection(By targetField, string section) =>
             Driver.FindElements(targetField)
@@ -126,6 +132,9 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Actions.Common
 
         internal bool SaveButtonDisplayed() =>
             ElementIsDisplayed(CommonSelectors.SubmitButton);
+
+        internal bool ContinueButtonDisplayed() =>
+            ElementIsDisplayed(CommonSelectors.ContinueButton);
 
         internal bool GoBackLinkDisplayed() =>
             ElementIsDisplayed(CommonSelectors.GoBackLink);

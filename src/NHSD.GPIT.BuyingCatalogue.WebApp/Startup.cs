@@ -11,7 +11,6 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
-using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.Framework.Logging;
 using NHSD.GPIT.BuyingCatalogue.Services;
 using NHSD.GPIT.BuyingCatalogue.WebApp.ActionFilters;
@@ -45,7 +44,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp
                 options.Filters.Add(typeof(ActionArgumentNullFilter));
                 options.Filters.Add(typeof(OrdersActionFilter));
                 options.Filters.Add<SerilogMvcLoggingAttribute>();
-            });
+            }).AddControllersAsServices();
 
             services.AddMvc(
                     options =>
@@ -56,7 +55,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp
             services.AddFluentValidation(
                     options =>
                     {
-                        options.RegisterValidatorsFromAssemblyContaining<AddSolutionModelValidator>();
+                        options.RegisterValidatorsFromAssemblyContaining<SolutionModelValidator>();
                     });
 
             services.AddApplicationInsightsTelemetry();
@@ -70,8 +69,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp
 
             services.ConfigureIdentity();
 
-            services.ConfigureValidationSettings(Configuration)
-                .ConfigureCacheKeySettings(Configuration)
+            services.ConfigureCacheKeySettings(Configuration)
                 .ConfigureOrderMessageSettings(Configuration)
                 .ConfigureConsentCookieSettings(Configuration)
                 .ConfigureAnalyticsSettings(Configuration);

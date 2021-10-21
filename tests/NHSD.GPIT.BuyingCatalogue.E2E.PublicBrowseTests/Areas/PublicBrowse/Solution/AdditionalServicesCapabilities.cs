@@ -17,7 +17,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.PublicBrowse.Solution
     {
         private static readonly CatalogueItemId SolutionId = new(99999, "001");
 
-        private static readonly CatalogueItemId AdditionalServiceId = new(99999, "001A999");
+        private static readonly CatalogueItemId AdditionalServiceId = new(99999, "001A99");
 
         private static readonly Dictionary<string, string> Parameters = new()
         {
@@ -41,7 +41,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.PublicBrowse.Solution
             var numberEpicLinks = PublicBrowsePages.SolutionAction.GetCheckEpicLinks();
 
             await using var context = GetEndToEndDbContext();
-            var dbCapabilities = await context.CatalogueItemCapabilities.Include(c => c.Capability).Where(c => c.CatalogueItemId == new CatalogueItemId(99999, "001A999")).ToListAsync();
+            var dbCapabilities = await context.CatalogueItemCapabilities.Include(c => c.Capability).Where(c => c.CatalogueItemId == new CatalogueItemId(99999, "001A99")).ToListAsync();
 
             capabilitiesNames.Should().HaveCount(dbCapabilities.Count);
             numberEpicLinks.Should().HaveCount(dbCapabilities.Count);

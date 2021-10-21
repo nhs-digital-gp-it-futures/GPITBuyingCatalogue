@@ -54,8 +54,7 @@ namespace NHSD.GPIT.BuyingCatalogue.UI.Components.TagHelpers
             var month = BuildInputItem(Month, "Month", DateInputWidth2Class, false);
             var year = BuildInputItem(Year, "Year", DateInputWidth4Class, true);
 
-            (htmlHelper as IViewContextAware).Contextualize(ViewContext);
-            var id = htmlHelper.GenerateIdFromName(TagHelperFunctions.GetModelKebabNameFromFor(For));
+            var id = TagBuilder.CreateSanitizedId(TagHelperFunctions.GetModelKebabNameFromFor(For), "_");
 
             List<TagHelperAttribute> attributes = new List<TagHelperAttribute>
             {
@@ -91,8 +90,9 @@ namespace NHSD.GPIT.BuyingCatalogue.UI.Components.TagHelpers
             var label = BuildDateLabel(modelExpression, labelText);
             var input = BuildDateInput(modelExpression, selectedWidthClass);
 
-            item.InnerHtml.AppendHtml(label);
-            item.InnerHtml.AppendHtml(input);
+            item.InnerHtml
+                .AppendHtml(label)
+                .AppendHtml(input);
 
             return item;
         }

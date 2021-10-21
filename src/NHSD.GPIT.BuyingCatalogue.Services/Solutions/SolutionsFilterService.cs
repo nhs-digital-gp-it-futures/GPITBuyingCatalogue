@@ -4,10 +4,10 @@ using System.Linq;
 using System.Threading.Tasks;
 using LinqKit;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Caching.Memory;
 using MoreLinq;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
+using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Models;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Models.FilterModels;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions;
@@ -16,8 +16,6 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
 {
     public sealed class SolutionsFilterService : ISolutionsFilterService
     {
-        private const string FrameworkCacheKey = "framework-filter";
-        private const string CategoryCacheKey = "category-filter";
         private const string FoundationCapabilitiesKey = "FC";
         private const string AllSolutionsFrameworkKey = "All";
         private const int UndefinedCategory = 0;
@@ -27,22 +25,12 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
         private const char EpicStartingCharacter = 'E';
         private const char SupplierStartingCharacter = 'S';
         private const char SupplierMarkCharacter = 'X';
-        private const char DFOCVCMarkCharacter = 'D';
-
-        private readonly MemoryCacheEntryOptions memoryCacheOptions;
+        private const char DfocvcMarkCharacter = 'D';
 
         private readonly BuyingCatalogueDbContext dbContext;
-        private readonly IMemoryCache memoryCache;
 
-        public SolutionsFilterService(
-            BuyingCatalogueDbContext dbContext,
-            IMemoryCache memoryCache)
-        {
+        public SolutionsFilterService(BuyingCatalogueDbContext dbContext) =>
             this.dbContext = dbContext ?? throw new ArgumentNullException(nameof(dbContext));
-            this.memoryCache = memoryCache ?? throw new ArgumentNullException(nameof(memoryCache));
-
-            memoryCacheOptions = new MemoryCacheEntryOptions().SetAbsoluteExpiration(DateTime.Now.AddSeconds(60));
-        }
 
         public async Task<PagedList<CatalogueItem>> GetAllSolutionsFiltered(
             PageOptions options,
@@ -55,8 +43,11 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
                 .Include(i => i.Solution)
                 .Include(i => i.Supplier)
                 .Include(i => i.CatalogueItemCapabilities).ThenInclude(cic => cic.Capability)
-                .Where(i => i.CatalogueItemType == CatalogueItemType.Solution &&
-                    (i.PublishedStatus != PublicationStatus.Draft && i.PublishedStatus != PublicationStatus.Unpublished));
+                .Where(i =>
+                i.CatalogueItemType == CatalogueItemType.Solution
+                && (i.PublishedStatus != PublicationStatus.Draft
+                    && i.PublishedStatus != PublicationStatus.Unpublished)
+                && i.Supplier.IsActive);
 
             if (!string.IsNullOrWhiteSpace(frameworkId) && frameworkId != AllSolutionsFrameworkKey)
                 query = query.Where(ci => ci.Solution.FrameworkSolutions.Any(fs => fs.FrameworkId == frameworkId));
@@ -88,9 +79,6 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
 
         public async Task<Dictionary<EntityFramework.Catalogue.Models.Framework, int>> GetAllFrameworksAndCountForFilter()
         {
-            if (memoryCache.TryGetValue(FrameworkCacheKey, out List<KeyValuePair<EntityFramework.Catalogue.Models.Framework, int>> value))
-                return value.ToDictionary(r => r.Key, r => r.Value);
-
             var allSolutionsCount = await dbContext.CatalogueItems.AsNoTracking()
                 .Where(ci => ci.PublishedStatus == PublicationStatus.Published && ci.CatalogueItemType == CatalogueItemType.Solution)
                 .CountAsync();
@@ -115,23 +103,21 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
                     },
                     allSolutionsCount));
 
-            memoryCache.Set(FrameworkCacheKey, results, memoryCacheOptions);
-
             return results.ToDictionary(r => r.Key, r => r.Value);
         }
 
         public async Task<CategoryFilterModel> GetAllCategoriesAndCountForFilter(string frameworkId = null)
         {
-            if (memoryCache.TryGetValue($"{CategoryCacheKey}-{frameworkId ?? AllSolutionsFrameworkKey}", out CategoryFilterModel value))
-                return value;
-
             var query = dbContext.CatalogueItems.AsNoTracking()
                 .Include(ci => ci.CatalogueItemCapabilities)
                 .ThenInclude(cic => cic.Capability)
                 .ThenInclude(c => c.Category)
                 .Include(ci => ci.CatalogueItemEpics)
                 .ThenInclude(cie => cie.Epic)
-                .Where(ci => ci.PublishedStatus == PublicationStatus.Published && ci.CatalogueItemType == CatalogueItemType.Solution);
+                .Where(ci =>
+                ci.PublishedStatus == PublicationStatus.Published
+                && ci.CatalogueItemType == CatalogueItemType.Solution
+                && ci.Supplier.IsActive);
 
             if (!string.IsNullOrWhiteSpace(frameworkId) && frameworkId != AllSolutionsFrameworkKey)
                 query = query.Where(ci => ci.Solution.FrameworkSolutions.Any(fs => fs.FrameworkId == frameworkId));
@@ -142,8 +128,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
                 .Select(cic => cic.Capability.Category)
                 .DistinctBy(c => c.Id)
                 .Where(c => c.Id != UndefinedCategory)
-                .Select(c =>
-                new CapabilityCategoryFilter
+                .Select(c => new CapabilityCategoryFilter
                 {
                     Name = c.Name,
                     Description = c.Description,
@@ -167,8 +152,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
 
             var countOfCatalogueItemsWithAllFoundationCapabilities = results.Count(MeetsAllFoundationCapabilities);
 
-            var foundationCapabilitiesFilter =
-                foundationCapabilities
+            var foundationCapabilitiesFilter = foundationCapabilities
                 .Select(c => new CapabilitiesFilter
                 {
                     CapabilityId = c.CapabilityId,
@@ -179,22 +163,21 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
 
             var epics = results.SelectMany(ci => ci.CatalogueItemEpics)
                 .Select(cie => cie.Epic)
+                .Where(e => e.CompliancyLevel == CompliancyLevel.May)
                 .DistinctBy(e => e.Id)
                 .ToList();
 
             // for each category, add to its list of capabilities the capabilities that reference that category, and count how many
             // catalogue items reference that capability
-            categories.ForEach(c =>
-            c.Capabilities.AddRange(
+            categories.ForEach(c => c.Capabilities.AddRange(
                 capabilities.Where(cap => cap.CategoryId == c.CategoryId)
-                           .Select(cap =>
-                            new CapabilitiesFilter
-                            {
-                                CapabilityId = cap.Id,
-                                Name = cap.Name,
-                                CapabilityRef = cap.CapabilityRef,
-                                Count = results.Count(ci => ci.CatalogueItemCapabilities.Any(cic => cic.CapabilityId == cap.Id)),
-                            })));
+                    .Select(cap => new CapabilitiesFilter
+                    {
+                        CapabilityId = cap.Id,
+                        Name = cap.Name,
+                        CapabilityRef = cap.CapabilityRef,
+                        Count = results.Count(ci => ci.CatalogueItemCapabilities.Any(cic => cic.CapabilityId == cap.Id)),
+                    })));
 
             // for each category, then each capability in that category, add to its list of epics the epics that reference that capability, and count how many
             // catalogue items reference that epic
@@ -202,13 +185,14 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
                 c => c.Capabilities.ForEach(
                     cap => cap.Epics.AddRange(
                         epics.Where(e => e.CapabilityId == cap.CapabilityId)
-                             .Select(e =>
-                             new EpicsFilter
-                             {
-                                 Id = e.Id,
-                                 Name = e.Name,
-                                 Count = results.Count(ci => ci.CatalogueItemEpics.Any(cie => cie.EpicId == e.Id)),
-                             }))));
+                            .Select(e => new EpicsFilter
+                            {
+                                Id = e.Id,
+                                Name = e.Name,
+                                Count = results.Count(ci => ci.CatalogueItemEpics.Any(cie => cie.EpicId == e.Id)),
+                            })
+                            .OrderByDescending(e => e.Count)
+                            .ThenBy(e => e.Name))));
 
             var response = new CategoryFilterModel
             {
@@ -216,8 +200,6 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
                 FoundationCapabilities = foundationCapabilitiesFilter,
                 CountOfCatalogueItemsWithFoundationCapabilities = countOfCatalogueItemsWithAllFoundationCapabilities,
             };
-
-            memoryCache.Set($"{CategoryCacheKey}-{frameworkId ?? AllSolutionsFrameworkKey}", response, memoryCacheOptions);
 
             return response;
         }
@@ -241,10 +223,10 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
                 var capabilityPredicateBuilder = PredicateBuilder.New<CatalogueItem>();
 
                 capabilityPredicateBuilder = capabilityId == FoundationCapabilitiesKey
-                ? capabilityPredicateBuilder.Or(
-                    ci => ci.CatalogueItemCapabilities.Count(
-                        cic => cic.Capability.FrameworkCapabilities.Any(fc => fc.IsFoundation)) == foundationSolutionsCount)
-                : capabilityPredicateBuilder.Or(ci => ci.CatalogueItemCapabilities.Any(cic => cic.Capability.CapabilityRef == capabilityId));
+                    ? capabilityPredicateBuilder.Or(
+                        ci => ci.CatalogueItemCapabilities.Count(
+                            cic => cic.Capability.FrameworkCapabilities.Any(fc => fc.IsFoundation)) == foundationSolutionsCount)
+                    : capabilityPredicateBuilder.Or(ci => ci.CatalogueItemCapabilities.Any(cic => cic.Capability.CapabilityRef == capabilityId));
 
                 if (epicIds.Any())
                 {
@@ -274,7 +256,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
 
             foreach (var capability in splitCapabilities)
             {
-                if (capability == FoundationCapabilitiesKey || !capability.Contains(EpicStartingCharacter))
+                if (capability == FoundationCapabilitiesKey || !capability.ContainsIgnoreCase(EpicStartingCharacter))
                 {
                     output.Add(capability, new List<string>());
                 }
@@ -289,12 +271,12 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
                     .Where(s => !s.StartsWith(CapabilitiesStartingCharacter))
                     .Select(s =>
                     {
-                        if (s.Contains(DFOCVCMarkCharacter))
-                            return DecodeDFOCVCEpic(s);
-                        else if (s.Contains(SupplierMarkCharacter))
-                            return DecodeSupplierDefinedEpic(s);
-                        else
-                            return DecodeNormalEpic(epics[0], s);
+                        if (s.ContainsIgnoreCase(DfocvcMarkCharacter))
+                            return DecodeDfocvcEpic(s);
+
+                        return s.ContainsIgnoreCase(SupplierMarkCharacter)
+                            ? DecodeSupplierDefinedEpic(s)
+                            : DecodeNormalEpic(epics[0], s);
                     })
                     .ToList();
 
@@ -307,8 +289,9 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
 
         private static string DecodeNormalEpic(string capabilityId, string encodedEpic) => $"{capabilityId}E{encodedEpic}";
 
-        private static string DecodeDFOCVCEpic(string encodedEpic) => $"E000{encodedEpic.Substring(0, 2)}";
+        private static string DecodeDfocvcEpic(string encodedEpic) => $"E000{encodedEpic[..2]}";
 
-        private static string DecodeSupplierDefinedEpic(string encodedEpic) => ("S0" + encodedEpic).Replace("_", "E0").Replace("X", "X0");
+        private static string DecodeSupplierDefinedEpic(string encodedEpic) => ("S0" + encodedEpic)
+            .Replace("_", "E0", StringComparison.Ordinal).Replace("X", "X0", StringComparison.OrdinalIgnoreCase);
     }
 }

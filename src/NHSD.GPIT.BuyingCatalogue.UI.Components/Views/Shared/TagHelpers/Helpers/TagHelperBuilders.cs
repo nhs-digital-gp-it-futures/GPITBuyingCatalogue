@@ -93,7 +93,7 @@ namespace NHSD.GPIT.BuyingCatalogue.UI.Components.TagHelpers
             builder.GenerateId($"{name}-hint", "_");
             builder.AddCssClass(TagHelperConstants.NhsHint);
 
-            builder.InnerHtml.Append(hintText);
+            builder.InnerHtml.AppendHtml(hintText);
 
             return builder;
         }

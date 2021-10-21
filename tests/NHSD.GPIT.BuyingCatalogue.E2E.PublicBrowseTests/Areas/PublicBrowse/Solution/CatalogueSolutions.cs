@@ -285,7 +285,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.PublicBrowse.Solution
 
             await using var context = GetEndToEndDbContext();
 
-            var filterService = new SolutionsFilterService(context, Factory.GetMemoryCache);
+            var filterService = new SolutionsFilterService(context);
 
             var results = await filterService.GetAllCategoriesAndCountForFilter();
 
@@ -316,8 +316,8 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.PublicBrowse.Solution
         }
 
         [Theory]
-        [InlineData("C46", "C46E1")]
-        [InlineData("C46", "C46E2")]
+        [InlineData("C46", "C46E5")]
+        [InlineData("C46", "C46E6")]
         public void CatalogueSolutions_Filter_FilterByOneCapabilityWithEpic_CorrectResults(string capabilityId, string epicId)
         {
             CommonActions.WaitUntilElementExists(Objects.PublicBrowse.SolutionsObjects.FilterCapabilities);
@@ -333,6 +333,22 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.PublicBrowse.Solution
             CommonActions.PageLoadedCorrectGetIndex(typeof(SolutionsController), nameof(SolutionsController.Index)).Should().BeTrue();
 
             Driver.FindElements(ByExtensions.DataTestId("solutions-card")).Count.Should().Be(1);
+        }
+
+        [Fact]
+        public void CatalogueSolutions_Filter_MayEpicsOnly()
+        {
+            const string mayEpic = "C46E6";
+            const string mustEpic = "C46E1";
+
+            CommonActions.WaitUntilElementExists(Objects.PublicBrowse.SolutionsObjects.FilterCapabilities);
+
+            Driver.FindElement(Objects.PublicBrowse.SolutionsObjects.FilterSolutionsExpander).Click();
+            Driver.FindElement(Objects.PublicBrowse.SolutionsObjects.FilterCapabilities).Click();
+
+            CommonActions.ElementExists(By.XPath($"//input[@value='{mayEpic}']")).Should().BeTrue();
+
+            CommonActions.ElementExists(By.XPath($"//input[@value='{mustEpic}']")).Should().BeFalse();
         }
 
         [Fact]

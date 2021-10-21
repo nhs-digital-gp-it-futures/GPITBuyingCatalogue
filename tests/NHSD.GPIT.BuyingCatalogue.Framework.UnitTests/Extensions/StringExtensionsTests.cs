@@ -8,9 +8,27 @@ namespace NHSD.GPIT.BuyingCatalogue.Framework.UnitTests.Extensions
     public static class StringExtensionsTests
     {
         [Theory]
+        [InlineData('a', false)]
+        [InlineData('g', true)]
+        [InlineData('G', true)]
+        public static void ContainsIgnoreCase_Char_ReturnsExpectedResult(char value, bool expectedResult)
+        {
+            "Diogenes".ContainsIgnoreCase(value).Should().Be(expectedResult);
+        }
+
+        [Theory]
+        [InlineData("a", false)]
+        [InlineData("gene", true)]
+        [InlineData("GENE", true)]
+        public static void ContainsIgnoreCase_String_ReturnsExpectedResult(string value, bool expectedResult)
+        {
+            "Diogenes".ContainsIgnoreCase(value).Should().Be(expectedResult);
+        }
+
+        [Theory]
         [InlineData("womBAT")]
         [InlineData("123")]
-        public static void EqualsIgnoreCase_ToCompareNotSameAsInput_ReturnsFalse(string toCompare)
+        public static void EqualsIgnoreCase_String_ToCompareNotSameAsInput_ReturnsFalse(string toCompare)
         {
             "wicked".EqualsIgnoreCase(toCompare).Should().BeFalse();
         }
@@ -19,7 +37,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Framework.UnitTests.Extensions
         [InlineData("WICKED")]
         [InlineData("wicked")]
         [InlineData("WicKeD")]
-        public static void EqualsIgnoreCase_ToCompareSameAsInput_ReturnsTrue(string toCompare)
+        public static void EqualsIgnoreCase_String_ToCompareSameAsInput_ReturnsTrue(string toCompare)
         {
             "wicked".EqualsIgnoreCase(toCompare).Should().BeTrue();
         }

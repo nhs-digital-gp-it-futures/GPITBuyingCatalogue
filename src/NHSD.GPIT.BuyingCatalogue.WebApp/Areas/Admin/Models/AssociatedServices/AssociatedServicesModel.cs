@@ -21,7 +21,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.AssociatedServices
             {
                 Name = s.Name,
                 Description = s.AssociatedService.Description,
-                OrderGuidance = s.AssociatedService.OrderGuidance,
+                PublishedStatus = s.PublishedStatus,
                 CatalogueItemId = s.AssociatedService.CatalogueItemId,
                 Selected = catalogueItem.SupplierServiceAssociations.Any(ssa => ssa.AssociatedServiceId == s.Id),
             }).ToList();

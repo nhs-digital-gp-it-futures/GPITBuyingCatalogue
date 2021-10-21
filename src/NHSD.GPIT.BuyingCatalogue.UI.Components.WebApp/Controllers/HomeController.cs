@@ -13,13 +13,13 @@ namespace NHSD.GPIT.BuyingCatalogue.UI.Components.WebApp.Controllers
             return View();
         }
 
-        [Route("action-link")]
+        [HttpGet("action-link")]
         public IActionResult ActionLink()
         {
             return View(new BlankModel());
         }
 
-        [Route("address")]
+        [HttpGet("address")]
         public IActionResult Address()
         {
             var address = new Address
@@ -35,7 +35,7 @@ namespace NHSD.GPIT.BuyingCatalogue.UI.Components.WebApp.Controllers
             return View(address);
         }
 
-        [Route("breadcrumbs")]
+        [HttpGet("breadcrumbs")]
         public IActionResult Breadcrumbs()
         {
             var model = new BreadcrumbsModel
@@ -50,7 +50,7 @@ namespace NHSD.GPIT.BuyingCatalogue.UI.Components.WebApp.Controllers
             return View(model);
         }
 
-        [Route("care-card")]
+        [HttpGet("care-card")]
         public IActionResult CareCard()
         {
             var model = new CareCardModel
@@ -66,13 +66,13 @@ namespace NHSD.GPIT.BuyingCatalogue.UI.Components.WebApp.Controllers
             return View(model);
         }
 
-        [Route("buttons")]
+        [HttpGet("buttons")]
         public IActionResult Buttons()
         {
             return View(new ButtonsModel());
         }
 
-        [Route("do-and-dont-list")]
+        [HttpGet("do-and-dont-list")]
         public IActionResult DoAndDontList()
         {
             var model = new DoDontModel
@@ -88,13 +88,13 @@ namespace NHSD.GPIT.BuyingCatalogue.UI.Components.WebApp.Controllers
             return View(model);
         }
 
-        [Route("images")]
+        [HttpGet("images")]
         public IActionResult Images()
         {
             return View(new BlankModel());
         }
 
-        [Route("checkboxes")]
+        [HttpGet("checkboxes")]
         public IActionResult Checkboxes()
         {
             var model = new CheckBoxModel
@@ -110,61 +110,67 @@ namespace NHSD.GPIT.BuyingCatalogue.UI.Components.WebApp.Controllers
             return View(model);
         }
 
-        [Route("page-title")]
+        [HttpGet("page-title")]
         public IActionResult PageTitle()
         {
             return View(new BlankModel());
         }
 
-        [Route("date-input")]
+        [HttpGet("date-input")]
         public IActionResult DateInput()
         {
             return View(new DateInputModel());
         }
 
-        [Route("details-and-expanders")]
+        [HttpGet("time-input")]
+        public IActionResult TimeInput()
+        {
+            return View(new TimeInputModel());
+        }
+
+        [HttpGet("details-and-expanders")]
         public IActionResult DetailsAndExpanders()
         {
             return View(new BlankModel());
         }
 
-        [Route("end-note")]
+        [HttpGet("end-note")]
         public IActionResult EndNote()
         {
             return View(new BlankModel());
         }
 
-        [Route("fieldsets")]
+        [HttpGet("fieldsets")]
         public IActionResult FieldSets()
         {
             return View(new BlankModel());
         }
 
-        [Route("text-input")]
+        [HttpGet("text-input")]
         public IActionResult TextInput()
         {
             return View(new TextInputModel());
         }
 
-        [Route("bookended-text-input")]
+        [HttpGet("bookended-text-input")]
         public IActionResult BookendedTextInput()
         {
             return View(new TextInputModel());
         }
 
-        [Route("text-area")]
+        [HttpGet("text-area")]
         public IActionResult TextArea()
         {
             return View(new TextInputModel());
         }
 
-        [Route("inset-text")]
+        [HttpGet("inset-text")]
         public IActionResult InsetText()
         {
             return View(new BlankModel());
         }
 
-        [Route("radio-lists")]
+        [HttpGet("radio-lists")]
         public IActionResult RadioLists()
         {
             var model = new RadioListModel
@@ -185,13 +191,13 @@ namespace NHSD.GPIT.BuyingCatalogue.UI.Components.WebApp.Controllers
             return View(model);
         }
 
-        [Route("yes-no-radios")]
+        [HttpGet("yes-no-radios")]
         public IActionResult YesNoRadios()
         {
             return View(new RadioListModel());
         }
 
-        [Route("select-list")]
+        [HttpGet("select-list")]
         public IActionResult SelectList()
         {
             var model = new SelectListModel
@@ -207,13 +213,13 @@ namespace NHSD.GPIT.BuyingCatalogue.UI.Components.WebApp.Controllers
             return View(model);
         }
 
-        [Route("summary-list")]
+        [HttpGet("summary-list")]
         public IActionResult SummaryList()
         {
             return View(new BlankModel());
         }
 
-        [Route("table")]
+        [HttpGet("table")]
         public IActionResult Table()
         {
             var model = new TableModel
@@ -256,13 +262,13 @@ namespace NHSD.GPIT.BuyingCatalogue.UI.Components.WebApp.Controllers
             return View(model);
         }
 
-        [Route("tags")]
+        [HttpGet("tags")]
         public IActionResult Tags()
         {
             return View(new BlankModel());
         }
 
-        [Route("validation-summary")]
+        [HttpGet("validation-summary")]
         public IActionResult ValidationSummary()
         {
             const string error = "This Input is in Error.";
@@ -274,7 +280,7 @@ namespace NHSD.GPIT.BuyingCatalogue.UI.Components.WebApp.Controllers
             return View(new BlankModel());
         }
 
-        [Route("warning-callout")]
+        [HttpGet("warning-callout")]
         public IActionResult WarningCallout()
         {
             return View(new BlankModel());

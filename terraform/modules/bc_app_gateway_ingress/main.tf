@@ -2,7 +2,7 @@ resource "azurerm_application_gateway" "app_gateway" {
   name                = var.ag_name
   location            = var.region
   resource_group_name = var.rg_name
-
+  count               = var.core_env != "dev" ? 1 : 0
   sku {
     name     = "Standard_v2"
     tier     = "Standard_v2"
@@ -21,7 +21,7 @@ resource "azurerm_application_gateway" "app_gateway" {
 
   frontend_ip_configuration {
     name                 = "${var.ag_name_fragment}-appgateway-feip"
-    public_ip_address_id = azurerm_public_ip.pip_app_gateway.id
+    public_ip_address_id = azurerm_public_ip.pip_app_gateway[0].id
   }
 
   backend_address_pool {
@@ -35,7 +35,7 @@ resource "azurerm_application_gateway" "app_gateway" {
     path                                = "/"
     port                                = 80
     protocol                            = "Http"
-    request_timeout                     = 5
+    request_timeout                     = 10
     pick_host_name_from_backend_address = true
   }
 

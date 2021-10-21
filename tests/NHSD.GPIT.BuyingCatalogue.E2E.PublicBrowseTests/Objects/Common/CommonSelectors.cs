@@ -8,6 +8,8 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Objects.Common
 
         internal static By Header1 => By.TagName("h1");
 
+        internal static By Header2 => By.TagName("h2");
+
         internal static By Header3 => By.TagName("h3");
 
         internal static By GoBackLink => By.ClassName("nhsuk-back-link__link");
@@ -57,5 +59,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Objects.Common
         internal static By Name => By.Id("Name");
 
         internal static By OrderGuidance => By.Id("OrderGuidance");
+
+        internal static By ContinueButton => By.LinkText("Continue");
     }
 }

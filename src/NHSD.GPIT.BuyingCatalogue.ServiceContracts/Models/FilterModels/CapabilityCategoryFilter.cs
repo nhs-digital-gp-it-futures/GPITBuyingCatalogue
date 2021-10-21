@@ -1,7 +1,9 @@
 ﻿using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 
 namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.Models.FilterModels
 {
+    [ExcludeFromCodeCoverage(Justification = "Class currently only contains automatic properties")]
     public sealed class CapabilityCategoryFilter
     {
         public string Name { get; init; }

@@ -9,6 +9,7 @@ using AutoFixture.Idioms;
 using AutoFixture.Xunit2;
 using EnumsNET;
 using FluentAssertions;
+using Microsoft.EntityFrameworkCore;
 using Moq;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
@@ -34,16 +35,10 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Solutions
             assertion.Verify(constructors);
         }
 
-        [Fact]
-        public static async Task SaveSupplierContacts_ModelNull_ThrowsException()
+        [Theory]
+        [CommonAutoData]
+        public static async Task SaveSupplierContacts_ModelNull_ThrowsException(SolutionsService service)
         {
-            var service = new SolutionsService(
-                Mock.Of<BuyingCatalogueDbContext>(),
-                Mock.Of<IDbRepository<MarketingContact, BuyingCatalogueDbContext>>(),
-                Mock.Of<IDbRepository<Solution, BuyingCatalogueDbContext>>(),
-                Mock.Of<IDbRepository<Supplier, BuyingCatalogueDbContext>>(),
-                Mock.Of<ICatalogueItemRepository>());
-
             var actual = await Assert.ThrowsAsync<ArgumentNullException>(() => service.SaveSupplierContacts(default));
 
             actual.ParamName.Should().Be("model");
@@ -53,15 +48,15 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Solutions
         [InMemoryDbAutoData]
         public static async Task SaveSupplierContacts_ModelValid_CallsSetSolutionIdOnModel(
             [Frozen] BuyingCatalogueDbContext context,
-            CatalogueItem solution,
+            Solution solution,
             SolutionsService service,
             SupplierContactsModel model)
         {
-            solution.Solution.MarketingContacts.Clear();
-            context.CatalogueItems.Add(solution);
+            solution.MarketingContacts.Clear();
+            context.Solutions.Add(solution);
             await context.SaveChangesAsync();
 
-            model.SolutionId = solution.Id;
+            model.SolutionId = solution.CatalogueItemId;
 
             await service.SaveSupplierContacts(model);
 
@@ -72,19 +67,22 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Solutions
         [InMemoryDbAutoData]
         public static async Task SaveSupplierContacts_NoContactsInDatabase_AddsValidContactsToRepository(
             [Frozen] BuyingCatalogueDbContext context,
-            CatalogueItem solution,
+            Solution solution,
             SupplierContactsModel supplierContactsModel,
             SolutionsService service)
         {
-            solution.Solution.MarketingContacts.Clear();
-            context.CatalogueItems.Add(solution);
+            solution.MarketingContacts.Clear();
+            context.Solutions.Add(solution);
             await context.SaveChangesAsync();
 
-            supplierContactsModel.SolutionId = solution.Id;
+            supplierContactsModel.SolutionId = solution.CatalogueItemId;
 
             await service.SaveSupplierContacts(supplierContactsModel);
 
-            var newContacts = await context.MarketingContacts.AsAsyncEnumerable().Where(mc => mc.SolutionId == solution.Id).ToArrayAsync();
+            var newContacts = await context.MarketingContacts
+                .AsAsyncEnumerable()
+                .Where(mc => mc.SolutionId == solution.CatalogueItemId)
+                .ToArrayAsync();
 
             newContacts.Length.Should().Be(supplierContactsModel.Contacts.Length);
             newContacts.Should().BeEquivalentTo(supplierContactsModel.Contacts, config => config
@@ -98,14 +96,17 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Solutions
         [InMemoryDbAutoData]
         public static async Task SaveSupplierContacts_ContactsInDatabase_RemovesEmptyContactsFromDatabase(
             [Frozen] BuyingCatalogueDbContext context,
-            CatalogueItem solution,
+            Solution solution,
             SupplierContactsModel supplierContactsModel,
             SolutionsService service)
         {
-            context.CatalogueItems.Add(solution);
+            context.Solutions.Add(solution);
             await context.SaveChangesAsync();
 
-            supplierContactsModel.Contacts = await context.MarketingContacts.AsAsyncEnumerable().Where(mc => mc.SolutionId == solution.Id).ToArrayAsync();
+            supplierContactsModel.Contacts = await context.MarketingContacts
+                .AsAsyncEnumerable()
+                .Where(mc => mc.SolutionId == solution.CatalogueItemId)
+                .ToArrayAsync();
 
             supplierContactsModel.Contacts[0].FirstName = null;
             supplierContactsModel.Contacts[0].LastName = null;
@@ -113,11 +114,14 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Solutions
             supplierContactsModel.Contacts[0].PhoneNumber = null;
             supplierContactsModel.Contacts[0].Email = null;
 
-            supplierContactsModel.SolutionId = solution.Id;
+            supplierContactsModel.SolutionId = solution.CatalogueItemId;
 
             await service.SaveSupplierContacts(supplierContactsModel);
 
-            var updatedContacts = await context.MarketingContacts.AsAsyncEnumerable().Where(mc => mc.SolutionId == solution.Id).ToArrayAsync();
+            var updatedContacts = await context.MarketingContacts
+                .AsAsyncEnumerable()
+                .Where(mc => mc.SolutionId == solution.CatalogueItemId)
+                .ToArrayAsync();
 
             updatedContacts.Length.Should().Be(2);
             updatedContacts[0].Id.Should().Be(supplierContactsModel.Contacts[1].Id);
@@ -128,7 +132,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Solutions
         [InMemoryDbAutoData]
         public static async Task SaveSupplierContacts_ContactsInDatabase_UpdatesNonEmptyContacts(
             [Frozen] BuyingCatalogueDbContext context,
-            CatalogueItem solution,
+            Solution solution,
             SupplierContactsModel model,
             string updatedFirstName,
             string updatedLastName,
@@ -136,20 +140,26 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Solutions
             string updatedEmail,
             SolutionsService service)
         {
-            context.CatalogueItems.Add(solution);
+            context.Solutions.Add(solution);
             await context.SaveChangesAsync();
 
-            model.Contacts = await context.MarketingContacts.AsAsyncEnumerable().Where(mc => mc.SolutionId == solution.Id).ToArrayAsync();
+            model.Contacts = await context.MarketingContacts
+                .AsAsyncEnumerable()
+                .Where(mc => mc.SolutionId == solution.CatalogueItemId)
+                .ToArrayAsync();
 
             model.Contacts[0].FirstName = updatedFirstName;
             model.Contacts[0].LastName = updatedLastName;
             model.Contacts[0].PhoneNumber = updatedPhoneNumber;
             model.Contacts[0].Email = updatedEmail;
-            model.SolutionId = solution.Id;
+            model.SolutionId = solution.CatalogueItemId;
 
             await service.SaveSupplierContacts(model);
 
-            var updatedContacts = await context.MarketingContacts.AsAsyncEnumerable().Where(mc => mc.SolutionId == solution.Id).ToArrayAsync();
+            var updatedContacts = await context.MarketingContacts
+                .AsAsyncEnumerable()
+                .Where(mc => mc.SolutionId == solution.CatalogueItemId)
+                .ToArrayAsync();
 
             updatedContacts[0].FirstName.Should().Be(updatedFirstName);
             updatedContacts[0].LastName.Should().Be(updatedLastName);
@@ -181,203 +191,179 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Solutions
         {
             var service = new SolutionsService(
                 Mock.Of<BuyingCatalogueDbContext>(),
-                Mock.Of<IDbRepository<MarketingContact, BuyingCatalogueDbContext>>(),
                 Mock.Of<IDbRepository<Solution, BuyingCatalogueDbContext>>(),
-                Mock.Of<IDbRepository<Supplier, BuyingCatalogueDbContext>>(),
-                Mock.Of<ICatalogueItemRepository>());
+                Mock.Of<IDbRepository<Supplier, BuyingCatalogueDbContext>>());
 
-            var actual = await Assert.ThrowsAsync<ArgumentException>(() => service.SaveSolutionDescription(new CatalogueItemId(100000, "001"), summary, "Description", "Link"));
+            var actual = await Assert.ThrowsAsync<ArgumentException>(() => service.SaveSolutionDescription(
+                new CatalogueItemId(100000, "001"),
+                summary,
+                "Description",
+                "Link"));
 
             actual.ParamName.Should().Be("summary");
         }
 
-        [Fact]
-        public static async Task SaveSolutionDescription_CallsSaveChangesAsync_OnRepository()
+        [Theory]
+        [InMemoryDbAutoData]
+        public static async Task SaveSolutionDetails_CallsSaveChangesAsync_OnRepository(
+            [Frozen] BuyingCatalogueDbContext context,
+            SolutionsService service,
+            Solution solution)
         {
-            var mockSolutionRepository = new Mock<IDbRepository<Solution, BuyingCatalogueDbContext>>();
-            mockSolutionRepository.Setup(r => r.SingleAsync(It.IsAny<Expression<Func<Solution, bool>>>()))
-                .ReturnsAsync(new Solution());
+            const string expectedSolutionName = "Expected Name";
+            const int expectedSupplierId = 247;
 
-            var service = new SolutionsService(
-                Mock.Of<BuyingCatalogueDbContext>(),
-                Mock.Of<IDbRepository<MarketingContact, BuyingCatalogueDbContext>>(),
-                mockSolutionRepository.Object,
-                Mock.Of<IDbRepository<Supplier, BuyingCatalogueDbContext>>(),
-                Mock.Of<ICatalogueItemRepository>());
+            context.Solutions.Add(solution);
+            await context.SaveChangesAsync();
+
+            await service.SaveSolutionDetails(solution.CatalogueItemId, expectedSolutionName, expectedSupplierId, new List<FrameworkModel>());
+
+            var dbSolution = await context.CatalogueItems
+                .Include(s => s.Solution)
+                .Include(s => s.Solution.FrameworkSolutions)
+                .SingleAsync(s => s.Id == solution.CatalogueItemId);
+
+            dbSolution.Name.Should().BeEquivalentTo(expectedSolutionName);
+            dbSolution.SupplierId.Should().Be(expectedSupplierId);
+        }
+
+        [Theory]
+        [CommonAutoData]
+        public static async Task SaveSolutionDescription_CallsSaveChangesAsync_OnRepository(
+            [Frozen] Mock<IDbRepository<Solution, BuyingCatalogueDbContext>> solutionRepositoryMock,
+            SolutionsService service)
+        {
+            solutionRepositoryMock
+                .Setup(r => r.SingleAsync(It.IsAny<Expression<Func<Solution, bool>>>()))
+                .ReturnsAsync(new Solution());
 
             await service.SaveSolutionDescription(new CatalogueItemId(100000, "001"), "Summary", "Description", "Link");
 
-            mockSolutionRepository.Verify(r => r.SaveChangesAsync());
+            solutionRepositoryMock.Verify(r => r.SaveChangesAsync());
         }
 
-        [Fact]
-        public static async Task SaveSolutionFeatures_CallsSaveChangesAsync_OnRepository()
+        [Theory]
+        [CommonAutoData]
+        public static async Task SaveSolutionFeatures_CallsSaveChangesAsync_OnRepository(
+            [Frozen] Mock<IDbRepository<Solution, BuyingCatalogueDbContext>> solutionRepositoryMock,
+            SolutionsService service)
         {
-            var mockSolutionRepository = new Mock<IDbRepository<Solution, BuyingCatalogueDbContext>>();
-            mockSolutionRepository.Setup(r => r.SingleAsync(It.IsAny<Expression<Func<Solution, bool>>>()))
+            solutionRepositoryMock
+                .Setup(r => r.SingleAsync(It.IsAny<Expression<Func<Solution, bool>>>()))
                 .ReturnsAsync(new Solution());
-
-            var service = new SolutionsService(
-                Mock.Of<BuyingCatalogueDbContext>(),
-                Mock.Of<IDbRepository<MarketingContact, BuyingCatalogueDbContext>>(),
-                mockSolutionRepository.Object,
-                Mock.Of<IDbRepository<Supplier, BuyingCatalogueDbContext>>(),
-                Mock.Of<ICatalogueItemRepository>());
 
             await service.SaveSolutionFeatures(new CatalogueItemId(100000, "001"), Array.Empty<string>());
 
-            mockSolutionRepository.Verify(r => r.SaveChangesAsync());
+            solutionRepositoryMock.Verify(r => r.SaveChangesAsync());
         }
 
-        [Fact]
-        public static async Task SaveImplementationDetail_CallsSaveChangesAsync_OnRepository()
+        [Theory]
+        [CommonAutoData]
+        public static async Task SaveImplementationDetail_CallsSaveChangesAsync_OnRepository(
+            [Frozen] Mock<IDbRepository<Solution, BuyingCatalogueDbContext>> solutionRepositoryMock,
+            SolutionsService service)
         {
-            var mockSolutionRepository = new Mock<IDbRepository<Solution, BuyingCatalogueDbContext>>();
-            mockSolutionRepository.Setup(r => r.SingleAsync(It.IsAny<Expression<Func<Solution, bool>>>()))
+            solutionRepositoryMock
+                .Setup(r => r.SingleAsync(It.IsAny<Expression<Func<Solution, bool>>>()))
                 .ReturnsAsync(new Solution());
-
-            var service = new SolutionsService(
-                Mock.Of<BuyingCatalogueDbContext>(),
-                Mock.Of<IDbRepository<MarketingContact, BuyingCatalogueDbContext>>(),
-                mockSolutionRepository.Object,
-                Mock.Of<IDbRepository<Supplier, BuyingCatalogueDbContext>>(),
-                Mock.Of<ICatalogueItemRepository>());
 
             await service.SaveImplementationDetail(new CatalogueItemId(100000, "001"), "123");
 
-            mockSolutionRepository.Verify(r => r.SaveChangesAsync());
+            solutionRepositoryMock.Verify(r => r.SaveChangesAsync());
         }
 
-        [Fact]
-        public static async Task SaveRoadMap_CallsSaveChangesAsync_OnRepository()
+        [Theory]
+        [CommonAutoData]
+        public static async Task SaveRoadMap_CallsSaveChangesAsync_OnRepository(
+            [Frozen] Mock<IDbRepository<Solution, BuyingCatalogueDbContext>> solutionRepositoryMock,
+            SolutionsService service)
         {
-            var mockSolutionRepository = new Mock<IDbRepository<Solution, BuyingCatalogueDbContext>>();
-            mockSolutionRepository.Setup(r => r.SingleAsync(It.IsAny<Expression<Func<Solution, bool>>>()))
+            solutionRepositoryMock
+                .Setup(r => r.SingleAsync(It.IsAny<Expression<Func<Solution, bool>>>()))
                 .ReturnsAsync(new Solution());
-
-            var service = new SolutionsService(
-                Mock.Of<BuyingCatalogueDbContext>(),
-                Mock.Of<IDbRepository<MarketingContact, BuyingCatalogueDbContext>>(),
-                mockSolutionRepository.Object,
-                Mock.Of<IDbRepository<Supplier, BuyingCatalogueDbContext>>(),
-                Mock.Of<ICatalogueItemRepository>());
 
             await service.SaveRoadMap(new CatalogueItemId(100000, "001"), "123");
 
-            mockSolutionRepository.Verify(r => r.SaveChangesAsync());
+            solutionRepositoryMock.Verify(r => r.SaveChangesAsync());
         }
 
-        [Fact]
-        public static async Task SaveClientApplication_InvalidModel_ThrowsException()
+        [Theory]
+        [CommonAutoData]
+        public static async Task SaveClientApplication_InvalidModel_ThrowsException(SolutionsService service)
         {
-            var service = new SolutionsService(
-                Mock.Of<BuyingCatalogueDbContext>(),
-                Mock.Of<IDbRepository<MarketingContact, BuyingCatalogueDbContext>>(),
-                Mock.Of<IDbRepository<Solution, BuyingCatalogueDbContext>>(),
-                Mock.Of<IDbRepository<Supplier, BuyingCatalogueDbContext>>(),
-                Mock.Of<ICatalogueItemRepository>());
-
-            var actual = await Assert.ThrowsAsync<ArgumentNullException>(() => service.SaveClientApplication(new CatalogueItemId(100000, "001"), null));
+            var actual = await Assert.ThrowsAsync<ArgumentNullException>(
+                () => service.SaveClientApplication(new CatalogueItemId(100000, "001"), null));
 
             actual.ParamName.Should().Be("clientApplication");
         }
 
-        [Fact]
-        public static async Task SaveClientApplication_CallsSaveChangesAsync_OnRepository()
+        [Theory]
+        [CommonAutoData]
+        public static async Task SaveClientApplication_CallsSaveChangesAsync_OnRepository(
+            [Frozen] Mock<IDbRepository<Solution, BuyingCatalogueDbContext>> solutionRepositoryMock,
+            SolutionsService service)
         {
-            var mockSolutionRepository = new Mock<IDbRepository<Solution, BuyingCatalogueDbContext>>();
-            mockSolutionRepository.Setup(r => r.SingleAsync(It.IsAny<Expression<Func<Solution, bool>>>()))
+            solutionRepositoryMock
+                .Setup(r => r.SingleAsync(It.IsAny<Expression<Func<Solution, bool>>>()))
                 .ReturnsAsync(new Solution());
-
-            var service = new SolutionsService(
-                Mock.Of<BuyingCatalogueDbContext>(),
-                Mock.Of<IDbRepository<MarketingContact, BuyingCatalogueDbContext>>(),
-                mockSolutionRepository.Object,
-                Mock.Of<IDbRepository<Supplier, BuyingCatalogueDbContext>>(),
-                Mock.Of<ICatalogueItemRepository>());
 
             await service.SaveClientApplication(new CatalogueItemId(100000, "001"), new ClientApplication());
 
-            mockSolutionRepository.Verify(r => r.SaveChangesAsync());
+            solutionRepositoryMock.Verify(r => r.SaveChangesAsync());
         }
 
-        [Fact]
-        public static async Task SaveHosting_InvalidModel_ThrowsException()
+        [Theory]
+        [CommonAutoData]
+        public static async Task SaveHosting_InvalidModel_ThrowsException(SolutionsService service)
         {
-            var service = new SolutionsService(
-                Mock.Of<BuyingCatalogueDbContext>(),
-                Mock.Of<IDbRepository<MarketingContact, BuyingCatalogueDbContext>>(),
-                Mock.Of<IDbRepository<Solution, BuyingCatalogueDbContext>>(),
-                Mock.Of<IDbRepository<Supplier, BuyingCatalogueDbContext>>(),
-                Mock.Of<ICatalogueItemRepository>());
-
-            var actual = await Assert.ThrowsAsync<ArgumentNullException>(() => service.SaveHosting(new CatalogueItemId(100000, "001"), null));
+            var actual = await Assert.ThrowsAsync<ArgumentNullException>(
+                () => service.SaveHosting(new CatalogueItemId(100000, "001"), null));
 
             actual.ParamName.Should().Be("hosting");
         }
 
-        [Fact]
-        public static async Task SaveHosting_CallsSaveChangesAsync_OnRepository()
+        [Theory]
+        [CommonAutoData]
+        public static async Task SaveHosting_CallsSaveChangesAsync_OnRepository(
+            [Frozen] Mock<IDbRepository<Solution, BuyingCatalogueDbContext>> solutionRepositoryMock,
+            SolutionsService service)
         {
-            var mockSolutionRepository = new Mock<IDbRepository<Solution, BuyingCatalogueDbContext>>();
-            mockSolutionRepository.Setup(r => r.SingleAsync(It.IsAny<Expression<Func<Solution, bool>>>()))
+            solutionRepositoryMock
+                .Setup(r => r.SingleAsync(It.IsAny<Expression<Func<Solution, bool>>>()))
                 .ReturnsAsync(new Solution());
-
-            var service = new SolutionsService(
-                Mock.Of<BuyingCatalogueDbContext>(),
-                Mock.Of<IDbRepository<MarketingContact, BuyingCatalogueDbContext>>(),
-                mockSolutionRepository.Object,
-                Mock.Of<IDbRepository<Supplier, BuyingCatalogueDbContext>>(),
-                Mock.Of<ICatalogueItemRepository>());
 
             await service.SaveHosting(new CatalogueItemId(100000, "001"), new Hosting());
 
-            mockSolutionRepository.Verify(r => r.SaveChangesAsync());
+            solutionRepositoryMock.Verify(r => r.SaveChangesAsync());
         }
 
-        [Fact]
-        public static async Task SaveSupplier_CallsSaveChangesAsync_OnRepository()
+        [Theory]
+        [CommonAutoData]
+        public static async Task SaveSupplier_CallsSaveChangesAsync_OnRepository(
+            [Frozen] Mock<IDbRepository<Supplier, BuyingCatalogueDbContext>> supplierRepositoryMock,
+            SolutionsService service)
         {
-            var mockSupplierRepository = new Mock<IDbRepository<Supplier, BuyingCatalogueDbContext>>();
-            mockSupplierRepository.Setup(r => r.SingleAsync(It.IsAny<Expression<Func<Supplier, bool>>>()))
+            supplierRepositoryMock
+                .Setup(r => r.SingleAsync(It.IsAny<Expression<Func<Supplier, bool>>>()))
                 .ReturnsAsync(new Supplier());
-
-            var service = new SolutionsService(
-                Mock.Of<BuyingCatalogueDbContext>(),
-                Mock.Of<IDbRepository<MarketingContact, BuyingCatalogueDbContext>>(),
-                Mock.Of<IDbRepository<Solution, BuyingCatalogueDbContext>>(),
-                mockSupplierRepository.Object,
-                Mock.Of<ICatalogueItemRepository>());
 
             await service.SaveSupplierDescriptionAndLink(100000, "Description", "Link");
 
-            mockSupplierRepository.Verify(r => r.SaveChangesAsync());
+            supplierRepositoryMock.Verify(r => r.SaveChangesAsync());
         }
 
-        [Fact]
-        public static async Task AddCatalogueSolution_NullModel_ThrowsException()
+        [Theory]
+        [CommonAutoData]
+        public static async Task AddCatalogueSolution_NullModel_ThrowsException(SolutionsService service)
         {
-            var service = new SolutionsService(
-                Mock.Of<BuyingCatalogueDbContext>(),
-                Mock.Of<IDbRepository<MarketingContact, BuyingCatalogueDbContext>>(),
-                Mock.Of<IDbRepository<Solution, BuyingCatalogueDbContext>>(),
-                Mock.Of<IDbRepository<Supplier, BuyingCatalogueDbContext>>(),
-                Mock.Of<ICatalogueItemRepository>());
-
             (await Assert.ThrowsAsync<ArgumentNullException>(() => service.AddCatalogueSolution(null)))
-                .ParamName.Should().Be(nameof(CreateSolutionModel));
+                .ParamName.Should().Be("model");
         }
 
-        [Fact]
-        public static async Task AddCatalogueSolution_NullListOfFrameWorkModels_ThrowsException()
+        [Theory]
+        [CommonAutoData]
+        public static async Task AddCatalogueSolution_NullListOfFrameWorkModels_ThrowsException(SolutionsService service)
         {
-            var service = new SolutionsService(
-                Mock.Of<BuyingCatalogueDbContext>(),
-                Mock.Of<IDbRepository<MarketingContact, BuyingCatalogueDbContext>>(),
-                Mock.Of<IDbRepository<Solution, BuyingCatalogueDbContext>>(),
-                Mock.Of<IDbRepository<Supplier, BuyingCatalogueDbContext>>(),
-                Mock.Of<ICatalogueItemRepository>());
-
             (await Assert.ThrowsAsync<ArgumentNullException>(
                     () => service.AddCatalogueSolution(new CreateSolutionModel())))
                 .ParamName.Should()
@@ -385,79 +371,35 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Solutions
         }
 
         [Theory]
-        [CommonAutoData]
-        public static async Task AddCatalogueSolution_ModelValid_GetsLatestCatalogueItemId(
-            CreateSolutionModel model)
+        [InMemoryDbAutoData]
+        public static async Task AddCatalogueSolution_ModelValid_AddsCatalogueItemToDatabase(
+            [Frozen] BuyingCatalogueDbContext context,
+            CatalogueItem catalogueItem,
+            CreateSolutionModel model,
+            SolutionsService service)
         {
-            var mockCatalogueItemRepository = new Mock<ICatalogueItemRepository>();
-            mockCatalogueItemRepository.Setup(c => c.GetLatestCatalogueItemIdFor(model.SupplierId))
-                .ReturnsAsync(new CatalogueItemId(model.SupplierId, "045"));
+            model.SupplierId = catalogueItem.SupplierId;
 
-            var service = new SolutionsService(
-                Mock.Of<BuyingCatalogueDbContext>(),
-                Mock.Of<IDbRepository<MarketingContact, BuyingCatalogueDbContext>>(),
-                Mock.Of<IDbRepository<Solution, BuyingCatalogueDbContext>>(),
-                Mock.Of<IDbRepository<Supplier, BuyingCatalogueDbContext>>(),
-                mockCatalogueItemRepository.Object);
+            var id = await service.AddCatalogueSolution(model);
 
-            await service.AddCatalogueSolution(model);
+            var actual = await context.CatalogueItems.AsAsyncEnumerable().SingleAsync();
 
-            mockCatalogueItemRepository.Verify(c => c.GetLatestCatalogueItemIdFor(model.SupplierId));
+            actual.Name.Should().Be(model.Name);
         }
 
         [Theory]
-        [CommonAutoData]
-        public static async Task AddCatalogueSolution_ModelValid_AddsCatalogueItemToRepository(
-            CreateSolutionModel model)
+        [InMemoryDbAutoData]
+        public static async Task SupplierHasSolutionName_Returns_FromDatabase(
+            [Frozen] BuyingCatalogueDbContext context,
+            CatalogueItem catalogueItem,
+            SolutionsService service)
         {
-            var catalogueItemId = new CatalogueItemId(model.SupplierId, "045");
-            var mockCatalogueItemRepository = new Mock<ICatalogueItemRepository>();
-            mockCatalogueItemRepository.Setup(c => c.GetLatestCatalogueItemIdFor(model.SupplierId))
-                .ReturnsAsync(catalogueItemId);
+            context.CatalogueItems.Add(catalogueItem);
+            await context.SaveChangesAsync();
 
-            var service = new SolutionsService(
-                Mock.Of<BuyingCatalogueDbContext>(),
-                Mock.Of<IDbRepository<MarketingContact, BuyingCatalogueDbContext>>(),
-                Mock.Of<IDbRepository<Solution, BuyingCatalogueDbContext>>(),
-                Mock.Of<IDbRepository<Supplier, BuyingCatalogueDbContext>>(),
-                mockCatalogueItemRepository.Object);
+            var actual = await service.SupplierHasSolutionName(catalogueItem.SupplierId, catalogueItem.Name);
 
-            await service.AddCatalogueSolution(model);
-
-            mockCatalogueItemRepository.Verify(
-                repository => repository.Add(
-                    It.Is<CatalogueItem>(
-                        c =>
-                            c.Id == catalogueItemId.NextSolutionId() &&
-                            c.CatalogueItemType == CatalogueItemType.Solution &&
-                            c.Solution.LastUpdated > DateTime.UtcNow.AddMinutes(-2) &&
-                            c.Solution.LastUpdatedBy == model.UserId &&
-                            c.Name == model.Name &&
-                            c.PublishedStatus == PublicationStatus.Draft &&
-                            c.SupplierId == model.SupplierId)));
-        }
-
-        [Theory]
-        [AutoData]
-        public static async Task SupplierHasSolutionName_Returns_FromRepository(
-            int supplierId,
-            string solutionName,
-            Mock<ICatalogueItemRepository> mockCatalogueItemRepository)
-        {
-            var expected = DateTime.Now.Ticks % 2 == 0;
-            mockCatalogueItemRepository.Setup(c => c.SupplierHasSolutionName(supplierId, solutionName))
-                .ReturnsAsync(expected);
-            var service = new SolutionsService(
-                Mock.Of<BuyingCatalogueDbContext>(),
-                Mock.Of<IDbRepository<MarketingContact, BuyingCatalogueDbContext>>(),
-                Mock.Of<IDbRepository<Solution, BuyingCatalogueDbContext>>(),
-                Mock.Of<IDbRepository<Supplier, BuyingCatalogueDbContext>>(),
-                mockCatalogueItemRepository.Object);
-
-            var actual = await service.SupplierHasSolutionName(supplierId, solutionName);
-
-            mockCatalogueItemRepository.Verify(c => c.SupplierHasSolutionName(supplierId, solutionName));
-            actual.Should().Be(expected);
+            actual.Should().BeTrue();
         }
 
         [Theory]
@@ -478,8 +420,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Solutions
         [Theory]
         [CommonAutoData]
         public static void Remove_BrowserBased_ClientApplication_RemovesBrowserBasedEntries(
-            ClientApplication clientApplication,
-            SolutionsService service)
+            ClientApplication clientApplication)
         {
             clientApplication.ClientApplicationTypes = new HashSet<string>
             {
@@ -488,7 +429,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Solutions
                 ClientApplicationType.MobileTablet.AsString(EnumFormat.EnumMemberValue),
             };
 
-            var updatedClientApplication = service.RemoveClientApplicationType(clientApplication, ClientApplicationType.BrowserBased);
+            var updatedClientApplication = SolutionsService.RemoveClientApplicationType(clientApplication, ClientApplicationType.BrowserBased);
 
             updatedClientApplication.ClientApplicationTypes.Should().BeEquivalentTo(
                     new HashSet<string>
@@ -508,11 +449,11 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Solutions
             updatedClientApplication.Plugins.Should().BeNull();
 
             // Desktop
-            updatedClientApplication.NativeDesktopAdditionalInformation.Should().Equals(clientApplication.NativeDesktopAdditionalInformation);
-            updatedClientApplication.NativeDesktopHardwareRequirements.Should().Equals(clientApplication.NativeDesktopHardwareRequirements);
+            updatedClientApplication.NativeDesktopAdditionalInformation.Should().Be(clientApplication.NativeDesktopAdditionalInformation);
+            updatedClientApplication.NativeDesktopHardwareRequirements.Should().Be(clientApplication.NativeDesktopHardwareRequirements);
             updatedClientApplication.NativeDesktopMemoryAndStorage.Should().BeEquivalentTo(clientApplication.NativeDesktopMemoryAndStorage);
-            updatedClientApplication.NativeDesktopMinimumConnectionSpeed.Should().Equals(clientApplication.NativeDesktopMinimumConnectionSpeed);
-            updatedClientApplication.NativeDesktopOperatingSystemsDescription.Should().Equals(clientApplication.NativeDesktopOperatingSystemsDescription);
+            updatedClientApplication.NativeDesktopMinimumConnectionSpeed.Should().Be(clientApplication.NativeDesktopMinimumConnectionSpeed);
+            updatedClientApplication.NativeDesktopOperatingSystemsDescription.Should().Be(clientApplication.NativeDesktopOperatingSystemsDescription);
             updatedClientApplication.NativeDesktopThirdParty.Should().BeEquivalentTo(clientApplication.NativeDesktopThirdParty);
 
             // Mobile or Tablet
@@ -520,16 +461,14 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Solutions
             updatedClientApplication.MobileMemoryAndStorage.Should().BeEquivalentTo(clientApplication.MobileMemoryAndStorage);
             updatedClientApplication.MobileOperatingSystems.Should().BeEquivalentTo(clientApplication.MobileOperatingSystems);
             updatedClientApplication.MobileThirdParty.Should().BeEquivalentTo(clientApplication.MobileThirdParty);
-            updatedClientApplication.NativeMobileAdditionalInformation.Should().Equals(clientApplication.NativeMobileAdditionalInformation);
-            updatedClientApplication.NativeMobileFirstDesign.Should().Equals(clientApplication.NativeMobileFirstDesign);
-            updatedClientApplication.NativeMobileHardwareRequirements.Should().Equals(clientApplication.NativeMobileHardwareRequirements);
+            updatedClientApplication.NativeMobileAdditionalInformation.Should().Be(clientApplication.NativeMobileAdditionalInformation);
+            updatedClientApplication.NativeMobileFirstDesign.Should().Be(clientApplication.NativeMobileFirstDesign);
+            updatedClientApplication.NativeMobileHardwareRequirements.Should().Be(clientApplication.NativeMobileHardwareRequirements);
         }
 
         [Theory]
         [CommonAutoData]
-        public static void Remove_Desktop_ClientApplication_RemovesDesktopEntries(
-                  ClientApplication clientApplication,
-                  SolutionsService service)
+        public static void Remove_Desktop_ClientApplication_RemovesDesktopEntries(ClientApplication clientApplication)
         {
             clientApplication.ClientApplicationTypes = new HashSet<string>
             {
@@ -538,7 +477,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Solutions
                 ClientApplicationType.MobileTablet.AsString(EnumFormat.EnumMemberValue),
             };
 
-            var updatedClientApplication = service.RemoveClientApplicationType(clientApplication, ClientApplicationType.Desktop);
+            var updatedClientApplication = SolutionsService.RemoveClientApplicationType(clientApplication, ClientApplicationType.Desktop);
 
             updatedClientApplication.ClientApplicationTypes.Should().BeEquivalentTo(
                     new HashSet<string>
@@ -548,13 +487,13 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Solutions
                     });
 
             // Browser Based
-            updatedClientApplication.AdditionalInformation.Should().Equals(clientApplication.AdditionalInformation);
+            updatedClientApplication.AdditionalInformation.Should().Be(clientApplication.AdditionalInformation);
             updatedClientApplication.BrowsersSupported.Should().BeEquivalentTo(clientApplication.BrowsersSupported);
-            updatedClientApplication.HardwareRequirements.Should().Equals(clientApplication.HardwareRequirements);
-            updatedClientApplication.MinimumConnectionSpeed.Should().Equals(clientApplication.MinimumConnectionSpeed);
-            updatedClientApplication.MinimumDesktopResolution.Should().Equals(clientApplication.MinimumDesktopResolution);
-            updatedClientApplication.MobileFirstDesign.Should().Equals(clientApplication.MobileFirstDesign);
-            updatedClientApplication.MobileResponsive.Should().Equals(clientApplication.MobileResponsive);
+            updatedClientApplication.HardwareRequirements.Should().Be(clientApplication.HardwareRequirements);
+            updatedClientApplication.MinimumConnectionSpeed.Should().Be(clientApplication.MinimumConnectionSpeed);
+            updatedClientApplication.MinimumDesktopResolution.Should().Be(clientApplication.MinimumDesktopResolution);
+            updatedClientApplication.MobileFirstDesign.Should().Be(clientApplication.MobileFirstDesign);
+            updatedClientApplication.MobileResponsive.Should().Be(clientApplication.MobileResponsive);
             updatedClientApplication.Plugins.Should().BeEquivalentTo(clientApplication.Plugins);
 
             // Desktop
@@ -570,16 +509,14 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Solutions
             updatedClientApplication.MobileMemoryAndStorage.Should().BeEquivalentTo(clientApplication.MobileMemoryAndStorage);
             updatedClientApplication.MobileOperatingSystems.Should().BeEquivalentTo(clientApplication.MobileOperatingSystems);
             updatedClientApplication.MobileThirdParty.Should().BeEquivalentTo(clientApplication.MobileThirdParty);
-            updatedClientApplication.NativeMobileAdditionalInformation.Should().Equals(clientApplication.NativeMobileAdditionalInformation);
-            updatedClientApplication.NativeMobileFirstDesign.Should().Equals(clientApplication.NativeMobileFirstDesign);
-            updatedClientApplication.NativeMobileHardwareRequirements.Should().Equals(clientApplication.NativeMobileHardwareRequirements);
+            updatedClientApplication.NativeMobileAdditionalInformation.Should().Be(clientApplication.NativeMobileAdditionalInformation);
+            updatedClientApplication.NativeMobileFirstDesign.Should().Be(clientApplication.NativeMobileFirstDesign);
+            updatedClientApplication.NativeMobileHardwareRequirements.Should().Be(clientApplication.NativeMobileHardwareRequirements);
         }
 
         [Theory]
         [CommonAutoData]
-        public static void Remove_Mobile_ClientApplication_RemovesMobileEntries(
-                         ClientApplication clientApplication,
-                         SolutionsService service)
+        public static void Remove_Mobile_ClientApplication_RemovesMobileEntries(ClientApplication clientApplication)
         {
             clientApplication.ClientApplicationTypes = new HashSet<string>
             {
@@ -588,7 +525,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Solutions
                 ClientApplicationType.MobileTablet.AsString(EnumFormat.EnumMemberValue),
             };
 
-            var updatedClientApplication = service.RemoveClientApplicationType(clientApplication, ClientApplicationType.MobileTablet);
+            var updatedClientApplication = SolutionsService.RemoveClientApplicationType(clientApplication, ClientApplicationType.MobileTablet);
 
             updatedClientApplication.ClientApplicationTypes.Should().BeEquivalentTo(
                     new HashSet<string>
@@ -598,21 +535,21 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Solutions
                     });
 
             // Browser Based
-            updatedClientApplication.AdditionalInformation.Should().Equals(clientApplication.AdditionalInformation);
+            updatedClientApplication.AdditionalInformation.Should().Be(clientApplication.AdditionalInformation);
             updatedClientApplication.BrowsersSupported.Should().BeEquivalentTo(clientApplication.BrowsersSupported);
-            updatedClientApplication.HardwareRequirements.Should().Equals(clientApplication.HardwareRequirements);
-            updatedClientApplication.MinimumConnectionSpeed.Should().Equals(clientApplication.MinimumConnectionSpeed);
-            updatedClientApplication.MinimumDesktopResolution.Should().Equals(clientApplication.MinimumDesktopResolution);
-            updatedClientApplication.MobileFirstDesign.Should().Equals(clientApplication.MobileFirstDesign);
-            updatedClientApplication.MobileResponsive.Should().Equals(clientApplication.MobileResponsive);
+            updatedClientApplication.HardwareRequirements.Should().Be(clientApplication.HardwareRequirements);
+            updatedClientApplication.MinimumConnectionSpeed.Should().Be(clientApplication.MinimumConnectionSpeed);
+            updatedClientApplication.MinimumDesktopResolution.Should().Be(clientApplication.MinimumDesktopResolution);
+            updatedClientApplication.MobileFirstDesign.Should().Be(clientApplication.MobileFirstDesign);
+            updatedClientApplication.MobileResponsive.Should().Be(clientApplication.MobileResponsive);
             updatedClientApplication.Plugins.Should().BeEquivalentTo(clientApplication.Plugins);
 
             // Desktop
-            updatedClientApplication.NativeDesktopAdditionalInformation.Should().Equals(clientApplication.NativeDesktopAdditionalInformation);
-            updatedClientApplication.NativeDesktopHardwareRequirements.Should().Equals(clientApplication.NativeDesktopHardwareRequirements);
+            updatedClientApplication.NativeDesktopAdditionalInformation.Should().Be(clientApplication.NativeDesktopAdditionalInformation);
+            updatedClientApplication.NativeDesktopHardwareRequirements.Should().Be(clientApplication.NativeDesktopHardwareRequirements);
             updatedClientApplication.NativeDesktopMemoryAndStorage.Should().BeEquivalentTo(clientApplication.NativeDesktopMemoryAndStorage);
-            updatedClientApplication.NativeDesktopMinimumConnectionSpeed.Should().Equals(clientApplication.NativeDesktopMinimumConnectionSpeed);
-            updatedClientApplication.NativeDesktopOperatingSystemsDescription.Should().Equals(clientApplication.NativeDesktopOperatingSystemsDescription);
+            updatedClientApplication.NativeDesktopMinimumConnectionSpeed.Should().Be(clientApplication.NativeDesktopMinimumConnectionSpeed);
+            updatedClientApplication.NativeDesktopOperatingSystemsDescription.Should().Be(clientApplication.NativeDesktopOperatingSystemsDescription);
             updatedClientApplication.NativeDesktopThirdParty.Should().BeEquivalentTo(clientApplication.NativeDesktopThirdParty);
 
             // Mobile or Tablet
@@ -638,7 +575,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Solutions
 
             await service.SavePublicationStatus(solution.Id, PublicationStatus.Published);
 
-            var updatedSolution = await context.CatalogueItems.SingleAsync(c => c.Id == solution.Id);
+            var updatedSolution = await context.CatalogueItems.AsQueryable().SingleAsync(c => c.Id == solution.Id);
 
             updatedSolution.PublishedStatus.Should().Be(PublicationStatus.Published);
         }

@@ -53,6 +53,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp
                     {
                         options.AddServerHeader = false;
                     });
+                })
+                .UseDefaultServiceProvider(options =>
+                {
+                    options.ValidateOnBuild = true;
                 });
         }
     }

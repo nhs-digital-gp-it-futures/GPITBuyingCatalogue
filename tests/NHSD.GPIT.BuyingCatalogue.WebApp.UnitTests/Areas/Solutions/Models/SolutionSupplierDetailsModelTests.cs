@@ -20,13 +20,14 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Models
 
         [Theory]
         [CommonAutoData]
-        public static void Constructor_PopulatesAllProperties(CatalogueItem item)
+        public static void Constructor_PopulatesAllProperties(Solution solution)
         {
-            var model = new SolutionSupplierDetailsModel(item);
+            var catalogueItem = solution.CatalogueItem;
+            var model = new SolutionSupplierDetailsModel(catalogueItem);
 
-            model.Name.Should().Be(item.Supplier.Name);
-            model.Url.Should().Be(item.Supplier.SupplierUrl);
-            model.Summary.Should().Be(item.Supplier.Summary);
+            model.Name.Should().Be(catalogueItem.Supplier.Name);
+            model.Url.Should().Be(catalogueItem.Supplier.SupplierUrl);
+            model.Summary.Should().Be(catalogueItem.Supplier.Summary);
             model.Contacts.Any().Should().BeTrue();
         }
 
@@ -34,7 +35,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Models
         [CommonAutoData]
         public static void HasContacts_ValidContacts_ReturnsTrue(SolutionSupplierDetailsModel model)
         {
-            model.Contacts.Any(x => x != null).Should().BeTrue();
+            model.Contacts.Any(c => c != null).Should().BeTrue();
 
             model.HasContacts().Should().BeTrue();
         }

@@ -1,11 +1,9 @@
-﻿using System;
+﻿using AutoFixture;
+using AutoFixture.AutoMoq;
+using AutoFixture.Idioms;
 using FluentAssertions;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Moq;
-using NHSD.GPIT.BuyingCatalogue.ServiceContracts.CreateBuyer;
-using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Organisations;
-using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Users;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers;
 using Xunit;
 
@@ -21,47 +19,13 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
         }
 
         [Fact]
-        public static void Constructor_NullOrganisationService_ThrowsException()
+        public static void Constructors_VerifyGuardClauses()
         {
-            Assert.Throws<ArgumentNullException>(() =>
-                _ = new OrganisationsController(
-                        null,
-                        Mock.Of<IOdsService>(),
-                        Mock.Of<ICreateBuyerService>(),
-                        Mock.Of<IUsersService>()));
-        }
+            var fixture = new Fixture().Customize(new AutoMoqCustomization());
+            var assertion = new GuardClauseAssertion(fixture);
+            var constructors = typeof(OrganisationsController).GetConstructors();
 
-        [Fact]
-        public static void Constructor_NullOdsServiceService_ThrowsException()
-        {
-            Assert.Throws<ArgumentNullException>(() =>
-                _ = new OrganisationsController(
-                        Mock.Of<IOrganisationsService>(),
-                        null,
-                        Mock.Of<ICreateBuyerService>(),
-                        Mock.Of<IUsersService>()));
-        }
-
-        [Fact]
-        public static void Constructor_NullCreateBuyerServiceService_ThrowsException()
-        {
-            Assert.Throws<ArgumentNullException>(() =>
-                _ = new OrganisationsController(
-                        Mock.Of<IOrganisationsService>(),
-                        Mock.Of<IOdsService>(),
-                        null,
-                        Mock.Of<IUsersService>()));
-        }
-
-        [Fact]
-        public static void Constructor_NullUsersServiceService_ThrowsException()
-        {
-            Assert.Throws<ArgumentNullException>(() =>
-                _ = new OrganisationsController(
-                        Mock.Of<IOrganisationsService>(),
-                        Mock.Of<IOdsService>(),
-                        Mock.Of<ICreateBuyerService>(),
-                        null));
+            assertion.Verify(constructors);
         }
     }
 }

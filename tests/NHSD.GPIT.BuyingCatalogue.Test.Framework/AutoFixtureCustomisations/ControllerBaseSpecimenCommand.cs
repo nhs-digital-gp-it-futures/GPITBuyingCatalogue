@@ -57,7 +57,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Test.Framework.AutoFixtureCustomisations
             var claims = new[]
             {
                 new Claim("primaryOrganisationId", organisationId.ToString()),
-                new Claim(Claims.UserId, 1.ToString()),
+                new Claim(CatalogueClaims.UserId, 1.ToString()),
             };
 
             return new ClaimsPrincipal(new ClaimsIdentity(claims, "mock"));

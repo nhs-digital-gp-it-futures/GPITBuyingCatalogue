@@ -140,12 +140,12 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.CreateBuyer
         }
 
         [Fact]
-        public static void ValidateAsync_NullApplicationUser_ThrowsException()
+        public static Task ValidateAsync_NullApplicationUser_ThrowsException()
         {
             var context = ApplicationUserValidatorTestContext.Setup();
             var sut = context.ApplicationUserValidator;
 
-            Assert.ThrowsAsync<ArgumentNullException>(async () => await sut.ValidateAsync(null));
+            return Assert.ThrowsAsync<ArgumentNullException>(() => sut.ValidateAsync(null));
         }
 
         private static class TestContextTestCaseData
@@ -202,7 +202,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.CreateBuyer
             {
                 UsersRepositoryMock = new Mock<IDbRepository<AspNetUser, BuyingCatalogueDbContext>>();
                 UsersRepositoryMock
-                    .Setup(x => x.GetAllAsync(It.IsAny<Expression<Func<AspNetUser, bool>>>()))
+                    .Setup(r => r.GetAllAsync(It.IsAny<Expression<Func<AspNetUser, bool>>>()))
                     .ReturnsAsync(() => new[] { ApplicationUserByEmail });
 
                 ApplicationUserValidator = new AspNetUserValidator(UsersRepositoryMock.Object);

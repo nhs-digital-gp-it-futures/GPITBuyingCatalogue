@@ -18,7 +18,7 @@ module "webapp" {
   auth_pwd         = azurerm_key_vault_secret.sqladminpassword.value
   cert_name        = var.certname
   webapp_cname_url = local.gw_webappURL  
-  aspnet_environment = "Development"
+  aspnet_environment = var.environment
   sqlserver_name = module.sql_server_pri.sql_server_name
   sqlserver_rg = azurerm_resource_group.sql-server.name
   instrumentation_key = azurerm_application_insights.appinsights.instrumentation_key
@@ -34,5 +34,7 @@ module "webapp" {
   docker_registry_server_username = data.azurerm_container_registry.acr.admin_username
   docker_registry_server_password = data.azurerm_container_registry.acr.admin_password
   create_slot = local.shortenv == "preprod" || local.shortenv == "production" ? 1 : 0 
+  create_host_binding = local.coreEnv == "dev" ? 1 : 0 
+  ssl_thumbprint = data.azurerm_key_vault_certificate.ssl_cert.thumbprint
   depends_on = [module.sql_server_pri]
 }

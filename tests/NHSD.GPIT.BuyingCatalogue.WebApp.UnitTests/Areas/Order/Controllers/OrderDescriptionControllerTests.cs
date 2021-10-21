@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System.Linq;
+using System.Threading.Tasks;
 using AutoFixture;
 using AutoFixture.AutoMoq;
 using AutoFixture.Idioms;
@@ -75,6 +76,28 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers
 
         [Theory]
         [CommonAutoData]
+        public static async Task Post_OrderDescription_InvalidModelState_ReturnsView(
+            string odsCode,
+            CallOffId callOffId,
+            string errorKey,
+            string errorMessage,
+            OrderDescriptionModel model,
+            OrderDescriptionController controller)
+        {
+            controller.ModelState.AddModelError(errorKey, errorMessage);
+
+            var actualResult = (await controller.OrderDescription(odsCode, callOffId, model)).As<ViewResult>();
+
+            actualResult.Should().NotBeNull();
+            actualResult.ViewName.Should().BeNull();
+            actualResult.ViewData.ModelState.IsValid.Should().BeFalse();
+            actualResult.ViewData.ModelState.ErrorCount.Should().Be(1);
+            actualResult.ViewData.ModelState.Keys.Single().Should().Be(errorKey);
+            actualResult.ViewData.ModelState.Values.Single().Errors.Single().ErrorMessage.Should().Be(errorMessage);
+        }
+
+        [Theory]
+        [CommonAutoData]
         public static void Get_NewOrderDescription_ReturnsExpectedResult(
             string odsCode,
             EntityFramework.Ordering.Models.Order order,
@@ -109,6 +132,27 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers
             actualResult.As<RedirectToActionResult>().ControllerName.Should().Be(typeof(OrderController).ControllerName());
             actualResult.As<RedirectToActionResult>().RouteValues.Should().BeEquivalentTo(new RouteValueDictionary { { "odsCode", odsCode }, { "callOffId", order.CallOffId } });
             orderServiceMock.Verify(o => o.CreateOrder(model.Description, model.OdsCode), Times.Once);
+        }
+
+        [Theory]
+        [CommonAutoData]
+        public static async Task Post_NewOrderDescription_InvalidModelState_ReturnsView(
+            string odsCode,
+            string errorKey,
+            string errorMessage,
+            OrderDescriptionModel model,
+            OrderDescriptionController controller)
+        {
+            controller.ModelState.AddModelError(errorKey, errorMessage);
+
+            var actualResult = (await controller.NewOrderDescription(odsCode, model)).As<ViewResult>();
+
+            actualResult.Should().NotBeNull();
+            actualResult.ViewName.Should().Be("OrderDescription");
+            actualResult.ViewData.ModelState.IsValid.Should().BeFalse();
+            actualResult.ViewData.ModelState.ErrorCount.Should().Be(1);
+            actualResult.ViewData.ModelState.Keys.Single().Should().Be(errorKey);
+            actualResult.ViewData.ModelState.Values.Single().Errors.Single().ErrorMessage.Should().Be(errorMessage);
         }
     }
 }

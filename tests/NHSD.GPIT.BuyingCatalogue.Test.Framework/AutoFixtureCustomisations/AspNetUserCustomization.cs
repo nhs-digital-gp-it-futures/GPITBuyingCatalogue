@@ -9,11 +9,12 @@ namespace NHSD.GPIT.BuyingCatalogue.Test.Framework.AutoFixtureCustomisations
     {
         public void Customize(IFixture fixture)
         {
-            static ISpecimenBuilder ComposerTransformation(ICustomizationComposer<AspNetUser> c) =>
-                c.Without(u => u.AspNetUserClaims)
-                    .Without(u => u.AspNetUserLogins)
-                    .Without(u => u.AspNetUserRoles)
-                    .Without(u => u.AspNetUserTokens);
+            static ISpecimenBuilder ComposerTransformation(ICustomizationComposer<AspNetUser> composer) => composer
+                .Without(u => u.AspNetUserClaims)
+                .Without(u => u.AspNetUserLogins)
+                .Without(u => u.AspNetUserRoles)
+                .Without(u => u.AspNetUserTokens)
+                .Without(u => u.PrimaryOrganisation);
 
             fixture.Customize<AspNetUser>(ComposerTransformation);
         }

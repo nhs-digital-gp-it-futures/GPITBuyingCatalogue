@@ -1,7 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
+using System.Linq.Expressions;
 using System.Text.Json;
 using AutoFixture;
+using AutoFixture.Dsl;
+using AutoFixture.Kernel;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions;
 
@@ -11,73 +15,95 @@ namespace NHSD.GPIT.BuyingCatalogue.Test.Framework.AutoFixtureCustomisations
     {
         public void Customize(IFixture fixture)
         {
-            fixture.Customize<Integration>(
-                c => c.With(
-                    i => i.Qualifier,
-                    GetIntegrationQualifier()));
+            static ISpecimenBuilder ComposerTransformation(ICustomizationComposer<Solution> composer) => composer
+                .FromFactory(new SolutionSpecimenBuilder())
+                .Without(s => s.AdditionalServices)
+                .Without(s => s.CatalogueItem)
+                .Without(s => s.CatalogueItemId)
+                .Without(s => s.ClientApplication)
+                .Without(s => s.Features)
+                .Without(s => s.FrameworkSolutions)
+                .Without(s => s.Integrations)
+                .Without(s => s.LastUpdatedByUser)
+                .Without(s => s.MarketingContacts);
 
-            fixture.Customize<Solution>(
-                c => c.With(
-                        s => s.ClientApplication,
-                        JsonSerializer.Serialize(
-                            fixture
-                                .Build<ClientApplication>()
-                                .With(
-                                    ca => ca.BrowsersSupported,
-                                    new HashSet<string>
-                                    {
-                                        "Internet Explorer 11",
-                                        "Google Chrome",
-                                        "OPERA",
-                                        "safari",
-                                        "mozilla firefox",
-                                    })
-                                .With(ca => ca.ClientApplicationTypes, GetClientApplicationTypes())
-                                .With(
-                                    ca => ca.MobileConnectionDetails,
-                                    fixture.Build<MobileConnectionDetails>()
-                                        .With(
-                                            m => m.ConnectionType,
-                                            new HashSet<string> { "5g", "lte", "GpRS", "wifi" })
-                                        .Create())
-                                .With(
-                                    ca => ca.MobileOperatingSystems,
-                                    fixture.Build<MobileOperatingSystems>()
-                                        .With(m => m.OperatingSystems, new HashSet<string> { "andrOID", "Apple ios" })
-                                        .Create())
-                                .Create()))
-                    .With(s => s.Features, JsonSerializer.Serialize(fixture.Create<string[]>()))
-                    .With(
-                        s => s.Integrations,
-                        JsonSerializer.Serialize(
-                            fixture
-                            .Build<Integration[]>()
-                            .CreateMany<Integration>())));
+            fixture.Customize<Solution>(ComposerTransformation);
         }
 
-        private static string GetIntegrationQualifier()
+        private sealed class SolutionSpecimenBuilder : ISpecimenBuilder
         {
-            var qualifiers = new List<string>
+            public object Create(object request, ISpecimenContext context)
             {
-                "IM1",
-                "GP Connect",
-            };
+                if (!(request as Type == typeof(Solution)))
+                    return new NoSpecimen();
 
-            return qualifiers[new Random().Next(qualifiers.Count)];
-        }
+                var catalogueItem = context.Create<CatalogueItem>();
+                var solution = new Solution();
 
-        private static HashSet<string> GetClientApplicationTypes()
-        {
-            var result = new HashSet<string>();
+                catalogueItem.CatalogueItemType = CatalogueItemType.Solution;
+                catalogueItem.Solution = solution;
 
-            if (DateTime.Now.Ticks % 2 == 0)
-                result.Add("browser-BASED");
-            if (DateTime.Now.Ticks % 2 == 0)
-                result.Add("NATive-mobile");
-            if (DateTime.Now.Ticks % 2 == 0)
-                result.Add("native-DESKtop");
+                solution.CatalogueItem = catalogueItem;
+                solution.CatalogueItemId = catalogueItem.Id;
+                solution.ClientApplication = JsonSerializer.Serialize(context.Create<ClientApplication>());
+                solution.Features = JsonSerializer.Serialize(context.Create<string[]>());
+                solution.Integrations = JsonSerializer.Serialize(context.CreateMany<Integration>());
 
-            return result;
+                AddAdditionalServices(solution, context);
+                AddFrameworkSolutions(solution, context);
+                AddMarketingContacts(solution, context);
+                InitializeSupplier(solution);
+
+                return solution;
+            }
+
+            private static void AddAdditionalServices(Solution solution, ISpecimenContext context)
+            {
+                var additionalServices = context.CreateMany<AdditionalService>().ToList();
+                additionalServices.ForEach(a =>
+                {
+                    solution.AdditionalServices.Add(a);
+
+                    a.CatalogueItem.Supplier = solution.CatalogueItem.Supplier;
+                    a.CatalogueItem.SupplierId = solution.CatalogueItem.SupplierId;
+                    a.Solution = solution;
+                    a.SolutionId = solution.CatalogueItemId;
+                });
+            }
+
+            private static void AddFrameworkSolutions(Solution solution, ISpecimenContext context)
+            {
+                var frameworkSolutions = context.CreateMany<FrameworkSolution>().ToList();
+                frameworkSolutions.ForEach(f =>
+                {
+                    solution.FrameworkSolutions.Add(f);
+                    f.Solution = solution;
+                    f.SolutionId = solution.CatalogueItemId;
+                });
+            }
+
+            private static void AddMarketingContacts(Solution solution, ISpecimenContext context)
+            {
+                var marketingContacts = context.CreateMany<MarketingContact>().ToList();
+                marketingContacts.ForEach(mc =>
+                {
+                    solution.MarketingContacts.Add(mc);
+                    mc.SolutionId = solution.CatalogueItemId;
+                });
+            }
+
+            private static void InitializeSupplier(Solution solution)
+            {
+                foreach (var additionalService in solution.AdditionalServices)
+                {
+                    var catalogueItem = additionalService.CatalogueItem;
+                    var supplier = solution.CatalogueItem.Supplier;
+
+                    catalogueItem.Supplier = supplier;
+                    catalogueItem.SupplierId = supplier.Id;
+                    supplier.CatalogueItems.Add(catalogueItem);
+                }
+            }
         }
     }
 }

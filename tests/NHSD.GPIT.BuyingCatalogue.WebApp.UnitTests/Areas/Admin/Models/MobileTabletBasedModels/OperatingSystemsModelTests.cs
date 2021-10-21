@@ -14,11 +14,12 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Models.MobileTa
         [Theory]
         [CommonAutoData]
         public static void FromCatalogueItem_ValidCatalogueItem_PropertiesSetAsExpected(
-            CatalogueItem catalogueItem)
+            Solution solution)
         {
+            var catalogueItem = solution.CatalogueItem;
             var actual = new OperatingSystemsModel(catalogueItem);
 
-            var mobileOperatingSystems = catalogueItem.Solution.GetClientApplication().MobileOperatingSystems;
+            var mobileOperatingSystems = solution.GetClientApplication().MobileOperatingSystems;
 
             actual.Description.Should().Be(mobileOperatingSystems.OperatingSystemsDescription);
 

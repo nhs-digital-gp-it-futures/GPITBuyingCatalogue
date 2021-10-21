@@ -61,10 +61,12 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Models
         [Theory]
         [CommonAutoData]
         public static void FromCatalogueItem_ValidCatalogueItem_PropertiesSetAsExpected(
-            CatalogueItem catalogueItem,
+            Solution solution,
             FeaturesModel expected)
         {
-            catalogueItem.Solution.Features = JsonSerializer.Serialize(expected.AllFeatures);
+            var catalogueItem = solution.CatalogueItem;
+            solution.Features = JsonSerializer.Serialize(expected.AllFeatures);
+
             expected.SolutionId = catalogueItem.Id;
             expected.SolutionName = catalogueItem.Name;
 

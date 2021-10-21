@@ -29,7 +29,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.MobileTabletBasedM
         [Required(ErrorMessage = "Select a minimum memory size")]
         public string SelectedMemorySize { get; set; }
 
-        public List<SelectListItem> MemorySizes { get; set; }
+        public IReadOnlyList<SelectListItem> MemorySizes { get; init; }
 
         [Required(ErrorMessage = "Enter storage space information")]
         [StringLength(300)]

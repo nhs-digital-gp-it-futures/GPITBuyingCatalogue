@@ -51,7 +51,8 @@
                     <nhs-table-cell>Details</nhs-table-cell>
                     <nhs-table-cell>Yes</nhs-table-cell>
                     <nhs-table-cell><nhs-tag colour="Green" text="Completed" /></nhs-table-cell>
-                    <nhs-table-cell><a href="#">Edit</a></nhs-table-cell>
+                    <nhs-table-cell><a asp-action="Details" asp-controller="CatalogueSolutions"
+                        asp-route-solutionId="@Model.Solution.Id">Edit</a></nhs-table-cell>
                 </nhs-table-row-container>
                 <nhs-table-row-container>
                     <nhs-table-cell>Description</nhs-table-cell>
@@ -95,8 +96,14 @@
                 <nhs-table-row-container>
                     <nhs-table-cell>Additional Services</nhs-table-cell>
                     <nhs-table-cell>No</nhs-table-cell>
-                    <nhs-table-cell><nhs-tag colour="Green" text="Completed" /></nhs-table-cell>
-                    <nhs-table-cell><a href="#">Edit</a></nhs-table-cell>
+                    <nhs-table-cell>
+                        <nhs-tag status-enum="Model.AdditionalServicesStatus()" />
+                    </nhs-table-cell>
+                    <nhs-table-cell>
+                        <a asp-controller="@typeof(AdditionalServicesController).ControllerName()"
+                           asp-action="@nameof(AdditionalServicesController.Index)"
+                           asp-route-solutionId="@Model.Solution.Id">Edit</a>
+                    </nhs-table-cell>
                 </nhs-table-row-container>
                 <nhs-table-row-container>
                     <nhs-table-cell>Associated Services</nhs-table-cell>
@@ -170,8 +177,13 @@
                 <nhs-table-row-container>
                     <nhs-table-cell>Supplier details</nhs-table-cell>
                     <nhs-table-cell>Yes</nhs-table-cell>
-                    <nhs-table-cell><nhs-tag colour="Green" text="Completed" /></nhs-table-cell>
-                    <nhs-table-cell><a href="#">Edit</a></nhs-table-cell>
+                    <nhs-table-cell>
+                        <nhs-tag status-enum="@Model.SupplierDetailsStatus()" />
+                    </nhs-table-cell>
+                    <nhs-table-cell>
+                        <a asp-action="EditSupplierDetails"
+                           asp-route-solutionId="@Model.Solution.Id">Edit</a>
+                    </nhs-table-cell>
                 </nhs-table-row-container>
             </nhs-table>
         </nhs-fieldset-form-container>

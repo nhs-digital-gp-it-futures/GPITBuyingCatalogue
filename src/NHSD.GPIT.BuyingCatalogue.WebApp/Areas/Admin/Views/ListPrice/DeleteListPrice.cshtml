@@ -8,19 +8,19 @@
     <div class="nhsuk-grid-column-two-thirds">
         <nhs-validation-summary />
         <nhs-page-title title="@ViewBag.Title"
-                        caption="@Model.SolutionName"
+                        caption="@Model.ItemName"
                         advice="Confirm you want to delete the list price." />
         <div class="nhsuk-grid-row">
             <div class="nhsuk-grid-column-two-thirds">
                 <form method="post">
-                    <input type="hidden" asp-for="SolutionName" />
+                    <input type="hidden" asp-for="ItemName" />
                     <input type="hidden" asp-for="BackLinkText" />
                     <input type="hidden" asp-for="BackLink" />
                     <div>
                         <nhs-submit-button text="Delete" />
                     </div>
                     <div>
-                        <vc:nhs-backlink url="@Model.BackLink" text="Cancel" />
+                        <a href="@Model.BackLink">Cancel</a>
                     </div>
                 </form>
 

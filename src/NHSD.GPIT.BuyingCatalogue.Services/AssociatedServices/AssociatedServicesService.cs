@@ -6,7 +6,6 @@ using Microsoft.EntityFrameworkCore;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
-using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.AssociatedServices;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Models.AssociatedServices;
 
@@ -15,14 +14,10 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.AssociatedServices
     public sealed class AssociatedServicesService : IAssociatedServicesService
     {
         private readonly BuyingCatalogueDbContext dbContext;
-        private readonly ICatalogueItemRepository catalogueItemRepository;
 
-        public AssociatedServicesService(
-            BuyingCatalogueDbContext dbContext,
-            ICatalogueItemRepository catalogueItemRepository)
+        public AssociatedServicesService(BuyingCatalogueDbContext dbContext)
         {
             this.dbContext = dbContext ?? throw new ArgumentNullException(nameof(dbContext));
-            this.catalogueItemRepository = catalogueItemRepository ?? throw new ArgumentNullException(nameof(catalogueItemRepository));
         }
 
         public Task<List<CatalogueItem>> GetAssociatedServicesForSupplier(int? supplierId)
@@ -34,8 +29,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.AssociatedServices
                 .Include(c => c.AssociatedService)
                 .Where(
                     c => c.SupplierId == supplierId.GetValueOrDefault()
-                        && c.CatalogueItemType == CatalogueItemType.AssociatedService
-                        && c.PublishedStatus == PublicationStatus.Published)
+                        && c.CatalogueItemType == CatalogueItemType.AssociatedService)
                 .OrderBy(c => c.Name)
                 .ToListAsync();
         }
@@ -45,6 +39,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.AssociatedServices
             return dbContext.CatalogueItems
                 .Include(i => i.AssociatedService)
                 .Include(i => i.Supplier)
+                .Include(i => i.CataloguePrices).ThenInclude(cp => cp.PricingUnit)
                 .Where(i => i.Id == associatedServiceId)
                 .FirstOrDefaultAsync();
         }
@@ -79,14 +74,14 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.AssociatedServices
             CatalogueItem solution,
             AssociatedServicesDetailsModel model)
         {
-            model.ValidateNotNull(nameof(AssociatedServicesDetailsModel));
+            if (solution is null)
+                throw new ArgumentNullException(nameof(solution));
 
-            var latestAssociatedServiceCatalogueItemId = await catalogueItemRepository.GetLatestAssociatedServiceCatalogueItemIdFor(solution.SupplierId);
-            var catalogueItemId = latestAssociatedServiceCatalogueItemId.NextAssociatedServiceId();
+            if (model is null)
+                throw new ArgumentNullException(nameof(model));
 
             var associatedService = new CatalogueItem
             {
-                Id = catalogueItemId,
                 Name = model.Name,
                 AssociatedService = new AssociatedService
                 {
@@ -103,14 +98,15 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.AssociatedServices
             dbContext.Add(associatedService);
             await dbContext.SaveChangesAsync();
 
-            return catalogueItemId;
+            return associatedService.Id;
         }
 
         public async Task EditDetails(
             CatalogueItemId associatedServiceId,
             AssociatedServicesDetailsModel model)
         {
-            model.ValidateNotNull(nameof(AssociatedServicesDetailsModel));
+            if (model is null)
+                throw new ArgumentNullException(nameof(model));
 
             var associatedService = await dbContext.CatalogueItems
                 .Include(i => i.AssociatedService)
@@ -120,6 +116,15 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.AssociatedServices
             associatedService.Name = model.Name;
             associatedService.AssociatedService.Description = model.Description;
             associatedService.AssociatedService.OrderGuidance = model.OrderGuidance;
+
+            await dbContext.SaveChangesAsync();
+        }
+
+        public async Task SavePublicationStatus(CatalogueItemId associatedServiceId, PublicationStatus publicationStatus)
+        {
+            var solution = await GetAssociatedService(associatedServiceId);
+
+            solution.PublishedStatus = publicationStatus;
 
             await dbContext.SaveChangesAsync();
         }

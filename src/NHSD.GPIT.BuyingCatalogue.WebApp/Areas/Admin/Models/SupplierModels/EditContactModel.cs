@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using System;
+using System.ComponentModel.DataAnnotations;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Models;
 
@@ -12,12 +13,21 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.SupplierModels
 
         public EditContactModel(Supplier supplier)
         {
+            if (supplier is null)
+                throw new ArgumentNullException(nameof(supplier));
+
             Title = "Add a contact";
             SupplierName = supplier.Name;
         }
 
         public EditContactModel(SupplierContact contact, Supplier supplier)
         {
+            if (contact is null)
+                throw new ArgumentNullException(nameof(contact));
+
+            if (supplier is null)
+                throw new ArgumentNullException(nameof(supplier));
+
             ContactId = contact.Id;
             SupplierId = contact.SupplierId;
             FirstName = contact.FirstName;

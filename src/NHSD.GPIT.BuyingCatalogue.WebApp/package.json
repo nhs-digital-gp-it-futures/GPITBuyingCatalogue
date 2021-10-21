@@ -1,4 +1,12 @@
 {
+  "name": "nhsd.gpit.buyingcatalogue.webapp",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
   "author": "",
   "dependencies": {
     "govuk-frontend": "^3.13.1",
@@ -12,8 +20,7 @@
     "del": "^6.0.0",
     "gulp": "^4.0.2",
     "gulp-concat": "^2.6.1",
-    "gulp-cssmin": "^0.2.0",
-    "gulp-htmlmin": "^5.0.1",
+    "gulp-cssmin": "^0.2.0",    
     "gulp-sass": "^5.0.0",
     "merge-stream": "^2.0.0",
     "sass": "^1.42.1"

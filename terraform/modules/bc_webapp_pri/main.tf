@@ -50,10 +50,21 @@ resource "azurerm_app_service" "webapp" {
     use_32_bit_worker_process = true
     always_on                 = var.always_on
     min_tls_version           = "1.2"
+    
+    dynamic "ip_restriction" {
+      for_each = var.app_gateway_ip == null ? [] : list(var.app_gateway_ip)
+      content {
+        name       = "APP_GATEWAY_ACCESS"
+        ip_address = "${var.app_gateway_ip}/32"
+        priority   = 200
+        headers    = []
+      }    
+    }
+
     ip_restriction {
-      name       = "APP_GATEWAY_ACCESS"
-      ip_address = "${var.app_gateway_ip}/32"
-      priority   = 200
+      name       = "PRIMARY_VPN_ACCESS"
+      ip_address = "${var.primary_vpn}/32"
+      priority   = 210
       headers    = []
     }
 

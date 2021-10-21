@@ -226,7 +226,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
 
             for (int i = 0; i < model.OrderItem.ServiceRecipients.Count; i++)
             {
-                var (_, error) = model.OrderItem.ServiceRecipients[i].ToDateTime(state.CommencementDate);
+                var error = model.OrderItem.ServiceRecipients[i].ValidateDeliveryDate(state.CommencementDate);
 
                 if (error is not null)
                     ModelState.AddModelError($"OrderItem.ServiceRecipients[{i}].Day", error);
@@ -265,7 +265,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
             state.AgreedPrice = model.OrderItem.AgreedPrice;
             state.ServiceRecipients = model.OrderItem.ServiceRecipients;
 
-            // TODO - handle errors
             await orderItemService.Create(callOffId, state);
 
             orderSessionService.ClearSession(callOffId);

@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
+using NHSD.GPIT.BuyingCatalogue.ServiceContracts.ListPrices;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Models;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.ListPriceModels;
@@ -17,11 +18,14 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
     public sealed class ListPriceController : Controller
     {
         private readonly ISolutionsService solutionsService;
+        private readonly IListPricesService listPricesService;
 
         public ListPriceController(
-            ISolutionsService solutionsService)
+            ISolutionsService solutionsService,
+            IListPricesService listPricesService)
         {
             this.solutionsService = solutionsService ?? throw new ArgumentNullException(nameof(solutionsService));
+            this.listPricesService = listPricesService ?? throw new ArgumentNullException(nameof(listPricesService));
         }
 
         [HttpGet]
@@ -68,7 +72,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
                 return View("EditListPrice", model);
 
             var provisioningType = model.SelectedProvisioningType!.Value;
-            var saveSolutionListPriceModel = new SaveSolutionListPriceModel
+            var saveSolutionListPriceModel = new SaveListPriceModel
             {
                 Price = model.Price,
                 ProvisioningType = provisioningType,
@@ -76,7 +80,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
                 TimeUnit = model.GetTimeUnit(provisioningType),
             };
 
-            await solutionsService.SaveSolutionListPrice(solutionId, saveSolutionListPriceModel);
+            await listPricesService.SaveListPrice(solutionId, saveSolutionListPriceModel);
 
             return RedirectToAction(nameof(Index), new { solutionId });
         }
@@ -105,7 +109,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
                 return View("EditListPrice", model);
 
             var provisioningType = model.SelectedProvisioningType!.Value;
-            var saveSolutionListPriceModel = new SaveSolutionListPriceModel
+            var saveSolutionListPriceModel = new SaveListPriceModel
             {
                 CataloguePriceId = listPriceId,
                 Price = model.Price,
@@ -114,7 +118,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
                 TimeUnit = model.GetTimeUnit(provisioningType),
             };
 
-            await solutionsService.UpdateSolutionListPrice(solutionId, saveSolutionListPriceModel);
+            await listPricesService.UpdateListPrice(solutionId, saveSolutionListPriceModel);
 
             return RedirectToAction(nameof(Index), new { solutionId });
         }
@@ -138,7 +142,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
         {
             _ = model;
 
-            await solutionsService.DeleteSolutionListPrice(solutionId, listPriceId);
+            await listPricesService.DeleteListPrice(solutionId, listPriceId);
 
             return RedirectToAction(nameof(Index), new { solutionId });
         }

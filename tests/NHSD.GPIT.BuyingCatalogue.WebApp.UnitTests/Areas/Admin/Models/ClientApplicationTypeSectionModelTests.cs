@@ -18,9 +18,13 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Models
         [CommonAutoData]
         public static void FromCatalogueItem_ValidCatalogueItem_PropertiesSetAsExpected(
             [Frozen] CatalogueItem catalogueItem,
+            [Frozen] Solution solution,
             ClientApplicationTypeSectionModel expected)
         {
-            var actual = new ClientApplicationTypeSectionModel(catalogueItem);
+            // CatalogueItem must be frozen so that the same instance is used to construct the Solution and
+            // ClientApplicationTypeSectionModel instances
+            _ = catalogueItem;
+            var actual = new ClientApplicationTypeSectionModel(solution.CatalogueItem);
 
             actual.SolutionId.Should().BeEquivalentTo(expected.SolutionId);
             actual.SolutionName.Should().BeEquivalentTo(expected.SolutionName);
@@ -37,13 +41,13 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Models
         [Theory]
         [CommonAutoData]
         public static void Status_AvailableType_ReturnsCompleted(
-            CatalogueItem catalogueItem,
+            Solution solution,
             ClientApplication clientApplication)
         {
             clientApplication.ClientApplicationTypes = new HashSet<string> { "browser-based" };
-            catalogueItem.Solution.ClientApplication = JsonSerializer.Serialize(clientApplication);
+            solution.ClientApplication = JsonSerializer.Serialize(clientApplication);
 
-            var model = new ClientApplicationTypeSectionModel(catalogueItem);
+            var model = new ClientApplicationTypeSectionModel(solution.CatalogueItem);
 
             var actual = model.Status();
 
@@ -63,16 +67,16 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Models
         [Theory]
         [CommonAutoData]
         public static void Status_NothingComplete_ReturnsInProgress(
-                   CatalogueItem catalogueItem,
-                   ClientApplication clientApplication)
+            Solution solution,
+            ClientApplication clientApplication)
         {
             clientApplication.ClientApplicationTypes = new HashSet<string> { "browser-based", "native-mobile", "native-desktop" };
             clientApplication.BrowsersSupported = null;
             clientApplication.NativeDesktopOperatingSystemsDescription = null;
             clientApplication.MobileConnectionDetails = null;
-            catalogueItem.Solution.ClientApplication = JsonSerializer.Serialize(clientApplication);
+            solution.ClientApplication = JsonSerializer.Serialize(clientApplication);
 
-            var model = new ClientApplicationTypeSectionModel(catalogueItem);
+            var model = new ClientApplicationTypeSectionModel(solution.CatalogueItem);
 
             var actual = model.Status();
 
@@ -82,15 +86,15 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Models
         [Theory]
         [CommonAutoData]
         public static void Status_BrowserOnlyComplete_ReturnsInProgress(
-                   CatalogueItem catalogueItem,
-                   ClientApplication clientApplication)
+            Solution solution,
+            ClientApplication clientApplication)
         {
             clientApplication.ClientApplicationTypes = new HashSet<string> { "browser-based", "native-mobile", "native-desktop" };
             clientApplication.NativeDesktopOperatingSystemsDescription = null;
             clientApplication.MobileConnectionDetails = null;
-            catalogueItem.Solution.ClientApplication = JsonSerializer.Serialize(clientApplication);
+            solution.ClientApplication = JsonSerializer.Serialize(clientApplication);
 
-            var model = new ClientApplicationTypeSectionModel(catalogueItem);
+            var model = new ClientApplicationTypeSectionModel(solution.CatalogueItem);
 
             var actual = model.Status();
 
@@ -100,15 +104,15 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Models
         [Theory]
         [CommonAutoData]
         public static void Status_DesktopOnlyComplete_ReturnsInProgress(
-                   CatalogueItem catalogueItem,
-                   ClientApplication clientApplication)
+            Solution solution,
+            ClientApplication clientApplication)
         {
             clientApplication.ClientApplicationTypes = new HashSet<string> { "browser-based", "native-mobile", "native-desktop" };
             clientApplication.BrowsersSupported = null;
             clientApplication.MobileConnectionDetails = null;
-            catalogueItem.Solution.ClientApplication = JsonSerializer.Serialize(clientApplication);
+            solution.ClientApplication = JsonSerializer.Serialize(clientApplication);
 
-            var model = new ClientApplicationTypeSectionModel(catalogueItem);
+            var model = new ClientApplicationTypeSectionModel(solution.CatalogueItem);
 
             var actual = model.Status();
 
@@ -118,15 +122,15 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Models
         [Theory]
         [CommonAutoData]
         public static void Status_MobileOnlyComplete_ReturnsInProgress(
-                   CatalogueItem catalogueItem,
-                   ClientApplication clientApplication)
+            Solution solution,
+            ClientApplication clientApplication)
         {
             clientApplication.ClientApplicationTypes = new HashSet<string> { "browser-based", "native-mobile", "native-desktop" };
             clientApplication.BrowsersSupported = null;
             clientApplication.NativeDesktopOperatingSystemsDescription = null;
-            catalogueItem.Solution.ClientApplication = JsonSerializer.Serialize(clientApplication);
+            solution.ClientApplication = JsonSerializer.Serialize(clientApplication);
 
-            var model = new ClientApplicationTypeSectionModel(catalogueItem);
+            var model = new ClientApplicationTypeSectionModel(solution.CatalogueItem);
 
             var actual = model.Status();
 

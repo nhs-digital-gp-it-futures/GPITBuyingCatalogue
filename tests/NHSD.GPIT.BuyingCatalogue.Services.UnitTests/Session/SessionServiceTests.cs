@@ -1,4 +1,8 @@
-﻿using FluentAssertions;
+﻿using System;
+using AutoFixture;
+using AutoFixture.AutoMoq;
+using AutoFixture.Idioms;
+using FluentAssertions;
 using Microsoft.AspNetCore.Http;
 using Moq;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
@@ -11,6 +15,38 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Session
 {
     public static class SessionServiceTests
     {
+        [Fact]
+        public static void Constructors_VerifyGuardClauses()
+        {
+            var fixture = new Fixture().Customize(new AutoMoqCustomization());
+            var assertion = new GuardClauseAssertion(fixture);
+            var constructors = typeof(SessionService).GetConstructors();
+
+            assertion.Verify(constructors);
+        }
+
+        [Theory]
+        [CommonAutoData]
+        public static void Constructor_NullHttpContext_ThrowsException(
+            Mock<IHttpContextAccessor> httpContextAccessorMock)
+        {
+            httpContextAccessorMock.Setup(a => a.HttpContext).Returns((HttpContext)null);
+
+            Assert.Throws<InvalidOperationException>(() => _ = new SessionService(httpContextAccessorMock.Object));
+        }
+
+        [Theory]
+        [CommonAutoData]
+        public static void Constructor_NullSession_ThrowsException(
+            Mock<HttpContext> httpContextMock,
+            Mock<IHttpContextAccessor> httpContextAccessorMock)
+        {
+            httpContextMock.Setup(c => c.Session).Returns((ISession)null);
+            httpContextAccessorMock.Setup(a => a.HttpContext).Returns(httpContextMock.Object);
+
+            Assert.Throws<InvalidOperationException>(() => _ = new SessionService(httpContextAccessorMock.Object));
+        }
+
         [Theory]
         [CommonAutoData]
         public static void Strings_StoredAndRetrieved_FromSession(
@@ -43,14 +79,19 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Session
         [CommonAutoData]
         public static void Objects_StoredAndRetrieved_FromSession(
             string key,
-            CatalogueItem solution)
+            CatalogueItem catalogueItem)
         {
+            // Clear circular references
+            catalogueItem.CatalogueItemCapabilities.Clear();
+            catalogueItem.CataloguePrices.Clear();
+            catalogueItem.Supplier.CatalogueItems.Clear();
+
             var service = new SessionService(GetAccessor());
 
-            service.SetObject(key, solution);
+            service.SetObject(key, catalogueItem);
 
             var actual = service.GetObject<CatalogueItem>(key);
-            actual.Should().BeEquivalentTo(solution);
+            actual.Should().BeEquivalentTo(catalogueItem);
         }
 
         private static IHttpContextAccessor GetAccessor()

@@ -15,7 +15,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Models.ListPric
         {
             var editListPriceModel = new EditListPriceModel(catalogueItem);
 
-            editListPriceModel.SolutionName.Should().Be(catalogueItem.Name);
+            editListPriceModel.ItemName.Should().Be(catalogueItem.Name);
         }
 
         [Theory]

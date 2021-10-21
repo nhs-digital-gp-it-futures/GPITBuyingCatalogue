@@ -44,6 +44,11 @@ namespace NHSD.GPIT.BuyingCatalogue.UI.Components.TagHelpers
                    || GetCustomAttribute<PasswordAttribute>(aspFor) != null;
         }
 
+        public static bool CheckIfModelStateHasAnyErrors(ViewContext viewContext, params ModelExpression[] modelExpressions)
+        {
+            return modelExpressions.Any(me => CheckIfModelStateHasErrors(viewContext, me));
+        }
+
         public static bool CheckIfModelStateHasErrors(ViewContext viewContext, ModelExpression aspFor, string validationName = null)
         {
             var modelState = viewContext.ViewData?.ModelState;
@@ -104,7 +109,8 @@ namespace NHSD.GPIT.BuyingCatalogue.UI.Components.TagHelpers
             TagHelperContext context,
             TagBuilder input,
             TagHelperContent childContent,
-            IEnumerable<string> classes)
+            IEnumerable<string> classes,
+            bool isSelected = false)
         {
             var childContainer = TagHelperBuilders.GetChildContentConditionalBuilder(input, classes);
 
@@ -115,7 +121,7 @@ namespace NHSD.GPIT.BuyingCatalogue.UI.Components.TagHelpers
             childContainer.Attributes.TryGetValue("id", out string containerId);
 
             input.MergeAttribute(TagHelperConstants.AriaControls, containerId);
-            input.MergeAttribute(TagHelperConstants.AriaExpanded, "false");
+            input.MergeAttribute(TagHelperConstants.AriaExpanded, isSelected.ToString());
 
             TellParentThisHasConditionalChildContent(context);
         }

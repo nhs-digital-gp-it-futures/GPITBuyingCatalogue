@@ -1,4 +1,6 @@
-﻿using FluentValidation.TestHelper;
+﻿using AutoFixture.Xunit2;
+using FluentValidation.TestHelper;
+using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.Test.Framework.AutoFixtureCustomisations;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Validators;
@@ -11,9 +13,16 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators
         [Theory]
         [CommonAutoData]
         public static void Validate_NoExistingHostingTypes_HasError(
+            [Frozen] CatalogueItem catalogueItem,
+            [Frozen] Solution solution,
             ClientApplicationTypeSectionModel model,
             ClientApplicationTypeSectionModelValidator validator)
         {
+            // CatalogueItem and Solution must be frozen so that a catalogue item instance with solution is passed
+            // to the ClientApplicationTypeSectionModel constructor
+            _ = catalogueItem;
+            _ = solution;
+
             model.ExistingApplicationTypesCount = 0;
 
             var result = validator.TestValidate(model);
@@ -25,9 +34,16 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators
         [Theory]
         [CommonAutoData]
         public static void Validate_ExistingHostingTypes_DoesNotHaveError(
+            [Frozen] CatalogueItem catalogueItem,
+            [Frozen] Solution solution,
             ClientApplicationTypeSectionModel model,
             ClientApplicationTypeSectionModelValidator validator)
         {
+            // CatalogueItem and Solution must be frozen so that a catalogue item instance with solution is passed
+            // to the ClientApplicationTypeSectionModel constructor
+            _ = catalogueItem;
+            _ = solution;
+
             var result = validator.TestValidate(model);
 
             result.ShouldNotHaveValidationErrorFor(m => m.ExistingApplicationTypesCount);
