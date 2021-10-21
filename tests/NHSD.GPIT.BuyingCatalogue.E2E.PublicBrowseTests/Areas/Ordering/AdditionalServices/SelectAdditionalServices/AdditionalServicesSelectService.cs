@@ -72,7 +72,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering.AdditionalServices
 
             const string expectedCatalogueItemName = "E2E Multiple Prices Additional Service";
 
-            var expectedCatalogueItemId = new CatalogueItemId(99998, "001A999");
+            var expectedCatalogueItemId = new CatalogueItemId(99998, "001A99");
 
             CommonActions.ClickRadioButtonWithText(expectedCatalogueItemName);
 

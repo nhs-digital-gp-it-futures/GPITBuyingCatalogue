@@ -32,9 +32,9 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.ValueGenerators
 
             var incrementedCatalogueItemId = catalogueItem.CatalogueItemType switch
             {
-                CatalogueItemType.AdditionalService => (latestCatalogueItem?.Id ?? new CatalogueItemId(latestCatalogueItem.SupplierId, $"{catalogueItem.Solution.CatalogueItemId.ItemId}-A00")).NextAdditionalServiceId(),
-                CatalogueItemType.AssociatedService => (latestCatalogueItem?.Id ?? new CatalogueItemId(latestCatalogueItem.SupplierId, "S-000")).NextAssociatedServiceId(),
-                CatalogueItemType.Solution or _ => (latestCatalogueItem?.Id ?? new CatalogueItemId(latestCatalogueItem.SupplierId, "000")).NextSolutionId(),
+                CatalogueItemType.AdditionalService => (latestCatalogueItem?.Id ?? new CatalogueItemId(catalogueItem.SupplierId, $"{catalogueItem.AdditionalService.SolutionId.ItemId}A00")).NextAdditionalServiceId(),
+                CatalogueItemType.AssociatedService => (latestCatalogueItem?.Id ?? new CatalogueItemId(catalogueItem.SupplierId, "S-000")).NextAssociatedServiceId(),
+                CatalogueItemType.Solution or _ => (latestCatalogueItem?.Id ?? new CatalogueItemId(catalogueItem.SupplierId, "000")).NextSolutionId(),
             };
 
             return incrementedCatalogueItemId;
