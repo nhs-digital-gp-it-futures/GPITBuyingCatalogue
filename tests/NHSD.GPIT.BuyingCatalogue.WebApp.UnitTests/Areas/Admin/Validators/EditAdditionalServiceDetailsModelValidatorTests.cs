@@ -70,9 +70,12 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators
             var additionalService = solution.AdditionalServices.First();
             var additionalServiceCatalogueItem = additionalService.CatalogueItem;
             suppliersService.Setup(s => s.GetAllSolutionsForSupplier(additionalServiceCatalogueItem.Supplier.Id))
-                .ReturnsAsync(new List<CatalogueItem> { additionalServiceCatalogueItem });
+                .ReturnsAsync(solution.AdditionalServices.Select(a => a.CatalogueItem).ToList());
 
-            var model = new EditAdditionalServiceDetailsModel(solution.CatalogueItem, additionalServiceCatalogueItem);
+            var model = new EditAdditionalServiceDetailsModel(solution.CatalogueItem, additionalServiceCatalogueItem)
+            {
+                Name = solution.AdditionalServices.Last().CatalogueItem.Name,
+            };
 
             var result = await validator.TestValidateAsync(model);
 
