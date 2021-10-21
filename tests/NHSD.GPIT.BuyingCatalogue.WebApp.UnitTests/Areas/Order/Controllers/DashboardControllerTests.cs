@@ -112,9 +112,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers
                      HttpContext = new DefaultHttpContext { User = user },
                  };
 
-            organisationService.Setup(x => x.GetOrganisationByOdsCode(odsCode)).ReturnsAsync(organisation);
+            organisationService.Setup(s => s.GetOrganisationByOdsCode(odsCode)).ReturnsAsync(organisation);
 
-            orderService.Setup(x => x.GetOrders(organisation.Id)).ReturnsAsync(orders);
+            orderService.Setup(s => s.GetOrders(organisation.Id)).ReturnsAsync(orders);
 
             var expected = new OrganisationModel(organisation, user, orders);
 
@@ -147,7 +147,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers
                     HttpContext = new DefaultHttpContext { User = user },
                 };
 
-            organisationService.Setup(x => x.GetOrganisationsByOdsCodes(It.IsAny<string[]>())).ReturnsAsync(organisations);
+            organisationService.Setup(s => s.GetOrganisationsByOdsCodes(It.IsAny<string[]>())).ReturnsAsync(organisations);
 
             var expected = new SelectOrganisationModel(organisations.First().OdsCode, organisations);
 

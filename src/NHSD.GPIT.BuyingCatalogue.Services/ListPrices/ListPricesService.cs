@@ -16,7 +16,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.ListPrices
 
         public ListPricesService(BuyingCatalogueDbContext dbContext)
         {
-            this.dbContext = dbContext;
+            this.dbContext = dbContext ?? throw new ArgumentNullException(nameof(dbContext));
         }
 
         public async Task SaveListPrice(CatalogueItemId itemId, SaveListPriceModel model)
