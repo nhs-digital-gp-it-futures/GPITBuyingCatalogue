@@ -1,6 +1,4 @@
-﻿using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions;
-
-namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models
+﻿namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models
 {
     public sealed class Hosting
     {
