@@ -1,19 +1,12 @@
 {
-  "name": "NHSD.GPIT.BuyingCatalogue.WebApp",
-  "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
-  "keywords": [],
   "author": "",
-  "license": "ISC",
   "dependencies": {
     "govuk-frontend": "^3.13.1",
+    "gulp-terser": "^2.1.0",
     "nhsuk-frontend": "^5.1.0",
     "node-sass": "^6.0.1"
   },
+  "description": "",
   "devDependencies": {
     "clean-css": "^5.1.5",
     "del": "^6.0.0",
@@ -22,6 +15,15 @@
     "gulp-cssmin": "^0.2.0",
     "gulp-htmlmin": "^5.0.1",
     "gulp-sass": "^5.0.0",
-    "merge-stream": "^2.0.0"
-  }
+    "merge-stream": "^2.0.0",
+    "sass": "^1.42.1"
+  },
+  "keywords": [],
+  "license": "ISC",
+  "main": "index.js",
+  "name": "NHSD.GPIT.BuyingCatalogue.WebApp",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "version": "1.0.0"
 }
