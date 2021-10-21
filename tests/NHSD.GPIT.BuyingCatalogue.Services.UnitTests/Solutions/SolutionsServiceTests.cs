@@ -380,7 +380,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Solutions
         {
             model.SupplierId = catalogueItem.SupplierId;
 
-            await service.AddCatalogueSolution(model);
+            var id = await service.AddCatalogueSolution(model);
 
             var actual = await context.CatalogueItems.AsAsyncEnumerable().SingleAsync();
 

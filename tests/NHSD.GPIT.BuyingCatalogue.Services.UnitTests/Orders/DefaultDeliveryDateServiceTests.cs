@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using AutoFixture;
@@ -32,9 +33,11 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Orders
         public static async Task SetDefaultDeliveryDate_UpdatesDatabase(
             [Frozen] BuyingCatalogueDbContext context,
             Order order,
+            ICollection<DefaultDeliveryDate> defaultDeliveryDates,
             DateTime deliveryDate,
             DefaultDeliveryDateService service)
         {
+            order.DefaultDeliveryDates = defaultDeliveryDates;
             context.Orders.Add(order);
 
             await context.SaveChangesAsync();
