@@ -36,8 +36,6 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models
 
         public string AboutUrl { get; set; }
 
-        public string ServiceLevelAgreement { get; set; }
-
         public DateTime LastUpdated { get; set; }
 
         public int? LastUpdatedBy { get; set; }
@@ -51,5 +49,7 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models
         public ICollection<FrameworkSolution> FrameworkSolutions { get; set; }
 
         public ICollection<MarketingContact> MarketingContacts { get; set; }
+
+        public ServiceLevelAgreements ServiceLevelAgreement { get; set; }
     }
 }

@@ -23,7 +23,8 @@ namespace NHSD.GPIT.BuyingCatalogue.Test.Framework.AutoFixtureCustomisations
                 .Without(s => s.FrameworkSolutions)
                 .Without(s => s.Integrations)
                 .Without(s => s.LastUpdatedByUser)
-                .Without(s => s.MarketingContacts);
+                .Without(s => s.MarketingContacts)
+                .Without(s => s.ServiceLevelAgreement);
 
             fixture.Customize<Solution>(ComposerTransformation);
         }

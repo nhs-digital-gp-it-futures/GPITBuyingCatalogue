@@ -605,38 +605,6 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.UnitTests.Models.BuyingCatal
 
         [Theory]
         [CommonAutoData]
-        public static void HasServiceLevelAgreement_SolutionHasServiceLevelAgreement_ReturnsTrue(Solution solution)
-        {
-            solution.ServiceLevelAgreement.Should().NotBeNullOrWhiteSpace();
-
-            var actual = solution.CatalogueItem.HasServiceLevelAgreement();
-
-            actual.Should().BeTrue();
-        }
-
-        [Theory]
-        [MemberData(nameof(InvalidStringData.TestData), MemberType = typeof(InvalidStringData))]
-        public static void HasServiceLevelAgreement_SolutionHasInvalidServiceLevelAgreement_ReturnsFalse(string invalid)
-        {
-            var catalogueItem = new CatalogueItem { Solution = new Solution { ServiceLevelAgreement = invalid } };
-
-            var actual = catalogueItem.HasServiceLevelAgreement();
-
-            actual.Should().BeFalse();
-        }
-
-        [Fact]
-        public static void HasServiceLevelAgreement_SolutionIsNull_ReturnsFalse()
-        {
-            var catalogueItem = new CatalogueItem { Solution = null };
-
-            var actual = catalogueItem.HasServiceLevelAgreement();
-
-            actual.Should().BeFalse();
-        }
-
-        [Theory]
-        [CommonAutoData]
         public static void HasSupplierDetails_SupplierNotNull_ReturnsTrue(CatalogueItem catalogueItem)
         {
             catalogueItem.Supplier.Should().NotBeNull();
