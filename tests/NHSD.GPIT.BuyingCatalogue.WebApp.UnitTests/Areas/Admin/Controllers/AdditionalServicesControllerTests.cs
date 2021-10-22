@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using AutoFixture;
 using AutoFixture.AutoMoq;
@@ -10,10 +11,13 @@ using Moq;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.AdditionalServices;
+using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Capabilities;
+using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Models;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions;
 using NHSD.GPIT.BuyingCatalogue.Test.Framework.AutoFixtureCustomisations;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.AdditionalServices;
+using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.CapabilityModels;
 using Xunit;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
@@ -25,7 +29,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
         {
             var fixture = new Fixture().Customize(new AutoMoqCustomization());
             var assertion = new GuardClauseAssertion(fixture);
-            var constructors = typeof(AssociatedServicesController).GetConstructors();
+            var constructors = typeof(AdditionalServicesController).GetConstructors();
 
             assertion.Verify(constructors);
         }
@@ -436,6 +440,120 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
             actual.Should().NotBeNull();
             actual.ViewName.Should().Be(nameof(AdditionalServicesController.EditAdditionalService));
             actual.Model.Should().BeEquivalentTo(model);
+        }
+
+        [Theory]
+        [CommonAutoData]
+        public static async Task Get_EditCapabilities_InvalidId_ReturnsBadRequestObjectResult(
+            CatalogueItemId catalogueItemId,
+            CatalogueItemId additionalServiceId,
+            [Frozen] Mock<IAdditionalServicesService> additionalServicesService,
+            AdditionalServicesController controller)
+        {
+            additionalServicesService.Setup(s => s.GetAdditionalService(catalogueItemId, additionalServiceId))
+                .ReturnsAsync(default(CatalogueItem));
+
+            var result = await controller.EditCapabilities(catalogueItemId, additionalServiceId);
+
+            result.As<BadRequestObjectResult>().Should().NotBeNull();
+            result.As<BadRequestObjectResult>().Value.Should().Be($"No Additional Service with Id {additionalServiceId} found for Solution {catalogueItemId}");
+        }
+
+        [Theory]
+        [CommonAutoData]
+        public static async Task Get_EditCapabilities_ValidId_ReturnsModel(
+            Solution solution,
+            AdditionalService additionalService,
+            IReadOnlyList<CapabilityCategory> capabilityCategories,
+            [Frozen] Mock<IAdditionalServicesService> additionalServicesService,
+            [Frozen] Mock<ICapabilitiesService> capabilitiesService,
+            AdditionalServicesController controller)
+        {
+            var expectedModel = new EditCapabilitiesModel(additionalService.CatalogueItem, capabilityCategories);
+
+            capabilitiesService.Setup(s => s.GetCapabilitiesByCategory())
+                .ReturnsAsync(capabilityCategories.ToList());
+
+            additionalServicesService.Setup(s => s.GetAdditionalService(solution.CatalogueItemId, additionalService.CatalogueItemId))
+                .ReturnsAsync(additionalService.CatalogueItem);
+
+            var result = await controller.EditCapabilities(solution.CatalogueItemId, additionalService.CatalogueItemId);
+
+            result.As<ViewResult>().Should().NotBeNull();
+            result.As<ViewResult>().Model.Should().BeEquivalentTo(expectedModel, opt => opt.Excluding(m => m.BackLink));
+        }
+
+        [Theory]
+        [CommonAutoData]
+        public static async Task Post_EditCapabilities_InvalidModel_ReturnsViewWithModel(
+            Solution solution,
+            AdditionalService additionalService,
+            EditCapabilitiesModel model,
+            AdditionalServicesController controller)
+        {
+            controller.ModelState.AddModelError("some-key", "some-error");
+
+            var result = await controller.EditCapabilities(solution.CatalogueItemId, additionalService.CatalogueItemId, model);
+
+            result.As<ViewResult>().Should().NotBeNull();
+            result.As<ViewResult>().Model.Should().BeEquivalentTo(model, opt => opt.Excluding(m => m.BackLink));
+        }
+
+        [Theory]
+        [CommonAutoData]
+        public static async Task Post_EditCapabilities_InvalidId_ReturnsBadRequestObjectResult(
+            Solution solution,
+            AdditionalService additionalService,
+            EditCapabilitiesModel model,
+            [Frozen] Mock<IAdditionalServicesService> additionalServicesService,
+            AdditionalServicesController controller)
+        {
+            additionalServicesService.Setup(s => s.GetAdditionalService(solution.CatalogueItemId, additionalService.CatalogueItemId))
+                .ReturnsAsync(default(CatalogueItem));
+
+            var result = await controller.EditCapabilities(solution.CatalogueItemId, additionalService.CatalogueItemId, model);
+
+            result.As<BadRequestObjectResult>().Should().NotBeNull();
+            result.As<BadRequestObjectResult>().Value.Should().Be($"No Additional Service with Id {additionalService.CatalogueItemId} found for Solution {solution.CatalogueItemId}");
+        }
+
+        [Theory]
+        [CommonAutoData]
+        public static async Task Post_EditCapabilities_ValidModel_AddsCapabilitiesToCatalogueItem(
+            Solution solution,
+            AdditionalService additionalService,
+            EditCapabilitiesModel model,
+            [Frozen] Mock<IAdditionalServicesService> additionalServicesService,
+            [Frozen] Mock<ICapabilitiesService> capabilitiesService,
+            AdditionalServicesController controller)
+        {
+            additionalServicesService.Setup(s => s.GetAdditionalService(solution.CatalogueItemId, additionalService.CatalogueItemId))
+                .ReturnsAsync(additionalService.CatalogueItem);
+
+            _ = await controller.EditCapabilities(solution.CatalogueItemId, additionalService.CatalogueItemId, model);
+
+            capabilitiesService.Verify(s => s.AddCapabilitiesToCatalogueItem(additionalService.CatalogueItemId, It.IsAny<SaveCatalogueItemCapabilitiesModel>()));
+        }
+
+        [Theory]
+        [CommonAutoData]
+        public static async Task Post_EditCapabilities_ValidModel_RedirectsToEditAdditionalService(
+            Solution solution,
+            AdditionalService additionalService,
+            EditCapabilitiesModel model,
+            [Frozen] Mock<IAdditionalServicesService> additionalServicesService,
+            AdditionalServicesController controller)
+        {
+            additionalServicesService.Setup(s => s.GetAdditionalService(solution.CatalogueItemId, additionalService.CatalogueItemId))
+                .ReturnsAsync(additionalService.CatalogueItem);
+
+            var result = await controller.EditCapabilities(solution.CatalogueItemId, additionalService.CatalogueItemId, model);
+
+            result.As<RedirectToActionResult>().Should().NotBeNull();
+            result.As<RedirectToActionResult>().ActionName.Should().Be(nameof(AdditionalServicesController.EditAdditionalService));
+            result.As<RedirectToActionResult>().RouteValues.Should().Contain(
+                new KeyValuePair<string, object>("solutionId", solution.CatalogueItemId),
+                new KeyValuePair<string, object>("additionalServiceId", additionalService.CatalogueItemId));
         }
     }
 }
