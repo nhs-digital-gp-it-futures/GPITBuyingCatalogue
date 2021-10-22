@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Organisations.Models
+﻿namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Organisations.Models
 {
     public sealed class RelatedOrganisation
     {

@@ -322,7 +322,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
         [CommonAutoData]
         public static async Task Post_EditAdditionalServiceDetails_ValidModel_RedirectsToEditAdditionalService(
             CatalogueItem catalogueItem,
-            CatalogueItem additionalService,
+            AdditionalService additionalService,
             EditAdditionalServiceDetailsModel model,
             [Frozen] Mock<ISolutionsService> solutionsService,
             [Frozen] Mock<IAdditionalServicesService> additionalServicesService,
@@ -331,13 +331,111 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
             solutionsService.Setup(s => s.GetSolution(catalogueItem.Id))
                 .ReturnsAsync(catalogueItem);
 
-            additionalServicesService.Setup(s => s.GetAdditionalService(catalogueItem.Id, additionalService.Id))
-                .ReturnsAsync(additionalService);
+            additionalServicesService.Setup(s => s.GetAdditionalService(catalogueItem.Id, additionalService.CatalogueItemId))
+                .ReturnsAsync(additionalService.CatalogueItem);
 
-            var result = await controller.EditAdditionalServiceDetails(catalogueItem.Id, additionalService.Id, model);
+            var result = await controller.EditAdditionalServiceDetails(catalogueItem.Id, additionalService.CatalogueItemId, model);
 
             result.As<RedirectToActionResult>().Should().NotBeNull();
             result.As<RedirectToActionResult>().ActionName.Should().Be(nameof(AdditionalServicesController.EditAdditionalService));
+        }
+
+        [Theory]
+        [CommonAutoData]
+        public static async Task Post_SetPublicationStatus_SamePublicationStatus_DoesNotCallSavePublicationStatus(
+            CatalogueItem catalogueItem,
+            AdditionalService additionalService,
+            EditAdditionalServiceModel model,
+            [Frozen] Mock<ISolutionsService> solutionsService,
+            [Frozen] Mock<IAdditionalServicesService> additionalServicesService,
+            AdditionalServicesController controller)
+        {
+            model.SelectedPublicationStatus = catalogueItem.PublishedStatus;
+
+            solutionsService.Setup(s => s.GetSolution(catalogueItem.Id))
+                .ReturnsAsync(catalogueItem);
+
+            additionalServicesService.Setup(s => s.GetAdditionalService(catalogueItem.Id, additionalService.CatalogueItemId))
+                .ReturnsAsync(additionalService.CatalogueItem);
+
+            await controller.SetPublicationStatus(catalogueItem.Id, additionalService.CatalogueItemId, model);
+
+            solutionsService.Verify(s => s.SavePublicationStatus(catalogueItem.Id, model.SelectedPublicationStatus), Times.Never);
+        }
+
+        [Theory]
+        [CommonAutoData]
+        public static async Task Post_SetPublicationStatus_CallsSavePublicationStatus(
+            CatalogueItem catalogueItem,
+            AdditionalService additionalService,
+            [Frozen] Mock<ISolutionsService> mockSolutionService,
+            [Frozen] Mock<IAdditionalServicesService> additionalServicesService,
+            AdditionalServicesController controller)
+        {
+            additionalService.CatalogueItem.PublishedStatus = PublicationStatus.Draft;
+
+            var model = new EditAdditionalServiceModel { SelectedPublicationStatus = PublicationStatus.Published };
+
+            mockSolutionService.Setup(s => s.GetSolution(catalogueItem.Id))
+                .ReturnsAsync(catalogueItem);
+
+            additionalServicesService.Setup(s => s.GetAdditionalService(catalogueItem.Id, additionalService.CatalogueItemId))
+                .ReturnsAsync(additionalService.CatalogueItem);
+
+            await controller.SetPublicationStatus(catalogueItem.Id, additionalService.CatalogueItemId, model);
+
+            additionalServicesService.Verify(s => s.SavePublicationStatus(catalogueItem.Id, additionalService.CatalogueItemId, model.SelectedPublicationStatus));
+        }
+
+        [Theory]
+        [CommonAutoData]
+        public static async Task Post_SetPublicationStatus_ReturnsRedirectToActionResult(
+            CatalogueItem catalogueItem,
+            AdditionalService additionalService,
+            [Frozen] Mock<ISolutionsService> solutionsService,
+            [Frozen] Mock<IAdditionalServicesService> additionalServicesService,
+            AdditionalServicesController controller)
+        {
+            additionalService.CatalogueItem.PublishedStatus = PublicationStatus.Draft;
+
+            var model = new EditAdditionalServiceModel { SelectedPublicationStatus = PublicationStatus.Published };
+
+            solutionsService.Setup(s => s.GetSolution(catalogueItem.Id))
+                .ReturnsAsync(catalogueItem);
+
+            additionalServicesService.Setup(s => s.GetAdditionalService(catalogueItem.Id, additionalService.CatalogueItemId))
+                .ReturnsAsync(additionalService.CatalogueItem);
+
+            var actual = (await controller.SetPublicationStatus(catalogueItem.Id, additionalService.CatalogueItemId, model)).As<RedirectToActionResult>();
+
+            actual.Should().NotBeNull();
+            actual.ActionName.Should().Be(nameof(AdditionalServicesController.Index));
+        }
+
+        [Theory]
+        [CommonAutoData]
+        public static async Task Post_SetPublicationStatus_InvalidModel_ReturnsViewWithModel(
+            CatalogueItem catalogueItem,
+            AdditionalService additionalService,
+            [Frozen] Mock<ISolutionsService> solutionsService,
+            [Frozen] Mock<IAdditionalServicesService> additionalServicesService,
+            AdditionalServicesController controller)
+        {
+            controller.ModelState.AddModelError("some-key", "some-error");
+
+            var model = new EditAdditionalServiceModel(catalogueItem, additionalService.CatalogueItem);
+
+            solutionsService.Setup(s => s.GetSolution(catalogueItem.Id))
+                .ReturnsAsync(catalogueItem);
+
+            additionalServicesService.Setup(s => s.GetAdditionalService(catalogueItem.Id, additionalService.CatalogueItemId))
+                .ReturnsAsync(additionalService.CatalogueItem);
+
+            var actual = (await controller.SetPublicationStatus(catalogueItem.Id, additionalService.CatalogueItemId, model)).As<ViewResult>();
+
+            actual.Should().NotBeNull();
+            actual.ViewName.Should().Be(nameof(AdditionalServicesController.EditAdditionalService));
+            actual.Model.Should().BeEquivalentTo(model);
         }
     }
 }
