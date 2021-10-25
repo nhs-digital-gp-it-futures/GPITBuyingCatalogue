@@ -182,6 +182,8 @@
     <Build Include="Import\Types\SolutionCapability.sql" />
     <Build Include="Import\Types\Solutions.sql" />
     <Build Include="Catalogue\Tables\CatalogueItemContacts.sql" />
+    <Build Include="Catalogue\Tables\Standards.sql" />
+    <Build Include="Catalogue\Tables\StandardsCapabilities.sql" />
   </ItemGroup>
   <ItemGroup>
     <SqlCmdVariable Include="CREATE_EA_USER">
@@ -255,6 +257,8 @@
     <None Include="PostDeployment\ProdLikeData\MergeCataloguePrices.sql" />
     <None Include="PostDeployment\InsertAssociatedServices.sql" />
     <Build Include="Security\Schemas\catalogue.sql" />
+    <None Include="PostDeployment\InsertStandards.sql" />
+    <None Include="PostDeployment\InsertStandardsCapabilities.sql" />
   </ItemGroup>
   <ItemGroup>
     <PostDeploy Include="PostDeployment\PostDeployment.sql" />
