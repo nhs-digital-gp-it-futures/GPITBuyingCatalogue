@@ -27,6 +27,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Test.Framework.AutoFixtureCustomisations
             new AdditionalServiceCustomization(),
             new AssociatedServiceCustomization(),
             new SolutionCustomization(),
+            new StandardCapabilityCustomization(),
             new DefaultDeliveryDateCustomization(),
             new OrderItemRecipientCustomization(),
             new ContactCustomization(),

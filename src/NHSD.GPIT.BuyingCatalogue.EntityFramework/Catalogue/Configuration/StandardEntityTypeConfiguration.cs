@@ -12,7 +12,10 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Configuration
 
             builder.HasKey(s => s.Id);
 
-            builder.Property(s => s.Id).ValueGeneratedNever();
+            builder.Property(s => s.Id)
+                .HasMaxLength(5)
+                .ValueGeneratedNever();
+
             builder.Property(s => s.Name)
                 .IsRequired()
                 .HasMaxLength(255);
