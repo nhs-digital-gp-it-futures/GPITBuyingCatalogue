@@ -12,6 +12,8 @@
 :r ./InsertPricingUnits.sql
 :r ./InsertProvisioningTypes.sql
 :r ./InsertSuppliers.sql
+:r ./InsertStandards.sql
+:r ./InsertStandardsCapabilities.sql
 
 :r ./InsertOrderStatuses.sql
 :r ./InsertTimeUnits.sql

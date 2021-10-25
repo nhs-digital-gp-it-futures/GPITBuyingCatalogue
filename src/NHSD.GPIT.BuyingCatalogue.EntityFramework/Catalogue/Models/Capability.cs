@@ -35,6 +35,8 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models
 
         public ICollection<CatalogueItemCapability> CatalogueItemCapabilities { get; set; }
 
+        public ICollection<StandardCapability> StandardCapabilities { get; set; }
+
         public CapabilityStatus Status { get; set; }
     }
 }

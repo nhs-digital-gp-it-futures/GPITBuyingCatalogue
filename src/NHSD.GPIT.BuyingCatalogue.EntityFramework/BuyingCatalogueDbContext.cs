@@ -77,6 +77,8 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework
 
         public DbSet<ServiceInstanceItem> ServiceInstanceItems { get; set; }
 
+        public DbSet<Standard> Standards { get; set; }
+
         public DbSet<AspNetUser> AspNetUsers { get; set; }
 
         public DbSet<DataProtectionKey> DataProtectionKeys { get; set; }

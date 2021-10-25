@@ -74,6 +74,21 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
                 .FirstOrDefaultAsync();
         }
 
+        public async Task<IList<Standard>> GetSolutionStandards(CatalogueItemId catalogueItemId)
+        {
+            var requiredStandardsQuery = dbContext.Standards.Where(s => s.RequiredForAllSolutions);
+
+            return await dbContext.CatalogueItems
+               .Where(ci => ci.Id == catalogueItemId)
+               .SelectMany(ci => ci.CatalogueItemCapabilities)
+               .Select(cic => cic.Capability)
+               .SelectMany(c => c.StandardCapabilities)
+               .Select(sc => sc.Standard)
+               .Distinct()
+               .Union(requiredStandardsQuery)
+               .ToListAsync();
+        }
+
         public async Task<CatalogueItem> GetSolutionOverview(CatalogueItemId solutionId)
         {
             var solution = await dbContext.CatalogueItems
