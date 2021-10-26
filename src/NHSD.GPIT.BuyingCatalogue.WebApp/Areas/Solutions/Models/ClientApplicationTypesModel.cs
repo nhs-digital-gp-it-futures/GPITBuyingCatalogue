@@ -31,7 +31,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models
         [UIHint("DescriptionList")]
         public DescriptionListViewModel BrowserBasedApplication { get; init; }
 
-        public override int Index => 8;
+        public override int Index => 9;
 
         [UIHint("DescriptionList")]
         public DescriptionListViewModel NativeDesktopApplication { get; init; }

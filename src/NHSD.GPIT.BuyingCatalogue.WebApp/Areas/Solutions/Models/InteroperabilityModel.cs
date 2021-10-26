@@ -34,7 +34,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models
 
         public string[] GpConnectIntegrationQualifiers { get; set; }
 
-        public override int Index => 6;
+        public override int Index => 7;
 
         public string TextDescriptionsProvided()
         {

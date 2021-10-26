@@ -243,6 +243,69 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Controllers
 
         [Theory]
         [CommonAutoData]
+        public static async Task Get_Standards_GetSolutionAndStandardsFromService(
+            Solution solution,
+            List<Standard> standards,
+            [Frozen] Mock<ISolutionsService> mockService,
+            SolutionsController controller)
+        {
+            solution.CatalogueItem.PublishedStatus = PublicationStatus.Published;
+
+            mockService.Setup(s => s.GetSolutionOverview(solution.CatalogueItemId))
+                .ReturnsAsync(solution.CatalogueItem);
+
+            mockService.Setup(s => s.GetSolutionStandards(solution.CatalogueItemId))
+                .ReturnsAsync(standards);
+
+            await controller.Standards(solution.CatalogueItemId);
+
+            mockService.Verify(s => s.GetSolutionOverview(solution.CatalogueItemId));
+            mockService.Verify(s => s.GetSolutionStandards(solution.CatalogueItemId));
+        }
+
+        [Theory]
+        [CommonAutoData]
+        public static async Task Get_Standards_SolutionDoesNotExist_ReturnsBadRequestResult(
+            CatalogueItemId id,
+            [Frozen] Mock<ISolutionsService> mockService,
+            SolutionsController controller)
+        {
+            mockService.Setup(s => s.GetSolutionOverview(id))
+                .ReturnsAsync(default(CatalogueItem));
+
+            var actual = (await controller.Standards(id)).As<BadRequestObjectResult>();
+
+            actual.Should().NotBeNull();
+            actual.Value.Should().Be($"No Catalogue Item found for Id: {id}");
+        }
+
+        [Theory]
+        [CommonAutoData]
+        public static async Task Get_Standards_ValidSolutionForId_ReturnsExpectedResultView(
+            Solution solution,
+            List<Standard> standards,
+            [Frozen] Mock<ISolutionsService> mockService,
+            SolutionsController controller)
+        {
+            solution.CatalogueItem.PublishedStatus = PublicationStatus.Published;
+
+            var solutionStandardsModel = new SolutionStandardsModel(solution.CatalogueItem, standards);
+
+            mockService.Setup(s => s.GetSolutionOverview(solution.CatalogueItemId))
+                .ReturnsAsync(solution.CatalogueItem);
+
+            mockService.Setup(s => s.GetSolutionStandards(solution.CatalogueItemId))
+                .ReturnsAsync(standards);
+
+            var actual = (await controller.Standards(solution.CatalogueItemId)).As<ViewResult>();
+
+            actual.Should().NotBeNull();
+            actual.ViewName.Should().BeNullOrEmpty();
+            actual.Model.Should().BeEquivalentTo(solutionStandardsModel);
+        }
+
+        [Theory]
+        [CommonAutoData]
         public static async Task Get_ClientApplicationTypes_ValidId_GetsSolutionFromService(
             Solution solution,
             [Frozen] Mock<ISolutionsService> mockService,

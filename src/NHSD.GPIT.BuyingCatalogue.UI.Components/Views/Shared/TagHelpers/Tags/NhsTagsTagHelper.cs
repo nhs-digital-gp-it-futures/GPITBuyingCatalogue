@@ -87,7 +87,7 @@ namespace NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.TagHelpers.Tags
 
             output.Attributes.Add(new TagHelperAttribute(TagHelperConstants.Class, $"{NhsTagClass} {selectedColourClass}"));
 
-            output.Content.Append(TagText);
+            output.Content.AppendHtml(TagText);
         }
 
         private static (TagColour SelectedColourClass, string TagText) GetTaskProgressStatus(TaskProgress progress)

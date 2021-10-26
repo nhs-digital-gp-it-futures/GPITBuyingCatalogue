@@ -16,7 +16,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models
                 .ToList();
         }
 
-        public override int Index => 4;
+        public override int Index => 5;
 
         public IList<AdditionalServiceModel> Services { get; set; }
     }
