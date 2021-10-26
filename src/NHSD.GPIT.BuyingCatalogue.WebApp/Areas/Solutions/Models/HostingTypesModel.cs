@@ -22,6 +22,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models
 
         public PublicCloud PublicCloud { get; }
 
-        public override int Index => 9;
+        public override int Index => 10;
     }
 }
