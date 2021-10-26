@@ -30,16 +30,16 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.CapabilityModels
                     Id = c.Id,
                     Name = c.Name,
                     Selected = catalogueItem.CatalogueItemCapabilities.Any(itemCapability => itemCapability.CapabilityId == c.Id),
-                    Epics = c.Epics.Where(epic => epic.IsActive).Select(epic => new CapabilityEpicModel
+                    Epics = c.Epics.Select(epic => new CapabilityEpicModel
                     {
                         Id = epic.Id,
                         Name = epic.Name,
                         Selected = catalogueItem.CatalogueItemEpics
                             .Where(itemEpic => itemEpic.CapabilityId == c.Id)
                             .Any(itemEpic => string.Equals(itemEpic.EpicId, epic.Id, StringComparison.CurrentCultureIgnoreCase)),
-                    }).ToList(),
-                }).ToList(),
-            }).ToList();
+                    }).OrderBy(e => e.Name).ToList(),
+                }).OrderBy(c => c.Name).ToList(),
+            }).OrderBy(cc => cc.Name).ToList();
         }
 
         public string Name { get; init; }

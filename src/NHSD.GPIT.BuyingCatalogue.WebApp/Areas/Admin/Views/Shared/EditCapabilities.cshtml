@@ -9,9 +9,11 @@
         <nhs-validation-summary />
         <nhs-page-title title="@ViewBag.Title"
                         caption="@Model.SupplierName"
-                        advice="Select the Capabilities and and May Epics met by the @Model.CatalogueItemType." />
+                        advice="Select the Capabilities and any May Epics met by the @Model.CatalogueItemType." />
 
         <form method="post">
+            <input type="hidden" asp-for="BackLink" />
+            <input type="hidden" asp-for="BackLinkText" />
             <input type="hidden" asp-for="Name" />
             <input type="hidden" asp-for="SupplierName" />
             <input type="hidden" asp-for="CatalogueItemType" />
@@ -20,8 +22,7 @@
                 <nhs-fieldset-form-container asp-for="@Model">
                     <input type="hidden" asp-for="@Model.CapabilityCategories[i].Name" />
                     <nhs-fieldset-form-label asp-for="@Model.CapabilityCategories[i]"
-                                             label-text="@Model.CapabilityCategories[i].Name"
-                                             label-hint="@Model.CapabilityCategories[i].Description">
+                                             label-text="@Model.CapabilityCategories[i].Name">
                         <nhs-checkbox-container>
                             @for (int j = 0; j < Model.CapabilityCategories[i].Capabilities.Count; j++)
                             {

@@ -21,7 +21,11 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Capabilities
         }
 
         public Task<List<CapabilityCategory>> GetCapabilitiesByCategory()
-            => dbContext.CapabilityCategories.Include(c => c.Capabilities).ThenInclude(c => c.Epics).ToListAsync();
+            => dbContext
+                .CapabilityCategories
+                .Include(c => c.Capabilities)
+                .ThenInclude(c => c.Epics.Where(e => e.IsActive && e.CompliancyLevel == CompliancyLevel.May))
+                .ToListAsync();
 
         public async Task AddCapabilitiesToCatalogueItem(CatalogueItemId catalogueItemId, SaveCatalogueItemCapabilitiesModel model)
         {
@@ -34,14 +38,14 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Capabilities
                 .SingleAsync(c => c.Id == catalogueItemId);
 
             AddCapabilities(catalogueItem, model);
-            AddCapabilityEpics(catalogueItem, model);
+            await AddCapabilityEpics(catalogueItem, model);
 
             await dbContext.SaveChangesAsync();
         }
 
         private static void AddCapabilities(CatalogueItem catalogueItem, SaveCatalogueItemCapabilitiesModel model)
         {
-            var staleCapabilities = catalogueItem.CatalogueItemCapabilities.Where(capability => !model.Capabilities.Any(newCapability => newCapability.Id == capability.CapabilityId));
+            var staleCapabilities = catalogueItem.CatalogueItemCapabilities.Where(capability => !model.Capabilities.Any(newCapability => newCapability.Key == capability.CapabilityId));
             staleCapabilities.ToList().ForEach(c => catalogueItem.CatalogueItemCapabilities.Remove(c));
 
             foreach (var (id, _) in model.Capabilities)
@@ -61,12 +65,28 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Capabilities
             }
         }
 
-        private static void AddCapabilityEpics(CatalogueItem catalogueItem, SaveCatalogueItemCapabilitiesModel model)
+        private async Task AddCapabilityEpics(CatalogueItem catalogueItem, SaveCatalogueItemCapabilitiesModel model)
         {
-            var staleEpics = new List<CatalogueItemEpic>();
-            foreach (var (id, epicIds) in model.Capabilities)
+            var capabilitiesWithMustEpics = (await GetCapabilitiesWithMustEpics(model.Capabilities.Select(c => c.Key).ToArray()))
+                .ToDictionary(c => c.Id, c => c.Epics.Select(e => e.Id).ToArray());
+
+            var capabilitiesAndEpics = model
+                .Capabilities
+                .Concat(capabilitiesWithMustEpics)
+                .GroupBy(kvp => kvp.Key, kvp => kvp.Value)
+                .ToDictionary(
+                    kvp => kvp.Key,
+                    kvp => kvp.SelectMany(k => k).ToArray());
+
+            var staleEpics = catalogueItem
+                .CatalogueItemEpics
+                .Where(epic => !capabilitiesAndEpics.SelectMany(c => c.Value).Contains(epic.EpicId)).ToList();
+
+            if (staleEpics.Any())
+                staleEpics.ForEach(epic => catalogueItem.CatalogueItemEpics.Remove(epic));
+
+            foreach (var (id, epicIds) in capabilitiesAndEpics)
             {
-                staleEpics.AddRange(catalogueItem.CatalogueItemEpics.Where(epic => epic.CapabilityId == id && !epicIds.Contains(epic.EpicId)));
                 foreach (var epicId in epicIds)
                 {
                     if (catalogueItem.CatalogueItemEpics.Any(c => c.EpicId == epicId))
@@ -84,9 +104,9 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Capabilities
                     catalogueItem.CatalogueItemEpics.Add(catalogueItemEpic);
                 }
             }
-
-            if (staleEpics.Any())
-                staleEpics.ForEach(epic => catalogueItem.CatalogueItemEpics.Remove(epic));
         }
+
+        private Task<List<Capability>> GetCapabilitiesWithMustEpics(params int[] capabilityIds)
+            => dbContext.Capabilities.Include(c => c.Epics.Where(e => e.IsActive && e.CompliancyLevel == CompliancyLevel.Must)).Where(c => capabilityIds.Contains(c.Id)).ToListAsync();
     }
 }

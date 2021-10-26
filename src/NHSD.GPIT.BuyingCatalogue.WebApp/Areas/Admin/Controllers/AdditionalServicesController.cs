@@ -199,8 +199,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
                 UserId = User.UserId(),
                 Capabilities = model.CapabilityCategories
                     .SelectMany(cc => cc.Capabilities.Where(c => c.Selected))
-                    .Select(c => (c.Id, c.Epics.Where(e => e.Selected).Select(e => e.Id).ToList()))
-                    .ToList(),
+                    .ToDictionary(c => c.Id, c => c.Epics.Where(e => e.Selected).Select(e => e.Id).ToArray()),
             };
 
             await capabilitiesService.AddCapabilitiesToCatalogueItem(additionalServiceId, saveRequestModel);
