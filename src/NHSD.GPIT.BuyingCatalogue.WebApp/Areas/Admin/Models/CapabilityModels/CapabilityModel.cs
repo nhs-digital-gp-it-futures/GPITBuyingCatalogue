@@ -10,6 +10,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.CapabilityModels
 
         public bool Selected { get; init; }
 
-        public IReadOnlyList<CapabilityEpicModel> Epics { get; init; } = new List<CapabilityEpicModel>();
+        public IReadOnlyList<CapabilityEpicModel> Epics { get; init; } = new List<CapabilityEpicModel>().AsReadOnly();
     }
 }

@@ -8,6 +8,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.CapabilityModels
 
         public string Description { get; init; }
 
-        public IReadOnlyList<CapabilityModel> Capabilities { get; init; } = new List<CapabilityModel>();
+        public IReadOnlyList<CapabilityModel> Capabilities { get; init; } = new List<CapabilityModel>().AsReadOnly();
     }
 }
