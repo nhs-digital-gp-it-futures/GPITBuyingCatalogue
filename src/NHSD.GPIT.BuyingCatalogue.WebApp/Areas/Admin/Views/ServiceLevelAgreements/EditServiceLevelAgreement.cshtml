@@ -1,0 +1,99 @@
+﻿@using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models
+@using NHSD.GPIT.BuyingCatalogue.Framework.Extensions
+@using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
+@model NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.ServiceLevelAgreements.EditServiceLevelAgreementModel
+@{ ViewBag.Title = "Service Level Agreement"; }
+
+<partial name="Partials/_BackLink" model="Model" />
+<nhs-page-title title="@ViewBag.Title"
+                caption="@Model.CatalogueItem.Name"
+                advice="Let buyers know what servie levels are provided for your Catalogue Solution." />
+
+<p class="nhsuk-heading-m">Current solution type: @ConvertSlaType(Model.ServiceLevelAgreements.SlaType)</p>
+<vc:nhs-action-link text="Change solution type"
+                    url="@Url.Action(
+                    nameof(ServiceLevelAgreementsController.EditSlaLevel),
+                    typeof(ServiceLevelAgreementsController).ControllerName(),
+                    new  { solutionId = Model.CatalogueItem.Id })" />
+
+
+<p>Use the link to select the Catalogue Solution type that this Service Level Agreement covers.</p>
+
+<h2>Service availability</h2>
+<p>Provide information on when users can contact your support services. You must add at least one time period.</p>
+<vc:nhs-action-link text="Add availability times"
+                    url="#" />
+
+<nhs-table>
+    <nhs-table-column>Type of support</nhs-table-column>
+    <nhs-table-column>Time period</nhs-table-column>
+    <nhs-table-column>Applicable days</nhs-table-column>
+    <nhs-table-column></nhs-table-column>
+    @foreach(var item in Model.ServiceLevelAgreements.ServiceHours)
+    {
+        <nhs-table-row-container>
+            <nhs-table-cell>@item.Category</nhs-table-cell>
+            <nhs-table-cell>@item.TimeFrom - @item.TimeUntil</nhs-table-cell>
+            <nhs-table-cell>@item.ApplicableDays</nhs-table-cell>
+            <nhs-table-cell><a href="#">Edit</a></nhs-table-cell>
+        </nhs-table-row-container>
+    }
+</nhs-table>
+
+<h2>Contact details</h2>
+<p>Provide information on how users can contact your support services. You must add at least one contact channel.</p>
+<vc:nhs-action-link text="Add contact details"
+                    url="#" />
+
+<nhs-table>
+    <nhs-table-column>Channel</nhs-table-column>
+    <nhs-table-column>Contact</nhs-table-column>
+    <nhs-table-column>Hours available</nhs-table-column>
+    <nhs-table-column></nhs-table-column>
+    @foreach(var item in Model.ServiceLevelAgreements.Contacts)
+    { 
+        <nhs-table-row-container>
+            <nhs-table-cell>@item.Channel</nhs-table-cell>
+            <nhs-table-cell>@item.ContactInformation</nhs-table-cell>
+            <nhs-table-cell>@item.TimeFrom - @item.TimeUntil</nhs-table-cell>
+            <nhs-table-cell><a href="#">Edit</a></nhs-table-cell>
+        </nhs-table-row-container>
+    }
+</nhs-table>
+
+<h2>Service levels</h2>
+<p>Detail the levels of service you provide for users. You must add at least one type of service.</p>
+<vc:nhs-action-link text="Add service levels"
+                    url="#" />
+
+<nhs-table>
+    <nhs-table-column>Type of service</nhs-table-column>
+    <nhs-table-column>Service level</nhs-table-column>
+    <nhs-table-column>How the service levels are measured</nhs-table-column>
+    <nhs-table-column>Are service credits applied?</nhs-table-column>
+    <nhs-table-column></nhs-table-column>
+    @foreach(var item in Model.ServiceLevelAgreements.ServiceLevels)
+    {
+        <nhs-table-row-container>
+            <nhs-table-cell>@item.TypeOfService</nhs-table-cell>
+            <nhs-table-cell>@item.ServiceLevel</nhs-table-cell>
+            <nhs-table-cell>@item.HowMeasured</nhs-table-cell>
+            <nhs-table-cell>@item.ServiceCredits.ToYesNo()</nhs-table-cell>
+            <nhs-table-cell><a href="#">Edit</a></nhs-table-cell>
+        </nhs-table-row-container>
+    }
+</nhs-table>
+
+<vc:nhs-secondary-button text="Continue"
+                         use-primary-colour="true"
+                         url="@Url.Action(
+                                nameof(CatalogueSolutionsController.ManageCatalogueSolution),
+                                typeof(CatalogueSolutionsController).ControllerName(),
+                                new { solutionId = Model.CatalogueItem.Id })" />
+
+@{ static string ConvertSlaType(SlaType slaType) => slaType switch
+    {
+        SlaType.Type1 => "Type 1",
+        SlaType.Type2 => "Type 2",
+        _ => throw new ArgumentOutOfRangeException(nameof(slaType)),
+    }; }

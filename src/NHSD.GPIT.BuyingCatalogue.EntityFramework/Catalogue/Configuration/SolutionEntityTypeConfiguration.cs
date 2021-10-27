@@ -27,7 +27,6 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Configuration
                 .HasJsonConversion();
 
             builder.Property(s => s.RoadMap).HasMaxLength(1000);
-            builder.Property(s => s.ServiceLevelAgreement).HasMaxLength(1000);
             builder.Property(s => s.Summary).HasMaxLength(350);
 
             builder.HasOne(s => s.CatalogueItem)
