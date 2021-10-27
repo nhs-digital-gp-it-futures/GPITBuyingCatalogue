@@ -37,9 +37,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.CapabilityModels
                         Selected = catalogueItem.CatalogueItemEpics
                             .Where(itemEpic => itemEpic.CapabilityId == c.Id)
                             .Any(itemEpic => string.Equals(itemEpic.EpicId, epic.Id, StringComparison.CurrentCultureIgnoreCase)),
-                    }).OrderBy(e => e.Name).ToList().AsReadOnly(),
-                }).OrderBy(c => c.Name).ToList().AsReadOnly(),
-            }).OrderBy(cc => cc.Name).ToList().AsReadOnly();
+                    }).OrderBy(e => e.Name).ToList(),
+                }).OrderBy(c => c.Name).ToList(),
+            }).OrderBy(cc => cc.Name).ToList();
         }
 
         public string Name { get; init; }
@@ -48,6 +48,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.CapabilityModels
 
         public string CatalogueItemType { get; init; }
 
-        public IReadOnlyList<CapabilityCategoryModel> CapabilityCategories { get; init; }
+        public IList<CapabilityCategoryModel> CapabilityCategories { get; init; }
     }
 }
