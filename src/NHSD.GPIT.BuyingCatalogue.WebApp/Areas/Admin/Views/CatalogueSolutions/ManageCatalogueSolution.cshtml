@@ -161,8 +161,12 @@
                 <nhs-table-row-container>
                     <nhs-table-cell>Service Level Agreement</nhs-table-cell>
                     <nhs-table-cell>Yes</nhs-table-cell>
-                    <nhs-table-cell><nhs-tag colour="Green" text="Completed" /></nhs-table-cell>
-                    <nhs-table-cell><a href="#">Edit</a></nhs-table-cell>
+                    <nhs-table-cell>
+                        <nhs-tag status-enum="@Model.SlaStatus()" />
+                    </nhs-table-cell>
+                    <nhs-table-cell>
+                        <a asp-action="Index" asp-controller="ServiceLevelAgreements" asp-route-solutionId="@Model.Solution.Id">Edit</a>
+                    </nhs-table-cell>
                 </nhs-table-row-container>
                 <nhs-table-row-container>
                     <nhs-table-cell>Development plans</nhs-table-cell>

@@ -184,6 +184,10 @@
     <Build Include="Catalogue\Tables\CatalogueItemContacts.sql" />
     <Build Include="Catalogue\Tables\Standards.sql" />
     <Build Include="Catalogue\Tables\StandardsCapabilities.sql" />
+    <Build Include="Catalogue\Tables\SlaContacts.sql" />
+    <Build Include="Catalogue\Tables\ServiceLevelAgreements.sql" />
+    <Build Include="Catalogue\Tables\SlaServiceHours.sql" />
+    <Build Include="Catalogue\Tables\SlaServiceLevels.sql" />
   </ItemGroup>
   <ItemGroup>
     <SqlCmdVariable Include="CREATE_EA_USER">

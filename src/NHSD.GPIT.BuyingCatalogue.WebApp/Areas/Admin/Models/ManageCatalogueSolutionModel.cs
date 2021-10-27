@@ -6,6 +6,7 @@ using NHSD.GPIT.BuyingCatalogue.EntityFramework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Enums;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.AdditionalServices;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.AssociatedServices;
+using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.ServiceLevelAgreements;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Models;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models
@@ -47,6 +48,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models
             new AdditionalServicesModel(Solution, AdditionalServices).Status();
 
         public TaskProgress SupplierDetailsStatus() => new EditSupplierDetailsModel(Solution).Status();
+
+        public TaskProgress SlaStatus() => new EditServiceLevelAgreementModel(Solution).Status();
 
         public ManageCatalogueSolutionModel WithSolution(CatalogueItem solution)
         {
