@@ -1,0 +1,58 @@
+﻿@model NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.CapabilityModels.EditCapabilitiesModel;
+@{
+    ViewBag.Title = $"{Model.Name} Capabilities";
+}
+
+<partial name="Partials/_BackLink" model="Model" />
+<div class="nhsuk-grid-row">
+    <div class="nhsuk-grid-column-two-thirds">
+        <nhs-validation-summary />
+        <nhs-page-title title="@ViewBag.Title"
+                        caption="@Model.SupplierName"
+                        advice="Select the Capabilities and any May Epics met by the @Model.CatalogueItemType." />
+
+        <form method="post">
+            <input type="hidden" asp-for="BackLink" />
+            <input type="hidden" asp-for="BackLinkText" />
+            <input type="hidden" asp-for="Name" />
+            <input type="hidden" asp-for="SupplierName" />
+            <input type="hidden" asp-for="CatalogueItemType" />
+            @for (int i = 0; i < Model.CapabilityCategories.Count; i++)
+            {
+                <nhs-fieldset-form-container asp-for="@Model">
+                    <input type="hidden" asp-for="@Model.CapabilityCategories[i].Name" />
+                    <nhs-fieldset-form-label asp-for="@Model.CapabilityCategories[i]"
+                                             label-text="@Model.CapabilityCategories[i].Name">
+                        <nhs-checkbox-container>
+                            @for (int j = 0; j < Model.CapabilityCategories[i].Capabilities.Count; j++)
+                            {
+                                <input type="hidden" asp-for="@Model.CapabilityCategories[i].Capabilities[j].Name" />
+                                <nhs-checkbox asp-for="@Model.CapabilityCategories[i].Capabilities[j].Selected"
+                                              label-text="@Model.CapabilityCategories[i].Capabilities[j].Name"
+                                              hidden-input="@Model.CapabilityCategories[i].Capabilities[j].Id">
+                                    @if (Model.CapabilityCategories[i].Capabilities[j].Epics.Any())
+                                    {
+                                        <nhs-fieldset-form-label asp-for="@Model.CapabilityCategories[i].Capabilities[j]">
+                                            <nhs-checkbox-container>
+                                                @for (int k = 0; k < Model.CapabilityCategories[i].Capabilities[j].Epics.Count; k++)
+                                                {
+                                                    <input type="hidden" asp-for="@Model.CapabilityCategories[i].Capabilities[j].Epics[k].Name" />
+                                                    <nhs-checkbox asp-for="@Model.CapabilityCategories[i].Capabilities[j].Epics[k].Selected"
+                                                                  label-text="@Model.CapabilityCategories[i].Capabilities[j].Epics[k].Name"
+                                                                  hidden-input="@Model.CapabilityCategories[i].Capabilities[j].Epics[k].Id" />
+                                                }
+                                            </nhs-checkbox-container>
+                                        </nhs-fieldset-form-label>
+
+                                    }
+                                </nhs-checkbox>
+                            }
+                        </nhs-checkbox-container>
+                    </nhs-fieldset-form-label>
+                </nhs-fieldset-form-container>
+            }
+
+            <nhs-submit-button text="Save and Continue" />
+        </form>
+    </div>
+</div>
