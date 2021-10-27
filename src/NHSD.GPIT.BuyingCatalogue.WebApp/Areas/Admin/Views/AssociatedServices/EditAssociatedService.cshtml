@@ -57,12 +57,5 @@
 
             <nhs-submit-button text="Continue" />
         </form>
-
-        <vc:nhs-delete-button url="@Url.Action(
-                                               nameof(AssociatedServicesController.DeleteAssociatedService),
-                                               typeof(AssociatedServicesController).ControllerName(),
-                                               new { SolutionId = Model.Solution.Id, AssociatedServiceId = Model.AssociatedService.Id })"
-                              text="Delete Associated Service" />
-
     </div>
 </div>
