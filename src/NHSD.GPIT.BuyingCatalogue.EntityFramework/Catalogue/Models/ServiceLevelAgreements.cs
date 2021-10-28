@@ -4,7 +4,7 @@ using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 
 namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models
 {
-    public sealed class ServiceLevelAgreements
+    public class ServiceLevelAgreements
     {
         public ServiceLevelAgreements()
         {
@@ -23,6 +23,6 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models
 
         public ICollection<SlaServiceLevels> ServiceLevels { get; set; }
 
-        public Solution Solution { get; set; }
+        public virtual Solution Solution { get; set; }
     }
 }
