@@ -37,6 +37,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Test.Framework.AutoFixtureCustomisations
             new ControllerBaseCustomization(),
             new HostingTypeSectionModelCustomization(),
             new ClientApplicationTypeSectionModelCustomization(),
+            new ServiceLevelAgreementCustomization(),
         };
 
         internal static IFixture Create() => Create(Customizations);

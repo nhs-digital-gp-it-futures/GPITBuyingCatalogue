@@ -58,7 +58,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
                     typeof(CatalogueSolutionsController).ControllerName(),
                     new { solutionId }),
                 Title = "Add SLA Level",
-                SolutionId = solutionId,
             };
 
             return View("AddEditSlaLevel", model);
@@ -129,6 +128,11 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
         [HttpPost("edit-service-level-agreement/edit-sla-level")]
         public async Task<IActionResult> EditSlaLevel(CatalogueItemId solutionId, AddSlaTypeModel model)
         {
+            if (!ModelState.IsValid)
+            {
+                return View("AddEditSlaLevel", model);
+            }
+
             var solution = await solutionsService.GetSolution(solutionId);
             if (solution is null)
                 return BadRequest($"No Solution found for Id: {solutionId}");
