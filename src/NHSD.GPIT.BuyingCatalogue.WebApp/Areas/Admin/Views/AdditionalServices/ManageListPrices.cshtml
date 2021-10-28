@@ -6,7 +6,7 @@
 @model NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.ListPriceModels.ManageListPricesModel
 
 @{
-    ViewBag.Title = "Associated Service price";
+    ViewBag.Title = "Additional Service price";
 }
 
 <partial name="Partials/_BackLink" model="Model" />
@@ -15,12 +15,12 @@
         <nhs-validation-summary />
         <nhs-page-title title="@ViewBag.Title"
                         caption="@Model.CatalogueName"
-                        advice="Provide details of how much your Associated Service costs. You must add at least one price type." />
+                        advice="Provide details of how much your additional Service costs. You must add at least one price type." />
 
         <vc:nhs-action-link text="Add a price" url="@Url.Action(
-                                                   nameof(AssociatedServicesController.AddListPrice),
-                                                   typeof(AssociatedServicesController).ControllerName(),
-                                                   new { solutionId = Model.SolutionId.Value.ToString(), associatedServiceId = Model.CatalogueItemId.ToString() })" />
+                                                   nameof(AdditionalServicesController.AddListPrice),
+                                                   typeof(AdditionalServicesController).ControllerName(),
+                                                   new { solutionId = Model.SolutionId.Value.ToString(), additionalServiceId = Model.CatalogueItemId.ToString() })" />
 
         <nhs-table data-test-id="solution-list-prices">
             <nhs-table-column>Provisioning type</nhs-table-column>
@@ -36,10 +36,10 @@
                     <nhs-table-cell>@cataloguePrice.PricingUnit.Description</nhs-table-cell>
                     <nhs-table-cell>
                         <a asp-action="EditListPrice"
-                           asp-controller="AssociatedServices"
+                           asp-controller="additionalServices"
                            asp-route-solutionId="@Model.SolutionId.Value"
                            asp-route-listPriceId="@cataloguePrice.CataloguePriceId"
-                           asp-route-associatedServiceId="@Model.CatalogueItemId">
+                           asp-route-additionalServiceId="@Model.CatalogueItemId">
                             Edit
                         </a>
                     </nhs-table-cell>
@@ -48,9 +48,9 @@
         </nhs-table>
 
         <vc:nhs-secondary-button text="Continue" url="@Url.Action(
-                                                     nameof(AssociatedServicesController.EditAssociatedService),
-                                                     typeof(AssociatedServicesController).ControllerName(),
-                                                     new { solutionId = Model.SolutionId.Value.ToString(), associatedServiceId = Model.CatalogueItemId.ToString() })" use-primary-colour="true" />
+                                                     nameof(AdditionalServicesController.EditAdditionalService),
+                                                     typeof(AdditionalServicesController).ControllerName(),
+                                                     new { solutionId = Model.SolutionId.Value.ToString(), additionalServiceId = Model.CatalogueItemId.ToString() })" use-primary-colour="true" />
 
     </div>
 </div>

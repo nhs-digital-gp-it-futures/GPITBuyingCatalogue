@@ -163,7 +163,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
 
             var model = new EditListPriceModel(additionalService)
             {
-                Title = "Associated Service price",
+                Title = "Additional Service price",
                 BackLink = Url.Action(
                     nameof(ManageListPrices),
                     typeof(AdditionalServicesController).ControllerName(),

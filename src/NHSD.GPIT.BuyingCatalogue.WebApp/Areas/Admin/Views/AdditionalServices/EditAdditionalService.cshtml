@@ -47,10 +47,10 @@
                 <nhs-table-cell>Yes</nhs-table-cell>
                 <nhs-table-cell><nhs-tag status-enum="@Model.ListPriceStatus()" /></nhs-table-cell>
                 <nhs-table-cell>
-                    <a asp-controller="@typeof(AssociatedServicesController).ControllerName()"
-                       asp-action="@nameof(AssociatedServicesController.ManageListPrices)"
+                    <a asp-controller="@typeof(AdditionalServicesController).ControllerName()"
+                       asp-action="@nameof(AdditionalServicesController.ManageListPrices)"
                        asp-route-solutionId="@Model.Solution.Id"
-                       asp-route-associatedServiceId="@Model.AdditionalService.Id"
+                       asp-route-additionalServiceId="@Model.AdditionalService.Id"
                        style="white-space: nowrap;">Edit</a>
                 </nhs-table-cell>
             </nhs-table-row-container>

@@ -13,10 +13,10 @@
             <nhs-validation-summary />
             <nhs-page-title title="@ViewBag.Title"
                             caption="@Model.ItemName"
-                            advice="Provide information about the cost of the Associated Service." />
+                            advice="Provide information about the cost of the Additional Service." />
             @if (Model.Price.HasValue)
             {
-                <nhs-inset-text>Any changes to this price will be visible to anyone ordering this Associated Service in future.</nhs-inset-text>
+                <nhs-inset-text>Any changes to this price will be visible to anyone ordering this Additional Service in future.</nhs-inset-text>
             }
             <form method="post">
                 <input type="hidden" asp-for="CataloguePriceId" />
@@ -45,7 +45,7 @@
                             <nhs-select asp-for="DeclarativeTimeUnit"
                                         asp-items="timeUnitsSelectList"
                                         label-text="Unit of time"
-                                        label-hint="Provide the unit of time for how this Associated Service will be billed." />
+                                        label-hint="Provide the unit of time for how this Additional Service will be billed." />
                         </nhs-radio-button>
 
                         <nhs-radio-button asp-for="SelectedProvisioningType"
@@ -56,7 +56,7 @@
                             <nhs-select asp-for="OnDemandTimeUnit"
                                         asp-items="timeUnitsSelectList"
                                         label-text="Unit of time (optional)"
-                                        label-hint="Provide the unit of time for how this Associated Service will be billed." />
+                                        label-hint="Provide the unit of time for how this Additional Service will be billed." />
                         </nhs-radio-button>
                     </nhs-radio-button-container>
                 </nhs-fieldset-form-label>
@@ -78,11 +78,11 @@
             @if (Model.CataloguePriceId is not null)
             {
                 <vc:nhs-delete-button url="@Url.Action(
-                                              nameof(AssociatedServicesController.DeleteListPrice),
-                                              typeof(AssociatedServicesController).ControllerName(),
+                                              nameof(AdditionalServicesController.DeleteListPrice),
+                                              typeof(AdditionalServicesController).ControllerName(),
                                               new {
                                                   solutionId = Model.RelatedCatalogueItemId,
-                                                  associatedServiceId = Model.ItemId,
+                                                  additionalServiceId = Model.ItemId,
                                                   listPriceId = Model.CataloguePriceId})"
                                       text="Delete price" />
             }
