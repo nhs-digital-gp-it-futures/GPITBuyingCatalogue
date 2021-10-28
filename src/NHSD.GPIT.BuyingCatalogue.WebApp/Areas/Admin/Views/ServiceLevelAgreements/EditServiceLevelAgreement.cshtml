@@ -7,7 +7,7 @@
 <partial name="Partials/_BackLink" model="Model" />
 <nhs-page-title title="@ViewBag.Title"
                 caption="@Model.CatalogueItem.Name"
-                advice="Let buyers know what servie levels are provided for your Catalogue Solution." />
+                advice="Let buyers know what service levels are provided for your Catalogue Solution." />
 
 <p class="nhsuk-heading-m">Current solution type: @ConvertSlaType(Model.ServiceLevelAgreements.SlaType)</p>
 <vc:nhs-action-link text="Change solution type"
@@ -24,7 +24,7 @@
 <vc:nhs-action-link text="Add availability times"
                     url="#" />
 
-<nhs-table>
+<nhs-table data-test-id="service-hours-table">
     <nhs-table-column>Type of support</nhs-table-column>
     <nhs-table-column>Time period</nhs-table-column>
     <nhs-table-column>Applicable days</nhs-table-column>
@@ -45,7 +45,7 @@
 <vc:nhs-action-link text="Add contact details"
                     url="#" />
 
-<nhs-table>
+<nhs-table data-test-id="contact-details-table">
     <nhs-table-column>Channel</nhs-table-column>
     <nhs-table-column>Contact</nhs-table-column>
     <nhs-table-column>Hours available</nhs-table-column>
@@ -66,7 +66,7 @@
 <vc:nhs-action-link text="Add service levels"
                     url="#" />
 
-<nhs-table>
+<nhs-table data-test-id="service-levels-table">
     <nhs-table-column>Type of service</nhs-table-column>
     <nhs-table-column>Service level</nhs-table-column>
     <nhs-table-column>How the service levels are measured</nhs-table-column>
