@@ -16,6 +16,9 @@ Add-Content -Path $outFile "----------------------------------------------------
 
 Get-ChildItem -Recurse $projectPath
 
+Add-Content -Path $outFile "SET XACT_ABORT ON; -- Roll back everything if error occurs in script"
+Add-Content -Path $outFile "BEGIN TRANSACTION WholeScript"
+
 foreach($line in Get-Content -ErrorAction Stop $postDeploymentPath\PostDeployment.sql) {
     $trimmedLine = $line.Trim()
 
@@ -31,6 +34,8 @@ foreach($line in Get-Content -ErrorAction Stop $postDeploymentPath\PostDeploymen
         Add-Content -Path $outFile "GO`r`n"
     }
 }
+
+Add-Content -Path $outFile "COMMIT TRANSACTION WholeScript"
 
 if($error.Count -gt 0) {
 

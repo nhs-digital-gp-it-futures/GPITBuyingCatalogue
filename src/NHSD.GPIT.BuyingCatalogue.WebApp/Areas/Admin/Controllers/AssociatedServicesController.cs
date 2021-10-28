@@ -122,26 +122,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
             return View(new EditAssociatedServiceModel(solution, associatedService));
         }
 
-        [HttpGet("{associatedServiceId}/delete-associated-service")]
-        public async Task<IActionResult> DeleteAssociatedService(CatalogueItemId solutionId, CatalogueItemId associatedServiceId)
-        {
-            var associatedService = await associatedServicesService.GetAssociatedService(associatedServiceId);
-            if (associatedService is null)
-                return BadRequest($"No Associated Service found for Id: {associatedServiceId}");
-
-            return View(new DeleteAssociatedServiceModel(solutionId, associatedService));
-        }
-
-        [HttpPost("{associatedServiceId}/delete-associated-service")]
-        public IActionResult DeleteAssociatedService(CatalogueItemId solutionId, CatalogueItemId associatedServiceId, DeleteAssociatedServiceModel model)
-        {
-            associatedServicesService.DeleteAssociatedService(associatedServiceId);
-
-            return RedirectToAction(
-                nameof(AssociatedServices),
-                new { solutionId });
-        }
-
         [HttpGet("{associatedServiceId}/edit-associated-service-details")]
         public async Task<IActionResult> EditAssociatedServiceDetails(CatalogueItemId solutionId, CatalogueItemId associatedServiceId)
         {

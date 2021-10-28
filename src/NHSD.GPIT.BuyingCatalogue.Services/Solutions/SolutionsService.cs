@@ -47,8 +47,11 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
                 .Include(i => i.Supplier).ThenInclude(s => s.SupplierContacts)
                 .Include(i => i.Solution).ThenInclude(s => s.FrameworkSolutions).ThenInclude(fs => fs.Framework)
                 .Include(i => i.Solution).ThenInclude(s => s.MarketingContacts)
+                .Include(i => i.Solution).ThenInclude(s => s.ServiceLevelAgreement)
+                .Include(i => i.Solution).ThenInclude(s => s.ServiceLevelAgreement).ThenInclude(sla => sla.Contacts)
+                .Include(i => i.Solution).ThenInclude(s => s.ServiceLevelAgreement).ThenInclude(sla => sla.ServiceHours)
+                .Include(i => i.Solution).ThenInclude(s => s.ServiceLevelAgreement).ThenInclude(sla => sla.ServiceLevels)
                 .Include(i => i.CataloguePrices).ThenInclude(cp => cp.PricingUnit)
-                .Include(i => i.SupplierServiceAssociations)
                 .Where(i => i.Id == solutionId)
                 .FirstOrDefaultAsync();
         }
@@ -72,6 +75,21 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
                 .Include(ci => ci.CatalogueItemCapabilities).ThenInclude(cic => cic.Capability).ThenInclude(c => c.Epics)
                 .Where(c => c.Id == catalogueItemId && c.CatalogueItemCapabilities.Any(sc => sc.CapabilityId == capabilityId))
                 .FirstOrDefaultAsync();
+        }
+
+        public async Task<IList<Standard>> GetSolutionStandards(CatalogueItemId catalogueItemId)
+        {
+            var requiredStandardsQuery = dbContext.Standards.Where(s => s.RequiredForAllSolutions);
+
+            return await dbContext.CatalogueItems
+               .Where(ci => ci.Id == catalogueItemId)
+               .SelectMany(ci => ci.CatalogueItemCapabilities)
+               .Select(cic => cic.Capability)
+               .SelectMany(c => c.StandardCapabilities)
+               .Select(sc => sc.Standard)
+               .Distinct()
+               .Union(requiredStandardsQuery)
+               .ToListAsync();
         }
 
         public async Task<CatalogueItem> GetSolutionOverview(CatalogueItemId solutionId)

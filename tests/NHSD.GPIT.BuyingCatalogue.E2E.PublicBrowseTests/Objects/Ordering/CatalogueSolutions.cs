@@ -1,5 +1,4 @@
-﻿using NHSD.GPIT.BuyingCatalogue.E2ETests.Objects.Common;
-using OpenQA.Selenium;
+﻿using OpenQA.Selenium;
 
 namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Objects.Ordering
 {

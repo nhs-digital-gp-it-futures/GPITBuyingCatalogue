@@ -1,6 +1,4 @@
-﻿using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
-
-namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.BrowserBasedModels
+﻿namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.BrowserBasedModels
 {
     public class SupportedBrowserModel
     {

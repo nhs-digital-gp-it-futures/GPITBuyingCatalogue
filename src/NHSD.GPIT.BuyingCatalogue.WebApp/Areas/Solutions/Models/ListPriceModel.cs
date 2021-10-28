@@ -17,7 +17,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models
             FlatListPrices = item.CataloguePrices.Select(cp => new PriceViewModel(cp)).ToList();
         }
 
-        public override int Index => 3;
+        public override int Index => 4;
 
         public IList<PriceViewModel> FlatListPrices { get; set; }
 

@@ -7,5 +7,7 @@
             if (value == null) return string.Empty;
             return value.Value ? "Yes" : "No";
         }
+
+        public static string ToYesNo(this bool value) => value ? "Yes" : "No";
     }
 }

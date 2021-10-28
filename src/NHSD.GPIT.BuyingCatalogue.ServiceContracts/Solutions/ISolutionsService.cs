@@ -16,6 +16,8 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions
 
         Task<CatalogueItem> GetSolutionCapability(CatalogueItemId catalogueItemId, int capabilityId);
 
+        Task<IList<Standard>> GetSolutionStandards(CatalogueItemId catalogueItemId);
+
         Task<CatalogueItem> GetSolutionWithAllAssociatedServices(CatalogueItemId solutionId);
 
         Task<CatalogueItem> GetSolutionOverview(CatalogueItemId solutionId);

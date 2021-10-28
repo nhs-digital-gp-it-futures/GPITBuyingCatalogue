@@ -45,7 +45,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.AddNewSolution.Addition
 
             CommonActions.ElementIsDisplayed(CommonSelectors.Header1).Should().BeTrue();
             CommonActions.GoBackLinkDisplayed().Should().BeTrue();
-            CommonActions.ElementIsDisplayed(CommonSelectors.ContinueButton).Should().BeTrue();
+            CommonActions.ElementIsDisplayed(CommonSelectors.SubmitButton).Should().BeTrue();
             CommonActions.ElementIsDisplayed(Objects.Admin.AdditionalServices.AdditionalServices.AdditionalServicesTableDashboard).Should().BeTrue();
         }
 
@@ -64,7 +64,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.AddNewSolution.Addition
         [Fact]
         public void EditAdditionalService_ClickContinueButton_NavigatesToCorrectPage()
         {
-            CommonActions.ClickLinkElement(CommonSelectors.ContinueButton);
+            CommonActions.ClickSave();
 
             CommonActions.PageLoadedCorrectGetIndex(
                     typeof(AdditionalServicesController),

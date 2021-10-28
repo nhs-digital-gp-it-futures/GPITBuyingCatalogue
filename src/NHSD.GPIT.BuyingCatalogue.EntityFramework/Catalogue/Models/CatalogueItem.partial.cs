@@ -53,7 +53,7 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models
 
         public virtual bool HasListPrice() => CataloguePrices?.Any() == true;
 
-        public virtual bool HasServiceLevelAgreement() => !string.IsNullOrWhiteSpace(Solution?.ServiceLevelAgreement);
+        public virtual bool HasServiceLevelAgreement() => Solution.ServiceLevelAgreement is not null;
 
         public virtual bool HasSupplierDetails() => Supplier != null;
 

@@ -290,5 +290,20 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers
 
             return View(new SolutionSupplierDetailsModel(item));
         }
+
+        [HttpGet("{solutionId}/standards")]
+        public async Task<IActionResult> Standards(CatalogueItemId solutionId)
+        {
+            var item = await solutionsService.GetSolutionOverview(solutionId);
+            if (item is null)
+                return BadRequest($"No Catalogue Item found for Id: {solutionId}");
+
+            if (item.PublishedStatus == PublicationStatus.Suspended)
+                return RedirectToAction(nameof(Description), new { solutionId });
+
+            var standards = await solutionsService.GetSolutionStandards(solutionId);
+
+            return View(new SolutionStandardsModel(item, standards));
+        }
     }
 }

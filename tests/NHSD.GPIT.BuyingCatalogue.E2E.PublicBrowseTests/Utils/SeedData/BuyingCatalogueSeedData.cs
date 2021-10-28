@@ -851,6 +851,77 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
                 new Database.Models.TimeUnit { Id = 2, Name = "year", Description = "per year" },
             };
             context.AddRange(timeUnits);
+
+            // Standards
+            List<Standard> standards = new()
+            {
+                new Standard { Id = "S24", Name = "Business Continuity and Disaster Recovery", Description = "Ensures that solutions are supported by robust business continuity plans and disaster recovery measures.", Url = "https://gpitbjss.atlassian.net/wiki/spaces/GPITF/pages/1391134058/Business+Continuity+and+Disaster+Recovery", RequiredForAllSolutions = true },
+                new Standard { Id = "S25", Name = "Clinical Safety", Description = "Supports the management of clinical risk and patient safety.", Url = "https://gpitbjss.atlassian.net/wiki/spaces/GPITF/pages/1391134225/Clinical+Safety", RequiredForAllSolutions = true },
+                new Standard { Id = "S31", Name = "Commercial", Description = "Underpins all commercial activity relating to the Buying Catalogue by defining rules governing commercial relationships and setting out standards of behaviour.", Url = "https://gpitbjss.atlassian.net/wiki/spaces/GPITF/pages/1391134121/Commercial", RequiredForAllSolutions = true },
+                new Standard { Id = "S26", Name = "Data Migration", Description = "Supports the safe and effective migration of data if a buyer changes from one solution to another.", Url = "https://gpitbjss.atlassian.net/wiki/spaces/GPITF/pages/1391134456/Data+Migration", RequiredForAllSolutions = true },
+                new Standard { Id = "S27", Name = "Data Standards", Description = "Defines detailed technical standards for the storage, management and organisation of data and specifies standardised reference data, terminology and codes.", Url = "https://gpitbjss.atlassian.net/wiki/spaces/GPITF/pages/1391134407/Data+Standards", RequiredForAllSolutions = true },
+                new Standard { Id = "S29", Name = "Hosting & Infrastructure", Description = "Supports best practices for infrastructure and hosting of systems. For example, ensuring systems are cost effective, secure and energy efficient.", Url = "https://gpitbjss.atlassian.net/wiki/spaces/GPITF/pages/1391134324/Hosting+Infrastructure", RequiredForAllSolutions = true },
+                new Standard { Id = "S30", Name = "Information Governance", Description = "Supports the controls needed to ensure that sensitive personal data is kept confidential, is accurate and is available to authorised users when required.", Url = "https://gpitbjss.atlassian.net/wiki/spaces/GPITF/pages/1391134230/Information+Governance", RequiredForAllSolutions = true },
+                new Standard { Id = "S63", Name = "Non-Functional Questions", Description = "Enables NHS Digital to assess the risk associated with the assessment of a solution against other overarching Standards.", Url = "https://gpitbjss.atlassian.net/wiki/spaces/GPITF/pages/1569980472/Non-Functional+Questions", RequiredForAllSolutions = true },
+                new Standard { Id = "S65", Name = "Service Management", Description = "Supports suppliers in the delivery and management of services that enable their solutions to continue working.", Url = "https://gpitbjss.atlassian.net/wiki/spaces/GPITF/pages/1391133802/Service+Management", RequiredForAllSolutions = true },
+                new Standard { Id = "S69", Name = "Testing", Description = "Ensures that a suppliers’ software delivery test processes are of sufficient quality and rigour.", Url = "https://gpitbjss.atlassian.net/wiki/spaces/GPITF/pages/1391133583/Testing", RequiredForAllSolutions = true },
+                new Standard { Id = "S28", Name = "Training", Description = "Enables NHS Digital to assess the risk associated with the assessment of a solution against other overarching Standards.", Url = "https://gpitbjss.atlassian.net/wiki/spaces/GPITF/pages/1391133846/Training", RequiredForAllSolutions = true },
+                new Standard { Id = "S33", Name = "111", Description = "Supports the receiving and consuming of data sent by 111 provider systems for transfer of care to a GP practice.", Url = "https://gpitbjss.atlassian.net/wiki/spaces/GPITF/pages/1391133945/111", RequiredForAllSolutions = false },
+                new Standard { Id = "S34", Name = "Digital Diagnostics & Pathology Messaging", Description = "Supports the transmission and validation of results data to GP systems where a test request has been placed with a laboratory.", Url = "https://gpitbjss.atlassian.net/wiki/spaces/GPITF/pages/1391133752/Digital+Diagnostics+Pathology+Messaging", RequiredForAllSolutions = false },
+                new Standard { Id = "S77", Name = "Digital Medicines and Pharmacy FHIR Payload", Description = "Supports the receiving and consuming of data sent by a pharmacy to a GP practice relating to administration of immunisations or supply of emergency medication to patients", Url = "https://gpitbjss.atlassian.net/wiki/spaces/GPITF/pages/10752983078/Digital+Medicines+and+Pharmacy+FHIR+Payload", RequiredForAllSolutions = false },
+                new Standard { Id = "S35", Name = "e-Referrals Service (e-RS)", Description = "Supports electronic booking of hospital or clinic appointments, with a choice of place, date and time.", Url = "https://gpitbjss.atlassian.net/wiki/spaces/GPITF/pages/1391135075/eMED3+Fit+Notes", RequiredForAllSolutions = false },
+                new Standard { Id = "S36", Name = "Electronic Prescription Service (EPS)", Description = "Supports the sending of prescriptions electronically to a dispenser, for example a pharmacy, of the patient's choice.", Url = "https://gpitbjss.atlassian.net/wiki/spaces/GPITF/pages/1391133858/Electronic+Prescription+Service+EPS+-+Prescribing", RequiredForAllSolutions = false },
+                new Standard { Id = "S37", Name = "Electronic Yellow Card Reporting", Description = "Supports electronic reporting of suspected adverse drug reactions.", Url = "https://gpitbjss.atlassian.net/wiki/spaces/GPITF/pages/1391134080/Electronic+Yellow+Card+Reporting", RequiredForAllSolutions = false },
+                new Standard { Id = "S39", Name = "eMED3 (Fit Notes)", Description = "Supports the creation of eMED3 data, its integration into a Patient Record, printing MED3 fit note certificates and the extraction of data to NHS Digital.", Url = "https://gpitbjss.atlassian.net/wiki/spaces/GPITF/pages/1391135075/eMED3+Fit+Notes", RequiredForAllSolutions = false },
+                new Standard { Id = "S43", Name = "GP2GP", Description = "Supports sharing of data held within GP IT solutions across health and social care organisations.", Url = "https://gpitbjss.atlassian.net/wiki/spaces/GPITF/pages/1391134336/GP2GP", RequiredForAllSolutions = false },
+                new Standard { Id = "S44", Name = "GP Connect", Description = "Supports sharing of data held within GP IT solutions across health and social care organisations.", Url = "https://gpitbjss.atlassian.net/wiki/spaces/GPITF/pages/1391133650/GP+Connect", RequiredForAllSolutions = false },
+                new Standard { Id = "S78", Name = "GP Data for Planning and Research", Description = "Supports the extraction and submission of GP data, for health and social care purposes (including planning, policy development, public health, commissioning and research) to NHS Digital.", Url = "https://gpitbjss.atlassian.net/wiki/spaces/GPITF/pages/11235426957/GP+Data+for+Planning+and+Research", RequiredForAllSolutions = false },
+                new Standard { Id = "S46", Name = "GPES Data Extraction", Description = "Supports secure collection of information from GP practices and its delivery to approved organisations.", Url = "https://gpitbjss.atlassian.net/wiki/spaces/GPITF/pages/1391134238/GPES+Data+Extraction", RequiredForAllSolutions = false },
+                new Standard { Id = "S47", Name = "IM1 - Interface Mechanism", Description = "Supports the implementation of interfaces between solutions.", Url = "https://gpitbjss.atlassian.net/wiki/spaces/GPITF/pages/1391133895/IM1+-+Interface+Mechanism", RequiredForAllSolutions = false },
+                new Standard { Id = "S53", Name = "NHAIS HA/GP Links", Description = "Supports the management of patient registration and demographic information with National Health Application and Infrastructure Services.", Url = "https://gpitbjss.atlassian.net/wiki/spaces/GPITF/pages/1391133619/NHAIS+HA+GP+Links", RequiredForAllSolutions = false },
+                new Standard { Id = "S56", Name = "Personal Demographics Service (PDS)", Description = "Supports solution integration with the Personal Demographics Service which stores patient details.", Url = "https://gpitbjss.atlassian.net/wiki/spaces/GPITF/pages/1391133999/Personal+Demographics+Service+PDS", RequiredForAllSolutions = false },
+                new Standard { Id = "S58", Name = "Screening Messaging", Description = "Supports the validation and transfer of screening result data to solutions.", Url = "https://gpitbjss.atlassian.net/wiki/spaces/GPITF/pages/1391133789/Screening+messaging", RequiredForAllSolutions = false },
+                new Standard { Id = "S60", Name = "Summary Care Record (SCR)", Description = "Supports the management of Summary Care Record data and staff access to the data.", Url = "https://gpitbjss.atlassian.net/wiki/spaces/GPITF/pages/1391133699/Summary+Care+Record+SCR", RequiredForAllSolutions = false },
+            };
+
+            context.AddRange(standards);
+
+            // StandardCapabilities
+            List<StandardCapability> standardCapabilities = new()
+            {
+                new StandardCapability { StandardId = "S33", CapabilityId = 13 },
+                new StandardCapability { StandardId = "S34", CapabilityId = 8 },
+                new StandardCapability { StandardId = "S77", CapabilityId = 13 },
+                new StandardCapability { StandardId = "S35", CapabilityId = 11 },
+                new StandardCapability { StandardId = "S36", CapabilityId = 14 },
+                new StandardCapability { StandardId = "S37", CapabilityId = 15 },
+                new StandardCapability { StandardId = "S39", CapabilityId = 15 },
+                new StandardCapability { StandardId = "S43", CapabilityId = 13 },
+                new StandardCapability { StandardId = "S44", CapabilityId = 13 },
+                new StandardCapability { StandardId = "S44", CapabilityId = 5 },
+                new StandardCapability { StandardId = "S44", CapabilityId = 23 },
+                new StandardCapability { StandardId = "S44", CapabilityId = 39 },
+                new StandardCapability { StandardId = "S44", CapabilityId = 30 },
+                new StandardCapability { StandardId = "S78", CapabilityId = 13 },
+                new StandardCapability { StandardId = "S78", CapabilityId = 5 },
+                new StandardCapability { StandardId = "S46", CapabilityId = 13 },
+                new StandardCapability { StandardId = "S47", CapabilityId = 13 },
+                new StandardCapability { StandardId = "S47", CapabilityId = 15 },
+                new StandardCapability { StandardId = "S47", CapabilityId = 5 },
+                new StandardCapability { StandardId = "S47", CapabilityId = 14 },
+                new StandardCapability { StandardId = "S47", CapabilityId = 11 },
+                new StandardCapability { StandardId = "S47", CapabilityId = 12 },
+                new StandardCapability { StandardId = "S47", CapabilityId = 1 },
+                new StandardCapability { StandardId = "S47", CapabilityId = 3 },
+                new StandardCapability { StandardId = "S47", CapabilityId = 4 },
+                new StandardCapability { StandardId = "S47", CapabilityId = 2 },
+                new StandardCapability { StandardId = "S53", CapabilityId = 13 },
+                new StandardCapability { StandardId = "S56", CapabilityId = 13 },
+                new StandardCapability { StandardId = "S58", CapabilityId = 8 },
+                new StandardCapability { StandardId = "S60", CapabilityId = 13 },
+            };
+
+            context.AddRange(standardCapabilities);
         }
 
         private static void AddMockedItems(EndToEndDbContext context)

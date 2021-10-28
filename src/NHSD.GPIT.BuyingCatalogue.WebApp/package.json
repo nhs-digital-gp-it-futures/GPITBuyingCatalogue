@@ -9,21 +9,21 @@
   "keywords": [],
   "author": "",
   "dependencies": {
-    "govuk-frontend": "^3.13.1",
+    "govuk-frontend": "^3.14.0",
     "gulp-terser": "^2.1.0",
-    "nhsuk-frontend": "^5.1.0",
+    "nhsuk-frontend": "^5.2.0",
     "node-sass": "^6.0.1"
   },
   "description": "",
   "devDependencies": {
-    "clean-css": "^5.1.5",
+    "clean-css": "^5.2.2",
     "del": "^6.0.0",
     "gulp": "^4.0.2",
     "gulp-concat": "^2.6.1",
-    "gulp-cssmin": "^0.2.0",    
+    "gulp-cssmin": "^0.2.0",
     "gulp-sass": "^5.0.0",
     "merge-stream": "^2.0.0",
-    "sass": "^1.42.1"
+    "sass": "^1.43.3"
   },
   "keywords": [],
   "license": "ISC",

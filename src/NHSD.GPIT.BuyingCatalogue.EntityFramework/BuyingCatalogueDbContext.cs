@@ -75,7 +75,11 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework
 
         public DbSet<SupplierContact> SupplierContacts { get; set; }
 
+        public DbSet<SupplierServiceAssociation> SupplierServiceAssociations { get; set; }
+
         public DbSet<ServiceInstanceItem> ServiceInstanceItems { get; set; }
+
+        public DbSet<Standard> Standards { get; set; }
 
         public DbSet<AspNetUser> AspNetUsers { get; set; }
 
@@ -84,6 +88,8 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework
         public DbSet<Organisation> Organisations { get; set; }
 
         public DbSet<RelatedOrganisation> RelatedOrganisations { get; set; }
+
+        public DbSet<ServiceLevelAgreements> ServiceLevelAgreements { get; set; }
 
         public override Task<int> SaveChangesAsync(bool acceptAllChangesOnSuccess, CancellationToken cancellationToken = default)
         {

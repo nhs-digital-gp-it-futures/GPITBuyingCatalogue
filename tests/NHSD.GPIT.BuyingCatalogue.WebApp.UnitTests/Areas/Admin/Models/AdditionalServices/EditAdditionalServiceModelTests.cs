@@ -18,6 +18,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Models.Addition
             Solution solution,
             AdditionalService additionalService)
         {
+            additionalService.CatalogueItem.PublishedStatus = PublicationStatus.Draft;
             additionalService.CatalogueItem.Name = additionalServiceName;
             additionalService.FullDescription = additionalServiceDescription;
 
@@ -32,6 +33,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Models.Addition
             Solution solution,
             AdditionalService additionalService)
         {
+            additionalService.CatalogueItem.PublishedStatus = PublicationStatus.Draft;
             additionalService.CatalogueItem.Name = null;
             additionalService.FullDescription = null;
 

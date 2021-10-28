@@ -55,6 +55,12 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models
             },
             new()
             {
+                Action = nameof(SolutionsController.Standards),
+                Controller = ControllerName,
+                Name = "Standards",
+            },
+            new()
+            {
                 Action = nameof(SolutionsController.ListPrice),
                 Controller = ControllerName,
                 Name = "List price",

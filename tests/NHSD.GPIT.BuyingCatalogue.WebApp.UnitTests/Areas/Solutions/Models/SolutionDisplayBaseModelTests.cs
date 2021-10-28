@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using AutoFixture.Xunit2;
 using FluentAssertions;
 using Moq;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
@@ -108,27 +107,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Models
             childType
             .Should()
             .BeAssignableTo<SolutionDisplayBaseModel>();
-        }
-
-        [Theory]
-        [CommonAutoData]
-        public static void GetSections_ValidSectionProperty_ReturnsSectionsWithSelected(CatalogueItemId solutionId)
-        {
-            var model = new TestSolutionDisplayBaseModel { SolutionId = solutionId, };
-            for (int i = 0; i < 12; i++)
-            {
-                if (i % 2 != 0) continue;
-                model.SetShowTrue(i);
-                SectionModels[i].Show = true;
-            }
-
-            var expected = new List<SectionModel>(SectionModels.Where(s => s.Show));
-            expected.ForEach(s => s.SolutionId = solutionId.ToString());
-            expected.Single(s => s.Name.EqualsIgnoreCase(model.Section)).Selected = true;
-
-            var actual = model.GetSections();
-
-            actual.Should().BeEquivalentTo(expected);
         }
 
         [Theory]

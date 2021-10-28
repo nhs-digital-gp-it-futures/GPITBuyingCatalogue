@@ -76,6 +76,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.AdditionalServices
         {
             return dbContext.CatalogueItems
                 .Include(i => i.CatalogueItemCapabilities).ThenInclude(sc => sc.Capability)
+                .Include(i => i.CatalogueItemEpics)
                 .Include(i => i.Supplier)
                 .Include(i => i.AdditionalService)
                 .Where(i => solutionIds.Contains(i.AdditionalService.SolutionId)
@@ -85,9 +86,22 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.AdditionalServices
                 .ToListAsync();
         }
 
+        public async Task SavePublicationStatus(
+            CatalogueItemId catalogueItemId,
+            CatalogueItemId additionalServiceId,
+            PublicationStatus publicationStatus)
+        {
+            var solution = await GetAdditionalService(catalogueItemId, additionalServiceId);
+
+            solution.PublishedStatus = publicationStatus;
+
+            await dbContext.SaveChangesAsync();
+        }
+
         private IQueryable<CatalogueItem> BaseQuery(CatalogueItemId catalogueItemId) => dbContext.CatalogueItems
                 .Include(i => i.AdditionalService)
                 .Include(i => i.CatalogueItemCapabilities)
+                .Include(i => i.CatalogueItemEpics)
                 .Include(i => i.Supplier)
                 .Where(i => i.AdditionalService.SolutionId == catalogueItemId && i.CatalogueItemType == CatalogueItemType.AdditionalService)
                 .OrderBy(i => i.Name);

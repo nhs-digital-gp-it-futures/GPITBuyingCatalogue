@@ -49,6 +49,10 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Configuration
                 .HasForeignKey(c => c.CategoryId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK_Capabilities_CapabilityCategory");
+
+            builder.HasMany(c => c.StandardCapabilities)
+                .WithOne(sc => sc.Capability)
+                .HasForeignKey(c => c.CapabilityId);
         }
     }
 }

@@ -15,18 +15,17 @@
             <input type="hidden" asp-for="Id" />
             <input type="hidden" asp-for="Title" />
             <input type="hidden" asp-for="BackLink" />
-            <input type="hidden" asp-for="SupplierId" />
             <input type="hidden" asp-for="SupplierName" />
+            <input type="hidden" asp-for="CatalogueItemId" />
+            <input type="hidden" asp-for="CatalogueItemName" />
 
             <nhs-input asp-for="Name"
-                       label-text="Additional Service name"
-                       character-count="true"
-                       max-character-length="300" />
+                       label-text="Additional Service name" />
             <nhs-textarea asp-for="Description"
                           label-text="Additional Service description"
                           label-hint="Describe the extra functionality provided by the Additional Service."
-                          character-count="true"
-                          maxlength="1000" />
+                          number-of-rows="5"
+                          character-count="false" />
             <nhs-submit-button text="Save and continue" />
         </form>
     </div>

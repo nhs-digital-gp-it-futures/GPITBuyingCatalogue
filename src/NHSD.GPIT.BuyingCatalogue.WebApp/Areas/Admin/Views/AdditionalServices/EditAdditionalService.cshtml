@@ -34,7 +34,12 @@
                 <nhs-table-cell>Yes</nhs-table-cell>
                 <nhs-table-cell><nhs-tag status-enum="@Model.CapabilitiesStatus()" /></nhs-table-cell>
                 <nhs-table-cell>
-                    <a href="#">Edit</a>
+                    <a asp-controller="@typeof(AdditionalServicesController).ControllerName()"
+                       asp-action="@nameof(AdditionalServicesController.EditCapabilities)"
+                       asp-route-solutionId="@Model.Solution.Id"
+                       asp-route-additionalServiceId="@Model.AdditionalService.Id">
+                        Edit
+                    </a>
                 </nhs-table-cell>
             </nhs-table-row-container>
             <nhs-table-row-container>
@@ -47,11 +52,20 @@
             </nhs-table-row-container>
         </nhs-table>
 
-        <vc:nhs-secondary-button text="Continue"
-                                 use-primary-colour="true"
-                                 url="@Model.BackLink" />
+        <form method="post" asp-action="SetPublicationStatus" asp-route-solutionId="@Model.Solution.Id" asp-route-additionalServiceId="@Model.AdditionalService.Id">
+            <nhs-fieldset-form-label asp-for="@Model"
+                                     label-text="What would you like to do with this Additional Service?"
+                                     label-hint="Select one option."
+                                     size="Large">
+                <nhs-radio-buttons asp-for="SelectedPublicationStatus"
+                                   values="Model.PublicationStatuses.Cast<object>()"
+                                   value-name="Value"
+                                   display-name="Text" />
+            </nhs-fieldset-form-label>
+
+            <nhs-submit-button text="Continue" />
+        </form>
         <br />
 
-        <vc:nhs-delete-button url="#" text="Delete Associated Service" />
     </div>
 </div>

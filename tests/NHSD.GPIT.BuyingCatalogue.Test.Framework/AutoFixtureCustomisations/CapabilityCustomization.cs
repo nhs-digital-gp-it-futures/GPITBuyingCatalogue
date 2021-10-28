@@ -13,13 +13,14 @@ namespace NHSD.GPIT.BuyingCatalogue.Test.Framework.AutoFixtureCustomisations
         {
             fixture.Customize<Epic>(c => c.Without(e => e.CapabilityId));
 
-            ISpecimenBuilder ComposerTransformation(ICustomizationComposer<Capability> composer) => composer
+            static ISpecimenBuilder ComposerTransformation(ICustomizationComposer<Capability> composer) => composer
                 .FromFactory(new CapabilitySpecimenBuilder())
                 .Without(c => c.CatalogueItemCapabilities)
                 .Without(c => c.Category)
                 .Without(c => c.CategoryId)
                 .Without(c => c.Epics)
                 .Without(c => c.FrameworkCapabilities)
+                .Without(c => c.StandardCapabilities)
                 .Without(c => c.Id);
 
             fixture.Customize<Capability>(ComposerTransformation);
@@ -34,20 +35,37 @@ namespace NHSD.GPIT.BuyingCatalogue.Test.Framework.AutoFixtureCustomisations
 
                 var capability = new Capability();
                 var capabilityCategory = context.Create<CapabilityCategory>();
-                var epics = context.CreateMany<Epic>().ToList();
                 var id = context.Create<int>();
 
                 capability.Id = id;
                 capability.Category = capabilityCategory;
                 capability.CategoryId = capabilityCategory.Id;
 
-                epics.ForEach(e =>
-                {
-                    capability.Epics.Add(e);
-                    e.CapabilityId = id;
-                });
+                AddEpics(capability, context);
+                AddStandards(capability, context);
 
                 return capability;
+            }
+
+            private static void AddStandards(Capability item, ISpecimenContext context)
+            {
+                var standards = context.CreateMany<StandardCapability>().ToList();
+                standards.ForEach(sc =>
+                {
+                    sc.Capability = item;
+                    sc.CapabilityId = item.Id;
+                    item.StandardCapabilities.Add(sc);
+                });
+            }
+
+            private static void AddEpics(Capability item, ISpecimenContext context)
+            {
+                var epics = context.CreateMany<Epic>().ToList();
+                epics.ForEach(e =>
+                {
+                    item.Epics.Add(e);
+                    e.CapabilityId = item.Id;
+                });
             }
         }
     }
