@@ -1,0 +1,31 @@
+﻿@model NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.ServiceLevelAgreements.DeleteServiceAvailabilityTimesModel;
+@{
+    ViewBag.Title = "Delete service availability times?";
+}
+
+<partial name="Partials/_BackLink" model="Model" />
+<div class="nhsuk-grid-row">
+    <div class="nhsuk-grid-column-two-thirds">
+        <nhs-validation-summary />
+        <nhs-page-title title="@ViewBag.Title"
+                        caption="@Model.SolutionName"
+                        advice="Confirm you want to delete the service availability times." />
+        <div class="nhsuk-grid-row">
+            <div class="nhsuk-grid-column-two-thirds">
+                <form method="post">
+                    <input type="hidden" asp-for="ServiceAvailabilityTimesId" />
+                    <input type="hidden" asp-for="SolutionId" />
+                    <input type="hidden" asp-for="SolutionName" />
+                    <input type="hidden" asp-for="BackLinkText" />
+                    <input type="hidden" asp-for="BackLink" />
+                    <div>
+                        <nhs-submit-button text="Delete" />
+                    </div>
+                    <div>
+                        <a href="@Model.BackLink">Cancel</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

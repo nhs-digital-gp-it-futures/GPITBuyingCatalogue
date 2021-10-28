@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using System.Linq;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 
 namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models
@@ -9,7 +8,7 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models
         public ServiceLevelAgreements()
         {
             Contacts = new HashSet<SlaContact>();
-            ServiceHours = new HashSet<SlaServiceHours>();
+            ServiceHours = new HashSet<ServiceAvailabilityTimes>();
             ServiceLevels = new HashSet<SlaServiceLevels>();
         }
 
@@ -19,7 +18,7 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models
 
         public ICollection<SlaContact> Contacts { get; set; }
 
-        public ICollection<SlaServiceHours> ServiceHours { get; set; }
+        public ICollection<ServiceAvailabilityTimes> ServiceHours { get; set; }
 
         public ICollection<SlaServiceLevels> ServiceLevels { get; set; }
 

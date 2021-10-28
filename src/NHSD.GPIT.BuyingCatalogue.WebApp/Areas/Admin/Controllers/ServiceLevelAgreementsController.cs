@@ -2,6 +2,7 @@
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Models.ServiceLevelAgreements;
@@ -34,7 +35,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
             if (solution is null)
                 return BadRequest($"No Solution found for Id: {solutionId}");
 
-            var sla = await serviceLevelAgreementsService.GetAllServiceLevelAgreementsForSolution(solutionId);
+            var sla = await serviceLevelAgreementsService.GetServiceLevelAgreementForSolution(solutionId);
 
             if (sla is null)
             {
@@ -93,7 +94,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
             if (solution is null)
                 return BadRequest($"No Solution found for Id: {solutionId}");
 
-            var serviceLevelAgreements = await serviceLevelAgreementsService.GetAllServiceLevelAgreementsForSolution(solutionId);
+            var serviceLevelAgreements = await serviceLevelAgreementsService.GetServiceLevelAgreementForSolution(solutionId);
 
             var model = new EditServiceLevelAgreementModel(solution, serviceLevelAgreements)
             {
@@ -113,7 +114,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
             if (catalogueItem is null)
                 return BadRequest($"No Solution found for Id: {solutionId}");
 
-            var serviceLevelAgreements = await serviceLevelAgreementsService.GetAllServiceLevelAgreementsForSolution(solutionId);
+            var serviceLevelAgreements = await serviceLevelAgreementsService.GetServiceLevelAgreementForSolution(solutionId);
 
             var model = new AddSlaTypeModel(catalogueItem)
             {
@@ -138,6 +139,131 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
                 return BadRequest($"No Solution found for Id: {solutionId}");
 
             await serviceLevelAgreementsService.UpdateServiceLevelTypeAsync(solution, model.SlaLevel!.Value);
+
+            return RedirectToAction(nameof(EditServiceLevelAgreement), new { solutionId });
+        }
+
+        [HttpGet("edit-service-level-agreement/add-service-availability-times")]
+        public async Task<IActionResult> AddServiceAvailabilityTimes(CatalogueItemId solutionId)
+        {
+            var solution = await solutionsService.GetSolution(solutionId);
+            if (solution is null)
+                return BadRequest($"No Solution found for Id: {solutionId}");
+
+            var model = new EditServiceAvailabilityTimesModel(solution)
+            {
+                BackLink = Url.Action(nameof(EditServiceLevelAgreement), new { solutionId }),
+            };
+
+            return View("AddEditServiceAvailabilityTimes", model);
+        }
+
+        [HttpPost("edit-service-level-agreement/add-service-availability-times")]
+        public async Task<IActionResult> AddServiceAvailabilityTimes(CatalogueItemId solutionId, EditServiceAvailabilityTimesModel model)
+        {
+            if (!ModelState.IsValid)
+                return View("AddEditServiceAvailabilityTimes", model);
+
+            var solution = await solutionsService.GetSolution(solutionId);
+            if (solution is null)
+                return BadRequest($"No Solution found for Id: {solutionId}");
+
+            var serviceAvailabilityTimesModel = new ServiceAvailabilityTimesModel
+            {
+                SupportType = model.SupportType,
+                From = model.From!.Value,
+                Until = model.Until.Value,
+                ApplicableDays = model.ApplicableDays,
+                UserId = User.UserId(),
+            };
+
+            await serviceLevelAgreementsService.SaveServiceAvailabilityTimes(solution, serviceAvailabilityTimesModel);
+
+            return RedirectToAction(nameof(EditServiceLevelAgreement), new { solutionId });
+        }
+
+        [HttpGet("edit-service-level-agreement/edit-service-availability-times/{serviceAvailabilityTimesId}")]
+        public async Task<IActionResult> EditServiceAvailabilityTimes(CatalogueItemId solutionId, int serviceAvailabilityTimesId)
+        {
+            var solution = await solutionsService.GetSolution(solutionId);
+            if (solution is null)
+                return BadRequest($"No Solution found for Id: {solutionId}");
+
+            var serviceAvailabilityTimes = await serviceLevelAgreementsService.GetServiceAvailabilityTimes(solutionId, serviceAvailabilityTimesId);
+            if (serviceAvailabilityTimes is null)
+                return BadRequest($"No Service Availability Times with Id {serviceAvailabilityTimesId} found for Solution: {solutionId}");
+
+            var model = new EditServiceAvailabilityTimesModel(solution, serviceAvailabilityTimes)
+            {
+                BackLink = Url.Action(nameof(EditServiceLevelAgreement), new { solutionId }),
+                CanDelete = solution.PublishedStatus != PublicationStatus.Published || ((await serviceLevelAgreementsService.GetCountOfServiceAvailabilityTimes(serviceAvailabilityTimes.Id)) > 0),
+            };
+
+            return View("AddEditServiceAvailabilityTimes", model);
+        }
+
+        [HttpPost("edit-service-level-agreement/edit-service-availability-times/{serviceAvailabilityTimesId}")]
+        public async Task<IActionResult> EditServiceAvailabilityTimes(CatalogueItemId solutionId, int serviceAvailabilityTimesId, EditServiceAvailabilityTimesModel model)
+        {
+            if (!ModelState.IsValid)
+                return View("AddEditServiceAvailabilityTimes", model);
+
+            var solution = await solutionsService.GetSolution(solutionId);
+            if (solution is null)
+                return BadRequest($"No Solution found for Id: {solutionId}");
+
+            var serviceAvailabilityTimes = await serviceLevelAgreementsService.GetServiceAvailabilityTimes(solutionId, serviceAvailabilityTimesId);
+            if (serviceAvailabilityTimes is null)
+                return BadRequest($"No Service Availability Times with Id {serviceAvailabilityTimesId} found for Solution: {solutionId}");
+
+            var serviceAvailabilityTimesModel = new ServiceAvailabilityTimesModel
+            {
+                SupportType = model.SupportType,
+                From = model.From!.Value,
+                Until = model.Until.Value,
+                ApplicableDays = model.ApplicableDays,
+                UserId = User.UserId(),
+            };
+
+            await serviceLevelAgreementsService.UpdateServiceAvailabilityTimes(solution, serviceAvailabilityTimesId, serviceAvailabilityTimesModel);
+
+            return RedirectToAction(nameof(EditServiceLevelAgreement), new { solutionId });
+        }
+
+        [HttpGet("edit-service-level-agreement/delete-service-availability-times/{serviceAvailabilityTimesId}")]
+        public async Task<IActionResult> DeleteServiceAvailabilityTimes(CatalogueItemId solutionId, int serviceAvailabilityTimesId)
+        {
+            var solution = await solutionsService.GetSolution(solutionId);
+            if (solution is null)
+                return BadRequest($"No Solution found for Id: {solutionId}");
+
+            var serviceAvailabilityTimes = await serviceLevelAgreementsService.GetServiceAvailabilityTimes(solutionId, serviceAvailabilityTimesId);
+            if (serviceAvailabilityTimes is null)
+                return BadRequest($"No Service Availability Times with Id {serviceAvailabilityTimesId} found for Solution: {solutionId}");
+
+            var model = new DeleteServiceAvailabilityTimesModel(solution, serviceAvailabilityTimes)
+            {
+                BackLink = Url.Action(nameof(EditServiceAvailabilityTimes), new { solutionId, serviceAvailabilityTimesId }),
+            };
+
+            return View(model);
+        }
+
+        [HttpPost("edit-service-level-agreement/delete-service-availability-times/{serviceAvailabilityTimesId}")]
+        public async Task<IActionResult> DeleteServiceAvailabilityTimes(CatalogueItemId solutionId, int serviceAvailabilityTimesId, DeleteServiceAvailabilityTimesModel model)
+        {
+            if (!ModelState.IsValid)
+                return View(model);
+
+            var solution = await solutionsService.GetSolution(solutionId);
+            if (solution is null)
+                return BadRequest($"No Solution found for Id: {solutionId}");
+
+            var serviceAvailabilityTimes = await serviceLevelAgreementsService.GetServiceAvailabilityTimes(solutionId, serviceAvailabilityTimesId);
+            if (serviceAvailabilityTimes is null)
+                return BadRequest($"No Service Availability Times with Id {serviceAvailabilityTimesId} found for Solution: {solutionId}");
+
+            await serviceLevelAgreementsService.DeleteServiceAvailabilityTimes(solutionId, serviceAvailabilityTimesId);
 
             return RedirectToAction(nameof(EditServiceLevelAgreement), new { solutionId });
         }
