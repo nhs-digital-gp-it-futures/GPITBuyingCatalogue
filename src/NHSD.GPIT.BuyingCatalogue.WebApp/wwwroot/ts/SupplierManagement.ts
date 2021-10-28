@@ -1,5 +1,4 @@
-﻿
-class SupplierManagement {
+﻿class SupplierManagement {
 
     // a variable of type boolean
     checked: boolean;
@@ -24,7 +23,7 @@ class SupplierManagement {
 }
 
 window.onload = function (): void {
-    var supplierManagement: SupplierManagement = new SupplierManagement();
+    const supplierManagement: SupplierManagement = new SupplierManagement();
     supplierManagement.SetSupplierEvents();
 };
 
@@ -35,5 +34,3 @@ function ChangeSupplierDisplayStyle(style : string): void {
         input.style.display = style;
     }
 }
-
-

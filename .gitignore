@@ -362,4 +362,7 @@ MigrationBackup/
 **/wwwroot/js/*.js
 **/wwwroot/js/*.js.map
 
+# VScode files
+.vscode/*
+
 _remote_state.tf

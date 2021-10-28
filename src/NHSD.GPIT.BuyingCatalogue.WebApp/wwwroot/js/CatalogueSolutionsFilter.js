@@ -191,10 +191,8 @@ window.onload = function () {
 };
 function refreshCapabilitiesAndEpics(html) {
     const filterHtml = new DOMParser().parseFromString(html, "text/html");
-    let newCapabilities = null;
-    newCapabilities = filterHtml.getElementById(filterCapabilitiesDetails).querySelector(filterDetailsText);
-    let currentCapabilities = null;
-    currentCapabilities = document.getElementById(filterCapabilitiesDetails).querySelector(filterDetailsText);
+    const newCapabilities = filterHtml.getElementById(filterCapabilitiesDetails).querySelector(filterDetailsText);
+    const currentCapabilities = document.getElementById(filterCapabilitiesDetails).querySelector(filterDetailsText);
     currentCapabilities.parentNode.removeChild(currentCapabilities);
     document.getElementById(filterCapabilitiesDetails).appendChild(newCapabilities);
     this.RefireDomContentLoadedEvent();

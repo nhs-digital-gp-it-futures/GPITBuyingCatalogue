@@ -14,7 +14,7 @@ class SupplierManagement {
     }
 }
 window.onload = function () {
-    var supplierManagement = new SupplierManagement();
+    const supplierManagement = new SupplierManagement();
     supplierManagement.SetSupplierEvents();
 };
 function ChangeSupplierDisplayStyle(style) {

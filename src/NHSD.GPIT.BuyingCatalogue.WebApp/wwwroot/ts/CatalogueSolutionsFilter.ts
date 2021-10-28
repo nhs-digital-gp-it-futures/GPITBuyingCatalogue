@@ -188,7 +188,6 @@ class CatalogueSolutionsFilter {
         }));
     }
 
-
     // Epic Id's have 3 Patterns: Normal, DFOCVC and Supplier Defined
     // Normal is the CapabilityId e.g  "C47" followed by its unique Epic Id e.g "C47E1".
     // DFOCVC does not include the capability Id it's attached too, but instead starts with "E000",
@@ -266,11 +265,9 @@ window.onload = function (): void {
 function refreshCapabilitiesAndEpics(html: string): void {
     const filterHtml: Document = new DOMParser().parseFromString(html, "text/html");
 
-    let newCapabilities: HTMLElement = null;
-    newCapabilities = filterHtml.getElementById(filterCapabilitiesDetails)!.querySelector(filterDetailsText);
+    const newCapabilities: HTMLElement = filterHtml.getElementById(filterCapabilitiesDetails)!.querySelector(filterDetailsText);
 
-    let currentCapabilities: HTMLElement = null;
-    currentCapabilities = document.getElementById(filterCapabilitiesDetails)!.querySelector(filterDetailsText);
+    const currentCapabilities: HTMLElement = document.getElementById(filterCapabilitiesDetails)!.querySelector(filterDetailsText);
 
     currentCapabilities.parentNode!.removeChild(currentCapabilities);
 
