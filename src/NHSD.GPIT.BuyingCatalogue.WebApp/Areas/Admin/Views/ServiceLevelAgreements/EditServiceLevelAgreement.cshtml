@@ -53,20 +53,27 @@
 <h2>Contact details</h2>
 <p>Provide information on how users can contact your support services. You must add at least one contact channel.</p>
 <vc:nhs-action-link text="Add contact details"
-                    url="#" />
+                    url="@Url.Action(
+                        nameof(ServiceLevelAgreementsController.AddContact),
+                        typeof(ServiceLevelAgreementsController).ControllerName(),
+                        new { solutionId = Model.CatalogueItem.Id })" />
 
 <nhs-table data-test-id="contact-details-table">
     <nhs-table-column>Channel</nhs-table-column>
     <nhs-table-column>Contact</nhs-table-column>
     <nhs-table-column>Hours available</nhs-table-column>
     <nhs-table-column></nhs-table-column>
-    @foreach (var item in Model.ServiceLevelAgreements.Contacts)
+    @foreach(var item in Model.ServiceLevelAgreements.Contacts)
     {
         <nhs-table-row-container>
             <nhs-table-cell>@item.Channel</nhs-table-cell>
             <nhs-table-cell>@item.ContactInformation</nhs-table-cell>
-            <nhs-table-cell>@item.TimeFrom - @item.TimeUntil</nhs-table-cell>
-            <nhs-table-cell><a href="#">Edit</a></nhs-table-cell>
+            <nhs-table-cell>@item.TimeFrom.ToString("HH:mm") - @item.TimeUntil.ToString("HH:mm")</nhs-table-cell>
+            <nhs-table-cell><a href="@Url.Action(
+                                    nameof(ServiceLevelAgreementsController.EditContact),
+                                    typeof(ServiceLevelAgreementsController).ControllerName(),
+                                    new { solutionId = Model.CatalogueItem.Id, contactId = item.Id })
+                            ">Edit</a></nhs-table-cell>
         </nhs-table-row-container>
     }
 </nhs-table>

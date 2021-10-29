@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -264,6 +265,141 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
                 return BadRequest($"No Service Availability Times with Id {serviceAvailabilityTimesId} found for Solution: {solutionId}");
 
             await serviceLevelAgreementsService.DeleteServiceAvailabilityTimes(solutionId, serviceAvailabilityTimesId);
+
+            return RedirectToAction(nameof(EditServiceLevelAgreement), new { solutionId });
+        }
+
+        [HttpGet("add-contact")]
+        public async Task<IActionResult> AddContact(CatalogueItemId solutionId)
+        {
+            var catalogueItem = await solutionsService.GetSolution(solutionId);
+            if (catalogueItem is null)
+                return BadRequest($"No Solution found for Id: {solutionId}");
+
+            var model = new Models.ServiceLevelAgreements.EditSLAContactModel()
+            {
+                BackLink = Url.Action(nameof(EditServiceLevelAgreement), new { solutionId }),
+                BackLinkText = "Go back",
+            };
+
+            return View("EditSLAContact", model);
+        }
+
+        [HttpPost("add-contact")]
+        public async Task<IActionResult> AddContact(CatalogueItemId solutionId, Models.ServiceLevelAgreements.EditSLAContactModel model)
+        {
+            var catalogueItem = await solutionsService.GetSolution(solutionId);
+            if (catalogueItem is null)
+                return BadRequest($"No Solution found for Id: {solutionId}");
+
+            if (!ModelState.IsValid)
+            {
+                return View("EditSLAContact", model);
+            }
+
+            var addSLAContactModel = new ServiceContracts.Models.ServiceLevelAgreements.EditSLAContactModel
+            {
+                Channel = model.Channel,
+                ContactInformation = model.ContactInformation,
+                TimeFrom = model.From,
+                TimeUntil = model.Until,
+                UserId = User.UserId(),
+            };
+
+            await serviceLevelAgreementsService.AddSLAContact(catalogueItem, addSLAContactModel);
+
+            return RedirectToAction(nameof(EditServiceLevelAgreement), new { solutionId });
+        }
+
+        [HttpGet("edit-contact/{contactId}")]
+        public async Task<IActionResult> EditContact(CatalogueItemId solutionId, int contactId)
+        {
+            var catalogueItem = await solutionsService.GetSolution(solutionId);
+            if (catalogueItem is null)
+                return BadRequest($"No Solution found for Id: {solutionId}");
+
+            var serviceLevelAgreements = await serviceLevelAgreementsService.GetAllServiceLevelAgreementsForSolution(solutionId);
+
+            var contact = serviceLevelAgreements.Contacts.SingleOrDefault(slac => slac.Id == contactId);
+
+            if (contact is null)
+                return BadRequest($"No Contact found for Id: {contactId}");
+
+            var canDelete =
+                (catalogueItem.PublishedStatus == EntityFramework.Catalogue.Models.PublicationStatus.Draft
+                    || catalogueItem.PublishedStatus == EntityFramework.Catalogue.Models.PublicationStatus.Unpublished)
+                || (catalogueItem.PublishedStatus != EntityFramework.Catalogue.Models.PublicationStatus.Draft
+                && catalogueItem.PublishedStatus != EntityFramework.Catalogue.Models.PublicationStatus.Unpublished
+                && serviceLevelAgreements.Contacts.Count > 1);
+
+            var model = new Models.ServiceLevelAgreements.EditSLAContactModel(catalogueItem, contact, canDelete)
+            {
+                BackLink = Url.Action(nameof(EditServiceLevelAgreement), new { solutionId }),
+                BackLinkText = "Go back",
+            };
+
+            return View("EditSLAContact", model);
+        }
+
+        [HttpPost("edit-contact/{contactId}")]
+        public async Task<IActionResult> EditContact(CatalogueItemId solutionId, int contactId, Models.ServiceLevelAgreements.EditSLAContactModel model)
+        {
+            var catalogueItem = await solutionsService.GetSolution(solutionId);
+            if (catalogueItem is null)
+                return BadRequest($"No Solution found for Id: {solutionId}");
+
+            if (!ModelState.IsValid)
+            {
+                return View("EditSLAContact", model);
+            }
+
+            var addSLAContactModel = new ServiceContracts.Models.ServiceLevelAgreements.EditSLAContactModel
+            {
+                Id = contactId,
+                Channel = model.Channel,
+                ContactInformation = model.ContactInformation,
+                TimeFrom = model.From,
+                TimeUntil = model.Until,
+                UserId = User.UserId(),
+            };
+
+            await serviceLevelAgreementsService.EditSlaContact(addSLAContactModel);
+
+            return RedirectToAction(nameof(EditServiceLevelAgreement), new { solutionId });
+        }
+
+        [HttpGet("delete-contact/{contactId}")]
+        public async Task<IActionResult> DeleteContact(CatalogueItemId solutionId, int contactId)
+        {
+            var catalogueItem = await solutionsService.GetSolution(solutionId);
+            if (catalogueItem is null)
+                return BadRequest($"No Solution found for Id: {solutionId}");
+
+            var serviceLevelAgreements = await serviceLevelAgreementsService.GetAllServiceLevelAgreementsForSolution(solutionId);
+
+            if (!serviceLevelAgreements.Contacts.Any(slac => slac.Id == contactId))
+                return BadRequest($"No Contact found for Id: {contactId}");
+
+            var contact = serviceLevelAgreements.Contacts.SingleOrDefault(slac => slac.Id == contactId);
+
+            var model = new Models.ServiceLevelAgreements.EditSLAContactModel(catalogueItem, contact);
+
+            return View("DeleteSLAContact", model);
+        }
+
+        [HttpPost("delete-contact/{contactId}")]
+        public async Task<IActionResult> DeleteContact(CatalogueItemId solutionId, int contactId, Models.ServiceLevelAgreements.EditSLAContactModel model)
+        {
+            var catalogueItem = await solutionsService.GetSolution(solutionId);
+            if (catalogueItem is null)
+                return BadRequest($"No Solution found for Id: {solutionId}");
+
+            var serviceLevelAgreements = await serviceLevelAgreementsService.GetAllServiceLevelAgreementsForSolution(solutionId);
+
+            if (!serviceLevelAgreements.Contacts.Any(slac => slac.Id == contactId))
+                return BadRequest($"No Contact found for Id: {contactId}");
+
+            await serviceLevelAgreementsService.DeleteSlaContact(contactId);
 
             return RedirectToAction(nameof(EditServiceLevelAgreement), new { solutionId });
         }

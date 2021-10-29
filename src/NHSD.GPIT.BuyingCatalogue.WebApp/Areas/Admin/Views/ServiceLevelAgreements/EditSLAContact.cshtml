@@ -1,0 +1,50 @@
+﻿@using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
+@using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers;
+@model NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.ServiceLevelAgreements.EditSLAContactModel
+@{
+    ViewBag.Title = "Support contact details";
+}
+
+<article class="nhsuk-grid-row">
+    <div class="nhsuk-grid-column-two-thirds">
+        <partial name="Partials/_BackLink" model="Model" />
+        <nhs-validation-summary />
+        <nhs-page-title title="@ViewBag.Title"
+                        caption="@Model.SolutionName"
+                        advice="Provide information on how users can contact your support services under this Service Level Agreement." />
+        <form method="post">
+            <input type="hidden" asp-for="SolutionName" />
+            <input type="hidden" asp-for="SolutionId" />
+            <input type="hidden" asp-for="CanDelete" />
+            <input type="hidden" asp-for="SolutionName" />
+            <input type="hidden" asp-for="SolutionId" />
+            <input type="hidden" asp-for="CanDelete" />
+            <nhs-input asp-for="Channel"
+                       label-text="Contact channel"
+                       label-hint="For example, phone, email or webchat." />
+
+            <nhs-input asp-for="ContactInformation"
+                       label-text="Contact information"
+                       label-hint="For example, phone number, URL or email address." />
+
+            <nhs-fieldset-form-label asp-for="@Model"
+                                     label-text="Times when the support is available"
+                                     size="Medium">
+                <nhs-time-range-input asp-for="@Model"
+                                      asp-for-from="From"
+                                      asp-for-until="Until" />
+            </nhs-fieldset-form-label>
+            <br />
+            <nhs-submit-button text="Save and Continue" />
+        </form>
+
+        @if (Model.CanDelete)
+        {
+            <vc:nhs-delete-button url="@Url.Action(
+                                              nameof(ServiceLevelAgreementsController.DeleteContact),
+                                              typeof(ServiceLevelAgreementsController).ControllerName(),
+                                              new {solutionId = Model.SolutionId, contactId = Model.ContactId})"
+                                  text="Delete Contact" />
+        }
+    </div>
+</article>
