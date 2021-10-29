@@ -130,6 +130,9 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Actions.Common
         internal bool ElementIsNotDisplayed(By targetElement) =>
             ElementExists(targetElement) && !Driver.FindElement(targetElement).Displayed;
 
+        internal int NumberOfElementsDisplayed(By targetElement) =>
+            ElementExists(targetElement) ? Driver.FindElements(targetElement).Count : 0;
+
         internal bool SaveButtonDisplayed() =>
             ElementIsDisplayed(CommonSelectors.SubmitButton);
 
