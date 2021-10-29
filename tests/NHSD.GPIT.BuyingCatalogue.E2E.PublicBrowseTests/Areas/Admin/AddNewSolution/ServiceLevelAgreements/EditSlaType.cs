@@ -32,7 +32,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.AddNewSolution.ServiceL
         }
 
         [Fact]
-        public async Task AddSlaType_CorrectlyDisplayed()
+        public async Task EditSlaType_CorrectlyDisplayed()
         {
             await AddSlaToSolution();
             Driver.Navigate().Refresh();
@@ -51,7 +51,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.AddNewSolution.ServiceL
         }
 
         [Fact]
-        public async Task AddSlaType_ClickGoBack()
+        public async Task EditSlaType_ClickGoBack()
         {
             await AddSlaToSolution();
             Driver.Navigate().Refresh();
@@ -65,7 +65,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.AddNewSolution.ServiceL
         }
 
         [Fact]
-        public async Task AddSlaType_ClickSave_Valid()
+        public async Task EditSlaType_ClickSave_Valid()
         {
             await AddSlaToSolution();
             Driver.Navigate().Refresh();
