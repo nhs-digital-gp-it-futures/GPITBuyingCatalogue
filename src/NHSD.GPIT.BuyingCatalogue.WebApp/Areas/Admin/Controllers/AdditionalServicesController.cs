@@ -181,7 +181,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
 
             var additionalService = await additionalServicesService.GetAdditionalService(solutionId, additionalServiceId);
             if (additionalService is null)
-                return BadRequest($"No Associated Service found for Id: {additionalServiceId}");
+                return BadRequest($"No Additional Service found for Id: {additionalServiceId}");
 
             var model = new ManageListPricesModel(additionalService, solutionId)
             {
@@ -204,11 +204,11 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
 
             var additionalService = await additionalServicesService.GetAdditionalService(solutionId, additionalServiceId);
             if (additionalService is null)
-                return BadRequest($"No Associated Service found for Id: {additionalServiceId}");
+                return BadRequest($"No Additional Service found for Id: {additionalServiceId}");
 
             var model = new EditListPriceModel(additionalService)
             {
-                Title = "Associated Service price",
+                Title = "Additional Service price",
                 BackLink = Url.Action(
                     nameof(ManageListPrices),
                     typeof(AdditionalServicesController).ControllerName(),
