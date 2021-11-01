@@ -64,18 +64,6 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.AddNewSolution.Addition
         }
 
         [Fact]
-        public void DeleteListPrice_ClickCancelLink_ExpectedResult()
-        {
-            CommonActions.ClickLinkElement(ListPricesObjects.DeleteListPriceCancelLink);
-
-            CommonActions.PageLoadedCorrectGetIndex(
-                    typeof(AdditionalServicesController),
-                    nameof(AdditionalServicesController.EditListPrice))
-                .Should()
-                .BeTrue();
-        }
-
-        [Fact]
         public async Task DeleteListPrice_ClickDelete_ListPriceDeleted()
         {
             await using var context = GetEndToEndDbContext();
