@@ -14,9 +14,9 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.AddNewSolution.Addition
 {
     public sealed class DeleteListPrice : AuthorityTestBase, IClassFixture<LocalWebApplicationFactory>
     {
-        private const int ListPriceId = 15;
-        private static readonly CatalogueItemId SolutionId = new(99999, "001");
-        private static readonly CatalogueItemId AdditionalServiceId = new(99999, "001A99");
+        private const int ListPriceId = 6;
+        private static readonly CatalogueItemId SolutionId = new(99998, "001");
+        private static readonly CatalogueItemId AdditionalServiceId = new(99998, "001A99");
 
         private static readonly Dictionary<string, string> Parameters = new()
         {

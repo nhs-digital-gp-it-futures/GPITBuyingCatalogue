@@ -61,26 +61,6 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
                             StatusId = 1,
                         },
                     },
-                    CataloguePrices = new List<CataloguePrice>
-                    {
-                        new()
-                        {
-                            CataloguePriceId = 15,
-                            CatalogueItemId = new CatalogueItemId(99999, "001A99"),
-                            ProvisioningType = ProvisioningType.Patient,
-                            CataloguePriceType = CataloguePriceType.Flat,
-                            PricingUnit = new PricingUnit
-                            {
-                                Id = 15,
-                                TierName = "Test Tier",
-                                Description = "per test declarative",
-                            },
-                            TimeUnit = TimeUnit.PerYear,
-                            CurrencyCode = "GBP",
-                            Price = 1.33M,
-                            LastUpdated = DateTime.UtcNow,
-                        },
-                    },
                 },
                 new()
                 {
