@@ -24,14 +24,14 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
     {
         private readonly ISolutionsService solutionsService;
         private readonly IAdditionalServicesService additionalServicesService;
-        private readonly ICapabilitiesService capabilitiesService;
         private readonly IListPricesService listPricesService;
+        private readonly ICapabilitiesService capabilitiesService;
 
         public AdditionalServicesController(
             ISolutionsService solutionsService,
             IAdditionalServicesService additionalServicesService,
-            ICapabilitiesService capabilitiesService,
-            IListPricesService listPricesService)
+            IListPricesService listPricesService,
+            ICapabilitiesService capabilitiesService)
         {
             this.solutionsService = solutionsService ?? throw new ArgumentNullException(nameof(solutionsService));
             this.additionalServicesService = additionalServicesService ?? throw new ArgumentNullException(nameof(additionalServicesService));
@@ -127,6 +127,51 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
             return RedirectToAction(nameof(EditAdditionalService), new { solutionId, additionalServiceId });
         }
 
+        [HttpGet("{additionalServiceId}/edit-additional-service-details")]
+        public async Task<IActionResult> EditAdditionalServiceDetails(CatalogueItemId solutionId, CatalogueItemId additionalServiceId)
+        {
+            var solution = await solutionsService.GetSolution(solutionId);
+            if (solution is null)
+                return BadRequest($"No Solution found for Id: {solutionId}");
+
+            var additionalService = await additionalServicesService.GetAdditionalService(solutionId, additionalServiceId);
+            if (additionalService is null)
+                return BadRequest($"No Additional Service with Id {additionalServiceId} found for Solution {solutionId}");
+
+            var model = new EditAdditionalServiceDetailsModel(solution, additionalService)
+            {
+                BackLink = Url.Action(nameof(EditAdditionalService), new { solutionId, additionalServiceId }),
+            };
+
+            return View(model);
+        }
+
+        [HttpPost("{additionalServiceId}/edit-additional-service-details")]
+        public async Task<IActionResult> EditAdditionalServiceDetails(CatalogueItemId solutionId, CatalogueItemId additionalServiceId, EditAdditionalServiceDetailsModel model)
+        {
+            if (!ModelState.IsValid)
+                return View(model);
+
+            var solution = await solutionsService.GetSolution(solutionId);
+            if (solution is null)
+                return BadRequest($"No Solution found for Id: {solutionId}");
+
+            var additionalService = await additionalServicesService.GetAdditionalService(solutionId, additionalServiceId);
+            if (additionalService is null)
+                return BadRequest($"No Additional Service with Id {additionalServiceId} found for Solution {solutionId}");
+
+            var additionalServiceDetailsModel = new AdditionalServicesDetailsModel
+            {
+                Name = model.Name,
+                Description = model.Description,
+                UserId = User.UserId(),
+            };
+
+            await additionalServicesService.EditAdditionalService(solutionId, additionalServiceId, additionalServiceDetailsModel);
+
+            return RedirectToAction(nameof(EditAdditionalService), new { solutionId, additionalServiceId });
+        }
+
         [HttpGet("{additionalServiceId}/list-prices")]
         public async Task<IActionResult> ManageListPrices(CatalogueItemId solutionId, CatalogueItemId additionalServiceId)
         {
@@ -136,7 +181,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
 
             var additionalService = await additionalServicesService.GetAdditionalService(solutionId, additionalServiceId);
             if (additionalService is null)
-                return BadRequest($"No Additional Service found for Id: {additionalServiceId}");
+                return BadRequest($"No Associated Service found for Id: {additionalServiceId}");
 
             var model = new ManageListPricesModel(additionalService, solutionId)
             {
@@ -159,11 +204,11 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
 
             var additionalService = await additionalServicesService.GetAdditionalService(solutionId, additionalServiceId);
             if (additionalService is null)
-                return BadRequest($"No Additional Service found for Id: {additionalServiceId}");
+                return BadRequest($"No Associated Service found for Id: {additionalServiceId}");
 
             var model = new EditListPriceModel(additionalService)
             {
-                Title = "Additional Service price",
+                Title = "Associated Service price",
                 BackLink = Url.Action(
                     nameof(ManageListPrices),
                     typeof(AdditionalServicesController).ControllerName(),
@@ -255,51 +300,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
             await listPricesService.DeleteListPrice(additionalServiceId, listPriceId);
 
             return RedirectToAction(nameof(ManageListPrices), new { solutionId, additionalServiceId });
-        }
-
-        [HttpGet("{additionalServiceId}/edit-additional-service-details")]
-        public async Task<IActionResult> EditAdditionalServiceDetails(CatalogueItemId solutionId, CatalogueItemId additionalServiceId)
-        {
-            var solution = await solutionsService.GetSolution(solutionId);
-            if (solution is null)
-                return BadRequest($"No Solution found for Id: {solutionId}");
-
-            var additionalService = await additionalServicesService.GetAdditionalService(solutionId, additionalServiceId);
-            if (additionalService is null)
-                return BadRequest($"No Additional Service with Id {additionalServiceId} found for Solution {solutionId}");
-
-            var model = new EditAdditionalServiceDetailsModel(solution, additionalService)
-            {
-                BackLink = Url.Action(nameof(EditAdditionalService), new { solutionId, additionalServiceId }),
-            };
-
-            return View(model);
-        }
-
-        [HttpPost("{additionalServiceId}/edit-additional-service-details")]
-        public async Task<IActionResult> EditAdditionalServiceDetails(CatalogueItemId solutionId, CatalogueItemId additionalServiceId, EditAdditionalServiceDetailsModel model)
-        {
-            if (!ModelState.IsValid)
-                return View(model);
-
-            var solution = await solutionsService.GetSolution(solutionId);
-            if (solution is null)
-                return BadRequest($"No Solution found for Id: {solutionId}");
-
-            var additionalService = await additionalServicesService.GetAdditionalService(solutionId, additionalServiceId);
-            if (additionalService is null)
-                return BadRequest($"No Additional Service with Id {additionalServiceId} found for Solution {solutionId}");
-
-            var additionalServiceDetailsModel = new AdditionalServicesDetailsModel
-            {
-                Name = model.Name,
-                Description = model.Description,
-                UserId = User.UserId(),
-            };
-
-            await additionalServicesService.EditAdditionalService(solutionId, additionalServiceId, additionalServiceDetailsModel);
-
-            return RedirectToAction(nameof(EditAdditionalService), new { solutionId, additionalServiceId });
         }
 
         [HttpGet("{additionalServiceId}/edit-capabilities")]

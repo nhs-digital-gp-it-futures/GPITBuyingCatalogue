@@ -7,7 +7,7 @@
         <nhs-validation-summary />
         <nhs-page-title title="@ViewBag.Title"
                         caption="@Model.ItemName"
-                        advice="Confirm you want to delete the price for this Associated Service." />
+                        advice="Confirm you want to delete the price for this Additional Service." />
         <div class="nhsuk-grid-row">
             <div class="nhsuk-grid-column-two-thirds">
                 <form method="post">
@@ -18,7 +18,7 @@
                         <nhs-submit-button text="Delete" />
                     </div>
                     <div>
-                        <vc:nhs-backlink url="@Model.BackLink" text="Cancel" />
+                        <a href="@Model.BackLink">Cancel</a>
                     </div>
                 </form>
 
