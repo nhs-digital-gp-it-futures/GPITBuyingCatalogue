@@ -5,9 +5,9 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Database
 {
     public sealed class IdentityServiceStub : IIdentityService
     {
-        public (int UserId, string UserName) GetUserInfo()
+        public int GetUserId()
         {
-            return (UserSeedData.BobId, "Mr Test");
+            return UserSeedData.BobId;
         }
     }
 }

@@ -4,7 +4,7 @@ using NHSD.GPIT.BuyingCatalogue.EntityFramework.Users.Models;
 
 namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models
 {
-    public sealed class CatalogueItemCapability
+    public sealed class CatalogueItemCapability : IAudited
     {
         public CatalogueItemId CatalogueItemId { get; set; }
 

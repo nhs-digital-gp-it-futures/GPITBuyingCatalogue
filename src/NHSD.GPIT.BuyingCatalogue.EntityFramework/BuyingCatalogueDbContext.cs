@@ -98,7 +98,7 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework
                 if (entry.Entity is not IAudited auditedEntity)
                     continue;
 
-                (int userId, string userName) = identityService.GetUserInfo();
+                var userId = identityService.GetUserId();
 
                 switch (entry.State)
                 {
@@ -106,7 +106,11 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework
                     case EntityState.Unchanged:
                         continue;
                     default:
-                        auditedEntity.SetLastUpdatedBy(userId, userName);
+                        // mjrxxxx
+                        auditedEntity.LastUpdatedBy = userId;
+                        auditedEntity.LastUpdated = DateTime.UtcNow;
+
+                        // auditedEntity.SetLastUpdatedBy(userId, userName);
                         continue;
                 }
             }

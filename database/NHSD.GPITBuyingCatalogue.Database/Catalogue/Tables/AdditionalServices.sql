@@ -3,7 +3,7 @@
     CatalogueItemId nvarchar(14) NOT NULL,
     Summary nvarchar(300) NULL,
     FullDescription nvarchar(3000) NULL,
-    LastUpdated datetime2(7) NULL,
+    LastUpdated datetime2(7) NOT NULL,
     LastUpdatedBy int NULL,
     SolutionId nvarchar(14) NULL,
     CONSTRAINT PK_AdditionalServices PRIMARY KEY (CatalogueItemId),

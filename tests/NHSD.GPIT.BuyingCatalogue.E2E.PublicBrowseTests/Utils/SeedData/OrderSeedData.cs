@@ -44,9 +44,12 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
 
             var user = GetBuyerUser(context, order.OrderingPartyId);
 
-            order.SetLastUpdatedBy(
-                user.Id,
-                $"{user.FirstName} {user.LastName}");
+            // mjrxxx
+            //order.SetLastUpdatedBy(
+            //    user.Id,
+            //    $"{user.FirstName} {user.LastName}");
+            order.LastUpdatedBy = user.Id;
+            order.LastUpdated = DateTime.UtcNow;
 
             context.Add(order);
         }
@@ -68,9 +71,12 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
 
             var user = GetBuyerUser(context, order.OrderingPartyId);
 
-            order.SetLastUpdatedBy(
-                user.Id,
-                $"{user.FirstName} {user.LastName}");
+            // mjrxxx
+            //order.SetLastUpdatedBy(
+            //    user.Id,
+            //    $"{user.FirstName} {user.LastName}");
+            order.LastUpdatedBy = user.Id;
+            order.LastUpdated = DateTime.UtcNow;
 
             context.Add(order);
         }
@@ -99,9 +105,12 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
 
             var user = GetBuyerUser(context, order.OrderingPartyId);
 
-            order.SetLastUpdatedBy(
-                user.Id,
-                $"{user.FirstName} {user.LastName}");
+            // mjrxxxx CONSIDER IF THIS IS REQUIRED. WOULD SEEDING HAVE User.Id in context? Is setting this here necessary??
+            //order.SetLastUpdatedBy(
+            //    user.Id,
+            //    $"{user.FirstName} {user.LastName}");
+            order.LastUpdatedBy = user.Id;
+            order.LastUpdated = DateTime.UtcNow;
 
             context.Add(order);
         }
@@ -138,9 +147,12 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
 
             var user = GetBuyerUser(context, order.OrderingPartyId);
 
-            order.SetLastUpdatedBy(
-                user.Id,
-                $"{user.FirstName} {user.LastName}");
+            // mjrxxxx
+            //order.SetLastUpdatedBy(
+            //    user.Id,
+            //    $"{user.FirstName} {user.LastName}");
+            order.LastUpdatedBy = user.Id;
+            order.LastUpdated = DateTime.UtcNow;
 
             context.Add(order);
         }
@@ -178,9 +190,12 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
 
             var user = GetBuyerUser(context, order.OrderingPartyId);
 
-            order.SetLastUpdatedBy(
-                user.Id,
-                $"{user.FirstName} {user.LastName}");
+            // mjrxxxxx
+            //order.SetLastUpdatedBy(
+            //    user.Id,
+            //    $"{user.FirstName} {user.LastName}");
+            order.LastUpdatedBy = user.Id;
+            order.LastUpdated = DateTime.UtcNow;
 
             context.Add(order);
         }
@@ -252,9 +267,12 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
 
             var user = GetBuyerUser(context, order.OrderingPartyId);
 
-            order.SetLastUpdatedBy(
-                user.Id,
-                $"{user.FirstName} {user.LastName}");
+            // mjrxxxx
+            //order.SetLastUpdatedBy(
+            //    user.Id,
+            //    $"{user.FirstName} {user.LastName}");
+            order.LastUpdatedBy = user.Id;
+            order.LastUpdated = DateTime.UtcNow;
 
             order.AddOrUpdateOrderItem(addedSolution);
 
@@ -294,9 +312,12 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
 
             var user = GetBuyerUser(context, order.OrderingPartyId);
 
-            order.SetLastUpdatedBy(
-                user.Id,
-                $"{user.FirstName} {user.LastName}");
+            // mjrxxxx
+            //order.SetLastUpdatedBy(
+            //    user.Id,
+            //    $"{user.FirstName} {user.LastName}");
+            order.LastUpdatedBy = user.Id;
+            order.LastUpdated = DateTime.UtcNow;
 
             var price = context.CatalogueItems
                 .Include(c => c.CataloguePrices).ThenInclude(s => s.PricingUnit)
@@ -369,9 +390,12 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
 
             var user = GetBuyerUser(context, order.OrderingPartyId);
 
-            order.SetLastUpdatedBy(
-                user.Id,
-                $"{user.FirstName} {user.LastName}");
+            // mjrxxxx
+            //order.SetLastUpdatedBy(
+            //    user.Id,
+            //    $"{user.FirstName} {user.LastName}");
+            order.LastUpdatedBy = user.Id;
+            order.LastUpdated = DateTime.UtcNow;
 
             var priceSinglePriceSolution = context.CatalogueItems
                 .Include(c => c.CataloguePrices).ThenInclude(s => s.PricingUnit)
@@ -484,9 +508,12 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
 
             var user = GetBuyerUser(context, order.OrderingPartyId);
 
-            order.SetLastUpdatedBy(
-                user.Id,
-                $"{user.FirstName} {user.LastName}");
+            // mjrxxxx
+            //order.SetLastUpdatedBy(
+            //    user.Id,
+            //    $"{user.FirstName} {user.LastName}");
+            order.LastUpdatedBy = user.Id;
+            order.LastUpdated = DateTime.UtcNow;
 
             var price = context.CatalogueItems
                 .Include(c => c.CataloguePrices).ThenInclude(s => s.PricingUnit)
@@ -542,9 +569,12 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
 
             var user = GetBuyerUser(context, order.OrderingPartyId);
 
-            order.SetLastUpdatedBy(
-                user.Id,
-                $"{user.FirstName} {user.LastName}");
+            // mjrxxxx
+            //order.SetLastUpdatedBy(
+            //    user.Id,
+            //    $"{user.FirstName} {user.LastName}");
+            order.LastUpdatedBy = user.Id;
+            order.LastUpdated = DateTime.UtcNow;
 
             var price = context.CatalogueItems
                 .Include(c => c.CataloguePrices).ThenInclude(s => s.PricingUnit)
@@ -602,9 +632,13 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
 
             var user = GetBuyerUser(context, order.OrderingPartyId);
 
-            order.SetLastUpdatedBy(
-                user.Id,
-                $"{user.FirstName} {user.LastName}");
+            // mjrxxxx
+            // mjrxxxx URGENT - search for these commented out calls. Are they all in E2E? Need to run a test and break in context to see if these set statements are required at all
+            //order.SetLastUpdatedBy(
+            //    user.Id,
+            //    $"{user.FirstName} {user.LastName}");
+            order.LastUpdatedBy = user.Id;
+            order.LastUpdated = DateTime.UtcNow;
 
             var price = context.CatalogueItems
                 .Include(c => c.CataloguePrices).ThenInclude(s => s.PricingUnit)

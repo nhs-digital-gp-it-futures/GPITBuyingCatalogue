@@ -5,7 +5,7 @@ using NHSD.GPIT.BuyingCatalogue.EntityFramework.Users.Models;
 
 namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models
 {
-    public sealed class Solution
+    public sealed class Solution : IAudited
     {
         public Solution()
         {

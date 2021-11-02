@@ -4,7 +4,7 @@ using NHSD.GPIT.BuyingCatalogue.EntityFramework.Users.Models;
 
 namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models
 {
-    public sealed class FrameworkSolution
+    public sealed class FrameworkSolution : IAudited
     {
         public string FrameworkId { get; set; }
 
