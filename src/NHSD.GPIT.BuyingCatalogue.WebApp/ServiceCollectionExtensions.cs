@@ -1,6 +1,7 @@
 ﻿using System;
 using System.IO.Compression;
 using System.Threading.Tasks;
+using FluentValidation.AspNetCore;
 using MailKit;
 using MailKit.Net.Smtp;
 using Microsoft.AspNetCore.Authentication.Cookies;
@@ -22,6 +23,8 @@ using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Email;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Identity;
 using NHSD.GPIT.BuyingCatalogue.Services.Email;
 using NHSD.GPIT.BuyingCatalogue.Services.Identity;
+using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Validators;
+using NHSD.GPIT.BuyingCatalogue.WebApp.Validation;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp
 {
@@ -250,6 +253,15 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp
             });
 
             services.Configure<GzipCompressionProviderOptions>(options => options.Level = CompressionLevel.Fastest);
+        }
+
+        public static IServiceCollection AddFluentValidation(this IServiceCollection services)
+        {
+            return services.AddFluentValidation(
+                    options =>
+                    {
+                        options.RegisterValidatorsFromAssemblyContaining<SolutionModelValidator>();
+                    }).AddSingleton<IValidatorInterceptor, FluentValidatorInterceptor>();
         }
     }
 }
