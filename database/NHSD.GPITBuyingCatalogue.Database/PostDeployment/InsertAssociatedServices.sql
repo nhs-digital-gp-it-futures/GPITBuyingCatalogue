@@ -1,4 +1,5 @@
-﻿DECLARE @noUser AS int = NULL;
+﻿DECLARE @bobEmail AS nvarchar(50) = N'BobSmith@email.com';
+DECLARE @noUser AS int = (SELECT Id FROM users.AspNetUsers WHERE Email = @bobEmail);
 DECLARE @now AS datetime = GETUTCDATE();
 
 DECLARE @declarative AS int = (SELECT Id FROM catalogue.ProvisioningTypes WHERE [Name] = 'Declarative');

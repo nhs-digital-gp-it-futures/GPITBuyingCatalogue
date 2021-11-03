@@ -20,7 +20,8 @@ BEGIN
          LastUpdatedBy int NULL,     
     );
 
-    DECLARE @noUser AS int = NULL;
+    DECLARE @bobEmail AS nvarchar(50) = N'BobSmith@email.com';
+    DECLARE @noUser AS int = (SELECT Id FROM users.AspNetUsers WHERE Email = @bobEmail);
 
     INSERT INTO #Solution (CatalogueItemId, Summary, FullDescription, Features, ClientApplication, Hosting, ImplementationDetail, RoadMap, IntegrationsUrl, AboutUrl, LastUpdated, LastUpdatedBy)
          VALUES (N'10000-001', N'EMIS Web is the most widely used GP clinical system in the UK. Created by clinicians for clinicians, it helps run efficient practices, whilst delivering the best possible patient care. With patient safety at its core, EMIS Web enables you to deliver safe & informed on-demand care across locations.', N'We’re the UK leader in connected healthcare software and services. Through innovative IT we help healthcare professionals access the information they need to provide better, faster and more cost effective patient care.

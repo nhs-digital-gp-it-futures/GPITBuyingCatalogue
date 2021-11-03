@@ -14,7 +14,8 @@ BEGIN
         SolutionId nvarchar(14) NULL,
     );
 
-    DECLARE @noUser AS int = NULL;
+    DECLARE @bobEmail AS nvarchar(50) = N'BobSmith@email.com';
+    DECLARE @noUser AS int = (SELECT Id FROM users.AspNetUsers WHERE Email = @bobEmail);
 
     INSERT INTO #AdditionalService (CatalogueItemId, Summary, FullDescription, LastUpdated, LastUpdatedBy, SolutionId) 
          VALUES 

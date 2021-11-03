@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
@@ -102,7 +103,8 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework
 
         public override int SaveChanges()
         {
-            UpdateAuditFields(identityService.GetUserId());
+            if (ChangeTracker.Entries().Any(ct => ct.Entity is IAudited))
+                UpdateAuditFields(identityService.GetUserId());
 
             return base.SaveChanges();
         }
@@ -111,7 +113,7 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework
         {
             UpdateAuditFields(userId);
 
-            return base.SaveChangesAsync(true, default(CancellationToken));
+            return base.SaveChangesAsync(true, default);
         }
 
         public void SaveChangesAs(int userId)

@@ -13,7 +13,8 @@ BEGIN
         LastUpdatedBy int NULL,
     );
 
-    DECLARE @noUser AS int = NULL;
+    DECLARE @bobEmail AS nvarchar(50) = N'BobSmith@email.com';
+    DECLARE @noUser AS int = (SELECT Id FROM users.AspNetUsers WHERE Email = @bobEmail);
 
     INSERT INTO #FrameworkSolutions (FrameworkId, SolutionId, IsFoundation, LastUpdated, LastUpdatedBy) 
          VALUES (N'NHSDGP001', N'10000-001', 1, CAST(N'2020-03-25T07:30:18.1133333' AS datetime2), @noUser),

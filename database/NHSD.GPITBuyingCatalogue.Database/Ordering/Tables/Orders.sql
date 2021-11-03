@@ -12,7 +12,7 @@
     Created datetime2 CONSTRAINT DF_Order_Created DEFAULT GETUTCDATE() NOT NULL,
     LastUpdated datetime2 CONSTRAINT DF_Order_LastUpdated DEFAULT GETUTCDATE() NOT NULL CONSTRAINT Order_LastUpdatedNotBeforeCreated CHECK (LastUpdated >= Created),
     LastUpdatedBy int NOT NULL,
-    Completed datetime2 NULL CONSTRAINT Order_CompletedNotBeforeCreated CHECK (Completed >= LastUpdated AND Completed >= Created),
+    Completed datetime2 NULL CONSTRAINT Order_CompletedNotBeforeCreated CHECK (Completed >= Created),
     OrderStatusId int NOT NULL,
     IsDeleted bit CONSTRAINT DF_Order_IsDeleted DEFAULT 0 NOT NULL,
     CONSTRAINT PK_Orders PRIMARY KEY (Id),

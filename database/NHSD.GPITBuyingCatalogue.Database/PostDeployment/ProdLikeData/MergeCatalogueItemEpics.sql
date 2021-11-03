@@ -14,7 +14,8 @@ BEGIN
         LastUpdatedBy int NULL
     );
 
-    DECLARE @noUser AS int = NULL;
+    DECLARE @bobEmail AS nvarchar(50) = N'BobSmith@email.com';
+    DECLARE @noUser AS int = (SELECT Id FROM users.AspNetUsers WHERE Email = @bobEmail);
 
     INSERT INTO #CatalogueItemEpic (CatalogueItemId, CapabilityId, EpicId, StatusId, LastUpdated, LastUpdatedBy) 
          VALUES (N'10000-001', 5,  N'C5E1',   1, CAST(N'2020-03-31T10:44:23.3733333' AS datetime2), @noUser),

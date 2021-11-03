@@ -25,7 +25,8 @@ DECLARE @videoConsultationCapabilityId AS int = 44;
 
 DECLARE @gpitframeworkId AS nvarchar(10) = 'NHSDGP001';
 DECLARE @dfocvcframeworkId AS nvarchar(10) = 'DFOCVC001';
-DECLARE @noUser AS int = NULL;
+DECLARE @bobEmail AS nvarchar(50) = N'BobSmith@email.com';
+DECLARE @noUser AS int = (SELECT Id FROM users.AspNetUsers WHERE Email = @bobEmail);
 DECLARE @now AS datetime = GETUTCDATE();
 
 DECLARE @publishedStatus AS int = 3;

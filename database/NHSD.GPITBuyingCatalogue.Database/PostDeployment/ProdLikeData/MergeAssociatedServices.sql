@@ -14,7 +14,8 @@ BEGIN
         LastUpdatedBy int NULL,
     );
 
-    DECLARE @noUser AS int = NULL;
+    DECLARE @bobEmail AS nvarchar(50) = N'BobSmith@email.com';
+    DECLARE @noUser AS int = (SELECT Id FROM users.AspNetUsers WHERE Email = @bobEmail);
 
     INSERT INTO #AssociatedService (CatalogueItemId, [Description], OrderGuidance, LastUpdated, LastUpdatedBy) 
          VALUES 

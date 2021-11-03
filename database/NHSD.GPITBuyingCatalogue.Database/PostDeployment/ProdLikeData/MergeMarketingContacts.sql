@@ -17,7 +17,8 @@ BEGIN
         LastUpdatedBy int NULL,
     );
 
-    DECLARE @noUser AS int = NULL;
+    DECLARE @bobEmail AS nvarchar(50) = N'BobSmith@email.com';
+    DECLARE @noUser AS int = (SELECT Id FROM users.AspNetUsers WHERE Email = @bobEmail);
 
     INSERT INTO #MarketingContact (Id, SolutionId, FirstName, LastName, Email, PhoneNumber, Department, LastUpdated, LastUpdatedBy) 
          VALUES (1003, N'10000-001', N'Bob', N'Smith', N'bob.smith@anon.net', N'01234 5678901', N'Internal Sales Team', CAST(N'2020-03-31T10:50:17.6233333' AS datetime2), @noUser),

@@ -6,7 +6,8 @@ DECLARE @additionalServiceItemType AS int = 2;
 DECLARE @solutionId AS nvarchar(14);
 DECLARE @additionalServiceId AS nvarchar(14);
 DECLARE @additionalServiceId2 AS nvarchar(14);
-DECLARE @noUser AS int = NULL;
+DECLARE @bobEmail AS nvarchar(50) = N'BobSmith@email.com';
+DECLARE @noUser AS int = (SELECT Id FROM users.AspNetUsers WHERE Email = @bobEmail);
 
 DECLARE @patient AS smallint = -1;
 DECLARE @bed AS smallint = -2;

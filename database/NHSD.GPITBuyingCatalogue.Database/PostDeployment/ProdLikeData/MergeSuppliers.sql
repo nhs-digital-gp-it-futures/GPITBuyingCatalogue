@@ -18,7 +18,8 @@ BEGIN
         IsActive bit NOT NULL DEFAULT 1,
     );
 
-    DECLARE @noUser AS int = NULL;
+    DECLARE @bobEmail AS nvarchar(50) = N'BobSmith@email.com';
+    DECLARE @noUser AS int = (SELECT Id FROM users.AspNetUsers WHERE Email = @bobEmail);
 
     INSERT INTO #Supplier (Id, [Name], LegalName, Summary, SupplierUrl, [Address], Deleted, LastUpdated, LastUpdatedBy)
          VALUES (10000, N'EMIS Health', N'EMIS Health', N'We’re the UK leader in connected healthcare software & services. Through innovative IT, we help healthcare professionals access the information they need to provide better, faster and more cost effective patient care.

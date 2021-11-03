@@ -13,7 +13,8 @@ BEGIN
         LastUpdatedBy int NULL
     );
 
-    DECLARE @noUser AS int = NULL;
+    DECLARE @bobEmail AS nvarchar(50) = N'BobSmith@email.com';
+    DECLARE @noUser AS int = (SELECT Id FROM users.AspNetUsers WHERE Email = @bobEmail);
     DECLARE @now AS datetime2 = GETUTCDATE();
 
     INSERT INTO #CatalogueItemCapability (CatalogueItemId, CapabilityId, StatusId, LastUpdated, LastUpdatedBy) 
