@@ -1,4 +1,5 @@
 ﻿@using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
+@using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers 
 @using NHSD.GPIT.BuyingCatalogue.Framework.Extensions
 @model NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.ManageCatalogueSolutionModel;
 @{
@@ -21,7 +22,7 @@
 }
 
 <div class="nhsuk-grid-row">
-    <div class="nhsuk-grid-column-full">
+    <div class="nhsuk-grid-column-two-thirds">
         <nhs-page-title title="@ViewBag.Title"
                         caption="@Model.Solution.Supplier.Name"
                         advice="Explain what your Catalogue Solution is for and how it works. This information will be published on the Buying Catalogue to help buyers understand if it meets their needs." />
@@ -37,6 +38,13 @@
             </nhs-summary-list>
         }
 
+        <vc:nhs-secondary-button url="@Url.Action(
+                                      nameof(SolutionsController.Description),
+                                      typeof(SolutionsController).ControllerName(),
+                                      new { solutionId = Model.Solution.Id })"
+                                 use-primary-colour="false"
+                                 text="Preview" />
+
         <nhs-fieldset-form-container asp-for="@Model"
                                      label-text="Sections"
                                      size="Large"
@@ -51,8 +59,10 @@
                     <nhs-table-cell>Details</nhs-table-cell>
                     <nhs-table-cell>Yes</nhs-table-cell>
                     <nhs-table-cell><nhs-tag colour="Green" text="Completed" /></nhs-table-cell>
-                    <nhs-table-cell><a asp-action="Details" asp-controller="CatalogueSolutions"
-                        asp-route-solutionId="@Model.Solution.Id">Edit</a></nhs-table-cell>
+                    <nhs-table-cell>
+                        <a asp-action="Details" asp-controller="CatalogueSolutions"
+                           asp-route-solutionId="@Model.Solution.Id">Edit</a>
+                    </nhs-table-cell>
                 </nhs-table-row-container>
                 <nhs-table-row-container>
                     <nhs-table-cell>Description</nhs-table-cell>
@@ -73,46 +83,6 @@
                     </nhs-table-cell>
                     <nhs-table-cell>
                         <a asp-action="Features" asp-route-solutionId="@Model.Solution.Id">Edit</a>
-                    </nhs-table-cell>
-                </nhs-table-row-container>
-                <nhs-table-row-container>
-                    <nhs-table-cell>Capabilities and Epics</nhs-table-cell>
-                    <nhs-table-cell>Yes</nhs-table-cell>
-                    <nhs-table-cell><nhs-tag colour="Green" text="Completed" /></nhs-table-cell>
-                    <nhs-table-cell><a href="#">Edit</a></nhs-table-cell>
-                </nhs-table-row-container>
-                <nhs-table-row-container>
-                    <nhs-table-cell>List price</nhs-table-cell>
-                    <nhs-table-cell>Yes</nhs-table-cell>
-                    <nhs-table-cell>
-                        <nhs-tag status-enum="@Model.ListPriceStatus()" />
-                    </nhs-table-cell>
-                    <nhs-table-cell>
-                        <a asp-controller="@typeof(ListPriceController).ControllerName()"
-                           asp-action="@nameof(ListPriceController.Index)"
-                           asp-route-solutionId="@Model.Solution.Id">Edit</a>
-                    </nhs-table-cell>
-                </nhs-table-row-container>
-                <nhs-table-row-container>
-                    <nhs-table-cell>Additional Services</nhs-table-cell>
-                    <nhs-table-cell>No</nhs-table-cell>
-                    <nhs-table-cell>
-                        <nhs-tag status-enum="Model.AdditionalServicesStatus()" />
-                    </nhs-table-cell>
-                    <nhs-table-cell>
-                        <a asp-controller="@typeof(AdditionalServicesController).ControllerName()"
-                           asp-action="@nameof(AdditionalServicesController.Index)"
-                           asp-route-solutionId="@Model.Solution.Id">Edit</a>
-                    </nhs-table-cell>
-                </nhs-table-row-container>
-                <nhs-table-row-container>
-                    <nhs-table-cell>Associated Services</nhs-table-cell>
-                    <nhs-table-cell>No</nhs-table-cell>
-                    <nhs-table-cell><nhs-tag status-enum="@Model.AssociatedServicesStatus()" /></nhs-table-cell>
-                    <nhs-table-cell>
-                        <a asp-controller="@typeof(AssociatedServicesController).ControllerName()"
-                           asp-action="@nameof(AssociatedServicesController.AssociatedServices)"
-                           asp-route-solutionId="@Model.Solution.Id">Edit</a>
                     </nhs-table-cell>
                 </nhs-table-row-container>
                 <nhs-table-row-container>
@@ -140,7 +110,7 @@
                 </nhs-table-row-container>
                 <nhs-table-row-container>
                     <nhs-table-cell>Client application type</nhs-table-cell>
-                    <nhs-table-cell>Yes</nhs-table-cell>                    
+                    <nhs-table-cell>Yes</nhs-table-cell>
                     <nhs-table-cell>
                         <nhs-tag status-enum="@Model.ClientApplicationTypeStatus()" />
                     </nhs-table-cell>
@@ -150,7 +120,7 @@
                 </nhs-table-row-container>
                 <nhs-table-row-container>
                     <nhs-table-cell>Hosting type</nhs-table-cell>
-                    <nhs-table-cell>Yes</nhs-table-cell>                    
+                    <nhs-table-cell>Yes</nhs-table-cell>
                     <nhs-table-cell>
                         <nhs-tag status-enum="@Model.HostingTypeStatus()" />
                     </nhs-table-cell>
@@ -159,13 +129,43 @@
                     </nhs-table-cell>
                 </nhs-table-row-container>
                 <nhs-table-row-container>
-                    <nhs-table-cell>Service Level Agreement</nhs-table-cell>
+                    <nhs-table-cell>List price</nhs-table-cell>
                     <nhs-table-cell>Yes</nhs-table-cell>
                     <nhs-table-cell>
-                        <nhs-tag status-enum="@Model.SlaStatus()" />
+                        <nhs-tag status-enum="@Model.ListPriceStatus()" />
                     </nhs-table-cell>
                     <nhs-table-cell>
-                        <a asp-action="Index" asp-controller="ServiceLevelAgreements" asp-route-solutionId="@Model.Solution.Id">Edit</a>
+                        <a asp-controller="@typeof(ListPriceController).ControllerName()"
+                           asp-action="@nameof(ListPriceController.Index)"
+                           asp-route-solutionId="@Model.Solution.Id">Edit</a>
+                    </nhs-table-cell>
+                </nhs-table-row-container>
+                <nhs-table-row-container>
+                    <nhs-table-cell>Capabilities and Epics</nhs-table-cell>
+                    <nhs-table-cell>Yes</nhs-table-cell>
+                    <nhs-table-cell><nhs-tag colour="Green" text="Completed" /></nhs-table-cell>
+                    <nhs-table-cell><a href="#">Edit</a></nhs-table-cell>
+                </nhs-table-row-container>
+                <nhs-table-row-container>
+                    <nhs-table-cell>Additional Services</nhs-table-cell>
+                    <nhs-table-cell>No</nhs-table-cell>
+                    <nhs-table-cell>
+                        <nhs-tag status-enum="Model.AdditionalServicesStatus()" />
+                    </nhs-table-cell>
+                    <nhs-table-cell>
+                        <a asp-controller="@typeof(AdditionalServicesController).ControllerName()"
+                           asp-action="@nameof(AdditionalServicesController.Index)"
+                           asp-route-solutionId="@Model.Solution.Id">Edit</a>
+                    </nhs-table-cell>
+                </nhs-table-row-container>
+                <nhs-table-row-container>
+                    <nhs-table-cell>Associated Services</nhs-table-cell>
+                    <nhs-table-cell>No</nhs-table-cell>
+                    <nhs-table-cell><nhs-tag status-enum="@Model.AssociatedServicesStatus()" /></nhs-table-cell>
+                    <nhs-table-cell>
+                        <a asp-controller="@typeof(AssociatedServicesController).ControllerName()"
+                           asp-action="@nameof(AssociatedServicesController.AssociatedServices)"
+                           asp-route-solutionId="@Model.Solution.Id">Edit</a>
                     </nhs-table-cell>
                 </nhs-table-row-container>
                 <nhs-table-row-container>
@@ -187,6 +187,16 @@
                     <nhs-table-cell>
                         <a asp-action="EditSupplierDetails"
                            asp-route-solutionId="@Model.Solution.Id">Edit</a>
+                    </nhs-table-cell>
+                </nhs-table-row-container>
+                <nhs-table-row-container>
+                    <nhs-table-cell>Service Level Agreement</nhs-table-cell>
+                    <nhs-table-cell>Yes</nhs-table-cell>
+                    <nhs-table-cell>
+                        <nhs-tag status-enum="@Model.SlaStatus()" />
+                    </nhs-table-cell>
+                    <nhs-table-cell>
+                        <a asp-action="Index" asp-controller="ServiceLevelAgreements" asp-route-solutionId="@Model.Solution.Id">Edit</a>
                     </nhs-table-cell>
                 </nhs-table-row-container>
             </nhs-table>
