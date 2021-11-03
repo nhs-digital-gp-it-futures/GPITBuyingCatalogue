@@ -79,6 +79,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.AdditionalServices
                 .Include(i => i.CatalogueItemEpics)
                 .Include(i => i.Supplier)
                 .Include(i => i.AdditionalService)
+                .Include(i => i.CataloguePrices).ThenInclude(cp => cp.PricingUnit)
                 .Where(i => solutionIds.Contains(i.AdditionalService.SolutionId)
                     && i.CatalogueItemType == CatalogueItemType.AdditionalService
                     && i.PublishedStatus == PublicationStatus.Published)
@@ -103,6 +104,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.AdditionalServices
                 .Include(i => i.CatalogueItemCapabilities)
                 .Include(i => i.CatalogueItemEpics)
                 .Include(i => i.Supplier)
+                .Include(i => i.CataloguePrices).ThenInclude(cp => cp.PricingUnit)
                 .Where(i => i.AdditionalService.SolutionId == catalogueItemId && i.CatalogueItemType == CatalogueItemType.AdditionalService)
                 .OrderBy(i => i.Name);
     }

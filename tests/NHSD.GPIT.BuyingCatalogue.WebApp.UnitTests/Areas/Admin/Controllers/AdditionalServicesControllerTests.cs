@@ -12,12 +12,14 @@ using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.AdditionalServices;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Capabilities;
+using NHSD.GPIT.BuyingCatalogue.ServiceContracts.ListPrices;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Models;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions;
 using NHSD.GPIT.BuyingCatalogue.Test.Framework.AutoFixtureCustomisations;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.AdditionalServices;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.CapabilityModels;
+using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.ListPriceModels;
 using Xunit;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
@@ -554,6 +556,251 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
             result.As<RedirectToActionResult>().RouteValues.Should().Contain(
                 new KeyValuePair<string, object>("solutionId", solution.CatalogueItemId),
                 new KeyValuePair<string, object>("additionalServiceId", additionalService.CatalogueItemId));
+        }
+
+        [Theory]
+        [CommonAutoData]
+        public static async Task Get_ManageListPrices_ValidId_ReturnsCataloguePrice(
+        CatalogueItemId catalogueItemId,
+        CatalogueItemId additionalServiceId,
+        CatalogueItem catalogueItem,
+        CatalogueItem additionalService,
+        [Frozen] Mock<ISolutionsService> mockSolutionsService,
+        [Frozen] Mock<IAdditionalServicesService> mockAdditionalServicesService,
+        AdditionalServicesController controller)
+        {
+            mockSolutionsService
+                .Setup(s => s.GetSolution(catalogueItemId))
+                .ReturnsAsync(catalogueItem);
+
+            mockAdditionalServicesService
+                .Setup(s => s.GetAdditionalService(catalogueItemId, additionalServiceId))
+                .ReturnsAsync(additionalService);
+
+            var actual = (await controller.ManageListPrices(catalogueItemId, additionalServiceId)).As<ViewResult>();
+
+            actual.ViewName.Should().BeNull();
+
+            var manageListPricesModel = actual.Model.As<ManageListPricesModel>();
+            manageListPricesModel.CataloguePrices.Should().BeEquivalentTo(additionalService.CataloguePrices);
+            manageListPricesModel.CatalogueItemId.Should().Be(additionalService.Id);
+            manageListPricesModel.CatalogueName.Should().Be(additionalService.Name);
+            manageListPricesModel.BackLinkText.Should().Be("Go back");
+        }
+
+        [Theory]
+        [CommonAutoData]
+        public static async Task Get_ManageListPrices_InvalidId_ReturnsBadRequestResult(
+            CatalogueItemId catalogueItemId,
+            CatalogueItemId additionalServiceId,
+            [Frozen] Mock<IAdditionalServicesService> mockAdditionalServicesService,
+            [Frozen] Mock<ISolutionsService> mockSolutionService,
+            AdditionalServicesController controller,
+            CatalogueItem catalogueItem)
+        {
+            mockSolutionService
+                .Setup(s => s.GetSolution(catalogueItemId))
+                .ReturnsAsync(catalogueItem);
+
+            mockAdditionalServicesService
+                .Setup(s => s.GetAdditionalService(catalogueItemId, additionalServiceId))
+                .ReturnsAsync(default(CatalogueItem));
+
+            var actual = (await controller.ManageListPrices(catalogueItemId, additionalServiceId)).As<BadRequestObjectResult>();
+
+            actual.Value.Should().Be($"No Additional Service found for Id: {additionalServiceId}");
+        }
+
+        [Theory]
+        [CommonAutoData]
+        public static async Task Get_AddListPrice_ValidId_ReturnsModel(
+            CatalogueItemId catalogueItemId,
+            CatalogueItemId additionalServiceId,
+            [Frozen] Mock<IAdditionalServicesService> mockAdditionalServicesService,
+            [Frozen] Mock<ISolutionsService> mockSolutionsService,
+            AdditionalServicesController controller,
+            CatalogueItem catalogueItem,
+            CatalogueItem additionalService)
+        {
+            mockSolutionsService
+                .Setup(s => s.GetSolution(catalogueItemId))
+                .ReturnsAsync(catalogueItem);
+
+            mockAdditionalServicesService
+                .Setup(s => s.GetAdditionalService(catalogueItemId, additionalServiceId))
+                .ReturnsAsync(additionalService);
+
+            var actual = await controller.AddListPrice(catalogueItemId, additionalServiceId);
+
+            mockSolutionsService.Verify(s => s.GetSolution(catalogueItemId));
+            actual.Should().NotBeNull();
+            actual.Should().BeOfType<ViewResult>();
+
+            var model = actual.As<ViewResult>().Model.As<EditListPriceModel>();
+            model.ItemId.Should().Be(additionalService.Id);
+            model.ItemName.Should().Be(additionalService.Name);
+            model.BackLinkText.Should().Be("Go back");
+        }
+
+        [Theory]
+        [CommonAutoData]
+        public static async Task Get_AddListPrice_InvalidSolutionId_ReturnsBadRequestResult(
+            CatalogueItemId catalogueItemId,
+            CatalogueItemId additionalServiceId,
+            [Frozen] Mock<ISolutionsService> mockSolutionsService,
+            AdditionalServicesController controller)
+        {
+            mockSolutionsService
+                .Setup(s => s.GetSolution(catalogueItemId))
+                .ReturnsAsync(default(CatalogueItem));
+
+            var actual = (await controller.AddListPrice(catalogueItemId, additionalServiceId)).As<BadRequestObjectResult>();
+
+            actual.Value.Should().Be($"No Solution found for Id: {catalogueItemId}");
+        }
+
+        [Theory]
+        [CommonAutoData]
+        public static async Task Get_AddListPrice_InvalidAdditionalServiceId_ReturnsBadRequestResult(
+            CatalogueItemId catalogueItemId,
+            CatalogueItemId additionalServiceId,
+            [Frozen] Mock<IAdditionalServicesService> mockAdditionalServicesService,
+            [Frozen] Mock<ISolutionsService> mockSolutionsService,
+            AdditionalServicesController controller,
+            CatalogueItem catalogueItem)
+        {
+            mockSolutionsService
+                .Setup(s => s.GetSolution(catalogueItemId))
+                .ReturnsAsync(catalogueItem);
+
+            mockAdditionalServicesService
+                .Setup(s => s.GetAdditionalService(catalogueItemId, additionalServiceId))
+                .ReturnsAsync((CatalogueItem)null);
+
+            var actual = (await controller.AddListPrice(catalogueItemId, additionalServiceId)).As<BadRequestObjectResult>();
+
+            actual.Value.Should().Be($"No Additional Service found for Id: {additionalServiceId}");
+        }
+
+        [Theory]
+        [CommonAutoData]
+        public static async Task Post_AddListPrice_ModelStateValid_RedirectsToManageListPrices(
+            CatalogueItemId catalogueItemId,
+            CatalogueItemId additionalServiceId,
+            [Frozen] Mock<IAdditionalServicesService> mockAdditionalServicesService,
+            [Frozen] Mock<ISolutionsService> mockSolutionsService,
+            AdditionalServicesController controller,
+            CatalogueItem catalogueItem)
+        {
+            const decimal price = 3.21M;
+            var solutionId = additionalServiceId;
+            var editListPriceModel = new EditListPriceModel(catalogueItem)
+            {
+                Price = price,
+                SelectedProvisioningType = ProvisioningType.Patient,
+                Unit = "per patient",
+            };
+
+            mockSolutionsService
+                .Setup(s => s.GetSolution(catalogueItemId))
+                .ReturnsAsync(catalogueItem);
+
+            mockAdditionalServicesService
+                .Setup(s => s.GetAdditionalService(catalogueItemId, additionalServiceId))
+                .ReturnsAsync(catalogueItem);
+
+            var actual = await controller.AddListPrice(solutionId, additionalServiceId, editListPriceModel);
+
+            actual.Should().NotBeNull();
+            actual.Should().BeOfType<RedirectToActionResult>();
+            actual.As<RedirectToActionResult>().ControllerName.Should().BeNull();
+            actual.As<RedirectToActionResult>().ActionName.Should().Be(nameof(AdditionalServicesController.ManageListPrices));
+        }
+
+        [Theory]
+        [CommonAutoData]
+        public static async Task Get_EditListPrice_ValidId_ReturnsModel(
+            CatalogueItemId catalogueItemId,
+            CatalogueItemId additionalServiceId,
+            [Frozen] Mock<IListPricesService> mockListPricesService,
+            AdditionalServicesController controller,
+            CatalogueItem catalogueItem)
+        {
+            var cataloguePriceId = catalogueItem
+                .CataloguePrices
+                .First()
+                .CataloguePriceId;
+
+            mockListPricesService
+                .Setup(s => s.GetCatalogueItemWithPrices(additionalServiceId))
+                .ReturnsAsync(catalogueItem);
+
+            var actual = await controller.EditListPrice(catalogueItemId, additionalServiceId, cataloguePriceId);
+
+            actual.Should().NotBeNull();
+            actual.Should().BeOfType<ViewResult>();
+            var model = actual.As<ViewResult>().Model;
+            model.Should().BeOfType<EditListPriceModel>();
+
+            model.As<EditListPriceModel>().ItemName.Should().Be(catalogueItem.Name);
+            model.As<EditListPriceModel>().CataloguePriceId.Should().Be(cataloguePriceId);
+            model.As<EditListPriceModel>().BackLinkText.Should().Be("Go back");
+        }
+
+        [Theory]
+        [CommonAutoData]
+        public static async Task Get_EditListPrice_InvalidListPriceId_RedirectsToManageListPrices(
+            CatalogueItemId catalogueItemId,
+            CatalogueItem catalogueItem,
+            [Frozen] Mock<IListPricesService> mockListPricesService,
+            AdditionalServicesController controller)
+        {
+            catalogueItem.CataloguePrices.Clear();
+
+            const int cataloguePriceId = int.MaxValue;
+
+            mockListPricesService
+                .Setup(s => s.GetCatalogueItemWithPrices(catalogueItemId))
+                .ReturnsAsync(catalogueItem);
+
+            var actual = await controller.EditListPrice(catalogueItemId, catalogueItemId, cataloguePriceId);
+
+            actual.Should().NotBeNull();
+            actual.Should().BeOfType<RedirectToActionResult>();
+            actual.As<RedirectToActionResult>().ControllerName.Should().BeNull();
+            actual.As<RedirectToActionResult>().ActionName.Should().Be(nameof(AdditionalServicesController.ManageListPrices));
+        }
+
+        [Theory]
+        [CommonAutoData]
+        public static async Task Post_EditListPrice_ModelStateValid_RedirectsToManageListPrices(
+            CatalogueItemId catalogueItemId,
+            CatalogueItem catalogueItem,
+            [Frozen] Mock<IListPricesService> mockListPricesService,
+            AdditionalServicesController controller)
+        {
+            const decimal price = 3.21M;
+            var cataloguePriceId = catalogueItem
+                .CataloguePrices
+                .First()
+                .CataloguePriceId;
+
+            var editListPriceModel = new EditListPriceModel(catalogueItem)
+            {
+                CataloguePriceId = cataloguePriceId,
+                Price = price,
+                SelectedProvisioningType = ProvisioningType.Patient,
+                Unit = "per patient",
+            };
+
+            var actual = await controller.EditListPrice(catalogueItemId, catalogueItem.Id, cataloguePriceId, editListPriceModel);
+
+            mockListPricesService.Verify(s => s.UpdateListPrice(catalogueItem.Id, It.IsAny<ServiceContracts.Models.SaveListPriceModel>()));
+
+            actual.Should().NotBeNull();
+            actual.Should().BeOfType<RedirectToActionResult>();
+            actual.As<RedirectToActionResult>().ControllerName.Should().BeNull();
+            actual.As<RedirectToActionResult>().ActionName.Should().Be(nameof(AdditionalServicesController.ManageListPrices));
         }
     }
 }
