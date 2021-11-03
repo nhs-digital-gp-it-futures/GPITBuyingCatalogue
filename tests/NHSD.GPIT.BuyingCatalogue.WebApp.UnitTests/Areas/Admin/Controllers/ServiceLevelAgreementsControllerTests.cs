@@ -898,7 +898,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
         {
             solutionsService.Setup(s => s.GetSolution(itemId)).ReturnsAsync(solution.CatalogueItem);
 
-            serviceLevelAgreementService.Setup(slas => slas.GetAllServiceLevelAgreementsForSolution(itemId)).ReturnsAsync(solution.ServiceLevelAgreement);
+            serviceLevelAgreementService.Setup(slas => slas.GetServiceLevelAgreementForSolution(itemId)).ReturnsAsync(solution.ServiceLevelAgreement);
 
             var expectedContact = solution.ServiceLevelAgreement.Contacts.FirstOrDefault();
 
@@ -1051,7 +1051,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
         {
             solutionsService.Setup(s => s.GetSolution(itemId)).ReturnsAsync(solution.CatalogueItem);
 
-            serviceLevelAgreementService.Setup(slas => slas.GetAllServiceLevelAgreementsForSolution(itemId)).ReturnsAsync(solution.ServiceLevelAgreement);
+            serviceLevelAgreementService.Setup(slas => slas.GetServiceLevelAgreementForSolution(itemId)).ReturnsAsync(solution.ServiceLevelAgreement);
 
             var expectedContact = solution.ServiceLevelAgreement.Contacts.FirstOrDefault();
 

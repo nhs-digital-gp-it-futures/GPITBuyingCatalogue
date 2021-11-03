@@ -49,10 +49,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.ServiceLevelAgreem
         public string ContactInformation { get; set; }
 
         [ModelBinder(BinderType = typeof(TimeInputModelBinder))]
-        public DateTime From { get; set; }
+        public DateTime? From { get; set; }
 
         [ModelBinder(BinderType = typeof(TimeInputModelBinder))]
-        public DateTime Until { get; set; }
+        public DateTime? Until { get; set; }
 
         public string SolutionName { get; set; }
 

@@ -301,8 +301,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
             {
                 Channel = model.Channel,
                 ContactInformation = model.ContactInformation,
-                TimeFrom = model.From,
-                TimeUntil = model.Until,
+                TimeFrom = model.From.Value,
+                TimeUntil = model.Until.Value,
                 UserId = User.UserId(),
             };
 
@@ -318,7 +318,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
             if (catalogueItem is null)
                 return BadRequest($"No Solution found for Id: {solutionId}");
 
-            var serviceLevelAgreements = await serviceLevelAgreementsService.GetAllServiceLevelAgreementsForSolution(solutionId);
+            var serviceLevelAgreements = await serviceLevelAgreementsService.GetServiceLevelAgreementForSolution(solutionId);
 
             var contact = serviceLevelAgreements.Contacts.SingleOrDefault(slac => slac.Id == contactId);
 
@@ -354,8 +354,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
                 Id = contactId,
                 Channel = model.Channel,
                 ContactInformation = model.ContactInformation,
-                TimeFrom = model.From,
-                TimeUntil = model.Until,
+                TimeFrom = model.From.Value,
+                TimeUntil = model.Until.Value,
                 UserId = User.UserId(),
             };
 
