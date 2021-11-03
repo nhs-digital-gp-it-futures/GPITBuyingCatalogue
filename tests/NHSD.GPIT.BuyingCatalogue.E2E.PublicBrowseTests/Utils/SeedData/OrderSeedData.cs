@@ -166,7 +166,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
                 },
                 CommencementDate = timeNow.AddDays(1),
             };
-            
+
             var user = GetBuyerUser(context, order.OrderingPartyId);
 
             context.Add(order);
@@ -604,7 +604,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
             order.AddOrUpdateOrderItem(addedSolution);
 
             context.Add(order);
-            
+
             context.SaveChangesAs(user.Id);
         }
 

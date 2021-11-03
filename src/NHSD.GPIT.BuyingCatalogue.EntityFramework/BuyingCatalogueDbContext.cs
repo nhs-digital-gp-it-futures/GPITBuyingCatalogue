@@ -96,15 +96,14 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework
 
         public override Task<int> SaveChangesAsync(bool acceptAllChangesOnSuccess, CancellationToken cancellationToken = default)
         {
-            UpdateAuditFields(identityService.GetUserId());
+            UpdateAuditFields();
 
             return base.SaveChangesAsync(acceptAllChangesOnSuccess, cancellationToken);
         }
 
         public override int SaveChanges()
         {
-            if (ChangeTracker.Entries().Any(ct => ct.Entity is IAudited))
-                UpdateAuditFields(identityService.GetUserId());
+            UpdateAuditFields();
 
             return base.SaveChanges();
         }
@@ -130,12 +129,14 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework
             modelBuilder.ApplyConfigurationsFromAssembly(Assembly.GetExecutingAssembly());
         }
 
-        private void UpdateAuditFields(int userId)
+        private void UpdateAuditFields(int? userId = null)
         {
             foreach (var entry in ChangeTracker.Entries())
             {
                 if (entry.Entity is not IAudited auditedEntity)
                     continue;
+
+                userId = userId ?? identityService.GetUserId();
 
                 switch (entry.State)
                 {
@@ -143,7 +144,7 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework
                     case EntityState.Unchanged:
                         continue;
                     default:
-                        auditedEntity.LastUpdatedBy = userId;
+                        auditedEntity.LastUpdatedBy = userId.Value;
                         auditedEntity.LastUpdated = DateTime.UtcNow;
                         continue;
                 }
