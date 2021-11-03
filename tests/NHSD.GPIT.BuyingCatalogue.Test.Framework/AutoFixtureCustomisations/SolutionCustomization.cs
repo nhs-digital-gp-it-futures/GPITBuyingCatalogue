@@ -52,6 +52,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Test.Framework.AutoFixtureCustomisations
                 AddFrameworkSolutions(solution, context);
                 AddMarketingContacts(solution, context);
                 AddServiceLevelAgreements(solution, context);
+                AddSLAContacts(solution, context);
                 InitializeSupplier(solution);
 
                 return solution;
@@ -98,6 +99,16 @@ namespace NHSD.GPIT.BuyingCatalogue.Test.Framework.AutoFixtureCustomisations
                 solution.ServiceLevelAgreement = sla;
                 sla.SolutionId = solution.CatalogueItemId;
                 sla.Solution = solution;
+            }
+
+            private static void AddSLAContacts(Solution solution, ISpecimenContext context)
+            {
+                var slaContacts = context.CreateMany<SlaContact>().ToList();
+                slaContacts.ForEach(slac =>
+                {
+                    solution.ServiceLevelAgreement.Contacts.Add(slac);
+                    slac.SolutionId = solution.CatalogueItemId;
+                });
             }
 
             private static void InitializeSupplier(Solution solution)

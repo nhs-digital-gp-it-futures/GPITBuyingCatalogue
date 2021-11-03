@@ -674,6 +674,23 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
                                 LastUpdated = DateTime.UtcNow,
                             },
                         },
+                        ServiceLevelAgreement = new ServiceLevelAgreements()
+                        {
+                            SolutionId = new CatalogueItemId(99998, "001"),
+                            SlaType = SlaType.Type1,
+                            Contacts = new List<SlaContact>()
+                            {
+                                new SlaContact()
+                                {
+                                    Id = 1,
+                                    SolutionId = new CatalogueItemId(99998, "001"),
+                                    Channel = "This is a Channel",
+                                    ContactInformation = "This is Contact Information",
+                                    TimeFrom = DateTime.UtcNow,
+                                    TimeUntil = DateTime.UtcNow.AddHours(5),
+                                },
+                            },
+                        },
                     },
                     CatalogueItemCapabilities = new List<CatalogueItemCapability>
                     {
@@ -756,7 +773,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
 
                     Solution = new Solution
                     {
-                        CatalogueItemId = new CatalogueItemId(99999, "008"),
+                        CatalogueItemId = new CatalogueItemId(99998, "002"),
                         AboutUrl = "https://test.com",
                         Summary = "SUMMARY - E2E With Contact With Single Price",
                         Features = @"[""Digital Online Consultation"",""Video Consultation"", ""Fully interoperable with all major GP IT solutions"", ""Compliant with all relevant ISO standards""]",
@@ -841,6 +858,32 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
                                 Email = "test@test.com",
                                 Department = "Fruit controller",
                                 LastUpdated = DateTime.UtcNow,
+                            },
+                        },
+                        ServiceLevelAgreement = new ServiceLevelAgreements()
+                        {
+                            SolutionId = new CatalogueItemId(99998, "002"),
+                            SlaType = SlaType.Type1,
+                            Contacts = new List<SlaContact>()
+                            {
+                                new SlaContact()
+                                {
+                                    Id = 2,
+                                    SolutionId = new CatalogueItemId(99998, "002"),
+                                    Channel = "This is a Channel",
+                                    ContactInformation = "This is Contact Information",
+                                    TimeFrom = DateTime.UtcNow,
+                                    TimeUntil = DateTime.UtcNow.AddHours(5),
+                                },
+                                new SlaContact()
+                                {
+                                    Id = 3,
+                                    SolutionId = new CatalogueItemId(99998, "002"),
+                                    Channel = "This is a Channel 2",
+                                    ContactInformation = "This is Contact Information 2",
+                                    TimeFrom = DateTime.UtcNow,
+                                    TimeUntil = DateTime.UtcNow.AddHours(5),
+                                },
                             },
                         },
                     },

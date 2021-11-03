@@ -288,14 +288,14 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
         [HttpPost("add-contact")]
         public async Task<IActionResult> AddContact(CatalogueItemId solutionId, Models.ServiceLevelAgreements.EditSLAContactModel model)
         {
-            var catalogueItem = await solutionsService.GetSolution(solutionId);
-            if (catalogueItem is null)
-                return BadRequest($"No Solution found for Id: {solutionId}");
-
             if (!ModelState.IsValid)
             {
                 return View("EditSLAContact", model);
             }
+
+            var catalogueItem = await solutionsService.GetSolution(solutionId);
+            if (catalogueItem is null)
+                return BadRequest($"No Solution found for Id: {solutionId}");
 
             var addSLAContactModel = new ServiceContracts.Models.ServiceLevelAgreements.EditSLAContactModel
             {
@@ -325,14 +325,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
             if (contact is null)
                 return BadRequest($"No Contact found for Id: {contactId}");
 
-            var canDelete =
-                (catalogueItem.PublishedStatus == EntityFramework.Catalogue.Models.PublicationStatus.Draft
-                    || catalogueItem.PublishedStatus == EntityFramework.Catalogue.Models.PublicationStatus.Unpublished)
-                || (catalogueItem.PublishedStatus != EntityFramework.Catalogue.Models.PublicationStatus.Draft
-                && catalogueItem.PublishedStatus != EntityFramework.Catalogue.Models.PublicationStatus.Unpublished
-                && serviceLevelAgreements.Contacts.Count > 1);
-
-            var model = new Models.ServiceLevelAgreements.EditSLAContactModel(catalogueItem, contact, canDelete)
+            var model = new Models.ServiceLevelAgreements.EditSLAContactModel(catalogueItem, contact, serviceLevelAgreements)
             {
                 BackLink = Url.Action(nameof(EditServiceLevelAgreement), new { solutionId }),
                 BackLinkText = "Go back",
@@ -344,14 +337,17 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
         [HttpPost("edit-contact/{contactId}")]
         public async Task<IActionResult> EditContact(CatalogueItemId solutionId, int contactId, Models.ServiceLevelAgreements.EditSLAContactModel model)
         {
-            var catalogueItem = await solutionsService.GetSolution(solutionId);
-            if (catalogueItem is null)
-                return BadRequest($"No Solution found for Id: {solutionId}");
-
             if (!ModelState.IsValid)
             {
                 return View("EditSLAContact", model);
             }
+
+            var catalogueItem = await solutionsService.GetSolution(solutionId);
+            if (catalogueItem is null)
+                return BadRequest($"No Solution found for Id: {solutionId}");
+
+            if (!catalogueItem.Solution.ServiceLevelAgreement.Contacts.Any(slac => slac.Id == contactId))
+                return BadRequest($"No Contact found for Id: {contactId}");
 
             var addSLAContactModel = new ServiceContracts.Models.ServiceLevelAgreements.EditSLAContactModel
             {
@@ -375,14 +371,16 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
             if (catalogueItem is null)
                 return BadRequest($"No Solution found for Id: {solutionId}");
 
-            var serviceLevelAgreements = await serviceLevelAgreementsService.GetAllServiceLevelAgreementsForSolution(solutionId);
-
-            if (!serviceLevelAgreements.Contacts.Any(slac => slac.Id == contactId))
+            if (!catalogueItem.Solution.ServiceLevelAgreement.Contacts.Any(slac => slac.Id == contactId))
                 return BadRequest($"No Contact found for Id: {contactId}");
 
-            var contact = serviceLevelAgreements.Contacts.SingleOrDefault(slac => slac.Id == contactId);
+            var contact = catalogueItem.Solution.ServiceLevelAgreement.Contacts.SingleOrDefault(slac => slac.Id == contactId);
 
-            var model = new Models.ServiceLevelAgreements.EditSLAContactModel(catalogueItem, contact);
+            var model = new Models.ServiceLevelAgreements.EditSLAContactModel(catalogueItem, contact)
+            {
+                BackLink = Url.Action(nameof(EditContact), new { solutionId, contactId }),
+                BackLinkText = "Go back",
+            };
 
             return View("DeleteSLAContact", model);
         }
@@ -394,9 +392,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
             if (catalogueItem is null)
                 return BadRequest($"No Solution found for Id: {solutionId}");
 
-            var serviceLevelAgreements = await serviceLevelAgreementsService.GetAllServiceLevelAgreementsForSolution(solutionId);
-
-            if (!serviceLevelAgreements.Contacts.Any(slac => slac.Id == contactId))
+            if (!catalogueItem.Solution.ServiceLevelAgreement.Contacts.Any(slac => slac.Id == contactId))
                 return BadRequest($"No Contact found for Id: {contactId}");
 
             await serviceLevelAgreementsService.DeleteSlaContact(contactId);
