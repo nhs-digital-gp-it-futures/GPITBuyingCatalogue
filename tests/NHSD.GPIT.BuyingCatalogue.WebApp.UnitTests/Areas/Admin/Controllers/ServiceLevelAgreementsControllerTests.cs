@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using System.Threading.Tasks;
 using AutoFixture;
 using AutoFixture.AutoMoq;
@@ -798,7 +799,11 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
             CatalogueItemId itemId,
             Solution solution)
         {
-            var addModel = new WebApp.Areas.Admin.Models.ServiceLevelAgreements.EditSLAContactModel();
+            var addModel = new WebApp.Areas.Admin.Models.ServiceLevelAgreements.EditSLAContactModel
+            {
+                From = DateTime.UtcNow,
+                Until = DateTime.UtcNow,
+            };
 
             slaService.Setup(s => s.AddSLAContact(It.IsAny<CatalogueItem>(), It.IsAny<ServiceContracts.Models.ServiceLevelAgreements.EditSLAContactModel>()));
             solutionsService.Setup(s => s.GetSolution(itemId)).ReturnsAsync(solution.CatalogueItem);
@@ -927,7 +932,11 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
             CatalogueItemId itemId,
             Solution solution)
         {
-            var addModel = new WebApp.Areas.Admin.Models.ServiceLevelAgreements.EditSLAContactModel();
+            var addModel = new WebApp.Areas.Admin.Models.ServiceLevelAgreements.EditSLAContactModel()
+            {
+                From = DateTime.UtcNow,
+                Until = DateTime.UtcNow,
+            };
 
             slaService.Setup(s => s.EditSlaContact(It.IsAny<ServiceContracts.Models.ServiceLevelAgreements.EditSLAContactModel>()));
             solutionsService.Setup(s => s.GetSolution(itemId)).ReturnsAsync(solution.CatalogueItem);
