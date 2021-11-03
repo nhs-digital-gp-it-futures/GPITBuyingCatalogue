@@ -41,7 +41,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
         {
             solution.ServiceLevelAgreement = null;
             solutionsService.Setup(s => s.GetSolution(itemId)).ReturnsAsync(solution.CatalogueItem);
-            slaService.Setup(s => s.GetAllServiceLevelAgreementsForSolution(itemId)).ReturnsAsync(default(ServiceLevelAgreements));
+            slaService.Setup(s => s.GetServiceLevelAgreementForSolution(itemId)).ReturnsAsync(default(ServiceLevelAgreements));
 
             var actual = await controller.Index(itemId);
 
@@ -60,7 +60,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
             CatalogueItemId itemId)
         {
             solutionsService.Setup(s => s.GetSolution(itemId)).ReturnsAsync(solution.CatalogueItem);
-            slaService.Setup(s => s.GetAllServiceLevelAgreementsForSolution(itemId)).ReturnsAsync(solution.ServiceLevelAgreement);
+            slaService.Setup(s => s.GetServiceLevelAgreementForSolution(itemId)).ReturnsAsync(solution.ServiceLevelAgreement);
 
             var actual = await controller.Index(itemId);
 
@@ -210,7 +210,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
             var expectedModel = new EditServiceLevelAgreementModel(solution.CatalogueItem, solution.ServiceLevelAgreement);
 
             solutionsService.Setup(s => s.GetSolution(itemId)).ReturnsAsync(solution.CatalogueItem);
-            slaService.Setup(s => s.GetAllServiceLevelAgreementsForSolution(itemId)).ReturnsAsync(solution.ServiceLevelAgreement);
+            slaService.Setup(s => s.GetServiceLevelAgreementForSolution(itemId)).ReturnsAsync(solution.ServiceLevelAgreement);
 
             var actual = await controller.EditServiceLevelAgreement(itemId);
 
@@ -246,7 +246,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
             Solution solution)
         {
             solutionsService.Setup(s => s.GetSolution(itemId)).ReturnsAsync(solution.CatalogueItem);
-            slaService.Setup(s => s.GetAllServiceLevelAgreementsForSolution(itemId)).ReturnsAsync(solution.ServiceLevelAgreement);
+            slaService.Setup(s => s.GetServiceLevelAgreementForSolution(itemId)).ReturnsAsync(solution.ServiceLevelAgreement);
 
             var expectedModel = new AddSlaTypeModel(solution.CatalogueItem);
 
@@ -342,6 +342,408 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
                     opt => opt
                         .Excluding(m => m.BackLink)
                         .Excluding(m => m.Title));
+        }
+
+        [Theory]
+        [CommonAutoData]
+        public static async Task Get_AddServiceAvailabilityTimes_NullSolution(
+            CatalogueItemId solutionId,
+            [Frozen] Mock<ISolutionsService> solutionsService,
+            ServiceLevelAgreementsController controller)
+        {
+            solutionsService.Setup(s => s.GetSolution(solutionId))
+                .ReturnsAsync(default(CatalogueItem));
+
+            var result = await controller.AddServiceAvailabilityTimes(solutionId);
+
+            result.As<BadRequestObjectResult>().Should().NotBeNull();
+            result.As<BadRequestObjectResult>().Value.Should().Be($"No Solution found for Id: {solutionId}");
+        }
+
+        [Theory]
+        [CommonAutoData]
+        public static async Task Get_AddServiceAvailabilityTimes_Valid(
+            Solution solution,
+            [Frozen] Mock<ISolutionsService> solutionsService,
+            ServiceLevelAgreementsController controller)
+        {
+            var expectedModel = new EditServiceAvailabilityTimesModel(solution.CatalogueItem);
+
+            solutionsService.Setup(s => s.GetSolution(solution.CatalogueItemId))
+                .ReturnsAsync(solution.CatalogueItem);
+
+            var result = await controller.AddServiceAvailabilityTimes(solution.CatalogueItemId);
+
+            result.As<ViewResult>().Should().NotBeNull();
+            result.As<ViewResult>().ViewName.Should().Be("AddEditServiceAvailabilityTimes");
+            result.As<ViewResult>().Model.Should().BeEquivalentTo(expectedModel, opt => opt.Excluding(m => m.BackLink));
+        }
+
+        [Theory]
+        [CommonAutoData]
+        public static async Task Post_AddServiceAvailabilityTimes_InvalidModel(
+            CatalogueItemId solutionId,
+            EditServiceAvailabilityTimesModel model,
+            ServiceLevelAgreementsController controller)
+        {
+            controller.ModelState.AddModelError("some-key", "some-error");
+
+            var result = await controller.AddServiceAvailabilityTimes(solutionId, model);
+
+            result.As<ViewResult>().Should().NotBeNull();
+            result.As<ViewResult>().Model.Should().BeEquivalentTo(model, opt => opt.Excluding(m => m.BackLink));
+        }
+
+        [Theory]
+        [CommonAutoData]
+        public static async Task Post_AddServiceAvailabilityTimes_NullSolution(
+            CatalogueItemId solutionId,
+            EditServiceAvailabilityTimesModel model,
+            [Frozen] Mock<ISolutionsService> solutionsService,
+            ServiceLevelAgreementsController controller)
+        {
+            solutionsService.Setup(s => s.GetSolution(solutionId))
+                .ReturnsAsync(default(CatalogueItem));
+
+            var result = await controller.AddServiceAvailabilityTimes(solutionId, model);
+
+            result.As<BadRequestObjectResult>().Should().NotBeNull();
+            result.As<BadRequestObjectResult>().Value.Should().Be($"No Solution found for Id: {solutionId}");
+        }
+
+        [Theory]
+        [CommonAutoData]
+        public static async Task Post_AddServiceAvailabilityTimes_ValidModel(
+            Solution solution,
+            EditServiceAvailabilityTimesModel model,
+            [Frozen] Mock<ISolutionsService> solutionsService,
+            [Frozen] Mock<IServiceLevelAgreementsService> serviceLevelAgreementsService,
+            ServiceLevelAgreementsController controller)
+        {
+            solutionsService.Setup(s => s.GetSolution(solution.CatalogueItemId))
+                .ReturnsAsync(solution.CatalogueItem);
+
+            var result = await controller.AddServiceAvailabilityTimes(solution.CatalogueItemId, model);
+
+            serviceLevelAgreementsService.Verify(s => s.SaveServiceAvailabilityTimes(solution.CatalogueItem, It.IsAny<ServiceAvailabilityTimesModel>()));
+
+            result.As<RedirectToActionResult>().Should().NotBeNull();
+            result.As<RedirectToActionResult>().ActionName.Should().Be(nameof(controller.EditServiceLevelAgreement));
+        }
+
+        [Theory]
+        [CommonAutoData]
+        public static async Task Get_EditServiceAvailabilityTimes_NullSolution(
+            CatalogueItemId solutionId,
+            int serviceAvailabilityTimesId,
+            [Frozen] Mock<ISolutionsService> solutionsService,
+            ServiceLevelAgreementsController controller)
+        {
+            solutionsService.Setup(s => s.GetSolution(solutionId))
+                .ReturnsAsync(default(CatalogueItem));
+
+            var result = await controller.EditServiceAvailabilityTimes(solutionId, serviceAvailabilityTimesId);
+
+            result.As<BadRequestObjectResult>().Should().NotBeNull();
+            result.As<BadRequestObjectResult>().Value.Should().Be($"No Solution found for Id: {solutionId}");
+        }
+
+        [Theory]
+        [CommonAutoData]
+        public static async Task Get_EditServiceAvailabilityTimes_NullServiceAvailabilityTimes(
+            CatalogueItemId solutionId,
+            int serviceAvailabilityTimesId,
+            [Frozen] Mock<IServiceLevelAgreementsService> serviceLevelAgreementsService,
+            ServiceLevelAgreementsController controller)
+        {
+            serviceLevelAgreementsService.Setup(s => s.GetServiceAvailabilityTimes(solutionId, serviceAvailabilityTimesId))
+                .ReturnsAsync(default(ServiceAvailabilityTimes));
+
+            var result = await controller.EditServiceAvailabilityTimes(solutionId, serviceAvailabilityTimesId);
+
+            result.As<BadRequestObjectResult>().Should().NotBeNull();
+            result.As<BadRequestObjectResult>().Value.Should().Be($"No Service Availability Times with Id {serviceAvailabilityTimesId} found for Solution: {solutionId}");
+        }
+
+        [Theory]
+        [CommonAutoData]
+        public static async Task Get_EditServiceAvailabilityTimes_Valid(
+            Solution solution,
+            ServiceAvailabilityTimes serviceAvailabilityTimes,
+            [Frozen] Mock<ISolutionsService> solutionsService,
+            [Frozen] Mock<IServiceLevelAgreementsService> serviceLevelAgreementsService,
+            ServiceLevelAgreementsController controller)
+        {
+            solution.CatalogueItem.PublishedStatus = PublicationStatus.Published;
+
+            var expectedModel = new EditServiceAvailabilityTimesModel(solution.CatalogueItem, serviceAvailabilityTimes);
+
+            solutionsService.Setup(s => s.GetSolution(solution.CatalogueItemId))
+                .ReturnsAsync(solution.CatalogueItem);
+
+            serviceLevelAgreementsService.Setup(s => s.GetServiceAvailabilityTimes(solution.CatalogueItemId, serviceAvailabilityTimes.Id))
+                .ReturnsAsync(serviceAvailabilityTimes);
+
+            var result = await controller.EditServiceAvailabilityTimes(solution.CatalogueItemId, serviceAvailabilityTimes.Id);
+
+            result.As<ViewResult>().Should().NotBeNull();
+            result.As<ViewResult>().ViewName.Should().Be("AddEditServiceAvailabilityTimes");
+            result.As<ViewResult>().Model.Should().BeEquivalentTo(expectedModel, opt => opt.Excluding(m => m.BackLink));
+        }
+
+        [Theory]
+        [CommonAutoData]
+        public static async Task Get_EditServiceAvailabilityTimes_SingleServiceAvailabilityTimes(
+            Solution solution,
+            ServiceAvailabilityTimes serviceAvailabilityTimes,
+            [Frozen] Mock<ISolutionsService> solutionsService,
+            [Frozen] Mock<IServiceLevelAgreementsService> serviceLevelAgreementsService,
+            ServiceLevelAgreementsController controller)
+        {
+            solution.CatalogueItem.PublishedStatus = PublicationStatus.Published;
+
+            serviceLevelAgreementsService.Setup(s => s.GetCountOfServiceAvailabilityTimes(serviceAvailabilityTimes.Id))
+                .ReturnsAsync(0);
+
+            var expectedModel = new EditServiceAvailabilityTimesModel(solution.CatalogueItem, serviceAvailabilityTimes)
+            {
+                CanDelete = false,
+            };
+
+            solutionsService.Setup(s => s.GetSolution(solution.CatalogueItemId))
+                .ReturnsAsync(solution.CatalogueItem);
+
+            serviceLevelAgreementsService.Setup(s => s.GetServiceAvailabilityTimes(solution.CatalogueItemId, serviceAvailabilityTimes.Id))
+                .ReturnsAsync(serviceAvailabilityTimes);
+
+            var result = await controller.EditServiceAvailabilityTimes(solution.CatalogueItemId, serviceAvailabilityTimes.Id);
+
+            result.As<ViewResult>().Should().NotBeNull();
+            result.As<ViewResult>().Model.Should().BeEquivalentTo(expectedModel, opt => opt.Excluding(m => m.BackLink));
+        }
+
+        [Theory]
+        [CommonAutoData]
+        public static async Task Get_EditServiceAvailabilityTimes_ManyServiceAvailabilityTimes(
+            Solution solution,
+            ServiceAvailabilityTimes serviceAvailabilityTimes,
+            [Frozen] Mock<ISolutionsService> solutionsService,
+            [Frozen] Mock<IServiceLevelAgreementsService> serviceLevelAgreementsService,
+            ServiceLevelAgreementsController controller)
+        {
+            solution.CatalogueItem.PublishedStatus = PublicationStatus.Published;
+
+            serviceLevelAgreementsService.Setup(s => s.GetCountOfServiceAvailabilityTimes(serviceAvailabilityTimes.Id))
+                .ReturnsAsync(1);
+
+            var expectedModel = new EditServiceAvailabilityTimesModel(solution.CatalogueItem, serviceAvailabilityTimes)
+            {
+                CanDelete = true,
+            };
+
+            solutionsService.Setup(s => s.GetSolution(solution.CatalogueItemId))
+                .ReturnsAsync(solution.CatalogueItem);
+
+            serviceLevelAgreementsService.Setup(s => s.GetServiceAvailabilityTimes(solution.CatalogueItemId, serviceAvailabilityTimes.Id))
+                .ReturnsAsync(serviceAvailabilityTimes);
+
+            var result = await controller.EditServiceAvailabilityTimes(solution.CatalogueItemId, serviceAvailabilityTimes.Id);
+
+            result.As<ViewResult>().Should().NotBeNull();
+            result.As<ViewResult>().Model.Should().BeEquivalentTo(expectedModel, opt => opt.Excluding(m => m.BackLink));
+        }
+
+        [Theory]
+        [CommonAutoData]
+        public static async Task Post_EditServiceAvailabilityTimes_InvalidModel(
+            CatalogueItemId solutionId,
+            int serviceAvailabilityTimesId,
+            EditServiceAvailabilityTimesModel model,
+            ServiceLevelAgreementsController controller)
+        {
+            controller.ModelState.AddModelError("some-key", "some-error");
+
+            var result = await controller.EditServiceAvailabilityTimes(solutionId, serviceAvailabilityTimesId, model);
+
+            result.As<ViewResult>().Should().NotBeNull();
+            result.As<ViewResult>().Model.Should().BeEquivalentTo(model, opt => opt.Excluding(m => m.BackLink));
+        }
+
+        [Theory]
+        [CommonAutoData]
+        public static async Task Post_EditServiceAvailabilityTimes_NullSolution(
+            CatalogueItemId solutionId,
+            int serviceAvailabilityTimesId,
+            EditServiceAvailabilityTimesModel model,
+            [Frozen] Mock<ISolutionsService> solutionsService,
+            ServiceLevelAgreementsController controller)
+        {
+            solutionsService.Setup(s => s.GetSolution(solutionId))
+                .ReturnsAsync(default(CatalogueItem));
+
+            var result = await controller.EditServiceAvailabilityTimes(solutionId, serviceAvailabilityTimesId, model);
+
+            result.As<BadRequestObjectResult>().Should().NotBeNull();
+            result.As<BadRequestObjectResult>().Value.Should().Be($"No Solution found for Id: {solutionId}");
+        }
+
+        [Theory]
+        [CommonAutoData]
+        public static async Task Post_EditServiceAvailabilityTimes_NullServiceAvailabilityTimes(
+            CatalogueItemId solutionId,
+            int serviceAvailabilityTimesId,
+            EditServiceAvailabilityTimesModel model,
+            [Frozen] Mock<IServiceLevelAgreementsService> serviceLevelAgreementsService,
+            ServiceLevelAgreementsController controller)
+        {
+            serviceLevelAgreementsService.Setup(s => s.GetServiceAvailabilityTimes(solutionId, serviceAvailabilityTimesId))
+                .ReturnsAsync(default(ServiceAvailabilityTimes));
+
+            var result = await controller.EditServiceAvailabilityTimes(solutionId, serviceAvailabilityTimesId, model);
+
+            result.As<BadRequestObjectResult>().Should().NotBeNull();
+            result.As<BadRequestObjectResult>().Value.Should().Be($"No Service Availability Times with Id {serviceAvailabilityTimesId} found for Solution: {solutionId}");
+        }
+
+        [Theory]
+        [CommonAutoData]
+        public static async Task Post_EditServiceAvailabilityTimes_ValidModel(
+            Solution solution,
+            ServiceAvailabilityTimes serviceAvailabilityTimes,
+            EditServiceAvailabilityTimesModel model,
+            [Frozen] Mock<ISolutionsService> solutionsService,
+            [Frozen] Mock<IServiceLevelAgreementsService> serviceLevelAgreementsService,
+            ServiceLevelAgreementsController controller)
+        {
+            solutionsService.Setup(s => s.GetSolution(solution.CatalogueItemId))
+                .ReturnsAsync(solution.CatalogueItem);
+
+            serviceLevelAgreementsService.Setup(s => s.GetServiceAvailabilityTimes(solution.CatalogueItemId, serviceAvailabilityTimes.Id))
+                .ReturnsAsync(serviceAvailabilityTimes);
+
+            var result = await controller.EditServiceAvailabilityTimes(solution.CatalogueItemId, serviceAvailabilityTimes.Id, model);
+
+            serviceLevelAgreementsService.Verify(s => s.UpdateServiceAvailabilityTimes(solution.CatalogueItem, serviceAvailabilityTimes.Id, It.IsAny<ServiceAvailabilityTimesModel>()));
+
+            result.As<RedirectToActionResult>().Should().NotBeNull();
+            result.As<RedirectToActionResult>().ActionName.Should().Be(nameof(controller.EditServiceLevelAgreement));
+        }
+
+        [Theory]
+        [CommonAutoData]
+        public static async Task Get_DeleteServiceAvailabilityTimes_NullSolution(
+            CatalogueItemId solutionId,
+            int serviceAvailabilityTimesId,
+            [Frozen] Mock<ISolutionsService> solutionsService,
+            ServiceLevelAgreementsController controller)
+        {
+            solutionsService.Setup(s => s.GetSolution(solutionId))
+                .ReturnsAsync(default(CatalogueItem));
+
+            var result = await controller.DeleteServiceAvailabilityTimes(solutionId, serviceAvailabilityTimesId);
+
+            result.As<BadRequestObjectResult>().Should().NotBeNull();
+            result.As<BadRequestObjectResult>().Value.Should().Be($"No Solution found for Id: {solutionId}");
+        }
+
+        [Theory]
+        [CommonAutoData]
+        public static async Task Get_DeleteServiceAvailabilityTimes_NullServiceAvailabilityTimes(
+            CatalogueItemId solutionId,
+            int serviceAvailabilityTimesId,
+            [Frozen] Mock<IServiceLevelAgreementsService> serviceLevelAgreementsService,
+            ServiceLevelAgreementsController controller)
+        {
+            serviceLevelAgreementsService.Setup(s => s.GetServiceAvailabilityTimes(solutionId, serviceAvailabilityTimesId))
+                .ReturnsAsync(default(ServiceAvailabilityTimes));
+
+            var result = await controller.DeleteServiceAvailabilityTimes(solutionId, serviceAvailabilityTimesId);
+
+            result.As<BadRequestObjectResult>().Should().NotBeNull();
+            result.As<BadRequestObjectResult>().Value.Should().Be($"No Service Availability Times with Id {serviceAvailabilityTimesId} found for Solution: {solutionId}");
+        }
+
+        [Theory]
+        [CommonAutoData]
+        public static async Task Get_DeleteServiceAvailabilityTimes_Valid(
+            Solution solution,
+            ServiceAvailabilityTimes serviceAvailabilityTimes,
+            [Frozen] Mock<ISolutionsService> solutionsService,
+            [Frozen] Mock<IServiceLevelAgreementsService> serviceLevelAgreementsService,
+            ServiceLevelAgreementsController controller)
+        {
+            var expectedModel = new DeleteServiceAvailabilityTimesModel(solution.CatalogueItem, serviceAvailabilityTimes);
+
+            solutionsService.Setup(s => s.GetSolution(solution.CatalogueItemId))
+                .ReturnsAsync(solution.CatalogueItem);
+
+            serviceLevelAgreementsService.Setup(s => s.GetServiceAvailabilityTimes(solution.CatalogueItemId, serviceAvailabilityTimes.Id))
+                .ReturnsAsync(serviceAvailabilityTimes);
+
+            var result = await controller.DeleteServiceAvailabilityTimes(solution.CatalogueItemId, serviceAvailabilityTimes.Id);
+
+            result.As<ViewResult>().Should().NotBeNull();
+            result.As<ViewResult>().Model.Should().BeEquivalentTo(expectedModel, opt => opt.Excluding(m => m.BackLink));
+        }
+
+        [Theory]
+        [CommonAutoData]
+        public static async Task Post_DeleteServiceAvailabilityTimes_NullSolution(
+            CatalogueItemId solutionId,
+            int serviceAvailabilityTimesId,
+            DeleteServiceAvailabilityTimesModel model,
+            [Frozen] Mock<ISolutionsService> solutionsService,
+            ServiceLevelAgreementsController controller)
+        {
+            solutionsService.Setup(s => s.GetSolution(solutionId))
+                .ReturnsAsync(default(CatalogueItem));
+
+            var result = await controller.DeleteServiceAvailabilityTimes(solutionId, serviceAvailabilityTimesId, model);
+
+            result.As<BadRequestObjectResult>().Should().NotBeNull();
+            result.As<BadRequestObjectResult>().Value.Should().Be($"No Solution found for Id: {solutionId}");
+        }
+
+        [Theory]
+        [CommonAutoData]
+        public static async Task Post_DeleteServiceAvailabilityTimes_NullServiceAvailabilityTimes(
+            CatalogueItemId solutionId,
+            int serviceAvailabilityTimesId,
+            DeleteServiceAvailabilityTimesModel model,
+            [Frozen] Mock<IServiceLevelAgreementsService> serviceLevelAgreementsService,
+            ServiceLevelAgreementsController controller)
+        {
+            serviceLevelAgreementsService.Setup(s => s.GetServiceAvailabilityTimes(solutionId, serviceAvailabilityTimesId))
+                .ReturnsAsync(default(ServiceAvailabilityTimes));
+
+            var result = await controller.DeleteServiceAvailabilityTimes(solutionId, serviceAvailabilityTimesId, model);
+
+            result.As<BadRequestObjectResult>().Should().NotBeNull();
+            result.As<BadRequestObjectResult>().Value.Should().Be($"No Service Availability Times with Id {serviceAvailabilityTimesId} found for Solution: {solutionId}");
+        }
+
+        [Theory]
+        [CommonAutoData]
+        public static async Task Post_DeleteServiceAvailabilityTimes_ValidModel(
+            Solution solution,
+            ServiceAvailabilityTimes serviceAvailabilityTimes,
+            DeleteServiceAvailabilityTimesModel model,
+            [Frozen] Mock<ISolutionsService> solutionsService,
+            [Frozen] Mock<IServiceLevelAgreementsService> serviceLevelAgreementsService,
+            ServiceLevelAgreementsController controller)
+        {
+            solutionsService.Setup(s => s.GetSolution(solution.CatalogueItemId))
+                .ReturnsAsync(solution.CatalogueItem);
+
+            serviceLevelAgreementsService.Setup(s => s.GetServiceAvailabilityTimes(solution.CatalogueItemId, serviceAvailabilityTimes.Id))
+                .ReturnsAsync(serviceAvailabilityTimes);
+
+            var result = await controller.DeleteServiceAvailabilityTimes(solution.CatalogueItemId, serviceAvailabilityTimes.Id, model);
+
+            serviceLevelAgreementsService.Verify(s => s.DeleteServiceAvailabilityTimes(solution.CatalogueItemId, serviceAvailabilityTimes.Id));
+
+            result.As<RedirectToActionResult>().Should().NotBeNull();
+            result.As<RedirectToActionResult>().ActionName.Should().Be(nameof(controller.EditServiceLevelAgreement));
         }
     }
 }
