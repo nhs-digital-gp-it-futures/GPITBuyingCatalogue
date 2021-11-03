@@ -24,7 +24,6 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
             AddOrderWithAddedAssociatedService(context);
             AddOrderReadyToComplete(context);
             AddCompletedOrder(context);
-            context.SaveChanges();
         }
 
         private static void AddOrderAtDescriptionStage(BuyingCatalogueDbContext context)
@@ -44,14 +43,9 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
 
             var user = GetBuyerUser(context, order.OrderingPartyId);
 
-            // mjrxxx
-            //order.SetLastUpdatedBy(
-            //    user.Id,
-            //    $"{user.FirstName} {user.LastName}");
-            order.LastUpdatedBy = user.Id;
-            order.LastUpdated = DateTime.UtcNow;
-
             context.Add(order);
+
+            context.SaveChangesAs(user.Id);
         }
 
         private static void AddOrderAtCallOffPartyStage(BuyingCatalogueDbContext context)
@@ -71,14 +65,9 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
 
             var user = GetBuyerUser(context, order.OrderingPartyId);
 
-            // mjrxxx
-            //order.SetLastUpdatedBy(
-            //    user.Id,
-            //    $"{user.FirstName} {user.LastName}");
-            order.LastUpdatedBy = user.Id;
-            order.LastUpdated = DateTime.UtcNow;
-
             context.Add(order);
+
+            context.SaveChangesAs(user.Id);
         }
 
         private static void AddOrderAtSupplierStage(BuyingCatalogueDbContext context)
@@ -105,14 +94,9 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
 
             var user = GetBuyerUser(context, order.OrderingPartyId);
 
-            // mjrxxxx CONSIDER IF THIS IS REQUIRED. WOULD SEEDING HAVE User.Id in context? Is setting this here necessary??
-            //order.SetLastUpdatedBy(
-            //    user.Id,
-            //    $"{user.FirstName} {user.LastName}");
-            order.LastUpdatedBy = user.Id;
-            order.LastUpdated = DateTime.UtcNow;
-
             context.Add(order);
+
+            context.SaveChangesAs(user.Id);
         }
 
         private static void AddOrderAtCommencementDateStage(BuyingCatalogueDbContext context)
@@ -147,14 +131,9 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
 
             var user = GetBuyerUser(context, order.OrderingPartyId);
 
-            // mjrxxxx
-            //order.SetLastUpdatedBy(
-            //    user.Id,
-            //    $"{user.FirstName} {user.LastName}");
-            order.LastUpdatedBy = user.Id;
-            order.LastUpdated = DateTime.UtcNow;
-
             context.Add(order);
+
+            context.SaveChangesAs(user.Id);
         }
 
         private static void AddOrderAtCatalogueSolutionStage(BuyingCatalogueDbContext context)
@@ -187,17 +166,12 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
                 },
                 CommencementDate = timeNow.AddDays(1),
             };
-
+            
             var user = GetBuyerUser(context, order.OrderingPartyId);
 
-            // mjrxxxxx
-            //order.SetLastUpdatedBy(
-            //    user.Id,
-            //    $"{user.FirstName} {user.LastName}");
-            order.LastUpdatedBy = user.Id;
-            order.LastUpdated = DateTime.UtcNow;
-
             context.Add(order);
+
+            context.SaveChangesAs(user.Id);
         }
 
         private static void AddOrderWithAddedCatalogueSolution(BuyingCatalogueDbContext context)
@@ -267,16 +241,11 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
 
             var user = GetBuyerUser(context, order.OrderingPartyId);
 
-            // mjrxxxx
-            //order.SetLastUpdatedBy(
-            //    user.Id,
-            //    $"{user.FirstName} {user.LastName}");
-            order.LastUpdatedBy = user.Id;
-            order.LastUpdated = DateTime.UtcNow;
-
             order.AddOrUpdateOrderItem(addedSolution);
 
             context.Add(order);
+
+            context.SaveChangesAs(user.Id);
         }
 
         private static void AddOrderWithAddedNoContactCatalogueSolution(BuyingCatalogueDbContext context)
@@ -311,13 +280,6 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
             };
 
             var user = GetBuyerUser(context, order.OrderingPartyId);
-
-            // mjrxxxx
-            //order.SetLastUpdatedBy(
-            //    user.Id,
-            //    $"{user.FirstName} {user.LastName}");
-            order.LastUpdatedBy = user.Id;
-            order.LastUpdated = DateTime.UtcNow;
 
             var price = context.CatalogueItems
                 .Include(c => c.CataloguePrices).ThenInclude(s => s.PricingUnit)
@@ -355,6 +317,8 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
             order.AddOrUpdateOrderItem(addedSolution);
 
             context.Add(order);
+
+            context.SaveChangesAs(user.Id);
         }
 
         private static void AddOrderWithAddedNoContactSolutionAndNoContactAdditionalSolution(BuyingCatalogueDbContext context)
@@ -389,13 +353,6 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
             };
 
             var user = GetBuyerUser(context, order.OrderingPartyId);
-
-            // mjrxxxx
-            //order.SetLastUpdatedBy(
-            //    user.Id,
-            //    $"{user.FirstName} {user.LastName}");
-            order.LastUpdatedBy = user.Id;
-            order.LastUpdated = DateTime.UtcNow;
 
             var priceSinglePriceSolution = context.CatalogueItems
                 .Include(c => c.CataloguePrices).ThenInclude(s => s.PricingUnit)
@@ -473,6 +430,8 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
             order.AddOrUpdateOrderItem(addedAdditionalSolution);
 
             context.Add(order);
+
+            context.SaveChangesAs(user.Id);
         }
 
         private static void AddOrderWithAddedAssociatedService(BuyingCatalogueDbContext context)
@@ -508,13 +467,6 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
 
             var user = GetBuyerUser(context, order.OrderingPartyId);
 
-            // mjrxxxx
-            //order.SetLastUpdatedBy(
-            //    user.Id,
-            //    $"{user.FirstName} {user.LastName}");
-            order.LastUpdatedBy = user.Id;
-            order.LastUpdated = DateTime.UtcNow;
-
             var price = context.CatalogueItems
                 .Include(c => c.CataloguePrices).ThenInclude(s => s.PricingUnit)
                 .Single(c => c.Id == new CatalogueItemId(99998, "S-999"))
@@ -534,6 +486,8 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
             order.AddOrUpdateOrderItem(addedSolution);
 
             context.Add(order);
+
+            context.SaveChangesAs(user.Id);
         }
 
         private static void AddOrderReadyToComplete(BuyingCatalogueDbContext context)
@@ -569,13 +523,6 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
 
             var user = GetBuyerUser(context, order.OrderingPartyId);
 
-            // mjrxxxx
-            //order.SetLastUpdatedBy(
-            //    user.Id,
-            //    $"{user.FirstName} {user.LastName}");
-            order.LastUpdatedBy = user.Id;
-            order.LastUpdated = DateTime.UtcNow;
-
             var price = context.CatalogueItems
                 .Include(c => c.CataloguePrices).ThenInclude(s => s.PricingUnit)
                 .Single(c => c.Id == new CatalogueItemId(99998, "S-999"))
@@ -597,6 +544,8 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
             order.AddOrUpdateOrderItem(addedSolution);
 
             context.Add(order);
+
+            context.SaveChangesAs(user.Id);
         }
 
         private static void AddCompletedOrder(BuyingCatalogueDbContext context)
@@ -632,14 +581,6 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
 
             var user = GetBuyerUser(context, order.OrderingPartyId);
 
-            // mjrxxxx
-            // mjrxxxx URGENT - search for these commented out calls. Are they all in E2E? Need to run a test and break in context to see if these set statements are required at all
-            //order.SetLastUpdatedBy(
-            //    user.Id,
-            //    $"{user.FirstName} {user.LastName}");
-            order.LastUpdatedBy = user.Id;
-            order.LastUpdated = DateTime.UtcNow;
-
             var price = context.CatalogueItems
                 .Include(c => c.CataloguePrices).ThenInclude(s => s.PricingUnit)
                 .Single(c => c.Id == new CatalogueItemId(99998, "S-999"))
@@ -663,6 +604,8 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
             order.AddOrUpdateOrderItem(addedSolution);
 
             context.Add(order);
+            
+            context.SaveChangesAs(user.Id);
         }
 
         private static int GetOrganisationId(BuyingCatalogueDbContext context, string odsCode = "03F")

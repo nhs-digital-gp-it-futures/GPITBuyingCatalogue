@@ -29,7 +29,7 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models
 
         public DateTime LastUpdated { get; set; }
 
-        public int? LastUpdatedBy { get; set; }
+        public int LastUpdatedBy { get; set; }
 
         public AspNetUser LastUpdatedByUser { get; set; }
 
@@ -49,7 +49,6 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models
             Email = sourceContact.Email;
             FirstName = sourceContact.FirstName;
             LastName = sourceContact.LastName;
-            LastUpdated = sourceContact.LastUpdated;
             PhoneNumber = sourceContact.PhoneNumber;
         }
 

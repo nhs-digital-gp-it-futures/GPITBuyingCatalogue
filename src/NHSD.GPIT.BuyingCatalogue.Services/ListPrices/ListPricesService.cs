@@ -34,7 +34,6 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.ListPrices
                 ProvisioningType = model.ProvisioningType,
                 TimeUnit = model.TimeUnit,
                 CurrencyCode = "GBP",
-                LastUpdated = DateTime.UtcNow,
             };
 
             catalogueItem.CataloguePrices.Add(cataloguePrice);
@@ -54,7 +53,6 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.ListPrices
             listPrice.Price = model.Price;
             listPrice.ProvisioningType = model.ProvisioningType;
             listPrice.TimeUnit = model.TimeUnit;
-            listPrice.LastUpdated = DateTime.UtcNow;
             listPrice.PricingUnit.TierName = model.PricingUnit.TierName;
             listPrice.PricingUnit.Description = model.PricingUnit.Description;
             listPrice.PricingUnit.Definition = model.PricingUnit.Definition;

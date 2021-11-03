@@ -261,8 +261,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
                 Email = model.Email,
                 PhoneNumber = model.PhoneNumber,
                 Department = model.Department,
-                LastUpdated = DateTime.UtcNow,
-                LastUpdatedBy = User.UserId(),
             };
 
             supplier = await suppliersService.AddSupplierContact(supplierId, newContact);
@@ -311,8 +309,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
                 Email = model.Email,
                 PhoneNumber = model.PhoneNumber,
                 Department = model.Department,
-                LastUpdated = DateTime.UtcNow,
-                LastUpdatedBy = User.UserId(),
             };
 
             supplier = await suppliersService.EditSupplierContact(supplierId, contactId, updatedContact);

@@ -1,13 +1,15 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using System;
+using Microsoft.EntityFrameworkCore;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Database.Configuration;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework;
+using NHSD.GPIT.BuyingCatalogue.EntityFramework.Identity;
 
 namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Database
 {
     internal sealed class EndToEndDbContext : BuyingCatalogueDbContext
     {
-        public EndToEndDbContext(DbContextOptions<EndToEndDbContext> options)
-            : base(options, new IdentityServiceStub())
+        public EndToEndDbContext(DbContextOptions<EndToEndDbContext> options, IIdentityService identityService)
+            : base(options, identityService)
         {
         }
 

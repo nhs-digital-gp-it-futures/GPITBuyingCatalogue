@@ -52,8 +52,6 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Capabilities
 
                 var catalogueItemCapability = new CatalogueItemCapability
                 {
-                    LastUpdated = DateTime.UtcNow,
-                    LastUpdatedBy = model.UserId,
                     CatalogueItemId = catalogueItemId,
                     CapabilityId = id,
                     StatusId = 1,
@@ -87,8 +85,6 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Capabilities
 
                     var catalogueItemEpic = new CatalogueItemEpic
                     {
-                        LastUpdated = DateTime.UtcNow,
-                        LastUpdatedBy = model.UserId,
                         CatalogueItemId = catalogueItemId,
                         CapabilityId = id,
                         EpicId = epicId,

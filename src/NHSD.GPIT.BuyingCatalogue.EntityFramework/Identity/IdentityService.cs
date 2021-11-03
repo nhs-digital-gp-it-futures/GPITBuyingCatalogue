@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.Http;
 
 namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Identity
 {
-    public sealed class IdentityService : IIdentityService
+    public class IdentityService : IIdentityService
     {
         public const string UserId = "userId";
 

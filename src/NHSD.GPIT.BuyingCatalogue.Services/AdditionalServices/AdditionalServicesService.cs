@@ -34,8 +34,6 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.AdditionalServices
                 AdditionalService = new()
                 {
                     FullDescription = model.Description,
-                    LastUpdated = DateTime.UtcNow,
-                    LastUpdatedBy = model.UserId,
                     SolutionId = solution.Id,
                 },
                 CatalogueItemType = CatalogueItemType.AdditionalService,
@@ -58,8 +56,6 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.AdditionalServices
 
             additionalService.Name = model.Name;
             additionalService.AdditionalService.FullDescription = model.Description;
-            additionalService.AdditionalService.LastUpdated = DateTime.UtcNow;
-            additionalService.AdditionalService.LastUpdatedBy = model.UserId;
 
             await dbContext.SaveChangesAsync();
         }

@@ -37,17 +37,14 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models
 
         public DateTime Created { get; set; } = DateTime.UtcNow;
 
-        // mjrxxxx
         public DateTime LastUpdated { get; set; }
 
-        // mjrxxxx
-        public int? LastUpdatedBy { get; set; }
+        public int LastUpdatedBy { get; set; }
 
         public AspNetUser LastUpdatedByUser { get; set; }
 
         public string LastUpdatedByName => $"{LastUpdatedByUser.FirstName} {LastUpdatedByUser.LastName}";
 
-        // mjrxxxx why the backing field?
         public DateTime? Completed => completed;
 
         public bool IsDeleted { get; set; }

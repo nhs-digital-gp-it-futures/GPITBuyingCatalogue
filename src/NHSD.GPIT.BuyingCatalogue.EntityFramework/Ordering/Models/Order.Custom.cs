@@ -11,10 +11,6 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models
         private readonly List<OrderItem> orderItems = new();
         private readonly List<ServiceInstanceItem> serviceInstanceItems = new();
 
-        // mjrxxx
-        // private DateTime lastUpdated;
-        // private int lastUpdatedBy;
-        // private string lastUpdatedByName;
         private DateTime? completed;
 
         public IReadOnlyList<ServiceInstanceItem> ServiceInstanceItems => serviceInstanceItems.AsReadOnly();
@@ -59,22 +55,10 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models
             return result;
         }
 
-        // mjrxxxx
-        // public void SetLastUpdatedBy(int userId, string userName)
-        // {
-        //    lastUpdatedBy = userId;
-        //    lastUpdatedByName = userName ?? throw new ArgumentNullException(nameof(userName));
-        //    lastUpdated = completed ?? DateTime.UtcNow;
-        // }
-
         public OrderItem AddOrUpdateOrderItem(OrderItem orderItem)
         {
             if (orderItem is null)
                 throw new ArgumentNullException(nameof(orderItem));
-
-            // mjrxxxx - review this comment - doesn't make sense to me
-            // Included to force EF Core to track order as changed so audit information is updated
-            LastUpdated = DateTime.UtcNow;
 
             var existingItem = orderItems.SingleOrDefault(o => o.Equals(orderItem));
             if (existingItem is null)

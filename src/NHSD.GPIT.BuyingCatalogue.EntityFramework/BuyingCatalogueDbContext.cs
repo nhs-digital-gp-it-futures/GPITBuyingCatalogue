@@ -93,29 +93,30 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework
 
         public override Task<int> SaveChangesAsync(bool acceptAllChangesOnSuccess, CancellationToken cancellationToken = default)
         {
-            foreach (var entry in ChangeTracker.Entries())
-            {
-                if (entry.Entity is not IAudited auditedEntity)
-                    continue;
-
-                var userId = identityService.GetUserId();
-
-                switch (entry.State)
-                {
-                    case EntityState.Detached:
-                    case EntityState.Unchanged:
-                        continue;
-                    default:
-                        // mjrxxxx
-                        auditedEntity.LastUpdatedBy = userId;
-                        auditedEntity.LastUpdated = DateTime.UtcNow;
-
-                        // auditedEntity.SetLastUpdatedBy(userId, userName);
-                        continue;
-                }
-            }
+            UpdateAuditFields(identityService.GetUserId());
 
             return base.SaveChangesAsync(acceptAllChangesOnSuccess, cancellationToken);
+        }
+
+        public override int SaveChanges()
+        {
+            UpdateAuditFields(identityService.GetUserId());
+
+            return base.SaveChanges();
+        }
+
+        public Task<int> SaveChangesAsAsync(int userId)
+        {
+            UpdateAuditFields(userId);
+
+            return base.SaveChangesAsync(true, default(CancellationToken));
+        }
+
+        public void SaveChangesAs(int userId)
+        {
+            UpdateAuditFields(userId);
+
+            base.SaveChanges();
         }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -123,6 +124,26 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework
             modelBuilder.HasAnnotation("Relational:Collation", "SQL_Latin1_General_CP1_CI_AS");
 
             modelBuilder.ApplyConfigurationsFromAssembly(Assembly.GetExecutingAssembly());
+        }
+
+        private void UpdateAuditFields(int userId)
+        {
+            foreach (var entry in ChangeTracker.Entries())
+            {
+                if (entry.Entity is not IAudited auditedEntity)
+                    continue;
+
+                switch (entry.State)
+                {
+                    case EntityState.Detached:
+                    case EntityState.Unchanged:
+                        continue;
+                    default:
+                        auditedEntity.LastUpdatedBy = userId;
+                        auditedEntity.LastUpdated = DateTime.UtcNow;
+                        continue;
+                }
+            }
         }
     }
 }

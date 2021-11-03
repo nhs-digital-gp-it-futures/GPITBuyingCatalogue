@@ -7,6 +7,7 @@ using Microsoft.AspNetCore;
 using Microsoft.AspNetCore.DataProtection;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Hosting.Server.Features;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.Data.Sqlite;
 using Microsoft.EntityFrameworkCore;
@@ -17,6 +18,7 @@ using Microsoft.Extensions.Logging;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Database;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework;
+using NHSD.GPIT.BuyingCatalogue.EntityFramework.Identity;
 using NHSD.GPIT.BuyingCatalogue.WebApp;
 using OpenQA.Selenium;
 using Serilog;
@@ -110,9 +112,11 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils
                     .EnableSensitiveDataLogging()
                     .Options;
 
-                return new EndToEndDbContext(options);
+                return new EndToEndDbContext(options, GetIdentityService);
             }
         }
+
+        internal IIdentityService GetIdentityService => host.Services.GetRequiredService<IIdentityService>();
 
         internal IDistributedCache GetDistributedCache => host.Services.GetRequiredService<IDistributedCache>();
 
@@ -152,6 +156,10 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils
                     options.EnableSensitiveDataLogging();
                 });
                 services.AddDbContext<BuyingCatalogueDbContext, EndToEndDbContext>();
+
+                services.AddHttpContextAccessor();
+
+                services.AddSingleton<IIdentityService>(new IdentityService(new HttpContextAccessor()));
 
                 var sp = services.BuildServiceProvider();
 

@@ -1,10 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
+using NHSD.GPIT.BuyingCatalogue.EntityFramework.Users.Models;
 
 namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models
 {
-    public sealed partial class OrderItem
+    public sealed partial class OrderItem : IAudited
     {
         public int OrderId { get; set; }
 
@@ -27,6 +28,12 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models
         public DateTime Created { get; set; }
 
         public DateTime LastUpdated { get; set; }
+
+        public int LastUpdatedBy { get; set; }
+
+        public AspNetUser LastUpdatedByUser { get; set; }
+
+        public string LastUpdatedByName => $"{LastUpdatedByUser.FirstName} {LastUpdatedByUser.LastName}";
 
         public IReadOnlyList<OrderItemRecipient> OrderItemRecipients => recipients;
     }

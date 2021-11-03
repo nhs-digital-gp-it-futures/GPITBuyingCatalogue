@@ -5,6 +5,7 @@ using FluentAssertions;
 using Microsoft.EntityFrameworkCore;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Objects.Common;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Utils;
+using NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.TestBases;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
@@ -92,7 +93,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.AddNewSolution.Associat
             await using var context = GetEndToEndDbContext();
             var solution = await context.CatalogueItems.Include(c => c.SupplierServiceAssociations).SingleAsync(s => s.Id == SolutionId);
             solution.SupplierServiceAssociations.Clear();
-            await context.SaveChangesAsync();
+            await context.SaveChangesAsAsync(UserSeedData.BobId);
 
             NavigateToUrl(typeof(AssociatedServicesController), nameof(AssociatedServicesController.AssociatedServices), parameters: Parameters);
 

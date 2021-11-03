@@ -87,8 +87,6 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.AssociatedServices
                 {
                     Description = model.Description,
                     OrderGuidance = model.OrderGuidance,
-                    LastUpdated = DateTime.UtcNow,
-                    LastUpdatedBy = model.UserId,
                 },
                 CatalogueItemType = CatalogueItemType.AssociatedService,
                 SupplierId = solution.SupplierId,
