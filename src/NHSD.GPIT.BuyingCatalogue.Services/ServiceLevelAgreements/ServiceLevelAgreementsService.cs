@@ -109,8 +109,8 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.ServiceLevelAgreements
             await dbContext.SaveChangesAsync();
         }
 
-        public async Task<int> GetCountOfServiceAvailabilityTimes(params int[] idsToExclude)
-            => await dbContext.ServiceAvailabilityTimes.Where(s => !idsToExclude.Contains(s.Id)).CountAsync();
+        public async Task<int> GetCountOfServiceAvailabilityTimes(CatalogueItemId solutionId, params int[] idsToExclude)
+            => await dbContext.ServiceAvailabilityTimes.Where(s => s.SolutionId == solutionId && !idsToExclude.Contains(s.Id)).CountAsync();
 
         public async Task AddSLAContact(CatalogueItem solution, EditSLAContactModel model)
         {

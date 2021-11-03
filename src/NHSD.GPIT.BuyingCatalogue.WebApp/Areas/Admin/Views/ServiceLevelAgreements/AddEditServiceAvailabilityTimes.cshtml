@@ -15,6 +15,8 @@
                         advice="Provide information on when your support services are available under this Service Level Agreement." />
 
         <form method="post">
+            <input type="hidden" asp-for="BackLink" />
+            <input type="hidden" asp-for="BackLinkText" />
             <input type="hidden" asp-for="CanDelete" />
             <input type="hidden" asp-for="SolutionId" />
             <input type="hidden" asp-for="SolutionName" />
