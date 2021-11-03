@@ -18,15 +18,19 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Validators.ServiceLevelAg
 
             RuleFor(slac => slac)
                 .MustAsync(NotBeDuplicateContact)
+                .OverridePropertyName(nameof(EditSLAContactModel.Channel))
+                .WithMessage("A contact with these details already exists");
+
+            RuleFor(slac => slac)
+                .MustAsync(NotBeDuplicateContact)
+                .OverridePropertyName(nameof(EditSLAContactModel.ContactInformation))
                 .WithMessage("A contact with these details already exists");
 
             RuleFor(slac => slac.Channel)
-                .MaximumLength(300)
                 .NotEmpty()
                 .WithMessage("Enter a contact channel");
 
             RuleFor(slac => slac.ContactInformation)
-                .MaximumLength(1000)
                 .NotEmpty()
                 .WithMessage("Enter contact information");
 
