@@ -26,7 +26,7 @@ DECLARE @videoConsultationCapabilityId AS int = 44;
 DECLARE @gpitframeworkId AS nvarchar(10) = 'NHSDGP001';
 DECLARE @dfocvcframeworkId AS nvarchar(10) = 'DFOCVC001';
 DECLARE @bobEmail AS nvarchar(50) = N'BobSmith@email.com';
-DECLARE @noUser AS int = (SELECT Id FROM users.AspNetUsers WHERE Email = @bobEmail);
+DECLARE @bobUser AS int = (SELECT Id FROM users.AspNetUsers WHERE Email = @bobEmail);
 DECLARE @now AS datetime = GETUTCDATE();
 
 DECLARE @publishedStatus AS int = 3;
@@ -53,18 +53,18 @@ BEGIN
             'Write on Time is a Citizen-facing Appointments Management system specifically designed to reduce the number of DNAs in your practice.',
             'FULL DESCRIPTION – Write on Time is a Citizen-facing Appointments Management system specifically designed to reduce the number of DNAs in your practice.',
             @now,
-            @noUser);
+            @bobUser);
 
         INSERT INTO catalogue.MarketingContacts(SolutionId, FirstName, LastName, PhoneNumber, Email, Department, LastUpdated, LastUpdatedBy)
-             VALUES (@solutionId, 'Pat', 'Butcher', '01234 567891', 'sales@test.test', 'Sales', @now, @noUser);
+             VALUES (@solutionId, 'Pat', 'Butcher', '01234 567891', 'sales@test.test', 'Sales', @now, @bobUser);
 
         INSERT INTO catalogue.CatalogueItemCapabilities(CatalogueItemId, CapabilityId, StatusId, LastUpdated, LastUpdatedBy)
-             SELECT @solutionId, Id, 1, @now, @noUser
+             SELECT @solutionId, Id, 1, @now, @bobUser
                FROM catalogue.Capabilities
               WHERE CapabilityRef = 'C1';
 
         INSERT INTO catalogue.FrameworkSolutions(FrameworkId ,SolutionId ,IsFoundation, LastUpdated, LastUpdatedBy)
-             VALUES (@gpitframeworkId, @solutionId , 1, @now, @noUser);
+             VALUES (@gpitframeworkId, @solutionId , 1, @now, @bobUser);
     END;
 
     /*************************************************************************************************************************************************************/
@@ -85,18 +85,18 @@ BEGIN
             'Appointment Gateway is a complete appointment management suite that has been fully integrated with all major clinical systems throughout both the UK and Europe.',
             'FULL DESCRIPTION – Appointment Gateway is a complete appointment management suite that has been fully integrated with all major clinical systems throughout both the UK and Europe.',
             @now,
-            @noUser);
+            @bobUser);
 
         INSERT INTO catalogue.MarketingContacts(SolutionId, FirstName, LastName, PhoneNumber, Email, Department, LastUpdated, LastUpdatedBy)
-             VALUES (@solutionId, 'Sam', 'Samosa', '01234 567891', 'sales@test.test', 'Sales', @now, @noUser);
+             VALUES (@solutionId, 'Sam', 'Samosa', '01234 567891', 'sales@test.test', 'Sales', @now, @bobUser);
 
         INSERT INTO catalogue.CatalogueItemCapabilities(CatalogueItemId, CapabilityId, StatusId, LastUpdated, LastUpdatedBy)
-             SELECT @solutionId, Id, 1, @now, @noUser
+             SELECT @solutionId, Id, 1, @now, @bobUser
                FROM catalogue.Capabilities
               WHERE CapabilityRef IN ('C1', 'C5');
 
         INSERT INTO catalogue.FrameworkSolutions(FrameworkId, SolutionId, IsFoundation, LastUpdated, LastUpdatedBy)
-             VALUES (@gpitframeworkId, @solutionId, 1, @now, @noUser);
+             VALUES (@gpitframeworkId, @solutionId, 1, @now, @bobUser);
     END;
 
     /*************************************************************************************************************************************************************/
@@ -117,13 +117,13 @@ BEGIN
             'Zen Guidance utilizes an advanced AI framework to provide clinicians with highly accurate data to support sound decision-making.',
             'FULL DESCRIPTION – Zen Guidance utilizes an advanced AI framework to provide clinicians with highly accurate data to support sound decision-making.',
             @now,
-            @noUser);
+            @bobUser);
 
         INSERT INTO catalogue.MarketingContacts(SolutionId, FirstName, LastName, PhoneNumber, Email, Department, LastUpdated, LastUpdatedBy)
-             VALUES (@solutionId, 'Victoria', 'Sponge', '01234 567891', 'sales@test.test', 'Sales', @now, @noUser);
+             VALUES (@solutionId, 'Victoria', 'Sponge', '01234 567891', 'sales@test.test', 'Sales', @now, @bobUser);
 
         INSERT INTO catalogue.CatalogueItemCapabilities (CatalogueItemId, CapabilityId, StatusId, LastUpdated, LastUpdatedBy)
-             SELECT @solutionId, Id, 1, @now, @noUser
+             SELECT @solutionId, Id, 1, @now, @bobUser
                FROM catalogue.Capabilities
               WHERE CapabilityRef = 'C6';
     END;
@@ -146,13 +146,13 @@ BEGIN
             'Intellidoc Comms empowers all practice staff to record & send communications in an extremely streamlined and time-efficient manner.',
             'FULL DESCRIPTION – Intellidoc Comms empowers all practice staff to record & send communications in an extremely streamlined and time-efficient manner.',
             @now,
-            @noUser);
+            @bobUser);
 
         INSERT INTO catalogue.MarketingContacts(SolutionId, FirstName, LastName, PhoneNumber, Email, Department, LastUpdated, LastUpdatedBy)
-             VALUES (@solutionId, 'Richard', 'Burton', '01234 567891', 'sales@test.test', 'Sales', @now, @noUser);
+             VALUES (@solutionId, 'Richard', 'Burton', '01234 567891', 'sales@test.test', 'Sales', @now, @bobUser);
 
         INSERT INTO catalogue.CatalogueItemCapabilities(CatalogueItemId, CapabilityId, StatusId, LastUpdated, LastUpdatedBy)
-             SELECT @solutionId, Id, 1, @now, @noUser
+             SELECT @solutionId, Id, 1, @now, @bobUser
                FROM catalogue.Capabilities
               WHERE CapabilityRef IN ('C7', 'C15');
     END;
@@ -175,18 +175,18 @@ BEGIN
             'Diagnostics XYZ introduces new diagnostic tools not currently provided by the leading clinical software suppliers.',
             'FULL DESCRIPTION – Diagnostics XYZ introduces new diagnostic tools not currently provided by the leading clinical software suppliers.',
             @now,
-            @noUser);
+            @bobUser);
 
         INSERT INTO catalogue.MarketingContacts(SolutionId, FirstName, LastName, PhoneNumber, Email, Department, LastUpdated, LastUpdatedBy)
-             VALUES (@solutionId, 'Harry', 'Houdini', '01234 567891', 'sales@test.test', 'Sales', @now, @noUser);
+             VALUES (@solutionId, 'Harry', 'Houdini', '01234 567891', 'sales@test.test', 'Sales', @now, @bobUser);
 
         INSERT INTO catalogue.CatalogueItemCapabilities(CatalogueItemId, CapabilityId, StatusId, LastUpdated, LastUpdatedBy)
-             SELECT @solutionId, Id, 1, @now, @noUser
+             SELECT @solutionId, Id, 1, @now, @bobUser
                FROM catalogue.Capabilities
               WHERE CapabilityRef = 'C8';
 
         INSERT INTO catalogue.FrameworkSolutions(FrameworkId ,SolutionId ,IsFoundation, LastUpdated, LastUpdatedBy)
-             VALUES (@gpitframeworkId, @solutionId , 1, @now, @noUser);
+             VALUES (@gpitframeworkId, @solutionId , 1, @now, @bobUser);
     END;
 
     /*************************************************************************************************************************************************************/
@@ -207,13 +207,13 @@ BEGIN
             'Document Wizard is the UK industry-leader for clinical document management software due to our patented lightweight interface and interoperability.',
             'FULL DESCRIPTION – Document Wizard is the UK industry-leader for clinical document management software due to our patented lightweight interface and interoperability.',
             @now,
-            @noUser);
+            @bobUser);
 
         INSERT INTO catalogue.MarketingContacts(SolutionId, FirstName, LastName, PhoneNumber, Email, Department, LastUpdated, LastUpdatedBy)
-             VALUES (@solutionId, 'Agent', 'M', '01234 567891', 'm@test.test', 'Sales', @now, @noUser);
+             VALUES (@solutionId, 'Agent', 'M', '01234 567891', 'm@test.test', 'Sales', @now, @bobUser);
 
         INSERT INTO catalogue.CatalogueItemCapabilities(CatalogueItemId, CapabilityId, StatusId, LastUpdated, LastUpdatedBy)
-             SELECT @solutionId, Id, 1, @now, @noUser
+             SELECT @solutionId, Id, 1, @now, @bobUser
                FROM catalogue.Capabilities
               WHERE CapabilityRef IN ('C9', 'C19', 'C41');
     END;
@@ -236,13 +236,13 @@ BEGIN
             'Paperlite utilises new OCR technology to seamlessly transfer written notes to digital patient records.',
             'FULL DESCRIPTION – Paperlite utilises new OCR technology to seamlessly transfer written notes to digital patient records.',
             @now,
-            @noUser);
+            @bobUser);
 
         INSERT INTO catalogue.MarketingContacts(SolutionId, FirstName, LastName, PhoneNumber, Email, Department, LastUpdated, LastUpdatedBy)
-             VALUES ('100006-001', 'Timothy', 'Teabag', '01234 567891', 'sales@test.test', 'Sales', @now, @noUser);
+             VALUES ('100006-001', 'Timothy', 'Teabag', '01234 567891', 'sales@test.test', 'Sales', @now, @bobUser);
 
         INSERT INTO catalogue.CatalogueItemCapabilities(CatalogueItemId, CapabilityId, StatusId, LastUpdated, LastUpdatedBy)
-             SELECT '100006-001', Id, 1, @now, @noUser
+             SELECT '100006-001', Id, 1, @now, @bobUser
                FROM catalogue.Capabilities
               WHERE CapabilityRef IN ('C9', 'C17');
     END;
@@ -265,13 +265,13 @@ BEGIN
             'Medsort enhances your medicine optimisation process and introduces new, more customisable tools that can be adapted to your local environment.',
             'FULL DESCRIPTION – Medsort enhances your medicine optimisation process and introduces new, more customisable tools that can be adapted to your local environment.',
             @now,
-            @noUser);
+            @bobUser);
 
         INSERT INTO catalogue.MarketingContacts(SolutionId, FirstName, LastName, PhoneNumber, Email, Department, LastUpdated, LastUpdatedBy)
-             VALUES (@solutionId, 'Betty', 'Banjo', '01234 567891', 'sales@test.test', 'Sales', @now, @noUser);
+             VALUES (@solutionId, 'Betty', 'Banjo', '01234 567891', 'sales@test.test', 'Sales', @now, @bobUser);
 
         INSERT INTO catalogue.CatalogueItemCapabilities(CatalogueItemId, CapabilityId, StatusId, LastUpdated, LastUpdatedBy)
-             SELECT @solutionId, Id, 1, @now, @noUser
+             SELECT @solutionId, Id, 1, @now, @bobUser
                FROM catalogue.Capabilities
               WHERE CapabilityRef = 'C30';
     END;
@@ -293,13 +293,13 @@ BEGIN
             'BostonDynamics enhances your medicine optimisation process and introduces new, more customisable tools that can be adapted to your local environment.',
             'FULL DESCRIPTION – BostonDynamics enhances your medicine optimisation process and introduces new, more customisable tools that can be adapted to your local environment.',
             @now,
-            @noUser);
+            @bobUser);
 
         INSERT INTO catalogue.MarketingContacts(SolutionId, FirstName, LastName, PhoneNumber, Email, Department, LastUpdated, LastUpdatedBy)
-             VALUES (@solutionId, 'Boston', 'Rocks', '01234 567891', 'sales@test.test', 'Sales', @now, @noUser);
+             VALUES (@solutionId, 'Boston', 'Rocks', '01234 567891', 'sales@test.test', 'Sales', @now, @bobUser);
 
         INSERT INTO catalogue.CatalogueItemCapabilities(CatalogueItemId, CapabilityId, StatusId, LastUpdated, LastUpdatedBy)
-             SELECT @solutionId, Id, 1, @now, @noUser
+             SELECT @solutionId, Id, 1, @now, @bobUser
                FROM catalogue.Capabilities
               WHERE CapabilityRef = 'C30';
     END;
@@ -355,133 +355,133 @@ EMIS Web GP is fully accredited to securely exchange data with the NHS SPINE and
 
 Using EMIS Web, healthcare professionals can provide the best possible patient care with patient safety at its core. We safely and securely hold more patient records than any other supplier and work with clinicians and pharmacists to ensure the highest possible standards of patient safety are upheld. The system provides secure access to all the information they need to make the right decisions for their patients.',
             @now,
-            @noUser);
+            @bobUser);
 
         INSERT INTO catalogue.MarketingContacts(SolutionId, FirstName, LastName, Email, PhoneNumber, Department, LastUpdated, LastUpdatedBy)
-             VALUES (@solutionId, 'Eduardo', 'Eggbert', 'eddie@eggs.test', '01234 567891', 'Internal Sales Team', @now, @noUser);
+             VALUES (@solutionId, 'Eduardo', 'Eggbert', 'eddie@eggs.test', '01234 567891', 'Internal Sales Team', @now, @bobUser);
 
         INSERT INTO catalogue.CatalogueItemCapabilities (CatalogueItemId, CapabilityId, StatusId, LastUpdated, LastUpdatedBy)
         VALUES
-        (@solutionId, @gpAppointmentManagementCapabilityId, 1, @now, @noUser),
-        (@solutionId, @resourceManagementCapabilityId, 1, @now, @noUser),
-        (@solutionId, @medicineOptimizationCapabilityId, 1, @now, @noUser),
-        (@solutionId, @referralManagementCapabilityId, 1, @now, @noUser),
-        (@solutionId, @gpExtractVerificationCapabilityId, 1, @now, @noUser),
-        (@solutionId, @scanningCapabilityId, 1, @now, @noUser),
-        (@solutionId, @reportingCapabilityId, 1, @now, @noUser),
-        (@solutionId, @patientInformationMaintenanceCapabilityId, 1, @now, @noUser),
-        (@solutionId, @recordingConsultationCapabilityId, 1, @now, @noUser),
-        (@solutionId, @prescribingCapabilityId, 1, @now, @noUser),
-        (@solutionId, @productivityCapabilityId, 1, @now, @noUser),
-        (@solutionId, @clinicalDecisionSupportCapabilityId, 1, @now, @noUser),
-        (@solutionId, @workflowCapabilityId, 1, @now, @noUser);
+        (@solutionId, @gpAppointmentManagementCapabilityId, 1, @now, @bobUser),
+        (@solutionId, @resourceManagementCapabilityId, 1, @now, @bobUser),
+        (@solutionId, @medicineOptimizationCapabilityId, 1, @now, @bobUser),
+        (@solutionId, @referralManagementCapabilityId, 1, @now, @bobUser),
+        (@solutionId, @gpExtractVerificationCapabilityId, 1, @now, @bobUser),
+        (@solutionId, @scanningCapabilityId, 1, @now, @bobUser),
+        (@solutionId, @reportingCapabilityId, 1, @now, @bobUser),
+        (@solutionId, @patientInformationMaintenanceCapabilityId, 1, @now, @bobUser),
+        (@solutionId, @recordingConsultationCapabilityId, 1, @now, @bobUser),
+        (@solutionId, @prescribingCapabilityId, 1, @now, @bobUser),
+        (@solutionId, @productivityCapabilityId, 1, @now, @bobUser),
+        (@solutionId, @clinicalDecisionSupportCapabilityId, 1, @now, @bobUser),
+        (@solutionId, @workflowCapabilityId, 1, @now, @bobUser);
 
         INSERT INTO catalogue.FrameworkSolutions(FrameworkId ,SolutionId ,IsFoundation, LastUpdated ,LastUpdatedBy)
-             VALUES (@gpitframeworkId, @solutionId , 1, @now, @noUser);
+             VALUES (@gpitframeworkId, @solutionId , 1, @now, @bobUser);
 
         INSERT INTO catalogue.CatalogueItemEpics (CatalogueItemId, CapabilityId, EpicId, StatusId, LastUpdated, LastUpdatedBy)
         VALUES
-        (@solutionId, @gpAppointmentManagementCapabilityId, 'C5E1', 1, @now, @noUser),
-        (@solutionId, @gpAppointmentManagementCapabilityId, 'C5E2', 1, @now, @noUser),
-        (@solutionId, @gpAppointmentManagementCapabilityId, 'C5E3', 1, @now, @noUser),
-        (@solutionId, @gpAppointmentManagementCapabilityId, 'C5E4', 1, @now, @noUser),
-        (@solutionId, @gpAppointmentManagementCapabilityId, 'C5E5', 1, @now, @noUser),
-        (@solutionId, @gpAppointmentManagementCapabilityId, 'C5E6', 1, @now, @noUser),
-        (@solutionId, @gpAppointmentManagementCapabilityId, 'C5E7', 1, @now, @noUser),
-        (@solutionId, @clinicalDecisionSupportCapabilityId, 'C6E1', 1, @now, @noUser),
-        (@solutionId, @clinicalDecisionSupportCapabilityId, 'C6E2', 3, @now, @noUser),
-        (@solutionId, @clinicalDecisionSupportCapabilityId, 'C6E3', 2, @now, @noUser),
-        (@solutionId, @clinicalDecisionSupportCapabilityId, 'C6E4', 2, @now, @noUser),
-        (@solutionId, @gpExtractVerificationCapabilityId, 'C10E1', 1, @now, @noUser),
-        (@solutionId, @gpExtractVerificationCapabilityId, 'C10E2', 2, @now, @noUser),
-        (@solutionId, @referralManagementCapabilityId, 'C11E1', 1, @now, @noUser),
-        (@solutionId, @referralManagementCapabilityId, 'C11E2', 1, @now, @noUser),
-        (@solutionId, @resourceManagementCapabilityId, 'C12E1', 1, @now, @noUser),
-        (@solutionId, @resourceManagementCapabilityId, 'C12E2', 1, @now, @noUser),
-        (@solutionId, @resourceManagementCapabilityId, 'C12E3', 1, @now, @noUser),
-        (@solutionId, @resourceManagementCapabilityId, 'C12E4', 1, @now, @noUser),
-        (@solutionId, @resourceManagementCapabilityId, 'C12E5', 1, @now, @noUser),
-        (@solutionId, @resourceManagementCapabilityId, 'C12E6', 1, @now, @noUser),
-        (@solutionId, @resourceManagementCapabilityId, 'C12E7', 2, @now, @noUser),
-        (@solutionId, @patientInformationMaintenanceCapabilityId, 'C13E1', 1, @now, @noUser),
-        (@solutionId, @patientInformationMaintenanceCapabilityId, 'C13E2', 1, @now, @noUser),
-        (@solutionId, @patientInformationMaintenanceCapabilityId, 'C13E3', 1, @now, @noUser),
-        (@solutionId, @patientInformationMaintenanceCapabilityId, 'C13E4', 1, @now, @noUser),
-        (@solutionId, @patientInformationMaintenanceCapabilityId, 'C13E5', 1, @now, @noUser),
-        (@solutionId, @patientInformationMaintenanceCapabilityId, 'C13E6', 1, @now, @noUser),
-        (@solutionId, @patientInformationMaintenanceCapabilityId, 'C13E7', 1, @now, @noUser),
-        (@solutionId, @patientInformationMaintenanceCapabilityId, 'C13E8', 1, @now, @noUser),
-        (@solutionId, @patientInformationMaintenanceCapabilityId, 'C13E9', 1, @now, @noUser),
-        (@solutionId, @patientInformationMaintenanceCapabilityId, 'C13E10', 1, @now, @noUser),
-        (@solutionId, @patientInformationMaintenanceCapabilityId, 'C13E11', 1, @now, @noUser),
-        (@solutionId, @patientInformationMaintenanceCapabilityId, 'C13E12', 1, @now, @noUser),
-        (@solutionId, @patientInformationMaintenanceCapabilityId, 'C13E13', 2, @now, @noUser),
-        (@solutionId, @patientInformationMaintenanceCapabilityId, 'C13E14', 2, @now, @noUser),
-        (@solutionId, @patientInformationMaintenanceCapabilityId, 'C13E15', 2, @now, @noUser),
-        (@solutionId, @patientInformationMaintenanceCapabilityId, 'C13E16', 2, @now, @noUser),
-        (@solutionId, @patientInformationMaintenanceCapabilityId, 'C13E17', 2, @now, @noUser),
-        (@solutionId, @patientInformationMaintenanceCapabilityId, 'C13E18', 2, @now, @noUser),
-        (@solutionId, @patientInformationMaintenanceCapabilityId, 'C13E19', 2, @now, @noUser),
-        (@solutionId, @patientInformationMaintenanceCapabilityId, 'C13E20', 2, @now, @noUser),
-        (@solutionId, @patientInformationMaintenanceCapabilityId, 'C13E21', 2, @now, @noUser),
-        (@solutionId, @prescribingCapabilityId, 'C14E1', 1, @now, @noUser),
-        (@solutionId, @prescribingCapabilityId, 'C14E2', 1, @now, @noUser),
-        (@solutionId, @prescribingCapabilityId, 'C14E3', 1, @now, @noUser),
-        (@solutionId, @prescribingCapabilityId, 'C14E4', 1, @now, @noUser),
-        (@solutionId, @prescribingCapabilityId, 'C14E5', 1, @now, @noUser),
-        (@solutionId, @prescribingCapabilityId, 'C14E6', 1, @now, @noUser),
-        (@solutionId, @prescribingCapabilityId, 'C14E7', 1, @now, @noUser),
-        (@solutionId, @prescribingCapabilityId, 'C14E8', 1, @now, @noUser),
-        (@solutionId, @prescribingCapabilityId, 'C14E9', 1, @now, @noUser),
-        (@solutionId, @prescribingCapabilityId, 'C14E10', 1, @now, @noUser),
-        (@solutionId, @prescribingCapabilityId, 'C14E11', 1, @now, @noUser),
-        (@solutionId, @prescribingCapabilityId, 'C14E12', 1, @now, @noUser),
-        (@solutionId, @prescribingCapabilityId, 'C14E13', 1, @now, @noUser),
-        (@solutionId, @prescribingCapabilityId, 'C14E14', 2, @now, @noUser),
-        (@solutionId, @prescribingCapabilityId, 'C14E15', 2, @now, @noUser),
-        (@solutionId, @prescribingCapabilityId, 'C14E16', 2, @now, @noUser),
-        (@solutionId, @recordingConsultationCapabilityId, 'C15E1', 1, @now, @noUser),
-        (@solutionId, @recordingConsultationCapabilityId, 'C15E2', 1, @now, @noUser),
-        (@solutionId, @recordingConsultationCapabilityId, 'C15E3', 1, @now, @noUser),
-        (@solutionId, @recordingConsultationCapabilityId, 'C15E4', 1, @now, @noUser),
-        (@solutionId, @recordingConsultationCapabilityId, 'C15E5', 1, @now, @noUser),
-        (@solutionId, @recordingConsultationCapabilityId, 'C15E6', 1, @now, @noUser),
-        (@solutionId, @recordingConsultationCapabilityId, 'C15E7', 1, @now, @noUser),
-        (@solutionId, @recordingConsultationCapabilityId, 'C15E8', 1, @now, @noUser),
-        (@solutionId, @reportingCapabilityId, 'C16E1', 1, @now, @noUser),
-        (@solutionId, @scanningCapabilityId, 'C17E1', 1, @now, @noUser),
-        (@solutionId, @scanningCapabilityId, 'C17E2', 2, @now, @noUser),
-        (@solutionId, @workflowCapabilityId, 'C20E1', 2, @now, @noUser),
-        (@solutionId, @workflowCapabilityId, 'C20E2', 2, @now, @noUser),
-        (@solutionId, @workflowCapabilityId, 'C20E3', 1, @now, @noUser),
-        (@solutionId, @workflowCapabilityId, 'C20E4', 2, @now, @noUser),
-        (@solutionId, @workflowCapabilityId, 'C20E5', 1, @now, @noUser),
-        (@solutionId, @workflowCapabilityId, 'C20E6', 2, @now, @noUser),
-        (@solutionId, @workflowCapabilityId, 'C20E7', 1, @now, @noUser),
-        (@solutionId, @workflowCapabilityId, 'C20E8', 2, @now, @noUser),
-        (@solutionId, @workflowCapabilityId, 'C20E9', 1, @now, @noUser),
-        (@solutionId, @workflowCapabilityId, 'C20E10', 2, @now, @noUser),
-        (@solutionId, @workflowCapabilityId, 'C20E11', 1, @now, @noUser),
-        (@solutionId, @workflowCapabilityId, 'C20E12', 2, @now, @noUser),
-        (@solutionId, @workflowCapabilityId, 'C20E13', 2, @now, @noUser),
-        (@solutionId, @medicineOptimizationCapabilityId, 'C30E1', 1, @now, @noUser),
-        (@solutionId, @medicineOptimizationCapabilityId, 'C30E2', 1, @now, @noUser),
-        (@solutionId, @medicineOptimizationCapabilityId, 'C30E3', 1, @now, @noUser),
-        (@solutionId, @medicineOptimizationCapabilityId, 'C30E4', 2, @now, @noUser),
-        (@solutionId, @medicineOptimizationCapabilityId, 'C30E5', 2, @now, @noUser),
-        (@solutionId, @medicineOptimizationCapabilityId, 'C30E6', 2, @now, @noUser),
-        (@solutionId, @medicineOptimizationCapabilityId, 'C30E7', 2, @now, @noUser),
-        (@solutionId, @medicineOptimizationCapabilityId, 'C30E8', 2, @now, @noUser),
-        (@solutionId, @medicineOptimizationCapabilityId, 'C30E9', 2, @now, @noUser),
-        (@solutionId, @medicineOptimizationCapabilityId, 'C30E10', 2, @now, @noUser),
-        (@solutionId, @medicineOptimizationCapabilityId, 'C30E11', 2, @now, @noUser),
-        (@solutionId, @medicineOptimizationCapabilityId, 'C30E12', 2, @now, @noUser),
-        (@solutionId, @medicineOptimizationCapabilityId, 'C30E13', 2, @now, @noUser),
-        (@solutionId, @medicineOptimizationCapabilityId, 'C30E14', 2, @now, @noUser),
-        (@solutionId, @onlineConsultationCapabilityId, 'S020X01E01', 1, @now, @noUser),
-        (@solutionId, @onlineConsultationCapabilityId, 'S020X01E02', 1, @now, @noUser),
-        (@solutionId, @videoConsultationCapabilityId, 'S020X01E03', 1, @now, @noUser),
-        (@solutionId, @videoConsultationCapabilityId, 'S020X01E04', 1, @now, @noUser);
+        (@solutionId, @gpAppointmentManagementCapabilityId, 'C5E1', 1, @now, @bobUser),
+        (@solutionId, @gpAppointmentManagementCapabilityId, 'C5E2', 1, @now, @bobUser),
+        (@solutionId, @gpAppointmentManagementCapabilityId, 'C5E3', 1, @now, @bobUser),
+        (@solutionId, @gpAppointmentManagementCapabilityId, 'C5E4', 1, @now, @bobUser),
+        (@solutionId, @gpAppointmentManagementCapabilityId, 'C5E5', 1, @now, @bobUser),
+        (@solutionId, @gpAppointmentManagementCapabilityId, 'C5E6', 1, @now, @bobUser),
+        (@solutionId, @gpAppointmentManagementCapabilityId, 'C5E7', 1, @now, @bobUser),
+        (@solutionId, @clinicalDecisionSupportCapabilityId, 'C6E1', 1, @now, @bobUser),
+        (@solutionId, @clinicalDecisionSupportCapabilityId, 'C6E2', 3, @now, @bobUser),
+        (@solutionId, @clinicalDecisionSupportCapabilityId, 'C6E3', 2, @now, @bobUser),
+        (@solutionId, @clinicalDecisionSupportCapabilityId, 'C6E4', 2, @now, @bobUser),
+        (@solutionId, @gpExtractVerificationCapabilityId, 'C10E1', 1, @now, @bobUser),
+        (@solutionId, @gpExtractVerificationCapabilityId, 'C10E2', 2, @now, @bobUser),
+        (@solutionId, @referralManagementCapabilityId, 'C11E1', 1, @now, @bobUser),
+        (@solutionId, @referralManagementCapabilityId, 'C11E2', 1, @now, @bobUser),
+        (@solutionId, @resourceManagementCapabilityId, 'C12E1', 1, @now, @bobUser),
+        (@solutionId, @resourceManagementCapabilityId, 'C12E2', 1, @now, @bobUser),
+        (@solutionId, @resourceManagementCapabilityId, 'C12E3', 1, @now, @bobUser),
+        (@solutionId, @resourceManagementCapabilityId, 'C12E4', 1, @now, @bobUser),
+        (@solutionId, @resourceManagementCapabilityId, 'C12E5', 1, @now, @bobUser),
+        (@solutionId, @resourceManagementCapabilityId, 'C12E6', 1, @now, @bobUser),
+        (@solutionId, @resourceManagementCapabilityId, 'C12E7', 2, @now, @bobUser),
+        (@solutionId, @patientInformationMaintenanceCapabilityId, 'C13E1', 1, @now, @bobUser),
+        (@solutionId, @patientInformationMaintenanceCapabilityId, 'C13E2', 1, @now, @bobUser),
+        (@solutionId, @patientInformationMaintenanceCapabilityId, 'C13E3', 1, @now, @bobUser),
+        (@solutionId, @patientInformationMaintenanceCapabilityId, 'C13E4', 1, @now, @bobUser),
+        (@solutionId, @patientInformationMaintenanceCapabilityId, 'C13E5', 1, @now, @bobUser),
+        (@solutionId, @patientInformationMaintenanceCapabilityId, 'C13E6', 1, @now, @bobUser),
+        (@solutionId, @patientInformationMaintenanceCapabilityId, 'C13E7', 1, @now, @bobUser),
+        (@solutionId, @patientInformationMaintenanceCapabilityId, 'C13E8', 1, @now, @bobUser),
+        (@solutionId, @patientInformationMaintenanceCapabilityId, 'C13E9', 1, @now, @bobUser),
+        (@solutionId, @patientInformationMaintenanceCapabilityId, 'C13E10', 1, @now, @bobUser),
+        (@solutionId, @patientInformationMaintenanceCapabilityId, 'C13E11', 1, @now, @bobUser),
+        (@solutionId, @patientInformationMaintenanceCapabilityId, 'C13E12', 1, @now, @bobUser),
+        (@solutionId, @patientInformationMaintenanceCapabilityId, 'C13E13', 2, @now, @bobUser),
+        (@solutionId, @patientInformationMaintenanceCapabilityId, 'C13E14', 2, @now, @bobUser),
+        (@solutionId, @patientInformationMaintenanceCapabilityId, 'C13E15', 2, @now, @bobUser),
+        (@solutionId, @patientInformationMaintenanceCapabilityId, 'C13E16', 2, @now, @bobUser),
+        (@solutionId, @patientInformationMaintenanceCapabilityId, 'C13E17', 2, @now, @bobUser),
+        (@solutionId, @patientInformationMaintenanceCapabilityId, 'C13E18', 2, @now, @bobUser),
+        (@solutionId, @patientInformationMaintenanceCapabilityId, 'C13E19', 2, @now, @bobUser),
+        (@solutionId, @patientInformationMaintenanceCapabilityId, 'C13E20', 2, @now, @bobUser),
+        (@solutionId, @patientInformationMaintenanceCapabilityId, 'C13E21', 2, @now, @bobUser),
+        (@solutionId, @prescribingCapabilityId, 'C14E1', 1, @now, @bobUser),
+        (@solutionId, @prescribingCapabilityId, 'C14E2', 1, @now, @bobUser),
+        (@solutionId, @prescribingCapabilityId, 'C14E3', 1, @now, @bobUser),
+        (@solutionId, @prescribingCapabilityId, 'C14E4', 1, @now, @bobUser),
+        (@solutionId, @prescribingCapabilityId, 'C14E5', 1, @now, @bobUser),
+        (@solutionId, @prescribingCapabilityId, 'C14E6', 1, @now, @bobUser),
+        (@solutionId, @prescribingCapabilityId, 'C14E7', 1, @now, @bobUser),
+        (@solutionId, @prescribingCapabilityId, 'C14E8', 1, @now, @bobUser),
+        (@solutionId, @prescribingCapabilityId, 'C14E9', 1, @now, @bobUser),
+        (@solutionId, @prescribingCapabilityId, 'C14E10', 1, @now, @bobUser),
+        (@solutionId, @prescribingCapabilityId, 'C14E11', 1, @now, @bobUser),
+        (@solutionId, @prescribingCapabilityId, 'C14E12', 1, @now, @bobUser),
+        (@solutionId, @prescribingCapabilityId, 'C14E13', 1, @now, @bobUser),
+        (@solutionId, @prescribingCapabilityId, 'C14E14', 2, @now, @bobUser),
+        (@solutionId, @prescribingCapabilityId, 'C14E15', 2, @now, @bobUser),
+        (@solutionId, @prescribingCapabilityId, 'C14E16', 2, @now, @bobUser),
+        (@solutionId, @recordingConsultationCapabilityId, 'C15E1', 1, @now, @bobUser),
+        (@solutionId, @recordingConsultationCapabilityId, 'C15E2', 1, @now, @bobUser),
+        (@solutionId, @recordingConsultationCapabilityId, 'C15E3', 1, @now, @bobUser),
+        (@solutionId, @recordingConsultationCapabilityId, 'C15E4', 1, @now, @bobUser),
+        (@solutionId, @recordingConsultationCapabilityId, 'C15E5', 1, @now, @bobUser),
+        (@solutionId, @recordingConsultationCapabilityId, 'C15E6', 1, @now, @bobUser),
+        (@solutionId, @recordingConsultationCapabilityId, 'C15E7', 1, @now, @bobUser),
+        (@solutionId, @recordingConsultationCapabilityId, 'C15E8', 1, @now, @bobUser),
+        (@solutionId, @reportingCapabilityId, 'C16E1', 1, @now, @bobUser),
+        (@solutionId, @scanningCapabilityId, 'C17E1', 1, @now, @bobUser),
+        (@solutionId, @scanningCapabilityId, 'C17E2', 2, @now, @bobUser),
+        (@solutionId, @workflowCapabilityId, 'C20E1', 2, @now, @bobUser),
+        (@solutionId, @workflowCapabilityId, 'C20E2', 2, @now, @bobUser),
+        (@solutionId, @workflowCapabilityId, 'C20E3', 1, @now, @bobUser),
+        (@solutionId, @workflowCapabilityId, 'C20E4', 2, @now, @bobUser),
+        (@solutionId, @workflowCapabilityId, 'C20E5', 1, @now, @bobUser),
+        (@solutionId, @workflowCapabilityId, 'C20E6', 2, @now, @bobUser),
+        (@solutionId, @workflowCapabilityId, 'C20E7', 1, @now, @bobUser),
+        (@solutionId, @workflowCapabilityId, 'C20E8', 2, @now, @bobUser),
+        (@solutionId, @workflowCapabilityId, 'C20E9', 1, @now, @bobUser),
+        (@solutionId, @workflowCapabilityId, 'C20E10', 2, @now, @bobUser),
+        (@solutionId, @workflowCapabilityId, 'C20E11', 1, @now, @bobUser),
+        (@solutionId, @workflowCapabilityId, 'C20E12', 2, @now, @bobUser),
+        (@solutionId, @workflowCapabilityId, 'C20E13', 2, @now, @bobUser),
+        (@solutionId, @medicineOptimizationCapabilityId, 'C30E1', 1, @now, @bobUser),
+        (@solutionId, @medicineOptimizationCapabilityId, 'C30E2', 1, @now, @bobUser),
+        (@solutionId, @medicineOptimizationCapabilityId, 'C30E3', 1, @now, @bobUser),
+        (@solutionId, @medicineOptimizationCapabilityId, 'C30E4', 2, @now, @bobUser),
+        (@solutionId, @medicineOptimizationCapabilityId, 'C30E5', 2, @now, @bobUser),
+        (@solutionId, @medicineOptimizationCapabilityId, 'C30E6', 2, @now, @bobUser),
+        (@solutionId, @medicineOptimizationCapabilityId, 'C30E7', 2, @now, @bobUser),
+        (@solutionId, @medicineOptimizationCapabilityId, 'C30E8', 2, @now, @bobUser),
+        (@solutionId, @medicineOptimizationCapabilityId, 'C30E9', 2, @now, @bobUser),
+        (@solutionId, @medicineOptimizationCapabilityId, 'C30E10', 2, @now, @bobUser),
+        (@solutionId, @medicineOptimizationCapabilityId, 'C30E11', 2, @now, @bobUser),
+        (@solutionId, @medicineOptimizationCapabilityId, 'C30E12', 2, @now, @bobUser),
+        (@solutionId, @medicineOptimizationCapabilityId, 'C30E13', 2, @now, @bobUser),
+        (@solutionId, @medicineOptimizationCapabilityId, 'C30E14', 2, @now, @bobUser),
+        (@solutionId, @onlineConsultationCapabilityId, 'S020X01E01', 1, @now, @bobUser),
+        (@solutionId, @onlineConsultationCapabilityId, 'S020X01E02', 1, @now, @bobUser),
+        (@solutionId, @videoConsultationCapabilityId, 'S020X01E03', 1, @now, @bobUser),
+        (@solutionId, @videoConsultationCapabilityId, 'S020X01E04', 1, @now, @bobUser);
     END;
 
     /*************************************************************************************************************************************************************/
@@ -525,29 +525,29 @@ TPP maintain close contact with staff at the unit throughout these phases to ens
             'SystmOne GP has been in use across UK General Practice for over 20 years. It is the system of choice for over 2,700 practices and is used by over 75,000 staff members. SystmOne GP is an advanced solution that goes far beyond the main functionality required for running a GP practice. It contains complete workflow support, a full analytics module, QOF tracking, and a comprehensive clinical development kit. Improving the quality of care across settings is core to TPP’s vision. The GP product is ideal for cross-organisational working and fully supports the requirements of Primary Care Networks.
             It enables true integrated care between GP, hospital, mental health and social care settings. TPP GP is Spine-accredited, providing access to the latest versions of GP2GP, EPS, and eRS. The system is fully compliant with SNOMED CT. SystmOne GP is leading on national interoperability programmes, compliant with national open FHIR standards for access to GP data and for transfer of care documentation.',
             @now,
-            @noUser);
+            @bobUser);
 
         INSERT INTO catalogue.CatalogueItemCapabilities (CatalogueItemId, CapabilityId, StatusId, LastUpdated, LastUpdatedBy)
         VALUES
-        (@solutionId, @presciptionOrderingCapabilityId, 1, @now, @noUser),
-        (@solutionId, @gpAppointmentManagementCapabilityId, 1, @now, @noUser),
-        (@solutionId, @resourceManagementCapabilityId, 1, @now, @noUser),
-        (@solutionId, @unifiedCareRecordCapabilityId, 1, @now, @noUser),
-        (@solutionId, @referralManagementCapabilityId, 1, @now, @noUser),
-        (@solutionId, @communicationManagementCapabilityId, 1, @now, @noUser),
-        (@solutionId, @reportingCapabilityId, 1, @now, @noUser),
-        (@solutionId, @patientInformationMaintenanceCapabilityId, 1, @now, @noUser),
-        (@solutionId, @citizenAppointmentManagementCapabilityId, 1, @now, @noUser),
-        (@solutionId, @citizenCommunicateCapabilityId, 1, @now, @noUser),
-        (@solutionId, @dataAnalyticsCapabilityId, 1, @now, @noUser),
-        (@solutionId, @sharedCarePlansCapabilityId, 1, @now, @noUser),
-        (@solutionId, @recordingConsultationCapabilityId, 1, @now, @noUser),
-        (@solutionId, @prescribingCapabilityId, 1, @now, @noUser),
-        (@solutionId, @productivityCapabilityId, 1, @now, @noUser),
-        (@solutionId, @citizenViewRecordCapabilityId, 1, @now, @noUser);
+        (@solutionId, @presciptionOrderingCapabilityId, 1, @now, @bobUser),
+        (@solutionId, @gpAppointmentManagementCapabilityId, 1, @now, @bobUser),
+        (@solutionId, @resourceManagementCapabilityId, 1, @now, @bobUser),
+        (@solutionId, @unifiedCareRecordCapabilityId, 1, @now, @bobUser),
+        (@solutionId, @referralManagementCapabilityId, 1, @now, @bobUser),
+        (@solutionId, @communicationManagementCapabilityId, 1, @now, @bobUser),
+        (@solutionId, @reportingCapabilityId, 1, @now, @bobUser),
+        (@solutionId, @patientInformationMaintenanceCapabilityId, 1, @now, @bobUser),
+        (@solutionId, @citizenAppointmentManagementCapabilityId, 1, @now, @bobUser),
+        (@solutionId, @citizenCommunicateCapabilityId, 1, @now, @bobUser),
+        (@solutionId, @dataAnalyticsCapabilityId, 1, @now, @bobUser),
+        (@solutionId, @sharedCarePlansCapabilityId, 1, @now, @bobUser),
+        (@solutionId, @recordingConsultationCapabilityId, 1, @now, @bobUser),
+        (@solutionId, @prescribingCapabilityId, 1, @now, @bobUser),
+        (@solutionId, @productivityCapabilityId, 1, @now, @bobUser),
+        (@solutionId, @citizenViewRecordCapabilityId, 1, @now, @bobUser);
 
         INSERT INTO catalogue.FrameworkSolutions(FrameworkId ,SolutionId ,IsFoundation, LastUpdated, LastUpdatedBy)
-             VALUES (@gpitframeworkId, @solutionId , 1, @now, @noUser);
+             VALUES (@gpitframeworkId, @solutionId , 1, @now, @bobUser);
     END;
 
     /*************************************************************************************************************************************************************/
@@ -568,18 +568,18 @@ TPP maintain close contact with staff at the unit throughout these phases to ens
             'Summary - DFOCVC.',
             'FULL DESCRIPTION – Digital First, Online Consultation and Video Consultation Solution.',
             @now,
-            @noUser);
+            @bobUser);
 
         INSERT INTO catalogue.MarketingContacts(SolutionId, FirstName, LastName, PhoneNumber, Email, Department, LastUpdated, LastUpdatedBy)
-             VALUES (@solutionId, 'Sam', 'Samosa', '01234 567891', 'sales@test.test', 'Sales', @now, @noUser);
+             VALUES (@solutionId, 'Sam', 'Samosa', '01234 567891', 'sales@test.test', 'Sales', @now, @bobUser);
 
         INSERT INTO catalogue.CatalogueItemCapabilities(CatalogueItemId, CapabilityId, StatusId, LastUpdated, LastUpdatedBy)
-             SELECT @solutionId, Id, 1, @now, @noUser
+             SELECT @solutionId, Id, 1, @now, @bobUser
                FROM catalogue.Capabilities
               WHERE CapabilityRef IN ('C43');
 
         INSERT INTO catalogue.FrameworkSolutions(FrameworkId, SolutionId, IsFoundation, LastUpdated, LastUpdatedBy)
-             VALUES (@dfocvcframeworkId, @solutionId, 0, @now, @noUser);
+             VALUES (@dfocvcframeworkId, @solutionId, 0, @now, @bobUser);
     END;
 
     /*************************************************************************************************************************************************************/
@@ -600,19 +600,19 @@ TPP maintain close contact with staff at the unit throughout these phases to ens
             'Summary - GPIT DFOCVC.',
             'FULL DESCRIPTION – GPIT Futures, Digital First Online Consultation and Video Consultation Solution.',
             @now,
-            @noUser);
+            @bobUser);
 
         INSERT INTO catalogue.MarketingContacts(SolutionId, FirstName, LastName, PhoneNumber, Email, Department, LastUpdated, LastUpdatedBy)
-             VALUES (@solutionId, 'Sam', 'Samosa', '01234 567891', 'sales@test.test', 'Sales', @now, @noUser);
+             VALUES (@solutionId, 'Sam', 'Samosa', '01234 567891', 'sales@test.test', 'Sales', @now, @bobUser);
 
         INSERT INTO catalogue.CatalogueItemCapabilities(CatalogueItemId, CapabilityId, StatusId, LastUpdated, LastUpdatedBy)
-             SELECT @solutionId, Id, 1, @now, @noUser
+             SELECT @solutionId, Id, 1, @now, @bobUser
                FROM catalogue.Capabilities
               WHERE CapabilityRef IN ('C44');
 
         INSERT INTO catalogue.FrameworkSolutions(FrameworkId, SolutionId, IsFoundation, LastUpdated, LastUpdatedBy)
-             VALUES (@gpitframeworkId, @solutionId, 1, @now, @noUser),
-                    (@dfocvcframeworkId, @solutionId, 0, @now, @noUser);
+             VALUES (@gpitframeworkId, @solutionId, 1, @now, @bobUser),
+                    (@dfocvcframeworkId, @solutionId, 0, @now, @bobUser);
     END;
 
     DECLARE @flatPriceType AS int = 1;
