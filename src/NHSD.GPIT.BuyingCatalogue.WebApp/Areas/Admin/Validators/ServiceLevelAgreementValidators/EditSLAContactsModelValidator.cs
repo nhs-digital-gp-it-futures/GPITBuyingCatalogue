@@ -34,12 +34,11 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Validators.ServiceLevelAg
 
             RuleFor(slac => slac.From)
                 .NotEmpty()
-                .When(slac => slac.Until.HasValue)
                 .WithMessage("Enter a from time");
 
             RuleFor(slac => slac.Until)
                 .NotEmpty()
-                .When(slac => slac.From.HasValue)
+                .Unless(slac => !slac.From.HasValue)
                 .WithMessage("Enter an until time");
         }
 
