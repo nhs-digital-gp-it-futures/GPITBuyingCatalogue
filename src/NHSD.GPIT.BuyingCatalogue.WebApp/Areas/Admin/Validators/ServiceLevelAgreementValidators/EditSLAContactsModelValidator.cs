@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using FluentValidation;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.ServiceLevelAgreements;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.ServiceLevelAgreements;
+using NHSD.GPIT.BuyingCatalogue.WebApp.Validation;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Validators.ServiceLevelAgreementValidators
 {
@@ -17,14 +18,11 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Validators.ServiceLevelAg
             this.serviceLevelAgreementsService = serviceLevelAgreementsService;
 
             RuleFor(slac => slac)
-                .MustAsync(NotBeDuplicateContact)
-                .OverridePropertyName(nameof(EditSLAContactModel.Channel))
-                .WithMessage("A contact with these details already exists");
-
-            RuleFor(slac => slac)
-                .MustAsync(NotBeDuplicateContact)
-                .OverridePropertyName(nameof(EditSLAContactModel.ContactInformation))
-                .WithMessage("A contact with these details already exists");
+            .MustAsync(NotBeDuplicateContact)
+            .OverridePropertyName(
+            slac => slac.Channel,
+            slac => slac.ContactInformation)
+            .WithMessage("A contact with these details already exists");
 
             RuleFor(slac => slac.Channel)
                 .NotEmpty()
@@ -36,16 +34,20 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Validators.ServiceLevelAg
 
             RuleFor(slac => slac.From)
                 .NotEmpty()
+                .When(slac => slac.Until.HasValue)
                 .WithMessage("Enter a from time");
 
             RuleFor(slac => slac.Until)
                 .NotEmpty()
+                .When(slac => slac.From.HasValue)
                 .WithMessage("Enter an until time");
         }
 
         private async Task<bool> NotBeDuplicateContact(EditSLAContactModel model, CancellationToken cancellationToken)
         {
-            var serviceLevelAgreements = await serviceLevelAgreementsService.GetAllServiceLevelAgreementsForSolution(model.SolutionId);
+            _ = cancellationToken;
+
+            var serviceLevelAgreements = await serviceLevelAgreementsService.GetServiceLevelAgreementForSolution(model.SolutionId);
 
             return !serviceLevelAgreements.Contacts.Any(slac =>
             slac.Id != model.ContactId
