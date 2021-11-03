@@ -22,20 +22,30 @@
 <h2>Service availability</h2>
 <p>Provide information on when users can contact your support services. You must add at least one time period.</p>
 <vc:nhs-action-link text="Add availability times"
-                    url="#" />
+                    url="@Url.Action(
+                    nameof(ServiceLevelAgreementsController.AddServiceAvailabilityTimes),
+                    typeof(ServiceLevelAgreementsController).ControllerName(),
+                    new  { solutionId = Model.CatalogueItem.Id })" />
 
 <nhs-table data-test-id="service-hours-table">
     <nhs-table-column>Type of support</nhs-table-column>
     <nhs-table-column>Time period</nhs-table-column>
     <nhs-table-column>Applicable days</nhs-table-column>
     <nhs-table-column></nhs-table-column>
-    @foreach(var item in Model.ServiceLevelAgreements.ServiceHours)
+    @foreach (var item in Model.ServiceLevelAgreements.ServiceHours)
     {
         <nhs-table-row-container>
             <nhs-table-cell>@item.Category</nhs-table-cell>
-            <nhs-table-cell>@item.TimeFrom - @item.TimeUntil</nhs-table-cell>
+            <nhs-table-cell>@item.TimeFrom.ToString("HH:mm") - @item.TimeUntil.ToString("HH:mm")</nhs-table-cell>
             <nhs-table-cell>@item.ApplicableDays</nhs-table-cell>
-            <nhs-table-cell><a href="#">Edit</a></nhs-table-cell>
+            <nhs-table-cell>
+                <a asp-action="@nameof(ServiceLevelAgreementsController.EditServiceAvailabilityTimes)"
+                   asp-controller="@typeof(ServiceLevelAgreementsController).ControllerName()"
+                   asp-route-solutionId="@item.SolutionId"
+                   asp-route-serviceAvailabilityTimesId="@item.Id">
+                    Edit
+                </a>
+            </nhs-table-cell>
         </nhs-table-row-container>
     }
 </nhs-table>
@@ -50,8 +60,8 @@
     <nhs-table-column>Contact</nhs-table-column>
     <nhs-table-column>Hours available</nhs-table-column>
     <nhs-table-column></nhs-table-column>
-    @foreach(var item in Model.ServiceLevelAgreements.Contacts)
-    { 
+    @foreach (var item in Model.ServiceLevelAgreements.Contacts)
+    {
         <nhs-table-row-container>
             <nhs-table-cell>@item.Channel</nhs-table-cell>
             <nhs-table-cell>@item.ContactInformation</nhs-table-cell>
@@ -72,7 +82,7 @@
     <nhs-table-column>How the service levels are measured</nhs-table-column>
     <nhs-table-column>Are service credits applied?</nhs-table-column>
     <nhs-table-column></nhs-table-column>
-    @foreach(var item in Model.ServiceLevelAgreements.ServiceLevels)
+    @foreach (var item in Model.ServiceLevelAgreements.ServiceLevels)
     {
         <nhs-table-row-container>
             <nhs-table-cell>@item.TypeOfService</nhs-table-cell>
@@ -91,9 +101,11 @@
                                 typeof(CatalogueSolutionsController).ControllerName(),
                                 new { solutionId = Model.CatalogueItem.Id })" />
 
-@{ static string ConvertSlaType(SlaType slaType) => slaType switch
+@{
+    static string ConvertSlaType(SlaType slaType) => slaType switch
     {
         SlaType.Type1 => "Type 1",
         SlaType.Type2 => "Type 2",
         _ => throw new ArgumentOutOfRangeException(nameof(slaType)),
-    }; }
+    };
+}

@@ -5,11 +5,11 @@ using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 
 namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Configuration
 {
-    internal sealed class SlaServiceHoursEntityTypeConfiguration : IEntityTypeConfiguration<SlaServiceHours>
+    internal sealed class ServiceAvailabilityTimesEntityTypeConfiguration : IEntityTypeConfiguration<ServiceAvailabilityTimes>
     {
-        public void Configure(EntityTypeBuilder<SlaServiceHours> builder)
+        public void Configure(EntityTypeBuilder<ServiceAvailabilityTimes> builder)
         {
-            builder.ToTable("SlaServiceHours", Schemas.Catalogue);
+            builder.ToTable("ServiceAvailabilityTimes", Schemas.Catalogue);
 
             builder.HasKey(s => s.Id);
 
@@ -20,7 +20,12 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Configuration
             builder.HasOne(s => s.ServiceLevelAgreement)
                 .WithMany(s => s.ServiceHours)
                 .HasForeignKey(s => s.SolutionId)
-                .HasConstraintName("FK_SlaServiceHours_ServiceLevelAgreement");
+                .HasConstraintName("FK_ServiceAvailabilityTimes_ServiceLevelAgreements");
+
+            builder.HasOne(s => s.LastUpdatedByUser)
+                .WithMany()
+                .HasForeignKey(s => s.LastUpdatedBy)
+                .HasConstraintName("FK_ServiceAvailabilityTimes_LastUpdatedBy");
         }
     }
 }

@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Diagnostics.CodeAnalysis;
 using System.Threading.Tasks;
-using FluentValidation.AspNetCore;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.AspNetCore.Hosting;
@@ -14,7 +13,6 @@ using Microsoft.Extensions.Logging;
 using NHSD.GPIT.BuyingCatalogue.Framework.Logging;
 using NHSD.GPIT.BuyingCatalogue.Services;
 using NHSD.GPIT.BuyingCatalogue.WebApp.ActionFilters;
-using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Validators;
 using Serilog;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp
@@ -52,11 +50,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp
                         options.Filters.Add(new AutoValidateAntiforgeryTokenAttribute());
                     });
 
-            services.AddFluentValidation(
-                    options =>
-                    {
-                        options.RegisterValidatorsFromAssemblyContaining<SolutionModelValidator>();
-                    });
+            services.AddFluentValidation();
 
             services.AddApplicationInsightsTelemetry();
 

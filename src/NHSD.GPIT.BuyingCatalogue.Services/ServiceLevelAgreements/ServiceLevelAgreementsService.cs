@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework;
@@ -32,7 +33,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.ServiceLevelAgreements
             await dbContext.SaveChangesAsync();
         }
 
-        public async Task<EntityFramework.Catalogue.Models.ServiceLevelAgreements> GetAllServiceLevelAgreementsForSolution(CatalogueItemId solutionId)
+        public async Task<EntityFramework.Catalogue.Models.ServiceLevelAgreements> GetServiceLevelAgreementForSolution(CatalogueItemId solutionId)
         {
             return await dbContext.ServiceLevelAgreements
                 .Include(s => s.Contacts)
@@ -49,5 +50,66 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.ServiceLevelAgreements
 
             await dbContext.SaveChangesAsync();
         }
+
+        public async Task<ServiceAvailabilityTimes> GetServiceAvailabilityTimes(CatalogueItemId solutionId, int serviceAvailabilityTimesId)
+            => await dbContext.ServiceAvailabilityTimes.SingleOrDefaultAsync(s => s.SolutionId == solutionId && s.Id == serviceAvailabilityTimesId);
+
+        public async Task SaveServiceAvailabilityTimes(CatalogueItem solution, ServiceAvailabilityTimesModel model)
+        {
+            if (solution is null)
+                throw new ArgumentNullException(nameof(solution));
+
+            if (model is null)
+                throw new ArgumentNullException(nameof(model));
+
+            var serviceAvailabilityTimes = new ServiceAvailabilityTimes
+            {
+                ApplicableDays = model.ApplicableDays,
+                Category = model.SupportType,
+                TimeFrom = model.From,
+                TimeUntil = model.Until,
+                SolutionId = solution.Id,
+                LastUpdatedBy = model.UserId,
+                LastUpdated = DateTime.UtcNow,
+            };
+
+            dbContext.ServiceAvailabilityTimes.Add(serviceAvailabilityTimes);
+
+            await dbContext.SaveChangesAsync();
+        }
+
+        public async Task UpdateServiceAvailabilityTimes(CatalogueItem solution, int serviceAvailabilityTimesId, ServiceAvailabilityTimesModel model)
+        {
+            if (solution is null)
+                throw new ArgumentNullException(nameof(solution));
+
+            if (model is null)
+                throw new ArgumentNullException(nameof(model));
+
+            var serviceAvailabilityTimes = await GetServiceAvailabilityTimes(solution.Id, serviceAvailabilityTimesId);
+
+            serviceAvailabilityTimes.ApplicableDays = model.ApplicableDays;
+            serviceAvailabilityTimes.Category = model.SupportType;
+            serviceAvailabilityTimes.TimeFrom = model.From;
+            serviceAvailabilityTimes.TimeUntil = model.Until;
+            serviceAvailabilityTimes.LastUpdatedBy = model.UserId;
+            serviceAvailabilityTimes.LastUpdated = DateTime.UtcNow;
+
+            dbContext.ServiceAvailabilityTimes.Update(serviceAvailabilityTimes);
+
+            await dbContext.SaveChangesAsync();
+        }
+
+        public async Task DeleteServiceAvailabilityTimes(CatalogueItemId solutionId, int serviceAvailabilityTimesId)
+        {
+            var serviceAvailabilityTimes = await GetServiceAvailabilityTimes(solutionId, serviceAvailabilityTimesId);
+
+            dbContext.ServiceAvailabilityTimes.Remove(serviceAvailabilityTimes);
+
+            await dbContext.SaveChangesAsync();
+        }
+
+        public async Task<int> GetCountOfServiceAvailabilityTimes(params int[] idsToExclude)
+            => await dbContext.ServiceAvailabilityTimes.Where(s => !idsToExclude.Contains(s.Id)).CountAsync();
     }
 }

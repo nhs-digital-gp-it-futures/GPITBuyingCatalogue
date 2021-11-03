@@ -1,19 +1,19 @@
 {
   "compileOnSave": true,
   "compilerOptions": {
-    "noImplicitAny": false,
+    "noImplicitAny": true,
     "noEmitOnError": true,
-    "removeComments": false,
+    "removeComments": true,
     "sourceMap": true,
     "target": "es6",
     "outDir": "wwwroot/js",
-    "rootDir": "./Scripts",
+    "rootDir": "wwwroot/ts",
     "lib": [
       "es2019",
       "dom"
     ]
   },
   "include": [
-    "Scripts/**/*"
+    "wwwroot/ts/*"
   ]
 }
