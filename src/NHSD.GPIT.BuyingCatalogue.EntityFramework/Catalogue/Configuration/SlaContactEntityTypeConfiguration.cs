@@ -13,6 +13,11 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Configuration
 
             builder.HasKey(s => s.Id);
 
+            builder.HasOne(s => s.LastUpdatedByUser)
+                .WithMany()
+                .HasForeignKey(s => s.LastUpdatedBy)
+                .HasConstraintName("FK_SlaContacts_LastUpdatedBy");
+
             builder.Property(s => s.SolutionId)
                 .HasMaxLength(14)
                 .HasConversion(id => id.ToString(), id => CatalogueItemId.ParseExact(id));

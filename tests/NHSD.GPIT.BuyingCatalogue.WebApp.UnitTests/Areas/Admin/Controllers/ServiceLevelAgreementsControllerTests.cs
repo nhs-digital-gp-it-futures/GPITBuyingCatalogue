@@ -1,4 +1,6 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Linq;
+using System.Threading.Tasks;
 using AutoFixture;
 using AutoFixture.AutoMoq;
 using AutoFixture.Idioms;
@@ -744,6 +746,403 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
 
             result.As<RedirectToActionResult>().Should().NotBeNull();
             result.As<RedirectToActionResult>().ActionName.Should().Be(nameof(controller.EditServiceLevelAgreement));
+        }
+
+        [Theory]
+        [CommonAutoData]
+        public static async Task Get_AddSlaContact_InvalidSolution(
+            [Frozen] Mock<ISolutionsService> solutionsService,
+            ServiceLevelAgreementsController controller,
+            CatalogueItemId itemId)
+        {
+            solutionsService.Setup(s => s.GetSolution(itemId)).ReturnsAsync(default(CatalogueItem));
+
+            var actual = await controller.AddContact(itemId);
+
+            actual.Should().NotBeNull();
+            actual.Should().BeOfType<BadRequestObjectResult>();
+            actual.As<BadRequestObjectResult>().Value.Should().Be($"No Solution found for Id: {itemId}");
+        }
+
+        [Theory]
+        [CommonAutoData]
+        public static async Task Get_AddSlaContact_ValidSolution(
+            [Frozen] Mock<ISolutionsService> solutionsService,
+            ServiceLevelAgreementsController controller,
+            Solution solution,
+            CatalogueItemId itemId)
+        {
+            solutionsService.Setup(s => s.GetSolution(itemId)).ReturnsAsync(solution.CatalogueItem);
+
+            var expectedModel = new WebApp.Areas.Admin.Models.ServiceLevelAgreements.EditSLAContactModel();
+
+            var actual = await controller.AddContact(itemId);
+
+            actual.Should().NotBeNull();
+            actual.Should().BeOfType<ViewResult>();
+            actual.As<ViewResult>().Model.Should().BeOfType<WebApp.Areas.Admin.Models.ServiceLevelAgreements.EditSLAContactModel>();
+            var model = actual.As<ViewResult>().Model.As<WebApp.Areas.Admin.Models.ServiceLevelAgreements.EditSLAContactModel>();
+            model.Should()
+                    .BeEquivalentTo(
+                    expectedModel,
+                    opt => opt
+                        .Excluding(m => m.BackLink)
+                        .Excluding(m => m.BackLinkText));
+        }
+
+        [Theory]
+        [CommonAutoData]
+        public static async Task Post_AddSlaContact_Valid(
+            [Frozen] Mock<ISolutionsService> solutionsService,
+            [Frozen] Mock<IServiceLevelAgreementsService> slaService,
+            ServiceLevelAgreementsController controller,
+            CatalogueItemId itemId,
+            Solution solution)
+        {
+            var addModel = new WebApp.Areas.Admin.Models.ServiceLevelAgreements.EditSLAContactModel
+            {
+                From = DateTime.UtcNow,
+                Until = DateTime.UtcNow,
+            };
+
+            slaService.Setup(s => s.AddSLAContact(It.IsAny<CatalogueItem>(), It.IsAny<ServiceContracts.Models.ServiceLevelAgreements.EditSLAContactModel>()));
+            solutionsService.Setup(s => s.GetSolution(itemId)).ReturnsAsync(solution.CatalogueItem);
+
+            var actual = await controller.AddContact(itemId, addModel);
+
+            actual.Should().NotBeNull();
+            actual.Should().BeOfType<RedirectToActionResult>();
+            actual.As<RedirectToActionResult>().ActionName.Should().Be(nameof(controller.EditServiceLevelAgreement));
+            slaService.Verify(s => s.AddSLAContact(It.IsAny<CatalogueItem>(), It.IsAny<ServiceContracts.Models.ServiceLevelAgreements.EditSLAContactModel>()));
+        }
+
+        [Theory]
+        [CommonAutoData]
+        public static async Task Post_AddSlaContact_InvalidSolution(
+            [Frozen] Mock<ISolutionsService> solutionsService,
+            ServiceLevelAgreementsController controller,
+            CatalogueItemId itemId)
+        {
+            solutionsService.Setup(s => s.GetSolution(itemId)).ReturnsAsync(default(CatalogueItem));
+
+            var addModel = new WebApp.Areas.Admin.Models.ServiceLevelAgreements.EditSLAContactModel();
+
+            var actual = await controller.AddContact(itemId, addModel);
+
+            actual.Should().NotBeNull();
+            actual.Should().BeOfType<BadRequestObjectResult>();
+            actual.As<BadRequestObjectResult>().Value.Should().Be($"No Solution found for Id: {itemId}");
+        }
+
+        [Theory]
+        [CommonAutoData]
+        public static async Task Post_AddSlaContact_ModelError(
+            ServiceLevelAgreementsController controller,
+            CatalogueItemId itemId)
+        {
+            controller.ModelState.AddModelError("Test", "A test error");
+
+            var actual = await controller.AddContact(itemId, new WebApp.Areas.Admin.Models.ServiceLevelAgreements.EditSLAContactModel());
+
+            actual.Should().NotBeNull();
+            actual.Should().BeOfType<ViewResult>();
+            actual.As<ViewResult>().Model.Should().BeOfType<WebApp.Areas.Admin.Models.ServiceLevelAgreements.EditSLAContactModel>();
+            var model = actual.As<ViewResult>().Model.As<WebApp.Areas.Admin.Models.ServiceLevelAgreements.EditSLAContactModel>();
+            model.Should()
+                    .BeEquivalentTo(
+                    new WebApp.Areas.Admin.Models.ServiceLevelAgreements.EditSLAContactModel(),
+                    opt => opt
+                        .Excluding(m => m.BackLink));
+        }
+
+        [Theory]
+        [CommonAutoData]
+        public static async Task Get_EditSlaContact_InvalidSolution(
+            [Frozen] Mock<ISolutionsService> solutionsService,
+            ServiceLevelAgreementsController controller,
+            int contactId,
+            CatalogueItemId itemId)
+        {
+            solutionsService.Setup(s => s.GetSolution(itemId)).ReturnsAsync(default(CatalogueItem));
+
+            var actual = await controller.EditContact(itemId, contactId);
+
+            actual.Should().NotBeNull();
+            actual.Should().BeOfType<BadRequestObjectResult>();
+            actual.As<BadRequestObjectResult>().Value.Should().Be($"No Solution found for Id: {itemId}");
+        }
+
+        [Theory]
+        [CommonAutoData]
+        public static async Task Get_EditSlaContact_InvalidContactId(
+            [Frozen] Mock<ISolutionsService> solutionsService,
+            ServiceLevelAgreementsController controller,
+            Solution solution,
+            int contactId,
+            CatalogueItemId itemId)
+        {
+            solutionsService.Setup(s => s.GetSolution(itemId)).ReturnsAsync(solution.CatalogueItem);
+
+            solution.ServiceLevelAgreement.Contacts.Clear();
+
+            var actual = await controller.EditContact(itemId, contactId);
+
+            actual.Should().NotBeNull();
+            actual.Should().BeOfType<BadRequestObjectResult>();
+            actual.As<BadRequestObjectResult>().Value.Should().Be($"No Contact found for Id: {contactId}");
+        }
+
+        [Theory]
+        [CommonAutoData]
+        public static async Task Get_EditSlaContact_ValidSolution(
+            [Frozen] Mock<ISolutionsService> solutionsService,
+            [Frozen] Mock<IServiceLevelAgreementsService> serviceLevelAgreementService,
+            ServiceLevelAgreementsController controller,
+            Solution solution,
+            CatalogueItemId itemId)
+        {
+            solutionsService.Setup(s => s.GetSolution(itemId)).ReturnsAsync(solution.CatalogueItem);
+
+            serviceLevelAgreementService.Setup(slas => slas.GetServiceLevelAgreementForSolution(itemId)).ReturnsAsync(solution.ServiceLevelAgreement);
+
+            var expectedContact = solution.ServiceLevelAgreement.Contacts.FirstOrDefault();
+
+            var expectedModel = new WebApp.Areas.Admin.Models.ServiceLevelAgreements.EditSLAContactModel(solution.CatalogueItem, expectedContact, solution.ServiceLevelAgreement);
+
+            var actual = await controller.EditContact(itemId, expectedContact.Id);
+
+            actual.Should().NotBeNull();
+            actual.Should().BeOfType<ViewResult>();
+            actual.As<ViewResult>().Model.Should().BeOfType<WebApp.Areas.Admin.Models.ServiceLevelAgreements.EditSLAContactModel>();
+            var model = actual.As<ViewResult>().Model.As<WebApp.Areas.Admin.Models.ServiceLevelAgreements.EditSLAContactModel>();
+            model.Should()
+                    .BeEquivalentTo(
+                    expectedModel,
+                    opt => opt
+                        .Excluding(m => m.BackLink)
+                        .Excluding(m => m.BackLinkText));
+        }
+
+        [Theory]
+        [CommonAutoData]
+        public static async Task Post_EditSlaContact_Valid(
+            [Frozen] Mock<ISolutionsService> solutionsService,
+            [Frozen] Mock<IServiceLevelAgreementsService> slaService,
+            ServiceLevelAgreementsController controller,
+            CatalogueItemId itemId,
+            Solution solution)
+        {
+            var addModel = new WebApp.Areas.Admin.Models.ServiceLevelAgreements.EditSLAContactModel()
+            {
+                From = DateTime.UtcNow,
+                Until = DateTime.UtcNow,
+            };
+
+            slaService.Setup(s => s.EditSlaContact(It.IsAny<ServiceContracts.Models.ServiceLevelAgreements.EditSLAContactModel>()));
+            solutionsService.Setup(s => s.GetSolution(itemId)).ReturnsAsync(solution.CatalogueItem);
+
+            var expectedContact = solution.ServiceLevelAgreement.Contacts.FirstOrDefault();
+
+            var actual = await controller.EditContact(itemId, expectedContact.Id, addModel);
+
+            actual.Should().NotBeNull();
+            actual.Should().BeOfType<RedirectToActionResult>();
+            actual.As<RedirectToActionResult>().ActionName.Should().Be(nameof(controller.EditServiceLevelAgreement));
+            slaService.Verify(s => s.EditSlaContact(It.IsAny<ServiceContracts.Models.ServiceLevelAgreements.EditSLAContactModel>()));
+        }
+
+        [Theory]
+        [CommonAutoData]
+        public static async Task Post_EditSlaContact_InvalidSolution(
+            [Frozen] Mock<ISolutionsService> solutionsService,
+            ServiceLevelAgreementsController controller,
+            int contactId,
+            CatalogueItemId itemId)
+        {
+            solutionsService.Setup(s => s.GetSolution(itemId)).ReturnsAsync(default(CatalogueItem));
+
+            var addModel = new WebApp.Areas.Admin.Models.ServiceLevelAgreements.EditSLAContactModel();
+
+            var actual = await controller.EditContact(itemId, contactId, addModel);
+
+            actual.Should().NotBeNull();
+            actual.Should().BeOfType<BadRequestObjectResult>();
+            actual.As<BadRequestObjectResult>().Value.Should().Be($"No Solution found for Id: {itemId}");
+        }
+
+        [Theory]
+        [CommonAutoData]
+        public static async Task Post_EditSlaContact_InvalidContact(
+            [Frozen] Mock<ISolutionsService> solutionsService,
+            ServiceLevelAgreementsController controller,
+            int contactId,
+            CatalogueItemId itemId,
+            Solution solution)
+        {
+            solutionsService.Setup(s => s.GetSolution(itemId)).ReturnsAsync(solution.CatalogueItem);
+
+            var addModel = new WebApp.Areas.Admin.Models.ServiceLevelAgreements.EditSLAContactModel();
+
+            var actual = await controller.EditContact(itemId, contactId, addModel);
+
+            actual.Should().NotBeNull();
+            actual.Should().BeOfType<BadRequestObjectResult>();
+            actual.As<BadRequestObjectResult>().Value.Should().Be($"No Contact found for Id: {contactId}");
+        }
+
+        [Theory]
+        [CommonAutoData]
+        public static async Task Post_EditSlaContact_ModelError(
+            ServiceLevelAgreementsController controller,
+            int contactId,
+            CatalogueItemId itemId)
+        {
+            controller.ModelState.AddModelError("Test", "A test error");
+
+            var actual = await controller.EditContact(itemId, contactId, new WebApp.Areas.Admin.Models.ServiceLevelAgreements.EditSLAContactModel());
+
+            actual.Should().NotBeNull();
+            actual.Should().BeOfType<ViewResult>();
+            actual.As<ViewResult>().Model.Should().BeOfType<WebApp.Areas.Admin.Models.ServiceLevelAgreements.EditSLAContactModel>();
+            var model = actual.As<ViewResult>().Model.As<WebApp.Areas.Admin.Models.ServiceLevelAgreements.EditSLAContactModel>();
+            model.Should()
+                    .BeEquivalentTo(
+                    new WebApp.Areas.Admin.Models.ServiceLevelAgreements.EditSLAContactModel(),
+                    opt => opt
+                        .Excluding(m => m.BackLink));
+        }
+
+        [Theory]
+        [CommonAutoData]
+        public static async Task Get_DeleteSlaContact_InvalidSolution(
+            [Frozen] Mock<ISolutionsService> solutionsService,
+            ServiceLevelAgreementsController controller,
+            int contactId,
+            CatalogueItemId itemId)
+        {
+            solutionsService.Setup(s => s.GetSolution(itemId)).ReturnsAsync(default(CatalogueItem));
+
+            var actual = await controller.DeleteContact(itemId, contactId);
+
+            actual.Should().NotBeNull();
+            actual.Should().BeOfType<BadRequestObjectResult>();
+            actual.As<BadRequestObjectResult>().Value.Should().Be($"No Solution found for Id: {itemId}");
+        }
+
+        [Theory]
+        [CommonAutoData]
+        public static async Task Get_DeleteSlaContact_InvalidContactId(
+            [Frozen] Mock<ISolutionsService> solutionsService,
+            ServiceLevelAgreementsController controller,
+            Solution solution,
+            int contactId,
+            CatalogueItemId itemId)
+        {
+            solutionsService.Setup(s => s.GetSolution(itemId)).ReturnsAsync(solution.CatalogueItem);
+
+            solution.ServiceLevelAgreement.Contacts.Clear();
+
+            var actual = await controller.DeleteContact(itemId, contactId);
+
+            actual.Should().NotBeNull();
+            actual.Should().BeOfType<BadRequestObjectResult>();
+            actual.As<BadRequestObjectResult>().Value.Should().Be($"No Contact found for Id: {contactId}");
+        }
+
+        [Theory]
+        [CommonAutoData]
+        public static async Task Get_DeleteSlaContact_ValidSolution(
+            [Frozen] Mock<ISolutionsService> solutionsService,
+            [Frozen] Mock<IServiceLevelAgreementsService> serviceLevelAgreementService,
+            ServiceLevelAgreementsController controller,
+            Solution solution,
+            CatalogueItemId itemId)
+        {
+            solutionsService.Setup(s => s.GetSolution(itemId)).ReturnsAsync(solution.CatalogueItem);
+
+            serviceLevelAgreementService.Setup(slas => slas.GetServiceLevelAgreementForSolution(itemId)).ReturnsAsync(solution.ServiceLevelAgreement);
+
+            var expectedContact = solution.ServiceLevelAgreement.Contacts.FirstOrDefault();
+
+            var expectedModel = new WebApp.Areas.Admin.Models.ServiceLevelAgreements.EditSLAContactModel(solution.CatalogueItem, expectedContact);
+
+            var actual = await controller.DeleteContact(itemId, expectedContact.Id);
+
+            actual.Should().NotBeNull();
+            actual.Should().BeOfType<ViewResult>();
+            actual.As<ViewResult>().Model.Should().BeOfType<WebApp.Areas.Admin.Models.ServiceLevelAgreements.EditSLAContactModel>();
+            var model = actual.As<ViewResult>().Model.As<WebApp.Areas.Admin.Models.ServiceLevelAgreements.EditSLAContactModel>();
+            model.Should()
+                    .BeEquivalentTo(
+                    expectedModel,
+                    opt => opt
+                        .Excluding(m => m.BackLink)
+                        .Excluding(m => m.BackLinkText));
+        }
+
+        [Theory]
+        [CommonAutoData]
+        public static async Task Post_DeleteSlaContact_Valid(
+            [Frozen] Mock<ISolutionsService> solutionsService,
+            [Frozen] Mock<IServiceLevelAgreementsService> slaService,
+            ServiceLevelAgreementsController controller,
+            CatalogueItemId itemId,
+            Solution solution)
+        {
+            var addModel = new WebApp.Areas.Admin.Models.ServiceLevelAgreements.EditSLAContactModel();
+
+            slaService.Setup(s => s.DeleteSlaContact(It.IsAny<int>()));
+            solutionsService.Setup(s => s.GetSolution(itemId)).ReturnsAsync(solution.CatalogueItem);
+
+            var expectedContact = solution.ServiceLevelAgreement.Contacts.FirstOrDefault();
+
+            var actual = await controller.DeleteContact(itemId, expectedContact.Id, addModel);
+
+            actual.Should().NotBeNull();
+            actual.Should().BeOfType<RedirectToActionResult>();
+            actual.As<RedirectToActionResult>().ActionName.Should().Be(nameof(controller.EditServiceLevelAgreement));
+            slaService.Verify(s => s.DeleteSlaContact(It.IsAny<int>()));
+        }
+
+        [Theory]
+        [CommonAutoData]
+        public static async Task Post_DeleteSlaContact_InvalidSolution(
+            [Frozen] Mock<ISolutionsService> solutionsService,
+            ServiceLevelAgreementsController controller,
+            int contactId,
+            CatalogueItemId itemId)
+        {
+            solutionsService.Setup(s => s.GetSolution(itemId)).ReturnsAsync(default(CatalogueItem));
+
+            var addModel = new WebApp.Areas.Admin.Models.ServiceLevelAgreements.EditSLAContactModel();
+
+            var actual = await controller.DeleteContact(itemId, contactId, addModel);
+
+            actual.Should().NotBeNull();
+            actual.Should().BeOfType<BadRequestObjectResult>();
+            actual.As<BadRequestObjectResult>().Value.Should().Be($"No Solution found for Id: {itemId}");
+        }
+
+        [Theory]
+        [CommonAutoData]
+        public static async Task Post_DeleteSlaContact_InvalidContact(
+            [Frozen] Mock<ISolutionsService> solutionsService,
+            ServiceLevelAgreementsController controller,
+            int contactId,
+            CatalogueItemId itemId,
+            Solution solution)
+        {
+            solutionsService.Setup(s => s.GetSolution(itemId)).ReturnsAsync(solution.CatalogueItem);
+
+            var addModel = new WebApp.Areas.Admin.Models.ServiceLevelAgreements.EditSLAContactModel();
+
+            solution.ServiceLevelAgreement.Contacts.Clear();
+
+            var actual = await controller.DeleteContact(itemId, contactId, addModel);
+
+            actual.Should().NotBeNull();
+            actual.Should().BeOfType<BadRequestObjectResult>();
+            actual.As<BadRequestObjectResult>().Value.Should().Be($"No Contact found for Id: {contactId}");
         }
     }
 }

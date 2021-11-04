@@ -47,14 +47,14 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Models.Interope
 
         [Theory]
         [CommonAutoData]
-        public static void Status_NoIntegrations_ShouldBeNotStarted(
+        public static void Status_NoIntegrations_ShouldBeOptional(
             InteroperabilityModel model)
         {
             model.Link = null;
             model.IM1Integrations = Array.Empty<Integration>();
             model.GpConnectIntegrations = Array.Empty<Integration>();
 
-            model.Status().Should().Be(TaskProgress.NotStarted);
+            model.Status().Should().Be(TaskProgress.Optional);
         }
 
         [Theory]

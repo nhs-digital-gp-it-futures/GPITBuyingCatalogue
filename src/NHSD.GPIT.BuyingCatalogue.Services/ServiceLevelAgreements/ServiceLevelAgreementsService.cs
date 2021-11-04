@@ -111,5 +111,53 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.ServiceLevelAgreements
 
         public async Task<int> GetCountOfServiceAvailabilityTimes(params int[] idsToExclude)
             => await dbContext.ServiceAvailabilityTimes.Where(s => !idsToExclude.Contains(s.Id)).CountAsync();
+
+        public async Task AddSLAContact(CatalogueItem solution, EditSLAContactModel model)
+        {
+            if (model is null)
+                throw new ArgumentNullException(nameof(model));
+
+            if (solution is null)
+                throw new ArgumentNullException(nameof(solution));
+
+            var slaContact = new SlaContact
+            {
+                SolutionId = solution.Id,
+                Channel = model.Channel,
+                ContactInformation = model.ContactInformation,
+                TimeFrom = model.TimeFrom,
+                TimeUntil = model.TimeUntil,
+                LastUpdated = DateTime.UtcNow,
+                LastUpdatedBy = model.UserId,
+            };
+
+            dbContext.SlaContacts.Add(slaContact);
+
+            await dbContext.SaveChangesAsync();
+        }
+
+        public async Task DeleteSlaContact(int slaContactId)
+        {
+            var contact = await dbContext.SlaContacts.SingleAsync(slac => slac.Id == slaContactId);
+
+            dbContext.SlaContacts.Remove(contact);
+
+            await dbContext.SaveChangesAsync();
+        }
+
+        public async Task EditSlaContact(EditSLAContactModel model)
+        {
+            if (model is null)
+                throw new ArgumentNullException(nameof(model));
+
+            var contact = await dbContext.SlaContacts.SingleAsync(slac => slac.Id == model.Id);
+
+            contact.Channel = model.Channel;
+            contact.ContactInformation = model.ContactInformation;
+            contact.TimeFrom = model.TimeFrom;
+            contact.TimeUntil = model.TimeUntil;
+
+            await dbContext.SaveChangesAsync();
+        }
     }
 }

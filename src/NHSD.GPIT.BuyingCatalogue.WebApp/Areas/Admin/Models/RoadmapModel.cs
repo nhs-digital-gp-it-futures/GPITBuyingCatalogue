@@ -29,7 +29,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models
 
         public TaskProgress Status() =>
             string.IsNullOrWhiteSpace(Link)
-                ? TaskProgress.NotStarted
+                ? TaskProgress.Optional
                 : TaskProgress.Completed;
     }
 }

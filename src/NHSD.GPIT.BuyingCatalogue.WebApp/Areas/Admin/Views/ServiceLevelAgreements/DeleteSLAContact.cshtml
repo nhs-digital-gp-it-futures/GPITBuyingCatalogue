@@ -1,0 +1,24 @@
+﻿@model NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.ServiceLevelAgreements.EditSLAContactModel
+@{ ViewBag.Title = $"Delete Contact {Model.Channel}?"; }
+
+<partial name="Partials/_BackLink" model="Model" />
+<div class="nhsuk-grid-row">
+    <div class="nhsuk-grid-column-two-thirds">
+        <nhs-validation-summary />
+        <nhs-page-title title="@ViewBag.Title"
+                        caption="@Model.SolutionName"
+                        advice="Confirm you want to delete the contact for this service level agreement." />
+        <div class="nhsuk-grid-row">
+            <div class="nhsuk-grid-column-two-thirds">
+                <form method="post">
+                    <div>
+                        <nhs-submit-button text="Delete" />
+                    </div>
+                    <div>
+                        <a href="@Model.BackLink">Cancel</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

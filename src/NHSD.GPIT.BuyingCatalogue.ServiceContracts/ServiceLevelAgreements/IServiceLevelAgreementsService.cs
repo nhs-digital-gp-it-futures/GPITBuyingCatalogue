@@ -22,5 +22,11 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.ServiceLevelAgreements
         Task DeleteServiceAvailabilityTimes(CatalogueItemId solutionId, int serviceAvailabilityTimesId);
 
         Task<int> GetCountOfServiceAvailabilityTimes(params int[] idsToExclude);
+
+        Task AddSLAContact(CatalogueItem solution, EditSLAContactModel model);
+
+        Task EditSlaContact(EditSLAContactModel model);
+
+        Task DeleteSlaContact(int slaContactId);
     }
 }

@@ -92,6 +92,8 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework
 
         public DbSet<ServiceLevelAgreements> ServiceLevelAgreements { get; set; }
 
+        public DbSet<SlaContact> SlaContacts { get; set; }
+
         public DbSet<ServiceAvailabilityTimes> ServiceAvailabilityTimes { get; set; }
 
         public override Task<int> SaveChangesAsync(bool acceptAllChangesOnSuccess, CancellationToken cancellationToken = default)
