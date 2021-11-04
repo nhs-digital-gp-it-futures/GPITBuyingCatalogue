@@ -17,7 +17,7 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models
 
         public string Url { get; set; }
 
-        public bool RequiredForAllSolutions { get; set; }
+        public StandardType StandardType { get; set; }
 
         public ICollection<StandardCapability> StandardCapabilities { get; set; }
     }

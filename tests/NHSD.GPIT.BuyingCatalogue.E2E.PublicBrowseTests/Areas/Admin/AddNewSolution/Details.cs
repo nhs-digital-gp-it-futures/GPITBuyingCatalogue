@@ -45,7 +45,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.AddNewSolution
         [Fact]
         public async Task Details_IsFoundationUpdatedCorrectly()
         {
-            CommonActions.ClickFirstCheckbox();
+            CommonActions.ClickCheckboxByLabel("GP IT Futures Framework");
             CommonActions.ClickCheckboxByLabel("Foundation Solution");
             CommonActions.ClickCheckboxByLabel("DFOCVC Framework");
             CommonActions.ClickSave();
@@ -69,7 +69,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.AddNewSolution
 
             Driver.Navigate().Refresh();
 
-            CommonActions.ClickFirstCheckbox();
+            CommonActions.ClickCheckboxByLabel("GP IT Futures Framework");
             CommonActions.ClickCheckboxByLabel("DFOCVC Framework");
             CommonActions.ClickSave();
 
@@ -88,7 +88,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.AddNewSolution
         [Fact]
         public async Task Details_NotFoundationUpdatedCorrectly()
         {
-            CommonActions.ClickFirstCheckbox();
+            CommonActions.ClickCheckboxByLabel("GP IT Futures Framework");
             CommonActions.ClickCheckboxByLabel("DFOCVC Framework");
             CommonActions.ClickSave();
 

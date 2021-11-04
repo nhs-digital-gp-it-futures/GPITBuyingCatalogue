@@ -28,8 +28,9 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Configuration
                 .IsRequired()
                 .HasMaxLength(1000);
 
-            builder.Property(s => s.RequiredForAllSolutions)
-                .IsRequired();
+            builder.Property(s => s.StandardType)
+                .IsRequired()
+                .HasColumnName("StandardTypeId");
 
             builder.HasMany(s => s.StandardCapabilities)
                 .WithOne(sc => sc.Standard)
