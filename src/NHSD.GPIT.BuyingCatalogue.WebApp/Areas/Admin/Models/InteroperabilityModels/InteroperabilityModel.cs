@@ -60,6 +60,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.InteroperabilityMo
             || IM1Integrations.Any()
             || GpConnectIntegrations.Any()
             ? TaskProgress.Completed
-            : TaskProgress.NotStarted;
+            : TaskProgress.Optional;
     }
 }

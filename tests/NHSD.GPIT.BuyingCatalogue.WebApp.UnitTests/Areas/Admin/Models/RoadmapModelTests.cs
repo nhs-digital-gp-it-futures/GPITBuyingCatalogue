@@ -66,13 +66,13 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Models
 
         [Theory]
         [MemberData(nameof(InvalidStringData.TestData), MemberType = typeof(InvalidStringData))]
-        public static void Status_LinkInvalid_ReturnsNotStarted(string invalid)
+        public static void Status_LinkInvalid_ReturnsOptional(string invalid)
         {
             var model = new RoadmapModel { Link = invalid };
 
             var actual = model.Status();
 
-            actual.Should().Be(TaskProgress.NotStarted);
+            actual.Should().Be(TaskProgress.Optional);
         }
     }
 }

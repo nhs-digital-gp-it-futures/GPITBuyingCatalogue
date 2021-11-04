@@ -111,6 +111,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models
         public TaskProgress Status() =>
             AllFeatures.Any()
                 ? TaskProgress.Completed
-                : TaskProgress.NotStarted;
+                : TaskProgress.Optional;
     }
 }
