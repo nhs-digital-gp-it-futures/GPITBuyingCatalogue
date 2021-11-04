@@ -688,6 +688,17 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
                                     TimeUntil = DateTime.UtcNow.AddHours(5),
                                 },
                             },
+                            ServiceHours = new HashSet<ServiceAvailabilityTimes>
+                            {
+                                new()
+                                {
+                                    Id = 1,
+                                    ApplicableDays = "Applicable Days 01",
+                                    Category = "Support Type 01",
+                                    TimeFrom = DateTime.UtcNow.AddHours(-5),
+                                    TimeUntil = DateTime.UtcNow,
+                                },
+                            },
                         },
                     },
                     CatalogueItemCapabilities = new List<CatalogueItemCapability>
@@ -881,6 +892,25 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
                                     ContactInformation = "This is Contact Information 2",
                                     TimeFrom = DateTime.UtcNow,
                                     TimeUntil = DateTime.UtcNow.AddHours(5),
+                                },
+                            },
+                            ServiceHours = new HashSet<ServiceAvailabilityTimes>
+                            {
+                                new()
+                                {
+                                    Id = 2,
+                                    ApplicableDays = "Applicable Days 02",
+                                    Category = "Support Type 02",
+                                    TimeFrom = DateTime.UtcNow.AddHours(-5),
+                                    TimeUntil = DateTime.UtcNow,
+                                },
+                                new()
+                                {
+                                    Id = 3,
+                                    ApplicableDays = "Applicable Days 03",
+                                    Category = "Support Type 03",
+                                    TimeFrom = DateTime.UtcNow.AddHours(-5),
+                                    TimeUntil = DateTime.UtcNow,
                                 },
                             },
                         },

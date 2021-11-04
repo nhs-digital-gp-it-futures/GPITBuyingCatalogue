@@ -504,7 +504,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
         {
             solution.CatalogueItem.PublishedStatus = PublicationStatus.Published;
 
-            serviceLevelAgreementsService.Setup(s => s.GetCountOfServiceAvailabilityTimes(serviceAvailabilityTimes.Id))
+            serviceLevelAgreementsService.Setup(s => s.GetCountOfServiceAvailabilityTimes(solution.CatalogueItemId, serviceAvailabilityTimes.Id))
                 .ReturnsAsync(0);
 
             var expectedModel = new EditServiceAvailabilityTimesModel(solution.CatalogueItem, serviceAvailabilityTimes)
@@ -535,7 +535,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
         {
             solution.CatalogueItem.PublishedStatus = PublicationStatus.Published;
 
-            serviceLevelAgreementsService.Setup(s => s.GetCountOfServiceAvailabilityTimes(serviceAvailabilityTimes.Id))
+            serviceLevelAgreementsService.Setup(s => s.GetCountOfServiceAvailabilityTimes(solution.CatalogueItemId, serviceAvailabilityTimes.Id))
                 .ReturnsAsync(1);
 
             var expectedModel = new EditServiceAvailabilityTimesModel(solution.CatalogueItem, serviceAvailabilityTimes)

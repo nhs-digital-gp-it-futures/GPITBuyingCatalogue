@@ -230,7 +230,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.ServiceLevelAgreements
             var idToExclude = serviceAvailabilityTimes.First().Id;
             var expectedCount = serviceAvailabilityTimes.Count - 1;
 
-            var actualCount = await service.GetCountOfServiceAvailabilityTimes(idToExclude);
+            var actualCount = await service.GetCountOfServiceAvailabilityTimes(solution.CatalogueItemId, idToExclude);
 
             actualCount.Should().Be(expectedCount);
         }

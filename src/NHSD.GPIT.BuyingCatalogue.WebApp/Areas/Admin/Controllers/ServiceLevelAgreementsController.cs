@@ -197,7 +197,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
             var model = new EditServiceAvailabilityTimesModel(solution, serviceAvailabilityTimes)
             {
                 BackLink = Url.Action(nameof(EditServiceLevelAgreement), new { solutionId }),
-                CanDelete = solution.PublishedStatus != PublicationStatus.Published || ((await serviceLevelAgreementsService.GetCountOfServiceAvailabilityTimes(serviceAvailabilityTimes.Id)) > 0),
+                CanDelete = solution.PublishedStatus != PublicationStatus.Published || ((await serviceLevelAgreementsService.GetCountOfServiceAvailabilityTimes(solutionId, serviceAvailabilityTimes.Id)) > 0),
             };
 
             return View("AddEditServiceAvailabilityTimes", model);

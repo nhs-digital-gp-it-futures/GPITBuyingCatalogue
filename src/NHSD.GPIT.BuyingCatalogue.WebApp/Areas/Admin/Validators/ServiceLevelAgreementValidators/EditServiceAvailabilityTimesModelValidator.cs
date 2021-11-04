@@ -5,8 +5,9 @@ using System.Threading.Tasks;
 using FluentValidation;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.ServiceLevelAgreements;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.ServiceLevelAgreements;
+using NHSD.GPIT.BuyingCatalogue.WebApp.Validation;
 
-namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Validators
+namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Validators.ServiceLevelAgreementValidators
 {
     public sealed class EditServiceAvailabilityTimesModelValidator : AbstractValidator<EditServiceAvailabilityTimesModel>
     {
@@ -18,7 +19,12 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Validators
 
             RuleFor(m => m)
                 .MustAsync(NotBeADuplicateServiceAvailabilityTime)
-                .WithMessage("Service availability time with these details already exists");
+                .WithMessage("Service availability time with these details already exists")
+                .OverridePropertyName(
+                    m => m.SupportType,
+                    m => m.ApplicableDays,
+                    m => m.From,
+                    m => m.Until);
 
             RuleFor(m => m.SupportType)
                 .NotEmpty()
@@ -30,7 +36,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Validators
 
             RuleFor(m => m.Until)
                 .NotNull()
-                .WithMessage("Enter an until time");
+                .WithMessage("Enter an until time")
+                .Unless(m => !m.From.HasValue);
 
             RuleFor(m => m.ApplicableDays)
                 .NotEmpty()

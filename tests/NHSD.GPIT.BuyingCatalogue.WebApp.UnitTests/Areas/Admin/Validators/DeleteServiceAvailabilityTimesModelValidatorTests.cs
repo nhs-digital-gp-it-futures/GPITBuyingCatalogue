@@ -6,7 +6,7 @@ using NHSD.GPIT.BuyingCatalogue.ServiceContracts.ServiceLevelAgreements;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions;
 using NHSD.GPIT.BuyingCatalogue.Test.Framework.AutoFixtureCustomisations;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.ServiceLevelAgreements;
-using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Validators;
+using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Validators.ServiceLevelAgreementValidators;
 using Xunit;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators
@@ -29,7 +29,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators
             solutionsService.Setup(s => s.GetSolution(solution.CatalogueItemId))
                 .ReturnsAsync(solution.CatalogueItem);
 
-            serviceLevelAgreementsService.Setup(s => s.GetCountOfServiceAvailabilityTimes(serviceAvailabilityTimes.Id))
+            serviceLevelAgreementsService.Setup(s => s.GetCountOfServiceAvailabilityTimes(solution.CatalogueItemId, serviceAvailabilityTimes.Id))
                 .ReturnsAsync(1);
 
             var result = validator.TestValidate(model);
@@ -53,7 +53,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators
             solutionsService.Setup(s => s.GetSolution(solution.CatalogueItemId))
                 .ReturnsAsync(solution.CatalogueItem);
 
-            serviceLevelAgreementsService.Setup(s => s.GetCountOfServiceAvailabilityTimes(serviceAvailabilityTimes.Id))
+            serviceLevelAgreementsService.Setup(s => s.GetCountOfServiceAvailabilityTimes(solution.CatalogueItemId, serviceAvailabilityTimes.Id))
                 .ReturnsAsync(0);
 
             var result = validator.TestValidate(model);
@@ -78,7 +78,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators
             solutionsService.Setup(s => s.GetSolution(solution.CatalogueItemId))
                 .ReturnsAsync(solution.CatalogueItem);
 
-            serviceLevelAgreementsService.Setup(s => s.GetCountOfServiceAvailabilityTimes(serviceAvailabilityTimes.Id))
+            serviceLevelAgreementsService.Setup(s => s.GetCountOfServiceAvailabilityTimes(solution.CatalogueItemId, serviceAvailabilityTimes.Id))
                 .ReturnsAsync(1);
 
             var result = validator.TestValidate(model);
@@ -102,7 +102,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators
             solutionsService.Setup(s => s.GetSolution(solution.CatalogueItemId))
                 .ReturnsAsync(solution.CatalogueItem);
 
-            serviceLevelAgreementsService.Setup(s => s.GetCountOfServiceAvailabilityTimes(serviceAvailabilityTimes.Id))
+            serviceLevelAgreementsService.Setup(s => s.GetCountOfServiceAvailabilityTimes(solution.CatalogueItemId, serviceAvailabilityTimes.Id))
                 .ReturnsAsync(0);
 
             var result = validator.TestValidate(model);

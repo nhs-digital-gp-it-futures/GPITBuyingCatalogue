@@ -7,7 +7,7 @@ using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.ServiceLevelAgreements;
 using NHSD.GPIT.BuyingCatalogue.Test.Framework.AutoFixtureCustomisations;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.ServiceLevelAgreements;
-using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Validators;
+using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Validators.ServiceLevelAgreementValidators;
 using Xunit;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators
@@ -117,7 +117,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators
 
             var result = validator.TestValidate(model);
 
-            result.ShouldHaveValidationErrorFor(m => m)
+            result.ShouldHaveAnyValidationError()
                 .WithErrorMessage("Service availability time with these details already exists");
         }
 

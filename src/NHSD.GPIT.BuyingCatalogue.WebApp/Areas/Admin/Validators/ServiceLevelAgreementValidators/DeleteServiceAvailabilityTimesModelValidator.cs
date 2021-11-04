@@ -6,7 +6,7 @@ using NHSD.GPIT.BuyingCatalogue.ServiceContracts.ServiceLevelAgreements;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.ServiceLevelAgreements;
 
-namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Validators
+namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Validators.ServiceLevelAgreementValidators
 {
     public sealed class DeleteServiceAvailabilityTimesModelValidator : AbstractValidator<DeleteServiceAvailabilityTimesModel>
     {
@@ -31,7 +31,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Validators
 
             var isNotPublished = solution.PublishedStatus != PublicationStatus.Published;
 
-            return isNotPublished || ((await serviceLevelAgreementsService.GetCountOfServiceAvailabilityTimes(model.ServiceAvailabilityTimesId)) > 0);
+            return isNotPublished || ((await serviceLevelAgreementsService.GetCountOfServiceAvailabilityTimes(model.SolutionId, model.ServiceAvailabilityTimesId)) > 0);
         }
     }
 }
