@@ -50,13 +50,13 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Models
 
         [Theory]
         [MemberData(nameof(InvalidStringData.TestData), MemberType = typeof(InvalidStringData))]
-        public static void StatusImplementation_NoDescriptionAdded_ReturnsNotStarted(string invalid)
+        public static void StatusImplementation_NoDescriptionAdded_ReturnsOptional(string invalid)
         {
             var model = new ImplementationTimescaleModel { Description = invalid };
 
             var actual = model.Status();
 
-            actual.Should().Be(TaskProgress.NotStarted);
+            actual.Should().Be(TaskProgress.Optional);
         }
     }
 }

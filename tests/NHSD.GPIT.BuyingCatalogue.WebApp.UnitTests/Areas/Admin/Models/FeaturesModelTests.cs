@@ -95,13 +95,13 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Models
         }
 
         [Fact]
-        public static void Status_NoFeatureAdded_ReturnsNotStarted()
+        public static void Status_NoFeatureAdded_ReturnsOptional()
         {
             var model = new FeaturesModel { Feature01 = null, Feature05 = string.Empty, Feature10 = "    " };
 
             var actual = model.Status();
 
-            actual.Should().Be(TaskProgress.NotStarted);
+            actual.Should().Be(TaskProgress.Optional);
         }
     }
 }
