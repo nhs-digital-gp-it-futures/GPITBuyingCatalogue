@@ -79,7 +79,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
 
         public async Task<IList<Standard>> GetSolutionStandards(CatalogueItemId catalogueItemId)
         {
-            var requiredStandardsQuery = dbContext.Standards.Where(s => s.RequiredForAllSolutions);
+            var requiredStandardsQuery = dbContext.Standards.Where(s => s.StandardType == StandardType.Overarching);
 
             return await dbContext.CatalogueItems
                .Where(ci => ci.Id == catalogueItemId)
@@ -90,6 +90,8 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
                .Distinct()
                .Union(requiredStandardsQuery)
                .ToListAsync();
+
+            // TODO : Add in Capability Standards when workoff plans is done.
         }
 
         public async Task<CatalogueItem> GetSolutionOverview(CatalogueItemId solutionId)

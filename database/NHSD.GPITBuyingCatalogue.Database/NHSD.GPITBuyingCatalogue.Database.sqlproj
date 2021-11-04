@@ -188,6 +188,7 @@
     <Build Include="Catalogue\Tables\ServiceLevelAgreements.sql" />
     <Build Include="Catalogue\Tables\ServiceAvailabilityTimes.sql" />
     <Build Include="Catalogue\Tables\SlaServiceLevels.sql" />
+    <Build Include="Catalogue\Tables\StandardTypes.sql" />
   </ItemGroup>
   <ItemGroup>
     <SqlCmdVariable Include="CREATE_EA_USER">
@@ -263,6 +264,7 @@
     <Build Include="Security\Schemas\catalogue.sql" />
     <None Include="PostDeployment\InsertStandards.sql" />
     <None Include="PostDeployment\InsertStandardsCapabilities.sql" />
+    <None Include="PostDeployment\InsertStandardTypes.sql" />
   </ItemGroup>
   <ItemGroup>
     <PostDeploy Include="PostDeployment\PostDeployment.sql" />

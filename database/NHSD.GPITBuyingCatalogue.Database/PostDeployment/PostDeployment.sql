@@ -12,6 +12,7 @@
 :r ./InsertPricingUnits.sql
 :r ./InsertProvisioningTypes.sql
 :r ./InsertSuppliers.sql
+:r ./InsertStandardTypes.sql
 :r ./InsertStandards.sql
 :r ./InsertStandardsCapabilities.sql
 
