@@ -5,7 +5,7 @@ namespace NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.Components.NhsSub
 {
     public sealed class NhsSubmitButtonViewComponent : ViewComponent
     {
-        private const string DefaultButtonText = "Save and return";
+        private const string DefaultButtonText = "Save and continue";
 
         public async Task<IViewComponentResult> InvokeAsync(string text)
         {

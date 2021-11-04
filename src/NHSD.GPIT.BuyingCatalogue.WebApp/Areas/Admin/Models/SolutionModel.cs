@@ -21,11 +21,14 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models
             SupplierId = solution.SupplierId;
             SolutionName = solution.Name;
             SupplierName = solution.Supplier.Name;
+            SolutionDisplayName = solution.Name;
         }
 
         public int? SupplierId { get; set; }
 
         public string SolutionName { get; set; }
+
+        public string SolutionDisplayName { get; set; }
 
         public string SupplierName { get; set; }
 

@@ -15,7 +15,7 @@
                 @Model.Organisation.OdsCode
             </p>
         </nhs-summary-list-row>
-        <nhs-summary-list-row label-text="Primary Role ID">
+        <nhs-summary-list-row label-text="Primary role ID">
             <p>
                 @Model.Organisation.PrimaryRoleId
             </p>
@@ -27,16 +27,17 @@
         </nhs-summary-list-row>
         <nhs-summary-list-row label-text="Contract">
             <p>
-                <a data-test-id="edit-org-button" asp-area="Admin" asp-controller="Organisations" asp-action="EditOrganisation" asp-route-organisationId="@Model.Organisation.Id" class="bc-u-float-right nhsuk-u-margin-left-2">Change</a>
+                <a data-test-id="edit-org-button" asp-area="Admin" asp-controller="Organisations" asp-action="EditOrganisation" asp-route-organisationId="@Model.Organisation.Id" class="bc-u-float-right nhsuk-u-margin-left-2">Edit</a>
                 @Model.CatalogueAgreementText
             </p>
         </nhs-summary-list-row>
     </nhs-summary-list>
 
-    <h2 data-test-id="accounts-subheading">User accounts for @Model.Organisation.Name</h2>
+    <h2 data-test-id="accounts-subheading">User accounts</h2>
+    <p>These users are the buyers for this organisation.</p>
 
     <div data-test-id="add-user-button">
-        <vc:nhs-action-link url="/admin/organisations/@Model.Organisation.Id/adduser" text="Add new user" />
+        <vc:nhs-action-link url="/admin/organisations/@Model.Organisation.Id/adduser" text="Add a new user" />
     </div>
 
     <div data-test-id="user-table">
@@ -65,7 +66,7 @@
                         <div data-test-id="user-email-@user.Id">@user.Email</div>
                     </nhs-table-cell>
                     <nhs-table-cell>
-                        <a data-test-id="user-name-@user.Id" asp-area="Admin" asp-controller="Organisations" asp-action="UserDetails" asp-route-organisationId="@Model.Organisation.Id" asp-route-userId="@user.Id">Manage</a>
+                        <a data-test-id="user-name-@user.Id" asp-area="Admin" asp-controller="Organisations" asp-action="UserDetails" asp-route-organisationId="@Model.Organisation.Id" asp-route-userId="@user.Id">Edit</a>
                     </nhs-table-cell>
                 </nhs-table-row-container>
             }
@@ -73,9 +74,9 @@
     </div>
 
     <h2>Related organisations</h2>
-    <p>These are the organisations @Model.Organisation.Name can create orders for.</p>
+    <p>These are the organisations this organisation can create orders on behalf of.</p>
     <div data-test-id="add-organisation-button">
-        <vc:nhs-action-link url="/admin/organisations/proxy/@Model.Organisation.Id" text="Add an organisation" />
+        <vc:nhs-action-link url="/admin/organisations/proxy/@Model.Organisation.Id" text="Relate to an organisation" />
     </div>
 
     <div id="related-org-table" data-test-id="related-org-table">

@@ -42,7 +42,7 @@
                         <nhs-select asp-for="DeclarativeTimeUnit"
                                     asp-items="timeUnitsSelectList"
                                     label-text="Unit of time"
-                                    label-hint="Provide the unit of time for how this Catalogue Solution will be billed." />
+                                    label-hint="Select the billing period for this list price." />
                     </nhs-radio-button>
 
                     <nhs-radio-button asp-for="SelectedProvisioningType"
@@ -53,7 +53,7 @@
                         <nhs-select asp-for="OnDemandTimeUnit"
                                     asp-items="timeUnitsSelectList"
                                     label-text="Unit of time (optional)"
-                                    label-hint="Provide the unit of time for how this Catalogue Solution will be billed." />
+                                    label-hint="Select the billing period for this list price." />
                     </nhs-radio-button>
                 </nhs-radio-button-container>
             </nhs-fieldset-form-label>
@@ -64,7 +64,7 @@
 
             <nhs-input asp-for="Unit"
                        label-text="Unit"
-                       label-hint="For example, per consultation, per practice, per licence." />
+                       label-hint="For example: per consultation, per practice or per licence." />
 
             <nhs-textarea asp-for="UnitDefinition"
                           label-text="Unit definition (optional)"

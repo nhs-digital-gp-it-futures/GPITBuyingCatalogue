@@ -15,7 +15,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.AdditionalServices
             : this()
         {
             Title = "Additional service details";
-            SupplierName = catalogueItem.Supplier.Name;
+            SolutionName = catalogueItem.Name;
             CatalogueItemId = catalogueItem.Id;
             CatalogueItemName = catalogueItem.Name;
         }
@@ -27,14 +27,14 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.AdditionalServices
             Id = additionalServiceCatalogueItem.Id;
             Name = additionalServiceCatalogueItem.Name;
             Description = additionalServiceCatalogueItem.AdditionalService.FullDescription;
-            SupplierName = catalogueItem.Supplier.Name;
+            SolutionName = catalogueItem.Name;
             CatalogueItemId = catalogueItem.Id;
             CatalogueItemName = catalogueItem.Name;
         }
 
         public string Title { get; init; }
 
-        public string SupplierName { get; init; }
+        public string SolutionName { get; init; }
 
         public CatalogueItemId CatalogueItemId { get; init; }
 

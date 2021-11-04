@@ -11,7 +11,7 @@
             <nhs-page-title
                 title="@ViewBag.Title"
                 caption="@Model.Organisation.Name"
-                advice="@Model.Organisation.Name will then be able to create orders on this organisation's behalf." />
+                advice="This organisation will then be able to create orders on behalf of the organisation you select." />
             <form method="post">
                 <input type="hidden" asp-for="@Model.Organisation.Id" />
 
@@ -24,7 +24,7 @@
                                        value-name="@nameof(Organisation.Id)"
                                        display-name="@nameof(Organisation.Name)" />
                 </nhs-fieldset-form-label>
-                <nhs-submit-button text="Confirm" />
+                <nhs-submit-button text="Save and continue" />
             </form>
         </div>
     </div>

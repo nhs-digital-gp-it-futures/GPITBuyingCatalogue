@@ -15,6 +15,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models
         public EditSupplierDetailsModel(CatalogueItem catalogueItem)
         {
             SupplierName = catalogueItem.Supplier.Name;
+            SolutionName = catalogueItem.Name;
             SupplierSummary = catalogueItem.Supplier.Summary;
 
             var supplierContactsList = catalogueItem.Supplier.SupplierContacts.Select(sc => CreateAvailableSupplierContact(sc, catalogueItem)).OrderBy(c => c.DisplayName);
@@ -22,6 +23,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models
         }
 
         public string SupplierName { get; init; }
+
+        public string SolutionName { get; init; }
 
         public string SupplierSummary { get; init; }
 

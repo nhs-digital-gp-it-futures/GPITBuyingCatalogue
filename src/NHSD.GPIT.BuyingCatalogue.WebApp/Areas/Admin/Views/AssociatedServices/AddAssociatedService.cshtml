@@ -9,27 +9,21 @@
         <nhs-validation-summary />
         <nhs-page-title title="@ViewBag.Title"
                         caption="@Model.Solution.Supplier.Name"
-                        advice="Provide the following details for the Associated Service." />
+                        advice="Provide the following details for your Associated Service." />
 
-        <nhs-inset-text>This Associated Service will be available for any order placed with this supplier.</nhs-inset-text>
+        <nhs-inset-text>This Associated Service will be available for selection with any of your Catalogue Solutions.</nhs-inset-text>
 
         <form method="post">
             <input type="hidden" asp-for="@Model.BackLink" />
 
             <nhs-input asp-for="Name"
-                       label-text="Associated Service name"
-                       character-count="true"
-                       max-character-length="300"/>
+                       label-text="Associated Service name" />
             <nhs-textarea asp-for="Description"
                           label-text="Associated Service description"
-                          label-hint="Describe how this Associated Service helps implement or optimise the live operation of your Catalogue Solution."
-                          character-count="true"
-                          maxlength="1000"/>
+                          label-hint="Describe how this Associated Service helps implement or optimise the live operation of your Catalogue Solution." />
             <nhs-textarea asp-for="OrderGuidance"
                           label-text="Order guidance"
-                          label-hint="Help buyers understand how they should order the Associated Services by providing typical order volumes and implementation timescales."
-                          character-count="true"
-                          maxlength="1000" />
+                          label-hint="Help buyers understand how they should order the Associated Services by providing typical order volumes and implementation timescales." />
             <nhs-submit-button text="Save and continue" />
         </form>
     </div>
