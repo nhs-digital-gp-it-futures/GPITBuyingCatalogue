@@ -8,14 +8,14 @@
     <div class="nhsuk-grid-column-two-thirds">
         <nhs-validation-summary />
         <nhs-page-title title="@ViewBag.Title"
-                        caption="@Model.SupplierName"
+                        caption="@Model.SolutionName"
                         advice="Provide details about the Additional Service." />
 
         <form method="post">
             <input type="hidden" asp-for="Id" />
             <input type="hidden" asp-for="Title" />
             <input type="hidden" asp-for="BackLink" />
-            <input type="hidden" asp-for="SupplierName" />
+            <input type="hidden" asp-for="SolutionName" />
             <input type="hidden" asp-for="CatalogueItemId" />
             <input type="hidden" asp-for="CatalogueItemName" />
 
@@ -24,8 +24,7 @@
             <nhs-textarea asp-for="Description"
                           label-text="Additional Service description"
                           label-hint="Describe the extra functionality provided by the Additional Service."
-                          number-of-rows="5"
-                          character-count="false" />
+                          number-of-rows="5" />
             <nhs-submit-button text="Save and continue" />
         </form>
     </div>

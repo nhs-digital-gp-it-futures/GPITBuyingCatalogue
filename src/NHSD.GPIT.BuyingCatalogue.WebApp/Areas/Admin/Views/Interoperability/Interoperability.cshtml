@@ -124,23 +124,19 @@
                 }
             }
 
-            <h2>Supplier asserted integrations</h2>
+            <h2 for="@nameof(Model.Link)">Supplier asserted integrations (optional)</h2>
 
             <form method="post">
                 <input type="hidden" asp-for="@Model.BackLink" />
                 <input type="hidden" asp-for="@Model.BackLinkText" />
                 <nhs-input asp-for="Link"
-                           label-text="Supplier asserted integrations (optional)"
-                           label-hint="Provide a URL to a page that gives information about your own integrations that fully or partially integrate with other systems. "
-                           character-count="true" />
+                           label-hint="Provide a URL to a page that gives information about your own integrations that fully or partially integrate with other systems. " />
                 <nhs-inset-text>
                     <p>
-                        If you are providing a URL, it must link to a page detailing all the supplier asserted integrations for your Catalogue Solution. It’s your responsibility to keep this page up-to-date.
+                        If you are providing a URL, it must link to a page detailing all the supplier asserted integrations for your Catalogue Solution. It’s your responsibility to keep this page up to date.
                     </p>
                 </nhs-inset-text>
-                <div class="nhsuk-u-margin-bottom-5">
-                    <partial name="Partials/_BackToTop" />
-                </div>
+                <br/>
                 <nhs-submit-button text="Save and continue" />
             </form>
         </div>

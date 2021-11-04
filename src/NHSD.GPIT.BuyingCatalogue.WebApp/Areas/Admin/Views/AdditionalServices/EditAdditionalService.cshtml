@@ -70,7 +70,7 @@
             <input type="hidden" asp-for="AdditionalServicePublicationStatus" />
 
             <nhs-fieldset-form-label asp-for="@Model"
-                                     label-text="What would you like to do with this Additional Service?"
+                                     label-text="Additional Service status"
                                      label-hint="Select one option."
                                      size="Large">
                 <nhs-radio-buttons asp-for="SelectedPublicationStatus"
@@ -79,7 +79,7 @@
                                    display-name="Text" />
             </nhs-fieldset-form-label>
 
-            <nhs-submit-button text="Continue" />
+            <nhs-submit-button />
         </form>
         <br />
     </div>

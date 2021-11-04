@@ -35,13 +35,5 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models
         public string[] GpConnectIntegrationQualifiers { get; set; }
 
         public override int Index => 7;
-
-        public string TextDescriptionsProvided()
-        {
-            if ((IM1Integrations == null || !IM1Integrations.Any()) && (GpConnectIntegrations == null || !GpConnectIntegrations.Any()))
-                return "No integration yet";
-
-            return "IM1 and GP Connect offer integrations specified and assured by the NHS.";
-        }
     }
 }
