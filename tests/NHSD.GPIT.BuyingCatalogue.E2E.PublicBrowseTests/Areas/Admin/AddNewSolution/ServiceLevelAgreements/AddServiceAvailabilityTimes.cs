@@ -48,6 +48,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.AddNewSolution.ServiceL
             CommonActions.ElementIsDisplayed(ServiceAvailabilityTimesObjects.FromInput).Should().BeTrue();
             CommonActions.ElementIsDisplayed(ServiceAvailabilityTimesObjects.UntilInput).Should().BeTrue();
             CommonActions.ElementIsDisplayed(ServiceAvailabilityTimesObjects.ApplicableDaysInput).Should().BeTrue();
+            CommonActions.ElementExists(ServiceAvailabilityTimesObjects.DeleteLink).Should().BeFalse();
             CommonActions.GoBackLinkDisplayed().Should().BeTrue();
             CommonActions.SaveButtonDisplayed().Should().BeTrue();
         }
