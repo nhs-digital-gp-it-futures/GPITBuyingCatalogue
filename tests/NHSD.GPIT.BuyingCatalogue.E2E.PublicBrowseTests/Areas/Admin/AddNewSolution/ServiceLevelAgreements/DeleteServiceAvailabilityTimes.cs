@@ -14,6 +14,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.AddNewSolution.ServiceL
 {
     public sealed class DeleteServiceAvailabilityTimes : AuthorityTestBase, IClassFixture<LocalWebApplicationFactory>
     {
+        private const int CancelLinkServiceAvailabilityTimesId = 2;
         private const int ServiceAvailabilityTimesId = 3;
         private static readonly CatalogueItemId SolutionId = new(99998, "002");
 
@@ -21,6 +22,12 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.AddNewSolution.ServiceL
         {
             { nameof(SolutionId), SolutionId.ToString() },
             { nameof(ServiceAvailabilityTimesId), ServiceAvailabilityTimesId.ToString() },
+        };
+
+        private static readonly Dictionary<string, string> CancelLinkParameters = new()
+        {
+            { nameof(SolutionId), SolutionId.ToString() },
+            { nameof(ServiceAvailabilityTimesId), CancelLinkServiceAvailabilityTimesId.ToString() },
         };
 
         public DeleteServiceAvailabilityTimes(LocalWebApplicationFactory factory)
@@ -40,6 +47,23 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.AddNewSolution.ServiceL
 
             CommonActions.SaveButtonDisplayed().Should().BeTrue();
             CommonActions.ElementIsDisplayed(ServiceAvailabilityTimesObjects.CancelLink).Should().BeTrue();
+        }
+
+        [Fact]
+        public void DeleteServiceAvailabilityTimes_ClickCancel_ExpectedResult()
+        {
+            NavigateToUrl(
+                typeof(ServiceLevelAgreementsController),
+                nameof(ServiceLevelAgreementsController.DeleteServiceAvailabilityTimes),
+                CancelLinkParameters);
+
+            CommonActions.ClickLinkElement(ServiceAvailabilityTimesObjects.CancelLink);
+
+            CommonActions.PageLoadedCorrectGetIndex(
+                typeof(ServiceLevelAgreementsController),
+                nameof(ServiceLevelAgreementsController.EditServiceAvailabilityTimes))
+                .Should()
+                .BeTrue();
         }
 
         [Fact]
