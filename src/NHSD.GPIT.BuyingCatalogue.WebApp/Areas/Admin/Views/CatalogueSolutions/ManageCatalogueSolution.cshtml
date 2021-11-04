@@ -23,6 +23,7 @@
 
 <div class="nhsuk-grid-row">
     <div class="nhsuk-grid-column-two-thirds">
+        <nhs-validation-summary RadioId="SelectedPublicationStatus"/>
         <nhs-page-title title="@ViewBag.Title"
                         caption="@Model.Solution.Supplier.Name"
                         advice="Explain what your Catalogue Solution is for and how it works. This information will be published on the Buying Catalogue to help buyers understand if it meets their needs." />
@@ -41,7 +42,7 @@
         <vc:nhs-secondary-button url="@Url.Action(
                                       nameof(SolutionsController.Description),
                                       typeof(SolutionsController).ControllerName(),
-                                      new { solutionId = Model.Solution.Id })"
+                                      new { solutionId = Model.Solution.Id, area = "Solutions" })"
                                  use-primary-colour="false"
                                  text="Preview" />
 
@@ -143,7 +144,9 @@
                 <nhs-table-row-container>
                     <nhs-table-cell>Capabilities and Epics</nhs-table-cell>
                     <nhs-table-cell>Yes</nhs-table-cell>
-                    <nhs-table-cell><nhs-tag colour="Green" text="Completed" /></nhs-table-cell>
+                    <nhs-table-cell>
+                        <nhs-tag status-enum="@Model.CapabilitiesStatus()" />
+                    </nhs-table-cell>
                     <nhs-table-cell><a href="#">Edit</a></nhs-table-cell>
                 </nhs-table-row-container>
                 <nhs-table-row-container>
@@ -203,7 +206,7 @@
         </nhs-fieldset-form-container>
 
         <form method="post" asp-action="SetPublicationStatus" asp-route-solutionId="@Model.Solution.Id">
-            <input type="hidden" asp-for="Solution" />
+            <input type="hidden" asp-for="SolutionId" />
             <input type="hidden" asp-for="BackLink" />
             <input type="hidden" asp-for="BackLinkText" />
             <nhs-fieldset-form-label asp-for="@Model"
