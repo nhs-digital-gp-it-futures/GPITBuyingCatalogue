@@ -28,8 +28,6 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Configuration
             builder.Property(oi => oi.LastUpdatedBy);
             builder.Property(oi => oi.Price).HasColumnType("decimal(18, 4)");
 
-            builder.Ignore(oi => oi.LastUpdatedByName);
-
             builder.HasOne(oi => oi.CatalogueItem)
                 .WithMany()
                 .HasForeignKey(oi => oi.CatalogueItemId)

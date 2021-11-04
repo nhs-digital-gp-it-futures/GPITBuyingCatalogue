@@ -43,8 +43,6 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models
 
         public AspNetUser LastUpdatedByUser { get; set; }
 
-        public string LastUpdatedByName => $"{LastUpdatedByUser.FirstName} {LastUpdatedByUser.LastName}";
-
         public DateTime? Completed => completed;
 
         public bool IsDeleted { get; set; }
