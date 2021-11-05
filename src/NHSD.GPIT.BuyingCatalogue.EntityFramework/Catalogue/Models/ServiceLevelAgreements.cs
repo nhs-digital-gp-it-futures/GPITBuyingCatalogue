@@ -9,7 +9,7 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models
         {
             Contacts = new HashSet<SlaContact>();
             ServiceHours = new HashSet<ServiceAvailabilityTimes>();
-            ServiceLevels = new HashSet<SlaServiceLevels>();
+            ServiceLevels = new HashSet<SlaServiceLevel>();
         }
 
         public CatalogueItemId SolutionId { get; set; }
@@ -20,7 +20,7 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models
 
         public ICollection<ServiceAvailabilityTimes> ServiceHours { get; set; }
 
-        public ICollection<SlaServiceLevels> ServiceLevels { get; set; }
+        public ICollection<SlaServiceLevel> ServiceLevels { get; set; }
 
         public virtual Solution Solution { get; set; }
     }

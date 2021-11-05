@@ -11,7 +11,7 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.ServiceLevelAgreements
 
         Task<ServiceAvailabilityTimes> GetServiceAvailabilityTimes(CatalogueItemId solutionId, int serviceAvailabilityTimesId);
 
-        Task AddServiceLevelAsync(AddSlaModel model);
+        Task AddServiceLevelAgreement(AddSlaModel model);
 
         Task UpdateServiceLevelTypeAsync(CatalogueItem solution, SlaType slaLevel);
 
@@ -28,5 +28,11 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.ServiceLevelAgreements
         Task EditSlaContact(EditSLAContactModel model);
 
         Task DeleteSlaContact(int slaContactId);
+
+        Task AddServiceLevel(CatalogueItemId solutionId, EditServiceLevelModel model);
+
+        Task UpdateServiceLevel(CatalogueItemId solutionId, int serviceLevelId, EditServiceLevelModel model);
+
+        Task DeleteServiceLevel(CatalogueItemId solutionId, int serviceLevelId);
     }
 }

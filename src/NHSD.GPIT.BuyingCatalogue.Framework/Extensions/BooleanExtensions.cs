@@ -9,5 +9,7 @@
         }
 
         public static string ToYesNo(this bool value) => value ? "Yes" : "No";
+
+        public static int ToInt(this bool value) => value ? 1 : 0;
     }
 }

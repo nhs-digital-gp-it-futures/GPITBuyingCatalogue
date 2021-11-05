@@ -12,7 +12,7 @@
 <p class="nhsuk-heading-m">Current solution type: @ConvertSlaType(Model.ServiceLevelAgreements.SlaType)</p>
 <vc:nhs-action-link text="Change solution type"
                     url="@Url.Action(
-                    nameof(ServiceLevelAgreementsController.EditSlaLevel),
+                    nameof(ServiceLevelAgreementsController.EditServiceLevelAgreementType),
                     typeof(ServiceLevelAgreementsController).ControllerName(),
                     new  { solutionId = Model.CatalogueItem.Id })" />
 
@@ -81,7 +81,10 @@
 <h2>Service levels</h2>
 <p>Detail the levels of service you provide for users. You must add at least one type of service.</p>
 <vc:nhs-action-link text="Add service levels"
-                    url="#" />
+                    url="@Url.Action(
+                    nameof(ServiceLevelAgreementsController.AddServiceLevel),
+                    typeof(ServiceLevelAgreementsController).ControllerName(),
+                    new  { solutionId = Model.CatalogueItem.Id })" />
 
 <nhs-table data-test-id="service-levels-table">
     <nhs-table-column>Type of service</nhs-table-column>
@@ -96,7 +99,14 @@
             <nhs-table-cell>@item.ServiceLevel</nhs-table-cell>
             <nhs-table-cell>@item.HowMeasured</nhs-table-cell>
             <nhs-table-cell>@item.ServiceCredits.ToYesNo()</nhs-table-cell>
-            <nhs-table-cell><a href="#">Edit</a></nhs-table-cell>
+            <nhs-table-cell>
+                <a asp-action="@nameof(ServiceLevelAgreementsController.EditServiceLevel)"
+                   asp-controller="@typeof(ServiceLevelAgreementsController).ControllerName()"
+                   asp-route-solutionId="@item.SolutionId"
+                   asp-route-serviceLevelId="@item.Id">
+                    Edit
+                </a>
+            </nhs-table-cell>
         </nhs-table-row-container>
     }
 </nhs-table>

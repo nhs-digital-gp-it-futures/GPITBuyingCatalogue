@@ -40,14 +40,14 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
 
             if (sla is null)
             {
-                return RedirectToAction(nameof(AddSlaLevel), new { solutionId });
+                return RedirectToAction(nameof(AddServiceLevelAgreement), new { solutionId });
             }
 
             return RedirectToAction(nameof(EditServiceLevelAgreement), new { solutionId });
         }
 
-        [HttpGet("add-sla-level")]
-        public async Task<IActionResult> AddSlaLevel(CatalogueItemId solutionId)
+        [HttpGet("add-sla")]
+        public async Task<IActionResult> AddServiceLevelAgreement(CatalogueItemId solutionId)
         {
             var solution = await solutionsService.GetSolution(solutionId);
             if (solution is null)
@@ -62,15 +62,15 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
                 Title = "Type of Catalogue Solution",
             };
 
-            return View("AddEditSlaLevel", model);
+            return View("AddEditSlaType", model);
         }
 
-        [HttpPost("add-sla-level")]
-        public async Task<IActionResult> AddSlaLevel(CatalogueItemId solutionId, AddSlaTypeModel model)
+        [HttpPost("add-sla")]
+        public async Task<IActionResult> AddServiceLevelAgreement(CatalogueItemId solutionId, AddSlaTypeModel model)
         {
             if (!ModelState.IsValid)
             {
-                return View("AddEditSlaLevel", model);
+                return View("AddEditSlaType", model);
             }
 
             var solution = await solutionsService.GetSolution(solutionId);
@@ -83,7 +83,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
                 SlaLevel = model.SlaLevel.Value,
             };
 
-            await serviceLevelAgreementsService.AddServiceLevelAsync(addSlaModel);
+            await serviceLevelAgreementsService.AddServiceLevelAgreement(addSlaModel);
 
             return RedirectToAction(nameof(EditServiceLevelAgreement), new { solutionId });
         }
@@ -108,8 +108,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
             return View(model);
         }
 
-        [HttpGet("edit-service-level-agreement/edit-sla-level")]
-        public async Task<IActionResult> EditSlaLevel(CatalogueItemId solutionId)
+        [HttpGet("edit-service-level-agreement/edit-sla-type")]
+        public async Task<IActionResult> EditServiceLevelAgreementType(CatalogueItemId solutionId)
         {
             var catalogueItem = await solutionsService.GetSolution(solutionId);
             if (catalogueItem is null)
@@ -124,15 +124,15 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
                 Title = "Type of Catalogue Solution",
             };
 
-            return View("AddEditSlaLevel", model);
+            return View("AddEditSlaType", model);
         }
 
-        [HttpPost("edit-service-level-agreement/edit-sla-level")]
-        public async Task<IActionResult> EditSlaLevel(CatalogueItemId solutionId, AddSlaTypeModel model)
+        [HttpPost("edit-service-level-agreement/edit-sla-type")]
+        public async Task<IActionResult> EditServiceLevelAgreementType(CatalogueItemId solutionId, AddSlaTypeModel model)
         {
             if (!ModelState.IsValid)
             {
-                return View("AddEditSlaLevel", model);
+                return View("AddEditSlaType", model);
             }
 
             var solution = await solutionsService.GetSolution(solutionId);
@@ -398,6 +398,128 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
             await serviceLevelAgreementsService.DeleteSlaContact(contactId);
 
             return RedirectToAction(nameof(EditServiceLevelAgreement), new { solutionId });
+        }
+
+        [HttpGet("add-service-level")]
+        public async Task<IActionResult> AddServiceLevel(CatalogueItemId solutionId)
+        {
+            var catalogueItem = await solutionsService.GetSolution(solutionId);
+            if (catalogueItem is null)
+                return BadRequest($"No Solution found for Id: {solutionId}");
+
+            var model = new AddEditServiceLevelModel(catalogueItem)
+            {
+                BackLink = Url.Action(nameof(EditServiceLevelAgreement), new { solutionId }),
+            };
+
+            return View("AddEditServiceLevel", model);
+        }
+
+        [HttpPost("add-service-level")]
+        public async Task<IActionResult> AddServiceLevel(CatalogueItemId solutionId, AddEditServiceLevelModel model)
+        {
+            if (!ModelState.IsValid)
+                return View("AddEditServiceLevel", model);
+
+            var catalogueItem = await solutionsService.GetSolution(solutionId);
+            if (catalogueItem is null)
+                return BadRequest($"No Solution found for Id: {solutionId}");
+
+            var addServiceLevelModel = new EditServiceLevelModel
+            {
+                ServiceType = model.ServiceType,
+                ServiceLevel = model.ServiceLevel,
+                HowMeasured = model.HowMeasured,
+                CreditsApplied = Convert.ToBoolean((int)model.CreditsApplied),
+            };
+
+            await serviceLevelAgreementsService.AddServiceLevel(solutionId, addServiceLevelModel);
+
+            return RedirectToAction(nameof(Index), new { solutionId });
+        }
+
+        [HttpGet("edit-service-level/{serviceLevelId}")]
+        public async Task<IActionResult> EditServiceLevel(CatalogueItemId solutionId, int serviceLevelId)
+        {
+            var catalogueItem = await solutionsService.GetSolution(solutionId);
+            if (catalogueItem is null)
+                return BadRequest($"No Solution found for Id: {solutionId}");
+
+            var serviceLevel = catalogueItem.Solution.ServiceLevelAgreement.ServiceLevels.SingleOrDefault(sl => sl.Id == serviceLevelId);
+            if (serviceLevel is null)
+                return BadRequest($"No Service Level found for Id: {serviceLevelId}");
+
+            var model = new AddEditServiceLevelModel(catalogueItem, serviceLevel)
+            {
+                BackLink = Url.Action(nameof(EditServiceLevelAgreement), new { solutionId }),
+                CanDelete = catalogueItem.PublishedStatus != PublicationStatus.Published || catalogueItem.Solution.ServiceLevelAgreement.ServiceLevels.Any(sl => sl.Id != serviceLevelId),
+            };
+
+            return View("AddEditServiceLevel", model);
+        }
+
+        [HttpPost("edit-service-level/{serviceLevelId}")]
+        public async Task<IActionResult> EditServiceLevel(CatalogueItemId solutionId, int serviceLevelId, AddEditServiceLevelModel model)
+        {
+            if (!ModelState.IsValid)
+                return View("AddEditServiceLevel", model);
+
+            var catalogueItem = await solutionsService.GetSolution(solutionId);
+            if (catalogueItem is null)
+                return BadRequest($"No Solution found for Id: {solutionId}");
+
+            if (!catalogueItem.Solution.ServiceLevelAgreement.ServiceLevels.Any(sl => sl.Id == serviceLevelId))
+                return BadRequest($"No Service Level found for Id: {serviceLevelId}");
+
+            var addServiceLevelModel = new EditServiceLevelModel
+            {
+                ServiceType = model.ServiceType,
+                ServiceLevel = model.ServiceLevel,
+                HowMeasured = model.HowMeasured,
+                CreditsApplied = Convert.ToBoolean((int)model.CreditsApplied),
+            };
+
+            await serviceLevelAgreementsService.UpdateServiceLevel(solutionId, serviceLevelId, addServiceLevelModel);
+
+            return RedirectToAction(nameof(Index), new { solutionId });
+        }
+
+        [HttpGet("delete-service-level/{serviceLevelId}")]
+        public async Task<IActionResult> DeleteServiceLevel(CatalogueItemId solutionId, int serviceLevelId)
+        {
+            var catalogueItem = await solutionsService.GetSolution(solutionId);
+            if (catalogueItem is null)
+                return BadRequest($"No Solution found for Id: {solutionId}");
+
+            var serviceLevel = catalogueItem.Solution.ServiceLevelAgreement.ServiceLevels.SingleOrDefault(sl => sl.Id == serviceLevelId);
+            if (serviceLevel is null)
+                return BadRequest($"No Service Level found for Id: {serviceLevelId}");
+
+            var model = new DeleteServiceLevelModel(catalogueItem, serviceLevel)
+            {
+                BackLink = Url.Action(nameof(EditServiceLevel), new { solutionId, serviceLevelId }),
+            };
+
+            return View(model);
+        }
+
+        [HttpPost("delete-service-level/{serviceLevelId}")]
+        public async Task<IActionResult> DeleteServiceLevel(CatalogueItemId solutionId, int serviceLevelId, DeleteServiceLevelModel model)
+        {
+            if (!ModelState.IsValid)
+                return View(model);
+
+            var catalogueItem = await solutionsService.GetSolution(solutionId);
+            if (catalogueItem is null)
+                return BadRequest($"No Solution found for Id: {solutionId}");
+
+            var serviceLevel = catalogueItem.Solution.ServiceLevelAgreement.ServiceLevels.SingleOrDefault(sl => sl.Id == serviceLevelId);
+            if (serviceLevel is null)
+                return BadRequest($"No Service Level found for Id: {serviceLevelId}");
+
+            await serviceLevelAgreementsService.DeleteServiceLevel(solutionId, serviceLevelId);
+
+            return RedirectToAction(nameof(Index), new { solutionId });
         }
     }
 }

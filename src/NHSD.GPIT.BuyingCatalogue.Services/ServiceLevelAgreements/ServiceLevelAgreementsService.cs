@@ -19,7 +19,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.ServiceLevelAgreements
             this.dbContext = dbContext ?? throw new ArgumentNullException(nameof(dbContext));
         }
 
-        public async Task AddServiceLevelAsync(AddSlaModel model)
+        public async Task AddServiceLevelAgreement(AddSlaModel model)
         {
             if (model is null)
                 throw new ArgumentNullException(nameof(model));
@@ -159,5 +159,52 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.ServiceLevelAgreements
 
             await dbContext.SaveChangesAsync();
         }
+
+        public async Task AddServiceLevel(CatalogueItemId solutionId, EditServiceLevelModel model)
+        {
+            if (model is null)
+                throw new ArgumentNullException(nameof(model));
+
+            var serviceLevel = new SlaServiceLevel
+            {
+                SolutionId = solutionId,
+                TypeOfService = model.ServiceType,
+                ServiceLevel = model.ServiceLevel,
+                HowMeasured = model.HowMeasured,
+                ServiceCredits = model.CreditsApplied,
+            };
+
+            dbContext.SlaServiceLevels.Add(serviceLevel);
+
+            await dbContext.SaveChangesAsync();
+        }
+
+        public async Task UpdateServiceLevel(CatalogueItemId solutionId, int serviceLevelId, EditServiceLevelModel model)
+        {
+            if (model is null)
+                throw new ArgumentNullException(nameof(model));
+
+            var serviceLevel = await GetServiceLevel(solutionId, serviceLevelId);
+            serviceLevel.TypeOfService = model.ServiceType;
+            serviceLevel.ServiceLevel = model.ServiceLevel;
+            serviceLevel.HowMeasured = model.HowMeasured;
+            serviceLevel.ServiceCredits = model.CreditsApplied;
+
+            dbContext.SlaServiceLevels.Update(serviceLevel);
+
+            await dbContext.SaveChangesAsync();
+        }
+
+        public async Task DeleteServiceLevel(CatalogueItemId solutionId, int serviceLevelId)
+        {
+            var serviceLevel = await GetServiceLevel(solutionId, serviceLevelId);
+
+            dbContext.SlaServiceLevels.Remove(serviceLevel);
+
+            await dbContext.SaveChangesAsync();
+        }
+
+        private async Task<SlaServiceLevel> GetServiceLevel(CatalogueItemId solutionId, int serviceLevelId)
+            => await dbContext.SlaServiceLevels.SingleOrDefaultAsync(s => s.SolutionId == solutionId && s.Id == serviceLevelId);
     }
 }

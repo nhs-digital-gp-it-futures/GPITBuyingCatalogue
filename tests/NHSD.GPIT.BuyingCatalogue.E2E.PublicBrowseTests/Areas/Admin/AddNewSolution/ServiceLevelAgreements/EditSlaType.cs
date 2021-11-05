@@ -27,7 +27,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.AddNewSolution.ServiceL
             : base(
                   factory,
                   typeof(ServiceLevelAgreementsController),
-                  nameof(ServiceLevelAgreementsController.EditSlaLevel),
+                  nameof(ServiceLevelAgreementsController.EditServiceLevelAgreementType),
                   Parameters)
         {
         }
