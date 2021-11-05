@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using FluentAssertions;
 using Microsoft.EntityFrameworkCore;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Objects.Admin;
+using NHSD.GPIT.BuyingCatalogue.E2ETests.Objects.Common;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Utils;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.TestBases;
@@ -19,10 +20,16 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin
     public sealed class ManageCatalogueSolution : AuthorityTestBase, IClassFixture<LocalWebApplicationFactory>, IDisposable
     {
         private static readonly CatalogueItemId SolutionId = new(99999, "001");
+        private static readonly CatalogueItemId UnpublishedSolutionId = new(99999, "002");
 
         private static readonly Dictionary<string, string> Parameters = new()
         {
             { nameof(SolutionId), SolutionId.ToString() },
+        };
+
+        private static readonly Dictionary<string, string> UnpublishedSolutionParameters = new()
+        {
+            { nameof(SolutionId), UnpublishedSolutionId.ToString() },
         };
 
         public ManageCatalogueSolution(LocalWebApplicationFactory factory)
@@ -132,31 +139,61 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin
         }
 
         [Fact]
-        public async Task ManageCatalogueSolution_SetPublicationStatus()
+        public void Publish_IncompleteSections_ThrowsError()
+        {
+            NavigateToUrl(
+                typeof(CatalogueSolutionsController),
+                nameof(CatalogueSolutionsController.ManageCatalogueSolution),
+                UnpublishedSolutionParameters);
+
+            CommonActions.ClickRadioButtonWithText(PublicationStatus.Published.Description());
+
+            CommonActions.ClickSave();
+
+            CommonActions.PageLoadedCorrectGetIndex(
+                typeof(CatalogueSolutionsController),
+                nameof(CatalogueSolutionsController.ManageCatalogueSolution))
+                .Should()
+                .BeTrue();
+
+            CommonActions.ErrorSummaryDisplayed()
+                .Should()
+                .BeTrue();
+
+            CommonActions.ErrorSummaryLinksExist()
+                .Should()
+                .BeTrue();
+
+            CommonActions.ElementShowingCorrectErrorMessage(
+                ManageCatalogueSolutionObjects.PublicationStatusInputError,
+                "Complete all mandatory sections before publishing");
+        }
+
+        [Fact]
+        public async Task Publish_CompleteSections_NoError()
         {
             await using var context = GetEndToEndDbContext();
-            (await context.CatalogueItems.SingleAsync(c => c.Id == SolutionId)).PublishedStatus = PublicationStatus.Draft;
+            var supplierContact = context.SupplierContacts.First();
+            var catalogueItem = context.CatalogueItems.First(c => c.Id == SolutionId);
+            catalogueItem.CatalogueItemContacts.Add(supplierContact);
+
             await context.SaveChangesAsAsync(UserSeedData.BobId);
 
             Driver.Navigate().Refresh();
 
-            CommonActions
-                .ClickRadioButtonWithText(PublicationStatus.Published.Description());
+            CommonActions.ClickRadioButtonWithText(PublicationStatus.Published.Description());
 
             CommonActions.ClickSave();
 
-            CommonActions
-                .PageLoadedCorrectGetIndex(
-                    typeof(CatalogueSolutionsController),
-                    nameof(CatalogueSolutionsController.Index))
+            CommonActions.PageLoadedCorrectGetIndex(
+                typeof(CatalogueSolutionsController),
+                nameof(CatalogueSolutionsController.Index))
                 .Should()
                 .BeTrue();
 
-            await using var updatedContext = GetEndToEndDbContext();
-            var publishedStatus = (await updatedContext.CatalogueItems.SingleAsync(c => c.Id == SolutionId)).PublishedStatus;
-            publishedStatus
-                .Should()
-                .Be(PublicationStatus.Published);
+            CommonActions.ElementExists(CommonSelectors.NhsErrorSection)
+                 .Should()
+                 .BeFalse();
         }
 
         public void Dispose()
