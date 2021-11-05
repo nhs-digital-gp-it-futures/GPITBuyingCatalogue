@@ -3,6 +3,7 @@ using System.Linq;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Extensions;
+using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Enums;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.AdditionalServices;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.AssociatedServices;
@@ -20,6 +21,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models
         public IReadOnlyList<CatalogueItem> AdditionalServices { get; private set; }
 
         public IReadOnlyList<SelectListItem> PublicationStatuses { get; private set; }
+
+        public CatalogueItemId SolutionId { get; set; }
 
         public string LastUpdatedByName { get; set; }
 
@@ -51,8 +54,13 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models
 
         public TaskProgress SlaStatus() => new EditServiceLevelAgreementModel(Solution).Status();
 
+        public TaskProgress CapabilitiesStatus() => Solution.CatalogueItemCapabilities.Any()
+            ? TaskProgress.Completed
+            : TaskProgress.NotStarted;
+
         public ManageCatalogueSolutionModel WithSolution(CatalogueItem solution)
         {
+            SolutionId = solution.Id;
             Solution = solution;
             SelectedPublicationStatus = Solution.PublishedStatus;
             PublicationStatuses = Solution
