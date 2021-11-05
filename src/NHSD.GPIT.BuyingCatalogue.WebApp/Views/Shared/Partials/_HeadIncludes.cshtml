@@ -39,8 +39,8 @@
             a.appendChild(r);
         })(window,document,'https://static.hotjar.com/c/hotjar-','.js?sv=');
     </script>
-
-    static string ToAdobeAnalyticsPageName(string pageName) => pageName.Kebaberize().ToLowerInvariant();
+    
+    static string ToAdobeAnalyticsPageName(string pageName) => !string.IsNullOrEmpty(pageName) ? pageName.Kebaberize().ToLowerInvariant() : "Unknown";
 
     // The only view where PageName is currently set explicitly is Home, which has to be set to 'home', hence the use of
     // ViewBag. If additional views need an explicit page name (rather than relying on the title) then it will make
