@@ -224,13 +224,11 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
                     {
                         FrameworkId = framework.FrameworkId,
                         IsFoundation = framework.IsFoundation,
-                        LastUpdated = DateTime.UtcNow,
                     });
                 }
                 else
                 {
                     existingFramework.IsFoundation = framework.IsFoundation;
-                    existingFramework.LastUpdated = DateTime.UtcNow;
                 }
             }
 
@@ -397,8 +395,6 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
                 {
                     FrameworkId = framework.FrameworkId,
                     IsFoundation = framework.IsFoundation,
-                    LastUpdated = dateTimeNow,
-                    LastUpdatedBy = model.UserId,
                 });
             }
 
@@ -409,8 +405,6 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
                         new Solution
                         {
                             FrameworkSolutions = frameworkSolutions,
-                            LastUpdated = dateTimeNow,
-                            LastUpdatedBy = model.UserId,
                         },
                 Name = model.Name,
                 PublishedStatus = PublicationStatus.Draft,

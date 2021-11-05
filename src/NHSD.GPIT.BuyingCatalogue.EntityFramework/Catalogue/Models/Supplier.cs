@@ -5,7 +5,7 @@ using NHSD.GPIT.BuyingCatalogue.EntityFramework.Users.Models;
 
 namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models
 {
-    public sealed class Supplier
+    public sealed class Supplier : IAudited
     {
         public Supplier()
         {
@@ -29,7 +29,7 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models
 
         public DateTime LastUpdated { get; set; }
 
-        public int? LastUpdatedBy { get; set; }
+        public int LastUpdatedBy { get; set; }
 
         public AspNetUser LastUpdatedByUser { get; set; }
 

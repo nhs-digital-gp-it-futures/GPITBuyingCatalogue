@@ -52,6 +52,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
                 OrderId = order.Id,
                 PriceId = model.CataloguePrice.CataloguePriceId,
                 Price = model.AgreedPrice,
+                Created = DateTime.UtcNow,
             });
 
             item.SetRecipients(model.ServiceRecipients.Select(r => new OrderItemRecipient

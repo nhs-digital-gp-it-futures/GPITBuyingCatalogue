@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
@@ -97,25 +98,30 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework
 
         public override Task<int> SaveChangesAsync(bool acceptAllChangesOnSuccess, CancellationToken cancellationToken = default)
         {
-            foreach (var entry in ChangeTracker.Entries())
-            {
-                if (entry.Entity is not IAudited auditedEntity)
-                    continue;
-
-                (int userId, string userName) = identityService.GetUserInfo();
-
-                switch (entry.State)
-                {
-                    case EntityState.Detached:
-                    case EntityState.Unchanged:
-                        continue;
-                    default:
-                        auditedEntity.SetLastUpdatedBy(userId, userName);
-                        continue;
-                }
-            }
+            UpdateAuditFields();
 
             return base.SaveChangesAsync(acceptAllChangesOnSuccess, cancellationToken);
+        }
+
+        public override int SaveChanges()
+        {
+            UpdateAuditFields();
+
+            return base.SaveChanges();
+        }
+
+        public Task<int> SaveChangesAsAsync(int userId)
+        {
+            UpdateAuditFields(userId);
+
+            return base.SaveChangesAsync(true, default);
+        }
+
+        public void SaveChangesAs(int userId)
+        {
+            UpdateAuditFields(userId);
+
+            base.SaveChanges();
         }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -123,6 +129,28 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework
             modelBuilder.HasAnnotation("Relational:Collation", "SQL_Latin1_General_CP1_CI_AS");
 
             modelBuilder.ApplyConfigurationsFromAssembly(Assembly.GetExecutingAssembly());
+        }
+
+        private void UpdateAuditFields(int? userId = null)
+        {
+            foreach (var entry in ChangeTracker.Entries())
+            {
+                if (entry.Entity is not IAudited auditedEntity)
+                    continue;
+
+                userId = userId ?? identityService.GetUserId();
+
+                switch (entry.State)
+                {
+                    case EntityState.Detached:
+                    case EntityState.Unchanged:
+                        continue;
+                    default:
+                        auditedEntity.LastUpdatedBy = userId.Value;
+                        auditedEntity.LastUpdated = DateTime.UtcNow;
+                        continue;
+                }
+            }
         }
     }
 }

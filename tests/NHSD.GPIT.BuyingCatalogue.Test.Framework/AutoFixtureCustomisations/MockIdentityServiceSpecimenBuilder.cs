@@ -17,7 +17,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Test.Framework.AutoFixtureCustomisations
             var userName = context.Create<string>();
 
             var identityServiceMock = context.Create<Mock<IIdentityService>>();
-            identityServiceMock.Setup(i => i.GetUserInfo()).Returns((userId, userName));
+            identityServiceMock.Setup(i => i.GetUserId()).Returns(userId);
 
             return identityServiceMock.Object;
         }

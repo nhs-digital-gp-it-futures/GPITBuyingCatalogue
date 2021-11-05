@@ -6,6 +6,7 @@ using FluentAssertions;
 using Microsoft.EntityFrameworkCore;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Objects.Admin;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Utils;
+using NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.TestBases;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Extensions;
@@ -115,7 +116,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin
         {
             await using var context = GetEndToEndDbContext();
             (await context.CatalogueItems.SingleAsync(c => c.Id == SolutionId)).PublishedStatus = publicationStatus;
-            await context.SaveChangesAsync();
+            await context.SaveChangesAsAsync(UserSeedData.BobId);
 
             Driver.Navigate().Refresh();
 
@@ -135,7 +136,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin
         {
             await using var context = GetEndToEndDbContext();
             (await context.CatalogueItems.SingleAsync(c => c.Id == SolutionId)).PublishedStatus = PublicationStatus.Draft;
-            await context.SaveChangesAsync();
+            await context.SaveChangesAsAsync(UserSeedData.BobId);
 
             Driver.Navigate().Refresh();
 
@@ -162,7 +163,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin
         {
             using var context = GetEndToEndDbContext();
             context.CatalogueItems.Single(ci => ci.Id == SolutionId).PublishedStatus = PublicationStatus.Published;
-            context.SaveChanges();
+            context.SaveChangesAs(UserSeedData.BobId);
         }
     }
 }

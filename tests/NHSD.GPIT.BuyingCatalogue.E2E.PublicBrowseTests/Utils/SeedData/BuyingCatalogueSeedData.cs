@@ -15,7 +15,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
             AddDefaultData(context);
             AddCatalogueItems(context);
             AddMockedItems(context);
-            context.SaveChanges();
+            context.SaveChangesAs(UserSeedData.BobId);
         }
 
         private static void AddCatalogueItems(EndToEndDbContext context)
@@ -29,7 +29,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
             var additionalServices = AdditionalServicesSeedData.GetAdditionalServices(catalogueSolutions);
             context.AddRange(additionalServices);
 
-            context.SaveChanges();
+            context.SaveChangesAs(UserSeedData.BobId);
 
             List<FrameworkSolution> frameworkSolutions = new()
             {
@@ -44,7 +44,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
             };
             context.AddRange(frameworkSolutions);
 
-            context.SaveChanges();
+            context.SaveChangesAs(UserSeedData.BobId);
 
             List<CataloguePrice> prices = new()
             {
@@ -728,8 +728,6 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
                 {
                     Id = 99999,
                     Name = "DFOCVC Supplier",
-                    LastUpdated = DateTime.UtcNow,
-                    LastUpdatedBy = UserSeedData.BobId,
                     LegalName = "DFOCVC Supplier",
                     Deleted = false,
                     Address = new Address
@@ -762,8 +760,6 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
                 {
                     Id = 99998,
                     Name = "E2E Test Supplier With Contact",
-                    LastUpdated = DateTime.UtcNow,
-                    LastUpdatedBy = UserSeedData.BobId,
                     LegalName = "E2E Supplier WC",
                     Deleted = false,
                     Address = new Address
@@ -815,8 +811,6 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
                 {
                     Id = 99997,
                     Name = "E2E Test Supplier",
-                    LastUpdated = DateTime.UtcNow,
-                    LastUpdatedBy = UserSeedData.BobId,
                     LegalName = "E2E Supplier",
                     Deleted = false,
                     Address = new Address
@@ -835,8 +829,6 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
                 {
                     Id = 99996,
                     Name = "Inactive Supplier",
-                    LastUpdated = DateTime.UtcNow,
-                    LastUpdatedBy = UserSeedData.BobId,
                     LegalName = "Inactive Supplier",
                     Deleted = false,
                     IsActive = false,

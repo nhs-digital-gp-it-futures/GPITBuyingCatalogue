@@ -7,6 +7,7 @@ using Microsoft.EntityFrameworkCore;
 using netDumbster.smtp;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Utils;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.RandomData;
+using NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.TestBases;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Organisations.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Users.Models;
@@ -194,7 +195,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin
             };
 
             context.RelatedOrganisations.Add(relatedOrganisation);
-            await context.SaveChangesAsync();
+            await context.SaveChangesAsAsync(UserSeedData.BobId);
 
             Driver.Navigate().Refresh();
 
@@ -206,7 +207,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin
             var user = GenerateUser.GenerateAspNetUser(OrganisationId, DefaultPassword, isEnabled);
             await using var context = GetEndToEndDbContext();
             context.Add(user);
-            await context.SaveChangesAsync();
+            await context.SaveChangesAsAsync(UserSeedData.BobId);
             Driver.Navigate().Refresh();
 
             return user;

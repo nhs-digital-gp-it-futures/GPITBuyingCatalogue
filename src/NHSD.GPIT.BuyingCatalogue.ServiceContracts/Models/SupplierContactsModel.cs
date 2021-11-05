@@ -22,7 +22,6 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.Models
             foreach (var contact in Contacts)
             {
                 contact.SolutionId = SolutionId;
-                contact.LastUpdated = DateTime.UtcNow;
             }
         }
 

@@ -1,7 +1,11 @@
-﻿namespace NHSD.GPIT.BuyingCatalogue.EntityFramework
+﻿using System;
+
+namespace NHSD.GPIT.BuyingCatalogue.EntityFramework
 {
     public interface IAudited
     {
-        void SetLastUpdatedBy(int userId, string userName);
+        int LastUpdatedBy { get; set; }
+
+        DateTime LastUpdated { get; set; }
     }
 }

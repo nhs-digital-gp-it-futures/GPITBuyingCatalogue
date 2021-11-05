@@ -100,13 +100,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
                 .WithAssociatedServices(associatedServices)
                 .WithAdditionalServices(additionalServices);
 
-            if (solution.Solution.LastUpdatedBy.HasValue)
-            {
-                var lastUpdatedBy = solution.Solution.LastUpdatedByUser;
+            var lastUpdatedBy = solution.Solution.LastUpdatedByUser;
 
-                if (lastUpdatedBy is not null)
-                    model.LastUpdatedByName = $"{lastUpdatedBy.FirstName} {lastUpdatedBy.LastName}";
-            }
+            if (lastUpdatedBy is not null)
+                model.LastUpdatedByName = $"{lastUpdatedBy.FirstName} {lastUpdatedBy.LastName}";
 
             return View(model);
         }

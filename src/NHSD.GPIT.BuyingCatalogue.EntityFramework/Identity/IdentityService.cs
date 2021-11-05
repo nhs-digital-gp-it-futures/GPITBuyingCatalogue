@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.Http;
 
 namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Identity
 {
-    public sealed class IdentityService : IIdentityService
+    public class IdentityService : IIdentityService
     {
         public const string UserId = "userId";
 
@@ -19,15 +19,12 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Identity
             this.context = context ?? throw new ArgumentNullException(nameof(context));
         }
 
-        public (int UserId, string UserName) GetUserInfo()
+        public int GetUserId()
         {
             if (context.HttpContext is null)
                 throw new InvalidOperationException();
 
-            var userId = int.Parse(GetClaimValue(context.HttpContext.User, UserId), CultureInfo.InvariantCulture);
-            var userName = GetClaimValue(context.HttpContext.User, UserDisplayName);
-
-            return (userId, userName);
+            return int.Parse(GetClaimValue(context.HttpContext.User, UserId), CultureInfo.InvariantCulture);
         }
 
         private static string GetClaimValue(ClaimsPrincipal user, string claimType)

@@ -47,7 +47,7 @@
                                asp-route-odsCode="@Model.OdsCode">@Model.InCompleteOrders[i].CallOffId</a>
                         </nhs-table-cell>
                         <nhs-table-cell>@Model.InCompleteOrders[i].Description</nhs-table-cell>
-                        <nhs-table-cell>@Model.InCompleteOrders[i].LastUpdatedByName</nhs-table-cell>
+                        <nhs-table-cell>@Model.InCompleteOrders[i].LastUpdatedByUser.FullName</nhs-table-cell>
                         <nhs-table-cell>@Model.InCompleteOrders[i].LastUpdated.ToLongDateString()</nhs-table-cell>
                         <nhs-table-cell>@Model.InCompleteOrders[i].Created.ToLongDateString()</nhs-table-cell>
                     </nhs-table-row-container>
@@ -71,7 +71,7 @@
                                asp-route-odsCode="@Model.OdsCode">@Model.CompleteOrders[i].CallOffId</a>
                         </nhs-table-cell>
                         <nhs-table-cell>@Model.CompleteOrders[i].Description</nhs-table-cell>
-                        <nhs-table-cell>@Model.CompleteOrders[i].LastUpdatedByName</nhs-table-cell>
+                        <nhs-table-cell>@Model.CompleteOrders[i].LastUpdatedByUser.FullName</nhs-table-cell>
                         <nhs-table-cell>@Model.CompleteOrders[i].Completed?.ToLongDateString()</nhs-table-cell>
                         <nhs-table-cell>@Model.CompleteOrders[i].Created.ToLongDateString()</nhs-table-cell>
                         <nhs-table-cell>@(Model.CompleteOrders[i].FundingSourceOnlyGms == true ? "Yes" : "No")</nhs-table-cell>

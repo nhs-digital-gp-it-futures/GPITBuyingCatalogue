@@ -1,4 +1,10 @@
-﻿:r ./InsertCapabilityStatuses.sql
+﻿:r ./CreateClinicalCommissioningGroups.sql
+:r ./CreateCommissioningSupportUnits.sql
+:r ./CreateExecutiveAgency.sql
+:r ./CreateExecutiveAgencyUser.sql
+:r ./CreateTestUsers.sql
+
+:r ./InsertCapabilityStatuses.sql
 :r ./InsertCapabilityCategories.sql
 :r ./InsertCompliancyLevels.sql
 :r ./InsertPublicationStatuses.sql
@@ -21,12 +27,6 @@
 :r ./InsertSolutions.sql
 :r ./InsertAdditionalServices.sql
 :r ./InsertAssociatedServices.sql
-
-:r ./CreateClinicalCommissioningGroups.sql
-:r ./CreateCommissioningSupportUnits.sql
-:r ./CreateExecutiveAgency.sql
-:r ./CreateExecutiveAgencyUser.sql
-:r ./CreateTestUsers.sql
 
 :r ./DropImport.sql
 :r ./DropPublish.sql

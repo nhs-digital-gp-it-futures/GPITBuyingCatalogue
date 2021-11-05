@@ -28,6 +28,8 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Users.Models
 
         public string LastName { get; set; }
 
+        public string FullName => $"{FirstName} {LastName}";
+
         public ICollection<AspNetUserClaim> AspNetUserClaims { get; set; }
 
         public ICollection<AspNetUserLogin> AspNetUserLogins { get; set; }

@@ -33,7 +33,7 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.UnitTests.Identity
         {
             mockAccessor.Setup(a => a.HttpContext).Returns((HttpContext)null);
 
-            Assert.Throws<InvalidOperationException>(() => _ = service.GetUserInfo());
+            Assert.Throws<InvalidOperationException>(() => _ = service.GetUserId());
         }
 
         [Theory]
@@ -56,9 +56,8 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.UnitTests.Identity
             mockContext.Setup(c => c.User).Returns(new ClaimsPrincipal(identity));
             mockAccessor.Setup(a => a.HttpContext).Returns(mockContext.Object);
 
-            (int userId, string userName) = service.GetUserInfo();
+            var userId = service.GetUserId();
 
-            userName.Should().Be("Bill Smith");
             userId.Should().Be(testUserId);
         }
     }

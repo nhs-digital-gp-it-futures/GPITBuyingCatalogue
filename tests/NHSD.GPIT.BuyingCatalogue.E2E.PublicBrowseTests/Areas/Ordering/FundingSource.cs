@@ -4,6 +4,7 @@ using System.Linq;
 using FluentAssertions;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Objects.Common;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Utils;
+using NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.TestBases;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers;
@@ -97,7 +98,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering
 
             order.FundingSourceOnlyGms = null;
 
-            context.SaveChanges();
+            context.SaveChangesAs(UserSeedData.BobId);
         }
     }
 }

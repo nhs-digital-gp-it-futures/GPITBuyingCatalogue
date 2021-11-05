@@ -5,6 +5,7 @@ using Microsoft.EntityFrameworkCore;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Objects.Admin.ServiceLevelAgreements;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Objects.Common;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Utils;
+using NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.TestBases;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
@@ -105,7 +106,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.AddNewSolution.ServiceL
                 .Include(s => s.ServiceLevelAgreement)
                 .SingleAsync(s => s.CatalogueItemId == SolutionId);
             solution.ServiceLevelAgreement = sla;
-            await context.SaveChangesAsync();
+            await context.SaveChangesAsAsync(UserSeedData.BobId);
             Driver.Navigate().Refresh();
         }
     }

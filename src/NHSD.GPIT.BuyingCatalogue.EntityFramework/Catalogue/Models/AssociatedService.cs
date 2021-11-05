@@ -4,7 +4,7 @@ using NHSD.GPIT.BuyingCatalogue.EntityFramework.Users.Models;
 
 namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models
 {
-    public sealed class AssociatedService
+    public sealed class AssociatedService : IAudited
     {
         public CatalogueItemId CatalogueItemId { get; set; }
 
@@ -12,9 +12,9 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models
 
         public string OrderGuidance { get; set; }
 
-        public DateTime? LastUpdated { get; set; }
+        public DateTime LastUpdated { get; set; }
 
-        public int? LastUpdatedBy { get; set; }
+        public int LastUpdatedBy { get; set; }
 
         public AspNetUser LastUpdatedByUser { get; set; }
 

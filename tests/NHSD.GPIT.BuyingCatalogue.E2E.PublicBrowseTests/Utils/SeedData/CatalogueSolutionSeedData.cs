@@ -447,8 +447,6 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
                     Solution = new Solution
                     {
                         CatalogueItemId = new CatalogueItemId(99999, "005"),
-                        LastUpdatedBy = UserSeedData.BobId,
-                        LastUpdated = DateTime.UtcNow,
                     },
                 },
                 new CatalogueItem

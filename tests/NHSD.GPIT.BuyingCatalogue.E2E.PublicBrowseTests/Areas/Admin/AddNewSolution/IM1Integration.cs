@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using FluentAssertions;
 using Microsoft.EntityFrameworkCore;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Utils;
+using NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.TestBases;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
@@ -98,7 +99,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.AddNewSolution
             var context = GetEndToEndDbContext();
             var solution = context.Solutions.Single(s => s.CatalogueItemId == SolutionId);
             solution.Integrations = null;
-            context.SaveChanges();
+            context.SaveChangesAs(UserSeedData.BobId);
         }
     }
 }
