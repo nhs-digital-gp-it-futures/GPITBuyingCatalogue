@@ -3,7 +3,7 @@ using OpenQA.Selenium;
 
 namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Objects.Admin.AssociatedServices
 {
-    internal static class AssociatedServices
+    internal static class AssociatedServicesObjects
     {
         internal static By EditLink => ByExtensions.DataTestId("edit-link");
 
@@ -12,5 +12,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Objects.Admin.AssociatedServices
         internal static By AssociatedServicesTable => ByExtensions.DataTestId("associated-services-table");
 
         internal static By AssociatedServiceDashboardTable => ByExtensions.DataTestId("associated-service-dashboard-table");
+
+        internal static By PublicationStatusInputError => By.Id("edit-associated-service-error");
     }
 }

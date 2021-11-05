@@ -24,7 +24,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Models.Addition
 
             var model = new EditAdditionalServiceModel(solution.CatalogueItem, additionalService.CatalogueItem);
 
-            model.DetailsStatus().Should().Be(TaskProgress.Completed);
+            model.DetailsStatus.Should().Be(TaskProgress.Completed);
         }
 
         [Theory]
@@ -39,7 +39,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Models.Addition
 
             var model = new EditAdditionalServiceModel(solution.CatalogueItem, additionalService.CatalogueItem);
 
-            model.DetailsStatus().Should().Be(TaskProgress.NotStarted);
+            model.DetailsStatus.Should().Be(TaskProgress.NotStarted);
         }
 
         [Theory]
@@ -47,26 +47,26 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Models.Addition
         public static void ListPriceStatus_WithCataloguePrices_ReturnsCompleted(
             List<CataloguePrice> cataloguePrices,
             CatalogueItem catalogueItem,
-            CatalogueItem additionalService)
+            AdditionalService additionalService)
         {
-            additionalService.CataloguePrices = cataloguePrices;
+            additionalService.CatalogueItem.CataloguePrices = cataloguePrices;
 
-            var model = new EditAdditionalServiceModel(catalogueItem, additionalService);
+            var model = new EditAdditionalServiceModel(catalogueItem, additionalService.CatalogueItem);
 
-            model.ListPriceStatus().Should().Be(TaskProgress.Completed);
+            model.ListPriceStatus.Should().Be(TaskProgress.Completed);
         }
 
         [Theory]
         [CommonAutoData]
         public static void ListPriceStatus_WithNoCataloguePrices_ReturnsCompleted(
             CatalogueItem catalogueItem,
-            CatalogueItem additionalService)
+            AdditionalService additionalService)
         {
-            additionalService.CataloguePrices = new HashSet<CataloguePrice>();
+            additionalService.CatalogueItem.CataloguePrices = new HashSet<CataloguePrice>();
 
-            var model = new EditAdditionalServiceModel(catalogueItem, additionalService);
+            var model = new EditAdditionalServiceModel(catalogueItem, additionalService.CatalogueItem);
 
-            model.ListPriceStatus().Should().Be(TaskProgress.NotStarted);
+            model.ListPriceStatus.Should().Be(TaskProgress.NotStarted);
         }
     }
 }

@@ -153,27 +153,31 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
         [Theory]
         [CommonAutoData]
         public static async Task Get_EditAssociatedService_ValidIds_ReturnsViewWithExpectedModel(
-            CatalogueItem solution,
-            CatalogueItem associatedService,
+            Solution solution,
+            AssociatedService associatedService,
             [Frozen] Mock<ISolutionsService> mockSolutionService,
             [Frozen] Mock<IAssociatedServicesService> mockAssociatedServicesService,
             AssociatedServicesController controller)
         {
-            mockSolutionService.Setup(s => s.GetSolution(solution.Id))
-                .ReturnsAsync(solution);
+            associatedService.CatalogueItem.PublishedStatus = PublicationStatus.Draft;
 
-            mockAssociatedServicesService.Setup(s => s.GetAssociatedService(associatedService.Id))
-                .ReturnsAsync(associatedService);
+            mockSolutionService.Setup(s => s.GetSolution(solution.CatalogueItemId))
+                .ReturnsAsync(solution.CatalogueItem);
 
-            var actual = await controller.EditAssociatedService(solution.Id, associatedService.Id);
+            mockAssociatedServicesService.Setup(s => s.GetAssociatedService(associatedService.CatalogueItemId))
+                .ReturnsAsync(associatedService.CatalogueItem);
 
-            mockSolutionService.Verify(s => s.GetSolution(solution.Id));
-            mockAssociatedServicesService.Verify(a => a.GetAssociatedService(associatedService.Id));
+            var expectedModel = new EditAssociatedServiceModel(solution.CatalogueItem, associatedService.CatalogueItem);
+
+            var actual = await controller.EditAssociatedService(solution.CatalogueItemId, associatedService.CatalogueItemId);
+
+            mockSolutionService.Verify(s => s.GetSolution(solution.CatalogueItemId));
+            mockAssociatedServicesService.Verify(a => a.GetAssociatedService(associatedService.CatalogueItemId));
 
             actual.Should().BeOfType<ViewResult>();
 
             actual.As<ViewResult>().ViewName.Should().BeNull();
-            actual.As<ViewResult>().Model.Should().BeEquivalentTo(new EditAssociatedServiceModel(solution, associatedService));
+            actual.As<ViewResult>().Model.Should().BeEquivalentTo(expectedModel, opt => opt.Excluding(m => m.BackLink));
         }
 
         [Theory]
@@ -698,22 +702,23 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
         [Theory]
         [CommonAutoData]
         public static async Task Post_SetPublicationStatus_InvalidModel_ReturnsViewWithModel(
-            CatalogueItem catalogueItem,
+            Solution solution,
+            AssociatedService associatedService,
             [Frozen] Mock<ISolutionsService> mockSolutionService,
             [Frozen] Mock<IAssociatedServicesService> mockAssociatedServicesService,
             AssociatedServicesController controller)
         {
             controller.ModelState.AddModelError("some-key", "some-error");
 
-            var model = new EditAssociatedServiceModel(catalogueItem, catalogueItem);
+            var model = new EditAssociatedServiceModel(solution.CatalogueItem, associatedService.CatalogueItem);
 
-            mockSolutionService.Setup(s => s.GetSolution(catalogueItem.Id))
-                .ReturnsAsync(catalogueItem);
+            mockSolutionService.Setup(s => s.GetSolution(solution.CatalogueItemId))
+                .ReturnsAsync(solution.CatalogueItem);
 
-            mockAssociatedServicesService.Setup(s => s.GetAssociatedService(catalogueItem.Id))
-                .ReturnsAsync(catalogueItem);
+            mockAssociatedServicesService.Setup(s => s.GetAssociatedService(associatedService.CatalogueItemId))
+                .ReturnsAsync(associatedService.CatalogueItem);
 
-            var actual = (await controller.SetPublicationStatus(catalogueItem.Id, catalogueItem.Id, model)).As<ViewResult>();
+            var actual = (await controller.SetPublicationStatus(solution.CatalogueItemId, associatedService.CatalogueItemId, model)).As<ViewResult>();
 
             actual.Should().NotBeNull();
             actual.ViewName.Should().Be(nameof(AssociatedServicesController.EditAssociatedService));
