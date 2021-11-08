@@ -31,11 +31,11 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Validators.ServiceLevelAg
                 .WithMessage("Enter a type of support");
 
             RuleFor(m => m.From)
-                .NotNull()
+                .NotEmpty()
                 .WithMessage("Enter a from time");
 
             RuleFor(m => m.Until)
-                .NotNull()
+                .NotEmpty()
                 .WithMessage("Enter an until time")
                 .Unless(m => !m.From.HasValue);
 
