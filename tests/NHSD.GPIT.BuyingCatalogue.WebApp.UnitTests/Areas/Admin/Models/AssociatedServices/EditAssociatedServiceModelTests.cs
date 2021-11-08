@@ -11,15 +11,18 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Models.Associat
         [Theory]
         [CommonAutoData]
         public static void EditAssociatedServices_ValidCatalogueItem_NoRelatedServices_PropertiesSetAsExpected(
-            CatalogueItem solution,
-            CatalogueItem associatedService)
+            Solution solution,
+            AssociatedService associatedService)
         {
-            var actual = new EditAssociatedServiceModel(solution, associatedService);
+            var actual = new EditAssociatedServiceModel(solution.CatalogueItem, associatedService.CatalogueItem);
 
-            actual.Solution.Should().Be(solution);
-            actual.AssociatedService.Should().Be(associatedService);
+            actual.SolutionId.Should().Be(solution.CatalogueItemId);
+            actual.SolutionName.Should().Be(solution.CatalogueItem.Name);
+            actual.AssociatedServiceId.Should().Be(associatedService.CatalogueItemId);
+            actual.AssociatedServiceName.Should().Be(associatedService.CatalogueItem.Name);
+            actual.SelectedPublicationStatus.Should().Be(associatedService.CatalogueItem.PublishedStatus);
+            actual.AssociatedServicePublicationStatus.Should().Be(associatedService.CatalogueItem.PublishedStatus);
             actual.BackLinkText.Should().Be("Go back");
-            actual.BackLink.Should().Be($"/admin/catalogue-solutions/manage/{solution.Id}/associated-services");
         }
     }
 }

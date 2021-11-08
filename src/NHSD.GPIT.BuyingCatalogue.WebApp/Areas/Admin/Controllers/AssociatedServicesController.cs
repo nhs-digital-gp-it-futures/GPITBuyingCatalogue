@@ -119,7 +119,12 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
             if (associatedService is null)
                 return BadRequest($"No Associated Service found for Id: {associatedServiceId}");
 
-            return View(new EditAssociatedServiceModel(solution, associatedService));
+            var model = new EditAssociatedServiceModel(solution, associatedService)
+            {
+                BackLink = Url.Action(nameof(AssociatedServices), new { solutionId }),
+            };
+
+            return View(model);
         }
 
         [HttpGet("{associatedServiceId}/edit-associated-service-details")]
@@ -308,15 +313,13 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
         [HttpPost("{associatedServiceId}/edit-associated-service")]
         public async Task<IActionResult> SetPublicationStatus(CatalogueItemId solutionId, CatalogueItemId associatedServiceId, EditAssociatedServiceModel model)
         {
-            var associatedService = await associatedServicesService.GetAssociatedService(associatedServiceId);
             if (!ModelState.IsValid)
             {
                 var solution = await solutionsService.GetSolution(solutionId);
-                return View(
-                    "EditAssociatedService",
-                    new EditAssociatedServiceModel(solution, associatedService));
+                return View("EditAssociatedService", model);
             }
 
+            var associatedService = await associatedServicesService.GetAssociatedService(associatedServiceId);
             if (model.SelectedPublicationStatus == associatedService.PublishedStatus)
                 return RedirectToAction(nameof(AssociatedServices), new { solutionId });
 

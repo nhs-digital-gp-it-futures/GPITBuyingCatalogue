@@ -46,7 +46,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.AddNewSolution.Associat
 
             CommonActions.ElementIsDisplayed(CommonSelectors.Header1).Should().BeTrue();
             CommonActions.ElementIsDisplayed(CommonSelectors.ActionLink).Should().BeTrue();
-            CommonActions.ElementIsDisplayed(Objects.Admin.AssociatedServices.AssociatedServices.AssociatedServicesTable).Should().BeTrue();
+            CommonActions.ElementIsDisplayed(Objects.Admin.AssociatedServices.AssociatedServicesObjects.AssociatedServicesTable).Should().BeTrue();
             CommonActions.GoBackLinkDisplayed().Should().BeTrue();
             CommonActions.SaveButtonDisplayed().Should().BeTrue();
         }
@@ -70,7 +70,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.AddNewSolution.Associat
 
             CommonActions.ElementIsDisplayed(CommonSelectors.Header1).Should().BeTrue();
             CommonActions.ElementIsDisplayed(CommonSelectors.ActionLink).Should().BeTrue();
-            CommonActions.ElementIsDisplayed(Objects.Admin.AssociatedServices.AssociatedServices.AssociatedServicesTable).Should().BeFalse();
+            CommonActions.ElementIsDisplayed(Objects.Admin.AssociatedServices.AssociatedServicesObjects.AssociatedServicesTable).Should().BeFalse();
             CommonActions.GoBackLinkDisplayed().Should().BeTrue();
             CommonActions.SaveButtonDisplayed().Should().BeTrue();
         }
@@ -151,7 +151,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.AddNewSolution.Associat
         [Fact]
         public void AssociatedServices_ClickEditLink_ExpectedResult()
         {
-            CommonActions.ClickLinkElement(Objects.Admin.AssociatedServices.AssociatedServices.EditLink, TargetServiceId);
+            CommonActions.ClickLinkElement(Objects.Admin.AssociatedServices.AssociatedServicesObjects.EditLink, TargetServiceId);
 
             CommonActions.PageLoadedCorrectGetIndex(typeof(AssociatedServicesController), nameof(AssociatedServicesController.EditAssociatedService))
                 .Should()

@@ -73,15 +73,14 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
         [HttpPost("{additionalServiceId}/edit-additional-service")]
         public async Task<IActionResult> SetPublicationStatus(CatalogueItemId solutionId, CatalogueItemId additionalServiceId, EditAdditionalServiceModel model)
         {
-            var additionalService = await additionalServicesService.GetAdditionalService(solutionId, additionalServiceId);
             if (!ModelState.IsValid)
             {
-                var solution = await solutionsService.GetSolution(solutionId);
                 return View(
                     nameof(EditAdditionalService),
-                    new EditAdditionalServiceModel(solution, additionalService));
+                    model);
             }
 
+            var additionalService = await additionalServicesService.GetAdditionalService(solutionId, additionalServiceId);
             if (model.SelectedPublicationStatus == additionalService.PublishedStatus)
                 return RedirectToAction(nameof(Index), new { solutionId });
 

@@ -43,7 +43,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.AddNewSolution.Addition
 
             CommonActions.ElementIsDisplayed(CommonSelectors.Header1).Should().BeTrue();
             CommonActions.ElementIsDisplayed(CommonSelectors.ActionLink).Should().BeTrue();
-            CommonActions.ElementIsDisplayed(Objects.Admin.AdditionalServices.AdditionalServices.AdditionalServicesTable).Should().BeTrue();
+            CommonActions.ElementIsDisplayed(Objects.Admin.AdditionalServices.AdditionalServicesObjects.AdditionalServicesTable).Should().BeTrue();
             CommonActions.GoBackLinkDisplayed().Should().BeTrue();
             CommonActions.ContinueButtonDisplayed().Should().BeTrue();
         }
@@ -67,7 +67,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.AddNewSolution.Addition
 
             CommonActions.ElementIsDisplayed(CommonSelectors.Header1).Should().BeTrue();
             CommonActions.ElementIsDisplayed(CommonSelectors.ActionLink).Should().BeTrue();
-            CommonActions.ElementIsDisplayed(Objects.Admin.AdditionalServices.AdditionalServices.AdditionalServicesTable).Should().BeFalse();
+            CommonActions.ElementIsDisplayed(Objects.Admin.AdditionalServices.AdditionalServicesObjects.AdditionalServicesTable).Should().BeFalse();
             CommonActions.GoBackLinkDisplayed().Should().BeTrue();
             CommonActions.ContinueButtonDisplayed().Should().BeTrue();
         }

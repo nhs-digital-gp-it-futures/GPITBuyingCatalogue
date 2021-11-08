@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using FluentAssertions;
 using Microsoft.EntityFrameworkCore;
+using NHSD.GPIT.BuyingCatalogue.E2ETests.Objects.Admin.AssociatedServices;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Objects.Common;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Utils;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData;
@@ -19,8 +20,17 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.AddNewSolution
 {
     public sealed class EditAssociatedService : AuthorityTestBase, IClassFixture<LocalWebApplicationFactory>, IDisposable
     {
-        private static readonly CatalogueItemId SolutionId = new(99999, "001");
-        private static readonly CatalogueItemId AssociatedServiceId = new(99999, "S-999");
+        private static readonly CatalogueItemId IncompleteSolutionId = new(99999, "001");
+        private static readonly CatalogueItemId IncompleteAssociatedServiceId = new(99999, "S-998");
+
+        private static readonly CatalogueItemId SolutionId = new(99998, "001");
+        private static readonly CatalogueItemId AssociatedServiceId = new(99998, "S-999");
+
+        private static readonly Dictionary<string, string> IncompleteServiceParameters = new()
+        {
+            { nameof(SolutionId), IncompleteSolutionId.ToString() },
+            { nameof(AssociatedServiceId), IncompleteAssociatedServiceId.ToString() },
+        };
 
         private static readonly Dictionary<string, string> Parameters = new()
         {
@@ -83,7 +93,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.AddNewSolution
             CommonActions.ElementIsDisplayed(CommonSelectors.Header1).Should().BeTrue();
             CommonActions.GoBackLinkDisplayed().Should().BeTrue();
             CommonActions.ElementIsDisplayed(Objects.Admin.CommonObjects.SaveButton).Should().BeTrue();
-            CommonActions.ElementIsDisplayed(Objects.Admin.AssociatedServices.AssociatedServices.AssociatedServiceDashboardTable).Should().BeTrue();
+            CommonActions.ElementIsDisplayed(Objects.Admin.AssociatedServices.AssociatedServicesObjects.AssociatedServiceDashboardTable).Should().BeTrue();
         }
 
         [Fact]
@@ -134,7 +144,43 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.AddNewSolution
         }
 
         [Fact]
-        public async Task EditAssociatedService_SetPublicationStatus()
+        public async Task Publish_IncompleteSections_ThrowsError()
+        {
+            await using var context = GetEndToEndDbContext();
+            var item = await context.CatalogueItems.FirstAsync(c => c.CatalogueItemType == CatalogueItemType.AssociatedService && c.Id == IncompleteAssociatedServiceId);
+            item.PublishedStatus = PublicationStatus.Draft;
+            await context.SaveChangesAsAsync(UserSeedData.BobId);
+
+            NavigateToUrl(
+                typeof(AssociatedServicesController),
+                nameof(AssociatedServicesController.EditAssociatedService),
+                IncompleteServiceParameters);
+
+            CommonActions.ClickRadioButtonWithText(PublicationStatus.Published.Description());
+
+            CommonActions.ClickSave();
+
+            CommonActions.PageLoadedCorrectGetIndex(
+                typeof(AssociatedServicesController),
+                nameof(AssociatedServicesController.EditAssociatedService))
+                .Should()
+                .BeTrue();
+
+            CommonActions.ErrorSummaryDisplayed()
+                .Should()
+                .BeTrue();
+
+            CommonActions.ErrorSummaryLinksExist()
+                .Should()
+                .BeTrue();
+
+            CommonActions.ElementShowingCorrectErrorMessage(
+                AssociatedServicesObjects.PublicationStatusInputError,
+                "Complete all mandatory sections before publishing");
+        }
+
+        [Fact]
+        public async Task Publish_CompleteSections_SetPublicationStatus()
         {
             await using var context = GetEndToEndDbContext();
             (await context.CatalogueItems.SingleAsync(c => c.Id == AssociatedServiceId)).PublishedStatus = PublicationStatus.Draft;
