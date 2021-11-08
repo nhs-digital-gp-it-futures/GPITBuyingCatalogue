@@ -93,6 +93,8 @@
     <Folder Include="Import\Stored Procedures" />
     <Folder Include="Publish\Stored Procedures" />
     <Folder Include="Import\Types" />
+    <Folder Include="Auditing" />
+    <Folder Include="Auditing\StoredProcedures" />
   </ItemGroup>
   <ItemGroup>
     <Build Include="Security\Users\NHSD.sql" />
@@ -189,6 +191,10 @@
     <Build Include="Catalogue\Tables\ServiceAvailabilityTimes.sql" />
     <Build Include="Catalogue\Tables\SlaServiceLevels.sql" />
     <Build Include="Catalogue\Tables\StandardTypes.sql" />
+    <Build Include="Security\Schemas\auditing.sql" />
+    <Build Include="Auditing\StoredProcedures\EnableTemporalTable.sql" />
+    <Build Include="Auditing\StoredProcedures\DisableTemporalTable.sql" />
+    <None Include="PostDeployment\EnableTemporalTables.sql" />
   </ItemGroup>
   <ItemGroup>
     <SqlCmdVariable Include="CREATE_EA_USER">
