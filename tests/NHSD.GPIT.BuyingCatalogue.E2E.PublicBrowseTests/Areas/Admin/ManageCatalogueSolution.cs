@@ -176,6 +176,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin
             var supplierContact = context.SupplierContacts.First();
             var catalogueItem = context.CatalogueItems.First(c => c.Id == SolutionId);
             catalogueItem.CatalogueItemContacts.Add(supplierContact);
+            catalogueItem.PublishedStatus = PublicationStatus.Unpublished;
 
             await context.SaveChangesAsAsync(UserSeedData.BobId);
 
@@ -194,6 +195,10 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin
             CommonActions.ElementExists(CommonSelectors.NhsErrorSection)
                  .Should()
                  .BeFalse();
+
+            await using var updatedContext = GetEndToEndDbContext();
+            var updatedCatalogueItem = updatedContext.CatalogueItems.First(c => c.Id == SolutionId);
+            updatedCatalogueItem.PublishedStatus.Should().Be(PublicationStatus.Published);
         }
 
         public void Dispose()

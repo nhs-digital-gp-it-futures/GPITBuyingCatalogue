@@ -276,6 +276,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators
             List<ServiceAvailabilityTimes> serviceAvailabilityTimes,
             List<SlaContact> slaContacts,
             List<SlaServiceLevel> slaServiceLevels,
+            List<AdditionalService> additionalServices,
+            List<AssociatedService> associatedServices,
             [Frozen] Mock<ISolutionsService> solutionsService,
             ManageCatalogueSolutionModelValidator validator)
         {
@@ -287,9 +289,11 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators
             solutionsService.Setup(s => s.GetSolution(solution.CatalogueItemId))
                 .ReturnsAsync(solution.CatalogueItem);
 
-            var model = new ManageCatalogueSolutionModel
+            var model = new ManageCatalogueSolutionModel(
+                solution.CatalogueItem,
+                additionalServices.Select(a => a.CatalogueItem).ToList(),
+                associatedServices.Select(a => a.CatalogueItem).ToList())
             {
-                SolutionId = solution.CatalogueItemId,
                 SelectedPublicationStatus = PublicationStatus.Published,
             };
 

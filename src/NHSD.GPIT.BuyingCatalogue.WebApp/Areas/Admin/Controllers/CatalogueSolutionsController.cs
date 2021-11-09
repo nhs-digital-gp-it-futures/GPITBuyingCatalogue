@@ -95,15 +95,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
             var associatedServices = await associatedServicesService.GetAssociatedServicesForSupplier(solution.SupplierId);
             var additionalServices = await additionalServicesService.GetAdditionalServicesBySolutionId(solutionId);
 
-            var model = new ManageCatalogueSolutionModel()
-                .WithSolution(solution)
-                .WithAssociatedServices(associatedServices)
-                .WithAdditionalServices(additionalServices);
-
-            var lastUpdatedBy = solution.Solution.LastUpdatedByUser;
-
-            if (lastUpdatedBy is not null)
-                model.LastUpdatedByName = $"{lastUpdatedBy.FirstName} {lastUpdatedBy.LastName}";
+            var model = new ManageCatalogueSolutionModel(solution, additionalServices, associatedServices);
 
             return View(model);
         }
@@ -111,18 +103,12 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
         [HttpPost("manage/{solutionId}")]
         public async Task<IActionResult> SetPublicationStatus(CatalogueItemId solutionId, ManageCatalogueSolutionModel model)
         {
-            var solution = await solutionsService.GetSolution(solutionId);
             if (!ModelState.IsValid)
             {
-                var associatedServices = await associatedServicesService.GetAssociatedServicesForSupplier(solution.SupplierId);
-                var additionalServices = await additionalServicesService.GetAdditionalServicesBySolutionId(solutionId);
-
-                return View("ManageCatalogueSolution", model
-                    .WithSolution(solution)
-                    .WithAssociatedServices(associatedServices)
-                    .WithAdditionalServices(additionalServices));
+                return View("ManageCatalogueSolution", model);
             }
 
+            var solution = await solutionsService.GetSolution(solutionId);
             if (model.SelectedPublicationStatus == solution.PublishedStatus)
                 return RedirectToAction(nameof(Index));
 
