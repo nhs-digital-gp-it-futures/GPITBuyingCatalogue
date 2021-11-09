@@ -3,7 +3,7 @@ resource "azurerm_network_security_rule" "Public" {
   count                       = local.shortenv == "production" ? 1 : 0 
   resource_group_name         = azurerm_resource_group.app-gateway.name
   network_security_group_name = azurerm_network_security_group.gateway.name
-  source_address_prefix       = "AzureCloud"
+  source_address_prefix       = "Any"
   destination_address_prefix  = "*"
   source_port_range           = "*"
   destination_port_ranges     = [ "80", "443" ]
@@ -13,6 +13,7 @@ resource "azurerm_network_security_rule" "Public" {
   priority                    = 100
   description                 = "Allow public access to this environment"
 }
+
 resource "azurerm_network_security_rule" "VPN_Access" {
   name                        = "AllowBjssVpn"
   resource_group_name         = azurerm_resource_group.app-gateway.name
