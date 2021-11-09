@@ -11,6 +11,8 @@ using Moq;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Users.Models;
+using NHSD.GPIT.BuyingCatalogue.ServiceContracts.AdditionalServices;
+using NHSD.GPIT.BuyingCatalogue.ServiceContracts.AssociatedServices;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Caching;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions;
 using NHSD.GPIT.BuyingCatalogue.Test.Framework.AutoFixtureCustomisations;
@@ -173,27 +175,40 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
         [CommonAutoData]
         public static async Task Get_ManageSolution_ReturnsViewWithExpectedModel(
             [Frozen] AspNetUser aspNetUser,
-            Solution expected,
+            Solution solution,
+            List<AdditionalService> additionalServices,
+            List<AssociatedService> associatedServices,
             int userId,
             [Frozen] Mock<ISolutionsService> mockSolutionService,
+            [Frozen] Mock<IAdditionalServicesService> additionalServicesService,
+            [Frozen] Mock<IAssociatedServicesService> associatedServicesService,
             CatalogueSolutionsController controller)
         {
-            expected.LastUpdatedBy = userId;
-            expected.LastUpdatedByUser = aspNetUser;
+            var additionalServicesItems = additionalServices.Select(a => a.CatalogueItem).ToList();
+            var associatedServicesItems = associatedServices.Select(a => a.CatalogueItem).ToList();
+
+            solution.CatalogueItem.CatalogueItemType = CatalogueItemType.Solution;
+            solution.LastUpdatedBy = userId;
+            solution.LastUpdatedByUser = aspNetUser;
             aspNetUser.Id = userId;
-            var expectedCatalogueItem = expected.CatalogueItem;
+            var expectedModel = new ManageCatalogueSolutionModel(solution.CatalogueItem, additionalServicesItems, associatedServicesItems);
 
-            mockSolutionService.Setup(s => s.GetSolution(expectedCatalogueItem.Id))
-                .ReturnsAsync(expectedCatalogueItem);
+            mockSolutionService.Setup(s => s.GetSolution(solution.CatalogueItemId))
+                .ReturnsAsync(solution.CatalogueItem);
 
-            var actual = (await controller.ManageCatalogueSolution(expectedCatalogueItem.Id)).As<ViewResult>();
+            additionalServicesService.Setup(s => s.GetAdditionalServicesBySolutionId(solution.CatalogueItemId))
+                .ReturnsAsync(additionalServicesItems);
 
-            mockSolutionService.Verify(s => s.GetSolution(expectedCatalogueItem.Id));
+            associatedServicesService.Setup(s => s.GetAssociatedServicesForSupplier(solution.CatalogueItem.SupplierId))
+                .ReturnsAsync(associatedServicesItems);
+
+            var actual = (await controller.ManageCatalogueSolution(solution.CatalogueItemId)).As<ViewResult>();
+
+            mockSolutionService.Verify(s => s.GetSolution(solution.CatalogueItemId));
             actual.Should().NotBeNull();
             actual.ViewName.Should().BeNull();
             var model = actual.Model.As<ManageCatalogueSolutionModel>();
-            model.Solution.Should().BeEquivalentTo(expectedCatalogueItem);
-            model.LastUpdatedByName.Should().BeEquivalentTo($"{aspNetUser.FirstName} {aspNetUser.LastName}");
+            model.Should().BeEquivalentTo(expectedModel, opt => opt.Excluding(m => m.BackLink));
         }
 
         [Theory]

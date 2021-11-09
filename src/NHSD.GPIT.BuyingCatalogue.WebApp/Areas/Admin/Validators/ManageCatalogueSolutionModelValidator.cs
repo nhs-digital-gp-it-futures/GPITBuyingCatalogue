@@ -30,18 +30,15 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Validators
             if (model.SelectedPublicationStatus != PublicationStatus.Published || model.SelectedPublicationStatus == solution.PublishedStatus)
                 return true;
 
-            var populatedModel = model
-                .WithSolution(solution);
-
             var mandatoryTasksStatuses = new[]
             {
-                model.DescriptionStatus(),
-                model.ClientApplicationTypeStatus(),
-                model.HostingTypeStatus(),
-                model.ListPriceStatus(),
-                model.SupplierDetailsStatus(),
-                model.CapabilitiesStatus(),
-                model.SlaStatus(),
+                model.DescriptionStatus,
+                model.ClientApplicationTypeStatus,
+                model.HostingTypeStatus,
+                model.ListPriceStatus,
+                model.SupplierDetailsStatus,
+                model.CapabilitiesStatus,
+                model.SlaStatus,
             };
 
             return mandatoryTasksStatuses.All(status => status == ServiceContracts.Enums.TaskProgress.Completed);
