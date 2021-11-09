@@ -97,6 +97,10 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.ManageSuppliers
                 Objects.Admin.ManageSuppliers.ManageSuppliers.SupplierDetailsSupplierLegalName,
                 existingSupplier.LegalName);
 
+            CommonActions.ElementAddValue(
+                Objects.Admin.ManageSuppliers.ManageSuppliers.SupplierDetailsSupplierLegalName,
+                existingSupplier.LegalName);
+
             CommonActions.ClickSave();
 
             CommonActions

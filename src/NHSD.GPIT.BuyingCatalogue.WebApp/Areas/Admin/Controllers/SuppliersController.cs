@@ -8,6 +8,7 @@ using NHSD.GPIT.BuyingCatalogue.EntityFramework.Addresses.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Suppliers;
+using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Verification;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.SupplierModels;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
@@ -18,10 +19,12 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
     public sealed class SuppliersController : Controller
     {
         private readonly ISuppliersService suppliersService;
+        private readonly IVerificationService verificationService;
 
-        public SuppliersController(ISuppliersService suppliersService)
+        public SuppliersController(ISuppliersService suppliersService, IVerificationService verificationService)
         {
             this.suppliersService = suppliersService ?? throw new ArgumentNullException(nameof(suppliersService));
+            this.verificationService = verificationService ?? throw new ArgumentNullException(nameof(verificationService));
         }
 
         [HttpGet]
@@ -112,6 +115,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
             if ((await suppliersService.GetSupplierByLegalName(model.SupplierLegalName)) is not null)
                 ModelState.AddModelError(nameof(model.SupplierLegalName), "Supplier legal name already exists. Enter a different name");
 
+            if (!await verificationService.VerifyUrl(model.SupplierWebsite))
+                ModelState.AddModelError(nameof(model.SupplierWebsite), "Supplier website url is not valid. Enter a valid url");
+
             if (!ModelState.IsValid)
                 return View("EditSupplierDetails", model);
 
@@ -154,6 +160,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
 
             if (supplierByLegalName is not null && supplierByLegalName.Id != supplierId)
                 ModelState.AddModelError(nameof(model.SupplierLegalName), "Supplier legal name already exists. Enter a different name");
+
+            if (!await verificationService.VerifyUrl(model.SupplierWebsite))
+                ModelState.AddModelError(nameof(model.SupplierWebsite), "Supplier website url is not valid. Enter a valid url");
 
             if (!ModelState.IsValid)
                 return View("EditSupplierDetails", model);

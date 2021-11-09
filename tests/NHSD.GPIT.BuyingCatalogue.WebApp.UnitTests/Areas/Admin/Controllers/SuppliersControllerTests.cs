@@ -12,6 +12,7 @@ using NHSD.GPIT.BuyingCatalogue.EntityFramework.Addresses.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Suppliers;
+using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Verification;
 using NHSD.GPIT.BuyingCatalogue.Test.Framework.AutoFixtureCustomisations;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.SupplierModels;
@@ -110,10 +111,12 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
         public static async Task Post_AddSupplierDetails_SupplierNameExists_ReturnsError(
             EditSupplierDetailsModel model,
             [Frozen] Mock<ISuppliersService> mockSuppliersService,
+            [Frozen] Mock<IVerificationService> mockVerificationService,
             Supplier supplier,
             SuppliersController controller)
         {
             mockSuppliersService.Setup(s => s.GetSupplierByName(model.SupplierName)).ReturnsAsync(supplier);
+            mockVerificationService.Setup(s => s.VerifyUrl(It.IsAny<string>())).ReturnsAsync(true);
 
             var actual = (await controller.AddSupplierDetails(model)).As<ViewResult>();
 
@@ -129,11 +132,13 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
         public static async Task Post_AddSupplierDetails_SupplierLegalNameExists_ReturnsError(
             EditSupplierDetailsModel model,
             [Frozen] Mock<ISuppliersService> mockSuppliersService,
+            [Frozen] Mock<IVerificationService> mockVerificationService,
             Supplier supplier,
             SuppliersController controller)
         {
             mockSuppliersService.Setup(s => s.GetSupplierByName(model.SupplierName)).ReturnsAsync((Supplier)null);
             mockSuppliersService.Setup(s => s.GetSupplierByLegalName(model.SupplierLegalName)).ReturnsAsync(supplier);
+            mockVerificationService.Setup(s => s.VerifyUrl(It.IsAny<string>())).ReturnsAsync(true);
 
             var actual = (await controller.AddSupplierDetails(model)).As<ViewResult>();
 
@@ -146,15 +151,38 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
 
         [Theory]
         [CommonAutoData]
+        public static async Task Post_AddSupplierDetails_SupplierWebsiteUrlInvalid_ReturnsError(
+        EditSupplierDetailsModel model,
+        [Frozen] Mock<ISuppliersService> mockSuppliersService,
+        [Frozen] Mock<IVerificationService> mockVerificationService,
+        SuppliersController controller)
+        {
+            mockSuppliersService.Setup(s => s.GetSupplierByName(model.SupplierName)).ReturnsAsync((Supplier)null);
+            mockSuppliersService.Setup(s => s.GetSupplierByLegalName(model.SupplierLegalName)).ReturnsAsync((Supplier)null);
+            mockVerificationService.Setup(s => s.VerifyUrl(It.IsAny<string>())).ReturnsAsync(false);
+
+            var actual = (await controller.AddSupplierDetails(model)).As<ViewResult>();
+
+            actual.Should().NotBeNull();
+            actual.ViewData.ModelState.IsValid.Should().BeFalse();
+            actual.ViewData.ModelState.ErrorCount.Should().Be(1);
+            actual.ViewData.ModelState.Keys.Single().Should().Be("SupplierWebsite");
+            actual.ViewData.ModelState.Values.Single().Errors.Single().ErrorMessage.Should().Be("Supplier website url is not valid. Enter a valid url");
+        }
+
+        [Theory]
+        [CommonAutoData]
         public static async Task Post_AddSupplierDetails_AddsSupplier_RedirectsCorrectly(
             EditSupplierDetailsModel model,
             [Frozen] Mock<ISuppliersService> mockSuppliersService,
+            [Frozen] Mock<IVerificationService> mockVerificationService,
             Supplier supplier,
             SuppliersController controller)
         {
             mockSuppliersService.Setup(s => s.GetSupplierByName(model.SupplierName)).ReturnsAsync((Supplier)null);
             mockSuppliersService.Setup(s => s.GetSupplierByLegalName(model.SupplierLegalName)).ReturnsAsync((Supplier)null);
             mockSuppliersService.Setup(s => s.AddSupplier(It.IsAny<ServiceContracts.Models.EditSupplierModel>())).ReturnsAsync(supplier);
+            mockVerificationService.Setup(s => s.VerifyUrl(It.IsAny<string>())).ReturnsAsync(true);
 
             var actual = (await controller.AddSupplierDetails(model)).As<RedirectToActionResult>();
 
@@ -192,12 +220,14 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
         public static async Task Post_EditSupplierDetails_SupplierNameExists_ReturnsError(
             EditSupplierDetailsModel model,
             [Frozen] Mock<ISuppliersService> mockSuppliersService,
+            [Frozen] Mock<IVerificationService> mockVerificationService,
             Supplier existingSupplier,
             int supplierId,
             SuppliersController controller)
         {
             mockSuppliersService.Setup(s => s.GetSupplierByName(model.SupplierName)).ReturnsAsync(existingSupplier);
             mockSuppliersService.Setup(s => s.GetSupplierByLegalName(model.SupplierLegalName)).ReturnsAsync((Supplier)null);
+            mockVerificationService.Setup(s => s.VerifyUrl(It.IsAny<string>())).ReturnsAsync(true);
 
             var actual = (await controller.EditSupplierDetails(supplierId, model)).As<ViewResult>();
 
@@ -213,12 +243,14 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
         public static async Task Post_EditSupplierDetails_SupplierNameExists_MatchesThisSupplier_RedirectsCorrectly(
             EditSupplierDetailsModel model,
             [Frozen] Mock<ISuppliersService> mockSuppliersService,
+            [Frozen] Mock<IVerificationService> mockVerificationService,
             Supplier existingSupplier,
             SuppliersController controller)
         {
             mockSuppliersService.Setup(s => s.GetSupplierByName(model.SupplierName)).ReturnsAsync(existingSupplier);
             mockSuppliersService.Setup(s => s.GetSupplierByLegalName(model.SupplierLegalName)).ReturnsAsync((Supplier)null);
             mockSuppliersService.Setup(s => s.EditSupplierDetails(existingSupplier.Id, It.IsAny<ServiceContracts.Models.EditSupplierModel>())).ReturnsAsync(existingSupplier);
+            mockVerificationService.Setup(s => s.VerifyUrl(It.IsAny<string>())).ReturnsAsync(true);
 
             var actual = (await controller.EditSupplierDetails(existingSupplier.Id, model)).As<RedirectToActionResult>();
 
@@ -231,12 +263,14 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
         public static async Task Post_EditSupplierDetails_SupplierLegalNameExists_ReturnsError(
             EditSupplierDetailsModel model,
             [Frozen] Mock<ISuppliersService> mockSuppliersService,
+            [Frozen] Mock<IVerificationService> mockVerificationService,
             Supplier existingSupplier,
             int supplierId,
             SuppliersController controller)
         {
             mockSuppliersService.Setup(s => s.GetSupplierByName(model.SupplierName)).ReturnsAsync((Supplier)null);
             mockSuppliersService.Setup(s => s.GetSupplierByLegalName(model.SupplierLegalName)).ReturnsAsync(existingSupplier);
+            mockVerificationService.Setup(s => s.VerifyUrl(It.IsAny<string>())).ReturnsAsync(true);
 
             var actual = (await controller.EditSupplierDetails(supplierId, model)).As<ViewResult>();
 
@@ -245,6 +279,29 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
             actual.ViewData.ModelState.ErrorCount.Should().Be(1);
             actual.ViewData.ModelState.Keys.Single().Should().Be("SupplierLegalName");
             actual.ViewData.ModelState.Values.Single().Errors.Single().ErrorMessage.Should().Be("Supplier legal name already exists. Enter a different name");
+         }
+
+        [Theory]
+        [CommonAutoData]
+        public static async Task Post_EditSupplierDetails__SupplierWebsiteUrlInvalid_ReturnsError(
+        EditSupplierDetailsModel model,
+        [Frozen] Mock<ISuppliersService> mockSuppliersService,
+        [Frozen] Mock<IVerificationService> mockVerificationService,
+        Supplier existingSupplier,
+        int supplierId,
+        SuppliersController controller)
+        {
+            mockSuppliersService.Setup(s => s.GetSupplierByName(model.SupplierName)).ReturnsAsync((Supplier)null);
+            mockSuppliersService.Setup(s => s.GetSupplierByLegalName(model.SupplierLegalName)).ReturnsAsync((Supplier)null);
+            mockVerificationService.Setup(s => s.VerifyUrl(It.IsAny<string>())).ReturnsAsync(false);
+
+            var actual = (await controller.EditSupplierDetails(supplierId, model)).As<ViewResult>();
+
+            actual.Should().NotBeNull();
+            actual.ViewData.ModelState.IsValid.Should().BeFalse();
+            actual.ViewData.ModelState.ErrorCount.Should().Be(1);
+            actual.ViewData.ModelState.Keys.Single().Should().Be("SupplierWebsite");
+            actual.ViewData.ModelState.Values.Single().Errors.Single().ErrorMessage.Should().Be("Supplier website url is not valid. Enter a valid url");
         }
 
         [Theory]
@@ -252,12 +309,14 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
         public static async Task Post_EditSupplierDetails_SupplierLegalNameExists_MatchesThisSupplier_RedirectsCorrectly(
             EditSupplierDetailsModel model,
             [Frozen] Mock<ISuppliersService> mockSuppliersService,
+            [Frozen] Mock<IVerificationService> mockVerificationService,
             Supplier existingSupplier,
             SuppliersController controller)
         {
             mockSuppliersService.Setup(s => s.GetSupplierByName(model.SupplierName)).ReturnsAsync((Supplier)null);
             mockSuppliersService.Setup(s => s.GetSupplierByLegalName(model.SupplierLegalName)).ReturnsAsync(existingSupplier);
             mockSuppliersService.Setup(s => s.EditSupplierDetails(existingSupplier.Id, It.IsAny<ServiceContracts.Models.EditSupplierModel>())).ReturnsAsync(existingSupplier);
+            mockVerificationService.Setup(s => s.VerifyUrl(It.IsAny<string>())).ReturnsAsync(true);
 
             var actual = (await controller.EditSupplierDetails(existingSupplier.Id, model)).As<RedirectToActionResult>();
 
