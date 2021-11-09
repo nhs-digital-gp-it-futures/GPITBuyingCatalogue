@@ -1,6 +1,8 @@
 ﻿using System;
+using Microsoft.AspNetCore.Mvc;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
+using NHSD.GPIT.BuyingCatalogue.WebApp.ModelBinders;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Models;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.ServiceLevelAgreements
@@ -37,8 +39,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.ServiceLevelAgreem
 
         public string SupportType { get; init; }
 
+        [ModelBinder(BinderType = typeof(TimeInputModelBinder))]
         public DateTime? From { get; init; }
 
+        [ModelBinder(BinderType = typeof(TimeInputModelBinder))]
         public DateTime? Until { get; init; }
 
         public string ApplicableDays { get; init; }
