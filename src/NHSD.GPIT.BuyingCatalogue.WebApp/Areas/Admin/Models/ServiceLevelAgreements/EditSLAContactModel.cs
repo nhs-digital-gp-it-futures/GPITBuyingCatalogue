@@ -14,12 +14,22 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.ServiceLevelAgreem
         {
         }
 
-        public EditSLAContactModel(CatalogueItem solution, SlaContact sla, EntityFramework.Catalogue.Models.ServiceLevelAgreements slas)
+        public EditSLAContactModel(CatalogueItem solution)
+        {
+            SolutionName = solution.Name;
+            SolutionId = solution.Id;
+        }
+
+        public EditSLAContactModel(CatalogueItem solution, SlaContact sla)
+            : this(solution)
         {
             ContactId = sla.Id;
-            SolutionId = solution.Id;
-            SolutionName = solution.Name;
             Channel = sla.Channel;
+        }
+
+        public EditSLAContactModel(CatalogueItem solution, SlaContact sla, EntityFramework.Catalogue.Models.ServiceLevelAgreements slas)
+            : this(solution, sla)
+        {
             ContactInformation = sla.ContactInformation;
             From = sla.TimeFrom;
             Until = sla.TimeUntil;
@@ -28,14 +38,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.ServiceLevelAgreem
             (solution.PublishedStatus == PublicationStatus.Draft || solution.PublishedStatus == PublicationStatus.Unpublished)
             || (solution.PublishedStatus != PublicationStatus.Draft && solution.PublishedStatus != PublicationStatus.Unpublished
                 && slas.Contacts.Count > 1);
-        }
-
-        public EditSLAContactModel(CatalogueItem solution, SlaContact sla)
-        {
-            ContactId = sla.Id;
-            SolutionId = solution.Id;
-            SolutionName = solution.Name;
-            Channel = sla.Channel;
         }
 
         public int? ContactId { get; set; }

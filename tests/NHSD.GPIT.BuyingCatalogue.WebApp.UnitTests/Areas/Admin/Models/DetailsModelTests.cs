@@ -34,8 +34,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Models
             actual.CatalogueAgreementText.Should().Be("Organisation End User Agreement has not been signed");
             actual.Users.Should().BeEquivalentTo(users);
             actual.RelatedOrganisations.Should().BeEquivalentTo(relatedOrganisations);
-            actual.BackLinkText.Should().Be("Go back to previous page");
-            actual.BackLink.Should().Be("/admin/buyer-organisations");
         }
 
         [Theory]

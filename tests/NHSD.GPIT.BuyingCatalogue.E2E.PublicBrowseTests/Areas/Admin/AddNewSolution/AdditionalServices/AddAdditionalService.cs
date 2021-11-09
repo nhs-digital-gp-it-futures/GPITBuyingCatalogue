@@ -36,11 +36,11 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.AddNewSolution.Addition
         public async Task AddAdditionalService_CorrectlyDisplayed()
         {
             await using var context = GetEndToEndDbContext();
-            var supplierName = (await context.CatalogueItems.Include(ci => ci.Supplier).SingleAsync(s => s.Id == SolutionId)).Supplier.Name;
+            var solutionName = (await context.CatalogueItems.SingleAsync(s => s.Id == SolutionId)).Name;
 
             CommonActions.PageTitle()
                 .Should()
-                .BeEquivalentTo($"Additional Service details - {supplierName}".FormatForComparison());
+                .BeEquivalentTo($"Additional Service details - {solutionName}".FormatForComparison());
 
             CommonActions.ElementIsDisplayed(CommonSelectors.Header1).Should().BeTrue();
             CommonActions.ElementIsDisplayed(CommonSelectors.Name).Should().BeTrue();

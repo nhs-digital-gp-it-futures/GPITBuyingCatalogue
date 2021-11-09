@@ -15,8 +15,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Models
         {
             var model = new SelectOrganisationModel(organisation);
 
-            model.BackLinkText.Should().Be("Go back to previous page");
-            model.BackLink.Should().Be($"/admin/organisations/find");
             model.OdsOrganisation.Should().Be(organisation);
         }
     }

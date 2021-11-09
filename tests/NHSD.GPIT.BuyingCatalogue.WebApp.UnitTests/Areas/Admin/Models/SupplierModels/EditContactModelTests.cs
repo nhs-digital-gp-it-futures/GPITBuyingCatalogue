@@ -42,8 +42,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Models.Supplier
 
             actual.Title.Should().Be("Add a contact");
             actual.SupplierName.Should().Be(supplier.Name);
-            actual.BackLinkText.Should().Be("Go back to previous page");
-            actual.BackLink.Should().Be("./");
         }
 
         [Theory]
@@ -63,8 +61,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Models.Supplier
             actual.Department.Should().Be(contact.Department);
             actual.Title.Should().Be($"{contact.FirstName} {contact.LastName} contact details");
             actual.SupplierName.Should().Be(supplier.Name);
-            actual.BackLinkText.Should().Be("Go back to previous page");
-            actual.BackLink.Should().Be("./");
         }
     }
 }

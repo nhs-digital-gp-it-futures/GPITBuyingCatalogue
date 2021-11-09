@@ -26,8 +26,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Models
 
             actual.OdsOrganisation.Should().Be(organisation);
             actual.CatalogueAgreementSigned.Should().Be(default);
-            actual.BackLinkText.Should().Be("Go back to previous page");
-            actual.BackLink.Should().Be($"/admin/organisations/find/select?ods={organisation.OdsCode}");
         }
     }
 }

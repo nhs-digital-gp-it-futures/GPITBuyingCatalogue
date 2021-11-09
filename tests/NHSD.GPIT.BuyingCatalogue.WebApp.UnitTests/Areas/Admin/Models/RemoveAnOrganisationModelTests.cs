@@ -16,8 +16,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Models
         {
             var model = new RemoveAnOrganisationModel(currentOrganisation, relatedOrganisation);
 
-            model.BackLinkText.Should().Be("Go back to previous page");
-            model.BackLink.Should().Be($"/admin/organisations/{currentOrganisation.Id}");
             model.CurrentOrganisation.Should().Be(currentOrganisation);
             model.RelatedOrganisation.Should().Be(relatedOrganisation);
         }

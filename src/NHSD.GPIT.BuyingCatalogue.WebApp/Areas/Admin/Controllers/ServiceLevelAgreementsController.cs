@@ -276,7 +276,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
             if (catalogueItem is null)
                 return BadRequest($"No Solution found for Id: {solutionId}");
 
-            var model = new Models.ServiceLevelAgreements.EditSLAContactModel()
+            var model = new Models.ServiceLevelAgreements.EditSLAContactModel(catalogueItem)
             {
                 BackLink = Url.Action(nameof(EditServiceLevelAgreement), new { solutionId }),
                 BackLinkText = "Go back",

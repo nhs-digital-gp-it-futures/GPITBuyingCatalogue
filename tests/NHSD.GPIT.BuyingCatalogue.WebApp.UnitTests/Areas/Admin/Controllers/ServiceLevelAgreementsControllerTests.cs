@@ -791,7 +791,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
         {
             solutionsService.Setup(s => s.GetSolution(itemId)).ReturnsAsync(solution.CatalogueItem);
 
-            var expectedModel = new WebApp.Areas.Admin.Models.ServiceLevelAgreements.EditSLAContactModel();
+            var expectedModel = new WebApp.Areas.Admin.Models.ServiceLevelAgreements.EditSLAContactModel(solution.CatalogueItem);
 
             var actual = await controller.AddContact(itemId);
 

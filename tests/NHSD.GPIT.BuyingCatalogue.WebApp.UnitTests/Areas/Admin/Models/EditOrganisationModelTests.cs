@@ -27,8 +27,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Models
             actual.CatalogueAgreementSigned.Should().Be(organisation.CatalogueAgreementSigned);
             actual.Organisation.Should().Be(organisation);
             actual.OrganisationAddress.Should().Be(organisation.Address);
-            actual.BackLinkText.Should().Be("Go back to previous page");
-            actual.BackLink.Should().Be($"/admin/organisations/{organisation.Id}");
         }
     }
 }
