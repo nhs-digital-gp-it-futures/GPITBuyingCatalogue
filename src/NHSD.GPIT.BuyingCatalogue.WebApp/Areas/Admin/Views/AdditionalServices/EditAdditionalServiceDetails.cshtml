@@ -9,7 +9,7 @@
         <nhs-validation-summary />
         <nhs-page-title title="@ViewBag.Title"
                         caption="@Model.SolutionName"
-                        advice="Provide details about the Additional Service." />
+                        advice="Provide details about your Additional Service." />
 
         <form method="post">
             <input type="hidden" asp-for="Id" />
@@ -23,7 +23,7 @@
                        label-text="Additional Service name" />
             <nhs-textarea asp-for="Description"
                           label-text="Additional Service description"
-                          label-hint="Describe the extra functionality provided by the Additional Service."
+                          label-hint="Describe the extra functionality provided by your Additional Service."
                           number-of-rows="5" />
             <nhs-submit-button text="Save and continue" />
         </form>
