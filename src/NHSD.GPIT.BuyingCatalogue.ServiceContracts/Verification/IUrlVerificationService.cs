@@ -2,8 +2,8 @@
 
 namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.Verification
 {
-    public interface IVerificationService
+    public interface IUrlVerificationService
     {
-        Task<bool> VerifyUrl(string uRL);
+        Task<bool> VerifyUrl(string siteLink);
     }
 }

@@ -19,9 +19,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
     public sealed class SuppliersController : Controller
     {
         private readonly ISuppliersService suppliersService;
-        private readonly IVerificationService verificationService;
+        private readonly IUrlVerificationService verificationService;
 
-        public SuppliersController(ISuppliersService suppliersService, IVerificationService verificationService)
+        public SuppliersController(ISuppliersService suppliersService, IUrlVerificationService verificationService)
         {
             this.suppliersService = suppliersService ?? throw new ArgumentNullException(nameof(suppliersService));
             this.verificationService = verificationService ?? throw new ArgumentNullException(nameof(verificationService));

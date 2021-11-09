@@ -111,7 +111,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
         public static async Task Post_AddSupplierDetails_SupplierNameExists_ReturnsError(
             EditSupplierDetailsModel model,
             [Frozen] Mock<ISuppliersService> mockSuppliersService,
-            [Frozen] Mock<IVerificationService> mockVerificationService,
+            [Frozen] Mock<IUrlVerificationService> mockVerificationService,
             Supplier supplier,
             SuppliersController controller)
         {
@@ -132,7 +132,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
         public static async Task Post_AddSupplierDetails_SupplierLegalNameExists_ReturnsError(
             EditSupplierDetailsModel model,
             [Frozen] Mock<ISuppliersService> mockSuppliersService,
-            [Frozen] Mock<IVerificationService> mockVerificationService,
+            [Frozen] Mock<IUrlVerificationService> mockVerificationService,
             Supplier supplier,
             SuppliersController controller)
         {
@@ -152,10 +152,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
         [Theory]
         [CommonAutoData]
         public static async Task Post_AddSupplierDetails_SupplierWebsiteUrlInvalid_ReturnsError(
-        EditSupplierDetailsModel model,
-        [Frozen] Mock<ISuppliersService> mockSuppliersService,
-        [Frozen] Mock<IVerificationService> mockVerificationService,
-        SuppliersController controller)
+            EditSupplierDetailsModel model,
+            [Frozen] Mock<ISuppliersService> mockSuppliersService,
+            [Frozen] Mock<IUrlVerificationService> mockVerificationService,
+            SuppliersController controller)
         {
             mockSuppliersService.Setup(s => s.GetSupplierByName(model.SupplierName)).ReturnsAsync((Supplier)null);
             mockSuppliersService.Setup(s => s.GetSupplierByLegalName(model.SupplierLegalName)).ReturnsAsync((Supplier)null);
@@ -175,7 +175,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
         public static async Task Post_AddSupplierDetails_AddsSupplier_RedirectsCorrectly(
             EditSupplierDetailsModel model,
             [Frozen] Mock<ISuppliersService> mockSuppliersService,
-            [Frozen] Mock<IVerificationService> mockVerificationService,
+            [Frozen] Mock<IUrlVerificationService> mockVerificationService,
             Supplier supplier,
             SuppliersController controller)
         {
@@ -220,7 +220,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
         public static async Task Post_EditSupplierDetails_SupplierNameExists_ReturnsError(
             EditSupplierDetailsModel model,
             [Frozen] Mock<ISuppliersService> mockSuppliersService,
-            [Frozen] Mock<IVerificationService> mockVerificationService,
+            [Frozen] Mock<IUrlVerificationService> mockVerificationService,
             Supplier existingSupplier,
             int supplierId,
             SuppliersController controller)
@@ -243,7 +243,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
         public static async Task Post_EditSupplierDetails_SupplierNameExists_MatchesThisSupplier_RedirectsCorrectly(
             EditSupplierDetailsModel model,
             [Frozen] Mock<ISuppliersService> mockSuppliersService,
-            [Frozen] Mock<IVerificationService> mockVerificationService,
+            [Frozen] Mock<IUrlVerificationService> mockVerificationService,
             Supplier existingSupplier,
             SuppliersController controller)
         {
@@ -263,7 +263,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
         public static async Task Post_EditSupplierDetails_SupplierLegalNameExists_ReturnsError(
             EditSupplierDetailsModel model,
             [Frozen] Mock<ISuppliersService> mockSuppliersService,
-            [Frozen] Mock<IVerificationService> mockVerificationService,
+            [Frozen] Mock<IUrlVerificationService> mockVerificationService,
             Supplier existingSupplier,
             int supplierId,
             SuppliersController controller)
@@ -283,13 +283,12 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
 
         [Theory]
         [CommonAutoData]
-        public static async Task Post_EditSupplierDetails__SupplierWebsiteUrlInvalid_ReturnsError(
-        EditSupplierDetailsModel model,
-        [Frozen] Mock<ISuppliersService> mockSuppliersService,
-        [Frozen] Mock<IVerificationService> mockVerificationService,
-        Supplier existingSupplier,
-        int supplierId,
-        SuppliersController controller)
+        public static async Task Post_EditSupplierDetails_SupplierWebsiteUrlInvalid_ReturnsError(
+            EditSupplierDetailsModel model,
+            [Frozen] Mock<ISuppliersService> mockSuppliersService,
+            [Frozen] Mock<IUrlVerificationService> mockVerificationService,
+            int supplierId,
+            SuppliersController controller)
         {
             mockSuppliersService.Setup(s => s.GetSupplierByName(model.SupplierName)).ReturnsAsync((Supplier)null);
             mockSuppliersService.Setup(s => s.GetSupplierByLegalName(model.SupplierLegalName)).ReturnsAsync((Supplier)null);
@@ -309,7 +308,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
         public static async Task Post_EditSupplierDetails_SupplierLegalNameExists_MatchesThisSupplier_RedirectsCorrectly(
             EditSupplierDetailsModel model,
             [Frozen] Mock<ISuppliersService> mockSuppliersService,
-            [Frozen] Mock<IVerificationService> mockVerificationService,
+            [Frozen] Mock<IUrlVerificationService> mockVerificationService,
             Supplier existingSupplier,
             SuppliersController controller)
         {
