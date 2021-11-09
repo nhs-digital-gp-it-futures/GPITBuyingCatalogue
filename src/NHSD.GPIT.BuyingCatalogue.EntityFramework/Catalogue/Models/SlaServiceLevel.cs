@@ -2,7 +2,7 @@
 
 namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models
 {
-    public sealed class SlaServiceLevels
+    public sealed class SlaServiceLevel
     {
         public int Id { get; set; }
 

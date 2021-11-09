@@ -57,7 +57,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators
             Solution solution,
             List<ServiceAvailabilityTimes> serviceAvailabilityTimes,
             List<SlaContact> slaContacts,
-            List<SlaServiceLevels> slaServiceLevels,
+            List<SlaServiceLevel> slaServiceLevels,
             [Frozen] Mock<ISolutionsService> solutionsService,
             ManageCatalogueSolutionModelValidator validator)
         {
@@ -90,7 +90,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators
             Solution solution,
             List<ServiceAvailabilityTimes> serviceAvailabilityTimes,
             List<SlaContact> slaContacts,
-            List<SlaServiceLevels> slaServiceLevels,
+            List<SlaServiceLevel> slaServiceLevels,
             [Frozen] Mock<ISolutionsService> solutionsService,
             ManageCatalogueSolutionModelValidator validator)
         {
@@ -121,7 +121,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators
             Solution solution,
             List<ServiceAvailabilityTimes> serviceAvailabilityTimes,
             List<SlaContact> slaContacts,
-            List<SlaServiceLevels> slaServiceLevels,
+            List<SlaServiceLevel> slaServiceLevels,
             [Frozen] Mock<ISolutionsService> solutionsService,
             ManageCatalogueSolutionModelValidator validator)
         {
@@ -156,7 +156,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators
             Solution solution,
             List<ServiceAvailabilityTimes> serviceAvailabilityTimes,
             List<SlaContact> slaContacts,
-            List<SlaServiceLevels> slaServiceLevels,
+            List<SlaServiceLevel> slaServiceLevels,
             [Frozen] Mock<ISolutionsService> solutionsService,
             ManageCatalogueSolutionModelValidator validator)
         {
@@ -188,7 +188,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators
             Solution solution,
             List<ServiceAvailabilityTimes> serviceAvailabilityTimes,
             List<SlaContact> slaContacts,
-            List<SlaServiceLevels> slaServiceLevels,
+            List<SlaServiceLevel> slaServiceLevels,
             [Frozen] Mock<ISolutionsService> solutionsService,
             ManageCatalogueSolutionModelValidator validator)
         {
@@ -219,7 +219,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators
             Solution solution,
             List<ServiceAvailabilityTimes> serviceAvailabilityTimes,
             List<SlaContact> slaContacts,
-            List<SlaServiceLevels> slaServiceLevels,
+            List<SlaServiceLevel> slaServiceLevels,
             [Frozen] Mock<ISolutionsService> solutionsService,
             ManageCatalogueSolutionModelValidator validator)
         {
@@ -275,7 +275,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators
             Solution solution,
             List<ServiceAvailabilityTimes> serviceAvailabilityTimes,
             List<SlaContact> slaContacts,
-            List<SlaServiceLevels> slaServiceLevels,
+            List<SlaServiceLevel> slaServiceLevels,
             [Frozen] Mock<ISolutionsService> solutionsService,
             ManageCatalogueSolutionModelValidator validator)
         {

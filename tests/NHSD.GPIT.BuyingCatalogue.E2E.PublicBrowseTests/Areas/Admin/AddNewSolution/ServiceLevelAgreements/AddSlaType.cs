@@ -29,7 +29,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.AddNewSolution.ServiceL
             : base(
                   factory,
                   typeof(ServiceLevelAgreementsController),
-                  nameof(ServiceLevelAgreementsController.AddSlaLevel),
+                  nameof(ServiceLevelAgreementsController.AddServiceLevelAgreement),
                   Parameters)
         {
         }
@@ -68,7 +68,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.AddNewSolution.ServiceL
 
             CommonActions.PageLoadedCorrectGetIndex(
                 typeof(ServiceLevelAgreementsController),
-                nameof(ServiceLevelAgreementsController.AddSlaLevel))
+                nameof(ServiceLevelAgreementsController.AddServiceLevelAgreement))
                 .Should().BeTrue();
 
             CommonActions.ErrorSummaryDisplayed()

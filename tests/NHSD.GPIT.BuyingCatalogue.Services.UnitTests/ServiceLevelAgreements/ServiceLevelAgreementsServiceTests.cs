@@ -33,7 +33,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.ServiceLevelAgreements
         [InMemoryDbAutoData]
         public static Task AddServiceLevel_NullModel(
             ServiceLevelAgreementsService service)
-                => Assert.ThrowsAsync<ArgumentNullException>("model", () => service.AddServiceLevelAsync(null));
+                => Assert.ThrowsAsync<ArgumentNullException>("model", () => service.AddServiceLevelAgreement(null));
 
         [Theory]
         [InMemoryDbAutoData]
@@ -51,7 +51,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.ServiceLevelAgreements
             context.CatalogueItems.Add(solution.CatalogueItem);
             await context.SaveChangesAsync();
 
-            await service.AddServiceLevelAsync(model);
+            await service.AddServiceLevelAgreement(model);
 
             var sla = context.ServiceLevelAgreements.Single(s => s.SolutionId == solution.CatalogueItemId);
             sla.SlaType.Should().Be(model.SlaLevel);

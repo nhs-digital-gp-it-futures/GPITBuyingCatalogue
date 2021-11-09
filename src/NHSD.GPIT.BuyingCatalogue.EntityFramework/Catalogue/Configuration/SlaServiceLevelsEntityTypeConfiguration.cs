@@ -5,9 +5,9 @@ using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 
 namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Configuration
 {
-    internal sealed class SlaServiceLevelsEntityTypeConfiguration : IEntityTypeConfiguration<SlaServiceLevels>
+    internal sealed class SlaServiceLevelsEntityTypeConfiguration : IEntityTypeConfiguration<SlaServiceLevel>
     {
-        public void Configure(EntityTypeBuilder<SlaServiceLevels> builder)
+        public void Configure(EntityTypeBuilder<SlaServiceLevel> builder)
         {
             builder.ToTable("SlaServiceLevels", Schemas.Catalogue);
 
