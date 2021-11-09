@@ -166,7 +166,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
                                     TimeUntil = DateTime.UtcNow,
                                 },
                             },
-                            ServiceLevels = new HashSet<SlaServiceLevels>
+                            ServiceLevels = new HashSet<SlaServiceLevel>
                             {
                                 new()
                                 {
@@ -738,6 +738,17 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
                                     TimeUntil = DateTime.UtcNow,
                                 },
                             },
+                            ServiceLevels = new HashSet<SlaServiceLevel>
+                            {
+                                new()
+                                {
+                                    Id = 1,
+                                    TypeOfService = "Type of Service 01",
+                                    ServiceLevel = "Service level 01",
+                                    HowMeasured = "How Measured 01",
+                                    ServiceCredits = true,
+                                },
+                            },
                         },
                     },
                     CatalogueItemCapabilities = new List<CatalogueItemCapability>
@@ -950,6 +961,25 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
                                     Category = "Support Type 03",
                                     TimeFrom = DateTime.UtcNow.AddHours(-5),
                                     TimeUntil = DateTime.UtcNow,
+                                },
+                            },
+                            ServiceLevels = new HashSet<SlaServiceLevel>
+                            {
+                                new()
+                                {
+                                    Id = 2,
+                                    TypeOfService = "Type of Service 02",
+                                    ServiceLevel = "Service level 02",
+                                    HowMeasured = "How Measured 02",
+                                    ServiceCredits = true,
+                                },
+                                new()
+                                {
+                                    Id = 3,
+                                    TypeOfService = "Type of Service 03",
+                                    ServiceLevel = "Service level 03",
+                                    HowMeasured = "How Measured 03",
+                                    ServiceCredits = true,
                                 },
                             },
                         },

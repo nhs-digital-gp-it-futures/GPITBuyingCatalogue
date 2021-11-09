@@ -93,6 +93,8 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework
 
         public DbSet<SlaContact> SlaContacts { get; set; }
 
+        public DbSet<SlaServiceLevel> SlaServiceLevels { get; set; }
+
         public DbSet<ServiceAvailabilityTimes> ServiceAvailabilityTimes { get; set; }
 
         public override Task<int> SaveChangesAsync(bool acceptAllChangesOnSuccess, CancellationToken cancellationToken = default)
@@ -137,7 +139,7 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework
                 if (entry.Entity is not IAudited auditedEntity)
                     continue;
 
-                userId = userId ?? identityService.GetUserId();
+                userId ??= identityService.GetUserId();
 
                 switch (entry.State)
                 {

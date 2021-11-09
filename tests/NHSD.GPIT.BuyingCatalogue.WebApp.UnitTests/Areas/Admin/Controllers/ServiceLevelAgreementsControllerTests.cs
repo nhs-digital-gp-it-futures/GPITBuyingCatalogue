@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using AutoFixture;
@@ -49,7 +50,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
 
             actual.Should().NotBeNull();
             actual.Should().BeOfType<RedirectToActionResult>();
-            actual.As<RedirectToActionResult>().ActionName.Should().Be(nameof(controller.AddSlaLevel));
+            actual.As<RedirectToActionResult>().ActionName.Should().Be(nameof(controller.AddServiceLevelAgreement));
         }
 
         [Theory]
@@ -89,7 +90,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
 
         [Theory]
         [CommonAutoData]
-        public static async Task Get_AddSlaLevel_ModelPopulatedCorrectly(
+        public static async Task Get_AddServiceLevelAgreement_ModelPopulatedCorrectly(
             [Frozen] Mock<ISolutionsService> solutionsService,
             ServiceLevelAgreementsController controller,
             CatalogueItemId itemId,
@@ -100,7 +101,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
 
             var expectedModel = new AddSlaTypeModel(solution.CatalogueItem);
 
-            var actual = await controller.AddSlaLevel(itemId);
+            var actual = await controller.AddServiceLevelAgreement(itemId);
 
             actual.Should().NotBeNull();
             actual.Should().BeOfType<ViewResult>();
@@ -116,14 +117,14 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
 
         [Theory]
         [CommonAutoData]
-        public static async Task Get_AddSlaLevel_NullSolution(
+        public static async Task Get_AddServiceLevelAgreement_NullSolution(
             [Frozen] Mock<ISolutionsService> solutionsService,
             ServiceLevelAgreementsController controller,
             CatalogueItemId itemId)
         {
             solutionsService.Setup(s => s.GetSolution(itemId)).ReturnsAsync(default(CatalogueItem));
 
-            var actual = await controller.AddSlaLevel(itemId);
+            var actual = await controller.AddServiceLevelAgreement(itemId);
 
             actual.Should().NotBeNull();
             actual.Should().BeOfType<BadRequestObjectResult>();
@@ -132,7 +133,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
 
         [Theory]
         [CommonAutoData]
-        public static async Task Post_AddSlaLevel_Valid(
+        public static async Task Post_AddServiceLevelAgreement_Valid(
             [Frozen] Mock<ISolutionsService> solutionsService,
             [Frozen] Mock<IServiceLevelAgreementsService> slaService,
             ServiceLevelAgreementsController controller,
@@ -145,20 +146,20 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
                 SlaLevel = slaType,
             };
 
-            slaService.Setup(s => s.AddServiceLevelAsync(It.IsAny<AddSlaModel>()));
+            slaService.Setup(s => s.AddServiceLevelAgreement(It.IsAny<AddSlaModel>()));
             solutionsService.Setup(s => s.GetSolution(itemId)).ReturnsAsync(solution.CatalogueItem);
 
-            var actual = await controller.AddSlaLevel(itemId, addModel);
+            var actual = await controller.AddServiceLevelAgreement(itemId, addModel);
 
             actual.Should().NotBeNull();
             actual.Should().BeOfType<RedirectToActionResult>();
             actual.As<RedirectToActionResult>().ActionName.Should().Be(nameof(controller.EditServiceLevelAgreement));
-            slaService.Verify(s => s.AddServiceLevelAsync(It.IsAny<AddSlaModel>()));
+            slaService.Verify(s => s.AddServiceLevelAgreement(It.IsAny<AddSlaModel>()));
         }
 
         [Theory]
         [CommonAutoData]
-        public static async Task Post_AddSlaLevel_InvalidSolution(
+        public static async Task Post_AddServiceLevelAgreement_InvalidSolution(
             [Frozen] Mock<ISolutionsService> solutionsService,
             ServiceLevelAgreementsController controller,
             CatalogueItemId itemId,
@@ -171,7 +172,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
             };
             solutionsService.Setup(s => s.GetSolution(itemId)).ReturnsAsync(default(CatalogueItem));
 
-            var actual = await controller.AddSlaLevel(itemId, addModel);
+            var actual = await controller.AddServiceLevelAgreement(itemId, addModel);
 
             actual.Should().NotBeNull();
             actual.Should().BeOfType<BadRequestObjectResult>();
@@ -180,13 +181,13 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
 
         [Theory]
         [CommonAutoData]
-        public static async Task Post_AddSlaLevel_ModelError(
+        public static async Task Post_AddServiceLevelAgreement_ModelError(
             ServiceLevelAgreementsController controller,
             CatalogueItemId itemId)
         {
             controller.ModelState.AddModelError("Test", "A test error");
 
-            var actual = await controller.AddSlaLevel(itemId, new AddSlaTypeModel());
+            var actual = await controller.AddServiceLevelAgreement(itemId, new AddSlaTypeModel());
 
             actual.Should().NotBeNull();
             actual.Should().BeOfType<ViewResult>();
@@ -252,7 +253,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
 
             var expectedModel = new AddSlaTypeModel(solution.CatalogueItem);
 
-            var actual = await controller.EditSlaLevel(itemId);
+            var actual = await controller.EditServiceLevelAgreementType(itemId);
 
             actual.Should().NotBeNull();
             actual.Should().BeOfType<ViewResult>();
@@ -269,7 +270,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
         {
             solutionsService.Setup(s => s.GetSolution(itemId)).ReturnsAsync(default(CatalogueItem));
 
-            var actual = await controller.EditSlaLevel(itemId);
+            var actual = await controller.EditServiceLevelAgreementType(itemId);
 
             actual.Should().NotBeNull();
             actual.Should().BeOfType<BadRequestObjectResult>();
@@ -294,7 +295,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
             slaService.Setup(s => s.UpdateServiceLevelTypeAsync(solution.CatalogueItem, It.IsAny<SlaType>()));
             solutionsService.Setup(s => s.GetSolution(itemId)).ReturnsAsync(solution.CatalogueItem);
 
-            var actual = await controller.EditSlaLevel(itemId, addModel);
+            var actual = await controller.EditServiceLevelAgreementType(itemId, addModel);
 
             actual.Should().NotBeNull();
             actual.Should().BeOfType<RedirectToActionResult>();
@@ -317,7 +318,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
             };
             solutionsService.Setup(s => s.GetSolution(itemId)).ReturnsAsync(default(CatalogueItem));
 
-            var actual = await controller.EditSlaLevel(itemId, addModel);
+            var actual = await controller.EditServiceLevelAgreementType(itemId, addModel);
 
             actual.Should().NotBeNull();
             actual.Should().BeOfType<BadRequestObjectResult>();
@@ -332,7 +333,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
         {
             controller.ModelState.AddModelError("Test", "A test error");
 
-            var actual = await controller.EditSlaLevel(itemId, new AddSlaTypeModel());
+            var actual = await controller.EditServiceLevelAgreementType(itemId, new AddSlaTypeModel());
 
             actual.Should().NotBeNull();
             actual.Should().BeOfType<ViewResult>();
@@ -686,6 +687,22 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
 
             result.As<ViewResult>().Should().NotBeNull();
             result.As<ViewResult>().Model.Should().BeEquivalentTo(expectedModel, opt => opt.Excluding(m => m.BackLink));
+        }
+
+        [Theory]
+        [CommonAutoData]
+        public static async Task Post_DeleteServiceAvailabilityTimes_InvalidModel(
+            CatalogueItemId solutionId,
+            int serviceAvailabilityTimesId,
+            DeleteServiceAvailabilityTimesModel model,
+            ServiceLevelAgreementsController controller)
+        {
+            controller.ModelState.AddModelError("some-key", "some-error");
+
+            var result = await controller.DeleteServiceAvailabilityTimes(solutionId, serviceAvailabilityTimesId, model);
+
+            result.As<ViewResult>().Should().NotBeNull();
+            result.As<ViewResult>().Model.Should().BeEquivalentTo(model, opt => opt.Excluding(m => m.BackLink));
         }
 
         [Theory]
@@ -1143,6 +1160,382 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
             actual.Should().NotBeNull();
             actual.Should().BeOfType<BadRequestObjectResult>();
             actual.As<BadRequestObjectResult>().Value.Should().Be($"No Contact found for Id: {contactId}");
+        }
+
+        [Theory]
+        [CommonAutoData]
+        public static async Task Get_AddServiceLevel_NullSolution(
+            CatalogueItemId solutionId,
+            [Frozen] Mock<ISolutionsService> solutionsService,
+            ServiceLevelAgreementsController controller)
+        {
+            solutionsService.Setup(s => s.GetSolution(solutionId))
+                .ReturnsAsync(default(CatalogueItem));
+
+            var result = await controller.AddServiceLevel(solutionId);
+
+            result.As<BadRequestObjectResult>().Should().NotBeNull();
+            result.As<BadRequestObjectResult>().Value.Should().Be($"No Solution found for Id: {solutionId}");
+        }
+
+        [Theory]
+        [CommonAutoData]
+        public static async Task Get_AddServiceLevel_ValidSolution(
+            Solution solution,
+            [Frozen] Mock<ISolutionsService> solutionsService,
+            ServiceLevelAgreementsController controller)
+        {
+            solutionsService.Setup(s => s.GetSolution(solution.CatalogueItemId))
+                .ReturnsAsync(solution.CatalogueItem);
+
+            var expectedModel = new AddEditServiceLevelModel(solution.CatalogueItem);
+
+            var result = await controller.AddServiceLevel(solution.CatalogueItemId);
+
+            result.As<ViewResult>().Should().NotBeNull();
+            result.As<ViewResult>().Model.Should().BeEquivalentTo(expectedModel, opt => opt.Excluding(m => m.BackLink));
+        }
+
+        [Theory]
+        [CommonAutoData]
+        public static async Task Post_AddServiceLevel_InvalidModelState(
+            CatalogueItemId solutionId,
+            AddEditServiceLevelModel model,
+            ServiceLevelAgreementsController controller)
+        {
+            controller.ModelState.AddModelError("some-key", "some-error");
+
+            var result = await controller.AddServiceLevel(solutionId, model);
+
+            result.As<ViewResult>().Should().NotBeNull();
+            result.As<ViewResult>().Model.Should().BeEquivalentTo(model, opt => opt.Excluding(m => m.BackLink));
+        }
+
+        [Theory]
+        [CommonAutoData]
+        public static async Task Post_AddServiceLevel_NullSolution(
+            CatalogueItemId solutionId,
+            AddEditServiceLevelModel model,
+            [Frozen] Mock<ISolutionsService> solutionsService,
+            ServiceLevelAgreementsController controller)
+        {
+            solutionsService.Setup(s => s.GetSolution(solutionId))
+                .ReturnsAsync(default(CatalogueItem));
+
+            var result = await controller.AddServiceLevel(solutionId, model);
+
+            result.As<BadRequestObjectResult>().Should().NotBeNull();
+            result.As<BadRequestObjectResult>().Value.Should().Be($"No Solution found for Id: {solutionId}");
+        }
+
+        [Theory]
+        [CommonAutoData]
+        public static async Task Post_AddServiceLevel_ValidRequest(
+            Solution solution,
+            AddEditServiceLevelModel model,
+            [Frozen] Mock<ISolutionsService> solutionsService,
+            [Frozen] Mock<IServiceLevelAgreementsService> serviceLevelAgreementsService,
+            ServiceLevelAgreementsController controller)
+        {
+            solutionsService.Setup(s => s.GetSolution(solution.CatalogueItemId))
+                .ReturnsAsync(solution.CatalogueItem);
+
+            var result = await controller.AddServiceLevel(solution.CatalogueItemId, model);
+
+            result.As<RedirectToActionResult>().Should().NotBeNull();
+            result.As<RedirectToActionResult>().ActionName.Should().Be(nameof(controller.Index));
+            serviceLevelAgreementsService.Verify(
+                s => s.AddServiceLevel(
+                    solution.CatalogueItemId,
+                    It.Is<EditServiceLevelModel>(
+                        m => string.Equals(model.ServiceType, m.ServiceType)
+                        && string.Equals(model.ServiceLevel, m.ServiceLevel)
+                        && string.Equals(model.HowMeasured, m.HowMeasured)
+                        && model.CreditsApplied == m.CreditsApplied)));
+        }
+
+        [Theory]
+        [CommonAutoData]
+        public static async Task Get_EditServiceLevel_NullSolution(
+            CatalogueItemId solutionId,
+            int serviceLevelId,
+            [Frozen] Mock<ISolutionsService> solutionsService,
+            ServiceLevelAgreementsController controller)
+        {
+            solutionsService.Setup(s => s.GetSolution(solutionId))
+                .ReturnsAsync(default(CatalogueItem));
+
+            var result = await controller.EditServiceLevel(solutionId, serviceLevelId);
+
+            result.As<BadRequestObjectResult>().Should().NotBeNull();
+            result.As<BadRequestObjectResult>().Value.Should().Be($"No Solution found for Id: {solutionId}");
+        }
+
+        [Theory]
+        [CommonAutoData]
+        public static async Task Get_EditServiceLevel_NullServiceLevel(
+            Solution solution,
+            int serviceLevelId,
+            [Frozen] Mock<ISolutionsService> solutionsService,
+            ServiceLevelAgreementsController controller)
+        {
+            solution.ServiceLevelAgreement.ServiceLevels = new HashSet<SlaServiceLevel>();
+
+            solutionsService.Setup(s => s.GetSolution(solution.CatalogueItemId))
+                .ReturnsAsync(solution.CatalogueItem);
+
+            var result = await controller.EditServiceLevel(solution.CatalogueItemId, serviceLevelId);
+
+            result.As<BadRequestObjectResult>().Should().NotBeNull();
+            result.As<BadRequestObjectResult>().Value.Should().Be($"No Service Level found for Id: {serviceLevelId}");
+        }
+
+        [Theory]
+        [CommonAutoData]
+        public static async Task Get_EditServiceLevel_ValidRequest(
+            Solution solution,
+            ServiceLevelAgreements serviceLevelAgreement,
+            SlaServiceLevel serviceLevel,
+            [Frozen] Mock<ISolutionsService> solutionsService,
+            ServiceLevelAgreementsController controller)
+        {
+            solution.CatalogueItem.PublishedStatus = PublicationStatus.Published;
+            serviceLevelAgreement.ServiceLevels.Add(serviceLevel);
+            solution.ServiceLevelAgreement = serviceLevelAgreement;
+
+            var expectedModel = new AddEditServiceLevelModel(solution.CatalogueItem, serviceLevel);
+
+            solutionsService.Setup(s => s.GetSolution(solution.CatalogueItemId))
+                .ReturnsAsync(solution.CatalogueItem);
+
+            var result = await controller.EditServiceLevel(solution.CatalogueItemId, serviceLevel.Id);
+
+            result.As<ViewResult>().Should().NotBeNull();
+            result.As<ViewResult>().Model.Should().BeEquivalentTo(expectedModel, opt => opt.Excluding(m => m.BackLink));
+        }
+
+        [Theory]
+        [CommonAutoData]
+        public static async Task Post_EditServiceLevel_InvalidModel(
+            CatalogueItemId solutionId,
+            int serviceLevelId,
+            AddEditServiceLevelModel model,
+            ServiceLevelAgreementsController controller)
+        {
+            controller.ModelState.AddModelError("some-key", "some-error");
+
+            var result = await controller.EditServiceLevel(solutionId, serviceLevelId, model);
+
+            result.As<ViewResult>().Should().NotBeNull();
+            result.As<ViewResult>().Model.Should().BeEquivalentTo(model, opt => opt.Excluding(m => m.BackLink));
+        }
+
+        [Theory]
+        [CommonAutoData]
+        public static async Task Post_EditServiceLevel_NullSolution(
+            CatalogueItemId solutionId,
+            int serviceLevelId,
+            AddEditServiceLevelModel model,
+            [Frozen] Mock<ISolutionsService> solutionsService,
+            ServiceLevelAgreementsController controller)
+        {
+            solutionsService.Setup(s => s.GetSolution(solutionId))
+                .ReturnsAsync(default(CatalogueItem));
+
+            var result = await controller.EditServiceLevel(solutionId, serviceLevelId, model);
+
+            result.As<BadRequestObjectResult>().Should().NotBeNull();
+            result.As<BadRequestObjectResult>().Value.Should().Be($"No Solution found for Id: {solutionId}");
+        }
+
+        [Theory]
+        [CommonAutoData]
+        public static async Task Post_EditServiceLevel_NullServiceLevel(
+            Solution solution,
+            int serviceLevelId,
+            AddEditServiceLevelModel model,
+            [Frozen] Mock<ISolutionsService> solutionsService,
+            ServiceLevelAgreementsController controller)
+        {
+            solution.ServiceLevelAgreement.ServiceLevels = new HashSet<SlaServiceLevel>();
+
+            solutionsService.Setup(s => s.GetSolution(solution.CatalogueItemId))
+                .ReturnsAsync(solution.CatalogueItem);
+
+            var result = await controller.EditServiceLevel(solution.CatalogueItemId, serviceLevelId, model);
+
+            result.As<BadRequestObjectResult>().Should().NotBeNull();
+            result.As<BadRequestObjectResult>().Value.Should().Be($"No Service Level found for Id: {serviceLevelId}");
+        }
+
+        [Theory]
+        [CommonAutoData]
+        public static async Task Post_EditServiceLevel_ValidRequest(
+            Solution solution,
+            ServiceLevelAgreements serviceLevelAgreement,
+            SlaServiceLevel serviceLevel,
+            AddEditServiceLevelModel model,
+            [Frozen] Mock<ISolutionsService> solutionsService,
+            [Frozen] Mock<IServiceLevelAgreementsService> serviceLevelAgreementsService,
+            ServiceLevelAgreementsController controller)
+        {
+            serviceLevelAgreement.ServiceLevels.Add(serviceLevel);
+            solution.ServiceLevelAgreement = serviceLevelAgreement;
+
+            solutionsService.Setup(s => s.GetSolution(solution.CatalogueItemId))
+                .ReturnsAsync(solution.CatalogueItem);
+
+            var result = await controller.EditServiceLevel(solution.CatalogueItemId, serviceLevel.Id, model);
+
+            result.As<RedirectToActionResult>().Should().NotBeNull();
+            result.As<RedirectToActionResult>().ActionName.Should().Be(nameof(controller.Index));
+            serviceLevelAgreementsService.Verify(
+                s => s.UpdateServiceLevel(
+                    solution.CatalogueItemId,
+                    serviceLevel.Id,
+                    It.Is<EditServiceLevelModel>(
+                        m => string.Equals(model.ServiceType, m.ServiceType)
+                        && string.Equals(model.ServiceLevel, m.ServiceLevel)
+                        && string.Equals(model.HowMeasured, m.HowMeasured)
+                        && model.CreditsApplied == m.CreditsApplied)));
+        }
+
+        [Theory]
+        [CommonAutoData]
+        public static async Task Get_DeleteServiceLevel_NullSolution(
+            CatalogueItemId solutionId,
+            int serviceLevelId,
+            [Frozen] Mock<ISolutionsService> solutionsService,
+            ServiceLevelAgreementsController controller)
+        {
+            solutionsService.Setup(s => s.GetSolution(solutionId))
+                .ReturnsAsync(default(CatalogueItem));
+
+            var result = await controller.DeleteServiceLevel(solutionId, serviceLevelId);
+
+            result.As<BadRequestObjectResult>().Should().NotBeNull();
+            result.As<BadRequestObjectResult>().Value.Should().Be($"No Solution found for Id: {solutionId}");
+        }
+
+        [Theory]
+        [CommonAutoData]
+        public static async Task Get_DeleteServiceLevel_NullServiceLevel(
+            Solution solution,
+            int serviceLevelId,
+            [Frozen] Mock<ISolutionsService> solutionsService,
+            ServiceLevelAgreementsController controller)
+        {
+            solution.ServiceLevelAgreement.ServiceLevels = new HashSet<SlaServiceLevel>();
+
+            solutionsService.Setup(s => s.GetSolution(solution.CatalogueItemId))
+                .ReturnsAsync(solution.CatalogueItem);
+
+            var result = await controller.DeleteServiceLevel(solution.CatalogueItemId, serviceLevelId);
+
+            result.As<BadRequestObjectResult>().Should().NotBeNull();
+            result.As<BadRequestObjectResult>().Value.Should().Be($"No Service Level found for Id: {serviceLevelId}");
+        }
+
+        [Theory]
+        [CommonAutoData]
+        public static async Task Get_DeleteServiceLevel_ValidRequest(
+            Solution solution,
+            ServiceLevelAgreements serviceLevelAgreement,
+            SlaServiceLevel serviceLevel,
+            [Frozen] Mock<ISolutionsService> solutionsService,
+            ServiceLevelAgreementsController controller)
+        {
+            serviceLevelAgreement.ServiceLevels.Add(serviceLevel);
+            solution.ServiceLevelAgreement = serviceLevelAgreement;
+
+            var expectedModel = new DeleteServiceLevelModel(solution.CatalogueItem, serviceLevel);
+
+            solutionsService.Setup(s => s.GetSolution(solution.CatalogueItemId))
+                .ReturnsAsync(solution.CatalogueItem);
+
+            var result = await controller.DeleteServiceLevel(solution.CatalogueItemId, serviceLevel.Id);
+
+            result.As<ViewResult>().Should().NotBeNull();
+            result.As<ViewResult>().Model.Should().BeEquivalentTo(expectedModel, opt => opt.Excluding(m => m.BackLink));
+        }
+
+        [Theory]
+        [CommonAutoData]
+        public static async Task Post_DeleteServiceLevel_InvalidModel(
+            CatalogueItemId solutionId,
+            int serviceLevelId,
+            DeleteServiceLevelModel model,
+            ServiceLevelAgreementsController controller)
+        {
+            controller.ModelState.AddModelError("some-key", "some-error");
+
+            var result = await controller.DeleteServiceLevel(solutionId, serviceLevelId, model);
+
+            result.As<ViewResult>().Should().NotBeNull();
+            result.As<ViewResult>().Model.Should().BeEquivalentTo(model, opt => opt.Excluding(m => m.BackLink));
+        }
+
+        [Theory]
+        [CommonAutoData]
+        public static async Task Post_DeleteServiceLevel_NullSolution(
+            CatalogueItemId solutionId,
+            int serviceLevelId,
+            DeleteServiceLevelModel model,
+            [Frozen] Mock<ISolutionsService> solutionsService,
+            ServiceLevelAgreementsController controller)
+        {
+            solutionsService.Setup(s => s.GetSolution(solutionId))
+                .ReturnsAsync(default(CatalogueItem));
+
+            var result = await controller.DeleteServiceLevel(solutionId, serviceLevelId, model);
+
+            result.As<BadRequestObjectResult>().Should().NotBeNull();
+            result.As<BadRequestObjectResult>().Value.Should().Be($"No Solution found for Id: {solutionId}");
+        }
+
+        [Theory]
+        [CommonAutoData]
+        public static async Task Post_DeleteServiceLevel_NullServiceLevel(
+            Solution solution,
+            int serviceLevelId,
+            DeleteServiceLevelModel model,
+            [Frozen] Mock<ISolutionsService> solutionsService,
+            ServiceLevelAgreementsController controller)
+        {
+            solution.ServiceLevelAgreement.ServiceLevels = new HashSet<SlaServiceLevel>();
+
+            solutionsService.Setup(s => s.GetSolution(solution.CatalogueItemId))
+                .ReturnsAsync(solution.CatalogueItem);
+
+            var result = await controller.DeleteServiceLevel(solution.CatalogueItemId, serviceLevelId, model);
+
+            result.As<BadRequestObjectResult>().Should().NotBeNull();
+            result.As<BadRequestObjectResult>().Value.Should().Be($"No Service Level found for Id: {serviceLevelId}");
+        }
+
+        [Theory]
+        [CommonAutoData]
+        public static async Task Post_DeleteServiceLevel_ValidRequest(
+            Solution solution,
+            ServiceLevelAgreements serviceLevelAgreement,
+            SlaServiceLevel serviceLevel,
+            DeleteServiceLevelModel model,
+            [Frozen] Mock<ISolutionsService> solutionsService,
+            [Frozen] Mock<IServiceLevelAgreementsService> serviceLevelAgreementsService,
+            ServiceLevelAgreementsController controller)
+        {
+            serviceLevelAgreement.ServiceLevels.Add(serviceLevel);
+            solution.ServiceLevelAgreement = serviceLevelAgreement;
+
+            solutionsService.Setup(s => s.GetSolution(solution.CatalogueItemId))
+                .ReturnsAsync(solution.CatalogueItem);
+
+            var result = await controller.DeleteServiceLevel(solution.CatalogueItemId, serviceLevel.Id, model);
+
+            result.As<RedirectToActionResult>().Should().NotBeNull();
+            result.As<RedirectToActionResult>().ActionName.Should().Be(nameof(controller.Index));
+            serviceLevelAgreementsService.Verify(
+                s => s.DeleteServiceLevel(solution.CatalogueItemId, serviceLevel.Id));
         }
     }
 }
