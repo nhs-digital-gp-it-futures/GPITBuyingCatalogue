@@ -1,4 +1,5 @@
 ﻿using FluentValidation;
+using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Enums;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.AssociatedServices;
 
@@ -16,7 +17,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Validators.PublicationSta
 
         private bool HaveCompletedAllMandatorySections(EditAssociatedServiceModel model)
         {
-            if (model.SelectedPublicationStatus == model.AssociatedServicePublicationStatus)
+            if (model.SelectedPublicationStatus != PublicationStatus.Published || model.SelectedPublicationStatus == model.AssociatedServicePublicationStatus)
                 return true;
 
             return model.DetailsStatus == TaskProgress.Completed

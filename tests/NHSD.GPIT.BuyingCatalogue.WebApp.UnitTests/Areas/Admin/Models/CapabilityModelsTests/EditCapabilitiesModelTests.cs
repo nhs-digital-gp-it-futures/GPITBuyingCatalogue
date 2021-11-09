@@ -20,7 +20,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Models.Capabili
             var model = new EditCapabilitiesModel(additionalService.CatalogueItem, capabilityCategories);
 
             model.Name.Should().Be(additionalService.CatalogueItem.Name);
-            model.SupplierName.Should().Be(additionalService.CatalogueItem.Supplier.Name);
+            model.SolutionName.Should().Be(additionalService.CatalogueItem.Name);
             model.CatalogueItemType.Should().Be(additionalService.CatalogueItem.CatalogueItemType.AsString(EnumFormat.DisplayName));
         }
 

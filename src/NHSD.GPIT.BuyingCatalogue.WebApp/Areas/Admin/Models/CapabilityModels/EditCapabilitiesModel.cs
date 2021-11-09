@@ -19,7 +19,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.CapabilityModels
             : this()
         {
             Name = catalogueItem.Name;
-            SupplierName = catalogueItem.Supplier.Name;
+            SolutionName = catalogueItem.Name;
             CatalogueItemType = catalogueItem.CatalogueItemType.AsString(EnumFormat.DisplayName);
 
             CapabilityCategories = capabilityCategories.Select(cc => new CapabilityCategoryModel
@@ -45,7 +45,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.CapabilityModels
 
         public string Name { get; init; }
 
-        public string SupplierName { get; init; }
+        public string SolutionName { get; init; }
 
         public string CatalogueItemType { get; init; }
 

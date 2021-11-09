@@ -42,14 +42,14 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.AddNewSolution.Addition
             var capabilityCategories = await context.CapabilityCategories.ToListAsync();
             var additionalService = await context.CatalogueItems.Include(i => i.Supplier).SingleAsync(s => s.Id == AdditionalServiceId);
             var additionalServiceName = additionalService.Name;
-            var supplierName = additionalService.Supplier.Name;
+            var solutionName = additionalService.Name;
 
             CommonActions.GoBackLinkDisplayed().Should().BeTrue();
             CommonActions.SaveButtonDisplayed().Should().BeTrue();
 
             CommonActions.PageTitle()
                 .Should()
-                .BeEquivalentTo($"{additionalServiceName} Capabilities - {supplierName}".FormatForComparison());
+                .BeEquivalentTo($"{additionalServiceName} Capabilities - {solutionName}".FormatForComparison());
 
             CommonActions.ElementIsDisplayed(CommonSelectors.Header1)
                 .Should()
