@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
@@ -14,76 +15,82 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models
 {
     public sealed class ManageCatalogueSolutionModel : NavBaseModel
     {
-        public CatalogueItem Solution { get; private set; }
+        public ManageCatalogueSolutionModel()
+        {
+        }
 
-        public IReadOnlyList<CatalogueItem> AssociatedServices { get; private set; }
+        public ManageCatalogueSolutionModel(CatalogueItem solution, IReadOnlyList<CatalogueItem> additionalServices, IReadOnlyList<CatalogueItem> associatedServices)
+        {
+            SolutionId = solution.Id;
+            SolutionName = solution.Name;
+            SelectedPublicationStatus = SolutionPublicationStatus = solution.PublishedStatus;
+            SupplierName = solution.Supplier.Name;
+            LastUpdated = solution.Solution.LastUpdated;
 
-        public IReadOnlyList<CatalogueItem> AdditionalServices { get; private set; }
+            var lastUpdatedBy = solution.Solution.LastUpdatedByUser;
+            if (lastUpdatedBy is not null)
+                LastUpdatedByName = $"{lastUpdatedBy.FirstName} {lastUpdatedBy.LastName}";
 
-        public IReadOnlyList<SelectListItem> PublicationStatuses { get; private set; }
+            DescriptionStatus = new DescriptionModel(solution).Status();
+            FeaturesStatus = new FeaturesModel().FromCatalogueItem(solution).Status();
+            ImplementationStatus = new ImplementationTimescaleModel(solution).Status();
+            RoadmapStatus = new RoadmapModel().FromCatalogueItem(solution).Status();
+            HostingTypeStatus = new HostingTypeSectionModel(solution).Status();
+            ClientApplicationTypeStatus = new ClientApplicationTypeSectionModel(solution).Status();
+            InteroperabilityStatus = new InteroperabilityModels.InteroperabilityModel(solution).Status();
+            ListPriceStatus = new ListPriceModels.ManageListPricesModel(solution).Status();
+            AssociatedServicesStatus = new AssociatedServicesModel(solution, associatedServices).Status();
+            AdditionalServicesStatus = new AdditionalServicesModel(solution, additionalServices).Status();
+            SupplierDetailsStatus = new EditSupplierDetailsModel(solution).Status();
+            SlaStatus = new EditServiceLevelAgreementModel(solution).Status();
+            CapabilitiesStatus = solution.CatalogueItemCapabilities.Any()
+                ? TaskProgress.Completed
+                : TaskProgress.NotStarted;
+        }
 
-        public CatalogueItemId SolutionId { get; set; }
+        public CatalogueItemId SolutionId { get; init; }
 
-        public string LastUpdatedByName { get; set; }
+        public string SolutionName { get; init; }
+
+        public PublicationStatus SolutionPublicationStatus { get; init; }
+
+        public string SupplierName { get; init; }
+
+        public DateTime LastUpdated { get; init; }
+
+        public string LastUpdatedByName { get; init; }
 
         public PublicationStatus SelectedPublicationStatus { get; set; }
 
-        public TaskProgress DescriptionStatus() => new DescriptionModel(Solution).Status();
-
-        public TaskProgress FeaturesStatus() => new FeaturesModel().FromCatalogueItem(Solution).Status();
-
-        public TaskProgress ImplementationStatus() => new ImplementationTimescaleModel(Solution).Status();
-
-        public TaskProgress RoadmapStatus() => new RoadmapModel().FromCatalogueItem(Solution).Status();
-
-        public TaskProgress HostingTypeStatus() => new HostingTypeSectionModel(Solution).Status();
-
-        public TaskProgress ClientApplicationTypeStatus() => new ClientApplicationTypeSectionModel(Solution).Status();
-
-        public TaskProgress InteroperabilityStatus() => new InteroperabilityModels.InteroperabilityModel(Solution).Status();
-
-        public TaskProgress ListPriceStatus() => new ListPriceModels.ManageListPricesModel(Solution).Status();
-
-        public TaskProgress AssociatedServicesStatus() =>
-            new AssociatedServicesModel(Solution, AssociatedServices).Status();
-
-        public TaskProgress AdditionalServicesStatus() =>
-            new AdditionalServicesModel(Solution, AdditionalServices).Status();
-
-        public TaskProgress SupplierDetailsStatus() => new EditSupplierDetailsModel(Solution).Status();
-
-        public TaskProgress SlaStatus() => new EditServiceLevelAgreementModel(Solution).Status();
-
-        public TaskProgress CapabilitiesStatus() => Solution.CatalogueItemCapabilities.Any()
-            ? TaskProgress.Completed
-            : TaskProgress.NotStarted;
-
-        public ManageCatalogueSolutionModel WithSolution(CatalogueItem solution)
-        {
-            SolutionId = solution.Id;
-            Solution = solution;
-            SelectedPublicationStatus = Solution.PublishedStatus;
-            PublicationStatuses = Solution
-                .PublishedStatus
-                .GetAvailablePublicationStatuses(solution.CatalogueItemType)
+        public IReadOnlyList<SelectListItem> PublicationStatuses => SolutionPublicationStatus
+                .GetAvailablePublicationStatuses(CatalogueItemType.Solution)
                 .Select(p => new SelectListItem(p.Description(), p.EnumMemberName()))
                 .ToList();
 
-            return this;
-        }
+        public TaskProgress DescriptionStatus { get; init; }
 
-        public ManageCatalogueSolutionModel WithAssociatedServices(List<CatalogueItem> associatedServices)
-        {
-            AssociatedServices = associatedServices;
+        public TaskProgress FeaturesStatus { get; init; }
 
-            return this;
-        }
+        public TaskProgress ImplementationStatus { get; init; }
 
-        public ManageCatalogueSolutionModel WithAdditionalServices(List<CatalogueItem> additionalServices)
-        {
-            AdditionalServices = additionalServices;
+        public TaskProgress RoadmapStatus { get; init; }
 
-            return this;
-        }
+        public TaskProgress HostingTypeStatus { get; init; }
+
+        public TaskProgress ClientApplicationTypeStatus { get; init; }
+
+        public TaskProgress InteroperabilityStatus { get; init; }
+
+        public TaskProgress ListPriceStatus { get; init; }
+
+        public TaskProgress AssociatedServicesStatus { get; init; }
+
+        public TaskProgress AdditionalServicesStatus { get; init; }
+
+        public TaskProgress SupplierDetailsStatus { get; init; }
+
+        public TaskProgress SlaStatus { get; init; }
+
+        public TaskProgress CapabilitiesStatus { get; init; }
     }
 }
