@@ -8,7 +8,7 @@
      PhoneNumber nvarchar(35) NULL,
      Department nvarchar(50) NULL,
      LastUpdated datetime2(7) CONSTRAINT DF_SupplierContacts_LastUpdated DEFAULT GETUTCDATE() NOT NULL,
-     LastUpdatedBy int NOT NULL,
+     LastUpdatedBy int NULL,
      CONSTRAINT PK_SupplierContacts PRIMARY KEY (Id),
      CONSTRAINT FK_SupplierContacts_Supplier FOREIGN KEY (SupplierId) REFERENCES catalogue.Suppliers(Id) ON DELETE CASCADE,
      CONSTRAINT FK_SupplierContacts_LastUpdatedBy FOREIGN KEY (LastUpdatedBy) REFERENCES users.AspNetUsers(Id),
