@@ -8,14 +8,14 @@
     <div class="nhsuk-grid-column-two-thirds">
         <nhs-validation-summary />
         <nhs-page-title title="@ViewBag.Title"
-                        caption="@Model.SupplierName"
+                        caption="@Model.SolutionName"
                         advice="Select the Capabilities and any May Epics met by your @Model.CatalogueItemType." />
 
         <form method="post">
             <input type="hidden" asp-for="BackLink" />
             <input type="hidden" asp-for="BackLinkText" />
             <input type="hidden" asp-for="Name" />
-            <input type="hidden" asp-for="SupplierName" />
+            <input type="hidden" asp-for="SolutionName" />
             <input type="hidden" asp-for="CatalogueItemType" />
             @for (int i = 0; i < Model.CapabilityCategories.Count; i++)
             {
