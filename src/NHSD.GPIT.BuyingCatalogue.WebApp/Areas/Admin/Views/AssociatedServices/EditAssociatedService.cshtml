@@ -9,7 +9,7 @@
     <div class="nhsuk-grid-column-two-thirds">
         <nhs-validation-summary RadioId="@nameof(Model.SelectedPublicationStatus)" />
         <nhs-page-title title="@ViewBag.Title"
-                        caption="@Model.Solution.Supplier.Name"
+                        caption="@Model.SupplierName"
                         advice="Provide information about this Associated Service." />
 
         <nhs-table data-test-id="associated-service-dashboard-table">
@@ -44,6 +44,7 @@
         <form method="post" asp-action="SetPublicationStatus" asp-route-solutionId="@Model.SolutionId" asp-route-associatedServiceId="@Model.AssociatedServiceId">
             <input type="hidden" asp-for="SolutionId" />
             <input type="hidden" asp-for="SolutionName" />
+            <input type="hidden" asp-for="SupplierName" />
             <input type="hidden" asp-for="AssociatedServiceId" />
             <input type="hidden" asp-for="AssociatedServiceName" />
             <input type="hidden" asp-for="BackLink" />

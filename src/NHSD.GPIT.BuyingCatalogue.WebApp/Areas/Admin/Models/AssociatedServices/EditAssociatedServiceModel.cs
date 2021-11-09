@@ -21,6 +21,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.AssociatedServices
         {
             SolutionId = solution.Id;
             SolutionName = solution.Name;
+            SupplierName = solution.Supplier.Name;
             AssociatedServiceId = associatedService.Id;
             AssociatedServiceName = associatedService.Name;
             SelectedPublicationStatus = associatedService.PublishedStatus;
@@ -44,6 +45,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.AssociatedServices
         public string SolutionName { get; init; }
 
         public string AssociatedServiceName { get; init; }
+
+        public string SupplierName { get; init; }
 
         public PublicationStatus AssociatedServicePublicationStatus { get; init; }
 

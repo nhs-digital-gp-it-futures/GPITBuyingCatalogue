@@ -83,17 +83,17 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.AddNewSolution
         public async Task EditAssociatedService_CorrectlyDisplayed()
         {
             await using var context = GetEndToEndDbContext();
-            var solutionName = (await context.CatalogueItems.SingleAsync(s => s.Id == SolutionId)).Name;
+            var supplierName = (await context.CatalogueItems.Include(ci => ci.Supplier).SingleAsync(s => s.Id == SolutionId)).Supplier.Name;
             var associatedServiceName = (await context.CatalogueItems.SingleAsync(s => s.Id == AssociatedServiceId)).Name;
 
             CommonActions.PageTitle()
                 .Should()
-                .BeEquivalentTo($"{associatedServiceName} information - {solutionName}".FormatForComparison());
+                .BeEquivalentTo($"{associatedServiceName} information - {supplierName}".FormatForComparison());
 
             CommonActions.ElementIsDisplayed(CommonSelectors.Header1).Should().BeTrue();
             CommonActions.GoBackLinkDisplayed().Should().BeTrue();
             CommonActions.ElementIsDisplayed(Objects.Admin.CommonObjects.SaveButton).Should().BeTrue();
-            CommonActions.ElementIsDisplayed(Objects.Admin.AssociatedServices.AssociatedServicesObjects.AssociatedServiceDashboardTable).Should().BeTrue();
+            CommonActions.ElementIsDisplayed(AssociatedServicesObjects.AssociatedServiceDashboardTable).Should().BeTrue();
         }
 
         [Fact]

@@ -30,8 +30,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Models.Supplier
             actual.FirstName.Should().Be(supplierContact.FirstName);
             actual.LastName.Should().Be(supplierContact.LastName);
             actual.SupplierName.Should().Be(supplierName);
-            actual.BackLinkText.Should().Be("Go back to previous page");
-            actual.BackLink.Should().Be("./");
         }
     }
 }

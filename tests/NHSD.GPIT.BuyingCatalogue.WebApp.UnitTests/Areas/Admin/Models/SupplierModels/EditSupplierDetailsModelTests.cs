@@ -29,9 +29,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Models.Supplier
             actual.AboutSupplier.Should().Be(supplier.Summary);
             actual.SupplierWebsite.Should().Be(supplier.SupplierUrl);
             actual.SupplierDisplayName.Should().Be(supplier.Name);
-
-            actual.BackLinkText.Should().Be("Go back to previous page");
-            actual.BackLink.Should().Be("./");
         }
     }
 }
