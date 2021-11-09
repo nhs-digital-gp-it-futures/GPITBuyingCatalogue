@@ -2,7 +2,6 @@
 using FluentValidation.TestHelper;
 using Moq;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
-using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.ServiceLevelAgreements;
 using NHSD.GPIT.BuyingCatalogue.Test.Framework.AutoFixtureCustomisations;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.ServiceLevelAgreements;
@@ -22,7 +21,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators
             {
                 ServiceLevel = "Service Level",
                 HowMeasured = "How Measured",
-                CreditsApplied = ServiceLevelCredits.Yes,
+                CreditsApplied = true,
             };
 
             var result = validator.TestValidate(model);
@@ -40,7 +39,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators
             {
                 ServiceType = "Service Type",
                 HowMeasured = "How Measured",
-                CreditsApplied = ServiceLevelCredits.Yes,
+                CreditsApplied = true,
             };
 
             var result = validator.TestValidate(model);
@@ -58,7 +57,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators
             {
                 ServiceType = "Service Type",
                 ServiceLevel = "Service Level",
-                CreditsApplied = ServiceLevelCredits.Yes,
+                CreditsApplied = true,
             };
 
             var result = validator.TestValidate(model);
@@ -104,7 +103,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators
                 ServiceType = serviceLevel.TypeOfService,
                 ServiceLevel = serviceLevel.ServiceLevel,
                 HowMeasured = serviceLevel.HowMeasured,
-                CreditsApplied = (ServiceLevelCredits)serviceLevel.ServiceCredits.ToInt(),
+                CreditsApplied = serviceLevel.ServiceCredits,
             };
 
             var result = validator.TestValidate(model);

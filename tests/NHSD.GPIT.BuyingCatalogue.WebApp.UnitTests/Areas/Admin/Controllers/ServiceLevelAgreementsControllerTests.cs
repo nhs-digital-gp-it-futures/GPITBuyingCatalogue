@@ -1251,7 +1251,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
                         m => string.Equals(model.ServiceType, m.ServiceType)
                         && string.Equals(model.ServiceLevel, m.ServiceLevel)
                         && string.Equals(model.HowMeasured, m.HowMeasured)
-                        && Convert.ToBoolean((int)model.CreditsApplied) == m.CreditsApplied)));
+                        && model.CreditsApplied == m.CreditsApplied)));
         }
 
         [Theory]
@@ -1397,7 +1397,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
                         m => string.Equals(model.ServiceType, m.ServiceType)
                         && string.Equals(model.ServiceLevel, m.ServiceLevel)
                         && string.Equals(model.HowMeasured, m.HowMeasured)
-                        && Convert.ToBoolean((int)model.CreditsApplied) == m.CreditsApplied)));
+                        && model.CreditsApplied == m.CreditsApplied)));
         }
 
         [Theory]

@@ -1,5 +1,4 @@
-﻿using System;
-using System.Linq;
+﻿using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using FluentValidation;
@@ -55,7 +54,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Validators.ServiceLevelAg
                 && string.Equals(sl.TypeOfService, model.ServiceType)
                 && string.Equals(sl.ServiceLevel, model.ServiceLevel)
                 && string.Equals(sl.HowMeasured, model.HowMeasured)
-                && sl.ServiceCredits == Convert.ToBoolean((int)model.CreditsApplied));
+                && sl.ServiceCredits == model.CreditsApplied);
         }
     }
 }

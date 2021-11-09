@@ -29,7 +29,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.ServiceLevelAgreem
             ServiceType = serviceLevel.TypeOfService;
             ServiceLevel = serviceLevel.ServiceLevel;
             HowMeasured = serviceLevel.HowMeasured;
-            CreditsApplied = (ServiceLevelCredits)serviceLevel.ServiceCredits.ToInt();
+            CreditsApplied = serviceLevel.ServiceCredits;
         }
 
         public CatalogueItemId SolutionId { get; init; }
@@ -46,12 +46,12 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.ServiceLevelAgreem
         [StringLength(1000)]
         public string HowMeasured { get; init; }
 
-        public ServiceLevelCredits? CreditsApplied { get; init; }
+        public bool? CreditsApplied { get; init; }
 
         public IList<SelectListItem> CreditsOptions => new List<SelectListItem>
         {
-            new("Yes", ServiceLevelCredits.Yes.ToString()),
-            new("No", ServiceLevelCredits.No.ToString()),
+            new(true.ToYesNo(), true.ToString()),
+            new(false.ToYesNo(), false.ToString()),
         };
 
         public bool CanDelete { get; init; }

@@ -430,7 +430,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
                 ServiceType = model.ServiceType,
                 ServiceLevel = model.ServiceLevel,
                 HowMeasured = model.HowMeasured,
-                CreditsApplied = Convert.ToBoolean((int)model.CreditsApplied),
+                CreditsApplied = model.CreditsApplied!.Value,
             };
 
             await serviceLevelAgreementsService.AddServiceLevel(solutionId, addServiceLevelModel);
@@ -476,7 +476,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
                 ServiceType = model.ServiceType,
                 ServiceLevel = model.ServiceLevel,
                 HowMeasured = model.HowMeasured,
-                CreditsApplied = Convert.ToBoolean((int)model.CreditsApplied),
+                CreditsApplied = model.CreditsApplied!.Value,
             };
 
             await serviceLevelAgreementsService.UpdateServiceLevel(solutionId, serviceLevelId, addServiceLevelModel);
