@@ -8,7 +8,7 @@
     DefaultDeliveryDate date NULL,
     Created datetime2 CONSTRAINT DF_OrderItem_Created DEFAULT GETUTCDATE() NOT NULL,
     LastUpdated datetime2 CONSTRAINT DF_OrderItem_LastUpdated DEFAULT GETUTCDATE() NOT NULL CONSTRAINT OrderItem_LastUpdatedNotBeforeCreated CHECK (LastUpdated >= Created),
-    [LastUpdatedBy] INT NOT NULL, 
+    [LastUpdatedBy] INT NULL, 
     CONSTRAINT PK_OrderItems PRIMARY KEY (OrderId, CatalogueItemId),
     CONSTRAINT FK_OrderItems_Order FOREIGN KEY (OrderId) REFERENCES ordering.Orders (Id) ON DELETE CASCADE,
     CONSTRAINT FK_OrderItems_CatalogueItem FOREIGN KEY (CatalogueItemId) REFERENCES catalogue.CatalogueItems (Id),

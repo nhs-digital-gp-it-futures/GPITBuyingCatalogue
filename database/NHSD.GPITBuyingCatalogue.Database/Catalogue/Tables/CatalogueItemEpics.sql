@@ -5,7 +5,7 @@
      EpicId nvarchar(10) NOT NULL,
      StatusId int NOT NULL,
      LastUpdated datetime2(7) NOT NULL,
-     LastUpdatedBy int NOT NULL,
+     LastUpdatedBy int NULL,
      CONSTRAINT PK_CatalogueItemEpics PRIMARY KEY (CatalogueItemId, CapabilityId, EpicId),
      CONSTRAINT FK_CatalogueItemEpics_Capability FOREIGN KEY (CapabilityId) REFERENCES catalogue.Capabilities(Id),
      CONSTRAINT FK_CatalogueItemEpics_Epic FOREIGN KEY (EpicId) REFERENCES catalogue.Epics(Id),
