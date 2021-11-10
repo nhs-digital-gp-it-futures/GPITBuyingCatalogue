@@ -300,6 +300,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
         [HttpGet("{additionalServiceId}/edit-capabilities")]
         public async Task<IActionResult> EditCapabilities(CatalogueItemId solutionId, CatalogueItemId additionalServiceId)
         {
+            var solution = await solutionsService.GetSolution(solutionId);
+            if (solution is null)
+                return BadRequest($"No Solution found for Id: {solutionId}");
+
             var additionalService = await additionalServicesService.GetAdditionalService(solutionId, additionalServiceId);
             if (additionalService is null)
                 return BadRequest($"No Additional Service with Id {additionalServiceId} found for Solution {solutionId}");
@@ -309,6 +313,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
             var model = new EditCapabilitiesModel(additionalService, capabilities)
             {
                 BackLink = Url.Action(nameof(EditAdditionalService), new { solutionId, additionalServiceId }),
+                SolutionName = solution.Name,
             };
 
             return View(model);

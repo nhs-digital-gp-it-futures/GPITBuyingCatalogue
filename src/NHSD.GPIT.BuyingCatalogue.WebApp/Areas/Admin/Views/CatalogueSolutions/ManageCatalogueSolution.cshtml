@@ -147,7 +147,11 @@
                     <nhs-table-cell>
                         <nhs-tag status-enum="@Model.CapabilitiesStatus" />
                     </nhs-table-cell>
-                    <nhs-table-cell><a href="#">Edit</a></nhs-table-cell>
+                    <nhs-table-cell>
+                        <a asp-controller="@typeof(CatalogueSolutionsController).ControllerName()"
+                           asp-action="@nameof(CatalogueSolutionsController.EditCapabilities)"
+                           asp-route-solutionId="@Model.SolutionId">Edit</a>
+                    </nhs-table-cell>
                 </nhs-table-row-container>
                 <nhs-table-row-container>
                     <nhs-table-cell>Additional Services</nhs-table-cell>

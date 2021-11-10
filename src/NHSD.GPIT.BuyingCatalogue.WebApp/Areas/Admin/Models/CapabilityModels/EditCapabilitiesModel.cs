@@ -17,9 +17,11 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.CapabilityModels
         public EditCapabilitiesModel(CatalogueItem catalogueItem, IReadOnlyList<CapabilityCategory> capabilityCategories)
             : this()
         {
-            Name = catalogueItem.Name;
-            SolutionName = catalogueItem.Name;
             CatalogueItemType = catalogueItem.CatalogueItemType.AsString(EnumFormat.DisplayName);
+
+            Title = catalogueItem.CatalogueItemType == EntityFramework.Catalogue.Models.CatalogueItemType.Solution
+                ? "Capabilities and Epics"
+                : $"{catalogueItem.Name} Capabilities and Epics";
 
             CapabilityCategories = capabilityCategories.Select(cc => new CapabilityCategoryModel
             {
@@ -42,7 +44,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.CapabilityModels
             }).OrderBy(cc => cc.Name).ToList();
         }
 
-        public string Name { get; init; }
+        public string Title { get; init; }
 
         public string SolutionName { get; init; }
 
