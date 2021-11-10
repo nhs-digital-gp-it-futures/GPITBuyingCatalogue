@@ -11,7 +11,7 @@
      LastUpdatedBy int NULL,
      IsActive bit CONSTRAINT DF_Suppliers_IsActive DEFAULT 0 NOT NULL,
      SysStartTime datetime2(0) GENERATED ALWAYS AS ROW START NOT NULL,
-	 SysEndTime datetime2(0) GENERATED ALWAYS AS ROW END NOT NULL,
+     SysEndTime datetime2(0) GENERATED ALWAYS AS ROW END NOT NULL,
      PERIOD FOR SYSTEM_TIME (SysStartTime, SysEndTime),     
      CONSTRAINT PK_Suppliers PRIMARY KEY (Id),
      CONSTRAINT FK_Suppliers_LastUpdatedBy FOREIGN KEY (LastUpdatedBy) REFERENCES users.AspNetUsers(Id),

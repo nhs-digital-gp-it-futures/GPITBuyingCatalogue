@@ -10,7 +10,7 @@
     LastUpdated datetime2 CONSTRAINT DF_OrderItem_LastUpdated DEFAULT GETUTCDATE() NOT NULL CONSTRAINT OrderItem_LastUpdatedNotBeforeCreated CHECK (LastUpdated >= Created),
     LastUpdatedBy INT NULL, 
     SysStartTime datetime2(0) GENERATED ALWAYS AS ROW START NOT NULL,
-	SysEndTime datetime2(0) GENERATED ALWAYS AS ROW END NOT NULL,
+    SysEndTime datetime2(0) GENERATED ALWAYS AS ROW END NOT NULL,
     PERIOD FOR SYSTEM_TIME (SysStartTime, SysEndTime),
     CONSTRAINT PK_OrderItems PRIMARY KEY (OrderId, CatalogueItemId),
     CONSTRAINT FK_OrderItems_Order FOREIGN KEY (OrderId) REFERENCES ordering.Orders (Id) ON DELETE CASCADE,

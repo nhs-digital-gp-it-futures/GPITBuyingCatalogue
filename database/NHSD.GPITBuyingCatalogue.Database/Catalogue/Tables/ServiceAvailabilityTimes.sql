@@ -9,7 +9,7 @@
     LastUpdated datetime2(7) CONSTRAINT DF_ServiceAvailabilityTimes_LastUpdated DEFAULT GETUTCDATE() NOT NULL,
     LastUpdatedBy int NULL,
     SysStartTime datetime2(0) GENERATED ALWAYS AS ROW START NOT NULL,
-	SysEndTime datetime2(0) GENERATED ALWAYS AS ROW END NOT NULL,
+    SysEndTime datetime2(0) GENERATED ALWAYS AS ROW END NOT NULL,
     PERIOD FOR SYSTEM_TIME (SysStartTime, SysEndTime),
     CONSTRAINT PKaServiceAvailabilityTimes PRIMARY KEY (Id),
     CONSTRAINT FK_ServiceAvailabilityTimes_ServiceLevelAgreements FOREIGN KEY (SolutionId) REFERENCES catalogue.ServiceLevelAgreements(SolutionId) ON DELETE CASCADE,

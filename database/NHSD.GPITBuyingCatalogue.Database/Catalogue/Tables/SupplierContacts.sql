@@ -10,7 +10,7 @@
      LastUpdated datetime2(7) CONSTRAINT DF_SupplierContacts_LastUpdated DEFAULT GETUTCDATE() NOT NULL,
      LastUpdatedBy int NULL,
      SysStartTime datetime2(0) GENERATED ALWAYS AS ROW START NOT NULL,
-	 SysEndTime datetime2(0) GENERATED ALWAYS AS ROW END NOT NULL,
+     SysEndTime datetime2(0) GENERATED ALWAYS AS ROW END NOT NULL,
      PERIOD FOR SYSTEM_TIME (SysStartTime, SysEndTime),
      CONSTRAINT PK_SupplierContacts PRIMARY KEY (Id),
      CONSTRAINT FK_SupplierContacts_Supplier FOREIGN KEY (SupplierId) REFERENCES catalogue.Suppliers(Id) ON DELETE CASCADE,

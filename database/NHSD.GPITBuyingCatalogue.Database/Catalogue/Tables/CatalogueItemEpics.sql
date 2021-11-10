@@ -7,7 +7,7 @@
      LastUpdated datetime2(7) NOT NULL,
      LastUpdatedBy int NULL,
      SysStartTime datetime2(0) GENERATED ALWAYS AS ROW START NOT NULL,
-	 SysEndTime datetime2(0) GENERATED ALWAYS AS ROW END NOT NULL,
+     SysEndTime datetime2(0) GENERATED ALWAYS AS ROW END NOT NULL,
      PERIOD FOR SYSTEM_TIME (SysStartTime, SysEndTime),
      CONSTRAINT PK_CatalogueItemEpics PRIMARY KEY (CatalogueItemId, CapabilityId, EpicId),
      CONSTRAINT FK_CatalogueItemEpics_Capability FOREIGN KEY (CapabilityId) REFERENCES catalogue.Capabilities(Id),

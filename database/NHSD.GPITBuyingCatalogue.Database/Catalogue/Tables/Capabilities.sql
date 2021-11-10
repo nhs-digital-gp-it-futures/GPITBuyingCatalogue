@@ -10,7 +10,7 @@
      EffectiveDate date NOT NULL,
      CategoryId int NOT NULL,
      SysStartTime datetime2(0) GENERATED ALWAYS AS ROW START NOT NULL,
-	 SysEndTime datetime2(0) GENERATED ALWAYS AS ROW END NOT NULL,
+     SysEndTime datetime2(0) GENERATED ALWAYS AS ROW END NOT NULL,
      PERIOD FOR SYSTEM_TIME (SysStartTime, SysEndTime),
      CONSTRAINT PK_Capabilities PRIMARY KEY (Id),
      CONSTRAINT FK_Capabilities_CapabilityCategory FOREIGN KEY (CategoryId) REFERENCES catalogue.CapabilityCategories(Id),

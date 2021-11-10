@@ -7,7 +7,7 @@
     LastUpdatedBy int NULL,
     SolutionId nvarchar(14) NULL,
     SysStartTime datetime2(0) GENERATED ALWAYS AS ROW START NOT NULL,
-	SysEndTime datetime2(0) GENERATED ALWAYS AS ROW END NOT NULL,
+    SysEndTime datetime2(0) GENERATED ALWAYS AS ROW END NOT NULL,
     PERIOD FOR SYSTEM_TIME (SysStartTime, SysEndTime),
     CONSTRAINT PK_AdditionalServices PRIMARY KEY (CatalogueItemId),
     CONSTRAINT FK_AdditionalServices_CatalogueItem FOREIGN KEY (CatalogueItemId) REFERENCES catalogue.CatalogueItems(Id) ON DELETE CASCADE,
