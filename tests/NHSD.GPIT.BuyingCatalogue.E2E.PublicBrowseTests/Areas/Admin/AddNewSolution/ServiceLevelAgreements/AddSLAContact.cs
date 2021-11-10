@@ -21,8 +21,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.AddNewSolution.ServiceL
         private const string ContactInformationNoInput = "Enter contact information";
         private const string FromNoInput = "Error: Enter a from time";
         private const string UntilNoInput = "Error: Enter an until time";
-        private const string FromInvalidFormat = "Error: Enter From in the correct format";
-        private const string UntilInvalidFormat = "Error: Enter Until in the correct format";
+        private const string TimeInvalidFormat = "Error: Enter time in the correct format";
         private const string DuplicateContact = "A contact with these details already exists";
 
         private const int ExistingContactId = 1;
@@ -138,7 +137,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.AddNewSolution.ServiceL
             CommonActions.ErrorSummaryLinksExist().Should().BeTrue();
 
             CommonActions
-                .ElementShowingCorrectErrorMessage(SLAContactObjects.TimeInputError, FromInvalidFormat)
+                .ElementShowingCorrectErrorMessage(SLAContactObjects.TimeInputError, TimeInvalidFormat)
                 .Should()
                 .BeTrue();
         }
@@ -161,7 +160,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.AddNewSolution.ServiceL
             CommonActions.ErrorSummaryLinksExist().Should().BeTrue();
 
             CommonActions
-                .ElementShowingCorrectErrorMessage(SLAContactObjects.TimeInputError, UntilInvalidFormat)
+                .ElementShowingCorrectErrorMessage(SLAContactObjects.TimeInputError, TimeInvalidFormat)
                 .Should()
                 .BeTrue();
         }
