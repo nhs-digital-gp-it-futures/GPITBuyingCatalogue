@@ -2,10 +2,11 @@
 using System.Collections.Generic;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
+using NHSD.GPIT.BuyingCatalogue.EntityFramework.Users.Models;
 
 namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models
 {
-    public sealed class CataloguePrice
+    public sealed class CataloguePrice : IAudited
     {
         public CataloguePrice()
         {
@@ -22,6 +23,10 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models
         public string CurrencyCode { get; set; }
 
         public DateTime LastUpdated { get; set; }
+
+        public int? LastUpdatedBy { get; set; }
+
+        public AspNetUser LastUpdatedByUser { get; set; }
 
         public decimal? Price { get; set; }
 

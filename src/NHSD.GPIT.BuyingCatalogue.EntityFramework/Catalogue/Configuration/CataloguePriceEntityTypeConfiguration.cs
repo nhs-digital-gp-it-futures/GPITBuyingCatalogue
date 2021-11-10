@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using System;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
@@ -33,6 +34,9 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Configuration
                 .HasConversion<int>()
                 .HasColumnName("TimeUnitId");
 
+            builder.Property(p => p.LastUpdated).HasDefaultValue(DateTime.UtcNow);
+            builder.Property(p => p.LastUpdatedBy);
+
             builder.HasOne(p => p.CatalogueItem)
                 .WithMany(i => i.CataloguePrices)
                 .HasForeignKey(p => p.CatalogueItemId);
@@ -41,6 +45,11 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Configuration
                 .WithMany()
                 .HasForeignKey(p => p.PricingUnitId)
                 .OnDelete(DeleteBehavior.ClientSetNull);
+
+            builder.HasOne(p => p.LastUpdatedByUser)
+                .WithMany()
+                .HasForeignKey(p => p.LastUpdatedBy)
+                .HasConstraintName("FK_CataloguePrices_LastUpdatedBy");
         }
     }
 }

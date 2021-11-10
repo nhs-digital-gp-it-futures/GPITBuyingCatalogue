@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using System;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 
@@ -18,6 +19,8 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Configuration
 
             builder.Property(r => r.OdsCode).HasMaxLength(8);
             builder.Property(r => r.DeliveryDate).HasColumnType("date");
+            builder.Property(r => r.LastUpdated).HasDefaultValue(DateTime.UtcNow);
+            builder.Property(r => r.LastUpdatedBy);
 
             builder.HasOne(r => r.Recipient)
                 .WithMany(r => r.OrderItemRecipients)
@@ -29,6 +32,11 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Configuration
                 .WithMany(oi => oi.OrderItemRecipients)
                 .HasForeignKey(r => new { r.OrderId, r.CatalogueItemId })
                 .HasConstraintName("FK_OrderItemRecipients_OrderItem");
+
+            builder.HasOne(r => r.LastUpdatedByUser)
+                .WithMany()
+                .HasForeignKey(r => r.LastUpdatedBy)
+                .HasConstraintName("FK_OrderItemRecipients_LastUpdatedBy");
         }
     }
 }

@@ -1,9 +1,11 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using NHSD.GPIT.BuyingCatalogue.EntityFramework.Users.Models;
 
 namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models
 {
-    public sealed class Contact
+    public sealed class Contact : IAudited
     {
         public Contact()
         {
@@ -29,6 +31,12 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models
         [Required(ErrorMessage = "Telephone Number Required")]
         [StringLength(35)]
         public string Phone { get; set; }
+
+        public DateTime LastUpdated { get; set; }
+
+        public int? LastUpdatedBy { get; set; }
+
+        public AspNetUser LastUpdatedByUser { get; set; }
 
         public ICollection<Order> OrderOrderingPartyContacts { get; set; }
 

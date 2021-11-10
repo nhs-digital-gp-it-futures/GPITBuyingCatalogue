@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using System;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 
@@ -17,6 +18,13 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Configuration
             builder.Property(c => c.FirstName).HasMaxLength(100);
             builder.Property(c => c.LastName).HasMaxLength(100);
             builder.Property(c => c.Phone).HasMaxLength(35);
+            builder.Property(c => c.LastUpdated).HasDefaultValue(DateTime.UtcNow);
+            builder.Property(c => c.LastUpdatedBy);
+
+            builder.HasOne(c => c.LastUpdatedByUser)
+                .WithMany()
+                .HasForeignKey(c => c.LastUpdatedBy)
+                .HasConstraintName("FK_Contacts_LastUpdatedBy");
         }
     }
 }

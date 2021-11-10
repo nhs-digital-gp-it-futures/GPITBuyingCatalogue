@@ -1,14 +1,21 @@
 ﻿using System;
+using NHSD.GPIT.BuyingCatalogue.EntityFramework.Users.Models;
 
 namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models
 {
-    public sealed class DefaultDeliveryDate : IEquatable<DefaultDeliveryDate>
+    public sealed class DefaultDeliveryDate : IEquatable<DefaultDeliveryDate>,  IAudited
     {
         public int OrderId { get; init; }
 
         public CatalogueItemId CatalogueItemId { get; init; }
 
         public DateTime? DeliveryDate { get; set; }
+
+        public DateTime LastUpdated { get; set; }
+
+        public int? LastUpdatedBy { get; set; }
+
+        public AspNetUser LastUpdatedByUser { get; set; }
 
         public Order Order { get; set; }
 

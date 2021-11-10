@@ -44,9 +44,9 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Configuration
                 .HasForeignKey(oi => oi.PriceId)
                 .HasConstraintName("FK_OrderItems_PriceId");
 
-            builder.HasOne(o => o.LastUpdatedByUser)
+            builder.HasOne(oi => oi.LastUpdatedByUser)
                 .WithMany()
-                .HasForeignKey(o => o.LastUpdatedBy)
+                .HasForeignKey(oi => oi.LastUpdatedBy)
                 .HasConstraintName("FK_OrderItems_LastUpdatedBy");
         }
     }

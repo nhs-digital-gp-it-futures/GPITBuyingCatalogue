@@ -4,7 +4,7 @@ using NHSD.GPIT.BuyingCatalogue.EntityFramework.Users.Models;
 
 namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models
 {
-    public class SlaContact
+    public class SlaContact : IAudited
     {
         public int Id { get; set; }
 

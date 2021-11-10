@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using System;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
@@ -21,6 +22,8 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Configuration
             builder.Property(m => m.FirstName).HasMaxLength(35);
             builder.Property(m => m.LastName).HasMaxLength(35);
             builder.Property(m => m.PhoneNumber).HasMaxLength(35);
+            builder.Property(f => f.LastUpdated).HasDefaultValue(DateTime.UtcNow);
+            builder.Property(f => f.LastUpdatedBy);
 
             builder.HasOne<Solution>()
                 .WithMany(s => s.MarketingContacts)
