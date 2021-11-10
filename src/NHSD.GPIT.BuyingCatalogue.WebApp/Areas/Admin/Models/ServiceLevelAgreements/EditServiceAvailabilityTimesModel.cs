@@ -11,7 +11,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.ServiceLevelAgreem
     {
         public EditServiceAvailabilityTimesModel()
         {
-            BackLinkText = "Go back";
         }
 
         public EditServiceAvailabilityTimesModel(CatalogueItem solution)

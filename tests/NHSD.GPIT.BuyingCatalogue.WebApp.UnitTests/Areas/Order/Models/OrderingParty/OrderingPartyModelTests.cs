@@ -18,7 +18,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.Ordering
             var model = new OrderingPartyModel(odsCode, order, organisation);
 
             model.BackLink.Should().Be($"/order/organisation/{odsCode}/order/{order.CallOffId}");
-            model.BackLinkText.Should().Be("Go back");
             model.Title.Should().Be($"Call-off Ordering Party information for {order.CallOffId}");
             model.OdsCode.Should().Be(odsCode);
             model.OrganisationName.Should().Be(organisation.Name);

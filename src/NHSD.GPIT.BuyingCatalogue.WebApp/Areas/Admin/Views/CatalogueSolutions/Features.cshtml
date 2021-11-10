@@ -3,10 +3,7 @@
     ViewBag.Title = "Features";
 }
 
-<vc:nhs-backlink text="Go back"
-                 url="@Url.Action("ManageCatalogueSolution", "CatalogueSolutions", new { solutionId = @Model.SolutionId })">
-</vc:nhs-backlink>
-
+<partial name="Partials/_BackLink" model="Model" />
 <div class="nhsuk-grid-row">
     <div class="nhsuk-grid-column-two-thirds">
 
@@ -22,18 +19,18 @@
 
         <form method="post">
 
-            <nhs-input asp-for="Feature01" label-text="Feature 1 (optional)" maxlength="100"></nhs-input>
-            <nhs-input asp-for="Feature02" label-text="Feature 2 (optional)" maxlength="100"></nhs-input>
-            <nhs-input asp-for="Feature03" label-text="Feature 3 (optional)" maxlength="100"></nhs-input>
-            <nhs-input asp-for="Feature04" label-text="Feature 4 (optional)" maxlength="100"></nhs-input>
-            <nhs-input asp-for="Feature05" label-text="Feature 5 (optional)" maxlength="100"></nhs-input>
-            <nhs-input asp-for="Feature06" label-text="Feature 6 (optional)" maxlength="100"></nhs-input>
-            <nhs-input asp-for="Feature07" label-text="Feature 7 (optional)" maxlength="100"></nhs-input>
-            <nhs-input asp-for="Feature08" label-text="Feature 8 (optional)" maxlength="100"></nhs-input>
-            <nhs-input asp-for="Feature09" label-text="Feature 9 (optional)" maxlength="100"></nhs-input>
-            <nhs-input asp-for="Feature10" label-text="Feature 10 (optional)" maxlength="100"></nhs-input>
+            <nhs-input asp-for="Feature01" label-text="Feature 1 (optional)" />
+            <nhs-input asp-for="Feature02" label-text="Feature 2 (optional)" />
+            <nhs-input asp-for="Feature03" label-text="Feature 3 (optional)" />
+            <nhs-input asp-for="Feature04" label-text="Feature 4 (optional)" />
+            <nhs-input asp-for="Feature05" label-text="Feature 5 (optional)" />
+            <nhs-input asp-for="Feature06" label-text="Feature 6 (optional)" />
+            <nhs-input asp-for="Feature07" label-text="Feature 7 (optional)" />
+            <nhs-input asp-for="Feature08" label-text="Feature 8 (optional)" />
+            <nhs-input asp-for="Feature09" label-text="Feature 9 (optional)" />
+            <nhs-input asp-for="Feature10" label-text="Feature 10 (optional)" />
             <br/>
-            <nhs-submit-button text="Save and continue"/>
+            <nhs-submit-button />
 
         </form>
     </div>

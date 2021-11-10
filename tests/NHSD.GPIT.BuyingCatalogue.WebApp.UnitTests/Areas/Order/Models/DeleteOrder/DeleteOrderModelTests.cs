@@ -16,7 +16,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.DeleteOr
             var model = new DeleteOrderModel(odsCode, order);
 
             model.BackLink.Should().Be($"/order/organisation/{odsCode}/order/{order.CallOffId}");
-            model.BackLinkText.Should().Be("Go back");
             model.Title.Should().Be($"Delete order {order.CallOffId}?");
             model.Description.Should().Be(order.Description);
         }

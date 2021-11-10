@@ -10,7 +10,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.ServiceLevelAgreem
     {
         public EditServiceLevelAgreementModel()
         {
-            BackLinkText = "Go back";
         }
 
         public EditServiceLevelAgreementModel(CatalogueItem solution)

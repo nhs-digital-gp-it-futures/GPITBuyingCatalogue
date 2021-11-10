@@ -9,6 +9,7 @@ using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Caching;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Models;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models;
+using NHSD.GPIT.BuyingCatalogue.WebApp.Models;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers
 {
@@ -122,7 +123,16 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers
             if (item.PublishedStatus == PublicationStatus.Suspended)
                 return RedirectToAction(nameof(Description), new { solutionId });
 
-            return View(new CapabilitiesViewModel(item));
+            var model = new CapabilitiesViewModel(item)
+            {
+                BackLinkText = NavBaseModel.BackLinkTextDefault,
+                BackLink = Url.Action(
+                    nameof(AdditionalServices),
+                    typeof(SolutionsController).ControllerName(),
+                    new { solutionId }),
+            };
+
+            return View(model);
         }
 
         [HttpGet("{solutionId}/additional-services/{additionalServiceId}/capabilities")]
@@ -156,9 +166,17 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers
                 return RedirectToAction(nameof(Description), new { solutionId });
 
             var solutionCapability = item.CatalogueItemCapability(capabilityId);
-            var model = new SolutionCheckEpicsModel(solutionCapability);
 
-            return View(model.WithSolutionName(item.Name));
+            var model = new SolutionCheckEpicsModel(solutionCapability)
+            {
+                BackLink = Url.Action(
+                    nameof(Capabilities),
+                    typeof(SolutionsController).ControllerName(),
+                    new { solutionId }),
+                SolutionName = item.Name,
+            };
+
+            return View(model);
         }
 
         [HttpGet("{solutionId}/additional-services/{additionalServiceId}/capability/{capabilityId}")]
@@ -180,11 +198,18 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers
                 return RedirectToAction(nameof(Description), new { solutionId });
 
             var solutionCapability = item.CatalogueItemCapability(capabilityId);
-            var model = new SolutionCheckEpicsModel(solutionCapability);
+            var model = new SolutionCheckEpicsModel(solutionCapability)
+            {
+                SolutionName = item.Name,
+                SolutionId = solutionId,
+                CatalogueItemIdAdditional = additionalServiceId,
+                BackLink = Url.Action(
+                    nameof(CapabilitiesAdditionalServices),
+                    typeof(SolutionsController).ControllerName(),
+                    new { solutionId, additionalServiceId }),
+            };
 
-            return View(
-                "CheckEpics",
-                model.WithItems(solutionId, additionalServiceId, item.Name));
+            return View("CheckEpics", model);
         }
 
         [HttpGet("{solutionId}/client-application-types")]

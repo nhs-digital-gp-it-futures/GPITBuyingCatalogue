@@ -12,8 +12,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.DeleteApplicationT
 
         public DeleteApplicationTypeConfirmationModel(CatalogueItem solution, ClientApplicationType clientApplicationType)
         {
-            BackLinkText = "Go back";
-
             if (clientApplicationType == ClientApplicationType.BrowserBased)
             {
                 BackLink = $"/admin/catalogue-solutions/manage/{solution.Id}/client-application-type/browser-based";

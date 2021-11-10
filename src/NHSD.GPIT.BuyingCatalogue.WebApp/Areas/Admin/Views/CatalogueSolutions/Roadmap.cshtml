@@ -3,10 +3,7 @@
     ViewBag.Title = "Development plans";
 }
 
-<vc:nhs-backlink text="Go back"
-    url="@Url.Action("ManageCatalogueSolution", "CatalogueSolutions", new { solutionId = @Model.SolutionId })">
-</vc:nhs-backlink>
-
+<partial name="Partials/_BackLink" model="Model" />
 <div class="nhsuk-grid-row">
     <div class="nhsuk-grid-column-two-thirds">
 
@@ -15,19 +12,18 @@
             advice="Let buyers know about any future development plans for your Catalogue Solution."/>
 
         <form method="post">
-
+            <input type="hidden" asp-for="BackLink" />
+            <input type="hidden" asp-for="SolutionName" />
+            <input type="hidden" asp-for="SolutionId" />
             <nhs-input asp-for="Link"
-                label-text="Link to roadmap (optional)"
-                label-hint="Provide a URL to a page that gives buyers further information about your roadmap."
-                character-count="true"></nhs-input>
+                       label-text="Link to roadmap (optional)"
+                       label-hint="Provide a URL to a page that gives buyers further information about your roadmap."/>
 
             <div class="nhsuk-inset-text">
                 <span class="nhsuk-u-visually-hidden">Information: </span>
                 <p>This information will be published on the Buying Catalogue and therefore available to anyone. You should not include anything you consider commercially sensitive.</p>
             </div>
-            <nhs-submit-button text="Save and continue"/>
-
+            <nhs-submit-button />
         </form>
-
     </div>
 </div>

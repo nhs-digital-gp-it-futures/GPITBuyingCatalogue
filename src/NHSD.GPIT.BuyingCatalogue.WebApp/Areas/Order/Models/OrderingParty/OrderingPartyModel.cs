@@ -12,7 +12,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.OrderingParty
 
         public OrderingPartyModel(string odsCode, EntityFramework.Ordering.Models.Order order, Organisation organisation)
         {
-            BackLinkText = "Go back";
             BackLink = $"/order/organisation/{odsCode}/order/{order.CallOffId}";
             Title = $"Call-off Ordering Party information for {order.CallOffId}";
             OdsCode = odsCode;

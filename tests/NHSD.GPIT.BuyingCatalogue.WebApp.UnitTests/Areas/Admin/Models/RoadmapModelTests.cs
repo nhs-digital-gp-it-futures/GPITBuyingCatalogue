@@ -40,15 +40,19 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Models
             expected.SolutionId = catalogueItem.Id;
             expected.SolutionName = catalogueItem.Name;
 
-            var actual = new RoadmapModel().FromCatalogueItem(catalogueItem);
+            var actual = new RoadmapModel(catalogueItem);
 
-            actual.Should().BeEquivalentTo(expected);
+            actual.Should().BeEquivalentTo(
+                expected,
+                options => options
+                    .Excluding(rm => rm.BackLink)
+                    .Excluding(rm => rm.BackLinkText));
         }
 
         [Fact]
         public static void FromCatalogueItem_NullCatalogueItem_ThrowsException()
         {
-            var actual = Assert.Throws<ArgumentNullException>(() => new RoadmapModel().FromCatalogueItem(null));
+            var actual = Assert.Throws<ArgumentNullException>(() => new RoadmapModel(null));
 
             actual.ParamName.Should().Be("catalogueItem");
         }

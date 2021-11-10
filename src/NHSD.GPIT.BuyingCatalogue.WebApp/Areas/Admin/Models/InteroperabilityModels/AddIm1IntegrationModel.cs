@@ -9,8 +9,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.InteroperabilityMo
     {
         public AddIm1IntegrationModel()
         {
-            BackLinkText = "Go back";
-
             IntegrationTypes = new List<object>
             {
                 new { Text = "IM1 Bulk", Value = "Bulk" },

@@ -20,7 +20,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.Supplier
             var model = new SupplierModel(odsCode, order, supplierContacts);
 
             model.BackLink.Should().Be($"/order/organisation/{odsCode}/order/{order.CallOffId}");
-            model.BackLinkText.Should().Be("Go back");
             model.Title.Should().Be($"Supplier information for {order.CallOffId}");
             model.OdsCode.Should().Be(odsCode);
             model.Id.Should().Be(order.Supplier.Id);

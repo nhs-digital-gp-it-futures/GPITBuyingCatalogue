@@ -11,7 +11,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.ServiceLevelAgreem
     {
         public AddSlaTypeModel()
         {
-            BackLinkText = "Go back";
         }
 
         public AddSlaTypeModel(Solution solution)

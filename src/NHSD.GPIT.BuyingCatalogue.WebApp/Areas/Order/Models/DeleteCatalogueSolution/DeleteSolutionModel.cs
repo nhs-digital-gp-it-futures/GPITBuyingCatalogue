@@ -11,7 +11,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.DeleteCatalogueSol
         public DeleteSolutionModel(string odsCode, CallOffId callOffId, CatalogueItemId solutionId, string solutionName, string orderDescription)
         {
             BackLink = $"/order/organisation/{odsCode}/order/{callOffId}/catalogue-solutions/{solutionId}";
-            BackLinkText = "Go back";
             Title = $"Delete {solutionName} from {callOffId}?";
             OdsCode = odsCode;
             CallOffId = callOffId;

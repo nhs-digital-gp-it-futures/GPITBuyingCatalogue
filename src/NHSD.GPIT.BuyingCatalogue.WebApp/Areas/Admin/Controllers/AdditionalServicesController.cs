@@ -188,7 +188,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
                     nameof(EditAdditionalService),
                     typeof(AdditionalServicesController).ControllerName(),
                     new { solutionId, additionalServiceId }),
-                BackLinkText = "Go back",
             };
 
             return View(model);
@@ -212,7 +211,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
                     nameof(ManageListPrices),
                     typeof(AdditionalServicesController).ControllerName(),
                     new { solutionId, additionalServiceId }),
-                BackLinkText = "Go back",
             };
 
             return View("EditListPrice", model);
@@ -249,7 +247,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
             var editListPriceModel = new EditListPriceModel(additionalService, cataloguePrice, solutionId)
             {
                 BackLink = Url.Action(nameof(ManageListPrices), new { solutionId, additionalServiceId }),
-                BackLinkText = "Go back",
                 Title = $"{additionalService.Name} price",
             };
 
@@ -285,7 +282,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
             var model = new DeleteListPriceModel(additionalService)
             {
                 BackLink = Url.Action(nameof(EditListPrice), new { solutionId, additionalServiceId, listPriceId }),
-                BackLinkText = "Go back",
             };
 
             return View(model);

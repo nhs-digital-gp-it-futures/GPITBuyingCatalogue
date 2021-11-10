@@ -13,7 +13,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.Dashboard
 
         public SelectOrganisationModel(string currentOdsCode, List<Organisation> organisations)
         {
-            BackLinkText = "Go back";
             BackLink = $"/order/organisation/{currentOdsCode}";
             Title = "Which organisation are you looking for?";
             OdsCode = currentOdsCode;

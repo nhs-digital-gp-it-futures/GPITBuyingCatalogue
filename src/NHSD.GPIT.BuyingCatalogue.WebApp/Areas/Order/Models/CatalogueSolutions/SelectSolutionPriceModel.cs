@@ -16,7 +16,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.CatalogueSolutions
         public SelectSolutionPriceModel(string odsCode, CallOffId callOffId, string solutionName, List<CataloguePrice> prices)
         {
             BackLink = $"/order/organisation/{odsCode}/order/{callOffId}/catalogue-solutions/select/solution";
-            BackLinkText = "Go back";
             Title = $"List price for {solutionName}";
             OdsCode = odsCode;
             SetPrices(prices);

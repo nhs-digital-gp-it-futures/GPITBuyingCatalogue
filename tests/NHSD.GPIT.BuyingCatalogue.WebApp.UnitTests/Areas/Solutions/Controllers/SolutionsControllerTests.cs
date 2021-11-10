@@ -238,7 +238,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Controllers
 
             actual.Should().NotBeNull();
             actual.ViewName.Should().BeNullOrEmpty();
-            actual.Model.Should().BeEquivalentTo(capabilitiesViewModel);
+            actual.Model.Should().BeEquivalentTo(capabilitiesViewModel, opt => opt.Excluding(cvm => cvm.BackLink).Excluding(cvm => cvm.BackLinkText));
         }
 
         [Theory]
@@ -372,7 +372,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Controllers
             var capability = solution.CatalogueItemCapability(capabilityId);
 
             var expectedModel = new SolutionCheckEpicsModel(capability)
-                .WithSolutionName(solution.Name);
+            {
+                SolutionName = solution.Name,
+            };
 
             mockSolutionsService
                 .Setup(s => s.GetSolutionCapability(catalogueItemId, capabilityId))
@@ -382,7 +384,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Controllers
 
             actual.Should().NotBeNull();
             actual.ViewName.Should().BeNullOrEmpty();
-            actual.Model.Should().BeEquivalentTo(expectedModel);
+            actual.Model.Should().BeEquivalentTo(expectedModel, opt => opt.Excluding(em => em.BackLinkText).Excluding(em => em.BackLink));
         }
 
         [Theory]
@@ -427,7 +429,11 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Controllers
             var capability = additionalSolution.CatalogueItemCapability(capabilityId);
 
             var expectedModel = new SolutionCheckEpicsModel(capability)
-                .WithItems(catalogueItemId, catalogueItemIdAdditional, additionalSolution.Name);
+            {
+                SolutionName = additionalSolution.Name,
+                SolutionId = catalogueItemId,
+                CatalogueItemIdAdditional = catalogueItemIdAdditional,
+            };
 
             mockSolutionsService
                 .Setup(s => s.GetAdditionalServiceCapability(catalogueItemIdAdditional, capabilityId))
@@ -441,7 +447,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Controllers
 
             actual.Should().NotBeNull();
             actual.ViewName.Should().Be("CheckEpics");
-            actual.Model.Should().BeEquivalentTo(expectedModel);
+            actual.Model.Should().BeEquivalentTo(expectedModel, opt => opt.Excluding(em => em.BackLink).Excluding(em => em.BackLinkText));
         }
 
         [Theory]

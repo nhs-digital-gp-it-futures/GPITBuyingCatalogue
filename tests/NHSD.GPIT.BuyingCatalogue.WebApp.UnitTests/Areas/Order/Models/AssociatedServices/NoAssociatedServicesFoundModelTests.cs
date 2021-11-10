@@ -17,7 +17,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.Associat
             var model = new NoAssociatedServicesFoundModel(odsCode, callOffId);
 
             model.BackLink.Should().Be($"/order/organisation/{odsCode}/order/{callOffId}");
-            model.BackLinkText.Should().Be("Go back");
             model.Title.Should().Be("No Associated Services found");
         }
     }

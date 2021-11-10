@@ -17,7 +17,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.AssociatedServices
                 throw new ArgumentNullException(nameof(associatedService));
 
             BackLink = $"/admin/catalogue-solutions/manage/{solutionId}/associated-services/{associatedService.Id}/edit-associated-service";
-            BackLinkText = "Go back";
             AssociatedService = associatedService;
         }
 

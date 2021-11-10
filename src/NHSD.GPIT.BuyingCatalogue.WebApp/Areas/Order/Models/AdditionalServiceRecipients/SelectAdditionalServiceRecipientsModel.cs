@@ -21,7 +21,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.AdditionalServiceR
                  : $"/order/organisation/{odsCode}/order/{state.CallOffId}/additional-services/select/additional-service/price"
                 : $"/order/organisation/{odsCode}/order/{state.CallOffId}/additional-services/{state.CatalogueItemId}";
 
-            BackLinkText = "Go back";
             Title = $"Service Recipients for {state.CatalogueItemName} for {state.CallOffId}";
             OdsCode = odsCode;
             CallOffId = state.CallOffId;

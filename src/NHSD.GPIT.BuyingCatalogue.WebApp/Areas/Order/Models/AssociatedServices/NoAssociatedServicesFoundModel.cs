@@ -7,7 +7,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.AssociatedServices
         public NoAssociatedServicesFoundModel(string odsCode, CallOffId callOffId)
         {
             BackLink = $"/order/organisation/{odsCode}/order/{callOffId}";
-            BackLinkText = "Go back";
             Title = "No Associated Services found";
         }
     }

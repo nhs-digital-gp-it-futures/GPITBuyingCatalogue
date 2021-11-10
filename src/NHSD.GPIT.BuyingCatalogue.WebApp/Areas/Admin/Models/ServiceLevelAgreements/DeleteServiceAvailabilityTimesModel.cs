@@ -8,7 +8,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.ServiceLevelAgreem
     {
         public DeleteServiceAvailabilityTimesModel()
         {
-            BackLinkText = "Go back";
         }
 
         public DeleteServiceAvailabilityTimesModel(CatalogueItem solution, ServiceAvailabilityTimes serviceAvailabilityTimes)

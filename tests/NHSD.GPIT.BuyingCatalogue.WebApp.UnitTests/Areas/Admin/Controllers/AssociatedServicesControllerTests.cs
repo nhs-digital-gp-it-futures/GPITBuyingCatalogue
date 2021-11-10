@@ -412,7 +412,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
             manageListPricesModel.CataloguePrices.Should().BeEquivalentTo(associatedService.CataloguePrices);
             manageListPricesModel.CatalogueItemId.Should().Be(associatedService.Id);
             manageListPricesModel.CatalogueName.Should().Be(associatedService.Name);
-            manageListPricesModel.BackLinkText.Should().Be("Go back");
         }
 
         [Theory]
@@ -466,7 +465,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
             var model = actual.As<ViewResult>().Model.As<EditListPriceModel>();
             model.ItemId.Should().Be(associatedService.Id);
             model.ItemName.Should().Be(associatedService.Name);
-            model.BackLinkText.Should().Be("Go back");
         }
 
         [Theory]
@@ -571,7 +569,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
 
             model.As<EditListPriceModel>().ItemName.Should().Be(catalogueItem.Name);
             model.As<EditListPriceModel>().CataloguePriceId.Should().Be(cataloguePriceId);
-            model.As<EditListPriceModel>().BackLinkText.Should().Be("Go back");
         }
 
         [Theory]

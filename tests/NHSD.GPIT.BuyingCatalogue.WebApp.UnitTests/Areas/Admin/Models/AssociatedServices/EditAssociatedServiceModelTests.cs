@@ -22,7 +22,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Models.Associat
             actual.AssociatedServiceName.Should().Be(associatedService.CatalogueItem.Name);
             actual.SelectedPublicationStatus.Should().Be(associatedService.CatalogueItem.PublishedStatus);
             actual.AssociatedServicePublicationStatus.Should().Be(associatedService.CatalogueItem.PublishedStatus);
-            actual.BackLinkText.Should().Be("Go back");
         }
     }
 }

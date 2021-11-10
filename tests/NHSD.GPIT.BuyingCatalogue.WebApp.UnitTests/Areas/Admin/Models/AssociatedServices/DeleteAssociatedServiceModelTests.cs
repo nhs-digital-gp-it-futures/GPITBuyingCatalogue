@@ -29,7 +29,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Models.Associat
             var actual = new DeleteAssociatedServiceModel(catalogueItemId, associatedService);
 
             actual.AssociatedService.Should().Be(associatedService);
-            actual.BackLinkText.Should().Be("Go back");
             actual.BackLink.Should().Be($"/admin/catalogue-solutions/manage/{catalogueItemId}/associated-services/{associatedService.Id}/edit-associated-service");
         }
     }

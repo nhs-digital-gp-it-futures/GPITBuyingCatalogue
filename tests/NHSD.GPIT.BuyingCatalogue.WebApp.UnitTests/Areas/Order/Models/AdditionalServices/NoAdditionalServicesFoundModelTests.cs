@@ -17,7 +17,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.Addition
             var model = new NoAdditionalServicesFoundModel(odsCode, callOffId);
 
             model.BackLink.Should().Be($"/order/organisation/{odsCode}/order/{callOffId}");
-            model.BackLinkText.Should().Be("Go back");
             model.Title.Should().Be("No Additional Services found");
         }
     }
