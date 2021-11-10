@@ -64,11 +64,16 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
             mockService.Setup(s => s.GetSolution(catalogueItemId))
                 .ReturnsAsync(catalogueItem);
 
+            var expected = new FeaturesModel(catalogueItem)
+            {
+                BackLink = "testUrl",
+            };
+
             var actual = (await controller.Features(catalogueItemId)).As<ViewResult>();
 
             mockService.Verify(s => s.GetSolution(catalogueItemId));
             actual.ViewName.Should().BeNull();
-            actual.Model.Should().BeEquivalentTo(new FeaturesModel().FromCatalogueItem(catalogueItem));
+            actual.Model.Should().BeEquivalentTo(expected);
         }
 
         [Theory]
@@ -124,11 +129,16 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
             mockService.Setup(s => s.GetSolution(catalogueItemId))
                 .ReturnsAsync(catalogueItem);
 
+            var expected = new FeaturesModel(catalogueItem)
+            {
+                BackLink = "testUrl",
+            };
+
             var actual = (await controller.Features(catalogueItemId)).As<ViewResult>();
 
             mockService.Verify(s => s.GetSolution(catalogueItemId));
             actual.ViewName.Should().BeNull();
-            actual.Model.Should().BeEquivalentTo(new FeaturesModel().FromCatalogueItem(catalogueItem));
+            actual.Model.Should().BeEquivalentTo(expected);
         }
 
         [Theory]
@@ -497,11 +507,16 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
             mockService.Setup(s => s.GetSolution(catalogueItemId))
                 .ReturnsAsync(catalogueItem);
 
+            var expected = new RoadmapModel(catalogueItem)
+            {
+                BackLink = "testUrl",
+            };
+
             var actual = (await controller.Roadmap(catalogueItemId)).As<ViewResult>();
 
             mockService.Verify(s => s.GetSolution(catalogueItemId));
             actual.ViewName.Should().BeNull();
-            actual.Model.Should().BeEquivalentTo(new RoadmapModel().FromCatalogueItem(catalogueItem));
+            actual.Model.Should().BeEquivalentTo(expected);
         }
 
         [Theory]
@@ -557,11 +572,16 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
             mockService.Setup(s => s.GetSolution(catalogueItemId))
                 .ReturnsAsync(catalogueItem);
 
+            var expected = new RoadmapModel(catalogueItem)
+            {
+                BackLink = "testUrl",
+            };
+
             var actual = (await controller.Roadmap(catalogueItemId)).As<ViewResult>();
 
             mockService.Verify(s => s.GetSolution(catalogueItemId));
             actual.ViewName.Should().BeNull();
-            actual.Model.Should().BeEquivalentTo(new RoadmapModel().FromCatalogueItem(catalogueItem));
+            actual.Model.Should().BeEquivalentTo(expected);
         }
 
         [Theory]
@@ -2040,7 +2060,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
                 HostingType = hostingType,
                 SolutionId = catalogueItem.Id,
                 SolutionName = catalogueItem.Name,
-                BackLinkText = "Go back",
             };
 
             solutionsService.Setup(s => s.GetSolution(catalogueItem.Id))

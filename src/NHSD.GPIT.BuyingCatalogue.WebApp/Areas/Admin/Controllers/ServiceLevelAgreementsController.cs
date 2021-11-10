@@ -279,7 +279,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
             var model = new Models.ServiceLevelAgreements.EditSLAContactModel(catalogueItem)
             {
                 BackLink = Url.Action(nameof(EditServiceLevelAgreement), new { solutionId }),
-                BackLinkText = "Go back",
             };
 
             return View("EditSLAContact", model);
@@ -328,7 +327,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
             var model = new Models.ServiceLevelAgreements.EditSLAContactModel(catalogueItem, contact, serviceLevelAgreements)
             {
                 BackLink = Url.Action(nameof(EditServiceLevelAgreement), new { solutionId }),
-                BackLinkText = "Go back",
             };
 
             return View("EditSLAContact", model);
@@ -379,7 +377,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
             var model = new Models.ServiceLevelAgreements.EditSLAContactModel(catalogueItem, contact)
             {
                 BackLink = Url.Action(nameof(EditContact), new { solutionId, contactId }),
-                BackLinkText = "Go back",
             };
 
             return View("DeleteSLAContact", model);

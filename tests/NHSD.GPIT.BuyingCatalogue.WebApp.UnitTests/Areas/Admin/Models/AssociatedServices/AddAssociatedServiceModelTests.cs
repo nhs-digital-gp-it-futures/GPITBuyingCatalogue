@@ -16,7 +16,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Models.Associat
             var actual = new AddAssociatedServiceModel(catalogueItem);
 
             actual.Solution.Should().Be(catalogueItem);
-            actual.BackLinkText.Should().Be("Go back");
             actual.BackLink.Should().Be($"/admin/catalogue-solutions/manage/{catalogueItem.Id}/associated-services");
         }
     }

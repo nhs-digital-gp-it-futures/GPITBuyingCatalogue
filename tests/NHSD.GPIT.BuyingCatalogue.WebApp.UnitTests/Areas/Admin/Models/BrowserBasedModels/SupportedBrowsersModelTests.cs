@@ -33,9 +33,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Models.BrowserB
                 .Excluding(m => m.Checked));
 
             actual.MobileResponsive.Should().Be(solution.GetClientApplication().MobileResponsive.ToYesNo());
-
-            actual.BackLink.Should().Be("./");
-            actual.BackLinkText.Should().Be("Go back");
         }
 
         [Fact]
@@ -44,15 +41,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Models.BrowserB
             var actual = Assert.Throws<ArgumentNullException>(() => new SupportedBrowsersModel(null));
 
             actual.ParamName.Should().Be("catalogueItem");
-        }
-
-        [Fact]
-        public static void DefaultConstructor_PropertiesCorrectlySet()
-        {
-            var model = new SupportedBrowsersModel();
-
-            model.BackLinkText.Should().Be("Go back");
-            model.BackLink.Should().Be("./");
         }
     }
 }

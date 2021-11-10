@@ -21,7 +21,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.Catalogu
             var model = new SelectSolutionServiceRecipientsModel(odsCode, state, selectionMode);
 
             model.BackLink.Should().Be($"/order/organisation/{odsCode}/order/{state.CallOffId}/catalogue-solutions/select/solution/price");
-            model.BackLinkText.Should().Be("Go back");
             model.Title.Should().Be($"Service Recipients for {state.CatalogueItemName} for {state.CallOffId}");
             model.OdsCode.Should().Be(odsCode);
             model.CallOffId.Should().Be(state.CallOffId);
@@ -39,7 +38,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.Catalogu
             var model = new SelectSolutionServiceRecipientsModel(odsCode, state, selectionMode);
 
             model.BackLink.Should().Be($"/order/organisation/{odsCode}/order/{state.CallOffId}/catalogue-solutions/{state.CatalogueItemId}");
-            model.BackLinkText.Should().Be("Go back");
             model.Title.Should().Be($"Service Recipients for {state.CatalogueItemName} for {state.CallOffId}");
             model.OdsCode.Should().Be(odsCode);
             model.CallOffId.Should().Be(state.CallOffId);

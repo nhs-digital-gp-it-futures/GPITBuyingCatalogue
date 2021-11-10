@@ -9,8 +9,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.HostingTypeModels
     {
         protected BaseCloudModel()
         {
-            BackLink = "./";
-            BackLinkText = "Go back";
         }
 
         protected BaseCloudModel(CatalogueItem solution)

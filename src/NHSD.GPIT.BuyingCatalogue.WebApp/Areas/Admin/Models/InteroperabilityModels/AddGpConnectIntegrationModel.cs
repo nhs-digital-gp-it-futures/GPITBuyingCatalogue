@@ -9,8 +9,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.InteroperabilityMo
     {
         public AddGpConnectIntegrationModel()
         {
-            BackLinkText = "Go back";
-
             IntegrationTypes = new List<object>
             {
                 new { Text = "GP Connect - HTML View", Value = "HTML View" },

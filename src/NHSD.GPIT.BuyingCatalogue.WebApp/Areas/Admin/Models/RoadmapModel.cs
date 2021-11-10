@@ -3,11 +3,25 @@ using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Enums;
+using NHSD.GPIT.BuyingCatalogue.WebApp.Models;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models
 {
-    public sealed class RoadmapModel
+    public sealed class RoadmapModel : NavBaseModel
     {
+        public RoadmapModel()
+        {
+        }
+
+        public RoadmapModel(CatalogueItem catalogueItem)
+        {
+            catalogueItem.ValidateNotNull(nameof(catalogueItem));
+
+            Link = catalogueItem.Solution?.RoadMap;
+            SolutionId = catalogueItem.Id;
+            SolutionName = catalogueItem.Name;
+        }
+
         [StringLength(1000)]
         [Url]
         public string Link { get; set; }
@@ -15,17 +29,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models
         public CatalogueItemId SolutionId { get; set; }
 
         public string SolutionName { get; set; }
-
-        public RoadmapModel FromCatalogueItem(CatalogueItem catalogueItem)
-        {
-            catalogueItem.ValidateNotNull(nameof(catalogueItem));
-
-            Link = catalogueItem.Solution?.RoadMap;
-            SolutionId = catalogueItem.Id;
-            SolutionName = catalogueItem.Name;
-
-            return this;
-        }
 
         public TaskProgress Status() =>
             string.IsNullOrWhiteSpace(Link)

@@ -41,7 +41,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
 
             var model = new EditSupplierModel(supplier)
             {
-                BackLinkText = "Go back",
                 BackLink = Url.Action(
                     nameof(Index),
                     typeof(SuppliersController).ControllerName()),
@@ -60,7 +59,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
 
             var supplierStatus = new EditSupplierModel(supplier)
             {
-                BackLinkText = "Go back",
                 BackLink = Url.Action(
                     nameof(Index),
                     typeof(SuppliersController).ControllerName()),
@@ -97,7 +95,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
                 BackLink = Url.Action(
                     nameof(Index),
                     typeof(SuppliersController).ControllerName()),
-                BackLinkText = "Go back",
             };
 
             return View("EditSupplierDetails", model);
@@ -136,7 +133,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
 
             var model = new EditSupplierDetailsModel(supplier)
             {
-                BackLinkText = "Go back",
                 BackLink = Url.Action(nameof(EditSupplier), typeof(SuppliersController).ControllerName(), new { supplierId }),
             };
 
@@ -216,7 +212,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
 
             var model = new ManageSupplierContactsModel(supplier)
             {
-                BackLinkText = "Go back",
                 BackLink = Url.Action(
                     nameof(EditSupplier),
                     typeof(SuppliersController).ControllerName(),
@@ -233,7 +228,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
 
             var model = new EditContactModel(supplier)
             {
-                BackLinkText = "Go back",
                 BackLink = Url.Action(
                     nameof(ManageSupplierContacts),
                     typeof(SuppliersController).ControllerName(),
@@ -280,7 +274,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
 
             var model = new EditContactModel(contact, supplier)
             {
-                BackLinkText = "Go back",
                 BackLink = Url.Action(
                     nameof(ManageSupplierContacts),
                     typeof(SuppliersController).ControllerName(),
@@ -328,7 +321,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
 
             var model = new DeleteContactModel(contact, supplier.Name)
             {
-                BackLinkText = "Go back",
                 BackLink = Url.Action(
                     nameof(EditSupplierContact),
                     typeof(SuppliersController).ControllerName(),

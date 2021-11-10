@@ -19,7 +19,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.Catalogu
             var model = new SelectFlatDeclarativeQuantityModel(odsCode, callOffId, solutionName, quantity);
 
             model.BackLink.Should().Be($"/order/organisation/{odsCode}/order/{callOffId}/catalogue-solutions/select/solution/price/recipients/date");
-            model.BackLinkText.Should().Be("Go back");
             model.Title.Should().Be($"Quantity of {solutionName} for {callOffId}");
             model.Quantity.Should().Be(quantity.ToString());
         }

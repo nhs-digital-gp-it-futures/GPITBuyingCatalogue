@@ -20,7 +20,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.Commence
             var model = new CommencementDateModel(odsCode, callOffId, commencementDate);
 
             model.BackLink.Should().Be($"/order/organisation/{odsCode}/order/{callOffId}");
-            model.BackLinkText.Should().Be("Go back");
             model.Title.Should().Be($"Commencement date for {callOffId}");
             model.OdsCode.Should().Be(odsCode);
             model.Day.Should().Be(commencementDate.Day.ToString("00"));

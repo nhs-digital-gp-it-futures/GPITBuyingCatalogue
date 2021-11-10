@@ -8,7 +8,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.ServiceLevelAgreem
     {
         public DeleteServiceLevelModel()
         {
-            BackLinkText = "Go back";
         }
 
         public DeleteServiceLevelModel(CatalogueItem solution, SlaServiceLevel serviceLevel)

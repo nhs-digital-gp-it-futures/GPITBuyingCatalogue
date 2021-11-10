@@ -13,7 +13,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.AdditionalServices
     {
         public EditAdditionalServiceModel()
         {
-            BackLinkText = "Go back";
         }
 
         public EditAdditionalServiceModel(CatalogueItem solution, CatalogueItem additionalService)

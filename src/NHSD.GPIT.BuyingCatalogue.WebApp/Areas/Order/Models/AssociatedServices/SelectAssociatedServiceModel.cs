@@ -14,7 +14,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.AssociatedServices
         public SelectAssociatedServiceModel(string odsCode, CallOffId callOffId, List<CatalogueItem> solutions, CatalogueItemId? selectedSolutionId)
         {
             BackLink = $"/order/organisation/{odsCode}/order/{callOffId}/associated-services";
-            BackLinkText = "Go back";
             Title = $"Add Associated Service for {callOffId}";
             OdsCode = odsCode;
             Solutions = solutions;

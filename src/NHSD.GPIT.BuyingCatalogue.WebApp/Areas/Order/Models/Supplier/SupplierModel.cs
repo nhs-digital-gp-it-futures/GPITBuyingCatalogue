@@ -10,7 +10,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.Supplier
     {
         public SupplierModel(string odsCode, EntityFramework.Ordering.Models.Order order, ICollection<SupplierContact> supplierContacts)
         {
-            BackLinkText = "Go back";
             BackLink = $"/order/organisation/{odsCode}/order/{order.CallOffId}";
             Title = $"Supplier information for {order.CallOffId}";
             OdsCode = odsCode;

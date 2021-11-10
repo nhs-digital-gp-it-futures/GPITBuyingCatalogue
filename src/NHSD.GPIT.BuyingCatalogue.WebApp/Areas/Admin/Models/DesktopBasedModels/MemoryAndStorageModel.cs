@@ -12,8 +12,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.DesktopBasedModels
         {
             MemorySizes = Framework.Constants.SelectLists.MemorySizes;
             Resolutions = Framework.Constants.SelectLists.ScreenResolutions;
-
-            BackLinkText = "Go back";
         }
 
         public MemoryAndStorageModel(CatalogueItem catalogueItem)
@@ -30,8 +28,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.DesktopBasedModels
             StorageSpace = ClientApplication?.NativeDesktopMemoryAndStorage?.StorageRequirementsDescription;
             ProcessingPower = ClientApplication?.NativeDesktopMemoryAndStorage?.MinimumCpu;
             SelectedResolution = ClientApplication?.NativeDesktopMemoryAndStorage?.RecommendedResolution;
-
-            BackLinkText = "Go back";
         }
 
         [Required(ErrorMessage = "Select a minimum memory size")]

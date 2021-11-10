@@ -32,9 +32,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models
                 LastUpdatedByName = $"{lastUpdatedBy.FirstName} {lastUpdatedBy.LastName}";
 
             DescriptionStatus = new DescriptionModel(solution).Status();
-            FeaturesStatus = new FeaturesModel().FromCatalogueItem(solution).Status();
+            FeaturesStatus = new FeaturesModel(solution).Status();
             ImplementationStatus = new ImplementationTimescaleModel(solution).Status();
-            RoadmapStatus = new RoadmapModel().FromCatalogueItem(solution).Status();
+            RoadmapStatus = new RoadmapModel(solution).Status();
             HostingTypeStatus = new HostingTypeSectionModel(solution).Status();
             ClientApplicationTypeStatus = new ClientApplicationTypeSectionModel(solution).Status();
             InteroperabilityStatus = new InteroperabilityModels.InteroperabilityModel(solution).Status();

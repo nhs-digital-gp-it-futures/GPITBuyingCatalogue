@@ -11,8 +11,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.DesktopBasedModels
         public ConnectivityModel()
         {
             ConnectionSpeeds = Framework.Constants.SelectLists.ConnectionSpeeds;
-
-            BackLinkText = "Go back";
         }
 
         public ConnectivityModel(CatalogueItem catalogueItem)
@@ -26,8 +24,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.DesktopBasedModels
             ConnectionSpeeds = Framework.Constants.SelectLists.ConnectionSpeeds;
 
             SelectedConnectionSpeed = ClientApplication?.NativeDesktopMinimumConnectionSpeed;
-
-            BackLinkText = "Go back";
         }
 
         [Required(ErrorMessage = "Select a connection speed")]

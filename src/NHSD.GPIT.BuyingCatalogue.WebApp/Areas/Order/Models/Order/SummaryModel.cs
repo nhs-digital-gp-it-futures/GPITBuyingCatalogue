@@ -8,7 +8,6 @@
 
         public SummaryModel(string odsCode, EntityFramework.Ordering.Models.Order order)
         {
-            BackLinkText = "Go back";
             OdsCode = odsCode;
             Order = order;
         }

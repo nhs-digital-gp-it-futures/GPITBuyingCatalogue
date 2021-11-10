@@ -25,6 +25,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models
 
         public string Description { get; set; }
 
+        public string BackLinkText { get; set; }
+
+        public string BackLink { get; set; }
+
         public IList<RowViewModel> RowViewModels { get; } = new List<RowViewModel>();
     }
 }

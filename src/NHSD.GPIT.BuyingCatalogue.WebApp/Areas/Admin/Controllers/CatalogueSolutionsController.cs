@@ -77,12 +77,23 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
             if (solution is null)
                 return BadRequest($"No Solution found for Id: {solutionId}");
 
-            return View(new FeaturesModel().FromCatalogueItem(solution));
+            var model = new FeaturesModel(solution)
+            {
+                BackLink = Url.Action(
+                    nameof(ManageCatalogueSolution),
+                    typeof(CatalogueSolutionsController).ControllerName(),
+                    new { solutionId }),
+            };
+
+            return View(model);
         }
 
         [HttpPost("manage/{solutionId}/features")]
         public async Task<IActionResult> Features(CatalogueItemId solutionId, FeaturesModel model)
         {
+            if (!ModelState.IsValid)
+                return View(model);
+
             await solutionsService.SaveSolutionFeatures(solutionId, model.AllFeatures);
 
             return RedirectToAction(nameof(ManageCatalogueSolution), new { solutionId });
@@ -234,7 +245,15 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
             if (solution is null)
                 return BadRequest($"No Solution found for Id: {solutionId}");
 
-            return View(new RoadmapModel().FromCatalogueItem(solution));
+            var model = new RoadmapModel(solution)
+            {
+                BackLink = Url.Action(
+                    nameof(ManageCatalogueSolution),
+                    typeof(CatalogueSolutionsController).ControllerName(),
+                    new { solutionId }),
+            };
+
+            return View(model);
         }
 
         [HttpPost("manage/{solutionId}/development-plans")]
@@ -243,7 +262,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
             if (!ModelState.IsValid)
             {
                 var solution = await solutionsService.GetSolution(solutionId);
-                return View(model.FromCatalogueItem(solution));
+                return View(model);
             }
 
             await solutionsService.SaveRoadMap(solutionId, model.Link);
@@ -309,7 +328,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
         }
 
         [HttpGet("manage/{solutionId}/hosting-type/hosting-type-public-cloud")]
-        public async Task<IActionResult> PublicCloud(CatalogueItemId solutionId, [FromQuery]bool? isNewHostingType = false)
+        public async Task<IActionResult> PublicCloud(CatalogueItemId solutionId, [FromQuery] bool? isNewHostingType = false)
         {
             var catalogueItem = await solutionsService.GetSolution(solutionId);
             if (catalogueItem is null)
@@ -463,15 +482,19 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
                 case ServiceContracts.Solutions.HostingType.Hybrid:
                     hosting.HybridHostingType = new HybridHostingType();
                     break;
+
                 case ServiceContracts.Solutions.HostingType.OnPremise:
                     hosting.OnPremise = new OnPremise();
                     break;
+
                 case ServiceContracts.Solutions.HostingType.PrivateCloud:
                     hosting.PrivateCloud = new PrivateCloud();
                     break;
+
                 case ServiceContracts.Solutions.HostingType.PublicCloud:
                     hosting.PublicCloud = new PublicCloud();
                     break;
+
                 default:
                     throw new ArgumentOutOfRangeException(nameof(hostingType));
             }
@@ -713,7 +736,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
             var model = new EditSupplierDetailsModel(catalogueItem)
             {
                 BackLink = Url.Action(nameof(ManageCatalogueSolution), new { solutionId }),
-                BackLinkText = "Go back",
             };
 
             return View(model);

@@ -21,7 +21,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.Addition
             var model = new SelectAdditionalServiceModel(odsCode, callOffId, solutions, selectedSolutionId);
 
             model.BackLink.Should().Be($"/order/organisation/{odsCode}/order/{callOffId}/additional-services");
-            model.BackLinkText.Should().Be("Go back");
             model.Title.Should().Be($"Add Additional Service for {callOffId}");
             model.OdsCode.Should().Be(odsCode);
             model.Solutions.Should().BeEquivalentTo(solutions);
