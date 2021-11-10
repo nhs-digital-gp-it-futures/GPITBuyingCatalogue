@@ -5,6 +5,9 @@
     BandStart int NOT NULL,
     BandEnd int NULL,
     Price decimal(18, 3) NOT NULL,
+    SysStartTime datetime2(0) GENERATED ALWAYS AS ROW START NOT NULL,
+    SysEndTime datetime2(0) GENERATED ALWAYS AS ROW END NOT NULL,
+    PERIOD FOR SYSTEM_TIME (SysStartTime, SysEndTime),
     CONSTRAINT PK_CataloguePriceTiers PRIMARY KEY (Id),
     CONSTRAINT FK_CataloguePriceTiers_CataloguePriceId FOREIGN KEY (CataloguePriceId) REFERENCES catalogue.CataloguePrices(CataloguePriceId) ON DELETE CASCADE,
 );

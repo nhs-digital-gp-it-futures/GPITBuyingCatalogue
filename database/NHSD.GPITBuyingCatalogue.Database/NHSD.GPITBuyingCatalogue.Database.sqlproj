@@ -193,7 +193,6 @@
     <Build Include="Catalogue\Tables\StandardTypes.sql" />
     <Build Include="Security\Schemas\auditing.sql" />
     <Build Include="Auditing\StoredProcedures\EnableTemporalTable.sql" />
-    <Build Include="Auditing\StoredProcedures\DisableTemporalTable.sql" />
     <None Include="PostDeployment\EnableTemporalTables.sql" />
   </ItemGroup>
   <ItemGroup>
@@ -277,6 +276,13 @@
   </ItemGroup>
   <ItemGroup>
     <RefactorLog Include="NHSD.GPITBuyingCatalogue.Database.refactorlog" />
+  </ItemGroup>
+  <ItemGroup>
+    <ArtifactReference Include="$(DacPacRootPath)\Extensions\Microsoft\SQLDB\Extensions\SqlServer\AzureV12\SqlSchemas\master.dacpac">
+      <HintPath>$(DacPacRootPath)\Extensions\Microsoft\SQLDB\Extensions\SqlServer\AzureV12\SqlSchemas\master.dacpac</HintPath>
+      <SuppressMissingDependenciesErrors>False</SuppressMissingDependenciesErrors>
+      <DatabaseVariableLiteralValue>master</DatabaseVariableLiteralValue>
+    </ArtifactReference>
   </ItemGroup>
   <PropertyGroup>
     <PreBuildEvent>
