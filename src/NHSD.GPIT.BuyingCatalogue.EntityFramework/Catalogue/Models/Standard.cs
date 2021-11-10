@@ -1,8 +1,10 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using NHSD.GPIT.BuyingCatalogue.EntityFramework.Users.Models;
 
 namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models
 {
-    public sealed class Standard
+    public sealed class Standard : IAudited
     {
         public Standard()
         {
@@ -16,6 +18,12 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models
         public string Description { get; set; }
 
         public string Url { get; set; }
+
+        public DateTime LastUpdated { get; set; }
+
+        public int? LastUpdatedBy { get; set; }
+
+        public AspNetUser LastUpdatedByUser { get; set; }
 
         public StandardType StandardType { get; set; }
 

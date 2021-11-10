@@ -77,7 +77,9 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.AssociatedServices
             updatedSolution.CatalogueItem.SupplierServiceAssociations.Should()
                 .BeEquivalentTo(expected, config => config
                     .Excluding(ctx => ctx.AssociatedService)
-                    .Excluding(ctx => ctx.CatalogueItem));
+                    .Excluding(ctx => ctx.CatalogueItem)
+                    .Excluding(ctx => ctx.LastUpdated)
+                    .Excluding(ctx => ctx.LastUpdatedBy));
         }
     }
 }

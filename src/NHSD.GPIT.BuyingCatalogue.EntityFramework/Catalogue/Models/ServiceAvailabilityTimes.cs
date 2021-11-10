@@ -4,7 +4,7 @@ using NHSD.GPIT.BuyingCatalogue.EntityFramework.Users.Models;
 
 namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models
 {
-    public class ServiceAvailabilityTimes
+    public class ServiceAvailabilityTimes : IAudited
     {
         public int Id { get; set; }
 
@@ -18,12 +18,12 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models
 
         public CatalogueItemId SolutionId { get; set; }
 
-        public DateTime? LastUpdated { get; set; }
+        public DateTime LastUpdated { get; set; }
 
         public int? LastUpdatedBy { get; set; }
 
-        public ServiceLevelAgreements ServiceLevelAgreement { get; set; }
-
         public AspNetUser LastUpdatedByUser { get; set; }
+
+        public ServiceLevelAgreements ServiceLevelAgreement { get; set; }
     }
 }

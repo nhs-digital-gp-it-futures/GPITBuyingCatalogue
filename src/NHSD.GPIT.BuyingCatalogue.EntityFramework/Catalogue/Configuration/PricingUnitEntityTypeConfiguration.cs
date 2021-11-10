@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using System;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 
@@ -24,6 +25,14 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Configuration
 
             builder.Property(u => u.TierName)
                 .HasMaxLength(30);
+
+            builder.Property(u => u.LastUpdated).HasDefaultValue(DateTime.UtcNow);
+            builder.Property(u => u.LastUpdatedBy);
+
+            builder.HasOne(u => u.LastUpdatedByUser)
+                .WithMany()
+                .HasForeignKey(u => u.LastUpdatedBy)
+                .HasConstraintName("FK_PricingUnits_LastUpdatedBy");
         }
     }
 }

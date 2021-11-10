@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using System;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 
@@ -32,9 +33,17 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Configuration
                 .IsRequired()
                 .HasColumnName("StandardTypeId");
 
+            builder.Property(s => s.LastUpdated).HasDefaultValue(DateTime.UtcNow);
+            builder.Property(s => s.LastUpdatedBy);
+
             builder.HasMany(s => s.StandardCapabilities)
                 .WithOne(sc => sc.Standard)
                 .HasForeignKey(sc => sc.StandardId);
+
+            builder.HasOne(s => s.LastUpdatedByUser)
+                .WithMany()
+                .HasForeignKey(s => s.LastUpdatedBy)
+                .HasConstraintName("FK_Standards_LastUpdatedBy");
         }
     }
 }

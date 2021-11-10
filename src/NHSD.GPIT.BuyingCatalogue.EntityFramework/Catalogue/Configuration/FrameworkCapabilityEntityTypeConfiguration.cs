@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using System;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 
@@ -13,6 +14,8 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Configuration
             builder.HasKey(f => new { f.FrameworkId, f.CapabilityId });
 
             builder.Property(f => f.FrameworkId).HasMaxLength(10);
+            builder.Property(t => t.LastUpdated).HasDefaultValue(DateTime.UtcNow);
+            builder.Property(t => t.LastUpdatedBy);
 
             builder.HasOne(f => f.Capability)
                 .WithMany(c => c.FrameworkCapabilities)
@@ -25,6 +28,11 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Configuration
                 .HasForeignKey(d => d.FrameworkId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK_FrameworkCapabilities_Framework");
+
+            builder.HasOne(f => f.LastUpdatedByUser)
+                .WithMany()
+                .HasForeignKey(f => f.LastUpdatedBy)
+                .HasConstraintName("FK_FrameworkCapabilities_LastUpdatedBy");
         }
     }
 }

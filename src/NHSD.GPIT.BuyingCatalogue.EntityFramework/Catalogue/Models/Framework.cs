@@ -1,8 +1,9 @@
 ﻿using System;
+using NHSD.GPIT.BuyingCatalogue.EntityFramework.Users.Models;
 
 namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models
 {
-    public sealed class Framework
+    public sealed class Framework : IAudited
     {
         public string Id { get; set; }
 
@@ -17,5 +18,11 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models
         public DateTime? ActiveDate { get; set; }
 
         public DateTime? ExpiryDate { get; set; }
+
+        public DateTime LastUpdated { get; set; }
+
+        public int? LastUpdatedBy { get; set; }
+
+        public AspNetUser LastUpdatedByUser { get; set; }
     }
 }
