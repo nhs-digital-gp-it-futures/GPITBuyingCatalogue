@@ -37,7 +37,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering.AssociatedServices
         [Fact]
         public void AssociatedServicesController_AllSectionsDisplayed()
         {
-            CommonActions.ElementIsDisplayed(Objects.Ordering.CatalogueItems.AddItemButton("Associated Service")).Should().BeTrue();
+            CommonActions.ElementIsDisplayed(Objects.Ordering.CatalogueItems.AddAssociatedService).Should().BeTrue();
             CommonActions.ElementIsDisplayed(Objects.Ordering.CatalogueItems.AddedItemsTable).Should().BeTrue();
             CommonActions.ElementIsDisplayed(Objects.Ordering.CatalogueItems.ContinueButton).Should().BeTrue();
             CommonActions.GoBackLinkDisplayed().Should().BeTrue();
@@ -59,7 +59,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering.AssociatedServices
         [Fact]
         public void AssociatedServicesController_ClickAddAssociatedService()
         {
-            CommonActions.ClickLinkElement(Objects.Ordering.CatalogueItems.AddItemButton("Associated Service"));
+            CommonActions.ClickLinkElement(Objects.Ordering.CatalogueItems.AddAssociatedService);
 
             CommonActions
                 .PageLoadedCorrectGetIndex(

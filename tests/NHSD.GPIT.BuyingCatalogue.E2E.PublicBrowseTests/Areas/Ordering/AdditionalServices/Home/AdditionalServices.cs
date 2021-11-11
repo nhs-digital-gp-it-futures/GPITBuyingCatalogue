@@ -33,7 +33,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering.AdditionalServices
         [Fact]
         public void AdditionalSolutions_AllSectionsDisplayed()
         {
-            CommonActions.ElementIsDisplayed(Objects.Ordering.CatalogueItems.AddItemButton("Additional Service")).Should().BeTrue();
+            CommonActions.ElementIsDisplayed(Objects.Ordering.CatalogueItems.AddAdditionalService).Should().BeTrue();
             CommonActions.ElementIsDisplayed(Objects.Ordering.CatalogueItems.AddedItemsTable).Should().BeTrue();
             CommonActions.ElementIsDisplayed(Objects.Ordering.CatalogueItems.ContinueButton).Should().BeTrue();
             CommonActions.GoBackLinkDisplayed().Should().BeTrue();
@@ -55,7 +55,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering.AdditionalServices
         [Fact]
         public void AdditionalSolutions_ClickAddSolution()
         {
-            CommonActions.ClickLinkElement(Objects.Ordering.CatalogueItems.AddItemButton("Additional Service"));
+            CommonActions.ClickLinkElement(Objects.Ordering.CatalogueItems.AddAdditionalService);
 
             CommonActions
                 .PageLoadedCorrectGetIndex(
