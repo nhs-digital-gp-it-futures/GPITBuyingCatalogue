@@ -69,8 +69,6 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.ServiceLevelAgreements
                 TimeFrom = model.From,
                 TimeUntil = model.Until,
                 SolutionId = solution.Id,
-                LastUpdatedBy = model.UserId,
-                LastUpdated = DateTime.UtcNow,
             };
 
             dbContext.ServiceAvailabilityTimes.Add(serviceAvailabilityTimes);

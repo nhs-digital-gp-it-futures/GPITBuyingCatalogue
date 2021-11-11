@@ -1,9 +1,11 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
+using NHSD.GPIT.BuyingCatalogue.EntityFramework.Users.Models;
 
 namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models
 {
-    public class ServiceLevelAgreements
+    public class ServiceLevelAgreements : IAudited
     {
         public ServiceLevelAgreements()
         {
@@ -11,6 +13,12 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models
             ServiceHours = new HashSet<ServiceAvailabilityTimes>();
             ServiceLevels = new HashSet<SlaServiceLevel>();
         }
+
+        public DateTime LastUpdated { get; set; }
+
+        public int? LastUpdatedBy { get; set; }
+
+        public AspNetUser LastUpdatedByUser { get; set; }
 
         public CatalogueItemId SolutionId { get; set; }
 

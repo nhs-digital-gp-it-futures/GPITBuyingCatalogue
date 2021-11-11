@@ -18,7 +18,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
         internal static void Initialize(BuyingCatalogueDbContext context)
         {
             AddDefaultData(context);
-            context.SaveChangesAs(UserSeedData.BobId);
+            context.SaveChanges();
         }
 
         private static void AddDefaultData(BuyingCatalogueDbContext context)

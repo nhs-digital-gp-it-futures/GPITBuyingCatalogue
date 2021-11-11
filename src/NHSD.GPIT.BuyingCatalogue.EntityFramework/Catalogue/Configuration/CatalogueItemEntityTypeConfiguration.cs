@@ -37,6 +37,8 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Configuration
                 .IsRequired()
                 .HasMaxLength(6);
 
+            builder.Property(i => i.LastUpdated).HasDefaultValue(DateTime.UtcNow);
+
             builder.HasOne(i => i.Supplier)
                 .WithMany(s => s.CatalogueItems)
                 .HasForeignKey(i => i.SupplierId)
@@ -52,6 +54,11 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Configuration
 
             builder.HasIndex(i => new { i.SupplierId, i.Name }, "AK_CatalogueItems_Supplier_Name")
                 .IsUnique();
+
+            builder.HasOne(i => i.LastUpdatedByUser)
+                .WithMany()
+                .HasForeignKey(i => i.LastUpdatedBy)
+                .HasConstraintName("FK_CatalogueItems_LastUpdatedBy");
         }
     }
 }

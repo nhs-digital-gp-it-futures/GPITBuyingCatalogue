@@ -1,10 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
+using NHSD.GPIT.BuyingCatalogue.EntityFramework.Users.Models;
 
 namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models
 {
-    public partial class CatalogueItem
+    public partial class CatalogueItem : IAudited
     {
         public CatalogueItem()
         {
@@ -22,6 +23,12 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models
         public int SupplierId { get; set; }
 
         public DateTime Created { get; set; }
+
+        public DateTime LastUpdated { get; set; }
+
+        public int? LastUpdatedBy { get; set; }
+
+        public AspNetUser LastUpdatedByUser { get; set; }
 
         public virtual CatalogueItemType CatalogueItemType { get; set; }
 

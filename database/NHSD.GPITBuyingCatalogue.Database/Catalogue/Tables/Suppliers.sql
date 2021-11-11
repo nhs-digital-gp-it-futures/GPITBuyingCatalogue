@@ -7,7 +7,7 @@
      SupplierUrl nvarchar(1000) NULL,
      [Address] nvarchar(500) NULL,
      Deleted bit CONSTRAINT DF_Supplier_Deleted DEFAULT 0 NOT NULL,
-     LastUpdated datetime2(7) NOT NULL,
+     LastUpdated datetime2(7) DEFAULT GETUTCDATE() NOT NULL,
      LastUpdatedBy int NULL,
      IsActive bit CONSTRAINT DF_Suppliers_IsActive DEFAULT 0 NOT NULL,
      SysStartTime datetime2(0) GENERATED ALWAYS AS ROW START NOT NULL,

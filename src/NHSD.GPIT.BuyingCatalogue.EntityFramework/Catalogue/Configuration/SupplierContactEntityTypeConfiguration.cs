@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using System;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 
@@ -31,14 +32,16 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Configuration
                 .IsRequired()
                 .HasMaxLength(6);
 
+            builder.Property(s => s.LastUpdated).HasDefaultValue(DateTime.UtcNow);
+
             builder.HasOne<Supplier>()
                 .WithMany(s => s.SupplierContacts)
                 .HasForeignKey(c => c.SupplierId)
                 .HasConstraintName("FK_SupplierContacts_Supplier");
 
-            builder.HasOne(c => c.LastUpdatedByUser)
+            builder.HasOne(s => s.LastUpdatedByUser)
                 .WithMany()
-                .HasForeignKey(c => c.LastUpdatedBy)
+                .HasForeignKey(s => s.LastUpdatedBy)
                 .HasConstraintName("FK_SupplierContacts_LastUpdatedBy");
 
             builder.HasIndex(c => c.SupplierId, "IX_SupplierContacts_SupplierId");

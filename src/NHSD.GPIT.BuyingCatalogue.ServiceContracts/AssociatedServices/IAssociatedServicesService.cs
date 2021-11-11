@@ -12,8 +12,6 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.AssociatedServices
 
         Task<CatalogueItem> GetAssociatedService(CatalogueItemId associatedServiceId);
 
-        Task DeleteAssociatedService(CatalogueItemId associatedServiceId);
-
         Task RelateAssociatedServicesToSolution(CatalogueItemId solutionId, IEnumerable<CatalogueItemId> associatedServices);
 
         Task EditDetails(CatalogueItemId associatedServiceId, AssociatedServicesDetailsModel model);

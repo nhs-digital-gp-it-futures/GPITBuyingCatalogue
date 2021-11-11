@@ -1,4 +1,5 @@
-﻿using System.Text.Json;
+﻿using System;
+using System.Text.Json;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Addresses.Models;
@@ -29,8 +30,8 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Configuration
 
             builder.Property(s => s.Summary).HasMaxLength(1100);
             builder.Property(s => s.SupplierUrl).HasMaxLength(1000);
-
             builder.Property(s => s.IsActive).HasDefaultValue(0);
+            builder.Property(s => s.LastUpdated).HasDefaultValue(DateTime.UtcNow);
 
             builder.HasOne(s => s.LastUpdatedByUser)
                 .WithMany()

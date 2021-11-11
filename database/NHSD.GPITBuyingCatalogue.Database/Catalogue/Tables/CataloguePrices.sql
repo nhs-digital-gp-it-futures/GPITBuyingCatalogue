@@ -7,7 +7,8 @@
     PricingUnitId smallint NOT NULL,
     TimeUnitId int NULL,
     CurrencyCode nvarchar(3) NOT NULL,
-    LastUpdated datetime2(7) NOT NULL,
+    LastUpdated datetime2(7) DEFAULT GETUTCDATE() NOT NULL,
+    LastUpdatedBy int NULL,
     Price decimal(18, 4) NULL,
     SysStartTime datetime2(0) GENERATED ALWAYS AS ROW START NOT NULL,
     SysEndTime datetime2(0) GENERATED ALWAYS AS ROW END NOT NULL,
@@ -18,4 +19,5 @@
     CONSTRAINT FK_CataloguePrices_CataloguePriceType_CataloguePriceTypeId FOREIGN KEY (CataloguePriceTypeId) REFERENCES catalogue.CataloguePriceTypes(Id),
     CONSTRAINT FK_CataloguePrices_PricingUnit_PricingUnitId FOREIGN KEY (PricingUnitId) REFERENCES catalogue.PricingUnits(Id),
     CONSTRAINT FK_CataloguePrices_TimeUnit_TimeUnitId FOREIGN KEY (TimeUnitId) REFERENCES catalogue.TimeUnits(Id),
+    CONSTRAINT FK_CataloguePrices_LastUpdatedBy FOREIGN KEY (LastUpdatedBy) REFERENCES users.AspNetUsers(Id),
 );

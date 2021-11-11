@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using System;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 
@@ -33,6 +34,8 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Configuration
                 .HasConversion<int>()
                 .HasColumnName("StatusId");
 
+            builder.Property(c => c.LastUpdated).HasDefaultValue(DateTime.UtcNow);
+
             builder.HasMany(c => c.CatalogueItemCapabilities)
                 .WithOne(cic => cic.Capability)
                 .HasForeignKey(c => c.CapabilityId);
@@ -53,6 +56,11 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Configuration
             builder.HasMany(c => c.StandardCapabilities)
                 .WithOne(sc => sc.Capability)
                 .HasForeignKey(c => c.CapabilityId);
+
+            builder.HasOne(c => c.LastUpdatedByUser)
+                .WithMany()
+                .HasForeignKey(c => c.LastUpdatedBy)
+                .HasConstraintName("FK_Capabilities_LastUpdatedBy");
         }
     }
 }

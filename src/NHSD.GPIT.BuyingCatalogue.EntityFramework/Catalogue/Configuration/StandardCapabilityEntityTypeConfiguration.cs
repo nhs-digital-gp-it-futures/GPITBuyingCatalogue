@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using System;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 
@@ -9,6 +10,8 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Configuration
         public void Configure(EntityTypeBuilder<StandardCapability> builder)
         {
             builder.ToTable("StandardsCapabilities", Schemas.Catalogue);
+
+            builder.Property(sc => sc.LastUpdated).HasDefaultValue(DateTime.UtcNow);
 
             builder.HasKey(sc => new { sc.StandardId, sc.CapabilityId });
 
@@ -23,6 +26,11 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Configuration
                 .HasForeignKey(sc => sc.StandardId)
                 .HasConstraintName("FK_StandardsCapabilities_Standard")
                 .OnDelete(DeleteBehavior.Cascade);
+
+            builder.HasOne(sc => sc.LastUpdatedByUser)
+                .WithMany()
+                .HasForeignKey(sc => sc.LastUpdatedBy)
+                .HasConstraintName("FK_StandardsCapabilities_LastUpdatedBy");
         }
     }
 }

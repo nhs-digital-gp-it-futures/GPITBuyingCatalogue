@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using System;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
@@ -17,10 +18,17 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Configuration
                 .HasMaxLength(14)
                 .HasConversion(id => id.ToString(), id => CatalogueItemId.ParseExact(id));
 
+            builder.Property(s => s.LastUpdated).HasDefaultValue(DateTime.UtcNow);
+
             builder.HasOne(s => s.Solution)
                 .WithOne(s => s.ServiceLevelAgreement)
                 .HasForeignKey<ServiceLevelAgreements>(s => s.SolutionId)
                 .HasConstraintName("FK_ServiceLevelAgreements_Solution");
+
+            builder.HasOne(s => s.LastUpdatedByUser)
+                .WithMany()
+                .HasForeignKey(s => s.LastUpdatedBy)
+                .HasConstraintName("FK_ServiceLevelAgreements_LastUpdatedBy");
         }
     }
 }

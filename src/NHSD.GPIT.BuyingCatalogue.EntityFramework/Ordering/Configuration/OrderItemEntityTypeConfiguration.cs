@@ -25,7 +25,6 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Configuration
                 .HasColumnName("EstimationPeriodId");
 
             builder.Property(oi => oi.LastUpdated).HasDefaultValue(DateTime.UtcNow);
-            builder.Property(oi => oi.LastUpdatedBy);
             builder.Property(oi => oi.Price).HasColumnType("decimal(18, 4)");
 
             builder.HasOne(oi => oi.CatalogueItem)
@@ -44,9 +43,9 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Configuration
                 .HasForeignKey(oi => oi.PriceId)
                 .HasConstraintName("FK_OrderItems_PriceId");
 
-            builder.HasOne(o => o.LastUpdatedByUser)
+            builder.HasOne(oi => oi.LastUpdatedByUser)
                 .WithMany()
-                .HasForeignKey(o => o.LastUpdatedBy)
+                .HasForeignKey(oi => oi.LastUpdatedBy)
                 .HasConstraintName("FK_OrderItems_LastUpdatedBy");
         }
     }

@@ -7,10 +7,13 @@
      CompliancyLevelId int NULL,
      IsActive bit CONSTRAINT DF_Epic_IsActive DEFAULT 0 NOT NULL,
      SupplierDefined bit CONSTRAINT DF_Epic_SupplierDefined DEFAULT 0 NOT NULL,
+     LastUpdated datetime2(7) DEFAULT GETUTCDATE() NOT NULL,
+     LastUpdatedBy int NULL,
      SysStartTime datetime2(0) GENERATED ALWAYS AS ROW START NOT NULL,
      SysEndTime datetime2(0) GENERATED ALWAYS AS ROW END NOT NULL,
      PERIOD FOR SYSTEM_TIME (SysStartTime, SysEndTime),
      CONSTRAINT PK_Epics PRIMARY KEY (Id),
      CONSTRAINT FK_Epics_Capability FOREIGN KEY (CapabilityId) REFERENCES catalogue.Capabilities(Id),
      CONSTRAINT FK_Epics_CompliancyLevel FOREIGN KEY (CompliancyLevelId) REFERENCES catalogue.CompliancyLevels(Id),
+     CONSTRAINT FK_Epics_LastUpdatedBy FOREIGN KEY (LastUpdatedBy) REFERENCES users.AspNetUsers(Id),
 );

@@ -111,13 +111,6 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework
             return base.SaveChanges();
         }
 
-        public Task<int> SaveChangesAsAsync(int userId)
-        {
-            UpdateAuditFields(userId);
-
-            return base.SaveChangesAsync(true, default);
-        }
-
         public void SaveChangesAs(int userId)
         {
             UpdateAuditFields(userId);
@@ -134,12 +127,12 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework
 
         private void UpdateAuditFields(int? userId = null)
         {
+            userId ??= identityService.GetUserId();
+
             foreach (var entry in ChangeTracker.Entries())
             {
                 if (entry.Entity is not IAudited auditedEntity)
                     continue;
-
-                userId ??= identityService.GetUserId();
 
                 switch (entry.State)
                 {
@@ -147,7 +140,7 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework
                     case EntityState.Unchanged:
                         continue;
                     default:
-                        auditedEntity.LastUpdatedBy = userId.Value;
+                        auditedEntity.LastUpdatedBy = userId;
                         auditedEntity.LastUpdated = DateTime.UtcNow;
                         continue;
                 }

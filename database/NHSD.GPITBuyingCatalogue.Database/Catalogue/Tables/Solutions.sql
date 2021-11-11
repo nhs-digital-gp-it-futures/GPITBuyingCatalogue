@@ -11,7 +11,7 @@
      Integrations nvarchar(max) NULL,
      IntegrationsUrl nvarchar(1000) NULL,
      AboutUrl nvarchar(1000) NULL,
-     LastUpdated datetime2(7) NOT NULL,
+     LastUpdated datetime2(7) DEFAULT GETUTCDATE() NOT NULL,
      LastUpdatedBy int NULL,
      SysStartTime datetime2(0) GENERATED ALWAYS AS ROW START NOT NULL,
      SysEndTime datetime2(0) GENERATED ALWAYS AS ROW END NOT NULL,

@@ -15,7 +15,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
             AddDefaultData(context);
             AddCatalogueItems(context);
             AddMockedItems(context);
-            context.SaveChangesAs(UserSeedData.BobId);
+            context.SaveChanges();
         }
 
         private static void AddCatalogueItems(EndToEndDbContext context)
@@ -29,7 +29,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
             var additionalServices = AdditionalServicesSeedData.GetAdditionalServices(catalogueSolutions);
             context.AddRange(additionalServices);
 
-            context.SaveChangesAs(UserSeedData.BobId);
+            context.SaveChanges();
 
             List<FrameworkSolution> frameworkSolutions = new()
             {
@@ -44,7 +44,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
             };
             context.AddRange(frameworkSolutions);
 
-            context.SaveChangesAs(UserSeedData.BobId);
+            context.SaveChanges();
 
             List<CataloguePrice> prices = new()
             {
