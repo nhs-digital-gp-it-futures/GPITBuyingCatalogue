@@ -182,7 +182,7 @@
                         <nhs-tag status-enum="@Model.RoadmapStatus" />
                     </nhs-table-cell>
                     <nhs-table-cell>
-                        <a asp-action="Roadmap" asp-route-solutionId="@Model.SolutionId">Edit</a>
+                        <a asp-action="@nameof(CatalogueSolutionsController.DevelopmentPlans)" asp-route-solutionId="@Model.SolutionId">Edit</a>
                     </nhs-table-cell>
                 </nhs-table-row-container>
                 <nhs-table-row-container>

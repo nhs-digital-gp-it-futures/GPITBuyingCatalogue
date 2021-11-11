@@ -13,6 +13,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Test.Framework.AutoFixtureCustomisations
             new CapabilityCategoryCustomization(),
             new CapabilityCustomization(),
             new CataloguePriceCustomization(),
+            new CatalogueItemCustomization(),
             new CatalogueItemCapabilityCustomization(),
             new CatalogueItemIdCustomization(),
             new CallOffIdCustomization(),
@@ -23,10 +24,10 @@ namespace NHSD.GPIT.BuyingCatalogue.Test.Framework.AutoFixtureCustomisations
             new MobileConnectionDetailsCustomization(),
             new MobileOperatingSystemsCustomization(),
             new ClientApplicationCustomization(),
-            new CatalogueItemCustomization(),
             new AdditionalServiceCustomization(),
             new AssociatedServiceCustomization(),
             new SolutionCustomization(),
+            new StandardsCustomization(),
             new StandardCapabilityCustomization(),
             new DefaultDeliveryDateCustomization(),
             new OrderItemRecipientCustomization(),
@@ -40,6 +41,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Test.Framework.AutoFixtureCustomisations
             new ServiceLevelAgreementCustomization(),
             new ActionContextCustomization(),
             new ServiceAvailabilityTimesCustomization(),
+            new WorkOffPlanCustomization(),
         };
 
         internal static IFixture Create() => Create(Customizations);
