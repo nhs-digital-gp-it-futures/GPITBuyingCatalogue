@@ -9,6 +9,6 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Objects.Ordering
 
         internal static By ContinueButton => By.LinkText("Continue");
 
-        internal static By AddItemButton(string itemType) => By.LinkText($"Add {itemType}");
+        internal static By AddItemButton(string itemType) => By.LinkText($"Add a {itemType}");
     }
 }

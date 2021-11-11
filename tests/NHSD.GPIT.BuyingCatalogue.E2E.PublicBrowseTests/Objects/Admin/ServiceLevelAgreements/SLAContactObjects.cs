@@ -18,7 +18,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Objects.Admin.ServiceLevelAgreement
 
         internal static By Until => By.Id("Until");
 
-        internal static By DeleteLink => By.LinkText("Delete Contact");
+        internal static By DeleteLink => By.LinkText("Delete contact");
 
         internal static By CancelLink => By.LinkText("Cancel");
     }
