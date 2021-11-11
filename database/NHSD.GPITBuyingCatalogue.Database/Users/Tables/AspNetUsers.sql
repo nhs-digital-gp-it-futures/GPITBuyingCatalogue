@@ -21,6 +21,8 @@
      CatalogueAgreementSigned bit CONSTRAINT DF_AspNetUsers_CatalogueAgreementSigned DEFAULT 0 NOT NULL,
      FirstName nvarchar(100) NOT NULL, 
      LastName nvarchar(100) NOT NULL,
+     LastUpdated datetime2(7) DEFAULT GETUTCDATE() NOT NULL,
+     LastUpdatedBy int NULL,
      SysStartTime datetime2(0) GENERATED ALWAYS AS ROW START NOT NULL,
      SysEndTime datetime2(0) GENERATED ALWAYS AS ROW END NOT NULL,
      PERIOD FOR SYSTEM_TIME (SysStartTime, SysEndTime),     
@@ -28,4 +30,5 @@
      CONSTRAINT AK_AspNetUsers_NormalizedUserName UNIQUE (NormalizedUserName),
      CONSTRAINT AK_AspNetUsers_NormalizedEmail UNIQUE (NormalizedEmail),
      CONSTRAINT FK_AspNetUsers_OrganisationId FOREIGN KEY (PrimaryOrganisationId) REFERENCES organisations.Organisations (Id),
+     CONSTRAINT FK_AspNetUsers_LastUpdatedBy FOREIGN KEY (LastUpdatedBy) REFERENCES users.AspNetUsers(Id),
 );

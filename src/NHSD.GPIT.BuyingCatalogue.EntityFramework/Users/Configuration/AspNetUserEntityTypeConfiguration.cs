@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using System;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Users.Models;
 
@@ -35,6 +36,7 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Users.Configuration
             builder.Property(u => u.PhoneNumber).HasMaxLength(35);
             builder.Property(u => u.PhoneNumberConfirmed).IsRequired().HasDefaultValue(0);
             builder.Property(u => u.UserName).HasMaxLength(256).IsRequired();
+            builder.Property(u => u.LastUpdated).HasDefaultValue(DateTime.UtcNow);
 
             builder.HasOne(u => u.PrimaryOrganisation)
                 .WithMany()
@@ -44,6 +46,11 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Users.Configuration
             builder.HasIndex(u => u.NormalizedEmail, "AK_AspNetUsers_NormalizedEmail").IsUnique();
             builder.HasIndex(u => u.NormalizedUserName, "AK_AspNetUsers_NormalizedUserName")
                 .IsUnique();
+
+            builder.HasOne(u => u.LastUpdatedByUser)
+                .WithMany()
+                .HasForeignKey(u => u.LastUpdatedBy)
+                .HasConstraintName("FK_AspNetUsers_LastUpdatedBy");
         }
     }
 }
