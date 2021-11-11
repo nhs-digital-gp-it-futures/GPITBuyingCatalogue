@@ -13,7 +13,7 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Organisations.Configuration
 
             builder.HasKey(ro => new { ro.OrganisationId, ro.RelatedOrganisationId });
 
-            builder.Property(o => o.LastUpdated).HasDefaultValue(DateTime.UtcNow);
+            builder.Property(ro => ro.LastUpdated).HasDefaultValue(DateTime.UtcNow);
 
             builder.HasOne(ro => ro.Organisation)
                 .WithMany(o => o.RelatedOrganisationOrganisations)
@@ -27,10 +27,10 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Organisations.Configuration
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK_RelatedOrganisations_RelatedOrganisationId");
 
-            builder.HasOne(o => o.LastUpdatedByUser)
+            builder.HasOne(ro => ro.LastUpdatedByUser)
                 .WithMany()
-                .HasForeignKey(o => o.LastUpdatedBy)
-                .HasConstraintName("FK_Organisations_LastUpdatedBy");
+                .HasForeignKey(ro => ro.LastUpdatedBy)
+                .HasConstraintName("FK_RelatedOrganisations_LastUpdatedBy");
         }
     }
 }
