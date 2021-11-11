@@ -12,10 +12,10 @@ namespace NHSD.GPIT.BuyingCatalogue.Test.Framework.AutoFixtureCustomisations
         {
             static ISpecimenBuilder ComposerTransformation(ICustomizationComposer<WorkOffPlan> composer) => composer
                 .FromFactory(new WorkOffPlanSpecimenBuilder())
-                .Without(wop => wop.Standard)
-                .Without(wop => wop.StandardId)
-                .Without(wop => wop.Solution)
-                .Without(wop => wop.SolutionId);
+                .Without(wp => wp.Standard)
+                .Without(wp => wp.StandardId)
+                .Without(wp => wp.Solution)
+                .Without(wp => wp.SolutionId);
 
             fixture.Customize<WorkOffPlan>(ComposerTransformation);
         }

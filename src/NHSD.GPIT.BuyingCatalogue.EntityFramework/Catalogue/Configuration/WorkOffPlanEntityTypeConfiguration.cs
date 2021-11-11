@@ -11,40 +11,40 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Configuration
         {
             builder.ToTable("WorkOffPlans", Schemas.Catalogue);
 
-            builder.HasKey(wop => wop.Id);
+            builder.HasKey(wp => wp.Id);
 
-            builder.Property(wop => wop.Details)
+            builder.Property(wp => wp.Details)
                 .IsRequired()
                 .HasMaxLength(300);
 
-            builder.Property(wop => wop.SolutionId)
+            builder.Property(wp => wp.SolutionId)
                 .IsRequired()
                 .HasMaxLength(14);
 
-            builder.Property(wop => wop.StandardId)
+            builder.Property(wp => wp.StandardId)
                 .IsRequired()
                 .HasMaxLength(5);
 
-            builder.Property(wop => wop.CompletionDate)
+            builder.Property(wp => wp.CompletionDate)
                 .IsRequired();
 
-            builder.Property(wop => wop.LastUpdated)
+            builder.Property(wp => wp.LastUpdated)
                 .IsRequired()
                 .HasDefaultValue(DateTime.UtcNow);
 
-            builder.HasOne(wop => wop.LastUpdatedByUser)
+            builder.HasOne(wp => wp.LastUpdatedByUser)
                 .WithMany()
-                .HasForeignKey(wop => wop.LastUpdatedBy)
+                .HasForeignKey(wp => wp.LastUpdatedBy)
                 .HasConstraintName("FK_WorkOffPlans_LastUpdatedBy");
 
-            builder.HasOne(wop => wop.Solution)
+            builder.HasOne(wp => wp.Solution)
                 .WithMany(s => s.WorkOffPlans)
-                .HasForeignKey(wop => wop.SolutionId)
+                .HasForeignKey(wp => wp.SolutionId)
                 .HasConstraintName("FK_WorkOffPlans_Solution");
 
-            builder.HasOne(wop => wop.Standard)
+            builder.HasOne(wp => wp.Standard)
                 .WithMany()
-                .HasForeignKey(wop => wop.StandardId)
+                .HasForeignKey(wp => wp.StandardId)
                 .HasConstraintName("FK_WorkOffPlans_Standard");
         }
     }
