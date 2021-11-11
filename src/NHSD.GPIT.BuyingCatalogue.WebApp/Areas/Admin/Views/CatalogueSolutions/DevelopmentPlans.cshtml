@@ -22,7 +22,7 @@
             <nhs-table-column>Details</nhs-table-column>
             <nhs-table-column>Agreed&nbsp;completion&nbsp;date</nhs-table-column>
             <nhs-table-column></nhs-table-column>
-            @foreach(var workOffPlan in Model.WorkOffPlans.OrderBy(wop => wop.Standard.Name).OrderBy(wop => wop.Details))
+            @foreach(var workOffPlan in Model.WorkOffPlans.OrderBy(wp => wp.Standard.Name).OrderBy(wp => wp.Details))
             {
                 <nhs-table-row-container>
                     <nhs-table-cell>@workOffPlan.Standard.Name</nhs-table-cell>

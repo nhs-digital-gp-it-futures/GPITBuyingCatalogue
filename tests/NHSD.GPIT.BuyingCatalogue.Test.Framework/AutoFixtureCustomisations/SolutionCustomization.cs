@@ -129,11 +129,11 @@ namespace NHSD.GPIT.BuyingCatalogue.Test.Framework.AutoFixtureCustomisations
             private static void AddWorkOffPlans(Solution solution, ISpecimenContext context)
             {
                 var workOffPlans = context.CreateMany<WorkOffPlan>().ToList();
-                workOffPlans.ForEach(wop =>
+                workOffPlans.ForEach(wp =>
                 {
-                    wop.Solution = solution;
-                    wop.SolutionId = solution.CatalogueItemId;
-                    solution.WorkOffPlans.Add(wop);
+                    wp.Solution = solution;
+                    wp.SolutionId = solution.CatalogueItemId;
+                    solution.WorkOffPlans.Add(wp);
                 });
             }
         }
