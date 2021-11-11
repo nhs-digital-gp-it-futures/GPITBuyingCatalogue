@@ -15,8 +15,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.OrderDes
         {
             var model = new OrderDescriptionModel(odsCode, order);
 
-            model.BackLink.Should().Be("./");
-            model.BackLinkText.Should().Be("Go back");
             model.Title.Should().Be("Order description");
             model.Description.Should().Be(order.Description);
         }

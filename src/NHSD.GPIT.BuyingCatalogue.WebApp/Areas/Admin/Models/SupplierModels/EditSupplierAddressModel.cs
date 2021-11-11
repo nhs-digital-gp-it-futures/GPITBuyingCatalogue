@@ -9,7 +9,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.SupplierModels
     {
         public EditSupplierAddressModel()
         {
-            BackLinkText = "Go back";
         }
 
         public EditSupplierAddressModel(Supplier supplier)
@@ -27,7 +26,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.SupplierModels
             PostCode = supplier.Address?.Postcode;
             Country = supplier.Address?.Country;
 
-            BackLinkText = "Go back";
             SupplierName = supplier.Name;
         }
 

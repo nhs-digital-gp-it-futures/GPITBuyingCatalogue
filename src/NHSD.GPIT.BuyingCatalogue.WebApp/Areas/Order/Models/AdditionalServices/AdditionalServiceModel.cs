@@ -8,7 +8,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.AdditionalServices
         public AdditionalServiceModel(string odsCode, EntityFramework.Ordering.Models.Order order, List<OrderItem> orderItems)
         {
             BackLink = $"/order/organisation/{odsCode}/order/{order.CallOffId}";
-            BackLinkText = "Go back";
             Title = $"Additional Services for {order.CallOffId}";
             OdsCode = odsCode;
             OrderDescription = order.Description;

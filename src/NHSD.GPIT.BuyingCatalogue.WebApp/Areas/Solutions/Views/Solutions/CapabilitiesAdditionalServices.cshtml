@@ -5,9 +5,8 @@
 
 @section BackLink
 {
-    <vc:nhs-backlink text="Go back" url="@Url.Action("AdditionalServices", "Solutions", new { solutionId = Model.SolutionId })"></vc:nhs-backlink>
+    <vc:nhs-backlink text="@Model.BackLinkText" url="@Model.BackLink" />
 }
-
 
 <div class="nhsuk-width-container">
     <main id="maincontent" role="main">

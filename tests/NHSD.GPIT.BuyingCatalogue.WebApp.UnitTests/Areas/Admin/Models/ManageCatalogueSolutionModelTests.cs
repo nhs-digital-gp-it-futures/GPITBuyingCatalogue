@@ -42,7 +42,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Models
             List<AdditionalService> additionalServices,
             List<AssociatedService> associatedServices)
         {
-            var expected = new FeaturesModel().FromCatalogueItem(solution.CatalogueItem).Status();
+            var expected = new FeaturesModel(solution.CatalogueItem).Status();
             var model = new ManageCatalogueSolutionModel(
                 solution.CatalogueItem,
                 additionalServices.Select(a => a.CatalogueItem).ToList(),
@@ -96,7 +96,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Models
             List<AdditionalService> additionalServices,
             List<AssociatedService> associatedServices)
         {
-            var expected = new RoadmapModel().FromCatalogueItem(solution.CatalogueItem).Status();
+            var expected = new RoadmapModel(solution.CatalogueItem).Status();
             var model = new ManageCatalogueSolutionModel(
                 solution.CatalogueItem,
                 additionalServices.Select(a => a.CatalogueItem).ToList(),

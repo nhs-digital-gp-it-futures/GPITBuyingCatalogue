@@ -18,7 +18,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.Catalogu
         {
             var model = new EditSolutionModel(odsCode, state);
 
-            model.BackLinkText.Should().Be("Go back");
             model.Title.Should().Be($"{state.CatalogueItemName} information for {state.CallOffId}");
             model.OdsCode.Should().Be(odsCode);
             model.OrderItem.Should().Be(state);

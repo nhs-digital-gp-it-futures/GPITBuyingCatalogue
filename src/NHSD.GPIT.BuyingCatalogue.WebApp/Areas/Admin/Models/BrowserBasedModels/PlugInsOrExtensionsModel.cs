@@ -9,7 +9,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.BrowserBasedModels
         public PlugInsOrExtensionsModel()
             : base()
         {
-            BackLinkText = "Go back";
         }
 
         public PlugInsOrExtensionsModel(CatalogueItem catalogueItem)
@@ -17,7 +16,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.BrowserBasedModels
         {
             AdditionalInformation = ClientApplication?.Plugins?.AdditionalInformation;
             PlugInsRequired = ClientApplication?.Plugins?.Required.ToYesNo();
-            BackLinkText = "Go back";
         }
 
         [StringLength(500)]

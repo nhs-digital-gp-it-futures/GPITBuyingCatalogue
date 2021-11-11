@@ -23,7 +23,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.BrowserBasedModels
         public SupportedBrowsersModel()
             : base()
         {
-            BackLinkText = "Go back";
         }
 
         public SupportedBrowsersModel(CatalogueItem catalogueItem)
@@ -38,8 +37,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.BrowserBasedModels
 
             if (ClientApplication.MobileResponsive.HasValue)
                 MobileResponsive = ClientApplication.MobileResponsive.ToYesNo();
-
-            BackLinkText = "Go back";
         }
 
         public SupportedBrowserModel[] Browsers { get; set; }

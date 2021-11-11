@@ -73,7 +73,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
             var expectedResult = new EditSupplierModel(supplier)
             {
                 BackLink = "testUrl",
-                BackLinkText = "Go back",
             };
 
             mockSuppliersService.Setup(s => s.GetSupplier(It.IsAny<int>())).ReturnsAsync(supplier);
@@ -95,7 +94,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
             var expectedResult = new EditSupplierDetailsModel
             {
                 BackLink = "testUrl",
-                BackLinkText = "Go back",
             };
 
             var actual = controller.AddSupplierDetails().As<ViewResult>();
@@ -177,7 +175,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
             var expectedResult = new EditSupplierDetailsModel(supplier)
             {
                 BackLink = "testUrl",
-                BackLinkText = "Go back",
             };
 
             var actual = (await controller.EditSupplierDetails(supplier.Id)).As<ViewResult>();
@@ -314,7 +311,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
             var expectedResult = new ManageSupplierContactsModel(supplier)
             {
                 BackLink = "testUrl",
-                BackLinkText = "Go back",
             };
 
             var actual = (await controller.ManageSupplierContacts(supplier.Id)).As<ViewResult>();
@@ -336,7 +332,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
             var expectedResult = new EditContactModel(supplier)
             {
                 BackLink = "testUrl",
-                BackLinkText = "Go back",
             };
 
             var actual = (await controller.AddSupplierContact(supplier.Id)).As<ViewResult>();
@@ -398,7 +393,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
             var expectedResult = new EditContactModel(supplier.SupplierContacts.First(), supplier)
             {
                 BackLink = "testUrl",
-                BackLinkText = "Go back",
             };
 
             var actual = (await controller.EditSupplierContact(supplier.Id, supplier.SupplierContacts.First().Id)).As<ViewResult>();
@@ -460,7 +454,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
             var expectedResult = new DeleteContactModel(supplier.SupplierContacts.First(), supplier.Name)
             {
                 BackLink = "testUrl",
-                BackLinkText = "Go back",
             };
 
             var actual = (await controller.DeleteSupplierContact(supplier.Id, supplier.SupplierContacts.First().Id)).As<ViewResult>();

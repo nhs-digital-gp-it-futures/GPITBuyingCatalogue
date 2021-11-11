@@ -18,7 +18,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.HostingTypeModels
             SolutionId = solution.Id;
             SolutionName = solution.Name;
             HostingType = hostingType;
-            BackLinkText = "Go back";
         }
 
         public HostingType HostingType { get; init; }

@@ -70,15 +70,19 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Models
             expected.SolutionId = catalogueItem.Id;
             expected.SolutionName = catalogueItem.Name;
 
-            var actual = new FeaturesModel().FromCatalogueItem(catalogueItem);
+            var actual = new FeaturesModel(catalogueItem);
 
-            actual.Should().BeEquivalentTo(expected);
+            actual.Should().BeEquivalentTo(
+                expected,
+                options => options
+                    .Excluding(fm => fm.BackLink)
+                    .Excluding(fm => fm.BackLinkText));
         }
 
         [Fact]
         public static void FromCatalogueItem_NullCatalogueItem_ThrowsException()
         {
-            var actual = Assert.Throws<ArgumentNullException>(() => new FeaturesModel().FromCatalogueItem(null));
+            var actual = Assert.Throws<ArgumentNullException>(() => new FeaturesModel(null));
 
             actual.ParamName.Should().Be("catalogueItem");
         }

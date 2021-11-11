@@ -17,15 +17,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Models.Supplier
             actual.ParamName.Should().Be("supplier");
         }
 
-        [Fact]
-        public static void ParameterlessConstructor_PropertiesSetAsExpected()
-        {
-            var actual = new EditSupplierAddressModel();
-
-            actual.BackLinkText.Should().Be("Go back");
-            actual.BackLink.Should().Be("./");
-        }
-
         [Theory]
         [CommonAutoData]
         public static void WithValidConstruction_PropertiesSetAsExpected(
@@ -43,8 +34,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Models.Supplier
             actual.PostCode.Should().Be(supplier.Address.Postcode);
             actual.Country.Should().Be(supplier.Address.Country);
 
-            actual.BackLinkText.Should().Be("Go back");
-            actual.BackLink.Should().Be("./");
             actual.SupplierName.Should().Be(supplier.Name);
         }
     }

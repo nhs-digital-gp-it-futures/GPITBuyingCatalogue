@@ -22,8 +22,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Models.BrowserB
             actual.SelectedScreenResolution.Should().Be(solution.GetClientApplication().MinimumDesktopResolution);
             actual.ConnectionSpeeds.Should().BeEquivalentTo(SelectLists.ConnectionSpeeds);
             actual.ScreenResolutions.Should().BeEquivalentTo(SelectLists.ScreenResolutions);
-            actual.BackLink.Should().Be("./");
-            actual.BackLinkText.Should().Be("Go back");
         }
 
         [Fact]

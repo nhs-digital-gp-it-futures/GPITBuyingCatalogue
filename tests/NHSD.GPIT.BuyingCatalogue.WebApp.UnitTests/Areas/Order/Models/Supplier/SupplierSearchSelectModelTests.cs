@@ -19,7 +19,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.Supplier
             var model = new SupplierSearchSelectModel(odsCode, callOffId, suppliers);
 
             model.BackLink.Should().Be($"/order/organisation/{odsCode}/order/{callOffId}/supplier/search");
-            model.BackLinkText.Should().Be("Go back");
             model.Title.Should().Be("Suppliers found");
             model.OdsCode.Should().Be(odsCode);
             model.Suppliers.Should().BeEquivalentTo(suppliers);

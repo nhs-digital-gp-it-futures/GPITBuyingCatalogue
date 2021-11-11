@@ -6,14 +6,7 @@
 
 @section BackLink
 {
-    @if (Model.CatalogueItemIdAdditional.ItemId != null)
-    {
-        <vc:nhs-backlink text="Go back" url="@Url.Action("CapabilitiesAdditionalServices", "Solutions", new { solutionId = Model.SolutionId, additionalServiceId = Model.CatalogueItemIdAdditional })"></vc:nhs-backlink>
-    }
-    else
-    {
-        <vc:nhs-backlink text="Go back" url="@Url.Action("Capabilities", "Solutions", new { solutionId = Model.SolutionId })"></vc:nhs-backlink>
-    }
+    <partial name="Partials/_BackLink" model="@Model" />
 }
 
 <p>@Model.Description</p>

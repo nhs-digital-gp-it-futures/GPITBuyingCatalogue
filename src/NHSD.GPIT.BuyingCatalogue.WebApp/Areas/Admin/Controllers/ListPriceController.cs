@@ -42,7 +42,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
                     nameof(CatalogueSolutionsController.ManageCatalogueSolution),
                     typeof(CatalogueSolutionsController).ControllerName(),
                     new { solutionId }),
-                BackLinkText = "Go back",
             };
 
             return View(model);
@@ -59,7 +58,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
             var model = new EditListPriceModel(solution)
             {
                 BackLink = Url.Action(nameof(Index), new { solutionId }),
-                BackLinkText = "Go back",
             };
 
             return View("EditListPrice", model);
@@ -96,7 +94,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
             var editListPriceModel = new EditListPriceModel(solution, cataloguePrice)
             {
                 BackLink = Url.Action(nameof(Index), new { solutionId }),
-                BackLinkText = "Go back",
             };
 
             return View("EditListPrice", editListPriceModel);
@@ -131,7 +128,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
             var model = new DeleteListPriceModel(solution)
             {
                 BackLink = Url.Action(nameof(EditListPrice), new { solutionId, listPriceId }),
-                BackLinkText = "Go back",
             };
 
             return View(model);

@@ -3,10 +3,11 @@ using System.Linq;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models;
+using NHSD.GPIT.BuyingCatalogue.WebApp.Models;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models
 {
-    public sealed class SolutionCheckEpicsModel : INoNavModel
+    public sealed class SolutionCheckEpicsModel : NavBaseModel, INoNavModel
     {
         public SolutionCheckEpicsModel()
         {
@@ -43,25 +44,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models
         public bool HasNoEpics() => !HasNhsDefined() && !HasSupplierDefined();
 
         public bool HasSupplierDefined() => SupplierDefined != null && SupplierDefined.Length > 0;
-
-        public SolutionCheckEpicsModel WithItems(
-            CatalogueItemId catalogueItemId,
-            CatalogueItemId catalogueItemIdAdditional,
-            string solutionName)
-        {
-            SolutionId = catalogueItemId;
-            CatalogueItemIdAdditional = catalogueItemIdAdditional;
-
-            return WithSolutionName(solutionName);
-        }
-
-        public SolutionCheckEpicsModel WithSolutionName(string solutionName)
-        {
-            if (!string.IsNullOrWhiteSpace(solutionName))
-                SolutionName = solutionName;
-
-            return this;
-        }
 
         private static string[] GetEpics(Capability capability, bool supplierDefined) =>
             capability?

@@ -11,7 +11,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.DeleteAssociatedSe
         public DeleteAssociatedServiceModel(string odsCode, CallOffId callOffId, CatalogueItemId catalogueItemId, string solutionName, string orderDescription)
         {
             BackLink = $"/order/organisation/{odsCode}/order/{callOffId}/associated-services/{catalogueItemId}";
-            BackLinkText = "Go back";
             Title = $"Delete {solutionName} from {callOffId}?";
             OdsCode = odsCode;
             CallOffId = callOffId;

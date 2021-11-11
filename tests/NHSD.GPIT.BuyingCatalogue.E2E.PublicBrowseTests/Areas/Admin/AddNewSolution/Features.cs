@@ -61,7 +61,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.AddNewSolution
 
             await using var context = GetEndToEndDbContext();
             var catalogueItem = await context.CatalogueItems.Include(c => c.Solution).SingleAsync(s => s.Id == SolutionId);
-            var featuresModel = new FeaturesModel().FromCatalogueItem(catalogueItem);
+            var featuresModel = new FeaturesModel(catalogueItem);
 
             featuresModel.AllFeatures.Should().BeEquivalentTo(features);
         }

@@ -16,7 +16,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.AdditionalServices
         public SelectAdditionalServicePriceModel(string odsCode, CallOffId callOffId, string solutionName, List<CataloguePrice> prices)
         {
             BackLink = $"/order/organisation/{odsCode}/order/{callOffId}/additional-services/select/additional-service";
-            BackLinkText = "Go back";
             Title = $"List price for {solutionName}";
             OdsCode = odsCode;
             SetPrices(prices);

@@ -10,7 +10,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.OrderDescription
 
         public OrderDescriptionModel(string odsCode, EntityFramework.Ordering.Models.Order order)
         {
-            BackLinkText = "Go back";
             Title = "Order description";
             OdsCode = odsCode;
             Description = order?.Description;
