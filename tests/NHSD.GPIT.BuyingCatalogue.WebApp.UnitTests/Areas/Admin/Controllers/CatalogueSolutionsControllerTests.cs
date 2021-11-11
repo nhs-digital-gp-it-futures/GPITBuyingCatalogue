@@ -14,11 +14,14 @@ using NHSD.GPIT.BuyingCatalogue.EntityFramework.Users.Models;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.AdditionalServices;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.AssociatedServices;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Caching;
+using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Capabilities;
+using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Models;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions;
 using NHSD.GPIT.BuyingCatalogue.Test.Framework.AutoFixtureCustomisations;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.BrowserBasedModels;
+using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.CapabilityModels;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.ClientApplicationTypeModels;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.HostingTypeModels;
 using Xunit;
@@ -2298,6 +2301,116 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
             _ = await controller.EditSupplierDetails(catalogueItem.Id, model);
 
             solutionsService.Verify(s => s.SaveContacts(catalogueItem.Id, expectedContacts));
+        }
+
+        [Theory]
+        [CommonAutoData]
+        public static async Task Get_EditCapabilities_InvalidId_ReturnsBadRequestObjectResult(
+            CatalogueItemId catalogueItemId,
+            [Frozen] Mock<ISolutionsService> solutionsService,
+            CatalogueSolutionsController controller)
+        {
+            solutionsService.Setup(s => s.GetSolution(catalogueItemId))
+                .ReturnsAsync(default(CatalogueItem));
+
+            var result = await controller.EditCapabilities(catalogueItemId);
+
+            result.As<BadRequestObjectResult>().Should().NotBeNull();
+            result.As<BadRequestObjectResult>().Value.Should().Be($"No Solution found for Id: {catalogueItemId}");
+        }
+
+        [Theory]
+        [CommonAutoData]
+        public static async Task Get_EditCapabilities_ValidId_ReturnsModel(
+            Solution solution,
+            IReadOnlyList<CapabilityCategory> capabilityCategories,
+            [Frozen] Mock<ISolutionsService> solutionsService,
+            [Frozen] Mock<ICapabilitiesService> capabilitiesService,
+            CatalogueSolutionsController controller)
+        {
+            var expectedModel = new EditCapabilitiesModel(solution.CatalogueItem, capabilityCategories)
+            {
+                SolutionName = solution.CatalogueItem.Name,
+            };
+
+            capabilitiesService.Setup(s => s.GetCapabilitiesByCategory())
+                .ReturnsAsync(capabilityCategories.ToList());
+
+            solutionsService.Setup(s => s.GetSolution(solution.CatalogueItemId))
+                .ReturnsAsync(solution.CatalogueItem);
+
+            var result = await controller.EditCapabilities(solution.CatalogueItemId);
+
+            result.As<ViewResult>().Should().NotBeNull();
+            result.As<ViewResult>().Model.Should().BeEquivalentTo(expectedModel, opt => opt.Excluding(m => m.BackLink));
+        }
+
+        [Theory]
+        [CommonAutoData]
+        public static async Task Post_EditCapabilities_InvalidModel_ReturnsViewWithModel(
+            Solution solution,
+            EditCapabilitiesModel model,
+            CatalogueSolutionsController controller)
+        {
+            controller.ModelState.AddModelError("some-key", "some-error");
+
+            var result = await controller.EditCapabilities(solution.CatalogueItemId, model);
+
+            result.As<ViewResult>().Should().NotBeNull();
+            result.As<ViewResult>().Model.Should().BeEquivalentTo(model, opt => opt.Excluding(m => m.BackLink));
+        }
+
+        [Theory]
+        [CommonAutoData]
+        public static async Task Post_EditCapabilities_InvalidId_ReturnsBadRequestObjectResult(
+            Solution solution,
+            EditCapabilitiesModel model,
+            [Frozen] Mock<ISolutionsService> solutionsService,
+            CatalogueSolutionsController controller)
+        {
+            solutionsService.Setup(s => s.GetSolution(solution.CatalogueItemId))
+                .ReturnsAsync(default(CatalogueItem));
+
+            var result = await controller.EditCapabilities(solution.CatalogueItemId, model);
+
+            result.As<BadRequestObjectResult>().Should().NotBeNull();
+            result.As<BadRequestObjectResult>().Value.Should().Be($"No Solution found for Id: {solution.CatalogueItemId}");
+        }
+
+        [Theory]
+        [CommonAutoData]
+        public static async Task Post_EditCapabilities_ValidModel_AddsCapabilitiesToCatalogueItem(
+            Solution solution,
+            EditCapabilitiesModel model,
+            [Frozen] Mock<ISolutionsService> solutionsService,
+            [Frozen] Mock<ICapabilitiesService> capabilitiesService,
+            CatalogueSolutionsController controller)
+        {
+            solutionsService.Setup(s => s.GetSolution(solution.CatalogueItemId))
+                .ReturnsAsync(solution.CatalogueItem);
+
+            _ = await controller.EditCapabilities(solution.CatalogueItemId, model);
+
+            capabilitiesService.Verify(s => s.AddCapabilitiesToCatalogueItem(solution.CatalogueItemId, It.IsAny<SaveCatalogueItemCapabilitiesModel>()));
+        }
+
+        [Theory]
+        [CommonAutoData]
+        public static async Task Post_EditCapabilities_ValidModel_RedirectsToManageCatalogueSolution(
+            Solution solution,
+            EditCapabilitiesModel model,
+            [Frozen] Mock<ISolutionsService> solutionsService,
+            CatalogueSolutionsController controller)
+        {
+            solutionsService.Setup(s => s.GetSolution(solution.CatalogueItemId))
+                .ReturnsAsync(solution.CatalogueItem);
+
+            var result = await controller.EditCapabilities(solution.CatalogueItemId, model);
+
+            result.As<RedirectToActionResult>().Should().NotBeNull();
+            result.As<RedirectToActionResult>().ActionName.Should().Be(nameof(CatalogueSolutionsController.ManageCatalogueSolution));
+            result.As<RedirectToActionResult>().RouteValues.Should().Contain(
+                new KeyValuePair<string, object>("solutionId", solution.CatalogueItemId));
         }
     }
 }

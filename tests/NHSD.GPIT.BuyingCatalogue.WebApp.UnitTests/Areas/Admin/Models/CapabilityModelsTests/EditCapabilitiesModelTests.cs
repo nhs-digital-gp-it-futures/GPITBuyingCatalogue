@@ -14,14 +14,34 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Models.Capabili
         [Theory]
         [CommonAutoData]
         public static void Constructing_SetsPropertiesAsExpected(
+            Solution solution,
             AdditionalService additionalService,
             IReadOnlyList<CapabilityCategory> capabilityCategories)
         {
-            var model = new EditCapabilitiesModel(additionalService.CatalogueItem, capabilityCategories);
+            var model = new EditCapabilitiesModel(additionalService.CatalogueItem, capabilityCategories)
+            {
+                SolutionName = solution.CatalogueItem.Name,
+            };
 
-            model.Name.Should().Be(additionalService.CatalogueItem.Name);
-            model.SolutionName.Should().Be(additionalService.CatalogueItem.Name);
+            model.Title.Should().Be($"{additionalService.CatalogueItem.Name} Capabilities and Epics");
+            model.SolutionName.Should().Be(solution.CatalogueItem.Name);
             model.CatalogueItemType.Should().Be(additionalService.CatalogueItem.CatalogueItemType.AsString(EnumFormat.DisplayName));
+        }
+
+        [Theory]
+        [CommonAutoData]
+        public static void Constructing_WithSolution_SetsPropertiesAsExpected(
+            Solution solution,
+            IReadOnlyList<CapabilityCategory> capabilityCategories)
+        {
+            var model = new EditCapabilitiesModel(solution.CatalogueItem, capabilityCategories)
+            {
+                SolutionName = solution.CatalogueItem.Name,
+            };
+
+            model.Title.Should().Be($"Capabilities and Epics");
+            model.SolutionName.Should().Be(solution.CatalogueItem.Name);
+            model.CatalogueItemType.Should().Be(solution.CatalogueItem.CatalogueItemType.AsString(EnumFormat.DisplayName));
         }
 
         [Theory]

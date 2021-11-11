@@ -5,6 +5,7 @@ using FluentAssertions;
 using Microsoft.EntityFrameworkCore;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Objects.Common;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Utils;
+using NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.TestBases;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
@@ -12,24 +13,22 @@ using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers;
 using OpenQA.Selenium;
 using Xunit;
 
-namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.AddNewSolution.AdditionalServices
+namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.AddNewSolution
 {
-    public sealed class AdditionalServiceCapabilities : AuthorityTestBase, IClassFixture<LocalWebApplicationFactory>
+    public sealed class SolutionCapabilities : AuthorityTestBase, IClassFixture<LocalWebApplicationFactory>
     {
         private static readonly CatalogueItemId SolutionId = new(99999, "001");
-        private static readonly CatalogueItemId AdditionalServiceId = new(99999, "001A99");
 
         private static readonly Dictionary<string, string> Parameters = new()
         {
             { nameof(SolutionId), SolutionId.ToString() },
-            { nameof(AdditionalServiceId), AdditionalServiceId.ToString() },
         };
 
-        public AdditionalServiceCapabilities(LocalWebApplicationFactory factory)
+        public SolutionCapabilities(LocalWebApplicationFactory factory)
             : base(
                   factory,
-                  typeof(AdditionalServicesController),
-                  nameof(AdditionalServicesController.EditCapabilities),
+                  typeof(CatalogueSolutionsController),
+                  nameof(CatalogueSolutionsController.EditCapabilities),
                   Parameters)
         {
         }
@@ -39,9 +38,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.AddNewSolution.Addition
         {
             await using var context = GetEndToEndDbContext();
             var capabilityCategories = await context.CapabilityCategories.ToListAsync();
-            var additionalService = await context.CatalogueItems.Include(i => i.Supplier).SingleAsync(s => s.Id == AdditionalServiceId);
-            var solution = await context.CatalogueItems.SingleAsync(s => s.Id == SolutionId);
-            var additionalServiceName = additionalService.Name;
+            var solution = await context.CatalogueItems.Include(i => i.Supplier).SingleAsync(s => s.Id == SolutionId);
             var solutionName = solution.Name;
 
             CommonActions.GoBackLinkDisplayed().Should().BeTrue();
@@ -49,7 +46,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.AddNewSolution.Addition
 
             CommonActions.PageTitle()
                 .Should()
-                .BeEquivalentTo($"{additionalServiceName} Capabilities and Epics - {solutionName}".FormatForComparison());
+                .BeEquivalentTo($"Capabilities and Epics - {solutionName}".FormatForComparison());
 
             CommonActions.ElementIsDisplayed(CommonSelectors.Header1)
                 .Should()
@@ -62,9 +59,9 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.AddNewSolution.Addition
         public async Task Submit_NoCapabilitiesSelected_AddsSummaryError()
         {
             await using var context = GetEndToEndDbContext();
-            var catalogueItemCapabilities = await context.CatalogueItemCapabilities.Where(c => c.CatalogueItemId == AdditionalServiceId).ToListAsync();
+            var catalogueItemCapabilities = await context.CatalogueItemCapabilities.Where(c => c.CatalogueItemId == SolutionId).ToListAsync();
             context.CatalogueItemCapabilities.RemoveRange(catalogueItemCapabilities);
-            await context.SaveChangesAsync();
+            await context.SaveChangesAsAsync(UserSeedData.BobId);
 
             Driver.Navigate().Refresh();
 
@@ -79,7 +76,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.AddNewSolution.Addition
                 .BeTrue();
 
             context.CatalogueItemCapabilities.AddRange(catalogueItemCapabilities);
-            await context.SaveChangesAsync();
+            await context.SaveChangesAsAsync(UserSeedData.BobId);
         }
 
         [Fact]
@@ -93,12 +90,12 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.AddNewSolution.Addition
             CommonActions.ClickSave();
 
             CommonActions.PageLoadedCorrectGetIndex(
-                    typeof(AdditionalServicesController),
-                    nameof(AdditionalServicesController.EditAdditionalService))
+                    typeof(CatalogueSolutionsController),
+                    nameof(CatalogueSolutionsController.ManageCatalogueSolution))
                 .Should()
                 .BeTrue();
 
-            var catalogueItemCapability = await context.CatalogueItemCapabilities.SingleOrDefaultAsync(c => c.CatalogueItemId == AdditionalServiceId && c.CapabilityId == capability.Id);
+            var catalogueItemCapability = await context.CatalogueItemCapabilities.SingleOrDefaultAsync(c => c.CatalogueItemId == SolutionId && c.CapabilityId == capability.Id);
 
             catalogueItemCapability.Should().NotBeNull();
         }
@@ -109,8 +106,8 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.AddNewSolution.Addition
             CommonActions.ClickGoBackLink();
 
             CommonActions.PageLoadedCorrectGetIndex(
-                    typeof(AdditionalServicesController),
-                    nameof(AdditionalServicesController.EditAdditionalService))
+                    typeof(CatalogueSolutionsController),
+                    nameof(CatalogueSolutionsController.ManageCatalogueSolution))
                 .Should()
                 .BeTrue();
         }

@@ -467,17 +467,24 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
             Solution solution,
             AdditionalService additionalService,
             IReadOnlyList<CapabilityCategory> capabilityCategories,
+            [Frozen] Mock<ISolutionsService> solutionsService,
             [Frozen] Mock<IAdditionalServicesService> additionalServicesService,
             [Frozen] Mock<ICapabilitiesService> capabilitiesService,
             AdditionalServicesController controller)
         {
-            var expectedModel = new EditCapabilitiesModel(additionalService.CatalogueItem, capabilityCategories);
+            var expectedModel = new EditCapabilitiesModel(additionalService.CatalogueItem, capabilityCategories)
+            {
+                SolutionName = solution.CatalogueItem.Name,
+            };
 
             capabilitiesService.Setup(s => s.GetCapabilitiesByCategory())
                 .ReturnsAsync(capabilityCategories.ToList());
 
             additionalServicesService.Setup(s => s.GetAdditionalService(solution.CatalogueItemId, additionalService.CatalogueItemId))
                 .ReturnsAsync(additionalService.CatalogueItem);
+
+            solutionsService.Setup(s => s.GetSolution(solution.CatalogueItemId))
+                .ReturnsAsync(solution.CatalogueItem);
 
             var result = await controller.EditCapabilities(solution.CatalogueItemId, additionalService.CatalogueItemId);
 
