@@ -31,6 +31,11 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Organisations.Configuration
 
             builder.HasIndex(o => o.Name, "AK_Organisations_Name")
                 .IsUnique();
+
+            builder.HasOne(o => o.LastUpdatedByUser)
+                .WithMany()
+                .HasForeignKey(o => o.LastUpdatedBy)
+                .HasConstraintName("FK_Organisations_LastUpdatedBy");
         }
     }
 }
