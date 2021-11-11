@@ -10,8 +10,6 @@ namespace NHSD.GPIT.BuyingCatalogue.Test.Framework.AutoFixtureCustomisations
     {
         public void Customize(IFixture fixture)
         {
-            fixture.Customize<Standard>(c => c.Without(s => s.StandardCapabilities));
-
             static ISpecimenBuilder ComposerTransformation(ICustomizationComposer<StandardCapability> composer) => composer
                 .FromFactory(new StandardCapabilitySpecimenBuilder())
                 .Without(sc => sc.Capability)
@@ -32,10 +30,10 @@ namespace NHSD.GPIT.BuyingCatalogue.Test.Framework.AutoFixtureCustomisations
                 var standard = context.Create<Standard>();
                 var standardCapability = new StandardCapability();
 
-                standard.StandardCapabilities.Add(standardCapability);
-
                 standardCapability.Standard = standard;
                 standardCapability.StandardId = standard.Id;
+
+                standard.StandardCapabilities.Add(standardCapability);
 
                 return standardCapability;
             }

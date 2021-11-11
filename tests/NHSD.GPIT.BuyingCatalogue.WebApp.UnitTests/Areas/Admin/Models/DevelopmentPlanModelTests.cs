@@ -12,13 +12,13 @@ using Xunit;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Models
 {
-    public static class RoadmapModelTests
+    public static class DevelopmentPlanModelTests
     {
         [Fact]
         public static void Link_Should_BeCorrectlyDecorated()
         {
-            var propertyInfo = typeof(RoadmapModel)
-                .GetProperty(nameof(RoadmapModel.Link), BindingFlags.Instance | BindingFlags.Public);
+            var propertyInfo = typeof(DevelopmentPlanModel)
+                .GetProperty(nameof(DevelopmentPlanModel.Link), BindingFlags.Instance | BindingFlags.Public);
 
             propertyInfo
                 .Should()
@@ -28,31 +28,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Models
                 .BeDecoratedWith<UrlAttribute>();
         }
 
-        [Theory]
-        [CommonAutoData]
-        public static void FromCatalogueItem_ValidCatalogueItem_PropertiesSetAsExpected(
-            Solution solution,
-            RoadmapModel expected)
-        {
-            var catalogueItem = solution.CatalogueItem;
-
-            expected.Link = solution.RoadMap;
-            expected.SolutionId = catalogueItem.Id;
-            expected.SolutionName = catalogueItem.Name;
-
-            var actual = new RoadmapModel(catalogueItem);
-
-            actual.Should().BeEquivalentTo(
-                expected,
-                options => options
-                    .Excluding(rm => rm.BackLink)
-                    .Excluding(rm => rm.BackLinkText));
-        }
-
         [Fact]
         public static void FromCatalogueItem_NullCatalogueItem_ThrowsException()
         {
-            var actual = Assert.Throws<ArgumentNullException>(() => new RoadmapModel(null));
+            var actual = Assert.Throws<ArgumentNullException>(() => new DevelopmentPlanModel(null));
 
             actual.ParamName.Should().Be("catalogueItem");
         }
@@ -61,7 +40,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Models
         [AutoData]
         public static void Status_LinkAdded_ReturnsCompleted(string link)
         {
-            var model = new RoadmapModel { Link = link };
+            var model = new DevelopmentPlanModel { Link = link };
 
             var actual = model.Status();
 
@@ -72,7 +51,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Models
         [MemberData(nameof(InvalidStringData.TestData), MemberType = typeof(InvalidStringData))]
         public static void Status_LinkInvalid_ReturnsOptional(string invalid)
         {
-            var model = new RoadmapModel { Link = invalid };
+            var model = new DevelopmentPlanModel { Link = invalid };
 
             var actual = model.Status();
 
