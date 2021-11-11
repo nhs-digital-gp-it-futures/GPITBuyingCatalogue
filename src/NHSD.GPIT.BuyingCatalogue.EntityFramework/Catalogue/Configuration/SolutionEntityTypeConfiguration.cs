@@ -24,7 +24,6 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Configuration
             builder.Property(s => s.ImplementationDetail).HasMaxLength(1100);
             builder.Property(s => s.IntegrationsUrl).HasMaxLength(1000);
             builder.Property(s => s.LastUpdated).HasDefaultValue(DateTime.UtcNow);
-            builder.Property(s => s.LastUpdatedBy);
 
             builder.Property(s => s.Hosting)
                 .HasJsonConversion();

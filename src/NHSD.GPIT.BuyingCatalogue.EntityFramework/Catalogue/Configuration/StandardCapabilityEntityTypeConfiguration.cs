@@ -12,7 +12,6 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Configuration
             builder.ToTable("StandardsCapabilities", Schemas.Catalogue);
 
             builder.Property(sc => sc.LastUpdated).HasDefaultValue(DateTime.UtcNow);
-            builder.Property(sc => sc.LastUpdatedBy);
 
             builder.HasKey(sc => new { sc.StandardId, sc.CapabilityId });
 

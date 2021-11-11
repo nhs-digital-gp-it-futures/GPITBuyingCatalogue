@@ -15,7 +15,6 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Configuration
             builder.HasKey(s => s.Id);
 
             builder.Property(s => s.LastUpdated).HasDefaultValue(DateTime.UtcNow);
-            builder.Property(s => s.LastUpdatedBy);
 
             builder.HasOne(s => s.LastUpdatedByUser)
                 .WithMany()

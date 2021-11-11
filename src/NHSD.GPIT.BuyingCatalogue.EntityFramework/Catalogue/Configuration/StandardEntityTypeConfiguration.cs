@@ -34,7 +34,6 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Configuration
                 .HasColumnName("StandardTypeId");
 
             builder.Property(s => s.LastUpdated).HasDefaultValue(DateTime.UtcNow);
-            builder.Property(s => s.LastUpdatedBy);
 
             builder.HasMany(s => s.StandardCapabilities)
                 .WithOne(sc => sc.Standard)

@@ -19,7 +19,6 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Configuration
             builder.Property(c => c.LastName).HasMaxLength(100);
             builder.Property(c => c.Phone).HasMaxLength(35);
             builder.Property(c => c.LastUpdated).HasDefaultValue(DateTime.UtcNow);
-            builder.Property(c => c.LastUpdatedBy);
 
             builder.HasOne(c => c.LastUpdatedByUser)
                 .WithMany()

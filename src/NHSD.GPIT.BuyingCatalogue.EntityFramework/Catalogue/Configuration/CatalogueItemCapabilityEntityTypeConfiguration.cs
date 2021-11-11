@@ -19,7 +19,6 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Configuration
                 .HasConversion(id => id.ToString(), id => CatalogueItemId.ParseExact(id));
 
             builder.Property(i => i.LastUpdated).HasDefaultValue(DateTime.UtcNow);
-            builder.Property(i => i.LastUpdatedBy);
 
             builder.HasOne(i => i.Capability)
                 .WithMany(c => c.CatalogueItemCapabilities)

@@ -20,7 +20,6 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Configuration
 
             builder.Property(d => d.DeliveryDate).HasColumnType("date");
             builder.Property(d => d.LastUpdated).HasDefaultValue(DateTime.UtcNow);
-            builder.Property(d => d.LastUpdatedBy);
 
             builder.HasOne(d => d.Order)
                 .WithMany(o => o.DefaultDeliveryDates)

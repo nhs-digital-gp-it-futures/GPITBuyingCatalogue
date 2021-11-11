@@ -25,7 +25,6 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Configuration
                 .HasConversion(id => id.ToString(), id => CatalogueItemId.ParseExact(id));
 
             builder.Property(ssa => ssa.LastUpdated).HasDefaultValue(DateTime.UtcNow);
-            builder.Property(ssa => ssa.LastUpdatedBy);
 
             builder.HasOne(d => d.CatalogueItem)
                 .WithMany(p => p.SupplierServiceAssociations)

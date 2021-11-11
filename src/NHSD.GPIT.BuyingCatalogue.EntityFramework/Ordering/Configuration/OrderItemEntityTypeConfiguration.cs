@@ -25,7 +25,6 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Configuration
                 .HasColumnName("EstimationPeriodId");
 
             builder.Property(oi => oi.LastUpdated).HasDefaultValue(DateTime.UtcNow);
-            builder.Property(oi => oi.LastUpdatedBy);
             builder.Property(oi => oi.Price).HasColumnType("decimal(18, 4)");
 
             builder.HasOne(oi => oi.CatalogueItem)

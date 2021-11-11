@@ -15,7 +15,6 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Configuration
 
             builder.Property(t => t.Price).HasColumnType("decimal(18, 3)");
             builder.Property(t => t.LastUpdated).HasDefaultValue(DateTime.UtcNow);
-            builder.Property(t => t.LastUpdatedBy);
 
             builder.HasOne<CataloguePrice>()
                 .WithMany()

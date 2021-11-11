@@ -21,7 +21,6 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Configuration
 
             builder.Property(o => o.FundingSourceOnlyGms).HasColumnName("FundingSourceOnlyGMS");
             builder.Property(o => o.LastUpdated).HasDefaultValue(DateTime.UtcNow);
-            builder.Property(o => o.LastUpdatedBy);
             builder.Property(o => o.OrderStatus)
                 .HasConversion<int>()
                 .HasColumnName("OrderStatusId");

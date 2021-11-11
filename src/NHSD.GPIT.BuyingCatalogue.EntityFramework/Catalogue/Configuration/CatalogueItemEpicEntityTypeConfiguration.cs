@@ -20,7 +20,6 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Configuration
 
             builder.Property(e => e.EpicId).HasMaxLength(10);
             builder.Property(e => e.LastUpdated).HasDefaultValue(DateTime.UtcNow);
-            builder.Property(e => e.LastUpdatedBy);
 
             builder.HasOne<Capability>()
                 .WithMany()

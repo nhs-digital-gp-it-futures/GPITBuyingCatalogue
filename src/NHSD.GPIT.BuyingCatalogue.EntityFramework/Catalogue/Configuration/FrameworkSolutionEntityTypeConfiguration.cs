@@ -20,7 +20,6 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Configuration
                 .HasConversion(id => id.ToString(), id => CatalogueItemId.ParseExact(id));
 
             builder.Property(f => f.LastUpdated).HasDefaultValue(DateTime.UtcNow);
-            builder.Property(f => f.LastUpdatedBy);
 
             builder.HasOne(f => f.Framework)
                 .WithMany()

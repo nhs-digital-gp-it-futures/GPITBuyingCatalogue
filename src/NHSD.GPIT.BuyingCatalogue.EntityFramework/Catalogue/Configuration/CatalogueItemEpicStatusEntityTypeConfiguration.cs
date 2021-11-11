@@ -17,7 +17,6 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Configuration
                 .HasMaxLength(16);
 
             builder.Property(s => s.LastUpdated).HasDefaultValue(DateTime.UtcNow);
-            builder.Property(s => s.LastUpdatedBy);
 
             builder.HasIndex(s => s.Name, "AK_CatalogueItemEpicStatus_Name")
                 .IsUnique();

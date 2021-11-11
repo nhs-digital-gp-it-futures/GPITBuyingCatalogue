@@ -35,7 +35,6 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Configuration
                 .HasColumnName("StatusId");
 
             builder.Property(c => c.LastUpdated).HasDefaultValue(DateTime.UtcNow);
-            builder.Property(c => c.LastUpdatedBy);
 
             builder.HasMany(c => c.CatalogueItemCapabilities)
                 .WithOne(cic => cic.Capability)

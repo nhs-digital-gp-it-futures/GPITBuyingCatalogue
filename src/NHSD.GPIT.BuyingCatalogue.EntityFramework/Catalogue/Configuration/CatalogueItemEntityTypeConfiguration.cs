@@ -38,7 +38,6 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Configuration
                 .HasMaxLength(6);
 
             builder.Property(i => i.LastUpdated).HasDefaultValue(DateTime.UtcNow);
-            builder.Property(i => i.LastUpdatedBy);
 
             builder.HasOne(i => i.Supplier)
                 .WithMany(s => s.CatalogueItems)
