@@ -12,12 +12,6 @@
             <nhs-page-title title="@ViewBag.Title" 
                             advice="Check the supplier information and edit details for the primary contact for this order." />
 
-            <nhs-inset-text>
-                <p>
-                    Once saved, you'll not be able to change the supplier for this order. To change the supplier, you'd need to start a new order.
-                </p>
-            </nhs-inset-text>
-
             <nhs-summary-list>
                 <nhs-summary-list-row label-text="Supplier name">
                     <p data-test-id="supplier-name">
@@ -47,7 +41,7 @@
                     <nhs-input asp-for="PrimaryContact.Phone"
                                           label-text="Telephone number" />
                     <div data-test-id="save-button">
-                        <nhs-submit-button text="Save and return" />
+                        <nhs-submit-button />
                     </div>
                 </div>
             </form>
