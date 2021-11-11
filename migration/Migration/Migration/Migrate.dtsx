@@ -12,8 +12,8 @@
   DTS:ObjectName="Migrate"
   DTS:PackageType="5"
   DTS:ProtectionLevel="0"
-  DTS:VersionBuild="327"
-  DTS:VersionGUID="{B6B33F2A-647B-4947-B292-452A832AA03E}">
+  DTS:VersionBuild="329"
+  DTS:VersionGUID="{12A9B0CE-1E3C-4B7A-8279-F40C230C6C7A}">
   <DTS:Property
     DTS:Name="PackageFormatVersion">8</DTS:Property>
   <DTS:ConnectionManagers>
@@ -15963,6 +15963,10 @@ where [refTable].[OriginalId] = ?</property>
                       refId="Package\Migrate Organizations\Save Organizations.Inputs[OLE DB Destination Input].ExternalColumns[SysEndTime]"
                       dataType="dbTimeStamp2"
                       name="SysEndTime" />
+                    <externalMetadataColumn
+                      refId="Package\Migrate Organizations\Save Organizations.Inputs[OLE DB Destination Input].ExternalColumns[LastUpdatedBy]"
+                      dataType="i4"
+                      name="LastUpdatedBy" />
                   </externalMetadataColumns>
                 </input>
               </inputs>
@@ -18401,6 +18405,15 @@ where [refTable].[OriginalId] = ?</property>
                       refId="Package\Migrate Related Organizations\Save Related Organizations.Inputs[OLE DB Destination Input].ExternalColumns[SysEndTime]"
                       dataType="dbTimeStamp2"
                       name="SysEndTime" />
+                    <externalMetadataColumn
+                      refId="Package\Migrate Related Organizations\Save Related Organizations.Inputs[OLE DB Destination Input].ExternalColumns[LastUpdated]"
+                      dataType="dbTimeStamp2"
+                      name="LastUpdated"
+                      scale="7" />
+                    <externalMetadataColumn
+                      refId="Package\Migrate Related Organizations\Save Related Organizations.Inputs[OLE DB Destination Input].ExternalColumns[LastUpdatedBy]"
+                      dataType="i4"
+                      name="LastUpdatedBy" />
                   </externalMetadataColumns>
                 </input>
               </inputs>
@@ -24665,7 +24678,7 @@ where [refTable].[OriginalId] = ?</property>
                   containsID="true"
                   dataType="System.String"
                   description="Specifies the list of lineage identifiers that map to the parameters that the SQL statement in the SQLCommand property uses. Entries in the list are separated by semicolons."
-                  name="ParameterMap">#{Package\Migrate Users\271:invalid};</property>
+                  name="ParameterMap">#{Package\Migrate Users\276:invalid};</property>
                 <property
                   dataType="System.Int32"
                   description="Specifies the column code page to use when code page information is unavailable from the data source."
@@ -26696,30 +26709,6 @@ where [refTable].[OriginalId] = ?</property>
           Id="Package\Create Pricing Lookup Table\Add Deployed Units to Lookup Table\Add to Lookup Table"
           TopLeft="24,209.5" />
         <EdgeLayout
-          Id="Package\Create Pricing Lookup Table\Add Deployed Units to Lookup Table.Paths[Lookup Match Output]"
-          TopLeft="114,149.5">
-          <EdgeLayout.Curve>
-            <mssgle:Curve
-              StartConnector="{assembly:Null}"
-              EndConnector="0,60"
-              Start="0,0"
-              End="0,52.5">
-              <mssgle:Curve.Segments>
-                <mssgle:SegmentCollection
-                  Capacity="5">
-                  <mssgle:LineSegment
-                    End="0,52.5" />
-                </mssgle:SegmentCollection>
-              </mssgle:Curve.Segments>
-            </mssgle:Curve>
-          </EdgeLayout.Curve>
-          <EdgeLayout.Labels>
-            <mssgm:EdgeLabel
-              BoundingBox="-68.07673828125,20.4453125,136.1534765625,11.609375"
-              RelativePosition="Any" />
-          </EdgeLayout.Labels>
-        </EdgeLayout>
-        <EdgeLayout
           Id="Package\Create Pricing Lookup Table\Add Deployed Units to Lookup Table.Paths[OLE DB Source Output]"
           TopLeft="114,47.5">
           <EdgeLayout.Curve>
@@ -26740,6 +26729,30 @@ where [refTable].[OriginalId] = ?</property>
           <EdgeLayout.Labels>
             <mssgm:EdgeLabel
               BoundingBox="-15.10447265625,21.52685546875,30.2089453125,9.4462890625"
+              RelativePosition="Any" />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <EdgeLayout
+          Id="Package\Create Pricing Lookup Table\Add Deployed Units to Lookup Table.Paths[Lookup Match Output]"
+          TopLeft="114,149.5">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="0,60"
+              Start="0,0"
+              End="0,52.5">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,52.5" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <mssgm:EdgeLabel
+              BoundingBox="-68.07673828125,20.4453125,136.1534765625,11.609375"
               RelativePosition="Any" />
           </EdgeLayout.Labels>
         </EdgeLayout>
@@ -29820,9 +29833,7 @@ where [refTable].[OriginalId] = ?</property>
             </mssgle:Curve>
           </EdgeLayout.Curve>
           <EdgeLayout.Labels>
-            <mssgm:EdgeLabel
-              BoundingBox="0,0,0,0"
-              RelativePosition="Any" />
+            <EdgeLabelCollection />
           </EdgeLayout.Labels>
         </EdgeLayout>
         <EdgeLayout
@@ -30411,9 +30422,7 @@ where [refTable].[OriginalId] = ?</property>
             </mssgle:Curve>
           </EdgeLayout.Curve>
           <EdgeLayout.Labels>
-            <mssgm:EdgeLabel
-              BoundingBox="0,0,0,0"
-              RelativePosition="Any" />
+            <EdgeLabelCollection />
           </EdgeLayout.Labels>
         </EdgeLayout>
       </GraphLayout>

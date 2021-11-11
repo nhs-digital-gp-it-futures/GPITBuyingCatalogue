@@ -2,10 +2,11 @@
 using System.Collections.Generic;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Addresses.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
+using NHSD.GPIT.BuyingCatalogue.EntityFramework.Users.Models;
 
 namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Organisations.Models
 {
-    public sealed class Organisation
+    public sealed class Organisation : IAudited
     {
         public Organisation()
         {
@@ -27,6 +28,10 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Organisations.Models
         public bool CatalogueAgreementSigned { get; set; }
 
         public DateTime LastUpdated { get; set; }
+
+        public int? LastUpdatedBy { get; set; }
+
+        public AspNetUser LastUpdatedByUser { get; set; }
 
         public ICollection<Order> Orders { get; set; }
 
