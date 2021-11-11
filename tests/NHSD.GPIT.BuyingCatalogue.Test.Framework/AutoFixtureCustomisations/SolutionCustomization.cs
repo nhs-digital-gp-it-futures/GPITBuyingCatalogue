@@ -24,7 +24,8 @@ namespace NHSD.GPIT.BuyingCatalogue.Test.Framework.AutoFixtureCustomisations
                 .Without(s => s.Integrations)
                 .Without(s => s.LastUpdatedByUser)
                 .Without(s => s.MarketingContacts)
-                .Without(s => s.ServiceLevelAgreement);
+                .Without(s => s.ServiceLevelAgreement)
+                .Without(s => s.WorkOffPlans);
 
             fixture.Customize<Solution>(ComposerTransformation);
         }
@@ -54,6 +55,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Test.Framework.AutoFixtureCustomisations
                 AddServiceLevelAgreements(solution, context);
                 AddSLAContacts(solution, context);
                 InitializeSupplier(solution);
+                AddWorkOffPlans(solution, context);
 
                 return solution;
             }
@@ -122,6 +124,17 @@ namespace NHSD.GPIT.BuyingCatalogue.Test.Framework.AutoFixtureCustomisations
                     catalogueItem.SupplierId = supplier.Id;
                     supplier.CatalogueItems.Add(catalogueItem);
                 }
+            }
+
+            private static void AddWorkOffPlans(Solution solution, ISpecimenContext context)
+            {
+                var workOffPlans = context.CreateMany<WorkOffPlan>().ToList();
+                workOffPlans.ForEach(wop =>
+                {
+                    wop.Solution = solution;
+                    wop.SolutionId = solution.CatalogueItemId;
+                    solution.WorkOffPlans.Add(wop);
+                });
             }
         }
     }

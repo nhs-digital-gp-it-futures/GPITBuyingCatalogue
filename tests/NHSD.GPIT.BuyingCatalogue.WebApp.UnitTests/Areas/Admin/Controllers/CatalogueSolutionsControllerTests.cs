@@ -489,12 +489,13 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
         public static async Task Get_Roadmap_GetsSolutionFromService(
             CatalogueItemId catalogueItemId,
             [Frozen] Mock<ISolutionsService> mockService,
+            Solution solution,
             CatalogueSolutionsController controller)
         {
             mockService.Setup(s => s.GetSolution(catalogueItemId))
-                .ReturnsAsync(new CatalogueItem());
+                .ReturnsAsync(solution.CatalogueItem);
 
-            await controller.Roadmap(catalogueItemId);
+            await controller.DevelopmentPlans(catalogueItemId);
 
             mockService.Verify(s => s.GetSolution(catalogueItemId));
         }
@@ -502,20 +503,20 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
         [Theory]
         [CommonAutoData]
         public static async Task Get_Roadmap_ValidId_ReturnsViewWithExpectedModel(
-            CatalogueItem catalogueItem,
+            Solution solution,
             CatalogueItemId catalogueItemId,
             [Frozen] Mock<ISolutionsService> mockService,
             CatalogueSolutionsController controller)
         {
             mockService.Setup(s => s.GetSolution(catalogueItemId))
-                .ReturnsAsync(catalogueItem);
+                .ReturnsAsync(solution.CatalogueItem);
 
-            var expected = new RoadmapModel(catalogueItem)
+            var expected = new DevelopmentPlanModel(solution.CatalogueItem)
             {
                 BackLink = "testUrl",
             };
 
-            var actual = (await controller.Roadmap(catalogueItemId)).As<ViewResult>();
+            var actual = (await controller.DevelopmentPlans(catalogueItemId)).As<ViewResult>();
 
             mockService.Verify(s => s.GetSolution(catalogueItemId));
             actual.ViewName.Should().BeNull();
@@ -532,7 +533,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
             mockService.Setup(s => s.GetSolution(catalogueItemId))
                 .ReturnsAsync(default(CatalogueItem));
 
-            var actual = (await controller.Roadmap(catalogueItemId)).As<BadRequestObjectResult>();
+            var actual = (await controller.DevelopmentPlans(catalogueItemId)).As<BadRequestObjectResult>();
 
             actual.Value.Should().Be($"No Solution found for Id: {catalogueItemId}");
         }
@@ -541,11 +542,11 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
         [CommonAutoData]
         public static async Task Post_Roadmap_CallsSavesSolutionRoadmap(
             CatalogueItemId catalogueItemId,
-            RoadmapModel model,
+            DevelopmentPlanModel model,
             [Frozen] Mock<ISolutionsService> mockService,
             CatalogueSolutionsController controller)
         {
-            await controller.Roadmap(catalogueItemId, model);
+            await controller.DevelopmentPlans(catalogueItemId, model);
 
             mockService.Verify(s => s.SaveRoadMap(catalogueItemId, model.Link));
         }
@@ -554,10 +555,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
         [CommonAutoData]
         public static async Task Post_Roadmap_RedirectsToManageCatalogueSolution(
             CatalogueItemId catalogueItemId,
-            RoadmapModel model,
+            DevelopmentPlanModel model,
             CatalogueSolutionsController controller)
         {
-            var actual = (await controller.Roadmap(catalogueItemId, model)).As<RedirectToActionResult>();
+            var actual = (await controller.DevelopmentPlans(catalogueItemId, model)).As<RedirectToActionResult>();
 
             actual.ActionName.Should().Be(nameof(CatalogueSolutionsController.ManageCatalogueSolution));
             actual.ControllerName.Should().BeNull();
@@ -567,20 +568,20 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
         [Theory]
         [CommonAutoData]
         public static async Task Post_Roadmap_InvalidId_ReturnsBadRequestResult(
-            CatalogueItem catalogueItem,
+            Solution solution,
             CatalogueItemId catalogueItemId,
             [Frozen] Mock<ISolutionsService> mockService,
             CatalogueSolutionsController controller)
         {
             mockService.Setup(s => s.GetSolution(catalogueItemId))
-                .ReturnsAsync(catalogueItem);
+                .ReturnsAsync(solution.CatalogueItem);
 
-            var expected = new RoadmapModel(catalogueItem)
+            var expected = new DevelopmentPlanModel(solution.CatalogueItem)
             {
                 BackLink = "testUrl",
             };
 
-            var actual = (await controller.Roadmap(catalogueItemId)).As<ViewResult>();
+            var actual = (await controller.DevelopmentPlans(catalogueItemId)).As<ViewResult>();
 
             mockService.Verify(s => s.GetSolution(catalogueItemId));
             actual.ViewName.Should().BeNull();

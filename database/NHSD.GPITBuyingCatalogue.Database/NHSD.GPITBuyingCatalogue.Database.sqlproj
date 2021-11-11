@@ -194,6 +194,7 @@
     <Build Include="Security\Schemas\auditing.sql" />
     <Build Include="Auditing\StoredProcedures\EnableTemporalTable.sql" />
     <None Include="PostDeployment\EnableTemporalTables.sql" />
+    <Build Include="Catalogue\Tables\WorkOffPlans.sql" />
   </ItemGroup>
   <ItemGroup>
     <SqlCmdVariable Include="CREATE_EA_USER">

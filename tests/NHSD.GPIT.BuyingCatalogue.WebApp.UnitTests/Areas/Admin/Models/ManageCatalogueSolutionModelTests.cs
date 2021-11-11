@@ -96,7 +96,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Models
             List<AdditionalService> additionalServices,
             List<AssociatedService> associatedServices)
         {
-            var expected = new RoadmapModel(solution.CatalogueItem).Status();
+            var expected = new DevelopmentPlanModel(solution.CatalogueItem).Status();
             var model = new ManageCatalogueSolutionModel(
                 solution.CatalogueItem,
                 additionalServices.Select(a => a.CatalogueItem).ToList(),

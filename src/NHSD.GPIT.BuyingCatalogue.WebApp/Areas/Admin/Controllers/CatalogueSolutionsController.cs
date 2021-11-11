@@ -244,13 +244,13 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
         }
 
         [HttpGet("manage/{solutionId}/development-plans")]
-        public async Task<IActionResult> Roadmap(CatalogueItemId solutionId)
+        public async Task<IActionResult> DevelopmentPlans(CatalogueItemId solutionId)
         {
             var solution = await solutionsService.GetSolution(solutionId);
             if (solution is null)
                 return BadRequest($"No Solution found for Id: {solutionId}");
 
-            var model = new RoadmapModel(solution)
+            var model = new DevelopmentPlanModel(solution)
             {
                 BackLink = Url.Action(
                     nameof(ManageCatalogueSolution),
@@ -262,7 +262,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
         }
 
         [HttpPost("manage/{solutionId}/development-plans")]
-        public async Task<IActionResult> Roadmap(CatalogueItemId solutionId, RoadmapModel model)
+        public async Task<IActionResult> DevelopmentPlans(CatalogueItemId solutionId, DevelopmentPlanModel model)
         {
             if (!ModelState.IsValid)
             {

@@ -12,6 +12,7 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models
             AdditionalServices = new HashSet<AdditionalService>();
             FrameworkSolutions = new HashSet<FrameworkSolution>();
             MarketingContacts = new HashSet<MarketingContact>();
+            WorkOffPlans = new HashSet<WorkOffPlan>();
         }
 
         public CatalogueItemId CatalogueItemId { get; set; }
@@ -51,5 +52,7 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models
         public ICollection<MarketingContact> MarketingContacts { get; set; }
 
         public ServiceLevelAgreements ServiceLevelAgreement { get; set; }
+
+        public ICollection<WorkOffPlan> WorkOffPlans { get; set; }
     }
 }
