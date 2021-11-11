@@ -14,8 +14,8 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Configuration
             builder.HasKey(f => new { f.FrameworkId, f.CapabilityId });
 
             builder.Property(f => f.FrameworkId).HasMaxLength(10);
-            builder.Property(t => t.LastUpdated).HasDefaultValue(DateTime.UtcNow);
-            builder.Property(t => t.LastUpdatedBy);
+            builder.Property(f => f.LastUpdated).HasDefaultValue(DateTime.UtcNow);
+            builder.Property(f => f.LastUpdatedBy);
 
             builder.HasOne(f => f.Capability)
                 .WithMany(c => c.FrameworkCapabilities)

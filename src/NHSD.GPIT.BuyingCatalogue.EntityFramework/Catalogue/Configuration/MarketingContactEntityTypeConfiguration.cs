@@ -22,8 +22,8 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Configuration
             builder.Property(m => m.FirstName).HasMaxLength(35);
             builder.Property(m => m.LastName).HasMaxLength(35);
             builder.Property(m => m.PhoneNumber).HasMaxLength(35);
-            builder.Property(f => f.LastUpdated).HasDefaultValue(DateTime.UtcNow);
-            builder.Property(f => f.LastUpdatedBy);
+            builder.Property(m => m.LastUpdated).HasDefaultValue(DateTime.UtcNow);
+            builder.Property(m => m.LastUpdatedBy);
 
             builder.HasOne<Solution>()
                 .WithMany(s => s.MarketingContacts)
