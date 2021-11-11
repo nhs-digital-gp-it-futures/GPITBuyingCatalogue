@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Globalization;
 using System.Linq;
 using System.Security.Claims;
 using Microsoft.AspNetCore.Http;
@@ -19,12 +18,12 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Identity
             this.context = context ?? throw new ArgumentNullException(nameof(context));
         }
 
-        public int GetUserId()
+        public int? GetUserId()
         {
-            if (context.HttpContext is null)
-                throw new InvalidOperationException();
+            if (context.HttpContext is null || context.HttpContext.User is null)
+                return null;
 
-            return int.Parse(GetClaimValue(context.HttpContext.User, UserId), CultureInfo.InvariantCulture);
+            return int.TryParse(GetClaimValue(context.HttpContext.User, UserId), out var userId) ? userId : null;
         }
 
         private static string GetClaimValue(ClaimsPrincipal user, string claimType)

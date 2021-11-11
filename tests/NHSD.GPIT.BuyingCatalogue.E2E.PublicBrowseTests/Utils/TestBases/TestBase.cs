@@ -14,7 +14,6 @@ using NHSD.GPIT.BuyingCatalogue.E2ETests.Actions.Ordering;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Actions.PublicBrowse;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Database;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.MemoryCache;
-using NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.Session;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using OpenQA.Selenium;
@@ -88,7 +87,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.TestBases
             using var context = GetEndToEndDbContext();
             var solution = context.Solutions.Single(s => s.CatalogueItemId == solutionId);
             solution.ClientApplication = string.Empty;
-            context.SaveChangesAs(UserSeedData.BobId);
+            context.SaveChanges();
         }
 
         internal void ClearHostingTypes(CatalogueItemId solutionId)
@@ -96,7 +95,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.TestBases
             using var context = GetEndToEndDbContext();
             var solution = context.Solutions.Single(s => s.CatalogueItemId == solutionId);
             solution.Hosting = null;
-            context.SaveChangesAs(UserSeedData.BobId);
+            context.SaveChanges();
         }
 
         internal void ClearFeatures(CatalogueItemId solutionId)
@@ -104,7 +103,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.TestBases
             using var context = GetEndToEndDbContext();
             var solution = context.Solutions.Single(s => s.CatalogueItemId == solutionId);
             solution.Features = string.Empty;
-            context.SaveChangesAs(UserSeedData.BobId);
+            context.SaveChanges();
         }
 
         internal void ClearRoadMap(CatalogueItemId solutionId)
@@ -112,7 +111,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.TestBases
             using var context = GetEndToEndDbContext();
             var solution = context.Solutions.Single(s => s.CatalogueItemId == solutionId);
             solution.RoadMap = string.Empty;
-            context.SaveChangesAs(UserSeedData.BobId);
+            context.SaveChanges();
         }
 
         internal void AuthorityLogin()

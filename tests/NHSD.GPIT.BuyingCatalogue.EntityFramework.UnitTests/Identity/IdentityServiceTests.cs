@@ -27,13 +27,13 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.UnitTests.Identity
 
         [Theory]
         [CommonAutoData]
-        public static void Constructor_NoContext_ThrowsInvalidOperationException(
+        public static void Constructor_NoContext_ReturnsNull(
             [Frozen] Mock<IHttpContextAccessor> mockAccessor,
             IdentityService service)
         {
             mockAccessor.Setup(a => a.HttpContext).Returns((HttpContext)null);
 
-            Assert.Throws<InvalidOperationException>(() => _ = service.GetUserId());
+            Assert.Null(service.GetUserId());
         }
 
         [Theory]

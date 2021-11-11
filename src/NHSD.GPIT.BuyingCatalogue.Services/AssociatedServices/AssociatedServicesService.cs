@@ -44,12 +44,6 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.AssociatedServices
                 .FirstOrDefaultAsync();
         }
 
-        public Task DeleteAssociatedService(CatalogueItemId associatedServiceId)
-        {
-            // MJRTODO
-            return Task.CompletedTask;
-        }
-
         public async Task RelateAssociatedServicesToSolution(
             CatalogueItemId solutionId,
             IEnumerable<CatalogueItemId> associatedServices)

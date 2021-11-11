@@ -93,6 +93,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Models
             var epics = new Fixture()
                 .Build<Epic>()
                 .With(e => e.SupplierDefined, false)
+                .Without(e => e.LastUpdatedByUser)
                 .CreateMany();
 
             solutionCapability.Capability.Epics = epics.ToList();
@@ -111,6 +112,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Models
             var epics = new Fixture()
                 .Build<Epic>()
                 .With(e => e.SupplierDefined, true)
+                .Without(e => e.LastUpdatedByUser)
                 .CreateMany();
 
             solutionCapability.Capability.Epics = epics.ToList();

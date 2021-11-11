@@ -143,7 +143,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.ServiceLevelAgreements
         {
             await service.SaveServiceAvailabilityTimes(solution.CatalogueItem, model);
 
-            var serviceAvailabilityTimes = context.ServiceAvailabilityTimes.Single(s => s.SolutionId == solution.CatalogueItemId && s.LastUpdatedBy == model.UserId);
+            var serviceAvailabilityTimes = context.ServiceAvailabilityTimes.Single(s => s.SolutionId == solution.CatalogueItemId);
 
             serviceAvailabilityTimes.Should().NotBeNull();
             serviceAvailabilityTimes.ApplicableDays.Should().Be(model.ApplicableDays);

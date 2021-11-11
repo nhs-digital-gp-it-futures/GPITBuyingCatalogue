@@ -5,7 +5,6 @@ using FluentAssertions;
 using Microsoft.EntityFrameworkCore;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Objects.Common;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Utils;
-using NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.TestBases;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
@@ -64,7 +63,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.AddNewSolution.Addition
             await using var context = GetEndToEndDbContext();
             var catalogueItemCapabilities = await context.CatalogueItemCapabilities.Where(c => c.CatalogueItemId == AdditionalServiceId).ToListAsync();
             context.CatalogueItemCapabilities.RemoveRange(catalogueItemCapabilities);
-            await context.SaveChangesAsAsync(UserSeedData.BobId);
+            await context.SaveChangesAsync();
 
             Driver.Navigate().Refresh();
 
@@ -79,7 +78,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.AddNewSolution.Addition
                 .BeTrue();
 
             context.CatalogueItemCapabilities.AddRange(catalogueItemCapabilities);
-            await context.SaveChangesAsAsync(UserSeedData.BobId);
+            await context.SaveChangesAsync();
         }
 
         [Fact]

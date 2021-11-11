@@ -5,7 +5,6 @@ using System.Threading.Tasks;
 using FluentAssertions;
 using Microsoft.EntityFrameworkCore;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Utils;
-using NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.TestBases;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
@@ -82,7 +81,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.PublicBrowse.Solution
             await using var context = GetEndToEndDbContext();
             var solution = await context.CatalogueItems.SingleAsync(ci => ci.Id == SolutionId);
             solution.PublishedStatus = PublicationStatus.Suspended;
-            await context.SaveChangesAsAsync(UserSeedData.BobId);
+            await context.SaveChangesAsync();
 
             Driver.Navigate().Refresh();
 
@@ -98,7 +97,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.PublicBrowse.Solution
         {
             using var context = GetEndToEndDbContext();
             context.CatalogueItems.Single(ci => ci.Id == SolutionId).PublishedStatus = PublicationStatus.Published;
-            context.SaveChangesAs(UserSeedData.BobId);
+            context.SaveChanges();
         }
     }
 }
