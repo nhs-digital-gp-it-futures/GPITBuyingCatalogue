@@ -12,8 +12,8 @@
   DTS:ObjectName="Migrate"
   DTS:PackageType="5"
   DTS:ProtectionLevel="0"
-  DTS:VersionBuild="329"
-  DTS:VersionGUID="{12A9B0CE-1E3C-4B7A-8279-F40C230C6C7A}">
+  DTS:VersionBuild="331"
+  DTS:VersionGUID="{45C82FAD-11B0-427A-BE65-FF8A0AE7F6A2}">
   <DTS:Property
     DTS:Name="PackageFormatVersion">8</DTS:Property>
   <DTS:ConnectionManagers>
@@ -24678,7 +24678,7 @@ where [refTable].[OriginalId] = ?</property>
                   containsID="true"
                   dataType="System.String"
                   description="Specifies the list of lineage identifiers that map to the parameters that the SQL statement in the SQLCommand property uses. Entries in the list are separated by semicolons."
-                  name="ParameterMap">#{Package\Migrate Users\276:invalid};</property>
+                  name="ParameterMap">#{Package\Migrate Users\280:invalid};</property>
                 <property
                   dataType="System.Int32"
                   description="Specifies the column code page to use when code page information is unavailable from the data source."
@@ -25090,6 +25090,15 @@ where [refTable].[OriginalId] = ?</property>
                       refId="Package\Migrate Users\Save Users.Inputs[OLE DB Destination Input].ExternalColumns[SysEndTime]"
                       dataType="dbTimeStamp2"
                       name="SysEndTime" />
+                    <externalMetadataColumn
+                      refId="Package\Migrate Users\Save Users.Inputs[OLE DB Destination Input].ExternalColumns[LastUpdated]"
+                      dataType="dbTimeStamp2"
+                      name="LastUpdated"
+                      scale="7" />
+                    <externalMetadataColumn
+                      refId="Package\Migrate Users\Save Users.Inputs[OLE DB Destination Input].ExternalColumns[LastUpdatedBy]"
+                      dataType="i4"
+                      name="LastUpdatedBy" />
                   </externalMetadataColumns>
                 </input>
               </inputs>
@@ -31812,9 +31821,7 @@ where [refTable].[OriginalId] = ?</property>
             </mssgle:Curve>
           </EdgeLayout.Curve>
           <EdgeLayout.Labels>
-            <mssgm:EdgeLabel
-              BoundingBox="0,0,0,0"
-              RelativePosition="Any" />
+            <EdgeLabelCollection />
           </EdgeLayout.Labels>
         </EdgeLayout>
         <EdgeLayout
@@ -31836,9 +31843,7 @@ where [refTable].[OriginalId] = ?</property>
             </mssgle:Curve>
           </EdgeLayout.Curve>
           <EdgeLayout.Labels>
-            <mssgm:EdgeLabel
-              BoundingBox="0,0,0,0"
-              RelativePosition="Any" />
+            <EdgeLabelCollection />
           </EdgeLayout.Labels>
         </EdgeLayout>
         <EdgeLayout

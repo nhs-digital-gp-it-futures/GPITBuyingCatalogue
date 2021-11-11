@@ -1,10 +1,11 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using Microsoft.AspNetCore.Identity;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Organisations.Models;
 
 namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Users.Models
 {
-    public sealed class AspNetUser : IdentityUser<int>
+    public sealed class AspNetUser : IdentityUser<int>, IAudited
     {
         public AspNetUser()
         {
@@ -29,6 +30,12 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Users.Models
         public string LastName { get; set; }
 
         public string FullName => $"{FirstName} {LastName}";
+
+        public DateTime LastUpdated { get; set; }
+
+        public int? LastUpdatedBy { get; set; }
+
+        public AspNetUser LastUpdatedByUser { get; set; }
 
         public ICollection<AspNetUserClaim> AspNetUserClaims { get; set; }
 
