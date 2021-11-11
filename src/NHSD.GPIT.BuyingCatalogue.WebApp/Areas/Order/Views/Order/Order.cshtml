@@ -14,7 +14,7 @@
                             advice="@Model.TitleAdvice" />
 
             <nhs-fieldset-form-container asp-for="@Model"
-                                         label-text="Order Description"
+                                         label-text="Order description"
                                          label-hint="@Model.Description">
                 <br />
                 <br />
@@ -23,13 +23,13 @@
                         <nhs-task-list-item label-text="Provide a description of your order"
                                             url="@Model.DescriptionUrl"
                                             status="@Model.SectionStatuses.DescriptionStatus" />
-                        <nhs-task-list-item label-text="Provide Call-off Ordering Party Information"
+                        <nhs-task-list-item label-text="Provide Call-off Ordering Party information"
                                             url="@Url.Action(
                                                 nameof(OrderingPartyController.OrderingParty),
                                                 typeof(OrderingPartyController).ControllerName(),
                                                 new { Model.OdsCode, Model.CallOffId})"
                                             status="@Model.SectionStatuses.OrderingPartyStatus" />
-                        <nhs-task-list-item label-text="Provide Supplier information"
+                        <nhs-task-list-item label-text="Provide supplier information"
                                             url="@Url.Action(
                                                 nameof(SupplierController.Supplier),
                                                 typeof(SupplierController).ControllerName(),

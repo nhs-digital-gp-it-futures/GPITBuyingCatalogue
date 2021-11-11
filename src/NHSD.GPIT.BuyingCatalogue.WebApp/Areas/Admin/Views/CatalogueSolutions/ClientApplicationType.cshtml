@@ -15,7 +15,7 @@
             <nhs-validation-summary />
             <nhs-page-title title="@ViewBag.Title"
                             caption="@Model.SolutionName"
-                            advice="Let buyers know which types of application will work with your Catalogue Solution." />
+                            advice="Let buyers know which platforms are compatible with your Catalogue Solution." />
 
             @*TODO: Update Action Link to Add Client application type*@
             <vc:nhs-action-link url="@Url.Action(
@@ -24,7 +24,7 @@
             new { Model.SolutionId })" text=" Add an application type" />
 
             <p>
-                Use the link to add information on each of the application types your Catalogue Solution works with.
+                Use the link to add information on which platforms your Catalogue Solution is compatible with.
             </p>
 
             <form method="post">

@@ -17,7 +17,7 @@
                         caption="@Model.CatalogueName"
                         advice="Provide details of how much your Catalogue Solution costs. You must add at least one price type." />
 
-        <vc:nhs-action-link text="Add a price" url="@Url.Action(
+        <vc:nhs-action-link text="Add a list price" url="@Url.Action(
                                                    nameof(ListPriceController.AddListPrice),
                                                    typeof(ListPriceController).ControllerName(),
                                                    new { solutionId = Model.CatalogueItemId })" />

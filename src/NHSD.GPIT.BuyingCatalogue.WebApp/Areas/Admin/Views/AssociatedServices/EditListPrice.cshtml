@@ -13,7 +13,7 @@
             <nhs-validation-summary />
             <nhs-page-title title="@ViewBag.Title"
                             caption="@Model.ItemName"
-                            advice="Provide information about the cost of the Associated Service." />
+                            advice="Provide information about the cost of your Associated Service." />
             @if (Model.Price.HasValue)
             {
                 <nhs-inset-text>Any changes to this price will be visible to anyone ordering this Associated Service in future.</nhs-inset-text>
@@ -62,12 +62,12 @@
                 </nhs-fieldset-form-label>
                 <nhs-bookended-input asp-for="Price"
                                      label-text="Price"
-                                     label-hint="Provide the list price in £s to a maximum of 4 decimal places."
+                                     label-hint="Provide the list price in pounds to a maximum of 4 decimal places."
                                      Prefix="£" />
 
                 <nhs-input asp-for="Unit"
                            label-text="Unit"
-                           label-hint="For example, per consultation, per practice, per licence." />
+                           label-hint="For example: per consultation, per practice or per licence." />
 
                 <nhs-textarea asp-for="UnitDefinition"
                               label-text="Unit definition (optional)"

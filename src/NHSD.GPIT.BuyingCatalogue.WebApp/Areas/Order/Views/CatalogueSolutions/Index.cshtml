@@ -14,13 +14,13 @@
                                      label-text="Order description"
                                      label-hint="@Model.OrderDescription"
                                      size="Large">
-
-            <vc:nhs-secondary-button url="@Url.Action(
-                                                nameof(CatalogueSolutionsController.SelectSolution),
-                                                typeof(CatalogueSolutionsController).ControllerName(),
-                                                new {Model.OdsCode, Model.CallOffId})"
-                                     text="Add Catalogue Solution"
-                                     use-primary-colour="false" />
+            <br/>
+            <vc:nhs-action-link
+                text="Add a Catalogue Solution"
+                url="@Url.Action(
+                        nameof(CatalogueSolutionsController.SelectSolution),
+                        typeof(CatalogueSolutionsController).ControllerName(),
+                        new {Model.OdsCode, Model.CallOffId})" />
 
             <nhs-table data-test-id="added-order-items">
                 <nhs-table-column>Catalogue Solution</nhs-table-column>
@@ -50,6 +50,7 @@
     </nhs-table-row-container>}
             </nhs-table>
         </nhs-fieldset-form-container>
+        <br/>
         <vc:nhs-secondary-button text="Continue"
                                  use-primary-colour="true"
                                  url="@Url.Action(

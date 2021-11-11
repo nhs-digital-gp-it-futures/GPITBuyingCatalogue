@@ -59,7 +59,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
                     nameof(CatalogueSolutionsController.ManageCatalogueSolution),
                     typeof(CatalogueSolutionsController).ControllerName(),
                     new { solutionId }),
-                Title = "Type of Catalogue Solution",
+                Title = "Catalogue Solution type",
             };
 
             return View("AddEditSlaType", model);
@@ -121,7 +121,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
             {
                 SlaLevel = serviceLevelAgreements.SlaType,
                 BackLink = Url.Action(nameof(EditServiceLevelAgreement), new { solutionId }),
-                Title = "Type of Catalogue Solution",
+                Title = "Catalogue Solution type",
             };
 
             return View("AddEditSlaType", model);

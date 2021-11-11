@@ -7,7 +7,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.Order
     {
         public OrderModel(string odsCode, EntityFramework.Ordering.Models.Order order, OrderTaskList orderSections)
         {
-            BackLinkText = "Go back to all orders";
             BackLink = $"/order/organisation/{odsCode}";
             OdsCode = odsCode;
             SectionStatuses = orderSections;
@@ -21,7 +20,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.Order
             {
                 Title = $"Order {order.CallOffId}";
                 CallOffId = order.CallOffId;
-                TitleAdvice = "Complete the following steps to create an order";
+                TitleAdvice = "Complete the following steps to create an order summary.";
                 Description = order.Description;
             }
         }

@@ -1,4 +1,6 @@
-﻿@model NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.DeleteCatalogueSolution.DeleteSolutionModel;
+﻿@using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers;
+@using NHSD.GPIT.BuyingCatalogue.Framework.Extensions; 
+@model NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.DeleteCatalogueSolution.DeleteSolutionModel;
 @{
     ViewBag.Title = Model.Title;
 }
@@ -14,22 +16,13 @@
                 <input type="hidden" asp-for="@Model.BackLinkText" />
                 <input type="hidden" asp-for="@Model.OdsCode" />
                 <input type="hidden" asp-for="@Model.Title" />
-
-                <nhs-fieldset-form-container asp-for="@Model"
-                                             label-text="Order Description"
-                                             label-hint="@Model.OrderDescription">
-                    <div class="nhsuk-grid-row">
-                        <div class="nhsuk-grid-column-two-thirds">
-                            <div>
-                                <nhs-submit-button text="Confirm Delete" />
-                            </div>
-                            <div>
-                                <vc:nhs-backlink url="/order/organisation/@Model.OdsCode/order/@Model.CallOffId/catalogue-solutions/@Model.SolutionId"
-                                                 text="Cancel delete" />
-                            </div>
-                        </div>
-                    </div>
-                </nhs-fieldset-form-container>
+                <nhs-submit-button text="Delete" />
+                <br/>
+                <a asp-action="@nameof(CatalogueSolutionsController.EditSolution)"
+                    asp-controller="@typeof(CatalogueSolutionsController).ControllerName()"
+                    asp-route-odsCode="@Model.OdsCode"
+                    asp-route-callOffId="@Model.CallOffId"
+                    asp-route-catalogueItemId="@Model.SolutionId">Cancel</a>
             </form>
         </div>
     </div>
