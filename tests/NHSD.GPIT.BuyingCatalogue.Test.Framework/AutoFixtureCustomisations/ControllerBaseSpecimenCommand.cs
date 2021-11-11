@@ -23,9 +23,11 @@ namespace NHSD.GPIT.BuyingCatalogue.Test.Framework.AutoFixtureCustomisations
 
             if (specimen is ControllerBase controller)
             {
+                var httpRequestCookiesMock = context.Create<Mock<IRequestCookieCollection>>();
                 var headerDictionary = context.Create<HeaderDictionary>();
                 var httpRequestMock = context.Create<Mock<HttpRequest>>();
                 httpRequestMock.Setup(r => r.Headers).Returns(headerDictionary);
+                httpRequestMock.Setup(r => r.Cookies).Returns(httpRequestCookiesMock.Object);
 
                 var httpResponseCookiesMock = context.Create<Mock<IResponseCookies>>();
                 var httpResponseMock = context.Create<Mock<HttpResponse>>();
