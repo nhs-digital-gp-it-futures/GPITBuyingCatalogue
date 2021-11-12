@@ -274,21 +274,6 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Solutions
 
         [Theory]
         [CommonAutoData]
-        public static async Task SaveRoadMap_CallsSaveChangesAsync_OnRepository(
-            [Frozen] Mock<IDbRepository<Solution, BuyingCatalogueDbContext>> solutionRepositoryMock,
-            SolutionsService service)
-        {
-            solutionRepositoryMock
-                .Setup(r => r.SingleAsync(It.IsAny<Expression<Func<Solution, bool>>>()))
-                .ReturnsAsync(new Solution());
-
-            await service.SaveRoadMap(new CatalogueItemId(100000, "001"), "123");
-
-            solutionRepositoryMock.Verify(r => r.SaveChangesAsync());
-        }
-
-        [Theory]
-        [CommonAutoData]
         public static async Task SaveClientApplication_InvalidModel_ThrowsException(SolutionsService service)
         {
             var actual = await Assert.ThrowsAsync<ArgumentNullException>(
