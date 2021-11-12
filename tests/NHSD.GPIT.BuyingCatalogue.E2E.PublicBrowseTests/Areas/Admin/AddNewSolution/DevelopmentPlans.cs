@@ -25,8 +25,8 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.AddNewSolution
         public DevelopmentPlans(LocalWebApplicationFactory factory)
             : base(
                   factory,
-                  typeof(CatalogueSolutionsController),
-                  nameof(CatalogueSolutionsController.DevelopmentPlans),
+                  typeof(DevelopmentPlansController),
+                  nameof(DevelopmentPlansController.DevelopmentPlans),
                   Parameters)
         {
         }

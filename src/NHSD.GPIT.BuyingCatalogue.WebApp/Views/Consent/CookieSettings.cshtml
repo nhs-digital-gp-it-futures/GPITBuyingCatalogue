@@ -1,0 +1,27 @@
+﻿@model NHSD.GPIT.BuyingCatalogue.WebApp.Models.CookieSettingsModel
+@{
+    ViewBag.Title = "Cookies that measure website use (analytics cookies)";
+}
+<partial name="Partials/_BackLink" model="@Model" />
+<div class="nhsuk-grid-row">
+    <div class="nhsuk-grid-column-two-thirds">
+        <nhs-page-title title="@ViewBag.Title"
+                        advice="These cookies store information about how you use our website, such as the links you click on. We use them to help make our website better." />
+        <form method="post">
+            <input type="hidden" asp-for="BackLink" />
+            <input type="hidden" asp-for="BackLinkText" />
+
+            <nhs-fieldset-form-label asp-for="@Model"
+                                     label-text="What settings do you want for analytics cookies?"
+                                     label-hint="We'll use a cookie to save your settings."
+                                     size="Medium">
+                <nhs-radio-buttons asp-for="UseAnalytics"
+                                   values="Model.CookieOptions.Cast<object>()"
+                                   value-name="Value"
+                                   display-name="Text" />
+            </nhs-fieldset-form-label>
+
+            <nhs-submit-button text="Save cookie settings" />
+        </form>
+    </div>
+</div>

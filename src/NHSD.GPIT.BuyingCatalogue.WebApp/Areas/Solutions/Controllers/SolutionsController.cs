@@ -326,7 +326,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers
             if (item.PublishedStatus == PublicationStatus.Suspended)
                 return RedirectToAction(nameof(Description), new { solutionId });
 
-            var standards = await solutionsService.GetSolutionStandards(solutionId);
+            var standards = await solutionsService.GetSolutionStandardsForMarketing(solutionId);
 
             return View(new SolutionStandardsModel(item, standards));
         }

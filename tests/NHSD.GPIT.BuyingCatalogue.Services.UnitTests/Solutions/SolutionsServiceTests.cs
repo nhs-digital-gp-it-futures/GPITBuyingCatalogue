@@ -274,21 +274,6 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Solutions
 
         [Theory]
         [CommonAutoData]
-        public static async Task SaveRoadMap_CallsSaveChangesAsync_OnRepository(
-            [Frozen] Mock<IDbRepository<Solution, BuyingCatalogueDbContext>> solutionRepositoryMock,
-            SolutionsService service)
-        {
-            solutionRepositoryMock
-                .Setup(r => r.SingleAsync(It.IsAny<Expression<Func<Solution, bool>>>()))
-                .ReturnsAsync(new Solution());
-
-            await service.SaveRoadMap(new CatalogueItemId(100000, "001"), "123");
-
-            solutionRepositoryMock.Verify(r => r.SaveChangesAsync());
-        }
-
-        [Theory]
-        [CommonAutoData]
         public static async Task SaveClientApplication_InvalidModel_ThrowsException(SolutionsService service)
         {
             var actual = await Assert.ThrowsAsync<ArgumentNullException>(
@@ -578,6 +563,44 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Solutions
             var updatedSolution = await context.CatalogueItems.AsQueryable().SingleAsync(c => c.Id == solution.Id);
 
             updatedSolution.PublishedStatus.Should().Be(PublicationStatus.Published);
+        }
+
+        [Theory]
+        [InMemoryDbAutoData]
+        public static async Task GetSolution_ReturnsExpectedRelatedItems(
+            [Frozen] BuyingCatalogueDbContext context,
+            Solution solution,
+            SupplierContact supplierContact,
+            ServiceAvailabilityTimes serviceAvailalabilityTime,
+            SlaServiceLevel slaServiceLevel,
+            SupplierServiceAssociation supplierServiceAssociation,
+            SolutionsService service)
+        {
+            solution.CatalogueItem.CatalogueItemContacts.Add(supplierContact);
+            solution.ServiceLevelAgreement.ServiceHours.Add(serviceAvailalabilityTime);
+            solution.ServiceLevelAgreement.ServiceLevels.Add(slaServiceLevel);
+            solution.CatalogueItem.SupplierServiceAssociations.Add(supplierServiceAssociation);
+
+            context.Solutions.Add(solution);
+            await context.SaveChangesAsync();
+
+            var savedSolution = await service.GetSolution(solution.CatalogueItemId);
+
+            savedSolution.Should().NotBeNull();
+            savedSolution.Solution.Should().NotBeNull();
+            savedSolution.CatalogueItemContacts.Should().NotBeNullOrEmpty();
+            savedSolution.CatalogueItemCapabilities.Should().NotBeNull();
+            savedSolution.CatalogueItemCapabilities.First().Capability.Should().NotBeNull();
+            savedSolution.Supplier.Should().NotBeNull();
+            savedSolution.Supplier.SupplierContacts.Should().NotBeNull();
+            savedSolution.Solution.FrameworkSolutions.Should().NotBeNull();
+            savedSolution.Solution.FrameworkSolutions.First().Framework.Should().NotBeNull();
+            savedSolution.Solution.MarketingContacts.Should().NotBeNullOrEmpty();
+            savedSolution.Solution.ServiceLevelAgreement.Should().NotBeNull();
+            savedSolution.Solution.ServiceLevelAgreement.Contacts.Should().NotBeNullOrEmpty();
+            savedSolution.Solution.ServiceLevelAgreement.ServiceHours.Should().NotBeNullOrEmpty();
+            savedSolution.Solution.ServiceLevelAgreement.ServiceLevels.Should().NotBeNullOrEmpty();
+            savedSolution.SupplierServiceAssociations.Should().NotBeNullOrEmpty();
         }
     }
 }

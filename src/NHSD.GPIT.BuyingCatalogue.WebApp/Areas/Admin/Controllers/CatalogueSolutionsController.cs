@@ -243,38 +243,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
             return RedirectToAction(nameof(ManageCatalogueSolution), new { solutionId });
         }
 
-        [HttpGet("manage/{solutionId}/development-plans")]
-        public async Task<IActionResult> DevelopmentPlans(CatalogueItemId solutionId)
-        {
-            var solution = await solutionsService.GetSolution(solutionId);
-            if (solution is null)
-                return BadRequest($"No Solution found for Id: {solutionId}");
-
-            var model = new DevelopmentPlanModel(solution)
-            {
-                BackLink = Url.Action(
-                    nameof(ManageCatalogueSolution),
-                    typeof(CatalogueSolutionsController).ControllerName(),
-                    new { solutionId }),
-            };
-
-            return View(model);
-        }
-
-        [HttpPost("manage/{solutionId}/development-plans")]
-        public async Task<IActionResult> DevelopmentPlans(CatalogueItemId solutionId, DevelopmentPlanModel model)
-        {
-            if (!ModelState.IsValid)
-            {
-                var solution = await solutionsService.GetSolution(solutionId);
-                return View(model);
-            }
-
-            await solutionsService.SaveRoadMap(solutionId, model.Link);
-
-            return RedirectToAction(nameof(ManageCatalogueSolution), new { solutionId });
-        }
-
         [HttpGet("manage/{solutionId}/hosting-type")]
         public async Task<IActionResult> HostingType(CatalogueItemId solutionId)
         {

@@ -16,7 +16,9 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions
 
         Task<CatalogueItem> GetSolutionCapability(CatalogueItemId catalogueItemId, int capabilityId);
 
-        Task<IList<Standard>> GetSolutionStandards(CatalogueItemId catalogueItemId);
+        Task<IList<Standard>> GetSolutionStandardsForMarketing(CatalogueItemId catalogueItemId);
+
+        Task<IList<Standard>> GetSolutionStandardsForEditing(CatalogueItemId catalogueItemId);
 
         Task<CatalogueItem> GetSolutionWithAllAssociatedServices(CatalogueItemId solutionId);
 
@@ -31,8 +33,6 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions
         Task SaveSolutionFeatures(CatalogueItemId solutionId, string[] features);
 
         Task SaveImplementationDetail(CatalogueItemId solutionId, string detail);
-
-        Task SaveRoadMap(CatalogueItemId solutionId, string roadMap);
 
         Task<ClientApplication> GetClientApplication(CatalogueItemId solutionId);
 
