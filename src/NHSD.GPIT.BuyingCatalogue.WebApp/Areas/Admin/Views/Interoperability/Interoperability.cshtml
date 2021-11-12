@@ -64,7 +64,10 @@
                                     </p>
                                 </nhs-table-cell>
                                 <nhs-table-cell>
-                                    <a href="#">
+                                    <a asp-action="EditIm1Integration"
+                                       asp-controller="Interoperability"
+                                       asp-route-solutionId="@Model.CatalogueItemId"
+                                       asp-route-integrationId="@integration.Id">
                                         Edit
                                     </a>
                                 </nhs-table-cell>

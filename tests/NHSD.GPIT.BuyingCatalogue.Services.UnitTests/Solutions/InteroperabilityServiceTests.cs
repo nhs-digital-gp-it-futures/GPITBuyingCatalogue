@@ -69,8 +69,90 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Solutions
             await context.SaveChangesAsync();
 
             await service.AddIntegration(solution.CatalogueItemId, newIntegration);
-            var updatedSolution = await context.Solutions.SingleAsync();
+            var updatedSolution = await context.Solutions.SingleAsync(s => s.CatalogueItemId == solution.CatalogueItemId);
             updatedSolution.GetIntegrations().Should().Contain(i => i.Description == newIntegration.Description);
+        }
+
+        [Theory]
+        [InMemoryDbAutoData]
+        public static async Task EditIntegration_UpdatesDatabase(
+            [Frozen] BuyingCatalogueDbContext context,
+            Solution solution,
+            List<Integration> integrations,
+            Integration updatedIntegration,
+            InteroperabilityService service)
+        {
+            solution.Integrations = JsonSerializer.Serialize(integrations);
+            updatedIntegration.Id = integrations[0].Id;
+
+            context.Solutions.Add(solution);
+            await context.SaveChangesAsync();
+
+            await service.EditIntegration(solution.CatalogueItemId, updatedIntegration.Id, updatedIntegration);
+            var updatedSolution = await context.Solutions.SingleAsync(s => s.CatalogueItemId == solution.CatalogueItemId);
+            updatedSolution.GetIntegrations().Should().ContainEquivalentOf(updatedIntegration);
+        }
+
+        [Theory]
+        [InMemoryDbAutoData]
+        public static Task EditIntegration_NullIntegrationThrowsException(InteroperabilityService service)
+        {
+            return Assert.ThrowsAsync<ArgumentNullException>(() => service.EditIntegration(default, default, null));
+        }
+
+        [Theory]
+        [InMemoryDbAutoData]
+        public static async Task GetIntegrationById_ReturnsIntegration(
+            [Frozen] BuyingCatalogueDbContext context,
+            Solution solution,
+            List<Integration> integrations,
+            InteroperabilityService service)
+        {
+            solution.Integrations = JsonSerializer.Serialize(integrations);
+            context.Solutions.Add(solution);
+
+            await context.SaveChangesAsync();
+
+            var integration = await service.GetIntegrationById(solution.CatalogueItemId, integrations[0].Id);
+
+            integration.Should().BeEquivalentTo(integrations[0]);
+        }
+
+        [Theory]
+        [InMemoryDbAutoData]
+        public static async Task DeleteIntegration_UpdatesDatabase(
+            [Frozen] BuyingCatalogueDbContext context,
+            Solution solution,
+            List<Integration> integrations,
+            InteroperabilityService service)
+        {
+            solution.Integrations = JsonSerializer.Serialize(integrations);
+            var deletedIntegration = integrations[0];
+
+            context.Solutions.Add(solution);
+            await context.SaveChangesAsync();
+
+            await service.DeleteIntegration(solution.CatalogueItemId, deletedIntegration.Id);
+            var updatedSolution = await context.Solutions.SingleAsync(s => s.CatalogueItemId == solution.CatalogueItemId);
+            updatedSolution.GetIntegrations().Should().NotContainEquivalentOf(deletedIntegration);
+        }
+
+        [Theory]
+        [InMemoryDbAutoData]
+        public static async Task DeleteIntegration_NullIntegrationDoesNotUpdateDatabase(
+            [Frozen] BuyingCatalogueDbContext context,
+            Solution solution,
+            List<Integration> integrations,
+            InteroperabilityService service,
+            Guid invalidIntegrationId)
+        {
+            solution.Integrations = JsonSerializer.Serialize(integrations);
+            context.Solutions.Add(solution);
+            await context.SaveChangesAsync();
+
+            await service.DeleteIntegration(solution.CatalogueItemId, invalidIntegrationId);
+            var updatedSolution = await context.Solutions.SingleAsync(s => s.CatalogueItemId == solution.CatalogueItemId);
+            updatedSolution.GetIntegrations().Should().BeEquivalentTo(integrations);
         }
     }
 }
