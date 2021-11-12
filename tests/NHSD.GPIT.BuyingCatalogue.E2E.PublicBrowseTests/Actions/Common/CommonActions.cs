@@ -246,7 +246,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Actions.Common
             {
                 null => controllerRoute,
                 _ => methodRoute[0] != '~'
-                    ? controllerRoute + "/" + methodRoute
+                    ? string.Join('/', new[] { controllerRoute, methodRoute }.Where(s => !string.IsNullOrWhiteSpace(s)))
                     : methodRoute[2..],
             };
 

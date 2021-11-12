@@ -10,7 +10,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Controllers
             return View();
         }
 
-        [Route("privacy-policy")]
+        [HttpGet("privacy-policy")]
         public IActionResult PrivacyPolicy()
         {
             return View();
