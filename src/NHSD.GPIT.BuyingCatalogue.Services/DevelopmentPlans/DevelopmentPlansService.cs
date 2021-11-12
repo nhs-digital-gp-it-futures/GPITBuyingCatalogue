@@ -14,21 +14,19 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.DevelopmentPlans
     public sealed class DevelopmentPlansService : IDevelopmentPlansService
     {
         private readonly BuyingCatalogueDbContext dbContext;
-        private readonly IDbRepository<Solution, BuyingCatalogueDbContext> solutionRepository;
 
         public DevelopmentPlansService(
-            BuyingCatalogueDbContext dbContext,
-            IDbRepository<Solution, BuyingCatalogueDbContext> solutionRepository)
+            BuyingCatalogueDbContext dbContext)
         {
             this.dbContext = dbContext ?? throw new ArgumentNullException(nameof(dbContext));
-            this.solutionRepository = solutionRepository ?? throw new ArgumentNullException(nameof(solutionRepository));
         }
 
         public async Task SaveDevelopmentPlans(CatalogueItemId solutionId, string developmentPlan)
         {
-            var solution = await solutionRepository.SingleAsync(s => s.CatalogueItemId == solutionId);
+            var solution = await dbContext.Solutions.SingleOrDefaultAsync(s => s.CatalogueItemId == solutionId);
+
             solution.RoadMap = developmentPlan;
-            await solutionRepository.SaveChangesAsync();
+            await dbContext.SaveChangesAsync();
         }
 
         public async Task<List<WorkOffPlan>> GetWorkOffPlans(CatalogueItemId solutionId) =>
