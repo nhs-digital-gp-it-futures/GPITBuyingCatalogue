@@ -185,7 +185,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Controllers
         {
             var cookieList = new List<KeyValuePair<string, string>>
             {
-                new KeyValuePair<string,string>("some-cookie", "cookie-value"),
+                new KeyValuePair<string, string>("some-cookie", "cookie-value"),
             };
 
             requestCookiesMock.Setup(c => c.GetEnumerator()).Returns(cookieList.GetEnumerator());
