@@ -14,16 +14,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Controllers
 {
     public sealed class ConsentController : Controller
     {
-        private static readonly string[] MandatoryCookies = new[]
-        {
-            "io",
-            "token",
-            ".AspNetCore.Antiforgery",
-            ".AspNetCore.Identity.Application",
-            "user-session",
-            "antiforgery",
-        };
-
         private readonly CookieExpirationSettings cookieExpiration;
 
         public ConsentController(CookieExpirationSettings cookieSettings)
@@ -76,7 +66,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Controllers
                     CreationDate = DateTime.UtcNow.Ticks,
                 });
 
-            foreach (var cookie in Request.Cookies.Where(c => !MandatoryCookies.Contains(c.Key)))
+            foreach (var cookie in Request.Cookies.Where(c => !CatalogueCookies.MandatoryCookies.Contains(c.Key)))
             {
                 Response.Cookies.Delete(cookie.Key);
             }
