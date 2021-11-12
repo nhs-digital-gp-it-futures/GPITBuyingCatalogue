@@ -1,6 +1,6 @@
 ﻿CREATE TABLE [catalogue].[WorkOffPlans]
 (
-    [Id] INT NOT NULL,
+    [Id] INT IDENTITY(1,1) NOT NULL,
     [SolutionId] NVARCHAR(14) NOT NULL,
     [StandardId] NVARCHAR(5) NOT NULL,
     [Details] NVARCHAR(300) NOT NULL,

@@ -9,13 +9,14 @@ using NHSD.GPIT.BuyingCatalogue.WebApp.Validation;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Validators.ServiceLevelAgreementValidators
 {
-    public class EditSLAContactsModelValidator : AbstractValidator<EditSLAContactModel>
+    public sealed class EditSLAContactsModelValidator : AbstractValidator<EditSLAContactModel>
     {
         private readonly IServiceLevelAgreementsService serviceLevelAgreementsService;
 
         public EditSLAContactsModelValidator(IServiceLevelAgreementsService serviceLevelAgreementsService)
         {
-            this.serviceLevelAgreementsService = serviceLevelAgreementsService;
+            this.serviceLevelAgreementsService = serviceLevelAgreementsService
+                ?? throw new ArgumentNullException(nameof(serviceLevelAgreementsService));
 
             RuleFor(slac => slac)
             .MustAsync(NotBeDuplicateContact)

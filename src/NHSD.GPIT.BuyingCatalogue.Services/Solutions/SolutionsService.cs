@@ -51,6 +51,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
                 .Include(i => i.Solution).ThenInclude(s => s.ServiceLevelAgreement).ThenInclude(sla => sla.Contacts)
                 .Include(i => i.Solution).ThenInclude(s => s.ServiceLevelAgreement).ThenInclude(sla => sla.ServiceHours)
                 .Include(i => i.Solution).ThenInclude(s => s.ServiceLevelAgreement).ThenInclude(sla => sla.ServiceLevels)
+                .Include(i => i.Solution).ThenInclude(s => s.WorkOffPlans).ThenInclude(s => s.Standard)
                 .Include(i => i.CataloguePrices).ThenInclude(cp => cp.PricingUnit)
                 .Include(i => i.SupplierServiceAssociations)
                 .Where(i => i.Id == solutionId)
@@ -78,7 +79,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
                 .FirstOrDefaultAsync();
         }
 
-        public async Task<IList<Standard>> GetSolutionStandards(CatalogueItemId catalogueItemId)
+        public async Task<IList<Standard>> GetSolutionStandardsForMarketing(CatalogueItemId catalogueItemId)
         {
             var requiredStandardsQuery = dbContext.Standards.Where(s => s.StandardType == StandardType.Overarching);
 
@@ -93,6 +94,21 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
                .ToListAsync();
 
             // TODO : Add in Capability Standards when workoff plans is done.
+        }
+
+        public async Task<IList<Standard>> GetSolutionStandardsForEditing(CatalogueItemId catalogueItemId)
+        {
+            var requiredandCapabilityStandards = dbContext.Standards.Where(s => s.StandardType != StandardType.Interoperability);
+
+            return await dbContext.CatalogueItems
+               .Where(ci => ci.Id == catalogueItemId)
+               .SelectMany(ci => ci.CatalogueItemCapabilities)
+               .Select(cic => cic.Capability)
+               .SelectMany(c => c.StandardCapabilities)
+               .Select(sc => sc.Standard)
+               .Distinct()
+               .Union(requiredandCapabilityStandards)
+               .ToListAsync();
         }
 
         public async Task<CatalogueItem> GetSolutionOverview(CatalogueItemId solutionId)
@@ -259,13 +275,6 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
         {
             var solution = await solutionRepository.SingleAsync(s => s.CatalogueItemId == solutionId);
             solution.ImplementationDetail = detail;
-            await solutionRepository.SaveChangesAsync();
-        }
-
-        public async Task SaveRoadMap(CatalogueItemId solutionId, string roadMap)
-        {
-            var solution = await solutionRepository.SingleAsync(s => s.CatalogueItemId == solutionId);
-            solution.RoadMap = roadMap;
             await solutionRepository.SaveChangesAsync();
         }
 

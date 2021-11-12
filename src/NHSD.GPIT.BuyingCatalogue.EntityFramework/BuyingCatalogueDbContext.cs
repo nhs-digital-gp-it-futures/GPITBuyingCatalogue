@@ -97,6 +97,8 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework
 
         public DbSet<ServiceAvailabilityTimes> ServiceAvailabilityTimes { get; set; }
 
+        public DbSet<WorkOffPlan> WorkOffPlans { get; set; }
+
         public override Task<int> SaveChangesAsync(bool acceptAllChangesOnSuccess, CancellationToken cancellationToken = default)
         {
             UpdateAuditFields();

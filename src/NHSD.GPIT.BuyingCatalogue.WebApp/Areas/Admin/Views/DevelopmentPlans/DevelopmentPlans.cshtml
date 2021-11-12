@@ -1,4 +1,7 @@
-﻿@model NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.DevelopmentPlanModel
+﻿@using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
+@using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers; 
+
+@model NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.DevelopmentPlans.DevelopmentPlanModel
 @{
     ViewBag.Title = "Development plans";
 }
@@ -13,7 +16,11 @@
 
         <h2>Work-off Plans</h2>
 
-        <vc:nhs-action-link text="Add a Work-off Plan item" url="#" />
+        <vc:nhs-action-link text="Add a Work-off Plan item"
+                            url="@Url.Action(
+                                    nameof(DevelopmentPlansController.AddWorkOffPlan),
+                                    typeof(DevelopmentPlansController).ControllerName(),
+                                    new { Model.SolutionId})" />
 
         <p>Use the link to add information about each Work-off Plan item for your Catalogue Solution.</p>
 
@@ -22,17 +29,22 @@
             <nhs-table-column>Details</nhs-table-column>
             <nhs-table-column>Agreed&nbsp;completion&nbsp;date</nhs-table-column>
             <nhs-table-column></nhs-table-column>
-            @foreach(var workOffPlan in Model.WorkOffPlans.OrderBy(wp => wp.Standard.Name).OrderBy(wp => wp.Details))
+            @foreach (var workOffPlan in Model.WorkOffPlans.OrderBy(wp => wp.Standard.Name).OrderBy(wp => wp.Details))
             {
                 <nhs-table-row-container>
                     <nhs-table-cell>@workOffPlan.Standard.Name</nhs-table-cell>
                     <nhs-table-cell>@workOffPlan.Details</nhs-table-cell>
                     <nhs-table-cell>@workOffPlan.CompletionDate.ToString("dd/MM/yyyy")</nhs-table-cell>
-                    <nhs-table-cell><a href="#">Edit</a></nhs-table-cell>
+                    <nhs-table-cell>
+                        <a href="@Url.Action(
+                                    nameof(DevelopmentPlansController.EditWorkOffPlan),
+                                    typeof(DevelopmentPlansController).ControllerName(),
+                                    new { solutionid = Model.SolutionId, workOffPlanId = workOffPlan.Id })">Edit</a>
+                    </nhs-table-cell>
                 </nhs-table-row-container>
             }
         </nhs-table>
-        <br/>
+        <br />
         <h2>Roadmap</h2>
         <form method="post">
             <input type="hidden" asp-for="BackLink" />

@@ -254,13 +254,13 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Controllers
             mockService.Setup(s => s.GetSolutionOverview(solution.CatalogueItemId))
                 .ReturnsAsync(solution.CatalogueItem);
 
-            mockService.Setup(s => s.GetSolutionStandards(solution.CatalogueItemId))
+            mockService.Setup(s => s.GetSolutionStandardsForMarketing(solution.CatalogueItemId))
                 .ReturnsAsync(standards);
 
             await controller.Standards(solution.CatalogueItemId);
 
             mockService.Verify(s => s.GetSolutionOverview(solution.CatalogueItemId));
-            mockService.Verify(s => s.GetSolutionStandards(solution.CatalogueItemId));
+            mockService.Verify(s => s.GetSolutionStandardsForMarketing(solution.CatalogueItemId));
         }
 
         [Theory]
@@ -294,7 +294,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Controllers
             mockService.Setup(s => s.GetSolutionOverview(solution.CatalogueItemId))
                 .ReturnsAsync(solution.CatalogueItem);
 
-            mockService.Setup(s => s.GetSolutionStandards(solution.CatalogueItemId))
+            mockService.Setup(s => s.GetSolutionStandardsForMarketing(solution.CatalogueItemId))
                 .ReturnsAsync(standards);
 
             var actual = (await controller.Standards(solution.CatalogueItemId)).As<ViewResult>();
