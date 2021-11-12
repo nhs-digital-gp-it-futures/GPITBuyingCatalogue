@@ -37,7 +37,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering.CatalogueSolutions
         [Fact]
         public void CatalogueSolutions_AllSectionsDisplayed()
         {
-            CommonActions.ElementIsDisplayed(Objects.Ordering.CatalogueItems.AddItemButton("Catalogue Solution")).Should().BeTrue();
+            CommonActions.ElementIsDisplayed(Objects.Ordering.CatalogueItems.AddCatalogueSolution).Should().BeTrue();
             CommonActions.ElementIsDisplayed(Objects.Ordering.CatalogueItems.AddedItemsTable).Should().BeTrue();
             CommonActions.ElementIsDisplayed(Objects.Ordering.CatalogueItems.ContinueButton).Should().BeTrue();
             CommonActions.GoBackLinkDisplayed().Should().BeTrue();
@@ -59,7 +59,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering.CatalogueSolutions
         [Fact]
         public void CatalogueSolutions_ClickAddSolution()
         {
-            CommonActions.ClickLinkElement(Objects.Ordering.CatalogueItems.AddItemButton("Catalogue Solution"));
+            CommonActions.ClickLinkElement(Objects.Ordering.CatalogueItems.AddCatalogueSolution);
 
             CommonActions
                 .PageLoadedCorrectGetIndex(

@@ -23,7 +23,7 @@
                                                class="nhsuk-u-margin-left-4">Change organisation</a>
                 </p>
             }
-            <vc:nhs-action-link text="Create new order"
+            <vc:nhs-action-link text="Create a new order"
                                      url="@Url.Action(
                                          nameof(OrderController.NewOrder),
                                          typeof(OrderController).ControllerName(),
@@ -60,7 +60,7 @@
                 <nhs-table-column>Last updated by</nhs-table-column>
                 <nhs-table-column>Date Completed</nhs-table-column>
                 <nhs-table-column>Date created</nhs-table-column>
-                <nhs-table-column>Payment centrally processed</nhs-table-column>
+                <nhs-table-column>Payment centrally processed?</nhs-table-column>
                 @for (int i = 0; i < Model.CompleteOrders.Count; i++)
                 {
                     <nhs-table-row-container>

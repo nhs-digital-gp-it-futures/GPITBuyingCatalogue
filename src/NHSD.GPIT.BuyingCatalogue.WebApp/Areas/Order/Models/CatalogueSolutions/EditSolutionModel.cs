@@ -85,7 +85,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.CatalogueSolutions
 
                 return OrderItem.CataloguePrice?.ProvisioningType == ProvisioningType.OnDemand
                     ? "Estimate the quantity you think you'll need either per month or per year."
-                    : "Enter the amount you wish to order. This is usually based on each Service Recipient's practice list size to help calculate an estimated price, but the figure can be changed if required.As you’re ordering per patient, we've included each practice list size if we have it. If it's not included, you'll need to add it yourself.";
+                    : "Enter the amount you wish to order. This is usually based on each Service Recipient's practice list size to help calculate an estimated price, but the figure can be changed if required.<br/><br/>As you’re ordering per patient, we've included each practice list size if we have it. If it's not included, you'll need to add it yourself.";
             }
         }
 

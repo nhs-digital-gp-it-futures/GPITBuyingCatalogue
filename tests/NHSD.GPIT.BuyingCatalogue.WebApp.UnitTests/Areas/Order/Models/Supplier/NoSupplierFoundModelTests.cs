@@ -17,7 +17,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.Supplier
             var model = new NoSupplierFoundModel(odsCode, callOffId);
 
             model.BackLink.Should().Be($"/order/organisation/{odsCode}/order/{callOffId}/supplier/search");
-            model.BackLinkText.Should().Be("Go back to search");
         }
     }
 }

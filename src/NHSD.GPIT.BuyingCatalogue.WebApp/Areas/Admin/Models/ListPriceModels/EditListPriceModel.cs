@@ -18,7 +18,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.ListPriceModels
         {
             ItemId = catalogueItem.Id;
             ItemName = catalogueItem.Name;
-            Title = "Add list price";
+            Title = "Add a list price";
         }
 
         public EditListPriceModel(CatalogueItem catalogueItem, CataloguePrice cataloguePrice)
@@ -29,7 +29,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.ListPriceModels
             Unit = cataloguePrice.PricingUnit.Description;
             UnitDefinition = cataloguePrice.PricingUnit.Definition;
             SelectedProvisioningType = cataloguePrice.ProvisioningType;
-            Title = $"{catalogueItem.Name} price";
+            Title = $"{catalogueItem.Name} list price";
 
             if (cataloguePrice.ProvisioningType == ProvisioningType.Declarative)
             {

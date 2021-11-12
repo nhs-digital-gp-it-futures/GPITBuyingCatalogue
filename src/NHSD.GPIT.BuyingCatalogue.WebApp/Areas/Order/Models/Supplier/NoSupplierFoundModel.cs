@@ -6,7 +6,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.Supplier
     {
         public NoSupplierFoundModel(string odsCode, CallOffId callOffId)
         {
-            BackLinkText = "Go back to search";
             BackLink = $"/order/organisation/{odsCode}/order/{callOffId}/supplier/search";
         }
     }

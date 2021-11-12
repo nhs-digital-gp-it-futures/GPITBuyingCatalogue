@@ -41,7 +41,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.AddNewSolution.ServiceL
 
             CommonActions.PageTitle()
                 .Should()
-                .BeEquivalentTo($"Type of Catalogue Solution - {solution.Name}".FormatForComparison());
+                .BeEquivalentTo($"Catalogue Solution type - {solution.Name}".FormatForComparison());
 
             CommonActions.ElementIsDisplayed(CommonSelectors.Header1).Should().BeTrue();
             CommonActions.ElementIsDisplayed(CommonSelectors.RadioButtonItems).Should().BeTrue();

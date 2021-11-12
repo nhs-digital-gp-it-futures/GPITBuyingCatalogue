@@ -46,6 +46,6 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Objects.Ordering
 
         public static By CatalogueSolutionsEditSolutionDeleteSolutionLink => By.LinkText("Delete Catalogue Solution");
 
-        public static By CatalogueSolutionsDeleteSolutionCancelLink => By.LinkText("Cancel delete");
+        public static By CatalogueSolutionsDeleteSolutionCancelLink => By.LinkText("Cancel");
     }
 }

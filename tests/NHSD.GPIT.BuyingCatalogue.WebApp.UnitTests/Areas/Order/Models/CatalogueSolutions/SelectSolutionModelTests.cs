@@ -21,7 +21,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.Catalogu
             var model = new SelectSolutionModel(odsCode, callOffId, solutions, selectedSolutionId);
 
             model.BackLink.Should().Be($"/order/organisation/{odsCode}/order/{callOffId}/catalogue-solutions");
-            model.Title.Should().Be($"Add Catalogue Solution for {callOffId}");
+            model.Title.Should().Be($"Add a Catalogue Solution for {callOffId}");
             model.OdsCode.Should().Be(odsCode);
             model.Solutions.Should().BeEquivalentTo(solutions);
             model.SelectedSolutionId.Should().Be(selectedSolutionId);
