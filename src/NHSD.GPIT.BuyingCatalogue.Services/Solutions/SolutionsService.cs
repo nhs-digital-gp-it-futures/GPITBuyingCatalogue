@@ -52,6 +52,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
                 .Include(i => i.Solution).ThenInclude(s => s.ServiceLevelAgreement).ThenInclude(sla => sla.ServiceHours)
                 .Include(i => i.Solution).ThenInclude(s => s.ServiceLevelAgreement).ThenInclude(sla => sla.ServiceLevels)
                 .Include(i => i.CataloguePrices).ThenInclude(cp => cp.PricingUnit)
+                .Include(i => i.SupplierServiceAssociations)
                 .Where(i => i.Id == solutionId)
                 .FirstOrDefaultAsync();
         }
