@@ -15,6 +15,7 @@
         <form method="post">
             <input type="hidden" asp-for="SolutionName" />
             <input type="hidden" asp-for="SolutionId" />
+            <input type="hidden" asp-for="BackLink" />
             <nhs-select asp-for="SelectedStandard"
                         asp-items="standardsList"
                         label-text="Select Standard" />
