@@ -139,7 +139,37 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
             if (solution is null)
                 return BadRequest($"No Solution found for Id: {solutionId}");
 
-            await serviceLevelAgreementsService.UpdateServiceLevelTypeAsync(solution, model.SlaLevel!.Value);
+            if (model.SlaLevel!.Value != solution.Solution.ServiceLevelAgreement.SlaType)
+                return RedirectToAction(nameof(EditServiceLevelAgreementTypeConfirmation), new { solutionId });
+
+            return RedirectToAction(nameof(EditServiceLevelAgreement), new { solutionId });
+        }
+
+        [HttpGet("edit-service-level-agreement/edit-sla-type/confirm-change")]
+        public async Task<IActionResult> EditServiceLevelAgreementTypeConfirmation(CatalogueItemId solutionId)
+        {
+            var catalogueItem = await solutionsService.GetSolution(solutionId);
+            if (catalogueItem is null)
+                return BadRequest($"No Solution found for Id: {solutionId}");
+
+            var model = new EditSlaTypeConfirmationModel(catalogueItem)
+            {
+                BackLink = Url.Action(nameof(EditServiceLevelAgreementType), new { solutionId }),
+            };
+
+            return View(model);
+        }
+
+        [HttpPost("edit-service-level-agreement/edit-sla-type/confirm-change")]
+        public async Task<IActionResult> EditServiceLevelAgreementTypeConfirmation(CatalogueItemId solutionId, EditSlaTypeConfirmationModel model)
+        {
+            var catalogueItem = await solutionsService.GetSolution(solutionId);
+            if (catalogueItem is null)
+                return BadRequest($"No Solution found for Id: {solutionId}");
+
+            var newSlaType = catalogueItem.Solution.ServiceLevelAgreement.SlaType == SlaType.Type1 ? SlaType.Type2 : SlaType.Type1;
+
+            await serviceLevelAgreementsService.UpdateServiceLevelTypeAsync(catalogueItem, newSlaType);
 
             return RedirectToAction(nameof(EditServiceLevelAgreement), new { solutionId });
         }
