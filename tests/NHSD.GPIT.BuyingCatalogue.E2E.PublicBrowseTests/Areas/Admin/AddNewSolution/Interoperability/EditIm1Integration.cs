@@ -45,7 +45,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.AddNewSolution.Interope
 
             CommonActions.PageTitle()
                 .Should()
-                .BeEquivalentTo($"Add an IM1 Integration - {solution.Name}".FormatForComparison());
+                .BeEquivalentTo($"Edit an IM1 Integration - {solution.Name}".FormatForComparison());
 
             CommonActions.ElementIsDisplayed(CommonSelectors.Header1).Should().BeTrue();
             CommonActions.ElementIsDisplayed(InteroperabilityObjects.SelectedIntegrationType).Should().BeTrue();
