@@ -1,13 +1,15 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
+using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Models;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.InteroperabilityModels
 {
-    public class AddIm1IntegrationModel : NavBaseModel
+    public class AddEditIm1IntegrationModel : NavBaseModel
     {
-        public AddIm1IntegrationModel()
+        public AddEditIm1IntegrationModel()
         {
             IntegrationTypes = new List<object>
             {
@@ -23,11 +25,11 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.InteroperabilityMo
             };
         }
 
-        public AddIm1IntegrationModel(CatalogueItem solution)
+        public AddEditIm1IntegrationModel(CatalogueItem solution)
             : this()
         {
-            BackLink = $"/admin/catalogue-solutions/manage/{solution.Id}/interoperability";
             SolutionName = solution.Name;
+            SolutionId = solution.Id;
         }
 
         public string SolutionName { get; }
@@ -49,5 +51,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.InteroperabilityMo
         [Required(ErrorMessage = "Enter a description")]
         [StringLength(1000)]
         public string Description { get; set; }
+
+        public CatalogueItemId SolutionId { get; }
+
+        public Guid IntegrationId { get; set; }
     }
 }

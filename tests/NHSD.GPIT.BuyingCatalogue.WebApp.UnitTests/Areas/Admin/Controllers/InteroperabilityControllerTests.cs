@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Text.Json;
 using System.Threading.Tasks;
 using AutoFixture;
@@ -87,12 +88,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
         [CommonAutoData]
         public static async Task Get_AddIm1Integration_ValidId_ReturnsViewWithExpectedModel(
             Solution solution,
-            List<Integration> integrations,
             [Frozen] Mock<ISolutionsService> mockService,
             InteroperabilityController controller)
         {
             var catalogueItem = solution.CatalogueItem;
-            solution.Integrations = JsonSerializer.Serialize(integrations);
 
             mockService.Setup(s => s.GetSolution(catalogueItem.Id))
                 .ReturnsAsync(catalogueItem);
@@ -100,8 +99,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
             var actual = (await controller.AddIm1Integration(catalogueItem.Id)).As<ViewResult>();
 
             mockService.Verify(s => s.GetSolution(catalogueItem.Id));
-            actual.ViewName.Should().BeNull();
-            actual.Model.Should().BeEquivalentTo(new AddIm1IntegrationModel(catalogueItem));
+            actual.ViewName.Should().Be("AddEditIm1Integration");
+            var expectedModel = new AddEditIm1IntegrationModel(catalogueItem);
+            actual.Model.Should().BeEquivalentTo(expectedModel, opt =>
+                opt.Excluding(m => m.BackLink));
         }
 
         [Theory]
@@ -123,7 +124,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
         [CommonAutoData]
         public static async Task Post_AddIm1Integration_Saves_And_RedirectsToManageCatalogueSolution(
             CatalogueItemId catalogueItemId,
-            AddIm1IntegrationModel model,
+            AddEditIm1IntegrationModel model,
             [Frozen] Mock<IInteroperabilityService> mockInteroperabilityService,
             InteroperabilityController controller)
         {
@@ -147,6 +148,266 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
             actual.ActionName.Should().Be(nameof(InteroperabilityController.Interoperability));
             actual.ControllerName.Should().BeNull();
             actual.RouteValues["solutionId"].Should().Be(catalogueItemId);
+        }
+
+        [Theory]
+        [CommonAutoData]
+        public static async Task Get_EditIm1Integration_ValidId_ReturnsViewWithExpectedModel(
+            Solution solution,
+            [Frozen] Mock<ISolutionsService> mockService,
+            InteroperabilityController controller,
+            List<Integration> integrations)
+        {
+            integrations.ForEach(i => i.IntegrationType = Framework.Constants.Interoperability.IM1IntegrationType);
+            solution.Integrations = JsonSerializer.Serialize(integrations);
+
+            mockService.Setup(s => s.GetSolution(solution.CatalogueItemId))
+                .ReturnsAsync(solution.CatalogueItem);
+
+            var actual = await controller.EditIm1Integration(solution.CatalogueItemId, integrations[0].Id);
+
+            actual.Should().NotBeNull();
+            actual.Should().BeOfType<ViewResult>();
+            actual.As<ViewResult>().ViewName.Should().Be("AddEditIm1Integration");
+            actual.As<ViewResult>().Model.Should().BeOfType<AddEditIm1IntegrationModel>();
+        }
+
+        [Theory]
+        [CommonAutoData]
+        public static async Task Get_EditIm1Integration_NullSolution_ReturnsBadRequestObjectResult(
+            Solution solution,
+            [Frozen] Mock<ISolutionsService> mockService,
+            InteroperabilityController controller,
+            Guid integrationId)
+        {
+            mockService.Setup(s => s.GetSolution(solution.CatalogueItemId))
+                .ReturnsAsync((CatalogueItem)default);
+
+            var actual = await controller.EditIm1Integration(solution.CatalogueItemId, integrationId);
+
+            actual.Should().NotBeNull();
+            actual.Should().BeOfType<BadRequestObjectResult>();
+            actual.As<BadRequestObjectResult>().Value.Should().BeEquivalentTo($"No Solution found for Id: {solution.CatalogueItemId}");
+        }
+
+        [Theory]
+        [CommonAutoData]
+        public static async Task Get_EditIm1Integration_NullIntegration_ReturnsBadRequestObjectResult(
+            Solution solution,
+            [Frozen] Mock<ISolutionsService> mockService,
+            InteroperabilityController controller,
+            Guid integrationId)
+        {
+            mockService.Setup(s => s.GetSolution(solution.CatalogueItemId))
+                .ReturnsAsync(solution.CatalogueItem);
+
+            var actual = await controller.EditIm1Integration(solution.CatalogueItemId, integrationId);
+
+            actual.Should().NotBeNull();
+            actual.Should().BeOfType<BadRequestObjectResult>();
+            actual.As<BadRequestObjectResult>().Value.Should().BeEquivalentTo($"No integration found for Id: {integrationId}");
+        }
+
+        [Theory]
+        [CommonAutoData]
+        public static async Task Post_EditIm1Integration_Saves_And_RedirectsToManageIntegrations(
+            Solution solution,
+            [Frozen] Mock<ISolutionsService> mockService,
+            [Frozen] Mock<IInteroperabilityService> mockInteroperabilityService,
+            InteroperabilityController controller,
+            List<Integration> integrations,
+            AddEditIm1IntegrationModel model)
+        {
+            solution.Integrations = JsonSerializer.Serialize(integrations);
+
+            mockService.Setup(s => s.GetSolution(solution.CatalogueItemId)).ReturnsAsync(solution.CatalogueItem);
+
+            mockInteroperabilityService.Setup(s => s.EditIntegration(solution.CatalogueItemId, integrations[0].Id, integrations[0]));
+
+            var actual = await controller.EditIm1Integration(solution.CatalogueItemId, integrations[0].Id, model);
+
+            actual.Should().NotBeNull();
+            actual.Should().BeOfType<RedirectToActionResult>();
+
+            actual.As<RedirectToActionResult>().ActionName.Should().Be(nameof(InteroperabilityController.Interoperability));
+            actual.As<RedirectToActionResult>().ControllerName.Should().BeNull();
+            actual.As<RedirectToActionResult>().RouteValues["solutionId"].Should().Be(solution.CatalogueItemId);
+        }
+
+        [Theory]
+        [CommonAutoData]
+        public static async Task Post_EditIm1Integration_NullSolution_ReturnsBadRequestObjectResult(
+            Solution solution,
+            [Frozen] Mock<ISolutionsService> mockService,
+            InteroperabilityController controller,
+            Guid integrationId,
+            AddEditIm1IntegrationModel model)
+        {
+            mockService.Setup(s => s.GetSolution(solution.CatalogueItemId))
+                .ReturnsAsync((CatalogueItem)default);
+
+            var actual = await controller.EditIm1Integration(solution.CatalogueItemId, integrationId, model);
+
+            actual.Should().NotBeNull();
+            actual.Should().BeOfType<BadRequestObjectResult>();
+            actual.As<BadRequestObjectResult>().Value.Should().BeEquivalentTo($"No Solution found for Id: {solution.CatalogueItemId}");
+        }
+
+        [Theory]
+        [CommonAutoData]
+        public static async Task Post_EditIm1Integration_NullIntegration_ReturnsBadRequestObjectResult(
+            Solution solution,
+            [Frozen] Mock<ISolutionsService> mockService,
+            InteroperabilityController controller,
+            Guid integrationId,
+            AddEditIm1IntegrationModel model)
+        {
+            mockService.Setup(s => s.GetSolution(solution.CatalogueItemId))
+                .ReturnsAsync(solution.CatalogueItem);
+
+            var actual = await controller.EditIm1Integration(solution.CatalogueItemId, integrationId, model);
+
+            actual.Should().NotBeNull();
+            actual.Should().BeOfType<BadRequestObjectResult>();
+            actual.As<BadRequestObjectResult>().Value.Should().BeEquivalentTo($"No integration found for Id: {integrationId}");
+        }
+
+        [Theory]
+        [CommonAutoData]
+        public static async Task Get_DeleteIm1Integration_ValidId_ReturnsView(
+            Solution solution,
+            List<Integration> integrations,
+            [Frozen] Mock<ISolutionsService> mockService,
+            InteroperabilityController controller)
+        {
+            solution.Integrations = JsonSerializer.Serialize(integrations);
+
+            mockService.Setup(s => s.GetSolution(solution.CatalogueItemId)).ReturnsAsync(solution.CatalogueItem);
+
+            var actual = await controller.DeleteIm1Integration(solution.CatalogueItemId, integrations[0].Id);
+
+            actual.Should().NotBeNull()
+                .And.BeOfType<ViewResult>();
+
+            actual.As<ViewResult>().Model.Should().BeOfType<DeleteIntegrationModel>();
+
+            var expectedModel = new DeleteIntegrationModel(solution.CatalogueItem)
+            {
+                IntegrationId = integrations[0].Id,
+                IntegrationType = Framework.Constants.Interoperability.IM1IntegrationType,
+            };
+
+            actual.As<ViewResult>().Model.Should().BeEquivalentTo(expectedModel, opt => opt.Excluding(m => m.BackLink));
+        }
+
+        [Theory]
+        [CommonAutoData]
+        public static async Task Get_DeleteIm1Integration_NullSolutionId_ReturnsBadRequestObjectResult(
+            [Frozen] Mock<ISolutionsService> mockService,
+            InteroperabilityController controller,
+            CatalogueItemId itemId)
+        {
+            mockService.Setup(s => s.GetSolution(itemId)).ReturnsAsync((CatalogueItem)default);
+
+            var actual = await controller.DeleteIm1Integration(itemId, Guid.NewGuid());
+
+            actual.Should().NotBeNull()
+                .And.BeOfType<BadRequestObjectResult>();
+
+            actual.As<BadRequestObjectResult>().Value.Should().Be($"No Solution found for Id: {itemId}");
+        }
+
+        [Theory]
+        [CommonAutoData]
+        public static async Task Get_DeleteIm1Integration_InvalidIntegrationId_ReturnsBadRequestObjectResult(
+            Solution solution,
+            [Frozen] Mock<ISolutionsService> mockService,
+            InteroperabilityController controller,
+            Guid integrationId)
+        {
+            mockService.Setup(s => s.GetSolution(solution.CatalogueItemId)).ReturnsAsync(solution.CatalogueItem);
+
+            var actual = await controller.DeleteIm1Integration(solution.CatalogueItemId, integrationId);
+
+            actual.Should().NotBeNull()
+                .And.BeOfType<BadRequestObjectResult>();
+
+            actual.As<BadRequestObjectResult>().Value.Should().Be($"No integration found for Id: {integrationId}");
+        }
+
+        [Theory]
+        [CommonAutoData]
+        public static async Task Post_DeleteIm1Integration_ValidId_ReturnsRedirectToView(
+            Solution solution,
+            [Frozen] Mock<ISolutionsService> mockService,
+            [Frozen] Mock<IInteroperabilityService> mockInteroperabilityService,
+            InteroperabilityController controller,
+            List<Integration> integrations)
+        {
+            solution.Integrations = JsonSerializer.Serialize(integrations);
+
+            var model = new DeleteIntegrationModel(solution.CatalogueItem)
+            {
+                IntegrationId = Guid.NewGuid(),
+                IntegrationType = Framework.Constants.Interoperability.IM1IntegrationType,
+            };
+
+            mockService.Setup(s => s.GetSolution(solution.CatalogueItemId)).ReturnsAsync(solution.CatalogueItem);
+            mockInteroperabilityService.Setup(s => s.DeleteIntegration(solution.CatalogueItemId, integrations[0].Id));
+
+            var actual = await controller.DeleteIm1Integration(solution.CatalogueItemId, integrations[0].Id, model);
+
+            actual.Should().NotBeNull()
+                .And.BeOfType<RedirectToActionResult>();
+            actual.As<RedirectToActionResult>().ActionName.Should().Be(nameof(controller.Interoperability));
+        }
+
+        [Theory]
+        [CommonAutoData]
+        public static async Task Post_DeleteIm1Integration_NullSolutionId_ReturnsBadRequestObjectResult(
+            Solution solution,
+            [Frozen] Mock<ISolutionsService> mockService,
+            InteroperabilityController controller,
+            CatalogueItemId itemId)
+        {
+            var model = new DeleteIntegrationModel(solution.CatalogueItem)
+            {
+                IntegrationId = Guid.NewGuid(),
+                IntegrationType = Framework.Constants.Interoperability.IM1IntegrationType,
+            };
+
+            mockService.Setup(s => s.GetSolution(itemId)).ReturnsAsync((CatalogueItem)default);
+
+            var actual = await controller.DeleteIm1Integration(itemId, Guid.NewGuid(), model);
+
+            actual.Should().NotBeNull()
+                .And.BeOfType<BadRequestObjectResult>();
+
+            actual.As<BadRequestObjectResult>().Value.Should().Be($"No Solution found for Id: {itemId}");
+        }
+
+        [Theory]
+        [CommonAutoData]
+        public static async Task Post_DeleteIm1Integration_InvalidIntegrationId_ReturnsBadRequestObjectResult(
+            Solution solution,
+            [Frozen] Mock<ISolutionsService> mockService,
+            InteroperabilityController controller,
+            Guid integrationId)
+        {
+            var model = new DeleteIntegrationModel(solution.CatalogueItem)
+            {
+                IntegrationId = Guid.NewGuid(),
+                IntegrationType = Framework.Constants.Interoperability.IM1IntegrationType,
+            };
+
+            mockService.Setup(s => s.GetSolution(solution.CatalogueItemId)).ReturnsAsync(solution.CatalogueItem);
+
+            var actual = await controller.DeleteIm1Integration(solution.CatalogueItemId, integrationId, model);
+
+            actual.Should().NotBeNull()
+                .And.BeOfType<BadRequestObjectResult>();
+
+            actual.As<BadRequestObjectResult>().Value.Should().Be($"No integration found for Id: {integrationId}");
         }
 
         [Theory]

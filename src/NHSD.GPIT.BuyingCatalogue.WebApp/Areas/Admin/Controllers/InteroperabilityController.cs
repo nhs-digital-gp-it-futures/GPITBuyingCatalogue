@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -12,7 +13,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
 {
     [Authorize(Policy = "AdminOnly")]
     [Area("Admin")]
-    [Route("admin/catalogue-solutions")]
+    [Route("admin/catalogue-solutions/manage/{solutionId}/interoperability")]
     public sealed class InteroperabilityController : Controller
     {
         private readonly ISolutionsService solutionsService;
@@ -26,7 +27,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
             this.interoperabilityService = interoperabilityService ?? throw new ArgumentNullException(nameof(interoperabilityService));
         }
 
-        [HttpGet("manage/{solutionId}/interoperability")]
+        [HttpGet]
         public async Task<IActionResult> Interoperability(CatalogueItemId solutionId)
         {
             var solution = await solutionsService.GetSolution(solutionId);
@@ -37,7 +38,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
             return View(new InteroperabilityModel(solution));
         }
 
-        [HttpPost("manage/{solutionId}/interoperability")]
+        [HttpPost]
         public async Task<IActionResult> Interoperability(CatalogueItemId solutionId, InteroperabilityModel model)
         {
             if (!ModelState.IsValid)
@@ -55,7 +56,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
                 new { solutionId });
         }
 
-        [HttpGet("manage/{solutionId}/interoperability/add-im1-integration")]
+        [HttpGet("add-im1-integration")]
         public async Task<IActionResult> AddIm1Integration(CatalogueItemId solutionId)
         {
             var solution = await solutionsService.GetSolution(solutionId);
@@ -63,14 +64,19 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
             if (solution is null)
                 return BadRequest($"No Solution found for Id: {solutionId}");
 
-            return View(new AddIm1IntegrationModel(solution));
+            var model = new AddEditIm1IntegrationModel(solution)
+            {
+                BackLink = Url.Action(nameof(Interoperability), new { solutionId }),
+            };
+
+            return View("AddEditIm1Integration", model);
         }
 
-        [HttpPost("manage/{solutionId}/interoperability/add-im1-integration")]
-        public async Task<IActionResult> AddIm1Integration(CatalogueItemId solutionId, AddIm1IntegrationModel model)
+        [HttpPost("add-im1-integration")]
+        public async Task<IActionResult> AddIm1Integration(CatalogueItemId solutionId, AddEditIm1IntegrationModel model)
         {
             if (!ModelState.IsValid)
-                return View(model);
+                return View("AddEditIm1Integration", model);
 
             var integration = new Integration
             {
@@ -86,7 +92,117 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
             return RedirectToAction(nameof(Interoperability), new { solutionId });
         }
 
-        [HttpGet("manage/{solutionId}/interoperability/add-gp-connect-integration")]
+        [HttpGet("edit-im1-integration/{integrationId}")]
+        public async Task<IActionResult> EditIm1Integration(CatalogueItemId solutionId, Guid integrationId)
+        {
+            var solution = await solutionsService.GetSolution(solutionId);
+
+            if (solution is null)
+                return BadRequest($"No Solution found for Id: {solutionId}");
+
+            var im1Integration = solution
+                .Solution
+                .GetIntegrations()
+                .SingleOrDefault(i => i.Id == integrationId);
+
+            if (im1Integration is null)
+                return BadRequest($"No integration found for Id: {integrationId}");
+
+            var model = new AddEditIm1IntegrationModel(solution)
+            {
+                BackLink = Url.Action(nameof(Interoperability), new { solutionId }),
+                IntegrationId = integrationId,
+                Description = im1Integration.Description,
+                SelectedIntegrationType = im1Integration.Qualifier,
+                IntegratesWith = im1Integration.IntegratesWith,
+                SelectedProviderOrConsumer = im1Integration.IsConsumer ?
+                    Framework.Constants.Interoperability.Consumer :
+                    Framework.Constants.Interoperability.Provider,
+            };
+
+            return View("AddEditIm1Integration", model);
+        }
+
+        [HttpPost("edit-im1-integration/{integrationId}")]
+        public async Task<IActionResult> EditIm1Integration(CatalogueItemId solutionId, Guid integrationId, AddEditIm1IntegrationModel model)
+        {
+            if (!ModelState.IsValid)
+            {
+                return View("AddEditIm1Integration", model);
+            }
+
+            var solution = await solutionsService.GetSolution(solutionId);
+
+            if (solution is null)
+                return BadRequest($"No Solution found for Id: {solutionId}");
+
+            var im1Integration = solution
+                .Solution
+                .GetIntegrations()
+                .SingleOrDefault(i => i.Id == integrationId);
+
+            if (im1Integration is null)
+                return BadRequest($"No integration found for Id: {integrationId}");
+
+            im1Integration.Qualifier = model.SelectedIntegrationType;
+            im1Integration.IntegratesWith = model.IntegratesWith;
+            im1Integration.Description = model.Description;
+            im1Integration.Qualifier = model.SelectedIntegrationType;
+            im1Integration.IsConsumer = model.SelectedProviderOrConsumer == Framework.Constants.Interoperability.Consumer;
+
+            await interoperabilityService.EditIntegration(solutionId, integrationId, im1Integration);
+
+            return RedirectToAction(nameof(Interoperability), new { solutionId });
+        }
+
+        [HttpGet("delete-im1-integration/{integrationId}")]
+        public async Task<IActionResult> DeleteIm1Integration(CatalogueItemId solutionId, Guid integrationId)
+        {
+            var solution = await solutionsService.GetSolution(solutionId);
+
+            if (solution is null)
+                return BadRequest($"No Solution found for Id: {solutionId}");
+
+            var im1Integration = solution
+                .Solution
+                .GetIntegrations()
+                .SingleOrDefault(i => i.Id == integrationId);
+
+            if (im1Integration is null)
+                return BadRequest($"No integration found for Id: {integrationId}");
+
+            var model = new DeleteIntegrationModel(solution)
+            {
+                BackLink = Url.Action(nameof(EditIm1Integration), new { solutionId, integrationId }),
+                IntegrationId = integrationId,
+                IntegrationType = Framework.Constants.Interoperability.IM1IntegrationType,
+            };
+
+            return View("DeleteIntegration", model);
+        }
+
+        [HttpPost("delete-im1-integration/{integrationId}")]
+        public async Task<IActionResult> DeleteIm1Integration(CatalogueItemId solutionId, Guid integrationId, DeleteIntegrationModel model)
+        {
+            var solution = await solutionsService.GetSolution(solutionId);
+
+            if (solution is null)
+                return BadRequest($"No Solution found for Id: {solutionId}");
+
+            var im1Integration = solution
+                .Solution
+                .GetIntegrations()
+                .SingleOrDefault(i => i.Id == integrationId);
+
+            if (im1Integration is null)
+                return BadRequest($"No integration found for Id: {integrationId}");
+
+            await interoperabilityService.DeleteIntegration(solutionId, model.IntegrationId);
+
+            return RedirectToAction(nameof(Interoperability), new { solutionId });
+        }
+
+        [HttpGet("add-gp-connect-integration")]
         public async Task<IActionResult> AddGpConnectIntegration(CatalogueItemId solutionId)
         {
             var solution = await solutionsService.GetSolution(solutionId);
@@ -97,7 +213,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
             return View(new AddGpConnectIntegrationModel(solution));
         }
 
-        [HttpPost("manage/{solutionId}/interoperability/add-gp-connect-integration")]
+        [HttpPost("add-gp-connect-integration")]
         public async Task<IActionResult> AddGpConnectIntegration(CatalogueItemId solutionId, AddGpConnectIntegrationModel model)
         {
             if (!ModelState.IsValid)
