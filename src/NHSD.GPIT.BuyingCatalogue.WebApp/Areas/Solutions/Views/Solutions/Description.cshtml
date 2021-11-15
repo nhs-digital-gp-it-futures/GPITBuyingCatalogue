@@ -6,7 +6,7 @@
         <nhs-summary-list>
             <nhs-summary-list-row label-text="Solution name">
                 <p>
-                    @Model.SolutionName 
+                    @Model.SolutionName
                 </p>
             </nhs-summary-list-row>
             <nhs-summary-list-row label-text="Supplier name">
@@ -36,8 +36,8 @@
             <p data-test-id="solution-suspended-notice">This Catalogue Solution has been suspended from the Buying Catalogue and is not available at this time.</p>
             <p>The supplier did not satisfy an agreed remedial plan to meet outstanding compliance with required standards.</p>
         }
-        else 
-        { 
+        else
+        {
             @if (Model.HasSummary())
             {
                 <h2>Summary</h2>
@@ -50,6 +50,11 @@
                 <h2>Full description</h2>
 
                 <p style="white-space: pre-line">@Model.Description</p>
+            }
+
+            @if (Model.HasAboutUrl())
+            {
+                <a href="@Model.AboutUrl" target="_blank">More about this solution</a>
             }
         }
     </div>

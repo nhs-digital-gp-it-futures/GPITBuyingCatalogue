@@ -22,9 +22,12 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models
             Frameworks = catalogueItem.Frameworks().ToArray();
             IsFoundation = catalogueItem.IsFoundation().ToYesNo();
             SupplierName = catalogueItem.Supplier.Name;
+            AboutUrl = catalogueItem.Solution.AboutUrl;
         }
 
         public string Description { get; init; }
+
+        public string AboutUrl { get; init; }
 
         [UIHint("TableListCell")]
         public string[] Frameworks { get; init; }
@@ -44,5 +47,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models
         public bool HasDescription() => !string.IsNullOrWhiteSpace(Description);
 
         public bool HasSummary() => !string.IsNullOrWhiteSpace(Summary);
+
+        public bool HasAboutUrl() => !string.IsNullOrWhiteSpace(AboutUrl);
     }
 }
