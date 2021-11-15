@@ -116,6 +116,11 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.AddNewSolution.Associat
         [Fact]
         public async Task AssociatedServices_NoServices_Save_Saves_And_NavigatesToCorrectPage()
         {
+            await using var context = GetEndToEndDbContext();
+            var solution = await context.CatalogueItems.Include(c => c.SupplierServiceAssociations).SingleAsync(s => s.Id == SolutionId);
+            solution.SupplierServiceAssociations.Clear();
+            await context.SaveChangesAsync();
+
             var args = new Dictionary<string, string>
             {
                 { nameof(SolutionId), SolutionIdNoAssociatedServices.ToString() },
@@ -131,8 +136,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.AddNewSolution.Associat
                 .Should()
                 .BeTrue();
 
-            await using var context = GetEndToEndDbContext();
-            var solution = await context.CatalogueItems.Include(c => c.SupplierServiceAssociations).SingleAsync(s => s.Id == SolutionId);
+            solution = await context.CatalogueItems.Include(c => c.SupplierServiceAssociations).SingleAsync(s => s.Id == SolutionId);
 
             solution.SupplierServiceAssociations.Should().BeEmpty();
         }
