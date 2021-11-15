@@ -1,0 +1,14 @@
+[
+  {
+    "Category": "Core support hours",
+    "TimeFrom": "2021-11-12T06:30:00",
+    "TimeUntil": "2021-11-12T20:30:00",
+    "ApplicableDays": "Monday \u2013 Sunday inclusive and including Bank Holidays."
+  },
+  {
+    "Category": "Non-core support hours",
+    "TimeFrom": "2021-11-12T20:30:00",
+    "TimeUntil": "2021-11-12T06:30:00",
+    "ApplicableDays": "Monday \u2013 Sunday inclusive and including Bank Holidays."
+  }
+]
