@@ -34,7 +34,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models
         public string Description { get; set; }
 
         [StringLength(1000)]
-        [Url]
         public string Link { get; set; }
 
         public TaskProgress Status()

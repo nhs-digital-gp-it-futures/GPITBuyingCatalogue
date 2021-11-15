@@ -2133,7 +2133,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
                 .ReturnsAsync(catalogueItem);
 
             var result = (await controller.EditSupplierDetails(catalogueItem.Id)).As<ViewResult>();
-            var model = result.Model.As<EditSupplierDetailsModel>();
+            var model = result.Model.As<EditSolutionContactsModel>();
 
             result.Should().NotBeNull();
             model.Should().NotBeNull();
@@ -2144,7 +2144,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
         [Theory]
         [CommonAutoData]
         public static async Task Post_EditSupplierDetails_InvalidModel_ReturnsViewWithModel(
-            EditSupplierDetailsModel model,
+            EditSolutionContactsModel model,
             CatalogueItem catalogueItem,
             [Frozen] Mock<ISolutionsService> solutionsService,
             CatalogueSolutionsController controller)
@@ -2163,7 +2163,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
         [Theory]
         [CommonAutoData]
         public static async Task Post_EditSupplierDetails_ValidModel_ReturnsRedirectToActionResult(
-            EditSupplierDetailsModel model,
+            EditSolutionContactsModel model,
             CatalogueItem catalogueItem,
             [Frozen] Mock<ISolutionsService> solutionsService,
             CatalogueSolutionsController controller)
@@ -2180,7 +2180,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
         [Theory]
         [CommonAutoData]
         public static async Task Post_EditSupplierDetails_ValidModel_SavesContacts(
-            EditSupplierDetailsModel model,
+            EditSolutionContactsModel model,
             CatalogueItem catalogueItem,
             [Frozen] Mock<ISolutionsService> solutionsService,
             CatalogueSolutionsController controller)
