@@ -49,7 +49,15 @@
             {
                 <h2>Full description</h2>
 
-                <p style="white-space: pre-line">@Model.Description</p>
+                <p>
+                    @if(Model.Description.StartsWith("http://") || Model.Description.StartsWith("https://"))
+                    {
+                        <a href="@Model.Description" target="_blank">More about this solution</a>   
+                    } else
+                    {
+                        @Model.Description
+                    }
+                </p>
             }
         }
     </div>
