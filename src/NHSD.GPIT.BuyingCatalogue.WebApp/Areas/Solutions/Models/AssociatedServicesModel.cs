@@ -9,9 +9,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models
         public AssociatedServicesModel(CatalogueItem catalogueItem)
             : base(catalogueItem)
         {
-            // TODO: make use of new nav property on catalogue item once merged
             Services = catalogueItem.Supplier.CatalogueItems
-                .Where(c => c.CatalogueItemType == CatalogueItemType.AssociatedService)
+                .Where(c => c.CatalogueItemType == CatalogueItemType.AssociatedService && catalogueItem.SupplierServiceAssociations.Any(ssa => ssa.AssociatedServiceId == c.Id))
                 .OrderBy(c => c.Name)
                 .Select(c => new AssociatedServiceModel(c.AssociatedService))
                 .ToList();

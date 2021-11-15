@@ -23,11 +23,30 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Models
             Solution solution)
         {
             var catalogueItem = solution.CatalogueItem;
+            catalogueItem.SupplierServiceAssociations.Add(new SupplierServiceAssociation { AssociatedServiceId = service.CatalogueItemId });
             catalogueItem.Supplier.CatalogueItems.Add(service.CatalogueItem);
 
             var model = new AssociatedServicesModel(catalogueItem);
 
-            model.Services.Count.Should().BeGreaterThan(0);
+            model.Services.Count.Should().Be(1);
+            model.HasServices().Should().BeTrue();
+        }
+
+        [Theory]
+        [CommonAutoData]
+        public static void Services_CorrectlyFilters_SelectedServices(
+            AssociatedService selectedService,
+            AssociatedService nonSelectedService,
+            Solution solution)
+        {
+            var catalogueItem = solution.CatalogueItem;
+            catalogueItem.SupplierServiceAssociations.Add(new SupplierServiceAssociation { AssociatedServiceId = selectedService.CatalogueItemId });
+            catalogueItem.Supplier.CatalogueItems.Add(selectedService.CatalogueItem);
+            catalogueItem.Supplier.CatalogueItems.Add(nonSelectedService.CatalogueItem);
+
+            var model = new AssociatedServicesModel(catalogueItem);
+
+            model.Services.Count.Should().Be(1);
             model.HasServices().Should().BeTrue();
         }
 
