@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using FluentAssertions;
 using Microsoft.EntityFrameworkCore;
+using NHSD.GPIT.BuyingCatalogue.E2ETests.Objects.Admin;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Utils;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.TestBases;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
@@ -12,9 +13,9 @@ using NHSD.GPIT.BuyingCatalogue.Framework.Serialization;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers;
 using Xunit;
 
-namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.AddNewSolution
+namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.AddNewSolution.Interoperability
 {
-    public sealed class IM1Integration : AuthorityTestBase, IClassFixture<LocalWebApplicationFactory>, IDisposable
+    public sealed class AddGPConnectIntegration : AuthorityTestBase, IClassFixture<LocalWebApplicationFactory>, IDisposable
     {
         private static readonly CatalogueItemId SolutionId = new(99999, "002");
 
@@ -26,31 +27,29 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.AddNewSolution
             },
         };
 
-        public IM1Integration(LocalWebApplicationFactory factory)
+        public AddGPConnectIntegration(LocalWebApplicationFactory factory)
             : base(
                   factory,
                   typeof(InteroperabilityController),
-                  nameof(InteroperabilityController.AddIm1Integration),
+                  nameof(InteroperabilityController.AddGpConnectIntegration),
                   Parameters)
         {
         }
 
         [Theory]
-        [InlineData("Bulk", "Provider")]
-        [InlineData("Transactional", "Provider")]
-        [InlineData("Patient Facing", "Provider")]
-        [InlineData("Bulk", "Consumer")]
-        [InlineData("Transactional", "Consumer")]
-        [InlineData("Patient Facing", "Consumer")]
-        public async Task IM1Integration_SavePage(string integrationType, string providerOrConsumer)
+        [InlineData("HTML View", "Provider")]
+        [InlineData("Appointment Booking", "Provider")]
+        [InlineData("Structured Record", "Provider")]
+        [InlineData("HTML View", "Consumer")]
+        [InlineData("Appointment Booking", "Consumer")]
+        [InlineData("Structured Record", "Consumer")]
+        public async Task GPConnectIntegration_SavePage(string integrationType, string providerOrConsumer)
         {
-            CommonActions.SelectDropDownItemByValue(Objects.Admin.EditSolution.InteroperabilityObjects.IntegrationType, integrationType);
+            CommonActions.SelectDropDownItemByValue(InteroperabilityObjects.SelectedIntegrationType, integrationType);
 
-            CommonActions.SelectDropDownItemByValue(Objects.Admin.EditSolution.InteroperabilityObjects.ProviderOrConsumer, providerOrConsumer);
+            CommonActions.SelectDropDownItemByValue(InteroperabilityObjects.SelectedProviderOrConsumer, providerOrConsumer);
 
-            var integratesWith = TextGenerators.TextInputAddText(Objects.Admin.EditSolution.InteroperabilityObjects.IntegratesWith, 100);
-
-            var description = TextGenerators.TextInputAddText(Objects.Common.CommonSelectors.Description, 1000);
+            var additionalInformation = TextGenerators.TextInputAddText(Objects.Common.CommonSelectors.AdditionalInfoTextArea, 1000);
 
             CommonActions.ClickSave();
 
@@ -68,15 +67,14 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.AddNewSolution
 
             var firstIntegration = integrationsList.First();
 
-            firstIntegration.IntegrationType.Should().Be("IM1");
+            firstIntegration.IntegrationType.Should().Be("GP Connect");
             firstIntegration.Qualifier.Should().BeEquivalentTo(integrationType);
             firstIntegration.IsConsumer.Should().Be(providerOrConsumer == "Consumer");
-            firstIntegration.IntegratesWith.Should().Be(integratesWith);
-            firstIntegration.Description.Should().Be(description);
+            firstIntegration.AdditionalInformation.Should().Be(additionalInformation);
         }
 
         [Fact]
-        public void IM1Integration_ClickGoBackLink()
+        public void GPConnectIntegration_ClickGoBackLink()
         {
             CommonActions.ClickGoBackLink();
 
@@ -84,7 +82,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.AddNewSolution
         }
 
         [Fact]
-        public void IM1Integration_MandatoryDataMissingThrowsError()
+        public void GPConnectIntegration_MandatoryDataMissingThrowsError()
         {
             CommonActions.ClickSave();
 

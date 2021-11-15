@@ -10,9 +10,9 @@ using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers;
 using Xunit;
 
-namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.AddNewSolution
+namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.AddNewSolution.Interoperability
 {
-    public sealed class Interoperability : AuthorityTestBase, IClassFixture<LocalWebApplicationFactory>, IDisposable
+    public sealed class EditInteroperability : AuthorityTestBase, IClassFixture<LocalWebApplicationFactory>, IDisposable
     {
         private static readonly CatalogueItemId SolutionId = new(99999, "002");
 
@@ -23,7 +23,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.AddNewSolution
             },
         };
 
-        public Interoperability(LocalWebApplicationFactory factory)
+        public EditInteroperability(LocalWebApplicationFactory factory)
             : base(factory, typeof(InteroperabilityController), nameof(InteroperabilityController.Interoperability), Parameters)
         {
         }
