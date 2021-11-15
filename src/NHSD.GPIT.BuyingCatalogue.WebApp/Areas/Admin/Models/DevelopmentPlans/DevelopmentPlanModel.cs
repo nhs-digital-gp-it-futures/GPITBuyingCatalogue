@@ -25,7 +25,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.DevelopmentPlans
         }
 
         [StringLength(1000)]
-        [Url]
         public string Link { get; set; }
 
         public CatalogueItemId SolutionId { get; set; }

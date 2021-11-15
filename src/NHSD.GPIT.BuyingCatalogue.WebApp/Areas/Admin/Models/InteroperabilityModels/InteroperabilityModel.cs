@@ -34,7 +34,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.InteroperabilityMo
         public string[] GpConnectIntegrationQualifiers { get; set; }
 
         [StringLength(1000)]
-        [Url]
         public string Link { get; set; }
 
         public void SetSolution(CatalogueItem catalogueItem)

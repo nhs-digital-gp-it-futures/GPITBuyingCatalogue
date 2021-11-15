@@ -34,7 +34,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.SupplierModels
         [StringLength(1100)]
         public string AboutSupplier { get; init; }
 
-        [Url]
         [StringLength(1000)]
         public string SupplierWebsite { get; init; }
 
