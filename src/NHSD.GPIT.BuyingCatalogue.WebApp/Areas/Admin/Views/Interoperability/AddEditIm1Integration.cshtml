@@ -1,7 +1,7 @@
-﻿@model NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.InteroperabilityModels.AddIm1IntegrationModel;
-@{
-    ViewBag.Title = "Add an IM1 integration";
-}
+﻿@using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
+@using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers;
+@model NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.InteroperabilityModels.AddEditIm1IntegrationModel;
+@{ ViewBag.Title = "Add an IM1 integration"; }
 
 <div class="nhsuk-width-container">
     <partial name="Partials/_BackLink" model="Model" />
@@ -33,6 +33,14 @@
 
                 <nhs-submit-button />
             </form>
+            @if (Model.Description is not null)
+            {
+                <vc:nhs-delete-button url="@Url.Action(
+                                               nameof(InteroperabilityController.DeleteIm1Integration),
+                                               typeof(InteroperabilityController).ControllerName(),
+                                               new { Model.SolutionId, Model.IntegrationId })"
+                              text="Delete integration" />
+            }
         </div>
     </div>
 </div>

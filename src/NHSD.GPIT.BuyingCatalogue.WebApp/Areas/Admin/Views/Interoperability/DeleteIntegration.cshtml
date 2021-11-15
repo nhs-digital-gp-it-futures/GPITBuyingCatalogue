@@ -1,0 +1,27 @@
+﻿@model NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.InteroperabilityModels.DeleteIntegrationModel;
+@{ ViewBag.Title = $"Delete {Model.IntegrationType} integration?"; }
+
+<div class="nhsuk-width-container">
+    <div class="nhsuk-grid-row">
+        <div class="nhsuk-grid-column-full nhsuk-u-margin-bottom-3">
+            <partial name="Partials/_BackLink" model="Model" />
+        </div>
+
+        <div class="nhsuk-grid-column-full">
+            <nhs-validation-summary />
+            <nhs-page-title title="@ViewBag.Title"
+                            caption="@Model.SolutionName"
+                            advice="Confirm you want to delete this integration." />
+            <form method="post">
+                <input type="hidden" asp-for="@Model.BackLink" />
+                <input type="hidden" asp-for="@Model.SolutionName" />
+                <div>
+                    <nhs-submit-button text="Delete" />
+                </div>
+                <div>
+                    <a href="@Model.BackLink">Cancel</a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

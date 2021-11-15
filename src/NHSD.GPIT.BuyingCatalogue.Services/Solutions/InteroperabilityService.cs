@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text.Json;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
@@ -43,6 +44,53 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
             solution.Integrations = JsonSerializer.Serialize(integrations);
 
             await dbContext.SaveChangesAsync();
+        }
+
+        public async Task<Integration> GetIntegrationById(CatalogueItemId solutionId, Guid integrationId)
+        {
+            var solution = await dbContext.Solutions.SingleOrDefaultAsync(s => s.CatalogueItemId == solutionId);
+
+            var integration = solution?.GetIntegrations().SingleOrDefault(i => i.Id == integrationId);
+
+            return integration;
+        }
+
+        public async Task EditIntegration(CatalogueItemId solutionId, Guid integrationId, Integration integration)
+        {
+            if (integration is null)
+                throw new ArgumentNullException(nameof(integration));
+
+            var solution = await dbContext.Solutions.SingleAsync(s => s.CatalogueItemId == solutionId);
+
+            var integrations = solution.GetIntegrations().ToList();
+
+            var index = integrations.IndexOf(integrations.Single(i => i.Id == integrationId));
+
+            integrations.RemoveAt(index);
+
+            integrations.Insert(index, integration);
+
+            solution.Integrations = JsonSerializer.Serialize(integrations);
+
+            await dbContext.SaveChangesAsync();
+        }
+
+        public async Task DeleteIntegration(CatalogueItemId solutionId, Guid integrationId)
+        {
+            var solution = await dbContext.Solutions.SingleAsync(s => s.CatalogueItemId == solutionId);
+
+            var integrations = solution.GetIntegrations().ToList();
+
+            var index = integrations.IndexOf(integrations.SingleOrDefault(i => i.Id == integrationId));
+
+            if (index > -1)
+            {
+                integrations.RemoveAt(index);
+
+                solution.Integrations = JsonSerializer.Serialize(integrations);
+
+                await dbContext.SaveChangesAsync();
+            }
         }
     }
 }
