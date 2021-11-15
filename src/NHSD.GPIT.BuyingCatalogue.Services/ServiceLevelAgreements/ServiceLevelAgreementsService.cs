@@ -1,12 +1,16 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
+using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
+using NHSD.GPIT.BuyingCatalogue.Framework.Serialization;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Models.ServiceLevelAgreements;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.ServiceLevelAgreements;
+using NHSD.GPIT.BuyingCatalogue.Services.Properties;
 
 namespace NHSD.GPIT.BuyingCatalogue.Services.ServiceLevelAgreements
 {
@@ -30,6 +34,9 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.ServiceLevelAgreements
                 SlaType = model.SlaLevel,
             };
 
+            if (solution.ServiceLevelAgreement.SlaType == SlaType.Type1)
+                ApplyType1ServiceLevelAgreement(solution.ServiceLevelAgreement);
+
             await dbContext.SaveChangesAsync();
         }
 
@@ -45,6 +52,15 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.ServiceLevelAgreements
         public async Task UpdateServiceLevelTypeAsync(CatalogueItem solution, SlaType slaLevel)
         {
             var sla = await dbContext.ServiceLevelAgreements.SingleAsync(s => s.SolutionId == solution.Id);
+
+            if (sla.SlaType != slaLevel)
+            {
+                sla.ServiceHours.Clear();
+                sla.ServiceLevels.Clear();
+
+                if (slaLevel == SlaType.Type1)
+                    ApplyType1ServiceLevelAgreement(sla);
+            }
 
             sla.SlaType = slaLevel;
 
@@ -200,6 +216,15 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.ServiceLevelAgreements
             dbContext.SlaServiceLevels.Remove(serviceLevel);
 
             await dbContext.SaveChangesAsync();
+        }
+
+        private static void ApplyType1ServiceLevelAgreement(EntityFramework.Catalogue.Models.ServiceLevelAgreements serviceLevelAgreement)
+        {
+            serviceLevelAgreement.ServiceHours.AddRange(
+                JsonDeserializer.Deserialize<ICollection<ServiceAvailabilityTimes>>(Resources.Type1DefaultServiceHours.GetString()));
+
+            serviceLevelAgreement.ServiceLevels.AddRange(
+                JsonDeserializer.Deserialize<ICollection<SlaServiceLevel>>(Resources.Type1DefaultServiceLevels.GetString()));
         }
 
         private async Task<SlaServiceLevel> GetServiceLevel(CatalogueItemId solutionId, int serviceLevelId)

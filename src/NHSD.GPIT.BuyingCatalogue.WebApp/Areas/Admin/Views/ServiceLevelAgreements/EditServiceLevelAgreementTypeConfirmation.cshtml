@@ -1,0 +1,30 @@
+﻿@model NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.ServiceLevelAgreements.EditSlaTypeConfirmationModel
+@{
+    ViewBag.Title = "Catalogue Solution type";
+}
+
+<div class="nhsuk-width-container">
+    <div class="nhsuk-grid-row">
+        <div class="nhsuk-grid-column-full nhsuk-u-margin-bottom-3">
+            <partial name="Partials/_BackLink" model="Model" />
+        </div>
+
+        <div class="nhsuk-grid-column-full">
+            <nhs-validation-summary />
+            <nhs-page-title title="@ViewBag.Title"
+                            caption="@Model.SolutionName"
+                            advice=@Model.Advice />
+            
+            <p>Are you sure you wish to do this?</p>
+
+            <form method="post">
+                <div>
+                    <nhs-submit-button />
+                </div>
+                <div>
+                    <a href="@Model.BackLink">Cancel</a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

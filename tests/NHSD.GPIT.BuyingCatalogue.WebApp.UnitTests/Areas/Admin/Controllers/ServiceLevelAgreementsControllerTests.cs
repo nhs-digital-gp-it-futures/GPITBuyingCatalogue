@@ -279,7 +279,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
 
         [Theory]
         [CommonAutoData]
-        public static async Task Post_EditSlaLevel_Valid(
+        public static async Task Post_EditSlaLevel_Valid_NoChangeInSlaType_NoSave(
             [Frozen] Mock<ISolutionsService> solutionsService,
             [Frozen] Mock<IServiceLevelAgreementsService> slaService,
             ServiceLevelAgreementsController controller,
@@ -287,6 +287,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
             Solution solution,
             SlaType slaType)
         {
+            solution.ServiceLevelAgreement.SlaType = slaType;
             var addModel = new AddSlaTypeModel(solution.CatalogueItem)
             {
                 SlaLevel = slaType,
@@ -300,7 +301,30 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
             actual.Should().NotBeNull();
             actual.Should().BeOfType<RedirectToActionResult>();
             actual.As<RedirectToActionResult>().ActionName.Should().Be(nameof(controller.EditServiceLevelAgreement));
-            slaService.Verify(s => s.UpdateServiceLevelTypeAsync(solution.CatalogueItem, It.IsAny<SlaType>()));
+            slaService.Verify(s => s.UpdateServiceLevelTypeAsync(solution.CatalogueItem, It.IsAny<SlaType>()), Times.Never);
+        }
+
+        [Theory]
+        [CommonAutoData]
+        public static async Task Post_EditSlaLevel_Valid_ChangeType_RedirectsToConfirmation(
+                  [Frozen] Mock<ISolutionsService> solutionsService,
+                  ServiceLevelAgreementsController controller,
+                  CatalogueItemId itemId,
+                  Solution solution)
+        {
+            solution.ServiceLevelAgreement.SlaType = SlaType.Type1;
+            var addModel = new AddSlaTypeModel(solution.CatalogueItem)
+            {
+                SlaLevel = SlaType.Type2,
+            };
+
+            solutionsService.Setup(s => s.GetSolution(itemId)).ReturnsAsync(solution.CatalogueItem);
+
+            var actual = await controller.EditServiceLevelAgreementType(itemId, addModel);
+
+            actual.Should().NotBeNull();
+            actual.Should().BeOfType<RedirectToActionResult>();
+            actual.As<RedirectToActionResult>().ActionName.Should().Be(nameof(controller.EditServiceLevelAgreementTypeConfirmation));
         }
 
         [Theory]
@@ -1536,6 +1560,85 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
             result.As<RedirectToActionResult>().ActionName.Should().Be(nameof(controller.Index));
             serviceLevelAgreementsService.Verify(
                 s => s.DeleteServiceLevel(solution.CatalogueItemId, serviceLevel.Id));
+        }
+
+        [Theory]
+        [CommonAutoData]
+        public static async Task Get_EditServiceLevelAgreementTypeConfirmation_NullSolution(
+            CatalogueItemId solutionId,
+            [Frozen] Mock<ISolutionsService> solutionsService,
+            ServiceLevelAgreementsController controller)
+        {
+            solutionsService.Setup(s => s.GetSolution(solutionId))
+                .ReturnsAsync(default(CatalogueItem));
+
+            var result = await controller.EditServiceLevelAgreementTypeConfirmation(solutionId);
+
+            result.As<BadRequestObjectResult>().Should().NotBeNull();
+            result.As<BadRequestObjectResult>().Value.Should().Be($"No Solution found for Id: {solutionId}");
+        }
+
+        [Theory]
+        [CommonAutoData]
+        public static async Task Get_EditServiceLevelAgreementTypeConfirmation_ValidRequest(
+            Solution solution,
+            ServiceLevelAgreements serviceLevelAgreement,
+            [Frozen] Mock<ISolutionsService> solutionsService,
+            ServiceLevelAgreementsController controller)
+        {
+            solution.ServiceLevelAgreement = serviceLevelAgreement;
+
+            var expectedModel = new EditSlaTypeConfirmationModel(solution.CatalogueItem);
+
+            solutionsService.Setup(s => s.GetSolution(solution.CatalogueItemId))
+                .ReturnsAsync(solution.CatalogueItem);
+
+            var result = await controller.EditServiceLevelAgreementTypeConfirmation(solution.CatalogueItemId);
+
+            result.As<ViewResult>().Should().NotBeNull();
+            result.As<ViewResult>().ViewName.Should().BeNull();
+            result.As<ViewResult>().Model.Should().BeEquivalentTo(expectedModel, opt => opt.Excluding(m => m.BackLink));
+        }
+
+        [Theory]
+        [CommonAutoData]
+        public static async Task Post_EditServiceLevelAgreementTypeConfirmation_NullSolution(
+            CatalogueItemId solutionId,
+            EditSlaTypeConfirmationModel model,
+            [Frozen] Mock<ISolutionsService> solutionsService,
+            ServiceLevelAgreementsController controller)
+        {
+            solutionsService.Setup(s => s.GetSolution(solutionId))
+                .ReturnsAsync(default(CatalogueItem));
+
+            var result = await controller.EditServiceLevelAgreementTypeConfirmation(solutionId, model);
+
+            result.As<BadRequestObjectResult>().Should().NotBeNull();
+            result.As<BadRequestObjectResult>().Value.Should().Be($"No Solution found for Id: {solutionId}");
+        }
+
+        [Theory]
+        [CommonAutoData]
+        public static async Task Post_EditServiceLevelAgreementTypeConfirmation_ValidRequest(
+            Solution solution,
+            ServiceLevelAgreements serviceLevelAgreement,
+            EditSlaTypeConfirmationModel model,
+            [Frozen] Mock<ISolutionsService> solutionsService,
+            [Frozen] Mock<IServiceLevelAgreementsService> serviceLevelAgreementsService,
+            ServiceLevelAgreementsController controller)
+        {
+            serviceLevelAgreement.SlaType = SlaType.Type1;
+            solution.ServiceLevelAgreement = serviceLevelAgreement;
+
+            solutionsService.Setup(s => s.GetSolution(solution.CatalogueItemId))
+                .ReturnsAsync(solution.CatalogueItem);
+
+            var result = await controller.EditServiceLevelAgreementTypeConfirmation(solution.CatalogueItemId, model);
+
+            result.As<RedirectToActionResult>().Should().NotBeNull();
+            result.As<RedirectToActionResult>().ActionName.Should().Be(nameof(controller.EditServiceLevelAgreement));
+            serviceLevelAgreementsService.Verify(
+                s => s.UpdateServiceLevelTypeAsync(solution.CatalogueItem, SlaType.Type2));
         }
     }
 }

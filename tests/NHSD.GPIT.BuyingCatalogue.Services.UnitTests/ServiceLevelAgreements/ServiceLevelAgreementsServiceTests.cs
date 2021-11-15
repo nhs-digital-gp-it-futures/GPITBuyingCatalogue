@@ -7,6 +7,8 @@ using AutoFixture.AutoMoq;
 using AutoFixture.Idioms;
 using AutoFixture.Xunit2;
 using FluentAssertions;
+using Microsoft.EntityFrameworkCore;
+using MoreLinq;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
@@ -37,7 +39,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.ServiceLevelAgreements
 
         [Theory]
         [InMemoryDbAutoData]
-        public static async Task AddServiceLevel_Valid(
+        public static async Task AddServiceLevel_Valid_Type1(
             [Frozen] BuyingCatalogueDbContext context,
             ServiceLevelAgreementsService service,
             Solution solution)
@@ -53,8 +55,42 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.ServiceLevelAgreements
 
             await service.AddServiceLevelAgreement(model);
 
-            var sla = context.ServiceLevelAgreements.Single(s => s.SolutionId == solution.CatalogueItemId);
+            var sla = context.ServiceLevelAgreements
+                .Include(s => s.ServiceLevels)
+                .Include(s => s.ServiceHours)
+                .Single(s => s.SolutionId == solution.CatalogueItemId);
+
             sla.SlaType.Should().Be(model.SlaLevel);
+            sla.ServiceHours.Should().NotBeNullOrEmpty();
+            sla.ServiceLevels.Should().NotBeNullOrEmpty();
+        }
+
+        [Theory]
+        [InMemoryDbAutoData]
+        public static async Task AddServiceLevel_Valid_Type2(
+            [Frozen] BuyingCatalogueDbContext context,
+            ServiceLevelAgreementsService service,
+            Solution solution)
+        {
+            var model = new AddSlaModel
+            {
+                Solution = solution.CatalogueItem,
+                SlaLevel = SlaType.Type2,
+            };
+            solution.ServiceLevelAgreement = null;
+            context.CatalogueItems.Add(solution.CatalogueItem);
+            await context.SaveChangesAsync();
+
+            await service.AddServiceLevelAgreement(model);
+
+            var sla = context.ServiceLevelAgreements
+                .Include(s => s.ServiceLevels)
+                .Include(s => s.ServiceHours)
+                .Single(s => s.SolutionId == solution.CatalogueItemId);
+
+            sla.SlaType.Should().Be(model.SlaLevel);
+            sla.ServiceHours.Should().BeEmpty();
+            sla.ServiceLevels.Should().BeEmpty();
         }
 
         [Theory]
@@ -86,20 +122,85 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.ServiceLevelAgreements
 
         [Theory]
         [InMemoryDbAutoData]
-        public static async Task UpdateServiceLevelTypeAsync(
+        public static async Task UpdateServiceLevelTypeAsync_NoChange_LevelsAndHours_Unchanged(
             [Frozen] BuyingCatalogueDbContext context,
             ServiceLevelAgreementsService service,
+            ServiceAvailabilityTimes serviceAvailalabilityTime,
+            SlaServiceLevel slaServiceLevel,
             Solution solution)
         {
             solution.ServiceLevelAgreement.SlaType = SlaType.Type1;
+            solution.ServiceLevelAgreement.ServiceHours.Add(serviceAvailalabilityTime);
+            solution.ServiceLevelAgreement.ServiceLevels.Add(slaServiceLevel);
+            context.CatalogueItems.Add(solution.CatalogueItem);
+            await context.SaveChangesAsync();
+
+            await service.UpdateServiceLevelTypeAsync(solution.CatalogueItem, SlaType.Type1);
+
+            var sla = context.ServiceLevelAgreements
+                .Include(s => s.ServiceLevels)
+                .Include(s => s.ServiceHours)
+                .Single(s => s.SolutionId == solution.CatalogueItemId);
+
+            sla.SlaType.Should().Be(SlaType.Type1);
+            sla.ServiceHours.Single().ApplicableDays.Should().Be(serviceAvailalabilityTime.ApplicableDays);
+            sla.ServiceLevels.Single().ServiceLevel.Should().Be(slaServiceLevel.ServiceLevel);
+        }
+
+        [Theory]
+        [InMemoryDbAutoData]
+        public static async Task UpdateServiceLevelTypeAsync_Type1ToType2_LevelsAndHours_Cleared(
+            [Frozen] BuyingCatalogueDbContext context,
+            ServiceLevelAgreementsService service,
+            ServiceAvailabilityTimes serviceAvailalabilityTime,
+            SlaServiceLevel slaServiceLevel,
+            Solution solution)
+        {
+            solution.ServiceLevelAgreement.SlaType = SlaType.Type1;
+            solution.ServiceLevelAgreement.ServiceHours.Add(serviceAvailalabilityTime);
+            solution.ServiceLevelAgreement.ServiceLevels.Add(slaServiceLevel);
             context.CatalogueItems.Add(solution.CatalogueItem);
             await context.SaveChangesAsync();
 
             await service.UpdateServiceLevelTypeAsync(solution.CatalogueItem, SlaType.Type2);
 
-            var sla = context.ServiceLevelAgreements.Single(s => s.SolutionId == solution.CatalogueItemId);
+            var sla = context.ServiceLevelAgreements
+                .Include(s => s.ServiceLevels)
+                .Include(s => s.ServiceHours)
+                .Single(s => s.SolutionId == solution.CatalogueItemId);
 
             sla.SlaType.Should().Be(SlaType.Type2);
+            sla.ServiceHours.Should().BeEmpty();
+            sla.ServiceLevels.Should().BeEmpty();
+        }
+
+        [Theory]
+        [InMemoryDbAutoData]
+        public static async Task UpdateServiceLevelTypeAsync_Type2ToType1_LevelsAndHours_Defaulted(
+            [Frozen] BuyingCatalogueDbContext context,
+            ServiceLevelAgreementsService service,
+            ServiceAvailabilityTimes serviceAvailalabilityTime,
+            SlaServiceLevel slaServiceLevel,
+            Solution solution)
+        {
+            solution.ServiceLevelAgreement.SlaType = SlaType.Type2;
+            solution.ServiceLevelAgreement.ServiceHours.Add(serviceAvailalabilityTime);
+            solution.ServiceLevelAgreement.ServiceLevels.Add(slaServiceLevel);
+            context.CatalogueItems.Add(solution.CatalogueItem);
+            await context.SaveChangesAsync();
+
+            await service.UpdateServiceLevelTypeAsync(solution.CatalogueItem, SlaType.Type1);
+
+            var sla = context.ServiceLevelAgreements
+                .Include(s => s.ServiceLevels)
+                .Include(s => s.ServiceHours)
+                .Single(s => s.SolutionId == solution.CatalogueItemId);
+
+            sla.SlaType.Should().Be(SlaType.Type1);
+            sla.ServiceHours.ForEach(x => x.ApplicableDays.Should().NotBe(serviceAvailalabilityTime.ApplicableDays));
+            sla.ServiceLevels.ForEach(x => x.ServiceLevel.Should().NotBe(slaServiceLevel.ServiceLevel));
+            sla.ServiceHours.Count.Should().Be(2);
+            sla.ServiceLevels.Count.Should().Be(5);
         }
 
         [Theory]

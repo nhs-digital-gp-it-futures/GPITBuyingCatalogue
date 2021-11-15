@@ -1,0 +1,32 @@
+[
+  {
+    "TypeOfService": "Catalogue Solution availability including interfaces to national systems",
+    "ServiceLevel": "99.9% availability during each calendar month and less than 10 minutes downtime in total",
+    "HowMeasured": "Measured on a per practice basis by suppliers monitoring tools and reported to service management",
+    "ServiceCredits": true
+  },
+  {
+    "TypeOfService": "Catalogue Solution responsiveness",
+    "ServiceLevel": "99.9% of transactions take less than 2 seconds",
+    "HowMeasured": "Measured per transaction within the boundaries of the suppliers datacentre and reported to service management",
+    "ServiceCredits": true
+  },
+  {
+    "TypeOfService": "Clinical safety",
+    "ServiceLevel": "No Clinical Safety Incidents in a calendar month and not resolved within the resolution time",
+    "HowMeasured": "Any Clinical Safety Incidents being reported in accordance with DCB0129",
+    "ServiceCredits": true
+  },
+  {
+    "TypeOfService": "Other failures",
+    "ServiceLevel": "No High Severity Service Incidents in a calendar month and not resolved with resolution time",
+    "HowMeasured": "Any High Severity Service Incidents being reported",
+    "ServiceCredits": true
+  },
+  {
+    "TypeOfService": "Service desk performance",
+    "ServiceLevel": "Applicable service failures and their definitions to be agreed with each supplier",
+    "HowMeasured": "To be taken from the approved proposal from the supplier",
+    "ServiceCredits": true
+  }
+]
