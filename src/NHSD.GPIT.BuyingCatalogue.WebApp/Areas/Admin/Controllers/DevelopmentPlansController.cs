@@ -57,7 +57,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
 
             await developmentPlansService.SaveDevelopmentPlans(solutionId, model.Link);
 
-            return RedirectToAction(nameof(CatalogueSolutionsController.ManageCatalogueSolution), new { solutionId });
+            return RedirectToAction(
+                nameof(CatalogueSolutionsController.ManageCatalogueSolution),
+                typeof(CatalogueSolutionsController).ControllerName(),
+                new { solutionId });
         }
 
         [HttpGet("add-work-off-plan")]

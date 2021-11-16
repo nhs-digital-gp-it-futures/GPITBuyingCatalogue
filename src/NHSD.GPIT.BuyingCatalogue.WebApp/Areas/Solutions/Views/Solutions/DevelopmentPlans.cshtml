@@ -1,0 +1,49 @@
+﻿@using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models
+@using System.Linq;
+@model NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models.DevelopmentPlansModel;
+@{ 
+    var roadmapTitle = string.IsNullOrWhiteSpace(Model.RoadmapLink) ? "Roadmap" : "Roadmaps";
+
+    var standardsInOrder = Model.WorkOffPlans.Select(wp => wp.Standard).Distinct().OrderBy(s => s.Name);
+}
+
+<b>These are the development plans for this Catalogue Solution:</b>
+<br/>
+<br/>
+<h2>@roadmapTitle</h2>
+@if (!string.IsNullOrWhiteSpace(Model.RoadmapLink))
+{
+    <p>The supplier has provided a roadmap detailing the development plans for this Catalogue Solution.</p>
+    <p><a href="@Model.RoadmapLink" target="_blank">View supplier’s roadmap for this Catalogue Solution</a>(opens in a new tab)</p>
+}
+<p>The GP IT Futures Capabilities and Standards roadmap outlines future changes to the Capabilities and Standards model.</p>
+<p><a href="https://gpitbjss.atlassian.net/wiki/spaces/GPITF/pages/1391133519/Roadmap" target="_blank">View GP IT Futures Capabilities and Standards roadmap</a>(opens in a new tab)</p>
+
+@if (Model.WorkOffPlans.Any()) 
+{ 
+    <h2>Work-off Plans</h2>
+    <p>This Catalogue Solution is subject to a Compliance Work-off Plan. It means the supplier has agreed to complete any outstanding work to meet a Standard within an agreed timeframe.</p>
+    <p><a href="https://gpitbjss.atlassian.net/wiki/spaces/GPITF/pages/1391134310/Introduction+to+Capabilities+and+Standards" target="_blank">More information about these requirements</a></p>
+    <hr/>
+
+    @foreach(var standard in standardsInOrder)
+    {
+        <h3 id="@standard.Id">@standard.Name</h3>
+        <p><b>Description: </b>@standard.Description</p>
+        <p><a href="@standard.Url" target="_blank">More information about this Standard</a>(opens in a new tab)</p>
+        <p>The supplier is working towards full compliance with this Standard and has the following Work-off Plan items:</p>
+
+        <nhs-table>
+            <nhs-table-column>Details</nhs-table-column>
+            <nhs-table-column>Agreed&nbsp;completion&nbsp;date</nhs-table-column>
+            @foreach(var workOffPlan in Model.WorkOffPlans.Where(wp => wp.StandardId == standard.Id).OrderBy(wp => wp.CompletionDate).ThenBy(wp => wp.Details))
+            {
+                <nhs-table-row-container>
+                    <nhs-table-cell>@workOffPlan.Details</nhs-table-cell>
+                    <nhs-table-cell>@workOffPlan.CompletionDate.ToShortDateString()</nhs-table-cell>
+                </nhs-table-row-container>
+            }
+        </nhs-table>
+        <br/>
+    }
+}
