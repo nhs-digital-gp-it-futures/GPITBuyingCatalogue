@@ -1,0 +1,63 @@
+﻿@using NHSD.GPIT.BuyingCatalogue.Framework.Extensions
+@model NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models.ServiceLevelAgreementDetailsModel
+
+<p><b>These are the levels of service the supplier has committed to for this Catalogue Solution:</b></p>
+
+<h2>Service availability</h2>
+<p>This is when you can contact support services for this Catalogue Solution.</p>
+
+<nhs-table data-test-id="service-availability-table">
+    <nhs-table-column>Category</nhs-table-column>
+    <nhs-table-column>Time period</nhs-table-column>
+    <nhs-table-column>Applicable days</nhs-table-column>
+    <nhs-table-column></nhs-table-column>
+    @foreach (var serviceAvailabilityTime in Model.ServiceAvailabilityTimes.OrderBy(sat => sat.Category).ThenBy(sat => sat.TimeFrom))
+    {
+        <nhs-table-row-container>
+            <nhs-table-cell>@serviceAvailabilityTime.Category</nhs-table-cell>
+            <nhs-table-cell>@serviceAvailabilityTime.TimeFrom.ToString("HH:mm") - @serviceAvailabilityTime.TimeUntil.ToString("HH:mm")</nhs-table-cell>
+            <nhs-table-cell>@serviceAvailabilityTime.ApplicableDays</nhs-table-cell>
+            <nhs-table-cell></nhs-table-cell>
+        </nhs-table-row-container>
+    }
+</nhs-table>
+
+<p>Note: Incidents and Service Requests can be logged 24/7/365 via the Self-Service portal. However, the Service Levels are operational within the defined periods contained in this regime.</p>
+
+<h2>Contact details</h2>
+<p>This is how you can contact support services for this Catalogue Solution.</p>
+
+<nhs-table data-test-id="service-contacts-table">
+    <nhs-table-column>Channel</nhs-table-column>
+    <nhs-table-column>Contact</nhs-table-column>
+    <nhs-table-column>Accessible hours</nhs-table-column>
+    <nhs-table-column></nhs-table-column>
+    @foreach (var slaContact in Model.SlaContacts.OrderBy(sat => sat.Channel).ThenBy(sat => sat.TimeFrom))
+    {
+        <nhs-table-row-container>
+            <nhs-table-cell>@slaContact.Channel</nhs-table-cell>
+            <nhs-table-cell>@slaContact.ContactInformation</nhs-table-cell>
+            <nhs-table-cell>@slaContact.TimeFrom.ToString("HH:mm") - @slaContact.TimeUntil.ToString("HH:mm")</nhs-table-cell>
+            <nhs-table-cell></nhs-table-cell>
+        </nhs-table-row-container>
+    }
+</nhs-table>
+
+<h2>Service levels</h2>
+<p>These are the levels of service provided for this Catalogue Solution.</p>
+
+<nhs-table data-test-id="service-levels-table">
+    <nhs-table-column>Type of service</nhs-table-column>
+    <nhs-table-column>Service level</nhs-table-column>
+    <nhs-table-column>How the service levels are measured</nhs-table-column>
+    <nhs-table-column>Are service credits applied?</nhs-table-column>
+    @foreach (var serviceLevel in Model.ServiceLevels)
+    {
+        <nhs-table-row-container>
+            <nhs-table-cell>@serviceLevel.TypeOfService</nhs-table-cell>
+            <nhs-table-cell>@serviceLevel.ServiceLevel</nhs-table-cell>
+            <nhs-table-cell>@serviceLevel.HowMeasured</nhs-table-cell>
+            <nhs-table-cell>@serviceLevel.ServiceCredits.ToYesNo()</nhs-table-cell>
+        </nhs-table-row-container>
+    }
+</nhs-table>

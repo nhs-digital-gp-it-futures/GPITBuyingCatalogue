@@ -16,110 +16,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models
 
         private static readonly string ControllerName = typeof(SolutionsController).ControllerName();
 
-        private static readonly List<Func<CatalogueItem, bool>> ShowSectionFunctions = new()
-        {
-            { _ => true },
-            { catalogueItem => catalogueItem.HasFeatures() },
-            { catalogueItem => catalogueItem.HasCapabilities() },
-            { catalogueItem => catalogueItem.HasListPrice() },
-            { catalogueItem => catalogueItem.HasAdditionalServices() },
-            { catalogueItem => catalogueItem.HasAssociatedServices() },
-            { catalogueItem => catalogueItem.HasInteroperability() },
-            { catalogueItem => catalogueItem.HasImplementationDetail() },
-            { catalogueItem => catalogueItem.HasClientApplication() },
-            { catalogueItem => catalogueItem.HasHosting() },
-            { catalogueItem => catalogueItem.HasServiceLevelAgreement() },
-            { catalogueItem => catalogueItem.HasDevelopmentPlans() },
-            { catalogueItem => catalogueItem.HasSupplierDetails() },
-        };
-
-        private readonly IList<SectionModel> sections = new List<SectionModel>
-        {
-            new()
-            {
-                Action = nameof(SolutionsController.Description),
-                Controller = ControllerName,
-                Name = KeyDescription,
-            },
-            new()
-            {
-                Action = nameof(SolutionsController.Features),
-                Controller = ControllerName,
-                Name = "Features",
-            },
-            new()
-            {
-                Action = nameof(SolutionsController.Capabilities),
-                Controller = ControllerName,
-                Name = "Capabilities",
-            },
-            new()
-            {
-                Action = nameof(SolutionsController.Standards),
-                Controller = ControllerName,
-                Name = "Standards",
-            },
-            new()
-            {
-                Action = nameof(SolutionsController.ListPrice),
-                Controller = ControllerName,
-                Name = "List price",
-            },
-            new()
-            {
-                Action = nameof(SolutionsController.AdditionalServices),
-                Controller = ControllerName,
-                Name = "Additional Services",
-            },
-            new()
-            {
-                Action = nameof(SolutionsController.AssociatedServices),
-                Controller = ControllerName,
-                Name = "Associated Services",
-            },
-            new()
-            {
-                Action = nameof(SolutionsController.Interoperability),
-                Controller = ControllerName,
-                Name = nameof(SolutionsController.Interoperability),
-            },
-            new()
-            {
-                Action = nameof(SolutionsController.Implementation),
-                Controller = ControllerName,
-                Name = "Implementation",
-            },
-            new()
-            {
-                Action = nameof(SolutionsController.ClientApplicationTypes),
-                Controller = ControllerName,
-                Name = "Client application type",
-            },
-            new()
-            {
-                Action = nameof(SolutionsController.HostingType),
-                Controller = ControllerName,
-                Name = "Hosting type",
-            },
-            new()
-            {
-                Action = nameof(SolutionsController.Description),
-                Controller = ControllerName,
-                Name = "Service Level Agreement",
-            },
-            new()
-            {
-                Action = nameof(SolutionsController.Description),
-                Controller = ControllerName,
-                Name = "Development plans",
-            },
-            new()
-            {
-                Action = nameof(SolutionsController.SupplierDetails),
-                Controller = ControllerName,
-                Name = "Supplier details",
-            },
-        };
+        private IList<SectionModel> sections;
 
         protected SolutionDisplayBaseModel()
         {
@@ -140,7 +37,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models
 
             LastReviewed = catalogueItem.Solution.LastUpdated;
 
-            SetVisibleSections(catalogueItem);
+            SetSections(catalogueItem);
             SetPaginationFooter();
         }
 
@@ -186,19 +83,113 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models
             PaginationFooter.Next = index < (sectionsToShow.Count - 1) ? sectionsToShow[index + 1] : null;
         }
 
-        public void SetShowTrue(int index) => sections[index].Show = true;
-
         public bool IsInRemediation() => PublicationStatus == PublicationStatus.InRemediation;
 
         public bool IsSuspended() => PublicationStatus == PublicationStatus.Suspended;
 
-        private void SetVisibleSections(CatalogueItem solution)
+        private void SetSections(CatalogueItem catalogueItem)
         {
-            for (var i = 0; i < ShowSectionFunctions.Count; i++)
+            sections = new List<SectionModel>
             {
-                if (ShowSectionFunctions[i](solution))
-                    SetShowTrue(i);
-            }
+                new()
+                {
+                    Action = nameof(SolutionsController.Description),
+                    Controller = ControllerName,
+                    Name = KeyDescription,
+                    Show = true,
+                },
+                new()
+                {
+                    Action = nameof(SolutionsController.Features),
+                    Controller = ControllerName,
+                    Name = "Features",
+                    Show = catalogueItem.HasFeatures(),
+                },
+                new()
+                {
+                    Action = nameof(SolutionsController.Capabilities),
+                    Controller = ControllerName,
+                    Name = "Capabilities",
+                    Show = catalogueItem.HasCapabilities(),
+                },
+                new()
+                {
+                    Action = nameof(SolutionsController.Standards),
+                    Controller = ControllerName,
+                    Name = "Standards",
+                    Show = catalogueItem.HasStandards(),
+                },
+                new()
+                {
+                    Action = nameof(SolutionsController.ListPrice),
+                    Controller = ControllerName,
+                    Name = "List price",
+                    Show = catalogueItem.HasListPrice(),
+                },
+                new()
+                {
+                    Action = nameof(SolutionsController.AdditionalServices),
+                    Controller = ControllerName,
+                    Name = "Additional Services",
+                    Show = catalogueItem.HasAdditionalServices(),
+                },
+                new()
+                {
+                    Action = nameof(SolutionsController.AssociatedServices),
+                    Controller = ControllerName,
+                    Name = "Associated Services",
+                    Show = catalogueItem.HasAssociatedServices(),
+                },
+                new()
+                {
+                    Action = nameof(SolutionsController.Interoperability),
+                    Controller = ControllerName,
+                    Name = nameof(SolutionsController.Interoperability),
+                    Show = catalogueItem.HasInteroperability(),
+                },
+                new()
+                {
+                    Action = nameof(SolutionsController.Implementation),
+                    Controller = ControllerName,
+                    Name = "Implementation",
+                    Show = catalogueItem.HasImplementationDetail(),
+                },
+                new()
+                {
+                    Action = nameof(SolutionsController.ClientApplicationTypes),
+                    Controller = ControllerName,
+                    Name = "Client application type",
+                    Show = catalogueItem.HasClientApplication(),
+                },
+                new()
+                {
+                    Action = nameof(SolutionsController.HostingType),
+                    Controller = ControllerName,
+                    Name = "Hosting type",
+                    Show = catalogueItem.HasHosting(),
+                },
+                new()
+                {
+                    Action = nameof(SolutionsController.ServiceLevelAgreement),
+                    Controller = ControllerName,
+                    Name = "Service Level Agreement",
+                    Show = catalogueItem.HasServiceLevelAgreement(),
+                },
+                new()
+                {
+                    Action = nameof(SolutionsController.Description),
+                    Controller = ControllerName,
+                    Name = "Development plans",
+                    Show = catalogueItem.HasDevelopmentPlans(),
+                },
+                new()
+                {
+                    Action = nameof(SolutionsController.SupplierDetails),
+                    Controller = ControllerName,
+                    Name = "Supplier details",
+                    Show = catalogueItem.HasSupplierDetails(),
+                },
+            };
         }
     }
 }
