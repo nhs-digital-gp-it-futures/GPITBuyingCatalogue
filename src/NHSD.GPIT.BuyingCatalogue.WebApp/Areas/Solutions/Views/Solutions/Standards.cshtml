@@ -1,4 +1,6 @@
 ﻿@using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models
+@using NHSD.GPIT.BuyingCatalogue.Framework.Extensions 
+@using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers 
 @model NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models.SolutionStandardsModel
 
 <p><b>Standards describe the technical specifications or operating conditions required for a Catalogue Solution to be published on the Buying Catalogue. This is how @Model.SolutionName has performed against the relevant Standards:</b></p>
@@ -22,8 +24,21 @@
         <nhs-table-row-container>
             <nhs-table-cell>@standard.Name</nhs-table-cell>
             <nhs-table-cell>@standard.Description <a href="@standard.Url">More information about this Standard</a></nhs-table-cell>
-            <nhs-table-cell><nhs-tag colour="Green" text="Fully&nbsp;met" /></nhs-table-cell>
-            <nhs-table-cell></nhs-table-cell>
+            @if (Model.StandardsWithWorkOffPlans.Any(swp => swp == standard.Id))
+            {
+                <nhs-table-cell><nhs-tag colour="Yellow" text="In&nbsp;Progress" /></nhs-table-cell>
+                <nhs-table-cell>
+                    <a asp-action="@nameof(SolutionsController.DevelopmentPlans)"
+                       asp-controller="@typeof(SolutionsController).ControllerName()"
+                       asp-route-solutionId="@Model.SolutionId"
+                       asp-fragment="@standard.Id">View&nbsp;details</a>
+                </nhs-table-cell>
+            }
+            else
+            {
+                <nhs-table-cell><nhs-tag colour="Green" text="Fully&nbsp;met" /></nhs-table-cell>
+                <nhs-table-cell></nhs-table-cell>
+            }
         </nhs-table-row-container>
     }
 </nhs-table>
@@ -49,8 +64,21 @@
             <nhs-table-row-container>
                 <nhs-table-cell>@standard.Name</nhs-table-cell>
                 <nhs-table-cell>@standard.Description <a href="@standard.Url">More information about this Standard</a></nhs-table-cell>
-                <nhs-table-cell><nhs-tag colour="Green" text="Fully&nbsp;met" /></nhs-table-cell>
-                <nhs-table-cell></nhs-table-cell>
+                @if (Model.StandardsWithWorkOffPlans.Any(swp => swp == standard.Id))
+                {
+                    <nhs-table-cell><nhs-tag colour="Yellow" text="In&nbsp;Progress" /></nhs-table-cell>
+                    <nhs-table-cell>
+                        <a asp-action="@nameof(SolutionsController.DevelopmentPlans)"
+                           asp-controller="@typeof(SolutionsController).ControllerName()"
+                           asp-route-solutionId="@Model.SolutionId"
+                           asp-fragment="@standard.Id">View&nbsp;details</a>
+                    </nhs-table-cell>
+                }
+                else
+                {
+                    <nhs-table-cell><nhs-tag colour="Green" text="Fully&nbsp;met" /></nhs-table-cell>
+                    <nhs-table-cell></nhs-table-cell>
+                }
             </nhs-table-row-container>
         }
     </nhs-table>
@@ -77,8 +105,19 @@
             <nhs-table-row-container>
                 <nhs-table-cell>@standard.Name</nhs-table-cell>
                 <nhs-table-cell>@standard.Description <a href="@standard.Url">More information about this Standard</a></nhs-table-cell>
-                <nhs-table-cell><nhs-tag colour="Green" text="Fully&nbsp;met" /></nhs-table-cell>
-                <nhs-table-cell></nhs-table-cell>
+                @if (Model.StandardsWithWorkOffPlans.Any(swp => swp == standard.Id))
+                {
+                    <nhs-table-cell><nhs-tag colour="Yellow" text="In&nbsp;Progress" /></nhs-table-cell>
+                    <nhs-table-cell><a asp-action="@nameof(SolutionsController.DevelopmentPlans)"
+                                       asp-controller="@typeof(SolutionsController).ControllerName()"
+                                       asp-route-solutionId="@Model.SolutionId"
+                                       asp-fragment="@standard.Id">View&nbsp;details</a></nhs-table-cell>
+                }
+                else
+                {
+                    <nhs-table-cell><nhs-tag colour="Green" text="Fully&nbsp;met" /></nhs-table-cell>
+                    <nhs-table-cell></nhs-table-cell>
+                }
             </nhs-table-row-container>
         }
     </nhs-table>
