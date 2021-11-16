@@ -11,38 +11,11 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.ModelBinders
     public static class NewlinesNormalizingModelBinderTests
     {
         [Fact]
-        public static void Constructor_NullModelBinder_ThrowsException()
-        {
-            Assert.Throws<ArgumentNullException>(() => new NewlinesNormalizingModelBinder(null));
-        }
-
-        [Fact]
         public static Task BindModelAsync_NullBindingContext_ThrowsException()
         {
-            var binderMock = new Mock<IModelBinder>();
-            var modelBinder = new NewlinesNormalizingModelBinder(binderMock.Object);
+            var modelBinder = new NewlinesNormalizingModelBinder();
 
-            return Assert.ThrowsAsync<ArgumentException>(() => modelBinder.BindModelAsync(null));            
-        }
-
-        [Theory]
-        [InlineData(null)]
-        [InlineData("")]
-        [InlineData("\t")]
-        public static Task NullOrWhitespaceModelName_ThrowsException(string modelName)
-        {
-            var valueProviderMock = new Mock<IValueProvider>();
-            var contextMock = new Mock<ModelBindingContext>();
-            var binderMock = new Mock<IModelBinder>();
-            var modelBinder = new NewlinesNormalizingModelBinder(binderMock.Object);
-
-            valueProviderMock.Setup(v => v.GetValue(It.IsAny<string>())).Returns(ValueProviderResult.None);
-
-            contextMock.SetupAllProperties();
-            contextMock.Setup(c => c.ModelName).Returns(modelName);
-            contextMock.Setup(c => c.ValueProvider).Returns(valueProviderMock.Object);
-
-            return Assert.ThrowsAsync<ArgumentException>(() => modelBinder.BindModelAsync(contextMock.Object));
+            return Assert.ThrowsAsync<ArgumentNullException>(() => modelBinder.BindModelAsync(null));
         }
 
         [Theory]
@@ -53,16 +26,18 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.ModelBinders
         [InlineData("Abc\rdef\nghi", 11)]
         public static void ValidInput_CorrectlyRemovesCarriageReturn(string input, int expectedCount)
         {
-            Mock<IValueProvider> valueProviderMock = new Mock<IValueProvider>();
-            Mock<ModelBindingContext> contextMock = new Mock<ModelBindingContext>();
-            var binderMock = new Mock<IModelBinder>();
-            var modelBinder = new NewlinesNormalizingModelBinder(binderMock.Object);
+            var valueProviderMock = new Mock<IValueProvider>();
+            var contextMock = new Mock<ModelBindingContext>();
+            var modelStateMock = new Mock<ModelStateDictionary>();
+
+            var modelBinder = new NewlinesNormalizingModelBinder();
 
             valueProviderMock.Setup(v => v.GetValue(It.IsAny<string>())).Returns(new ValueProviderResult(input));
 
             contextMock.SetupAllProperties();
             contextMock.Setup(c => c.ModelName).Returns("Description");
             contextMock.Setup(c => c.ValueProvider).Returns(valueProviderMock.Object);
+            contextMock.Setup(c => c.ModelState).Returns(modelStateMock.Object);
 
             modelBinder.BindModelAsync(contextMock.Object);
 

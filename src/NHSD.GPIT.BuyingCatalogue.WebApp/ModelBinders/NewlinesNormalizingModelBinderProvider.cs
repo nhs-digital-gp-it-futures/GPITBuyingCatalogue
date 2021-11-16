@@ -1,8 +1,5 @@
 ﻿using System;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
-using Microsoft.AspNetCore.Mvc.ModelBinding.Binders;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Logging;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.ModelBinders
 {
@@ -14,10 +11,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.ModelBinders
                 throw new ArgumentNullException(nameof(context));
 
             if (context.Metadata.ModelType == typeof(string))
-            {
-                var loggerFactory = context.Services.GetRequiredService<ILoggerFactory>();
-                return new NewlinesNormalizingModelBinder(new SimpleTypeModelBinder(context.Metadata.ModelType, loggerFactory));
-            }
+                return new NewlinesNormalizingModelBinder();
 
             return null;
         }
