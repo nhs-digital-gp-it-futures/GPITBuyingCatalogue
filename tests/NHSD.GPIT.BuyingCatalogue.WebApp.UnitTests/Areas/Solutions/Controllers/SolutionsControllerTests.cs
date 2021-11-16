@@ -289,13 +289,15 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Controllers
         {
             solution.CatalogueItem.PublishedStatus = PublicationStatus.Published;
 
-            var solutionStandardsModel = new SolutionStandardsModel(solution.CatalogueItem, standards);
+            var solutionStandardsModel = new SolutionStandardsModel(solution.CatalogueItem, standards, new List<string>());
 
             mockService.Setup(s => s.GetSolutionOverview(solution.CatalogueItemId))
                 .ReturnsAsync(solution.CatalogueItem);
 
             mockService.Setup(s => s.GetSolutionStandardsForMarketing(solution.CatalogueItemId))
                 .ReturnsAsync(standards);
+
+            mockService.Setup(s => s.GetWorkOffPlans(solution.CatalogueItemId)).ReturnsAsync(new List<WorkOffPlan>());
 
             var actual = (await controller.Standards(solution.CatalogueItemId)).As<ViewResult>();
 

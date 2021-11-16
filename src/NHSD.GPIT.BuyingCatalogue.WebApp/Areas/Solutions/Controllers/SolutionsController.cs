@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
@@ -348,7 +349,21 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers
 
             var standards = await solutionsService.GetSolutionStandardsForMarketing(solutionId);
 
-            return View(new SolutionStandardsModel(item, standards));
+            var standardsWithWorkOffPlans = (await solutionsService.GetWorkOffPlans(solutionId)).Select(wp => wp.StandardId);
+
+            return View(new SolutionStandardsModel(item, standards, standardsWithWorkOffPlans));
+        }
+
+        [HttpGet("{solutionId}/development-plans")]
+        public async Task<IActionResult> DevelopmentPlans(CatalogueItemId solutionId)
+        {
+            var item = await solutionsService.GetSolutionOverview(solutionId);
+            if (item is null)
+                return BadRequest($"No Catalogue Item found for Id: {solutionId}");
+
+            var workOffPlans = await solutionsService.GetWorkOffPlans(solutionId);
+
+            return View(new DevelopmentPlansModel(item, workOffPlans));
         }
     }
 }
