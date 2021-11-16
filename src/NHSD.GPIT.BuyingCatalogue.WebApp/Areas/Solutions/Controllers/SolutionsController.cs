@@ -303,6 +303,26 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers
             return View(new ListPriceModel(item));
         }
 
+        [HttpGet("{solutionId}/service-level-agreements")]
+        public async Task<IActionResult> ServiceLevelAgreement(CatalogueItemId solutionId)
+        {
+            var item = await solutionsService.GetSolutionOverview(solutionId);
+            if (item is null)
+                return BadRequest($"No Catalogue Item found for Id: {solutionId}");
+
+            if (item.PublishedStatus == PublicationStatus.Suspended)
+                return RedirectToAction(nameof(Description), new { solutionId });
+
+            var serviceLevelAgreement = item.Solution.ServiceLevelAgreement;
+            var model = new ServiceLevelAgreementDetailsModel(
+                item,
+                serviceLevelAgreement.ServiceHours,
+                serviceLevelAgreement.Contacts,
+                serviceLevelAgreement.ServiceLevels);
+
+            return View(model);
+        }
+
         [HttpGet("{solutionId}/supplier-details")]
         public async Task<IActionResult> SupplierDetails(CatalogueItemId solutionId)
         {

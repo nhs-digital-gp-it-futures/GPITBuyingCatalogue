@@ -894,6 +894,46 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Controllers
             actual.Value.Should().Be($"No Catalogue Item found for Id: {id}");
         }
 
+        [Theory]
+        [CommonAutoData]
+        public static async Task Get_ServiceLevelAgreement_NullSolutionForId_ReturnsBadRequestResult(
+            [Frozen] Mock<ISolutionsService> mockService,
+            SolutionsController controller,
+            CatalogueItemId id)
+        {
+            mockService.Setup(s => s.GetSolutionOverview(id))
+                .ReturnsAsync(default(CatalogueItem));
+
+            var actual = (await controller.ServiceLevelAgreement(id)).As<BadRequestObjectResult>();
+
+            actual.Should().NotBeNull();
+            actual.Value.Should().Be($"No Catalogue Item found for Id: {id}");
+        }
+
+        [Theory]
+        [CommonAutoData]
+        public static async Task Get_ServiceLevelAgreement_ValidSolutionForId_ReturnsExpectedViewResult(
+            [Frozen] Mock<ISolutionsService> mockService,
+            SolutionsController controller,
+            Solution solution)
+        {
+            var expectedModel = new ServiceLevelAgreementDetailsModel(
+                solution.CatalogueItem,
+                solution.ServiceLevelAgreement.ServiceHours,
+                solution.ServiceLevelAgreement.Contacts,
+                solution.ServiceLevelAgreement.ServiceLevels);
+
+            mockService.Setup(s => s.GetSolutionOverview(solution.CatalogueItemId))
+                .ReturnsAsync(solution.CatalogueItem);
+
+            var actual = (await controller.ServiceLevelAgreement(solution.CatalogueItemId)).As<ViewResult>();
+
+            actual.Should().NotBeNull();
+            actual.ViewName.Should().BeNullOrEmpty();
+
+            actual.Model.Should().BeEquivalentTo(expectedModel);
+        }
+
         private static string GetIntegrationsJson()
         {
             var integrations = new List<Integration>
