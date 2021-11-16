@@ -43,7 +43,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Organisations
                 CatalogueAgreementSigned = agreementSigned,
                 LastUpdated = DateTime.UtcNow,
                 Name = odsOrganisation.OrganisationName,
-                OdsCode = odsOrganisation.OdsCode.ToUpperInvariant(),
+                OdsCode = odsOrganisation.OdsCode,
                 PrimaryRoleId = odsOrganisation.PrimaryRoleId,
             };
 

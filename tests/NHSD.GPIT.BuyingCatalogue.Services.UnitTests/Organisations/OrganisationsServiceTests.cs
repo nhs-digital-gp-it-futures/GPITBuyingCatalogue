@@ -73,7 +73,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Organisations
             newOrganisation.CatalogueAgreementSigned.Should().Be(agreementSigned);
             newOrganisation.LastUpdated.Date.Should().Be(DateTime.UtcNow.Date);
             newOrganisation.Name.Should().Be(odsOrganisation.OrganisationName);
-            newOrganisation.OdsCode.Should().Be(odsOrganisation.OdsCode.ToUpper());
+            newOrganisation.OdsCode.Should().Be(odsOrganisation.OdsCode);
             newOrganisation.PrimaryRoleId.Should().Be(odsOrganisation.PrimaryRoleId);
         }
     }
