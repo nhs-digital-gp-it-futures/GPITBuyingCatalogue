@@ -54,7 +54,9 @@
 
             @if (Model.HasAboutUrl())
             {
-                <a href="@Model.AboutUrl" target="_blank">More about this solution</a>
+                <p>
+                    <a href="@Model.AboutUrl" target="_blank">More about this solution</a> (opens in a new tab)
+                </p>
             }
         }
     </div>
