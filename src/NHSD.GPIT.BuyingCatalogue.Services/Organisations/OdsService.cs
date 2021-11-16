@@ -44,8 +44,6 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Organisations
                 .AllowHttpStatus("3xx,4xx")
                 .GetJsonAsync<OdsResponse>();
 
-            // https://directory.spineservices.nhs.uk/ORD/2-0-0/organisations/13y
-
             var odsResponseOrganisation = response?.Organisation;
 
             odsOrganisation = odsResponseOrganisation is null ? null : new OdsOrganisation
