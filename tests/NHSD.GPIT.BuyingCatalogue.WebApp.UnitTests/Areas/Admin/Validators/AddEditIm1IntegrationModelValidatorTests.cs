@@ -10,6 +10,23 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators
     {
         [Theory]
         [CommonAutoData]
+        public static void Validate_ValidModel_NoModelError(AddEditIm1IntegrationValidator validator)
+        {
+            var model = new AddEditIm1IntegrationModel
+            {
+                Description = "Description Text",
+                SelectedProviderOrConsumer = "Provider",
+                SelectedIntegrationType = "Bulk",
+                IntegratesWith = "Integrates With Text",
+            };
+
+            var result = validator.TestValidate(model);
+
+            result.ShouldNotHaveAnyValidationErrors();
+        }
+
+        [Theory]
+        [CommonAutoData]
         public static void Validate_NoIntegrationType_SetsModelError(AddEditIm1IntegrationValidator validator)
         {
             var model = new AddEditIm1IntegrationModel
