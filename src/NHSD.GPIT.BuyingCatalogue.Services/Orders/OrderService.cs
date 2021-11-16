@@ -47,6 +47,8 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
                 .Include(o => o.SupplierContact)
                 .Include(o => o.ServiceInstanceItems)
                 .Include(o => o.OrderItems).ThenInclude(i => i.CatalogueItem).ThenInclude(a => a.AdditionalService)
+                .Include(o => o.OrderItems).ThenInclude(i => i.CatalogueItem).ThenInclude(a => a.AssociatedService)
+                .Include(o => o.OrderItems).ThenInclude(i => i.CatalogueItem).ThenInclude(a => a.Solution).ThenInclude(a => a.FrameworkSolutions)
                 .Include(o => o.OrderItems).ThenInclude(i => i.OrderItemRecipients).ThenInclude(r => r.Recipient)
                 .Include(o => o.OrderItems).ThenInclude(i => i.CataloguePrice).ThenInclude(p => p.PricingUnit)
                 .Include(o => o.DefaultDeliveryDates)
