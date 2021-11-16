@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
+using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using CsvHelper;
@@ -24,11 +25,24 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Csv
             var items = new List<FullOrderCsvModel>();
 
             int itemId = 1;
+            string framework;
 
             foreach (var orderItem in order.OrderItems)
             {
                 foreach (var recipient in orderItem.OrderItemRecipients)
                 {
+                    var catalogueItem = orderItem.CatalogueItem;
+                    framework = null;
+
+                    if (catalogueItem?.Solution != null)
+                        framework = catalogueItem.Solution?.FrameworkSolutions?.OfType<FrameworkSolution>().FirstOrDefault().FrameworkId;
+
+                    if (catalogueItem?.AdditionalService != null)
+                        framework = catalogueItem.AdditionalService.Solution?.FrameworkSolutions?.OfType<FrameworkSolution>().FirstOrDefault().FrameworkId;
+
+                    if (catalogueItem?.AssociatedService != null)
+                        framework = catalogueItem.AssociatedService.CatalogueItem.Solution?.FrameworkSolutions?.OfType<FrameworkSolution>().FirstOrDefault().FrameworkId;
+
                     var orderCsvModel = new FullOrderCsvModel
                     {
                         CallOffId = order.CallOffId,
@@ -54,6 +68,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Csv
                         Price = orderItem.Price.GetValueOrDefault(),
                         OrderType = (int)orderItem.CataloguePrice.ProvisioningType,
                         M1Planned = recipient.DeliveryDate,
+                        Framework = framework,
                     };
 
                     items.Add(orderCsvModel);
