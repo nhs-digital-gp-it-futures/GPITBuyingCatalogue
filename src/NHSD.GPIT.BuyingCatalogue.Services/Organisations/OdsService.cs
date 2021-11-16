@@ -49,7 +49,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Organisations
             odsOrganisation = odsResponseOrganisation is null ? null : new OdsOrganisation
             {
                 OrganisationName = odsResponseOrganisation.Name,
-                OdsCode = odsCode,
+                OdsCode = odsResponseOrganisation.OrgId.Extension,
                 PrimaryRoleId = GetPrimaryRoleId(odsResponseOrganisation),
                 Address = OdsResponseAddressToAddress(odsResponseOrganisation.GeoLoc.Location),
                 IsActive = IsActive(odsResponseOrganisation),

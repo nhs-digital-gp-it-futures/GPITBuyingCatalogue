@@ -22,7 +22,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Organisations
 {
     public static class OdsServiceTests
     {
-        private const string OdsCode = "XYZ";
+        private const string OdsCode = "97T";
 
         private const string ValidResponseBody = @"{""Organisation"": "
             + @"{""Name"": ""SOUTH EAST - H&J COMMISSIONING HUB"", "
