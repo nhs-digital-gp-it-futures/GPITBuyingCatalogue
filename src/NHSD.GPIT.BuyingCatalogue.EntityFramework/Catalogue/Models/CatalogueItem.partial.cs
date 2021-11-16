@@ -57,6 +57,8 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models
 
         public virtual bool HasSupplierDetails() => Supplier != null;
 
+        public virtual bool HasStandards() => true;
+
         public virtual bool? IsFoundation() => Solution?.FrameworkSolutions?.Any(f => f.IsFoundation);
 
         public MarketingContact SecondContact() =>
