@@ -29,6 +29,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Csv
             Map(o => o.ActualM1Date).Index(20).Name("Actual M1 date");
             Map(o => o.VerficationDate).Index(21).Name("Buyer verification date (M2)");
             Map(o => o.CeaseDate).Index(22).Name("Cease Date");
+            Map(o => o.Framework).Index(23).Name("Framework");
         }
     }
 }
