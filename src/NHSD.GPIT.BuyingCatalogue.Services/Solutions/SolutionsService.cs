@@ -83,6 +83,8 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
         {
             var requiredStandardsQuery = dbContext.Standards.Where(s => s.StandardType == StandardType.Overarching);
 
+            var capabilityStandards = dbContext.WorkOffPlans.Where(wp => wp.SolutionId == catalogueItemId).Select(wp => wp.Standard).Distinct();
+
             return await dbContext.CatalogueItems
                .Where(ci => ci.Id == catalogueItemId)
                .SelectMany(ci => ci.CatalogueItemCapabilities)
@@ -91,9 +93,8 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
                .Select(sc => sc.Standard)
                .Distinct()
                .Union(requiredStandardsQuery)
+               .Union(capabilityStandards)
                .ToListAsync();
-
-            // TODO : Add in Capability Standards when workoff plans is done.
         }
 
         public async Task<IList<Standard>> GetSolutionStandardsForEditing(CatalogueItemId catalogueItemId)
@@ -455,6 +456,11 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
 
             await dbContext.SaveChangesAsync();
         }
+
+        public async Task<List<WorkOffPlan>> GetWorkOffPlans(CatalogueItemId solutionId) =>
+            await dbContext.WorkOffPlans
+                .Include(wp => wp.Standard)
+                .Where(wp => wp.SolutionId == solutionId).ToListAsync();
 
         internal static ClientApplication RemoveClientApplicationType(ClientApplication clientApplication, ClientApplicationType clientApplicationType)
         {

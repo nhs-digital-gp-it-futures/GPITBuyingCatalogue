@@ -41,8 +41,6 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models
 
         public virtual bool HasClientApplication() => !string.IsNullOrWhiteSpace(Solution?.ClientApplication);
 
-        public virtual bool HasDevelopmentPlans() => !string.IsNullOrWhiteSpace(Solution?.RoadMap);
-
         public virtual bool HasFeatures() => !string.IsNullOrWhiteSpace(Solution?.Features);
 
         public virtual bool HasHosting() => Solution?.Hosting is not null;
