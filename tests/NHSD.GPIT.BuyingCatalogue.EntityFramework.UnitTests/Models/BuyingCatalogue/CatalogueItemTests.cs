@@ -414,38 +414,6 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.UnitTests.Models.BuyingCatal
 
         [Theory]
         [CommonAutoData]
-        public static void HasDevelopmentPlans_SolutionHasDevelopmentPlans_ReturnsTrue(Solution solution)
-        {
-            solution.RoadMap.Should().NotBeNullOrWhiteSpace();
-
-            var actual = solution.CatalogueItem.HasDevelopmentPlans();
-
-            actual.Should().BeTrue();
-        }
-
-        [Theory]
-        [MemberData(nameof(InvalidStringData.TestData), MemberType = typeof(InvalidStringData))]
-        public static void HasDevelopmentPlans_SolutionHasInvalidDevelopmentPlans_ReturnsFalse(string invalid)
-        {
-            var catalogueItem = new CatalogueItem { Solution = new Solution { RoadMap = invalid } };
-
-            var actual = catalogueItem.HasDevelopmentPlans();
-
-            actual.Should().BeFalse();
-        }
-
-        [Fact]
-        public static void HasDevelopmentPlans_SolutionHasIsNull_ReturnsFalse()
-        {
-            var catalogueItem = new CatalogueItem { Solution = null };
-
-            var actual = catalogueItem.HasDevelopmentPlans();
-
-            actual.Should().BeFalse();
-        }
-
-        [Theory]
-        [CommonAutoData]
         public static void HasFeatures_SolutionHasFeatures_ReturnsTrue(Solution solution)
         {
             solution.Features.Should().NotBeNullOrWhiteSpace();

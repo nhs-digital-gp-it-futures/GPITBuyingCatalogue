@@ -177,10 +177,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models
                 },
                 new()
                 {
-                    Action = nameof(SolutionsController.Description),
+                    Action = nameof(SolutionsController.DevelopmentPlans),
                     Controller = ControllerName,
                     Name = "Development plans",
-                    Show = catalogueItem.HasDevelopmentPlans(),
+                    Show = true,
                 },
                 new()
                 {
