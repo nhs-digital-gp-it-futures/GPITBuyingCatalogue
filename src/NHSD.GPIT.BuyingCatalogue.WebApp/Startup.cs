@@ -13,6 +13,7 @@ using Microsoft.Extensions.Logging;
 using NHSD.GPIT.BuyingCatalogue.Framework.Logging;
 using NHSD.GPIT.BuyingCatalogue.Services;
 using NHSD.GPIT.BuyingCatalogue.WebApp.ActionFilters;
+using NHSD.GPIT.BuyingCatalogue.WebApp.ModelBinders;
 using Serilog;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp
@@ -48,6 +49,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp
                     options =>
                     {
                         options.Filters.Add(new AutoValidateAntiforgeryTokenAttribute());
+                        options.ModelBinderProviders.Insert(0, new NewlinesNormalizingModelBinderProvider());
                     });
 
             services.AddFluentValidation();
