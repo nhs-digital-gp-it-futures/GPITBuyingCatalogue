@@ -16,11 +16,11 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Validators.Interoperabili
                 .WithMessage("Select if your system is a provider or consumer");
 
             RuleFor(i => i.IntegratesWith)
-                .NotNull()
+                .NotEmpty()
                 .WithMessage("Enter the system being integrated with");
 
             RuleFor(i => i.Description)
-                .NotNull()
+                .NotEmpty()
                 .WithMessage("Enter a description");
         }
     }
