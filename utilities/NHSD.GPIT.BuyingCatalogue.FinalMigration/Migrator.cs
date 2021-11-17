@@ -17,6 +17,8 @@ namespace NHSD.GPIT.BuyingCatalogue.FinalMigration
         private readonly string ORDAPIConnectionString;
         private readonly string GPITBuyingCatalogueConnectionString;
 
+        private List<LegacyModels.AspNetUser> legacyUsers;
+
         public Migrator()
         {
             BAPIConnectionString = GetConnectionString("BAPI");
@@ -36,15 +38,9 @@ namespace NHSD.GPIT.BuyingCatalogue.FinalMigration
         {
             using (var sqlConnection = new SqlConnection(ISAPIConnectionString))
             {
-                sqlConnection.Open();
-                
-                string sql = $"select * from AspNetUsers";
-
-                var entities = sqlConnection.Query<LegacyModels.AspNetUser>(sql).ToList();
-
-              //  var entities = sqlConnection.Query(sql).ToList();
-
-                System.Diagnostics.Trace.WriteLine($"Loaded {entities.Count} users from legacy database");
+                sqlConnection.Open();                                
+                legacyUsers = sqlConnection.Query<LegacyModels.AspNetUser>("select * from AspNetUsers").ToList();              
+                System.Diagnostics.Trace.WriteLine($"Loaded {legacyUsers.Count} users from legacy database");
             }
         }
 
@@ -67,7 +63,6 @@ namespace NHSD.GPIT.BuyingCatalogue.FinalMigration
                 return new EntityFramework.BuyingCatalogueDbContext(options, new IdentityServiceStub());
             }
         }
-
 
         private string GetConnectionString(string connectionStringName)
         {
