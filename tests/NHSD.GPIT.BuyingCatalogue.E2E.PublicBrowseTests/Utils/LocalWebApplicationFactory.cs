@@ -46,7 +46,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils
         private const string Browser = "chrome";
 
         // Sqllite constants
-        private const string SqlliteConnectionStringInMemory = "DataSource=:memory:";
+        private string SqlliteConnectionStringInMemory => $"DataSource={Guid.NewGuid()};Mode=memory";
 
         private const string SqlliteFileSystemFileLocation = "C:/test.db";
 
