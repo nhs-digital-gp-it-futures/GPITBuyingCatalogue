@@ -1,10 +1,9 @@
 ﻿using System;
-using System.Collections.Generic;
-
-#nullable disable
+using System.Diagnostics.CodeAnalysis;
 
 namespace NHSD.GPIT.BuyingCatalogue.FinalMigration.LegacyModels
 {
+    [ExcludeFromCodeCoverage]
     public partial class Order
     {
         public int Id { get; set; }

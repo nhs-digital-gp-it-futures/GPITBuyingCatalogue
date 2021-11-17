@@ -1,8 +1,10 @@
 ﻿using System.Diagnostics;
+using System.Diagnostics.CodeAnalysis;
 
 namespace NHSD.GPIT.BuyingCatalogue.FinalMigration
 {
-    public class TraceListenerEx : TraceListener
+    [ExcludeFromCodeCoverage]
+    public sealed class TraceListenerEx : TraceListener
     {
         public delegate void WriteMessage(object sender, string message);
         public event WriteMessage OnWriteMessage;
