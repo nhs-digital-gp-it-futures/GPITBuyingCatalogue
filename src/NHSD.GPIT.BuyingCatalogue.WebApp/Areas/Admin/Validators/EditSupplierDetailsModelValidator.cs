@@ -1,29 +1,18 @@
-﻿using System.Collections.Generic;
-using System.Linq;
-using FluentValidation;
-using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models;
+﻿using FluentValidation;
+using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Validation;
+using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.SupplierModels;
+using NHSD.GPIT.BuyingCatalogue.WebApp.Validation;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Validators
 {
-    public sealed class EditSupplierDetailsModelValidator : AbstractValidator<EditSupplierDetailsModel>
+    public class EditSupplierDetailsModelValidator : AbstractValidator<EditSupplierDetailsModel>
     {
-        internal static readonly string ErrorElementName = $"edit-supplier-details";
-
-        public EditSupplierDetailsModelValidator()
+        public EditSupplierDetailsModelValidator(
+            IUrlValidator urlValidator)
         {
-            RuleFor(m => m.AvailableSupplierContacts)
-                .Must(HaveAtLeastOneSelectedContact)
-                .WithMessage("Select a supplier contact")
-                .OverridePropertyName(ErrorElementName)
-                .Must(HaveNoMoreThanTwoSelectedContacts)
-                .WithMessage("You can only select up to two supplier contacts")
-                .OverridePropertyName(ErrorElementName);
+            RuleFor(m => m.SupplierWebsite)
+                .IsValidUrl(urlValidator)
+                .Unless(m => string.IsNullOrWhiteSpace(m.SupplierWebsite));
         }
-
-        private static bool HaveAtLeastOneSelectedContact(IReadOnlyList<AvailableSupplierContact> availableSupplierContacts)
-            => availableSupplierContacts.Any(c => c.Selected);
-
-        private static bool HaveNoMoreThanTwoSelectedContacts(IReadOnlyList<AvailableSupplierContact> availableSupplierContacts)
-            => availableSupplierContacts.Count(c => c.Selected) <= 2;
     }
 }

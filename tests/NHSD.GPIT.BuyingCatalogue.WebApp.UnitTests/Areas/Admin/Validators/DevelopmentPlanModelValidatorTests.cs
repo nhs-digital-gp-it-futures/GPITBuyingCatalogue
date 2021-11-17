@@ -4,21 +4,21 @@ using FluentValidation.TestHelper;
 using Moq;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Validation;
 using NHSD.GPIT.BuyingCatalogue.Test.Framework.AutoFixtureCustomisations;
-using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.SupplierModels;
-using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Validators;
+using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.DevelopmentPlans;
+using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Validators.DevelopmentPlans;
 using Xunit;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators
 {
-    public static class EditSupplierDetailsModelValidatorTests
+    public static class DevelopmentPlanModelValidatorTests
     {
         [Theory]
         [CommonAutoData]
-        public static void Validate_NoWebsite_DoesNotValidate(
+        public static void Validate_NoLink_DoesNotValidate(
             [Frozen] Mock<IUrlValidator> urlValidator,
-            EditSupplierDetailsModelValidator validator)
+            DevelopmentPlanModelValidator validator)
         {
-            var model = new EditSupplierDetailsModel();
+            var model = new DevelopmentPlanModel();
 
             var result = validator.TestValidate(model);
 
@@ -28,50 +28,50 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators
         [Theory]
         [CommonAutoData]
         public static void Validate_MissingProtocol_SetsModelError(
-            EditSupplierDetailsModel model,
+            DevelopmentPlanModel model,
             [Frozen] Mock<IUrlValidator> urlValidator,
-            EditSupplierDetailsModelValidator validator)
+            DevelopmentPlanModelValidator validator)
         {
-            urlValidator.Setup(uv => uv.IsValidUrl(model.SupplierWebsite))
+            urlValidator.Setup(uv => uv.IsValidUrl(model.Link))
                 .ReturnsAsync(false);
 
             var result = validator.TestValidate(model);
 
-            result.ShouldHaveValidationErrorFor(m => m.SupplierWebsite)
+            result.ShouldHaveValidationErrorFor(m => m.Link)
                 .WithErrorMessage("Enter a prefix to the URL, either http or https");
         }
 
         [Theory]
         [CommonAutoData]
-        public static void Validate_InvalidWebsite_SetsModelError(
+        public static void Validate_InvalidLink_SetsModelError(
             [Frozen] Mock<IUrlValidator> urlValidator,
-            EditSupplierDetailsModelValidator validator)
+            DevelopmentPlanModelValidator validator)
         {
-            var model = new EditSupplierDetailsModel { SupplierWebsite = "http://wiothaoih" };
+            var model = new DevelopmentPlanModel { Link = "http://wiothaoih" };
 
-            urlValidator.Setup(uv => uv.IsValidUrl(model.SupplierWebsite))
+            urlValidator.Setup(uv => uv.IsValidUrl(model.Link))
                 .ReturnsAsync(false);
 
             var result = validator.TestValidate(model);
 
-            result.ShouldHaveValidationErrorFor(m => m.SupplierWebsite)
+            result.ShouldHaveValidationErrorFor(m => m.Link)
                 .WithErrorMessage("Enter a valid URL");
         }
 
         [Theory]
         [CommonAutoData]
-        public static void Validate_ValidWebsite_NoModelError(
+        public static void Validate_ValidLink_NoModelError(
             Uri uri,
             [Frozen] Mock<IUrlValidator> urlValidator,
-            EditSupplierDetailsModelValidator validator)
+            DevelopmentPlanModelValidator validator)
         {
-            var model = new EditSupplierDetailsModel { SupplierWebsite = uri.ToString() };
-            urlValidator.Setup(uv => uv.IsValidUrl(model.SupplierWebsite))
+            var model = new DevelopmentPlanModel { Link = uri.ToString() };
+            urlValidator.Setup(uv => uv.IsValidUrl(model.Link))
                 .ReturnsAsync(true);
 
             var result = validator.TestValidate(model);
 
-            result.ShouldNotHaveValidationErrorFor(m => m.SupplierWebsite);
+            result.ShouldNotHaveValidationErrorFor(m => m.Link);
         }
     }
 }
