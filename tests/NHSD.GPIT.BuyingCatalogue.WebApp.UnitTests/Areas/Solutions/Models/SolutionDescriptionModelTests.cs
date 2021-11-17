@@ -113,5 +113,27 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Models
 
             actual.Should().BeFalse();
         }
+
+        [Theory]
+        [CommonAutoData]
+        public static void HasAboutUrl_ValidUrl_ReturnsTrue(SolutionDescriptionModel model)
+        {
+            model.AboutUrl.Should().NotBeNullOrWhiteSpace();
+
+            var actual = model.HasAboutUrl();
+
+            actual.Should().BeTrue();
+        }
+
+        [Theory]
+        [MemberData(nameof(InvalidStringData.TestData), MemberType = typeof(InvalidStringData))]
+        public static void HasAboutUrl_InvalidUrl_ReturnsFalse(string invalid)
+        {
+            var model = new SolutionDescriptionModel { AboutUrl = invalid };
+
+            var actual = model.HasAboutUrl();
+
+            actual.Should().BeFalse();
+        }
     }
 }
