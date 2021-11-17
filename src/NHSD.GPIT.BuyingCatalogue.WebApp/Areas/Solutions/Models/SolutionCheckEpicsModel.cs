@@ -50,6 +50,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models
                 .Epics?
                 .Where(e => e.IsActive && e.SupplierDefined == supplierDefined)
                 .Select(epic => epic.Name)
+                .OrderBy(name => name)
                 .ToArray();
     }
 }
