@@ -16,7 +16,3 @@ GO
 CREATE CLUSTERED COLUMNSTORE INDEX IX_SlaServiceLevels_History
 ON catalogue.SlaServiceLevels_History;
 GO
-
-CREATE NONCLUSTERED INDEX IX_SlaServiceLevels_History_Id_Period_Columns
-ON catalogue.SlaServiceLevels_History (SysEndTime, SysStartTime, Id);
-GO

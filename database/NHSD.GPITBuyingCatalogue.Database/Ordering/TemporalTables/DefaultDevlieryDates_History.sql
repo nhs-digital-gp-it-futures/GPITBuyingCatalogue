@@ -13,7 +13,3 @@ GO
 CREATE CLUSTERED COLUMNSTORE INDEX IX_DefaultDeliveryDates_History
 ON ordering.DefaultDeliveryDates_History;
 GO
-
-CREATE NONCLUSTERED INDEX IX_DefaultDeliveryDates_History_OrderId_CatalogueItemId_Period_Columns
-ON ordering.DefaultDeliveryDates_History (SysEndTime, SysStartTime, CatalogueItemId, OrderId);
-GO

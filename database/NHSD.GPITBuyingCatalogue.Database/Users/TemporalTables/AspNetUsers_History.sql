@@ -31,7 +31,3 @@ GO
 CREATE CLUSTERED COLUMNSTORE INDEX IX_AspNetUsers_History
 ON users.AspNetUsers_History;
 GO
-
-CREATE NONCLUSTERED INDEX IX_AspNetUsers_History_Id_Period_Columns
-ON users.AspNetUsers_History (SysEndTime, SysStartTime, Id);
-GO

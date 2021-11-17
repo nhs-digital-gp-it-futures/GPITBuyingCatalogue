@@ -14,7 +14,3 @@ GO
 CREATE CLUSTERED COLUMNSTORE INDEX IX_AspNetUserClaims_History
 ON users.AspNetUserClaims_History;
 GO
-
-CREATE NONCLUSTERED INDEX IX_AspNetUserClaims_History_Id_Period_Columns
-ON users.AspNetUserClaims_History (SysEndTime, SysStartTime, Id);
-GO

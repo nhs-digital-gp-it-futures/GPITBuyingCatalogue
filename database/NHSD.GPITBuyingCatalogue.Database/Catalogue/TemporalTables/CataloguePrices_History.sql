@@ -18,7 +18,3 @@ GO
 CREATE CLUSTERED COLUMNSTORE INDEX IX_CataloguePrices_History
 ON catalogue.CataloguePrices_History;
 GO
-
-CREATE NONCLUSTERED INDEX IX_CataloguePrices_History_CataloguePriceId_Period_Columns
-ON catalogue.CataloguePrices_History (SysEndTime, SysStartTime, CataloguePriceId);
-GO

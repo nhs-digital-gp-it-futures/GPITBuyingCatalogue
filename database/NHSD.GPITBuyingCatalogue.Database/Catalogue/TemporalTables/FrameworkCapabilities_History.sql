@@ -13,7 +13,3 @@ GO
 CREATE CLUSTERED COLUMNSTORE INDEX IX_FrameworkCapabilities_History
 ON catalogue.FrameworkCapabilities_History;
 GO 
-
-CREATE NONCLUSTERED INDEX IX_FrameworkCapabilities_History_FrameworkId_CapabilityId_Period_Columns
-ON catalogue.FrameworkCapabilities_History (SysEndTime, SysStartTime, CapabilityId, FrameworkId);
-GO

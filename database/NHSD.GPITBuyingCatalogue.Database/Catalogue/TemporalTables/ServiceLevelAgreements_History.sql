@@ -12,7 +12,3 @@ GO
 CREATE CLUSTERED COLUMNSTORE INDEX IX_ServiceLevelAgreements_History
 ON catalogue.ServiceLevelAgreements_History;
 GO
-
-CREATE NONCLUSTERED INDEX IX_ServiceLevelAgreements_History_SolutionId_Period_Columns
-ON catalogue.ServiceLevelAgreements_History (SysEndTime, SysStartTime, SolutionId);
-GO

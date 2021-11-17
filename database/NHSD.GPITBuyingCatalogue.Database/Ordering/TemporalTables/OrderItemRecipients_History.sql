@@ -15,7 +15,3 @@ GO
 CREATE CLUSTERED COLUMNSTORE INDEX IX_OrderItemRecipients_History
 ON ordering.OrderItemRecipients_History;
 GO
-
-CREATE NONCLUSTERED INDEX IX_OrderItemRecipients_History_OrderId_CatalogueItemId_OdsCode_Period_Columns
-ON ordering.OrderItemRecipients_History (SysEndTime, SysStartTime, OrderId, CatalogueItemId, OdsCode);
-GO
