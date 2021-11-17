@@ -15,7 +15,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.AddNewSolution.ServiceL
 {
     public sealed class EditSlaType : AuthorityTestBase, IClassFixture<LocalWebApplicationFactory>
     {
-        private static readonly CatalogueItemId SolutionId = new(99999, "001");
+        private static readonly CatalogueItemId SolutionId = new(99998, "001");
 
         private static readonly Dictionary<string, string> Parameters = new()
         {
@@ -34,9 +34,6 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.AddNewSolution.ServiceL
         [Fact]
         public async Task EditSlaType_CorrectlyDisplayed()
         {
-            await AddSlaToSolution();
-            Driver.Navigate().Refresh();
-
             await using var context = GetEndToEndDbContext();
             var solution = await context.CatalogueItems.SingleAsync(ci => ci.Id == SolutionId);
 
@@ -51,11 +48,8 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.AddNewSolution.ServiceL
         }
 
         [Fact]
-        public async Task EditSlaType_ClickGoBack()
+        public void EditSlaType_ClickGoBack()
         {
-            await AddSlaToSolution();
-            Driver.Navigate().Refresh();
-
             CommonActions.ClickGoBackLink();
 
             CommonActions.PageLoadedCorrectGetIndex(
@@ -65,12 +59,9 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.AddNewSolution.ServiceL
         }
 
         [Fact]
-        public async Task EditSlaType_ClickSave_WithChangeOfType_ShowsConfirmation()
+        public void EditSlaType_ClickSave_WithChangeOfType_ShowsConfirmation()
         {
-            await AddSlaToSolution();
-            Driver.Navigate().Refresh();
-
-            CommonActions.ClickRadioButtonWithText("Type 1 Catalogue Solution");
+            CommonActions.ClickRadioButtonWithText("Type 2 Catalogue Solution");
 
             CommonActions.ClickSave();
 
@@ -81,12 +72,9 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.AddNewSolution.ServiceL
         }
 
         [Fact]
-        public async Task EditSlaType_ClickSave_NoChangeOfType_NoConfirmation()
+        public void EditSlaType_ClickSave_NoChangeOfType_NoConfirmation()
         {
-            await AddSlaToSolution();
-            Driver.Navigate().Refresh();
-
-            CommonActions.ClickRadioButtonWithText("Type 2 Catalogue Solution");
+            CommonActions.ClickRadioButtonWithText("Type 1 Catalogue Solution");
 
             CommonActions.ClickSave();
 
@@ -96,20 +84,6 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.AddNewSolution.ServiceL
                 .Should().BeTrue();
         }
 
-        private async Task AddSlaToSolution()
-        {
-            await using var context = GetEndToEndDbContext();
-            var sla = new EntityFramework.Catalogue.Models.ServiceLevelAgreements
-            {
-                SolutionId = SolutionId,
-                SlaType = SlaType.Type2,
-            };
 
-            var solution = await context.Solutions
-                .Include(s => s.ServiceLevelAgreement)
-                .SingleAsync(s => s.CatalogueItemId == SolutionId);
-            solution.ServiceLevelAgreement = sla;
-            await context.SaveChangesAsync();
-        }
     }
 }
