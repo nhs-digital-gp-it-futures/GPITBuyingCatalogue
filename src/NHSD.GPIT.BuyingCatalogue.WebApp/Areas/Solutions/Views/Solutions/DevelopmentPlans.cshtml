@@ -14,10 +14,10 @@
 @if (!string.IsNullOrWhiteSpace(Model.RoadmapLink))
 {
     <p>The supplier has provided a roadmap detailing the development plans for this Catalogue Solution.</p>
-    <p><a href="@Model.RoadmapLink" target="_blank">View supplier’s roadmap for this Catalogue Solution</a>(opens in a new tab)</p>
+    <p><a href="@Model.RoadmapLink" target="_blank">View supplier’s roadmap for this Catalogue Solution</a> (opens in a new tab)</p>
 }
 <p>The GP IT Futures Capabilities and Standards roadmap outlines future changes to the Capabilities and Standards model.</p>
-<p><a href="https://gpitbjss.atlassian.net/wiki/spaces/GPITF/pages/1391133519/Roadmap" target="_blank">View GP IT Futures Capabilities and Standards roadmap</a>(opens in a new tab)</p>
+<p><a href="https://gpitbjss.atlassian.net/wiki/spaces/GPITF/pages/1391133519/Roadmap" target="_blank">View GP IT Futures Capabilities and Standards roadmap</a> (opens in a new tab)</p>
 
 @if (Model.WorkOffPlans.Any()) 
 { 
@@ -30,7 +30,7 @@
     {
         <h3 id="@standard.Id">@standard.Name</h3>
         <p><b>Description: </b>@standard.Description</p>
-        <p><a href="@standard.Url" target="_blank">More information about this Standard</a>(opens in a new tab)</p>
+        <p><a href="@standard.Url" target="_blank">More information about this Standard</a> (opens in a new tab)</p>
         <p>The supplier is working towards full compliance with this Standard and has the following Work-off Plan items:</p>
 
         <nhs-table>
