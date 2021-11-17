@@ -6,7 +6,7 @@
      SourceUrl nvarchar(max) NULL,
      CompliancyLevelId int NULL,
      IsActive bit NOT NULL,
-     SupplierDefined bit  DEFAULT 0 NOT NULL,
+     SupplierDefined bit NOT NULL,
      LastUpdated datetime2(7) NOT NULL,
      LastUpdatedBy int NULL,
      SysStartTime datetime2(0) NOT NULL,
