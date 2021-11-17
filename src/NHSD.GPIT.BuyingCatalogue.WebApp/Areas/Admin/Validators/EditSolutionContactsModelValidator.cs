@@ -12,6 +12,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Validators
         public EditSolutionContactsModelValidator()
         {
             RuleFor(m => m.AvailableSupplierContacts)
+                .Cascade(CascadeMode.Stop)
                 .Must(HaveAtLeastOneSelectedContact)
                 .WithMessage("Select a supplier contact")
                 .OverridePropertyName(ErrorElementName)
