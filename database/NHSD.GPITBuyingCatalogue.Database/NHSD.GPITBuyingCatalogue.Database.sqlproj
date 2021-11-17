@@ -95,6 +95,7 @@
     <Folder Include="Import\Types" />
     <Folder Include="Auditing" />
     <Folder Include="Auditing\StoredProcedures" />
+    <Folder Include="Organisations\TemporalTables" />
   </ItemGroup>
   <ItemGroup>
     <Build Include="Security\Users\NHSD.sql" />
@@ -195,6 +196,8 @@
     <Build Include="Auditing\StoredProcedures\EnableTemporalTable.sql" />
     <None Include="PostDeployment\EnableTemporalTables.sql" />
     <Build Include="Catalogue\Tables\WorkOffPlans.sql" />
+    <Build Include="Organisations\TemporalTables\Organisations_History.sql" />
+    <Build Include="Organisations\TemporalTables\RelatedOrganisations_History.sql" />
   </ItemGroup>
   <ItemGroup>
     <SqlCmdVariable Include="CREATE_EA_USER">
