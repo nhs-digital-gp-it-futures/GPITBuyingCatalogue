@@ -11,4 +11,4 @@
      CONSTRAINT PK_CapabilityCategories PRIMARY KEY (Id),
      CONSTRAINT AK_CapabilityCategories_Name UNIQUE ([Name]),
      CONSTRAINT FK_CapabilityCategories_LastUpdatedBy FOREIGN KEY (LastUpdatedBy) REFERENCES users.AspNetUsers(Id),
-);
+) WITH (SYSTEM_VERSIONING = ON (HISTORY_TABLE = catalogue.CapabilityCategories_History));

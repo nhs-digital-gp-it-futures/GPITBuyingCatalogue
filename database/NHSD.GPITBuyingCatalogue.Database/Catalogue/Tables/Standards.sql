@@ -13,4 +13,4 @@
     CONSTRAINT PK_Standards PRIMARY KEY (Id),
     CONSTRAINT FK_Standards_StandardType FOREIGN KEY (StandardTypeId) REFERENCES catalogue.StandardTypes(Id),
     CONSTRAINT FK_Standards_LastUpdatedBy FOREIGN KEY (LastUpdatedBy) REFERENCES users.AspNetUsers(Id),
-);
+) WITH (SYSTEM_VERSIONING = ON (HISTORY_TABLE = catalogue.Standards_History));

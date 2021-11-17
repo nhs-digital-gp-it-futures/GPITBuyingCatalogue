@@ -14,4 +14,4 @@
     CONSTRAINT PK_SlaServiceLevels PRIMARY KEY (Id),
     CONSTRAINT FK_SlaServiceLevels_ServiceLevelAgreements FOREIGN KEY (SolutionId) REFERENCES catalogue.ServiceLevelAgreements(SolutionId) ON DELETE CASCADE,
     CONSTRAINT FK_SlaServiceLevels_LastUpdatedBy FOREIGN KEY (LastUpdatedBy) REFERENCES users.AspNetUsers(Id),
-)
+) WITH (SYSTEM_VERSIONING = ON (HISTORY_TABLE = catalogue.SlaServiceLevels_History));

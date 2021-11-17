@@ -1,0 +1,19 @@
+﻿CREATE TABLE catalogue.FrameworkSolutions_History
+(
+     FrameworkId nvarchar(10) NOT NULL,
+     SolutionId nvarchar(14) NOT NULL,
+     IsFoundation bit NOT NULL,
+     LastUpdated datetime2(7)NOT NULL,
+     LastUpdatedBy int NULL,
+     SysStartTime datetime2(0) NOT NULL,
+     SysEndTime datetime2(0) NOT NULL
+);
+GO
+
+CREATE CLUSTERED COLUMNSTORE INDEX IX_FrameworkSolutions_History
+ON catalogue.FrameworkSolutions_History;
+GO
+
+CREATE NONCLUSTERED INDEX IX_FrameworkSolutions_History_FrameworkId_SolutionId_Period_Columns
+ON catalogue.FrameworkSolutions_History (SysEndTime, SysStartTime, SolutionId, FrameworkId);
+GO

@@ -16,4 +16,4 @@
      CONSTRAINT FK_Epics_Capability FOREIGN KEY (CapabilityId) REFERENCES catalogue.Capabilities(Id),
      CONSTRAINT FK_Epics_CompliancyLevel FOREIGN KEY (CompliancyLevelId) REFERENCES catalogue.CompliancyLevels(Id),
      CONSTRAINT FK_Epics_LastUpdatedBy FOREIGN KEY (LastUpdatedBy) REFERENCES users.AspNetUsers(Id),
-);
+) WITH (SYSTEM_VERSIONING = ON (HISTORY_TABLE = catalogue.Epics_History));

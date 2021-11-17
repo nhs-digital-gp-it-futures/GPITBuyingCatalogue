@@ -11,4 +11,4 @@
      CONSTRAINT PK_CatalogueItemCapabilityStatus PRIMARY KEY (Id),
      CONSTRAINT AK_CatalogueItemCapabilityStatus_Name UNIQUE ([Name]),
      CONSTRAINT FK_CatalogueItemCapabilityStatus_LastUpdatedBy FOREIGN KEY (LastUpdatedBy) REFERENCES users.AspNetUsers(Id),
-);
+) WITH (SYSTEM_VERSIONING = ON (HISTORY_TABLE = catalogue.CatalogueItemCapabilityStatus_History));

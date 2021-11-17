@@ -13,4 +13,4 @@
      CONSTRAINT FK_AspNetUserClaims_AspNetUsers_UserId FOREIGN KEY (UserId) REFERENCES users.AspNetUsers (Id) ON DELETE CASCADE,
      CONSTRAINT FK_AspNetUserClaims_LastUpdatedBy FOREIGN KEY (LastUpdatedBy) REFERENCES users.AspNetUsers(Id),
      INDEX IX_AspNetUserClaims_UserId (UserId),
-);
+) WITH (SYSTEM_VERSIONING = ON (HISTORY_TABLE = users.AspNetUserClaims_History));

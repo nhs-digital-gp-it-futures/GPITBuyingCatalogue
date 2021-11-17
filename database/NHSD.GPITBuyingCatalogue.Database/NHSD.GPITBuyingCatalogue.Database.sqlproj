@@ -93,9 +93,10 @@
     <Folder Include="Import\Stored Procedures" />
     <Folder Include="Publish\Stored Procedures" />
     <Folder Include="Import\Types" />
-    <Folder Include="Auditing" />
-    <Folder Include="Auditing\StoredProcedures" />
     <Folder Include="Organisations\TemporalTables" />
+    <Folder Include="Catalogue\TemporalTables" />
+    <Folder Include="Ordering\TemporalTables" />
+    <Folder Include="Users\TemporalTables" />
   </ItemGroup>
   <ItemGroup>
     <Build Include="Security\Users\NHSD.sql" />
@@ -193,11 +194,46 @@
     <Build Include="Catalogue\Tables\SlaServiceLevels.sql" />
     <Build Include="Catalogue\Tables\StandardTypes.sql" />
     <Build Include="Security\Schemas\auditing.sql" />
-    <Build Include="Auditing\StoredProcedures\EnableTemporalTable.sql" />
-    <None Include="PostDeployment\EnableTemporalTables.sql" />
     <Build Include="Catalogue\Tables\WorkOffPlans.sql" />
     <Build Include="Organisations\TemporalTables\Organisations_History.sql" />
     <Build Include="Organisations\TemporalTables\RelatedOrganisations_History.sql" />
+    <Build Include="Catalogue\TemporalTables\AdditionalServices_History.sql" />
+    <Build Include="Catalogue\TemporalTables\AssociatedServices_History.sql" />
+    <Build Include="Catalogue\TemporalTables\Capabilities_History.sql" />
+    <Build Include="Catalogue\TemporalTables\CapabilityCategories_History.sql" />
+    <Build Include="Catalogue\TemporalTables\CatalogueItemCapabilities_History.sql" />
+    <Build Include="Catalogue\TemporalTables\CatalogueItemCapabilityStatus_History.sql" />
+    <Build Include="Catalogue\TemporalTables\CatalogueItemContacts_History.sql" />
+    <Build Include="Catalogue\TemporalTables\CatalogueItemEpics_History.sql" />
+    <Build Include="Catalogue\TemporalTables\CatalogueItemEpicStatus_History.sql" />
+    <Build Include="Catalogue\TemporalTables\CatalogueItems_History.sql" />
+    <Build Include="Catalogue\TemporalTables\CataloguePrices_History.sql" />
+    <Build Include="Catalogue\TemporalTables\CataloguePriceTiers_History.sql" />
+    <Build Include="Catalogue\TemporalTables\Epics_History.sql" />
+    <Build Include="Catalogue\TemporalTables\FrameworkCapabilities_History.sql" />
+    <Build Include="Catalogue\TemporalTables\Frameworks_History.sql" />
+    <Build Include="Catalogue\TemporalTables\FrameworkSolutions_History.sql" />
+    <Build Include="Catalogue\TemporalTables\MarketingContacts_History.sql" />
+    <Build Include="Catalogue\TemporalTables\PricingUnits_History.sql" />
+    <Build Include="Catalogue\TemporalTables\ServiceAvailabilityTimes_History.sql" />
+    <Build Include="Catalogue\TemporalTables\ServiceLevelAgreements_History.sql" />
+    <Build Include="Catalogue\TemporalTables\SlaContacts_History.sql" />
+    <Build Include="Catalogue\TemporalTables\SlaServiceLevels_History.sql" />
+    <Build Include="Catalogue\TemporalTables\Solutions_History.sql" />
+    <Build Include="Catalogue\TemporalTables\Standards_History.sql" />
+    <Build Include="Catalogue\TemporalTables\StandardsCapabilities_History.sql" />
+    <Build Include="Catalogue\TemporalTables\SupplierContacts_History.sql" />
+    <Build Include="Catalogue\TemporalTables\Suppliers_History.sql" />
+    <Build Include="Catalogue\TemporalTables\SupplierServiceAssociations.sql" />
+    <Build Include="Catalogue\TemporalTables\WorkOffPlans_History.sql" />
+    <Build Include="Ordering\TemporalTables\Contacts_History.sql" />
+    <Build Include="Ordering\TemporalTables\DefaultDevlieryDates_History.sql" />
+    <Build Include="Ordering\TemporalTables\OrderItemRecipients_History.sql" />
+    <Build Include="Ordering\TemporalTables\OrderItems_History.sql" />
+    <Build Include="Ordering\TemporalTables\Orders_History.sql" />
+    <Build Include="Ordering\TemporalTables\ServiceRecipients_History.sql" />
+    <Build Include="Users\TemporalTables\AspNetUserClaims_History.sql" />
+    <Build Include="Users\TemporalTables\AspNetUsers_History.sql" />
   </ItemGroup>
   <ItemGroup>
     <SqlCmdVariable Include="CREATE_EA_USER">

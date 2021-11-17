@@ -9,4 +9,4 @@
     PERIOD FOR SYSTEM_TIME (SysStartTime, SysEndTime),
     CONSTRAINT PK_ServiceRecipients PRIMARY KEY (OdsCode),
     CONSTRAINT FK_ServiceRecipients_LastUpdatedBy FOREIGN KEY (LastUpdatedBy) REFERENCES users.AspNetUsers(Id),
-);
+) WITH (SYSTEM_VERSIONING = ON (HISTORY_TABLE = ordering.ServiceRecipients_History));
