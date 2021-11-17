@@ -24,5 +24,7 @@ namespace NHSD.GPIT.BuyingCatalogue.FinalMigration.LegacyModels
         public DateTime? Completed { get; set; }
         public int OrderStatusId { get; set; }
         public bool IsDeleted { get; set; }
+
+        public int NewId { get; set; }
     }
 }

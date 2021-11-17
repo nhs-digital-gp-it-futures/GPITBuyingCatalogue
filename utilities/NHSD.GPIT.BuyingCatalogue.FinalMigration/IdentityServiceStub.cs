@@ -7,7 +7,7 @@ namespace NHSD.GPIT.BuyingCatalogue.FinalMigration
     {
         public int? GetUserId()
         {
-            throw new NotImplementedException();
+            return null;
         }
     }
 }

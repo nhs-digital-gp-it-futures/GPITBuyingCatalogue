@@ -64,7 +64,7 @@ namespace NHSD.GPIT.BuyingCatalogue.FinalMigration
             this.Controls.Add(this.dryRunButton);
             this.Controls.Add(this.outputTextBox);
             this.Name = "MainForm";
-            this.Text = "Form1";
+            this.Text = "NHSD GPIT Buying Catalogue Final Migration Utility";
             this.ResumeLayout(false);
             this.PerformLayout();
 
