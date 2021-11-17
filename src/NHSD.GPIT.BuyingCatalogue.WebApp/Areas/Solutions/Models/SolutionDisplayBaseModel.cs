@@ -109,7 +109,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models
                 {
                     Action = nameof(SolutionsController.Capabilities),
                     Controller = ControllerName,
-                    Name = "Capabilities",
+                    Name = "Capabilities and Epics",
                     Show = catalogueItem.HasCapabilities(),
                 },
                 new()
