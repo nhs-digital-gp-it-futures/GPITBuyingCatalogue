@@ -17,7 +17,3 @@ GO
 CREATE CLUSTERED COLUMNSTORE INDEX IX_Frameworks_History
 ON catalogue.Frameworks_History;
 GO
-
-CREATE NONCLUSTERED INDEX IX_Frameworks_History_Id_Period_Columns
-ON catalogue.Frameworks_History (SysEndTime, SysStartTime, Id);
-GO

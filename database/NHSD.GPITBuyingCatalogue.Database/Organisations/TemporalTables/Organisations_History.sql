@@ -15,5 +15,3 @@ GO
 
 CREATE CLUSTERED COLUMNSTORE INDEX IX_Organisation_History ON organisations.Organisations_History;
 GO
-
-CREATE NONCLUSTERED INDEX IX_Organisations_History_Id_Period_Columns ON organisations.Organisations_History (SysEndTime, SysStartTime, Id);

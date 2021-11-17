@@ -16,7 +16,3 @@ GO
 CREATE CLUSTERED COLUMNSTORE INDEX IX_ServiceAvailabilityTimes_History
 ON catalogue.ServiceAvailabilityTimes_History;
 GO
-
-CREATE NONCLUSTERED INDEX IX_ServiceAvailabilityTimes_History_Id_Period_Columns
-ON catalogue.ServiceAvailabilityTimes_History (SysEndTime, SysStartTime, Id);
-GO

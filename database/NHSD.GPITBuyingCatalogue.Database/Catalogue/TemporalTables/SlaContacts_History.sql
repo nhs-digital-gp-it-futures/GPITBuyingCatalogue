@@ -16,7 +16,3 @@ GO
 CREATE CLUSTERED COLUMNSTORE INDEX IX_SlaContacts_History
 ON catalogue.SlaContacts_History;
 GO
-
-CREATE NONCLUSTERED INDEX IX_SlaContacts_History_Id_Period_Columns
-ON catalogue.SlaContacts_History (SysEndTime, SysStartTime, Id);
-GO

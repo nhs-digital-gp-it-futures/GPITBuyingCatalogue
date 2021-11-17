@@ -12,7 +12,3 @@ GO
 CREATE CLUSTERED COLUMNSTORE INDEX IX_SupplierServiceAssociations_History
 ON catalogue.SupplierServiceAssociations_History;
 GO
-
-CREATE NONCLUSTERED INDEX IX_SupplierServiceAssociations_History_AssociatedServiceId_CatalogueItemId_Period_Columns
-ON catalogue.SupplierServiceAssociations_History (SysEndTime, SysStartTime, AssociatedServiceId, CatalogueItemId);
-GO

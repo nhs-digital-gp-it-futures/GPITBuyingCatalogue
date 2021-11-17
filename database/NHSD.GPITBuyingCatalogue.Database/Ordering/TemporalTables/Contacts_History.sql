@@ -15,7 +15,3 @@ GO
 CREATE CLUSTERED COLUMNSTORE INDEX IX_Contacts_History
 ON ordering.Contacts_History;
 GO
-
-CREATE NONCLUSTERED INDEX IX_Contacts_History_Id_Period_Columns
-ON ordering.Contacts_History (SysEndTime, SysStartTime, Id);
-GO

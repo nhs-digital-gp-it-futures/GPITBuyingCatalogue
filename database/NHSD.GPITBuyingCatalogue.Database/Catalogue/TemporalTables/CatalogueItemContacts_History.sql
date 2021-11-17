@@ -10,7 +10,3 @@ GO
 CREATE CLUSTERED COLUMNSTORE INDEX IX_CatalogueItemContacts_History
 ON catalogue.CatalogueItemContacts_History;
 GO
-
-CREATE NONCLUSTERED INDEX IX_CatalogueItemContacts_History_CatalogueItemId_Period_Columns
-ON catalogue.CatalogueItemContacts_History (SysEndTime, SysStartTime, CatalogueItemId);
-GO

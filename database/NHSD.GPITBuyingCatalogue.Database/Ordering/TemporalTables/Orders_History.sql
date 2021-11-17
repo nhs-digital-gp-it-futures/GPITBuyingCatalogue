@@ -23,7 +23,3 @@ GO
 CREATE CLUSTERED COLUMNSTORE INDEX IX_Orders_History
 ON ordering.Orders_History;
 GO
-
-CREATE NONCLUSTERED INDEX IX_Orders_History_Id_Period_Columns
-ON ordering.Orders_History (SysEndTime, SysStartTime, Id);
-GO

@@ -16,7 +16,3 @@ GO
 CREATE CLUSTERED COLUMNSTORE INDEX IX_CatalogueItems_History
 ON catalogue.CatalogueItems_History;
 GO
-
-CREATE NONCLUSTERED INDEX IX_CatalogueItems_History_Id_Period_Columns
-ON catalogue.CatalogueItems_History (SysEndTime, SysStartTime, Id);
-GO

@@ -13,7 +13,3 @@ GO
 CREATE CLUSTERED COLUMNSTORE INDEX IX_CatalogueItemEpicStatus_History
 ON catalogue.CatalogueItemEpicStatus_History;
 GO
-
-CREATE NONCLUSTERED INDEX IX_CatalogueItemEpicStatus_History_Id_Period_Columns
-ON catalogue.CatalogueItemEpicStatus_History (SysEndTime, SysStartTime, Id);
-GO

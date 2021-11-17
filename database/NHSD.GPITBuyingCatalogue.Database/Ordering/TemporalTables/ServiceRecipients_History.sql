@@ -12,7 +12,3 @@ GO
 CREATE CLUSTERED COLUMNSTORE INDEX IX_ServiceRecipients_History
 ON ordering.ServiceRecipients_History;
 GO
-
-CREATE NONCLUSTERED INDEX IX_ServiceRecipients_History_OdsCode_Period_Columns
-ON ordering.ServiceRecipients_History (SysEndTime, SysStartTime, OdsCode);
-GO

@@ -15,7 +15,3 @@ GO
 CREATE CLUSTERED COLUMNSTORE INDEX IX_WorkOffPlans_History
 ON catalogue.WorkOffPlans_History;
 GO
-
-CREATE NONCLUSTERED INDEX IX_WorkOffPlans_History_Id_Period_Columns
-ON catalogue.WorkOffPlans_History (SysEndTime, SysStartTime, Id);
-GO
