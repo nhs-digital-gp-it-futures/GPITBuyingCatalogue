@@ -51,6 +51,11 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
                     CatalogueItemType = CatalogueItemType.Solution,
                     Created = DateTime.UtcNow,
                     Name = "DFOCVC Solution Full",
+                    SupplierServiceAssociations = new List<SupplierServiceAssociation>
+                    {
+                        new SupplierServiceAssociation { AssociatedServiceId = new CatalogueItemId(99999, "S-999") },
+                        new SupplierServiceAssociation { AssociatedServiceId = new CatalogueItemId(99999, "S-998") },
+                    },
                     Solution = new Solution
                     {
                         CatalogueItemId = new CatalogueItemId(99999, "001"),
