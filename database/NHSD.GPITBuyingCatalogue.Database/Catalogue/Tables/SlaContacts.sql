@@ -14,4 +14,4 @@
      CONSTRAINT PK_SlaContacts PRIMARY KEY (Id),
      CONSTRAINT FK_SlaContacts_ServiceLevelAgreement FOREIGN KEY (SolutionId) REFERENCES catalogue.ServiceLevelAgreements(SolutionId),
      CONSTRAINT FK_SlaContacts_LastUpdatedBy FOREIGN KEY (LastUpdatedBy) REFERENCES users.AspNetUsers(Id),
-);
+) WITH (SYSTEM_VERSIONING = ON (HISTORY_TABLE = catalogue.SlaContacts_History));

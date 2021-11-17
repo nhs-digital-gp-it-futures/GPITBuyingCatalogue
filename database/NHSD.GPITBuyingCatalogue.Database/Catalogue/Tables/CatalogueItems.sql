@@ -17,4 +17,4 @@
     CONSTRAINT FK_CatalogueItems_PublicationStatus FOREIGN KEY (PublishedStatusId) REFERENCES catalogue.PublicationStatus(Id),
     CONSTRAINT AK_CatalogueItems_Supplier_Name UNIQUE (SupplierId, [Name]),
     CONSTRAINT FK_CatalogueItems_LastUpdatedBy FOREIGN KEY (LastUpdatedBy) REFERENCES users.AspNetUsers(Id),
-);
+) WITH (SYSTEM_VERSIONING = ON (HISTORY_TABLE = catalogue.CatalogueItems_History));

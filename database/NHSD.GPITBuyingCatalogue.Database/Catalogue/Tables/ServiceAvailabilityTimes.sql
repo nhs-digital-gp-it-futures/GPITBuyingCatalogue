@@ -14,4 +14,4 @@
     CONSTRAINT PKaServiceAvailabilityTimes PRIMARY KEY (Id),
     CONSTRAINT FK_ServiceAvailabilityTimes_ServiceLevelAgreements FOREIGN KEY (SolutionId) REFERENCES catalogue.ServiceLevelAgreements(SolutionId) ON DELETE CASCADE,
     CONSTRAINT FK_ServiceAvailabilityTimes_LastUpdatedBy FOREIGN KEY (LastUpdatedBy) REFERENCES users.AspNetUsers(Id),
-)
+) WITH (SYSTEM_VERSIONING = ON (HISTORY_TABLE = catalogue.ServiceAvailabilityTimes_History));

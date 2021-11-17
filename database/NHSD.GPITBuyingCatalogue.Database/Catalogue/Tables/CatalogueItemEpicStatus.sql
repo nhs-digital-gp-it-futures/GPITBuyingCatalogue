@@ -11,4 +11,4 @@
      CONSTRAINT PK_CatalogueItemEpicStatus PRIMARY KEY (Id),
      CONSTRAINT AK_CatalogueItemEpicStatus_Name UNIQUE ([Name]),
      CONSTRAINT FK_CatalogueItemEpicStatus_LastUpdatedBy FOREIGN KEY (LastUpdatedBy) REFERENCES users.AspNetUsers(Id),
-);
+) WITH (SYSTEM_VERSIONING = ON (HISTORY_TABLE = catalogue.CatalogueItemEpicStatus_History));

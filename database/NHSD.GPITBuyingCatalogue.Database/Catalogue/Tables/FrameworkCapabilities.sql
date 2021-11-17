@@ -12,4 +12,4 @@
      CONSTRAINT FK_FrameworkCapabilities_Capability FOREIGN KEY (CapabilityId) REFERENCES catalogue.Capabilities(Id),
      CONSTRAINT FK_FrameworkCapabilities_Framework FOREIGN KEY (FrameworkId) REFERENCES catalogue.Frameworks(Id),
      CONSTRAINT FK_FrameworkCapabilities_LastUpdatedBy FOREIGN KEY (LastUpdatedBy) REFERENCES users.AspNetUsers(Id),
-);
+) WITH (SYSTEM_VERSIONING = ON (HISTORY_TABLE = catalogue.FrameworkCapabilities_History));

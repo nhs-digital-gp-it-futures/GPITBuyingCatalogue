@@ -19,4 +19,4 @@
      CONSTRAINT FK_Capabilities_CapabilityStatus FOREIGN KEY (StatusId) REFERENCES catalogue.CapabilityStatus(Id),
      CONSTRAINT FK_Capabilities_LastUpdatedBy FOREIGN KEY (LastUpdatedBy) REFERENCES users.AspNetUsers(Id),
      INDEX IX_Capabilities_CapabilityRef (CapabilityRef),
-);
+) WITH (SYSTEM_VERSIONING = ON (HISTORY_TABLE = catalogue.Capabilities_History));

@@ -13,4 +13,4 @@
     CONSTRAINT PK_CataloguePriceTiers PRIMARY KEY (Id),
     CONSTRAINT FK_CataloguePriceTiers_CataloguePriceId FOREIGN KEY (CataloguePriceId) REFERENCES catalogue.CataloguePrices(CataloguePriceId) ON DELETE CASCADE,
     CONSTRAINT FK_CataloguePriceTiers_LastUpdatedBy FOREIGN KEY (LastUpdatedBy) REFERENCES users.AspNetUsers(Id),
-);
+) WITH (SYSTEM_VERSIONING = ON (HISTORY_TABLE = catalogue.CataloguePriceTiers_History));
