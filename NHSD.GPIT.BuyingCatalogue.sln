@@ -111,6 +111,10 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NHSD.GPIT.BuyingCatalogue.U
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NHSD.GPIT.BuyingCatalogue.UI.Components.UnitTests", "tests\NHSD.GPIT.BuyingCatalogue.UI.Components.UnitTests\NHSD.GPIT.BuyingCatalogue.UI.Components.UnitTests.csproj", "{0A9411BA-8BEC-4472-B21E-79077727F99E}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "utilities", "utilities", "{91BDF5D8-5649-4FEE-AEE0-3B0DA4A273E0}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NHSD.GPIT.BuyingCatalogue.FinalMigration", "utilities\NHSD.GPIT.BuyingCatalogue.FinalMigration\NHSD.GPIT.BuyingCatalogue.FinalMigration.csproj", "{3C2BEA81-94D9-4750-A3FF-A3D9E38CEB45}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -189,6 +193,10 @@ Global
 		{0A9411BA-8BEC-4472-B21E-79077727F99E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{0A9411BA-8BEC-4472-B21E-79077727F99E}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{0A9411BA-8BEC-4472-B21E-79077727F99E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3C2BEA81-94D9-4750-A3FF-A3D9E38CEB45}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3C2BEA81-94D9-4750-A3FF-A3D9E38CEB45}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3C2BEA81-94D9-4750-A3FF-A3D9E38CEB45}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3C2BEA81-94D9-4750-A3FF-A3D9E38CEB45}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -216,6 +224,7 @@ Global
 		{C0E6F77D-A380-4196-B4B8-C859092393DC} = {885B7CFA-DB1B-4D95-9943-CDDDDCBED5A3}
 		{ADE6425F-36C9-4183-81EF-BB1A186F2D7B} = {885B7CFA-DB1B-4D95-9943-CDDDDCBED5A3}
 		{0A9411BA-8BEC-4472-B21E-79077727F99E} = {D1172DF2-850A-4CCD-949F-8CB9AE7A2DE8}
+		{3C2BEA81-94D9-4750-A3FF-A3D9E38CEB45} = {91BDF5D8-5649-4FEE-AEE0-3B0DA4A273E0}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {141F787F-5876-42E9-90BB-1A87A9EE130D}
