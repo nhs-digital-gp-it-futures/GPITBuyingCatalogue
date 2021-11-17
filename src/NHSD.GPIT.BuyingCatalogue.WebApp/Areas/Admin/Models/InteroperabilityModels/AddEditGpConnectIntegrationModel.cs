@@ -1,13 +1,15 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
+using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Models;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.InteroperabilityModels
 {
-    public class AddGpConnectIntegrationModel : NavBaseModel
+    public class AddEditGpConnectIntegrationModel : NavBaseModel
     {
-        public AddGpConnectIntegrationModel()
+        public AddEditGpConnectIntegrationModel()
         {
             IntegrationTypes = new List<object>
             {
@@ -23,27 +25,28 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.InteroperabilityMo
             };
         }
 
-        public AddGpConnectIntegrationModel(CatalogueItem solution)
+        public AddEditGpConnectIntegrationModel(CatalogueItem solution)
             : this()
         {
-            BackLink = $"/admin/catalogue-solutions/manage/{solution.Id}/interoperability";
             SolutionName = solution.Name;
+            SolutionId = solution.Id;
         }
 
         public string SolutionName { get; }
 
         public IEnumerable<object> IntegrationTypes { get; }
 
-        [Required(ErrorMessage = "Select integration type")]
         public string SelectedIntegrationType { get; set; }
 
-        [Required(ErrorMessage = "Select if your system is a provider or consumer")]
         public string SelectedProviderOrConsumer { get; set; }
 
         public IEnumerable<object> ProviderConsumerTypes { get; }
 
-        [Required(ErrorMessage = "Enter additional information")]
         [StringLength(1000)]
         public string AdditionalInformation { get; set; }
+
+        public CatalogueItemId SolutionId { get; init; }
+
+        public Guid IntegrationId { get; init; }
     }
 }
