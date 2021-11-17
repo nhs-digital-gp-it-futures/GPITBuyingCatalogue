@@ -20,11 +20,16 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Validation
             return rule.OverridePropertyName(propertyName);
         }
 
-        public static IRuleBuilderOptions<T, string> IsValidUrl<T>(this IRuleBuilder<T, string> ruleBuilder, IUrlValidator urlValidator)
+        public static IRuleBuilderOptions<T, string> IsValidUrl<T>(this IRuleBuilderInitial<T, string> ruleBuilder, IUrlValidator urlValidator)
         {
             return ruleBuilder
+                .Cascade(CascadeMode.Stop)
+                .Must(BePrefixedCorrectly)
+                .WithMessage("Enter a prefix to the URL, either http or https")
                 .MustAsync((link, _) => urlValidator.IsValidUrl(link))
                 .WithMessage("Enter a valid URL");
         }
+
+        private static bool BePrefixedCorrectly(string url) => url.StartsWith("http") || url.StartsWith("https");
     }
 }

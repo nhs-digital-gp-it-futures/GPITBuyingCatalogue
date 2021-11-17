@@ -1,4 +1,5 @@
-﻿using AutoFixture.Xunit2;
+﻿using System;
+using AutoFixture.Xunit2;
 using FluentValidation.TestHelper;
 using Moq;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Validation;
@@ -26,11 +27,28 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators
 
         [Theory]
         [CommonAutoData]
-        public static void Validate_InvalidLink_SetsModelError(
+        public static void Validate_MissingProtocol_SetsModelError(
             DescriptionModel model,
             [Frozen] Mock<IUrlValidator> urlValidator,
             DescriptionModelValidator validator)
         {
+            urlValidator.Setup(uv => uv.IsValidUrl(model.Link))
+                .ReturnsAsync(false);
+
+            var result = validator.TestValidate(model);
+
+            result.ShouldHaveValidationErrorFor(m => m.Link)
+                .WithErrorMessage("Enter a prefix to the URL, either http or https");
+        }
+
+        [Theory]
+        [CommonAutoData]
+        public static void Validate_InvalidLink_SetsModelError(
+            [Frozen] Mock<IUrlValidator> urlValidator,
+            DescriptionModelValidator validator)
+        {
+            var model = new DescriptionModel { Link = "http://wiothaoih" };
+
             urlValidator.Setup(uv => uv.IsValidUrl(model.Link))
                 .ReturnsAsync(false);
 
@@ -42,11 +60,12 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators
 
         [Theory]
         [CommonAutoData]
-        public static void VAlidate_ValidLink_NoModelError(
-            DescriptionModel model,
+        public static void Validate_ValidLink_NoModelError(
+            Uri uri,
             [Frozen] Mock<IUrlValidator> urlValidator,
             DescriptionModelValidator validator)
         {
+            var model = new DescriptionModel { Link = uri.ToString() };
             urlValidator.Setup(uv => uv.IsValidUrl(model.Link))
                 .ReturnsAsync(true);
 

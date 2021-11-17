@@ -1,4 +1,5 @@
-﻿using AutoFixture.Xunit2;
+﻿using System;
+using AutoFixture.Xunit2;
 using FluentValidation.TestHelper;
 using Moq;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Validation;
@@ -26,11 +27,28 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators
 
         [Theory]
         [CommonAutoData]
-        public static void Validate_InvalidWebsite_SetsModelError(
+        public static void Validate_MissingProtocol_SetsModelError(
             EditSupplierDetailsModel model,
             [Frozen] Mock<IUrlValidator> urlValidator,
             EditSupplierDetailsModelValidator validator)
         {
+            urlValidator.Setup(uv => uv.IsValidUrl(model.SupplierWebsite))
+                .ReturnsAsync(false);
+
+            var result = validator.TestValidate(model);
+
+            result.ShouldHaveValidationErrorFor(m => m.SupplierWebsite)
+                .WithErrorMessage("Enter a prefix to the URL, either http or https");
+        }
+
+        [Theory]
+        [CommonAutoData]
+        public static void Validate_InvalidWebsite_SetsModelError(
+            [Frozen] Mock<IUrlValidator> urlValidator,
+            EditSupplierDetailsModelValidator validator)
+        {
+            var model = new EditSupplierDetailsModel { SupplierWebsite = "http://wiothaoih" };
+
             urlValidator.Setup(uv => uv.IsValidUrl(model.SupplierWebsite))
                 .ReturnsAsync(false);
 
@@ -42,11 +60,12 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators
 
         [Theory]
         [CommonAutoData]
-        public static void VAlidate_ValidWebsite_NoModelError(
-            EditSupplierDetailsModel model,
+        public static void Validate_ValidWebsite_NoModelError(
+            Uri uri,
             [Frozen] Mock<IUrlValidator> urlValidator,
             EditSupplierDetailsModelValidator validator)
         {
+            var model = new EditSupplierDetailsModel { SupplierWebsite = uri.ToString() };
             urlValidator.Setup(uv => uv.IsValidUrl(model.SupplierWebsite))
                 .ReturnsAsync(true);
 

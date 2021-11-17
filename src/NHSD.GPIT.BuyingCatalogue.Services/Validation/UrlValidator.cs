@@ -22,12 +22,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Validation
             if (string.IsNullOrWhiteSpace(url))
                 throw new ArgumentException("Url cannot be null, empty or whitespace", nameof(url));
 
-            var localUrl = url;
-            if (!localUrl.StartsWith("http://", StringComparison.CurrentCultureIgnoreCase)
-                && !localUrl.StartsWith("https://", StringComparison.CurrentCultureIgnoreCase))
-                localUrl = $"https://{localUrl}";
-
-            if (!Uri.TryCreate(localUrl, UriKind.Absolute, out var parsedUri))
+            if (!Uri.TryCreate(url, UriKind.Absolute, out var parsedUri))
                 return false;
 
             try
