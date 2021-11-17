@@ -47,7 +47,6 @@ namespace NHSD.GPIT.BuyingCatalogue.FinalMigration
         private void LoadCurrentUsers()
         {
             var entities = CurrentDbContext.AspNetUsers.ToList();
-
             System.Diagnostics.Trace.WriteLine($"Loaded {entities.Count} users from current database");
         }
 
