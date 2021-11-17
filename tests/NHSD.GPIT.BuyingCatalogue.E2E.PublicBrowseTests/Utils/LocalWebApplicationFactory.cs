@@ -45,9 +45,6 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils
 
         private const string Browser = "chrome";
 
-        // Sqllite constants
-        private string SqlliteConnectionStringInMemory => $"DataSource={Guid.NewGuid()};Mode=memory";
-
         private const string SqlliteFileSystemFileLocation = "C:/test.db";
 
         private const bool UseFileSystemSqlite = false;
@@ -102,6 +99,8 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils
         public string RootUri { get; }
 
         internal IWebDriver Driver { get; }
+
+        internal string SqlliteConnectionStringInMemory => $"DataSource={Guid.NewGuid()};Mode=memory";
 
         internal EndToEndDbContext DbContext
         {
