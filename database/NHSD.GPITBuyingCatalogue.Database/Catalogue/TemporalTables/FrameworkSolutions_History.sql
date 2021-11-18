@@ -8,8 +8,3 @@
      SysStartTime datetime2(0) NOT NULL,
      SysEndTime datetime2(0) NOT NULL
 );
-GO
-
-CREATE CLUSTERED COLUMNSTORE INDEX IX_FrameworkSolutions_History
-ON catalogue.FrameworkSolutions_History;
-GO

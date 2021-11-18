@@ -18,8 +18,3 @@
     SysStartTime datetime2(0) NOT NULL,
     SysEndTime datetime2(0) NOT NULL  
 );
-GO
-
-CREATE CLUSTERED COLUMNSTORE INDEX IX_Orders_History
-ON ordering.Orders_History;
-GO

@@ -11,7 +11,3 @@
     SysStartTime datetime2(0) NOT NULL,
     SysEndTime datetime2(0) NOT NULL,
 );
-GO
-
-CREATE CLUSTERED COLUMNSTORE INDEX IX_Organisation_History ON organisations.Organisations_History;
-GO

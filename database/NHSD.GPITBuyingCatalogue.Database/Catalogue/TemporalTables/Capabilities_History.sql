@@ -15,7 +15,3 @@
      SysEndTime datetime2(0) NOT NULL,
 );
 GO
-
-CREATE CLUSTERED COLUMNSTORE INDEX IX_Capabilities_History
-ON catalogue.Capabilities_History;
-GO
