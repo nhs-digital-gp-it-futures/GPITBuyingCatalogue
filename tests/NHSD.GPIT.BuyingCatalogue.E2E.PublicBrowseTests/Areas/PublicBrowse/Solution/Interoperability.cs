@@ -1,0 +1,164 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using FluentAssertions;
+using Microsoft.EntityFrameworkCore;
+using NHSD.GPIT.BuyingCatalogue.E2ETests.Objects.Common;
+using NHSD.GPIT.BuyingCatalogue.E2ETests.Objects.PublicBrowse;
+using NHSD.GPIT.BuyingCatalogue.E2ETests.Utils;
+using NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.TestBases;
+using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
+using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
+using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers;
+using Xunit;
+
+namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.PublicBrowse.Solution
+{
+    public sealed class Interoperability : AnonymousTestBase, IClassFixture<LocalWebApplicationFactory>, IDisposable
+    {
+        private static readonly CatalogueItemId SolutionId = new(99999, "001");
+        private static readonly Dictionary<string, string> Parameters = new()
+        {
+            { nameof(SolutionId), SolutionId.ToString() },
+        };
+
+        public Interoperability(LocalWebApplicationFactory factory)
+            : base(
+                  factory,
+                  typeof(SolutionsController),
+                  nameof(SolutionsController.Interoperability),
+                  Parameters)
+        {
+        }
+
+        [Fact]
+        public void Interoperability_AllSectionsDisplayed()
+        {
+            CommonActions
+                .ElementIsDisplayed(CommonSelectors.Header2)
+                .Should()
+                .BeTrue();
+
+            CommonActions
+                .ElementIsDisplayed(InteroperabilityObjects.IMIntegrationsHeading)
+                .Should()
+                .BeTrue();
+
+            CommonActions
+                .ElementIsDisplayed(InteroperabilityObjects.GpConnectHeading)
+                .Should()
+                .BeTrue();
+
+            CommonActions
+                .ElementIsDisplayed(InteroperabilityObjects.TableAppointmentBooking)
+                .Should()
+                .BeTrue();
+
+            CommonActions
+                .ElementIsDisplayed(InteroperabilityObjects.TableBulk)
+                .Should()
+                .BeTrue();
+
+            CommonActions
+                .ElementIsDisplayed(InteroperabilityObjects.TableHtmlView)
+                .Should()
+                .BeTrue();
+
+            CommonActions
+                .ElementIsDisplayed(InteroperabilityObjects.TablePatientFacing)
+                .Should()
+                .BeTrue();
+
+            CommonActions
+                .ElementIsDisplayed(InteroperabilityObjects.TableStructuredRecord)
+                .Should()
+                .BeTrue();
+
+            CommonActions
+                .ElementIsDisplayed(InteroperabilityObjects.TableTransactional)
+                .Should()
+                .BeTrue();
+        }
+
+        [Fact]
+        public void Interoperability_NoIntegrations_NoSectionsDisplayed()
+        {
+            using var context = GetEndToEndDbContext();
+            var solution = context.Solutions.Single(s => s.CatalogueItemId == SolutionId);
+            var originalIntegrations = solution.Integrations;
+            solution.Integrations = null;
+            context.SaveChanges();
+
+            Driver.Navigate().Refresh();
+
+            CommonActions
+                .ElementExists(InteroperabilityObjects.IMIntegrationsHeading)
+                .Should()
+                .BeFalse();
+
+            CommonActions
+                .ElementExists(InteroperabilityObjects.GpConnectHeading)
+                .Should()
+                .BeFalse();
+
+            CommonActions
+                .ElementExists(InteroperabilityObjects.TableAppointmentBooking)
+                .Should()
+                .BeFalse();
+
+            CommonActions
+                .ElementExists(InteroperabilityObjects.TableBulk)
+                .Should()
+                .BeFalse();
+
+            CommonActions
+                .ElementExists(InteroperabilityObjects.TableHtmlView)
+                .Should()
+                .BeFalse();
+
+            CommonActions
+                .ElementExists(InteroperabilityObjects.TablePatientFacing)
+                .Should()
+                .BeFalse();
+
+            CommonActions
+                .ElementExists(InteroperabilityObjects.TableStructuredRecord)
+                .Should()
+                .BeFalse();
+
+            CommonActions
+                .ElementExists(InteroperabilityObjects.TableTransactional)
+                .Should()
+                .BeFalse();
+
+            solution.Integrations = originalIntegrations;
+            context.SaveChanges();
+        }
+
+        [Fact]
+        public async Task Interoperability_SolutionIsSuspended_Redirect()
+        {
+            await using var context = GetEndToEndDbContext();
+            var solution = await context.CatalogueItems.SingleAsync(ci => ci.Id == SolutionId);
+            solution.PublishedStatus = PublicationStatus.Suspended;
+            await context.SaveChangesAsync();
+
+            Driver.Navigate().Refresh();
+
+            CommonActions
+                .PageLoadedCorrectGetIndex(
+                    typeof(SolutionsController),
+                    nameof(SolutionsController.Description))
+                .Should()
+                .BeTrue();
+        }
+
+        public void Dispose()
+        {
+            using var context = GetEndToEndDbContext();
+            context.CatalogueItems.Single(ci => ci.Id == SolutionId).PublishedStatus = PublicationStatus.Published;
+            context.SaveChanges();
+        }
+    }
+}
