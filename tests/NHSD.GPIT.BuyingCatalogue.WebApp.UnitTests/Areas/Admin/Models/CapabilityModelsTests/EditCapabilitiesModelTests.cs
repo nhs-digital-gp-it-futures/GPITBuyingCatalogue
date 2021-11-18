@@ -3,6 +3,7 @@ using System.Linq;
 using EnumsNET;
 using FluentAssertions;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
+using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.Test.Framework.AutoFixtureCustomisations;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.CapabilityModels;
 using Xunit;
@@ -93,12 +94,46 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Models.Capabili
         [CommonAutoData]
         public static void Constructing_WithNoExistingItemCapabilities_SetsCapabilityCategoriesAsExpected(
             AdditionalService additionalService,
-            IReadOnlyList<CapabilityCategory> capabilityCategories)
+            List<CapabilityCategory> capabilityCategories,
+            List<Capability> capabilities)
         {
+            capabilityCategories.ForEach(cc => cc.Capabilities.AddRange(capabilities));
+
             var model = new EditCapabilitiesModel(additionalService.CatalogueItem, capabilityCategories);
 
             model.CapabilityCategories.Should().NotBeEmpty();
             model.CapabilityCategories.Should().NotContain(capabilityCategory => capabilityCategory.Capabilities.Any(capability => capability.Selected));
+        }
+
+        [Theory]
+        [CommonAutoData]
+        public static void Constructing_CapabilityCategoryWithNoCapabilities_DoesNotAdd(
+            AdditionalService additionalService)
+        {
+            var capabilityCategories = new List<CapabilityCategory> {
+                new()
+                {
+                    Name = "First Category",
+                    Capabilities = new List<Capability>(),
+                },
+                new()
+                {
+                    Name = "Second Category",
+                    Capabilities = new List<Capability>()
+                    {
+                        new()
+                        {
+                            Name = "First Capability",
+                        },
+                    },
+                },
+            };
+
+            var model = new EditCapabilitiesModel(additionalService.CatalogueItem, capabilityCategories);
+
+            model.CapabilityCategories.Should().NotBeEmpty();
+            model.CapabilityCategories.Should().Contain(capabilityCategory => string.Equals(capabilityCategory.Name, capabilityCategories[1].Name));
+            model.CapabilityCategories.Should().NotContain(capabilityCategory => string.Equals(capabilityCategory.Name, capabilityCategories[0].Name));
         }
     }
 }

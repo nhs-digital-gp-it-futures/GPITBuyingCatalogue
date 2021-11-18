@@ -23,7 +23,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.CapabilityModels
                 ? "Capabilities and Epics"
                 : $"{catalogueItem.Name} Capabilities and Epics";
 
-            CapabilityCategories = capabilityCategories.Select(cc => new CapabilityCategoryModel
+            CapabilityCategories = capabilityCategories.Where(cc => cc.Capabilities.Any()).Select(cc => new CapabilityCategoryModel
             {
                 Name = cc.Name,
                 Description = cc.Description,

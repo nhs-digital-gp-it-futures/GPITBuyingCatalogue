@@ -53,7 +53,7 @@ VALUES
 (38, 'Telecare', 'Supports the monitoring of Patients/Service Users or their environment to ensure quick identification and response to any adverse event.', @gpitFuturesBaseUrl + '1391135549/Telecare', 0, 4),
 (39, 'Unified Care Record', 'Provides a consolidated view to Health and Care Professionals of a Patient/Service User''s complete and up-to-date records, sourced from various health and care settings.', @gpitFuturesBaseUrl + '1391134504/Unified+Care+Record', 0, 9),
 (40, 'Medicines Verification', 'Supports compliance with the Falsified Medicines Directive and minimise the risk that falsified medicinal products are supplied to the public.', @gpitFuturesBaseUrl + '1391135093/Medicines+Verificatio', 0, 8),
-(41, 'Productivity', 'Supports Patients/Service Users and Health and Care Professionals by delivering improved efficiency or experience related outcomes.', @gpitFuturesBaseUrl + '1391135618/Productivity', 0, 0),
+(41, 'Productivity', 'Supports Patients/Service Users and Health and Care Professionals by delivering improved efficiency or experience related outcomes.', @gpitFuturesBaseUrl + '1391135618/Productivity', 0, 11),
 (42, 'Dispensing', 'Supports the timely and effective dispensing of medical products and appliances to Patients.', @gpitFuturesBaseUrl + '1391133465/Dispensing', 0, 8);
 
 DECLARE @covidVaccinationBaseUrl AS char(55) = 'https://gpitbjss.atlassian.net/wiki/spaces/CVPDR/pages/';
