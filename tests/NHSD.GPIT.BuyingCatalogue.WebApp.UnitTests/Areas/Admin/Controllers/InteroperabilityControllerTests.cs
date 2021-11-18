@@ -427,8 +427,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
             var actual = (await controller.AddGpConnectIntegration(catalogueItem.Id)).As<ViewResult>();
 
             mockService.Verify(s => s.GetSolution(catalogueItem.Id));
-            actual.ViewName.Should().BeNull();
-            actual.Model.Should().BeEquivalentTo(new AddGpConnectIntegrationModel(catalogueItem));
+            actual.ViewName.Should().NotBeNull();
+            actual.ViewName.Should().Be("AddEditGpConnectIntegration");
+            actual.Model.Should().BeEquivalentTo(new AddEditGpConnectIntegrationModel(catalogueItem), opt => opt.Excluding(m => m.BackLink));
         }
 
         [Theory]
@@ -450,7 +451,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
         [CommonAutoData]
         public static async Task Post_AddGpConnectIntegration_Saves_And_RedirectsToManageCatalogueSolution(
             CatalogueItemId catalogueItemId,
-            AddGpConnectIntegrationModel model,
+            AddEditGpConnectIntegrationModel model,
             [Frozen] Mock<IInteroperabilityService> mockInteroperabilityService,
             InteroperabilityController controller)
         {
@@ -473,6 +474,267 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
             actual.ActionName.Should().Be(nameof(InteroperabilityController.Interoperability));
             actual.ControllerName.Should().BeNull();
             actual.RouteValues["solutionId"].Should().Be(catalogueItemId);
+        }
+
+        [Theory]
+        [CommonAutoData]
+        public static async Task Get_EditGpConnectIntegration_ValidId_ReturnsViewWithExpectedModel(
+            Solution solution,
+            [Frozen] Mock<ISolutionsService> mockService,
+            InteroperabilityController controller,
+            List<Integration> integrations)
+        {
+            integrations.ForEach(i => i.IntegrationType = Framework.Constants.Interoperability.GpConnectIntegrationType);
+            solution.Integrations = JsonSerializer.Serialize(integrations);
+
+            mockService.Setup(s => s.GetSolution(solution.CatalogueItemId))
+                .ReturnsAsync(solution.CatalogueItem);
+
+            var actual = await controller.EditGpConnectIntegration(solution.CatalogueItemId, integrations[0].Id);
+
+            actual.Should().NotBeNull();
+            actual.Should().BeOfType<ViewResult>();
+            actual.As<ViewResult>().ViewName.Should().Be("AddEditGpConnectIntegration");
+            actual.As<ViewResult>().Model.Should().BeOfType<AddEditGpConnectIntegrationModel>();
+        }
+
+        [Theory]
+        [CommonAutoData]
+        public static async Task Get_EditGpConnectIntegration_NullSolution_ReturnsBadRequestObjectResult(
+            Solution solution,
+            [Frozen] Mock<ISolutionsService> mockService,
+            InteroperabilityController controller,
+            Guid integrationId)
+        {
+            mockService.Setup(s => s.GetSolution(solution.CatalogueItemId))
+                .ReturnsAsync((CatalogueItem)default);
+
+            var actual = await controller.EditGpConnectIntegration(solution.CatalogueItemId, integrationId);
+
+            actual.Should().NotBeNull();
+            actual.Should().BeOfType<BadRequestObjectResult>();
+            actual.As<BadRequestObjectResult>().Value.Should().BeEquivalentTo($"No Solution found for Id: {solution.CatalogueItemId}");
+        }
+
+        [Theory]
+        [CommonAutoData]
+        public static async Task Get_EditGpConnectIntegration_NullIntegration_ReturnsBadRequestObjectResult(
+            Solution solution,
+            [Frozen] Mock<ISolutionsService> mockService,
+            InteroperabilityController controller,
+            Guid integrationId)
+        {
+            mockService.Setup(s => s.GetSolution(solution.CatalogueItemId))
+                .ReturnsAsync(solution.CatalogueItem);
+
+            var actual = await controller.EditGpConnectIntegration(solution.CatalogueItemId, integrationId);
+
+            actual.Should().NotBeNull();
+            actual.Should().BeOfType<BadRequestObjectResult>();
+            actual.As<BadRequestObjectResult>().Value.Should().BeEquivalentTo($"No integration found for Id: {integrationId}");
+        }
+
+        [Theory]
+        [CommonAutoData]
+        public static async Task Post_EditGpConnectIntegration_Saves_And_RedirectsToManageIntegrations(
+            Solution solution,
+            [Frozen] Mock<ISolutionsService> mockService,
+            [Frozen] Mock<IInteroperabilityService> mockInteroperabilityService,
+            InteroperabilityController controller,
+            List<Integration> integrations,
+            AddEditGpConnectIntegrationModel model)
+        {
+            solution.Integrations = JsonSerializer.Serialize(integrations);
+
+            mockService.Setup(s => s.GetSolution(solution.CatalogueItemId)).ReturnsAsync(solution.CatalogueItem);
+
+            mockInteroperabilityService.Setup(s => s.EditIntegration(solution.CatalogueItemId, integrations[0].Id, integrations[0]));
+
+            var actual = await controller.EditGpConnectIntegration(solution.CatalogueItemId, integrations[0].Id, model);
+
+            actual.Should().NotBeNull();
+            actual.Should().BeOfType<RedirectToActionResult>();
+
+            actual.As<RedirectToActionResult>().ActionName.Should().Be(nameof(InteroperabilityController.Interoperability));
+            actual.As<RedirectToActionResult>().ControllerName.Should().BeNull();
+            actual.As<RedirectToActionResult>().RouteValues["solutionId"].Should().Be(solution.CatalogueItemId);
+        }
+
+        [Theory]
+        [CommonAutoData]
+        public static async Task Post_EditGpConnectIntegration_NullSolution_ReturnsBadRequestObjectResult(
+            Solution solution,
+            [Frozen] Mock<ISolutionsService> mockService,
+            InteroperabilityController controller,
+            Guid integrationId,
+            AddEditGpConnectIntegrationModel model)
+        {
+            mockService.Setup(s => s.GetSolution(solution.CatalogueItemId))
+                .ReturnsAsync((CatalogueItem)default);
+
+            var actual = await controller.EditGpConnectIntegration(solution.CatalogueItemId, integrationId, model);
+
+            actual.Should().NotBeNull();
+            actual.Should().BeOfType<BadRequestObjectResult>();
+            actual.As<BadRequestObjectResult>().Value.Should().BeEquivalentTo($"No Solution found for Id: {solution.CatalogueItemId}");
+        }
+
+        [Theory]
+        [CommonAutoData]
+        public static async Task Post_EditGpConnectIntegration_NullIntegration_ReturnsBadRequestObjectResult(
+            Solution solution,
+            [Frozen] Mock<ISolutionsService> mockService,
+            InteroperabilityController controller,
+            Guid integrationId,
+            AddEditGpConnectIntegrationModel model)
+        {
+            mockService.Setup(s => s.GetSolution(solution.CatalogueItemId))
+                .ReturnsAsync(solution.CatalogueItem);
+
+            var actual = await controller.EditGpConnectIntegration(solution.CatalogueItemId, integrationId, model);
+
+            actual.Should().NotBeNull();
+            actual.Should().BeOfType<BadRequestObjectResult>();
+            actual.As<BadRequestObjectResult>().Value.Should().BeEquivalentTo($"No integration found for Id: {integrationId}");
+        }
+
+        [Theory]
+        [CommonAutoData]
+        public static async Task Get_DeleteGpConnectIntegration_ValidId_ReturnsView(
+            Solution solution,
+            List<Integration> integrations,
+            [Frozen] Mock<ISolutionsService> mockService,
+            InteroperabilityController controller)
+        {
+            integrations.ForEach(i => i.IntegrationType = Framework.Constants.Interoperability.GpConnectIntegrationType);
+            solution.Integrations = JsonSerializer.Serialize(integrations);
+
+            mockService.Setup(s => s.GetSolution(solution.CatalogueItemId)).ReturnsAsync(solution.CatalogueItem);
+
+            var actual = await controller.DeleteGpConnectIntegration(solution.CatalogueItemId, integrations[0].Id);
+
+            actual.Should().NotBeNull()
+                .And.BeOfType<ViewResult>();
+
+            actual.As<ViewResult>().Model.Should().BeOfType<DeleteIntegrationModel>();
+
+            var expectedModel = new DeleteIntegrationModel(solution.CatalogueItem)
+            {
+                IntegrationId = integrations[0].Id,
+                IntegrationType = Framework.Constants.Interoperability.GpConnectIntegrationType,
+            };
+
+            actual.As<ViewResult>().Model.Should().BeEquivalentTo(expectedModel, opt => opt.Excluding(m => m.BackLink));
+        }
+
+        [Theory]
+        [CommonAutoData]
+        public static async Task Get_DeleteGpConnectIntegration_NullSolutionId_ReturnsBadRequestObjectResult(
+            [Frozen] Mock<ISolutionsService> mockService,
+            InteroperabilityController controller,
+            CatalogueItemId itemId)
+        {
+            mockService.Setup(s => s.GetSolution(itemId)).ReturnsAsync((CatalogueItem)default);
+
+            var actual = await controller.DeleteGpConnectIntegration(itemId, Guid.NewGuid());
+
+            actual.Should().NotBeNull()
+                .And.BeOfType<BadRequestObjectResult>();
+
+            actual.As<BadRequestObjectResult>().Value.Should().Be($"No Solution found for Id: {itemId}");
+        }
+
+        [Theory]
+        [CommonAutoData]
+        public static async Task Get_DeleteGpConnectIntegration_InvalidIntegrationId_ReturnsBadRequestObjectResult(
+            Solution solution,
+            [Frozen] Mock<ISolutionsService> mockService,
+            InteroperabilityController controller,
+            Guid integrationId)
+        {
+            mockService.Setup(s => s.GetSolution(solution.CatalogueItemId)).ReturnsAsync(solution.CatalogueItem);
+
+            var actual = await controller.DeleteGpConnectIntegration(solution.CatalogueItemId, integrationId);
+
+            actual.Should().NotBeNull()
+                .And.BeOfType<BadRequestObjectResult>();
+
+            actual.As<BadRequestObjectResult>().Value.Should().Be($"No integration found for Id: {integrationId}");
+        }
+
+        [Theory]
+        [CommonAutoData]
+        public static async Task Post_DeleteGpConnectIntegration_ValidId_ReturnsRedirectToView(
+            Solution solution,
+            [Frozen] Mock<ISolutionsService> mockService,
+            [Frozen] Mock<IInteroperabilityService> mockInteroperabilityService,
+            InteroperabilityController controller,
+            List<Integration> integrations)
+        {
+            solution.Integrations = JsonSerializer.Serialize(integrations);
+
+            var model = new DeleteIntegrationModel(solution.CatalogueItem)
+            {
+                IntegrationId = Guid.NewGuid(),
+                IntegrationType = Framework.Constants.Interoperability.IM1IntegrationType,
+            };
+
+            mockService.Setup(s => s.GetSolution(solution.CatalogueItemId)).ReturnsAsync(solution.CatalogueItem);
+            mockInteroperabilityService.Setup(s => s.DeleteIntegration(solution.CatalogueItemId, integrations[0].Id));
+
+            var actual = await controller.DeleteGpConnectIntegration(solution.CatalogueItemId, integrations[0].Id, model);
+
+            actual.Should().NotBeNull()
+                .And.BeOfType<RedirectToActionResult>();
+            actual.As<RedirectToActionResult>().ActionName.Should().Be(nameof(controller.Interoperability));
+        }
+
+        [Theory]
+        [CommonAutoData]
+        public static async Task Post_DeleteGpConnectIntegration_NullSolutionId_ReturnsBadRequestObjectResult(
+            Solution solution,
+            [Frozen] Mock<ISolutionsService> mockService,
+            InteroperabilityController controller,
+            CatalogueItemId itemId)
+        {
+            var model = new DeleteIntegrationModel(solution.CatalogueItem)
+            {
+                IntegrationId = Guid.NewGuid(),
+                IntegrationType = Framework.Constants.Interoperability.IM1IntegrationType,
+            };
+
+            mockService.Setup(s => s.GetSolution(itemId)).ReturnsAsync((CatalogueItem)default);
+
+            var actual = await controller.DeleteGpConnectIntegration(itemId, Guid.NewGuid(), model);
+
+            actual.Should().NotBeNull()
+                .And.BeOfType<BadRequestObjectResult>();
+
+            actual.As<BadRequestObjectResult>().Value.Should().Be($"No Solution found for Id: {itemId}");
+        }
+
+        [Theory]
+        [CommonAutoData]
+        public static async Task Post_DeleteGpConnectIntegration_InvalidIntegrationId_ReturnsBadRequestObjectResult(
+            Solution solution,
+            [Frozen] Mock<ISolutionsService> mockService,
+            InteroperabilityController controller,
+            Guid integrationId)
+        {
+            var model = new DeleteIntegrationModel(solution.CatalogueItem)
+            {
+                IntegrationId = Guid.NewGuid(),
+                IntegrationType = Framework.Constants.Interoperability.IM1IntegrationType,
+            };
+
+            mockService.Setup(s => s.GetSolution(solution.CatalogueItemId)).ReturnsAsync(solution.CatalogueItem);
+
+            var actual = await controller.DeleteGpConnectIntegration(solution.CatalogueItemId, integrationId, model);
+
+            actual.Should().NotBeNull()
+                .And.BeOfType<BadRequestObjectResult>();
+
+            actual.As<BadRequestObjectResult>().Value.Should().Be($"No integration found for Id: {integrationId}");
         }
     }
 }

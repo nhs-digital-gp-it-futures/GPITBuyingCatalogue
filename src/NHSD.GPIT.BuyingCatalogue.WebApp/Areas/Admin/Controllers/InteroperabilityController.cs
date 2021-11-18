@@ -210,14 +210,19 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
             if (solution is null)
                 return BadRequest($"No Solution found for Id: {solutionId}");
 
-            return View(new AddGpConnectIntegrationModel(solution));
+            var model = new AddEditGpConnectIntegrationModel(solution)
+            {
+                BackLink = Url.Action(nameof(Interoperability), new { solutionId }),
+            };
+
+            return View("AddEditGpConnectIntegration", model);
         }
 
         [HttpPost("add-gp-connect-integration")]
-        public async Task<IActionResult> AddGpConnectIntegration(CatalogueItemId solutionId, AddGpConnectIntegrationModel model)
+        public async Task<IActionResult> AddGpConnectIntegration(CatalogueItemId solutionId, AddEditGpConnectIntegrationModel model)
         {
             if (!ModelState.IsValid)
-                return View(model);
+                return View("AddEditGpConnectIntegration", model);
 
             var integration = new Integration
             {
@@ -228,6 +233,112 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
             };
 
             await interoperabilityService.AddIntegration(solutionId, integration);
+
+            return RedirectToAction(nameof(Interoperability), new { solutionId });
+        }
+
+        [HttpGet("edit-gp-connect-integration/{integrationId}")]
+        public async Task<IActionResult> EditGpConnectIntegration(CatalogueItemId solutionId, Guid integrationId)
+        {
+            var solution = await solutionsService.GetSolution(solutionId);
+
+            if (solution is null)
+                return BadRequest($"No Solution found for Id: {solutionId}");
+
+            var integration = solution
+                .Solution
+                .GetIntegrations()
+                .SingleOrDefault(i => i.Id == integrationId);
+
+            if (integration is null)
+                return BadRequest($"No integration found for Id: {integrationId}");
+
+            var model = new AddEditGpConnectIntegrationModel(solution)
+            {
+                BackLink = Url.Action(nameof(Interoperability), new { solutionId }),
+                AdditionalInformation = integration.AdditionalInformation,
+                SelectedIntegrationType = integration.Qualifier,
+                SelectedProviderOrConsumer = integration.IsConsumer ?
+                    Framework.Constants.Interoperability.Consumer :
+                    Framework.Constants.Interoperability.Provider,
+                IntegrationId = integration.Id,
+            };
+
+            return View("AddEditGpConnectIntegration", model);
+        }
+
+        [HttpPost("edit-gp-connect-integration/{integrationId}")]
+        public async Task<IActionResult> EditGpConnectIntegration(CatalogueItemId solutionId, Guid integrationId, AddEditGpConnectIntegrationModel model)
+        {
+            if (!ModelState.IsValid)
+                return View("AddEditGpConnectIntegration", model);
+
+            var solution = await solutionsService.GetSolution(solutionId);
+
+            if (solution is null)
+                return BadRequest($"No Solution found for Id: {solutionId}");
+
+            var integration = solution
+                .Solution
+                .GetIntegrations()
+                .SingleOrDefault(i => i.Id == integrationId);
+
+            if (integration is null)
+                return BadRequest($"No integration found for Id: {integrationId}");
+
+            integration.Qualifier = model.SelectedIntegrationType;
+            integration.AdditionalInformation = model.AdditionalInformation;
+            integration.Qualifier = model.SelectedIntegrationType;
+            integration.IsConsumer = model.SelectedProviderOrConsumer == Framework.Constants.Interoperability.Consumer;
+
+            await interoperabilityService.EditIntegration(solutionId, integrationId, integration);
+
+            return RedirectToAction(nameof(Interoperability), new { solutionId });
+        }
+
+        [HttpGet("delete-gp-connect-integration/{integrationId}")]
+        public async Task<IActionResult> DeleteGpConnectIntegration(CatalogueItemId solutionId, Guid integrationId)
+        {
+            var solution = await solutionsService.GetSolution(solutionId);
+
+            if (solution is null)
+                return BadRequest($"No Solution found for Id: {solutionId}");
+
+            var integration = solution
+                .Solution
+                .GetIntegrations()
+                .SingleOrDefault(i => i.Id == integrationId);
+
+            if (integration is null)
+                return BadRequest($"No integration found for Id: {integrationId}");
+
+            var model = new DeleteIntegrationModel(solution)
+            {
+                BackLink = Url.Action(nameof(EditIm1Integration), new { solutionId, integrationId }),
+                IntegrationId = integrationId,
+                IntegrationType = Framework.Constants.Interoperability.GpConnectIntegrationType,
+            };
+
+            return View("DeleteIntegration", model);
+        }
+
+        [HttpPost("delete-gp-connect-integration/{integrationId}")]
+        public async Task<IActionResult> DeleteGpConnectIntegration(CatalogueItemId solutionId, Guid integrationId, DeleteIntegrationModel model)
+        {
+            var solution = await solutionsService.GetSolution(solutionId);
+
+            if (solution is null)
+                return BadRequest($"No Solution found for Id: {solutionId}");
+
+            var integration = solution
+                .Solution
+                .GetIntegrations()
+                .SingleOrDefault(i => i.Id == integrationId);
+
+            if (integration is null)
+                return BadRequest($"No integration found for Id: {integrationId}");
+
+            await interoperabilityService.DeleteIntegration(solutionId, model.IntegrationId);
 
             return RedirectToAction(nameof(Interoperability), new { solutionId });
         }
