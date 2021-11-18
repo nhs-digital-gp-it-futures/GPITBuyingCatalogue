@@ -2230,7 +2230,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
                 SolutionName = solution.CatalogueItem.Name,
             };
 
-            capabilitiesService.Setup(s => s.GetCapabilitiesByCategory())
+            capabilitiesService.Setup(s => s.GetCapabilitiesByCategory(It.IsAny<int>()))
                 .ReturnsAsync(capabilityCategories.ToList());
 
             solutionsService.Setup(s => s.GetSolution(solution.CatalogueItemId))

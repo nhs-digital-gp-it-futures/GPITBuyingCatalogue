@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Threading.Tasks;
 using AutoFixture;
@@ -36,13 +37,20 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Capabilities
             [Frozen] BuyingCatalogueDbContext context,
             CapabilitiesService capabilitiesService)
         {
+            var supplierId = 10020;
+            var supplierIdString = supplierId.ToString(CultureInfo.InvariantCulture);
+            var supplierKey = $"S{supplierIdString[^3..]}";
+
             var expectedCapabilities = await context
                 .CapabilityCategories
                 .Include(c => c.Capabilities)
-                .ThenInclude(c => c.Epics.Where(e => e.IsActive && e.CompliancyLevel == CompliancyLevel.May))
+                .ThenInclude(c =>
+                    c.Epics.Where(e =>
+                       (e.IsActive && !e.SupplierDefined && e.CompliancyLevel == CompliancyLevel.May)
+                    || (e.IsActive && e.SupplierDefined && EF.Functions.Like(e.Id, $"{supplierKey}%"))))
                 .ToListAsync();
 
-            var capabilityCategories = await capabilitiesService.GetCapabilitiesByCategory();
+            var capabilityCategories = await capabilitiesService.GetCapabilitiesByCategory(supplierId);
 
             capabilityCategories.Should().BeEquivalentTo(expectedCapabilities);
         }

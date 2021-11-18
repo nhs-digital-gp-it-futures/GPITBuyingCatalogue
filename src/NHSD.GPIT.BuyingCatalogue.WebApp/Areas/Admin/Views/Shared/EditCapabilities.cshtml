@@ -28,7 +28,7 @@
                             {
                                 <input type="hidden" asp-for="@Model.CapabilityCategories[i].Capabilities[j].Name" />
                                 <nhs-checkbox asp-for="@Model.CapabilityCategories[i].Capabilities[j].Selected"
-                                              label-text="@Model.CapabilityCategories[i].Capabilities[j].Name"
+                                              label-text="(@Model.CapabilityCategories[i].Capabilities[j].CapabilityRef) @Model.CapabilityCategories[i].Capabilities[j].Name"
                                               hidden-input="@Model.CapabilityCategories[i].Capabilities[j].Id">
                                     @if (Model.CapabilityCategories[i].Capabilities[j].Epics.Any())
                                     {
@@ -38,7 +38,7 @@
                                                 {
                                                     <input type="hidden" asp-for="@Model.CapabilityCategories[i].Capabilities[j].Epics[k].Name" />
                                                     <nhs-checkbox asp-for="@Model.CapabilityCategories[i].Capabilities[j].Epics[k].Selected"
-                                                                  label-text="@Model.CapabilityCategories[i].Capabilities[j].Epics[k].Name"
+                                                                  label-text="(@Model.CapabilityCategories[i].Capabilities[j].Epics[k].Id) @Model.CapabilityCategories[i].Capabilities[j].Epics[k].Name"
                                                                   hidden-input="@Model.CapabilityCategories[i].Capabilities[j].Epics[k].Id" />
                                                 }
                                             </nhs-checkbox-container>
