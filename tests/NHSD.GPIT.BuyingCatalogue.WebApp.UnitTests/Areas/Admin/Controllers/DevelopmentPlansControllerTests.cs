@@ -84,6 +84,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
 
             var actual = (await controller.DevelopmentPlans(catalogueItemId, model)).As<BadRequestObjectResult>();
 
+            actual.Should().NotBeNull();
             actual.Value.Should().Be($"No Solution found for Id: {catalogueItemId}");
         }
 
@@ -130,6 +131,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
             var actual = (await controller.DevelopmentPlans(catalogueItemId)).As<ViewResult>();
 
             mockService.Verify(s => s.GetSolution(catalogueItemId));
+
+            actual.Should().NotBeNull();
             actual.ViewName.Should().BeNull();
             actual.Model.Should().BeEquivalentTo(expected, opt => opt.Excluding(m => m.BackLink));
         }
@@ -170,6 +173,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
 
             actual.Should().NotBeNull();
             actual.ViewName.Should().NotBeNull();
+            actual.ViewName.Should().Be("EditWorkOffPlan");
 
             actual.Model.Should().BeEquivalentTo(expectedModel, opt => opt.Excluding(m => m.BackLink));
         }
@@ -239,6 +243,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
 
             var actual = (await controller.AddWorkOffPlan(solution.CatalogueItemId, model)).As<RedirectToActionResult>();
 
+            actual.Should().NotBeNull();
             actual.ActionName.Should().Be(nameof(DevelopmentPlansController.DevelopmentPlans));
             actual.RouteValues["solutionId"].Should().Be(solution.CatalogueItemId);
         }
@@ -390,6 +395,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
 
             var actual = (await controller.EditWorkOffPlan(solution.CatalogueItemId, workOffPlan.Id, model)).As<RedirectToActionResult>();
 
+            actual.Should().NotBeNull();
             actual.ActionName.Should().Be(nameof(DevelopmentPlansController.DevelopmentPlans));
             actual.RouteValues["solutionId"].Should().Be(solution.CatalogueItemId);
         }
@@ -521,6 +527,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
 
             var actual = (await controller.DeleteWorkOffPlan(solution.CatalogueItemId, workOffPlan.Id, model)).As<RedirectToActionResult>();
 
+            actual.Should().NotBeNull();
             actual.ActionName.Should().Be(nameof(DevelopmentPlansController.DevelopmentPlans));
             actual.RouteValues["solutionId"].Should().Be(solution.CatalogueItemId);
         }
