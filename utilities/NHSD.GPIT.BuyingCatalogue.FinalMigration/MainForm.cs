@@ -36,6 +36,7 @@ namespace NHSD.GPIT.BuyingCatalogue.FinalMigration
         private void runMigrationButton_Click(object sender, EventArgs e)
         {
             runMigrationButton.Enabled = false;
+            reconcileButton.Enabled = false;
 
             BackgroundWorker worker = new BackgroundWorker();
             worker.DoWork += Migration_DoWork;
@@ -52,6 +53,7 @@ namespace NHSD.GPIT.BuyingCatalogue.FinalMigration
         private void Migration_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
         {
             runMigrationButton.Enabled = true;
+            reconcileButton.Enabled = true;
 
             if (e.Error is not null)
             {
@@ -62,6 +64,40 @@ namespace NHSD.GPIT.BuyingCatalogue.FinalMigration
             {
                 System.Diagnostics.Trace.WriteLine("Migration complete");
                 MessageBox.Show("Migration complete");
+            }
+        }
+
+        private void reconcileButton_Click(object sender, EventArgs e)
+        {
+            runMigrationButton.Enabled = false;
+            reconcileButton.Enabled = false;
+
+            BackgroundWorker worker = new BackgroundWorker();
+            worker.DoWork += Reconcile_DoWork;
+            worker.RunWorkerCompleted += Reconcile_RunWorkerCompleted;
+            worker.RunWorkerAsync();
+        }
+
+        private void Reconcile_DoWork(object sender, DoWorkEventArgs e)
+        {
+            var reconciliation = new Reconciliation();
+            reconciliation.RunReconciliation();
+        }
+
+        private void Reconcile_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
+        {
+            runMigrationButton.Enabled = true;
+            reconcileButton.Enabled = true;
+
+            if (e.Error is not null)
+            {
+                System.Diagnostics.Trace.WriteLine($"Reconciliation failed. Error: {e.Error.Message}");
+                MessageBox.Show("Reconciliation failed");
+            }
+            else
+            {
+                System.Diagnostics.Trace.WriteLine("Reconciliation complete");
+                MessageBox.Show("Reconciliation complete");
             }
         }
     }

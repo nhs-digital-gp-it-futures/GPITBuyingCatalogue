@@ -90,7 +90,36 @@ namespace NHSD.GPIT.BuyingCatalogue.FinalMigration
 
         private void MigrateRelatedOrganisations()
         {
-            // TODO
+            System.Diagnostics.Trace.WriteLine("Migrating related organisations start");
+
+            using(var context = GetContext())
+            {
+                var relatedOrganisations = context.RelatedOrganisations.ToList();
+
+                foreach(var relatedOrganisation in relatedOrganisations)
+                {
+                    context.RelatedOrganisations.Remove(relatedOrganisation);
+                }
+
+                context.SaveChangesWithoutAudit();
+
+                foreach(var legacyRelatedOrganisation in legacyRelatedOrganisations)
+                {                    
+                    var relatedOrganisation = new EntityFramework.Organisations.Models.RelatedOrganisation
+                    {
+                        OrganisationId = legacyOrganisations.Single(x => x.OrganisationId == legacyRelatedOrganisation.OrganisationId).NewId,
+                        RelatedOrganisationId = legacyOrganisations.Single(x => x.OrganisationId == legacyRelatedOrganisation.RelatedOrganisationId).NewId,
+                    };
+
+                    System.Diagnostics.Trace.WriteLine($"Adding related organisation {relatedOrganisation.Organisation} to {relatedOrganisation.RelatedOrganisationId}");
+
+                    context.RelatedOrganisations.Add(relatedOrganisation);
+                }
+
+                context.SaveChangesWithoutAudit();
+            }
+
+            System.Diagnostics.Trace.WriteLine("Migrating related organisations end");
         }
 
         private void MigrateUsers()
@@ -501,13 +530,10 @@ namespace NHSD.GPIT.BuyingCatalogue.FinalMigration
                             DeliveryDate = x.DeliveryDate
                         });
 
-                context.OrderItemRecipients.AddRange(newOrderItemRecipients);
-
-                context.SaveChangesWithoutAudit();
+                context.OrderItemRecipients.AddRange(newOrderItemRecipients);                
             }
 
-
-            //context.SaveChangesWithoutAudit();
+            context.SaveChangesWithoutAudit();
 
             System.Diagnostics.Trace.WriteLine("Migrating order items and recipients end");
         }

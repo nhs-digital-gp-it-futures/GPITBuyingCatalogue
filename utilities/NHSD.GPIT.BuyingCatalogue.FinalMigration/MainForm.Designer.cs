@@ -31,6 +31,7 @@ namespace NHSD.GPIT.BuyingCatalogue.FinalMigration
         {
             this.outputTextBox = new System.Windows.Forms.TextBox();
             this.runMigrationButton = new System.Windows.Forms.Button();
+            this.reconcileButton = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
             // outputTextBox
@@ -56,11 +57,22 @@ namespace NHSD.GPIT.BuyingCatalogue.FinalMigration
             this.runMigrationButton.UseVisualStyleBackColor = true;
             this.runMigrationButton.Click += new System.EventHandler(this.runMigrationButton_Click);
             // 
+            // reconcileButton
+            // 
+            this.reconcileButton.Location = new System.Drawing.Point(166, 21);
+            this.reconcileButton.Name = "reconcileButton";
+            this.reconcileButton.Size = new System.Drawing.Size(119, 23);
+            this.reconcileButton.TabIndex = 2;
+            this.reconcileButton.Text = "Reconcile";
+            this.reconcileButton.UseVisualStyleBackColor = true;
+            this.reconcileButton.Click += new System.EventHandler(this.reconcileButton_Click);
+            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(825, 499);
+            this.Controls.Add(this.reconcileButton);
             this.Controls.Add(this.runMigrationButton);
             this.Controls.Add(this.outputTextBox);
             this.Name = "MainForm";
@@ -74,6 +86,7 @@ namespace NHSD.GPIT.BuyingCatalogue.FinalMigration
 
         private System.Windows.Forms.TextBox outputTextBox;
         private System.Windows.Forms.Button runMigrationButton;
+        private System.Windows.Forms.Button reconcileButton;
     }
 }
 

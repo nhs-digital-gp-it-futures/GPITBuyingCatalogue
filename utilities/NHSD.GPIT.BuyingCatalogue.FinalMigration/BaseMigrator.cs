@@ -51,8 +51,10 @@ namespace NHSD.GPIT.BuyingCatalogue.FinalMigration
             LoadValidLegacyServiceRecipients();
 
             // Housekeeping on the organisations we migrate accross
-            var validOrganisations = new List<LegacyModels.Organisation>();
-            validOrganisations.Add(legacyOrganisations.Single(x => x.Name == "NHS Digital"));
+            var validOrganisations = new List<LegacyModels.Organisation>
+            {
+                legacyOrganisations.Single(x => x.Name == "NHS Digital")
+            };
             validOrganisations.AddRange(legacyOrganisations.Where(x => legacyUsers.Any(y => y.PrimaryOrganisationId == x.OrganisationId)));
             validOrganisations.AddRange(legacyOrganisations.Where(x => validLegacyOrders.Any(y => y.OrderingPartyId == x.OrganisationId)));
             validOrganisations.AddRange(legacyOrganisations.Where(x => legacyRelatedOrganisations.Any(y => y.RelatedOrganisationId == x.OrganisationId)));
@@ -161,7 +163,6 @@ namespace NHSD.GPIT.BuyingCatalogue.FinalMigration
             legacyRelatedOrganisations = sqlConnection.Query<LegacyModels.RelatedOrganisation>("select * from RelatedOrganisations").ToList();
             System.Diagnostics.Trace.WriteLine($"Loaded {legacyRelatedOrganisations.Count} related organisations from legacy database");
         }
-
 
         private void LoadLegacyUsers()
         {
