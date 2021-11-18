@@ -110,7 +110,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Models.Capabili
         public static void Constructing_CapabilityCategoryWithNoCapabilities_DoesNotAdd(
             AdditionalService additionalService)
         {
-            var capabilityCategories = new List<CapabilityCategory> {
+            var capabilityCategories = new List<CapabilityCategory>
+            {
                 new()
                 {
                     Name = "First Category",
