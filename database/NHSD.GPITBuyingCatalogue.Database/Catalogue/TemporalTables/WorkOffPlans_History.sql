@@ -10,8 +10,3 @@
     SysStartTime DATETIME2(0) NOT NULL,
     SysEndTime DATETIME2(0) NOT NULL
 );
-GO
-
-CREATE CLUSTERED COLUMNSTORE INDEX IX_WorkOffPlans_History
-ON catalogue.WorkOffPlans_History;
-GO

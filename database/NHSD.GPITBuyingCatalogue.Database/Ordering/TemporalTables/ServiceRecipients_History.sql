@@ -7,8 +7,3 @@
     SysStartTime datetime2(0) NOT NULL,
     SysEndTime datetime2(0) NOT NULL
 );
-GO
-
-CREATE CLUSTERED COLUMNSTORE INDEX IX_ServiceRecipients_History
-ON ordering.ServiceRecipients_History;
-GO

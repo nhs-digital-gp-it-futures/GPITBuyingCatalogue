@@ -9,8 +9,3 @@
     SysStartTime datetime2(0) NOT NULL,
     SysEndTime datetime2(0) NOT NULL
 );
-GO
-
-CREATE CLUSTERED COLUMNSTORE INDEX IX_AdditionalServices_History
-ON catalogue.AdditionalServices_History;
-GO

@@ -13,8 +13,3 @@
      SysStartTime datetime2(0) NOT NULL,
      SysEndTime datetime2(0) NOT NULL
 );
-GO
-
-CREATE CLUSTERED COLUMNSTORE INDEX IX_Suppliers_History
-ON catalogue.Suppliers_History;
-GO
