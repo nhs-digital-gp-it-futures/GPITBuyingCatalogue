@@ -6,6 +6,8 @@ namespace NHSD.GPIT.BuyingCatalogue.FinalMigration.LegacyModels
     public partial class ServiceRecipient
     {
         public string OdsCode { get; set; }
-        public string Name { get; set; }        
+        public string Name { get; set; }
+        
+        public bool Processed { get; set; }
     }
 }

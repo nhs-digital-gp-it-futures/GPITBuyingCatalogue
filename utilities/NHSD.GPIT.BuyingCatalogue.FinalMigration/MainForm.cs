@@ -33,35 +33,35 @@ namespace NHSD.GPIT.BuyingCatalogue.FinalMigration
             }
         }
 
-        private void dryRunButton_Click(object sender, EventArgs e)
+        private void runMigrationButton_Click(object sender, EventArgs e)
         {
-            dryRunButton.Enabled = false;
+            runMigrationButton.Enabled = false;
 
             BackgroundWorker worker = new BackgroundWorker();
-            worker.DoWork += DryRun_DoWork;
-            worker.RunWorkerCompleted += DryRun_RunWorkerCompleted;
+            worker.DoWork += Migration_DoWork;
+            worker.RunWorkerCompleted += Migration_RunWorkerCompleted;
             worker.RunWorkerAsync();
         }
 
-        private void DryRun_DoWork(object sender, DoWorkEventArgs e)
+        private void Migration_DoWork(object sender, DoWorkEventArgs e)
         {
             var migrator = new Migrator();
             migrator.RunMigration();
         }
 
-        private void DryRun_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
+        private void Migration_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
         {
-            dryRunButton.Enabled = true;
+            runMigrationButton.Enabled = true;
 
             if (e.Error is not null)
             {
-                System.Diagnostics.Trace.WriteLine($"Dry run failed. Error: {e.Error.Message}");
-                MessageBox.Show("Dry run failed");
+                System.Diagnostics.Trace.WriteLine($"Migration failed. Error: {e.Error.Message}");
+                MessageBox.Show("Migration failed");
             }
             else
             {
-                System.Diagnostics.Trace.WriteLine("Dry run complete");
-                MessageBox.Show("Dry run complete");
+                System.Diagnostics.Trace.WriteLine("Migration complete");
+                MessageBox.Show("Migration complete");
             }
         }
     }

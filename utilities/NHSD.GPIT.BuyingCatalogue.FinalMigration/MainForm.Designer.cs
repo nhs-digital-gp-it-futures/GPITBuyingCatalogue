@@ -30,7 +30,7 @@ namespace NHSD.GPIT.BuyingCatalogue.FinalMigration
         private void InitializeComponent()
         {
             this.outputTextBox = new System.Windows.Forms.TextBox();
-            this.dryRunButton = new System.Windows.Forms.Button();
+            this.runMigrationButton = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
             // outputTextBox
@@ -46,22 +46,22 @@ namespace NHSD.GPIT.BuyingCatalogue.FinalMigration
             this.outputTextBox.Size = new System.Drawing.Size(801, 404);
             this.outputTextBox.TabIndex = 0;
             // 
-            // dryRunButton
+            // runMigrationButton
             // 
-            this.dryRunButton.Location = new System.Drawing.Point(12, 21);
-            this.dryRunButton.Name = "dryRunButton";
-            this.dryRunButton.Size = new System.Drawing.Size(75, 23);
-            this.dryRunButton.TabIndex = 1;
-            this.dryRunButton.Text = "Dry Run";
-            this.dryRunButton.UseVisualStyleBackColor = true;
-            this.dryRunButton.Click += new System.EventHandler(this.dryRunButton_Click);
+            this.runMigrationButton.Location = new System.Drawing.Point(12, 21);
+            this.runMigrationButton.Name = "runMigrationButton";
+            this.runMigrationButton.Size = new System.Drawing.Size(119, 23);
+            this.runMigrationButton.TabIndex = 1;
+            this.runMigrationButton.Text = "Run Migration";
+            this.runMigrationButton.UseVisualStyleBackColor = true;
+            this.runMigrationButton.Click += new System.EventHandler(this.runMigrationButton_Click);
             // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(825, 499);
-            this.Controls.Add(this.dryRunButton);
+            this.Controls.Add(this.runMigrationButton);
             this.Controls.Add(this.outputTextBox);
             this.Name = "MainForm";
             this.Text = "NHSD GPIT Buying Catalogue Final Migration Utility";
@@ -73,7 +73,7 @@ namespace NHSD.GPIT.BuyingCatalogue.FinalMigration
         #endregion
 
         private System.Windows.Forms.TextBox outputTextBox;
-        private System.Windows.Forms.Button dryRunButton;
+        private System.Windows.Forms.Button runMigrationButton;
     }
 }
 
