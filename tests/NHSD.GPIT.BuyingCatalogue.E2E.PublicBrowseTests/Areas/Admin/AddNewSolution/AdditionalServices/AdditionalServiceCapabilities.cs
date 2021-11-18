@@ -88,7 +88,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.AddNewSolution.Addition
             await using var context = GetEndToEndDbContext();
             var capability = await context.Capabilities.FirstAsync();
 
-            CommonActions.ClickCheckboxByLabel(capability.Name);
+            CommonActions.ClickCheckboxByLabel($"({capability.CapabilityRef}) {capability.Name}");
 
             CommonActions.ClickSave();
 

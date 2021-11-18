@@ -31,6 +31,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.CapabilityModels
                 {
                     Id = c.Id,
                     Name = c.Name,
+                    CapabilityRef = c.CapabilityRef,
                     Selected = catalogueItem.CatalogueItemCapabilities.Any(itemCapability => itemCapability.CapabilityId == c.Id),
                     Epics = c.Epics.Select(epic => new CapabilityEpicModel
                     {
