@@ -12,8 +12,3 @@
      SysStartTime datetime2(0) NOT NULL,
      SysEndTime datetime2(0) NOT NULL
 );
-GO
-
-CREATE CLUSTERED COLUMNSTORE INDEX IX_Epics_History
-ON catalogue.Epics_History;
-GO

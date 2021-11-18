@@ -10,8 +10,3 @@
     SysStartTime datetime2(0) NOT NULL,
     SysEndTime datetime2(0) NOT NULL
 );
-GO
-
-CREATE CLUSTERED COLUMNSTORE INDEX IX_CataloguePriceTiers_History
-ON catalogue.CataloguePriceTiers_History;
-GO
