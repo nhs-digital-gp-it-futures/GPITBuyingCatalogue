@@ -201,7 +201,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
                 state.EstimationPeriod = model.EstimationPeriod;
 
                 if (model.EstimationPeriod is null)
-                    ModelState.AddModelError(nameof(model.EstimationPeriod), "Time Unit is required");
+                    ModelState.AddModelError(nameof(model.EstimationPeriod), "Time unit is required");
             }
 
             if (!ModelState.IsValid)
