@@ -40,8 +40,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.CapabilityModels
                         Selected = catalogueItem.CatalogueItemEpics
                             .Where(itemEpic => itemEpic.CapabilityId == c.Id)
                             .Any(itemEpic => string.Equals(itemEpic.EpicId, epic.Id, StringComparison.CurrentCultureIgnoreCase)),
-                    }).OrderBy(e => e.Name).ToList(),
-                }).OrderBy(c => c.Name).ToList(),
+                    }).OrderBy(e => e.Id).ToList(),
+                }).OrderBy(c => c.Id).ToList(),
             }).OrderBy(cc => cc.Name).ToList();
         }
 

@@ -83,6 +83,19 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.AdditionalServices
                 .ToListAsync();
         }
 
+        // checks to see if this additional services' name is unique for this solution
+        public Task<bool> AdditionalServiceExistsWithNameForSolution(
+            string additionalServiceName,
+            CatalogueItemId solutionId,
+            CatalogueItemId currentCatalogueItemId = default) =>
+            dbContext
+                .AdditionalServices
+                .AnyAsync(add =>
+                    add.CatalogueItem.CatalogueItemType == CatalogueItemType.AdditionalService
+                    && add.SolutionId == solutionId
+                    && add.CatalogueItem.Name == additionalServiceName
+                    && add.CatalogueItemId != currentCatalogueItemId);
+
         public async Task SavePublicationStatus(
             CatalogueItemId catalogueItemId,
             CatalogueItemId additionalServiceId,

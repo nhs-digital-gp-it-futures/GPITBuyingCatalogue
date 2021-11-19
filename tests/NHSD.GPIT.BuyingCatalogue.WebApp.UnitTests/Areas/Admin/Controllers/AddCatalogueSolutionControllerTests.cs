@@ -100,8 +100,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
 
             model.Frameworks = frameworks;
 
-            mockService.Setup(s => s.GetSolutionByName(It.IsAny<string>()))
-                .ReturnsAsync(existingSolution);
+            mockService.Setup(s => s.CatalogueSolutionExistsWithName(It.IsAny<string>(), default))
+                .ReturnsAsync(true);
 
             mockSuppliersService.Setup(s => s.GetAllActiveSuppliers())
                 .ReturnsAsync(suppliers);

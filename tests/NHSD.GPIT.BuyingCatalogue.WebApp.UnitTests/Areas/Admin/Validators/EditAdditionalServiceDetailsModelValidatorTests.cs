@@ -4,6 +4,7 @@ using AutoFixture.Xunit2;
 using FluentValidation.TestHelper;
 using Moq;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
+using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.AdditionalServices;
 using NHSD.GPIT.BuyingCatalogue.Test.Framework.AutoFixtureCustomisations;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.AdditionalServices;
@@ -68,8 +69,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators
         {
             var additionalService = solution.AdditionalServices.First();
             var additionalServiceCatalogueItem = additionalService.CatalogueItem;
-            additionalServicesService.Setup(s => s.GetAdditionalServicesBySolutionId(solution.CatalogueItemId))
-                .ReturnsAsync(solution.AdditionalServices.Select(a => a.CatalogueItem).ToList());
+
+            additionalServicesService.Setup(s =>
+                s.AdditionalServiceExistsWithNameForSolution(It.IsAny<string>(), It.IsAny<CatalogueItemId>(), It.IsAny<CatalogueItemId>()))
+                    .ReturnsAsync(true);
 
             var model = new EditAdditionalServiceDetailsModel(solution.CatalogueItem, additionalServiceCatalogueItem)
             {

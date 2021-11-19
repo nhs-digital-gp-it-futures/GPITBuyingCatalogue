@@ -1,6 +1,4 @@
-﻿using System;
-using System.Linq;
-using System.Threading;
+﻿using System.Threading;
 using System.Threading.Tasks;
 using FluentValidation;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.AdditionalServices;
@@ -34,12 +32,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Validators
 
         private async Task<bool> NotBeADuplicateService(EditAdditionalServiceDetailsModel model, CancellationToken cancellationToken)
         {
-            var allSolutions = await additionalServicesService.GetAdditionalServicesBySolutionId(model.CatalogueItemId);
-
-            if (model.Id is not null)
-                allSolutions = allSolutions.Where(s => s.Id != model.Id).ToList();
-
-            return !allSolutions.Any(s => string.Equals(s.Name, model.Name, StringComparison.CurrentCultureIgnoreCase));
+            return !await additionalServicesService.AdditionalServiceExistsWithNameForSolution(model.Name, model.CatalogueItemId);
         }
     }
 }

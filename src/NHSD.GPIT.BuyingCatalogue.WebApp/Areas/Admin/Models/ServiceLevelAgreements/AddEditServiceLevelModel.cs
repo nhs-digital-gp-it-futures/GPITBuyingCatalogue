@@ -37,6 +37,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.ServiceLevelAgreem
 
         public int? ServiceLevelId { get; init; }
 
+        [StringLength(100)]
         public string ServiceType { get; init; }
 
         [StringLength(1000)]
