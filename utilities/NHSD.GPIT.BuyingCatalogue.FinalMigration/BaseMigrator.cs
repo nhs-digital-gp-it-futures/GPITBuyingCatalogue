@@ -76,8 +76,7 @@ namespace NHSD.GPIT.BuyingCatalogue.FinalMigration
         protected EntityFramework.BuyingCatalogueDbContext GetContext()
         {
             var options = new DbContextOptionsBuilder<EntityFramework.BuyingCatalogueDbContext>()
-                .UseSqlServer(GPITBuyingCatalogueConnectionString)
-                .EnableSensitiveDataLogging()
+                .UseSqlServer(GPITBuyingCatalogueConnectionString)                
                 .Options;
 
             return new EntityFramework.BuyingCatalogueDbContext(options, new IdentityServiceStub());
@@ -103,7 +102,7 @@ namespace NHSD.GPIT.BuyingCatalogue.FinalMigration
                 .Include(x => x.OrderingPartyContact)
                 .Include(x => x.SupplierContact)
                 .Include(x => x.DefaultDeliveryDates)
-                .Include(x => x.OrderItems)
+                .Include(x => x.OrderItems).ThenInclude(x => x.OrderItemRecipients)
                 .IgnoreQueryFilters().ToList();
             System.Diagnostics.Trace.WriteLine($"Loaded {entities.Count} orders from current database");
             return entities;
@@ -216,7 +215,12 @@ namespace NHSD.GPIT.BuyingCatalogue.FinalMigration
         {
             using var sqlConnection = new SqlConnection(ORDAPIConnectionString);
             sqlConnection.Open();
-            legacyOrderItems = sqlConnection.Query<LegacyModels.OrderItem>("select * from OrderItem").ToList();
+
+            // Comment from SSIS package...
+            // There is a price with ID 1012 that has been deleted so the query in Get Order Items replaces that ID with the ID of the replacement price (1766).
+            legacyOrderItems = sqlConnection.Query<LegacyModels.OrderItem>(@"SELECT OrderId,CatalogueItemId,ProvisioningTypeId,CataloguePriceTypeId,PricingUnitName,TimeUnitId,EstimationPeriodId,
+                CASE WHEN PriceId = 1012 THEN 1766 ELSE PriceId END AS PriceId,CurrencyCode,Price,DefaultDeliveryDate,Created,LastUpdated
+                FROM OrderItem").ToList();
             System.Diagnostics.Trace.WriteLine($"Loaded {legacyOrderItems.Count} order items from legacy database");
         }
 

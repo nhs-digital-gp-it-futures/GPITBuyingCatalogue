@@ -64,15 +64,14 @@ namespace NHSD.GPIT.BuyingCatalogue.FinalMigration
                         var currentOrganisation = currentOrganisations.Single(x => x.OdsCode.Equals(legacyOrganisation.OdsCode, StringComparison.CurrentCultureIgnoreCase));
 
                         currentOrganisation.Name = legacyOrganisation.Name;
+                        currentOrganisation.OdsCode = legacyOrganisation.OdsCode;
+                        currentOrganisation.PrimaryRoleId = legacyOrganisation.PrimaryRoleId;
+                        currentOrganisation.CatalogueAgreementSigned = legacyOrganisation.CatalogueAgreementSigned;
 
                         var legacyAddress = JsonDeserializer.Deserialize<EntityFramework.Addresses.Models.Address>(legacyOrganisation.Address);
                         
                         if(!AreAddressesEqual(currentOrganisation.Address, legacyAddress))
                             currentOrganisation.Address = legacyAddress;
-
-                        currentOrganisation.OdsCode = legacyOrganisation.OdsCode;
-                        currentOrganisation.PrimaryRoleId = legacyOrganisation.PrimaryRoleId;
-                        currentOrganisation.CatalogueAgreementSigned = legacyOrganisation.CatalogueAgreementSigned;                                                
 
                         if(context.SaveChangesWithoutAudit() > 0)
                             System.Diagnostics.Trace.WriteLine($"Updated organisation with ODS code {legacyOrganisation.OdsCode}");
@@ -329,6 +328,9 @@ namespace NHSD.GPIT.BuyingCatalogue.FinalMigration
                             System.Diagnostics.Trace.WriteLine($"Updated order with Description {legacyOrder.Description}");
 
                         legacyOrder.NewId = currentOrder.Id;
+
+                        if (legacyOrder.Completed.HasValue && currentOrder.Completed != legacyOrder.Completed)
+                            UpdateOrderCompletedDate(currentOrder.Id, legacyOrder.Completed.Value);
                     }
                 }
             }
@@ -479,12 +481,7 @@ namespace NHSD.GPIT.BuyingCatalogue.FinalMigration
 
                 if(legacyOrderItem.PriceId is not null)
                 {
-                    // Comment from SSIS package...
-                    // There is a price with ID 1012 that has been deleted so the query in Get Order Items replaces that ID with the ID of the replacement price (1766).
-                    if (legacyOrderItem.PriceId.Value == 1012)
-                        orderItem.PriceId = 1766;
-                    else
-                        orderItem.PriceId = legacyOrderItem.PriceId.Value;
+                    orderItem.PriceId = legacyOrderItem.PriceId.Value;
 
                     if(!cataloguePrices.Any(x=>x.CataloguePriceId == orderItem.PriceId))
                     {
