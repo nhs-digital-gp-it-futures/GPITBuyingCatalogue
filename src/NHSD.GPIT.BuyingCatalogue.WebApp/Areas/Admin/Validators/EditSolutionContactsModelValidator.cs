@@ -7,7 +7,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Validators
 {
     public sealed class EditSolutionContactsModelValidator : AbstractValidator<EditSolutionContactsModel>
     {
-        internal static readonly string ErrorElementName = $"edit-supplier-details";
+        internal static readonly string ErrorElementName = $"AvailableSupplierContacts[0].Selected";
 
         public EditSolutionContactsModelValidator()
         {

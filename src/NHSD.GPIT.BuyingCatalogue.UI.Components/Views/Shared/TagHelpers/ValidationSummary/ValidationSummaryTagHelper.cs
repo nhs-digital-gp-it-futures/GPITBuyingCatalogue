@@ -107,7 +107,14 @@ namespace NHSD.GPIT.BuyingCatalogue.UI.Components.TagHelpers
 
             var propertyNames = viewType.GetProperties().Select(i => i.Name).ToList();
             var orderedStates = ViewContext.ViewData.ModelState
-                .OrderBy(d => propertyNames.IndexOf(d.Key));
+                .OrderBy(d =>
+                {
+                    var key = d.Key.Contains('[')
+                        ? d.Key[..d.Key.IndexOf('[')]
+                        : d.Key;
+
+                    return propertyNames.IndexOf(key);
+                });
 
             foreach ((var key, ModelStateEntry modelStateEntry) in orderedStates)
             {
