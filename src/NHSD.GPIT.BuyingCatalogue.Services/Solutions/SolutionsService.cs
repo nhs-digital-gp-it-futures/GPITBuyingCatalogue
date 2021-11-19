@@ -70,6 +70,15 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
                 .FirstOrDefaultAsync();
         }
 
+        // checks to see if this catalogue solutions' name is globally unique
+        public Task<bool> CatalogueSolutionExistsWithName(string solutionName, CatalogueItemId currentCatalogueItemId = default) =>
+            dbContext
+                .CatalogueItems
+                .AnyAsync(ci =>
+                ci.CatalogueItemType == CatalogueItemType.Solution
+                && ci.Name == solutionName
+                && ci.Id != currentCatalogueItemId);
+
         public async Task<CatalogueItem> GetSolutionCapability(CatalogueItemId catalogueItemId, int capabilityId)
         {
             return await dbContext.CatalogueItems

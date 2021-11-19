@@ -21,17 +21,16 @@
             <input type="hidden" asp-for="BackLink" />
             <nhs-input asp-for="ServiceType"
                        label-text="Type of service"
-                       label-hint="For example, permitted downtime, incident response or escalation and complaints management." />
+                       label-hint="For example, permitted downtime, incident response or escalation and complaints management."
+                       character-count="true"/>
 
             <nhs-textarea asp-for="ServiceLevel"
                           label-text="Service level"
-                          label-hint="For example, how quickly you’ll respond to incidents or how much downtime is permitted."
-                          character-count="false" />
+                          label-hint="For example, how quickly you’ll respond to incidents or how much downtime is permitted." />
 
             <nhs-textarea asp-for="HowMeasured"
                           label-text="How the service levels are measured"
-                          label-hint="For example, how you show that the service levels have or have not been met."
-                          character-count="false" />
+                          label-hint="For example, how you show that the service levels have or have not been met." />
 
             <nhs-fieldset-form-label asp-for="@Model"
                                      label-text="Are service credits applied?"

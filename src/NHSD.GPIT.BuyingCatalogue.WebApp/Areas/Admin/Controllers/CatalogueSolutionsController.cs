@@ -168,9 +168,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
         [HttpPost("manage/{solutionId}/details")]
         public async Task<IActionResult> Details(CatalogueItemId solutionId, SolutionModel model)
         {
-            var existingSolution = await solutionsService.GetSolutionByName(model.SolutionName);
-
-            if (existingSolution is not null && existingSolution.Id != solutionId)
+            if (await solutionsService.CatalogueSolutionExistsWithName(model.SolutionName, solutionId))
                 ModelState.AddModelError(nameof(SolutionModel.SolutionName), "A solution with this name already exists");
 
             if (!ModelState.IsValid)
