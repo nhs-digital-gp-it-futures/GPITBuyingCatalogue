@@ -61,6 +61,8 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Email
                 var authentication = settings.Authentication;
                 if (authentication.IsRequired)
                     await client.AuthenticateAsync(authentication.UserName, authentication.Password).ConfigureAwait(false);
+                else
+                    logger.LogWarning("SendEmailAsync: Attempting to send an email when authentication has not been configured");
 
                 var mimeMessage = emailMessage.AsMimeMessage(settings.EmailSubjectPrefix);
                 await client.SendAsync(mimeMessage).ConfigureAwait(false);
