@@ -11,7 +11,7 @@ using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers;
 using Xunit;
 
-namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.AddNewSolution
+namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.AddNewSolution.DevelopmentPlans
 {
     public sealed class DevelopmentPlans : AuthorityTestBase, IClassFixture<LocalWebApplicationFactory>, IDisposable
     {
@@ -76,6 +76,18 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.AddNewSolution
             var roadmapUrl = solution.RoadMap;
 
             roadmapUrl.Should().BeNullOrEmpty();
+        }
+
+        [Fact]
+        public void DevelopmentPlans_ClickAddWorkOffPlan_CorrectRedirect()
+        {
+            CommonActions.ClickLinkElement(DevelopmentPlanObjects.WorkOffPlansActionLink);
+
+            CommonActions.PageLoadedCorrectGetIndex(
+                typeof(DevelopmentPlansController),
+                nameof(DevelopmentPlansController.AddWorkOffPlan))
+                .Should()
+                .BeTrue();
         }
 
         public void Dispose()
