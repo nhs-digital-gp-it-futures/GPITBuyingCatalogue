@@ -34,5 +34,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Framework.Settings
         /// Gets the value used to prefix the subject in e-mails.
         /// </summary>
         public string EmailSubjectPrefix { get; init; }
+
+        public string SenderAddress { get; set; }
     }
 }

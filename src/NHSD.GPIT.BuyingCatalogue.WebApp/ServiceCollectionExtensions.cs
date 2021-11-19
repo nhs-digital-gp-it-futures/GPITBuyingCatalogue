@@ -154,7 +154,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp
             smtpSettings.Host = host;
             smtpSettings.Port = portNumber;
 
-            if (!string.IsNullOrWhiteSpace(userName) && !string.IsNullOrWhiteSpace(password))
+            if (!string.IsNullOrWhiteSpace(userName))
+                smtpSettings.SenderAddress = userName;
+
+            if (!string.IsNullOrWhiteSpace(password))
                 smtpSettings.Authentication = new SmtpAuthenticationSettings { IsRequired = true, UserName = userName, Password = password };
 
             services.AddSingleton(smtpSettings);
