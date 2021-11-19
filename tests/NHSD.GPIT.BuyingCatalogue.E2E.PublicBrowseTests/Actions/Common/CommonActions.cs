@@ -145,6 +145,9 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Actions.Common
         internal bool ErrorSummaryDisplayed() =>
             ElementIsDisplayed(CommonSelectors.NhsErrorSection);
 
+        internal bool CancelLinkDisplayed() =>
+            ElementIsDisplayed(CommonSelectors.CancelLink);
+
         internal bool ErrorSummaryLinksExist() =>
         Driver
         .FindElement(CommonSelectors.NhsErrorSectionLinkList)

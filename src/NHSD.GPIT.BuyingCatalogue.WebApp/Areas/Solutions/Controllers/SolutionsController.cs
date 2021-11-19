@@ -366,6 +366,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers
             if (item is null)
                 return BadRequest($"No Catalogue Item found for Id: {solutionId}");
 
+            if (item.PublishedStatus == PublicationStatus.Suspended)
+                return RedirectToAction(nameof(Description), new { solutionId });
+
             var workOffPlans = await solutionsService.GetWorkOffPlans(solutionId);
 
             return View(new DevelopmentPlansModel(item, workOffPlans));
