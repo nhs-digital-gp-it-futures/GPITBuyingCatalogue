@@ -25,15 +25,23 @@
                 <div class="nhsuk-u-margin-bottom-5">
                     <div>
                         <nhs-bookended-input asp-for="@Model.OrderItem.AgreedPrice"
-                                             label-text="What price have you agreed?"
+                                             label-text="What price have you agreed, in pounds, @Model.OrderItem.CataloguePrice.PricingUnit.Description @Model.OrderItem.TimeUnitDescription?"
                                              label-hint="You can change the list price if you've agreed a different rate with the supplier."
                                              Prefix="@Model.OrderItem.CurrencySymbol"
                                              Suffix="@Model.OrderItem.CataloguePrice.PricingUnit.Description @Model.OrderItem.TimeUnitDescription" />
 
-                        <nhs-details label-text="How to fill this form">
+                        <hr/>
+                        <vc:nhs-secondary-button url="@Url.Action(
+                                                nameof(AdditionalServiceRecipientsController.SelectAdditionalServiceRecipients),
+                                                typeof(AdditionalServiceRecipientsController).ControllerName(),
+                                                new {Model.OdsCode, Model.OrderItem.CallOffId})"
+                                                 text="Edit Service Recipients"
+                                                 use-primary-colour="false" />
+                        <br/>
+                        <nhs-details label-text="What information should I enter?">
                             <p><b>@Model.SecondColumnDetailsTitle</b></p>
-                            <p>@Model.SecondColumnDetailsContent</p>
-                            <p><b>What date should i enter?</b></p>
+                            <p>@Html.Raw(Model.SecondColumnDetailsContent)</p>
+                            <p><b>What date should I enter?</b></p>
                             <p>Enter the planned delivery date you've agreed with the supplier. This is the day that each of the listed Service Recipients will start using this Additional Service.</p>
                             <p>We've included the commencement date for this Call-off Agreement, but you can change it if you’ve agreed a different delivery date.</p>
                         </nhs-details>
@@ -42,7 +50,7 @@
             </div>
             <div class="nhsuk-grid-column-full">
                 <nhs-table>
-                    <nhs-table-column>Recipient name (ODS Code)</nhs-table-column>
+                    <nhs-table-column>Recipient name (ODS code)</nhs-table-column>
                     <nhs-table-column>@Model.SecondColumnName</nhs-table-column>
                     <nhs-table-column>Planned delivery date</nhs-table-column>
                     @for (int i = 0; i < Model.OrderItem.ServiceRecipients.Count; i++)
@@ -71,15 +79,9 @@
                     }
                 </nhs-table>
                 <div style="margin-top:30px">
-                    <nhs-submit-button text="Save" /><br />
+                    <nhs-submit-button />
 
-                    <vc:nhs-secondary-button url="@Url.Action(
-                                                nameof(AdditionalServiceRecipientsController.SelectAdditionalServiceRecipients),
-                                                typeof(AdditionalServiceRecipientsController).ControllerName(),
-                                                new {Model.OdsCode, Model.OrderItem.CallOffId})"
-                                             text="Edit Service Recipients"
-                                             use-primary-colour="false" /><br />
-
+                    <br />
                     <vc:nhs-delete-button url="@Url.Action(
                                                nameof(DeleteAdditionalServiceController.DeleteAdditionalService),
                                                typeof(DeleteAdditionalServiceController).ControllerName(),
