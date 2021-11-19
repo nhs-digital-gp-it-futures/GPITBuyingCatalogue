@@ -15,6 +15,7 @@ namespace NHSD.GPIT.BuyingCatalogue.FinalMigration
         private readonly string ISAPIConnectionString;
         private readonly string ORDAPIConnectionString;
         protected readonly string GPITBuyingCatalogueConnectionString;
+        private readonly string TestUsers;
 
         protected List<LegacyModels.Organisation> legacyOrganisations;
         protected List<LegacyModels.RelatedOrganisation> legacyRelatedOrganisations;
@@ -33,6 +34,10 @@ namespace NHSD.GPIT.BuyingCatalogue.FinalMigration
             ISAPIConnectionString = GetConnectionString("ISAPI");
             ORDAPIConnectionString = GetConnectionString("ORDAPI");
             GPITBuyingCatalogueConnectionString = GetConnectionString("GPITBuyingCatalogue");
+            TestUsers = ConfigurationManager.AppSettings.Get("TestUsers");
+
+            if (string.IsNullOrEmpty(TestUsers))
+                throw new ConfigurationErrorsException("TestUsers are not specified in config");
         }
 
         protected void LoadLegacyData()
@@ -68,7 +73,7 @@ namespace NHSD.GPIT.BuyingCatalogue.FinalMigration
             var connectionString = ConfigurationManager.ConnectionStrings[connectionStringName].ConnectionString;
 
             if (string.IsNullOrEmpty(connectionString))
-                throw new ArgumentException($"Failed to get connection string config for {connectionStringName}");
+                throw new ConfigurationErrorsException($"Failed to get connection string config for {connectionStringName}");
 
             return connectionString;
         }
@@ -191,7 +196,7 @@ namespace NHSD.GPIT.BuyingCatalogue.FinalMigration
         {
             using var sqlConnection = new SqlConnection(ORDAPIConnectionString);
             sqlConnection.Open();
-            validLegacyOrders = sqlConnection.Query<LegacyModels.Order>("select * from [Order] WHERE LastUpdatedByName NOT IN ('Jon Alsop','Roberts Bot','Ljiljana Evans','Lorraine Olowosuko','Enitan Onabamiro')").ToList();
+            validLegacyOrders = sqlConnection.Query<LegacyModels.Order>($"select * from [Order] WHERE LastUpdatedByName NOT IN ({TestUsers})").ToList();
             System.Diagnostics.Trace.WriteLine($"Loaded {validLegacyOrders.Count} valid orders from legacy database");
         }
 
@@ -199,7 +204,7 @@ namespace NHSD.GPIT.BuyingCatalogue.FinalMigration
         {
             using var sqlConnection = new SqlConnection(ORDAPIConnectionString);
             sqlConnection.Open();
-            testLegacyOrders = sqlConnection.Query<LegacyModels.Order>("select * from [Order] WHERE LastUpdatedByName IN ('Jon Alsop','Roberts Bot','Ljiljana Evans','Lorraine Olowosuko','Enitan Onabamiro')").ToList();
+            testLegacyOrders = sqlConnection.Query<LegacyModels.Order>($"select * from [Order] WHERE LastUpdatedByName IN ({TestUsers})").ToList();
             System.Diagnostics.Trace.WriteLine($"Loaded {testLegacyOrders.Count} test orders from legacy database");
         }
 
@@ -237,9 +242,9 @@ namespace NHSD.GPIT.BuyingCatalogue.FinalMigration
             using var sqlConnection = new SqlConnection(ORDAPIConnectionString);
             sqlConnection.Open();
             legacyServiceRecipients = sqlConnection.Query<LegacyModels.ServiceRecipient>(
-                @"select * from ServiceRecipient where OdsCode in (select distinct oir.OdsCode from OrderItemRecipients oir
+                $@"select * from ServiceRecipient where OdsCode in (select distinct oir.OdsCode from OrderItemRecipients oir
                 join[Order] o on o.Id = oir.OrderId
-                WHERE o.LastUpdatedByName NOT IN('Jon Alsop', 'Roberts Bot', 'Ljiljana Evans', 'Lorraine Olowosuko', 'Enitan Onabamiro'))").ToList();
+                WHERE o.LastUpdatedByName NOT IN({TestUsers}))").ToList();
             System.Diagnostics.Trace.WriteLine($"Loaded {legacyServiceRecipients.Count} service recipients from legacy database");
         }
     }    
