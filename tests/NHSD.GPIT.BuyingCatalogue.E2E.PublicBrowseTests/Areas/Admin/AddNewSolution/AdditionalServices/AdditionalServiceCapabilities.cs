@@ -38,7 +38,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.AddNewSolution.Addition
         public async Task AllSectionsDisplayed()
         {
             await using var context = GetEndToEndDbContext();
-            var capabilityCategories = await context.CapabilityCategories.ToListAsync();
+            var capabilityCategories = await context.CapabilityCategories.Include(cc => cc.Capabilities).Where(cc => cc.Capabilities.Any()).ToListAsync();
             var additionalService = await context.CatalogueItems.Include(i => i.Supplier).SingleAsync(s => s.Id == AdditionalServiceId);
             var solution = await context.CatalogueItems.SingleAsync(s => s.Id == SolutionId);
             var additionalServiceName = additionalService.Name;
@@ -88,7 +88,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.AddNewSolution.Addition
             await using var context = GetEndToEndDbContext();
             var capability = await context.Capabilities.FirstAsync();
 
-            CommonActions.ClickCheckboxByLabel(capability.Name);
+            CommonActions.ClickCheckboxByLabel($"({capability.CapabilityRef}) {capability.Name}");
 
             CommonActions.ClickSave();
 

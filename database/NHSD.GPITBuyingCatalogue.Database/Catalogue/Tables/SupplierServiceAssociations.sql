@@ -11,4 +11,4 @@
     CONSTRAINT FK_SupplierServiceAssociations_AssociatedService FOREIGN KEY (AssociatedServiceId) REFERENCES catalogue.AssociatedServices(CatalogueItemId) ON DELETE CASCADE,
     CONSTRAINT FK_SupplierServiceAssociations_CatalogueItem FOREIGN KEY (CatalogueItemId) REFERENCES catalogue.CatalogueItems(Id),
     CONSTRAINT FK_SupplierServiceAssociations_LastUpdatedBy FOREIGN KEY (LastUpdatedBy) REFERENCES users.AspNetUsers(Id),
-);
+) WITH (SYSTEM_VERSIONING = ON (HISTORY_TABLE = catalogue.SupplierServiceAssociations_History));

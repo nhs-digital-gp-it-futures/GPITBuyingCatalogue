@@ -44,6 +44,19 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.AssociatedServices
                 .FirstOrDefaultAsync();
         }
 
+        // checks to see if this associated services' name is unique for the supplier
+        public Task<bool> AssociatedServiceExistsWithNameForSupplier(
+            string additionalServiceName,
+            int supplierId,
+            CatalogueItemId currentCatalogueItemId = default) =>
+            dbContext
+                .AssociatedServices
+                .AnyAsync(asoc =>
+                    asoc.CatalogueItem.CatalogueItemType == CatalogueItemType.AssociatedService
+                    && asoc.CatalogueItem.SupplierId == supplierId
+                    && asoc.CatalogueItem.Name == additionalServiceName
+                    && asoc.CatalogueItemId != currentCatalogueItemId);
+
         public async Task RelateAssociatedServicesToSolution(
             CatalogueItemId solutionId,
             IEnumerable<CatalogueItemId> associatedServices)
@@ -56,10 +69,10 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.AssociatedServices
             solution.SupplierServiceAssociations.Clear();
 
             solution.SupplierServiceAssociations = associatedServices.Select(a => new SupplierServiceAssociation
-                {
-                    CatalogueItemId = solutionId,
-                    AssociatedServiceId = a,
-                }).ToList();
+            {
+                CatalogueItemId = solutionId,
+                AssociatedServiceId = a,
+            }).ToList();
 
             await dbContext.SaveChangesAsync();
         }

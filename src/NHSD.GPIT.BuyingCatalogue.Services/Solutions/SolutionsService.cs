@@ -70,6 +70,15 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
                 .FirstOrDefaultAsync();
         }
 
+        // checks to see if this catalogue solutions' name is globally unique
+        public Task<bool> CatalogueSolutionExistsWithName(string solutionName, CatalogueItemId currentCatalogueItemId = default) =>
+            dbContext
+                .CatalogueItems
+                .AnyAsync(ci =>
+                ci.CatalogueItemType == CatalogueItemType.Solution
+                && ci.Name == solutionName
+                && ci.Id != currentCatalogueItemId);
+
         public async Task<CatalogueItem> GetSolutionCapability(CatalogueItemId catalogueItemId, int capabilityId)
         {
             return await dbContext.CatalogueItems
@@ -157,16 +166,9 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
                .Include(i => i.CataloguePrices)
                .Include(i => i.Supplier).ThenInclude(s => s.CatalogueItems.Where(c => c.CatalogueItemType == CatalogueItemType.AssociatedService && c.PublishedStatus == PublicationStatus.Published)).ThenInclude(c => c.AssociatedService)
                .Include(i => i.Supplier).ThenInclude(s => s.CatalogueItems.Where(c => c.CatalogueItemType == CatalogueItemType.AssociatedService && c.PublishedStatus == PublicationStatus.Published)).ThenInclude(c => c.CataloguePrices).ThenInclude(cp => cp.PricingUnit)
+               .Include(i => i.SupplierServiceAssociations)
                .Where(i => i.Id == solutionId)
                .SingleOrDefaultAsync();
-
-            var additionalServices = await dbContext.CatalogueItems
-                .Include(i => i.Supplier).ThenInclude(s => s.CatalogueItems.Where(c => c.CatalogueItemType == CatalogueItemType.AdditionalService && c.AdditionalService != null).Take(1))
-                .ThenInclude(a => a.AdditionalService)
-                .Where(i => i.Id == solutionId)
-                .SingleOrDefaultAsync();
-
-            solution?.Supplier?.CatalogueItems.Add(additionalServices.Supplier?.CatalogueItems?.FirstOrDefault());
 
             return solution;
         }

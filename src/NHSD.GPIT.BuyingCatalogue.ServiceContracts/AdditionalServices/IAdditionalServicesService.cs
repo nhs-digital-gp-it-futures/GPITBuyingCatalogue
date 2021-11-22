@@ -14,6 +14,11 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.AdditionalServices
 
         Task<List<CatalogueItem>> GetAdditionalServicesBySolutionIds(IEnumerable<CatalogueItemId> solutionIds);
 
+        Task<bool> AdditionalServiceExistsWithNameForSolution(
+            string additionalServiceName,
+            CatalogueItemId solutionId,
+            CatalogueItemId currentCatalogueItemId = default);
+
         Task<CatalogueItemId> AddAdditionalService(CatalogueItem solution, AdditionalServicesDetailsModel model);
 
         Task EditAdditionalService(CatalogueItemId catalogueItemId, CatalogueItemId additionalServiceId, AdditionalServicesDetailsModel model);

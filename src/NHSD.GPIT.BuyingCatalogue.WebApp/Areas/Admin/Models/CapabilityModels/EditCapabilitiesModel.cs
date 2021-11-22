@@ -23,7 +23,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.CapabilityModels
                 ? "Capabilities and Epics"
                 : $"{catalogueItem.Name} Capabilities and Epics";
 
-            CapabilityCategories = capabilityCategories.Select(cc => new CapabilityCategoryModel
+            CapabilityCategories = capabilityCategories.Where(cc => cc.Capabilities.Any()).Select(cc => new CapabilityCategoryModel
             {
                 Name = cc.Name,
                 Description = cc.Description,
@@ -31,6 +31,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.CapabilityModels
                 {
                     Id = c.Id,
                     Name = c.Name,
+                    CapabilityRef = c.CapabilityRef,
                     Selected = catalogueItem.CatalogueItemCapabilities.Any(itemCapability => itemCapability.CapabilityId == c.Id),
                     Epics = c.Epics.Select(epic => new CapabilityEpicModel
                     {
@@ -39,8 +40,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.CapabilityModels
                         Selected = catalogueItem.CatalogueItemEpics
                             .Where(itemEpic => itemEpic.CapabilityId == c.Id)
                             .Any(itemEpic => string.Equals(itemEpic.EpicId, epic.Id, StringComparison.CurrentCultureIgnoreCase)),
-                    }).OrderBy(e => e.Name).ToList(),
-                }).OrderBy(c => c.Name).ToList(),
+                    }).OrderBy(e => e.Id).ToList(),
+                }).OrderBy(c => c.Id).ToList(),
             }).OrderBy(cc => cc.Name).ToList();
         }
 

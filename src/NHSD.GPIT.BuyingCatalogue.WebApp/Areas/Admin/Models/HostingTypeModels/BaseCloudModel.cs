@@ -23,7 +23,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.HostingTypeModels
         public string SolutionName { get; }
 
         [StringLength(1000)]
-        [Url]
         public string Link { get; set; }
 
         public string RequiresHscn { get; set; }

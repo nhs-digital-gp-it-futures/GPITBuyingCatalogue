@@ -10,6 +10,7 @@ using NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.TestBases;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers;
+using OpenQA.Selenium;
 using Xunit;
 
 namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.PublicBrowse.Solution
@@ -100,6 +101,24 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.PublicBrowse.Solution
                 .ElementExists(CommonSelectors.PaginationNext)
                 .Should()
                 .BeTrue();
+        }
+
+        [Fact]
+        public void Description_Link_DisplaysEmbeddedLink()
+        {
+            using var context = GetEndToEndDbContext();
+            var catalogueItem = context.CatalogueItems.Include(c => c.Solution).Single(c => c.Id == SolutionId);
+
+            catalogueItem.Solution.AboutUrl = "https://www.fake.com";
+            context.SaveChanges();
+
+            Driver.Navigate().Refresh();
+
+            CommonActions.ElementIsDisplayed(By.LinkText("More about this solution"))
+                .Should()
+                .BeTrue();
+
+            context.SaveChanges();
         }
 
         public void Dispose()

@@ -11,4 +11,4 @@
     CONSTRAINT PK_DefaultDeliveryDates PRIMARY KEY (OrderId, CatalogueItemId),
     CONSTRAINT FK_DefaultDeliveryDates_Order FOREIGN KEY (OrderId) REFERENCES ordering.Orders (Id) ON DELETE CASCADE,
     CONSTRAINT FK_DefaultDeliveryDates_LastUpdatedBy FOREIGN KEY (LastUpdatedBy) REFERENCES users.AspNetUsers(Id),
-);
+) WITH (SYSTEM_VERSIONING = ON (HISTORY_TABLE = ordering.DefaultDeliveryDates_History));

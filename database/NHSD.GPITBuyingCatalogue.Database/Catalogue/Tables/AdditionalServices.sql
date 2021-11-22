@@ -13,4 +13,4 @@
     CONSTRAINT FK_AdditionalServices_CatalogueItem FOREIGN KEY (CatalogueItemId) REFERENCES catalogue.CatalogueItems(Id) ON DELETE CASCADE,
     CONSTRAINT FK_AdditionalServices_Solution FOREIGN KEY (SolutionId) REFERENCES catalogue.Solutions(CatalogueItemId),
     CONSTRAINT FK_AdditionalServices_LastUpdatedBy FOREIGN KEY (LastUpdatedBy) REFERENCES users.AspNetUsers(Id),
-);
+) WITH (SYSTEM_VERSIONING = ON (HISTORY_TABLE = catalogue.AdditionalServices_History));

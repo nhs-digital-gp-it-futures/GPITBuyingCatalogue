@@ -78,8 +78,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
         [HttpPost("add-associated-service")]
         public async Task<IActionResult> AddAssociatedService(CatalogueItemId solutionId, AddAssociatedServiceModel model)
         {
-            if ((await suppliersService.GetAllSolutionsForSupplier(solutionId.SupplierId))
-                .Any(ci => ci.Name.Equals(model.Name, StringComparison.CurrentCultureIgnoreCase)))
+            if (await associatedServicesService.AssociatedServiceExistsWithNameForSupplier(model.Name, solutionId.SupplierId))
                 ModelState.AddModelError(nameof(AddAssociatedServiceModel.Name), "Associated Service name already exists. Enter a different name");
 
             var solution = await solutionsService.GetSolution(solutionId);
@@ -152,8 +151,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
             if (associatedService is null)
                 return BadRequest($"No Associated Service found for Id: {associatedServiceId}");
 
-            if ((await suppliersService.GetAllSolutionsForSupplier(associatedServiceId.SupplierId))
-                .Any(ci => ci.Id != associatedServiceId && ci.Name.Equals(model.Name, StringComparison.CurrentCultureIgnoreCase)))
+            if (await associatedServicesService.AssociatedServiceExistsWithNameForSupplier(model.Name, solutionId.SupplierId, associatedServiceId))
                 ModelState.AddModelError(nameof(AddAssociatedServiceModel.Name), "Associated Service name already exists. Enter a different name");
 
             if (!ModelState.IsValid)

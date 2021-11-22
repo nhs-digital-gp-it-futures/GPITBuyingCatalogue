@@ -26,4 +26,4 @@
     CONSTRAINT FK_Orders_OrderStatus FOREIGN KEY (OrderStatusId) REFERENCES ordering.OrderStatus (Id),
     CONSTRAINT FK_Orders_LastUpdatedBy FOREIGN KEY (LastUpdatedBy) REFERENCES users.AspNetUsers(Id),
     INDEX IX_Orders_IsDeleted (IsDeleted)        
-);
+) WITH (SYSTEM_VERSIONING = ON (HISTORY_TABLE = ordering.Orders_History));

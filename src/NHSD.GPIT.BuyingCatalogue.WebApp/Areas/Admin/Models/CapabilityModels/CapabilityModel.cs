@@ -8,6 +8,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.CapabilityModels
 
         public string Name { get; init; }
 
+        public string CapabilityRef { get; init; }
+
         public bool Selected { get; init; }
 
         public IList<CapabilityEpicModel> Epics { get; init; } = new List<CapabilityEpicModel>();

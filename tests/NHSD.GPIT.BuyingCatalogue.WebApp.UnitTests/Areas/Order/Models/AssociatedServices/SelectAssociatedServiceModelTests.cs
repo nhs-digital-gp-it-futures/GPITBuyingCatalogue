@@ -21,7 +21,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.Associat
             var model = new SelectAssociatedServiceModel(odsCode, callOffId, solutions, selectedSolutionId);
 
             model.BackLink.Should().Be($"/order/organisation/{odsCode}/order/{callOffId}/associated-services");
-            model.Title.Should().Be($"Add Associated Service for {callOffId}");
+            model.Title.Should().Be($"Add an Associated Service for {callOffId}");
             model.OdsCode.Should().Be(odsCode);
             model.Solutions.Should().BeEquivalentTo(solutions);
             model.SelectedSolutionId.Should().Be(selectedSolutionId);

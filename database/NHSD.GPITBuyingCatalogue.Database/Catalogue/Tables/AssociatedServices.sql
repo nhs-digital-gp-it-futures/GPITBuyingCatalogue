@@ -11,4 +11,4 @@
     CONSTRAINT PK_AssociatedServices PRIMARY KEY (CatalogueItemId),
     CONSTRAINT FK_AssociatedServices_CatalogueItem FOREIGN KEY (CatalogueItemId) REFERENCES catalogue.CatalogueItems(Id) ON DELETE CASCADE,
     CONSTRAINT FK_AssociatedServices_LastUpdatedBy FOREIGN KEY (LastUpdatedBy) REFERENCES users.AspNetUsers(Id),
-);
+) WITH (SYSTEM_VERSIONING = ON (HISTORY_TABLE = catalogue.AssociatedServices_History));

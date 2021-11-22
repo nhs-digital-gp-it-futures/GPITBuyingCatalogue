@@ -4,6 +4,8 @@
 @model NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.AssociatedServices.EditAssociatedServiceModel;
 @{
     ViewBag.Title = Model.Title;
+
+    var pricingUnit = string.Concat(Model.OrderItem.CataloguePrice.PricingUnit.Description, Model.OrderItem.TimeUnitDescription).Trim();
 }
 
 <div data-test-id="order-item-page">
@@ -13,68 +15,53 @@
             <nhs-validation-summary RadioId="EstimationPeriod" />
             <nhs-page-title title="@ViewBag.Title"
                             advice="Provide the price you've agreed with the supplier and the quantity you want to order." />
-        </div>
-        <form method="post">
-            <input type="hidden" asp-for="@Model.BackLink" />
-            <input type="hidden" asp-for="@Model.BackLinkText" />
-            <input type="hidden" asp-for="@Model.OdsCode" />
-            <input type="hidden" asp-for="@Model.Title" />
 
-            <div class="nhsuk-grid-column-two-thirds">
-                <div class="nhsuk-u-margin-bottom-5">
-                    <div class="">
-                        <input type="hidden" asp-for="@Model.OrderItem.ServiceRecipients[0].Name" />
-                        <input type="hidden" asp-for="@Model.OrderItem.ServiceRecipients[0].OdsCode" />
-                        <nhs-bookended-input asp-for="@Model.OrderItem.ServiceRecipients[0].Quantity"
-                                             label-text="How many do you think you'll need?" />
-                        <nhs-details label-text="What quantity should i enter?">
-                            Enter the estimated quantity you think you'll need either per month or per year.
+            <form method="post">
+                <input type="hidden" asp-for="@Model.BackLink" />
+                <input type="hidden" asp-for="@Model.BackLinkText" />
+                <input type="hidden" asp-for="@Model.OdsCode" />
+                <input type="hidden" asp-for="@Model.Title" />
+                <input type="hidden" asp-for="@Model.OrderItem.ServiceRecipients[0].Name" />
+                <input type="hidden" asp-for="@Model.OrderItem.ServiceRecipients[0].OdsCode" />
+                <nhs-bookended-input asp-for="@Model.OrderItem.ServiceRecipients[0].Quantity"
+                                     label-text="How many do you think you'll need?" />
+                <nhs-details label-text="What quantity should I enter?">
+                    Enter the estimated quantity you think you'll need either per month or per year.
+                </nhs-details>
+                <br />
+                @if (Model.OrderItem.CataloguePrice.ProvisioningType == ProvisioningType.OnDemand)
+                {
+                    <div id="selectEstimationPeriod" data-test-id="question-selectEstimationPeriod">
+                        <div data-test-id="radiobutton-options">
+                            <nhs-fieldset-form-label asp-for="@Model"
+                                                     label-text="Over what period did you estimate the quantity?"
+                                                     label-hint="Select one option."
+                                                     size="Medium">
+                                <nhs-radio-buttons asp-for="EstimationPeriod"
+                                                   values="@Model.TimeUnits.Cast<object>()"
+                                                   value-name="EnumMemberName"
+                                                   display-name="Description" />
+                            </nhs-fieldset-form-label>
+                        </div>
+                    </div>
+                    <div data-test-id="view-section-estimation-period-id" class="">
+                        <nhs-details label-text="What period should I enter?">
+                            This should be based on how you estimated the quantity you want to order.
                         </nhs-details>
                     </div>
-
-                    @if (Model.OrderItem.CataloguePrice.ProvisioningType == ProvisioningType.OnDemand)
-                    {
-                        <div class="nhsuk-u-margin-bottom-5">
-                            <div id="selectEstimationPeriod" data-test-id="question-selectEstimationPeriod">
-                                <div data-test-id="radiobutton-options">
-                                    <nhs-fieldset-form-label asp-for="@Model"
-                                                             label-text="Over what period did you estimate the quantity?"
-                                                             label-hint="Select one option.">
-                                        <nhs-radio-buttons asp-for="EstimationPeriod"
-                                                           values="@Model.TimeUnits.Cast<object>()"
-                                                           value-name="EnumMemberName"
-                                                           display-name="Description" />
-                                    </nhs-fieldset-form-label>
-                                </div>
-                            </div>
-                            <div data-test-id="view-section-estimation-period-id" class="">
-                                <nhs-details label-text="What period should I enter?">
-                                    This should be based on how you estimated the quantity you want to order.
-                                </nhs-details>
-                            </div>
-                        </div>
-                    }
-                </div>
-            </div>
-            <div class="nhsuk-grid-column-full">
-                <nhs-table>
-                    <nhs-table-column>What price have you agreed? (@Model.OrderItem.CurrencySymbol)</nhs-table-column>
-                    <nhs-table-column>Unit of order</nhs-table-column>
-                    <nhs-table-row-container>
-                        <nhs-table-cell>
-                            <nhs-bookended-input asp-for="OrderItem.AgreedPrice"
-                                                 Prefix="@Model.OrderItem.CurrencySymbol" />
-                            <nhs-details label-text="What price should I enter?">
-                                You can change the list price if you’ve agreed a different rate with the supplier.
-                            </nhs-details>
-                        </nhs-table-cell>
-                        <nhs-table-cell>
-                            @Model.OrderItem.CataloguePrice.PricingUnit.Description @Model.OrderItem.TimeUnitDescription
-                        </nhs-table-cell>
-                    </nhs-table-row-container>
-                </nhs-table>
-
-                <nhs-submit-button text="Save" /><br />
+                }
+                <br />
+                <nhs-bookended-input asp-for="OrderItem.AgreedPrice"
+                                     label-text="What price have you agreed, in pounds, @pricingUnit?"
+                                     label-hint="You can change the list price if you've agreed a different rate with the supplier."
+                                     Prefix="@Model.OrderItem.CurrencySymbol"
+                                     Suffix="@pricingUnit" />
+                <nhs-details label-text="What price should I enter?">
+                    You can change the list price if you’ve agreed a different rate with the supplier.
+                </nhs-details>
+                <br />
+                <nhs-submit-button />
+                <br />
                 <vc:nhs-delete-button text="Delete Associated Service"
                                       url="@Url.Action(
                                                nameof(DeleteAssociatedServiceController.DeleteAssociatedService),
@@ -83,7 +70,8 @@
                                                 Model.OrderItem.CallOffId,
                                                 Model.OrderItem.CatalogueItemId,
                                                 Model.OrderItem.CatalogueItemName})" />
-            </div>
-        </form>
+
+            </form>
+        </div>
     </div>
 </div>

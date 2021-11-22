@@ -9,14 +9,14 @@ using Xunit;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Models
 {
-    public static class EditSupplierDetailsModelTests
+    public static class EditSolutionContactsModelTests
     {
         [Theory]
         [CommonAutoData]
         public static void Constructing_ValidCatalogueItem_SetsPropertiesAsExpected(
             CatalogueItem catalogueItem)
         {
-            var model = new EditSupplierDetailsModel(catalogueItem);
+            var model = new EditSolutionContactsModel(catalogueItem);
 
             model.SupplierName.Should().Be(catalogueItem.Supplier.Name);
             model.SupplierSummary.Should().Be(catalogueItem.Supplier.Summary);
@@ -31,7 +31,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Models
             catalogueItem.Supplier.SupplierContacts = supplierContacts;
             catalogueItem.CatalogueItemContacts = supplierContacts;
 
-            var model = new EditSupplierDetailsModel(catalogueItem);
+            var model = new EditSolutionContactsModel(catalogueItem);
 
             model.Status().Should().Be(TaskProgress.Completed);
         }
@@ -43,7 +43,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Models
         {
             catalogueItem.CatalogueItemContacts = new List<SupplierContact>();
 
-            var model = new EditSupplierDetailsModel(catalogueItem);
+            var model = new EditSolutionContactsModel(catalogueItem);
 
             model.Status().Should().Be(TaskProgress.NotStarted);
         }
@@ -74,7 +74,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Models
                 },
             };
 
-            var model = new EditSupplierDetailsModel(catalogueItem);
+            var model = new EditSolutionContactsModel(catalogueItem);
 
             model.AvailableSupplierContacts.Should().BeEquivalentTo(expectedAvailableContacts);
         }

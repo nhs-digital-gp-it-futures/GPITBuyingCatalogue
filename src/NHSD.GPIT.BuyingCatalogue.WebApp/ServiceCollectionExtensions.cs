@@ -13,6 +13,7 @@ using Microsoft.AspNetCore.ResponseCompression;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 using Microsoft.Net.Http.Headers;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Users.Models;
@@ -33,6 +34,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp
         private const string BuyingCatalogueDbConnectionEnvironmentVariable = "BC_DB_CONNECTION";
         private const string BuyingCatalogueSmtpHostEnvironmentVariable = "BC_SMTP_HOST";
         private const string BuyingCatalogueSmtpPortEnvironmentVariable = "BC_SMTP_PORT";
+        private const string BuyingCatalogueSmtpUserNameEnvironmentVariable = "BC_SMTP_USERNAME";
+        private const string BuyingCatalogueSmtpPasswordEnvironmentVariable = "BC_SMTP_PASSWORD";
         private const string BuyingCatalogueDomainNameEnvironmentVariable = "DOMAIN_NAME";
 
         public static void ConfigureAuthorization(this IServiceCollection services)
@@ -142,11 +145,21 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp
             if (!int.TryParse(port, out var portNumber))
                 throw new InvalidOperationException($"Environment variable '{BuyingCatalogueSmtpPortEnvironmentVariable}' must be a valid smtp port number");
 
+            var userName = Environment.GetEnvironmentVariable(BuyingCatalogueSmtpUserNameEnvironmentVariable);
+            var password = Environment.GetEnvironmentVariable(BuyingCatalogueSmtpPasswordEnvironmentVariable);
+
             var allowInvalidCertificate = configuration.GetValue<bool>("AllowInvalidCertificate");
             var smtpSettings = configuration.GetSection("SmtpServer").Get<SmtpSettings>();
             smtpSettings.AllowInvalidCertificate ??= allowInvalidCertificate;
             smtpSettings.Host = host;
             smtpSettings.Port = portNumber;
+
+            if (!string.IsNullOrWhiteSpace(userName))
+                smtpSettings.SenderAddress = userName;
+
+            if (!string.IsNullOrWhiteSpace(password))
+                smtpSettings.Authentication = new SmtpAuthenticationSettings { IsRequired = true, UserName = userName, Password = password };
+
             services.AddSingleton(smtpSettings);
             services.AddScoped<IMailTransport, SmtpClient>();
             services.AddTransient<IEmailService, MailKitEmailService>();

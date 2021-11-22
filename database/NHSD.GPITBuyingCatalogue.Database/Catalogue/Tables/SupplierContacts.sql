@@ -16,4 +16,4 @@
      CONSTRAINT FK_SupplierContacts_Supplier FOREIGN KEY (SupplierId) REFERENCES catalogue.Suppliers(Id) ON DELETE CASCADE,
      CONSTRAINT FK_SupplierContacts_LastUpdatedBy FOREIGN KEY (LastUpdatedBy) REFERENCES users.AspNetUsers(Id),
      INDEX IX_SupplierContacts_SupplierId (SupplierId),
-);
+) WITH (SYSTEM_VERSIONING = ON (HISTORY_TABLE = catalogue.SupplierContacts_History));

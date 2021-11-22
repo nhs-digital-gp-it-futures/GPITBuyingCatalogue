@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using FluentAssertions;
 using Microsoft.EntityFrameworkCore;
@@ -14,9 +15,9 @@ using Xunit;
 
 namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.AddNewSolution.ServiceLevelAgreements
 {
-    public sealed class EditSlaTypeConfirmation : AuthorityTestBase, IClassFixture<LocalWebApplicationFactory>
+    public sealed class EditSlaTypeConfirmation : AuthorityTestBase, IClassFixture<LocalWebApplicationFactory>, IDisposable
     {
-        private static readonly CatalogueItemId SolutionId = new(99999, "001");
+        private static readonly CatalogueItemId SolutionId = new(99998, "001");
 
         private static readonly Dictionary<string, string> Parameters = new()
         {
@@ -35,9 +36,6 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.AddNewSolution.ServiceL
         [Fact]
         public async Task EditSlaTypeConfirmation_CorrectlyDisplayed()
         {
-            await AddSlaToSolution();
-            Driver.Navigate().Refresh();
-
             await using var context = GetEndToEndDbContext();
             var solution = await context.CatalogueItems.SingleAsync(ci => ci.Id == SolutionId);
 
@@ -51,11 +49,8 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.AddNewSolution.ServiceL
         }
 
         [Fact]
-        public async Task EditSlaTypeConfirmation_ClickGoBack()
+        public void EditSlaTypeConfirmation_ClickGoBack()
         {
-            await AddSlaToSolution();
-            Driver.Navigate().Refresh();
-
             CommonActions.ClickGoBackLink();
 
             CommonActions.PageLoadedCorrectGetIndex(
@@ -78,9 +73,6 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.AddNewSolution.ServiceL
         [Fact]
         public async Task EditSlaTypeConfirmation_ClickSave_Valid()
         {
-            await AddSlaToSolution();
-            Driver.Navigate().Refresh();
-
             CommonActions.ClickSave();
 
             CommonActions.PageLoadedCorrectGetIndex(
@@ -91,23 +83,18 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.AddNewSolution.ServiceL
             await using var context = GetEndToEndDbContext();
             var sla = await context.ServiceLevelAgreements.SingleAsync(s => s.SolutionId == SolutionId);
 
-            sla.SlaType.Should().Be(SlaType.Type1);
+            sla.SlaType.Should().Be(SlaType.Type2);
         }
 
-        private async Task AddSlaToSolution()
+        public void Dispose()
         {
-            await using var context = GetEndToEndDbContext();
-            var sla = new EntityFramework.Catalogue.Models.ServiceLevelAgreements
-            {
-                SolutionId = SolutionId,
-                SlaType = SlaType.Type2,
-            };
+            using var context = GetEndToEndDbContext();
 
-            var solution = await context.Solutions
-                .Include(s => s.ServiceLevelAgreement)
-                .SingleAsync(s => s.CatalogueItemId == SolutionId);
-            solution.ServiceLevelAgreement = sla;
-            await context.SaveChangesAsync();
+            var sla = context.ServiceLevelAgreements.SingleAsync(sla => sla.SolutionId == SolutionId).Result;
+
+            sla.SlaType = SlaType.Type1;
+
+            context.SaveChanges();
         }
     }
 }

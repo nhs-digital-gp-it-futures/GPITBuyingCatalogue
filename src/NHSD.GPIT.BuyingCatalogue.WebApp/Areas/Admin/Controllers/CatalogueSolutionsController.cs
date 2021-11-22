@@ -168,9 +168,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
         [HttpPost("manage/{solutionId}/details")]
         public async Task<IActionResult> Details(CatalogueItemId solutionId, SolutionModel model)
         {
-            var existingSolution = await solutionsService.GetSolutionByName(model.SolutionName);
-
-            if (existingSolution is not null && existingSolution.Id != solutionId)
+            if (await solutionsService.CatalogueSolutionExistsWithName(model.SolutionName, solutionId))
                 ModelState.AddModelError(nameof(SolutionModel.SolutionName), "A solution with this name already exists");
 
             if (!ModelState.IsValid)
@@ -706,7 +704,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
         {
             var catalogueItem = await solutionsService.GetSolution(solutionId);
 
-            var model = new EditSupplierDetailsModel(catalogueItem)
+            var model = new EditSolutionContactsModel(catalogueItem)
             {
                 BackLink = Url.Action(nameof(ManageCatalogueSolution), new { solutionId }),
             };
@@ -715,7 +713,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
         }
 
         [HttpPost("manage/{solutionId}/supplier-details")]
-        public async Task<IActionResult> EditSupplierDetails(CatalogueItemId solutionId, EditSupplierDetailsModel model)
+        public async Task<IActionResult> EditSupplierDetails(CatalogueItemId solutionId, EditSolutionContactsModel model)
         {
             if (!ModelState.IsValid)
                 return View(model);
@@ -740,7 +738,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
             if (solution is null)
                 return BadRequest($"No Solution found for Id: {solutionId}");
 
-            var capabilities = await capabilitiesService.GetCapabilitiesByCategory();
+            var capabilities = await capabilitiesService.GetCapabilitiesByCategory(solution.SupplierId);
 
             var model = new EditCapabilitiesModel(solution, capabilities)
             {

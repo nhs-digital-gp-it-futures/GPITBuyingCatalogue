@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
@@ -20,12 +21,20 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Capabilities
             this.dbContext = dbContext ?? throw new ArgumentNullException(nameof(dbContext));
         }
 
-        public Task<List<CapabilityCategory>> GetCapabilitiesByCategory()
-            => dbContext
+        public Task<List<CapabilityCategory>> GetCapabilitiesByCategory(int supplierId)
+        {
+            var supplierIdString = supplierId.ToString(CultureInfo.InvariantCulture);
+            var supplierKey = $"S{supplierIdString[^3..]}";
+
+            return dbContext
                 .CapabilityCategories
                 .Include(c => c.Capabilities)
-                .ThenInclude(c => c.Epics.Where(e => e.IsActive && e.CompliancyLevel == CompliancyLevel.May))
+                .ThenInclude(c =>
+                    c.Epics.Where(e =>
+                       (e.IsActive && !e.SupplierDefined && e.CompliancyLevel == CompliancyLevel.May)
+                    || (e.IsActive && e.SupplierDefined && EF.Functions.Like(e.Id, $"{supplierKey}%"))))
                 .ToListAsync();
+        }
 
         public async Task AddCapabilitiesToCatalogueItem(CatalogueItemId catalogueItemId, SaveCatalogueItemCapabilitiesModel model)
         {

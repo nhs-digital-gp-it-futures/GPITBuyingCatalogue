@@ -6,7 +6,6 @@ using NHSD.GPIT.BuyingCatalogue.E2ETests.Objects.Admin.ServiceLevelAgreements;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Objects.Common;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Utils;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.TestBases;
-using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers;
@@ -16,7 +15,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.AddNewSolution.ServiceL
 {
     public sealed class EditServiceLevelAgreement : AuthorityTestBase, IClassFixture<LocalWebApplicationFactory>
     {
-        private static readonly CatalogueItemId SolutionId = new(99999, "001");
+        private static readonly CatalogueItemId SolutionId = new(99998, "001");
 
         private static readonly Dictionary<string, string> Parameters = new()
         {
@@ -35,8 +34,6 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.AddNewSolution.ServiceL
         [Fact]
         public async Task EditServiceLevelAgreement_DisplaysCorrectly()
         {
-            await AddSlaToSolution();
-
             await using var context = GetEndToEndDbContext();
             var solution = await context.CatalogueItems.SingleAsync(ci => ci.Id == SolutionId);
 
@@ -67,10 +64,8 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.AddNewSolution.ServiceL
         }
 
         [Fact]
-        public async Task EditServiceLevelAgreement_ClickGoBack()
+        public void EditServiceLevelAgreement_ClickGoBack()
         {
-            await AddSlaToSolution();
-
             CommonActions.ClickGoBackLink();
 
             CommonActions.PageLoadedCorrectGetIndex(
@@ -80,33 +75,14 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.AddNewSolution.ServiceL
         }
 
         [Fact]
-        public async Task EditServiceLevelAgreement_ClickContinue()
+        public void EditServiceLevelAgreement_ClickContinue()
         {
-            await AddSlaToSolution();
-
             CommonActions.ClickContinue();
 
             CommonActions.PageLoadedCorrectGetIndex(
                 typeof(CatalogueSolutionsController),
                 nameof(CatalogueSolutionsController.ManageCatalogueSolution))
                 .Should().BeTrue();
-        }
-
-        private async Task AddSlaToSolution()
-        {
-            await using var context = GetEndToEndDbContext();
-            var sla = new EntityFramework.Catalogue.Models.ServiceLevelAgreements
-            {
-                SolutionId = SolutionId,
-                SlaType = SlaType.Type2,
-            };
-
-            var solution = await context.Solutions
-                .Include(s => s.ServiceLevelAgreement)
-                .SingleAsync(s => s.CatalogueItemId == SolutionId);
-            solution.ServiceLevelAgreement = sla;
-            await context.SaveChangesAsync();
-            Driver.Navigate().Refresh();
         }
     }
 }

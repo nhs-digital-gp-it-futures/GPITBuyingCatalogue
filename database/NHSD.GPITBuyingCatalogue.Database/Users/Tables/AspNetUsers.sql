@@ -31,4 +31,4 @@
      CONSTRAINT AK_AspNetUsers_NormalizedEmail UNIQUE (NormalizedEmail),
      CONSTRAINT FK_AspNetUsers_OrganisationId FOREIGN KEY (PrimaryOrganisationId) REFERENCES organisations.Organisations (Id),
      CONSTRAINT FK_AspNetUsers_LastUpdatedBy FOREIGN KEY (LastUpdatedBy) REFERENCES users.AspNetUsers(Id),
-);
+) WITH (SYSTEM_VERSIONING = ON (HISTORY_TABLE = users.AspNetUsers_History));

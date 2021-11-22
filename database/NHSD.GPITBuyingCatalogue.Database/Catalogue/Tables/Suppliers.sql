@@ -16,4 +16,4 @@
      CONSTRAINT PK_Suppliers PRIMARY KEY (Id),
      CONSTRAINT FK_Suppliers_LastUpdatedBy FOREIGN KEY (LastUpdatedBy) REFERENCES users.AspNetUsers(Id),
      INDEX IX_Suppliers_Name ([Name]),
-);
+) WITH (SYSTEM_VERSIONING = ON (HISTORY_TABLE = catalogue.Suppliers_History));

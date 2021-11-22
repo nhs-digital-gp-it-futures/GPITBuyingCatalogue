@@ -17,12 +17,13 @@
                 <input type="hidden" asp-for="@Model.OdsCode" />
                 <input type="hidden" asp-for="@Model.Title" />
                 <nhs-fieldset-form-label asp-for="@Model"
-                                         label-text="Select Associated Service">
+                                         label-text="Select an Associated Service">
                     <nhs-radio-buttons asp-for="SelectedSolutionId"
                                        values="@Model.Solutions"
                                        value-name="@nameof(CatalogueItem.Id)"
                                        display-name="@nameof(CatalogueItem.Name)" />
                 </nhs-fieldset-form-label>
+                <br/>
                 <nhs-submit-button text="Continue" />
             </form>
         </div>

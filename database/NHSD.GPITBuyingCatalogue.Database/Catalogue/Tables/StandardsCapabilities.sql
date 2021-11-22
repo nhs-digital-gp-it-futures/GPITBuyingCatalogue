@@ -11,4 +11,4 @@
     CONSTRAINT FK_StandardsCapabilities_Standard FOREIGN KEY (StandardId) REFERENCES catalogue.Standards(Id) ON DELETE CASCADE,
     CONSTRAINT FK_StandardsCapabilities_Capability FOREIGN KEY (CapabilityId) REFERENCES catalogue.Capabilities(Id) ON DELETE CASCADE,
     CONSTRAINT FK_StandardsCapabilities_LastUpdatedBy FOREIGN KEY (LastUpdatedBy) REFERENCES users.AspNetUsers(Id),
-)
+) WITH (SYSTEM_VERSIONING = ON (HISTORY_TABLE = catalogue.StandardsCapabilities_History));

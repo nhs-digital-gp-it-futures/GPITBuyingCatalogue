@@ -15,13 +15,12 @@
                                          label-text="Order description"
                                          label-hint="@Model.OrderDescription"
                                          size="Large">
-
-                <vc:nhs-secondary-button url="@Url.Action(
+                <br/>
+                <vc:nhs-action-link url="@Url.Action(
                                                 nameof(AdditionalServicesController.SelectAdditionalService),
                                                 typeof(AdditionalServicesController).ControllerName(),
                                                 new {Model.OdsCode, Model.CallOffId})"
-                                         text="Add an Additional Service"
-                                         use-primary-colour="false" />
+                                         text="Add an Additional Service" />
 
                 <nhs-table data-test-id="added-order-items">
                     <nhs-table-column>Additional Service</nhs-table-column>
@@ -51,6 +50,7 @@
         </nhs-table-row-container>}
                 </nhs-table>
             </nhs-fieldset-form-container>
+            </br/>
             <vc:nhs-secondary-button text="Continue"
                                      use-primary-colour="true"
                                      url="@Url.Action(

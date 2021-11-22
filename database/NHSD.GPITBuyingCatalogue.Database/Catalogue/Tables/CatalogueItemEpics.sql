@@ -15,4 +15,4 @@
      CONSTRAINT FK_CatalogueItemEpics_CatalogueItem FOREIGN KEY (CatalogueItemId) REFERENCES catalogue.CatalogueItems(Id) ON DELETE CASCADE,
      CONSTRAINT FK_CatalogueItemEpics_Status FOREIGN KEY (StatusId) REFERENCES catalogue.CatalogueItemEpicStatus(Id),
      CONSTRAINT FK_CatalogueItemEpics_LastUpdatedBy FOREIGN KEY (LastUpdatedBy) REFERENCES users.AspNetUsers(Id),
-);
+) WITH (SYSTEM_VERSIONING = ON (HISTORY_TABLE = catalogue.CatalogueItemEpics_History));

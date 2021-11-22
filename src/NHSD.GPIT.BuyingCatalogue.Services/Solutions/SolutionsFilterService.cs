@@ -18,8 +18,6 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
     {
         private const string FoundationCapabilitiesKey = "FC";
         private const string AllSolutionsFrameworkKey = "All";
-        private const int UndefinedCategory = 0;
-        private const int ProductivityCapability = 41;
         private const char CapabilitiesDelimiter = '|';
         private const char CapabilitiesStartingCharacter = 'C';
         private const char EpicStartingCharacter = 'E';
@@ -127,7 +125,6 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
             var categories = results.SelectMany(ci => ci.CatalogueItemCapabilities)
                 .Select(cic => cic.Capability.Category)
                 .DistinctBy(c => c.Id)
-                .Where(c => c.Id != UndefinedCategory)
                 .Select(c => new CapabilityCategoryFilter
                 {
                     Name = c.Name,
@@ -138,7 +135,6 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
             var capabilities = results.SelectMany(ci => ci.CatalogueItemCapabilities)
                 .Select(cic => cic.Capability)
                 .DistinctBy(c => c.Id)
-                .Where(c => c.Id != ProductivityCapability)
                 .ToList();
 
             var foundationCapabilities = await dbContext.FrameworkCapabilities.AsNoTracking()

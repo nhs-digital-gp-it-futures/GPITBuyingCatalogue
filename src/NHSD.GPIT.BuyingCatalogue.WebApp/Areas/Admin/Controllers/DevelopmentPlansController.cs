@@ -49,11 +49,12 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
         [HttpPost]
         public async Task<IActionResult> DevelopmentPlans(CatalogueItemId solutionId, DevelopmentPlanModel model)
         {
+            var solution = await solutionsService.GetSolution(solutionId);
+            if (solution is null)
+                return BadRequest($"No Solution found for Id: {solutionId}");
+
             if (!ModelState.IsValid)
-            {
-                var solution = await solutionsService.GetSolution(solutionId);
                 return View(model);
-            }
 
             await developmentPlansService.SaveDevelopmentPlans(solutionId, model.Link);
 
