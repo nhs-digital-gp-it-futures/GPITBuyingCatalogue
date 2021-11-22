@@ -80,7 +80,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.ListPrices
 
             CommonActions.PageLoadedCorrectGetIndex(
                     typeof(ListPriceController),
-                    nameof(ListPriceController.Index))
+                    nameof(ListPriceController.ManageListPrices))
                 .Should()
                 .BeTrue();
 

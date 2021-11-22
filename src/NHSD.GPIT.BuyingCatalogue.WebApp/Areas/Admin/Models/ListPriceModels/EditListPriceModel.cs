@@ -16,6 +16,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.ListPriceModels
 
         public EditListPriceModel(CatalogueItem catalogueItem)
         {
+            CatalogueItemType = catalogueItem.CatalogueItemType;
             ItemId = catalogueItem.Id;
             ItemName = catalogueItem.Name;
             Title = "Add a list price";
@@ -24,6 +25,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.ListPriceModels
         public EditListPriceModel(CatalogueItem catalogueItem, CataloguePrice cataloguePrice)
             : this(catalogueItem)
         {
+            CatalogueItemType = catalogueItem.CatalogueItemType;
             CataloguePriceId = cataloguePrice.CataloguePriceId;
             Price = cataloguePrice.Price;
             Unit = cataloguePrice.PricingUnit.Description;
@@ -60,6 +62,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.ListPriceModels
             new(ProvisioningType.OnDemand.Name(), ProvisioningType.OnDemand.ToString()),
         };
 
+        public CatalogueItemType CatalogueItemType { get; init; }
+
         public int? CataloguePriceId { get; init; }
 
         public CatalogueItemId ItemId { get; init; }
@@ -81,6 +85,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.ListPriceModels
         public string UnitDefinition { get; init; }
 
         public string Title { get; init; }
+
+        public string DeleteLink { get; init; }
 
         public CatalogueItemId RelatedCatalogueItemId { get; }
 

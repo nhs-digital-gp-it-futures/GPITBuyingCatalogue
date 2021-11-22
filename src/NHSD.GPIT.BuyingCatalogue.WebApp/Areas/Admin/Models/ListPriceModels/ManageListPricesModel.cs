@@ -36,6 +36,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.ListPriceModels
         // This is only used for routing for Associated and Additional services
         public CatalogueItemId? SolutionId { get; }
 
+        public string AddLink { get; init; }
+
         public TaskProgress Status() =>
             CataloguePrices is not null && CataloguePrices.Any()
             ? TaskProgress.Completed

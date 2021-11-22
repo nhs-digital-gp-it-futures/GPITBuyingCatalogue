@@ -29,7 +29,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> Index(CatalogueItemId solutionId)
+        public async Task<IActionResult> ManageListPrices(CatalogueItemId solutionId)
         {
             var solution = await solutionsService.GetSolution(solutionId);
 
@@ -41,6 +41,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
                 BackLink = Url.Action(
                     nameof(CatalogueSolutionsController.ManageCatalogueSolution),
                     typeof(CatalogueSolutionsController).ControllerName(),
+                    new { solutionId }),
+                AddLink = Url.Action(
+                    nameof(AddListPrice),
+                    typeof(ListPriceController).ControllerName(),
                     new { solutionId }),
             };
 
@@ -57,7 +61,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
 
             var model = new EditListPriceModel(solution)
             {
-                BackLink = Url.Action(nameof(Index), new { solutionId }),
+                BackLink = Url.Action(nameof(ManageListPrices), new { solutionId }),
             };
 
             return View("EditListPrice", model);
@@ -80,7 +84,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
 
             await listPricesService.SaveListPrice(solutionId, saveSolutionListPriceModel);
 
-            return RedirectToAction(nameof(Index), new { solutionId });
+            return RedirectToAction(nameof(ManageListPrices), new { solutionId });
         }
 
         [HttpGet("{listPriceId}")]
@@ -89,11 +93,12 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
             var solution = await solutionsService.GetSolution(solutionId);
             var cataloguePrice = solution.CataloguePrices.FirstOrDefault(cp => cp.CataloguePriceId == listPriceId);
             if (cataloguePrice is null)
-                return RedirectToAction(nameof(Index), new { solutionId });
+                return RedirectToAction(nameof(ManageListPrices), new { solutionId });
 
             var editListPriceModel = new EditListPriceModel(solution, cataloguePrice)
             {
-                BackLink = Url.Action(nameof(Index), new { solutionId }),
+                BackLink = Url.Action(nameof(ManageListPrices), new { solutionId }),
+                DeleteLink = Url.Action(nameof(DeleteListPrice), new { solutionId, listPriceId }),
             };
 
             return View("EditListPrice", editListPriceModel);
@@ -117,7 +122,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
 
             await listPricesService.UpdateListPrice(solutionId, saveSolutionListPriceModel);
 
-            return RedirectToAction(nameof(Index), new { solutionId });
+            return RedirectToAction(nameof(ManageListPrices), new { solutionId });
         }
 
         [HttpGet("{listPriceId}/delete")]
@@ -140,7 +145,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
 
             await listPricesService.DeleteListPrice(solutionId, listPriceId);
 
-            return RedirectToAction(nameof(Index), new { solutionId });
+            return RedirectToAction(nameof(ManageListPrices), new { solutionId });
         }
     }
 }

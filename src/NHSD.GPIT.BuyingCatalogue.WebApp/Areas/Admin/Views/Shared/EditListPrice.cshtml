@@ -1,5 +1,5 @@
-﻿@using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
-@using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers;
+﻿@using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models 
+@using NHSD.GPIT.BuyingCatalogue.EntityFramework.Extensions
 @using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.ListPriceModels
 @model EditListPriceModel
 
@@ -13,8 +13,11 @@
         <nhs-validation-summary />
         <nhs-page-title title="@ViewBag.Title"
                         caption="@Model.ItemName"
-                        advice="Provide the following information about the pricing model for your Catalogue Solution." />
-
+                        advice="Provide the following information about the pricing model for your @Model.CatalogueItemType.DisplayName()." />
+        @if (Model.Price.HasValue && Model.CataloguePriceId.HasValue && Model.CatalogueItemType != CatalogueItemType.Solution)
+        {
+            <nhs-inset-text>Any changes to this price will be visible to anyone ordering this @Model.CatalogueItemType.DisplayName() in future.</nhs-inset-text>
+        }
         <form method="post">
             <input type="hidden" asp-for="CataloguePriceId" />
             <input type="hidden" asp-for="ItemName" />
@@ -22,6 +25,8 @@
             <input type="hidden" asp-for="BackLink" />
             <input type="hidden" asp-for="Title" />
             <input type="hidden" asp-for="ItemId" />
+            <input type="hidden" asp-for="CatalogueItemType" />
+            <input type="hidden" asp-for="DeleteLink" />
             <nhs-fieldset-form-label id="@nameof(Model.SelectedProvisioningType)" asp-for="@Model" label-text="Provisioning type">
                 <nhs-radio-button-container>
                     @{
@@ -74,11 +79,7 @@
         </form>
         @if (Model.CataloguePriceId is not null)
         {
-            <vc:nhs-delete-button url="@Url.Action(
-                                          nameof(ListPriceController.DeleteListPrice),
-                                          typeof(ListPriceController).ControllerName(),
-                                          new {solutionId = Model.ItemId, listPriceId = Model.CataloguePriceId})"
-                                  text="Delete price" />
+            <vc:nhs-delete-button url="@Model.DeleteLink" text="Delete price" />
         }
     </div>
 </div>
