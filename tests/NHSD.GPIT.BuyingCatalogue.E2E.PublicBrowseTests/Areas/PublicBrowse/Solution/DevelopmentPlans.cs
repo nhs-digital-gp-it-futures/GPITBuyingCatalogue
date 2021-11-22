@@ -14,7 +14,7 @@ using Xunit;
 
 namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.PublicBrowse.Solution
 {
-    public sealed class Standards : AnonymousTestBase, IClassFixture<LocalWebApplicationFactory>, IDisposable
+    public sealed class DevelopmentPlans : AnonymousTestBase, IClassFixture<LocalWebApplicationFactory>, IDisposable
     {
         private static readonly CatalogueItemId SolutionWithAllSections = new(99998, "001");
         private static readonly CatalogueItemId SolutionWithDefaultSection = new(99998, "002");
@@ -29,35 +29,37 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.PublicBrowse.Solution
             { "SolutionId", SolutionWithDefaultSection.ToString() },
         };
 
-        public Standards(LocalWebApplicationFactory factory)
+        public DevelopmentPlans(LocalWebApplicationFactory factory)
             : base(
                   factory,
                   typeof(SolutionsController),
-                  nameof(SolutionsController.Standards),
+                  nameof(SolutionsController.DevelopmentPlans),
                   ParametersWithAllSections)
         {
         }
 
         [Fact]
-        public void Standards_HasAllSections_SectionsDisplayed()
+        public void DevelopmentPlans_HasAllSections_SectionsDisplayed()
         {
-            CommonActions.ElementIsDisplayed(StandardsObjects.OverarchingTable).Should().BeTrue();
-            CommonActions.ElementIsDisplayed(StandardsObjects.InteroperabilityTable).Should().BeTrue();
-            CommonActions.ElementIsDisplayed(StandardsObjects.CapabilityTable).Should().BeTrue();
+            CommonActions.ElementTextContains(DevelopmentPlansObjects.RoadmapTitle, "Roadmaps").Should().BeTrue();
+            CommonActions.ElementIsDisplayed(DevelopmentPlansObjects.SupplierRoadmapSection).Should().BeTrue();
+            CommonActions.ElementIsDisplayed(DevelopmentPlansObjects.ProgramRoadmapSection).Should().BeTrue();
+            CommonActions.ElementIsDisplayed(DevelopmentPlansObjects.WorkOffPlansSection).Should().BeTrue();
         }
 
         [Fact]
-        public void Standards_NoInterop_SectionsDisplayed()
+        public void DevelopmentPlans_HasDefaultSections_SectionsDisplayed()
         {
-            NavigateToUrl(typeof(SolutionsController), nameof(SolutionsController.Standards), ParametersWithDefaultSections);
+            NavigateToUrl(typeof(SolutionsController), nameof(SolutionsController.DevelopmentPlans), ParametersWithDefaultSections);
 
-            CommonActions.ElementIsDisplayed(StandardsObjects.OverarchingTable).Should().BeTrue();
-            CommonActions.ElementIsDisplayed(StandardsObjects.InteroperabilityTable).Should().BeFalse();
-            CommonActions.ElementIsDisplayed(StandardsObjects.CapabilityTable).Should().BeFalse();
+            CommonActions.ElementTextContains(DevelopmentPlansObjects.RoadmapTitle, "Roadmap").Should().BeTrue();
+            CommonActions.ElementIsDisplayed(DevelopmentPlansObjects.SupplierRoadmapSection).Should().BeFalse();
+            CommonActions.ElementIsDisplayed(DevelopmentPlansObjects.ProgramRoadmapSection).Should().BeTrue();
+            CommonActions.ElementIsDisplayed(DevelopmentPlansObjects.WorkOffPlansSection).Should().BeFalse();
         }
 
         [Fact]
-        public async Task Standards_SolutionIsSuspended_Redirect()
+        public async Task DevelopmentPlans_SolutionIsSuspended_Redirect()
         {
             await using var context = GetEndToEndDbContext();
             var solution = await context.CatalogueItems.SingleAsync(ci => ci.Id == SolutionWithAllSections);

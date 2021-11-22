@@ -757,6 +757,24 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
                                 },
                             },
                         },
+                        WorkOffPlans = new HashSet<WorkOffPlan>
+                        {
+                            new()
+                            {
+                                Id = 1,
+                                StandardId = "S1",
+                                Details = "Some Details",
+                                CompletionDate = DateTime.UtcNow.AddDays(5),
+                            },
+                            new()
+                            {
+                                Id = 2,
+                                StandardId = "S1",
+                                Details = "Standard for Deletion Test",
+                                CompletionDate = DateTime.UtcNow.AddDays(5),
+                            },
+                        },
+                        RoadMap = "www.fake.com",
                     },
                     CatalogueItemCapabilities = new List<CatalogueItemCapability>
                     {

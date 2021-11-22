@@ -6,6 +6,8 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Objects.Common
     {
         internal static By SubmitButton => By.Id("Submit");
 
+        internal static By CancelLink => By.LinkText("Cancel");
+
         internal static By Header1 => By.TagName("h1");
 
         internal static By Header2 => By.TagName("h2");
