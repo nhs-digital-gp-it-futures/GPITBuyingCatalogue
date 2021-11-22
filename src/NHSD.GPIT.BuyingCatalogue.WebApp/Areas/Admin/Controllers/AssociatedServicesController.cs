@@ -195,6 +195,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
                     nameof(EditAssociatedService),
                     typeof(AssociatedServicesController).ControllerName(),
                     new { solutionId, associatedServiceId }),
+                AddLink = Url.Action(
+                    nameof(AddListPrice),
+                    typeof(AssociatedServicesController).ControllerName(),
+                    new { solutionId, associatedServiceId }),
             };
 
             return View(model);
@@ -254,6 +258,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
             var editListPriceModel = new EditListPriceModel(associatedService, cataloguePrice, solutionId)
             {
                 BackLink = Url.Action(nameof(ManageListPrices), new { solutionId, associatedServiceId }),
+                DeleteLink = Url.Action(nameof(DeleteListPrice), new { solutionId, associatedServiceId, listPriceId }),
                 Title = $"{associatedService.Name} list price",
             };
 
