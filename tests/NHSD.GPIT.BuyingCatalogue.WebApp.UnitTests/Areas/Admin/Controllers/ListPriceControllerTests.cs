@@ -52,7 +52,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
                 .Setup(s => s.GetSolution(catalogueItemId))
                 .ReturnsAsync(catalogueItem);
 
-            var actual = (await listPriceController.Index(catalogueItemId)).As<ViewResult>();
+            var actual = (await listPriceController.ManageListPrices(catalogueItemId)).As<ViewResult>();
 
             mockSolutionsService.Verify(s => s.GetSolution(catalogueItemId));
             actual.ViewName.Should().BeNull();
@@ -74,7 +74,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
                 .Setup(s => s.GetSolution(catalogueItemId))
                 .ReturnsAsync(default(CatalogueItem));
 
-            var actual = (await listPriceController.Index(catalogueItemId)).As<BadRequestObjectResult>();
+            var actual = (await listPriceController.ManageListPrices(catalogueItemId)).As<BadRequestObjectResult>();
 
             actual.Value.Should().Be($"No Solution found for Id: {catalogueItemId}");
         }
@@ -146,7 +146,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
             actual.Should().NotBeNull();
             actual.Should().BeOfType<RedirectToActionResult>();
             actual.As<RedirectToActionResult>().ControllerName.Should().BeNull();
-            actual.As<RedirectToActionResult>().ActionName.Should().Be(nameof(ListPriceController.Index));
+            actual.As<RedirectToActionResult>().ActionName.Should().Be(nameof(ListPriceController.ManageListPrices));
         }
 
         [Theory]
@@ -194,7 +194,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
             actual.Should().NotBeNull();
             actual.Should().BeOfType<RedirectToActionResult>();
             actual.As<RedirectToActionResult>().ControllerName.Should().BeNull();
-            actual.As<RedirectToActionResult>().ActionName.Should().Be(nameof(ListPriceController.Index));
+            actual.As<RedirectToActionResult>().ActionName.Should().Be(nameof(ListPriceController.ManageListPrices));
         }
 
         [Theory]
@@ -231,7 +231,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
             actual.Should().NotBeNull();
             actual.Should().BeOfType<RedirectToActionResult>();
             actual.As<RedirectToActionResult>().ControllerName.Should().BeNull();
-            actual.As<RedirectToActionResult>().ActionName.Should().Be(nameof(ListPriceController.Index));
+            actual.As<RedirectToActionResult>().ActionName.Should().Be(nameof(ListPriceController.ManageListPrices));
         }
     }
 }
