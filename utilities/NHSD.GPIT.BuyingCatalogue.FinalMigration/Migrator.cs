@@ -448,7 +448,7 @@ namespace NHSD.GPIT.BuyingCatalogue.FinalMigration
             var pricingUnits = context.PricingUnits.ToList();
             var currentOrders = GetCurrentOrders(context);            
             
-            foreach (var legacyOrderItem in legacyOrderItems)
+            foreach (var legacyOrderItem in validLegacyOrderItems)
             {
                 if(!currentOrders.Any(x=>x.Id == legacyOrderItem.OrderId))
                 {
@@ -516,7 +516,7 @@ namespace NHSD.GPIT.BuyingCatalogue.FinalMigration
 
                 context.OrderItems.Add(orderItem);
                 
-                var newOrderItemRecipients = legacyOrderItemRecipients
+                var newOrderItemRecipients = validLegacyOrderItemRecipients
                     .Where(x => x.OrderId == orderItem.OrderId && x.CatalogueItemId == legacyOrderItem.CatalogueItemId)
                     .Select(x => new EntityFramework.Ordering.Models.OrderItemRecipient
                         { 

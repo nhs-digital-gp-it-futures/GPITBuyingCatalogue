@@ -25,8 +25,8 @@ namespace NHSD.GPIT.BuyingCatalogue.FinalMigration
         protected List<LegacyModels.Order> validLegacyOrders;
         protected List<LegacyModels.Order> testLegacyOrders;
         protected List<LegacyModels.DefaultDeliveryDate> legacyDefaultDeliveryDates;
-        protected List<LegacyModels.OrderItem> legacyOrderItems;
-        protected List<LegacyModels.OrderItemRecipient> legacyOrderItemRecipients;
+        protected List<LegacyModels.OrderItem> validLegacyOrderItems;
+        protected List<LegacyModels.OrderItemRecipient> validLegacyOrderItemRecipients;
         protected List<LegacyModels.ServiceRecipient> legacyServiceRecipients;
 
         protected BaseMigrator()
@@ -51,8 +51,8 @@ namespace NHSD.GPIT.BuyingCatalogue.FinalMigration
             LoadValidLegacyOrders();
             LoadTestLegacyOrders();
             LoadLegacyDefaultDeliveryDates();
-            LoadLegacyOrderItems();
-            LoadLegacyOrderItemRecipients();
+            LoadValidLegacyOrderItems();
+            LoadValidLegacyOrderItemRecipients();
             LoadValidLegacyServiceRecipients();
 
             // Housekeeping on the organisations we migrate accross
@@ -152,6 +152,14 @@ namespace NHSD.GPIT.BuyingCatalogue.FinalMigration
             return true;
         }
 
+        protected static void CompareCount(string table, int currentCount, int legacyCount)
+        {
+            if (currentCount != legacyCount)
+                System.Diagnostics.Trace.WriteLine($"Warning!!!. {table} record count mismatch. Current {currentCount}, Legacy {legacyCount}");
+            else
+                System.Diagnostics.Trace.WriteLine($"{table} table record count matches: {currentCount}");
+        }
+
         private void LoadLegacyOrganisations()
         {
             using var sqlConnection = new SqlConnection(ISAPIConnectionString);
@@ -216,25 +224,27 @@ namespace NHSD.GPIT.BuyingCatalogue.FinalMigration
             System.Diagnostics.Trace.WriteLine($"Loaded {legacyDefaultDeliveryDates.Count} default delivery dates from legacy database");
         }
 
-        private void LoadLegacyOrderItems()
+        private void LoadValidLegacyOrderItems()
         {
             using var sqlConnection = new SqlConnection(ORDAPIConnectionString);
             sqlConnection.Open();
 
             // Comment from SSIS package...
             // There is a price with ID 1012 that has been deleted so the query in Get Order Items replaces that ID with the ID of the replacement price (1766).
-            legacyOrderItems = sqlConnection.Query<LegacyModels.OrderItem>(@"SELECT OrderId,CatalogueItemId,ProvisioningTypeId,CataloguePriceTypeId,PricingUnitName,TimeUnitId,EstimationPeriodId,
+            validLegacyOrderItems = sqlConnection.Query<LegacyModels.OrderItem>($@"SELECT OrderId,CatalogueItemId,ProvisioningTypeId,CataloguePriceTypeId,PricingUnitName,TimeUnitId,EstimationPeriodId,
                 CASE WHEN PriceId = 1012 THEN 1766 ELSE PriceId END AS PriceId,CurrencyCode,Price,DefaultDeliveryDate,Created,LastUpdated
-                FROM OrderItem").ToList();
-            System.Diagnostics.Trace.WriteLine($"Loaded {legacyOrderItems.Count} order items from legacy database");
+                FROM OrderItem
+                where OrderId in (select Id from [Order] WHERE LastUpdatedByName NOT IN ({TestUsers}))").ToList();
+            System.Diagnostics.Trace.WriteLine($"Loaded {validLegacyOrderItems.Count} order items from legacy database");
         }
 
-        private void LoadLegacyOrderItemRecipients()
+        private void LoadValidLegacyOrderItemRecipients()
         {
             using var sqlConnection = new SqlConnection(ORDAPIConnectionString);
             sqlConnection.Open();
-            legacyOrderItemRecipients = sqlConnection.Query<LegacyModels.OrderItemRecipient>("select * from OrderItemRecipients").ToList();
-            System.Diagnostics.Trace.WriteLine($"Loaded {legacyOrderItemRecipients.Count} order item recipients from legacy database");
+            validLegacyOrderItemRecipients = sqlConnection.Query<LegacyModels.OrderItemRecipient>($@"select * from OrderItemRecipients
+                where OrderId in (select Id from [Order] WHERE LastUpdatedByName NOT IN ({TestUsers}))").ToList();
+            System.Diagnostics.Trace.WriteLine($"Loaded {validLegacyOrderItemRecipients.Count} order item recipients from legacy database");
         }
 
         private void LoadValidLegacyServiceRecipients()
