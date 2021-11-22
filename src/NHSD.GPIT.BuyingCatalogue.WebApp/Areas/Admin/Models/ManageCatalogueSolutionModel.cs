@@ -42,7 +42,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models
             ListPriceStatus = new ListPriceModels.ManageListPricesModel(solution).Status();
             AssociatedServicesStatus = new AssociatedServicesModel(solution, associatedServices).Status();
             AdditionalServicesStatus = new AdditionalServicesModel(solution, additionalServices).Status();
-            SupplierDetailsStatus = new EditSupplierDetailsModel(solution).Status();
+            SupplierDetailsStatus = new EditSolutionContactsModel(solution).Status();
             SlaStatus = new EditServiceLevelAgreementModel(solution).Status();
             CapabilitiesStatus = solution.CatalogueItemCapabilities.Any()
                 ? TaskProgress.Completed

@@ -12,4 +12,4 @@
     PERIOD FOR SYSTEM_TIME (SysStartTime, SysEndTime),
     CONSTRAINT PK_PricingUnits PRIMARY KEY (Id),
     CONSTRAINT FK_PricingUnits_LastUpdatedBy FOREIGN KEY (LastUpdatedBy) REFERENCES users.AspNetUsers(Id),
-);
+) WITH (SYSTEM_VERSIONING = ON (HISTORY_TABLE = catalogue.PricingUnits_History));

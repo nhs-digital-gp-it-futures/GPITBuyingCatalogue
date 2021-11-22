@@ -12,4 +12,4 @@
      CONSTRAINT FK_FrameworkSolutions_Framework FOREIGN KEY (FrameworkId) REFERENCES catalogue.Frameworks(Id),
      CONSTRAINT FK_FrameworkSolutions_Solution FOREIGN KEY (SolutionId) REFERENCES catalogue.Solutions(CatalogueItemId) ON DELETE CASCADE,
      CONSTRAINT FK_FrameworkSolutions_LastUpdatedBy FOREIGN KEY (LastUpdatedBy) REFERENCES users.AspNetUsers(Id),
-);
+) WITH (SYSTEM_VERSIONING = ON (HISTORY_TABLE = catalogue.FrameworkSolutions_History));

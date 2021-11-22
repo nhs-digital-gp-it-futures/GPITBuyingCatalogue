@@ -308,7 +308,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
             if (additionalService is null)
                 return BadRequest($"No Additional Service with Id {additionalServiceId} found for Solution {solutionId}");
 
-            var capabilities = await capabilitiesService.GetCapabilitiesByCategory();
+            var capabilities = await capabilitiesService.GetCapabilitiesByCategory(solution.SupplierId);
 
             var model = new EditCapabilitiesModel(additionalService, capabilities)
             {

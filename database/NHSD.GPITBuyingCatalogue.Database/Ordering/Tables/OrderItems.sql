@@ -18,4 +18,4 @@
     CONSTRAINT FK_OrderItems_EstimationPeriod FOREIGN KEY (EstimationPeriodId) REFERENCES catalogue.TimeUnits (Id),
     CONSTRAINT FK_OrderItems_PriceId FOREIGN KEY (PriceId) REFERENCES catalogue.CataloguePrices (CataloguePriceId),
     CONSTRAINT FK_OrderItems_LastUpdatedBy FOREIGN KEY (LastUpdatedBy) REFERENCES users.AspNetUsers(Id),
-);
+) WITH (SYSTEM_VERSIONING = ON (HISTORY_TABLE = ordering.OrderItems_History));

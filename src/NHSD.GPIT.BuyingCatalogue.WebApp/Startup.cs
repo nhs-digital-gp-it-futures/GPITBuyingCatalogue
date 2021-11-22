@@ -89,6 +89,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp
             ServicesStartup.Configure(services);
 
             services.AddRazorPages();
+
+            services.AddHttpClient();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

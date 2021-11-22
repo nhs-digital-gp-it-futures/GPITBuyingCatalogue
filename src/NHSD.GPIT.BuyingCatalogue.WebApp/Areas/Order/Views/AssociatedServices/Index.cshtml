@@ -15,13 +15,13 @@
                                          label-text="Order description"
                                          label-hint="@Model.OrderDescription"
                                          size="Large">
-
-                <vc:nhs-secondary-button url="@Url.Action(
+                <br/>
+                <vc:nhs-action-link url="@Url.Action(
                                                   "SelectAssociatedService",
                                                   "AssociatedServices",
                                                   new { Model.OdsCode, Model.CallOffId })"
-                                         text="Add an Associated Service"
-                                         use-primary-colour="false" />
+                                         text="Add an Associated Service"/>
+                <br/>
                 <nhs-table data-test-id="added-order-items">
                     <nhs-table-column>Associated Service</nhs-table-column>
                     <nhs-table-column>Unit of order</nhs-table-column>
@@ -50,6 +50,7 @@
         </div>
     </div>}
             </nhs-fieldset-form-container>
+            <br/>
             <vc:nhs-secondary-button text="Continue"
                                      use-primary-colour="true"
                                      url="@Url.Action(

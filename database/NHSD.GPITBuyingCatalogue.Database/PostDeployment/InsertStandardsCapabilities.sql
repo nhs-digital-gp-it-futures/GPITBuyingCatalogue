@@ -1,4 +1,4 @@
-﻿TRUNCATE TABLE catalogue.StandardsCapabilities;
+﻿DELETE FROM catalogue.StandardsCapabilities;
 
 INSERT INTO catalogue.StandardsCapabilities(StandardId, CapabilityId)
 VALUES

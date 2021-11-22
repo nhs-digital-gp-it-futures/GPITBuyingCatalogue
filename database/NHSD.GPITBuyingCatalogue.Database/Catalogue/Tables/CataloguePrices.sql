@@ -20,4 +20,4 @@
     CONSTRAINT FK_CataloguePrices_PricingUnit_PricingUnitId FOREIGN KEY (PricingUnitId) REFERENCES catalogue.PricingUnits(Id),
     CONSTRAINT FK_CataloguePrices_TimeUnit_TimeUnitId FOREIGN KEY (TimeUnitId) REFERENCES catalogue.TimeUnits(Id),
     CONSTRAINT FK_CataloguePrices_LastUpdatedBy FOREIGN KEY (LastUpdatedBy) REFERENCES users.AspNetUsers(Id),
-);
+) WITH (SYSTEM_VERSIONING = ON (HISTORY_TABLE = catalogue.CataloguePrices_History));

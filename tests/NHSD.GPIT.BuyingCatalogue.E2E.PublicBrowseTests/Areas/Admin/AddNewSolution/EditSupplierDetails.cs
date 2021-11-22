@@ -61,8 +61,18 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.AddNewSolution
         {
             CommonActions.ClickSave();
 
-            CommonActions.ErrorSummaryDisplayed().Should().BeTrue();
-            CommonActions.ElementShowingCorrectErrorMessage(CommonSelectors.NhsErrorSectionLinkList, "Select a supplier contact")
+            CommonActions
+                .ErrorSummaryDisplayed()
+                .Should()
+                .BeTrue();
+
+            CommonActions
+                .ErrorSummaryLinksExist()
+                .Should()
+                .BeTrue();
+
+            CommonActions
+                .ElementShowingCorrectErrorMessage(CommonSelectors.NhsErrorSectionLinkList, "Select a supplier contact")
                 .Should()
                 .BeTrue();
         }
@@ -74,8 +84,18 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.AddNewSolution
 
             CommonActions.ClickSave();
 
-            CommonActions.ErrorSummaryDisplayed().Should().BeTrue();
-            CommonActions.ElementShowingCorrectErrorMessage(CommonSelectors.NhsErrorSectionLinkList, "You can only select up to two supplier contacts")
+            CommonActions
+                .ErrorSummaryDisplayed()
+                .Should()
+                .BeTrue();
+
+            CommonActions
+                .ErrorSummaryLinksExist()
+                .Should()
+                .BeTrue();
+
+            CommonActions
+                .ElementShowingCorrectErrorMessage(CommonSelectors.NhsErrorSectionLinkList, "You can only select up to two supplier contacts")
                 .Should()
                 .BeTrue();
         }

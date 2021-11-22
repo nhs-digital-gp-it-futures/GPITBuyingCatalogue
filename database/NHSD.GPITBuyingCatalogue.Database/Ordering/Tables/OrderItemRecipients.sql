@@ -14,4 +14,4 @@
     CONSTRAINT FK_OrderItemRecipients_OrderItem FOREIGN KEY (OrderId, CatalogueItemId) REFERENCES ordering.OrderItems (OrderId, CatalogueItemId) ON DELETE CASCADE,
     CONSTRAINT FK_OrderItemRecipients_OdsCode FOREIGN KEY (OdsCode) REFERENCES ordering.ServiceRecipients (OdsCode),
     CONSTRAINT FK_OrderItemRecipients_LastUpdatedBy FOREIGN KEY (LastUpdatedBy) REFERENCES users.AspNetUsers(Id),
-);
+) WITH (SYSTEM_VERSIONING = ON (HISTORY_TABLE = ordering.OrderItemRecipients_History));

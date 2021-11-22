@@ -14,4 +14,4 @@
      PERIOD FOR SYSTEM_TIME (SysStartTime, SysEndTime),
      CONSTRAINT PK_Frameworks PRIMARY KEY (Id),
      CONSTRAINT FK_Frameworks_LastUpdatedBy FOREIGN KEY (LastUpdatedBy) REFERENCES users.AspNetUsers(Id),
-);
+) WITH (SYSTEM_VERSIONING = ON (HISTORY_TABLE = catalogue.Frameworks_History));

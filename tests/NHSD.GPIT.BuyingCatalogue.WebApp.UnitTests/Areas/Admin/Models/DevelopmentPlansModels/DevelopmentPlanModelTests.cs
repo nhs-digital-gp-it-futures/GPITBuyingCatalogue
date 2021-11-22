@@ -21,9 +21,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Models.Developm
             propertyInfo
                 .Should()
                 .BeDecoratedWith<StringLengthAttribute>(s => s.MaximumLength == 1000);
-            propertyInfo
-                .Should()
-                .BeDecoratedWith<UrlAttribute>();
         }
 
         [Fact]

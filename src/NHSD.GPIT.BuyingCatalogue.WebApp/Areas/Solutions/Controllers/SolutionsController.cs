@@ -151,6 +151,11 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers
 
             return View(new CapabilitiesViewModel(item)
             {
+                BackLink = Url.Action(
+                    nameof(AdditionalServices),
+                    typeof(SolutionsController).ControllerName(),
+                    new { solutionId }),
+                BackLinkText = NavBaseModel.BackLinkTextDefault,
                 Name = item.CatalogueItemName(additionalServiceId),
                 Description = item.AdditionalServiceDescription(additionalServiceId),
             });

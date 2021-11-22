@@ -706,7 +706,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
         {
             var catalogueItem = await solutionsService.GetSolution(solutionId);
 
-            var model = new EditSupplierDetailsModel(catalogueItem)
+            var model = new EditSolutionContactsModel(catalogueItem)
             {
                 BackLink = Url.Action(nameof(ManageCatalogueSolution), new { solutionId }),
             };
@@ -715,7 +715,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
         }
 
         [HttpPost("manage/{solutionId}/supplier-details")]
-        public async Task<IActionResult> EditSupplierDetails(CatalogueItemId solutionId, EditSupplierDetailsModel model)
+        public async Task<IActionResult> EditSupplierDetails(CatalogueItemId solutionId, EditSolutionContactsModel model)
         {
             if (!ModelState.IsValid)
                 return View(model);
@@ -740,7 +740,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
             if (solution is null)
                 return BadRequest($"No Solution found for Id: {solutionId}");
 
-            var capabilities = await capabilitiesService.GetCapabilitiesByCategory();
+            var capabilities = await capabilitiesService.GetCapabilitiesByCategory(solution.SupplierId);
 
             var model = new EditCapabilitiesModel(solution, capabilities)
             {

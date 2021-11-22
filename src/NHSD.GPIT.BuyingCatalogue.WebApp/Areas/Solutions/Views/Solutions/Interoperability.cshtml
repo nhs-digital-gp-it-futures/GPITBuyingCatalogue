@@ -16,13 +16,13 @@
                 and <a href="https://digital.nhs.uk/services/gp-connect">GP Connect integrations</a> on the NHS Digital website.
             </p>
 
-            <h3>IM1 integrations</h3>
-
             @if (Model.IM1Integrations.Any())
             {
+                <h3>IM1 integrations</h3>
+
                 @foreach (var qualifier in Model.IM1IntegrationQualifiers)
                 {
-                    <nhs-table label-text=@($"IM1 {qualifier}")>
+                    <nhs-table label-text=@($"IM1 {qualifier}") data-test-id="table-integrations-@qualifier.ToLowerInvariant().Replace(' ', '-')">
                         <nhs-table-column>
                             Provider or consumer
                         </nhs-table-column>
@@ -57,13 +57,13 @@
                 }
             }
 
-            <h3>GP Connect integrations</h3>
-
             @if (Model.GpConnectIntegrations.Any())
             {
+                <h3>GP Connect integrations</h3>
+
                 @foreach (var qualifier in Model.GpConnectIntegrationQualifiers)
                 {
-                    <nhs-table label-text=@($"GP Connect {qualifier}")>
+                    <nhs-table label-text=@($"GP Connect {qualifier}") data-test-id="table-gpconnect-@qualifier.ToLowerInvariant().Replace(' ', '-')">
                         <nhs-table-column>
                             Provider or consumer
                         </nhs-table-column>
@@ -91,7 +91,7 @@
                     </div>
                 }
             }
-              
+
             <h2>Supplier asserted integrations</h2>
             <p>Supplier asserted integrations are interoperability interfaces prepared by a supplier and are not specified or assured by the NHS.</p>
             <p>
