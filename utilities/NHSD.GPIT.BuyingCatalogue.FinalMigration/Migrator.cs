@@ -9,10 +9,10 @@ using NHSD.GPIT.BuyingCatalogue.Framework.Serialization;
 namespace NHSD.GPIT.BuyingCatalogue.FinalMigration
 {
     [ExcludeFromCodeCoverage]
-    sealed class Migrator : BaseMigrator
-    {                
+    internal sealed class Migrator : BaseMigrator
+    {
         public Migrator() : base()
-        {     
+        {
         }
 
         public void RunMigration()
@@ -51,7 +51,7 @@ namespace NHSD.GPIT.BuyingCatalogue.FinalMigration
                             Address = JsonDeserializer.Deserialize<EntityFramework.Addresses.Models.Address>(legacyOrganisation.Address),
                             OdsCode = legacyOrganisation.OdsCode,
                             PrimaryRoleId = legacyOrganisation.PrimaryRoleId,
-                            CatalogueAgreementSigned = legacyOrganisation.CatalogueAgreementSigned,                            
+                            CatalogueAgreementSigned = legacyOrganisation.CatalogueAgreementSigned,
                             LastUpdated = legacyOrganisation.LastUpdated
                         };
 
@@ -60,7 +60,7 @@ namespace NHSD.GPIT.BuyingCatalogue.FinalMigration
                         legacyOrganisation.NewId = newOrganisation.Id;
                     }
                     else
-                    {                        
+                    {
                         var currentOrganisation = currentOrganisations.Single(x => x.OdsCode.Equals(legacyOrganisation.OdsCode, StringComparison.CurrentCultureIgnoreCase));
 
                         currentOrganisation.Name = legacyOrganisation.Name;
@@ -69,11 +69,11 @@ namespace NHSD.GPIT.BuyingCatalogue.FinalMigration
                         currentOrganisation.CatalogueAgreementSigned = legacyOrganisation.CatalogueAgreementSigned;
 
                         var legacyAddress = JsonDeserializer.Deserialize<EntityFramework.Addresses.Models.Address>(legacyOrganisation.Address);
-                        
-                        if(!AreAddressesEqual(currentOrganisation.Address, legacyAddress))
+
+                        if (!AreAddressesEqual(currentOrganisation.Address, legacyAddress))
                             currentOrganisation.Address = legacyAddress;
 
-                        if(context.SaveChangesWithoutAudit() > 0)
+                        if (context.SaveChangesWithoutAudit() > 0)
                             System.Diagnostics.Trace.WriteLine($"Updated organisation with ODS code {legacyOrganisation.OdsCode}");
 
                         legacyOrganisation.NewId = currentOrganisation.Id;
@@ -91,19 +91,19 @@ namespace NHSD.GPIT.BuyingCatalogue.FinalMigration
         {
             System.Diagnostics.Trace.WriteLine("Migrating related organisations start");
 
-            using(var context = GetContext())
+            using (var context = GetContext())
             {
                 var relatedOrganisations = context.RelatedOrganisations.ToList();
 
-                foreach(var relatedOrganisation in relatedOrganisations)
+                foreach (var relatedOrganisation in relatedOrganisations)
                 {
                     context.RelatedOrganisations.Remove(relatedOrganisation);
                 }
 
                 context.SaveChangesWithoutAudit();
 
-                foreach(var legacyRelatedOrganisation in legacyRelatedOrganisations)
-                {                    
+                foreach (var legacyRelatedOrganisation in legacyRelatedOrganisations)
+                {
                     var relatedOrganisation = new EntityFramework.Organisations.Models.RelatedOrganisation
                     {
                         OrganisationId = legacyOrganisations.Single(x => x.OrganisationId == legacyRelatedOrganisation.OrganisationId).NewId,
@@ -165,7 +165,7 @@ namespace NHSD.GPIT.BuyingCatalogue.FinalMigration
                         legacyUser.NewId = newUser.Id;
                     }
                     else
-                    {                        
+                    {
                         var currentUser = currentUsers.Single(x => x.UserName.Equals(legacyUser.UserName, StringComparison.CurrentCultureIgnoreCase));
 
                         currentUser.UserName = legacyUser.UserName;
@@ -188,8 +188,8 @@ namespace NHSD.GPIT.BuyingCatalogue.FinalMigration
                         currentUser.CatalogueAgreementSigned = legacyUser.CatalogueAgreementSigned;
                         currentUser.FirstName = legacyUser.FirstName;
                         currentUser.LastName = legacyUser.LastName;
-                        
-                        if(context.SaveChangesWithoutAudit() > 0)
+
+                        if (context.SaveChangesWithoutAudit() > 0)
                             System.Diagnostics.Trace.WriteLine($"Updated user with UserName {legacyUser.UserName}");
 
                         legacyUser.NewId = currentUser.Id;
@@ -265,7 +265,7 @@ namespace NHSD.GPIT.BuyingCatalogue.FinalMigration
                             UpdateOrderCompletedDate(newOrder.Id, legacyOrder.Completed.Value);
                     }
                     else
-                    {                        
+                    {
                         var currentOrder = currentOrders.Single(x => x.Id == legacyOrder.Id);
 
                         currentOrder.Description = legacyOrder.Description;
@@ -287,7 +287,7 @@ namespace NHSD.GPIT.BuyingCatalogue.FinalMigration
                                 Phone = legacyContacts.Single(x => x.Id == legacyOrder.OrderingPartyContactId).Phone
                             };
                         }
-                        else if( currentOrder.OrderingPartyContact != null && legacyOrder.OrderingPartyContactId == null)
+                        else if (currentOrder.OrderingPartyContact != null && legacyOrder.OrderingPartyContactId == null)
                         {
                             currentOrder.OrderingPartyContact = null;
                         }
@@ -298,7 +298,7 @@ namespace NHSD.GPIT.BuyingCatalogue.FinalMigration
                             currentOrder.OrderingPartyContact.Email = legacyContacts.Single(x => x.Id == legacyOrder.OrderingPartyContactId).Email;
                             currentOrder.OrderingPartyContact.Phone = legacyContacts.Single(x => x.Id == legacyOrder.OrderingPartyContactId).Phone;
                         }
-    
+
                         if (currentOrder.SupplierContact == null && legacyOrder.SupplierContactId != null)
                         {
                             currentOrder.SupplierContact = new EntityFramework.Ordering.Models.Contact
@@ -324,7 +324,7 @@ namespace NHSD.GPIT.BuyingCatalogue.FinalMigration
                         currentOrder.LastUpdated = legacyOrder.LastUpdated;
                         currentOrder.LastUpdatedBy = legacyUsers.FirstOrDefault(x => x.Id.Equals(legacyOrder.LastUpdatedBy.ToString(), StringComparison.CurrentCultureIgnoreCase))?.NewId;
 
-                        if ( context.SaveChangesWithoutAudit() > 0 )
+                        if (context.SaveChangesWithoutAudit() > 0)
                             System.Diagnostics.Trace.WriteLine($"Updated order with Description {legacyOrder.Description}");
 
                         legacyOrder.NewId = currentOrder.Id;
@@ -351,7 +351,7 @@ namespace NHSD.GPIT.BuyingCatalogue.FinalMigration
             {
                 var currentOrders = GetCurrentOrders(context);
 
-                foreach(var currentOrder in currentOrders)
+                foreach (var currentOrder in currentOrders)
                 {
                     var legacyDates = legacyDefaultDeliveryDates.Where(x => x.OrderId == currentOrder.Id).ToList();
 
@@ -380,7 +380,7 @@ namespace NHSD.GPIT.BuyingCatalogue.FinalMigration
         }
 
         private void MigrateServiceRecipients()
-        {            
+        {
             System.Diagnostics.Trace.WriteLine("Migrating service recipients start");
 
             using (var context = GetContext())
@@ -395,8 +395,8 @@ namespace NHSD.GPIT.BuyingCatalogue.FinalMigration
 
                         var newServiceRecipient = new EntityFramework.Ordering.Models.ServiceRecipient
                         {
-                             OdsCode = legacyServiceRecipient.OdsCode,
-                             Name = legacyServiceRecipient.Name
+                            OdsCode = legacyServiceRecipient.OdsCode,
+                            Name = legacyServiceRecipient.Name
                         };
 
                         context.ServiceRecipients.Add(newServiceRecipient);
@@ -446,13 +446,13 @@ namespace NHSD.GPIT.BuyingCatalogue.FinalMigration
             var catalogueItems = context.CatalogueItems.ToList();
             var cataloguePrices = context.CataloguePrices.ToList();
             var pricingUnits = context.PricingUnits.ToList();
-            var currentOrders = GetCurrentOrders(context);            
-            
+            var currentOrders = GetCurrentOrders(context);
+
             foreach (var legacyOrderItem in validLegacyOrderItems)
             {
-                if(!currentOrders.Any(x=>x.Id == legacyOrderItem.OrderId))
+                if (!currentOrders.Any(x => x.Id == legacyOrderItem.OrderId))
                 {
-                    if(testLegacyOrders.Any(x=>x.Id == legacyOrderItem.OrderId))
+                    if (testLegacyOrders.Any(x => x.Id == legacyOrderItem.OrderId))
                         System.Diagnostics.Trace.WriteLine($"Information!!!. Not migrating order item {legacyOrderItem.OrderId} - {legacyOrderItem.CatalogueItemId}. Order does not exist in current database. Original order is test data");
                     else
                         System.Diagnostics.Trace.WriteLine($"Warning!!!. Not migrating order item {legacyOrderItem.OrderId} - {legacyOrderItem.CatalogueItemId}. Order does not exist in current database");
@@ -460,7 +460,7 @@ namespace NHSD.GPIT.BuyingCatalogue.FinalMigration
                     continue;
                 }
 
-                if (!catalogueItems.Any(x=>x.Id == EntityFramework.Ordering.Models.CatalogueItemId.ParseExact(legacyOrderItem.CatalogueItemId)))
+                if (!catalogueItems.Any(x => x.Id == EntityFramework.Ordering.Models.CatalogueItemId.ParseExact(legacyOrderItem.CatalogueItemId)))
                 {
                     System.Diagnostics.Trace.WriteLine($"Warning!!!. Can't migrate order item {legacyOrderItem.OrderId} - {legacyOrderItem.CatalogueItemId}. CatalogueItem does not exist in current database.");
                     continue;
@@ -479,11 +479,11 @@ namespace NHSD.GPIT.BuyingCatalogue.FinalMigration
                     LastUpdated = legacyOrderItem.LastUpdated,
                 };
 
-                if(legacyOrderItem.PriceId is not null)
+                if (legacyOrderItem.PriceId is not null)
                 {
                     orderItem.PriceId = legacyOrderItem.PriceId.Value;
 
-                    if(!cataloguePrices.Any(x=>x.CataloguePriceId == orderItem.PriceId))
+                    if (!cataloguePrices.Any(x => x.CataloguePriceId == orderItem.PriceId))
                     {
                         System.Diagnostics.Trace.WriteLine($"Warning!!!. Can't migrate order item {legacyOrderItem.OrderId} - {legacyOrderItem.CatalogueItemId}. CataloguePrice {orderItem.PriceId} does not exist in current database.");
                         continue;
@@ -498,7 +498,7 @@ namespace NHSD.GPIT.BuyingCatalogue.FinalMigration
                         System.Diagnostics.Trace.WriteLine($"Warning!!!. Can't migrate order item {legacyOrderItem.OrderId} - {legacyOrderItem.CatalogueItemId}. PricingUnitName {legacyOrderItem.PricingUnitName} does not exist in current database.");
                         continue;
                     }
-                    
+
                     var cataloguePrice = cataloguePrices.SingleOrDefault(x =>
                         x.CatalogueItemId == EntityFramework.Ordering.Models.CatalogueItemId.ParseExact(legacyOrderItem.CatalogueItemId)
                         && x.ProvisioningType == (EntityFramework.Catalogue.Models.ProvisioningType)legacyOrderItem.ProvisioningTypeId
@@ -515,26 +515,26 @@ namespace NHSD.GPIT.BuyingCatalogue.FinalMigration
                 }
 
                 context.OrderItems.Add(orderItem);
-                
+
                 var newOrderItemRecipients = validLegacyOrderItemRecipients
                     .Where(x => x.OrderId == orderItem.OrderId && x.CatalogueItemId == legacyOrderItem.CatalogueItemId)
                     .Select(x => new EntityFramework.Ordering.Models.OrderItemRecipient
-                        { 
-                            OrderId = orderItem.OrderId,
-                            CatalogueItemId = EntityFramework.Ordering.Models.CatalogueItemId.ParseExact(x.CatalogueItemId),
-                            OdsCode = x.OdsCode,
-                            Quantity = x.Quantity,
-                            DeliveryDate = x.DeliveryDate
-                        });
+                    {
+                        OrderId = orderItem.OrderId,
+                        CatalogueItemId = EntityFramework.Ordering.Models.CatalogueItemId.ParseExact(x.CatalogueItemId),
+                        OdsCode = x.OdsCode,
+                        Quantity = x.Quantity,
+                        DeliveryDate = x.DeliveryDate
+                    });
 
-                context.OrderItemRecipients.AddRange(newOrderItemRecipients);                
+                context.OrderItemRecipients.AddRange(newOrderItemRecipients);
             }
 
             context.SaveChangesWithoutAudit();
 
             System.Diagnostics.Trace.WriteLine("Migrating order items and recipients end");
         }
-         
+
         private void UpdateOrderCompletedDate(int orderId, DateTime completedDate)
         {
             using var sqlConnection = new SqlConnection(GPITBuyingCatalogueConnectionString);

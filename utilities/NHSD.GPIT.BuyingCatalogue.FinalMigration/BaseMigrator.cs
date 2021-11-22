@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Configuration;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
@@ -10,7 +9,7 @@ using Microsoft.EntityFrameworkCore;
 namespace NHSD.GPIT.BuyingCatalogue.FinalMigration
 {
     [ExcludeFromCodeCoverage]
-    class BaseMigrator
+    internal class BaseMigrator
     {
         private readonly string ISAPIConnectionString;
         private readonly string ORDAPIConnectionString;
@@ -81,7 +80,7 @@ namespace NHSD.GPIT.BuyingCatalogue.FinalMigration
         protected EntityFramework.BuyingCatalogueDbContext GetContext()
         {
             var options = new DbContextOptionsBuilder<EntityFramework.BuyingCatalogueDbContext>()
-                .UseSqlServer(GPITBuyingCatalogueConnectionString)                
+                .UseSqlServer(GPITBuyingCatalogueConnectionString)
                 .Options;
 
             return new EntityFramework.BuyingCatalogueDbContext(options, new IdentityServiceStub());
@@ -257,5 +256,5 @@ namespace NHSD.GPIT.BuyingCatalogue.FinalMigration
                 WHERE o.LastUpdatedByName NOT IN({TestUsers}))").ToList();
             System.Diagnostics.Trace.WriteLine($"Loaded {legacyServiceRecipients.Count} service recipients from legacy database");
         }
-    }    
+    }
 }

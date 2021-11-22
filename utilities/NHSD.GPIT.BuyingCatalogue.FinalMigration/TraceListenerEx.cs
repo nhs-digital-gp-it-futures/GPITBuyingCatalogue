@@ -7,6 +7,7 @@ namespace NHSD.GPIT.BuyingCatalogue.FinalMigration
     public sealed class TraceListenerEx : TraceListener
     {
         public delegate void WriteMessage(object sender, string message);
+
         public event WriteMessage OnWriteMessage;
 
         public override void WriteLine(string message)

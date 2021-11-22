@@ -10,7 +10,7 @@ using NHSD.GPIT.BuyingCatalogue.Framework.Serialization;
 namespace NHSD.GPIT.BuyingCatalogue.FinalMigration
 {
     [ExcludeFromCodeCoverage]
-    sealed class Reconciliation : BaseMigrator
+    internal sealed class Reconciliation : BaseMigrator
     {
         public Reconciliation() : base()
         {
