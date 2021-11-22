@@ -1,7 +1,5 @@
 ﻿@using NHSD.GPIT.BuyingCatalogue.EntityFramework.Extensions
 @using NHSD.GPIT.BuyingCatalogue.Framework.Constants
-@using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
-@using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers;
 
 @model NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.ListPriceModels.ManageListPricesModel
 
@@ -17,10 +15,7 @@
                         caption="@Model.CatalogueName"
                         advice="Provide details of how much your Catalogue Solution costs. You must add at least one price type." />
 
-        <vc:nhs-action-link text="Add a list price" url="@Url.Action(
-                                                   nameof(ListPriceController.AddListPrice),
-                                                   typeof(ListPriceController).ControllerName(),
-                                                   new { solutionId = Model.CatalogueItemId })" />
+        <vc:nhs-action-link text="Add a list price" url="@Model.AddLink" />
 
         <nhs-table data-test-id="solution-list-prices">
             <nhs-table-column>Provisioning type</nhs-table-column>
@@ -41,10 +36,7 @@
             }
         </nhs-table>
 
-        <vc:nhs-secondary-button text="Continue" url="@Url.Action(
-                                                     nameof(CatalogueSolutionsController.ManageCatalogueSolution),
-                                                     typeof(CatalogueSolutionsController).ControllerName(),
-                                                     new { solutionId = Model.CatalogueItemId.ToString() })" use-primary-colour="true" />
+        <vc:nhs-secondary-button text="Continue" url="@Model.BackLink" use-primary-colour="true" />
 
     </div>
 </div>

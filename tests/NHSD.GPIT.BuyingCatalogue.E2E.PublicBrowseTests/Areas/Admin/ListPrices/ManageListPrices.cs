@@ -23,7 +23,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.ListPrices
             : base(
                   factory,
                   typeof(ListPriceController),
-                  nameof(ListPriceController.Index),
+                  nameof(ListPriceController.ManageListPrices),
                   Parameters)
         {
         }
