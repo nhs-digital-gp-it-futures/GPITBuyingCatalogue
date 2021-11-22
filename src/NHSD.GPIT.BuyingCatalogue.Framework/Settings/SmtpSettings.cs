@@ -9,9 +9,9 @@ namespace NHSD.GPIT.BuyingCatalogue.Framework.Settings
     public sealed class SmtpSettings
     {
         /// <summary>
-        /// Gets the authentication settings for the SMTP server.
+        /// Gets or sets the authentication settings for the SMTP server.
         /// </summary>
-        public SmtpAuthenticationSettings Authentication { get; init; } = new();
+        public SmtpAuthenticationSettings Authentication { get; set; } = new();
 
         /// <summary>
         /// Gets or sets the host name of the SMTP server.
@@ -34,5 +34,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Framework.Settings
         /// Gets the value used to prefix the subject in e-mails.
         /// </summary>
         public string EmailSubjectPrefix { get; init; }
+
+        public string SenderAddress { get; set; }
     }
 }

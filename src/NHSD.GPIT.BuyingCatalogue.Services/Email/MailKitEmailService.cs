@@ -52,7 +52,8 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Email
         /// <see langword="null" />.</exception>
         public async Task SendEmailAsync(EmailMessage emailMessage)
         {
-            emailMessage.ValidateNotNull(nameof(emailMessage));
+            if (emailMessage == null)
+                throw new ArgumentNullException(nameof(emailMessage));
 
             await client.ConnectAsync(settings.Host, settings.Port).ConfigureAwait(false);
 
@@ -61,6 +62,11 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Email
                 var authentication = settings.Authentication;
                 if (authentication.IsRequired)
                     await client.AuthenticateAsync(authentication.UserName, authentication.Password).ConfigureAwait(false);
+                else
+                    logger.LogWarning("SendEmailAsync: Attempting to send an email when authentication has not been configured");
+
+                if (!string.IsNullOrEmpty(settings.SenderAddress))
+                    emailMessage.Sender.Address = settings.SenderAddress;
 
                 var mimeMessage = emailMessage.AsMimeMessage(settings.EmailSubjectPrefix);
                 await client.SendAsync(mimeMessage).ConfigureAwait(false);

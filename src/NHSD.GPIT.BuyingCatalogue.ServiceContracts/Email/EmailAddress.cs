@@ -52,8 +52,8 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.Email
         public string DisplayName { get; }
 
         /// <summary>
-        /// Gets the actual e-mail address.
+        /// Gets or sets the actual e-mail address.
         /// </summary>
-        public string Address { get; }
+        public string Address { get; set; }
     }
 }
