@@ -41,7 +41,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
         [HttpPost]
         public async Task<IActionResult> Index(SolutionModel model)
         {
-            if (await solutionsService.GetSolutionByName(model.SolutionName) is not null)
+            if (await solutionsService.CatalogueSolutionExistsWithName(model.SolutionName))
                 ModelState.AddModelError(nameof(SolutionModel.SolutionName), "A solution with this name already exists");
 
             if (!ModelState.IsValid)

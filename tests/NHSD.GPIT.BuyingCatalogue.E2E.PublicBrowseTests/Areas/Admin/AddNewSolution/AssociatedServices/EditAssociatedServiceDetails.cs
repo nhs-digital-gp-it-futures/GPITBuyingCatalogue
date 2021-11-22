@@ -19,6 +19,8 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.AddNewSolution.Associat
 
         private static readonly CatalogueItemId AssociatedServiceId = new(99999, "S-999");
 
+        private static readonly CatalogueItemId ExistingAssociatedServiceId = new(99999, "S-998");
+
         private static readonly Dictionary<string, string> Parameters = new()
         {
             { nameof(SolutionId), SolutionId.ToString() },
@@ -85,14 +87,12 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.AddNewSolution.Associat
         public async Task EditAssociatedServiceDetails_DuplicateNameOfService()
         {
             await using var context = GetEndToEndDbContext();
-            var catalogueItems = await context.CatalogueItems
-                .Where(ci => ci.SupplierId == AssociatedServiceId.SupplierId
-                && ci.Id != AssociatedServiceId)
-                .ToListAsync();
 
-            var name = catalogueItems.OrderBy(_ => Guid.NewGuid()).First().Name;
+            var existingAssociatedService = await context
+                .CatalogueItems
+                .SingleOrDefaultAsync(ci => ci.Id == ExistingAssociatedServiceId);
 
-            CommonActions.ClearInputElement(CommonSelectors.Name);
+            var name = existingAssociatedService.Name;
 
             CommonActions.ElementAddValue(CommonSelectors.Name, name);
 

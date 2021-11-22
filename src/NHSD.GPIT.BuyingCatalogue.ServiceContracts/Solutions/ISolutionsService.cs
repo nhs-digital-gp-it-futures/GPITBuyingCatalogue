@@ -14,6 +14,8 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions
 
         Task<CatalogueItem> GetSolutionByName(string solutionName);
 
+        Task<bool> CatalogueSolutionExistsWithName(string solutionName, CatalogueItemId currentCatalogueItemId = default);
+
         Task<CatalogueItem> GetSolutionCapability(CatalogueItemId catalogueItemId, int capabilityId);
 
         Task<IList<Standard>> GetSolutionStandardsForMarketing(CatalogueItemId catalogueItemId);

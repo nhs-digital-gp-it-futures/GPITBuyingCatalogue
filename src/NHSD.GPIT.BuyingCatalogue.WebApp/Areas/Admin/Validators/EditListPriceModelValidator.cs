@@ -23,7 +23,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Validators
                 .Cascade(CascadeMode.Stop)
                 .NotNull()
                 .WithMessage("Enter a price")
-                .GreaterThan(0)
+                .GreaterThanOrEqualTo(0)
                 .WithMessage("Price cannot be negative")
                 .Must(p => Regex.IsMatch(p.ToString(), @"^\d+.?\d{0,4}$"))
                 .WithMessage("Price must be to a maximum of 4 decimal places");

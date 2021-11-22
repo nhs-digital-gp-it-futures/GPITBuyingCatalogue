@@ -353,7 +353,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
         [Theory]
         [CommonAutoData]
         public static async Task Post_EditAssociatedServiceDetails_MatchingName_ReturnsModelError(
-            [Frozen] Mock<ISuppliersService> mockSupplierService,
             [Frozen] Mock<ISolutionsService> mockSolutionService,
             [Frozen] Mock<IAssociatedServicesService> mockAssociatedServicesService,
             AssociatedServicesController controller,
@@ -367,15 +366,18 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
                     .ReturnsAsync(solution);
 
             var catalogueItem = associatedService.CatalogueItem;
+
             mockAssociatedServicesService.Setup(s => s.GetAssociatedService(associatedServiceId))
                 .ReturnsAsync(catalogueItem);
+
+            mockAssociatedServicesService.Setup(s =>
+                s.AssociatedServiceExistsWithNameForSupplier(It.IsAny<string>(), It.IsAny<int>(), It.IsAny<CatalogueItemId>()))
+                .ReturnsAsync(true);
 
             var model = new EditAssociatedServiceDetailsModel(solution, catalogueItem);
 
             item.Id = solutionId;
             item.Name = model.Name;
-
-            mockSupplierService.Setup(s => s.GetAllSolutionsForSupplier(associatedServiceId.SupplierId)).ReturnsAsync(new List<CatalogueItem> { item });
 
             var actual = await controller.EditAssociatedServiceDetails(solutionId, associatedServiceId, model);
 
