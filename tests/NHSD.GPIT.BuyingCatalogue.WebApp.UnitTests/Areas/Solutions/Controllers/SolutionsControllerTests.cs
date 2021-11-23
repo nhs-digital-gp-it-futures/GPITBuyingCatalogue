@@ -173,8 +173,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Controllers
         {
             var catalogueItem = solution.CatalogueItem;
             solution.ClientApplication = JsonSerializer.Serialize(clientApplication);
-
-            // TODO: add AutoFixture customization (exclude certain base properties)
             var associatedServicesModel = new AssociatedServicesModel(catalogueItem);
 
             solutionsServiceMock.Setup(s => s.GetSolutionWithAllAssociatedServices(id))

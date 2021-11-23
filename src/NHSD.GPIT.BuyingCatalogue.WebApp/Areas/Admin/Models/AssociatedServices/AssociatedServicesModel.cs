@@ -48,8 +48,17 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.AssociatedServices
 
         private TaskProgress Status(CatalogueItem associatedService)
         {
-            // TODO - Easier to do this once Details and Price pages are done
-            return TaskProgress.Completed;
+            var detailsStatus = (!string.IsNullOrEmpty(associatedService.AssociatedService.Description)
+                && !string.IsNullOrEmpty(associatedService.AssociatedService.OrderGuidance)
+                && !string.IsNullOrEmpty(associatedService.Name))
+                ? TaskProgress.Completed
+                : TaskProgress.NotStarted;
+
+            var listPriceStatus = associatedService.CataloguePrices.Any()
+                ? TaskProgress.Completed
+                : TaskProgress.NotStarted;
+
+            return detailsStatus & listPriceStatus;
         }
     }
 }

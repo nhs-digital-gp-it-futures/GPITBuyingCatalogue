@@ -21,12 +21,10 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models
 
         public string Description { get; set; }
 
-        // TODO: remove
         public int OrderingPartyId { get; set; }
 
         public int? OrderingPartyContactId { get; set; }
 
-        // TODO: remove
         public int? SupplierId { get; set; }
 
         public int? SupplierContactId { get; set; }

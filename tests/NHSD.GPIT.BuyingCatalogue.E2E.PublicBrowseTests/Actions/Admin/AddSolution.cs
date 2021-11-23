@@ -28,11 +28,8 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Actions.Admin
             }
         }
 
-        // TODO : Fix so that this doesn't rely on Framework loading order (SUPER FRAGILE)
         internal bool FoundationSolutionDisplayed()
         {
-            var checkbox = Driver.FindElements(Objects.Admin.AddSolutionObjects.SolutionFrameworks)[1];
-            checkbox.Click();
             try
             {
                 Wait.Until(s => ElementDisplayed(Objects.Admin.AddSolutionObjects.FoundationSolution));

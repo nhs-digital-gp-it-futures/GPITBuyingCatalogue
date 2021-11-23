@@ -42,11 +42,11 @@ namespace NHSD.GPIT.BuyingCatalogue.Test.Framework.AutoFixtureCustomisations
 
                 controller.ControllerContext = new ControllerContext { HttpContext = httpContextMock.Object };
 
-                // TODO: Investigate better way of doing this to test Url.Action in controllers
-                var urlHelperMock = new Mock<IUrlHelper>();
-                controller.Url = urlHelperMock.Object;
+                var urlHelperMock = context.Create<Mock<IUrlHelper>>();
                 urlHelperMock.Setup(u => u.Action(It.IsAny<UrlActionContext>()))
                     .Returns("testUrl");
+
+                controller.Url = urlHelperMock.Object;
             }
             else
             {
