@@ -41,6 +41,109 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Suppliers
 
         [Theory]
         [InMemoryDbAutoData]
+        public static async Task GetAllSuppliers_RetrievesAllSuppliers(
+            [Frozen] BuyingCatalogueDbContext context,
+            Supplier supplier1,
+            Supplier supplier2,
+            Supplier supplier3,
+            SuppliersService service)
+        {
+            context.Suppliers.Add(supplier1);
+            context.Suppliers.Add(supplier2);
+            context.Suppliers.Add(supplier3);
+            await context.SaveChangesAsync();
+
+            var actual = await service.GetAllSuppliers();
+
+            actual.Count.Should().Be(3);
+        }
+
+        [Theory]
+        [InMemoryDbAutoData]
+        public static async Task GetAllActiveSuppliers_RetrievesAllActiveSuppliers(
+            [Frozen] BuyingCatalogueDbContext context,
+            Supplier supplier1,
+            Supplier supplier2,
+            Supplier supplier3,
+            SuppliersService service)
+        {
+            supplier1.IsActive = false;
+            context.Suppliers.Add(supplier1);
+            supplier2.IsActive = true;
+            context.Suppliers.Add(supplier2);
+            supplier3.IsActive = true;
+            context.Suppliers.Add(supplier3);
+            await context.SaveChangesAsync();
+
+            var actual = await service.GetAllActiveSuppliers();
+
+            actual.Count.Should().Be(2);
+            actual.Any(s => s.Id == supplier1.Id).Should().BeFalse();
+        }
+
+        [Theory]
+        [InMemoryDbAutoData]
+        public static async Task GetSupplierByName_RetrievesCorrectSupplier(
+            [Frozen] BuyingCatalogueDbContext context,
+            Supplier supplier1,
+            Supplier supplier2,
+            Supplier supplier3,
+            SuppliersService service)
+        {
+            context.Suppliers.Add(supplier1);
+            context.Suppliers.Add(supplier2);
+            context.Suppliers.Add(supplier3);
+            await context.SaveChangesAsync();
+
+            var actual = await service.GetSupplierByName(supplier2.Name);
+
+            actual.Should().NotBeNull();
+            actual.Name.Should().Be(supplier2.Name);
+        }
+
+        [Theory]
+        [InMemoryDbAutoData]
+        public static async Task GetSupplierByLegalName_RetrievesCorrectSupplier(
+            [Frozen] BuyingCatalogueDbContext context,
+            Supplier supplier1,
+            Supplier supplier2,
+            Supplier supplier3,
+            SuppliersService service)
+        {
+            context.Suppliers.Add(supplier1);
+            context.Suppliers.Add(supplier2);
+            context.Suppliers.Add(supplier3);
+            await context.SaveChangesAsync();
+
+            var actual = await service.GetSupplierByLegalName(supplier2.LegalName);
+
+            actual.Should().NotBeNull();
+            actual.Name.Should().Be(supplier2.Name);
+            actual.LegalName.Should().Be(supplier2.LegalName);
+        }
+
+        [Theory]
+        [InMemoryDbAutoData]
+        public static async Task GetAllSolutionsForSupplier_RetrievesCorrectSolutions(
+            [Frozen] BuyingCatalogueDbContext context,
+            CatalogueItem item1,
+            CatalogueItem item2,
+            CatalogueItem item3,
+            SuppliersService service)
+        {
+            context.CatalogueItems.Add(item1);
+            context.CatalogueItems.Add(item2);
+            context.CatalogueItems.Add(item3);
+            await context.SaveChangesAsync();
+
+            var actual = await service.GetAllSolutionsForSupplier(item2.SupplierId);
+
+            actual.Count.Should().Be(1);
+            actual.Single().Id.Should().Be(item2.Id);
+        }
+
+        [Theory]
+        [InMemoryDbAutoData]
         public static async Task AddSupplier_AddsSupplier(
             [Frozen] BuyingCatalogueDbContext context,
             Supplier latestSupplier,

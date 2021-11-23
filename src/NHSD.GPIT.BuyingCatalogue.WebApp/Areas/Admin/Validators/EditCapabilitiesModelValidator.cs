@@ -9,7 +9,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Validators
         public EditCapabilitiesModelValidator()
         {
             RuleFor(m => m.CapabilityCategories)
-                .Must(capability => capability.Any(x => x.Capabilities.Any(y => y.Selected)))
+                .Must(capability => capability.Any(c => c.Capabilities.Any(y => y.Selected)))
                 .WithMessage("Select a Capability")
                 .OverridePropertyName("edit-capabilities");
         }
