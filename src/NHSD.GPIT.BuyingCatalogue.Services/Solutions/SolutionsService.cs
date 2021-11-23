@@ -17,17 +17,10 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
     public sealed class SolutionsService : ISolutionsService
     {
         private readonly BuyingCatalogueDbContext dbContext;
-        private readonly IDbRepository<Solution, BuyingCatalogueDbContext> solutionRepository;
-        private readonly IDbRepository<Supplier, BuyingCatalogueDbContext> supplierRepository;
 
-        public SolutionsService(
-            BuyingCatalogueDbContext dbContext,
-            IDbRepository<Solution, BuyingCatalogueDbContext> solutionRepository,
-            IDbRepository<Supplier, BuyingCatalogueDbContext> supplierRepository)
+        public SolutionsService(BuyingCatalogueDbContext dbContext)
         {
             this.dbContext = dbContext ?? throw new ArgumentNullException(nameof(dbContext));
-            this.solutionRepository = solutionRepository ?? throw new ArgumentNullException(nameof(solutionRepository));
-            this.supplierRepository = supplierRepository ?? throw new ArgumentNullException(nameof(supplierRepository));
         }
 
         public Task<CatalogueItem> GetSolutionListPrices(CatalogueItemId solutionId)
@@ -263,30 +256,30 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
         {
             summary.ValidateNotNullOrWhiteSpace(nameof(summary));
 
-            var solution = await solutionRepository.SingleAsync(s => s.CatalogueItemId == solutionId);
+            var solution = await dbContext.Solutions.SingleAsync(s => s.CatalogueItemId == solutionId);
             solution.Summary = summary;
             solution.FullDescription = description;
             solution.AboutUrl = link;
-            await solutionRepository.SaveChangesAsync();
+            await dbContext.SaveChangesAsync();
         }
 
         public async Task SaveSolutionFeatures(CatalogueItemId solutionId, string[] features)
         {
-            var solution = await solutionRepository.SingleAsync(s => s.CatalogueItemId == solutionId);
+            var solution = await dbContext.Solutions.SingleAsync(s => s.CatalogueItemId == solutionId);
             solution.Features = JsonSerializer.Serialize(features);
-            await solutionRepository.SaveChangesAsync();
+            await dbContext.SaveChangesAsync();
         }
 
         public async Task SaveImplementationDetail(CatalogueItemId solutionId, string detail)
         {
-            var solution = await solutionRepository.SingleAsync(s => s.CatalogueItemId == solutionId);
+            var solution = await dbContext.Solutions.SingleAsync(s => s.CatalogueItemId == solutionId);
             solution.ImplementationDetail = detail;
-            await solutionRepository.SaveChangesAsync();
+            await dbContext.SaveChangesAsync();
         }
 
         public async Task<ClientApplication> GetClientApplication(CatalogueItemId solutionId)
         {
-            var solution = await solutionRepository.SingleAsync(s => s.CatalogueItemId == solutionId);
+            var solution = await dbContext.Solutions.SingleAsync(s => s.CatalogueItemId == solutionId);
             return solution.GetClientApplication();
         }
 
@@ -294,9 +287,9 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
         {
             clientApplication.ValidateNotNull(nameof(clientApplication));
 
-            var solution = await solutionRepository.SingleAsync(s => s.CatalogueItemId == solutionId);
+            var solution = await dbContext.Solutions.SingleAsync(s => s.CatalogueItemId == solutionId);
             solution.ClientApplication = JsonSerializer.Serialize(clientApplication);
-            await solutionRepository.SaveChangesAsync();
+            await dbContext.SaveChangesAsync();
         }
 
         public async Task DeleteClientApplication(CatalogueItemId solutionId, ClientApplicationType clientApplicationType)
@@ -310,7 +303,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
 
         public async Task<Hosting> GetHosting(CatalogueItemId solutionId)
         {
-            var solution = await solutionRepository.SingleAsync(s => s.CatalogueItemId == solutionId);
+            var solution = await dbContext.Solutions.SingleAsync(s => s.CatalogueItemId == solutionId);
             return solution.Hosting ?? new Hosting();
         }
 
@@ -318,17 +311,17 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
         {
             hosting.ValidateNotNull(nameof(hosting));
 
-            var solution = await solutionRepository.SingleAsync(s => s.CatalogueItemId == solutionId);
+            var solution = await dbContext.Solutions.SingleAsync(s => s.CatalogueItemId == solutionId);
             solution.Hosting = hosting;
-            await solutionRepository.SaveChangesAsync();
+            await dbContext.SaveChangesAsync();
         }
 
         public async Task SaveSupplierDescriptionAndLink(int supplierId, string description, string link)
         {
-            var supplier = await supplierRepository.SingleAsync(s => s.Id == supplierId);
+            var supplier = await dbContext.Suppliers.SingleAsync(s => s.Id == supplierId);
             supplier.Summary = description;
             supplier.SupplierUrl = link;
-            await supplierRepository.SaveChangesAsync();
+            await dbContext.SaveChangesAsync();
         }
 
         public async Task SaveSupplierContacts(SupplierContactsModel model)

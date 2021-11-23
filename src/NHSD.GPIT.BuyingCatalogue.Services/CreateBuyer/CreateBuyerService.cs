@@ -13,7 +13,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.CreateBuyer
 {
     public sealed class CreateBuyerService : ICreateBuyerService
     {
-        private readonly IDbRepository<AspNetUser, BuyingCatalogueDbContext> userRepository;
+        private readonly BuyingCatalogueDbContext dbContext;
         private readonly IPasswordService passwordService;
         private readonly IPasswordResetCallback passwordResetCallback;
         private readonly IEmailService emailService;
@@ -21,14 +21,14 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.CreateBuyer
         private readonly IAspNetUserValidator aspNetUserValidator;
 
         public CreateBuyerService(
-            IDbRepository<AspNetUser, BuyingCatalogueDbContext> userRepository,
+            BuyingCatalogueDbContext dbContext,
             IPasswordService passwordService,
             IPasswordResetCallback passwordResetCallback,
             IEmailService emailService,
             RegistrationSettings settings,
             IAspNetUserValidator aspNetUserValidator)
         {
-            this.userRepository = userRepository ?? throw new ArgumentNullException(nameof(userRepository));
+            this.dbContext = dbContext ?? throw new ArgumentNullException(nameof(dbContext));
             this.passwordService = passwordService ?? throw new ArgumentNullException(nameof(passwordService));
             this.passwordResetCallback = passwordResetCallback ?? throw new ArgumentNullException(nameof(passwordResetCallback));
             this.emailService = emailService ?? throw new ArgumentNullException(nameof(emailService));
@@ -60,9 +60,9 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.CreateBuyer
             if (!validationResult.IsSuccess)
                 return Result.Failure<int>(validationResult.Errors);
 
-            userRepository.Add(aspNetUser);
+            dbContext.AspNetUsers.Add(aspNetUser);
 
-            await userRepository.SaveChangesAsync();
+            await dbContext.SaveChangesAsync();
 
             var token = await passwordService.GeneratePasswordResetTokenAsync(aspNetUser.Email);
 

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Users.Models;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.CreateBuyer;
@@ -20,11 +21,11 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.CreateBuyer
 
         private static readonly EmailAddressAttribute EmailAddressAttribute = new();
 
-        private readonly IDbRepository<AspNetUser, BuyingCatalogueDbContext> usersRepository;
+        private readonly BuyingCatalogueDbContext dbContext;
 
-        public AspNetUserValidator(IDbRepository<AspNetUser, BuyingCatalogueDbContext> usersRepository)
+        public AspNetUserValidator(BuyingCatalogueDbContext dbContext)
         {
-            this.usersRepository = usersRepository ?? throw new ArgumentNullException(nameof(usersRepository));
+            this.dbContext = dbContext ?? throw new ArgumentNullException(nameof(dbContext));
         }
 
         public async Task<Result> ValidateAsync(AspNetUser user)
@@ -105,7 +106,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.CreateBuyer
             }
             else
             {
-                var user = (await usersRepository.GetAllAsync(u => u.NormalizedEmail == email.ToUpperInvariant())).FirstOrDefault();
+                var user = await dbContext.AspNetUsers.Where(u => u.NormalizedEmail == email.ToUpperInvariant()).FirstOrDefaultAsync();
 
                 if (user is not null &&
                     string.Equals(user.Email, email, StringComparison.OrdinalIgnoreCase))

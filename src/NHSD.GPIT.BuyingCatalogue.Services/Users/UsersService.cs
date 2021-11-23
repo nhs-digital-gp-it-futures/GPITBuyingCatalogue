@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Users.Models;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Users;
@@ -10,26 +11,28 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Users
 {
     public sealed class UsersService : IUsersService
     {
-        private readonly IDbRepository<AspNetUser, BuyingCatalogueDbContext> userRepository;
+        private readonly BuyingCatalogueDbContext dbContext;
 
-        public UsersService(
-            IDbRepository<AspNetUser, BuyingCatalogueDbContext> userRepository)
+        public UsersService(BuyingCatalogueDbContext dbContext)
         {
-            this.userRepository = userRepository ?? throw new ArgumentNullException(nameof(userRepository));
+            this.dbContext = dbContext ?? throw new ArgumentNullException(nameof(dbContext));
         }
 
-        public Task<AspNetUser> GetUser(int userId) => userRepository.SingleAsync(u => u.Id == userId);
+        public Task<AspNetUser> GetUser(int userId)
+        {
+            return dbContext.AspNetUsers.SingleAsync(u => u.Id == userId);
+        }
 
         public async Task<List<AspNetUser>> GetAllUsersForOrganisation(int organisationId)
         {
-            return (await userRepository.GetAllAsync(u => u.PrimaryOrganisationId == organisationId)).ToList();
+            return await dbContext.AspNetUsers.Where(u => u.PrimaryOrganisationId == organisationId).ToListAsync();
         }
 
         public async Task EnableOrDisableUser(int userId, bool disabled)
         {
-            var user = await userRepository.SingleAsync(u => u.Id == userId);
+            var user = await dbContext.AspNetUsers.SingleAsync(u => u.Id == userId);
             user.Disabled = disabled;
-            await userRepository.SaveChangesAsync();
+            await dbContext.SaveChangesAsync();
         }
     }
 }
