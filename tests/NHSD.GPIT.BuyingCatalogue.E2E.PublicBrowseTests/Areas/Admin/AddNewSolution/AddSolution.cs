@@ -38,6 +38,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.AddNewSolution
         [Fact]
         public void AddSolution_FoundationSolutionDisplayed()
         {
+            CommonActions.ClickCheckboxByLabel("GP IT Futures Framework");
             AdminPages.AddSolution.FoundationSolutionDisplayed().Should().BeTrue();
         }
 

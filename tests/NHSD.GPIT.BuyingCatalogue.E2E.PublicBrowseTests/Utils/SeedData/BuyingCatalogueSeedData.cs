@@ -111,15 +111,6 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
             };
             context.AddRange(cataloguePriceTypes);
 
-            // TODO: required? (Not currently used)
-            // CompliancyLevel
-            List<Database.Models.CompliancyLevel> compliancyLevels = new()
-            {
-                new Database.Models.CompliancyLevel { Id = 1, Name = "MUST" },
-                new Database.Models.CompliancyLevel { Id = 2, Name = "SHOULD" },
-                new Database.Models.CompliancyLevel { Id = 3, Name = "MAY" },
-            };
-
             // Frameworks
             List<EntityFramework.Catalogue.Models.Framework> frameworks = new()
             {
