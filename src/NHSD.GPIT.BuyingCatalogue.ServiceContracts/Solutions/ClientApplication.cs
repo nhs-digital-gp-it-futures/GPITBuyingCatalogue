@@ -52,22 +52,17 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions
 
         public string NativeDesktopAdditionalInformation { get; set; }
 
-        // TODO: refactor to avoid what is essentially duplication of ClientApplicationTypes
-        // (consider ClientApplicationTypes and use of ClientApplicationType enum)
         public IReadOnlyList<ClientApplicationType> ExistingClientApplicationTypes
         {
             get
             {
                 var result = new List<ClientApplicationType>(3);
 
-                if (ClientApplicationTypes?.Any(type => type.Equals("browser-based", StringComparison.OrdinalIgnoreCase)) ?? false)
-                    result.Add(ClientApplicationType.BrowserBased);
-
-                if (ClientApplicationTypes?.Any(type => type.Equals("native-mobile", StringComparison.OrdinalIgnoreCase)) ?? false)
-                    result.Add(ClientApplicationType.MobileTablet);
-
-                if (ClientApplicationTypes?.Any(type => type.Equals("native-desktop", StringComparison.OrdinalIgnoreCase)) ?? false)
-                    result.Add(ClientApplicationType.Desktop);
+                foreach (ClientApplicationType clientApplicationType in Enum.GetValues(typeof(ClientApplicationType)))
+                {
+                    if (ClientApplicationTypes?.Any(type => type.Equals(clientApplicationType.AsString(EnumFormat.EnumMemberValue), StringComparison.OrdinalIgnoreCase)) ?? false)
+                        result.Add(clientApplicationType);
+                }
 
                 return result;
             }
