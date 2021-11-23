@@ -61,7 +61,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
 
             mockService.Verify(s => s.GetSolution(catalogueItem.Id));
             actual.ViewName.Should().BeNull();
-            actual.Model.Should().BeEquivalentTo(new DesktopBasedModel(catalogueItem));
+            actual.Model.Should().BeEquivalentTo(new DesktopBasedModel(catalogueItem), opt => opt.Excluding(m => m.BackLink));
         }
 
         [Theory]
@@ -97,7 +97,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
 
             mockService.Verify(s => s.GetSolution(catalogueItem.Id));
             actual.ViewName.Should().BeNull();
-            actual.Model.Should().BeEquivalentTo(new OperatingSystemsModel(catalogueItem));
+            actual.Model.Should().BeEquivalentTo(new OperatingSystemsModel(catalogueItem), opt => opt.Excluding(m => m.BackLink));
         }
 
         [Theory]
@@ -156,7 +156,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
 
             mockService.Verify(s => s.GetSolution(catalogueItem.Id));
             actual.ViewName.Should().BeNull();
-            actual.Model.Should().BeEquivalentTo(new ConnectivityModel(catalogueItem));
+            actual.Model.Should().BeEquivalentTo(new ConnectivityModel(catalogueItem), opt => opt.Excluding(m => m.BackLink));
         }
 
         [Theory]
@@ -216,7 +216,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
 
             mockService.Verify(s => s.GetSolution(catalogueItem.Id));
             actual.ViewName.Should().BeNull();
-            actual.Model.Should().BeEquivalentTo(new MemoryAndStorageModel(catalogueItem));
+            actual.Model.Should().BeEquivalentTo(new MemoryAndStorageModel(catalogueItem), opt => opt.Excluding(m => m.BackLink));
         }
 
         [Theory]
@@ -278,7 +278,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
 
             mockService.Verify(s => s.GetSolution(catalogueItem.Id));
             actual.ViewName.Should().BeNull();
-            actual.Model.Should().BeEquivalentTo(new ThirdPartyComponentsModel(catalogueItem));
+            actual.Model.Should().BeEquivalentTo(new ThirdPartyComponentsModel(catalogueItem), opt => opt.Excluding(m => m.BackLink));
         }
 
         [Theory]
@@ -338,7 +338,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
 
             mockService.Verify(s => s.GetSolution(catalogueItem.Id));
             actual.ViewName.Should().BeNull();
-            actual.Model.Should().BeEquivalentTo(new HardwareRequirementsModel(catalogueItem));
+            actual.Model.Should().BeEquivalentTo(new HardwareRequirementsModel(catalogueItem), opt => opt.Excluding(m => m.BackLink));
         }
 
         [Theory]
@@ -397,7 +397,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
 
             mockService.Verify(s => s.GetSolution(catalogueItem.Id));
             actual.ViewName.Should().BeNull();
-            actual.Model.Should().BeEquivalentTo(new AdditionalInformationModel(catalogueItem));
+            actual.Model.Should().BeEquivalentTo(new AdditionalInformationModel(catalogueItem), opt => opt.Excluding(m => m.BackLink));
         }
 
         [Theory]

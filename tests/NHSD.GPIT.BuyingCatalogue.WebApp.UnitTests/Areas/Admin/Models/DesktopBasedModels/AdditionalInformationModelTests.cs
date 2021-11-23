@@ -19,7 +19,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Models.DesktopB
             var actual = new AdditionalInformationModel(catalogueItem);
 
             actual.AdditionalInformation.Should().Be(solution.GetClientApplication().NativeDesktopAdditionalInformation);
-            actual.BackLink.Should().Be($"/admin/catalogue-solutions/manage/{catalogueItem.Id}/client-application-type/desktop");
         }
 
         [Fact]

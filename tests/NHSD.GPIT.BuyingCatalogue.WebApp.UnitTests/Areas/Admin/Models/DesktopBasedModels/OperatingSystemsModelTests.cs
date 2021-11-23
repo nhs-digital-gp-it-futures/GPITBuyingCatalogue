@@ -19,8 +19,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Models.DesktopB
             var actual = new OperatingSystemsModel(catalogueItem);
 
             actual.Description.Should().Be(solution.GetClientApplication().NativeDesktopOperatingSystemsDescription);
-
-            actual.BackLink.Should().Be($"/admin/catalogue-solutions/manage/{catalogueItem.Id}/client-application-type/desktop");
         }
 
         [Fact]

@@ -50,7 +50,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
 
             mockService.Verify(s => s.GetSolution(catalogueItem.Id));
             actual.ViewName.Should().BeNull();
-            actual.Model.Should().BeEquivalentTo(new InteroperabilityModel(catalogueItem));
+            actual.Model.Should().BeEquivalentTo(new InteroperabilityModel(catalogueItem), opt => opt.Excluding(m => m.BackLink));
         }
 
         [Theory]

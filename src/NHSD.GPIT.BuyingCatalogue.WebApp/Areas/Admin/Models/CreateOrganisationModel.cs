@@ -13,7 +13,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models
         public CreateOrganisationModel(OdsOrganisation organisation)
         {
             OdsOrganisation = organisation ?? throw new ArgumentNullException(nameof(organisation));
-            BackLink = $"/admin/organisations/find/select?ods={organisation.OdsCode}";
         }
 
         public OdsOrganisation OdsOrganisation { get; set; }

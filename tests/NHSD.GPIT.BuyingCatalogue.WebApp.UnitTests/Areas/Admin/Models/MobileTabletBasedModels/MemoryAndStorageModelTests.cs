@@ -24,7 +24,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Models.MobileTa
 
             actual.SelectedMemorySize.Should().Be(mobileMemoryAndStorage.MinimumMemoryRequirement);
             actual.Description.Should().Be(mobileMemoryAndStorage.Description);
-            actual.BackLink.Should().Be($"/admin/catalogue-solutions/manage/{catalogueItem.Id}/client-application-type/mobiletablet");
         }
 
         [Fact]

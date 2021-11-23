@@ -31,7 +31,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Models.Associat
 
             actual.SelectableAssociatedServices.Should().BeEquivalentTo(expected);
             actual.Solution.Should().Be(catalogueItem);
-            actual.BackLink.Should().Be($"/admin/catalogue-solutions/manage/{catalogueItem.Id}");
         }
 
         [Theory]
@@ -62,7 +61,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Models.Associat
 
             actual.SelectableAssociatedServices.Should().BeEquivalentTo(expected);
             actual.Solution.Should().Be(catalogueItem);
-            actual.BackLink.Should().Be($"/admin/catalogue-solutions/manage/{catalogueItem.Id}");
         }
     }
 }

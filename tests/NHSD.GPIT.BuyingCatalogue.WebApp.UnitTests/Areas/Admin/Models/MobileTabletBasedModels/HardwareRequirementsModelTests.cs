@@ -19,7 +19,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Models.MobileTa
             var actual = new HardwareRequirementsModel(catalogueItem);
 
             actual.Description.Should().Be(solution.GetClientApplication().NativeMobileHardwareRequirements);
-            actual.BackLink.Should().Be($"/admin/catalogue-solutions/manage/{catalogueItem.Id}/client-application-type/mobiletablet");
         }
 
         [Fact]

@@ -47,7 +47,15 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
 
             var associatedServices = await associatedServicesService.GetAssociatedServicesForSupplier(solution.Supplier.Id);
 
-            return View(new AssociatedServicesModel(solution, associatedServices));
+            var model = new AssociatedServicesModel(solution, associatedServices)
+            {
+                BackLink = Url.Action(
+                    nameof(CatalogueSolutionsController.ManageCatalogueSolution),
+                    typeof(CatalogueSolutionsController).ControllerName(),
+                    new { solutionId }),
+            };
+
+            return View(model);
         }
 
         [HttpPost]
@@ -72,7 +80,12 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
             if (solution is null)
                 return BadRequest($"No Solution found for Id: {solutionId}");
 
-            return View(new AddAssociatedServiceModel(solution));
+            var model = new AddAssociatedServiceModel(solution)
+            {
+                BackLink = Url.Action(nameof(AssociatedServices), new { solutionId }),
+            };
+
+            return View(model);
         }
 
         [HttpPost("add-associated-service")]
@@ -137,7 +150,12 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
             if (associatedService is null)
                 return BadRequest($"No Associated Service found for Id: {associatedServiceId}");
 
-            return View(new EditAssociatedServiceDetailsModel(solution, associatedService));
+            var model = new EditAssociatedServiceDetailsModel(solution, associatedService)
+            {
+                BackLink = Url.Action(nameof(EditAssociatedService), new { solutionId, associatedServiceId }),
+            };
+
+            return View(model);
         }
 
         [HttpPost("{associatedServiceId}/edit-associated-service-details")]

@@ -19,7 +19,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Models.DesktopB
             var actual = new HardwareRequirementsModel(catalogueItem);
 
             actual.Description.Should().Be(solution.GetClientApplication().NativeDesktopHardwareRequirements);
-            actual.BackLink.Should().Be($"/admin/catalogue-solutions/manage/{catalogueItem.Id}/client-application-type/desktop");
         }
 
         [Fact]

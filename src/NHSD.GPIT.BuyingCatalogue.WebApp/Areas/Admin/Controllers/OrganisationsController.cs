@@ -47,7 +47,12 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
         {
             var organisation = await organisationsService.GetOrganisation(organisationId);
 
-            return View(new EditOrganisationModel(organisation));
+            var model = new EditOrganisationModel(organisation)
+            {
+                BackLink = Url.Action(nameof(Details), new { organisationId }),
+            };
+
+            return View(model);
         }
 
         [HttpPost("{organisationId}/edit")]
@@ -69,7 +74,12 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
         {
             var organisation = await organisationsService.GetOrganisation(organisationId);
 
-            return View(new EditConfirmationModel(organisation.Name, organisationId));
+            var model = new EditConfirmationModel(organisation.Name, organisationId)
+            {
+                BackLink = Url.Action(nameof(Details), new { organisationId }),
+            };
+
+            return View(model);
         }
 
         [HttpGet("find")]
@@ -120,7 +130,12 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
         {
             (var organisation, _) = await odsService.GetOrganisationByOdsCode(ods);
 
-            return View(new CreateOrganisationModel(organisation));
+            var model = new CreateOrganisationModel(organisation)
+            {
+                BackLink = Url.Action(nameof(Select), new { ods }),
+            };
+
+            return View(model);
         }
 
         [HttpPost("find/select/create")]
@@ -166,7 +181,12 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
         {
             var organisation = await organisationsService.GetOrganisation(organisationId);
 
-            return View(new AddUserModel(organisation));
+            var model = new AddUserModel(organisation)
+            {
+                BackLink = Url.Action(nameof(Details), new { organisationId }),
+            };
+
+            return View(model);
         }
 
         [HttpPost("{organisationId}/adduser")]
@@ -189,7 +209,12 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
         {
             var user = await userService.GetUser(userId);
 
-            return View(new AddUserConfirmationModel(user.GetDisplayName(), organisationId));
+            var model = new AddUserConfirmationModel(user.GetDisplayName(), organisationId)
+            {
+                BackLink = Url.Action(nameof(Details), new { organisationId }),
+            };
+
+            return View(model);
         }
 
         [HttpGet("{organisationId}/{userId}")]
@@ -198,7 +223,12 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
             var user = await userService.GetUser(userId);
             var organisation = await organisationsService.GetOrganisation(organisationId);
 
-            return View(new UserDetailsModel(organisation, user));
+            var model = new UserDetailsModel(organisation, user)
+            {
+                BackLink = Url.Action(nameof(Details), new { organisationId }),
+            };
+
+            return View(model);
         }
 
         [HttpPost("{organisationId}/{userId}")]
@@ -226,7 +256,12 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
             var organisation = await organisationsService.GetOrganisation(organisationId);
             var user = await userService.GetUser(userId);
 
-            return View(new UserEnablingModel(organisation, user));
+            var model = new UserEnablingModel(organisation, user)
+            {
+                BackLink = Url.Action(nameof(UserDetails), new { organisationId, userId }),
+            };
+
+            return View(model);
         }
 
         [HttpGet("{organisationId}/{userId}/enable")]
@@ -235,7 +270,12 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
             var organisation = await organisationsService.GetOrganisation(organisationId);
             var user = await userService.GetUser(userId);
 
-            return View(new UserEnablingModel(organisation, user));
+            var model = new UserEnablingModel(organisation, user)
+            {
+                BackLink = Url.Action(nameof(UserDetails), new { organisationId, userId }),
+            };
+
+            return View(model);
         }
 
         [HttpGet("proxy/{organisationId}")]
@@ -248,7 +288,12 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
 
             var availableOrganisations = await organisationsService.GetUnrelatedOrganisations(organisationId);
 
-            return View(new AddAnOrganisationModel(organisation, availableOrganisations));
+            var model = new AddAnOrganisationModel(organisation, availableOrganisations)
+            {
+                BackLink = Url.Action(nameof(Details), new { organisationId }),
+            };
+
+            return View(model);
         }
 
         [HttpPost("proxy/{organisationId}")]
@@ -278,7 +323,12 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
             if (relatedOrganisation is null)
                 return BadRequest($"No Organisation found for Id: {relatedOrganisationId}");
 
-            return View(new RemoveAnOrganisationModel(currentOrganisation, relatedOrganisation));
+            var model = new RemoveAnOrganisationModel(currentOrganisation, relatedOrganisation)
+            {
+                BackLink = Url.Action(nameof(Details), new { organisationId }),
+            };
+
+            return View(model);
         }
 
         [HttpPost("removeproxy/{organisationId}/{relatedOrganisationId}")]

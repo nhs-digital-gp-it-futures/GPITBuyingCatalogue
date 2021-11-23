@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using EnumsNET;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
@@ -247,7 +248,12 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
             if (solution is null)
                 return BadRequest($"No Solution found for Id: {solutionId}");
 
-            return View(new HostingTypeSectionModel(solution));
+            var model = new HostingTypeSectionModel(solution)
+            {
+                BackLink = Url.Action(nameof(ManageCatalogueSolution), new { solutionId }),
+            };
+
+            return View(model);
         }
 
         [HttpPost("manage/{solutionId}/hosting-type")]
@@ -279,7 +285,12 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
             if (solution is null)
                 return BadRequest($"No Solution found for Id: {solutionId}");
 
-            return View(new HostingTypeSelectionModel(solution));
+            var model = new HostingTypeSelectionModel(solution)
+            {
+                BackLink = Url.Action(nameof(HostingType), new { solutionId }),
+            };
+
+            return View(model);
         }
 
         [HttpPost("manage/{solutionId}/hosting-type/add-hosting-type")]
@@ -481,7 +492,15 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
             if (solution is null)
                 return BadRequest($"No Solution found for Id: {solutionId}");
 
-            return View(new BrowserBasedModel(solution));
+            var clientApplicationTypes = solution.Solution.GetClientApplication()?.ClientApplicationTypes;
+            var model = new BrowserBasedModel(solution)
+            {
+                BackLink = clientApplicationTypes?.Any(type => type.Equals(ServiceContracts.Solutions.ClientApplicationType.BrowserBased.AsString(EnumFormat.EnumMemberValue))) ?? false
+                           ? Url.Action(nameof(AddApplicationType), new { solutionId })
+                           : Url.Action(nameof(ClientApplicationType), new { solutionId }),
+            };
+
+            return View(model);
         }
 
         [HttpGet("manage/{solutionId}/client-application-type/browser-based/supported-browser")]
@@ -656,7 +675,12 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
             if (solution is null)
                 return BadRequest($"No Solution found for Id: {solutionId}");
 
-            return View(new ClientApplicationTypeSectionModel(solution));
+            var model = new ClientApplicationTypeSectionModel(solution)
+            {
+                BackLink = Url.Action(nameof(ManageCatalogueSolution), new { solutionId }),
+            };
+
+            return View(model);
         }
 
         [HttpGet("manage/{solutionId}/client-application-type/add-application-type")]
@@ -667,7 +691,12 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
             if (solution is null)
                 return BadRequest($"No Solution found for Id: {solutionId}");
 
-            return View(new ClientApplicationTypeSelectionModel(solution));
+            var model = new ClientApplicationTypeSelectionModel(solution)
+            {
+                BackLink = Url.Action(nameof(ClientApplicationType), new { solutionId }),
+            };
+
+            return View(model);
         }
 
         [HttpPost("manage/{solutionId}/client-application-type/add-application-type")]
@@ -676,7 +705,11 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
             if (!ModelState.IsValid)
             {
                 var solution = await solutionsService.GetSolution(solutionId);
-                return View(new ClientApplicationTypeSelectionModel(solution));
+                var erroredModel = new ClientApplicationTypeSelectionModel(solution)
+                {
+                    BackLink = Url.Action(nameof(ClientApplicationType), new { solutionId }),
+                };
+                return View(erroredModel);
             }
 
             return model.SelectedApplicationType switch

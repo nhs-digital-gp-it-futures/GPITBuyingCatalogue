@@ -29,7 +29,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models
             HostingTypesToAdd = Enum.GetValues<HostingType>().Except(ExistingHostingTypes).ToList();
             HostingTypesToAddRadioItems = HostingTypesToAdd.Select(t => new { Text = t.AsString(EnumFormat.DisplayName), Value = t.ToString() });
             ExistingHostingTypesCount = ExistingHostingTypes.Count;
-            BackLink = $"/admin/catalogue-solutions/manage/{catalogueItem.Id}";
         }
 
         public Hosting Hosting { get; set; }

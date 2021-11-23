@@ -7,7 +7,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models
         public EditConfirmationModel(string organisationName, int organisationId)
         {
             Name = organisationName;
-            BackLink = $"/admin/organisations/{organisationId}";
             BackLinkText = "Back to dashboard";
         }
 

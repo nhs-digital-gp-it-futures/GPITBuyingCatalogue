@@ -15,7 +15,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Models.DeleteAp
             CatalogueItem catalogueItem)
         {
             var actual = new DeleteApplicationTypeConfirmationModel(catalogueItem, ClientApplicationType.BrowserBased);
-            actual.BackLink.Should().Be($"/admin/catalogue-solutions/manage/{catalogueItem.Id}/client-application-type/browser-based");
             actual.ApplicationType.Should().Be("browser-based");
         }
 
@@ -25,7 +24,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Models.DeleteAp
             CatalogueItem catalogueItem)
         {
             var actual = new DeleteApplicationTypeConfirmationModel(catalogueItem, ClientApplicationType.Desktop);
-            actual.BackLink.Should().Be($"/admin/catalogue-solutions/manage/{catalogueItem.Id}/client-application-type/desktop");
             actual.ApplicationType.Should().Be("desktop");
         }
 
@@ -35,7 +33,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Models.DeleteAp
             CatalogueItem catalogueItem)
         {
             var actual = new DeleteApplicationTypeConfirmationModel(catalogueItem, ClientApplicationType.MobileTablet);
-            actual.BackLink.Should().Be($"/admin/catalogue-solutions/manage/{catalogueItem.Id}/client-application-type/mobiletablet");
             actual.ApplicationType.Should().Be("mobile or tablet");
         }
     }
