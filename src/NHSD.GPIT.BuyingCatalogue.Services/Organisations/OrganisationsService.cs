@@ -12,19 +12,16 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Organisations
     public sealed class OrganisationsService : IOrganisationsService
     {
         private readonly BuyingCatalogueDbContext dbContext;
-        private readonly IDbRepository<Organisation, BuyingCatalogueDbContext> organisationRepository;
 
         public OrganisationsService(
-            BuyingCatalogueDbContext dbContext,
-            IDbRepository<Organisation, BuyingCatalogueDbContext> organisationRepository)
+            BuyingCatalogueDbContext dbContext)
         {
-            this.organisationRepository = organisationRepository ?? throw new ArgumentNullException(nameof(organisationRepository));
             this.dbContext = dbContext ?? throw new ArgumentNullException(nameof(dbContext));
         }
 
         public async Task<IList<Organisation>> GetAllOrganisations()
         {
-            return (await organisationRepository.GetAllAsync(o => true)).OrderBy(o => o.Name).ToList();
+            return await dbContext.Organisations.OrderBy(o => o.Name).ToListAsync();
         }
 
         public async Task<(int OrganisationId, string Error)> AddOdsOrganisation(OdsOrganisation odsOrganisation, bool agreementSigned)
@@ -55,24 +52,24 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Organisations
 
         public async Task<Organisation> GetOrganisation(int id)
         {
-            return await organisationRepository.SingleAsync(o => o.Id == id);
+            return await dbContext.Organisations.SingleAsync(o => o.Id == id);
         }
 
         public async Task<Organisation> GetOrganisationByOdsCode(string odsCode)
         {
-            return await organisationRepository.SingleAsync(o => o.OdsCode == odsCode);
+            return await dbContext.Organisations.SingleAsync(o => o.OdsCode == odsCode);
         }
 
         public async Task<List<Organisation>> GetOrganisationsByOdsCodes(string[] odsCodes)
         {
-            return (await organisationRepository.GetAllAsync(o => odsCodes.Contains(o.OdsCode))).OrderBy(o => o.Name).ToList();
+            return await dbContext.Organisations.Where(o => odsCodes.Contains(o.OdsCode)).OrderBy(o => o.Name).ToListAsync();
         }
 
         public async Task UpdateCatalogueAgreementSigned(int organisationId, bool signed)
         {
-            var organisation = await organisationRepository.SingleAsync(o => o.Id == organisationId);
+            var organisation = await dbContext.Organisations.SingleAsync(o => o.Id == organisationId);
             organisation.CatalogueAgreementSigned = signed;
-            await organisationRepository.SaveChangesAsync();
+            await dbContext.SaveChangesAsync();
         }
 
         public async Task<List<Organisation>> GetUnrelatedOrganisations(int organisationId)

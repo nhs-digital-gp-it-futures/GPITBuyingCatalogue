@@ -1,9 +1,10 @@
 ﻿using System;
-using System.Linq.Expressions;
 using System.Threading.Tasks;
 using AutoFixture.Xunit2;
-using Moq;
+using FluentAssertions;
+using Microsoft.EntityFrameworkCore;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework;
+using NHSD.GPIT.BuyingCatalogue.EntityFramework.Organisations.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Users.Models;
 using NHSD.GPIT.BuyingCatalogue.Services.Users;
 using NHSD.GPIT.BuyingCatalogue.Test.Framework.AutoFixtureCustomisations;
@@ -21,60 +22,85 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Users
         }
 
         [Theory]
-        [CommonAutoData]
-        public static async Task GetUser_CallsSingleAsync_OnRepository(
-            [Frozen] Mock<IDbRepository<AspNetUser, BuyingCatalogueDbContext>> dbRepositoryMock,
-            int userId,
+        [InMemoryDbAutoData]
+        public static async Task GetUser_GetsUserFromDatabase(
+            [Frozen] BuyingCatalogueDbContext context,
+            AspNetUser user,
             UsersService service)
         {
-            dbRepositoryMock.Setup(r => r.SingleAsync(It.IsAny<Expression<Func<AspNetUser, bool>>>()))
-                .ReturnsAsync(new AspNetUser());
+            context.AspNetUsers.Add(user);
+            await context.SaveChangesAsync();
 
-            await service.GetUser(userId);
+            var actual = await service.GetUser(user.Id);
 
-            dbRepositoryMock.Verify(r => r.SingleAsync(It.IsAny<Expression<Func<AspNetUser, bool>>>()));
-        }
-
-        [Fact]
-        public static async Task GetAllUsersForOrganisation_CallsGetAllAsync_OnRepository()
-        {
-            var users = new AspNetUser[]
-            {
-                new() { UserName = "One" },
-                new() { UserName = "Two" },
-            };
-
-            var mockUsersRepository = new Mock<IDbRepository<AspNetUser, BuyingCatalogueDbContext>>();
-            mockUsersRepository.Setup(r => r.GetAllAsync(It.IsAny<Expression<Func<AspNetUser, bool>>>()))
-                .ReturnsAsync(users);
-
-            var service = new UsersService(
-                mockUsersRepository.Object);
-
-            await service.GetAllUsersForOrganisation(27);
-
-            mockUsersRepository.Verify(r => r.GetAllAsync(It.IsAny<Expression<Func<AspNetUser, bool>>>()));
+            actual.Should().BeEquivalentTo(user);
         }
 
         [Theory]
-        [InlineData(true)]
-        [InlineData(false)]
-        public static async Task EnableOrDisableUser_GetsUser_SetsDisabled_AndUpdates(bool enabled)
+        [InMemoryDbAutoData]
+        public static async Task GetAllUsersForOrganisation_GetsCorrectUsersFromDatabase(
+            [Frozen] BuyingCatalogueDbContext context,
+            Organisation organisation,
+            AspNetUser user1,
+            AspNetUser user2,
+            AspNetUser user3,
+            UsersService service)
         {
-            var user = new AspNetUser { Disabled = !enabled };
+            context.Organisations.Add(organisation);
+            user1.PrimaryOrganisationId = organisation.Id;
+            user2.PrimaryOrganisationId = organisation.Id;
+            context.AspNetUsers.Add(user1);
+            context.AspNetUsers.Add(user2);
+            context.AspNetUsers.Add(user3);
+            await context.SaveChangesAsync();
 
-            var mockUsersRepository = new Mock<IDbRepository<AspNetUser, BuyingCatalogueDbContext>>();
-            mockUsersRepository.Setup(r => r.SingleAsync(It.IsAny<Expression<Func<AspNetUser, bool>>>()))
-                .ReturnsAsync(user);
+            var actual = await service.GetAllUsersForOrganisation(organisation.Id);
 
-            var service = new UsersService(
-                mockUsersRepository.Object);
+            actual.Count.Should().Be(2);
+            actual[0].UserName.Should().Be(user1.UserName);
+            actual[1].UserName.Should().Be(user2.UserName);
+        }
 
-            await service.EnableOrDisableUser(13, enabled);
+        [Theory]
+        [InMemoryDbAutoData]
+        public static async Task EnableOrDisableUser_DisableUser_UpdatesDatabaseCorrectly(
+            [Frozen] BuyingCatalogueDbContext context,
+            Organisation organisation,
+            AspNetUser user,
+            UsersService service)
+        {
+            context.Organisations.Add(organisation);
+            user.Disabled = false;
+            user.PrimaryOrganisationId = organisation.Id;
+            context.AspNetUsers.Add(user);
+            await context.SaveChangesAsync();
 
-            Assert.Equal(enabled, user.Disabled);
-            mockUsersRepository.Verify(r => r.SingleAsync(It.IsAny<Expression<Func<AspNetUser, bool>>>()));
-            mockUsersRepository.Verify(r => r.SaveChangesAsync());
+            await service.EnableOrDisableUser(user.Id, true);
+
+            var actual = await context.AspNetUsers.SingleAsync(u => u.Id == user.Id);
+
+            actual.Disabled.Should().BeTrue();
+        }
+
+        [Theory]
+        [InMemoryDbAutoData]
+        public static async Task EnableOrDisableUser_EnableUser_UpdatesDatabaseCorrectly(
+            [Frozen] BuyingCatalogueDbContext context,
+            Organisation organisation,
+            AspNetUser user,
+            UsersService service)
+        {
+            context.Organisations.Add(organisation);
+            user.Disabled = true;
+            user.PrimaryOrganisationId = organisation.Id;
+            context.AspNetUsers.Add(user);
+            await context.SaveChangesAsync();
+
+            await service.EnableOrDisableUser(user.Id, false);
+
+            var actual = await context.AspNetUsers.SingleAsync(u => u.Id == user.Id);
+
+            actual.Disabled.Should().BeFalse();
         }
     }
 }
