@@ -10,6 +10,7 @@ using FluentAssertions;
 using Microsoft.EntityFrameworkCore;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
+using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Models.AssociatedServices;
 using NHSD.GPIT.BuyingCatalogue.Services.AssociatedServices;
 using NHSD.GPIT.BuyingCatalogue.Test.Framework.AutoFixtureCustomisations;
@@ -27,24 +28,6 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.AssociatedServices
             var constructors = typeof(AssociatedServicesService).GetConstructors();
 
             assertion.Verify(constructors);
-        }
-
-        [Theory]
-        [InMemoryDbAutoData]
-        public static Task AddAssociatedService_NullCatalogueItem_ThrowsException(
-            AssociatedServicesDetailsModel model,
-            AssociatedServicesService service)
-        {
-            return Assert.ThrowsAsync<ArgumentNullException>(() => service.AddAssociatedService(null, model));
-        }
-
-        [Theory]
-        [InMemoryDbAutoData]
-        public static Task AddAssociatedService_NullModel_ThrowsException(
-            CatalogueItem item,
-            AssociatedServicesService service)
-        {
-            return Assert.ThrowsAsync<ArgumentNullException>(() => service.AddAssociatedService(item, null));
         }
 
         [Theory]
@@ -80,6 +63,84 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.AssociatedServices
                     .Excluding(ctx => ctx.CatalogueItem)
                     .Excluding(ctx => ctx.LastUpdated)
                     .Excluding(ctx => ctx.LastUpdatedBy));
+        }
+
+        [Theory]
+        [InMemoryDbAutoData]
+        public static Task AddAssociatedService_NullCatalogueItem_ThrowsException(
+        AssociatedServicesDetailsModel model,
+        AssociatedServicesService service)
+        {
+            return Assert.ThrowsAsync<ArgumentNullException>(() => service.AddAssociatedService(null, model));
+        }
+
+        [Theory]
+        [InMemoryDbAutoData]
+        public static Task AddAssociatedService_NullModel_ThrowsException(
+            CatalogueItem item,
+            AssociatedServicesService service)
+        {
+            return Assert.ThrowsAsync<ArgumentNullException>(() => service.AddAssociatedService(item, null));
+        }
+
+        [Theory]
+        [InMemoryDbAutoData]
+        public static async Task AddAssociatedService_UpdatesDatabase(
+           [Frozen] BuyingCatalogueDbContext context,
+           CatalogueItem solution,
+           AssociatedServicesDetailsModel model,
+           AssociatedServicesService service)
+        {
+            solution.Id = new CatalogueItemId(solution.Id.SupplierId, solution.Id.ItemId[4..]);
+            context.CatalogueItems.Add(solution);
+            await context.SaveChangesAsync();
+
+            var result = await service.AddAssociatedService(solution, model);
+
+            var dbSolution = await context.CatalogueItems.Include(c => c.AssociatedService).SingleAsync(c => c.Id == result);
+
+            dbSolution.Should().NotBeNull();
+            dbSolution.Name.Should().Be(model.Name);
+            dbSolution.CatalogueItemType.Should().Be(CatalogueItemType.AssociatedService);
+            dbSolution.SupplierId.Should().Be(solution.SupplierId);
+            dbSolution.PublishedStatus.Should().Be(PublicationStatus.Draft);
+            dbSolution.AssociatedService.Should().NotBeNull();
+            dbSolution.AssociatedService.Description.Should().Be(model.Description);
+            dbSolution.AssociatedService.OrderGuidance.Should().Be(model.OrderGuidance);
+        }
+
+        [Theory]
+        [CommonAutoData]
+        public static Task EditDetails_NullModel_ThrowsException(
+            CatalogueItemId additionalServiceId,
+            AssociatedServicesService service)
+        {
+            return Assert.ThrowsAsync<ArgumentNullException>(() => service.EditDetails(additionalServiceId, null));
+        }
+
+        [Theory]
+        [InMemoryDbAutoData]
+        public static async Task EditDetails_UpdatesDatabase(
+            [Frozen] BuyingCatalogueDbContext context,
+            CatalogueItem solution,
+            CatalogueItem associatedService,
+            AssociatedServicesDetailsModel model,
+            AssociatedServicesService service)
+        {
+            context.CatalogueItems.Add(solution);
+            associatedService.CatalogueItemType = CatalogueItemType.AssociatedService;
+            associatedService.AssociatedService = new AssociatedService { CatalogueItemId = solution.Id };
+            context.CatalogueItems.Add(associatedService);
+            await context.SaveChangesAsync();
+
+            await service.EditDetails(associatedService.Id, model);
+
+            var dbSolution = await context.CatalogueItems.Include(c => c.AssociatedService).SingleAsync(c => c.Id == associatedService.Id);
+
+            dbSolution.Should().NotBeNull();
+            dbSolution.Name.Should().Be(model.Name);
+            dbSolution.AssociatedService.Description.Should().Be(model.Description);
+            dbSolution.AssociatedService.OrderGuidance.Should().Be(model.OrderGuidance);
         }
     }
 }

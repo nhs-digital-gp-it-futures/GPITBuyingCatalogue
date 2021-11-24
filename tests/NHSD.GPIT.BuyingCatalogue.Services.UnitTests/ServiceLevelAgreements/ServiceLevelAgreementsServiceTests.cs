@@ -197,8 +197,8 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.ServiceLevelAgreements
                 .Single(s => s.SolutionId == solution.CatalogueItemId);
 
             sla.SlaType.Should().Be(SlaType.Type1);
-            sla.ServiceHours.ForEach(x => x.ApplicableDays.Should().NotBe(serviceAvailalabilityTime.ApplicableDays));
-            sla.ServiceLevels.ForEach(x => x.ServiceLevel.Should().NotBe(slaServiceLevel.ServiceLevel));
+            sla.ServiceHours.ForEach(s => s.ApplicableDays.Should().NotBe(serviceAvailalabilityTime.ApplicableDays));
+            sla.ServiceLevels.ForEach(s => s.ServiceLevel.Should().NotBe(slaServiceLevel.ServiceLevel));
             sla.ServiceHours.Count.Should().Be(2);
             sla.ServiceLevels.Count.Should().Be(5);
         }

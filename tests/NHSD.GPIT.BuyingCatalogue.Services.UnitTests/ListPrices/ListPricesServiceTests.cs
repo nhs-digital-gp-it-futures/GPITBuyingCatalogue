@@ -7,6 +7,7 @@ using AutoFixture.Idioms;
 using AutoFixture.Xunit2;
 using FluentAssertions;
 using Microsoft.EntityFrameworkCore;
+using MoreLinq;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Models;
@@ -121,6 +122,23 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.ListPrices
             var actual = await context.CataloguePrices.AsAsyncEnumerable().AnyAsync(cp => cp.CataloguePriceId == cataloguePriceIdToRemove);
 
             actual.Should().BeFalse();
+        }
+
+        [Theory]
+        [InMemoryDbAutoData]
+        public static async Task GetCatalogueItemWithPrices_RetrievesFromDatabase(
+            [Frozen] BuyingCatalogueDbContext context,
+            CatalogueItem catalogueItem,
+            ListPricesService service)
+        {
+            context.CatalogueItems.Add(catalogueItem);
+            await context.SaveChangesAsync();
+
+            var actual = await service.GetCatalogueItemWithPrices(catalogueItem.Id);
+
+            actual.Should().NotBeNull();
+            actual.CataloguePrices.Should().NotBeNullOrEmpty();
+            actual.CataloguePrices.ForEach(p => p.PricingUnit.Should().NotBeNull());
         }
     }
 }
