@@ -7,8 +7,8 @@ module "webapp" {
   pjtcode          = var.pjtcode
   rg_name          = azurerm_resource_group.webapp.name
   webapp_name      = "${var.project}-${var.environment}-webapp"
-  sku_tier         = "Standard"
-  sku_size         = "S1"
+  sku_tier         = local.shortenv == "preprod" || local.shortenv == "production" ? "PremiumV2" : "Standard"
+  sku_size         = local.shortenv == "preprod" || local.shortenv == "production" ? "P2v2" : "S1"
   acr_name         = "gpitfuturesdevacr"
   acr_pwd          = data.azurerm_container_registry.acr.admin_password
   acr_rg           = "gpitfutures-dev-rg-acr"
@@ -28,6 +28,8 @@ module "webapp" {
   customer_network_range = var.nhsd_network_range
   smtp_server_host = var.smtp_server_host
   smtp_server_port = var.smtp_server_port
+  smtp_server_username = var.smtp_server_username
+  smtp_server_password = var.smtp_server_password
   vnet_subnet_id = azurerm_subnet.gateway.id
   app_dns_url = var.app_url
   docker_registry_server_url = data.azurerm_container_registry.acr.login_server

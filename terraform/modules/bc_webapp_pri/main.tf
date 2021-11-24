@@ -30,7 +30,9 @@ resource "azurerm_app_service" "webapp" {
     APPINSIGHTS_INSTRUMENTATIONKEY      = var.instrumentation_key
     BC_SMTP_HOST                        = var.smtp_server_host
     BC_SMTP_PORT                        = var.smtp_server_port   
-
+    BC_SMTP_USERNAME                    = var.smtp_server_username
+    BC_SMTP_PASSWORD                    = var.smtp_server_password
+    
     # Settings for Container Registy  
     DOCKER_REGISTRY_SERVER_URL          = "https://${var.docker_registry_server_url}" 
     DOCKER_REGISTRY_SERVER_USERNAME     = var.docker_registry_server_username
@@ -81,7 +83,6 @@ resource "azurerm_app_service" "webapp" {
 
   lifecycle {
     ignore_changes = [
-      app_settings,
       site_config[0].linux_fx_version
     ]
   }
