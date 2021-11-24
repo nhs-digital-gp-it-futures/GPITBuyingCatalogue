@@ -52,7 +52,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Controllers
                 .ReturnsAsync(pagedList);
 
             mockService.Setup(s => s.GetAllFrameworksAndCountForFilter())
-                .ReturnsAsync(new Dictionary<EntityFramework.Catalogue.Models.Framework, int>());
+                .ReturnsAsync(new List<KeyValuePair<EntityFramework.Catalogue.Models.Framework, int>>());
 
             mockService.Setup(s => s.GetAllCategoriesAndCountForFilter(It.IsAny<string>()))
                 .ReturnsAsync(categoryModel);
@@ -79,7 +79,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Controllers
                 .ReturnsAsync(pagedList);
 
             mockService.Setup(s => s.GetAllFrameworksAndCountForFilter())
-                .ReturnsAsync(new Dictionary<EntityFramework.Catalogue.Models.Framework, int>());
+                .ReturnsAsync(new List<KeyValuePair<EntityFramework.Catalogue.Models.Framework, int>>());
 
             mockService.Setup(s => s.GetAllCategoriesAndCountForFilter(It.IsAny<string>()))
                 .ReturnsAsync(categoryModel);
@@ -109,9 +109,11 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Controllers
 
             mockService.Setup(s => s.GetAllFrameworksAndCountForFilter())
                 .ReturnsAsync(
-                new Dictionary<EntityFramework.Catalogue.Models.Framework, int>
+                new List<KeyValuePair<EntityFramework.Catalogue.Models.Framework, int>>
                 {
-                    { new EntityFramework.Catalogue.Models.Framework { Id = "All", ShortName = "All" }, 10 },
+                    new KeyValuePair<EntityFramework.Catalogue.Models.Framework, int>(
+                        new EntityFramework.Catalogue.Models.Framework { Id = "All", ShortName = "All" },
+                        10),
                 });
 
             mockService.Setup(s => s.GetAllCategoriesAndCountForFilter(It.IsAny<string>()))

@@ -13,7 +13,7 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions
             string frameworkId = null,
             string selectedCapabilities = null);
 
-        Task<Dictionary<Framework, int>> GetAllFrameworksAndCountForFilter();
+        Task<List<KeyValuePair<Framework, int>>> GetAllFrameworksAndCountForFilter();
 
         Task<CategoryFilterModel> GetAllCategoriesAndCountForFilter(string frameworkId = null);
     }

@@ -45,16 +45,14 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers
 
             var frameworks = await solutionsFilterService.GetAllFrameworksAndCountForFilter();
 
-            var categories = await solutionsFilterService.GetAllCategoriesAndCountForFilter(selectedFramework);
-
             return View(new SolutionsModel(frameworks)
             {
                 CatalogueItems = solutions.Items,
                 Options = solutions.Options,
                 SelectedFramework = selectedFramework ?? FrameworkFilterKeys.GenericCacheKey,
-                CategoryFilters = categories.CategoryFilters,
-                FoundationCapabilities = categories.FoundationCapabilities,
-                CountOfSolutionsWithFoundationCapability = categories.CountOfCatalogueItemsWithFoundationCapabilities,
+                CategoryFilters = default,
+                FoundationCapabilities = default,
+                CountOfSolutionsWithFoundationCapability = default,
                 SelectedCapabilities = capabilities,
             });
         }
@@ -63,6 +61,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers
         public async Task<IActionResult> LoadCatalogueSolutionsFilter([FromQuery] string selectedFramework)
         {
             var cacheKey = selectedFramework ?? FrameworkFilterKeys.GenericCacheKey;
+
             var html = filterCache.Get(cacheKey);
 
             if (html is not null)
@@ -83,7 +82,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers
                 },
                 true);
 
-            filterCache.Set(cacheKey, result, DateTime.Now.AddSeconds(60));
+            filterCache.Set(cacheKey, result);
 
             return Content(result);
         }

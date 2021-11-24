@@ -18,14 +18,13 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Caching
         public static void Set_AddsToCache(
             string filterKey,
             string content,
-            DateTime expiration,
             [Frozen] Mock<IMemoryCache> memoryCache,
-            [Frozen] FilterCacheKeySettings filterCacheKeySettings,
+            [Frozen] FilterCacheKeysSettings filterCacheKeySettings,
             FilterCache filterCache)
         {
-            var expectedCacheKey = $"{filterCacheKeySettings.FilterCacheKey}{filterKey}";
+            var expectedCacheKey = $"{filterCacheKeySettings.FrameworkFilterKey}{filterKey}";
 
-            filterCache.Set(filterKey, content, expiration);
+            filterCache.Set(filterKey, content);
 
             memoryCache.Verify(m => m.CreateEntry(expectedCacheKey));
         }
@@ -35,10 +34,10 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Caching
         public static void Remove_RemovesFromCache(
             string filterKey,
             [Frozen] Mock<IMemoryCache> memoryCache,
-            [Frozen] FilterCacheKeySettings filterCacheKeySettings,
+            [Frozen] FilterCacheKeysSettings filterCacheKeySettings,
             FilterCache filterCache)
         {
-            var expectedCacheKey = $"{filterCacheKeySettings.FilterCacheKey}{filterKey}";
+            var expectedCacheKey = $"{filterCacheKeySettings.FrameworkFilterKey}{filterKey}";
 
             filterCache.Remove(filterKey);
 
@@ -51,10 +50,10 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Caching
             string filterKey,
             string content,
             [Frozen] Mock<IMemoryCache> memoryCache,
-            [Frozen] FilterCacheKeySettings filterCacheKeySettings,
+            [Frozen] FilterCacheKeysSettings filterCacheKeySettings,
             FilterCache filterCache)
         {
-            var cacheKey = $"{filterCacheKeySettings.FilterCacheKey}{filterKey}";
+            var cacheKey = $"{filterCacheKeySettings.FrameworkFilterKey}{filterKey}";
 
             object cacheContent = content;
             memoryCache.Setup(m => m.TryGetValue(cacheKey, out cacheContent))
@@ -65,14 +64,6 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Caching
             actualContent
                 .Should()
                 .Be(content);
-        }
-
-        [Theory]
-        [CommonAutoData]
-        public static void Remove_IEnumerableString_NullEnumerable_ThrowsException(
-            FilterCache filterCache)
-        {
-             Assert.Throws<ArgumentNullException>(() => filterCache.Remove((IEnumerable<string>)null));
         }
 
         [Theory]

@@ -75,33 +75,31 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
             return new PagedList<CatalogueItem>(results, options);
         }
 
-        public async Task<Dictionary<EntityFramework.Catalogue.Models.Framework, int>> GetAllFrameworksAndCountForFilter()
+        public async Task<List<KeyValuePair<EntityFramework.Catalogue.Models.Framework, int>>> GetAllFrameworksAndCountForFilter()
         {
             var allSolutionsCount = await dbContext.CatalogueItems.AsNoTracking()
-                .Where(ci => ci.PublishedStatus == PublicationStatus.Published && ci.CatalogueItemType == CatalogueItemType.Solution)
-                .CountAsync();
+                .CountAsync(ci => ci.PublishedStatus == PublicationStatus.Published && ci.CatalogueItemType == CatalogueItemType.Solution);
 
-            var frameworkSolutions = await dbContext.FrameworkSolutions.AsNoTracking()
-                .Include(fs => fs.Framework)
+            var frameworks = await dbContext.FrameworkSolutions.AsNoTracking()
                 .Where(fs => fs.Solution.CatalogueItem.PublishedStatus == PublicationStatus.Published)
-                .OrderBy(fs => fs.Framework.ShortName)
+                .Select(fs => fs.Framework)
                 .ToListAsync();
 
-            var results = frameworkSolutions
-                .GroupBy(fs => fs.Framework.Id)
-                .Select(fs => new KeyValuePair<EntityFramework.Catalogue.Models.Framework, int>(fs.First().Framework, fs.Count())).ToList();
+            var results = frameworks
+                .GroupBy(fw => fw.Id)
+                .Select(group => new KeyValuePair<EntityFramework.Catalogue.Models.Framework, int>(group.First(), group.Count()))
+                .OrderBy(g => g.Key.ShortName)
+                .ToList();
 
-            results.Insert(
-                0,
-                new KeyValuePair<EntityFramework.Catalogue.Models.Framework, int>(
-                    new EntityFramework.Catalogue.Models.Framework
-                    {
-                        Id = AllSolutionsFrameworkKey,
-                        ShortName = AllSolutionsFrameworkKey,
-                    },
-                    allSolutionsCount));
+            var allSolutionsFramework = new EntityFramework.Catalogue.Models.Framework
+            {
+                Id = AllSolutionsFrameworkKey,
+                ShortName = AllSolutionsFrameworkKey,
+            };
 
-            return results.ToDictionary(r => r.Key, r => r.Value);
+            results.Insert(0, new KeyValuePair<EntityFramework.Catalogue.Models.Framework, int>(allSolutionsFramework, allSolutionsCount));
+
+            return results;
         }
 
         public async Task<CategoryFilterModel> GetAllCategoriesAndCountForFilter(string frameworkId = null)

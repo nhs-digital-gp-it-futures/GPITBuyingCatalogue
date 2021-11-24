@@ -188,11 +188,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp
 
         public static IServiceCollection ConfigureCacheKeySettings(this IServiceCollection services, IConfiguration configuration)
         {
-            var filterCacheKeySettings = new FilterCacheKeySettings
-            {
-                FilterCacheKey = configuration.GetValue<string>("filterCacheKey"),
-            };
-
+            var filterCacheKeySettings = configuration.GetSection(FilterCacheKeysSettings.SectionName).Get<FilterCacheKeysSettings>();
             services.AddSingleton(filterCacheKeySettings);
 
             return services;
