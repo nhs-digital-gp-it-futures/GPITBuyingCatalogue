@@ -7,10 +7,10 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.Caching
     {
         string Get(string filterKey);
 
-        void Set(string filterKey, string content, DateTime expiration);
+        void Set(string filterKey, string content);
 
         void Remove(string filterKey);
 
-        void Remove(IEnumerable<string> filterKeys);
+        void RemoveAll();
     }
 }

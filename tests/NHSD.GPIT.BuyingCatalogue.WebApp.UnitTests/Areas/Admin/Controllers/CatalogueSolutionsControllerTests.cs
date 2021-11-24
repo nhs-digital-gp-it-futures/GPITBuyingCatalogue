@@ -1898,7 +1898,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
 
             await controller.SetPublicationStatus(catalogueItem.Id, manageCatalogueSolutionModel);
 
-            mockFilterCache.Verify(f => f.Remove(It.IsAny<IEnumerable<string>>()));
+            mockFilterCache.Verify(f => f.RemoveAll());
         }
 
         [Theory]

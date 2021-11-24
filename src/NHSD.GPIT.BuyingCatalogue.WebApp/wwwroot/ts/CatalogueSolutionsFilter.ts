@@ -100,15 +100,19 @@ class CatalogueSolutionsFilter {
 
         const xhttp: XMLHttpRequest = new XMLHttpRequest();
 
-        xhttp.onreadystatechange = function (): void {
-            if (xhttp.readyState === 4) {
+        xhttp.onreadystatechange = (event : Event): any => {
+            if (xhttp.readyState === XMLHttpRequest.DONE) {
                 if (xhttp.status === 200) {
-                    refreshCapabilitiesAndEpics(xhttp.responseText);
+                    this.refreshCapabilitiesAndEpics(xhttp.responseText);
                 } else {
                     console.log("Error: " + xhttp.status);
                 }
             }
         };
+
+        xhttp.open("GET", targetUrl.toString(), true);
+
+        xhttp.send();
     }
 
     reselectCapabilityAndEpicsFiltersAndFrameworkFilter = () => {
@@ -153,6 +157,20 @@ class CatalogueSolutionsFilter {
             input.checked = true;
         }
     }
+
+    refreshCapabilitiesAndEpics = (html: string) => {
+    const filterHtml: Document = new DOMParser().parseFromString(html, "text/html");
+
+    const newCapabilities: HTMLElement = filterHtml.getElementById(filterCapabilitiesDetails)!.querySelector(filterDetailsText);
+
+    const currentCapabilities: HTMLElement = document.getElementById(filterCapabilitiesDetails)!.querySelector(filterDetailsText);
+
+    currentCapabilities.parentNode!.removeChild(currentCapabilities);
+
+    document.getElementById(filterCapabilitiesDetails)!.appendChild(newCapabilities);
+
+    this.RefireDomContentLoadedEvent();
+}
 
     CheckCheckboxWithHiddenInputValue(value: string): void {
         const selector: string = "#" + filterContainer + " " + NhsukCheckboxesItem + " " + InputTypeHidden + "[value='" + value + "']";
@@ -232,7 +250,7 @@ window.onload = function (): void {
     const xhttp: XMLHttpRequest = new XMLHttpRequest();
 
     xhttp.onreadystatechange = function (): void {
-        if (xhttp.readyState === 4) {
+        if (xhttp.readyState === XMLHttpRequest.DONE) {
             if (xhttp.status === 200) {
                 catalgoueSolutionsFilter.ReplaceFilterAndAddBinders(xhttp.responseText);
             } else {
@@ -257,17 +275,3 @@ window.onload = function (): void {
 
     xhttp.send();
 };
-
-function refreshCapabilitiesAndEpics(html: string): void {
-    const filterHtml: Document = new DOMParser().parseFromString(html, "text/html");
-
-    const newCapabilities: HTMLElement = filterHtml.getElementById(filterCapabilitiesDetails)!.querySelector(filterDetailsText);
-
-    const currentCapabilities: HTMLElement = document.getElementById(filterCapabilitiesDetails)!.querySelector(filterDetailsText);
-
-    currentCapabilities.parentNode!.removeChild(currentCapabilities);
-
-    document.getElementById(filterCapabilitiesDetails)!.appendChild(newCapabilities);
-
-    this.RefireDomContentLoadedEvent();
-}

@@ -14,7 +14,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models
         {
         }
 
-        public SolutionsModel(Dictionary<EntityFramework.Catalogue.Models.Framework, int> frameworks)
+        public SolutionsModel(List<KeyValuePair<EntityFramework.Catalogue.Models.Framework, int>> frameworks)
         {
             FrameworkFilters = frameworks
                .Select(f =>

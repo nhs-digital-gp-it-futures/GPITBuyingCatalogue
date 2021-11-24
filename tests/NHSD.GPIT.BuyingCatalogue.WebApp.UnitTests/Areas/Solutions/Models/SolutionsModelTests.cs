@@ -15,7 +15,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Models
         {
             var expectedCount = 10;
 
-            var frameworks = new Dictionary<EntityFramework.Catalogue.Models.Framework, int> { { framework, expectedCount } };
+            var frameworks = new List<KeyValuePair<EntityFramework.Catalogue.Models.Framework, int>>
+            {
+                new KeyValuePair<EntityFramework.Catalogue.Models.Framework, int>(framework, expectedCount),
+            };
 
             var model = new SolutionsModel(frameworks);
 
@@ -32,7 +35,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Models
 
             var framework = new EntityFramework.Catalogue.Models.Framework { Id = "All", ShortName = "All" };
 
-            var frameworks = new Dictionary<EntityFramework.Catalogue.Models.Framework, int> { { framework, expectedCount } };
+            var frameworks = new List<KeyValuePair<EntityFramework.Catalogue.Models.Framework, int>>
+            {
+                new KeyValuePair<EntityFramework.Catalogue.Models.Framework, int>(framework, expectedCount),
+            };
 
             var model = new SolutionsModel(frameworks);
 

@@ -29,8 +29,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
     [Route("admin/catalogue-solutions")]
     public sealed class CatalogueSolutionsController : Controller
     {
-        private static readonly string[] FilterCacheKeys = new string[] { FrameworkFilterKeys.GenericCacheKey };
-
         private readonly ISolutionsService solutionsService;
         private readonly IAssociatedServicesService associatedServicesService;
         private readonly IAdditionalServicesService additionalServicesService;
@@ -129,10 +127,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
                 return RedirectToAction(nameof(Index));
 
             await solutionsService.SavePublicationStatus(solutionId, model.SelectedPublicationStatus);
-            var frameworkIds = FilterCacheKeys.Concat(
-                solution.Solution.FrameworkSolutions.Select(f => f.FrameworkId));
 
-            filterCache.Remove(frameworkIds);
+            filterCache.RemoveAll();
 
             return RedirectToAction(nameof(Index));
         }
@@ -183,6 +179,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
                 model.SolutionName,
                 model.SupplierId ?? default,
                 model.Frameworks);
+
+            filterCache.RemoveAll();
 
             return RedirectToAction(nameof(ManageCatalogueSolution), new { solutionId });
         }
@@ -768,6 +766,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
             };
 
             await capabilitiesService.AddCapabilitiesToCatalogueItem(solutionId, saveRequestModel);
+
+            filterCache.RemoveAll();
 
             return RedirectToAction(nameof(ManageCatalogueSolution), new { solutionId });
         }
