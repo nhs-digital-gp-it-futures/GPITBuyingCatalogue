@@ -5,10 +5,12 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Users.Models;
+using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.Framework.Identity;
 using NHSD.GPIT.BuyingCatalogue.Framework.Settings;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Identity;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Identity.Models;
+using NHSD.GPIT.BuyingCatalogue.WebApp.Models;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Identity.Controllers
 {
@@ -96,7 +98,15 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Identity.Controllers
         [HttpGet("Registration")]
         public IActionResult Registration()
         {
-            return View();
+            var model = new NavBaseModel
+            {
+                BackLink = Url.Action(
+                    nameof(AccountController.Login),
+                    typeof(AccountController).ControllerName()),
+                BackLinkText = "Back to log in",
+            };
+
+            return View(model);
         }
 
         [HttpGet("ForgotPassword")]
