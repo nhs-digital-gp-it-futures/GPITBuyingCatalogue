@@ -230,7 +230,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
             var frameworks = data.Solution.FrameworkSolutions.ToList();
             frameworks.RemoveAll(f => selectedFrameworks.Any(sf => f.FrameworkId == sf.FrameworkId && sf.Selected == false));
 
-            foreach (var framework in selectedFrameworks.Where(x => x.Selected))
+            foreach (var framework in selectedFrameworks.Where(f => f.Selected))
             {
                 var existingFramework = frameworks.FirstOrDefault(fs => fs.FrameworkId == framework.FrameworkId);
 
