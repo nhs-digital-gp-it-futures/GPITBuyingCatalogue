@@ -44,11 +44,8 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Caching
             }
         }
 
-        public void RemoveAll()
-        {
-            var cancellationToken = memoryCache.Get<CancellationTokenSource>(filterCacheKeySettings.CancellationSourceKey);
-            cancellationToken.Cancel();
-        }
+        public void RemoveAll() =>
+            memoryCache.Get<CancellationTokenSource>(filterCacheKeySettings.CancellationSourceKey).Cancel();
 
         public void Set(string filterKey, string content)
         {
