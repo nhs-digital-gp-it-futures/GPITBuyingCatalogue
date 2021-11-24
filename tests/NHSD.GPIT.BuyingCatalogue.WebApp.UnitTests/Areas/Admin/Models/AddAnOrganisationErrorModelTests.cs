@@ -18,7 +18,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Models
             actual.OdsCode.Should().Be(odsCode);
             actual.Error.Should().Be(error);
             actual.BackLinkText.Should().Be("Back to find an organisation page");
-            actual.BackLink.Should().Be("/admin/organisations/find");
         }
     }
 }

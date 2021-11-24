@@ -30,7 +30,27 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
             if (solution is null)
                 return BadRequest($"No Solution found for Id: {solutionId}");
 
-            return View(new DeleteApplicationTypeConfirmationModel(solution, applicationType));
+            var model = new DeleteApplicationTypeConfirmationModel(solution, applicationType)
+            {
+                BackLink = applicationType switch
+                {
+                    ClientApplicationType.BrowserBased => Url.Action(
+                        nameof(CatalogueSolutionsController.BrowserBased),
+                        typeof(CatalogueSolutionsController).ControllerName(),
+                        new { solutionId }),
+                    ClientApplicationType.Desktop => Url.Action(
+                        nameof(DesktopBasedController.Desktop),
+                        typeof(DesktopBasedController).ControllerName(),
+                        new { solutionId }),
+                    ClientApplicationType.MobileTablet => Url.Action(
+                        nameof(MobileTabletBasedController.MobileTablet),
+                        typeof(MobileTabletBasedController).ControllerName(),
+                        new { solutionId }),
+                    _ => throw new ArgumentOutOfRangeException(nameof(applicationType)),
+                },
+            };
+
+            return View(model);
         }
 
         [HttpPost("manage/{solutionId}/client-application-type/delete/{applicationType}")]

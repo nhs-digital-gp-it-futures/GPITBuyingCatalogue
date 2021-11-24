@@ -50,7 +50,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.InteroperabilityMo
             Link = catalogueItem.Solution?.IntegrationsUrl;
             SolutionName = catalogueItem.Name;
             CatalogueItemId = catalogueItem.Id;
-            BackLink = $"/admin/catalogue-solutions/manage/{catalogueItem.Id}";
         }
 
         public TaskProgress Status() =>

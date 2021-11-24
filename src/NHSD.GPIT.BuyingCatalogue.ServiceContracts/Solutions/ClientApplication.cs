@@ -76,6 +76,9 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions
                 ClientApplicationTypes.Add(clientApplicationType.AsString(EnumFormat.EnumMemberValue));
         }
 
+        public bool HasClientApplicationType(ClientApplicationType clientApplicationType)
+            => ClientApplicationTypes?.Any(type => type.Equals(clientApplicationType.AsString(EnumFormat.EnumMemberValue), StringComparison.OrdinalIgnoreCase)) ?? false;
+
         public TaskProgress AdditionalInformationStatus() => Status(AdditionalInformation);
 
         public TaskProgress ConnectivityStatus() => Status(MinimumConnectionSpeed);

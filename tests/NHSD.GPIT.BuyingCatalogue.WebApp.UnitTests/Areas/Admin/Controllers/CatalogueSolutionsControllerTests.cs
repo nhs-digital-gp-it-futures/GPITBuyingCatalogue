@@ -515,7 +515,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
 
             mockService.Verify(s => s.GetSolution(catalogueItemId));
             actual.ViewName.Should().BeNull();
-            actual.Model.Should().BeEquivalentTo(new HostingTypeSectionModel(catalogueItem));
+            actual.Model.Should().BeEquivalentTo(new HostingTypeSectionModel(catalogueItem), opt => opt.Excluding(m => m.BackLink));
         }
 
         [Theory]
@@ -585,7 +585,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
 
             mockService.Verify(s => s.GetSolution(catalogueItemId));
             actual.ViewName.Should().BeNull();
-            actual.Model.Should().BeEquivalentTo(new HostingTypeSectionModel(catalogueItem));
+            actual.Model.Should().BeEquivalentTo(new HostingTypeSectionModel(catalogueItem), opt => opt.Excluding(m => m.BackLink));
         }
 
         [Theory]
@@ -619,7 +619,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
 
             mockService.Verify(s => s.GetSolution(catalogueItemId));
             actual.ViewName.Should().BeNull();
-            actual.Model.Should().BeEquivalentTo(new HostingTypeSelectionModel(catalogueItem));
+            actual.Model.Should().BeEquivalentTo(new HostingTypeSelectionModel(catalogueItem), opt => opt.Excluding(m => m.BackLink));
         }
 
         [Theory]
@@ -1123,16 +1123,16 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
         [Theory]
         [CommonAutoData]
         public static async Task Get_BrowserBased_GetsSolutionFromService(
-            CatalogueItemId catalogueItemId,
+            Solution solution,
             [Frozen] Mock<ISolutionsService> mockService,
             CatalogueSolutionsController controller)
         {
-            mockService.Setup(s => s.GetSolution(catalogueItemId))
-                .ReturnsAsync(new CatalogueItem());
+            mockService.Setup(s => s.GetSolution(solution.CatalogueItemId))
+                .ReturnsAsync(solution.CatalogueItem);
 
-            await controller.BrowserBased(catalogueItemId);
+            await controller.BrowserBased(solution.CatalogueItemId);
 
-            mockService.Verify(s => s.GetSolution(catalogueItemId));
+            mockService.Verify(s => s.GetSolution(solution.CatalogueItemId));
         }
 
         [Theory]
@@ -1153,19 +1153,19 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
         [Theory]
         [CommonAutoData]
         public static async Task Get_BrowserBased_ValidId_ReturnsViewWithExpectedModel(
-            CatalogueItem catalogueItem,
+            Solution solution,
             CatalogueItemId catalogueItemId,
             [Frozen] Mock<ISolutionsService> mockService,
             CatalogueSolutionsController controller)
         {
             mockService.Setup(s => s.GetSolution(catalogueItemId))
-                .ReturnsAsync(catalogueItem);
+                .ReturnsAsync(solution.CatalogueItem);
 
             var actual = (await controller.BrowserBased(catalogueItemId)).As<ViewResult>();
 
             mockService.Verify(s => s.GetSolution(catalogueItemId));
             actual.ViewName.Should().BeNull();
-            actual.Model.Should().BeEquivalentTo(new BrowserBasedModel(catalogueItem));
+            actual.Model.Should().BeEquivalentTo(new BrowserBasedModel(solution.CatalogueItem), opt => opt.Excluding(m => m.BackLink));
         }
 
         [Theory]
@@ -1755,7 +1755,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
 
             mockService.Verify(s => s.GetSolution(catalogueItemId));
             actual.ViewName.Should().BeNull();
-            actual.Model.Should().BeEquivalentTo(new ClientApplicationTypeSectionModel(catalogueItem));
+            actual.Model.Should().BeEquivalentTo(new ClientApplicationTypeSectionModel(catalogueItem), opt => opt.Excluding(m => m.BackLink));
         }
 
         [Theory]
@@ -1789,7 +1789,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
 
             mockService.Verify(s => s.GetSolution(catalogueItemId));
             actual.ViewName.Should().BeNull();
-            actual.Model.Should().BeEquivalentTo(new ClientApplicationTypeSectionModel(catalogueItem));
+            actual.Model.Should().BeEquivalentTo(new ClientApplicationTypeSectionModel(catalogueItem), opt => opt.Excluding(m => m.BackLink));
         }
 
         [Theory]
@@ -1824,7 +1824,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
 
             mockService.Verify(s => s.GetSolution(catalogueItemId));
             actual.ViewName.Should().BeNull();
-            actual.Model.Should().BeEquivalentTo(new ClientApplicationTypeSelectionModel(catalogueItem));
+            actual.Model.Should().BeEquivalentTo(new ClientApplicationTypeSelectionModel(catalogueItem), opt => opt.Excluding(m => m.BackLink));
         }
 
         [Theory]

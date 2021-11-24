@@ -1,7 +1,5 @@
 ﻿using System;
-using System.Linq;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
-using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Enums;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions;
 
@@ -18,13 +16,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.MobileTabletBasedM
         {
             if (catalogueItem is null)
                 throw new ArgumentNullException(nameof(catalogueItem));
-
-            var clientApplicationTypes = catalogueItem.Solution?.GetClientApplication()?.ClientApplicationTypes;
-
-            if (clientApplicationTypes?.Any(type => type.Equals("native-mobile", StringComparison.OrdinalIgnoreCase)) ?? false)
-                BackLink = $"/admin/catalogue-solutions/manage/{catalogueItem.Id}/client-application-type";
-            else
-                BackLink = $"/admin/catalogue-solutions/manage/{catalogueItem.Id}/client-application-type/add-application-type";
 
             ApplicationType = ClientApplicationType.MobileTablet;
         }

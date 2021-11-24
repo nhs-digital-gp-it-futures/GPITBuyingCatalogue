@@ -30,7 +30,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Models.Interope
 
             var actual = new InteroperabilityModel(catalogueItem);
 
-            actual.BackLink.Should().Be($"/admin/catalogue-solutions/manage/{catalogueItem.Id}");
             actual.CatalogueItemId.Should().Be(catalogueItem.Id);
             actual.SolutionName.Should().BeEquivalentTo(expected.SolutionName);
             actual.Link.Should().BeEquivalentTo(expected.Link);

@@ -20,7 +20,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Models.DesktopB
 
             actual.ThirdPartyComponents.Should().Be(solution.GetClientApplication().NativeDesktopThirdParty.ThirdPartyComponents);
             actual.DeviceCapabilities.Should().Be(solution.GetClientApplication().NativeDesktopThirdParty.DeviceCapabilities);
-            actual.BackLink.Should().Be($"/admin/catalogue-solutions/manage/{catalogueItem.Id}/client-application-type/desktop");
         }
 
         [Fact]

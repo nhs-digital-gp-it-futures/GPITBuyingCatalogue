@@ -23,8 +23,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Models.MobileTa
 
             actual.Description.Should().Be(mobileOperatingSystems.OperatingSystemsDescription);
 
-            actual.BackLink.Should().Be($"/admin/catalogue-solutions/manage/{catalogueItem.Id}/client-application-type/mobiletablet");
-
             actual.OperatingSystems.Should().BeEquivalentTo(new SupportedOperatingSystemModel[]
             {
                 new() { OperatingSystemName = "Apple IOS", Checked = mobileOperatingSystems.OperatingSystems.Any(t => t.EqualsIgnoreCase("Apple IOS")) },

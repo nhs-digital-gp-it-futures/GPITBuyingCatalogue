@@ -20,7 +20,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Models.MobileTa
 
             actual.ThirdPartyComponents.Should().Be(solution.GetClientApplication().MobileThirdParty.ThirdPartyComponents);
             actual.DeviceCapabilities.Should().Be(solution.GetClientApplication().MobileThirdParty.DeviceCapabilities);
-            actual.BackLink.Should().Be($"/admin/catalogue-solutions/manage/{catalogueItem.Id}/client-application-type/mobiletablet");
         }
 
         [Fact]

@@ -12,7 +12,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.AssociatedServices
 
         public AddAssociatedServiceModel(CatalogueItem catalogueItem)
         {
-            BackLink = $"/admin/catalogue-solutions/manage/{catalogueItem.Id}/associated-services";
             Solution = catalogueItem;
         }
 

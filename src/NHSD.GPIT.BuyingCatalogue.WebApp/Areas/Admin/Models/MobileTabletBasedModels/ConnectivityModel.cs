@@ -21,8 +21,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.MobileTabletBasedM
             if (catalogueItem is null)
                 throw new ArgumentNullException(nameof(catalogueItem));
 
-            BackLink = $"/admin/catalogue-solutions/manage/{catalogueItem.Id}/client-application-type/mobiletablet";
-
             ConnectionSpeeds = Framework.Constants.SelectLists.ConnectionSpeeds;
             SetConnectionTypes();
 

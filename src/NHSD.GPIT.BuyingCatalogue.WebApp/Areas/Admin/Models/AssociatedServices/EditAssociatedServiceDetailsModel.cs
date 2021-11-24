@@ -12,7 +12,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.AssociatedServices
 
         public EditAssociatedServiceDetailsModel(CatalogueItem solution, CatalogueItem associatedServiceItem)
         {
-            BackLink = $"/admin/catalogue-solutions/manage/{solution.Id}/associated-services/{associatedServiceItem.Id}/edit-associated-service/";
             AssociatedService = associatedServiceItem;
             Name = associatedServiceItem.Name;
             Description = associatedServiceItem.AssociatedService.Description;

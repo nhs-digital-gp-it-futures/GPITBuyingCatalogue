@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
+using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.MobileTabletBasedModels;
 
@@ -30,7 +31,21 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
             if (solution is null)
                 return BadRequest($"No Solution found for Id: {solutionId}");
 
-            return View(new MobileTabletBasedModel(solution));
+            var clientApplication = solution.Solution.GetClientApplication();
+            var model = new MobileTabletBasedModel(solution)
+            {
+                BackLink = clientApplication?.HasClientApplicationType(ClientApplicationType.MobileTablet) ?? false
+                           ? Url.Action(
+                               nameof(CatalogueSolutionsController.AddApplicationType),
+                               typeof(CatalogueSolutionsController).ControllerName(),
+                               new { solutionId })
+                           : Url.Action(
+                               nameof(CatalogueSolutionsController.ClientApplicationType),
+                               typeof(CatalogueSolutionsController).ControllerName(),
+                               new { solutionId }),
+            };
+
+            return View(model);
         }
 
         [HttpGet("manage/{solutionId}/client-application-type/mobiletablet/operating-systems")]
@@ -41,7 +56,12 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
             if (solution is null)
                 return BadRequest($"No Solution found for Id: {solutionId}");
 
-            return View(new OperatingSystemsModel(solution));
+            var model = new OperatingSystemsModel(solution)
+            {
+                BackLink = Url.Action(nameof(MobileTablet), new { solutionId }),
+            };
+
+            return View(model);
         }
 
         [HttpPost("manage/{solutionId}/client-application-type/mobiletablet/operating-systems")]
@@ -88,7 +108,12 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
             if (solution is null)
                 return BadRequest($"No Solution found for Id: {solutionId}");
 
-            return View(new ConnectivityModel(solution));
+            var model = new ConnectivityModel(solution)
+            {
+                BackLink = Url.Action(nameof(MobileTablet), new { solutionId }),
+            };
+
+            return View(model);
         }
 
         [HttpPost("manage/{solutionId}/client-application-type/mobiletablet/connectivity")]
@@ -133,7 +158,11 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
             if (solution is null)
                 return BadRequest($"No Solution found for Id: {solutionId}");
 
-            return View(new MemoryAndStorageModel(solution));
+            var model = new MemoryAndStorageModel(solution)
+            {
+                BackLink = Url.Action(nameof(MobileTablet), new { solutionId }),
+            };
+            return View(model);
         }
 
         [HttpPost("manage/{solutionId}/client-application-type/mobiletablet/memory-and-storage")]
@@ -167,7 +196,12 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
             if (solution is null)
                 return BadRequest($"No Solution found for Id: {solutionId}");
 
-            return View(new ThirdPartyComponentsModel(solution));
+            var model = new ThirdPartyComponentsModel(solution)
+            {
+                BackLink = Url.Action(nameof(MobileTablet), new { solutionId }),
+            };
+
+            return View(model);
         }
 
         [HttpPost("manage/{solutionId}/client-application-type/mobiletablet/third-party-components")]
@@ -201,7 +235,12 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
             if (solution is null)
                 return BadRequest($"No Solution found for Id: {solutionId}");
 
-            return View(new HardwareRequirementsModel(solution));
+            var model = new HardwareRequirementsModel(solution)
+            {
+                BackLink = Url.Action(nameof(MobileTablet), new { solutionId }),
+            };
+
+            return View(model);
         }
 
         [HttpPost("manage/{solutionId}/client-application-type/mobiletablet/hardware-requirements")]
@@ -232,7 +271,12 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
             if (solution is null)
                 return BadRequest($"No Solution found for Id: {solutionId}");
 
-            return View(new AdditionalInformationModel(solution));
+            var model = new AdditionalInformationModel(solution)
+            {
+                BackLink = Url.Action(nameof(MobileTablet), new { solutionId }),
+            };
+
+            return View(model);
         }
 
         [HttpPost("manage/{solutionId}/client-application-type/mobiletablet/additional-information")]

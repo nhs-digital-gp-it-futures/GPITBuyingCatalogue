@@ -14,7 +14,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models
         {
             Organisation = organisation;
             AvailableOrganisations = availableOrganisations;
-            BackLink = $"/admin/organisations/{organisation.Id}";
         }
 
         public Organisation Organisation { get; set; }

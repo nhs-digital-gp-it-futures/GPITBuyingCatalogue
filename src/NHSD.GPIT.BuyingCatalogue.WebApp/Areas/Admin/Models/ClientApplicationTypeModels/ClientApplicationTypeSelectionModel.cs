@@ -12,7 +12,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.ClientApplicationT
         public ClientApplicationTypeSelectionModel(CatalogueItem catalogueItem)
             : base(catalogueItem)
         {
-            BackLink = $"/admin/catalogue-solutions/manage/{catalogueItem.Id}/client-application-type";
         }
 
         public bool ApplicationTypesAvailableForSelection { get; set; }

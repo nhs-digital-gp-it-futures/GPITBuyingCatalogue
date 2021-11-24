@@ -35,7 +35,15 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
             if (solution is null)
                 return BadRequest($"No Solution found for Id: {solutionId}");
 
-            return View(new InteroperabilityModel(solution));
+            var model = new InteroperabilityModel(solution)
+            {
+                BackLink = Url.Action(
+                    nameof(CatalogueSolutionsController.ManageCatalogueSolution),
+                    typeof(CatalogueSolutionsController).ControllerName(),
+                    new { solutionId }),
+            };
+
+            return View(model);
         }
 
         [HttpPost]

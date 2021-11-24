@@ -26,8 +26,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Models.MobileTa
             actual.SelectedConnectionSpeed.Should().Be(mobileConnectionDetails.MinimumConnectionSpeed);
             actual.Description.Should().Be(mobileConnectionDetails.Description);
 
-            actual.BackLink.Should().Be($"/admin/catalogue-solutions/manage/{catalogueItem.Id}/client-application-type/mobiletablet");
-
             actual.ConnectionTypes.Should().BeEquivalentTo(new ConnectionTypeModel[]
             {
                 new() { ConnectionType = "GPRS", Checked = mobileConnectionDetails.ConnectionType.Any(t => t.EqualsIgnoreCase("GPRS")) },

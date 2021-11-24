@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Text.Json;
 using FluentAssertions;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions;
@@ -11,39 +10,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Models.MobileTa
 {
     public static class MobileTabletBasedModelTests
     {
-        [Theory]
-        [CommonAutoData]
-        public static void FromCatalogueItem_ValidCatalogueItem_NoExistingNativeMobile_BackLinkSetCorrectly(
-            Solution solution,
-            ClientApplication clientApplication)
-        {
-            clientApplication.ClientApplicationTypes.Clear();
-            clientApplication.ClientApplicationTypes.Add("browser-based");
-
-            solution.ClientApplication = JsonSerializer.Serialize(clientApplication);
-            var catalogueItem = solution.CatalogueItem;
-
-            var actual = new MobileTabletBasedModel(catalogueItem);
-            actual.BackLink.Should().Be($"/admin/catalogue-solutions/manage/{catalogueItem.Id}/client-application-type/add-application-type");
-        }
-
-        [Theory]
-        [CommonAutoData]
-        public static void FromCatalogueItem_ValidCatalogueItem_WithNativeMobile_BackLinkSetCorrectly(
-            Solution solution,
-            ClientApplication clientApplication)
-        {
-            clientApplication.ClientApplicationTypes.Clear();
-            clientApplication.ClientApplicationTypes.Add("native-mobile");
-
-            solution.ClientApplication = JsonSerializer.Serialize(clientApplication);
-            var catalogueItem = solution.CatalogueItem;
-
-            var actual = new MobileTabletBasedModel(catalogueItem);
-
-            actual.BackLink.Should().Be($"/admin/catalogue-solutions/manage/{catalogueItem.Id}/client-application-type");
-        }
-
         [Theory]
         [CommonAutoData]
         public static void FromCatalogueItem_ValidCatalogueItem_ApplicationTypeSetCorrectly(

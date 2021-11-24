@@ -17,7 +17,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Models
 
             actual.Name.Should().Be(organisationName);
             actual.BackLinkText.Should().Be("Back to dashboard");
-            actual.BackLink.Should().Be($"/admin/organisations/{organisationId}");
         }
     }
 }

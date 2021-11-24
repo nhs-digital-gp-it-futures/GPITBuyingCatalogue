@@ -30,7 +30,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
         {
             var suppliers = await suppliersService.GetAllActiveSuppliers();
 
-            var model = new SolutionModel().WithSelectListItems(suppliers).WithAddSolution();
+            var model = new SolutionModel()
+            {
+                BackLink = Url.Action(nameof(CatalogueSolutionsController.Index), typeof(CatalogueSolutionsController).ControllerName()),
+            }.WithSelectListItems(suppliers).WithAddSolution();
 
             model.Frameworks = (await solutionsService.GetAllFrameworks())
                 .Select(f => new FrameworkModel { Name = $"{f.ShortName} Framework", FrameworkId = f.Id }).ToList();

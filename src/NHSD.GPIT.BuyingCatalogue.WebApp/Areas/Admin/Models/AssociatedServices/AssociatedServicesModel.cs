@@ -14,7 +14,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.AssociatedServices
 
         public AssociatedServicesModel(CatalogueItem catalogueItem, IReadOnlyList<CatalogueItem> associatedServices)
         {
-            BackLink = $"/admin/catalogue-solutions/manage/{catalogueItem.Id}";
             Solution = catalogueItem;
             SelectableAssociatedServices = associatedServices.Select(s => new SelectableAssociatedService
             {

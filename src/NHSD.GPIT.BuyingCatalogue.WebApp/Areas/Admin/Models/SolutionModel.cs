@@ -12,7 +12,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models
     {
         public SolutionModel()
         {
-            BackLink = "/admin/catalogue-solutions";
         }
 
         public SolutionModel(CatalogueItem solution)

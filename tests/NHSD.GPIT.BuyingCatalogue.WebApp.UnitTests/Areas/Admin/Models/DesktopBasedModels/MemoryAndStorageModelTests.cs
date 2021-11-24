@@ -26,7 +26,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Models.DesktopB
             actual.StorageSpace.Should().Be(desktopMemoryAndStorage.StorageRequirementsDescription);
             actual.ProcessingPower.Should().Be(desktopMemoryAndStorage.MinimumCpu);
             actual.SelectedResolution.Should().Be(desktopMemoryAndStorage.RecommendedResolution);
-            actual.BackLink.Should().Be($"/admin/catalogue-solutions/manage/{catalogueItem.Id}/client-application-type/desktop");
         }
 
         [Fact]

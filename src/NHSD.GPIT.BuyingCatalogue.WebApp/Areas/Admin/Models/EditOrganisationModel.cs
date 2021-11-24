@@ -15,7 +15,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models
         {
             Organisation = organisation ?? throw new ArgumentNullException(nameof(organisation));
             CatalogueAgreementSigned = organisation.CatalogueAgreementSigned;
-            BackLink = $"/admin/organisations/{organisation.Id}";
             OrganisationAddress = organisation.Address;
         }
 
