@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-
-namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.Caching
+﻿namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.Caching
 {
     public interface IFilterCache
     {

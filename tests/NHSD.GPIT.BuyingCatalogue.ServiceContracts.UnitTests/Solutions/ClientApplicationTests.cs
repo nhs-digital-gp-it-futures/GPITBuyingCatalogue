@@ -471,6 +471,24 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.UnitTests.Solutions
             clientApplication.ApplicationTypeStatus(ClientApplicationType.BrowserBased).Should().Be(TaskProgress.NotStarted);
         }
 
+        [Theory]
+        [CommonAutoData]
+        public static void HasClientApplicationType_True(
+            ClientApplication clientApplication)
+        {
+            clientApplication.EnsureClientApplicationTypePresent(ClientApplicationType.BrowserBased);
+
+            clientApplication.HasClientApplicationType(ClientApplicationType.BrowserBased).Should().BeTrue();
+        }
+
+        [Fact]
+        public static void HasClientApplicationType_False()
+        {
+            var clientApplication = new ClientApplication();
+
+            clientApplication.HasClientApplicationType(ClientApplicationType.BrowserBased).Should().BeFalse();
+        }
+
         private static class ResultSetData
         {
             public static IEnumerable<object[]> TestData()

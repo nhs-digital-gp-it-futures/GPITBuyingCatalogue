@@ -2,12 +2,10 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using EnumsNET;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
-using NHSD.GPIT.BuyingCatalogue.Framework.Constants;
 using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.AdditionalServices;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.AssociatedServices;
@@ -492,10 +490,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
             if (solution is null)
                 return BadRequest($"No Solution found for Id: {solutionId}");
 
-            var clientApplicationTypes = solution.Solution.GetClientApplication()?.ClientApplicationTypes;
+            var clientApplication = solution.Solution.GetClientApplication();
             var model = new BrowserBasedModel(solution)
             {
-                BackLink = clientApplicationTypes?.Any(type => type.Equals(ServiceContracts.Solutions.ClientApplicationType.BrowserBased.AsString(EnumFormat.EnumMemberValue))) ?? false
+                BackLink = clientApplication?.HasClientApplicationType(ServiceContracts.Solutions.ClientApplicationType.Desktop) ?? false
                            ? Url.Action(nameof(AddApplicationType), new { solutionId })
                            : Url.Action(nameof(ClientApplicationType), new { solutionId }),
             };
