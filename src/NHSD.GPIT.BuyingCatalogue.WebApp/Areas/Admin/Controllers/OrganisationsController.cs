@@ -39,7 +39,12 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
             var users = await userService.GetAllUsersForOrganisation(organisationId);
             var relatedOrganisations = await organisationsService.GetRelatedOrganisations(organisationId);
 
-            return View(new DetailsModel(organisation, users, relatedOrganisations));
+            var model = new DetailsModel(organisation, users, relatedOrganisations)
+            {
+                BackLink = Url.Action(nameof(HomeController.BuyerOrganisations), typeof(HomeController).ControllerName()),
+            };
+
+            return View(model);
         }
 
         [HttpGet("{organisationId}/edit")]
@@ -85,7 +90,12 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
         [HttpGet("find")]
         public IActionResult Find(string ods)
         {
-            return View(new FindOrganisationModel(ods));
+            var model = new FindOrganisationModel(ods)
+            {
+                BackLink = Url.Action(nameof(HomeController.BuyerOrganisations), typeof(HomeController).ControllerName()),
+            };
+
+            return View(model);
         }
 
         [HttpPost("find")]
@@ -110,7 +120,12 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
         {
             var (organisation, _) = await odsService.GetOrganisationByOdsCode(ods);
 
-            return View(new SelectOrganisationModel(organisation));
+            var model = new SelectOrganisationModel(organisation)
+            {
+                BackLink = Url.Action(nameof(Find)),
+            };
+
+            return View(model);
         }
 
         [HttpPost("find/select")]
@@ -165,7 +180,12 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
         [HttpGet("find/select/create/error")]
         public IActionResult Error(string odsCode, string error)
         {
-            return View(new AddAnOrganisationErrorModel(odsCode, error));
+            var model = new AddAnOrganisationErrorModel(odsCode, error)
+            {
+                BackLink = Url.Action(nameof(Find)),
+            };
+
+            return View(model);
         }
 
         [HttpGet("find/select/create/confirmation")]
@@ -173,7 +193,12 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
         {
             var organisation = await organisationsService.GetOrganisation(organisationId);
 
-            return View(new ConfirmationModel(organisation.Name));
+            var model = new ConfirmationModel(organisation.Name)
+            {
+                BackLink = Url.Action(nameof(HomeController.BuyerOrganisations), typeof(HomeController).ControllerName()),
+            };
+
+            return View(model);
         }
 
         [HttpGet("{organisationId}/adduser")]

@@ -13,7 +13,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models
             OdsCode = odsCode;
             Error = error;
             BackLinkText = "Back to find an organisation page";
-            BackLink = "/admin/organisations/find";
         }
 
         public string OdsCode { get; set; }

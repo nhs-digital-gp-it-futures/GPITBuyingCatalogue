@@ -19,7 +19,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models
             CatalogueAgreementText = organisation.CatalogueAgreementSigned ? "Organisation End User Agreement has been signed" : "Organisation End User Agreement has not been signed";
             Users = users;
             RelatedOrganisations = relatedOrganisations;
-            BackLink = "/admin/buyer-organisations";
         }
 
         public Organisation Organisation { get; set; }
