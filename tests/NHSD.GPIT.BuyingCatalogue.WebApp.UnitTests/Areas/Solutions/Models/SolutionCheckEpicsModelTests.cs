@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Linq;
 using AutoFixture;
+using AutoFixture.Xunit2;
 using FluentAssertions;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.Test.Framework.AutoFixtureCustomisations;
@@ -73,11 +74,12 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Models
         [Theory]
         [CommonAutoData]
         public static void HasNoEpics_NoNhsOrSupplierDefinedEpics_ReturnsTrue(
-            CatalogueItemCapability solutionCapability)
+            CatalogueItemCapability solutionCapability,
+            [Frozen] CatalogueItem catalogueItem)
         {
             solutionCapability.Capability.Epics = Array.Empty<Epic>();
 
-            var model = new SolutionCheckEpicsModel(solutionCapability);
+            var model = new SolutionCheckEpicsModel(solutionCapability, catalogueItem);
 
             model.HasNoEpics().Should().BeTrue();
         }
@@ -85,7 +87,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Models
         [Theory]
         [CommonAutoData]
         public static void HasNoEpics_HasNhsDefinedEpicsOnly_ReturnsFalse(
-            CatalogueItemCapability solutionCapability)
+            CatalogueItemCapability solutionCapability,
+            [Frozen] CatalogueItem catalogueItem)
         {
             var epics = new Fixture()
                 .Build<Epic>()
@@ -94,7 +97,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Models
                 .CreateMany();
 
             solutionCapability.Capability.Epics = epics.ToList();
-            var model = new SolutionCheckEpicsModel(solutionCapability);
+            var model = new SolutionCheckEpicsModel(solutionCapability, catalogueItem);
 
             model.HasSupplierDefined().Should().BeFalse();
             model.HasNhsDefined().Should().BeTrue();
@@ -104,7 +107,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Models
         [Theory]
         [CommonAutoData]
         public static void HasNoEpics_HasSupplierDefinedEpicsOnly_ReturnsFalse(
-            CatalogueItemCapability solutionCapability)
+            CatalogueItemCapability solutionCapability,
+            [Frozen] CatalogueItem catalogueItem)
         {
             var epics = new Fixture()
                 .Build<Epic>()
@@ -113,7 +117,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Models
                 .CreateMany();
 
             solutionCapability.Capability.Epics = epics.ToList();
-            var model = new SolutionCheckEpicsModel(solutionCapability);
+            var model = new SolutionCheckEpicsModel(solutionCapability, catalogueItem);
 
             model.HasSupplierDefined().Should().BeTrue();
             model.HasNhsDefined().Should().BeFalse();
