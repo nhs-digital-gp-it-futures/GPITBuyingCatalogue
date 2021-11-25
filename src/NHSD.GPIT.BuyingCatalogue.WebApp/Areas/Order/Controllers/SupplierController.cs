@@ -40,7 +40,15 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
 
             var supplier = await supplierService.GetSupplierFromBuyingCatalogue(order.Supplier.Id);
 
-            return View(new SupplierModel(odsCode, order, supplier.SupplierContacts));
+            var model = new SupplierModel(odsCode, order, supplier.SupplierContacts)
+            {
+                BackLink = Url.Action(
+                    nameof(OrderController.Order),
+                    typeof(OrderController).ControllerName(),
+                    new { odsCode, callOffId }),
+            };
+
+            return View(model);
         }
 
         [HttpPost]
@@ -74,7 +82,15 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
                     new { odsCode, callOffId });
             }
 
-            return View(new SupplierSearchModel(odsCode, order));
+            var model = new SupplierSearchModel(odsCode, order)
+            {
+                BackLink = Url.Action(
+                    nameof(OrderController.Order),
+                    typeof(OrderController).ControllerName(),
+                    new { odsCode, callOffId }),
+            };
+
+            return View(model);
         }
 
         [HttpPost("search")]
@@ -89,15 +105,17 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
         [HttpGet("search/select")]
         public async Task<IActionResult> SupplierSearchSelect(string odsCode, CallOffId callOffId, [FromQuery] string search)
         {
+            var backlink = Url.Action(nameof(SupplierSearch), new { odsCode, callOffId });
+
             if (string.IsNullOrWhiteSpace(search))
-                return View("NoSupplierFound", new NoSupplierFoundModel(odsCode, callOffId));
+                return View("NoSupplierFound", new NoSupplierFoundModel() { BackLink = backlink });
 
             var suppliers = await supplierService.GetListFromBuyingCatalogue(search, null, null);
 
             if (suppliers.Count == 0)
-                return View("NoSupplierFound", new NoSupplierFoundModel(odsCode, callOffId));
+                return View("NoSupplierFound", new NoSupplierFoundModel() { BackLink = backlink });
 
-            return View(new SupplierSearchSelectModel(odsCode, callOffId, suppliers));
+            return View(new SupplierSearchSelectModel(odsCode, callOffId, suppliers) { BackLink = backlink });
         }
 
         [HttpPost("search/select")]

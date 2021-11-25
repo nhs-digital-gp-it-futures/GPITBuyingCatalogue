@@ -4,7 +4,6 @@
     {
         public SupplierSearchModel(string odsCode, EntityFramework.Ordering.Models.Order order)
         {
-            BackLink = $"/order/organisation/{odsCode}/order/{order.CallOffId}";
             Title = $"Find supplier information for {order.CallOffId}";
             OdsCode = odsCode;
         }

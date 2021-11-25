@@ -18,7 +18,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.Order
         {
             var model = new OrderModel(odsCode, order, orderSections);
 
-            model.BackLink.Should().Be($"/order/organisation/{odsCode}");
             model.SectionStatuses.Should().BeEquivalentTo(orderSections);
             model.Title.Should().Be($"Order {order.CallOffId}");
             model.CallOffId.Should().Be(order.CallOffId);
@@ -33,7 +32,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.Order
         {
             var model = new OrderModel(odsCode, null, orderSections);
 
-            model.BackLink.Should().Be($"/order/organisation/{odsCode}");
             model.SectionStatuses.Should().BeEquivalentTo(orderSections);
             model.Title.Should().Be("New order");
             model.CallOffId.Should().BeEquivalentTo(default(CallOffId));

@@ -155,7 +155,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers
 
             result.Should().NotBeNull();
             result.ViewName.Should().BeNull();
-            result.Model.Should().BeEquivalentTo(expected);
+            result.Model.Should().BeEquivalentTo(expected, opt => opt.Excluding(m => m.BackLink));
         }
 
         [Theory]

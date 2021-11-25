@@ -39,7 +39,15 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
             var order = await orderService.GetOrder(callOffId);
             var organisation = await organisationService.GetOrganisationByOdsCode(odsCode);
 
-            return View(new OrderingPartyModel(odsCode, order, organisation));
+            var model = new OrderingPartyModel(odsCode, order, organisation)
+            {
+                BackLink = Url.Action(
+                    nameof(OrderController.Order),
+                    typeof(OrderController).ControllerName(),
+                    new { odsCode, callOffId }),
+            };
+
+            return View(model);
         }
 
         [HttpPost]

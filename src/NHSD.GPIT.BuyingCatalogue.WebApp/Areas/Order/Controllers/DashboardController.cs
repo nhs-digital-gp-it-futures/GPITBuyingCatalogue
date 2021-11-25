@@ -59,7 +59,12 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
 
             var organisations = await organisationsService.GetOrganisationsByOdsCodes(odsCodes.ToArray());
 
-            return View(new SelectOrganisationModel(odsCode, organisations));
+            var model = new SelectOrganisationModel(odsCode, organisations)
+            {
+                BackLink = Url.Action(nameof(Organisation), new { odsCode }),
+            };
+
+            return View(model);
         }
 
         [HttpPost("organisation/{odsCode}/select")]

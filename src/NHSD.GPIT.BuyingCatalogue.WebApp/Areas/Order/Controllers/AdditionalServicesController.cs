@@ -8,6 +8,7 @@ using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.AdditionalServices;
+using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Models;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Orders;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Session;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions;
@@ -47,7 +48,15 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
             var order = await orderService.GetOrder(callOffId);
             var orderItems = await orderItemService.GetOrderItems(callOffId, CatalogueItemType.AdditionalService);
 
-            return View(new AdditionalServiceModel(odsCode, order, orderItems));
+            var model = new AdditionalServiceModel(odsCode, order, orderItems)
+            {
+                BackLink = Url.Action(
+                    nameof(OrderController.Order),
+                    typeof(OrderController).ControllerName(),
+                    new { odsCode, callOffId }),
+            };
+
+            return View(model);
         }
 
         [HttpGet("select/additional-service")]
@@ -65,8 +74,17 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
             var additionalServices = await additionalServicesService.GetAdditionalServicesBySolutionIds(solutionIds);
 
             return !additionalServices.Any()
-                ? View("NoAdditionalServicesFound", new NoAdditionalServicesFoundModel(odsCode, callOffId))
-                : View(new SelectAdditionalServiceModel(odsCode, callOffId, additionalServices, state.CatalogueItemId));
+                ? View("NoAdditionalServicesFound", new NoAdditionalServicesFoundModel()
+                {
+                    BackLink = Url.Action(
+                        nameof(OrderController.Order),
+                        typeof(OrderController).ControllerName(),
+                        new { odsCode, callOffId }),
+                })
+                : View(new SelectAdditionalServiceModel(odsCode, callOffId, additionalServices, state.CatalogueItemId)
+                {
+                    BackLink = Url.Action(nameof(Index), new { odsCode, callOffId }),
+                });
         }
 
         [HttpPost("select/additional-service")]
@@ -131,7 +149,12 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
 
             var prices = solution.CataloguePrices.Where(p => p.CataloguePriceType == CataloguePriceType.Flat).ToList();
 
-            return View(new SelectAdditionalServicePriceModel(odsCode, callOffId, state.CatalogueItemName, prices));
+            var model = new SelectAdditionalServicePriceModel(odsCode, callOffId, state.CatalogueItemName, prices)
+            {
+                BackLink = Url.Action(nameof(SelectAdditionalService), new { odsCode, callOffId }),
+            };
+
+            return View(model);
         }
 
         [HttpPost("select/additional-service/price")]
@@ -162,7 +185,15 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
         {
             var state = orderSessionService.GetOrderStateFromSession(callOffId);
 
-            return View(new SelectFlatDeclarativeQuantityModel(odsCode, callOffId, state.CatalogueItemName, state.Quantity));
+            var model = new SelectFlatDeclarativeQuantityModel(callOffId, state.CatalogueItemName, state.Quantity)
+            {
+                BackLink = Url.Action(
+                    nameof(AdditionalServiceRecipientsDateController.SelectAdditionalServiceRecipientsDate),
+                    typeof(AdditionalServiceRecipientsDateController).ControllerName(),
+                    new { odsCode, callOffId }),
+            };
+
+            return View(model);
         }
 
         [HttpPost("select/additional-service/price/flat/declarative")]
@@ -193,7 +224,15 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
         {
             var state = orderSessionService.GetOrderStateFromSession(callOffId);
 
-            return View(new SelectFlatOnDemandQuantityModel(odsCode, callOffId, state.CatalogueItemName, state.Quantity, state.EstimationPeriod));
+            var model = new SelectFlatOnDemandQuantityModel(odsCode, callOffId, state.CatalogueItemName, state.Quantity, state.EstimationPeriod)
+            {
+                BackLink = Url.Action(
+                    nameof(AdditionalServiceRecipientsDateController.SelectAdditionalServiceRecipientsDate),
+                    typeof(AdditionalServiceRecipientsDateController).ControllerName(),
+                    new { odsCode, callOffId }),
+            };
+
+            return View(model);
         }
 
         [HttpPost("select/additional-service/price/flat/ondemand")]
@@ -228,7 +267,12 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
         {
             var state = await orderSessionService.InitialiseStateForEdit(odsCode, callOffId, catalogueItemId);
 
-            return View(new EditAdditionalServiceModel(odsCode, state));
+            var model = new EditAdditionalServiceModel(odsCode, state)
+            {
+                BackLink = GetEditAdditionalServiceBackLink(state, odsCode),
+            };
+
+            return View(model);
         }
 
         [HttpPost("{catalogueItemId}")]
@@ -285,6 +329,24 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
                 nameof(Index),
                 typeof(AdditionalServicesController).ControllerName(),
                 new { odsCode, callOffId });
+        }
+
+        private string GetEditAdditionalServiceBackLink(CreateOrderItemModel state, string odsCode)
+        {
+            if (!state.IsNewSolution)
+            {
+                return Url.Action(nameof(Index), new { odsCode, callOffId = state.CallOffId });
+            }
+
+            if (state.CataloguePrice.ProvisioningType == ProvisioningType.Declarative)
+                return Url.Action(nameof(SelectFlatDeclarativeQuantity), new { odsCode, callOffId = state.CallOffId });
+            else if (state.CataloguePrice.ProvisioningType == ProvisioningType.OnDemand)
+                return Url.Action(nameof(SelectFlatOnDemandQuantity), new { odsCode, callOffId = state.CallOffId });
+
+            return Url.Action(
+                nameof(AdditionalServiceRecipientsDateController.SelectAdditionalServiceRecipientsDate),
+                typeof(AdditionalServiceRecipientsDateController).ControllerName(),
+                new { odsCode, callOffId = state.CallOffId });
         }
     }
 }

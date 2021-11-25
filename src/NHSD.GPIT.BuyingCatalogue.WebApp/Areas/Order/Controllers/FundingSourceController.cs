@@ -30,7 +30,15 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
         {
             var order = await orderService.GetOrder(callOffId);
 
-            return View(new FundingSourceModel(odsCode, callOffId, order.FundingSourceOnlyGms));
+            var model = new FundingSourceModel(odsCode, callOffId, order.FundingSourceOnlyGms)
+            {
+                BackLink = Url.Action(
+                    nameof(OrderController.Order),
+                    typeof(OrderController).ControllerName(),
+                    new { odsCode, callOffId }),
+            };
+
+            return View(model);
         }
 
         [HttpPost]

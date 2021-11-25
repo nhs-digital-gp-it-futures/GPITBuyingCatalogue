@@ -12,15 +12,13 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.Catalogu
         [Theory]
         [CommonAutoData]
         public static void WithValidArguments_PropertiesCorrectlySet(
-            string odsCode,
             CreateOrderItemModel state,
             DateTime? defaultDeliveryDate)
         {
             state.SkipPriceSelection = false;
 
-            var model = new SelectSolutionServiceRecipientsDateModel(odsCode, state, defaultDeliveryDate);
+            var model = new SelectSolutionServiceRecipientsDateModel(state, defaultDeliveryDate);
 
-            model.BackLink.Should().Be($"/order/organisation/{odsCode}/order/{state.CallOffId}/catalogue-solutions/select/solution/price/recipients");
             model.Title.Should().Be($"Planned delivery date of {state.CatalogueItemName} for {state.CallOffId}");
             model.CommencementDate.Should().Be(state.CommencementDate);
         }
@@ -28,14 +26,13 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.Catalogu
         [Theory]
         [CommonAutoData]
         public static void WithValidArguments_AndPlannedDeliveryDate_PropertiesCorrectlySet(
-            string odsCode,
             CreateOrderItemModel state,
             DateTime? defaultDeliveryDate,
             DateTime plannedDeliveryDate)
         {
             state.PlannedDeliveryDate = plannedDeliveryDate;
 
-            var model = new SelectSolutionServiceRecipientsDateModel(odsCode, state, defaultDeliveryDate);
+            var model = new SelectSolutionServiceRecipientsDateModel(state, defaultDeliveryDate);
 
             model.Day.Should().Be(plannedDeliveryDate.Day.ToString("00"));
             model.Month.Should().Be(plannedDeliveryDate.Month.ToString("00"));
@@ -45,13 +42,12 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.Catalogu
         [Theory]
         [CommonAutoData]
         public static void WithValidArguments_AndDefaultDeliveryDate_PropertiesCorrectlySet(
-            string odsCode,
             CreateOrderItemModel state,
             DateTime plannedDeliveryDate)
         {
             state.PlannedDeliveryDate = plannedDeliveryDate;
 
-            var model = new SelectSolutionServiceRecipientsDateModel(odsCode, state, null);
+            var model = new SelectSolutionServiceRecipientsDateModel(state, null);
 
             model.Day.Should().Be(plannedDeliveryDate.Day.ToString("00"));
             model.Month.Should().Be(plannedDeliveryDate.Month.ToString("00"));
@@ -61,14 +57,13 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.Catalogu
         [Theory]
         [CommonAutoData]
         public static void WithValidArguments_AndCommencementDate_PropertiesCorrectlySet(
-            string odsCode,
             CreateOrderItemModel state,
             DateTime commencementDate)
         {
             state.PlannedDeliveryDate = null;
             state.CommencementDate = commencementDate;
 
-            var model = new SelectSolutionServiceRecipientsDateModel(odsCode, state, null);
+            var model = new SelectSolutionServiceRecipientsDateModel(state, null);
 
             model.Day.Should().Be(commencementDate.Day.ToString("00"));
             model.Month.Should().Be(commencementDate.Month.ToString("00"));

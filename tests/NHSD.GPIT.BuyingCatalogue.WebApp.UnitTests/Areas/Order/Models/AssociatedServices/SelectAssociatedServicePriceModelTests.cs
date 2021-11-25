@@ -3,7 +3,6 @@ using System.Linq;
 using FluentAssertions;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Extensions;
-using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.Test.Framework.AutoFixtureCustomisations;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.AssociatedServices;
 using Xunit;
@@ -16,14 +15,12 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.Associat
         [CommonAutoData]
         public static void WithValidArguments_PropertiesCorrectlySet(
             string odsCode,
-            CallOffId callOffId,
             string solutionName,
             List<CataloguePrice> prices)
         {
             prices.ForEach(cp => cp.CurrencyCode = "GBP");
-            var model = new SelectAssociatedServicePriceModel(odsCode, callOffId, solutionName, prices);
+            var model = new SelectAssociatedServicePriceModel(odsCode, solutionName, prices);
 
-            model.BackLink.Should().Be($"/order/organisation/{odsCode}/order/{callOffId}/associated-services/select/associated-service");
             model.Title.Should().Be($"List price for {solutionName}");
             model.OdsCode.Should().Be(odsCode);
             model.Prices.Should().HaveCount(prices.Count);

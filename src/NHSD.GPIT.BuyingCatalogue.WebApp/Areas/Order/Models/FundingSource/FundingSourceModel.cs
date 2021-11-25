@@ -12,7 +12,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.FundingSource
 
         public FundingSourceModel(string odsCode, CallOffId callOffId, bool? fundingSourceOnlyGms)
         {
-            BackLink = $"/order/organisation/{odsCode}/order/{callOffId}";
             Title = $"Funding source for {callOffId}";
             FundingSourceOnlyGms = fundingSourceOnlyGms.ToYesNo();
         }

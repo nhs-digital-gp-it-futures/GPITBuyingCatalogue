@@ -17,7 +17,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.AdditionalServices
             List<CatalogueItem> solutions,
             CatalogueItemId? selectedAdditionalServiceId)
         {
-            BackLink = $"/order/organisation/{odsCode}/order/{callOffId}/additional-services";
             Title = $"Add an Additional Service for {callOffId}";
             OdsCode = odsCode;
             Solutions = solutions;

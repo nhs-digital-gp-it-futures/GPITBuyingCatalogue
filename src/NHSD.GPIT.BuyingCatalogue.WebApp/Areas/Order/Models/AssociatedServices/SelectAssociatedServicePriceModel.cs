@@ -2,7 +2,6 @@
 using System.ComponentModel.DataAnnotations;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Extensions;
-using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.Framework.Constants;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.AssociatedServices
@@ -13,9 +12,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.AssociatedServices
         {
         }
 
-        public SelectAssociatedServicePriceModel(string odsCode, CallOffId callOffId, string solutionName, List<CataloguePrice> prices)
+        public SelectAssociatedServicePriceModel(string odsCode, string solutionName, List<CataloguePrice> prices)
         {
-            BackLink = $"/order/organisation/{odsCode}/order/{callOffId}/associated-services/select/associated-service";
             Title = $"List price for {solutionName}";
             OdsCode = odsCode;
             SetPrices(prices);

@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc.ModelBinding;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
+using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Models;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Orders;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Session;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions;
@@ -43,7 +44,15 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
             var order = await orderService.GetOrder(callOffId);
             var orderItems = await orderItemService.GetOrderItems(callOffId, CatalogueItemType.Solution);
 
-            return View(new CatalogueSolutionsModel(odsCode, order, orderItems));
+            var model = new CatalogueSolutionsModel(odsCode, order, orderItems)
+            {
+                BackLink = Url.Action(
+                    nameof(OrderController.Order),
+                    typeof(OrderController).ControllerName(),
+                    new { odsCode, callOffId }),
+            };
+
+            return View(model);
         }
 
         [HttpGet("select/solution")]
@@ -55,7 +64,12 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
 
             var solutions = await solutionsService.GetSupplierSolutions(order.SupplierId);
 
-            return View(new SelectSolutionModel(odsCode, callOffId, solutions, state.CatalogueItemId));
+            var model = new SelectSolutionModel(odsCode, callOffId, solutions, state.CatalogueItemId)
+            {
+                BackLink = Url.Action(nameof(Index), new { odsCode, callOffId }),
+            };
+
+            return View(model);
         }
 
         [HttpPost("select/solution")]
@@ -119,7 +133,12 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
 
             var prices = solution.CataloguePrices.Where(p => p.CataloguePriceType == CataloguePriceType.Flat).ToList();
 
-            return View(new SelectSolutionPriceModel(odsCode, callOffId, state.CatalogueItemName, prices));
+            var model = new SelectSolutionPriceModel(odsCode, state.CatalogueItemName, prices)
+            {
+                BackLink = Url.Action(nameof(SelectSolution), new { odsCode, callOffId }),
+            };
+
+            return View(model);
         }
 
         [HttpPost("select/solution/price")]
@@ -150,7 +169,15 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
         {
             var state = orderSessionService.GetOrderStateFromSession(callOffId);
 
-            return View(new SelectFlatDeclarativeQuantityModel(odsCode, callOffId, state.CatalogueItemName, state.Quantity));
+            var model = new SelectFlatDeclarativeQuantityModel(callOffId, state.CatalogueItemName, state.Quantity)
+            {
+                BackLink = Url.Action(
+                    nameof(CatalogueSolutionRecipientsDateController.SelectSolutionServiceRecipientsDate),
+                    typeof(CatalogueSolutionRecipientsDateController).ControllerName(),
+                    new { odsCode, callOffId }),
+            };
+
+            return View(model);
         }
 
         [HttpPost("select/solution/price/flat/declarative")]
@@ -181,7 +208,15 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
         {
             var state = orderSessionService.GetOrderStateFromSession(callOffId);
 
-            return View(new SelectFlatOnDemandQuantityModel(odsCode, callOffId, state.CatalogueItemName, state.Quantity, state.EstimationPeriod));
+            var model = new SelectFlatOnDemandQuantityModel(odsCode, callOffId, state.CatalogueItemName, state.Quantity, state.EstimationPeriod)
+            {
+                BackLink = Url.Action(
+                    nameof(CatalogueSolutionRecipientsDateController.SelectSolutionServiceRecipientsDate),
+                    typeof(CatalogueSolutionRecipientsDateController).ControllerName(),
+                    new { odsCode, callOffId }),
+            };
+
+            return View(model);
         }
 
         [HttpPost("select/solution/price/flat/ondemand")]
@@ -216,7 +251,12 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
         {
             var state = await orderSessionService.InitialiseStateForEdit(odsCode, callOffId, catalogueItemId);
 
-            return View(new EditSolutionModel(odsCode, state));
+            var model = new EditSolutionModel(odsCode, state)
+            {
+                BackLink = GetEditSolutionBackLink(state, odsCode),
+            };
+
+            return View(model);
         }
 
         [HttpPost("{catalogueItemId}")]
@@ -273,6 +313,24 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
                 nameof(Index),
                 typeof(CatalogueSolutionsController).ControllerName(),
                 new { odsCode, callOffId });
+        }
+
+        private string GetEditSolutionBackLink(CreateOrderItemModel state, string odsCode)
+        {
+            if (!state.IsNewSolution)
+            {
+                return Url.Action(nameof(Index), new { odsCode, callOffId = state.CallOffId });
+            }
+
+            if (state.CataloguePrice.ProvisioningType == ProvisioningType.Declarative)
+                return Url.Action(nameof(SelectFlatDeclarativeQuantity), new { odsCode, callOffId = state.CallOffId });
+            else if (state.CataloguePrice.ProvisioningType == ProvisioningType.OnDemand)
+                return Url.Action(nameof(SelectFlatOnDemandQuantity), new { odsCode, callOffId = state.CallOffId });
+
+            return Url.Action(
+                nameof(CatalogueSolutionRecipientsDateController.SelectSolutionServiceRecipientsDate),
+                typeof(CatalogueSolutionRecipientsDateController).ControllerName(),
+                new { odsCode, callOffId = state.CallOffId });
         }
     }
 }

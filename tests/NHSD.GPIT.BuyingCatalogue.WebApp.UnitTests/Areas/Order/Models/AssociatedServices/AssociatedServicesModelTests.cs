@@ -18,7 +18,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.Associat
         {
             var model = new AssociatedServiceModel(odsCode, order, orderItems);
 
-            model.BackLink.Should().Be($"/order/organisation/{odsCode}/order/{order.CallOffId}");
             model.Title.Should().Be($"Associated Services for {order.CallOffId}");
             model.OdsCode.Should().Be(odsCode);
             model.OrderDescription.Should().Be(order.Description);

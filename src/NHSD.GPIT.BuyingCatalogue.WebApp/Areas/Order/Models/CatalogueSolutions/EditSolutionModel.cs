@@ -12,20 +12,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.CatalogueSolutions
 
         public EditSolutionModel(string odsCode, CreateOrderItemModel state)
         {
-            if (!state.IsNewSolution)
-            {
-                BackLink = $"/order/organisation/{odsCode}/order/{state.CallOffId}/catalogue-solutions";
-            }
-            else
-            {
-                if (state.CataloguePrice.ProvisioningType == ProvisioningType.Declarative)
-                    BackLink = $"/order/organisation/{odsCode}/order/{state.CallOffId}/catalogue-solutions/select/solution/price/flat/declarative";
-                else if (state.CataloguePrice.ProvisioningType == ProvisioningType.OnDemand)
-                    BackLink = $"/order/organisation/{odsCode}/order/{state.CallOffId}/catalogue-solutions/select/solution/price/flat/ondemand";
-                else
-                    BackLink = $"/order/organisation/{odsCode}/order/{state.CallOffId}/catalogue-solutions/select/solution/price/recipients/date";
-            }
-
             Title = $"{state.CatalogueItemName} information for {state.CallOffId}";
             OdsCode = odsCode;
             OrderItem = state;

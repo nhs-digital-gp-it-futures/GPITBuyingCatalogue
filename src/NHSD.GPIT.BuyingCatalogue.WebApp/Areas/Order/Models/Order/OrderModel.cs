@@ -7,7 +7,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.Order
     {
         public OrderModel(string odsCode, EntityFramework.Ordering.Models.Order order, OrderTaskList orderSections)
         {
-            BackLink = $"/order/organisation/{odsCode}";
             OdsCode = odsCode;
             SectionStatuses = orderSections;
 

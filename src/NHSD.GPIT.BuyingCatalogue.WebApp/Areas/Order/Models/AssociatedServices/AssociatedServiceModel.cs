@@ -7,7 +7,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.AssociatedServices
     {
         public AssociatedServiceModel(string odsCode, EntityFramework.Ordering.Models.Order order, List<OrderItem> orderItems)
         {
-            BackLink = $"/order/organisation/{odsCode}/order/{order.CallOffId}";
             Title = $"Associated Services for {order.CallOffId}";
             OdsCode = odsCode;
             OrderDescription = order.Description;
