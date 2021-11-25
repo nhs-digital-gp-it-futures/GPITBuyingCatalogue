@@ -49,6 +49,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp
                     options =>
                     {
                         options.Filters.Add(new AutoValidateAntiforgeryTokenAttribute());
+                        options.Filters.Add(new BadRequestActionFilter());
                         options.ModelBinderProviders.Insert(0, new NewlinesNormalizingModelBinderProvider());
                     });
 

@@ -1,77 +1,89 @@
-﻿using FluentAssertions;
+﻿using AutoFixture.Xunit2;
+using FluentAssertions;
 using Microsoft.AspNetCore.Diagnostics;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.Features;
 using Microsoft.AspNetCore.Mvc;
+using Moq;
+using NHSD.GPIT.BuyingCatalogue.Test.Framework.AutoFixtureCustomisations;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Controllers;
+using NHSD.GPIT.BuyingCatalogue.WebApp.Models;
 using Xunit;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Controllers
 {
     public static class HomeControllerTests
     {
-        [Fact]
-        public static void Get_Index_ReturnsDefaultView()
+        [Theory]
+        [CommonAutoData]
+        public static void Get_Index_ReturnsDefaultView(
+            HomeController controller)
         {
-            var controller = new HomeController();
-
-            var result = controller.Index() as ViewResult;
+            var result = controller.Index().As<ViewResult>();
 
             result.Should().NotBeNull();
             result.ViewName.Should().BeNull();
         }
 
-        [Fact]
-        public static void Get_PrivacyPolicy_ReturnsDefaultView()
+        [Theory]
+        [CommonAutoData]
+        public static void Get_PrivacyPolicy_ReturnsDefaultView(
+            HomeController controller)
         {
-            var controller = new HomeController();
-
-            var result = controller.PrivacyPolicy() as ViewResult;
+            var result = controller.PrivacyPolicy().As<ViewResult>();
 
             result.Should().NotBeNull();
             result.ViewName.Should().BeNull();
         }
 
-        [Fact]
-        public static void Get_Error500_ReturnsDefaultErrorView()
+        [Theory]
+        [CommonAutoData]
+        public static void Get_Error500_ReturnsDefaultErrorView(
+            HomeController controller)
         {
-            var controller = new HomeController();
+            var result = controller.Error(500).As<ViewResult>();
 
-            var result = controller.Error(500);
-
-            Assert.IsAssignableFrom<ViewResult>(result);
-            Assert.Null(((ViewResult)result).ViewName);
+            result.Should().NotBeNull();
+            result.ViewName.Should().BeNull();
         }
 
-        [Fact]
-        public static void Get_ErrorNullStatus_ReturnsDefaultErrorView()
+        [Theory]
+        [CommonAutoData]
+        public static void Get_ErrorNullStatus_ReturnsDefaultErrorView(
+            HomeController controller)
         {
-            var controller = new HomeController();
+            var result = controller.Error(null).As<ViewResult>();
 
-            var result = controller.Error(null);
-
-            Assert.IsAssignableFrom<ViewResult>(result);
-            Assert.Null(((ViewResult)result).ViewName);
+            result.Should().NotBeNull();
+            result.ViewName.Should().BeNull();
         }
 
-        [Fact]
-        public static void Get_Error404_ReturnsPageNotFound()
+        [Theory]
+        [CommonAutoData]
+        public static void Get_Error404_ReturnsPageNotFound(
+            [Frozen] Mock<IFeatureCollection> features,
+            HomeController controller)
         {
-            var controller = new HomeController();
+            features.Setup(c => c.Get<IStatusCodeReExecuteFeature>()).Returns(new StatusCodeReExecuteFeature { OriginalPath = "BAD" });
 
-            IFeatureCollection features = new FeatureCollection();
-            features.Set<IStatusCodeReExecuteFeature>(new StatusCodeReExecuteFeature { OriginalPath = "BAD" });
+            var result = controller.Error(404).As<ViewResult>();
 
-            controller.ControllerContext = new ControllerContext()
-            {
-                HttpContext = new DefaultHttpContext(features),
-            };
+            result.Should().NotBeNull();
+            result.ViewName.Should().Be("PageNotFound");
+            result.ViewData.Should().Contain(d => string.Equals(d.Key, "BadUrl") && string.Equals(d.Value, "Incorrect url BAD"));
+        }
 
-            var result = controller.Error(404);
+        [Theory]
+        [CommonAutoData]
+        public static void Get_ErrorWithErrorValue_ReturnsErrorViewModel(
+            string error,
+            HomeController controller)
+        {
+            var expectedModel = new ErrorModel(error);
 
-            Assert.IsAssignableFrom<ViewResult>(result);
-            Assert.Equal("PageNotFound", ((ViewResult)result).ViewName);
-            Assert.Equal("Incorrect url BAD", ((ViewResult)result).ViewData["BadUrl"]);
+            var result = controller.Error(error: error).As<ViewResult>();
+
+            result.Should().NotBeNull();
+            result.Model.As<ErrorModel>().Should().BeEquivalentTo(expectedModel);
         }
     }
 }

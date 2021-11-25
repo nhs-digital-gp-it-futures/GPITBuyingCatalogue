@@ -1,9 +1,9 @@
 ﻿@using NHSD.GPIT.BuyingCatalogue.WebApp.Models
+@model ErrorModel
 @{
     ViewBag.Title = "Error";
-    var backLinkModel = new NavBaseModel{ BackLink = "/", BackLinkText = "Go to homepage" };
 }
 
-<partial name="Partials/_BackLink" model="@backLinkModel" />
+<partial name="Partials/_BackLink" model="@Model" />
 <nhs-page-title title="@ViewBag.Title"
-                advice="Something went wrong" />
+                advice="@(Model.Error ?? "Something went wrong")" />

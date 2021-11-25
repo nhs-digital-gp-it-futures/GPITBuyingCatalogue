@@ -105,6 +105,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
         public async Task<IActionResult> ManageCatalogueSolution(CatalogueItemId solutionId)
         {
             var solution = await solutionsService.GetSolution(solutionId);
+            if (solution is null)
+                return BadRequest($"No Solution found for Id: {solutionId}");
+
             var associatedServices = await associatedServicesService.GetAssociatedServicesForSupplier(solution.SupplierId);
             var additionalServices = await additionalServicesService.GetAdditionalServicesBySolutionId(solutionId);
 
@@ -117,9 +120,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
         public async Task<IActionResult> SetPublicationStatus(CatalogueItemId solutionId, ManageCatalogueSolutionModel model)
         {
             if (!ModelState.IsValid)
-            {
                 return View("ManageCatalogueSolution", model);
-            }
 
             var solution = await solutionsService.GetSolution(solutionId);
             if (model.SelectedPublicationStatus == solution.PublishedStatus)
@@ -199,9 +200,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
         public async Task<IActionResult> Description(CatalogueItemId solutionId, DescriptionModel model)
         {
             if (!ModelState.IsValid)
-            {
                 return View(model);
-            }
 
             await solutionsService.SaveSolutionDescription(
                 solutionId,
@@ -227,9 +226,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
         public async Task<IActionResult> Implementation(CatalogueItemId solutionId, ImplementationTimescaleModel model)
         {
             if (!ModelState.IsValid)
-            {
                 return View(model);
-            }
 
             await solutionsService.SaveImplementationDetail(
                 solutionId,
@@ -516,9 +513,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
         public async Task<IActionResult> SupportedBrowsers(CatalogueItemId solutionId, SupportedBrowsersModel model)
         {
             if (!ModelState.IsValid)
-            {
                 return View(model);
-            }
 
             var clientApplication = await solutionsService.GetClientApplication(solutionId);
             if (clientApplication is null)
@@ -554,9 +549,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
         public async Task<IActionResult> PlugInsOrExtensions(CatalogueItemId solutionId, PlugInsOrExtensionsModel model)
         {
             if (!ModelState.IsValid)
-            {
                 return View(model);
-            }
 
             var clientApplication = await solutionsService.GetClientApplication(solutionId);
             if (clientApplication is null)

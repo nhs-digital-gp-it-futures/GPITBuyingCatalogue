@@ -3,6 +3,7 @@ using System.Security.Claims;
 using AutoFixture;
 using AutoFixture.Kernel;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Http.Features;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Routing;
 using Moq;
@@ -33,9 +34,12 @@ namespace NHSD.GPIT.BuyingCatalogue.Test.Framework.AutoFixtureCustomisations
                 var httpResponseMock = context.Create<Mock<HttpResponse>>();
                 httpResponseMock.Setup(r => r.Cookies).Returns(httpResponseCookiesMock.Object);
 
+                var featureCollectionMock = context.Create<Mock<IFeatureCollection>>();
+
                 var httpContextMock = context.Create<Mock<HttpContext>>();
                 httpContextMock.Setup(c => c.Request).Returns(httpRequestMock.Object);
                 httpContextMock.Setup(c => c.Response).Returns(httpResponseMock.Object);
+                httpContextMock.Setup(c => c.Features).Returns(featureCollectionMock.Object);
                 httpContextMock
                     .Setup(c => c.User)
                     .Returns(CreateClaimsPrincipal(GetOrganisationId(context)));
