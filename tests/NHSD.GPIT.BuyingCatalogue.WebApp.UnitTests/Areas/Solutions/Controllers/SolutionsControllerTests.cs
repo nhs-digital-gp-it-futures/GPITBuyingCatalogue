@@ -373,10 +373,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Controllers
             var capabilityId = capabilityItem.Capability.Id;
             var capability = solution.CatalogueItemCapability(capabilityId);
 
-            var expectedModel = new SolutionCheckEpicsModel(capability)
-            {
-                SolutionName = solution.Name,
-            };
+            var expectedModel = new SolutionCheckEpicsModel(capability, solution);
 
             mockSolutionsService
                 .Setup(s => s.GetSolutionCapability(catalogueItemId, capabilityId))
@@ -430,12 +427,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Controllers
             var capabilityId = capabilityItem.Capability.Id;
             var capability = additionalSolution.CatalogueItemCapability(capabilityId);
 
-            var expectedModel = new SolutionCheckEpicsModel(capability)
-            {
-                SolutionName = additionalSolution.Name,
-                SolutionId = catalogueItemId,
-                CatalogueItemIdAdditional = catalogueItemIdAdditional,
-            };
+            var expectedModel = new SolutionCheckEpicsModel(capability, additionalSolution, catalogueItemIdAdditional);
 
             mockSolutionsService
                 .Setup(s => s.GetAdditionalServiceCapability(catalogueItemIdAdditional, capabilityId))

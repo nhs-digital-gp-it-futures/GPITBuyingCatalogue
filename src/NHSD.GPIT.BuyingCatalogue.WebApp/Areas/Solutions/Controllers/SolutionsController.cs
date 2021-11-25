@@ -172,13 +172,12 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers
 
             var solutionCapability = item.CatalogueItemCapability(capabilityId);
 
-            var model = new SolutionCheckEpicsModel(solutionCapability)
+            var model = new SolutionCheckEpicsModel(solutionCapability, item)
             {
                 BackLink = Url.Action(
                     nameof(Capabilities),
                     typeof(SolutionsController).ControllerName(),
                     new { solutionId }),
-                SolutionName = item.Name,
             };
 
             return View(model);
@@ -203,11 +202,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers
                 return RedirectToAction(nameof(Description), new { solutionId });
 
             var solutionCapability = item.CatalogueItemCapability(capabilityId);
-            var model = new SolutionCheckEpicsModel(solutionCapability)
+            var model = new SolutionCheckEpicsModel(solutionCapability, item, additionalServiceId)
             {
-                SolutionName = item.Name,
-                SolutionId = solutionId,
-                CatalogueItemIdAdditional = additionalServiceId,
                 BackLink = Url.Action(
                     nameof(CapabilitiesAdditionalServices),
                     typeof(SolutionsController).ControllerName(),
