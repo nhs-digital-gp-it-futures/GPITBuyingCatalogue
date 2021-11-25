@@ -13,7 +13,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models
         {
         }
 
-        public SolutionCheckEpicsModel(CatalogueItemCapability solutionCapability)
+        public SolutionCheckEpicsModel(CatalogueItemCapability solutionCapability, CatalogueItem catalogueItem)
         {
             Description = solutionCapability.Capability?.Description;
             Name = solutionCapability.Capability?.Name;
@@ -21,23 +21,37 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models
             NhsDefined = GetEpics(solutionCapability.Capability, false);
             SupplierDefined = GetEpics(solutionCapability.Capability, true);
             LastReviewed = solutionCapability.LastUpdated;
+            SolutionName = catalogueItem.Name;
+            SolutionId = catalogueItem.Id;
+            Url = solutionCapability.Capability.SourceUrl;
         }
 
-        public CatalogueItemId CatalogueItemIdAdditional { get; set; }
+        public SolutionCheckEpicsModel(
+            CatalogueItemCapability solutionCapability,
+            CatalogueItem catalogueItem,
+            CatalogueItemId additionalServiceId)
+            : this(solutionCapability, catalogueItem)
+        {
+            CatalogueItemIdAdditional = additionalServiceId;
+        }
 
-        public string Description { get; set; }
+        public CatalogueItemId CatalogueItemIdAdditional { get; init; }
+
+        public string Description { get; init; }
 
         public DateTime LastReviewed { get; set; }
 
         public string Name { get; set; }
 
-        public string[] NhsDefined { get; set; }
+        public string Url { get; init; }
+
+        public string[] NhsDefined { get; init; }
 
         public CatalogueItemId SolutionId { get; set; }
 
         public string SolutionName { get; set; }
 
-        public string[] SupplierDefined { get; set; }
+        public string[] SupplierDefined { get; init; }
 
         public bool HasNhsDefined() => NhsDefined != null && NhsDefined.Length > 0;
 
