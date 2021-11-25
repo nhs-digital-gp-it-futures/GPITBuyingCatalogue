@@ -309,8 +309,7 @@ namespace NHSD.GPIT.BuyingCatalogue.FinalMigration
                     && x.OdsCode.Equals(legacyOrderItemRecipient.OdsCode, StringComparison.CurrentCultureIgnoreCase));
 
                 if(currentOrderItemRecipient is null)
-                {
-                    // MJRTODO - Could check that final assertion by checking the OrderItems table
+                {                    
                     System.Diagnostics.Trace.WriteLine($"Warning!!!. failed to reconcile order item recipient with order id {legacyOrderItemRecipient.OrderId} and catalogue item id {legacyOrderItemRecipient.CatalogueItemId} and ods code {legacyOrderItemRecipient.OdsCode}. Probably OrderItem missing due to PriceId issue");                    
                     continue;
                 }
