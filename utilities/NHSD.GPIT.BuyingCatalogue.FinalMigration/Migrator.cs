@@ -449,11 +449,13 @@ namespace NHSD.GPIT.BuyingCatalogue.FinalMigration
             var currentOrders = GetCurrentOrders(context);
 
             foreach (var legacyOrderItem in validLegacyOrderItems)
-            {
+            {                
                 if (!currentOrders.Any(x => x.Id == legacyOrderItem.OrderId))
                 {
                     if (testLegacyOrders.Any(x => x.Id == legacyOrderItem.OrderId))
                         System.Diagnostics.Trace.WriteLine($"Information!!!. Not migrating order item {legacyOrderItem.OrderId} - {legacyOrderItem.CatalogueItemId}. Order does not exist in current database. Original order is test data");
+                    else if (deletedLegacyOrders.Any(x => x.Id == legacyOrderItem.OrderId))
+                        System.Diagnostics.Trace.WriteLine($"Information!!!. Not migrating order item {legacyOrderItem.OrderId} - {legacyOrderItem.CatalogueItemId}. Order does not exist in current database. Original order was deleted");
                     else
                         System.Diagnostics.Trace.WriteLine($"Warning!!!. Not migrating order item {legacyOrderItem.OrderId} - {legacyOrderItem.CatalogueItemId}. Order does not exist in current database");
 

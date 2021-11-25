@@ -182,7 +182,15 @@ namespace NHSD.GPIT.BuyingCatalogue.FinalMigration
                 currentOrder.Created.Should().Be(legacyOrder.Created);
                 currentOrder.LastUpdated.Should().Be(legacyOrder.LastUpdated);
                 currentOrder.LastUpdatedBy.Should().Be(lastUpdatedBy);
-                currentOrder.Completed.Should().Be(legacyOrder.Completed);
+
+                if (legacyOrder.Completed.HasValue)
+                {
+                    currentOrder.Completed.Should().NotBeNull();
+                    currentOrder.Completed.Value.TrimMilliseconds().Should().Be(legacyOrder.Completed.Value.TrimMilliseconds());                    
+                }
+                else
+                    currentOrder.Completed.Should().BeNull();
+                
                 currentOrder.OrderStatus.Should().Be((OrderStatus)legacyOrder.OrderStatusId);
                 currentOrder.IsDeleted.Should().Be(legacyOrder.IsDeleted);
             }
@@ -241,8 +249,14 @@ namespace NHSD.GPIT.BuyingCatalogue.FinalMigration
             {
                 System.Diagnostics.Trace.WriteLine($"Comparing order item with order id {legacyOrderItem.OrderId} and catalogue item id {legacyOrderItem.CatalogueItemId}");
 
-                var currentOrderItem = currentOrderItems.Single(x => x.OrderId == legacyOrderItem.OrderId
+                var currentOrderItem = currentOrderItems.FirstOrDefault(x => x.OrderId == legacyOrderItem.OrderId
                     && x.CatalogueItemId == CatalogueItemId.ParseExact(legacyOrderItem.CatalogueItemId));
+
+                if(currentOrderItem is null)
+                {
+                    System.Diagnostics.Trace.WriteLine($"Warning!!!. Failed to reconcile order item {legacyOrderItem.OrderId} - {legacyOrderItem.CatalogueItemId}. OrderItem does not appear to have been migrated. Probably PriceId issue.");
+                    continue;
+                }
 
                 if (legacyOrderItem.PriceId is not null)
                     currentOrderItem.PriceId.Should().Be(legacyOrderItem.PriceId);
@@ -288,11 +302,18 @@ namespace NHSD.GPIT.BuyingCatalogue.FinalMigration
 
             foreach (var legacyOrderItemRecipient in validLegacyOrderItemRecipients)
             {
-                System.Diagnostics.Trace.WriteLine($"Comparing order item with order id {legacyOrderItemRecipient.OrderId} and catalogue item id {legacyOrderItemRecipient.CatalogueItemId} and ods code {legacyOrderItemRecipient.OdsCode}");
+                System.Diagnostics.Trace.WriteLine($"Comparing order item recipient with order id {legacyOrderItemRecipient.OrderId} and catalogue item id {legacyOrderItemRecipient.CatalogueItemId} and ods code {legacyOrderItemRecipient.OdsCode}");
 
-                var currentOrderItemRecipient = currentOrderItemRecipients.Single(x => x.OrderId == legacyOrderItemRecipient.OrderId
+                var currentOrderItemRecipient = currentOrderItemRecipients.FirstOrDefault(x => x.OrderId == legacyOrderItemRecipient.OrderId
                     && x.CatalogueItemId == CatalogueItemId.ParseExact(legacyOrderItemRecipient.CatalogueItemId)
                     && x.OdsCode.Equals(legacyOrderItemRecipient.OdsCode, StringComparison.CurrentCultureIgnoreCase));
+
+                if(currentOrderItemRecipient is null)
+                {
+                    // MJRTODO - Could check that final assertion by checking the OrderItems table
+                    System.Diagnostics.Trace.WriteLine($"Warning!!!. failed to reconcile order item recipient with order id {legacyOrderItemRecipient.OrderId} and catalogue item id {legacyOrderItemRecipient.CatalogueItemId} and ods code {legacyOrderItemRecipient.OdsCode}. Probably OrderItem missing due to PriceId issue");                    
+                    continue;
+                }
 
                 currentOrderItemRecipient.Quantity.Should().Be(legacyOrderItemRecipient.Quantity);
                 currentOrderItemRecipient.DeliveryDate.Should().Be(legacyOrderItemRecipient.DeliveryDate);
