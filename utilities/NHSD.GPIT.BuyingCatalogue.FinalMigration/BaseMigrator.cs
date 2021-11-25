@@ -23,6 +23,7 @@ namespace NHSD.GPIT.BuyingCatalogue.FinalMigration
         protected List<LegacyModels.Contact> legacyContacts;
         protected List<LegacyModels.Order> validLegacyOrders;
         protected List<LegacyModels.Order> testLegacyOrders;
+        protected List<LegacyModels.Order> deletedLegacyOrders;
         protected List<LegacyModels.DefaultDeliveryDate> legacyDefaultDeliveryDates;
         protected List<LegacyModels.OrderItem> validLegacyOrderItems;
         protected List<LegacyModels.OrderItemRecipient> validLegacyOrderItemRecipients;
@@ -49,6 +50,7 @@ namespace NHSD.GPIT.BuyingCatalogue.FinalMigration
             LoadLegacyContacts();
             LoadValidLegacyOrders();
             LoadTestLegacyOrders();
+            LoadDeletedLegacyOrders();
             LoadLegacyDefaultDeliveryDates();
             LoadValidLegacyOrderItems();
             LoadValidLegacyOrderItemRecipients();
@@ -203,7 +205,7 @@ namespace NHSD.GPIT.BuyingCatalogue.FinalMigration
         {
             using var sqlConnection = new SqlConnection(ORDAPIConnectionString);
             sqlConnection.Open();
-            validLegacyOrders = sqlConnection.Query<LegacyModels.Order>($"select * from [Order] WHERE LastUpdatedByName NOT IN ({TestUsers})").ToList();
+            validLegacyOrders = sqlConnection.Query<LegacyModels.Order>($"select * from [Order] WHERE IsDeleted = 0 and LastUpdatedByName NOT IN ({TestUsers})").ToList();
             System.Diagnostics.Trace.WriteLine($"Loaded {validLegacyOrders.Count} valid orders from legacy database");
         }
 
@@ -213,6 +215,14 @@ namespace NHSD.GPIT.BuyingCatalogue.FinalMigration
             sqlConnection.Open();
             testLegacyOrders = sqlConnection.Query<LegacyModels.Order>($"select * from [Order] WHERE LastUpdatedByName IN ({TestUsers})").ToList();
             System.Diagnostics.Trace.WriteLine($"Loaded {testLegacyOrders.Count} test orders from legacy database");
+        }
+
+        private void LoadDeletedLegacyOrders()
+        {
+            using var sqlConnection = new SqlConnection(ORDAPIConnectionString);
+            sqlConnection.Open();
+            deletedLegacyOrders = sqlConnection.Query<LegacyModels.Order>($"select * from [Order] WHERE IsDeleted = 1").ToList();
+            System.Diagnostics.Trace.WriteLine($"Loaded {testLegacyOrders.Count} deleted orders from legacy database");
         }
 
         private void LoadLegacyDefaultDeliveryDates()
@@ -233,7 +243,7 @@ namespace NHSD.GPIT.BuyingCatalogue.FinalMigration
             validLegacyOrderItems = sqlConnection.Query<LegacyModels.OrderItem>($@"SELECT OrderId,CatalogueItemId,ProvisioningTypeId,CataloguePriceTypeId,PricingUnitName,TimeUnitId,EstimationPeriodId,
                 CASE WHEN PriceId = 1012 THEN 1766 ELSE PriceId END AS PriceId,CurrencyCode,Price,DefaultDeliveryDate,Created,LastUpdated
                 FROM OrderItem
-                where OrderId in (select Id from [Order] WHERE LastUpdatedByName NOT IN ({TestUsers}))").ToList();
+                where OrderId in (select Id from [Order] WHERE IsDeleted = 0 and LastUpdatedByName NOT IN ({TestUsers}))").ToList();
             System.Diagnostics.Trace.WriteLine($"Loaded {validLegacyOrderItems.Count} order items from legacy database");
         }
 
