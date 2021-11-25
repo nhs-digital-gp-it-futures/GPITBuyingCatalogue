@@ -40,6 +40,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Test.Framework.AutoFixtureCustomisations
             new ClientApplicationTypeSectionModelCustomization(),
             new ServiceLevelAgreementCustomization(),
             new ActionContextCustomization(),
+            new ActionExecutedContextCustomization(),
             new ServiceAvailabilityTimesCustomization(),
             new WorkOffPlanCustomization(),
             new HttpClientCustomization(),

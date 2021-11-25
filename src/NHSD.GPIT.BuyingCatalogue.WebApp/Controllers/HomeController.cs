@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
+using NHSD.GPIT.BuyingCatalogue.WebApp.Models;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.Controllers
 {
@@ -17,7 +18,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Controllers
         }
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
-        public IActionResult Error(int? statusCode)
+        public IActionResult Error(int? statusCode = null, string error = null)
         {
             if (statusCode.HasValue && statusCode == 404)
             {
@@ -26,7 +27,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Controllers
                 return View("PageNotFound");
             }
 
-            return View();
+            return View(new ErrorModel(error));
         }
     }
 }
