@@ -170,7 +170,7 @@ function reselectCapabilityAndEpicsFiltersAndFrameworkFilter() {
         const splitCapabilities = capabilities.split(CapabilitiesDelimiter);
 
         splitCapabilities.forEach(capability => {
-            if (capability === FoundationCapabilitiesId || !capability.includes(EpicSplitCharacter)) {
+            if (capability === FoundationCapabilitiesId || (!capability.includes(EpicSplitCharacter) && !capability.includes(SupplierSplitCharacter))) {
                 CheckCheckboxWithHiddenInputValue(capability);
             }
             else {                

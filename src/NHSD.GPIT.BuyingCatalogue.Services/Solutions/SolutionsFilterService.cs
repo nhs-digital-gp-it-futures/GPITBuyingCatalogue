@@ -250,7 +250,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
 
             foreach (var capability in splitCapabilities)
             {
-                if (capability == FoundationCapabilitiesKey || !capability.ContainsIgnoreCase(EpicStartingCharacter))
+                if (capability == FoundationCapabilitiesKey || (!capability.ContainsIgnoreCase(SupplierStartingCharacter) && !capability.ContainsIgnoreCase(EpicStartingCharacter)))
                 {
                     output.Add(capability, new List<string>());
                 }
