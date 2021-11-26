@@ -105,45 +105,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
 
         [Theory]
         [CommonAutoData]
-        public static async Task Post_AddSupplierDetails_SupplierNameExists_ReturnsError(
-            EditSupplierDetailsModel model,
-            [Frozen] Mock<ISuppliersService> mockSuppliersService,
-            Supplier supplier,
-            SuppliersController controller)
-        {
-            mockSuppliersService.Setup(s => s.GetSupplierByName(model.SupplierName)).ReturnsAsync(supplier);
-
-            var actual = (await controller.AddSupplierDetails(model)).As<ViewResult>();
-
-            actual.Should().NotBeNull();
-            actual.ViewData.ModelState.IsValid.Should().BeFalse();
-            actual.ViewData.ModelState.ErrorCount.Should().Be(1);
-            actual.ViewData.ModelState.Keys.Single().Should().Be("SupplierName");
-            actual.ViewData.ModelState.Values.Single().Errors.Single().ErrorMessage.Should().Be("Supplier name already exists. Enter a different name");
-        }
-
-        [Theory]
-        [CommonAutoData]
-        public static async Task Post_AddSupplierDetails_SupplierLegalNameExists_ReturnsError(
-            EditSupplierDetailsModel model,
-            [Frozen] Mock<ISuppliersService> mockSuppliersService,
-            Supplier supplier,
-            SuppliersController controller)
-        {
-            mockSuppliersService.Setup(s => s.GetSupplierByName(model.SupplierName)).ReturnsAsync((Supplier)null);
-            mockSuppliersService.Setup(s => s.GetSupplierByLegalName(model.SupplierLegalName)).ReturnsAsync(supplier);
-
-            var actual = (await controller.AddSupplierDetails(model)).As<ViewResult>();
-
-            actual.Should().NotBeNull();
-            actual.ViewData.ModelState.IsValid.Should().BeFalse();
-            actual.ViewData.ModelState.ErrorCount.Should().Be(1);
-            actual.ViewData.ModelState.Keys.Single().Should().Be("SupplierLegalName");
-            actual.ViewData.ModelState.Values.Single().Errors.Single().ErrorMessage.Should().Be("Supplier legal name already exists. Enter a different name");
-        }
-
-        [Theory]
-        [CommonAutoData]
         public static async Task Post_AddSupplierDetails_AddsSupplier_RedirectsCorrectly(
             EditSupplierDetailsModel model,
             [Frozen] Mock<ISuppliersService> mockSuppliersService,
@@ -186,27 +147,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
 
         [Theory]
         [CommonAutoData]
-        public static async Task Post_EditSupplierDetails_SupplierNameExists_ReturnsError(
-            EditSupplierDetailsModel model,
-            [Frozen] Mock<ISuppliersService> mockSuppliersService,
-            Supplier existingSupplier,
-            int supplierId,
-            SuppliersController controller)
-        {
-            mockSuppliersService.Setup(s => s.GetSupplierByName(model.SupplierName)).ReturnsAsync(existingSupplier);
-            mockSuppliersService.Setup(s => s.GetSupplierByLegalName(model.SupplierLegalName)).ReturnsAsync((Supplier)null);
-
-            var actual = (await controller.EditSupplierDetails(supplierId, model)).As<ViewResult>();
-
-            actual.Should().NotBeNull();
-            actual.ViewData.ModelState.IsValid.Should().BeFalse();
-            actual.ViewData.ModelState.ErrorCount.Should().Be(1);
-            actual.ViewData.ModelState.Keys.Single().Should().Be("SupplierName");
-            actual.ViewData.ModelState.Values.Single().Errors.Single().ErrorMessage.Should().Be("Supplier name already exists. Enter a different name");
-        }
-
-        [Theory]
-        [CommonAutoData]
         public static async Task Post_EditSupplierDetails_SupplierNameExists_MatchesThisSupplier_RedirectsCorrectly(
             EditSupplierDetailsModel model,
             [Frozen] Mock<ISuppliersService> mockSuppliersService,
@@ -221,27 +161,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
 
             actual.ActionName.Should().Be(nameof(SuppliersController.EditSupplier));
             actual.ControllerName.Should().Be(typeof(SuppliersController).ControllerName());
-        }
-
-        [Theory]
-        [CommonAutoData]
-        public static async Task Post_EditSupplierDetails_SupplierLegalNameExists_ReturnsError(
-            EditSupplierDetailsModel model,
-            [Frozen] Mock<ISuppliersService> mockSuppliersService,
-            Supplier existingSupplier,
-            int supplierId,
-            SuppliersController controller)
-        {
-            mockSuppliersService.Setup(s => s.GetSupplierByName(model.SupplierName)).ReturnsAsync((Supplier)null);
-            mockSuppliersService.Setup(s => s.GetSupplierByLegalName(model.SupplierLegalName)).ReturnsAsync(existingSupplier);
-
-            var actual = (await controller.EditSupplierDetails(supplierId, model)).As<ViewResult>();
-
-            actual.Should().NotBeNull();
-            actual.ViewData.ModelState.IsValid.Should().BeFalse();
-            actual.ViewData.ModelState.ErrorCount.Should().Be(1);
-            actual.ViewData.ModelState.Keys.Single().Should().Be("SupplierLegalName");
-            actual.ViewData.ModelState.Values.Single().Errors.Single().ErrorMessage.Should().Be("Supplier legal name already exists. Enter a different name");
         }
 
         [Theory]
@@ -343,26 +262,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
 
         [Theory]
         [CommonAutoData]
-        public static async Task Post_AddSupplierContact_DuplicateContact_ReturnsError(
-            [Frozen] Mock<ISuppliersService> mockSuppliersService,
-            Supplier supplier,
-            SuppliersController controller)
-        {
-            var model = new EditContactModel(supplier.SupplierContacts.First(), supplier);
-
-            mockSuppliersService.Setup(s => s.GetSupplier(supplier.Id)).ReturnsAsync(supplier);
-
-            var actual = (await controller.AddSupplierContact(supplier.Id, model)).As<ViewResult>();
-
-            actual.Should().NotBeNull();
-            actual.ViewData.ModelState.IsValid.Should().BeFalse();
-            actual.ViewData.ModelState.ErrorCount.Should().Be(1);
-            actual.ViewData.ModelState.Keys.Single().Should().Be("edit-contact");
-            actual.ViewData.ModelState.Values.Single().Errors.Single().ErrorMessage.Should().Be("A contact with these contact details already exists for this supplier");
-        }
-
-        [Theory]
-        [CommonAutoData]
         public static async Task Post_AddSupplierContact_AddsContact_RedirectsCorrectly(
             EditContactModel model,
             [Frozen] Mock<ISuppliersService> mockSuppliersService,
@@ -400,46 +299,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
             actual.Should().NotBeNull();
             actual.ViewName.Should().BeNull();
             actual.Model.Should().BeEquivalentTo(expectedResult);
-        }
-
-        [Theory]
-        [CommonAutoData]
-        public static async Task Post_EditSupplierContact_DuplicateContact_ReturnsError(
-            [Frozen] Mock<ISuppliersService> mockSuppliersService,
-            Supplier supplier,
-            SuppliersController controller)
-        {
-            var model = new EditContactModel(supplier.SupplierContacts.First(), supplier);
-
-            mockSuppliersService.Setup(s => s.GetSupplier(supplier.Id)).ReturnsAsync(supplier);
-
-            var actual = (await controller.EditSupplierContact(supplier.Id, supplier.SupplierContacts.Last().Id, model)).As<ViewResult>();
-
-            actual.Should().NotBeNull();
-            actual.ViewData.ModelState.IsValid.Should().BeFalse();
-            actual.ViewData.ModelState.ErrorCount.Should().Be(1);
-            actual.ViewData.ModelState.Keys.Single().Should().Be("edit-contact");
-            actual.ViewData.ModelState.Values.Single().Errors.Single().ErrorMessage.Should().Be("A contact with these contact details already exists for this supplier");
-        }
-
-        [Theory]
-        [CommonAutoData]
-        public static async Task Post_EditSupplierContact_EditsContact_RedirectsCorrectly(
-            EditContactModel model,
-            [Frozen] Mock<ISuppliersService> mockSuppliersService,
-            Supplier supplier,
-            SuppliersController controller)
-        {
-            mockSuppliersService.Setup(s => s.GetSupplier(supplier.Id)).ReturnsAsync(supplier);
-            mockSuppliersService.Setup(s => s.EditSupplierContact(supplier.Id, It.IsAny<int>(), It.IsAny<SupplierContact>())).ReturnsAsync(supplier);
-
-            var actual = (await controller.EditSupplierContact(supplier.Id, supplier.SupplierContacts.First().Id, model)).As<RedirectToActionResult>();
-
-            actual.ActionName.Should().Be(nameof(SuppliersController.ManageSupplierContacts));
-            actual.ControllerName.Should().Be(typeof(SuppliersController).ControllerName());
-            actual.RouteValues["supplierId"].Should().Be(supplier.Id);
-
-            mockSuppliersService.Verify(s => s.EditSupplierContact(supplier.Id, supplier.SupplierContacts.First().Id, It.IsAny<SupplierContact>()), Times.Once());
         }
 
         [Theory]

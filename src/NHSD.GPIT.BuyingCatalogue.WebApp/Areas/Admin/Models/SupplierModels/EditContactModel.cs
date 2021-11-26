@@ -17,6 +17,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.SupplierModels
                 throw new ArgumentNullException(nameof(supplier));
 
             Title = "Add a contact";
+            SupplierId = supplier.Id;
             SupplierName = supplier.Name;
         }
 
@@ -40,9 +41,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.SupplierModels
             SupplierName = supplier.Name;
         }
 
-        public int ContactId { get; }
+        public int? ContactId { get; init; }
 
-        public int SupplierId { get; }
+        public int SupplierId { get; init; }
 
         [StringLength(35)]
         [Required(ErrorMessage = "Enter a first name")]

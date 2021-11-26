@@ -8,10 +8,8 @@ using AutoFixture.Xunit2;
 using FluentAssertions;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.AspNetCore.Routing;
 using Moq;
-using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Models;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Organisations;
@@ -83,38 +81,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers
 
             actualResult.Should().BeOfType<ViewResult>();
             actualResult.As<ViewResult>().ViewData.Model.Should().BeEquivalentTo(expectedViewData);
-        }
-
-        [Theory]
-        [CommonAutoData]
-        public static void Post_SelectAdditionalServiceRecipients_NoRecipientsSelected_ReturnsErrorResult(
-            string odsCode,
-            CallOffId callOffId,
-            List<OrderItemRecipientModel> serviceRecipients,
-            AdditionalServiceRecipientsController controller)
-        {
-            serviceRecipients.ForEach(r => r.Selected = false);
-
-            var model = new SelectAdditionalServiceRecipientsModel
-            {
-                ServiceRecipients = serviceRecipients,
-            };
-
-            var actualResult = controller.SelectAdditionalServiceRecipients(odsCode, callOffId, model);
-
-            actualResult.Should().BeOfType<ViewResult>();
-            actualResult.As<ViewResult>().ViewData.ModelState.ValidationState.Should().Be(ModelValidationState.Invalid);
-
-            actualResult.As<ViewResult>()
-                .ViewData.ModelState.Keys.Single()
-                .Should()
-                .Be("ServiceRecipients[0].Selected");
-
-            actualResult.As<ViewResult>()
-                .ViewData.ModelState.Values.Single()
-                .Errors.Single()
-                .ErrorMessage.Should()
-                .Be("Select a Service Recipient");
         }
 
         [Theory]

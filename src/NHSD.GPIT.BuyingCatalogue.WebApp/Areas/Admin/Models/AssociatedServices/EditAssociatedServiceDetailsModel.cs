@@ -1,5 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
+using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Models;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.AssociatedServices
@@ -12,13 +13,17 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.AssociatedServices
 
         public EditAssociatedServiceDetailsModel(CatalogueItem solution, CatalogueItem associatedServiceItem)
         {
-            AssociatedService = associatedServiceItem;
-            Name = associatedServiceItem.Name;
+            SolutionId = solution.Id;
+            ServiceName = Name = associatedServiceItem.Name;
             Description = associatedServiceItem.AssociatedService.Description;
             OrderGuidance = associatedServiceItem.AssociatedService.OrderGuidance;
         }
 
-        public CatalogueItem AssociatedService { get; }
+        public CatalogueItemId SolutionId { get; set; }
+
+        public string ServiceName { get; set; }
+
+        public string SupplierName { get; set; }
 
         [Required(ErrorMessage = "Enter a name")]
         [StringLength(300)]

@@ -46,9 +46,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
         [HttpPost]
         public IActionResult SelectAdditionalServiceRecipients(string odsCode, CallOffId callOffId, SelectAdditionalServiceRecipientsModel model)
         {
-            if (!model.ServiceRecipients.Any(sr => sr.Selected))
-                ModelState.AddModelError("ServiceRecipients[0].Selected", "Select a Service Recipient");
-
             if (!ModelState.IsValid)
                 return View(model);
 

@@ -16,12 +16,15 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.SupplierModels
             if (supplier is null)
                 throw new ArgumentNullException(nameof(supplier));
 
+            SupplierId = supplier.Id;
             SupplierName = supplier.Name;
             SupplierLegalName = supplier.LegalName;
             AboutSupplier = supplier.Summary;
             SupplierWebsite = supplier.SupplierUrl;
             SupplierDisplayName = supplier.Name;
         }
+
+        public int? SupplierId { get; init; }
 
         [Required(ErrorMessage = "Enter a supplier name")]
         [StringLength(255)]
