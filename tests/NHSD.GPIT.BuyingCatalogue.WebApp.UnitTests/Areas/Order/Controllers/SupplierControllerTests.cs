@@ -77,7 +77,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers
             var actualResult = await controller.Supplier(odsCode, order.CallOffId);
 
             actualResult.Should().BeOfType<ViewResult>();
-            actualResult.As<ViewResult>().ViewData.Model.Should().BeEquivalentTo(expectedViewData);
+            actualResult.As<ViewResult>().ViewData.Model.Should().BeEquivalentTo(expectedViewData, opt => opt.Excluding(m => m.BackLink));
         }
 
         [Theory]
@@ -133,7 +133,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers
             var actualResult = await controller.SupplierSearch(odsCode, order.CallOffId);
 
             actualResult.Should().BeOfType<ViewResult>();
-            actualResult.As<ViewResult>().ViewData.Model.Should().BeEquivalentTo(expectedViewData);
+            actualResult.As<ViewResult>().ViewData.Model.Should().BeEquivalentTo(expectedViewData, opt => opt.Excluding(m => m.BackLink));
         }
 
         [Theory]
@@ -162,12 +162,12 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers
             CallOffId callOffId,
             SupplierController controller)
         {
-            var expectedViewData = new NoSupplierFoundModel(odsCode, callOffId);
+            var expectedViewData = new NoSupplierFoundModel();
 
             var actualResult = await controller.SupplierSearchSelect(odsCode, callOffId, search);
 
             actualResult.Should().BeOfType<ViewResult>();
-            actualResult.As<ViewResult>().ViewData.Model.Should().BeEquivalentTo(expectedViewData);
+            actualResult.As<ViewResult>().ViewData.Model.Should().BeEquivalentTo(expectedViewData, opt => opt.Excluding(m => m.BackLink));
             actualResult.As<ViewResult>().ViewName.Should().Be("NoSupplierFound");
         }
 
@@ -179,7 +179,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers
             [Frozen] Mock<ISupplierService> supplierServiceMock,
             SupplierController controller)
         {
-            var expectedViewData = new NoSupplierFoundModel(odsCode, callOffId);
+            var expectedViewData = new NoSupplierFoundModel();
 
             supplierServiceMock.Setup(s => s.GetListFromBuyingCatalogue(It.IsAny<string>(), null, null))
                 .ReturnsAsync(new List<Supplier>());
@@ -187,7 +187,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers
             var actualResult = await controller.SupplierSearchSelect(odsCode, callOffId, "searchTerm");
 
             actualResult.Should().BeOfType<ViewResult>();
-            actualResult.As<ViewResult>().ViewData.Model.Should().BeEquivalentTo(expectedViewData);
+            actualResult.As<ViewResult>().ViewData.Model.Should().BeEquivalentTo(expectedViewData, opt => opt.Excluding(m => m.BackLink));
             actualResult.As<ViewResult>().ViewName.Should().Be("NoSupplierFound");
         }
 
@@ -208,7 +208,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers
             var actualResult = await controller.SupplierSearchSelect(odsCode, callOffId, "searchTerm");
 
             actualResult.Should().BeOfType<ViewResult>();
-            actualResult.As<ViewResult>().ViewData.Model.Should().BeEquivalentTo(expectedViewData);
+            actualResult.As<ViewResult>().ViewData.Model.Should().BeEquivalentTo(expectedViewData, opt => opt.Excluding(m => m.BackLink));
         }
 
         [Theory]

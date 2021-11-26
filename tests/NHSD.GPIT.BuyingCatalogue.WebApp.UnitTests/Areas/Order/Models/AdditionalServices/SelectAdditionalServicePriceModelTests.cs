@@ -23,7 +23,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.Addition
             prices.ForEach(cp => cp.CurrencyCode = "GBP");
             var model = new SelectAdditionalServicePriceModel(odsCode, callOffId, solutionName, prices);
 
-            model.BackLink.Should().Be($"/order/organisation/{odsCode}/order/{callOffId}/additional-services/select/additional-service");
             model.Title.Should().Be($"List price for {solutionName}");
             model.OdsCode.Should().Be(odsCode);
             model.Prices.Should().HaveCount(prices.Count);

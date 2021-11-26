@@ -13,7 +13,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.CatalogueSolutions
 
         public SelectSolutionModel(string odsCode, CallOffId callOffId, List<CatalogueItem> solutions, CatalogueItemId? selectedSolutionId)
         {
-            BackLink = $"/order/organisation/{odsCode}/order/{callOffId}/catalogue-solutions";
             Title = $"Add a Catalogue Solution for {callOffId}";
             OdsCode = odsCode;
             Solutions = solutions;

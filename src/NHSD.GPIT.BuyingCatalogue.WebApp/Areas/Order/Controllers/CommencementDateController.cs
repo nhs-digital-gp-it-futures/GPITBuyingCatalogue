@@ -31,7 +31,15 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
         {
             var order = await orderService.GetOrder(callOffId);
 
-            return View(new CommencementDateModel(odsCode, callOffId, order.CommencementDate));
+            var model = new CommencementDateModel(odsCode, callOffId, order.CommencementDate)
+            {
+                BackLink = Url.Action(
+                    nameof(OrderController.Order),
+                    typeof(OrderController).ControllerName(),
+                    new { odsCode, callOffId }),
+            };
+
+            return View(model);
         }
 
         [HttpPost]

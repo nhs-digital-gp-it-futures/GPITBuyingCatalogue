@@ -2,7 +2,6 @@
 using System.ComponentModel.DataAnnotations;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Extensions;
-using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.Framework.Constants;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.CatalogueSolutions
@@ -13,9 +12,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.CatalogueSolutions
         {
         }
 
-        public SelectSolutionPriceModel(string odsCode, CallOffId callOffId, string solutionName, List<CataloguePrice> prices)
+        public SelectSolutionPriceModel(string odsCode, string solutionName, List<CataloguePrice> prices)
         {
-            BackLink = $"/order/organisation/{odsCode}/order/{callOffId}/catalogue-solutions/select/solution";
             Title = $"List price for {solutionName}";
             OdsCode = odsCode;
             SetPrices(prices);

@@ -18,7 +18,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.FundingS
         {
             var model = new FundingSourceModel(odsCode, callOffId, fundingSourceOnlyGms);
 
-            model.BackLink.Should().Be($"/order/organisation/{odsCode}/order/{callOffId}");
             model.Title.Should().Be($"Funding source for {callOffId}");
             model.FundingSourceOnlyGms.Should().Be(fundingSourceOnlyGms.ToYesNo());
         }

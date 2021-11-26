@@ -45,9 +45,13 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
             var orderModel = new OrderModel(odsCode, order, sectionStatuses)
             {
                 DescriptionUrl = Url.Action(
-                                    nameof(OrderDescriptionController.OrderDescription),
-                                    typeof(OrderDescriptionController).ControllerName(),
-                                    new { odsCode, order.CallOffId }),
+                    nameof(OrderDescriptionController.OrderDescription),
+                    typeof(OrderDescriptionController).ControllerName(),
+                    new { odsCode, order.CallOffId }),
+                BackLink = Url.Action(
+                    nameof(DashboardController.Organisation),
+                    typeof(DashboardController).ControllerName(),
+                    new { odsCode }),
             };
 
             return View(orderModel);
@@ -59,9 +63,13 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
             var orderModel = new OrderModel(odsCode, null, new OrderTaskList())
             {
                 DescriptionUrl = Url.Action(
-                                    nameof(OrderDescriptionController.NewOrderDescription),
-                                    typeof(OrderDescriptionController).ControllerName(),
-                                    new { odsCode }),
+                    nameof(OrderDescriptionController.NewOrderDescription),
+                    typeof(OrderDescriptionController).ControllerName(),
+                    new { odsCode }),
+                BackLink = Url.Action(
+                    nameof(DashboardController.Organisation),
+                    typeof(DashboardController).ControllerName(),
+                    new { odsCode }),
             };
 
             return View("Order", orderModel);

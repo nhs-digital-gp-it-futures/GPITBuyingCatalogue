@@ -1,6 +1,5 @@
 ﻿using System.Linq;
 using FluentAssertions;
-using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Models;
 using NHSD.GPIT.BuyingCatalogue.Test.Framework.AutoFixtureCustomisations;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.CatalogueSolutions;
@@ -56,37 +55,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.Catalogu
             var model = new EditSolutionModel(odsCode, state);
 
             model.OrderItem.ServiceRecipients.ForEach(oi => oi.DeliveryDate.Should().Be(state.PlannedDeliveryDate));
-        }
-
-        [Theory]
-        [CommonAutoData]
-        public static void WhenEditingExistingSolution_BackLinkCorrectlySet(
-            string odsCode,
-            CreateOrderItemModel state)
-        {
-            state.IsNewSolution = false;
-
-            var model = new EditSolutionModel(odsCode, state);
-
-            model.BackLink.Should().Be($"/order/organisation/{odsCode}/order/{state.CallOffId}/catalogue-solutions");
-        }
-
-        [Theory]
-        [CommonInlineAutoData(ProvisioningType.Declarative, "/order/organisation/{0}/order/{1}/catalogue-solutions/select/solution/price/flat/declarative")]
-        [CommonInlineAutoData(ProvisioningType.OnDemand, "/order/organisation/{0}/order/{1}/catalogue-solutions/select/solution/price/flat/ondemand")]
-        [CommonInlineAutoData(ProvisioningType.Patient, "/order/organisation/{0}/order/{1}/catalogue-solutions/select/solution/price/recipients/date")]
-        public static void WhenEditingNewSolution_BackLinkCorrectlySet(
-            ProvisioningType provisioningType,
-            string expectedBackLink,
-            string odsCode,
-            CreateOrderItemModel state)
-        {
-            state.IsNewSolution = true;
-            state.CataloguePrice.ProvisioningType = provisioningType;
-
-            var model = new EditSolutionModel(odsCode, state);
-
-            model.BackLink.Should().Be(string.Format(expectedBackLink, odsCode, state.CallOffId));
         }
     }
 }

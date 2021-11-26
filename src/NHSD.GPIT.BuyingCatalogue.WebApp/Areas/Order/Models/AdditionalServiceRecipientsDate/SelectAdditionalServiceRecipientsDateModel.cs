@@ -12,11 +12,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.AdditionalServiceR
         }
 
         public SelectAdditionalServiceRecipientsDateModel(
-            string odsCode,
             CreateOrderItemModel state,
             DateTime? defaultDeliveryDate)
         {
-            BackLink = $"/order/organisation/{odsCode}/order/{state.CallOffId}/additional-services/select/additional-service/price/recipients";
             Title = $"Planned delivery date of {state.CatalogueItemName} for {state.CallOffId}";
 
             CommencementDate = state.CommencementDate;

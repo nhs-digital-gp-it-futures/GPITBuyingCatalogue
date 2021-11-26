@@ -34,7 +34,15 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
 
             var defaultDeliveryDate = await defaultDeliveryDateService.GetDefaultDeliveryDate(callOffId, state.CatalogueItemId.GetValueOrDefault());
 
-            return View(new SelectAdditionalServiceRecipientsDateModel(odsCode, state, defaultDeliveryDate));
+            var model = new SelectAdditionalServiceRecipientsDateModel(state, defaultDeliveryDate)
+            {
+                BackLink = Url.Action(
+                    nameof(AdditionalServiceRecipientsController.SelectAdditionalServiceRecipients),
+                    typeof(AdditionalServiceRecipientsController).ControllerName(),
+                    new { odsCode, callOffId }),
+            };
+
+            return View(model);
         }
 
         [HttpPost]

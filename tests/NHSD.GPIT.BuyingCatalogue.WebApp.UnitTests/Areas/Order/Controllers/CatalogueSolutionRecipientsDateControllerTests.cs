@@ -52,13 +52,13 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers
             [Frozen] Mock<IOrderSessionService> orderSessionServiceMock,
             CatalogueSolutionRecipientsDateController controller)
         {
-            var expectedViewData = new SelectSolutionServiceRecipientsDateModel(odsCode, state, defaultDeliveryDate);
+            var expectedViewData = new SelectSolutionServiceRecipientsDateModel(state, defaultDeliveryDate);
             orderSessionServiceMock.Setup(s => s.GetOrderStateFromSession(state.CallOffId)).Returns(state);
 
             var actualResult = await controller.SelectSolutionServiceRecipientsDate(odsCode, state.CallOffId);
 
             actualResult.Should().BeOfType<ViewResult>();
-            actualResult.As<ViewResult>().ViewData.Model.Should().BeEquivalentTo(expectedViewData);
+            actualResult.As<ViewResult>().ViewData.Model.Should().BeEquivalentTo(expectedViewData, opt => opt.Excluding(m => m.BackLink));
         }
 
         [Theory]

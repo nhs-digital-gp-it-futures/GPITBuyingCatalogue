@@ -13,7 +13,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.CommencementDate
 
         public CommencementDateModel(string odsCode, CallOffId callOffId, DateTime? commencementDate)
         {
-            BackLink = $"/order/organisation/{odsCode}/order/{callOffId}";
             Title = $"Commencement date for {callOffId}";
             OdsCode = odsCode;
 

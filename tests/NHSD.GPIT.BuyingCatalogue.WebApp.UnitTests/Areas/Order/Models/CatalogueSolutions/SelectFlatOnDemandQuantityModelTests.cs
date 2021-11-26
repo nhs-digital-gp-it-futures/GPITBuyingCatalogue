@@ -20,7 +20,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.Catalogu
         {
             var model = new SelectFlatOnDemandQuantityModel(odsCode, callOffId, solutionName, quantity, estimationPeriod);
 
-            model.BackLink.Should().Be($"/order/organisation/{odsCode}/order/{callOffId}/catalogue-solutions/select/solution/price/recipients/date");
             model.Title.Should().Be($"Quantity of {solutionName} for {callOffId}");
             model.OdsCode.Should().Be(odsCode);
             model.CallOffId.Should().Be(callOffId);

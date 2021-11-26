@@ -30,7 +30,15 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
         {
             var order = await orderService.GetOrder(callOffId);
 
-            return View(new DeleteAdditionalServiceModel(odsCode, callOffId, catalogueItemId, catalogueItemName, order.Description));
+            var model = new DeleteAdditionalServiceModel(odsCode, callOffId, catalogueItemId, catalogueItemName, order.Description)
+            {
+                BackLink = Url.Action(
+                    nameof(AdditionalServicesController.EditAdditionalService),
+                    typeof(AdditionalServicesController).ControllerName(),
+                    new { odsCode, callOffId, catalogueItemId }),
+            };
+
+            return View(model);
         }
 
         [HttpPost]

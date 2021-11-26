@@ -10,7 +10,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.DeleteOrder
 
         public DeleteOrderModel(string odsCode, EntityFramework.Ordering.Models.Order order)
         {
-            BackLink = $"/order/organisation/{odsCode}/order/{order.CallOffId}";
             Title = $"Delete order {order.CallOffId}?";
             Description = order.Description;
             CallOffId = order.CallOffId;

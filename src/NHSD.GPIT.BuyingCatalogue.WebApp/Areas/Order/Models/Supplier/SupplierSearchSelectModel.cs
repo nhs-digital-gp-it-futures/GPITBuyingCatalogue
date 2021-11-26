@@ -8,7 +8,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.Supplier
     {
         public SupplierSearchSelectModel(string odsCode, CallOffId callOffId, List<EntityFramework.Catalogue.Models.Supplier> suppliers)
         {
-            BackLink = $"/order/organisation/{odsCode}/order/{callOffId}/supplier/search";
             Title = "Suppliers found";
             OdsCode = odsCode;
             Suppliers = suppliers;
