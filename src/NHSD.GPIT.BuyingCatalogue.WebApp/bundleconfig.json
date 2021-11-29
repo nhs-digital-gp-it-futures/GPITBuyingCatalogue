@@ -16,5 +16,11 @@
     "inputFiles": [
       "wwwroot/js/SupplierManagement.js"
     ]
+  },
+  {
+    "outputFileName": "wwwroot/js/ListPriceManagement.min.js",
+    "inputFiles": [
+      "wwwroot/js/ListPriceManagement.js"
+    ]
   }
 ]

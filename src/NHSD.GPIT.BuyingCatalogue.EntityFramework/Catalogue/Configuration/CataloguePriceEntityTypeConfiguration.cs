@@ -45,6 +45,16 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Configuration
                 .HasForeignKey(p => p.PricingUnitId)
                 .OnDelete(DeleteBehavior.ClientSetNull);
 
+            builder.Property(i => i.PublishedStatus)
+                .HasConversion<int>()
+                .HasColumnName("PublishedStatusId")
+                .HasDefaultValue(PublicationStatus.Draft);
+
+            builder.Property(i => i.IsLocked)
+                .HasConversion<bool>()
+                .HasColumnName("IsLocked")
+                .HasDefaultValue(false);
+
             builder.HasOne(p => p.LastUpdatedByUser)
                 .WithMany()
                 .HasForeignKey(p => p.LastUpdatedBy)

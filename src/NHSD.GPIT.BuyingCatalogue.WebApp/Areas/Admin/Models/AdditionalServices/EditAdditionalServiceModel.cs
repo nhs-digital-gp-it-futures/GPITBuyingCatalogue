@@ -34,9 +34,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.AdditionalServices
                 ? TaskProgress.Completed
                 : TaskProgress.NotStarted;
 
-            ListPriceStatus = additionalService.CataloguePrices.Any()
-                ? TaskProgress.Completed
-                : TaskProgress.NotStarted;
+            ListPriceStatus = new ListPriceModels.ManageListPricesModel(additionalService).Status();
         }
 
         public CatalogueItemId SolutionId { get; init; }

@@ -7,9 +7,11 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.ListPrices
 {
     public interface IListPricesService
     {
-        Task SaveListPrice(CatalogueItemId itemId, SaveListPriceModel model);
+        Task<int> SaveListPrice(CatalogueItemId itemId, SaveListPriceModel model);
 
         Task UpdateListPrice(CatalogueItemId itemId, SaveListPriceModel model);
+
+        Task UpdateListPriceStatus(CatalogueItemId itemId, SaveListPriceModel model);
 
         Task DeleteListPrice(CatalogueItemId itemId, int cataloguePriceId);
 

@@ -19,7 +19,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.ListPrices
             this.dbContext = dbContext ?? throw new ArgumentNullException(nameof(dbContext));
         }
 
-        public async Task SaveListPrice(CatalogueItemId itemId, SaveListPriceModel model)
+        public async Task<int> SaveListPrice(CatalogueItemId itemId, SaveListPriceModel model)
         {
             if (model is null)
                 throw new ArgumentNullException(nameof(model));
@@ -34,10 +34,14 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.ListPrices
                 ProvisioningType = model.ProvisioningType,
                 TimeUnit = model.TimeUnit,
                 CurrencyCode = "GBP",
+                IsLocked = false,
+                PublishedStatus = PublicationStatus.Draft,
             };
 
             catalogueItem.CataloguePrices.Add(cataloguePrice);
             await dbContext.SaveChangesAsync();
+
+            return cataloguePrice.CataloguePriceId;
         }
 
         public async Task UpdateListPrice(CatalogueItemId itemId, SaveListPriceModel model)
@@ -50,6 +54,9 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.ListPrices
                 .Include(p => p.PricingUnit)
                 .SingleAsync(p => p.CataloguePriceId == model.CataloguePriceId && p.CatalogueItemId == itemId);
 
+            if (listPrice.IsLocked)
+                throw new InvalidOperationException($"Catalogue price {listPrice.CataloguePriceId} cannot be edited because it is locked");
+
             listPrice.Price = model.Price;
             listPrice.ProvisioningType = model.ProvisioningType;
             listPrice.TimeUnit = model.TimeUnit;
@@ -60,12 +67,34 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.ListPrices
             await dbContext.SaveChangesAsync();
         }
 
+        public async Task UpdateListPriceStatus(CatalogueItemId itemId, SaveListPriceModel model)
+        {
+            if (model is null)
+                throw new ArgumentNullException(nameof(model));
+
+            var listPrice = await dbContext
+                .CataloguePrices
+                .SingleAsync(p => p.CataloguePriceId == model.CataloguePriceId && p.CatalogueItemId == itemId);
+
+            var isLocked =
+                (listPrice.PublishedStatus == PublicationStatus.Draft && model.Status == PublicationStatus.Published)
+                || listPrice.IsLocked;
+
+            listPrice.PublishedStatus = model.Status;
+            listPrice.IsLocked = isLocked;
+
+            await dbContext.SaveChangesAsync();
+        }
+
         public async Task DeleteListPrice(CatalogueItemId itemId, int cataloguePriceId)
         {
             var cataloguePrice = await dbContext
                 .CataloguePrices
                 .Include(p => p.PricingUnit)
                 .SingleAsync(p => p.CataloguePriceId == cataloguePriceId && p.CatalogueItemId == itemId);
+
+            if (cataloguePrice.IsLocked)
+                throw new InvalidOperationException($"Catalogue price {cataloguePriceId} cannot be deleted because it is locked");
 
             dbContext.CataloguePrices.Remove(cataloguePrice);
 
