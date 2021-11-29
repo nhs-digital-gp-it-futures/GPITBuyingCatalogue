@@ -212,7 +212,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.AddNewSolution.Associat
             CommonActions
                 .PageLoadedCorrectGetIndex(
                     typeof(AssociatedServicesController),
-                    nameof(AssociatedServicesController.ManageListPrices))
+                    nameof(AssociatedServicesController.PublishListPrice))
                 .Should()
                 .BeTrue();
         }

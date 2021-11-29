@@ -168,7 +168,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Controllers
         [CommonAutoData]
         public static async Task Get_AssociatedServices_ValidSolutionForId_ReturnsExpectedViewResult(
             [Frozen] Mock<ISolutionsService> solutionsServiceMock,
-            CatalogueItemId id,
             ClientApplication clientApplication,
             Solution solution,
             SolutionsController controller)
@@ -177,10 +176,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Controllers
             solution.ClientApplication = JsonSerializer.Serialize(clientApplication);
             var associatedServicesModel = new AssociatedServicesModel(catalogueItem);
 
-            solutionsServiceMock.Setup(s => s.GetSolutionWithAllAssociatedServices(id))
+            solutionsServiceMock.Setup(s => s.GetSolutionWithAllAssociatedServices(catalogueItem.Id))
                 .ReturnsAsync(catalogueItem);
 
-            var actual = (await controller.AssociatedServices(id)).As<ViewResult>();
+            var actual = (await controller.AssociatedServices(catalogueItem.Id)).As<ViewResult>();
 
             actual.Should().NotBeNull();
             actual.ViewName.Should().BeNullOrEmpty();

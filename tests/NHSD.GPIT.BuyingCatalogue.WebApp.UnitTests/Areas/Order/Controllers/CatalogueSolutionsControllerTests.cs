@@ -108,6 +108,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers
             {
                 catalogueItemCataloguePrice.CataloguePriceType = CataloguePriceType.Flat;
                 catalogueItemCataloguePrice.CurrencyCode = "GBP";
+                catalogueItemCataloguePrice.PublishedStatus = PublicationStatus.Published;
             }
 
             var prices = catalogueItem.CataloguePrices.Where(p => p.CataloguePriceType == CataloguePriceType.Flat).ToList();

@@ -211,7 +211,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.AddNewSolution.Addition
             CommonActions
                 .PageLoadedCorrectGetIndex(
                     typeof(AdditionalServicesController),
-                    nameof(AdditionalServicesController.ManageListPrices))
+                    nameof(AdditionalServicesController.PublishListPrice))
                 .Should()
                 .BeTrue();
         }
