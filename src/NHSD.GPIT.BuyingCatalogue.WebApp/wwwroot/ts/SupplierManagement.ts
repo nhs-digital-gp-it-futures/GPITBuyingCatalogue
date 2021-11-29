@@ -1,36 +1,24 @@
-﻿class SupplierManagement {
+﻿window.onload = function () {
+    const inactiveSupplierCheckboxContainer = "inactive-supplier-checkbox";
+    const inactiveSupplierCheckbox = "ShowInactiveSuppliers";
 
-    // a variable of type boolean
-    checked: boolean;
+    document.getElementById(inactiveSupplierCheckboxContainer).style.display = 'block';
 
-    SetSupplierEvents = () => {
-        const inactiveSupplierCheckboxContainer: string = "inactive-supplier-checkbox";
-        const inactiveSupplierCheckbox: string = "ShowInactiveSuppliers";
+    ChangeSupplierDisplayStyle('none');
 
-        document.getElementById(inactiveSupplierCheckboxContainer).style.display = "block";
+    const checkbox = document.getElementById(inactiveSupplierCheckbox);
 
-        ChangeSupplierDisplayStyle("none");
-
-        const checkbox: HTMLElement = document.getElementById(inactiveSupplierCheckbox);
-
-        checkbox.addEventListener("click", this.ChangeSupplierDisplay);
-    }
-
-    ChangeSupplierDisplay(): void {
-
-        this.checked ? ChangeSupplierDisplayStyle("table-row") : ChangeSupplierDisplayStyle("none");
-    }
+    checkbox.addEventListener("click", ChangeSupplierDisplay)
 }
 
-window.onload = function (): void {
-    const supplierManagement: SupplierManagement = new SupplierManagement();
-    supplierManagement.SetSupplierEvents();
-};
+function ChangeSupplierDisplay() {
+    this.checked ? ChangeSupplierDisplayStyle('table-row') : ChangeSupplierDisplayStyle('none');
+}
 
-function ChangeSupplierDisplayStyle(style: string): void {
-    const inactiveSuppliers: HTMLCollectionOf<Element> = document.getElementsByClassName("inactive");
-    for (let i: number = 0; i < inactiveSuppliers.length; i++) {
-        const input: HTMLInputElement = inactiveSuppliers.item(i) as HTMLInputElement;
+function ChangeSupplierDisplayStyle(style) {
+    const inactiveSuppliers = document.getElementsByClassName("inactive");
+    for (let i = 0; i < inactiveSuppliers.length; i++) {
+        const input = inactiveSuppliers.item(i) as HTMLInputElement;
         input.style.display = style;
     }
 }

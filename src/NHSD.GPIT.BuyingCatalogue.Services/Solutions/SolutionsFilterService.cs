@@ -183,7 +183,8 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
                             {
                                 Id = e.Id,
                                 Name = e.Name,
-                                Count = results.Count(ci => ci.CatalogueItemEpics.Any(cie => cie.EpicId == e.Id)),
+                                Count = results.Where(ci => ci.CatalogueItemCapabilities.Any(cic => cic.CapabilityId == e.CapabilityId))
+                                    .Count(ci => ci.CatalogueItemEpics.Any(cie => cie.EpicId == e.Id)),
                             })
                             .OrderByDescending(e => e.Count)
                             .ThenBy(e => e.Name))));
@@ -250,7 +251,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
 
             foreach (var capability in splitCapabilities)
             {
-                if (capability == FoundationCapabilitiesKey || !capability.ContainsIgnoreCase(EpicStartingCharacter))
+                if (capability == FoundationCapabilitiesKey || (!capability.ContainsIgnoreCase(SupplierStartingCharacter) && !capability.ContainsIgnoreCase(EpicStartingCharacter)))
                 {
                     output.Add(capability, new List<string>());
                 }
