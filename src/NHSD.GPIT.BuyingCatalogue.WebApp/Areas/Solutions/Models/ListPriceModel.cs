@@ -14,7 +14,11 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models
         public ListPriceModel(CatalogueItem item)
             : base(item)
         {
-            FlatListPrices = item.CataloguePrices.Select(cp => new PriceViewModel(cp)).ToList();
+            FlatListPrices = item.CataloguePrices
+                .Where(cp =>
+                    cp.CataloguePriceType == CataloguePriceType.Flat
+                    && cp.PublishedStatus == PublicationStatus.Published)
+                .Select(cp => new PriceViewModel(cp)).ToList();
         }
 
         public override int Index => 4;

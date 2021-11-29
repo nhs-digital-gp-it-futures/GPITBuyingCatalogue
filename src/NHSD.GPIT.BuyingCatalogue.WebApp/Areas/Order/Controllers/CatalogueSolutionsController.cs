@@ -100,7 +100,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
             state.CatalogueItemName = solution.Name;
             orderSessionService.SetOrderStateToSession(state);
 
-            var prices = solution.CataloguePrices.Where(p => p.CataloguePriceType == CataloguePriceType.Flat).ToList();
+            var prices = solution.CataloguePrices.Where(p =>
+            p.CataloguePriceType == CataloguePriceType.Flat
+            && p.PublishedStatus == PublicationStatus.Published).ToList();
 
             if (!prices.Any())
                 throw new InvalidOperationException($"Catalogue Solution {state.CatalogueItemId.GetValueOrDefault()} does not have any Flat prices associated");
@@ -131,7 +133,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
 
             var solution = await solutionsService.GetSolutionListPrices(state.CatalogueItemId.GetValueOrDefault());
 
-            var prices = solution.CataloguePrices.Where(p => p.CataloguePriceType == CataloguePriceType.Flat).ToList();
+            var prices = solution.CataloguePrices.Where(p =>
+            p.CataloguePriceType == CataloguePriceType.Flat
+            && p.PublishedStatus == PublicationStatus.Published).ToList();
 
             var model = new SelectSolutionPriceModel(odsCode, state.CatalogueItemName, prices)
             {

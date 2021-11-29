@@ -29,6 +29,10 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models
 
         public decimal? Price { get; set; }
 
+        public bool IsLocked { get; set; }
+
+        public PublicationStatus PublishedStatus { get; set; }
+
         public CatalogueItem CatalogueItem { get; set; }
 
         public CataloguePriceType CataloguePriceType { get; set; }

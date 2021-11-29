@@ -13,5 +13,7 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.Models
         public TimeUnit? TimeUnit { get; init; }
 
         public PricingUnit PricingUnit { get; init; }
+
+        public PublicationStatus Status { get; init; }
     }
 }

@@ -7,6 +7,8 @@
     PricingUnitId smallint NOT NULL,
     TimeUnitId int NULL,
     CurrencyCode nvarchar(3) NOT NULL,
+    PublishedStatusId INT CONSTRAINT DF_CataloguePrice_PublishedStatus DEFAULT 1 NOT NULL,
+    IsLocked BIT CONSTRAINT DF_CataloguePrices_IsLocked DEFAULT 0 NOT NULL,
     LastUpdated datetime2(7) DEFAULT GETUTCDATE() NOT NULL,
     LastUpdatedBy int NULL,
     Price decimal(18, 4) NULL,
@@ -20,4 +22,5 @@
     CONSTRAINT FK_CataloguePrices_PricingUnit_PricingUnitId FOREIGN KEY (PricingUnitId) REFERENCES catalogue.PricingUnits(Id),
     CONSTRAINT FK_CataloguePrices_TimeUnit_TimeUnitId FOREIGN KEY (TimeUnitId) REFERENCES catalogue.TimeUnits(Id),
     CONSTRAINT FK_CataloguePrices_LastUpdatedBy FOREIGN KEY (LastUpdatedBy) REFERENCES users.AspNetUsers(Id),
+    CONSTRAINT FK_CataloguePrices_PublicationStatus FOREIGN KEY (PublishedStatusId) REFERENCES catalogue.PublicationStatus(Id),
 ) WITH (SYSTEM_VERSIONING = ON (HISTORY_TABLE = catalogue.CataloguePrices_History));

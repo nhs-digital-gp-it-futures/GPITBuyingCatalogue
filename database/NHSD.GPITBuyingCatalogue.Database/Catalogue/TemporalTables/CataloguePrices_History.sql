@@ -7,6 +7,8 @@
     PricingUnitId smallint NOT NULL,
     TimeUnitId int NULL,
     CurrencyCode nvarchar(3) NOT NULL,
+    PublishedStatusId INT NOT NULL,
+    IsLocked BIT NOT NULL,
     LastUpdated datetime2(7) NOT NULL,
     LastUpdatedBy int NULL,
     Price decimal(18, 4) NULL,
