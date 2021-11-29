@@ -66,7 +66,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.ListPriceModels
 
         public TaskProgress Status()
         {
-            if (CataloguePrices is null)
+            if (CataloguePrices is null || !CataloguePrices.Any())
                 return TaskProgress.NotStarted;
 
             if (CataloguePrices.Any(cp => cp.PublishedStatus == PublicationStatus.Published))

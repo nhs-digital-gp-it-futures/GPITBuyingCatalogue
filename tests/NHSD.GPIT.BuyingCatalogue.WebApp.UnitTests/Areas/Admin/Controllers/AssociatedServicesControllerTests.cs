@@ -473,7 +473,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
 
         [Theory]
         [CommonAutoData]
-        public static async Task Post_AddListPrice_ModelStateValid_RedirectsToManageListPrices(
+        public static async Task Post_AddListPrice_ModelStateValid_RedirectsPublishListPrice(
             CatalogueItemId catalogueItemId,
             CatalogueItemId associatedServiceId,
             [Frozen] Mock<IAssociatedServicesService> mockAssociatedServicesService,
@@ -503,7 +503,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
             actual.Should().NotBeNull();
             actual.Should().BeOfType<RedirectToActionResult>();
             actual.As<RedirectToActionResult>().ControllerName.Should().BeNull();
-            actual.As<RedirectToActionResult>().ActionName.Should().Be(nameof(AssociatedServicesController.ManageListPrices));
+            actual.As<RedirectToActionResult>().ActionName.Should().Be(nameof(AssociatedServicesController.PublishListPrice));
         }
 
         [Theory]
@@ -519,6 +519,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
                 .CataloguePrices
                 .First()
                 .CataloguePriceId;
+
+            catalogueItem.CataloguePrices.First().IsLocked = false;
 
             mockListPricesService
                 .Setup(s => s.GetCatalogueItemWithPrices(associatedServiceId))
@@ -561,7 +563,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
 
         [Theory]
         [CommonAutoData]
-        public static async Task Post_EditListPrice_ModelStateValid_RedirectsToManageListPrices(
+        public static async Task Post_EditListPrice_ModelStateValid_RedirectsToPublishListPrice(
             CatalogueItemId catalogueItemId,
             CatalogueItem catalogueItem,
             [Frozen] Mock<IListPricesService> mockListPricesService,
@@ -572,6 +574,11 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
                 .CataloguePrices
                 .First()
                 .CataloguePriceId;
+
+            catalogueItem.CataloguePrices.First().IsLocked = false;
+
+            mockListPricesService.Setup(lps => lps.GetCatalogueItemWithPrices(catalogueItem.Id))
+                 .ReturnsAsync(catalogueItem);
 
             var editListPriceModel = new EditListPriceModel(catalogueItem)
             {
@@ -588,7 +595,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
             actual.Should().NotBeNull();
             actual.Should().BeOfType<RedirectToActionResult>();
             actual.As<RedirectToActionResult>().ControllerName.Should().BeNull();
-            actual.As<RedirectToActionResult>().ActionName.Should().Be(nameof(AssociatedServicesController.ManageListPrices));
+            actual.As<RedirectToActionResult>().ActionName.Should().Be(nameof(AssociatedServicesController.PublishListPrice));
         }
 
         [Theory]

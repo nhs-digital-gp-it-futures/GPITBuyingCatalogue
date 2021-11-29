@@ -24,7 +24,8 @@ namespace NHSD.GPIT.BuyingCatalogue.Test.Framework.AutoFixtureCustomisations
                 .Without(i => i.Solution)
                 .Without(i => i.Supplier)
                 .Without(i => i.SupplierId)
-                .Without(i => i.SupplierServiceAssociations);
+                .Without(i => i.SupplierServiceAssociations)
+                .Without(i => i.PublishedStatus);
 
             fixture.Customize<CatalogueItem>(ComposerTransformation);
         }
@@ -37,7 +38,11 @@ namespace NHSD.GPIT.BuyingCatalogue.Test.Framework.AutoFixtureCustomisations
                     return new NoSpecimen();
 
                 var id = context.Create<CatalogueItemId>();
-                var item = new CatalogueItem { Id = id };
+                var item = new CatalogueItem
+                {
+                    Id = id,
+                    PublishedStatus = PublicationStatus.Published,
+                };
 
                 AddCapabilities(item, context);
                 AddPrices(item, context);

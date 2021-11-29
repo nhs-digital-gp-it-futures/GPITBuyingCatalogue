@@ -250,6 +250,28 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
                         new() { CapabilityId = 43, EpicId = "E00099", StatusId = 1 },
                     },
                     PublishedStatus = PublicationStatus.Published,
+                    CataloguePrices = new List<CataloguePrice>
+                    {
+                        new()
+                        {
+                            CataloguePriceId = 15,
+                            CatalogueItemId = new CatalogueItemId(99999, "001"),
+                            ProvisioningType = ProvisioningType.Patient,
+                            CataloguePriceType = CataloguePriceType.Flat,
+                            PublishedStatus = PublicationStatus.Published,
+                            IsLocked = true,
+                            PricingUnit = new PricingUnit
+                            {
+                                Id = 15,
+                                TierName = "Test Tier",
+                                Description = "per test patient",
+                            },
+                            TimeUnit = TimeUnit.PerYear,
+                            CurrencyCode = "GBP",
+                            Price = 999.9999M,
+                            LastUpdated = DateTime.UtcNow,
+                        },
+                    },
                 },
                 new CatalogueItem
                 {
@@ -609,6 +631,8 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
                             CatalogueItemId = new CatalogueItemId(99997, "001"),
                             ProvisioningType = ProvisioningType.Patient,
                             CataloguePriceType = CataloguePriceType.Flat,
+                            PublishedStatus = PublicationStatus.Published,
+                            IsLocked = true,
                             PricingUnit = new PricingUnit
                             {
                                 Id = 5,
@@ -800,6 +824,8 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
                             CatalogueItemId = new CatalogueItemId(99998, "001"),
                             ProvisioningType = ProvisioningType.Patient,
                             CataloguePriceType = CataloguePriceType.Flat,
+                            PublishedStatus = PublicationStatus.Published,
+                            IsLocked = true,
                             PricingUnit = new PricingUnit
                             {
                                 Id = 1,
@@ -817,6 +843,8 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
                             CatalogueItemId = new CatalogueItemId(99998, "001"),
                             ProvisioningType = ProvisioningType.OnDemand,
                             CataloguePriceType = CataloguePriceType.Flat,
+                            PublishedStatus = PublicationStatus.Published,
+                            IsLocked = true,
                             PricingUnit = new PricingUnit
                             {
                                 Id = 2,
@@ -834,6 +862,8 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
                             CatalogueItemId = new CatalogueItemId(99998, "001"),
                             ProvisioningType = ProvisioningType.Declarative,
                             CataloguePriceType = CataloguePriceType.Flat,
+                            PublishedStatus = PublicationStatus.Published,
+                            IsLocked = true,
                             PricingUnit = new PricingUnit
                             {
                                 Id = 3,
@@ -1026,6 +1056,8 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
                             CatalogueItemId = new CatalogueItemId(99998, "002"),
                             ProvisioningType = ProvisioningType.Declarative,
                             CataloguePriceType = CataloguePriceType.Flat,
+                            PublishedStatus = PublicationStatus.Published,
+                            IsLocked = true,
                             PricingUnit = new PricingUnit
                             {
                                 Id = 4,
