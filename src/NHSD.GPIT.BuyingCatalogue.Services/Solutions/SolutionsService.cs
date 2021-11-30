@@ -169,17 +169,12 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
         }
 
         public async Task<CatalogueItem> GetSolutionAdditionalServiceCapabilities(CatalogueItemId id)
-        {
-            var catalogueItem = await dbContext.CatalogueItems
-                .Include(i => i.Solution)
+            => await dbContext.CatalogueItems
                 .Include(i => i.CatalogueItemCapabilities)
                 .ThenInclude(cic => cic.Capability)
                 .ThenInclude(c => c.Epics)
-                .Where(i => i.Id == id)
-                .SingleAsync();
-
-            return catalogueItem;
-        }
+                .Include(i => i.CatalogueItemEpics)
+                .SingleAsync(i => i.Id == id);
 
         public async Task<CatalogueItem> GetAdditionalServiceCapability(
             CatalogueItemId catalogueItemId,
