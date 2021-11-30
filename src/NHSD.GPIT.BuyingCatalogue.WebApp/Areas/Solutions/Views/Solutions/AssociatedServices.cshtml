@@ -1,12 +1,12 @@
-﻿@model NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models.AssociatedServicesModel
+﻿@using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models; 
+
+@model NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models.AssociatedServicesModel
 @{
     ViewBag.Title = "Solution Associated Services";
 }
 
 <div>
-    <p>
-        <strong>These are the Associated Services offered with this Catalogue Solution:</strong>
-    </p>
+    <p><strong>These are the Associated Services offered with this Catalogue Solution:</strong></p>
 
     <nhs-details label-text="What are Associated Services?">
         <p>Associated Services help you to implement or optimise the live operation of a Catalogue Solution or Additional Service, for example, training or data migration.</p>
@@ -18,65 +18,51 @@
     }
     else
     {
-        <nhs-table label-text="Associated Services available" data-test-id="associated-services-table">
-            <nhs-table-column>Associated Service</nhs-table-column>
-            <nhs-table-column>Price</nhs-table-column>
+<nhs-table label-text="Associated Services available" data-test-id="associated-services-table">
+    <nhs-table-column>Associated Service</nhs-table-column>
+    <nhs-table-column>Price</nhs-table-column>
 
-            @for (int i = 0; i < Model.Services.Count; i++)
-            {
-                <nhs-table-row-container>
-                    <nhs-table-cell>
-                        @{ var id = $"#assoc{i + 1}"; }
-                        <a href="@id">@Model.Services[i].Name</a>
-                    </nhs-table-cell>
-                    <nhs-table-cell>
-                        @for (int j = 0; j < Model.Services[i].Prices.Count; j++)
-                        {
-                            <span style="white-space: nowrap;">
-                                @Model.Services[i].Prices[j]
-                            </span>
-                            @if (j < Model.Services[i].Prices.Count - 1)
-                            {
-                                <br />
-                            }
-                        }
-                    </nhs-table-cell>
-                </nhs-table-row-container>
-            }
-        </nhs-table>
+    @foreach (var solution in Model.Services)
+    {
+        <nhs-table-row-container>
+            <nhs-table-cell><a href="@solution.Id">@solution.Name</a></nhs-table-cell>
+            <nhs-table-cell>
+                @foreach (var price in solution.CataloguePrices.Where(cp => cp.PublishedStatus == PublicationStatus.Published))
+                {
+                    <p style="white-space: nowrap; margin-bottom:0;">@price.ToString()</p>
+                }
+            </nhs-table-cell>
+        </nhs-table-row-container>
+    }
+</nhs-table>
 
-        <div class="nhsuk-summary-list" data-test-id="associated-services-details">
-            @for (int i = 0; i < Model.Services.Count; i++)
-            {
-                var id = $"assoc{i + 1}";
-                <hr style="border-width: 4px;">
-                <h3 id="@id">@Model.Services[i].Name</h3>
-                <nhs-summary-list>
-                    <nhs-summary-list-row label-text="Description">
-                        <p data-test-id="description">
-                            @Model.Services[i].Description
-                        </p>
-                    </nhs-summary-list-row>
-                    <nhs-summary-list-row label-text="Order guidance">
-                        <p data-test-id="order-guidance">
-                            @Model.Services[i].OrderGuidance
-                        </p>
-                    </nhs-summary-list-row>
-                    <nhs-summary-list-row label-text="Price">
-                        <div data-test-id="price">
-                            @for (var index = 0; index < Model.Services[i].Prices.Count; index++)
-                            {
-                                <span style="white-space: nowrap;">@Model.Services[i].Prices[index]</span>
-                                @if (index < Model.Services[i].Prices.Count - 1)
-                                {
-                                    <br />
-                                }
-                            }
-                        </div>
-                    </nhs-summary-list-row>
-                </nhs-summary-list>
-                <partial name="_BackToTop" />
-            }
-        </div>
+<div data-test-id="associated-services-details">
+    @foreach (var solution in Model.Services)
+    {
+        <hr style="border-width: 4px;">
+        <h3 id="@solution.Id">@solution.Name</h3>
+        <nhs-summary-list>
+            <nhs-summary-list-row label-text="Description">
+                <p data-test-id="description">
+                    @solution.AssociatedService.Description
+                </p>
+            </nhs-summary-list-row>
+            <nhs-summary-list-row label-text="Order guidance">
+                <p data-test-id="order-guidance">
+                    @solution.AssociatedService.OrderGuidance
+                </p>
+            </nhs-summary-list-row>
+            <nhs-summary-list-row label-text="Price">
+                <div data-test-id="price">
+                    @foreach (var price in solution.CataloguePrices.Where(cp => cp.PublishedStatus == PublicationStatus.Published))
+                    {
+                        <p style="white-space: nowrap;">@price.ToString()</p>
+                    }
+                </div>
+            </nhs-summary-list-row>
+        </nhs-summary-list>
+        <partial name="_BackToTop" />
+    }
+</div>
     }
 </div>

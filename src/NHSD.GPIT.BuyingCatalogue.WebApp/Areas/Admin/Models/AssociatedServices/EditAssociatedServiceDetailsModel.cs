@@ -14,12 +14,15 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.AssociatedServices
         public EditAssociatedServiceDetailsModel(CatalogueItem solution, CatalogueItem associatedServiceItem)
         {
             SolutionId = solution.Id;
+            Id = associatedServiceItem.Id;
             ServiceName = Name = associatedServiceItem.Name;
             Description = associatedServiceItem.AssociatedService.Description;
             OrderGuidance = associatedServiceItem.AssociatedService.OrderGuidance;
         }
 
         public CatalogueItemId SolutionId { get; set; }
+
+        public CatalogueItemId? Id { get; init; }
 
         public string ServiceName { get; set; }
 

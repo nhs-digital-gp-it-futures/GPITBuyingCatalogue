@@ -1,4 +1,5 @@
-﻿using FluentAssertions;
+﻿using System.Collections.Generic;
+using FluentAssertions;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.Test.Framework.AutoFixtureCustomisations;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models;
@@ -24,27 +25,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Models
         {
             var catalogueItem = solution.CatalogueItem;
             catalogueItem.SupplierServiceAssociations.Add(new SupplierServiceAssociation { AssociatedServiceId = service.CatalogueItemId });
-            catalogueItem.Supplier.CatalogueItems.Add(service.CatalogueItem);
+            List<CatalogueItem> associatedServices = new List<CatalogueItem> { service.CatalogueItem };
 
-            var model = new AssociatedServicesModel(catalogueItem);
-
-            model.Services.Count.Should().Be(1);
-            model.HasServices().Should().BeTrue();
-        }
-
-        [Theory]
-        [CommonAutoData]
-        public static void Services_CorrectlyFilters_SelectedServices(
-            AssociatedService selectedService,
-            AssociatedService nonSelectedService,
-            Solution solution)
-        {
-            var catalogueItem = solution.CatalogueItem;
-            catalogueItem.SupplierServiceAssociations.Add(new SupplierServiceAssociation { AssociatedServiceId = selectedService.CatalogueItemId });
-            catalogueItem.Supplier.CatalogueItems.Add(selectedService.CatalogueItem);
-            catalogueItem.Supplier.CatalogueItems.Add(nonSelectedService.CatalogueItem);
-
-            var model = new AssociatedServicesModel(catalogueItem);
+            var model = new AssociatedServicesModel(catalogueItem, associatedServices);
 
             model.Services.Count.Should().Be(1);
             model.HasServices().Should().BeTrue();
@@ -55,9 +38,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Models
         public static void HasServices_NoService_ReturnsFalse(Solution solution)
         {
             var catalogueItem = solution.CatalogueItem;
-            catalogueItem.Supplier.CatalogueItems.Clear();
 
-            var model = new AssociatedServicesModel(catalogueItem);
+            var model = new AssociatedServicesModel(catalogueItem, new List<CatalogueItem>());
 
             model.HasServices().Should().BeFalse();
         }

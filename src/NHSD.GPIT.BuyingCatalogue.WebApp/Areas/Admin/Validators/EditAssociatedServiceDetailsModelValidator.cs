@@ -24,7 +24,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Validators
         {
             _ = cancellationToken;
 
-            return !(await associatedServicesService.AssociatedServiceExistsWithNameForSupplier(model.Name, model.SolutionId.SupplierId, default));
+            return !(await associatedServicesService.AssociatedServiceExistsWithNameForSupplier(
+                model.Name,
+                model.SolutionId.SupplierId,
+                model.Id.HasValue ? model.Id.Value : default));
         }
     }
 }
