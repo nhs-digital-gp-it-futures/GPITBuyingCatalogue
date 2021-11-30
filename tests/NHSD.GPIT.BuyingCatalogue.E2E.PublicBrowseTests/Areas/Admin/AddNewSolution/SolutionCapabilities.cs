@@ -100,37 +100,6 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.AddNewSolution
         }
 
         [Fact]
-        public async Task CapabilitiesAndEpicsSelected_PreselectsCheckboxes()
-        {
-            await using var context = GetEndToEndDbContext();
-            var solution = await context.CatalogueItems
-                .Include(i => i.CatalogueItemCapabilities)
-                .ThenInclude(c => c.Capability)
-                .Include(i => i.CatalogueItemEpics)
-                .ThenInclude(cie => cie.Epic)
-                .SingleAsync(i => i.Id == SolutionId);
-
-            solution
-                .CatalogueItemCapabilities
-                .ToList()
-                .ForEach(c => CommonActions.CheckBoxSelectedByLabelText($"({c.Capability.CapabilityRef}) {c.Capability.Name}".Trim())
-                    .Should()
-                    .BeTrue());
-
-            solution
-                .CatalogueItemEpics
-                .Where(cie => cie.Epic.CompliancyLevel == EntityFramework.Catalogue.Models.CompliancyLevel.May
-                    && cie.Epic.IsActive
-                    && ((!cie.Epic.SupplierDefined) || (cie.Epic.SupplierDefined && cie.Epic.Id.Contains(solution.SupplierId.ToString()))))
-                .AsParallel()
-                .ForAll(e => CommonActions.CheckBoxSelectedByLabelText($"({e.Epic.Id}) {e.Epic.Name}".Trim())
-                    .Should()
-                    .BeTrue());
-
-            CommonActions.CheckBoxSelectedByLabelText("Test");
-        }
-
-        [Fact]
         public void ClickGoBackLink_NavigatesToCorrectPage()
         {
             CommonActions.ClickGoBackLink();
