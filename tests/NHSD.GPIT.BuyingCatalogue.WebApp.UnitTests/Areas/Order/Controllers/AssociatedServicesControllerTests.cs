@@ -147,7 +147,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers
                 catalogueItemCataloguePrice.CurrencyCode = "GBP";
             }
 
-            var prices = catalogueItem.CataloguePrices.Where(p => p.CataloguePriceType == CataloguePriceType.Flat).ToList();
+            var prices = catalogueItem.CataloguePrices.Where(p =>
+            p.CataloguePriceType == CataloguePriceType.Flat
+            && p.PublishedStatus == PublicationStatus.Published).ToList();
 
             var expectedViewData = new SelectAssociatedServicePriceModel(odsCode, state.CatalogueItemName, prices);
 
