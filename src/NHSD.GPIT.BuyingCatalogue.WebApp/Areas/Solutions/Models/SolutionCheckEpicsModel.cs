@@ -18,8 +18,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models
             Description = solutionCapability.Capability?.Description;
             Name = solutionCapability.Capability?.Name;
             SolutionId = solutionCapability.CatalogueItemId;
-            NhsDefined = GetEpics(solutionCapability.Capability, false);
-            SupplierDefined = GetEpics(solutionCapability.Capability, true);
+            NhsDefined = GetEpics(catalogueItem, false);
+            SupplierDefined = GetEpics(catalogueItem, true);
             LastReviewed = solutionCapability.LastUpdated;
             SolutionName = catalogueItem.Name;
             SolutionId = catalogueItem.Id;
@@ -59,11 +59,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models
 
         public bool HasSupplierDefined() => SupplierDefined != null && SupplierDefined.Length > 0;
 
-        private static string[] GetEpics(Capability capability, bool supplierDefined) =>
-            capability?
-                .Epics?
-                .Where(e => e.IsActive && e.SupplierDefined == supplierDefined)
-                .Select(epic => epic.Name)
+        private static string[] GetEpics(CatalogueItem item, bool supplierDefined) =>
+            item.CatalogueItemEpics?
+                .Where(e => e.Epic.SupplierDefined == supplierDefined)
+                .Select(epic => epic.Epic.Name)
                 .OrderBy(name => name)
                 .ToArray();
     }

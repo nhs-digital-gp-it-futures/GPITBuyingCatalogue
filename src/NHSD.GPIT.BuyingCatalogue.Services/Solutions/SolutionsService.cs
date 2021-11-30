@@ -37,6 +37,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
                 .Include(i => i.Solution)
                 .Include(i => i.CatalogueItemContacts)
                 .Include(i => i.CatalogueItemCapabilities).ThenInclude(sc => sc.Capability)
+                .Include(i => i.CatalogueItemEpics)
                 .Include(i => i.Supplier).ThenInclude(s => s.SupplierContacts)
                 .Include(i => i.Solution).ThenInclude(s => s.FrameworkSolutions).ThenInclude(fs => fs.Framework)
                 .Include(i => i.Solution).ThenInclude(s => s.MarketingContacts)
@@ -77,6 +78,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
             return await dbContext.CatalogueItems
                 .Include(ci => ci.Solution)
                 .Include(ci => ci.CatalogueItemCapabilities).ThenInclude(cic => cic.Capability).ThenInclude(c => c.Epics)
+                .Include(ci => ci.CatalogueItemEpics.Where(cie => cie.CapabilityId == capabilityId && cie.Epic.IsActive)).ThenInclude(cie => cie.Epic)
                 .Where(c => c.Id == catalogueItemId && c.CatalogueItemCapabilities.Any(sc => sc.CapabilityId == capabilityId))
                 .FirstOrDefaultAsync();
         }
@@ -188,6 +190,8 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
                 .Include(i => i.CatalogueItemCapabilities.Where(cic => cic.CapabilityId == capabilityId))
                 .ThenInclude(cic => cic.Capability)
                 .ThenInclude(c => c.Epics)
+                .Include(i => i.CatalogueItemEpics.Where(cie => cie.CapabilityId == capabilityId && cie.Epic.IsActive))
+                .ThenInclude(cie => cie.Epic)
                 .Where(i => i.Id == catalogueItemId)
                 .SingleAsync();
 
