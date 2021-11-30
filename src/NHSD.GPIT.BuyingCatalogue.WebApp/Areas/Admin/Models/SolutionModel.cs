@@ -3,6 +3,7 @@ using System.Globalization;
 using System.Linq;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
+using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Models;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Models;
 
@@ -16,10 +17,13 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models
 
         public SolutionModel(CatalogueItem solution)
         {
+            SolutionId = solution.Id;
             SupplierId = solution.SupplierId;
             SolutionName = solution.Name;
             SolutionDisplayName = solution.Name;
         }
+
+        public CatalogueItemId? SolutionId { get; set; }
 
         public string SolutionName { get; set; }
 

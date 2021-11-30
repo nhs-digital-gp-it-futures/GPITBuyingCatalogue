@@ -351,43 +351,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
 
         [Theory]
         [CommonAutoData]
-        public static async Task Post_EditAssociatedServiceDetails_MatchingName_ReturnsModelError(
-            [Frozen] Mock<ISolutionsService> mockSolutionService,
-            [Frozen] Mock<IAssociatedServicesService> mockAssociatedServicesService,
-            AssociatedServicesController controller,
-            CatalogueItem item,
-            CatalogueItem solution,
-            AssociatedService associatedService,
-            CatalogueItemId solutionId,
-            CatalogueItemId associatedServiceId)
-        {
-            mockSolutionService.Setup(s => s.GetSolution(solutionId))
-                    .ReturnsAsync(solution);
-
-            var catalogueItem = associatedService.CatalogueItem;
-
-            mockAssociatedServicesService.Setup(s => s.GetAssociatedService(associatedServiceId))
-                .ReturnsAsync(catalogueItem);
-
-            mockAssociatedServicesService.Setup(s =>
-                s.AssociatedServiceExistsWithNameForSupplier(It.IsAny<string>(), It.IsAny<int>(), It.IsAny<CatalogueItemId>()))
-                .ReturnsAsync(true);
-
-            var model = new EditAssociatedServiceDetailsModel(solution, catalogueItem);
-
-            item.Id = solutionId;
-            item.Name = model.Name;
-
-            var actual = await controller.EditAssociatedServiceDetails(solutionId, associatedServiceId, model);
-
-            actual.Should().BeOfType<ViewResult>();
-
-            actual.As<ViewResult>().Model.Should().NotBeNull();
-            actual.As<ViewResult>().Model.Should().BeEquivalentTo(model);
-        }
-
-        [Theory]
-        [CommonAutoData]
         public static async Task Get_ManageListPrices_ValidId_ReturnsCataloguePrice(
             CatalogueItemId catalogueItemId,
             CatalogueItemId associatedServiceId,

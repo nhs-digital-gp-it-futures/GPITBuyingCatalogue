@@ -44,7 +44,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators
         [Theory]
         [CommonAutoData]
         public static async Task Validate_EmptySupplierId_SetsModelErrorForSupplierId(
-            [Frozen] Mock<ISolutionsService> mockSolutionsService,
             SolutionModel model,
             SolutionModelValidator validator)
         {
@@ -55,8 +54,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators
             result
                 .ShouldHaveValidationErrorFor(m => m.SupplierId)
                 .WithErrorMessage("Select a supplier name");
-
-            mockSolutionsService.Verify(s => s.SupplierHasSolutionName(It.IsAny<int>(), It.IsAny<string>()), Times.Never);
         }
 
         [Theory]
@@ -72,8 +69,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators
 
         [Theory]
         [CommonAutoData]
-        public static async Task Validate_SolutionNameNotValid_SetsModelErrorWithoutServiceCall(
-            [Frozen] Mock<ISolutionsService> mockSolutionsService,
+        public static async Task Validate_SolutionNameNotValid_SetsModelError(
             SolutionModel model,
             SolutionModelValidator validator)
         {
@@ -84,15 +80,11 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators
             result
                 .ShouldHaveValidationErrorFor(m => m.SolutionName)
                 .WithErrorMessage("Enter a solution name");
-
-            mockSolutionsService
-                .Verify(s => s.SupplierHasSolutionName(It.IsAny<int>(), It.IsAny<string>()), Times.Never);
         }
 
         [Theory]
         [CommonAutoData]
-        public static async Task Validate_SolutionNameTooLong_SetsModelErrorWithoutServiceCall(
-            [Frozen] Mock<ISolutionsService> mockSolutionsService,
+        public static async Task Validate_SolutionNameTooLong_SetsModelError(
             SolutionModel model,
             SolutionModelValidator validator)
         {
@@ -103,25 +95,38 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators
             result
                 .ShouldHaveValidationErrorFor(m => m.SolutionName)
                 .WithErrorMessage("Solution name cannot be more than 255 characters");
-
-            mockSolutionsService
-                .Verify(s => s.SupplierHasSolutionName(It.IsAny<int>(), It.IsAny<string>()), Times.Never);
         }
 
         [Theory]
         [CommonAutoData]
-        public static async Task Validate_SolutionNameUniqueForSupplierId_NoErrorForSupplierName(
+        public static async Task Validate_AddSolutionNameAlreadyExists_SetsModelErrorForSolutionName(
             [Frozen] Mock<ISolutionsService> mockSolutionsService,
             SolutionModel model,
             SolutionModelValidator validator)
         {
-            mockSolutionsService
-                .Setup(s => s.SupplierHasSolutionName(model.SupplierId.Value, model.SolutionName))
-                .ReturnsAsync(false);
+            model.SolutionId = null;
+
+            mockSolutionsService.Setup(s => s.CatalogueSolutionExistsWithName(model.SolutionName, default))
+                .ReturnsAsync(true);
 
             var result = await validator.TestValidateAsync(model);
 
-            result.ShouldNotHaveValidationErrorFor(m => m.SolutionName);
+            result.ShouldHaveValidationErrorFor(m => m.SolutionName);
+        }
+
+        [Theory]
+        [CommonAutoData]
+        public static async Task Validate_EditSolutionNameAlreadyExists_SetsModelErrorForSolutionName(
+            [Frozen] Mock<ISolutionsService> mockSolutionsService,
+            SolutionModel model,
+            SolutionModelValidator validator)
+        {
+            mockSolutionsService.Setup(s => s.CatalogueSolutionExistsWithName(model.SolutionName, model.SolutionId.Value))
+                .ReturnsAsync(true);
+
+            var result = await validator.TestValidateAsync(model);
+
+            result.ShouldHaveValidationErrorFor(m => m.SolutionName);
         }
     }
 }

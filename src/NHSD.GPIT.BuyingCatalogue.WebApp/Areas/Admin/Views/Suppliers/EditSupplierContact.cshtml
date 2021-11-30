@@ -14,6 +14,12 @@
                         caption="@Model.SupplierName"
                         advice="Provide information for this contact." />
         <form method="post">
+            <input type="hidden" asp-for="BackLink" />
+            <input type="hidden" asp-for="BackLinkText" />
+            <input type="hidden" asp-for="SupplierName" />
+            <input type="hidden" asp-for="SupplierId" />
+            <input type="hidden" asp-for="ContactId" />
+            <input type="hidden" asp-for="Title" />
             <nhs-fieldset-form-container asp-for="@Model">
                 <nhs-input asp-for="FirstName"
                            label-text="First name" />
@@ -27,10 +33,6 @@
                            label-text="Email address" />
             </nhs-fieldset-form-container>
             <br />
-            <input type="hidden" asp-for="BackLink" />
-            <input type="hidden" asp-for="BackLinkText" />
-            <input type="hidden" asp-for="SupplierName" />
-            <input type="hidden" asp-for="Title" />
             <nhs-submit-button />
         </form>
         @if (Model.ContactId > 0)

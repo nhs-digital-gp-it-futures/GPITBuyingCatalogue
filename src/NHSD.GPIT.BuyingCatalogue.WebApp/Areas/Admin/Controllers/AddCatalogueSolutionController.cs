@@ -44,9 +44,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
         [HttpPost]
         public async Task<IActionResult> Index(SolutionModel model)
         {
-            if (await solutionsService.CatalogueSolutionExistsWithName(model.SolutionName))
-                ModelState.AddModelError(nameof(SolutionModel.SolutionName), "A solution with this name already exists");
-
             if (!ModelState.IsValid)
             {
                 var suppliers = await suppliersService.GetAllActiveSuppliers();
@@ -58,8 +55,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
             {
                 Frameworks = model.Frameworks,
                 Name = model.SolutionName,
-
-                // Model validation ensures supplier ID has a value
                 SupplierId = model.SupplierId!.Value,
                 UserId = User.UserId(),
             });

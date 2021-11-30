@@ -15,7 +15,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Models.Associat
         {
             var actual = new AddAssociatedServiceModel(catalogueItem);
 
-            actual.Solution.Should().Be(catalogueItem);
+            actual.SolutionId.Should().Be(catalogueItem.Id);
+            actual.SupplierName.Should().Be(catalogueItem.Supplier.Name);
         }
     }
 }

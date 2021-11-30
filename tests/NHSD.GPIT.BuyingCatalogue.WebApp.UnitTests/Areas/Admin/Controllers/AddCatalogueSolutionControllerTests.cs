@@ -86,36 +86,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
 
         [Theory]
         [CommonAutoData]
-        public static async Task Post_Index_SolutionNameAlreadyExists_ThrowsError(
-            SolutionModel model,
-            CatalogueItem existingSolution,
-            List<Supplier> suppliers,
-            [Frozen] Mock<ISolutionsService> mockService,
-            [Frozen] Mock<ISuppliersService> mockSuppliersService,
-            AddCatalogueSolutionController controller)
-        {
-            var frameworks = new List<FrameworkModel> { new() { Name = "DFOCVC", Selected = true, FrameworkId = "DFOCVC001" } };
-
-            existingSolution.Name = model.SolutionName;
-
-            model.Frameworks = frameworks;
-
-            mockService.Setup(s => s.CatalogueSolutionExistsWithName(It.IsAny<string>(), default))
-                .ReturnsAsync(true);
-
-            mockSuppliersService.Setup(s => s.GetAllActiveSuppliers())
-                .ReturnsAsync(suppliers);
-
-            var actual = (await controller.Index(model)).As<ViewResult>();
-
-            actual.Should().NotBeNull();
-            actual.ViewData.ModelState.IsValid.Should().BeFalse();
-            actual.ViewData.ModelState.ErrorCount.Should().Be(1);
-            actual.ViewData.ModelState.FirstOrDefault().Key.Should().BeEquivalentTo(nameof(SolutionModel.SolutionName));
-        }
-
-        [Theory]
-        [CommonAutoData]
         public static async Task Post_Index_ModelStateValid_RedirectsToManageCatalogueSolutions(
             SolutionModel model,
             Mock<ISolutionsService> mockService,

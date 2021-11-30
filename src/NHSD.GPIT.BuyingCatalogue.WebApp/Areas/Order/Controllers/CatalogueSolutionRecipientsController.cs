@@ -46,14 +46,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
         [HttpPost]
         public IActionResult SelectSolutionServiceRecipients(string odsCode, CallOffId callOffId, SelectSolutionServiceRecipientsModel model)
         {
-            if (!model.ServiceRecipients.Any(sr => sr.Selected))
-                ModelState.AddModelError("ServiceRecipients[0].Selected", "Select a Service Recipient");
-
-            var state = orderSessionService.GetOrderStateFromSession(callOffId);
-
             if (!ModelState.IsValid)
                 return View(model);
 
+            var state = orderSessionService.GetOrderStateFromSession(callOffId);
             state.ServiceRecipients = model.ServiceRecipients;
 
             orderSessionService.SetOrderStateToSession(state);

@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
@@ -103,12 +102,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
         [HttpPost("add-supplier/details")]
         public async Task<IActionResult> AddSupplierDetails(EditSupplierDetailsModel model)
         {
-            if ((await suppliersService.GetSupplierByName(model.SupplierName)) is not null)
-                ModelState.AddModelError(nameof(model.SupplierName), "Supplier name already exists. Enter a different name");
-
-            if ((await suppliersService.GetSupplierByLegalName(model.SupplierLegalName)) is not null)
-                ModelState.AddModelError(nameof(model.SupplierLegalName), "Supplier legal name already exists. Enter a different name");
-
             if (!ModelState.IsValid)
                 return View("EditSupplierDetails", model);
 
@@ -142,15 +135,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
         [HttpPost("{supplierId}/details")]
         public async Task<IActionResult> EditSupplierDetails(int supplierId, EditSupplierDetailsModel model)
         {
-            var supplierByName = await suppliersService.GetSupplierByName(model.SupplierName);
-            var supplierByLegalName = await suppliersService.GetSupplierByLegalName(model.SupplierLegalName);
-
-            if (supplierByName is not null && supplierByName.Id != supplierId)
-                ModelState.AddModelError(nameof(model.SupplierName), "Supplier name already exists. Enter a different name");
-
-            if (supplierByLegalName is not null && supplierByLegalName.Id != supplierId)
-                ModelState.AddModelError(nameof(model.SupplierLegalName), "Supplier legal name already exists. Enter a different name");
-
             if (!ModelState.IsValid)
                 return View("EditSupplierDetails", model);
 
@@ -240,11 +224,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
         [HttpPost("{supplierId}/contacts/add-contact")]
         public async Task<IActionResult> AddSupplierContact(int supplierId, EditContactModel model)
         {
-            var supplier = await suppliersService.GetSupplier(supplierId);
-
-            if (IsContactDuplicateOfExistingContact(supplier.SupplierContacts, model))
-                ModelState.AddModelError("edit-contact", "A contact with these contact details already exists for this supplier");
-
             if (!ModelState.IsValid)
                 return View("EditSupplierContact", model);
 
@@ -257,12 +236,12 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
                 Department = model.Department,
             };
 
-            supplier = await suppliersService.AddSupplierContact(supplierId, newContact);
+            _ = await suppliersService.AddSupplierContact(supplierId, newContact);
 
             return RedirectToAction(
                 nameof(ManageSupplierContacts),
                 typeof(SuppliersController).ControllerName(),
-                new { supplierId = supplier.Id });
+                new { supplierId = supplierId });
         }
 
         [HttpGet("{supplierId}/contacts/{contactId}")]
@@ -286,17 +265,12 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
         [HttpPost("{supplierId}/contacts/{contactId}")]
         public async Task<IActionResult> EditSupplierContact(int supplierId, int contactId, EditContactModel model)
         {
-            var supplier = await suppliersService.GetSupplier(supplierId);
-
-            if (IsContactDuplicateOfExistingContact(supplier.SupplierContacts, model))
-                ModelState.AddModelError("edit-contact", "A contact with these contact details already exists for this supplier");
-
             if (!ModelState.IsValid)
                 return View(model);
 
             var updatedContact = new SupplierContact
             {
-                Id = model.ContactId,
+                Id = model.ContactId!.Value,
                 FirstName = model.FirstName,
                 LastName = model.LastName,
                 Email = model.Email,
@@ -304,12 +278,12 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
                 Department = model.Department,
             };
 
-            supplier = await suppliersService.EditSupplierContact(supplierId, contactId, updatedContact);
+            _ = await suppliersService.EditSupplierContact(supplierId, contactId, updatedContact);
 
             return RedirectToAction(
                 nameof(ManageSupplierContacts),
                 typeof(SuppliersController).ControllerName(),
-                new { supplierId = supplier.Id });
+                new { supplierId = supplierId });
         }
 
         [HttpGet("{supplierId}/contacts/{contactId}/delete")]
@@ -339,16 +313,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
                 nameof(ManageSupplierContacts),
                 typeof(SuppliersController).ControllerName(),
                 new { supplierId = supplier.Id });
-        }
-
-        private static bool IsContactDuplicateOfExistingContact(IEnumerable<SupplierContact> existingContacts, EditContactModel model)
-        {
-            return existingContacts.Any(sc =>
-                string.Equals(sc.FirstName.Trim(), model.FirstName?.Trim(), StringComparison.CurrentCultureIgnoreCase)
-                && string.Equals(sc.LastName.Trim(), model.LastName?.Trim(), StringComparison.CurrentCultureIgnoreCase)
-                && string.Equals(sc.Email.Trim(), model.Email?.Trim(), StringComparison.CurrentCultureIgnoreCase)
-                && string.Equals(sc.PhoneNumber.Trim(), model.PhoneNumber?.Trim(), StringComparison.CurrentCultureIgnoreCase)
-                && string.Equals(sc.Department.Trim(), model.Department?.Trim(), StringComparison.CurrentCultureIgnoreCase));
         }
     }
 }

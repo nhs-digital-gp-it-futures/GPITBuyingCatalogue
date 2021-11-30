@@ -67,9 +67,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
         [HttpPost("manage/{solutionId}/client-application-type/mobiletablet/operating-systems")]
         public async Task<IActionResult> OperatingSystems(CatalogueItemId solutionId, OperatingSystemsModel model)
         {
-            if (!model.OperatingSystems.Any(o => o.Checked))
-                ModelState.AddModelError("OperatingSystems[0].Checked", "Select at least one supported operating system");
-
             if (!ModelState.IsValid)
                 return View(model);
 
