@@ -32,7 +32,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Validators
 
         private async Task<bool> NotBeADuplicateService(EditAdditionalServiceDetailsModel model, CancellationToken cancellationToken)
         {
-            return !await additionalServicesService.AdditionalServiceExistsWithNameForSolution(model.Name, model.CatalogueItemId);
+            return !await additionalServicesService.AdditionalServiceExistsWithNameForSolution(
+                model.Name,
+                model.CatalogueItemId,
+                model.Id.HasValue ? model.Id.Value : default);
         }
     }
 }

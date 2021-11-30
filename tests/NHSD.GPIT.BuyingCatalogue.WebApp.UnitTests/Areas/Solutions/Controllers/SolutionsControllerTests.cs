@@ -140,12 +140,18 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Controllers
         {
             var id = solution.CatalogueItemId;
 
-            mockService.Setup(s => s.GetSolutionWithAllAssociatedServices(id))
+            var associatedServices = solution.CatalogueItem.SupplierServiceAssociations.Select(ssa => ssa.CatalogueItem).ToList();
+
+            mockService.Setup(s => s.GetSolutionOverview(id))
                 .ReturnsAsync(solution.CatalogueItem);
+
+            mockService.Setup(s => s.GetPublishedAssociatedServicesForSolution(id))
+                .ReturnsAsync(associatedServices);
 
             await controller.AssociatedServices(id);
 
-            mockService.Verify(s => s.GetSolutionWithAllAssociatedServices(id));
+            mockService.Verify(s => s.GetSolutionOverview(id));
+            mockService.Verify(s => s.GetPublishedAssociatedServicesForSolution(id));
         }
 
         [Theory]
@@ -155,7 +161,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Controllers
             [Frozen] Mock<ISolutionsService> mockService,
             SolutionsController controller)
         {
-            mockService.Setup(s => s.GetSolutionWithAllAssociatedServices(id))
+            mockService.Setup(s => s.GetSolutionOverview(id))
                 .ReturnsAsync(default(CatalogueItem));
 
             var actual = (await controller.AssociatedServices(id)).As<BadRequestObjectResult>();
@@ -174,10 +180,14 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Controllers
         {
             var catalogueItem = solution.CatalogueItem;
             solution.ClientApplication = JsonSerializer.Serialize(clientApplication);
-            var associatedServicesModel = new AssociatedServicesModel(catalogueItem);
+            var associatedServices = solution.CatalogueItem.SupplierServiceAssociations.Select(ssa => ssa.CatalogueItem).ToList();
+            var associatedServicesModel = new AssociatedServicesModel(catalogueItem, associatedServices);
 
-            solutionsServiceMock.Setup(s => s.GetSolutionWithAllAssociatedServices(catalogueItem.Id))
+            solutionsServiceMock.Setup(s => s.GetSolutionOverview(catalogueItem.Id))
                 .ReturnsAsync(catalogueItem);
+
+            solutionsServiceMock.Setup(s => s.GetPublishedAssociatedServicesForSolution(catalogueItem.Id))
+                .ReturnsAsync(associatedServices);
 
             var actual = (await controller.AssociatedServices(catalogueItem.Id)).As<ViewResult>();
 
@@ -863,12 +873,18 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Controllers
         {
             var id = solution.CatalogueItemId;
 
-            mockService.Setup(s => s.GetSolutionWithAllAdditionalServices(id))
+            var additionalServices = solution.AdditionalServices.Select(add => add.CatalogueItem).ToList();
+
+            mockService.Setup(s => s.GetSolutionOverview(id))
                 .ReturnsAsync(solution.CatalogueItem);
+
+            mockService.Setup(s => s.GetPublishedAdditionalServicesForSolution(id))
+                .ReturnsAsync(additionalServices);
 
             await controller.AdditionalServices(id);
 
-            mockService.Verify(s => s.GetSolutionWithAllAdditionalServices(id));
+            mockService.Verify(s => s.GetSolutionOverview(id));
+            mockService.Verify(s => s.GetPublishedAdditionalServicesForSolution(id));
         }
 
         [Theory]
@@ -878,7 +894,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Controllers
             SolutionsController controller,
             CatalogueItemId id)
         {
-            mockService.Setup(s => s.GetSolutionWithAllAdditionalServices(id))
+            mockService.Setup(s => s.GetSolutionOverview(id))
                 .ReturnsAsync(default(CatalogueItem));
 
             var actual = (await controller.AdditionalServices(id)).As<BadRequestObjectResult>();

@@ -18,7 +18,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators
             EditAssociatedServiceDetailsModel model,
             EditAssociatedServiceDetailsModelValidator validator)
         {
-            associatedServicesService.Setup(s => s.AssociatedServiceExistsWithNameForSupplier(model.Name, model.SolutionId.SupplierId, default))
+            associatedServicesService.Setup(s => s.AssociatedServiceExistsWithNameForSupplier(model.Name, model.SolutionId.SupplierId, model.Id.Value))
                 .ReturnsAsync(true);
 
             var result = validator.TestValidate(model);

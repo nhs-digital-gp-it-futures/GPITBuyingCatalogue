@@ -90,27 +90,34 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers
         [HttpGet("{solutionId}/associated-services")]
         public async Task<IActionResult> AssociatedServices(CatalogueItemId solutionId)
         {
-            var item = await solutionsService.GetSolutionWithAllAssociatedServices(solutionId);
-            if (item is null)
+            var solution = await solutionsService.GetSolutionOverview(solutionId);
+
+            if (solution is null)
                 return BadRequest($"No Catalogue Item found for Id: {solutionId}");
 
-            if (item.PublishedStatus == PublicationStatus.Suspended)
+            if (solution.PublishedStatus == PublicationStatus.Suspended)
                 return RedirectToAction(nameof(Description), new { solutionId });
 
-            return View(new AssociatedServicesModel(item));
+            var associatedServices = await solutionsService.GetPublishedAssociatedServicesForSolution(solutionId);
+
+            return View(new AssociatedServicesModel(solution, associatedServices));
         }
 
         [HttpGet("{solutionId}/additional-services")]
         public async Task<IActionResult> AdditionalServices(CatalogueItemId solutionId)
         {
-            var item = await solutionsService.GetSolutionWithAllAdditionalServices(solutionId);
-            if (item is null)
+            var solution = await solutionsService.GetSolutionOverview(solutionId);
+
+            if (solution is null)
                 return BadRequest($"No Catalogue Item found for Id: {solutionId}");
 
-            if (item.PublishedStatus == PublicationStatus.Suspended)
+            if (solution.PublishedStatus == PublicationStatus.Suspended)
                 return RedirectToAction(nameof(Description), new { solutionId });
 
-            return View(new AdditionalServicesModel(item));
+            var additionalServices =
+                await solutionsService.GetPublishedAdditionalServicesForSolution(solutionId);
+
+            return View(new AdditionalServicesModel(solution, additionalServices));
         }
 
         [HttpGet("{solutionId}/capabilities")]

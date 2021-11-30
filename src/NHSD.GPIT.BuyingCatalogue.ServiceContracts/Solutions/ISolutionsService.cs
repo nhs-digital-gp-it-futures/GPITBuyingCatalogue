@@ -12,6 +12,8 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions
 
         Task<CatalogueItem> GetSolution(CatalogueItemId solutionId);
 
+        Task<CatalogueItem> GetSolutionThin(CatalogueItemId solutionId);
+
         Task<CatalogueItem> GetSolutionByName(string solutionName);
 
         Task<bool> CatalogueSolutionExistsWithName(string solutionName, CatalogueItemId currentCatalogueItemId = default);
@@ -22,11 +24,11 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions
 
         Task<IList<Standard>> GetSolutionStandardsForEditing(CatalogueItemId catalogueItemId);
 
-        Task<CatalogueItem> GetSolutionWithAllAssociatedServices(CatalogueItemId solutionId);
+        Task<List<CatalogueItem>> GetPublishedAdditionalServicesForSolution(CatalogueItemId solutionId);
+
+        Task<List<CatalogueItem>> GetPublishedAssociatedServicesForSolution(CatalogueItemId solutionId);
 
         Task<CatalogueItem> GetSolutionOverview(CatalogueItemId solutionId);
-
-        Task<CatalogueItem> GetSolutionWithAllAdditionalServices(CatalogueItemId solutionId);
 
         Task SaveSolutionDetails(CatalogueItemId id, string solutionName, int supplierId, IList<FrameworkModel> selectedFrameworks);
 
