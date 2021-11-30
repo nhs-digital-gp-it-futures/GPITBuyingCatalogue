@@ -271,6 +271,25 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
                             Price = 999.9999M,
                             LastUpdated = DateTime.UtcNow,
                         },
+                        new()
+                        {
+                            CataloguePriceId = 18,
+                            CatalogueItemId = new CatalogueItemId(99999, "001"),
+                            ProvisioningType = ProvisioningType.Patient,
+                            CataloguePriceType = CataloguePriceType.Flat,
+                            PublishedStatus = PublicationStatus.Draft,
+                            IsLocked = false,
+                            PricingUnit = new PricingUnit
+                            {
+                                Id = 18,
+                                TierName = "Test Tier",
+                                Description = "per test patient",
+                            },
+                            TimeUnit = TimeUnit.PerYear,
+                            CurrencyCode = "GBP",
+                            Price = 999.9999M,
+                            LastUpdated = DateTime.UtcNow,
+                        },
                     },
                 },
                 new CatalogueItem

@@ -14,7 +14,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.ListPrices
 {
     public sealed class DeleteListPrice : AuthorityTestBase, IClassFixture<LocalWebApplicationFactory>
     {
-        private const int ListPriceId = -1;
+        private const int ListPriceId = 18;
         private static readonly CatalogueItemId SolutionId = new(99999, "001");
 
         private static readonly Dictionary<string, string> Parameters = new()
@@ -76,6 +76,10 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.ListPrices
         [Fact]
         public async Task DeleteListPrice_ClickDelete_ListPriceDeleted()
         {
+            await using var context = GetEndToEndDbContext();
+
+            var originalCount = context.CataloguePrices.Count(cp => cp.CatalogueItemId == SolutionId);
+
             CommonActions.ClickSave();
 
             CommonActions.PageLoadedCorrectGetIndex(
@@ -84,9 +88,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.ListPrices
                 .Should()
                 .BeTrue();
 
-            await using var context = GetEndToEndDbContext();
-
-            context.CataloguePrices.Count(cp => cp.CatalogueItemId == SolutionId).Should().Be(0);
+            context.CataloguePrices.Count(cp => cp.CatalogueItemId == SolutionId).Should().Be(originalCount - 1);
         }
     }
 }

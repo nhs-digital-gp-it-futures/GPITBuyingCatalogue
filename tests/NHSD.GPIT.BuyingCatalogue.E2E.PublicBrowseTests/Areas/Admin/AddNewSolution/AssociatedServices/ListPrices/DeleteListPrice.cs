@@ -14,7 +14,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.AddNewSolution.Associat
 {
     public sealed class DeleteListPrice : AuthorityTestBase, IClassFixture<LocalWebApplicationFactory>
     {
-        private const int ListPriceId = 10;
+        private const int ListPriceId = 17;
         private static readonly CatalogueItemId SolutionId = new(99998, "001");
 
         private static readonly CatalogueItemId AssociatedServiceId = new(99998, "S-997");
