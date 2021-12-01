@@ -34,6 +34,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
         public Task<CatalogueItem> GetSolution(CatalogueItemId solutionId)
         {
             return dbContext.CatalogueItems
+                .AsNoTracking()
                 .Include(i => i.Solution)
                 .Include(i => i.CatalogueItemContacts)
                 .Include(i => i.CatalogueItemCapabilities).ThenInclude(sc => sc.Capability)
@@ -424,7 +425,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
 
         public async Task SavePublicationStatus(CatalogueItemId solutionId, PublicationStatus publicationStatus)
         {
-            var solution = await GetSolution(solutionId);
+            var solution = await dbContext.CatalogueItems.SingleAsync(i => i.Id == solutionId);
 
             solution.PublishedStatus = publicationStatus;
 
@@ -433,7 +434,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
 
         public async Task SaveContacts(CatalogueItemId solutionId, IList<SupplierContact> supplierContacts)
         {
-            var solution = await GetSolution(solutionId);
+            var solution = await dbContext.CatalogueItems.Include(i => i.CatalogueItemContacts).SingleAsync(i => i.Id == solutionId);
 
             var staleContacts = solution.CatalogueItemContacts.Except(supplierContacts);
             foreach (var staleContact in staleContacts.ToList())
