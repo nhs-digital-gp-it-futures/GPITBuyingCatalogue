@@ -1,4 +1,6 @@
-﻿<footer role="contentinfo">
+﻿@using NHSD.GPIT.BuyingCatalogue.Framework.Extensions
+@using NHSD.GPIT.BuyingCatalogue.WebApp.Controllers
+<footer role="contentinfo">
     <div class="nhsuk-footer" id="nhsuk-footer">
         <div class="nhsuk-width-container">
             <h2 class="nhsuk-u-visually-hidden">Support links</h2>
@@ -13,7 +15,9 @@
                     <a class="nhsuk-footer__list-item-link" href="~/document/terms-of-use.pdf">Terms of Use</a>
                 </li>
                 <li class="nhsuk-footer__list-item">
-                    <a class="nhsuk-footer__list-item-link" href="#">Accessibility statement</a>
+                    <a class="nhsuk-footer__list-item-link"
+                       asp-action="@nameof(HomeController.AccessibilityStatement)"
+                       asp-controller="@typeof(HomeController).ControllerName()">Accessibility statement</a>
                 </li>
                 <li class="nhsuk-footer__list-item">
                     <a class="nhsuk-footer__list-item-link" href="https://digital.nhs.uk/services/gp-it-futures-systems">About GP IT Futures</a>
