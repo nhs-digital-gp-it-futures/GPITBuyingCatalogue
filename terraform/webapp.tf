@@ -8,7 +8,7 @@ module "webapp" {
   rg_name          = azurerm_resource_group.webapp.name
   webapp_name      = "${var.project}-${var.environment}-webapp"
   sku_tier         = "Standard"
-  sku_size         = "S1"
+  sku_size         = local.shortenv != "production" ? "S1" : "S2"
   acr_name         = "gpitfuturesdevacr"
   acr_pwd          = data.azurerm_container_registry.acr.admin_password
   acr_rg           = "gpitfutures-dev-rg-acr"
