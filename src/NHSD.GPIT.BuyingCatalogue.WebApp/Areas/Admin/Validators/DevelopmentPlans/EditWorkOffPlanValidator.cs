@@ -64,9 +64,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Validators.DevelopmentPla
                 .WithMessage("A Work-Off Plan with these details already exists");
 
             Transform(wp => wp, wp => ParseDate(wp))
-                .GreaterThanOrEqualTo(DateTime.Today.AddMonths(-2))
+                .GreaterThanOrEqualTo(DateTime.Today.AddDays(-84))
                 .Unless(wp => !IsValidDate(wp))
-                .WithMessage("Agreed completion date must be in the future or within the last 2 months")
+                .WithMessage("Agreed completion date must be in the future or within the last 12 weeks")
                 .OverridePropertyName(wp => wp.Day);
         }
 
