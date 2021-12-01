@@ -37,6 +37,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
                 .Include(i => i.Solution)
                 .Include(i => i.CatalogueItemContacts)
                 .Include(i => i.CatalogueItemCapabilities).ThenInclude(sc => sc.Capability)
+                .Include(i => i.CatalogueItemEpics)
                 .Include(i => i.Supplier).ThenInclude(s => s.SupplierContacts)
                 .Include(i => i.Solution).ThenInclude(s => s.FrameworkSolutions).ThenInclude(fs => fs.Framework)
                 .Include(i => i.Solution).ThenInclude(s => s.MarketingContacts)
@@ -82,6 +83,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
             return await dbContext.CatalogueItems
                 .Include(ci => ci.Solution)
                 .Include(ci => ci.CatalogueItemCapabilities).ThenInclude(cic => cic.Capability).ThenInclude(c => c.Epics)
+                .Include(ci => ci.CatalogueItemEpics.Where(cie => cie.CapabilityId == capabilityId && cie.Epic.IsActive)).ThenInclude(cie => cie.Epic)
                 .Where(c => c.Id == catalogueItemId && c.CatalogueItemCapabilities.Any(sc => sc.CapabilityId == capabilityId))
                 .FirstOrDefaultAsync();
         }
@@ -155,17 +157,12 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
         }
 
         public async Task<CatalogueItem> GetSolutionAdditionalServiceCapabilities(CatalogueItemId id)
-        {
-            var catalogueItem = await dbContext.CatalogueItems
-                .Include(i => i.Solution)
+            => await dbContext.CatalogueItems
                 .Include(i => i.CatalogueItemCapabilities)
                 .ThenInclude(cic => cic.Capability)
                 .ThenInclude(c => c.Epics)
-                .Where(i => i.Id == id)
-                .SingleAsync();
-
-            return catalogueItem;
-        }
+                .Include(i => i.CatalogueItemEpics)
+                .SingleAsync(i => i.Id == id);
 
         public async Task<CatalogueItem> GetAdditionalServiceCapability(
             CatalogueItemId catalogueItemId,
@@ -176,6 +173,8 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
                 .Include(i => i.CatalogueItemCapabilities.Where(cic => cic.CapabilityId == capabilityId))
                 .ThenInclude(cic => cic.Capability)
                 .ThenInclude(c => c.Epics)
+                .Include(i => i.CatalogueItemEpics.Where(cie => cie.CapabilityId == capabilityId && cie.Epic.IsActive))
+                .ThenInclude(cie => cie.Epic)
                 .Where(i => i.Id == catalogueItemId)
                 .SingleAsync();
 

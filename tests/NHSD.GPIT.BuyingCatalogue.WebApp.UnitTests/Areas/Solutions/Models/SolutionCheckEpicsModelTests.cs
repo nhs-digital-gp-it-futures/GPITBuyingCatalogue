@@ -91,12 +91,15 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Models
             [Frozen] CatalogueItem catalogueItem)
         {
             var epics = new Fixture()
-                .Build<Epic>()
-                .With(e => e.SupplierDefined, false)
+                .Build<CatalogueItemEpic>()
+                .Without(e => e.CatalogueItemId)
+                .Without(e => e.Status)
                 .Without(e => e.LastUpdatedByUser)
-                .CreateMany();
+                .With(e => e.Epic, new Epic { SupplierDefined = false })
+                .CreateMany()
+                .ToList();
 
-            solutionCapability.Capability.Epics = epics.ToList();
+            catalogueItem.CatalogueItemEpics = epics;
             var model = new SolutionCheckEpicsModel(solutionCapability, catalogueItem);
 
             model.HasSupplierDefined().Should().BeFalse();
@@ -111,12 +114,15 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Models
             [Frozen] CatalogueItem catalogueItem)
         {
             var epics = new Fixture()
-                .Build<Epic>()
-                .With(e => e.SupplierDefined, true)
+                .Build<CatalogueItemEpic>()
+                .Without(e => e.CatalogueItemId)
+                .Without(e => e.Status)
                 .Without(e => e.LastUpdatedByUser)
-                .CreateMany();
+                .With(e => e.Epic, new Epic { SupplierDefined = true })
+                .CreateMany()
+                .ToList();
 
-            solutionCapability.Capability.Epics = epics.ToList();
+            catalogueItem.CatalogueItemEpics = epics;
             var model = new SolutionCheckEpicsModel(solutionCapability, catalogueItem);
 
             model.HasSupplierDefined().Should().BeTrue();
