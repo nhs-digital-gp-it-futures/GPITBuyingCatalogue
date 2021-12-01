@@ -17,6 +17,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Controllers
             return View();
         }
 
+        [HttpGet("accessibility-statement")]
+        public IActionResult AccessibilityStatement() => View();
+
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error(int? statusCode = null, string error = null)
         {
