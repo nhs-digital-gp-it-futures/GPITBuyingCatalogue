@@ -90,7 +90,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers
         [HttpGet("{solutionId}/associated-services")]
         public async Task<IActionResult> AssociatedServices(CatalogueItemId solutionId)
         {
-            var solution = await solutionsService.GetSolutionOverview(solutionId);
+            var solution = await solutionsService.GetSolutionThin(solutionId);
 
             if (solution is null)
                 return BadRequest($"No Catalogue Item found for Id: {solutionId}");
@@ -98,15 +98,17 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers
             if (solution.PublishedStatus == PublicationStatus.Suspended)
                 return RedirectToAction(nameof(Description), new { solutionId });
 
+            var contentStatus = await solutionsService.GetContentStatusForCatalogueItem(solutionId);
+
             var associatedServices = await solutionsService.GetPublishedAssociatedServicesForSolution(solutionId);
 
-            return View(new AssociatedServicesModel(solution, associatedServices));
+            return View(new AssociatedServicesModel(solution, associatedServices, contentStatus));
         }
 
         [HttpGet("{solutionId}/additional-services")]
         public async Task<IActionResult> AdditionalServices(CatalogueItemId solutionId)
         {
-            var solution = await solutionsService.GetSolutionOverview(solutionId);
+            var solution = await solutionsService.GetSolutionThin(solutionId);
 
             if (solution is null)
                 return BadRequest($"No Catalogue Item found for Id: {solutionId}");
@@ -114,23 +116,27 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers
             if (solution.PublishedStatus == PublicationStatus.Suspended)
                 return RedirectToAction(nameof(Description), new { solutionId });
 
+            var contentStatus = await solutionsService.GetContentStatusForCatalogueItem(solutionId);
+
             var additionalServices =
                 await solutionsService.GetPublishedAdditionalServicesForSolution(solutionId);
 
-            return View(new AdditionalServicesModel(solution, additionalServices));
+            return View(new AdditionalServicesModel(solution, additionalServices, contentStatus));
         }
 
         [HttpGet("{solutionId}/capabilities")]
         public async Task<IActionResult> Capabilities(CatalogueItemId solutionId)
         {
-            var item = await solutionsService.GetSolutionOverview(solutionId);
+            var item = await solutionsService.GetSolutionWithCapabilities(solutionId);
             if (item is null)
                 return BadRequest($"No Catalogue Item found for Id: {solutionId}");
 
             if (item.PublishedStatus == PublicationStatus.Suspended)
                 return RedirectToAction(nameof(Description), new { solutionId });
 
-            var model = new CapabilitiesViewModel(item)
+            var contentStatus = await solutionsService.GetContentStatusForCatalogueItem(solutionId);
+
+            var model = new CapabilitiesViewModel(item, contentStatus)
             {
                 BackLinkText = NavBaseModel.BackLinkTextDefault,
                 BackLink = Url.Action(
@@ -154,11 +160,13 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers
             if (solution.PublishedStatus == PublicationStatus.Suspended)
                 return RedirectToAction(nameof(Description), new { solutionId });
 
-            var item = await solutionsService.GetSolutionAdditionalServiceCapabilities(additionalServiceId);
+            var item = await solutionsService.GetSolutionWithCapabilities(additionalServiceId);
             if (item is null)
                 return BadRequest($"No Catalogue Item found for Id: {additionalServiceId}");
 
-            return View(new CapabilitiesViewModel(solution, item)
+            var contentStatus = await solutionsService.GetContentStatusForCatalogueItem(solutionId);
+
+            return View(new CapabilitiesViewModel(solution, item, contentStatus)
             {
                 BackLink = Url.Action(
                     nameof(AdditionalServices),
@@ -180,7 +188,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers
             if (item.PublishedStatus == PublicationStatus.Suspended)
                 return RedirectToAction(nameof(Description), new { solutionId });
 
-            var solutionCapability = item.CatalogueItemCapability(capabilityId);
+            var solutionCapability = item.CatalogueItemCapabilities
+                .First(cic => cic.CapabilityId == capabilityId);
 
             var model = new SolutionCheckEpicsModel(solutionCapability, item)
             {
@@ -199,19 +208,28 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers
             CatalogueItemId additionalServiceId,
             int capabilityId)
         {
-            var item = await solutionsService.GetAdditionalServiceCapability(
-                additionalServiceId,
-                capabilityId);
 
-            if (item is null)
-                return BadRequest($"No Catalogue Item found for Id: {solutionId} with Capability Id: {capabilityId}");
+            var solution = await solutionsService.GetSolutionThin(solutionId);
 
-            var solution = await solutionsService.GetSolutionOverview(solutionId);
+            if (solution is null)
+                return BadRequest($"No Catalogue Item found for Id: {solutionId}");
 
             if (solution.PublishedStatus == PublicationStatus.Suspended)
                 return RedirectToAction(nameof(Description), new { solutionId });
 
-            var solutionCapability = item.CatalogueItemCapability(capabilityId);
+            var item = await solutionsService.GetSolutionCapability(
+                additionalServiceId,
+                capabilityId);
+
+            if (item is null)
+                return BadRequest($"No Catalogue Item found for Id: {additionalServiceId} with Capability Id: {capabilityId}");
+
+            if (item.PublishedStatus == PublicationStatus.Suspended)
+                return RedirectToAction(nameof(Description), new { solutionId });
+
+            var solutionCapability = item.CatalogueItemCapabilities
+                .First(cic => cic.CapabilityId == capabilityId);
+
             var model = new SolutionCheckEpicsModel(solutionCapability, item, additionalServiceId)
             {
                 BackLink = Url.Action(
@@ -226,7 +244,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers
         [HttpGet("{solutionId}/client-application-types")]
         public async Task<IActionResult> ClientApplicationTypes(CatalogueItemId solutionId)
         {
-            var item = await solutionsService.GetSolutionOverview(solutionId);
+            var item = await solutionsService.GetSolutionThin(solutionId);
 
             if (item is null)
                 return BadRequest($"No Catalogue Item found for Id: {solutionId}");
@@ -234,7 +252,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers
             if (item.PublishedStatus == PublicationStatus.Suspended)
                 return RedirectToAction(nameof(Description), new { solutionId });
 
-            var model = new ClientApplicationTypesModel(item);
+            var contentStatus = await solutionsService.GetContentStatusForCatalogueItem(solutionId);
+
+            var model = new ClientApplicationTypesModel(item, contentStatus);
 
             return View(model);
         }
@@ -242,94 +262,103 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers
         [HttpGet("{solutionId}")]
         public async Task<IActionResult> Description(CatalogueItemId solutionId)
         {
-            var item = await solutionsService.GetSolutionOverview(solutionId);
+            var item = await solutionsService.GetSolutionWithBasicInformation(solutionId);
             if (item is null)
                 return BadRequest($"No Catalogue Item found for Id: {solutionId}");
 
-            return View(new SolutionDescriptionModel(item));
+            var contentStatus = await solutionsService.GetContentStatusForCatalogueItem(solutionId);
+
+            return View(new SolutionDescriptionModel(item, contentStatus));
         }
 
         [HttpGet("{solutionId}/features")]
         public async Task<IActionResult> Features(CatalogueItemId solutionId)
         {
-            var item = await solutionsService.GetSolutionOverview(solutionId);
+            var item = await solutionsService.GetSolutionThin(solutionId);
             if (item is null)
                 return BadRequest($"No Catalogue Item found for Id: {solutionId}");
 
             if (item.PublishedStatus == PublicationStatus.Suspended)
                 return RedirectToAction(nameof(Description), new { solutionId });
 
-            return View(new SolutionFeaturesModel(item));
+            var contentStatus = await solutionsService.GetContentStatusForCatalogueItem(solutionId);
+
+            return View(new SolutionFeaturesModel(item, contentStatus));
         }
 
         [HttpGet("{solutionId}/hosting-type")]
         public async Task<IActionResult> HostingType(CatalogueItemId solutionId)
         {
-            var item = await solutionsService.GetSolutionOverview(solutionId);
+            var item = await solutionsService.GetSolutionThin(solutionId);
             if (item is null)
                 return BadRequest($"No Catalogue Item found for Id: {solutionId}");
 
             if (item.PublishedStatus == PublicationStatus.Suspended)
                 return RedirectToAction(nameof(Description), new { solutionId });
 
-            return View(new HostingTypesModel(item));
+            var contentStatus = await solutionsService.GetContentStatusForCatalogueItem(solutionId);
+
+            return View(new HostingTypesModel(item, contentStatus));
         }
 
         [HttpGet("{solutionId}/implementation")]
         public async Task<IActionResult> Implementation(CatalogueItemId solutionId)
         {
-            var item = await solutionsService.GetSolutionOverview(solutionId);
+            var item = await solutionsService.GetSolutionThin(solutionId);
             if (item is null)
                 return BadRequest($"No Catalogue Item found for Id: {solutionId}");
 
             if (item.PublishedStatus == PublicationStatus.Suspended)
                 return RedirectToAction(nameof(Description), new { solutionId });
 
-            return View(new ImplementationTimescalesModel(item));
+            var contentStatus = await solutionsService.GetContentStatusForCatalogueItem(solutionId);
+
+            return View(new ImplementationTimescalesModel(item, contentStatus));
         }
 
         [HttpGet("{solutionId}/interoperability")]
         public async Task<IActionResult> Interoperability(CatalogueItemId solutionId)
         {
-            var item = await solutionsService.GetSolutionOverview(solutionId);
+            var item = await solutionsService.GetSolutionThin(solutionId);
             if (item is null)
                 return BadRequest($"No Catalogue Item found for Id: {solutionId}");
 
             if (item.PublishedStatus == PublicationStatus.Suspended)
                 return RedirectToAction(nameof(Description), new { solutionId });
 
-            return View(new InteroperabilityModel(item));
+            var contentStatus = await solutionsService.GetContentStatusForCatalogueItem(solutionId);
+
+            return View(new InteroperabilityModel(item, contentStatus));
         }
 
         [HttpGet("{solutionId}/list-price")]
         public async Task<IActionResult> ListPrice(CatalogueItemId solutionId)
         {
-            var item = await solutionsService.GetSolutionOverview(solutionId);
+            var item = await solutionsService.GetSolutionWithListPrices(solutionId);
             if (item is null)
                 return BadRequest($"No Catalogue Item found for Id: {solutionId}");
 
             if (item.PublishedStatus == PublicationStatus.Suspended)
                 return RedirectToAction(nameof(Description), new { solutionId });
 
-            return View(new ListPriceModel(item));
+            var contentStatus = await solutionsService.GetContentStatusForCatalogueItem(solutionId);
+
+            return View(new ListPriceModel(item, contentStatus));
         }
 
         [HttpGet("{solutionId}/service-level-agreements")]
         public async Task<IActionResult> ServiceLevelAgreement(CatalogueItemId solutionId)
         {
-            var item = await solutionsService.GetSolutionOverview(solutionId);
+            var item = await solutionsService.GetSolutionWithServiceLevelAgreements(solutionId);
             if (item is null)
                 return BadRequest($"No Catalogue Item found for Id: {solutionId}");
 
             if (item.PublishedStatus == PublicationStatus.Suspended)
                 return RedirectToAction(nameof(Description), new { solutionId });
 
-            var serviceLevelAgreement = item.Solution.ServiceLevelAgreement;
-            var model = new ServiceLevelAgreementDetailsModel(
-                item,
-                serviceLevelAgreement.ServiceHours,
-                serviceLevelAgreement.Contacts,
-                serviceLevelAgreement.ServiceLevels);
+            var contentStatus = await solutionsService.GetContentStatusForCatalogueItem(solutionId);
+
+            var model = new ServiceLevelAgreementDetailsModel(item, contentStatus);
 
             return View(model);
         }
@@ -337,20 +366,22 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers
         [HttpGet("{solutionId}/supplier-details")]
         public async Task<IActionResult> SupplierDetails(CatalogueItemId solutionId)
         {
-            var item = await solutionsService.GetSolutionOverview(solutionId);
+            var item = await solutionsService.GetSolutionWithSupplierDetails(solutionId);
             if (item is null)
                 return BadRequest($"No Catalogue Item found for Id: {solutionId}");
 
             if (item.PublishedStatus == PublicationStatus.Suspended)
                 return RedirectToAction(nameof(Description), new { solutionId });
 
-            return View(new SolutionSupplierDetailsModel(item));
+            var contentStatus = await solutionsService.GetContentStatusForCatalogueItem(solutionId);
+
+            return View(new SolutionSupplierDetailsModel(item, contentStatus));
         }
 
         [HttpGet("{solutionId}/standards")]
         public async Task<IActionResult> Standards(CatalogueItemId solutionId)
         {
-            var item = await solutionsService.GetSolutionOverview(solutionId);
+            var item = await solutionsService.GetSolutionThin(solutionId);
             if (item is null)
                 return BadRequest($"No Catalogue Item found for Id: {solutionId}");
 
@@ -361,22 +392,26 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers
 
             var standardsWithWorkOffPlans = (await solutionsService.GetWorkOffPlans(solutionId)).Select(wp => wp.StandardId);
 
-            return View(new SolutionStandardsModel(item, standards, standardsWithWorkOffPlans));
+            var contentStatus = await solutionsService.GetContentStatusForCatalogueItem(solutionId);
+
+            return View(new SolutionStandardsModel(item, standards, standardsWithWorkOffPlans, contentStatus));
         }
 
         [HttpGet("{solutionId}/development-plans")]
         public async Task<IActionResult> DevelopmentPlans(CatalogueItemId solutionId)
         {
-            var item = await solutionsService.GetSolutionOverview(solutionId);
+            var item = await solutionsService.GetSolutionThin(solutionId);
             if (item is null)
                 return BadRequest($"No Catalogue Item found for Id: {solutionId}");
 
             if (item.PublishedStatus == PublicationStatus.Suspended)
                 return RedirectToAction(nameof(Description), new { solutionId });
 
+            var contentStatus = await solutionsService.GetContentStatusForCatalogueItem(solutionId);
+
             var workOffPlans = await solutionsService.GetWorkOffPlans(solutionId);
 
-            return View(new DevelopmentPlansModel(item, workOffPlans));
+            return View(new DevelopmentPlansModel(item, workOffPlans, contentStatus));
         }
     }
 }

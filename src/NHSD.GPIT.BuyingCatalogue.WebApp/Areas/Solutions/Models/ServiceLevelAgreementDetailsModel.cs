@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
+using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions.Models;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models
 {
@@ -8,26 +9,17 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models
     {
         public ServiceLevelAgreementDetailsModel(
             CatalogueItem catalogueItem,
-            ICollection<ServiceAvailabilityTimes> serviceAvailabilityTimes,
-            ICollection<SlaContact> slaContacts,
-            ICollection<SlaServiceLevel> serviceLevels)
-            : base(catalogueItem)
+            CatalogueItemContentStatus contentStatus)
+            : base(catalogueItem, contentStatus)
         {
             if (catalogueItem is null)
                 throw new ArgumentNullException(nameof(catalogueItem));
 
-            if (serviceAvailabilityTimes is null)
-                throw new ArgumentNullException(nameof(serviceAvailabilityTimes));
+            var serviceLevelAgreement = catalogueItem.Solution.ServiceLevelAgreement;
 
-            if (slaContacts is null)
-                throw new ArgumentNullException(nameof(slaContacts));
-
-            if (serviceLevels is null)
-                throw new ArgumentNullException(nameof(serviceLevels));
-
-            ServiceAvailabilityTimes = serviceAvailabilityTimes;
-            SlaContacts = slaContacts;
-            ServiceLevels = serviceLevels;
+            ServiceAvailabilityTimes = serviceLevelAgreement.ServiceHours;
+            SlaContacts = serviceLevelAgreement.Contacts;
+            ServiceLevels = serviceLevelAgreement.ServiceLevels;
         }
 
         public ICollection<ServiceAvailabilityTimes> ServiceAvailabilityTimes { get; init; }

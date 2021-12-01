@@ -3,7 +3,9 @@ using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
+using NHSD.GPIT.BuyingCatalogue.Framework.Serialization;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions;
+using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions.Models;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models
 {
@@ -13,12 +15,18 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models
         private const string KeyNativeDesktop = "native-desktop";
         private const string KeyNativeMobile = "native-mobile";
 
-        public ClientApplicationTypesModel(CatalogueItem catalogueItem)
-            : base(catalogueItem)
+        public ClientApplicationTypesModel(
+            CatalogueItem catalogueItem,
+            CatalogueItemContentStatus contentStatus)
+            : base(catalogueItem, contentStatus)
         {
-            BrowserBasedApplication = GetBrowserBasedApplication(ClientApplication);
-            NativeDesktopApplication = GetNativeDesktopApplication(ClientApplication);
-            NativeMobileApplication = GetNativeMobileApplication(ClientApplication);
+            ClientApplication = string.IsNullOrWhiteSpace(catalogueItem.Solution.ClientApplication)
+                ? new ClientApplication()
+                : JsonDeserializer.Deserialize<ClientApplication>(catalogueItem.Solution.ClientApplication);
+
+            BrowserBasedApplication = GetBrowserBasedApplication();
+            NativeDesktopApplication = GetNativeDesktopApplication();
+            NativeMobileApplication = GetNativeMobileApplication();
 
             ApplicationTypes = GetApplicationTypes();
 
@@ -39,70 +47,72 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models
         [UIHint("DescriptionList")]
         public DescriptionListViewModel NativeMobileApplication { get; init; }
 
+        public ClientApplication ClientApplication { get; init; }
+
         public string HasApplicationType(string key) =>
             (ClientApplication?.ClientApplicationTypes?.Any(s => s.EqualsIgnoreCase(key))).ToYesNo();
 
-        private static DescriptionListViewModel GetBrowserBasedApplication(ClientApplication clientApplication)
+        private DescriptionListViewModel GetBrowserBasedApplication()
         {
-            if (!clientApplication.ClientApplicationTypes.Any(t => t.EqualsIgnoreWhiteSpace(KeyBrowserBased)))
+            if (!ClientApplication.ClientApplicationTypes.Any(t => t.EqualsIgnoreWhiteSpace(KeyBrowserBased)))
                 return null;
 
             var items = new Dictionary<string, ListViewModel>();
 
-            if (clientApplication.BrowsersSupported?.Any() == true)
+            if (ClientApplication.BrowsersSupported?.Any() == true)
             {
                 items.Add(
                     "Supported browser types",
-                    new ListViewModel { List = clientApplication.BrowsersSupported.ToArray(), });
+                    new ListViewModel { List = ClientApplication.BrowsersSupported.ToArray(), });
             }
 
-            if (clientApplication.MobileResponsive is not null)
+            if (ClientApplication.MobileResponsive is not null)
             {
                 items.Add(
                     "Mobile responsive",
-                    new ListViewModel { Text = clientApplication.MobileResponsive.ToYesNo(), });
+                    new ListViewModel { Text = ClientApplication.MobileResponsive.ToYesNo(), });
             }
 
-            if (clientApplication.Plugins is not null)
+            if (ClientApplication.Plugins is not null)
             {
                 items.Add(
                     "Plug-ins or extensions required",
-                    new ListViewModel { Text = clientApplication.Plugins.Required.ToYesNo(), });
+                    new ListViewModel { Text = ClientApplication.Plugins.Required.ToYesNo(), });
 
-                if (!string.IsNullOrWhiteSpace(clientApplication.Plugins.AdditionalInformation))
+                if (!string.IsNullOrWhiteSpace(ClientApplication.Plugins.AdditionalInformation))
                 {
                     items.Add(
                         "Additional information about plug-ins or extensions",
-                        new ListViewModel { Text = clientApplication.Plugins.AdditionalInformation, });
+                        new ListViewModel { Text = ClientApplication.Plugins.AdditionalInformation, });
                 }
             }
 
-            if (!string.IsNullOrWhiteSpace(clientApplication.MinimumConnectionSpeed))
+            if (!string.IsNullOrWhiteSpace(ClientApplication.MinimumConnectionSpeed))
             {
                 items.Add(
                     "Minimum connection speed",
-                    new ListViewModel { Text = clientApplication.MinimumConnectionSpeed, });
+                    new ListViewModel { Text = ClientApplication.MinimumConnectionSpeed, });
             }
 
-            if (!string.IsNullOrWhiteSpace(clientApplication.MinimumDesktopResolution))
+            if (!string.IsNullOrWhiteSpace(ClientApplication.MinimumDesktopResolution))
             {
                 items.Add(
                     "Screen resolution and aspect ratio",
-                    new ListViewModel { Text = clientApplication.MinimumDesktopResolution, });
+                    new ListViewModel { Text = ClientApplication.MinimumDesktopResolution, });
             }
 
-            if (!string.IsNullOrWhiteSpace(clientApplication.HardwareRequirements))
+            if (!string.IsNullOrWhiteSpace(ClientApplication.HardwareRequirements))
             {
                 items.Add(
                     "Hardware requirements",
-                    new ListViewModel { Text = clientApplication.HardwareRequirements });
+                    new ListViewModel { Text = ClientApplication.HardwareRequirements });
             }
 
-            if (!string.IsNullOrWhiteSpace(clientApplication.AdditionalInformation))
+            if (!string.IsNullOrWhiteSpace(ClientApplication.AdditionalInformation))
             {
                 items.Add(
                     "Additional information",
-                    new ListViewModel { Text = clientApplication.AdditionalInformation });
+                    new ListViewModel { Text = ClientApplication.AdditionalInformation });
             }
 
             return new DescriptionListViewModel
@@ -112,93 +122,93 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models
             };
         }
 
-        private static DescriptionListViewModel GetNativeDesktopApplication(ClientApplication clientApplication)
+        private DescriptionListViewModel GetNativeDesktopApplication()
         {
-            if (!clientApplication.ClientApplicationTypes.Any(t => t.EqualsIgnoreWhiteSpace(KeyNativeDesktop)))
+            if (!ClientApplication.ClientApplicationTypes.Any(t => t.EqualsIgnoreWhiteSpace(KeyNativeDesktop)))
                 return null;
 
             var items = new Dictionary<string, ListViewModel>();
 
-            if (!string.IsNullOrWhiteSpace(clientApplication.NativeDesktopOperatingSystemsDescription))
+            if (!string.IsNullOrWhiteSpace(ClientApplication.NativeDesktopOperatingSystemsDescription))
             {
                 items.Add(
                     "Description of supported operating systems",
-                    new ListViewModel { Text = clientApplication.NativeDesktopOperatingSystemsDescription });
+                    new ListViewModel { Text = ClientApplication.NativeDesktopOperatingSystemsDescription });
             }
 
-            if (!string.IsNullOrWhiteSpace(clientApplication.NativeDesktopMinimumConnectionSpeed))
+            if (!string.IsNullOrWhiteSpace(ClientApplication.NativeDesktopMinimumConnectionSpeed))
             {
                 items.Add(
                     "Minimum connection speed",
-                    new ListViewModel { Text = clientApplication.NativeDesktopMinimumConnectionSpeed });
+                    new ListViewModel { Text = ClientApplication.NativeDesktopMinimumConnectionSpeed });
             }
 
             if (!string.IsNullOrWhiteSpace(
-                clientApplication.NativeDesktopMemoryAndStorage?.RecommendedResolution))
+                ClientApplication.NativeDesktopMemoryAndStorage?.RecommendedResolution))
             {
                 items.Add(
                     "Screen resolution and aspect ratio",
                     new ListViewModel
                     {
-                        Text = clientApplication.NativeDesktopMemoryAndStorage.RecommendedResolution,
+                        Text = ClientApplication.NativeDesktopMemoryAndStorage.RecommendedResolution,
                     });
             }
 
             if (!string.IsNullOrWhiteSpace(
-                clientApplication.NativeDesktopMemoryAndStorage?.MinimumMemoryRequirement))
+                ClientApplication.NativeDesktopMemoryAndStorage?.MinimumMemoryRequirement))
             {
                 items.Add(
                     "Memory size",
                     new ListViewModel
                     {
-                        Text = clientApplication.NativeDesktopMemoryAndStorage.MinimumMemoryRequirement,
+                        Text = ClientApplication.NativeDesktopMemoryAndStorage.MinimumMemoryRequirement,
                     });
             }
 
             if (!string.IsNullOrWhiteSpace(
-                clientApplication.NativeDesktopMemoryAndStorage?.StorageRequirementsDescription))
+                ClientApplication.NativeDesktopMemoryAndStorage?.StorageRequirementsDescription))
             {
                 items.Add(
                     "Storage space",
                     new ListViewModel
                     {
-                        Text = clientApplication.NativeDesktopMemoryAndStorage.StorageRequirementsDescription,
+                        Text = ClientApplication.NativeDesktopMemoryAndStorage.StorageRequirementsDescription,
                     });
             }
 
-            if (!string.IsNullOrWhiteSpace(clientApplication.NativeDesktopMemoryAndStorage?.MinimumCpu))
+            if (!string.IsNullOrWhiteSpace(ClientApplication.NativeDesktopMemoryAndStorage?.MinimumCpu))
             {
                 items.Add(
                     "Processing power",
-                    new ListViewModel { Text = clientApplication.NativeDesktopMemoryAndStorage.MinimumCpu });
+                    new ListViewModel { Text = ClientApplication.NativeDesktopMemoryAndStorage.MinimumCpu });
             }
 
-            if (!string.IsNullOrWhiteSpace(clientApplication.NativeDesktopThirdParty?.ThirdPartyComponents))
+            if (!string.IsNullOrWhiteSpace(ClientApplication.NativeDesktopThirdParty?.ThirdPartyComponents))
             {
                 items.Add(
                     "Third-party components",
-                    new ListViewModel { Text = clientApplication.NativeDesktopThirdParty.ThirdPartyComponents });
+                    new ListViewModel { Text = ClientApplication.NativeDesktopThirdParty.ThirdPartyComponents });
             }
 
-            if (!string.IsNullOrWhiteSpace(clientApplication.NativeDesktopThirdParty?.DeviceCapabilities))
+            if (!string.IsNullOrWhiteSpace(ClientApplication.NativeDesktopThirdParty?.DeviceCapabilities))
             {
                 items.Add(
                     "Device capabilities",
-                    new ListViewModel { Text = clientApplication.NativeDesktopThirdParty.DeviceCapabilities });
+                    new ListViewModel { Text = ClientApplication.NativeDesktopThirdParty.DeviceCapabilities });
             }
 
-            if (!string.IsNullOrWhiteSpace(clientApplication.NativeDesktopHardwareRequirements))
+            if (!string.IsNullOrWhiteSpace(ClientApplication.NativeDesktopHardwareRequirements))
             {
                 items.Add(
                     "Hardware requirements",
-                    new ListViewModel { Text = clientApplication.NativeDesktopHardwareRequirements });
+                    new ListViewModel { Text = ClientApplication.NativeDesktopHardwareRequirements });
             }
 
-            if (!string.IsNullOrWhiteSpace(clientApplication.NativeDesktopAdditionalInformation))
+            if (!string.IsNullOrWhiteSpace(ClientApplication.NativeDesktopAdditionalInformation))
             {
                 items.Add(
                     "Additional information",
-                    new ListViewModel { Text = clientApplication.NativeDesktopAdditionalInformation });
+                    new ListViewModel { Text = ClientApplication.NativeDesktopAdditionalInformation });
             }
 
             return new DescriptionListViewModel
@@ -208,91 +218,91 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models
             };
         }
 
-        private static DescriptionListViewModel GetNativeMobileApplication(ClientApplication clientApplication)
+        private DescriptionListViewModel GetNativeMobileApplication()
         {
-            if (!clientApplication.ClientApplicationTypes.Any(t => t.EqualsIgnoreWhiteSpace(KeyNativeMobile)))
+            if (!ClientApplication.ClientApplicationTypes.Any(t => t.EqualsIgnoreWhiteSpace(KeyNativeMobile)))
                 return null;
 
             var items = new Dictionary<string, ListViewModel>();
 
-            if (clientApplication.MobileOperatingSystems?.OperatingSystems?.Any() == true)
+            if (ClientApplication.MobileOperatingSystems?.OperatingSystems?.Any() == true)
             {
                 items.Add(
                     "Supported operating systems",
-                    new ListViewModel { List = clientApplication.MobileOperatingSystems.OperatingSystems.ToArray(), });
+                    new ListViewModel { List = ClientApplication.MobileOperatingSystems.OperatingSystems.ToArray(), });
             }
 
             if (!string.IsNullOrWhiteSpace(
-                clientApplication.MobileOperatingSystems?.OperatingSystemsDescription))
+                ClientApplication.MobileOperatingSystems?.OperatingSystemsDescription))
             {
                 items.Add(
                     "Description of supported operating systems",
-                    new ListViewModel { Text = clientApplication.MobileOperatingSystems.OperatingSystemsDescription });
+                    new ListViewModel { Text = ClientApplication.MobileOperatingSystems.OperatingSystemsDescription });
             }
 
             if (!string.IsNullOrWhiteSpace(
-                clientApplication.MobileConnectionDetails?.MinimumConnectionSpeed))
+                ClientApplication.MobileConnectionDetails?.MinimumConnectionSpeed))
             {
                 items.Add(
                     "Minimum connection speed",
-                    new ListViewModel { Text = clientApplication.MobileConnectionDetails.MinimumConnectionSpeed });
+                    new ListViewModel { Text = ClientApplication.MobileConnectionDetails.MinimumConnectionSpeed });
             }
 
-            if (clientApplication.MobileConnectionDetails?.ConnectionType?.Any() == true)
+            if (ClientApplication.MobileConnectionDetails?.ConnectionType?.Any() == true)
             {
                 items.Add(
                     "Connection types supported",
-                    new ListViewModel { List = clientApplication.MobileConnectionDetails.ConnectionType.ToArray(), });
+                    new ListViewModel { List = ClientApplication.MobileConnectionDetails.ConnectionType.ToArray(), });
             }
 
-            if (!string.IsNullOrWhiteSpace(clientApplication.MobileConnectionDetails?.Description))
+            if (!string.IsNullOrWhiteSpace(ClientApplication.MobileConnectionDetails?.Description))
             {
                 items.Add(
                     "Connection requirements",
-                    new ListViewModel { Text = clientApplication.MobileConnectionDetails.Description });
+                    new ListViewModel { Text = ClientApplication.MobileConnectionDetails.Description });
             }
 
             if (!string.IsNullOrWhiteSpace(
-                clientApplication.MobileMemoryAndStorage?.MinimumMemoryRequirement))
+                ClientApplication.MobileMemoryAndStorage?.MinimumMemoryRequirement))
             {
                 items.Add(
                     "Memory size",
-                    new ListViewModel { Text = clientApplication.MobileMemoryAndStorage.MinimumMemoryRequirement });
+                    new ListViewModel { Text = ClientApplication.MobileMemoryAndStorage.MinimumMemoryRequirement });
             }
 
-            if (!string.IsNullOrWhiteSpace(clientApplication.MobileMemoryAndStorage?.Description))
+            if (!string.IsNullOrWhiteSpace(ClientApplication.MobileMemoryAndStorage?.Description))
             {
                 items.Add(
                     "Storage space",
-                    new ListViewModel { Text = clientApplication.MobileMemoryAndStorage.Description });
+                    new ListViewModel { Text = ClientApplication.MobileMemoryAndStorage.Description });
             }
 
-            if (!string.IsNullOrWhiteSpace(clientApplication.MobileThirdParty?.ThirdPartyComponents))
+            if (!string.IsNullOrWhiteSpace(ClientApplication.MobileThirdParty?.ThirdPartyComponents))
             {
                 items.Add(
                     "Third-party components",
-                    new ListViewModel { Text = clientApplication.MobileThirdParty.ThirdPartyComponents });
+                    new ListViewModel { Text = ClientApplication.MobileThirdParty.ThirdPartyComponents });
             }
 
-            if (!string.IsNullOrWhiteSpace(clientApplication.MobileThirdParty?.DeviceCapabilities))
+            if (!string.IsNullOrWhiteSpace(ClientApplication.MobileThirdParty?.DeviceCapabilities))
             {
                 items.Add(
                     "Device capabilities",
-                    new ListViewModel { Text = clientApplication.MobileThirdParty.DeviceCapabilities });
+                    new ListViewModel { Text = ClientApplication.MobileThirdParty.DeviceCapabilities });
             }
 
-            if (!string.IsNullOrWhiteSpace(clientApplication.NativeMobileHardwareRequirements))
+            if (!string.IsNullOrWhiteSpace(ClientApplication.NativeMobileHardwareRequirements))
             {
                 items.Add(
                     "Hardware requirements",
-                    new ListViewModel { Text = clientApplication.NativeMobileHardwareRequirements });
+                    new ListViewModel { Text = ClientApplication.NativeMobileHardwareRequirements });
             }
 
-            if (!string.IsNullOrWhiteSpace(clientApplication.NativeMobileAdditionalInformation))
+            if (!string.IsNullOrWhiteSpace(ClientApplication.NativeMobileAdditionalInformation))
             {
                 items.Add(
                     "Additional information",
-                    new ListViewModel { Text = clientApplication.NativeMobileAdditionalInformation });
+                    new ListViewModel { Text = ClientApplication.NativeMobileAdditionalInformation });
             }
 
             return new DescriptionListViewModel

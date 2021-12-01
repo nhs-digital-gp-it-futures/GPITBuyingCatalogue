@@ -124,21 +124,5 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Models
             model.VerifyGet(m => m.Section);
             actual.Should().Be(expected);
         }
-
-        [Theory]
-        [CommonInlineAutoData(PublicationStatus.Published, false)]
-        [CommonInlineAutoData(PublicationStatus.InRemediation, true)]
-        public static void IsInRemediation(
-            PublicationStatus publicationStatus,
-            bool expected,
-            Solution solution)
-        {
-            var catalogueItem = solution.CatalogueItem;
-            catalogueItem.PublishedStatus = publicationStatus;
-
-            var model = new TestSolutionDisplayBaseModel(catalogueItem);
-
-            model.IsInRemediation().Should().Be(expected);
-        }
     }
 }

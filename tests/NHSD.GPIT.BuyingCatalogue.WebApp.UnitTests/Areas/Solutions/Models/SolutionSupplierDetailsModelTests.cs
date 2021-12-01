@@ -2,6 +2,7 @@
 using System.Linq;
 using FluentAssertions;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
+using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions.Models;
 using NHSD.GPIT.BuyingCatalogue.Test.Framework.AutoFixtureCustomisations;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models;
 using Xunit;
@@ -23,7 +24,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Models
         public static void Constructor_PopulatesAllProperties(Solution solution)
         {
             var catalogueItem = solution.CatalogueItem;
-            var model = new SolutionSupplierDetailsModel(catalogueItem);
+            var model = new SolutionSupplierDetailsModel(catalogueItem, new CatalogueItemContentStatus());
 
             model.Name.Should().Be(catalogueItem.Supplier.Name);
             model.Url.Should().Be(catalogueItem.Supplier.SupplierUrl);
