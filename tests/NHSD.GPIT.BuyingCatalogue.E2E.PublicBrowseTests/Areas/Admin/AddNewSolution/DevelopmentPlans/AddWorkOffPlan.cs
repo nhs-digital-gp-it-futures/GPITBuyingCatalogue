@@ -22,7 +22,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.AddNewSolution.Developm
         private const string DateErrorYearSize = "Error: Year must be four numbers";
         private const string DateIncorrectFormatError = "Error: Enter an agreed completion date in a valid format";
         private const string DuplicateWorkOffPlanError = "A Work-Off Plan with these details already exists";
-        private const string DateInPastError = "Error: Agreed completion date must be in the future or within the last 2 months";
+        private const string DateInPastError = "Error: Agreed completion date must be in the future or within the last 12 weeks";
 
         private static readonly CatalogueItemId SolutionId = new(99998, "001");
 
