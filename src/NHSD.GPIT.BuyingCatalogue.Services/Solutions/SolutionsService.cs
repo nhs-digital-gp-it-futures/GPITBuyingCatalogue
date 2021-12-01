@@ -123,7 +123,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
 
         public async Task<CatalogueItem> GetSolutionOverview(CatalogueItemId solutionId)
         {
-            var solution = await dbContext.CatalogueItems
+            var solution = await dbContext.CatalogueItems.AsNoTracking()
                 .Include(s => s.CatalogueItemCapabilities).ThenInclude(sc => sc.Capability)
                 .Include(i => i.Supplier).ThenInclude(s => s.SupplierContacts)
                 .Include(i => i.Solution).ThenInclude(s => s.FrameworkSolutions).ThenInclude(fs => fs.Framework)
@@ -135,9 +135,9 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
                 .Include(s => s.CatalogueItemEpics).ThenInclude(se => se.Epic)
                 .Include(i => i.CataloguePrices).ThenInclude(p => p.PricingUnit)
                 .Where(i => i.Id == solutionId)
-                .FirstOrDefaultAsync();
+                .SingleOrDefaultAsync();
 
-            var associatedServices = await dbContext.CatalogueItems
+            var associatedServices = await dbContext.CatalogueItems.AsNoTracking()
                 .Include(i => i.Supplier).ThenInclude(s => s.CatalogueItems.Where(c => c.CatalogueItemType == CatalogueItemType.AssociatedService && c.AssociatedService != null).Take(1))
                 .ThenInclude(c => c.AssociatedService)
                 .Where(i => i.Id == solutionId)
@@ -145,7 +145,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
 
             solution?.Supplier?.CatalogueItems.Add(associatedServices.Supplier?.CatalogueItems?.FirstOrDefault());
 
-            var additionalServices = await dbContext.CatalogueItems
+            var additionalServices = await dbContext.CatalogueItems.AsNoTracking()
                 .Include(i => i.Supplier).ThenInclude(s => s.CatalogueItems.Where(c => c.CatalogueItemType == CatalogueItemType.AdditionalService && c.AdditionalService != null).Take(1))
                 .ThenInclude(c => c.AdditionalService)
                 .Where(i => i.Id == solutionId)
