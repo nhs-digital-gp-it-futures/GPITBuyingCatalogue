@@ -13,6 +13,12 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models
             RowViewModels = solution.CatalogueItemCapabilities.Select(cic => new RowViewModel(cic)).ToList();
         }
 
+        public CapabilitiesViewModel(CatalogueItem solution, CatalogueItem additionalService)
+            : base(solution)
+        {
+            RowViewModels = additionalService.CatalogueItemCapabilities.Select(cic => new RowViewModel(cic)).ToList();
+        }
+
         public CapabilitiesViewModel()
         {
         }
