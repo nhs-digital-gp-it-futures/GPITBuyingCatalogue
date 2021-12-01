@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
+using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions.Models;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models
 {
@@ -11,8 +12,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models
         {
         }
 
-        public ListPriceModel(CatalogueItem item)
-            : base(item)
+        public ListPriceModel(CatalogueItem item, CatalogueItemContentStatus contentStatus)
+            : base(item, contentStatus)
         {
             FlatListPrices = item.CataloguePrices
                 .Where(cp =>

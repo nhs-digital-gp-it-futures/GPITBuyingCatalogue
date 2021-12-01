@@ -13,7 +13,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models
         {
         }
 
-        public SolutionCheckEpicsModel(CatalogueItemCapability solutionCapability, CatalogueItem catalogueItem)
+        public SolutionCheckEpicsModel(
+            CatalogueItemCapability solutionCapability,
+            CatalogueItem catalogueItem)
         {
             Description = solutionCapability.Capability?.Description;
             Name = solutionCapability.Capability?.Name;

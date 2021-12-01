@@ -1,7 +1,9 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
+using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions.Models;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models
 {
@@ -11,16 +13,16 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models
         {
         }
 
-        public SolutionDescriptionModel(CatalogueItem catalogueItem)
-            : base(catalogueItem)
+        public SolutionDescriptionModel(CatalogueItem catalogueItem, CatalogueItemContentStatus contentStatus)
+            : base(catalogueItem, contentStatus)
         {
             var solution = catalogueItem.Solution;
 
             Description = solution.FullDescription;
             Summary = solution.Summary;
 
-            Frameworks = catalogueItem.Frameworks().ToArray();
-            IsFoundation = catalogueItem.IsFoundation().ToYesNo();
+            Frameworks = catalogueItem.Solution.FrameworkSolutions.Select(s => s.Framework.ShortName).ToArray();
+            IsFoundation = catalogueItem.Solution.FrameworkSolutions.Any(fs => fs.IsFoundation).ToYesNo();
             SupplierName = catalogueItem.Supplier.Name;
             AboutUrl = catalogueItem.Solution.AboutUrl;
         }

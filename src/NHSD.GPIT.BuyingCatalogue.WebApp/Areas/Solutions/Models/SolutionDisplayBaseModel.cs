@@ -6,6 +6,7 @@ using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.Framework.Serialization;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions;
+using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions.Models;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models
@@ -22,7 +23,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models
         {
         }
 
-        protected SolutionDisplayBaseModel(CatalogueItem catalogueItem)
+        protected SolutionDisplayBaseModel(
+            CatalogueItem catalogueItem,
+            CatalogueItemContentStatus contentStatus)
         {
             if (catalogueItem is null)
                 throw new ArgumentNullException(nameof(catalogueItem));
@@ -31,17 +34,11 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models
             SolutionName = catalogueItem.Name;
             PublicationStatus = catalogueItem.PublishedStatus;
 
-            ClientApplication = catalogueItem.Solution.ClientApplication == null
-                ? new ClientApplication()
-                : JsonDeserializer.Deserialize<ClientApplication>(catalogueItem.Solution.ClientApplication);
-
             LastReviewed = catalogueItem.Solution.LastUpdated;
 
-            SetSections(catalogueItem);
+            SetSections(contentStatus);
             SetPaginationFooter();
         }
-
-        public ClientApplication ClientApplication { get; set; }
 
         public abstract int Index { get; }
 
@@ -87,7 +84,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models
 
         public bool IsSuspended() => PublicationStatus == PublicationStatus.Suspended;
 
-        private void SetSections(CatalogueItem catalogueItem)
+        private void SetSections(CatalogueItemContentStatus contentStatus)
         {
             sections = new List<SectionModel>
             {
@@ -96,98 +93,98 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models
                     Action = nameof(SolutionsController.Description),
                     Controller = ControllerName,
                     Name = KeyDescription,
-                    Show = true,
+                    Show = CatalogueItemContentStatus.ShowDescription,
                 },
                 new()
                 {
                     Action = nameof(SolutionsController.Features),
                     Controller = ControllerName,
                     Name = "Features",
-                    Show = catalogueItem.HasFeatures(),
+                    Show = contentStatus.ShowFeatures,
                 },
                 new()
                 {
                     Action = nameof(SolutionsController.Capabilities),
                     Controller = ControllerName,
                     Name = "Capabilities and Epics",
-                    Show = catalogueItem.HasCapabilities(),
+                    Show = CatalogueItemContentStatus.ShowCapabilities,
                 },
                 new()
                 {
                     Action = nameof(SolutionsController.Standards),
                     Controller = ControllerName,
                     Name = "Standards",
-                    Show = catalogueItem.HasStandards(),
+                    Show = CatalogueItemContentStatus.ShowStandards,
                 },
                 new()
                 {
                     Action = nameof(SolutionsController.ListPrice),
                     Controller = ControllerName,
                     Name = "List price",
-                    Show = catalogueItem.HasListPrice(),
+                    Show = CatalogueItemContentStatus.ShowListPrice,
                 },
                 new()
                 {
                     Action = nameof(SolutionsController.AdditionalServices),
                     Controller = ControllerName,
                     Name = "Additional Services",
-                    Show = catalogueItem.HasAdditionalServices(),
+                    Show = contentStatus.ShowAdditionalServices,
                 },
                 new()
                 {
                     Action = nameof(SolutionsController.AssociatedServices),
                     Controller = ControllerName,
                     Name = "Associated Services",
-                    Show = catalogueItem.HasAssociatedServices(),
+                    Show = contentStatus.ShowAssociatedServices,
                 },
                 new()
                 {
                     Action = nameof(SolutionsController.Interoperability),
                     Controller = ControllerName,
                     Name = nameof(SolutionsController.Interoperability),
-                    Show = catalogueItem.HasInteroperability(),
+                    Show = contentStatus.ShowInteroperability,
                 },
                 new()
                 {
                     Action = nameof(SolutionsController.Implementation),
                     Controller = ControllerName,
                     Name = "Implementation",
-                    Show = catalogueItem.HasImplementationDetail(),
+                    Show = contentStatus.ShowImplementation,
                 },
                 new()
                 {
                     Action = nameof(SolutionsController.ClientApplicationTypes),
                     Controller = ControllerName,
                     Name = "Client application type",
-                    Show = catalogueItem.HasClientApplication(),
+                    Show = CatalogueItemContentStatus.ShowClientApplications,
                 },
                 new()
                 {
                     Action = nameof(SolutionsController.HostingType),
                     Controller = ControllerName,
                     Name = "Hosting type",
-                    Show = catalogueItem.HasHosting(),
+                    Show = CatalogueItemContentStatus.ShowHosting,
                 },
                 new()
                 {
                     Action = nameof(SolutionsController.ServiceLevelAgreement),
                     Controller = ControllerName,
                     Name = "Service Level Agreement",
-                    Show = catalogueItem.HasServiceLevelAgreement(),
+                    Show = CatalogueItemContentStatus.ShowServiceLevelAgreements,
                 },
                 new()
                 {
                     Action = nameof(SolutionsController.DevelopmentPlans),
                     Controller = ControllerName,
                     Name = "Development plans",
-                    Show = true,
+                    Show = CatalogueItemContentStatus.ShowDevelopmentPlans,
                 },
                 new()
                 {
                     Action = nameof(SolutionsController.SupplierDetails),
                     Controller = ControllerName,
                     Name = "Supplier details",
-                    Show = catalogueItem.HasSupplierDetails(),
+                    Show = CatalogueItemContentStatus.ShowSupplierDetails,
                 },
             };
         }

@@ -1,13 +1,14 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
+using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions.Models;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models
 {
     public sealed class SolutionSupplierDetailsModel : SolutionDisplayBaseModel
     {
-        public SolutionSupplierDetailsModel(CatalogueItem catalogueItem)
-            : base(catalogueItem)
+        public SolutionSupplierDetailsModel(CatalogueItem catalogueItem, CatalogueItemContentStatus contentStatus)
+            : base(catalogueItem, contentStatus)
         {
             Summary = catalogueItem.Supplier?.Summary;
             Name = catalogueItem.Supplier?.Name;

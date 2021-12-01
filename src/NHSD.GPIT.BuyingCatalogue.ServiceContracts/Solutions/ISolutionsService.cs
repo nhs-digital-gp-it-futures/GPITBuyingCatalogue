@@ -4,6 +4,7 @@ using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Models;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions.Admin;
+using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions.Models;
 
 namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions
 {
@@ -41,7 +42,7 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions
 
         Task<List<CatalogueItem>> GetPublishedAssociatedServicesForSolution(CatalogueItemId solutionId);
 
-        Task<CatalogueItem> GetSolutionOverview(CatalogueItemId solutionId);
+        Task<CatalogueItemContentStatus> GetContentStatusForCatalogueItem(CatalogueItemId solutionId);
 
         Task SaveSolutionDetails(CatalogueItemId id, string solutionName, int supplierId, IList<FrameworkModel> selectedFrameworks);
 
@@ -68,12 +69,6 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions
         Task<List<CatalogueItem>> GetSupplierSolutions(int? supplierId);
 
         Task<IList<CatalogueItem>> GetAllSolutions(PublicationStatus? publicationStatus = null);
-
-        Task<CatalogueItem> GetSolutionAdditionalServiceCapabilities(CatalogueItemId id);
-
-        Task<CatalogueItem> GetAdditionalServiceCapability(
-            CatalogueItemId catalogueItemId,
-            int capabilityId);
 
         Task<CatalogueItemId> AddCatalogueSolution(CreateSolutionModel model);
 
