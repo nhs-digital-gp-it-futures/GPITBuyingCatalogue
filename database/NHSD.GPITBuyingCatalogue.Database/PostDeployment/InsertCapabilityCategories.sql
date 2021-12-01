@@ -18,7 +18,7 @@ VALUES
 (8, 'Medicines management', 'Find solutions that allow the safe prescribing and dispensing of medicines.'),
 (9, 'Patient care management', 'Find solutions that support the maintenance and sharing of patient information.'),
 (10, 'Reporting and data analytics', 'Find solutions that allow local data analysis across all aspects of a GP practice.'),
-(11, 'Supplier defined capabilities', 'Find solutions that have met Capabilities defined by a supplier.');
+(11, 'Supplier defined Capabilities', 'Find solutions that have met Capabilities defined by a supplier.');
 
 MERGE INTO catalogue.CapabilityCategories AS TARGET
      USING @capabilityCategories AS SOURCE
