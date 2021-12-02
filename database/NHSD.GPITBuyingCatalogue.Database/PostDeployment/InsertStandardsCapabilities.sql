@@ -2,20 +2,6 @@
 
 INSERT INTO catalogue.StandardsCapabilities(StandardId, CapabilityId)
 VALUES
-('S32', 1), -- Interoperability -> Appointments Management - Citizen
-('S32', 2), -- Interoperability -> Communicate With Practice - Citizen
-('S32', 3), -- Interoperability -> Prescription Ordering - Citizen
-('S32', 4), -- Interoperability -> View Record - Citizen
-('S32', 5), -- Interoperability -> Appointments Management - GP
-('S32', 8), -- Interoperability -> Digital Diagnostics
-('S32', 11), -- Interoperability -> Referral Management
-('S32', 12), -- Interoperability -> Resource Management
-('S32', 13), -- Interoperability -> Patient Information Maintainance
-('S32', 14), -- Interoperability -> Prescribing
-('S32', 15), -- Interoperability -> Recording Consultations
-('S32', 23), -- Interoperability -> Cross-organisation Appointment Booking
-('S32', 30), -- Interoperability -> Medicines Optimisation
-('S32', 39), -- Interoperability -> Unified Care Record
 ('S33', 13), -- 111 -> Patient Information Maintainance
 ('S34', 8),  -- Digital Diagnostics & Pathology Messaging -> Digital Diagnostics
 ('S77', 13), -- Digital Medicines and Pharmacy FHIR Payload -> Patient Information Maintainance
