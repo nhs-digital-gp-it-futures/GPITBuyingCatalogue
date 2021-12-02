@@ -208,7 +208,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers
             CatalogueItemId additionalServiceId,
             int capabilityId)
         {
-
             var solution = await solutionsService.GetSolutionThin(solutionId);
 
             if (solution is null)
