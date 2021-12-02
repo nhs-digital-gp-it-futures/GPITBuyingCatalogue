@@ -2199,7 +2199,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
             [Frozen] Mock<ISolutionsService> solutionsService,
             CatalogueSolutionsController controller)
         {
-            solutionsService.Setup(s => s.GetSolutionThin(catalogueItemId))
+            solutionsService.Setup(s => s.GetSolutionWithCapabilities(catalogueItemId))
                 .ReturnsAsync(default(CatalogueItem));
 
             var result = await controller.EditCapabilities(catalogueItemId);
@@ -2225,7 +2225,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
             capabilitiesService.Setup(s => s.GetCapabilitiesByCategory(It.IsAny<int>()))
                 .ReturnsAsync(capabilityCategories.ToList());
 
-            solutionsService.Setup(s => s.GetSolutionThin(solution.CatalogueItemId))
+            solutionsService.Setup(s => s.GetSolutionWithCapabilities(solution.CatalogueItemId))
                 .ReturnsAsync(solution.CatalogueItem);
 
             var result = await controller.EditCapabilities(solution.CatalogueItemId);

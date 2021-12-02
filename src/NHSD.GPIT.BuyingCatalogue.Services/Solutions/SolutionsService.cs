@@ -53,6 +53,8 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
                 .Include(ci => ci.Solution)
                 .Include(ci => ci.CatalogueItemCapabilities)
                     .ThenInclude(cic => cic.Capability)
+                .Include(ci => ci.CatalogueItemEpics)
+                    .ThenInclude(cie => cie.Epic)
                 .SingleOrDefaultAsync(ci => ci.Id == solutionId);
 
         public async Task<CatalogueItem> GetSolutionWithListPrices(CatalogueItemId solutionId) =>
@@ -124,7 +126,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
                     DevelopmentPlans = ci.Solution.WorkOffPlans.Any()
                         ? TaskProgress.Completed
                         : TaskProgress.Optional,
-                    CapabilitiesAndEpics = (ci.CatalogueItemCapabilities.Any() && ci.CatalogueItemEpics.Any())
+                    CapabilitiesAndEpics = ci.CatalogueItemCapabilities.Any()
                         ? TaskProgress.Completed
                         : TaskProgress.NotStarted,
                     SupplierDetails = ci.Supplier.SupplierContacts.Any()
