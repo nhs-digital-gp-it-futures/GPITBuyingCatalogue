@@ -782,7 +782,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
         [HttpGet("manage/{solutionId}/edit-capabilities")]
         public async Task<IActionResult> EditCapabilities(CatalogueItemId solutionId)
         {
-            var solution = await solutionsService.GetSolutionThin(solutionId);
+            var solution = await solutionsService.GetSolutionWithCapabilities(solutionId);
             if (solution is null)
                 return BadRequest($"No Solution found for Id: {solutionId}");
 

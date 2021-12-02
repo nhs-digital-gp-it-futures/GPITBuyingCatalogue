@@ -100,6 +100,21 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.AddNewSolution
         }
 
         [Fact]
+        public void Submit_CapabilitiesSelected_PreselectsCapabilities()
+        {
+            CommonActions.ClickFirstCheckbox();
+
+            CommonActions.ClickSave();
+
+            NavigateToUrl(
+                typeof(CatalogueSolutionsController),
+                nameof(CatalogueSolutionsController.EditCapabilities),
+                Parameters);
+
+            CommonActions.GetNumberOfSelectedCheckBoxes().Should().BeGreaterThan(0);
+        }
+
+        [Fact]
         public void ClickGoBackLink_NavigatesToCorrectPage()
         {
             CommonActions.ClickGoBackLink();
