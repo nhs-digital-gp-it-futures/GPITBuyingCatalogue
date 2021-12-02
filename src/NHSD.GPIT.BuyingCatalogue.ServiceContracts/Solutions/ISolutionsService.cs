@@ -3,6 +3,7 @@ using System.Threading.Tasks;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Models;
+using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions.Admin;
 
 namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions
 {
@@ -10,9 +11,21 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions
     {
         Task<CatalogueItem> GetSolutionListPrices(CatalogueItemId solutionId);
 
-        Task<CatalogueItem> GetSolution(CatalogueItemId solutionId);
-
         Task<CatalogueItem> GetSolutionThin(CatalogueItemId solutionId);
+
+        Task<CatalogueItem> GetSolutionWithBasicInformation(CatalogueItemId solutionId);
+
+        Task<CatalogueItem> GetSolutionWithCapabilities(CatalogueItemId solutionId);
+
+        Task<CatalogueItem> GetSolutionWithListPrices(CatalogueItemId solutionId);
+
+        Task<CatalogueItem> GetSolutionWithServiceLevelAgreements(CatalogueItemId solutionId);
+
+        Task<CatalogueItem> GetSolutionWithSupplierDetails(CatalogueItemId solutionId);
+
+        Task<CatalogueItem> GetSolutionWithWorkOffPlans(CatalogueItemId solutionId);
+
+        Task<SolutionLoadingStatusesModel> GetSolutionLoadingStatuses(CatalogueItemId solutionId);
 
         Task<CatalogueItem> GetSolutionByName(string solutionName);
 

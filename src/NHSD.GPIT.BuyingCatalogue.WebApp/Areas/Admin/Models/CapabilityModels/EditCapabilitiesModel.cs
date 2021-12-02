@@ -52,10 +52,5 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.CapabilityModels
         public string CatalogueItemType { get; init; }
 
         public IList<CapabilityCategoryModel> CapabilityCategories { get; init; }
-
-        public TaskProgress Status()
-            => CapabilityCategories.Any(cc => cc.Capabilities.Any(c => c.Selected))
-                ? TaskProgress.Completed
-                : TaskProgress.NotStarted;
     }
 }

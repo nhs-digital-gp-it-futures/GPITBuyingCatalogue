@@ -26,22 +26,5 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.ServiceLevelAgreem
         public CatalogueItem CatalogueItem { get; init; }
 
         public EntityFramework.Catalogue.Models.ServiceLevelAgreements ServiceLevelAgreements { get; init; }
-
-        public TaskProgress Status()
-        {
-            // No SLA type has been added
-            if (CatalogueItem.Solution.ServiceLevelAgreement is null)
-                return TaskProgress.NotStarted;
-
-            // Everything complete
-            if (CatalogueItem.Solution.ServiceLevelAgreement is not null &&
-                CatalogueItem.Solution.ServiceLevelAgreement.Contacts.Any() &&
-                CatalogueItem.Solution.ServiceLevelAgreement.ServiceHours.Any() &&
-                CatalogueItem.Solution.ServiceLevelAgreement.ServiceLevels.Any())
-                return TaskProgress.Completed;
-
-            // One or more sections not completed
-            return TaskProgress.InProgress;
-        }
     }
 }

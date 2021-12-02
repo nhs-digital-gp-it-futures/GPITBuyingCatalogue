@@ -43,7 +43,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
             [Frozen] Mock<ISolutionsService> solutionsService,
             AdditionalServicesController controller)
         {
-            solutionsService.Setup(s => s.GetSolution(catalogueItemId))
+            solutionsService.Setup(s => s.GetSolutionThin(catalogueItemId))
                 .ReturnsAsync(default(CatalogueItem));
 
             var result = await controller.Index(catalogueItemId);
@@ -63,7 +63,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
         {
             var expectedResult = new AdditionalServicesModel(catalogueItem, additionalServices);
 
-            solutionsService.Setup(s => s.GetSolution(catalogueItem.Id))
+            solutionsService.Setup(s => s.GetSolutionThin(catalogueItem.Id))
                 .ReturnsAsync(catalogueItem);
 
             additionalServicesService.Setup(s => s.GetAdditionalServicesBySolutionId(catalogueItem.Id))
@@ -83,7 +83,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
             [Frozen] Mock<ISolutionsService> solutionsService,
             AdditionalServicesController controller)
         {
-            solutionsService.Setup(s => s.GetSolution(catalogueItemId))
+            solutionsService.Setup(s => s.GetSolutionThin(catalogueItemId))
                 .ReturnsAsync(default(CatalogueItem));
 
             var result = await controller.EditAdditionalService(catalogueItemId, additionalServiceId);
@@ -120,7 +120,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
         {
             var expectedResult = new EditAdditionalServiceModel(catalogueItem, additionalService.CatalogueItem);
 
-            solutionsService.Setup(s => s.GetSolution(catalogueItem.Id))
+            solutionsService.Setup(s => s.GetSolutionThin(catalogueItem.Id))
                 .ReturnsAsync(catalogueItem);
 
             additionalServicesService.Setup(s => s.GetAdditionalService(catalogueItem.Id, additionalService.CatalogueItemId))
@@ -139,7 +139,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
             [Frozen] Mock<ISolutionsService> mockSolutionsService,
             AdditionalServicesController controller)
         {
-            mockSolutionsService.Setup(s => s.GetSolution(catalogueItemId))
+            mockSolutionsService.Setup(s => s.GetSolutionThin(catalogueItemId))
                 .ReturnsAsync(default(CatalogueItem));
 
             var result = await controller.AddAdditionalService(catalogueItemId);
@@ -157,7 +157,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
         {
             var expectedModel = new EditAdditionalServiceDetailsModel(catalogueItem);
 
-            solutionsService.Setup(s => s.GetSolution(catalogueItem.Id))
+            solutionsService.Setup(s => s.GetSolutionThin(catalogueItem.Id))
                 .ReturnsAsync(catalogueItem);
 
             var result = await controller.AddAdditionalService(catalogueItem.Id);
@@ -189,7 +189,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
             [Frozen] Mock<ISolutionsService> solutionsService,
             AdditionalServicesController controller)
         {
-            solutionsService.Setup(s => s.GetSolution(catalogueItemId))
+            solutionsService.Setup(s => s.GetSolutionThin(catalogueItemId))
                 .ReturnsAsync(default(CatalogueItem));
 
             var result = await controller.AddAdditionalService(catalogueItemId, model);
@@ -206,7 +206,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
             [Frozen] Mock<ISolutionsService> solutionsService,
             AdditionalServicesController controller)
         {
-            solutionsService.Setup(s => s.GetSolution(catalogueItem.Id))
+            solutionsService.Setup(s => s.GetSolutionThin(catalogueItem.Id))
                 .ReturnsAsync(catalogueItem);
 
             var result = await controller.AddAdditionalService(catalogueItem.Id, model);
@@ -223,7 +223,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
             [Frozen] Mock<ISolutionsService> solutionsService,
             AdditionalServicesController controller)
         {
-            solutionsService.Setup(s => s.GetSolution(catalogueItemId))
+            solutionsService.Setup(s => s.GetSolutionThin(catalogueItemId))
                 .ReturnsAsync(default(CatalogueItem));
 
             var result = await controller.EditAdditionalServiceDetails(catalogueItemId, additionalServiceId);
@@ -260,7 +260,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
             var catalogueItem = additionalService.CatalogueItem;
             var expectedModel = new EditAdditionalServiceDetailsModel(catalogueItem, catalogueItem);
 
-            solutionsService.Setup(s => s.GetSolution(catalogueItem.Id))
+            solutionsService.Setup(s => s.GetSolutionThin(catalogueItem.Id))
                 .ReturnsAsync(catalogueItem);
 
             additionalServicesService.Setup(s => s.GetAdditionalService(catalogueItem.Id, catalogueItem.Id))
@@ -297,7 +297,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
             [Frozen] Mock<ISolutionsService> solutionsService,
             AdditionalServicesController controller)
         {
-            solutionsService.Setup(s => s.GetSolution(catalogueItemId))
+            solutionsService.Setup(s => s.GetSolutionThin(catalogueItemId))
                 .ReturnsAsync(default(CatalogueItem));
 
             var result = await controller.EditAdditionalServiceDetails(catalogueItemId, additionalServiceId, model);
@@ -334,7 +334,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
             [Frozen] Mock<IAdditionalServicesService> additionalServicesService,
             AdditionalServicesController controller)
         {
-            solutionsService.Setup(s => s.GetSolution(catalogueItem.Id))
+            solutionsService.Setup(s => s.GetSolutionThin(catalogueItem.Id))
                 .ReturnsAsync(catalogueItem);
 
             additionalServicesService.Setup(s => s.GetAdditionalService(catalogueItem.Id, additionalService.CatalogueItemId))
@@ -358,7 +358,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
         {
             model.SelectedPublicationStatus = catalogueItem.PublishedStatus;
 
-            solutionsService.Setup(s => s.GetSolution(catalogueItem.Id))
+            solutionsService.Setup(s => s.GetSolutionThin(catalogueItem.Id))
                 .ReturnsAsync(catalogueItem);
 
             additionalServicesService.Setup(s => s.GetAdditionalService(catalogueItem.Id, additionalService.CatalogueItemId))
@@ -382,7 +382,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
 
             var model = new EditAdditionalServiceModel { SelectedPublicationStatus = PublicationStatus.Published };
 
-            mockSolutionService.Setup(s => s.GetSolution(catalogueItem.Id))
+            mockSolutionService.Setup(s => s.GetSolutionThin(catalogueItem.Id))
                 .ReturnsAsync(catalogueItem);
 
             additionalServicesService.Setup(s => s.GetAdditionalService(catalogueItem.Id, additionalService.CatalogueItemId))
@@ -406,7 +406,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
 
             var model = new EditAdditionalServiceModel { SelectedPublicationStatus = PublicationStatus.Published };
 
-            solutionsService.Setup(s => s.GetSolution(catalogueItem.Id))
+            solutionsService.Setup(s => s.GetSolutionThin(catalogueItem.Id))
                 .ReturnsAsync(catalogueItem);
 
             additionalServicesService.Setup(s => s.GetAdditionalService(catalogueItem.Id, additionalService.CatalogueItemId))
@@ -431,7 +431,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
 
             var model = new EditAdditionalServiceModel(catalogueItem, additionalService.CatalogueItem);
 
-            solutionsService.Setup(s => s.GetSolution(catalogueItem.Id))
+            solutionsService.Setup(s => s.GetSolutionThin(catalogueItem.Id))
                 .ReturnsAsync(catalogueItem);
 
             additionalServicesService.Setup(s => s.GetAdditionalService(catalogueItem.Id, additionalService.CatalogueItemId))
@@ -483,7 +483,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
             additionalServicesService.Setup(s => s.GetAdditionalService(solution.CatalogueItemId, additionalService.CatalogueItemId))
                 .ReturnsAsync(additionalService.CatalogueItem);
 
-            solutionsService.Setup(s => s.GetSolution(solution.CatalogueItemId))
+            solutionsService.Setup(s => s.GetSolutionThin(solution.CatalogueItemId))
                 .ReturnsAsync(solution.CatalogueItem);
 
             var result = await controller.EditCapabilities(solution.CatalogueItemId, additionalService.CatalogueItemId);
@@ -577,7 +577,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
         AdditionalServicesController controller)
         {
             mockSolutionsService
-                .Setup(s => s.GetSolution(catalogueItemId))
+                .Setup(s => s.GetSolutionThin(catalogueItemId))
                 .ReturnsAsync(catalogueItem);
 
             mockAdditionalServicesService
@@ -605,7 +605,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
             CatalogueItem catalogueItem)
         {
             mockSolutionService
-                .Setup(s => s.GetSolution(catalogueItemId))
+                .Setup(s => s.GetSolutionThin(catalogueItemId))
                 .ReturnsAsync(catalogueItem);
 
             mockAdditionalServicesService
@@ -629,7 +629,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
             CatalogueItem additionalService)
         {
             mockSolutionsService
-                .Setup(s => s.GetSolution(catalogueItemId))
+                .Setup(s => s.GetSolutionThin(catalogueItemId))
                 .ReturnsAsync(catalogueItem);
 
             mockAdditionalServicesService
@@ -638,7 +638,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
 
             var actual = await controller.AddListPrice(catalogueItemId, additionalServiceId);
 
-            mockSolutionsService.Verify(s => s.GetSolution(catalogueItemId));
+            mockSolutionsService.Verify(s => s.GetSolutionThin(catalogueItemId));
             actual.Should().NotBeNull();
             actual.Should().BeOfType<ViewResult>();
 
@@ -656,7 +656,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
             AdditionalServicesController controller)
         {
             mockSolutionsService
-                .Setup(s => s.GetSolution(catalogueItemId))
+                .Setup(s => s.GetSolutionThin(catalogueItemId))
                 .ReturnsAsync(default(CatalogueItem));
 
             var actual = (await controller.AddListPrice(catalogueItemId, additionalServiceId)).As<BadRequestObjectResult>();
@@ -675,7 +675,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
             CatalogueItem catalogueItem)
         {
             mockSolutionsService
-                .Setup(s => s.GetSolution(catalogueItemId))
+                .Setup(s => s.GetSolutionThin(catalogueItemId))
                 .ReturnsAsync(catalogueItem);
 
             mockAdditionalServicesService
@@ -707,7 +707,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
             };
 
             mockSolutionsService
-                .Setup(s => s.GetSolution(catalogueItemId))
+                .Setup(s => s.GetSolutionThin(catalogueItemId))
                 .ReturnsAsync(catalogueItem);
 
             mockAdditionalServicesService

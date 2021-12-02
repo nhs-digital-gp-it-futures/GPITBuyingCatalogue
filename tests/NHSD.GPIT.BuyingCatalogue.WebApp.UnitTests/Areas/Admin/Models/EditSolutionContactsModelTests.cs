@@ -24,32 +24,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Models
 
         [Theory]
         [CommonAutoData]
-        public static void Status_ValidSupplierContacts_ReturnsTaskCompleted(
-            IList<SupplierContact> supplierContacts,
-            CatalogueItem catalogueItem)
-        {
-            catalogueItem.Supplier.SupplierContacts = supplierContacts;
-            catalogueItem.CatalogueItemContacts = supplierContacts;
-
-            var model = new EditSolutionContactsModel(catalogueItem);
-
-            model.Status().Should().Be(TaskProgress.Completed);
-        }
-
-        [Theory]
-        [CommonAutoData]
-        public static void Status_NoSupplierContacts_ReturnsTaskNotStarted(
-            CatalogueItem catalogueItem)
-        {
-            catalogueItem.CatalogueItemContacts = new List<SupplierContact>();
-
-            var model = new EditSolutionContactsModel(catalogueItem);
-
-            model.Status().Should().Be(TaskProgress.NotStarted);
-        }
-
-        [Theory]
-        [CommonAutoData]
         public static void Constructing_DisplayNameSetAsExpected(
             IList<SupplierContact> supplierContacts,
             CatalogueItem catalogueItem)

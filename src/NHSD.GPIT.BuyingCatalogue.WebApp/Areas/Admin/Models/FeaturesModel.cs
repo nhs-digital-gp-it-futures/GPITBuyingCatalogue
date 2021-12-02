@@ -87,10 +87,5 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models
                     Feature10,
                 }.Where(f => !string.IsNullOrWhiteSpace(f))
                 .ToArray();
-
-        public TaskProgress Status() =>
-            AllFeatures.Any()
-                ? TaskProgress.Completed
-                : TaskProgress.Optional;
     }
 }

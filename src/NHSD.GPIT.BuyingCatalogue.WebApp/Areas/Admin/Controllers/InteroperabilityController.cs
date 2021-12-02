@@ -30,7 +30,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
         [HttpGet]
         public async Task<IActionResult> Interoperability(CatalogueItemId solutionId)
         {
-            var solution = await solutionsService.GetSolution(solutionId);
+            var solution = await solutionsService.GetSolutionThin(solutionId);
 
             if (solution is null)
                 return BadRequest($"No Solution found for Id: {solutionId}");
@@ -51,7 +51,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
         {
             if (!ModelState.IsValid)
             {
-                var solution = await solutionsService.GetSolution(solutionId);
+                var solution = await solutionsService.GetSolutionThin(solutionId);
                 model.SetSolution(solution);
                 return View(model);
             }
@@ -67,7 +67,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
         [HttpGet("add-im1-integration")]
         public async Task<IActionResult> AddIm1Integration(CatalogueItemId solutionId)
         {
-            var solution = await solutionsService.GetSolution(solutionId);
+            var solution = await solutionsService.GetSolutionThin(solutionId);
 
             if (solution is null)
                 return BadRequest($"No Solution found for Id: {solutionId}");
@@ -103,7 +103,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
         [HttpGet("edit-im1-integration/{integrationId}")]
         public async Task<IActionResult> EditIm1Integration(CatalogueItemId solutionId, Guid integrationId)
         {
-            var solution = await solutionsService.GetSolution(solutionId);
+            var solution = await solutionsService.GetSolutionThin(solutionId);
 
             if (solution is null)
                 return BadRequest($"No Solution found for Id: {solutionId}");
@@ -139,7 +139,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
                 return View("AddEditIm1Integration", model);
             }
 
-            var solution = await solutionsService.GetSolution(solutionId);
+            var solution = await solutionsService.GetSolutionThin(solutionId);
 
             if (solution is null)
                 return BadRequest($"No Solution found for Id: {solutionId}");
@@ -166,7 +166,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
         [HttpGet("delete-im1-integration/{integrationId}")]
         public async Task<IActionResult> DeleteIm1Integration(CatalogueItemId solutionId, Guid integrationId)
         {
-            var solution = await solutionsService.GetSolution(solutionId);
+            var solution = await solutionsService.GetSolutionThin(solutionId);
 
             if (solution is null)
                 return BadRequest($"No Solution found for Id: {solutionId}");
@@ -192,7 +192,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
         [HttpPost("delete-im1-integration/{integrationId}")]
         public async Task<IActionResult> DeleteIm1Integration(CatalogueItemId solutionId, Guid integrationId, DeleteIntegrationModel model)
         {
-            var solution = await solutionsService.GetSolution(solutionId);
+            var solution = await solutionsService.GetSolutionThin(solutionId);
 
             if (solution is null)
                 return BadRequest($"No Solution found for Id: {solutionId}");
@@ -213,7 +213,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
         [HttpGet("add-gp-connect-integration")]
         public async Task<IActionResult> AddGpConnectIntegration(CatalogueItemId solutionId)
         {
-            var solution = await solutionsService.GetSolution(solutionId);
+            var solution = await solutionsService.GetSolutionThin(solutionId);
 
             if (solution is null)
                 return BadRequest($"No Solution found for Id: {solutionId}");
@@ -248,7 +248,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
         [HttpGet("edit-gp-connect-integration/{integrationId}")]
         public async Task<IActionResult> EditGpConnectIntegration(CatalogueItemId solutionId, Guid integrationId)
         {
-            var solution = await solutionsService.GetSolution(solutionId);
+            var solution = await solutionsService.GetSolutionThin(solutionId);
 
             if (solution is null)
                 return BadRequest($"No Solution found for Id: {solutionId}");
@@ -281,7 +281,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
             if (!ModelState.IsValid)
                 return View("AddEditGpConnectIntegration", model);
 
-            var solution = await solutionsService.GetSolution(solutionId);
+            var solution = await solutionsService.GetSolutionThin(solutionId);
 
             if (solution is null)
                 return BadRequest($"No Solution found for Id: {solutionId}");
@@ -307,7 +307,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
         [HttpGet("delete-gp-connect-integration/{integrationId}")]
         public async Task<IActionResult> DeleteGpConnectIntegration(CatalogueItemId solutionId, Guid integrationId)
         {
-            var solution = await solutionsService.GetSolution(solutionId);
+            var solution = await solutionsService.GetSolutionThin(solutionId);
 
             if (solution is null)
                 return BadRequest($"No Solution found for Id: {solutionId}");
@@ -333,7 +333,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
         [HttpPost("delete-gp-connect-integration/{integrationId}")]
         public async Task<IActionResult> DeleteGpConnectIntegration(CatalogueItemId solutionId, Guid integrationId, DeleteIntegrationModel model)
         {
-            var solution = await solutionsService.GetSolution(solutionId);
+            var solution = await solutionsService.GetSolutionThin(solutionId);
 
             if (solution is null)
                 return BadRequest($"No Solution found for Id: {solutionId}");

@@ -57,7 +57,6 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.AddNewSolution
                 .SingleAsync(s => s.Id == SolutionId);
 
             var solutions = solution.Solution.FrameworkSolutions.ToList();
-            solutions.Count.Should().Be(1);
             solutions[0].FrameworkId.Should().Be("NHSDGP001");
             solutions[0].IsFoundation.Should().Be(true);
         }
@@ -80,7 +79,6 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.AddNewSolution
                 .SingleAsync(s => s.Id == SolutionId);
 
             var solutions = solution.Solution.FrameworkSolutions.ToList();
-            solutions.Count.Should().Be(1);
             solutions[0].FrameworkId.Should().Be("DFOCVC001");
             solutions[0].IsFoundation.Should().Be(false);
         }
@@ -99,7 +97,6 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.AddNewSolution
                 .SingleAsync(s => s.Id == SolutionId);
 
             var solutions = solution.Solution.FrameworkSolutions.ToList();
-            solutions.Count.Should().Be(1);
             solutions[0].FrameworkId.Should().Be("NHSDGP001");
             solutions[0].IsFoundation.Should().Be(false);
         }

@@ -42,7 +42,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
         [HttpGet]
         public async Task<IActionResult> Index(CatalogueItemId solutionId)
         {
-            var solution = await solutionsService.GetSolution(solutionId);
+            var solution = await solutionsService.GetSolutionThin(solutionId);
             if (solution is null)
                 return BadRequest($"No Solution found for Id: {solutionId}");
 
@@ -54,7 +54,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
         [HttpGet("{additionalServiceId}/edit-additional-service")]
         public async Task<IActionResult> EditAdditionalService(CatalogueItemId solutionId, CatalogueItemId additionalServiceId)
         {
-            var solution = await solutionsService.GetSolution(solutionId);
+            var solution = await solutionsService.GetSolutionThin(solutionId);
             if (solution is null)
                 return BadRequest($"No Solution found for Id: {solutionId}");
 
@@ -92,7 +92,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
         [HttpGet("add-additional-service")]
         public async Task<IActionResult> AddAdditionalService(CatalogueItemId solutionId)
         {
-            var solution = await solutionsService.GetSolution(solutionId);
+            var solution = await solutionsService.GetSolutionThin(solutionId);
             if (solution is null)
                 return BadRequest($"No Solution found for Id: {solutionId}");
 
@@ -110,7 +110,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
             if (!ModelState.IsValid)
                 return View("EditAdditionalServiceDetails", model);
 
-            var solution = await solutionsService.GetSolution(solutionId);
+            var solution = await solutionsService.GetSolutionThin(solutionId);
             if (solution is null)
                 return BadRequest($"No Solution found for Id: {solutionId}");
 
@@ -129,7 +129,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
         [HttpGet("{additionalServiceId}/edit-additional-service-details")]
         public async Task<IActionResult> EditAdditionalServiceDetails(CatalogueItemId solutionId, CatalogueItemId additionalServiceId)
         {
-            var solution = await solutionsService.GetSolution(solutionId);
+            var solution = await solutionsService.GetSolutionThin(solutionId);
             if (solution is null)
                 return BadRequest($"No Solution found for Id: {solutionId}");
 
@@ -151,7 +151,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
             if (!ModelState.IsValid)
                 return View(model);
 
-            var solution = await solutionsService.GetSolution(solutionId);
+            var solution = await solutionsService.GetSolutionThin(solutionId);
             if (solution is null)
                 return BadRequest($"No Solution found for Id: {solutionId}");
 
@@ -174,7 +174,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
         [HttpGet("{additionalServiceId}/list-prices")]
         public async Task<IActionResult> ManageListPrices(CatalogueItemId solutionId, CatalogueItemId additionalServiceId)
         {
-            var solution = await solutionsService.GetSolution(solutionId);
+            var solution = await solutionsService.GetSolutionThin(solutionId);
             if (solution is null)
                 return BadRequest($"No Solution found for Id: {solutionId}");
 
@@ -203,7 +203,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
         [HttpGet("{additionalServiceId}/list-price/add-list-price")]
         public async Task<IActionResult> AddListPrice(CatalogueItemId solutionId, CatalogueItemId additionalServiceId)
         {
-            var solution = await solutionsService.GetSolution(solutionId);
+            var solution = await solutionsService.GetSolutionThin(solutionId);
             if (solution is null)
                 return BadRequest($"No Solution found for Id: {solutionId}");
 
@@ -411,7 +411,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
         [HttpGet("{additionalServiceId}/edit-capabilities")]
         public async Task<IActionResult> EditCapabilities(CatalogueItemId solutionId, CatalogueItemId additionalServiceId)
         {
-            var solution = await solutionsService.GetSolution(solutionId);
+            var solution = await solutionsService.GetSolutionThin(solutionId);
             if (solution is null)
                 return BadRequest($"No Solution found for Id: {solutionId}");
 

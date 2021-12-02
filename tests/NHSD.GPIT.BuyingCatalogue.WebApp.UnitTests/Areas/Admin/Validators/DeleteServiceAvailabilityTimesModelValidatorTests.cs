@@ -26,7 +26,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators
 
             var model = new DeleteServiceAvailabilityTimesModel(solution.CatalogueItem, serviceAvailabilityTimes);
 
-            solutionsService.Setup(s => s.GetSolution(solution.CatalogueItemId))
+            solutionsService.Setup(s => s.GetSolutionThin(solution.CatalogueItemId))
                 .ReturnsAsync(solution.CatalogueItem);
 
             serviceLevelAgreementsService.Setup(s => s.GetCountOfServiceAvailabilityTimes(solution.CatalogueItemId, serviceAvailabilityTimes.Id))
@@ -50,7 +50,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators
 
             var model = new DeleteServiceAvailabilityTimesModel(solution.CatalogueItem, serviceAvailabilityTimes);
 
-            solutionsService.Setup(s => s.GetSolution(solution.CatalogueItemId))
+            solutionsService.Setup(s => s.GetSolutionThin(solution.CatalogueItemId))
                 .ReturnsAsync(solution.CatalogueItem);
 
             serviceLevelAgreementsService.Setup(s => s.GetCountOfServiceAvailabilityTimes(solution.CatalogueItemId, serviceAvailabilityTimes.Id))
@@ -75,7 +75,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators
 
             var model = new DeleteServiceAvailabilityTimesModel(solution.CatalogueItem, serviceAvailabilityTimes);
 
-            solutionsService.Setup(s => s.GetSolution(solution.CatalogueItemId))
+            solutionsService.Setup(s => s.GetSolutionThin(solution.CatalogueItemId))
                 .ReturnsAsync(solution.CatalogueItem);
 
             serviceLevelAgreementsService.Setup(s => s.GetCountOfServiceAvailabilityTimes(solution.CatalogueItemId, serviceAvailabilityTimes.Id))
@@ -99,7 +99,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators
 
             var model = new DeleteServiceAvailabilityTimesModel(solution.CatalogueItem, serviceAvailabilityTimes);
 
-            solutionsService.Setup(s => s.GetSolution(solution.CatalogueItemId))
+            solutionsService.Setup(s => s.GetSolutionThin(solution.CatalogueItemId))
                 .ReturnsAsync(solution.CatalogueItem);
 
             serviceLevelAgreementsService.Setup(s => s.GetCountOfServiceAvailabilityTimes(solution.CatalogueItemId, serviceAvailabilityTimes.Id))

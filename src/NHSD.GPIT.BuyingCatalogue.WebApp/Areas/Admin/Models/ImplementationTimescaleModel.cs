@@ -26,10 +26,5 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models
         public string Description { get; set; }
 
         public string SolutionName { get; set; }
-
-        public TaskProgress Status() =>
-            !string.IsNullOrWhiteSpace(Description)
-                ? TaskProgress.Completed
-                : TaskProgress.Optional;
     }
 }

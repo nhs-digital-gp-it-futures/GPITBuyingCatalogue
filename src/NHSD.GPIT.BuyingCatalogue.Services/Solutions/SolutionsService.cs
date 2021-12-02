@@ -9,8 +9,10 @@ using NHSD.GPIT.BuyingCatalogue.EntityFramework;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
+using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Enums;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Models;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions;
+using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions.Admin;
 
 namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
 {
@@ -31,32 +33,116 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
                 .SingleOrDefaultAsync();
         }
 
-        public Task<CatalogueItem> GetSolution(CatalogueItemId solutionId)
-        {
-            return dbContext.CatalogueItems
-                .AsNoTracking()
-                .Include(i => i.Solution)
-                .Include(i => i.CatalogueItemContacts)
-                .Include(i => i.CatalogueItemCapabilities).ThenInclude(sc => sc.Capability)
-                .Include(i => i.CatalogueItemEpics)
-                .Include(i => i.Supplier).ThenInclude(s => s.SupplierContacts)
-                .Include(i => i.Solution).ThenInclude(s => s.FrameworkSolutions).ThenInclude(fs => fs.Framework)
-                .Include(i => i.Solution).ThenInclude(s => s.MarketingContacts)
-                .Include(i => i.Solution).ThenInclude(s => s.ServiceLevelAgreement)
-                .Include(i => i.Solution).ThenInclude(s => s.ServiceLevelAgreement).ThenInclude(sla => sla.Contacts)
-                .Include(i => i.Solution).ThenInclude(s => s.ServiceLevelAgreement).ThenInclude(sla => sla.ServiceHours)
-                .Include(i => i.Solution).ThenInclude(s => s.ServiceLevelAgreement).ThenInclude(sla => sla.ServiceLevels)
-                .Include(i => i.Solution).ThenInclude(s => s.WorkOffPlans).ThenInclude(s => s.Standard)
-                .Include(i => i.CataloguePrices).ThenInclude(cp => cp.PricingUnit)
-                .Include(i => i.SupplierServiceAssociations)
-                .Where(i => i.Id == solutionId)
-                .FirstOrDefaultAsync();
-        }
-
         public Task<CatalogueItem> GetSolutionThin(CatalogueItemId solutionId) =>
             dbContext.CatalogueItems
+            .AsNoTracking()
+            .Include(ci => ci.Supplier)
             .Include(ci => ci.Solution)
             .FirstOrDefaultAsync(ci => ci.Id == solutionId);
+
+        public async Task<CatalogueItem> GetSolutionWithBasicInformation(CatalogueItemId solutionId) =>
+            await dbContext.CatalogueItems.AsNoTracking()
+                .Include(ci => ci.Solution)
+                    .ThenInclude(s => s.FrameworkSolutions)
+                    .ThenInclude(s => s.Framework)
+                .Include(ci => ci.Supplier)
+                .SingleOrDefaultAsync(ci => ci.Id == solutionId);
+
+        public async Task<CatalogueItem> GetSolutionWithCapabilities(CatalogueItemId solutionId) =>
+            await dbContext.CatalogueItems.AsNoTracking()
+                .Include(ci => ci.Solution)
+                .Include(ci => ci.CatalogueItemCapabilities)
+                    .ThenInclude(cic => cic.Capability)
+                .SingleOrDefaultAsync(ci => ci.Id == solutionId);
+
+        public async Task<CatalogueItem> GetSolutionWithListPrices(CatalogueItemId solutionId) =>
+            await dbContext.CatalogueItems.AsNoTracking()
+                .Include(ci => ci.Solution)
+                .Include(ci => ci.CataloguePrices)
+                    .ThenInclude(cp => cp.PricingUnit)
+                .SingleOrDefaultAsync(ci => ci.Id == solutionId);
+
+        public async Task<CatalogueItem> GetSolutionWithServiceLevelAgreements(CatalogueItemId solutionId) =>
+            await dbContext.CatalogueItems.AsNoTracking()
+                .Include(ci => ci.Solution)
+                .Include(ci => ci.Solution).ThenInclude(s => s.ServiceLevelAgreement).ThenInclude(sla => sla.Contacts)
+                .Include(ci => ci.Solution).ThenInclude(s => s.ServiceLevelAgreement).ThenInclude(sla => sla.ServiceHours)
+                .Include(ci => ci.Solution).ThenInclude(s => s.ServiceLevelAgreement).ThenInclude(sla => sla.ServiceLevels)
+            .SingleOrDefaultAsync(ci => ci.Id == solutionId);
+
+        public async Task<CatalogueItem> GetSolutionWithSupplierDetails(CatalogueItemId solutionId) =>
+            await dbContext.CatalogueItems.AsNoTracking()
+                .Include(ci => ci.Solution)
+                    .ThenInclude(s => s.MarketingContacts)
+                .Include(ci => ci.Supplier)
+                    .ThenInclude(s => s.SupplierContacts)
+                .SingleOrDefaultAsync(ci => ci.Id == solutionId);
+
+        public async Task<CatalogueItem> GetSolutionWithWorkOffPlans(CatalogueItemId solutionId) =>
+            await dbContext.CatalogueItems.AsNoTracking()
+                .Include(ci => ci.Solution)
+                    .ThenInclude(s => s.WorkOffPlans)
+                .SingleOrDefaultAsync(ci => ci.Id == solutionId);
+
+        public async Task<SolutionLoadingStatusesModel> GetSolutionLoadingStatuses(CatalogueItemId solutionId)
+        {
+            var solution = await dbContext.CatalogueItems
+                .AsNoTracking()
+                .Where(ci => ci.Id == solutionId)
+                .Select(ci => new SolutionLoadingStatusesModel
+                {
+                    Description = (!string.IsNullOrWhiteSpace(ci.Solution.Summary) && !string.IsNullOrWhiteSpace(ci.Solution.FullDescription))
+                        ? TaskProgress.Completed
+                        : TaskProgress.NotStarted,
+                    AdditionalServices = ci.Solution.AdditionalServices.Any()
+                        ? TaskProgress.Completed
+                        : TaskProgress.Optional,
+                    AssociatedServices = ci.SupplierServiceAssociations.Any()
+                        ? TaskProgress.Completed
+                        : TaskProgress.Optional,
+                    Features = !string.IsNullOrWhiteSpace(ci.Solution.Features)
+                        ? TaskProgress.Completed
+                        : TaskProgress.Optional,
+                    Interoperability = !string.IsNullOrWhiteSpace(ci.Solution.Integrations)
+                        ? TaskProgress.Completed
+                        : TaskProgress.Optional,
+                    Implementation = !string.IsNullOrWhiteSpace(ci.Solution.ImplementationDetail)
+                        ? TaskProgress.Completed
+                        : TaskProgress.Optional,
+                    ListPrice = ci.CataloguePrices.Any(cp => cp.PublishedStatus == PublicationStatus.Published)
+                        ? TaskProgress.Completed
+                        : ci.CataloguePrices.Any()
+                            ? TaskProgress.InProgress
+                            : TaskProgress.NotStarted,
+                    ClientApplicationType = !string.IsNullOrEmpty(ci.Solution.ClientApplication)
+                        ? TaskProgress.Completed
+                        : TaskProgress.NotStarted,
+                    HostingType = ci.Solution.Hosting != null
+                        ? TaskProgress.Completed
+                        : TaskProgress.NotStarted,
+                    DevelopmentPlans = ci.Solution.WorkOffPlans.Any()
+                        ? TaskProgress.Completed
+                        : TaskProgress.Optional,
+                    CapabilitiesAndEpics = (ci.CatalogueItemCapabilities.Any() && ci.CatalogueItemEpics.Any())
+                        ? TaskProgress.Completed
+                        : TaskProgress.NotStarted,
+                    SupplierDetails = ci.Supplier.SupplierContacts.Any()
+                        ? TaskProgress.Completed
+                        : TaskProgress.NotStarted,
+                    ServiceLevelAgreement = (ci.Solution.ServiceLevelAgreement != null &&
+                                             ci.Solution.ServiceLevelAgreement.Contacts.Any() &&
+                                             ci.Solution.ServiceLevelAgreement.ServiceHours.Any() &&
+                                             ci.Solution.ServiceLevelAgreement.ServiceLevels.Any())
+                        ? TaskProgress.Completed
+                        : (ci.Solution.ServiceLevelAgreement.Contacts.Any() ||
+                           ci.Solution.ServiceLevelAgreement.ServiceHours.Any() ||
+                           ci.Solution.ServiceLevelAgreement.ServiceLevels.Any())
+                           ? TaskProgress.InProgress
+                           : TaskProgress.NotStarted,
+                }).SingleOrDefaultAsync();
+
+            return solution;
+        }
 
         public Task<CatalogueItem> GetSolutionByName(string solutionName)
         {

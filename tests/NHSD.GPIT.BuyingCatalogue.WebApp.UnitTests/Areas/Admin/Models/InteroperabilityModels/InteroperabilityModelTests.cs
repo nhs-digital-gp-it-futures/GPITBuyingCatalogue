@@ -34,58 +34,5 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Models.Interope
             actual.SolutionName.Should().BeEquivalentTo(expected.SolutionName);
             actual.Link.Should().BeEquivalentTo(expected.Link);
         }
-
-        [Theory]
-        [CommonAutoData]
-        public static void Status_ShouldBeComplete(
-            InteroperabilityModel model)
-        {
-            model.Status().Should().Be(TaskProgress.Completed);
-        }
-
-        [Theory]
-        [CommonAutoData]
-        public static void Status_NoIntegrations_ShouldBeOptional(
-            InteroperabilityModel model)
-        {
-            model.Link = null;
-            model.IM1Integrations = Array.Empty<Integration>();
-            model.GpConnectIntegrations = Array.Empty<Integration>();
-
-            model.Status().Should().Be(TaskProgress.Optional);
-        }
-
-        [Theory]
-        [CommonAutoData]
-        public static void Status_LinkOnly_ShouldBeComplete(
-            InteroperabilityModel model)
-        {
-            model.IM1Integrations = Array.Empty<Integration>();
-            model.GpConnectIntegrations = Array.Empty<Integration>();
-
-            model.Status().Should().Be(TaskProgress.Completed);
-        }
-
-        [Theory]
-        [CommonAutoData]
-        public static void Status_IM1IntegrationsOnly_ShouldBeComplete(
-            InteroperabilityModel model)
-        {
-            model.Link = null;
-            model.GpConnectIntegrations = Array.Empty<Integration>();
-
-            model.Status().Should().Be(TaskProgress.Completed);
-        }
-
-        [Theory]
-        [CommonAutoData]
-        public static void Status_GpConnectIntegrationsOnly_ShouldBeComplete(
-            InteroperabilityModel model)
-        {
-            model.Link = null;
-            model.IM1Integrations = Array.Empty<Integration>();
-
-            model.Status().Should().Be(TaskProgress.Completed);
-        }
     }
 }

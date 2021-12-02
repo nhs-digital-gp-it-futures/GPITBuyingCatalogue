@@ -50,7 +50,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
             [Frozen] Mock<ISolutionsService> mockService,
             DeleteApplicationTypeController controller)
         {
-            mockService.Setup(s => s.GetSolution(It.IsAny<CatalogueItemId>())).ReturnsAsync(catalogueItem);
+            mockService.Setup(s => s.GetSolutionThin(It.IsAny<CatalogueItemId>())).ReturnsAsync(catalogueItem);
 
             var actual = (await controller.DeleteApplicationTypeConfirmation(catalogueItem.Id, clientApplicationType)).As<ViewResult>();
 
@@ -66,7 +66,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
             [Frozen] Mock<ISolutionsService> mockService,
             DeleteApplicationTypeController controller)
         {
-            mockService.Setup(s => s.GetSolution(It.IsAny<CatalogueItemId>())).ReturnsAsync((CatalogueItem)null);
+            mockService.Setup(s => s.GetSolutionThin(It.IsAny<CatalogueItemId>())).ReturnsAsync((CatalogueItem)null);
 
             var actual = (await controller.DeleteApplicationTypeConfirmation(catalogueItem.Id, clientApplicationType)).As<BadRequestObjectResult>();
 

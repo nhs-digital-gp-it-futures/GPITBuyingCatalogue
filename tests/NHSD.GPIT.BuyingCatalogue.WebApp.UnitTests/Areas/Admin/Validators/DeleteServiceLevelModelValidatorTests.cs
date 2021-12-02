@@ -30,7 +30,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators
 
             var model = new DeleteServiceLevelModel(solution.CatalogueItem, serviceLevel);
 
-            solutionsService.Setup(s => s.GetSolution(solution.CatalogueItemId))
+            solutionsService.Setup(s => s.GetSolutionThin(solution.CatalogueItemId))
                 .ReturnsAsync(solution.CatalogueItem);
 
             var result = validator.TestValidate(model);
@@ -54,7 +54,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators
 
             var model = new DeleteServiceLevelModel(solution.CatalogueItem, serviceLevel);
 
-            solutionsService.Setup(s => s.GetSolution(solution.CatalogueItemId))
+            solutionsService.Setup(s => s.GetSolutionWithServiceLevelAgreements(solution.CatalogueItemId))
                 .ReturnsAsync(solution.CatalogueItem);
 
             var result = validator.TestValidate(model);
@@ -79,7 +79,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators
 
             var model = new DeleteServiceLevelModel(solution.CatalogueItem, serviceLevel);
 
-            solutionsService.Setup(s => s.GetSolution(solution.CatalogueItemId))
+            solutionsService.Setup(s => s.GetSolutionThin(solution.CatalogueItemId))
                 .ReturnsAsync(solution.CatalogueItem);
 
             var result = validator.TestValidate(model);
@@ -103,7 +103,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators
 
             var model = new DeleteServiceLevelModel(solution.CatalogueItem, serviceLevel);
 
-            solutionsService.Setup(s => s.GetSolution(solution.CatalogueItemId))
+            solutionsService.Setup(s => s.GetSolutionThin(solution.CatalogueItemId))
                 .ReturnsAsync(solution.CatalogueItem);
 
             var result = validator.TestValidate(model);

@@ -43,7 +43,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
             CatalogueItemId itemId)
         {
             solution.ServiceLevelAgreement = null;
-            solutionsService.Setup(s => s.GetSolution(itemId)).ReturnsAsync(solution.CatalogueItem);
+            solutionsService.Setup(s => s.GetSolutionWithServiceLevelAgreements(itemId)).ReturnsAsync(solution.CatalogueItem);
             slaService.Setup(s => s.GetServiceLevelAgreementForSolution(itemId)).ReturnsAsync(default(ServiceLevelAgreements));
 
             var actual = await controller.Index(itemId);
@@ -62,7 +62,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
             Solution solution,
             CatalogueItemId itemId)
         {
-            solutionsService.Setup(s => s.GetSolution(itemId)).ReturnsAsync(solution.CatalogueItem);
+            solutionsService.Setup(s => s.GetSolutionWithServiceLevelAgreements(itemId)).ReturnsAsync(solution.CatalogueItem);
             slaService.Setup(s => s.GetServiceLevelAgreementForSolution(itemId)).ReturnsAsync(solution.ServiceLevelAgreement);
 
             var actual = await controller.Index(itemId);
@@ -79,7 +79,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
             ServiceLevelAgreementsController controller,
             CatalogueItemId itemId)
         {
-            solutionsService.Setup(s => s.GetSolution(itemId)).ReturnsAsync(default(CatalogueItem));
+            solutionsService.Setup(s => s.GetSolutionWithServiceLevelAgreements(itemId)).ReturnsAsync(default(CatalogueItem));
 
             var actual = await controller.Index(itemId);
 
@@ -97,7 +97,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
             Solution solution)
         {
             solution.ServiceLevelAgreement = null;
-            solutionsService.Setup(s => s.GetSolution(itemId)).ReturnsAsync(solution.CatalogueItem);
+            solutionsService.Setup(s => s.GetSolutionWithServiceLevelAgreements(itemId)).ReturnsAsync(solution.CatalogueItem);
 
             var expectedModel = new AddSlaTypeModel(solution.CatalogueItem);
 
@@ -122,7 +122,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
             ServiceLevelAgreementsController controller,
             CatalogueItemId itemId)
         {
-            solutionsService.Setup(s => s.GetSolution(itemId)).ReturnsAsync(default(CatalogueItem));
+            solutionsService.Setup(s => s.GetSolutionWithServiceLevelAgreements(itemId)).ReturnsAsync(default(CatalogueItem));
 
             var actual = await controller.AddServiceLevelAgreement(itemId);
 
@@ -147,7 +147,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
             };
 
             slaService.Setup(s => s.AddServiceLevelAgreement(It.IsAny<AddSlaModel>()));
-            solutionsService.Setup(s => s.GetSolution(itemId)).ReturnsAsync(solution.CatalogueItem);
+            solutionsService.Setup(s => s.GetSolutionWithServiceLevelAgreements(itemId)).ReturnsAsync(solution.CatalogueItem);
 
             var actual = await controller.AddServiceLevelAgreement(itemId, addModel);
 
@@ -170,7 +170,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
             {
                 SlaLevel = slaType,
             };
-            solutionsService.Setup(s => s.GetSolution(itemId)).ReturnsAsync(default(CatalogueItem));
+            solutionsService.Setup(s => s.GetSolutionWithServiceLevelAgreements(itemId)).ReturnsAsync(default(CatalogueItem));
 
             var actual = await controller.AddServiceLevelAgreement(itemId, addModel);
 
@@ -212,7 +212,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
         {
             var expectedModel = new EditServiceLevelAgreementModel(solution.CatalogueItem, solution.ServiceLevelAgreement);
 
-            solutionsService.Setup(s => s.GetSolution(itemId)).ReturnsAsync(solution.CatalogueItem);
+            solutionsService.Setup(s => s.GetSolutionWithServiceLevelAgreements(itemId)).ReturnsAsync(solution.CatalogueItem);
             slaService.Setup(s => s.GetServiceLevelAgreementForSolution(itemId)).ReturnsAsync(solution.ServiceLevelAgreement);
 
             var actual = await controller.EditServiceLevelAgreement(itemId);
@@ -230,7 +230,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
             ServiceLevelAgreementsController controller,
             CatalogueItemId itemId)
         {
-            solutionsService.Setup(s => s.GetSolution(itemId)).ReturnsAsync(default(CatalogueItem));
+            solutionsService.Setup(s => s.GetSolutionWithServiceLevelAgreements(itemId)).ReturnsAsync(default(CatalogueItem));
 
             var actual = await controller.EditServiceLevelAgreement(itemId);
 
@@ -248,7 +248,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
             CatalogueItemId itemId,
             Solution solution)
         {
-            solutionsService.Setup(s => s.GetSolution(itemId)).ReturnsAsync(solution.CatalogueItem);
+            solutionsService.Setup(s => s.GetSolutionWithServiceLevelAgreements(itemId)).ReturnsAsync(solution.CatalogueItem);
             slaService.Setup(s => s.GetServiceLevelAgreementForSolution(itemId)).ReturnsAsync(solution.ServiceLevelAgreement);
 
             var expectedModel = new AddSlaTypeModel(solution.CatalogueItem);
@@ -268,7 +268,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
             ServiceLevelAgreementsController controller,
             CatalogueItemId itemId)
         {
-            solutionsService.Setup(s => s.GetSolution(itemId)).ReturnsAsync(default(CatalogueItem));
+            solutionsService.Setup(s => s.GetSolutionWithServiceLevelAgreements(itemId)).ReturnsAsync(default(CatalogueItem));
 
             var actual = await controller.EditServiceLevelAgreementType(itemId);
 
@@ -294,7 +294,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
             };
 
             slaService.Setup(s => s.UpdateServiceLevelTypeAsync(solution.CatalogueItem, It.IsAny<SlaType>()));
-            solutionsService.Setup(s => s.GetSolution(itemId)).ReturnsAsync(solution.CatalogueItem);
+            solutionsService.Setup(s => s.GetSolutionWithServiceLevelAgreements(itemId)).ReturnsAsync(solution.CatalogueItem);
 
             var actual = await controller.EditServiceLevelAgreementType(itemId, addModel);
 
@@ -318,7 +318,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
                 SlaLevel = SlaType.Type2,
             };
 
-            solutionsService.Setup(s => s.GetSolution(itemId)).ReturnsAsync(solution.CatalogueItem);
+            solutionsService.Setup(s => s.GetSolutionWithServiceLevelAgreements(itemId)).ReturnsAsync(solution.CatalogueItem);
 
             var actual = await controller.EditServiceLevelAgreementType(itemId, addModel);
 
@@ -340,7 +340,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
             {
                 SlaLevel = slaType,
             };
-            solutionsService.Setup(s => s.GetSolution(itemId)).ReturnsAsync(default(CatalogueItem));
+            solutionsService.Setup(s => s.GetSolutionWithServiceLevelAgreements(itemId)).ReturnsAsync(default(CatalogueItem));
 
             var actual = await controller.EditServiceLevelAgreementType(itemId, addModel);
 
@@ -378,7 +378,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
             [Frozen] Mock<ISolutionsService> solutionsService,
             ServiceLevelAgreementsController controller)
         {
-            solutionsService.Setup(s => s.GetSolution(solutionId))
+            solutionsService.Setup(s => s.GetSolutionWithServiceLevelAgreements(solutionId))
                 .ReturnsAsync(default(CatalogueItem));
 
             var result = await controller.AddServiceAvailabilityTimes(solutionId);
@@ -396,7 +396,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
         {
             var expectedModel = new EditServiceAvailabilityTimesModel(solution.CatalogueItem);
 
-            solutionsService.Setup(s => s.GetSolution(solution.CatalogueItemId))
+            solutionsService.Setup(s => s.GetSolutionWithServiceLevelAgreements(solution.CatalogueItemId))
                 .ReturnsAsync(solution.CatalogueItem);
 
             var result = await controller.AddServiceAvailabilityTimes(solution.CatalogueItemId);
@@ -429,7 +429,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
             [Frozen] Mock<ISolutionsService> solutionsService,
             ServiceLevelAgreementsController controller)
         {
-            solutionsService.Setup(s => s.GetSolution(solutionId))
+            solutionsService.Setup(s => s.GetSolutionWithServiceLevelAgreements(solutionId))
                 .ReturnsAsync(default(CatalogueItem));
 
             var result = await controller.AddServiceAvailabilityTimes(solutionId, model);
@@ -447,7 +447,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
             [Frozen] Mock<IServiceLevelAgreementsService> serviceLevelAgreementsService,
             ServiceLevelAgreementsController controller)
         {
-            solutionsService.Setup(s => s.GetSolution(solution.CatalogueItemId))
+            solutionsService.Setup(s => s.GetSolutionWithServiceLevelAgreements(solution.CatalogueItemId))
                 .ReturnsAsync(solution.CatalogueItem);
 
             var result = await controller.AddServiceAvailabilityTimes(solution.CatalogueItemId, model);
@@ -466,7 +466,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
             [Frozen] Mock<ISolutionsService> solutionsService,
             ServiceLevelAgreementsController controller)
         {
-            solutionsService.Setup(s => s.GetSolution(solutionId))
+            solutionsService.Setup(s => s.GetSolutionWithServiceLevelAgreements(solutionId))
                 .ReturnsAsync(default(CatalogueItem));
 
             var result = await controller.EditServiceAvailabilityTimes(solutionId, serviceAvailabilityTimesId);
@@ -505,7 +505,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
 
             var expectedModel = new EditServiceAvailabilityTimesModel(solution.CatalogueItem, serviceAvailabilityTimes);
 
-            solutionsService.Setup(s => s.GetSolution(solution.CatalogueItemId))
+            solutionsService.Setup(s => s.GetSolutionWithServiceLevelAgreements(solution.CatalogueItemId))
                 .ReturnsAsync(solution.CatalogueItem);
 
             serviceLevelAgreementsService.Setup(s => s.GetServiceAvailabilityTimes(solution.CatalogueItemId, serviceAvailabilityTimes.Id))
@@ -537,7 +537,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
                 CanDelete = false,
             };
 
-            solutionsService.Setup(s => s.GetSolution(solution.CatalogueItemId))
+            solutionsService.Setup(s => s.GetSolutionWithServiceLevelAgreements(solution.CatalogueItemId))
                 .ReturnsAsync(solution.CatalogueItem);
 
             serviceLevelAgreementsService.Setup(s => s.GetServiceAvailabilityTimes(solution.CatalogueItemId, serviceAvailabilityTimes.Id))
@@ -568,7 +568,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
                 CanDelete = true,
             };
 
-            solutionsService.Setup(s => s.GetSolution(solution.CatalogueItemId))
+            solutionsService.Setup(s => s.GetSolutionWithServiceLevelAgreements(solution.CatalogueItemId))
                 .ReturnsAsync(solution.CatalogueItem);
 
             serviceLevelAgreementsService.Setup(s => s.GetServiceAvailabilityTimes(solution.CatalogueItemId, serviceAvailabilityTimes.Id))
@@ -605,7 +605,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
             [Frozen] Mock<ISolutionsService> solutionsService,
             ServiceLevelAgreementsController controller)
         {
-            solutionsService.Setup(s => s.GetSolution(solutionId))
+            solutionsService.Setup(s => s.GetSolutionWithServiceLevelAgreements(solutionId))
                 .ReturnsAsync(default(CatalogueItem));
 
             var result = await controller.EditServiceAvailabilityTimes(solutionId, serviceAvailabilityTimesId, model);
@@ -642,7 +642,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
             [Frozen] Mock<IServiceLevelAgreementsService> serviceLevelAgreementsService,
             ServiceLevelAgreementsController controller)
         {
-            solutionsService.Setup(s => s.GetSolution(solution.CatalogueItemId))
+            solutionsService.Setup(s => s.GetSolutionWithServiceLevelAgreements(solution.CatalogueItemId))
                 .ReturnsAsync(solution.CatalogueItem);
 
             serviceLevelAgreementsService.Setup(s => s.GetServiceAvailabilityTimes(solution.CatalogueItemId, serviceAvailabilityTimes.Id))
@@ -664,7 +664,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
             [Frozen] Mock<ISolutionsService> solutionsService,
             ServiceLevelAgreementsController controller)
         {
-            solutionsService.Setup(s => s.GetSolution(solutionId))
+            solutionsService.Setup(s => s.GetSolutionWithServiceLevelAgreements(solutionId))
                 .ReturnsAsync(default(CatalogueItem));
 
             var result = await controller.DeleteServiceAvailabilityTimes(solutionId, serviceAvailabilityTimesId);
@@ -701,7 +701,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
         {
             var expectedModel = new DeleteServiceAvailabilityTimesModel(solution.CatalogueItem, serviceAvailabilityTimes);
 
-            solutionsService.Setup(s => s.GetSolution(solution.CatalogueItemId))
+            solutionsService.Setup(s => s.GetSolutionWithServiceLevelAgreements(solution.CatalogueItemId))
                 .ReturnsAsync(solution.CatalogueItem);
 
             serviceLevelAgreementsService.Setup(s => s.GetServiceAvailabilityTimes(solution.CatalogueItemId, serviceAvailabilityTimes.Id))
@@ -738,7 +738,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
             [Frozen] Mock<ISolutionsService> solutionsService,
             ServiceLevelAgreementsController controller)
         {
-            solutionsService.Setup(s => s.GetSolution(solutionId))
+            solutionsService.Setup(s => s.GetSolutionWithServiceLevelAgreements(solutionId))
                 .ReturnsAsync(default(CatalogueItem));
 
             var result = await controller.DeleteServiceAvailabilityTimes(solutionId, serviceAvailabilityTimesId, model);
@@ -775,7 +775,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
             [Frozen] Mock<IServiceLevelAgreementsService> serviceLevelAgreementsService,
             ServiceLevelAgreementsController controller)
         {
-            solutionsService.Setup(s => s.GetSolution(solution.CatalogueItemId))
+            solutionsService.Setup(s => s.GetSolutionWithServiceLevelAgreements(solution.CatalogueItemId))
                 .ReturnsAsync(solution.CatalogueItem);
 
             serviceLevelAgreementsService.Setup(s => s.GetServiceAvailabilityTimes(solution.CatalogueItemId, serviceAvailabilityTimes.Id))
@@ -796,7 +796,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
             ServiceLevelAgreementsController controller,
             CatalogueItemId itemId)
         {
-            solutionsService.Setup(s => s.GetSolution(itemId)).ReturnsAsync(default(CatalogueItem));
+            solutionsService.Setup(s => s.GetSolutionWithServiceLevelAgreements(itemId)).ReturnsAsync(default(CatalogueItem));
 
             var actual = await controller.AddContact(itemId);
 
@@ -813,7 +813,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
             Solution solution,
             CatalogueItemId itemId)
         {
-            solutionsService.Setup(s => s.GetSolution(itemId)).ReturnsAsync(solution.CatalogueItem);
+            solutionsService.Setup(s => s.GetSolutionWithServiceLevelAgreements(itemId)).ReturnsAsync(solution.CatalogueItem);
 
             var expectedModel = new WebApp.Areas.Admin.Models.ServiceLevelAgreements.EditSLAContactModel(solution.CatalogueItem);
 
@@ -847,7 +847,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
             };
 
             slaService.Setup(s => s.AddSLAContact(It.IsAny<CatalogueItem>(), It.IsAny<ServiceContracts.Models.ServiceLevelAgreements.EditSLAContactModel>()));
-            solutionsService.Setup(s => s.GetSolution(itemId)).ReturnsAsync(solution.CatalogueItem);
+            solutionsService.Setup(s => s.GetSolutionWithServiceLevelAgreements(itemId)).ReturnsAsync(solution.CatalogueItem);
 
             var actual = await controller.AddContact(itemId, addModel);
 
@@ -864,7 +864,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
             ServiceLevelAgreementsController controller,
             CatalogueItemId itemId)
         {
-            solutionsService.Setup(s => s.GetSolution(itemId)).ReturnsAsync(default(CatalogueItem));
+            solutionsService.Setup(s => s.GetSolutionWithServiceLevelAgreements(itemId)).ReturnsAsync(default(CatalogueItem));
 
             var addModel = new WebApp.Areas.Admin.Models.ServiceLevelAgreements.EditSLAContactModel();
 
@@ -904,7 +904,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
             int contactId,
             CatalogueItemId itemId)
         {
-            solutionsService.Setup(s => s.GetSolution(itemId)).ReturnsAsync(default(CatalogueItem));
+            solutionsService.Setup(s => s.GetSolutionWithServiceLevelAgreements(itemId)).ReturnsAsync(default(CatalogueItem));
 
             var actual = await controller.EditContact(itemId, contactId);
 
@@ -922,7 +922,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
             int contactId,
             CatalogueItemId itemId)
         {
-            solutionsService.Setup(s => s.GetSolution(itemId)).ReturnsAsync(solution.CatalogueItem);
+            solutionsService.Setup(s => s.GetSolutionWithServiceLevelAgreements(itemId)).ReturnsAsync(solution.CatalogueItem);
 
             solution.ServiceLevelAgreement.Contacts.Clear();
 
@@ -942,7 +942,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
             Solution solution,
             CatalogueItemId itemId)
         {
-            solutionsService.Setup(s => s.GetSolution(itemId)).ReturnsAsync(solution.CatalogueItem);
+            solutionsService.Setup(s => s.GetSolutionWithServiceLevelAgreements(itemId)).ReturnsAsync(solution.CatalogueItem);
 
             serviceLevelAgreementService.Setup(slas => slas.GetServiceLevelAgreementForSolution(itemId)).ReturnsAsync(solution.ServiceLevelAgreement);
 
@@ -980,7 +980,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
             };
 
             slaService.Setup(s => s.EditSlaContact(It.IsAny<ServiceContracts.Models.ServiceLevelAgreements.EditSLAContactModel>()));
-            solutionsService.Setup(s => s.GetSolution(itemId)).ReturnsAsync(solution.CatalogueItem);
+            solutionsService.Setup(s => s.GetSolutionWithServiceLevelAgreements(itemId)).ReturnsAsync(solution.CatalogueItem);
 
             var expectedContact = solution.ServiceLevelAgreement.Contacts.FirstOrDefault();
 
@@ -1000,7 +1000,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
             int contactId,
             CatalogueItemId itemId)
         {
-            solutionsService.Setup(s => s.GetSolution(itemId)).ReturnsAsync(default(CatalogueItem));
+            solutionsService.Setup(s => s.GetSolutionWithServiceLevelAgreements(itemId)).ReturnsAsync(default(CatalogueItem));
 
             var addModel = new WebApp.Areas.Admin.Models.ServiceLevelAgreements.EditSLAContactModel();
 
@@ -1020,7 +1020,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
             CatalogueItemId itemId,
             Solution solution)
         {
-            solutionsService.Setup(s => s.GetSolution(itemId)).ReturnsAsync(solution.CatalogueItem);
+            solutionsService.Setup(s => s.GetSolutionWithServiceLevelAgreements(itemId)).ReturnsAsync(solution.CatalogueItem);
 
             var addModel = new WebApp.Areas.Admin.Models.ServiceLevelAgreements.EditSLAContactModel();
 
@@ -1061,7 +1061,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
             int contactId,
             CatalogueItemId itemId)
         {
-            solutionsService.Setup(s => s.GetSolution(itemId)).ReturnsAsync(default(CatalogueItem));
+            solutionsService.Setup(s => s.GetSolutionWithServiceLevelAgreements(itemId)).ReturnsAsync(default(CatalogueItem));
 
             var actual = await controller.DeleteContact(itemId, contactId);
 
@@ -1079,7 +1079,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
             int contactId,
             CatalogueItemId itemId)
         {
-            solutionsService.Setup(s => s.GetSolution(itemId)).ReturnsAsync(solution.CatalogueItem);
+            solutionsService.Setup(s => s.GetSolutionWithServiceLevelAgreements(itemId)).ReturnsAsync(solution.CatalogueItem);
 
             solution.ServiceLevelAgreement.Contacts.Clear();
 
@@ -1099,7 +1099,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
             Solution solution,
             CatalogueItemId itemId)
         {
-            solutionsService.Setup(s => s.GetSolution(itemId)).ReturnsAsync(solution.CatalogueItem);
+            solutionsService.Setup(s => s.GetSolutionWithServiceLevelAgreements(itemId)).ReturnsAsync(solution.CatalogueItem);
 
             serviceLevelAgreementService.Setup(slas => slas.GetServiceLevelAgreementForSolution(itemId)).ReturnsAsync(solution.ServiceLevelAgreement);
 
@@ -1133,7 +1133,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
             var addModel = new WebApp.Areas.Admin.Models.ServiceLevelAgreements.EditSLAContactModel();
 
             slaService.Setup(s => s.DeleteSlaContact(It.IsAny<int>()));
-            solutionsService.Setup(s => s.GetSolution(itemId)).ReturnsAsync(solution.CatalogueItem);
+            solutionsService.Setup(s => s.GetSolutionWithServiceLevelAgreements(itemId)).ReturnsAsync(solution.CatalogueItem);
 
             var expectedContact = solution.ServiceLevelAgreement.Contacts.FirstOrDefault();
 
@@ -1153,7 +1153,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
             int contactId,
             CatalogueItemId itemId)
         {
-            solutionsService.Setup(s => s.GetSolution(itemId)).ReturnsAsync(default(CatalogueItem));
+            solutionsService.Setup(s => s.GetSolutionWithServiceLevelAgreements(itemId)).ReturnsAsync(default(CatalogueItem));
 
             var addModel = new WebApp.Areas.Admin.Models.ServiceLevelAgreements.EditSLAContactModel();
 
@@ -1173,7 +1173,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
             CatalogueItemId itemId,
             Solution solution)
         {
-            solutionsService.Setup(s => s.GetSolution(itemId)).ReturnsAsync(solution.CatalogueItem);
+            solutionsService.Setup(s => s.GetSolutionWithServiceLevelAgreements(itemId)).ReturnsAsync(solution.CatalogueItem);
 
             var addModel = new WebApp.Areas.Admin.Models.ServiceLevelAgreements.EditSLAContactModel();
 
@@ -1193,7 +1193,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
             [Frozen] Mock<ISolutionsService> solutionsService,
             ServiceLevelAgreementsController controller)
         {
-            solutionsService.Setup(s => s.GetSolution(solutionId))
+            solutionsService.Setup(s => s.GetSolutionWithServiceLevelAgreements(solutionId))
                 .ReturnsAsync(default(CatalogueItem));
 
             var result = await controller.AddServiceLevel(solutionId);
@@ -1209,7 +1209,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
             [Frozen] Mock<ISolutionsService> solutionsService,
             ServiceLevelAgreementsController controller)
         {
-            solutionsService.Setup(s => s.GetSolution(solution.CatalogueItemId))
+            solutionsService.Setup(s => s.GetSolutionWithServiceLevelAgreements(solution.CatalogueItemId))
                 .ReturnsAsync(solution.CatalogueItem);
 
             var expectedModel = new AddEditServiceLevelModel(solution.CatalogueItem);
@@ -1243,7 +1243,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
             [Frozen] Mock<ISolutionsService> solutionsService,
             ServiceLevelAgreementsController controller)
         {
-            solutionsService.Setup(s => s.GetSolution(solutionId))
+            solutionsService.Setup(s => s.GetSolutionWithServiceLevelAgreements(solutionId))
                 .ReturnsAsync(default(CatalogueItem));
 
             var result = await controller.AddServiceLevel(solutionId, model);
@@ -1261,7 +1261,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
             [Frozen] Mock<IServiceLevelAgreementsService> serviceLevelAgreementsService,
             ServiceLevelAgreementsController controller)
         {
-            solutionsService.Setup(s => s.GetSolution(solution.CatalogueItemId))
+            solutionsService.Setup(s => s.GetSolutionWithServiceLevelAgreements(solution.CatalogueItemId))
                 .ReturnsAsync(solution.CatalogueItem);
 
             var result = await controller.AddServiceLevel(solution.CatalogueItemId, model);
@@ -1286,7 +1286,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
             [Frozen] Mock<ISolutionsService> solutionsService,
             ServiceLevelAgreementsController controller)
         {
-            solutionsService.Setup(s => s.GetSolution(solutionId))
+            solutionsService.Setup(s => s.GetSolutionWithServiceLevelAgreements(solutionId))
                 .ReturnsAsync(default(CatalogueItem));
 
             var result = await controller.EditServiceLevel(solutionId, serviceLevelId);
@@ -1305,7 +1305,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
         {
             solution.ServiceLevelAgreement.ServiceLevels = new HashSet<SlaServiceLevel>();
 
-            solutionsService.Setup(s => s.GetSolution(solution.CatalogueItemId))
+            solutionsService.Setup(s => s.GetSolutionWithServiceLevelAgreements(solution.CatalogueItemId))
                 .ReturnsAsync(solution.CatalogueItem);
 
             var result = await controller.EditServiceLevel(solution.CatalogueItemId, serviceLevelId);
@@ -1329,7 +1329,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
 
             var expectedModel = new AddEditServiceLevelModel(solution.CatalogueItem, serviceLevel);
 
-            solutionsService.Setup(s => s.GetSolution(solution.CatalogueItemId))
+            solutionsService.Setup(s => s.GetSolutionWithServiceLevelAgreements(solution.CatalogueItemId))
                 .ReturnsAsync(solution.CatalogueItem);
 
             var result = await controller.EditServiceLevel(solution.CatalogueItemId, serviceLevel.Id);
@@ -1363,7 +1363,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
             [Frozen] Mock<ISolutionsService> solutionsService,
             ServiceLevelAgreementsController controller)
         {
-            solutionsService.Setup(s => s.GetSolution(solutionId))
+            solutionsService.Setup(s => s.GetSolutionWithServiceLevelAgreements(solutionId))
                 .ReturnsAsync(default(CatalogueItem));
 
             var result = await controller.EditServiceLevel(solutionId, serviceLevelId, model);
@@ -1383,7 +1383,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
         {
             solution.ServiceLevelAgreement.ServiceLevels = new HashSet<SlaServiceLevel>();
 
-            solutionsService.Setup(s => s.GetSolution(solution.CatalogueItemId))
+            solutionsService.Setup(s => s.GetSolutionWithServiceLevelAgreements(solution.CatalogueItemId))
                 .ReturnsAsync(solution.CatalogueItem);
 
             var result = await controller.EditServiceLevel(solution.CatalogueItemId, serviceLevelId, model);
@@ -1406,7 +1406,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
             serviceLevelAgreement.ServiceLevels.Add(serviceLevel);
             solution.ServiceLevelAgreement = serviceLevelAgreement;
 
-            solutionsService.Setup(s => s.GetSolution(solution.CatalogueItemId))
+            solutionsService.Setup(s => s.GetSolutionWithServiceLevelAgreements(solution.CatalogueItemId))
                 .ReturnsAsync(solution.CatalogueItem);
 
             var result = await controller.EditServiceLevel(solution.CatalogueItemId, serviceLevel.Id, model);
@@ -1432,7 +1432,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
             [Frozen] Mock<ISolutionsService> solutionsService,
             ServiceLevelAgreementsController controller)
         {
-            solutionsService.Setup(s => s.GetSolution(solutionId))
+            solutionsService.Setup(s => s.GetSolutionWithServiceLevelAgreements(solutionId))
                 .ReturnsAsync(default(CatalogueItem));
 
             var result = await controller.DeleteServiceLevel(solutionId, serviceLevelId);
@@ -1451,7 +1451,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
         {
             solution.ServiceLevelAgreement.ServiceLevels = new HashSet<SlaServiceLevel>();
 
-            solutionsService.Setup(s => s.GetSolution(solution.CatalogueItemId))
+            solutionsService.Setup(s => s.GetSolutionWithServiceLevelAgreements(solution.CatalogueItemId))
                 .ReturnsAsync(solution.CatalogueItem);
 
             var result = await controller.DeleteServiceLevel(solution.CatalogueItemId, serviceLevelId);
@@ -1474,7 +1474,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
 
             var expectedModel = new DeleteServiceLevelModel(solution.CatalogueItem, serviceLevel);
 
-            solutionsService.Setup(s => s.GetSolution(solution.CatalogueItemId))
+            solutionsService.Setup(s => s.GetSolutionWithServiceLevelAgreements(solution.CatalogueItemId))
                 .ReturnsAsync(solution.CatalogueItem);
 
             var result = await controller.DeleteServiceLevel(solution.CatalogueItemId, serviceLevel.Id);
@@ -1508,7 +1508,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
             [Frozen] Mock<ISolutionsService> solutionsService,
             ServiceLevelAgreementsController controller)
         {
-            solutionsService.Setup(s => s.GetSolution(solutionId))
+            solutionsService.Setup(s => s.GetSolutionWithServiceLevelAgreements(solutionId))
                 .ReturnsAsync(default(CatalogueItem));
 
             var result = await controller.DeleteServiceLevel(solutionId, serviceLevelId, model);
@@ -1528,7 +1528,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
         {
             solution.ServiceLevelAgreement.ServiceLevels = new HashSet<SlaServiceLevel>();
 
-            solutionsService.Setup(s => s.GetSolution(solution.CatalogueItemId))
+            solutionsService.Setup(s => s.GetSolutionWithServiceLevelAgreements(solution.CatalogueItemId))
                 .ReturnsAsync(solution.CatalogueItem);
 
             var result = await controller.DeleteServiceLevel(solution.CatalogueItemId, serviceLevelId, model);
@@ -1551,7 +1551,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
             serviceLevelAgreement.ServiceLevels.Add(serviceLevel);
             solution.ServiceLevelAgreement = serviceLevelAgreement;
 
-            solutionsService.Setup(s => s.GetSolution(solution.CatalogueItemId))
+            solutionsService.Setup(s => s.GetSolutionWithServiceLevelAgreements(solution.CatalogueItemId))
                 .ReturnsAsync(solution.CatalogueItem);
 
             var result = await controller.DeleteServiceLevel(solution.CatalogueItemId, serviceLevel.Id, model);
@@ -1569,7 +1569,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
             [Frozen] Mock<ISolutionsService> solutionsService,
             ServiceLevelAgreementsController controller)
         {
-            solutionsService.Setup(s => s.GetSolution(solutionId))
+            solutionsService.Setup(s => s.GetSolutionWithServiceLevelAgreements(solutionId))
                 .ReturnsAsync(default(CatalogueItem));
 
             var result = await controller.EditServiceLevelAgreementTypeConfirmation(solutionId);
@@ -1590,7 +1590,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
 
             var expectedModel = new EditSlaTypeConfirmationModel(solution.CatalogueItem);
 
-            solutionsService.Setup(s => s.GetSolution(solution.CatalogueItemId))
+            solutionsService.Setup(s => s.GetSolutionWithServiceLevelAgreements(solution.CatalogueItemId))
                 .ReturnsAsync(solution.CatalogueItem);
 
             var result = await controller.EditServiceLevelAgreementTypeConfirmation(solution.CatalogueItemId);
@@ -1608,7 +1608,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
             [Frozen] Mock<ISolutionsService> solutionsService,
             ServiceLevelAgreementsController controller)
         {
-            solutionsService.Setup(s => s.GetSolution(solutionId))
+            solutionsService.Setup(s => s.GetSolutionWithServiceLevelAgreements(solutionId))
                 .ReturnsAsync(default(CatalogueItem));
 
             var result = await controller.EditServiceLevelAgreementTypeConfirmation(solutionId, model);
@@ -1630,7 +1630,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
             serviceLevelAgreement.SlaType = SlaType.Type1;
             solution.ServiceLevelAgreement = serviceLevelAgreement;
 
-            solutionsService.Setup(s => s.GetSolution(solution.CatalogueItemId))
+            solutionsService.Setup(s => s.GetSolutionWithServiceLevelAgreements(solution.CatalogueItemId))
                 .ReturnsAsync(solution.CatalogueItem);
 
             var result = await controller.EditServiceLevelAgreementTypeConfirmation(solution.CatalogueItemId, model);

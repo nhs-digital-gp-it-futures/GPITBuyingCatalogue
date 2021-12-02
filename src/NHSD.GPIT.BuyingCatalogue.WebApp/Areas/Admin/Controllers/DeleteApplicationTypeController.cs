@@ -25,7 +25,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
         [HttpGet("manage/{solutionId}/client-application-type/delete/{applicationType}")]
         public async Task<IActionResult> DeleteApplicationTypeConfirmation(CatalogueItemId solutionId, ClientApplicationType applicationType)
         {
-            var solution = await solutionsService.GetSolution(solutionId);
+            var solution = await solutionsService.GetSolutionThin(solutionId);
 
             if (solution is null)
                 return BadRequest($"No Solution found for Id: {solutionId}");

@@ -86,26 +86,5 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Models
 
             actual.ParamName.Should().Be("catalogueItem");
         }
-
-        [Theory]
-        [AutoData]
-        public static void Status_OneFeatureAdded_ReturnsCompleted(string feature)
-        {
-            var model = new FeaturesModel { Feature01 = feature };
-
-            var actual = model.Status();
-
-            actual.Should().Be(TaskProgress.Completed);
-        }
-
-        [Fact]
-        public static void Status_NoFeatureAdded_ReturnsOptional()
-        {
-            var model = new FeaturesModel { Feature01 = null, Feature05 = string.Empty, Feature10 = "    " };
-
-            var actual = model.Status();
-
-            actual.Should().Be(TaskProgress.Optional);
-        }
     }
 }

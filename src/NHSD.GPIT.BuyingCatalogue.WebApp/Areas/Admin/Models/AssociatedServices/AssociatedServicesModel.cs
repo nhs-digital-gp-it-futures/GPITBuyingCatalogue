@@ -31,33 +31,5 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.AssociatedServices
         public List<SelectableAssociatedService> SelectableAssociatedServices { get; } = new();
 
         public IReadOnlyList<CatalogueItem> AssociatedServices { get; }
-
-        public TaskProgress Status()
-        {
-            if (!AssociatedServices.Any())
-                return TaskProgress.Optional;
-
-            var statuses = AssociatedServices.Select(Status).ToList();
-
-            if (statuses.All(s => s == TaskProgress.Completed))
-                return TaskProgress.Completed;
-
-            return statuses.Any(s => s == TaskProgress.InProgress) ? TaskProgress.InProgress : TaskProgress.Optional;
-        }
-
-        private TaskProgress Status(CatalogueItem associatedService)
-        {
-            var detailsStatus = (!string.IsNullOrEmpty(associatedService.AssociatedService.Description)
-                && !string.IsNullOrEmpty(associatedService.AssociatedService.OrderGuidance)
-                && !string.IsNullOrEmpty(associatedService.Name))
-                ? TaskProgress.Completed
-                : TaskProgress.NotStarted;
-
-            var listPriceStatus = associatedService.CataloguePrices.Any()
-                ? TaskProgress.Completed
-                : TaskProgress.NotStarted;
-
-            return detailsStatus & listPriceStatus;
-        }
     }
 }

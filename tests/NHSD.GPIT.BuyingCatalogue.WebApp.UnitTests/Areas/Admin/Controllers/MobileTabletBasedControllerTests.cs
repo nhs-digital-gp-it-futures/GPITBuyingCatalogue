@@ -55,12 +55,12 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
             var catalogueItem = solution.CatalogueItem;
             solution.Integrations = JsonSerializer.Serialize(integrations);
 
-            mockService.Setup(s => s.GetSolution(catalogueItem.Id))
+            mockService.Setup(s => s.GetSolutionThin(catalogueItem.Id))
                 .ReturnsAsync(catalogueItem);
 
             var actual = (await controller.MobileTablet(catalogueItem.Id)).As<ViewResult>();
 
-            mockService.Verify(s => s.GetSolution(catalogueItem.Id));
+            mockService.Verify(s => s.GetSolutionThin(catalogueItem.Id));
             actual.ViewName.Should().BeNull();
             actual.Model.Should().BeEquivalentTo(new MobileTabletBasedModel(catalogueItem), opt => opt.Excluding(m => m.BackLink));
         }
@@ -72,7 +72,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
             [Frozen] Mock<ISolutionsService> mockService,
             MobileTabletBasedController controller)
         {
-            mockService.Setup(s => s.GetSolution(catalogueItemId))
+            mockService.Setup(s => s.GetSolutionThin(catalogueItemId))
                 .ReturnsAsync(default(CatalogueItem));
 
             var actual = (await controller.MobileTablet(catalogueItemId)).As<BadRequestObjectResult>();
@@ -91,12 +91,12 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
             var catalogueItem = solution.CatalogueItem;
             solution.Integrations = JsonSerializer.Serialize(integrations);
 
-            mockService.Setup(s => s.GetSolution(catalogueItem.Id))
+            mockService.Setup(s => s.GetSolutionThin(catalogueItem.Id))
                 .ReturnsAsync(catalogueItem);
 
             var actual = (await controller.OperatingSystems(catalogueItem.Id)).As<ViewResult>();
 
-            mockService.Verify(s => s.GetSolution(catalogueItem.Id));
+            mockService.Verify(s => s.GetSolutionThin(catalogueItem.Id));
             actual.ViewName.Should().BeNull();
             actual.Model.Should().BeEquivalentTo(new OperatingSystemsModel(catalogueItem), opt => opt.Excluding(m => m.BackLink));
         }
@@ -108,7 +108,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
             [Frozen] Mock<ISolutionsService> mockService,
             MobileTabletBasedController controller)
         {
-            mockService.Setup(s => s.GetSolution(catalogueItemId))
+            mockService.Setup(s => s.GetSolutionThin(catalogueItemId))
                 .ReturnsAsync(default(CatalogueItem));
 
             var actual = (await controller.OperatingSystems(catalogueItemId)).As<BadRequestObjectResult>();
@@ -155,12 +155,12 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
             var catalogueItem = solution.CatalogueItem;
             solution.Integrations = JsonSerializer.Serialize(integrations);
 
-            mockService.Setup(s => s.GetSolution(catalogueItem.Id))
+            mockService.Setup(s => s.GetSolutionThin(catalogueItem.Id))
                 .ReturnsAsync(catalogueItem);
 
             var actual = (await controller.Connectivity(catalogueItem.Id)).As<ViewResult>();
 
-            mockService.Verify(s => s.GetSolution(catalogueItem.Id));
+            mockService.Verify(s => s.GetSolutionThin(catalogueItem.Id));
             actual.ViewName.Should().BeNull();
             actual.Model.Should().BeEquivalentTo(new ConnectivityModel(catalogueItem), opt => opt.Excluding(m => m.BackLink));
         }
@@ -172,7 +172,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
             [Frozen] Mock<ISolutionsService> mockService,
             MobileTabletBasedController controller)
         {
-            mockService.Setup(s => s.GetSolution(catalogueItemId))
+            mockService.Setup(s => s.GetSolutionThin(catalogueItemId))
                 .ReturnsAsync(default(CatalogueItem));
 
             var actual = (await controller.Connectivity(catalogueItemId)).As<BadRequestObjectResult>();
@@ -221,12 +221,12 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
             var catalogueItem = solution.CatalogueItem;
             solution.Integrations = JsonSerializer.Serialize(integrations);
 
-            mockService.Setup(s => s.GetSolution(catalogueItem.Id))
+            mockService.Setup(s => s.GetSolutionThin(catalogueItem.Id))
                 .ReturnsAsync(catalogueItem);
 
             var actual = (await controller.MemoryAndStorage(catalogueItem.Id)).As<ViewResult>();
 
-            mockService.Verify(s => s.GetSolution(catalogueItem.Id));
+            mockService.Verify(s => s.GetSolutionThin(catalogueItem.Id));
             actual.ViewName.Should().BeNull();
             actual.Model.Should().BeEquivalentTo(new MemoryAndStorageModel(catalogueItem), opt => opt.Excluding(m => m.BackLink));
         }
@@ -238,7 +238,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
             [Frozen] Mock<ISolutionsService> mockService,
             MobileTabletBasedController controller)
         {
-            mockService.Setup(s => s.GetSolution(catalogueItemId))
+            mockService.Setup(s => s.GetSolutionThin(catalogueItemId))
                 .ReturnsAsync(default(CatalogueItem));
 
             var actual = (await controller.MemoryAndStorage(catalogueItemId)).As<BadRequestObjectResult>();
@@ -281,12 +281,12 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
             var catalogueItem = solution.CatalogueItem;
             solution.Integrations = JsonSerializer.Serialize(integrations);
 
-            mockService.Setup(s => s.GetSolution(catalogueItem.Id))
+            mockService.Setup(s => s.GetSolutionThin(catalogueItem.Id))
                 .ReturnsAsync(catalogueItem);
 
             var actual = (await controller.ThirdPartyComponents(catalogueItem.Id)).As<ViewResult>();
 
-            mockService.Verify(s => s.GetSolution(catalogueItem.Id));
+            mockService.Verify(s => s.GetSolutionThin(catalogueItem.Id));
             actual.ViewName.Should().BeNull();
             actual.Model.Should().BeEquivalentTo(new ThirdPartyComponentsModel(catalogueItem), opt => opt.Excluding(m => m.BackLink));
         }
@@ -298,7 +298,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
             [Frozen] Mock<ISolutionsService> mockService,
             MobileTabletBasedController controller)
         {
-            mockService.Setup(s => s.GetSolution(catalogueItemId))
+            mockService.Setup(s => s.GetSolutionThin(catalogueItemId))
                 .ReturnsAsync(default(CatalogueItem));
 
             var actual = (await controller.ThirdPartyComponents(catalogueItemId)).As<BadRequestObjectResult>();
@@ -341,12 +341,12 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
             var catalogueItem = solution.CatalogueItem;
             solution.Integrations = JsonSerializer.Serialize(integrations);
 
-            mockService.Setup(s => s.GetSolution(catalogueItem.Id))
+            mockService.Setup(s => s.GetSolutionThin(catalogueItem.Id))
                 .ReturnsAsync(catalogueItem);
 
             var actual = (await controller.HardwareRequirements(catalogueItem.Id)).As<ViewResult>();
 
-            mockService.Verify(s => s.GetSolution(catalogueItem.Id));
+            mockService.Verify(s => s.GetSolutionThin(catalogueItem.Id));
             actual.ViewName.Should().BeNull();
             actual.Model.Should().BeEquivalentTo(new HardwareRequirementsModel(catalogueItem), opt => opt.Excluding(m => m.BackLink));
         }
@@ -358,7 +358,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
             [Frozen] Mock<ISolutionsService> mockService,
             MobileTabletBasedController controller)
         {
-            mockService.Setup(s => s.GetSolution(catalogueItemId))
+            mockService.Setup(s => s.GetSolutionThin(catalogueItemId))
                 .ReturnsAsync(default(CatalogueItem));
 
             var actual = (await controller.HardwareRequirements(catalogueItemId)).As<BadRequestObjectResult>();
@@ -400,12 +400,12 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
             var catalogueItem = solution.CatalogueItem;
             solution.Integrations = JsonSerializer.Serialize(integrations);
 
-            mockService.Setup(s => s.GetSolution(catalogueItem.Id))
+            mockService.Setup(s => s.GetSolutionThin(catalogueItem.Id))
                 .ReturnsAsync(catalogueItem);
 
             var actual = (await controller.AdditionalInformation(catalogueItem.Id)).As<ViewResult>();
 
-            mockService.Verify(s => s.GetSolution(catalogueItem.Id));
+            mockService.Verify(s => s.GetSolutionThin(catalogueItem.Id));
             actual.ViewName.Should().BeNull();
             actual.Model.Should().BeEquivalentTo(new AdditionalInformationModel(catalogueItem), opt => opt.Excluding(m => m.BackLink));
         }
@@ -417,7 +417,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
             [Frozen] Mock<ISolutionsService> mockService,
             MobileTabletBasedController controller)
         {
-            mockService.Setup(s => s.GetSolution(catalogueItemId))
+            mockService.Setup(s => s.GetSolutionThin(catalogueItemId))
                 .ReturnsAsync(default(CatalogueItem));
 
             var actual = (await controller.AdditionalInformation(catalogueItemId)).As<BadRequestObjectResult>();

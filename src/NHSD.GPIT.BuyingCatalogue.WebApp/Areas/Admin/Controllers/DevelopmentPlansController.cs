@@ -31,7 +31,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
         [HttpGet]
         public async Task<IActionResult> DevelopmentPlans(CatalogueItemId solutionId)
         {
-            var solution = await solutionsService.GetSolution(solutionId);
+            var solution = await solutionsService.GetSolutionWithWorkOffPlans(solutionId);
             if (solution is null)
                 return BadRequest($"No Solution found for Id: {solutionId}");
 
@@ -49,7 +49,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
         [HttpPost]
         public async Task<IActionResult> DevelopmentPlans(CatalogueItemId solutionId, DevelopmentPlanModel model)
         {
-            var solution = await solutionsService.GetSolution(solutionId);
+            var solution = await solutionsService.GetSolutionWithWorkOffPlans(solutionId);
             if (solution is null)
                 return BadRequest($"No Solution found for Id: {solutionId}");
 
@@ -67,7 +67,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
         [HttpGet("add-work-off-plan")]
         public async Task<IActionResult> AddWorkOffPlan(CatalogueItemId solutionId)
         {
-            var solution = await solutionsService.GetSolution(solutionId);
+            var solution = await solutionsService.GetSolutionWithWorkOffPlans(solutionId);
 
             if (solution is null)
                 return BadRequest($"No Solution found for Id: {solutionId}");
@@ -88,7 +88,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
         [HttpPost("add-work-off-plan")]
         public async Task<IActionResult> AddWorkOffPlan(CatalogueItemId solutionId, EditWorkOffPlanModel model)
         {
-            var solution = await solutionsService.GetSolution(solutionId);
+            var solution = await solutionsService.GetSolutionWithWorkOffPlans(solutionId);
 
             if (solution is null)
                 return BadRequest($"No Solution found for Id: {solutionId}");
@@ -116,7 +116,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
         [HttpGet("edit-work-off-plan/{workOffPlanId}")]
         public async Task<IActionResult> EditWorkOffPlan(CatalogueItemId solutionId, int workOffPlanId)
         {
-            var solution = await solutionsService.GetSolution(solutionId);
+            var solution = await solutionsService.GetSolutionWithWorkOffPlans(solutionId);
 
             if (solution is null)
                 return BadRequest($"No Solution found for Id: {solutionId}");
@@ -142,7 +142,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
         [HttpPost("edit-work-off-plan/{workOffPlanId}")]
         public async Task<IActionResult> EditWorkOffPlan(CatalogueItemId solutionId, int workOffPlanId, EditWorkOffPlanModel model)
         {
-            var solution = await solutionsService.GetSolution(solutionId);
+            var solution = await solutionsService.GetSolutionWithWorkOffPlans(solutionId);
 
             if (solution is null)
                 return BadRequest($"No Solution found for Id: {solutionId}");
@@ -176,7 +176,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
         [HttpGet("delete-work-off-plan/{workOffPlanId}")]
         public async Task<IActionResult> DeleteWorkOffPlan(CatalogueItemId solutionId, int workOffPlanId)
         {
-            var solution = await solutionsService.GetSolution(solutionId);
+            var solution = await solutionsService.GetSolutionWithWorkOffPlans(solutionId);
 
             if (solution is null)
                 return BadRequest($"No Solution found for Id: {solutionId}");
@@ -200,7 +200,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
         [HttpPost("delete-work-off-plan/{workOffPlanId}")]
         public async Task<IActionResult> DeleteWorkOffPlan(CatalogueItemId solutionId, int workOffPlanId, EditWorkOffPlanModel model)
         {
-            var solution = await solutionsService.GetSolution(solutionId);
+            var solution = await solutionsService.GetSolutionWithWorkOffPlans(solutionId);
 
             if (solution is null)
                 return BadRequest($"No Solution found for Id: {solutionId}");

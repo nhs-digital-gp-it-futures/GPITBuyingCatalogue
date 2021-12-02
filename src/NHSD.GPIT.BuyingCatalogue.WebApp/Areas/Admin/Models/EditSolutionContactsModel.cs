@@ -30,8 +30,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models
 
         public IReadOnlyList<AvailableSupplierContact> AvailableSupplierContacts { get; init; }
 
-        public TaskProgress Status() => AvailableSupplierContacts.Any(c => c.Selected) ? TaskProgress.Completed : TaskProgress.NotStarted;
-
         private static AvailableSupplierContact CreateAvailableSupplierContact(SupplierContact supplierContact, CatalogueItem catalogueItem)
         {
             var availableSupplierContact = new AvailableSupplierContact

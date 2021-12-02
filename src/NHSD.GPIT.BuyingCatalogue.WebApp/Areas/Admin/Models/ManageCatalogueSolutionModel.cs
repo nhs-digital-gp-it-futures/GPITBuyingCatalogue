@@ -6,10 +6,7 @@ using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Enums;
-using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.AdditionalServices;
-using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.AssociatedServices;
-using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.DevelopmentPlans;
-using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.ServiceLevelAgreements;
+using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions.Admin;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Models;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models
@@ -20,33 +17,31 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models
         {
         }
 
-        public ManageCatalogueSolutionModel(CatalogueItem solution, IReadOnlyList<CatalogueItem> additionalServices, IReadOnlyList<CatalogueItem> associatedServices)
+        public ManageCatalogueSolutionModel(SolutionLoadingStatusesModel solutionLoadingStatuses, CatalogueItem solution)
         {
             SolutionId = solution.Id;
             SolutionName = solution.Name;
-            SelectedPublicationStatus = SolutionPublicationStatus = solution.PublishedStatus;
             SupplierName = solution.Supplier.Name;
             LastUpdated = solution.Solution.LastUpdated;
-
             var lastUpdatedBy = solution.Solution.LastUpdatedByUser;
             if (lastUpdatedBy is not null)
                 LastUpdatedByName = $"{lastUpdatedBy.FirstName} {lastUpdatedBy.LastName}";
+            SelectedPublicationStatus = solution.PublishedStatus;
+            SolutionPublicationStatus = solution.PublishedStatus;
 
-            DescriptionStatus = new DescriptionModel(solution).Status();
-            FeaturesStatus = new FeaturesModel(solution).Status();
-            ImplementationStatus = new ImplementationTimescaleModel(solution).Status();
-            RoadmapStatus = new DevelopmentPlanModel(solution).Status();
-            HostingTypeStatus = new HostingTypeSectionModel(solution).Status();
-            ClientApplicationTypeStatus = new ClientApplicationTypeSectionModel(solution).Status();
-            InteroperabilityStatus = new InteroperabilityModels.InteroperabilityModel(solution).Status();
-            ListPriceStatus = new ListPriceModels.ManageListPricesModel(solution).Status();
-            AssociatedServicesStatus = new AssociatedServicesModel(solution, associatedServices).Status();
-            AdditionalServicesStatus = new AdditionalServicesModel(solution, additionalServices).Status();
-            SupplierDetailsStatus = new EditSolutionContactsModel(solution).Status();
-            SlaStatus = new EditServiceLevelAgreementModel(solution).Status();
-            CapabilitiesStatus = solution.CatalogueItemCapabilities.Any()
-                ? TaskProgress.Completed
-                : TaskProgress.NotStarted;
+            DescriptionStatus = solutionLoadingStatuses.Description;
+            FeaturesStatus = solutionLoadingStatuses.Features;
+            AdditionalServicesStatus = solutionLoadingStatuses.AdditionalServices;
+            AssociatedServicesStatus = solutionLoadingStatuses.AssociatedServices;
+            InteroperabilityStatus = solutionLoadingStatuses.Interoperability;
+            ImplementationStatus = solutionLoadingStatuses.Implementation;
+            ClientApplicationTypeStatus = solutionLoadingStatuses.ClientApplicationType;
+            HostingTypeStatus = solutionLoadingStatuses.HostingType;
+            ListPriceStatus = solutionLoadingStatuses.ListPrice;
+            CapabilitiesStatus = solutionLoadingStatuses.CapabilitiesAndEpics;
+            RoadmapStatus = solutionLoadingStatuses.DevelopmentPlans;
+            SupplierDetailsStatus = solutionLoadingStatuses.SupplierDetails;
+            SlaStatus = solutionLoadingStatuses.ServiceLevelAgreement;
         }
 
         public CatalogueItemId SolutionId { get; init; }

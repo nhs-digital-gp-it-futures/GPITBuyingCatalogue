@@ -26,10 +26,5 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.AdditionalServices
         public string ItemName { get; init; }
 
         public IReadOnlyList<CatalogueItem> AdditionalServices { get; init; }
-
-        public TaskProgress Status()
-            => AdditionalServices.Any(i => i.PublishedStatus == PublicationStatus.Published)
-               ? TaskProgress.Completed
-               : TaskProgress.Optional;
     }
 }
