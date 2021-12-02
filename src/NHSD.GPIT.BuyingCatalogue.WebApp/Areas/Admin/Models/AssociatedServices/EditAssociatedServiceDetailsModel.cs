@@ -16,6 +16,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.AssociatedServices
             SolutionId = solution.Id;
             Id = associatedServiceItem.Id;
             ServiceName = Name = associatedServiceItem.Name;
+            SupplierName = solution.Supplier.Name;
             Description = associatedServiceItem.AssociatedService.Description;
             OrderGuidance = associatedServiceItem.AssociatedService.OrderGuidance;
         }
