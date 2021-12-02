@@ -82,6 +82,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
             await dbContext.CatalogueItems.AsNoTracking()
                 .Include(ci => ci.Solution)
                     .ThenInclude(s => s.WorkOffPlans)
+                    .ThenInclude(wp => wp.Standard)
                 .SingleOrDefaultAsync(ci => ci.Id == solutionId);
 
         public async Task<SolutionLoadingStatusesModel> GetSolutionLoadingStatuses(CatalogueItemId solutionId)
