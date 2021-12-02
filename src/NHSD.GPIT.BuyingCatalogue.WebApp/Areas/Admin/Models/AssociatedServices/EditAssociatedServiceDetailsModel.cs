@@ -16,6 +16,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.AssociatedServices
             SolutionId = solution.Id;
             Id = associatedServiceItem.Id;
             ServiceName = Name = associatedServiceItem.Name;
+            SupplierName = solution.Supplier.Name;
             Description = associatedServiceItem.AssociatedService.Description;
             OrderGuidance = associatedServiceItem.AssociatedService.OrderGuidance;
         }
@@ -29,7 +30,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.AssociatedServices
         public string SupplierName { get; set; }
 
         [Required(ErrorMessage = "Enter a name")]
-        [StringLength(300)]
+        [StringLength(255)]
         public string Name { get; set; }
 
         [Required(ErrorMessage = "Enter a description")]

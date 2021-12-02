@@ -30,7 +30,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models
         [StringLength(350)]
         public string Summary { get; set; }
 
-        [StringLength(1000)]
+        [StringLength(3000)]
         public string Description { get; set; }
 
         [StringLength(1000)]

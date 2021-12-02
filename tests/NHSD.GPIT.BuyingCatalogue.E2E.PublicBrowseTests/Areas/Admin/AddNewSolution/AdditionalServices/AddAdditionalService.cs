@@ -64,7 +64,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.AddNewSolution.Addition
         [Fact]
         public async Task AddAdditionalService_CompleteAdditionalService()
         {
-            var name = TextGenerators.TextInputAddText(CommonSelectors.Name, 300);
+            var name = TextGenerators.TextInputAddText(CommonSelectors.Name, 255);
             var description = TextGenerators.TextInputAddText(CommonSelectors.Description, 1000);
 
             CommonActions.ClickSave();

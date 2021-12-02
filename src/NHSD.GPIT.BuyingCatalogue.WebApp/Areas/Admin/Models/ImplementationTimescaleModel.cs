@@ -22,7 +22,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models
             SolutionName = catalogueItem?.Name;
         }
 
-        [StringLength(1000)]
+        [StringLength(1100)]
         public string Description { get; set; }
 
         public string SolutionName { get; set; }

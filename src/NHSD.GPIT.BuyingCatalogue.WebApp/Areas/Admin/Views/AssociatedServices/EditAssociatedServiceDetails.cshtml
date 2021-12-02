@@ -14,6 +14,7 @@
         <nhs-inset-text>Any changes to these details will be visible to anyone ordering your Associated Service in future.</nhs-inset-text>
 
         <form method="post">
+            <input type="hidden" asp-for="@Model.Id" />
             <input type="hidden" asp-for="@Model.BackLink" />
             <input type="hidden" asp-for="@Model.SolutionId" />
             <input type="hidden" asp-for="@Model.ServiceName" />
