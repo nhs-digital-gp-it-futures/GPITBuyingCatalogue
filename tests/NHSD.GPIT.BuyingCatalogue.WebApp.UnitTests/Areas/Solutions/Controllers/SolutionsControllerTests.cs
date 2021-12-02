@@ -39,7 +39,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Controllers
         [Theory]
         [CommonAutoData]
         public static async Task Get_Index_GetsSolutionsFromService(
-            [Frozen]Mock<ISolutionsFilterService> mockService,
+            [Frozen] Mock<ISolutionsFilterService> mockService,
             SolutionsController controller)
         {
             var pagedList = new PagedList<CatalogueItem>(new List<CatalogueItem>(), new PageOptions(string.Empty, string.Empty));
@@ -510,7 +510,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Controllers
             [Frozen] Mock<ISolutionsService> mockSolutionsService,
             SolutionsController controller)
         {
-
             mockSolutionsService
                 .Setup(s => s.GetSolutionCapability(additionalSolution.CatalogueItemId, capabilityId))
                     .ReturnsAsync(default(CatalogueItem));
@@ -535,7 +534,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Controllers
             [Frozen] Mock<ISolutionsService> mockSolutionsService,
             SolutionsController controller)
         {
-
             mockSolutionsService.Setup(s => s.GetSolutionThin(catalogueItemId))
                 .ReturnsAsync(default(CatalogueItem));
 
