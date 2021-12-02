@@ -24,6 +24,7 @@ VALUES
 --Interoperability Standards
 INSERT INTO @Standards(Id,[Name],[Description],[Url],[StandardTypeId])
 VALUES
+('S32','Interoperability','Defines a comprehensive set of standards, interfaces and protocols that solutions will use when working together.','https://gpitbjss.atlassian.net/wiki/spaces/GPITF/pages/1391133681/Interoperability+Standard', 2),
 ('S33', '111', 'Supports the receiving and consuming of data sent by 111 provider systems for transfer of care to a GP practice.', 'https://gpitbjss.atlassian.net/wiki/spaces/GPITF/pages/1391133945/111', 2),
 ('S34', 'Digital Diagnostics & Pathology Messaging', 'Supports the transmission and validation of results data to GP systems where a test request has been placed with a laboratory.', 'https://gpitbjss.atlassian.net/wiki/spaces/GPITF/pages/1391133752/Digital+Diagnostics+Pathology+Messaging', 2),
 ('S77', 'Digital Medicines and Pharmacy FHIR Payload', 'Supports the receiving and consuming of data sent by a pharmacy to a GP practice relating to administration of immunisations or supply of emergency medication to patients.', 'https://gpitbjss.atlassian.net/wiki/spaces/GPITF/pages/10752983078/Digital+Medicines+and+Pharmacy+FHIR+Payload', 2),
