@@ -41,7 +41,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
             [Frozen] Mock<ISolutionsService> mockService,
             DevelopmentPlansController controller)
         {
-            mockService.Setup(s => s.GetSolution(catalogueItemId))
+            mockService.Setup(s => s.GetSolutionWithWorkOffPlans(catalogueItemId))
                 .ReturnsAsync(solution.CatalogueItem);
 
             var expected = new DevelopmentPlanModel(solution.CatalogueItem)
@@ -51,7 +51,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
 
             var actual = (await controller.DevelopmentPlans(catalogueItemId)).As<ViewResult>();
 
-            mockService.Verify(s => s.GetSolution(catalogueItemId));
+            mockService.Verify(s => s.GetSolutionWithWorkOffPlans(catalogueItemId));
             actual.ViewName.Should().BeNull();
             actual.Model.Should().BeEquivalentTo(expected);
         }
@@ -63,7 +63,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
             [Frozen] Mock<ISolutionsService> mockService,
             DevelopmentPlansController controller)
         {
-            mockService.Setup(s => s.GetSolution(catalogueItemId))
+            mockService.Setup(s => s.GetSolutionWithWorkOffPlans(catalogueItemId))
                 .ReturnsAsync(default(CatalogueItem));
 
             var actual = (await controller.DevelopmentPlans(catalogueItemId)).As<BadRequestObjectResult>();
@@ -79,7 +79,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
             [Frozen] Mock<ISolutionsService> mockService,
             DevelopmentPlansController controller)
         {
-            mockService.Setup(s => s.GetSolution(catalogueItemId))
+            mockService.Setup(s => s.GetSolutionWithWorkOffPlans(catalogueItemId))
                 .ReturnsAsync(default(CatalogueItem));
 
             var actual = (await controller.DevelopmentPlans(catalogueItemId, model)).As<BadRequestObjectResult>();
@@ -123,14 +123,14 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
             [Frozen] Mock<ISolutionsService> mockService,
             DevelopmentPlansController controller)
         {
-            mockService.Setup(s => s.GetSolution(catalogueItemId))
+            mockService.Setup(s => s.GetSolutionWithWorkOffPlans(catalogueItemId))
                 .ReturnsAsync(solution.CatalogueItem);
 
             var expected = new DevelopmentPlanModel(solution.CatalogueItem);
 
             var actual = (await controller.DevelopmentPlans(catalogueItemId)).As<ViewResult>();
 
-            mockService.Verify(s => s.GetSolution(catalogueItemId));
+            mockService.Verify(s => s.GetSolutionWithWorkOffPlans(catalogueItemId));
 
             actual.Should().NotBeNull();
             actual.ViewName.Should().BeNull();
@@ -144,7 +144,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
             DevelopmentPlansController controller,
             CatalogueItemId id)
         {
-            mockService.Setup(s => s.GetSolution(id))
+            mockService.Setup(s => s.GetSolutionWithWorkOffPlans(id))
                 .ReturnsAsync(default(CatalogueItem));
 
             var actual = (await controller.DevelopmentPlans(id)).As<BadRequestObjectResult>();
@@ -163,7 +163,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
         {
             var expectedModel = new EditWorkOffPlanModel(solution.CatalogueItem, standards);
 
-            mockService.Setup(s => s.GetSolution(solution.CatalogueItemId))
+            mockService.Setup(s => s.GetSolutionWithWorkOffPlans(solution.CatalogueItemId))
                 .ReturnsAsync(solution.CatalogueItem);
 
             mockService.Setup(s => s.GetSolutionStandardsForEditing(solution.CatalogueItemId))
@@ -186,7 +186,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
             EditWorkOffPlanModel model,
             CatalogueItemId id)
         {
-            mockService.Setup(s => s.GetSolution(id))
+            mockService.Setup(s => s.GetSolutionWithWorkOffPlans(id))
                 .ReturnsAsync(default(CatalogueItem));
 
             var actual = (await controller.AddWorkOffPlan(id, model)).As<BadRequestObjectResult>();
@@ -203,7 +203,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
             DevelopmentPlansController controller,
             Solution solution)
         {
-            mockService.Setup(s => s.GetSolution(solution.CatalogueItemId))
+            mockService.Setup(s => s.GetSolutionWithWorkOffPlans(solution.CatalogueItemId))
                 .ReturnsAsync(solution.CatalogueItem);
 
             var model = new EditWorkOffPlanModel()
@@ -228,7 +228,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
             DevelopmentPlansController controller,
             Solution solution)
         {
-            mockService.Setup(s => s.GetSolution(solution.CatalogueItemId))
+            mockService.Setup(s => s.GetSolutionWithWorkOffPlans(solution.CatalogueItemId))
                 .ReturnsAsync(solution.CatalogueItem);
 
             var model = new EditWorkOffPlanModel()
@@ -255,7 +255,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
             DevelopmentPlansController controller,
             CatalogueItemId id)
         {
-            mockService.Setup(s => s.GetSolution(id))
+            mockService.Setup(s => s.GetSolutionWithWorkOffPlans(id))
                 .ReturnsAsync(default(CatalogueItem));
 
             var actual = (await controller.EditWorkOffPlan(id, 1)).As<BadRequestObjectResult>();
@@ -272,7 +272,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
             Solution solution,
             int workOffPlanId)
         {
-            mockService.Setup(s => s.GetSolution(solution.CatalogueItemId))
+            mockService.Setup(s => s.GetSolutionWithWorkOffPlans(solution.CatalogueItemId))
                 .ReturnsAsync(solution.CatalogueItem);
 
             var actual = (await controller.EditWorkOffPlan(solution.CatalogueItemId, workOffPlanId)).As<BadRequestObjectResult>();
@@ -293,7 +293,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
 
             var expectedModel = new EditWorkOffPlanModel(solution.CatalogueItem, standards, workOffPlan);
 
-            mockService.Setup(s => s.GetSolution(solution.CatalogueItemId))
+            mockService.Setup(s => s.GetSolutionWithWorkOffPlans(solution.CatalogueItemId))
                 .ReturnsAsync(solution.CatalogueItem);
 
             mockService.Setup(s => s.GetSolutionStandardsForEditing(solution.CatalogueItemId))
@@ -316,7 +316,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
             CatalogueItemId id,
             int workOffPlanId)
         {
-            mockService.Setup(s => s.GetSolution(id))
+            mockService.Setup(s => s.GetSolutionWithWorkOffPlans(id))
                 .ReturnsAsync(default(CatalogueItem));
 
             var actual = (await controller.EditWorkOffPlan(id, workOffPlanId, model)).As<BadRequestObjectResult>();
@@ -334,7 +334,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
             Solution solution,
             int workOffPlanId)
         {
-            mockService.Setup(s => s.GetSolution(solution.CatalogueItemId))
+            mockService.Setup(s => s.GetSolutionWithWorkOffPlans(solution.CatalogueItemId))
                 .ReturnsAsync(solution.CatalogueItem);
 
             var actual = (await controller.EditWorkOffPlan(solution.CatalogueItemId, workOffPlanId, model)).As<BadRequestObjectResult>();
@@ -353,7 +353,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
         {
             var workOffPlan = solution.WorkOffPlans.FirstOrDefault();
 
-            mockService.Setup(s => s.GetSolution(solution.CatalogueItemId))
+            mockService.Setup(s => s.GetSolutionWithWorkOffPlans(solution.CatalogueItemId))
                 .ReturnsAsync(solution.CatalogueItem);
 
             var model = new EditWorkOffPlanModel()
@@ -380,7 +380,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
         {
             var workOffPlan = solution.WorkOffPlans.FirstOrDefault();
 
-            mockService.Setup(s => s.GetSolution(solution.CatalogueItemId))
+            mockService.Setup(s => s.GetSolutionWithWorkOffPlans(solution.CatalogueItemId))
                 .ReturnsAsync(solution.CatalogueItem);
 
             var model = new EditWorkOffPlanModel()
@@ -407,7 +407,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
             DevelopmentPlansController controller,
             CatalogueItemId id)
         {
-            mockService.Setup(s => s.GetSolution(id))
+            mockService.Setup(s => s.GetSolutionWithWorkOffPlans(id))
                 .ReturnsAsync(default(CatalogueItem));
 
             var actual = (await controller.DeleteWorkOffPlan(id, 1)).As<BadRequestObjectResult>();
@@ -424,7 +424,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
             Solution solution,
             int workOffPlanId)
         {
-            mockService.Setup(s => s.GetSolution(solution.CatalogueItemId))
+            mockService.Setup(s => s.GetSolutionWithWorkOffPlans(solution.CatalogueItemId))
                 .ReturnsAsync(solution.CatalogueItem);
 
             var actual = (await controller.DeleteWorkOffPlan(solution.CatalogueItemId, workOffPlanId)).As<BadRequestObjectResult>();
@@ -444,7 +444,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
 
             var expectedModel = new EditWorkOffPlanModel(solution.CatalogueItem, workOffPlan);
 
-            mockService.Setup(s => s.GetSolution(solution.CatalogueItemId))
+            mockService.Setup(s => s.GetSolutionWithWorkOffPlans(solution.CatalogueItemId))
                 .ReturnsAsync(solution.CatalogueItem);
 
             var actual = (await controller.DeleteWorkOffPlan(solution.CatalogueItemId, workOffPlan.Id)).As<ViewResult>();
@@ -464,7 +464,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
             CatalogueItemId id,
             int workOffPlanId)
         {
-            mockService.Setup(s => s.GetSolution(id))
+            mockService.Setup(s => s.GetSolutionWithWorkOffPlans(id))
                 .ReturnsAsync(default(CatalogueItem));
 
             var actual = (await controller.DeleteWorkOffPlan(id, workOffPlanId, model)).As<BadRequestObjectResult>();
@@ -482,7 +482,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
             Solution solution,
             int workOffPlanId)
         {
-            mockService.Setup(s => s.GetSolution(solution.CatalogueItemId))
+            mockService.Setup(s => s.GetSolutionWithWorkOffPlans(solution.CatalogueItemId))
                 .ReturnsAsync(solution.CatalogueItem);
 
             var actual = (await controller.DeleteWorkOffPlan(solution.CatalogueItemId, workOffPlanId, model)).As<BadRequestObjectResult>();
@@ -501,7 +501,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
         {
             var workOffPlan = solution.WorkOffPlans.FirstOrDefault();
 
-            mockService.Setup(s => s.GetSolution(solution.CatalogueItemId))
+            mockService.Setup(s => s.GetSolutionWithWorkOffPlans(solution.CatalogueItemId))
                 .ReturnsAsync(solution.CatalogueItem);
 
             var model = new EditWorkOffPlanModel();
@@ -520,7 +520,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
         {
             var workOffPlan = solution.WorkOffPlans.FirstOrDefault();
 
-            mockService.Setup(s => s.GetSolution(solution.CatalogueItemId))
+            mockService.Setup(s => s.GetSolutionWithWorkOffPlans(solution.CatalogueItemId))
                 .ReturnsAsync(solution.CatalogueItem);
 
             var model = new EditWorkOffPlanModel();

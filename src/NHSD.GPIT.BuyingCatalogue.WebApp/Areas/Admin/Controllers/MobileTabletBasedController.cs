@@ -26,7 +26,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
         [HttpGet("manage/{solutionId}/client-application-type/mobiletablet")]
         public async Task<IActionResult> MobileTablet(CatalogueItemId solutionId)
         {
-            var solution = await solutionsService.GetSolution(solutionId);
+            var solution = await solutionsService.GetSolutionThin(solutionId);
 
             if (solution is null)
                 return BadRequest($"No Solution found for Id: {solutionId}");
@@ -51,7 +51,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
         [HttpGet("manage/{solutionId}/client-application-type/mobiletablet/operating-systems")]
         public async Task<IActionResult> OperatingSystems(CatalogueItemId solutionId)
         {
-            var solution = await solutionsService.GetSolution(solutionId);
+            var solution = await solutionsService.GetSolutionThin(solutionId);
 
             if (solution is null)
                 return BadRequest($"No Solution found for Id: {solutionId}");
@@ -100,7 +100,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
         [HttpGet("manage/{solutionId}/client-application-type/mobiletablet/connectivity")]
         public async Task<IActionResult> Connectivity(CatalogueItemId solutionId)
         {
-            var solution = await solutionsService.GetSolution(solutionId);
+            var solution = await solutionsService.GetSolutionThin(solutionId);
 
             if (solution is null)
                 return BadRequest($"No Solution found for Id: {solutionId}");
@@ -150,7 +150,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
         [HttpGet("manage/{solutionId}/client-application-type/mobiletablet/memory-and-storage")]
         public async Task<IActionResult> MemoryAndStorage(CatalogueItemId solutionId)
         {
-            var solution = await solutionsService.GetSolution(solutionId);
+            var solution = await solutionsService.GetSolutionThin(solutionId);
 
             if (solution is null)
                 return BadRequest($"No Solution found for Id: {solutionId}");
@@ -188,7 +188,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
         [HttpGet("manage/{solutionId}/client-application-type/mobiletablet/third-party-components")]
         public async Task<IActionResult> ThirdPartyComponents(CatalogueItemId solutionId)
         {
-            var solution = await solutionsService.GetSolution(solutionId);
+            var solution = await solutionsService.GetSolutionThin(solutionId);
 
             if (solution is null)
                 return BadRequest($"No Solution found for Id: {solutionId}");
@@ -227,7 +227,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
         [HttpGet("manage/{solutionId}/client-application-type/mobiletablet/hardware-requirements")]
         public async Task<IActionResult> HardwareRequirements(CatalogueItemId solutionId)
         {
-            var solution = await solutionsService.GetSolution(solutionId);
+            var solution = await solutionsService.GetSolutionThin(solutionId);
 
             if (solution is null)
                 return BadRequest($"No Solution found for Id: {solutionId}");
@@ -263,7 +263,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
         [HttpGet("manage/{solutionId}/client-application-type/mobiletablet/additional-information")]
         public async Task<IActionResult> AdditionalInformation(CatalogueItemId solutionId)
         {
-            var solution = await solutionsService.GetSolution(solutionId);
+            var solution = await solutionsService.GetSolutionThin(solutionId);
 
             if (solution is null)
                 return BadRequest($"No Solution found for Id: {solutionId}");

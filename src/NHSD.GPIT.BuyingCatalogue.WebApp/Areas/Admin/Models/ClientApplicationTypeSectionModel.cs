@@ -40,20 +40,5 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models
         public List<ClientApplicationType> ApplicationTypesToAdd { get; set; }
 
         public IEnumerable<object> ApplicationTypesToAddRadioItems { get; }
-
-        public TaskProgress Status()
-        {
-            var existingClientApplicationTypes = ExistingClientApplicationTypes.ToList();
-
-            if (!existingClientApplicationTypes.Any())
-                return TaskProgress.NotStarted;
-
-            var statuses = existingClientApplicationTypes.Select(c => ClientApplication.ApplicationTypeStatus(c));
-
-            if (statuses.All(s => s == TaskProgress.Completed))
-                return TaskProgress.Completed;
-
-            return statuses.Any(s => s == TaskProgress.InProgress) ? TaskProgress.InProgress : TaskProgress.NotStarted;
-        }
     }
 }

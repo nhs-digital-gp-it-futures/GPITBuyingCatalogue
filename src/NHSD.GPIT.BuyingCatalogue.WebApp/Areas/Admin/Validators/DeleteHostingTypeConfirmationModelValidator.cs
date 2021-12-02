@@ -26,7 +26,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Validators
 
         private async Task<bool> NotBeTheOnlyHostingType(DeleteHostingTypeConfirmationModel model, CancellationToken token)
         {
-            var solution = await solutionsService.GetSolution(model.SolutionId);
+            var solution = await solutionsService.GetSolutionThin(model.SolutionId);
             var solutionHostingOptions = solution.Solution.Hosting.AvailableHosting();
 
             return solutionHostingOptions.Count > 1

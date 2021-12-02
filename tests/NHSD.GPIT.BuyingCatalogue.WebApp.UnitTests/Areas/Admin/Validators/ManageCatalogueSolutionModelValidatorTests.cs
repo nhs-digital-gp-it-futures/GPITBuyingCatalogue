@@ -5,6 +5,7 @@ using FluentValidation.TestHelper;
 using Moq;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions;
+using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions.Admin;
 using NHSD.GPIT.BuyingCatalogue.Test.Framework.AutoFixtureCustomisations;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Validators;
@@ -22,7 +23,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators
             ManageCatalogueSolutionModelValidator validator)
         {
             solution.CatalogueItem.PublishedStatus = PublicationStatus.Published;
-            solutionsService.Setup(s => s.GetSolution(solution.CatalogueItemId))
+            solutionsService.Setup(s => s.GetSolutionThin(solution.CatalogueItemId))
                 .ReturnsAsync(solution.CatalogueItem);
 
             var model = new ManageCatalogueSolutionModel
@@ -69,7 +70,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators
             solution.ServiceLevelAgreement.Contacts = slaContacts;
             solution.CatalogueItem.CatalogueItemContacts.Add(solution.CatalogueItem.Supplier.SupplierContacts.First());
             solution.CatalogueItem.PublishedStatus = PublicationStatus.Draft;
-            solutionsService.Setup(s => s.GetSolution(solution.CatalogueItemId))
+            solutionsService.Setup(s => s.GetSolutionThin(solution.CatalogueItemId))
                 .ReturnsAsync(solution.CatalogueItem);
 
             var model = new ManageCatalogueSolutionModel
@@ -100,7 +101,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators
             solution.ServiceLevelAgreement.Contacts = slaContacts;
             solution.CatalogueItem.CatalogueItemContacts.Add(solution.CatalogueItem.Supplier.SupplierContacts.First());
             solution.CatalogueItem.PublishedStatus = PublicationStatus.Draft;
-            solutionsService.Setup(s => s.GetSolution(solution.CatalogueItemId))
+            solutionsService.Setup(s => s.GetSolutionThin(solution.CatalogueItemId))
                 .ReturnsAsync(solution.CatalogueItem);
 
             var model = new ManageCatalogueSolutionModel
@@ -135,7 +136,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators
             solution.ServiceLevelAgreement.Contacts = slaContacts;
             solution.CatalogueItem.CatalogueItemContacts.Add(solution.CatalogueItem.Supplier.SupplierContacts.First());
             solution.CatalogueItem.PublishedStatus = PublicationStatus.Draft;
-            solutionsService.Setup(s => s.GetSolution(solution.CatalogueItemId))
+            solutionsService.Setup(s => s.GetSolutionThin(solution.CatalogueItemId))
                 .ReturnsAsync(solution.CatalogueItem);
 
             var model = new ManageCatalogueSolutionModel
@@ -167,7 +168,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators
             solution.ServiceLevelAgreement.Contacts = slaContacts;
             solution.CatalogueItem.CatalogueItemContacts.Add(solution.CatalogueItem.Supplier.SupplierContacts.First());
             solution.CatalogueItem.PublishedStatus = PublicationStatus.Draft;
-            solutionsService.Setup(s => s.GetSolution(solution.CatalogueItemId))
+            solutionsService.Setup(s => s.GetSolutionThin(solution.CatalogueItemId))
                 .ReturnsAsync(solution.CatalogueItem);
 
             var model = new ManageCatalogueSolutionModel
@@ -198,7 +199,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators
             solution.ServiceLevelAgreement.ServiceLevels = slaServiceLevels;
             solution.ServiceLevelAgreement.Contacts = slaContacts;
             solution.CatalogueItem.PublishedStatus = PublicationStatus.Draft;
-            solutionsService.Setup(s => s.GetSolution(solution.CatalogueItemId))
+            solutionsService.Setup(s => s.GetSolutionThin(solution.CatalogueItemId))
                 .ReturnsAsync(solution.CatalogueItem);
 
             var model = new ManageCatalogueSolutionModel
@@ -230,7 +231,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators
             solution.ServiceLevelAgreement.Contacts = slaContacts;
             solution.CatalogueItem.CatalogueItemContacts.Add(solution.CatalogueItem.Supplier.SupplierContacts.First());
             solution.CatalogueItem.PublishedStatus = PublicationStatus.Draft;
-            solutionsService.Setup(s => s.GetSolution(solution.CatalogueItemId))
+            solutionsService.Setup(s => s.GetSolutionThin(solution.CatalogueItemId))
                 .ReturnsAsync(solution.CatalogueItem);
 
             var model = new ManageCatalogueSolutionModel
@@ -254,7 +255,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators
         {
             solution.CatalogueItem.CatalogueItemContacts.Add(solution.CatalogueItem.Supplier.SupplierContacts.First());
             solution.CatalogueItem.PublishedStatus = PublicationStatus.Draft;
-            solutionsService.Setup(s => s.GetSolution(solution.CatalogueItemId))
+            solutionsService.Setup(s => s.GetSolutionThin(solution.CatalogueItemId))
                 .ReturnsAsync(solution.CatalogueItem);
 
             var model = new ManageCatalogueSolutionModel
@@ -273,26 +274,31 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators
         [CommonAutoData]
         public static void Validate_Valid_NoModelError(
             Solution solution,
-            List<ServiceAvailabilityTimes> serviceAvailabilityTimes,
-            List<SlaContact> slaContacts,
-            List<SlaServiceLevel> slaServiceLevels,
-            List<AdditionalService> additionalServices,
-            List<AssociatedService> associatedServices,
             [Frozen] Mock<ISolutionsService> solutionsService,
             ManageCatalogueSolutionModelValidator validator)
         {
-            solution.ServiceLevelAgreement.ServiceHours = serviceAvailabilityTimes;
-            solution.ServiceLevelAgreement.ServiceLevels = slaServiceLevels;
-            solution.ServiceLevelAgreement.Contacts = slaContacts;
-            solution.CatalogueItem.CatalogueItemContacts.Add(solution.CatalogueItem.Supplier.SupplierContacts.First());
+            SolutionLoadingStatusesModel solutionLoadingStatuses = new SolutionLoadingStatusesModel
+            {
+                Description = ServiceContracts.Enums.TaskProgress.Completed,
+                AdditionalServices = ServiceContracts.Enums.TaskProgress.Completed,
+                AssociatedServices = ServiceContracts.Enums.TaskProgress.Completed,
+                CapabilitiesAndEpics = ServiceContracts.Enums.TaskProgress.Completed,
+                ClientApplicationType = ServiceContracts.Enums.TaskProgress.Completed,
+                DevelopmentPlans = ServiceContracts.Enums.TaskProgress.Completed,
+                Features = ServiceContracts.Enums.TaskProgress.Completed,
+                HostingType = ServiceContracts.Enums.TaskProgress.Completed,
+                Implementation = ServiceContracts.Enums.TaskProgress.Completed,
+                Interoperability = ServiceContracts.Enums.TaskProgress.Completed,
+                ListPrice = ServiceContracts.Enums.TaskProgress.Completed,
+                ServiceLevelAgreement = ServiceContracts.Enums.TaskProgress.Completed,
+                SupplierDetails = ServiceContracts.Enums.TaskProgress.Completed,
+            };
+
             solution.CatalogueItem.PublishedStatus = PublicationStatus.Draft;
-            solutionsService.Setup(s => s.GetSolution(solution.CatalogueItemId))
+            solutionsService.Setup(s => s.GetSolutionThin(solution.CatalogueItemId))
                 .ReturnsAsync(solution.CatalogueItem);
 
-            var model = new ManageCatalogueSolutionModel(
-                solution.CatalogueItem,
-                additionalServices.Select(a => a.CatalogueItem).ToList(),
-                associatedServices.Select(a => a.CatalogueItem).ToList())
+            var model = new ManageCatalogueSolutionModel(solutionLoadingStatuses, solution.CatalogueItem)
             {
                 SelectedPublicationStatus = PublicationStatus.Published,
             };

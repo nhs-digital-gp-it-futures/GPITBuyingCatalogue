@@ -27,7 +27,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Validators.ServiceLevelAg
 
         private async Task<bool> NotBeTheOnlyEntry(DeleteServiceAvailabilityTimesModel model, CancellationToken token)
         {
-            var solution = await solutionsService.GetSolution(model.SolutionId);
+            var solution = await solutionsService.GetSolutionThin(model.SolutionId);
 
             var isNotPublished = solution.PublishedStatus != PublicationStatus.Published;
 

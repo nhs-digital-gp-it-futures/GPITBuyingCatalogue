@@ -4,11 +4,13 @@ using FluentAssertions;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Extensions;
+using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions.Admin;
 using NHSD.GPIT.BuyingCatalogue.Test.Framework.AutoFixtureCustomisations;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.DevelopmentPlans;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.InteroperabilityModels;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.ListPriceModels;
+
 using Xunit;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Models
@@ -19,8 +21,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Models
         [CommonAutoData]
         public static void PublicationStatuses_Returns_AllStatuses(
             Solution solution,
-            List<AdditionalService> additionalServices,
-            List<AssociatedService> associatedServices)
+            SolutionLoadingStatusesModel solutionLoadingStatuses)
         {
             var expected = solution.CatalogueItem
                 .PublishedStatus
@@ -28,26 +29,19 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Models
                 .Select(p => new SelectListItem(p.Description(), p.EnumMemberName()))
                 .ToList();
 
-            var actual = new ManageCatalogueSolutionModel(
-                solution.CatalogueItem,
-                additionalServices.Select(a => a.CatalogueItem).ToList(),
-                associatedServices.Select(a => a.CatalogueItem).ToList()).PublicationStatuses;
+            var actual = new ManageCatalogueSolutionModel(solutionLoadingStatuses, solution.CatalogueItem).PublicationStatuses;
 
             actual.Should().BeEquivalentTo(expected);
         }
 
         [Theory]
         [CommonAutoData]
-        public static void StatusFeatures_Returns_FromFeaturesModel(
+        public static void StatusFeatures_Returns_FromSolutionLoadingStatusesModel(
             Solution solution,
-            List<AdditionalService> additionalServices,
-            List<AssociatedService> associatedServices)
+            SolutionLoadingStatusesModel solutionLoadingStatuses)
         {
-            var expected = new FeaturesModel(solution.CatalogueItem).Status();
-            var model = new ManageCatalogueSolutionModel(
-                solution.CatalogueItem,
-                additionalServices.Select(a => a.CatalogueItem).ToList(),
-                associatedServices.Select(a => a.CatalogueItem).ToList());
+            var expected = solutionLoadingStatuses.Features;
+            var model = new ManageCatalogueSolutionModel(solutionLoadingStatuses, solution.CatalogueItem);
 
             var actual = model.FeaturesStatus;
 
@@ -56,16 +50,12 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Models
 
         [Theory]
         [CommonAutoData]
-        public static void StatusDescription_Returns_FromDescriptionModel(
+        public static void StatusDescription_Returns_FromSolutionLoadingStatusesModel(
             Solution solution,
-            List<AdditionalService> additionalServices,
-            List<AssociatedService> associatedServices)
+            SolutionLoadingStatusesModel solutionLoadingStatuses)
         {
-            var expected = new DescriptionModel(solution.CatalogueItem).Status();
-            var model = new ManageCatalogueSolutionModel(
-                solution.CatalogueItem,
-                additionalServices.Select(a => a.CatalogueItem).ToList(),
-                associatedServices.Select(a => a.CatalogueItem).ToList());
+            var expected = solutionLoadingStatuses.Description;
+            var model = new ManageCatalogueSolutionModel(solutionLoadingStatuses, solution.CatalogueItem);
 
             var actual = model.DescriptionStatus;
 
@@ -74,16 +64,12 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Models
 
         [Theory]
         [CommonAutoData]
-        public static void StatusImplementation_Returns_FromImplementationTimescaleModel(
+        public static void StatusImplementation_Returns_FromSolutionLoadingStatusesModel(
             Solution solution,
-            List<AdditionalService> additionalServices,
-            List<AssociatedService> associatedServices)
+            SolutionLoadingStatusesModel solutionLoadingStatuses)
         {
-            var expected = new ImplementationTimescaleModel(solution.CatalogueItem).Status();
-            var model = new ManageCatalogueSolutionModel(
-                solution.CatalogueItem,
-                additionalServices.Select(a => a.CatalogueItem).ToList(),
-                associatedServices.Select(a => a.CatalogueItem).ToList());
+            var expected = solutionLoadingStatuses.Implementation;
+            var model = new ManageCatalogueSolutionModel(solutionLoadingStatuses, solution.CatalogueItem);
 
             var actual = model.ImplementationStatus;
 
@@ -92,16 +78,12 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Models
 
         [Theory]
         [CommonAutoData]
-        public static void StatusRoadmap_Returns_FromRoadmapModel(
+        public static void StatusRoadmap_Returns_FromSolutionLoadingStatusesModel(
             Solution solution,
-            List<AdditionalService> additionalServices,
-            List<AssociatedService> associatedServices)
+            SolutionLoadingStatusesModel solutionLoadingStatuses)
         {
-            var expected = new DevelopmentPlanModel(solution.CatalogueItem).Status();
-            var model = new ManageCatalogueSolutionModel(
-                solution.CatalogueItem,
-                additionalServices.Select(a => a.CatalogueItem).ToList(),
-                associatedServices.Select(a => a.CatalogueItem).ToList());
+            var expected = solutionLoadingStatuses.DevelopmentPlans;
+            var model = new ManageCatalogueSolutionModel(solutionLoadingStatuses, solution.CatalogueItem);
 
             var actual = model.RoadmapStatus;
 
@@ -110,18 +92,12 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Models
 
         [Theory]
         [CommonAutoData]
-        public static void StatusInteroperability_Returns_FromInteroperabilityModel(
+        public static void StatusInteroperability_Returns_FromSolutionLoadingStatusesModel(
             Solution solution,
-            List<AdditionalService> additionalServices,
-            List<AssociatedService> associatedServices)
+            SolutionLoadingStatusesModel solutionLoadingStatuses)
         {
-            var catalogueItem = solution.CatalogueItem;
-
-            var expected = new InteroperabilityModel(catalogueItem).Status();
-            var model = new ManageCatalogueSolutionModel(
-                solution.CatalogueItem,
-                additionalServices.Select(a => a.CatalogueItem).ToList(),
-                associatedServices.Select(a => a.CatalogueItem).ToList());
+            var expected = solutionLoadingStatuses.Interoperability;
+            var model = new ManageCatalogueSolutionModel(solutionLoadingStatuses, solution.CatalogueItem);
 
             var actual = model.InteroperabilityStatus;
 
@@ -130,16 +106,12 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Models
 
         [Theory]
         [CommonAutoData]
-        public static void StatusListPrice_Returns_FromManageListPricesModel(
+        public static void StatusListPrice_Returns_FromSolutionLoadingStatusesModel(
             Solution solution,
-            List<AdditionalService> additionalServices,
-            List<AssociatedService> associatedServices)
+            SolutionLoadingStatusesModel solutionLoadingStatuses)
         {
-            var expected = new ManageListPricesModel(solution.CatalogueItem).Status();
-            var model = new ManageCatalogueSolutionModel(
-                solution.CatalogueItem,
-                additionalServices.Select(a => a.CatalogueItem).ToList(),
-                associatedServices.Select(a => a.CatalogueItem).ToList());
+            var expected = solutionLoadingStatuses.ListPrice;
+            var model = new ManageCatalogueSolutionModel(solutionLoadingStatuses, solution.CatalogueItem);
 
             var actual = model.ListPriceStatus;
 

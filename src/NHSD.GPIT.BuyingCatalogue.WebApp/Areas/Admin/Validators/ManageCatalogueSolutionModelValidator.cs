@@ -26,7 +26,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Validators
         {
             _ = cancellationToken;
 
-            var solution = await solutionsService.GetSolution(model.SolutionId);
+            var solution = await solutionsService.GetSolutionThin(model.SolutionId);
             if (model.SelectedPublicationStatus != PublicationStatus.Published || model.SelectedPublicationStatus == solution.PublishedStatus)
                 return true;
 

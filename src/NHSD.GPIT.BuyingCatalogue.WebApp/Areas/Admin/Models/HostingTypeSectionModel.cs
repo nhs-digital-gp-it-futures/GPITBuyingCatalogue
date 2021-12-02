@@ -42,15 +42,5 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models
         public List<HostingType> HostingTypesToAdd { get; set; }
 
         public IEnumerable<object> HostingTypesToAddRadioItems { get; }
-
-        public TaskProgress Status()
-        {
-            if (!ExistingHostingTypes.Any())
-                return TaskProgress.NotStarted;
-
-            var statuses = ExistingHostingTypes.Select(c => Hosting.HostingTypeStatus(c));
-
-            return statuses.All(s => s == TaskProgress.Completed) ? TaskProgress.Completed : TaskProgress.NotStarted;
-        }
     }
 }

@@ -75,7 +75,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
         [HttpGet("manage/{solutionId}/features")]
         public async Task<IActionResult> Features(CatalogueItemId solutionId)
         {
-            var solution = await solutionsService.GetSolution(solutionId);
+            var solution = await solutionsService.GetSolutionThin(solutionId);
             if (solution is null)
                 return BadRequest($"No Solution found for Id: {solutionId}");
 
@@ -104,14 +104,13 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
         [HttpGet("manage/{solutionId}")]
         public async Task<IActionResult> ManageCatalogueSolution(CatalogueItemId solutionId)
         {
-            var solution = await solutionsService.GetSolution(solutionId);
+            var solution = await solutionsService.GetSolutionThin(solutionId);
             if (solution is null)
                 return BadRequest($"No Solution found for Id: {solutionId}");
 
-            var associatedServices = await associatedServicesService.GetAssociatedServicesForSupplier(solution.SupplierId);
-            var additionalServices = await additionalServicesService.GetAdditionalServicesBySolutionId(solutionId);
+            var solutionStatuses = await solutionsService.GetSolutionLoadingStatuses(solutionId);
 
-            var model = new ManageCatalogueSolutionModel(solution, additionalServices, associatedServices);
+            var model = new ManageCatalogueSolutionModel(solutionStatuses, solution);
 
             return View(model);
         }
@@ -122,7 +121,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
             if (!ModelState.IsValid)
                 return View("ManageCatalogueSolution", model);
 
-            var solution = await solutionsService.GetSolution(solutionId);
+            var solution = await solutionsService.GetSolutionThin(solutionId);
             if (model.SelectedPublicationStatus == solution.PublishedStatus)
                 return RedirectToAction(nameof(Index));
 
@@ -136,7 +135,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
         [HttpGet("manage/{solutionId}/details")]
         public async Task<IActionResult> Details(CatalogueItemId solutionId)
         {
-            var solution = await solutionsService.GetSolution(solutionId);
+            var solution = await solutionsService.GetSolutionWithBasicInformation(solutionId);
 
             if (solution is null)
                 return BadRequest($"No Solution found for Id: {solutionId}");
@@ -185,7 +184,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
         [HttpGet("manage/{solutionId}/description")]
         public async Task<IActionResult> Description(CatalogueItemId solutionId)
         {
-            var solution = await solutionsService.GetSolution(solutionId);
+            var solution = await solutionsService.GetSolutionThin(solutionId);
 
             if (solution is null)
                 return BadRequest($"No Solution found for Id: {solutionId}");
@@ -211,7 +210,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
         [HttpGet("manage/{solutionId}/implementation")]
         public async Task<IActionResult> Implementation(CatalogueItemId solutionId)
         {
-            var solution = await solutionsService.GetSolution(solutionId);
+            var solution = await solutionsService.GetSolutionThin(solutionId);
 
             if (solution is null)
                 return BadRequest($"No Solution found for Id: {solutionId}");
@@ -235,7 +234,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
         [HttpGet("manage/{solutionId}/hosting-type")]
         public async Task<IActionResult> HostingType(CatalogueItemId solutionId)
         {
-            var solution = await solutionsService.GetSolution(solutionId);
+            var solution = await solutionsService.GetSolutionThin(solutionId);
 
             if (solution is null)
                 return BadRequest($"No Solution found for Id: {solutionId}");
@@ -254,7 +253,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
             if (!ModelState.IsValid)
                 return View(model);
 
-            var catalogueItem = await solutionsService.GetSolution(solutionId);
+            var catalogueItem = await solutionsService.GetSolutionThin(solutionId);
 
             Hosting hosting = new Hosting
             {
@@ -272,7 +271,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
         [HttpGet("manage/{solutionId}/hosting-type/add-hosting-type")]
         public async Task<IActionResult> AddHostingType(CatalogueItemId solutionId)
         {
-            var solution = await solutionsService.GetSolution(solutionId);
+            var solution = await solutionsService.GetSolutionThin(solutionId);
 
             if (solution is null)
                 return BadRequest($"No Solution found for Id: {solutionId}");
@@ -290,7 +289,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
         {
             if (!ModelState.IsValid)
             {
-                var solution = await solutionsService.GetSolution(solutionId);
+                var solution = await solutionsService.GetSolutionThin(solutionId);
                 return View(new HostingTypeSelectionModel(solution));
             }
 
@@ -302,7 +301,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
         [HttpGet("manage/{solutionId}/hosting-type/hosting-type-public-cloud")]
         public async Task<IActionResult> PublicCloud(CatalogueItemId solutionId, [FromQuery] bool? isNewHostingType = false)
         {
-            var catalogueItem = await solutionsService.GetSolution(solutionId);
+            var catalogueItem = await solutionsService.GetSolutionThin(solutionId);
             if (catalogueItem is null)
                 return BadRequest($"No Solution found for Id: {solutionId}");
 
@@ -321,6 +320,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
             if (!ModelState.IsValid)
                 return View(model);
 
+            var catalogueItem = await solutionsService.GetSolutionThin(solutionId);
+            if (catalogueItem is null)
+                return BadRequest($"No Solution found for Id: {solutionId}");
+
             var hosting = await solutionsService.GetHosting(solutionId);
             hosting.PublicCloud = new PublicCloud { Summary = model.Summary, Link = model.Link, RequiresHscn = model.RequiresHscn };
 
@@ -332,7 +335,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
         [HttpGet("manage/{solutionId}/hosting-type/hosting-type-private-cloud")]
         public async Task<IActionResult> PrivateCloud(CatalogueItemId solutionId, [FromQuery] bool? isNewHostingType = false)
         {
-            var catalogueItem = await solutionsService.GetSolution(solutionId);
+            var catalogueItem = await solutionsService.GetSolutionThin(solutionId);
             if (catalogueItem is null)
                 return BadRequest($"No Solution found for Id: {solutionId}");
 
@@ -351,6 +354,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
             if (!ModelState.IsValid)
                 return View(model);
 
+            var catalogueItem = await solutionsService.GetSolutionThin(solutionId);
+            if (catalogueItem is null)
+                return BadRequest($"No Solution found for Id: {solutionId}");
+
             var hosting = await solutionsService.GetHosting(solutionId);
             hosting.PrivateCloud = new PrivateCloud { Summary = model.Summary, HostingModel = model.HostingModel, Link = model.Link, RequiresHscn = model.RequiresHscn };
 
@@ -362,7 +369,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
         [HttpGet("manage/{solutionId}/hosting-type/hosting-type-hybrid")]
         public async Task<IActionResult> Hybrid(CatalogueItemId solutionId, [FromQuery] bool? isNewHostingType = false)
         {
-            var catalogueItem = await solutionsService.GetSolution(solutionId);
+            var catalogueItem = await solutionsService.GetSolutionThin(solutionId);
             if (catalogueItem is null)
                 return BadRequest($"No Solution found for Id: {solutionId}");
 
@@ -381,6 +388,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
             if (!ModelState.IsValid)
                 return View(model);
 
+            var catalogueItem = await solutionsService.GetSolutionThin(solutionId);
+            if (catalogueItem is null)
+                return BadRequest($"No Solution found for Id: {solutionId}");
+
             var hosting = await solutionsService.GetHosting(solutionId);
             hosting.HybridHostingType = new HybridHostingType { Summary = model.Summary, HostingModel = model.HostingModel, Link = model.Link, RequiresHscn = model.RequiresHscn };
 
@@ -392,7 +403,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
         [HttpGet("manage/{solutionId}/hosting-type/hosting-type-on-premise")]
         public async Task<IActionResult> OnPremise(CatalogueItemId solutionId, [FromQuery] bool? isNewHostingType = false)
         {
-            var catalogueItem = await solutionsService.GetSolution(solutionId);
+            var catalogueItem = await solutionsService.GetSolutionThin(solutionId);
             if (catalogueItem is null)
                 return BadRequest($"No Solution found for Id: {solutionId}");
 
@@ -411,6 +422,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
             if (!ModelState.IsValid)
                 return View(model);
 
+            var catalogueItem = await solutionsService.GetSolutionThin(solutionId);
+            if (catalogueItem is null)
+                return BadRequest($"No Solution found for Id: {solutionId}");
+
             var hosting = await solutionsService.GetHosting(solutionId);
             hosting.OnPremise = new OnPremise { Summary = model.Summary, HostingModel = model.HostingModel, Link = model.Link, RequiresHscn = model.RequiresHscn };
 
@@ -422,7 +437,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
         [HttpGet("manage/{solutionId}/hosting-type/delete-hosting-type/{hostingType}")]
         public async Task<IActionResult> DeleteHostingType(CatalogueItemId solutionId, HostingType hostingType)
         {
-            var solution = await solutionsService.GetSolution(solutionId);
+            var solution = await solutionsService.GetSolutionThin(solutionId);
 
             var backlinkActionName = hostingType switch
             {
@@ -447,7 +462,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
             if (!ModelState.IsValid)
                 return View(model);
 
-            var solution = await solutionsService.GetSolution(solutionId);
+            var solution = await solutionsService.GetSolutionThin(solutionId);
             var hosting = solution.Solution.Hosting;
             switch (hostingType)
             {
@@ -479,7 +494,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
         [HttpGet("manage/{solutionId}/client-application-type/browser-based")]
         public async Task<IActionResult> BrowserBased(CatalogueItemId solutionId)
         {
-            var solution = await solutionsService.GetSolution(solutionId);
+            var solution = await solutionsService.GetSolutionThin(solutionId);
 
             if (solution is null)
                 return BadRequest($"No Solution found for Id: {solutionId}");
@@ -498,7 +513,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
         [HttpGet("manage/{solutionId}/client-application-type/browser-based/supported-browser")]
         public async Task<IActionResult> SupportedBrowsers(CatalogueItemId solutionId)
         {
-            var solution = await solutionsService.GetSolution(solutionId);
+            var solution = await solutionsService.GetSolutionThin(solutionId);
 
             if (solution is null)
                 return BadRequest($"No Solution found for Id: {solutionId}");
@@ -511,6 +526,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
         {
             if (!ModelState.IsValid)
                 return View(model);
+
+            var catalogueItem = await solutionsService.GetSolutionThin(solutionId);
+            if (catalogueItem is null)
+                return BadRequest($"No Solution found for Id: {solutionId}");
 
             var clientApplication = await solutionsService.GetClientApplication(solutionId);
             if (clientApplication is null)
@@ -535,7 +554,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
         [HttpGet("manage/{solutionId}/client-application-type/browser-based/plug-ins-or-extensions")]
         public async Task<IActionResult> PlugInsOrExtensions(CatalogueItemId solutionId)
         {
-            var solution = await solutionsService.GetSolution(solutionId);
+            var solution = await solutionsService.GetSolutionThin(solutionId);
             if (solution is null)
                 return BadRequest($"No Solution found for Id: {solutionId}");
 
@@ -547,6 +566,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
         {
             if (!ModelState.IsValid)
                 return View(model);
+
+            var catalogueItem = await solutionsService.GetSolutionThin(solutionId);
+            if (catalogueItem is null)
+                return BadRequest($"No Solution found for Id: {solutionId}");
 
             var clientApplication = await solutionsService.GetClientApplication(solutionId);
             if (clientApplication is null)
@@ -570,7 +593,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
         [HttpGet("manage/{solutionId}/client-application-type/browser-based/connectivity-and-resolution")]
         public async Task<IActionResult> ConnectivityAndResolution(CatalogueItemId solutionId)
         {
-            var solution = await solutionsService.GetSolution(solutionId);
+            var solution = await solutionsService.GetSolutionThin(solutionId);
             if (solution is null)
                 return BadRequest($"No Solution found for Id: {solutionId}");
 
@@ -582,7 +605,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
         {
             if (!ModelState.IsValid)
             {
-                var solution = await solutionsService.GetSolution(solutionId);
+                var solution = await solutionsService.GetSolutionThin(solutionId);
                 return View(new ConnectivityAndResolutionModel(solution));
             }
 
@@ -602,7 +625,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
         [HttpGet("manage/{solutionId}/client-application-type/browser-based/hardware-requirements")]
         public async Task<IActionResult> HardwareRequirements(CatalogueItemId solutionId)
         {
-            var solution = await solutionsService.GetSolution(solutionId);
+            var solution = await solutionsService.GetSolutionThin(solutionId);
             if (solution is null)
                 return BadRequest($"No Solution found for Id: {solutionId}");
 
@@ -614,6 +637,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
         {
             if (!ModelState.IsValid)
                 return View(model);
+
+            var catalogueItem = await solutionsService.GetSolutionThin(solutionId);
+            if (catalogueItem is null)
+                return BadRequest($"No Solution found for Id: {solutionId}");
 
             var clientApplication = await solutionsService.GetClientApplication(solutionId);
             if (clientApplication is null)
@@ -630,7 +657,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
         [HttpGet("manage/{solutionId}/client-application-type/browser-based/additional-information")]
         public async Task<IActionResult> AdditionalInformation(CatalogueItemId solutionId)
         {
-            var solution = await solutionsService.GetSolution(solutionId);
+            var solution = await solutionsService.GetSolutionThin(solutionId);
             if (solution is null)
                 return BadRequest($"No Solution found for Id: {solutionId}");
 
@@ -658,7 +685,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
         [HttpGet("manage/{solutionId}/client-application-type")]
         public async Task<IActionResult> ClientApplicationType(CatalogueItemId solutionId)
         {
-            var solution = await solutionsService.GetSolution(solutionId);
+            var solution = await solutionsService.GetSolutionThin(solutionId);
 
             if (solution is null)
                 return BadRequest($"No Solution found for Id: {solutionId}");
@@ -674,7 +701,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
         [HttpGet("manage/{solutionId}/client-application-type/add-application-type")]
         public async Task<IActionResult> AddApplicationType(CatalogueItemId solutionId)
         {
-            var solution = await solutionsService.GetSolution(solutionId);
+            var solution = await solutionsService.GetSolutionThin(solutionId);
 
             if (solution is null)
                 return BadRequest($"No Solution found for Id: {solutionId}");
@@ -692,7 +719,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
         {
             if (!ModelState.IsValid)
             {
-                var solution = await solutionsService.GetSolution(solutionId);
+                var solution = await solutionsService.GetSolutionThin(solutionId);
                 var erroredModel = new ClientApplicationTypeSelectionModel(solution)
                 {
                     BackLink = Url.Action(nameof(ClientApplicationType), new { solutionId }),
@@ -721,7 +748,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
         [HttpGet("manage/{solutionId}/supplier-details")]
         public async Task<IActionResult> EditSupplierDetails(CatalogueItemId solutionId)
         {
-            var catalogueItem = await solutionsService.GetSolution(solutionId);
+            var catalogueItem = await solutionsService.GetSolutionWithSupplierDetails(solutionId);
 
             var model = new EditSolutionContactsModel(catalogueItem)
             {
@@ -737,7 +764,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
             if (!ModelState.IsValid)
                 return View(model);
 
-            var solution = await solutionsService.GetSolution(solutionId);
+            var solution = await solutionsService.GetSolutionWithSupplierDetails(solutionId);
+            if (solution is null)
+                return BadRequest($"No Solution found for Id: {solutionId}");
             var filteredSelectedContacts = model.AvailableSupplierContacts.Where(sc => sc.Selected).ToList();
             var selectedContacts = solution.Supplier.SupplierContacts.Join(
                 filteredSelectedContacts,
@@ -753,7 +782,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
         [HttpGet("manage/{solutionId}/edit-capabilities")]
         public async Task<IActionResult> EditCapabilities(CatalogueItemId solutionId)
         {
-            var solution = await solutionsService.GetSolution(solutionId);
+            var solution = await solutionsService.GetSolutionThin(solutionId);
             if (solution is null)
                 return BadRequest($"No Solution found for Id: {solutionId}");
 
@@ -774,7 +803,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
             if (!ModelState.IsValid)
                 return View(model);
 
-            var solution = await solutionsService.GetSolution(solutionId);
+            var solution = await solutionsService.GetSolutionThin(solutionId);
             if (solution is null)
                 return BadRequest($"No Solution found for Id: {solutionId}");
 

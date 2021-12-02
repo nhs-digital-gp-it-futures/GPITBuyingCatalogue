@@ -30,32 +30,5 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Models
 
             actual.ParamName.Should().Be("catalogueItem");
         }
-
-        [Theory]
-        [CommonAutoData]
-        public static void StatusHostingType_AvailableHosting_ReturnsCompleted(
-            [Frozen] CatalogueItem catalogueItem,
-            [Frozen] Solution solution,
-            HostingTypeSectionModel model)
-        {
-            // CatalogueItem and Solution must be frozen so that a catalogue item instance with solution is passed
-            // to the HostingTypeSectionModel constructor
-            _ = catalogueItem;
-            _ = solution;
-
-            var actual = model.Status();
-
-            actual.Should().Be(TaskProgress.Completed);
-        }
-
-        [Fact]
-        public static void StatusHostingType_NoCloudTypeAdded_ReturnsNotStarted()
-        {
-            var model = new HostingTypeSectionModel();
-
-            var actual = model.Status();
-
-            actual.Should().Be(TaskProgress.NotStarted);
-        }
     }
 }

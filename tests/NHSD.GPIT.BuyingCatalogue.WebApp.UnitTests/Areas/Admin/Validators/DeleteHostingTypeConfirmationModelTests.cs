@@ -24,7 +24,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators
             var catalogueItem = solution.CatalogueItem;
             catalogueItem.PublishedStatus = PublicationStatus.Published;
 
-            solutionsService.Setup(s => s.GetSolution(model.SolutionId))
+            solutionsService.Setup(s => s.GetSolutionThin(model.SolutionId))
                 .ReturnsAsync(catalogueItem);
 
             var result = await validator.TestValidateAsync(model);
@@ -52,7 +52,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators
                 HostingType = HostingType.PublicCloud,
             };
 
-            solutionsService.Setup(s => s.GetSolution(model.SolutionId))
+            solutionsService.Setup(s => s.GetSolutionThin(model.SolutionId))
                 .ReturnsAsync(catalogueItem);
 
             var result = await validator.TestValidateAsync(model);
@@ -72,7 +72,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators
             var catalogueItem = solution.CatalogueItem;
             catalogueItem.PublishedStatus = PublicationStatus.Unpublished;
 
-            solutionsService.Setup(s => s.GetSolution(model.SolutionId))
+            solutionsService.Setup(s => s.GetSolutionThin(model.SolutionId))
                 .ReturnsAsync(catalogueItem);
 
             var result = await validator.TestValidateAsync(model);
@@ -100,7 +100,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators
                 HostingType = HostingType.PublicCloud,
             };
 
-            solutionsService.Setup(s => s.GetSolution(model.SolutionId))
+            solutionsService.Setup(s => s.GetSolutionThin(model.SolutionId))
                 .ReturnsAsync(catalogueItem);
 
             var result = await validator.TestValidateAsync(model);

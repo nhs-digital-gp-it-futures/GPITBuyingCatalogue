@@ -32,10 +32,5 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.DevelopmentPlans
         public string SolutionName { get; set; }
 
         public ICollection<WorkOffPlan> WorkOffPlans { get; init; }
-
-        public TaskProgress Status() =>
-            string.IsNullOrWhiteSpace(Link)
-                ? TaskProgress.Optional
-                : TaskProgress.Completed;
     }
 }

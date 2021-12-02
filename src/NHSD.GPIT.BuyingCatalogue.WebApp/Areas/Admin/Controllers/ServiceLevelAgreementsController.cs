@@ -32,7 +32,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
         [HttpGet]
         public async Task<IActionResult> Index(CatalogueItemId solutionId)
         {
-            var solution = await solutionsService.GetSolution(solutionId);
+            var solution = await solutionsService.GetSolutionWithServiceLevelAgreements(solutionId);
             if (solution is null)
                 return BadRequest($"No Solution found for Id: {solutionId}");
 
@@ -49,7 +49,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
         [HttpGet("add-sla")]
         public async Task<IActionResult> AddServiceLevelAgreement(CatalogueItemId solutionId)
         {
-            var solution = await solutionsService.GetSolution(solutionId);
+            var solution = await solutionsService.GetSolutionWithServiceLevelAgreements(solutionId);
             if (solution is null)
                 return BadRequest($"No Solution found for Id: {solutionId}");
 
@@ -73,7 +73,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
                 return View("AddEditSlaType", model);
             }
 
-            var solution = await solutionsService.GetSolution(solutionId);
+            var solution = await solutionsService.GetSolutionWithServiceLevelAgreements(solutionId);
             if (solution is null)
                 return BadRequest($"No Solution found for Id: {solutionId}");
 
@@ -91,7 +91,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
         [HttpGet("edit-service-level-agreement")]
         public async Task<IActionResult> EditServiceLevelAgreement(CatalogueItemId solutionId)
         {
-            var solution = await solutionsService.GetSolution(solutionId);
+            var solution = await solutionsService.GetSolutionWithServiceLevelAgreements(solutionId);
             if (solution is null)
                 return BadRequest($"No Solution found for Id: {solutionId}");
 
@@ -111,7 +111,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
         [HttpGet("edit-service-level-agreement/edit-sla-type")]
         public async Task<IActionResult> EditServiceLevelAgreementType(CatalogueItemId solutionId)
         {
-            var catalogueItem = await solutionsService.GetSolution(solutionId);
+            var catalogueItem = await solutionsService.GetSolutionWithServiceLevelAgreements(solutionId);
             if (catalogueItem is null)
                 return BadRequest($"No Solution found for Id: {solutionId}");
 
@@ -135,7 +135,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
                 return View("AddEditSlaType", model);
             }
 
-            var solution = await solutionsService.GetSolution(solutionId);
+            var solution = await solutionsService.GetSolutionWithServiceLevelAgreements(solutionId);
             if (solution is null)
                 return BadRequest($"No Solution found for Id: {solutionId}");
 
@@ -148,7 +148,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
         [HttpGet("edit-service-level-agreement/edit-sla-type/confirm-change")]
         public async Task<IActionResult> EditServiceLevelAgreementTypeConfirmation(CatalogueItemId solutionId)
         {
-            var catalogueItem = await solutionsService.GetSolution(solutionId);
+            var catalogueItem = await solutionsService.GetSolutionWithServiceLevelAgreements(solutionId);
             if (catalogueItem is null)
                 return BadRequest($"No Solution found for Id: {solutionId}");
 
@@ -163,7 +163,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
         [HttpPost("edit-service-level-agreement/edit-sla-type/confirm-change")]
         public async Task<IActionResult> EditServiceLevelAgreementTypeConfirmation(CatalogueItemId solutionId, EditSlaTypeConfirmationModel model)
         {
-            var catalogueItem = await solutionsService.GetSolution(solutionId);
+            var catalogueItem = await solutionsService.GetSolutionWithServiceLevelAgreements(solutionId);
             if (catalogueItem is null)
                 return BadRequest($"No Solution found for Id: {solutionId}");
 
@@ -177,7 +177,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
         [HttpGet("edit-service-level-agreement/add-service-availability-times")]
         public async Task<IActionResult> AddServiceAvailabilityTimes(CatalogueItemId solutionId)
         {
-            var solution = await solutionsService.GetSolution(solutionId);
+            var solution = await solutionsService.GetSolutionWithServiceLevelAgreements(solutionId);
             if (solution is null)
                 return BadRequest($"No Solution found for Id: {solutionId}");
 
@@ -195,7 +195,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
             if (!ModelState.IsValid)
                 return View("AddEditServiceAvailabilityTimes", model);
 
-            var solution = await solutionsService.GetSolution(solutionId);
+            var solution = await solutionsService.GetSolutionWithServiceLevelAgreements(solutionId);
             if (solution is null)
                 return BadRequest($"No Solution found for Id: {solutionId}");
 
@@ -216,7 +216,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
         [HttpGet("edit-service-level-agreement/edit-service-availability-times/{serviceAvailabilityTimesId}")]
         public async Task<IActionResult> EditServiceAvailabilityTimes(CatalogueItemId solutionId, int serviceAvailabilityTimesId)
         {
-            var solution = await solutionsService.GetSolution(solutionId);
+            var solution = await solutionsService.GetSolutionWithServiceLevelAgreements(solutionId);
             if (solution is null)
                 return BadRequest($"No Solution found for Id: {solutionId}");
 
@@ -239,7 +239,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
             if (!ModelState.IsValid)
                 return View("AddEditServiceAvailabilityTimes", model);
 
-            var solution = await solutionsService.GetSolution(solutionId);
+            var solution = await solutionsService.GetSolutionWithServiceLevelAgreements(solutionId);
             if (solution is null)
                 return BadRequest($"No Solution found for Id: {solutionId}");
 
@@ -264,7 +264,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
         [HttpGet("edit-service-level-agreement/delete-service-availability-times/{serviceAvailabilityTimesId}")]
         public async Task<IActionResult> DeleteServiceAvailabilityTimes(CatalogueItemId solutionId, int serviceAvailabilityTimesId)
         {
-            var solution = await solutionsService.GetSolution(solutionId);
+            var solution = await solutionsService.GetSolutionWithServiceLevelAgreements(solutionId);
             if (solution is null)
                 return BadRequest($"No Solution found for Id: {solutionId}");
 
@@ -286,7 +286,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
             if (!ModelState.IsValid)
                 return View(model);
 
-            var solution = await solutionsService.GetSolution(solutionId);
+            var solution = await solutionsService.GetSolutionWithServiceLevelAgreements(solutionId);
             if (solution is null)
                 return BadRequest($"No Solution found for Id: {solutionId}");
 
@@ -302,7 +302,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
         [HttpGet("add-contact")]
         public async Task<IActionResult> AddContact(CatalogueItemId solutionId)
         {
-            var catalogueItem = await solutionsService.GetSolution(solutionId);
+            var catalogueItem = await solutionsService.GetSolutionWithServiceLevelAgreements(solutionId);
             if (catalogueItem is null)
                 return BadRequest($"No Solution found for Id: {solutionId}");
 
@@ -322,7 +322,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
                 return View("EditSLAContact", model);
             }
 
-            var catalogueItem = await solutionsService.GetSolution(solutionId);
+            var catalogueItem = await solutionsService.GetSolutionWithServiceLevelAgreements(solutionId);
             if (catalogueItem is null)
                 return BadRequest($"No Solution found for Id: {solutionId}");
 
@@ -343,7 +343,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
         [HttpGet("edit-contact/{contactId}")]
         public async Task<IActionResult> EditContact(CatalogueItemId solutionId, int contactId)
         {
-            var catalogueItem = await solutionsService.GetSolution(solutionId);
+            var catalogueItem = await solutionsService.GetSolutionWithServiceLevelAgreements(solutionId);
             if (catalogueItem is null)
                 return BadRequest($"No Solution found for Id: {solutionId}");
 
@@ -370,7 +370,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
                 return View("EditSLAContact", model);
             }
 
-            var catalogueItem = await solutionsService.GetSolution(solutionId);
+            var catalogueItem = await solutionsService.GetSolutionWithServiceLevelAgreements(solutionId);
             if (catalogueItem is null)
                 return BadRequest($"No Solution found for Id: {solutionId}");
 
@@ -395,7 +395,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
         [HttpGet("delete-contact/{contactId}")]
         public async Task<IActionResult> DeleteContact(CatalogueItemId solutionId, int contactId)
         {
-            var catalogueItem = await solutionsService.GetSolution(solutionId);
+            var catalogueItem = await solutionsService.GetSolutionWithServiceLevelAgreements(solutionId);
             if (catalogueItem is null)
                 return BadRequest($"No Solution found for Id: {solutionId}");
 
@@ -415,7 +415,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
         [HttpPost("delete-contact/{contactId}")]
         public async Task<IActionResult> DeleteContact(CatalogueItemId solutionId, int contactId, Models.ServiceLevelAgreements.EditSLAContactModel model)
         {
-            var catalogueItem = await solutionsService.GetSolution(solutionId);
+            var catalogueItem = await solutionsService.GetSolutionWithServiceLevelAgreements(solutionId);
             if (catalogueItem is null)
                 return BadRequest($"No Solution found for Id: {solutionId}");
 
@@ -430,7 +430,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
         [HttpGet("add-service-level")]
         public async Task<IActionResult> AddServiceLevel(CatalogueItemId solutionId)
         {
-            var catalogueItem = await solutionsService.GetSolution(solutionId);
+            var catalogueItem = await solutionsService.GetSolutionWithServiceLevelAgreements(solutionId);
             if (catalogueItem is null)
                 return BadRequest($"No Solution found for Id: {solutionId}");
 
@@ -448,7 +448,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
             if (!ModelState.IsValid)
                 return View("AddEditServiceLevel", model);
 
-            var catalogueItem = await solutionsService.GetSolution(solutionId);
+            var catalogueItem = await solutionsService.GetSolutionWithServiceLevelAgreements(solutionId);
             if (catalogueItem is null)
                 return BadRequest($"No Solution found for Id: {solutionId}");
 
@@ -468,7 +468,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
         [HttpGet("edit-service-level/{serviceLevelId}")]
         public async Task<IActionResult> EditServiceLevel(CatalogueItemId solutionId, int serviceLevelId)
         {
-            var catalogueItem = await solutionsService.GetSolution(solutionId);
+            var catalogueItem = await solutionsService.GetSolutionWithServiceLevelAgreements(solutionId);
             if (catalogueItem is null)
                 return BadRequest($"No Solution found for Id: {solutionId}");
 
@@ -491,7 +491,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
             if (!ModelState.IsValid)
                 return View("AddEditServiceLevel", model);
 
-            var catalogueItem = await solutionsService.GetSolution(solutionId);
+            var catalogueItem = await solutionsService.GetSolutionWithServiceLevelAgreements(solutionId);
             if (catalogueItem is null)
                 return BadRequest($"No Solution found for Id: {solutionId}");
 
@@ -514,7 +514,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
         [HttpGet("delete-service-level/{serviceLevelId}")]
         public async Task<IActionResult> DeleteServiceLevel(CatalogueItemId solutionId, int serviceLevelId)
         {
-            var catalogueItem = await solutionsService.GetSolution(solutionId);
+            var catalogueItem = await solutionsService.GetSolutionWithServiceLevelAgreements(solutionId);
             if (catalogueItem is null)
                 return BadRequest($"No Solution found for Id: {solutionId}");
 
@@ -536,7 +536,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
             if (!ModelState.IsValid)
                 return View(model);
 
-            var catalogueItem = await solutionsService.GetSolution(solutionId);
+            var catalogueItem = await solutionsService.GetSolutionWithServiceLevelAgreements(solutionId);
             if (catalogueItem is null)
                 return BadRequest($"No Solution found for Id: {solutionId}");
 

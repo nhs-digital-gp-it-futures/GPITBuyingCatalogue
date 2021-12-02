@@ -136,7 +136,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
             };
 
             mockSolutionsService
-                .Setup(s => s.GetSolution(catalogueItem.Id))
+                .Setup(s => s.GetSolutionThin(catalogueItem.Id))
                 .ReturnsAsync(catalogueItem);
 
             var actual = await listPriceController.AddListPrice(solutionId, editListPriceModel);
@@ -188,7 +188,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
             const int cataloguePriceId = int.MaxValue;
 
             mockSolutionsService
-               .Setup(s => s.GetSolution(catalogueItem.Id))
+               .Setup(s => s.GetSolutionThin(catalogueItem.Id))
                .ReturnsAsync(catalogueItem);
 
             var actual = await listPriceController.EditListPrice(catalogueItem.Id, cataloguePriceId);

@@ -51,12 +51,5 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.InteroperabilityMo
             SolutionName = catalogueItem.Name;
             CatalogueItemId = catalogueItem.Id;
         }
-
-        public TaskProgress Status() =>
-            !string.IsNullOrWhiteSpace(Link)
-            || IM1Integrations.Any()
-            || GpConnectIntegrations.Any()
-            ? TaskProgress.Completed
-            : TaskProgress.Optional;
     }
 }

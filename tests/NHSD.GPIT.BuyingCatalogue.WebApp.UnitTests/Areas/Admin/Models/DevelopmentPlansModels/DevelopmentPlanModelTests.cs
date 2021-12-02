@@ -30,27 +30,5 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Models.Developm
 
             actual.ParamName.Should().Be("catalogueItem");
         }
-
-        [Theory]
-        [AutoData]
-        public static void Status_LinkAdded_ReturnsCompleted(string link)
-        {
-            var model = new DevelopmentPlanModel { Link = link };
-
-            var actual = model.Status();
-
-            actual.Should().Be(TaskProgress.Completed);
-        }
-
-        [Theory]
-        [MemberData(nameof(InvalidStringData.TestData), MemberType = typeof(InvalidStringData))]
-        public static void Status_LinkInvalid_ReturnsOptional(string invalid)
-        {
-            var model = new DevelopmentPlanModel { Link = invalid };
-
-            var actual = model.Status();
-
-            actual.Should().Be(TaskProgress.Optional);
-        }
     }
 }

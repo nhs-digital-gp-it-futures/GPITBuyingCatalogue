@@ -23,7 +23,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Validators.ServiceLevelAg
 
         private async Task<bool> NotBeTheOnlyEntry(DeleteServiceLevelModel model, CancellationToken token)
         {
-            var catalogueItem = await solutionsService.GetSolution(model.SolutionId);
+            var catalogueItem = await solutionsService.GetSolutionWithServiceLevelAgreements(model.SolutionId);
 
             var isNotPublished = catalogueItem.PublishedStatus != PublicationStatus.Published;
 
