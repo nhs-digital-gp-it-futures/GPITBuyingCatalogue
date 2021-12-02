@@ -19,7 +19,8 @@ VALUES
 ('S63', 'Non-Functional Questions', 'Enables NHS Digital to assess the risk associated with the assessment of a solution against other overarching Standards.', 'https://gpitbjss.atlassian.net/wiki/spaces/GPITF/pages/1569980472/Non-Functional+Questions', 1),
 ('S65', 'Service Management', 'Supports suppliers in the delivery and management of services that enable their solutions to continue working.', 'https://gpitbjss.atlassian.net/wiki/spaces/GPITF/pages/1391133802/Service+Management', 1),
 ('S69', 'Testing', 'Ensures that a suppliers’ software delivery test processes are of sufficient quality and rigour.', 'https://gpitbjss.atlassian.net/wiki/spaces/GPITF/pages/1391133583/Testing', 1),
-('S28', 'Training', 'Enables NHS Digital to assess the risk associated with the assessment of a solution against other overarching Standards.', 'https://gpitbjss.atlassian.net/wiki/spaces/GPITF/pages/1391133846/Training', 1);
+('S28', 'Training', 'Enables NHS Digital to assess the risk associated with the assessment of a solution against other overarching Standards.', 'https://gpitbjss.atlassian.net/wiki/spaces/GPITF/pages/1391133846/Training', 1),
+('S32','Interoperability','Defines a comprehensive set of standards, interfaces and protocols that solutions will use when working together.','https://gpitbjss.atlassian.net/wiki/spaces/GPITF/pages/1391133681/Interoperability+Standard', 1);
 
 --Interoperability Standards
 INSERT INTO @Standards(Id,[Name],[Description],[Url],[StandardTypeId])
