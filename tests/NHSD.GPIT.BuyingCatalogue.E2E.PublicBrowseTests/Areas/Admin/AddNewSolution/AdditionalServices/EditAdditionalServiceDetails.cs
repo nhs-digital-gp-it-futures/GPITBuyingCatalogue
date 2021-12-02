@@ -40,7 +40,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.AddNewSolution.Addition
             CommonActions.ClearInputElement(CommonSelectors.Name);
             CommonActions.ClearInputElement(CommonSelectors.Description);
 
-            var name = TextGenerators.TextInputAddText(CommonSelectors.Name, 300);
+            var name = TextGenerators.TextInputAddText(CommonSelectors.Name, 255);
             var description = TextGenerators.TextInputAddText(CommonSelectors.Description, 1000);
 
             CommonActions.ClickSave();
