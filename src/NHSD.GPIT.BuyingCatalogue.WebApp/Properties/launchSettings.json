@@ -27,7 +27,7 @@
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development",
         "ASPNETCORE_HOSTINGSTARTUPASSEMBLIES": "Microsoft.AspNetCore.Mvc.Razor.RuntimeCompilation",
-        "BC_DB_CONNECTION": "Server=localhost,1432;Database=training-depersonalised;User=SA;password=Abc123Abc123;Integrated Security=false",
+        "BC_DB_CONNECTION": "Server=localhost,1432;Database=GPITBuyingCatalogue;User=SA;password=Abc123Abc123;Integrated Security=false",
         "APPINSIGHTS_INSTRUMENTATIONKEY": "",
         "BC_SMTP_HOST": "localhost",
         "BC_SMTP_PORT": "1081",
