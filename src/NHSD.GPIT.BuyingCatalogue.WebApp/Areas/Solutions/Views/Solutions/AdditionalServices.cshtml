@@ -19,7 +19,7 @@
         @foreach (var solution in Model.Services)
         {
             <nhs-table-row-container>
-                <nhs-table-cell><a href="@solution.Id">@solution.Name</a></nhs-table-cell>
+                <nhs-table-cell><a href="#@solution.Id">@solution.Name</a></nhs-table-cell>
                 <nhs-table-cell>
                     @foreach (var price in solution.CataloguePrices.Where(cp => cp.PublishedStatus == PublicationStatus.Published))
                     {
