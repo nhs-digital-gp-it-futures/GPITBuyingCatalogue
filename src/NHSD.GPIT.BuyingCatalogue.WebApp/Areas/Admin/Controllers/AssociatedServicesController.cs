@@ -41,7 +41,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
         [HttpGet]
         public async Task<IActionResult> AssociatedServices(CatalogueItemId solutionId)
         {
-            var solution = await solutionsService.GetSolutionThin(solutionId);
+            var solution = await solutionsService.GetSolutionWithServiceAssociations(solutionId);
             if (solution is null)
                 return BadRequest($"No Solution found for Id: {solutionId}");
 
