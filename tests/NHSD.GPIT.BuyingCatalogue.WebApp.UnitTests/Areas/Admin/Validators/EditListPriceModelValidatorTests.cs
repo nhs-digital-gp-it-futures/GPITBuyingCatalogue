@@ -156,27 +156,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators
 
         [Theory]
         [CommonAutoData]
-        public static async Task Validate_ProvisioningTypeDeclarativeWithNoTimeUnit_SetsModelErrorForProvisioningType(
-            CatalogueItem item,
-            EditListPriceModelValidator validator)
-        {
-            var model = new EditListPriceModel(item)
-            {
-                Price = 3.21M,
-                Unit = "per patient",
-                SelectedProvisioningType = ProvisioningType.Declarative,
-                DeclarativeTimeUnit = null,
-            };
-
-            var result = await validator.TestValidateAsync(model);
-
-            result
-                .ShouldHaveValidationErrorFor(m => m.DeclarativeTimeUnit)
-                .WithErrorMessage(EditListPriceModelValidator.TimeUnitErrorMessage);
-        }
-
-        [Theory]
-        [CommonAutoData]
         public static async Task Validate_ProvisioningTypeOnDemandWithNoTimeUnit_NoValidationError(
             CatalogueItem item,
             EditListPriceModelValidator validator)

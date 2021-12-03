@@ -78,6 +78,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
                     .ThenInclude(s => s.MarketingContacts)
                 .Include(ci => ci.Supplier)
                     .ThenInclude(s => s.SupplierContacts)
+                .Include(ci => ci.CatalogueItemContacts)
                 .SingleOrDefaultAsync(ci => ci.Id == solutionId);
 
         public async Task<CatalogueItem> GetSolutionWithWorkOffPlans(CatalogueItemId solutionId) =>

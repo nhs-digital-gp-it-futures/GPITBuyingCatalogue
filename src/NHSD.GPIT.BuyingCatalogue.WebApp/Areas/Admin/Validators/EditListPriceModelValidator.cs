@@ -43,12 +43,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Validators
                 .NotNull()
                 .WithMessage("Select a provisioning type");
 
-            RuleFor(p => p.DeclarativeTimeUnit)
-                .Cascade(CascadeMode.Stop)
-                .NotNull()
-                .WithMessage(TimeUnitErrorMessage)
-                .When(p => Equals(p.SelectedProvisioningType, ProvisioningType.Declarative));
-
             RuleFor(p => p)
                 .Cascade(CascadeMode.Stop)
                 .NotNull()
