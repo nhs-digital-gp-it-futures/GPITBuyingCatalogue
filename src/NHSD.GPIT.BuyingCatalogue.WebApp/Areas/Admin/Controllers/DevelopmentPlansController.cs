@@ -54,7 +54,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
                 return BadRequest($"No Solution found for Id: {solutionId}");
 
             if (!ModelState.IsValid)
+            {
+                model.WorkOffPlans = solution.Solution.WorkOffPlans;
                 return View(model);
+            }
 
             await developmentPlansService.SaveDevelopmentPlans(solutionId, model.Link);
 
