@@ -578,7 +578,7 @@ VALUES
 ('E00001', 'Conduct online consultation', @capabilityId, 1, 1),
 ('E00002', 'Conduct online consultation with a proxy', @capabilityId, 3, 1),
 ('E00003', 'Patient or service user requests for online consultation support and provides information', @capabilityId, 3, 1),
-('E00004', 'proxy requests for online consultation support and provides information', @capabilityId, 3, 1),
+('E00004', 'Proxy requests for online consultation support and provides information', @capabilityId, 3, 1),
 ('E00005', 'Respond to Online Consultation requests for support from patients or service users', @capabilityId, 3, 1),
 ('E00006', 'Respond to Online Consultation requests for support from proxies', @capabilityId, 3, 1),
 ('E00007', 'Include attachments in online consultation requests', @capabilityId, 3, 1),
