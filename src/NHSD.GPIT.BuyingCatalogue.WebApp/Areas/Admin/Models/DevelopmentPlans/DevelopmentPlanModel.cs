@@ -3,7 +3,6 @@ using System.ComponentModel.DataAnnotations;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
-using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Enums;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Models;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.DevelopmentPlans
@@ -31,6 +30,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.DevelopmentPlans
 
         public string SolutionName { get; set; }
 
-        public ICollection<WorkOffPlan> WorkOffPlans { get; init; }
+        public ICollection<WorkOffPlan> WorkOffPlans { get; set; }
     }
 }

@@ -78,6 +78,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
                     .ThenInclude(s => s.MarketingContacts)
                 .Include(ci => ci.Supplier)
                     .ThenInclude(s => s.SupplierContacts)
+                .Include(ci => ci.CatalogueItemContacts)
                 .SingleOrDefaultAsync(ci => ci.Id == solutionId);
 
         public async Task<CatalogueItem> GetSolutionWithWorkOffPlans(CatalogueItemId solutionId) =>
@@ -136,7 +137,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
                     CapabilitiesAndEpics = ci.CatalogueItemCapabilities.Any()
                         ? TaskProgress.Completed
                         : TaskProgress.NotStarted,
-                    SupplierDetails = ci.Supplier.SupplierContacts.Any()
+                    SupplierDetails = ci.CatalogueItemContacts.Any()
                         ? TaskProgress.Completed
                         : TaskProgress.NotStarted,
                     ServiceLevelAgreement = (ci.Solution.ServiceLevelAgreement != null &&
@@ -483,13 +484,26 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
         {
             var solution = await dbContext.CatalogueItems.Include(i => i.CatalogueItemContacts).SingleAsync(i => i.Id == solutionId);
 
-            var staleContacts = solution.CatalogueItemContacts.Except(supplierContacts);
+            var staleContacts = solution
+                .CatalogueItemContacts
+                .Where(c => !supplierContacts.Any(sc =>
+                           sc.Id == c.Id
+                        && sc.FirstName.EqualsIgnoreCase(c.FirstName)
+                        && sc.LastName.EqualsIgnoreCase(c.LastName)
+                        && sc.SupplierId == c.SupplierId));
+
+            var newContacts = supplierContacts.Where(sc => !solution.CatalogueItemContacts.Any(c =>
+                           sc.Id == c.Id
+                        && sc.FirstName.EqualsIgnoreCase(c.FirstName)
+                        && sc.LastName.EqualsIgnoreCase(c.LastName)
+                        && sc.SupplierId == c.SupplierId));
+
             foreach (var staleContact in staleContacts.ToList())
             {
                 solution.CatalogueItemContacts.Remove(staleContact);
             }
 
-            solution.CatalogueItemContacts = supplierContacts;
+            solution.CatalogueItemContacts.AddRange(newContacts);
 
             await dbContext.SaveChangesAsync();
         }

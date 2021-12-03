@@ -52,11 +52,6 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.AddNewSolution.Associat
                 .BeTrue();
 
             CommonActions
-                .ElementIsNotDisplayed(ListPricesObjects.DeclarativeTimeInput)
-                .Should()
-                .BeTrue();
-
-            CommonActions
                 .ElementIsNotDisplayed(ListPricesObjects.OnDemandTimeInput)
                 .Should()
                 .BeTrue();

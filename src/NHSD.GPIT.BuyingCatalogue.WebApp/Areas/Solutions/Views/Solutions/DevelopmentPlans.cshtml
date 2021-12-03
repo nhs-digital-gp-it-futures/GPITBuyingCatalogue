@@ -1,5 +1,4 @@
-﻿@using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models
-@using System.Linq;
+﻿@using System.Linq;
 @model NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models.DevelopmentPlansModel;
 @{ 
     var roadmapTitle = string.IsNullOrWhiteSpace(Model.RoadmapLink) ? "Roadmap" : "Roadmaps";
@@ -40,7 +39,7 @@
             {
                 <nhs-table-row-container>
                     <nhs-table-cell>@workOffPlan.Details</nhs-table-cell>
-                    <nhs-table-cell>@workOffPlan.CompletionDate.ToShortDateString()</nhs-table-cell>
+                    <nhs-table-cell>@workOffPlan.CompletionDate.ToString("dd/MM/yyyy", System.Globalization.CultureInfo.InvariantCulture)</nhs-table-cell>
                 </nhs-table-row-container>
             }
         </nhs-table>

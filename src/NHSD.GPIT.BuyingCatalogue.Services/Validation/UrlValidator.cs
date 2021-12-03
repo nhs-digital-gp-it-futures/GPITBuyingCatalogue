@@ -27,7 +27,9 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Validation
 
             try
             {
-                using var httpRequestMessage = new HttpRequestMessage(HttpMethod.Head, parsedUri.GetLeftPart(UriPartial.Path));
+                using var httpRequestMessage = new HttpRequestMessage(HttpMethod.Get, parsedUri.GetLeftPart(UriPartial.Path));
+                httpRequestMessage.Headers.UserAgent.Add(new System.Net.Http.Headers.ProductInfoHeaderValue("BuyingCatalogue", "1.0"));
+
                 using var cancellationTokenSource = new CancellationTokenSource(TimeSpan.FromSeconds(3));
                 using var response = await httpClient.SendAsync(httpRequestMessage, HttpCompletionOption.ResponseHeadersRead, cancellationTokenSource.Token);
 

@@ -767,6 +767,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
             var solution = await solutionsService.GetSolutionWithSupplierDetails(solutionId);
             if (solution is null)
                 return BadRequest($"No Solution found for Id: {solutionId}");
+
             var filteredSelectedContacts = model.AvailableSupplierContacts.Where(sc => sc.Selected).ToList();
             var selectedContacts = solution.Supplier.SupplierContacts.Join(
                 filteredSelectedContacts,
