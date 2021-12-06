@@ -43,7 +43,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Models.ListPric
         [CommonInlineAutoData(ProvisioningType.Patient, TimeUnit.PerMonth, TimeUnit.PerMonth, TimeUnit.PerYear)]
         [CommonInlineAutoData(ProvisioningType.Declarative, TimeUnit.PerMonth, TimeUnit.PerYear, TimeUnit.PerMonth)]
         [CommonInlineAutoData(ProvisioningType.OnDemand, TimeUnit.PerMonth, TimeUnit.PerYear, TimeUnit.PerYear)]
-        public static void GetTimeUnit_WithPatientProvisioningType_ReturnsTimeUnit(
+        public static void GetTimeUnit_SolutionWithProvisioningType_ReturnsTimeUnit(
             ProvisioningType provisioningType,
             TimeUnit? declarativeTimeUnit,
             TimeUnit? onDemandTimeUnit,
@@ -55,6 +55,31 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Models.ListPric
                 SelectedProvisioningType = provisioningType,
                 DeclarativeTimeUnit = declarativeTimeUnit,
                 OnDemandTimeUnit = onDemandTimeUnit,
+                CatalogueItemType = CatalogueItemType.Solution,
+            };
+
+            var actualTimeUnit = editListPriceModel.GetTimeUnit(provisioningType);
+
+            actualTimeUnit.Should().Be(expectedTimeUnit);
+        }
+
+        [Theory]
+        [CommonInlineAutoData(ProvisioningType.Patient, TimeUnit.PerMonth, TimeUnit.PerMonth, TimeUnit.PerYear)]
+        [CommonInlineAutoData(ProvisioningType.Declarative, null, TimeUnit.PerYear, null)]
+        [CommonInlineAutoData(ProvisioningType.OnDemand, TimeUnit.PerMonth, TimeUnit.PerYear, TimeUnit.PerYear)]
+        public static void GetTimeUnit_AdditionalServiceWithProvisioningType_ReturnsTimeUnit(
+            ProvisioningType provisioningType,
+            TimeUnit? declarativeTimeUnit,
+            TimeUnit? onDemandTimeUnit,
+            TimeUnit? expectedTimeUnit,
+            CatalogueItem catalogueItem)
+        {
+            var editListPriceModel = new EditListPriceModel(catalogueItem)
+            {
+                SelectedProvisioningType = provisioningType,
+                DeclarativeTimeUnit = declarativeTimeUnit,
+                OnDemandTimeUnit = onDemandTimeUnit,
+                CatalogueItemType = CatalogueItemType.AdditionalService,
             };
 
             var actualTimeUnit = editListPriceModel.GetTimeUnit(provisioningType);
