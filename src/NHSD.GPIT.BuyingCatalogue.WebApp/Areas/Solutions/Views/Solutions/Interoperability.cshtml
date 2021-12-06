@@ -92,13 +92,16 @@
                 }
             }
 
-            <h2>Supplier asserted integrations</h2>
-            <p>Supplier asserted integrations are interoperability interfaces prepared by a supplier and are not specified or assured by the NHS.</p>
-            <p>
-                <a href="https://www.caltechhealth.com/products/partner-products/" target="_blank">
-                    View the Supplier Asserted Integrations for this Catalogue Solution
-                </a>
-            </p>
+            @if (!string.IsNullOrWhiteSpace(Model.IntegrationsUrl))
+            {
+                <h2>Supplier asserted integrations</h2>
+                <p>Supplier asserted integrations are interoperability interfaces prepared by a supplier and are not specified or assured by the NHS.</p>
+                <p>
+                    <a href="@Model.IntegrationsUrl" target="_blank">
+                        View the Supplier Asserted Integrations for this Catalogue Solution
+                    </a>
+                </p>
+            }
         </div>
     </div>
 </article>

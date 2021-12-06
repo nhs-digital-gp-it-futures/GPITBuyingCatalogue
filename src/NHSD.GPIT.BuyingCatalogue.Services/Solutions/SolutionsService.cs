@@ -228,7 +228,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
                         add.CatalogueItem.PublishedStatus == PublicationStatus.Published),
                     ShowAssociatedServices = ci.SupplierServiceAssociations.Any(ssa =>
                         ssa.AssociatedService.CatalogueItem.PublishedStatus == PublicationStatus.Published),
-                    ShowInteroperability = !string.IsNullOrWhiteSpace(ci.Solution.Integrations),
+                    ShowInteroperability = !string.IsNullOrWhiteSpace(ci.Solution.Integrations) || !string.IsNullOrWhiteSpace(ci.Solution.IntegrationsUrl),
                     ShowImplementation = !string.IsNullOrWhiteSpace(ci.Solution.ImplementationDetail),
                 }).SingleOrDefaultAsync();
 

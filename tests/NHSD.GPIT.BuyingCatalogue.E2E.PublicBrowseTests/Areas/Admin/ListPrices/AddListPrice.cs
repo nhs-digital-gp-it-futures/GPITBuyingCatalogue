@@ -49,6 +49,11 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.ListPrices
                 .BeTrue();
 
             CommonActions
+                .ElementIsNotDisplayed(ListPricesObjects.DeclarativeTimeInput)
+                .Should()
+                .BeTrue();
+
+            CommonActions
                 .ElementIsNotDisplayed(ListPricesObjects.OnDemandTimeInput)
                 .Should()
                 .BeTrue();
@@ -97,6 +102,25 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.ListPrices
             var actualNumberOfListPrices = (await GetCataloguePrice()).Count;
 
             actualNumberOfListPrices.Should().Be(expectedNumberOfListPrices);
+        }
+
+        [Fact]
+        public void AddListPrice_DeclarativeProvisioningType_SelectListDisplayed()
+        {
+            var provisioningType = ProvisioningType.Declarative.Name();
+
+            CommonActions
+                .ElementIsDisplayed(ListPricesObjects.DeclarativeTimeInput)
+                .Should()
+                .BeFalse();
+
+            CommonActions
+                .ClickRadioButtonWithText(provisioningType);
+
+            CommonActions
+                .ElementIsDisplayed(ListPricesObjects.DeclarativeTimeInput)
+                .Should()
+                .BeTrue();
         }
 
         [Fact]

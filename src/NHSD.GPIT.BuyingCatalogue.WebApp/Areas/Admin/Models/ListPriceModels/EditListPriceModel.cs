@@ -33,7 +33,11 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.ListPriceModels
             SelectedProvisioningType = cataloguePrice.ProvisioningType;
             Title = $"{catalogueItem.Name} list price";
 
-            if (cataloguePrice.ProvisioningType == ProvisioningType.OnDemand)
+            if (CatalogueItemType == CatalogueItemType.Solution && cataloguePrice.ProvisioningType == ProvisioningType.Declarative)
+            {
+                DeclarativeTimeUnit = cataloguePrice.TimeUnit;
+            }
+            else if (cataloguePrice.ProvisioningType == ProvisioningType.OnDemand)
             {
                 OnDemandTimeUnit = cataloguePrice.TimeUnit;
             }
@@ -68,6 +72,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.ListPriceModels
 
         public ProvisioningType? SelectedProvisioningType { get; init; }
 
+        public TimeUnit? DeclarativeTimeUnit { get; init; }
+
         public TimeUnit? OnDemandTimeUnit { get; init; }
 
         public decimal? Price { get; init; }
@@ -95,7 +101,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.ListPriceModels
             => provisioningType switch
             {
                 ProvisioningType.Patient => TimeUnit.PerYear,
-                ProvisioningType.Declarative => TimeUnit.PerMonth,
+                ProvisioningType.Declarative when CatalogueItemType != CatalogueItemType.Solution => null,
+                ProvisioningType.Declarative when DeclarativeTimeUnit.HasValue => DeclarativeTimeUnit.Value,
                 ProvisioningType.OnDemand when OnDemandTimeUnit.HasValue => OnDemandTimeUnit.Value,
                 _ => null,
             };
