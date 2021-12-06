@@ -1,4 +1,5 @@
 ﻿using System;
+using System.ComponentModel.DataAnnotations;
 using Microsoft.AspNetCore.Mvc;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
@@ -36,6 +37,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.ServiceLevelAgreem
 
         public int? ServiceAvailabilityTimesId { get; init; }
 
+        [StringLength(100)]
         public string SupportType { get; init; }
 
         [ModelBinder(BinderType = typeof(TimeInputModelBinder))]
@@ -44,6 +46,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.ServiceLevelAgreem
         [ModelBinder(BinderType = typeof(TimeInputModelBinder))]
         public DateTime? Until { get; init; }
 
+        [StringLength(1000)]
         public string ApplicableDays { get; init; }
 
         public bool CanDelete { get; init; }
