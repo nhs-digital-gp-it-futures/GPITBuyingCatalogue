@@ -21,6 +21,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models
 
             var integrations = catalogueItem.Solution?.GetIntegrations();
 
+            IntegrationsUrl = catalogueItem.Solution.IntegrationsUrl;
             IM1Integrations = integrations.Where(i => i.IntegrationType.EqualsIgnoreCase("IM1")).ToArray();
             IM1IntegrationQualifiers = IM1Integrations.Select(i => i.Qualifier).Distinct().ToArray();
             GpConnectIntegrations = integrations.Where(i => i.IntegrationType.EqualsIgnoreCase("GP Connect")).ToArray();
@@ -34,6 +35,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models
         public Integration[] GpConnectIntegrations { get; set; }
 
         public string[] GpConnectIntegrationQualifiers { get; set; }
+
+        public string IntegrationsUrl { get; set; }
 
         public override int Index => 7;
     }
