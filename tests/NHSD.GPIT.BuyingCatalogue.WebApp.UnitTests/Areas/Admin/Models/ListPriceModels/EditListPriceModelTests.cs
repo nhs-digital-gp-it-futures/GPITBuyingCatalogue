@@ -40,11 +40,12 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Models.ListPric
         }
 
         [Theory]
-        [CommonInlineAutoData(ProvisioningType.Patient, TimeUnit.PerMonth, TimeUnit.PerYear)]
-        [CommonInlineAutoData(ProvisioningType.Declarative, TimeUnit.PerYear, TimeUnit.PerMonth)]
-        [CommonInlineAutoData(ProvisioningType.OnDemand, TimeUnit.PerYear, TimeUnit.PerYear)]
-        public static void GetTimeUnit_WithProvisioningType_ReturnsTimeUnit(
+        [CommonInlineAutoData(ProvisioningType.Patient, TimeUnit.PerMonth, TimeUnit.PerMonth, TimeUnit.PerYear)]
+        [CommonInlineAutoData(ProvisioningType.Declarative, TimeUnit.PerMonth, TimeUnit.PerYear, TimeUnit.PerMonth)]
+        [CommonInlineAutoData(ProvisioningType.OnDemand, TimeUnit.PerMonth, TimeUnit.PerYear, TimeUnit.PerYear)]
+        public static void GetTimeUnit_WithPatientProvisioningType_ReturnsTimeUnit(
             ProvisioningType provisioningType,
+            TimeUnit? declarativeTimeUnit,
             TimeUnit? onDemandTimeUnit,
             TimeUnit? expectedTimeUnit,
             CatalogueItem catalogueItem)
@@ -52,6 +53,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Models.ListPric
             var editListPriceModel = new EditListPriceModel(catalogueItem)
             {
                 SelectedProvisioningType = provisioningType,
+                DeclarativeTimeUnit = declarativeTimeUnit,
                 OnDemandTimeUnit = onDemandTimeUnit,
             };
 
