@@ -252,7 +252,7 @@ namespace NHSD.GPIT.BuyingCatalogue.FinalMigration
             using var sqlConnection = new SqlConnection(ORDAPIConnectionString);
             sqlConnection.Open();
             validLegacyOrderItemRecipients = sqlConnection.Query<LegacyModels.OrderItemRecipient>($@"select * from OrderItemRecipients
-                where OrderId in (select Id from [Order] WHERE LastUpdatedByName NOT IN ({TestUsers}))").ToList();
+                where OrderId in (select Id from [Order] WHERE IsDeleted = 0 and LastUpdatedByName NOT IN ({TestUsers}))").ToList();
             System.Diagnostics.Trace.WriteLine($"Loaded {validLegacyOrderItemRecipients.Count} order item recipients from legacy database");
         }
 

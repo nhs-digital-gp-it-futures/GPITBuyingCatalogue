@@ -116,6 +116,8 @@ namespace NHSD.GPIT.BuyingCatalogue.FinalMigration
                 currentUser.FirstName.Should().Be(legacyUser.FirstName);
                 currentUser.LastName.Should().Be(legacyUser.LastName);
             }
+
+            System.Diagnostics.Trace.WriteLine("All legacy users accounted for. Any previous message re: count mismatch likely due to new users in destination db");
         }
 
         private void ReconcileOrders()
@@ -125,7 +127,7 @@ namespace NHSD.GPIT.BuyingCatalogue.FinalMigration
             using var context = GetContext();
             var currentOrganisations = context.Organisations.ToList();
             var currentUsers = context.AspNetUsers.ToList();
-            var currentOrders = context.Orders.IgnoreQueryFilters().Include(x => x.OrderingPartyContact).Include(x => x.SupplierContact).ToList();
+            var currentOrders = context.Orders.Include(x => x.OrderingPartyContact).Include(x => x.SupplierContact).ToList();
 
             CompareCount("Orders", currentOrders.Count, validLegacyOrders.Count);
 
