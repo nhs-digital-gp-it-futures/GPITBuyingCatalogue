@@ -25,7 +25,7 @@
             <input type="hidden" asp-for="@Model.BackLink" />
             <input type="hidden" asp-for="@Model.BackLinkText" />
 
-            @if (Model.AssociatedServices.Any())
+            @if (Model.SelectableAssociatedServices.Any())
             {
                 <nhs-table data-test-id="associated-services-table" label-text="Associated Services available">
                     <nhs-table-column>
@@ -51,6 +51,10 @@
                                         <nhs-checkbox asp-for="@Model.SelectableAssociatedServices[i].Selected"
                                                       hidden-input="@Model.SelectableAssociatedServices[i].CatalogueItemId" />
                                     </nhs-checkbox-container>
+                                }
+                                else
+                                {
+                                    <input type="hidden" asp-for="@Model.SelectableAssociatedServices[i].CatalogueItemId" />
                                 }
                             </nhs-table-cell>
                             <nhs-table-cell>
