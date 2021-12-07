@@ -1,4 +1,5 @@
-﻿@using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models 
+﻿@using System.Linq; 
+@using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models 
 @using NHSD.GPIT.BuyingCatalogue.EntityFramework.Extensions
 @using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.ListPriceModels
 @model EditListPriceModel
@@ -49,6 +50,18 @@
                             <nhs-select asp-for="DeclarativeTimeUnit"
                                         asp-items="timeUnitsSelectList"
                                         label-text="Unit of time"
+                                        label-hint="Select the billing period for this list price." />
+                        }
+                        else if (Model.CatalogueItemType == CatalogueItemType.AdditionalService)
+                        {
+                            var declarativeSelectList = new SelectList(
+                                timeUnitsSelectList.Where(sl => !string.Equals(sl.Value, TimeUnit.PerYear.ToString())),
+                                "Value",
+                                "Text");
+
+                            <nhs-select asp-for="DeclarativeTimeUnit"
+                                        asp-items="declarativeSelectList"
+                                        label-text="Unit of time (optional)"
                                         label-hint="Select the billing period for this list price." />
                         }
                     </nhs-radio-button>

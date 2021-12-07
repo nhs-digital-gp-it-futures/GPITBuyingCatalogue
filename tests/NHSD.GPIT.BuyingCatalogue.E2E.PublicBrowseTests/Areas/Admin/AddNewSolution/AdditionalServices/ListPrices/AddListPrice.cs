@@ -53,7 +53,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.AddNewSolution.Addition
             CommonActions
                 .ElementExists(ListPricesObjects.DeclarativeTimeInput)
                 .Should()
-                .BeFalse();
+                .BeTrue();
 
             CommonActions
                 .ElementIsNotDisplayed(ListPricesObjects.OnDemandTimeInput)
@@ -115,9 +115,9 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.AddNewSolution.Addition
                 .ClickRadioButtonWithText(provisioningType);
 
             CommonActions
-                .ElementExists(ListPricesObjects.DeclarativeTimeInput)
+                .ElementIsDisplayed(ListPricesObjects.DeclarativeTimeInput)
                 .Should()
-                .BeFalse();
+                .BeTrue();
         }
 
         [Fact]
