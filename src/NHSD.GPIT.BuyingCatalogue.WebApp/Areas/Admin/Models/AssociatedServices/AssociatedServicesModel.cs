@@ -23,13 +23,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.AssociatedServices
                 CatalogueItemId = s.AssociatedService.CatalogueItemId,
                 Selected = catalogueItem.SupplierServiceAssociations.Any(ssa => ssa.AssociatedServiceId == s.Id),
             }).ToList();
-            AssociatedServices = associatedServices;
         }
 
         public CatalogueItem Solution { get; }
 
         public List<SelectableAssociatedService> SelectableAssociatedServices { get; } = new();
-
-        public IReadOnlyList<CatalogueItem> AssociatedServices { get; }
     }
 }
