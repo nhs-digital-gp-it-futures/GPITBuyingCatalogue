@@ -14,11 +14,11 @@
 
         public static bool ShowClientApplications => true;
 
-        public static bool ShowHosting => true;
-
         public static bool ShowServiceLevelAgreements => true;
 
         public static bool ShowSupplierDetails => true;
+
+        public bool ShowHosting { get; init; }
 
         public bool ShowFeatures { get; init; }
 

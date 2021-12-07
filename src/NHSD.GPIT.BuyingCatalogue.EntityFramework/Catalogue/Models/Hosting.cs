@@ -9,5 +9,11 @@
         public HybridHostingType HybridHostingType { get; set; } = new();
 
         public OnPremise OnPremise { get; set; } = new();
+
+        public bool IsValid()
+            => PublicCloud.IsValid()
+               || PrivateCloud.IsValid()
+               || HybridHostingType.IsValid()
+               || OnPremise.IsValid();
     }
 }

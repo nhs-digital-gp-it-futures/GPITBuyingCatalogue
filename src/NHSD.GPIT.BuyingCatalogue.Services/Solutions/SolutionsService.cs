@@ -128,7 +128,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
                     ClientApplicationType = !string.IsNullOrEmpty(ci.Solution.ClientApplication)
                         ? TaskProgress.Completed
                         : TaskProgress.NotStarted,
-                    HostingType = ci.Solution.Hosting != null
+                    HostingType = ci.Solution.Hosting != null && ci.Solution.Hosting.IsValid()
                         ? TaskProgress.Completed
                         : TaskProgress.NotStarted,
                     DevelopmentPlans = ci.Solution.WorkOffPlans.Any()
@@ -230,6 +230,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
                         ssa.AssociatedService.CatalogueItem.PublishedStatus == PublicationStatus.Published),
                     ShowInteroperability = !string.IsNullOrWhiteSpace(ci.Solution.Integrations) || !string.IsNullOrWhiteSpace(ci.Solution.IntegrationsUrl),
                     ShowImplementation = !string.IsNullOrWhiteSpace(ci.Solution.ImplementationDetail),
+                    ShowHosting = ci.Solution.Hosting != null && ci.Solution.Hosting.IsValid(),
                 }).SingleOrDefaultAsync();
 
         public async Task<List<CatalogueItem>> GetPublishedAdditionalServicesForSolution(CatalogueItemId solutionId) =>
