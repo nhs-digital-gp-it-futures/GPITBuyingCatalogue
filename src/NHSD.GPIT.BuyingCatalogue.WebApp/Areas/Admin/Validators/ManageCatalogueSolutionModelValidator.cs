@@ -34,7 +34,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Validators
             {
                 model.DescriptionStatus,
                 model.ClientApplicationTypeStatus,
-                model.HostingTypeStatus,
                 model.ListPriceStatus,
                 model.SupplierDetailsStatus,
                 model.CapabilitiesStatus,

@@ -15,5 +15,7 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models
 
         [StringLength(500)]
         public string Summary { get; set; }
+
+        public bool IsValid() => !string.IsNullOrWhiteSpace(Summary) && !string.IsNullOrWhiteSpace(HostingModel);
     }
 }

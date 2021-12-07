@@ -163,7 +163,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models
                     Action = nameof(SolutionsController.HostingType),
                     Controller = ControllerName,
                     Name = "Hosting type",
-                    Show = CatalogueItemContentStatus.ShowHosting,
+                    Show = contentStatus.ShowHosting,
                 },
                 new()
                 {
