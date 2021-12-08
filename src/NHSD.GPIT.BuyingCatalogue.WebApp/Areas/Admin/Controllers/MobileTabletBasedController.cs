@@ -36,11 +36,11 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
             {
                 BackLink = clientApplication?.HasClientApplicationType(ClientApplicationType.MobileTablet) ?? false
                            ? Url.Action(
-                               nameof(CatalogueSolutionsController.AddApplicationType),
+                               nameof(CatalogueSolutionsController.ClientApplicationType),
                                typeof(CatalogueSolutionsController).ControllerName(),
                                new { solutionId })
                            : Url.Action(
-                               nameof(CatalogueSolutionsController.ClientApplicationType),
+                               nameof(CatalogueSolutionsController.AddApplicationType),
                                typeof(CatalogueSolutionsController).ControllerName(),
                                new { solutionId }),
             };
