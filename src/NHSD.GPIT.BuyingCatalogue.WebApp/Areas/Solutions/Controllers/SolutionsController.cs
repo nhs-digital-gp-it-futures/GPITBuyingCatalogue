@@ -6,6 +6,7 @@ using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.Framework.Constants;
 using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
+using NHSD.GPIT.BuyingCatalogue.ServiceContracts.AdditionalServices;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Caching;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Models;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions;
@@ -19,15 +20,18 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers
     public sealed class SolutionsController : Controller
     {
         private readonly ISolutionsService solutionsService;
+        private readonly IAdditionalServicesService additionalServicesService;
         private readonly ISolutionsFilterService solutionsFilterService;
         private readonly IFilterCache filterCache;
 
         public SolutionsController(
             ISolutionsService solutionsService,
+            IAdditionalServicesService additionalServicesService,
             IFilterCache filterCache,
             ISolutionsFilterService solutionsFilterService)
         {
             this.solutionsService = solutionsService ?? throw new ArgumentNullException(nameof(solutionsService));
+            this.additionalServicesService = additionalServicesService ?? throw new ArgumentNullException(nameof(additionalServicesService));
             this.filterCache = filterCache ?? throw new ArgumentNullException(nameof(filterCache));
             this.solutionsFilterService = solutionsFilterService ?? throw new ArgumentNullException(nameof(solutionsFilterService));
         }
@@ -160,7 +164,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers
             if (solution.PublishedStatus == PublicationStatus.Suspended)
                 return RedirectToAction(nameof(Description), new { solutionId });
 
-            var item = await solutionsService.GetSolutionWithCapabilities(additionalServiceId);
+            var item = await additionalServicesService.GetAdditionalServiceWithCapabilities(additionalServiceId);
             if (item is null)
                 return BadRequest($"No Catalogue Item found for Id: {additionalServiceId}");
 
@@ -173,8 +177,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers
                     typeof(SolutionsController).ControllerName(),
                     new { solutionId }),
                 BackLinkText = NavBaseModel.BackLinkTextDefault,
-                Name = item.CatalogueItemName(additionalServiceId),
-                Description = item.AdditionalServiceDescription(additionalServiceId),
+                Name = item.Name,
+                Description = item.AdditionalService.FullDescription,
             });
         }
 
