@@ -12,7 +12,7 @@
       "commandName": "IISExpress",
       "launchBrowser": true,
       "environmentVariables": {
-        "ASPNETCORE_ENVIRONMENT": "Development",
+        "ASPNETCORE_ENVIRONMENT": "development",
         "ASPNETCORE_HOSTINGSTARTUPASSEMBLIES": "Microsoft.AspNetCore.Mvc.Razor.RuntimeCompilation",
         "BC_DB_CONNECTION": "Server=localhost,1432;Database=GPITBuyingCatalogue;User=SA;password=Abc123Abc123;Integrated Security=false",
         "APPINSIGHTS_INSTRUMENTATIONKEY": "",
@@ -25,7 +25,7 @@
       "commandName": "Project",
       "launchBrowser": true,
       "environmentVariables": {
-        "ASPNETCORE_ENVIRONMENT": "Development",
+        "ASPNETCORE_ENVIRONMENT": "development",
         "ASPNETCORE_HOSTINGSTARTUPASSEMBLIES": "Microsoft.AspNetCore.Mvc.Razor.RuntimeCompilation",
         "BC_DB_CONNECTION": "Server=localhost,1432;Database=GPITBuyingCatalogue;User=SA;password=Abc123Abc123;Integrated Security=false",
         "APPINSIGHTS_INSTRUMENTATIONKEY": "",
@@ -43,7 +43,7 @@
       "publishAllPorts": true,
       "useSSL": true,
       "environmentVariables": {
-        "ASPNETCORE_ENVIRONMENT": "Development",
+        "ASPNETCORE_ENVIRONMENT": "development",
         "ASPNETCORE_HOSTINGSTARTUPASSEMBLIES": "Microsoft.AspNetCore.Mvc.Razor.RuntimeCompilation",
         "BC_DB_CONNECTION": "Server=host.docker.internal,1432;Database=GPITBuyingCatalogue;User=SA;password=Abc123Abc123;Integrated Security=false",
         "APPINSIGHTS_INSTRUMENTATIONKEY": "",
