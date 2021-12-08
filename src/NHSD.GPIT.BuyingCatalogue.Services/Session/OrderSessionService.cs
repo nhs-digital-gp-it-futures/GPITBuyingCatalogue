@@ -99,7 +99,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Session
 
             if (state is null)
             {
-                var order = await orderService.GetOrder(callOffId);
+                var order = await orderService.GetOrderThin(callOffId);
                 var solution = await solutionsService.GetSolutionListPrices(orderItem.CatalogueItemId);
 
                 state = new CreateOrderItemModel

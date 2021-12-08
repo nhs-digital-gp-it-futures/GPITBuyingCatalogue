@@ -48,7 +48,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers
         {
             var expectedViewData = new OrderingPartyModel(odsCode, order, organisation);
 
-            orderServiceMock.Setup(s => s.GetOrder(order.CallOffId)).ReturnsAsync(order);
+            orderServiceMock.Setup(s => s.GetOrderThin(order.CallOffId)).ReturnsAsync(order);
             organisationServiceMock.Setup(s => s.GetOrganisationByOdsCode(odsCode)).ReturnsAsync(organisation);
 
             var actualResult = await controller.OrderingParty(odsCode, order.CallOffId);

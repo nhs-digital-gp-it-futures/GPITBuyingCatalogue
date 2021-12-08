@@ -28,7 +28,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
         [HttpGet]
         public async Task<IActionResult> Supplier(string odsCode, CallOffId callOffId)
         {
-            var order = await orderService.GetOrder(callOffId);
+            var order = await orderService.GetOrderWithSupplier(callOffId);
 
             if (order.Supplier is null)
             {
@@ -72,7 +72,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
         [HttpGet("search")]
         public async Task<IActionResult> SupplierSearch(string odsCode, CallOffId callOffId)
         {
-            var order = await orderService.GetOrder(callOffId);
+            var order = await orderService.GetOrderWithSupplier(callOffId);
 
             if (order.Supplier is not null)
             {

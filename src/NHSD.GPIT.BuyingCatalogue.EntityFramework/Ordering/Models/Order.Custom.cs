@@ -29,7 +29,6 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models
 
         public void Complete()
         {
-            // TODO - review error handling in OAPI
             OrderStatus = OrderStatus.Complete;
             completed = DateTime.UtcNow;
         }

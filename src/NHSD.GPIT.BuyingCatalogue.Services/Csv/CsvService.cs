@@ -8,116 +8,88 @@ using System.Threading.Tasks;
 using CsvHelper;
 using CsvHelper.Configuration;
 using CsvHelper.TypeConversion;
+using Microsoft.EntityFrameworkCore;
+using NHSD.GPIT.BuyingCatalogue.EntityFramework;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Extensions;
-using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Csv;
 
 namespace NHSD.GPIT.BuyingCatalogue.Services.Csv
 {
     public class CsvService : ICsvService
     {
-        public async Task CreateFullOrderCsvAsync(Order order, MemoryStream stream)
+        private readonly BuyingCatalogueDbContext dbContext;
+
+        public CsvService(BuyingCatalogueDbContext dbContext)
         {
-            if (order is null)
-                throw new ArgumentNullException(nameof(order));
+            this.dbContext = dbContext ?? throw new ArgumentNullException(nameof(dbContext));
+        }
 
-            var items = new List<FullOrderCsvModel>();
-
-            int itemId = 1;
-            string framework;
-
-            foreach (var orderItem in order.OrderItems)
-            {
-                foreach (var recipient in orderItem.OrderItemRecipients)
+        public async Task CreateFullOrderCsvAsync(int orderId, MemoryStream stream)
+        {
+            var items = await dbContext.OrderItemRecipients.AsNoTracking()
+                .Where(oir => oir.OrderId == orderId)
+                .Select(oir => new FullOrderCsvModel
                 {
-                    var catalogueItem = orderItem.CatalogueItem;
-                    framework = null;
+                    CallOffId = oir.OrderItem.Order.CallOffId,
+                    OdsCode = oir.OrderItem.Order.OrderingParty.OdsCode,
+                    OrganisationName = oir.OrderItem.Order.OrderingParty.Name,
+                    CommencementDate = oir.OrderItem.Order.CommencementDate,
+                    ServiceRecipientId = oir.Recipient.OdsCode,
+                    ServiceRecipientName = oir.Recipient.Name,
+                    SupplierId = oir.OrderItem.Order.SupplierId.Value.ToString(CultureInfo.InvariantCulture),
+                    SupplierName = oir.OrderItem.Order.Supplier.Name,
+                    ProductId = oir.OrderItem.CatalogueItemId.ToString(),
+                    ProductName = oir.OrderItem.CatalogueItem.Name,
+                    ProductType = oir.OrderItem.CatalogueItem.CatalogueItemType.DisplayName(),
+                    QuantityOrdered = oir.Quantity,
+                    UnitOfOrder = oir.OrderItem.CataloguePrice.PricingUnit.Description,
+                    UnitTime = !oir.OrderItem.CataloguePrice.TimeUnit.HasValue ? string.Empty : oir.OrderItem.CataloguePrice.TimeUnit.Value.Description(),
+                    EstimationPeriod = !oir.OrderItem.EstimationPeriod.HasValue ? string.Empty : oir.OrderItem.EstimationPeriod.Value.Description(),
+                    Price = oir.OrderItem.Price.GetValueOrDefault(),
+                    OrderType = (int)oir.OrderItem.CataloguePrice.ProvisioningType,
+                    M1Planned = oir.DeliveryDate,
+                    Framework =
+                    oir.OrderItem.CatalogueItem.CatalogueItemType == CatalogueItemType.Solution
+                    ? oir.OrderItem.CatalogueItem.Solution.FrameworkSolutions.FirstOrDefault().FrameworkId
+                    : oir.OrderItem.CatalogueItem.CatalogueItemType == CatalogueItemType.AdditionalService
+                        ? oir.OrderItem.CatalogueItem.AdditionalService.Solution.FrameworkSolutions.FirstOrDefault().FrameworkId
+                        : oir.OrderItem.CatalogueItem.AssociatedService.CatalogueItem.Solution.FrameworkSolutions.FirstOrDefault().FrameworkId,
+                    FundingType = oir.OrderItem.Order.FundingSourceOnlyGms.Value ? "Central" : "Local",
+                }).ToListAsync();
 
-                    if (catalogueItem?.Solution != null)
-                        framework = catalogueItem.Solution?.FrameworkSolutions?.OfType<FrameworkSolution>().FirstOrDefault().FrameworkId;
-
-                    if (catalogueItem?.AdditionalService != null)
-                        framework = catalogueItem.AdditionalService.Solution?.FrameworkSolutions?.OfType<FrameworkSolution>().FirstOrDefault().FrameworkId;
-
-                    if (catalogueItem?.AssociatedService != null)
-                        framework = catalogueItem.AssociatedService.CatalogueItem.Solution?.FrameworkSolutions?.OfType<FrameworkSolution>().FirstOrDefault().FrameworkId;
-
-                    var orderCsvModel = new FullOrderCsvModel
-                    {
-                        CallOffId = order.CallOffId,
-                        OdsCode = order.OrderingParty.OdsCode,
-                        OrganisationName = order.OrderingParty.Name,
-                        CommencementDate = order.CommencementDate,
-                        ServiceRecipientId = recipient.Recipient.OdsCode,
-                        ServiceRecipientName = recipient.Recipient.Name,
-                        ServiceRecipientItemId = $"{order.CallOffId}-{recipient.Recipient.OdsCode}-{itemId}",
-                        SupplierId = order.Supplier.Id.ToString(CultureInfo.InvariantCulture),
-                        SupplierName = order.Supplier.Name,
-                        ProductId = orderItem.CatalogueItemId.ToString(),
-                        ProductName = orderItem.CatalogueItem.Name,
-                        ProductType = orderItem.CatalogueItem.CatalogueItemType.DisplayName(),
-                        QuantityOrdered = recipient.Quantity,
-                        UnitOfOrder = orderItem.CataloguePrice.PricingUnit.Description,
-                        UnitTime = orderItem.CataloguePrice.ProvisioningType == ProvisioningType.OnDemand
-                        ? null
-                        : orderItem.CataloguePrice.TimeUnit?.Description(),
-                        EstimationPeriod = orderItem.CataloguePrice.ProvisioningType == ProvisioningType.Declarative
-                        ? null
-                        : orderItem.EstimationPeriod?.Description(),
-                        Price = orderItem.Price.GetValueOrDefault(),
-                        OrderType = (int)orderItem.CataloguePrice.ProvisioningType,
-                        M1Planned = recipient.DeliveryDate,
-                        Framework = framework,
-                        FundingType = order.FundingSourceOnlyGms.Value ? "Central" : "Local",
-                    };
-
-                    items.Add(orderCsvModel);
-                    itemId++;
-                }
-            }
+            for (int i = 0; i < items.Count; i++)
+                items[i].ServiceRecipientItemId = $"{items[i].CallOffId}-{items[i].ServiceRecipientId}-{i + 1}";
 
             await WriteRecordsAsync<FullOrderCsvModel, FullOrderCsvModelMap>(stream, items);
         }
 
-        public async Task CreatePatientNumberCsvAsync(Order order, MemoryStream stream)
+        public async Task CreatePatientNumberCsvAsync(int orderId, MemoryStream stream)
         {
-            if (order is null)
-                throw new ArgumentNullException(nameof(order));
-
-            var items = new List<PatientOrderCsvModel>();
-
-            int itemId = 1;
-
-            foreach (var orderItem in order.OrderItems)
-            {
-                foreach (var recipient in orderItem.OrderItemRecipients)
+            var items = await dbContext.OrderItemRecipients.AsNoTracking()
+                .Where(oir => oir.OrderId == orderId)
+                .Select(oir => new PatientOrderCsvModel
                 {
-                    var orderCsvModel = new PatientOrderCsvModel
-                    {
-                        CallOffId = order.CallOffId,
-                        OdsCode = order.OrderingParty.OdsCode,
-                        OrganisationName = order.OrderingParty.Name,
-                        CommencementDate = order.CommencementDate.Value,
-                        ServiceRecipientId = recipient.Recipient.OdsCode,
-                        ServiceRecipientName = recipient.Recipient.Name,
-                        ServiceRecipientItemId = $"{order.CallOffId}-{recipient.Recipient.OdsCode}-{itemId}",
-                        SupplierId = order.Supplier.Id,
-                        SupplierName = order.Supplier.Name,
-                        ProductId = orderItem.CatalogueItemId.ToString(),
-                        ProductName = orderItem.CatalogueItem.Name,
-                        ProductType = orderItem.CatalogueItem.CatalogueItemType.DisplayName(),
-                        QuantityOrdered = recipient.Quantity,
-                        UnitOfOrder = orderItem.CataloguePrice.PricingUnit.Description,
-                        Price = orderItem.Price.GetValueOrDefault(),
-                        M1Planned = recipient.DeliveryDate.Value,
-                        FundingType = order.FundingSourceOnlyGms.Value ? "Central" : "Local",
-                    };
+                    CallOffId = oir.OrderItem.Order.CallOffId,
+                    OdsCode = oir.OrderItem.Order.OrderingParty.OdsCode,
+                    OrganisationName = oir.OrderItem.Order.OrderingParty.Name,
+                    CommencementDate = oir.OrderItem.Order.CommencementDate,
+                    ServiceRecipientId = oir.Recipient.OdsCode,
+                    ServiceRecipientName = oir.Recipient.Name,
+                    SupplierId = oir.OrderItem.Order.SupplierId.Value,
+                    SupplierName = oir.OrderItem.Order.Supplier.Name,
+                    ProductId = oir.OrderItem.CatalogueItemId.ToString(),
+                    ProductName = oir.OrderItem.CatalogueItem.Name,
+                    ProductType = oir.OrderItem.CatalogueItem.CatalogueItemType.DisplayName(),
+                    QuantityOrdered = oir.Quantity,
+                    UnitOfOrder = oir.OrderItem.CataloguePrice.PricingUnit.Description,
+                    Price = oir.OrderItem.Price.GetValueOrDefault(),
+                    M1Planned = oir.DeliveryDate,
+                    FundingType = oir.OrderItem.Order.FundingSourceOnlyGms.Value ? "Central" : "Local",
+                }).ToListAsync();
 
-                    items.Add(orderCsvModel);
-                    itemId++;
-                }
-            }
+            for (int i = 0; i < items.Count; i++)
+                items[i].ServiceRecipientItemId = $"{items[i].CallOffId}-{items[i].ServiceRecipientId}-{i + 1}";
 
             await WriteRecordsAsync<PatientOrderCsvModel, PatientOrderCsvModelMap>(stream, items);
         }

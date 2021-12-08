@@ -52,7 +52,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers
         {
             var expectedViewData = new CommencementDateModel(odsCode, order.CallOffId, order.CommencementDate);
 
-            orderServiceMock.Setup(s => s.GetOrder(order.CallOffId)).ReturnsAsync(order);
+            orderServiceMock.Setup(s => s.GetOrderThin(order.CallOffId)).ReturnsAsync(order);
 
             var actualResult = await controller.CommencementDate(odsCode, order.CallOffId);
 

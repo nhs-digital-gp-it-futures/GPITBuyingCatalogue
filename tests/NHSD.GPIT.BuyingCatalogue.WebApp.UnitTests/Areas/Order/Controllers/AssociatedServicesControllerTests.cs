@@ -57,7 +57,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers
         {
             var expectedViewData = new AssociatedServiceModel(odsCode, order, orderItems);
 
-            orderServiceMock.Setup(s => s.GetOrder(order.CallOffId)).ReturnsAsync(order);
+            orderServiceMock.Setup(s => s.GetOrderThin(order.CallOffId)).ReturnsAsync(order);
 
             orderItemServiceMock.Setup(s => s.GetOrderItems(order.CallOffId, CatalogueItemType.AssociatedService))
                 .ReturnsAsync(orderItems);
@@ -82,7 +82,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers
         {
             var expectedViewData = new NoAssociatedServicesFoundModel();
 
-            orderServiceMock.Setup(s => s.GetOrder(order.CallOffId)).ReturnsAsync(order);
+            orderServiceMock.Setup(s => s.GetOrderThin(order.CallOffId)).ReturnsAsync(order);
 
             organisationServiceMock.Setup(s => s.GetOrganisationByOdsCode(It.IsAny<string>()))
                 .ReturnsAsync(organisation);
@@ -113,7 +113,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers
         {
             var expectedViewData = new SelectAssociatedServiceModel(odsCode, state.CallOffId, associatedServices, state.CatalogueItemId);
 
-            orderServiceMock.Setup(s => s.GetOrder(state.CallOffId)).ReturnsAsync(order);
+            orderServiceMock.Setup(s => s.GetOrderThin(state.CallOffId)).ReturnsAsync(order);
 
             organisationServiceMock.Setup(s => s.GetOrganisationByOdsCode(It.IsAny<string>()))
                 .ReturnsAsync(organisation);

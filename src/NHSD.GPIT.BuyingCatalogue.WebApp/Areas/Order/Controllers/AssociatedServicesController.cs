@@ -49,7 +49,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
         {
             orderSessionService.ClearSession(callOffId);
 
-            var order = await orderService.GetOrder(callOffId);
+            var order = await orderService.GetOrderThin(callOffId);
             var orderItems = await orderItemService.GetOrderItems(callOffId, CatalogueItemType.AssociatedService);
 
             var model = new AssociatedServiceModel(odsCode, order, orderItems)
@@ -66,7 +66,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
         [HttpGet("select/associated-service")]
         public async Task<IActionResult> SelectAssociatedService(string odsCode, CallOffId callOffId)
         {
-            var order = await orderService.GetOrder(callOffId);
+            var order = await orderService.GetOrderThin(callOffId);
 
             var organisation = await organisationService.GetOrganisationByOdsCode(odsCode);
 

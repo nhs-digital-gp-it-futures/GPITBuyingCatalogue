@@ -62,7 +62,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
         public async Task AddOrderSupplier(CallOffId callOffId, int supplierId)
         {
             var supplier = await GetSupplierFromBuyingCatalogue(supplierId);
-            var order = await orderService.GetOrder(callOffId);
+            var order = await orderService.GetOrderWithSupplier(callOffId);
 
             order.Supplier = supplier;
 
@@ -74,7 +74,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
             if (contact is null)
                 throw new ArgumentNullException(nameof(contact));
 
-            var order = await orderService.GetOrder(callOffId);
+            var order = await orderService.GetOrderWithSupplier(callOffId);
 
             switch (order.SupplierContact)
             {

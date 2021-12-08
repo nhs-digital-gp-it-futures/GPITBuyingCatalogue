@@ -11,33 +11,59 @@ using NHSD.GPIT.BuyingCatalogue.Framework.Settings;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Csv;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Email;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Orders;
-using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Organisations;
 
 namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
 {
     public sealed class OrderService : IOrderService
     {
         private readonly BuyingCatalogueDbContext dbContext;
-        private readonly IOrganisationsService organisationService;
         private readonly ICsvService csvService;
         private readonly IEmailService emailService;
         private readonly OrderMessageSettings orderMessageSettings;
 
         public OrderService(
             BuyingCatalogueDbContext dbContext,
-            IOrganisationsService organisationService,
             ICsvService csvService,
             IEmailService emailService,
             OrderMessageSettings orderMessageSettings)
         {
             this.dbContext = dbContext ?? throw new ArgumentNullException(nameof(dbContext));
-            this.organisationService = organisationService ?? throw new ArgumentNullException(nameof(organisationService));
             this.csvService = csvService ?? throw new ArgumentNullException(nameof(csvService));
             this.emailService = emailService ?? throw new ArgumentNullException(nameof(emailService));
             this.orderMessageSettings = orderMessageSettings ?? throw new ArgumentNullException(nameof(orderMessageSettings));
         }
 
-        public Task<Order> GetOrder(CallOffId callOffId)
+        public Task<Order> GetOrderThin(CallOffId callOffId)
+        {
+            return dbContext.Orders
+                .Where(o => o.Id == callOffId.Id)
+                .Include(o => o.OrderingParty)
+                .Include(o => o.OrderingPartyContact)
+                .Include(o => o.Supplier)
+                .Include(o => o.OrderItems).ThenInclude(i => i.CatalogueItem)
+                .SingleOrDefaultAsync();
+        }
+
+        public Task<Order> GetOrderWithDefaultDeliveryDatesAndOrderItems(CallOffId callOffId)
+        {
+            return dbContext.Orders
+                .Where(o => o.Id == callOffId.Id)
+                .Include(o => o.OrderItems).ThenInclude(i => i.CatalogueItem)
+                .Include(o => o.OrderItems).ThenInclude(i => i.OrderItemRecipients).ThenInclude(r => r.Recipient)
+                .Include(o => o.DefaultDeliveryDates)
+                .SingleOrDefaultAsync();
+        }
+
+        public Task<Order> GetOrderWithSupplier(CallOffId callOffId)
+        {
+            return dbContext.Orders
+                .Where(o => o.Id == callOffId.Id)
+                .Include(o => o.Supplier)
+                .Include(o => o.SupplierContact)
+                .SingleOrDefaultAsync();
+        }
+
+        public Task<Order> GetOrderForSummary(CallOffId callOffId)
         {
             return dbContext.Orders
                 .Where(o => o.Id == callOffId.Id)
@@ -46,12 +72,9 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
                 .Include(o => o.Supplier)
                 .Include(o => o.SupplierContact)
                 .Include(o => o.ServiceInstanceItems)
-                .Include(o => o.OrderItems).ThenInclude(i => i.CatalogueItem).ThenInclude(a => a.AdditionalService)
-                .Include(o => o.OrderItems).ThenInclude(i => i.CatalogueItem).ThenInclude(a => a.AssociatedService)
-                .Include(o => o.OrderItems).ThenInclude(i => i.CatalogueItem).ThenInclude(a => a.Solution).ThenInclude(a => a.FrameworkSolutions)
+                .Include(o => o.OrderItems).ThenInclude(i => i.CatalogueItem)
                 .Include(o => o.OrderItems).ThenInclude(i => i.OrderItemRecipients).ThenInclude(r => r.Recipient)
                 .Include(o => o.OrderItems).ThenInclude(i => i.CataloguePrice).ThenInclude(p => p.PricingUnit)
-                .Include(o => o.DefaultDeliveryDates)
                 .SingleOrDefaultAsync();
         }
 
@@ -117,14 +140,14 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
 
         public async Task CompleteOrder(CallOffId callOffId)
         {
-            var order = await GetOrder(callOffId);
+            var order = await GetOrderThin(callOffId);
 
             order.Complete();
 
             await using var fullOrderStream = new MemoryStream();
             await using var patientOrderStream = new MemoryStream();
 
-            await csvService.CreateFullOrderCsvAsync(order, fullOrderStream);
+            await csvService.CreateFullOrderCsvAsync(order.Id, fullOrderStream);
 
             fullOrderStream.Position = 0;
 
@@ -137,7 +160,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
                oi.CatalogueItem.CatalogueItemType == CatalogueItemType.AdditionalService
             || oi.CataloguePrice.ProvisioningType != ProvisioningType.Patient))
             {
-                await csvService.CreatePatientNumberCsvAsync(order, patientOrderStream);
+                await csvService.CreatePatientNumberCsvAsync(order.Id, patientOrderStream);
 
                 patientOrderStream.Position = 0;
 
