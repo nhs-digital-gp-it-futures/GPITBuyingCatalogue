@@ -180,9 +180,9 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
         {
             return await dbContext.CatalogueItems.AsNoTracking()
                 .Include(ci => ci.Solution)
-                .Include(ci => ci.CatalogueItemCapabilities).ThenInclude(cic => cic.Capability).ThenInclude(c => c.Epics)
+                .Include(ci => ci.CatalogueItemCapabilities.Where(c => c.CapabilityId == capabilityId)).ThenInclude(cic => cic.Capability)
                 .Include(ci => ci.CatalogueItemEpics.Where(cie => cie.CapabilityId == capabilityId && cie.Epic.IsActive)).ThenInclude(cie => cie.Epic)
-                .SingleOrDefaultAsync(c => c.Id == catalogueItemId && c.CatalogueItemCapabilities.Any(sc => sc.CapabilityId == capabilityId));
+                .SingleOrDefaultAsync(c => c.Id == catalogueItemId);
         }
 
         public async Task<IList<Standard>> GetSolutionStandardsForMarketing(CatalogueItemId catalogueItemId)
