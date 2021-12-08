@@ -12,7 +12,7 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.UnitTests.Models.BuyingCatal
         [CommonAutoData]
         public static void ToString_ReturnsCorrectString(CataloguePrice price)
         {
-            var expected = $"£{price.Price!.Value:F} {price.PricingUnit?.Description}".Trim();
+            var expected = $"£{price.Price!.Value:N4} {price.PricingUnit?.Description}".Trim();
 
             var actual = price.ToString();
 
