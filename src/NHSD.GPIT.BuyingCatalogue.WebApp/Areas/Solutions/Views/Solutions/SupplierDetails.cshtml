@@ -19,16 +19,23 @@
             @foreach (var contact in Model.Contacts)
             {
                 <nhs-summary-list>
-                    <nhs-summary-list-row label-text="Contact name">
-                        <p>
-                            @contact.FullName
-                        </p>
-                    </nhs-summary-list-row>
-                    <nhs-summary-list-row label-text="Department">
-                        <p>
-                            @contact.Department
-                        </p>
-                    </nhs-summary-list-row>
+                    @if (!string.IsNullOrWhiteSpace(contact.FullName))
+                    {
+                        <nhs-summary-list-row label-text="Contact name">
+                            <p>
+                                @contact.FullName
+                            </p>
+                        </nhs-summary-list-row>
+                    }
+
+                    @if (!string.IsNullOrWhiteSpace(contact.Department))
+                    {
+                        <nhs-summary-list-row label-text="Department">
+                            <p>
+                                @contact.Department
+                            </p>
+                        </nhs-summary-list-row>
+                    }
                     <nhs-summary-list-row label-text="Contact details">
                         @if (!string.IsNullOrWhiteSpace(contact.PhoneNumber))
                         {
