@@ -502,9 +502,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
             var clientApplication = solution.Solution.GetClientApplication();
             var model = new BrowserBasedModel(solution)
             {
-                BackLink = clientApplication?.HasClientApplicationType(ServiceContracts.Solutions.ClientApplicationType.Desktop) ?? false
-                           ? Url.Action(nameof(AddApplicationType), new { solutionId })
-                           : Url.Action(nameof(ClientApplicationType), new { solutionId }),
+                BackLink = clientApplication?.HasClientApplicationType(ServiceContracts.Solutions.ClientApplicationType.BrowserBased) ?? false
+                           ? Url.Action(nameof(ClientApplicationType), new { solutionId })
+                           : Url.Action(nameof(AddApplicationType), new { solutionId }),
             };
 
             return View(model);

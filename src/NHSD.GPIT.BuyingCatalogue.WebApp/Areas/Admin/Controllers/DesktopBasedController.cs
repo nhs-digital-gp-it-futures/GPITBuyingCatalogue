@@ -33,13 +33,13 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
             var clientApplication = solution.Solution.GetClientApplication();
             var model = new DesktopBasedModel(solution)
             {
-                BackLink = clientApplication?.HasClientApplicationType(ClientApplicationType.BrowserBased) ?? false
+                BackLink = clientApplication?.HasClientApplicationType(ClientApplicationType.Desktop) ?? false
                            ? Url.Action(
-                               nameof(CatalogueSolutionsController.AddApplicationType),
+                               nameof(CatalogueSolutionsController.ClientApplicationType),
                                typeof(CatalogueSolutionsController).ControllerName(),
                                new { solutionId })
                            : Url.Action(
-                               nameof(CatalogueSolutionsController.ClientApplicationType),
+                               nameof(CatalogueSolutionsController.AddApplicationType),
                                typeof(CatalogueSolutionsController).ControllerName(),
                                new { solutionId }),
             };
