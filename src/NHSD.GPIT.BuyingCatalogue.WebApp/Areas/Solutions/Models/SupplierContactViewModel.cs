@@ -1,4 +1,5 @@
-﻿using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
+﻿using System.Linq;
+using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models
 {
@@ -6,7 +7,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models
     {
         public SupplierContactViewModel(MarketingContact contact)
         {
-            FullName = $"{contact.FirstName} {contact.LastName}";
+            FullName = string.Join(" ", new[] { contact.FirstName, contact.LastName }.Where(str => !string.IsNullOrWhiteSpace(str)));
             PhoneNumber = contact.PhoneNumber;
             Department = contact.Department;
             Email = contact.Email;
