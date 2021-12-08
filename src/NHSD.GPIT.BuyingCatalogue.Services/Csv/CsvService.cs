@@ -69,6 +69,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Csv
                         OrderType = (int)orderItem.CataloguePrice.ProvisioningType,
                         M1Planned = recipient.DeliveryDate,
                         Framework = framework,
+                        FundingType = order.FundingSourceOnlyGms.Value ? "Central" : "Local",
                     };
 
                     items.Add(orderCsvModel);
@@ -110,6 +111,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Csv
                         UnitOfOrder = orderItem.CataloguePrice.PricingUnit.Description,
                         Price = orderItem.Price.GetValueOrDefault(),
                         M1Planned = recipient.DeliveryDate.Value,
+                        FundingType = order.FundingSourceOnlyGms.Value ? "Central" : "Local",
                     };
 
                     items.Add(orderCsvModel);
