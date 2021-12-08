@@ -20,7 +20,7 @@
                 {
                     <nhs-table-row-container>
                         <nhs-table-cell data-test-id="price">
-                            @item.CurrencyCode@item.Price
+                            @item.CurrencyCode@item.Price.Value.ToString("N4")
                         </nhs-table-cell>
                         <nhs-table-cell>
                             @item.Unit
