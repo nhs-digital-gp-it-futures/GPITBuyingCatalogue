@@ -47,7 +47,7 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models
 
         public override string ToString()
         {
-            return $"£{Price.Value:F} {PricingUnit?.Description}".Trim();
+            return $"£{Price.Value:N4} {PricingUnit?.Description}".Trim();
         }
 
         public string ToPriceUnitString()
