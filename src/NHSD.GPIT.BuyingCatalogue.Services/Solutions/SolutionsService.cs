@@ -419,8 +419,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
                 query = query.Where(i => i.PublishedStatus == publicationStatus.Value);
 
             return await query
-                .OrderByDescending(i => i.Created)
-                .ThenBy(i => i.Name)
+                .OrderBy(i => i.Name)
                 .ToListAsync();
         }
 
