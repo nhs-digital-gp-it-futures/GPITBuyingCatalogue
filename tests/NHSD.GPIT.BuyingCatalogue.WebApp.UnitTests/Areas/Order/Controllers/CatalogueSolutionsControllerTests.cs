@@ -54,7 +54,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers
         {
             var expectedViewData = new CatalogueSolutionsModel(odsCode, order, orderItems);
 
-            orderServiceMock.Setup(s => s.GetOrder(order.CallOffId)).ReturnsAsync(order);
+            orderServiceMock.Setup(s => s.GetOrderThin(order.CallOffId)).ReturnsAsync(order);
 
             orderItemServiceMock.Setup(s => s.GetOrderItems(order.CallOffId, CatalogueItemType.Solution))
                 .ReturnsAsync(orderItems);
@@ -80,7 +80,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers
         {
             var expectedViewData = new SelectSolutionModel(odsCode, state.CallOffId, solutions, state.CatalogueItemId);
 
-            orderServiceMock.Setup(s => s.GetOrder(state.CallOffId)).ReturnsAsync(order);
+            orderServiceMock.Setup(s => s.GetOrderThin(state.CallOffId)).ReturnsAsync(order);
 
             orderSessionServiceMock.Setup(s => s.InitialiseStateForCreate(order, CatalogueItemType.Solution, null, null)).Returns(state);
 

@@ -27,11 +27,12 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Csv
         [InlineData(17, nameof(PatientOrderCsvModel.ActualM1Date), "Actual M1 date")]
         [InlineData(18, nameof(PatientOrderCsvModel.VerficationDate), "Buyer verification date (M2)")]
         [InlineData(19, nameof(PatientOrderCsvModel.CeaseDate), "Cease Date")]
+        [InlineData(20, nameof(PatientOrderCsvModel.Framework), "Framework")]
         public static void ModelMap_ShouldBe_CorrectlyMapped(int index, string memberName, string name)
         {
             var map = new PatientOrderCsvModelMap();
 
-            map.MemberMaps.Count.Should().Be(20);
+            map.MemberMaps.Count.Should().Be(21);
             map.MemberMaps[index].Data.Member.Name.Should().Be(memberName);
             map.MemberMaps[index].Data.Names[0].Should().Be(name);
         }

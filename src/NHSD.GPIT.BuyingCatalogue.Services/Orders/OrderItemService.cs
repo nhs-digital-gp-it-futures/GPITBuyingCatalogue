@@ -35,7 +35,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
             if (model is null)
                 throw new ArgumentNullException(nameof(model));
 
-            var order = await orderService.GetOrder(callOffId);
+            var order = await orderService.GetOrderWithDefaultDeliveryDatesAndOrderItems(callOffId);
 
             var catalogueItemId = model.CatalogueItemId;
             var catalogueItem = await dbContext.FindAsync<CatalogueItem>(catalogueItemId);

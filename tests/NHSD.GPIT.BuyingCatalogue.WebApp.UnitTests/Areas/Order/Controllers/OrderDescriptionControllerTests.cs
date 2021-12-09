@@ -48,7 +48,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers
         {
             var expectedViewData = new OrderDescriptionModel(odsCode, order) { BackLink = "testUrl" };
 
-            orderServiceMock.Setup(s => s.GetOrder(order.CallOffId)).ReturnsAsync(order);
+            orderServiceMock.Setup(s => s.GetOrderThin(order.CallOffId)).ReturnsAsync(order);
 
             var actualResult = await controller.OrderDescription(odsCode, order.CallOffId);
 
@@ -100,13 +100,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers
         [CommonAutoData]
         public static void Get_NewOrderDescription_ReturnsExpectedResult(
             string odsCode,
-            EntityFramework.Ordering.Models.Order order,
-            [Frozen] Mock<IOrderService> orderServiceMock,
             OrderDescriptionController controller)
         {
             var expectedViewData = new OrderDescriptionModel(odsCode, null) { BackLink = "testUrl" };
-
-            orderServiceMock.Setup(s => s.GetOrder(order.CallOffId)).ReturnsAsync(order);
 
             var actualResult = controller.NewOrderDescription(odsCode);
 

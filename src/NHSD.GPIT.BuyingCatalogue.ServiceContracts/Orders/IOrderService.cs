@@ -6,7 +6,13 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.Orders
 {
     public interface IOrderService
     {
-        public Task<Order> GetOrder(CallOffId callOffId);
+        public Task<Order> GetOrderThin(CallOffId callOffId);
+
+        public Task<Order> GetOrderWithDefaultDeliveryDatesAndOrderItems(CallOffId callOffId);
+
+        public Task<Order> GetOrderWithSupplier(CallOffId callOffId);
+
+        public Task<Order> GetOrderForSummary(CallOffId callOffId);
 
         public Task<IList<Order>> GetOrders(int organisationId);
 

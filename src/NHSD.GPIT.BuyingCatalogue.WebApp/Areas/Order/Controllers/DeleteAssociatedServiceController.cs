@@ -32,7 +32,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
             CatalogueItemId catalogueItemId,
             string catalogueItemName)
         {
-            var order = await orderService.GetOrder(callOffId);
+            var order = await orderService.GetOrderThin(callOffId);
 
             var model = new DeleteAssociatedServiceModel(odsCode, callOffId, catalogueItemId, catalogueItemName, order.Description)
             {

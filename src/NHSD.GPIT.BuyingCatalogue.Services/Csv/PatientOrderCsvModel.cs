@@ -46,5 +46,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Csv
         public DateTime? VerficationDate { get; set; }
 
         public DateTime? CeaseDate { get; set; }
+
+        public string Framework { get; set; }
     }
 }

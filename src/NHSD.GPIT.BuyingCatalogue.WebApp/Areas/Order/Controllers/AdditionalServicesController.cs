@@ -45,7 +45,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
         {
             orderSessionService.ClearSession(callOffId);
 
-            var order = await orderService.GetOrder(callOffId);
+            var order = await orderService.GetOrderThin(callOffId);
             var orderItems = await orderItemService.GetOrderItems(callOffId, CatalogueItemType.AdditionalService);
 
             var model = new AdditionalServiceModel(odsCode, order, orderItems)
@@ -62,7 +62,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
         [HttpGet("select/additional-service")]
         public async Task<IActionResult> SelectAdditionalService(string odsCode, CallOffId callOffId)
         {
-            var order = await orderService.GetOrder(callOffId);
+            var order = await orderService.GetOrderThin(callOffId);
 
             // Get Catalogue Solutions related to the order
             var orderItems = await orderItemService.GetOrderItems(callOffId, CatalogueItemType.Solution);
