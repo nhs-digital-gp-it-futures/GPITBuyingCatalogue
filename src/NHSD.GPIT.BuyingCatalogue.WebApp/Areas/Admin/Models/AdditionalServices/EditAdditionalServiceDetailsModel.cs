@@ -45,7 +45,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.AdditionalServices
         [StringLength(255)]
         public string Name { get; init; }
 
-        [StringLength(1000)]
+        [StringLength(3000)]
         public string Description { get; init; }
     }
 }

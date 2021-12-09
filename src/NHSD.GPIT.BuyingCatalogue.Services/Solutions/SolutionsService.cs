@@ -105,9 +105,12 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
                     Description = (!string.IsNullOrWhiteSpace(ci.Solution.Summary))
                         ? TaskProgress.Completed
                         : TaskProgress.NotStarted,
-                    AdditionalServices = ci.Solution.AdditionalServices.Any()
+                    AdditionalServices = ci.Solution.AdditionalServices
+                        .Any(add => add.CatalogueItem.PublishedStatus == PublicationStatus.Published)
                         ? TaskProgress.Completed
-                        : TaskProgress.Optional,
+                        : ci.Solution.AdditionalServices.Any()
+                            ? TaskProgress.InProgress
+                            : TaskProgress.Optional,
                     AssociatedServices = ci.SupplierServiceAssociations.Any()
                         ? TaskProgress.Completed
                         : TaskProgress.Optional,
