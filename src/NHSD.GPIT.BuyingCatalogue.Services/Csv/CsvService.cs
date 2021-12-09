@@ -64,10 +64,10 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Csv
             await WriteRecordsAsync<FullOrderCsvModel, FullOrderCsvModelMap>(stream, items);
         }
 
-        public async Task CreatePatientNumberCsvAsync(int orderId, MemoryStream stream)
+        public async Task<int> CreatePatientNumberCsvAsync(int orderId, MemoryStream stream)
         {
             var items = await dbContext.OrderItemRecipients.AsNoTracking()
-                .Where(oir => oir.OrderId == orderId)
+                .Where(oir => oir.OrderId == orderId && oir.OrderItem.CataloguePrice.ProvisioningType == ProvisioningType.Patient)
                 .Select(oir => new PatientOrderCsvModel
                 {
                     CallOffId = oir.OrderItem.Order.CallOffId,
@@ -85,13 +85,24 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Csv
                     UnitOfOrder = oir.OrderItem.CataloguePrice.PricingUnit.Description,
                     Price = oir.OrderItem.Price.GetValueOrDefault(),
                     M1Planned = oir.DeliveryDate,
+                    Framework =
+                    oir.OrderItem.CatalogueItem.CatalogueItemType == CatalogueItemType.Solution
+                    ? oir.OrderItem.CatalogueItem.Solution.FrameworkSolutions.FirstOrDefault().FrameworkId
+                    : oir.OrderItem.CatalogueItem.CatalogueItemType == CatalogueItemType.AdditionalService
+                        ? oir.OrderItem.CatalogueItem.AdditionalService.Solution.FrameworkSolutions.FirstOrDefault().FrameworkId
+                        : oir.OrderItem.CatalogueItem.AssociatedService.CatalogueItem.Solution.FrameworkSolutions.FirstOrDefault().FrameworkId,
                     FundingType = oir.OrderItem.Order.FundingSourceOnlyGms.Value ? "Central" : "Local",
                 }).ToListAsync();
+
+            if (items.Count == 0)
+                return 0;
 
             for (int i = 0; i < items.Count; i++)
                 items[i].ServiceRecipientItemId = $"{items[i].CallOffId}-{items[i].ServiceRecipientId}-{i + 1}";
 
             await WriteRecordsAsync<PatientOrderCsvModel, PatientOrderCsvModelMap>(stream, items);
+
+            return items.Count;
         }
 
         private static async Task WriteRecordsAsync<TEntity, TClassMap>(MemoryStream stream, IEnumerable<TEntity> items)

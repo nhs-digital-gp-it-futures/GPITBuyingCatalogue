@@ -156,14 +156,9 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
                 new($"{order.CallOffId}_{order.OrderingParty.OdsCode}_Full.csv", fullOrderStream),
             };
 
-            if (!order.OrderItems.Any(oi =>
-               oi.CatalogueItem.CatalogueItemType == CatalogueItemType.AdditionalService
-            || oi.CataloguePrice.ProvisioningType != ProvisioningType.Patient))
+            if (await csvService.CreatePatientNumberCsvAsync(order.Id, patientOrderStream) > 0)
             {
-                await csvService.CreatePatientNumberCsvAsync(order.Id, patientOrderStream);
-
                 patientOrderStream.Position = 0;
-
                 attachments.Add(new($"{order.CallOffId}_{order.OrderingParty.OdsCode}_Patients.csv", patientOrderStream));
             }
 

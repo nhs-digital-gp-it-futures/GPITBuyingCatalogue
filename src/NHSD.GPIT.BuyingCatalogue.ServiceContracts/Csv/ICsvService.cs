@@ -7,6 +7,6 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.Csv
     {
         public Task CreateFullOrderCsvAsync(int orderId, MemoryStream stream);
 
-        public Task CreatePatientNumberCsvAsync(int orderId, MemoryStream stream);
+        public Task<int> CreatePatientNumberCsvAsync(int orderId, MemoryStream stream);
     }
 }
