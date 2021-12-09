@@ -102,7 +102,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
                 .Where(ci => ci.Id == solutionId)
                 .Select(ci => new SolutionLoadingStatusesModel
                 {
-                    Description = (!string.IsNullOrWhiteSpace(ci.Solution.Summary) && !string.IsNullOrWhiteSpace(ci.Solution.FullDescription))
+                    Description = (!string.IsNullOrWhiteSpace(ci.Solution.Summary))
                         ? TaskProgress.Completed
                         : TaskProgress.NotStarted,
                     AdditionalServices = ci.Solution.AdditionalServices.Any()
