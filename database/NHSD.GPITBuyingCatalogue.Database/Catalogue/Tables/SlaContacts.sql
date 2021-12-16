@@ -6,6 +6,7 @@
      ContactInformation nvarchar(1000) NOT NULL,
      TimeFrom datetime2(7) NOT NULL,
      TimeUntil datetime2(7) NOT NULL,
+     ApplicableDays nvarchar(1000) NULL DEFAULT NULL,
      LastUpdated datetime2(7) CONSTRAINT DF_SlaContacts_LastUpdated DEFAULT GETUTCDATE() NOT NULL,
      LastUpdatedBy int NULL,
      SysStartTime datetime2(0) GENERATED ALWAYS AS ROW START NOT NULL,
