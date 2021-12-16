@@ -9,11 +9,12 @@ using NHSD.GPIT.BuyingCatalogue.WebApp.Validation;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Validators.ServiceLevelAgreementValidators
 {
-    public sealed class EditSLAContactsModelValidator : AbstractValidator<EditSLAContactModel>
+    public sealed class EditSLAContactModelValidator : AbstractValidator<EditSLAContactModel>
     {
+        internal const string DuplicateContactErrorMessage = "A contact with these details already exists";
         private readonly IServiceLevelAgreementsService serviceLevelAgreementsService;
 
-        public EditSLAContactsModelValidator(IServiceLevelAgreementsService serviceLevelAgreementsService)
+        public EditSLAContactModelValidator(IServiceLevelAgreementsService serviceLevelAgreementsService)
         {
             this.serviceLevelAgreementsService = serviceLevelAgreementsService
                 ?? throw new ArgumentNullException(nameof(serviceLevelAgreementsService));
@@ -21,9 +22,19 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Validators.ServiceLevelAg
             RuleFor(slac => slac)
             .MustAsync(NotBeDuplicateContact)
             .OverridePropertyName(
-            slac => slac.Channel,
-            slac => slac.ContactInformation)
-            .WithMessage("A contact with these details already exists");
+                slac => slac.Channel,
+                slac => slac.ContactInformation)
+            .WithMessage(DuplicateContactErrorMessage)
+            .When(slac => string.IsNullOrWhiteSpace(slac.ApplicableDays));
+
+            RuleFor(slac => slac)
+            .MustAsync(NotBeDuplicateContact)
+            .OverridePropertyName(
+                slac => slac.Channel,
+                slac => slac.ContactInformation,
+                slac => slac.ApplicableDays)
+            .WithMessage(DuplicateContactErrorMessage)
+            .Unless(slac => string.IsNullOrWhiteSpace(slac.ApplicableDays));
 
             RuleFor(slac => slac.Channel)
                 .NotEmpty()
@@ -49,10 +60,13 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Validators.ServiceLevelAg
 
             var serviceLevelAgreements = await serviceLevelAgreementsService.GetServiceLevelAgreementForSolution(model.SolutionId);
 
-            return !serviceLevelAgreements.Contacts.Any(slac =>
-            slac.Id != model.ContactId
-            && string.Equals(slac.Channel, model.Channel, StringComparison.CurrentCultureIgnoreCase)
-            && string.Equals(slac.ContactInformation, model.ContactInformation, StringComparison.CurrentCultureIgnoreCase));
+            return !serviceLevelAgreements
+                .Contacts
+                .Any(slac =>
+                    slac.Id != model.ContactId
+                    && string.Equals(slac.ApplicableDays, model.ApplicableDays)
+                    && string.Equals(slac.Channel, model.Channel, StringComparison.CurrentCultureIgnoreCase)
+                    && string.Equals(slac.ContactInformation, model.ContactInformation, StringComparison.CurrentCultureIgnoreCase));
         }
     }
 }

@@ -139,6 +139,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.ServiceLevelAgreements
                 SolutionId = solution.Id,
                 Channel = model.Channel,
                 ContactInformation = model.ContactInformation,
+                ApplicableDays = model.ApplicableDays,
                 TimeFrom = model.TimeFrom,
                 TimeUntil = model.TimeUntil,
                 LastUpdated = DateTime.UtcNow,
@@ -168,6 +169,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.ServiceLevelAgreements
 
             contact.Channel = model.Channel;
             contact.ContactInformation = model.ContactInformation;
+            contact.ApplicableDays = model.ApplicableDays;
             contact.TimeFrom = model.TimeFrom;
             contact.TimeUntil = model.TimeUntil;
 
