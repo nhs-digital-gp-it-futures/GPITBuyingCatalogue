@@ -182,6 +182,46 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.AddNewSolution.ServiceL
         }
 
         [Fact]
+        public async Task EditSLAContact_DuplicateContactWithApplicableDays_ErrorThrown()
+        {
+            await using var context = GetEndToEndDbContext();
+            var existingContact = await context.SlaContacts.SingleAsync(slac => slac.Id == 3);
+            existingContact.ApplicableDays = "Test";
+
+            await context.SaveChangesAsync();
+
+            CommonActions.ElementAddValue(SLAContactObjects.Channel, existingContact.Channel);
+            CommonActions.ElementAddValue(SLAContactObjects.ContactInformation, existingContact.ContactInformation);
+            CommonActions.ElementAddValue(SLAContactObjects.ApplicableDays, existingContact.ApplicableDays);
+
+            CommonActions.ClickSave();
+
+            CommonActions.PageLoadedCorrectGetIndex(
+                typeof(ServiceLevelAgreementsController),
+                nameof(ServiceLevelAgreementsController.EditContact))
+                .Should()
+                .BeTrue();
+
+            CommonActions.ErrorSummaryDisplayed().Should().BeTrue();
+            CommonActions.ErrorSummaryLinksExist().Should().BeTrue();
+
+            CommonActions
+                .ElementShowingCorrectErrorMessage(SLAContactObjects.ChannelError, DuplicateContact)
+                .Should()
+                .BeTrue();
+
+            CommonActions
+                .ElementShowingCorrectErrorMessage(SLAContactObjects.ContactInformationError, DuplicateContact)
+                .Should()
+                .BeTrue();
+
+            CommonActions
+                .ElementShowingCorrectErrorMessage(SLAContactObjects.ApplicableDaysError, DuplicateContact)
+                .Should()
+                .BeTrue();
+        }
+
+        [Fact]
         public async Task EditSLAContact_ValidContact_ExpectedResult()
         {
             const string timefrom = "12:30";
@@ -189,6 +229,37 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.AddNewSolution.ServiceL
 
             var channel = TextGenerators.TextInputAddText(SLAContactObjects.Channel, 300);
             var contactInformation = TextGenerators.TextInputAddText(SLAContactObjects.ContactInformation, 1000);
+            CommonActions.ElementAddValue(SLAContactObjects.From, timefrom);
+            CommonActions.ElementAddValue(SLAContactObjects.Until, timeUntil);
+
+            CommonActions.ClickSave();
+
+            CommonActions.PageLoadedCorrectGetIndex(
+                typeof(ServiceLevelAgreementsController),
+                nameof(ServiceLevelAgreementsController.EditServiceLevelAgreement))
+                .Should()
+                .BeTrue();
+
+            await using var context = GetEndToEndDbContext();
+            var contact = await context.SlaContacts.SingleOrDefaultAsync(slac => slac.Id == ContactId);
+
+            contact.Should().NotBeNull();
+
+            contact.Channel.FormatForComparison().Should().Be(channel.FormatForComparison());
+            contact.ContactInformation.FormatForComparison().Should().Be(contactInformation.FormatForComparison());
+            contact.TimeFrom.ToString("HH:mm").FormatForComparison().Should().Be(timefrom.FormatForComparison());
+            contact.TimeUntil.ToString("HH:mm").FormatForComparison().Should().Be(timeUntil.FormatForComparison());
+        }
+
+        [Fact]
+        public async Task EditSLAContact_ValidContactWithApplicableDays_ExpectedResult()
+        {
+            const string timefrom = "12:30";
+            const string timeUntil = "13:30";
+
+            var channel = TextGenerators.TextInputAddText(SLAContactObjects.Channel, 300);
+            var contactInformation = TextGenerators.TextInputAddText(SLAContactObjects.ContactInformation, 1000);
+            var applicableDays = TextGenerators.TextInputAddText(SLAContactObjects.ApplicableDays, 1000);
             CommonActions.ElementAddValue(SLAContactObjects.From, timefrom);
             CommonActions.ElementAddValue(SLAContactObjects.Until, timeUntil);
 

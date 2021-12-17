@@ -12,6 +12,10 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Objects.Admin.ServiceLevelAgreement
 
         internal static By ContactInformationError => By.Id("ContactInformation-error");
 
+        internal static By ApplicableDays => By.Id("ApplicableDays");
+
+        internal static By ApplicableDaysError => By.Id("ApplicableDays-error");
+
         internal static By From => By.Id("From");
 
         internal static By TimeInputError => By.Id("edit-sla-contact-error");
