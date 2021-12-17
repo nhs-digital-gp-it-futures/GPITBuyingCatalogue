@@ -29,6 +29,7 @@
     <nhs-table-column>Channel</nhs-table-column>
     <nhs-table-column>Contact</nhs-table-column>
     <nhs-table-column>Accessible hours</nhs-table-column>
+    <nhs-table-column>Applicable days</nhs-table-column>
     <nhs-table-column></nhs-table-column>
     @foreach (var slaContact in Model.SlaContacts.OrderBy(sat => sat.Channel).ThenBy(sat => sat.TimeFrom))
     {
@@ -36,6 +37,7 @@
             <nhs-table-cell>@slaContact.Channel</nhs-table-cell>
             <nhs-table-cell>@slaContact.ContactInformation</nhs-table-cell>
             <nhs-table-cell>@slaContact.TimeFrom.ToString("HH:mm") - @slaContact.TimeUntil.ToString("HH:mm")</nhs-table-cell>
+            <nhs-table-cell>@slaContact.ApplicableDays</nhs-table-cell>
             <nhs-table-cell></nhs-table-cell>
         </nhs-table-row-container>
     }

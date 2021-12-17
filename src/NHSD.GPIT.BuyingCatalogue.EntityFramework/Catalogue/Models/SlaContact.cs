@@ -14,6 +14,8 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models
 
         public string ContactInformation { get; set; }
 
+        public string ApplicableDays { get; set; }
+
         public DateTime TimeFrom { get; set; }
 
         public DateTime TimeUntil { get; set; }
