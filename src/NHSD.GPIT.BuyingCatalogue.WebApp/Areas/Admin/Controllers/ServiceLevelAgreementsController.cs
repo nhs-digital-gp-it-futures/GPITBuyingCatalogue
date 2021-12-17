@@ -330,6 +330,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
             {
                 Channel = model.Channel,
                 ContactInformation = model.ContactInformation,
+                ApplicableDays = model.ApplicableDays,
                 TimeFrom = model.From.Value,
                 TimeUntil = model.Until.Value,
                 UserId = User.UserId(),
@@ -382,6 +383,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
                 Id = contactId,
                 Channel = model.Channel,
                 ContactInformation = model.ContactInformation,
+                ApplicableDays = model.ApplicableDays,
                 TimeFrom = model.From.Value,
                 TimeUntil = model.Until.Value,
                 UserId = User.UserId(),

@@ -33,6 +33,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.ServiceLevelAgreem
             ContactInformation = sla.ContactInformation;
             From = sla.TimeFrom;
             Until = sla.TimeUntil;
+            ApplicableDays = sla.ApplicableDays;
 
             CanDelete =
             (solution.PublishedStatus == PublicationStatus.Draft || solution.PublishedStatus == PublicationStatus.Unpublished)
@@ -55,6 +56,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.ServiceLevelAgreem
 
         [ModelBinder(BinderType = typeof(TimeInputModelBinder))]
         public DateTime? Until { get; set; }
+
+        [StringLength(1000)]
+        public string ApplicableDays { get; set; }
 
         public string SolutionName { get; set; }
 

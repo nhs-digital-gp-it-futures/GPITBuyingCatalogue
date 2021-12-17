@@ -62,18 +62,22 @@
     <nhs-table-column>Channel</nhs-table-column>
     <nhs-table-column>Contact</nhs-table-column>
     <nhs-table-column>Hours available</nhs-table-column>
+    <nhs-table-column>Applicable days</nhs-table-column>
     <nhs-table-column></nhs-table-column>
-    @foreach(var item in Model.ServiceLevelAgreements.Contacts)
+    @foreach (var item in Model.ServiceLevelAgreements.Contacts)
     {
         <nhs-table-row-container>
             <nhs-table-cell>@item.Channel</nhs-table-cell>
             <nhs-table-cell>@item.ContactInformation</nhs-table-cell>
             <nhs-table-cell>@item.TimeFrom.ToString("HH:mm") - @item.TimeUntil.ToString("HH:mm")</nhs-table-cell>
-            <nhs-table-cell><a href="@Url.Action(
+            <nhs-table-cell>@item.ApplicableDays</nhs-table-cell>
+            <nhs-table-cell>
+                <a href="@Url.Action(
                                     nameof(ServiceLevelAgreementsController.EditContact),
                                     typeof(ServiceLevelAgreementsController).ControllerName(),
                                     new { solutionId = Model.CatalogueItem.Id, contactId = item.Id })
-                            ">Edit</a></nhs-table-cell>
+                            ">Edit</a>
+            </nhs-table-cell>
         </nhs-table-row-container>
     }
 </nhs-table>
