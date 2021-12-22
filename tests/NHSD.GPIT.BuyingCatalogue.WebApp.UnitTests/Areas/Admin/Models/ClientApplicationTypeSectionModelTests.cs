@@ -1,11 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text.Json;
 using AutoFixture.Xunit2;
 using FluentAssertions;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
-using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Enums;
-using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions;
 using NHSD.GPIT.BuyingCatalogue.Test.Framework.AutoFixtureCustomisations;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models;
 using Xunit;

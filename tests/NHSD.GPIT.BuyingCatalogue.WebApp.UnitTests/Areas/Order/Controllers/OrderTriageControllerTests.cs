@@ -50,7 +50,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers
             var result = controller.Index(odsCode, model);
 
             result.As<RedirectToActionResult>().Should().NotBeNull();
-            result.As<RedirectToActionResult>().ActionName.Should().Be(nameof(controller.NotReady));
+            result.As<RedirectToActionResult>().ActionName.Should().Be(nameof(controller.NotSure));
         }
 
         [Theory]
@@ -74,7 +74,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers
             string odsCode,
             OrderTriageController controller)
         {
-            var result = controller.NotReady(odsCode);
+            var result = controller.NotSure(odsCode);
 
             result.As<ViewResult>().Should().NotBeNull();
             result.As<ViewResult>().Model.Should().BeOfType(typeof(GenericOrderTriageModel));
@@ -157,7 +157,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers
             var result = controller.TriageSelection(odsCode, option, model);
 
             result.As<RedirectToActionResult>().Should().NotBeNull();
-            result.As<RedirectToActionResult>().ActionName.Should().Be(nameof(OrderController.NewOrder));
+            result.As<RedirectToActionResult>().ActionName.Should().Be(nameof(OrderController.ReadyToStart));
             result.As<RedirectToActionResult>().ControllerName.Should().Be(typeof(OrderController).ControllerName());
         }
 

@@ -64,8 +64,8 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering
             CommonActions.ClickLinkElement(Objects.Ordering.OrganisationDashboard.CreateOrderLink);
 
             CommonActions.PageLoadedCorrectGetIndex(
-                typeof(OrderController),
-                nameof(OrderController.NewOrder)).Should().BeTrue();
+                typeof(OrderTriageController),
+                nameof(OrderTriageController.Index)).Should().BeTrue();
         }
     }
 }

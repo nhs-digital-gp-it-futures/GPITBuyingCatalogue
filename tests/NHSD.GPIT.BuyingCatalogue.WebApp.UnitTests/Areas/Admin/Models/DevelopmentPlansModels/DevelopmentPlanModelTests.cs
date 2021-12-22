@@ -1,10 +1,7 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations;
 using System.Reflection;
-using AutoFixture.Xunit2;
 using FluentAssertions;
-using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Enums;
-using NHSD.GPIT.BuyingCatalogue.Test.Framework.TestData;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.DevelopmentPlans;
 using Xunit;
 

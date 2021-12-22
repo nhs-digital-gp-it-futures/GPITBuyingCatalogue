@@ -14,6 +14,8 @@
             <form method="post">
                 <input type="hidden" asp-for="BackLink" />
                 <input type="hidden" asp-for="BackLinkText" />
+                <input type="hidden" asp-for="Title" />
+                <input type="hidden" asp-for="Advice" />
                 <nhs-fieldset-form-label asp-for="@Model">
                     <nhs-radio-buttons asp-for="Selected"
                                        values="Model.SelectListItems.Cast<object>()"

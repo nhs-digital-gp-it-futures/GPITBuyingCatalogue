@@ -8,6 +8,7 @@ using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Models.TaskList;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Orders;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.TaskList;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.Order;
+using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.OrderTriage;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
 {
@@ -55,6 +56,20 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
             };
 
             return View(orderModel);
+        }
+
+        [HttpGet("~/order/organisation/{odsCode}/order/ready-to-start")]
+        public IActionResult ReadyToStart(string odsCode, TriageOption? option = null)
+        {
+            var model = new ReadyToStartModel(odsCode)
+            {
+                BackLink = Url.Action(
+                    nameof(OrderTriageController.TriageSelection),
+                    typeof(OrderTriageController).ControllerName(),
+                    new { odsCode, option, selected = true }),
+            };
+
+            return View(model);
         }
 
         [HttpGet("~/order/organisation/{odsCode}/order/neworder")]
