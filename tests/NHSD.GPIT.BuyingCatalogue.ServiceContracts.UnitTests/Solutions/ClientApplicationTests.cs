@@ -294,7 +294,7 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.UnitTests.Solutions
         public static void SupportedBrowsersStatus_BrowsersSupportedIsEmpty_ReturnsNotStarted(
             ClientApplication clientApplication)
         {
-            clientApplication.BrowsersSupported = new HashSet<string>();
+            clientApplication.BrowsersSupported = new HashSet<SupportedBrowser>();
             clientApplication.MobileResponsive.HasValue.Should().BeTrue();
 
             clientApplication.SupportedBrowsersStatus().Should().Be(TaskProgress.NotStarted);

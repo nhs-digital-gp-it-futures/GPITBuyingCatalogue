@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text.Json.Serialization;
 using EnumsNET;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Enums;
+using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions.Serialization;
 
 namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions
 {
@@ -10,7 +12,8 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions
     {
         public HashSet<string> ClientApplicationTypes { get; set; } = new();
 
-        public HashSet<string> BrowsersSupported { get; set; } = new();
+        [JsonConverter(typeof(SupportedBrowsersJsonConverter))]
+        public HashSet<SupportedBrowser> BrowsersSupported { get; set; } = new();
 
         public bool? MobileResponsive { get; set; }
 

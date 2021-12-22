@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using FluentAssertions;
 using Microsoft.EntityFrameworkCore;
@@ -8,6 +9,7 @@ using NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.TestBases;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.Framework.Serialization;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers;
+using OpenQA.Selenium;
 using Xunit;
 
 namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.AddNewSolution.ClientApplicationTypes.BrowserBased
@@ -53,7 +55,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.AddNewSolution.ClientAp
             var clientApplication = JsonDeserializer.Deserialize<ServiceContracts.Solutions.ClientApplication>(solution.ClientApplication);
 
             clientApplication.Should().NotBeNull();
-            clientApplication.BrowsersSupported.Should().Contain(expectedBrowser);
+            clientApplication.BrowsersSupported.Should().Contain(b => b.BrowserName == expectedBrowser);
             clientApplication.MobileResponsive.Should().BeTrue();
         }
 
@@ -77,6 +79,32 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.AddNewSolution.ClientAp
 
             CommonActions.ErrorSummaryDisplayed().Should().BeTrue();
             CommonActions.ErrorSummaryLinksExist().Should().BeTrue();
+        }
+
+        [Fact]
+        public async Task SupportedBrowsers_AddMinimumVersion_ExpectedResult()
+        {
+            var targetBrowser = "Google Chrome";
+
+            CommonActions.ClickCheckboxByLabel(targetBrowser);
+
+            var browserVersion = TextGenerators.TextInputAddText(By.Id("Browsers_0__MinimumBrowserVersion"), 50);
+
+            CommonActions.ClickRadioButtonWithText("Yes");
+
+            CommonActions.ClickSave();
+
+            CommonActions.PageLoadedCorrectGetIndex(
+                typeof(CatalogueSolutionsController),
+                nameof(CatalogueSolutionsController.BrowserBased)).Should().BeTrue();
+
+            await using var context = GetEndToEndDbContext();
+            var solution = await context.Solutions.SingleAsync(s => s.CatalogueItemId == SolutionId);
+
+            var clientApplication = JsonDeserializer.Deserialize<ServiceContracts.Solutions.ClientApplication>(solution.ClientApplication);
+
+            clientApplication.Should().NotBeNull();
+            clientApplication.BrowsersSupported.First(bs => bs.BrowserName == targetBrowser).MinimumBrowserVersion.Should().Be(browserVersion);
         }
 
         public void Dispose()

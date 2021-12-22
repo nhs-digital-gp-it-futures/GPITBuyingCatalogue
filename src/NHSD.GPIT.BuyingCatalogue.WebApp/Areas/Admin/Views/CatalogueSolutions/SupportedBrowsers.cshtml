@@ -19,11 +19,17 @@
                 <input type="hidden" asp-for="@Model.SolutionName" />
                 <nhs-fieldset-form-label asp-for="@Model"
                                          label-text="Supported browser types"
-                                         label-hint="Select all the types of browser that are supported by your Catalogue Solution.">
+                                         label-hint="Select all the types of browser and minimum version that are supported by your Catalogue Solution.">
                     <nhs-checkbox-container>
                         @for (var i = 0; i < Model.Browsers.Length; i++)
                         {
-                            <nhs-checkbox asp-for="@Model.Browsers[i].Checked" label-text="@Model.Browsers[i].BrowserName" hidden-input="@Model.Browsers[i].BrowserName" />
+                            <nhs-checkbox asp-for="@Model.Browsers[i].Checked" label-text="@Model.Browsers[i].BrowserName" hidden-input="@Model.Browsers[i].BrowserName" >
+                                <nhs-input
+                                    asp-for="@Model.Browsers[i].MinimumBrowserVersion"
+                                    label-text="Browser version (optional)"
+                                    label-hint="e.g 96 and above, 96.0.1441.110"
+                                    class="nhsuk-u-width-one-third"/>
+                            </nhs-checkbox>
                         }
                     </nhs-checkbox-container>
                 </nhs-fieldset-form-label>

@@ -9,10 +9,10 @@ namespace NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.TagHelpers.FieldS
 
         public const string NhsFieldset = "nhsuk-fieldset";
         public const string NhsFieldsetLegend = "nhsuk-fieldset__legend";
-        public const string NhsFieldsetLegendExtraLarge = "nhsuk-label--xl";
-        public const string NhsFieldsetLegendLarge = "nhsuk-label--l";
-        public const string NhsFieldsetLegendMedium = "nhsuk-label--m";
-        public const string NhsFieldsetLegendSmall = "nhsuk-label--s";
+        public const string NhsFieldsetLegendExtraLarge = "nhsuk-fieldset__legend--xl";
+        public const string NhsFieldsetLegendLarge = "nhsuk-fieldset__legend--l";
+        public const string NhsFieldsetLegendMedium = "nhsuk-fieldset__legend--m";
+        public const string NhsFieldsetLegendSmall = "nhsuk-fieldset__legend--s";
         public const string NhsFieldSetLegendHeading = "nhsuk-fieldset__heading";
 
         public enum FieldSetSize
