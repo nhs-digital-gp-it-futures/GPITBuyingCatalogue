@@ -43,7 +43,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models
 
         public string DataTestTag { get; set; }
 
-        public HashSet<string> BrowsersSupported { get; set; } = new();
+        public HashSet<SupportedBrowser> BrowsersSupported { get; set; } = new();
 
         public bool? MobileResponsive { get; set; }
 

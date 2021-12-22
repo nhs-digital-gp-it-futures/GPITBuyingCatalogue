@@ -1,5 +1,6 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations;
+using System.Linq;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions;
@@ -49,7 +50,13 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.BrowserBasedModels
             foreach (var browser in Browsers)
             {
                 browser.Checked = ClientApplication.BrowsersSupported is not null &&
-                    ClientApplication.BrowsersSupported.Contains(browser.BrowserName);
+                    ClientApplication.BrowsersSupported.Any(bs => bs.BrowserName.Contains(browser.BrowserName));
+
+                if (ClientApplication.BrowsersSupported.Any(bs => bs.BrowserName.Contains(browser.BrowserName)))
+                {
+                    browser.MinimumBrowserVersion = ClientApplication.BrowsersSupported
+                        .FirstOrDefault(bs => bs.BrowserName.Contains(browser.BrowserName)).MinimumBrowserVersion;
+                }
             }
         }
     }

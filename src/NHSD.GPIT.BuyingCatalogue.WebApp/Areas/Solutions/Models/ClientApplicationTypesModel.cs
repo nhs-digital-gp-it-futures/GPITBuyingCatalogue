@@ -63,7 +63,15 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models
             {
                 items.Add(
                     "Supported browser types",
-                    new ListViewModel { List = ClientApplication.BrowsersSupported.ToArray(), });
+                    new ListViewModel
+                    {
+                        List = ClientApplication
+                        .BrowsersSupported
+                        .Select(bs =>
+                        !string.IsNullOrWhiteSpace(bs.MinimumBrowserVersion)
+                        ? $"{bs.BrowserName} (Version {bs.MinimumBrowserVersion})"
+                        : bs.BrowserName).ToArray(),
+                    });
             }
 
             if (ClientApplication.MobileResponsive is not null)

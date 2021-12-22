@@ -11,13 +11,13 @@ namespace NHSD.GPIT.BuyingCatalogue.Test.Framework.AutoFixtureCustomisations
     {
         public void Customize(IFixture fixture)
         {
-            var browsersSupported = new HashSet<string>
+            var browsersSupported = new HashSet<SupportedBrowser>
             {
-                "Internet Explorer 11",
-                "Google Chrome",
-                "OPERA",
-                "safari",
-                "mozilla firefox",
+                new SupportedBrowser { BrowserName = "Internet Explorer 11" },
+                new SupportedBrowser { BrowserName = "Google Chrome" },
+                new SupportedBrowser { BrowserName = "OPERA" },
+                new SupportedBrowser { BrowserName = "safari" },
+                new SupportedBrowser { BrowserName = "mozilla firefox" },
             };
 
             ISpecimenBuilder ComposerTransformation(ICustomizationComposer<ClientApplication> composer) => composer
