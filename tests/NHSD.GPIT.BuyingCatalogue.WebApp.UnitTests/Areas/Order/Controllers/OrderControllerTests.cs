@@ -127,5 +127,16 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers
                 .ErrorMessage.Should()
                 .Be("Your order is incomplete. Please go back to the order and check again");
         }
+
+        [Theory]
+        [CommonAutoData]
+        public static void Get_ReadyToStart_ReturnsView(
+            string odsCode,
+            OrderController controller)
+        {
+            var result = controller.ReadyToStart(odsCode);
+
+            result.As<ViewResult>().Should().NotBeNull();
+        }
     }
 }

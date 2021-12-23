@@ -1,0 +1,27 @@
+﻿@model NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.OrderTriage.GenericOrderTriageModel
+@{
+    ViewBag.Title = "Orders with a value over £250k";
+}
+
+<div>
+    <partial name="Partials/_BackLink" model="Model" />
+    <div class="nhsuk-grid-row nhsuk-u-margin-bottom-6">
+        <div class="nhsuk-grid-column-full">
+            <nhs-page-title title="@ViewBag.Title" />
+
+            <p>For orders over £250k, you must execute an Off-Catalogue Competition procedure.</p>
+
+            <p>This means you must invite shortlisted suppliers to provide written tenders. You can then evaluate these tenders and select the Catalogue Solution that best meets your needs based on this information.</p>
+
+            <p>You’ll not be ready to place an order of this value until this procedure has been carried out.</p>
+
+            <h2>Need help?</h2>
+
+            <p>For help using the Buying Catalogue, contact the National and Commercial Procurement Hub: <a href="mailto:commercial.procurementhub@nhs.net">commercial.procurementhub@nhs.net</a>.</p>
+
+            <vc:nhs-secondary-button text="Return to orders dashboard"
+                                     use-primary-colour="true"
+                                     url="@Model.OrdersDashboardLink" />
+        </div>
+    </div>
+</div>

@@ -1,0 +1,25 @@
+﻿@model NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.OrderTriage.GenericOrderTriageModel
+@{
+    ViewBag.Title = "Orders with a value less than £40k";
+}
+
+<div>
+    <partial name="Partials/_BackLink" model="Model" />
+    <div class="nhsuk-grid-row nhsuk-u-margin-bottom-6">
+        <div class="nhsuk-grid-column-full">
+            <nhs-page-title title="@ViewBag.Title" />
+
+            <p>For orders under £40k, you can execute a Direct Award procedure. This means you’re free to choose to procure any Catalogue Solution or service on the Buying Catalogue.</p>
+
+            <p>You’ll not be ready to place an order of this value until you’ve browsed <a href="https://buyingcatalogue.digital.nhs.uk/">the Buying Catalogue</a> and identified what you want.</p>
+
+            <h2>Need help?</h2>
+
+            <p>For help using the Buying Catalogue, contact the National and Commercial Procurement Hub: <a href="mailto:commercial.procurementhub@nhs.net">commercial.procurementhub@nhs.net</a>.</p>
+
+            <vc:nhs-secondary-button text="Return to orders dashboard"
+                                     use-primary-colour="true"
+                                     url="@Model.OrdersDashboardLink" />
+        </div>
+    </div>
+</div>
