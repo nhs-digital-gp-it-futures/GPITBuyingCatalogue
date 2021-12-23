@@ -27,6 +27,7 @@
                             @for (int j = 0; j < Model.CapabilityCategories[i].Capabilities.Count; j++)
                             {
                                 <input type="hidden" asp-for="@Model.CapabilityCategories[i].Capabilities[j].Name" />
+                                <input type="hidden" asp-for="@Model.CapabilityCategories[i].Capabilities[j].CapabilityRef" />
                                 <nhs-checkbox asp-for="@Model.CapabilityCategories[i].Capabilities[j].Selected"
                                               label-text="(@Model.CapabilityCategories[i].Capabilities[j].CapabilityRef) @Model.CapabilityCategories[i].Capabilities[j].Name"
                                               hidden-input="@Model.CapabilityCategories[i].Capabilities[j].Id">
