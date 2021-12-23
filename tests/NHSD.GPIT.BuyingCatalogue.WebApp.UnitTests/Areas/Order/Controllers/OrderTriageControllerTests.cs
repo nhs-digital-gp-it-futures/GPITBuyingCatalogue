@@ -90,7 +90,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers
 
             result.As<RedirectToActionResult>().Should().NotBeNull();
             result.As<RedirectToActionResult>().ActionName.Should().Be(nameof(controller.Index));
-        } 
+        }
 
         [Theory]
         [CommonAutoData]
