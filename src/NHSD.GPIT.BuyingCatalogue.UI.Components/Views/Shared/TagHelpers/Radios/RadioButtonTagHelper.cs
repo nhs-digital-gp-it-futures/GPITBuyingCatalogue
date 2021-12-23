@@ -80,9 +80,9 @@ namespace NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.TagHelpers.Radios
                     input,
                     childContent,
                     tags);
-
-                TagHelperFunctions.TellParentTagIfThisTagIsInError(ViewContext, context, For);
             }
+
+            TagHelperFunctions.TellParentTagIfThisTagIsInError(ViewContext, context, For);
 
             output.Content
                 .AppendHtml(input)
