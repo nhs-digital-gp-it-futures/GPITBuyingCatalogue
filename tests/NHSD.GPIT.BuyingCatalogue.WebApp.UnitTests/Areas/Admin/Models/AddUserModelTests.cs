@@ -15,7 +15,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Models
         {
             var actual = new AddUserModel(organisation);
 
-            actual.Organisation.Should().Be(organisation);
+            actual.OrganisationName.Should().Be(organisation.Name);
         }
     }
 }

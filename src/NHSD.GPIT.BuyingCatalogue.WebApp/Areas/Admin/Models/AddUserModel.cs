@@ -12,10 +12,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models
 
         public AddUserModel(Organisation organisation)
         {
-            Organisation = organisation;
+            OrganisationName = organisation.Name;
         }
 
-        public Organisation Organisation { get; set; }
+        public string OrganisationName { get; set; }
 
         [Required(ErrorMessage = "First Name Required")]
         [StringLength(100)]

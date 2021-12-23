@@ -12,14 +12,17 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models
 
         public AddAnOrganisationModel(Organisation organisation, List<Organisation> availableOrganisations)
         {
-            Organisation = organisation;
+            OrganisationId = organisation.Id;
+            OrganisationName = organisation.Name;
             AvailableOrganisations = availableOrganisations;
         }
 
-        public Organisation Organisation { get; set; }
+        public int OrganisationId { get; set; }
+
+        public string OrganisationName { get; set; }
 
         public List<Organisation> AvailableOrganisations { get; set; }
 
-        public int SelectedOrganisation { get; set; }
+        public int? SelectedOrganisation { get; set; }
     }
 }
