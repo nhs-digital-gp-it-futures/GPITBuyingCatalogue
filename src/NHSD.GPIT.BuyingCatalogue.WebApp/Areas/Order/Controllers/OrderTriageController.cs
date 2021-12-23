@@ -67,9 +67,12 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
         }
 
         [HttpGet("{option}")]
-        public IActionResult TriageSelection(string odsCode, TriageOption option, bool? selected = null)
+        public IActionResult TriageSelection(string odsCode, TriageOption? option, bool? selected = null)
         {
-            var (title, advice, _) = GetTriageSelectionContent(option);
+            if (option is null)
+                return RedirectToAction(nameof(Index), new { odsCode });
+
+            var (title, advice, _) = GetTriageSelectionContent(option!.Value);
 
             var model = new TriageDueDiligenceModel
             {

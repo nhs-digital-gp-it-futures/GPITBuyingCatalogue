@@ -82,6 +82,18 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers
 
         [Theory]
         [CommonAutoData]
+        public static void Get_TriageSelection_InvalidOption_Redirects(
+            string odsCode,
+            OrderTriageController controller)
+        {
+            var result = controller.TriageSelection(odsCode, null);
+
+            result.As<RedirectToActionResult>().Should().NotBeNull();
+            result.As<RedirectToActionResult>().ActionName.Should().Be(nameof(controller.Index));
+        } 
+
+        [Theory]
+        [CommonAutoData]
         public static void Get_TriageSelection_ReturnsView(
             string odsCode,
             TriageOption option,
