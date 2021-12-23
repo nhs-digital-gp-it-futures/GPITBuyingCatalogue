@@ -5,7 +5,7 @@ using NHSD.GPIT.BuyingCatalogue.UI.Components.TagHelpers;
 namespace NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.TagHelpers.Radios
 {
     [HtmlTargetElement(TagHelperName, ParentTag = FieldSetFormLabelTagHelper.TagHelperName)]
-    [RestrictChildren(RadioButtonTagHelper.TagHelperName)]
+    [RestrictChildren(RadioButtonTagHelper.TagHelperName, TagHelperConstants.Input)]
     public sealed class RadioButtonContainerTagHelper : TagHelper
     {
         public const string TagHelperName = "nhs-radio-button-container";

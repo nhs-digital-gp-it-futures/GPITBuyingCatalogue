@@ -101,6 +101,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
         [HttpPost("find")]
         public async Task<IActionResult> Find(FindOrganisationModel model)
         {
+            if (!ModelState.IsValid)
+                return View(model);
+
             var (organisation, error) = await odsService.GetOrganisationByOdsCode(model.OdsCode);
 
             if (organisation is null)
@@ -327,7 +330,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
             if (!ModelState.IsValid)
                 return View(model);
 
-            await organisationsService.AddRelatedOrganisations(organisationId, model.SelectedOrganisation);
+            await organisationsService.AddRelatedOrganisations(organisationId, model.SelectedOrganisation!.Value);
 
             return RedirectToAction(
                 nameof(Details),
