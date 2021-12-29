@@ -9,7 +9,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Validators
         {
             RuleFor(m => m.SelectedTriageOption)
                 .NotNull()
-                .WithMessage("Select the approximate value of you order, or ‘I’m not sure’ if you do not know");
+                .WithMessage("Select the approximate value of your order, or ‘I’m not sure’ if you do not know");
         }
     }
 }
