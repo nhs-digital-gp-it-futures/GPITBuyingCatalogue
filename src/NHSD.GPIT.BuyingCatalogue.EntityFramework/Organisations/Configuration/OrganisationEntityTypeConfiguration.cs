@@ -17,7 +17,7 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Organisations.Configuration
 
             builder.Property(o => o.Address)
                 .HasConversion(
-                    a => JsonSerializer.Serialize(a, null),
+                    a => JsonSerializer.Serialize(a, (JsonSerializerOptions)null),
                     a => JsonSerializer.Deserialize<Address>(a, new JsonSerializerOptions { PropertyNameCaseInsensitive = true }));
 
             builder.Property(o => o.Id).ValueGeneratedOnAdd();

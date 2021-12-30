@@ -17,7 +17,7 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Configuration
             builder.Property(s => s.Address)
                 .HasMaxLength(500)
                 .HasConversion(
-                    a => JsonSerializer.Serialize(a, null),
+                    a => JsonSerializer.Serialize(a, (JsonSerializerOptions)null),
                     a => JsonSerializer.Deserialize<Address>(a, new JsonSerializerOptions { PropertyNameCaseInsensitive = true }));
 
             builder.Property(s => s.LegalName)

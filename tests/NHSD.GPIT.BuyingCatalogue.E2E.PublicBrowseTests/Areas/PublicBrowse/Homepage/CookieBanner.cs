@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text.Json;
+using System.Text.Json.Serialization;
 using System.Web;
 using FluentAssertions;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Utils;
@@ -111,7 +112,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.PublicBrowse.Homepage
 
         private void AddConsentCookie(CookieData cookieData)
         {
-            var cookieContent = JsonSerializer.Serialize(cookieData, new JsonSerializerOptions { IgnoreNullValues = true });
+            var cookieContent = JsonSerializer.Serialize(cookieData, new JsonSerializerOptions { DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull });
             var cookie = new Cookie(CatalogueCookies.BuyingCatalogueConsent, HttpUtility.UrlEncode(cookieContent));
 
             Driver.Manage().Cookies.AddCookie(cookie);

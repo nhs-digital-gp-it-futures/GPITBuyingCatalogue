@@ -35,6 +35,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
                 .ToListAsync();
         }
 
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Performance", "CA1841:Prefer Dictionary.Contains methods", Justification = "'Contains' is used for LINQ to SQL Query")]
         public async Task<IReadOnlyDictionary<string, ServiceRecipient>> AddOrUpdateServiceRecipients(
             IEnumerable<ServiceRecipient> recipients)
         {

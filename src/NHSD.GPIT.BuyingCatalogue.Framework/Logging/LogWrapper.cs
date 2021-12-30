@@ -5,6 +5,8 @@ using Microsoft.Extensions.Logging;
 namespace NHSD.GPIT.BuyingCatalogue.Framework.Logging
 {
     [ExcludeFromCodeCoverage]
+    [SuppressMessage("Performance", "CA1848:Use the LoggerMessage delegates", Justification = "To be reviewed as tech debt")]
+    [SuppressMessage("Usage", "CA2254:Template should be a static expression", Justification = "To be reviewed as tech debt")]
     public class LogWrapper<T> : ILogWrapper<T>
         where T : class
     {
