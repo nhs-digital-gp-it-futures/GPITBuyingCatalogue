@@ -11,17 +11,18 @@ Once complete, this will become the single repository required for the Buying Ca
 
 ### Architecture overview
 
-This application uses **.NET 5** to provide a Web Application capable of running on Linux or Windows.
+This application uses **.NET 6** to provide a Web Application capable of running on Linux or Windows.
 
 
 ## Setting up your development environment for the Buying Catalogue
 
 ### Requirements
 
+- .NET 6.0
 - .NET 5.0
 - Docker
 
-> Before you begin please install **.NET 5.0** & **Docker** on your machine.
+> Before you begin please install **.NET 6.0**, **.NET 5.0** & **Docker** on your machine.
 
 ## Running the API
 
