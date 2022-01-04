@@ -75,4 +75,10 @@
     <ProjectReference Include="..\NHSD.GPIT.BuyingCatalogue.UI.Components\NHSD.GPIT.BuyingCatalogue.UI.Components.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Content Update="tsconfig.json">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+
 </Project>

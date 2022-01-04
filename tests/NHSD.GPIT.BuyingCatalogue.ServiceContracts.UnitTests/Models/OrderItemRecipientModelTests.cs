@@ -48,9 +48,9 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.UnitTests.Models
         }
 
         [Theory]
-        [InlineData("1", "1", "2022", null)]
-        [InlineData("", "1", "2022", "Planned delivery date must be a real date")]
-        [InlineData("1", "", "2022", "Planned delivery date must be a real date")]
+        [InlineData("1", "1", "2023", null)]
+        [InlineData("", "1", "2023", "Planned delivery date must be a real date")]
+        [InlineData("1", "", "2023", "Planned delivery date must be a real date")]
         [InlineData("1", "1", "", "Planned delivery date must be a real date")]
         [InlineData("29", "2", "2024", null)]
         [InlineData("29", "2", "2023", "Planned delivery date must be a real date")]
