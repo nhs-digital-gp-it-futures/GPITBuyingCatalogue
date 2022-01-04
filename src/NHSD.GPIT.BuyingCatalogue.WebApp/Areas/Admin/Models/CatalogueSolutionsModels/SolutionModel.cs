@@ -1,0 +1,65 @@
+﻿using System.Collections.Generic;
+using System.Globalization;
+using System.Linq;
+using Microsoft.AspNetCore.Mvc.Rendering;
+using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
+using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
+using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Models;
+using NHSD.GPIT.BuyingCatalogue.WebApp.Models;
+
+namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.CatalogueSolutionsModels
+{
+    public sealed class SolutionModel : NavBaseModel
+    {
+        public SolutionModel()
+        {
+        }
+
+        public SolutionModel(CatalogueItem solution)
+        {
+            SolutionId = solution.Id;
+            SupplierId = solution.SupplierId;
+            SolutionName = solution.Name;
+            SolutionDisplayName = solution.Name;
+        }
+
+        public CatalogueItemId? SolutionId { get; set; }
+
+        public string SolutionName { get; set; }
+
+        public string SolutionDisplayName { get; set; }
+
+        public int? SupplierId { get; set; }
+
+        public IList<FrameworkModel> Frameworks { get; set; }
+
+        public IEnumerable<SelectListItem> SuppliersSelectList { get; set; } = new List<SelectListItem>();
+
+        public string Heading { get; set; }
+
+        public string Description { get; set; }
+
+        public SolutionModel WithSelectListItems(IList<Supplier> suppliers)
+        {
+            SuppliersSelectList = suppliers == null || !suppliers.Any()
+            ? System.Array.Empty<SelectListItem>()
+            : suppliers.Select(s => new SelectListItem($"{s.Name} ({s.Id})", s.Id.ToString(CultureInfo.InvariantCulture)));
+
+            return this;
+        }
+
+        public SolutionModel WithAddSolution()
+        {
+            Heading = "Add a solution";
+            Description = "Provide the following information about your Catalogue Solution.";
+            return this;
+        }
+
+        public SolutionModel WithEditSolution()
+        {
+            Heading = "Details";
+            Description = "These are the current details for this Catalogue Solution.";
+            return this;
+        }
+    }
+}

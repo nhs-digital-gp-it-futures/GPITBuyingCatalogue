@@ -1,6 +1,6 @@
 ﻿using System.Linq;
 using FluentValidation;
-using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.MobileTabletBasedModels;
+using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.ClientApplicationTypeModels.MobileTabletBasedModels;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Validators
 {
