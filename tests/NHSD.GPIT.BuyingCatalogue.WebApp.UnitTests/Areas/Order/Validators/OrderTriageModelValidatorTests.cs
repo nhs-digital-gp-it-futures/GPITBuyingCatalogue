@@ -19,7 +19,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Validators
             var result = validator.TestValidate(model);
 
             result.ShouldHaveValidationErrorFor(m => m.SelectedTriageOption)
-                .WithErrorMessage("Select the approximate value of you order, or ‘I’m not sure’ if you do not know");
+                .WithErrorMessage("Select the approximate value of your order, or ‘I’m not sure’ if you do not know");
         }
 
         [Theory]
