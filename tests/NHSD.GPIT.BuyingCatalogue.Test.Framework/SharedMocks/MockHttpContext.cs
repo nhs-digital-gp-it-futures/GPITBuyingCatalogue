@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Text.Json;
+using System.Text.Json.Serialization;
 using Microsoft.AspNetCore.Http;
 using Moq;
 using NHSD.GPIT.BuyingCatalogue.Framework.Constants;
@@ -48,7 +49,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Test.Framework.SharedMocks
         public HttpContext HttpContext => httpContextMock.Object;
 
         public void SetCookieData(CookieData data) =>
-            CookieContent = JsonSerializer.Serialize(data, new JsonSerializerOptions { IgnoreNullValues = true });
+            CookieContent = JsonSerializer.Serialize(data, new JsonSerializerOptions { DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull });
 
         private void UpdateRequestCookieCollectionMock()
         {
