@@ -634,7 +634,5 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
             actual.ViewName.Should().BeNull();
             actual.Model.Should().BeEquivalentTo(new AdditionalInformationModel(catalogueItem));
         }
-
-
     }
 }
