@@ -22,8 +22,8 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.AddNewSolution.HostingT
         public EditPrivateCloudHostingType(LocalWebApplicationFactory factory)
            : base(
                  factory,
-                 typeof(CatalogueSolutionsController),
-                 nameof(CatalogueSolutionsController.PrivateCloud),
+                 typeof(HostingTypesController),
+                 nameof(HostingTypesController.PrivateCloud),
                  Parameters)
         {
         }
@@ -70,8 +70,8 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.AddNewSolution.HostingT
             CommonActions.ClickGoBackLink();
 
             CommonActions.PageLoadedCorrectGetIndex(
-                    typeof(CatalogueSolutionsController),
-                    nameof(CatalogueSolutionsController.HostingType))
+                    typeof(HostingTypesController),
+                    nameof(HostingTypesController.HostingType))
                 .Should()
                 .BeTrue();
         }

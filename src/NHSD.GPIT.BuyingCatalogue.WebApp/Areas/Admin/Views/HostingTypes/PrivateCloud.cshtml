@@ -55,8 +55,8 @@
             @if (!Model.IsNewHostingType)
             {
                 <vc:nhs-delete-button url="@Url.Action(
-                        nameof(CatalogueSolutionsController.DeleteHostingType),
-                        typeof(CatalogueSolutionsController).ControllerName(),
+                        nameof(HostingTypesController.DeleteHostingType),
+                        typeof(HostingTypesController).ControllerName(),
                         new { solutionId = Model.SolutionId, hostingType = HostingType.PrivateCloud })" text="Delete hosting type" />
             }
         </div>

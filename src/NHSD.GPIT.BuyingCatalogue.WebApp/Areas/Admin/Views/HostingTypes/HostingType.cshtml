@@ -15,8 +15,8 @@
                         advice="Let buyers know how your Catalogue Solution can be hosted. You must add at least one." />
 
         <vc:nhs-action-link url="@Url.Action(
-        nameof(CatalogueSolutionsController.AddHostingType),
-        typeof(CatalogueSolutionsController).ControllerName(),
+        nameof(HostingTypesController.AddHostingType),
+        typeof(HostingTypesController).ControllerName(),
         new { Model.SolutionId})" text="Add a hosting type" />
         <form method="post">
             <input type="hidden" asp-for="@Model.SolutionId" />
@@ -34,7 +34,7 @@
                         <nhs-table-row-container>
                             <nhs-table-cell>@hostingType.AsString(EnumFormat.DisplayName)</nhs-table-cell>
                             <nhs-table-cell>
-                                <a asp-action="@hostingType" asp-controller="CatalogueSolutions" asp-route-solutionId="@Model.SolutionId" class="nhsuk-breadcrumb__link">Edit</a>
+                                <a asp-action="@hostingType" asp-controller="HostingTypes" asp-route-solutionId="@Model.SolutionId" class="nhsuk-breadcrumb__link">Edit</a>
                             </nhs-table-cell>
                         </nhs-table-row-container>
                     }

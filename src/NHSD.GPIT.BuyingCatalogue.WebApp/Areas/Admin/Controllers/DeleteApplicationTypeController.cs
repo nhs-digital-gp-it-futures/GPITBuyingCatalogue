@@ -35,8 +35,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
                 BackLink = applicationType switch
                 {
                     ClientApplicationType.BrowserBased => Url.Action(
-                        nameof(CatalogueSolutionsController.BrowserBased),
-                        typeof(CatalogueSolutionsController).ControllerName(),
+                        nameof(BrowserBasedController.BrowserBased),
+                        typeof(BrowserBasedController).ControllerName(),
                         new { solutionId }),
                     ClientApplicationType.Desktop => Url.Action(
                         nameof(DesktopBasedController.Desktop),

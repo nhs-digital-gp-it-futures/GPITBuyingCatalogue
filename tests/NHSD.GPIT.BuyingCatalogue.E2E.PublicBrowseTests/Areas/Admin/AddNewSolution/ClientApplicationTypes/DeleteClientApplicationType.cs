@@ -56,7 +56,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.AddNewSolution.ClientAp
         }
 
         [Theory]
-        [InlineData(ClientApplicationType.BrowserBased, typeof(CatalogueSolutionsController), nameof(CatalogueSolutionsController.BrowserBased))]
+        [InlineData(ClientApplicationType.BrowserBased, typeof(BrowserBasedController), nameof(BrowserBasedController.BrowserBased))]
         [InlineData(ClientApplicationType.MobileTablet, typeof(MobileTabletBasedController), nameof(MobileTabletBasedController.MobileTablet))]
         [InlineData(ClientApplicationType.Desktop, typeof(DesktopBasedController), nameof(DesktopBasedController.Desktop))]
         public void DeleteClientApplicationType_ClickGoBackLink_NavigatesToCorrectPage(ClientApplicationType clientApplicationType, Type controller, string expectedControllerMethod)
@@ -78,7 +78,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.AddNewSolution.ClientAp
         }
 
         [Theory]
-        [InlineData(ClientApplicationType.BrowserBased, typeof(CatalogueSolutionsController), nameof(CatalogueSolutionsController.BrowserBased))]
+        [InlineData(ClientApplicationType.BrowserBased, typeof(BrowserBasedController), nameof(BrowserBasedController.BrowserBased))]
         [InlineData(ClientApplicationType.MobileTablet, typeof(MobileTabletBasedController), nameof(MobileTabletBasedController.MobileTablet))]
         [InlineData(ClientApplicationType.Desktop, typeof(DesktopBasedController), nameof(DesktopBasedController.Desktop))]
         public void DeleteClientApplicationType_ClickCancelLink_NavigatesToCorrectPage(ClientApplicationType clientApplicationType, Type controller, string expectedControllerMethod)
