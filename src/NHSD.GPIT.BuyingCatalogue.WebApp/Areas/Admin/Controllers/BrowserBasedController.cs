@@ -13,7 +13,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
 {
     [Authorize(Policy = "AdminOnly")]
     [Area("Admin")]
-    [Route("admin/catalogue-solutions")]
+    [Route("admin/catalogue-solutions/manage/{solutionId}/client-application-type/browser-based")]
     public class BrowserBasedController : Controller
     {
         private readonly ISolutionsService solutionsService;
@@ -23,7 +23,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
             this.solutionsService = solutionsService ?? throw new ArgumentNullException(nameof(solutionsService));
         }
 
-        [HttpGet("manage/{solutionId}/client-application-type/browser-based")]
+        [HttpGet]
         public async Task<IActionResult> BrowserBased(CatalogueItemId solutionId)
         {
             var solution = await solutionsService.GetSolutionThin(solutionId);
@@ -42,7 +42,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
             return View(model);
         }
 
-        [HttpGet("manage/{solutionId}/client-application-type/browser-based/supported-browser")]
+        [HttpGet("supported-browser")]
         public async Task<IActionResult> SupportedBrowsers(CatalogueItemId solutionId)
         {
             var solution = await solutionsService.GetSolutionThin(solutionId);
@@ -53,7 +53,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
             return View(new SupportedBrowsersModel(solution));
         }
 
-        [HttpPost("manage/{solutionId}/client-application-type/browser-based/supported-browser")]
+        [HttpPost("supported-browser")]
         public async Task<IActionResult> SupportedBrowsers(CatalogueItemId solutionId, SupportedBrowsersModel model)
         {
             if (!ModelState.IsValid)
@@ -88,7 +88,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
             return RedirectToAction(nameof(BrowserBased), new { solutionId });
         }
 
-        [HttpGet("manage/{solutionId}/client-application-type/browser-based/plug-ins-or-extensions")]
+        [HttpGet("plug-ins-or-extensions")]
         public async Task<IActionResult> PlugInsOrExtensions(CatalogueItemId solutionId)
         {
             var solution = await solutionsService.GetSolutionThin(solutionId);
@@ -98,7 +98,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
             return View(new PlugInsOrExtensionsModel(solution));
         }
 
-        [HttpPost("manage/{solutionId}/client-application-type/browser-based/plug-ins-or-extensions")]
+        [HttpPost("plug-ins-or-extensions")]
         public async Task<IActionResult> PlugInsOrExtensions(CatalogueItemId solutionId, PlugInsOrExtensionsModel model)
         {
             if (!ModelState.IsValid)
@@ -127,7 +127,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
             return RedirectToAction(nameof(BrowserBased), new { solutionId });
         }
 
-        [HttpGet("manage/{solutionId}/client-application-type/browser-based/connectivity-and-resolution")]
+        [HttpGet("connectivity-and-resolution")]
         public async Task<IActionResult> ConnectivityAndResolution(CatalogueItemId solutionId)
         {
             var solution = await solutionsService.GetSolutionThin(solutionId);
@@ -137,7 +137,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
             return View(new ConnectivityAndResolutionModel(solution));
         }
 
-        [HttpPost("manage/{solutionId}/client-application-type/browser-based/connectivity-and-resolution")]
+        [HttpPost("connectivity-and-resolution")]
         public async Task<IActionResult> ConnectivityAndResolution(CatalogueItemId solutionId, ConnectivityAndResolutionModel model)
         {
             if (!ModelState.IsValid)
@@ -159,7 +159,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
             return RedirectToAction(nameof(BrowserBased), new { solutionId });
         }
 
-        [HttpGet("manage/{solutionId}/client-application-type/browser-based/hardware-requirements")]
+        [HttpGet("hardware-requirements")]
         public async Task<IActionResult> HardwareRequirements(CatalogueItemId solutionId)
         {
             var solution = await solutionsService.GetSolutionThin(solutionId);
@@ -169,7 +169,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
             return View(new HardwareRequirementsModel(solution));
         }
 
-        [HttpPost("manage/{solutionId}/client-application-type/browser-based/hardware-requirements")]
+        [HttpPost("hardware-requirements")]
         public async Task<IActionResult> HardwareRequirements(CatalogueItemId solutionId, HardwareRequirementsModel model)
         {
             if (!ModelState.IsValid)
@@ -191,7 +191,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
             return RedirectToAction(nameof(BrowserBased), new { solutionId });
         }
 
-        [HttpGet("manage/{solutionId}/client-application-type/browser-based/additional-information")]
+        [HttpGet("additional-information")]
         public async Task<IActionResult> AdditionalInformation(CatalogueItemId solutionId)
         {
             var solution = await solutionsService.GetSolutionThin(solutionId);
@@ -201,7 +201,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
             return View(new AdditionalInformationModel(solution));
         }
 
-        [HttpPost("manage/{solutionId}/client-application-type/browser-based/additional-information")]
+        [HttpPost("additional-information")]
         public async Task<IActionResult> AdditionalInformation(CatalogueItemId solutionId, AdditionalInformationModel model)
         {
             if (!ModelState.IsValid)
