@@ -474,15 +474,6 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
         public Task<bool> SupplierHasSolutionName(int supplierId, string solutionName) =>
             dbContext.CatalogueItems.AnyAsync(i => i.SupplierId == supplierId && i.Name == solutionName);
 
-        public async Task SavePublicationStatus(CatalogueItemId solutionId, PublicationStatus publicationStatus)
-        {
-            var solution = await dbContext.CatalogueItems.SingleAsync(i => i.Id == solutionId);
-
-            solution.PublishedStatus = publicationStatus;
-
-            await dbContext.SaveChangesAsync();
-        }
-
         public async Task SaveContacts(CatalogueItemId solutionId, IList<SupplierContact> supplierContacts)
         {
             var solution = await dbContext.CatalogueItems.Include(i => i.CatalogueItemContacts).SingleAsync(i => i.Id == solutionId);

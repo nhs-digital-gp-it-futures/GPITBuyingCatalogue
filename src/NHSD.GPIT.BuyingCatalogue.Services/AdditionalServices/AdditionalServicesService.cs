@@ -105,18 +105,6 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.AdditionalServices
                     && add.CatalogueItem.Name == additionalServiceName
                     && add.CatalogueItemId != currentCatalogueItemId);
 
-        public async Task SavePublicationStatus(
-            CatalogueItemId catalogueItemId,
-            CatalogueItemId additionalServiceId,
-            PublicationStatus publicationStatus)
-        {
-            var solution = await GetAdditionalService(catalogueItemId, additionalServiceId);
-
-            solution.PublishedStatus = publicationStatus;
-
-            await dbContext.SaveChangesAsync();
-        }
-
         private IQueryable<CatalogueItem> BaseQuery(CatalogueItemId catalogueItemId) => dbContext.CatalogueItems
                 .Include(i => i.AdditionalService)
                 .Include(i => i.CatalogueItemCapabilities)

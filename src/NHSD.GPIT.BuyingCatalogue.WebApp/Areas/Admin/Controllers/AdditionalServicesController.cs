@@ -10,6 +10,7 @@ using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Capabilities;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.ListPrices;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Models;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Models.AdditionalServices;
+using NHSD.GPIT.BuyingCatalogue.ServiceContracts.PublishStatus;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.AdditionalServices;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.CapabilityModels;
@@ -26,17 +27,20 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
         private readonly IAdditionalServicesService additionalServicesService;
         private readonly IListPricesService listPricesService;
         private readonly ICapabilitiesService capabilitiesService;
+        private readonly IPublicationStatusService publicationStatusService;
 
         public AdditionalServicesController(
             ISolutionsService solutionsService,
             IAdditionalServicesService additionalServicesService,
             IListPricesService listPricesService,
-            ICapabilitiesService capabilitiesService)
+            ICapabilitiesService capabilitiesService,
+            IPublicationStatusService publicationStatusService)
         {
             this.solutionsService = solutionsService ?? throw new ArgumentNullException(nameof(solutionsService));
             this.additionalServicesService = additionalServicesService ?? throw new ArgumentNullException(nameof(additionalServicesService));
             this.capabilitiesService = capabilitiesService ?? throw new ArgumentNullException(nameof(capabilitiesService));
             this.listPricesService = listPricesService ?? throw new ArgumentNullException(nameof(listPricesService));
+            this.publicationStatusService = publicationStatusService ?? throw new ArgumentNullException(nameof(publicationStatusService));
         }
 
         [HttpGet]
@@ -80,11 +84,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
                     model);
             }
 
-            var additionalService = await additionalServicesService.GetAdditionalService(solutionId, additionalServiceId);
-            if (model.SelectedPublicationStatus == additionalService.PublishedStatus)
-                return RedirectToAction(nameof(Index), new { solutionId });
-
-            await additionalServicesService.SavePublicationStatus(solutionId, additionalServiceId, model.SelectedPublicationStatus);
+            await publicationStatusService.SetPublicationStatus(additionalServiceId, model.SelectedPublicationStatus);
 
             return RedirectToAction(nameof(Index), new { solutionId });
         }

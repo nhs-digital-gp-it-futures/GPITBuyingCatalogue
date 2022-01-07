@@ -14,6 +14,7 @@ using NHSD.GPIT.BuyingCatalogue.EntityFramework.Users.Models;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Caching;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Capabilities;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Models;
+using NHSD.GPIT.BuyingCatalogue.ServiceContracts.PublishStatus;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions.Admin;
 using NHSD.GPIT.BuyingCatalogue.Test.Framework.AutoFixtureCustomisations;
@@ -593,27 +594,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
 
         [Theory]
         [CommonAutoData]
-        public static async Task Post_SetPublicationStatus_SamePublicationStatus_DoesNotCallSavePublicationStatus(
-            CatalogueItem solution,
-            ManageCatalogueSolutionModel manageCatalogueSolutionModel,
-            [Frozen] Mock<ISolutionsService> mockSolutionService,
-            CatalogueSolutionsController controller)
-        {
-            manageCatalogueSolutionModel.SelectedPublicationStatus = solution.PublishedStatus;
-
-            mockSolutionService.Setup(s => s.GetSolutionThin(solution.Id))
-                .ReturnsAsync(solution);
-
-            await controller.SetPublicationStatus(solution.Id, manageCatalogueSolutionModel);
-
-            mockSolutionService.Verify(s => s.SavePublicationStatus(solution.Id, manageCatalogueSolutionModel.SelectedPublicationStatus), Times.Never);
-        }
-
-        [Theory]
-        [CommonAutoData]
         public static async Task Post_SetPublicationStatus_CallsSavePublicationStatus(
             Solution solution,
             [Frozen] Mock<ISolutionsService> mockSolutionService,
+            [Frozen] Mock<IPublicationStatusService> mockPublicationStatusService,
             CatalogueSolutionsController controller)
         {
             var catalogueItem = solution.CatalogueItem;
@@ -626,7 +610,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
 
             await controller.SetPublicationStatus(catalogueItem.Id, manageCatalogueSolutionModel);
 
-            mockSolutionService.Verify(s => s.SavePublicationStatus(catalogueItem.Id, manageCatalogueSolutionModel.SelectedPublicationStatus));
+            mockPublicationStatusService.Verify(s => s.SetPublicationStatus(catalogueItem.Id, manageCatalogueSolutionModel.SelectedPublicationStatus));
         }
 
         [Theory]

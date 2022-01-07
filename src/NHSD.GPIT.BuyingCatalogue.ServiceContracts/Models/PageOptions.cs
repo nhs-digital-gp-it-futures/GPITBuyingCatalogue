@@ -21,7 +21,7 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.Models
         {
             None,
             Alphabetical,
-            LastUpdated,
+            LastPublished,
         }
 
         public int PageSize { get; } = 20;

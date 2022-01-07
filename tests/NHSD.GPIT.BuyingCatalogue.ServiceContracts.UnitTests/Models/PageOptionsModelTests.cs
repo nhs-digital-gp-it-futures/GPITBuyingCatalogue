@@ -22,7 +22,7 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.UnitTests.Models
         [InlineData("", "", 1, PageOptions.SortOptions.None)]
         [InlineData("2", "", 2, PageOptions.SortOptions.None)]
         [InlineData("", "alphabetical", 1, PageOptions.SortOptions.Alphabetical)]
-        [InlineData("2", "LaStUpDaTeD", 2, PageOptions.SortOptions.LastUpdated)]
+        [InlineData("2", "lastpublished", 2, PageOptions.SortOptions.LastPublished)]
         [InlineData("IncorrectDate", "IncorrectDate", 1, PageOptions.SortOptions.None)]
         public static void PageOptions_ValuesInConstructor_ExpectedValues(string page, string sortBy, int expectedPage, PageOptions.SortOptions expectedSort)
         {

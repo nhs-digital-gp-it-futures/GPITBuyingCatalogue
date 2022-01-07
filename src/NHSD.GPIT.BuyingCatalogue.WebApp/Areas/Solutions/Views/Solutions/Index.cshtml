@@ -11,21 +11,21 @@
     string sortText = Model.Options.Sort switch
     {
 
-        PageOptions.SortOptions.LastUpdated => "last updated.",
+        PageOptions.SortOptions.LastPublished => "last published.",
         _ => "A-Z."
     };
 
     string sortLinkText = Model.Options.Sort switch
     {
 
-        PageOptions.SortOptions.LastUpdated => "A-Z",
-        _ => "last updated",
+        PageOptions.SortOptions.LastPublished => "A-Z",
+        _ => "last published",
     };
 
     string sortQueryParam = Model.Options.Sort switch
     {
-        PageOptions.SortOptions.LastUpdated => PageOptions.SortOptions.Alphabetical.ToString().ToLower(),
-        _ => PageOptions.SortOptions.LastUpdated.ToString().ToLower(),
+        PageOptions.SortOptions.LastPublished => PageOptions.SortOptions.Alphabetical.ToString().ToLower(),
+        _ => PageOptions.SortOptions.LastPublished.ToString().ToLower(),
     };
 
     bool showFrameworkAndCapabilitiesItems =

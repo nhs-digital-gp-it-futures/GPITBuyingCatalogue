@@ -9,6 +9,7 @@ using NHSD.GPIT.BuyingCatalogue.ServiceContracts.AssociatedServices;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.ListPrices;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Models;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Models.AssociatedServices;
+using NHSD.GPIT.BuyingCatalogue.ServiceContracts.PublishStatus;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Suppliers;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.AssociatedServices;
@@ -25,17 +26,20 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
         private readonly ISuppliersService suppliersService;
         private readonly IAssociatedServicesService associatedServicesService;
         private readonly IListPricesService listPricesService;
+        private readonly IPublicationStatusService publicationStatusService;
 
         public AssociatedServicesController(
             ISolutionsService solutionsService,
             ISuppliersService suppliersService,
             IAssociatedServicesService associatedServicesService,
-            IListPricesService listPricesService)
+            IListPricesService listPricesService,
+            IPublicationStatusService publicationStatusService)
         {
             this.solutionsService = solutionsService ?? throw new ArgumentNullException(nameof(solutionsService));
             this.suppliersService = suppliersService ?? throw new ArgumentNullException(nameof(suppliersService));
             this.associatedServicesService = associatedServicesService ?? throw new ArgumentNullException(nameof(associatedServicesService));
             this.listPricesService = listPricesService ?? throw new ArgumentNullException(nameof(listPricesService));
+            this.publicationStatusService = publicationStatusService ?? throw new ArgumentNullException(nameof(publicationStatusService));
         }
 
         [HttpGet]
@@ -431,11 +435,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
                 return View("EditAssociatedService", model);
             }
 
-            var associatedService = await associatedServicesService.GetAssociatedService(associatedServiceId);
-            if (model.SelectedPublicationStatus == associatedService.PublishedStatus)
-                return RedirectToAction(nameof(AssociatedServices), new { solutionId });
-
-            await associatedServicesService.SavePublicationStatus(associatedServiceId, model.SelectedPublicationStatus);
+            await publicationStatusService.SetPublicationStatus(associatedServiceId, model.SelectedPublicationStatus);
 
             return RedirectToAction(nameof(AssociatedServices), new { solutionId });
         }
