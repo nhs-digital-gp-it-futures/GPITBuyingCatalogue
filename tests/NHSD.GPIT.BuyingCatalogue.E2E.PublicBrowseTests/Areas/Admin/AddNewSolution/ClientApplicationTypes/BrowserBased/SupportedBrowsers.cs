@@ -26,8 +26,8 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.AddNewSolution.ClientAp
         public SupportedBrowsers(LocalWebApplicationFactory factory)
             : base(
                   factory,
-                  typeof(CatalogueSolutionsController),
-                  nameof(CatalogueSolutionsController.SupportedBrowsers),
+                  typeof(BrowserBasedController),
+                  nameof(BrowserBasedController.SupportedBrowsers),
                   Parameters)
         {
         }
@@ -46,8 +46,8 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.AddNewSolution.ClientAp
             CommonActions.ClickSave();
 
             CommonActions.PageLoadedCorrectGetIndex(
-                typeof(CatalogueSolutionsController),
-                nameof(CatalogueSolutionsController.BrowserBased)).Should().BeTrue();
+                typeof(BrowserBasedController),
+                nameof(BrowserBasedController.BrowserBased)).Should().BeTrue();
 
             await using var context = GetEndToEndDbContext();
             var solution = await context.Solutions.SingleAsync(s => s.CatalogueItemId == SolutionId);
@@ -95,8 +95,8 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.AddNewSolution.ClientAp
             CommonActions.ClickSave();
 
             CommonActions.PageLoadedCorrectGetIndex(
-                typeof(CatalogueSolutionsController),
-                nameof(CatalogueSolutionsController.BrowserBased)).Should().BeTrue();
+                typeof(BrowserBasedController),
+                nameof(BrowserBasedController.BrowserBased)).Should().BeTrue();
 
             await using var context = GetEndToEndDbContext();
             var solution = await context.Solutions.SingleAsync(s => s.CatalogueItemId == SolutionId);

@@ -26,8 +26,8 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.AddNewSolution.HostingT
         public DeleteHostingType(LocalWebApplicationFactory factory)
            : base(
                  factory,
-                 typeof(CatalogueSolutionsController),
-                 nameof(CatalogueSolutionsController.DeleteHostingType),
+                 typeof(HostingTypesController),
+                 nameof(HostingTypesController.DeleteHostingType),
                  Parameters)
         {
         }
@@ -55,8 +55,8 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.AddNewSolution.HostingT
             CommonActions.ClickGoBackLink();
 
             CommonActions.PageLoadedCorrectGetIndex(
-                    typeof(CatalogueSolutionsController),
-                    nameof(CatalogueSolutionsController.Hybrid))
+                    typeof(HostingTypesController),
+                    nameof(HostingTypesController.Hybrid))
                 .Should()
                 .BeTrue();
         }
@@ -67,8 +67,8 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.AddNewSolution.HostingT
             CommonActions.ClickLinkElement(HostingTypesObjects.DeleteHostingTypeCancelLink);
 
             CommonActions.PageLoadedCorrectGetIndex(
-                    typeof(CatalogueSolutionsController),
-                    nameof(CatalogueSolutionsController.Hybrid))
+                    typeof(HostingTypesController),
+                    nameof(HostingTypesController.Hybrid))
                 .Should()
                 .BeTrue();
         }
@@ -79,8 +79,8 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.AddNewSolution.HostingT
             CommonActions.ClickSave();
 
             CommonActions.PageLoadedCorrectGetIndex(
-                    typeof(CatalogueSolutionsController),
-                    nameof(CatalogueSolutionsController.HostingType))
+                    typeof(HostingTypesController),
+                    nameof(HostingTypesController.HostingType))
                 .Should()
                 .BeTrue();
 

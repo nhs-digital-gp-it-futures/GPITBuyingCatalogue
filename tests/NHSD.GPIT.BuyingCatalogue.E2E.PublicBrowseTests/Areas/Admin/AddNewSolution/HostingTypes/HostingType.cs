@@ -27,8 +27,8 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.AddNewSolution.HostingT
         public HostingType(LocalWebApplicationFactory factory)
            : base(
                  factory,
-                 typeof(CatalogueSolutionsController),
-                 nameof(CatalogueSolutionsController.HostingType),
+                 typeof(HostingTypesController),
+                 nameof(HostingTypesController.HostingType),
                  Parameters)
         {
         }

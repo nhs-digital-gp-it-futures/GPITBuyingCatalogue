@@ -22,8 +22,8 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.AddNewSolution.ClientAp
         public BrowserBasedDashboard(LocalWebApplicationFactory factory)
             : base(
                   factory,
-                  typeof(CatalogueSolutionsController),
-                  nameof(CatalogueSolutionsController.BrowserBased),
+                  typeof(BrowserBasedController),
+                  nameof(BrowserBasedController.BrowserBased),
                   Parameters)
         {
         }
@@ -44,7 +44,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.AddNewSolution.ClientAp
         {
             CommonActions.ClickGoBackLink();
 
-            CommonActions.PageLoadedCorrectGetIndex(typeof(CatalogueSolutionsController), nameof(CatalogueSolutionsController.ClientApplicationType));
+            CommonActions.PageLoadedCorrectGetIndex(typeof(BrowserBasedController), nameof(CatalogueSolutionsController.ClientApplicationType));
         }
 
         [Fact]
