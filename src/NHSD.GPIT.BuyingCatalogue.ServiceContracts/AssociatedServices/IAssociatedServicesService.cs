@@ -22,7 +22,5 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.AssociatedServices
         Task EditDetails(CatalogueItemId associatedServiceId, AssociatedServicesDetailsModel model);
 
         Task<CatalogueItemId> AddAssociatedService(CatalogueItem solution, AssociatedServicesDetailsModel model);
-
-        Task SavePublicationStatus(CatalogueItemId associatedServiceId, PublicationStatus publicationStatus);
     }
 }

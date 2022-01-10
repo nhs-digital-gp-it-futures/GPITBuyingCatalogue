@@ -24,7 +24,5 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.AdditionalServices
         Task<CatalogueItemId> AddAdditionalService(CatalogueItem solution, AdditionalServicesDetailsModel model);
 
         Task EditAdditionalService(CatalogueItemId catalogueItemId, CatalogueItemId additionalServiceId, AdditionalServicesDetailsModel model);
-
-        Task SavePublicationStatus(CatalogueItemId catalogueItemId, CatalogueItemId additionalServiceId, PublicationStatus publicationStatus);
     }
 }

@@ -124,14 +124,5 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.AssociatedServices
 
             await dbContext.SaveChangesAsync();
         }
-
-        public async Task SavePublicationStatus(CatalogueItemId associatedServiceId, PublicationStatus publicationStatus)
-        {
-            var solution = await GetAssociatedService(associatedServiceId);
-
-            solution.PublishedStatus = publicationStatus;
-
-            await dbContext.SaveChangesAsync();
-        }
     }
 }

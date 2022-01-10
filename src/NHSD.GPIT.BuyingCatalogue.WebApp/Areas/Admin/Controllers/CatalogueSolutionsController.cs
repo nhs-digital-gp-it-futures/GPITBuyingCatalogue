@@ -12,6 +12,7 @@ using NHSD.GPIT.BuyingCatalogue.ServiceContracts.AssociatedServices;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Caching;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Capabilities;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Models;
+using NHSD.GPIT.BuyingCatalogue.ServiceContracts.PublishStatus;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Suppliers;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.CapabilityModels;
@@ -32,6 +33,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
         private readonly IFilterCache filterCache;
         private readonly ISuppliersService suppliersService;
         private readonly ICapabilitiesService capabilitiesService;
+        private readonly IPublicationStatusService publicationStatusService;
 
         public CatalogueSolutionsController(
             ISolutionsService solutionsService,
@@ -39,7 +41,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
             IAdditionalServicesService additionalServicesService,
             IFilterCache filterCache,
             ISuppliersService suppliersService,
-            ICapabilitiesService capabilitiesService)
+            ICapabilitiesService capabilitiesService,
+            IPublicationStatusService publicationStatusService)
         {
             this.solutionsService = solutionsService ?? throw new ArgumentNullException(nameof(solutionsService));
             this.associatedServicesService = associatedServicesService ?? throw new ArgumentNullException(nameof(associatedServicesService));
@@ -47,6 +50,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
             this.filterCache = filterCache ?? throw new ArgumentNullException(nameof(filterCache));
             this.suppliersService = suppliersService ?? throw new ArgumentNullException(nameof(suppliersService));
             this.capabilitiesService = capabilitiesService ?? throw new ArgumentNullException(nameof(capabilitiesService));
+            this.publicationStatusService = publicationStatusService ?? throw new ArgumentNullException(nameof(publicationStatusService));
         }
 
         [HttpGet]
@@ -120,12 +124,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
                 return View("ManageCatalogueSolution", model);
 
             var solution = await solutionsService.GetSolutionThin(solutionId);
-            if (model.SelectedPublicationStatus == solution.PublishedStatus)
-                return RedirectToAction(nameof(Index));
+            if (model.SelectedPublicationStatus != solution.PublishedStatus)
+                filterCache.RemoveAll();
 
-            await solutionsService.SavePublicationStatus(solutionId, model.SelectedPublicationStatus);
-
-            filterCache.RemoveAll();
+            await publicationStatusService.SetPublicationStatus(solutionId, model.SelectedPublicationStatus);
 
             return RedirectToAction(nameof(Index));
         }

@@ -577,23 +577,5 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Solutions
             updatedClientApplication.NativeMobileFirstDesign.Should().BeNull();
             updatedClientApplication.NativeMobileHardwareRequirements.Should().BeNull();
         }
-
-        [Theory]
-        [InMemoryDbAutoData]
-        public static async Task SavePublicationStatus_Updates_PublicationStatus(
-            [Frozen] BuyingCatalogueDbContext context,
-            CatalogueItem solution,
-            SolutionsService service)
-        {
-            solution.PublishedStatus = PublicationStatus.Draft;
-            context.CatalogueItems.Add(solution);
-            await context.SaveChangesAsync();
-
-            await service.SavePublicationStatus(solution.Id, PublicationStatus.Published);
-
-            var updatedSolution = await context.CatalogueItems.AsQueryable().SingleAsync(c => c.Id == solution.Id);
-
-            updatedSolution.PublishedStatus.Should().Be(PublicationStatus.Published);
-        }
     }
 }

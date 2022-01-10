@@ -14,6 +14,7 @@ using NHSD.GPIT.BuyingCatalogue.ServiceContracts.AdditionalServices;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Capabilities;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.ListPrices;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Models;
+using NHSD.GPIT.BuyingCatalogue.ServiceContracts.PublishStatus;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions;
 using NHSD.GPIT.BuyingCatalogue.Test.Framework.AutoFixtureCustomisations;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers;
@@ -348,34 +349,12 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
 
         [Theory]
         [CommonAutoData]
-        public static async Task Post_SetPublicationStatus_SamePublicationStatus_DoesNotCallSavePublicationStatus(
-            CatalogueItem catalogueItem,
-            AdditionalService additionalService,
-            EditAdditionalServiceModel model,
-            [Frozen] Mock<ISolutionsService> solutionsService,
-            [Frozen] Mock<IAdditionalServicesService> additionalServicesService,
-            AdditionalServicesController controller)
-        {
-            model.SelectedPublicationStatus = catalogueItem.PublishedStatus;
-
-            solutionsService.Setup(s => s.GetSolutionThin(catalogueItem.Id))
-                .ReturnsAsync(catalogueItem);
-
-            additionalServicesService.Setup(s => s.GetAdditionalService(catalogueItem.Id, additionalService.CatalogueItemId))
-                .ReturnsAsync(additionalService.CatalogueItem);
-
-            await controller.SetPublicationStatus(catalogueItem.Id, additionalService.CatalogueItemId, model);
-
-            solutionsService.Verify(s => s.SavePublicationStatus(catalogueItem.Id, model.SelectedPublicationStatus), Times.Never);
-        }
-
-        [Theory]
-        [CommonAutoData]
         public static async Task Post_SetPublicationStatus_CallsSavePublicationStatus(
             CatalogueItem catalogueItem,
             AdditionalService additionalService,
             [Frozen] Mock<ISolutionsService> mockSolutionService,
             [Frozen] Mock<IAdditionalServicesService> additionalServicesService,
+            [Frozen] Mock<IPublicationStatusService> publicationStatusService,
             AdditionalServicesController controller)
         {
             additionalService.CatalogueItem.PublishedStatus = PublicationStatus.Draft;
@@ -390,7 +369,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
 
             await controller.SetPublicationStatus(catalogueItem.Id, additionalService.CatalogueItemId, model);
 
-            additionalServicesService.Verify(s => s.SavePublicationStatus(catalogueItem.Id, additionalService.CatalogueItemId, model.SelectedPublicationStatus));
+            publicationStatusService.Verify(s => s.SetPublicationStatus(additionalService.CatalogueItemId, model.SelectedPublicationStatus));
         }
 
         [Theory]

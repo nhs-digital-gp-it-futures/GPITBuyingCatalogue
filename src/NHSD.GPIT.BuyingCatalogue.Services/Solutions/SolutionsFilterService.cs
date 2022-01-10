@@ -60,7 +60,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
 
             query = options.Sort switch
             {
-                PageOptions.SortOptions.LastUpdated => query.OrderByDescending(ci => ci.Solution.LastUpdated),
+                PageOptions.SortOptions.LastPublished => query.OrderByDescending(ci => ci.LastPublished),
                 _ => query.OrderBy(ci => ci.Name),
             };
 

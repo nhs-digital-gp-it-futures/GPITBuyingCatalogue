@@ -52,13 +52,13 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.PublicBrowse.Solution
                 .Should()
                 .BeTrue();
 
-            Driver.Url.Should().Contain($"sortBy={PageOptions.SortOptions.LastUpdated.ToString().ToLowerInvariant()}");
+            Driver.Url.Should().Contain($"sortBy={PageOptions.SortOptions.LastPublished.ToString().ToLowerInvariant()}");
         }
 
         [Fact]
         public void CatalogueSolutions_ClickAToZSortByLink_ExpectedResult()
         {
-            var queryParam = new Dictionary<string, string> { { "sortBy", "lastupdated" } };
+            var queryParam = new Dictionary<string, string> { { "sortBy", "lastpublished" } };
 
             NavigateToUrl(
                 typeof(SolutionsController),
