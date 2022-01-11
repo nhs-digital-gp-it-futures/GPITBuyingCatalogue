@@ -203,35 +203,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
         {
             var state = orderSessionService.GetOrderStateFromSession(callOffId);
 
-            var quantityModelStateKey = "OrderItem.ServiceRecipients[0].Quantity";
-
-            if (model.OrderItem.ServiceRecipients[0].Quantity is null)
-                ModelState.AddModelError(quantityModelStateKey, "Enter a quantity");
-
-            if (model.OrderItem.ServiceRecipients[0].Quantity <= 0
-            && !(ModelState[quantityModelStateKey].ValidationState == ModelValidationState.Invalid))
-                ModelState.AddModelError(quantityModelStateKey, "Quantity must be greater than 0");
-
-            var priceModelStateKey = "OrderItem.AgreedPrice";
-
-            if (model.OrderItem.AgreedPrice > state.CataloguePrice.Price
-                && !(ModelState[priceModelStateKey].ValidationState == ModelValidationState.Invalid))
-                ModelState.AddModelError(priceModelStateKey, "Price cannot be greater than list price");
-
-            if (model.OrderItem.AgreedPrice is null
-                && !(ModelState[priceModelStateKey].ValidationState == ModelValidationState.Invalid))
-                ModelState.AddModelError(priceModelStateKey, "Enter an agreed price");
-
-            if (model.OrderItem.AgreedPrice < 0
-                && !(ModelState[priceModelStateKey].ValidationState == ModelValidationState.Invalid))
-                ModelState.AddModelError(priceModelStateKey, "Price cannot be negative");
-
             if (state.CataloguePrice.ProvisioningType == ProvisioningType.OnDemand)
             {
                 state.EstimationPeriod = model.EstimationPeriod;
-
-                if (model.EstimationPeriod is null)
-                    ModelState.AddModelError(nameof(model.EstimationPeriod), "Time unit is required");
             }
 
             if (!ModelState.IsValid)

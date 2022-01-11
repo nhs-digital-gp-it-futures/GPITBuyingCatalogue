@@ -1,10 +1,10 @@
 ﻿using FluentValidation.TestHelper;
 using NHSD.GPIT.BuyingCatalogue.Test.Framework.AutoFixtureCustomisations;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.AdditionalServiceRecipients;
-using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Validators;
+using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Validators.AdditionalServices;
 using Xunit;
 
-namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Validators
+namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Validators.AdditionalServices
 {
     public static class SelectAdditionalServiceRecipientsModelValidatorTests
     {

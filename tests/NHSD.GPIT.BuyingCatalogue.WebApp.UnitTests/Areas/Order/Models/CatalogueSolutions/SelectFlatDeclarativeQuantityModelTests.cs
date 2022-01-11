@@ -20,42 +20,5 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.Catalogu
             model.Title.Should().Be($"Quantity of {solutionName} for {callOffId}");
             model.Quantity.Should().Be(quantity.ToString());
         }
-
-        [Theory]
-        [InlineData(null)]
-        [InlineData("")]
-        [InlineData("ABC")]
-        public static void GetQuantity_QuantityMustBeANumber(string quantity)
-        {
-            var model = new SelectFlatDeclarativeQuantityModel { Quantity = quantity };
-
-            (_, string error) = model.GetQuantity();
-
-            error.Should().Be("Quantity must be a number");
-        }
-
-        [Theory]
-        [InlineData(0)]
-        [InlineData(-1)]
-        public static void GetQuantity_QuantityMustBeGreaterThanZero(int quantity)
-        {
-            var model = new SelectFlatDeclarativeQuantityModel { Quantity = quantity.ToString() };
-
-            (_, string error) = model.GetQuantity();
-
-            error.Should().Be("Quantity must be greater than zero");
-        }
-
-        [Fact]
-        public static void GetQuantity_ValidQuantityReturnedWithoutError()
-        {
-            var model = new SelectFlatDeclarativeQuantityModel { Quantity = "123" };
-
-            (int? quantity, string error) = model.GetQuantity();
-
-            Assert.Null(error);
-            Assert.NotNull(quantity);
-            quantity.Value.Should().Be(123);
-        }
     }
 }

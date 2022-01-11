@@ -1,13 +1,11 @@
 ﻿using System;
 using System.Diagnostics;
 using System.IO;
-using System.Net;
 using System.Net.Http;
 using OpenQA.Selenium;
 using OpenQA.Selenium.Chrome;
 using OpenQA.Selenium.Firefox;
 using OpenQA.Selenium.Remote;
-using static System.Net.WebRequestMethods;
 
 namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils
 {

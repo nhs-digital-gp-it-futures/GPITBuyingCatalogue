@@ -33,20 +33,14 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.CommencementDate
         [StringLength(4)]
         public string Year { get; set; }
 
-        public (DateTime? Date, string Error) ToDateTime()
+        public DateTime? CommencementDate
         {
-            try
+            get
             {
-                var date = DateTime.ParseExact($"{Day}/{Month}/{Year}", "d/M/yyyy", CultureInfo.InvariantCulture);
+                if (!DateTime.TryParseExact($"{Day}/{Month}/{Year}", "d/M/yyyy", CultureInfo.InvariantCulture, DateTimeStyles.None, out var deliveryDate))
+                    return null;
 
-                if (date.ToUniversalTime() <= DateTime.UtcNow.AddDays(-60))
-                    return (null, "Commencement date must be in the future or within the last 60 days");
-
-                return (date, null);
-            }
-            catch (FormatException)
-            {
-                return (null, "Commencement date must be a real date");
+                return deliveryDate.ToUniversalTime();
             }
         }
     }

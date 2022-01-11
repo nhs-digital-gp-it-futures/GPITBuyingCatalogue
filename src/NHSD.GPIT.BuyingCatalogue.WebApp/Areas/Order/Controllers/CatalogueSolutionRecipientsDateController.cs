@@ -48,19 +48,13 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
         [HttpPost]
         public async Task<IActionResult> SelectSolutionServiceRecipientsDate(string odsCode, CallOffId callOffId, SelectSolutionServiceRecipientsDateModel model)
         {
-            var state = orderSessionService.GetOrderStateFromSession(callOffId);
-
-            (DateTime? date, var error) = model.ValidateAndGetDeliveryDate();
-
-            if (error is not null)
-                ModelState.AddModelError("Day", error);
-
             if (!ModelState.IsValid)
                 return View(model);
 
-            state.PlannedDeliveryDate = date;
+            var state = orderSessionService.GetOrderStateFromSession(callOffId);
+            state.PlannedDeliveryDate = model.DeliveryDate;
 
-            await defaultDeliveryDateService.SetDefaultDeliveryDate(callOffId, state.CatalogueItemId.GetValueOrDefault(), date.Value);
+            await defaultDeliveryDateService.SetDefaultDeliveryDate(callOffId, state.CatalogueItemId.GetValueOrDefault(), model.DeliveryDate!.Value);
 
             orderSessionService.SetOrderStateToSession(state);
 

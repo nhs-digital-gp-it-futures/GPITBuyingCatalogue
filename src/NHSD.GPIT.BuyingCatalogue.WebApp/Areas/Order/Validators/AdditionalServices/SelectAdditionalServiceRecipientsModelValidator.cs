@@ -2,7 +2,7 @@
 using FluentValidation;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.AdditionalServiceRecipients;
 
-namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Validators
+namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Validators.AdditionalServices
 {
     public sealed class SelectAdditionalServiceRecipientsModelValidator : AbstractValidator<SelectAdditionalServiceRecipientsModel>
     {
