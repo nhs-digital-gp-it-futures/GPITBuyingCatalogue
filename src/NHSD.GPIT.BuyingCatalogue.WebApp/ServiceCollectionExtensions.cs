@@ -192,6 +192,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp
             var filterCacheKeySettings = configuration.GetSection(FilterCacheKeysSettings.SectionName).Get<FilterCacheKeysSettings>();
             services.AddSingleton(filterCacheKeySettings);
 
+            var gpPracticeCacheKeySettings = configuration.GetSection(GpPracticeCacheKeysSettings.SectionName).Get<GpPracticeCacheKeysSettings>();
+            services.AddSingleton(gpPracticeCacheKeySettings);
+
             return services;
         }
 

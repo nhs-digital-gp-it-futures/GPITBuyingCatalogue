@@ -112,7 +112,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers
 
         [Theory]
         [CommonAutoData]
-        public static void Post_SelectSolutionRecipients_NewSolution_CorrectlyRedirects(
+        public static async Task Post_SelectSolutionRecipients_NewSolution_CorrectlyRedirects(
             string odsCode,
             CreateOrderItemModel state,
             List<OrderItemRecipientModel> serviceRecipients,
@@ -130,7 +130,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers
                 ServiceRecipients = serviceRecipients,
             };
 
-            var actualResult = controller.SelectSolutionServiceRecipients(odsCode, state.CallOffId, model);
+            var actualResult = await controller.SelectSolutionServiceRecipients(odsCode, state.CallOffId, model);
 
             actualResult.Should().BeOfType<RedirectToActionResult>();
             actualResult.As<RedirectToActionResult>().ActionName.Should().Be(nameof(CatalogueSolutionRecipientsDateController.SelectSolutionServiceRecipientsDate));
@@ -140,7 +140,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers
 
         [Theory]
         [CommonAutoData]
-        public static void Post_SelectSolutionRecipients_ExistingSolution_CorrectlyRedirects(
+        public static async Task Post_SelectSolutionRecipients_ExistingSolution_CorrectlyRedirects(
             string odsCode,
             CreateOrderItemModel state,
             List<OrderItemRecipientModel> serviceRecipients,
@@ -158,7 +158,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers
                 ServiceRecipients = serviceRecipients,
             };
 
-            var actualResult = controller.SelectSolutionServiceRecipients(odsCode, state.CallOffId, model);
+            var actualResult = await controller.SelectSolutionServiceRecipients(odsCode, state.CallOffId, model);
 
             actualResult.Should().BeOfType<RedirectToActionResult>();
             actualResult.As<RedirectToActionResult>().ActionName.Should().Be(nameof(CatalogueSolutionsController.EditSolution));

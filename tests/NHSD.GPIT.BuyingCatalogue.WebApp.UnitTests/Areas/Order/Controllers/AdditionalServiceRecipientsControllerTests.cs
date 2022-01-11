@@ -113,7 +113,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers
 
         [Theory]
         [CommonAutoData]
-        public static void Post_SelectAdditionalServiceRecipients_NewSolution_CorrectlyRedirects(
+        public static async Task Post_SelectAdditionalServiceRecipients_NewSolution_CorrectlyRedirects(
             string odsCode,
             CreateOrderItemModel state,
             List<OrderItemRecipientModel> serviceRecipients,
@@ -131,7 +131,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers
                 ServiceRecipients = serviceRecipients,
             };
 
-            var actualResult = controller.SelectAdditionalServiceRecipients(odsCode, state.CallOffId, model);
+            var actualResult = await controller.SelectAdditionalServiceRecipients(odsCode, state.CallOffId, model);
 
             actualResult.Should().BeOfType<RedirectToActionResult>();
             actualResult.As<RedirectToActionResult>().ActionName.Should().Be(nameof(AdditionalServiceRecipientsDateController.SelectAdditionalServiceRecipientsDate));
@@ -141,7 +141,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers
 
         [Theory]
         [CommonAutoData]
-        public static void Post_SelectAdditionalServiceRecipients_ExistingSolution_CorrectlyRedirects(
+        public static async Task Post_SelectAdditionalServiceRecipients_ExistingSolution_CorrectlyRedirects(
             string odsCode,
             CreateOrderItemModel state,
             List<OrderItemRecipientModel> serviceRecipients,
@@ -159,7 +159,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers
                 ServiceRecipients = serviceRecipients,
             };
 
-            var actualResult = controller.SelectAdditionalServiceRecipients(odsCode, state.CallOffId, model);
+            var actualResult = await controller.SelectAdditionalServiceRecipients(odsCode, state.CallOffId, model);
 
             actualResult.Should().BeOfType<RedirectToActionResult>();
             actualResult.As<RedirectToActionResult>().ActionName.Should().Be(nameof(AdditionalServicesController.EditAdditionalService));

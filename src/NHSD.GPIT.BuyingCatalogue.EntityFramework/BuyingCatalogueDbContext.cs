@@ -61,6 +61,8 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework
 
         public DbSet<FrameworkSolution> FrameworkSolutions { get; set; }
 
+        public DbSet<GpPracticeSize> GpPracticeSizes { get; set; }
+
         public DbSet<MarketingContact> MarketingContacts { get; set; }
 
         public DbSet<Order> Orders { get; set; }

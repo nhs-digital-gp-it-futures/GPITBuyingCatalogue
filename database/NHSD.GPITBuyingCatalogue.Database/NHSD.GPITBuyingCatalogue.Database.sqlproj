@@ -235,6 +235,7 @@
     <Build Include="Users\TemporalTables\AspNetUserClaims_History.sql" />
     <Build Include="Users\TemporalTables\AspNetUsers_History.sql" />
     <Build Include="Import\Functions\GetLastPublishedDate.sql" />
+    <Build Include="Organisations\Tables\GpPracticeSize.sql" />
   </ItemGroup>
   <ItemGroup>
     <SqlCmdVariable Include="CREATE_EA_USER">
