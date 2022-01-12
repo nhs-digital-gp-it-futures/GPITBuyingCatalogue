@@ -67,6 +67,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp
             services.ConfigureIdentity();
 
             services.ConfigureCacheKeySettings(Configuration)
+                .ConfigureGovNotify(Configuration)
                 .ConfigureOrderMessageSettings(Configuration)
                 .ConfigureConsentCookieSettings(Configuration)
                 .ConfigureAnalyticsSettings(Configuration);
