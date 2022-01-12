@@ -1,0 +1,33 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Threading.Tasks;
+using Microsoft.Extensions.Logging;
+using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Email;
+
+namespace NHSD.GPIT.BuyingCatalogue.Services.Email
+{
+    public class FakeGovNotifyEmailService : IGovNotifyEmailService
+    {
+        private readonly ILogger<FakeGovNotifyEmailService> logger;
+        private readonly Action<ILogger, Dictionary<string, string>, Exception> emailRequestLog;
+
+        public FakeGovNotifyEmailService(ILogger<FakeGovNotifyEmailService> logger)
+        {
+            this.logger = logger ?? throw new ArgumentNullException(nameof(logger));
+            emailRequestLog = LoggerMessage.Define<Dictionary<string, string>>(LogLevel.Information, new EventId(1000), "Email request {@Data}");
+        }
+
+        public Task SendEmailAsync(string emailAddress, string templateId, Dictionary<string, dynamic> personalisation)
+        {
+            var data = new Dictionary<string, string>();
+            data["EmailAddress"] = emailAddress;
+            data["TemplateId"] = templateId;
+            foreach (var p in personalisation ?? new Dictionary<string, dynamic>())
+                data.Add(p.Key, p.Value.ToString());
+
+            emailRequestLog(logger, data, null);
+
+            return Task.CompletedTask;
+        }
+    }
+}
