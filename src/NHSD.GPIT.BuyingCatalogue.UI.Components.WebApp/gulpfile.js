@@ -3,7 +3,7 @@
 
 var gulp = require("gulp"),
     concat = require("gulp-concat"),
-    cssmin = require("gulp-cssmin"),
+    cssmin = require("gulp-clean-css"),
     htmlmin = require("gulp-htmlmin"),
     uglify = require("gulp-uglify"),
     merge = require("merge-stream"),
