@@ -2,7 +2,7 @@
 "use strict";
 const gulp = require("gulp"),
     concat = require("gulp-concat"),
-    cssmin = require("gulp-cssmin"),   
+    cssmin = require("gulp-clean-css"),   
     terser = require('gulp-terser'),
     merge = require("merge-stream"),
     del = require("del"),
