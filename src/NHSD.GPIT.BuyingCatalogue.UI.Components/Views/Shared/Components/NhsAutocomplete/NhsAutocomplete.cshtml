@@ -58,11 +58,11 @@
 			});
 
 			function DefaultValue(){
-					let searchParams = new URLSearchParams(window.location.search);
+				let searchParams = new URLSearchParams(window.location.search);
 
-					if(searchParams.has('@Model.QueryParameterName')){
-						return searchParams.get('@Model.QueryParameterName');
-					}
-					return '';
+				if(searchParams.has('@Model.QueryParameterName')){
+					return searchParams.get('@Model.QueryParameterName');
+				}
+				return '';
 			}
 		</script>
