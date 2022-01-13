@@ -13,16 +13,12 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Email
         private readonly IAsyncNotificationClient notificationClient;
         private readonly ILogger<GovNotifyEmailService> logger;
 
-        private readonly Action<ILogger, string, Exception> notificationClientFailure;
-
         public GovNotifyEmailService(
             IAsyncNotificationClient notificationClient,
             ILogger<GovNotifyEmailService> logger)
         {
             this.notificationClient = notificationClient ?? throw new ArgumentNullException(nameof(notificationClient));
             this.logger = logger ?? throw new ArgumentNullException(nameof(logger));
-
-            notificationClientFailure = LoggerMessage.Define<string>(LogLevel.Error, new EventId(2), "An error occurred when calling the NotificationClient: {Message}");
         }
 
         public async Task SendEmailAsync(string emailAddress, string templateId, Dictionary<string, dynamic> personalisation)
@@ -33,7 +29,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Email
             }
             catch (NotifyClientException exception)
             {
-                notificationClientFailure(logger, exception.Message, exception);
+                logger.LogError(exception, "An error occurred when calling the NotificationClient: {Message}", exception.Message);
                 throw;
             }
         }
