@@ -46,6 +46,10 @@ variable "auth_pwd" {
   type      = string
   sensitive = true
 }
+variable "hangfire_pwd" {
+  type      = string
+  sensitive = true
+}
 variable "cert_name" {
   type      = string
 }

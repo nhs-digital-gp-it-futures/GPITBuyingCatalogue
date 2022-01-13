@@ -1,0 +1,12 @@
+﻿@model NHSD.GPIT.BuyingCatalogue.WebApp.Models.NavBaseModel
+@{
+    ViewBag.Title = "Practice lists updating";
+}
+
+<div data-test-id="import-gp-practice-list-confirmation-page">
+    <partial name="Partials/_BackLink" model="Model" />
+    <div data-test-id="import-gp-practice-list-confirmation-page-title">
+        <nhs-page-title title="@ViewBag.Title"/>
+        <p>The practice list sizes are updating to the latest figures. You'll receive an email confirmation when this is completed.</p>
+    </div>
+</div>

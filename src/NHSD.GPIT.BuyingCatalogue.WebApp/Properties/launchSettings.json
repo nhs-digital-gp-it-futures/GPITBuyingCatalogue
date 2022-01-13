@@ -15,6 +15,7 @@
         "ASPNETCORE_ENVIRONMENT": "development",
         "ASPNETCORE_HOSTINGSTARTUPASSEMBLIES": "Microsoft.AspNetCore.Mvc.Razor.RuntimeCompilation",
         "BC_DB_CONNECTION": "Server=localhost,1432;Database=GPITBuyingCatalogue;User=SA;password=Abc123Abc123;Integrated Security=false",
+        "HANGFIRE_DB_CONNECTION": "Server=localhost,1432;Database=GPITBuyingCatalogue;User=HangFire;password=Abc123Abc123;Integrated Security=false",
         "APPINSIGHTS_INSTRUMENTATIONKEY": "",
         "DOMAIN_NAME": "localhost:49036"
       }
@@ -26,6 +27,7 @@
         "ASPNETCORE_ENVIRONMENT": "development",
         "ASPNETCORE_HOSTINGSTARTUPASSEMBLIES": "Microsoft.AspNetCore.Mvc.Razor.RuntimeCompilation",
         "BC_DB_CONNECTION": "Server=localhost,1432;Database=GPITBuyingCatalogue;User=SA;password=Abc123Abc123;Integrated Security=false",
+        "HANGFIRE_DB_CONNECTION": "Server=localhost,1432;Database=GPITBuyingCatalogue;User=HangFire;password=Abc123Abc123;Integrated Security=false",
         "APPINSIGHTS_INSTRUMENTATIONKEY": "",
         "DOMAIN_NAME": "localhost:5001"
       },
@@ -42,6 +44,7 @@
         "ASPNETCORE_ENVIRONMENT": "development",
         "ASPNETCORE_HOSTINGSTARTUPASSEMBLIES": "Microsoft.AspNetCore.Mvc.Razor.RuntimeCompilation",
         "BC_DB_CONNECTION": "Server=host.docker.internal,1432;Database=GPITBuyingCatalogue;User=SA;password=Abc123Abc123;Integrated Security=false",
+        "HANGFIRE_DB_CONNECTION": "Server=host.docker.internal,1432;Database=GPITBuyingCatalogue;User=HangFire;password=Abc123Abc123;Integrated Security=false",
         "APPINSIGHTS_INSTRUMENTATIONKEY": "",
         "DOMAIN_NAME": "localhost:49155",
         "USE_SSL_FOR_PDF": "true"

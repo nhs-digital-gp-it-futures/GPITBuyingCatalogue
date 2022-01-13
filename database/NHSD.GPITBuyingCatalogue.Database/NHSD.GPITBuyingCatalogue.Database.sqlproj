@@ -236,6 +236,7 @@
     <Build Include="Users\TemporalTables\AspNetUsers_History.sql" />
     <Build Include="Import\Functions\GetLastPublishedDate.sql" />
     <Build Include="Organisations\Tables\OrganisationTypes.sql" />
+    <Build Include="Organisations\Tables\GpPracticeSize.sql" />
   </ItemGroup>
   <ItemGroup>
     <SqlCmdVariable Include="CREATE_EA_USER">
@@ -314,6 +315,10 @@
     <None Include="PostDeployment\InsertStandardTypes.sql" />
     <None Include="PostDeployment\InsertRelatedOrganisations.sql" />
     <None Include="PostDeployment\InsertOrganisationTypes.sql" />
+    <None Include="Security\Schemas\HangFire.sql" />
+    <None Include="Security\Users\HangFire.sql" />
+    <None Include="Security\Logins\HangFire.sql" />
+    <None Include="Security\Roles\BackgroundProcessor.sql" />
   </ItemGroup>
   <ItemGroup>
     <PostDeploy Include="PostDeployment\PostDeployment.sql" />
