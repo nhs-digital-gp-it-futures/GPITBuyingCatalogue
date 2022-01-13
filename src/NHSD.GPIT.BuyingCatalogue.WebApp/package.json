@@ -10,6 +10,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "accessible-autocomplete": "^2.0.3",
     "govuk-frontend": "^3.14.0",
     "nhsuk-frontend": "^5.2.0",
     "node-sass": "^7.0.1"

@@ -51,6 +51,10 @@ gulp.task("clean", function () {
     return del(files);
 });
 
+gulp.task('watch', function () {
+    gulp.watch([paths.scss + '**/*.scss'], gulp.series(['sass','min:css']));
+});
+
 function getBundles(regexPattern) {
     return bundleconfig.filter(function (bundle) {
         return regexPattern.test(bundle.outputFileName);

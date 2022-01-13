@@ -1,0 +1,68 @@
+﻿@model NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.Components.Autocomplete.NhsAutocompleteModel;
+
+		<div id="autocomplete-container" class="autocomplete-container">
+			<label style="display:none;" for="@Model.Id">@Model.PlaceholderText</label>
+			<div id="@(Model.Id + "-container")"></div>
+		</div>
+
+		<script type="text/javascript" src="@Url.Content("~/accessible-autocomplete/accessible-autocomplete.min.js")" asp-append-version="true"></script>
+		<script type="text/javascript">
+
+			const source = (query,populateResults) => {
+				const url = '@(Model.AjaxUrl + "?" + Model.QueryParameterName + "=")' + query;
+				const xhr = new XMLHttpRequest();
+				xhr.open('GET', url);
+				xhr.onload = () => {
+					if (xhr.status === 200) {
+						const json = JSON.parse(xhr.responseText);
+						populateResults(json);
+					}
+				};
+				xhr.send();
+			}
+
+			const suggestion = ({title, category}) => {
+				if(title && category){
+					const truncateLength = 36;
+					const dots = title.length > truncateLength ? '...' : '';
+					const resultTruncated  = title.substring(0, truncateLength) + dots;
+					  return `<span class="autocomplete__option-title">${resultTruncated}</span>
+						${category ? `<span class="autocomplete__option-category">${category}</span>` : ''}
+					  `;
+				}
+				return '';
+			};
+
+			const inputValue = (obj) => {
+				if (obj && obj.title) return obj.title.trim();
+				return '';
+			};
+
+			const onConfirm = ({url}) => {
+				window.location.href = url;
+			};
+
+			accessibleAutocomplete({
+				element: document.querySelector('@("#" + Model.Id + "-container")'),
+				id: '@Model.Id', 
+				source: source,
+				confirmOnBlur: false,
+				onConfirm: onConfirm,
+				defaultValue: DefaultValue(),
+				placeholder: '@Model.PlaceholderText',
+				minLength: 2,
+				templates: {
+					inputValue: inputValue,
+					suggestion: suggestion,
+				},
+			});
+
+			function DefaultValue(){
+					let searchParams = new URLSearchParams(window.location.search);
+
+					if(searchParams.has('@Model.QueryParameterName')){
+						return searchParams.get('@Model.QueryParameterName');
+					}
+					return '';
+			}
+		</script>
