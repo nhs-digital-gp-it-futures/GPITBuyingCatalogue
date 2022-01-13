@@ -2,6 +2,8 @@
 using System.IO.Compression;
 using System.Threading.Tasks;
 using FluentValidation.AspNetCore;
+using Hangfire;
+using Hangfire.SqlServer;
 using MailKit;
 using MailKit.Net.Smtp;
 using Microsoft.AspNetCore.Authentication.Cookies;
@@ -270,6 +272,22 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp
                     {
                         options.RegisterValidatorsFromAssemblyContaining<SolutionModelValidator>();
                     }).AddSingleton<IValidatorInterceptor, FluentValidatorInterceptor>();
+        }
+
+        public static IServiceCollection AddHangFire(this IServiceCollection services)
+        {
+            var connectionString = Environment.GetEnvironmentVariable(BuyingCatalogueDbConnectionEnvironmentVariable);
+
+            return services
+                .AddHangfire(x => x.UseSqlServerStorage(connectionString, new SqlServerStorageOptions
+                {
+                    CommandBatchMaxTimeout = TimeSpan.FromMinutes(5),
+                    SlidingInvisibilityTimeout = TimeSpan.FromMinutes(5),
+                    QueuePollInterval = TimeSpan.Zero,
+                    UseRecommendedIsolationLevel = true,
+                    DisableGlobalLocks = true,
+                }))
+                .AddHangfireServer();
         }
     }
 }

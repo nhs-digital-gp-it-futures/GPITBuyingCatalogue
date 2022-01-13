@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Diagnostics.CodeAnalysis;
 using System.Threading.Tasks;
+using Hangfire;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.AspNetCore.Hosting;
@@ -92,6 +93,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp
             services.AddRazorPages();
 
             services.AddHttpClient();
+
+            services.AddHangFire();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -185,6 +188,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp
                 endpoints.MapControllers();
                 endpoints.MapDefaultControllerRoute();
             });
+
+            app.UseHangfireDashboard();
         }
 
         private static bool IsE2ETestEnvironment() => Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT") == "E2ETest";
