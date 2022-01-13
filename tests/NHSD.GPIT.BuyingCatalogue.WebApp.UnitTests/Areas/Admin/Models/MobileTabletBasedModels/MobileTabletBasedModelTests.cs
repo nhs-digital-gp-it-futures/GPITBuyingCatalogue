@@ -17,7 +17,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Models.MobileTa
         {
             var actual = new MobileTabletBasedModel(catalogueItem);
 
-            actual.ApplicationType.Should().Equals(ClientApplicationType.MobileTablet);
+            actual.ApplicationType.Should().Be(ClientApplicationType.MobileTablet);
         }
 
         [Fact]

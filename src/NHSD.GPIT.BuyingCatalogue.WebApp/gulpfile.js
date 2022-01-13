@@ -2,13 +2,12 @@
 "use strict";
 const gulp = require("gulp"),
     concat = require("gulp-concat"),
-    cssmin = require("gulp-cssmin"),   
+    cssmin = require("gulp-clean-css"),   
     terser = require('gulp-terser'),
     merge = require("merge-stream"),
     del = require("del"),
     sass = require("gulp-sass")(require('sass')),
     bundleconfig = require("./bundleconfig.json");
-const gutil = require('gulp-util');
 const paths = {
     scss: 'wwwroot/scss/'
 };
@@ -29,8 +28,7 @@ gulp.task("min:js", async function () {
     const tasks = getBundles(regex.js).map(function (bundle) {
         return gulp.src(bundle.inputFiles, { base: "." })
             .pipe(concat(bundle.outputFileName))
-            .pipe(terser())
-            .on('error', function (err) { gutil.log(gutil.colors.red('[Error]'), err.toString()); })
+            .pipe(terser())            
             .pipe(gulp.dest("."));
     });
     return merge(tasks);

@@ -42,9 +42,9 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering.AdditionalServices
             CommonActions.ElementIsDisplayed(CommonSelectors.Header1).Should().BeTrue();
 
             await using var context = GetEndToEndDbContext();
-            var numberOfPrices = await context.CataloguePrices.Where(cp => cp.CatalogueItemId == CatalogueItemId).CountAsync();
+            var numberOfPrices = await context.CataloguePrices.Where(cp => cp.CatalogueItemId == CatalogueItemId && cp.PublishedStatus == EntityFramework.Catalogue.Models.PublicationStatus.Published).CountAsync();
 
-            CommonActions.GetNumberOfRadioButtonsDisplayed().Should().Equals(numberOfPrices);
+            CommonActions.GetNumberOfRadioButtonsDisplayed().Should().Be(numberOfPrices);
         }
 
         [Fact]

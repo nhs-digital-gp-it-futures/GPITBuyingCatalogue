@@ -50,7 +50,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering.CatalogueSolutions
             await using var context = GetEndToEndDbContext();
             var numberOfPrices = await context.CataloguePrices.Where(cp => cp.CatalogueItemId == CatalogueItemId).CountAsync();
 
-            CommonActions.GetNumberOfRadioButtonsDisplayed().Should().Equals(numberOfPrices);
+            CommonActions.GetNumberOfRadioButtonsDisplayed().Should().Be(numberOfPrices);
         }
 
         [Fact]
