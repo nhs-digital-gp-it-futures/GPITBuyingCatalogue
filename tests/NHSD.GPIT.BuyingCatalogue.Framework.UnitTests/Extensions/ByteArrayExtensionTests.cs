@@ -36,7 +36,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Framework.UnitTests.Extensions
 
             var result = bytes.GetString();
 
-            result.Should().Equals(expected);
+            result.Should().BeEquivalentTo(expected);
         }
     }
 }
