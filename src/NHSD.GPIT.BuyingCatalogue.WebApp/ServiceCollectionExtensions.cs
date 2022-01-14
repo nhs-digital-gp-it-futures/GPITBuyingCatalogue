@@ -25,8 +25,6 @@ using NHSD.GPIT.BuyingCatalogue.Services.Email;
 using NHSD.GPIT.BuyingCatalogue.Services.Identity;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Validators;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Validation;
-using Notify.Client;
-using Notify.Interfaces;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp
 {
@@ -220,22 +218,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp
             services.AddSingleton(passwordResetSettings);
             services.AddScoped<IPasswordService, PasswordService>();
             services.AddScoped<IPasswordResetCallback, PasswordResetCallback>();
-        }
-
-        public static IServiceCollection ConfigureGovNotify(this IServiceCollection services, IConfiguration configuration)
-        {
-            var notifyApiKey = Environment.GetEnvironmentVariable("NOTIFY_API_KEY");
-            if (!string.IsNullOrWhiteSpace(notifyApiKey))
-            {
-                services.AddScoped<IAsyncNotificationClient, NotificationClient>(sp => new NotificationClient(notifyApiKey));
-                services.AddScoped<IGovNotifyEmailService, GovNotifyEmailService>();
-            }
-            else
-            {
-                services.AddScoped<IGovNotifyEmailService, FakeGovNotifyEmailService>();
-            }
-
-            return services;
         }
 
         public static IServiceCollection ConfigureAnalyticsSettings(this IServiceCollection services, IConfiguration configuration)

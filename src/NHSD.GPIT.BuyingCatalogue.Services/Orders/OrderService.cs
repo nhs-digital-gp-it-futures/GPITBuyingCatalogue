@@ -10,7 +10,6 @@ using NHSD.GPIT.BuyingCatalogue.Framework.Settings;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Csv;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Email;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Orders;
-using Notify.Client;
 
 namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
 {
@@ -18,13 +17,13 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
     {
         private readonly BuyingCatalogueDbContext dbContext;
         private readonly ICsvService csvService;
-        private readonly IGovNotifyEmailService emailService;
+        private readonly IEmailService emailService;
         private readonly OrderMessageSettings orderMessageSettings;
 
         public OrderService(
             BuyingCatalogueDbContext dbContext,
             ICsvService csvService,
-            IGovNotifyEmailService emailService,
+            IEmailService emailService,
             OrderMessageSettings orderMessageSettings)
         {
             this.dbContext = dbContext ?? throw new ArgumentNullException(nameof(dbContext));
@@ -151,24 +150,28 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
 
             fullOrderStream.Position = 0;
 
-            var personalisation = new Dictionary<string, dynamic>
+            var attachments = new List<EmailAttachment>(2)
             {
-                { "organisation_name", order.OrderingParty.Name },
-                { "full_order_csv", NotificationClient.PrepareUpload(fullOrderStream.ToArray(), true) },
+                new($"{order.CallOffId}_{order.OrderingParty.OdsCode}_Full.csv", fullOrderStream),
             };
 
-            var templateId = orderMessageSettings.SingleCsvTemplateId;
             if (await csvService.CreatePatientNumberCsvAsync(order.Id, patientOrderStream) > 0)
             {
                 patientOrderStream.Position = 0;
-                personalisation.Add("patient_order_csv", NotificationClient.PrepareUpload(patientOrderStream.ToArray(), true));
-                templateId = orderMessageSettings.DualCsvTemplateId;
+                attachments.Add(new($"{order.CallOffId}_{order.OrderingParty.OdsCode}_Patients.csv", patientOrderStream));
             }
 
-            await emailService.SendEmailAsync(
-                orderMessageSettings.Recipient.Address,
-                templateId,
-                personalisation);
+            var messageTemplate = orderMessageSettings.EmailMessageTemplate with
+            {
+                Subject = $"New Order {order.CallOffId}_{order.OrderingParty.OdsCode}",
+            };
+
+            var message = new EmailMessage(
+                messageTemplate,
+                new[] { new EmailAddress(orderMessageSettings.Recipient) },
+                attachments);
+
+            await emailService.SendEmailAsync(message);
 
             await dbContext.SaveChangesAsync();
         }
