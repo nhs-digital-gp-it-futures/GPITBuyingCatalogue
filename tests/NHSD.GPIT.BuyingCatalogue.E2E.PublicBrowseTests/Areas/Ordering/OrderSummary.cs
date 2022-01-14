@@ -1,8 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using FluentAssertions;
-using netDumbster.smtp;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Objects.Common;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Utils;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.TestBases;
@@ -13,7 +11,7 @@ using Xunit;
 namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering
 {
     public sealed class OrderSummary
-        : BuyerTestBase, IClassFixture<LocalWebApplicationFactory>, IDisposable
+        : BuyerTestBase, IClassFixture<LocalWebApplicationFactory>
     {
         private const string OdsCode = "03F";
         private static readonly CallOffId CallOffId = new(90009, 1);
@@ -25,8 +23,6 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering
                 { nameof(CallOffId), CallOffId.ToString() },
             };
 
-        private readonly SimpleSmtpServer smtp;
-
         public OrderSummary(LocalWebApplicationFactory factory)
             : base(
                   factory,
@@ -34,7 +30,6 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering
                   nameof(OrderController.Summary),
                   Parameters)
         {
-            smtp = SimpleSmtpServer.Start(9999);
         }
 
         [Fact]
@@ -159,18 +154,9 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering
 
             Driver.FindElements(Objects.Ordering.OrderSummary.PrintPDFButton).Count.Should().Be(1);
 
-            smtp.ReceivedEmailCount.Should().Be(1);
-
-            smtp.ReceivedEmail[0].Subject.Equals($"New Order {CallOffId}_{OdsCode}").Should().BeTrue();
-
             using var context = GetEndToEndDbContext();
 
             context.Orders.Single(o => o.Id == CallOffId.Id).Completed.Should().NotBeNull();
-        }
-
-        public void Dispose()
-        {
-            smtp.Dispose();
         }
 
         private void RedirectToSummaryForOrder(CallOffId callOffId)

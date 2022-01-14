@@ -8,6 +8,10 @@ namespace NHSD.GPIT.BuyingCatalogue.Framework.Settings
     {
         public EmailMessageTemplate EmailMessageTemplate { get; set; }
 
+        public string SingleCsvTemplateId { get; set; }
+
+        public string DualCsvTemplateId { get; set; }
+
         public EmailAddressTemplate Recipient { get; set; }
     }
 }
