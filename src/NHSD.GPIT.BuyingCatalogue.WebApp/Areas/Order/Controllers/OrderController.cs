@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -10,6 +12,7 @@ using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Organisations;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.TaskList;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.Order;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.OrderTriage;
+using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.Shared;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
 {
@@ -66,7 +69,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
         [HttpGet("~/order/organisation/{odsCode}/order/ready-to-start")]
         public IActionResult ReadyToStart(string odsCode, TriageOption? option = null)
         {
-            var model = new ReadyToStartModel(odsCode, option)
+            var model = new ReadyToStartModel()
             {
                 BackLink = Url.Action(
                     nameof(OrderTriageController.TriageSelection),
@@ -75,6 +78,46 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
             };
 
             return View(model);
+        }
+
+        [HttpPost("~/order/organisation/{odsCode}/order/ready-to-start")]
+        public IActionResult ReadyToStart(string odsCode, ReadyToStartModel model, TriageOption? option = null)
+        {
+            if (User.GetSecondaryOdsCodes().Any())
+                return RedirectToAction(nameof(SelectOrganisation), new { odsCode, option });
+
+            return RedirectToAction(
+                nameof(NewOrder),
+                typeof(OrderController).ControllerName(),
+                new { odsCode });
+        }
+
+        [HttpGet("~/order/organisation/{odsCode}/order/proxy-select")]
+        public async Task<IActionResult> SelectOrganisation(string odsCode, TriageOption? option = null)
+        {
+            var odsCodes = new List<string>(User.GetSecondaryOdsCodes())
+            {
+                User.GetPrimaryOdsCode(),
+            };
+
+            var organisations = await organisationsService.GetOrganisationsByOdsCodes(odsCodes.ToArray());
+
+            var model = new SelectOrganisationModel(odsCode, organisations)
+            {
+                BackLink = Url.Action(nameof(ReadyToStart), new { odsCode, option }),
+                Title = "Which organisation are you ordering for?",
+            };
+
+            return View(model);
+        }
+
+        [HttpPost("~/order/organisation/{odsCode}/order/proxy-select")]
+        public IActionResult SelectOrganisation(string odsCode, SelectOrganisationModel model)
+        {
+            if (!ModelState.IsValid)
+                return View(model);
+
+            return RedirectToAction(nameof(NewOrder), new { odsCode = model.SelectedOrganisation });
         }
 
         [HttpGet("~/order/organisation/{odsCode}/order/neworder")]
