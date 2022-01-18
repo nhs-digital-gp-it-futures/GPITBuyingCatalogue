@@ -140,7 +140,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
 
             if (!order.CanComplete())
             {
-                model = new SummaryModel(odsCode, order);
+                model.Order = order;
                 ModelState.AddModelError("Order", "Your order is incomplete. Please go back to the order and check again");
                 return View(model);
             }

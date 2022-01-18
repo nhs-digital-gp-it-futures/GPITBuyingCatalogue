@@ -10,9 +10,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.ActionFilters
     {
         public override void OnActionExecuting(ActionExecutingContext context)
         {
-            var remoteIp = context.HttpContext.Connection.RemoteIpAddress;
-
-            if (!IPAddress.IsLoopback(remoteIp))
+            if (!IPAddress.IsLoopback(context.HttpContext.Connection.RemoteIpAddress))
             {
                 context.Result = new UnauthorizedResult();
                 return;

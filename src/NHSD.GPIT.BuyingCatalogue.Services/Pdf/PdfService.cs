@@ -16,7 +16,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Pdf
 
             if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
             {
-                fileName = @$"{Path.GetTempPath}{Guid.NewGuid()}.pdf";
+                fileName = @$"{Path.GetTempPath()}{Guid.NewGuid()}.pdf";
                 args = @$"--headless --disable-gpu --ignore-certificate-errors --print-to-pdf={fileName} {url}";
                 chrome = "C:\\Program Files (x86)\\Google\\Chrome\\Application\\chrome.exe";
             }
