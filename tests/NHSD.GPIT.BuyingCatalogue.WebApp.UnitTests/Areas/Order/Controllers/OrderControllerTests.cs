@@ -6,6 +6,7 @@ using AutoFixture.Idioms;
 using AutoFixture.Xunit2;
 using FluentAssertions;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.AspNetCore.Routing;
@@ -14,6 +15,7 @@ using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Models.TaskList;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Orders;
+using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Pdf;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.TaskList;
 using NHSD.GPIT.BuyingCatalogue.Test.Framework.AutoFixtureCustomisations;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers;
@@ -111,7 +113,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers
 
             orderServiceMock.Setup(s => s.GetOrderForSummary(order.CallOffId)).ReturnsAsync(order);
 
-            var actualResult = await controller.Summary(odsCode, order.CallOffId);
+            var actualResult = await controller.Summary(odsCode, order.CallOffId, new SummaryModel());
 
             actualResult.Should().BeOfType<ViewResult>();
             actualResult.As<ViewResult>().ViewData.ModelState.ValidationState.Should().Be(ModelValidationState.Invalid);
@@ -137,6 +139,34 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers
             var result = controller.ReadyToStart(odsCode);
 
             result.As<ViewResult>().Should().NotBeNull();
+        }
+
+        [Theory]
+        [CommonAutoData]
+        public static void Get_Download_ReturnsExpectedResult(
+            string odsCode,
+            CallOffId callOffId,
+            [Frozen] Mock<IPdfService> pdfServiceMock,
+            byte[] result,
+            OrderController controller)
+        {
+            pdfServiceMock.Setup(s => s.Convert(It.IsAny<System.Uri>())).Returns(result);
+
+            var httpContext = new DefaultHttpContext();
+            httpContext.Request.Scheme = "https";
+            httpContext.Request.Host = new HostString("localhost");
+
+            controller.ControllerContext = new ControllerContext
+            {
+                HttpContext = httpContext,
+            };
+
+            var actualResult = controller.Download(odsCode, callOffId);
+
+            actualResult.Should().BeOfType<FileContentResult>();
+            actualResult.As<FileContentResult>().ContentType.Should().Be("application/pdf");
+            actualResult.As<FileContentResult>().FileDownloadName.Should().Be($"order-summary-{callOffId}.pdf");
+            actualResult.As<FileContentResult>().FileContents.Should().BeEquivalentTo(result);
         }
     }
 }

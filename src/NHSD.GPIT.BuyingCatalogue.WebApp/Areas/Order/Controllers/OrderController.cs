@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Runtime.InteropServices;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -10,6 +11,7 @@ using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Pdf;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.TaskList;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.Order;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.OrderTriage;
+using NHSD.GPIT.BuyingCatalogue.WebApp.Controllers;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
 {
@@ -151,18 +153,21 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
         [HttpGet("download")]
         public IActionResult Download(string odsCode, CallOffId callOffId)
         {
-            // MJRTODO - Sort the URL out for all platforms
+            string url = Url.Action(
+                        nameof(OrderSummaryController.Index),
+                        typeof(OrderSummaryController).ControllerName(),
+                        new { odsCode, callOffId });
 
-            // Works
-            // string url = "https://host.docker.internal:49153/OrderSummary/03F/C010002-01/print";
+            if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+            {
+                url = $"{Request.Scheme}://{Request.Host}{url}";
+            }
+            else
+            {
+                url = $"https://localhost{url}";
+            }
 
-            // Works
-            // string url = "https://www.bbc.co.uk/news";
-
-            // Works in docker
-            string url = $"https://localhost/OrderSummary/{odsCode}/{callOffId}";
-
-            var result = pdfService.Convert(url);
+            var result = pdfService.Convert(new Uri(url));
 
             return File(result, "application/pdf", $"order-summary-{callOffId}.pdf");
         }

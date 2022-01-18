@@ -8,17 +8,15 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Pdf
 {
     public sealed class PdfService : IPdfService
     {
-        public byte[] Convert(string url)
+        public byte[] Convert(Uri url)
         {
-            // MJRTODO - Maybe make cert ignore configurable??
-
-            var fileName = string.Empty;
-            string args = string.Empty;
-            string chrome = string.Empty;
+            string fileName;
+            string args;
+            string chrome;
 
             if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
             {
-                fileName = @$"C:\Temp\{Guid.NewGuid()}.pdf";
+                fileName = @$"{Path.GetTempPath}{Guid.NewGuid()}.pdf";
                 args = @$"--headless --disable-gpu --ignore-certificate-errors --print-to-pdf={fileName} {url}";
                 chrome = "C:\\Program Files (x86)\\Google\\Chrome\\Application\\chrome.exe";
             }
@@ -29,8 +27,8 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Pdf
                 chrome = "/usr/bin/chromium-browser";
             }
 
-            ProcessStartInfo psi = new ProcessStartInfo(chrome, args);
-            Process process = Process.Start(psi);
+            var psi = new ProcessStartInfo(chrome, args);
+            var process = Process.Start(psi);
             process.WaitForExit(10000);
 
             byte[] fileContent = File.ReadAllBytes(fileName);

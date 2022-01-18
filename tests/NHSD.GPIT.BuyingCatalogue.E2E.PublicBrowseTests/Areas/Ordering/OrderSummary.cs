@@ -91,27 +91,6 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering
         }
 
         [Fact]
-        public void OrderSummary_ClickPrintOrSaveAsPDF_ExpectedResult()
-        {
-            CommonActions.ClickLinkElement(Objects.Ordering.OrderSummary.PrintPDFButton);
-
-            CommonActions
-            .PageLoadedCorrectGetIndex(
-                  typeof(OrderController),
-                  nameof(OrderController.Summary))
-            .Should()
-            .BeTrue();
-
-            Driver.Url.EndsWith("?print=true").Should().BeTrue();
-
-            CommonActions.ElementIsDisplayed(CommonSelectors.SubmitButton).Should().BeFalse();
-
-            CommonActions.ElementIsDisplayed(Objects.Ordering.OrderSummary.PrintPDFButton).Should().BeFalse();
-
-            CommonActions.GoBackLinkDisplayed().Should().BeFalse();
-        }
-
-        [Fact]
         public void OrderSummary_IncompleteOrder_ClickGoBackLink_ExpectedResult()
         {
             CommonActions.ClickGoBackLink();
