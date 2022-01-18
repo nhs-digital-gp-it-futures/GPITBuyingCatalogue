@@ -35,9 +35,9 @@
                 <vc:nhs-secondary-button text="Print or save as PDF"
                                          use-primary-colour="false"
                                          url="@Url.Action(
-                nameof(OrderController.Summary),
+                nameof(OrderController.Download),
                 typeof(OrderController).ControllerName(),
-                new { Model.OdsCode, Model.Order.CallOffId, print = "true" })" />
+                new { Model.OdsCode, Model.Order.CallOffId})" />
             </nhs-fieldset-form-container>
         }
     </div>
@@ -163,9 +163,9 @@
                         <vc:nhs-secondary-button text="Print or save as PDF"
                                                  use-primary-colour="false"
                                                  url="@Url.Action(
-                                                        nameof(OrderController.Summary),
+                                                        nameof(OrderController.Download),
                                                         typeof(OrderController).ControllerName(),
-                                                        new { Model.OdsCode, Model.Order.CallOffId, print = "true" })" />
+                                                        new { Model.OdsCode, Model.Order.CallOffId })" />
                         <hr />
                     </nhs-fieldset-form-container>
                     <form method="post">

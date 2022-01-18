@@ -6,6 +6,7 @@ using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Models.TaskList;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Orders;
+using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Pdf;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.TaskList;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.Order;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.OrderTriage;
@@ -19,13 +20,16 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
     {
         private readonly IOrderService orderService;
         private readonly ITaskListService taskListService;
+        private readonly IPdfService pdfService;
 
         public OrderController(
             IOrderService orderService,
-            ITaskListService taskListService)
+            ITaskListService taskListService,
+            IPdfService pdfService)
         {
             this.orderService = orderService ?? throw new ArgumentNullException(nameof(orderService));
             this.taskListService = taskListService ?? throw new ArgumentNullException(nameof(taskListService));
+            this.pdfService = pdfService ?? throw new ArgumentNullException(nameof(pdfService));
         }
 
         [HttpGet]
@@ -91,7 +95,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
         }
 
         [HttpGet("summary")]
-        public async Task<IActionResult> Summary(string odsCode, CallOffId callOffId, string print = "false")
+        public async Task<IActionResult> Summary(string odsCode, CallOffId callOffId)
         {
             var order = await orderService.GetOrderForSummary(callOffId);
 
@@ -124,19 +128,17 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
                 },
             };
 
-            return print.Equals("true", StringComparison.OrdinalIgnoreCase)
-                ? View("PrintSummary", model)
-                : View(model);
+            return View(model);
         }
 
         [HttpPost("summary")]
-        public async Task<IActionResult> Summary(string odsCode, CallOffId callOffId)
+        public async Task<IActionResult> Summary(string odsCode, CallOffId callOffId, SummaryModel model)
         {
             var order = await orderService.GetOrderForSummary(callOffId);
 
             if (!order.CanComplete())
             {
-                var model = new SummaryModel(odsCode, order);
+                model = new SummaryModel(odsCode, order);
                 ModelState.AddModelError("Order", "Your order is incomplete. Please go back to the order and check again");
                 return View(model);
             }
@@ -144,6 +146,25 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
             await orderService.CompleteOrder(callOffId);
 
             return RedirectToAction();
+        }
+
+        [HttpGet("download")]
+        public IActionResult Download(string odsCode, CallOffId callOffId)
+        {
+            // MJRTODO - Sort the URL out for all platforms
+
+            // Works
+            // string url = "https://host.docker.internal:49153/OrderSummary/03F/C010002-01/print";
+
+            // Works
+            // string url = "https://www.bbc.co.uk/news";
+
+            // Works in docker
+            string url = $"https://localhost/OrderSummary/{odsCode}/{callOffId}";
+
+            var result = pdfService.Convert(url);
+
+            return File(result, "application/pdf", $"order-summary-{callOffId}.pdf");
         }
     }
 }
