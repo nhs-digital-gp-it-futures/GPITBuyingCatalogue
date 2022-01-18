@@ -1,7 +1,9 @@
-﻿@using NHSD.GPIT.BuyingCatalogue.WebApp.Models
+﻿@using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
+@using NHSD.GPIT.BuyingCatalogue.WebApp.Models
+@using NHSD.GPIT.BuyingCatalogue.WebApp.Controllers
 @{
     ViewBag.Title = "Nominate an organisation to create orders on your behalf";
-    var backLinkModel = new NavBaseModel{ BackLink = "/" };
+    var backLinkModel = new NavBaseModel { BackLink = "/" };
 }
 
 <partial name="Partials/_BackLink" model="@backLinkModel" />
@@ -10,15 +12,24 @@
         <nhs-page-title title="@ViewBag.Title"
                         advice="Get support procuring IT systems from the Buying Catalogue." />
         <p>
-            You can nominate an organisation to create orders from the Buying Catalogue on your behalf using the link below.
+            You can nominate an organisation to create orders from the Buying Catalogue on your behalf using our online form. You'll need to provide the name of the organisation you're nominating and its ODS code if you know it.
         </p>
         <p>
-            Once connected, registered users will create orders that just need to be reviewed and approved by the relevant person at your organisation.
+            We’ll send you an email to confirm this has been set up and then registered users from that organisation will be able to create orders for you.
+        </p>
+        <p>
+            The Buying Catalogue Team aims to respond to nomination requests within 5 working days.
         </p>
         <p>
             If you need advice about using the Buying Catalogue or procuring IT systems, contact the <a href="mailto:commercial.procurementhub@nhs.net">National Commercial and Procurement Hub</a>.
         </p>
+        <p>
+            If for any reason the button does not work, you can send your details to buying.catalogue@nhs.net with the subject line: Buying Catalogue nomination request.
+        </p>
         <br />
-        <vc:nhs-action-link url="mailto:buying.catalogue@nhs.net?subject=Nominate an organisation&body=To%20the%20Buying%20Catalogue%20team%2C%0A%0AI%20wish%20to%20nominate%20an%20organisation%20to%20create%20orders%20on%20the%20Buying%20Catalogue%20on%20behalf%20of%20my%20organisation.%0A%0AMy%20details%20are%3A%0A%0AMy%20name%3A%0A%0AMy%20telephone%20number%3A%0A%0AMy%20email%20address%3A%0A%0AMy%20organisation%E2%80%99s%20name%3A%0A%0AMy%20organisation%E2%80%99s%20ODS%20code%3A"  text="Nominate an organisation" />
+        <vc:nhs-action-link url="@Url.Action(
+                                     nameof(NominateOrganisationController.Details),
+                                     typeof(NominateOrganisationController).ControllerName())" 
+                            text="Nominate an organisation") />
     </div>
 </div>
