@@ -17,13 +17,17 @@
                             advice="Provide the price you've agreed with the supplier and the quantity you want to order." />
 
             <form method="post">
-                <input type="hidden" asp-for="@Model.BackLink" />
-                <input type="hidden" asp-for="@Model.BackLinkText" />
-                <input type="hidden" asp-for="@Model.OdsCode" />
-                <input type="hidden" asp-for="@Model.Title" />
-                <input type="hidden" asp-for="@Model.OrderItem.ServiceRecipients[0].Name" />
-                <input type="hidden" asp-for="@Model.OrderItem.ServiceRecipients[0].OdsCode" />
-                <nhs-bookended-input asp-for="@Model.OrderItem.ServiceRecipients[0].Quantity"
+                <input type="hidden" asp-for="BackLink" />
+                <input type="hidden" asp-for="BackLinkText" />
+                <input type="hidden" asp-for="OdsCode" />
+                <input type="hidden" asp-for="Title" />
+                <input type="hidden" asp-for="OrderItem.ServiceRecipients[0].Name" />
+                <input type="hidden" asp-for="OrderItem.CataloguePrice.ProvisioningType" />
+                <input type="hidden" asp-for="OrderItem.CataloguePrice.Price" />
+                <input type="hidden" asp-for="OrderItem.CommencementDate" />
+
+                <input type="hidden" asp-for="OrderItem.ServiceRecipients[0].OdsCode" />
+                <nhs-bookended-input asp-for="OrderItem.ServiceRecipients[0].Quantity"
                                      label-text="How many do you think you'll need?" />
                 <nhs-details label-text="What quantity should I enter?">
                     Enter the estimated quantity you think you'll need either per month or per year.

@@ -62,32 +62,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers
 
         [Theory]
         [CommonAutoData]
-        public static async Task Post_CommencementDate_InvalidDate_ReturnsErrorResult(
-            string odsCode,
-            CallOffId callOffId,
-            CommencementDateController controller)
-        {
-            var model = new CommencementDateModel { Day = "ABC", };
-
-            var actualResult = await controller.CommencementDate(odsCode, callOffId, model);
-
-            actualResult.Should().BeOfType<ViewResult>();
-            actualResult.As<ViewResult>().ViewData.ModelState.ValidationState.Should().Be(ModelValidationState.Invalid);
-
-            actualResult.As<ViewResult>()
-                .ViewData.ModelState.Keys.Single()
-                .Should()
-                .Be("Day");
-
-            actualResult.As<ViewResult>()
-                .ViewData.ModelState.Values.Single()
-                .Errors.Single()
-                .ErrorMessage.Should()
-                .Be("Commencement date must be a real date");
-        }
-
-        [Theory]
-        [CommonAutoData]
         public static async Task Post_CommencementDate_SetsDate_CorrectlyRedirects(
             string odsCode,
             CreateOrderItemModel state,

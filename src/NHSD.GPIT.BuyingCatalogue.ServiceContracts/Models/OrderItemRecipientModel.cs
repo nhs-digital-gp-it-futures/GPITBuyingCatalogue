@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Globalization;
-using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Constants;
 
 namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.Models
 {
@@ -64,19 +63,5 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.Models
         public int? Quantity { get; set; }
 
         public bool IsComplete => Quantity.HasValue && DeliveryDate.HasValue;
-
-        public string ValidateDeliveryDate(DateTime? commencementDate)
-        {
-            if (!DeliveryDate.HasValue)
-                return "Planned delivery date must be a real date";
-
-            if (DeliveryDate.Value.ToUniversalTime() <= DateTime.UtcNow)
-                return "Planned delivery date must be in the future";
-
-            if (commencementDate.HasValue && DeliveryDate.Value.ToUniversalTime() > commencementDate.Value.AddMonths(ValidationConstants.MaxDeliveryMonthsFromCommencement))
-                return $"Planned delivery date must be within {ValidationConstants.MaxDeliveryMonthsFromCommencement} months from the commencement date for this Call-off Agreement";
-
-            return null;
-        }
     }
 }

@@ -45,15 +45,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
         [HttpPost]
         public async Task<IActionResult> CommencementDate(string odsCode, CallOffId callOffId, CommencementDateModel model)
         {
-            (DateTime? date, var error) = model.ToDateTime();
-
-            if (error != null)
-                ModelState.AddModelError("Day", error);
-
             if (!ModelState.IsValid)
                 return View(model);
 
-            await commencementDateService.SetCommencementDate(callOffId, date);
+            await commencementDateService.SetCommencementDate(callOffId, model.CommencementDate!.Value);
 
             return RedirectToAction(
                 nameof(OrderController.Order),

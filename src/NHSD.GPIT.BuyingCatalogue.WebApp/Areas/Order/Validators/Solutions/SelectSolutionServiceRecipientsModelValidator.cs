@@ -2,7 +2,7 @@
 using FluentValidation;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.CatalogueSolutionRecipients;
 
-namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Validators
+namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Validators.Solutions
 {
     public sealed class SelectSolutionServiceRecipientsModelValidator : AbstractValidator<SelectSolutionServiceRecipientsModel>
     {
