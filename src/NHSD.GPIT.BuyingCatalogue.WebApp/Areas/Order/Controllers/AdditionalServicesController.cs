@@ -203,17 +203,12 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
         [HttpPost("select/additional-service/price/flat/declarative")]
         public IActionResult SelectFlatDeclarativeQuantity(string odsCode, CallOffId callOffId, SelectFlatDeclarativeQuantityModel model)
         {
-            (int? quantity, var error) = model.GetQuantity();
-
-            if (error != null)
-                ModelState.AddModelError("Quantity", error);
-
             if (!ModelState.IsValid)
                 return View(model);
 
             var state = orderSessionService.GetOrderStateFromSession(callOffId);
 
-            state.Quantity = quantity;
+            state.Quantity = model.QuantityAsInt;
 
             orderSessionService.SetOrderStateToSession(state);
 
@@ -242,20 +237,12 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
         [HttpPost("select/additional-service/price/flat/ondemand")]
         public IActionResult SelectFlatOnDemandQuantity(string odsCode, CallOffId callOffId, SelectFlatOnDemandQuantityModel model)
         {
-            (int? quantity, var error) = model.GetQuantity();
-
-            if (error != null)
-                ModelState.AddModelError(nameof(model.Quantity), error);
-
-            if (model.EstimationPeriod is null)
-                ModelState.AddModelError(nameof(model.EstimationPeriod), "Time Unit is Required");
-
             if (!ModelState.IsValid)
                 return View(model);
 
             var state = orderSessionService.GetOrderStateFromSession(callOffId);
 
-            state.Quantity = quantity;
+            state.Quantity = model.QuantityAsInt;
             state.EstimationPeriod = model.EstimationPeriod.Value;
 
             orderSessionService.SetOrderStateToSession(state);
@@ -283,39 +270,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
         public async Task<IActionResult> EditAdditionalService(string odsCode, CallOffId callOffId, CatalogueItemId catalogueItemId, EditAdditionalServiceModel model)
         {
             var state = orderSessionService.GetOrderStateFromSession(callOffId);
-
-            for (int i = 0; i < model.OrderItem.ServiceRecipients.Count; i++)
-            {
-                var error = model.OrderItem.ServiceRecipients[i].ValidateDeliveryDate(state.CommencementDate);
-
-                if (error is not null)
-                    ModelState.AddModelError($"OrderItem.ServiceRecipients[{i}].Day", error);
-
-                var quantityModelStateKey = $"OrderItem.ServiceRecipients[{i}].Quantity";
-
-                if (model.OrderItem.ServiceRecipients[i].Quantity is null
-                    && !(ModelState[quantityModelStateKey].ValidationState == ModelValidationState.Invalid))
-                    ModelState.AddModelError(quantityModelStateKey, "Enter a quantity");
-
-                if (model.OrderItem.ServiceRecipients[i].Quantity <= 0
-                    && !(ModelState[quantityModelStateKey].ValidationState == ModelValidationState.Invalid))
-                    ModelState.AddModelError(quantityModelStateKey, "Quantity must be greater than 0");
-            }
-
-            var priceModelStateKey = "OrderItem.AgreedPrice";
-
-            if (model.OrderItem.AgreedPrice > state.CataloguePrice.Price
-                && !(ModelState[priceModelStateKey].ValidationState == ModelValidationState.Invalid))
-                ModelState.AddModelError(priceModelStateKey, "Price cannot be greater than list price");
-
-            if (model.OrderItem.AgreedPrice is null
-                && !(ModelState[priceModelStateKey].ValidationState == ModelValidationState.Invalid))
-                ModelState.AddModelError(priceModelStateKey, "Enter an agreed price");
-
-            if (model.OrderItem.AgreedPrice < 0
-                && !(ModelState[priceModelStateKey].ValidationState == ModelValidationState.Invalid))
-                ModelState.AddModelError(priceModelStateKey, "Price cannot be negative");
-
             if (!ModelState.IsValid)
             {
                 model.UpdateModel(state);

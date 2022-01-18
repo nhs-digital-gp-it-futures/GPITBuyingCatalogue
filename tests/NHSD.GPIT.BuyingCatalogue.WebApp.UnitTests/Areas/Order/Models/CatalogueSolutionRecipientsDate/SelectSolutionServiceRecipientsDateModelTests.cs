@@ -70,56 +70,32 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.Catalogu
             model.Year.Should().Be(commencementDate.Year.ToString("00"));
         }
 
-        [Fact]
-        public static void ValidateAndGetDeliveryDate_ValidDeliveryDate_ReturnsNoError()
+        [Theory]
+        [CommonAutoData]
+        public static void DeliveryDate_WithValidDate_ParsesSuccessfully(
+            SelectSolutionServiceRecipientsDateModel model)
         {
-            var model = new SelectSolutionServiceRecipientsDateModel { Day = "1", Month = "2", Year = "2022", CommencementDate = new DateTime(2021, 12, 25) };
+            var date = DateTime.UtcNow;
 
-            (var date, var error) = model.ValidateAndGetDeliveryDate();
+            model.Day = date.Day.ToString();
+            model.Month = date.Month.ToString();
+            model.Year = date.Year.ToString();
 
-            error.Should().BeNull();
-            date.Should().Be(new DateTime(2022, 2, 1));
-        }
+            var deliveryDate = model.DeliveryDate!.Value;
 
-        [Fact]
-        public static void ValidateAndGetDeliveryDate_BeyondMonthsLimit_ReturnsError()
-        {
-            var commencementDate = new DateTime(2021, 12, 25);
-            var badDeliveryDate = commencementDate.AddMonths(42).AddDays(1);
-            var model = new SelectSolutionServiceRecipientsDateModel
-            {
-                Day = badDeliveryDate.Day.ToString(),
-                Month = badDeliveryDate.Month.ToString(),
-                Year = badDeliveryDate.Year.ToString(),
-                CommencementDate = commencementDate,
-            };
-
-            (var date, var error) = model.ValidateAndGetDeliveryDate();
-
-            error.Should().Be("Planned delivery date must be within 42 months from the commencement date for this Call-off Agreement");
-            date.Should().BeNull();
+            deliveryDate.Day.Should().Be(date.Day);
+            deliveryDate.Month.Should().Be(date.Month);
+            deliveryDate.Year.Should().Be(date.Year);
         }
 
         [Theory]
-        [InlineData("1", "1", "2023", null)]
-        [InlineData("", "1", "2023", "Planned delivery date must be a real date")]
-        [InlineData("1", "", "2023", "Planned delivery date must be a real date")]
-        [InlineData("1", "1", "", "Planned delivery date must be a real date")]
-        [InlineData("29", "2", "2024", null)]
-        [InlineData("29", "2", "2023", "Planned delivery date must be a real date")]
-        public static void ValidateAndGetDeliveryDate_InvalidDates_ReturnError(string day, string month, string year, string expected)
+        [CommonAutoData]
+        public static void DeliveryDate_WithInvalidDate_DoesNotParse(
+            SelectSolutionServiceRecipientsDateModel model)
         {
-            var model = new SelectSolutionServiceRecipientsDateModel
-            {
-                Day = day,
-                Month = month,
-                Year = year,
-                CommencementDate = new DateTime(2021, 12, 25),
-            };
+            model.Day = model.Month = model.Year = null;
 
-            (_, var error) = model.ValidateAndGetDeliveryDate();
-
-            error.Should().Be(expected);
+            model.DeliveryDate.HasValue.Should().BeFalse();
         }
     }
 }

@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Linq;
 using System.Threading.Tasks;
 using AutoFixture;
 using AutoFixture.AutoMoq;
@@ -8,11 +7,9 @@ using AutoFixture.Xunit2;
 using FluentAssertions;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.AspNetCore.Routing;
 using Moq;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
-using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Models;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Orders;
@@ -59,32 +56,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers
 
             actualResult.Should().BeOfType<ViewResult>();
             actualResult.As<ViewResult>().ViewData.Model.Should().BeEquivalentTo(expectedViewData, opt => opt.Excluding(m => m.BackLink));
-        }
-
-        [Theory]
-        [CommonAutoData]
-        public static async Task Post_SelectAdditionalServiceRecipientsDate_InvalidDate_ReturnsErrorResult(
-            string odsCode,
-            CallOffId callOffId,
-            AdditionalServiceRecipientsDateController controller)
-        {
-            var model = new SelectAdditionalServiceRecipientsDateModel { Day = "ABC", };
-
-            var actualResult = await controller.SelectAdditionalServiceRecipientsDate(odsCode, callOffId, model);
-
-            actualResult.Should().BeOfType<ViewResult>();
-            actualResult.As<ViewResult>().ViewData.ModelState.ValidationState.Should().Be(ModelValidationState.Invalid);
-
-            actualResult.As<ViewResult>()
-                .ViewData.ModelState.Keys.Single()
-                .Should()
-                .Be("Day");
-
-            actualResult.As<ViewResult>()
-                .ViewData.ModelState.Values.Single()
-                .Errors.Single()
-                .ErrorMessage.Should()
-                .Be("Planned delivery date must be a real date");
         }
 
         [Theory]

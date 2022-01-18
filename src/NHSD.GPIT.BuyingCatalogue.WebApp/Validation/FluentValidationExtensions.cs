@@ -20,15 +20,31 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Validation
             return rule.OverridePropertyName(propertyName);
         }
 
+        public static IRuleBuilderOptions<T, string> IsValidQuantity<T>(this IRuleBuilderInitial<T, string> ruleBuilder)
+            => ruleBuilder
+                .Cascade(CascadeMode.Stop)
+                .NotEmpty()
+                .WithMessage("Enter a quantity")
+                .Must(quantity => int.TryParse(quantity, out _))
+                .WithMessage("Quantity must be a number")
+                .Must(quantity => int.Parse(quantity) > 0)
+                .WithMessage("Quantity must be greater than zero");
+
+        public static IRuleBuilderOptions<T, int?> IsValidQuantity<T>(this IRuleBuilderInitial<T, int?> ruleBuilder)
+            => ruleBuilder
+                .Cascade(CascadeMode.Stop)
+                .NotNull()
+                .WithMessage("Enter a quantity")
+                .GreaterThan(0)
+                .WithMessage("Quantity must be greater than 0");
+
         public static IRuleBuilderOptions<T, string> IsValidUrl<T>(this IRuleBuilderInitial<T, string> ruleBuilder, IUrlValidator urlValidator)
-        {
-            return ruleBuilder
+            => ruleBuilder
                 .Cascade(CascadeMode.Stop)
                 .Must(BePrefixedCorrectly)
                 .WithMessage("Enter a prefix to the URL, either http or https")
                 .MustAsync((link, _) => urlValidator.IsValidUrl(link))
                 .WithMessage("Enter a valid URL");
-        }
 
         private static bool BePrefixedCorrectly(string url) => url.StartsWith("http") || url.StartsWith("https");
     }

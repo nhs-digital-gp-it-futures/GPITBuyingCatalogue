@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Globalization;
-using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Constants;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Models;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.AdditionalServiceRecipientsDate
@@ -47,23 +46,14 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.AdditionalServiceR
 
         public string Year { get; set; }
 
-        public (DateTime? Date, string Error) ValidateAndGetDeliveryDate()
+        public DateTime? DeliveryDate
         {
-            try
+            get
             {
-                var date = DateTime.ParseExact($"{Day}/{Month}/{Year}", "d/M/yyyy", CultureInfo.InvariantCulture);
+                if (!DateTime.TryParseExact($"{Day}/{Month}/{Year}", "d/M/yyyy", CultureInfo.InvariantCulture, DateTimeStyles.None, out var deliveryDate))
+                    return null;
 
-                if (date.ToUniversalTime() <= DateTime.UtcNow)
-                    return (null, "Planned delivery date must be in the future");
-
-                if (CommencementDate.HasValue && date.ToUniversalTime() > CommencementDate.Value.AddMonths(ValidationConstants.MaxDeliveryMonthsFromCommencement))
-                    return (null, $"Planned delivery date must be within {ValidationConstants.MaxDeliveryMonthsFromCommencement} months from the commencement date for this Call-off Agreement");
-
-                return (date, null);
-            }
-            catch (FormatException)
-            {
-                return (null, "Planned delivery date must be a real date");
+                return deliveryDate.ToUniversalTime();
             }
         }
     }

@@ -1,5 +1,4 @@
-﻿using System.ComponentModel.DataAnnotations;
-using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
+﻿using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.AdditionalServices
 {
@@ -15,18 +14,17 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.AdditionalServices
             Quantity = quantity.ToString();
         }
 
-        [Required(ErrorMessage = "Enter a quantity")]
         public string Quantity { get; set; }
 
-        public (int? Quantity, string Error) GetQuantity()
+        public int? QuantityAsInt
         {
-            if (!int.TryParse(Quantity, out var quantity))
-                return (null, "Quantity must be a number");
+            get
+            {
+                if (!int.TryParse(Quantity, out var quantity))
+                    return null;
 
-            if (quantity < 1)
-                return (null, "Quantity must be greater than zero");
-
-            return (quantity, null);
+                return quantity;
+            }
         }
     }
 }

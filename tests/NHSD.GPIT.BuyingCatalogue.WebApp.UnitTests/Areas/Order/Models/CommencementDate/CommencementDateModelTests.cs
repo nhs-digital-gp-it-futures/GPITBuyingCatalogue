@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Globalization;
 using FluentAssertions;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.Test.Framework.AutoFixtureCustomisations;
@@ -27,81 +26,31 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.Commence
         }
 
         [Theory]
-        [InlineData("", "", "")]
-        [InlineData("Invalid", "1", "2022")]
-        [InlineData("1", "Invalid", "2022")]
-        [InlineData("1", "1", "Invalid")]
-        [InlineData("29", "2", "2022")]
-        [InlineData("1", "13", "2022")]
-        public static void ToDateTime_InvalidDate_ReturnsError(string day, string month, string year)
+        [CommonAutoData]
+        public static void CommencementDate_WithValidDate_ParsesSuccessfully(
+            CommencementDateModel model)
         {
-            var model = new CommencementDateModel
-            {
-                Day = day,
-                Month = month,
-                Year = year,
-            };
+            var date = DateTime.UtcNow;
 
-            var (_, error) = model.ToDateTime();
+            model.Day = date.Day.ToString();
+            model.Month = date.Month.ToString();
+            model.Year = date.Year.ToString();
 
-            error.Should().Be("Commencement date must be a real date");
+            var deliveryDate = model.CommencementDate!.Value;
+
+            deliveryDate.Day.Should().Be(date.Day);
+            deliveryDate.Month.Should().Be(date.Month);
+            deliveryDate.Year.Should().Be(date.Year);
         }
 
         [Theory]
-        [InlineData("1", "1", "2022")]
-        [InlineData("31", "7", "2022")]
-        [InlineData("29", "2", "2024")]
-        public static void ToDateTime_ValidDate_ReturnsDate(string day, string month, string year)
+        [CommonAutoData]
+        public static void CommencementDate_WithInvalidDate_DoesNotParse(
+            CommencementDateModel model)
         {
-            var model = new CommencementDateModel
-            {
-                Day = day,
-                Month = month,
-                Year = year,
-            };
+            model.Day = model.Month = model.Year = null;
 
-            (DateTime? dateTime, string error) = model.ToDateTime();
-
-            Assert.Null(error);
-            Assert.NotNull(dateTime);
-
-            dateTime.Should().Be(DateTime.ParseExact($"{model.Day}/{model.Month}/{model.Year}", "d/M/yyyy", CultureInfo.InvariantCulture));
-        }
-
-        [Fact]
-        public static void ToDateTime_DateMoreThan60DaysInPast_ReturnsError()
-        {
-            var oldDate = DateTime.UtcNow.AddDays(-60);
-
-            var model = new CommencementDateModel
-            {
-                Day = oldDate.Day.ToString(),
-                Month = oldDate.Month.ToString(),
-                Year = oldDate.Year.ToString(),
-            };
-
-            var (_, error) = model.ToDateTime();
-
-            error.Should().Be("Commencement date must be in the future or within the last 60 days");
-        }
-
-        [Fact]
-        public static void ToDateTime_DayLessThan60DaysInPast_ReturnsDate()
-        {
-            var oldDate = DateTime.UtcNow.AddDays(-59);
-
-            var model = new CommencementDateModel
-            {
-                Day = oldDate.Day.ToString(),
-                Month = oldDate.Month.ToString(),
-                Year = oldDate.Year.ToString(),
-            };
-
-            (DateTime? dateTime, string error) = model.ToDateTime();
-
-            Assert.Null(error);
-            Assert.NotNull(dateTime);
-            dateTime.Should().Be(oldDate.Date);
+            model.CommencementDate.HasValue.Should().BeFalse();
         }
     }
 }
