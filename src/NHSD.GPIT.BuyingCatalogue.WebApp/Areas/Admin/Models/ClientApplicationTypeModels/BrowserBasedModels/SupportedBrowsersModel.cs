@@ -42,7 +42,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.ClientApplicationT
 
         public SupportedBrowserModel[] Browsers { get; set; }
 
-        [Required(ErrorMessage = "Select yes if your Catalogue Solution is mobile responsive")]
         public string MobileResponsive { get; set; }
 
         private void CheckBrowsers()

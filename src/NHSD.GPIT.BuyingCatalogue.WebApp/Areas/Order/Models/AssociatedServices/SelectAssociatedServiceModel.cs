@@ -21,7 +21,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.AssociatedServices
 
         public List<CatalogueItem> Solutions { get; set; }
 
-        [Required(ErrorMessage = "Select an Associated Service")]
         public CatalogueItemId? SelectedSolutionId { get; set; }
     }
 }

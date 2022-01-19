@@ -10,6 +10,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Validators
         public DescriptionModelValidator(
             IUrlValidator urlValidator)
         {
+            RuleFor(m => m.Summary)
+                .NotEmpty()
+                .WithMessage("Enter a summary");
+
             RuleFor(m => m.Link)
                 .IsValidUrl(urlValidator)
                 .Unless(m => string.IsNullOrWhiteSpace(m.Link));

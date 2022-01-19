@@ -14,6 +14,18 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Validators
         {
             this.associatedServicesService = associatedServicesService;
 
+            RuleFor(m => m.Name)
+                .NotEmpty()
+                .WithMessage("Enter a name");
+
+            RuleFor(m => m.Description)
+                .NotEmpty()
+                .WithMessage("Enter a description");
+
+            RuleFor(m => m.OrderGuidance)
+                .NotEmpty()
+                .WithMessage("Enter order guidance");
+
             RuleFor(m => m)
                 .MustAsync(NotBeADuplicateServiceName)
                 .WithMessage("Associated Service name already exists. Enter a different name")

@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.Framework.Constants;
@@ -28,7 +27,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.ClientApplicationT
             ScreenResolutions = SelectLists.ScreenResolutions;
         }
 
-        [Required(ErrorMessage = "Select a connection speed")]
         public string SelectedConnectionSpeed { get; set; }
 
         public IReadOnlyList<SelectListItem> ConnectionSpeeds { get; set; }

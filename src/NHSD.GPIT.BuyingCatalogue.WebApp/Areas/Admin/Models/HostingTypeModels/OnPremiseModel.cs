@@ -20,7 +20,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.HostingTypeModels
             HostingModel = hostingType?.HostingModel;
         }
 
-        [Required]
         [StringLength(1000)]
         public string HostingModel { get; set; }
     }

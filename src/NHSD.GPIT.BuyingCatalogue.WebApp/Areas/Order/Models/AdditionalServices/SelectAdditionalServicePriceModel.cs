@@ -22,7 +22,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.AdditionalServices
 
         public List<PriceModel> Prices { get; set; }
 
-        [Required(ErrorMessage = "Select a price")]
         public int? SelectedPrice { get; set; }
 
         public void SetPrices(List<CataloguePrice> prices)

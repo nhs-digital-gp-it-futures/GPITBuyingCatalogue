@@ -7,7 +7,7 @@ using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Suppliers;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Validation;
 using NHSD.GPIT.BuyingCatalogue.Test.Framework.AutoFixtureCustomisations;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.SupplierModels;
-using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Validators;
+using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Validators.Suppliers;
 using Xunit;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators
@@ -206,6 +206,42 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators
             var result = validator.TestValidate(model);
 
             result.ShouldNotHaveValidationErrorFor(m => m.SupplierLegalName);
+        }
+
+        [Theory]
+        [CommonInlineAutoData(null)]
+        [CommonInlineAutoData("")]
+        public static void Validate_SupplierNameNullOrEmpty_SetsModelError(
+            string supplierName,
+            EditSupplierDetailsModelValidator validator)
+        {
+            var model = new EditSupplierDetailsModel
+            {
+                SupplierName = supplierName,
+            };
+
+            var result = validator.TestValidate(model);
+
+            result.ShouldHaveValidationErrorFor(m => m.SupplierName)
+                .WithErrorMessage("Enter a supplier name");
+        }
+
+        [Theory]
+        [CommonInlineAutoData(null)]
+        [CommonInlineAutoData("")]
+        public static void Validate_SupplierLegalNameNullOrEmpty_SetsModelError(
+            string supplierLegalName,
+            EditSupplierDetailsModelValidator validator)
+        {
+            var model = new EditSupplierDetailsModel
+            {
+                SupplierLegalName = supplierLegalName,
+            };
+
+            var result = validator.TestValidate(model);
+
+            result.ShouldHaveValidationErrorFor(m => m.SupplierLegalName)
+                .WithErrorMessage("Enter a supplier legal name");
         }
     }
 }

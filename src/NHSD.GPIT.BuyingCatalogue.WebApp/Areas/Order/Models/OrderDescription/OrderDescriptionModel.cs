@@ -15,7 +15,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.OrderDescription
             Description = order?.Description;
         }
 
-        [Required(ErrorMessage = "Enter a description")]
         [StringLength(100)]
         public string Description { get; set; }
     }
