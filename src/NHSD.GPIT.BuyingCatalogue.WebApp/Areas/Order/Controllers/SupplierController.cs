@@ -77,8 +77,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
             if (order.Supplier is not null)
             {
                 return RedirectToAction(
-                    nameof(OrderController.Order),
-                    typeof(OrderController).ControllerName(),
+                    nameof(SupplierController.Supplier),
+                    typeof(SupplierController).ControllerName(),
                     new { odsCode, callOffId });
             }
 
@@ -110,8 +110,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
             if (order?.Supplier is not null)
             {
                 return RedirectToAction(
-                    nameof(OrderController.Order),
-                    typeof(OrderController).ControllerName(),
+                    nameof(SupplierController.Supplier),
+                    typeof(SupplierController).ControllerName(),
                     new { odsCode, callOffId });
             }
 

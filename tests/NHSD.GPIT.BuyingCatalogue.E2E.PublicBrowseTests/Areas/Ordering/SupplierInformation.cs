@@ -388,8 +388,8 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering
                 queryParameters);
 
             CommonActions.PageLoadedCorrectGetIndex(
-                typeof(OrderController),
-                nameof(OrderController.Order)).Should().BeTrue();
+                typeof(SupplierController),
+                nameof(SupplierController.Supplier)).Should().BeTrue();
         }
 
         public void Dispose()
