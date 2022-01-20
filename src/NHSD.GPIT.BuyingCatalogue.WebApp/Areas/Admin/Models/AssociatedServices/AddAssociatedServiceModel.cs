@@ -21,15 +21,12 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.AssociatedServices
 
         public string SupplierName { get; set; }
 
-        [Required(ErrorMessage = "Enter a name")]
         [StringLength(255)]
         public string Name { get; set; }
 
-        [Required(ErrorMessage = "Enter a description")]
         [StringLength(1000)]
         public string Description { get; set; }
 
-        [Required(ErrorMessage = "Enter order guidance")]
         [StringLength(1000)]
         public string OrderGuidance { get; set; }
     }

@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.Supplier
@@ -19,7 +18,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.Supplier
 
         public List<EntityFramework.Catalogue.Models.Supplier> Suppliers { get; set; }
 
-        [Required(ErrorMessage = "Please select a supplier")]
         public int? SelectedSupplierId { get; set; }
     }
 }

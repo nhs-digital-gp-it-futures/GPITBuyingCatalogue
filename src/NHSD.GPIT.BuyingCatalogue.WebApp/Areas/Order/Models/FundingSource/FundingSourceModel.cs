@@ -1,5 +1,4 @@
-﻿using System.ComponentModel.DataAnnotations;
-using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
+﻿using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.FundingSource
@@ -16,7 +15,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.FundingSource
             FundingSourceOnlyGms = fundingSourceOnlyGms.ToYesNo();
         }
 
-        [Required(ErrorMessage = "Select yes if you're paying for this order in full using your GP IT Futures centrally held funding allocation")]
         public string FundingSourceOnlyGms { get; set; }
     }
 }

@@ -21,7 +21,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.ClientApplicationT
         [StringLength(500)]
         public string AdditionalInformation { get; set; }
 
-        [Required(ErrorMessage = "Select yes if any plug-ins or extensions are required")]
         public string PlugInsRequired { get; set; }
     }
 }

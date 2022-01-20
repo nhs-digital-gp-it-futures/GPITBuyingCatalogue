@@ -13,6 +13,21 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators.Host
     public sealed class OnPremiseModelValidatorTests
     {
         [Theory]
+        [CommonInlineAutoData(null)]
+        [CommonInlineAutoData("")]
+        public static void Validate_HostingModelNullOrEmpty_SetsModelError(
+            string hostingModel,
+            OnPremiseModel model,
+            OnPremiseModelValidator validator)
+        {
+            model.HostingModel = hostingModel;
+
+            var result = validator.TestValidate(model);
+
+            result.ShouldHaveValidationErrorFor(m => m.HostingModel);
+        }
+
+        [Theory]
         [CommonAutoData]
         public static void Validate_NoLink_DoesNotValidate(
             [Frozen] Mock<IUrlValidator> urlValidator,

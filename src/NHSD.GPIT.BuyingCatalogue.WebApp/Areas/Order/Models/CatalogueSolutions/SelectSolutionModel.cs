@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 
@@ -21,7 +20,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.CatalogueSolutions
 
         public List<CatalogueItem> Solutions { get; set; }
 
-        [Required(ErrorMessage = "Select a Catalogue Solution")]
         public CatalogueItemId? SelectedSolutionId { get; set; }
     }
 }

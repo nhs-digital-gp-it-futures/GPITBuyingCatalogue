@@ -13,6 +13,22 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators.Host
     public sealed class PrivateCloudModelValidatorTests
     {
         [Theory]
+        [CommonInlineAutoData(null)]
+        [CommonInlineAutoData("")]
+        public static void Validate_HostingModelNullOrEmpty_SetsModelError(
+            string hostingModel,
+            PrivateCloudModel model,
+            PrivateCloudModelValidator validator)
+        {
+            model.HostingModel = hostingModel;
+
+            var result = validator.TestValidate(model);
+
+            result.ShouldHaveValidationErrorFor(m => m.HostingModel)
+                .WithErrorMessage("Enter data centre model information");
+        }
+
+        [Theory]
         [CommonAutoData]
         public static void Validate_NoLink_DoesNotValidate(
             [Frozen] Mock<IUrlValidator> urlValidator,

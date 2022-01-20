@@ -29,16 +29,13 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.ClientApplicationT
             SelectedResolution = ClientApplication?.NativeDesktopMemoryAndStorage?.RecommendedResolution;
         }
 
-        [Required(ErrorMessage = "Select a minimum memory size")]
         public string SelectedMemorySize { get; set; }
 
         public IReadOnlyList<SelectListItem> MemorySizes { get; init; }
 
-        [Required(ErrorMessage = "Enter storage space information")]
         [StringLength(300)]
         public string StorageSpace { get; set; }
 
-        [Required(ErrorMessage = "Enter processing power information")]
         [StringLength(300)]
         public string ProcessingPower { get; set; }
 

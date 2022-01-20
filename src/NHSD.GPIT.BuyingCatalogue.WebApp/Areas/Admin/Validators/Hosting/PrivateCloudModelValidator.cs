@@ -10,6 +10,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Validators.Hosting
             IUrlValidator validator)
         {
             Include(new BaseCloudModelValidator(validator));
+
+            RuleFor(m => m.HostingModel)
+                .NotEmpty()
+                .WithMessage("Enter data centre model information");
         }
     }
 }

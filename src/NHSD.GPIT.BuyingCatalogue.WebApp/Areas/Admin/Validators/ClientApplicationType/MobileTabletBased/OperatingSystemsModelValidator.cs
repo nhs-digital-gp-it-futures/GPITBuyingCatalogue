@@ -2,7 +2,7 @@
 using FluentValidation;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.ClientApplicationTypeModels.MobileTabletBasedModels;
 
-namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Validators
+namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Validators.ClientApplicationType.MobileTabletBased
 {
     public class OperatingSystemsModelValidator : AbstractValidator<OperatingSystemsModel>
     {
