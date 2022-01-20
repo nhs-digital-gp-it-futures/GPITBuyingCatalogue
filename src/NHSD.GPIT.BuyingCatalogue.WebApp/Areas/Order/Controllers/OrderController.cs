@@ -6,6 +6,7 @@ using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Models.TaskList;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Orders;
+using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Organisations;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.TaskList;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.Order;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.OrderTriage;
@@ -19,13 +20,16 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
     {
         private readonly IOrderService orderService;
         private readonly ITaskListService taskListService;
+        private readonly IOrganisationsService organisationsService;
 
         public OrderController(
             IOrderService orderService,
-            ITaskListService taskListService)
+            ITaskListService taskListService,
+            IOrganisationsService organisationsService)
         {
             this.orderService = orderService ?? throw new ArgumentNullException(nameof(orderService));
             this.taskListService = taskListService ?? throw new ArgumentNullException(nameof(taskListService));
+            this.organisationsService = organisationsService ?? throw new ArgumentNullException(nameof(organisationsService));
         }
 
         [HttpGet]
@@ -53,6 +57,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
                     nameof(DashboardController.Organisation),
                     typeof(DashboardController).ControllerName(),
                     new { odsCode }),
+                BackLinkText = "Go back to dashboard",
             };
 
             return View(orderModel);
@@ -61,7 +66,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
         [HttpGet("~/order/organisation/{odsCode}/order/ready-to-start")]
         public IActionResult ReadyToStart(string odsCode, TriageOption? option = null)
         {
-            var model = new ReadyToStartModel(odsCode)
+            var model = new ReadyToStartModel(odsCode, option)
             {
                 BackLink = Url.Action(
                     nameof(OrderTriageController.TriageSelection),
@@ -73,18 +78,20 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
         }
 
         [HttpGet("~/order/organisation/{odsCode}/order/neworder")]
-        public IActionResult NewOrder(string odsCode)
+        public async Task<IActionResult> NewOrder(string odsCode, TriageOption? option = null)
         {
-            var orderModel = new OrderModel(odsCode, null, new OrderTaskList())
+            var organisation = await organisationsService.GetOrganisationByOdsCode(odsCode);
+
+            var orderModel = new OrderModel(odsCode, null, new OrderTaskList(), organisation.Name)
             {
                 DescriptionUrl = Url.Action(
                     nameof(OrderDescriptionController.NewOrderDescription),
                     typeof(OrderDescriptionController).ControllerName(),
-                    new { odsCode }),
+                    new { odsCode, option }),
                 BackLink = Url.Action(
-                    nameof(DashboardController.Organisation),
-                    typeof(DashboardController).ControllerName(),
-                    new { odsCode }),
+                    nameof(OrderController.ReadyToStart),
+                    typeof(OrderController).ControllerName(),
+                    new { odsCode, option }),
             };
 
             return View("Order", orderModel);
