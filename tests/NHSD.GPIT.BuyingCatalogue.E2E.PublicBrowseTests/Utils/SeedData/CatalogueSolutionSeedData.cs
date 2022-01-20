@@ -186,6 +186,19 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
                         },
                         Integrations = JsonSerializer.Serialize(Integrations.GetIntegrations),
                     },
+                    CatalogueItemContacts = new List<SupplierContact>
+                    {
+                        new()
+                        {
+                            Id = 5,
+                            SupplierId = 99999,
+                            FirstName = "Jan",
+                            LastName = "Bob",
+                            Email = "test@test.com",
+                            Department = "Soaps and Socks",
+                            LastUpdated = DateTime.UtcNow,
+                        },
+                    },
                     CatalogueItemCapabilities = new List<CatalogueItemCapability>
                     {
                         new() { CapabilityId = 43, LastUpdated = DateTime.UtcNow, StatusId = 1 },
