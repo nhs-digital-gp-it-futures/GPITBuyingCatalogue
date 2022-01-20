@@ -3,7 +3,7 @@ using NHSD.GPIT.BuyingCatalogue.EntityFramework.Users.Models;
 
 namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models
 {
-    public sealed class DefaultDeliveryDate : IEquatable<DefaultDeliveryDate>,  IAudited
+    public sealed class DefaultDeliveryDate : IEquatable<DefaultDeliveryDate>, IAudited
     {
         public int OrderId { get; init; }
 

@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using FluentAssertions;
 using Microsoft.EntityFrameworkCore;
+using NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.UrlGenerators;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Objects.Common;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Utils;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.TestBases;
@@ -76,7 +77,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.ManageSuppliers
 
             CommonActions.ClickLinkElement(
                 Objects.Admin.ManageSuppliers.ManageSuppliers.ManageSupplierContactsEditLink,
-                GenerateUrlFromMethod(typeof(SuppliersController), nameof(SuppliersController.EditSupplierContact), @params));
+                UrlGenerator.GenerateUrlFromMethod(typeof(SuppliersController), nameof(SuppliersController.EditSupplierContact), @params));
 
             CommonActions.PageLoadedCorrectGetIndex(
                     typeof(SuppliersController),

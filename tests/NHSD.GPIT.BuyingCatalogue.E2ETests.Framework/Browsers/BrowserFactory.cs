@@ -1,15 +1,12 @@
-﻿using System;
-using System.Diagnostics;
-using System.IO;
-using System.Net.Http;
+﻿using System.Diagnostics;
 using OpenQA.Selenium;
 using OpenQA.Selenium.Chrome;
 using OpenQA.Selenium.Firefox;
 using OpenQA.Selenium.Remote;
 
-namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils
+namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.Browsers
 {
-    internal sealed class BrowserFactory
+    public sealed class BrowserFactory
     {
         private const string DefaultHubUrl = "http://localhost:4444/wd/hub";
 

@@ -1,11 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Reflection;
-using System.Text;
-using System.Text.RegularExpressions;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Actions.Admin;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Actions.Authorization;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Actions.Common;
@@ -13,6 +9,7 @@ using NHSD.GPIT.BuyingCatalogue.E2ETests.Actions.Marketing;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Actions.Ordering;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Actions.PublicBrowse;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Database;
+using NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.UrlGenerators;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.MemoryCache;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.Session;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
@@ -192,63 +189,6 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.TestBases
             return Session.Clear();
         }
 
-        protected static string GenerateUrlFromMethod(
-            Type controllerType,
-            string methodName,
-            IDictionary<string, string> parameters = null,
-            IDictionary<string, string> queryParameters = null)
-        {
-            if (controllerType.BaseType != typeof(Controller))
-                throw new InvalidOperationException($"{nameof(controllerType)} is not a type of {nameof(Controller)}");
-
-            if (string.IsNullOrWhiteSpace(methodName))
-                throw new ArgumentNullException(nameof(methodName), $"{nameof(methodName)} should not be null");
-
-            var controllerRoute = controllerType.GetCustomAttribute<RouteAttribute>(false)?.Template ?? string.Empty;
-
-            var methodRoute = controllerType.GetMethods()
-                .FirstOrDefault(m => m.Name == methodName && m.GetCustomAttribute<HttpGetAttribute>(false) is not null)?
-                .GetCustomAttribute<HttpGetAttribute>(false)?.Template;
-
-            var absoluteRoute = methodRoute switch
-            {
-                null => new StringBuilder(controllerRoute.ToLowerInvariant()),
-                _ => methodRoute[0] != '~'
-                    ? new StringBuilder(controllerRoute.ToLowerInvariant() + "/" + methodRoute.ToLowerInvariant())
-                    : new StringBuilder(methodRoute[2..].ToLowerInvariant()),
-            };
-
-            if (parameters is not null && parameters.Any())
-            {
-                foreach (var param in parameters)
-                    absoluteRoute.Replace('{' + param.Key.ToLowerInvariant() + '}', param.Value);
-            }
-
-            if (queryParameters is not null && queryParameters.Any())
-            {
-                absoluteRoute.Append('?');
-                foreach (var param in queryParameters)
-                    absoluteRoute.Append($"{param.Key}={param.Value}&");
-
-                absoluteRoute.Remove(absoluteRoute.Length - 1, 1);
-            }
-
-            var absoluteRouteUrl = absoluteRoute.ToString();
-
-            if (absoluteRouteUrl.Contains('{'))
-            {
-                Regex rx = new Regex(@"{[^}]*}", RegexOptions.IgnoreCase);
-
-                var exceptionMessage = $"Not all Parameters in the URL String has been given values." +
-                    $" Theses Parameters are missing {string.Join(",", rx.Matches(absoluteRouteUrl).Select(m => m.Value))}";
-
-                throw new InvalidOperationException(exceptionMessage);
-            }
-
-            return new Uri("https://www.fake.com/" + absoluteRoute.ToString(), UriKind.Absolute)
-                .PathAndQuery[1..];
-        }
-
         protected void NavigateToUrl(string relativeUrl)
         {
             NavigateToUrl(new Uri(relativeUrl, UriKind.Relative));
@@ -266,7 +206,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.TestBases
             IDictionary<string, string> parameters = null,
             IDictionary<string, string> queryParameters = null)
         {
-            NavigateToUrl(new Uri(GenerateUrlFromMethod(controller, methodName, parameters, queryParameters), UriKind.Relative));
+            NavigateToUrl(new Uri(UrlGenerator.GenerateUrlFromMethod(controller, methodName, parameters, queryParameters), UriKind.Relative));
         }
     }
 }
