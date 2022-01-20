@@ -6,6 +6,7 @@ using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Orders;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.OrderDescription;
+using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.OrderTriage;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
 {
@@ -56,14 +57,14 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
         }
 
         [HttpGet("~/organisation/{odsCode}/order/neworder/description")]
-        public IActionResult NewOrderDescription(string odsCode)
+        public IActionResult NewOrderDescription(string odsCode, TriageOption? option = null)
         {
             var descriptionModel = new OrderDescriptionModel(odsCode, null)
             {
                 BackLink = Url.Action(
                             nameof(OrderController.NewOrder),
                             typeof(OrderController).ControllerName(),
-                            new { odsCode }),
+                            new { odsCode, option }),
             };
 
             return View("OrderDescription", descriptionModel);
