@@ -46,7 +46,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Orders
             await context.Orders.AddAsync(order);
             await context.SaveChangesAsync();
 
-            await service.DeleteOrderItem(order.CallOffId, orderItem2.CatalogueItemId);
+            await service.DeleteOrderItem(order.CallOffId, order.OrderingParty.OdsCode, orderItem2.CatalogueItemId);
 
             var updatedOrder = await context.Orders.FirstOrDefaultAsync();
 
@@ -72,7 +72,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Orders
             await context.Orders.AddAsync(order);
             await context.SaveChangesAsync();
 
-            await service.DeleteOrderItem(order.CallOffId, orderItem.CatalogueItemId);
+            await service.DeleteOrderItem(order.CallOffId, order.OrderingParty.OdsCode, orderItem.CatalogueItemId);
 
             var updatedOrder = await context.Orders.AsAsyncEnumerable().FirstOrDefaultAsync();
 
@@ -85,7 +85,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Orders
         [InMemoryDbAutoData]
         public static Task Create_NullModel_ThrowsException(OrderItemService service)
         {
-            return Assert.ThrowsAsync<ArgumentNullException>(() => service.Create(default, null));
+            return Assert.ThrowsAsync<ArgumentNullException>(() => service.Create(default, null, null));
         }
     }
 }

@@ -5,6 +5,6 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.Orders
 {
     public interface IOrderDescriptionService
     {
-        Task SetOrderDescription(CallOffId callOffId, string description);
+        Task SetOrderDescription(CallOffId callOffId, string odsCode, string description);
     }
 }

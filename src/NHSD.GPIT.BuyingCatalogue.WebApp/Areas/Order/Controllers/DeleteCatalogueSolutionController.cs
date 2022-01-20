@@ -32,7 +32,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
             CatalogueItemId catalogueItemId,
             string catalogueItemName)
         {
-            var order = await orderService.GetOrderThin(callOffId);
+            var order = await orderService.GetOrderThin(callOffId, odsCode);
 
             var model = new DeleteSolutionModel(odsCode, callOffId, catalogueItemId, catalogueItemName, order.Description)
             {
@@ -53,7 +53,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
             string catalogueItemName,
             DeleteSolutionModel model)
         {
-            await orderItemService.DeleteOrderItem(callOffId, catalogueItemId);
+            await orderItemService.DeleteOrderItem(callOffId, odsCode, catalogueItemId);
 
             return RedirectToAction(
                 nameof(CatalogueSolutionsController.Index),

@@ -42,7 +42,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Orders
 
             await context.SaveChangesAsync();
 
-            await service.SetDefaultDeliveryDate(order.CallOffId, order.DefaultDeliveryDates.First().CatalogueItemId, deliveryDate);
+            await service.SetDefaultDeliveryDate(order.CallOffId, order.OrderingParty.OdsCode, order.DefaultDeliveryDates.First().CatalogueItemId, deliveryDate);
 
             var actual = await context.Orders
                 .Include(o => o.DefaultDeliveryDates)

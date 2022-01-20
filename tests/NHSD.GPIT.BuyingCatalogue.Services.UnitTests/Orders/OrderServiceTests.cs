@@ -54,7 +54,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Orders
             await context.Orders.AddAsync(order);
             await context.SaveChangesAsync();
 
-            await service.DeleteOrder(order.CallOffId);
+            await service.DeleteOrder(order.CallOffId, order.OrderingParty.OdsCode);
 
             var updatedOrder = await context.Orders.FirstOrDefaultAsync();
 
