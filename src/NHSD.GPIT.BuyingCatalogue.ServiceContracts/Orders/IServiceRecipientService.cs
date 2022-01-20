@@ -6,7 +6,7 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.Orders
 {
     public interface IServiceRecipientService
     {
-        Task<List<ServiceRecipient>> GetAllOrderItemRecipients(CallOffId callOffId);
+        Task<List<ServiceRecipient>> GetAllOrderItemRecipients(CallOffId callOffId, string odsCode);
 
         Task<IReadOnlyDictionary<string, ServiceRecipient>> AddOrUpdateServiceRecipients(
             IEnumerable<ServiceRecipient> recipients);

@@ -40,8 +40,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
         {
             orderSessionService.ClearSession(callOffId);
 
-            var order = await orderService.GetOrderThin(callOffId);
-            var orderItems = await orderItemService.GetOrderItems(callOffId, CatalogueItemType.Solution);
+            var order = await orderService.GetOrderThin(callOffId, odsCode);
+            var orderItems = await orderItemService.GetOrderItems(callOffId, odsCode, CatalogueItemType.Solution);
 
             var model = new CatalogueSolutionsModel(odsCode, order, orderItems)
             {
@@ -57,7 +57,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
         [HttpGet("select/solution")]
         public async Task<IActionResult> SelectSolution(string odsCode, CallOffId callOffId)
         {
-            var order = await orderService.GetOrderThin(callOffId);
+            var order = await orderService.GetOrderThin(callOffId, odsCode);
 
             var state = orderSessionService.InitialiseStateForCreate(order, CatalogueItemType.Solution, null, null);
 
@@ -82,7 +82,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
                 return View(model);
             }
 
-            var existingOrder = await orderItemService.GetOrderItem(callOffId, model.SelectedSolutionId.GetValueOrDefault());
+            var existingOrder = await orderItemService.GetOrderItem(callOffId, odsCode, model.SelectedSolutionId.GetValueOrDefault());
 
             if (existingOrder is not null)
             {
@@ -263,7 +263,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
             state.AgreedPrice = model.OrderItem.AgreedPrice;
             state.ServiceRecipients = model.OrderItem.ServiceRecipients;
 
-            await orderItemService.Create(callOffId, state);
+            await orderItemService.Create(callOffId, odsCode, state);
 
             orderSessionService.ClearSession(callOffId);
 

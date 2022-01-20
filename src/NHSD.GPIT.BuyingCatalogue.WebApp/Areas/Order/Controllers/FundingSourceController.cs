@@ -28,7 +28,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
         [HttpGet]
         public async Task<IActionResult> FundingSource(string odsCode, CallOffId callOffId)
         {
-            var order = await orderService.GetOrderThin(callOffId);
+            var order = await orderService.GetOrderThin(callOffId, odsCode);
 
             var model = new FundingSourceModel(odsCode, callOffId, order.FundingSourceOnlyGms)
             {
@@ -49,7 +49,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
 
             var onlyGms = model.FundingSourceOnlyGms.EqualsIgnoreCase("Yes");
 
-            await fundingSourceService.SetFundingSource(callOffId, onlyGms);
+            await fundingSourceService.SetFundingSource(callOffId, odsCode, onlyGms);
 
             return RedirectToAction(
                 nameof(OrderController.Order),

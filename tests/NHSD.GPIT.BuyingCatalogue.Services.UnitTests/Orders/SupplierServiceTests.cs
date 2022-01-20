@@ -27,7 +27,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Orders
             SupplierService service)
         {
             return Assert.ThrowsAsync<ArgumentNullException>(
-                () => service.AddOrUpdateOrderSupplierContact(default, null));
+                () => service.AddOrUpdateOrderSupplierContact(default, null, null));
         }
     }
 }
