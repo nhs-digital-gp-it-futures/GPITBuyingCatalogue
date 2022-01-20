@@ -1,5 +1,4 @@
-﻿using System.ComponentModel.DataAnnotations;
-using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
+﻿using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.FundingSource

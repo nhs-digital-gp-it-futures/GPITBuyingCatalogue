@@ -1,5 +1,4 @@
-﻿using System;
-using AutoFixture.Xunit2;
+﻿using AutoFixture.Xunit2;
 using FluentValidation.TestHelper;
 using Moq;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Validation;
