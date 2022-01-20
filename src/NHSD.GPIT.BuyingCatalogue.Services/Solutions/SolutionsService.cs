@@ -75,7 +75,6 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
         public async Task<CatalogueItem> GetSolutionWithSupplierDetails(CatalogueItemId solutionId) =>
             await dbContext.CatalogueItems.AsNoTracking()
                 .Include(ci => ci.Solution)
-                    .ThenInclude(s => s.MarketingContacts)
                 .Include(ci => ci.Supplier)
                     .ThenInclude(s => s.SupplierContacts)
                 .Include(ci => ci.CatalogueItemContacts)

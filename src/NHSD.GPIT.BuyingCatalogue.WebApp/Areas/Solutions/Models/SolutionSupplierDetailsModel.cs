@@ -15,8 +15,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models
             Url = catalogueItem.Supplier?.SupplierUrl;
 
             Contacts = catalogueItem
-                .Solution
-                .MarketingContacts
+                .CatalogueItemContacts
                 .Select(mc => new SupplierContactViewModel(mc))
                 .ToList();
         }

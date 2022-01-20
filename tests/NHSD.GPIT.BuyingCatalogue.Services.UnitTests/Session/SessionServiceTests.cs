@@ -85,6 +85,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Session
             catalogueItem.CatalogueItemCapabilities.Clear();
             catalogueItem.CataloguePrices.Clear();
             catalogueItem.Supplier.CatalogueItems.Clear();
+            catalogueItem.CatalogueItemContacts.Clear();
 
             var service = new SessionService(GetAccessor());
 
