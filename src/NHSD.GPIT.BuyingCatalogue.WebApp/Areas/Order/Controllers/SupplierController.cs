@@ -105,7 +105,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
         [HttpGet("search/select")]
         public async Task<IActionResult> SupplierSearchSelect(string odsCode, CallOffId callOffId, [FromQuery] string search)
         {
-            var order = await orderService.GetOrderWithSupplier(callOffId);
+            var order = await orderService.GetOrderWithSupplier(callOffId, odsCode);
 
             if (order?.Supplier is not null)
             {

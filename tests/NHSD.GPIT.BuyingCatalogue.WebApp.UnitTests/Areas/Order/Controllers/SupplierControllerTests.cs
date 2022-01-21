@@ -223,7 +223,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers
             SupplierController controller)
         {
             order.Supplier = supplier;
-            orderServiceMock.Setup(_ => _.GetOrderWithSupplier(callOffId))
+            orderServiceMock.Setup(_ => _.GetOrderWithSupplier(callOffId, odsCode))
                 .ReturnsAsync(order);
 
             var result = await controller.SupplierSearchSelect(odsCode, callOffId, search);
