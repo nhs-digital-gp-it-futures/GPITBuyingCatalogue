@@ -1,4 +1,6 @@
-﻿using System.Linq;
+﻿using System.Collections.Generic;
+using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
 using AutoFixture;
 using AutoFixture.AutoMoq;
@@ -6,6 +8,7 @@ using AutoFixture.Idioms;
 using AutoFixture.Xunit2;
 using FluentAssertions;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.AspNetCore.Routing;
@@ -20,19 +23,13 @@ using NHSD.GPIT.BuyingCatalogue.ServiceContracts.TaskList;
 using NHSD.GPIT.BuyingCatalogue.Test.Framework.AutoFixtureCustomisations;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.Order;
+using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.Shared;
 using Xunit;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers
 {
     public static class OrderControllerTests
     {
-        [Fact]
-        public static void ClassIsCorrectlyDecorated()
-        {
-            typeof(OrderController).Should().BeDecoratedWith<AuthorizeAttribute>();
-            typeof(OrderController).Should().BeDecoratedWith<AreaAttribute>(a => a.RouteValue == "Order");
-        }
-
         [Fact]
         public static void Constructors_VerifyGuardClauses()
         {
@@ -144,6 +141,69 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers
             var result = controller.ReadyToStart(odsCode);
 
             result.As<ViewResult>().Should().NotBeNull();
+        }
+
+        [Theory]
+        [CommonAutoData]
+        public static async Task Get_SelectOrganisation_ReturnsView(
+            [Frozen] Mock<IOrganisationsService> organisationService,
+            List<Organisation> organisations,
+            OrderController controller)
+        {
+            var user = new ClaimsPrincipal(new ClaimsIdentity(
+                new Claim[]
+                {
+                    new("organisationFunction", "Buyer"),
+                    new("primaryOrganisationOdsCode", organisations.First().OdsCode),
+                    new("secondaryOrganisationOdsCode", organisations.Last().OdsCode),
+                },
+                "mock"));
+
+            controller.ControllerContext =
+                new ControllerContext
+                {
+                    HttpContext = new DefaultHttpContext { User = user },
+                };
+
+            organisationService.Setup(s => s.GetOrganisationsByOdsCodes(It.IsAny<string[]>())).ReturnsAsync(organisations);
+
+            var expected = new SelectOrganisationModel(organisations.First().OdsCode, organisations)
+            {
+                Title = "Which organisation are you ordering for?",
+            };
+
+            var result = (await controller.SelectOrganisation(organisations.First().OdsCode)).As<ViewResult>();
+
+            result.Should().NotBeNull();
+            result.Model.Should().BeEquivalentTo(expected, opt => opt.Excluding(m => m.BackLink));
+        }
+
+        [Theory]
+        [CommonAutoData]
+        public static void Post_SelectOrganisation_InvalidModel_ReturnsView(
+            string odsCode,
+            SelectOrganisationModel model,
+            OrderController controller)
+        {
+            controller.ModelState.AddModelError("some-key", "some-error");
+
+            var result = controller.SelectOrganisation(odsCode, model).As<ViewResult>();
+
+            result.Should().NotBeNull();
+            result.Model.Should().BeEquivalentTo(model, opt => opt.Excluding(m => m.BackLink));
+        }
+
+        [Theory]
+        [CommonAutoData]
+        public static void Post_SelectOrganisation_RedirectsToNewOrder(
+            string odsCode,
+            SelectOrganisationModel model,
+            OrderController controller)
+        {
+            var result = controller.SelectOrganisation(odsCode, model).As<RedirectToActionResult>();
+
+            result.Should().NotBeNull();
+            result.ActionName.Should().Be(nameof(OrderController.NewOrder));
         }
     }
 }

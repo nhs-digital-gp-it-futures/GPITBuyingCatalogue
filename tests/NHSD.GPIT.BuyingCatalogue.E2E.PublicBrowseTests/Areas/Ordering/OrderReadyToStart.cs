@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 using FluentAssertions;
-using NHSD.GPIT.BuyingCatalogue.E2ETests.Objects.Ordering;
+using NHSD.GPIT.BuyingCatalogue.E2ETests.Objects.Common;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Utils;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.TestBases;
 using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
@@ -34,13 +34,13 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering
         {
             CommonActions.PageTitle().Should().BeEquivalentTo("Before you start an order".FormatForComparison());
             CommonActions.GoBackLinkDisplayed().Should().BeTrue();
-            CommonActions.ElementIsDisplayed(OrderReadyToStartObjects.StartOrderButton).Should().BeTrue();
+            CommonActions.ElementIsDisplayed(CommonSelectors.SubmitButton).Should().BeTrue();
         }
 
         [Fact]
         public void ReadyToStart_ClickContinue_RedirectsToCorrectPage()
         {
-            CommonActions.ClickLinkElement(OrderReadyToStartObjects.StartOrderButton);
+            CommonActions.ClickSave();
 
             CommonActions.PageLoadedCorrectGetIndex(
                 typeof(OrderController),
