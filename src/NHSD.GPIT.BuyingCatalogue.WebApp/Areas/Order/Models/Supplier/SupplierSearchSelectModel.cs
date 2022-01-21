@@ -9,12 +9,15 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.Supplier
         {
             Title = "Suppliers found";
             OdsCode = odsCode;
+            CallOffId = callOffId;
             Suppliers = suppliers;
         }
 
         public SupplierSearchSelectModel()
         {
         }
+
+        public CallOffId CallOffId { get; set; }
 
         public List<EntityFramework.Catalogue.Models.Supplier> Suppliers { get; set; }
 
