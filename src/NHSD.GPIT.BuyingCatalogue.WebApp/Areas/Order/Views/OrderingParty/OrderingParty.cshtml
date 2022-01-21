@@ -1,6 +1,6 @@
 ﻿@model NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.OrderingParty.OrderingPartyModel;
 @{
-    ViewBag.Title = Model.Title;
+    ViewBag.Title = "Call-off Ordering Party contact details";
 }
 
 <div data-test-id="ordering-party-page">
@@ -8,57 +8,28 @@
     <div class="nhsuk-grid-row">
         <div class="nhsuk-grid-column-two-thirds">
             <form method="post">
-                <input type="hidden" asp-for="@Model.BackLink" />
+               <input type="hidden" asp-for="@Model.BackLink" />
                 <input type="hidden" asp-for="@Model.BackLinkText" />
-                <input type="hidden" asp-for="@Model.OdsCode" />
-                <input type="hidden" asp-for="@Model.Title" />
-                <input type="hidden" asp-for="@Model.OrganisationName" />
                 <nhs-validation-summary />
                 <nhs-page-title title="@ViewBag.Title"
-                                advice="Check the organisation information and edit details for the primary contact for this order." />
+                                advice="Provide information about the primary contact for this order."
+								caption = "Order @Model.CallOffId"/>
 
-                <nhs-summary-list>
-                    <nhs-summary-list-row label-text="Organisation name">
-                        <p data-test-id="organisation-name">
-                            @Model.OrganisationName
-                        </p>
-                    </nhs-summary-list-row>
-                    <nhs-summary-list-row label-text="ODS code">
-                        <p data-test-id="organisation-ods-code">
-                            @Model.OdsCode
-                        </p>
-                    </nhs-summary-list-row>
-                    <nhs-summary-list-row label-text="Organisation address">
-                        <div data-test-id="organisation-address">
-                            <vc:nhs-address address="@Model.Address" />
-                        </div>
-                    </nhs-summary-list-row>
-                </nhs-summary-list>
-                <input type="hidden" asp-for="@Model.Address.Line1" />
-                <input type="hidden" asp-for="@Model.Address.Line2" />
-                <input type="hidden" asp-for="@Model.Address.Line3" />
-                <input type="hidden" asp-for="@Model.Address.Line4" />
-                <input type="hidden" asp-for="@Model.Address.Line5" />
-                <input type="hidden" asp-for="@Model.Address.Town" />
-                <input type="hidden" asp-for="@Model.Address.County" />
-                <input type="hidden" asp-for="@Model.Address.Postcode" />
-                <input type="hidden" asp-for="@Model.Address.County" />
-                <div data-test-id="primary-contact-fields">
-                    <h2 data-test-id="primary-contact-details-heading">Primary contact’s details</h2>
-                    <div data-test-id="multi-question-questions">
-                        <nhs-input asp-for="@Model.Contact.FirstName"
-                                              label-text="First name" />
-                        <nhs-input asp-for="@Model.Contact.LastName"
-                                              label-text="Last name" />
-                        <nhs-input asp-for="@Model.Contact.EmailAddress"
-                                              label-text="Email address" />
-                        <nhs-input asp-for="@Model.Contact.TelephoneNumber"
-                                              label-text="Telephone number" />
-                    </div>
-                    <div data-test-id="save-button">
-                        <nhs-submit-button />
-                    </div>
-                </div>
+				<nhs-fieldset-form-container asp-for="@Model"
+											label-text="Primary contact details"
+											label-hint="Who is the best person to contact about this order?">
+					<nhs-input asp-for="@Model.Contact.FirstName"
+                                            label-text="First name" />
+                    <nhs-input asp-for="@Model.Contact.LastName"
+                                            label-text="Last name" />
+					<nhs-input asp-for="@Model.Contact.TelephoneNumber"
+											label-text="Telephone number"
+											input-width="Ten"/>
+                    <nhs-input asp-for="@Model.Contact.EmailAddress"
+                                            label-text="Email address" />
+				</nhs-fieldset-form-container>
+				<br/>
+                <nhs-submit-button />
             </form>
         </div>
     </div>

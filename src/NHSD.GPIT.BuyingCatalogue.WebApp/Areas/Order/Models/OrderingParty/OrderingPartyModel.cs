@@ -1,5 +1,4 @@
-﻿using NHSD.GPIT.BuyingCatalogue.EntityFramework.Addresses.Models;
-using NHSD.GPIT.BuyingCatalogue.EntityFramework.Organisations.Models;
+﻿using NHSD.GPIT.BuyingCatalogue.EntityFramework.Organisations.Models;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Models;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.OrderingParty
@@ -10,12 +9,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.OrderingParty
         {
         }
 
-        public OrderingPartyModel(string odsCode, EntityFramework.Ordering.Models.Order order, Organisation organisation)
+        public OrderingPartyModel(string odsCode, EntityFramework.Ordering.Models.Order order)
         {
-            Title = $"Call-off Ordering Party information for {order.CallOffId}";
             OdsCode = odsCode;
-            OrganisationName = organisation.Name;
-            Address = organisation.Address;
+            CallOffId = order.CallOffId.ToString();
             Contact = new PrimaryContactModel
             {
                 FirstName = order.OrderingPartyContact?.FirstName,
@@ -25,10 +22,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.OrderingParty
             };
         }
 
-        public string OrganisationName { get; set; }
-
-        public Address Address { get; set; }
-
         public PrimaryContactModel Contact { get; set; }
+
+        public string CallOffId { get; set; }
     }
 }
