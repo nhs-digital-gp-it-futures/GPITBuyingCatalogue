@@ -18,18 +18,15 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
     {
         private readonly IOrderService orderService;
         private readonly IOrderingPartyService orderingPartyService;
-        private readonly IOrganisationsService organisationService;
         private readonly IContactDetailsService contactDetailsService;
 
         public OrderingPartyController(
             IOrderService orderService,
             IOrderingPartyService orderingPartyService,
-            IOrganisationsService organisationService,
             IContactDetailsService contactDetailsService)
         {
             this.orderService = orderService ?? throw new ArgumentNullException(nameof(orderService));
             this.orderingPartyService = orderingPartyService ?? throw new ArgumentNullException(nameof(orderingPartyService));
-            this.organisationService = organisationService ?? throw new ArgumentNullException(nameof(organisationService));
             this.contactDetailsService = contactDetailsService ?? throw new ArgumentNullException(nameof(contactDetailsService));
         }
 
@@ -37,9 +34,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
         public async Task<IActionResult> OrderingParty(string odsCode, CallOffId callOffId)
         {
             var order = await orderService.GetOrderThin(callOffId, odsCode);
-            var organisation = await organisationService.GetOrganisationByOdsCode(odsCode);
 
-            var model = new OrderingPartyModel(odsCode, order, organisation)
+            var model = new OrderingPartyModel(odsCode, order)
             {
                 BackLink = Url.Action(
                     nameof(OrderController.Order),
