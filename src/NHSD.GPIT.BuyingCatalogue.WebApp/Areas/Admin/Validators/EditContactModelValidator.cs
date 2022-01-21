@@ -16,6 +16,29 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Validators
         {
             this.suppliersService = suppliersService;
 
+            RuleFor(m => m.FirstName)
+                .NotEmpty()
+                .WithMessage("Enter a first name");
+
+            RuleFor(m => m.LastName)
+                .NotEmpty()
+                .WithMessage("Enter a last name");
+
+            RuleFor(m => m.PhoneNumber)
+                .NotEmpty()
+                .WithMessage("Enter a phone number");
+
+            RuleFor(m => m.Department)
+                .NotEmpty()
+                .WithMessage("Enter a department name");
+
+            RuleFor(m => m.Email)
+                .Cascade(CascadeMode.Stop)
+                .NotEmpty()
+                .WithMessage("Enter an email address")
+                .EmailAddress()
+                .WithMessage("Enter an email address in the correct format, like name@example.com");
+
             RuleFor(m => m)
                 .MustAsync(NotBeADuplicateContact)
                 .WithMessage("A contact with these contact details already exists for this supplier")

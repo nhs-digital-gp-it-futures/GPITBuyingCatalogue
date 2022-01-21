@@ -6,7 +6,7 @@ using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Validation;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.SupplierModels;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Validation;
 
-namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Validators
+namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Validators.Suppliers
 {
     public class EditSupplierDetailsModelValidator : AbstractValidator<EditSupplierDetailsModel>
     {
@@ -17,6 +17,14 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Validators
             ISuppliersService suppliersService)
         {
             this.suppliersService = suppliersService;
+
+            RuleFor(m => m.SupplierName)
+                .NotEmpty()
+                .WithMessage("Enter a supplier name");
+
+            RuleFor(m => m.SupplierLegalName)
+                .NotEmpty()
+                .WithMessage("Enter a supplier legal name");
 
             RuleFor(m => m.SupplierWebsite)
                 .IsValidUrl(urlValidator)

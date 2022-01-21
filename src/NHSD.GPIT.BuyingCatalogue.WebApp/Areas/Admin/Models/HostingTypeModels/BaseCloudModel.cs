@@ -27,7 +27,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.HostingTypeModels
 
         public string RequiresHscn { get; set; }
 
-        [Required(ErrorMessage = "Enter a summary")]
         [StringLength(500)]
         public string Summary { get; set; }
 

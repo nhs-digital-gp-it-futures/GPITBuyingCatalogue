@@ -19,7 +19,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.ClientApplicationT
             Description = ClientApplication?.NativeDesktopOperatingSystemsDescription;
         }
 
-        [Required(ErrorMessage = "Enter supported operating systems information")]
         [StringLength(1000)]
         public string Description { get; set; }
     }

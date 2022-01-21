@@ -13,6 +13,22 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators
     public static class DescriptionModelValidatorTests
     {
         [Theory]
+        [CommonInlineAutoData(null)]
+        [CommonInlineAutoData("")]
+        public static void Validate_SummaryNullOrEmpty_SetsModelError(
+            string summary,
+            DescriptionModel model,
+            DescriptionModelValidator validator)
+        {
+            model.Summary = summary;
+
+            var result = validator.TestValidate(model);
+
+            result.ShouldHaveValidationErrorFor(m => m.Summary)
+                .WithErrorMessage("Enter a summary");
+        }
+
+        [Theory]
         [CommonAutoData]
         public static void Validate_NoLink_DoesNotValidate(
             [Frozen] Mock<IUrlValidator> urlValidator,

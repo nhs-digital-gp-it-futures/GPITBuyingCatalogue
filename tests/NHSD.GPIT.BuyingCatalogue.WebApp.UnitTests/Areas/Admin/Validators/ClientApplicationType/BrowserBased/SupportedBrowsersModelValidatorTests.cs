@@ -1,13 +1,40 @@
 ﻿using FluentValidation.TestHelper;
 using NHSD.GPIT.BuyingCatalogue.Test.Framework.AutoFixtureCustomisations;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.ClientApplicationTypeModels.BrowserBasedModels;
-using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Validators;
+using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Validators.ClientApplicationType.BrowserBased;
 using Xunit;
 
-namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators
+namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators.ClientApplicationType.BrowserBased
 {
     public static class SupportedBrowsersModelValidatorTests
     {
+        [Theory]
+        [CommonInlineAutoData(null)]
+        [CommonInlineAutoData("")]
+        public static void Validate_MobileResponsiveNullOrEmpty_SetsModelError(
+            string pluginsRequired,
+            SupportedBrowsersModel model,
+            SupportedBrowsersModelValidator validator)
+        {
+            model.MobileResponsive = pluginsRequired;
+
+            var result = validator.TestValidate(model);
+
+            result.ShouldHaveValidationErrorFor(m => m.MobileResponsive)
+                .WithErrorMessage("Select yes if your Catalogue Solution is mobile responsive");
+        }
+
+        [Theory]
+        [CommonAutoData]
+        public static void Validate_Valid_NoModelError(
+            SupportedBrowsersModel model,
+            SupportedBrowsersModelValidator validator)
+        {
+            var result = validator.TestValidate(model);
+
+            result.ShouldNotHaveAnyValidationErrors();
+        }
+
         [Theory]
         [CommonAutoData]
         public static void Validate_Incomplete_HasError(
