@@ -66,10 +66,10 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering
             CommonActions.ErrorSummaryDisplayed().Should().BeTrue();
             CommonActions.ErrorSummaryLinksExist().Should().BeTrue();
 
-            CommonActions.ElementShowingCorrectErrorMessage("Contact.FirstName", "First Name Required").Should().BeTrue();
-            CommonActions.ElementShowingCorrectErrorMessage("Contact.LastName", "Last Name Required").Should().BeTrue();
-            CommonActions.ElementShowingCorrectErrorMessage("Contact.EmailAddress", "Email Address Required").Should().BeTrue();
-            CommonActions.ElementShowingCorrectErrorMessage("Contact.TelephoneNumber", "Telephone Number Required").Should().BeTrue();
+            CommonActions.ElementShowingCorrectErrorMessage("Contact.FirstName", "Enter a first name").Should().BeTrue();
+            CommonActions.ElementShowingCorrectErrorMessage("Contact.LastName", "Enter a last name").Should().BeTrue();
+            CommonActions.ElementShowingCorrectErrorMessage("Contact.EmailAddress", "Enter an email address").Should().BeTrue();
+            CommonActions.ElementShowingCorrectErrorMessage("Contact.TelephoneNumber", "Enter a telephone number").Should().BeTrue();
         }
 
         [Fact]
@@ -89,7 +89,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering
             CommonActions.ErrorSummaryDisplayed().Should().BeTrue();
             CommonActions.ErrorSummaryLinksExist().Should().BeTrue();
 
-            CommonActions.ElementShowingCorrectErrorMessage("Contact.EmailAddress", "The EmailAddress field is not a valid e-mail address.")
+            CommonActions.ElementShowingCorrectErrorMessage("Contact.EmailAddress", "Enter an email address in the correct format, like name@example.com")
                 .Should().BeTrue();
         }
 
