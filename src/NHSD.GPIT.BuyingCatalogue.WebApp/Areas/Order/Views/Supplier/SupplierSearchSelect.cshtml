@@ -11,17 +11,13 @@
             <form method="post">
                 <input type="hidden" asp-for="@Model.BackLink" />
                 <input type="hidden" asp-for="@Model.BackLinkText" />
-                <input type="hidden" asp-for="@Model.OdsCode" />
                 <input type="hidden" asp-for="@Model.Title" />
                 <nhs-validation-summary RadioId="SelectedSupplierId" />
                 <nhs-page-title title="@ViewBag.Title"
-                                advice="These are the suppliers that match the search terms you provided. Select the one you're looking for." />
-                <nhs-inset-text>
-                    <p>Once saved, you'll not be able to change the supplier for this order. To change the supplier, you'd need to start a new order.</p>
-                </nhs-inset-text>
+                                caption="Order @Model.CallOffId"/>
 
                 <nhs-fieldset-form-label asp-for="@Model"
-                                         label-text="Select supplier">
+                                         label-hint="Select the supplier you want to order from.">
                     <nhs-radio-buttons asp-for="SelectedSupplierId"
                                        values="@Model.Suppliers"
                                        value-name="Id"

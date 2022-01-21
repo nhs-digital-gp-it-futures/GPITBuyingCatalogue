@@ -98,7 +98,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering
                     typeof(SupplierController),
                     nameof(SupplierController.SupplierSearchSelect)).Should().BeTrue();
 
-            CommonActions.PageTitle().Should().BeEquivalentTo("Suppliers found".FormatForComparison());
+            CommonActions.PageTitle().Should().BeEquivalentTo($"Suppliers found - Order {CallOffId}".FormatForComparison());
 
             CommonActions.ElementIsDisplayed(Objects.Ordering.SupplierInformation.SupplierRadioContainer);
 
@@ -117,7 +117,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering
                     typeof(SupplierController),
                     nameof(SupplierController.SupplierSearchSelect)).Should().BeTrue();
 
-            CommonActions.PageTitle().Should().BeEquivalentTo("Suppliers found".FormatForComparison());
+            CommonActions.PageTitle().Should().BeEquivalentTo($"Suppliers found - Order {CallOffId}".FormatForComparison());
 
             CommonActions.ElementIsDisplayed(Objects.Ordering.SupplierInformation.SupplierRadioContainer);
 
