@@ -5,7 +5,6 @@ using Microsoft.EntityFrameworkCore;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Utils;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.TestBases;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
-using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers;
 using Xunit;
 
@@ -36,15 +35,9 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering
         [Fact]
         public void OrderingPartyInformation_AllSectionsDisplayed()
         {
-            CommonActions.PageTitle()
-                .Should()
-                .BeEquivalentTo($"Call-off Ordering Party information for {CallOffId}".FormatForComparison());
             CommonActions.GoBackLinkDisplayed().Should().BeTrue();
             CommonActions.SaveButtonDisplayed().Should().BeTrue();
 
-            CommonActions.ElementIsDisplayed(Objects.Ordering.CalloffPartyInformation.OrganisationName).Should().BeTrue();
-            CommonActions.ElementIsDisplayed(Objects.Ordering.CalloffPartyInformation.OrganisationOdsCode).Should().BeTrue();
-            CommonActions.ElementIsDisplayed(Objects.Ordering.CalloffPartyInformation.OrganisationAddress).Should().BeTrue();
             CommonActions.ElementIsDisplayed(Objects.Ordering.CalloffPartyInformation.FirstNameInput).Should().BeTrue();
             CommonActions.ElementIsDisplayed(Objects.Ordering.CalloffPartyInformation.LastNameInput).Should().BeTrue();
             CommonActions.ElementIsDisplayed(Objects.Ordering.CalloffPartyInformation.EmailAddressInput).Should().BeTrue();
