@@ -10,7 +10,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.OrderTriage
 
         public IEnumerable<SelectListItem> TriageOptions => new[]
         {
-            new SelectListItem("Under £40k", TriageOption.Between40kTo250k.ToString()),
+            new SelectListItem("Under £40k", TriageOption.Under40k.ToString()),
             new SelectListItem("£40k to £250k", TriageOption.Between40kTo250k.ToString()),
             new SelectListItem("Over £250k", TriageOption.Over250k.ToString()),
             new SelectListItem("I'm not sure", TriageOption.NotSure.ToString()),
