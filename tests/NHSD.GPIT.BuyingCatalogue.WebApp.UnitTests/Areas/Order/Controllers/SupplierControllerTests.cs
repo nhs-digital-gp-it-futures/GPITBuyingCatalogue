@@ -213,6 +213,29 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers
 
         [Theory]
         [CommonAutoData]
+        public static async Task Get_SupplierSearchSelect_ExistingSupplierOnOrder_ReturnsRedirectResult(
+            string odsCode,
+            CallOffId callOffId,
+            string search,
+            Supplier supplier,
+            EntityFramework.Ordering.Models.Order order,
+            [Frozen] Mock<IOrderService> orderServiceMock,
+            SupplierController controller)
+        {
+            order.Supplier = supplier;
+            orderServiceMock.Setup(_ => _.GetOrderWithSupplier(callOffId))
+                .ReturnsAsync(order);
+
+            var result = await controller.SupplierSearchSelect(odsCode, callOffId, search);
+
+            var redirectResult = result.As<RedirectToActionResult>();
+            redirectResult.Should().NotBeNull();
+            redirectResult.ActionName.Should().Be(nameof(SupplierController.Supplier));
+            redirectResult.ControllerName.Should().Be(typeof(SupplierController).ControllerName());
+        }
+
+        [Theory]
+        [CommonAutoData]
         public static async Task Post_SupplierSearchSelect_ValidModelState_AddsSupplier_RedirectsCorrectly(
             string odsCode,
             CallOffId callOffId,

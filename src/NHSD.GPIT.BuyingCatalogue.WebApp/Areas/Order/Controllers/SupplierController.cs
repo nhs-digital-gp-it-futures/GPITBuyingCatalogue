@@ -77,7 +77,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
             if (order.Supplier is not null)
             {
                 return RedirectToAction(
-                    nameof(Supplier),
+                    nameof(SupplierController.Supplier),
                     typeof(SupplierController).ControllerName(),
                     new { odsCode, callOffId });
             }
@@ -105,6 +105,16 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
         [HttpGet("search/select")]
         public async Task<IActionResult> SupplierSearchSelect(string odsCode, CallOffId callOffId, [FromQuery] string search)
         {
+            var order = await orderService.GetOrderWithSupplier(callOffId);
+
+            if (order?.Supplier is not null)
+            {
+                return RedirectToAction(
+                    nameof(SupplierController.Supplier),
+                    typeof(SupplierController).ControllerName(),
+                    new { odsCode, callOffId });
+            }
+
             var backlink = Url.Action(nameof(SupplierSearch), new { odsCode, callOffId });
 
             if (string.IsNullOrWhiteSpace(search))
