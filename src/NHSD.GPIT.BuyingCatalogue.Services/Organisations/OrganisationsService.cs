@@ -101,7 +101,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Organisations
             if (organisation.RelatedOrganisationOrganisations.Any(ro => ro.RelatedOrganisationId == relatedOrganisationId))
                 return;
 
-            dbContext.RelatedOrganisations.Add(new RelatedOrganisation { OrganisationId = organisationId, RelatedOrganisationId = relatedOrganisationId });
+            dbContext.RelatedOrganisations.Add(new RelatedOrganisation(organisationId, relatedOrganisationId));
 
             await dbContext.SaveChangesAsync();
         }

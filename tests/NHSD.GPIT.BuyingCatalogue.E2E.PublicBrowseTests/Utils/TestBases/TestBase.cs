@@ -134,6 +134,14 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.TestBases
             AuthorizationPages.LoginActions.Login(user, DefaultPassword);
         }
 
+        internal void BuyerLogin(string buyerEmail)
+        {
+            if (!AuthorizationPages.LoginActions.EmailAddressInputDisplayed())
+                return;
+
+            AuthorizationPages.LoginActions.Login(buyerEmail, DefaultPassword);
+        }
+
         internal async Task SetValuesToSession(Dictionary<string, object> sessionValues)
         {
             foreach (var (key, value) in sessionValues)
