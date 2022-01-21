@@ -10,8 +10,10 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
 {
     internal static class UserSeedData
     {
+        internal const string AliceEmail = "AliceSmith@email.com";
         internal const int BobId = 2;
         internal const int SueId = 3;
+        internal const int AliceId = 4;
 
         private const string TestPassword = "Th1sIsP4ssword!";
 
@@ -58,6 +60,31 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
                 PrimaryRoleId = "RO98",
                 CatalogueAgreementSigned = false,
                 LastUpdated = DateTime.UtcNow,
+            };
+
+            var aliceOrganisation = new Organisation
+            {
+                Id = 83,
+                Name = "NHS Leeds CCG",
+                Address = new Address
+                {
+                    Line1 = "SUITES 2 - 4 WIRA HOUSE",
+                    Line2 = "RING ROAD",
+                    Line3 = "WEST PARK",
+                    Town = "LEEDS",
+                    County = "WEST YORKSHIRE",
+                    Postcode = "LS16 6EB",
+                    Country = "ENGLAND",
+                },
+                OdsCode = "15F",
+                PrimaryRoleId = "RO98",
+                CatalogueAgreementSigned = false,
+                LastUpdated = DateTime.UtcNow,
+                RelatedOrganisationOrganisations = new HashSet<RelatedOrganisation>
+                {
+                    new RelatedOrganisation(83, 2),
+                    new RelatedOrganisation(83, 3),
+                },
             };
 
             // Organisations
@@ -153,7 +180,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
                 new Organisation { Id = 192, Name = "NHS Kent and Medway Commissioning Support Unit", Address = new Address { Line1 = "KENT HOUSE", Line2 = "81 STATION ROAD", Town = "ASHFORD", County = "KENT", Postcode = "TN23 1PP", Country = "ENGLAND" }, OdsCode = "0AM", PrimaryRoleId = "RO98", CatalogueAgreementSigned = false, LastUpdated = DateTime.UtcNow },
                 new Organisation { Id = 81, Name = "NHS Kernow CCG", Address = new Address { Line1 = "SEDGEMOOR CENTRE", Line2 = "PRIORY ROAD", Town = "ST. AUSTELL", Postcode = "PL25 5AS", Country = "ENGLAND" }, OdsCode = "11N", PrimaryRoleId = "RO98", CatalogueAgreementSigned = false, LastUpdated = DateTime.UtcNow },
                 new Organisation { Id = 82, Name = "NHS Knowsley CCG", Address = new Address { Line1 = "NUTGROVE VILLA", Line2 = "WESTMORLAND ROAD", Line3 = "HUYTON", Town = "LIVERPOOL", Postcode = "L36 6GA", Country = "ENGLAND" }, OdsCode = "01J", PrimaryRoleId = "RO98", CatalogueAgreementSigned = false, LastUpdated = DateTime.UtcNow },
-                new Organisation { Id = 83, Name = "NHS Leeds CCG", Address = new Address { Line1 = "SUITES 2 - 4 WIRA HOUSE", Line2 = "RING ROAD", Line3 = "WEST PARK", Town = "LEEDS", County = "WEST YORKSHIRE", Postcode = "LS16 6EB", Country = "ENGLAND" }, OdsCode = "15F", PrimaryRoleId = "RO98", CatalogueAgreementSigned = false, LastUpdated = DateTime.UtcNow },
+                aliceOrganisation,
                 new Organisation { Id = 84, Name = "NHS Leeds North CCG", Address = new Address { Line1 = "LEAFIELD HOUSE", Line2 = "107-109 KING LANE", Town = "LEEDS", County = "WEST YORKSHIRE", Postcode = "LS17 5BP", Country = "ENGLAND" }, OdsCode = "02V", PrimaryRoleId = "RO98", CatalogueAgreementSigned = false, LastUpdated = DateTime.UtcNow },
                 new Organisation { Id = 85, Name = "NHS Leeds West CCG", Address = new Address { Line1 = "UNITS 2-4 WIRA BUSINESS PARK", Line2 = "RING ROAD", Line3 = "WEST PARK", Town = "LEEDS", County = "WEST YORKSHIRE", Postcode = "LS16 6EB", Country = "ENGLAND" }, OdsCode = "03C", PrimaryRoleId = "RO98", CatalogueAgreementSigned = false, LastUpdated = DateTime.UtcNow },
                 new Organisation { Id = 86, Name = "NHS Leicester City CCG", Address = new Address { Line1 = "ST JOHNS HOUSE", Line2 = "30 EAST STREET", Town = "LEICESTER", Postcode = "LE1 6NB", Country = "ENGLAND" }, OdsCode = "04C", PrimaryRoleId = "RO98", CatalogueAgreementSigned = false, LastUpdated = DateTime.UtcNow },
@@ -309,6 +336,27 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
             buyUser.PasswordHash = new PasswordHasher<AspNetUser>().HashPassword(buyUser, TestPassword);
 
             context.Add(buyUser);
+
+            var buyProxyUser = new AspNetUser
+            {
+                Id = AliceId,
+                Email = AliceEmail,
+                NormalizedEmail = AliceEmail.ToUpperInvariant(),
+                UserName = AliceEmail,
+                NormalizedUserName = AliceEmail.ToUpperInvariant(),
+                Disabled = false,
+                FirstName = "Alice",
+                LastName = "Smith",
+                EmailConfirmed = true,
+                CatalogueAgreementSigned = true,
+                OrganisationFunction = "Buyer",
+                PrimaryOrganisation = aliceOrganisation,
+                PrimaryOrganisationId = aliceOrganisation.Id,
+                SecurityStamp = Guid.NewGuid().ToString(),
+            };
+            buyProxyUser.PasswordHash = new PasswordHasher<AspNetUser>().HashPassword(buyProxyUser, TestPassword);
+
+            context.Add(buyProxyUser);
         }
     }
 }

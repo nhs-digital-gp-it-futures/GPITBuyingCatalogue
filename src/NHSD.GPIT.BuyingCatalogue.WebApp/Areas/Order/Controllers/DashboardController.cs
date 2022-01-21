@@ -7,6 +7,7 @@ using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Orders;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Organisations;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.Dashboard;
+using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.Shared;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
 {

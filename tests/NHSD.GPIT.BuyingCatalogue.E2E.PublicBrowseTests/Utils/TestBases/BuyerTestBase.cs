@@ -16,5 +16,18 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.TestBases
         {
             BuyerLogin();
         }
+
+        protected BuyerTestBase(
+            LocalWebApplicationFactory factory,
+            Type controller,
+            string methodName,
+            IDictionary<string, string> parameters,
+            string buyerEmail)
+            : base(
+                  factory,
+                  GenerateUrlFromMethod(controller, methodName, parameters))
+        {
+            BuyerLogin(buyerEmail);
+        }
     }
 }
