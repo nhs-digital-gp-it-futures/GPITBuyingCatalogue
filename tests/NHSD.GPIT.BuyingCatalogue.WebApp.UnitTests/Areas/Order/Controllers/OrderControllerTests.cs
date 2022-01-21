@@ -192,7 +192,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers
             result.Should().NotBeNull();
             result.Model.Should().BeEquivalentTo(model, opt => opt.Excluding(m => m.BackLink));
         }
-        
+
         [Theory]
         [CommonAutoData]
         public static void Post_SelectOrganisation_RedirectsToNewOrder(

@@ -130,8 +130,16 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.TestBases
                 return;
 
             using var context = GetEndToEndDbContext();
-            var user = context.AspNetUsers.First(s => s.OrganisationFunction == "Buyer").Email;
+            var user = context.AspNetUsers.First(s => s.OrganisationFunction == "Buyer" && string.Equals(s.FirstName, "Sue")).Email;
             AuthorizationPages.LoginActions.Login(user, DefaultPassword);
+        }
+
+        internal void BuyerLogin(string buyerEmail)
+        {
+            if (!AuthorizationPages.LoginActions.EmailAddressInputDisplayed())
+                return;
+
+            AuthorizationPages.LoginActions.Login(buyerEmail, DefaultPassword);
         }
 
         internal async Task SetValuesToSession(Dictionary<string, object> sessionValues)

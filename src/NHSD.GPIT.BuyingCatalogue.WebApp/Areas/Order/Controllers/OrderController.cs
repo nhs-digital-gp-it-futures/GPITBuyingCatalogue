@@ -89,7 +89,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
             return RedirectToAction(
                 nameof(NewOrder),
                 typeof(OrderController).ControllerName(),
-                new { odsCode });
+                new { odsCode, option });
         }
 
         [HttpGet("~/order/organisation/{odsCode}/order/proxy-select")]
@@ -112,12 +112,12 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
         }
 
         [HttpPost("~/order/organisation/{odsCode}/order/proxy-select")]
-        public IActionResult SelectOrganisation(string odsCode, SelectOrganisationModel model)
+        public IActionResult SelectOrganisation(string odsCode, SelectOrganisationModel model, TriageOption? option = null)
         {
             if (!ModelState.IsValid)
                 return View(model);
 
-            return RedirectToAction(nameof(NewOrder), new { odsCode = model.SelectedOrganisation });
+            return RedirectToAction(nameof(NewOrder), new { odsCode = model.SelectedOrganisation, option });
         }
 
         [HttpGet("~/order/organisation/{odsCode}/order/neworder")]

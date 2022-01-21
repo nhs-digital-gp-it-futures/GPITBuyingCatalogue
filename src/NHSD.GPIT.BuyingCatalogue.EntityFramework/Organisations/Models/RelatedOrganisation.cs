@@ -5,6 +5,16 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Organisations.Models
 {
     public sealed class RelatedOrganisation : IAudited
     {
+        public RelatedOrganisation()
+        {
+        }
+
+        public RelatedOrganisation(int organisationId, int relatedOrganisationId)
+        {
+            OrganisationId = organisationId;
+            RelatedOrganisationId = relatedOrganisationId;
+        }
+
         public int OrganisationId { get; set; }
 
         public int RelatedOrganisationId { get; set; }
