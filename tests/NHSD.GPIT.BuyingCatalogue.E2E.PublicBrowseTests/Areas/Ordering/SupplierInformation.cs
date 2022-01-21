@@ -363,6 +363,35 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering
             CommonActions.ElementShowingCorrectErrorMessage("PrimaryContact.Email", "The Email field is not a valid e-mail address.").Should().BeTrue();
         }
 
+        [Fact]
+        public async Task SupplierInformation_SupplierSearch_SupplierAlreadySelected_Expected()
+        {
+            await using var context = GetEndToEndDbContext();
+            var supplier = context.Suppliers.First();
+            var order = context.Orders
+                .Include(o => o.Supplier)
+                .Include(o => o.SupplierContact)
+                .Single(o => o.Id == CallOffId.Id);
+
+            order.Supplier = supplier;
+            await context.SaveChangesAsync();
+
+            var queryParameters = new Dictionary<string, string>
+            {
+                { "search", SearchWithContact },
+            };
+
+            NavigateToUrl(
+                typeof(SupplierController),
+                nameof(SupplierController.SupplierSearchSelect),
+                Parameters,
+                queryParameters);
+
+            CommonActions.PageLoadedCorrectGetIndex(
+                typeof(SupplierController),
+                nameof(SupplierController.Supplier)).Should().BeTrue();
+        }
+
         public void Dispose()
         {
             using var context = GetEndToEndDbContext();
