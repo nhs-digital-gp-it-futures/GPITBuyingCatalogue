@@ -29,7 +29,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
         [HttpGet]
         public async Task<IActionResult> OrderDescription(string odsCode, CallOffId callOffId)
         {
-            var order = await orderService.GetOrderThin(callOffId);
+            var order = await orderService.GetOrderThin(callOffId, odsCode);
 
             var descriptionModel = new OrderDescriptionModel(odsCode, order)
             {
@@ -48,7 +48,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
             if (!ModelState.IsValid)
                 return View(model);
 
-            await orderDescriptionService.SetOrderDescription(callOffId, model.Description);
+            await orderDescriptionService.SetOrderDescription(callOffId, odsCode, model.Description);
 
             return RedirectToAction(
                 nameof(OrderController.Order),

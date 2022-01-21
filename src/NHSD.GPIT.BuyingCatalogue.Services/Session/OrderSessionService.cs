@@ -95,11 +95,11 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Session
                 return state;
             }
 
-            var orderItem = await orderItemService.GetOrderItem(callOffId, catalogueItemId);
+            var orderItem = await orderItemService.GetOrderItem(callOffId, odsCode, catalogueItemId);
 
             if (state is null)
             {
-                var order = await orderService.GetOrderThin(callOffId);
+                var order = await orderService.GetOrderThin(callOffId, odsCode);
                 var solution = await solutionsService.GetSolutionListPrices(orderItem.CatalogueItemId);
 
                 state = new CreateOrderItemModel

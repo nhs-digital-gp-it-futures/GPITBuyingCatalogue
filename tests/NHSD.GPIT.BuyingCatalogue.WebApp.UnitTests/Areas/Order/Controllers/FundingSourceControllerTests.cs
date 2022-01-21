@@ -48,7 +48,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers
         {
             var expectedViewData = new FundingSourceModel(odsCode, order.CallOffId, order.FundingSourceOnlyGms);
 
-            orderServiceMock.Setup(s => s.GetOrderThin(order.CallOffId)).ReturnsAsync(order);
+            orderServiceMock.Setup(s => s.GetOrderThin(order.CallOffId, odsCode)).ReturnsAsync(order);
 
             var actualResult = await controller.FundingSource(odsCode, order.CallOffId);
 
@@ -71,7 +71,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers
             actualResult.As<RedirectToActionResult>().ActionName.Should().Be(nameof(OrderController.Order));
             actualResult.As<RedirectToActionResult>().ControllerName.Should().Be(typeof(OrderController).ControllerName());
             actualResult.As<RedirectToActionResult>().RouteValues.Should().BeEquivalentTo(new RouteValueDictionary { { "odsCode", odsCode }, { "callOffId", callOffId } });
-            fundingSourceServiceMock.Verify(o => o.SetFundingSource(callOffId, model.FundingSourceOnlyGms.EqualsIgnoreCase("Yes")), Times.Once);
+            fundingSourceServiceMock.Verify(o => o.SetFundingSource(callOffId, odsCode, model.FundingSourceOnlyGms.EqualsIgnoreCase("Yes")), Times.Once);
         }
 
         [Theory]

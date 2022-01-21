@@ -35,7 +35,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
         [HttpGet]
         public async Task<IActionResult> Order(string odsCode, CallOffId callOffId)
         {
-            var order = await orderService.GetOrderThin(callOffId);
+            var order = await orderService.GetOrderThin(callOffId, odsCode);
 
             if (order.OrderStatus == OrderStatus.Complete)
             {
@@ -100,7 +100,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
         [HttpGet("summary")]
         public async Task<IActionResult> Summary(string odsCode, CallOffId callOffId, string print = "false")
         {
-            var order = await orderService.GetOrderForSummary(callOffId);
+            var order = await orderService.GetOrderForSummary(callOffId, odsCode);
 
             var model = new SummaryModel(odsCode, order)
             {
@@ -139,7 +139,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
         [HttpPost("summary")]
         public async Task<IActionResult> Summary(string odsCode, CallOffId callOffId)
         {
-            var order = await orderService.GetOrderForSummary(callOffId);
+            var order = await orderService.GetOrderForSummary(callOffId, odsCode);
 
             if (!order.CanComplete())
             {
@@ -148,7 +148,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
                 return View(model);
             }
 
-            await orderService.CompleteOrder(callOffId);
+            await orderService.CompleteOrder(callOffId, odsCode);
 
             return RedirectToAction();
         }

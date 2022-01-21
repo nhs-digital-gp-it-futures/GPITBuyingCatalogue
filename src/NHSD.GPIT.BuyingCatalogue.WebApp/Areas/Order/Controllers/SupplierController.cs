@@ -28,7 +28,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
         [HttpGet]
         public async Task<IActionResult> Supplier(string odsCode, CallOffId callOffId)
         {
-            var order = await orderService.GetOrderWithSupplier(callOffId);
+            var order = await orderService.GetOrderWithSupplier(callOffId, odsCode);
 
             if (order.Supplier is null)
             {
@@ -61,7 +61,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
                 return View(model);
             }
 
-            await supplierService.AddOrUpdateOrderSupplierContact(callOffId, model.PrimaryContact);
+            await supplierService.AddOrUpdateOrderSupplierContact(callOffId, odsCode, model.PrimaryContact);
 
             return RedirectToAction(
                 nameof(OrderController.Order),
@@ -72,7 +72,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
         [HttpGet("search")]
         public async Task<IActionResult> SupplierSearch(string odsCode, CallOffId callOffId)
         {
-            var order = await orderService.GetOrderWithSupplier(callOffId);
+            var order = await orderService.GetOrderWithSupplier(callOffId, odsCode);
 
             if (order.Supplier is not null)
             {
@@ -105,7 +105,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
         [HttpGet("search/select")]
         public async Task<IActionResult> SupplierSearchSelect(string odsCode, CallOffId callOffId, [FromQuery] string search)
         {
-            var order = await orderService.GetOrderWithSupplier(callOffId);
+            var order = await orderService.GetOrderWithSupplier(callOffId, odsCode);
 
             if (order?.Supplier is not null)
             {
@@ -138,7 +138,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
             }
 
             // Model validation ensures that a supplier is selected
-            await supplierService.AddOrderSupplier(callOffId, model.SelectedSupplierId!.Value);
+            await supplierService.AddOrderSupplier(callOffId, odsCode, model.SelectedSupplierId!.Value);
 
             return RedirectToAction(
                 nameof(Supplier),

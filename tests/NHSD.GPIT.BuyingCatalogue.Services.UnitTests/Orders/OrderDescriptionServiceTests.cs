@@ -37,7 +37,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Orders
             context.Orders.Add(order);
             await context.SaveChangesAsync();
 
-            await service.SetOrderDescription(order.CallOffId, description);
+            await service.SetOrderDescription(order.CallOffId, order.OrderingParty.OdsCode, description);
 
             var updatedOrder = await context.Orders.SingleAsync();
             updatedOrder.Description.Should().Be(description);

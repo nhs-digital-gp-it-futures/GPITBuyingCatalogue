@@ -37,7 +37,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Orders
             context.Orders.Add(order);
             await context.SaveChangesAsync();
 
-            await service.SetFundingSource(order.CallOffId, fundingSource);
+            await service.SetFundingSource(order.CallOffId, order.OrderingParty.OdsCode, fundingSource);
 
             var updatedOrder = await context.Orders.SingleAsync();
             updatedOrder.FundingSourceOnlyGms.Should().Be(fundingSource);

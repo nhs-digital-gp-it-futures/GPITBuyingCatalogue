@@ -37,7 +37,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Orders
             context.Orders.Add(order);
             await context.SaveChangesAsync();
 
-            await service.SetCommencementDate(order.CallOffId, commencementDate);
+            await service.SetCommencementDate(order.CallOffId, order.OrderingParty.OdsCode, commencementDate);
 
             var updatedOrder = await context.Orders.SingleAsync();
             updatedOrder.CommencementDate.Should().Be(commencementDate);
