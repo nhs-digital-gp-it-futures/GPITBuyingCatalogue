@@ -10,7 +10,8 @@
         <div class="nhsuk-grid-column-two-thirds">
 
             <nhs-page-title title="@ViewBag.Title"
-                            advice="Search for the supplier you want to purchase from." />
+                            caption="Order @(Model.CallOffId)"
+                            advice="Search for the supplier you want to order from." />
 
             <form method="post">
                 <nhs-input asp-for="SearchString" label-text="Enter supplier name" />

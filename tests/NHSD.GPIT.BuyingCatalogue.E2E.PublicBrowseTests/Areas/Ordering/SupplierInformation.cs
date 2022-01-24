@@ -39,9 +39,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering
         [Fact]
         public void SupplierInformation_AllSectionsDisplayed()
         {
-            CommonActions.PageTitle()
-                .Should()
-                .BeEquivalentTo($"Find supplier information for {CallOffId}".FormatForComparison());
+            CommonActions.PageTitle().Should().BeEquivalentTo($"Find supplier information - Order {CallOffId}".FormatForComparison());
             CommonActions.GoBackLinkDisplayed().Should().BeTrue();
             CommonActions.SaveButtonDisplayed().Should().BeTrue();
             CommonActions.ElementIsDisplayed(Objects.Ordering.SupplierInformation.SupplierSearchInput).Should().BeTrue();
@@ -98,7 +96,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering
                     typeof(SupplierController),
                     nameof(SupplierController.SupplierSearchSelect)).Should().BeTrue();
 
-            CommonActions.PageTitle().Should().BeEquivalentTo("Suppliers found".FormatForComparison());
+            CommonActions.PageTitle().Should().BeEquivalentTo($"Suppliers found - Order {CallOffId}".FormatForComparison());
 
             CommonActions.ElementIsDisplayed(Objects.Ordering.SupplierInformation.SupplierRadioContainer);
 
@@ -117,7 +115,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering
                     typeof(SupplierController),
                     nameof(SupplierController.SupplierSearchSelect)).Should().BeTrue();
 
-            CommonActions.PageTitle().Should().BeEquivalentTo("Suppliers found".FormatForComparison());
+            CommonActions.PageTitle().Should().BeEquivalentTo($"Suppliers found - Order {CallOffId}".FormatForComparison());
 
             CommonActions.ElementIsDisplayed(Objects.Ordering.SupplierInformation.SupplierRadioContainer);
 
