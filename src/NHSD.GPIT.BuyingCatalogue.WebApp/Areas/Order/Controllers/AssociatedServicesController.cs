@@ -71,7 +71,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
 
             var state = orderSessionService.InitialiseStateForCreate(order, CatalogueItemType.AssociatedService, null, new OrderItemRecipientModel { OdsCode = odsCode, Name = organisation.Name });
 
-            var associatedServices = await associatedServicesService.GetAssociatedServicesForSupplier(order.SupplierId);
+            var associatedServices = await associatedServicesService.GetPublishedAssociatedServicesForSupplier(order.SupplierId);
 
             if (!associatedServices.Any())
             {
@@ -99,7 +99,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
 
             if (!ModelState.IsValid)
             {
-                model.Solutions = await associatedServicesService.GetAssociatedServicesForSupplier(state.SupplierId);
+                model.Solutions = await associatedServicesService.GetPublishedAssociatedServicesForSupplier(state.SupplierId);
                 return View(model);
             }
 

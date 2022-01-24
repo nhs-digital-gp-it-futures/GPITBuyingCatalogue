@@ -8,7 +8,9 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.AssociatedServices
 {
     public interface IAssociatedServicesService
     {
-        Task<List<CatalogueItem>> GetAssociatedServicesForSupplier(int? supplierId);
+        Task<List<CatalogueItem>> GetAllAssociatedServicesForSupplier(int? supplierId);
+
+        Task<List<CatalogueItem>> GetPublishedAssociatedServicesForSupplier(int? supplierId);
 
         Task<CatalogueItem> GetAssociatedService(CatalogueItemId associatedServiceId);
 
