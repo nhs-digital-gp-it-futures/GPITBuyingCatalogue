@@ -49,7 +49,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
             if (solution is null)
                 return BadRequest($"No Solution found for Id: {solutionId}");
 
-            var associatedServices = await associatedServicesService.GetAssociatedServicesForSupplier(solution.Supplier.Id);
+            var associatedServices = await associatedServicesService.GetAllAssociatedServicesForSupplier(solution.Supplier.Id);
 
             var model = new AssociatedServicesModel(solution, associatedServices)
             {
