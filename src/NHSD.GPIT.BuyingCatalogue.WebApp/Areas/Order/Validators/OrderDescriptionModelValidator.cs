@@ -9,7 +9,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Validators
         {
             RuleFor(m => m.Description)
                 .NotEmpty()
-                .WithMessage("Enter a description");
+                .WithMessage("Enter an order description");
         }
     }
 }

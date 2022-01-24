@@ -10,8 +10,12 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Routing;
 using Moq;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
+using NHSD.GPIT.BuyingCatalogue.EntityFramework.Organisations.Models;
+using NHSD.GPIT.BuyingCatalogue.EntityFramework.Users.Models;
 using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Orders;
+using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Organisations;
+using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Users;
 using NHSD.GPIT.BuyingCatalogue.Test.Framework.AutoFixtureCustomisations;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.OrderDescription;
@@ -98,13 +102,35 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers
 
         [Theory]
         [CommonAutoData]
-        public static void Get_NewOrderDescription_ReturnsExpectedResult(
+        public static async Task Get_NewOrderDescription_ReturnsExpectedResult(
             string odsCode,
+            string organisationName,
+            [Frozen] Mock<IUsersService> mockUsersService,
+            [Frozen] Mock<IOrganisationsService> mockOrganisationsService,
             OrderDescriptionController controller)
         {
-            var expectedViewData = new OrderDescriptionModel(odsCode, null) { BackLink = "testUrl" };
+            const int organisationId = 1;
 
-            var actualResult = controller.NewOrderDescription(odsCode);
+            mockUsersService
+                .Setup(x => x.GetUser(1))
+                .ReturnsAsync(new AspNetUser
+                {
+                    PrimaryOrganisationId = organisationId,
+                });
+
+            mockOrganisationsService
+                .Setup(x => x.GetOrganisation(organisationId))
+                .ReturnsAsync(new Organisation
+                {
+                    Name = organisationName,
+                });
+
+            var expectedViewData = new OrderDescriptionModel(odsCode, organisationName) { BackLink = "testUrl" };
+
+            var actualResult = await controller.NewOrderDescription(odsCode);
+
+            mockUsersService.VerifyAll();
+            mockOrganisationsService.VerifyAll();
 
             actualResult.Should().BeOfType<ViewResult>();
             actualResult.As<ViewResult>().ViewData.Model.Should().BeEquivalentTo(expectedViewData);
