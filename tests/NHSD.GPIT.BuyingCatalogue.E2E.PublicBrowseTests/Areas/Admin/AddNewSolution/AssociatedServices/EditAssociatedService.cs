@@ -93,6 +93,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.AddNewSolution
             CommonActions.GoBackLinkDisplayed().Should().BeTrue();
             CommonActions.ElementIsDisplayed(Objects.Admin.CommonObjects.SaveButton).Should().BeTrue();
             CommonActions.ElementIsDisplayed(AssociatedServicesObjects.AssociatedServiceDashboardTable).Should().BeTrue();
+            CommonActions.ElementIsDisplayed(AssociatedServicesObjects.AssociatedServiceRelatedSolutionsTable).Should().BeFalse();
         }
 
         [Fact]
@@ -117,6 +118,24 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.AddNewSolution
                     nameof(AssociatedServicesController.AssociatedServices))
                 .Should()
                 .BeTrue();
+        }
+
+        [Fact]
+        public void EditAssociatedService_WithServiceAssociations_TableIsDisplayed()
+        {
+            using var context = GetEndToEndDbContext();
+            var associatedService = context.AssociatedServices.Single(a => a.CatalogueItemId == AssociatedServiceId);
+            var solutions = context.Solutions.Include(s => s.CatalogueItem).Take(5).ToList();
+            solutions.ForEach(s => s.CatalogueItem.SupplierServiceAssociations = new HashSet<SupplierServiceAssociation> { new(s.CatalogueItemId, AssociatedServiceId) });
+
+            context.SaveChanges();
+
+            Driver.Navigate().Refresh();
+
+            CommonActions.ElementIsDisplayed(AssociatedServicesObjects.AssociatedServiceRelatedSolutionsTable).Should().BeTrue();
+
+            solutions.ForEach(s => s.CatalogueItem.SupplierServiceAssociations.Clear());
+            context.SaveChanges();
         }
 
         [Theory]

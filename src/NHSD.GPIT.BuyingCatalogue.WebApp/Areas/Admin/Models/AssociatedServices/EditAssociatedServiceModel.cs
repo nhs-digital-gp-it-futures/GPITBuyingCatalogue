@@ -35,6 +35,12 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.AssociatedServices
             ListPriceStatus = new ListPriceModels.ManageListPricesModel(associatedService).Status();
         }
 
+        public EditAssociatedServiceModel(CatalogueItem solution, CatalogueItem associatedService, IList<CatalogueItem> relatedSolutions)
+            : this(solution, associatedService)
+        {
+            RelatedSolutions = relatedSolutions;
+        }
+
         public CatalogueItemId SolutionId { get; init; }
 
         public CatalogueItemId AssociatedServiceId { get; init; }
@@ -57,5 +63,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.AssociatedServices
         public TaskProgress DetailsStatus { get; init; }
 
         public TaskProgress ListPriceStatus { get; init; }
+
+        public IList<CatalogueItem> RelatedSolutions { get; set; } = new List<CatalogueItem>();
     }
 }

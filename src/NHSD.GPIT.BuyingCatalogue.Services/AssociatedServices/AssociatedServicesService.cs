@@ -83,14 +83,16 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.AssociatedServices
 
             solution.SupplierServiceAssociations.Clear();
 
-            solution.SupplierServiceAssociations = associatedServices.Select(a => new SupplierServiceAssociation
-            {
-                CatalogueItemId = solutionId,
-                AssociatedServiceId = a,
-            }).ToList();
+            solution.SupplierServiceAssociations = associatedServices.Select(a => new SupplierServiceAssociation(solutionId, a)).ToList();
 
             await dbContext.SaveChangesAsync();
         }
+
+        public async Task<List<CatalogueItem>> GetAllSolutionsForAssociatedService(CatalogueItemId currentSolutionId, CatalogueItemId associatedServiceId)
+            => await dbContext
+                .SupplierServiceAssociations
+                .Where(ssa => ssa.AssociatedServiceId == associatedServiceId && ssa.CatalogueItemId != currentSolutionId)
+                .Select(ssa => ssa.CatalogueItem).ToListAsync();
 
         public async Task<CatalogueItemId> AddAssociatedService(
             CatalogueItem solution,

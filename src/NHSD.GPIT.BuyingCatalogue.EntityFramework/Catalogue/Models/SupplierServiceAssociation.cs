@@ -8,6 +8,16 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models
     [ExcludeFromCodeCoverage]
     public sealed class SupplierServiceAssociation : IAudited
     {
+        public SupplierServiceAssociation()
+        {
+        }
+
+        public SupplierServiceAssociation(CatalogueItemId solutionId, CatalogueItemId associatedServiceId)
+        {
+            CatalogueItemId = solutionId;
+            AssociatedServiceId = associatedServiceId;
+        }
+
         public DateTime LastUpdated { get; set; }
 
         public int? LastUpdatedBy { get; set; }
