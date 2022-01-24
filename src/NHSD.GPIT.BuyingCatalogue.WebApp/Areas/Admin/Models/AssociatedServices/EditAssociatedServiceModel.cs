@@ -51,7 +51,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.AssociatedServices
 
         public string SupplierName { get; init; }
 
-        public PublicationStatus AssociatedServicePublicationStatus { get; init; }
+        public PublicationStatus AssociatedServicePublicationStatus { get; set; }
 
         public PublicationStatus SelectedPublicationStatus { get; set; }
 

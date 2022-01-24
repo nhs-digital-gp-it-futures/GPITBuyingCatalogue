@@ -13,6 +13,7 @@ using NHSD.GPIT.BuyingCatalogue.EntityFramework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers;
+using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Validators.PublicationStatusValidation;
 using Xunit;
 
 namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.AddNewSolution
@@ -135,6 +136,37 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.AddNewSolution
             CommonActions.ElementIsDisplayed(AssociatedServicesObjects.AssociatedServiceRelatedSolutionsTable).Should().BeTrue();
 
             solutions.ForEach(s => s.CatalogueItem.SupplierServiceAssociations.Clear());
+            context.SaveChanges();
+        }
+
+        [Fact]
+        public void AddAssociatedService_Unpublish_ActiveSolutions_ValidationError()
+        {
+            using var context = GetEndToEndDbContext();
+            var associatedService = context.AssociatedServices.Single(a => a.CatalogueItemId == AssociatedServiceId);
+            var solution = context.Solutions.Include(s => s.CatalogueItem).First(s => s.CatalogueItemId != SolutionId);
+            solution.CatalogueItem.SupplierServiceAssociations = new HashSet<SupplierServiceAssociation> { new(solution.CatalogueItemId, AssociatedServiceId) };
+            solution.CatalogueItem.PublishedStatus = PublicationStatus.Published;
+
+            context.SaveChanges();
+
+            Driver.Navigate().Refresh();
+
+            CommonActions.ClickRadioButtonWithValue(PublicationStatus.Unpublished.ToString());
+
+            CommonActions.ClickSave();
+
+            CommonActions.ErrorSummaryDisplayed().Should().BeTrue();
+
+            CommonActions.ErrorSummaryLinksExist().Should().BeTrue();
+
+            CommonActions.ElementShowingCorrectErrorMessage(
+                AssociatedServicesObjects.PublicationStatusInputError,
+                "Error: This Associated Service cannot be unpublished as it is referenced by another solution")
+                .Should()
+                .BeTrue();
+
+            solution.CatalogueItem.SupplierServiceAssociations.Clear();
             context.SaveChanges();
         }
 
