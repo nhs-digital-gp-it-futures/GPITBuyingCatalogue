@@ -14,6 +14,7 @@ using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Validators.PublicationStatusValidation;
+using OpenQA.Selenium;
 using Xunit;
 
 namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.AddNewSolution
@@ -137,6 +138,26 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.AddNewSolution
 
             solutions.ForEach(s => s.CatalogueItem.SupplierServiceAssociations.Clear());
             context.SaveChanges();
+        }
+
+        [Fact]
+        public void EditAssociatedService_EditServiceAssociation_NavigatesToCorrectPage()
+        {
+            using var context = GetEndToEndDbContext();
+            var associatedService = context.AssociatedServices.Single(a => a.CatalogueItemId == AssociatedServiceId);
+            var solution = context.Solutions.Include(s => s.CatalogueItem).First();
+            solution.CatalogueItem.SupplierServiceAssociations = new HashSet<SupplierServiceAssociation> { new(solution.CatalogueItemId, AssociatedServiceId) };
+
+            context.SaveChanges();
+
+            Driver.Navigate().Refresh();
+
+            CommonActions.ClickLinkElement(ByExtensions.DataTestId($"edit-service-association-{solution.CatalogueItemId}"));
+
+            CommonActions.PageLoadedCorrectGetIndex(
+                typeof(AssociatedServicesController),
+                nameof(AssociatedServicesController.AssociatedServices))
+                .Should().BeTrue();
         }
 
         [Fact]

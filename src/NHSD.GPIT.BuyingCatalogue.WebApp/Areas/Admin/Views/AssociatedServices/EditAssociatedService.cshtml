@@ -54,10 +54,10 @@
                             <nhs-table-cell>@referentialSolution.Id</nhs-table-cell>
                             <nhs-table-cell>@referentialSolution.Name</nhs-table-cell>
                             <nhs-table-cell>
-                                <a asp-action="@nameof(AssociatedServicesController.EditAssociatedService)"
+                                <a asp-action="@nameof(AssociatedServicesController.AssociatedServices)"
                                    asp-controller="@typeof(AssociatedServicesController).ControllerName()"
                                    asp-route-solutionId="@referentialSolution.Id"
-                                   asp-route-associatedServiceId="@Model.AssociatedServiceId" style="white-space: nowrap;">
+                                   data-test-id="edit-service-association-@referentialSolution.Id" style="white-space: nowrap;">
                                 Edit
                                 </a>
                             </nhs-table-cell>
