@@ -13,6 +13,8 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Objects.Admin.AssociatedServices
 
         internal static By AssociatedServiceDashboardTable => ByExtensions.DataTestId("associated-service-dashboard-table");
 
+        internal static By AssociatedServiceRelatedSolutionsTable => ByExtensions.DataTestId("associated-service-related-solutions-table");
+
         internal static By PublicationStatusInputError => By.Id("edit-associated-service-error");
     }
 }

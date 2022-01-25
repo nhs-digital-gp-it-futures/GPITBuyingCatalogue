@@ -28,8 +28,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
     public sealed class CatalogueSolutionsController : Controller
     {
         private readonly ISolutionsService solutionsService;
-        private readonly IAssociatedServicesService associatedServicesService;
-        private readonly IAdditionalServicesService additionalServicesService;
         private readonly IFilterCache filterCache;
         private readonly ISuppliersService suppliersService;
         private readonly ICapabilitiesService capabilitiesService;
@@ -37,16 +35,12 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
 
         public CatalogueSolutionsController(
             ISolutionsService solutionsService,
-            IAssociatedServicesService associatedServicesService,
-            IAdditionalServicesService additionalServicesService,
             IFilterCache filterCache,
             ISuppliersService suppliersService,
             ICapabilitiesService capabilitiesService,
             IPublicationStatusService publicationStatusService)
         {
             this.solutionsService = solutionsService ?? throw new ArgumentNullException(nameof(solutionsService));
-            this.associatedServicesService = associatedServicesService ?? throw new ArgumentNullException(nameof(associatedServicesService));
-            this.additionalServicesService = additionalServicesService ?? throw new ArgumentNullException(nameof(additionalServicesService));
             this.filterCache = filterCache ?? throw new ArgumentNullException(nameof(filterCache));
             this.suppliersService = suppliersService ?? throw new ArgumentNullException(nameof(suppliersService));
             this.capabilitiesService = capabilitiesService ?? throw new ArgumentNullException(nameof(capabilitiesService));

@@ -142,5 +142,27 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.AssociatedServices
             dbSolution.AssociatedService.Description.Should().Be(model.Description);
             dbSolution.AssociatedService.OrderGuidance.Should().Be(model.OrderGuidance);
         }
+
+        [Theory]
+        [InMemoryDbAutoData]
+        public static async Task GetAllSolutionsForAssociatedService_Returns_RelatedSolutions(
+            List<Solution> solutions,
+            Solution solution,
+            AssociatedService associatedService,
+            [Frozen] BuyingCatalogueDbContext context,
+            AssociatedServicesService service)
+        {
+            solutions.ForEach(s => s.CatalogueItem.SupplierServiceAssociations = new HashSet<SupplierServiceAssociation> { new(s.CatalogueItemId, associatedService.CatalogueItemId) });
+
+            context.Solutions.AddRange(solutions);
+            context.AssociatedServices.Add(associatedService);
+
+            context.SaveChanges();
+
+            var relatedSolutions = await service.GetAllSolutionsForAssociatedService(solution.CatalogueItemId, associatedService.CatalogueItemId);
+
+            relatedSolutions.Should().NotBeEmpty();
+            relatedSolutions.Count.Should().Be(solutions.Count);
+        }
     }
 }
