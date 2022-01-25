@@ -86,10 +86,18 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering.AssociatedServices
                 .BeTrue();
         }
 
-        [Fact]
-        public void AssociatedServicesEditAssociatedServiceOnDemandPrice_CorrectInput_ExpectedResults()
+        [Theory]
+        [InlineData(0)]
+        [InlineData(0.1)]
+        public void AssociatedServicesEditAssociatedServiceOnDemandPrice_CorrectInput_ExpectedResults(decimal price)
         {
             CommonActions.ClickRadioButtonWithValue("PerMonth");
+
+            CommonActions.ClearInputElement(Objects.Ordering.CatalogueSolutions.CatalogueSolutionsEditSolutionAgreedPriceInput);
+
+            CommonActions.ElementAddValue(
+                Objects.Ordering.CatalogueSolutions.CatalogueSolutionsEditSolutionAgreedPriceInput,
+                price.ToString());
 
             CommonActions.ClickSave();
 

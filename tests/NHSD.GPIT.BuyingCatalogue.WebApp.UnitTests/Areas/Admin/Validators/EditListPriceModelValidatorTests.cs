@@ -15,14 +15,16 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators
     public static class EditListPriceModelValidatorTests
     {
         [Theory]
-        [CommonAutoData]
+        [CommonInlineAutoData(0)]
+        [CommonInlineAutoData(3.21)]
         public static async Task Validate_ValidModel_NoValidationErrors(
+            decimal price,
             CatalogueItem item,
             EditListPriceModelValidator validator)
         {
             var model = new EditListPriceModel(item)
             {
-                Price = 3.21M,
+                Price = price,
                 Unit = "per patient",
                 UnitDefinition = new string('x', 20),
                 SelectedProvisioningType = ProvisioningType.Patient,
