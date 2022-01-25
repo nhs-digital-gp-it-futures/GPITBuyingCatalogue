@@ -43,6 +43,8 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework
 
         public DbSet<CapabilityCategory> CapabilityCategories { get; set; }
 
+        public DbSet<Epic> Epics { get; set; }
+
         public DbSet<CatalogueItem> CatalogueItems { get; set; }
 
         public DbSet<CatalogueItemCapability> CatalogueItemCapabilities { get; set; }

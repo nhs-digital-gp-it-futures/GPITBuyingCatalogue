@@ -24,5 +24,7 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models
         public AspNetUser LastUpdatedByUser { get; set; }
 
         public CompliancyLevel CompliancyLevel { get; set; }
+
+        public Capability Capability { get; set; }
     }
 }

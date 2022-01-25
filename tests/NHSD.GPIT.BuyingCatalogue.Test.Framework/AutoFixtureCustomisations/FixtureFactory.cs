@@ -12,6 +12,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Test.Framework.AutoFixtureCustomisations
             new AspNetUserCustomization(),
             new CapabilityCategoryCustomization(),
             new CapabilityCustomization(),
+            new EpicCustomization(),
             new CataloguePriceCustomization(),
             new CatalogueItemCustomization(),
             new CatalogueItemCapabilityCustomization(),
