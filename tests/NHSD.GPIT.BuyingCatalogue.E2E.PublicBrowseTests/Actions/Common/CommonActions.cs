@@ -187,6 +187,10 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Actions.Common
             .FindElements(By.ClassName("nhsuk-checkboxes__input"))
             .Count(cb => cb.Selected);
 
+        internal int GetNumberOfSelectedRadioButtons() => Driver
+            .FindElements(By.ClassName("nhsuk-radios__input"))
+            .Count(x => x.Selected);
+
         internal bool CheckBoxSelectedByLabelText(string labelText)
         {
             var targetId =
