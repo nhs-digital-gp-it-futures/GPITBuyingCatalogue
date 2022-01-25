@@ -127,8 +127,8 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.AddNewSolution
         {
             using var context = GetEndToEndDbContext();
             var associatedService = context.AssociatedServices.Single(a => a.CatalogueItemId == AssociatedServiceId);
-            var solutions = context.Solutions.Include(s => s.CatalogueItem).Take(5).ToList();
-            solutions.ForEach(s => s.CatalogueItem.SupplierServiceAssociations = new HashSet<SupplierServiceAssociation> { new(s.CatalogueItemId, AssociatedServiceId) });
+            var solution = context.Solutions.Include(s => s.CatalogueItem).ThenInclude(c => c.AssociatedService).First();
+            solution.CatalogueItem.SupplierServiceAssociations = new HashSet<SupplierServiceAssociation> { new(solution.CatalogueItemId, AssociatedServiceId) };
 
             context.SaveChanges();
 
@@ -136,7 +136,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.AddNewSolution
 
             CommonActions.ElementIsDisplayed(AssociatedServicesObjects.AssociatedServiceRelatedSolutionsTable).Should().BeTrue();
 
-            solutions.ForEach(s => s.CatalogueItem.SupplierServiceAssociations.Clear());
+            solution.CatalogueItem.SupplierServiceAssociations.Clear();
             context.SaveChanges();
         }
 
@@ -145,7 +145,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.AddNewSolution
         {
             using var context = GetEndToEndDbContext();
             var associatedService = context.AssociatedServices.Single(a => a.CatalogueItemId == AssociatedServiceId);
-            var solution = context.Solutions.Include(s => s.CatalogueItem).First();
+            var solution = context.Solutions.Include(s => s.CatalogueItem).ThenInclude(c => c.AssociatedService).First();
             solution.CatalogueItem.SupplierServiceAssociations = new HashSet<SupplierServiceAssociation> { new(solution.CatalogueItemId, AssociatedServiceId) };
 
             context.SaveChanges();
@@ -158,6 +158,9 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.AddNewSolution
                 typeof(AssociatedServicesController),
                 nameof(AssociatedServicesController.AssociatedServices))
                 .Should().BeTrue();
+
+            solution.CatalogueItem.SupplierServiceAssociations.Clear();
+            context.SaveChanges();
         }
 
         [Fact]
@@ -165,7 +168,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.AddNewSolution
         {
             using var context = GetEndToEndDbContext();
             var associatedService = context.AssociatedServices.Single(a => a.CatalogueItemId == AssociatedServiceId);
-            var solution = context.Solutions.Include(s => s.CatalogueItem).First(s => s.CatalogueItemId != SolutionId);
+            var solution = context.Solutions.Include(s => s.CatalogueItem).ThenInclude(c => c.AssociatedService).First(s => s.CatalogueItemId != SolutionId);
             solution.CatalogueItem.SupplierServiceAssociations = new HashSet<SupplierServiceAssociation> { new(solution.CatalogueItemId, AssociatedServiceId) };
             solution.CatalogueItem.PublishedStatus = PublicationStatus.Published;
 
