@@ -52,12 +52,14 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Validators.Shar
         }
 
         [Theory]
-        [CommonAutoData]
+        [CommonInlineAutoData(0)]
+        [CommonInlineAutoData(5)]
         public static void Validate_ValidAgreedPrice_NoValidationError(
+            int agreedPrice,
             CreateOrderItemModel model,
             CreateOrderItemModelValidator validator)
         {
-            model.AgreedPrice = 5;
+            model.AgreedPrice = agreedPrice;
             model.CataloguePrice.Price = 10;
 
             var result = validator.TestValidate(model);
