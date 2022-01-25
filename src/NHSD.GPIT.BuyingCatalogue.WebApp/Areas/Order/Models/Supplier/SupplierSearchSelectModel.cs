@@ -5,12 +5,13 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.Supplier
 {
     public sealed class SupplierSearchSelectModel : OrderingBaseModel
     {
-        public SupplierSearchSelectModel(string odsCode, CallOffId callOffId, List<EntityFramework.Catalogue.Models.Supplier> suppliers)
+        public SupplierSearchSelectModel(string odsCode, CallOffId callOffId, List<EntityFramework.Catalogue.Models.Supplier> suppliers, int? selectedSupplierId = null)
         {
             Title = "Suppliers found";
             OdsCode = odsCode;
             CallOffId = callOffId;
             Suppliers = suppliers;
+            SelectedSupplierId = selectedSupplierId;
         }
 
         public SupplierSearchSelectModel()

@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using FluentAssertions;
 using Microsoft.EntityFrameworkCore;
+using NHSD.GPIT.BuyingCatalogue.E2ETests.Objects.Common;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Utils;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.TestBases;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
@@ -151,6 +152,96 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering
         }
 
         [Fact]
+        public void SupplierInformation_ValidSupplierWithExistingContact_ConfirmSupplier_Expected()
+        {
+            var queryParameters = new Dictionary<string, string>
+            {
+                { "search", SearchWithContact },
+            };
+
+            NavigateToUrl(
+                typeof(SupplierController),
+                nameof(SupplierController.SupplierSearchSelect),
+                Parameters,
+                queryParameters);
+
+            CommonActions.ClickRadioButtonWithText(queryParameters["search"]);
+
+            CommonActions.ClickSave();
+
+            CommonActions.PageLoadedCorrectGetIndex(
+                typeof(SupplierController),
+                nameof(SupplierController.ConfirmSupplier)).Should().BeTrue();
+
+            CommonActions.PageTitle().Should().BeEquivalentTo($"Supplier details - Order {CallOffId}".FormatForComparison());
+            CommonActions.GoBackLinkDisplayed().Should().BeTrue();
+            CommonActions.ElementIsDisplayed(CommonSelectors.ActionLink).Should().BeTrue();
+            CommonActions.SaveButtonDisplayed().Should().BeTrue();
+        }
+
+        [Fact]
+        public void SupplierInformation_ValidSupplierWithExistingContact_ConfirmSupplier_GoBack_Expected()
+        {
+            var queryParameters = new Dictionary<string, string>
+            {
+                { "search", SearchWithContact },
+            };
+
+            NavigateToUrl(
+                typeof(SupplierController),
+                nameof(SupplierController.SupplierSearchSelect),
+                Parameters,
+                queryParameters);
+
+            CommonActions.ClickRadioButtonWithText(queryParameters["search"]);
+
+            CommonActions.ClickSave();
+
+            CommonActions.PageLoadedCorrectGetIndex(
+                typeof(SupplierController),
+                nameof(SupplierController.ConfirmSupplier)).Should().BeTrue();
+
+            CommonActions.ClickGoBackLink();
+
+            CommonActions.PageLoadedCorrectGetIndex(
+                typeof(SupplierController),
+                nameof(SupplierController.SupplierSearchSelect)).Should().BeTrue();
+
+            CommonActions.GetNumberOfSelectedRadioButtons().Should().Be(1);
+        }
+
+        [Fact]
+        public void SupplierInformation_ValidSupplierWithExistingContact_ConfirmSupplier_ClickActionLick_Expected()
+        {
+            var queryParameters = new Dictionary<string, string>
+            {
+                { "search", SearchWithContact },
+            };
+
+            NavigateToUrl(
+                typeof(SupplierController),
+                nameof(SupplierController.SupplierSearchSelect),
+                Parameters,
+                queryParameters);
+
+            CommonActions.ClickRadioButtonWithText(queryParameters["search"]);
+
+            CommonActions.ClickSave();
+
+            CommonActions.PageLoadedCorrectGetIndex(
+                typeof(SupplierController),
+                nameof(SupplierController.ConfirmSupplier)).Should().BeTrue();
+
+            CommonActions.ClickLinkElement(CommonSelectors.ActionLink);
+
+            CommonActions.PageLoadedCorrectGetIndex(
+                typeof(SupplierController),
+                nameof(SupplierController.SupplierSearchSelect)).Should().BeTrue();
+
+            CommonActions.GetNumberOfSelectedRadioButtons().Should().Be(1);
+        }
+
+        [Fact]
         public async Task SupplierInformation_ValidSupplierWithExistingContact_SelectSupplier_Expected()
         {
             var queryParameters = new Dictionary<string, string>
@@ -165,6 +256,12 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering
                 queryParameters);
 
             CommonActions.ClickRadioButtonWithText(queryParameters["search"]);
+
+            CommonActions.ClickSave();
+
+            CommonActions.PageLoadedCorrectGetIndex(
+                typeof(SupplierController),
+                nameof(SupplierController.ConfirmSupplier)).Should().BeTrue();
 
             CommonActions.ClickSave();
 
@@ -216,6 +313,12 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering
 
             CommonActions.PageLoadedCorrectGetIndex(
                 typeof(SupplierController),
+                nameof(SupplierController.ConfirmSupplier)).Should().BeTrue();
+
+            CommonActions.ClickSave();
+
+            CommonActions.PageLoadedCorrectGetIndex(
+                typeof(SupplierController),
                 nameof(SupplierController.Supplier)).Should().BeTrue();
 
             await using var context = GetEndToEndDbContext();
@@ -262,6 +365,12 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering
 
             CommonActions.PageLoadedCorrectGetIndex(
                 typeof(SupplierController),
+                nameof(SupplierController.ConfirmSupplier)).Should().BeTrue();
+
+            CommonActions.ClickSave();
+
+            CommonActions.PageLoadedCorrectGetIndex(
+                typeof(SupplierController),
                 nameof(SupplierController.Supplier)).Should().BeTrue();
 
             CommonActions.ClickSave();
@@ -294,6 +403,12 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering
                 queryParameters);
 
             CommonActions.ClickRadioButtonWithText(queryParameters["search"]);
+
+            CommonActions.ClickSave();
+
+            CommonActions.PageLoadedCorrectGetIndex(
+                typeof(SupplierController),
+                nameof(SupplierController.ConfirmSupplier)).Should().BeTrue();
 
             CommonActions.ClickSave();
 
@@ -337,6 +452,12 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering
                 queryParameters);
 
             CommonActions.ClickRadioButtonWithText(queryParameters["search"]);
+
+            CommonActions.ClickSave();
+
+            CommonActions.PageLoadedCorrectGetIndex(
+                typeof(SupplierController),
+                nameof(SupplierController.ConfirmSupplier)).Should().BeTrue();
 
             CommonActions.ClickSave();
 

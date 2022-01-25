@@ -1,0 +1,57 @@
+﻿@using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
+@using NHSD.GPIT.BuyingCatalogue.Framework.Extensions
+@model NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.Supplier.ConfirmSupplierModel;
+@{
+    ViewBag.Title = Model.Title;
+}
+
+<div data-test-id="supplier-page">
+    <partial name="Partials/_BackLink" model="Model" />
+
+    <div class="nhsuk-grid-row">
+        <div class="nhsuk-grid-column-two-thirds">
+            <nhs-validation-summary />
+            <nhs-page-title title="@ViewBag.Title" 
+                            caption="Order @Model.CallOffId"
+                            advice="Confirm this is the supplier you want to order from." />
+
+            <nhs-summary-list>
+                <nhs-summary-list-row label-text="Supplier name">
+                    <p data-test-id="supplier-name">
+                        @Model.Name
+                    </p>
+                </nhs-summary-list-row>
+                <nhs-summary-list-row label-text="Legal name">
+                    <p data-test-id="supplier-legal-name">
+                        @Model.LegalName
+                    </p>
+                </nhs-summary-list-row>
+                <nhs-summary-list-row label-text="Registered address">
+                    <div data-test-id="supplier-address">
+                        <vc:nhs-address address="@Model.Address" />
+                    </div>
+                </nhs-summary-list-row>
+            </nhs-summary-list>
+            
+            <vc:nhs-action-link url="@Url.Action(
+                                         nameof(SupplierController.SupplierSearchSelect),
+                                         typeof(SupplierController).ControllerName(),
+                                         new { Model.OdsCode, Model.CallOffId, Model.Search, Model.SupplierId })"
+                                text="Search for a different supplier" />
+
+            <div class="nhsuk-inset-text">
+                <span class="nhsuk-u-visually-hidden">Information: </span>
+                <h3>Confirming your supplier</h3>
+                <p>Once you’ve confirmed your supplier you’ll not be able to change it for this order.</p>
+                <p>If you do progress and later decide that you want to change your supplier, you’ll need to start a new order.</p>
+            </div>
+
+            <form method="post">
+                <input type="hidden" asp-for="SupplierId" />
+                <div data-test-id="save-button">
+                    <nhs-submit-button text="Confirm supplier" />
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
