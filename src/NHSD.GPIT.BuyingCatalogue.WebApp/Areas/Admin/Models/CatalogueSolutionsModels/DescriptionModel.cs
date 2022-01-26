@@ -26,7 +26,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.CatalogueSolutions
 
         public string SolutionName { get; set; }
 
-        [Required(ErrorMessage = "Enter a summary")]
         [StringLength(350)]
         public string Summary { get; set; }
 

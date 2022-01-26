@@ -6,24 +6,24 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.Orders
 {
     public interface IOrderService
     {
-        public Task<Order> GetOrderThin(CallOffId callOffId);
+        public Task<Order> GetOrderThin(CallOffId callOffId, string odsCode);
 
-        public Task<Order> GetOrderWithDefaultDeliveryDatesAndOrderItems(CallOffId callOffId);
+        public Task<Order> GetOrderWithDefaultDeliveryDatesAndOrderItems(CallOffId callOffId, string odsCode);
 
-        public Task<Order> GetOrderWithSupplier(CallOffId callOffId);
+        public Task<Order> GetOrderWithSupplier(CallOffId callOffId, string odsCode);
 
-        public Task<Order> GetOrderForSummary(CallOffId callOffId);
+        public Task<Order> GetOrderForSummary(CallOffId callOffId, string odsCode);
 
         public Task<IList<Order>> GetOrders(int organisationId);
 
-        public Task<Order> GetOrderSummary(CallOffId callOffId);
+        public Task<Order> GetOrderSummary(CallOffId callOffId, string odsCode);
 
-        public Task<Order> GetOrderForStatusUpdate(CallOffId callOffId);
+        public Task<Order> GetOrderForStatusUpdate(CallOffId callOffId, string odsCode);
 
         public Task<Order> CreateOrder(string description, string odsCode);
 
-        public Task DeleteOrder(CallOffId callOffId);
+        public Task DeleteOrder(CallOffId callOffId, string odsCode);
 
-        public Task CompleteOrder(CallOffId callOffId);
+        public Task CompleteOrder(CallOffId callOffId, string odsCode);
     }
 }

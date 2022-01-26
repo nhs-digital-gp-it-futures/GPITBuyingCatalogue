@@ -11,12 +11,25 @@ namespace NHSD.GPIT.BuyingCatalogue.UI.Components.TagHelpers
     public sealed class TextInputTagHelper : TagHelper
     {
         public const string TagHelperName = "nhs-input";
+        public const string InputWidthName = "input-width";
 
         private readonly IHtmlGenerator htmlGenerator;
 
         public TextInputTagHelper(IHtmlGenerator htmlGenerator)
         {
             this.htmlGenerator = htmlGenerator;
+        }
+
+        public enum TextInputWidth
+        {
+            Thirty = 30,
+            Twenty = 20,
+            Ten = 10,
+            Five = 5,
+            Four = 4,
+            Three = 3,
+            Two = 2,
+            Default = 0,
         }
 
         [HtmlAttributeNotBound]
@@ -31,6 +44,9 @@ namespace NHSD.GPIT.BuyingCatalogue.UI.Components.TagHelpers
 
         [HtmlAttributeName(TagHelperConstants.LabelHintName)]
         public string LabelHint { get; set; }
+
+        [HtmlAttributeName(InputWidthName)]
+        public TextInputWidth TextWidth { get; set; } = TextInputWidth.Default;
 
         [HtmlAttributeName(TagHelperConstants.CharacterCountName)]
         public bool CharacterCountEnabled { get; set; } = false;
@@ -69,6 +85,9 @@ namespace NHSD.GPIT.BuyingCatalogue.UI.Components.TagHelpers
                 null,
                 new
                 { @class = TagHelperConstants.NhsInput, });
+
+            if (TextWidth != TextInputWidth.Default)
+                builder.AddCssClass($"nhsuk-input--width-{(int)TextWidth}");
 
             if (!builder.Attributes.Any(a => a.Key == "maxlength"))
             {

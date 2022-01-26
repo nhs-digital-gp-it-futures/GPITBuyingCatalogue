@@ -1,5 +1,6 @@
 ﻿using System;
-using System.Runtime.InteropServices;
+using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -7,11 +8,11 @@ using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Models.TaskList;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Orders;
-using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Pdf;
+using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Organisations;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.TaskList;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.Order;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.OrderTriage;
-using NHSD.GPIT.BuyingCatalogue.WebApp.Controllers;
+using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.Shared;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
 {
@@ -22,22 +23,22 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
     {
         private readonly IOrderService orderService;
         private readonly ITaskListService taskListService;
-        private readonly IPdfService pdfService;
+        private readonly IOrganisationsService organisationsService;
 
         public OrderController(
             IOrderService orderService,
             ITaskListService taskListService,
-            IPdfService pdfService)
+            IOrganisationsService organisationsService)
         {
             this.orderService = orderService ?? throw new ArgumentNullException(nameof(orderService));
             this.taskListService = taskListService ?? throw new ArgumentNullException(nameof(taskListService));
-            this.pdfService = pdfService ?? throw new ArgumentNullException(nameof(pdfService));
+            this.organisationsService = organisationsService ?? throw new ArgumentNullException(nameof(organisationsService));
         }
 
         [HttpGet]
         public async Task<IActionResult> Order(string odsCode, CallOffId callOffId)
         {
-            var order = await orderService.GetOrderThin(callOffId);
+            var order = await orderService.GetOrderThin(callOffId, odsCode);
 
             if (order.OrderStatus == OrderStatus.Complete)
             {
@@ -59,6 +60,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
                     nameof(DashboardController.Organisation),
                     typeof(DashboardController).ControllerName(),
                     new { odsCode }),
+                BackLinkText = "Go back to dashboard",
             };
 
             return View(orderModel);
@@ -67,7 +69,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
         [HttpGet("~/order/organisation/{odsCode}/order/ready-to-start")]
         public IActionResult ReadyToStart(string odsCode, TriageOption? option = null)
         {
-            var model = new ReadyToStartModel(odsCode)
+            var model = new ReadyToStartModel()
             {
                 BackLink = Url.Action(
                     nameof(OrderTriageController.TriageSelection),
@@ -78,28 +80,70 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
             return View(model);
         }
 
-        [HttpGet("~/order/organisation/{odsCode}/order/neworder")]
-        public IActionResult NewOrder(string odsCode)
+        [HttpPost("~/order/organisation/{odsCode}/order/ready-to-start")]
+        public IActionResult ReadyToStart(string odsCode, ReadyToStartModel model, TriageOption? option = null)
         {
-            var orderModel = new OrderModel(odsCode, null, new OrderTaskList())
+            if (User.GetSecondaryOdsCodes().Any())
+                return RedirectToAction(nameof(SelectOrganisation), new { odsCode, option });
+
+            return RedirectToAction(
+                nameof(NewOrder),
+                typeof(OrderController).ControllerName(),
+                new { odsCode, option });
+        }
+
+        [HttpGet("~/order/organisation/{odsCode}/order/proxy-select")]
+        public async Task<IActionResult> SelectOrganisation(string odsCode, TriageOption? option = null)
+        {
+            var odsCodes = new List<string>(User.GetSecondaryOdsCodes())
+            {
+                User.GetPrimaryOdsCode(),
+            };
+
+            var organisations = await organisationsService.GetOrganisationsByOdsCodes(odsCodes.ToArray());
+
+            var model = new SelectOrganisationModel(odsCode, organisations)
+            {
+                BackLink = Url.Action(nameof(ReadyToStart), new { odsCode, option }),
+                Title = "Which organisation are you ordering for?",
+            };
+
+            return View(model);
+        }
+
+        [HttpPost("~/order/organisation/{odsCode}/order/proxy-select")]
+        public IActionResult SelectOrganisation(string odsCode, SelectOrganisationModel model, TriageOption? option = null)
+        {
+            if (!ModelState.IsValid)
+                return View(model);
+
+            return RedirectToAction(nameof(NewOrder), new { odsCode = model.SelectedOrganisation, option });
+        }
+
+        [HttpGet("~/order/organisation/{odsCode}/order/neworder")]
+        public async Task<IActionResult> NewOrder(string odsCode, TriageOption? option = null)
+        {
+            var organisation = await organisationsService.GetOrganisationByOdsCode(odsCode);
+
+            var orderModel = new OrderModel(odsCode, null, new OrderTaskList(), organisation.Name)
             {
                 DescriptionUrl = Url.Action(
                     nameof(OrderDescriptionController.NewOrderDescription),
                     typeof(OrderDescriptionController).ControllerName(),
-                    new { odsCode }),
+                    new { odsCode, option }),
                 BackLink = Url.Action(
-                    nameof(DashboardController.Organisation),
-                    typeof(DashboardController).ControllerName(),
-                    new { odsCode }),
+                    nameof(OrderController.ReadyToStart),
+                    typeof(OrderController).ControllerName(),
+                    new { odsCode, option }),
             };
 
             return View("Order", orderModel);
         }
 
         [HttpGet("summary")]
-        public async Task<IActionResult> Summary(string odsCode, CallOffId callOffId)
+        public async Task<IActionResult> Summary(string odsCode, CallOffId callOffId, string print = "false")
         {
-            var order = await orderService.GetOrderForSummary(callOffId);
+            var order = await orderService.GetOrderForSummary(callOffId, odsCode);
 
             var model = new SummaryModel(odsCode, order)
             {
@@ -130,46 +174,26 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
                 },
             };
 
-            return View(model);
+            return print.Equals("true", StringComparison.OrdinalIgnoreCase)
+                ? View("PrintSummary", model)
+                : View(model);
         }
 
         [HttpPost("summary")]
-        public async Task<IActionResult> Summary(string odsCode, CallOffId callOffId, SummaryModel model)
+        public async Task<IActionResult> Summary(string odsCode, CallOffId callOffId)
         {
-            var order = await orderService.GetOrderForSummary(callOffId);
+            var order = await orderService.GetOrderForSummary(callOffId, odsCode);
 
             if (!order.CanComplete())
             {
-                model.Order = order;
+                var model = new SummaryModel(odsCode, order);
                 ModelState.AddModelError("Order", "Your order is incomplete. Please go back to the order and check again");
                 return View(model);
             }
 
-            await orderService.CompleteOrder(callOffId);
+            await orderService.CompleteOrder(callOffId, odsCode);
 
             return RedirectToAction();
-        }
-
-        [HttpGet("download")]
-        public IActionResult Download(string odsCode, CallOffId callOffId)
-        {
-            string url = Url.Action(
-                        nameof(OrderSummaryController.Index),
-                        typeof(OrderSummaryController).ControllerName(),
-                        new { odsCode, callOffId });
-
-            if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
-            {
-                url = $"{Request.Scheme}://{Request.Host}{url}";
-            }
-            else
-            {
-                url = $"https://localhost{url}";
-            }
-
-            var result = pdfService.Convert(new Uri(url));
-
-            return File(result, "application/pdf", $"order-summary-{callOffId}.pdf");
         }
     }
 }

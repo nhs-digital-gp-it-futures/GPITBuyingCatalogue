@@ -1,5 +1,7 @@
 ﻿using System.Collections.Generic;
+using System.Threading.Tasks;
 using FluentAssertions;
+using Microsoft.EntityFrameworkCore;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Utils;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.TestBases;
 using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
@@ -29,9 +31,12 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering
         }
 
         [Fact]
-        public void NewOrderDashboard_AllSectionsDisplayed()
+        public async Task NewOrderDashboard_AllSectionsDisplayed()
         {
-            CommonActions.PageTitle().Should().BeEquivalentTo("New Order".FormatForComparison());
+            await using var context = GetEndToEndDbContext();
+            var organisation = await context.Organisations.SingleAsync(o => o.OdsCode == Parameters["OdsCode"]);
+
+            CommonActions.PageTitle().Should().BeEquivalentTo($"New Order-{organisation.Name}".FormatForComparison());
             CommonActions.GoBackLinkDisplayed().Should().BeTrue();
 
             CommonActions.ElementIsDisplayed(Objects.Ordering.OrderDashboard.TaskList)
@@ -50,8 +55,8 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering
             CommonActions.ClickGoBackLink();
 
             CommonActions.PageLoadedCorrectGetIndex(
-                typeof(DashboardController),
-                nameof(DashboardController.Organisation))
+                    typeof(OrderController),
+                    nameof(OrderController.ReadyToStart))
                     .Should().BeTrue();
         }
 

@@ -24,7 +24,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
         [HttpGet]
         public async Task<IActionResult> DeleteOrder(string odsCode, CallOffId callOffId)
         {
-            var order = await orderService.GetOrderThin(callOffId);
+            var order = await orderService.GetOrderThin(callOffId, odsCode);
 
             var model = new DeleteOrderModel(odsCode, order)
             {
@@ -40,7 +40,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
         [HttpPost]
         public async Task<IActionResult> DeleteOrder(string odsCode, CallOffId callOffId, DeleteOrderModel model)
         {
-            await orderService.DeleteOrder(callOffId);
+            await orderService.DeleteOrder(callOffId, odsCode);
 
             return RedirectToAction(
                 nameof(DashboardController.Organisation),

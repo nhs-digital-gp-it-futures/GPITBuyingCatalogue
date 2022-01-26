@@ -23,12 +23,11 @@
 
             <p>For help using the Buying Catalogue, contact the National and Commercial Procurement Hub: <a href="mailto:commercial.procurementhub@nhs.net">commercial.procurementhub@nhs.net</a>.</p>
 
-            <vc:nhs-secondary-button text="Start order"
-                                     url="@Url.Action(
-                                            nameof(OrderController.NewOrder),
-                                            typeof(OrderController).ControllerName(),
-                                            new { Model.OdsCode })"
-                                     use-primary-colour="true" /><br />
+            <form method="post">
+                <input type="hidden" asp-for="BackLink" />
+                <input type="hidden" asp-for="BackLinkText" />
+                <nhs-submit-button text="Start order" />
+            </form>
         </div>
     </div>
 </div>

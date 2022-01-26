@@ -26,11 +26,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.SupplierModels
 
         public int? SupplierId { get; init; }
 
-        [Required(ErrorMessage = "Enter a supplier name")]
         [StringLength(255)]
         public string SupplierName { get; init; }
 
-        [Required(ErrorMessage = "Enter a supplier legal name")]
         [StringLength(255)]
         public string SupplierLegalName { get; init; }
 

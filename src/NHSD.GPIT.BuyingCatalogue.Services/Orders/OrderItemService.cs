@@ -30,12 +30,12 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
             this.orderService = orderService ?? throw new ArgumentNullException(nameof(orderService));
         }
 
-        public async Task Create(CallOffId callOffId, CreateOrderItemModel model)
+        public async Task Create(CallOffId callOffId, string odsCode, CreateOrderItemModel model)
         {
             if (model is null)
                 throw new ArgumentNullException(nameof(model));
 
-            var order = await orderService.GetOrderWithDefaultDeliveryDatesAndOrderItems(callOffId);
+            var order = await orderService.GetOrderWithDefaultDeliveryDatesAndOrderItems(callOffId, odsCode);
 
             var catalogueItemId = model.CatalogueItemId;
             var catalogueItem = await dbContext.FindAsync<CatalogueItem>(catalogueItemId);
@@ -68,7 +68,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
             await dbContext.SaveChangesAsync();
         }
 
-        public async Task<List<OrderItem>> GetOrderItems(CallOffId callOffId, CatalogueItemType? catalogueItemType)
+        public async Task<List<OrderItem>> GetOrderItems(CallOffId callOffId,  string odsCode, CatalogueItemType? catalogueItemType)
         {
             Expression<Func<Order, IEnumerable<OrderItem>>> orderItems = catalogueItemType is null
                 ? o => o.OrderItems
@@ -78,7 +78,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
                 return null;
 
             return await dbContext.Orders
-                .Where(o => o.Id == callOffId.Id)
+                .Where(o => o.Id == callOffId.Id && o.OrderingParty.OdsCode == odsCode)
                 .Include(orderItems).ThenInclude(i => i.CatalogueItem)
                 .Include(orderItems).ThenInclude(i => i.OrderItemRecipients).ThenInclude(r => r.Recipient)
                 .Include(orderItems).ThenInclude(i => i.CataloguePrice).ThenInclude(p => p.PricingUnit)
@@ -87,13 +87,13 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
                 .ToListAsync();
         }
 
-        public Task<OrderItem> GetOrderItem(CallOffId callOffId, CatalogueItemId catalogueItemId)
+        public Task<OrderItem> GetOrderItem(CallOffId callOffId, string odsCode, CatalogueItemId catalogueItemId)
         {
             Expression<Func<Order, IEnumerable<OrderItem>>> orderItems = o =>
                 o.OrderItems.Where(i => i.CatalogueItem.Id == catalogueItemId);
 
             return dbContext.Orders
-                .Where(o => o.Id == callOffId.Id)
+                .Where(o => o.Id == callOffId.Id && o.OrderingParty.OdsCode == odsCode)
                 .Include(orderItems).ThenInclude(i => i.CatalogueItem)
                 .Include(orderItems).ThenInclude(i => i.OrderItemRecipients).ThenInclude(r => r.Recipient)
                 .Include(orderItems).ThenInclude(i => i.CataloguePrice).ThenInclude(p => p.PricingUnit)
@@ -101,10 +101,10 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
                 .SingleOrDefaultAsync();
         }
 
-        public async Task DeleteOrderItem(CallOffId callOffId, CatalogueItemId catalogueItemId)
+        public async Task DeleteOrderItem(CallOffId callOffId,  string odsCode, CatalogueItemId catalogueItemId)
         {
             var order = await dbContext.Orders
-                .Where(o => o.Id == callOffId.Id)
+                .Where(o => o.Id == callOffId.Id && o.OrderingParty.OdsCode == odsCode)
                 .Include(o => o.OrderItems)
                 .Include(o => o.OrderItems).ThenInclude(i => i.CatalogueItem).ThenInclude(a => a.AdditionalService)
                 .SingleAsync();

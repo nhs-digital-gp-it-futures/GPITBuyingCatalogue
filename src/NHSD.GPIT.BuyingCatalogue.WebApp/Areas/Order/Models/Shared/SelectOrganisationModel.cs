@@ -3,7 +3,7 @@ using System.Linq;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Organisations.Models;
 using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
 
-namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.Dashboard
+namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.Shared
 {
     public class SelectOrganisationModel : OrderingBaseModel
     {

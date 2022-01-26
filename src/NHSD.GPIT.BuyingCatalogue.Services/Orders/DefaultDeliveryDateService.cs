@@ -19,13 +19,13 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
             this.dbContext = dbContext ?? throw new ArgumentNullException(nameof(dbContext));
         }
 
-        public async Task<DateTime?> GetDefaultDeliveryDate(CallOffId callOffId, CatalogueItemId catalogueItemId)
+        public async Task<DateTime?> GetDefaultDeliveryDate(CallOffId callOffId, string odsCode, CatalogueItemId catalogueItemId)
         {
             Expression<Func<Order, IEnumerable<DefaultDeliveryDate>>> defaultDeliveryDate = o
                 => o.DefaultDeliveryDates.Where(d => d.CatalogueItemId == catalogueItemId);
 
             var date = await dbContext.Orders
-                .Where(o => o.Id == callOffId.Id)
+                .Where(o => o.Id == callOffId.Id && o.OrderingParty.OdsCode == odsCode)
                 .Include(defaultDeliveryDate)
                 .SelectMany(defaultDeliveryDate)
                 .Select(d => d.DeliveryDate)
@@ -34,9 +34,9 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
             return date == default(DateTime) ? null : date;
         }
 
-        public async Task<DeliveryDateResult> SetDefaultDeliveryDate(CallOffId callOffId, CatalogueItemId catalogueItemId, DateTime deliveryDate)
+        public async Task<DeliveryDateResult> SetDefaultDeliveryDate(CallOffId callOffId, string odsCode, CatalogueItemId catalogueItemId, DateTime deliveryDate)
         {
-            var order = await GetOrder(callOffId, catalogueItemId);
+            var order = await GetOrder(callOffId, odsCode, catalogueItemId);
 
             DeliveryDateResult addedOrUpdated = order.SetDefaultDeliveryDate(catalogueItemId, deliveryDate);
 
@@ -45,10 +45,10 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
             return addedOrUpdated;
         }
 
-        private Task<Order> GetOrder(CallOffId callOffId, CatalogueItemId catalogueItemId)
+        private Task<Order> GetOrder(CallOffId callOffId, string odsCode, CatalogueItemId catalogueItemId)
         {
             return dbContext.Orders
-                .Where(o => o.Id == callOffId.Id)
+                .Where(o => o.Id == callOffId.Id && o.OrderingParty.OdsCode == odsCode)
                 .Include(o => o.DefaultDeliveryDates.Where(d => d.CatalogueItemId == catalogueItemId))
                 .SingleOrDefaultAsync();
         }

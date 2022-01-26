@@ -32,7 +32,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
         {
             var state = orderSessionService.GetOrderStateFromSession(callOffId);
 
-            var defaultDeliveryDate = await defaultDeliveryDateService.GetDefaultDeliveryDate(callOffId, state.CatalogueItemId.GetValueOrDefault());
+            var defaultDeliveryDate = await defaultDeliveryDateService.GetDefaultDeliveryDate(callOffId, odsCode, state.CatalogueItemId.GetValueOrDefault());
 
             var model = new SelectAdditionalServiceRecipientsDateModel(state, defaultDeliveryDate)
             {
@@ -55,7 +55,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
 
             state.PlannedDeliveryDate = model.DeliveryDate;
 
-            await defaultDeliveryDateService.SetDefaultDeliveryDate(callOffId, state.CatalogueItemId.GetValueOrDefault(), model.DeliveryDate!.Value);
+            await defaultDeliveryDateService.SetDefaultDeliveryDate(callOffId, odsCode, state.CatalogueItemId.GetValueOrDefault(), model.DeliveryDate!.Value);
 
             orderSessionService.SetOrderStateToSession(state);
 

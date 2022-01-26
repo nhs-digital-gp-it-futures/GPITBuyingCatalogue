@@ -20,7 +20,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.AssociatedServices
             this.dbContext = dbContext ?? throw new ArgumentNullException(nameof(dbContext));
         }
 
-        public Task<List<CatalogueItem>> GetAssociatedServicesForSupplier(int? supplierId)
+        public Task<List<CatalogueItem>> GetAllAssociatedServicesForSupplier(int? supplierId)
         {
             return dbContext.CatalogueItems
                 .Include(s => s.CatalogueItemCapabilities)
@@ -30,6 +30,21 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.AssociatedServices
                 .Where(
                     c => c.SupplierId == supplierId.GetValueOrDefault()
                         && c.CatalogueItemType == CatalogueItemType.AssociatedService)
+                .OrderBy(c => c.Name)
+                .ToListAsync();
+        }
+
+        public Task<List<CatalogueItem>> GetPublishedAssociatedServicesForSupplier(int? supplierId)
+        {
+            return dbContext.CatalogueItems
+                .Include(s => s.CatalogueItemCapabilities)
+                .ThenInclude(sc => sc.Capability)
+                .Include(c => c.Supplier)
+                .Include(c => c.AssociatedService)
+                .Where(
+                    c => c.SupplierId == supplierId.GetValueOrDefault()
+                        && c.CatalogueItemType == CatalogueItemType.AssociatedService
+                        && c.PublishedStatus == PublicationStatus.Published)
                 .OrderBy(c => c.Name)
                 .ToListAsync();
         }
@@ -68,14 +83,16 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.AssociatedServices
 
             solution.SupplierServiceAssociations.Clear();
 
-            solution.SupplierServiceAssociations = associatedServices.Select(a => new SupplierServiceAssociation
-            {
-                CatalogueItemId = solutionId,
-                AssociatedServiceId = a,
-            }).ToList();
+            solution.SupplierServiceAssociations = associatedServices.Select(a => new SupplierServiceAssociation(solutionId, a)).ToList();
 
             await dbContext.SaveChangesAsync();
         }
+
+        public async Task<List<CatalogueItem>> GetAllSolutionsForAssociatedService(CatalogueItemId currentSolutionId, CatalogueItemId associatedServiceId)
+            => await dbContext
+                .SupplierServiceAssociations
+                .Where(ssa => ssa.AssociatedServiceId == associatedServiceId && ssa.CatalogueItemId != currentSolutionId)
+                .Select(ssa => ssa.CatalogueItem).ToListAsync();
 
         public async Task<CatalogueItemId> AddAssociatedService(
             CatalogueItem solution,

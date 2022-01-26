@@ -2,7 +2,7 @@
 using FluentValidation;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.ClientApplicationTypeModels.BrowserBasedModels;
 
-namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Validators
+namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Validators.ClientApplicationType.BrowserBased
 {
     public sealed class SupportedBrowsersModelValidator : AbstractValidator<SupportedBrowsersModel>
     {
@@ -10,6 +10,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Validators
 
         public SupportedBrowsersModelValidator()
         {
+            RuleFor(m => m.MobileResponsive)
+                .NotEmpty()
+                .WithMessage("Select yes if your Catalogue Solution is mobile responsive");
+
             RuleFor(m => m.Browsers)
                 .Must(b => b.Any(c => c.Checked == true))
                 .WithMessage(MandatoryRequiredMessage)

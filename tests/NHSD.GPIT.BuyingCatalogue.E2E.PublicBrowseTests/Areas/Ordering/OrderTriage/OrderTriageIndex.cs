@@ -4,6 +4,7 @@ using NHSD.GPIT.BuyingCatalogue.E2ETests.Utils;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.TestBases;
 using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers;
+using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.OrderTriage;
 using Xunit;
 
 namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering.OrderTriage
@@ -55,10 +56,14 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering.OrderTriage
                 .BeTrue();
         }
 
-        [Fact]
-        public void Index_Selection_RedirectsToCorrectPage()
+        [Theory]
+        [InlineData(TriageOption.Under40k)]
+        [InlineData(TriageOption.Between40kTo250k)]
+        [InlineData(TriageOption.Over250k)]
+        public void Index_Selection_RedirectsToCorrectPage(
+            TriageOption option)
         {
-            CommonActions.ClickRadioButtonWithText("Under £40k");
+            CommonActions.ClickRadioButtonWithValue(option.ToString());
 
             CommonActions.ClickSave();
 
@@ -67,6 +72,8 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering.OrderTriage
                 nameof(OrderTriageController.TriageSelection))
                 .Should()
                 .BeTrue();
+
+            Driver.Url.Contains(option.ToString()).Should().BeTrue();
         }
 
         [Fact]

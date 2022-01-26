@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Linq;
 using System.Threading.Tasks;
 using AutoFixture;
 using AutoFixture.AutoMoq;
@@ -8,10 +7,8 @@ using AutoFixture.Xunit2;
 using FluentAssertions;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.AspNetCore.Routing;
 using Moq;
-using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Models;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Orders;
@@ -52,7 +49,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers
         {
             var expectedViewData = new CommencementDateModel(odsCode, order.CallOffId, order.CommencementDate);
 
-            orderServiceMock.Setup(s => s.GetOrderThin(order.CallOffId)).ReturnsAsync(order);
+            orderServiceMock.Setup(s => s.GetOrderThin(order.CallOffId, odsCode)).ReturnsAsync(order);
 
             var actualResult = await controller.CommencementDate(odsCode, order.CallOffId);
 
@@ -85,7 +82,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers
             actualResult.As<RedirectToActionResult>().ControllerName.Should().Be(typeof(OrderController).ControllerName());
             actualResult.As<RedirectToActionResult>().RouteValues.Should().BeEquivalentTo(new RouteValueDictionary { { "odsCode", odsCode }, { "callOffId", state.CallOffId } });
 
-            commencementDateServiceMock.Verify(c => c.SetCommencementDate(state.CallOffId, DateTime.UtcNow.AddDays(1).Date), Times.Once);
+            commencementDateServiceMock.Verify(c => c.SetCommencementDate(state.CallOffId, odsCode, DateTime.UtcNow.AddDays(1).Date), Times.Once);
         }
     }
 }

@@ -29,7 +29,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
         [HttpGet]
         public async Task<IActionResult> CommencementDate(string odsCode, CallOffId callOffId)
         {
-            var order = await orderService.GetOrderThin(callOffId);
+            var order = await orderService.GetOrderThin(callOffId, odsCode);
 
             var model = new CommencementDateModel(odsCode, callOffId, order.CommencementDate)
             {
@@ -48,7 +48,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
             if (!ModelState.IsValid)
                 return View(model);
 
-            await commencementDateService.SetCommencementDate(callOffId, model.CommencementDate!.Value);
+            await commencementDateService.SetCommencementDate(callOffId, odsCode, model.CommencementDate!.Value);
 
             return RedirectToAction(
                 nameof(OrderController.Order),

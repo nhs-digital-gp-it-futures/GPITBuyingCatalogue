@@ -3,7 +3,6 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.ModelBinding;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
@@ -49,8 +48,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
         {
             orderSessionService.ClearSession(callOffId);
 
-            var order = await orderService.GetOrderThin(callOffId);
-            var orderItems = await orderItemService.GetOrderItems(callOffId, CatalogueItemType.AssociatedService);
+            var order = await orderService.GetOrderThin(callOffId, odsCode);
+            var orderItems = await orderItemService.GetOrderItems(callOffId, odsCode, CatalogueItemType.AssociatedService);
 
             var model = new AssociatedServiceModel(odsCode, order, orderItems)
             {
@@ -66,13 +65,13 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
         [HttpGet("select/associated-service")]
         public async Task<IActionResult> SelectAssociatedService(string odsCode, CallOffId callOffId)
         {
-            var order = await orderService.GetOrderThin(callOffId);
+            var order = await orderService.GetOrderThin(callOffId, odsCode);
 
             var organisation = await organisationService.GetOrganisationByOdsCode(odsCode);
 
             var state = orderSessionService.InitialiseStateForCreate(order, CatalogueItemType.AssociatedService, null, new OrderItemRecipientModel { OdsCode = odsCode, Name = organisation.Name });
 
-            var associatedServices = await associatedServicesService.GetAssociatedServicesForSupplier(order.SupplierId);
+            var associatedServices = await associatedServicesService.GetPublishedAssociatedServicesForSupplier(order.SupplierId);
 
             if (!associatedServices.Any())
             {
@@ -100,11 +99,11 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
 
             if (!ModelState.IsValid)
             {
-                model.Solutions = await associatedServicesService.GetAssociatedServicesForSupplier(state.SupplierId);
+                model.Solutions = await associatedServicesService.GetPublishedAssociatedServicesForSupplier(state.SupplierId);
                 return View(model);
             }
 
-            var existingOrder = await orderItemService.GetOrderItem(callOffId, model.SelectedSolutionId.Value);
+            var existingOrder = await orderItemService.GetOrderItem(callOffId, odsCode, model.SelectedSolutionId.Value);
 
             if (existingOrder != null)
             {
@@ -217,7 +216,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
             state.AgreedPrice = model.OrderItem.AgreedPrice;
             state.ServiceRecipients = model.OrderItem.ServiceRecipients;
 
-            await orderItemService.Create(callOffId, state);
+            await orderItemService.Create(callOffId, odsCode, state);
 
             orderSessionService.ClearSession(callOffId);
 

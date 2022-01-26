@@ -47,7 +47,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers
         {
             var expectedViewData = new DeleteOrderModel(odsCode, order);
 
-            orderServiceMock.Setup(s => s.GetOrderThin(order.CallOffId)).ReturnsAsync(order);
+            orderServiceMock.Setup(s => s.GetOrderThin(order.CallOffId, odsCode)).ReturnsAsync(order);
 
             var actualResult = await controller.DeleteOrder(odsCode, order.CallOffId);
 
@@ -70,7 +70,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers
             actualResult.As<RedirectToActionResult>().ActionName.Should().Be(nameof(DashboardController.Organisation));
             actualResult.As<RedirectToActionResult>().ControllerName.Should().Be(typeof(DashboardController).ControllerName());
             actualResult.As<RedirectToActionResult>().RouteValues.Should().BeEquivalentTo(new RouteValueDictionary { { "odsCode", odsCode } });
-            orderServiceMock.Verify(o => o.DeleteOrder(callOffId), Times.Once);
+            orderServiceMock.Verify(o => o.DeleteOrder(callOffId, odsCode), Times.Once);
         }
     }
 }

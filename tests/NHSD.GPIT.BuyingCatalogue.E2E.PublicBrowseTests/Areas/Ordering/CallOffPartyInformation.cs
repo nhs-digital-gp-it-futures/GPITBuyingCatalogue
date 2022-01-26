@@ -5,7 +5,6 @@ using Microsoft.EntityFrameworkCore;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Utils;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.TestBases;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
-using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers;
 using Xunit;
 
@@ -36,15 +35,9 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering
         [Fact]
         public void OrderingPartyInformation_AllSectionsDisplayed()
         {
-            CommonActions.PageTitle()
-                .Should()
-                .BeEquivalentTo($"Call-off Ordering Party information for {CallOffId}".FormatForComparison());
             CommonActions.GoBackLinkDisplayed().Should().BeTrue();
             CommonActions.SaveButtonDisplayed().Should().BeTrue();
 
-            CommonActions.ElementIsDisplayed(Objects.Ordering.CalloffPartyInformation.OrganisationName).Should().BeTrue();
-            CommonActions.ElementIsDisplayed(Objects.Ordering.CalloffPartyInformation.OrganisationOdsCode).Should().BeTrue();
-            CommonActions.ElementIsDisplayed(Objects.Ordering.CalloffPartyInformation.OrganisationAddress).Should().BeTrue();
             CommonActions.ElementIsDisplayed(Objects.Ordering.CalloffPartyInformation.FirstNameInput).Should().BeTrue();
             CommonActions.ElementIsDisplayed(Objects.Ordering.CalloffPartyInformation.LastNameInput).Should().BeTrue();
             CommonActions.ElementIsDisplayed(Objects.Ordering.CalloffPartyInformation.EmailAddressInput).Should().BeTrue();
@@ -73,10 +66,10 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering
             CommonActions.ErrorSummaryDisplayed().Should().BeTrue();
             CommonActions.ErrorSummaryLinksExist().Should().BeTrue();
 
-            CommonActions.ElementShowingCorrectErrorMessage("Contact.FirstName", "First Name Required").Should().BeTrue();
-            CommonActions.ElementShowingCorrectErrorMessage("Contact.LastName", "Last Name Required").Should().BeTrue();
-            CommonActions.ElementShowingCorrectErrorMessage("Contact.EmailAddress", "Email Address Required").Should().BeTrue();
-            CommonActions.ElementShowingCorrectErrorMessage("Contact.TelephoneNumber", "Telephone Number Required").Should().BeTrue();
+            CommonActions.ElementShowingCorrectErrorMessage("Contact.FirstName", "Enter a first name").Should().BeTrue();
+            CommonActions.ElementShowingCorrectErrorMessage("Contact.LastName", "Enter a last name").Should().BeTrue();
+            CommonActions.ElementShowingCorrectErrorMessage("Contact.EmailAddress", "Enter an email address").Should().BeTrue();
+            CommonActions.ElementShowingCorrectErrorMessage("Contact.TelephoneNumber", "Enter a telephone number").Should().BeTrue();
         }
 
         [Fact]
@@ -96,7 +89,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering
             CommonActions.ErrorSummaryDisplayed().Should().BeTrue();
             CommonActions.ErrorSummaryLinksExist().Should().BeTrue();
 
-            CommonActions.ElementShowingCorrectErrorMessage("Contact.EmailAddress", "The EmailAddress field is not a valid e-mail address.")
+            CommonActions.ElementShowingCorrectErrorMessage("Contact.EmailAddress", "Enter an email address in the correct format, like name@example.com")
                 .Should().BeTrue();
         }
 

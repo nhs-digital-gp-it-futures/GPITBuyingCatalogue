@@ -266,9 +266,17 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering.CatalogueSolutions
                 .BeTrue();
         }
 
-        [Fact]
-        public void CatalogueSolutionsEditSolution_CorrectInput_ExpectedResults()
+        [Theory]
+        [InlineData(0)]
+        [InlineData(0.1)]
+        public void CatalogueSolutionsEditSolution_CorrectInput_ExpectedResults(decimal price)
         {
+            CommonActions.ClearInputElement(Objects.Ordering.CatalogueSolutions.CatalogueSolutionsEditSolutionAgreedPriceInput);
+
+            CommonActions.ElementAddValue(
+                Objects.Ordering.CatalogueSolutions.CatalogueSolutionsEditSolutionAgreedPriceInput,
+                price.ToString());
+
             CommonActions.ClickSave();
 
             CommonActions.PageLoadedCorrectGetIndex(

@@ -47,6 +47,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Test.Framework.AutoFixtureCustomisations
                 AddCapabilities(item, context);
                 AddPrices(item, context);
                 InitializeSupplier(item, context);
+                AddCatalogueItemContacts(item, context);
 
                 return item;
             }
@@ -81,6 +82,13 @@ namespace NHSD.GPIT.BuyingCatalogue.Test.Framework.AutoFixtureCustomisations
 
                 item.Supplier = supplier;
                 item.SupplierId = supplier.Id;
+            }
+
+            private static void AddCatalogueItemContacts(CatalogueItem item, ISpecimenContext context)
+            {
+                var contact = context.Create<SupplierContact>();
+                contact.AssignedCatalogueItems.Add(item);
+                item.CatalogueItemContacts.Add(contact);
             }
         }
     }

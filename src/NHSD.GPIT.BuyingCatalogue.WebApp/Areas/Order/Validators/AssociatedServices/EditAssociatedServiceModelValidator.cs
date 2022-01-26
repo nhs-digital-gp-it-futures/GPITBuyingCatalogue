@@ -17,7 +17,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Validators.AssociatedServ
                 .Cascade(CascadeMode.Stop)
                 .NotNull()
                 .WithMessage("Enter an agreed price")
-                .GreaterThan(0)
+                .GreaterThanOrEqualTo(0)
                 .WithMessage("Price cannot be negative")
                 .Must(NotExceedTheListPrice)
                 .WithMessage("Price cannot be greater than list price");

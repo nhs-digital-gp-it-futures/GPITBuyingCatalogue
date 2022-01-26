@@ -7,6 +7,7 @@ using NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.TestBases;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers;
+using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.OrderDescription;
 using Xunit;
 
 namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering
@@ -36,7 +37,8 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering
         [Fact]
         public async Task OrderDescription_AllSectionsDisplayed()
         {
-            CommonActions.PageTitle().Should().BeEquivalentTo("Order description".FormatForComparison());
+            CommonActions.PageTitle().Should().BeEquivalentTo($"Order description - Order {CallOffId}".FormatForComparison());
+            CommonActions.LedeText().Should().BeEquivalentTo(OrderDescriptionModel.AdviceText.FormatForComparison());
             CommonActions.GoBackLinkDisplayed().Should().BeTrue();
             CommonActions.SaveButtonDisplayed().Should().BeTrue();
             CommonActions.ElementIsDisplayed(Objects.Ordering.OrderDescription.DescriptionInput).Should().BeTrue();
@@ -71,7 +73,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering
             CommonActions.ErrorSummaryDisplayed().Should().BeTrue();
             CommonActions.ErrorSummaryLinksExist().Should().BeTrue();
 
-            CommonActions.ElementShowingCorrectErrorMessage("Description", "Enter a description")
+            CommonActions.ElementShowingCorrectErrorMessage("Description", "Enter an order description")
                 .Should().BeTrue();
         }
 

@@ -5,7 +5,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models
 {
     public sealed class SupplierContactViewModel
     {
-        public SupplierContactViewModel(MarketingContact contact)
+        public SupplierContactViewModel(SupplierContact contact)
         {
             FullName = string.Join(" ", new[] { contact.FirstName, contact.LastName }.Where(str => !string.IsNullOrWhiteSpace(str)));
             PhoneNumber = contact.PhoneNumber;

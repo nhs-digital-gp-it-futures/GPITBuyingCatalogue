@@ -62,7 +62,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
                 .ReturnsAsync(catalogueItem);
 
             var catalogueItems = associatedServices.Select(a => a.CatalogueItem).ToList();
-            mockAssociatedServicesService.Setup(s => s.GetAssociatedServicesForSupplier(catalogueItem.Supplier.Id))
+            mockAssociatedServicesService.Setup(s => s.GetAllAssociatedServicesForSupplier(catalogueItem.Supplier.Id))
                 .ReturnsAsync(catalogueItems);
 
             var actual = await controller.AssociatedServices(catalogueItem.Id);

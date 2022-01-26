@@ -2,10 +2,10 @@
 using FluentValidation.TestHelper;
 using NHSD.GPIT.BuyingCatalogue.Test.Framework.AutoFixtureCustomisations;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.ClientApplicationTypeModels.MobileTabletBasedModels;
-using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Validators;
+using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Validators.ClientApplicationType.MobileTabletBased;
 using Xunit;
 
-namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators
+namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators.ClientApplicationType.MobileAndTabletBased
 {
     public static class OperatingSystemsModelValidatorTests
     {

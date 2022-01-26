@@ -17,21 +17,16 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.OrganisationModels
 
         public string OrganisationName { get; set; }
 
-        [Required(ErrorMessage = "First Name Required")]
         [StringLength(100)]
         public string FirstName { get; set; }
 
-        [Required(ErrorMessage = "Last Name Required")]
         [StringLength(100)]
         public string LastName { get; set; }
 
-        [Required(ErrorMessage = "Telephone Number Required")]
         [StringLength(35)]
         public string TelephoneNumber { get; set; }
 
-        [Required(ErrorMessage = "Email Address Required")]
         [StringLength(256)]
-        [EmailAddress]
         public string EmailAddress { get; set; }
     }
 }
