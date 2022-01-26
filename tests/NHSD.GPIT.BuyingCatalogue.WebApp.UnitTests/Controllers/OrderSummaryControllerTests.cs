@@ -44,7 +44,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Controllers
         {
             order.OrderStatus = OrderStatus.Complete;
 
-            orderServiceMock.Setup(s => s.GetOrderForSummary(order.CallOffId)).ReturnsAsync(order);
+            orderServiceMock.Setup(s => s.GetOrderForSummary(order.CallOffId, odsCode)).ReturnsAsync(order);
 
             var expectedViewData = new OrderSummaryModel(odsCode, order)
             {
@@ -68,7 +68,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Controllers
         {
             order.OrderStatus = OrderStatus.Incomplete;
 
-            orderServiceMock.Setup(s => s.GetOrderForSummary(order.CallOffId)).ReturnsAsync(order);
+            orderServiceMock.Setup(s => s.GetOrderForSummary(order.CallOffId, odsCode)).ReturnsAsync(order);
 
             var expectedViewData = new OrderSummaryModel(odsCode, order)
             {
@@ -95,7 +95,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Controllers
             orderItem.CatalogueItem.CatalogueItemType = EntityFramework.Catalogue.Models.CatalogueItemType.Solution;
             order.AddOrUpdateOrderItem(orderItem);
 
-            orderServiceMock.Setup(s => s.GetOrderForSummary(order.CallOffId)).ReturnsAsync(order);
+            orderServiceMock.Setup(s => s.GetOrderForSummary(order.CallOffId, odsCode)).ReturnsAsync(order);
 
             var expectedViewData = new OrderSummaryModel(odsCode, order)
             {

@@ -21,7 +21,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Controllers
 
         public async Task<IActionResult> Index(string odsCode, CallOffId callOffId)
         {
-            var order = await orderService.GetOrderForSummary(callOffId);
+            var order = await orderService.GetOrderForSummary(callOffId, odsCode);
 
             var model = new OrderSummaryModel(odsCode, order)
             {
