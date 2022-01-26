@@ -17,12 +17,23 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
             this.dbContext = dbContext ?? throw new ArgumentNullException(nameof(dbContext));
         }
 
-        public async Task SetCommencementDate(CallOffId callOffId, string odsCode, DateTime? commencementDate)
+        public async Task SetCommencementDate(
+            CallOffId callOffId,
+            string odsCode,
+            DateTime? commencementDate,
+            int? initialPeriod,
+            int? maximumTerm)
         {
             commencementDate.ValidateNotNull(nameof(commencementDate));
+            initialPeriod.ValidateNotNull(nameof(initialPeriod));
+            maximumTerm.ValidateNotNull(nameof(maximumTerm));
 
             var order = await dbContext.Orders.SingleAsync(o => o.Id == callOffId.Id && o.OrderingParty.OdsCode == odsCode);
-            order.CommencementDate = commencementDate.Value;
+
+            order.CommencementDate = commencementDate!.Value;
+            order.InitialPeriod = initialPeriod;
+            order.MaximumTerm = maximumTerm;
+
             await dbContext.SaveChangesAsync();
         }
     }

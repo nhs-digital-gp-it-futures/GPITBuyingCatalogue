@@ -16,5 +16,7 @@
     OrderStatusId int NOT NULL,
     IsDeleted bit NOT NULL,
     SysStartTime datetime2(0) NOT NULL,
-    SysEndTime datetime2(0) NOT NULL  
+    SysEndTime datetime2(0) NOT NULL, 
+    [InitialPeriod] INT NULL, 
+    [MaximumTerm] INT NULL  
 );

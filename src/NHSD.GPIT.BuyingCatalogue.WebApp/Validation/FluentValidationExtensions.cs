@@ -5,6 +5,7 @@ using System.Linq.Expressions;
 using FluentValidation;
 using FluentValidation.Internal;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Validation;
+using NHSD.GPIT.BuyingCatalogue.WebApp.Extensions;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.Validation
 {
@@ -20,15 +21,27 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Validation
             return rule.OverridePropertyName(propertyName);
         }
 
-        public static IRuleBuilderOptions<T, string> IsValidQuantity<T>(this IRuleBuilderInitial<T, string> ruleBuilder)
-            => ruleBuilder
+        public static IRuleBuilderOptions<T, string> IsNumeric<T>(this IRuleBuilderInitial<T, string> ruleBuilder, string propertyName)
+        {
+            const string vowels = "aeiou";
+            var name = propertyName.ToLower();
+
+            // This won't always be true, some words beginning with 'h' require the indefinite article 'an' (eg hour),
+            // and some words beginning with vowels require 'a' (eg unit), so expand with exceptions should the need arise
+            var article = vowels.Contains(name.First()) ? "an" : "a";
+
+            return ruleBuilder
                 .Cascade(CascadeMode.Stop)
                 .NotEmpty()
-                .WithMessage("Enter a quantity")
-                .Must(quantity => int.TryParse(quantity, out _))
-                .WithMessage("Quantity must be a number")
-                .Must(quantity => int.Parse(quantity) > 0)
-                .WithMessage("Quantity must be greater than zero");
+                .WithMessage($"Enter {article} {name}")
+                .Must(x => int.TryParse(x, out _))
+                .WithMessage($"{name.CapitaliseFirstLetter()} must be a number");
+        }
+
+        public static IRuleBuilderOptions<T, string> IsNumericAndNonZero<T>(this IRuleBuilderInitial<T, string> ruleBuilder, string propertyName)
+            => ruleBuilder.IsNumeric(propertyName)
+                .Must(x => int.Parse(x) > 0)
+                .WithMessage($"{propertyName.ToLower().CapitaliseFirstLetter()} must be greater than zero");
 
         public static IRuleBuilderOptions<T, int?> IsValidQuantity<T>(this IRuleBuilderInitial<T, int?> ruleBuilder)
             => ruleBuilder
