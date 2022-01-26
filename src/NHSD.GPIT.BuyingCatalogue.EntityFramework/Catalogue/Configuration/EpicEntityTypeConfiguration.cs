@@ -2,6 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
+using NHSD.GPIT.BuyingCatalogue.EntityFramework.ValueGenerators;
 
 namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Configuration
 {
@@ -13,7 +14,10 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Configuration
 
             builder.HasKey(e => e.Id);
 
-            builder.Property(e => e.Id).HasMaxLength(10);
+            builder.Property(e => e.Id)
+                .HasMaxLength(10)
+                .HasValueGenerator<EpicIdValueGenerator>();
+
             builder.Property(e => e.CompliancyLevel)
                 .HasConversion<int>()
                 .HasColumnName("CompliancyLevelId");

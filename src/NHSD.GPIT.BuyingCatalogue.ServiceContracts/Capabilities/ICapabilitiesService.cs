@@ -8,6 +8,8 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.Capabilities
 {
     public interface ICapabilitiesService
     {
+        Task<List<Capability>> GetCapabilities();
+
         Task<List<CapabilityCategory>> GetCapabilitiesByCategory(int supplierId);
 
         Task AddCapabilitiesToCatalogueItem(CatalogueItemId catalogueItemId, SaveCatalogueItemCapabilitiesModel model);

@@ -9,7 +9,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.SupplierDefinedEpi
         public SupplierDefinedEpicsDashboardModel(List<Epic> supplierDefinedEpics)
         {
             SupplierDefinedEpics = supplierDefinedEpics
-                .Select(e => new SupplierDefinedEpicModel(e.Id, e.Name, e.Capability.Name))
+                .Select(e => new SupplierDefinedEpicModel(e.Id, e.Name, e.Capability.Name, e.IsActive))
                 .ToList();
         }
 

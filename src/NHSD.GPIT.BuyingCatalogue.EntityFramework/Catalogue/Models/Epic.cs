@@ -9,6 +9,8 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models
 
         public string Name { get; set; }
 
+        public string Description { get; set; }
+
         public int CapabilityId { get; set; }
 
         public string SourceUrl { get; set; }

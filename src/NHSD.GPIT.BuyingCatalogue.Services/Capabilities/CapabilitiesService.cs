@@ -21,6 +21,8 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Capabilities
             this.dbContext = dbContext ?? throw new ArgumentNullException(nameof(dbContext));
         }
 
+        public Task<List<Capability>> GetCapabilities() => dbContext.Capabilities.AsNoTracking().ToListAsync();
+
         public Task<List<CapabilityCategory>> GetCapabilitiesByCategory(int supplierId)
         {
             var supplierIdString = supplierId.ToString(CultureInfo.InvariantCulture);
