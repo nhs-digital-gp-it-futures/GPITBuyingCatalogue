@@ -31,8 +31,8 @@
 
             <nhs-fieldset-form-container asp-for="@Model"
                                          label-text="Get order summary"
-                                         label-hint="Using this button will give you the option to print a copy or create a PDF version of your order summary so you can check it's correct.">
-                <vc:nhs-secondary-button text="Print or save as PDF"
+                                         label-hint="Using this button will create a PDF version of your order summary so you can check it's correct.">
+                <vc:nhs-secondary-button text="Save as PDF"
                                          use-primary-colour="false"
                                          url="@Url.Action(
                 nameof(OrderController.Download),
@@ -159,8 +159,8 @@
                 <div class="nhsuk-grid-column-two-thirds">
                     <nhs-fieldset-form-container asp-for="@Model"
                                                  label-text="Get order summary"
-                                                 label-hint="Using this button will give you the option to print a copy or create a PDF version of your order summary so you can check it's correct.">
-                        <vc:nhs-secondary-button text="Print or save as PDF"
+                                                 label-hint="Using this button will create a PDF version of your order summary so you can check it's correct.">
+                        <vc:nhs-secondary-button text="Save as PDF"
                                                  use-primary-colour="false"
                                                  url="@Url.Action(
                                                         nameof(OrderController.Download),

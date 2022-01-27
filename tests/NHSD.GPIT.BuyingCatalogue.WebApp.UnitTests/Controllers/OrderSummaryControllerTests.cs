@@ -48,7 +48,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Controllers
 
             var expectedViewData = new OrderSummaryModel(odsCode, order)
             {
-                AdviceText = "This order has been confirmed and can no longer be changed. You can use the button to get a copy of the order summary.",
+                AdviceText = "This order has been confirmed and can no longer be changed.",
                 Title = $"Order confirmed for {order.CallOffId}",
             };
 
