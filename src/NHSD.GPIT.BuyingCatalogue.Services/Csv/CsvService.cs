@@ -51,10 +51,10 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Csv
                     M1Planned = oir.DeliveryDate,
                     Framework =
                     oir.OrderItem.CatalogueItem.CatalogueItemType == CatalogueItemType.Solution
-                    ? oir.OrderItem.CatalogueItem.Solution.FrameworkSolutions.FirstOrDefault().FrameworkId
+                    ? oir.OrderItem.CatalogueItem.Solution.FrameworkSolutions.FirstOrDefault(fs => fs.FrameworkId != "COVID").FrameworkId
                     : oir.OrderItem.CatalogueItem.CatalogueItemType == CatalogueItemType.AdditionalService
-                        ? oir.OrderItem.CatalogueItem.AdditionalService.Solution.FrameworkSolutions.FirstOrDefault().FrameworkId
-                        : oir.OrderItem.CatalogueItem.AssociatedService.CatalogueItem.Solution.FrameworkSolutions.FirstOrDefault().FrameworkId,
+                        ? oir.OrderItem.CatalogueItem.AdditionalService.Solution.FrameworkSolutions.FirstOrDefault(fs => fs.FrameworkId != "COVID").FrameworkId
+                        : oir.OrderItem.CatalogueItem.AssociatedService.CatalogueItem.Solution.FrameworkSolutions.FirstOrDefault(fs => fs.FrameworkId != "COVID").FrameworkId,
                     FundingType = oir.OrderItem.Order.FundingSourceOnlyGms.Value ? "Central" : "Local",
                 }).ToListAsync();
 
@@ -87,10 +87,10 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Csv
                     M1Planned = oir.DeliveryDate,
                     Framework =
                     oir.OrderItem.CatalogueItem.CatalogueItemType == CatalogueItemType.Solution
-                    ? oir.OrderItem.CatalogueItem.Solution.FrameworkSolutions.FirstOrDefault().FrameworkId
+                    ? oir.OrderItem.CatalogueItem.Solution.FrameworkSolutions.FirstOrDefault(fs => fs.FrameworkId != "COVID").FrameworkId
                     : oir.OrderItem.CatalogueItem.CatalogueItemType == CatalogueItemType.AdditionalService
-                        ? oir.OrderItem.CatalogueItem.AdditionalService.Solution.FrameworkSolutions.FirstOrDefault().FrameworkId
-                        : oir.OrderItem.CatalogueItem.AssociatedService.CatalogueItem.Solution.FrameworkSolutions.FirstOrDefault().FrameworkId,
+                        ? oir.OrderItem.CatalogueItem.AdditionalService.Solution.FrameworkSolutions.FirstOrDefault(fs => fs.FrameworkId != "COVID").FrameworkId
+                        : oir.OrderItem.CatalogueItem.AssociatedService.CatalogueItem.Solution.FrameworkSolutions.FirstOrDefault(fs => fs.FrameworkId != "COVID").FrameworkId,
                     FundingType = oir.OrderItem.Order.FundingSourceOnlyGms.Value ? "Central" : "Local",
                 }).ToListAsync();
 
