@@ -23,20 +23,12 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Capabilities
 
         public Task<List<Capability>> GetCapabilities() => dbContext.Capabilities.AsNoTracking().ToListAsync();
 
-        public Task<List<CapabilityCategory>> GetCapabilitiesByCategory(int supplierId)
-        {
-            var supplierIdString = supplierId.ToString(CultureInfo.InvariantCulture);
-            var supplierKey = $"S{supplierIdString[^3..]}";
-
-            return dbContext
+        public Task<List<CapabilityCategory>> GetCapabilitiesByCategory()
+            => dbContext
                 .CapabilityCategories
                 .Include(c => c.Capabilities)
-                .ThenInclude(c =>
-                    c.Epics.Where(e =>
-                       (e.IsActive && !e.SupplierDefined && e.CompliancyLevel == CompliancyLevel.May)
-                    || (e.IsActive && e.SupplierDefined && EF.Functions.Like(e.Id, $"{supplierKey}%"))))
+                .ThenInclude(c => c.Epics.Where(e => e.IsActive && e.CompliancyLevel == CompliancyLevel.May))
                 .ToListAsync();
-        }
 
         public async Task AddCapabilitiesToCatalogueItem(CatalogueItemId catalogueItemId, SaveCatalogueItemCapabilitiesModel model)
         {

@@ -624,7 +624,10 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
                 new Epic { Id = "E00088", Name = "SNOMED code Video Consultation", CapabilityId = capabilities.Single(s => s.CapabilityRef == "C44").Id, CompliancyLevel = CompliancyLevel.May, IsActive = true },
                 new Epic { Id = "E00099", Name = "User Friendly", CapabilityId = capabilities.Single(s => s.CapabilityRef == "C43").Id, CompliancyLevel = CompliancyLevel.May, IsActive = true, SupplierDefined = true },
                 new Epic { Id = "E123456", Name = "SupplierDefinedEpic 123", CapabilityId = capabilities.Single(s => s.CapabilityRef == "C2").Id, CompliancyLevel = CompliancyLevel.May, IsActive = true, SupplierDefined = true },
-                new Epic { Id = "S00001", Name = "SupplierDefinedEpic New Format 1", Description = "SDE Description", CapabilityId = capabilities.Single(s => s.CapabilityRef == "C43").Id, CompliancyLevel = CompliancyLevel.May, IsActive = true, SupplierDefined = true },
+                new Epic { Id = "S00001", Name = "SupplierDefinedEpic New Format 1", Description = "SDE Description", CapabilityId = capabilities.Single(s => s.CapabilityRef == "C44").Id, CompliancyLevel = CompliancyLevel.May, IsActive = true, SupplierDefined = true },
+                new Epic { Id = "S00002", Name = "SupplierDefinedEpic New Format 2", Description = "SDE Description", CapabilityId = capabilities.Single(s => s.CapabilityRef == "C43").Id, CompliancyLevel = CompliancyLevel.May, IsActive = true, SupplierDefined = true },
+                new Epic { Id = "S00003", Name = "SupplierDefinedEpic New Format 3", Description = "SDE Description", CapabilityId = capabilities.Single(s => s.CapabilityRef == "C43").Id, CompliancyLevel = CompliancyLevel.May, IsActive = false, SupplierDefined = true },
+                new Epic { Id = "S00004", Name = "SupplierDefinedEpic New Format 4", Description = "SDE Description", CapabilityId = capabilities.Single(s => s.CapabilityRef == "C2").Id, CompliancyLevel = CompliancyLevel.May, IsActive = false, SupplierDefined = true },
             };
             context.AddRange(epics);
 

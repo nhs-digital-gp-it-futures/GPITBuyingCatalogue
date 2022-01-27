@@ -11,6 +11,12 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.Capabilities
 
         Task AddSupplierDefinedEpic(AddEditSupplierDefinedEpic epicModel);
 
-        Task<bool> EpicExists(string id, int capabilityId, string name, string description, bool isActive);
+        Task EditSupplierDefinedEpic(AddEditSupplierDefinedEpic epicModel);
+
+        Task<bool> EpicExists(string epicId, int capabilityId, string name, string description, bool isActive);
+
+        Task<Epic> GetEpic(string epicId);
+
+        Task<List<CatalogueItem>> GetItemsReferencingEpic(string epicId);
     }
 }

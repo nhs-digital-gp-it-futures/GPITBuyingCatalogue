@@ -38,8 +38,28 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Capabilities
             await dbContext.SaveChangesAsync();
         }
 
+        public async Task EditSupplierDefinedEpic(AddEditSupplierDefinedEpic epicModel)
+        {
+            if (epicModel is null)
+                throw new ArgumentNullException(nameof(epicModel));
+
+            var epic = await dbContext
+                .Epics
+                .FirstOrDefaultAsync(e => e.Id == epicModel.Id && e.SupplierDefined);
+
+            if (epic is null)
+                throw new KeyNotFoundException($"{epicModel.Id} is not a valid Epic Id");
+
+            epic.Name = epicModel.Name;
+            epic.Description = epicModel.Description;
+            epic.CapabilityId = epicModel.CapabilityId;
+            epic.IsActive = epicModel.IsActive;
+
+            await dbContext.SaveChangesAsync();
+        }
+
         public Task<bool> EpicExists(
-            string id,
+            string epicId,
             int capabilityId,
             string name,
             string description,
@@ -47,7 +67,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Capabilities
             dbContext
                .Epics
                .AnyAsync(e =>
-                   e.Id != id
+                   e.Id != epicId
                    && e.CapabilityId == capabilityId
                    && e.Name == name
                    && e.Description == description
@@ -61,5 +81,35 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Capabilities
                 .Include(e => e.Capability)
                 .Where(e => e.SupplierDefined)
                 .ToListAsync();
+
+        public Task<Epic> GetEpic(string epicId)
+        {
+            if (string.IsNullOrWhiteSpace(epicId))
+                throw new ArgumentException("Id is null or empty", nameof(epicId));
+
+            return dbContext
+                .Epics
+                .AsNoTracking()
+                .FirstOrDefaultAsync(e =>
+                    e.Id == epicId
+                    && e.SupplierDefined == true);
+        }
+
+        public Task<List<CatalogueItem>> GetItemsReferencingEpic(string epicId)
+        {
+            if (string.IsNullOrWhiteSpace(epicId))
+                throw new ArgumentException("Id is null or empty", nameof(epicId));
+
+            return dbContext
+                  .CatalogueItemEpics
+                  .Include(e => e.CatalogueItem)
+                  .ThenInclude(e => e.AdditionalService)
+                  .AsNoTracking()
+                  .Where(e =>
+                      e.EpicId == epicId
+                      && e.Epic.SupplierDefined == true)
+                  .Select(e => e.CatalogueItem)
+                  .ToListAsync();
+        }
     }
 }

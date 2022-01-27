@@ -330,7 +330,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
             if (solution is null)
                 return BadRequest($"No Solution found for Id: {solutionId}");
 
-            var capabilities = await capabilitiesService.GetCapabilitiesByCategory(solution.SupplierId);
+            var capabilities = await capabilitiesService.GetCapabilitiesByCategory();
 
             var model = new EditCapabilitiesModel(solution, capabilities)
             {

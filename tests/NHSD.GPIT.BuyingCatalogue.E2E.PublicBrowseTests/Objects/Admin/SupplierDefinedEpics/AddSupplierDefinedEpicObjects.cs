@@ -4,22 +4,22 @@ using OpenQA.Selenium;
 
 namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Objects.Admin.SupplierDefinedEpics
 {
-    internal static class AddSupplierDefinedEpicObjects
+    internal class AddSupplierDefinedEpicObjects
     {
-        internal static By CapabilityInput => By.Id(nameof(AddEditSupplierDefinedEpicModel.SelectedCapabilityId));
+        internal static By CapabilityInput => By.Id(nameof(SupplierDefinedEpicBaseModel.SelectedCapabilityId));
 
-        internal static By NameInput => By.Id(nameof(AddEditSupplierDefinedEpicModel.Name));
+        internal static By NameInput => By.Id(nameof(SupplierDefinedEpicBaseModel.Name));
 
-        internal static By DescriptionInput => By.Id(nameof(AddEditSupplierDefinedEpicModel.Description));
+        internal static By DescriptionInput => By.Id(nameof(SupplierDefinedEpicBaseModel.Description));
 
         internal static By StatusInput => ByExtensions.DataTestId("active-status-buttons");
 
-        internal static By CapabilityInputError => By.Id($"{nameof(AddEditSupplierDefinedEpicModel.SelectedCapabilityId)}-error");
+        internal static By CapabilityInputError => By.Id($"{nameof(SupplierDefinedEpicBaseModel.SelectedCapabilityId)}-error");
 
-        internal static By NameInputError => By.Id($"{nameof(AddEditSupplierDefinedEpicModel.Name)}-error");
+        internal static By NameInputError => By.Id($"{nameof(SupplierDefinedEpicBaseModel.Name)}-error");
 
-        internal static By DescriptionInputError => By.Id($"{nameof(AddEditSupplierDefinedEpicModel.Description)}-error");
+        internal static By DescriptionInputError => By.Id($"{nameof(SupplierDefinedEpicBaseModel.Description)}-error");
 
-        internal static By StatusInputError => By.Id($"add-edit-supplier-defined-epic-error");
+        internal static By StatusInputError => By.Id($"supplier-defined-epic-base-error");
     }
 }

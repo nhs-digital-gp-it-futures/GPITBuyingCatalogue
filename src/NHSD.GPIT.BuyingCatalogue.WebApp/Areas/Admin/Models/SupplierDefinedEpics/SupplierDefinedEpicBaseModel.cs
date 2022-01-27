@@ -7,25 +7,11 @@ using NHSD.GPIT.BuyingCatalogue.WebApp.Models;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.SupplierDefinedEpics
 {
-    public sealed class AddEditSupplierDefinedEpicModel : NavBaseModel
+    public class SupplierDefinedEpicBaseModel : NavBaseModel
     {
-        public AddEditSupplierDefinedEpicModel()
-        {
-        }
-
-        public AddEditSupplierDefinedEpicModel(Epic epic)
-        {
-            Id = epic.Id;
-            Name = epic.Name;
-            Description = epic.Description;
-            IsActive = epic.IsActive;
-        }
-
         public string Id { get; set; }
 
         public int? SelectedCapabilityId { get; set; }
-
-        public SelectList Capabilities { get; set; }
 
         [StringLength(500)]
         public string Name { get; set; }
@@ -35,7 +21,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.SupplierDefinedEpi
 
         public bool? IsActive { get; set; }
 
-        public bool CanDelete { get; set; }
+        public SelectList Capabilities { get; set; }
 
         public IList<SelectListItem> ActiveOptions => new List<SelectListItem>
         {
@@ -43,7 +29,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.SupplierDefinedEpi
             new("Inactive", false.ToString()),
         };
 
-        public AddEditSupplierDefinedEpicModel WithSelectListCapabilities(List<Capability> capabilities)
+        public SupplierDefinedEpicBaseModel WithSelectListCapabilities(List<Capability> capabilities)
         {
             Capabilities = new SelectList(
                 capabilities

@@ -20,6 +20,8 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models
 
         public AspNetUser LastUpdatedByUser { get; set; }
 
+        public CatalogueItem CatalogueItem { get; set; }
+
         public Epic Epic { get; set; }
 
         public CatalogueItemEpicStatus Status { get; set; }

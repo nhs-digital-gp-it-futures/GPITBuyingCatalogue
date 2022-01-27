@@ -236,5 +236,190 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Capabilities
 
             addedEpic.Should().NotBeNull();
         }
+
+        [Theory]
+        [InMemoryDbAutoData]
+        public static async Task GetEpic_EpicIdNullOrEmpty_ThrowsArgumentException(
+            SupplierDefinedEpicsService service)
+        {
+            await Assert.ThrowsAsync<ArgumentException>(() => service.GetEpic(null));
+            await Assert.ThrowsAsync<ArgumentException>(() => service.GetEpic(string.Empty));
+        }
+
+        [Theory]
+        [InMemoryDbAutoData]
+        public static async Task GetEpic_ValidEpicId_ReturnsEpic(
+            Capability capability,
+            Epic epic,
+            [Frozen] BuyingCatalogueDbContext context,
+            SupplierDefinedEpicsService service)
+        {
+            epic.CapabilityId = capability.Id;
+            epic.SupplierDefined = true;
+
+            context.Capabilities.Add(capability);
+            context.Epics.Add(epic);
+            await context.SaveChangesAsync();
+
+            var actualEpic = await service.GetEpic(epic.Id);
+
+            actualEpic
+                .Should()
+                .BeEquivalentTo(
+                    epic,
+                    opt => opt
+                        .Excluding(m => m.Capability));
+        }
+
+        [Theory]
+        [InMemoryDbAutoData]
+        public static async Task GetEpic_ValidEpicId_NotSupplierDefined_ReturnsNull(
+            Capability capability,
+            Epic epic,
+            [Frozen] BuyingCatalogueDbContext context,
+            SupplierDefinedEpicsService service)
+        {
+            epic.CapabilityId = capability.Id;
+            epic.SupplierDefined = false;
+
+            context.Capabilities.Add(capability);
+            context.Epics.Add(epic);
+            await context.SaveChangesAsync();
+
+            var actualEpic = await service.GetEpic(epic.Id);
+
+            actualEpic.Should().BeNull();
+        }
+
+        [Theory]
+        [InMemoryDbAutoData]
+        public static async Task GetItemsReferencingEpic_EpicIdNullOrEmpty_ThrowsArgumentException(
+            SupplierDefinedEpicsService service)
+        {
+            await Assert.ThrowsAsync<ArgumentException>(() => service.GetItemsReferencingEpic(null));
+            await Assert.ThrowsAsync<ArgumentException>(() => service.GetItemsReferencingEpic(string.Empty));
+        }
+
+        [Theory]
+        [InMemoryDbAutoData]
+        public static async Task GetItemsReferencingEpic_ValidEpicId_ReturnsItems(
+            Epic epic,
+            Capability capability,
+            List<CatalogueItem> catalogueItems,
+            [Frozen] BuyingCatalogueDbContext context,
+            SupplierDefinedEpicsService service)
+        {
+            epic.CapabilityId = capability.Id;
+            epic.SupplierDefined = true;
+
+            catalogueItems.ForEach(c => c.CatalogueItemEpics.Add(new CatalogueItemEpic
+            {
+                CapabilityId = capability.Id,
+                EpicId = epic.Id,
+                StatusId = 1,
+            }));
+
+            context.Capabilities.Add(capability);
+            context.Epics.Add(epic);
+            context.CatalogueItems.AddRange(catalogueItems);
+
+            await context.SaveChangesAsync();
+
+            var relatedItems = await service.GetItemsReferencingEpic(epic.Id);
+
+            relatedItems.Should().NotBeNull();
+            relatedItems.Should().NotBeEmpty();
+            relatedItems.Count.Should().Be(catalogueItems.Count);
+        }
+
+        [Theory]
+        [InMemoryDbAutoData]
+        public static async Task GetItemsReferencingEpic_ValidEpicId_NotSupplierDefined_ReturnsEmpty(
+            Epic epic,
+            Capability capability,
+            List<CatalogueItem> catalogueItems,
+            [Frozen] BuyingCatalogueDbContext context,
+            SupplierDefinedEpicsService service)
+        {
+            epic.CapabilityId = capability.Id;
+            epic.SupplierDefined = false;
+
+            catalogueItems.ForEach(c => c.CatalogueItemEpics.Add(new CatalogueItemEpic
+            {
+                CapabilityId = capability.Id,
+                EpicId = epic.Id,
+                StatusId = 1,
+            }));
+
+            context.Capabilities.Add(capability);
+            context.Epics.Add(epic);
+            context.CatalogueItems.AddRange(catalogueItems);
+
+            await context.SaveChangesAsync();
+
+            var relatedItems = await service.GetItemsReferencingEpic(epic.Id);
+
+            relatedItems.Should().NotBeNull();
+            relatedItems.Should().BeEmpty();
+        }
+
+        [Theory]
+        [InMemoryDbAutoData]
+        public static Task EditSupplierDefinedEpic_NullModel_ThrowsArgumentNullException(SupplierDefinedEpicsService service)
+            => Assert.ThrowsAsync<ArgumentNullException>(() => service.EditSupplierDefinedEpic(null));
+
+        [Theory]
+        [InMemoryDbAutoData]
+        public static Task EditSupplierDefinedEpic_InvalidEpicId_ThrowsKeyNotFoundException(
+            AddEditSupplierDefinedEpic editEpicModel,
+            SupplierDefinedEpicsService service)
+        {
+            editEpicModel.Id = "invalid-id";
+
+            return Assert.ThrowsAsync<KeyNotFoundException>(() => service.EditSupplierDefinedEpic(editEpicModel));
+        }
+
+        [Theory]
+        [InMemoryDbAutoData]
+        public static async Task EditSupplierDefinedEpic_ValidRequest_UpdatesEpic(
+            Capability capability,
+            Epic epic,
+            AddEditSupplierDefinedEpic editEpicModel,
+            [Frozen] BuyingCatalogueDbContext context,
+            SupplierDefinedEpicsService service)
+        {
+            var expectedEpic = new Epic
+            {
+                Id = epic.Id,
+                Name = editEpicModel.Name,
+                Description = editEpicModel.Description,
+                CapabilityId = editEpicModel.CapabilityId,
+                IsActive = editEpicModel.IsActive,
+            };
+
+            editEpicModel.Id = epic.Id;
+            epic.CapabilityId = capability.Id;
+            epic.SupplierDefined = true;
+
+            context.Capabilities.Add(capability);
+            context.Epics.Add(epic);
+
+            await context.SaveChangesAsync();
+            await service.EditSupplierDefinedEpic(editEpicModel);
+
+            var updatedEpic = await context.Epics.FindAsync(editEpicModel.Id);
+
+            updatedEpic
+                .Should()
+                .BeEquivalentTo(
+                    expectedEpic,
+                    opt => opt.Excluding(m => m.SourceUrl)
+                              .Excluding(m => m.Capability)
+                              .Excluding(m => m.LastUpdated)
+                              .Excluding(m => m.LastUpdatedBy)
+                              .Excluding(m => m.SupplierDefined)
+                              .Excluding(m => m.CompliancyLevel)
+                              .Excluding(m => m.LastUpdatedByUser));
+        }
     }
 }

@@ -7,11 +7,12 @@ using NHSD.GPIT.BuyingCatalogue.WebApp.Validation;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Validators.SupplierDefinedEpics
 {
-    public sealed class AddEditSupplierDefinedEpicModelValidator : AbstractValidator<AddEditSupplierDefinedEpicModel>
+    public sealed class SupplierDefinedEpicBaseModelValidator : AbstractValidator<SupplierDefinedEpicBaseModel>
     {
         private readonly ISupplierDefinedEpicsService supplierDefinedEpicsService;
 
-        public AddEditSupplierDefinedEpicModelValidator(ISupplierDefinedEpicsService supplierDefinedEpicsService)
+        public SupplierDefinedEpicBaseModelValidator(
+            ISupplierDefinedEpicsService supplierDefinedEpicsService)
         {
             this.supplierDefinedEpicsService = supplierDefinedEpicsService;
 
@@ -42,7 +43,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Validators.SupplierDefine
                     m => m.IsActive);
         }
 
-        private async Task<bool> NotBeADuplicateEpic(AddEditSupplierDefinedEpicModel model, CancellationToken token)
+        private async Task<bool> NotBeADuplicateEpic(SupplierDefinedEpicBaseModel model, CancellationToken token)
         {
             _ = token;
 

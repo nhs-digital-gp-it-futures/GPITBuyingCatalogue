@@ -38,21 +38,21 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
         public async Task<IActionResult> AddEpic()
         {
             var capabilities = await capabilitiesService.GetCapabilities();
-            var model = new AddEditSupplierDefinedEpicModel()
+            var model = new SupplierDefinedEpicBaseModel()
             {
                 BackLink = Url.Action(nameof(Dashboard)),
             };
 
-            return View("AddEditEpic", model.WithSelectListCapabilities(capabilities));
+            return View(model.WithSelectListCapabilities(capabilities));
         }
 
         [HttpPost("add-epic")]
-        public async Task<IActionResult> AddEpic(AddEditSupplierDefinedEpicModel model)
+        public async Task<IActionResult> AddEpic(SupplierDefinedEpicBaseModel model)
         {
             if (!ModelState.IsValid)
             {
                 var capabilities = await capabilitiesService.GetCapabilities();
-                return View("AddEditEpic", model.WithSelectListCapabilities(capabilities));
+                return View(model.WithSelectListCapabilities(capabilities));
             }
 
             var createEpicModel = new AddEditSupplierDefinedEpic(
@@ -67,9 +67,45 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
         }
 
         [HttpGet("edit/{epicId}")]
-        public IActionResult EditEpic(string epicId)
+        public async Task<IActionResult> EditEpic(string epicId)
         {
-            return View();
+            var epic = await supplierDefinedEpicsService.GetEpic(epicId);
+            if (epic is null)
+                return BadRequest($"No Supplier defined Epic found for Id: {epicId}");
+
+            var capabilities = await capabilitiesService.GetCapabilities();
+            var relatedItems = await supplierDefinedEpicsService.GetItemsReferencingEpic(epicId);
+
+            var model = new EditSupplierDefinedEpicModel(epic, relatedItems)
+            {
+                BackLink = Url.Action(nameof(Dashboard)),
+            };
+
+            return View(model.WithSelectListCapabilities(capabilities));
+        }
+
+        [HttpPost("edit/{epicId}")]
+        public async Task<IActionResult> EditEpic(string epicId, EditSupplierDefinedEpicModel model)
+        {
+            if (!ModelState.IsValid)
+            {
+                var capabilities = await capabilitiesService.GetCapabilities();
+                var relatedSolutions = await supplierDefinedEpicsService.GetItemsReferencingEpic(epicId);
+                model.RelatedItems = relatedSolutions;
+
+                return View(model.WithSelectListCapabilities(capabilities));
+            }
+
+            var editEpicModel = new AddEditSupplierDefinedEpic(
+                epicId,
+                model.SelectedCapabilityId!.Value,
+                model.Name,
+                model.Description,
+                model.IsActive!.Value);
+
+            await supplierDefinedEpicsService.EditSupplierDefinedEpic(editEpicModel);
+
+            return RedirectToAction(nameof(Dashboard));
         }
     }
 }

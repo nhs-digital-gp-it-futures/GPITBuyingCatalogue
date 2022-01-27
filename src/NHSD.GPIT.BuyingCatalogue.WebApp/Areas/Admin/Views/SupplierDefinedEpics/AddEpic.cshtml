@@ -1,6 +1,6 @@
 ﻿@using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
 @using NHSD.GPIT.BuyingCatalogue.Framework.Extensions
-@model NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.SupplierDefinedEpics.AddEditSupplierDefinedEpicModel
+@model NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.SupplierDefinedEpics.SupplierDefinedEpicBaseModel
 @{
     ViewBag.Title = "Supplier defined Epic details";
 }
@@ -14,8 +14,6 @@
         <form method="post">
             <input type="hidden" asp-for="BackLink" />
             <input type="hidden" asp-for="BackLinkText"/>
-            <input type="hidden" asp-for="CanDelete" />
-            <input type="hidden" asp-for="Id"/>
 
             <nhs-select asp-for="SelectedCapabilityId"
                         asp-items="@Model.Capabilities"
@@ -42,10 +40,5 @@
 
             <nhs-submit-button text="Save and continue" />
         </form>
-
-        @if(Model.CanDelete)
-        {
-            <vc:nhs-delete-button url="#" text="Delete supplier defined Epic" />
-        }
     </div>
 </div>
