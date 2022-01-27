@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using OpenQA.Selenium;
+using OpenQA.Selenium.Support.UI;
 
 namespace NHSD.GPIT.BuyingCatalogue.E2ETests.UIComponentTests.Actions
 {
@@ -34,5 +35,19 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.UIComponentTests.Actions
 
             Driver.FindElement(By.Id(targetId)).Click();
         }
+
+        internal string GetSelectDropDownValue(By by)
+        {
+            var selectElement = new SelectElement(Driver.FindElement(by));
+            return selectElement.SelectedOption.GetDomAttribute("value");
+            
+        }
+
+        internal void SelectDropDownItemByText(By targetField, string text)
+        {
+            var selectElement = new SelectElement(Driver.FindElement(targetField));
+            selectElement.SelectByText(text);
+        }
+
     }
 }
