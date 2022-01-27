@@ -119,6 +119,12 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.PublicBrowse.Homepage
             .BeTrue();
         }
 
+        [Fact]
+        public void Hompage_NewTest()
+        {
+            CommonActions.ElementIsDisplayed(Objects.Home.HomeSelectors.RequestAccountLink).Should().BeTrue();
+        }
+
         public void Dispose()
         {
             NavigateToUrl(

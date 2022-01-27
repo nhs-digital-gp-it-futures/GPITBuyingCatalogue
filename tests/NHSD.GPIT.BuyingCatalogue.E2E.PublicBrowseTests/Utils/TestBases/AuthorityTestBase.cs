@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.UrlGenerators;
 
 namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.TestBases
 {
@@ -12,7 +13,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.TestBases
             IDictionary<string, string> parameters)
             : base(
                   factory,
-                  GenerateUrlFromMethod(controller, methodName, parameters))
+                  UrlGenerator.GenerateUrlFromMethod(controller, methodName, parameters))
         {
             AuthorityLogin();
         }

@@ -47,6 +47,7 @@
   <ItemGroup>
     <ProjectReference Include="..\..\src\NHSD.GPIT.BuyingCatalogue.EntityFramework\NHSD.GPIT.BuyingCatalogue.EntityFramework.csproj" />
     <ProjectReference Include="..\..\src\NHSD.GPIT.BuyingCatalogue.WebApp\NHSD.GPIT.BuyingCatalogue.WebApp.csproj" />
+    <ProjectReference Include="..\NHSD.GPIT.BuyingCatalogue.E2ETests.Framework\NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.csproj" />
   </ItemGroup>
 
   <ItemGroup>
