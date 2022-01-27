@@ -40,7 +40,6 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.UIComponentTests.Actions
         {
             var selectElement = new SelectElement(Driver.FindElement(by));
             return selectElement.SelectedOption.GetDomAttribute("value");
-            
         }
 
         internal void SelectDropDownItemByText(By targetField, string text)
@@ -48,6 +47,5 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.UIComponentTests.Actions
             var selectElement = new SelectElement(Driver.FindElement(targetField));
             selectElement.SelectByText(text);
         }
-
     }
 }
