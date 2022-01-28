@@ -181,7 +181,7 @@ function reselectCapabilityAndEpicsFiltersAndFrameworkFilter() {
                         CheckCheckboxWithHiddenInputValue(epic);
                     else if (epic.includes(DFOCVCMarker))
                         CheckCheckboxWithHiddenInputValue(DecodeDFOCVCEpic(epic));
-                    else if (epic.includes(SupplierSolutionCharacter))
+                    else if (epic.includes(SupplierSolutionCharacter) || epic.length === 4)
                         CheckCheckboxWithHiddenInputValue(DecodeSupplierDefinedEpic(epic));
                     else
                         CheckCheckboxWithHiddenInputValue(DecodeNormalEpic(epics[0], epic));
@@ -234,18 +234,26 @@ function RefireDomContentLoadedEvent() {
 }
 
 // Epic Id's have 3 Patterns: Normal, DFOCVC and Supplier Defined
+//
 // Normal is the CapabilityId e.g  "C47" followed by its unique Epic Id e.g "C47E1".
+//
 // DFOCVC does not include the capability Id it's attached too, but instead starts with "E000",
 // so you get key that look like "E00033" or "E00001" (the unique numbers are always 2 numbers e.g "01").
-// Supplier Defined have the Supplier Id, the Solution Id then a Unique Id e.g "S042X02E01"
+//
+// Supplier Defined have two formats, the old and new format.
+// The old format has the Supplier Id, the Solution Id then a Unique Id e.g "S042X02E01"
 // where "S042" is the Supplier Id, "X01" is the Solution Id and "E01" is the unique key.
-/// Compression Logic for Each Type ///
-/// Normal
+//
+// The new format has the Supplier identifier and a Unique Id e.g "S00001".
+// This format is supplier agnostic as these epics are available globally, throughout all solutions.
+//
+// Compression Logic for Each Type
+//
 // Normal just remove the Capability Id, so "C47E1" just becomes "E1", since they're tied to the capability in the URL e.g "C47E1E2E3E4".
-/// DFOCVC
-// DFOCVC epics gain a D on the end of their Id e.g "E00047D" so that it's not recombined with the capability Id server side
-// we then remove 3 of the zeros so "E00047D" would become "E47D".
-/// Supplier Defined
+//
+// DFOCVC epics gain a D on the end of their Id e.g "E00047D" so that it's not recombined with the capability Id server side we then remove 3 of the zeros so "E00047D" would become "E47D".
+//
+// Supplier Defined
 // We strip all prepending zeros from the numbers, so "S042X01E01" becomes "S42X1E1".
 // next we change the E to an _ because E is used as a spit character for other epics, so "S42X1E1" becomes "S42X1_1".
 
