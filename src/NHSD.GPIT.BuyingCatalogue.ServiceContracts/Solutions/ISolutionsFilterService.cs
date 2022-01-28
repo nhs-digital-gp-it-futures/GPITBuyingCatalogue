@@ -11,10 +11,13 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions
         Task<PagedList<CatalogueItem>> GetAllSolutionsFiltered(
             PageOptions options = null,
             string frameworkId = null,
-            string selectedCapabilities = null);
+            string selectedCapabilities = null,
+            string search = null);
 
         Task<List<KeyValuePair<Framework, int>>> GetAllFrameworksAndCountForFilter();
 
         Task<CategoryFilterModel> GetAllCategoriesAndCountForFilter(string frameworkId = null);
+
+        Task<List<SolutionSearchFilterModel>> GetSolutionsBySearchTerm(string searchTerm, int maxToBringBack = 15);
     }
 }

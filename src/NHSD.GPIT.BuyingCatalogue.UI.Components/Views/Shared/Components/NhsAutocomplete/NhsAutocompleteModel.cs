@@ -8,6 +8,8 @@
 
         public string QueryParameterName { get; set; }
 
-        public string PlaceholderText { get; set; }
+        public string TitleText { get; set; }
+
+        public string CurrentPageUrl { get; set; }
     }
 }
