@@ -6,6 +6,8 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models
 {
     public sealed class SupplierContact : IAudited
     {
+        public const int TemporaryContactId = -1;
+
         public int Id { get; set; }
 
         public int SupplierId { get; set; }

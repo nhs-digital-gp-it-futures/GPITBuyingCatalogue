@@ -46,7 +46,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering
             await using var context = GetEndToEndDbContext();
             var order = await context.Orders.SingleAsync(o => o.Id == CallOffId.Id);
 
-            CommonActions.InputValueEqualToo(Objects.Ordering.OrderDescription.DescriptionInput, order.Description);
+            CommonActions.InputValueEqualTo(Objects.Ordering.OrderDescription.DescriptionInput, order.Description);
         }
 
         [Fact]

@@ -15,10 +15,12 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Contacts
             if (newOrUpdatedContact is null)
                 return existingContact;
 
+            existingContact.SupplierContactId = newOrUpdatedContact.SupplierContactId;
             existingContact.FirstName = newOrUpdatedContact.FirstName;
             existingContact.LastName = newOrUpdatedContact.LastName;
             existingContact.Email = newOrUpdatedContact.EmailAddress;
             existingContact.Phone = newOrUpdatedContact.TelephoneNumber;
+            existingContact.Department = newOrUpdatedContact.Department;
 
             return existingContact;
         }

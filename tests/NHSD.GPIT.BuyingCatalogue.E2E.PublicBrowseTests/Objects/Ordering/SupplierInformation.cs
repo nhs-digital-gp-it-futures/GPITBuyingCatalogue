@@ -1,5 +1,4 @@
-﻿using NHSD.GPIT.BuyingCatalogue.E2ETests.Objects.Common;
-using OpenQA.Selenium;
+﻿using OpenQA.Selenium;
 
 namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Objects.Ordering
 {
@@ -11,16 +10,8 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Objects.Ordering
 
         public static By SupplierRadioErrorMessage => By.Id("supplier-search-select-error");
 
-        public static By SupplierName => ByExtensions.DataTestId("supplier-name");
+        public static By SupplierContactRadioErrorMessage => By.Id("supplier-error");
 
-        public static By SupplierAddress => ByExtensions.DataTestId("supplier-address");
-
-        public static By SupplierFirstName => By.Id("PrimaryContact_FirstName");
-
-        public static By SupplierLastName => By.Id("PrimaryContact_LastName");
-
-        public static By SupplierEmail => By.Id("PrimaryContact_Email");
-
-        public static By SupplierPhone => By.Id("PrimaryContact_Phone");
+        public static By CreateNewContactLink => By.ClassName("nhsuk-action-link__text");
     }
 }
