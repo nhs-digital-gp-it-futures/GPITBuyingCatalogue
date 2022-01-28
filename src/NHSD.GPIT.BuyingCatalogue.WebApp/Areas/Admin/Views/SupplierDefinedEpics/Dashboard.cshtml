@@ -28,7 +28,7 @@
 <nhs-table data-test-id="sde-table">
     <nhs-table-column>Epic</nhs-table-column>
     <nhs-table-column>Capability</nhs-table-column>
-    <nhs-table-column></nhs-table-column>
+    <nhs-table-column>Status</nhs-table-column>
     <nhs-table-column></nhs-table-column>
     @foreach (var supplierDefinedEpic in Model.SupplierDefinedEpics)
     {
@@ -40,10 +40,8 @@
                     @supplierDefinedEpic.Capability
             </nhs-table-cell>
             <nhs-table-cell>
-            @if (!supplierDefinedEpic.IsActive)
-            {
-                <nhs-tag colour="Grey" text="Inactive" />
-            }
+                <nhs-tag colour="@GetTagColour(supplierDefinedEpic.IsActive)"
+                    text="@GetTagText(supplierDefinedEpic.IsActive)"/>
             </nhs-table-cell>
             <nhs-table-cell>
                 <a
@@ -55,3 +53,9 @@
         </nhs-table-row-container>
     }
 </nhs-table>
+@{
+    NhsTagsTagHelper.TagColour GetTagColour(bool status) =>
+        status ? NhsTagsTagHelper.TagColour.Green : NhsTagsTagHelper.TagColour.Grey;
+
+    string GetTagText(bool status) => status ? "Active" : "Inactive";
+}

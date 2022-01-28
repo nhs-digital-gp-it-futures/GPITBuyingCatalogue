@@ -129,7 +129,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
             if (associatedService is null)
                 return BadRequest($"No Associated Service found for Id: {associatedServiceId}");
 
-            var relatedSolutions = await associatedServicesService.GetAllSolutionsForAssociatedService(solutionId, associatedServiceId);
+            var relatedSolutions = await associatedServicesService.GetAllSolutionsForAssociatedService(associatedServiceId);
             var model = new EditAssociatedServiceModel(solution, associatedService, relatedSolutions)
             {
                 BackLink = Url.Action(nameof(AssociatedServices), new { solutionId }),
@@ -144,7 +144,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
             if (!ModelState.IsValid)
             {
                 var solution = await solutionsService.GetSolutionThin(solutionId);
-                var relatedSolutions = await associatedServicesService.GetAllSolutionsForAssociatedService(solutionId, associatedServiceId);
+                var relatedSolutions = await associatedServicesService.GetAllSolutionsForAssociatedService(associatedServiceId);
                 model.RelatedSolutions = relatedSolutions;
 
                 return View("EditAssociatedService", model);

@@ -96,6 +96,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.AddNewSolution
             CommonActions.ElementIsDisplayed(Objects.Admin.CommonObjects.SaveButton).Should().BeTrue();
             CommonActions.ElementIsDisplayed(AssociatedServicesObjects.AssociatedServiceDashboardTable).Should().BeTrue();
             CommonActions.ElementIsDisplayed(AssociatedServicesObjects.AssociatedServiceRelatedSolutionsTable).Should().BeFalse();
+            CommonActions.ElementIsDisplayed(AssociatedServicesObjects.AssociatedServiceRelatedSolutionsInset).Should().BeTrue();
         }
 
         [Fact]
@@ -123,24 +124,6 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.AddNewSolution
         }
 
         [Fact]
-        public void EditAssociatedService_WithServiceAssociations_TableIsDisplayed()
-        {
-            using var context = GetEndToEndDbContext();
-            var associatedService = context.AssociatedServices.Single(a => a.CatalogueItemId == AssociatedServiceId);
-            var solution = context.Solutions.Include(s => s.CatalogueItem).ThenInclude(c => c.AssociatedService).First();
-            solution.CatalogueItem.SupplierServiceAssociations = new HashSet<SupplierServiceAssociation> { new(solution.CatalogueItemId, AssociatedServiceId) };
-
-            context.SaveChanges();
-
-            Driver.Navigate().Refresh();
-
-            CommonActions.ElementIsDisplayed(AssociatedServicesObjects.AssociatedServiceRelatedSolutionsTable).Should().BeTrue();
-
-            solution.CatalogueItem.SupplierServiceAssociations.Clear();
-            context.SaveChanges();
-        }
-
-        [Fact]
         public void EditAssociatedService_EditServiceAssociation_NavigatesToCorrectPage()
         {
             using var context = GetEndToEndDbContext();
@@ -158,6 +141,25 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.AddNewSolution
                 typeof(AssociatedServicesController),
                 nameof(AssociatedServicesController.AssociatedServices))
                 .Should().BeTrue();
+
+            solution.CatalogueItem.SupplierServiceAssociations.Clear();
+            context.SaveChanges();
+        }
+
+        [Fact]
+        public void EditAssociatedService_WithServiceAssociations_TableIsDisplayed()
+        {
+            using var context = GetEndToEndDbContext();
+            var associatedService = context.AssociatedServices.Single(a => a.CatalogueItemId == AssociatedServiceId);
+            var solution = context.Solutions.Include(s => s.CatalogueItem).ThenInclude(c => c.SupplierServiceAssociations).First();
+            solution.CatalogueItem.SupplierServiceAssociations = new HashSet<SupplierServiceAssociation> { new(solution.CatalogueItemId, AssociatedServiceId) };
+
+            context.SaveChanges();
+
+            Driver.Navigate().Refresh();
+
+            CommonActions.ElementIsDisplayed(AssociatedServicesObjects.AssociatedServiceRelatedSolutionsTable).Should().BeTrue();
+            CommonActions.ElementIsDisplayed(AssociatedServicesObjects.AssociatedServiceRelatedSolutionsInset).Should().BeFalse();
 
             solution.CatalogueItem.SupplierServiceAssociations.Clear();
             context.SaveChanges();
@@ -186,7 +188,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.AddNewSolution
 
             CommonActions.ElementShowingCorrectErrorMessage(
                 AssociatedServicesObjects.PublicationStatusInputError,
-                "Error: This Associated Service cannot be unpublished as it is referenced by another solution")
+                "Error: This Associated Service cannot be unpublished as it is referenced by at least one solution")
                 .Should()
                 .BeTrue();
 

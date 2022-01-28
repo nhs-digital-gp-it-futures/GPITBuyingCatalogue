@@ -25,6 +25,6 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.AssociatedServices
 
         Task<CatalogueItemId> AddAssociatedService(CatalogueItem solution, AssociatedServicesDetailsModel model);
 
-        Task<List<CatalogueItem>> GetAllSolutionsForAssociatedService(CatalogueItemId currentSolutionId, CatalogueItemId associatedServiceId);
+        Task<List<CatalogueItem>> GetAllSolutionsForAssociatedService(CatalogueItemId associatedServiceId);
     }
 }

@@ -33,9 +33,9 @@
 
             @if(Model.RelatedItems.Count > 0)
             {
-                <nhs-table data-test-id="epic-related-items-table" label-text="Catalogue items referencing this Epic">
-                    <nhs-table-column>Catalogue item ID</nhs-table-column>
-                    <nhs-table-column>Catalogue item name</nhs-table-column>
+                <nhs-table data-test-id="epic-related-items-table" label-text="Catalogue Solutions or Additional Services referencing this Epic">
+                    <nhs-table-column>ID</nhs-table-column>
+                    <nhs-table-column>Name</nhs-table-column>
                     <nhs-table-column></nhs-table-column>
                         @foreach(var relatedItem in Model.RelatedItems)
                         {
@@ -55,9 +55,9 @@
             } else
             {
                 <nhs-inset-text data-test-id="epic-related-items-inset">
-                    <b>Catalogue items referencing this Epic</b>
+                    <b>Catalogue Solutions or Additional Services referencing this Epic</b>
                     <br/><br/>
-                    This Epic is currently not being referenced by any catalogue items.
+                    This Epic is currently not being referenced by any Catalogue Solutions or Additional Services.
                 </nhs-inset-text>
             }
 
