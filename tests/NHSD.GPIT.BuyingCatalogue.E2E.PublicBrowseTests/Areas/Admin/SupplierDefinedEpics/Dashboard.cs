@@ -22,10 +22,16 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.SupplierDefinedEpics
         }
 
         [Fact]
-        public void Index_AllSectionsDisplayed()
+        public void Dashboard_AllSectionsDisplayed()
         {
+            CommonActions.WaitUntilElementIsDisplayed(SupplierDefinedEpicsDashboardObjects.InactiveItemsContainer);
+
             CommonActions.PageTitle().Should().Be("Supplier defined Epics".FormatForComparison());
             CommonActions.LedeText().Should().Be("Add a supplier defined Epic or edit an existing one.".FormatForComparison());
+
+            CommonActions.ElementIsDisplayed(SupplierDefinedEpicsDashboardObjects.InactiveItemsContainer)
+                .Should()
+                .BeTrue();
 
             CommonActions.ElementIsDisplayed(SupplierDefinedEpicsDashboardObjects.EpicsTable)
                 .Should()
@@ -34,10 +40,14 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.SupplierDefinedEpics
             CommonActions.ElementIsDisplayed(SupplierDefinedEpicsDashboardObjects.AddEpicLink)
                 .Should()
                 .BeTrue();
+
+            CommonActions.ElementIsNotDisplayed(SupplierDefinedEpicsDashboardObjects.InactiveItemRow)
+                .Should()
+                .BeTrue();
         }
 
         [Fact]
-        public void Index_EpicsTable_ContainsEditLinkForEachEpic()
+        public void Dashboard_EpicsTable_ContainsEditLinkForEachEpic()
         {
             using var context = GetEndToEndDbContext();
             var epics = context.Epics.Where(e => e.SupplierDefined).ToList();
@@ -51,18 +61,13 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.SupplierDefinedEpics
         }
 
         [Fact]
-        public void Index_EpicsTable_DisplaysStatusesCorrectly()
+        public void Dashboard_ClickShowInactiveEpics_ExpectedResult()
         {
-            using var context = GetEndToEndDbContext();
-            var epics = context.Epics.Where(e => e.SupplierDefined).ToList();
+            CommonActions.ElementIsNotDisplayed(SupplierDefinedEpicsDashboardObjects.InactiveItemRow).Should().BeTrue();
 
-            epics.ForEach(epic =>
-                Driver
-                    .FindElement(By.XPath($"//tr[td//text()[contains(., '{epic.Name}')]]/td[3]/strong"))
-                    .Text
-                    .EqualsIgnoreWhiteSpace(GetActiveStatusText(epic.IsActive))
-                    .Should()
-                    .BeTrue());
+            CommonActions.ClickFirstCheckbox();
+
+            CommonActions.ElementIsDisplayed(SupplierDefinedEpicsDashboardObjects.InactiveItemRow).Should().BeTrue();
         }
 
         private static string GetActiveStatusText(bool isActive) => isActive ? "Active" : "Inactive";

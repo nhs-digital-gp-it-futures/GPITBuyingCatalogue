@@ -14,5 +14,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.SupplierDefinedEpi
         }
 
         public IList<SupplierDefinedEpicModel> SupplierDefinedEpics { get; set; } = new List<SupplierDefinedEpicModel>();
+
+        public bool ShowInactiveItems { get; }
     }
 }

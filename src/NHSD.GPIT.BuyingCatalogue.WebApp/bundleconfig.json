@@ -12,9 +12,9 @@
     ]
   },
   {
-    "outputFileName": "wwwroot/js/SupplierManagement.min.js",
+    "outputFileName": "wwwroot/js/InactiveItemManagement.min.js",
     "inputFiles": [
-      "wwwroot/js/SupplierManagement.js"
+      "wwwroot/js/InactiveItemManagement.js"
     ]
   },
   {
