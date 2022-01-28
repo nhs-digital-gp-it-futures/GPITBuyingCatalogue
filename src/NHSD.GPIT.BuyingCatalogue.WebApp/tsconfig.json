@@ -15,5 +15,6 @@
   },
   "include": [
     "wwwroot/ts/*"
-  ]
+  ],
+  "exclude": ["node_modules"]
 }
