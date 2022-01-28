@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Actions.Common;
-using NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.RandomData;
+using NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.RandomData;
 using OpenQA.Selenium;
 
 namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Actions.Admin.EditSolution

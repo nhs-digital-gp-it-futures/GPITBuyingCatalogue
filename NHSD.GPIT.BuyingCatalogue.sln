@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 16
-VisualStudioVersion = 16.0.31005.135
+# Visual Studio Version 17
+VisualStudioVersion = 17.0.32014.148
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{F263267A-74BC-476F-AC68-412968DFDE9B}"
 	ProjectSection(SolutionItems) = preProject
@@ -111,6 +111,10 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NHSD.GPIT.BuyingCatalogue.U
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NHSD.GPIT.BuyingCatalogue.UI.Components.UnitTests", "tests\NHSD.GPIT.BuyingCatalogue.UI.Components.UnitTests\NHSD.GPIT.BuyingCatalogue.UI.Components.UnitTests.csproj", "{0A9411BA-8BEC-4472-B21E-79077727F99E}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NHSD.GPIT.BuyingCatalogue.E2ETests.Framework", "tests\NHSD.GPIT.BuyingCatalogue.E2ETests.Framework\NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.csproj", "{98B5F3D2-BCD0-4545-BBE6-B6F6A69EDA0E}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NHSD.GPIT.BuyingCatalogue.E2ETests.UIComponentTests", "tests\NHSD.GPIT.BuyingCatalogue.E2ETests.UIComponentTests\NHSD.GPIT.BuyingCatalogue.E2ETests.UIComponentTests.csproj", "{14D4E116-CC67-46C2-8FEC-4883EAC07EBA}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -189,6 +193,14 @@ Global
 		{0A9411BA-8BEC-4472-B21E-79077727F99E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{0A9411BA-8BEC-4472-B21E-79077727F99E}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{0A9411BA-8BEC-4472-B21E-79077727F99E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{98B5F3D2-BCD0-4545-BBE6-B6F6A69EDA0E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{98B5F3D2-BCD0-4545-BBE6-B6F6A69EDA0E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{98B5F3D2-BCD0-4545-BBE6-B6F6A69EDA0E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{98B5F3D2-BCD0-4545-BBE6-B6F6A69EDA0E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{14D4E116-CC67-46C2-8FEC-4883EAC07EBA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{14D4E116-CC67-46C2-8FEC-4883EAC07EBA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{14D4E116-CC67-46C2-8FEC-4883EAC07EBA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{14D4E116-CC67-46C2-8FEC-4883EAC07EBA}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -216,6 +228,8 @@ Global
 		{C0E6F77D-A380-4196-B4B8-C859092393DC} = {885B7CFA-DB1B-4D95-9943-CDDDDCBED5A3}
 		{ADE6425F-36C9-4183-81EF-BB1A186F2D7B} = {885B7CFA-DB1B-4D95-9943-CDDDDCBED5A3}
 		{0A9411BA-8BEC-4472-B21E-79077727F99E} = {D1172DF2-850A-4CCD-949F-8CB9AE7A2DE8}
+		{98B5F3D2-BCD0-4545-BBE6-B6F6A69EDA0E} = {D1172DF2-850A-4CCD-949F-8CB9AE7A2DE8}
+		{14D4E116-CC67-46C2-8FEC-4883EAC07EBA} = {D1172DF2-850A-4CCD-949F-8CB9AE7A2DE8}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {141F787F-5876-42E9-90BB-1A87A9EE130D}
