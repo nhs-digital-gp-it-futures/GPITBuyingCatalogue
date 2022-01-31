@@ -785,7 +785,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
                 SolutionName = solution.CatalogueItem.Name,
             };
 
-            capabilitiesService.Setup(s => s.GetCapabilitiesByCategory(It.IsAny<int>()))
+            capabilitiesService.Setup(s => s.GetCapabilitiesByCategory())
                 .ReturnsAsync(capabilityCategories.ToList());
 
             solutionsService.Setup(s => s.GetSolutionWithCapabilities(solution.CatalogueItemId))

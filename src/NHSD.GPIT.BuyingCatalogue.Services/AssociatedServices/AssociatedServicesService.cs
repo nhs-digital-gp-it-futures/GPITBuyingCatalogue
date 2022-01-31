@@ -88,10 +88,10 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.AssociatedServices
             await dbContext.SaveChangesAsync();
         }
 
-        public async Task<List<CatalogueItem>> GetAllSolutionsForAssociatedService(CatalogueItemId currentSolutionId, CatalogueItemId associatedServiceId)
+        public async Task<List<CatalogueItem>> GetAllSolutionsForAssociatedService(CatalogueItemId associatedServiceId)
             => await dbContext
                 .SupplierServiceAssociations
-                .Where(ssa => ssa.AssociatedServiceId == associatedServiceId && ssa.CatalogueItemId != currentSolutionId)
+                .Where(ssa => ssa.AssociatedServiceId == associatedServiceId)
                 .Select(ssa => ssa.CatalogueItem).ToListAsync();
 
         public async Task<CatalogueItemId> AddAssociatedService(

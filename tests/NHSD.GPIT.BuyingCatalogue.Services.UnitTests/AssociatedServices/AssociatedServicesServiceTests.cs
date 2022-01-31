@@ -147,7 +147,6 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.AssociatedServices
         [InMemoryDbAutoData]
         public static async Task GetAllSolutionsForAssociatedService_Returns_RelatedSolutions(
             List<Solution> solutions,
-            Solution solution,
             AssociatedService associatedService,
             [Frozen] BuyingCatalogueDbContext context,
             AssociatedServicesService service)
@@ -159,7 +158,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.AssociatedServices
 
             context.SaveChanges();
 
-            var relatedSolutions = await service.GetAllSolutionsForAssociatedService(solution.CatalogueItemId, associatedService.CatalogueItemId);
+            var relatedSolutions = await service.GetAllSolutionsForAssociatedService(associatedService.CatalogueItemId);
 
             relatedSolutions.Should().NotBeEmpty();
             relatedSolutions.Count.Should().Be(solutions.Count);
