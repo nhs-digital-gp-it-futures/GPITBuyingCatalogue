@@ -8,6 +8,7 @@ const EpicSplitCharacter = 'E';
 const DFOCVCMarker = 'D';
 const SupplierSplitCharacter = 'S';
 const SupplierSolutionCharacter = 'X';
+const SupplierNewFormatCharacter = 'N';
 const CapabilityMarker = 'C';
 const InputTypeHidden = "input[type='hidden']";
 const NhsukCheckboxesInput = ".nhsuk-checkboxes__input";
@@ -80,7 +81,9 @@ function generateQueryParam() {
         if (input.checked) {
             const value = checkbox.parentNode.querySelector(InputTypeHidden).getAttribute("value");
 
-            if (value.includes(SupplierSplitCharacter))
+            if (value.includes(SupplierSplitCharacter) && !value.includes(SupplierSolutionCharacter))
+                output += EncodeNewSupplierDefinedEpic(value);
+            else if (value.includes(SupplierSplitCharacter))
                 output += EncodeSupplierDefinedEpic(value);
             else if (value.includes(EpicSplitCharacter) && !value.includes(CapabilityMarker))
                 output += EncodeDFOCVCEpic(value);
@@ -177,14 +180,20 @@ function reselectCapabilityAndEpicsFiltersAndFrameworkFilter() {
                 const epics = capability.split(SupplierSplitCharacter).map(s => s.split(EpicSplitCharacter)).flat();
 
                 epics.forEach(epic => {
+                    let value = "";
+
                     if (epic.startsWith(CapabilitiesSplitCharacter))
-                        CheckCheckboxWithHiddenInputValue(epic);
+                        value = epic;
                     else if (epic.includes(DFOCVCMarker))
-                        CheckCheckboxWithHiddenInputValue(DecodeDFOCVCEpic(epic));
-                    else if (epic.includes(SupplierSolutionCharacter) || epic.length === 4)
-                        CheckCheckboxWithHiddenInputValue(DecodeSupplierDefinedEpic(epic));
+                        value = DecodeDFOCVCEpic(epic);
+                    else if (epic.includes(SupplierNewFormatCharacter))
+                        value = DecodeNewSupplierDefinedEpic(epic);
+                    else if (epic.includes(SupplierSolutionCharacter))
+                        value = DecodeSupplierDefinedEpic(epic);
                     else
-                        CheckCheckboxWithHiddenInputValue(DecodeNormalEpic(epics[0], epic));
+                        value = DecodeNormalEpic(epics[0], epic);
+
+                    CheckCheckboxWithHiddenInputValue(value);
                 });
             }
         });
@@ -253,9 +262,13 @@ function RefireDomContentLoadedEvent() {
 //
 // DFOCVC epics gain a D on the end of their Id e.g "E00047D" so that it's not recombined with the capability Id server side we then remove 3 of the zeros so "E00047D" would become "E47D".
 //
-// Supplier Defined
+// Supplier Defined (new)
+// Leading zeros are stripped preserving just the unique ID, S00001 becomes S1 or S00100 becomes S100.
+// An 'N' is appended to the end to denote this as a new Supplier defined Epic.
+//
+// Supplier Defined (old)
 // We strip all prepending zeros from the numbers, so "S042X01E01" becomes "S42X1E1".
-// next we change the E to an _ because E is used as a spit character for other epics, so "S42X1E1" becomes "S42X1_1".
+// next we change the E to an _ because E is used as a split character for other epics, so "S42X1E1" becomes "S42X1_1".
 
 function EncodeNormalEpic(rawValue) {
     return rawValue.substring(rawValue.indexOf(EpicSplitCharacter));
@@ -269,6 +282,10 @@ function EncodeSupplierDefinedEpic(rawValue) {
     return rawValue.replace("E0", '_').replace("S0", 'S').replace("X0", 'X');
 }
 
+function EncodeNewSupplierDefinedEpic(rawValue) {
+    return rawValue.replace(/S[0]+/, 'S') + SupplierNewFormatCharacter;
+}
+
 function DecodeNormalEpic(capabilityId, encodedValue) {
     return capabilityId + EpicSplitCharacter + encodedValue;
 }
@@ -279,4 +296,8 @@ function DecodeDFOCVCEpic(encodedValue) {
 
 function DecodeSupplierDefinedEpic(encodedValue) {
     return ("S0" + encodedValue).replace('_', "E0").replace('X', "X0");
+}
+
+function DecodeNewSupplierDefinedEpic(encodedValue) {
+    return "S" + encodedValue.replace('N', '').padStart(5, '0');
 }

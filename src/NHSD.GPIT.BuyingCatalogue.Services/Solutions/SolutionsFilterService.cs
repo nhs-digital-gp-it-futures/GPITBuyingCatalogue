@@ -20,6 +20,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
         private const char CapabilitiesDelimiter = '|';
         private const char CapabilitiesStartingCharacter = 'C';
         private const char EpicStartingCharacter = 'E';
+        private const char SupplierNewFormatCharacter = 'N';
         private const char SupplierStartingCharacter = 'S';
         private const char SupplierMarkCharacter = 'X';
         private const char DfocvcMarkCharacter = 'D';
@@ -300,7 +301,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
                         if (s.ContainsIgnoreCase(DfocvcMarkCharacter))
                             return DecodeDfocvcEpic(s);
 
-                        if (s.Length == 4)
+                        if (s.ContainsIgnoreCase(SupplierNewFormatCharacter))
                             return DecodeNewSupplierDefinedEpic(s);
 
                         return s.ContainsIgnoreCase(SupplierMarkCharacter)
@@ -323,6 +324,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
         private static string DecodeOldSupplierDefinedEpic(string encodedEpic) => ("S0" + encodedEpic)
             .Replace("_", "E0", StringComparison.Ordinal).Replace("X", "X0", StringComparison.OrdinalIgnoreCase);
 
-        private static string DecodeNewSupplierDefinedEpic(string encodedEpic) => $"S0{encodedEpic}";
+        private static string DecodeNewSupplierDefinedEpic(string encodedEpic)
+            => $"S{encodedEpic.Replace("N", string.Empty, StringComparison.OrdinalIgnoreCase).PadLeft(5, '0')}";
     }
 }
