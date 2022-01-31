@@ -107,12 +107,21 @@
                 <nhs-page-number-pagination current-page-number="@Model.Options.PageNumber"
                                             total-number-of-pages="@Model.Options.NumberOfPages" />
 
-            </div>
-        }
-        else
-        {
-            <h2 id="no-results">No results found that match your search criteria</h2>
-            <p>Try a different search term or change any filters you've selected.</p>
+			</div>
+		}
+		else
+		{
+			@if(Context.Request.Query["search"].Count > 0){
+				<h2 id="no-results-search">No results were found for "@Context.Request.Query["search"].FirstOrDefault()"</h2>
+				<p>Try a different search term or change any filters you've selected.</p>
+			}
+			else
+			{				
+				<h2 id="no-results">No results found that match your search criteria</h2>
+				<p>Try a different search term or change any filters you've selected.</p>
+			}
+
+
         }
     </div>
 </div>
