@@ -13,12 +13,10 @@
 <nhs-page-title title="@ViewBag.Title"
                 advice="Add a supplier defined Epic or edit an existing one." />
 
-<div data-test-id="sde-add-link">
-    <vc:nhs-action-link url="@Url.Action(
-        nameof(SupplierDefinedEpicsController.AddEpic),
-        typeof(SupplierDefinedEpicsController).ControllerName())"
-        text="Add a supplier defined Epic"/>
-</div>
+<vc:nhs-action-link url="@Url.Action(
+    nameof(SupplierDefinedEpicsController.AddEpic),
+    typeof(SupplierDefinedEpicsController).ControllerName())"
+    text="Add a supplier defined Epic"/>
 
 <nhs-checkbox-container Id="inactive-items-checkbox" style="display:none;">
     <nhs-checkbox asp-for="ShowInactiveItems"

@@ -43,9 +43,7 @@
                                 <nhs-table-cell>@relatedItem.Id</nhs-table-cell>
                                 <nhs-table-cell>@relatedItem.Name</nhs-table-cell>
                                 <nhs-table-cell>
-                                    <a href="@GetEditUrl(relatedItem)"
-                                       data-test-id="epic-association-@relatedItem.Id"
-                                       style="white-space: nowrap;">
+                                    <a href="@GetEditUrl(relatedItem)" style="white-space: nowrap;">
                                     Edit
                                     </a>
                                 </nhs-table-cell>
@@ -71,7 +69,7 @@
                                    display-name="Text" />
             </nhs-fieldset-form-label>
 
-            <nhs-submit-button text="Save and continue" />
+            <nhs-submit-button />
         </form>
     </div>
 </div>
