@@ -7,6 +7,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 	ProjectSection(SolutionItems) = preProject
 		.editorconfig = .editorconfig
 		azure-pipelines.yml = azure-pipelines.yml
+		CodeCoverage.runsettings = CodeCoverage.runsettings
 		docker-build.ps1 = docker-build.ps1
 		docker-start.ps1 = docker-start.ps1
 		LICENSE = LICENSE
@@ -113,7 +114,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NHSD.GPIT.BuyingCatalogue.U
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NHSD.GPIT.BuyingCatalogue.E2ETests.Framework", "tests\NHSD.GPIT.BuyingCatalogue.E2ETests.Framework\NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.csproj", "{98B5F3D2-BCD0-4545-BBE6-B6F6A69EDA0E}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NHSD.GPIT.BuyingCatalogue.E2ETests.UIComponentTests", "tests\NHSD.GPIT.BuyingCatalogue.E2ETests.UIComponentTests\NHSD.GPIT.BuyingCatalogue.E2ETests.UIComponentTests.csproj", "{14D4E116-CC67-46C2-8FEC-4883EAC07EBA}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NHSD.GPIT.BuyingCatalogue.E2ETests.UIComponentTests", "tests\NHSD.GPIT.BuyingCatalogue.E2ETests.UIComponentTests\NHSD.GPIT.BuyingCatalogue.E2ETests.UIComponentTests.csproj", "{14D4E116-CC67-46C2-8FEC-4883EAC07EBA}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
