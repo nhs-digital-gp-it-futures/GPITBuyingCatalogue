@@ -87,3 +87,7 @@ variable "app_url" {
 variable "acr_subscription_id" {
   type = string
 }
+
+variable "primary_env" {
+  type = string
+}

@@ -27,7 +27,7 @@ resource "azurerm_sql_virtual_network_rule" "sqlvnetrule" {
  module "sql_server_sec" {
   source                = "./modules/bc_sql_server"
 
-  count                 = local.shortenv == "preprod" || local.shortenv == "production" ? 1 : 0 
+  count                 = local.shortenv == "platform" || local.shortenv == "production" ? 1 : 0 
   
   environment           = var.environment
   region                = local.sql_region2

@@ -7,8 +7,8 @@ module "webapp" {
   pjtcode          = var.pjtcode
   rg_name          = azurerm_resource_group.webapp.name
   webapp_name      = "${var.project}-${var.environment}-webapp"
-  sku_tier         = local.shortenv == "preprod" || local.shortenv == "production" ? "PremiumV2" : "Standard"
-  sku_size         = local.shortenv == "preprod" || local.shortenv == "production" ? "P2v2" : "S1"
+  sku_tier         = local.shortenv == "platform" || local.shortenv == "production" ? "PremiumV2" : "Standard"
+  sku_size         = local.shortenv == "platform" || local.shortenv == "production" ? "P2v2" : "S1"
   acr_name         = "gpitfuturesdevacr"
   acr_pwd          = data.azurerm_container_registry.acr.admin_password
   acr_rg           = "gpitfutures-dev-rg-acr"
@@ -35,7 +35,7 @@ module "webapp" {
   docker_registry_server_url = data.azurerm_container_registry.acr.login_server
   docker_registry_server_username = data.azurerm_container_registry.acr.admin_username
   docker_registry_server_password = data.azurerm_container_registry.acr.admin_password
-  create_slot = local.shortenv == "preprod" || local.shortenv == "production" ? 1 : 0 
+  create_slot = local.shortenv == "platform" || local.shortenv == "production" ? 1 : 0 
   create_host_binding = local.coreEnv == "dev" ? 1 : 0 
   ssl_thumbprint = data.azurerm_key_vault_certificate.ssl_cert.thumbprint
   depends_on = [module.sql_server_pri]

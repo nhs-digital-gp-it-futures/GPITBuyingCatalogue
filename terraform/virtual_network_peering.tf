@@ -1,6 +1,6 @@
 data "azurerm_virtual_network" "primary_virtualnet" {
   name                = "primary-virtualnet"
-  resource_group_name = "${var.project}-${var.primaryEnv}-rg-virtualnet"
+  resource_group_name = "${var.project}-${var.primary_env}-rg-virtualnet"
 }
 
 resource "azurerm_virtual_network_peering" "secondary-to-primary-vnet" {

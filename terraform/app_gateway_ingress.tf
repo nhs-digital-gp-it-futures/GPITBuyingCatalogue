@@ -6,7 +6,7 @@ module "appgateway" {
   rg_name                 = azurerm_resource_group.app-gateway.name
   ag_name                 = "${var.project}-${var.environment}-appgateway"
   ag_name_fragment        = "${var.project}-${var.environment}"
-  ag_capacity             = local.shortenv != "preprod" && local.shortenv != "production" ? "1" : "2"
+  ag_capacity             = local.shortenv != "platform" && local.shortenv != "production" ? "1" : "2"
   ag_subnet_id            = azurerm_subnet.gateway.id
   core_env                = local.coreEnv
   core_url                = var.coreurl

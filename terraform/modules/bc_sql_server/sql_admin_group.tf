@@ -8,5 +8,5 @@ resource "azurerm_sql_active_directory_administrator" "sql_admins" {
   login               = var.sqladmins 
   tenant_id           = data.azurerm_client_config.current.tenant_id
   object_id           = var.sqladmins
-  count               = var.environmentIt != "dr" 
+  count               = var.environment != "dr" ? 1 : 0
 }
