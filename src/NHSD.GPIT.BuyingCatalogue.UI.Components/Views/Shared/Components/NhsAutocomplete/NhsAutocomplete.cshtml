@@ -1,68 +1,24 @@
 ﻿@model NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.Components.Autocomplete.NhsAutocompleteModel;
 
-		<div id="autocomplete-container" class="autocomplete-container">
-			<label style="display:none;" for="@Model.Id">@Model.PlaceholderText</label>
-			<div id="@(Model.Id + "-container")"></div>
+		<div id="@(Model.Id + "-form-input-wrap-search")" class="autocomplete-wrap-search">
+			<label id="@(Model.Id + "-form-input-label")" for="@(Model.Id + "-form-input")">@Model.TitleText</label>
+			<form class="autocomplete-wrap-form" id="@(Model.Id + "-search-form")" action="@(Model.CurrentPageUrl)" method="get" role="search">				
+				<div id="autocomplete-container" class="autocomplete-container">
+					<label class="nhsuk-u-visually-hidden" for="@Model.Id">@Model.TitleText</label>
+					<div id="@(Model.Id + "-container")"></div>
+				</div>
+				<input class="nhsuk-search__input" id="@(Model.Id + "-form-input")" name="@Model.QueryParameterName" type="search" placeholder="Search" autocomplete="off">
+				<button class="autocomplete-search__submit" type="submit">
+					<svg class="nhsuk-icon nhsuk-icon__search" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" aria-hidden="true" focusable="false" width="27" height="27">
+						<path d="M19.71 18.29l-4.11-4.1a7 7 0 1 0-1.41 1.41l4.1 4.11a1 1 0 0 0 1.42 0 1 1 0 0 0 0-1.42zM5 10a5 5 0 1 1 5 5 5 5 0 0 1-5-5z"></path>
+					</svg>
+					<span class="nhsuk-u-visually-hidden">Search</span>
+				</button>
+			</form>
 		</div>
 
-		<script type="text/javascript" src="@Url.Content("~/accessible-autocomplete/accessible-autocomplete.min.js")" asp-append-version="true"></script>
+		<script type="text/javascript" src="@Url.Content("~/js/accessible-autocomplete/accessible-autocomplete.min.js")" asp-append-version="true"></script>
+		<script type="text/javascript" src="@Url.Content("~/js/accessible-autocomplete/autocompleteConfig.min.js")" asp-append-version="true"></script>		
 		<script type="text/javascript">
-
-			const source = (query,populateResults) => {
-				const url = '@(Model.AjaxUrl + "?" + Model.QueryParameterName + "=")' + query;
-				const xhr = new XMLHttpRequest();
-				xhr.open('GET', url);
-				xhr.onload = () => {
-					if (xhr.status === 200) {
-						const json = JSON.parse(xhr.responseText);
-						populateResults(json);
-					}
-				};
-				xhr.send();
-			}
-
-			const suggestion = ({title, category}) => {
-				if(title && category){
-					const truncateLength = 36;
-					const dots = title.length > truncateLength ? '...' : '';
-					const resultTruncated  = title.substring(0, truncateLength) + dots;
-					  return `<span class="autocomplete__option-title">${resultTruncated}</span>
-						${category ? `<span class="autocomplete__option-category">${category}</span>` : ''}
-					  `;
-				}
-				return '';
-			};
-
-			const inputValue = (obj) => {
-				if (obj && obj.title) return obj.title.trim();
-				return '';
-			};
-
-			const onConfirm = ({url}) => {
-				window.location.href = url;
-			};
-
-			accessibleAutocomplete({
-				element: document.querySelector('@("#" + Model.Id + "-container")'),
-				id: '@Model.Id', 
-				source: source,
-				confirmOnBlur: false,
-				onConfirm: onConfirm,
-				defaultValue: DefaultValue(),
-				placeholder: '@Model.PlaceholderText',
-				minLength: 2,
-				templates: {
-					inputValue: inputValue,
-					suggestion: suggestion,
-				},
-			});
-
-			function DefaultValue(){
-				let searchParams = new URLSearchParams(window.location.search);
-
-				if(searchParams.has('@Model.QueryParameterName')){
-					return searchParams.get('@Model.QueryParameterName');
-				}
-				return '';
-			}
+			new autocompleteConfig('@Model.Id','@Model.AjaxUrl','@Model.QueryParameterName','@Model.TitleText','@Model.CurrentPageUrl').Implement();
 		</script>

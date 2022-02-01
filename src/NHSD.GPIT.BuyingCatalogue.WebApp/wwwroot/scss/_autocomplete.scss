@@ -17,8 +17,8 @@
 
 .autocomplete-container {
     z-index: 1; /* [9] */
-    margin-bottom:20px;
-    position: relative;
+    display: inline-block;
+    width:95%;
 
     @include mq($until: tablet) {
         display: inline;
@@ -58,8 +58,11 @@
     /* duplicate of .nhsuk-search__input in _header.scss, for non javascript version */
     .autocomplete__input {
         -webkit-appearance: listbox; // sass-lint:disable-line prefixes /* [2] */
-        border: 1px solid $color_nhsuk-grey-3;
-        border-radius: $nhsuk-border-radius;
+        border-bottom: 1px solid $color_nhsuk-grey-3;
+        border-left: 1px solid $color_nhsuk-grey-3;
+        border-right: 0;
+        border-top: 1px solid $color_nhsuk-grey-3;
+        border-radius: $nhsuk-border-radius 0 0 $nhsuk-border-radius;
         font-size: $nhsuk-base-font-size;
         height: 50px; /* [3] */
         padding: 0 12px; /* [9] */
@@ -101,8 +104,6 @@
     overflow-x: hidden;
     overflow-y: auto;
     padding: nhsuk-spacing(3);
-    position: absolute;
-    top: 100%;
     width: 100%;
     z-index: 1; /* [7] */
 
@@ -229,3 +230,42 @@
     font-size: 14px;
     margin-top: 4px
 }
+
+.autocomplete-wrap-search{
+    margin-bottom:20px;
+}
+
+.autocomplete-wrap-form {
+    display: flex;
+    width:100%;
+}
+
+.autocomplete-search__submit {
+    background-color: $color_nhsuk-green;
+    display: inline-block;
+    height: 50px;
+    border: 0;
+    border-bottom-left-radius: 0;
+    border-bottom-right-radius: 4px;
+    border-top-left-radius: 0;
+    border-top-right-radius: 4px;
+    font-size: inherit;
+    line-height: inherit;
+    outline: 0;
+    padding-top: 7px;
+    padding-left: 7px;
+    padding-right: 7px;
+
+
+    .nhsuk-icon__search {
+        fill: #ffffff;
+    }
+
+    &:hover,
+    &:active {
+        background-color: $color_nhsuk-green-hover;
+        cursor: pointer;
+        border: 1px solid #fff;
+    }
+}
+

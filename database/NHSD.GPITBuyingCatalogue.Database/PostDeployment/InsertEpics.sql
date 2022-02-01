@@ -1,7 +1,7 @@
 ﻿CREATE TABLE #Epics
 (
     Id nvarchar(10) NOT NULL PRIMARY KEY,
-    [Name] nvarchar(150) NOT NULL,
+    [Name] nvarchar(500) NOT NULL,
     CapabilityId int NOT NULL,
     CompliancyLevelId int NULL,
     IsActive bit NOT NULL,
@@ -664,6 +664,48 @@ VALUES
 ('E00074', 'Disable and enable video during a group video consultation', @capabilityId, 3, 1),
 ('E00087', 'Retain attachments (file and images) received during video consultation in the Patient Record', @capabilityId, 3, 1),
 ('E00088', 'SNOMED code video consultation', @capabilityId, 3, 1);
+
+SET @capabilityId = 43;
+
+INSERT INTO #Epics(Id, [Name], CapabilityId, CompliancyLevelId, IsActive, SupplierDefined)
+VALUES
+('S00002', 'Alert practice if expected response times are exceeded', @capabilityId, 3, 1, 1),
+('S00003', 'Allow practice to set target response times for patient requests', @capabilityId, 3, 1, 1),
+('S00004', 'Allow to track whether a patient has read the practice response.', @capabilityId, 3, 1, 1),
+('S00008', 'Automatic follow-up reminders', @capabilityId, 3, 1, 1),
+('S00009', 'Capacity & Demand Modelling', @capabilityId, 3, 1, 1),
+('S00011', 'DIRECT Automatic searching, matching, linking and opening of patient records in TPP SystmOne, Emis Web, Cegedim Vision - Lan & Aeros', @capabilityId, 3, 1, 1),
+('S00012', 'Display a warning to a patient when they are uploading an image', @capabilityId, 3, 1, 1),
+('S00013', 'Event Log', @capabilityId, 3, 1, 1),
+('S00015', 'Filtering, sorting and searching all incoming messages', @capabilityId, 3, 1, 1),
+('S00021', 'Out of  Hours (OOH) Requests', @capabilityId, 3, 1, 1),
+('S00023', 'Preset Messages', @capabilityId, 3, 1, 1),
+('S00024', 'Remote Monitoring', @capabilityId, 3, 1, 1),
+('S00027', 'Search online consultations', @capabilityId, 3, 1, 1),
+('S00029', 'To determine when a patient has read a practice response, if at all.', @capabilityId, 3, 1, 1),
+('S00031', 'Viewing messages sent to patients', @capabilityId, 3, 1, 1);
+
+
+SET @capabilityId = 44;
+
+INSERT INTO #Epics(Id, [Name], CapabilityId, CompliancyLevelId, IsActive, SupplierDefined)
+VALUES
+('S00001', '1-Way Video Triage Consultations', @capabilityId, 3, 1, 1),
+('S00005', 'Appless Video', @capabilityId, 3, 1, 1),
+('S00006', 'Auto Transcription', @capabilityId, 3, 1, 1),
+('S00007', 'Automated  multiple reminders via multiple channels', @capabilityId, 3, 1, 1),
+('S00010', 'Consultation Countdown', @capabilityId, 3, 1, 1),
+('S00014', 'Facility for clinician to take notes during video consultation', @capabilityId, 3, 1, 1),
+('S00016', 'In call video tools - video blurring', @capabilityId, 3, 1, 1),
+('S00017', 'In call video tools - zoom', @capabilityId, 3, 1, 1),
+('S00018', 'Instant Forwarding', @capabilityId, 3, 1, 1),
+('S00019', 'Instant Location', @capabilityId, 3, 1, 1),
+('S00020', 'Instant Vital Signs', @capabilityId, 3, 1, 1),
+('S00022', 'Pop Out Floating Video', @capabilityId, 3, 1, 1),
+('S00025', 'Reporting', @capabilityId, 3, 1, 1),
+('S00026', 'Reporting Dashboards', @capabilityId, 3, 1, 1),
+('S00028', 'Take screen captures during video consultation', @capabilityId, 3, 1, 1),
+('S00030', 'Vidtu video consultation solution', @capabilityId, 3, 1, 1);
 
 IF UPPER('$(INSERT_TEST_DATA)') = 'TRUE'
 BEGIN

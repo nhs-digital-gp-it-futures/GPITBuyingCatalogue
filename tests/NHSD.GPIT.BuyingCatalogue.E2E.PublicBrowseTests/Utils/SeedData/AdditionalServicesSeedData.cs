@@ -110,6 +110,13 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
                             EpicId = "E123456",
                             StatusId = 1,
                         },
+                        new()
+                        {
+                            CatalogueItemId = new CatalogueItemId(99999, "001A98"),
+                            CapabilityId = 2,
+                            EpicId = "S00004",
+                            StatusId = 1,
+                        },
                     },
                 },
                 new()

@@ -20,6 +20,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
         private const char CapabilitiesDelimiter = '|';
         private const char CapabilitiesStartingCharacter = 'C';
         private const char EpicStartingCharacter = 'E';
+        private const char SupplierNewFormatCharacter = 'N';
         private const char SupplierStartingCharacter = 'S';
         private const char SupplierMarkCharacter = 'X';
         private const char DfocvcMarkCharacter = 'D';
@@ -32,7 +33,8 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
         public async Task<PagedList<CatalogueItem>> GetAllSolutionsFiltered(
             PageOptions options,
             string frameworkId = null,
-            string selectedCapabilities = null)
+            string selectedCapabilities = null,
+            string search = null)
         {
             options ??= new PageOptions();
 
@@ -42,8 +44,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
                 .Include(i => i.CatalogueItemCapabilities).ThenInclude(cic => cic.Capability)
                 .Where(i =>
                 i.CatalogueItemType == CatalogueItemType.Solution
-                && (i.PublishedStatus != PublicationStatus.Draft
-                    && i.PublishedStatus != PublicationStatus.Unpublished)
+                && (i.PublishedStatus == PublicationStatus.Published || i.PublishedStatus == PublicationStatus.InRemediation)
                 && i.Supplier.IsActive);
 
             if (!string.IsNullOrWhiteSpace(frameworkId) && frameworkId != AllSolutionsFrameworkKey)
@@ -55,6 +56,9 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
 
                 query = query.AsExpandableEFCore().Where(capabilitiesPredicate);
             }
+
+            if (!string.IsNullOrWhiteSpace(search))
+                query = query.Where(ci => ci.Supplier.Name.Contains(search) || ci.Name.Contains(search));
 
             options.TotalNumberOfItems = await query.CountAsync();
 
@@ -198,6 +202,35 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
             return response;
         }
 
+        public async Task<List<SolutionSearchFilterModel>> GetSolutionsBySearchTerm(string searchTerm, int maxToBringBack = 15)
+        {
+            var searchBySolutionNameQuery = dbContext.CatalogueItems.AsNoTracking()
+                .Where(ci =>
+                    ci.Name.Contains(searchTerm)
+                    && ci.CatalogueItemType == CatalogueItemType.Solution
+                    && (ci.PublishedStatus == PublicationStatus.Published || ci.PublishedStatus == PublicationStatus.InRemediation)
+                    && ci.Supplier.IsActive)
+                .Select(ci => new SolutionSearchFilterModel
+                {
+                    Title = ci.Name,
+                    Category = "Solution",
+                });
+
+            var searchBySupplierNameQuery = dbContext.Suppliers.AsNoTracking()
+                .Where(s => s.Name.Contains(searchTerm) && s.IsActive)
+                .Select(s => new SolutionSearchFilterModel
+                {
+                    Title = s.Name,
+                    Category = "Supplier",
+                });
+
+            return await searchBySolutionNameQuery
+                .Union(searchBySupplierNameQuery)
+                .OrderBy(ssfm => ssfm.Title)
+                .Take(maxToBringBack)
+                .ToListAsync();
+        }
+
         /// <summary>
         /// loop through the capabilities and epics and generates an EF where clause from the list.
         /// </summary>
@@ -268,8 +301,11 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
                         if (s.ContainsIgnoreCase(DfocvcMarkCharacter))
                             return DecodeDfocvcEpic(s);
 
+                        if (s.ContainsIgnoreCase(SupplierNewFormatCharacter))
+                            return DecodeNewSupplierDefinedEpic(s);
+
                         return s.ContainsIgnoreCase(SupplierMarkCharacter)
-                            ? DecodeSupplierDefinedEpic(s)
+                            ? DecodeOldSupplierDefinedEpic(s)
                             : DecodeNormalEpic(epics[0], s);
                     })
                     .ToList();
@@ -285,7 +321,10 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
 
         private static string DecodeDfocvcEpic(string encodedEpic) => $"E000{encodedEpic[..2]}";
 
-        private static string DecodeSupplierDefinedEpic(string encodedEpic) => ("S0" + encodedEpic)
+        private static string DecodeOldSupplierDefinedEpic(string encodedEpic) => ("S0" + encodedEpic)
             .Replace("_", "E0", StringComparison.Ordinal).Replace("X", "X0", StringComparison.OrdinalIgnoreCase);
+
+        private static string DecodeNewSupplierDefinedEpic(string encodedEpic)
+            => $"S{encodedEpic.Replace("N", string.Empty, StringComparison.OrdinalIgnoreCase).PadLeft(5, '0')}";
     }
 }

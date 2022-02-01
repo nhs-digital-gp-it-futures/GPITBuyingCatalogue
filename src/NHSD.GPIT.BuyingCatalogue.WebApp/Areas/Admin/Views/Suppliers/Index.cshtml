@@ -7,7 +7,7 @@
 }
 
 @section Scripts{
-    <script type="text/javascript" src="@Url.Content("~/js/SupplierManagement.min.js")" asp-append-version="true"></script>
+    <script type="text/javascript" src="@Url.Content("~/js/InactiveItemManagement.min.js")" asp-append-version="true"></script>
 }
 
 <nhs-page-title title="@ViewBag.Title"
@@ -19,8 +19,8 @@
                     text="Add a supplier"
                     data-test-id="add-supplier" />
 
-<nhs-checkbox-container Id="inactive-supplier-checkbox" style="display:none;">
-    <nhs-checkbox asp-for="ShowInactiveSuppliers"
+<nhs-checkbox-container Id="inactive-items-checkbox" style="display:none;">
+    <nhs-checkbox asp-for="ShowInactiveItems"
                   label-text="Show inactive suppliers" />
 </nhs-checkbox-container>
 
