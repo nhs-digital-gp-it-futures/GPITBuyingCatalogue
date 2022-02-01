@@ -1,6 +1,6 @@
 ﻿using NHSD.GPIT.BuyingCatalogue.E2ETests.Actions.Common;
+using NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.RandomData;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Objects.Marketing;
-using NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.RandomData;
 using OpenQA.Selenium;
 
 namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Actions.Marketing

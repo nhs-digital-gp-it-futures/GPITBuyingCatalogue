@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using AutoFixture;
 using AutoFixture.Xunit2;
@@ -87,18 +88,11 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Models
         [Theory]
         [CommonAutoData]
         public static void HasNoEpics_HasNhsDefinedEpicsOnly_ReturnsFalse(
+            List<CatalogueItemEpic> epics,
             CatalogueItemCapability solutionCapability,
             [Frozen] CatalogueItem catalogueItem)
         {
-            var epics = new Fixture()
-                .Build<CatalogueItemEpic>()
-                .Without(e => e.CatalogueItemId)
-                .Without(e => e.Status)
-                .Without(e => e.LastUpdatedByUser)
-                .With(e => e.Epic, new Epic { SupplierDefined = false })
-                .CreateMany()
-                .ToList();
-
+            epics.ForEach(e => e.Epic = new Epic { SupplierDefined = false });
             catalogueItem.CatalogueItemEpics = epics;
             var model = new SolutionCheckEpicsModel(solutionCapability, catalogueItem);
 
@@ -110,17 +104,11 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Models
         [Theory]
         [CommonAutoData]
         public static void HasNoEpics_HasSupplierDefinedEpicsOnly_ReturnsFalse(
+            List<CatalogueItemEpic> epics,
             CatalogueItemCapability solutionCapability,
             [Frozen] CatalogueItem catalogueItem)
         {
-            var epics = new Fixture()
-                .Build<CatalogueItemEpic>()
-                .Without(e => e.CatalogueItemId)
-                .Without(e => e.Status)
-                .Without(e => e.LastUpdatedByUser)
-                .With(e => e.Epic, new Epic { SupplierDefined = true })
-                .CreateMany()
-                .ToList();
+            epics.ForEach(e => e.Epic = new Epic { SupplierDefined = true });
 
             catalogueItem.CatalogueItemEpics = epics;
             var model = new SolutionCheckEpicsModel(solutionCapability, catalogueItem);

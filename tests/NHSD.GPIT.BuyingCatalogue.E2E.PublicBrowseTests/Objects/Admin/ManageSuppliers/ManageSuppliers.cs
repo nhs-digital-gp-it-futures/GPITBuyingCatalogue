@@ -5,9 +5,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Objects.Admin.ManageSuppliers
 {
     public static class ManageSuppliers
     {
-        public static By InactiveSupplierCheckBox => By.Id("ShowInactiveSuppliers");
-
-        public static By InactiveSuppliersContainer => By.Id("inactive-supplier-checkbox");
+        public static By InactiveSuppliersContainer => By.Id("inactive-items-checkbox");
 
         public static By SuppliersTable => ByExtensions.DataTestId("manage-suppliers-table");
 

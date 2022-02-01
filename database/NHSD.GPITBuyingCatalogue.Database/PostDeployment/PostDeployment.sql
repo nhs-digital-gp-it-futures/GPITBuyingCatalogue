@@ -27,6 +27,7 @@
 :r ./InsertSolutions.sql
 :r ./InsertAdditionalServices.sql
 :r ./InsertAssociatedServices.sql
+:r ./InsertRelatedOrganisations.sql
 
 :r ./DropImport.sql
 :r ./DropPublish.sql

@@ -311,6 +311,7 @@
     <None Include="PostDeployment\InsertStandards.sql" />
     <None Include="PostDeployment\InsertStandardsCapabilities.sql" />
     <None Include="PostDeployment\InsertStandardTypes.sql" />
+    <None Include="PostDeployment\InsertRelatedOrganisations.sql" />
   </ItemGroup>
   <ItemGroup>
     <PostDeploy Include="PostDeployment\PostDeployment.sql" />

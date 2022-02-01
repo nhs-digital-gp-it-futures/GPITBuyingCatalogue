@@ -49,7 +49,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Controllers
                 FoundationCapabilities = new List<CapabilitiesFilter>(),
             };
 
-            mockService.Setup(s => s.GetAllSolutionsFiltered(It.IsAny<PageOptions>(), null, null))
+            mockService.Setup(s => s.GetAllSolutionsFiltered(It.IsAny<PageOptions>(), null, null, null))
                 .ReturnsAsync(pagedList);
 
             mockService.Setup(s => s.GetAllFrameworksAndCountForFilter())
@@ -58,9 +58,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Controllers
             mockService.Setup(s => s.GetAllCategoriesAndCountForFilter(It.IsAny<string>()))
                 .ReturnsAsync(categoryModel);
 
-            await controller.Index(null, null, null, null);
+            await controller.Index(null, null, null, null, null);
 
-            mockService.Verify(s => s.GetAllSolutionsFiltered(It.IsAny<PageOptions>(), null, null));
+            mockService.Verify(s => s.GetAllSolutionsFiltered(It.IsAny<PageOptions>(), null, null, null));
         }
 
         [Theory]
@@ -76,7 +76,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Controllers
                 FoundationCapabilities = new List<CapabilitiesFilter>(),
             };
 
-            mockService.Setup(s => s.GetAllSolutionsFiltered(It.IsAny<PageOptions>(), null, null))
+            mockService.Setup(s => s.GetAllSolutionsFiltered(It.IsAny<PageOptions>(), null, null, null))
                 .ReturnsAsync(pagedList);
 
             mockService.Setup(s => s.GetAllFrameworksAndCountForFilter())
@@ -85,7 +85,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Controllers
             mockService.Setup(s => s.GetAllCategoriesAndCountForFilter(It.IsAny<string>()))
                 .ReturnsAsync(categoryModel);
 
-            var actual = (await controller.Index(null, null, null, null)).As<ViewResult>();
+            var actual = (await controller.Index(null, null, null, null, null)).As<ViewResult>();
 
             actual.Should().NotBeNull();
             actual.ViewName.Should().BeNullOrEmpty();
@@ -105,7 +105,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Controllers
                 FoundationCapabilities = new List<CapabilitiesFilter>(),
             };
 
-            mockService.Setup(s => s.GetAllSolutionsFiltered(It.IsAny<PageOptions>(), null, null))
+            mockService.Setup(s => s.GetAllSolutionsFiltered(It.IsAny<PageOptions>(), null, null, null))
                 .ReturnsAsync(pagedList);
 
             mockService.Setup(s => s.GetAllFrameworksAndCountForFilter())
@@ -120,7 +120,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Controllers
             mockService.Setup(s => s.GetAllCategoriesAndCountForFilter(It.IsAny<string>()))
                 .ReturnsAsync(categoryModel);
 
-            var actual = (await controller.Index(null, null, null, null)).As<ViewResult>();
+            var actual = (await controller.Index(null, null, null, null, null)).As<ViewResult>();
 
             actual.Should().NotBeNull();
             actual.ViewName.Should().BeNullOrEmpty();

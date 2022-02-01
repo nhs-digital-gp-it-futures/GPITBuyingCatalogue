@@ -1,0 +1,59 @@
+﻿@using NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.TagHelpers.Tags
+@using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
+@using NHSD.GPIT.BuyingCatalogue.Framework.Extensions
+@model NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.SupplierDefinedEpics.SupplierDefinedEpicsDashboardModel
+@{
+    ViewBag.Title = "Supplier defined Epics";
+}
+
+@section Scripts{
+    <script type="text/javascript" src="@Url.Content("~/js/InactiveItemManagement.min.js")" asp-append-version="true"></script>
+}
+
+<nhs-page-title title="@ViewBag.Title"
+                advice="Add a supplier defined Epic or edit an existing one." />
+
+<vc:nhs-action-link url="@Url.Action(
+    nameof(SupplierDefinedEpicsController.AddEpic),
+    typeof(SupplierDefinedEpicsController).ControllerName())"
+    text="Add a supplier defined Epic"/>
+
+<nhs-checkbox-container Id="inactive-items-checkbox" style="display:none;">
+    <nhs-checkbox asp-for="ShowInactiveItems"
+                    label-text="Show inactive supplier defined Epics" />
+</nhs-checkbox-container>
+
+<nhs-table data-test-id="sde-table">
+    <nhs-table-column>Epic</nhs-table-column>
+    <nhs-table-column>Capability</nhs-table-column>
+    <nhs-table-column>Status</nhs-table-column>
+    <nhs-table-column></nhs-table-column>
+    @foreach (var supplierDefinedEpic in Model.SupplierDefinedEpics)
+    {
+        <nhs-table-row-container class="@(!supplierDefinedEpic.IsActive ? "inactive" : null)">
+            <nhs-table-cell>
+                    @supplierDefinedEpic.Name
+            </nhs-table-cell>
+            <nhs-table-cell>
+                    @supplierDefinedEpic.Capability
+            </nhs-table-cell>
+            <nhs-table-cell>
+                <nhs-tag colour="@GetTagColour(supplierDefinedEpic.IsActive)"
+                    text="@GetTagText(supplierDefinedEpic.IsActive)"/>
+            </nhs-table-cell>
+            <nhs-table-cell>
+                <a
+                    asp-area="Admin"
+                    asp-controller="@(typeof(SupplierDefinedEpicsController).ControllerName())"
+                    asp-action="@nameof(SupplierDefinedEpicsController.EditEpic)"
+                    asp-route-epicId="@supplierDefinedEpic.Id">Edit</a>
+            </nhs-table-cell>
+        </nhs-table-row-container>
+    }
+</nhs-table>
+@{
+    NhsTagsTagHelper.TagColour GetTagColour(bool status) =>
+        status ? NhsTagsTagHelper.TagColour.Green : NhsTagsTagHelper.TagColour.Grey;
+
+    string GetTagText(bool status) => status ? "Active" : "Inactive";
+}

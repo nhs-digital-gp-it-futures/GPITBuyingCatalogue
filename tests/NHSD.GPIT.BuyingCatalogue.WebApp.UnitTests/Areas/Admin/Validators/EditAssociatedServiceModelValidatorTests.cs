@@ -90,7 +90,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators
         {
             solutions.ForEach(s => s.CatalogueItem.PublishedStatus = solutionsPublicationStatus);
 
-            service.Setup(s => s.GetAllSolutionsForAssociatedService(model.SolutionId, model.AssociatedServiceId))
+            service.Setup(s => s.GetAllSolutionsForAssociatedService(model.AssociatedServiceId))
                 .ReturnsAsync(solutions.Select(s => s.CatalogueItem).ToList());
 
             model.AssociatedServicePublicationStatus = PublicationStatus.Published;
@@ -99,7 +99,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators
             var result = validator.TestValidate(model);
 
             result.ShouldHaveValidationErrorFor(m => m.SelectedPublicationStatus)
-                .WithErrorMessage("This Associated Service cannot be unpublished as it is referenced by another solution");
+                .WithErrorMessage("This Associated Service cannot be unpublished as it is referenced by at least one solution");
         }
 
         [Theory]
@@ -114,7 +114,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators
         {
             solutions.ForEach(s => s.CatalogueItem.PublishedStatus = solutionsPublicationStatus);
 
-            service.Setup(s => s.GetAllSolutionsForAssociatedService(model.SolutionId, model.AssociatedServiceId))
+            service.Setup(s => s.GetAllSolutionsForAssociatedService(model.AssociatedServiceId))
                 .ReturnsAsync(solutions.Select(s => s.CatalogueItem).ToList());
 
             model.AssociatedServicePublicationStatus = PublicationStatus.Published;

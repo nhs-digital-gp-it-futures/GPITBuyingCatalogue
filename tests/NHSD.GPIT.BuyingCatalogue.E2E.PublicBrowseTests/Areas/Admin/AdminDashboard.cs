@@ -2,6 +2,7 @@
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Utils;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.TestBases;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers;
+using OpenQA.Selenium;
 using Xunit;
 
 namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin
@@ -27,6 +28,12 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin
         public void ManageCatalogueSolutions_AddSolutionLinkDisplayed()
         {
             AdminPages.AddSolution.AddSolutionLinkDisplayed().Should().BeTrue();
+        }
+
+        [Fact]
+        public void AdminDashboard_ManageSupplierDefinedEpicsLinkDisplayed()
+        {
+            CommonActions.ElementExists(By.LinkText("Manage Supplier defined Epics")).Should().BeTrue();
         }
     }
 }
