@@ -1,4 +1,6 @@
-﻿@model NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.SupplierModels.DeleteContactModel
+﻿@using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
+@using NHSD.GPIT.BuyingCatalogue.Framework.Extensions
+@model NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.SupplierModels.DeleteContactModel
 @{
     ViewBag.Title = $"Delete {Model.FirstName} {Model.LastName} contact details?";
 }
@@ -17,8 +19,8 @@
                         <nhs-submit-button text="Delete" />
                     </div>
                     <div>
-                        <a asp-controller="Suppliers"
-                           asp-action="EditSupplierContact"
+                        <a asp-controller="@typeof(SuppliersController).ControllerName()"
+                           asp-action="@nameof(SuppliersController.EditSupplierContact)"
                            asp-route-supplierId="@Model.SupplierId"
                            asp-route-contactId="@Model.ContactId">Cancel</a>
                     </div>

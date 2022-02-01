@@ -1,4 +1,6 @@
-﻿@model NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.OrganisationModels.RemoveAnOrganisationModel
+﻿@using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
+@using NHSD.GPIT.BuyingCatalogue.Framework.Extensions
+@model NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.OrganisationModels.RemoveAnOrganisationModel
 @{
     ViewBag.Title = "Remove organisation";
 }
@@ -17,7 +19,10 @@
                 <div data-test-id="submit-button">
                     <nhs-submit-button text="Remove organisation" />
                 </div>
-                <a asp-area="Admin" asp-controller="Organisations" asp-action="Details" asp-route-organisationId="@Model.CurrentOrganisation.Id">Cancel</a>
+                <a asp-area="@typeof(OrganisationsController).AreaName()" 
+                   asp-controller="@typeof(OrganisationsController).ControllerName()" 
+                   asp-action="@nameof(OrganisationsController.Details)" 
+                   asp-route-organisationId="@Model.CurrentOrganisation.Id">Cancel</a>
             </form>
         </div>
     </div>
