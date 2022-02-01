@@ -4,10 +4,9 @@ locals {
 
   # Find Shared components (e.g. key vaults)
   liveEnv = local.shortenv == "production" ? "production" : "preprod"
-  coreEnv = local.shortenv != "preprod" && local.shortenv != "production" ? "dev" : local.liveEnv
 
   # Secret name for keys
-  secretPrefix = local.shortenv != "preprod" && local.shortenv != "production" ? "${var.pjtcode}${local.shortenv}" : "${var.pjtcode}${local.coreEnv}"
+  secretPrefix = local.shortenv != "preprod" && local.shortenv != "production" ? "${var.pjtcode}${local.shortenv}" : "${var.pjtcode}${var.core_env}"
   
   # KeyVault IDs
   kv_id = "/subscriptions/${var.subscription_id}/resourceGroups/${azurerm_resource_group.keyvault.name}/providers/Microsoft.KeyVault/vaults/${azurerm_key_vault.keyvault.name}"

@@ -17,7 +17,7 @@ module "sql_databases_pri" {
   rg_replica_name       = azurerm_resource_group.sql-server.name
   sqlsvr_replica_name   = "${var.project}-${var.environment}-sql-secondary"
   
-  core_env              = local.coreEnv
+  core_env              = var.core_env
 
   depends_on = [module.sql_server_pri]
 } 

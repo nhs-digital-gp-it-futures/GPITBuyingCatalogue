@@ -1,6 +1,6 @@
 data "azurerm_key_vault" "keyvault_core" {
-  name                = "gpitf-${local.coreEnv}-core-kv"
-  resource_group_name = "${var.project}-${local.coreEnv}-rg-core-kv"
+  name                = "gpitf-${var.core_env}-core-kv"
+  resource_group_name = "${var.project}-${var.core_env}-rg-core-kv"
 }
 
 data "azurerm_key_vault_secret" "ssl_cert" {

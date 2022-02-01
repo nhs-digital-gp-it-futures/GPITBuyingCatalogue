@@ -1,9 +1,10 @@
 resource "azurerm_mssql_database" "sql_main_primary" {
   name                             = "BuyingCatalogue${var.db_name}${var.environment}"  
+  count                            = var.environment != "dr" ? 1 : 0
   server_id                        = var.server_id  
   collation                        = var.sql_collation  
   sku_name                         = var.core_env != "dev" ? "S1" : "S0"
-
+ 
   tags = {
     environment                    = var.environment,
     architecture                   = "new"

@@ -18,6 +18,7 @@ resource "azurerm_sql_virtual_network_rule" "sqlvnetrule" {
   resource_group_name = azurerm_resource_group.sql-server.name
   server_name         = "${var.project}-${var.environment}-sql-primary"
   subnet_id           = azurerm_subnet.backend.id
+  count               = var.environment != "dr" ? 1 : 0
 
   depends_on = [
     module.sql_server_pri

@@ -5,7 +5,7 @@ resource "azurerm_sql_server" "sql_server" {
   version                      = var.sql_version
   administrator_login          = var.sql_admin_username
   administrator_login_password = var.sql_admin_password
-
+  count                        = var.environment != "dr" ? 1 : 0
   tags = {
     environment                = var.environment,
     architecture               = "new"
