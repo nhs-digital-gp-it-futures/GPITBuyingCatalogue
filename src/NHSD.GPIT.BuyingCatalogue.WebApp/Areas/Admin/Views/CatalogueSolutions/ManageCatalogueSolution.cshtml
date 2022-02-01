@@ -126,7 +126,9 @@
                         <nhs-tag status-enum="@Model.HostingTypeStatus" />
                     </nhs-table-cell>
                     <nhs-table-cell>
-                        <a asp-action="HostingType" asp-controller="CatalogueSolutions" asp-route-solutionId="@Model.SolutionId">Edit</a>
+                        <a asp-controller="@typeof(HostingTypesController).ControllerName()"
+                           asp-action="@nameof(HostingTypesController.HostingType)"
+                           asp-route-solutionId="@Model.SolutionId">Edit</a>
                     </nhs-table-cell>
                 </nhs-table-row-container>
                 <nhs-table-row-container>
