@@ -29,8 +29,8 @@
                     {
         <nhs-table-row-container>
             <nhs-table-cell>
-                <a asp-action="EditAssociatedService"
-                   asp-controller="AssociatedServices"
+                <a asp-action="@nameof(AssociatedServicesController.EditAssociatedService)"
+                   asp-controller="@typeof(AssociatedServicesController).ControllerName()"
                    asp-route-catalogueItemId="@item.CatalogueItemId"
                    asp-route-odsCode="@Model.OdsCode"
                    asp-route-callOffId="@Model.CallOffId">
