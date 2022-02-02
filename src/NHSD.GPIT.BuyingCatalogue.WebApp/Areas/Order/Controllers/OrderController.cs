@@ -201,8 +201,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
         }
 
         [HttpGet("download")]
-        public IActionResult Download(string odsCode, CallOffId callOffId)
+        public async Task<IActionResult> Download(string odsCode, CallOffId callOffId)
         {
+            var order = await orderService.GetOrderForSummary(callOffId, odsCode);
+
             string url = Url.Action(
                         nameof(OrderSummaryController.Index),
                         typeof(OrderSummaryController).ControllerName(),
@@ -219,7 +221,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
 
             var result = pdfService.Convert(new Uri(url));
 
-            return File(result, "application/pdf", $"order-summary-{callOffId}.pdf");
+            var fileName = order.OrderStatus == OrderStatus.Complete ? $"order-summary-completed-{callOffId}.pdf" : $"order-summary-in-progress-{callOffId}.pdf";
+
+            return File(result, "application/pdf", fileName);
         }
     }
 }

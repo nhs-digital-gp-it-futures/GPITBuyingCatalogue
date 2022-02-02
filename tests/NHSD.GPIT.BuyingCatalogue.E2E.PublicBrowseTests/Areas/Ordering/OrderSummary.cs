@@ -42,9 +42,13 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering
         {
             RedirectToSummaryForOrder(new CallOffId(90004, 1));
 
-            CommonActions.ElementIsDisplayed(Objects.Ordering.OrderSummary.PrintPDFButton).Should().BeFalse();
+            CommonActions.ElementIsDisplayed(Objects.Ordering.OrderSummary.DownloadPDFCompletedOrder).Should().BeFalse();
 
-            Driver.FindElements(Objects.Ordering.OrderSummary.PrintPDFButton).Count.Should().Be(0);
+            Driver.FindElements(Objects.Ordering.OrderSummary.DownloadPDFCompletedOrder).Count.Should().Be(0);
+
+            CommonActions.ElementIsDisplayed(Objects.Ordering.OrderSummary.DownloadPDFIncompleteOrder).Should().BeFalse();
+
+            Driver.FindElements(Objects.Ordering.OrderSummary.DownloadPDFIncompleteOrder).Count.Should().Be(0);
 
             CommonActions.ElementIsDisplayed(CommonSelectors.SubmitButton).Should().BeFalse();
 
@@ -71,9 +75,13 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering
 
             CommonActions.ElementIsDisplayed(CommonSelectors.SubmitButton).Should().BeFalse();
 
-            CommonActions.ElementIsDisplayed(Objects.Ordering.OrderSummary.PrintPDFButton).Should().BeTrue();
+            CommonActions.ElementIsDisplayed(Objects.Ordering.OrderSummary.DownloadPDFCompletedOrder).Should().BeTrue();
 
-            Driver.FindElements(Objects.Ordering.OrderSummary.PrintPDFButton).Count.Should().Be(1);
+            Driver.FindElements(Objects.Ordering.OrderSummary.DownloadPDFCompletedOrder).Count.Should().Be(1);
+
+            CommonActions.ElementIsDisplayed(Objects.Ordering.OrderSummary.DownloadPDFIncompleteOrder).Should().BeFalse();
+
+            Driver.FindElements(Objects.Ordering.OrderSummary.DownloadPDFIncompleteOrder).Count.Should().Be(0);
 
             CommonActions.GoBackLinkDisplayed().Should().BeTrue();
         }
@@ -83,9 +91,13 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering
         {
             CommonActions.ElementIsDisplayed(CommonSelectors.SubmitButton).Should().BeTrue();
 
-            CommonActions.ElementIsDisplayed(Objects.Ordering.OrderSummary.PrintPDFButton).Should().BeTrue();
+            CommonActions.ElementIsDisplayed(Objects.Ordering.OrderSummary.DownloadPDFCompletedOrder).Should().BeFalse();
 
-            Driver.FindElements(Objects.Ordering.OrderSummary.PrintPDFButton).Count.Should().Be(1);
+            Driver.FindElements(Objects.Ordering.OrderSummary.DownloadPDFCompletedOrder).Count.Should().Be(0);
+
+            CommonActions.ElementIsDisplayed(Objects.Ordering.OrderSummary.DownloadPDFIncompleteOrder).Should().BeTrue();
+
+            Driver.FindElements(Objects.Ordering.OrderSummary.DownloadPDFIncompleteOrder).Count.Should().Be(1);
 
             CommonActions.GoBackLinkDisplayed().Should().BeTrue();
         }
@@ -132,11 +144,15 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering
 
             CommonActions.ElementIsDisplayed(CommonSelectors.SubmitButton).Should().BeFalse();
 
-            CommonActions.ElementIsDisplayed(Objects.Ordering.OrderSummary.PrintPDFButton).Should().BeTrue();
+            CommonActions.ElementIsDisplayed(Objects.Ordering.OrderSummary.DownloadPDFCompletedOrder).Should().BeTrue();
+
+            CommonActions.ElementIsDisplayed(Objects.Ordering.OrderSummary.DownloadPDFIncompleteOrder).Should().BeFalse();
 
             CommonActions.GoBackLinkDisplayed().Should().BeTrue();
 
-            Driver.FindElements(Objects.Ordering.OrderSummary.PrintPDFButton).Count.Should().Be(1);
+            Driver.FindElements(Objects.Ordering.OrderSummary.DownloadPDFCompletedOrder).Count.Should().Be(1);
+
+            Driver.FindElements(Objects.Ordering.OrderSummary.DownloadPDFIncompleteOrder).Count.Should().Be(0);
 
             smtp.ReceivedEmailCount.Should().Be(1);
 

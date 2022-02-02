@@ -209,13 +209,18 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers
 
         [Theory]
         [CommonAutoData]
-        public static void Get_Download_ReturnsExpectedResult(
+        public static async Task Get_Download_CompleteOrder_ReturnsExpectedResult(
             string odsCode,
-            CallOffId callOffId,
+            EntityFramework.Ordering.Models.Order order,
+            [Frozen] Mock<IOrderService> orderServiceMock,
             [Frozen] Mock<IPdfService> pdfServiceMock,
             byte[] result,
             OrderController controller)
         {
+            order.OrderStatus = OrderStatus.Complete;
+
+            orderServiceMock.Setup(s => s.GetOrderForSummary(order.CallOffId, odsCode)).ReturnsAsync(order);
+
             pdfServiceMock.Setup(s => s.Convert(It.IsAny<System.Uri>())).Returns(result);
 
             var httpContext = new DefaultHttpContext();
@@ -227,11 +232,44 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers
                 HttpContext = httpContext,
             };
 
-            var actualResult = controller.Download(odsCode, callOffId);
+            var actualResult = await controller.Download(odsCode, order.CallOffId);
 
             actualResult.Should().BeOfType<FileContentResult>();
             actualResult.As<FileContentResult>().ContentType.Should().Be("application/pdf");
-            actualResult.As<FileContentResult>().FileDownloadName.Should().Be($"order-summary-{callOffId}.pdf");
+            actualResult.As<FileContentResult>().FileDownloadName.Should().Be($"order-summary-completed-{order.CallOffId}.pdf");
+            actualResult.As<FileContentResult>().FileContents.Should().BeEquivalentTo(result);
+        }
+
+        [Theory]
+        [CommonAutoData]
+        public static async Task Get_Download_IncompleteOrder_ReturnsExpectedResult(
+            string odsCode,
+            EntityFramework.Ordering.Models.Order order,
+            [Frozen] Mock<IOrderService> orderServiceMock,
+            [Frozen] Mock<IPdfService> pdfServiceMock,
+            byte[] result,
+            OrderController controller)
+        {
+            order.OrderStatus = OrderStatus.Incomplete;
+
+            orderServiceMock.Setup(s => s.GetOrderForSummary(order.CallOffId, odsCode)).ReturnsAsync(order);
+
+            pdfServiceMock.Setup(s => s.Convert(It.IsAny<System.Uri>())).Returns(result);
+
+            var httpContext = new DefaultHttpContext();
+            httpContext.Request.Scheme = "https";
+            httpContext.Request.Host = new HostString("localhost");
+
+            controller.ControllerContext = new ControllerContext
+            {
+                HttpContext = httpContext,
+            };
+
+            var actualResult = await controller.Download(odsCode, order.CallOffId);
+
+            actualResult.Should().BeOfType<FileContentResult>();
+            actualResult.As<FileContentResult>().ContentType.Should().Be("application/pdf");
+            actualResult.As<FileContentResult>().FileDownloadName.Should().Be($"order-summary-in-progress-{order.CallOffId}.pdf");
             actualResult.As<FileContentResult>().FileContents.Should().BeEquivalentTo(result);
         }
     }
