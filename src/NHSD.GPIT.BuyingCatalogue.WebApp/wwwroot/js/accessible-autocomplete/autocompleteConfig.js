@@ -12,6 +12,7 @@ class autocompleteConfig {
     Implement() {
         this.defaultInput.parentNode.removeChild(this.defaultInput);
         this.formInputLabel.removeAttribute("for");
+        this.form.firstElementChild.removeAttribute("style");
         accessibleAutocomplete({
             element: document.getElementById(this.modelId.concat("-container")),
             id: this.modelId,

@@ -361,6 +361,8 @@ MigrationBackup/
 # Generated js files
 **/wwwroot/js/*.js
 **/wwwroot/js/*.js.map
+**/wwwroot/js/accessible-autocomplete/*.min.js
+**/wwwroot/js/accessible-autocomplete/*.js.map
 
 # vscode files
 .vscode/*
