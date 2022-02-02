@@ -1,4 +1,6 @@
-﻿@model NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.OrganisationModels.CreateOrganisationModel
+﻿@using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
+@using NHSD.GPIT.BuyingCatalogue.Framework.Extensions
+@model NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.OrganisationModels.CreateOrganisationModel
 @{
     ViewBag.Title = "Confirm organisation";
 }
@@ -12,7 +14,12 @@
         <div class="nhsuk-grid-column-full">
             <div class="nhsuk-grid-row">
                 <h2 data-test-id="organisation-details-heading" class="nhsuk-grid-column-one-half">Organisation details</h2>
-                <a data-test-id="change-org-link" asp-area="Admin" asp-controller="Organisations" asp-action="Find" asp-route-ods="@Model.OdsOrganisation.OdsCode" class="nhsuk-grid-column-one-half nhsuk-u-font-size-19">Change organisation</a>
+                <a data-test-id="change-org-link" 
+                   asp-area="@typeof(OrganisationsController).AreaName()" 
+                   asp-controller="@typeof(OrganisationsController).ControllerName()" 
+                   asp-action="@nameof(OrganisationsController.Find)" 
+                   asp-route-ods="@Model.OdsOrganisation.OdsCode" 
+                   class="nhsuk-grid-column-one-half nhsuk-u-font-size-19">Change organisation</a>
             </div>
         </div>
         <div class="nhsuk-grid-column-two-thirds">

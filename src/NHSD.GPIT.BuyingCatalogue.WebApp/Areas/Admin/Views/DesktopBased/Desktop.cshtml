@@ -27,7 +27,10 @@
                     <nhs-table-cell>Yes</nhs-table-cell>
                     <nhs-table-cell><nhs-tag status-enum="@Model.SupportedOperatingSystemsStatus()" /></nhs-table-cell>
                     <nhs-table-cell>
-                        <a asp-action="OperatingSystems" asp-controller="DesktopBased" asp-route-solutionId="@Model.SolutionId" class="nhsuk-breadcrumb__link">Edit</a>
+                        <a asp-action="@nameof(DesktopBasedController.OperatingSystems)" 
+                           asp-controller="@typeof(DesktopBasedController).ControllerName()" 
+                           asp-route-solutionId="@Model.SolutionId" 
+                           class="nhsuk-breadcrumb__link">Edit</a>
                     </nhs-table-cell>
                 </nhs-table-row-container>
 
@@ -36,7 +39,10 @@
                     <nhs-table-cell>Yes</nhs-table-cell>
                     <nhs-table-cell><nhs-tag status-enum="@Model.ConnectivityStatus()" /></nhs-table-cell>
                     <nhs-table-cell>
-                        <a asp-action="Connectivity" asp-controller="DesktopBased" asp-route-solutionId="@Model.SolutionId" class="nhsuk-breadcrumb__link">Edit</a>
+                        <a asp-action="@nameof(DesktopBasedController.Connectivity)" 
+                           asp-controller="@typeof(DesktopBasedController).ControllerName()" 
+                           asp-route-solutionId="@Model.SolutionId" 
+                           class="nhsuk-breadcrumb__link">Edit</a>
                     </nhs-table-cell>
                 </nhs-table-row-container>
 
@@ -45,7 +51,10 @@
                     <nhs-table-cell>Yes</nhs-table-cell>
                     <nhs-table-cell><nhs-tag status-enum="@Model.MemoryAndStorageStatus()" /></nhs-table-cell>
                     <nhs-table-cell>
-                        <a asp-action="MemoryAndStorage" asp-controller="DesktopBased" asp-route-solutionId="@Model.SolutionId" class="nhsuk-breadcrumb__link">Edit</a>
+                        <a asp-action="@nameof(DesktopBasedController.MemoryAndStorage)" 
+                           asp-controller="@typeof(DesktopBasedController).ControllerName()" 
+                           asp-route-solutionId="@Model.SolutionId" 
+                           class="nhsuk-breadcrumb__link">Edit</a>
                     </nhs-table-cell>
                 </nhs-table-row-container>
 
@@ -54,7 +63,10 @@
                     <nhs-table-cell>No</nhs-table-cell>
                     <nhs-table-cell><nhs-tag status-enum="@Model.StatusThirdParty()" /></nhs-table-cell>
                     <nhs-table-cell>
-                        <a asp-action="ThirdPartyComponents" asp-controller="DesktopBased" asp-route-solutionId="@Model.SolutionId" class="nhsuk-breadcrumb__link">Edit</a>
+                        <a asp-action="@nameof(DesktopBasedController.ThirdPartyComponents)" 
+                           asp-controller="@typeof(DesktopBasedController).ControllerName()"
+                           asp-route-solutionId="@Model.SolutionId"
+                           class="nhsuk-breadcrumb__link">Edit</a>
                     </nhs-table-cell>
                 </nhs-table-row-container>
 
@@ -63,7 +75,10 @@
                     <nhs-table-cell>No</nhs-table-cell>
                     <nhs-table-cell><nhs-tag status-enum="@Model.StatusHardware()" /></nhs-table-cell>
                     <nhs-table-cell>
-                        <a asp-action="HardwareRequirements" asp-controller="DesktopBased" asp-route-solutionId="@Model.SolutionId" class="nhsuk-breadcrumb__link">Edit</a>
+                        <a asp-action="@nameof(DesktopBasedController.HardwareRequirements)" 
+                           asp-controller="@typeof(DesktopBasedController).ControllerName()" 
+                           asp-route-solutionId="@Model.SolutionId" 
+                           class="nhsuk-breadcrumb__link">Edit</a>
                     </nhs-table-cell>
                 </nhs-table-row-container>
 
@@ -72,7 +87,10 @@
                     <nhs-table-cell>No</nhs-table-cell>
                     <nhs-table-cell><nhs-tag status-enum="@Model.StatusAdditionalInformation()" /></nhs-table-cell>
                     <nhs-table-cell>
-                        <a asp-action="AdditionalInformation" asp-controller="DesktopBased" asp-route-solutionId="@Model.SolutionId" class="nhsuk-breadcrumb__link">Edit</a>
+                        <a asp-action="@nameof(DesktopBasedController.AdditionalInformation)" 
+                           asp-controller="@typeof(DesktopBasedController).ControllerName()" 
+                           asp-route-solutionId="@Model.SolutionId" 
+                           class="nhsuk-breadcrumb__link">Edit</a>
                     </nhs-table-cell>
                 </nhs-table-row-container>
 

@@ -48,17 +48,25 @@
                                 <nhs-table-cell>
                                     @if (applicationType == ClientApplicationType.MobileTablet)
                                     {
-                                        <a asp-action="@applicationType" asp-controller="MobileTabletBased" asp-route-solutionId="@Model.SolutionId" class="nhsuk-breadcrumb__link">Edit</a>
+                                        <a asp-action="@applicationType" 
+                                           asp-controller="@typeof(MobileTabletBasedController).ControllerName()" 
+                                           asp-route-solutionId="@Model.SolutionId" 
+                                           class="nhsuk-breadcrumb__link">Edit</a>
                                     }
                                     else if (applicationType == ClientApplicationType.Desktop)
                                     {
-                                        <a asp-action="@applicationType" asp-controller="DesktopBased" asp-route-solutionId="@Model.SolutionId" class="nhsuk-breadcrumb__link">Edit</a>
+                                        <a asp-action="@applicationType" 
+                                           asp-controller="@typeof(DesktopBasedController).ControllerName()" 
+                                           asp-route-solutionId="@Model.SolutionId" 
+                                           class="nhsuk-breadcrumb__link">Edit</a>
                                     }
                                     else
                                     {
-                                        <a asp-action="@applicationType" asp-controller="CatalogueSolutions" asp-route-solutionId="@Model.SolutionId" class="nhsuk-breadcrumb__link">Edit</a>
+                                        <a asp-action="@applicationType" 
+                                           asp-controller="@typeof(CatalogueSolutionsController).ControllerName()" 
+                                           asp-route-solutionId="@Model.SolutionId" 
+                                           class="nhsuk-breadcrumb__link">Edit</a>
                                     }
-
                                 </nhs-table-cell>
                             </nhs-table-row-container>
                         }
