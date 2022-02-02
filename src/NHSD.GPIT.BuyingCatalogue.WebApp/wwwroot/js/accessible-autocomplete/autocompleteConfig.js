@@ -48,8 +48,8 @@ class autocompleteConfig {
             const dots = result.title.length > truncateLength ? '...' : '';
             const resultTruncated = result.title.substring(0, truncateLength) + dots;
             return `<span class="autocomplete__option-title">${resultTruncated}</span>
-						${result.category ? `<span class="autocomplete__option-category">${result.category}</span>` : ''}
-					  `;
+                        ${result.category ? `<span class="autocomplete__option-category">${result.category}</span>` : ''}
+                      `;
         }
         return '';
     }
