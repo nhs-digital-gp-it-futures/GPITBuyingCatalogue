@@ -261,6 +261,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
                         new() { CapabilityId = 43, EpicId = "E00090", StatusId = 1 },
                         new() { CapabilityId = 43, EpicId = "E00091", StatusId = 1 },
                         new() { CapabilityId = 43, EpicId = "E00099", StatusId = 1 },
+                        new() { CapabilityId = 43, EpicId = "S00002", StatusId = 1 },
                     },
                     PublishedStatus = PublicationStatus.Published,
                     CataloguePrices = new List<CataloguePrice>

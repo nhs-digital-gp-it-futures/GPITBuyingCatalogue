@@ -44,13 +44,10 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Capabilities
             var expectedCapabilities = await context
                 .CapabilityCategories
                 .Include(c => c.Capabilities)
-                .ThenInclude(c =>
-                    c.Epics.Where(e =>
-                       (e.IsActive && !e.SupplierDefined && e.CompliancyLevel == CompliancyLevel.May)
-                    || (e.IsActive && e.SupplierDefined && EF.Functions.Like(e.Id, $"{supplierKey}%"))))
+                .ThenInclude(c => c.Epics.Where(e => e.IsActive && e.CompliancyLevel == CompliancyLevel.May))
                 .ToListAsync();
 
-            var capabilityCategories = await capabilitiesService.GetCapabilitiesByCategory(supplierId);
+            var capabilityCategories = await capabilitiesService.GetCapabilitiesByCategory();
 
             capabilityCategories.Should().BeEquivalentTo(expectedCapabilities);
         }

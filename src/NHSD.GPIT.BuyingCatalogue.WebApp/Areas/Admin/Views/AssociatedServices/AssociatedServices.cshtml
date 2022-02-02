@@ -67,7 +67,8 @@
                                 <nhs-tag status-enum="@Model.SelectableAssociatedServices[i].PublishedStatus" />
                             </nhs-table-cell>
                             <nhs-table-cell>
-                                <a asp-action="EditAssociatedService" asp-controller="AssociatedServices" 
+                                <a asp-action="@nameof(AssociatedServicesController.EditAssociatedService)" 
+                                   asp-controller="@typeof(AssociatedServicesController).ControllerName()" 
                                    asp-route-solutionId="@Model.Solution.Id"
                                    asp-route-associatedServiceId="@Model.SelectableAssociatedServices[i].CatalogueItemId"
                                    data-test-id="edit-link" class="nhsuk-breadcrumb__link">Edit</a>

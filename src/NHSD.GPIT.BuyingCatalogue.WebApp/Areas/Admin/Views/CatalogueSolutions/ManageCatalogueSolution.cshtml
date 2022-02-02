@@ -11,10 +11,14 @@
         <div class="nhsuk-width-container">
             <ol class="nhsuk-breadcrumb__list">
                 <li class="nhsuk-breadcrumb__item">
-                    <a asp-action="Index" asp-controller="Home" class="nhsuk-breadcrumb__link">Home</a>
+                    <a asp-action="@nameof(HomeController.Index)" 
+                       asp-controller="@typeof(HomeController).ControllerName()" 
+                       class="nhsuk-breadcrumb__link">Home</a>
                 </li>
                 <li class="nhsuk-breadcrumb__item">
-                    <a asp-action="Index" asp-controller="CatalogueSolutions" class="nhsuk-breadcrumb__link">Manage Catalogue Solutions</a>
+                    <a asp-action="@nameof(CatalogueSolutionsController.Index)" 
+                       asp-controller="@typeof(CatalogueSolutionsController).ControllerName()" 
+                       class="nhsuk-breadcrumb__link">Manage Catalogue Solutions</a>
                 </li>
             </ol>
         </div>
@@ -61,7 +65,8 @@
                     <nhs-table-cell>Yes</nhs-table-cell>
                     <nhs-table-cell><nhs-tag colour="Green" text="Completed" /></nhs-table-cell>
                     <nhs-table-cell>
-                        <a asp-action="Details" asp-controller="CatalogueSolutions"
+                        <a asp-action="@nameof(CatalogueSolutionsController.Details)" 
+                           asp-controller="@typeof(CatalogueSolutionsController).ControllerName()"
                            asp-route-solutionId="@Model.SolutionId">Edit</a>
                     </nhs-table-cell>
                 </nhs-table-row-container>
@@ -72,7 +77,8 @@
                         <nhs-tag status-enum="@Model.DescriptionStatus" />
                     </nhs-table-cell>
                     <nhs-table-cell>
-                        <a asp-action="Description" asp-controller="CatalogueSolutions"
+                        <a asp-action="@nameof(CatalogueSolutionsController.Description)" 
+                           asp-controller="@typeof(CatalogueSolutionsController).ControllerName()"
                            asp-route-solutionId="@Model.SolutionId">Edit</a>
                     </nhs-table-cell>
                 </nhs-table-row-container>
@@ -83,7 +89,9 @@
                         <nhs-tag status-enum="@Model.FeaturesStatus" />
                     </nhs-table-cell>
                     <nhs-table-cell>
-                        <a asp-action="Features" asp-route-solutionId="@Model.SolutionId">Edit</a>
+                        <a asp-action="@nameof(CatalogueSolutionsController.Features)" 
+                           asp-controller="@typeof(CatalogueSolutionsController).ControllerName()"
+                           asp-route-solutionId="@Model.SolutionId">Edit</a>
                     </nhs-table-cell>
                 </nhs-table-row-container>
                 <nhs-table-row-container>
@@ -105,7 +113,8 @@
                         <nhs-tag status-enum="@Model.ImplementationStatus" />
                     </nhs-table-cell>
                     <nhs-table-cell>
-                        <a asp-action="Implementation" asp-controller="CatalogueSolutions"
+                        <a asp-action="@nameof(CatalogueSolutionsController.Implementation)" 
+                           asp-controller="@typeof(CatalogueSolutionsController).ControllerName()"
                            asp-route-solutionId="@Model.SolutionId">Edit</a>
                     </nhs-table-cell>
                 </nhs-table-row-container>
@@ -116,7 +125,9 @@
                         <nhs-tag status-enum="@Model.ClientApplicationTypeStatus" />
                     </nhs-table-cell>
                     <nhs-table-cell>
-                        <a asp-action="ClientApplicationType" asp-controller="CatalogueSolutions" asp-route-solutionId="@Model.SolutionId">Edit</a>
+                        <a asp-action="@nameof(CatalogueSolutionsController.ClientApplicationType)" 
+                           asp-controller="@typeof(CatalogueSolutionsController).ControllerName()" 
+                           asp-route-solutionId="@Model.SolutionId">Edit</a>
                     </nhs-table-cell>
                 </nhs-table-row-container>
                 <nhs-table-row-container>
@@ -126,7 +137,9 @@
                         <nhs-tag status-enum="@Model.HostingTypeStatus" />
                     </nhs-table-cell>
                     <nhs-table-cell>
-                        <a asp-action="HostingType" asp-controller="CatalogueSolutions" asp-route-solutionId="@Model.SolutionId">Edit</a>
+                        <a asp-controller="@typeof(HostingTypesController).ControllerName()"
+                           asp-action="@nameof(HostingTypesController.HostingType)"
+                           asp-route-solutionId="@Model.SolutionId">Edit</a>
                     </nhs-table-cell>
                 </nhs-table-row-container>
                 <nhs-table-row-container>
@@ -195,7 +208,8 @@
                         <nhs-tag status-enum="@Model.SupplierDetailsStatus" />
                     </nhs-table-cell>
                     <nhs-table-cell>
-                        <a asp-action="EditSupplierDetails"
+                        <a asp-action="@nameof(CatalogueSolutionsController.EditSupplierDetails)"
+                           asp-controller="@typeof(CatalogueSolutionsController).ControllerName()"
                            asp-route-solutionId="@Model.SolutionId">Edit</a>
                     </nhs-table-cell>
                 </nhs-table-row-container>
@@ -206,7 +220,9 @@
                         <nhs-tag status-enum="@Model.SlaStatus" />
                     </nhs-table-cell>
                     <nhs-table-cell>
-                        <a asp-action="Index" asp-controller="ServiceLevelAgreements" asp-route-solutionId="@Model.SolutionId">Edit</a>
+                        <a asp-action="@nameof(ServiceLevelAgreementsController.Index)" 
+                           asp-controller="@typeof(ServiceLevelAgreementsController).ControllerName()" 
+                           asp-route-solutionId="@Model.SolutionId">Edit</a>
                     </nhs-table-cell>
                 </nhs-table-row-container>
             </nhs-table>

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Linq;
 using System.Threading.Tasks;
+using System.Web;
 using Microsoft.AspNetCore.Mvc;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
@@ -12,6 +13,7 @@ using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Models;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Models;
+using NHSD.GPIT.BuyingCatalogue.WebApp.Models.Autocomplete;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers
 {
@@ -41,11 +43,16 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers
             [FromQuery] string page,
             [FromQuery] string sortBy,
             [FromQuery] string selectedFramework,
-            [FromQuery] string capabilities)
+            [FromQuery] string capabilities,
+            [FromQuery] string search)
         {
             var options = new PageOptions(page, sortBy);
 
-            var solutions = await solutionsFilterService.GetAllSolutionsFiltered(options, selectedFramework, capabilities);
+            var solutions = await solutionsFilterService.GetAllSolutionsFiltered(
+                options,
+                selectedFramework,
+                capabilities,
+                search);
 
             var frameworks = await solutionsFilterService.GetAllFrameworksAndCountForFilter();
 
@@ -89,6 +96,22 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers
             filterCache.Set(cacheKey, result);
 
             return Content(result);
+        }
+
+        [HttpGet("search-suggestions")]
+        public async Task<IActionResult> FilterSearchSuggestions([FromQuery] string search)
+        {
+            var currentPageUrl = new UriBuilder(HttpContext.Request.Headers.Referer.ToString());
+
+            var results = await solutionsFilterService.GetSolutionsBySearchTerm(search);
+
+            return Json(results.Select(r =>
+                new AutocompleteResult
+                {
+                    Title = r.Title,
+                    Category = r.Category,
+                    Url = AppendQueryParameterToUrl(currentPageUrl, nameof(search), r.Title).ToString(),
+                }));
         }
 
         [HttpGet("{solutionId}/associated-services")]
@@ -415,6 +438,14 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers
             var workOffPlans = await solutionsService.GetWorkOffPlans(solutionId);
 
             return View(new DevelopmentPlansModel(item, workOffPlans, contentStatus));
+        }
+
+        private static UriBuilder AppendQueryParameterToUrl(UriBuilder uri, string queryParameterName, string queryParameterValue)
+        {
+            var query = HttpUtility.ParseQueryString(uri.Query);
+            query.Set(queryParameterName, queryParameterValue);
+            uri.Query = query.ToString();
+            return uri;
         }
     }
 }

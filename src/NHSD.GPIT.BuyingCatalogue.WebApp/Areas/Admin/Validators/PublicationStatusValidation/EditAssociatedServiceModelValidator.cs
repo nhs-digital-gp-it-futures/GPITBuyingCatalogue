@@ -19,7 +19,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Validators.PublicationSta
 
             RuleFor(m => m.SelectedPublicationStatus)
                 .MustAsync(NotHaveAnyPublishedSolutionReferences)
-                .WithMessage("This Associated Service cannot be unpublished as it is referenced by another solution")
+                .WithMessage("This Associated Service cannot be unpublished as it is referenced by at least one solution")
                 .When(m => m.SelectedPublicationStatus == PublicationStatus.Unpublished && m.SelectedPublicationStatus != m.AssociatedServicePublicationStatus)
                 .Must(HaveCompletedAllMandatorySections)
                 .WithMessage("Complete all mandatory sections before publishing")
@@ -34,7 +34,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Validators.PublicationSta
 
         private async Task<bool> NotHaveAnyPublishedSolutionReferences(EditAssociatedServiceModel model, PublicationStatus selectedPublicationStatus, CancellationToken cancellationToken)
         {
-            var solutions = await associatedServicesService.GetAllSolutionsForAssociatedService(model.SolutionId, model.AssociatedServiceId);
+            var solutions = await associatedServicesService.GetAllSolutionsForAssociatedService(model.AssociatedServiceId);
             if (solutions.Count == 0)
                 return true;
 

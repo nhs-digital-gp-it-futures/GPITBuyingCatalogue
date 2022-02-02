@@ -34,7 +34,12 @@
                     </span>
                 </nhs-table-cell>
                 <nhs-table-cell>
-                    <a data-test-id="org-link" data-org-id="@organisationModel.Id" asp-area="Admin" asp-controller="Organisations" asp-action="Details" asp-route-organisationId="@organisationModel.Id">Edit</a>
+                    <a data-test-id="org-link" 
+                       data-org-id="@organisationModel.Id" 
+                       asp-area="@typeof(OrganisationsController).AreaName()" 
+                       asp-controller="@typeof(OrganisationsController).ControllerName()"
+                       asp-action="@nameof(OrganisationsController.Details)" 
+                       asp-route-organisationId="@organisationModel.Id">Edit</a>
                 </nhs-table-cell>
             </nhs-table-row-container>
         }
