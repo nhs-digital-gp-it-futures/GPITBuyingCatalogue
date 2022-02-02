@@ -15,6 +15,7 @@ namespace NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.Components.Autoco
                 QueryParameterName = queryParameterName,
                 TitleText = titleText,
                 CurrentPageUrl = UriHelper.GetEncodedPathAndQuery(HttpContext.Request),
+                SearchText = HttpContext.Request.Query[queryParameterName],
             };
 
             return await Task.FromResult(View("NhsAutocomplete", model));
