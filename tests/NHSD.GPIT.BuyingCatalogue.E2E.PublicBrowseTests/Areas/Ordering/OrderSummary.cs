@@ -180,7 +180,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering
 
             new FileInfo(filePath).Length.Should().BePositive();
 
-            ValidateIdPdf(filePath);
+            ValidateIsPdf(filePath);
 
             DeleteDownloadFile(filePath);
         }
@@ -202,7 +202,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering
 
             new FileInfo(filePath).Length.Should().BePositive();
 
-            ValidateIdPdf(filePath);
+            ValidateIsPdf(filePath);
 
             DeleteDownloadFile(filePath);
         }
@@ -229,17 +229,15 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering
             }
         }
 
-        private static void ValidateIdPdf(string filePath)
+        private static void ValidateIsPdf(string filePath)
         {
             var buffer = new byte[5];
 
-            using (var fs = new FileStream(filePath, FileMode.Open, FileAccess.Read))
-            {
-                var bytesRead = fs.Read(buffer, 0, buffer.Length);
-                fs.Close();
-                bytesRead.Should().Be(buffer.Length);
-                buffer.Should().BeEquivalentTo(Encoding.ASCII.GetBytes("%PDF-"));
-            }
+            using var fs = new FileStream(filePath, FileMode.Open, FileAccess.Read);
+            var bytesRead = fs.Read(buffer, 0, buffer.Length);
+            fs.Close();
+            bytesRead.Should().Be(buffer.Length);
+            buffer.Should().BeEquivalentTo(Encoding.ASCII.GetBytes("%PDF-"));
         }
 
         private void RedirectToSummaryForOrder(CallOffId callOffId)
