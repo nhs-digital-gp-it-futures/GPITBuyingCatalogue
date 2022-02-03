@@ -17,9 +17,11 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Email
 
         public Task SendEmailAsync(string emailAddress, string templateId, Dictionary<string, dynamic> personalisation)
         {
-            var data = new Dictionary<string, string>();
-            data["EmailAddress"] = emailAddress;
-            data["TemplateId"] = templateId;
+            var data = new Dictionary<string, string>
+            {
+                ["EmailAddress"] = emailAddress,
+                ["TemplateId"] = templateId,
+            };
             foreach (var p in personalisation ?? new Dictionary<string, dynamic>())
                 data.Add(p.Key, p.Value.ToString());
 
