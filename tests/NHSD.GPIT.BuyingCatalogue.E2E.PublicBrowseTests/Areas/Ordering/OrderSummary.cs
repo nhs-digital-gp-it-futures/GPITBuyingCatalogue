@@ -220,7 +220,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering
 
         private static void WaitForDownloadFile(string filePath)
         {
-            for (int i = 0; i < 30; i++)
+            for (int i = 0; i < 80; i++)
             {
                 if (File.Exists(filePath))
                     break;
