@@ -168,11 +168,11 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering
         [Fact]
         public void OrderSummary_OrderReadyToComplete_ClickDownloadPDF_FileDownloaded()
         {
-            Driver.FindElement(Objects.Ordering.OrderSummary.DownloadPDFIncompleteOrder).Click();
-
             string filePath = @$"{Path.GetTempPath()}order-summary-in-progress-C090009-01.pdf";
 
             DeleteDownloadFile(filePath);
+
+            Driver.FindElement(Objects.Ordering.OrderSummary.DownloadPDFIncompleteOrder).Click();
 
             WaitForDownloadFile(filePath);
 
@@ -190,11 +190,11 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering
         {
             RedirectToSummaryForOrder(new CallOffId(90010, 1));
 
-            Driver.FindElement(Objects.Ordering.OrderSummary.DownloadPDFCompletedOrder).Click();
-
             string filePath = @$"{Path.GetTempPath()}order-summary-completed-C090010-01.pdf";
 
             DeleteDownloadFile(filePath);
+
+            Driver.FindElement(Objects.Ordering.OrderSummary.DownloadPDFCompletedOrder).Click();
 
             WaitForDownloadFile(filePath);
 
@@ -220,7 +220,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering
 
         private static void WaitForDownloadFile(string filePath)
         {
-            for (int i = 0; i < 80; i++)
+            for (int i = 0; i < 10; i++)
             {
                 if (File.Exists(filePath))
                     break;
