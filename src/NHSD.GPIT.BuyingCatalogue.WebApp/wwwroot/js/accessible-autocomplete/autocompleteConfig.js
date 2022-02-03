@@ -60,8 +60,8 @@ class autocompleteConfig {
         window.location.href = result.url;
     }
     addFormEvents() {
-        this.form.addEventListener('keyup', ({ key }) => {
-            if (key === 'Enter' && document.activeElement.id === this.modelId)
+        this.form.addEventListener('keyup', function (keyboardEvent) {
+            if (keyboardEvent.key === 'Enter' && document.activeElement.id === this.modelId)
                 this.form.submit();
         });
     }
