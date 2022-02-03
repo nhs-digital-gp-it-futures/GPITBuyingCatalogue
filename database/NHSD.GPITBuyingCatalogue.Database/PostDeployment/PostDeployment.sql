@@ -1,4 +1,5 @@
-﻿:r ./CreateClinicalCommissioningGroups.sql
+﻿:r ./InsertOrganisationTypes.sql
+:r ./CreateClinicalCommissioningGroups.sql
 :r ./CreateCommissioningSupportUnits.sql
 :r ./CreateExecutiveAgency.sql
 :r ./CreateExecutiveAgencyUser.sql

@@ -27,6 +27,15 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Organisations.Configuration
                 .HasMaxLength(255);
 
             builder.Property(o => o.OdsCode).HasMaxLength(8);
+
+            builder.Property(o => o.ExternalIdentifier).HasMaxLength(100);
+
+            builder.Property(o => o.InternalIdentifier).HasMaxLength(103);
+
+            builder.Property(o => o.OrganisationType)
+                .HasConversion<int>()
+                .HasColumnName("OrganisationTypeId");
+
             builder.Property(o => o.PrimaryRoleId).HasMaxLength(8);
 
             builder.HasIndex(o => o.Name, "AK_Organisations_Name")

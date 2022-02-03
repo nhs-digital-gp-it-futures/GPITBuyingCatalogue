@@ -235,6 +235,7 @@
     <Build Include="Users\TemporalTables\AspNetUserClaims_History.sql" />
     <Build Include="Users\TemporalTables\AspNetUsers_History.sql" />
     <Build Include="Import\Functions\GetLastPublishedDate.sql" />
+    <Build Include="Organisations\Tables\OrganisationTypes.sql" />
   </ItemGroup>
   <ItemGroup>
     <SqlCmdVariable Include="CREATE_EA_USER">
@@ -312,6 +313,7 @@
     <None Include="PostDeployment\InsertStandardsCapabilities.sql" />
     <None Include="PostDeployment\InsertStandardTypes.sql" />
     <None Include="PostDeployment\InsertRelatedOrganisations.sql" />
+    <None Include="PostDeployment\InsertOrganisationTypes.sql" />
   </ItemGroup>
   <ItemGroup>
     <PostDeploy Include="PostDeployment\PostDeployment.sql" />
