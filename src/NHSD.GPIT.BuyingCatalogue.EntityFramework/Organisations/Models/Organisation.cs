@@ -23,6 +23,12 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Organisations.Models
 
         public string OdsCode { get; set; }
 
+        public string ExternalIdentifier { get; set; }
+
+        public string InternalIdentifier { get; set; }
+
+        public OrganisationType OrganisationType { get; set; }
+
         public string PrimaryRoleId { get; set; }
 
         public bool CatalogueAgreementSigned { get; set; }
