@@ -21,7 +21,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.UIComponentTests.Tests
         [Fact]
         public void TimeInput_EnterValueInSingleFrom()
         {
-            var time = DateTime.Now.ToShortTimeString();
+            var time = DateTime.Now.ToString("HH:mm");
             CommonActions.SendTextToElement(TimeInputObject.SingleFrom, time);
 
             CommonActions.GetElementValue(TimeInputObject.SingleFrom).Should().Be(time);
@@ -30,7 +30,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.UIComponentTests.Tests
         [Fact]
         public void TimeInput_EnterValueIntoUntilInputBox()
         {
-            var time = DateTime.Now.ToShortTimeString();
+            var time = DateTime.Now.ToString("HH:mm");
             CommonActions.SendTextToElement(TimeInputObject.Until, time);
 
             CommonActions.GetElementValue(TimeInputObject.Until).Should().Be(time);
@@ -39,7 +39,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.UIComponentTests.Tests
         [Fact]
         public void TimeInput_EnterValueIntoFromInputBox()
         {
-            var time = DateTime.Now.ToShortTimeString();
+            var time = DateTime.Now.ToString("HH:mm");
             CommonActions.SendTextToElement(TimeInputObject.From, time);
 
             CommonActions.GetElementValue(TimeInputObject.From).Should().Be(time);
