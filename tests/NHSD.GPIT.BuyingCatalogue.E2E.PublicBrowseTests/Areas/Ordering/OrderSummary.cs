@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using FluentAssertions;
 using netDumbster.smtp;
@@ -163,9 +164,64 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering
             context.Orders.Single(o => o.Id == CallOffId.Id).Completed.Should().NotBeNull();
         }
 
+        [Fact]
+        public void OrderSummary_OrderReadyToComplete_ClickDownloadPDF_FileDownloaded()
+        {
+            Driver.FindElement(Objects.Ordering.OrderSummary.DownloadPDFIncompleteOrder).Click();
+
+            string filePath = @$"{Path.GetTempPath()}order-summary-in-progress-C090009-01.pdf";
+
+            DeleteDownloadFile(filePath);
+
+            WaitForDownloadFile(filePath);
+
+            File.Exists(filePath).Should().BeTrue();
+
+            new FileInfo(filePath).Length.Should().BePositive();
+
+            DeleteDownloadFile(filePath);
+        }
+
+        [Fact]
+        public void OrderSummary_OrderComplete_ClickDownloadPDF_FileDownloaded()
+        {
+            RedirectToSummaryForOrder(new CallOffId(90010, 1));
+
+            Driver.FindElement(Objects.Ordering.OrderSummary.DownloadPDFCompletedOrder).Click();
+
+            string filePath = @$"{Path.GetTempPath()}order-summary-completed-C090010-01.pdf";
+
+            DeleteDownloadFile(filePath);
+
+            WaitForDownloadFile(filePath);
+
+            File.Exists(filePath).Should().BeTrue();
+
+            new FileInfo(filePath).Length.Should().BePositive();
+
+            DeleteDownloadFile(filePath);
+        }
+
         public void Dispose()
         {
             smtp.Dispose();
+        }
+
+        private static void DeleteDownloadFile(string filePath)
+        {
+            if (File.Exists(filePath))
+                File.Delete(filePath);
+        }
+
+        private static void WaitForDownloadFile(string filePath)
+        {
+            for (int i = 0; i < 10; i++)
+            {
+                if (File.Exists(filePath))
+                    break;
+
+                System.Threading.Thread.Sleep(1000);
+            }
         }
 
         private void RedirectToSummaryForOrder(CallOffId callOffId)
