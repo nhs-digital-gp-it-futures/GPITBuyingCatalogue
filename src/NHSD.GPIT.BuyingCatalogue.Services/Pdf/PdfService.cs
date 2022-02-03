@@ -8,32 +8,34 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Pdf
 {
     public sealed class PdfService : IPdfService
     {
+        private const string ChromeArgs = "--no-sandbox --headless --disable-gpu --disable-software-rasterizer --ignore-certificate-errors";
+        private const string ChromeWindowsPath = @"C:\Program Files (x86)\Google\Chrome\Application\chrome.exe";
+        private const string ChromeLinuxPath = "/usr/bin/chromium-browser";
+
         public byte[] Convert(Uri url)
         {
             string fileName;
-            string args;
-            string chrome;
+            string chromePath;
 
             if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
             {
                 fileName = @$"{Path.GetTempPath()}{Guid.NewGuid()}.pdf";
-                args = @$"--headless --disable-gpu --ignore-certificate-errors --print-to-pdf={fileName} {url}";
-                chrome = "C:\\Program Files (x86)\\Google\\Chrome\\Application\\chrome.exe";
+                chromePath = ChromeWindowsPath;
             }
             else
             {
                 fileName = @$"/tmp/{Guid.NewGuid()}.pdf";
-                args = $"--no-sandbox --headless --disable-gpu --disable-software-rasterizer --ignore-certificate-errors --print-to-pdf={fileName} {url}";
-                chrome = "/usr/bin/chromium-browser";
+                chromePath = ChromeLinuxPath;
             }
 
-            var psi = new ProcessStartInfo(chrome, args);
+            var psi = new ProcessStartInfo(chromePath, $"{ChromeArgs} --print-to-pdf={fileName} {url}");
             var process = Process.Start(psi);
             process.WaitForExit(10000);
 
             byte[] fileContent = File.ReadAllBytes(fileName);
 
-            File.Delete(fileName);
+            if (File.Exists(fileName))
+                File.Delete(fileName);
 
             return fileContent;
         }
