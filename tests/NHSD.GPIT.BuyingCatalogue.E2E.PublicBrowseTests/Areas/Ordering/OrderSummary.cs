@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Text;
 using FluentAssertions;
 using netDumbster.smtp;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Objects.Common;
@@ -179,6 +180,8 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering
 
             new FileInfo(filePath).Length.Should().BePositive();
 
+            ValidateIdPdf(filePath);
+
             DeleteDownloadFile(filePath);
         }
 
@@ -198,6 +201,8 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering
             File.Exists(filePath).Should().BeTrue();
 
             new FileInfo(filePath).Length.Should().BePositive();
+
+            ValidateIdPdf(filePath);
 
             DeleteDownloadFile(filePath);
         }
@@ -221,6 +226,19 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering
                     break;
 
                 System.Threading.Thread.Sleep(1000);
+            }
+        }
+
+        private static void ValidateIdPdf(string filePath)
+        {
+            var buffer = new byte[5];
+
+            using (var fs = new FileStream(filePath, FileMode.Open, FileAccess.Read))
+            {
+                var bytesRead = fs.Read(buffer, 0, buffer.Length);
+                fs.Close();
+                bytesRead.Should().Be(buffer.Length);
+                buffer.Should().BeEquivalentTo(Encoding.ASCII.GetBytes("%PDF-"));
             }
         }
 
