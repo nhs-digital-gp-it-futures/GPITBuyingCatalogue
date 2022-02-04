@@ -58,6 +58,16 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Capabilities
             await dbContext.SaveChangesAsync();
         }
 
+        public async Task DeleteSupplierDefinedEpic(string epicId)
+        {
+            var epic = await dbContext.Epics.SingleOrDefaultAsync(e => e.Id == epicId);
+            if (epic is null)
+                return;
+
+            dbContext.Epics.Remove(epic);
+            await dbContext.SaveChangesAsync();
+        }
+
         public Task<bool> EpicExists(
             string epicId,
             int capabilityId,
