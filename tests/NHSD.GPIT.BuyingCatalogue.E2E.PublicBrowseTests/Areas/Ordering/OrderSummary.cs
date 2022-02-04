@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Text;
 using FluentAssertions;
 using netDumbster.smtp;
@@ -168,21 +169,24 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering
         [Fact]
         public void OrderSummary_OrderReadyToComplete_ClickDownloadPDF_FileDownloaded()
         {
-            string filePath = @$"{Path.GetTempPath()}order-summary-in-progress-C090009-01.pdf";
+            if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+            {
+                string filePath = @$"{Path.GetTempPath()}order-summary-in-progress-C090009-01.pdf";
 
-            DeleteDownloadFile(filePath);
+                DeleteDownloadFile(filePath);
 
-            Driver.FindElement(Objects.Ordering.OrderSummary.DownloadPDFIncompleteOrder).Click();
+                Driver.FindElement(Objects.Ordering.OrderSummary.DownloadPDFIncompleteOrder).Click();
 
-            WaitForDownloadFile(filePath);
+                WaitForDownloadFile(filePath);
 
-            File.Exists(filePath).Should().BeTrue();
+                File.Exists(filePath).Should().BeTrue();
 
-            new FileInfo(filePath).Length.Should().BePositive();
+                new FileInfo(filePath).Length.Should().BePositive();
 
-            ValidateIsPdf(filePath);
+                ValidateIsPdf(filePath);
 
-            DeleteDownloadFile(filePath);
+                DeleteDownloadFile(filePath);
+            }
         }
 
         [Fact]
