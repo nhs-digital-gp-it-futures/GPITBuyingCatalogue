@@ -169,6 +169,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering
         [Fact]
         public void OrderSummary_OrderComplete_ClickDownloadPDF_FileDownloaded()
         {
+            // This test is fragile on the Linux pipeline, but fine on Windows and Docker
             if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
             {
                 string filePath = @$"{Path.GetTempPath()}order-summary-completed-C090010-01.pdf";
@@ -194,6 +195,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering
         [Fact]
         public void OrderSummary_OrderReadyToComplete_ClickDownloadPDF_FileDownloaded()
         {
+            // This test is fragile on the Linux pipeline, but fine on Windows and Docker
             if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
             {
                 string filePath = @$"{Path.GetTempPath()}order-summary-in-progress-C090009-01.pdf";
