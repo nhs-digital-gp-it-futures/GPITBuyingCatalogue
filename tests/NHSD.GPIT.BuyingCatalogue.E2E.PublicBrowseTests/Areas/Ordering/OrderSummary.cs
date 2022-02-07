@@ -167,15 +167,15 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering
         }
 
         [Fact]
-        public void OrderSummary_OrderReadyToComplete_ClickDownloadPDF_FileDownloaded()
+        public void OrderSummary_OrderZComplete_ClickDownloadPDF_FileDownloaded()
         {
-            System.Threading.Thread.Sleep(10000);
-
-            string filePath = @$"{Path.GetTempPath()}order-summary-in-progress-C090009-01.pdf";
+            string filePath = @$"{Path.GetTempPath()}order-summary-completed-C090010-01.pdf";
 
             DeleteDownloadFile(filePath);
 
-            Driver.FindElement(Objects.Ordering.OrderSummary.DownloadPDFIncompleteOrder).Click();
+            RedirectToSummaryForOrder(new CallOffId(90010, 1));
+
+            Driver.FindElement(Objects.Ordering.OrderSummary.DownloadPDFCompletedOrder).Click();
 
             WaitForDownloadFile(filePath);
 
@@ -189,17 +189,13 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering
         }
 
         [Fact]
-        public void OrderSummary_OrderComplete_ClickDownloadPDF_FileDownloaded()
+        public void OrderSummary_OrderReadyToComplete_ClickDownloadPDF_FileDownloaded()
         {
-            System.Threading.Thread.Sleep(10000);
-
-            string filePath = @$"{Path.GetTempPath()}order-summary-completed-C090010-01.pdf";
+            string filePath = @$"{Path.GetTempPath()}order-summary-in-progress-C090009-01.pdf";
 
             DeleteDownloadFile(filePath);
 
-            RedirectToSummaryForOrder(new CallOffId(90010, 1));
-
-            Driver.FindElement(Objects.Ordering.OrderSummary.DownloadPDFCompletedOrder).Click();
+            Driver.FindElement(Objects.Ordering.OrderSummary.DownloadPDFIncompleteOrder).Click();
 
             WaitForDownloadFile(filePath);
 
