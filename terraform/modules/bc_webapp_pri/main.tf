@@ -41,7 +41,7 @@ resource "azurerm_app_service" "webapp" {
     DOMAIN_NAME                         = var.app_dns_url
     
     # Settings for sql
-    BC_DB_CONNECTION                    = "Server=tcp:${data.azurerm_sql_server.sql_server.fqdn},1433;Initial Catalog=${var.db_name_main};Persist Security Info=False;User ID=${data.azurerm_sql_server.sql_server.administrator_login};Password=${var.auth_pwd};MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;"    
+    BC_DB_CONNECTION                    = "Server=tcp:${coalesce(data.azurerm_sql_server.sql_server.fqdn, "todoConString")},1433;Initial Catalog=${var.db_name_main};Persist Security Info=False;User ID=${data.azurerm_sql_server.sql_server.administrator_login};Password=${var.auth_pwd};MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;"    
     
     WEBSITE_HTTPLOGGING_RETENTION_DAYS  = "2"
   }

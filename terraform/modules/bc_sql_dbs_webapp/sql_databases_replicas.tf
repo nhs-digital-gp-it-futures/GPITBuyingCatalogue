@@ -3,7 +3,7 @@ resource "azurerm_mssql_database" "sql_main_primary_replica" {
   count               = var.enable_replica
   create_mode         = "OnlineSecondary"
   server_id           = data.azurerm_sql_server.sql_replica_server[0].id
-  creation_source_database_id  = azurerm_mssql_database.sql_main_primary.id
+  creation_source_database_id  = azurerm_mssql_database.sql_main_primary[0].id
   sku_name                     = var.core_env != "dev" ? "S1" : "S0"
   tags = {
     environment                    = var.environment,

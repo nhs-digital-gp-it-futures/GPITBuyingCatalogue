@@ -9,7 +9,7 @@ resource "azurerm_sql_failover_group" "sql_bapi_primary_fog" {
   count               = var.enable_replica
   resource_group_name = var.rg_name
   server_name         = var.sqlsvr_name
-  databases           = [azurerm_mssql_database.sql_main_primary.id]
+  databases           = [azurerm_mssql_database.sql_main_primary[0].id]
   
   partner_servers {
     id = data.azurerm_sql_server.sql_replica_server[0].id

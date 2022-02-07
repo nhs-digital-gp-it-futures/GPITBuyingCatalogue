@@ -35,8 +35,8 @@ module "webapp" {
   docker_registry_server_url = data.azurerm_container_registry.acr.login_server
   docker_registry_server_username = data.azurerm_container_registry.acr.admin_username
   docker_registry_server_password = data.azurerm_container_registry.acr.admin_password
-  create_slot = local.shortenv == "platform" || local.shortenv == "production" ? 1 : 0 
-  create_host_binding = local.coreEnv == "dev" ? 1 : 0 
+  create_slot = local.shortenv == "dr" || local.shortenv == "platform" || local.shortenv == "production" ? 1 : 0 
+  create_host_binding = local.shortenv == "drtest" || local.shortenv == "platform" || local.shortenv == "production" ? 0 : 1 
   ssl_thumbprint = data.azurerm_key_vault_certificate.ssl_cert.thumbprint
   depends_on = [module.sql_server_pri]
 }
