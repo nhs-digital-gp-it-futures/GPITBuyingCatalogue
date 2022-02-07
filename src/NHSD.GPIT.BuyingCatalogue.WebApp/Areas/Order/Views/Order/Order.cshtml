@@ -91,6 +91,11 @@
                                             nameof(DeleteOrderController.DeleteOrder),
                                             typeof(DeleteOrderController).ControllerName(),
                                             new { Model.OdsCode, Model.CallOffId })"/>
+
+            @if (Model.LastUpdated is not null && !string.IsNullOrWhiteSpace(Model.LastUpdatedByUserName))
+            {
+                <nhs-endnote data-test-id="last-updated-endnote">Order last updated by @Model.LastUpdatedByUserName on @Model.LastUpdated!.Value.ToString("dd MMMM yyyy")</nhs-endnote>
+            }
         </div>
     </div>
 </div>

@@ -42,6 +42,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
                 .Include(o => o.OrderingParty)
                 .Include(o => o.OrderingPartyContact)
                 .Include(o => o.Supplier)
+                .Include(o => o.LastUpdatedByUser)
                 .Include(o => o.OrderItems).ThenInclude(i => i.CatalogueItem)
                 .SingleOrDefaultAsync();
         }
