@@ -28,7 +28,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Controllers
             assertion.Verify(constructors);
         }
 
-        [Fact(Skip = "Temporarily disabled")]
+        [Fact]
         public static void ClassIsCorrectlyDecorated()
         {
             typeof(OrderSummaryController).Should().BeDecoratedWith<RestrictToLocalhostActionFilter>();

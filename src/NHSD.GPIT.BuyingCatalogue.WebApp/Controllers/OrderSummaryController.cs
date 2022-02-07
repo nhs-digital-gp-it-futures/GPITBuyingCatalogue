@@ -3,14 +3,13 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Orders;
+using NHSD.GPIT.BuyingCatalogue.WebApp.ActionFilters;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Models;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.Controllers
 {
     [Route("ordersummary/{odsCode}/{callOffId}")]
-
-    // Temporarily disabled
-    // [RestrictToLocalhostActionFilter]
+    [RestrictToLocalhostActionFilter]
     public sealed class OrderSummaryController : Controller
     {
         private readonly IOrderService orderService;
