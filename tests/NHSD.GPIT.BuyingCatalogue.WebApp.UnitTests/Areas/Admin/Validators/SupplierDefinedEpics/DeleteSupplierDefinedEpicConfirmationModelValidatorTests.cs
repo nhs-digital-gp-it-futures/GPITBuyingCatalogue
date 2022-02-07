@@ -118,6 +118,5 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators.Supp
 
             result.ShouldNotHaveAnyValidationErrors();
         }
-
     }
 }
