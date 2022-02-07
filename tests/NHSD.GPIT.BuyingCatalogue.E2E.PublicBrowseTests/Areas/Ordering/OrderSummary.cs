@@ -48,7 +48,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering
 
             CommonActions.ElementTextEqualTo(
                 Objects.Ordering.OrderSummary.LastUpdatedEndNote,
-                $"Order last updated by Sue Smith on {DateTime.UtcNow.ToString("dd MMM yyyy")}");
+                $"Order last updated by Sue Smith on {DateTime.UtcNow.ToString("dd MMMM yyyy")}");
         }
 
         [Fact]
@@ -79,7 +79,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering
 
             CommonActions.ElementTextEqualTo(
                 Objects.Ordering.OrderSummary.LastUpdatedEndNote,
-                $"Order last updated by Sue Smith on {DateTime.UtcNow.ToString("dd MMM yyyy")}");
+                $"Order last updated by Sue Smith on {DateTime.UtcNow.ToString("dd MMMM yyyy")}");
         }
 
         [Fact]
@@ -95,7 +95,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering
 
             CommonActions.ElementTextEqualTo(
                 Objects.Ordering.OrderSummary.LastUpdatedEndNote,
-                $"Order last updated by Sue Smith on {DateTime.UtcNow.ToString("dd MMM yyyy")}");
+                $"Order last updated by Sue Smith on {DateTime.UtcNow.ToString("dd MMMM yyyy")}");
         }
 
         [Fact]
