@@ -9,4 +9,10 @@ resource "azurerm_mssql_database" "sql_main_primary_replica" {
     environment                    = var.environment,
     architecture                   = "new"
   }
+
+    lifecycle {
+    ignore_changes = [
+      server_id
+    ]
+  }
 }

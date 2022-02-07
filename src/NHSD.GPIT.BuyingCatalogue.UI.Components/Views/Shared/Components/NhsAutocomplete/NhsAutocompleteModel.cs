@@ -11,5 +11,7 @@
         public string TitleText { get; set; }
 
         public string CurrentPageUrl { get; set; }
+
+        public string SearchText { get; set; }
     }
 }

@@ -130,3 +130,7 @@ variable "create_host_binding" {
 variable "ssl_thumbprint" {
   type = string
 }
+
+variable "notify_api_key" {
+  type = string
+}

@@ -48,22 +48,22 @@
                                 <nhs-table-cell>
                                     @if (applicationType == ClientApplicationType.MobileTablet)
                                     {
-                                        <a asp-action="@applicationType" 
+                                        <a asp-action="@nameof(MobileTabletBasedController.MobileTablet)" 
                                            asp-controller="@typeof(MobileTabletBasedController).ControllerName()" 
                                            asp-route-solutionId="@Model.SolutionId" 
                                            class="nhsuk-breadcrumb__link">Edit</a>
                                     }
                                     else if (applicationType == ClientApplicationType.Desktop)
                                     {
-                                        <a asp-action="@applicationType" 
+                                        <a asp-action="@nameof(DesktopBasedController.Desktop)" 
                                            asp-controller="@typeof(DesktopBasedController).ControllerName()" 
                                            asp-route-solutionId="@Model.SolutionId" 
                                            class="nhsuk-breadcrumb__link">Edit</a>
                                     }
-                                    else
+                                    else if (applicationType == ClientApplicationType.BrowserBased)
                                     {
-                                        <a asp-action="@applicationType" 
-                                           asp-controller="@typeof(CatalogueSolutionsController).ControllerName()" 
+                                        <a asp-action="@nameof(BrowserBasedController.BrowserBased)" 
+                                           asp-controller="@typeof(BrowserBasedController).ControllerName()" 
                                            asp-route-solutionId="@Model.SolutionId" 
                                            class="nhsuk-breadcrumb__link">Edit</a>
                                     }

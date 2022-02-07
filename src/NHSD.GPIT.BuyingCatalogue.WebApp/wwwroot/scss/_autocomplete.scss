@@ -28,7 +28,8 @@
 
 @include mq($until: tablet) {
     /* duplicate of .nhsuk-search__input in _header.scss, for non javascript version */
-    .autocomplete__input {
+    .autocomplete__input,
+    .nhsuk-search__input {
         -ms-flex-positive: 2; /* [1] */
         -webkit-appearance: listbox; // sass-lint:disable-line prefixes /* [2] */
         border-bottom: 1px solid $color_nhsuk-grey-3;
@@ -56,7 +57,8 @@
 
 @include mq($from: tablet) {
     /* duplicate of .nhsuk-search__input in _header.scss, for non javascript version */
-    .autocomplete__input {
+    .autocomplete__input,
+    .nhsuk-search__input {
         -webkit-appearance: listbox; // sass-lint:disable-line prefixes /* [2] */
         border-bottom: 1px solid $color_nhsuk-grey-3;
         border-left: 1px solid $color_nhsuk-grey-3;
@@ -74,16 +76,12 @@
             outline-offset: $nhsuk-focus-width;
             padding: 0 11px; /* [10] */
         }
-
-        &::placeholder {
-            color: $color_nhsuk-grey-1;
-            font-size: $nhsuk-base-font-size;
-        }
     }
 }
 
 @include mq($from: desktop) {
-    .autocomplete__input {
+    .autocomplete__input,
+    .nhsuk-search__input {
         width: 100%;
     }
 }
