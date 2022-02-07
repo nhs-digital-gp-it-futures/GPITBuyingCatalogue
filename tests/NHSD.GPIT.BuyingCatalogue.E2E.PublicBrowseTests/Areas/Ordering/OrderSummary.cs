@@ -169,6 +169,8 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering
         [Fact]
         public void OrderSummary_OrderReadyToComplete_ClickDownloadPDF_FileDownloaded()
         {
+            System.Threading.Thread.Sleep(10000);
+
             string filePath = @$"{Path.GetTempPath()}order-summary-in-progress-C090009-01.pdf";
 
             DeleteDownloadFile(filePath);
@@ -189,6 +191,8 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering
         [Fact]
         public void OrderSummary_OrderComplete_ClickDownloadPDF_FileDownloaded()
         {
+            System.Threading.Thread.Sleep(10000);
+
             string filePath = @$"{Path.GetTempPath()}order-summary-completed-C090010-01.pdf";
 
             DeleteDownloadFile(filePath);
