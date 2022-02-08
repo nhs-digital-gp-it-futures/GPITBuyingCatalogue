@@ -1,8 +1,11 @@
-﻿@using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers;
+﻿@using EnumsNET
+@using NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.TagHelpers.Tags;
+@using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
+@using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers;
 @using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
 @model NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.Dashboard.OrganisationModel;
 @{
-    ViewBag.Title = Model.Title;
+    ViewBag.Title = "Orders dashboard";
 }
 
 <div data-test-id="dashboard-page">
@@ -11,6 +14,7 @@
     <div class="nhsuk-grid-row">
         <div class="nhsuk-grid-column-two-thirds">
             <nhs-page-title title="@ViewBag.Title"
+                            caption="@Model.OrganisationName"
                             advice="Manage orders currently in progress and view completed orders." />
             @if (Model.CanActOnBehalf)
             {
@@ -31,53 +35,53 @@
         </div>
 
         <div class="nhsuk-grid-column-full">
-            <nhs-table label-text="Incomplete orders" data-test-id="incomplete-orders-table">
+            <nhs-table data-test-id="orders-table">
                 <nhs-table-column>Call-off Agreement ID</nhs-table-column>
                 <nhs-table-column>Order description</nhs-table-column>
-                <nhs-table-column>Last updated by</nhs-table-column>
                 <nhs-table-column>Last updated</nhs-table-column>
-                <nhs-table-column>Date created</nhs-table-column>
-                @for (int i = 0; i < Model.InCompleteOrders.Count; i++)
+                <nhs-table-column>Status</nhs-table-column>
+                <nhs-table-column></nhs-table-column>
+                @foreach(var order in Model.Orders)
                 {
                     <nhs-table-row-container>
+                        <nhs-table-cell>@order.CallOffId</nhs-table-cell>
+                        <nhs-table-cell>@order.Description</nhs-table-cell>
+                        <nhs-table-cell>@order.LastUpdated.ToString("dd/MM/yyyy")</nhs-table-cell>
                         <nhs-table-cell>
-                            <a asp-action="@nameof(OrderController.Order)"
-                               asp-controller="@typeof(OrderController).ControllerName()"
-                               asp-route-callOffId="@Model.InCompleteOrders[i].CallOffId"
-                               asp-route-odsCode="@Model.OdsCode">@Model.InCompleteOrders[i].CallOffId</a>
+                            <nhs-tag colour="@GetTagColour(order.OrderStatus)" text="@order.OrderStatus.AsString(EnumFormat.EnumMemberValue)" />
                         </nhs-table-cell>
-                        <nhs-table-cell>@Model.InCompleteOrders[i].Description</nhs-table-cell>
-                        <nhs-table-cell>@Model.InCompleteOrders[i].LastUpdatedByUser.FullName</nhs-table-cell>
-                        <nhs-table-cell>@Model.InCompleteOrders[i].LastUpdated.ToLongDateString()</nhs-table-cell>
-                        <nhs-table-cell>@Model.InCompleteOrders[i].Created.ToLongDateString()</nhs-table-cell>
-                    </nhs-table-row-container>
-                }
-            </nhs-table>
-
-            <nhs-table label-text="Completed orders" data-test-id="complete-orders-table">
-                <nhs-table-column>Call-off Agreement ID</nhs-table-column>
-                <nhs-table-column>Order description</nhs-table-column>
-                <nhs-table-column>Last updated by</nhs-table-column>
-                <nhs-table-column>Date Completed</nhs-table-column>
-                <nhs-table-column>Date created</nhs-table-column>
-                <nhs-table-column>Payment centrally processed?</nhs-table-column>
-                @for (int i = 0; i < Model.CompleteOrders.Count; i++)
-                {
-                    <nhs-table-row-container>
                         <nhs-table-cell>
-                            <a asp-action="@nameof(OrderController.Order)"
+                            <a data-test-id="link-@order.CallOffId" asp-action="@nameof(OrderController.Order)"
                                asp-controller="@typeof(OrderController).ControllerName()"
-                               asp-route-callOffId="@Model.CompleteOrders[i].CallOffId"
-                               asp-route-odsCode="@Model.OdsCode">@Model.CompleteOrders[i].CallOffId</a>
+                               asp-route-odsCode="@Model.OdsCode"
+                               asp-route-callOffId="@order.CallOffId" style="white-space:nowrap;">
+                                @GetLinkName(order.OrderStatus)
+                           </a>
                         </nhs-table-cell>
-                        <nhs-table-cell>@Model.CompleteOrders[i].Description</nhs-table-cell>
-                        <nhs-table-cell>@Model.CompleteOrders[i].LastUpdatedByUser.FullName</nhs-table-cell>
-                        <nhs-table-cell>@Model.CompleteOrders[i].Completed?.ToLongDateString()</nhs-table-cell>
-                        <nhs-table-cell>@Model.CompleteOrders[i].Created.ToLongDateString()</nhs-table-cell>
-                        <nhs-table-cell>@(Model.CompleteOrders[i].FundingSourceOnlyGms == true ? "Yes" : "No")</nhs-table-cell>
                     </nhs-table-row-container>
                 }
             </nhs-table>
         </div>
+        <div id="pagination">
+            <nhs-page-number-pagination current-page-number="@Model.Options.PageNumber"
+                                        total-number-of-pages="@Model.Options.NumberOfPages" />
+
+		</div>
     </div>
 </div>
+
+@{
+    string GetLinkName(OrderStatus orderStatus) => orderStatus switch
+    {
+        OrderStatus.Complete => "View",
+        OrderStatus.InProgress => "Edit",
+        _ => string.Empty,
+    };
+
+    NhsTagsTagHelper.TagColour GetTagColour(OrderStatus orderStatus) => orderStatus switch
+    {
+        OrderStatus.Complete => NhsTagsTagHelper.TagColour.Green,
+        OrderStatus.InProgress => NhsTagsTagHelper.TagColour.Yellow,
+        _ => throw new ArgumentOutOfRangeException(nameof(orderStatus)),
+    };
+}

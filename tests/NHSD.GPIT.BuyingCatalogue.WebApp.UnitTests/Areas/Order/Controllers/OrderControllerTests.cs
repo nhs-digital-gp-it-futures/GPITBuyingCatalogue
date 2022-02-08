@@ -44,7 +44,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers
 
         [Theory]
         [CommonAutoData]
-        public static async Task Get_IncompleteOrder_ReturnsExpectedResult(
+        public static async Task Get_InProgressOrder_ReturnsExpectedResult(
             string odsCode,
             EntityFramework.Ordering.Models.Order order,
             AspNetUser aspNetUser,
@@ -54,7 +54,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers
             OrderController controller)
         {
             order.LastUpdatedByUser = aspNetUser;
-            order.OrderStatus = OrderStatus.Incomplete;
+            order.OrderStatus = OrderStatus.InProgress;
 
             var expectedViewData = new OrderModel(odsCode, order, orderTaskList) { DescriptionUrl = "testUrl" };
 

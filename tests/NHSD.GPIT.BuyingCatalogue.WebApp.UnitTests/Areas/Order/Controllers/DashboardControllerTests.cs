@@ -14,6 +14,7 @@ using Microsoft.AspNetCore.Routing;
 using Moq;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Organisations.Models;
 using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
+using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Models;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Orders;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Organisations;
 using NHSD.GPIT.BuyingCatalogue.Test.Framework.AutoFixtureCustomisations;
@@ -99,7 +100,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers
             [Frozen] Mock<IOrganisationsService> organisationService,
             [Frozen] Mock<IOrderService> orderService,
             Organisation organisation,
-            List<EntityFramework.Ordering.Models.Order> orders,
+            PagedList<EntityFramework.Ordering.Models.Order> orders,
             string odsCode,
             DashboardController controller)
         {
@@ -115,9 +116,12 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers
 
             organisationService.Setup(s => s.GetOrganisationByOdsCode(odsCode)).ReturnsAsync(organisation);
 
-            orderService.Setup(s => s.GetOrders(organisation.Id)).ReturnsAsync(orders);
+            orderService.Setup(s => s.GetPagedOrders(organisation.Id, It.IsAny<PageOptions>())).ReturnsAsync(orders);
 
-            var expected = new OrganisationModel(organisation, user, orders);
+            var expected = new OrganisationModel(organisation, user, orders.Items)
+            {
+                Options = orders.Options,
+            };
 
             var result = (await controller.Organisation(odsCode)).As<ViewResult>();
 

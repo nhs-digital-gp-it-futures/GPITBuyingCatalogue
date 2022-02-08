@@ -9,6 +9,7 @@ using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.Framework.Settings;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Csv;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Email;
+using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Models;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Orders;
 using Notify.Client;
 
@@ -96,6 +97,29 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
                 .SelectMany(o => o.Orders)
                 .AsNoTracking()
                 .ToListAsync();
+        }
+
+        public async Task<PagedList<Order>> GetPagedOrders(int organisationId, PageOptions options)
+        {
+            options ??= new PageOptions();
+
+            var query = dbContext.Organisations
+                .Where(o => o.Id == organisationId)
+                .Include(o => o.Orders).ThenInclude(o => o.LastUpdatedByUser)
+                .SelectMany(o => o.Orders)
+                .OrderByDescending(o => o.LastUpdated)
+                .AsNoTracking();
+
+            options.TotalNumberOfItems = await query.CountAsync();
+
+            if (options.PageNumber != 0)
+                query = query.Skip((options.PageNumber - 1) * options.PageSize);
+
+            query = query.Take(options.PageSize);
+
+            var results = await query.ToListAsync();
+
+            return new PagedList<Order>(results, options);
         }
 
         public Task<Order> GetOrderSummary(CallOffId callOffId, string odsCode)

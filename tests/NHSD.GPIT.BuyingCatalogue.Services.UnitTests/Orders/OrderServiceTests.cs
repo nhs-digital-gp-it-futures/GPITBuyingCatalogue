@@ -1,4 +1,6 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 using AutoFixture;
 using AutoFixture.AutoMoq;
 using AutoFixture.Idioms;
@@ -8,6 +10,7 @@ using Microsoft.EntityFrameworkCore;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Organisations.Models;
+using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Models;
 using NHSD.GPIT.BuyingCatalogue.Services.Orders;
 using NHSD.GPIT.BuyingCatalogue.Test.Framework.AutoFixtureCustomisations;
 using Xunit;
@@ -60,6 +63,32 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Orders
 
             // Although soft deleted, there is a query filter on the context to exclude soft deleted orders
             updatedOrder.Should().BeNull();
+        }
+
+        [Theory]
+        [InMemoryDbAutoData]
+        public static async Task GetPagedOrders_ReturnsExpectedPageSize(
+            Organisation organisation,
+            List<Order> orders,
+            [Frozen]BuyingCatalogueDbContext context,
+            OrderService service)
+        {
+            organisation.Orders = orders;
+
+            context.Orders.AddRange(orders);
+            context.Organisations.Add(organisation);
+
+            context.SaveChanges();
+
+            var result = await service.GetPagedOrders(organisation.Id, new PageOptions("0", 2));
+
+            result.Items.Count.Should().Be(2);
+            result.Options.TotalNumberOfItems.Should().Be(orders.Count);
+
+            var expectedNumberOfPages = (int)Math.Ceiling((double)orders.Count / result.Options.PageSize);
+            result.Options.NumberOfPages
+                .Should()
+                .Be(expectedNumberOfPages);
         }
     }
 }

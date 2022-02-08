@@ -49,7 +49,7 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models
 
         public bool IsDeleted { get; set; }
 
-        public OrderStatus OrderStatus { get; set; } = OrderStatus.Incomplete;
+        public OrderStatus OrderStatus { get; set; } = OrderStatus.InProgress;
 
         public Organisation OrderingParty { get; set; }
 

@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
+using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Models;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Orders;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Organisations;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.Dashboard;
@@ -41,13 +42,23 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
         }
 
         [HttpGet("organisation/{odsCode}")]
-        public async Task<IActionResult> Organisation(string odsCode)
+        public async Task<IActionResult> Organisation(
+            string odsCode,
+            [FromQuery]string page = "")
         {
+            const int PageSize = 10;
+            var options = new PageOptions(page, PageSize);
+
             var organisation = await organisationsService.GetOrganisationByOdsCode(odsCode);
 
-            var allOrders = await orderService.GetOrders(organisation.Id);
+            var orders = await orderService.GetPagedOrders(organisation.Id, options);
 
-            return View(new OrganisationModel(organisation, User, allOrders));
+            var model = new OrganisationModel(organisation, User, orders.Items)
+            {
+                Options = orders.Options,
+            };
+
+            return View(model);
         }
 
         [HttpGet("organisation/{odsCode}/select")]
