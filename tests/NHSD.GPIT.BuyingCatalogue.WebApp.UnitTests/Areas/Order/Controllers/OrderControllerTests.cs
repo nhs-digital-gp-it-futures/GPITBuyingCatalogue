@@ -15,6 +15,7 @@ using Microsoft.AspNetCore.Routing;
 using Moq;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Organisations.Models;
+using NHSD.GPIT.BuyingCatalogue.EntityFramework.Users.Models;
 using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Models.TaskList;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Orders;
@@ -45,11 +46,13 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers
         public static async Task Get_IncompleteOrder_ReturnsExpectedResult(
             string odsCode,
             EntityFramework.Ordering.Models.Order order,
+            AspNetUser aspNetUser,
             OrderTaskList orderTaskList,
             [Frozen] Mock<IOrderService> orderServiceMock,
             [Frozen] Mock<ITaskListService> taskListServiceMock,
             OrderController controller)
         {
+            order.LastUpdatedByUser = aspNetUser;
             order.OrderStatus = OrderStatus.Incomplete;
 
             var expectedViewData = new OrderModel(odsCode, order, orderTaskList) { DescriptionUrl = "testUrl" };

@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using FluentAssertions;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Objects.Common;
@@ -44,6 +45,10 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering
             CommonActions.ElementIsDisplayed(CommonSelectors.SubmitButton).Should().BeFalse();
 
             CommonActions.GoBackLinkDisplayed().Should().BeTrue();
+
+            CommonActions.ElementTextEqualTo(
+                Objects.Ordering.OrderSummary.LastUpdatedEndNote,
+                $"Order last updated by Sue Smith on {DateTime.UtcNow.ToString("dd MMMM yyyy")}");
         }
 
         [Fact]
@@ -71,6 +76,10 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering
             Driver.FindElements(Objects.Ordering.OrderSummary.PrintPDFButton).Count.Should().Be(1);
 
             CommonActions.GoBackLinkDisplayed().Should().BeTrue();
+
+            CommonActions.ElementTextEqualTo(
+                Objects.Ordering.OrderSummary.LastUpdatedEndNote,
+                $"Order last updated by Sue Smith on {DateTime.UtcNow.ToString("dd MMMM yyyy")}");
         }
 
         [Fact]
@@ -83,6 +92,10 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering
             Driver.FindElements(Objects.Ordering.OrderSummary.PrintPDFButton).Count.Should().Be(1);
 
             CommonActions.GoBackLinkDisplayed().Should().BeTrue();
+
+            CommonActions.ElementTextEqualTo(
+                Objects.Ordering.OrderSummary.LastUpdatedEndNote,
+                $"Order last updated by Sue Smith on {DateTime.UtcNow.ToString("dd MMMM yyyy")}");
         }
 
         [Fact]
