@@ -31,7 +31,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
         {
             var order = await orderService.GetOrderThin(callOffId, odsCode);
 
-            var model = new CommencementDateModel(odsCode, callOffId, order.CommencementDate)
+            var model = new CommencementDateModel(odsCode, callOffId, order.CommencementDate, order.InitialPeriod, order.MaximumTerm)
             {
                 BackLink = Url.Action(
                     nameof(OrderController.Order),
@@ -48,7 +48,12 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
             if (!ModelState.IsValid)
                 return View(model);
 
-            await commencementDateService.SetCommencementDate(callOffId, odsCode, model.CommencementDate!.Value);
+            await commencementDateService.SetCommencementDate(
+                callOffId,
+                odsCode,
+                model.CommencementDate!.Value,
+                model.InitialPeriodValue,
+                model.MaximumTermValue);
 
             return RedirectToAction(
                 nameof(OrderController.Order),

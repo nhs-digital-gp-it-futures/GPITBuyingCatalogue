@@ -254,6 +254,14 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp
             return services;
         }
 
+        public static IServiceCollection ConfigureRequestAccountMessageSettings(this IServiceCollection services, IConfiguration configuration)
+        {
+            var settings = configuration.GetSection("requestAccountMessage").Get<RequestAccountMessageSettings>();
+            services.AddSingleton(settings);
+
+            return services;
+        }
+
         public static void ConfigureRegistration(this IServiceCollection services, IConfiguration configuration)
         {
             var registrationSettings = configuration.GetSection("Registration").Get<RegistrationSettings>();

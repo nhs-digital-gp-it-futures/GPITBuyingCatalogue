@@ -47,6 +47,9 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering
 
             CommonActions.ElementIsDisplayed(Objects.Ordering.OrderDashboard.OrderDescriptionStatus)
                 .Should().BeTrue();
+
+            CommonActions.ElementExists(Objects.Ordering.OrderDashboard.LastUpdatedEndNote)
+                .Should().BeFalse();
         }
 
         [Fact]

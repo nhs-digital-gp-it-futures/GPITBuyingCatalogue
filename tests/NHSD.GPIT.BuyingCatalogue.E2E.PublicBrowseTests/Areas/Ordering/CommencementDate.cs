@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Threading.Tasks;
 using FluentAssertions;
 using Microsoft.EntityFrameworkCore;
@@ -8,25 +7,21 @@ using NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.TestBases;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers;
+using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Validators;
 using Xunit;
 
 namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering
 {
-    public sealed class CommencementDate
-        : BuyerTestBase, IClassFixture<LocalWebApplicationFactory>
+    public sealed class CommencementDate : BuyerTestBase, IClassFixture<LocalWebApplicationFactory>
     {
-        private const string RealDateErrorMessage = "Error: Commencement date must be a real date";
-        private const string MustBeInFutureErrorMessage = "Error: Commencement date must be in the future or within the last 60 days";
-
         private const string OdsCode = "03F";
         private static readonly CallOffId CallOffId = new(90003, 1);
 
-        private static readonly Dictionary<string, string> Parameters =
-            new()
-            {
-                { nameof(OdsCode), OdsCode },
-                { nameof(CallOffId), CallOffId.ToString() },
-            };
+        private static readonly Dictionary<string, string> Parameters = new()
+        {
+            { nameof(OdsCode), OdsCode },
+            { nameof(CallOffId), CallOffId.ToString() },
+        };
 
         public CommencementDate(LocalWebApplicationFactory factory)
             : base(
@@ -40,14 +35,14 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering
         [Fact]
         public void CommencementDate_AllSectionsDisplayed()
         {
-            CommonActions.PageTitle()
-                .Should()
-                .BeEquivalentTo($"Commencement date for {CallOffId}".FormatForComparison());
+            CommonActions.PageTitle().Should().BeEquivalentTo($"Timescales for Call-off Agreement - Order {CallOffId}".FormatForComparison());
             CommonActions.GoBackLinkDisplayed().Should().BeTrue();
-            CommonActions.SaveButtonDisplayed().Should().BeTrue();
             CommonActions.ElementIsDisplayed(Objects.Ordering.CommencementDate.CommencementDateDayInput).Should().BeTrue();
             CommonActions.ElementIsDisplayed(Objects.Ordering.CommencementDate.CommencementDateMonthInput).Should().BeTrue();
             CommonActions.ElementIsDisplayed(Objects.Ordering.CommencementDate.CommencementDateYearInput).Should().BeTrue();
+            CommonActions.ElementIsDisplayed(Objects.Ordering.CommencementDate.InitialPeriodInput).Should().BeTrue();
+            CommonActions.ElementIsDisplayed(Objects.Ordering.CommencementDate.MaximumTermInput).Should().BeTrue();
+            CommonActions.SaveButtonDisplayed().Should().BeTrue();
         }
 
         [Fact]
@@ -78,7 +73,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering
 
             CommonActions.ElementShowingCorrectErrorMessage(
                 Objects.Ordering.CommencementDate.CommencementDateErrorMessage,
-                RealDateErrorMessage).Should().BeTrue();
+                $"Error:{CommencementDateModelValidator.CommencementDateDayMissingErrorMessage}").Should().BeTrue();
         }
 
         [Fact]
@@ -101,7 +96,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering
 
             CommonActions.ElementShowingCorrectErrorMessage(
                 Objects.Ordering.CommencementDate.CommencementDateErrorMessage,
-                RealDateErrorMessage).Should().BeTrue();
+                $"Error:{CommencementDateModelValidator.CommencementDateMonthMissingErrorMessage}").Should().BeTrue();
         }
 
         [Fact]
@@ -125,17 +120,22 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering
 
             CommonActions.ElementShowingCorrectErrorMessage(
                 Objects.Ordering.CommencementDate.CommencementDateErrorMessage,
-                RealDateErrorMessage).Should().BeTrue();
+                $"Error:{CommencementDateModelValidator.CommencementDateYearMissingErrorMessage}").Should().BeTrue();
         }
 
-        [Fact]
-        public void CommencementDate_OnlyYear_ThrowsError()
+        [Theory]
+        [InlineData("1")]
+        [InlineData("12")]
+        [InlineData("123")]
+        public void CommencementDate_YearTooShort_ThrowsError(string year)
         {
             Driver.FindElement(Objects.Ordering.CommencementDate.CommencementDateDayInput).Clear();
             Driver.FindElement(Objects.Ordering.CommencementDate.CommencementDateMonthInput).Clear();
             Driver.FindElement(Objects.Ordering.CommencementDate.CommencementDateYearInput).Clear();
 
-            Driver.FindElement(Objects.Ordering.CommencementDate.CommencementDateYearInput).SendKeys(DateTime.UtcNow.Year.ToString());
+            Driver.FindElement(Objects.Ordering.CommencementDate.CommencementDateDayInput).SendKeys("1");
+            Driver.FindElement(Objects.Ordering.CommencementDate.CommencementDateMonthInput).SendKeys("1");
+            Driver.FindElement(Objects.Ordering.CommencementDate.CommencementDateYearInput).SendKeys(year);
 
             CommonActions.ClickSave();
 
@@ -148,7 +148,34 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering
 
             CommonActions.ElementShowingCorrectErrorMessage(
                 Objects.Ordering.CommencementDate.CommencementDateErrorMessage,
-                RealDateErrorMessage).Should().BeTrue();
+                $"Error:{CommencementDateModelValidator.CommencementDateYearTooShortErrorMessage}").Should().BeTrue();
+        }
+
+        [Theory]
+        [InlineData("99", "01", "2000")]
+        [InlineData("01", "99", "2000")]
+        public void CommencementDate_InvalidDate_ThrowsError(string day, string month, string year)
+        {
+            Driver.FindElement(Objects.Ordering.CommencementDate.CommencementDateDayInput).Clear();
+            Driver.FindElement(Objects.Ordering.CommencementDate.CommencementDateMonthInput).Clear();
+            Driver.FindElement(Objects.Ordering.CommencementDate.CommencementDateYearInput).Clear();
+
+            Driver.FindElement(Objects.Ordering.CommencementDate.CommencementDateDayInput).SendKeys(day);
+            Driver.FindElement(Objects.Ordering.CommencementDate.CommencementDateMonthInput).SendKeys(month);
+            Driver.FindElement(Objects.Ordering.CommencementDate.CommencementDateYearInput).SendKeys(year);
+
+            CommonActions.ClickSave();
+
+            CommonActions.PageLoadedCorrectGetIndex(
+                typeof(CommencementDateController),
+                nameof(CommencementDateController.CommencementDate)).Should().BeTrue();
+
+            CommonActions.ErrorSummaryDisplayed().Should().BeTrue();
+            CommonActions.ErrorSummaryLinksExist().Should().BeTrue();
+
+            CommonActions.ElementShowingCorrectErrorMessage(
+                Objects.Ordering.CommencementDate.CommencementDateErrorMessage,
+                $"Error:{CommencementDateModelValidator.CommencementDateInvalidErrorMessage}").Should().BeTrue();
         }
 
         [Fact]
@@ -169,16 +196,148 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering
 
             CommonActions.ElementShowingCorrectErrorMessage(
                 Objects.Ordering.CommencementDate.CommencementDateErrorMessage,
-                MustBeInFutureErrorMessage).Should().BeTrue();
+                $"Error:{CommencementDateModelValidator.CommencementDateInThePastErrorMessage}").Should().BeTrue();
         }
 
         [Fact]
-        public async Task CommencementDate_InputDate_AddsCommencementDate()
+        public void CommencementDate_InitialPeriodAndMaximumTermMissing_ThrowsError()
         {
+            CommonActions.ElementAddValue(Objects.Ordering.CommencementDate.InitialPeriodInput, string.Empty);
+            CommonActions.ElementAddValue(Objects.Ordering.CommencementDate.MaximumTermInput, string.Empty);
+
+            CommonActions.ClickSave();
+
+            CommonActions.PageLoadedCorrectGetIndex(
+                typeof(CommencementDateController),
+                nameof(CommencementDateController.CommencementDate)).Should().BeTrue();
+
+            CommonActions.ErrorSummaryDisplayed().Should().BeTrue();
+            CommonActions.ErrorSummaryLinksExist().Should().BeTrue();
+
+            CommonActions.ElementShowingCorrectErrorMessage(
+                Objects.Ordering.CommencementDate.InitialPeriodError,
+                CommencementDateModelValidator.InitialPeriodMissingErrorMessage).Should().BeTrue();
+
+            CommonActions.ElementShowingCorrectErrorMessage(
+                Objects.Ordering.CommencementDate.MaximumTermError,
+                CommencementDateModelValidator.MaximumTermMissingErrorMessage).Should().BeTrue();
+        }
+
+        [Fact]
+        public void CommencementDate_InitialPeriodAndMaximumTermNonNumeric_ThrowsError()
+        {
+            CommonActions.ElementAddValue(Objects.Ordering.CommencementDate.InitialPeriodInput, "A");
+            CommonActions.ElementAddValue(Objects.Ordering.CommencementDate.MaximumTermInput, "B");
+
+            CommonActions.ClickSave();
+
+            CommonActions.PageLoadedCorrectGetIndex(
+                typeof(CommencementDateController),
+                nameof(CommencementDateController.CommencementDate)).Should().BeTrue();
+
+            CommonActions.ErrorSummaryDisplayed().Should().BeTrue();
+            CommonActions.ErrorSummaryLinksExist().Should().BeTrue();
+
+            CommonActions.ElementShowingCorrectErrorMessage(
+                Objects.Ordering.CommencementDate.InitialPeriodError,
+                CommencementDateModelValidator.InitialPeriodNotANumberErrorMessage).Should().BeTrue();
+
+            CommonActions.ElementShowingCorrectErrorMessage(
+                Objects.Ordering.CommencementDate.MaximumTermError,
+                CommencementDateModelValidator.MaximumTermNotANumberErrorMessage).Should().BeTrue();
+        }
+
+        [Fact]
+        public void CommencementDate_InitialPeriodAndMaximumTermTooLow_ThrowsError()
+        {
+            CommonActions.ElementAddValue(Objects.Ordering.CommencementDate.InitialPeriodInput, "0");
+            CommonActions.ElementAddValue(Objects.Ordering.CommencementDate.MaximumTermInput, "0");
+
+            CommonActions.ClickSave();
+
+            CommonActions.PageLoadedCorrectGetIndex(
+                typeof(CommencementDateController),
+                nameof(CommencementDateController.CommencementDate)).Should().BeTrue();
+
+            CommonActions.ErrorSummaryDisplayed().Should().BeTrue();
+            CommonActions.ErrorSummaryLinksExist().Should().BeTrue();
+
+            CommonActions.ElementShowingCorrectErrorMessage(
+                Objects.Ordering.CommencementDate.InitialPeriodError,
+                CommencementDateModelValidator.InitialPeriodTooLowErrorMessage).Should().BeTrue();
+
+            CommonActions.ElementShowingCorrectErrorMessage(
+                Objects.Ordering.CommencementDate.MaximumTermError,
+                CommencementDateModelValidator.MaximumTermTooLowErrorMessage).Should().BeTrue();
+        }
+
+        [Fact]
+        public void CommencementDate_InitialPeriodAndMaximumTermTooHigh_ThrowsError()
+        {
+            CommonActions.ElementAddValue(
+                Objects.Ordering.CommencementDate.InitialPeriodInput,
+                $"{CommencementDateModelValidator.MaximumInitialPeriod + 1}");
+
+            CommonActions.ElementAddValue(
+                Objects.Ordering.CommencementDate.MaximumTermInput,
+                $"{CommencementDateModelValidator.MaximumMaximumTerm + 1}");
+
+            CommonActions.ClickSave();
+
+            CommonActions.PageLoadedCorrectGetIndex(
+                typeof(CommencementDateController),
+                nameof(CommencementDateController.CommencementDate)).Should().BeTrue();
+
+            CommonActions.ErrorSummaryDisplayed().Should().BeTrue();
+            CommonActions.ErrorSummaryLinksExist().Should().BeTrue();
+
+            CommonActions.ElementShowingCorrectErrorMessage(
+                Objects.Ordering.CommencementDate.InitialPeriodError,
+                CommencementDateModelValidator.InitialPeriodTooHighErrorMessage).Should().BeTrue();
+
+            CommonActions.ElementShowingCorrectErrorMessage(
+                Objects.Ordering.CommencementDate.MaximumTermError,
+                CommencementDateModelValidator.MaximumTermTooHighErrorMessage).Should().BeTrue();
+        }
+
+        [Fact]
+        public void CommencementDate_MaximumTermInvalid_ThrowsError()
+        {
+            CommonActions.ElementAddValue(
+                Objects.Ordering.CommencementDate.InitialPeriodInput,
+                $"{CommencementDateModelValidator.MaximumInitialPeriod}");
+
+            CommonActions.ElementAddValue(
+                Objects.Ordering.CommencementDate.MaximumTermInput,
+                $"{CommencementDateModelValidator.MaximumInitialPeriod}");
+
+            CommonActions.ClickSave();
+
+            CommonActions.PageLoadedCorrectGetIndex(
+                typeof(CommencementDateController),
+                nameof(CommencementDateController.CommencementDate)).Should().BeTrue();
+
+            CommonActions.ErrorSummaryDisplayed().Should().BeTrue();
+            CommonActions.ErrorSummaryLinksExist().Should().BeTrue();
+
+            CommonActions.ElementShowingCorrectErrorMessage(
+                Objects.Ordering.CommencementDate.MaximumTermError,
+                CommencementDateModelValidator.MaximumTermInvalidErrorMessage).Should().BeTrue();
+        }
+
+        [Fact]
+        public async Task CommencementDate_EverythingOk_AddsCommencementDate()
+        {
+            const int initialPeriod = 3;
+            const int maximumTerm = 12;
+
             var date = TextGenerators.DateInputAddDateSoon(
                 Objects.Ordering.CommencementDate.CommencementDateDayInput,
                 Objects.Ordering.CommencementDate.CommencementDateMonthInput,
                 Objects.Ordering.CommencementDate.CommencementDateYearInput);
+
+            CommonActions.ElementAddValue(Objects.Ordering.CommencementDate.InitialPeriodInput, $"{initialPeriod}");
+            CommonActions.ElementAddValue(Objects.Ordering.CommencementDate.MaximumTermInput, $"{maximumTerm}");
 
             CommonActions.ClickSave();
 
@@ -187,11 +346,13 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering
                 nameof(OrderController.Order)).Should().BeTrue();
 
             await using var context = GetEndToEndDbContext();
-            var order = await context.Orders
-                .SingleAsync(o => o.Id == CallOffId.Id);
+
+            var order = await context.Orders.SingleAsync(o => o.Id == CallOffId.Id);
 
             order.CommencementDate.Should().NotBeNull();
-            order.CommencementDate.Value.Date.Should().Be(date.Date);
+            order.CommencementDate!.Value.Date.Should().Be(date.Date);
+            order.InitialPeriod.Should().Be(initialPeriod);
+            order.MaximumTerm.Should().Be(maximumTerm);
         }
     }
 }
