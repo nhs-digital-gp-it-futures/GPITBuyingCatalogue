@@ -219,7 +219,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
                 url = $"https://localhost{url}";
             }
 
-            var result = await pdfService.Convert(new Uri(url));
+            var result = pdfService.Convert(new Uri(url));
 
             var fileName = order.OrderStatus == OrderStatus.Complete ? $"order-summary-completed-{callOffId}.pdf" : $"order-summary-in-progress-{callOffId}.pdf";
 

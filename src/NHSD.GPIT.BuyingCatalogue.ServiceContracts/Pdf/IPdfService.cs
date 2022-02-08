@@ -1,9 +1,7 @@
-﻿using System.Threading.Tasks;
-
-namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.Pdf
+﻿namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.Pdf
 {
     public interface IPdfService
     {
-        Task<byte[]> Convert(System.Uri url);
+        byte[] Convert(System.Uri url);
     }
 }

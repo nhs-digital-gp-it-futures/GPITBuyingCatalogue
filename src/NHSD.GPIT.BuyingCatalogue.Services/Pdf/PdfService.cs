@@ -1,65 +1,32 @@
 ﻿using System;
+using System.Diagnostics;
 using System.IO;
-using System.Net.Http;
-using System.Threading.Tasks;
-using iText.Html2pdf;
+using System.Runtime.InteropServices;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Pdf;
 
 namespace NHSD.GPIT.BuyingCatalogue.Services.Pdf
 {
     public sealed class PdfService : IPdfService
     {
-        public async Task<byte[]> Convert(Uri url)
+        private const string ChromeArgs = "--no-sandbox --headless --disable-dev-shm-usage --disable-gpu --disable-software-rasterizer --ignore-certificate-errors";
+        private const string ChromeWindowsPath = @"C:\Program Files (x86)\Google\Chrome\Application\chrome.exe";
+        private const string ChromeLinuxPath = "/usr/bin/chromium-browser";
+
+        public byte[] Convert(Uri url)
         {
-            string htmlFilePath = string.Empty;
-            string pdfFilePath = string.Empty;
+            string filePath = @$"{Path.GetTempPath()}{Guid.NewGuid()}.pdf";
+            string chromePath = RuntimeInformation.IsOSPlatform(OSPlatform.Windows) ? ChromeWindowsPath : ChromeLinuxPath;
 
-            try
-            {
-                htmlFilePath = await ConvertToHtml(url);
+            var psi = new ProcessStartInfo(chromePath, $"{ChromeArgs} --print-to-pdf={filePath} {url}");
+            var process = Process.Start(psi);
+            process.WaitForExit(10000);
 
-                pdfFilePath = Path.Combine(Path.GetTempPath(), $"{Guid.NewGuid()}.pdf");
+            byte[] fileContent = File.ReadAllBytes(filePath);
 
-                HtmlConverter.ConvertToPdf(
-                    new FileInfo(htmlFilePath),
-                    new FileInfo(pdfFilePath));
+            if (File.Exists(filePath))
+                File.Delete(filePath);
 
-                byte[] fileContent = File.ReadAllBytes(pdfFilePath);
-
-                return fileContent;
-            }
-            finally
-            {
-                if (!string.IsNullOrEmpty(pdfFilePath) && File.Exists(pdfFilePath))
-                    File.Delete(pdfFilePath);
-
-                if (!string.IsNullOrEmpty(htmlFilePath) && File.Exists(htmlFilePath))
-                    File.Delete(htmlFilePath);
-            }
-        }
-
-        private static async Task<string> ConvertToHtml(Uri url)
-        {
-            string htmlFilePath = Path.Combine(Path.GetTempPath(), $"{Guid.NewGuid()}.html");
-
-            using (var httpClientHandler = new HttpClientHandler
-            {
-                ServerCertificateCustomValidationCallback = (message, cert, chain, sslPolicyErrors) =>
-                {
-                    return true;
-                },
-            })
-            {
-                using var httpClient = new HttpClient(httpClientHandler) { BaseAddress = url };
-                var response = await httpClient.GetAsync(url);
-                response.EnsureSuccessStatusCode();
-                await using var ms = await response.Content.ReadAsStreamAsync();
-                await using var fs = File.Create(htmlFilePath);
-                ms.Seek(0, SeekOrigin.Begin);
-                await ms.CopyToAsync(fs);
-            }
-
-            return htmlFilePath;
+            return fileContent;
         }
     }
 }
