@@ -12,7 +12,7 @@ using NHSD.GPIT.BuyingCatalogue.EntityFramework.Users.Models;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers;
 using Xunit;
 
-namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin
+namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.Organisations
 {
     public sealed class Organisation : AuthorityTestBase, IClassFixture<LocalWebApplicationFactory>
     {
@@ -76,25 +76,6 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin
         }
 
         [Fact]
-        public void Organisation_AddUser()
-        {
-            AdminPages.Organisation.ClickAddUserButton();
-
-            var user = GenerateUser.Generate();
-
-            AdminPages.AddUser.EnterFirstName(user.FirstName);
-            AdminPages.AddUser.EnterLastName(user.LastName);
-            AdminPages.AddUser.EnterTelephoneNumber(user.TelephoneNumber);
-            AdminPages.AddUser.EnterEmailAddress(user.EmailAddress);
-
-            AdminPages.AddUser.ClickAddUserButton();
-
-            var confirmationMessage = AdminPages.AddUser.GetConfirmationMessage();
-
-            confirmationMessage.Should().BeEquivalentTo($"{user.FirstName} {user.LastName} account added");
-        }
-
-        [Fact]
         public async Task Organisation_ViewUserDetails()
         {
             var user = await AddUser();
@@ -107,6 +88,18 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin
             AdminPages.UserDetails.GetUserName().Should().BeEquivalentTo($"{user.FirstName} {user.LastName}");
             AdminPages.UserDetails.GetContactDetails().Should().BeEquivalentTo(user.PhoneNumber);
             AdminPages.UserDetails.GetEmailAddress().Should().BeEquivalentTo(user.Email);
+        }
+
+        [Fact]
+        public void Organisation_ClickAddUserButton_ExpectedResult()
+        {
+            AdminPages.Organisation.ClickAddUserButton();
+
+            CommonActions.PageLoadedCorrectGetIndex(
+                typeof(OrganisationsController),
+                nameof(OrganisationsController.AddUser))
+            .Should()
+            .BeTrue();
         }
 
         [Fact]

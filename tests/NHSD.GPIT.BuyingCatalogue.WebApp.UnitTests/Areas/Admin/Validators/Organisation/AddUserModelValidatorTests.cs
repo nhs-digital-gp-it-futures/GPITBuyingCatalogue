@@ -1,4 +1,7 @@
-﻿using FluentValidation.TestHelper;
+﻿using AutoFixture.Xunit2;
+using FluentValidation.TestHelper;
+using Moq;
+using NHSD.GPIT.BuyingCatalogue.ServiceContracts.CreateBuyer;
 using NHSD.GPIT.BuyingCatalogue.Test.Framework.AutoFixtureCustomisations;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.OrganisationModels;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Validators.Organisation;
@@ -70,6 +73,41 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators.Orga
 
             result.ShouldHaveValidationErrorFor(m => m.EmailAddress)
                 .WithErrorMessage("Email Address Required");
+        }
+
+        [Theory]
+        [CommonInlineAutoData("test")]
+        public static void Validate_EmailAddressInvalidFormat_SetsModelError(
+            string emailAddress,
+            AddUserModel model,
+            AddUserModelValidator validator)
+        {
+            model.EmailAddress = emailAddress;
+
+            var result = validator.TestValidate(model);
+
+            result.ShouldHaveValidationErrorFor(model => model.EmailAddress)
+                .WithErrorMessage("Enter an email address in the correct format, like name@example.com");
+        }
+
+        [Theory]
+        [CommonAutoData]
+        public static void Validate_UserWithEmailExists_SetsModelError(
+            [Frozen] Mock<ICreateBuyerService> createBuyerService,
+            AddUserModel model,
+            AddUserModelValidator validator)
+        {
+            var emailAddress = "test@test.com";
+
+            createBuyerService.Setup(cbs => cbs.UserExistsWithEmail(emailAddress))
+                .ReturnsAsync(true);
+
+            model.EmailAddress = emailAddress;
+
+            var result = validator.TestValidate(model);
+
+            result.ShouldHaveValidationErrorFor(model => model.EmailAddress)
+                .WithErrorMessage("A user with this email address is already registered on the Buying Catalogue");
         }
 
         [Theory]
