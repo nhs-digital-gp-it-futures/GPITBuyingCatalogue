@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using OpenQA.Selenium;
 using OpenQA.Selenium.Support.UI;
 
@@ -34,6 +35,17 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.UIComponentTests.Actions
         {
             var selectElement = new SelectElement(Driver.FindElement(targetField));
             selectElement.SelectByText(text);
+        }
+
+        internal void ClickCheckboxByLabel(string labelText)
+        {
+            var targetId =
+            Driver
+            .FindElements(By.ClassName("nhsuk-checkboxes__label"))
+            .FirstOrDefault(label => label.Text == labelText)!
+            .GetAttribute("for");
+
+            Driver.FindElement(By.Id(targetId)).Click();
         }
     }
 }

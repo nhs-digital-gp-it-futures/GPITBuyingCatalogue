@@ -20,7 +20,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.UIComponentTests.Tests
         [Fact]
         public void Buttons_SaveAndContinueButtonIsDisplayed()
         {
-            CommonActions.GetElementText(ButtonsObjects.SaveAndContinueButton).Contains("Save and continue").Should().BeTrue();
+            CommonActions.GetElementText(CommonSelectors.SubmitButton).Contains("Save and continue").Should().BeTrue();
         }
 
         [Fact]

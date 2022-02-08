@@ -4,7 +4,6 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.UIComponentTests.Tests
 {
     internal sealed class ButtonsObjects
     {
-        internal static By SaveAndContinueButton => By.Id("Submit");
         internal static By SecondaryButton => By.CssSelector("[href ='buttons']");
     }
 }
