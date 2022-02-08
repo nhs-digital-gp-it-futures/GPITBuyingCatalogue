@@ -1,4 +1,5 @@
-﻿using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
+﻿using System;
+using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Models.TaskList;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.Order
@@ -23,6 +24,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.Order
                 TitleAdvice = "Complete the following steps to create an order summary.";
                 Description = order.Description;
                 OrganisationName = order.OrderingParty.Name;
+
+                LastUpdatedByUserName = order.LastUpdatedByUser.FullName;
+                LastUpdated = order.LastUpdated;
             }
         }
 
@@ -35,6 +39,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.Order
         public string TitleAdvice { get; set; }
 
         public string OrganisationName { get; set; }
+
+        public string LastUpdatedByUserName { get; set; }
+
+        public DateTime? LastUpdated { get; set; }
 
         public OrderTaskList SectionStatuses { get; set; }
     }
