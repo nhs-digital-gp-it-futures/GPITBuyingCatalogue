@@ -18,6 +18,8 @@
     SysStartTime datetime2(0) GENERATED ALWAYS AS ROW START NOT NULL,
     SysEndTime datetime2(0) GENERATED ALWAYS AS ROW END NOT NULL,
     PERIOD FOR SYSTEM_TIME (SysStartTime, SysEndTime),
+    [InitialPeriod] INT NULL, 
+    [MaximumTerm] INT NULL, 
     CONSTRAINT PK_Orders PRIMARY KEY (Id),
     CONSTRAINT FK_Orders_OrderingParty FOREIGN KEY (OrderingPartyId) REFERENCES organisations.Organisations (Id),
     CONSTRAINT FK_Orders_OrderingPartyContact FOREIGN KEY (OrderingPartyContactId) REFERENCES ordering.Contacts (Id),

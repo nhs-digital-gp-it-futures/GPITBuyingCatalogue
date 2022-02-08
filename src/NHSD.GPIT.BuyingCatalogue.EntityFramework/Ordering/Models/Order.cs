@@ -31,6 +31,10 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models
 
         public DateTime? CommencementDate { get; set; }
 
+        public int? InitialPeriod { get; set; }
+
+        public int? MaximumTerm { get; set; }
+
         public bool? FundingSourceOnlyGms { get; set; }
 
         public DateTime Created { get; set; } = DateTime.UtcNow;

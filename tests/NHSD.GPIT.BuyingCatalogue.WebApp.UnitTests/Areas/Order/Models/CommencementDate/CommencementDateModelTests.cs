@@ -9,6 +9,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.Commence
 {
     public static class CommencementDateModelTests
     {
+        private const int InitialPeriod = 3;
+        private const int MaximumTerm = 12;
+
         [Theory]
         [CommonAutoData]
         public static void WithValidArguments_PropertiesCorrectlySet(
@@ -16,13 +19,15 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.Commence
             CallOffId callOffId,
             DateTime commencementDate)
         {
-            var model = new CommencementDateModel(odsCode, callOffId, commencementDate);
+            var model = new CommencementDateModel(odsCode, callOffId, commencementDate, InitialPeriod, MaximumTerm);
 
-            model.Title.Should().Be($"Commencement date for {callOffId}");
+            model.Title.Should().Be("Timescales for Call-off Agreement");
             model.OdsCode.Should().Be(odsCode);
             model.Day.Should().Be(commencementDate.Day.ToString("00"));
             model.Month.Should().Be(commencementDate.Month.ToString("00"));
             model.Year.Should().Be(commencementDate.Year.ToString("00"));
+            model.InitialPeriodValue.Should().Be(InitialPeriod);
+            model.MaximumTermValue.Should().Be(MaximumTerm);
         }
 
         [Theory]
