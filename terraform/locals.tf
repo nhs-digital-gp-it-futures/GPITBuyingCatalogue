@@ -4,7 +4,7 @@ locals {
 
   # Find Shared components (e.g. key vaults)
   liveEnv = local.shortenv == "production" ? "production" : "platform"
-  coreEnv = local.shortenv != "platform" && local.shortenv != "production" ? "dev" : local.liveEnv
+  coreEnv = local.shortenv != "platform" && local.shortenv != "dr" && local.shortenv != "preprod" && local.shortenv != "production" ? "dev" : local.liveEnv
 
   # Secret name for keys
   secretPrefix = local.shortenv != "platform" && local.shortenv != "production" ? "${var.pjtcode}${local.shortenv}" : "${var.pjtcode}${local.coreEnv}"
