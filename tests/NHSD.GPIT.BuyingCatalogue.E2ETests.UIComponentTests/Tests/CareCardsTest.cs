@@ -22,23 +22,5 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.UIComponentTests.Tests
         {
             CommonActions.IsElementDisplayed(CommonObject.Header1).Should().BeTrue();
         }
-
-        [Fact]
-        public void CareCards_NonUrgentAdviceTitleIsDisplayed()
-        {
-            CommonActions.IsElementDisplayed(CareCardObjects.NonUrgentAdvice).Should().BeTrue();
-        }
-
-        [Fact]
-        public void CareCards_UrgentTestCareTitleIsDisplayed()
-        {
-            CommonActions.IsElementDisplayed(CareCardObjects.UrgentTestCare).Should().BeTrue();
-        }
-
-        [Fact]
-        public void CareCards_ImmediateCareCardTitleIsDisplayed()
-        {
-            CommonActions.IsElementDisplayed(CareCardObjects.ImmediateCareCardTitle).Should().BeTrue();
-        }
     }
 }

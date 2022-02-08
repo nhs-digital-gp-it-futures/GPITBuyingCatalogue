@@ -19,7 +19,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.UIComponentTests.Tests
         [Fact]
         public void FieldSets_FieldSetsHeader()
         {
-            CommonActions.IsElementDisplayed(FieldSetsObjects.FieldSets).Should().BeTrue();
+            CommonActions.IsElementDisplayed(CommonObject.Header1).Should().BeTrue();
         }
 
         [Fact]

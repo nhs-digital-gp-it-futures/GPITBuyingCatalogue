@@ -32,13 +32,5 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.UIComponentTests.Tests
                Contains("Do")
                .Should().BeTrue();
         }
-
-        [Fact]
-        public void DoAndDontLists_GetDontListsHeader2()
-        {
-            CommonActions.GetElementText(DoAndDontListsObjects.DontList).
-               Contains("Don't")
-               .Should().BeTrue();
-        }
     }
 }
