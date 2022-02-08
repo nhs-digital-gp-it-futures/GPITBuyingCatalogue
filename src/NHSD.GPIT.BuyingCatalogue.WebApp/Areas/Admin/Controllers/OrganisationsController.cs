@@ -223,13 +223,12 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
             if (!ModelState.IsValid)
                 return View(model);
 
-            // TODO - Check result
-            var result = await createBuyerService.Create(organisationId, model.FirstName, model.LastName, model.TelephoneNumber, model.EmailAddress);
+            var user = await createBuyerService.Create(organisationId, model.FirstName, model.LastName, model.TelephoneNumber, model.EmailAddress);
 
             return RedirectToAction(
                 nameof(AddUserConfirmation),
                 typeof(OrganisationsController).ControllerName(),
-                new { organisationId, userId = result.Value });
+                new { organisationId, userId = user.Id });
         }
 
         [HttpGet("{organisationId}/adduser/confirmation/{userId}")]

@@ -113,7 +113,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.TestBases
 
         internal void AuthorityLogin()
         {
-            if (!AuthorizationPages.LoginActions.EmailAddressInputDisplayed())
+            if (UserAlreadyLoggedIn() || !AuthorizationPages.LoginActions.EmailAddressInputDisplayed())
                 return;
 
             using var context = GetEndToEndDbContext();
@@ -123,7 +123,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.TestBases
 
         internal void BuyerLogin()
         {
-            if (!AuthorizationPages.LoginActions.EmailAddressInputDisplayed())
+            if (UserAlreadyLoggedIn() || !AuthorizationPages.LoginActions.EmailAddressInputDisplayed())
                 return;
 
             using var context = GetEndToEndDbContext();
@@ -133,7 +133,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.TestBases
 
         internal void BuyerLogin(string buyerEmail)
         {
-            if (!AuthorizationPages.LoginActions.EmailAddressInputDisplayed())
+            if (UserAlreadyLoggedIn() || !AuthorizationPages.LoginActions.EmailAddressInputDisplayed())
                 return;
 
             AuthorizationPages.LoginActions.Login(buyerEmail, DefaultPassword);
@@ -208,5 +208,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.TestBases
         {
             NavigateToUrl(new Uri(UrlGenerator.GenerateUrlFromMethod(controller, methodName, parameters, queryParameters), UriKind.Relative));
         }
+
+        protected bool UserAlreadyLoggedIn() => Driver.Manage().Cookies.GetCookieNamed("user-session") != null;
     }
 }
