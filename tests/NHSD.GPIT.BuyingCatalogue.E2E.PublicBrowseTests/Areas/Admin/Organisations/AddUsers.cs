@@ -76,6 +76,12 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.Organisations
         {
             CommonActions.ClickSave();
 
+            CommonActions.PageLoadedCorrectGetIndex(
+                typeof(OrganisationsController),
+                nameof(OrganisationsController.AddUser))
+                .Should()
+                .BeTrue();
+
             CommonActions.ErrorSummaryDisplayed().Should().BeTrue();
             CommonActions.ErrorSummaryLinksExist().Should().BeTrue();
 
@@ -97,6 +103,12 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.Organisations
 
             CommonActions.ClickSave();
 
+            CommonActions.PageLoadedCorrectGetIndex(
+                typeof(OrganisationsController),
+                nameof(OrganisationsController.AddUser))
+                .Should()
+                .BeTrue();
+
             CommonActions.ErrorSummaryDisplayed().Should().BeTrue();
             CommonActions.ErrorSummaryLinksExist().Should().BeTrue();
 
@@ -114,6 +126,12 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.Organisations
             AdminPages.AddUser.EnterEmailAddress(user.Email);
 
             CommonActions.ClickSave();
+
+            CommonActions.PageLoadedCorrectGetIndex(
+                typeof(OrganisationsController),
+                nameof(OrganisationsController.AddUser))
+                .Should()
+                .BeTrue();
 
             CommonActions.ErrorSummaryDisplayed().Should().BeTrue();
             CommonActions.ErrorSummaryLinksExist().Should().BeTrue();
