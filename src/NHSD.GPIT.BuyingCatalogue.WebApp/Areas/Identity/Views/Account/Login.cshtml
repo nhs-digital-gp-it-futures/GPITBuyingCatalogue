@@ -26,9 +26,8 @@
             <nhs-submit-button text="Log in" />
             <div>
                 <a data-test-id="request-account-link" 
-                   asp-controller="@typeof(AccountController).ControllerName()"
-                   asp-action="@nameof(AccountController.Registration)" 
-                   asp-route-returnUrl="@Model.ReturnUrl">
+                   asp-controller="@typeof(RegistrationController).ControllerName()" 
+                   asp-action="@nameof(RegistrationController.Index)">
                     Don't have an account? Request one now
                 </a>
             </div>
