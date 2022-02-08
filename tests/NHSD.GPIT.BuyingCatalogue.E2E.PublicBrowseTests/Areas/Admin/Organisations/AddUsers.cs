@@ -37,6 +37,18 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.Organisations
         }
 
         [Fact]
+        public void AddUser_ClickGoBackButton_ExpectedResult()
+        {
+            CommonActions.ClickGoBackLink();
+
+            CommonActions.PageLoadedCorrectGetIndex(
+                typeof(OrganisationsController),
+                nameof(OrganisationsController.Details))
+                .Should()
+                .BeTrue();
+        }
+
+        [Fact]
         public void AddUser_AddUser_ExpectedResult()
         {
             var user = GenerateUser.Generate();
@@ -47,6 +59,12 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.Organisations
             AdminPages.AddUser.EnterEmailAddress(user.EmailAddress);
 
             CommonActions.ClickSave();
+
+            CommonActions.PageLoadedCorrectGetIndex(
+                typeof(OrganisationsController),
+                nameof(OrganisationsController.AddUserConfirmation))
+                .Should()
+                .BeTrue();
 
             var confirmationMessage = AdminPages.AddUser.GetConfirmationMessage();
 

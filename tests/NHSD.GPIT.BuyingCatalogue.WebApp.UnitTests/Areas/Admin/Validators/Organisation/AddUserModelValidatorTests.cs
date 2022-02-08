@@ -24,7 +24,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators.Orga
             var result = validator.TestValidate(model);
 
             result.ShouldHaveValidationErrorFor(m => m.FirstName)
-                .WithErrorMessage("First Name Required");
+                .WithErrorMessage("Enter a first name");
         }
 
         [Theory]
@@ -40,7 +40,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators.Orga
             var result = validator.TestValidate(model);
 
             result.ShouldHaveValidationErrorFor(m => m.LastName)
-                .WithErrorMessage("Last Name Required");
+                .WithErrorMessage("Enter a last name");
         }
 
         [Theory]
@@ -56,7 +56,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators.Orga
             var result = validator.TestValidate(model);
 
             result.ShouldHaveValidationErrorFor(m => m.TelephoneNumber)
-                .WithErrorMessage("Telephone Number Required");
+                .WithErrorMessage("Enter a telephone number");
         }
 
         [Theory]
@@ -72,7 +72,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators.Orga
             var result = validator.TestValidate(model);
 
             result.ShouldHaveValidationErrorFor(m => m.EmailAddress)
-                .WithErrorMessage("Email Address Required");
+                .WithErrorMessage("Enter an email address");
         }
 
         [Theory]
