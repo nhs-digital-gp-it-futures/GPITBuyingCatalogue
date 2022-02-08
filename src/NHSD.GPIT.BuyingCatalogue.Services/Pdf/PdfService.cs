@@ -1,30 +1,49 @@
 ﻿using System;
-using System.Diagnostics;
 using System.IO;
-using System.Runtime.InteropServices;
+using System.Net.Http;
+using System.Threading.Tasks;
+using iText.Html2pdf;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Pdf;
 
 namespace NHSD.GPIT.BuyingCatalogue.Services.Pdf
 {
     public sealed class PdfService : IPdfService
     {
-        private const string ChromeArgs = "--no-sandbox --headless --disable-dev-shm-usage --disable-gpu --disable-software-rasterizer --ignore-certificate-errors";
-        private const string ChromeWindowsPath = @"C:\Program Files (x86)\Google\Chrome\Application\chrome.exe";
-        private const string ChromeLinuxPath = "/usr/bin/chromium-browser";
-
-        public byte[] Convert(Uri url)
+        public async Task<byte[]> Convert(Uri url)
         {
-            string filePath = @$"{Path.GetTempPath()}{Guid.NewGuid()}.pdf";
-            string chromePath = RuntimeInformation.IsOSPlatform(OSPlatform.Windows) ? ChromeWindowsPath : ChromeLinuxPath;
+            string outputFilePath = @$"{Path.GetTempPath()}{Guid.NewGuid()}.pdf";
+            string inputFilePath = @$"{Path.GetTempPath()}{Guid.NewGuid()}.html";
 
-            var psi = new ProcessStartInfo(chromePath, $"{ChromeArgs} --print-to-pdf={filePath} {url}");
-            var process = Process.Start(psi);
-            process.WaitForExit(10000);
+            using (var httpClientHandler = new HttpClientHandler
+            {
+                ServerCertificateCustomValidationCallback = (message, cert, chain, sslPolicyErrors) =>
+                {
+                    return true;
+                },
+            })
+            {
+                using (var httpClient = new HttpClient(httpClientHandler) { BaseAddress = url })
+                {
+                    var response = await httpClient.GetAsync(url);
+                    response.EnsureSuccessStatusCode();
+                    await using var ms = await response.Content.ReadAsStreamAsync();
+                    await using var fs = File.Create(inputFilePath);
+                    ms.Seek(0, SeekOrigin.Begin);
+                    await ms.CopyToAsync(fs);
+                }
+            }
 
-            byte[] fileContent = File.ReadAllBytes(filePath);
+            HtmlConverter.ConvertToPdf(
+                new FileInfo(inputFilePath),
+                new FileInfo(outputFilePath));
 
-            if (File.Exists(filePath))
-                File.Delete(filePath);
+            byte[] fileContent = File.ReadAllBytes(outputFilePath);
+
+            if (File.Exists(outputFilePath))
+                File.Delete(outputFilePath);
+
+            if (File.Exists(inputFilePath))
+                File.Delete(inputFilePath);
 
             return fileContent;
         }

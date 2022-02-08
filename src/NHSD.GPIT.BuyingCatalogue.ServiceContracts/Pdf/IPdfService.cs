@@ -1,9 +1,9 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using System.Threading.Tasks;
 
 namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.Pdf
 {
     public interface IPdfService
     {
-        byte[] Convert(System.Uri url);
+        Task<byte[]> Convert(System.Uri url);
     }
 }

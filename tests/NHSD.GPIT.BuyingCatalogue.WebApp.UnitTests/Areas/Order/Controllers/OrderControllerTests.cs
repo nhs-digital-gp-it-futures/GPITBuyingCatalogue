@@ -221,7 +221,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers
 
             orderServiceMock.Setup(s => s.GetOrderForSummary(order.CallOffId, odsCode)).ReturnsAsync(order);
 
-            pdfServiceMock.Setup(s => s.Convert(It.IsAny<System.Uri>())).Returns(result);
+            pdfServiceMock.Setup(s => s.Convert(It.IsAny<System.Uri>())).ReturnsAsync(result);
 
             var httpContext = new DefaultHttpContext();
             httpContext.Request.Scheme = "https";
@@ -254,7 +254,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers
 
             orderServiceMock.Setup(s => s.GetOrderForSummary(order.CallOffId, odsCode)).ReturnsAsync(order);
 
-            pdfServiceMock.Setup(s => s.Convert(It.IsAny<System.Uri>())).Returns(result);
+            pdfServiceMock.Setup(s => s.Convert(It.IsAny<System.Uri>())).ReturnsAsync(result);
 
             var httpContext = new DefaultHttpContext();
             httpContext.Request.Scheme = "https";
