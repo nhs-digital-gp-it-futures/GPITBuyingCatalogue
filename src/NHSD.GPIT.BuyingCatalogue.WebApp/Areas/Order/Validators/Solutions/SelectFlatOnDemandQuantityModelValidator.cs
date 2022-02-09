@@ -9,7 +9,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Validators.Solutions
         public SelectFlatOnDemandQuantityModelValidator()
         {
             RuleFor(m => m.Quantity)
-                .IsValidQuantity();
+                .IsNumericAndNonZero("quantity");
 
             RuleFor(m => m.EstimationPeriod)
                 .NotNull()

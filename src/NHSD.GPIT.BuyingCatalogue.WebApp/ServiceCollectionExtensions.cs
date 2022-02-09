@@ -246,10 +246,26 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp
             return services;
         }
 
+        public static IServiceCollection ConfigureNominateOrganisationMessageSettings(this IServiceCollection services, IConfiguration configuration)
+        {
+            var settings = configuration.GetSection("nominateOrganisationMessage").Get<NominateOrganisationMessageSettings>();
+            services.AddSingleton(settings);
+
+            return services;
+        }
+
         public static IServiceCollection ConfigureOrderMessageSettings(this IServiceCollection services, IConfiguration configuration)
         {
             var orderMessageSettings = configuration.GetSection("orderMessage").Get<OrderMessageSettings>();
             services.AddSingleton(orderMessageSettings);
+
+            return services;
+        }
+
+        public static IServiceCollection ConfigureRequestAccountMessageSettings(this IServiceCollection services, IConfiguration configuration)
+        {
+            var settings = configuration.GetSection("requestAccountMessage").Get<RequestAccountMessageSettings>();
+            services.AddSingleton(settings);
 
             return services;
         }
