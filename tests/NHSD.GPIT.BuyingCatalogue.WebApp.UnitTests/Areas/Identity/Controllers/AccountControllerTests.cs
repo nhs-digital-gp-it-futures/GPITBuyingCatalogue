@@ -7,7 +7,6 @@ using Moq;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Users.Models;
 using NHSD.GPIT.BuyingCatalogue.Framework.Settings;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Identity;
-using NHSD.GPIT.BuyingCatalogue.Test.Framework.AutoFixtureCustomisations;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Identity.Controllers;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Identity.Models;
 using Xunit;
@@ -122,16 +121,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Identity.Controllers
 
             Assert.IsAssignableFrom<LocalRedirectResult>(result);
             Assert.Equal("~/", ((LocalRedirectResult)result).Url);
-        }
-
-        [Theory]
-        [CommonAutoData]
-        public static void Get_Registration_ReturnsDefaultView(AccountController controller)
-        {
-            var result = controller.Registration();
-
-            Assert.IsAssignableFrom<ViewResult>(result);
-            Assert.Null(((ViewResult)result).ViewName);
         }
 
         [Fact]

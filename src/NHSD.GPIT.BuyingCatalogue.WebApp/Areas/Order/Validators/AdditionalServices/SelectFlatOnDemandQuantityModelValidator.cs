@@ -13,7 +13,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Validators.AdditionalServ
                 .WithMessage("Time Unit is Required");
 
             RuleFor(m => m.Quantity)
-                .IsValidQuantity();
+                .IsNumericAndNonZero("quantity");
         }
     }
 }
