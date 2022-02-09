@@ -40,6 +40,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering
         public async Task OrganisationDashboard_OrganisationDashboard_SectionsCorrectlyDisplayed()
         {
             CommonActions.ElementIsDisplayed(Objects.Ordering.OrganisationDashboard.CreateOrderLink).Should().BeTrue();
+            CommonActions.ElementIsDisplayed(Objects.Ordering.OrganisationDashboard.SearchBar).Should().BeTrue();
             CommonActions.ElementIsDisplayed(ByExtensions.DataTestId("orders-table")).Should().BeTrue();
             CommonActions.ElementIsDisplayed(CommonSelectors.Pagination).Should().BeTrue();
             CommonActions.ElementIsDisplayed(CommonSelectors.PaginationNext).Should().BeTrue();
@@ -119,7 +120,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering
         [Theory]
         [InlineData(OrderStatus.InProgress, "Edit")]
         [InlineData(OrderStatus.Complete, "View")]
-        public void OrganisationDashboard_OrderInProgress_DisplaysCorrectLinkText(
+        public void OrganisationDashboard_OrderStatus_DisplaysCorrectLinkText(
             OrderStatus status,
             string expectedLinkText)
         {
@@ -146,7 +147,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering
         }
 
         [Fact]
-        public void OrganisationDashboard_OrderCompleted_ClickEdit_Redirects()
+        public void OrganisationDashboard_OrderCompleted_ClickView_Redirects()
         {
             using var context = GetEndToEndDbContext();
             var orders = context.Organisations.SelectMany(o => o.Orders).OrderByDescending(o => o.LastUpdated).ToList();
@@ -158,6 +159,90 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering
                 typeof(OrderController),
                 nameof(OrderController.Summary))
                 .Should().BeTrue();
+        }
+
+        [Fact]
+        public async Task OrderDashboard_SearchValid_DisplaysOrders()
+        {
+            using var context = GetEndToEndDbContext();
+            var organisation = await context.Organisations.Include(o => o.Orders).SingleAsync(o => o.OdsCode == OdsCode);
+            var order = organisation.Orders.First();
+
+            CommonActions.ElementAddValue(Objects.Ordering.OrganisationDashboard.SearchBar, order.CallOffId.ToString());
+
+            CommonActions.WaitUntilElementIsDisplayed(Objects.Ordering.OrganisationDashboard.SearchListBox);
+
+            CommonActions.ElementExists(Objects.Ordering.OrganisationDashboard.SearchResult(0))
+                .Should()
+                .BeTrue();
+
+            CommonActions.ElementTextEqualTo(
+                Objects.Ordering.OrganisationDashboard.SearchResultTitle(0),
+                order.CallOffId.ToString())
+                .Should()
+                .BeTrue();
+
+            CommonActions.ElementTextEqualTo(
+                Objects.Ordering.OrganisationDashboard.SearchResultDescription(0),
+                "Call-off ID")
+                .Should()
+                .BeTrue();
+        }
+
+        [Fact]
+        public void OrderDashboard_SearchInvalid_NoResults()
+        {
+            TextGenerators.TextInputAddText(Objects.Ordering.OrganisationDashboard.SearchBar, 5);
+
+            CommonActions.WaitUntilElementIsDisplayed(Objects.Ordering.OrganisationDashboard.SearchListBox);
+
+            CommonActions.ElementIsDisplayed(Objects.Ordering.OrganisationDashboard.NoResults)
+                .Should()
+                .BeTrue();
+
+            CommonActions.ClickLinkElement(Objects.Ordering.OrganisationDashboard.SearchButton);
+
+            CommonActions.ElementIsDisplayed(Objects.Ordering.OrganisationDashboard.SearchBar).Should().BeTrue();
+            CommonActions.ElementIsDisplayed(Objects.Ordering.OrganisationDashboard.NoResultsElement).Should().BeTrue();
+            CommonActions.ElementIsDisplayed(ByExtensions.DataTestId("orders-table")).Should().BeFalse();
+        }
+
+        [Fact]
+        public async Task OrderDashboard_Search_FiltersTable()
+        {
+            using var context = GetEndToEndDbContext();
+            var organisation = await context.Organisations.Include(o => o.Orders).SingleAsync(o => o.OdsCode == OdsCode);
+            var order = organisation.Orders.First();
+
+            CommonActions.ElementAddValue(Objects.Ordering.OrganisationDashboard.SearchBar, order.CallOffId.ToString());
+            CommonActions.WaitUntilElementIsDisplayed(Objects.Ordering.OrganisationDashboard.SearchListBox);
+
+            CommonActions.ClickLinkElement(Objects.Ordering.OrganisationDashboard.SearchButton);
+
+            CommonActions.GetNumberOfTableRowsDisplayed().Should().Be(1);
+        }
+
+        [Fact]
+        public void OrderDashboard_NoOrders_SectionsCorrectlyDisplayed()
+        {
+            var parameters = new Dictionary<string, string>
+            {
+                { nameof(OdsCode), "13Y" },
+            };
+
+            NavigateToUrl(
+                typeof(DashboardController),
+                nameof(DashboardController.Organisation),
+                parameters);
+
+            CommonActions.ElementIsDisplayed(Objects.Ordering.OrganisationDashboard.CreateOrderLink).Should().BeTrue();
+            CommonActions.ElementIsDisplayed(Objects.Ordering.OrganisationDashboard.SearchBar).Should().BeFalse();
+            CommonActions.ElementIsDisplayed(ByExtensions.DataTestId("orders-table")).Should().BeFalse();
+            CommonActions.ElementIsDisplayed(CommonSelectors.Pagination).Should().BeFalse();
+            CommonActions.ElementIsDisplayed(CommonSelectors.PaginationNext).Should().BeFalse();
+            CommonActions.ElementExists(CommonSelectors.PaginationPrevious).Should().BeFalse();
+            CommonActions.GoBackLinkDisplayed().Should().BeTrue();
+            CommonActions.ElementIsDisplayed(By.Id("no-orders")).Should().BeTrue();
         }
 
         [Fact]

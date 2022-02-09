@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using AutoFixture;
 using AutoFixture.AutoMoq;
@@ -70,7 +71,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Orders
         public static async Task GetPagedOrders_ReturnsExpectedPageSize(
             Organisation organisation,
             List<Order> orders,
-            [Frozen]BuyingCatalogueDbContext context,
+            [Frozen] BuyingCatalogueDbContext context,
             OrderService service)
         {
             organisation.Orders = orders;
@@ -89,6 +90,83 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Orders
             result.Options.NumberOfPages
                 .Should()
                 .Be(expectedNumberOfPages);
+        }
+
+        [Theory]
+        [InMemoryDbAutoData]
+        public static async Task GetPagedOrders_SearchTerm_ReturnsExpectedResults(
+            Organisation organisation,
+            List<Order> orders,
+            [Frozen] BuyingCatalogueDbContext context,
+            OrderService service)
+        {
+            organisation.Orders = orders;
+
+            context.Orders.AddRange(orders);
+            context.Organisations.Add(organisation);
+
+            context.SaveChanges();
+
+            var order = orders.First();
+            var searchTerm = order.CallOffId.ToString();
+
+            var result = await service.GetPagedOrders(organisation.Id, new PageOptions("0", 2), searchTerm);
+
+            result.Items.First().Should().BeEquivalentTo(order);
+        }
+
+        [Theory]
+        [InMemoryDbAutoData]
+        public static async Task GetOrdersBySearchTerm_CallOffId_ReturnsExpectedResults(
+            Organisation organisation,
+            List<Order> orders,
+            [Frozen] BuyingCatalogueDbContext context,
+            OrderService service)
+        {
+            organisation.Orders = orders;
+
+            context.Organisations.Add(organisation);
+            context.Orders.AddRange(orders);
+
+            context.SaveChanges();
+
+            var order = orders.First();
+            var searchTerm = order.CallOffId.ToString()[5..];
+
+            var results = await service.GetOrdersBySearchTerm(organisation.Id, searchTerm);
+
+            results.Should().NotBeEmpty();
+
+            var actual = results.First();
+            actual.Category.Should().Be("Call-off ID");
+            actual.Title.Should().Be(order.CallOffId.ToString());
+        }
+
+        [Theory]
+        [InMemoryDbAutoData]
+        public static async Task GetOrdersBySearchTerm_Description_ReturnsExpectedResults(
+            Organisation organisation,
+            List<Order> orders,
+            [Frozen] BuyingCatalogueDbContext context,
+            OrderService service)
+        {
+            organisation.Orders = orders;
+
+            context.Organisations.Add(organisation);
+            context.Orders.AddRange(orders);
+
+            context.SaveChanges();
+
+            var order = orders.First();
+            var searchTerm = order.Description.ToString()[..15];
+
+            var results = await service.GetOrdersBySearchTerm(organisation.Id, searchTerm);
+
+            results.Should().NotBeEmpty();
+
+            var actual = results.First();
+            actual.Category.Should().Be("Description");
+            actual.Title.Should().Be(order.Description);
         }
     }
 }

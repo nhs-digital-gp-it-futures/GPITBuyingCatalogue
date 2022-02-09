@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
@@ -15,12 +16,14 @@ using Moq;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Organisations.Models;
 using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Models;
+using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Models.FilterModels;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Orders;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Organisations;
 using NHSD.GPIT.BuyingCatalogue.Test.Framework.AutoFixtureCustomisations;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.Dashboard;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.Shared;
+using NHSD.GPIT.BuyingCatalogue.WebApp.Models.Autocomplete;
 using Xunit;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers
@@ -116,7 +119,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers
 
             organisationService.Setup(s => s.GetOrganisationByOdsCode(odsCode)).ReturnsAsync(organisation);
 
-            orderService.Setup(s => s.GetPagedOrders(organisation.Id, It.IsAny<PageOptions>())).ReturnsAsync(orders);
+            orderService.Setup(s => s.GetPagedOrders(organisation.Id, It.IsAny<PageOptions>(), string.Empty)).ReturnsAsync(orders);
 
             var expected = new OrganisationModel(organisation, user, orders.Items)
             {
@@ -197,6 +200,46 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers
             actualResult.ViewData.ModelState.ErrorCount.Should().Be(1);
             actualResult.ViewData.ModelState.Keys.Single().Should().Be(errorKey);
             actualResult.ViewData.ModelState.Values.Single().Errors.Single().ErrorMessage.Should().Be(errorMessage);
+        }
+
+        [Theory]
+        [CommonAutoData]
+        public static async Task Get_FilterSearchSuggestions_ReturnsResults(
+            Organisation organisation,
+            string searchTerm,
+            List<SearchFilterModel> searchResults,
+            [Frozen] Mock<IOrganisationsService> organisationsService,
+            [Frozen] Mock<IOrderService> orderService,
+            DashboardController controller)
+        {
+            controller.ControllerContext.HttpContext = new DefaultHttpContext()
+            {
+                Request =
+                {
+                    Headers =
+                    {
+                        Referer = "http://www.test.com",
+                    },
+                },
+            };
+            var requestUri = new UriBuilder(controller.HttpContext.Request.Headers.Referer.ToString());
+            var expected = searchResults.Select(r => new AutocompleteResult
+            {
+                Title = r.Title,
+                Category = r.Category,
+                Url = requestUri.AppendQueryParameterToUrl("search", r.Title).ToString(),
+            });
+
+            organisationsService.Setup(s => s.GetOrganisationByOdsCode(organisation.OdsCode))
+                .ReturnsAsync(organisation);
+
+            orderService.Setup(s => s.GetOrdersBySearchTerm(organisation.Id, searchTerm))
+                .ReturnsAsync(searchResults);
+
+            var result = (await controller.FilterSearchSuggestions(organisation.OdsCode, searchTerm)).As<JsonResult>();
+
+            result.Should().NotBeNull();
+            result.Value.Should().BeEquivalentTo(expected);
         }
     }
 }

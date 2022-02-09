@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
@@ -10,6 +11,7 @@ using NHSD.GPIT.BuyingCatalogue.Framework.Settings;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Csv;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Email;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Models;
+using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Models.FilterModels;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Orders;
 using Notify.Client;
 
@@ -89,37 +91,63 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
                 .SingleOrDefaultAsync();
         }
 
-        public async Task<IList<Order>> GetOrders(int organisationId)
-        {
-            return await dbContext.Organisations
-                .Where(o => o.Id == organisationId)
-                .Include(o => o.Orders).ThenInclude(o => o.LastUpdatedByUser)
-                .SelectMany(o => o.Orders)
-                .AsNoTracking()
-                .ToListAsync();
-        }
-
-        public async Task<PagedList<Order>> GetPagedOrders(int organisationId, PageOptions options)
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Globalization", "CA1305:Specify IFormatProvider", Justification = "Formatting used in LINQ-to-SQL Queries which does not support format providers")]
+        public async Task<PagedList<Order>> GetPagedOrders(int organisationId, PageOptions options, string search = null)
         {
             options ??= new PageOptions();
 
-            var query = dbContext.Organisations
+            var query = await dbContext.Organisations
                 .Where(o => o.Id == organisationId)
                 .Include(o => o.Orders).ThenInclude(o => o.LastUpdatedByUser)
                 .SelectMany(o => o.Orders)
                 .OrderByDescending(o => o.LastUpdated)
-                .AsNoTracking();
+                .AsNoTracking()
+                .ToListAsync();
 
-            options.TotalNumberOfItems = await query.CountAsync();
+            if (!string.IsNullOrWhiteSpace(search))
+            {
+                query = query.Where(o =>
+                    o.CallOffId.ToString().Contains(search, StringComparison.OrdinalIgnoreCase)
+                    || o.Description.Contains(search, StringComparison.OrdinalIgnoreCase)).ToList();
+            }
+
+            options.TotalNumberOfItems = query.Count;
 
             if (options.PageNumber != 0)
-                query = query.Skip((options.PageNumber - 1) * options.PageSize);
+                query = query.Skip((options.PageNumber - 1) * options.PageSize).ToList();
 
-            query = query.Take(options.PageSize);
-
-            var results = await query.ToListAsync();
+            var results = query.Take(options.PageSize).ToList();
 
             return new PagedList<Order>(results, options);
+        }
+
+        public async Task<IList<SearchFilterModel>> GetOrdersBySearchTerm(int organisationId, string searchTerm)
+        {
+            var baseData = await dbContext
+              .Organisations
+              .Include(o => o.Orders)
+              .Where(o => o.Id == organisationId)
+              .SelectMany(o => o.Orders)
+              .AsNoTracking()
+              .ToListAsync();
+
+            var callOffIdMatches = baseData
+                .Where(o => o.CallOffId.ToString().Contains(searchTerm, StringComparison.OrdinalIgnoreCase))
+                .Select(o => new SearchFilterModel
+                {
+                    Title = o.CallOffId.ToString(),
+                    Category = "Call-off ID",
+                });
+
+            var descriptionMatches = baseData
+                .Where(o => o.Description.Contains(searchTerm, StringComparison.OrdinalIgnoreCase))
+                .Select(o => new SearchFilterModel
+                {
+                    Title = o.Description,
+                    Category = "Description",
+                });
+
+            return callOffIdMatches.Union(descriptionMatches).ToList();
         }
 
         public Task<Order> GetOrderSummary(CallOffId callOffId, string odsCode)

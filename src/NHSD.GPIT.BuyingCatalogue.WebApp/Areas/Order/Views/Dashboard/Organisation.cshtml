@@ -35,38 +35,62 @@
         </div>
 
         <div class="nhsuk-grid-column-full">
-            <nhs-table data-test-id="orders-table">
-                <nhs-table-column>Call-off Agreement ID</nhs-table-column>
-                <nhs-table-column>Order description</nhs-table-column>
-                <nhs-table-column>Last updated</nhs-table-column>
-                <nhs-table-column>Status</nhs-table-column>
-                <nhs-table-column></nhs-table-column>
-                @foreach(var order in Model.Orders)
-                {
-                    <nhs-table-row-container>
-                        <nhs-table-cell>@order.CallOffId</nhs-table-cell>
-                        <nhs-table-cell>@order.Description</nhs-table-cell>
-                        <nhs-table-cell>@order.LastUpdated.ToString("dd/MM/yyyy")</nhs-table-cell>
-                        <nhs-table-cell>
-                            <nhs-tag colour="@GetTagColour(order.OrderStatus)" text="@order.OrderStatus.AsString(EnumFormat.EnumMemberValue)" />
-                        </nhs-table-cell>
-                        <nhs-table-cell>
-                            <a data-test-id="link-@order.CallOffId" asp-action="@nameof(OrderController.Order)"
-                               asp-controller="@typeof(OrderController).ControllerName()"
-                               asp-route-odsCode="@Model.OdsCode"
-                               asp-route-callOffId="@order.CallOffId" style="white-space:nowrap;">
-                                @GetLinkName(order.OrderStatus)
-                           </a>
-                        </nhs-table-cell>
-                    </nhs-table-row-container>
-                }
-            </nhs-table>
-        </div>
-        <div id="pagination">
-            <nhs-page-number-pagination current-page-number="@Model.Options.PageNumber"
-                                        total-number-of-pages="@Model.Options.NumberOfPages" />
+            @if((Model.Orders.Count == 0 && Context.Request.Query["search"].Count > 0) || Model.Orders.Count > 0)
+            {
+                <vc:nhs-autocomplete id="orders-dashboard-autocomplete"
+				        ajax-url="@Url.Action(
+				        nameof(DashboardController.FilterSearchSuggestions),
+				        typeof(DashboardController).ControllerName(),
+                        new { odsCode = Model.OdsCode })"
+				        title-text="Search for order by order description or Call-off ID"
+				        query-parameter-name="search"/>
+            }
+            @if (Model.Orders is not null && Model.Orders.Count > 0)
+            {
+                <nhs-table data-test-id="orders-table">
+                    <nhs-table-column>Call-off ID</nhs-table-column>
+                    <nhs-table-column>Order description</nhs-table-column>
+                    <nhs-table-column>Last updated</nhs-table-column>
+                    <nhs-table-column>Status</nhs-table-column>
+                    <nhs-table-column>Action</nhs-table-column>
+                    @foreach(var order in Model.Orders)
+                    {
+                        <nhs-table-row-container>
+                            <nhs-table-cell>@order.CallOffId</nhs-table-cell>
+                            <nhs-table-cell>@order.Description</nhs-table-cell>
+                            <nhs-table-cell>@order.LastUpdated.ToString("dd/MM/yyyy")</nhs-table-cell>
+                            <nhs-table-cell>
+                                <nhs-tag colour="@GetTagColour(order.OrderStatus)" text="@order.OrderStatus.AsString(EnumFormat.EnumMemberValue)" />
+                            </nhs-table-cell>
+                            <nhs-table-cell>
+                                <a data-test-id="link-@order.CallOffId" asp-action="@nameof(OrderController.Order)"
+                                    asp-controller="@typeof(OrderController).ControllerName()"
+                                    asp-route-odsCode="@Model.OdsCode"
+                                    asp-route-callOffId="@order.CallOffId" style="white-space:nowrap;">
+                                    @GetLinkName(order.OrderStatus)
+                                </a>
+                            </nhs-table-cell>
+                        </nhs-table-row-container>
+                    }
+                </nhs-table>
+                <div id="pagination">
+                    <nhs-page-number-pagination current-page-number="@Model.Options.PageNumber"
+                                                total-number-of-pages="@Model.Options.NumberOfPages" />
 
-		</div>
+		        </div>
+		    }
+		    else
+		    {
+			    @if(Context.Request.Query["search"].Count > 0)
+                {
+				    <h2 id="no-results-search">No results were found for "@Context.Request.Query["search"].FirstOrDefault()"</h2>
+                    <p>Try a different search term.</p>
+                } else
+                {
+                    <p id="no-orders">There are currently no orders for this organisation.</p>
+                }
+            }
+        </div>
     </div>
 </div>
 

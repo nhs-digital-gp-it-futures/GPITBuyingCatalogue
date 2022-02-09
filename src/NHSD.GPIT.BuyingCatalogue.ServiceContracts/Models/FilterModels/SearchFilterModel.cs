@@ -1,6 +1,6 @@
 ﻿namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.Models.FilterModels
 {
-    public sealed class SolutionSearchFilterModel
+    public sealed class SearchFilterModel
     {
         public string Title { get; set; }
 
