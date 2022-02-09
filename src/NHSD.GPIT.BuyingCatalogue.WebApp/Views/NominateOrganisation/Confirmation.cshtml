@@ -1,0 +1,22 @@
+﻿@model NHSD.GPIT.BuyingCatalogue.WebApp.Models.NavBaseModel
+@{
+    Layout = "Layouts/_AllBannersLayout";
+    ViewBag.Title = "Nomination submitted";
+}
+
+<partial name="Partials/_BackLink" model="@Model" />
+<div class="nhsuk-grid-row">
+    <div class="nhsuk-grid-column-two-thirds">
+        <nhs-page-title title="@ViewBag.Title"
+                        advice="Your nomination has been sent to the Buying Catalogue Team." />
+        <div data-test-id="nomination-confirmation-details">
+            <h3>What next?</h3>
+            <p>
+                We'll email you once buyers from the organisation you've nominated are able to act on your behalf.
+            </p>
+            <p>
+                The Buying Catalogue Team aims to respond to account requests within 5 working days.
+            </p>
+        </div>
+    </div>
+</div>

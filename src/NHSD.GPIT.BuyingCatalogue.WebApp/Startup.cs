@@ -68,6 +68,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp
 
             services.ConfigureCacheKeySettings(Configuration)
                 .ConfigureGovNotify(Configuration)
+                .ConfigureNominateOrganisationMessageSettings(Configuration)
                 .ConfigureOrderMessageSettings(Configuration)
                 .ConfigureRequestAccountMessageSettings(Configuration)
                 .ConfigureConsentCookieSettings(Configuration)
