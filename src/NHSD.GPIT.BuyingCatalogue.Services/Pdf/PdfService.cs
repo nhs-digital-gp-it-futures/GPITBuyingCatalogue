@@ -14,19 +14,21 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Pdf
 
         public byte[] Convert(Uri url)
         {
-            string filePath = @$"{Path.GetTempPath()}{Guid.NewGuid()}.pdf";
+            string filePath = Path.Combine(Path.GetTempPath(), $"{Guid.NewGuid()}.pdf");
             string chromePath = RuntimeInformation.IsOSPlatform(OSPlatform.Windows) ? ChromeWindowsPath : ChromeLinuxPath;
 
-            var psi = new ProcessStartInfo(chromePath, $"{ChromeArgs} --print-to-pdf={filePath} {url}");
-            var process = Process.Start(psi);
-            process.WaitForExit(10000);
-
-            byte[] fileContent = File.ReadAllBytes(filePath);
-
-            if (File.Exists(filePath))
-                File.Delete(filePath);
-
-            return fileContent;
+            try
+            {
+                var psi = new ProcessStartInfo(chromePath, $"{ChromeArgs} --print-to-pdf={filePath} {url}");
+                var process = Process.Start(psi);
+                process.WaitForExit(10000);
+                return File.ReadAllBytes(filePath);
+            }
+            finally
+            {
+                if (File.Exists(filePath))
+                    File.Delete(filePath);
+            }
         }
     }
 }
