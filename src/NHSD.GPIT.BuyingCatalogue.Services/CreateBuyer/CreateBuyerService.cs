@@ -33,10 +33,17 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.CreateBuyer
             this.settings = settings ?? throw new ArgumentNullException(nameof(settings));
         }
 
-        public async Task<AspNetUser> Create(int primaryOrganisationId, string firstName, string lastName, string phoneNumber, string emailAddress)
+        public async Task<AspNetUser> Create(int primaryOrganisationId, string firstName, string lastName, string phoneNumber, string emailAddress, bool isAdmin)
         {
             if (string.IsNullOrWhiteSpace(emailAddress))
                 throw new ArgumentException($"{nameof(emailAddress)} must be provided.", nameof(emailAddress));
+
+            //If the account is being created for the NHS Digital organisation by an Authority user
+            // then they are creating another authority user
+            var organisationFunction =
+                primaryOrganisationId == 1 && isAdmin
+                    ? OrganisationFunction.Authority.DisplayName
+                    : OrganisationFunction.Buyer.DisplayName;
 
             var aspNetUser = new AspNetUser
             {
@@ -48,7 +55,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.CreateBuyer
                 Email = emailAddress,
                 NormalizedEmail = emailAddress.ToUpperInvariant(),
                 PrimaryOrganisationId = primaryOrganisationId,
-                OrganisationFunction = OrganisationFunction.Buyer.DisplayName,
+                OrganisationFunction = organisationFunction,
                 SecurityStamp = Guid.NewGuid().ToString(),
                 ConcurrencyStamp = Guid.NewGuid().ToString(),
             };
