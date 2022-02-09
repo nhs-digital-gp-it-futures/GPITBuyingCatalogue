@@ -1,5 +1,10 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
+using AutoFixture;
+using AutoFixture.AutoMoq;
+using AutoFixture.Idioms;
+using AutoFixture.Xunit2;
 using FluentAssertions;
 using Microsoft.AspNetCore.Identity;
 using Moq;
@@ -7,8 +12,8 @@ using NHSD.GPIT.BuyingCatalogue.EntityFramework.Users.Models;
 using NHSD.GPIT.BuyingCatalogue.Framework.Settings;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Email;
 using NHSD.GPIT.BuyingCatalogue.Services.Identity;
+using NHSD.GPIT.BuyingCatalogue.Test.Framework.AutoFixtureCustomisations;
 using NHSD.GPIT.BuyingCatalogue.Test.Framework.Builders;
-using NHSD.GPIT.BuyingCatalogue.Test.Framework.SharedMocks;
 using Xunit;
 
 namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Identity
@@ -29,33 +34,13 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Identity
         null);
 
         [Fact]
-        public static void Constructor_IEmailService_PasswordResetSettings_UserManagerApplicationUser_NullEmailService_ThrowsException()
+        public static void Constructors_VerifyGuardClauses()
         {
-            Assert.Throws<ArgumentNullException>(() =>
-                _ = new PasswordService(
-                    null,
-                    new PasswordResetSettings(),
-                    MockUserManager.Object));
-        }
+            var fixture = new Fixture().Customize(new AutoMoqCustomization());
+            var assertion = new GuardClauseAssertion(fixture);
+            var constructors = typeof(PasswordService).GetConstructors();
 
-        [Fact]
-        public static void Constructor_IEmailService_PasswordResetSettings_UserManagerApplicationUser_NullSettings_ThrowsException()
-        {
-            Assert.Throws<ArgumentNullException>(() =>
-                _ = new PasswordService(
-                    Mock.Of<IEmailService>(),
-                    null,
-                    MockUserManager.Object));
-        }
-
-        [Fact]
-        public static void Constructor_IEmailService_PasswordResetSettings_UserManagerApplicationUser_NullUserManager_ThrowsException()
-        {
-            Assert.Throws<ArgumentNullException>(() =>
-                _ = new PasswordService(
-                    Mock.Of<IEmailService>(),
-                    new PasswordResetSettings(),
-                    null));
+            assertion.Verify(constructors);
         }
 
         [Theory]
@@ -67,7 +52,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Identity
             Task GeneratePasswordResetTokenAsync()
             {
                 var service = new PasswordService(
-                    Mock.Of<IEmailService>(),
+                    Mock.Of<IGovNotifyEmailService>(),
                     new PasswordResetSettings(),
                     MockUserManager.Object);
 
@@ -81,7 +66,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Identity
         public static async Task GeneratePasswordResetTokenAsync_UserNotFound_ReturnsNull()
         {
             var service = new PasswordService(
-                Mock.Of<IEmailService>(),
+                Mock.Of<IGovNotifyEmailService>(),
                 new PasswordResetSettings(),
                 MockUserManager.Object);
 
@@ -106,7 +91,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Identity
                 .ReturnsAsync(expectedToken);
 
             var service = new PasswordService(
-                Mock.Of<IEmailService>(),
+                Mock.Of<IGovNotifyEmailService>(),
                 new PasswordResetSettings(),
                 mockUserManager.Object);
 
@@ -123,7 +108,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Identity
             static Task SendResetEmailAsync()
             {
                 var service = new PasswordService(
-                    Mock.Of<IEmailService>(),
+                    Mock.Of<IGovNotifyEmailService>(),
                     new PasswordResetSettings(),
                     MockUserManager.Object);
 
@@ -139,7 +124,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Identity
             static Task SendResetEmailAsync()
             {
                 var service = new PasswordService(
-                    Mock.Of<IEmailService>(),
+                    Mock.Of<IGovNotifyEmailService>(),
                     new PasswordResetSettings(),
                     MockUserManager.Object);
 
@@ -149,97 +134,20 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Identity
             return Assert.ThrowsAsync<ArgumentNullException>(SendResetEmailAsync);
         }
 
-        [Fact]
-        public static async Task SendResetEmailAsync_SendsEmail()
+        [Theory]
+        [CommonAutoData]
+        public static async Task SendResetEmailAsync_SendsEmail(
+            [Frozen] PasswordResetSettings settings,
+            [Frozen] Mock<IGovNotifyEmailService> govNotifyEmailService,
+            PasswordService passwordService)
         {
-            var template = new EmailMessageTemplate(new EmailAddressTemplate("from@sender.test"));
-            var mockEmailService = new Mock<IEmailService>();
-            var registrationService = new PasswordService(
-                mockEmailService.Object,
-                new PasswordResetSettings { EmailMessageTemplate = template },
-                MockUserManager.Object);
+            var user = AspNetUserBuilder.Create().Build();
+            await passwordService.SendResetEmailAsync(user, new Uri("https://duckduckgo.com/"));
 
-            await registrationService.SendResetEmailAsync(
-                AspNetUserBuilder.Create().Build(),
-                new Uri("https://duckduckgo.com/"));
-
-            mockEmailService.Verify(e => e.SendEmailAsync(It.IsNotNull<EmailMessage>()));
-        }
-
-        [Fact]
-        public static async Task SendResetEmailAsync_UsesExpectedTemplate()
-        {
-            // ReSharper disable once StringLiteralTypo
-            const string subject = "Gozleme";
-
-            var template = new EmailMessageTemplate(new EmailAddressTemplate("from@sender.test"))
-            {
-                Subject = subject,
-            };
-
-            var mockEmailService = new MockEmailService();
-            var registrationService = new PasswordService(
-                mockEmailService,
-                new PasswordResetSettings { EmailMessageTemplate = template },
-                MockUserManager.Object);
-
-            await registrationService.SendResetEmailAsync(
-                AspNetUserBuilder.Create().Build(),
-                new Uri("https://duckduckgo.com/"));
-
-            mockEmailService.SentMessage.Subject.Should().Be(subject);
-        }
-
-        [Fact]
-        public static async Task SendResetEmailAsync_UsesExpectedRecipient()
-        {
-            var template = new EmailMessageTemplate(new EmailAddressTemplate("from@sender.test"));
-            var mockEmailService = new MockEmailService();
-
-            var user = AspNetUserBuilder
-                .Create()
-                .WithFirstName("Uncle")
-                .WithLastName("Bob")
-                .WithEmailAddress("uncle@bob.com")
-                .Build();
-
-            var registrationService = new PasswordService(
-                mockEmailService,
-                new PasswordResetSettings { EmailMessageTemplate = template },
-                MockUserManager.Object);
-
-            await registrationService.SendResetEmailAsync(
-                user,
-                new Uri("https://duckduckgo.com/"));
-
-            var recipients = mockEmailService.SentMessage.Recipients;
-            recipients.Should().HaveCount(1);
-
-            var recipient = recipients[0];
-            recipient.Address.Should().Be(user.Email);
-            recipient.DisplayName.Should().Be($"{user.FirstName} {user.LastName}");
-        }
-
-        [Fact]
-        public static async Task SendResetEmailAsync_UsesExpectedCallback()
-        {
-            const string expectedCallback = "https://callback.nhs.uk/";
-
-            var callback = new Uri(expectedCallback);
-            var template = new EmailMessageTemplate(new EmailAddressTemplate("from@sender.test"));
-
-            var mockEmailService = new MockEmailService();
-            var registrationService = new PasswordService(
-                mockEmailService,
-                new PasswordResetSettings { EmailMessageTemplate = template },
-                MockUserManager.Object);
-
-            await registrationService.SendResetEmailAsync(
-                AspNetUserBuilder.Create().Build(),
-                callback);
-
-            mockEmailService.SentMessage.TextBody!.FormatItems.Should().HaveCount(1);
-            mockEmailService.SentMessage.TextBody!.FormatItems[0].Should().Be(expectedCallback);
+            govNotifyEmailService.Verify(e => e.SendEmailAsync(
+                user.Email,
+                settings.EmailTemplateId,
+                It.IsAny<Dictionary<string, dynamic>>()));
         }
 
         [Fact]
@@ -256,7 +164,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Identity
             mockUserManager.Setup(m => m.ResetPasswordAsync(user, token, password)).ReturnsAsync(() => expectedResult);
 
             var service = new PasswordService(
-                Mock.Of<IEmailService>(),
+                Mock.Of<IGovNotifyEmailService>(),
                 new PasswordResetSettings(),
                 mockUserManager.Object);
 
@@ -275,7 +183,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Identity
         public static async Task IsValidPasswordResetToken_BadInput_ReturnsFalse(string emailAddress, string token)
         {
             var service = new PasswordService(
-                Mock.Of<IEmailService>(),
+                Mock.Of<IGovNotifyEmailService>(),
                 new PasswordResetSettings(),
                 MockUserManager.Object);
 
@@ -298,7 +206,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Identity
                 .ReturnsAsync(expectedUser);
 
             var service = new PasswordService(
-                Mock.Of<IEmailService>(),
+                Mock.Of<IGovNotifyEmailService>(),
                 new PasswordResetSettings(),
                 mockUserManager.Object);
 

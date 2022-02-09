@@ -65,8 +65,8 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.PublicBrowse.Homepage
             CommonActions.ClickLinkElement(Objects.Home.HomeSelectors.RequestAccountLink);
 
             CommonActions.PageLoadedCorrectGetIndex(
-            typeof(AccountController),
-            nameof(AccountController.Registration))
+            typeof(RegistrationController),
+            nameof(RegistrationController.Index))
             .Should()
             .BeTrue();
         }
@@ -74,6 +74,12 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.PublicBrowse.Homepage
         [Fact]
         public void HomePage_ClickNominateOrganisation_ExpectedResult()
         {
+            NavigateToUrl(
+                typeof(AccountController),
+                nameof(AccountController.Login));
+
+            BuyerLogin();
+
             CommonActions.ClickLinkElement(Objects.Home.HomeSelectors.NominateOrganisationLink);
 
             CommonActions.PageLoadedCorrectGetIndex(

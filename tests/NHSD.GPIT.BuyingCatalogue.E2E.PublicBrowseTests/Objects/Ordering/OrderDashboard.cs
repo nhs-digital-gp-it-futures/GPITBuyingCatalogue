@@ -1,4 +1,5 @@
-﻿using OpenQA.Selenium;
+﻿using NHSD.GPIT.BuyingCatalogue.E2ETests.Objects.Common;
+using OpenQA.Selenium;
 
 namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Objects.Ordering
 {
@@ -9,5 +10,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Objects.Ordering
         public static By OrderDescriptionLink => By.LinkText("Order description");
 
         public static By OrderDescriptionStatus => By.Id("Order_description-status");
+
+        public static By LastUpdatedEndNote => ByExtensions.DataTestId("last-updated-endnote");
     }
 }

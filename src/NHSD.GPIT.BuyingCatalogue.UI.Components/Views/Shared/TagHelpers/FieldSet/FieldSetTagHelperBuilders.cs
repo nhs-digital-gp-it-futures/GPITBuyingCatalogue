@@ -13,6 +13,7 @@ namespace NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.TagHelpers.FieldS
         public const string NhsFieldsetLegendLarge = "nhsuk-fieldset__legend--l";
         public const string NhsFieldsetLegendMedium = "nhsuk-fieldset__legend--m";
         public const string NhsFieldsetLegendSmall = "nhsuk-fieldset__legend--s";
+        public const string NhsFieldsetLegendExtraSmall = "nhsuk-fieldset__legend--xs";
         public const string NhsFieldSetLegendHeading = "nhsuk-fieldset__heading";
 
         public enum FieldSetSize
@@ -21,6 +22,7 @@ namespace NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.TagHelpers.FieldS
             Large = 0,
             Medium = 2,
             Small = 3,
+            ExtraSmall = 4,
         }
 
         public static TagBuilder GetFieldsetBuilder(string formName, string labelHint)
@@ -41,16 +43,17 @@ namespace NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.TagHelpers.FieldS
         {
             var builder = new TagBuilder(TagHelperConstants.Legend);
 
-            var selectedLedgendClass = selectedSize switch
+            var selectedLegendClass = selectedSize switch
             {
                 FieldSetSize.ExtraLarge => NhsFieldsetLegendExtraLarge,
                 FieldSetSize.Medium => NhsFieldsetLegendMedium,
                 FieldSetSize.Small => NhsFieldsetLegendSmall,
+                FieldSetSize.ExtraSmall => NhsFieldsetLegendExtraSmall,
                 FieldSetSize.Large or _ => NhsFieldsetLegendLarge,
             };
 
             builder.AddCssClass(NhsFieldsetLegend);
-            builder.AddCssClass(selectedLedgendClass);
+            builder.AddCssClass(selectedLegendClass);
 
             return builder;
         }
@@ -61,9 +64,9 @@ namespace NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.TagHelpers.FieldS
                 return null;
 
             var fieldsetLegend = GetFieldsetLegendBuilder(selectedSize);
-            var fieldsetlegendheader = GetFieldsetLegendHeadingTagBuilder(labelText, selectedSize);
+            var fieldsetLegendHeader = GetFieldsetLegendHeadingTagBuilder(labelText, selectedSize);
 
-            fieldsetLegend.InnerHtml.AppendHtml(fieldsetlegendheader);
+            fieldsetLegend.InnerHtml.AppendHtml(fieldsetLegendHeader);
 
             return fieldsetLegend;
         }
@@ -73,17 +76,18 @@ namespace NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.TagHelpers.FieldS
             if (labelText == null)
                 return null;
 
-            var selectedLedgendTag = selectedSize switch
+            var selectedLegendTag = selectedSize switch
             {
                 FieldSetSize.ExtraLarge => TagHelperConstants.HeaderOne,
                 FieldSetSize.Medium => TagHelperConstants.HeaderThree,
                 FieldSetSize.Small => "label",
+                FieldSetSize.ExtraSmall => "label",
                 _ or FieldSetSize.Large => TagHelperConstants.HeaderTwo,
             };
 
-            var builder = new TagBuilder(selectedLedgendTag);
-            builder.AddCssClass(NhsFieldSetLegendHeading);
+            var builder = new TagBuilder(selectedLegendTag);
 
+            builder.AddCssClass(NhsFieldSetLegendHeading);
             builder.InnerHtml.Append(labelText);
 
             return builder;

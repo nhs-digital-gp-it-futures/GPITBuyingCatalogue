@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Users.Models;
@@ -16,7 +17,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.CreateBuyer
         private readonly BuyingCatalogueDbContext dbContext;
         private readonly IPasswordService passwordService;
         private readonly IPasswordResetCallback passwordResetCallback;
-        private readonly IEmailService emailService;
+        private readonly IGovNotifyEmailService govNotifyEmailService;
         private readonly RegistrationSettings settings;
         private readonly IAspNetUserValidator aspNetUserValidator;
 
@@ -24,14 +25,14 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.CreateBuyer
             BuyingCatalogueDbContext dbContext,
             IPasswordService passwordService,
             IPasswordResetCallback passwordResetCallback,
-            IEmailService emailService,
+            IGovNotifyEmailService govNotifyEmailService,
             RegistrationSettings settings,
             IAspNetUserValidator aspNetUserValidator)
         {
             this.dbContext = dbContext ?? throw new ArgumentNullException(nameof(dbContext));
             this.passwordService = passwordService ?? throw new ArgumentNullException(nameof(passwordService));
             this.passwordResetCallback = passwordResetCallback ?? throw new ArgumentNullException(nameof(passwordResetCallback));
-            this.emailService = emailService ?? throw new ArgumentNullException(nameof(emailService));
+            this.govNotifyEmailService = govNotifyEmailService ?? throw new ArgumentNullException(nameof(govNotifyEmailService));
             this.settings = settings ?? throw new ArgumentNullException(nameof(settings));
             this.aspNetUserValidator = aspNetUserValidator ?? throw new ArgumentNullException(nameof(aspNetUserValidator));
         }
@@ -71,17 +72,22 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.CreateBuyer
             return Result.Success(aspNetUser.Id);
         }
 
-        public Task SendInitialEmailAsync(PasswordResetToken token)
+        private Task SendInitialEmailAsync(PasswordResetToken token)
         {
             if (token is null)
                 throw new ArgumentNullException(nameof(token));
 
             var user = token.User;
 
-            return emailService.SendEmailAsync(
-                settings.EmailMessage,
-                new EmailAddress(user.Email, user.GetDisplayName()),
-                passwordResetCallback.GetPasswordResetCallback(token));
+            var personalisation = new Dictionary<string, dynamic>
+            {
+                ["password_set_link"] = passwordResetCallback.GetPasswordResetCallback(token),
+            };
+
+            return govNotifyEmailService.SendEmailAsync(
+                user.Email,
+                settings.EmailTemplateId,
+                personalisation);
         }
     }
 }

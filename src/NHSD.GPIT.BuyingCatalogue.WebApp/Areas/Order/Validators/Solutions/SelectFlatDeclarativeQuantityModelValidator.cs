@@ -9,7 +9,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Validators.Solutions
         public SelectFlatDeclarativeQuantityModelValidator()
         {
             RuleFor(m => m.Quantity)
-                .IsValidQuantity();
+                .IsNumericAndNonZero("quantity");
         }
     }
 }

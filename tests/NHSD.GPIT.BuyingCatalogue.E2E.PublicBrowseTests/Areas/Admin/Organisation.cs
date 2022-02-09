@@ -4,7 +4,6 @@ using System.Linq;
 using System.Threading.Tasks;
 using FluentAssertions;
 using Microsoft.EntityFrameworkCore;
-using netDumbster.smtp;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Utils;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.RandomData;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.TestBases;
@@ -15,7 +14,7 @@ using Xunit;
 
 namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin
 {
-    public sealed class Organisation : AuthorityTestBase, IClassFixture<LocalWebApplicationFactory>, IDisposable
+    public sealed class Organisation : AuthorityTestBase, IClassFixture<LocalWebApplicationFactory>
     {
         private const int OrganisationId = 2;
 
@@ -24,8 +23,6 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin
             { nameof(OrganisationId), OrganisationId.ToString() },
         };
 
-        private readonly SimpleSmtpServer smtp;
-
         public Organisation(LocalWebApplicationFactory factory)
             : base(
                   factory,
@@ -33,7 +30,6 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin
                   nameof(OrganisationsController.Details),
                   Parameters)
         {
-            smtp = SimpleSmtpServer.Start(9999);
         }
 
         [Fact]
@@ -96,7 +92,6 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin
             var confirmationMessage = AdminPages.AddUser.GetConfirmationMessage();
 
             confirmationMessage.Should().BeEquivalentTo($"{user.FirstName} {user.LastName} account added");
-            smtp.ReceivedEmailCount.Should().Be(1);
         }
 
         [Fact]
@@ -175,11 +170,6 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin
             var selectedRelationships = relationships.Where(o => o.OrganisationId == OrganisationId);
 
             selectedRelationships.Select(s => s.RelatedOrganisationId).Should().NotContain(relatedOrgId);
-        }
-
-        public void Dispose()
-        {
-            smtp.Dispose();
         }
 
         private async Task<int> AddRelatedOrganisation()

@@ -10,7 +10,6 @@ using Microsoft.EntityFrameworkCore;
 using Moq;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Users.Models;
-using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.Framework.Settings;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.CreateBuyer;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Email;
@@ -21,7 +20,6 @@ using NHSD.GPIT.BuyingCatalogue.Services.CreateBuyer;
 using NHSD.GPIT.BuyingCatalogue.Test.Framework.AutoFixtureCustomisations;
 using NHSD.GPIT.BuyingCatalogue.Test.Framework.Builders;
 using NHSD.GPIT.BuyingCatalogue.Test.Framework.Comparers;
-using NHSD.GPIT.BuyingCatalogue.Test.Framework.SharedMocks;
 using Xunit;
 
 namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.CreateBuyer
@@ -52,13 +50,25 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.CreateBuyer
         [Theory]
         [InMemoryDbAutoData]
         public static async Task Create_SuccessfulApplicationUserValidation_ReturnsSuccess(
-            [Frozen] BuyingCatalogueDbContext dbContext)
+            string expectedToken,
+            [Frozen] Mock<IAspNetUserValidator> aspNetUserValidator,
+            [Frozen] Mock<IPasswordResetCallback> mockPasswordResetCallback,
+            [Frozen] Mock<IPasswordService> mockPasswordService,
+            CreateBuyerService service)
         {
-            var context = CreateBuyerServiceTestContext.Setup(dbContext);
+            var expectedUser = CreateAspNetUser();
 
-            var sut = context.CreateBuyerService;
+            aspNetUserValidator.Setup(v => v.ValidateAsync(It.IsAny<AspNetUser>()))
+                .ReturnsAsync(Result.Success());
 
-            var actual = await sut.Create(1, "Test", "Smith", "0123456789", "a.b@c.com");
+            mockPasswordResetCallback.Setup(p => p.GetPasswordResetCallback(It.IsAny<PasswordResetToken>()))
+                .Returns(new Uri("http://www.test.com"));
+
+            mockPasswordService.Setup(
+                p => p.GeneratePasswordResetTokenAsync(It.Is<string>(e => e == expectedUser.Email)))
+                .ReturnsAsync(new PasswordResetToken(expectedToken, expectedUser));
+
+            var actual = await service.Create(1, "Test", "Smith", "0123456789", "a.b@c.com");
 
             actual.IsSuccess.Should().BeTrue();
             actual.Value.Should().Be(1);
@@ -67,62 +77,84 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.CreateBuyer
         [Theory]
         [InMemoryDbAutoData]
         public static async Task Create_ApplicationUserValidation_CalledOnce(
-            [Frozen] BuyingCatalogueDbContext dbContext)
+            string expectedToken,
+            [Frozen] Mock<IAspNetUserValidator> aspNetUserValidator,
+            [Frozen] Mock<IPasswordResetCallback> mockPasswordResetCallback,
+            [Frozen] Mock<IPasswordService> mockPasswordService,
+            CreateBuyerService service)
         {
-            var context = CreateBuyerServiceTestContext.Setup(dbContext);
-            var sut = context.CreateBuyerService;
+            var expectedUser = CreateAspNetUser();
 
-            const int primaryOrganisationId = 1;
+            aspNetUserValidator.Setup(v => v.ValidateAsync(It.IsAny<AspNetUser>()))
+                .ReturnsAsync(Result.Success());
 
-            await sut.Create(primaryOrganisationId, "Test", "Smith", "0123456789", "a.b@c.com");
+            mockPasswordResetCallback.Setup(p => p.GetPasswordResetCallback(It.IsAny<PasswordResetToken>()))
+                .Returns(new Uri("http://www.test.com"));
 
-            var expected = AspNetUserBuilder
-                .Create()
-                .WithFirstName("Test")
-                .WithLastName("Smith")
-                .WithPhoneNumber("0123456789")
-                .WithEmailAddress("a.b@c.com")
-                .WithPrimaryOrganisationId(primaryOrganisationId)
-                .Build();
+            mockPasswordService.Setup(
+                p => p.GeneratePasswordResetTokenAsync(It.Is<string>(e => e == expectedUser.Email)))
+                .ReturnsAsync(new PasswordResetToken(expectedToken, expectedUser));
 
-            context.AspNetUserValidatorMock.Verify(v => v.ValidateAsync(
-                It.Is<AspNetUser>(actual => AspNetUserEditableInformationComparer.Instance.Equals(expected, actual))));
+            await service.Create(
+                expectedUser.PrimaryOrganisationId,
+                expectedUser.FirstName,
+                expectedUser.LastName,
+                expectedUser.PhoneNumber,
+                expectedUser.Email);
+
+            aspNetUserValidator.Verify(v => v.ValidateAsync(
+                It.Is<AspNetUser>(actual => AspNetUserEditableInformationComparer.Instance.Equals(expectedUser, actual))));
         }
 
         [Theory]
         [InMemoryDbAutoData]
-        public static async Task Create_SuccessfulApplicationUserValidation_UserRepository_CalledOnce(
+        public static async Task Create_SuccessfulApplicationUserValidation_UserAddedToDbContext(
+            string expectedToken,
+            [Frozen] Mock<IAspNetUserValidator> aspNetUserValidator,
+            [Frozen] Mock<IPasswordResetCallback> mockPasswordResetCallback,
+            [Frozen] Mock<IPasswordService> mockPasswordService,
             [Frozen] BuyingCatalogueDbContext dbContext,
-            int primaryOrganisationId,
-            string firstName,
-            string lastName)
+            CreateBuyerService service)
         {
-            var context = CreateBuyerServiceTestContext.Setup(dbContext);
-            var sut = context.CreateBuyerService;
+            var expectedUser = CreateAspNetUser();
 
-            await sut.Create(primaryOrganisationId, firstName, lastName, "0123456789", "a.b@c.com");
+            aspNetUserValidator.Setup(v => v.ValidateAsync(It.IsAny<AspNetUser>()))
+                .ReturnsAsync(Result.Success());
 
-            var actual = await dbContext.AspNetUsers.SingleAsync(u => u.Email == "a.b@c.com");
+            mockPasswordResetCallback.Setup(p => p.GetPasswordResetCallback(It.IsAny<PasswordResetToken>()))
+                .Returns(new Uri("http://www.test.com"));
 
-            actual.PrimaryOrganisationId.Should().Be(primaryOrganisationId);
-            actual.FirstName.Should().Be(firstName);
-            actual.LastName.Should().Be(lastName);
-            actual.PhoneNumber.Should().Be("0123456789");
-            actual.Email.Should().Be("a.b@c.com");
+            mockPasswordService.Setup(
+                p => p.GeneratePasswordResetTokenAsync(It.Is<string>(e => e == expectedUser.Email)))
+                .ReturnsAsync(new PasswordResetToken(expectedToken, expectedUser));
+
+            await service.Create(
+                expectedUser.PrimaryOrganisationId,
+                expectedUser.FirstName,
+                expectedUser.LastName,
+                expectedUser.PhoneNumber,
+                expectedUser.Email);
+
+            var actual = await dbContext.AspNetUsers.SingleAsync(u => u.Email == expectedUser.Email);
+
+            actual.PrimaryOrganisationId.Should().Be(expectedUser.PrimaryOrganisationId);
+            actual.FirstName.Should().Be(expectedUser.FirstName);
+            actual.LastName.Should().Be(expectedUser.LastName);
+            actual.PhoneNumber.Should().Be(expectedUser.PhoneNumber);
+            actual.Email.Should().Be(expectedUser.Email);
             actual.OrganisationFunction.Should().Be("Buyer");
         }
 
         [Theory]
         [InMemoryDbAutoData]
         public static async Task Create_ApplicationUserValidationFails_ReturnFailureResult(
-            [Frozen] BuyingCatalogueDbContext dbContext)
+            [Frozen] Mock<IAspNetUserValidator> aspNetUserValidator,
+            CreateBuyerService service)
         {
-            var context = CreateBuyerServiceTestContext.Setup(dbContext);
-            context.AspNetUserValidatorResult = Result.Failure(new List<ErrorDetails>());
+            aspNetUserValidator.Setup(v => v.ValidateAsync(It.IsAny<AspNetUser>()))
+                .ReturnsAsync(Result.Failure(new List<ErrorDetails>()));
 
-            var sut = context.CreateBuyerService;
-
-            var actual = await sut.Create(1, "Test", "Smith", "0123456789", "a.b@c.com");
+            var actual = await service.Create(1, "Test", "Smith", "0123456789", "a.b@c.com");
 
             var expected = Result.Failure<int>(new List<ErrorDetails>());
             actual.Should().Be(expected);
@@ -131,205 +163,46 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.CreateBuyer
         [Theory]
         [InMemoryDbAutoData]
         public static async Task Create_NewApplicationUser_SendsEmail(
-            [Frozen] BuyingCatalogueDbContext dbContext)
+            string expectedToken,
+            [Frozen] RegistrationSettings settings,
+            [Frozen] Mock<IAspNetUserValidator> aspNetUserValidator,
+            [Frozen] Mock<IPasswordResetCallback> mockPasswordResetCallback,
+            [Frozen] Mock<IPasswordService> mockPasswordService,
+            [Frozen] Mock<IGovNotifyEmailService> mockEmailService,
+            CreateBuyerService service)
         {
-            const string expectedToken = "TokenMcToken";
-            const int primaryOrganisationId = 27;
+            var expectedUser = CreateAspNetUser();
 
-            var context = CreateBuyerServiceTestContext.Setup(dbContext);
+            aspNetUserValidator.Setup(v => v.ValidateAsync(It.IsAny<AspNetUser>()))
+                .ReturnsAsync(Result.Success());
 
-            var expectedUser = AspNetUserBuilder
+            mockPasswordResetCallback.Setup(p => p.GetPasswordResetCallback(It.IsAny<PasswordResetToken>()))
+                .Returns(new Uri("http://www.test.com"));
+
+            mockPasswordService.Setup(
+                p => p.GeneratePasswordResetTokenAsync(It.Is<string>(e => e == expectedUser.Email)))
+                .ReturnsAsync(new PasswordResetToken(expectedToken, expectedUser));
+
+            await service.Create(
+                expectedUser.PrimaryOrganisationId,
+                expectedUser.FirstName,
+                expectedUser.LastName,
+                expectedUser.PhoneNumber,
+                expectedUser.Email);
+
+            mockEmailService.Verify(e => e.SendEmailAsync(
+                expectedUser.Email,
+                settings.EmailTemplateId,
+                It.IsAny<Dictionary<string, dynamic>>()));
+        }
+
+        private static AspNetUser CreateAspNetUser() => AspNetUserBuilder
                 .Create()
                 .WithFirstName("Test")
                 .WithLastName("Smith")
                 .WithPhoneNumber("0123456789")
                 .WithEmailAddress("a.b@c.com")
-                .WithPrimaryOrganisationId(primaryOrganisationId)
+                .WithPrimaryOrganisationId(1)
                 .Build();
-
-            context.PasswordServiceMock.Setup(
-                p => p.GeneratePasswordResetTokenAsync(It.Is<string>(e => e == "a.b@c.com")))
-                .ReturnsAsync(new PasswordResetToken(expectedToken, expectedUser));
-
-            var sut = context.CreateBuyerService;
-            await sut.Create(primaryOrganisationId, "Test", "Smith", "0123456789", "a.b@c.com");
-
-            context.EmailServiceMock.Verify(s => s.SendEmailAsync(It.IsAny<EmailMessage>()));
-        }
-
-        [Theory]
-        [CommonAutoData]
-        public static Task SendInitialEmailAsync_NullUser_ThrowsException(
-            CreateBuyerService service)
-        {
-            return Assert.ThrowsAsync<ArgumentNullException>(() => service.SendInitialEmailAsync(null));
-        }
-
-        [Theory]
-        [InMemoryDbAutoData]
-        public static async Task SendInitialEmailAsync_SendsEmail(
-            [Frozen] BuyingCatalogueDbContext dbContext)
-        {
-            var inputMessage = new EmailMessageTemplate(new EmailAddressTemplate("from@sender.test"))
-            {
-                HtmlContent = "HTML",
-                PlainTextContent = "Text",
-            };
-
-            var settings = new RegistrationSettings { EmailMessage = inputMessage };
-            var mockEmailService = new Mock<IEmailService>();
-            var mockPasswordResetCallback = Mock.Of<IPasswordResetCallback>(
-                c => c.GetPasswordResetCallback(It.IsAny<PasswordResetToken>()) == new Uri("https://www.google.co.uk/"));
-
-            var user = AspNetUserBuilder
-                .Create()
-                .WithEmailAddress("ricardo@burton.com")
-                .Build();
-
-            var createBuyerService = new CreateBuyerService(
-                dbContext,
-                Mock.Of<IPasswordService>(),
-                mockPasswordResetCallback,
-                mockEmailService.Object,
-                settings,
-                Mock.Of<IAspNetUserValidator>());
-
-            await createBuyerService.SendInitialEmailAsync(new PasswordResetToken("Token", user));
-
-            mockEmailService.Verify(e => e.SendEmailAsync(It.IsNotNull<EmailMessage>()));
-        }
-
-        [Theory]
-        [InMemoryDbAutoData]
-        public static async Task SendInitialEmailAsync_UsesExpectedTemplate(
-            [Frozen] BuyingCatalogueDbContext dbContext)
-        {
-            // ReSharper disable once StringLiteralTypo
-            const string subject = "Gozleme";
-
-            var template = new EmailMessageTemplate(new EmailAddressTemplate("from@sender.test"))
-            {
-                Subject = subject,
-            };
-
-            var mockEmailService = new MockEmailService();
-
-            var createBuyerService = new CreateBuyerService(
-                dbContext,
-                Mock.Of<IPasswordService>(),
-                Mock.Of<IPasswordResetCallback>(),
-                mockEmailService,
-                new RegistrationSettings { EmailMessage = template },
-                Mock.Of<IAspNetUserValidator>());
-
-            await createBuyerService.SendInitialEmailAsync(
-                new PasswordResetToken("Token", AspNetUserBuilder.Create().Build()));
-
-            mockEmailService.SentMessage.Subject.Should().Be(subject);
-        }
-
-        [Theory]
-        [InMemoryDbAutoData]
-        public static async Task SendInitialEmailAsync_UsesExpectedRecipient(
-            [Frozen] BuyingCatalogueDbContext dbContext)
-        {
-            var template = new EmailMessageTemplate(new EmailAddressTemplate("from@sender.test"));
-            var mockEmailService = new MockEmailService();
-
-            var user = AspNetUserBuilder
-                .Create()
-                .WithFirstName("Uncle")
-                .WithLastName("Bob")
-                .WithEmailAddress("uncle@bob.com")
-                .Build();
-
-            var createBuyerService = new CreateBuyerService(
-                dbContext,
-                Mock.Of<IPasswordService>(),
-                Mock.Of<IPasswordResetCallback>(),
-                mockEmailService,
-                new RegistrationSettings { EmailMessage = template },
-                Mock.Of<IAspNetUserValidator>());
-
-            await createBuyerService.SendInitialEmailAsync(new PasswordResetToken("Token", user));
-
-            var recipients = mockEmailService.SentMessage.Recipients;
-            recipients.Should().HaveCount(1);
-
-            var recipient = recipients[0];
-            recipient.Address.Should().Be(user.Email);
-            recipient.DisplayName.Should().Be(user.GetDisplayName());
-        }
-
-        [Theory]
-        [InMemoryDbAutoData]
-        public static async Task SendInitialEmailAsync_UsesExpectedCallback(
-            [Frozen] BuyingCatalogueDbContext dbContext)
-        {
-            const string expectedCallback = "https://callback.nhs.uk/";
-
-            var callback = new Uri(expectedCallback);
-            var template = new EmailMessageTemplate(new EmailAddressTemplate("from@sender.test"));
-
-            var passwordResetCallback = Mock.Of<IPasswordResetCallback>(
-                c => c.GetPasswordResetCallback(It.IsNotNull<PasswordResetToken>()) == callback);
-
-            var mockEmailService = new MockEmailService();
-
-            var createBuyerService = new CreateBuyerService(
-                dbContext,
-                Mock.Of<IPasswordService>(),
-                passwordResetCallback,
-                mockEmailService,
-                new RegistrationSettings { EmailMessage = template },
-                Mock.Of<IAspNetUserValidator>());
-
-            await createBuyerService.SendInitialEmailAsync(
-                new PasswordResetToken("Token", AspNetUserBuilder.Create().Build()));
-
-            mockEmailService.SentMessage.TextBody!.FormatItems.Should().HaveCount(1);
-            mockEmailService.SentMessage.TextBody!.FormatItems[0].Should().Be(expectedCallback);
-        }
-
-        private sealed class CreateBuyerServiceTestContext
-        {
-            private CreateBuyerServiceTestContext(BuyingCatalogueDbContext dbContext)
-            {
-                AspNetUserValidatorMock = new Mock<IAspNetUserValidator>();
-                AspNetUserValidatorMock.Setup(v => v.ValidateAsync(It.IsAny<AspNetUser>()))
-                    .ReturnsAsync(() => AspNetUserValidatorResult);
-
-                PasswordServiceMock = new Mock<IPasswordService>();
-                PasswordServiceMock.Setup(s => s.GeneratePasswordResetTokenAsync(It.IsAny<string>()))
-                    .ReturnsAsync(new PasswordResetToken("123", AspNetUserBuilder.Create().Build()));
-
-                EmailServiceMock = new Mock<IEmailService>();
-
-                var template = new EmailMessageTemplate(new EmailAddressTemplate("from@sender.test"));
-
-                CreateBuyerService = new CreateBuyerService(
-                    dbContext,
-                    PasswordServiceMock.Object,
-                    Mock.Of<IPasswordResetCallback>(),
-                    EmailServiceMock.Object,
-                    new RegistrationSettings { EmailMessage = template },
-                    AspNetUserValidatorMock.Object);
-            }
-
-            internal Mock<IAspNetUserValidator> AspNetUserValidatorMock { get; }
-
-            internal Result AspNetUserValidatorResult { get; set; } = Result.Success();
-
-            internal CreateBuyerService CreateBuyerService { get; }
-
-            internal Mock<IPasswordService> PasswordServiceMock { get; }
-
-            internal Mock<IEmailService> EmailServiceMock { get; }
-
-            public static CreateBuyerServiceTestContext Setup(BuyingCatalogueDbContext dbContext)
-            {
-                return new CreateBuyerServiceTestContext(dbContext);
-            }
-        }
     }
 }

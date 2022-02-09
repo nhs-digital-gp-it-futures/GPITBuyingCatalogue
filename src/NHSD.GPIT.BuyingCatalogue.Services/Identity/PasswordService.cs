@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Identity;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Users.Models;
@@ -14,27 +15,27 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Identity
     /// </summary>
     public sealed class PasswordService : IPasswordService
     {
-        private readonly IEmailService emailService;
+        private readonly IGovNotifyEmailService govNotifyEmailService;
         private readonly IdentityOptions identityOptions = new();
         private readonly PasswordResetSettings settings;
         private readonly UserManager<AspNetUser> userManager;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="PasswordService"/> class using
-        /// the provided <paramref name="emailService"/> and <paramref name="settings"/>.
+        /// the provided <paramref name="govNotifyEmailService"/> and <paramref name="settings"/>.
         /// </summary>
-        /// <param name="emailService">The service to use to send e-mails.</param>
+        /// <param name="govNotifyEmailService">The service to use to send e-mails.</param>
         /// <param name="settings">The configured password reset settings.</param>
         /// <param name="userManager">The Identity framework user manager.</param>
-        /// <exception cref="ArgumentNullException"><paramref name="emailService"/> is <see langref="null"/>.</exception>
+        /// <exception cref="ArgumentNullException"><paramref name="govNotifyEmailService"/> is <see langref="null"/>.</exception>
         /// <exception cref="ArgumentNullException"><paramref name="settings"/> is <see langref="null"/>.</exception>
         /// <exception cref="ArgumentNullException"><paramref name="userManager"/> is <see langref="null"/>.</exception>
         public PasswordService(
-            IEmailService emailService,
+            IGovNotifyEmailService govNotifyEmailService,
             PasswordResetSettings settings,
             UserManager<AspNetUser> userManager)
         {
-            this.emailService = emailService ?? throw new ArgumentNullException(nameof(emailService));
+            this.govNotifyEmailService = govNotifyEmailService ?? throw new ArgumentNullException(nameof(govNotifyEmailService));
             this.settings = settings ?? throw new ArgumentNullException(nameof(settings));
             this.userManager = userManager ?? throw new ArgumentNullException(nameof(userManager));
         }
@@ -72,13 +73,18 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Identity
         {
             if (user is null)
                 throw new ArgumentNullException(nameof(user));
+            if (callback is null)
+                throw new ArgumentNullException(nameof(callback));
 
-            callback.ValidateNotNull(nameof(callback));
+            var personalisation = new Dictionary<string, dynamic>
+            {
+                ["password_reset_link"] = callback.ToString(),
+            };
 
-            await emailService.SendEmailAsync(
-                settings.EmailMessageTemplate,
-                new EmailAddress(user.Email, $"{user.FirstName} {user.LastName}"),
-                callback);
+            await govNotifyEmailService.SendEmailAsync(
+                user.Email,
+                settings.EmailTemplateId,
+                personalisation);
         }
 
         /// <summary>

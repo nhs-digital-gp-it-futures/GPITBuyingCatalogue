@@ -38,5 +38,6 @@ module "webapp" {
   create_slot = local.shortenv == "preprod" || local.shortenv == "production" ? 1 : 0 
   create_host_binding = local.coreEnv == "dev" ? 1 : 0 
   ssl_thumbprint = data.azurerm_key_vault_certificate.ssl_cert.thumbprint
+  notify_api_key = var.notify_api_key
   depends_on = [module.sql_server_pri]
 }
