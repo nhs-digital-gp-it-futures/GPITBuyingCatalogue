@@ -25,17 +25,6 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.UIComponentTests.Actions
 
         internal IEnumerable<IWebElement> GetElements(By by) => Driver.FindElements(by);
 
-        internal void ClickCheckboxByLabel(string labelText)
-        {
-            var targetId =
-                 Driver
-                .FindElements(By.ClassName("nhsuk-checkboxes__label"))
-                .FirstOrDefault(label => label.Text == labelText)
-                .GetAttribute("for");
-
-            Driver.FindElement(By.Id(targetId)).Click();
-        }
-
         internal string GetSelectDropDownValue(By by)
         {
             var selectElement = new SelectElement(Driver.FindElement(by));
@@ -46,6 +35,17 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.UIComponentTests.Actions
         {
             var selectElement = new SelectElement(Driver.FindElement(targetField));
             selectElement.SelectByText(text);
+        }
+
+        internal void ClickCheckboxByLabel(string labelText)
+        {
+            var targetId =
+            Driver
+            .FindElements(By.ClassName("nhsuk-checkboxes__label"))
+            .FirstOrDefault(label => label.Text == labelText)!
+            .GetAttribute("for");
+
+            Driver.FindElement(By.Id(targetId)).Click();
         }
     }
 }

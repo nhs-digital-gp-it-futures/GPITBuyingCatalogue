@@ -10,8 +10,8 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.UrlGenerators
         public static string GenerateUrlFromMethod(
             Type controllerType,
             string methodName,
-            IDictionary<string, string> parameters = null,
-            IDictionary<string, string> queryParameters = null)
+            IDictionary<string, string>? parameters = null,
+            IDictionary<string, string>? queryParameters = null)
         {
             if (controllerType.BaseType != typeof(Controller))
                 throw new InvalidOperationException($"{nameof(controllerType)} is not a type of {nameof(Controller)}");
