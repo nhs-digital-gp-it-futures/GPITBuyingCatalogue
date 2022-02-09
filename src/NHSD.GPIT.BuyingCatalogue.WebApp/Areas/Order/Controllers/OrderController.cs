@@ -210,7 +210,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
                         typeof(OrderSummaryController).ControllerName(),
                         new { odsCode, callOffId });
 
-            url = RuntimeInformation.IsOSPlatform(OSPlatform.Windows) ? $"{Request.Scheme}://{Request.Host}{url}" : $"http://localhost{url}";
+            url = RuntimeInformation.IsOSPlatform(OSPlatform.Windows) ? $"{Request.Scheme}://{Request.Host}{url}" : $"{Request.Scheme}://localhost{url}";
 
             var result = pdfService.Convert(new Uri(url));
 
