@@ -86,6 +86,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp
 
             services.ConfigureDomainName();
 
+            services.ConfigurePdf();
+
             services.ConfigureDisabledErrorMessage(Configuration);
 
             services.ConfigureAuthorization();

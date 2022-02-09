@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
+using NHSD.GPIT.BuyingCatalogue.Framework.Settings;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Models.TaskList;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Orders;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Organisations;
@@ -28,17 +29,20 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
         private readonly ITaskListService taskListService;
         private readonly IOrganisationsService organisationsService;
         private readonly IPdfService pdfService;
+        private readonly PdfSettings pdfSettings;
 
         public OrderController(
             IOrderService orderService,
             ITaskListService taskListService,
             IOrganisationsService organisationsService,
-            IPdfService pdfService)
+            IPdfService pdfService,
+            PdfSettings pdfSettings)
         {
             this.orderService = orderService ?? throw new ArgumentNullException(nameof(orderService));
             this.taskListService = taskListService ?? throw new ArgumentNullException(nameof(taskListService));
             this.organisationsService = organisationsService ?? throw new ArgumentNullException(nameof(organisationsService));
             this.pdfService = pdfService ?? throw new ArgumentNullException(nameof(pdfService));
+            this.pdfSettings = pdfSettings ?? throw new ArgumentNullException(nameof(pdfSettings));
         }
 
         [HttpGet]
@@ -210,7 +214,14 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
                         typeof(OrderSummaryController).ControllerName(),
                         new { odsCode, callOffId });
 
-            url = RuntimeInformation.IsOSPlatform(OSPlatform.Windows) ? $"{Request.Scheme}://{Request.Host}{url}" : $"{Request.Scheme}://localhost{url}";
+            if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+            {
+                url = $"{Request.Scheme}://{Request.Host}{url}";
+            }
+            else
+            {
+                url = pdfSettings.UseSslForPdf ? $"https://localhost{url}" : $"http://localhost{url}";
+            }
 
             var result = pdfService.Convert(new Uri(url));
 
