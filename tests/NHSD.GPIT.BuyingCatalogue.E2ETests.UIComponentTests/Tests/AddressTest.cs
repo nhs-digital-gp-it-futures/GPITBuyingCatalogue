@@ -19,7 +19,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.UIComponentTests.Tests
         }
 
         [Fact]
-        public void Tag_GetAddressHeader()
+        public void Address_GetHeader()
         {
             CommonActions.GetElementText(CommonObject.Header1).
                Contains("Address")
