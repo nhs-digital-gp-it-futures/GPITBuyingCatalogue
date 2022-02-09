@@ -64,8 +64,8 @@
                                     </p>
                                 </nhs-table-cell>
                                 <nhs-table-cell>
-                                    <a asp-action="EditIm1Integration"
-                                       asp-controller="Interoperability"
+                                    <a asp-action="@nameof(InteroperabilityController.EditIm1Integration)"
+                                       asp-controller="@typeof(InteroperabilityController).ControllerName()"
                                        asp-route-solutionId="@Model.CatalogueItemId"
                                        asp-route-integrationId="@integration.Id">
                                         Edit
@@ -113,8 +113,8 @@
                                     </p>
                                 </nhs-table-cell>
                                 <nhs-table-cell>
-                                    <a asp-action="EditGpConnectIntegration"
-                                       asp-controller="Interoperability"
+                                    <a asp-action="@nameof(InteroperabilityController.EditGpConnectIntegration)"
+                                       asp-controller="@typeof(InteroperabilityController).ControllerName()"
                                        asp-route-solutionId="@Model.CatalogueItemId"
                                        asp-route-integrationId="@integration.Id">
                                         Edit

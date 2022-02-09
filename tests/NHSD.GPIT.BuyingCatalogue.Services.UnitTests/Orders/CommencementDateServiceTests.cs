@@ -32,15 +32,20 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Orders
             [Frozen] BuyingCatalogueDbContext context,
             Order order,
             DateTime commencementDate,
+            int? initialPeriod,
+            int? maximumTerm,
             CommencementDateService service)
         {
             context.Orders.Add(order);
-            await context.SaveChangesAsync();
 
-            await service.SetCommencementDate(order.CallOffId, order.OrderingParty.OdsCode, commencementDate);
+            await context.SaveChangesAsync();
+            await service.SetCommencementDate(order.CallOffId, order.OrderingParty.OdsCode, commencementDate, initialPeriod, maximumTerm);
 
             var updatedOrder = await context.Orders.SingleAsync();
+
             updatedOrder.CommencementDate.Should().Be(commencementDate);
+            updatedOrder.InitialPeriod.Should().Be(initialPeriod);
+            updatedOrder.MaximumTerm.Should().Be(maximumTerm);
         }
     }
 }

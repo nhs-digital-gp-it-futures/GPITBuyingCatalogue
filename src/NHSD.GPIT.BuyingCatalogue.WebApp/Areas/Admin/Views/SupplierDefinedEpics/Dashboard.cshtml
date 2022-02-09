@@ -43,7 +43,7 @@
             </nhs-table-cell>
             <nhs-table-cell>
                 <a
-                    asp-area="Admin"
+                    asp-area="@typeof(SupplierDefinedEpicsController).AreaName()"
                     asp-controller="@(typeof(SupplierDefinedEpicsController).ControllerName())"
                     asp-action="@nameof(SupplierDefinedEpicsController.EditEpic)"
                     asp-route-epicId="@supplierDefinedEpic.Id">Edit</a>

@@ -25,6 +25,8 @@ using NHSD.GPIT.BuyingCatalogue.Services.Email;
 using NHSD.GPIT.BuyingCatalogue.Services.Identity;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Validators;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Validation;
+using Notify.Client;
+using Notify.Interfaces;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp
 {
@@ -220,6 +222,22 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp
             services.AddScoped<IPasswordResetCallback, PasswordResetCallback>();
         }
 
+        public static IServiceCollection ConfigureGovNotify(this IServiceCollection services, IConfiguration configuration)
+        {
+            var notifyApiKey = Environment.GetEnvironmentVariable("NOTIFY_API_KEY");
+            if (!string.IsNullOrWhiteSpace(notifyApiKey))
+            {
+                services.AddScoped<IAsyncNotificationClient, NotificationClient>(sp => new NotificationClient(notifyApiKey));
+                services.AddScoped<IGovNotifyEmailService, GovNotifyEmailService>();
+            }
+            else
+            {
+                services.AddScoped<IGovNotifyEmailService, FakeGovNotifyEmailService>();
+            }
+
+            return services;
+        }
+
         public static IServiceCollection ConfigureAnalyticsSettings(this IServiceCollection services, IConfiguration configuration)
         {
             var analyticsSettings = configuration.GetSection(AnalyticsSettings.Key).Get<AnalyticsSettings>();
@@ -232,6 +250,14 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp
         {
             var orderMessageSettings = configuration.GetSection("orderMessage").Get<OrderMessageSettings>();
             services.AddSingleton(orderMessageSettings);
+
+            return services;
+        }
+
+        public static IServiceCollection ConfigureRequestAccountMessageSettings(this IServiceCollection services, IConfiguration configuration)
+        {
+            var settings = configuration.GetSection("requestAccountMessage").Get<RequestAccountMessageSettings>();
+            services.AddSingleton(settings);
 
             return services;
         }

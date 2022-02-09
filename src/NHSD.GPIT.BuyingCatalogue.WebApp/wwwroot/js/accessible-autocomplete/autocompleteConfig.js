@@ -12,6 +12,7 @@ class autocompleteConfig {
     Implement() {
         this.defaultInput.parentNode.removeChild(this.defaultInput);
         this.formInputLabel.removeAttribute("for");
+        this.form.firstElementChild.removeAttribute("style");
         accessibleAutocomplete({
             element: document.getElementById(this.modelId.concat("-container")),
             id: this.modelId,
@@ -46,9 +47,7 @@ class autocompleteConfig {
             const truncateLength = 100;
             const dots = result.title.length > truncateLength ? '...' : '';
             const resultTruncated = result.title.substring(0, truncateLength) + dots;
-            return `<span class="autocomplete__option-title">${resultTruncated}</span>
-						${result.category ? `<span class="autocomplete__option-category">${result.category}</span>` : ''}
-					  `;
+            return `<span class="autocomplete__option-title">${resultTruncated}</span>${result.category ? `<span class="autocomplete__option-category">${result.category}</span>` : ''}`;
         }
         return '';
     }
@@ -61,8 +60,8 @@ class autocompleteConfig {
         window.location.href = result.url;
     }
     addFormEvents() {
-        this.form.addEventListener('keyup', ({ key }) => {
-            if (key === 'Enter' && document.activeElement.id === this.modelId)
+        this.form.addEventListener('keyup', function (keyboardEvent) {
+            if (keyboardEvent.key === 'Enter' && document.activeElement.id === this.modelId)
                 this.form.submit();
         });
     }

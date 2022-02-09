@@ -18,7 +18,7 @@
                 <p class="nhsuk-u-margin-bottom-2">You are currently acting on behalf of:</p>
                 <p data-test-id="dashboard-page-proxy-on-behalf" class="nhsuk-u-margin-bottom-6">
                     @Model.OrganisationName <a asp-action="@nameof(DashboardController.SelectOrganisation)"
-                                               asp-controller="Dashboard"
+                                               asp-controller="@typeof(DashboardController).ControllerName()"
                                                asp-route-odsCode="@Model.OdsCode"
                                                class="nhsuk-u-margin-left-4">Change organisation</a>
                 </p>

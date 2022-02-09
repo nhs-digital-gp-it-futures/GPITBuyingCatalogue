@@ -5,6 +5,7 @@ using System.Linq;
 using System.Reflection;
 using System.Text.RegularExpressions;
 using Microsoft.Extensions.DependencyInjection;
+using Scrutor;
 
 namespace NHSD.GPIT.BuyingCatalogue.Services
 {
@@ -21,7 +22,9 @@ namespace NHSD.GPIT.BuyingCatalogue.Services
         private static void ConfigureInterfaceClasses(IServiceCollection services)
         {
             services.Scan(ts => ts.FromAssemblies(AssembliesToScan())
-                .AddClasses().AsMatchingInterface()
+                .AddClasses()
+                .UsingRegistrationStrategy(RegistrationStrategy.Skip)
+                .AsMatchingInterface()
                 .WithTransientLifetime());
         }
 

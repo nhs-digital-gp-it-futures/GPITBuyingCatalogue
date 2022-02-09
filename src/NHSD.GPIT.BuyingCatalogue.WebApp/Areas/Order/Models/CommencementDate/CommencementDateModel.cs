@@ -2,6 +2,7 @@
 using System.ComponentModel.DataAnnotations;
 using System.Globalization;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
+using NHSD.GPIT.BuyingCatalogue.WebApp.Extensions;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.CommencementDate
 {
@@ -11,10 +12,11 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.CommencementDate
         {
         }
 
-        public CommencementDateModel(string odsCode, CallOffId callOffId, DateTime? commencementDate)
+        public CommencementDateModel(string odsCode, CallOffId callOffId, DateTime? commencementDate, int? initialPeriod, int? maximumTerm)
         {
-            Title = $"Commencement date for {callOffId}";
+            Title = "Timescales for Call-off Agreement";
             OdsCode = odsCode;
+            CallOffId = callOffId;
 
             if (commencementDate.HasValue)
             {
@@ -22,7 +24,12 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.CommencementDate
                 Month = commencementDate.Value.Month.ToString("00");
                 Year = commencementDate.Value.Year.ToString("0000");
             }
+
+            InitialPeriod = $"{initialPeriod}";
+            MaximumTerm = $"{maximumTerm}";
         }
+
+        public CallOffId CallOffId { get; set; }
 
         [StringLength(2)]
         public string Day { get; set; }
@@ -32,6 +39,14 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.CommencementDate
 
         [StringLength(4)]
         public string Year { get; set; }
+
+        public string InitialPeriod { get; set; }
+
+        public int? InitialPeriodValue => InitialPeriod.AsNullableInt();
+
+        public string MaximumTerm { get; set; }
+
+        public int? MaximumTermValue => MaximumTerm.AsNullableInt();
 
         public DateTime? CommencementDate
         {
