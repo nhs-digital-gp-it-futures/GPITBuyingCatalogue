@@ -216,7 +216,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
             }
             else
             {
-                url = $"https://localhost{url}";
+                url = $"http://localhost{url}";
             }
 
             var result = pdfService.Convert(new Uri(url));
