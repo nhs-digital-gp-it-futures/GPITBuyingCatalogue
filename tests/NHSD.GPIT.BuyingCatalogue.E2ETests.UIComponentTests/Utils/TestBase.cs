@@ -14,7 +14,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.UIComponentTests.Utils
         public TestBase(LocalWebApplicationFactory factory,
                 Type controller,
                 string methodName,
-                IDictionary<string, string> parameters
+                IDictionary<string, string>? parameters = null
             )
         {
             Factory = factory;
@@ -26,7 +26,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.UIComponentTests.Utils
 
             Wait = new WebDriverWait(Driver, TimeSpan.FromSeconds(10));
 
-            uri = new Uri(factory.RootUri);
+            uri = new Uri(factory.RootUri!);
 
             NavigateToUrl(UrlGenerator.GenerateUrlFromMethod(
                 controller,
