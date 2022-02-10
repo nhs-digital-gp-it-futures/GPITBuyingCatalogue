@@ -131,23 +131,16 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
               .AsNoTracking()
               .ToListAsync();
 
-            var callOffIdMatches = baseData
-                .Where(o => o.CallOffId.ToString().Contains(searchTerm, StringComparison.OrdinalIgnoreCase))
-                .Select(o => new SearchFilterModel
-                {
-                    Title = o.CallOffId.ToString(),
-                    Category = "Call-off ID",
-                });
-
-            var descriptionMatches = baseData
-                .Where(o => o.Description.Contains(searchTerm, StringComparison.OrdinalIgnoreCase))
+            var matches = baseData
+                .Where(o => o.CallOffId.ToString().Contains(searchTerm, StringComparison.OrdinalIgnoreCase)
+                         || o.Description.Contains(searchTerm, StringComparison.OrdinalIgnoreCase))
                 .Select(o => new SearchFilterModel
                 {
                     Title = o.Description,
-                    Category = "Description",
+                    Category = o.CallOffId.ToString(),
                 });
 
-            return callOffIdMatches.Union(descriptionMatches).ToList();
+            return matches.ToList();
         }
 
         public Task<Order> GetOrderSummary(CallOffId callOffId, string odsCode)
