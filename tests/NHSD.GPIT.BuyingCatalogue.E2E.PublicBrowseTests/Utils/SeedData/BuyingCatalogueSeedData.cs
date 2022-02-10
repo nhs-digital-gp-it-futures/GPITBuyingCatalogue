@@ -628,6 +628,9 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
                 new Epic { Id = "S00002", Name = "SupplierDefinedEpic New Format 2", Description = "SDE Description", CapabilityId = capabilities.Single(s => s.CapabilityRef == "C43").Id, CompliancyLevel = CompliancyLevel.May, IsActive = true, SupplierDefined = true },
                 new Epic { Id = "S00003", Name = "SupplierDefinedEpic New Format 3", Description = "SDE Description", CapabilityId = capabilities.Single(s => s.CapabilityRef == "C43").Id, CompliancyLevel = CompliancyLevel.May, IsActive = false, SupplierDefined = true },
                 new Epic { Id = "S00004", Name = "SupplierDefinedEpic New Format 4", Description = "SDE Description", CapabilityId = capabilities.Single(s => s.CapabilityRef == "C2").Id, CompliancyLevel = CompliancyLevel.May, IsActive = false, SupplierDefined = true },
+                new Epic { Id = "S00005", Name = "SupplierDefinedEpic New Format 5", Description = "SDE Description", CapabilityId = capabilities.Single(s => s.CapabilityRef == "C44").Id, CompliancyLevel = CompliancyLevel.May, IsActive = true, SupplierDefined = true },
+                new Epic { Id = "S00006", Name = "SupplierDefinedEpic New Format 6", Description = "SDE Description", CapabilityId = capabilities.Single(s => s.CapabilityRef == "C43").Id, CompliancyLevel = CompliancyLevel.May, IsActive = true, SupplierDefined = true },
+                new Epic { Id = "S00007", Name = "SupplierDefinedEpic New Format 7", Description = "SDE Description", CapabilityId = capabilities.Single(s => s.CapabilityRef == "C43").Id, CompliancyLevel = CompliancyLevel.May, IsActive = false, SupplierDefined = true },
             };
             context.AddRange(epics);
 

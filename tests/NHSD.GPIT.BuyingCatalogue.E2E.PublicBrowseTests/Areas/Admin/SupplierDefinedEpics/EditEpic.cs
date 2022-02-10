@@ -2,6 +2,7 @@
 using System.Linq;
 using FluentAssertions;
 using Microsoft.EntityFrameworkCore;
+using NHSD.GPIT.BuyingCatalogue.E2ETests.Objects.Admin;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Objects.Admin.SupplierDefinedEpics;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Utils;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.TestBases;
@@ -288,6 +289,76 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.SupplierDefinedEpics
                 typeof(AdditionalServicesController),
                 nameof(AdditionalServicesController.EditCapabilities))
                 .Should().BeTrue();
+        }
+
+        [Fact]
+        public void EditEpic_Inactive_DeleteLinkVisible()
+        {
+            using var context = GetEndToEndDbContext();
+            var parameters = new Dictionary<string, string>
+            {
+                { nameof(EpicId), "S00003" },
+            };
+
+            NavigateToUrl(
+                typeof(SupplierDefinedEpicsController),
+                nameof(SupplierDefinedEpicsController.EditEpic),
+                parameters);
+
+            CommonActions.ElementIsDisplayed(EditSupplierDefinedEpicObjects.DeleteLink)
+                .Should()
+                .BeTrue();
+        }
+
+        [Fact]
+        public void EditEpic_Active_DeleteLinkNotVisible()
+        {
+            CommonActions
+                .ElementIsDisplayed(EditSupplierDefinedEpicObjects.DeleteLink)
+                .Should()
+                .BeFalse();
+        }
+
+        [Fact]
+        public void EditEpic_ActiveWithReferences_DeleteLinkNotVisible()
+        {
+            var parameters = new Dictionary<string, string>
+            {
+                { nameof(EpicId), "S00002" },
+            };
+
+            NavigateToUrl(
+                typeof(SupplierDefinedEpicsController),
+                nameof(SupplierDefinedEpicsController.EditEpic),
+                parameters);
+
+            CommonActions
+                .ElementIsDisplayed(EditSupplierDefinedEpicObjects.DeleteLink)
+                .Should()
+                .BeFalse();
+        }
+
+        [Fact]
+        public void EditEpic_DeleteLink_Navigates()
+        {
+            using var context = GetEndToEndDbContext();
+            var parameters = new Dictionary<string, string>
+            {
+                { nameof(EpicId), "S00003" },
+            };
+
+            NavigateToUrl(
+                typeof(SupplierDefinedEpicsController),
+                nameof(SupplierDefinedEpicsController.EditEpic),
+                parameters);
+
+            CommonActions.ClickLinkElement(EditSupplierDefinedEpicObjects.DeleteLink);
+
+            CommonActions.PageLoadedCorrectGetIndex(
+                typeof(SupplierDefinedEpicsController),
+                nameof(SupplierDefinedEpicsController.DeleteEpic))
+                .Should()
+                .BeTrue();
         }
     }
 }
