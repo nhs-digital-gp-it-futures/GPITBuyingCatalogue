@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using AutoFixture;
@@ -18,6 +19,10 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Organisations
 {
     public static class OrganisationsServiceTests
     {
+        private const string OdsCode = "OdsCode";
+        private const string OrganisationName = "OrganisationName";
+        private const string Junk = "Junk";
+
         [Fact]
         public static void Constructors_VerifyGuardClauses()
         {
@@ -76,6 +81,44 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Organisations
             newOrganisation.Name.Should().Be(odsOrganisation.OrganisationName);
             newOrganisation.OdsCode.Should().Be(odsOrganisation.OdsCode);
             newOrganisation.PrimaryRoleId.Should().Be(odsOrganisation.PrimaryRoleId);
+        }
+
+        [Theory]
+        [InMemoryDbAutoData]
+        public static async Task GetOrganisationsBySearchTerm_CorrectResultsReturned(
+            [Frozen] BuyingCatalogueDbContext context,
+            string searchTerm,
+            OrganisationsService service)
+        {
+            var organisations = GetOrganisationsForSearchTerm(searchTerm);
+            var noMatch = organisations.Single(x => x.Name == OrganisationName && x.OdsCode == OdsCode);
+
+            foreach (var organisation in organisations)
+            {
+                context.Organisations.Add(organisation);
+            }
+
+            await context.SaveChangesAsync();
+
+            var results = await service.GetOrganisationsBySearchTerm(searchTerm);
+
+            results.Should().BeEquivalentTo(organisations.Except(new[] { noMatch }));
+        }
+
+        private static List<Organisation> GetOrganisationsForSearchTerm(string searchTerm)
+        {
+            return new List<Organisation>
+            {
+                new() { Name = OrganisationName, OdsCode = OdsCode },
+                new() { Name = $"{searchTerm}", OdsCode = OdsCode },
+                new() { Name = $"{searchTerm}{Junk}", OdsCode = OdsCode },
+                new() { Name = $"{Junk}{searchTerm}", OdsCode = OdsCode },
+                new() { Name = $"{Junk}{searchTerm}{Junk}", OdsCode = OdsCode },
+                new() { Name = OrganisationName, OdsCode = $"{searchTerm}" },
+                new() { Name = OrganisationName, OdsCode = $"{searchTerm}{Junk}" },
+                new() { Name = OrganisationName, OdsCode = $"{Junk}{searchTerm}" },
+                new() { Name = OrganisationName, OdsCode = $"{Junk}{searchTerm}{Junk}" },
+            };
         }
     }
 }
