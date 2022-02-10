@@ -38,12 +38,12 @@
             @if((Model.Orders.Count == 0 && Context.Request.Query["search"].Count > 0) || Model.Orders.Count > 0)
             {
                 <vc:nhs-autocomplete id="orders-dashboard-autocomplete"
-				        ajax-url="@Url.Action(
-				        nameof(DashboardController.FilterSearchSuggestions),
-				        typeof(DashboardController).ControllerName(),
+                    ajax-url="@Url.Action(
+                        nameof(DashboardController.FilterSearchSuggestions),
+                        typeof(DashboardController).ControllerName(),
                         new { odsCode = Model.OdsCode })"
-				        title-text="Search for order by order description or Call-off ID"
-				        query-parameter-name="search"/>
+                    title-text="Search for order by order description or Call-off ID"
+                    query-parameter-name="search"/>
             }
             @if (Model.Orders is not null && Model.Orders.Count > 0)
             {
@@ -77,13 +77,13 @@
                     <nhs-page-number-pagination current-page-number="@Model.Options.PageNumber"
                                                 total-number-of-pages="@Model.Options.NumberOfPages" />
 
-		        </div>
-		    }
-		    else
-		    {
-			    @if(Context.Request.Query["search"].Count > 0)
+                </div>
+            }
+            else
+            {
+                @if(Context.Request.Query["search"].Count > 0)
                 {
-				    <h2 id="no-results-search">No results were found for "@Context.Request.Query["search"].FirstOrDefault()"</h2>
+                    <h2 id="no-results-search">No results were found for "@Context.Request.Query["search"].FirstOrDefault()"</h2>
                     <p>Try a different search term.</p>
                 } else
                 {
