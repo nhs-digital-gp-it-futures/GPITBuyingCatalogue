@@ -33,6 +33,7 @@ class autocompleteConfig {
     source(query, populateResults) {
         const trimmedQuery = query.trim();
         if (trimmedQuery.length < 2) {
+            populateResults([]);
             return;
         }
 
