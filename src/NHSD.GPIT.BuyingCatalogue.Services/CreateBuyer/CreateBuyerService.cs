@@ -38,7 +38,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.CreateBuyer
             if (string.IsNullOrWhiteSpace(emailAddress))
                 throw new ArgumentException($"{nameof(emailAddress)} must be provided.", nameof(emailAddress));
 
-            //If the account is being created for the NHS Digital organisation by an Authority user
+            // If the account is being created for the NHS Digital organisation by an Authority user
             // then they are creating another authority user
             var organisationFunction =
                 primaryOrganisationId == 1 && isAdmin
