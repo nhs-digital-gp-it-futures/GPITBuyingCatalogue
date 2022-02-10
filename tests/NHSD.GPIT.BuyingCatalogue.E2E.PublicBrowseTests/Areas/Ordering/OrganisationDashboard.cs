@@ -208,6 +208,23 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering
         }
 
         [Fact]
+        public void OrderingDashboard_SearchInvalid_ClickLink_NavigatesCorrectly()
+        {
+            TextGenerators.TextInputAddText(Objects.Ordering.OrganisationDashboard.SearchBar, 5);
+            CommonActions.WaitUntilElementIsDisplayed(Objects.Ordering.OrganisationDashboard.SearchListBox);
+
+            CommonActions.ClickLinkElement(Objects.Ordering.OrganisationDashboard.SearchButton);
+            CommonActions.WaitUntilElementIsDisplayed(Objects.Ordering.OrganisationDashboard.NoResultsElement);
+
+            CommonActions.ClickLinkElement(ByExtensions.DataTestId("clear-results-link"));
+
+            CommonActions.PageLoadedCorrectGetIndex(
+                typeof(DashboardController),
+                nameof(DashboardController.Organisation))
+                .Should().BeTrue();
+        }
+
+        [Fact]
         public async Task OrderDashboard_Search_FiltersTable()
         {
             using var context = GetEndToEndDbContext();

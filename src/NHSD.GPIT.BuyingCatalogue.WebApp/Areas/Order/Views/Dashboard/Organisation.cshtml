@@ -84,7 +84,14 @@
                 @if(Context.Request.Query["search"].Count > 0)
                 {
                     <h2 id="no-results-search">No results were found for "@Context.Request.Query["search"].FirstOrDefault()"</h2>
-                    <p>Try a different search term.</p>
+                    <p style="white-space:nowrap;">
+                        Try entering a different search term, or <a
+                        data-test-id="clear-results-link"
+                        asp-action="@nameof(DashboardController.Organisation)"
+                        asp-controller="@typeof(DashboardController).ControllerName()"
+                        asp-route-odsCode="@Model.OdsCode"
+                        >select an order from the complete list</a>.
+                        </p>
                 } else
                 {
                     <p id="no-orders">There are currently no orders for this organisation.</p>
