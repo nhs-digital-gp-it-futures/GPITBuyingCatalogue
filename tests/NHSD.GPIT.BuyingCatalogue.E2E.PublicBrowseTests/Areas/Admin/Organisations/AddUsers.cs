@@ -6,6 +6,7 @@ using NHSD.GPIT.BuyingCatalogue.E2ETests.Utils;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.RandomData;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.TestBases;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Users.Models;
+using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers;
 using Xunit;
 
@@ -34,6 +35,19 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.Organisations
                   nameof(OrganisationsController.AddUser),
                   Parameters)
         {
+        }
+
+        [Fact]
+        public void AddUser_AllSectionsDisplayed()
+        {
+            CommonActions.SaveButtonDisplayed().Should().BeTrue();
+            CommonActions.GoBackLinkDisplayed().Should().BeTrue();
+            CommonActions.PageTitle().Should().BeEquivalentTo("Add a new user".FormatForComparison());
+
+            CommonActions.ElementIsDisplayed(AddUserObjects.FirstName).Should().BeTrue();
+            CommonActions.ElementIsDisplayed(AddUserObjects.LastName).Should().BeTrue();
+            CommonActions.ElementIsDisplayed(AddUserObjects.TelephoneNumber).Should().BeTrue();
+            CommonActions.ElementIsDisplayed(AddUserObjects.Email).Should().BeTrue();
         }
 
         [Fact]
