@@ -1,17 +1,15 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using System.Security.Claims;
-using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Organisations.Models;
 using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
+using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Models;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.Dashboard
 {
     public sealed class OrganisationModel : OrderingBaseModel
     {
-        private readonly IList<EntityFramework.Ordering.Models.Order> allOrders;
-
-        public OrganisationModel(Organisation organisation, ClaimsPrincipal user, IList<EntityFramework.Ordering.Models.Order> allOrders)
+        public OrganisationModel(Organisation organisation, ClaimsPrincipal user, IList<EntityFramework.Ordering.Models.Order> orders)
         {
             organisation.ValidateNotNull(nameof(organisation));
 
@@ -21,21 +19,15 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.Dashboard
             OrganisationName = organisation.Name;
             OdsCode = organisation.OdsCode;
             CanActOnBehalf = user.GetSecondaryOdsCodes().Any();
-            this.allOrders = allOrders;
+            Orders = orders ?? new List<EntityFramework.Ordering.Models.Order>();
         }
 
         public string OrganisationName { get; set; }
 
         public bool CanActOnBehalf { get; set; }
 
-        public IList<EntityFramework.Ordering.Models.Order> InCompleteOrders
-        {
-            get { return allOrders.Where(o => !o.IsDeleted && o.OrderStatus == OrderStatus.Incomplete).ToList(); }
-        }
+        public IList<EntityFramework.Ordering.Models.Order> Orders { get; set; }
 
-        public IList<EntityFramework.Ordering.Models.Order> CompleteOrders
-        {
-            get { return allOrders.Where(o => !o.IsDeleted && o.OrderStatus == OrderStatus.Complete).ToList(); }
-        }
+        public PageOptions Options { get; set; }
     }
 }

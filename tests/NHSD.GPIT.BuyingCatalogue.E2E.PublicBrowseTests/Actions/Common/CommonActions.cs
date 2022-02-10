@@ -175,6 +175,9 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Actions.Common
         internal int GetNumberOfCheckBoxesDisplayed() =>
             Driver.FindElements(By.ClassName("nhsuk-checkboxes__input")).Count;
 
+        internal int GetNumberOfTableRowsDisplayed() =>
+            Driver.FindElements(By.ClassName("nhsuk-table__row")).Count;
+
         // Get Element Values
         internal string PageTitle() =>
             Driver.FindElement(CommonSelectors.Header1).Text.FormatForComparison();

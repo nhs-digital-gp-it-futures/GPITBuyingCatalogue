@@ -1,13 +1,16 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
+using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Models;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Orders;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Organisations;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.Dashboard;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.Shared;
+using NHSD.GPIT.BuyingCatalogue.WebApp.Models.Autocomplete;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
 {
@@ -41,13 +44,24 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
         }
 
         [HttpGet("organisation/{odsCode}")]
-        public async Task<IActionResult> Organisation(string odsCode)
+        public async Task<IActionResult> Organisation(
+            string odsCode,
+            [FromQuery] string page = "",
+            [FromQuery] string search = "")
         {
+            const int PageSize = 10;
+            var options = new PageOptions(page, PageSize);
+
             var organisation = await organisationsService.GetOrganisationByOdsCode(odsCode);
 
-            var allOrders = await orderService.GetOrders(organisation.Id);
+            var orders = await orderService.GetPagedOrders(organisation.Id, options, search);
 
-            return View(new OrganisationModel(organisation, User, allOrders));
+            var model = new OrganisationModel(organisation, User, orders.Items)
+            {
+                Options = orders.Options,
+            };
+
+            return View(model);
         }
 
         [HttpGet("organisation/{odsCode}/select")]
@@ -78,6 +92,25 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
                 nameof(Organisation),
                 typeof(DashboardController).ControllerName(),
                 new { odsCode = model.SelectedOrganisation });
+        }
+
+        [HttpGet("organisation/{odsCode}/search-suggestions")]
+        public async Task<IActionResult> FilterSearchSuggestions(
+            string odsCode,
+            [FromQuery] string search)
+        {
+            var currentPageUrl = new UriBuilder(HttpContext.Request.Headers.Referer.ToString());
+
+            var organisation = await organisationsService.GetOrganisationByOdsCode(odsCode);
+            var results = await orderService.GetOrdersBySearchTerm(organisation.Id, search);
+
+            return Json(results.Select(r =>
+                new AutocompleteResult
+                {
+                    Title = r.Title,
+                    Category = r.Category,
+                    Url = currentPageUrl.AppendQueryParameterToUrl(nameof(search), r.Title).ToString(),
+                }));
         }
     }
 }
