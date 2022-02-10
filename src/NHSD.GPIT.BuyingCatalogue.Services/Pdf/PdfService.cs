@@ -16,20 +16,10 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Pdf
         public byte[] Convert(Uri url)
         {
             string filePath = Path.Combine(Path.GetTempPath(), $"{Guid.NewGuid()}.pdf");
-            string chromePath;
-
-            if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
-            {
-                chromePath = File.Exists(ChromeWindows64BitPath) ? ChromeWindows64BitPath : ChromeWindows32BitPath;
-            }
-            else
-            {
-                chromePath = ChromeLinuxPath;
-            }
 
             try
             {
-                var psi = new ProcessStartInfo(chromePath, $"{ChromeArgs} --print-to-pdf={filePath} {url}");
+                var psi = new ProcessStartInfo(GetChromePath(), $"{ChromeArgs} --print-to-pdf={filePath} {url}");
                 var process = Process.Start(psi);
                 process.WaitForExit(30000);
                 return File.ReadAllBytes(filePath);
@@ -38,6 +28,18 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Pdf
             {
                 if (File.Exists(filePath))
                     File.Delete(filePath);
+            }
+        }
+
+        private static string GetChromePath()
+        {
+            if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+            {
+                return File.Exists(ChromeWindows64BitPath) ? ChromeWindows64BitPath : ChromeWindows32BitPath;
+            }
+            else
+            {
+                return ChromeLinuxPath;
             }
         }
     }
