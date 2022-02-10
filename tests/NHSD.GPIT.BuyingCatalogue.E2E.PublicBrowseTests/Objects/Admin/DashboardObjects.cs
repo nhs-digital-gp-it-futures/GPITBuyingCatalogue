@@ -12,9 +12,5 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Objects.Admin
         internal static By OrganisationLinks => ByExtensions.DataTestId("org-link");
 
         internal static By BuyerOrgLink => ByExtensions.DataTestId("buyer-org-link");
-
-        internal static By BuyerOrgsTable => ByExtensions.DataTestId("org-table");
-
-        internal static By AddOrgLink => ByExtensions.DataTestId("add-org-button");
     }
 }
