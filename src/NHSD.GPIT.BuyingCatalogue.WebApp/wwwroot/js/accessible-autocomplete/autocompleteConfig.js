@@ -31,7 +31,12 @@ class autocompleteConfig {
             this.addFormEvents();
     }
     source(query, populateResults) {
-        const url = this.ajaxUrl.concat("?", this.queryParameterName, "=", query);
+        const trimmedQuery = query.trim();
+        if (trimmedQuery.length < 2) {
+            return;
+        }
+
+        const url = this.ajaxUrl.concat("?", this.queryParameterName, "=", trimmedQuery);
         const xhr = new XMLHttpRequest();
         xhr.open('GET', url);
         xhr.onload = () => {
