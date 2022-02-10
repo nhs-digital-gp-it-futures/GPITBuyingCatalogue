@@ -245,7 +245,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers
 
         [Theory]
         [CommonAutoData]
-        public static async Task Get_Download_IncompleteOrder_ReturnsExpectedResult(
+        public static async Task Get_Download_InProgressOrder_ReturnsExpectedResult(
             string odsCode,
             EntityFramework.Ordering.Models.Order order,
             [Frozen] Mock<IOrderService> orderServiceMock,
@@ -253,7 +253,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers
             byte[] result,
             OrderController controller)
         {
-            order.OrderStatus = OrderStatus.Incomplete;
+            order.OrderStatus = OrderStatus.InProgress;
 
             orderServiceMock.Setup(s => s.GetOrderForSummary(order.CallOffId, odsCode)).ReturnsAsync(order);
 
