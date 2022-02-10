@@ -124,12 +124,10 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
         public async Task<IList<SearchFilterModel>> GetOrdersBySearchTerm(int organisationId, string searchTerm)
         {
             var baseData = await dbContext
-              .Organisations
-              .Include(o => o.Orders)
-              .Where(o => o.Id == organisationId)
-              .SelectMany(o => o.Orders)
-              .AsNoTracking()
-              .ToListAsync();
+                .Orders
+                .Where(o => o.OrderingPartyId == organisationId)
+                .AsNoTracking()
+                .ToListAsync();
 
             var matches = baseData
                 .Where(o => o.CallOffId.ToString().Contains(searchTerm, StringComparison.OrdinalIgnoreCase)
