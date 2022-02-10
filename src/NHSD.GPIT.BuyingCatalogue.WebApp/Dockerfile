@@ -2,6 +2,7 @@
 
 FROM mcr.microsoft.com/dotnet/aspnet:6.0-alpine AS base
 RUN apk update && apk add icu-libs
+RUN apk --no-cache upgrade && apk add --no-cache chromium
 ENV DOTNET_SYSTEM_GLOBALIZATION_INVARIANT=false
 WORKDIR /app
 EXPOSE 80
