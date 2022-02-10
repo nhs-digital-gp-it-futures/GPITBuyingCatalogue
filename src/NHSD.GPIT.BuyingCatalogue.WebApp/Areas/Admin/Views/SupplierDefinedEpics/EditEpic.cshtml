@@ -71,6 +71,15 @@
 
             <nhs-submit-button />
         </form>
+
+        @if (Model.CanDelete)
+        {
+                <vc:nhs-delete-button url="@Url.Action(
+                                               nameof(SupplierDefinedEpicsController.DeleteEpic),
+                                               typeof(SupplierDefinedEpicsController).ControllerName(),
+                                               new { epicId = Model.Id })"
+                              text="Delete Supplier defined Epic" />
+        }
     </div>
 </div>
 @{
