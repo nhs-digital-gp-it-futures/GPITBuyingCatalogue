@@ -107,5 +107,31 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
 
             return RedirectToAction(nameof(Dashboard));
         }
+
+        [HttpGet("delete/{epicId}")]
+        public async Task<IActionResult> DeleteEpic(string epicId)
+        {
+            var epic = await supplierDefinedEpicsService.GetEpic(epicId);
+            if (epic is null)
+                return RedirectToAction(nameof(Dashboard));
+
+            var model = new DeleteSupplierDefinedEpicConfirmationModel(epicId, epic.Name)
+            {
+                BackLink = Url.Action(nameof(EditEpic), new { epicId }),
+            };
+
+            return View(model);
+        }
+
+        [HttpPost("delete/{epicId}")]
+        public async Task<IActionResult> DeleteEpic(string epicId, DeleteSupplierDefinedEpicConfirmationModel model)
+        {
+            if (!ModelState.IsValid)
+                return RedirectToAction(nameof(EditEpic), new { epicId });
+
+            await supplierDefinedEpicsService.DeleteSupplierDefinedEpic(epicId);
+
+            return RedirectToAction(nameof(Dashboard));
+        }
     }
 }

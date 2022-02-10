@@ -421,5 +421,46 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Capabilities
                               .Excluding(m => m.CompliancyLevel)
                               .Excluding(m => m.LastUpdatedByUser));
         }
+
+        [Theory]
+        [InMemoryDbAutoData]
+        public static async Task DeleteSupplierDefinedEpic_ValidId_DeletesEpic(
+            Capability capability,
+            Epic epic,
+            [Frozen] BuyingCatalogueDbContext context,
+            SupplierDefinedEpicsService service)
+        {
+            epic.CapabilityId = capability.Id;
+            epic.SupplierDefined = true;
+
+            context.Capabilities.Add(capability);
+            context.Epics.Add(epic);
+
+            await service.DeleteSupplierDefinedEpic(epic.Id);
+
+            context.Epics.Any(e => e.Id == epic.Id).Should().BeFalse();
+        }
+
+        [Theory]
+        [InMemoryDbAutoData]
+        public static async Task DeleteSupplierDefinedEpic_InvalidId_Retuirns(
+            string invalidEpicId,
+            Capability capability,
+            Epic epic,
+            [Frozen] BuyingCatalogueDbContext context,
+            SupplierDefinedEpicsService service)
+        {
+            epic.CapabilityId = capability.Id;
+            epic.SupplierDefined = true;
+
+            context.Capabilities.Add(capability);
+            context.Epics.Add(epic);
+
+            var expectedCount = context.Epics.AsNoTracking().Count();
+
+            await service.DeleteSupplierDefinedEpic(invalidEpicId);
+
+            context.Epics.AsNoTracking().Count().Should().Be(expectedCount);
+        }
     }
 }
