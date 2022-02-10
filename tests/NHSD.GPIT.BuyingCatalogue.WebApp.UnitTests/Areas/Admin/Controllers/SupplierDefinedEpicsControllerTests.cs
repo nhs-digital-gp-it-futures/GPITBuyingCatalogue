@@ -15,6 +15,7 @@ using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Models.SupplierDefinedEpics;
 using NHSD.GPIT.BuyingCatalogue.Test.Framework.AutoFixtureCustomisations;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.SupplierDefinedEpics;
+using NHSD.GPIT.BuyingCatalogue.WebApp.Models.Autocomplete;
 using Xunit;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
@@ -33,35 +34,123 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
 
         [Theory]
         [CommonAutoData]
-        public static async Task Get_Dashboard_ReturnsModelWithEpics(
-            [Frozen] Mock<ISupplierDefinedEpicsService> supplierDefinedEpicsService,
-            SupplierDefinedEpicsController controller)
+        public static async Task Get_Dashboard_ReturnsViewWithExpectedViewModel(
+            List<Epic> epics,
+            [Frozen] Mock<ISupplierDefinedEpicsService> mockEpicsService,
+            SupplierDefinedEpicsController systemUnderTest)
         {
-            var epics = new List<Epic>
-            {
-                new Epic
-                {
-                    Capability = new Capability
-                    {
-                        Name = "Test Capability",
-                    },
-                    Name = "Test Epic",
-                    Id = "S00001",
-                },
-            };
+            var model = new SupplierDefinedEpicsDashboardModel(epics, null);
 
-            var expectedModel = new SupplierDefinedEpicsDashboardModel(epics);
-
-            supplierDefinedEpicsService.Setup(s => s.GetSupplierDefinedEpics())
+            mockEpicsService
+                .Setup(o => o.GetSupplierDefinedEpics())
                 .ReturnsAsync(epics);
 
-            var result = (await controller.Dashboard()).As<ViewResult>();
+            var actual = (await systemUnderTest.Dashboard()).As<ViewResult>();
 
-            result.Should().NotBeNull();
+            mockEpicsService.VerifyAll();
 
-            var model = result.Model.As<SupplierDefinedEpicsDashboardModel>();
-            model.Should().NotBeNull();
-            model.Should().BeEquivalentTo(expectedModel);
+            actual.Should().NotBeNull();
+            actual.ViewName.Should().BeNullOrEmpty();
+            actual.Model.As<SupplierDefinedEpicsDashboardModel>().Should().BeEquivalentTo(model);
+        }
+
+        [Theory]
+        [CommonAutoData]
+        public static async Task Get_Dashboard_WithSearchTerm_ReturnsViewWithExpectedViewModel(
+            string searchTerm,
+            List<Epic> epics,
+            [Frozen] Mock<ISupplierDefinedEpicsService> mockEpicsService,
+            SupplierDefinedEpicsController systemUnderTest)
+        {
+            var model = new SupplierDefinedEpicsDashboardModel(epics, searchTerm);
+
+            mockEpicsService
+                .Setup(o => o.GetSupplierDefinedEpicsBySearchTerm(searchTerm))
+                .ReturnsAsync(epics);
+
+            var actual = (await systemUnderTest.Dashboard(searchTerm)).As<ViewResult>();
+
+            mockEpicsService.VerifyAll();
+
+            actual.Should().NotBeNull();
+            actual.ViewName.Should().BeNullOrEmpty();
+            actual.Model.As<SupplierDefinedEpicsDashboardModel>().Should().BeEquivalentTo(model);
+        }
+
+        [Theory]
+        [CommonInlineAutoData(null)]
+        [CommonInlineAutoData("")]
+        [CommonInlineAutoData(" ")]
+        public static async Task Get_Dashboard_WithInvalidSearchTerm_ReturnsViewWithExpectedViewModel(
+            string searchTerm,
+            List<Epic> epics,
+            [Frozen] Mock<ISupplierDefinedEpicsService> mockEpicsService,
+            SupplierDefinedEpicsController systemUnderTest)
+        {
+            mockEpicsService
+                .Setup(o => o.GetSupplierDefinedEpics())
+                .ReturnsAsync(epics);
+
+            var model = new SupplierDefinedEpicsDashboardModel(epics, searchTerm);
+
+            var actual = (await systemUnderTest.Dashboard(searchTerm)).As<ViewResult>();
+
+            mockEpicsService.VerifyAll();
+
+            actual.Should().NotBeNull();
+            actual.ViewName.Should().BeNullOrEmpty();
+            actual.Model.As<SupplierDefinedEpicsDashboardModel>().Should().BeEquivalentTo(model);
+        }
+
+        [Theory]
+        [CommonAutoData]
+        public static async Task Get_SearchResults_WithMatches_ReturnsExpectedResult(
+            string searchTerm,
+            Capability capability,
+            List<Epic> epics,
+            [Frozen] Mock<ISupplierDefinedEpicsService> mockEpicsService,
+            SupplierDefinedEpicsController systemUnderTest)
+        {
+            epics.ForEach(x => x.Capability = capability);
+
+            mockEpicsService
+                .Setup(o => o.GetSupplierDefinedEpicsBySearchTerm(searchTerm))
+                .ReturnsAsync(epics);
+
+            var result = await systemUnderTest.SearchResults(searchTerm);
+
+            mockEpicsService.VerifyAll();
+
+            var actualResult = result.As<JsonResult>()
+                .Value.As<IEnumerable<AutocompleteResult>>()
+                .ToList();
+
+            foreach (var epic in epics)
+            {
+                actualResult.Should().Contain(x => x.Title == epic.Name && x.Category == epic.Capability.Name);
+            }
+        }
+
+        [Theory]
+        [CommonAutoData]
+        public static async Task Get_SearchResults_NoMatches_ReturnsExpectedResult(
+            string searchTerm,
+            [Frozen] Mock<ISupplierDefinedEpicsService> mockEpicsService,
+            SupplierDefinedEpicsController systemUnderTest)
+        {
+            mockEpicsService
+                .Setup(o => o.GetSupplierDefinedEpicsBySearchTerm(searchTerm))
+                .ReturnsAsync(new List<Epic>());
+
+            var result = await systemUnderTest.SearchResults(searchTerm);
+
+            mockEpicsService.VerifyAll();
+
+            var actualResult = result.As<JsonResult>()
+                .Value.As<IEnumerable<AutocompleteResult>>()
+                .ToList();
+
+            actualResult.Should().BeEmpty();
         }
 
         [Theory]
@@ -326,7 +415,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
 
         [Theory]
         [CommonAutoData]
-        public static async Task Get_DyeleteEpic_ValidEpicId_ReturnsViewWithModel(
+        public static async Task Get_DeleteEpic_ValidEpicId_ReturnsViewWithModel(
             Epic epic,
             [Frozen] Mock<ISupplierDefinedEpicsService> supplierDefinedEpicsService,
             SupplierDefinedEpicsController controller)
