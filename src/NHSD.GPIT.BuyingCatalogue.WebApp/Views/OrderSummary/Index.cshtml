@@ -1,7 +1,7 @@
 ﻿@using System.Linq
 @using NHSD.GPIT.BuyingCatalogue.EntityFramework.Extensions
 @using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models
-@model NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.Order.SummaryModel;
+@model NHSD.GPIT.BuyingCatalogue.WebApp.Models.OrderSummaryModel;
 @{
     Layout = "";
     ViewBag.Title = Model.Title;
@@ -48,7 +48,7 @@
         }
     </style>
 </head>
-<body onload="window.print();" class="nhsuk-bc-print">
+<body class="nhsuk-bc-print">
     <div class="nhsuk-width-container">
         <main class="nhsuk-main-wrapper" id="maincontent">
             <div class="bc-print-header">
