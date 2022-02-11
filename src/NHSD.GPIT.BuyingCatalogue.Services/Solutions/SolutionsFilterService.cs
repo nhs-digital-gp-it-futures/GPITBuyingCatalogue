@@ -202,7 +202,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
             return response;
         }
 
-        public async Task<List<SolutionSearchFilterModel>> GetSolutionsBySearchTerm(string searchTerm, int maxToBringBack = 15)
+        public async Task<List<SearchFilterModel>> GetSolutionsBySearchTerm(string searchTerm, int maxToBringBack = 15)
         {
             var searchBySolutionNameQuery = dbContext.CatalogueItems.AsNoTracking()
                 .Where(ci =>
@@ -210,7 +210,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
                     && ci.CatalogueItemType == CatalogueItemType.Solution
                     && (ci.PublishedStatus == PublicationStatus.Published || ci.PublishedStatus == PublicationStatus.InRemediation)
                     && ci.Supplier.IsActive)
-                .Select(ci => new SolutionSearchFilterModel
+                .Select(ci => new SearchFilterModel
                 {
                     Title = ci.Name,
                     Category = "Solution",
@@ -218,7 +218,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
 
             var searchBySupplierNameQuery = dbContext.Suppliers.AsNoTracking()
                 .Where(s => s.Name.Contains(searchTerm) && s.IsActive)
-                .Select(s => new SolutionSearchFilterModel
+                .Select(s => new SearchFilterModel
                 {
                     Title = s.Name,
                     Category = "Supplier",

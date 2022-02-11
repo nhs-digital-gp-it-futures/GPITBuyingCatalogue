@@ -60,13 +60,13 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Controllers
 
         [Theory]
         [CommonAutoData]
-        public static async Task Get_Index_Incomplete_InCompletable_Order_ReturnsExpectedResult(
+        public static async Task Get_Index_InProgress_InCompletable_Order_ReturnsExpectedResult(
             string odsCode,
             Order order,
             [Frozen] Mock<IOrderService> orderServiceMock,
             OrderSummaryController controller)
         {
-            order.OrderStatus = OrderStatus.Incomplete;
+            order.OrderStatus = OrderStatus.InProgress;
 
             orderServiceMock.Setup(s => s.GetOrderForSummary(order.CallOffId, odsCode)).ReturnsAsync(order);
 
@@ -84,14 +84,14 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Controllers
 
         [Theory]
         [CommonAutoData]
-        public static async Task Get_Index_Incomplete_Completable_Order_ReturnsExpectedResult(
+        public static async Task Get_Index_InProgress_Completable_Order_ReturnsExpectedResult(
             string odsCode,
             Order order,
             OrderItem orderItem,
             [Frozen] Mock<IOrderService> orderServiceMock,
             OrderSummaryController controller)
         {
-            order.OrderStatus = OrderStatus.Incomplete;
+            order.OrderStatus = OrderStatus.InProgress;
             orderItem.CatalogueItem.CatalogueItemType = EntityFramework.Catalogue.Models.CatalogueItemType.Solution;
             order.AddOrUpdateOrderItem(orderItem);
 

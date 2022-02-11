@@ -153,7 +153,7 @@
                         </p>
                     </nhs-summary-list-row>
                 </nhs-summary-list>
-        @if (Model.Order.OrderStatus == OrderStatus.Incomplete && Model.Order.CanComplete())
+        @if (Model.Order.OrderStatus == OrderStatus.InProgress && Model.Order.CanComplete())
         {
             <div class="nhsuk-grid-row">
                 <div class="nhsuk-grid-column-two-thirds">

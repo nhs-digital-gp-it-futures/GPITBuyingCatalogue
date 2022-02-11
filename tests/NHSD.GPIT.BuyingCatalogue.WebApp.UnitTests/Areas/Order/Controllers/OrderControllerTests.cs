@@ -44,7 +44,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers
 
         [Theory]
         [CommonAutoData]
-        public static async Task Get_IncompleteOrder_ReturnsExpectedResult(
+        public static async Task Get_InProgressOrder_ReturnsExpectedResult(
             string odsCode,
             EntityFramework.Ordering.Models.Order order,
             AspNetUser aspNetUser,
@@ -54,7 +54,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers
             OrderController controller)
         {
             order.LastUpdatedByUser = aspNetUser;
-            order.OrderStatus = OrderStatus.Incomplete;
+            order.OrderStatus = OrderStatus.InProgress;
 
             var expectedViewData = new OrderModel(odsCode, order, orderTaskList) { DescriptionUrl = "testUrl" };
 
@@ -245,7 +245,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers
 
         [Theory]
         [CommonAutoData]
-        public static async Task Get_Download_IncompleteOrder_ReturnsExpectedResult(
+        public static async Task Get_Download_InProgressOrder_ReturnsExpectedResult(
             string odsCode,
             EntityFramework.Ordering.Models.Order order,
             [Frozen] Mock<IOrderService> orderServiceMock,
@@ -253,7 +253,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers
             byte[] result,
             OrderController controller)
         {
-            order.OrderStatus = OrderStatus.Incomplete;
+            order.OrderStatus = OrderStatus.InProgress;
 
             orderServiceMock.Setup(s => s.GetOrderForSummary(order.CallOffId, odsCode)).ReturnsAsync(order);
 
