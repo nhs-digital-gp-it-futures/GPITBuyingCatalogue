@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Linq;
 using System.Threading.Tasks;
-using System.Web;
 using Microsoft.AspNetCore.Mvc;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
@@ -110,7 +109,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers
                 {
                     Title = r.Title,
                     Category = r.Category,
-                    Url = AppendQueryParameterToUrl(currentPageUrl, nameof(search), r.Title).ToString(),
+                    Url = currentPageUrl.AppendQueryParameterToUrl(nameof(search), r.Title).ToString(),
                 }));
         }
 
@@ -438,14 +437,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers
             var workOffPlans = await solutionsService.GetWorkOffPlans(solutionId);
 
             return View(new DevelopmentPlansModel(item, workOffPlans, contentStatus));
-        }
-
-        private static UriBuilder AppendQueryParameterToUrl(UriBuilder uri, string queryParameterName, string queryParameterValue)
-        {
-            var query = HttpUtility.ParseQueryString(uri.Query);
-            query.Set(queryParameterName, queryParameterValue);
-            uri.Query = query.ToString();
-            return uri;
         }
     }
 }

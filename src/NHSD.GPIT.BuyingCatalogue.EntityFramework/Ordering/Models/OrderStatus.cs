@@ -1,8 +1,12 @@
-﻿namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models
+﻿using System.Runtime.Serialization;
+
+namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models
 {
     public enum OrderStatus
     {
+        [EnumMember(Value = "Complete")]
         Complete = 1,
-        Incomplete = 2,
+        [EnumMember(Value = "In progress")]
+        InProgress = 2,
     }
 }
