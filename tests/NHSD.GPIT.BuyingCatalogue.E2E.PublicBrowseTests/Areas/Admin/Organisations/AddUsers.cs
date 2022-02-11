@@ -1,6 +1,8 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using FluentAssertions;
+using Microsoft.EntityFrameworkCore;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Objects.Admin;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Utils;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.RandomData;
@@ -38,11 +40,15 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.Organisations
         }
 
         [Fact]
-        public void AddUser_AllSectionsDisplayed()
+        public async void AddUser_AllSectionsDisplayed()
         {
+            await using var context = GetEndToEndDbContext();
+
+            var organisation = await context.Organisations.AsNoTracking().SingleOrDefaultAsync(o => o.Id == OrganisationId);
+
             CommonActions.SaveButtonDisplayed().Should().BeTrue();
             CommonActions.GoBackLinkDisplayed().Should().BeTrue();
-            CommonActions.PageTitle().Should().BeEquivalentTo("Add a new user".FormatForComparison());
+            CommonActions.PageTitle().Should().BeEquivalentTo($"Add a new user-{organisation.Name}".FormatForComparison());
 
             CommonActions.ElementIsDisplayed(AddUserObjects.FirstName).Should().BeTrue();
             CommonActions.ElementIsDisplayed(AddUserObjects.LastName).Should().BeTrue();
