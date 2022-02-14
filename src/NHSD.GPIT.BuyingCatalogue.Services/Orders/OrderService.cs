@@ -124,30 +124,21 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
         public async Task<IList<SearchFilterModel>> GetOrdersBySearchTerm(int organisationId, string searchTerm)
         {
             var baseData = await dbContext
-              .Organisations
-              .Include(o => o.Orders)
-              .Where(o => o.Id == organisationId)
-              .SelectMany(o => o.Orders)
-              .AsNoTracking()
-              .ToListAsync();
+                .Orders
+                .Where(o => o.OrderingPartyId == organisationId)
+                .AsNoTracking()
+                .ToListAsync();
 
-            var callOffIdMatches = baseData
-                .Where(o => o.CallOffId.ToString().Contains(searchTerm, StringComparison.OrdinalIgnoreCase))
-                .Select(o => new SearchFilterModel
-                {
-                    Title = o.CallOffId.ToString(),
-                    Category = "Call-off ID",
-                });
-
-            var descriptionMatches = baseData
-                .Where(o => o.Description.Contains(searchTerm, StringComparison.OrdinalIgnoreCase))
+            var matches = baseData
+                .Where(o => o.CallOffId.ToString().Contains(searchTerm, StringComparison.OrdinalIgnoreCase)
+                         || o.Description.Contains(searchTerm, StringComparison.OrdinalIgnoreCase))
                 .Select(o => new SearchFilterModel
                 {
                     Title = o.Description,
-                    Category = "Description",
+                    Category = o.CallOffId.ToString(),
                 });
 
-            return callOffIdMatches.Union(descriptionMatches).ToList();
+            return matches.ToList();
         }
 
         public Task<Order> GetOrderSummary(CallOffId callOffId, string odsCode)

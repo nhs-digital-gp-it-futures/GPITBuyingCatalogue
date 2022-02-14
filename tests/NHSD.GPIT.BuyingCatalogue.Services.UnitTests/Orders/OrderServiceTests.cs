@@ -138,8 +138,8 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Orders
             results.Should().NotBeEmpty();
 
             var actual = results.First();
-            actual.Category.Should().Be("Call-off ID");
-            actual.Title.Should().Be(order.CallOffId.ToString());
+            actual.Category.Should().Be(order.CallOffId.ToString());
+            actual.Title.Should().Be(order.Description);
         }
 
         [Theory]
@@ -165,7 +165,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Orders
             results.Should().NotBeEmpty();
 
             var actual = results.First();
-            actual.Category.Should().Be("Description");
+            actual.Category.Should().Be(order.CallOffId.ToString());
             actual.Title.Should().Be(order.Description);
         }
     }
