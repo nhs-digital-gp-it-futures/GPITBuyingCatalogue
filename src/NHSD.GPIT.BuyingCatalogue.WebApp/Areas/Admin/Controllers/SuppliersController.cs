@@ -8,6 +8,7 @@ using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Suppliers;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.SupplierModels;
+using NHSD.GPIT.BuyingCatalogue.WebApp.Models.Autocomplete;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
 {
@@ -24,13 +25,33 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(
+            [FromQuery] string search = "")
         {
-            var suppliers = await suppliersService.GetAllSuppliers();
+            var suppliers = await suppliersService.GetAllSuppliers(search);
 
-            var model = new ManageSuppliersModel(suppliers);
+            var model = new ManageSuppliersModel(suppliers)
+            {
+                ShowInactiveItems = !string.IsNullOrWhiteSpace(search) && suppliers.Any(s => !s.IsActive),
+            };
 
             return View(model);
+        }
+
+        [HttpGet("search-suggestions")]
+        public async Task<IActionResult> FilterSearchSuggestions(
+            [FromQuery] string search)
+        {
+            var currentPageUrl = new UriBuilder(HttpContext.Request.Headers.Referer.ToString());
+            var suppliers = await suppliersService.GetSuppliersBySearchTerm(search);
+
+            return Json(suppliers.Select(r =>
+                new AutocompleteResult
+                {
+                    Title = r.Name,
+                    Category = r.Id.ToString(),
+                    Url = currentPageUrl.AppendQueryParameterToUrl(nameof(search), r.Id.ToString()).ToString(),
+                }));
         }
 
         [HttpGet("{supplierId}")]

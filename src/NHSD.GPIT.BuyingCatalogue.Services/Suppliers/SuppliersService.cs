@@ -20,8 +20,11 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Suppliers
             this.dbContext = dbContext ?? throw new ArgumentNullException(nameof(dbContext));
         }
 
-        public async Task<IReadOnlyList<Supplier>> GetAllSuppliers()
+        public async Task<IList<Supplier>> GetAllSuppliers(string searchTerm = null)
         {
+            if (!string.IsNullOrWhiteSpace(searchTerm))
+                return await GetSuppliersBySearchTerm(searchTerm);
+
             return await dbContext.Suppliers.OrderBy(s => s.Name).ToListAsync();
         }
 
@@ -29,6 +32,9 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Suppliers
         {
             return await dbContext.Suppliers.Where(s => s.IsActive).OrderBy(s => s.Name).ToListAsync();
         }
+
+        public async Task<IList<Supplier>> GetSuppliersBySearchTerm(string searchTerm)
+            => await dbContext.Suppliers.Where(s => s.Id.ToString().Contains(searchTerm) || s.Name.Contains(searchTerm)).OrderBy(s => s.Name).ToListAsync();
 
         public async Task<Supplier> GetSupplier(int supplierId)
         {

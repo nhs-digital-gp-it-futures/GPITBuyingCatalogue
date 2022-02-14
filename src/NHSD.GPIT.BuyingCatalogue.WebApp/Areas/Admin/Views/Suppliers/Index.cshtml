@@ -19,13 +19,20 @@
                     text="Add a supplier"
                     data-test-id="add-supplier" />
 
-<nhs-checkbox-container Id="inactive-items-checkbox" style="display:none;">
-    <nhs-checkbox asp-for="ShowInactiveItems"
-                  label-text="Show inactive suppliers" />
-</nhs-checkbox-container>
+<vc:nhs-autocomplete id="manage-suppliers-autocomplete"
+    ajax-url="@Url.Action(
+    nameof(SuppliersController.FilterSearchSuggestions),
+    typeof(SuppliersController).ControllerName())"
+    title-text="Search by supplier name or Supplier ID"
+    query-parameter-name="search"/>
 
 @if (Model.Suppliers?.Count > 0)
 {
+    <nhs-checkbox-container Id="inactive-items-checkbox" style="display:none;">
+        <nhs-checkbox asp-for="ShowInactiveItems"
+                      label-text="Show inactive suppliers" />
+    </nhs-checkbox-container>
+
     <nhs-table data-test-id="manage-suppliers-table">
         <nhs-table-column> Supplier name </nhs-table-column>
         <nhs-table-column> Supplier ID </nhs-table-column>
@@ -33,7 +40,7 @@
         <nhs-table-column></nhs-table-column>
         @foreach (var supplierModel in Model.Suppliers)
         {
-            <nhs-table-row-container class="@(!supplierModel.IsActive ? "inactive" : null)">
+            <nhs-table-row-container class="nhsuk-table__row @(!supplierModel.IsActive ? "inactive" : null)">
                 <nhs-table-cell>
                     @supplierModel.Name
                 </nhs-table-cell>
@@ -55,4 +62,16 @@
             </nhs-table-row-container>
         }
     </nhs-table>
+} else {
+    @if(Context.Request.Query["search"].Count > 0)
+    {
+        <h2 id="no-results-search">No results were found for "@Context.Request.Query["search"].FirstOrDefault()"</h2>
+        <p style="white-space:nowrap;">
+            Try entering a different search term, or <a
+            data-test-id="clear-results-link"
+            asp-action="@nameof(SuppliersController.Index)"
+            asp-controller="@typeof(SuppliersController).ControllerName()"
+            >select a supplier from the complete list</a>.
+        </p>
+    }
 }

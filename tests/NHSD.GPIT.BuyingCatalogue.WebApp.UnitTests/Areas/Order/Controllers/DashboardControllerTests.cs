@@ -227,7 +227,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers
             {
                 Title = r.Title,
                 Category = r.Category,
-                Url = requestUri.AppendQueryParameterToUrl("search", r.Title).ToString(),
+                Url = requestUri.AppendQueryParameterToUrl("search", r.Category).ToString(),
             });
 
             organisationsService.Setup(s => s.GetOrganisationByOdsCode(organisation.OdsCode))
