@@ -10,6 +10,7 @@ using AutoFixture.Xunit2;
 using EnumsNET;
 using FluentAssertions;
 using Microsoft.EntityFrameworkCore;
+using MimeKit;
 using Moq;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
@@ -26,6 +27,10 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Solutions
 {
     public static class SolutionsServiceTests
     {
+        private const string SolutionName = "SolutionName";
+        private const string SupplierName = "SupplierName";
+        private const string Junk = "Junk";
+
         [Fact]
         public static void Constructors_VerifyGuardClauses()
         {
@@ -576,6 +581,68 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Solutions
             updatedClientApplication.NativeMobileAdditionalInformation.Should().BeNull();
             updatedClientApplication.NativeMobileFirstDesign.Should().BeNull();
             updatedClientApplication.NativeMobileHardwareRequirements.Should().BeNull();
+        }
+
+        [Theory]
+        [CommonInlineAutoData(null)]
+        [CommonInlineAutoData("")]
+        [CommonInlineAutoData(" ")]
+        public static void GetAllSolutionsForSearchTerm_NullSearchTerm_ThrowsException(
+            string searchTerm,
+            SolutionsService systemUnderTest)
+        {
+            FluentActions
+                .Awaiting(() => systemUnderTest.GetAllSolutionsForSearchTerm(searchTerm))
+                .Should().ThrowAsync<ArgumentNullException>();
+        }
+
+        [Theory]
+        [InMemoryDbAutoData]
+        public static async Task GetAllSolutionsForSearchTerm_ReturnsExpectedResults(
+            string searchTerm,
+            [Frozen] BuyingCatalogueDbContext context,
+            SolutionsService systemUnderTest)
+        {
+            var solutions = GetSolutionsForSearchTerm(searchTerm);
+            var noMatch = solutions.Single(x => x.Name == SolutionName && x.Supplier.Name == SupplierName);
+
+            for (var i = 0; i < solutions.Count; i++)
+            {
+                var supplier = solutions[i].Supplier;
+
+                supplier.Id = i * 10;
+                supplier.LegalName = $"{i}";
+
+                context.Suppliers.Add(supplier);
+
+                solutions[i].CatalogueItemType = CatalogueItemType.Solution;
+                solutions[i].Id = new CatalogueItemId(supplier.Id, $"{i}");
+                solutions[i].SupplierId = supplier.Id;
+            }
+
+            context.CatalogueItems.AddRange(solutions);
+
+            await context.SaveChangesAsync();
+
+            var results = await systemUnderTest.GetAllSolutionsForSearchTerm(searchTerm);
+
+            results.Should().BeEquivalentTo(solutions.Except(new[] { noMatch }));
+        }
+
+        private static List<CatalogueItem> GetSolutionsForSearchTerm(string searchTerm)
+        {
+            return new List<CatalogueItem>
+            {
+                new() { Name = SolutionName, Supplier = new Supplier { Name = SupplierName } },
+                new() { Name = $"{searchTerm}", Supplier = new Supplier { Name = SupplierName } },
+                new() { Name = $"{searchTerm}{Junk}", Supplier = new Supplier { Name = SupplierName } },
+                new() { Name = $"{Junk}{searchTerm}", Supplier = new Supplier { Name = SupplierName } },
+                new() { Name = $"{Junk}{searchTerm}{Junk}", Supplier = new Supplier { Name = SupplierName } },
+                new() { Name = SolutionName, Supplier = new Supplier { Name = $"{searchTerm}" } },
+                new() { Name = SolutionName, Supplier = new Supplier { Name = $"{searchTerm}{Junk}" } },
+                new() { Name = SolutionName, Supplier = new Supplier { Name = $"{Junk}{searchTerm}" } },
+                new() { Name = SolutionName, Supplier = new Supplier { Name = $"{Junk}{searchTerm}{Junk}" } },
+            };
         }
     }
 }

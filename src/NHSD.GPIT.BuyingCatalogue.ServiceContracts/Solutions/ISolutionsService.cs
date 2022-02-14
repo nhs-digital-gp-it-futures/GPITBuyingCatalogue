@@ -72,6 +72,8 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions
 
         Task<IList<CatalogueItem>> GetAllSolutions(PublicationStatus? publicationStatus = null);
 
+        Task<IList<CatalogueItem>> GetAllSolutionsForSearchTerm(string searchTerm);
+
         Task<CatalogueItemId> AddCatalogueSolution(CreateSolutionModel model);
 
         Task<IList<Framework>> GetAllFrameworks();
