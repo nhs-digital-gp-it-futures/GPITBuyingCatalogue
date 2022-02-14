@@ -66,74 +66,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
 
         [Theory]
         [CommonAutoData]
-        public static async Task Get_Index_InactiveSuppliers_DoesntShowInactiveItems(
-            IList<Supplier> suppliers,
-            [Frozen] Mock<ISuppliersService> mockSuppliersService,
-            SuppliersController controller)
-        {
-            suppliers.ToList().ForEach(s => s.IsActive = false);
-            mockSuppliersService.Setup(s => s.GetAllSuppliers(It.IsAny<string>())).ReturnsAsync(suppliers);
-
-            var result = (await controller.Index()).As<ViewResult>();
-
-            result.Should().NotBeNull();
-            result.Model.As<ManageSuppliersModel>().ShowInactiveItems.Should().BeFalse();
-        }
-
-        [Theory]
-        [CommonAutoData]
-        public static async Task Get_Index_ActiveAndInactiveSuppliers_DoesntShowInactiveItems(
-            IList<Supplier> suppliers,
-            [Frozen] Mock<ISuppliersService> mockSuppliersService,
-            SuppliersController controller)
-        {
-            suppliers.ToList().ForEach(s => s.IsActive = true);
-            suppliers.First().IsActive = false;
-            mockSuppliersService.Setup(s => s.GetAllSuppliers(It.IsAny<string>())).ReturnsAsync(suppliers);
-
-            var result = (await controller.Index()).As<ViewResult>();
-
-            result.Should().NotBeNull();
-            result.Model.As<ManageSuppliersModel>().ShowInactiveItems.Should().BeFalse();
-        }
-
-        [Theory]
-        [CommonAutoData]
-        public static async Task Get_Index_SearchTerm_ActiveSuppliers_DoesntShowInactiveItems(
-            string searchTerm,
-            IList<Supplier> suppliers,
-            [Frozen] Mock<ISuppliersService> mockSuppliersService,
-            SuppliersController controller)
-        {
-            suppliers.ToList().ForEach(s => s.IsActive = true);
-            mockSuppliersService.Setup(s => s.GetAllSuppliers(searchTerm)).ReturnsAsync(suppliers);
-
-            var result = (await controller.Index(searchTerm)).As<ViewResult>();
-
-            result.Should().NotBeNull();
-            result.Model.As<ManageSuppliersModel>().ShowInactiveItems.Should().BeFalse();
-        }
-
-        [Theory]
-        [CommonAutoData]
-        public static async Task Get_Index_SearchTerm_InctiveSuppliers_ShowInactiveItems(
-            string searchTerm,
-            IList<Supplier> suppliers,
-            [Frozen] Mock<ISuppliersService> mockSuppliersService,
-            SuppliersController controller)
-        {
-            suppliers.ToList().ForEach(s => s.IsActive = false);
-            mockSuppliersService.Setup(s => s.GetAllSuppliers(searchTerm)).ReturnsAsync(suppliers);
-
-            var result = (await controller.Index(searchTerm)).As<ViewResult>();
-
-            result.Should().NotBeNull();
-            result.Model.As<ManageSuppliersModel>().ShowInactiveItems.Should().BeTrue();
-        }
-
-        [Theory]
-        [CommonAutoData]
-        public static async Task Get_Index_SearchTerm_InctiveAndActiveSuppliers_ShowInactiveItems(
+        public static async Task Get_Index_SearchTerm_DisableScripting(
             string searchTerm,
             IList<Supplier> suppliers,
             [Frozen] Mock<ISuppliersService> mockSuppliersService,
@@ -146,7 +79,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
             var result = (await controller.Index(searchTerm)).As<ViewResult>();
 
             result.Should().NotBeNull();
-            result.Model.As<ManageSuppliersModel>().ShowInactiveItems.Should().BeTrue();
+            result.Model.As<ManageSuppliersModel>().DisableScripting.Should().BeTrue();
         }
 
         [Theory]
@@ -468,7 +401,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
             {
                 Title = r.Name,
                 Category = r.Id.ToString(),
-                Url = requestUri.AppendQueryParameterToUrl("search", r.Id.ToString()).ToString(),
+                Url = "testUrl",
             });
 
             var supplier = searchResults.First();
@@ -479,7 +412,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
             var result = (await controller.FilterSearchSuggestions(searchTerm)).As<JsonResult>();
 
             result.Should().NotBeNull();
-            result.Value.Should().BeEquivalentTo(expected);
+            result.Value.Should().BeEquivalentTo(expected, opt => opt.ExcludingMissingMembers());
         }
 
         [Theory]

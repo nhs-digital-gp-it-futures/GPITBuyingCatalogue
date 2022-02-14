@@ -6,8 +6,11 @@
     ViewBag.Title = "Manage suppliers";
 }
 
-@section Scripts{
-    <script type="text/javascript" src="@Url.Content("~/js/InactiveItemManagement.min.js")" asp-append-version="true"></script>
+@if(!Model.DisableScripting)
+{
+    @section Scripts{
+        <script type="text/javascript" src="@Url.Content("~/js/InactiveItemManagement.min.js")" asp-append-version="true"></script>
+    }
 }
 
 <nhs-page-title title="@ViewBag.Title"

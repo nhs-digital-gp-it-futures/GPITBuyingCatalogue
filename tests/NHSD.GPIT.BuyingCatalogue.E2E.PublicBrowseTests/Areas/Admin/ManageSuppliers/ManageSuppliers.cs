@@ -138,7 +138,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.ManageSuppliers
 
             CommonActions.ClickLinkElement(Objects.Admin.ManageSuppliers.ManageSuppliers.SearchButton);
 
-            CommonActions.GetNumberOfSelectedCheckBoxes().Should().Be(0);
+            CommonActions.ElementIsDisplayed(Objects.Admin.ManageSuppliers.ManageSuppliers.InactiveSuppliersContainer).Should().BeFalse();
             CommonActions.GetNumberOfTableRowsDisplayed().Should().Be(2); // Count is original item, plus another item that matches the same name
         }
 
@@ -153,7 +153,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.ManageSuppliers
 
             CommonActions.ClickLinkElement(Objects.Admin.ManageSuppliers.ManageSuppliers.SearchButton);
 
-            CommonActions.GetNumberOfSelectedCheckBoxes().Should().Be(1);
+            CommonActions.ElementIsDisplayed(Objects.Admin.ManageSuppliers.ManageSuppliers.InactiveSuppliersContainer).Should().BeFalse();
             CommonActions.GetNumberOfTableRowsDisplayed().Should().Be(1);
         }
     }

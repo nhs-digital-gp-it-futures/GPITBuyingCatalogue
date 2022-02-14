@@ -32,7 +32,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
 
             var model = new ManageSuppliersModel(suppliers)
             {
-                ShowInactiveItems = !string.IsNullOrWhiteSpace(search) && suppliers.Any(s => !s.IsActive),
+                DisableScripting = !string.IsNullOrWhiteSpace(search),
             };
 
             return View(model);
@@ -50,7 +50,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
                 {
                     Title = r.Name,
                     Category = r.Id.ToString(),
-                    Url = currentPageUrl.AppendQueryParameterToUrl(nameof(search), r.Id.ToString()).ToString(),
+                    Url = Url.Action(nameof(EditSupplier), new { supplierId = r.Id.ToString() }),
                 }));
         }
 

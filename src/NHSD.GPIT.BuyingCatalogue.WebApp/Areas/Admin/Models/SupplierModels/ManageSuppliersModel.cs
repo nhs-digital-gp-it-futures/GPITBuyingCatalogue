@@ -15,7 +15,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.SupplierModels
             Suppliers = suppliers;
         }
 
-        public bool ShowInactiveItems { get; set; } // Only used for the checkbox component. value is not actually used server side;
+        public bool ShowInactiveItems { get; } // Only used for the checkbox component. value is not actually used server side;
+
+        public bool DisableScripting { get; set; }
 
         public IList<Supplier> Suppliers { get; set; }
     }
