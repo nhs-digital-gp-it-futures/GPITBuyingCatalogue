@@ -1,0 +1,19 @@
+﻿@model NHSD.GPIT.BuyingCatalogue.WebApp.Models.NavBaseModel
+@{
+    Layout = "Layouts/_AllBannersLayout";
+    ViewBag.Title = "Query submitted";
+}
+
+<partial name="Partials/_BackLink" model="@Model" />
+<div class="nhsuk-grid-row">
+    <div class="nhsuk-grid-column-two-thirds">
+        <nhs-page-title title="@ViewBag.Title"
+                        advice="Your query has been sent to the Procurement Hub Team." />
+        <div>
+            <h3>What next?</h3>
+            <p>
+                The Procurement Hub Team will respond to your query within 5 working days.
+            </p>
+        </div>
+    </div>
+</div>

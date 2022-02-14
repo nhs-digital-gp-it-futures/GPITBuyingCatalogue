@@ -79,8 +79,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
         [HttpGet("~/order/organisation/{odsCode}/order/ready-to-start")]
         public IActionResult ReadyToStart(string odsCode, TriageOption? option = null)
         {
-            var model = new ReadyToStartModel()
+            var model = new ReadyToStartModel
             {
+                OdsCode = odsCode,
+                Option = option,
                 BackLink = Url.Action(
                     nameof(OrderTriageController.TriageSelection),
                     typeof(OrderTriageController).ControllerName(),

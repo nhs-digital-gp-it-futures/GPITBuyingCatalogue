@@ -1,10 +1,12 @@
 ﻿using System.Collections.Generic;
 using FluentAssertions;
+using NHSD.GPIT.BuyingCatalogue.E2ETests.Objects.Ordering;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Utils;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.TestBases;
 using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.OrderTriage;
+using NHSD.GPIT.BuyingCatalogue.WebApp.Controllers;
 using Xunit;
 
 namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering.OrderTriage
@@ -99,12 +101,40 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering.OrderTriage
             CommonActions.PageTitle().Should().BeEquivalentTo(title.FormatForComparison());
         }
 
-        [Fact]
-        public void TriageSelection_No_RedirectsToCorrectPage()
+        [Theory]
+        [InlineData(TriageOption.Under40k)]
+        [InlineData(TriageOption.Between40kTo250k)]
+        [InlineData(TriageOption.Over250k)]
+        public void TriageSelection_No_RedirectsToCorrectPage(TriageOption option)
         {
+            var parameters = new Dictionary<string, string>
+            {
+                { nameof(OdsCode), OdsCode },
+                { nameof(option), option.ToString() },
+            };
+
+            NavigateToUrl(
+                typeof(OrderTriageController),
+                nameof(OrderTriageController.TriageSelection),
+                parameters);
+
             CommonActions.ClickRadioButtonWithText("No");
 
             CommonActions.ClickSave();
+
+            CommonActions.PageLoadedCorrectGetIndex(
+                typeof(OrderTriageController),
+                nameof(OrderTriageController.StepsNotCompleted));
+
+            CommonActions.ElementIsDisplayed(OrderTriageObjects.ProcurementHubLink).Should().BeTrue();
+
+            CommonActions.ClickLinkElement(OrderTriageObjects.ProcurementHubLink);
+
+            CommonActions.PageLoadedCorrectGetIndex(
+                typeof(ProcurementHubController),
+                nameof(ProcurementHubController.Index)).Should().BeTrue();
+
+            CommonActions.ClickGoBackLink();
 
             CommonActions.PageLoadedCorrectGetIndex(
                 typeof(OrderTriageController),

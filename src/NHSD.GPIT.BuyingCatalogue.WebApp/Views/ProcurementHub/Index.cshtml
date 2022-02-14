@@ -1,0 +1,58 @@
+﻿@model NHSD.GPIT.BuyingCatalogue.WebApp.Models.ProcurementHub.ProcurementHubDetailsModel
+@{
+    Layout = "Layouts/_AllBannersLayout";
+    ViewBag.Title = "Contact Procurement Hub";
+}
+
+<partial name="Partials/_BackLink" model="@Model" />
+
+<div class="nhsuk-grid-row">
+    <div class="nhsuk-grid-column-two-thirds">
+        <nhs-validation-summary />
+        <nhs-page-title title="@ViewBag.Title"
+                        advice="Provide the following details and the Procurement Hub Team will respond to your request within 5 working days." />
+
+        <form method="post">
+            <div class="nhsuk-u-margin-bottom-9">
+                <nhs-input asp-for="FullName"
+                           label-text="Full name"
+                           label-hint="We'll use the name you provide in any replies to your message. We'll not use it for any other purpose."/>
+
+                <nhs-input asp-for="EmailAddress"
+                           label-text="Email address"
+                           label-hint="We'll use your email address to resolve the issue you are contacting us about and reply to you. We'll not use it for any other purpose."/>
+
+                <nhs-input asp-for="OrganisationName"
+                           label-text="Your organisation's name"
+                           label-hint="We currently only support buyers from Clinical Commissioning Groups (CCGs) and Commissioning Support Units (CSUs)."/>
+
+                <nhs-input asp-for="OdsCode"
+                           input-width="Ten"
+                           label-text="Your organisation's ODS code (optional)"
+                           label-hint="Provide the ODS code for your organisation if you know it."/>
+
+                <nhs-textarea asp-for="Query"
+                              label-text="Your message for the Procurement Hub Team"
+                              label-hint="Do not include personal or financial information, for example, your National Insurance number or credit card details."/>
+            </div>
+
+            <div class="nhsuk-u-margin-bottom-9">
+                <h2>Privacy policy agreement</h2>
+                <p>
+                    You must confirm you have read and understood our <a href='~/privacy-policy' target="_blank">privacy policy (opens in a new tab)</a> before sending.
+                </p>
+                <nhs-fieldset-form-label asp-for="@Model">
+                    <nhs-checkbox-container>
+                        <nhs-checkbox asp-for="HasReadPrivacyPolicy" 
+                                      label-text="I have read and understood the privacy policy"/>
+                    </nhs-checkbox-container>
+                </nhs-fieldset-form-label>
+            </div>
+
+            <input type="hidden" asp-for="BackLink"/>
+            <input type="hidden" asp-for="BackLinkText" />
+
+            <nhs-submit-button text="Submit query" />
+        </form>
+    </div>
+</div>
