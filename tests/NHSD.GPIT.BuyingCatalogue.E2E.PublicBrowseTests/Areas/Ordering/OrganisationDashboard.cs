@@ -178,13 +178,13 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering
 
             CommonActions.ElementTextEqualTo(
                 Objects.Ordering.OrganisationDashboard.SearchResultTitle(0),
-                order.CallOffId.ToString())
+                order.Description)
                 .Should()
                 .BeTrue();
 
             CommonActions.ElementTextEqualTo(
                 Objects.Ordering.OrganisationDashboard.SearchResultDescription(0),
-                "Call-off ID")
+                order.CallOffId.ToString())
                 .Should()
                 .BeTrue();
         }
