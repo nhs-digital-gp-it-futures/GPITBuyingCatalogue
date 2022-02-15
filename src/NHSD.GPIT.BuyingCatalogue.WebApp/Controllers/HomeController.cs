@@ -1,7 +1,7 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
-using NHSD.GPIT.BuyingCatalogue.Framework.Settings;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Email;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Models;
 
@@ -9,46 +9,41 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Controllers
 {
     public class HomeController : Controller
     {
-        private IEmailService emailService;
-        private ContactUsSettings contactUsSettings;
+        private readonly IContactUsService contactUsService;
 
-        public HomeController(IEmailService eService, ContactUsSettings contactSettings)
+        public HomeController(IContactUsService contactUsService)
         {
-            emailService = eService;
-            contactUsSettings = contactSettings;
+            this.contactUsService = contactUsService ?? throw new ArgumentNullException(nameof(contactUsService));
         }
 
         public IActionResult Index()
-        {
-            return View();
-        }
+            => View();
 
         [HttpGet("privacy-policy")]
         public IActionResult PrivacyPolicy()
-        {
-            return View();
-        }
+            => View();
 
         [HttpGet("contact-us")]
         public IActionResult ContactUs()
-        {
-            var model = new ContactUsModel();
-            return View(model);
-        }
+            => View(new ContactUsModel());
 
         [HttpPost("contact-us")]
-        public IActionResult ContactUs(ContactUsModel model)
+        public async Task<IActionResult> ContactUs(ContactUsModel model)
         {
             if (!ModelState.IsValid)
                 return View(model);
 
-            var recipiant = new EmailAddress(contactUsSettings.TechnicalFaultAddress, "Technical Fault Address");
-            var email = new EmailMessage(contactUsSettings.EmailMessage, new List<EmailAddress>() { recipiant });
+            await contactUsService.SubmitQuery(
+                model.ContactMethod == ContactUsModel.ContactMethodTypes.TechnicalFault,
+                model.FullName,
+                model.EmailAddress,
+                model.Message);
 
-            emailService.SendEmailAsync(email);
-
-            return View("ContactUsConfirmation");
+            return RedirectToAction(nameof(ContactUsConfirmation));
         }
+
+        [HttpGet("contact-us/confirmation")]
+        public IActionResult ContactUsConfirmation() => View();
 
         [HttpGet("accessibility-statement")]
         public IActionResult AccessibilityStatement() => View();

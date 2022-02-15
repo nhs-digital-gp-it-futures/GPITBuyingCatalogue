@@ -1,7 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.Models
 {
@@ -9,24 +7,27 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Models
     {
         public enum ContactMethodTypes
         {
-            Website = 1,
+            TechnicalFault,
             Other,
         }
 
         public IEnumerable<object> ContactMethodOptions =>
             new List<object>
             {
-                new { Display = "A technical fault with this website", Value = ContactMethodTypes.Website},
+                new { Display = "A technical fault with this website", Value = ContactMethodTypes.TechnicalFault },
                 new { Display = "Any other query about the Buying Catalogue", Value = ContactMethodTypes.Other },
             };
 
-        public string ContactMethod { get; set; }
+        public ContactMethodTypes? ContactMethod { get; set; }
 
+        [StringLength(1500)]
+        public string Message { get; set; }
+
+        [StringLength(500)]
         public string FullName { get; set; }
 
+        [StringLength(500)]
         public string EmailAddress { get; set; }
-
-        public string Message { get; set; }
 
         public bool PrivacyPolicyAccepted { get; set; }
     }

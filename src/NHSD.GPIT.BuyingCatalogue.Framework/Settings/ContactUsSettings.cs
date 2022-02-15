@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics.CodeAnalysis;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Diagnostics.CodeAnalysis;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Email;
 
 namespace NHSD.GPIT.BuyingCatalogue.Framework.Settings
@@ -14,14 +9,12 @@ namespace NHSD.GPIT.BuyingCatalogue.Framework.Settings
     [ExcludeFromCodeCoverage]
     public sealed class ContactUsSettings
     {
-        /// <summary>
-        /// Gets or sets the sender, subject and content of
-        /// the e-mail message to send to the configured users.
-        /// </summary>
-        public EmailMessageTemplate EmailMessage { get; set; }
+        public string AdminTemplateId { get; set; }
 
-        public string TechnicalFaultAddress { get; set; }
+        public string UserTemplateId { get; set; }
 
-        public string OtherQueriesAddress { get; set; }
+        public EmailAddressTemplate GeneralQueriesRecipient { get; set; }
+
+        public EmailAddressTemplate TechnicalFaultRecipient { get; set; }
     }
 }
