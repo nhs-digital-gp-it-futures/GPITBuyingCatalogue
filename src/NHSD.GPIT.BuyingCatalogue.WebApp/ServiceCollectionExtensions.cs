@@ -17,6 +17,7 @@ using Microsoft.Net.Http.Headers;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Users.Models;
 using NHSD.GPIT.BuyingCatalogue.Framework.Constants;
+using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.Framework.Identity;
 using NHSD.GPIT.BuyingCatalogue.Framework.Settings;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Email;
@@ -38,6 +39,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp
         private const string BuyingCatalogueSmtpUserNameEnvironmentVariable = "BC_SMTP_USERNAME";
         private const string BuyingCatalogueSmtpPasswordEnvironmentVariable = "BC_SMTP_PASSWORD";
         private const string BuyingCatalogueDomainNameEnvironmentVariable = "DOMAIN_NAME";
+        private const string BuyingCataloguePdfEnvironmentVariable = "USE_SSL_FOR_PDF";
 
         public static void ConfigureAuthorization(this IServiceCollection services)
         {
@@ -177,6 +179,17 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp
             services.AddSingleton(domainNameSettings);
         }
 
+        public static void ConfigurePdf(this IServiceCollection services)
+        {
+            var useSsl = Environment.GetEnvironmentVariable(BuyingCataloguePdfEnvironmentVariable);
+
+            if (string.IsNullOrWhiteSpace(useSsl))
+                useSsl = "false";
+
+            var pdfSettings = new PdfSettings { UseSslForPdf = useSsl.EqualsIgnoreCase("true") };
+            services.AddSingleton(pdfSettings);
+        }
+
         public static IServiceCollection ConfigureConsentCookieSettings(this IServiceCollection services, IConfiguration configuration)
         {
             var cookieExpiration = configuration.GetSection("cookieExpiration").Get<CookieExpirationSettings>();
@@ -242,6 +255,14 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp
         {
             var analyticsSettings = configuration.GetSection(AnalyticsSettings.Key).Get<AnalyticsSettings>();
             services.AddSingleton(analyticsSettings);
+
+            return services;
+        }
+
+        public static IServiceCollection ConfigureNominateOrganisationMessageSettings(this IServiceCollection services, IConfiguration configuration)
+        {
+            var settings = configuration.GetSection("nominateOrganisationMessage").Get<NominateOrganisationMessageSettings>();
+            services.AddSingleton(settings);
 
             return services;
         }

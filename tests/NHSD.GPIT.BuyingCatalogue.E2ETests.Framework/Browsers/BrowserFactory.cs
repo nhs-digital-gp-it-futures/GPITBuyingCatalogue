@@ -70,6 +70,8 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.Browsers
                 options.AddArguments("start-maximized", "no-sandbox", "auto-open-devtools-for-tabs", "ignore-certificate-errors", "log-level=3");
             }
 
+            options.AddUserProfilePreference("download.default_directory", Path.GetTempPath());
+
             return options;
         }
 

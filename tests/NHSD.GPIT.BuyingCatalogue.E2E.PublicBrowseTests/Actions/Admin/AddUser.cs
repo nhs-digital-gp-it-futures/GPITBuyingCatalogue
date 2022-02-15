@@ -34,10 +34,5 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Actions.Admin
         {
             return Driver.FindElement(Objects.Admin.AddUserObjects.ConfirmationTitle).Text;
         }
-
-        internal void ClickAddUserButton()
-        {
-            Driver.FindElement(Objects.Admin.AddUserObjects.AddUserButton).Click();
-        }
     }
 }

@@ -1,6 +1,8 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
+using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Models;
+using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Models.FilterModels;
 
 namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.Orders
 {
@@ -14,7 +16,9 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.Orders
 
         public Task<Order> GetOrderForSummary(CallOffId callOffId, string odsCode);
 
-        public Task<IList<Order>> GetOrders(int organisationId);
+        public Task<PagedList<Order>> GetPagedOrders(int organisationId, PageOptions options, string search = null);
+
+        public Task<IList<SearchFilterModel>> GetOrdersBySearchTerm(int organisationId, string searchTerm);
 
         public Task<Order> GetOrderSummary(CallOffId callOffId, string odsCode);
 

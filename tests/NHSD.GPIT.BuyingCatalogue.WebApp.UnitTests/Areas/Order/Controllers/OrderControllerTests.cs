@@ -20,6 +20,7 @@ using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Models.TaskList;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Orders;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Organisations;
+using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Pdf;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.TaskList;
 using NHSD.GPIT.BuyingCatalogue.Test.Framework.AutoFixtureCustomisations;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers;
@@ -43,7 +44,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers
 
         [Theory]
         [CommonAutoData]
-        public static async Task Get_IncompleteOrder_ReturnsExpectedResult(
+        public static async Task Get_InProgressOrder_ReturnsExpectedResult(
             string odsCode,
             EntityFramework.Ordering.Models.Order order,
             AspNetUser aspNetUser,
@@ -53,7 +54,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers
             OrderController controller)
         {
             order.LastUpdatedByUser = aspNetUser;
-            order.OrderStatus = OrderStatus.Incomplete;
+            order.OrderStatus = OrderStatus.InProgress;
 
             var expectedViewData = new OrderModel(odsCode, order, orderTaskList) { DescriptionUrl = "testUrl" };
 
@@ -118,7 +119,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers
 
             orderServiceMock.Setup(s => s.GetOrderForSummary(order.CallOffId, odsCode)).ReturnsAsync(order);
 
-            var actualResult = await controller.Summary(odsCode, order.CallOffId);
+            var actualResult = await controller.Summary(odsCode, order.CallOffId, new SummaryModel());
 
             actualResult.Should().BeOfType<ViewResult>();
             actualResult.As<ViewResult>().ViewData.ModelState.ValidationState.Should().Be(ModelValidationState.Invalid);
@@ -207,6 +208,72 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers
 
             result.Should().NotBeNull();
             result.ActionName.Should().Be(nameof(OrderController.NewOrder));
+        }
+
+        [Theory]
+        [CommonAutoData]
+        public static async Task Get_Download_CompleteOrder_ReturnsExpectedResult(
+            string odsCode,
+            EntityFramework.Ordering.Models.Order order,
+            [Frozen] Mock<IOrderService> orderServiceMock,
+            [Frozen] Mock<IPdfService> pdfServiceMock,
+            byte[] result,
+            OrderController controller)
+        {
+            order.OrderStatus = OrderStatus.Complete;
+
+            orderServiceMock.Setup(s => s.GetOrderForSummary(order.CallOffId, odsCode)).ReturnsAsync(order);
+
+            pdfServiceMock.Setup(s => s.Convert(It.IsAny<System.Uri>())).Returns(result);
+
+            var httpContext = new DefaultHttpContext();
+            httpContext.Request.Scheme = "https";
+            httpContext.Request.Host = new HostString("localhost");
+
+            controller.ControllerContext = new ControllerContext
+            {
+                HttpContext = httpContext,
+            };
+
+            var actualResult = await controller.Download(odsCode, order.CallOffId);
+
+            actualResult.Should().BeOfType<FileContentResult>();
+            actualResult.As<FileContentResult>().ContentType.Should().Be("application/pdf");
+            actualResult.As<FileContentResult>().FileDownloadName.Should().Be($"order-summary-completed-{order.CallOffId}.pdf");
+            actualResult.As<FileContentResult>().FileContents.Should().BeEquivalentTo(result);
+        }
+
+        [Theory]
+        [CommonAutoData]
+        public static async Task Get_Download_InProgressOrder_ReturnsExpectedResult(
+            string odsCode,
+            EntityFramework.Ordering.Models.Order order,
+            [Frozen] Mock<IOrderService> orderServiceMock,
+            [Frozen] Mock<IPdfService> pdfServiceMock,
+            byte[] result,
+            OrderController controller)
+        {
+            order.OrderStatus = OrderStatus.InProgress;
+
+            orderServiceMock.Setup(s => s.GetOrderForSummary(order.CallOffId, odsCode)).ReturnsAsync(order);
+
+            pdfServiceMock.Setup(s => s.Convert(It.IsAny<System.Uri>())).Returns(result);
+
+            var httpContext = new DefaultHttpContext();
+            httpContext.Request.Scheme = "https";
+            httpContext.Request.Host = new HostString("localhost");
+
+            controller.ControllerContext = new ControllerContext
+            {
+                HttpContext = httpContext,
+            };
+
+            var actualResult = await controller.Download(odsCode, order.CallOffId);
+
+            actualResult.Should().BeOfType<FileContentResult>();
+            actualResult.As<FileContentResult>().ContentType.Should().Be("application/pdf");
+            actualResult.As<FileContentResult>().FileDownloadName.Should().Be($"order-summary-in-progress-{order.CallOffId}.pdf");
+            actualResult.As<FileContentResult>().FileContents.Should().BeEquivalentTo(result);
         }
     }
 }

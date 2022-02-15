@@ -10,6 +10,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.SupplierDefinedEpi
         {
             SupplierDefinedEpics = supplierDefinedEpics
                 .Select(e => new SupplierDefinedEpicModel(e.Id, e.Name, e.Capability.Name, e.IsActive))
+                .OrderBy(e => e.Capability)
+                .ThenBy(e => e.IsActive)
+                .ThenBy(e => e.Name)
                 .ToList();
         }
 

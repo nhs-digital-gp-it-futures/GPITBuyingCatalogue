@@ -1,14 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Users.Models;
-using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.Framework.Settings;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.CreateBuyer;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Email;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Identity;
-using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Results;
 
 namespace NHSD.GPIT.BuyingCatalogue.Services.CreateBuyer
 {
@@ -19,28 +18,32 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.CreateBuyer
         private readonly IPasswordResetCallback passwordResetCallback;
         private readonly IGovNotifyEmailService govNotifyEmailService;
         private readonly RegistrationSettings settings;
-        private readonly IAspNetUserValidator aspNetUserValidator;
 
         public CreateBuyerService(
             BuyingCatalogueDbContext dbContext,
             IPasswordService passwordService,
             IPasswordResetCallback passwordResetCallback,
             IGovNotifyEmailService govNotifyEmailService,
-            RegistrationSettings settings,
-            IAspNetUserValidator aspNetUserValidator)
+            RegistrationSettings settings)
         {
             this.dbContext = dbContext ?? throw new ArgumentNullException(nameof(dbContext));
             this.passwordService = passwordService ?? throw new ArgumentNullException(nameof(passwordService));
             this.passwordResetCallback = passwordResetCallback ?? throw new ArgumentNullException(nameof(passwordResetCallback));
             this.govNotifyEmailService = govNotifyEmailService ?? throw new ArgumentNullException(nameof(govNotifyEmailService));
             this.settings = settings ?? throw new ArgumentNullException(nameof(settings));
-            this.aspNetUserValidator = aspNetUserValidator ?? throw new ArgumentNullException(nameof(aspNetUserValidator));
         }
 
-        public async Task<Result<int>> Create(int primaryOrganisationId, string firstName, string lastName, string phoneNumber, string emailAddress)
+        public async Task<AspNetUser> Create(int primaryOrganisationId, string firstName, string lastName, string phoneNumber, string emailAddress, bool isAdmin)
         {
             if (string.IsNullOrWhiteSpace(emailAddress))
                 throw new ArgumentException($"{nameof(emailAddress)} must be provided.", nameof(emailAddress));
+
+            // If the account is being created for the NHS Digital organisation by an Authority user
+            // then they are creating another authority user
+            var organisationFunction =
+                primaryOrganisationId == 1 && isAdmin
+                    ? OrganisationFunction.Authority.DisplayName
+                    : OrganisationFunction.Buyer.DisplayName;
 
             var aspNetUser = new AspNetUser
             {
@@ -52,14 +55,10 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.CreateBuyer
                 Email = emailAddress,
                 NormalizedEmail = emailAddress.ToUpperInvariant(),
                 PrimaryOrganisationId = primaryOrganisationId,
-                OrganisationFunction = OrganisationFunction.Buyer.DisplayName,
+                OrganisationFunction = organisationFunction,
                 SecurityStamp = Guid.NewGuid().ToString(),
                 ConcurrencyStamp = Guid.NewGuid().ToString(),
             };
-
-            var validationResult = await aspNetUserValidator.ValidateAsync(aspNetUser);
-            if (!validationResult.IsSuccess)
-                return Result.Failure<int>(validationResult.Errors);
 
             dbContext.AspNetUsers.Add(aspNetUser);
 
@@ -69,8 +68,10 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.CreateBuyer
 
             await SendInitialEmailAsync(token);
 
-            return Result.Success(aspNetUser.Id);
+            return aspNetUser;
         }
+
+        public Task<bool> UserExistsWithEmail(string emailAddress) => Task.FromResult(dbContext.AspNetUsers.Any(u => u.NormalizedUserName == emailAddress.ToUpperInvariant()));
 
         private Task SendInitialEmailAsync(PasswordResetToken token)
         {

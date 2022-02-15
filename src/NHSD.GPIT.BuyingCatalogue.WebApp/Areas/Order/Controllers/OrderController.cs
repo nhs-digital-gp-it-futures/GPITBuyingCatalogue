@@ -1,18 +1,22 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
+using NHSD.GPIT.BuyingCatalogue.Framework.Settings;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Models.TaskList;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Orders;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Organisations;
+using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Pdf;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.TaskList;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.Order;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.OrderTriage;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.Shared;
+using NHSD.GPIT.BuyingCatalogue.WebApp.Controllers;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
 {
@@ -24,15 +28,21 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
         private readonly IOrderService orderService;
         private readonly ITaskListService taskListService;
         private readonly IOrganisationsService organisationsService;
+        private readonly IPdfService pdfService;
+        private readonly PdfSettings pdfSettings;
 
         public OrderController(
             IOrderService orderService,
             ITaskListService taskListService,
-            IOrganisationsService organisationsService)
+            IOrganisationsService organisationsService,
+            IPdfService pdfService,
+            PdfSettings pdfSettings)
         {
             this.orderService = orderService ?? throw new ArgumentNullException(nameof(orderService));
             this.taskListService = taskListService ?? throw new ArgumentNullException(nameof(taskListService));
             this.organisationsService = organisationsService ?? throw new ArgumentNullException(nameof(organisationsService));
+            this.pdfService = pdfService ?? throw new ArgumentNullException(nameof(pdfService));
+            this.pdfSettings = pdfSettings ?? throw new ArgumentNullException(nameof(pdfSettings));
         }
 
         [HttpGet]
@@ -141,7 +151,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
         }
 
         [HttpGet("summary")]
-        public async Task<IActionResult> Summary(string odsCode, CallOffId callOffId, string print = "false")
+        public async Task<IActionResult> Summary(string odsCode, CallOffId callOffId)
         {
             var order = await orderService.GetOrderForSummary(callOffId, odsCode);
 
@@ -174,19 +184,17 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
                 },
             };
 
-            return print.Equals("true", StringComparison.OrdinalIgnoreCase)
-                ? View("PrintSummary", model)
-                : View(model);
+            return View(model);
         }
 
         [HttpPost("summary")]
-        public async Task<IActionResult> Summary(string odsCode, CallOffId callOffId)
+        public async Task<IActionResult> Summary(string odsCode, CallOffId callOffId, SummaryModel model)
         {
             var order = await orderService.GetOrderForSummary(callOffId, odsCode);
 
             if (!order.CanComplete())
             {
-                var model = new SummaryModel(odsCode, order);
+                model.Order = order;
                 ModelState.AddModelError("Order", "Your order is incomplete. Please go back to the order and check again");
                 return View(model);
             }
@@ -194,6 +202,32 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
             await orderService.CompleteOrder(callOffId, odsCode);
 
             return RedirectToAction();
+        }
+
+        [HttpGet("download")]
+        public async Task<IActionResult> Download(string odsCode, CallOffId callOffId)
+        {
+            var order = await orderService.GetOrderForSummary(callOffId, odsCode);
+
+            string url = Url.Action(
+                        nameof(OrderSummaryController.Index),
+                        typeof(OrderSummaryController).ControllerName(),
+                        new { odsCode, callOffId });
+
+            if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+            {
+                url = $"{Request.Scheme}://{Request.Host}{url}";
+            }
+            else
+            {
+                url = pdfSettings.UseSslForPdf ? $"https://localhost{url}" : $"http://localhost{url}";
+            }
+
+            var result = pdfService.Convert(new Uri(url));
+
+            var fileName = order.OrderStatus == OrderStatus.Complete ? $"order-summary-completed-{callOffId}.pdf" : $"order-summary-in-progress-{callOffId}.pdf";
+
+            return File(result, "application/pdf", fileName);
         }
     }
 }
