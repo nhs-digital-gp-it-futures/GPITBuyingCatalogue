@@ -22,8 +22,18 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.UIComponentTests.Tests
         public void Address_GetHeader()
         {
             CommonActions.GetElementText(CommonObject.Header1).
-               Contains("Address")
-               .Should().BeTrue();
+              Contains("Address")
+              .Should().BeTrue();
+        }
+
+        [Fact]
+        public void Address_VerifyThatAddressPageIsLoaded()
+        {
+            CommonActions.PageLoadedCorrectGetIndex(
+                 typeof(HomeController),
+                 nameof(HomeController.Address))
+                 .Should()
+                 .BeTrue();
         }
     }
 }

@@ -24,5 +24,15 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.UIComponentTests.Tests
                 Contains("The Paragraphs Above were written to describe when to use endnotes.")
                 .Should().BeTrue();
         }
+
+        [Fact]
+        public void EndNote_VerifyThatEndNotePageIsLoaded()
+        {
+            CommonActions.PageLoadedCorrectGetIndex(
+                 typeof(HomeController),
+                 nameof(HomeController.EndNote))
+                 .Should()
+                 .BeTrue();
+        }
     }
 }

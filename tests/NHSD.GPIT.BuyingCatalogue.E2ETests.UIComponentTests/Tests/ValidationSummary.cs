@@ -18,6 +18,16 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.UIComponentTests.Tests
         }
 
         [Fact]
+        public void ValidationSummary_VerifyThatValidationSummaryPageIsLoaded()
+        {
+            CommonActions.PageLoadedCorrectGetIndex(
+                 typeof(HomeController),
+                 nameof(HomeController.ValidationSummary))
+                 .Should()
+                 .BeTrue();
+        }
+
+        [Fact]
         public void Tag_GetTagsHeader()
         {
             CommonActions.GetElementText(CommonObject.Header1).

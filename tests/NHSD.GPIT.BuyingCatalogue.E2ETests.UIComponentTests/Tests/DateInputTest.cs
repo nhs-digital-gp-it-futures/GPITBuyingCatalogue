@@ -1,6 +1,7 @@
 ﻿using System;
 using FluentAssertions;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.UIComponentTests.Objects;
+using NHSD.GPIT.BuyingCatalogue.E2ETests.UIComponentTests.Objects.Common;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.UIComponentTests.Utils;
 using NHSD.GPIT.BuyingCatalogue.UI.Components.WebApp.Controllers;
 using Xunit;
@@ -16,6 +17,24 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.UIComponentTests.Tests
                         nameof(HomeController.DateInput),
                         null)
         {
+        }
+
+        [Fact]
+        public void DateInput_VerifyThatDateInputPageIsLoaded()
+        {
+            CommonActions.PageLoadedCorrectGetIndex(
+                 typeof(HomeController),
+                 nameof(HomeController.DateInput))
+                 .Should()
+                 .BeTrue();
+        }
+
+        [Fact]
+        public void DateInput_TitleDisplaysCorrectly()
+        {
+            CommonActions.PageTitle()
+               .Should()
+               .BeEquivalentTo($"Dateinput-TagHelpers".FormatForComparison());
         }
 
         [Fact]

@@ -19,6 +19,16 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.UIComponentTests.Tests
         }
 
         [Fact]
+        public void SummaryList_VerifyThatSummaryListPageIsLoaded()
+        {
+            CommonActions.PageLoadedCorrectGetIndex(
+                 typeof(HomeController),
+                 nameof(HomeController.SummaryList))
+                 .Should()
+                 .BeTrue();
+        }
+
+        [Fact]
         public void SummaryList_EnterValueIntoSummaryListInputBox()
         {
             var text = Strings.RandomString(500);

@@ -1,6 +1,7 @@
 ﻿using FluentAssertions;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.RandomData;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.UIComponentTests.Objects;
+using NHSD.GPIT.BuyingCatalogue.E2ETests.UIComponentTests.Objects.Common;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.UIComponentTests.Utils;
 using NHSD.GPIT.BuyingCatalogue.UI.Components.WebApp.Controllers;
 using Xunit;
@@ -16,6 +17,24 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.UIComponentTests.Tests
                         nameof(HomeController.BookendedTextInput),
                         null)
         {
+        }
+
+        [Fact]
+        public void Address_VerifyThatBookendedTextInputPageIsLoaded()
+        {
+            CommonActions.PageLoadedCorrectGetIndex(
+                 typeof(HomeController),
+                 nameof(HomeController.BookendedTextInput))
+                 .Should()
+                 .BeTrue();
+        }
+
+        [Fact]
+        public void BookendedTextInput_TitleDisplaysCorrectly()
+        {
+            CommonActions.PageTitle()
+               .Should()
+               .BeEquivalentTo($"Bookendedinputs-TagHelpers".FormatForComparison());
         }
 
         [Fact]

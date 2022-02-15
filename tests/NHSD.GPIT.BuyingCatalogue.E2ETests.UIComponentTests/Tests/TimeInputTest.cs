@@ -19,6 +19,16 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.UIComponentTests.Tests
         }
 
         [Fact]
+        public void TimeInput_VerifyThatTimeInputPageIsLoaded()
+        {
+            CommonActions.PageLoadedCorrectGetIndex(
+                 typeof(HomeController),
+                 nameof(HomeController.TimeInput))
+                 .Should()
+                 .BeTrue();
+        }
+
+        [Fact]
         public void TimeInput_EnterValueInSingleFrom()
         {
             var time = DateTime.Now.ToString("HH:mm");
