@@ -13,6 +13,6 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.UIComponentTests.Actions
         }
 
         public IWebDriver Driver { get; }
-        public WebDriverWait Wait { get; protected set; }
+        public WebDriverWait Wait { get; }
     }
 }
