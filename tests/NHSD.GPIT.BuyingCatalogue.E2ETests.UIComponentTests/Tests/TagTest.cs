@@ -18,6 +18,16 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.UIComponentTests.Tests
         }
 
         [Fact]
+        public void Tags_VerifyThatTagsPageIsLoaded()
+        {
+            CommonActions.PageLoadedCorrectGetIndex(
+                 typeof(HomeController),
+                 nameof(HomeController.Tags))
+                 .Should()
+                 .BeTrue();
+        }
+
+        [Fact]
         public void Tag_GetTagsHeader()
         {
             CommonActions.GetElementText(CommonObject.Header1).

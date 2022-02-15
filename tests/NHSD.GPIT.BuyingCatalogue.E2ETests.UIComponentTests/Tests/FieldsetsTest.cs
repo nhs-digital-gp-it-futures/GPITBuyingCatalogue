@@ -17,6 +17,16 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.UIComponentTests.Tests
         }
 
         [Fact]
+        public void FieldSets_VerifyThatFieldSetsPageIsLoaded()
+        {
+            CommonActions.PageLoadedCorrectGetIndex(
+                 typeof(HomeController),
+                 nameof(HomeController.FieldSets))
+                 .Should()
+                 .BeTrue();
+        }
+
+        [Fact]
         public void FieldSets_FieldSetsHeader()
         {
             CommonActions.IsElementDisplayed(CommonObject.Header1).Should().BeTrue();

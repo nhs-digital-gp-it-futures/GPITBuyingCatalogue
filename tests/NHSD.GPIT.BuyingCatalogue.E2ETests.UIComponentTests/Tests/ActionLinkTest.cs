@@ -1,5 +1,6 @@
 ﻿using FluentAssertions;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.UIComponentTests.Objects;
+using NHSD.GPIT.BuyingCatalogue.E2ETests.UIComponentTests.Objects.Common;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.UIComponentTests.Utils;
 using NHSD.GPIT.BuyingCatalogue.UI.Components.WebApp.Controllers;
 using Xunit;
@@ -21,6 +22,24 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.UIComponentTests.Tests
         public void ActionLink_VerifyThatActionLinkIsDisplayed()
         {
             CommonActions.IsElementDisplayed(ActionLinksObjects.ActionLink).Should().BeTrue();
+        }
+
+        [Fact]
+        public void ActionLink_VerifyThatActionLinkPageIsLoaded()
+        {
+            CommonActions.PageLoadedCorrectGetIndex(
+                 typeof(HomeController),
+                 nameof(HomeController.ActionLink))
+                 .Should()
+                 .BeTrue();
+        }
+
+        [Fact]
+        public void ActionLink_TitleDisplaysCorrectly()
+        {
+            CommonActions.PageTitle()
+               .Should()
+               .BeEquivalentTo($"Actionlinks-ViewComponents".FormatForComparison());
         }
     }
 }

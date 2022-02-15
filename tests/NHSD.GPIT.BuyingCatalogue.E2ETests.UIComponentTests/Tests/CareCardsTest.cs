@@ -22,5 +22,15 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.UIComponentTests.Tests
         {
             CommonActions.IsElementDisplayed(CommonObject.Header1).Should().BeTrue();
         }
+
+        [Fact]
+        public void CareCard_VerifyThatCareCardPageIsLoaded()
+        {
+            CommonActions.PageLoadedCorrectGetIndex(
+                 typeof(HomeController),
+                 nameof(HomeController.CareCard))
+                 .Should()
+                 .BeTrue();
+        }
     }
 }

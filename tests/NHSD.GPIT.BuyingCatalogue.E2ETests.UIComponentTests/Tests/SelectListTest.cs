@@ -16,6 +16,16 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.UIComponentTests.Tests
         {
         }
 
+        [Fact]
+        public void SelectList_VerifyThatSelectListPageIsLoaded()
+        {
+            CommonActions.PageLoadedCorrectGetIndex(
+                 typeof(HomeController),
+                 nameof(HomeController.SelectList))
+                 .Should()
+                 .BeTrue();
+        }
+
         [Theory]
         [InlineData("First Option", "1")]
         [InlineData("Second Option", "2")]

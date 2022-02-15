@@ -18,6 +18,16 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.UIComponentTests.Tests
         }
 
         [Fact]
+        public void TextInput_VerifyThatTextInputPageIsLoaded()
+        {
+            CommonActions.PageLoadedCorrectGetIndex(
+                 typeof(HomeController),
+                 nameof(HomeController.TextInput))
+                 .Should()
+                 .BeTrue();
+        }
+
+        [Fact]
         public void TextInputBox_EnterAvalueIntoInputBox1()
         {
             var text = Strings.RandomString(100);
