@@ -1,4 +1,4 @@
 * @nhs-digital-gp-it-futures/buying-catalogue-reviewers
-src/* @nhs-digital-gp-it-futures/buying-catalogue-dev-reviewers
-tests/* @nhs-digital-gp-it-futures/buying-catalogue-test-reviewers
-terraform/* @nhs-digital-gp-it-futures/buying-catalogue-platform-reviewers
+src/ @nhs-digital-gp-it-futures/buying-catalogue-dev-reviewers
+tests/ @nhs-digital-gp-it-futures/buying-catalogue-test-reviewers
+terraform/ @nhs-digital-gp-it-futures/buying-catalogue-platform-reviewers
