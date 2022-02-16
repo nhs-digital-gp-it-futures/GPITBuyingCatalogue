@@ -111,6 +111,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp
 
             forwardingOptions.KnownNetworks.Clear();
             forwardingOptions.KnownProxies.Clear();
+            
             app.UseForwardedHeaders(forwardingOptions);
 
             app.UseSerilogRequestLogging(opts =>
