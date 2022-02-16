@@ -18,6 +18,16 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.UIComponentTests.Tests
         }
 
         [Fact]
+        public void DoAndDontList_VerifyThatDoAndDontListPageIsLoaded()
+        {
+            CommonActions.PageLoadedCorrectGetIndex(
+                 typeof(HomeController),
+                 nameof(HomeController.DoAndDontList))
+                 .Should()
+                 .BeTrue();
+        }
+
+        [Fact]
         public void DoAndDontLists_GetDoAndDontListsHeader1()
         {
             CommonActions.GetElementText(CommonObject.Header1).

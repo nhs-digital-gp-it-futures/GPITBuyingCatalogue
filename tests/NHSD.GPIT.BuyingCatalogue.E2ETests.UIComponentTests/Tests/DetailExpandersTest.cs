@@ -19,6 +19,16 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.UIComponentTests.Tests
         }
 
         [Fact]
+        public void DetailsAndExpanders_VerifyThatDetailsAndExpandersPageIsLoaded()
+        {
+            CommonActions.PageLoadedCorrectGetIndex(
+                 typeof(HomeController),
+                 nameof(HomeController.DetailsAndExpanders))
+                 .Should()
+                 .BeTrue();
+        }
+
+        [Fact]
         public void DetailsAndExpanders_DropDownWithSomeParagraphIsDislayed()
         {
             CommonActions.IsElementDisplayed(DetailsAndExpandersObjects.DetailsDropDownWithParagraph).Should().BeTrue();

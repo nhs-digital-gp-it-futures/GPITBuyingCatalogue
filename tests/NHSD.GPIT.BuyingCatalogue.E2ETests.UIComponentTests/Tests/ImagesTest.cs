@@ -17,6 +17,16 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.UIComponentTests.Tests
         }
 
         [Fact]
+        public void Images_VerifyThatImagesPageIsLoaded()
+        {
+            CommonActions.PageLoadedCorrectGetIndex(
+                 typeof(HomeController),
+                 nameof(HomeController.Images))
+                 .Should()
+                 .BeTrue();
+        }
+
+        [Fact]
         public void Images_IsTrueImageIsDisplayed()
         {
             CommonActions.IsElementDisplayed(ImagesObjects.Images).Should().BeTrue();

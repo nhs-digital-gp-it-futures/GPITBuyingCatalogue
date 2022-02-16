@@ -17,6 +17,16 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.UIComponentTests.Tests
         }
 
         [Fact]
+        public void YesNoRadios_VerifyThatYesNoRadiosPageIsLoaded()
+        {
+            CommonActions.PageLoadedCorrectGetIndex(
+                 typeof(HomeController),
+                 nameof(HomeController.YesNoRadios))
+                 .Should()
+                 .BeTrue();
+        }
+
+        [Fact]
         public void YesNoRadioButtons_CanClickYes()
         {
             CommonActions.ClickElement(YesNoRadioButtonObjects.Yes);

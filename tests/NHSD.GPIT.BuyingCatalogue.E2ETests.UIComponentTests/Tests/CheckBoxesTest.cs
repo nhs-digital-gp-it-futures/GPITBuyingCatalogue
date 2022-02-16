@@ -1,6 +1,7 @@
 ﻿using FluentAssertions;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.RandomData;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.UIComponentTests.Objects;
+using NHSD.GPIT.BuyingCatalogue.E2ETests.UIComponentTests.Objects.Common;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.UIComponentTests.Utils;
 using NHSD.GPIT.BuyingCatalogue.UI.Components.WebApp.Controllers;
 using OpenQA.Selenium;
@@ -16,6 +17,24 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.UIComponentTests.Tests
                         nameof(HomeController.Checkboxes),
                         null)
         {
+        }
+
+        [Fact]
+        public void Checkboxes_VerifyThatCheckboxesPageIsLoaded()
+        {
+            CommonActions.PageLoadedCorrectGetIndex(
+                 typeof(HomeController),
+                 nameof(HomeController.Checkboxes))
+                 .Should()
+                 .BeTrue();
+        }
+
+        [Fact]
+        public void Checkboxes_TitleDisplaysCorrectly()
+        {
+            CommonActions.PageTitle()
+               .Should()
+               .BeEquivalentTo($"Checkboxes-TagHelpers".FormatForComparison());
         }
 
         [Fact]

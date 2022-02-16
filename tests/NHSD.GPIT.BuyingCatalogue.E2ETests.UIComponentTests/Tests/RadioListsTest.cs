@@ -17,6 +17,16 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.UIComponentTests.Tests
         }
 
         [Fact]
+        public void RadioLists_VerifyThatRadioListsPageIsLoaded()
+        {
+            CommonActions.PageLoadedCorrectGetIndex(
+                 typeof(HomeController),
+                 nameof(HomeController.RadioLists))
+                 .Should()
+                 .BeTrue();
+        }
+
+        [Fact]
         public void RadioListButtons_CanClickFirstOption()
         {
             CommonActions.ClickElement(RadioListsObjects.FirstOption);

@@ -18,6 +18,16 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.UIComponentTests.Tests
         }
 
         [Fact]
+        public void Buttons_VerifyThatButtonsPageIsLoaded()
+        {
+            CommonActions.PageLoadedCorrectGetIndex(
+                 typeof(HomeController),
+                 nameof(HomeController.Buttons))
+                 .Should()
+                 .BeTrue();
+        }
+
+        [Fact]
         public void Buttons_SaveAndContinueButtonIsDisplayed()
         {
             CommonActions.GetElementText(CommonSelectors.SubmitButton).Contains("Save and continue").Should().BeTrue();
