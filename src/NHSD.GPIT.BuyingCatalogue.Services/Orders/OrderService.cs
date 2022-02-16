@@ -91,7 +91,6 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
                 .SingleOrDefaultAsync();
         }
 
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Globalization", "CA1305:Specify IFormatProvider", Justification = "Formatting used in LINQ-to-SQL Queries which does not support format providers")]
         public async Task<PagedList<Order>> GetPagedOrders(int organisationId, PageOptions options, string search = null)
         {
             options ??= new PageOptions();
