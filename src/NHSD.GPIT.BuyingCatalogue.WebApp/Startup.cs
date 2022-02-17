@@ -82,8 +82,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp
 
             services.ConfigureOds(Configuration);
 
-            services.ConfigureEmail(Configuration);
-
             services.ConfigureDomainName();
 
             services.ConfigurePdf();
