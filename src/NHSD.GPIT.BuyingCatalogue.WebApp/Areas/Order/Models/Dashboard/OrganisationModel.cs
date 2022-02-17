@@ -18,7 +18,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.Dashboard
             Title = organisation.Name;
             OrganisationName = organisation.Name;
             OdsCode = organisation.OdsCode;
-            CanActOnBehalf = user.GetSecondaryOdsCodes().Any();
+            CanActOnBehalf = user.GetSecondaryOrganisationInternalIdentifiers().Any();
             Orders = orders ?? new List<EntityFramework.Ordering.Models.Order>();
         }
 

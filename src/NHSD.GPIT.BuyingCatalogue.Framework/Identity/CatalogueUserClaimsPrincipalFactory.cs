@@ -33,12 +33,12 @@ namespace NHSD.GPIT.BuyingCatalogue.Framework.Identity
             id.AddClaim(new Claim(Constants.CatalogueClaims.OrganisationFunction, user.OrganisationFunction));
 
             var organisation = await organisationService.GetOrganisation(user.PrimaryOrganisationId);
-            id.AddClaim(new Claim(Constants.CatalogueClaims.PrimaryOrganisationOdsCode, organisation.OdsCode));
+            id.AddClaim(new Claim(Constants.CatalogueClaims.PrimaryOrganisationInternalIdentifier, organisation.InternalIdentifier));
 
             var relatedOrganisations = await organisationService.GetRelatedOrganisations(user.PrimaryOrganisationId);
 
             foreach (var relatedOrganisation in relatedOrganisations)
-                id.AddClaim(new Claim(Constants.CatalogueClaims.SecondaryOrganisationOdsCode, relatedOrganisation.OdsCode));
+                id.AddClaim(new Claim(Constants.CatalogueClaims.SecondaryOrganisationInternalIdentifier, relatedOrganisation.InternalIdentifier));
 
             return id;
         }

@@ -77,7 +77,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers
                 new Claim[]
                 {
                     new("organisationFunction", "Buyer"),
-                    new("primaryOrganisationOdsCode", odsCode),
+                    new("primaryOrganisationInternalIdentifier", odsCode),
                 },
                 "mock"));
 
@@ -144,8 +144,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers
                 new Claim[]
                 {
                     new("organisationFunction", "Buyer"),
-                    new("primaryOrganisationOdsCode", organisations.First().OdsCode),
-                    new("secondaryOrganisationOdsCode", organisations.Last().OdsCode),
+                    new("primaryOrganisationInternalIdentifier", organisations.First().OdsCode),
+                    new("secondaryOrganisationInternalIdentifier", organisations.Last().OdsCode),
                 },
                 "mock"));
 

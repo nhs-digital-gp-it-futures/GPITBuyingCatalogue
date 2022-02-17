@@ -35,7 +35,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
             if (!User.IsBuyer())
                 return View("NotBuyer");
 
-            var odsCode = User.GetPrimaryOdsCode();
+            var odsCode = User.GetPrimaryOrganisationInternalIdentifier();
 
             return RedirectToAction(
                 nameof(Organisation),
@@ -67,9 +67,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
         [HttpGet("organisation/{odsCode}/select")]
         public async Task<IActionResult> SelectOrganisation(string odsCode)
         {
-            var odsCodes = new List<string>(User.GetSecondaryOdsCodes())
+            var odsCodes = new List<string>(User.GetSecondaryOrganisationInternalIdentifiers())
             {
-                User.GetPrimaryOdsCode(),
+                User.GetPrimaryOrganisationInternalIdentifier(),
             };
 
             var organisations = await organisationsService.GetOrganisationsByOdsCodes(odsCodes.ToArray());

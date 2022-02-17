@@ -26,7 +26,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.Dashboar
             model.Title.Should().Be(organisation.Name);
             model.OrganisationName.Should().Be(organisation.Name);
             model.OdsCode.Should().Be(organisation.OdsCode);
-            model.CanActOnBehalf.Should().Be(user.GetSecondaryOdsCodes().Any());
+            model.CanActOnBehalf.Should().Be(user.GetSecondaryOrganisationInternalIdentifiers().Any());
             model.Orders.Should().BeEquivalentTo(allOrders);
         }
     }

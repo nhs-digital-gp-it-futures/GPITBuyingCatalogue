@@ -28,13 +28,13 @@ namespace NHSD.GPIT.BuyingCatalogue.Framework.UnitTests.Identity
             userManager.Setup(m => m.GetUserNameAsync(user)).ReturnsAsync(user.UserName);
 
             var orgService = new Mock<IOrganisationsService>();
-            orgService.Setup(m => m.GetOrganisation(It.IsAny<int>())).ReturnsAsync(new Organisation { OdsCode = "123" });
+            orgService.Setup(m => m.GetOrganisation(It.IsAny<int>())).ReturnsAsync(new Organisation { OdsCode = "123", InternalIdentifier = "123", ExternalIdentifier = "123" });
 
             orgService.Setup(m => m.GetRelatedOrganisations(It.IsAny<int>())).ReturnsAsync(new List<Organisation>
             {
-                new() { OdsCode = "ABC" },
-                new() { OdsCode = "DEF" },
-                new() { OdsCode = "GHI" },
+                new() { OdsCode = "ABC", InternalIdentifier = "ABC", ExternalIdentifier = "ABC" },
+                new() { OdsCode = "DEF", InternalIdentifier = "DEF", ExternalIdentifier = "DEF" },
+                new() { OdsCode = "GHI", InternalIdentifier = "GHI", ExternalIdentifier = "GHI" },
             });
 
             var options = new Mock<IOptions<IdentityOptions>>();
@@ -52,12 +52,12 @@ namespace NHSD.GPIT.BuyingCatalogue.Framework.UnitTests.Identity
 
             Assert.Equal(organisationFunction, GetClaimValue(principal, "organisationFunction"));
             Assert.Equal("Fred Smith", GetClaimValue(principal, "userDisplayName"));
-            Assert.Equal("123", GetClaimValue(principal, "primaryOrganisationOdsCode"));
-            Assert.Equal(3, GetClaimValues(principal, "secondaryOrganisationOdsCode").Length);
+            Assert.Equal("123", GetClaimValue(principal, "primaryOrganisationInternalIdentifier"));
+            Assert.Equal(3, GetClaimValues(principal, "secondaryOrganisationInternalIdentifier").Length);
 
-            Assert.Contains(GetClaimValues(principal, "secondaryOrganisationOdsCode"), s => s.EqualsIgnoreCase("ABC"));
-            Assert.Contains(GetClaimValues(principal, "secondaryOrganisationOdsCode"), s => s.EqualsIgnoreCase("DEF"));
-            Assert.Contains(GetClaimValues(principal, "secondaryOrganisationOdsCode"), s => s.EqualsIgnoreCase("GHI"));
+            Assert.Contains(GetClaimValues(principal, "secondaryOrganisationInternalIdentifier"), s => s.EqualsIgnoreCase("ABC"));
+            Assert.Contains(GetClaimValues(principal, "secondaryOrganisationInternalIdentifier"), s => s.EqualsIgnoreCase("DEF"));
+            Assert.Contains(GetClaimValues(principal, "secondaryOrganisationInternalIdentifier"), s => s.EqualsIgnoreCase("GHI"));
         }
 
         public static Mock<UserManager<AspNetUser>> MockUserManager()
