@@ -52,7 +52,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
             const int PageSize = 10;
             var options = new PageOptions(page, PageSize);
 
-            var organisation = await organisationsService.GetOrganisationByOdsCode(odsCode);
+            var organisation = await organisationsService.GetOrganisationByInternalIdentifier(odsCode);
 
             var orders = await orderService.GetPagedOrders(organisation.Id, options, search);
 
@@ -72,7 +72,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
                 User.GetPrimaryOrganisationInternalIdentifier(),
             };
 
-            var organisations = await organisationsService.GetOrganisationsByOdsCodes(odsCodes.ToArray());
+            var organisations = await organisationsService.GetOrganisationsByInternalIdentifiers(odsCodes.ToArray());
 
             var model = new SelectOrganisationModel(odsCode, organisations)
             {
@@ -101,7 +101,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
         {
             var currentPageUrl = new UriBuilder(HttpContext.Request.Headers.Referer.ToString());
 
-            var organisation = await organisationsService.GetOrganisationByOdsCode(odsCode);
+            var organisation = await organisationsService.GetOrganisationByInternalIdentifier(odsCode);
             var results = await orderService.GetOrdersBySearchTerm(organisation.Id, search);
 
             return Json(results.Select(r =>

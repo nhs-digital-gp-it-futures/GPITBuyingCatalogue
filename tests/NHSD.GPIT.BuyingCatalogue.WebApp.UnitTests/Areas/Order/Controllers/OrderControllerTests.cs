@@ -96,7 +96,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers
             Organisation organisation,
             OrderController controller)
         {
-            organisationsService.Setup(s => s.GetOrganisationByOdsCode(odsCode))
+            organisationsService.Setup(s => s.GetOrganisationByInternalIdentifier(odsCode))
                 .ReturnsAsync(organisation);
 
             var expectedViewData = new OrderModel(odsCode, null, new OrderTaskList(), organisation.Name) { DescriptionUrl = "testUrl" };
@@ -158,8 +158,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers
                 new Claim[]
                 {
                     new("organisationFunction", "Buyer"),
-                    new("primaryOrganisationInternalIdentifier", organisations.First().OdsCode),
-                    new("secondaryOrganisationInternalIdentifier", organisations.Last().OdsCode),
+                    new("primaryOrganisationInternalIdentifier", organisations.First().InternalIdentifier),
+                    new("secondaryOrganisationInternalIdentifier", organisations.Last().InternalIdentifier),
                 },
                 "mock"));
 
@@ -169,14 +169,14 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers
                     HttpContext = new DefaultHttpContext { User = user },
                 };
 
-            organisationService.Setup(s => s.GetOrganisationsByOdsCodes(It.IsAny<string[]>())).ReturnsAsync(organisations);
+            organisationService.Setup(s => s.GetOrganisationsByInternalIdentifiers(It.IsAny<string[]>())).ReturnsAsync(organisations);
 
-            var expected = new SelectOrganisationModel(organisations.First().OdsCode, organisations)
+            var expected = new SelectOrganisationModel(organisations.First().InternalIdentifier, organisations)
             {
                 Title = "Which organisation are you ordering for?",
             };
 
-            var result = (await controller.SelectOrganisation(organisations.First().OdsCode)).As<ViewResult>();
+            var result = (await controller.SelectOrganisation(organisations.First().InternalIdentifier)).As<ViewResult>();
 
             result.Should().NotBeNull();
             result.Model.Should().BeEquivalentTo(expected, opt => opt.Excluding(m => m.BackLink));

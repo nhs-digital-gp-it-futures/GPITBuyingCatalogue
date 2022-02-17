@@ -29,7 +29,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Organisations
             if (odsOrganisation is null)
                 throw new ArgumentNullException(nameof(odsOrganisation));
 
-            var persistedOrganisation = await dbContext.Organisations.FirstOrDefaultAsync(o => o.OdsCode == odsOrganisation.OdsCode);
+            var persistedOrganisation = await dbContext.Organisations.FirstOrDefaultAsync(o => o.ExternalIdentifier == odsOrganisation.OdsCode);
 
             if (persistedOrganisation is not null)
                 return (0, $"The organisation with ODS code {odsOrganisation.OdsCode} already exists.");
@@ -40,7 +40,6 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Organisations
                 CatalogueAgreementSigned = agreementSigned,
                 LastUpdated = DateTime.UtcNow,
                 Name = odsOrganisation.OrganisationName,
-                OdsCode = odsOrganisation.OdsCode,
                 ExternalIdentifier = odsOrganisation.OdsCode,
                 InternalIdentifier = odsOrganisation.OdsCode,
                 PrimaryRoleId = odsOrganisation.PrimaryRoleId,
@@ -57,14 +56,14 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Organisations
             return await dbContext.Organisations.SingleAsync(o => o.Id == id);
         }
 
-        public async Task<Organisation> GetOrganisationByOdsCode(string odsCode)
+        public async Task<Organisation> GetOrganisationByInternalIdentifier(string internalIdentifier)
         {
-            return await dbContext.Organisations.SingleAsync(o => o.OdsCode == odsCode);
+            return await dbContext.Organisations.SingleAsync(o => o.InternalIdentifier == internalIdentifier);
         }
 
-        public async Task<List<Organisation>> GetOrganisationsByOdsCodes(string[] odsCodes)
+        public async Task<List<Organisation>> GetOrganisationsByInternalIdentifiers(string[] internalIdentifiers)
         {
-            return await dbContext.Organisations.Where(o => odsCodes.Contains(o.OdsCode)).OrderBy(o => o.Name).ToListAsync();
+            return await dbContext.Organisations.Where(o => internalIdentifiers.Contains(o.InternalIdentifier)).OrderBy(o => o.Name).ToListAsync();
         }
 
         public async Task UpdateCatalogueAgreementSigned(int organisationId, bool signed)

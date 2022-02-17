@@ -32,7 +32,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Csv
                 .Select(oir => new FullOrderCsvModel
                 {
                     CallOffId = oir.OrderItem.Order.CallOffId,
-                    OdsCode = oir.OrderItem.Order.OrderingParty.OdsCode,
+                    OdsCode = oir.OrderItem.Order.OrderingParty.InternalIdentifier,
                     OrganisationName = oir.OrderItem.Order.OrderingParty.Name,
                     CommencementDate = oir.OrderItem.Order.CommencementDate,
                     ServiceRecipientId = oir.Recipient.OdsCode,
@@ -71,7 +71,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Csv
                 .Select(oir => new PatientOrderCsvModel
                 {
                     CallOffId = oir.OrderItem.Order.CallOffId,
-                    OdsCode = oir.OrderItem.Order.OrderingParty.OdsCode,
+                    OdsCode = oir.OrderItem.Order.OrderingParty.InternalIdentifier,
                     OrganisationName = oir.OrderItem.Order.OrderingParty.Name,
                     CommencementDate = oir.OrderItem.Order.CommencementDate,
                     ServiceRecipientId = oir.Recipient.OdsCode,
