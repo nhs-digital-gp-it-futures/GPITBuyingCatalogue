@@ -75,6 +75,8 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Organisations
             newOrganisation.LastUpdated.Date.Should().Be(DateTime.UtcNow.Date);
             newOrganisation.Name.Should().Be(odsOrganisation.OrganisationName);
             newOrganisation.OdsCode.Should().Be(odsOrganisation.OdsCode);
+            newOrganisation.ExternalIdentifier.Should().Be(odsOrganisation.OdsCode);
+            newOrganisation.InternalIdentifier.Should().Be(odsOrganisation.OdsCode);
             newOrganisation.PrimaryRoleId.Should().Be(odsOrganisation.PrimaryRoleId);
         }
     }
