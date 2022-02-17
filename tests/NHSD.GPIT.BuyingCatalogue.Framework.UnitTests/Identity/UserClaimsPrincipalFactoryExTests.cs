@@ -28,13 +28,13 @@ namespace NHSD.GPIT.BuyingCatalogue.Framework.UnitTests.Identity
             userManager.Setup(m => m.GetUserNameAsync(user)).ReturnsAsync(user.UserName);
 
             var orgService = new Mock<IOrganisationsService>();
-            orgService.Setup(m => m.GetOrganisation(It.IsAny<int>())).ReturnsAsync(new Organisation { InternalIdentifier = "123", ExternalIdentifier = "123" });
+            orgService.Setup(m => m.GetOrganisation(It.IsAny<int>())).ReturnsAsync(new Organisation { InternalIdentifier = "123" });
 
             orgService.Setup(m => m.GetRelatedOrganisations(It.IsAny<int>())).ReturnsAsync(new List<Organisation>
             {
-                new() { InternalIdentifier = "ABC", ExternalIdentifier = "ABC" },
-                new() { InternalIdentifier = "DEF", ExternalIdentifier = "DEF" },
-                new() { InternalIdentifier = "GHI", ExternalIdentifier = "GHI" },
+                new() { InternalIdentifier = "ABC" },
+                new() { InternalIdentifier = "DEF" },
+                new() { InternalIdentifier = "GHI" },
             });
 
             var options = new Mock<IOptions<IdentityOptions>>();

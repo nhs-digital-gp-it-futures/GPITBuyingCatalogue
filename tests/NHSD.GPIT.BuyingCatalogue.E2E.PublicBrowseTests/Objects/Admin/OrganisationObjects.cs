@@ -21,7 +21,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Objects.Admin
 
         internal static By RelatedOrgTableOrgName(int orgId) => ByExtensions.DataTestId($"related-org-name-{orgId}");
 
-        internal static By RelatedOrgTableOdsCode(int orgId) => ByExtensions.DataTestId($"related-org-odsCode-{orgId}");
+        internal static By RelatedOrgTableOdsCode(int orgId) => ByExtensions.DataTestId($"related-org-externalIdentifier-{orgId}");
 
         internal static By RelatedOrganisationRemove(int orgId) => ByExtensions.DataTestId($"related-org-remove-{orgId}");
 

@@ -24,12 +24,12 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Organisations
             return await dbContext.Organisations.OrderBy(o => o.Name).ToListAsync();
         }
 
-        public async Task<(int OrganisationId, string Error)> AddOdsOrganisation(OdsOrganisation odsOrganisation, bool agreementSigned)
+        public async Task<(int OrganisationId, string Error)> AddCcgOrganisation(OdsOrganisation odsOrganisation, bool agreementSigned)
         {
             if (odsOrganisation is null)
                 throw new ArgumentNullException(nameof(odsOrganisation));
 
-            var persistedOrganisation = await dbContext.Organisations.FirstOrDefaultAsync(o => o.ExternalIdentifier == odsOrganisation.OdsCode);
+            var persistedOrganisation = await dbContext.Organisations.FirstOrDefaultAsync(o => o.ExternalIdentifier == odsOrganisation.OdsCode && o.OrganisationType == OrganisationType.CCG);
 
             if (persistedOrganisation is not null)
                 return (0, $"The organisation with ODS code {odsOrganisation.OdsCode} already exists.");

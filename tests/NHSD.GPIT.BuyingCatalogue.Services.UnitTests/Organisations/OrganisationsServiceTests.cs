@@ -30,14 +30,14 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Organisations
 
         [Theory]
         [InMemoryDbAutoData]
-        public static Task AddOdsOrganisation_NullOdsOrganisation_ThrowsException(OrganisationsService service)
+        public static Task AddCcgOrganisation_NullOdsOrganisation_ThrowsException(OrganisationsService service)
         {
-            return Assert.ThrowsAsync<ArgumentNullException>(() => service.AddOdsOrganisation(null, true));
+            return Assert.ThrowsAsync<ArgumentNullException>(() => service.AddCcgOrganisation(null, true));
         }
 
         [Theory]
         [InMemoryDbAutoData]
-        public static async Task AddOdsOrganisation_OrganisationAlreadyExists_ReturnsError(
+        public static async Task AddCcgOrganisation_OrganisationAlreadyExists_ReturnsError(
             [Frozen] BuyingCatalogueDbContext context,
             OdsOrganisation odsOrganisation,
             bool agreementSigned,
@@ -45,10 +45,11 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Organisations
             OrganisationsService service)
         {
             organisation.ExternalIdentifier = odsOrganisation.OdsCode;
+            organisation.OrganisationType = OrganisationType.CCG;
             context.Organisations.Add(organisation);
             await context.SaveChangesAsync();
 
-            (int orgId, var error) = await service.AddOdsOrganisation(odsOrganisation, agreementSigned);
+            (int orgId, var error) = await service.AddCcgOrganisation(odsOrganisation, agreementSigned);
 
             orgId.Should().Be(0);
             error.Should().Be($"The organisation with ODS code {odsOrganisation.OdsCode} already exists.");
@@ -56,13 +57,13 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Organisations
 
         [Theory]
         [InMemoryDbAutoData]
-        public static async Task AddOdsOrganisation_OrganisationCreated(
+        public static async Task AddCcgOrganisation_OrganisationCreated(
             [Frozen] BuyingCatalogueDbContext context,
             OdsOrganisation odsOrganisation,
             bool agreementSigned,
             OrganisationsService service)
         {
-            (int orgId, var error) = await service.AddOdsOrganisation(odsOrganisation, agreementSigned);
+            (int orgId, var error) = await service.AddCcgOrganisation(odsOrganisation, agreementSigned);
 
             orgId.Should().NotBe(0);
             error.Should().BeNull();
