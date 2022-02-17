@@ -8,12 +8,6 @@ services:
         environment:
             SA_PASSWORD: "Abc123Abc123"
             ACCEPT_EULA: "Y"
-
-    maildev:
-        image: maildev/maildev
-        ports:
-        - "1080:80"
-        - "1081:25"
                  
     nhsd_gpitbcdb_deploy:
         image: ${DOCKER_REGISTRY}gpitbuyingcataloguedatabase
@@ -36,6 +30,5 @@ services:
             EA_USER_EMAIL: "user@agency.com"
             EA_USER_PASSWORD_HASH: "AQAAAAEAACcQAAAAEEOFkNNrFpKmDC2TBv2CP/dzxfnjdXk97RoqRlunE/CGs2tmFcewKZj4M/fITiP2tg=="
             EA_USER_PHONE: "01234567890"
-
         depends_on:
             - "sqlserver"    
