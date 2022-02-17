@@ -41,6 +41,8 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Organisations
                 LastUpdated = DateTime.UtcNow,
                 Name = odsOrganisation.OrganisationName,
                 OdsCode = odsOrganisation.OdsCode,
+                ExternalIdentifier = odsOrganisation.OdsCode,
+                InternalIdentifier = odsOrganisation.OdsCode,
                 PrimaryRoleId = odsOrganisation.PrimaryRoleId,
             };
 
