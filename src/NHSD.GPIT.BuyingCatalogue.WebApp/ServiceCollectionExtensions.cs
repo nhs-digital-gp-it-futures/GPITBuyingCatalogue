@@ -254,6 +254,12 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp
             services.AddSingleton(registrationSettings);
         }
 
+        public static void ConfigureContactUs(this IServiceCollection services, IConfiguration configuration)
+        {
+            var contactUsSettings = configuration.GetSection("contactUs").Get<ContactUsSettings>();
+            services.AddSingleton(contactUsSettings);
+        }
+
         public static void ConfigureDataProtection(this IServiceCollection services, IConfiguration configuration)
         {
             var dataProtectionAppName = configuration.GetValue<string>("dataProtection:applicationName");
