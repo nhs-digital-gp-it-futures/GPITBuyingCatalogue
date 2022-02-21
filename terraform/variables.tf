@@ -93,5 +93,5 @@ variable "primary_env" {
 }
 
 variable "core_env" {
-  types = string
+  type = string
 }
