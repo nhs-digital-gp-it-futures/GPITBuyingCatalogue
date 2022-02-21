@@ -91,3 +91,7 @@ variable "acr_subscription_id" {
 variable "primary_env" {
   type = string
 }
+
+variable "core_env" {
+  types = string
+}

@@ -1,5 +1,5 @@
 data "azurerm_virtual_network" "primary_virtualnet" {
-  name                = "gpitfutures-platform-virtualnet"
+  name                = "gpitfutures-${var.primary_env}-virtualnet"
   count               = var.environment == var.primary_env ? 0 : 1
   resource_group_name = "${var.project}-${var.primary_env}-rg-virtualnet"
 }

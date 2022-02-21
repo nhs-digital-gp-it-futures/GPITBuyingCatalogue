@@ -12,12 +12,12 @@ module "sql_databases_pri" {
   sql_edition           = "Standard"
   sql_size              = "S0"
 
-  enable_replica        = local.shortenv == "platform" || local.shortenv == "production" ? 1 : 0 
+  enable_replica        = local.shortenv == "preprod" || local.shortenv == "production" ? 1 : 0 
   region_replica        = local.sql_region2
   rg_replica_name       = azurerm_resource_group.sql-server.name
   sqlsvr_replica_name   = "${var.project}-${var.environment}-sql-secondary"
   
-  core_env              = local.coreEnv
+  core_env              = var.core_env
 
   depends_on = [module.sql_server_pri]
 } 
