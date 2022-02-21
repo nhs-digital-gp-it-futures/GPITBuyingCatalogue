@@ -28,13 +28,13 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.ActionFilters
                     return;
                 }
 
-                var internalIdentifier = context.HttpContext.Request.Path.ToString().Split('/', StringSplitOptions.RemoveEmptyEntries)[2];
+                var internalOrgId = context.HttpContext.Request.Path.ToString().Split('/', StringSplitOptions.RemoveEmptyEntries)[2];
 
-                if (!internalIdentifier.Equals(context.HttpContext.User.GetPrimaryOrganisationInternalIdentifier(), StringComparison.InvariantCultureIgnoreCase))
+                if (!internalOrgId.Equals(context.HttpContext.User.GetPrimaryOrganisationInternalIdentifier(), StringComparison.InvariantCultureIgnoreCase))
                 {
-                    if (!context.HttpContext.User.GetSecondaryOrganisationInternalIdentifiers().Any(s => s.EqualsIgnoreCase(internalIdentifier)))
+                    if (!context.HttpContext.User.GetSecondaryOrganisationInternalIdentifiers().Any(s => s.EqualsIgnoreCase(internalOrgId)))
                     {
-                        logger.LogWarning($"Attempt was made to access {context.HttpContext.Request.Path} when user cannot access {internalIdentifier}.");
+                        logger.LogWarning($"Attempt was made to access {context.HttpContext.Request.Path} when user cannot access {internalOrgId}.");
                         context.Result = new NotFoundResult();
                         return;
                     }

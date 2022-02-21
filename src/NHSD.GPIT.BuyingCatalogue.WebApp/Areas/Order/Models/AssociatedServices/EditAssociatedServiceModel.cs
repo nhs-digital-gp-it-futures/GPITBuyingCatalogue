@@ -12,14 +12,14 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.AssociatedServices
         {
         }
 
-        public EditAssociatedServiceModel(string odsCode, CreateOrderItemModel state)
+        public EditAssociatedServiceModel(string internalOrgId, CreateOrderItemModel state)
         {
             BackLink = state.IsNewSolution
-                ? $"/order/organisation/{odsCode}/order/{state.CallOffId}/associated-services/select/associated-service{(!state.SkipPriceSelection ? "/price" : string.Empty)}"
-                : $"/order/organisation/{odsCode}/order/{state.CallOffId}/associated-services";
+                ? $"/order/organisation/{internalOrgId}/order/{state.CallOffId}/associated-services/select/associated-service{(!state.SkipPriceSelection ? "/price" : string.Empty)}"
+                : $"/order/organisation/{internalOrgId}/order/{state.CallOffId}/associated-services";
 
             Title = $"{state.CatalogueItemName} information for {state.CallOffId}";
-            OdsCode = odsCode;
+            InternalOrgId = internalOrgId;
             OrderItem = state;
             EstimationPeriod = state.EstimationPeriod;
         }

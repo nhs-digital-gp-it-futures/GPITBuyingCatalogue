@@ -22,7 +22,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.Addition
 
             model.BackLink.Should().Be($"/order/organisation/{odsCode}/order/{state.CallOffId}/additional-services/select/additional-service/price");
             model.Title.Should().Be($"Service Recipients for {state.CatalogueItemName} for {state.CallOffId}");
-            model.OdsCode.Should().Be(odsCode);
+            model.InternalOrgId.Should().Be(odsCode);
             model.CallOffId.Should().Be(state.CallOffId);
         }
 
@@ -39,7 +39,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.Addition
 
             model.BackLink.Should().Be($"/order/organisation/{odsCode}/order/{state.CallOffId}/additional-services/{state.CatalogueItemId}");
             model.Title.Should().Be($"Service Recipients for {state.CatalogueItemName} for {state.CallOffId}");
-            model.OdsCode.Should().Be(odsCode);
+            model.InternalOrgId.Should().Be(odsCode);
             model.CallOffId.Should().Be(state.CallOffId);
         }
 

@@ -8,7 +8,7 @@
 
         public SummaryModel(string odsCode, EntityFramework.Ordering.Models.Order order)
         {
-            OdsCode = odsCode;
+            InternalOrgId = odsCode;
             Order = order;
         }
 

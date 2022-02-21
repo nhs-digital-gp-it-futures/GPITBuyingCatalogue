@@ -30,7 +30,7 @@
                              new { returnUrl = Url.Action(
                                  nameof(OrderTriageController.StepsNotCompleted),
                                  typeof(OrderTriageController).ControllerName(),
-                                 new { Model!.OdsCode, option = TriageOption.Between40kTo250k }),
+                                 new { Model!.InternalOrgId, option = TriageOption.Between40kTo250k }),
                              })">National Commercial and Procurement Hub</a>.
             </p>
 

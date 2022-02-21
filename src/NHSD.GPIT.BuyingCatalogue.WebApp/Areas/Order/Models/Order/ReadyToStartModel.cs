@@ -5,7 +5,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.Order
 {
     public class ReadyToStartModel : NavBaseModel
     {
-        public string OdsCode { get; set; }
+        public string InternalOrgId { get; set; }
 
         public TriageOption? Option { get; set; }
     }

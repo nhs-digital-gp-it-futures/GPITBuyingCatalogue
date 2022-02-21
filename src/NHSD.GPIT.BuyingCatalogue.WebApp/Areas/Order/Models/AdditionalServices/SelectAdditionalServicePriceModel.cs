@@ -15,7 +15,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.AdditionalServices
         public SelectAdditionalServicePriceModel(string odsCode, CallOffId callOffId, string solutionName, List<CataloguePrice> prices)
         {
             Title = $"List price for {solutionName}";
-            OdsCode = odsCode;
+            InternalOrgId = odsCode;
             SetPrices(prices);
         }
 

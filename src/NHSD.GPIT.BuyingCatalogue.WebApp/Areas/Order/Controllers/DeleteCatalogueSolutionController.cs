@@ -11,7 +11,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
 {
     [Authorize]
     [Area("Order")]
-    [Route("order/organisation/{odsCode}/order/{callOffId}/catalogue-solutions/delete/{catalogueItemId}/confirmation/{catalogueItemName}")]
+    [Route("order/organisation/{internalOrgId}/order/{callOffId}/catalogue-solutions/delete/{catalogueItemId}/confirmation/{catalogueItemName}")]
     public sealed class DeleteCatalogueSolutionController : Controller
     {
         private readonly IOrderService orderService;
@@ -27,19 +27,19 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
 
         [HttpGet]
         public async Task<IActionResult> DeleteSolution(
-            string odsCode,
+            string internalOrgId,
             CallOffId callOffId,
             CatalogueItemId catalogueItemId,
             string catalogueItemName)
         {
-            var order = await orderService.GetOrderThin(callOffId, odsCode);
+            var order = await orderService.GetOrderThin(callOffId, internalOrgId);
 
-            var model = new DeleteSolutionModel(odsCode, callOffId, catalogueItemId, catalogueItemName, order.Description)
+            var model = new DeleteSolutionModel(internalOrgId, callOffId, catalogueItemId, catalogueItemName, order.Description)
             {
                 BackLink = Url.Action(
                     nameof(CatalogueSolutionsController.EditSolution),
                     typeof(CatalogueSolutionsController).ControllerName(),
-                    new { odsCode, callOffId, catalogueItemId }),
+                    new { internalOrgId, callOffId, catalogueItemId }),
             };
 
             return View(model);
@@ -47,18 +47,18 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
 
         [HttpPost]
         public async Task<IActionResult> DeleteSolution(
-            string odsCode,
+            string internalOrgId,
             CallOffId callOffId,
             CatalogueItemId catalogueItemId,
             string catalogueItemName,
             DeleteSolutionModel model)
         {
-            await orderItemService.DeleteOrderItem(callOffId, odsCode, catalogueItemId);
+            await orderItemService.DeleteOrderItem(callOffId, internalOrgId, catalogueItemId);
 
             return RedirectToAction(
                 nameof(CatalogueSolutionsController.Index),
                 typeof(CatalogueSolutionsController).ControllerName(),
-                new { odsCode, callOffId });
+                new { internalOrgId, callOffId });
         }
     }
 }

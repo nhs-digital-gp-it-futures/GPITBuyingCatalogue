@@ -114,7 +114,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers
         [Theory]
         [CommonAutoData]
         public static void Post_SelectAdditionalServiceRecipients_NewSolution_CorrectlyRedirects(
-            string odsCode,
+            string internalOrgId,
             CreateOrderItemModel state,
             List<OrderItemRecipientModel> serviceRecipients,
             [Frozen] Mock<IOrderSessionService> orderSessionServiceMock,
@@ -131,18 +131,18 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers
                 ServiceRecipients = serviceRecipients,
             };
 
-            var actualResult = controller.SelectAdditionalServiceRecipients(odsCode, state.CallOffId, model);
+            var actualResult = controller.SelectAdditionalServiceRecipients(internalOrgId, state.CallOffId, model);
 
             actualResult.Should().BeOfType<RedirectToActionResult>();
             actualResult.As<RedirectToActionResult>().ActionName.Should().Be(nameof(AdditionalServiceRecipientsDateController.SelectAdditionalServiceRecipientsDate));
             actualResult.As<RedirectToActionResult>().ControllerName.Should().Be(typeof(AdditionalServiceRecipientsDateController).ControllerName());
-            actualResult.As<RedirectToActionResult>().RouteValues.Should().BeEquivalentTo(new RouteValueDictionary { { "odsCode", odsCode }, { "callOffId", state.CallOffId } });
+            actualResult.As<RedirectToActionResult>().RouteValues.Should().BeEquivalentTo(new RouteValueDictionary { { "internalOrgId", internalOrgId }, { "callOffId", state.CallOffId } });
         }
 
         [Theory]
         [CommonAutoData]
         public static void Post_SelectAdditionalServiceRecipients_ExistingSolution_CorrectlyRedirects(
-            string odsCode,
+            string internalOrgId,
             CreateOrderItemModel state,
             List<OrderItemRecipientModel> serviceRecipients,
             [Frozen] Mock<IOrderSessionService> orderSessionServiceMock,
@@ -159,12 +159,12 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers
                 ServiceRecipients = serviceRecipients,
             };
 
-            var actualResult = controller.SelectAdditionalServiceRecipients(odsCode, state.CallOffId, model);
+            var actualResult = controller.SelectAdditionalServiceRecipients(internalOrgId, state.CallOffId, model);
 
             actualResult.Should().BeOfType<RedirectToActionResult>();
             actualResult.As<RedirectToActionResult>().ActionName.Should().Be(nameof(AdditionalServicesController.EditAdditionalService));
             actualResult.As<RedirectToActionResult>().ControllerName.Should().Be(typeof(AdditionalServicesController).ControllerName());
-            actualResult.As<RedirectToActionResult>().RouteValues.Should().BeEquivalentTo(new RouteValueDictionary { { "odsCode", odsCode }, { "callOffId", state.CallOffId }, { "CatalogueItemId", state.CatalogueItemId } });
+            actualResult.As<RedirectToActionResult>().RouteValues.Should().BeEquivalentTo(new RouteValueDictionary { { "internalOrgId", internalOrgId }, { "callOffId", state.CallOffId }, { "CatalogueItemId", state.CatalogueItemId } });
         }
     }
 }

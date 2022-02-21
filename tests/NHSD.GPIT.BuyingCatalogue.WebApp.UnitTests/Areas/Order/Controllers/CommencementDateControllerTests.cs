@@ -59,7 +59,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers
         [Theory]
         [CommonAutoData]
         public static async Task Post_CommencementDate_SetsDate_CorrectlyRedirects(
-            string odsCode,
+            string internalOrgId,
             CreateOrderItemModel state,
             [Frozen] Mock<ICommencementDateService> commencementDateServiceMock,
             CommencementDateController controller)
@@ -78,10 +78,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers
             };
 
             commencementDateServiceMock
-                .Setup(x => x.SetCommencementDate(state.CallOffId, odsCode, date, initialPeriod, maximumTerm))
+                .Setup(x => x.SetCommencementDate(state.CallOffId, internalOrgId, date, initialPeriod, maximumTerm))
                 .Returns(Task.CompletedTask);
 
-            var result = await controller.CommencementDate(odsCode, state.CallOffId, model);
+            var result = await controller.CommencementDate(internalOrgId, state.CallOffId, model);
 
             commencementDateServiceMock.VerifyAll();
 
@@ -90,7 +90,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers
             actualResult.ControllerName.Should().Be(typeof(OrderController).ControllerName());
             actualResult.RouteValues.Should().BeEquivalentTo(new RouteValueDictionary
             {
-                { "odsCode", odsCode },
+                { "internalOrgId", internalOrgId },
                 { "callOffId", state.CallOffId },
             });
         }

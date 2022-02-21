@@ -14,7 +14,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
 {
     [Authorize]
     [Area("Order")]
-    [Route("order/organisation/{odsCode}/order/{callOffId}/additional-services/select/additional-service/price/recipients")]
+    [Route("order/organisation/{internalOrgId}/order/{callOffId}/additional-services/select/additional-service/price/recipients")]
     public sealed class AdditionalServiceRecipientsController : Controller
     {
         private readonly IOdsService odsService;
@@ -29,22 +29,22 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> SelectAdditionalServiceRecipients(string odsCode, CallOffId callOffId, string selectionMode)
+        public async Task<IActionResult> SelectAdditionalServiceRecipients(string internalOrgId, CallOffId callOffId, string selectionMode)
         {
             var state = orderSessionService.GetOrderStateFromSession(callOffId);
 
             if (state.ServiceRecipients is null)
             {
-                var recipients = await odsService.GetServiceRecipientsByParentInternalIdentifier(odsCode);
+                var recipients = await odsService.GetServiceRecipientsByParentInternalIdentifier(internalOrgId);
                 state.ServiceRecipients = recipients.Select(r => new OrderItemRecipientModel(r)).ToList();
                 orderSessionService.SetOrderStateToSession(state);
             }
 
-            return View(new SelectAdditionalServiceRecipientsModel(odsCode, state, selectionMode));
+            return View(new SelectAdditionalServiceRecipientsModel(internalOrgId, state, selectionMode));
         }
 
         [HttpPost]
-        public IActionResult SelectAdditionalServiceRecipients(string odsCode, CallOffId callOffId, SelectAdditionalServiceRecipientsModel model)
+        public IActionResult SelectAdditionalServiceRecipients(string internalOrgId, CallOffId callOffId, SelectAdditionalServiceRecipientsModel model)
         {
             if (!ModelState.IsValid)
                 return View(model);
@@ -59,13 +59,13 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
                 return RedirectToAction(
                     nameof(AdditionalServicesController.EditAdditionalService),
                     typeof(AdditionalServicesController).ControllerName(),
-                    new { odsCode, callOffId, state.CatalogueItemId });
+                    new { internalOrgId, callOffId, state.CatalogueItemId });
             }
 
             return RedirectToAction(
                 nameof(AdditionalServiceRecipientsDateController.SelectAdditionalServiceRecipientsDate),
                 typeof(AdditionalServiceRecipientsDateController).ControllerName(),
-                new { odsCode, callOffId });
+                new { internalOrgId, callOffId });
         }
     }
 }

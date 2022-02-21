@@ -14,7 +14,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
 {
     [Authorize]
     [Area("Order")]
-    [Route("order/organisation/{odsCode}/order/{callOffId}/description")]
+    [Route("order/organisation/{internalOrgId}/order/{callOffId}/description")]
     public sealed class OrderDescriptionController : Controller
     {
         private readonly IOrderService orderService;
@@ -35,64 +35,64 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> OrderDescription(string odsCode, CallOffId callOffId)
+        public async Task<IActionResult> OrderDescription(string internalOrgId, CallOffId callOffId)
         {
-            var order = await orderService.GetOrderThin(callOffId, odsCode);
+            var order = await orderService.GetOrderThin(callOffId, internalOrgId);
 
-            var descriptionModel = new OrderDescriptionModel(odsCode, order)
+            var descriptionModel = new OrderDescriptionModel(internalOrgId, order)
             {
                 BackLink = Url.Action(
                             nameof(OrderController.Order),
                             typeof(OrderController).ControllerName(),
-                            new { odsCode, callOffId }),
+                            new { internalOrgId, callOffId }),
             };
 
             return View(descriptionModel);
         }
 
         [HttpPost]
-        public async Task<IActionResult> OrderDescription(string odsCode, CallOffId callOffId, OrderDescriptionModel model)
+        public async Task<IActionResult> OrderDescription(string internalOrgId, CallOffId callOffId, OrderDescriptionModel model)
         {
             if (!ModelState.IsValid)
                 return View(model);
 
-            await orderDescriptionService.SetOrderDescription(callOffId, odsCode, model.Description);
+            await orderDescriptionService.SetOrderDescription(callOffId, internalOrgId, model.Description);
 
             return RedirectToAction(
                 nameof(OrderController.Order),
                 typeof(OrderController).ControllerName(),
-                new { odsCode, callOffId });
+                new { internalOrgId, callOffId });
         }
 
-        [HttpGet("~/organisation/{odsCode}/order/neworder/description")]
-        public async Task<IActionResult> NewOrderDescription(string odsCode, TriageOption? option = null)
+        [HttpGet("~/organisation/{internalOrgId}/order/neworder/description")]
+        public async Task<IActionResult> NewOrderDescription(string internalOrgId, TriageOption? option = null)
         {
             var user = await usersService.GetUser(User.UserId());
             var organisation = await organisationsService.GetOrganisation(user?.PrimaryOrganisationId ?? 0);
 
-            var descriptionModel = new OrderDescriptionModel(odsCode, organisation?.Name)
+            var descriptionModel = new OrderDescriptionModel(internalOrgId, organisation?.Name)
             {
                 BackLink = Url.Action(
                     nameof(OrderController.NewOrder),
                     typeof(OrderController).ControllerName(),
-                    new { odsCode, option }),
+                    new { internalOrgId, option }),
             };
 
             return View("OrderDescription", descriptionModel);
         }
 
-        [HttpPost("~/organisation/{odsCode}/order/neworder/description")]
-        public async Task<IActionResult> NewOrderDescription(string odsCode, OrderDescriptionModel model)
+        [HttpPost("~/organisation/{internalOrgId}/order/neworder/description")]
+        public async Task<IActionResult> NewOrderDescription(string internalOrgId, OrderDescriptionModel model)
         {
             if (!ModelState.IsValid)
                 return View("OrderDescription", model);
 
-            var order = await orderService.CreateOrder(model.Description, model.OdsCode);
+            var order = await orderService.CreateOrder(model.Description, model.InternalOrgId);
 
             return RedirectToAction(
                 nameof(OrderController.Order),
                 typeof(OrderController).ControllerName(),
-                new { odsCode, order.CallOffId });
+                new { internalOrgId, order.CallOffId });
         }
     }
 }

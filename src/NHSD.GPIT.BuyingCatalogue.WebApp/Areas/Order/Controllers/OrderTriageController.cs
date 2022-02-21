@@ -8,7 +8,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
 {
     [Authorize]
     [Area("Order")]
-    [Route("order/organisation/{odsCode}/order/triage")]
+    [Route("order/organisation/{internalOrgId}/order/triage")]
     public class OrderTriageController : Controller
     {
         private static readonly Dictionary<TriageOption, (string Title, string Advice, string ValidationError)> TriageSelectionContent = new()
@@ -25,14 +25,14 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
         };
 
         [HttpGet]
-        public IActionResult Index(string odsCode, TriageOption? option = null)
+        public IActionResult Index(string internalOrgId, TriageOption? option = null)
         {
             var model = new OrderTriageModel
             {
                 BackLink = Url.Action(
                     nameof(DashboardController.Organisation),
                     typeof(DashboardController).ControllerName(),
-                    new { odsCode }),
+                    new { internalOrgId }),
                 SelectedTriageOption = option,
             };
 
@@ -40,44 +40,44 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
         }
 
         [HttpPost]
-        public IActionResult Index(string odsCode, OrderTriageModel model)
+        public IActionResult Index(string internalOrgId, OrderTriageModel model)
         {
             if (!ModelState.IsValid)
                 return View(model);
 
             if (model.SelectedTriageOption == TriageOption.NotSure)
-                return RedirectToAction(nameof(NotSure), new { odsCode });
+                return RedirectToAction(nameof(NotSure), new { internalOrgId });
 
-            return RedirectToAction(nameof(TriageSelection), new { odsCode, option = model.SelectedTriageOption });
+            return RedirectToAction(nameof(TriageSelection), new { internalOrgId, option = model.SelectedTriageOption });
         }
 
         [HttpGet("not-sure")]
-        public IActionResult NotSure(string odsCode)
+        public IActionResult NotSure(string internalOrgId)
         {
             var model = new GenericOrderTriageModel
             {
-                BackLink = Url.Action(nameof(Index), new { odsCode, option = TriageOption.NotSure }),
-                OdsCode = odsCode,
+                BackLink = Url.Action(nameof(Index), new { internalOrgId, option = TriageOption.NotSure }),
+                InternalOrgId = internalOrgId,
                 OrdersDashboardLink = Url.Action(
                     nameof(DashboardController.Organisation),
                     typeof(DashboardController).ControllerName(),
-                    new { odsCode }),
+                    new { internalOrgId }),
             };
 
             return View(model);
         }
 
         [HttpGet("{option}")]
-        public IActionResult TriageSelection(string odsCode, TriageOption? option, bool? selected = null)
+        public IActionResult TriageSelection(string internalOrgId, TriageOption? option, bool? selected = null)
         {
             if (option is null)
-                return RedirectToAction(nameof(Index), new { odsCode });
+                return RedirectToAction(nameof(Index), new { internalOrgId });
 
             var (title, advice, _) = GetTriageSelectionContent(option!.Value);
 
             var model = new TriageDueDiligenceModel
             {
-                BackLink = Url.Action(nameof(Index), new { odsCode, option }),
+                BackLink = Url.Action(nameof(Index), new { internalOrgId, option }),
                 Advice = advice,
                 Title = title,
                 Selected = selected,
@@ -87,7 +87,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
         }
 
         [HttpPost("{option}")]
-        public IActionResult TriageSelection(string odsCode, TriageOption option, TriageDueDiligenceModel model)
+        public IActionResult TriageSelection(string internalOrgId, TriageOption option, TriageDueDiligenceModel model)
         {
             if (!model.Selected.HasValue)
             {
@@ -99,16 +99,16 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
                 return View(model);
 
             if (!model.Selected.GetValueOrDefault())
-                return RedirectToAction(nameof(StepsNotCompleted), new { odsCode, option });
+                return RedirectToAction(nameof(StepsNotCompleted), new { internalOrgId, option });
 
             return RedirectToAction(
                 nameof(OrderController.ReadyToStart),
                 typeof(OrderController).ControllerName(),
-                new { odsCode, option });
+                new { internalOrgId, option });
         }
 
         [HttpGet("{option}/steps-incomplete")]
-        public IActionResult StepsNotCompleted(string odsCode, TriageOption option)
+        public IActionResult StepsNotCompleted(string internalOrgId, TriageOption option)
         {
             var viewName = option switch
             {
@@ -120,12 +120,12 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
 
             var model = new GenericOrderTriageModel
             {
-                BackLink = Url.Action(nameof(TriageSelection), new { odsCode, option, selected = false }),
-                OdsCode = odsCode,
+                BackLink = Url.Action(nameof(TriageSelection), new { internalOrgId, option, selected = false }),
+                InternalOrgId = internalOrgId,
                 OrdersDashboardLink = Url.Action(
                     nameof(DashboardController.Organisation),
                     typeof(DashboardController).ControllerName(),
-                    new { odsCode }),
+                    new { internalOrgId }),
             };
 
             return View(viewName, model);

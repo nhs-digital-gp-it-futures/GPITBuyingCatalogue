@@ -13,7 +13,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
 {
     [Authorize]
     [Area("Order")]
-    [Route("order/organisation/{odsCode}/order/{callOffId}/ordering-party")]
+    [Route("order/organisation/{internalOrgId}/order/{callOffId}/ordering-party")]
     public sealed class OrderingPartyController : Controller
     {
         private readonly IOrderService orderService;
@@ -31,28 +31,28 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> OrderingParty(string odsCode, CallOffId callOffId)
+        public async Task<IActionResult> OrderingParty(string internalOrgId, CallOffId callOffId)
         {
-            var order = await orderService.GetOrderThin(callOffId, odsCode);
+            var order = await orderService.GetOrderThin(callOffId, internalOrgId);
 
-            var model = new OrderingPartyModel(odsCode, order)
+            var model = new OrderingPartyModel(internalOrgId, order)
             {
                 BackLink = Url.Action(
                     nameof(OrderController.Order),
                     typeof(OrderController).ControllerName(),
-                    new { odsCode, callOffId }),
+                    new { internalOrgId, callOffId }),
             };
 
             return View(model);
         }
 
         [HttpPost]
-        public async Task<IActionResult> OrderingParty(string odsCode, CallOffId callOffId, OrderingPartyModel model)
+        public async Task<IActionResult> OrderingParty(string internalOrgId, CallOffId callOffId, OrderingPartyModel model)
         {
             if (!ModelState.IsValid)
                 return View(model);
 
-            var order = await orderService.GetOrderThin(callOffId, odsCode);
+            var order = await orderService.GetOrderThin(callOffId, internalOrgId);
 
             var contact = contactDetailsService.AddOrUpdatePrimaryContact(
                 order.OrderingPartyContact,
@@ -63,7 +63,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
             return RedirectToAction(
                 nameof(OrderController.Order),
                 typeof(OrderController).ControllerName(),
-                new { odsCode, callOffId });
+                new { internalOrgId, callOffId });
         }
     }
 }

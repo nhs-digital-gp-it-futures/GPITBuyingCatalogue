@@ -11,7 +11,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
 {
     [Authorize]
     [Area("Order")]
-    [Route("order/organisation/{odsCode}/order/{callOffId}/funding-source")]
+    [Route("order/organisation/{internalOrgId}/order/{callOffId}/funding-source")]
     public sealed class FundingSourceController : Controller
     {
         private readonly IOrderService orderService;
@@ -26,35 +26,35 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> FundingSource(string odsCode, CallOffId callOffId)
+        public async Task<IActionResult> FundingSource(string internalOrgId, CallOffId callOffId)
         {
-            var order = await orderService.GetOrderThin(callOffId, odsCode);
+            var order = await orderService.GetOrderThin(callOffId, internalOrgId);
 
-            var model = new FundingSourceModel(odsCode, callOffId, order.FundingSourceOnlyGms)
+            var model = new FundingSourceModel(internalOrgId, callOffId, order.FundingSourceOnlyGms)
             {
                 BackLink = Url.Action(
                     nameof(OrderController.Order),
                     typeof(OrderController).ControllerName(),
-                    new { odsCode, callOffId }),
+                    new { internalOrgId, callOffId }),
             };
 
             return View(model);
         }
 
         [HttpPost]
-        public async Task<IActionResult> FundingSource(string odsCode, CallOffId callOffId, FundingSourceModel model)
+        public async Task<IActionResult> FundingSource(string internalOrgId, CallOffId callOffId, FundingSourceModel model)
         {
             if (!ModelState.IsValid)
                 return View(model);
 
             var onlyGms = model.FundingSourceOnlyGms.EqualsIgnoreCase("Yes");
 
-            await fundingSourceService.SetFundingSource(callOffId, odsCode, onlyGms);
+            await fundingSourceService.SetFundingSource(callOffId, internalOrgId, onlyGms);
 
             return RedirectToAction(
                 nameof(OrderController.Order),
                 typeof(OrderController).ControllerName(),
-                new { odsCode, callOffId });
+                new { internalOrgId, callOffId });
         }
     }
 }

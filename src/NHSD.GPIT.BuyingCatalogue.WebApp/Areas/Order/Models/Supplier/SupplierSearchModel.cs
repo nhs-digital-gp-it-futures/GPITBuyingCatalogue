@@ -8,7 +8,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.Supplier
         {
             Title = "Find supplier information";
             CallOffId = order.CallOffId;
-            OdsCode = odsCode;
+            InternalOrgId = odsCode;
         }
 
         public SupplierSearchModel()

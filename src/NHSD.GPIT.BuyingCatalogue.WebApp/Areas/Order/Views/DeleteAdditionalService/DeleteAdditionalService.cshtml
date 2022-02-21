@@ -12,7 +12,7 @@
             <form method="post">
                 <input type="hidden" asp-for="@Model.BackLink" />
                 <input type="hidden" asp-for="@Model.BackLinkText" />
-                <input type="hidden" asp-for="@Model.OdsCode" />
+                <input type="hidden" asp-for="@Model.InternalOrgId" />
                 <input type="hidden" asp-for="@Model.Title" />
 
                 <nhs-fieldset-form-container asp-for="@Model"
@@ -24,7 +24,7 @@
                                 <nhs-submit-button text="Delete" />
                             </div>
                             <div>
-                                <vc:nhs-backlink url="/order/organisation/@Model.OdsCode/order/@Model.CallOffId/additional-services/@Model.AdditionalServiceId"
+                                <vc:nhs-backlink url="/order/organisation/@Model.InternalOrgId/order/@Model.CallOffId/additional-services/@Model.AdditionalServiceId"
                                                  text="Cancel" />
                             </div>
                         </div>

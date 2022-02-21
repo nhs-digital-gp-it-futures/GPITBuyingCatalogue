@@ -13,7 +13,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.AdditionalServices
         public EditAdditionalServiceModel(string odsCode, CreateOrderItemModel state)
         {
             Title = $"{state.CatalogueItemName} information for {state.CallOffId}";
-            OdsCode = odsCode;
+            InternalOrgId = odsCode;
             OrderItem = state;
 
             OrderItem.ServiceRecipients = OrderItem.ServiceRecipients.Where(oir => oir.Selected).ToList();

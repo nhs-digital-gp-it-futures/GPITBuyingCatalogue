@@ -19,7 +19,7 @@
                 <vc:nhs-action-link url="@Url.Action(
                                                 nameof(AdditionalServicesController.SelectAdditionalService),
                                                 typeof(AdditionalServicesController).ControllerName(),
-                                                new {Model.OdsCode, Model.CallOffId})"
+                                                new {Model.InternalOrgId, Model.CallOffId})"
                                          text="Add an Additional Service" />
 
                 <nhs-table data-test-id="added-order-items">
@@ -34,7 +34,7 @@
                    asp-controller="@typeof(AdditionalServicesController).ControllerName()"
                    asp-action="@nameof(AdditionalServicesController.EditAdditionalService)"
                    asp-route-callOffId="@Model.CallOffId"
-                   asp-route-odsCode="@Model.OdsCode"
+                   asp-route-internalOrgId="@Model.InternalOrgId"
                    asp-route-catalogueItemId="@item.CatalogueItemId">@item.CatalogueItem.Name</a>
             </nhs-table-cell>
             <nhs-table-cell>
@@ -56,7 +56,7 @@
                                      url="@Url.Action(
                                      nameof(OrderController.Order),
                                      typeof(OrderController).ControllerName(),
-                                     new { Model.OdsCode, Model.CallOffId })" />
+                                     new { Model.InternalOrgId, Model.CallOffId })" />
         </div>
     </div>
 </div>

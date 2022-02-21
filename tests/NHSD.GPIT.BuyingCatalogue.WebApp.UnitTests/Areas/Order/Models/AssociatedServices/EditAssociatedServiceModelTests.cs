@@ -17,7 +17,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.Associat
             var model = new EditAssociatedServiceModel(odsCode, state);
 
             model.Title.Should().Be($"{state.CatalogueItemName} information for {state.CallOffId}");
-            model.OdsCode.Should().Be(odsCode);
+            model.InternalOrgId.Should().Be(odsCode);
             model.OrderItem.Should().Be(state);
             model.EstimationPeriod.Should().Be(state.EstimationPeriod);
         }

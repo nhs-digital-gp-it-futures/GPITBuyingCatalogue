@@ -13,7 +13,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
 {
     [Authorize]
     [Area("Order")]
-    [Route("order/organisation/{odsCode}/order/{callOffId}/catalogue-solutions/select/solution/price/recipients/date")]
+    [Route("order/organisation/{internalOrgId}/order/{callOffId}/catalogue-solutions/select/solution/price/recipients/date")]
     public sealed class CatalogueSolutionRecipientsDateController : Controller
     {
         private readonly IDefaultDeliveryDateService defaultDeliveryDateService;
@@ -28,25 +28,25 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> SelectSolutionServiceRecipientsDate(string odsCode, CallOffId callOffId)
+        public async Task<IActionResult> SelectSolutionServiceRecipientsDate(string internalOrgId, CallOffId callOffId)
         {
             var state = orderSessionService.GetOrderStateFromSession(callOffId);
 
-            var defaultDeliveryDate = await defaultDeliveryDateService.GetDefaultDeliveryDate(callOffId, odsCode, state.CatalogueItemId.GetValueOrDefault());
+            var defaultDeliveryDate = await defaultDeliveryDateService.GetDefaultDeliveryDate(callOffId, internalOrgId, state.CatalogueItemId.GetValueOrDefault());
 
             var model = new SelectSolutionServiceRecipientsDateModel(state, defaultDeliveryDate)
             {
                 BackLink = Url.Action(
                     nameof(CatalogueSolutionRecipientsController.SelectSolutionServiceRecipients),
                     typeof(CatalogueSolutionRecipientsController).ControllerName(),
-                    new { odsCode, callOffId }),
+                    new { internalOrgId, callOffId }),
             };
 
             return View(model);
         }
 
         [HttpPost]
-        public async Task<IActionResult> SelectSolutionServiceRecipientsDate(string odsCode, CallOffId callOffId, SelectSolutionServiceRecipientsDateModel model)
+        public async Task<IActionResult> SelectSolutionServiceRecipientsDate(string internalOrgId, CallOffId callOffId, SelectSolutionServiceRecipientsDateModel model)
         {
             if (!ModelState.IsValid)
                 return View(model);
@@ -54,7 +54,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
             var state = orderSessionService.GetOrderStateFromSession(callOffId);
             state.PlannedDeliveryDate = model.DeliveryDate;
 
-            await defaultDeliveryDateService.SetDefaultDeliveryDate(callOffId, odsCode, state.CatalogueItemId.GetValueOrDefault(), model.DeliveryDate!.Value);
+            await defaultDeliveryDateService.SetDefaultDeliveryDate(callOffId, internalOrgId, state.CatalogueItemId.GetValueOrDefault(), model.DeliveryDate!.Value);
 
             orderSessionService.SetOrderStateToSession(state);
 
@@ -63,7 +63,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
                 return RedirectToAction(
                     nameof(CatalogueSolutionsController.SelectFlatDeclarativeQuantity),
                     typeof(CatalogueSolutionsController).ControllerName(),
-                    new { odsCode, callOffId });
+                    new { internalOrgId, callOffId });
             }
 
             if (state.CataloguePrice.ProvisioningType == ProvisioningType.OnDemand)
@@ -71,13 +71,13 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
                 return RedirectToAction(
                     nameof(CatalogueSolutionsController.SelectFlatOnDemandQuantity),
                     typeof(CatalogueSolutionsController).ControllerName(),
-                    new { odsCode, callOffId });
+                    new { internalOrgId, callOffId });
             }
 
             return RedirectToAction(
                 nameof(CatalogueSolutionsController.EditSolution),
                 typeof(CatalogueSolutionsController).ControllerName(),
-                new { odsCode, callOffId, state.CatalogueItemId });
+                new { internalOrgId, callOffId, state.CatalogueItemId });
         }
     }
 }

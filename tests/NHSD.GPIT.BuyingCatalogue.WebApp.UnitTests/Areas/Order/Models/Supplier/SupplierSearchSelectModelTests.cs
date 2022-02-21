@@ -19,7 +19,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.Supplier
             var model = new SupplierSearchSelectModel(odsCode, callOffId, suppliers);
 
             model.Title.Should().Be("Suppliers found");
-            model.OdsCode.Should().Be(odsCode);
+            model.InternalOrgId.Should().Be(odsCode);
             model.Suppliers.Should().BeEquivalentTo(suppliers);
         }
     }

@@ -19,7 +19,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.DeleteCa
         {
             var model = new DeleteSolutionModel(odsCode, callOffId, catalogueItemId, solutionName, orderDescription);
             model.Title.Should().Be($"Delete {solutionName} from {callOffId}?");
-            model.OdsCode.Should().Be(odsCode);
+            model.InternalOrgId.Should().Be(odsCode);
             model.CallOffId.Should().Be(callOffId);
             model.SolutionId.Should().Be(catalogueItemId);
             model.SolutionName.Should().Be(solutionName);

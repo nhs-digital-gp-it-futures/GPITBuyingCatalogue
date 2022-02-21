@@ -11,7 +11,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
 {
     [Authorize]
     [Area("Order")]
-    [Route("order/organisation/{odsCode}/order/{callOffId}/supplier")]
+    [Route("order/organisation/{internalOrgId}/order/{callOffId}/supplier")]
     public sealed class SupplierController : Controller
     {
         private readonly IOrderService orderService;
@@ -26,33 +26,33 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> Supplier(string odsCode, CallOffId callOffId)
+        public async Task<IActionResult> Supplier(string internalOrgId, CallOffId callOffId)
         {
-            var order = await orderService.GetOrderWithSupplier(callOffId, odsCode);
+            var order = await orderService.GetOrderWithSupplier(callOffId, internalOrgId);
 
             if (order.Supplier is null)
             {
                 return RedirectToAction(
                     nameof(SupplierSearch),
                     typeof(SupplierController).ControllerName(),
-                    new { odsCode, callOffId });
+                    new { internalOrgId, callOffId });
             }
 
             var supplier = await supplierService.GetSupplierFromBuyingCatalogue(order.Supplier.Id);
 
-            var model = new SupplierModel(odsCode, order, supplier.SupplierContacts)
+            var model = new SupplierModel(internalOrgId, order, supplier.SupplierContacts)
             {
                 BackLink = Url.Action(
                     nameof(OrderController.Order),
                     typeof(OrderController).ControllerName(),
-                    new { odsCode, callOffId }),
+                    new { internalOrgId, callOffId }),
             };
 
             return View(model);
         }
 
         [HttpPost]
-        public async Task<IActionResult> Supplier(string odsCode, CallOffId callOffId, SupplierModel model)
+        public async Task<IActionResult> Supplier(string internalOrgId, CallOffId callOffId, SupplierModel model)
         {
             if (!ModelState.IsValid)
             {
@@ -61,61 +61,61 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
                 return View(model);
             }
 
-            await supplierService.AddOrUpdateOrderSupplierContact(callOffId, odsCode, model.PrimaryContact);
+            await supplierService.AddOrUpdateOrderSupplierContact(callOffId, internalOrgId, model.PrimaryContact);
 
             return RedirectToAction(
                 nameof(OrderController.Order),
                 typeof(OrderController).ControllerName(),
-                new { odsCode, callOffId });
+                new { internalOrgId, callOffId });
         }
 
         [HttpGet("search")]
-        public async Task<IActionResult> SupplierSearch(string odsCode, CallOffId callOffId)
+        public async Task<IActionResult> SupplierSearch(string internalOrgId, CallOffId callOffId)
         {
-            var order = await orderService.GetOrderWithSupplier(callOffId, odsCode);
+            var order = await orderService.GetOrderWithSupplier(callOffId, internalOrgId);
 
             if (order.Supplier is not null)
             {
                 return RedirectToAction(
                     nameof(SupplierController.Supplier),
                     typeof(SupplierController).ControllerName(),
-                    new { odsCode, callOffId });
+                    new { internalOrgId, callOffId });
             }
 
-            var model = new SupplierSearchModel(odsCode, order)
+            var model = new SupplierSearchModel(internalOrgId, order)
             {
                 BackLink = Url.Action(
                     nameof(OrderController.Order),
                     typeof(OrderController).ControllerName(),
-                    new { odsCode, callOffId }),
+                    new { internalOrgId, callOffId }),
             };
 
             return View(model);
         }
 
         [HttpPost("search")]
-        public IActionResult SupplierSearch(string odsCode, CallOffId callOffId, SupplierSearchModel model)
+        public IActionResult SupplierSearch(string internalOrgId, CallOffId callOffId, SupplierSearchModel model)
         {
             return RedirectToAction(
                 nameof(SupplierSearchSelect),
                 typeof(SupplierController).ControllerName(),
-                new { odsCode, callOffId, search = model.SearchString });
+                new { internalOrgId, callOffId, search = model.SearchString });
         }
 
         [HttpGet("search/select")]
-        public async Task<IActionResult> SupplierSearchSelect(string odsCode, CallOffId callOffId, [FromQuery] string search, int? supplierId = null)
+        public async Task<IActionResult> SupplierSearchSelect(string internalOrgId, CallOffId callOffId, [FromQuery] string search, int? supplierId = null)
         {
-            var order = await orderService.GetOrderWithSupplier(callOffId, odsCode);
+            var order = await orderService.GetOrderWithSupplier(callOffId, internalOrgId);
 
             if (order?.Supplier is not null)
             {
                 return RedirectToAction(
                     nameof(SupplierController.Supplier),
                     typeof(SupplierController).ControllerName(),
-                    new { odsCode, callOffId });
+                    new { internalOrgId, callOffId });
             }
 
-            var backlink = Url.Action(nameof(SupplierSearch), new { odsCode, callOffId });
+            var backlink = Url.Action(nameof(SupplierSearch), new { internalOrgId, callOffId });
 
             if (string.IsNullOrWhiteSpace(search))
                 return View("NoSupplierFound", new NoSupplierFoundModel() { BackLink = backlink });
@@ -125,7 +125,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
             if (suppliers.Count == 0)
                 return View("NoSupplierFound", new NoSupplierFoundModel() { BackLink = backlink });
 
-            return View(new SupplierSearchSelectModel(odsCode, callOffId, suppliers, supplierId)
+            return View(new SupplierSearchSelectModel(internalOrgId, callOffId, suppliers, supplierId)
             {
                 BackLink = backlink,
                 SelectedSupplierId = supplierId,
@@ -133,7 +133,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
         }
 
         [HttpPost("search/select")]
-        public async Task<IActionResult> SupplierSearchSelect(string odsCode, CallOffId callOffId, SupplierSearchSelectModel model, [FromQuery] string search)
+        public async Task<IActionResult> SupplierSearchSelect(string internalOrgId, CallOffId callOffId, SupplierSearchSelectModel model, [FromQuery] string search)
         {
             if (!ModelState.IsValid)
             {
@@ -146,7 +146,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
                 typeof(SupplierController).ControllerName(),
                 new
                 {
-                    odsCode,
+                    internalOrgId,
                     callOffId,
                     search,
                     supplierId = model.SelectedSupplierId!.Value,
@@ -154,16 +154,16 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
         }
 
         [HttpGet("confirm")]
-        public async Task<IActionResult> ConfirmSupplier(string odsCode, CallOffId callOffId, string search, int supplierId)
+        public async Task<IActionResult> ConfirmSupplier(string internalOrgId, CallOffId callOffId, string search, int supplierId)
         {
-            var order = await orderService.GetOrderWithSupplier(callOffId, odsCode);
+            var order = await orderService.GetOrderWithSupplier(callOffId, internalOrgId);
 
             if (order?.Supplier is not null)
             {
                 return RedirectToAction(
                     nameof(Supplier),
                     typeof(SupplierController).ControllerName(),
-                    new { odsCode, callOffId });
+                    new { internalOrgId, callOffId });
             }
 
             var supplier = await supplierService.GetSupplierFromBuyingCatalogue(supplierId);
@@ -173,27 +173,27 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
                 return RedirectToAction(
                     nameof(SupplierSearch),
                     typeof(SupplierController).ControllerName(),
-                    new { odsCode, callOffId });
+                    new { internalOrgId, callOffId });
             }
 
-            return View(new ConfirmSupplierModel(odsCode, callOffId, supplier, search)
+            return View(new ConfirmSupplierModel(internalOrgId, callOffId, supplier, search)
             {
-                BackLink = Url.Action(nameof(SupplierSearchSelect), new { odsCode, callOffId, search, supplierId }),
+                BackLink = Url.Action(nameof(SupplierSearchSelect), new { internalOrgId, callOffId, search, supplierId }),
             });
         }
 
         [HttpPost("confirm")]
-        public async Task<IActionResult> ConfirmSupplier(string odsCode, CallOffId callOffId, ConfirmSupplierModel model)
+        public async Task<IActionResult> ConfirmSupplier(string internalOrgId, CallOffId callOffId, ConfirmSupplierModel model)
         {
             if (!ModelState.IsValid)
                 return View(model);
 
-            await supplierService.AddOrderSupplier(callOffId, odsCode, model.SupplierId);
+            await supplierService.AddOrderSupplier(callOffId, internalOrgId, model.SupplierId);
 
             return RedirectToAction(
                 nameof(Supplier),
                 typeof(SupplierController).ControllerName(),
-                new { odsCode, callOffId });
+                new { internalOrgId, callOffId });
         }
     }
 }
