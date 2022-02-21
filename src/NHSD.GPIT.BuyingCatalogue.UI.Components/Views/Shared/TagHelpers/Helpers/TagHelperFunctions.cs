@@ -67,10 +67,11 @@ namespace NHSD.GPIT.BuyingCatalogue.UI.Components.TagHelpers
 
         public static string GetModelKebabNameFromFor(ModelExpression aspFor)
         {
-            string name = aspFor.Model.GetType().Name;
+            string name = aspFor.Model is null || !string.IsNullOrWhiteSpace(aspFor.Name) ? aspFor.Name : aspFor.Model.GetType().Name;
 
             // removes the word Model from the end of the Model, e.g SolutionDescriptionModel becomes SolutionDescription
-            name = name.Remove(name.Length - 5);
+            if (name.Contains("Model", StringComparison.OrdinalIgnoreCase))
+                name = name.Replace("Model", string.Empty);
 
             var pattern = new Regex(@"[A-Z]{2,}(?=[A-Z][a-z]+[0-9]*|\b)|[A-Z]?[a-z]+[0-9]*|[A-Z]|[0-9]+");
             return string.Join("-", pattern.Matches(name)).ToLower();

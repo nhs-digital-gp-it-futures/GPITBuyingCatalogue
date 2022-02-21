@@ -81,6 +81,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp
 
             services.ConfigureRegistration(Configuration);
 
+            services.ConfigureContactUs(Configuration);
+
             services.ConfigureOds(Configuration);
 
             services.ConfigureDomainName();
