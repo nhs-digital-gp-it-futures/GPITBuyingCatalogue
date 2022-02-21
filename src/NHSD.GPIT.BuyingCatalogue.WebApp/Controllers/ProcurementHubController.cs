@@ -54,7 +54,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Controllers
                 FullName = user?.FullName,
                 EmailAddress = user?.Email,
                 OrganisationName = organisation?.Name,
-                OdsCode = organisation?.OdsCode,
+                OdsCode = organisation?.ExternalIdentifier,
             });
         }
 
