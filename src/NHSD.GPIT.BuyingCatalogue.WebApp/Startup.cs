@@ -70,6 +70,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp
                 .ConfigureGovNotify(Configuration)
                 .ConfigureNominateOrganisationMessageSettings(Configuration)
                 .ConfigureOrderMessageSettings(Configuration)
+                .ConfigureProcurementHubMessageSettings(Configuration)
                 .ConfigureRequestAccountMessageSettings(Configuration)
                 .ConfigureConsentCookieSettings(Configuration)
                 .ConfigureAnalyticsSettings(Configuration);
@@ -81,8 +82,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp
             services.ConfigureRegistration(Configuration);
 
             services.ConfigureOds(Configuration);
-
-            services.ConfigureEmail(Configuration);
 
             services.ConfigureDomainName();
 

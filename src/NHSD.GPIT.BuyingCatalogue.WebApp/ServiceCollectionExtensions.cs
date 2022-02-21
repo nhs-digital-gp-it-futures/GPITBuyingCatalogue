@@ -2,8 +2,6 @@
 using System.IO.Compression;
 using System.Threading.Tasks;
 using FluentValidation.AspNetCore;
-using MailKit;
-using MailKit.Net.Smtp;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.DataProtection;
@@ -34,10 +32,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp
     public static class ServiceCollectionExtensions
     {
         private const string BuyingCatalogueDbConnectionEnvironmentVariable = "BC_DB_CONNECTION";
-        private const string BuyingCatalogueSmtpHostEnvironmentVariable = "BC_SMTP_HOST";
-        private const string BuyingCatalogueSmtpPortEnvironmentVariable = "BC_SMTP_PORT";
-        private const string BuyingCatalogueSmtpUserNameEnvironmentVariable = "BC_SMTP_USERNAME";
-        private const string BuyingCatalogueSmtpPasswordEnvironmentVariable = "BC_SMTP_PASSWORD";
         private const string BuyingCatalogueDomainNameEnvironmentVariable = "DOMAIN_NAME";
         private const string BuyingCataloguePdfEnvironmentVariable = "USE_SSL_FOR_PDF";
 
@@ -129,43 +123,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp
         {
             var disabledErrorMessage = configuration.GetSection("disabledErrorMessage").Get<DisabledErrorMessageSettings>();
             services.AddSingleton(disabledErrorMessage);
-        }
-
-        public static void ConfigureEmail(
-            this IServiceCollection services,
-            IConfiguration configuration)
-        {
-            var host = Environment.GetEnvironmentVariable(BuyingCatalogueSmtpHostEnvironmentVariable);
-
-            if (string.IsNullOrWhiteSpace(host))
-                throw new InvalidOperationException($"Environment variable '{BuyingCatalogueSmtpHostEnvironmentVariable}' must be set for the smtp host");
-
-            var port = Environment.GetEnvironmentVariable(BuyingCatalogueSmtpPortEnvironmentVariable);
-
-            if (string.IsNullOrWhiteSpace(port))
-                throw new InvalidOperationException($"Environment variable '{BuyingCatalogueSmtpPortEnvironmentVariable}' must be set for the smtp port");
-
-            if (!int.TryParse(port, out var portNumber))
-                throw new InvalidOperationException($"Environment variable '{BuyingCatalogueSmtpPortEnvironmentVariable}' must be a valid smtp port number");
-
-            var userName = Environment.GetEnvironmentVariable(BuyingCatalogueSmtpUserNameEnvironmentVariable);
-            var password = Environment.GetEnvironmentVariable(BuyingCatalogueSmtpPasswordEnvironmentVariable);
-
-            var allowInvalidCertificate = configuration.GetValue<bool>("AllowInvalidCertificate");
-            var smtpSettings = configuration.GetSection("SmtpServer").Get<SmtpSettings>();
-            smtpSettings.AllowInvalidCertificate ??= allowInvalidCertificate;
-            smtpSettings.Host = host;
-            smtpSettings.Port = portNumber;
-
-            if (!string.IsNullOrWhiteSpace(userName))
-                smtpSettings.SenderAddress = userName;
-
-            if (!string.IsNullOrWhiteSpace(password))
-                smtpSettings.Authentication = new SmtpAuthenticationSettings { IsRequired = true, UserName = userName, Password = password };
-
-            services.AddSingleton(smtpSettings);
-            services.AddScoped<IMailTransport, SmtpClient>();
-            services.AddTransient<IEmailService, MailKitEmailService>();
         }
 
         public static void ConfigureDomainName(this IServiceCollection services)
@@ -271,6 +228,14 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp
         {
             var orderMessageSettings = configuration.GetSection("orderMessage").Get<OrderMessageSettings>();
             services.AddSingleton(orderMessageSettings);
+
+            return services;
+        }
+
+        public static IServiceCollection ConfigureProcurementHubMessageSettings(this IServiceCollection services, IConfiguration configuration)
+        {
+            var settings = configuration.GetSection("procurementHubMessage").Get<ProcurementHubMessageSettings>();
+            services.AddSingleton(settings);
 
             return services;
         }

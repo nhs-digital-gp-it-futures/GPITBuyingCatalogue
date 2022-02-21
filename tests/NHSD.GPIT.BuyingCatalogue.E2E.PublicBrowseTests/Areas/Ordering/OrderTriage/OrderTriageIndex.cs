@@ -1,10 +1,12 @@
 ﻿using System.Collections.Generic;
 using FluentAssertions;
+using NHSD.GPIT.BuyingCatalogue.E2ETests.Objects.Ordering;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Utils;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.TestBases;
 using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.OrderTriage;
+using NHSD.GPIT.BuyingCatalogue.WebApp.Controllers;
 using Xunit;
 
 namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering.OrderTriage
@@ -51,9 +53,21 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering.OrderTriage
 
             CommonActions.PageLoadedCorrectGetIndex(
                 typeof(OrderTriageController),
-                nameof(OrderTriageController.NotSure))
-                .Should()
-                .BeTrue();
+                nameof(OrderTriageController.NotSure)).Should().BeTrue();
+
+            CommonActions.ElementIsDisplayed(OrderTriageObjects.ProcurementHubLink).Should().BeTrue();
+
+            CommonActions.ClickLinkElement(OrderTriageObjects.ProcurementHubLink);
+
+            CommonActions.PageLoadedCorrectGetIndex(
+                typeof(ProcurementHubController),
+                nameof(ProcurementHubController.Index)).Should().BeTrue();
+
+            CommonActions.ClickGoBackLink();
+
+            CommonActions.PageLoadedCorrectGetIndex(
+                typeof(OrderTriageController),
+                nameof(OrderTriageController.NotSure)).Should().BeTrue();
         }
 
         [Theory]
@@ -69,9 +83,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering.OrderTriage
 
             CommonActions.PageLoadedCorrectGetIndex(
                 typeof(OrderTriageController),
-                nameof(OrderTriageController.TriageSelection))
-                .Should()
-                .BeTrue();
+                nameof(OrderTriageController.TriageSelection)).Should().BeTrue();
 
             Driver.Url.Contains(option.ToString()).Should().BeTrue();
         }
