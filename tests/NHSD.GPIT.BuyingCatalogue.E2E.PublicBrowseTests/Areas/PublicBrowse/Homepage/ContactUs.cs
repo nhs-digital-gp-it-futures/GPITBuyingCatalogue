@@ -80,7 +80,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.PublicBrowse.Homepage
         }
 
         [Fact]
-        public void ContactUs_InvalidEmailFormat_ERrorSummary()
+        public void ContactUs_InvalidEmailFormat_ErrorSummary()
         {
             TextGenerators.TextInputAddText(ContactUsObjects.EmailAddressInput, 20);
 

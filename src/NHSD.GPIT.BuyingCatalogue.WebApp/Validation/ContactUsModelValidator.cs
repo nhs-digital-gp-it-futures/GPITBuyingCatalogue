@@ -37,7 +37,5 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Validation
                 .Equal(true)
                 .WithMessage(PrivacyPolicyNotAcceptedErrorMessage);
         }
-
-        public object TestValidator { get; internal set; }
     }
 }
