@@ -10,7 +10,6 @@ using AutoFixture.Xunit2;
 using EnumsNET;
 using FluentAssertions;
 using Microsoft.EntityFrameworkCore;
-using MimeKit;
 using Moq;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
