@@ -28,7 +28,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
             initialPeriod.ValidateNotNull(nameof(initialPeriod));
             maximumTerm.ValidateNotNull(nameof(maximumTerm));
 
-            var order = await dbContext.Orders.SingleAsync(o => o.Id == callOffId.Id && o.OrderingParty.OdsCode == odsCode);
+            var order = await dbContext.Orders.SingleAsync(o => o.Id == callOffId.Id && o.OrderingParty.InternalIdentifier == odsCode);
 
             order.CommencementDate = commencementDate!.Value;
             order.InitialPeriod = initialPeriod;

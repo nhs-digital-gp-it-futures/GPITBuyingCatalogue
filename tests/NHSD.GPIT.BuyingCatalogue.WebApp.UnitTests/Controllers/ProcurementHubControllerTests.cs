@@ -85,7 +85,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Controllers
             model.FullName.Should().Be(user.FullName);
             model.EmailAddress.Should().Be(user.Email);
             model.OrganisationName.Should().Be(organisation.Name);
-            model.OdsCode.Should().Be(organisation.OdsCode);
+            model.OdsCode.Should().Be(organisation.ExternalIdentifier);
         }
 
         [Theory]

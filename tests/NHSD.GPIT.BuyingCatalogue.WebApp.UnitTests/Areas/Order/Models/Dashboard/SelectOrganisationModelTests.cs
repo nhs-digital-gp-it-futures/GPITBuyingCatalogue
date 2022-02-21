@@ -15,7 +15,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.Dashboar
         public static void WithValidArguments_PropertiesCorrectlySet(
             List<Organisation> organisations)
         {
-            var currentOdsCode = organisations.First().OdsCode;
+            var currentOdsCode = organisations.First().InternalIdentifier;
 
             var model = new SelectOrganisationModel(currentOdsCode, organisations);
 

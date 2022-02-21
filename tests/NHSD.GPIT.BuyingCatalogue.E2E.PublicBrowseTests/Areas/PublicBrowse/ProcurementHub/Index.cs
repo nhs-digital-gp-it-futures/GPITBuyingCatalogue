@@ -57,7 +57,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.PublicBrowse.ProcurementHub
             CommonActions.ElementTextEqualTo(ProcurementHubObjects.FullNameInput, user.FullName);
             CommonActions.ElementTextEqualTo(ProcurementHubObjects.EmailAddressInput, user.Email);
             CommonActions.ElementTextEqualTo(ProcurementHubObjects.OrganisationNameInput, organisation.Name);
-            CommonActions.ElementTextEqualTo(ProcurementHubObjects.FullNameInput, organisation.OdsCode);
+            CommonActions.ElementTextEqualTo(ProcurementHubObjects.FullNameInput, organisation.ExternalIdentifier);
         }
 
         [Fact]

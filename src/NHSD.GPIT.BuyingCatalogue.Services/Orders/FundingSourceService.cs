@@ -22,7 +22,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
         {
             onlyGms.ValidateNotNull(nameof(onlyGms));
 
-            var order = await dbContext.Orders.SingleAsync(o => o.Id == callOffId.Id && o.OrderingParty.OdsCode == odsCode);
+            var order = await dbContext.Orders.SingleAsync(o => o.Id == callOffId.Id && o.OrderingParty.InternalIdentifier == odsCode);
             order.FundingSourceOnlyGms = onlyGms.Value;
             await dbContext.SaveChangesAsync();
         }

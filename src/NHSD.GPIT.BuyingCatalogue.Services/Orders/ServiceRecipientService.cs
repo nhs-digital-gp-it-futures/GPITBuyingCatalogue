@@ -23,7 +23,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
                 return null;
 
             return await context.Orders
-                .Where(o => o.Id == callOffId.Id && o.OrderingParty.OdsCode == odsCode)
+                .Where(o => o.Id == callOffId.Id && o.OrderingParty.InternalIdentifier == odsCode)
                 .SelectMany(o => o.OrderItems)
                 .Where(o => o.CatalogueItem.CatalogueItemType == CatalogueItemType.Solution)
                 .SelectMany(o => o.OrderItemRecipients)

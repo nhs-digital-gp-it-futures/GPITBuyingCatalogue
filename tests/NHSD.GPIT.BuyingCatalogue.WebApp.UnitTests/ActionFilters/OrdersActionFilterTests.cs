@@ -100,7 +100,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.ActionFilters
                          new Claim[]
                          {
                              new("organisationFunction", "Buyer"),
-                             new("primaryOrganisationOdsCode", "ABC"),
+                             new("primaryOrganisationInternalIdentifier", "ABC"),
                          })));
 
             var ordersActionFilter = new OrdersActionFilter(new Mock<ILogWrapper<OrdersActionFilter>>().Object);
@@ -120,10 +120,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.ActionFilters
                          new Claim[]
                          {
                              new("organisationFunction", "Buyer"),
-                             new("primaryOrganisationOdsCode", "ABC"),
-                             new("secondaryOrganisationOdsCode", "DEF"),
-                             new("secondaryOrganisationOdsCode", "GHI"),
-                             new("secondaryOrganisationOdsCode", "JKL"),
+                             new("primaryOrganisationInternalIdentifier", "ABC"),
+                             new("secondaryOrganisationInternalIdentifier", "DEF"),
+                             new("secondaryOrganisationInternalIdentifier", "GHI"),
+                             new("secondaryOrganisationInternalIdentifier", "JKL"),
                          })));
 
             var ordersActionFilter = new OrdersActionFilter(new Mock<ILogWrapper<OrdersActionFilter>>().Object);
@@ -146,10 +146,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.ActionFilters
                          new Claim[]
                          {
                              new("organisationFunction", "Buyer"),
-                             new("primaryOrganisationOdsCode", "ABC"),
-                             new("secondaryOrganisationOdsCode", "DEF"),
-                             new("secondaryOrganisationOdsCode", "GHI"),
-                             new("secondaryOrganisationOdsCode", "JKL"),
+                             new("primaryOrganisationInternalIdentifier", "ABC"),
+                             new("secondaryOrganisationInternalIdentifier", "DEF"),
+                             new("secondaryOrganisationInternalIdentifier", "GHI"),
+                             new("secondaryOrganisationInternalIdentifier", "JKL"),
                          })));
 
             var mockLogger = new Mock<ILogWrapper<OrdersActionFilter>>();

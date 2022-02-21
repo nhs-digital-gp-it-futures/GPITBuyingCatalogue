@@ -58,7 +58,7 @@
             <nhs-summary-list-row label-text="Call-off Ordering Party">
                 @Model.Order.OrderingPartyContact.FirstName @Model.Order.OrderingPartyContact.LastName<br />
                 @Model.Order.OrderingParty.Name<br />
-                @Model.Order.OrderingParty.OdsCode<br />
+                @Model.Order.OrderingParty.ExternalIdentifier<br />
                 <vc:nhs-address address="@Model.Order.OrderingParty.Address" />
             </nhs-summary-list-row>
             <nhs-summary-list-row label-text="Supplier">
