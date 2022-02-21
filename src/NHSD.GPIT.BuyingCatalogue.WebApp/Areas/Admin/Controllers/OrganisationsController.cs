@@ -46,7 +46,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
                 {
                     Id = o.Id,
                     Name = o.Name,
-                    OdsCode = o.OdsCode,
+                    OdsCode = o.ExternalIdentifier,
                 })
                 .ToList();
 
@@ -61,7 +61,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
             return Json(results.Select(x => new AutocompleteResult
             {
                 Title = x.Name,
-                Category = x.OdsCode,
+                Category = x.ExternalIdentifier,
                 Url = Url.Action(nameof(Details), new { organisationId = $"{x.Id}" }),
             }));
         }

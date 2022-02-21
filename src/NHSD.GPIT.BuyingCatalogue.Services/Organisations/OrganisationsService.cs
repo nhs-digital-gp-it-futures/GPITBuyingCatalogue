@@ -70,7 +70,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Organisations
         {
             return await dbContext.Organisations
                 .Where(x => EF.Functions.Like(x.Name, $"%{searchTerm}%")
-                    || EF.Functions.Like(x.OdsCode, $"%{searchTerm}%"))
+                    || EF.Functions.Like(x.ExternalIdentifier, $"%{searchTerm}%"))
                 .OrderBy(x => x.Name)
                 .ToListAsync();
         }

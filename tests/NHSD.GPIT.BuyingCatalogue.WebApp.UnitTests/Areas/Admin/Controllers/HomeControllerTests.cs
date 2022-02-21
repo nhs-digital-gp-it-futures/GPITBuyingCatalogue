@@ -23,46 +23,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
 
         [Theory]
         [CommonAutoData]
-        public static async Task Get_BuyerOrganisations_GetsAllOrganisations(
-            IList<Organisation> organisations,
-            [Frozen] Mock<IOrganisationsService> mockOrganisationService,
-            HomeController controller)
-        {
-            mockOrganisationService.Setup(o => o.GetAllOrganisations())
-                .ReturnsAsync(organisations);
-
-            await controller.BuyerOrganisations();
-
-            mockOrganisationService.Verify(o => o.GetAllOrganisations());
-        }
-
-        [Theory]
-        [CommonAutoData]
-        public static async Task Get_BuyerOrganisations_ReturnsViewWithExpectedViewModel(
-            IList<Organisation> organisations,
-            [Frozen] Mock<IOrganisationsService> mockOrganisationService,
-            HomeController controller)
-        {
-            mockOrganisationService.Setup(o => o.GetAllOrganisations())
-                .ReturnsAsync(organisations);
-
-            var expectedOrganisationModels = organisations.Select(
-                o => new OrganisationModel
-                {
-                    Id = o.Id,
-                    Name = o.Name,
-                    OdsCode = o.InternalIdentifier,
-                }).ToList();
-
-            var actual = (await controller.BuyerOrganisations()).As<ViewResult>();
-
-            actual.Should().NotBeNull();
-            actual.ViewName.Should().BeNullOrEmpty();
-            actual.Model.As<ListOrganisationsModel>().Organisations.Should().BeEquivalentTo(expectedOrganisationModels);
-        }
-
-        [Theory]
-        [CommonAutoData]
         public static void Get_Index_ReturnsDefaultView(
             HomeController controller)
         {

@@ -93,7 +93,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Organisations
             OrganisationsService service)
         {
             var organisations = GetOrganisationsForSearchTerm(searchTerm);
-            var noMatch = organisations.Single(x => x.Name == OrganisationName && x.OdsCode == OdsCode);
+            var noMatch = organisations.Single(x => x.Name == OrganisationName && x.ExternalIdentifier == OdsCode);
 
             foreach (var organisation in organisations)
             {
@@ -111,15 +111,15 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Organisations
         {
             return new List<Organisation>
             {
-                new() { Name = OrganisationName, OdsCode = OdsCode },
-                new() { Name = $"{searchTerm}", OdsCode = OdsCode },
-                new() { Name = $"{searchTerm}{Junk}", OdsCode = OdsCode },
-                new() { Name = $"{Junk}{searchTerm}", OdsCode = OdsCode },
-                new() { Name = $"{Junk}{searchTerm}{Junk}", OdsCode = OdsCode },
-                new() { Name = OrganisationName, OdsCode = $"{searchTerm}" },
-                new() { Name = OrganisationName, OdsCode = $"{searchTerm}{Junk}" },
-                new() { Name = OrganisationName, OdsCode = $"{Junk}{searchTerm}" },
-                new() { Name = OrganisationName, OdsCode = $"{Junk}{searchTerm}{Junk}" },
+                new() { Name = OrganisationName, ExternalIdentifier = OdsCode },
+                new() { Name = $"{searchTerm}", ExternalIdentifier = OdsCode },
+                new() { Name = $"{searchTerm}{Junk}", ExternalIdentifier = OdsCode },
+                new() { Name = $"{Junk}{searchTerm}", ExternalIdentifier = OdsCode },
+                new() { Name = $"{Junk}{searchTerm}{Junk}", ExternalIdentifier = OdsCode },
+                new() { Name = OrganisationName, ExternalIdentifier = $"{searchTerm}" },
+                new() { Name = OrganisationName, ExternalIdentifier = $"{searchTerm}{Junk}" },
+                new() { Name = OrganisationName, ExternalIdentifier = $"{Junk}{searchTerm}" },
+                new() { Name = OrganisationName, ExternalIdentifier = $"{Junk}{searchTerm}{Junk}" },
             };
         }
     }

@@ -66,12 +66,12 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.Organisations
 
             var sampleOrganisation = context.Organisations.First();
 
-            await CommonActions.InputCharactersWithDelay(OrganisationObjects.SearchBar, sampleOrganisation.OdsCode);
+            await CommonActions.InputCharactersWithDelay(OrganisationObjects.SearchBar, sampleOrganisation.ExternalIdentifier);
             CommonActions.WaitUntilElementIsDisplayed(OrganisationObjects.SearchListBox);
 
             CommonActions.ElementExists(OrganisationObjects.SearchResult(0)).Should().BeTrue();
             CommonActions.ElementTextEqualTo(OrganisationObjects.SearchResultTitle(0), sampleOrganisation.Name).Should().BeTrue();
-            CommonActions.ElementTextEqualTo(OrganisationObjects.SearchResultDescription(0), sampleOrganisation.OdsCode).Should().BeTrue();
+            CommonActions.ElementTextEqualTo(OrganisationObjects.SearchResultDescription(0), sampleOrganisation.ExternalIdentifier).Should().BeTrue();
 
             CommonActions.ClickLinkElement(OrganisationObjects.SearchButton);
 
@@ -81,7 +81,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.Organisations
 
             var pageSummary = GetPageSummary();
 
-            pageSummary.OdsCodes.Single().Should().Be(sampleOrganisation.OdsCode);
+            pageSummary.OdsCodes.Single().Should().Be(sampleOrganisation.ExternalIdentifier);
             pageSummary.OrganisationIds.Single().Should().Be(sampleOrganisation.Id);
             pageSummary.OrganisationNames.Single().Should().Be(sampleOrganisation.Name);
         }
@@ -142,7 +142,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.Organisations
             var pageSummary = GetPageSummary();
 
             pageSummary.OdsCodes.Should().BeEquivalentTo(organisations.Select(o => o.InternalIdentifier)).And.HaveCount(organisations.Count);
-            pageSummary.OrganisationIds.Should().BeEquivalentTo(organisations.Select(o => o.Id)).And.HaveCount(organisations.Count);
+            pageSummary.OrganisationIds.Should().BeEquivalentTo(organisations.Select(o => o.OrganisationId)).And.HaveCount(organisations.Count);
             pageSummary.OrganisationNames.Should().BeEquivalentTo(organisations.Select(o => o.Name)).And.HaveCount(organisations.Count);
         }
 
