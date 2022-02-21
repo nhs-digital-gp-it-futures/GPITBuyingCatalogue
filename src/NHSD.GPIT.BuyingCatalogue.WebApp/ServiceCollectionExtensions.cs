@@ -232,6 +232,14 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp
             return services;
         }
 
+        public static IServiceCollection ConfigureProcurementHubMessageSettings(this IServiceCollection services, IConfiguration configuration)
+        {
+            var settings = configuration.GetSection("procurementHubMessage").Get<ProcurementHubMessageSettings>();
+            services.AddSingleton(settings);
+
+            return services;
+        }
+
         public static IServiceCollection ConfigureRequestAccountMessageSettings(this IServiceCollection services, IConfiguration configuration)
         {
             var settings = configuration.GetSection("requestAccountMessage").Get<RequestAccountMessageSettings>();
