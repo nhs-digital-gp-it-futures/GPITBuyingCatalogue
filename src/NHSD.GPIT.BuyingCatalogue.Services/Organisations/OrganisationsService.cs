@@ -75,15 +75,6 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Organisations
                 .ToListAsync();
         }
 
-        public async Task<List<Organisation>> GetOrganisationsBySearchTerm(string searchTerm)
-        {
-            return await dbContext.Organisations
-                .Where(x => EF.Functions.Like(x.Name, $"%{searchTerm}%")
-                    || EF.Functions.Like(x.OdsCode, $"%{searchTerm}%"))
-                .OrderBy(x => x.Name)
-                .ToListAsync();
-        }
-
         public async Task UpdateCatalogueAgreementSigned(int organisationId, bool signed)
         {
             var organisation = await dbContext.Organisations.SingleAsync(o => o.Id == organisationId);

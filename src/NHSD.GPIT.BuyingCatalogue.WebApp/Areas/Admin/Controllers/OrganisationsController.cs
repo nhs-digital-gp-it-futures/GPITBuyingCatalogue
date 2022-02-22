@@ -56,7 +56,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
         [HttpGet("search-results")]
         public async Task<IActionResult> SearchResults([FromQuery] string search)
         {
-            var results = await GetFilteredOrganisations(search);
+            var results = (await GetFilteredOrganisations(search)).Take(15);
 
             return Json(results.Select(x => new AutocompleteResult
             {
