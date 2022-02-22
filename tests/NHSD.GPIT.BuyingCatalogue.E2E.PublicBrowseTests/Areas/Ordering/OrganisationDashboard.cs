@@ -19,12 +19,12 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering
     public sealed class OrganisationDashboard
         : BuyerTestBase, IClassFixture<LocalWebApplicationFactory>
     {
-        private const string OdsCode = "03F";
+        private const string InternalOrgId = "03F";
 
         private static readonly Dictionary<string, string> Parameters =
             new()
             {
-                { nameof(OdsCode), OdsCode },
+                { nameof(InternalOrgId), InternalOrgId },
             };
 
         public OrganisationDashboard(LocalWebApplicationFactory factory)
@@ -40,7 +40,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering
         public async Task OrganisationDashboard_SectionsCorrectlyDisplayed()
         {
             await using var context = GetEndToEndDbContext();
-            var organisation = await context.Organisations.SingleAsync(o => o.InternalIdentifier == Parameters["OdsCode"]);
+            var organisation = await context.Organisations.SingleAsync(o => o.InternalIdentifier == Parameters["InternalOrgId"]);
 
             CommonActions.PageTitle().Should().BeEquivalentTo($"Orders dashboard - {organisation.Name}".FormatForComparison());
             CommonActions.LedeText().Should().BeEquivalentTo("Manage orders currently in progress and view completed orders.".FormatForComparison());
@@ -75,7 +75,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering
             CommonActions.ElementIsDisplayed(CommonSelectors.PaginationNext).Should().BeTrue();
 
             using var context = GetEndToEndDbContext();
-            var countOfOrders = context.Organisations.Where(o => o.InternalIdentifier == OdsCode).SelectMany(o => o.Orders).AsNoTracking().Count();
+            var countOfOrders = context.Organisations.Where(o => o.InternalIdentifier == InternalOrgId).SelectMany(o => o.Orders).AsNoTracking().Count();
 
             var expectedNumberOfPages = new PageOptions()
             {
@@ -105,7 +105,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering
             CommonActions.ElementIsDisplayed(CommonSelectors.PaginationNext).Should().BeFalse();
 
             using var context = GetEndToEndDbContext();
-            var countOfOrders = context.Organisations.Where(o => o.InternalIdentifier == OdsCode).SelectMany(o => o.Orders).AsNoTracking().Count();
+            var countOfOrders = context.Organisations.Where(o => o.InternalIdentifier == InternalOrgId).SelectMany(o => o.Orders).AsNoTracking().Count();
 
             var expectedNumberOfPages = new PageOptions()
             {
@@ -166,7 +166,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering
         public async Task OrderDashboard_SearchValid_DisplaysOrders()
         {
             using var context = GetEndToEndDbContext();
-            var organisation = await context.Organisations.Include(o => o.Orders).SingleAsync(o => o.InternalIdentifier == OdsCode);
+            var organisation = await context.Organisations.Include(o => o.Orders).SingleAsync(o => o.InternalIdentifier == InternalOrgId);
             var order = organisation.Orders.First();
 
             CommonActions.ElementAddValue(Objects.Ordering.OrganisationDashboard.SearchBar, order.CallOffId.ToString());
@@ -229,7 +229,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering
         public async Task OrderDashboard_Search_FiltersTable()
         {
             using var context = GetEndToEndDbContext();
-            var organisation = await context.Organisations.Include(o => o.Orders).SingleAsync(o => o.InternalIdentifier == OdsCode);
+            var organisation = await context.Organisations.Include(o => o.Orders).SingleAsync(o => o.InternalIdentifier == InternalOrgId);
             var order = organisation.Orders.First();
 
             CommonActions.ElementAddValue(Objects.Ordering.OrganisationDashboard.SearchBar, order.CallOffId.ToString());
@@ -244,7 +244,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering
         public void OrderDashboard_NoOrders_SectionsCorrectlyDisplayed()
         {
             using var context = GetEndToEndDbContext();
-            var organisation = context.Organisations.AsNoTracking().Single(o => o.InternalIdentifier == OdsCode);
+            var organisation = context.Organisations.AsNoTracking().Single(o => o.InternalIdentifier == InternalOrgId);
             var orders = context.Orders.AsNoTracking().Where(o => o.OrderingPartyId == organisation.Id).ToList();
 
             context.RemoveRange(orders);
