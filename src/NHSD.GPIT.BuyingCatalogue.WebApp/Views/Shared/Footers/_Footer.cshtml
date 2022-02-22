@@ -14,10 +14,14 @@
                     <a class="nhsuk-footer__list-item-link" href="https://digital.nhs.uk/services/digital-care-services-catalogue/nhs-digital-buying-catalogue">About us</a>
                 </li>
                 <li class="nhsuk-footer__list-item">
-                    <a class="nhsuk-footer__list-item-link" href="~/guide#contact-us">Contact us</a>
+                    <a class="nhsuk-footer__list-item-link"
+                        asp-action="@nameof(HomeController.ContactUs)"
+                        asp-controller="@typeof(HomeController).ControllerName()">Contact us</a>
                 </li>
                 <li class="nhsuk-footer__list-item">
-                    <a class="nhsuk-footer__list-item-link" href="~/privacy-policy">Privacy policy and cookies</a>
+                    <a class="nhsuk-footer__list-item-link" 
+                        asp-action="@nameof(HomeController.PrivacyPolicy)"
+                        asp-controller="@typeof(HomeController).ControllerName()">Privacy policy and cookies</a>
                 </li>
                 <li class="nhsuk-footer__list-item">
                     <a class="nhsuk-footer__list-item-link" href="~/document/terms-of-use.pdf">Terms of Use</a>
