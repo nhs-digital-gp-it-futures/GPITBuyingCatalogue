@@ -12,19 +12,6 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Actions.Admin
         {
         }
 
-        internal bool AddOrgLinkDisplayed()
-        {
-            try
-            {
-                Driver.FindElement(Objects.Admin.DashboardObjects.AddOrgLink);
-                return true;
-            }
-            catch
-            {
-                return false;
-            }
-        }
-
         internal IEnumerable<string> GetOrganisationNamesOnPage()
         {
             return Driver.FindElements(Objects.Admin.DashboardObjects.OrganisationNames).Select(s => s.Text);

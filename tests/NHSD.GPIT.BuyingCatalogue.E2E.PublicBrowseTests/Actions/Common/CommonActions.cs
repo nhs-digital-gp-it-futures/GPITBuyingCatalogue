@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Objects.Common;
 using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
@@ -280,5 +281,14 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Actions.Common
         internal void WaitUntilElementExists(By element) => Wait.Until(d => d.FindElement(element));
 
         internal void WaitUntilElementIsDisplayed(By element) => Wait.Until(d => d.FindElement(element).Displayed);
+
+        internal async Task InputCharactersWithDelay(By inputBox, string input, int intervalMs = 200)
+        {
+            foreach (var character in input)
+            {
+                ElementAddValue(inputBox, $"{character}");
+                await Task.Delay(intervalMs);
+            }
+        }
     }
 }
