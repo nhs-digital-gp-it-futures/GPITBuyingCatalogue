@@ -107,12 +107,12 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
         [HttpGet("~/order/organisation/{internalOrgId}/order/proxy-select")]
         public async Task<IActionResult> SelectOrganisation(string internalOrgId, TriageOption? option = null)
         {
-            var odsCodes = new List<string>(User.GetSecondaryOrganisationInternalIdentifiers())
+            var internalOrgIds = new List<string>(User.GetSecondaryOrganisationInternalIdentifiers())
             {
                 User.GetPrimaryOrganisationInternalIdentifier(),
             };
 
-            var organisations = await organisationsService.GetOrganisationsByInternalIdentifiers(odsCodes.ToArray());
+            var organisations = await organisationsService.GetOrganisationsByInternalIdentifiers(internalOrgIds.ToArray());
 
             var model = new SelectOrganisationModel(internalOrgId, organisations)
             {
