@@ -90,6 +90,18 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.PublicBrowse.Homepage
         }
 
         [Fact]
+        public void HomePage_ClickContactUs_ExpectedResult()
+        {
+            CommonActions.ClickLinkElement(Objects.Home.HomeSelectors.ContactUsLink);
+
+            CommonActions.PageLoadedCorrectGetIndex(
+            typeof(HomeController),
+            nameof(HomeController.ContactUs))
+            .Should()
+            .BeTrue();
+        }
+
+        [Fact]
         public void HomePage_Buyer_ClickManageOrders_ExpectedResult()
         {
             NavigateToUrl(

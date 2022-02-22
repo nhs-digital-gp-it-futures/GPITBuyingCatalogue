@@ -84,7 +84,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers
 
             orderServiceMock.Setup(s => s.GetOrderThin(order.CallOffId, odsCode)).ReturnsAsync(order);
 
-            organisationServiceMock.Setup(s => s.GetOrganisationByOdsCode(It.IsAny<string>()))
+            organisationServiceMock.Setup(s => s.GetOrganisationByInternalIdentifier(It.IsAny<string>()))
                 .ReturnsAsync(organisation);
 
             associatedServicesServiceMock
@@ -115,7 +115,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers
 
             orderServiceMock.Setup(s => s.GetOrderThin(state.CallOffId, odsCode)).ReturnsAsync(order);
 
-            organisationServiceMock.Setup(s => s.GetOrganisationByOdsCode(It.IsAny<string>()))
+            organisationServiceMock.Setup(s => s.GetOrganisationByInternalIdentifier(It.IsAny<string>()))
                 .ReturnsAsync(organisation);
 
             orderSessionServiceMock.Setup(s => s.InitialiseStateForCreate(order, CatalogueItemType.AssociatedService, null, It.IsAny<OrderItemRecipientModel>()))

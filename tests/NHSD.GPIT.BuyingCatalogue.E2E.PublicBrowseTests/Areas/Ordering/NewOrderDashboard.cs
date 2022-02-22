@@ -34,7 +34,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering
         public async Task NewOrderDashboard_AllSectionsDisplayed()
         {
             await using var context = GetEndToEndDbContext();
-            var organisation = await context.Organisations.SingleAsync(o => o.OdsCode == Parameters["OdsCode"]);
+            var organisation = await context.Organisations.SingleAsync(o => o.InternalIdentifier == Parameters["OdsCode"]);
 
             CommonActions.PageTitle().Should().BeEquivalentTo($"New Order-{organisation.Name}".FormatForComparison());
             CommonActions.GoBackLinkDisplayed().Should().BeTrue();

@@ -36,7 +36,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering
         public void SelectOrganisation_AllSectionsDisplayed()
         {
             using var context = GetEndToEndDbContext();
-            var organisation = context.Organisations.Include(o => o.RelatedOrganisationOrganisations).First(o => o.OdsCode == OdsCode);
+            var organisation = context.Organisations.Include(o => o.RelatedOrganisationOrganisations).First(o => o.InternalIdentifier == OdsCode);
             var expectedNumberOfRadioOptions = organisation.RelatedOrganisationOrganisations.Count + 1;
 
             CommonActions.PageTitle()

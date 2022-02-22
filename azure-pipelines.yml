@@ -10,10 +10,10 @@ variables:
   - group: dev-acr-secrets
 
 trigger:
-- main
+- develop
 
 pr:
-- main
+- develop
 
 jobs:
 - job: version

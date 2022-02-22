@@ -35,25 +35,26 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Organisations
 
         [Theory]
         [InMemoryDbAutoData]
-        public static Task AddOdsOrganisation_NullOdsOrganisation_ThrowsException(OrganisationsService service)
+        public static Task AddCcgOrganisation_NullOdsOrganisation_ThrowsException(OrganisationsService service)
         {
-            return Assert.ThrowsAsync<ArgumentNullException>(() => service.AddOdsOrganisation(null, true));
+            return Assert.ThrowsAsync<ArgumentNullException>(() => service.AddCcgOrganisation(null, true));
         }
 
         [Theory]
         [InMemoryDbAutoData]
-        public static async Task AddOdsOrganisation_OrganisationAlreadyExists_ReturnsError(
+        public static async Task AddCcgOrganisation_OrganisationAlreadyExists_ReturnsError(
             [Frozen] BuyingCatalogueDbContext context,
             OdsOrganisation odsOrganisation,
             bool agreementSigned,
             Organisation organisation,
             OrganisationsService service)
         {
-            organisation.OdsCode = odsOrganisation.OdsCode;
+            organisation.ExternalIdentifier = odsOrganisation.OdsCode;
+            organisation.OrganisationType = OrganisationType.CCG;
             context.Organisations.Add(organisation);
             await context.SaveChangesAsync();
 
-            (int orgId, var error) = await service.AddOdsOrganisation(odsOrganisation, agreementSigned);
+            (int orgId, var error) = await service.AddCcgOrganisation(odsOrganisation, agreementSigned);
 
             orgId.Should().Be(0);
             error.Should().Be($"The organisation with ODS code {odsOrganisation.OdsCode} already exists.");
@@ -61,13 +62,13 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Organisations
 
         [Theory]
         [InMemoryDbAutoData]
-        public static async Task AddOdsOrganisation_OrganisationCreated(
+        public static async Task AddCcgOrganisation_OrganisationCreated(
             [Frozen] BuyingCatalogueDbContext context,
             OdsOrganisation odsOrganisation,
             bool agreementSigned,
             OrganisationsService service)
         {
-            (int orgId, var error) = await service.AddOdsOrganisation(odsOrganisation, agreementSigned);
+            (int orgId, var error) = await service.AddCcgOrganisation(odsOrganisation, agreementSigned);
 
             orgId.Should().NotBe(0);
             error.Should().BeNull();
@@ -79,7 +80,8 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Organisations
             newOrganisation.CatalogueAgreementSigned.Should().Be(agreementSigned);
             newOrganisation.LastUpdated.Date.Should().Be(DateTime.UtcNow.Date);
             newOrganisation.Name.Should().Be(odsOrganisation.OrganisationName);
-            newOrganisation.OdsCode.Should().Be(odsOrganisation.OdsCode);
+            newOrganisation.ExternalIdentifier.Should().Be(odsOrganisation.OdsCode);
+            newOrganisation.InternalIdentifier.Should().Be(odsOrganisation.OdsCode);
             newOrganisation.PrimaryRoleId.Should().Be(odsOrganisation.PrimaryRoleId);
         }
 
@@ -91,7 +93,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Organisations
             OrganisationsService service)
         {
             var organisations = GetOrganisationsForSearchTerm(searchTerm);
-            var noMatch = organisations.Single(x => x.Name == OrganisationName && x.OdsCode == OdsCode);
+            var noMatch = organisations.Single(x => x.Name == OrganisationName && x.ExternalIdentifier == OdsCode);
 
             foreach (var organisation in organisations)
             {
@@ -109,15 +111,15 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Organisations
         {
             return new List<Organisation>
             {
-                new() { Name = OrganisationName, OdsCode = OdsCode },
-                new() { Name = $"{searchTerm}", OdsCode = OdsCode },
-                new() { Name = $"{searchTerm}{Junk}", OdsCode = OdsCode },
-                new() { Name = $"{Junk}{searchTerm}", OdsCode = OdsCode },
-                new() { Name = $"{Junk}{searchTerm}{Junk}", OdsCode = OdsCode },
-                new() { Name = OrganisationName, OdsCode = $"{searchTerm}" },
-                new() { Name = OrganisationName, OdsCode = $"{searchTerm}{Junk}" },
-                new() { Name = OrganisationName, OdsCode = $"{Junk}{searchTerm}" },
-                new() { Name = OrganisationName, OdsCode = $"{Junk}{searchTerm}{Junk}" },
+                new() { Name = OrganisationName, ExternalIdentifier = OdsCode },
+                new() { Name = $"{searchTerm}", ExternalIdentifier = OdsCode },
+                new() { Name = $"{searchTerm}{Junk}", ExternalIdentifier = OdsCode },
+                new() { Name = $"{Junk}{searchTerm}", ExternalIdentifier = OdsCode },
+                new() { Name = $"{Junk}{searchTerm}{Junk}", ExternalIdentifier = OdsCode },
+                new() { Name = OrganisationName, ExternalIdentifier = $"{searchTerm}" },
+                new() { Name = OrganisationName, ExternalIdentifier = $"{searchTerm}{Junk}" },
+                new() { Name = OrganisationName, ExternalIdentifier = $"{Junk}{searchTerm}" },
+                new() { Name = OrganisationName, ExternalIdentifier = $"{Junk}{searchTerm}{Junk}" },
             };
         }
     }

@@ -44,7 +44,9 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.AddNewSolution.ClientAp
         {
             CommonActions.ClickGoBackLink();
 
-            CommonActions.PageLoadedCorrectGetIndex(typeof(BrowserBasedController), nameof(CatalogueSolutionsController.ClientApplicationType));
+            CommonActions
+                .PageLoadedCorrectGetIndex(typeof(CatalogueSolutionsController), nameof(CatalogueSolutionsController.AddApplicationType))
+                .Should().BeTrue();
         }
 
         [Fact]
@@ -57,6 +59,28 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.AddNewSolution.ClientAp
                 nameof(DeleteApplicationTypeController.DeleteApplicationTypeConfirmation))
                 .Should()
                 .BeTrue();
+        }
+
+        [Fact]
+        public void BrowserBasedDashboard_HasApplication_ClickGoBackLink()
+        {
+            var solutionWithBrowserBasedApp = new CatalogueItemId(99999, "001");
+            var parameters = new Dictionary<string, string>
+            {
+                { nameof(SolutionId), solutionWithBrowserBasedApp.ToString() },
+            };
+
+            NavigateToUrl(
+                typeof(BrowserBasedController),
+                nameof(BrowserBasedController.BrowserBased),
+                parameters);
+
+            CommonActions.ClickGoBackLink();
+
+            CommonActions.PageLoadedCorrectGetIndex(
+                typeof(CatalogueSolutionsController),
+                nameof(CatalogueSolutionsController.ClientApplicationType))
+                .Should().BeTrue();
         }
 
         public void Dispose()

@@ -70,7 +70,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
                 {
                     Id = o.Id,
                     Name = o.Name,
-                    OdsCode = o.OdsCode,
+                    OdsCode = o.ExternalIdentifier,
                 })
                 .ToList();
 
@@ -100,7 +100,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
                 {
                     Id = o.Id,
                     Name = o.Name,
-                    OdsCode = o.OdsCode,
+                    OdsCode = o.ExternalIdentifier,
                 })
                 .ToList();
 
@@ -132,7 +132,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
                 {
                     Id = o.Id,
                     Name = o.Name,
-                    OdsCode = o.OdsCode,
+                    OdsCode = o.ExternalIdentifier,
                 })
                 .ToList();
 
@@ -167,7 +167,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
 
             foreach (var org in organisations)
             {
-                actualResult.Should().Contain(x => x.Title == org.Name && x.Category == org.OdsCode);
+                actualResult.Should().Contain(x => x.Title == org.Name && x.Category == org.ExternalIdentifier);
             }
         }
 

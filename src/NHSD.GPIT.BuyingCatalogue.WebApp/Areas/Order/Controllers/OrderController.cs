@@ -79,8 +79,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
         [HttpGet("~/order/organisation/{odsCode}/order/ready-to-start")]
         public IActionResult ReadyToStart(string odsCode, TriageOption? option = null)
         {
-            var model = new ReadyToStartModel()
+            var model = new ReadyToStartModel
             {
+                OdsCode = odsCode,
+                Option = option,
                 BackLink = Url.Action(
                     nameof(OrderTriageController.TriageSelection),
                     typeof(OrderTriageController).ControllerName(),
@@ -93,7 +95,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
         [HttpPost("~/order/organisation/{odsCode}/order/ready-to-start")]
         public IActionResult ReadyToStart(string odsCode, ReadyToStartModel model, TriageOption? option = null)
         {
-            if (User.GetSecondaryOdsCodes().Any())
+            if (User.GetSecondaryOrganisationInternalIdentifiers().Any())
                 return RedirectToAction(nameof(SelectOrganisation), new { odsCode, option });
 
             return RedirectToAction(
@@ -105,12 +107,12 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
         [HttpGet("~/order/organisation/{odsCode}/order/proxy-select")]
         public async Task<IActionResult> SelectOrganisation(string odsCode, TriageOption? option = null)
         {
-            var odsCodes = new List<string>(User.GetSecondaryOdsCodes())
+            var odsCodes = new List<string>(User.GetSecondaryOrganisationInternalIdentifiers())
             {
-                User.GetPrimaryOdsCode(),
+                User.GetPrimaryOrganisationInternalIdentifier(),
             };
 
-            var organisations = await organisationsService.GetOrganisationsByOdsCodes(odsCodes.ToArray());
+            var organisations = await organisationsService.GetOrganisationsByInternalIdentifiers(odsCodes.ToArray());
 
             var model = new SelectOrganisationModel(odsCode, organisations)
             {
@@ -133,7 +135,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
         [HttpGet("~/order/organisation/{odsCode}/order/neworder")]
         public async Task<IActionResult> NewOrder(string odsCode, TriageOption? option = null)
         {
-            var organisation = await organisationsService.GetOrganisationByOdsCode(odsCode);
+            var organisation = await organisationsService.GetOrganisationByInternalIdentifier(odsCode);
 
             var orderModel = new OrderModel(odsCode, null, new OrderTaskList(), organisation.Name)
             {
