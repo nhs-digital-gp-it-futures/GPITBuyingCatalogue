@@ -23,7 +23,8 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
             AddOrderWithAddedNoContactSolutionAndNoContactAdditionalSolution(context);
             AddOrderWithAddedAssociatedService(context);
             AddOrderReadyToComplete(context);
-            AddCompletedOrder(context);
+            AddCompletedOrder(context, 90010, GetOrganisationId(context));
+            AddCompletedOrder(context, 90011, GetOrganisationId(context, "15F"));
         }
 
         private static void AddOrderAtDescriptionStage(BuyingCatalogueDbContext context)
@@ -548,15 +549,14 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
             context.SaveChangesAs(user.Id);
         }
 
-        private static void AddCompletedOrder(BuyingCatalogueDbContext context)
+        private static void AddCompletedOrder(BuyingCatalogueDbContext context, int orderId, int organisationId)
         {
-            const int orderId = 90010;
             var timeNow = DateTime.UtcNow;
 
             var order = new Order
             {
                 Id = orderId,
-                OrderingPartyId = GetOrganisationId(context),
+                OrderingPartyId = organisationId,
                 Created = timeNow,
                 OrderStatus = OrderStatus.InProgress,
                 IsDeleted = false,
