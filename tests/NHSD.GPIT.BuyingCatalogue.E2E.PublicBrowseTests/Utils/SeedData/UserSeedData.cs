@@ -64,11 +64,6 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
                 PrimaryRoleId = "RO98",
                 CatalogueAgreementSigned = false,
                 LastUpdated = DateTime.UtcNow,
-                RelatedOrganisationOrganisations = new HashSet<RelatedOrganisation>
-                {
-                    new RelatedOrganisation(77, 2),
-                    new RelatedOrganisation(77, 3),
-                },
             };
 
             var aliceOrganisation = new Organisation

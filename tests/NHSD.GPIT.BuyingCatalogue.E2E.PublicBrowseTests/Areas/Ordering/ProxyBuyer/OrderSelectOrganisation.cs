@@ -9,7 +9,7 @@ using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers;
 using Xunit;
 
-namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering
+namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering.ProxyBuyer
 {
     public class OrderSelectOrganisation
         : BuyerTestBase, IClassFixture<LocalWebApplicationFactory>
@@ -25,8 +25,8 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering
         public OrderSelectOrganisation(LocalWebApplicationFactory factory)
             : base(
                   factory,
-                  typeof(OrderController),
-                  nameof(OrderController.SelectOrganisation),
+                  typeof(OrderTriageController),
+                  nameof(OrderTriageController.SelectOrganisation),
                   Parameters,
                   UserSeedData.AliceEmail)
         {

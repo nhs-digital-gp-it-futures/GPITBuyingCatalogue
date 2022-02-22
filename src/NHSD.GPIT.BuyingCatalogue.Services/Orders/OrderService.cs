@@ -95,10 +95,9 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
         {
             options ??= new PageOptions();
 
-            var query = await dbContext.Organisations
-                .Where(o => o.Id == organisationId)
-                .Include(o => o.Orders).ThenInclude(o => o.LastUpdatedByUser)
-                .SelectMany(o => o.Orders)
+            var query = await dbContext.Orders
+                .Include(o => o.LastUpdatedByUser)
+                .Where(o => o.OrderingPartyId == organisationId)
                 .OrderByDescending(o => o.LastUpdated)
                 .AsNoTracking()
                 .ToListAsync();

@@ -1,14 +1,19 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
+using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Organisations;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.OrderTriage;
+using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.Shared;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
 {
     [Authorize]
     [Area("Order")]
-    [Route("order/organisation/{internalOrgId}/order/triage")]
+    [Route("order/organisation/{odsCode}/order/triage")]
     public class OrderTriageController : Controller
     {
         private static readonly Dictionary<TriageOption, (string Title, string Advice, string ValidationError)> TriageSelectionContent = new()
@@ -24,15 +29,65 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
                    "Select yes if you’ve carried out an Off-Catalogue Competition with suppliers"),
         };
 
-        [HttpGet]
-        public IActionResult Index(string internalOrgId, TriageOption? option = null)
+        private readonly IOrganisationsService organisationsService;
+
+        public OrderTriageController(IOrganisationsService organisationsService)
         {
-            var model = new OrderTriageModel
+            this.organisationsService = organisationsService ?? throw new ArgumentNullException(nameof(organisationsService));
+        }
+
+        [HttpGet("proxy-select")]
+        public async Task<IActionResult> SelectOrganisation(string odsCode, TriageOption? option = null)
+        {
+            if (!User.GetSecondaryOrganisationInternalIdentifiers().Any())
+                return RedirectToAction(nameof(Index), new { odsCode, option });
+
+            var odsCodes = new List<string>(User.GetSecondaryOrganisationInternalIdentifiers())
             {
-                BackLink = Url.Action(
+                User.GetPrimaryOrganisationInternalIdentifier(),
+            };
+
+            var organisations = await organisationsService.GetOrganisationsByInternalIdentifiers(odsCodes.ToArray());
+
+            var model = new SelectOrganisationModel(odsCode, organisations)
+            {
+                BackLink = Url.Action(nameof(DashboardController.Organisation), typeof(DashboardController).ControllerName(), new { odsCode, option }),
+                Title = "Which organisation are you ordering for?",
+            };
+
+            return View(model);
+        }
+
+        [HttpPost("proxy-select")]
+        public IActionResult SelectOrganisation(string odsCode, SelectOrganisationModel model, TriageOption? option = null)
+        {
+            if (!User.GetSecondaryOrganisationInternalIdentifiers().Any())
+                return RedirectToAction(nameof(Index), new { odsCode, option });
+
+            if (!ModelState.IsValid)
+                return View(model);
+
+            if (!string.Equals(odsCode, model.SelectedOrganisation, StringComparison.OrdinalIgnoreCase))
+                option = null;
+
+            return RedirectToAction(nameof(Index), new { odsCode = model.SelectedOrganisation, option });
+        }
+
+        [HttpGet]
+        public IActionResult Index(string odsCode, TriageOption? option = null)
+        {
+            var backlink = User.GetSecondaryOrganisationInternalIdentifiers().Any()
+                ? Url.Action(
+                    nameof(SelectOrganisation),
+                    new { odsCode, option })
+                : Url.Action(
                     nameof(DashboardController.Organisation),
                     typeof(DashboardController).ControllerName(),
-                    new { internalOrgId }),
+                    new { odsCode });
+
+            var model = new OrderTriageModel
+            {
+                BackLink = backlink,
                 SelectedTriageOption = option,
             };
 
@@ -40,44 +95,44 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
         }
 
         [HttpPost]
-        public IActionResult Index(string internalOrgId, OrderTriageModel model)
+        public IActionResult Index(string odsCode, OrderTriageModel model)
         {
             if (!ModelState.IsValid)
                 return View(model);
 
             if (model.SelectedTriageOption == TriageOption.NotSure)
-                return RedirectToAction(nameof(NotSure), new { internalOrgId });
+                return RedirectToAction(nameof(NotSure), new { odsCode });
 
-            return RedirectToAction(nameof(TriageSelection), new { internalOrgId, option = model.SelectedTriageOption });
+            return RedirectToAction(nameof(TriageSelection), new { odsCode, option = model.SelectedTriageOption });
         }
 
         [HttpGet("not-sure")]
-        public IActionResult NotSure(string internalOrgId)
+        public IActionResult NotSure(string odsCode)
         {
             var model = new GenericOrderTriageModel
             {
-                BackLink = Url.Action(nameof(Index), new { internalOrgId, option = TriageOption.NotSure }),
-                InternalOrgId = internalOrgId,
+                BackLink = Url.Action(nameof(Index), new { odsCode, option = TriageOption.NotSure }),
+                OdsCode = odsCode,
                 OrdersDashboardLink = Url.Action(
                     nameof(DashboardController.Organisation),
                     typeof(DashboardController).ControllerName(),
-                    new { internalOrgId }),
+                    new { odsCode }),
             };
 
             return View(model);
         }
 
         [HttpGet("{option}")]
-        public IActionResult TriageSelection(string internalOrgId, TriageOption? option, bool? selected = null)
+        public IActionResult TriageSelection(string odsCode, TriageOption? option, bool? selected = null)
         {
             if (option is null)
-                return RedirectToAction(nameof(Index), new { internalOrgId });
+                return RedirectToAction(nameof(Index), new { odsCode });
 
             var (title, advice, _) = GetTriageSelectionContent(option!.Value);
 
             var model = new TriageDueDiligenceModel
             {
-                BackLink = Url.Action(nameof(Index), new { internalOrgId, option }),
+                BackLink = Url.Action(nameof(Index), new { odsCode, option }),
                 Advice = advice,
                 Title = title,
                 Selected = selected,
@@ -87,7 +142,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
         }
 
         [HttpPost("{option}")]
-        public IActionResult TriageSelection(string internalOrgId, TriageOption option, TriageDueDiligenceModel model)
+        public IActionResult TriageSelection(string odsCode, TriageOption option, TriageDueDiligenceModel model)
         {
             if (!model.Selected.HasValue)
             {
@@ -99,16 +154,16 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
                 return View(model);
 
             if (!model.Selected.GetValueOrDefault())
-                return RedirectToAction(nameof(StepsNotCompleted), new { internalOrgId, option });
+                return RedirectToAction(nameof(StepsNotCompleted), new { odsCode, option });
 
             return RedirectToAction(
                 nameof(OrderController.ReadyToStart),
                 typeof(OrderController).ControllerName(),
-                new { internalOrgId, option });
+                new { odsCode, option });
         }
 
         [HttpGet("{option}/steps-incomplete")]
-        public IActionResult StepsNotCompleted(string internalOrgId, TriageOption option)
+        public IActionResult StepsNotCompleted(string odsCode, TriageOption option)
         {
             var viewName = option switch
             {
@@ -120,12 +175,12 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
 
             var model = new GenericOrderTriageModel
             {
-                BackLink = Url.Action(nameof(TriageSelection), new { internalOrgId, option, selected = false }),
-                InternalOrgId = internalOrgId,
+                BackLink = Url.Action(nameof(TriageSelection), new { odsCode, option, selected = false }),
+                OdsCode = odsCode,
                 OrdersDashboardLink = Url.Action(
                     nameof(DashboardController.Organisation),
                     typeof(DashboardController).ControllerName(),
-                    new { internalOrgId }),
+                    new { odsCode }),
             };
 
             return View(viewName, model);

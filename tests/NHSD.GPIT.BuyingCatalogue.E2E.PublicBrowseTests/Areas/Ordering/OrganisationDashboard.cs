@@ -19,12 +19,12 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering
     public sealed class OrganisationDashboard
         : BuyerTestBase, IClassFixture<LocalWebApplicationFactory>
     {
-        private const string InternalOrgId = "03F";
+        private const string OdsCode = "03F";
 
         private static readonly Dictionary<string, string> Parameters =
             new()
             {
-                { nameof(InternalOrgId), InternalOrgId },
+                { nameof(OdsCode), OdsCode },
             };
 
         public OrganisationDashboard(LocalWebApplicationFactory factory)
@@ -37,8 +37,15 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering
         }
 
         [Fact]
-        public async Task OrganisationDashboard_OrganisationDashboard_SectionsCorrectlyDisplayed()
+        public async Task OrganisationDashboard_SectionsCorrectlyDisplayed()
         {
+            await using var context = GetEndToEndDbContext();
+            var organisation = await context.Organisations.SingleAsync(o => o.InternalIdentifier == Parameters["OdsCode"]);
+
+            CommonActions.PageTitle().Should().BeEquivalentTo($"Orders dashboard - {organisation.Name}".FormatForComparison());
+            CommonActions.LedeText().Should().BeEquivalentTo("Manage orders currently in progress and view completed orders.".FormatForComparison());
+
+            CommonActions.ElementIsDisplayed(Objects.Ordering.OrganisationDashboard.ActOnBehalf).Should().BeFalse();
             CommonActions.ElementIsDisplayed(Objects.Ordering.OrganisationDashboard.CreateOrderLink).Should().BeTrue();
             CommonActions.ElementIsDisplayed(Objects.Ordering.OrganisationDashboard.SearchBar).Should().BeTrue();
             CommonActions.ElementIsDisplayed(ByExtensions.DataTestId("orders-table")).Should().BeTrue();
@@ -46,12 +53,6 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering
             CommonActions.ElementIsDisplayed(CommonSelectors.PaginationNext).Should().BeTrue();
             CommonActions.ElementExists(CommonSelectors.PaginationPrevious).Should().BeFalse();
             CommonActions.GoBackLinkDisplayed().Should().BeTrue();
-
-            await using var context = GetEndToEndDbContext();
-            var organisation = await context.Organisations.SingleAsync(o => o.InternalIdentifier == Parameters["InternalOrgId"]);
-
-            CommonActions.PageTitle().Should().BeEquivalentTo($"Orders dashboard - {organisation.Name}".FormatForComparison());
-            CommonActions.LedeText().Should().BeEquivalentTo("Manage orders currently in progress and view completed orders.".FormatForComparison());
         }
 
         [Fact]
@@ -74,7 +75,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering
             CommonActions.ElementIsDisplayed(CommonSelectors.PaginationNext).Should().BeTrue();
 
             using var context = GetEndToEndDbContext();
-            var countOfOrders = context.Organisations.Where(o => o.InternalIdentifier == InternalOrgId).SelectMany(o => o.Orders).AsNoTracking().Count();
+            var countOfOrders = context.Organisations.Where(o => o.InternalIdentifier == OdsCode).SelectMany(o => o.Orders).AsNoTracking().Count();
 
             var expectedNumberOfPages = new PageOptions()
             {
@@ -104,7 +105,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering
             CommonActions.ElementIsDisplayed(CommonSelectors.PaginationNext).Should().BeFalse();
 
             using var context = GetEndToEndDbContext();
-            var countOfOrders = context.Organisations.Where(o => o.InternalIdentifier == InternalOrgId).SelectMany(o => o.Orders).AsNoTracking().Count();
+            var countOfOrders = context.Organisations.Where(o => o.InternalIdentifier == OdsCode).SelectMany(o => o.Orders).AsNoTracking().Count();
 
             var expectedNumberOfPages = new PageOptions()
             {
@@ -165,7 +166,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering
         public async Task OrderDashboard_SearchValid_DisplaysOrders()
         {
             using var context = GetEndToEndDbContext();
-            var organisation = await context.Organisations.Include(o => o.Orders).SingleAsync(o => o.InternalIdentifier == InternalOrgId);
+            var organisation = await context.Organisations.Include(o => o.Orders).SingleAsync(o => o.InternalIdentifier == OdsCode);
             var order = organisation.Orders.First();
 
             CommonActions.ElementAddValue(Objects.Ordering.OrganisationDashboard.SearchBar, order.CallOffId.ToString());
@@ -228,7 +229,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering
         public async Task OrderDashboard_Search_FiltersTable()
         {
             using var context = GetEndToEndDbContext();
-            var organisation = await context.Organisations.Include(o => o.Orders).SingleAsync(o => o.InternalIdentifier == InternalOrgId);
+            var organisation = await context.Organisations.Include(o => o.Orders).SingleAsync(o => o.InternalIdentifier == OdsCode);
             var order = organisation.Orders.First();
 
             CommonActions.ElementAddValue(Objects.Ordering.OrganisationDashboard.SearchBar, order.CallOffId.ToString());
@@ -242,15 +243,14 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering
         [Fact]
         public void OrderDashboard_NoOrders_SectionsCorrectlyDisplayed()
         {
-            var parameters = new Dictionary<string, string>
-            {
-                { nameof(InternalOrgId), "13Y" },
-            };
+            using var context = GetEndToEndDbContext();
+            var organisation = context.Organisations.AsNoTracking().Single(o => o.InternalIdentifier == OdsCode);
+            var orders = context.Orders.AsNoTracking().Where(o => o.OrderingPartyId == organisation.Id).ToList();
 
-            NavigateToUrl(
-                typeof(DashboardController),
-                nameof(DashboardController.Organisation),
-                parameters);
+            context.RemoveRange(orders);
+            context.SaveChanges();
+
+            Driver.Navigate().Refresh();
 
             CommonActions.ElementIsDisplayed(Objects.Ordering.OrganisationDashboard.CreateOrderLink).Should().BeTrue();
             CommonActions.ElementIsDisplayed(Objects.Ordering.OrganisationDashboard.SearchBar).Should().BeFalse();
@@ -260,6 +260,9 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering
             CommonActions.ElementExists(CommonSelectors.PaginationPrevious).Should().BeFalse();
             CommonActions.GoBackLinkDisplayed().Should().BeTrue();
             CommonActions.ElementIsDisplayed(By.Id("no-orders")).Should().BeTrue();
+
+            context.Orders.AddRange(orders);
+            context.SaveChanges();
         }
 
         [Fact]

@@ -15,14 +15,13 @@ using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Pdf;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.TaskList;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.Order;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.OrderTriage;
-using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.Shared;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Controllers;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
 {
     [Authorize]
     [Area("Order")]
-    [Route("order/organisation/{internalOrgId}/order/{callOffId}")]
+    [Route("order/organisation/{odsCode}/order/{callOffId}")]
     public sealed class OrderController : Controller
     {
         private readonly IOrderService orderService;
@@ -46,128 +45,97 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> Order(string internalOrgId, CallOffId callOffId)
+        public async Task<IActionResult> Order(string odsCode, CallOffId callOffId)
         {
-            var order = await orderService.GetOrderThin(callOffId, internalOrgId);
+            var order = await orderService.GetOrderThin(callOffId, odsCode);
 
             if (order.OrderStatus == OrderStatus.Complete)
             {
                 return RedirectToAction(
                     nameof(Summary),
                     typeof(OrderController).ControllerName(),
-                    new { internalOrgId, callOffId });
+                    new { odsCode, callOffId });
             }
 
             var sectionStatuses = taskListService.GetTaskListStatusModelForOrder(order);
 
-            var orderModel = new OrderModel(internalOrgId, order, sectionStatuses)
+            var orderModel = new OrderModel(odsCode, order, sectionStatuses)
             {
                 DescriptionUrl = Url.Action(
                     nameof(OrderDescriptionController.OrderDescription),
                     typeof(OrderDescriptionController).ControllerName(),
-                    new { internalOrgId, order.CallOffId }),
+                    new { odsCode, order.CallOffId }),
                 BackLink = Url.Action(
                     nameof(DashboardController.Organisation),
                     typeof(DashboardController).ControllerName(),
-                    new { internalOrgId }),
+                    new { odsCode }),
                 BackLinkText = "Go back to dashboard",
             };
 
             return View(orderModel);
         }
 
-        [HttpGet("~/order/organisation/{internalOrgId}/order/ready-to-start")]
-        public IActionResult ReadyToStart(string internalOrgId, TriageOption? option = null)
+        [HttpGet("~/order/organisation/{odsCode}/order/ready-to-start")]
+        public IActionResult ReadyToStart(string odsCode, TriageOption? option = null)
         {
             var model = new ReadyToStartModel
             {
-                InternalOrgId = internalOrgId,
+                OdsCode = odsCode,
                 Option = option,
                 BackLink = Url.Action(
                     nameof(OrderTriageController.TriageSelection),
                     typeof(OrderTriageController).ControllerName(),
-                    new { internalOrgId, option, selected = true }),
+                    new { odsCode, option, selected = true }),
             };
 
             return View(model);
         }
 
-        [HttpPost("~/order/organisation/{internalOrgId}/order/ready-to-start")]
-        public IActionResult ReadyToStart(string internalOrgId, ReadyToStartModel model, TriageOption? option = null)
+        [HttpPost("~/order/organisation/{odsCode}/order/ready-to-start")]
+        public IActionResult ReadyToStart(string odsCode, ReadyToStartModel model, TriageOption? option = null)
         {
-            if (User.GetSecondaryOrganisationInternalIdentifiers().Any())
-                return RedirectToAction(nameof(SelectOrganisation), new { internalOrgId, option });
-
             return RedirectToAction(
                 nameof(NewOrder),
                 typeof(OrderController).ControllerName(),
-                new { internalOrgId, option });
+                new { odsCode, option });
         }
 
-        [HttpGet("~/order/organisation/{internalOrgId}/order/proxy-select")]
-        public async Task<IActionResult> SelectOrganisation(string internalOrgId, TriageOption? option = null)
+        [HttpGet("~/order/organisation/{odsCode}/order/neworder")]
+        public async Task<IActionResult> NewOrder(string odsCode, TriageOption? option = null)
         {
-            var internalOrgIds = new List<string>(User.GetSecondaryOrganisationInternalIdentifiers())
-            {
-                User.GetPrimaryOrganisationInternalIdentifier(),
-            };
+            var organisation = await organisationsService.GetOrganisationByInternalIdentifier(odsCode);
 
-            var organisations = await organisationsService.GetOrganisationsByInternalIdentifiers(internalOrgIds.ToArray());
-
-            var model = new SelectOrganisationModel(internalOrgId, organisations)
-            {
-                BackLink = Url.Action(nameof(ReadyToStart), new { internalOrgId, option }),
-                Title = "Which organisation are you ordering for?",
-            };
-
-            return View(model);
-        }
-
-        [HttpPost("~/order/organisation/{internalOrgId}/order/proxy-select")]
-        public IActionResult SelectOrganisation(string internalOrgId, SelectOrganisationModel model, TriageOption? option = null)
-        {
-            if (!ModelState.IsValid)
-                return View(model);
-
-            return RedirectToAction(nameof(NewOrder), new { internalOrgId = model.SelectedOrganisation, option });
-        }
-
-        [HttpGet("~/order/organisation/{internalOrgId}/order/neworder")]
-        public async Task<IActionResult> NewOrder(string internalOrgId, TriageOption? option = null)
-        {
-            var organisation = await organisationsService.GetOrganisationByInternalIdentifier(internalOrgId);
-
-            var orderModel = new OrderModel(internalOrgId, null, new OrderTaskList(), organisation.Name)
+            var orderModel = new OrderModel(odsCode, null, new OrderTaskList(), organisation.Name)
             {
                 DescriptionUrl = Url.Action(
                     nameof(OrderDescriptionController.NewOrderDescription),
                     typeof(OrderDescriptionController).ControllerName(),
-                    new { internalOrgId, option }),
+                    new { odsCode, option }),
                 BackLink = Url.Action(
                     nameof(OrderController.ReadyToStart),
                     typeof(OrderController).ControllerName(),
-                    new { internalOrgId, option }),
+                    new { odsCode, option }),
             };
 
             return View("Order", orderModel);
         }
 
         [HttpGet("summary")]
-        public async Task<IActionResult> Summary(string internalOrgId, CallOffId callOffId)
+        public async Task<IActionResult> Summary(string odsCode, CallOffId callOffId)
         {
-            var order = await orderService.GetOrderForSummary(callOffId, internalOrgId);
+            var order = await orderService.GetOrderForSummary(callOffId, odsCode);
 
-            var model = new SummaryModel(internalOrgId, order)
+            var model = new SummaryModel(odsCode, order)
             {
                 BackLink = order.OrderStatus == OrderStatus.Complete
                     ? Url.Action(
                         nameof(DashboardController.Organisation),
                         typeof(DashboardController).ControllerName(),
-                        new { internalOrgId })
+                        new { odsCode })
                     : Url.Action(
                         nameof(Order),
                         typeof(OrderController).ControllerName(),
-                        new { internalOrgId, callOffId }),
+                        new { odsCode, callOffId }),
 
                 Title = order.OrderStatus switch
                 {
@@ -190,9 +158,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
         }
 
         [HttpPost("summary")]
-        public async Task<IActionResult> Summary(string internalOrgId, CallOffId callOffId, SummaryModel model)
+        public async Task<IActionResult> Summary(string odsCode, CallOffId callOffId, SummaryModel model)
         {
-            var order = await orderService.GetOrderForSummary(callOffId, internalOrgId);
+            var order = await orderService.GetOrderForSummary(callOffId, odsCode);
 
             if (!order.CanComplete())
             {
@@ -201,20 +169,20 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
                 return View(model);
             }
 
-            await orderService.CompleteOrder(callOffId, internalOrgId);
+            await orderService.CompleteOrder(callOffId, odsCode);
 
             return RedirectToAction();
         }
 
         [HttpGet("download")]
-        public async Task<IActionResult> Download(string internalOrgId, CallOffId callOffId)
+        public async Task<IActionResult> Download(string odsCode, CallOffId callOffId)
         {
-            var order = await orderService.GetOrderForSummary(callOffId, internalOrgId);
+            var order = await orderService.GetOrderForSummary(callOffId, odsCode);
 
             string url = Url.Action(
                         nameof(OrderSummaryController.Index),
                         typeof(OrderSummaryController).ControllerName(),
-                        new { internalOrgId, callOffId });
+                        new { odsCode, callOffId });
 
             if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
             {
