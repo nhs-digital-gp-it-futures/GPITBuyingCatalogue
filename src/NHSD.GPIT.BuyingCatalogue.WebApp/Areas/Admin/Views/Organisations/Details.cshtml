@@ -13,7 +13,7 @@
     <nhs-summary-list>
         <nhs-summary-list-row label-text="ODS code">
             <p data-test-id="org-page-ods-code">
-                @Model.Organisation.OdsCode
+                @Model.Organisation.ExternalIdentifier
             </p>
         </nhs-summary-list-row>
         <nhs-summary-list-row label-text="Primary role ID">
@@ -107,7 +107,7 @@
                         <div data-test-id="related-org-name-@relatedOrganisation.Id">@relatedOrganisation.Name</div>
                     </nhs-table-cell>
                     <nhs-table-cell>
-                        <div data-test-id="related-org-odsCode-@relatedOrganisation.Id">@relatedOrganisation.OdsCode</div>
+                        <div data-test-id="related-org-externalIdentifier-@relatedOrganisation.Id">@relatedOrganisation.ExternalIdentifier</div>
                     </nhs-table-cell>
                     <nhs-table-cell>
                         <a data-test-id="related-org-remove-@relatedOrganisation.Id" 

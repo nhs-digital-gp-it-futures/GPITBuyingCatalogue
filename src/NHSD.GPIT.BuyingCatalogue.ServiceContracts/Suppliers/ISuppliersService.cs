@@ -20,9 +20,11 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.Suppliers
 
         Task<List<CatalogueItem>> GetAllSolutionsForSupplier(int supplierId);
 
-        Task<IReadOnlyList<Supplier>> GetAllSuppliers();
+        Task<IList<Supplier>> GetAllSuppliers(string searchTerm = null);
 
         Task<IList<Supplier>> GetAllActiveSuppliers();
+
+        Task<IList<Supplier>> GetSuppliersBySearchTerm(string searchTerm);
 
         Task<Supplier> UpdateSupplierActiveStatus(int supplierId, bool newStatus);
 

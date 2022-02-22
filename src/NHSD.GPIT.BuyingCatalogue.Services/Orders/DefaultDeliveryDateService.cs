@@ -25,7 +25,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
                 => o.DefaultDeliveryDates.Where(d => d.CatalogueItemId == catalogueItemId);
 
             var date = await dbContext.Orders
-                .Where(o => o.Id == callOffId.Id && o.OrderingParty.OdsCode == odsCode)
+                .Where(o => o.Id == callOffId.Id && o.OrderingParty.InternalIdentifier == odsCode)
                 .Include(defaultDeliveryDate)
                 .SelectMany(defaultDeliveryDate)
                 .Select(d => d.DeliveryDate)
@@ -48,7 +48,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
         private Task<Order> GetOrder(CallOffId callOffId, string odsCode, CatalogueItemId catalogueItemId)
         {
             return dbContext.Orders
-                .Where(o => o.Id == callOffId.Id && o.OrderingParty.OdsCode == odsCode)
+                .Where(o => o.Id == callOffId.Id && o.OrderingParty.InternalIdentifier == odsCode)
                 .Include(o => o.DefaultDeliveryDates.Where(d => d.CatalogueItemId == catalogueItemId))
                 .SingleOrDefaultAsync();
         }

@@ -35,7 +35,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
 
             if (state.ServiceRecipients is null)
             {
-                var recipients = await odsService.GetServiceRecipientsByParentOdsCode(odsCode);
+                var recipients = await odsService.GetServiceRecipientsByParentInternalIdentifier(odsCode);
                 state.ServiceRecipients = recipients.Select(sr => new OrderItemRecipientModel(sr)).ToList();
                 orderSessionService.SetOrderStateToSession(state);
             }

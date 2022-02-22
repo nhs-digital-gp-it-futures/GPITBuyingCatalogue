@@ -24,7 +24,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.MemoryCache
 
         public void InitializeServiceRecipients(string odsCode)
         {
-            serviceRecipientCacheKey = $"ServiceRecipients-ODS-{odsCode}";
+            serviceRecipientCacheKey = $"ServiceRecipients-Identifier-{odsCode}";
 
             SetServiceRecipients(ServiceRecipientsSeedData.GetServiceRecipients);
         }

@@ -610,7 +610,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
 
         private static int GetOrganisationId(BuyingCatalogueDbContext context, string odsCode = "03F")
         {
-            return context.Organisations.First(o => o.OdsCode == odsCode).Id;
+            return context.Organisations.First(o => o.InternalIdentifier == odsCode).Id;
         }
 
         private static AspNetUser GetBuyerUser(BuyingCatalogueDbContext context, int organisationId)

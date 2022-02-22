@@ -41,11 +41,11 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Orders
             await context.Organisations.AddAsync(organisation);
             await context.SaveChangesAsync();
 
-            await service.CreateOrder(description, organisation.OdsCode);
+            await service.CreateOrder(description, organisation.InternalIdentifier);
 
             var order = await context.Orders.Include(o => o.OrderingParty).SingleAsync();
             order.Description.Should().Be(description);
-            order.OrderingParty.OdsCode.Should().Be(organisation.OdsCode);
+            order.OrderingParty.InternalIdentifier.Should().Be(organisation.InternalIdentifier);
         }
 
         [Theory]
@@ -58,7 +58,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Orders
             await context.Orders.AddAsync(order);
             await context.SaveChangesAsync();
 
-            await service.DeleteOrder(order.CallOffId, order.OrderingParty.OdsCode);
+            await service.DeleteOrder(order.CallOffId, order.OrderingParty.InternalIdentifier);
 
             var updatedOrder = await context.Orders.FirstOrDefaultAsync();
 

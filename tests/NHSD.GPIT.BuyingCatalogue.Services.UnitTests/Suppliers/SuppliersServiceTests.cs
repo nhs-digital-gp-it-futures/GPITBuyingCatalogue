@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using AutoFixture;
@@ -57,6 +58,25 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Suppliers
             var actual = await service.GetAllSuppliers();
 
             actual.Count.Should().Be(3);
+        }
+
+        [Theory]
+        [InMemoryDbAutoData]
+        public static async Task GetAllSupplier_WithSearchTerm_ReturnsSupplier(
+            List<Supplier> suppliers,
+            [Frozen] BuyingCatalogueDbContext context,
+            SuppliersService service)
+        {
+            context.Suppliers.AddRange(suppliers);
+            await context.SaveChangesAsync();
+
+            var expectedSupplier = suppliers.First();
+            var searchTerm = expectedSupplier.Name;
+
+            var result = await service.GetAllSuppliers(searchTerm);
+
+            result.Should().NotBeEmpty();
+            result.Should().Contain(expectedSupplier);
         }
 
         [Theory]
@@ -292,6 +312,25 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Suppliers
             var updatedSupplier = await context.Suppliers.SingleAsync(s => s.Id == supplier.Id);
 
             updatedSupplier.SupplierContacts.ToList().ForEach(sc => sc.Id.Should().NotBe(contactToDelete));
+        }
+
+        [Theory]
+        [InMemoryDbAutoData]
+        public static async Task GetSuppliersBySearchTerm_ReturnsSupplier(
+            List<Supplier> suppliers,
+            [Frozen] BuyingCatalogueDbContext context,
+            SuppliersService service)
+        {
+            context.Suppliers.AddRange(suppliers);
+            await context.SaveChangesAsync();
+
+            var expectedSupplier = suppliers.First();
+            var searchTerm = expectedSupplier.Id.ToString();
+
+            var result = await service.GetSuppliersBySearchTerm(searchTerm);
+
+            result.Should().NotBeEmpty();
+            result.Should().Contain(expectedSupplier);
         }
     }
 }

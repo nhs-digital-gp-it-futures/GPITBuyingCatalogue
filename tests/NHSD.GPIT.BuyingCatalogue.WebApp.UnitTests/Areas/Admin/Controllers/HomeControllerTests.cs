@@ -59,7 +59,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
                 {
                     Id = o.Id,
                     Name = o.Name,
-                    OdsCode = o.OdsCode,
+                    OdsCode = o.InternalIdentifier,
                 }).ToList();
 
             var actual = (await controller.BuyerOrganisations()).As<ViewResult>();

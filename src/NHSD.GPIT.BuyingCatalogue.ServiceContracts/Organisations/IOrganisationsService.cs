@@ -10,11 +10,11 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.Organisations
 
         Task<Organisation> GetOrganisation(int id);
 
-        Task<Organisation> GetOrganisationByOdsCode(string odsCode);
+        Task<Organisation> GetOrganisationByInternalIdentifier(string internalIdentifier);
 
-        Task<List<Organisation>> GetOrganisationsByOdsCodes(string[] odsCodes);
+        Task<List<Organisation>> GetOrganisationsByInternalIdentifiers(string[] internalIdentifiers);
 
-        Task<(int OrganisationId, string Error)> AddOdsOrganisation(OdsOrganisation odsOrganisation, bool agreementSigned);
+        Task<(int OrganisationId, string Error)> AddCcgOrganisation(OdsOrganisation odsOrganisation, bool agreementSigned);
 
         Task UpdateCatalogueAgreementSigned(int organisationId, bool signed);
 

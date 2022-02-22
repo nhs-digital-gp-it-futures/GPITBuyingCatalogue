@@ -48,7 +48,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering
             CommonActions.GoBackLinkDisplayed().Should().BeTrue();
 
             await using var context = GetEndToEndDbContext();
-            var organisation = await context.Organisations.SingleAsync(o => o.OdsCode == Parameters["OdsCode"]);
+            var organisation = await context.Organisations.SingleAsync(o => o.InternalIdentifier == Parameters["OdsCode"]);
 
             CommonActions.PageTitle().Should().BeEquivalentTo($"Orders dashboard - {organisation.Name}".FormatForComparison());
             CommonActions.LedeText().Should().BeEquivalentTo("Manage orders currently in progress and view completed orders.".FormatForComparison());
@@ -74,7 +74,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering
             CommonActions.ElementIsDisplayed(CommonSelectors.PaginationNext).Should().BeTrue();
 
             using var context = GetEndToEndDbContext();
-            var countOfOrders = context.Organisations.Where(o => o.OdsCode == OdsCode).SelectMany(o => o.Orders).AsNoTracking().Count();
+            var countOfOrders = context.Organisations.Where(o => o.InternalIdentifier == OdsCode).SelectMany(o => o.Orders).AsNoTracking().Count();
 
             var expectedNumberOfPages = new PageOptions()
             {
@@ -104,7 +104,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering
             CommonActions.ElementIsDisplayed(CommonSelectors.PaginationNext).Should().BeFalse();
 
             using var context = GetEndToEndDbContext();
-            var countOfOrders = context.Organisations.Where(o => o.OdsCode == OdsCode).SelectMany(o => o.Orders).AsNoTracking().Count();
+            var countOfOrders = context.Organisations.Where(o => o.InternalIdentifier == OdsCode).SelectMany(o => o.Orders).AsNoTracking().Count();
 
             var expectedNumberOfPages = new PageOptions()
             {
@@ -165,7 +165,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering
         public async Task OrderDashboard_SearchValid_DisplaysOrders()
         {
             using var context = GetEndToEndDbContext();
-            var organisation = await context.Organisations.Include(o => o.Orders).SingleAsync(o => o.OdsCode == OdsCode);
+            var organisation = await context.Organisations.Include(o => o.Orders).SingleAsync(o => o.InternalIdentifier == OdsCode);
             var order = organisation.Orders.First();
 
             CommonActions.ElementAddValue(Objects.Ordering.OrganisationDashboard.SearchBar, order.CallOffId.ToString());
@@ -228,7 +228,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering
         public async Task OrderDashboard_Search_FiltersTable()
         {
             using var context = GetEndToEndDbContext();
-            var organisation = await context.Organisations.Include(o => o.Orders).SingleAsync(o => o.OdsCode == OdsCode);
+            var organisation = await context.Organisations.Include(o => o.Orders).SingleAsync(o => o.InternalIdentifier == OdsCode);
             var order = organisation.Orders.First();
 
             CommonActions.ElementAddValue(Objects.Ordering.OrganisationDashboard.SearchBar, order.CallOffId.ToString());

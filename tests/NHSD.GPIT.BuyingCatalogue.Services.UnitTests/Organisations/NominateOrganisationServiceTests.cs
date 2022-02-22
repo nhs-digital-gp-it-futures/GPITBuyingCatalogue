@@ -166,7 +166,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Organisations
             emailAddress.Should().Be(user.Email);
             fullName.Should().Be(user.FullName);
             userOrganisationName.Should().Be(organisation.Name);
-            userOdsCode.Should().Be(organisation.OdsCode);
+            userOdsCode.Should().Be(organisation.ExternalIdentifier);
             phoneNumber.Should().Be(user.PhoneNumber);
             nominatedOrganisationName.Should().Be(request.OrganisationName);
             nominatedOrganisationOdsCode.Should().Be(request.OdsCode);

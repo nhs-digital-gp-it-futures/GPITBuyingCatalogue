@@ -22,6 +22,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.PublicBrowse.NominateOrganisa
         {
             CommonActions.GoBackLinkDisplayed().Should().BeTrue();
             CommonActions.ElementIsDisplayed(CommonSelectors.Header1).Should().BeTrue();
+            CommonActions.ElementIsDisplayed(NominateOrganisationObjects.ProcurementHubLink).Should().BeTrue();
             CommonActions.ElementIsDisplayed(NominateOrganisationObjects.NominateAnOrganisationLink).Should().BeTrue();
         }
 
@@ -33,6 +34,22 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.PublicBrowse.NominateOrganisa
             CommonActions.PageLoadedCorrectGetIndex(
                 typeof(HomeController),
                 nameof(HomeController.Index)).Should().BeTrue();
+        }
+
+        [Fact]
+        public void Index_ClickProcurementHubLink_ExpectedResult()
+        {
+            CommonActions.ClickLinkElement(NominateOrganisationObjects.ProcurementHubLink);
+
+            CommonActions.PageLoadedCorrectGetIndex(
+                typeof(ProcurementHubController),
+                nameof(ProcurementHubController.Index)).Should().BeTrue();
+
+            CommonActions.ClickGoBackLink();
+
+            CommonActions.PageLoadedCorrectGetIndex(
+                typeof(NominateOrganisationController),
+                nameof(NominateOrganisationController.Index)).Should().BeTrue();
         }
 
         [Fact]

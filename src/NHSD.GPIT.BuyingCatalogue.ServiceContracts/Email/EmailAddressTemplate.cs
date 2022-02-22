@@ -2,10 +2,6 @@
 
 namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.Email
 {
-    /// <summary>
-    /// Defines a template that can be used to initialize the <see cref="EmailAddress"/>
-    /// sender of a new <see cref="EmailMessage"/>.
-    /// </summary>
     public sealed record EmailAddressTemplate
     {
         private readonly string address;

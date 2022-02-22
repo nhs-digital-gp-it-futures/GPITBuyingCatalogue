@@ -66,7 +66,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Organisations
                 { PhoneNumberToken, user.PhoneNumber ?? string.Empty },
                 { EmailAddressToken, user.Email },
                 { OrganisationNameToken, organisation.Name },
-                { OrganisationOdsCodeToken, organisation.OdsCode },
+                { OrganisationOdsCodeToken, organisation.ExternalIdentifier },
                 { NominatedOrganisationNameToken, request.OrganisationName },
                 { NominatedOrganisationOdsCodeToken, odsCode },
             };

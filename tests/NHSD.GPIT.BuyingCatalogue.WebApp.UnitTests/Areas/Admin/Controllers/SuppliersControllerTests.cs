@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using AutoFixture;
@@ -6,6 +7,7 @@ using AutoFixture.AutoMoq;
 using AutoFixture.Idioms;
 using AutoFixture.Xunit2;
 using FluentAssertions;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Addresses.Models;
@@ -15,6 +17,7 @@ using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Suppliers;
 using NHSD.GPIT.BuyingCatalogue.Test.Framework.AutoFixtureCustomisations;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.SupplierModels;
+using NHSD.GPIT.BuyingCatalogue.WebApp.Models.Autocomplete;
 using Xunit;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
@@ -34,27 +37,61 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
         [Theory]
         [CommonAutoData]
         public static async Task Get_Index_GetsAllSuppliers(
-            IReadOnlyList<Supplier> suppliers,
+            IList<Supplier> suppliers,
             [Frozen] Mock<ISuppliersService> mockSuppliersService,
             SuppliersController controller)
         {
-            mockSuppliersService.Setup(s => s.GetAllSuppliers()).ReturnsAsync(suppliers);
+            mockSuppliersService.Setup(s => s.GetAllSuppliers(It.IsAny<string>())).ReturnsAsync(suppliers);
 
             await controller.Index();
 
-            mockSuppliersService.Verify(o => o.GetAllSuppliers());
+            mockSuppliersService.Verify(o => o.GetAllSuppliers(It.IsAny<string>()));
+        }
+
+        [Theory]
+        [CommonAutoData]
+        public static async Task Get_Index_ActiveSuppliers_DoesntShowInactiveItems(
+            IList<Supplier> suppliers,
+            [Frozen] Mock<ISuppliersService> mockSuppliersService,
+            SuppliersController controller)
+        {
+            suppliers.ToList().ForEach(s => s.IsActive = true);
+            mockSuppliersService.Setup(s => s.GetAllSuppliers(It.IsAny<string>())).ReturnsAsync(suppliers);
+
+            var result = (await controller.Index()).As<ViewResult>();
+
+            result.Should().NotBeNull();
+            result.Model.As<ManageSuppliersModel>().ShowInactiveItems.Should().BeFalse();
+        }
+
+        [Theory]
+        [CommonAutoData]
+        public static async Task Get_Index_SearchTerm_DisableScripting(
+            string searchTerm,
+            IList<Supplier> suppliers,
+            [Frozen] Mock<ISuppliersService> mockSuppliersService,
+            SuppliersController controller)
+        {
+            suppliers.ToList().ForEach(s => s.IsActive = true);
+            suppliers.First().IsActive = false;
+            mockSuppliersService.Setup(s => s.GetAllSuppliers(searchTerm)).ReturnsAsync(suppliers);
+
+            var result = (await controller.Index(searchTerm)).As<ViewResult>();
+
+            result.Should().NotBeNull();
+            result.Model.As<ManageSuppliersModel>().DisableScripting.Should().BeTrue();
         }
 
         [Theory]
         [CommonAutoData]
         public static async Task Get_Index_ReturnsViewWithExpectedViewModel(
-            IReadOnlyList<Supplier> suppliers,
+            IList<Supplier> suppliers,
             [Frozen] Mock<ISuppliersService> mockSuppliersService,
             SuppliersController controller)
         {
             var expectedResult = new ManageSuppliersModel(suppliers);
 
-            mockSuppliersService.Setup(o => o.GetAllSuppliers()).ReturnsAsync(suppliers);
+            mockSuppliersService.Setup(o => o.GetAllSuppliers(It.IsAny<string>())).ReturnsAsync(suppliers);
 
             var actual = (await controller.Index()).As<ViewResult>();
 
@@ -339,6 +376,70 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
             actual.RouteValues["supplierId"].Should().Be(supplier.Id);
 
             mockSuppliersService.Verify(s => s.DeleteSupplierContact(supplier.Id, supplier.SupplierContacts.First().Id), Times.Once());
+        }
+
+        [Theory]
+        [CommonAutoData]
+        public static async Task Get_FilterSearchSuggestions_ReturnsResults(
+            string searchTerm,
+            List<Supplier> searchResults,
+            [Frozen] Mock<ISuppliersService> mockSuppliersService,
+            SuppliersController controller)
+        {
+            controller.ControllerContext.HttpContext = new DefaultHttpContext()
+            {
+                Request =
+                {
+                    Headers =
+                    {
+                        Referer = "http://www.test.com",
+                    },
+                },
+            };
+            var requestUri = new UriBuilder(controller.HttpContext.Request.Headers.Referer.ToString());
+            var expected = searchResults.Select(r => new AutocompleteResult
+            {
+                Title = r.Name,
+                Category = r.Id.ToString(),
+                Url = "testUrl",
+            });
+
+            var supplier = searchResults.First();
+
+            mockSuppliersService.Setup(s => s.GetSuppliersBySearchTerm(searchTerm))
+                .ReturnsAsync(searchResults);
+
+            var result = (await controller.FilterSearchSuggestions(searchTerm)).As<JsonResult>();
+
+            result.Should().NotBeNull();
+            result.Value.Should().BeEquivalentTo(expected, opt => opt.ExcludingMissingMembers());
+        }
+
+        [Theory]
+        [CommonAutoData]
+        public static async Task Get_FilterSearchSuggestions_NoResults(
+            string searchTerm,
+            [Frozen] Mock<ISuppliersService> mockSuppliersService,
+            SuppliersController controller)
+        {
+            controller.ControllerContext.HttpContext = new DefaultHttpContext()
+            {
+                Request =
+                {
+                    Headers =
+                    {
+                        Referer = "http://www.test.com",
+                    },
+                },
+            };
+
+            mockSuppliersService.Setup(s => s.GetSuppliersBySearchTerm(searchTerm))
+                .ReturnsAsync(Array.Empty<Supplier>());
+
+            var result = (await controller.FilterSearchSuggestions(searchTerm)).As<JsonResult>();
+
+            result.Should().NotBeNull();
+            result.Value.As<IEnumerable<AutocompleteResult>>().Should().BeEmpty();
         }
     }
 }

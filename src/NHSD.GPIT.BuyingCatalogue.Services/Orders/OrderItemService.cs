@@ -68,7 +68,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
             await dbContext.SaveChangesAsync();
         }
 
-        public async Task<List<OrderItem>> GetOrderItems(CallOffId callOffId,  string odsCode, CatalogueItemType? catalogueItemType)
+        public async Task<List<OrderItem>> GetOrderItems(CallOffId callOffId, string odsCode, CatalogueItemType? catalogueItemType)
         {
             Expression<Func<Order, IEnumerable<OrderItem>>> orderItems = catalogueItemType is null
                 ? o => o.OrderItems
@@ -78,7 +78,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
                 return null;
 
             return await dbContext.Orders
-                .Where(o => o.Id == callOffId.Id && o.OrderingParty.OdsCode == odsCode)
+                .Where(o => o.Id == callOffId.Id && o.OrderingParty.InternalIdentifier == odsCode)
                 .Include(orderItems).ThenInclude(i => i.CatalogueItem)
                 .Include(orderItems).ThenInclude(i => i.OrderItemRecipients).ThenInclude(r => r.Recipient)
                 .Include(orderItems).ThenInclude(i => i.CataloguePrice).ThenInclude(p => p.PricingUnit)
@@ -93,7 +93,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
                 o.OrderItems.Where(i => i.CatalogueItem.Id == catalogueItemId);
 
             return dbContext.Orders
-                .Where(o => o.Id == callOffId.Id && o.OrderingParty.OdsCode == odsCode)
+                .Where(o => o.Id == callOffId.Id && o.OrderingParty.InternalIdentifier == odsCode)
                 .Include(orderItems).ThenInclude(i => i.CatalogueItem)
                 .Include(orderItems).ThenInclude(i => i.OrderItemRecipients).ThenInclude(r => r.Recipient)
                 .Include(orderItems).ThenInclude(i => i.CataloguePrice).ThenInclude(p => p.PricingUnit)
@@ -104,7 +104,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
         public async Task DeleteOrderItem(CallOffId callOffId,  string odsCode, CatalogueItemId catalogueItemId)
         {
             var order = await dbContext.Orders
-                .Where(o => o.Id == callOffId.Id && o.OrderingParty.OdsCode == odsCode)
+                .Where(o => o.Id == callOffId.Id && o.OrderingParty.InternalIdentifier == odsCode)
                 .Include(o => o.OrderItems)
                 .Include(o => o.OrderItems).ThenInclude(i => i.CatalogueItem).ThenInclude(a => a.AdditionalService)
                 .SingleAsync();
