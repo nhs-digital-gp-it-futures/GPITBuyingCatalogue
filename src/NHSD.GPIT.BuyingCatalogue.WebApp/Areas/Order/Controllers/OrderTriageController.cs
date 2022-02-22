@@ -57,6 +57,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
             var model = new GenericOrderTriageModel
             {
                 BackLink = Url.Action(nameof(Index), new { odsCode, option = TriageOption.NotSure }),
+                OdsCode = odsCode,
                 OrdersDashboardLink = Url.Action(
                     nameof(DashboardController.Organisation),
                     typeof(DashboardController).ControllerName(),
@@ -120,6 +121,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
             var model = new GenericOrderTriageModel
             {
                 BackLink = Url.Action(nameof(TriageSelection), new { odsCode, option, selected = false }),
+                OdsCode = odsCode,
                 OrdersDashboardLink = Url.Action(
                     nameof(DashboardController.Organisation),
                     typeof(DashboardController).ControllerName(),

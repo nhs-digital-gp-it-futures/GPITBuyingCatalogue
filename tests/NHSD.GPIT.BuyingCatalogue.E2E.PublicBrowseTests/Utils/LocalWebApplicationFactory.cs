@@ -39,12 +39,6 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils
         private const string BC_DB_CONNECTION = "Server=localhost,1450;Database=GPITBuyingCatalogue;User=SA;password=8VSKwQ8xgk35qWFm8VSKwQ8xgk35qWFm!;Integrated Security=false";
 
         [SuppressMessage("StyleCop.CSharp.NamingRules", "SA1310:Field names should not contain underscore", Justification = "This name is used by the Webapp, so needs to be kept")]
-        private const string BC_SMTP_HOST = "localhost";
-
-        [SuppressMessage("StyleCop.CSharp.NamingRules", "SA1310:Field names should not contain underscore", Justification = "This name is used by the Webapp, so needs to be kept")]
-        private const string BC_SMTP_PORT = "9999";
-
-        [SuppressMessage("StyleCop.CSharp.NamingRules", "SA1310:Field names should not contain underscore", Justification = "This name is used by the Webapp, so needs to be kept")]
         private const string DOMAIN_NAME = "127.0.0.1";
 
         private const string Browser = "chrome";
@@ -98,8 +92,6 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils
                 RootUri = RootUri.Replace("127.0.0.1", "host.docker.internal");
             }
         }
-
-        public static int SmtpPort => int.Parse(BC_SMTP_PORT);
 
         public string BcDbName { get; private set; }
 
@@ -223,12 +215,6 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils
             SetEnvironmentVariable(nameof(BC_DB_CONNECTION), BC_DB_CONNECTION);
 
             SetEnvironmentVariable("ASPNETCORE_ENVIRONMENT", "E2ETest");
-
-            SetEnvironmentVariable("SMTPSERVER__PORT", BC_SMTP_PORT);
-
-            SetEnvironmentVariable(nameof(BC_SMTP_HOST), BC_SMTP_HOST);
-
-            SetEnvironmentVariable(nameof(BC_SMTP_PORT), BC_SMTP_PORT);
 
             SetEnvironmentVariable(nameof(DOMAIN_NAME), DOMAIN_NAME);
         }

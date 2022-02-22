@@ -30,39 +30,39 @@ namespace NHSD.GPIT.BuyingCatalogue.Framework.UnitTests.Extensions
         }
 
         [Fact]
-        public static void GetPrimaryOdsCode_NullPrincipal_ThrowsException()
+        public static void GetPrimaryOrganisationInternalIdentifier_NullPrincipal_ThrowsException()
         {
             ClaimsPrincipal user = null;
 
             // ReSharper disable once ExpressionIsAlwaysNull
-            Assert.Throws<ArgumentNullException>(() => user.GetPrimaryOdsCode());
+            Assert.Throws<ArgumentNullException>(() => user.GetPrimaryOrganisationInternalIdentifier());
         }
 
         [Fact]
-        public static void GetPrimaryOdsCode_GetsValue()
+        public static void GetPrimaryOrganisationInternalIdentifier_GetsValue()
         {
-            var user = CreatePrincipal("primaryOrganisationOdsCode", "3CY");
+            var user = CreatePrincipal("primaryOrganisationInternalIdentifier", "3CY");
 
-            var result = user.GetPrimaryOdsCode();
+            var result = user.GetPrimaryOrganisationInternalIdentifier();
 
             Assert.Equal("3CY", result);
         }
 
         [Fact]
-        public static void GetSecondaryOdsCode_NullPrincipal_ThrowsException()
+        public static void GetSecondaryOrganisationInternalIdentifiers_NullPrincipal_ThrowsException()
         {
             ClaimsPrincipal user = null;
 
             // ReSharper disable once ExpressionIsAlwaysNull
-            Assert.Throws<ArgumentNullException>(() => user.GetSecondaryOdsCodes());
+            Assert.Throws<ArgumentNullException>(() => user.GetSecondaryOrganisationInternalIdentifiers());
         }
 
         [Fact]
-        public static void GetSecondaryOdsCode_GetsValues()
+        public static void GetSecondaryOrganisationInternalIdentifiers_GetsValues()
         {
-            var user = CreatePrincipal("secondaryOrganisationOdsCode", new[] { "3CY", "3BY", "ABC" });
+            var user = CreatePrincipal("secondaryOrganisationInternalIdentifier", new[] { "3CY", "3BY", "ABC" });
 
-            var result = user.GetSecondaryOdsCodes();
+            var result = user.GetSecondaryOrganisationInternalIdentifiers();
 
             Assert.Equal(3, result.Count);
             Assert.Contains(result, s => s.EqualsIgnoreCase("3CY"));

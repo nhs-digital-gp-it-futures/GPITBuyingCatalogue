@@ -11,6 +11,7 @@ using Flurl.Http.Testing;
 using Microsoft.Extensions.Caching.Memory;
 using Moq;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Addresses.Models;
+using NHSD.GPIT.BuyingCatalogue.EntityFramework.Organisations.Models;
 using NHSD.GPIT.BuyingCatalogue.Framework.Settings;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Models;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Organisations;
@@ -85,7 +86,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Organisations
 
             var settings = new OdsSettings();
 
-            var service = new OdsService(settings, memoryCacheMock.Object);
+            var service = new OdsService(settings, memoryCacheMock.Object, new Mock<IOrganisationsService>().Object);
 
             (OdsOrganisation org, string error) = await service.GetOrganisationByOdsCode(odsCode);
 
@@ -95,7 +96,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Organisations
         }
 
         [Fact]
-        public static async Task GetBuyerOrganisationByOdsCode_WithValidResponse_Returns_BuyerOrganisation()
+        public static async Task GetOrganisationByOdsCode_WithValidResponse_Returns_BuyerOrganisation()
         {
             using var httpTest = new HttpTest();
             httpTest.RespondWith(status: 200, body: ValidResponseBody);
@@ -133,7 +134,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Organisations
                 BuyerOrganisationRoleIds = new[] { "RO98", "RO177", "RO213", "RO272" },
             };
 
-            var service = new OdsService(settings, memoryCacheMock.Object);
+            var service = new OdsService(settings, memoryCacheMock.Object, new Mock<IOrganisationsService>().Object);
 
             (OdsOrganisation org, string error) = await service.GetOrganisationByOdsCode(OdsCode);
 
@@ -145,7 +146,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Organisations
         }
 
         [Fact]
-        public static async Task GetBuyerOrganisationByOdsCode_WithValidResponse_NotBuyerRole_ReturnsError()
+        public static async Task GetOrganisationByOdsCode_WithValidResponse_NotBuyerRole_ReturnsError()
         {
             using var httpTest = new HttpTest();
             httpTest.RespondWith(status: 200, body: ValidResponseBody);
@@ -165,7 +166,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Organisations
                 BuyerOrganisationRoleIds = new[] { "X123" },
             };
 
-            var service = new OdsService(settings, memoryCacheMock.Object);
+            var service = new OdsService(settings, memoryCacheMock.Object, new Mock<IOrganisationsService>().Object);
 
             (OdsOrganisation org, string error) = await service.GetOrganisationByOdsCode(OdsCode);
 
@@ -175,7 +176,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Organisations
         }
 
         [Fact]
-        public static async Task GetBuyerOrganisationByOdsCode_WithInvalidResponse_ReturnsError()
+        public static async Task GetOrganisationByOdsCode_WithInvalidResponse_ReturnsError()
         {
             using var httpTest = new HttpTest();
             httpTest.RespondWithJson(new { ErrorCode = 404, ErrorText = "Not Found." }, 404);
@@ -194,7 +195,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Organisations
                 ApiBaseUrl = new Uri("https://spineservice"),
             };
 
-            var service = new OdsService(settings, memoryCacheMock.Object);
+            var service = new OdsService(settings, memoryCacheMock.Object, new Mock<IOrganisationsService>().Object);
 
             (OdsOrganisation org, string error) = await service.GetOrganisationByOdsCode(OdsCode);
 
@@ -207,16 +208,16 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Organisations
         [CommonInlineAutoData("")]
         [CommonInlineAutoData(" ")]
         [CommonInlineAutoData(null)]
-        public static Task GetServiceRecipientsByParentOdsCode_NoOdsCode_ThrowsException(
+        public static Task GetServiceRecipientsByParentInternalIdentifier_NoInternalIdentifier_ThrowsException(
             string odsCode,
             OdsService service)
         {
-            return Assert.ThrowsAsync<ArgumentException>(() => service.GetServiceRecipientsByParentOdsCode(odsCode));
+            return Assert.ThrowsAsync<ArgumentException>(() => service.GetServiceRecipientsByParentInternalIdentifier(odsCode));
         }
 
         [Theory]
         [CommonAutoData]
-        public static async Task GetServiceRecipientsByParentOdsCode_CachedCode_ReturnsFromCache(
+        public static async Task GetServiceRecipientsByParentInternalIdentifier_CachedCode_ReturnsFromCache(
             string odsCode,
             IEnumerable<ServiceRecipient> serviceRecipients)
         {
@@ -224,14 +225,14 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Organisations
 
             object expectedValue = serviceRecipients;
             memoryCacheMock
-                .Setup(m => m.TryGetValue($"ServiceRecipients-ODS-{odsCode}", out expectedValue))
+                .Setup(m => m.TryGetValue($"ServiceRecipients-Identifier-{odsCode}", out expectedValue))
                 .Returns(true);
 
             var settings = new OdsSettings();
 
-            var service = new OdsService(settings, memoryCacheMock.Object);
+            var service = new OdsService(settings, memoryCacheMock.Object, new Mock<IOrganisationsService>().Object);
 
-            var result = await service.GetServiceRecipientsByParentOdsCode(odsCode);
+            var result = await service.GetServiceRecipientsByParentInternalIdentifier(odsCode);
 
             result.Should().BeEquivalentTo(serviceRecipients);
             memoryCacheMock.Verify(v => v.CreateEntry(It.IsAny<object>()), Times.Never);
@@ -239,7 +240,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Organisations
 
         [Theory]
         [CommonAutoData]
-        public static async Task GetServiceRecipientsByParentOdsCode_SinglePage_ReturnsOrganisation(
+        public static async Task GetServiceRecipientsByParentInternalIdentifier_SinglePage_ReturnsOrganisation(
             string odsCode,
             ServiceRecipient childOrg)
         {
@@ -254,7 +255,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Organisations
 
             object expectedValue = null;
             memoryCacheMock
-                .Setup(m => m.TryGetValue($"ServiceRecipients-ODS-{odsCode}", out expectedValue))
+                .Setup(m => m.TryGetValue($"ServiceRecipients-Identifier-{odsCode}", out expectedValue))
                 .Returns(false);
 
             memoryCacheMock.Setup(m => m.CreateEntry(It.IsAny<object>())).Returns(Mock.Of<ICacheEntry>());
@@ -266,9 +267,13 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Organisations
                 GpPracticeRoleId = "RO177",
             };
 
-            var service = new OdsService(settings, memoryCacheMock.Object);
+            var organisationServiceMock = new Mock<IOrganisationsService>();
+            var organisation = new Organisation { ExternalIdentifier = odsCode };
+            organisationServiceMock.Setup(m => m.GetOrganisationByInternalIdentifier(It.IsAny<string>())).ReturnsAsync(organisation);
 
-            var result = await service.GetServiceRecipientsByParentOdsCode(odsCode);
+            var service = new OdsService(settings, memoryCacheMock.Object, organisationServiceMock.Object);
+
+            var result = await service.GetServiceRecipientsByParentInternalIdentifier(odsCode);
 
             result.Should().BeEquivalentTo(new[] { childOrg });
             memoryCacheMock.Verify(v => v.CreateEntry(It.IsAny<object>()), Times.Once);
@@ -276,7 +281,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Organisations
 
         [Theory]
         [CommonAutoData]
-        public static async Task GetServiceRecipientsByParentOdsCode_MultiplePages_ReturnsOrganisation(
+        public static async Task GetServiceRecipientsByParentInternalIdentifier_MultiplePages_ReturnsOrganisation(
             string odsCode,
             ServiceRecipient childOne,
             ServiceRecipient childTwo)
@@ -296,7 +301,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Organisations
 
             object expectedValue = null;
             memoryCacheMock
-                .Setup(m => m.TryGetValue($"ServiceRecipients-ODS-{odsCode}", out expectedValue))
+                .Setup(m => m.TryGetValue($"ServiceRecipients-Identifier-{odsCode}", out expectedValue))
                 .Returns(false);
 
             memoryCacheMock.Setup(m => m.CreateEntry(It.IsAny<object>())).Returns(Mock.Of<ICacheEntry>());
@@ -308,9 +313,13 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Organisations
                 GpPracticeRoleId = "RO177",
             };
 
-            var service = new OdsService(settings, memoryCacheMock.Object);
+            var organisationServiceMock = new Mock<IOrganisationsService>();
+            var organisation = new Organisation { ExternalIdentifier = odsCode };
+            organisationServiceMock.Setup(m => m.GetOrganisationByInternalIdentifier(It.IsAny<string>())).ReturnsAsync(organisation);
 
-            var result = await service.GetServiceRecipientsByParentOdsCode(odsCode);
+            var service = new OdsService(settings, memoryCacheMock.Object, organisationServiceMock.Object);
+
+            var result = await service.GetServiceRecipientsByParentInternalIdentifier(odsCode);
 
             result.Should().BeEquivalentTo(new[] { childOne, childTwo });
             memoryCacheMock.Verify(v => v.CreateEntry(It.IsAny<object>()), Times.Once);
@@ -318,7 +327,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Organisations
 
         [Theory]
         [CommonAutoData]
-        public static async Task GetServiceRecipientsByParentOdsCode_SinglePageDifferentRoleIds_ReturnsOnlyMatching(
+        public static async Task GetServiceRecipientsByParentInternalIdentifier_SinglePageDifferentRoleIds_ReturnsOnlyMatching(
             string odsCode,
             ServiceRecipient childOne,
             ServiceRecipient childTwo)
@@ -334,7 +343,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Organisations
 
             object expectedValue = null;
             memoryCacheMock
-                .Setup(m => m.TryGetValue($"ServiceRecipients-ODS-{odsCode}", out expectedValue))
+                .Setup(m => m.TryGetValue($"ServiceRecipients-Identifier-{odsCode}", out expectedValue))
                 .Returns(false);
 
             memoryCacheMock.Setup(m => m.CreateEntry(It.IsAny<object>())).Returns(Mock.Of<ICacheEntry>());
@@ -346,9 +355,13 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Organisations
                 GpPracticeRoleId = "RO177",
             };
 
-            var service = new OdsService(settings, memoryCacheMock.Object);
+            var organisationServiceMock = new Mock<IOrganisationsService>();
+            var organisation = new Organisation { ExternalIdentifier = odsCode };
+            organisationServiceMock.Setup(m => m.GetOrganisationByInternalIdentifier(It.IsAny<string>())).ReturnsAsync(organisation);
 
-            var result = await service.GetServiceRecipientsByParentOdsCode(odsCode);
+            var service = new OdsService(settings, memoryCacheMock.Object, organisationServiceMock.Object);
+
+            var result = await service.GetServiceRecipientsByParentInternalIdentifier(odsCode);
 
             result.Should().BeEquivalentTo(new[] { childOne });
             memoryCacheMock.Verify(v => v.CreateEntry(It.IsAny<object>()), Times.Once);
@@ -356,7 +369,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Organisations
 
         [Theory]
         [CommonAutoData]
-        public static async Task GetServiceRecipientsByParentOdsCode_NoOrganisations_ReturnsEmptyList(
+        public static async Task GetServiceRecipientsByParentInternalIdentifier_NoOrganisations_ReturnsEmptyList(
             string odsCode)
         {
             using var httpTest = new HttpTest();
@@ -366,7 +379,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Organisations
 
             object expectedValue = null;
             memoryCacheMock
-                .Setup(m => m.TryGetValue($"ServiceRecipients-ODS-{odsCode}", out expectedValue))
+                .Setup(m => m.TryGetValue($"ServiceRecipients-Identifier-{odsCode}", out expectedValue))
                 .Returns(false);
 
             memoryCacheMock.Setup(m => m.CreateEntry(It.IsAny<object>())).Returns(Mock.Of<ICacheEntry>());
@@ -378,9 +391,13 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Organisations
                 GpPracticeRoleId = "RO177",
             };
 
-            var service = new OdsService(settings, memoryCacheMock.Object);
+            var organisationServiceMock = new Mock<IOrganisationsService>();
+            var organisation = new Organisation { ExternalIdentifier = odsCode };
+            organisationServiceMock.Setup(m => m.GetOrganisationByInternalIdentifier(It.IsAny<string>())).ReturnsAsync(organisation);
 
-            var result = await service.GetServiceRecipientsByParentOdsCode(odsCode);
+            var service = new OdsService(settings, memoryCacheMock.Object, organisationServiceMock.Object);
+
+            var result = await service.GetServiceRecipientsByParentInternalIdentifier(odsCode);
 
             result.Should().BeEmpty();
             memoryCacheMock.Verify(v => v.CreateEntry(It.IsAny<object>()), Times.Once);

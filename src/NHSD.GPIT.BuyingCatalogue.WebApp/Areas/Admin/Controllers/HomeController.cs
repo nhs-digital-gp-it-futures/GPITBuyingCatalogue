@@ -30,7 +30,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
                 {
                     Id = o.Id,
                     Name = o.Name,
-                    OdsCode = o.OdsCode,
+                    OdsCode = o.InternalIdentifier,
                 }).ToList();
 
             return View(new ListOrganisationsModel(organisationModel));

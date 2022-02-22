@@ -46,7 +46,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Orders
             await context.Orders.AddAsync(order);
             await context.SaveChangesAsync();
 
-            await service.DeleteOrderItem(order.CallOffId, order.OrderingParty.OdsCode, orderItem2.CatalogueItemId);
+            await service.DeleteOrderItem(order.CallOffId, order.OrderingParty.InternalIdentifier, orderItem2.CatalogueItemId);
 
             var updatedOrder = await context.Orders.FirstOrDefaultAsync();
 
@@ -72,7 +72,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Orders
             await context.Orders.AddAsync(order);
             await context.SaveChangesAsync();
 
-            await service.DeleteOrderItem(order.CallOffId, order.OrderingParty.OdsCode, orderItem.CatalogueItemId);
+            await service.DeleteOrderItem(order.CallOffId, order.OrderingParty.InternalIdentifier, orderItem.CatalogueItemId);
 
             var updatedOrder = await context.Orders.AsAsyncEnumerable().FirstOrDefaultAsync();
 

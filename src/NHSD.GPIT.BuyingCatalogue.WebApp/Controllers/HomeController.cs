@@ -1,21 +1,49 @@
-﻿using Microsoft.AspNetCore.Diagnostics;
+﻿using System;
+using System.Threading.Tasks;
+using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
+using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Email;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Models;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.Controllers
 {
     public class HomeController : Controller
     {
-        public IActionResult Index()
+        private readonly IContactUsService contactUsService;
+
+        public HomeController(IContactUsService contactUsService)
         {
-            return View();
+            this.contactUsService = contactUsService ?? throw new ArgumentNullException(nameof(contactUsService));
         }
+
+        public IActionResult Index()
+            => View();
 
         [HttpGet("privacy-policy")]
         public IActionResult PrivacyPolicy()
+            => View();
+
+        [HttpGet("contact-us")]
+        public IActionResult ContactUs()
+            => View(new ContactUsModel());
+
+        [HttpPost("contact-us")]
+        public async Task<IActionResult> ContactUs(ContactUsModel model)
         {
-            return View();
+            if (!ModelState.IsValid)
+                return View(model);
+
+            await contactUsService.SubmitQuery(
+                model.ContactMethod == ContactUsModel.ContactMethodTypes.TechnicalFault,
+                model.FullName,
+                model.EmailAddress,
+                model.Message);
+
+            return RedirectToAction(nameof(ContactUsConfirmation));
         }
+
+        [HttpGet("contact-us/confirmation")]
+        public IActionResult ContactUsConfirmation() => View();
 
         [HttpGet("accessibility-statement")]
         public IActionResult AccessibilityStatement() => View();

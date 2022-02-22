@@ -1,0 +1,16 @@
+﻿@using NHSD.GPIT.BuyingCatalogue.WebApp.Models;
+
+@{
+    ViewData["Title"] = "Your message has been sent";
+    var backLinkModel = new NavBaseModel { BackLink = "/", BackLinkText = "Go back to homepage" };
+}
+
+<partial name="Partials/_BackLink" model="@backLinkModel" />
+
+<div class="nhsuk-grid-row">
+    <div class="nhsuk-grid-column-two-thirds">
+        <nhs-page-title title="@ViewBag.Title" />
+        <p>The Helpdesk Team/Buying Catalogue Team will reply to you as soon as possible.</p>
+        <p>Remember to check your ‘Junk’ or ‘Spam’ folder.</p>
+    </div>
+</div>
