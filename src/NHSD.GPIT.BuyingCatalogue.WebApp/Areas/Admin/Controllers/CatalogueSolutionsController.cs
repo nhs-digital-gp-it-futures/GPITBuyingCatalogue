@@ -79,7 +79,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
         {
             var results = await GetFilteredItems(search);
 
-            return Json(results.Select(x => new AutocompleteResult
+            return Json(results.Take(15).Select(x => new AutocompleteResult
             {
                 Title = x.Name,
                 Category = x.Supplier.Name,
