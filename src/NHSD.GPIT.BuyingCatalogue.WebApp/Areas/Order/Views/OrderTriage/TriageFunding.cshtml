@@ -1,7 +1,7 @@
 ﻿@using NHSD.GPIT.BuyingCatalogue.WebApp.Controllers
-@model NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.FundingSource.ConfirmFundingSourceModel
+@model NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.FundingSource.FundingSourceModel
 @{
-    ViewBag.Title = "Confirm funding source";
+    ViewBag.Title = "What funding source are you using to pay for this order?";
 }
 
 <div>
@@ -9,18 +9,13 @@
     <div class="nhsuk-grid-row nhsuk-u-margin-bottom-6">
         <div class="nhsuk-grid-column-full">
             <nhs-validation-summary RadioId="@nameof(Model.SelectedFundingSource)" />
-            <nhs-page-title title="@ViewBag.Title"
-                            caption="Order @Model.CallOffId"
-                            advice="Confirm the funding source you're using to pay for this order." />
-
-
-            <nhs-inset-text>If you want to pay using two different funding sources, you’ll need to create two separate orders.</nhs-inset-text>
+            <nhs-page-title title="@ViewBag.Title" />
 
             <form method="post">
                 <input type="hidden" asp-for="BackLink" />
                 <input type="hidden" asp-for="BackLinkText" />
 
-                <nhs-fieldset-form-label asp-for="SelectedFundingSource">
+                <nhs-fieldset-form-label asp-for="SelectedFundingSource" label-hint="Select the funding source you’ll be using to pay for this order. If you want to pay using two different sources, you’ll need to create two separate order summaries.">
                     <nhs-radio-buttons asp-for="SelectedFundingSource"
                                        values="Model.AvailableFundingSources.Cast<object>()"
                                        value-name="Value"
@@ -36,8 +31,16 @@
                     <p><br />Local funding means your organisation will be paying for the order. The supplier will invoice you directly.</p>
                 </nhs-details>
 
-                <nhs-submit-button />
+                <nhs-submit-button text="Continue" />
             </form>
+
+            <h2>Need help?</h2>
+            <p>For help using the Buying Catalogue, contact the National and Commercial Procurement Hub:</p>
+
+            <vc:nhs-action-link id="procurement-hub-link" text="Contact Procurement Hub"
+                            url="@Url.Action(
+                                nameof(ProcurementHubController.Index),
+                                typeof(ProcurementHubController).ControllerName())" />
         </div>
     </div>
 </div>

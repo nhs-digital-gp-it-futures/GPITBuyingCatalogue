@@ -37,6 +37,8 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models
 
         public bool? FundingSourceOnlyGms { get; set; }
 
+        public bool? ConfirmedFundingSource { get; set; }
+
         public DateTime Created { get; set; } = DateTime.UtcNow;
 
         public DateTime LastUpdated { get; set; }

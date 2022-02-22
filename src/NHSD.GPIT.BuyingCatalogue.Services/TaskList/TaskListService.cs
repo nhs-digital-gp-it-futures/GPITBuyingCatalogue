@@ -107,7 +107,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.TaskList
             if (order.HasAssociatedService())
                 completedSections |= TaskListOrderSections.AssociatedServices;
 
-            if (order.FundingSourceOnlyGms.HasValue)
+            if (order.ConfirmedFundingSource.HasValue && order.ConfirmedFundingSource.Value is true)
                 completedSections |= TaskListOrderSections.FundingSource;
 
             return completedSections;

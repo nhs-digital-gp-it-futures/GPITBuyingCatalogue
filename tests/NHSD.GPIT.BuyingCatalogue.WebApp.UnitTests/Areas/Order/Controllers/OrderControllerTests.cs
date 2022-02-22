@@ -18,6 +18,7 @@ using NHSD.GPIT.BuyingCatalogue.EntityFramework.Organisations.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Users.Models;
 using NHSD.GPIT.BuyingCatalogue.Framework.Constants;
 using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
+using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Enums;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Models.TaskList;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Orders;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Organisations;
@@ -26,6 +27,7 @@ using NHSD.GPIT.BuyingCatalogue.ServiceContracts.TaskList;
 using NHSD.GPIT.BuyingCatalogue.Test.Framework.AutoFixtureCustomisations;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.Order;
+using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.OrderTriage;
 using Xunit;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers
@@ -207,6 +209,49 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers
 
             model.InternalOrgId.Should().Be(internalOrgId);
             model.CallOffId.Should().Be(callOffId);
+        }
+        
+        [Theory]
+        [CommonAutoData]
+        public static void Post_ReadyToStart_Redirects(
+            string internalOrgId,
+            ReadyToStartModel model,
+            TriageOption option,
+            OrderController controller)
+        {
+            var result = controller.ReadyToStart(internalOrgId, model, option).As<RedirectToActionResult>();
+
+            result.Should().NotBeNull();
+            result.ActionName.Should().Be(nameof(controller.NewOrder));
+            result.RouteValues.Should().BeEquivalentTo(
+                new RouteValueDictionary
+                {
+                    { nameof(internalOrgId), internalOrgId },
+                    { nameof(option), option },
+                    { "fundingSource", null },
+                });
+        }
+
+        [Theory]
+        [CommonAutoData]
+        public static void Post_ReadyToStart_WithFundingSource_Redirects(
+            string internalOrgId,
+            ReadyToStartModel model,
+            TriageOption option,
+            FundingSource fundingSource,
+            OrderController controller)
+        {
+            var result = controller.ReadyToStart(internalOrgId, model, option, fundingSource).As<RedirectToActionResult>();
+
+            result.Should().NotBeNull();
+            result.ActionName.Should().Be(nameof(controller.NewOrder));
+            result.RouteValues.Should().BeEquivalentTo(
+                new RouteValueDictionary
+                {
+                    { nameof(internalOrgId), internalOrgId },
+                    { nameof(option), option },
+                    { nameof(fundingSource), fundingSource },
+                });
         }
 
         [Theory]

@@ -30,7 +30,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
         {
             var order = await orderService.GetOrderThin(callOffId, internalOrgId);
 
-            var model = new FundingSourceModel(callOffId, order.FundingSourceOnlyGms)
+            var model = new ConfirmFundingSourceModel(callOffId, order.FundingSourceOnlyGms)
             {
                 BackLink = Url.Action(
                     nameof(OrderController.Order),
@@ -42,14 +42,14 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> FundingSource(string internalOrgId, CallOffId callOffId, FundingSourceModel model)
+        public async Task<IActionResult> FundingSource(string internalOrgId, CallOffId callOffId, ConfirmFundingSourceModel model)
         {
             if (!ModelState.IsValid)
                 return View(model);
 
-            var onlyGms = model.FundingSourceOnlyGms.EqualsIgnoreCase("Yes");
+            var onlyGms = model.SelectedFundingSource!.Value.IsCentralFunding();
 
-            await fundingSourceService.SetFundingSource(callOffId, internalOrgId, onlyGms);
+            await fundingSourceService.SetFundingSource(callOffId, internalOrgId, onlyGms, true);
 
             return RedirectToAction(
                 nameof(OrderController.Order),

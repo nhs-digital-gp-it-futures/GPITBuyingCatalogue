@@ -18,6 +18,8 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Objects.Common
 
         internal static By RadioButtonItems => By.CssSelector(".nhsuk-radios__item");
 
+        internal static By RadioButtonInputs => By.CssSelector(".nhsuk-radios__input");
+
         internal static By RadioButtons => By.ClassName("nhsuk-radios");
 
         internal static By BreadcrumbList => By.ClassName("nhsuk-breadcrumb__list");

@@ -3,9 +3,11 @@ using System.Collections.Generic;
 using System.Linq;
 using FluentAssertions;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Objects.Common;
+using NHSD.GPIT.BuyingCatalogue.E2ETests.Objects.Ordering;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Utils;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.TestBases;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
+using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers;
 using Xunit;
 
@@ -36,9 +38,13 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering
         [Fact]
         public void FundingSource_AllSectionsDisplayed()
         {
+            CommonActions.PageTitle().Should().Be($"Confirm funding source - Order {CallOffId}".FormatForComparison());
+            CommonActions.LedeText().Should().Be("Confirm the funding source you're using to pay for this order.".FormatForComparison());
             CommonActions.SaveButtonDisplayed().Should().BeTrue();
             CommonActions.GoBackLinkDisplayed().Should().BeTrue();
 
+            CommonActions.ElementIsDisplayed(OrderTriageObjects.FundingSource).Should().BeTrue();
+            CommonActions.ElementIsDisplayed(OrderTriageObjects.FundingInset).Should().BeTrue();
             CommonActions.ElementIsDisplayed(CommonSelectors.RadioButtonItems).Should().BeTrue();
         }
 
@@ -71,8 +77,8 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering
             CommonActions.ErrorSummaryLinksExist().Should().BeTrue();
 
             CommonActions.ElementShowingCorrectErrorMessage(
-                Objects.Ordering.FundingSource.FundingSourceErrorMessage,
-                "Error: Select yes if you're paying for this order in full using your GP IT Futures centrally held funding allocation")
+                OrderTriageObjects.FundingSourceError,
+                "Error: Select a funding source")
                 .Should()
                 .BeTrue();
         }
@@ -80,13 +86,31 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering
         [Fact]
         public void FundingSource_SelectFundingSource_ExpectedResult()
         {
-            CommonActions.ClickRadioButtonWithText("Yes");
+            CommonActions.ClickRadioButtonWithText("Local funding");
 
             CommonActions.ClickSave();
 
             CommonActions.PageLoadedCorrectGetIndex(
                 typeof(OrderController),
                 nameof(OrderController.Order)).Should().BeTrue();
+
+            using var context = GetEndToEndDbContext();
+            var order = context.Orders.Single(o => o.Id == CallOffId.Id);
+            order.ConfirmedFundingSource.Should().Be(true);
+        }
+
+        [Fact]
+        public void FundingSource_Preselected_PrepopulatesFundingSource()
+        {
+            using var context = GetEndToEndDbContext();
+            var order = context.Orders.Single(o => o.Id == CallOffId.Id);
+            order.FundingSourceOnlyGms = true;
+
+            context.SaveChanges();
+
+            Driver.Navigate().Refresh();
+
+            CommonActions.IsRadioButtonChecked(ServiceContracts.Enums.FundingSource.Central.ToString()).Should().BeTrue();
         }
 
         public void Dispose()
@@ -96,6 +120,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering
                 .Single(o => o.Id == CallOffId.Id);
 
             order.FundingSourceOnlyGms = null;
+            order.ConfirmedFundingSource = null;
 
             context.SaveChanges();
         }

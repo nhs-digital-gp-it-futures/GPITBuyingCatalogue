@@ -1,20 +1,17 @@
-﻿using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
-using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
+﻿using System.Collections.Generic;
+using Microsoft.AspNetCore.Mvc.Rendering;
+using NHSD.GPIT.BuyingCatalogue.WebApp.Models;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.FundingSource
 {
-    public sealed class FundingSourceModel : OrderingBaseModel
+    public class FundingSourceModel : NavBaseModel
     {
-        public FundingSourceModel()
-        {
-        }
+        public ServiceContracts.Enums.FundingSource? SelectedFundingSource { get; set; }
 
-        public FundingSourceModel(CallOffId callOffId, bool? fundingSourceOnlyGms)
+        public IList<SelectListItem> AvailableFundingSources { get; } = new List<SelectListItem>
         {
-            Title = $"Funding source for {callOffId}";
-            FundingSourceOnlyGms = fundingSourceOnlyGms.ToYesNo();
-        }
-
-        public string FundingSourceOnlyGms { get; set; }
+            new("Central funding", ServiceContracts.Enums.FundingSource.Central.ToString()),
+            new("Local funding", ServiceContracts.Enums.FundingSource.Local.ToString()),
+        };
     }
 }

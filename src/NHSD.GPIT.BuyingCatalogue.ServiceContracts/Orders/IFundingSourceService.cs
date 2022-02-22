@@ -5,6 +5,6 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.Orders
 {
     public interface IFundingSourceService
     {
-        Task SetFundingSource(CallOffId callOffId, string internalOrgId, bool? onlyGms);
+        Task SetFundingSource(CallOffId callOffId, string internalOrgId, bool? onlyGms, bool? confirmed = null);
     }
 }

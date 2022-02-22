@@ -32,6 +32,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.TaskList
             OrderItem additionalServiceOrderItem,
             TaskListService service)
         {
+            order.ConfirmedFundingSource = true;
             solutionOrderItem.CatalogueItem.CatalogueItemType = CatalogueItemType.Solution;
             associatedServiceOrderItem.CatalogueItem.CatalogueItemType = CatalogueItemType.AssociatedService;
             additionalServiceOrderItem.CatalogueItem.CatalogueItemType = CatalogueItemType.AdditionalService;
@@ -289,6 +290,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.TaskList
             TaskListService service)
         {
             order.FundingSourceOnlyGms = null;
+            order.ConfirmedFundingSource = null;
 
             var actual = service.GetTaskListStatusModelForOrder(order);
 
