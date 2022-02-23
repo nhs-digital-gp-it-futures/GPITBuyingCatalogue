@@ -1,8 +1,13 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
+using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Organisations;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.OrderTriage;
+using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.Shared;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
 {
@@ -24,15 +29,65 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
                    "Select yes if you’ve carried out an Off-Catalogue Competition with suppliers"),
         };
 
+        private readonly IOrganisationsService organisationsService;
+
+        public OrderTriageController(IOrganisationsService organisationsService)
+        {
+            this.organisationsService = organisationsService ?? throw new ArgumentNullException(nameof(organisationsService));
+        }
+
+        [HttpGet("proxy-select")]
+        public async Task<IActionResult> SelectOrganisation(string odsCode, TriageOption? option = null)
+        {
+            if (!User.GetSecondaryOrganisationInternalIdentifiers().Any())
+                return RedirectToAction(nameof(Index), new { odsCode, option });
+
+            var odsCodes = new List<string>(User.GetSecondaryOrganisationInternalIdentifiers())
+            {
+                User.GetPrimaryOrganisationInternalIdentifier(),
+            };
+
+            var organisations = await organisationsService.GetOrganisationsByInternalIdentifiers(odsCodes.ToArray());
+
+            var model = new SelectOrganisationModel(odsCode, organisations)
+            {
+                BackLink = Url.Action(nameof(DashboardController.Organisation), typeof(DashboardController).ControllerName(), new { odsCode, option }),
+                Title = "Which organisation are you ordering for?",
+            };
+
+            return View(model);
+        }
+
+        [HttpPost("proxy-select")]
+        public IActionResult SelectOrganisation(string odsCode, SelectOrganisationModel model, TriageOption? option = null)
+        {
+            if (!User.GetSecondaryOrganisationInternalIdentifiers().Any())
+                return RedirectToAction(nameof(Index), new { odsCode, option });
+
+            if (!ModelState.IsValid)
+                return View(model);
+
+            if (!string.Equals(odsCode, model.SelectedOrganisation, StringComparison.OrdinalIgnoreCase))
+                option = null;
+
+            return RedirectToAction(nameof(Index), new { odsCode = model.SelectedOrganisation, option });
+        }
+
         [HttpGet]
         public IActionResult Index(string odsCode, TriageOption? option = null)
         {
-            var model = new OrderTriageModel
-            {
-                BackLink = Url.Action(
+            var backlink = User.GetSecondaryOrganisationInternalIdentifiers().Any()
+                ? Url.Action(
+                    nameof(SelectOrganisation),
+                    new { odsCode, option })
+                : Url.Action(
                     nameof(DashboardController.Organisation),
                     typeof(DashboardController).ControllerName(),
-                    new { odsCode }),
+                    new { odsCode });
+
+            var model = new OrderTriageModel
+            {
+                BackLink = backlink,
                 SelectedTriageOption = option,
             };
 
