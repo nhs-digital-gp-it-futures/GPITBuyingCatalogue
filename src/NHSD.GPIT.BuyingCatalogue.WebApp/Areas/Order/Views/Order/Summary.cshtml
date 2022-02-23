@@ -37,7 +37,7 @@
                                          url="@Url.Action(
                 nameof(OrderController.Download),
                 typeof(OrderController).ControllerName(),
-                new { Model.OdsCode, Model.Order.CallOffId})" />
+                new { Model.InternalOrgId, Model.Order.CallOffId})" />
             </nhs-fieldset-form-container>
         }
     </div>
@@ -165,7 +165,7 @@
                                                  url="@Url.Action(
                                                         nameof(OrderController.Download),
                                                         typeof(OrderController).ControllerName(),
-                                                        new { Model.OdsCode, Model.Order.CallOffId })" />
+                                                        new { Model.InternalOrgId, Model.Order.CallOffId })" />
                         <hr />
                     </nhs-fieldset-form-container>
                     <form method="post">

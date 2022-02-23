@@ -17,7 +17,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.Supplier
 
             model.Title.Should().Be("Find supplier information");
             model.CallOffId.Should().Be(order.CallOffId);
-            model.OdsCode.Should().Be(odsCode);
+            model.InternalOrgId.Should().Be(odsCode);
         }
     }
 }

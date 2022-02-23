@@ -63,19 +63,19 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers
         [Theory]
         [CommonAutoData]
         public static async Task Post_OrderDescription_SetsDescription_CorrectlyRedirects(
-            string odsCode,
+            string internalOrgId,
             CallOffId callOffId,
             OrderDescriptionModel model,
             [Frozen] Mock<IOrderDescriptionService> orderDescriptionServiceMock,
             OrderDescriptionController controller)
         {
-            var actualResult = await controller.OrderDescription(odsCode, callOffId, model);
+            var actualResult = await controller.OrderDescription(internalOrgId, callOffId, model);
 
             actualResult.Should().BeOfType<RedirectToActionResult>();
             actualResult.As<RedirectToActionResult>().ActionName.Should().Be(nameof(OrderController.Order));
             actualResult.As<RedirectToActionResult>().ControllerName.Should().Be(typeof(OrderController).ControllerName());
-            actualResult.As<RedirectToActionResult>().RouteValues.Should().BeEquivalentTo(new RouteValueDictionary { { "odsCode", odsCode }, { "callOffId", callOffId } });
-            orderDescriptionServiceMock.Verify(o => o.SetOrderDescription(callOffId, odsCode, model.Description), Times.Once);
+            actualResult.As<RedirectToActionResult>().RouteValues.Should().BeEquivalentTo(new RouteValueDictionary { { "internalOrgId", internalOrgId }, { "callOffId", callOffId } });
+            orderDescriptionServiceMock.Verify(o => o.SetOrderDescription(callOffId, internalOrgId, model.Description), Times.Once);
         }
 
         [Theory]
@@ -139,21 +139,21 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers
         [Theory]
         [CommonAutoData]
         public static async Task Post_NewOrderDescription_CreatesOrder_CorrectlyRedirects(
-            string odsCode,
+            string internalOrgId,
             OrderDescriptionModel model,
             EntityFramework.Ordering.Models.Order order,
             [Frozen] Mock<IOrderService> orderServiceMock,
             OrderDescriptionController controller)
         {
-            orderServiceMock.Setup(s => s.CreateOrder(model.Description, model.OdsCode)).ReturnsAsync(order);
+            orderServiceMock.Setup(s => s.CreateOrder(model.Description, model.InternalOrgId)).ReturnsAsync(order);
 
-            var actualResult = await controller.NewOrderDescription(odsCode, model);
+            var actualResult = await controller.NewOrderDescription(internalOrgId, model);
 
             actualResult.Should().BeOfType<RedirectToActionResult>();
             actualResult.As<RedirectToActionResult>().ActionName.Should().Be(nameof(OrderController.Order));
             actualResult.As<RedirectToActionResult>().ControllerName.Should().Be(typeof(OrderController).ControllerName());
-            actualResult.As<RedirectToActionResult>().RouteValues.Should().BeEquivalentTo(new RouteValueDictionary { { "odsCode", odsCode }, { "callOffId", order.CallOffId } });
-            orderServiceMock.Verify(o => o.CreateOrder(model.Description, model.OdsCode), Times.Once);
+            actualResult.As<RedirectToActionResult>().RouteValues.Should().BeEquivalentTo(new RouteValueDictionary { { "internalOrgId", internalOrgId }, { "callOffId", order.CallOffId } });
+            orderServiceMock.Verify(o => o.CreateOrder(model.Description, model.InternalOrgId), Times.Once);
         }
 
         [Theory]

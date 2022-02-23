@@ -21,7 +21,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.Catalogu
             var model = new SelectFlatOnDemandQuantityModel(odsCode, callOffId, solutionName, quantity, estimationPeriod);
 
             model.Title.Should().Be($"Quantity of {solutionName} for {callOffId}");
-            model.OdsCode.Should().Be(odsCode);
+            model.InternalOrgId.Should().Be(odsCode);
             model.CallOffId.Should().Be(callOffId);
             model.SolutionName.Should().Be(solutionName);
             model.Quantity.Should().Be(quantity.ToString());

@@ -19,7 +19,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.Addition
             var model = new AdditionalServiceModel(odsCode, order, orderItems);
 
             model.Title.Should().Be($"Additional Services for {order.CallOffId}");
-            model.OdsCode.Should().Be(odsCode);
+            model.InternalOrgId.Should().Be(odsCode);
             model.OrderDescription.Should().Be(order.Description);
             model.CallOffId.Should().Be(order.CallOffId);
             model.OrderItems.Should().BeEquivalentTo(orderItems);

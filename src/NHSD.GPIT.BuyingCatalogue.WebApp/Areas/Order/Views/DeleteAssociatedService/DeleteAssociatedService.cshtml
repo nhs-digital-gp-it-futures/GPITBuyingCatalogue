@@ -11,7 +11,7 @@
         <form method="post">
             <input type="hidden" asp-for="@Model.BackLink" />
             <input type="hidden" asp-for="@Model.BackLinkText" />
-            <input type="hidden" asp-for="@Model.OdsCode" />
+            <input type="hidden" asp-for="@Model.InternalOrgId" />
             <input type="hidden" asp-for="@Model.Title" />
 
             <nhs-fieldset-form-container asp-for="@Model"
@@ -25,8 +25,8 @@
                                         "AssociatedServices",
                                         new
                                         {
-                                            odsCode = Model.OdsCode,
-                                            callOffId = Model.CallOffId,
+                                            Model.InternalOrgId,
+                                            Model.CallOffId,
                                             Model.CatalogueItemId,
                                         })" />
             </nhs-fieldset-form-container>

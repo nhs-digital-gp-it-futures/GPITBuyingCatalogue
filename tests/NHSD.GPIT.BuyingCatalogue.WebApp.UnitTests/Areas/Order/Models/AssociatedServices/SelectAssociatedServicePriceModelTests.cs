@@ -22,7 +22,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.Associat
             var model = new SelectAssociatedServicePriceModel(odsCode, solutionName, prices);
 
             model.Title.Should().Be($"List price for {solutionName}");
-            model.OdsCode.Should().Be(odsCode);
+            model.InternalOrgId.Should().Be(odsCode);
             model.Prices.Should().HaveCount(prices.Count);
             model.Prices.First().CataloguePriceId.Should().Be(prices.First().CataloguePriceId);
             model.Prices.First().Description.Should()

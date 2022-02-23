@@ -14,12 +14,12 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering.AdditionalServices
     public sealed class AdditionalServicesSelectFlatDeclarativeQuantity
         : BuyerTestBase, IClassFixture<LocalWebApplicationFactory>, IAsyncLifetime
     {
-        private const string OdsCode = "03F";
+        private const string InternalOrgId = "03F";
         private static readonly CallOffId CallOffId = new(90004, 01);
         private static readonly CatalogueItemId CatalogueItemId = new(99998, "001");
 
         private static readonly Dictionary<string, string> Parameters =
-            new() { { nameof(OdsCode), OdsCode }, { nameof(CallOffId), CallOffId.ToString() } };
+            new() { { nameof(InternalOrgId), InternalOrgId }, { nameof(CallOffId), CallOffId.ToString() } };
 
         public AdditionalServicesSelectFlatDeclarativeQuantity(
             LocalWebApplicationFactory factory)
@@ -105,7 +105,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering.AdditionalServices
         {
             InitializeSessionHandler();
 
-            InitializeServiceRecipientMemoryCacheHandler(OdsCode);
+            InitializeServiceRecipientMemoryCacheHandler(InternalOrgId);
 
             using var context = GetEndToEndDbContext();
             var price = context.CataloguePrices.SingleOrDefault(cp => cp.CataloguePriceId == 7);

@@ -11,7 +11,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
 {
     [Authorize]
     [Area("Order")]
-    [Route("order/organisation/{odsCode}/order/{callOffId}/delete-order")]
+    [Route("order/organisation/{internalOrgId}/order/{callOffId}/delete-order")]
     public sealed class DeleteOrderController : Controller
     {
         private readonly IOrderService orderService;
@@ -22,30 +22,30 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> DeleteOrder(string odsCode, CallOffId callOffId)
+        public async Task<IActionResult> DeleteOrder(string internalOrgId, CallOffId callOffId)
         {
-            var order = await orderService.GetOrderThin(callOffId, odsCode);
+            var order = await orderService.GetOrderThin(callOffId, internalOrgId);
 
-            var model = new DeleteOrderModel(odsCode, order)
+            var model = new DeleteOrderModel(internalOrgId, order)
             {
                 BackLink = Url.Action(
                     nameof(OrderController.Order),
                     typeof(OrderController).ControllerName(),
-                    new { odsCode, callOffId }),
+                    new { internalOrgId, callOffId }),
             };
 
             return View(model);
         }
 
         [HttpPost]
-        public async Task<IActionResult> DeleteOrder(string odsCode, CallOffId callOffId, DeleteOrderModel model)
+        public async Task<IActionResult> DeleteOrder(string internalOrgId, CallOffId callOffId, DeleteOrderModel model)
         {
-            await orderService.DeleteOrder(callOffId, odsCode);
+            await orderService.DeleteOrder(callOffId, internalOrgId);
 
             return RedirectToAction(
                 nameof(DashboardController.Organisation),
                 typeof(DashboardController).ControllerName(),
-                new { odsCode });
+                new { internalOrgId });
         }
     }
 }

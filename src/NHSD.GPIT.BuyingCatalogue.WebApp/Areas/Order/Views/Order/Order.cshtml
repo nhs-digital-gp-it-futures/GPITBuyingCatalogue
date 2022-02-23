@@ -28,19 +28,19 @@
                                             url="@Url.Action(
                                                 nameof(OrderingPartyController.OrderingParty),
                                                 typeof(OrderingPartyController).ControllerName(),
-                                                new { Model.OdsCode, Model.CallOffId})"
+                                                new { Model.InternalOrgId, Model.CallOffId})"
                                             status="@Model.SectionStatuses.OrderingPartyStatus" />
                         <nhs-task-list-item label-text="Supplier information and contact details"
                                             url="@Url.Action(
                                                 nameof(SupplierController.Supplier),
                                                 typeof(SupplierController).ControllerName(),
-                                                new { Model.OdsCode, Model.CallOffId})"
+                                                new { Model.InternalOrgId, Model.CallOffId})"
                                             status="@Model.SectionStatuses.SupplierStatus" />
                         <nhs-task-list-item label-text="Timescales for Call-off Agreement"
                                             url="@Url.Action(
                                                 nameof(CommencementDateController.CommencementDate),
                                                 typeof(CommencementDateController).ControllerName(),
-                                                new { Model.OdsCode, Model.CallOffId})"
+                                                new { Model.InternalOrgId, Model.CallOffId})"
                                             status="@Model.SectionStatuses.CommencementDateStatus" />
                     </nhs-task-list-section>
                     <nhs-task-list-section label-text="Add services">
@@ -48,19 +48,19 @@
                                             url="@Url.Action(
                                                 nameof(CatalogueSolutionsController.Index),
                                                 typeof(CatalogueSolutionsController).ControllerName(),
-                                                new { Model.OdsCode, Model.CallOffId})"
+                                                new { Model.InternalOrgId, Model.CallOffId})"
                                             status="@Model.SectionStatuses.CatalogueSolutionsStatus" />
                         <nhs-task-list-item label-text="Add Additional Services to your order"
                                             url="@Url.Action(
                                                 nameof(AdditionalServicesController.Index),
                                                 typeof(AdditionalServicesController).ControllerName(),
-                                                new { Model.OdsCode, Model.CallOffId})"
+                                                new { Model.InternalOrgId, Model.CallOffId})"
                                             status="@Model.SectionStatuses.AdditionalServiceStatus" />
                         <nhs-task-list-item label-text="Add Associated Services to your order"
                                             url="@Url.Action(
                                                 nameof(AssociatedServicesController.Index),
                                                 typeof(AssociatedServicesController).ControllerName(),
-                                                new { Model.OdsCode, Model.CallOffId})"
+                                                new { Model.InternalOrgId, Model.CallOffId})"
                                             status="@Model.SectionStatuses.AssociatedServiceStatus" />
                     </nhs-task-list-section>
                     <nhs-task-list-section label-text="Complete order">
@@ -68,13 +68,13 @@
                                             url="@Url.Action(
                                                     nameof(FundingSourceController.FundingSource),
                                                     typeof(FundingSourceController).ControllerName(),
-                                                    new { Model.OdsCode, Model.CallOffId})"
+                                                    new { Model.InternalOrgId, Model.CallOffId})"
                                             status="@Model.SectionStatuses.FundingSourceStatus" />
                         <nhs-task-list-item label-text="Review and complete order"
                                             url="@Url.Action(
                                                     nameof(OrderController.Summary),
                                                     typeof(OrderController).ControllerName(),
-                                                    new { Model.OdsCode, Model.CallOffId })"
+                                                    new { Model.InternalOrgId, Model.CallOffId })"
                                             status="@Model.SectionStatuses.ReviewAndCompleteStatus" />
                     </nhs-task-list-section>
                 </nhs-task-list>
@@ -83,14 +83,14 @@
                                      url="@Url.Action(
                                             nameof(OrderController.Summary),
                                             typeof(OrderController).ControllerName(),
-                                            new { Model.OdsCode, Model.CallOffId })"
+                                            new { Model.InternalOrgId, Model.CallOffId })"
                                      use-primary-colour="false" /><br />
 
             <vc:nhs-delete-button text="Delete order"
                                   url="@Url.Action(
                                             nameof(DeleteOrderController.DeleteOrder),
                                             typeof(DeleteOrderController).ControllerName(),
-                                            new { Model.OdsCode, Model.CallOffId })"/>
+                                            new { Model.InternalOrgId, Model.CallOffId })"/>
 
             @if (Model.LastUpdated is not null && !string.IsNullOrWhiteSpace(Model.LastUpdatedByUserName))
             {

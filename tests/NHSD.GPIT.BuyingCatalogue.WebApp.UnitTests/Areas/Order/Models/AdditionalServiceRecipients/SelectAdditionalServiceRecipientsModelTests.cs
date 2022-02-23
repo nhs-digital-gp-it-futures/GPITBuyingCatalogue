@@ -11,35 +11,35 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.Addition
         [Theory]
         [CommonAutoData]
         public static void WithValidArguments__NewOrder_PropertiesCorrectlySet(
-            string odsCode,
+            string internalOrgId,
             string selectionMode,
             CreateOrderItemModel state)
         {
             state.IsNewSolution = true;
             state.SkipPriceSelection = false;
 
-            var model = new SelectAdditionalServiceRecipientsModel(odsCode, state, selectionMode);
+            var model = new SelectAdditionalServiceRecipientsModel(internalOrgId, state, selectionMode);
 
-            model.BackLink.Should().Be($"/order/organisation/{odsCode}/order/{state.CallOffId}/additional-services/select/additional-service/price");
+            model.BackLink.Should().Be($"/order/organisation/{internalOrgId}/order/{state.CallOffId}/additional-services/select/additional-service/price");
             model.Title.Should().Be($"Service Recipients for {state.CatalogueItemName} for {state.CallOffId}");
-            model.OdsCode.Should().Be(odsCode);
+            model.InternalOrgId.Should().Be(internalOrgId);
             model.CallOffId.Should().Be(state.CallOffId);
         }
 
         [Theory]
         [CommonAutoData]
         public static void WithValidArguments__ExistingOrder_PropertiesCorrectlySet(
-            string odsCode,
+            string internalOrgId,
             string selectionMode,
             CreateOrderItemModel state)
         {
             state.IsNewSolution = false;
 
-            var model = new SelectAdditionalServiceRecipientsModel(odsCode, state, selectionMode);
+            var model = new SelectAdditionalServiceRecipientsModel(internalOrgId, state, selectionMode);
 
-            model.BackLink.Should().Be($"/order/organisation/{odsCode}/order/{state.CallOffId}/additional-services/{state.CatalogueItemId}");
+            model.BackLink.Should().Be($"/order/organisation/{internalOrgId}/order/{state.CallOffId}/additional-services/{state.CatalogueItemId}");
             model.Title.Should().Be($"Service Recipients for {state.CatalogueItemName} for {state.CallOffId}");
-            model.OdsCode.Should().Be(odsCode);
+            model.InternalOrgId.Should().Be(internalOrgId);
             model.CallOffId.Should().Be(state.CallOffId);
         }
 
