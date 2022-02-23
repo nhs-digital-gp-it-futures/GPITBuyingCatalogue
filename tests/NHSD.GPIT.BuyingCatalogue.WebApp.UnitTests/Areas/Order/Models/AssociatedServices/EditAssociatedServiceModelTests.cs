@@ -17,7 +17,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.Associat
             var model = new EditAssociatedServiceModel(odsCode, state);
 
             model.Title.Should().Be($"{state.CatalogueItemName} information for {state.CallOffId}");
-            model.OdsCode.Should().Be(odsCode);
+            model.InternalOrgId.Should().Be(odsCode);
             model.OrderItem.Should().Be(state);
             model.EstimationPeriod.Should().Be(state.EstimationPeriod);
         }
@@ -25,42 +25,42 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.Associat
         [Theory]
         [CommonAutoData]
         public static void WhenEditingExistingSolution_BackLinkCorrectlySet(
-            string odsCode,
+            string internalOrgId,
             CreateOrderItemModel state)
         {
             state.IsNewSolution = false;
 
-            var model = new EditAssociatedServiceModel(odsCode, state);
+            var model = new EditAssociatedServiceModel(internalOrgId, state);
 
-            model.BackLink.Should().Be($"/order/organisation/{odsCode}/order/{state.CallOffId}/associated-services");
+            model.BackLink.Should().Be($"/order/organisation/{internalOrgId}/order/{state.CallOffId}/associated-services");
         }
 
         [Theory]
         [CommonAutoData]
         public static void WhenEditingNewSolution__AndSkipPrice_BackLinkCorrectlySet(
-            string odsCode,
+            string internalOrgId,
             CreateOrderItemModel state)
         {
             state.IsNewSolution = true;
             state.SkipPriceSelection = true;
 
-            var model = new EditAssociatedServiceModel(odsCode, state);
+            var model = new EditAssociatedServiceModel(internalOrgId, state);
 
-            model.BackLink.Should().Be($"/order/organisation/{odsCode}/order/{state.CallOffId}/associated-services/select/associated-service");
+            model.BackLink.Should().Be($"/order/organisation/{internalOrgId}/order/{state.CallOffId}/associated-services/select/associated-service");
         }
 
         [Theory]
         [CommonAutoData]
         public static void WhenEditingNewSolution__AndNotSkipPrice_BackLinkCorrectlySet(
-            string odsCode,
+            string internalOrgId,
             CreateOrderItemModel state)
         {
             state.IsNewSolution = true;
             state.SkipPriceSelection = false;
 
-            var model = new EditAssociatedServiceModel(odsCode, state);
+            var model = new EditAssociatedServiceModel(internalOrgId, state);
 
-            model.BackLink.Should().Be($"/order/organisation/{odsCode}/order/{state.CallOffId}/associated-services/select/associated-service/price");
+            model.BackLink.Should().Be($"/order/organisation/{internalOrgId}/order/{state.CallOffId}/associated-services/select/associated-service/price");
         }
     }
 }

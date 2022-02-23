@@ -22,7 +22,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.Commence
             var model = new CommencementDateModel(odsCode, callOffId, commencementDate, InitialPeriod, MaximumTerm);
 
             model.Title.Should().Be("Timescales for Call-off Agreement");
-            model.OdsCode.Should().Be(odsCode);
+            model.InternalOrgId.Should().Be(odsCode);
             model.Day.Should().Be(commencementDate.Day.ToString("00"));
             model.Month.Should().Be(commencementDate.Month.ToString("00"));
             model.Year.Should().Be(commencementDate.Year.ToString("00"));

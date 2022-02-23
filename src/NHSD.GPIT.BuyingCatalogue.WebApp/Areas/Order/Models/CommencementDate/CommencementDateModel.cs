@@ -15,7 +15,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.CommencementDate
         public CommencementDateModel(string odsCode, CallOffId callOffId, DateTime? commencementDate, int? initialPeriod, int? maximumTerm)
         {
             Title = "Timescales for Call-off Agreement";
-            OdsCode = odsCode;
+            InternalOrgId = odsCode;
             CallOffId = callOffId;
 
             if (commencementDate.HasValue)

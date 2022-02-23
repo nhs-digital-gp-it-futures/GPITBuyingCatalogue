@@ -11,7 +11,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.DeleteCatalogueSol
         public DeleteSolutionModel(string odsCode, CallOffId callOffId, CatalogueItemId solutionId, string solutionName, string orderDescription)
         {
             Title = $"Delete {solutionName} from {callOffId}?";
-            OdsCode = odsCode;
+            InternalOrgId = odsCode;
             CallOffId = callOffId;
             SolutionId = solutionId;
             SolutionName = solutionName;

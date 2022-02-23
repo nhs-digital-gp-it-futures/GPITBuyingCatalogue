@@ -14,7 +14,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.AssociatedServices
         public SelectAssociatedServicePriceModel(string odsCode, string solutionName, List<CataloguePrice> prices)
         {
             Title = $"List price for {solutionName}";
-            OdsCode = odsCode;
+            InternalOrgId = odsCode;
             SetPrices(prices);
         }
 

@@ -17,7 +17,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.AdditionalServices
             CatalogueItemId? selectedAdditionalServiceId)
         {
             Title = $"Add an Additional Service for {callOffId}";
-            OdsCode = odsCode;
+            InternalOrgId = odsCode;
             Solutions = solutions;
             SelectedAdditionalServiceId = selectedAdditionalServiceId;
         }

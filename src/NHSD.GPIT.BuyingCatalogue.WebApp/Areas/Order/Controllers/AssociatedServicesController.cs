@@ -18,7 +18,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
 {
     [Authorize]
     [Area("Order")]
-    [Route("order/organisation/{odsCode}/order/{callOffId}/associated-services")]
+    [Route("order/organisation/{internalOrgId}/order/{callOffId}/associated-services")]
     public sealed class AssociatedServicesController : Controller
     {
         private readonly IOrderService orderService;
@@ -44,32 +44,32 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
             this.organisationService = organisationService ?? throw new ArgumentNullException(nameof(organisationService));
         }
 
-        public async Task<IActionResult> Index(string odsCode, CallOffId callOffId)
+        public async Task<IActionResult> Index(string internalOrgId, CallOffId callOffId)
         {
             orderSessionService.ClearSession(callOffId);
 
-            var order = await orderService.GetOrderThin(callOffId, odsCode);
-            var orderItems = await orderItemService.GetOrderItems(callOffId, odsCode, CatalogueItemType.AssociatedService);
+            var order = await orderService.GetOrderThin(callOffId, internalOrgId);
+            var orderItems = await orderItemService.GetOrderItems(callOffId, internalOrgId, CatalogueItemType.AssociatedService);
 
-            var model = new AssociatedServiceModel(odsCode, order, orderItems)
+            var model = new AssociatedServiceModel(internalOrgId, order, orderItems)
             {
                 BackLink = Url.Action(
                     nameof(OrderController.Order),
                     typeof(OrderController).ControllerName(),
-                    new { odsCode, callOffId }),
+                    new { internalOrgId, callOffId }),
             };
 
             return View(model);
         }
 
         [HttpGet("select/associated-service")]
-        public async Task<IActionResult> SelectAssociatedService(string odsCode, CallOffId callOffId)
+        public async Task<IActionResult> SelectAssociatedService(string internalOrgId, CallOffId callOffId)
         {
-            var order = await orderService.GetOrderThin(callOffId, odsCode);
+            var order = await orderService.GetOrderThin(callOffId, internalOrgId);
 
-            var organisation = await organisationService.GetOrganisationByInternalIdentifier(odsCode);
+            var organisation = await organisationService.GetOrganisationByInternalIdentifier(internalOrgId);
 
-            var state = orderSessionService.InitialiseStateForCreate(order, CatalogueItemType.AssociatedService, null, new OrderItemRecipientModel { OdsCode = odsCode, Name = organisation.Name });
+            var state = orderSessionService.InitialiseStateForCreate(order, CatalogueItemType.AssociatedService, null, new OrderItemRecipientModel { OdsCode = internalOrgId, Name = organisation.Name });
 
             var associatedServices = await associatedServicesService.GetPublishedAssociatedServicesForSupplier(order.SupplierId);
 
@@ -80,20 +80,20 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
                     BackLink = Url.Action(
                         nameof(OrderController.Order),
                         typeof(OrderController).ControllerName(),
-                        new { odsCode, callOffId }),
+                        new { internalOrgId, callOffId }),
                 });
             }
 
-            var model = new SelectAssociatedServiceModel(odsCode, callOffId, associatedServices, state.CatalogueItemId)
+            var model = new SelectAssociatedServiceModel(internalOrgId, callOffId, associatedServices, state.CatalogueItemId)
             {
-                BackLink = Url.Action(nameof(Index), new { odsCode, callOffId }),
+                BackLink = Url.Action(nameof(Index), new { internalOrgId, callOffId }),
             };
 
             return View(model);
         }
 
         [HttpPost("select/associated-service")]
-        public async Task<IActionResult> SelectAssociatedService(string odsCode, CallOffId callOffId, SelectAssociatedServiceModel model)
+        public async Task<IActionResult> SelectAssociatedService(string internalOrgId, CallOffId callOffId, SelectAssociatedServiceModel model)
         {
             var state = orderSessionService.GetOrderStateFromSession(callOffId);
 
@@ -103,7 +103,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
                 return View(model);
             }
 
-            var existingOrder = await orderItemService.GetOrderItem(callOffId, odsCode, model.SelectedSolutionId.Value);
+            var existingOrder = await orderItemService.GetOrderItem(callOffId, internalOrgId, model.SelectedSolutionId.Value);
 
             if (existingOrder != null)
             {
@@ -112,7 +112,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
                 return RedirectToAction(
                     nameof(EditAssociatedService),
                     typeof(AssociatedServicesController).ControllerName(),
-                    new { odsCode, callOffId, existingOrder.CatalogueItemId });
+                    new { internalOrgId, callOffId, existingOrder.CatalogueItemId });
             }
 
             state.CatalogueItemId = model.SelectedSolutionId;
@@ -138,17 +138,17 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
                 return RedirectToAction(
                     nameof(EditAssociatedService),
                     typeof(AssociatedServicesController).ControllerName(),
-                    new { odsCode, callOffId, state.CatalogueItemId });
+                    new { internalOrgId, callOffId, state.CatalogueItemId });
             }
 
             return RedirectToAction(
                 nameof(SelectAssociatedServicePrice),
                 typeof(AssociatedServicesController).ControllerName(),
-                new { odsCode, callOffId });
+                new { internalOrgId, callOffId });
         }
 
         [HttpGet("select/associated-service/price")]
-        public async Task<IActionResult> SelectAssociatedServicePrice(string odsCode, CallOffId callOffId)
+        public async Task<IActionResult> SelectAssociatedServicePrice(string internalOrgId, CallOffId callOffId)
         {
             var state = orderSessionService.GetOrderStateFromSession(callOffId);
 
@@ -158,16 +158,16 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
             p.CataloguePriceType == CataloguePriceType.Flat
             && p.PublishedStatus == PublicationStatus.Published).ToList();
 
-            var model = new SelectAssociatedServicePriceModel(odsCode, state.CatalogueItemName, prices)
+            var model = new SelectAssociatedServicePriceModel(internalOrgId, state.CatalogueItemName, prices)
             {
-                BackLink = Url.Action(nameof(SelectAssociatedService), new { odsCode, callOffId }),
+                BackLink = Url.Action(nameof(SelectAssociatedService), new { internalOrgId, callOffId }),
             };
 
             return View(model);
         }
 
         [HttpPost("select/associated-service/price")]
-        public async Task<IActionResult> SelectAssociatedServicePrice(string odsCode, CallOffId callOffId, SelectAssociatedServicePriceModel model)
+        public async Task<IActionResult> SelectAssociatedServicePrice(string internalOrgId, CallOffId callOffId, SelectAssociatedServicePriceModel model)
         {
             var state = orderSessionService.GetOrderStateFromSession(callOffId);
 
@@ -186,19 +186,19 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
             return RedirectToAction(
                 nameof(EditAssociatedService),
                 typeof(AssociatedServicesController).ControllerName(),
-                new { odsCode, callOffId, state.CatalogueItemId });
+                new { internalOrgId, callOffId, state.CatalogueItemId });
         }
 
         [HttpGet("{catalogueItemId}")]
-        public async Task<IActionResult> EditAssociatedService(string odsCode, CallOffId callOffId, CatalogueItemId catalogueItemId)
+        public async Task<IActionResult> EditAssociatedService(string internalOrgId, CallOffId callOffId, CatalogueItemId catalogueItemId)
         {
-            var state = await orderSessionService.InitialiseStateForEdit(odsCode, callOffId, catalogueItemId);
+            var state = await orderSessionService.InitialiseStateForEdit(internalOrgId, callOffId, catalogueItemId);
 
-            return View(new EditAssociatedServiceModel(odsCode, state));
+            return View(new EditAssociatedServiceModel(internalOrgId, state));
         }
 
         [HttpPost("{catalogueItemId}")]
-        public async Task<IActionResult> EditAssociatedService(string odsCode, CallOffId callOffId, string catalogueItemId, EditAssociatedServiceModel model)
+        public async Task<IActionResult> EditAssociatedService(string internalOrgId, CallOffId callOffId, string catalogueItemId, EditAssociatedServiceModel model)
         {
             var state = orderSessionService.GetOrderStateFromSession(callOffId);
 
@@ -216,14 +216,14 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
             state.AgreedPrice = model.OrderItem.AgreedPrice;
             state.ServiceRecipients = model.OrderItem.ServiceRecipients;
 
-            await orderItemService.Create(callOffId, odsCode, state);
+            await orderItemService.Create(callOffId, internalOrgId, state);
 
             orderSessionService.ClearSession(callOffId);
 
             return RedirectToAction(
                 nameof(Index),
                 typeof(AssociatedServicesController).ControllerName(),
-                new { odsCode, callOffId });
+                new { internalOrgId, callOffId });
         }
     }
 }

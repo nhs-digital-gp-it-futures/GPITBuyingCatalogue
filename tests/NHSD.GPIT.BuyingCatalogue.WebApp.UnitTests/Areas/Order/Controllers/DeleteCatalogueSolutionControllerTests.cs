@@ -60,7 +60,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers
         [Theory]
         [CommonAutoData]
         public static async Task Post_DeleteSolution_Deletes_CorrectlyRedirects(
-            string odsCode,
+            string internalOrgId,
             CallOffId callOffId,
             DeleteSolutionModel model,
             CatalogueItemId catalogueItemId,
@@ -68,13 +68,13 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers
             [Frozen] Mock<IOrderItemService> orderItemServiceMock,
             DeleteCatalogueSolutionController controller)
         {
-            var actualResult = await controller.DeleteSolution(odsCode, callOffId, catalogueItemId, catalogueItemName, model);
+            var actualResult = await controller.DeleteSolution(internalOrgId, callOffId, catalogueItemId, catalogueItemName, model);
 
             actualResult.Should().BeOfType<RedirectToActionResult>();
             actualResult.As<RedirectToActionResult>().ActionName.Should().Be(nameof(CatalogueSolutionsController.Index));
             actualResult.As<RedirectToActionResult>().ControllerName.Should().Be(typeof(CatalogueSolutionsController).ControllerName());
-            actualResult.As<RedirectToActionResult>().RouteValues.Should().BeEquivalentTo(new RouteValueDictionary { { "odsCode", odsCode }, { "callOffId", callOffId } });
-            orderItemServiceMock.Verify(o => o.DeleteOrderItem(callOffId, odsCode, catalogueItemId), Times.Once);
+            actualResult.As<RedirectToActionResult>().RouteValues.Should().BeEquivalentTo(new RouteValueDictionary { { "internalOrgId", internalOrgId }, { "callOffId", callOffId } });
+            orderItemServiceMock.Verify(o => o.DeleteOrderItem(callOffId, internalOrgId, catalogueItemId), Times.Once);
         }
     }
 }

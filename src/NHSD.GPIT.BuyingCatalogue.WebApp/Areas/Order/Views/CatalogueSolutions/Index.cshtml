@@ -20,7 +20,7 @@
                 url="@Url.Action(
                         nameof(CatalogueSolutionsController.SelectSolution),
                         typeof(CatalogueSolutionsController).ControllerName(),
-                        new {Model.OdsCode, Model.CallOffId})" />
+                        new {Model.InternalOrgId, Model.CallOffId})" />
 
             <nhs-table data-test-id="added-order-items">
                 <nhs-table-column>Catalogue Solution</nhs-table-column>
@@ -33,7 +33,7 @@
             <a data-test-id="@item.CatalogueItemId-catalogueItemName"
                asp-controller="@typeof(CatalogueSolutionsController).ControllerName()"
                asp-action="@nameof(CatalogueSolutionsController.EditSolution)"
-               asp-route-odsCode="@Model.OdsCode"
+               asp-route-internalOrgId="@Model.InternalOrgId"
                asp-route-callOffId="@Model.CallOffId"
                asp-route-catalogueItemId="@item.CatalogueItemId">@item.CatalogueItem.Name</a>
         </nhs-table-cell>
@@ -56,6 +56,6 @@
                                  url="@Url.Action(
                                      nameof(OrderController.Order),
                                      typeof(OrderController).ControllerName(),
-                                     new { Model.OdsCode, Model.CallOffId })" />
+                                     new { Model.InternalOrgId, Model.CallOffId })" />
     </div>
 </div>

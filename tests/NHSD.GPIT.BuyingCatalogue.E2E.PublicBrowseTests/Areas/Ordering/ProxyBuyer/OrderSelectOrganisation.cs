@@ -14,12 +14,12 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering.ProxyBuyer
     public class OrderSelectOrganisation
         : BuyerTestBase, IClassFixture<LocalWebApplicationFactory>
     {
-        private const string OdsCode = "15F";
+        private const string InternalOrgId = "15F";
 
         private static readonly Dictionary<string, string> Parameters =
             new()
             {
-                { nameof(OdsCode), OdsCode },
+                { nameof(InternalOrgId), InternalOrgId },
             };
 
         public OrderSelectOrganisation(LocalWebApplicationFactory factory)
@@ -36,7 +36,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering.ProxyBuyer
         public void SelectOrganisation_AllSectionsDisplayed()
         {
             using var context = GetEndToEndDbContext();
-            var organisation = context.Organisations.Include(o => o.RelatedOrganisationOrganisations).First(o => o.InternalIdentifier == OdsCode);
+            var organisation = context.Organisations.Include(o => o.RelatedOrganisationOrganisations).First(o => o.InternalIdentifier == InternalOrgId);
             var expectedNumberOfRadioOptions = organisation.RelatedOrganisationOrganisations.Count + 1;
 
             CommonActions.PageTitle()

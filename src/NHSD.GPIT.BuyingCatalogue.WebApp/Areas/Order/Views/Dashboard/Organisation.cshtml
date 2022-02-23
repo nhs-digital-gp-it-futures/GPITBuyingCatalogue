@@ -26,7 +26,7 @@
                 <p data-test-id="dashboard-page-proxy-on-behalf" class="nhsuk-u-margin-bottom-6">
                     @Model.OrganisationName <a asp-action="@nameof(DashboardController.SelectOrganisation)"
                                                asp-controller="@typeof(DashboardController).ControllerName()"
-                                               asp-route-odsCode="@Model.OdsCode"
+                                               asp-route-internalOrgId="@Model.InternalOrgId"
                                                class="nhsuk-u-margin-left-4">Change organisation</a>
                 </p>
             }
@@ -34,7 +34,7 @@
                                      url="@Url.Action(
                                          newOrderAction,
                                          typeof(OrderTriageController).ControllerName(),
-                                         new { Model.OdsCode })" />
+                                         new { Model.InternalOrgId })" />
         </div>
 
         <div class="nhsuk-grid-column-full">
@@ -44,7 +44,7 @@
                     ajax-url="@Url.Action(
                         nameof(DashboardController.FilterSearchSuggestions),
                         typeof(DashboardController).ControllerName(),
-                        new { odsCode = Model.OdsCode })"
+                        new { Model.InternalOrgId })"
                     title-text="Search for order by order description or Call-off ID"
                     query-parameter-name="search"/>
             }
@@ -68,7 +68,7 @@
                             <nhs-table-cell>
                                 <a data-test-id="link-@order.CallOffId" asp-action="@nameof(OrderController.Order)"
                                     asp-controller="@typeof(OrderController).ControllerName()"
-                                    asp-route-odsCode="@Model.OdsCode"
+                                    asp-route-internalOrgId="@Model.InternalOrgId"
                                     asp-route-callOffId="@order.CallOffId" style="white-space:nowrap;">
                                     @GetLinkName(order.OrderStatus)
                                 </a>
@@ -92,7 +92,7 @@
                         data-test-id="clear-results-link"
                         asp-action="@nameof(DashboardController.Organisation)"
                         asp-controller="@typeof(DashboardController).ControllerName()"
-                        asp-route-odsCode="@Model.OdsCode"
+                        asp-route-internalOrgId="@Model.InternalOrgId"
                         >select an order from the complete list</a>.
                         </p>
                 } else

@@ -71,13 +71,13 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers
         [Theory]
         [CommonAutoData]
         public static void Get_Order_Buyer_RedirectsCorrectly(
-            string odsCode)
+            string internalOrgId)
         {
             var user = new ClaimsPrincipal(new ClaimsIdentity(
                 new Claim[]
                 {
                     new("organisationFunction", "Buyer"),
-                    new("primaryOrganisationInternalIdentifier", odsCode),
+                    new("primaryOrganisationInternalIdentifier", internalOrgId),
                 },
                 "mock"));
 
@@ -94,7 +94,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers
             result.Should().NotBeNull();
             result.ActionName.Should().Be(nameof(DashboardController.Organisation));
             result.ControllerName.Should().Be(typeof(DashboardController).ControllerName());
-            result.RouteValues.Should().BeEquivalentTo(new RouteValueDictionary { { "odsCode", odsCode } });
+            result.RouteValues.Should().BeEquivalentTo(new RouteValueDictionary { { "internalOrgId", internalOrgId } });
         }
 
         [Theory]
@@ -178,7 +178,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers
             actualResult.Should().BeOfType<RedirectToActionResult>();
             actualResult.As<RedirectToActionResult>().ActionName.Should().Be(nameof(DashboardController.Organisation));
             actualResult.As<RedirectToActionResult>().ControllerName.Should().Be(typeof(DashboardController).ControllerName());
-            actualResult.As<RedirectToActionResult>().RouteValues.Should().BeEquivalentTo(new RouteValueDictionary { { "odsCode", model.SelectedOrganisation } });
+            actualResult.As<RedirectToActionResult>().RouteValues.Should().BeEquivalentTo(new RouteValueDictionary { { "internalOrgId", model.SelectedOrganisation } });
         }
 
         [Theory]

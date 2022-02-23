@@ -14,7 +14,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering.CatalogueSolutions
     public sealed class CatalogueSolutionsDeleteSolution
         : BuyerTestBase, IClassFixture<LocalWebApplicationFactory>, IAsyncLifetime
     {
-        private const string OdsCode = "03F";
+        private const string InternalOrgId = "03F";
         private const string CatalogueItemName = "E2E With Contact With Single Price";
         private static readonly CallOffId CallOffId = new(90006, 1);
         private static readonly CatalogueItemId CatalogueItemId = new(99998, "002");
@@ -22,7 +22,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering.CatalogueSolutions
         private static readonly Dictionary<string, string> Parameters =
             new()
             {
-                { nameof(OdsCode), OdsCode },
+                { nameof(InternalOrgId), InternalOrgId },
                 { nameof(CallOffId), CallOffId.ToString() },
                 { nameof(CatalogueItemId), CatalogueItemId.ToString() },
                 { nameof(CatalogueItemName), CatalogueItemName },
@@ -96,7 +96,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering.CatalogueSolutions
         {
             InitializeSessionHandler();
 
-            InitializeServiceRecipientMemoryCacheHandler(OdsCode);
+            InitializeServiceRecipientMemoryCacheHandler(InternalOrgId);
 
             NavigateToUrl(
                 typeof(DeleteCatalogueSolutionController),

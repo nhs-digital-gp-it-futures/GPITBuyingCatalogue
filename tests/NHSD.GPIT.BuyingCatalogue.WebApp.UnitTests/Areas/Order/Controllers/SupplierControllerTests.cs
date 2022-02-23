@@ -42,21 +42,21 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers
         [Theory]
         [CommonAutoData]
         public static async Task Get_Supplier_NoSupplier_RedirectsCorrectly(
-            string odsCode,
+            string internalOrgId,
             EntityFramework.Ordering.Models.Order order,
             [Frozen] Mock<IOrderService> orderServiceMock,
             SupplierController controller)
         {
             order.Supplier = null;
 
-            orderServiceMock.Setup(s => s.GetOrderWithSupplier(order.CallOffId, odsCode)).ReturnsAsync(order);
+            orderServiceMock.Setup(s => s.GetOrderWithSupplier(order.CallOffId, internalOrgId)).ReturnsAsync(order);
 
-            var actualResult = await controller.Supplier(odsCode, order.CallOffId);
+            var actualResult = await controller.Supplier(internalOrgId, order.CallOffId);
 
             actualResult.Should().BeOfType<RedirectToActionResult>();
             actualResult.As<RedirectToActionResult>().ActionName.Should().Be(nameof(SupplierController.SupplierSearch));
             actualResult.As<RedirectToActionResult>().ControllerName.Should().Be(typeof(SupplierController).ControllerName());
-            actualResult.As<RedirectToActionResult>().RouteValues.Should().BeEquivalentTo(new RouteValueDictionary { { "odsCode", odsCode }, { "callOffId", order.CallOffId } });
+            actualResult.As<RedirectToActionResult>().RouteValues.Should().BeEquivalentTo(new RouteValueDictionary { { "internalOrgId", internalOrgId }, { "callOffId", order.CallOffId } });
         }
 
         [Theory]
@@ -83,37 +83,37 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers
         [Theory]
         [CommonAutoData]
         public static async Task Post_Supplier_UpdatesContact_CorrectlyRedirects(
-            string odsCode,
+            string internalOrgId,
             CallOffId callOffId,
             SupplierModel model,
             [Frozen] Mock<ISupplierService> supplierServiceMock,
             SupplierController controller)
         {
-            var actualResult = await controller.Supplier(odsCode, callOffId, model);
+            var actualResult = await controller.Supplier(internalOrgId, callOffId, model);
 
             actualResult.Should().BeOfType<RedirectToActionResult>();
             actualResult.As<RedirectToActionResult>().ActionName.Should().Be(nameof(OrderController.Order));
             actualResult.As<RedirectToActionResult>().ControllerName.Should().Be(typeof(OrderController).ControllerName());
-            actualResult.As<RedirectToActionResult>().RouteValues.Should().BeEquivalentTo(new RouteValueDictionary { { "odsCode", odsCode }, { "callOffId", callOffId } });
-            supplierServiceMock.Verify(s => s.AddOrUpdateOrderSupplierContact(callOffId, odsCode, model.PrimaryContact), Times.Once);
+            actualResult.As<RedirectToActionResult>().RouteValues.Should().BeEquivalentTo(new RouteValueDictionary { { "internalOrgId", internalOrgId }, { "callOffId", callOffId } });
+            supplierServiceMock.Verify(s => s.AddOrUpdateOrderSupplierContact(callOffId, internalOrgId, model.PrimaryContact), Times.Once);
         }
 
         [Theory]
         [CommonAutoData]
         public static async Task Get_SupplierSearch_WithSupplier_RedirectsCorrectly(
-            string odsCode,
+            string internalOrgId,
             EntityFramework.Ordering.Models.Order order,
             [Frozen] Mock<IOrderService> orderServiceMock,
             SupplierController controller)
         {
-            orderServiceMock.Setup(s => s.GetOrderWithSupplier(order.CallOffId, odsCode)).ReturnsAsync(order);
+            orderServiceMock.Setup(s => s.GetOrderWithSupplier(order.CallOffId, internalOrgId)).ReturnsAsync(order);
 
-            var actualResult = await controller.SupplierSearch(odsCode, order.CallOffId);
+            var actualResult = await controller.SupplierSearch(internalOrgId, order.CallOffId);
 
             actualResult.Should().BeOfType<RedirectToActionResult>();
             actualResult.As<RedirectToActionResult>().ActionName.Should().Be(nameof(SupplierController.Supplier));
             actualResult.As<RedirectToActionResult>().ControllerName.Should().Be(typeof(SupplierController).ControllerName());
-            actualResult.As<RedirectToActionResult>().RouteValues.Should().BeEquivalentTo(new RouteValueDictionary { { "odsCode", odsCode }, { "callOffId", order.CallOffId } });
+            actualResult.As<RedirectToActionResult>().RouteValues.Should().BeEquivalentTo(new RouteValueDictionary { { "internalOrgId", internalOrgId }, { "callOffId", order.CallOffId } });
         }
 
         [Theory]
@@ -139,17 +139,17 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers
         [Theory]
         [CommonAutoData]
         public static void Post_SupplierSearch_RedirectsCorrectly(
-            string odsCode,
+            string internalOrgId,
             CallOffId callOffId,
             SupplierSearchModel model,
             SupplierController controller)
         {
-            var actualResult = controller.SupplierSearch(odsCode, callOffId, model);
+            var actualResult = controller.SupplierSearch(internalOrgId, callOffId, model);
 
             actualResult.Should().BeOfType<RedirectToActionResult>();
             actualResult.As<RedirectToActionResult>().ActionName.Should().Be(nameof(SupplierController.SupplierSearchSelect));
             actualResult.As<RedirectToActionResult>().ControllerName.Should().Be(typeof(SupplierController).ControllerName());
-            actualResult.As<RedirectToActionResult>().RouteValues.Should().BeEquivalentTo(new RouteValueDictionary { { "odsCode", odsCode }, { "callOffId", callOffId }, { "search", model.SearchString } });
+            actualResult.As<RedirectToActionResult>().RouteValues.Should().BeEquivalentTo(new RouteValueDictionary { { "internalOrgId", internalOrgId }, { "callOffId", callOffId }, { "search", model.SearchString } });
         }
 
         [Theory]
@@ -237,7 +237,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers
         [Theory]
         [CommonAutoData]
         public static async Task Post_SupplierSearchSelect_ValidModelState_AddsSupplier_RedirectsCorrectly(
-            string odsCode,
+            string internalOrgId,
             CallOffId callOffId,
             string search,
             int supplierId,
@@ -246,14 +246,14 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers
         {
             model.SelectedSupplierId = supplierId;
 
-            var actualResult = await controller.SupplierSearchSelect(odsCode, callOffId, model, search);
+            var actualResult = await controller.SupplierSearchSelect(internalOrgId, callOffId, model, search);
 
             actualResult.Should().BeOfType<RedirectToActionResult>();
             actualResult.As<RedirectToActionResult>().ActionName.Should().Be(nameof(SupplierController.ConfirmSupplier));
             actualResult.As<RedirectToActionResult>().ControllerName.Should().Be(typeof(SupplierController).ControllerName());
             actualResult.As<RedirectToActionResult>().RouteValues.Should().BeEquivalentTo(new RouteValueDictionary
             {
-                { "odsCode", odsCode },
+                { "internalOrgId", internalOrgId },
                 { "callOffId", callOffId },
                 { "search", search },
                 { "supplierId", supplierId },
@@ -331,17 +331,17 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers
         [Theory]
         [CommonAutoData]
         public static async Task Post_ConfirmSupplier_ValidModelState_AddsSupplier_RedirectsCorrectly(
-            string odsCode,
+            string internalOrgId,
             CallOffId callOffId,
             ConfirmSupplierModel model,
             [Frozen] Mock<ISupplierService> mockSupplierService,
             SupplierController controller)
         {
             mockSupplierService
-                .Setup(x => x.AddOrderSupplier(callOffId, odsCode, model.SupplierId))
+                .Setup(x => x.AddOrderSupplier(callOffId, internalOrgId, model.SupplierId))
                 .Returns(Task.CompletedTask);
 
-            var result = await controller.ConfirmSupplier(odsCode, callOffId, model);
+            var result = await controller.ConfirmSupplier(internalOrgId, callOffId, model);
 
             mockSupplierService.VerifyAll();
 
@@ -350,7 +350,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers
             result.As<RedirectToActionResult>().ControllerName.Should().Be(typeof(SupplierController).ControllerName());
             result.As<RedirectToActionResult>().RouteValues.Should().BeEquivalentTo(new RouteValueDictionary
             {
-                { "odsCode", odsCode },
+                { "internalOrgId", internalOrgId },
                 { "callOffId", callOffId },
             });
         }

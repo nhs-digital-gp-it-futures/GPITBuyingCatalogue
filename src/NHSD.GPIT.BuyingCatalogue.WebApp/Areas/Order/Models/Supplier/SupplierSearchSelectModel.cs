@@ -8,7 +8,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.Supplier
         public SupplierSearchSelectModel(string odsCode, CallOffId callOffId, List<EntityFramework.Catalogue.Models.Supplier> suppliers, int? selectedSupplierId = null)
         {
             Title = "Suppliers found";
-            OdsCode = odsCode;
+            InternalOrgId = odsCode;
             CallOffId = callOffId;
             Suppliers = suppliers;
             SelectedSupplierId = selectedSupplierId;

@@ -59,19 +59,19 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers
         [Theory]
         [CommonAutoData]
         public static async Task Post_FundingSource_Deletes_CorrectlyRedirects(
-            string odsCode,
+            string internalOrgId,
             CallOffId callOffId,
             FundingSourceModel model,
             [Frozen] Mock<IFundingSourceService> fundingSourceServiceMock,
             FundingSourceController controller)
         {
-            var actualResult = await controller.FundingSource(odsCode, callOffId, model);
+            var actualResult = await controller.FundingSource(internalOrgId, callOffId, model);
 
             actualResult.Should().BeOfType<RedirectToActionResult>();
             actualResult.As<RedirectToActionResult>().ActionName.Should().Be(nameof(OrderController.Order));
             actualResult.As<RedirectToActionResult>().ControllerName.Should().Be(typeof(OrderController).ControllerName());
-            actualResult.As<RedirectToActionResult>().RouteValues.Should().BeEquivalentTo(new RouteValueDictionary { { "odsCode", odsCode }, { "callOffId", callOffId } });
-            fundingSourceServiceMock.Verify(o => o.SetFundingSource(callOffId, odsCode, model.FundingSourceOnlyGms.EqualsIgnoreCase("Yes")), Times.Once);
+            actualResult.As<RedirectToActionResult>().RouteValues.Should().BeEquivalentTo(new RouteValueDictionary { { "internalOrgId", internalOrgId }, { "callOffId", callOffId } });
+            fundingSourceServiceMock.Verify(o => o.SetFundingSource(callOffId, internalOrgId, model.FundingSourceOnlyGms.EqualsIgnoreCase("Yes")), Times.Once);
         }
 
         [Theory]

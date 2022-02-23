@@ -8,7 +8,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.CatalogueSolutions
         public CatalogueSolutionsModel(string odsCode, EntityFramework.Ordering.Models.Order order, List<OrderItem> orderItems)
         {
             Title = $"Catalogue Solution for {order.CallOffId}";
-            OdsCode = odsCode;
+            InternalOrgId = odsCode;
             OrderDescription = order.Description;
             CallOffId = order.CallOffId;
             OrderItems = orderItems;
