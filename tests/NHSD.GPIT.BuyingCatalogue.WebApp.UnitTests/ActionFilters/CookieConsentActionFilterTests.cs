@@ -161,8 +161,11 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.ActionFilters
         [CommonAutoData]
         public async Task Invoke_ValidCookieContent_NoPolicyDate_SetsExpectedItems(
             CookieData cookieData,
+            [Frozen] CookieExpirationSettings cookieExpirationSettings,
             CookieConsentActionFilter actionFilter)
         {
+            cookieExpirationSettings.BuyingCatalogueCookiePolicyDate = null;
+
             var expectedItems = new Dictionary<object, object>(2)
             {
                 { CatalogueCookies.ShowCookieBanner, false },
