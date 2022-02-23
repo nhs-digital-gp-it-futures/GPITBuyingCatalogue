@@ -11,7 +11,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
 {
     [Authorize]
     [Area("Order")]
-    [Route("order/organisation/{odsCode}/order/{callOffId}/additional-services/delete/{catalogueItemId}/confirmation/{catalogueItemName}")]
+    [Route("order/organisation/{internalOrgId}/order/{callOffId}/additional-services/delete/{catalogueItemId}/confirmation/{catalogueItemName}")]
     public sealed class DeleteAdditionalServiceController : Controller
     {
         private readonly IOrderService orderService;
@@ -26,30 +26,30 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> DeleteAdditionalService(string odsCode, CallOffId callOffId, CatalogueItemId catalogueItemId, string catalogueItemName)
+        public async Task<IActionResult> DeleteAdditionalService(string internalOrgId, CallOffId callOffId, CatalogueItemId catalogueItemId, string catalogueItemName)
         {
-            var order = await orderService.GetOrderThin(callOffId, odsCode);
+            var order = await orderService.GetOrderThin(callOffId, internalOrgId);
 
-            var model = new DeleteAdditionalServiceModel(odsCode, callOffId, catalogueItemId, catalogueItemName, order.Description)
+            var model = new DeleteAdditionalServiceModel(internalOrgId, callOffId, catalogueItemId, catalogueItemName, order.Description)
             {
                 BackLink = Url.Action(
                     nameof(AdditionalServicesController.EditAdditionalService),
                     typeof(AdditionalServicesController).ControllerName(),
-                    new { odsCode, callOffId, catalogueItemId }),
+                    new { internalOrgId, callOffId, catalogueItemId }),
             };
 
             return View(model);
         }
 
         [HttpPost]
-        public async Task<IActionResult> DeleteAdditionalService(string odsCode, CallOffId callOffId, CatalogueItemId catalogueItemId, string catalogueItemName, DeleteAdditionalServiceModel model)
+        public async Task<IActionResult> DeleteAdditionalService(string internalOrgId, CallOffId callOffId, CatalogueItemId catalogueItemId, string catalogueItemName, DeleteAdditionalServiceModel model)
         {
-            await orderItemService.DeleteOrderItem(callOffId, odsCode, catalogueItemId);
+            await orderItemService.DeleteOrderItem(callOffId, internalOrgId, catalogueItemId);
 
             return RedirectToAction(
                 nameof(AdditionalServicesController.Index),
                 typeof(AdditionalServicesController).ControllerName(),
-                new { odsCode, callOffId });
+                new { internalOrgId, callOffId });
         }
     }
 }

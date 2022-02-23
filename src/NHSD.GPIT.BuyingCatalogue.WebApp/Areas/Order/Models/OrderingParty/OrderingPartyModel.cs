@@ -10,7 +10,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.OrderingParty
 
         public OrderingPartyModel(string odsCode, EntityFramework.Ordering.Models.Order order)
         {
-            OdsCode = odsCode;
+            InternalOrgId = odsCode;
             CallOffId = order.CallOffId.ToString();
             Contact = new PrimaryContactModel
             {

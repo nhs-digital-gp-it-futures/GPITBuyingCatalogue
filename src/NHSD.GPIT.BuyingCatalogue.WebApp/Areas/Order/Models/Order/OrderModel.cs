@@ -8,7 +8,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.Order
     {
         public OrderModel(string odsCode, EntityFramework.Ordering.Models.Order order, OrderTaskList orderSections, string organisationName = "")
         {
-            OdsCode = odsCode;
+            InternalOrgId = odsCode;
             SectionStatuses = orderSections;
 
             if (order is null)

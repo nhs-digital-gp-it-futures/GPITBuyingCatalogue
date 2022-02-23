@@ -13,7 +13,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.DeleteOrder
             Title = $"Delete order {order.CallOffId}?";
             Description = order.Description;
             CallOffId = order.CallOffId;
-            OdsCode = odsCode;
+            InternalOrgId = odsCode;
         }
 
         public string Description { get; set; }

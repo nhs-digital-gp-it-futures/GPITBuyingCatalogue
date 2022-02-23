@@ -14,7 +14,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.OrderDescription
         public OrderDescriptionModel(string odsCode, string organisationName)
         {
             Title = "Order description";
-            OdsCode = odsCode;
+            InternalOrgId = odsCode;
             Caption = organisationName;
             Advice = NewOrderAdviceText;
         }
@@ -22,7 +22,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.OrderDescription
         public OrderDescriptionModel(string odsCode, EntityFramework.Ordering.Models.Order order)
         {
             Title = "Order description";
-            OdsCode = odsCode;
+            InternalOrgId = odsCode;
             Caption = $"Order {order?.CallOffId}";
             Description = order?.Description;
             Advice = AdviceText;

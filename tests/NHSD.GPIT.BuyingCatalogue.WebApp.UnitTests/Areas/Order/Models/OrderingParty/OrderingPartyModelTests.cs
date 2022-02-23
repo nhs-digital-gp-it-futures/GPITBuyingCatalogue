@@ -15,7 +15,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.Ordering
         {
             var model = new OrderingPartyModel(odsCode, order);
 
-            model.OdsCode.Should().Be(odsCode);
+            model.InternalOrgId.Should().Be(odsCode);
             model.CallOffId.Should().Be(order.CallOffId.ToString());
             model.Contact.FirstName.Should().Be(order.OrderingPartyContact.FirstName);
             model.Contact.LastName.Should().Be(order.OrderingPartyContact.LastName);

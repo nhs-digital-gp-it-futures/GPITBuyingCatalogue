@@ -8,7 +8,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.AdditionalServices
         public AdditionalServiceModel(string odsCode, EntityFramework.Ordering.Models.Order order, List<OrderItem> orderItems)
         {
             Title = $"Additional Services for {order.CallOffId}";
-            OdsCode = odsCode;
+            InternalOrgId = odsCode;
             OrderDescription = order.Description;
             CallOffId = order.CallOffId;
             OrderItems = orderItems;

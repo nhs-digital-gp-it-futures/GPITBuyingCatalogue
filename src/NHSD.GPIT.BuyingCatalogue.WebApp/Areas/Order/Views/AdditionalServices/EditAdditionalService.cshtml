@@ -19,7 +19,7 @@
         <form method="post">
             <input type="hidden" asp-for="BackLink" />
             <input type="hidden" asp-for="BackLinkText" />
-            <input type="hidden" asp-for="OdsCode" />
+            <input type="hidden" asp-for="InternalOrgId" />
             <input type="hidden" asp-for="Title" />
             <input type="hidden" asp-for="OrderItem.CataloguePrice.Price" />
             <input type="hidden" asp-for="OrderItem.CommencementDate" />
@@ -36,7 +36,7 @@
                         <vc:nhs-secondary-button url="@Url.Action(
                                                 nameof(AdditionalServiceRecipientsController.SelectAdditionalServiceRecipients),
                                                 typeof(AdditionalServiceRecipientsController).ControllerName(),
-                                                new {Model.OdsCode, Model.OrderItem.CallOffId})"
+                                                new {Model.InternalOrgId, Model.OrderItem.CallOffId})"
                                                  text="Edit Service Recipients"
                                                  use-primary-colour="false" />
                         <br/>
@@ -87,7 +87,7 @@
                     <vc:nhs-delete-button url="@Url.Action(
                                                nameof(DeleteAdditionalServiceController.DeleteAdditionalService),
                                                typeof(DeleteAdditionalServiceController).ControllerName(),
-                                               new { Model.OdsCode,
+                                               new { Model.InternalOrgId,
                                                    Model.OrderItem.CallOffId,
                                                    Model.OrderItem.CatalogueItemId,
                                                    Model.OrderItem.CatalogueItemName })"

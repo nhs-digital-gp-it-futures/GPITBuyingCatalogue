@@ -11,7 +11,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.Supplier
         public SupplierModel(string odsCode, EntityFramework.Ordering.Models.Order order, ICollection<SupplierContact> supplierContacts)
         {
             Title = $"Supplier information for {order.CallOffId}";
-            OdsCode = odsCode;
+            InternalOrgId = odsCode;
             Id = order.Supplier.Id;
             Name = order.Supplier.Name;
             Address = order.Supplier.Address;

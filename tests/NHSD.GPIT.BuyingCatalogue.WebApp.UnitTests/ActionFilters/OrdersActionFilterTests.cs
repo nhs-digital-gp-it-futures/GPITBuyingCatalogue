@@ -136,8 +136,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.ActionFilters
         [Fact]
         public async Task OrderDoesntMatch_UsersPrimaryOrSecondaryOdsCodes_ReturnsNotFoundResult()
         {
-            const string odsCode = "MNO";
-            var requestPath = $"/order/organisation/{odsCode}/edit";
+            const string internalOrgId = "MNO";
+            var requestPath = $"/order/organisation/{internalOrgId}/edit";
 
             httpRequestMock.Setup(r => r.Path).Returns(requestPath);
 
@@ -160,7 +160,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.ActionFilters
             await ordersActionFilter.OnActionExecutionAsync(actionExecutingContext, () => Task.FromResult(actionExecutedContext));
 
             actionExecutingContext.Result.Should().BeOfType<NotFoundResult>();
-            mockLogger.Verify(l => l.LogWarning($"Attempt was made to access {requestPath} when user cannot access {odsCode}."), Times.Once);
+            mockLogger.Verify(l => l.LogWarning($"Attempt was made to access {requestPath} when user cannot access {internalOrgId}."), Times.Once);
         }
     }
 }
