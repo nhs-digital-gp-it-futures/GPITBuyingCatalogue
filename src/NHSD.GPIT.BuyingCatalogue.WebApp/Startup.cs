@@ -42,6 +42,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp
             {
                 options.Filters.Add(typeof(ActionArgumentNullFilter));
                 options.Filters.Add(typeof(OrdersActionFilter));
+                options.Filters.Add(typeof(CookieConsentActionFilter));
                 options.Filters.Add<SerilogMvcLoggingAttribute>();
             }).AddControllersAsServices();
 
@@ -152,8 +153,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp
             app.UseStatusCodePagesWithReExecute("/Home/Error", "?statusCode={0}");
 
             app.UseHttpsRedirection();
-
-            app.UseMiddleware<Framework.Middleware.CookieConsent.CookieConsentMiddleware>();
 
             app.UseStaticFiles(new StaticFileOptions()
             {
