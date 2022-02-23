@@ -15,7 +15,6 @@ using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Pdf;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.TaskList;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.Order;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.OrderTriage;
-using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.Shared;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Controllers;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
@@ -95,41 +94,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
         [HttpPost("~/order/organisation/{odsCode}/order/ready-to-start")]
         public IActionResult ReadyToStart(string odsCode, ReadyToStartModel model, TriageOption? option = null)
         {
-            if (User.GetSecondaryOrganisationInternalIdentifiers().Any())
-                return RedirectToAction(nameof(SelectOrganisation), new { odsCode, option });
-
             return RedirectToAction(
                 nameof(NewOrder),
                 typeof(OrderController).ControllerName(),
                 new { odsCode, option });
-        }
-
-        [HttpGet("~/order/organisation/{odsCode}/order/proxy-select")]
-        public async Task<IActionResult> SelectOrganisation(string odsCode, TriageOption? option = null)
-        {
-            var odsCodes = new List<string>(User.GetSecondaryOrganisationInternalIdentifiers())
-            {
-                User.GetPrimaryOrganisationInternalIdentifier(),
-            };
-
-            var organisations = await organisationsService.GetOrganisationsByInternalIdentifiers(odsCodes.ToArray());
-
-            var model = new SelectOrganisationModel(odsCode, organisations)
-            {
-                BackLink = Url.Action(nameof(ReadyToStart), new { odsCode, option }),
-                Title = "Which organisation are you ordering for?",
-            };
-
-            return View(model);
-        }
-
-        [HttpPost("~/order/organisation/{odsCode}/order/proxy-select")]
-        public IActionResult SelectOrganisation(string odsCode, SelectOrganisationModel model, TriageOption? option = null)
-        {
-            if (!ModelState.IsValid)
-                return View(model);
-
-            return RedirectToAction(nameof(NewOrder), new { odsCode = model.SelectedOrganisation, option });
         }
 
         [HttpGet("~/order/organisation/{odsCode}/order/neworder")]
