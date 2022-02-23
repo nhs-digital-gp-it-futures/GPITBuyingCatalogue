@@ -6,17 +6,21 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.SupplierDefinedEpi
 {
     public class SupplierDefinedEpicsDashboardModel
     {
-        public SupplierDefinedEpicsDashboardModel(List<Epic> supplierDefinedEpics)
+        public SupplierDefinedEpicsDashboardModel(IEnumerable<Epic> supplierDefinedEpics, string searchTerm)
         {
             SupplierDefinedEpics = supplierDefinedEpics
-                .Select(e => new SupplierDefinedEpicModel(e.Id, e.Name, e.Capability.Name, e.IsActive))
+                .Select(e => new SupplierDefinedEpicModel(e))
                 .OrderBy(e => e.Capability)
                 .ThenBy(e => e.IsActive)
                 .ThenBy(e => e.Name)
                 .ToList();
+
+            SearchTerm = searchTerm;
         }
 
-        public IList<SupplierDefinedEpicModel> SupplierDefinedEpics { get; set; } = new List<SupplierDefinedEpicModel>();
+        public IList<SupplierDefinedEpicModel> SupplierDefinedEpics { get; }
+
+        public string SearchTerm { get; }
 
         public bool ShowInactiveItems { get; }
     }

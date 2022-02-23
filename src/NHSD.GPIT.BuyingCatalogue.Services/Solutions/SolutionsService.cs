@@ -425,6 +425,22 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
                 .ToListAsync();
         }
 
+        public async Task<IList<CatalogueItem>> GetAllSolutionsForSearchTerm(string searchTerm)
+        {
+            if (string.IsNullOrWhiteSpace(searchTerm))
+                throw new ArgumentNullException(nameof(searchTerm));
+
+            return await dbContext.CatalogueItems
+                .Include(i => i.Solution)
+                .Include(i => i.Supplier)
+                .Include(i => i.CatalogueItemCapabilities).ThenInclude(cic => cic.Capability)
+                .Where(i => i.CatalogueItemType == CatalogueItemType.Solution
+                    && (EF.Functions.Like(i.Name, $"%{searchTerm}%")
+                        || EF.Functions.Like(i.Supplier.Name, $"%{searchTerm}%")))
+                .OrderBy(i => i.Name)
+                .ToListAsync();
+        }
+
         public async Task<CatalogueItemId> AddCatalogueSolution(CreateSolutionModel model)
         {
             if (model is null)

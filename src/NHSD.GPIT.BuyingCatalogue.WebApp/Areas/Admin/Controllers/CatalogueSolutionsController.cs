@@ -7,8 +7,6 @@ using Microsoft.AspNetCore.Mvc;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
-using NHSD.GPIT.BuyingCatalogue.ServiceContracts.AdditionalServices;
-using NHSD.GPIT.BuyingCatalogue.ServiceContracts.AssociatedServices;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Caching;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Capabilities;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Models;
@@ -18,6 +16,7 @@ using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Suppliers;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.CapabilityModels;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.CatalogueSolutionsModels;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.ClientApplicationTypeModels;
+using NHSD.GPIT.BuyingCatalogue.WebApp.Models.Autocomplete;
 using PublicationStatus = NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models.PublicationStatus;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
@@ -48,11 +47,14 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index([FromQuery] string search = null)
         {
-            var solutions = await solutionsService.GetAllSolutions();
+            var solutions = await GetFilteredItems(search);
 
-            var solutionModel = new CatalogueSolutionsModel(solutions);
+            var solutionModel = new CatalogueSolutionsModel(solutions)
+            {
+                SearchTerm = search,
+            };
 
             return View(solutionModel);
         }
@@ -60,12 +62,29 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
         [HttpPost]
         public async Task<IActionResult> Index(CatalogueSolutionsModel model)
         {
-            model.SetSolutions(
-                 await solutionsService.GetAllSolutions(string.IsNullOrWhiteSpace(model.SelectedPublicationStatus)
-                     ? null
-                     : Enum.Parse<PublicationStatus>(model.SelectedPublicationStatus, true)));
+            var status = string.IsNullOrWhiteSpace(model.SelectedPublicationStatus)
+                ? (PublicationStatus?)null
+                : Enum.Parse<PublicationStatus>(model.SelectedPublicationStatus, ignoreCase: true);
+
+            var solutions = await solutionsService.GetAllSolutions(status);
+            var filteredSolutions = await GetFilteredItems(model.SearchTerm);
+
+            model.SetSolutions(solutions.Intersect(filteredSolutions));
 
             return View(model);
+        }
+
+        [HttpGet("search-results")]
+        public async Task<IActionResult> SearchResults([FromQuery] string search)
+        {
+            var results = await GetFilteredItems(search);
+
+            return Json(results.Take(15).Select(x => new AutocompleteResult
+            {
+                Title = x.Name,
+                Category = x.Supplier.Name,
+                Url = Url.Action(nameof(ManageCatalogueSolution), new { solutionId = $"{x.Id}" }),
+            }));
         }
 
         [HttpGet("manage/{solutionId}/features")]
@@ -364,6 +383,13 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
             filterCache.RemoveAll();
 
             return RedirectToAction(nameof(ManageCatalogueSolution), new { solutionId });
+        }
+
+        private async Task<IEnumerable<CatalogueItem>> GetFilteredItems(string search)
+        {
+            return string.IsNullOrWhiteSpace(search)
+                ? await solutionsService.GetAllSolutions()
+                : await solutionsService.GetAllSolutionsForSearchTerm(search);
         }
     }
 }

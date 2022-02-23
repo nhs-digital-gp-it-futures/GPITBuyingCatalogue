@@ -92,6 +92,20 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Capabilities
                 .Where(e => e.SupplierDefined)
                 .ToListAsync();
 
+        public Task<List<Epic>> GetSupplierDefinedEpicsBySearchTerm(string searchTerm)
+        {
+            if (string.IsNullOrWhiteSpace(searchTerm))
+                throw new ArgumentNullException(nameof(searchTerm));
+
+            return dbContext.Epics
+                .AsNoTracking()
+                .Include(e => e.Capability)
+                .Where(e => e.SupplierDefined
+                    && (EF.Functions.Like(e.Name, $"%{searchTerm}%")
+                        || EF.Functions.Like(e.Capability.Name, $"%{searchTerm}%")))
+                .ToListAsync();
+        }
+
         public Task<Epic> GetEpic(string epicId)
         {
             if (string.IsNullOrWhiteSpace(epicId))
