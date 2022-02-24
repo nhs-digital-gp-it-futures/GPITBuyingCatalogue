@@ -59,22 +59,22 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
                 .SingleAsync();
         }
 
-        public async Task AddOrderSupplier(CallOffId callOffId, string odsCode, int supplierId)
+        public async Task AddOrderSupplier(CallOffId callOffId, string internalOrgId, int supplierId)
         {
             var supplier = await GetSupplierFromBuyingCatalogue(supplierId);
-            var order = await orderService.GetOrderWithSupplier(callOffId, odsCode);
+            var order = await orderService.GetOrderWithSupplier(callOffId, internalOrgId);
 
             order.Supplier = supplier;
 
             await dbContext.SaveChangesAsync();
         }
 
-        public async Task AddOrUpdateOrderSupplierContact(CallOffId callOffId, string odsCode, Contact contact)
+        public async Task AddOrUpdateOrderSupplierContact(CallOffId callOffId, string internalOrgId, Contact contact)
         {
             if (contact is null)
                 throw new ArgumentNullException(nameof(contact));
 
-            var order = await orderService.GetOrderWithSupplier(callOffId, odsCode);
+            var order = await orderService.GetOrderWithSupplier(callOffId, internalOrgId);
 
             switch (order.SupplierContact)
             {

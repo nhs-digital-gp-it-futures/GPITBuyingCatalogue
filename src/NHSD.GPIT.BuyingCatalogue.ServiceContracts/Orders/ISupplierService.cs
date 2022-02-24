@@ -14,9 +14,9 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.Orders
 
         public Task<Supplier> GetSupplierFromBuyingCatalogue(int id);
 
-        public Task AddOrderSupplier(CallOffId callOffId, string odsCode, int supplierId);
+        public Task AddOrderSupplier(CallOffId callOffId, string internalOrgId, int supplierId);
 
-        public Task AddOrUpdateOrderSupplierContact(CallOffId callOffId,  string odsCode, Contact contact);
+        public Task AddOrUpdateOrderSupplierContact(CallOffId callOffId,  string internalOrgId, Contact contact);
 
         public Task SetSupplierSection(Order order, Supplier supplier, Contact contact);
     }
