@@ -19,7 +19,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
 
         public async Task SetCommencementDate(
             CallOffId callOffId,
-            string odsCode,
+            string internalOrgId,
             DateTime? commencementDate,
             int? initialPeriod,
             int? maximumTerm)
@@ -28,7 +28,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
             initialPeriod.ValidateNotNull(nameof(initialPeriod));
             maximumTerm.ValidateNotNull(nameof(maximumTerm));
 
-            var order = await dbContext.Orders.SingleAsync(o => o.Id == callOffId.Id && o.OrderingParty.InternalIdentifier == odsCode);
+            var order = await dbContext.Orders.SingleAsync(o => o.Id == callOffId.Id && o.OrderingParty.InternalIdentifier == internalOrgId);
 
             order.CommencementDate = commencementDate!.Value;
             order.InitialPeriod = initialPeriod;

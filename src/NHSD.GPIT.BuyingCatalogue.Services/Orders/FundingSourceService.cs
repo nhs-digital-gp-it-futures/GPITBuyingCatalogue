@@ -18,11 +18,11 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
             this.dbContext = dbContext ?? throw new ArgumentNullException(nameof(dbContext));
         }
 
-        public async Task SetFundingSource(CallOffId callOffId, string odsCode, bool? onlyGms)
+        public async Task SetFundingSource(CallOffId callOffId, string internalOrgId, bool? onlyGms)
         {
             onlyGms.ValidateNotNull(nameof(onlyGms));
 
-            var order = await dbContext.Orders.SingleAsync(o => o.Id == callOffId.Id && o.OrderingParty.InternalIdentifier == odsCode);
+            var order = await dbContext.Orders.SingleAsync(o => o.Id == callOffId.Id && o.OrderingParty.InternalIdentifier == internalOrgId);
             order.FundingSourceOnlyGms = onlyGms.Value;
             await dbContext.SaveChangesAsync();
         }

@@ -6,6 +6,6 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.Orders
 {
     public interface ICommencementDateService
     {
-        Task SetCommencementDate(CallOffId callOffId, string odsCode, DateTime? commencementDate, int? initialPeriod, int? maximumTerm);
+        Task SetCommencementDate(CallOffId callOffId, string internalOrgId, DateTime? commencementDate, int? initialPeriod, int? maximumTerm);
     }
 }

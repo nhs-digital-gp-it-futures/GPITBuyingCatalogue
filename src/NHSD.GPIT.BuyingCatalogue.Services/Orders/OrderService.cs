@@ -36,12 +36,12 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
             this.orderMessageSettings = orderMessageSettings ?? throw new ArgumentNullException(nameof(orderMessageSettings));
         }
 
-        public Task<Order> GetOrderThin(CallOffId callOffId, string odsCode)
+        public Task<Order> GetOrderThin(CallOffId callOffId, string internalOrgId)
         {
             return dbContext.Orders
                 .Where(o =>
                     o.Id == callOffId.Id
-                    && o.OrderingParty.InternalIdentifier == odsCode)
+                    && o.OrderingParty.InternalIdentifier == internalOrgId)
                 .Include(o => o.OrderingParty)
                 .Include(o => o.OrderingPartyContact)
                 .Include(o => o.Supplier)
@@ -50,35 +50,35 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
                 .SingleOrDefaultAsync();
         }
 
-        public Task<Order> GetOrderWithDefaultDeliveryDatesAndOrderItems(CallOffId callOffId, string odsCode)
+        public Task<Order> GetOrderWithDefaultDeliveryDatesAndOrderItems(CallOffId callOffId, string internalOrgId)
         {
             return dbContext.Orders
                 .Where(o =>
                     o.Id == callOffId.Id
-                    && o.OrderingParty.InternalIdentifier == odsCode)
+                    && o.OrderingParty.InternalIdentifier == internalOrgId)
                 .Include(o => o.OrderItems).ThenInclude(i => i.CatalogueItem)
                 .Include(o => o.OrderItems).ThenInclude(i => i.OrderItemRecipients).ThenInclude(r => r.Recipient)
                 .Include(o => o.DefaultDeliveryDates)
                 .SingleOrDefaultAsync();
         }
 
-        public Task<Order> GetOrderWithSupplier(CallOffId callOffId, string odsCode)
+        public Task<Order> GetOrderWithSupplier(CallOffId callOffId, string internalOrgId)
         {
             return dbContext.Orders
                 .Where(o =>
                     o.Id == callOffId.Id
-                    && o.OrderingParty.InternalIdentifier == odsCode)
+                    && o.OrderingParty.InternalIdentifier == internalOrgId)
                 .Include(o => o.Supplier)
                 .Include(o => o.SupplierContact)
                 .SingleOrDefaultAsync();
         }
 
-        public Task<Order> GetOrderForSummary(CallOffId callOffId, string odsCode)
+        public Task<Order> GetOrderForSummary(CallOffId callOffId, string internalOrgId)
         {
             return dbContext.Orders
                 .Where(o =>
                     o.Id == callOffId.Id
-                    && o.OrderingParty.InternalIdentifier == odsCode)
+                    && o.OrderingParty.InternalIdentifier == internalOrgId)
                 .Include(o => o.OrderingParty)
                 .Include(o => o.OrderingPartyContact)
                 .Include(o => o.Supplier)
@@ -139,12 +139,12 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
             return matches.ToList();
         }
 
-        public Task<Order> GetOrderSummary(CallOffId callOffId, string odsCode)
+        public Task<Order> GetOrderSummary(CallOffId callOffId, string internalOrgId)
         {
             return dbContext.Orders
                 .Where(o =>
                     o.Id == callOffId.Id
-                    && o.OrderingParty.InternalIdentifier == odsCode)
+                    && o.OrderingParty.InternalIdentifier == internalOrgId)
                 .Include(o => o.OrderingParty)
                 .Include(o => o.OrderingPartyContact)
                 .Include(o => o.SupplierContact)
@@ -154,12 +154,12 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
                 .SingleOrDefaultAsync();
         }
 
-        public Task<Order> GetOrderForStatusUpdate(CallOffId callOffId, string odsCode)
+        public Task<Order> GetOrderForStatusUpdate(CallOffId callOffId, string internalOrgId)
         {
             return dbContext.Orders
                 .Where(o =>
                     o.Id == callOffId.Id
-                    && o.OrderingParty.InternalIdentifier == odsCode)
+                    && o.OrderingParty.InternalIdentifier == internalOrgId)
                 .Include(o => o.OrderingParty)
                 .Include(o => o.Supplier)
                 .Include(o => o.OrderItems).ThenInclude(i => i.CatalogueItem)
@@ -168,9 +168,9 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
                 .SingleOrDefaultAsync();
         }
 
-        public async Task<Order> CreateOrder(string description, string odsCode)
+        public async Task<Order> CreateOrder(string description, string internalOrgId)
         {
-            var orderingParty = await dbContext.Organisations.SingleAsync(o => o.InternalIdentifier == odsCode);
+            var orderingParty = await dbContext.Organisations.SingleAsync(o => o.InternalIdentifier == internalOrgId);
 
             var order = new Order
             {
@@ -184,9 +184,9 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
             return order;
         }
 
-        public async Task DeleteOrder(CallOffId callOffId, string odsCode)
+        public async Task DeleteOrder(CallOffId callOffId, string internalOrgId)
         {
-            var order = await dbContext.Orders.Where(o => o.Id == callOffId.Id && o.OrderingParty.InternalIdentifier == odsCode).SingleAsync();
+            var order = await dbContext.Orders.Where(o => o.Id == callOffId.Id && o.OrderingParty.InternalIdentifier == internalOrgId).SingleAsync();
 
             if (order != null)
             {
@@ -196,9 +196,9 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
             }
         }
 
-        public async Task CompleteOrder(CallOffId callOffId, string odsCode)
+        public async Task CompleteOrder(CallOffId callOffId, string internalOrgId)
         {
-            var order = await GetOrderThin(callOffId, odsCode);
+            var order = await GetOrderThin(callOffId, internalOrgId);
 
             order.Complete();
 
