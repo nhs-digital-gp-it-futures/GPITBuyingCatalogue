@@ -120,7 +120,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Session
                 if (state.CatalogueItemType == CatalogueItemType.AssociatedService)
                 {
                     var organisation = await organisationService.GetOrganisationByInternalIdentifier(internalOrgId);
-                    state.ServiceRecipients = new List<OrderItemRecipientModel> { new() { OdsCode = internalOrgId, Name = organisation.Name } };
+                    state.ServiceRecipients = new List<OrderItemRecipientModel> { new() { OdsCode = organisation.ExternalIdentifier, Name = organisation.Name } };
                 }
                 else
                 {
