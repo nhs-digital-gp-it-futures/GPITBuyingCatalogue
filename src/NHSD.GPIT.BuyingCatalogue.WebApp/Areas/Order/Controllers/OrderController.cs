@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Runtime.InteropServices;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
@@ -169,9 +167,29 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
                 return View(model);
             }
 
-            await orderService.CompleteOrder(callOffId, internalOrgId);
+            await orderService.CompleteOrder(
+                callOffId,
+                internalOrgId,
+                User.UserId(),
+                OrderSummaryUri(internalOrgId, callOffId));
 
-            return RedirectToAction();
+            return RedirectToAction(
+                nameof(Completed),
+                typeof(OrderController).ControllerName(),
+                new { internalOrgId, callOffId });
+        }
+
+        [HttpGet("completed")]
+        public IActionResult Completed(string internalOrgId, CallOffId callOffId)
+        {
+            return View(new CompletedModel(internalOrgId, callOffId)
+            {
+                BackLink = Url.Action(
+                    nameof(DashboardController.Organisation),
+                    typeof(DashboardController).ControllerName(),
+                    new { internalOrgId }),
+                BackLinkText = "Go back to orders dashboard",
+            });
         }
 
         [HttpGet("download")]
@@ -179,25 +197,34 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
         {
             var order = await orderService.GetOrderForSummary(callOffId, internalOrgId);
 
-            string url = Url.Action(
-                        nameof(OrderSummaryController.Index),
-                        typeof(OrderSummaryController).ControllerName(),
-                        new { internalOrgId, callOffId });
+            var result = pdfService.Convert(OrderSummaryUri(internalOrgId, callOffId));
+
+            var fileName = order.OrderStatus == OrderStatus.Complete
+                ? $"order-summary-completed-{callOffId}.pdf"
+                : $"order-summary-in-progress-{callOffId}.pdf";
+
+            return File(result, "application/pdf", fileName);
+        }
+
+        private Uri OrderSummaryUri(string internalOrgId, CallOffId callOffId)
+        {
+            var uri = Url.Action(
+                nameof(OrderSummaryController.Index),
+                typeof(OrderSummaryController).ControllerName(),
+                new { internalOrgId, callOffId });
 
             if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
             {
-                url = $"{Request.Scheme}://{Request.Host}{url}";
+                uri = $"{Request.Scheme}://{Request.Host}{uri}";
             }
             else
             {
-                url = pdfSettings.UseSslForPdf ? $"https://localhost{url}" : $"http://localhost{url}";
+                uri = pdfSettings.UseSslForPdf
+                    ? $"https://localhost{uri}"
+                    : $"http://localhost{uri}";
             }
 
-            var result = pdfService.Convert(new Uri(url));
-
-            var fileName = order.OrderStatus == OrderStatus.Complete ? $"order-summary-completed-{callOffId}.pdf" : $"order-summary-in-progress-{callOffId}.pdf";
-
-            return File(result, "application/pdf", fileName);
+            return new Uri(uri);
         }
     }
 }
