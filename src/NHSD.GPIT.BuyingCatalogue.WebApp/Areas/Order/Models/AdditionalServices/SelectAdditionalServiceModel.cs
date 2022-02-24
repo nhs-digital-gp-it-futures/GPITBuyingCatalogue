@@ -11,13 +11,13 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.AdditionalServices
         }
 
         public SelectAdditionalServiceModel(
-            string odsCode,
+            string internalOrgId,
             CallOffId callOffId,
             List<CatalogueItem> solutions,
             CatalogueItemId? selectedAdditionalServiceId)
         {
             Title = $"Add an Additional Service for {callOffId}";
-            InternalOrgId = odsCode;
+            InternalOrgId = internalOrgId;
             Solutions = solutions;
             SelectedAdditionalServiceId = selectedAdditionalServiceId;
         }

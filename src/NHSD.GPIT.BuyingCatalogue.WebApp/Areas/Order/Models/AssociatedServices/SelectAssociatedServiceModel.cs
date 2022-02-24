@@ -10,10 +10,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.AssociatedServices
         {
         }
 
-        public SelectAssociatedServiceModel(string odsCode, CallOffId callOffId, List<CatalogueItem> solutions, CatalogueItemId? selectedSolutionId)
+        public SelectAssociatedServiceModel(string internalOrgId, CallOffId callOffId, List<CatalogueItem> solutions, CatalogueItemId? selectedSolutionId)
         {
             Title = $"Add an Associated Service for {callOffId}";
-            InternalOrgId = odsCode;
+            InternalOrgId = internalOrgId;
             Solutions = solutions;
             SelectedSolutionId = selectedSolutionId;
         }
