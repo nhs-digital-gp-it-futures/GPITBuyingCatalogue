@@ -13,14 +13,14 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.Supplier
         [Theory]
         [CommonAutoData]
         public static void WithValidArguments_PropertiesCorrectlySet(
-            string odsCode,
+            string internalOrgId,
             EntityFramework.Ordering.Models.Order order,
             ICollection<SupplierContact> supplierContacts)
         {
-            var model = new SupplierModel(odsCode, order, supplierContacts);
+            var model = new SupplierModel(internalOrgId, order, supplierContacts);
 
             model.Title.Should().Be($"Supplier information for {order.CallOffId}");
-            model.InternalOrgId.Should().Be(odsCode);
+            model.InternalOrgId.Should().Be(internalOrgId);
             model.Id.Should().Be(order.Supplier.Id);
             model.Name.Should().Be(order.Supplier.Name);
             model.Address.Should().BeEquivalentTo(order.Supplier.Address);
@@ -30,13 +30,13 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.Supplier
         [Theory]
         [CommonAutoData]
         public static void WithNoSupplierContact_AndAvailableContacts_PropertiesCorrectlySet(
-            string odsCode,
+            string internalOrgId,
             EntityFramework.Ordering.Models.Order order,
             ICollection<SupplierContact> supplierContacts)
         {
             order.SupplierContact = null;
 
-            var model = new SupplierModel(odsCode, order, supplierContacts);
+            var model = new SupplierModel(internalOrgId, order, supplierContacts);
 
             model.PrimaryContact.FirstName.Should().BeEquivalentTo(supplierContacts.First().FirstName);
             model.PrimaryContact.LastName.Should().BeEquivalentTo(supplierContacts.First().LastName);
@@ -47,12 +47,12 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.Supplier
         [Theory]
         [CommonAutoData]
         public static void WithNoSupplierContact_AndNoAvailableContacts_PropertiesCorrectlySet(
-            string odsCode,
+            string internalOrgId,
             EntityFramework.Ordering.Models.Order order)
         {
             order.SupplierContact = null;
 
-            var model = new SupplierModel(odsCode, order, new List<SupplierContact>());
+            var model = new SupplierModel(internalOrgId, order, new List<SupplierContact>());
 
             model.PrimaryContact.Should().BeNull();
         }

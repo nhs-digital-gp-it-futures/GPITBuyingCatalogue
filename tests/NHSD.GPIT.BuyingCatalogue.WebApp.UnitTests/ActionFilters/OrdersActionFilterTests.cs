@@ -91,7 +91,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.ActionFilters
         }
 
         [Fact]
-        public async Task OrderMatchesUsersPrimaryOdsCode_ReturnsOk()
+        public async Task OrderMatchesUsersPrimaryInternalOrgId_ReturnsOk()
         {
             httpRequestMock.Setup(r => r.Path).Returns("/order/organisation/ABC/edit");
 
@@ -111,7 +111,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.ActionFilters
         }
 
         [Fact]
-        public async Task OrderMatchesUsersSecondaryOdsCode_ReturnsOk()
+        public async Task OrderMatchesUsersSecondaryInternalOrgId_ReturnsOk()
         {
             httpRequestMock.Setup(r => r.Path).Returns("/order/organisation/GHI/edit");
 
@@ -134,7 +134,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.ActionFilters
         }
 
         [Fact]
-        public async Task OrderDoesntMatch_UsersPrimaryOrSecondaryOdsCodes_ReturnsNotFoundResult()
+        public async Task OrderDoesntMatch_UsersPrimaryOrSecondaryInternalOrgIds_ReturnsNotFoundResult()
         {
             const string internalOrgId = "MNO";
             var requestPath = $"/order/organisation/{internalOrgId}/edit";

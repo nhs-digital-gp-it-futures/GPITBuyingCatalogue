@@ -15,13 +15,13 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.Dashboar
         public static void WithValidArguments_PropertiesCorrectlySet(
             List<Organisation> organisations)
         {
-            var currentOdsCode = organisations.First().InternalIdentifier;
+            var currentInternalOrgId = organisations.First().InternalIdentifier;
 
-            var model = new SelectOrganisationModel(currentOdsCode, organisations);
+            var model = new SelectOrganisationModel(currentInternalOrgId, organisations);
 
             model.Title.Should().Be("Which organisation are you looking for?");
             model.AvailableOrganisations.Should().BeEquivalentTo(organisations);
-            model.SelectedOrganisation.Should().Be(currentOdsCode);
+            model.SelectedOrganisation.Should().Be(currentInternalOrgId);
         }
     }
 }

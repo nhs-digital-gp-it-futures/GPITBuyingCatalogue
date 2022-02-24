@@ -12,14 +12,14 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.Associat
         [Theory]
         [CommonAutoData]
         public static void WithValidArguments_PropertiesCorrectlySet(
-            string odsCode,
+            string internalOrgId,
             EntityFramework.Ordering.Models.Order order,
             List<OrderItem> orderItems)
         {
-            var model = new AssociatedServiceModel(odsCode, order, orderItems);
+            var model = new AssociatedServiceModel(internalOrgId, order, orderItems);
 
             model.Title.Should().Be($"Associated Services for {order.CallOffId}");
-            model.InternalOrgId.Should().Be(odsCode);
+            model.InternalOrgId.Should().Be(internalOrgId);
             model.OrderDescription.Should().Be(order.Description);
             model.CallOffId.Should().Be(order.CallOffId);
             model.OrderItems.Should().BeEquivalentTo(orderItems);

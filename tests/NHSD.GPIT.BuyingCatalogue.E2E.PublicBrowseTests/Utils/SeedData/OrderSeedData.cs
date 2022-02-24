@@ -608,9 +608,9 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
             context.SaveChangesAs(user.Id);
         }
 
-        private static int GetOrganisationId(BuyingCatalogueDbContext context, string odsCode = "03F")
+        private static int GetOrganisationId(BuyingCatalogueDbContext context, string internalOrgId = "03F")
         {
-            return context.Organisations.First(o => o.InternalIdentifier == odsCode).Id;
+            return context.Organisations.First(o => o.InternalIdentifier == internalOrgId).Id;
         }
 
         private static AspNetUser GetBuyerUser(BuyingCatalogueDbContext context, int organisationId)

@@ -10,12 +10,12 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.Ordering
         [Theory]
         [CommonAutoData]
         public static void WithValidArguments_PropertiesCorrectlySet(
-            string odsCode,
+            string internalOrgId,
             EntityFramework.Ordering.Models.Order order)
         {
-            var model = new OrderingPartyModel(odsCode, order);
+            var model = new OrderingPartyModel(internalOrgId, order);
 
-            model.InternalOrgId.Should().Be(odsCode);
+            model.InternalOrgId.Should().Be(internalOrgId);
             model.CallOffId.Should().Be(order.CallOffId.ToString());
             model.Contact.FirstName.Should().Be(order.OrderingPartyContact.FirstName);
             model.Contact.LastName.Should().Be(order.OrderingPartyContact.LastName);

@@ -43,7 +43,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers
         [Theory]
         [CommonAutoData]
         public static async Task Get_SelectSolutionServiceRecipientsDate_ReturnsExpectedResult(
-            string odsCode,
+            string internalOrgId,
             DateTime? defaultDeliveryDate,
             CreateOrderItemModel state,
             [Frozen] Mock<IOrderSessionService> orderSessionServiceMock,
@@ -52,7 +52,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers
             var expectedViewData = new SelectSolutionServiceRecipientsDateModel(state, defaultDeliveryDate);
             orderSessionServiceMock.Setup(s => s.GetOrderStateFromSession(state.CallOffId)).Returns(state);
 
-            var actualResult = await controller.SelectSolutionServiceRecipientsDate(odsCode, state.CallOffId);
+            var actualResult = await controller.SelectSolutionServiceRecipientsDate(internalOrgId, state.CallOffId);
 
             actualResult.Should().BeOfType<ViewResult>();
             actualResult.As<ViewResult>().ViewData.Model.Should().BeEquivalentTo(expectedViewData, opt => opt.Excluding(m => m.BackLink));
@@ -142,7 +142,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers
         [Theory]
         [CommonAutoData]
         public static async Task Post_SelectSolutionServiceRecipientsDate_SetsDatesAndSession(
-            string odsCode,
+            string internalOrgId,
             CreateOrderItemModel state,
             [Frozen] Mock<IOrderSessionService> orderSessionServiceMock,
             [Frozen] Mock<IDefaultDeliveryDateService> defaultDeliveryDateServiceMock,
@@ -162,11 +162,11 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers
             orderSessionServiceMock.Setup(s => s.SetOrderStateToSession(It.IsAny<CreateOrderItemModel>()))
                 .Callback<CreateOrderItemModel>(s => updatedState = s);
 
-            await controller.SelectSolutionServiceRecipientsDate(odsCode, state.CallOffId, model);
+            await controller.SelectSolutionServiceRecipientsDate(internalOrgId, state.CallOffId, model);
 
             updatedState.PlannedDeliveryDate.Should().Be(DateTime.UtcNow.AddDays(1).Date);
 
-            defaultDeliveryDateServiceMock.Verify(c => c.SetDefaultDeliveryDate(state.CallOffId, odsCode, state.CatalogueItemId.GetValueOrDefault(), DateTime.UtcNow.AddDays(1).Date), Times.Once());
+            defaultDeliveryDateServiceMock.Verify(c => c.SetDefaultDeliveryDate(state.CallOffId, internalOrgId, state.CatalogueItemId.GetValueOrDefault(), DateTime.UtcNow.AddDays(1).Date), Times.Once());
         }
     }
 }

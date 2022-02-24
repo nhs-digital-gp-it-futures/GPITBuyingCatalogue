@@ -41,7 +41,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers
         [Theory]
         [CommonAutoData]
         public static async Task Get_InProgressOrder_ReturnsExpectedResult(
-            string odsCode,
+            string internalOrgId,
             EntityFramework.Ordering.Models.Order order,
             AspNetUser aspNetUser,
             OrderTaskList orderTaskList,
@@ -52,13 +52,13 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers
             order.LastUpdatedByUser = aspNetUser;
             order.OrderStatus = OrderStatus.InProgress;
 
-            var expectedViewData = new OrderModel(odsCode, order, orderTaskList) { DescriptionUrl = "testUrl" };
+            var expectedViewData = new OrderModel(internalOrgId, order, orderTaskList) { DescriptionUrl = "testUrl" };
 
-            orderServiceMock.Setup(s => s.GetOrderThin(order.CallOffId, odsCode)).ReturnsAsync(order);
+            orderServiceMock.Setup(s => s.GetOrderThin(order.CallOffId, internalOrgId)).ReturnsAsync(order);
 
             taskListServiceMock.Setup(s => s.GetTaskListStatusModelForOrder(order)).Returns(orderTaskList);
 
-            var actualResult = await controller.Order(odsCode, order.CallOffId);
+            var actualResult = await controller.Order(internalOrgId, order.CallOffId);
 
             actualResult.Should().BeOfType<ViewResult>();
             actualResult.As<ViewResult>().ViewData.Model.Should().BeEquivalentTo(expectedViewData, opt => opt.Excluding(m => m.BackLink).Excluding(m => m.BackLinkText));
@@ -87,17 +87,17 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers
         [Theory]
         [CommonAutoData]
         public static async Task Get_NewOrder_ReturnsExpectedResult(
-            string odsCode,
+            string internalOrgId,
             [Frozen] Mock<IOrganisationsService> organisationsService,
             Organisation organisation,
             OrderController controller)
         {
-            organisationsService.Setup(s => s.GetOrganisationByInternalIdentifier(odsCode))
+            organisationsService.Setup(s => s.GetOrganisationByInternalIdentifier(internalOrgId))
                 .ReturnsAsync(organisation);
 
-            var expectedViewData = new OrderModel(odsCode, null, new OrderTaskList(), organisation.Name) { DescriptionUrl = "testUrl" };
+            var expectedViewData = new OrderModel(internalOrgId, null, new OrderTaskList(), organisation.Name) { DescriptionUrl = "testUrl" };
 
-            var actualResult = await controller.NewOrder(odsCode);
+            var actualResult = await controller.NewOrder(internalOrgId);
 
             actualResult.Should().BeOfType<ViewResult>();
             actualResult.As<ViewResult>().ViewData.Model.Should().BeEquivalentTo(expectedViewData, opt => opt.Excluding(m => m.BackLink));
@@ -106,16 +106,16 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers
         [Theory]
         [CommonAutoData]
         public static async Task Post_Summary_CannotComplete_ReturnsErrorResult(
-            string odsCode,
+            string internalOrgId,
             EntityFramework.Ordering.Models.Order order,
             [Frozen] Mock<IOrderService> orderServiceMock,
             OrderController controller)
         {
             order.Description = null;
 
-            orderServiceMock.Setup(s => s.GetOrderForSummary(order.CallOffId, odsCode)).ReturnsAsync(order);
+            orderServiceMock.Setup(s => s.GetOrderForSummary(order.CallOffId, internalOrgId)).ReturnsAsync(order);
 
-            var actualResult = await controller.Summary(odsCode, order.CallOffId, new SummaryModel());
+            var actualResult = await controller.Summary(internalOrgId, order.CallOffId, new SummaryModel());
 
             actualResult.Should().BeOfType<ViewResult>();
             actualResult.As<ViewResult>().ViewData.ModelState.ValidationState.Should().Be(ModelValidationState.Invalid);
@@ -135,10 +135,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers
         [Theory]
         [CommonAutoData]
         public static void Get_ReadyToStart_ReturnsView(
-            string odsCode,
+            string internalOrgId,
             OrderController controller)
         {
-            var result = controller.ReadyToStart(odsCode);
+            var result = controller.ReadyToStart(internalOrgId);
 
             result.As<ViewResult>().Should().NotBeNull();
         }
@@ -146,7 +146,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers
         [Theory]
         [CommonAutoData]
         public static async Task Get_Download_CompleteOrder_ReturnsExpectedResult(
-            string odsCode,
+            string internalOrgId,
             EntityFramework.Ordering.Models.Order order,
             [Frozen] Mock<IOrderService> orderServiceMock,
             [Frozen] Mock<IPdfService> pdfServiceMock,
@@ -155,7 +155,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers
         {
             order.OrderStatus = OrderStatus.Complete;
 
-            orderServiceMock.Setup(s => s.GetOrderForSummary(order.CallOffId, odsCode)).ReturnsAsync(order);
+            orderServiceMock.Setup(s => s.GetOrderForSummary(order.CallOffId, internalOrgId)).ReturnsAsync(order);
 
             pdfServiceMock.Setup(s => s.Convert(It.IsAny<System.Uri>())).Returns(result);
 
@@ -168,7 +168,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers
                 HttpContext = httpContext,
             };
 
-            var actualResult = await controller.Download(odsCode, order.CallOffId);
+            var actualResult = await controller.Download(internalOrgId, order.CallOffId);
 
             actualResult.Should().BeOfType<FileContentResult>();
             actualResult.As<FileContentResult>().ContentType.Should().Be("application/pdf");
@@ -179,7 +179,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers
         [Theory]
         [CommonAutoData]
         public static async Task Get_Download_InProgressOrder_ReturnsExpectedResult(
-            string odsCode,
+            string internalOrgId,
             EntityFramework.Ordering.Models.Order order,
             [Frozen] Mock<IOrderService> orderServiceMock,
             [Frozen] Mock<IPdfService> pdfServiceMock,
@@ -188,7 +188,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers
         {
             order.OrderStatus = OrderStatus.InProgress;
 
-            orderServiceMock.Setup(s => s.GetOrderForSummary(order.CallOffId, odsCode)).ReturnsAsync(order);
+            orderServiceMock.Setup(s => s.GetOrderForSummary(order.CallOffId, internalOrgId)).ReturnsAsync(order);
 
             pdfServiceMock.Setup(s => s.Convert(It.IsAny<System.Uri>())).Returns(result);
 
@@ -201,7 +201,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers
                 HttpContext = httpContext,
             };
 
-            var actualResult = await controller.Download(odsCode, order.CallOffId);
+            var actualResult = await controller.Download(internalOrgId, order.CallOffId);
 
             actualResult.Should().BeOfType<FileContentResult>();
             actualResult.As<FileContentResult>().ContentType.Should().Be("application/pdf");

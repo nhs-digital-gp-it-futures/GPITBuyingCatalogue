@@ -45,16 +45,16 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers
         [Theory]
         [CommonAutoData]
         public static async Task Get_OrderDescription_ReturnsExpectedResult(
-            string odsCode,
+            string internalOrgId,
             EntityFramework.Ordering.Models.Order order,
             [Frozen] Mock<IOrderService> orderServiceMock,
             OrderDescriptionController controller)
         {
-            var expectedViewData = new OrderDescriptionModel(odsCode, order) { BackLink = "testUrl" };
+            var expectedViewData = new OrderDescriptionModel(internalOrgId, order) { BackLink = "testUrl" };
 
-            orderServiceMock.Setup(s => s.GetOrderThin(order.CallOffId, odsCode)).ReturnsAsync(order);
+            orderServiceMock.Setup(s => s.GetOrderThin(order.CallOffId, internalOrgId)).ReturnsAsync(order);
 
-            var actualResult = await controller.OrderDescription(odsCode, order.CallOffId);
+            var actualResult = await controller.OrderDescription(internalOrgId, order.CallOffId);
 
             actualResult.Should().BeOfType<ViewResult>();
             actualResult.As<ViewResult>().ViewData.Model.Should().BeEquivalentTo(expectedViewData);
@@ -81,7 +81,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers
         [Theory]
         [CommonAutoData]
         public static async Task Post_OrderDescription_InvalidModelState_ReturnsView(
-            string odsCode,
+            string internalOrgId,
             CallOffId callOffId,
             string errorKey,
             string errorMessage,
@@ -90,7 +90,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers
         {
             controller.ModelState.AddModelError(errorKey, errorMessage);
 
-            var actualResult = (await controller.OrderDescription(odsCode, callOffId, model)).As<ViewResult>();
+            var actualResult = (await controller.OrderDescription(internalOrgId, callOffId, model)).As<ViewResult>();
 
             actualResult.Should().NotBeNull();
             actualResult.ViewName.Should().BeNull();
@@ -103,7 +103,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers
         [Theory]
         [CommonAutoData]
         public static async Task Get_NewOrderDescription_ReturnsExpectedResult(
-            string odsCode,
+            string internalOrgId,
             string organisationName,
             [Frozen] Mock<IUsersService> mockUsersService,
             [Frozen] Mock<IOrganisationsService> mockOrganisationsService,
@@ -125,9 +125,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers
                     Name = organisationName,
                 });
 
-            var expectedViewData = new OrderDescriptionModel(odsCode, organisationName) { BackLink = "testUrl" };
+            var expectedViewData = new OrderDescriptionModel(internalOrgId, organisationName) { BackLink = "testUrl" };
 
-            var actualResult = await controller.NewOrderDescription(odsCode);
+            var actualResult = await controller.NewOrderDescription(internalOrgId);
 
             mockUsersService.VerifyAll();
             mockOrganisationsService.VerifyAll();
@@ -159,7 +159,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers
         [Theory]
         [CommonAutoData]
         public static async Task Post_NewOrderDescription_InvalidModelState_ReturnsView(
-            string odsCode,
+            string internalOrgId,
             string errorKey,
             string errorMessage,
             OrderDescriptionModel model,
@@ -167,7 +167,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers
         {
             controller.ModelState.AddModelError(errorKey, errorMessage);
 
-            var actualResult = (await controller.NewOrderDescription(odsCode, model)).As<ViewResult>();
+            var actualResult = (await controller.NewOrderDescription(internalOrgId, model)).As<ViewResult>();
 
             actualResult.Should().NotBeNull();
             actualResult.ViewName.Should().Be("OrderDescription");

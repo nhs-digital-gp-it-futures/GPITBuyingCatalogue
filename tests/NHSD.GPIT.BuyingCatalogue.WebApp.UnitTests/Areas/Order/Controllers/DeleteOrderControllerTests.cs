@@ -40,16 +40,16 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers
         [Theory]
         [CommonAutoData]
         public static async Task Get_DeleteOrder_ReturnsExpectedResult(
-            string odsCode,
+            string internalOrgId,
             EntityFramework.Ordering.Models.Order order,
             [Frozen] Mock<IOrderService> orderServiceMock,
             DeleteOrderController controller)
         {
-            var expectedViewData = new DeleteOrderModel(odsCode, order);
+            var expectedViewData = new DeleteOrderModel(internalOrgId, order);
 
-            orderServiceMock.Setup(s => s.GetOrderThin(order.CallOffId, odsCode)).ReturnsAsync(order);
+            orderServiceMock.Setup(s => s.GetOrderThin(order.CallOffId, internalOrgId)).ReturnsAsync(order);
 
-            var actualResult = await controller.DeleteOrder(odsCode, order.CallOffId);
+            var actualResult = await controller.DeleteOrder(internalOrgId, order.CallOffId);
 
             actualResult.Should().BeOfType<ViewResult>();
             actualResult.As<ViewResult>().ViewData.Model.Should().BeEquivalentTo(expectedViewData, opt => opt.Excluding(m => m.BackLink));
