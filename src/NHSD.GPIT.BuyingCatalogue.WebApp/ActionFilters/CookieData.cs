@@ -1,8 +1,8 @@
 ﻿using System.Diagnostics.CodeAnalysis;
 
-namespace NHSD.GPIT.BuyingCatalogue.Framework.Middleware.CookieConsent
+namespace NHSD.GPIT.BuyingCatalogue.WebApp.ActionFilters
 {
-    [ExcludeFromCodeCoverage]
+    [ExcludeFromCodeCoverage(Justification = "Class currently only contains automatic properties")]
     public sealed class CookieData
     {
         public long? CreationDate { get; set; }
