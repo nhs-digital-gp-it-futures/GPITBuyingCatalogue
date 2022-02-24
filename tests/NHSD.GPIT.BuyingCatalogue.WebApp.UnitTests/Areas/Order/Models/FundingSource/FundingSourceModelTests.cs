@@ -16,7 +16,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.FundingS
             CallOffId callOffId,
             bool? fundingSourceOnlyGms)
         {
-            var model = new FundingSourceModel(odsCode, callOffId, fundingSourceOnlyGms);
+            var model = new FundingSourceModel(callOffId, fundingSourceOnlyGms);
 
             model.Title.Should().Be($"Funding source for {callOffId}");
             model.FundingSourceOnlyGms.Should().Be(fundingSourceOnlyGms.ToYesNo());
