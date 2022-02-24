@@ -2,37 +2,35 @@
 using System.Text.Json;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc.Filters;
 using NHSD.GPIT.BuyingCatalogue.Framework.Constants;
 using NHSD.GPIT.BuyingCatalogue.Framework.Serialization;
 using NHSD.GPIT.BuyingCatalogue.Framework.Settings;
 
-namespace NHSD.GPIT.BuyingCatalogue.Framework.Middleware.CookieConsent
+namespace NHSD.GPIT.BuyingCatalogue.WebApp.ActionFilters
 {
-    public class CookieConsentMiddleware
+    public class CookieConsentActionFilter : IAsyncActionFilter
     {
-        private readonly RequestDelegate next;
+        private readonly CookieExpirationSettings cookieExpirationSettings;
 
-        public CookieConsentMiddleware(RequestDelegate next)
+        public CookieConsentActionFilter(CookieExpirationSettings cookieExpirationSettings)
         {
-            this.next = next;
+            this.cookieExpirationSettings = cookieExpirationSettings ?? throw new ArgumentNullException(nameof(cookieExpirationSettings));
         }
 
-        public async Task Invoke(HttpContext context, CookieExpirationSettings cookieExpirationSettings)
+        public async Task OnActionExecutionAsync(ActionExecutingContext context, ActionExecutionDelegate next)
         {
             if (context is null)
                 throw new ArgumentNullException(nameof(context));
 
-            if (cookieExpirationSettings is null)
-                throw new ArgumentNullException(nameof(cookieExpirationSettings));
+            var (showBanner, useAnalytics) = ExtractCookieData(context.HttpContext.Request, cookieExpirationSettings.BuyingCatalogueCookiePolicyDate);
 
-            var (showBanner, useAnalytics) = ExtractCookieData(context.Request, cookieExpirationSettings.BuyingCatalogueCookiePolicyDate);
-
-            context.Items[CatalogueCookies.ShowCookieBanner] = showBanner;
+            context.HttpContext.Items[CatalogueCookies.ShowCookieBanner] = showBanner;
 
             if (!showBanner)
-                context.Items[CatalogueCookies.UseAnalytics] = useAnalytics;
+                context.HttpContext.Items[CatalogueCookies.UseAnalytics] = useAnalytics;
 
-            await next.Invoke(context);
+            await next();
         }
 
         private static (bool ShowBanner, bool? UseAnalytics) ExtractCookieData(
