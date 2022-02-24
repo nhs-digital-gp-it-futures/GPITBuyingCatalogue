@@ -5,10 +5,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.CatalogueSolutions
 {
     public sealed class CatalogueSolutionsModel : OrderingBaseModel
     {
-        public CatalogueSolutionsModel(string odsCode, EntityFramework.Ordering.Models.Order order, List<OrderItem> orderItems)
+        public CatalogueSolutionsModel(string internalOrgId, EntityFramework.Ordering.Models.Order order, List<OrderItem> orderItems)
         {
             Title = $"Catalogue Solution for {order.CallOffId}";
-            InternalOrgId = odsCode;
+            InternalOrgId = internalOrgId;
             OrderDescription = order.Description;
             CallOffId = order.CallOffId;
             OrderItems = orderItems;

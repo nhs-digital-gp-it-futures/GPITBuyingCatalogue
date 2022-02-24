@@ -12,11 +12,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.FundingS
         [Theory]
         [CommonAutoData]
         public static void WithValidArguments_PropertiesCorrectlySet(
-            string odsCode,
             CallOffId callOffId,
             bool? fundingSourceOnlyGms)
         {
-            var model = new FundingSourceModel(odsCode, callOffId, fundingSourceOnlyGms);
+            var model = new FundingSourceModel(callOffId, fundingSourceOnlyGms);
 
             model.Title.Should().Be($"Funding source for {callOffId}");
             model.FundingSourceOnlyGms.Should().Be(fundingSourceOnlyGms.ToYesNo());

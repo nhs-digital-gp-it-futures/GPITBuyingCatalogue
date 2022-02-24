@@ -9,7 +9,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.FundingSource
         {
         }
 
-        public FundingSourceModel(string odsCode, CallOffId callOffId, bool? fundingSourceOnlyGms)
+        public FundingSourceModel(CallOffId callOffId, bool? fundingSourceOnlyGms)
         {
             Title = $"Funding source for {callOffId}";
             FundingSourceOnlyGms = fundingSourceOnlyGms.ToYesNo();

@@ -46,7 +46,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers
             [Frozen] Mock<IOrderService> orderServiceMock,
             FundingSourceController controller)
         {
-            var expectedViewData = new FundingSourceModel(odsCode, order.CallOffId, order.FundingSourceOnlyGms);
+            var expectedViewData = new FundingSourceModel(order.CallOffId, order.FundingSourceOnlyGms);
 
             orderServiceMock.Setup(s => s.GetOrderThin(order.CallOffId, odsCode)).ReturnsAsync(order);
 
