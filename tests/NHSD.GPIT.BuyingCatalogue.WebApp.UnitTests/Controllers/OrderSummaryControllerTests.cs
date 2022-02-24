@@ -46,7 +46,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Controllers
 
             orderServiceMock.Setup(s => s.GetOrderForSummary(order.CallOffId, odsCode)).ReturnsAsync(order);
 
-            var expectedViewData = new OrderSummaryModel(odsCode, order)
+            var expectedViewData = new OrderSummaryModel(order)
             {
                 AdviceText = "This order has been confirmed and can no longer be changed.",
                 Title = $"Order confirmed for {order.CallOffId}",
@@ -70,7 +70,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Controllers
 
             orderServiceMock.Setup(s => s.GetOrderForSummary(order.CallOffId, odsCode)).ReturnsAsync(order);
 
-            var expectedViewData = new OrderSummaryModel(odsCode, order)
+            var expectedViewData = new OrderSummaryModel(order)
             {
                 AdviceText = "This is what's been added to your order so far. You must complete all mandatory steps before you can confirm your order.",
                 Title = $"Order summary for {order.CallOffId}",
@@ -97,7 +97,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Controllers
 
             orderServiceMock.Setup(s => s.GetOrderForSummary(order.CallOffId, odsCode)).ReturnsAsync(order);
 
-            var expectedViewData = new OrderSummaryModel(odsCode, order)
+            var expectedViewData = new OrderSummaryModel(order)
             {
                 AdviceText = "Review your order summary and confirm the content is correct. Once confirmed, you'll be unable to make changes.",
                 Title = $"Review order summary for {order.CallOffId}",

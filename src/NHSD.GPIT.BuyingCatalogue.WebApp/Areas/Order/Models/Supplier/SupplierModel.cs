@@ -8,10 +8,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.Supplier
 {
     public sealed class SupplierModel : OrderingBaseModel
     {
-        public SupplierModel(string odsCode, EntityFramework.Ordering.Models.Order order, ICollection<SupplierContact> supplierContacts)
+        public SupplierModel(string internalOrgId, EntityFramework.Ordering.Models.Order order, ICollection<SupplierContact> supplierContacts)
         {
             Title = $"Supplier information for {order.CallOffId}";
-            InternalOrgId = odsCode;
+            InternalOrgId = internalOrgId;
             Id = order.Supplier.Id;
             Name = order.Supplier.Name;
             Address = order.Supplier.Address;

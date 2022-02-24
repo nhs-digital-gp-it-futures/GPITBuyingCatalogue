@@ -9,10 +9,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.Supplier
         {
         }
 
-        public ConfirmSupplierModel(string odsCode, CallOffId callOffId, EntityFramework.Catalogue.Models.Supplier supplier, string search)
+        public ConfirmSupplierModel(string internalOrgId, CallOffId callOffId, EntityFramework.Catalogue.Models.Supplier supplier, string search)
         {
             Title = "Supplier details";
-            InternalOrgId = odsCode;
+            InternalOrgId = internalOrgId;
             CallOffId = callOffId;
             Search = search;
             SupplierId = supplier.Id;

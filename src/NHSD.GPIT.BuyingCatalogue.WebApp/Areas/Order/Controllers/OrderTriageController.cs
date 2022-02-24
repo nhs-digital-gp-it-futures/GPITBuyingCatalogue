@@ -70,7 +70,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
             if (!string.Equals(internalOrgId, model.SelectedOrganisation, StringComparison.OrdinalIgnoreCase))
                 option = null;
 
-            return RedirectToAction(nameof(Index), new { odsCode = model.SelectedOrganisation, option });
+            return RedirectToAction(nameof(Index), new { internalOrgId = model.SelectedOrganisation, option });
         }
 
         [HttpGet]

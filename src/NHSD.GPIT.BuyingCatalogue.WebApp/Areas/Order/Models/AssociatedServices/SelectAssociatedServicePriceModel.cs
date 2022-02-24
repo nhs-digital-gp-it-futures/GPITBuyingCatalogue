@@ -11,10 +11,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.AssociatedServices
         {
         }
 
-        public SelectAssociatedServicePriceModel(string odsCode, string solutionName, List<CataloguePrice> prices)
+        public SelectAssociatedServicePriceModel(string internalOrgId, string solutionName, List<CataloguePrice> prices)
         {
             Title = $"List price for {solutionName}";
-            InternalOrgId = odsCode;
+            InternalOrgId = internalOrgId;
             SetPrices(prices);
         }
 

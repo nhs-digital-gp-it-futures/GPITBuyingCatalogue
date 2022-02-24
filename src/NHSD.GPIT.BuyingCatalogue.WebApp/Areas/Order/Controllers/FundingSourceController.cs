@@ -30,7 +30,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
         {
             var order = await orderService.GetOrderThin(callOffId, internalOrgId);
 
-            var model = new FundingSourceModel(internalOrgId, callOffId, order.FundingSourceOnlyGms)
+            var model = new FundingSourceModel(callOffId, order.FundingSourceOnlyGms)
             {
                 BackLink = Url.Action(
                     nameof(OrderController.Order),
