@@ -37,10 +37,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers
         [Theory]
         [CommonAutoData]
         public static void Get_Index_ReturnsModel(
-            string odsCode,
+            string internalOrgId,
             OrderTriageController controller)
         {
-            var result = controller.Index(odsCode);
+            var result = controller.Index(internalOrgId);
 
             result.As<ViewResult>().Should().NotBeNull();
             result.As<ViewResult>().Model.Should().NotBeNull();
@@ -49,13 +49,13 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers
         [Theory]
         [CommonAutoData]
         public static void Post_Index_InvalidModelState_ReturnsView(
-            string odsCode,
+            string internalOrgId,
             OrderTriageModel model,
             OrderTriageController controller)
         {
             controller.ModelState.AddModelError("some-key", "some-error");
 
-            var result = controller.Index(odsCode, model);
+            var result = controller.Index(internalOrgId, model);
 
             result.As<ViewResult>().Should().NotBeNull();
             result.As<ViewResult>().Model.Should().BeEquivalentTo(model, opt => opt.Excluding(m => m.BackLink));
@@ -64,13 +64,13 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers
         [Theory]
         [CommonAutoData]
         public static void Post_Index_NotSureTriageOption_RedirectsToView(
-            string odsCode,
+            string internalOrgId,
             OrderTriageModel model,
             OrderTriageController controller)
         {
             model.SelectedTriageOption = TriageOption.NotSure;
 
-            var result = controller.Index(odsCode, model);
+            var result = controller.Index(internalOrgId, model);
 
             result.As<RedirectToActionResult>().Should().NotBeNull();
             result.As<RedirectToActionResult>().ActionName.Should().Be(nameof(controller.NotSure));
@@ -79,13 +79,13 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers
         [Theory]
         [CommonAutoData]
         public static void Post_Index_Valid_RedirectsToTriageSelection(
-            string odsCode,
+            string internalOrgId,
             OrderTriageModel model,
             OrderTriageController controller)
         {
             model.SelectedTriageOption = TriageOption.Under40k;
 
-            var result = controller.Index(odsCode, model);
+            var result = controller.Index(internalOrgId, model);
 
             result.As<RedirectToActionResult>().Should().NotBeNull();
             result.As<RedirectToActionResult>().ActionName.Should().Be(nameof(controller.TriageSelection));
@@ -94,10 +94,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers
         [Theory]
         [CommonAutoData]
         public static void Get_NotReady_ReturnsView(
-            string odsCode,
+            string internalOrgId,
             OrderTriageController controller)
         {
-            var result = controller.NotSure(odsCode);
+            var result = controller.NotSure(internalOrgId);
 
             result.As<ViewResult>().Should().NotBeNull();
             result.As<ViewResult>().Model.Should().BeOfType(typeof(GenericOrderTriageModel));
@@ -106,10 +106,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers
         [Theory]
         [CommonAutoData]
         public static void Get_TriageSelection_InvalidOption_Redirects(
-            string odsCode,
+            string internalOrgId,
             OrderTriageController controller)
         {
-            var result = controller.TriageSelection(odsCode, null);
+            var result = controller.TriageSelection(internalOrgId, null);
 
             result.As<RedirectToActionResult>().Should().NotBeNull();
             result.As<RedirectToActionResult>().ActionName.Should().Be(nameof(controller.Index));
@@ -118,11 +118,11 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers
         [Theory]
         [CommonAutoData]
         public static void Get_TriageSelection_ReturnsView(
-            string odsCode,
+            string internalOrgId,
             TriageOption option,
             OrderTriageController controller)
         {
-            var result = controller.TriageSelection(odsCode, option);
+            var result = controller.TriageSelection(internalOrgId, option);
 
             result.As<ViewResult>().Should().NotBeNull();
         }
@@ -134,13 +134,13 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers
         public static void Post_TriageSelection_NoSelection_AddsModelError(
             TriageOption option,
             string expectedErrorMessage,
-            string odsCode,
+            string internalOrgId,
             TriageDueDiligenceModel model,
             OrderTriageController controller)
         {
             model.Selected = null;
 
-            _ = controller.TriageSelection(odsCode, option, model);
+            _ = controller.TriageSelection(internalOrgId, option, model);
 
             var modelStateErrors = controller.ModelState.Values.SelectMany(mse => mse.Errors.Select(e => e.ErrorMessage));
 
@@ -150,14 +150,14 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers
         [Theory]
         [CommonAutoData]
         public static void Post_TriageSelection_InvalidModelState_ReturnsView(
-            string odsCode,
+            string internalOrgId,
             TriageOption option,
             TriageDueDiligenceModel model,
             OrderTriageController controller)
         {
             controller.ModelState.AddModelError("some-key", "some-error");
 
-            var result = controller.TriageSelection(odsCode, option, model);
+            var result = controller.TriageSelection(internalOrgId, option, model);
 
             result.As<ViewResult>().Should().NotBeNull();
             result.As<ViewResult>().Model.Should().BeEquivalentTo(model, opt => opt.Excluding(m => m.BackLink));
@@ -166,14 +166,14 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers
         [Theory]
         [CommonAutoData]
         public static void Post_TriageSelection_NotSelected_RedirectsToStepsNotCompleted(
-            string odsCode,
+            string internalOrgId,
             TriageOption option,
             TriageDueDiligenceModel model,
             OrderTriageController controller)
         {
             model.Selected = false;
 
-            var result = controller.TriageSelection(odsCode, option, model);
+            var result = controller.TriageSelection(internalOrgId, option, model);
 
             result.As<RedirectToActionResult>().Should().NotBeNull();
             result.As<RedirectToActionResult>().ActionName.Should().Be(nameof(controller.StepsNotCompleted));
@@ -182,14 +182,14 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers
         [Theory]
         [CommonAutoData]
         public static void Post_TriageSelection_Selected_Redirects(
-            string odsCode,
+            string internalOrgId,
             TriageOption option,
             TriageDueDiligenceModel model,
             OrderTriageController controller)
         {
             model.Selected = true;
 
-            var result = controller.TriageSelection(odsCode, option, model);
+            var result = controller.TriageSelection(internalOrgId, option, model);
 
             result.As<RedirectToActionResult>().Should().NotBeNull();
             result.As<RedirectToActionResult>().ActionName.Should().Be(nameof(OrderController.ReadyToStart));
@@ -203,10 +203,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers
         public static void Get_StepsNotCompleted_ReturnsView(
             TriageOption option,
             string expectedViewName,
-            string odsCode,
+            string internalOrgId,
             OrderTriageController controller)
         {
-            var result = controller.StepsNotCompleted(odsCode, option);
+            var result = controller.StepsNotCompleted(internalOrgId, option);
 
             result.As<ViewResult>().Should().NotBeNull();
             result.As<ViewResult>().ViewName.Should().Be(expectedViewName);
@@ -303,7 +303,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers
         [Theory]
         [CommonAutoData]
         public static void Post_SelectOrganisation_InvalidModel_ReturnsView(
-            string odsCode,
+            string internalOrgId,
             List<Organisation> organisations,
             SelectOrganisationModel model,
             OrderTriageController controller)
@@ -325,7 +325,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers
 
             controller.ModelState.AddModelError("some-key", "some-error");
 
-            var result = controller.SelectOrganisation(odsCode, model).As<ViewResult>();
+            var result = controller.SelectOrganisation(internalOrgId, model).As<ViewResult>();
 
             result.Should().NotBeNull();
             result.Model.Should().BeEquivalentTo(model, opt => opt.Excluding(m => m.BackLink));
@@ -335,7 +335,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers
         [CommonAutoData]
         public static void Post_SelectOrganisation_SelectedDifferent_ResetsOption(
             TriageOption? option,
-            string odsCode,
+            string internalOrgId,
             List<Organisation> organisations,
             SelectOrganisationModel model,
             OrderTriageController controller)
@@ -355,7 +355,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers
                     HttpContext = new DefaultHttpContext { User = user },
                 };
 
-            var result = controller.SelectOrganisation(odsCode, model, option).As<RedirectToActionResult>();
+            var result = controller.SelectOrganisation(internalOrgId, model, option).As<RedirectToActionResult>();
 
             result.RouteValues["option"].As<TriageOption?>().Should().BeNull();
         }
@@ -363,11 +363,11 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers
         [Theory]
         [CommonAutoData]
         public static void Post_SelectOrganisation_RedirectsToNewOrder(
-            string odsCode,
+            string internalOrgId,
             SelectOrganisationModel model,
             OrderTriageController controller)
         {
-            var result = controller.SelectOrganisation(odsCode, model).As<RedirectToActionResult>();
+            var result = controller.SelectOrganisation(internalOrgId, model).As<RedirectToActionResult>();
 
             result.Should().NotBeNull();
             result.ActionName.Should().Be(nameof(OrderTriageController.Index));

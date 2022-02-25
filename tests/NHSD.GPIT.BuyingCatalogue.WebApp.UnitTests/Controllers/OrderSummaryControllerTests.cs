@@ -37,14 +37,14 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Controllers
         [Theory]
         [CommonAutoData]
         public static async Task Get_Index_CompleteOrder_ReturnsExpectedResult(
-            string odsCode,
+            string internalOrgId,
             Order order,
             [Frozen] Mock<IOrderService> orderServiceMock,
             OrderSummaryController controller)
         {
             order.OrderStatus = OrderStatus.Complete;
 
-            orderServiceMock.Setup(s => s.GetOrderForSummary(order.CallOffId, odsCode)).ReturnsAsync(order);
+            orderServiceMock.Setup(s => s.GetOrderForSummary(order.CallOffId, internalOrgId)).ReturnsAsync(order);
 
             var expectedViewData = new OrderSummaryModel(order)
             {
@@ -52,7 +52,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Controllers
                 Title = $"Order confirmed for {order.CallOffId}",
             };
 
-            var actualResult = await controller.Index(odsCode, order.CallOffId);
+            var actualResult = await controller.Index(internalOrgId, order.CallOffId);
 
             actualResult.Should().BeOfType<ViewResult>();
             actualResult.As<ViewResult>().ViewData.Model.Should().BeEquivalentTo(expectedViewData);
@@ -61,14 +61,14 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Controllers
         [Theory]
         [CommonAutoData]
         public static async Task Get_Index_InProgress_InCompletable_Order_ReturnsExpectedResult(
-            string odsCode,
+            string internalOrgId,
             Order order,
             [Frozen] Mock<IOrderService> orderServiceMock,
             OrderSummaryController controller)
         {
             order.OrderStatus = OrderStatus.InProgress;
 
-            orderServiceMock.Setup(s => s.GetOrderForSummary(order.CallOffId, odsCode)).ReturnsAsync(order);
+            orderServiceMock.Setup(s => s.GetOrderForSummary(order.CallOffId, internalOrgId)).ReturnsAsync(order);
 
             var expectedViewData = new OrderSummaryModel(order)
             {
@@ -76,7 +76,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Controllers
                 Title = $"Order summary for {order.CallOffId}",
             };
 
-            var actualResult = await controller.Index(odsCode, order.CallOffId);
+            var actualResult = await controller.Index(internalOrgId, order.CallOffId);
 
             actualResult.Should().BeOfType<ViewResult>();
             actualResult.As<ViewResult>().ViewData.Model.Should().BeEquivalentTo(expectedViewData);
@@ -85,7 +85,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Controllers
         [Theory]
         [CommonAutoData]
         public static async Task Get_Index_InProgress_Completable_Order_ReturnsExpectedResult(
-            string odsCode,
+            string internalOrgId,
             Order order,
             OrderItem orderItem,
             [Frozen] Mock<IOrderService> orderServiceMock,
@@ -95,7 +95,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Controllers
             orderItem.CatalogueItem.CatalogueItemType = EntityFramework.Catalogue.Models.CatalogueItemType.Solution;
             order.AddOrUpdateOrderItem(orderItem);
 
-            orderServiceMock.Setup(s => s.GetOrderForSummary(order.CallOffId, odsCode)).ReturnsAsync(order);
+            orderServiceMock.Setup(s => s.GetOrderForSummary(order.CallOffId, internalOrgId)).ReturnsAsync(order);
 
             var expectedViewData = new OrderSummaryModel(order)
             {
@@ -103,7 +103,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Controllers
                 Title = $"Review order summary for {order.CallOffId}",
             };
 
-            var actualResult = await controller.Index(odsCode, order.CallOffId);
+            var actualResult = await controller.Index(internalOrgId, order.CallOffId);
 
             actualResult.Should().BeOfType<ViewResult>();
             actualResult.As<ViewResult>().ViewData.Model.Should().BeEquivalentTo(expectedViewData);

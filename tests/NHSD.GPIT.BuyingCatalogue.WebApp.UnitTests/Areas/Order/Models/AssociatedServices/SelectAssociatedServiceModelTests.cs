@@ -13,15 +13,15 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.Associat
         [Theory]
         [CommonAutoData]
         public static void WithValidArguments_PropertiesCorrectlySet(
-            string odsCode,
+            string internalOrgId,
             CallOffId callOffId,
             List<CatalogueItem> solutions,
             CatalogueItemId? selectedSolutionId)
         {
-            var model = new SelectAssociatedServiceModel(odsCode, callOffId, solutions, selectedSolutionId);
+            var model = new SelectAssociatedServiceModel(internalOrgId, callOffId, solutions, selectedSolutionId);
 
             model.Title.Should().Be($"Add an Associated Service for {callOffId}");
-            model.InternalOrgId.Should().Be(odsCode);
+            model.InternalOrgId.Should().Be(internalOrgId);
             model.Solutions.Should().BeEquivalentTo(solutions);
             model.SelectedSolutionId.Should().Be(selectedSolutionId);
         }

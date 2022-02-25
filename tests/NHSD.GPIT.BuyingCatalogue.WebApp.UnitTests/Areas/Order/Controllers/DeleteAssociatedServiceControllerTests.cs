@@ -40,18 +40,18 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers
         [Theory]
         [CommonAutoData]
         public static async Task Get_DeleteAssociatedService_ReturnsExpectedResult(
-                string odsCode,
+                string internalOrgId,
                 EntityFramework.Ordering.Models.Order order,
                 CatalogueItemId catalogueItemId,
                 string catalogueItemName,
                 [Frozen] Mock<IOrderService> orderServiceMock,
                 DeleteAssociatedServiceController controller)
         {
-            var expectedViewData = new DeleteAssociatedServiceModel(odsCode, order.CallOffId, catalogueItemId, catalogueItemName, order.Description);
+            var expectedViewData = new DeleteAssociatedServiceModel(internalOrgId, order.CallOffId, catalogueItemId, catalogueItemName, order.Description);
 
-            orderServiceMock.Setup(s => s.GetOrderThin(order.CallOffId, odsCode)).ReturnsAsync(order);
+            orderServiceMock.Setup(s => s.GetOrderThin(order.CallOffId, internalOrgId)).ReturnsAsync(order);
 
-            var actualResult = await controller.DeleteAssociatedService(odsCode, order.CallOffId, catalogueItemId, catalogueItemName);
+            var actualResult = await controller.DeleteAssociatedService(internalOrgId, order.CallOffId, catalogueItemId, catalogueItemName);
 
             actualResult.Should().BeOfType<ViewResult>();
             actualResult.As<ViewResult>().ViewData.Model.Should().BeEquivalentTo(expectedViewData, opt => opt.Excluding(m => m.BackLink));

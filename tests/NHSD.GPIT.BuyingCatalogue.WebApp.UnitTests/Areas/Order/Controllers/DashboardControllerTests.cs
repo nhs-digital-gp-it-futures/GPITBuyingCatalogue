@@ -104,7 +104,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers
             [Frozen] Mock<IOrderService> orderService,
             Organisation organisation,
             PagedList<EntityFramework.Ordering.Models.Order> orders,
-            string odsCode,
+            string internalOrgId,
             DashboardController controller)
         {
             var user = new ClaimsPrincipal(new ClaimsIdentity(
@@ -117,7 +117,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers
                      HttpContext = new DefaultHttpContext { User = user },
                  };
 
-            organisationService.Setup(s => s.GetOrganisationByInternalIdentifier(odsCode)).ReturnsAsync(organisation);
+            organisationService.Setup(s => s.GetOrganisationByInternalIdentifier(internalOrgId)).ReturnsAsync(organisation);
 
             orderService.Setup(s => s.GetPagedOrders(organisation.Id, It.IsAny<PageOptions>(), string.Empty)).ReturnsAsync(orders);
 
@@ -126,7 +126,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers
                 Options = orders.Options,
             };
 
-            var result = (await controller.Organisation(odsCode)).As<ViewResult>();
+            var result = (await controller.Organisation(internalOrgId)).As<ViewResult>();
 
             result.Should().NotBeNull();
             result.ViewName.Should().BeNull();
@@ -169,11 +169,11 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers
         [Theory]
         [CommonAutoData]
         public static void Post_SelectOrganisation_CorrectlyRedirects(
-            string odsCode,
+            string internalOrgId,
             SelectOrganisationModel model,
             DashboardController controller)
         {
-            var actualResult = controller.SelectOrganisation(odsCode, model);
+            var actualResult = controller.SelectOrganisation(internalOrgId, model);
 
             actualResult.Should().BeOfType<RedirectToActionResult>();
             actualResult.As<RedirectToActionResult>().ActionName.Should().Be(nameof(DashboardController.Organisation));
@@ -186,13 +186,13 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers
         public static void Post_SelectOrganisation_InvalidModelState_ReturnsView(
             string errorKey,
             string errorMessage,
-            string odsCode,
+            string internalOrgId,
             SelectOrganisationModel model,
             DashboardController controller)
         {
             controller.ModelState.AddModelError(errorKey, errorMessage);
 
-            var actualResult = controller.SelectOrganisation(odsCode, model).As<ViewResult>();
+            var actualResult = controller.SelectOrganisation(internalOrgId, model).As<ViewResult>();
 
             actualResult.Should().NotBeNull();
             actualResult.ViewName.Should().BeNull();
