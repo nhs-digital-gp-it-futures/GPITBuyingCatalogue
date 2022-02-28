@@ -8,7 +8,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Objects.Admin
     {
         internal static By AddressLines => ByExtensions.DataTestId("org-page-address");
 
-        internal static By OdsCode => ByExtensions.DataTestId("org-page-ods-code");
+        internal static By OdsCode => ByExtensions.DataTestId("org-page-external-identifier");
 
         internal static By AddUserButton => ByExtensions.DataTestId("add-user-button", "a");
 
