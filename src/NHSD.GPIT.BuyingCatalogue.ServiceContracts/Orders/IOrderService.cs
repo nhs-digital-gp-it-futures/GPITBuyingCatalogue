@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Models;
@@ -28,6 +29,6 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.Orders
 
         public Task DeleteOrder(CallOffId callOffId, string internalOrgId);
 
-        public Task CompleteOrder(CallOffId callOffId, string internalOrgId);
+        public Task CompleteOrder(CallOffId callOffId, string internalOrgId, int userId, Uri orderSummaryUri);
     }
 }
