@@ -231,7 +231,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Actions.Common
         internal bool ElementTextContains(By targetElement, string expectedText) =>
             Driver.FindElement(targetElement).Text.Contains(expectedText);
 
-        internal bool InputValueEqualToo(By targetElement, string expectedText) =>
+        internal bool InputValueEqualTo(By targetElement, string expectedText) =>
             Driver.FindElement(targetElement).GetAttribute("value").EqualsIgnoreWhiteSpace(expectedText);
 
         internal bool InputElementIsEmpty(By targetElement) =>

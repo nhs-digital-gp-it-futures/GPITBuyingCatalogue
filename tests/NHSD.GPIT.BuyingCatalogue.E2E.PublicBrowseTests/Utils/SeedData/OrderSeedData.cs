@@ -16,6 +16,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
             AddOrderAtDescriptionStage(context);
             AddOrderAtCallOffPartyStage(context);
             AddOrderAtSupplierStage(context);
+            AddOrderAtSupplierContactStage(context);
             AddOrderAtCommencementDateStage(context);
             AddOrderAtCatalogueSolutionStage(context);
             AddOrderWithAddedCatalogueSolution(context);
@@ -91,6 +92,36 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
                     Email = "Clark.Kent@TheDailyPlanet.com",
                     Phone = "123456789",
                 },
+            };
+
+            var user = GetBuyerUser(context, order.OrderingPartyId);
+
+            context.Add(order);
+
+            context.SaveChangesAs(user.Id);
+        }
+
+        private static void AddOrderAtSupplierContactStage(BuyingCatalogueDbContext context)
+        {
+            const int orderId = 91002;
+            var timeNow = DateTime.UtcNow;
+
+            var order = new Order
+            {
+                Id = orderId,
+                OrderingPartyId = GetOrganisationId(context),
+                Created = timeNow,
+                OrderStatus = OrderStatus.InProgress,
+                IsDeleted = false,
+                Description = "This is an Order Description",
+                OrderingPartyContact = new Contact
+                {
+                    FirstName = "Clark",
+                    LastName = "Kent",
+                    Email = "Clark.Kent@TheDailyPlanet.com",
+                    Phone = "123456789",
+                },
+                SupplierId = 99998,
             };
 
             var user = GetBuyerUser(context, order.OrderingPartyId);

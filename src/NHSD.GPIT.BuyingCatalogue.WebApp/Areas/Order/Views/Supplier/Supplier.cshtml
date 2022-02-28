@@ -1,6 +1,8 @@
-﻿@model NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.Supplier.SupplierModel;
+﻿@using NHSD.GPIT.BuyingCatalogue.Framework.Extensions
+@using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
+@model NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.Supplier.SupplierModel;
 @{
-    ViewBag.Title = Model.Title;
+    ViewBag.Title = Model!.Title;
 }
 
 <div data-test-id="supplier-page">
@@ -8,42 +10,79 @@
 
     <div class="nhsuk-grid-row">
         <div class="nhsuk-grid-column-two-thirds">
-            <nhs-validation-summary />
+            <nhs-validation-summary RadioId="SelectedContactId" />
             <nhs-page-title title="@ViewBag.Title" 
-                            advice="Check the supplier information and edit details for the primary contact for this order." />
+                            caption="Order @(Model.CallOffId)"
+                            advice="Select an existing contact for @Model.SupplierName or add a new one." />
 
-            <nhs-summary-list>
-                <nhs-summary-list-row label-text="Supplier name">
-                    <p data-test-id="supplier-name">
-                        @Model.Name
-                    </p>
-                </nhs-summary-list-row>
-                <nhs-summary-list-row label-text="Registered address">
-                    <div data-test-id="supplier-address">
-                        <vc:nhs-address address="@Model.Address" />
-                    </div>
-                </nhs-summary-list-row>
-            </nhs-summary-list>
+            <div class="nhsuk-inset-text">
+                <span class="nhsuk-u-visually-hidden">Information: </span>
+                <h3>Your confirmed supplier</h3>
+                <p>As you've confirmed the supplier details for this order they cannot be changed.</p>
+                <p>If you need to select a new supplier, you must start a new order.</p>
+            </div>
 
             <form method="post">
-                <div data-test-id="primary-contact-fields">
-                    <h2 data-test-id="primary-contact-heading">Primary contact’s details</h2>
-                    <input type="hidden" asp-for="Id" />
-                    <input type="hidden" asp-for="BackLink" />
-                    <input type="hidden" asp-for="Name" />
-                    <input type="hidden" asp-for="Title" />
-                    <nhs-input asp-for="PrimaryContact.FirstName"
-                                          label-text="First name" />
-                    <nhs-input asp-for="PrimaryContact.LastName"
-                                          label-text="Last name" />
-                    <nhs-input asp-for="PrimaryContact.Email"
-                                          label-text="Email address" />
-                    <nhs-input asp-for="PrimaryContact.Phone"
-                                          label-text="Telephone number" />
-                    <div data-test-id="save-button">
-                        <nhs-submit-button />
-                    </div>
+                <input type="hidden" asp-for="SupplierId" />
+                <input type="hidden" asp-for="BackLink" />
+                <input type="hidden" asp-for="SupplierName" />
+                <input type="hidden" asp-for="Title" />
+                
+                <div class="nhsuk-u-margin-bottom-9">
+                    @if (Model.Contacts.Count > 1)
+                    {
+                        <nhs-fieldset-form-label asp-for="@Model"
+                                                 label-text="Who is your contact for this order?"
+                                                 label-hint="Select one option.">
+                            <nhs-radio-buttons asp-for="SelectedContactId"
+                                               values="@Model.FormattedContacts"
+                                               value-name="Value"
+                                               display-name="Text" />
+                        </nhs-fieldset-form-label>
+                    }
+                    else
+                    {
+                        <input type="hidden" asp-for="SelectedContactId" value="@Model.Contacts.First().Id"/>
+                        <h3>Contact for this order</h3>
+                        <p>@Model.FormattedContacts.First().Text</p>
+                    }
                 </div>
+
+                @if (Model.TemporaryContact != null)
+                {
+                    <p>
+                        Your contact has been added. You may edit this contact at any time.
+                    </p>
+                    <nhs-table label-text="Contacts added to this order">
+                        <nhs-table-column>Name</nhs-table-column>
+                        <nhs-table-column>Department</nhs-table-column>
+                        <nhs-table-column></nhs-table-column>
+
+                        <nhs-table-row-container>
+                            <nhs-table-cell>@Model.TemporaryContact.FirstName @Model.TemporaryContact.LastName</nhs-table-cell>
+                            <nhs-table-cell>@Model.TemporaryContact.Department</nhs-table-cell>
+                            <nhs-table-cell>
+                                <a asp-action="@nameof(SupplierController.NewContact)"
+                                   asp-controller="@typeof(SupplierController).ControllerName()"
+                                   asp-route-internalOrgId="@Model.InternalOrgId"
+                                   asp-route-callOffId="@Model.CallOffId">Edit</a>
+                            </nhs-table-cell>
+                        </nhs-table-row-container>
+                    </nhs-table>
+                }
+                else
+                {
+                    <vc:nhs-action-link url="@Url.Action(
+                                                 nameof(SupplierController.NewContact),
+                                                 typeof(SupplierController).ControllerName(),
+                                                 new { Model.InternalOrgId, Model.CallOffId })" 
+                                        text="Add a new contact" />
+                    <p>
+                        If your contact for this supplier is not listed, you can add their details using the link. The information will only appear on this order.
+                    </p>
+                }
+                <br/>
+                <nhs-submit-button />
             </form>
         </div>
     </div>
