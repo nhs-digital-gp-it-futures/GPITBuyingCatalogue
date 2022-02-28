@@ -215,7 +215,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
 
             fullOrderStream.Position = 0;
 
-            var personalisation = new Dictionary<string, dynamic>
+            var adminTokens = new Dictionary<string, dynamic>
             {
                 { "organisation_name", order.OrderingParty.Name },
                 { "full_order_csv", NotificationClient.PrepareUpload(fullOrderStream.ToArray(), true) },
@@ -226,30 +226,23 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
             if (await csvService.CreatePatientNumberCsvAsync(order.Id, patientOrderStream) > 0)
             {
                 patientOrderStream.Position = 0;
-                personalisation.Add("patient_order_csv", NotificationClient.PrepareUpload(patientOrderStream.ToArray(), true));
+                adminTokens.Add("patient_order_csv", NotificationClient.PrepareUpload(patientOrderStream.ToArray(), true));
                 templateId = orderMessageSettings.DualCsvTemplateId;
             }
-
-            await emailService.SendEmailAsync(
-                orderMessageSettings.Recipient.Address,
-                templateId,
-                personalisation);
 
             var userEmail = dbContext.Users.Single(x => x.Id == userId).Email;
             var pdfData = pdfService.Convert(orderSummaryUri);
 
-            var userEmailTokens = new Dictionary<string, dynamic>
+            var userTokens = new Dictionary<string, dynamic>
             {
                 { OrderIdToken, $"{callOffId}" },
                 { OrderSummaryLinkToken, NotificationClient.PrepareUpload(pdfData) },
             };
 
-            await emailService.SendEmailAsync(
-                userEmail,
-                orderMessageSettings.UserTemplateId,
-                userEmailTokens);
-
-            await dbContext.SaveChangesAsync();
+            await Task.WhenAll(
+                emailService.SendEmailAsync(orderMessageSettings.Recipient.Address, templateId, adminTokens),
+                emailService.SendEmailAsync(userEmail, orderMessageSettings.UserTemplateId, userTokens),
+                dbContext.SaveChangesAsync());
         }
     }
 }
