@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using FluentAssertions;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Objects.Common;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Objects.Ordering;
@@ -34,7 +35,10 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering
         [Fact]
         public void ReadyToStart_AllSectionsDisplayed()
         {
-            CommonActions.PageTitle().Should().BeEquivalentTo("Before you start an order".FormatForComparison());
+            using var context = GetEndToEndDbContext();
+            var organisation = context.Organisations.Single(o => string.Equals(o.InternalIdentifier, InternalOrgId));
+
+            CommonActions.PageTitle().Should().BeEquivalentTo($"Before you start an order - {organisation.Name}".FormatForComparison());
             CommonActions.GoBackLinkDisplayed().Should().BeTrue();
             CommonActions.ElementIsDisplayed(CommonSelectors.SubmitButton).Should().BeTrue();
             CommonActions.ElementIsDisplayed(OrderTriageObjects.ProcurementHubLink).Should().BeTrue();

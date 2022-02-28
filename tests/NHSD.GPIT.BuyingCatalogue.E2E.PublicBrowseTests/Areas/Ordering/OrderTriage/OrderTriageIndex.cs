@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using FluentAssertions;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Objects.Ordering;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Utils;
@@ -34,10 +35,13 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering.OrderTriage
         [Fact]
         public void Index_AllSectionsDisplayed()
         {
+            using var context = GetEndToEndDbContext();
+            var organisation = context.Organisations.Single(o => string.Equals(o.InternalIdentifier, InternalOrgId));
+
             CommonActions
                 .PageTitle()
                 .Should()
-                .BeEquivalentTo("What is the approximate value of the order you want to place?".FormatForComparison());
+                .BeEquivalentTo($"What is the approximate value of the order you want to place? - {organisation.Name}".FormatForComparison());
 
             CommonActions.GetNumberOfRadioButtonsDisplayed().Should().Be(4);
             CommonActions.GoBackLinkDisplayed().Should().BeTrue();

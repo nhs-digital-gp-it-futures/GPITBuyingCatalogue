@@ -186,11 +186,15 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers
 
         [Theory]
         [CommonAutoData]
-        public static void Get_ReadyToStart_ReturnsView(
-            string internalOrgId,
+        public static async Task Get_ReadyToStart_ReturnsView(
+            Organisation organisation,
+            [Frozen] Mock<IOrganisationsService> service,
             OrderController controller)
         {
-            var result = controller.ReadyToStart(internalOrgId);
+            service.Setup(s => s.GetOrganisationByInternalIdentifier(organisation.InternalIdentifier))
+                .ReturnsAsync(organisation);
+
+            var result = await controller.ReadyToStart(organisation.InternalIdentifier);
 
             result.As<ViewResult>().Should().NotBeNull();
         }
