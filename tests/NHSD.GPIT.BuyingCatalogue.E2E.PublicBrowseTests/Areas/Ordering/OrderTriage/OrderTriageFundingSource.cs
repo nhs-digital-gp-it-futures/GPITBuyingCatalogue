@@ -7,6 +7,7 @@ using NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.Extensions;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.TestBases;
 using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers;
+using OpenQA.Selenium;
 using Xunit;
 
 namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering.OrderTriage
@@ -41,6 +42,27 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering.OrderTriage
             CommonActions.ElementIsDisplayed(OrderTriageObjects.FundingInset).Should().BeTrue();
             CommonActions.ElementIsDisplayed(OrderTriageObjects.ProcurementHubActionLink).Should().BeTrue();
             CommonActions.ElementIsDisplayed(CommonSelectors.RadioButtonItems).Should().BeTrue();
+        }
+
+        [Fact]
+        public void OrderTriageFundingSource_ContactProcurementHub()
+        {
+            CommonActions.ClickLinkElement(OrderTriageObjects.ProcurementHubActionLink);
+
+            CommonActions.PageLoadedCorrectGetIndex(
+                typeof(WebApp.Controllers.ProcurementHubController),
+                nameof(WebApp.Controllers.ProcurementHubController.Index))
+                .Should().BeTrue();
+        }
+
+        [Fact]
+        public void OrderTriageFundingSource_ClickInset_TextDisplayed()
+        {
+            CommonActions.ElementIsDisplayed(OrderTriageObjects.FundingInsetText).Should().BeFalse();
+
+            CommonActions.ClickLinkElement(OrderTriageObjects.FundingInsetLink);
+
+            CommonActions.ElementIsDisplayed(OrderTriageObjects.FundingInsetText).Should().BeTrue();
         }
 
         [Fact]

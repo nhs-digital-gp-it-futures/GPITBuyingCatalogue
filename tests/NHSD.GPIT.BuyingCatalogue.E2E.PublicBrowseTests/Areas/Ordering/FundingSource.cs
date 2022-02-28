@@ -62,6 +62,16 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering
         }
 
         [Fact]
+        public void FundingSource_ClickInset_TextDisplayed()
+        {
+            CommonActions.ElementIsDisplayed(OrderTriageObjects.FundingInsetText).Should().BeFalse();
+
+            CommonActions.ClickLinkElement(OrderTriageObjects.FundingInsetLink);
+
+            CommonActions.ElementIsDisplayed(OrderTriageObjects.FundingInsetText).Should().BeTrue();
+        }
+
+        [Fact]
         public void FundingSource_DontSelectFundingSource_ThrowsError()
         {
             CommonActions.ClickSave();
