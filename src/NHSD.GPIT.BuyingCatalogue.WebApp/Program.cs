@@ -46,11 +46,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp
         public static IHostBuilder CreateHostBuilder(string[] args)
         {
             return Host.CreateDefaultBuilder(args)
-                .ConfigureAppConfiguration((hostContext, config) =>
-                {
-                    config.AddJsonFile("appsettings.json", optional: true, reloadOnChange: false)
-                        .AddJsonFile($"appsettings.{Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT")}.json", optional: true, reloadOnChange: false);
-                })
                 .UseSerilog()
                 .ConfigureWebHostDefaults(webBuilder =>
                 {
