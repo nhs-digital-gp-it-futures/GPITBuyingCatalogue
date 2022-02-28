@@ -69,7 +69,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
 
             var organisation = await organisationService.GetOrganisationByInternalIdentifier(internalOrgId);
 
-            var state = orderSessionService.InitialiseStateForCreate(order, CatalogueItemType.AssociatedService, null, new OrderItemRecipientModel { OdsCode = internalOrgId, Name = organisation.Name });
+            var state = orderSessionService.InitialiseStateForCreate(order, CatalogueItemType.AssociatedService, null, new OrderItemRecipientModel { OdsCode = organisation.ExternalIdentifier, Name = organisation.Name });
 
             var associatedServices = await associatedServicesService.GetPublishedAssociatedServicesForSupplier(order.SupplierId);
 
