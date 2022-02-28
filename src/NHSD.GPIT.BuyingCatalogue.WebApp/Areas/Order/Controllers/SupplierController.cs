@@ -1,10 +1,14 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Orders;
+using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Session;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.Supplier;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
@@ -15,18 +19,21 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
     public sealed class SupplierController : Controller
     {
         private readonly IOrderService orderService;
+        private readonly ISupplierContactSessionService sessionService;
         private readonly ISupplierService supplierService;
 
         public SupplierController(
             IOrderService orderService,
+            ISupplierContactSessionService sessionService,
             ISupplierService supplierService)
         {
             this.orderService = orderService ?? throw new ArgumentNullException(nameof(orderService));
+            this.sessionService = sessionService ?? throw new ArgumentNullException(nameof(sessionService));
             this.supplierService = supplierService ?? throw new ArgumentNullException(nameof(supplierService));
         }
 
         [HttpGet]
-        public async Task<IActionResult> Supplier(string internalOrgId, CallOffId callOffId)
+        public async Task<IActionResult> Supplier(string internalOrgId, CallOffId callOffId, int? selected = null)
         {
             var order = await orderService.GetOrderWithSupplier(callOffId, internalOrgId);
 
@@ -39,13 +46,41 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
             }
 
             var supplier = await supplierService.GetSupplierFromBuyingCatalogue(order.Supplier.Id);
+            var temporaryContact = sessionService.GetSupplierContact(callOffId, supplier.Id);
 
-            var model = new SupplierModel(internalOrgId, order, supplier.SupplierContacts)
+            if (temporaryContact == null)
+            {
+                if (order.SupplierContact is { SupplierContactId: null })
+                {
+                    temporaryContact = new SupplierContact
+                    {
+                        Id = SupplierContact.TemporaryContactId,
+                        SupplierId = supplier.Id,
+                        FirstName = order.SupplierContact.FirstName,
+                        LastName = order.SupplierContact.LastName,
+                        Department = order.SupplierContact.Department,
+                        PhoneNumber = order.SupplierContact.Phone,
+                        Email = order.SupplierContact.Email,
+                    };
+                }
+
+                sessionService.SetSupplierContact(callOffId, supplier.Id, temporaryContact);
+            }
+
+            if (selected == null
+                && order.SupplierContact != null)
+            {
+                selected = order.SupplierContact.SupplierContactId ?? SupplierContact.TemporaryContactId;
+            }
+
+            var model = new SupplierModel(internalOrgId, callOffId, order)
             {
                 BackLink = Url.Action(
                     nameof(OrderController.Order),
                     typeof(OrderController).ControllerName(),
                     new { internalOrgId, callOffId }),
+                Contacts = GetSupplierContacts(callOffId, supplier),
+                SelectedContactId = selected,
             };
 
             return View(model);
@@ -54,14 +89,18 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
         [HttpPost]
         public async Task<IActionResult> Supplier(string internalOrgId, CallOffId callOffId, SupplierModel model)
         {
+            var supplier = await supplierService.GetSupplierFromBuyingCatalogue(model.SupplierId);
+            var contacts = GetSupplierContacts(callOffId, supplier);
+
             if (!ModelState.IsValid)
             {
-                var supplier = await supplierService.GetSupplierFromBuyingCatalogue(model.Id);
-                model.Address = supplier.Address;
+                model.Contacts = contacts;
                 return View(model);
             }
 
-            await supplierService.AddOrUpdateOrderSupplierContact(callOffId, internalOrgId, model.PrimaryContact);
+            var contact = contacts.FirstOrDefault(x => x.Id == model.SelectedContactId);
+
+            await supplierService.AddOrUpdateOrderSupplierContact(callOffId, internalOrgId, contact);
 
             return RedirectToAction(
                 nameof(OrderController.Order),
@@ -194,6 +233,72 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
                 nameof(Supplier),
                 typeof(SupplierController).ControllerName(),
                 new { internalOrgId, callOffId });
+        }
+
+        [HttpGet("new-contact")]
+        public async Task<IActionResult> NewContact(string internalOrgId, CallOffId callOffId)
+        {
+            var order = await orderService.GetOrderWithSupplier(callOffId, internalOrgId);
+
+            if (order?.SupplierId is null)
+            {
+                return RedirectToAction(
+                    nameof(SupplierSearch),
+                    typeof(SupplierController).ControllerName(),
+                    new { internalOrgId, callOffId });
+            }
+
+            var newContact = sessionService.GetSupplierContact(callOffId, order.SupplierId.Value);
+
+            return View(new NewContactModel(callOffId, order.SupplierId.Value, order.Supplier.Name)
+            {
+                Title = newContact == null
+                    ? "Add a contact"
+                    : $"{newContact.FirstName} {newContact.LastName} details",
+                BackLink = Url.Action(nameof(Supplier), new { internalOrgId, callOffId }),
+                FirstName = newContact?.FirstName,
+                LastName = newContact?.LastName,
+                Department = newContact?.Department,
+                PhoneNumber = newContact?.PhoneNumber,
+                Email = newContact?.Email,
+            });
+        }
+
+        [HttpPost("new-contact")]
+        public IActionResult NewContact(string internalOrgId, CallOffId callOffId, NewContactModel model)
+        {
+            if (!ModelState.IsValid)
+                return View(model);
+
+            sessionService.SetSupplierContact(callOffId, model.SupplierId, new SupplierContact
+            {
+                Id = SupplierContact.TemporaryContactId,
+                SupplierId = model.SupplierId,
+                FirstName = model.FirstName,
+                LastName = model.LastName,
+                Department = model.Department,
+                PhoneNumber = model.PhoneNumber,
+                Email = model.Email,
+            });
+
+            return RedirectToAction(
+                nameof(Supplier),
+                typeof(SupplierController).ControllerName(),
+                new { internalOrgId, callOffId, selected = SupplierContact.TemporaryContactId });
+        }
+
+        private List<SupplierContact> GetSupplierContacts(CallOffId callOffId, Supplier supplier)
+        {
+            var temporaryContact = sessionService.GetSupplierContact(callOffId, supplier.Id);
+
+            var contacts = temporaryContact == null
+                ? supplier.SupplierContacts
+                : supplier.SupplierContacts.Union(new[] { temporaryContact });
+
+            return contacts
+                .OrderBy(x => x.FirstName)
+                .ThenBy(x => x.LastName)
+                .ToList();
         }
     }
 }

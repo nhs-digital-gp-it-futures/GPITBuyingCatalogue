@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Users.Models;
 
 namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models
@@ -14,6 +15,8 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models
         }
 
         public int Id { get; set; }
+
+        public int? SupplierContactId { get; set; }
 
         [Required(ErrorMessage = "First Name Required")]
         [StringLength(100)]
@@ -32,9 +35,14 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models
         [StringLength(35)]
         public string Phone { get; set; }
 
+        [StringLength(50)]
+        public string Department { get; set; }
+
         public DateTime LastUpdated { get; set; }
 
         public int? LastUpdatedBy { get; set; }
+
+        public SupplierContact SupplierContact { get; set; }
 
         public AspNetUser LastUpdatedByUser { get; set; }
 

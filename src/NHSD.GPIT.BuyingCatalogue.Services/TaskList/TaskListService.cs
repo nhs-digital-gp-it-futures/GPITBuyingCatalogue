@@ -28,7 +28,8 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.TaskList
 
             model.SupplierStatus = completedSections switch
             {
-                var cs when cs.HasFlag(TaskListOrderSections.SupplierComplete) => TaskProgress.Completed,
+                var cs when cs.HasFlag(TaskListOrderSections.SupplierContactComplete) => TaskProgress.Completed,
+                var cs when cs.HasFlag(TaskListOrderSections.SupplierComplete) => TaskProgress.InProgress,
                 var cs when cs.HasFlag(TaskListOrderSections.OrderingPartyComplete) => TaskProgress.NotStarted,
                 _ => TaskProgress.CannotStart,
             };
@@ -36,7 +37,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.TaskList
             model.CommencementDateStatus = completedSections switch
             {
                 var cs when cs.HasFlag(TaskListOrderSections.CommencementDateComplete) => TaskProgress.Completed,
-                var cs when cs.HasFlag(TaskListOrderSections.SupplierComplete) => TaskProgress.NotStarted,
+                var cs when cs.HasFlag(TaskListOrderSections.SupplierContactComplete) => TaskProgress.NotStarted,
                 _ => TaskProgress.CannotStart,
             };
 
@@ -90,6 +91,9 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.TaskList
 
             if (order.Supplier is not null)
                 completedSections |= TaskListOrderSections.Supplier;
+
+            if (order.SupplierContactId is not null)
+                completedSections |= TaskListOrderSections.SupplierContact;
 
             if (order.CommencementDate is not null)
                 completedSections |= TaskListOrderSections.CommencementDate;

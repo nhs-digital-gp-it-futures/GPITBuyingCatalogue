@@ -87,19 +87,19 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering.AdditionalServices
         {
             var model = Session.GetOrderStateFromSession(CallOffId.ToString());
 
-            CommonActions.InputValueEqualToo(
+            CommonActions.InputValueEqualTo(
                 CommonSelectors.DateDay,
                 model.CommencementDate.Value.Day.ToString("00"))
                 .Should()
                 .BeTrue();
 
-            CommonActions.InputValueEqualToo(
+            CommonActions.InputValueEqualTo(
                 CommonSelectors.DateMonth,
                 model.CommencementDate.Value.Month.ToString("00"))
                 .Should()
                 .BeTrue();
 
-            CommonActions.InputValueEqualToo(
+            CommonActions.InputValueEqualTo(
                 CommonSelectors.DateYear,
                 model.CommencementDate.Value.Year.ToString("0000"))
                 .Should()
