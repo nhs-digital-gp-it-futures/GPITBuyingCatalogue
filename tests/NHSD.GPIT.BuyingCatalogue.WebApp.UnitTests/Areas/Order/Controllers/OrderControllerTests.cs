@@ -1,4 +1,6 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
 using AutoFixture;
 using AutoFixture.AutoMoq;
@@ -10,9 +12,11 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.AspNetCore.Routing;
 using Moq;
+using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Organisations.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Users.Models;
+using NHSD.GPIT.BuyingCatalogue.Framework.Constants;
 using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Models.TaskList;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Orders;
@@ -28,6 +32,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers
 {
     public static class OrderControllerTests
     {
+        private const int UserId = 1;
+
         [Fact]
         public static void Constructors_VerifyGuardClauses()
         {
@@ -113,9 +119,13 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers
         {
             order.Description = null;
 
-            orderServiceMock.Setup(s => s.GetOrderForSummary(order.CallOffId, internalOrgId)).ReturnsAsync(order);
+            orderServiceMock
+                .Setup(s => s.GetOrderForSummary(order.CallOffId, internalOrgId))
+                .ReturnsAsync(order);
 
             var actualResult = await controller.Summary(internalOrgId, order.CallOffId, new SummaryModel());
+
+            orderServiceMock.VerifyAll();
 
             actualResult.Should().BeOfType<ViewResult>();
             actualResult.As<ViewResult>().ViewData.ModelState.ValidationState.Should().Be(ModelValidationState.Invalid);
@@ -134,6 +144,46 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers
 
         [Theory]
         [CommonAutoData]
+        public static async Task Post_Summary_ReadyToComplete_ReturnsExpectedResult(
+            string internalOrgId,
+            EntityFramework.Ordering.Models.Order order,
+            OrderItem orderItem,
+            CatalogueItem catalogueItem,
+            [Frozen] Mock<IOrderService> orderServiceMock,
+            OrderController systemUnderTest)
+        {
+            catalogueItem.CatalogueItemType = CatalogueItemType.Solution;
+            orderItem.CatalogueItem = catalogueItem;
+            order.AddOrUpdateOrderItem(orderItem);
+            order.OrderStatus = OrderStatus.InProgress;
+
+            orderServiceMock
+                .Setup(s => s.GetOrderForSummary(order.CallOffId, internalOrgId))
+                .ReturnsAsync(order);
+
+            orderServiceMock
+                .Setup(x => x.CompleteOrder(order.CallOffId, internalOrgId, UserId, It.IsAny<Uri>()))
+                .Returns(Task.CompletedTask);
+
+            SetControllerHttpContext(systemUnderTest);
+
+            var result = await systemUnderTest.Summary(internalOrgId, order.CallOffId, new SummaryModel());
+
+            orderServiceMock.VerifyAll();
+
+            var actualResult = result.Should().BeOfType<RedirectToActionResult>().Subject;
+
+            actualResult.ActionName.Should().Be(nameof(OrderController.Completed));
+            actualResult.ControllerName.Should().Be(typeof(OrderController).ControllerName());
+            actualResult.RouteValues.Should().BeEquivalentTo(new RouteValueDictionary
+            {
+                { "internalOrgId", internalOrgId },
+                { "callOffId", order.CallOffId },
+            });
+        }
+
+        [Theory]
+        [CommonAutoData]
         public static void Get_ReadyToStart_ReturnsView(
             string internalOrgId,
             OrderController controller)
@@ -141,6 +191,22 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers
             var result = controller.ReadyToStart(internalOrgId);
 
             result.As<ViewResult>().Should().NotBeNull();
+        }
+
+        [Theory]
+        [CommonAutoData]
+        public static void Get_Completed_ReturnsExpectedResult(
+            string internalOrgId,
+            CallOffId callOffId,
+            OrderController systemUnderTest)
+        {
+            var result = systemUnderTest.Completed(internalOrgId, callOffId);
+
+            result.Should().BeOfType<ViewResult>();
+            var model = result.As<ViewResult>().Model.Should().BeAssignableTo<CompletedModel>().Subject;
+
+            model.InternalOrgId.Should().Be(internalOrgId);
+            model.CallOffId.Should().Be(callOffId);
         }
 
         [Theory]
@@ -155,20 +221,20 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers
         {
             order.OrderStatus = OrderStatus.Complete;
 
-            orderServiceMock.Setup(s => s.GetOrderForSummary(order.CallOffId, internalOrgId)).ReturnsAsync(order);
+            orderServiceMock
+                .Setup(s => s.GetOrderForSummary(order.CallOffId, internalOrgId))
+                .ReturnsAsync(order);
 
-            pdfServiceMock.Setup(s => s.Convert(It.IsAny<System.Uri>())).Returns(result);
+            pdfServiceMock
+                .Setup(s => s.Convert(It.IsAny<System.Uri>()))
+                .Returns(result);
 
-            var httpContext = new DefaultHttpContext();
-            httpContext.Request.Scheme = "https";
-            httpContext.Request.Host = new HostString("localhost");
-
-            controller.ControllerContext = new ControllerContext
-            {
-                HttpContext = httpContext,
-            };
+            SetControllerHttpContext(controller);
 
             var actualResult = await controller.Download(internalOrgId, order.CallOffId);
+
+            orderServiceMock.VerifyAll();
+            pdfServiceMock.VerifyAll();
 
             actualResult.Should().BeOfType<FileContentResult>();
             actualResult.As<FileContentResult>().ContentType.Should().Be("application/pdf");
@@ -188,25 +254,40 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers
         {
             order.OrderStatus = OrderStatus.InProgress;
 
-            orderServiceMock.Setup(s => s.GetOrderForSummary(order.CallOffId, internalOrgId)).ReturnsAsync(order);
+            orderServiceMock
+                .Setup(s => s.GetOrderForSummary(order.CallOffId, internalOrgId))
+                .ReturnsAsync(order);
 
-            pdfServiceMock.Setup(s => s.Convert(It.IsAny<System.Uri>())).Returns(result);
+            pdfServiceMock
+                .Setup(s => s.Convert(It.IsAny<System.Uri>()))
+                .Returns(result);
 
-            var httpContext = new DefaultHttpContext();
-            httpContext.Request.Scheme = "https";
-            httpContext.Request.Host = new HostString("localhost");
-
-            controller.ControllerContext = new ControllerContext
-            {
-                HttpContext = httpContext,
-            };
+            SetControllerHttpContext(controller);
 
             var actualResult = await controller.Download(internalOrgId, order.CallOffId);
+
+            orderServiceMock.VerifyAll();
+            pdfServiceMock.VerifyAll();
 
             actualResult.Should().BeOfType<FileContentResult>();
             actualResult.As<FileContentResult>().ContentType.Should().Be("application/pdf");
             actualResult.As<FileContentResult>().FileDownloadName.Should().Be($"order-summary-in-progress-{order.CallOffId}.pdf");
             actualResult.As<FileContentResult>().FileContents.Should().BeEquivalentTo(result);
+        }
+
+        private static void SetControllerHttpContext(ControllerBase controller)
+        {
+            controller.ControllerContext = new ControllerContext
+            {
+                HttpContext = new DefaultHttpContext
+                {
+                    Request = { Scheme = "https", Host = new HostString("localhost") },
+                    User = new ClaimsPrincipal(new ClaimsIdentity(new Claim[]
+                    {
+                        new(CatalogueClaims.UserId, $"{UserId}"),
+                    })),
+                },
+            };
         }
     }
 }
