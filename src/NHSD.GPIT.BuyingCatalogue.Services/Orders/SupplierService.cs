@@ -69,26 +69,21 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
             await dbContext.SaveChangesAsync();
         }
 
-        public async Task AddOrUpdateOrderSupplierContact(CallOffId callOffId, string internalOrgId, Contact contact)
+        public async Task AddOrUpdateOrderSupplierContact(CallOffId callOffId, string internalOrgId, SupplierContact contact)
         {
             if (contact is null)
                 throw new ArgumentNullException(nameof(contact));
 
             var order = await orderService.GetOrderWithSupplier(callOffId, internalOrgId);
 
-            switch (order.SupplierContact)
-            {
-                case null:
-                    order.SupplierContact = contact;
-                    break;
+            order.SupplierContact ??= new Contact();
 
-                default:
-                    order.SupplierContact.FirstName = contact.FirstName;
-                    order.SupplierContact.LastName = contact.LastName;
-                    order.SupplierContact.Email = contact.Email;
-                    order.SupplierContact.Phone = contact.Phone;
-                    break;
-            }
+            order.SupplierContact.SupplierContactId = contact.Id == SupplierContact.TemporaryContactId ? null : contact.Id;
+            order.SupplierContact.FirstName = contact.FirstName;
+            order.SupplierContact.LastName = contact.LastName;
+            order.SupplierContact.Department = contact.Department;
+            order.SupplierContact.Email = contact.Email;
+            order.SupplierContact.Phone = contact.PhoneNumber;
 
             await dbContext.SaveChangesAsync();
         }
