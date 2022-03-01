@@ -197,8 +197,11 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils
             builder.UseUrls($"{LocalhostBaseAddress}:0");
             builder.ConfigureAppConfiguration((hostContext, config) =>
             {
-                config.AddJsonFile("appsettings.json", optional: true, reloadOnChange: false)
-                    .AddJsonFile($"appsettings.{Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT")}.json", optional: true, reloadOnChange: false);
+                foreach (var s in config.Sources)
+                {
+                    if (s is FileConfigurationSource)
+                        ((FileConfigurationSource)s).ReloadOnChange = false;
+                }
             });
             return builder;
         }
