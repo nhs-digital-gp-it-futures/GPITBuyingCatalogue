@@ -165,8 +165,14 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering.OrderTriage
         {
             CommonActions.ClickSave();
 
-            CommonActions.ErrorSummaryDisplayed();
-            CommonActions.ErrorSummaryLinksExist();
+            CommonActions.ErrorSummaryDisplayed().Should().BeTrue();
+            CommonActions.ErrorSummaryLinksExist().Should().BeTrue();
+
+            CommonActions.ElementShowingCorrectErrorMessage(
+                OrderTriageObjects.DueDiligenceError,
+                "Error: Select yes if you’ve identified what you want to order")
+                .Should()
+                .BeTrue();
         }
     }
 }
