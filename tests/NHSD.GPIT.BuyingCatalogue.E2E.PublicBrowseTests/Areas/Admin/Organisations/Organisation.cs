@@ -54,7 +54,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.Organisations
         public async Task Organisation_OdsCodeDisplayed()
         {
             await using var context = GetEndToEndDbContext();
-            var dbOdsCode = (await context.Organisations.SingleAsync(s => s.Id == OrganisationId)).InternalIdentifier;
+            var dbOdsCode = (await context.Organisations.SingleAsync(s => s.Id == OrganisationId)).ExternalIdentifier;
 
             var pageOdsCode = AdminPages.Organisation.GetOdsCode();
 
@@ -148,7 +148,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.Organisations
             var relatedOrganisation = await context.Organisations.SingleAsync(s => s.Id == relatedOrgId);
 
             organisation.OrganisationName.Should().BeEquivalentTo(relatedOrganisation.Name);
-            organisation.OdsCode.Should().BeEquivalentTo(relatedOrganisation.InternalIdentifier);
+            organisation.OdsCode.Should().BeEquivalentTo(relatedOrganisation.ExternalIdentifier);
         }
 
         [Fact]
