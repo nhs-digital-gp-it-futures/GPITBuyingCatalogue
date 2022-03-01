@@ -93,13 +93,50 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
 
             var actual = await listPriceController.AddListPrice(catalogueItemId);
 
-            mockListPricesService.Verify(s => s.GetCatalogueItemWithPrices(catalogueItemId));
+            mockListPricesService.VerifyAll();
+
             actual.Should().NotBeNull();
             actual.Should().BeOfType<ViewResult>();
 
             var model = actual.As<ViewResult>().Model.As<EditListPriceModel>();
             model.ItemId.Should().Be(catalogueItem.Id);
             model.ItemName.Should().Be(catalogueItem.Name);
+            model.IsAdding.Should().BeTrue();
+        }
+
+        [Theory]
+        [CommonAutoData]
+        public static async Task Get_AddListPrice_ValidId_WithValidListPriceId_ReturnsModel(
+            CatalogueItemId catalogueItemId,
+            CatalogueItem catalogueItem,
+            [Frozen] Mock<IListPricesService> mockListPricesService,
+            ListPriceController listPriceController)
+        {
+            var priceToClone = catalogueItem.CataloguePrices.First();
+
+            mockListPricesService
+                .Setup(s => s.GetCatalogueItemWithPrices(catalogueItemId))
+                .ReturnsAsync(catalogueItem);
+
+            var actual = await listPriceController.AddListPrice(catalogueItemId, priceToClone.CataloguePriceId);
+
+            mockListPricesService.VerifyAll();
+
+            actual.Should().NotBeNull();
+            actual.Should().BeOfType<ViewResult>();
+
+            var model = actual.As<ViewResult>().Model.As<EditListPriceModel>();
+
+            model.ItemId.Should().Be(catalogueItem.Id);
+            model.ItemName.Should().Be(catalogueItem.Name);
+            model.IsAdding.Should().BeTrue();
+            model.CataloguePriceId.Should().BeNull();
+
+            model.CatalogueItemType.Should().Be(catalogueItem.CatalogueItemType);
+            model.Price.Should().Be(priceToClone.Price);
+            model.Unit.Should().Be(priceToClone.PricingUnit.Description);
+            model.UnitDefinition.Should().Be(priceToClone.PricingUnit.Definition);
+            model.SelectedProvisioningType.Should().Be(priceToClone.ProvisioningType);
         }
 
         [Theory]
@@ -176,6 +213,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
             var model = actual.As<ViewResult>().Model.As<EditListPriceModel>();
             model.ItemName.Should().Be(catalogueItem.Name);
             model.CataloguePriceId.Should().Be(cataloguePriceId);
+            model.IsAdding.Should().BeFalse();
         }
 
         [Theory]
