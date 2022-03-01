@@ -5,8 +5,6 @@ resource "azurerm_sql_server" "sql_server" {
   version                      = var.sql_version
   administrator_login          = var.sql_admin_username
   administrator_login_password = var.sql_admin_password
-  hangfire_login               = var.sql_hangfire_username
-  hangfire_login_password      = var.sql_hangfire_password
 
   tags = {
     environment                = var.environment,
