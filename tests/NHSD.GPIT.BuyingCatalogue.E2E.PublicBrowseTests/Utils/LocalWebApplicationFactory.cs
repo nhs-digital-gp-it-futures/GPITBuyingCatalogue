@@ -126,11 +126,6 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils
         protected override IWebHostBuilder CreateWebHostBuilder()
         {
             var builder = WebHost.CreateDefaultBuilder(Array.Empty<string>()).UseSerilog();
-            builder.ConfigureAppConfiguration((hostContext, config) =>
-                {
-                    config.AddJsonFile("appsettings.json", optional: true, reloadOnChange: false)
-                        .AddJsonFile($"appsettings.{Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT")}.json", optional: true, reloadOnChange: false);
-                });
             builder.UseWebRoot(Path.GetFullPath("../../../../../src/NHSD.GPIT.BuyingCatalogue.WebApp/wwwroot"));
             builder.UseStartup<Startup>();
             builder.ConfigureTestServices(services =>
@@ -200,7 +195,11 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils
             });
 
             builder.UseUrls($"{LocalhostBaseAddress}:0");
-
+            builder.ConfigureAppConfiguration((hostContext, config) =>
+            {
+                config.AddJsonFile("appsettings.json", optional: true, reloadOnChange: false)
+                    .AddJsonFile($"appsettings.{Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT")}.json", optional: true, reloadOnChange: false);
+            });
             return builder;
         }
 
