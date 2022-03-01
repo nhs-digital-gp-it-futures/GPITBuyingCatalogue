@@ -60,6 +60,12 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Actions.Common
                 .FindElements(CommonSelectors.RadioButtonItems)
                 .Select(e => e.Text);
 
+        internal bool IsRadioButtonChecked(string radioButtonValue) =>
+            Driver
+                .FindElements(CommonSelectors.RadioButtonInputs)
+                .Where(r => r.GetAttribute("Value") == radioButtonValue)
+                .Any(r => r.Selected);
+
         internal IEnumerable<string> GetTableRowCells(int cellIndex = 0)
         {
             return Driver.FindElements(CommonSelectors.TableRow)

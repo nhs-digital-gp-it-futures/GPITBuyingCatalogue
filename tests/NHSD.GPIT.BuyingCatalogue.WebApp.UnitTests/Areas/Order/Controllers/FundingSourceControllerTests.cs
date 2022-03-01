@@ -46,7 +46,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers
             [Frozen] Mock<IOrderService> orderServiceMock,
             FundingSourceController controller)
         {
-            var expectedViewData = new FundingSourceModel(order.CallOffId, order.FundingSourceOnlyGms);
+            var expectedViewData = new ConfirmFundingSourceModel(order.CallOffId, order.FundingSourceOnlyGms);
 
             orderServiceMock.Setup(s => s.GetOrderThin(order.CallOffId, internalOrgId)).ReturnsAsync(order);
 
@@ -58,10 +58,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers
 
         [Theory]
         [CommonAutoData]
-        public static async Task Post_FundingSource_Deletes_CorrectlyRedirects(
+        public static async Task Post_FundingSource_CorrectlyRedirects(
             string internalOrgId,
             CallOffId callOffId,
-            FundingSourceModel model,
+            ConfirmFundingSourceModel model,
             [Frozen] Mock<IFundingSourceService> fundingSourceServiceMock,
             FundingSourceController controller)
         {
@@ -71,7 +71,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers
             actualResult.As<RedirectToActionResult>().ActionName.Should().Be(nameof(OrderController.Order));
             actualResult.As<RedirectToActionResult>().ControllerName.Should().Be(typeof(OrderController).ControllerName());
             actualResult.As<RedirectToActionResult>().RouteValues.Should().BeEquivalentTo(new RouteValueDictionary { { "internalOrgId", internalOrgId }, { "callOffId", callOffId } });
-            fundingSourceServiceMock.Verify(o => o.SetFundingSource(callOffId, internalOrgId, model.FundingSourceOnlyGms.EqualsIgnoreCase("Yes")), Times.Once);
+            fundingSourceServiceMock.Verify(o => o.SetFundingSource(callOffId, internalOrgId, model.SelectedFundingSource!.Value.IsCentralFunding(), true), Times.Once);
         }
 
         [Theory]
@@ -81,7 +81,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers
             string errorMessage,
             string internalOrgId,
             CallOffId callOffId,
-            FundingSourceModel model,
+            ConfirmFundingSourceModel model,
             FundingSourceController controller)
         {
             controller.ModelState.AddModelError(errorKey, errorMessage);

@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
+using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Enums;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Orders;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Organisations;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Users;
@@ -18,6 +19,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
     public sealed class OrderDescriptionController : Controller
     {
         private readonly IOrderService orderService;
+        private readonly IFundingSourceService fundingSourceService;
         private readonly IOrderDescriptionService orderDescriptionService;
         private readonly IOrganisationsService organisationsService;
         private readonly IUsersService usersService;
@@ -26,12 +28,14 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
             IOrderService orderService,
             IOrderDescriptionService orderDescriptionService,
             IOrganisationsService organisationsService,
-            IUsersService usersService)
+            IUsersService usersService,
+            IFundingSourceService fundingSourceService)
         {
             this.orderService = orderService ?? throw new ArgumentNullException(nameof(orderService));
             this.orderDescriptionService = orderDescriptionService ?? throw new ArgumentNullException(nameof(orderDescriptionService));
             this.organisationsService = organisationsService ?? throw new ArgumentNullException(nameof(organisationsService));
             this.usersService = usersService ?? throw new ArgumentNullException(nameof(usersService));
+            this.fundingSourceService = fundingSourceService ?? throw new ArgumentNullException(nameof(fundingSourceService));
         }
 
         [HttpGet]
@@ -65,7 +69,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
         }
 
         [HttpGet("~/organisation/{internalOrgId}/order/neworder/description")]
-        public async Task<IActionResult> NewOrderDescription(string internalOrgId, TriageOption? option = null)
+        public async Task<IActionResult> NewOrderDescription(string internalOrgId, TriageOption? option = null, FundingSource? fundingSource = null)
         {
             var user = await usersService.GetUser(User.UserId());
             var organisation = await organisationsService.GetOrganisation(user?.PrimaryOrganisationId ?? 0);
@@ -75,19 +79,21 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
                 BackLink = Url.Action(
                     nameof(OrderController.NewOrder),
                     typeof(OrderController).ControllerName(),
-                    new { internalOrgId, option }),
+                    new { internalOrgId, option, fundingSource }),
             };
 
             return View("OrderDescription", descriptionModel);
         }
 
         [HttpPost("~/organisation/{internalOrgId}/order/neworder/description")]
-        public async Task<IActionResult> NewOrderDescription(string internalOrgId, OrderDescriptionModel model)
+        public async Task<IActionResult> NewOrderDescription(string internalOrgId, OrderDescriptionModel model, FundingSource? fundingSource = null)
         {
             if (!ModelState.IsValid)
                 return View("OrderDescription", model);
 
             var order = await orderService.CreateOrder(model.Description, model.InternalOrgId);
+            if (fundingSource != null)
+                await fundingSourceService.SetFundingSource(order.CallOffId, internalOrgId, fundingSource!.Value.IsCentralFunding(), false);
 
             return RedirectToAction(
                 nameof(OrderController.Order),
