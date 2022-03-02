@@ -1,4 +1,6 @@
 ﻿@using NHSD.GPIT.BuyingCatalogue.WebApp.Models
+@using NHSD.GPIT.BuyingCatalogue.WebApp.Controllers
+@using NHSD.GPIT.BuyingCatalogue.Framework.Extensions
 @{
     ViewBag.Title = "Accessibility statement for NHS Digital Buying Catalogue";
     var backLinkModel = new NavBaseModel { BackLink = "/", BackLinkText = "Go back" };
@@ -27,9 +29,11 @@
 
         <h2>How accessible this website is</h2>
 
-        <p>We know our website is accessible, but we link to some information pages which are not fully accessible:</p>
+        <p>We know some parts of this website are not fully accessible and we link to some information pages which are not fully accessible:</p>
 
         <ul>
+            <li>some table inputs are missing labels</li>
+            <li>nested filters are not visible to screen readers</li>
             <li>pages hosted on the Confluence website are difficult to use for screen reader users</li>
         </ul>
 
@@ -46,7 +50,12 @@
 
         <h2>Reporting accessibility problems with this website</h2>
 
-        <p>We’re always looking to improve the accessibility of this website. If you find any problems not listed on this page or think we’re not meeting accessibility requirements, contact: <a href="mailto:buying.catalogue@nhs.net">buying.catalogue@nhs.net</a>.</p>
+        <p>We’re always looking to improve the accessibility of this website. If you find any problems not listed on this page or think we’re not meeting accessibility requirements, let us know.</p>
+        
+        <vc:nhs-action-link url="@Url.Action(
+                                     nameof(HomeController.ContactUs),
+                                     typeof(HomeController).ControllerName())"
+                            text="Contact the Buying Catalogue Team" />
 
         <h2>Enforcement procedure</h2>
 
@@ -57,13 +66,21 @@
         <p>NHS Digital is committed to making its website accessible, in accordance with the Public Sector Bodies (Websites and Mobile Applications) (No. 2) Accessibility Regulations 2018.</p>
 
         <h3>Compliance status</h3>
-
-        <p>This website is fully compliant with the <a href="https://www.w3.org/TR/WCAG21/" target="_blank">Web Content Accessibility Guidelines version 2.1 AA standard</a> (opens in a new tab).</p>
+        <p>
+            This website is partially compliant with the
+            <a href="https://www.w3.org/TR/WCAG21/" target="_blank">Web Content Accessibility Guidelines version 2.1 AA standard</a>
+            (opens in a new tab), due to the non-compliances listed.
+        </p>
+        
+        <h2>What we’re doing to improve accessibility</h2>
+        <ul>
+            <li>redesign to remove table inputs that are missing labels</li>
+            <li>redesign to remove nested filters</li>
+            <li>moving guidance pages from the Confluence website to the NHS Digital website</li>
+        </ul>
 
         <h2>Preparation of this accessibility statement</h2>
-
-        <p>This statement was published on 8 December 2021. It was last reviewed on 8 December 2021.</p>
-
+        <p>This statement was published on 1 December 2021. It was last reviewed on 21 February 2022.</p>
         <p>This website was last tested on 10 August 2021. The test was carried out by <a href="https://www.nomensa.com/" target="_blank">Nomensa</a> (opens in a new tab), who performed an expert evaluation against all level A and AA success criteria of the Web Content Accessibility Guidelines 2.1 of the following user journeys:</p>
         <ul>
             <li>create an order</li>

@@ -124,7 +124,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering.OrderTriage
 
             CommonActions.PageLoadedCorrectGetIndex(
                 typeof(OrderTriageController),
-                nameof(OrderTriageController.StepsNotCompleted));
+                nameof(OrderTriageController.StepsNotCompleted)).Should().BeTrue();
 
             CommonActions.ElementIsDisplayed(OrderTriageObjects.ProcurementHubLink).Should().BeTrue();
 
@@ -138,7 +138,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering.OrderTriage
 
             CommonActions.PageLoadedCorrectGetIndex(
                 typeof(OrderTriageController),
-                nameof(OrderTriageController.StepsNotCompleted));
+                nameof(OrderTriageController.StepsNotCompleted)).Should().BeTrue();
         }
 
         [Fact]
@@ -149,8 +149,8 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering.OrderTriage
             CommonActions.ClickSave();
 
             CommonActions.PageLoadedCorrectGetIndex(
-                typeof(OrderController),
-                nameof(OrderController.ReadyToStart));
+                typeof(OrderTriageController),
+                nameof(OrderTriageController.TriageFunding)).Should().BeTrue();
         }
 
         [Fact]

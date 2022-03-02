@@ -41,16 +41,16 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers
         [Theory]
         [CommonAutoData]
         public static async Task Get_FundingSource_ReturnsExpectedResult(
-            string odsCode,
+            string internalOrgId,
             EntityFramework.Ordering.Models.Order order,
             [Frozen] Mock<IOrderService> orderServiceMock,
             FundingSourceController controller)
         {
-            var expectedViewData = new FundingSourceModel(odsCode, order.CallOffId, order.FundingSourceOnlyGms);
+            var expectedViewData = new ConfirmFundingSourceModel(order.CallOffId, order.FundingSourceOnlyGms);
 
-            orderServiceMock.Setup(s => s.GetOrderThin(order.CallOffId, odsCode)).ReturnsAsync(order);
+            orderServiceMock.Setup(s => s.GetOrderThin(order.CallOffId, internalOrgId)).ReturnsAsync(order);
 
-            var actualResult = await controller.FundingSource(odsCode, order.CallOffId);
+            var actualResult = await controller.FundingSource(internalOrgId, order.CallOffId);
 
             actualResult.Should().BeOfType<ViewResult>();
             actualResult.As<ViewResult>().ViewData.Model.Should().BeEquivalentTo(expectedViewData, opt => opt.Excluding(m => m.BackLink));
@@ -58,10 +58,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers
 
         [Theory]
         [CommonAutoData]
-        public static async Task Post_FundingSource_Deletes_CorrectlyRedirects(
+        public static async Task Post_FundingSource_CorrectlyRedirects(
             string internalOrgId,
             CallOffId callOffId,
-            FundingSourceModel model,
+            ConfirmFundingSourceModel model,
             [Frozen] Mock<IFundingSourceService> fundingSourceServiceMock,
             FundingSourceController controller)
         {
@@ -71,7 +71,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers
             actualResult.As<RedirectToActionResult>().ActionName.Should().Be(nameof(OrderController.Order));
             actualResult.As<RedirectToActionResult>().ControllerName.Should().Be(typeof(OrderController).ControllerName());
             actualResult.As<RedirectToActionResult>().RouteValues.Should().BeEquivalentTo(new RouteValueDictionary { { "internalOrgId", internalOrgId }, { "callOffId", callOffId } });
-            fundingSourceServiceMock.Verify(o => o.SetFundingSource(callOffId, internalOrgId, model.FundingSourceOnlyGms.EqualsIgnoreCase("Yes")), Times.Once);
+            fundingSourceServiceMock.Verify(o => o.SetFundingSource(callOffId, internalOrgId, model.SelectedFundingSource!.Value.IsCentralFunding(), true), Times.Once);
         }
 
         [Theory]
@@ -79,14 +79,14 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers
         public static async Task Post_FundingSource_InvalidModelState_ReturnsView(
             string errorKey,
             string errorMessage,
-            string odsCode,
+            string internalOrgId,
             CallOffId callOffId,
-            FundingSourceModel model,
+            ConfirmFundingSourceModel model,
             FundingSourceController controller)
         {
             controller.ModelState.AddModelError(errorKey, errorMessage);
 
-            var actualResult = (await controller.FundingSource(odsCode, callOffId, model)).As<ViewResult>();
+            var actualResult = (await controller.FundingSource(internalOrgId, callOffId, model)).As<ViewResult>();
 
             actualResult.Should().NotBeNull();
             actualResult.ViewName.Should().BeNull();

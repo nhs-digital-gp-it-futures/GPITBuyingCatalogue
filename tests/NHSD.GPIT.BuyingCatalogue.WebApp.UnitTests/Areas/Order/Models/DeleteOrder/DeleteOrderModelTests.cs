@@ -10,10 +10,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.DeleteOr
         [Theory]
         [CommonAutoData]
         public static void WithValidArguments_PropertiesCorrectlySet(
-            string odsCode,
+            string internalOrgId,
             EntityFramework.Ordering.Models.Order order)
         {
-            var model = new DeleteOrderModel(odsCode, order);
+            var model = new DeleteOrderModel(internalOrgId, order);
 
             model.Title.Should().Be($"Delete order {order.CallOffId}?");
             model.Description.Should().Be(order.Description);

@@ -23,7 +23,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Controllers
         {
             var order = await orderService.GetOrderForSummary(callOffId, internalOrgId);
 
-            var model = new OrderSummaryModel(internalOrgId, order)
+            var model = new OrderSummaryModel(order)
             {
                 Title = order.OrderStatus switch
                 {

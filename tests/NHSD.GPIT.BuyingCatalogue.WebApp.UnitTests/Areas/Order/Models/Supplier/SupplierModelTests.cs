@@ -2,6 +2,7 @@
 using System.Linq;
 using FluentAssertions;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
+using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.Test.Framework.AutoFixtureCustomisations;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.Supplier;
 using Xunit;
@@ -13,48 +14,87 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.Supplier
         [Theory]
         [CommonAutoData]
         public static void WithValidArguments_PropertiesCorrectlySet(
-            string odsCode,
-            EntityFramework.Ordering.Models.Order order,
-            ICollection<SupplierContact> supplierContacts)
-        {
-            var model = new SupplierModel(odsCode, order, supplierContacts);
-
-            model.Title.Should().Be($"Supplier information for {order.CallOffId}");
-            model.InternalOrgId.Should().Be(odsCode);
-            model.Id.Should().Be(order.Supplier.Id);
-            model.Name.Should().Be(order.Supplier.Name);
-            model.Address.Should().BeEquivalentTo(order.Supplier.Address);
-            model.PrimaryContact.Should().BeEquivalentTo(order.SupplierContact);
-        }
-
-        [Theory]
-        [CommonAutoData]
-        public static void WithNoSupplierContact_AndAvailableContacts_PropertiesCorrectlySet(
-            string odsCode,
-            EntityFramework.Ordering.Models.Order order,
-            ICollection<SupplierContact> supplierContacts)
-        {
-            order.SupplierContact = null;
-
-            var model = new SupplierModel(odsCode, order, supplierContacts);
-
-            model.PrimaryContact.FirstName.Should().BeEquivalentTo(supplierContacts.First().FirstName);
-            model.PrimaryContact.LastName.Should().BeEquivalentTo(supplierContacts.First().LastName);
-            model.PrimaryContact.Email.Should().BeEquivalentTo(supplierContacts.First().Email);
-            model.PrimaryContact.Phone.Should().BeEquivalentTo(supplierContacts.First().PhoneNumber);
-        }
-
-        [Theory]
-        [CommonAutoData]
-        public static void WithNoSupplierContact_AndNoAvailableContacts_PropertiesCorrectlySet(
-            string odsCode,
+            string internalOrgId,
+            CallOffId callOffId,
             EntityFramework.Ordering.Models.Order order)
         {
-            order.SupplierContact = null;
+            var model = new SupplierModel(internalOrgId, callOffId, order);
 
-            var model = new SupplierModel(odsCode, order, new List<SupplierContact>());
+            model.Title.Should().Be("Supplier contact details");
+            model.CallOffId.Should().Be(callOffId);
+            model.InternalOrgId.Should().Be(internalOrgId);
+            model.SupplierId.Should().Be(order.Supplier.Id);
+            model.SupplierName.Should().Be(order.Supplier.Name);
 
-            model.PrimaryContact.Should().BeNull();
+            model.Contacts.Should().BeNull();
+            model.FormattedContacts.Should().BeNull();
+            model.TemporaryContact.Should().BeNull();
+        }
+
+        [Theory]
+        [CommonAutoData]
+        public static void WithContacts_PropertiesCorrectlySet(
+            string internalOrgId,
+            CallOffId callOffId,
+            EntityFramework.Ordering.Models.Order order,
+            List<SupplierContact> supplierContacts)
+        {
+            var model = new SupplierModel(internalOrgId, callOffId, order)
+            {
+                Contacts = supplierContacts,
+            };
+
+            model.Title.Should().Be("Supplier contact details");
+            model.CallOffId.Should().Be(callOffId);
+            model.InternalOrgId.Should().Be(internalOrgId);
+            model.SupplierId.Should().Be(order.Supplier.Id);
+            model.SupplierName.Should().Be(order.Supplier.Name);
+
+            model.Contacts.Should().BeEquivalentTo(supplierContacts);
+
+            foreach (var contact in supplierContacts)
+            {
+                model.FormattedContacts.Should().Contain(x => x.Value == $"{contact.Id}"
+                    && x.Text.Contains(contact.FirstName)
+                    && x.Text.Contains(contact.LastName)
+                    && x.Text.Contains(contact.Department));
+            }
+
+            model.TemporaryContact.Should().BeNull();
+        }
+
+        [Theory]
+        [CommonAutoData]
+        public static void WithContacts_AndATemporaryContact_PropertiesCorrectlySet(
+            string internalOrgId,
+            CallOffId callOffId,
+            EntityFramework.Ordering.Models.Order order,
+            List<SupplierContact> supplierContacts)
+        {
+            supplierContacts.First().Id = SupplierContact.TemporaryContactId;
+
+            var model = new SupplierModel(internalOrgId, callOffId, order)
+            {
+                Contacts = supplierContacts,
+            };
+
+            model.Title.Should().Be("Supplier contact details");
+            model.CallOffId.Should().Be(callOffId);
+            model.InternalOrgId.Should().Be(internalOrgId);
+            model.SupplierId.Should().Be(order.Supplier.Id);
+            model.SupplierName.Should().Be(order.Supplier.Name);
+
+            model.Contacts.Should().BeEquivalentTo(supplierContacts);
+
+            foreach (var contact in supplierContacts)
+            {
+                model.FormattedContacts.Should().Contain(x => x.Value == $"{contact.Id}"
+                    && x.Text.Contains(contact.FirstName)
+                    && x.Text.Contains(contact.LastName)
+                    && x.Text.Contains(contact.Department));
+            }
+
+            model.TemporaryContact.Should().Be(supplierContacts.First());
         }
     }
 }

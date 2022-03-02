@@ -32,6 +32,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.TaskList
             OrderItem additionalServiceOrderItem,
             TaskListService service)
         {
+            order.ConfirmedFundingSource = true;
             solutionOrderItem.CatalogueItem.CatalogueItemType = CatalogueItemType.Solution;
             associatedServiceOrderItem.CatalogueItem.CatalogueItemType = CatalogueItemType.AssociatedService;
             additionalServiceOrderItem.CatalogueItem.CatalogueItemType = CatalogueItemType.AdditionalService;
@@ -80,6 +81,19 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.TaskList
 
         [Theory]
         [CommonAutoData]
+        public static void NoSupplierContact_SupplierStatus_InProgress(
+            Order order,
+            TaskListService service)
+        {
+            order.SupplierContactId = null;
+
+            var actual = service.GetTaskListStatusModelForOrder(order);
+
+            actual.SupplierStatus.Should().Be(TaskProgress.InProgress);
+        }
+
+        [Theory]
+        [CommonAutoData]
         public static void NoSupplier_NoOrderingParty_SupplierStatus_CannotStart(
             Order order,
             TaskListService service)
@@ -94,7 +108,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.TaskList
 
         [Theory]
         [CommonAutoData]
-        public static void NoSupplier_NoCommencementDate_CommencementDateStatus_NotStarted(
+        public static void NoCommencementDate_CommencementDateStatus_NotStarted(
             Order order,
             TaskListService service)
         {
@@ -107,12 +121,12 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.TaskList
 
         [Theory]
         [CommonAutoData]
-        public static void NoSupplier_NoCommencementDate_NoSupplier_CommencementDateStatus_CannotStart(
+        public static void NoCommencementDate_NoSupplierContact_CommencementDateStatus_CannotStart(
             Order order,
             TaskListService service)
         {
             order.CommencementDate = null;
-            order.Supplier = null;
+            order.SupplierContactId = null;
 
             var actual = service.GetTaskListStatusModelForOrder(order);
 
@@ -276,6 +290,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.TaskList
             TaskListService service)
         {
             order.FundingSourceOnlyGms = null;
+            order.ConfirmedFundingSource = null;
 
             var actual = service.GetTaskListStatusModelForOrder(order);
 

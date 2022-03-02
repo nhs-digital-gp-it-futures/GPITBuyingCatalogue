@@ -11,12 +11,12 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.Shared
         {
         }
 
-        public SelectOrganisationModel(string currentOdsCode, List<Organisation> organisations)
+        public SelectOrganisationModel(string currentInternalOrgId, List<Organisation> organisations)
         {
             Title = "Which organisation are you looking for?";
-            InternalOrgId = currentOdsCode;
+            InternalOrgId = currentInternalOrgId;
             AvailableOrganisations = organisations;
-            SelectedOrganisation = organisations.Single(o => o.InternalIdentifier.EqualsIgnoreCase(currentOdsCode)).InternalIdentifier;
+            SelectedOrganisation = organisations.Single(o => o.InternalIdentifier.EqualsIgnoreCase(currentInternalOrgId)).InternalIdentifier;
         }
 
         public List<Organisation> AvailableOrganisations { get; set; }

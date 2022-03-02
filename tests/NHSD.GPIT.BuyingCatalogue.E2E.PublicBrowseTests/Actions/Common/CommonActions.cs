@@ -60,6 +60,12 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Actions.Common
                 .FindElements(CommonSelectors.RadioButtonItems)
                 .Select(e => e.Text);
 
+        internal bool IsRadioButtonChecked(string radioButtonValue) =>
+            Driver
+                .FindElements(CommonSelectors.RadioButtonInputs)
+                .Where(r => r.GetAttribute("Value") == radioButtonValue)
+                .Any(r => r.Selected);
+
         internal IEnumerable<string> GetTableRowCells(int cellIndex = 0)
         {
             return Driver.FindElements(CommonSelectors.TableRow)
@@ -231,7 +237,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Actions.Common
         internal bool ElementTextContains(By targetElement, string expectedText) =>
             Driver.FindElement(targetElement).Text.Contains(expectedText);
 
-        internal bool InputValueEqualToo(By targetElement, string expectedText) =>
+        internal bool InputValueEqualTo(By targetElement, string expectedText) =>
             Driver.FindElement(targetElement).GetAttribute("value").EqualsIgnoreWhiteSpace(expectedText);
 
         internal bool InputElementIsEmpty(By targetElement) =>

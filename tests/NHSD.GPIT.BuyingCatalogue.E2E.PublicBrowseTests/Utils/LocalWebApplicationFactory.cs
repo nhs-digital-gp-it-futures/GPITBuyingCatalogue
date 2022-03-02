@@ -14,6 +14,7 @@ using Microsoft.Data.Sqlite;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Caching.Distributed;
 using Microsoft.Extensions.Caching.Memory;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Database;
@@ -194,7 +195,14 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils
             });
 
             builder.UseUrls($"{LocalhostBaseAddress}:0");
-
+            builder.ConfigureAppConfiguration((hostContext, config) =>
+            {
+                foreach (var s in config.Sources)
+                {
+                    if (s is FileConfigurationSource)
+                        ((FileConfigurationSource)s).ReloadOnChange = false;
+                }
+            });
             return builder;
         }
 

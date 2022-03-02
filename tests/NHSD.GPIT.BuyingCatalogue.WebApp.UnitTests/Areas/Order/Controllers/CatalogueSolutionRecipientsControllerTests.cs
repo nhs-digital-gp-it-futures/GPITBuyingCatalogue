@@ -43,7 +43,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers
         [Theory]
         [CommonAutoData]
         public static async Task Get_SelectSolutionServiceRecipients_StateHasRecipients_ReturnsExpectedResult(
-                string odsCode,
+                string internalOrgId,
                 string selectionMode,
                 CreateOrderItemModel state,
                 [Frozen] Mock<IOrderSessionService> orderSessionServiceMock,
@@ -66,7 +66,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers
         [Theory]
         [CommonAutoData]
         public static async Task Get_SelectSolutionRecipients_StateDoesNotHaveRecipients_ReturnsExpectedResult(
-            string odsCode,
+            string internalOrgId,
             string selectionMode,
             [Frozen] IReadOnlyList<ServiceRecipient> recipients,
             CreateOrderItemModel state,

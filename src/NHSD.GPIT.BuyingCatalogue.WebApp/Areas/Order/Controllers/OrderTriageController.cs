@@ -5,7 +5,9 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
+using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Enums;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Organisations;
+using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.FundingSource;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.OrderTriage;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.Shared;
 
@@ -70,7 +72,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
             if (!string.Equals(internalOrgId, model.SelectedOrganisation, StringComparison.OrdinalIgnoreCase))
                 option = null;
 
-            return RedirectToAction(nameof(Index), new { odsCode = model.SelectedOrganisation, option });
+            return RedirectToAction(nameof(Index), new { internalOrgId = model.SelectedOrganisation, option });
         }
 
         [HttpGet]
@@ -157,8 +159,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
                 return RedirectToAction(nameof(StepsNotCompleted), new { internalOrgId, option });
 
             return RedirectToAction(
-                nameof(OrderController.ReadyToStart),
-                typeof(OrderController).ControllerName(),
+                nameof(TriageFunding),
                 new { internalOrgId, option });
         }
 
@@ -184,6 +185,30 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
             };
 
             return View(viewName, model);
+        }
+
+        [HttpGet("funding")]
+        public IActionResult TriageFunding(string internalOrgId, TriageOption option, FundingSource? fundingSource = null)
+        {
+            var model = new FundingSourceModel
+            {
+                BackLink = Url.Action(nameof(TriageSelection), new { internalOrgId, option, selected = true }),
+                SelectedFundingSource = fundingSource,
+            };
+
+            return View(model);
+        }
+
+        [HttpPost("funding")]
+        public IActionResult TriageFunding(string internalOrgId, TriageOption option, FundingSourceModel model)
+        {
+            if (!ModelState.IsValid)
+                return View(model);
+
+            return RedirectToAction(
+                   nameof(OrderController.ReadyToStart),
+                   typeof(OrderController).ControllerName(),
+                   new { internalOrgId, option, fundingSource = model.SelectedFundingSource!.Value });
         }
 
         private static (string Title, string Advice, string ValidationError) GetTriageSelectionContent(TriageOption option)

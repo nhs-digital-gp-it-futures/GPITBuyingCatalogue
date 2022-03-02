@@ -14,15 +14,15 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.Associat
         [Theory]
         [CommonAutoData]
         public static void WithValidArguments_PropertiesCorrectlySet(
-            string odsCode,
+            string internalOrgId,
             string solutionName,
             List<CataloguePrice> prices)
         {
             prices.ForEach(cp => cp.CurrencyCode = "GBP");
-            var model = new SelectAssociatedServicePriceModel(odsCode, solutionName, prices);
+            var model = new SelectAssociatedServicePriceModel(internalOrgId, solutionName, prices);
 
             model.Title.Should().Be($"List price for {solutionName}");
-            model.InternalOrgId.Should().Be(odsCode);
+            model.InternalOrgId.Should().Be(internalOrgId);
             model.Prices.Should().HaveCount(prices.Count);
             model.Prices.First().CataloguePriceId.Should().Be(prices.First().CataloguePriceId);
             model.Prices.First().Description.Should()

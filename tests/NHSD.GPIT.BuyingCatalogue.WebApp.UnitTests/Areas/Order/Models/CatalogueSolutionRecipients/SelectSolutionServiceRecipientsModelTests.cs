@@ -46,10 +46,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.Catalogu
         [Theory]
         [CommonAutoData]
         public static void WithNoSelectionMode_PropertiesCorrectlySet(
-            string odsCode,
+            string internalOrgId,
             CreateOrderItemModel state)
         {
-            var model = new SelectSolutionServiceRecipientsModel(odsCode, state, null);
+            var model = new SelectSolutionServiceRecipientsModel(internalOrgId, state, null);
 
             model.SelectionPrompt.Should().Be("Select all");
             model.SelectionParameter.Should().Be("all");
@@ -59,10 +59,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.Catalogu
         [Theory]
         [CommonAutoData]
         public static void WithAllSelectionMode_PropertiesCorrectlySet(
-            string odsCode,
+            string internalOrgId,
             CreateOrderItemModel state)
         {
-            var model = new SelectSolutionServiceRecipientsModel(odsCode, state, "all");
+            var model = new SelectSolutionServiceRecipientsModel(internalOrgId, state, "all");
 
             model.SelectionPrompt.Should().Be("Deselect all");
             model.SelectionParameter.Should().Be("none");
@@ -72,10 +72,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.Catalogu
         [Theory]
         [CommonAutoData]
         public static void WithNoneSelectionMode_PropertiesCorrectlySet(
-            string odsCode,
+            string internalOrgId,
             CreateOrderItemModel state)
         {
-            var model = new SelectSolutionServiceRecipientsModel(odsCode, state, "none");
+            var model = new SelectSolutionServiceRecipientsModel(internalOrgId, state, "none");
 
             model.SelectionPrompt.Should().Be("Select all");
             model.SelectionParameter.Should().Be("all");

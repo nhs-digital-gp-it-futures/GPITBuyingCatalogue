@@ -10,8 +10,11 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Routing;
 using Moq;
+using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
+using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Models;
+using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Orders;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Organisations;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Session;
 using NHSD.GPIT.BuyingCatalogue.Test.Framework.AutoFixtureCustomisations;
@@ -44,19 +47,19 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers
         [Theory]
         [CommonAutoData]
         public static async Task Get_SelectAdditionalServiceRecipients_StateHasRecipients_ReturnsExpectedResult(
-            string odsCode,
+            string internalOrgId,
             string selectionMode,
             CreateOrderItemModel state,
             [Frozen] Mock<IOrderSessionService> orderSessionServiceMock,
             AdditionalServiceRecipientsController controller)
         {
-            var model = new SelectAdditionalServiceRecipientsModel(odsCode, state, selectionMode);
+            var model = new SelectAdditionalServiceRecipientsModel(internalOrgId, state, selectionMode);
 
             orderSessionServiceMock
                 .Setup(s => s.GetOrderStateFromSession(state.CallOffId))
                 .Returns(state);
 
-            var actualResult = await controller.SelectAdditionalServiceRecipients(odsCode, state.CallOffId, selectionMode);
+            var actualResult = await controller.SelectAdditionalServiceRecipients(internalOrgId, state.CallOffId, selectionMode);
 
             orderSessionServiceMock.VerifyAll();
 
@@ -67,7 +70,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers
         [Theory]
         [CommonAutoData]
         public static async Task Get_SelectAdditionalServiceRecipients_StateDoesNotHaveRecipients_ReturnsExpectedResult(
-            string odsCode,
+            string internalOrgId,
             string selectionMode,
             [Frozen] IReadOnlyList<ServiceRecipient> recipients,
             CreateOrderItemModel state,
@@ -79,6 +82,48 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers
                 .Select(r => new OrderItemRecipientModel(r))
                 .ToList();
 
+            var model = new SelectAdditionalServiceRecipientsModel(internalOrgId, state, selectionMode);
+
+            state.ServiceRecipients = null;
+
+            orderSessionServiceMock
+                .Setup(s => s.GetOrderStateFromSession(state.CallOffId))
+                .Returns(state);
+
+            odsServiceMock
+                .Setup(s => s.GetServiceRecipientsByParentInternalIdentifier(internalOrgId))
+                .ReturnsAsync(recipients);
+
+            var actualResult = await controller.SelectAdditionalServiceRecipients(internalOrgId, state.CallOffId, selectionMode);
+
+            orderSessionServiceMock.VerifyAll();
+            odsServiceMock.VerifyAll();
+
+            actualResult.Should().BeOfType<ViewResult>();
+            actualResult.As<ViewResult>().ViewData.Model.Should().BeEquivalentTo(model);
+        }
+
+        [Theory]
+        [CommonAutoData]
+        public static async Task Get_SelectAdditionalServiceRecipients_StateDoesNotHaveRecipients_SetsSelectedOnServiceRecipients(
+            string internalOrgId,
+            string selectionMode,
+            [Frozen] IReadOnlyList<ServiceRecipient> recipients,
+            CatalogueItemId catalogueItemId,
+            CreateOrderItemModel state,
+            OrderItem orderItem,
+            [Frozen] Mock<IOdsService> odsServiceMock,
+            [Frozen] Mock<IOrderItemService> orderItemServiceMock,
+            [Frozen] Mock<IOrderSessionService> orderSessionServiceMock,
+            AdditionalServiceRecipientsController controller)
+        {
+            state.CatalogueItemId = catalogueItemId;
+            state.ServiceRecipients = recipients
+                .Select(r => new OrderItemRecipientModel(r) { Selected = true })
+                .ToList();
+
+            var model = new SelectAdditionalServiceRecipientsModel(internalOrgId, state, selectionMode);
+
             var model = new SelectAdditionalServiceRecipientsModel(odsCode, state, selectionMode);
 
             orderSessionServiceMock
@@ -87,11 +132,26 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers
 
             state.ServiceRecipients = null;
 
+            orderSessionServiceMock
+                .Setup(s => s.GetOrderStateFromSession(state.CallOffId))
+                .Returns(state);
+
             odsServiceMock
-                .Setup(s => s.GetServiceRecipientsByParentInternalIdentifier(odsCode))
+                .Setup(s => s.GetServiceRecipientsByParentInternalIdentifier(internalOrgId))
                 .ReturnsAsync(recipients);
 
-            var actualResult = await controller.SelectAdditionalServiceRecipients(odsCode, state.CallOffId, selectionMode);
+            orderItem.CatalogueItemId = catalogueItemId;
+            orderItem.SetRecipients(recipients.Select(x => new OrderItemRecipient { OdsCode = x.OrgId, }));
+
+            orderItemServiceMock
+                .Setup(x => x.GetOrderItems(state.CallOffId, internalOrgId, CatalogueItemType.Solution))
+                .ReturnsAsync(new List<OrderItem> { orderItem });
+
+            var actualResult = await controller.SelectAdditionalServiceRecipients(internalOrgId, state.CallOffId, selectionMode);
+
+            orderSessionServiceMock.VerifyAll();
+            orderItemServiceMock.VerifyAll();
+            odsServiceMock.VerifyAll();
 
             orderSessionServiceMock.VerifyAll();
             odsServiceMock.VerifyAll();

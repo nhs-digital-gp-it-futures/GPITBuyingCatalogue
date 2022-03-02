@@ -10,10 +10,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.CatalogueSolutions
         {
         }
 
-        public SelectSolutionModel(string odsCode, CallOffId callOffId, List<CatalogueItem> solutions, CatalogueItemId? selectedSolutionId)
+        public SelectSolutionModel(string internalOrgId, CallOffId callOffId, List<CatalogueItem> solutions, CatalogueItemId? selectedSolutionId)
         {
             Title = $"Add a Catalogue Solution for {callOffId}";
-            InternalOrgId = odsCode;
+            InternalOrgId = internalOrgId;
             Solutions = solutions;
             SelectedSolutionId = selectedSolutionId;
         }

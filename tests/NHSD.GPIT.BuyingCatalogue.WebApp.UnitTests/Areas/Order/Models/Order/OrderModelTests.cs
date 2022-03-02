@@ -13,14 +13,14 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.Order
         [Theory]
         [CommonAutoData]
         public static void WithValidArguments_PropertiesCorrectlySet(
-            string odsCode,
+            string internalOrgId,
             AspNetUser aspNetUser,
             EntityFramework.Ordering.Models.Order order,
             OrderTaskList orderSections)
         {
             order.LastUpdatedByUser = aspNetUser;
 
-            var model = new OrderModel(odsCode, order, orderSections);
+            var model = new OrderModel(internalOrgId, order, orderSections);
 
             model.SectionStatuses.Should().BeEquivalentTo(orderSections);
             model.Title.Should().Be($"Order {order.CallOffId}");
@@ -33,10 +33,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.Order
         [Theory]
         [CommonAutoData]
         public static void WithNoOrder_PropertiesCorrectlySet(
-            string odsCode,
+            string internalOrgId,
             OrderTaskList orderSections)
         {
-            var model = new OrderModel(odsCode, null, orderSections);
+            var model = new OrderModel(internalOrgId, null, orderSections);
 
             model.SectionStatuses.Should().BeEquivalentTo(orderSections);
             model.Title.Should().Be("New order");

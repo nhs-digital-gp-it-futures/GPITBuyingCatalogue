@@ -1,30 +1,43 @@
-﻿@model NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.FundingSource.FundingSourceModel;
+﻿@using NHSD.GPIT.BuyingCatalogue.WebApp.Controllers
+@model NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.FundingSource.ConfirmFundingSourceModel
 @{
-    ViewBag.Title = Model.Title;
+    ViewBag.Title = "Confirm funding source";
 }
 
-<partial name="Partials/_BackLink" model="Model" />
-<div class="nhsuk-grid-row">
-    <div class="nhsuk-grid-column-two-thirds">
-        <nhs-validation-summary RadioId="FundingSourceOnlyGms"/>
-        <nhs-page-title title="@ViewBag.Title"
-                        advice="Explain how you’re paying for this order" />
-        <form method="post">
-            <input type="hidden" asp-for="@Model.BackLink" />
-            <input type="hidden" asp-for="@Model.BackLinkText" />
-            <input type="hidden" asp-for="@Model.InternalOrgId" />
-            <input type="hidden" asp-for="@Model.Title" />
-                        <nhs-fieldset-form-label asp-for="@Model"
-                                           label-text="Are you paying for this order in full using your GP IT Futures centrally held funding allocation?">
-                            <nhs-yesno-radio-buttons asp-for="FundingSourceOnlyGms" />
-                        </nhs-fieldset-form-label>
-            <nhs-inset-text>
-                <p>Only answer ‘Yes’ if you’re using your central funding allocation to pay for the entire value of this order. It’ll then be centrally processed and paid for out of your allocation.</p>
-                <p>If you answer ‘No’, the order can still be completed but you’ll need to contact the supplier to arrange payment.</p>
-                <p>In both cases completing your order will generate an order summary that you’ll need to include in the contract you send to the supplier.</p>
-                <p>If you’re intending to pay using a combination of your central allocation and any other funding sources, you’ll need to create separate orders for each of the funding sources you’re using.</p>
-            </nhs-inset-text>
-            <nhs-submit-button />
-        </form>
+<div>
+    <partial name="Partials/_BackLink" model="Model" />
+    <div class="nhsuk-grid-row nhsuk-u-margin-bottom-6">
+        <div class="nhsuk-grid-column-full">
+            <nhs-validation-summary RadioId="@nameof(Model.SelectedFundingSource)" />
+            <nhs-page-title title="@ViewBag.Title"
+                            caption="Order @Model.CallOffId"
+                            advice="Confirm the funding source you're using to pay for this order." />
+
+
+            <nhs-inset-text>If you want to pay using two different funding sources, you’ll need to create two separate orders.</nhs-inset-text>
+
+            <form method="post">
+                <input type="hidden" asp-for="BackLink" />
+                <input type="hidden" asp-for="BackLinkText" />
+
+                <nhs-fieldset-form-label asp-for="SelectedFundingSource">
+                    <nhs-radio-buttons asp-for="SelectedFundingSource"
+                                       values="Model.AvailableFundingSources.Cast<object>()"
+                                       value-name="Value"
+                                       display-name="Text" />
+                </nhs-fieldset-form-label>
+
+                <nhs-details label-text="What is central and local funding?" data-test-id="funding-inset">
+                    <b>Central funding</b>
+                    <p><br />Central funding means you’re using your centrally held allocation to pay for the order. Any solutions or services you order will be paid for by either NHS England or NHS Digital. The supplier will invoice the relevant organisation directly.</p>
+                    <p>You should make sure you have enough of your central allocation available to pay for your order before placing it.</p>
+
+                    <b>Local funding</b>
+                    <p><br />Local funding means your organisation will be paying for the order. The supplier will invoice you directly.</p>
+                </nhs-details>
+
+                <nhs-submit-button />
+            </form>
+        </div>
     </div>
 </div>
