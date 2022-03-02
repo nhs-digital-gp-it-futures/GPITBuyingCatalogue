@@ -49,13 +49,13 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers
                 [Frozen] Mock<IOrderSessionService> orderSessionServiceMock,
                 CatalogueSolutionRecipientsController controller)
         {
-            var model = new SelectSolutionServiceRecipientsModel(odsCode, state, selectionMode);
+            var model = new SelectSolutionServiceRecipientsModel(internalOrgId, state, selectionMode);
 
             orderSessionServiceMock
                 .Setup(s => s.GetOrderStateFromSession(state.CallOffId))
                 .Returns(state);
 
-            var actualResult = await controller.SelectSolutionServiceRecipients(odsCode, state.CallOffId, selectionMode);
+            var actualResult = await controller.SelectSolutionServiceRecipients(internalOrgId, state.CallOffId, selectionMode);
 
             orderSessionServiceMock.VerifyAll();
 
@@ -78,7 +78,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers
                 .Select(r => new OrderItemRecipientModel(r))
                 .ToList();
 
-            var model = new SelectSolutionServiceRecipientsModel(odsCode, state, selectionMode);
+            var model = new SelectSolutionServiceRecipientsModel(internalOrgId, state, selectionMode);
 
             orderSessionServiceMock
                 .Setup(s => s.GetOrderStateFromSession(state.CallOffId))
@@ -87,10 +87,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers
             state.ServiceRecipients = null;
 
             odsServiceMock
-                .Setup(s => s.GetServiceRecipientsByParentInternalIdentifier(odsCode))
+                .Setup(s => s.GetServiceRecipientsByParentInternalIdentifier(internalOrgId))
                 .ReturnsAsync(recipients);
 
-            var actualResult = await controller.SelectSolutionServiceRecipients(odsCode, state.CallOffId, selectionMode);
+            var actualResult = await controller.SelectSolutionServiceRecipients(internalOrgId, state.CallOffId, selectionMode);
 
             orderSessionServiceMock.VerifyAll();
             odsServiceMock.VerifyAll();
