@@ -39,11 +39,19 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Controllers
                 model.EmailAddress,
                 model.Message);
 
-            return RedirectToAction(nameof(ContactUsConfirmation));
+            return RedirectToAction(nameof(ContactUsConfirmation), new { contactReason = model.ContactMethod });
         }
 
         [HttpGet("contact-us/confirmation")]
-        public IActionResult ContactUsConfirmation() => View();
+        public IActionResult ContactUsConfirmation(ContactUsModel.ContactMethodTypes contactReason)
+        {
+            var model = new ContactUsConfirmationModel(contactReason)
+            {
+                BackLink = Url.Action(nameof(Index)),
+            };
+
+            return View(model);
+        }
 
         [HttpGet("accessibility-statement")]
         public IActionResult AccessibilityStatement() => View();

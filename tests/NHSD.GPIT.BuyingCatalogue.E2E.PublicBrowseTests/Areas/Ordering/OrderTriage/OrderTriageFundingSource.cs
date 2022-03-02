@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using FluentAssertions;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Objects.Common;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Objects.Ordering;
@@ -34,7 +35,10 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering.OrderTriage
         [Fact]
         public void OrderTriageFundingSource_AllSectionsDisplayed()
         {
-            CommonActions.PageTitle().Should().Be("What funding source are you using to pay for this order?".FormatForComparison());
+            using var context = GetEndToEndDbContext();
+            var organisation = context.Organisations.Single(o => string.Equals(o.InternalIdentifier, InternalOrgId));
+
+            CommonActions.PageTitle().Should().Be($"What funding source are you using to pay for this order? - {organisation.Name}".FormatForComparison());
             CommonActions.SaveButtonDisplayed().Should().BeTrue();
             CommonActions.GoBackLinkDisplayed().Should().BeTrue();
 
