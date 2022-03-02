@@ -18,5 +18,9 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Objects.Ordering
         public static By FundingSource => By.Id("selected-funding-source");
 
         public static By FundingSourceError => By.Id("selected-funding-source-error");
+
+        public static By OrderValueError => By.Id("order-triage-error");
+
+        public static By DueDiligenceError => By.Id("triage-due-diligence-error");
     }
 }

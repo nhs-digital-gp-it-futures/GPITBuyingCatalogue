@@ -75,11 +75,12 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
         }
 
         [HttpGet("~/order/organisation/{internalOrgId}/order/ready-to-start")]
-        public IActionResult ReadyToStart(string internalOrgId, TriageOption? option = null, FundingSource? fundingSource = null)
+        public async Task<IActionResult> ReadyToStart(string internalOrgId, TriageOption? option = null, FundingSource? fundingSource = null)
         {
-            var model = new ReadyToStartModel
+            var organisation = await organisationsService.GetOrganisationByInternalIdentifier(internalOrgId);
+
+            var model = new ReadyToStartModel(organisation)
             {
-                InternalOrgId = internalOrgId,
                 Option = option,
                 BackLink = Url.Action(
                     nameof(OrderTriageController.TriageFunding),
