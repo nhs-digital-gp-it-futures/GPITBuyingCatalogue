@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using FluentAssertions;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Objects.Ordering;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Utils;
@@ -47,6 +48,9 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering.OrderTriage
         [InlineData(TriageOption.Over250k, "Have you sent out Invitations to Tender to suppliers?")]
         public void TriageSelection_ShowsCorrectTitle(TriageOption option, string title)
         {
+            using var context = GetEndToEndDbContext();
+            var organisation = context.Organisations.Single(o => string.Equals(o.InternalIdentifier, InternalOrgId));
+
             var parameters = new Dictionary<string, string>
             {
                 { nameof(InternalOrgId), InternalOrgId },
@@ -58,7 +62,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering.OrderTriage
                  nameof(OrderTriageController.TriageSelection),
                  parameters);
 
-            CommonActions.PageTitle().Should().BeEquivalentTo(title.FormatForComparison());
+            CommonActions.PageTitle().Should().BeEquivalentTo($"{title} - {organisation.Name}".FormatForComparison());
         }
 
         [Theory]
@@ -87,6 +91,9 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering.OrderTriage
         [InlineData(TriageOption.Over250k, "Orders with a value over £250k")]
         public void StepsNotCompleted_LoadsCorrectPage(TriageOption option, string title)
         {
+            using var context = GetEndToEndDbContext();
+            var organisation = context.Organisations.Single(o => string.Equals(o.InternalIdentifier, InternalOrgId));
+
             var parameters = new Dictionary<string, string>
             {
                 { nameof(InternalOrgId), InternalOrgId },
@@ -98,7 +105,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering.OrderTriage
                 nameof(OrderTriageController.StepsNotCompleted),
                 parameters);
 
-            CommonActions.PageTitle().Should().BeEquivalentTo(title.FormatForComparison());
+            CommonActions.PageTitle().Should().BeEquivalentTo($"{title} - {organisation.Name}".FormatForComparison());
         }
 
         [Theory]
@@ -158,8 +165,14 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering.OrderTriage
         {
             CommonActions.ClickSave();
 
-            CommonActions.ErrorSummaryDisplayed();
-            CommonActions.ErrorSummaryLinksExist();
+            CommonActions.ErrorSummaryDisplayed().Should().BeTrue();
+            CommonActions.ErrorSummaryLinksExist().Should().BeTrue();
+
+            CommonActions.ElementShowingCorrectErrorMessage(
+                OrderTriageObjects.DueDiligenceError,
+                "Error: Select yes if you’ve identified what you want to order")
+                .Should()
+                .BeTrue();
         }
     }
 }

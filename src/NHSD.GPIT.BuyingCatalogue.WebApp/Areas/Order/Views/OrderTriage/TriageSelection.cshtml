@@ -7,15 +7,17 @@
     <partial name="Partials/_BackLink" model="Model" />
     <div class="nhsuk-grid-row nhsuk-u-margin-bottom-6">
         <div class="nhsuk-grid-column-full">
-            <nhs-validation-summary RadioId="@nameof(Model.Selected))" />
+            <nhs-validation-summary RadioId="@nameof(Model.Selected)" />
             <nhs-page-title title="@ViewBag.Title"
-                            advice="@Model.Advice" />
+                            advice="@Model.Advice"
+                            caption="@Model.OrganisationName" />
 
             <form method="post">
                 <input type="hidden" asp-for="BackLink" />
                 <input type="hidden" asp-for="BackLinkText" />
                 <input type="hidden" asp-for="Title" />
                 <input type="hidden" asp-for="Advice" />
+                <input type="hidden" asp-for="OrganisationName" />
                 <nhs-fieldset-form-label asp-for="@Model">
                     <nhs-radio-buttons asp-for="Selected"
                                        values="Model.SelectListItems.Cast<object>()"
