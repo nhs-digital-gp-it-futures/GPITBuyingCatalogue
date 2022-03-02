@@ -43,7 +43,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Controllers
         }
 
         [HttpGet("contact-us/confirmation")]
-        public IActionResult ContactUsConfirmation(ContactUsModel.ContactMethodTypes contactReason) {
+        public IActionResult ContactUsConfirmation(ContactUsModel.ContactMethodTypes contactReason)
+        {
             var model = new ContactUsConfirmationModel(contactReason)
             {
                 BackLink = Url.Action(nameof(Index)),
