@@ -23,7 +23,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.PublicBrowse.Homepage
         [Fact]
         public void ContactUs_AllSectionsDisplayed()
         {
-            CommonActions.PageTitle().Should().Be("Contact the NHS App team".FormatForComparison());
+            CommonActions.PageTitle().Should().Be("Contact the NHS Buying Catalogue Team".FormatForComparison());
             CommonActions
                 .LedeText()
                 .Should()
