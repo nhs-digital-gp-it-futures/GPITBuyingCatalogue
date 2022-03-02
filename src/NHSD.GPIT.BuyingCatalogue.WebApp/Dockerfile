@@ -3,6 +3,10 @@
 FROM mcr.microsoft.com/dotnet/aspnet:6.0-alpine AS base
 RUN apk update && apk add icu-libs
 RUN apk --no-cache upgrade && apk add --no-cache chromium
+
+#UrlValidator. See https://github.com/dotnet/SqlClient/issues/776
+RUN sed -i '1i openssl_conf = default_conf' /etc/ssl/openssl.cnf && echo -e "\n[ default_conf ]\nssl_conf = ssl_sect\n[ssl_sect]\nsystem_default = system_default_sect\n[system_default_sect]\nMinProtocol = TLSv1\nCipherString = DEFAULT:@SECLEVEL=1" >> /etc/ssl/openssl.cnf
+
 ENV DOTNET_SYSTEM_GLOBALIZATION_INVARIANT=false
 WORKDIR /app
 EXPOSE 80
