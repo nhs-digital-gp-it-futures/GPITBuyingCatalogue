@@ -12,6 +12,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Validation
     [ExcludeFromCodeCoverage(Justification = "Contains extension methods for FluentValidation's IRuleBuilderOptions")]
     public static class FluentValidationExtensions
     {
+        public const string InvalidUrlPrefixErrorMessage = "Enter a prefix to the URL, either http or https";
+        public const string InvalidUrlErrorMessage = "Enter a valid URL";
+
         public static IRuleBuilderOptions<T, TProperty> OverridePropertyName<T, TProperty>(
             this IRuleBuilderOptions<T, TProperty> rule,
             params Expression<Func<T, object>>[] expressions)
@@ -55,9 +58,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Validation
             => ruleBuilder
                 .Cascade(CascadeMode.Stop)
                 .Must(BePrefixedCorrectly)
-                .WithMessage("Enter a prefix to the URL, either http or https")
+                .WithMessage(InvalidUrlPrefixErrorMessage)
                 .MustAsync((link, _) => urlValidator.IsValidUrl(link))
-                .WithMessage("Enter a valid URL");
+                .WithMessage(InvalidUrlErrorMessage);
 
         private static bool BePrefixedCorrectly(string url) => url.StartsWith("http") || url.StartsWith("https");
     }
