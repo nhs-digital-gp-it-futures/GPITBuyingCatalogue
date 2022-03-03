@@ -91,7 +91,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.ActionFilters
         }
 
         [Fact]
-        public async Task OrderMatchesUsersPrimaryOdsCode_ReturnsOk()
+        public async Task OrderMatchesUsersPrimaryInternalOrgId_ReturnsOk()
         {
             httpRequestMock.Setup(r => r.Path).Returns("/order/organisation/ABC/edit");
 
@@ -100,7 +100,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.ActionFilters
                          new Claim[]
                          {
                              new("organisationFunction", "Buyer"),
-                             new("primaryOrganisationOdsCode", "ABC"),
+                             new("primaryOrganisationInternalIdentifier", "ABC"),
                          })));
 
             var ordersActionFilter = new OrdersActionFilter(new Mock<ILogWrapper<OrdersActionFilter>>().Object);
@@ -111,7 +111,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.ActionFilters
         }
 
         [Fact]
-        public async Task OrderMatchesUsersSecondaryOdsCode_ReturnsOk()
+        public async Task OrderMatchesUsersSecondaryInternalOrgId_ReturnsOk()
         {
             httpRequestMock.Setup(r => r.Path).Returns("/order/organisation/GHI/edit");
 
@@ -120,10 +120,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.ActionFilters
                          new Claim[]
                          {
                              new("organisationFunction", "Buyer"),
-                             new("primaryOrganisationOdsCode", "ABC"),
-                             new("secondaryOrganisationOdsCode", "DEF"),
-                             new("secondaryOrganisationOdsCode", "GHI"),
-                             new("secondaryOrganisationOdsCode", "JKL"),
+                             new("primaryOrganisationInternalIdentifier", "ABC"),
+                             new("secondaryOrganisationInternalIdentifier", "DEF"),
+                             new("secondaryOrganisationInternalIdentifier", "GHI"),
+                             new("secondaryOrganisationInternalIdentifier", "JKL"),
                          })));
 
             var ordersActionFilter = new OrdersActionFilter(new Mock<ILogWrapper<OrdersActionFilter>>().Object);
@@ -134,10 +134,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.ActionFilters
         }
 
         [Fact]
-        public async Task OrderDoesntMatch_UsersPrimaryOrSecondaryOdsCodes_ReturnsNotFoundResult()
+        public async Task OrderDoesntMatch_UsersPrimaryOrSecondaryInternalOrgIds_ReturnsNotFoundResult()
         {
-            const string odsCode = "MNO";
-            var requestPath = $"/order/organisation/{odsCode}/edit";
+            const string internalOrgId = "MNO";
+            var requestPath = $"/order/organisation/{internalOrgId}/edit";
 
             httpRequestMock.Setup(r => r.Path).Returns(requestPath);
 
@@ -146,10 +146,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.ActionFilters
                          new Claim[]
                          {
                              new("organisationFunction", "Buyer"),
-                             new("primaryOrganisationOdsCode", "ABC"),
-                             new("secondaryOrganisationOdsCode", "DEF"),
-                             new("secondaryOrganisationOdsCode", "GHI"),
-                             new("secondaryOrganisationOdsCode", "JKL"),
+                             new("primaryOrganisationInternalIdentifier", "ABC"),
+                             new("secondaryOrganisationInternalIdentifier", "DEF"),
+                             new("secondaryOrganisationInternalIdentifier", "GHI"),
+                             new("secondaryOrganisationInternalIdentifier", "JKL"),
                          })));
 
             var mockLogger = new Mock<ILogWrapper<OrdersActionFilter>>();
@@ -160,7 +160,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.ActionFilters
             await ordersActionFilter.OnActionExecutionAsync(actionExecutingContext, () => Task.FromResult(actionExecutedContext));
 
             actionExecutingContext.Result.Should().BeOfType<NotFoundResult>();
-            mockLogger.Verify(l => l.LogWarning($"Attempt was made to access {requestPath} when user cannot access {odsCode}."), Times.Once);
+            mockLogger.Verify(l => l.LogWarning($"Attempt was made to access {requestPath} when user cannot access {internalOrgId}."), Times.Once);
         }
     }
 }

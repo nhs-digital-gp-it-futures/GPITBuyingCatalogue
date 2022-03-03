@@ -11,45 +11,45 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.Catalogu
         [Theory]
         [CommonAutoData]
         public static void WithValidArguments_NewOrder_PropertiesCorrectlySet(
-            string odsCode,
+            string internalOrgId,
             string selectionMode,
             CreateOrderItemModel state)
         {
             state.IsNewSolution = true;
             state.SkipPriceSelection = false;
 
-            var model = new SelectSolutionServiceRecipientsModel(odsCode, state, selectionMode);
+            var model = new SelectSolutionServiceRecipientsModel(internalOrgId, state, selectionMode);
 
-            model.BackLink.Should().Be($"/order/organisation/{odsCode}/order/{state.CallOffId}/catalogue-solutions/select/solution/price");
+            model.BackLink.Should().Be($"/order/organisation/{internalOrgId}/order/{state.CallOffId}/catalogue-solutions/select/solution/price");
             model.Title.Should().Be($"Service Recipients for {state.CatalogueItemName} for {state.CallOffId}");
-            model.OdsCode.Should().Be(odsCode);
+            model.InternalOrgId.Should().Be(internalOrgId);
             model.CallOffId.Should().Be(state.CallOffId);
         }
 
         [Theory]
         [CommonAutoData]
         public static void WithValidArguments_ExistingOrder_PropertiesCorrectlySet(
-            string odsCode,
+            string internalOrgId,
             string selectionMode,
             CreateOrderItemModel state)
         {
             state.IsNewSolution = false;
 
-            var model = new SelectSolutionServiceRecipientsModel(odsCode, state, selectionMode);
+            var model = new SelectSolutionServiceRecipientsModel(internalOrgId, state, selectionMode);
 
-            model.BackLink.Should().Be($"/order/organisation/{odsCode}/order/{state.CallOffId}/catalogue-solutions/{state.CatalogueItemId}");
+            model.BackLink.Should().Be($"/order/organisation/{internalOrgId}/order/{state.CallOffId}/catalogue-solutions/{state.CatalogueItemId}");
             model.Title.Should().Be($"Service Recipients for {state.CatalogueItemName} for {state.CallOffId}");
-            model.OdsCode.Should().Be(odsCode);
+            model.InternalOrgId.Should().Be(internalOrgId);
             model.CallOffId.Should().Be(state.CallOffId);
         }
 
         [Theory]
         [CommonAutoData]
         public static void WithNoSelectionMode_PropertiesCorrectlySet(
-            string odsCode,
+            string internalOrgId,
             CreateOrderItemModel state)
         {
-            var model = new SelectSolutionServiceRecipientsModel(odsCode, state, null);
+            var model = new SelectSolutionServiceRecipientsModel(internalOrgId, state, null);
 
             model.SelectionPrompt.Should().Be("Select all");
             model.SelectionParameter.Should().Be("all");
@@ -59,10 +59,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.Catalogu
         [Theory]
         [CommonAutoData]
         public static void WithAllSelectionMode_PropertiesCorrectlySet(
-            string odsCode,
+            string internalOrgId,
             CreateOrderItemModel state)
         {
-            var model = new SelectSolutionServiceRecipientsModel(odsCode, state, "all");
+            var model = new SelectSolutionServiceRecipientsModel(internalOrgId, state, "all");
 
             model.SelectionPrompt.Should().Be("Deselect all");
             model.SelectionParameter.Should().Be("none");
@@ -72,10 +72,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.Catalogu
         [Theory]
         [CommonAutoData]
         public static void WithNoneSelectionMode_PropertiesCorrectlySet(
-            string odsCode,
+            string internalOrgId,
             CreateOrderItemModel state)
         {
-            var model = new SelectSolutionServiceRecipientsModel(odsCode, state, "none");
+            var model = new SelectSolutionServiceRecipientsModel(internalOrgId, state, "none");
 
             model.SelectionPrompt.Should().Be("Select all");
             model.SelectionParameter.Should().Be("all");

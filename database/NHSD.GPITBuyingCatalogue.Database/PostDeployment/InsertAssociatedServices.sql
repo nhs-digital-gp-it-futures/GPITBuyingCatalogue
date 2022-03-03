@@ -32,9 +32,9 @@ BEGIN
                 N'The typical unit of order for practice mergers and splits is likely to be on an individual basis (one). This is a fixed fee per practice regardless of size.',
                 @now, @bobUser);
 
-    INSERT INTO catalogue.CataloguePrices (CatalogueItemId, ProvisioningTypeId, CataloguePriceTypeId, PricingUnitId, TimeUnitId, CurrencyCode, LastUpdated, Price)
-         VALUES (@associatedServiceId, @declarative, @flat, @course, NULL, @gbp, @now, 99.99),
-                (@associatedServiceId, @onDemand, @flat, @halfDay, NULL, @gbp, @now, 150.00);
+    INSERT INTO catalogue.CataloguePrices (CatalogueItemId, ProvisioningTypeId, CataloguePriceTypeId, PricingUnitId, TimeUnitId, CurrencyCode, LastUpdated, Price, PublishedStatusId)
+         VALUES (@associatedServiceId, @declarative, @flat, @course, NULL, @gbp, @now, 99.99, 3),
+                (@associatedServiceId, @onDemand, @flat, @halfDay, NULL, @gbp, @now, 150.00, 3);
 
     SET @associatedServiceId = '100000-S-002';
 
@@ -47,8 +47,8 @@ BEGIN
                 N'Dependent on the issue, a typical range is 1-7 days. Additional Engineering is available and would be dependant on scale and user needs. This could be one day or purchased in bulk.',
                 @now, @bobUser);
 
-    INSERT INTO catalogue.CataloguePrices (CatalogueItemId, ProvisioningTypeId, CataloguePriceTypeId, PricingUnitId, TimeUnitId, CurrencyCode, LastUpdated, Price)
-         VALUES (@associatedServiceId, @onDemand, @tiered, @hour, NULL, @gbp, @now, 595);
+    INSERT INTO catalogue.CataloguePrices (CatalogueItemId, ProvisioningTypeId, CataloguePriceTypeId, PricingUnitId, TimeUnitId, CurrencyCode, LastUpdated, Price, PublishedStatusId)
+         VALUES (@associatedServiceId, @onDemand, @tiered, @hour, NULL, @gbp, @now, 595, 3);
 
     DECLARE @tieredPriceId AS int = (SELECT CataloguePriceId FROM catalogue.CataloguePrices WHERE CatalogueItemId = @associatedServiceId AND CataloguePriceTypeId = @tiered);
 
@@ -67,8 +67,8 @@ BEGIN
                  N'The typical volume would be an average of eight thousand which is the typical practice capitation. The largest practice size is the maximum.',
                 @now, @bobUser);
 
-    INSERT INTO catalogue.CataloguePrices (CatalogueItemId, ProvisioningTypeId, CataloguePriceTypeId, PricingUnitId, TimeUnitId, CurrencyCode, LastUpdated, Price)
-         VALUES (@associatedServiceId, @onDemand, @flat, @hour, NULL, @gbp, @now, 4.35);
+    INSERT INTO catalogue.CataloguePrices (CatalogueItemId, ProvisioningTypeId, CataloguePriceTypeId, PricingUnitId, TimeUnitId, CurrencyCode, LastUpdated, Price, PublishedStatusId)
+         VALUES (@associatedServiceId, @onDemand, @flat, @hour, NULL, @gbp, @now, 4.35, 3);
 
 
      SET @associatedServiceId = '100000-S-004';
@@ -82,8 +82,8 @@ BEGIN
                 N'The typical volume would be an average of eight thousand which is the typical practice capitation. The largest practice size is the maximum.',
                 @now, @bobUser);
 
-    INSERT INTO catalogue.CataloguePrices (CatalogueItemId, ProvisioningTypeId, CataloguePriceTypeId, PricingUnitId, TimeUnitId, CurrencyCode, LastUpdated, Price)
-         VALUES (@associatedServiceId, @onDemand, @flat, @hour, NULL, @gbp, @now, 1.25);
+    INSERT INTO catalogue.CataloguePrices (CatalogueItemId, ProvisioningTypeId, CataloguePriceTypeId, PricingUnitId, TimeUnitId, CurrencyCode, LastUpdated, Price, PublishedStatusId)
+         VALUES (@associatedServiceId, @onDemand, @flat, @hour, NULL, @gbp, @now, 1.25, 3);
 
 
      SET @associatedServiceId = '100000-S-005';
@@ -97,8 +97,8 @@ BEGIN
                  N'Project Management resource is anticipated to be low for standard installations. For more complex deployments it is anticipated to be higher. The minimum is 1 day, maximum is 10 days per practice',
                 @now, @bobUser);
 
-    INSERT INTO catalogue.CataloguePrices (CatalogueItemId, ProvisioningTypeId, CataloguePriceTypeId, PricingUnitId, TimeUnitId, CurrencyCode, LastUpdated, Price)
-         VALUES (@associatedServiceId, @onDemand, @flat, @hour, NULL, @gbp, @now, 205);
+    INSERT INTO catalogue.CataloguePrices (CatalogueItemId, ProvisioningTypeId, CataloguePriceTypeId, PricingUnitId, TimeUnitId, CurrencyCode, LastUpdated, Price, PublishedStatusId)
+         VALUES (@associatedServiceId, @onDemand, @flat, @hour, NULL, @gbp, @now, 205, 3);
 
 END;
 GO

@@ -42,6 +42,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp
             {
                 options.Filters.Add(typeof(ActionArgumentNullFilter));
                 options.Filters.Add(typeof(OrdersActionFilter));
+                options.Filters.Add(typeof(CookieConsentActionFilter));
                 options.Filters.Add<SerilogMvcLoggingAttribute>();
             }).AddControllersAsServices();
 
@@ -70,6 +71,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp
                 .ConfigureGovNotify(Configuration)
                 .ConfigureNominateOrganisationMessageSettings(Configuration)
                 .ConfigureOrderMessageSettings(Configuration)
+                .ConfigureProcurementHubMessageSettings(Configuration)
                 .ConfigureRequestAccountMessageSettings(Configuration)
                 .ConfigureConsentCookieSettings(Configuration)
                 .ConfigureAnalyticsSettings(Configuration);
@@ -80,9 +82,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp
 
             services.ConfigureRegistration(Configuration);
 
-            services.ConfigureOds(Configuration);
+            services.ConfigureContactUs(Configuration);
 
-            services.ConfigureEmail(Configuration);
+            services.ConfigureOds(Configuration);
 
             services.ConfigureDomainName();
 
@@ -151,8 +153,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp
             app.UseStatusCodePagesWithReExecute("/Home/Error", "?statusCode={0}");
 
             app.UseHttpsRedirection();
-
-            app.UseMiddleware<Framework.Middleware.CookieConsent.CookieConsentMiddleware>();
 
             app.UseStaticFiles(new StaticFileOptions()
             {

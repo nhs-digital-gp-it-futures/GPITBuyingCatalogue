@@ -25,20 +25,20 @@ namespace NHSD.GPIT.BuyingCatalogue.Framework.Extensions
             return GetClaimValue(user, Constants.CatalogueClaims.UserDisplayName);
         }
 
-        public static string GetPrimaryOdsCode(this ClaimsPrincipal user)
+        public static string GetPrimaryOrganisationInternalIdentifier(this ClaimsPrincipal user)
         {
             if (user is null)
                 throw new ArgumentNullException(nameof(user));
 
-            return GetClaimValue(user, Constants.CatalogueClaims.PrimaryOrganisationOdsCode);
+            return GetClaimValue(user, Constants.CatalogueClaims.PrimaryOrganisationInternalIdentifier);
         }
 
-        public static IReadOnlyList<string> GetSecondaryOdsCodes(this ClaimsPrincipal user)
+        public static IReadOnlyList<string> GetSecondaryOrganisationInternalIdentifiers(this ClaimsPrincipal user)
         {
             if (user is null)
                 throw new ArgumentNullException(nameof(user));
 
-            return user.Claims.Where(c => c.Type.EqualsIgnoreCase(Constants.CatalogueClaims.SecondaryOrganisationOdsCode))
+            return user.Claims.Where(c => c.Type.EqualsIgnoreCase(Constants.CatalogueClaims.SecondaryOrganisationInternalIdentifier))
                 .Select(c => c.Value)
                 .ToList();
         }

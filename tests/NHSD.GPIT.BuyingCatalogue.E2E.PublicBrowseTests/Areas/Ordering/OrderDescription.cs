@@ -15,13 +15,13 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering
     public sealed class OrderDescription
         : BuyerTestBase, IClassFixture<LocalWebApplicationFactory>
     {
-        private const string OdsCode = "03F";
+        private const string InternalOrgId = "03F";
         private static readonly CallOffId CallOffId = new(90001, 1);
 
         private static readonly Dictionary<string, string> Parameters =
             new()
             {
-                { nameof(OdsCode), OdsCode },
+                { nameof(InternalOrgId), InternalOrgId },
                 { nameof(CallOffId), CallOffId.ToString() },
             };
 
@@ -46,7 +46,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering
             await using var context = GetEndToEndDbContext();
             var order = await context.Orders.SingleAsync(o => o.Id == CallOffId.Id);
 
-            CommonActions.InputValueEqualToo(Objects.Ordering.OrderDescription.DescriptionInput, order.Description);
+            CommonActions.InputValueEqualTo(Objects.Ordering.OrderDescription.DescriptionInput, order.Description);
         }
 
         [Fact]

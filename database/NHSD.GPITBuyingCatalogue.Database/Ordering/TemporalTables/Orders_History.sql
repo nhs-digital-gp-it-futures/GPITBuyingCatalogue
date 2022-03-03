@@ -9,6 +9,7 @@
     SupplierContactId int NULL,
     CommencementDate date NULL,
     FundingSourceOnlyGMS bit NULL,
+    ConfirmedFundingSource bit NULL,
     Created datetime2 NOT NULL,
     LastUpdated datetime2 NOT NULL,
     LastUpdatedBy int NULL,

@@ -11,18 +11,18 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.OrderDescription
         {
         }
 
-        public OrderDescriptionModel(string odsCode, string organisationName)
+        public OrderDescriptionModel(string internalOrgId, string organisationName)
         {
             Title = "Order description";
-            OdsCode = odsCode;
+            InternalOrgId = internalOrgId;
             Caption = organisationName;
             Advice = NewOrderAdviceText;
         }
 
-        public OrderDescriptionModel(string odsCode, EntityFramework.Ordering.Models.Order order)
+        public OrderDescriptionModel(string internalOrgId, EntityFramework.Ordering.Models.Order order)
         {
             Title = "Order description";
-            OdsCode = odsCode;
+            InternalOrgId = internalOrgId;
             Caption = $"Order {order?.CallOffId}";
             Description = order?.Description;
             Advice = AdviceText;

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Objects.Common;
 using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
@@ -58,6 +59,12 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Actions.Common
             Driver
                 .FindElements(CommonSelectors.RadioButtonItems)
                 .Select(e => e.Text);
+
+        internal bool IsRadioButtonChecked(string radioButtonValue) =>
+            Driver
+                .FindElements(CommonSelectors.RadioButtonInputs)
+                .Where(r => r.GetAttribute("Value") == radioButtonValue)
+                .Any(r => r.Selected);
 
         internal IEnumerable<string> GetTableRowCells(int cellIndex = 0)
         {
@@ -230,7 +237,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Actions.Common
         internal bool ElementTextContains(By targetElement, string expectedText) =>
             Driver.FindElement(targetElement).Text.Contains(expectedText);
 
-        internal bool InputValueEqualToo(By targetElement, string expectedText) =>
+        internal bool InputValueEqualTo(By targetElement, string expectedText) =>
             Driver.FindElement(targetElement).GetAttribute("value").EqualsIgnoreWhiteSpace(expectedText);
 
         internal bool InputElementIsEmpty(By targetElement) =>
@@ -280,5 +287,14 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Actions.Common
         internal void WaitUntilElementExists(By element) => Wait.Until(d => d.FindElement(element));
 
         internal void WaitUntilElementIsDisplayed(By element) => Wait.Until(d => d.FindElement(element).Displayed);
+
+        internal async Task InputCharactersWithDelay(By inputBox, string input, int intervalMs = 200)
+        {
+            foreach (var character in input)
+            {
+                ElementAddValue(inputBox, $"{character}");
+                await Task.Delay(intervalMs);
+            }
+        }
     }
 }

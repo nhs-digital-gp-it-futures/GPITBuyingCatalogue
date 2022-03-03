@@ -17,13 +17,13 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
         public ServiceRecipientService(BuyingCatalogueDbContext context) =>
             this.context = context ?? throw new ArgumentNullException(nameof(context));
 
-        public async Task<List<ServiceRecipient>> GetAllOrderItemRecipients(CallOffId callOffId, string odsCode)
+        public async Task<List<ServiceRecipient>> GetAllOrderItemRecipients(CallOffId callOffId, string internalOrgId)
         {
             if (!await context.Orders.AnyAsync(o => o.Id == callOffId.Id))
                 return null;
 
             return await context.Orders
-                .Where(o => o.Id == callOffId.Id && o.OrderingParty.OdsCode == odsCode)
+                .Where(o => o.Id == callOffId.Id && o.OrderingParty.InternalIdentifier == internalOrgId)
                 .SelectMany(o => o.OrderItems)
                 .Where(o => o.CatalogueItem.CatalogueItemType == CatalogueItemType.Solution)
                 .SelectMany(o => o.OrderItemRecipients)

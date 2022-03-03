@@ -18,7 +18,13 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Configuration
             builder.Property(c => c.FirstName).HasMaxLength(100);
             builder.Property(c => c.LastName).HasMaxLength(100);
             builder.Property(c => c.Phone).HasMaxLength(35);
+            builder.Property(c => c.Department).HasMaxLength(50);
             builder.Property(c => c.LastUpdated).HasDefaultValue(DateTime.UtcNow);
+
+            builder.HasOne(c => c.SupplierContact)
+                .WithMany()
+                .HasForeignKey(c => c.SupplierContactId)
+                .HasConstraintName("FK_Contacts_SupplierContactId");
 
             builder.HasOne(c => c.LastUpdatedByUser)
                 .WithMany()

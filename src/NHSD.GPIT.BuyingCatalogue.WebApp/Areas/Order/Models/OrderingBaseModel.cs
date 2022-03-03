@@ -8,6 +8,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models
     {
         public string Title { get; set; }
 
-        public string OdsCode { get; set; }
+        public string InternalOrgId { get; set; }
     }
 }

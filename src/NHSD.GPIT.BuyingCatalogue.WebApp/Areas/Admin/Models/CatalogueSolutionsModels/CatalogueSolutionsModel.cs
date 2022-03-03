@@ -20,6 +20,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.CatalogueSolutions
 
         public IList<CatalogueModel> Solutions { get; } = new List<CatalogueModel>();
 
+        public string SearchTerm { get; set; }
+
         public string SelectedPublicationStatus { get; set; }
 
         public void SetSolutions(IEnumerable<CatalogueItem> solutions)

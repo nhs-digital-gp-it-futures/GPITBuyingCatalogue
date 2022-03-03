@@ -71,13 +71,13 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers
         [Theory]
         [CommonAutoData]
         public static void Get_Order_Buyer_RedirectsCorrectly(
-            string odsCode)
+            string internalOrgId)
         {
             var user = new ClaimsPrincipal(new ClaimsIdentity(
                 new Claim[]
                 {
                     new("organisationFunction", "Buyer"),
-                    new("primaryOrganisationOdsCode", odsCode),
+                    new("primaryOrganisationInternalIdentifier", internalOrgId),
                 },
                 "mock"));
 
@@ -94,7 +94,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers
             result.Should().NotBeNull();
             result.ActionName.Should().Be(nameof(DashboardController.Organisation));
             result.ControllerName.Should().Be(typeof(DashboardController).ControllerName());
-            result.RouteValues.Should().BeEquivalentTo(new RouteValueDictionary { { "odsCode", odsCode } });
+            result.RouteValues.Should().BeEquivalentTo(new RouteValueDictionary { { "internalOrgId", internalOrgId } });
         }
 
         [Theory]
@@ -104,7 +104,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers
             [Frozen] Mock<IOrderService> orderService,
             Organisation organisation,
             PagedList<EntityFramework.Ordering.Models.Order> orders,
-            string odsCode,
+            string internalOrgId,
             DashboardController controller)
         {
             var user = new ClaimsPrincipal(new ClaimsIdentity(
@@ -117,7 +117,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers
                      HttpContext = new DefaultHttpContext { User = user },
                  };
 
-            organisationService.Setup(s => s.GetOrganisationByOdsCode(odsCode)).ReturnsAsync(organisation);
+            organisationService.Setup(s => s.GetOrganisationByInternalIdentifier(internalOrgId)).ReturnsAsync(organisation);
 
             orderService.Setup(s => s.GetPagedOrders(organisation.Id, It.IsAny<PageOptions>(), string.Empty)).ReturnsAsync(orders);
 
@@ -126,7 +126,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers
                 Options = orders.Options,
             };
 
-            var result = (await controller.Organisation(odsCode)).As<ViewResult>();
+            var result = (await controller.Organisation(internalOrgId)).As<ViewResult>();
 
             result.Should().NotBeNull();
             result.ViewName.Should().BeNull();
@@ -144,8 +144,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers
                 new Claim[]
                 {
                     new("organisationFunction", "Buyer"),
-                    new("primaryOrganisationOdsCode", organisations.First().OdsCode),
-                    new("secondaryOrganisationOdsCode", organisations.Last().OdsCode),
+                    new("primaryOrganisationInternalIdentifier", organisations.First().InternalIdentifier),
+                    new("secondaryOrganisationInternalIdentifier", organisations.Last().InternalIdentifier),
                 },
                 "mock"));
 
@@ -155,11 +155,11 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers
                     HttpContext = new DefaultHttpContext { User = user },
                 };
 
-            organisationService.Setup(s => s.GetOrganisationsByOdsCodes(It.IsAny<string[]>())).ReturnsAsync(organisations);
+            organisationService.Setup(s => s.GetOrganisationsByInternalIdentifiers(It.IsAny<string[]>())).ReturnsAsync(organisations);
 
-            var expected = new SelectOrganisationModel(organisations.First().OdsCode, organisations);
+            var expected = new SelectOrganisationModel(organisations.First().InternalIdentifier, organisations);
 
-            var result = (await controller.SelectOrganisation(organisations.First().OdsCode)).As<ViewResult>();
+            var result = (await controller.SelectOrganisation(organisations.First().InternalIdentifier)).As<ViewResult>();
 
             result.Should().NotBeNull();
             result.ViewName.Should().BeNull();
@@ -169,16 +169,16 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers
         [Theory]
         [CommonAutoData]
         public static void Post_SelectOrganisation_CorrectlyRedirects(
-            string odsCode,
+            string internalOrgId,
             SelectOrganisationModel model,
             DashboardController controller)
         {
-            var actualResult = controller.SelectOrganisation(odsCode, model);
+            var actualResult = controller.SelectOrganisation(internalOrgId, model);
 
             actualResult.Should().BeOfType<RedirectToActionResult>();
             actualResult.As<RedirectToActionResult>().ActionName.Should().Be(nameof(DashboardController.Organisation));
             actualResult.As<RedirectToActionResult>().ControllerName.Should().Be(typeof(DashboardController).ControllerName());
-            actualResult.As<RedirectToActionResult>().RouteValues.Should().BeEquivalentTo(new RouteValueDictionary { { "odsCode", model.SelectedOrganisation } });
+            actualResult.As<RedirectToActionResult>().RouteValues.Should().BeEquivalentTo(new RouteValueDictionary { { "internalOrgId", model.SelectedOrganisation } });
         }
 
         [Theory]
@@ -186,13 +186,13 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers
         public static void Post_SelectOrganisation_InvalidModelState_ReturnsView(
             string errorKey,
             string errorMessage,
-            string odsCode,
+            string internalOrgId,
             SelectOrganisationModel model,
             DashboardController controller)
         {
             controller.ModelState.AddModelError(errorKey, errorMessage);
 
-            var actualResult = controller.SelectOrganisation(odsCode, model).As<ViewResult>();
+            var actualResult = controller.SelectOrganisation(internalOrgId, model).As<ViewResult>();
 
             actualResult.Should().NotBeNull();
             actualResult.ViewName.Should().BeNull();
@@ -230,13 +230,13 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers
                 Url = requestUri.AppendQueryParameterToUrl("search", r.Category).ToString(),
             });
 
-            organisationsService.Setup(s => s.GetOrganisationByOdsCode(organisation.OdsCode))
+            organisationsService.Setup(s => s.GetOrganisationByInternalIdentifier(organisation.InternalIdentifier))
                 .ReturnsAsync(organisation);
 
             orderService.Setup(s => s.GetOrdersBySearchTerm(organisation.Id, searchTerm))
                 .ReturnsAsync(searchResults);
 
-            var result = (await controller.FilterSearchSuggestions(organisation.OdsCode, searchTerm)).As<JsonResult>();
+            var result = (await controller.FilterSearchSuggestions(organisation.InternalIdentifier, searchTerm)).As<JsonResult>();
 
             result.Should().NotBeNull();
             result.Value.Should().BeEquivalentTo(expected);

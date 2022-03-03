@@ -19,11 +19,13 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Organisations
         private readonly OdsSettings settings;
         private readonly IMemoryCache memoryCache;
         private readonly MemoryCacheEntryOptions memoryCacheOptions;
+        private readonly IOrganisationsService organisationsService;
 
-        public OdsService(OdsSettings settings, IMemoryCache memoryCache)
+        public OdsService(OdsSettings settings, IMemoryCache memoryCache, IOrganisationsService organisationsService)
         {
             this.settings = settings ?? throw new ArgumentNullException(nameof(settings));
             this.memoryCache = memoryCache ?? throw new ArgumentNullException(nameof(memoryCache));
+            this.organisationsService = organisationsService ?? throw new ArgumentNullException(nameof(organisationsService));
 
             memoryCacheOptions = new MemoryCacheEntryOptions().SetAbsoluteExpiration(DateTime.Now.AddSeconds(DefaultCacheDuration));
         }
@@ -67,15 +69,17 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Organisations
             return (odsOrganisation, null);
         }
 
-        public async Task<IEnumerable<ServiceRecipient>> GetServiceRecipientsByParentOdsCode(string odsCode)
+        public async Task<IEnumerable<ServiceRecipient>> GetServiceRecipientsByParentInternalIdentifier(string internalIdentifier)
         {
-            if (string.IsNullOrWhiteSpace(odsCode))
-                throw new ArgumentException(odsCode);
+            if (string.IsNullOrWhiteSpace(internalIdentifier))
+                throw new ArgumentException(internalIdentifier);
 
-            var key = $"ServiceRecipients-ODS-{odsCode}";
+            var key = $"ServiceRecipients-Identifier-{internalIdentifier}";
 
             if (memoryCache.TryGetValue(key, out IEnumerable<ServiceRecipient> cachedResults))
                 return cachedResults;
+
+            var organisation = await organisationsService.GetOrganisationByInternalIdentifier(internalIdentifier);
 
             var retrievedAll = false;
 
@@ -88,7 +92,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Organisations
                 var query = settings.ApiBaseUrl
                     .AppendPathSegment("organisations")
                     .SetQueryParam("RelTypeId", "RE4")
-                    .SetQueryParam("TargetOrgId", odsCode)
+                    .SetQueryParam("TargetOrgId", organisation.ExternalIdentifier)
                     .SetQueryParam("RelStatus", "active")
                     .SetQueryParam("Limit", searchLimit)
                     .AllowHttpStatus("3xx,4xx");

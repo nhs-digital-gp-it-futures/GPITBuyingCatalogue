@@ -8,7 +8,7 @@ using NHSD.GPIT.BuyingCatalogue.WebApp.Models;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.Controllers
 {
-    [Route("ordersummary/{odsCode}/{callOffId}")]
+    [Route("ordersummary/{internalOrgId}/{callOffId}")]
     [RestrictToLocalhostActionFilter]
     public sealed class OrderSummaryController : Controller
     {
@@ -19,11 +19,11 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Controllers
             this.orderService = orderService ?? throw new ArgumentNullException(nameof(orderService));
         }
 
-        public async Task<IActionResult> Index(string odsCode, CallOffId callOffId)
+        public async Task<IActionResult> Index(string internalOrgId, CallOffId callOffId)
         {
-            var order = await orderService.GetOrderForSummary(callOffId, odsCode);
+            var order = await orderService.GetOrderForSummary(callOffId, internalOrgId);
 
-            var model = new OrderSummaryModel(odsCode, order)
+            var model = new OrderSummaryModel(order)
             {
                 Title = order.OrderStatus switch
                 {

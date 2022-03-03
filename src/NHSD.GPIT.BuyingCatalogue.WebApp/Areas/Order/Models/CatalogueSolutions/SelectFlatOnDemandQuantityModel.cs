@@ -12,10 +12,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.CatalogueSolutions
         {
         }
 
-        public SelectFlatOnDemandQuantityModel(string odsCode, CallOffId callOffId, string solutionName, int? quantity, TimeUnit? estimationPeriod)
+        public SelectFlatOnDemandQuantityModel(string internalOrgId, CallOffId callOffId, string solutionName, int? quantity, TimeUnit? estimationPeriod)
         {
             Title = $"Quantity of {solutionName} for {callOffId}";
-            OdsCode = odsCode;
+            InternalOrgId = internalOrgId;
             CallOffId = callOffId;
             SolutionName = solutionName;
             Quantity = quantity.ToString();

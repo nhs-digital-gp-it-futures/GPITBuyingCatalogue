@@ -5,10 +5,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.AdditionalServices
 {
     public sealed class AdditionalServiceModel : OrderingBaseModel
     {
-        public AdditionalServiceModel(string odsCode, EntityFramework.Ordering.Models.Order order, List<OrderItem> orderItems)
+        public AdditionalServiceModel(string internalOrgId, EntityFramework.Ordering.Models.Order order, List<OrderItem> orderItems)
         {
             Title = $"Additional Services for {order.CallOffId}";
-            OdsCode = odsCode;
+            InternalOrgId = internalOrgId;
             OrderDescription = order.Description;
             CallOffId = order.CallOffId;
             OrderItems = orderItems;

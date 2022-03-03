@@ -35,7 +35,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
             var model = new BrowserBasedModel(solution)
             {
                 BackLink = clientApplication?.HasClientApplicationType(ClientApplicationType.BrowserBased) ?? false
-                           ? Url.Action(nameof(ClientApplicationType), new { solutionId })
+                           ? Url.Action(nameof(CatalogueSolutionsController.ClientApplicationType), typeof(CatalogueSolutionsController).ControllerName(), new { solutionId })
                            : Url.Action(nameof(CatalogueSolutionsController.AddApplicationType), typeof(CatalogueSolutionsController).ControllerName(), new { solutionId }),
             };
 

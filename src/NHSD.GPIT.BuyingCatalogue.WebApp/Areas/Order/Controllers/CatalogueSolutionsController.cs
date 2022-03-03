@@ -16,7 +16,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
 {
     [Authorize]
     [Area("Order")]
-    [Route("order/organisation/{odsCode}/order/{callOffId}/catalogue-solutions")]
+    [Route("order/organisation/{internalOrgId}/order/{callOffId}/catalogue-solutions")]
     public sealed class CatalogueSolutionsController : Controller
     {
         private readonly IOrderService orderService;
@@ -36,43 +36,43 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
             this.orderSessionService = orderSessionService ?? throw new ArgumentNullException(nameof(orderSessionService));
         }
 
-        public async Task<IActionResult> Index(string odsCode, CallOffId callOffId)
+        public async Task<IActionResult> Index(string internalOrgId, CallOffId callOffId)
         {
             orderSessionService.ClearSession(callOffId);
 
-            var order = await orderService.GetOrderThin(callOffId, odsCode);
-            var orderItems = await orderItemService.GetOrderItems(callOffId, odsCode, CatalogueItemType.Solution);
+            var order = await orderService.GetOrderThin(callOffId, internalOrgId);
+            var orderItems = await orderItemService.GetOrderItems(callOffId, internalOrgId, CatalogueItemType.Solution);
 
-            var model = new CatalogueSolutionsModel(odsCode, order, orderItems)
+            var model = new CatalogueSolutionsModel(internalOrgId, order, orderItems)
             {
                 BackLink = Url.Action(
                     nameof(OrderController.Order),
                     typeof(OrderController).ControllerName(),
-                    new { odsCode, callOffId }),
+                    new { internalOrgId, callOffId }),
             };
 
             return View(model);
         }
 
         [HttpGet("select/solution")]
-        public async Task<IActionResult> SelectSolution(string odsCode, CallOffId callOffId)
+        public async Task<IActionResult> SelectSolution(string internalOrgId, CallOffId callOffId)
         {
-            var order = await orderService.GetOrderThin(callOffId, odsCode);
+            var order = await orderService.GetOrderThin(callOffId, internalOrgId);
 
             var state = orderSessionService.InitialiseStateForCreate(order, CatalogueItemType.Solution, null, null);
 
             var solutions = await solutionsService.GetSupplierSolutions(order.SupplierId);
 
-            var model = new SelectSolutionModel(odsCode, callOffId, solutions, state.CatalogueItemId)
+            var model = new SelectSolutionModel(internalOrgId, callOffId, solutions, state.CatalogueItemId)
             {
-                BackLink = Url.Action(nameof(Index), new { odsCode, callOffId }),
+                BackLink = Url.Action(nameof(Index), new { internalOrgId, callOffId }),
             };
 
             return View(model);
         }
 
         [HttpPost("select/solution")]
-        public async Task<IActionResult> SelectSolution(string odsCode, CallOffId callOffId, SelectSolutionModel model)
+        public async Task<IActionResult> SelectSolution(string internalOrgId, CallOffId callOffId, SelectSolutionModel model)
         {
             var state = orderSessionService.GetOrderStateFromSession(callOffId);
 
@@ -82,7 +82,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
                 return View(model);
             }
 
-            var existingOrder = await orderItemService.GetOrderItem(callOffId, odsCode, model.SelectedSolutionId.GetValueOrDefault());
+            var existingOrder = await orderItemService.GetOrderItem(callOffId, internalOrgId, model.SelectedSolutionId.GetValueOrDefault());
 
             if (existingOrder is not null)
             {
@@ -91,7 +91,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
                 return RedirectToAction(
                     nameof(EditSolution),
                     typeof(CatalogueSolutionsController).ControllerName(),
-                    new { odsCode, callOffId, existingOrder.CatalogueItemId });
+                    new { internalOrgId, callOffId, existingOrder.CatalogueItemId });
             }
 
             state.CatalogueItemId = model.SelectedSolutionId;
@@ -116,17 +116,17 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
                 return RedirectToAction(
                     nameof(CatalogueSolutionRecipientsController.SelectSolutionServiceRecipients),
                     typeof(CatalogueSolutionRecipientsController).ControllerName(),
-                    new { odsCode, callOffId });
+                    new { internalOrgId, callOffId });
             }
 
             return RedirectToAction(
                 nameof(SelectSolutionPrice),
                 typeof(CatalogueSolutionsController).ControllerName(),
-                new { odsCode, callOffId });
+                new { internalOrgId, callOffId });
         }
 
         [HttpGet("select/solution/price")]
-        public async Task<IActionResult> SelectSolutionPrice(string odsCode, CallOffId callOffId)
+        public async Task<IActionResult> SelectSolutionPrice(string internalOrgId, CallOffId callOffId)
         {
             var state = orderSessionService.GetOrderStateFromSession(callOffId);
 
@@ -136,16 +136,16 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
             p.CataloguePriceType == CataloguePriceType.Flat
             && p.PublishedStatus == PublicationStatus.Published).ToList();
 
-            var model = new SelectSolutionPriceModel(odsCode, state.CatalogueItemName, prices)
+            var model = new SelectSolutionPriceModel(internalOrgId, state.CatalogueItemName, prices)
             {
-                BackLink = Url.Action(nameof(SelectSolution), new { odsCode, callOffId }),
+                BackLink = Url.Action(nameof(SelectSolution), new { internalOrgId, callOffId }),
             };
 
             return View(model);
         }
 
         [HttpPost("select/solution/price")]
-        public async Task<IActionResult> SelectSolutionPrice(string odsCode, CallOffId callOffId, SelectSolutionPriceModel model)
+        public async Task<IActionResult> SelectSolutionPrice(string internalOrgId, CallOffId callOffId, SelectSolutionPriceModel model)
         {
             var state = orderSessionService.GetOrderStateFromSession(callOffId);
 
@@ -164,11 +164,11 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
             return RedirectToAction(
                 nameof(CatalogueSolutionRecipientsController.SelectSolutionServiceRecipients),
                 typeof(CatalogueSolutionRecipientsController).ControllerName(),
-                new { odsCode, callOffId });
+                new { internalOrgId, callOffId });
         }
 
         [HttpGet("select/solution/price/flat/declarative")]
-        public IActionResult SelectFlatDeclarativeQuantity(string odsCode, CallOffId callOffId)
+        public IActionResult SelectFlatDeclarativeQuantity(string internalOrgId, CallOffId callOffId)
         {
             var state = orderSessionService.GetOrderStateFromSession(callOffId);
 
@@ -177,14 +177,14 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
                 BackLink = Url.Action(
                     nameof(CatalogueSolutionRecipientsDateController.SelectSolutionServiceRecipientsDate),
                     typeof(CatalogueSolutionRecipientsDateController).ControllerName(),
-                    new { odsCode, callOffId }),
+                    new { internalOrgId, callOffId }),
             };
 
             return View(model);
         }
 
         [HttpPost("select/solution/price/flat/declarative")]
-        public IActionResult SelectFlatDeclarativeQuantity(string odsCode, CallOffId callOffId, SelectFlatDeclarativeQuantityModel model)
+        public IActionResult SelectFlatDeclarativeQuantity(string internalOrgId, CallOffId callOffId, SelectFlatDeclarativeQuantityModel model)
         {
             if (!ModelState.IsValid)
                 return View(model);
@@ -198,27 +198,27 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
             return RedirectToAction(
                 nameof(EditSolution),
                 typeof(CatalogueSolutionsController).ControllerName(),
-                new { odsCode, callOffId, state.CatalogueItemId });
+                new { internalOrgId, callOffId, state.CatalogueItemId });
         }
 
         [HttpGet("select/solution/price/flat/ondemand")]
-        public IActionResult SelectFlatOnDemandQuantity(string odsCode, CallOffId callOffId)
+        public IActionResult SelectFlatOnDemandQuantity(string internalOrgId, CallOffId callOffId)
         {
             var state = orderSessionService.GetOrderStateFromSession(callOffId);
 
-            var model = new SelectFlatOnDemandQuantityModel(odsCode, callOffId, state.CatalogueItemName, state.Quantity, state.EstimationPeriod)
+            var model = new SelectFlatOnDemandQuantityModel(internalOrgId, callOffId, state.CatalogueItemName, state.Quantity, state.EstimationPeriod)
             {
                 BackLink = Url.Action(
                     nameof(CatalogueSolutionRecipientsDateController.SelectSolutionServiceRecipientsDate),
                     typeof(CatalogueSolutionRecipientsDateController).ControllerName(),
-                    new { odsCode, callOffId }),
+                    new { internalOrgId, callOffId }),
             };
 
             return View(model);
         }
 
         [HttpPost("select/solution/price/flat/ondemand")]
-        public IActionResult SelectFlatOnDemandQuantity(string odsCode, CallOffId callOffId, SelectFlatOnDemandQuantityModel model)
+        public IActionResult SelectFlatOnDemandQuantity(string internalOrgId, CallOffId callOffId, SelectFlatOnDemandQuantityModel model)
         {
             if (!ModelState.IsValid)
                 return View(model);
@@ -233,24 +233,24 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
             return RedirectToAction(
                 nameof(EditSolution),
                 typeof(CatalogueSolutionsController).ControllerName(),
-                new { odsCode, callOffId, state.CatalogueItemId });
+                new { internalOrgId, callOffId, state.CatalogueItemId });
         }
 
         [HttpGet("{catalogueItemId}")]
-        public async Task<IActionResult> EditSolution(string odsCode, CallOffId callOffId, CatalogueItemId catalogueItemId)
+        public async Task<IActionResult> EditSolution(string internalOrgId, CallOffId callOffId, CatalogueItemId catalogueItemId)
         {
-            var state = await orderSessionService.InitialiseStateForEdit(odsCode, callOffId, catalogueItemId);
+            var state = await orderSessionService.InitialiseStateForEdit(internalOrgId, callOffId, catalogueItemId);
 
-            var model = new EditSolutionModel(odsCode, state)
+            var model = new EditSolutionModel(internalOrgId, state)
             {
-                BackLink = GetEditSolutionBackLink(state, odsCode),
+                BackLink = GetEditSolutionBackLink(state, internalOrgId),
             };
 
             return View(model);
         }
 
         [HttpPost("{catalogueItemId}")]
-        public async Task<IActionResult> EditSolution(string odsCode, CallOffId callOffId, CatalogueItemId catalogueItemId, EditSolutionModel model)
+        public async Task<IActionResult> EditSolution(string internalOrgId, CallOffId callOffId, CatalogueItemId catalogueItemId, EditSolutionModel model)
         {
             var state = orderSessionService.GetOrderStateFromSession(callOffId);
 
@@ -263,32 +263,32 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
             state.AgreedPrice = model.OrderItem.AgreedPrice;
             state.ServiceRecipients = model.OrderItem.ServiceRecipients;
 
-            await orderItemService.Create(callOffId, odsCode, state);
+            await orderItemService.Create(callOffId, internalOrgId, state);
 
             orderSessionService.ClearSession(callOffId);
 
             return RedirectToAction(
                 nameof(Index),
                 typeof(CatalogueSolutionsController).ControllerName(),
-                new { odsCode, callOffId });
+                new { internalOrgId, callOffId });
         }
 
-        private string GetEditSolutionBackLink(CreateOrderItemModel state, string odsCode)
+        private string GetEditSolutionBackLink(CreateOrderItemModel state, string internalOrgId)
         {
             if (!state.IsNewSolution)
             {
-                return Url.Action(nameof(Index), new { odsCode, callOffId = state.CallOffId });
+                return Url.Action(nameof(Index), new { internalOrgId, callOffId = state.CallOffId });
             }
 
             if (state.CataloguePrice.ProvisioningType == ProvisioningType.Declarative)
-                return Url.Action(nameof(SelectFlatDeclarativeQuantity), new { odsCode, callOffId = state.CallOffId });
+                return Url.Action(nameof(SelectFlatDeclarativeQuantity), new { internalOrgId, callOffId = state.CallOffId });
             else if (state.CataloguePrice.ProvisioningType == ProvisioningType.OnDemand)
-                return Url.Action(nameof(SelectFlatOnDemandQuantity), new { odsCode, callOffId = state.CallOffId });
+                return Url.Action(nameof(SelectFlatOnDemandQuantity), new { internalOrgId, callOffId = state.CallOffId });
 
             return Url.Action(
                 nameof(CatalogueSolutionRecipientsDateController.SelectSolutionServiceRecipientsDate),
                 typeof(CatalogueSolutionRecipientsDateController).ControllerName(),
-                new { odsCode, callOffId = state.CallOffId });
+                new { internalOrgId, callOffId = state.CallOffId });
         }
     }
 }

@@ -32,7 +32,11 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.RandomData
         {
             var faker = new Faker("en_GB");
             var email = faker.Internet.Email();
-            return string.Join(string.Empty, faker.Random.AlphaNumeric(numChars - email.Length), email);
+            var length = numChars - email.Length;
+            if(length > 0)
+                return string.Join(string.Empty, faker.Random.AlphaNumeric(numChars - email.Length), email);
+
+            return email;
         }
 
         public static DateTime RandomDateSoon()

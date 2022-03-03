@@ -14,6 +14,7 @@ using Microsoft.Data.Sqlite;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Caching.Distributed;
 using Microsoft.Extensions.Caching.Memory;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Database;
@@ -37,12 +38,6 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils
         // Need to find a better way of doing this
         [SuppressMessage("StyleCop.CSharp.NamingRules", "SA1310:Field names should not contain underscore", Justification = "This name is used by the Webapp, so needs to be kept")]
         private const string BC_DB_CONNECTION = "Server=localhost,1450;Database=GPITBuyingCatalogue;User=SA;password=8VSKwQ8xgk35qWFm8VSKwQ8xgk35qWFm!;Integrated Security=false";
-
-        [SuppressMessage("StyleCop.CSharp.NamingRules", "SA1310:Field names should not contain underscore", Justification = "This name is used by the Webapp, so needs to be kept")]
-        private const string BC_SMTP_HOST = "localhost";
-
-        [SuppressMessage("StyleCop.CSharp.NamingRules", "SA1310:Field names should not contain underscore", Justification = "This name is used by the Webapp, so needs to be kept")]
-        private const string BC_SMTP_PORT = "9999";
 
         [SuppressMessage("StyleCop.CSharp.NamingRules", "SA1310:Field names should not contain underscore", Justification = "This name is used by the Webapp, so needs to be kept")]
         private const string DOMAIN_NAME = "127.0.0.1";
@@ -99,7 +94,10 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils
             }
         }
 
-        public static int SmtpPort => int.Parse(BC_SMTP_PORT);
+        ~LocalWebApplicationFactory()
+        {
+            Dispose(true);
+        }
 
         public string BcDbName { get; private set; }
 
@@ -202,7 +200,14 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils
             });
 
             builder.UseUrls($"{LocalhostBaseAddress}:0");
-
+            builder.ConfigureAppConfiguration((hostContext, config) =>
+            {
+                foreach (var s in config.Sources)
+                {
+                    if (s is FileConfigurationSource)
+                        ((FileConfigurationSource)s).ReloadOnChange = false;
+                }
+            });
             return builder;
         }
 
@@ -223,12 +228,6 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils
             SetEnvironmentVariable(nameof(BC_DB_CONNECTION), BC_DB_CONNECTION);
 
             SetEnvironmentVariable("ASPNETCORE_ENVIRONMENT", "E2ETest");
-
-            SetEnvironmentVariable("SMTPSERVER__PORT", BC_SMTP_PORT);
-
-            SetEnvironmentVariable(nameof(BC_SMTP_HOST), BC_SMTP_HOST);
-
-            SetEnvironmentVariable(nameof(BC_SMTP_PORT), BC_SMTP_PORT);
 
             SetEnvironmentVariable(nameof(DOMAIN_NAME), DOMAIN_NAME);
         }

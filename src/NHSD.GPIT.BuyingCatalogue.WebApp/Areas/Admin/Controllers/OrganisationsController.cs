@@ -1,12 +1,16 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using NHSD.GPIT.BuyingCatalogue.EntityFramework.Organisations.Models;
 using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.CreateBuyer;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Organisations;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Users;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.OrganisationModels;
+using NHSD.GPIT.BuyingCatalogue.WebApp.Models.Autocomplete;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
 {
@@ -32,6 +36,36 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
             this.userService = userService ?? throw new ArgumentNullException(nameof(userService));
         }
 
+        [HttpGet]
+        public async Task<IActionResult> Index([FromQuery] string search = null)
+        {
+            var organisations = await GetFilteredOrganisations(search);
+
+            var organisationModel = organisations
+                .Select(o => new OrganisationModel
+                {
+                    Id = o.Id,
+                    Name = o.Name,
+                    OdsCode = o.ExternalIdentifier,
+                })
+                .ToList();
+
+            return View(new IndexModel(search, organisationModel));
+        }
+
+        [HttpGet("search-results")]
+        public async Task<IActionResult> SearchResults([FromQuery] string search)
+        {
+            var results = (await GetFilteredOrganisations(search)).Take(15);
+
+            return Json(results.Select(x => new AutocompleteResult
+            {
+                Title = x.Name,
+                Category = x.ExternalIdentifier,
+                Url = Url.Action(nameof(Details), new { organisationId = $"{x.Id}" }),
+            }));
+        }
+
         [HttpGet("{organisationId}")]
         public async Task<IActionResult> Details(int organisationId)
         {
@@ -41,7 +75,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
 
             var model = new DetailsModel(organisation, users, relatedOrganisations)
             {
-                BackLink = Url.Action(nameof(HomeController.BuyerOrganisations), typeof(HomeController).ControllerName()),
+                BackLink = Url.Action(nameof(Index)),
             };
 
             return View(model);
@@ -92,7 +126,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
         {
             var model = new FindOrganisationModel(ods)
             {
-                BackLink = Url.Action(nameof(HomeController.BuyerOrganisations), typeof(HomeController).ControllerName()),
+                BackLink = Url.Action(nameof(Index)),
             };
 
             return View(model);
@@ -164,7 +198,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
 
             (OdsOrganisation organisation, _) = await odsService.GetOrganisationByOdsCode(model.OdsOrganisation.OdsCode);
 
-            var (orgId, error) = await organisationsService.AddOdsOrganisation(organisation, model.CatalogueAgreementSigned);
+            var (orgId, error) = await organisationsService.AddCcgOrganisation(organisation, model.CatalogueAgreementSigned);
 
             if (orgId == 0)
             {
@@ -198,7 +232,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
 
             var model = new ConfirmationModel(organisation.Name)
             {
-                BackLink = Url.Action(nameof(HomeController.BuyerOrganisations), typeof(HomeController).ControllerName()),
+                BackLink = Url.Action(nameof(Index)),
             };
 
             return View(model);
@@ -369,6 +403,13 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
                 nameof(Details),
                 typeof(OrganisationsController).ControllerName(),
                 new { organisationId });
+        }
+
+        private async Task<IEnumerable<Organisation>> GetFilteredOrganisations(string search)
+        {
+            return string.IsNullOrWhiteSpace(search)
+                ? await organisationsService.GetAllOrganisations()
+                : await organisationsService.GetOrganisationsBySearchTerm(search);
         }
     }
 }

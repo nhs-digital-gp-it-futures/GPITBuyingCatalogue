@@ -5,10 +5,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.AssociatedServices
 {
     public sealed class AssociatedServiceModel : OrderingBaseModel
     {
-        public AssociatedServiceModel(string odsCode, EntityFramework.Ordering.Models.Order order, List<OrderItem> orderItems)
+        public AssociatedServiceModel(string internalOrgId, EntityFramework.Ordering.Models.Order order, List<OrderItem> orderItems)
         {
             Title = $"Associated Services for {order.CallOffId}";
-            OdsCode = odsCode;
+            InternalOrgId = internalOrgId;
             OrderDescription = order.Description;
             CallOffId = order.CallOffId;
             OrderItems = orderItems;

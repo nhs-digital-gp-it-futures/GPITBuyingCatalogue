@@ -21,8 +21,6 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Organisations.Models
 
         public Address Address { get; set; }
 
-        public string OdsCode { get; set; }
-
         public string ExternalIdentifier { get; set; }
 
         public string InternalIdentifier { get; set; }

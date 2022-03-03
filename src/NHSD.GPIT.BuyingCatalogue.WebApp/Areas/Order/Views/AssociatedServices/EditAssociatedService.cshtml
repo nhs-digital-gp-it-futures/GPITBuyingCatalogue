@@ -19,7 +19,7 @@
             <form method="post">
                 <input type="hidden" asp-for="BackLink" />
                 <input type="hidden" asp-for="BackLinkText" />
-                <input type="hidden" asp-for="OdsCode" />
+                <input type="hidden" asp-for="InternalOrgId" />
                 <input type="hidden" asp-for="Title" />
                 <input type="hidden" asp-for="OrderItem.ServiceRecipients[0].Name" />
                 <input type="hidden" asp-for="OrderItem.CataloguePrice.ProvisioningType" />
@@ -70,7 +70,7 @@
                                       url="@Url.Action(
                                                nameof(DeleteAssociatedServiceController.DeleteAssociatedService),
                                                typeof(DeleteAssociatedServiceController).ControllerName(),
-                                          new { Model.OdsCode,
+                                          new { Model.InternalOrgId,
                                                 Model.OrderItem.CallOffId,
                                                 Model.OrderItem.CatalogueItemId,
                                                 Model.OrderItem.CatalogueItemName})" />

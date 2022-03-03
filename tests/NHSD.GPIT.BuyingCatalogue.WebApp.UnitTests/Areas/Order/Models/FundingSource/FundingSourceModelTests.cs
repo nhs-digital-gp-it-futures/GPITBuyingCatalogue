@@ -1,6 +1,6 @@
-﻿using FluentAssertions;
-using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
-using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
+﻿using System.Collections.Generic;
+using FluentAssertions;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using NHSD.GPIT.BuyingCatalogue.Test.Framework.AutoFixtureCustomisations;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.FundingSource;
 using Xunit;
@@ -11,15 +11,16 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.FundingS
     {
         [Theory]
         [CommonAutoData]
-        public static void WithValidArguments_PropertiesCorrectlySet(
-            string odsCode,
-            CallOffId callOffId,
-            bool? fundingSourceOnlyGms)
+        public static void AvailableFundingSources_Expected(
+            FundingSourceModel model)
         {
-            var model = new FundingSourceModel(odsCode, callOffId, fundingSourceOnlyGms);
+            var selectList = new List<SelectListItem>
+            {
+                new("Central funding", ServiceContracts.Enums.FundingSource.Central.ToString()),
+                new("Local funding", ServiceContracts.Enums.FundingSource.Local.ToString()),
+            };
 
-            model.Title.Should().Be($"Funding source for {callOffId}");
-            model.FundingSourceOnlyGms.Should().Be(fundingSourceOnlyGms.ToYesNo());
+            model.AvailableFundingSources.Should().BeEquivalentTo(selectList);
         }
     }
 }

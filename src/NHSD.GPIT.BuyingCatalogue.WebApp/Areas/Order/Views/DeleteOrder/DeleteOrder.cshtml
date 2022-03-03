@@ -16,7 +16,7 @@
             <form method="post">
                 <input type="hidden" asp-for="@Model.BackLink" />
                 <input type="hidden" asp-for="@Model.BackLinkText" />
-                <input type="hidden" asp-for="@Model.OdsCode" />
+                <input type="hidden" asp-for="@Model.InternalOrgId" />
                 <input type="hidden" asp-for="@Model.Title" />
                 <div data-test-id="yes-button">
                     <nhs-submit-button text="Confirm delete" />
@@ -24,7 +24,7 @@
                 <div>
                     <a asp-controller="@typeof(OrderController).ControllerName()"
                        asp-action="@nameof(OrderController.Order)"
-                       asp-route-odsCode="@Model.OdsCode"
+                       asp-route-internalOrgId="@Model.InternalOrgId"
                        asp-route-callOffId="@Model.CallOffId">
                         Cancel delete
                     </a>

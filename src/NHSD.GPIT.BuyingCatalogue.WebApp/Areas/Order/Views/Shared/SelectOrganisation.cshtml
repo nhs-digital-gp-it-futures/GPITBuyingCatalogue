@@ -15,13 +15,13 @@
             <form method="post">
                 <input type="hidden" asp-for="@Model.BackLink" />
                 <input type="hidden" asp-for="@Model.BackLinkText" />
-                <input type="hidden" asp-for="@Model.OdsCode" />
+                <input type="hidden" asp-for="@Model.InternalOrgId" />
                 <input type="hidden" asp-for="@Model.Title" />
                 <nhs-fieldset-form-label asp-for="@Model">
                     <nhs-radio-buttons
                         asp-for="SelectedOrganisation"
                         values="@Model.AvailableOrganisations"
-                        value-name="OdsCode"
+                        value-name="InternalIdentifier"
                         display-name="Name" />
                 </nhs-fieldset-form-label>
                 <nhs-submit-button text="Continue" />

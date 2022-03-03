@@ -8,9 +8,9 @@
 
         public const string UserId = "userId";
 
-        public const string PrimaryOrganisationOdsCode = "primaryOrganisationOdsCode";
+        public const string PrimaryOrganisationInternalIdentifier = "primaryOrganisationInternalIdentifier";
 
-        public const string SecondaryOrganisationOdsCode = "secondaryOrganisationOdsCode";
+        public const string SecondaryOrganisationInternalIdentifier = "secondaryOrganisationInternalIdentifier";
 
         public const string OrganisationFunction = "organisationFunction";
     }

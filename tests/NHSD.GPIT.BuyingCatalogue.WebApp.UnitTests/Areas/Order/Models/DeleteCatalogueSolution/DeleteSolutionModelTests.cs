@@ -11,15 +11,15 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.DeleteCa
         [Theory]
         [CommonAutoData]
         public static void WithValidArguments_PropertiesCorrectlySet(
-            string odsCode,
+            string internalOrgId,
             CallOffId callOffId,
             CatalogueItemId catalogueItemId,
             string solutionName,
             string orderDescription)
         {
-            var model = new DeleteSolutionModel(odsCode, callOffId, catalogueItemId, solutionName, orderDescription);
+            var model = new DeleteSolutionModel(internalOrgId, callOffId, catalogueItemId, solutionName, orderDescription);
             model.Title.Should().Be($"Delete {solutionName} from {callOffId}?");
-            model.OdsCode.Should().Be(odsCode);
+            model.InternalOrgId.Should().Be(internalOrgId);
             model.CallOffId.Should().Be(callOffId);
             model.SolutionId.Should().Be(catalogueItemId);
             model.SolutionName.Should().Be(solutionName);

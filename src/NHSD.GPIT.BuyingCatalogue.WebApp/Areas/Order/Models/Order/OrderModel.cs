@@ -6,9 +6,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.Order
 {
     public sealed class OrderModel : OrderingBaseModel
     {
-        public OrderModel(string odsCode, EntityFramework.Ordering.Models.Order order, OrderTaskList orderSections, string organisationName = "")
+        public OrderModel(string internalOrgId, EntityFramework.Ordering.Models.Order order, OrderTaskList orderSections, string organisationName = "")
         {
-            OdsCode = odsCode;
+            InternalOrgId = internalOrgId;
             SectionStatuses = orderSections;
 
             if (order is null)
