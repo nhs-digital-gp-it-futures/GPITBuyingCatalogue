@@ -39,11 +39,15 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers
 
         [Theory]
         [CommonAutoData]
-        public static void Get_Index_ReturnsModel(
-            string internalOrgId,
+        public static async Task Get_Index_ReturnsModel(
+            Organisation organisation,
+            [Frozen] Mock<IOrganisationsService> service,
             OrderTriageController controller)
         {
-            var result = controller.Index(internalOrgId);
+            service.Setup(s => s.GetOrganisationByInternalIdentifier(organisation.InternalIdentifier))
+                .ReturnsAsync(organisation);
+
+            var result = await controller.Index(organisation.InternalIdentifier);
 
             result.As<ViewResult>().Should().NotBeNull();
             result.As<ViewResult>().Model.Should().NotBeNull();
@@ -96,11 +100,15 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers
 
         [Theory]
         [CommonAutoData]
-        public static void Get_NotReady_ReturnsView(
-            string internalOrgId,
+        public static async Task Get_NotReady_ReturnsView(
+            Organisation organisation,
+            [Frozen] Mock<IOrganisationsService> service,
             OrderTriageController controller)
         {
-            var result = controller.NotSure(internalOrgId);
+            service.Setup(s => s.GetOrganisationByInternalIdentifier(organisation.InternalIdentifier))
+                .ReturnsAsync(organisation);
+
+            var result = await controller.NotSure(organisation.InternalIdentifier);
 
             result.As<ViewResult>().Should().NotBeNull();
             result.As<ViewResult>().Model.Should().BeOfType(typeof(GenericOrderTriageModel));
@@ -108,11 +116,11 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers
 
         [Theory]
         [CommonAutoData]
-        public static void Get_TriageSelection_InvalidOption_Redirects(
+        public static async Task Get_TriageSelection_InvalidOption_Redirects(
             string internalOrgId,
             OrderTriageController controller)
         {
-            var result = controller.TriageSelection(internalOrgId, null);
+            var result = await controller.TriageSelection(internalOrgId, null);
 
             result.As<RedirectToActionResult>().Should().NotBeNull();
             result.As<RedirectToActionResult>().ActionName.Should().Be(nameof(controller.Index));
@@ -120,12 +128,16 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers
 
         [Theory]
         [CommonAutoData]
-        public static void Get_TriageSelection_ReturnsView(
-            string internalOrgId,
+        public static async Task Get_TriageSelection_ReturnsView(
+            Organisation organisation,
             TriageOption option,
+            [Frozen] Mock<IOrganisationsService> service,
             OrderTriageController controller)
         {
-            var result = controller.TriageSelection(internalOrgId, option);
+            service.Setup(s => s.GetOrganisationByInternalIdentifier(organisation.InternalIdentifier))
+                .ReturnsAsync(organisation);
+
+            var result = await controller.TriageSelection(organisation.InternalIdentifier, option);
 
             result.As<ViewResult>().Should().NotBeNull();
         }
@@ -202,13 +214,17 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers
         [CommonInlineAutoData(TriageOption.Under40k, "Incomplete40k")]
         [CommonInlineAutoData(TriageOption.Between40kTo250k, "Incomplete40kTo250k")]
         [CommonInlineAutoData(TriageOption.Over250k, "IncompleteOver250k")]
-        public static void Get_StepsNotCompleted_ReturnsView(
+        public static async Task Get_StepsNotCompleted_ReturnsView(
             TriageOption option,
             string expectedViewName,
-            string internalOrgId,
+            Organisation organisation,
+            [Frozen] Mock<IOrganisationsService> service,
             OrderTriageController controller)
         {
-            var result = controller.StepsNotCompleted(internalOrgId, option);
+            service.Setup(s => s.GetOrganisationByInternalIdentifier(organisation.InternalIdentifier))
+                .ReturnsAsync(organisation);
+
+            var result = await controller.StepsNotCompleted(organisation.InternalIdentifier, option);
 
             result.As<ViewResult>().Should().NotBeNull();
             result.As<ViewResult>().ViewName.Should().Be(expectedViewName);
@@ -377,14 +393,18 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers
 
         [Theory]
         [CommonAutoData]
-        public static void Get_TriageFunding_ReturnsViewWithModel(
-            string internalOrgId,
+        public static async Task Get_TriageFunding_ReturnsViewWithModel(
+            Organisation organisation,
             TriageOption option,
+            [Frozen] Mock<IOrganisationsService> service,
             OrderTriageController controller)
         {
-            var model = new FundingSourceModel();
+            var model = new FundingSourceModel(organisation);
 
-            var result = controller.TriageFunding(internalOrgId, option).As<ViewResult>();
+            service.Setup(s => s.GetOrganisationByInternalIdentifier(organisation.InternalIdentifier))
+                .ReturnsAsync(organisation);
+
+            var result = (await controller.TriageFunding(organisation.InternalIdentifier, option)).As<ViewResult>();
 
             result.Should().NotBeNull();
             result.Model.Should().BeEquivalentTo(model, opt => opt.Excluding(m => m.BackLink));
@@ -392,13 +412,17 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers
 
         [Theory]
         [CommonAutoData]
-        public static void Get_TriageFunding_PreselectsFundingSource(
-            string internalOrgId,
+        public static async Task Get_TriageFunding_PreselectsFundingSource(
+            Organisation organisation,
             TriageOption option,
             FundingSource fundingSource,
+            [Frozen] Mock<IOrganisationsService> service,
             OrderTriageController controller)
         {
-            var result = controller.TriageFunding(internalOrgId, option, fundingSource).As<ViewResult>();
+            service.Setup(s => s.GetOrganisationByInternalIdentifier(organisation.InternalIdentifier))
+                .ReturnsAsync(organisation);
+
+            var result = (await controller.TriageFunding(organisation.InternalIdentifier, option, fundingSource)).As<ViewResult>();
 
             result.Model.As<FundingSourceModel>().SelectedFundingSource.Should().Be(fundingSource);
         }

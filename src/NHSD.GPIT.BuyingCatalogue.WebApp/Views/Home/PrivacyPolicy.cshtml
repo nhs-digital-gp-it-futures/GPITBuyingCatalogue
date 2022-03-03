@@ -580,7 +580,12 @@
 
         <p>You can always say no to our requests, and you can leave the user research panel at any time.</p>
 
-        <p>We will only use your information to contact you about the Buying Catalogue website user research panel. It will not be shared with anyone else. You can unsubscribe at any time by contacting the <a href="mailto:buying.catalogue@nhs.net">Buying Catalogue Team</a>.</p>
+        <p>
+            We will only use your information to contact you about the Buying Catalogue website user research panel.
+            It will not be shared with anyone else. You can unsubscribe at any time by contacting the
+            <a data-test-id="first-contact-us" asp-controller="@typeof(HomeController).ControllerName()"
+               asp-action="@nameof(HomeController.ContactUs)">Buying Catalogue Team</a>.
+        </p>
 
         <h2>What lawful basis are you using to process my personal data?</h2>
 
@@ -609,7 +614,11 @@
         </h3>
 
         <p>
-            For users that have registered accounts on the Buying Catalogue website, we may contact you for user research purposes. The lawful basis for this activity will be consent. We will only contact you for these purposes when you have given us informed and explicit consent. You can withdraw this consent at any time by contacting the <a href="mailto:buying.catalogue@nhs.net">Buying Catalogue Team</a>.
+            For users that have registered accounts on the Buying Catalogue website, we may contact you for user research purposes.
+            The lawful basis for this activity will be consent. We will only contact you for these purposes when you have given us informed and explicit consent.
+            You can withdraw this consent at any time by contacting the
+            <a data-test-id="second-contact-us" asp-controller="@typeof(HomeController).ControllerName()"
+               asp-action="@nameof(HomeController.ContactUs)">Buying Catalogue Team</a>.
         </p>
 
         <h2>

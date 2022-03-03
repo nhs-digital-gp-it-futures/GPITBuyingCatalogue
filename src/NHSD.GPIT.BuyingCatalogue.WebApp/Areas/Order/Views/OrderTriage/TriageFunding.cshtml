@@ -9,11 +9,13 @@
     <div class="nhsuk-grid-row nhsuk-u-margin-bottom-6">
         <div class="nhsuk-grid-column-full">
             <nhs-validation-summary RadioId="@nameof(Model.SelectedFundingSource)" />
-            <nhs-page-title title="@ViewBag.Title" />
+            <nhs-page-title title="@ViewBag.Title"
+                            caption="@Model.OrganisationName" />
 
             <form method="post">
                 <input type="hidden" asp-for="BackLink" />
                 <input type="hidden" asp-for="BackLinkText" />
+                <input type="hidden" asp-for="OrganisationName" />
 
                 <nhs-fieldset-form-label asp-for="SelectedFundingSource" label-hint="Select the funding source you’ll be using to pay for this order. If you want to pay using two different sources, you’ll need to create two separate order summaries.">
                     <nhs-radio-buttons asp-for="SelectedFundingSource"
