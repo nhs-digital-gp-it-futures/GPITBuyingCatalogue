@@ -1,8 +1,8 @@
-﻿CREATE USER [HangFire] FOR LOGIN [HangFire] WITH DEFAULT_SCHEMA = [HangFire];
+﻿CREATE USER [hangfire] FOR LOGIN [hangfire] WITH DEFAULT_SCHEMA = [HangFire];
 GO
 
-GRANT CONNECT TO [HangFire];
+GRANT CONNECT TO [hangfire];
 GO
 
-ALTER ROLE [BackgroundProcessor] ADD MEMBER [HangFire];
+ALTER ROLE [BackgroundProcessor] ADD MEMBER [hangfire];
 GO
