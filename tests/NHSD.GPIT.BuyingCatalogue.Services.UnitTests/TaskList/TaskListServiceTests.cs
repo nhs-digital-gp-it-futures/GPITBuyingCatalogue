@@ -46,9 +46,6 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.TaskList
             actual.OrderingPartyStatus.Should().Be(TaskProgress.Completed);
             actual.SupplierStatus.Should().Be(TaskProgress.Completed);
             actual.CommencementDateStatus.Should().Be(TaskProgress.Completed);
-            actual.CatalogueSolutionsStatus.Should().Be(TaskProgress.Completed);
-            actual.AdditionalServiceStatus.Should().Be(TaskProgress.Completed);
-            actual.AssociatedServiceStatus.Should().Be(TaskProgress.Completed);
             actual.FundingSourceStatus.Should().Be(TaskProgress.Completed);
             actual.ReviewAndCompleteStatus.Should().Be(TaskProgress.NotStarted);
         }
@@ -131,110 +128,6 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.TaskList
             var actual = service.GetTaskListStatusModelForOrder(order);
 
             actual.CommencementDateStatus.Should().Be(TaskProgress.CannotStart);
-        }
-
-        [Theory]
-        [CommonAutoData]
-        public static void NoSolutions_WithAssociatedServices_CatalogueSolutionStatus_Optional(
-            Order order,
-            OrderItem orderItem,
-            TaskListService service)
-        {
-            orderItem.CatalogueItem.CatalogueItemType = CatalogueItemType.AssociatedService;
-            order.AddOrUpdateOrderItem(orderItem);
-
-            var actual = service.GetTaskListStatusModelForOrder(order);
-
-            actual.CatalogueSolutionsStatus.Should().Be(TaskProgress.Optional);
-        }
-
-        [Theory]
-        [CommonAutoData]
-        public static void NoSolutions_NoAssociatedServices_CatalogueSolutionStatus_NoStarted(
-            Order order,
-            TaskListService service)
-        {
-            var actual = service.GetTaskListStatusModelForOrder(order);
-
-            actual.CatalogueSolutionsStatus.Should().Be(TaskProgress.NotStarted);
-        }
-
-        [Theory]
-        [CommonAutoData]
-        public static void NoSolutions_NoAssociatedServices_NoCommencementDate_CatalogueSolutionStatus_CannotStart(
-             Order order,
-             TaskListService service)
-        {
-            order.CommencementDate = null;
-
-            var actual = service.GetTaskListStatusModelForOrder(order);
-
-            actual.CatalogueSolutionsStatus.Should().Be(TaskProgress.CannotStart);
-        }
-
-        [Theory]
-        [CommonAutoData]
-        public static void NoAdditionalServices_AdditionalServiceStatus_Optional(
-            Order order,
-            OrderItem orderItem,
-            TaskListService service)
-        {
-            orderItem.CatalogueItem.CatalogueItemType = CatalogueItemType.Solution;
-            order.AddOrUpdateOrderItem(orderItem);
-
-            var actual = service.GetTaskListStatusModelForOrder(order);
-
-            actual.AdditionalServiceStatus.Should().Be(TaskProgress.Optional);
-        }
-
-        [Theory]
-        [CommonAutoData]
-        public static void NoAdditionalServices_NoSolutions_AdditionalServiceStatus_CannotStart(
-            Order order,
-            TaskListService service)
-        {
-            var actual = service.GetTaskListStatusModelForOrder(order);
-
-            actual.AdditionalServiceStatus.Should().Be(TaskProgress.CannotStart);
-        }
-
-        [Theory]
-        [CommonAutoData]
-        public static void NoAssociatedServices_AssociatedServiceStatus_Optional(
-            Order order,
-            OrderItem orderItem,
-            TaskListService service)
-        {
-            orderItem.CatalogueItem.CatalogueItemType = CatalogueItemType.Solution;
-            order.AddOrUpdateOrderItem(orderItem);
-
-            var actual = service.GetTaskListStatusModelForOrder(order);
-
-            actual.AssociatedServiceStatus.Should().Be(TaskProgress.Optional);
-        }
-
-        [Theory]
-        [CommonAutoData]
-        public static void NoAssociatedServices_NoSolutions_AssociatedServiceStatus_NoStarted(
-            Order order,
-            TaskListService service)
-        {
-            var actual = service.GetTaskListStatusModelForOrder(order);
-
-            actual.AssociatedServiceStatus.Should().Be(TaskProgress.NotStarted);
-        }
-
-        [Theory]
-        [CommonAutoData]
-        public static void NoAssociatedServices_NoSolutions_NoCommencementDate_AssociatedServiceStatus_CannotStart(
-            Order order,
-            TaskListService service)
-        {
-            order.CommencementDate = null;
-
-            var actual = service.GetTaskListStatusModelForOrder(order);
-
-            actual.AssociatedServiceStatus.Should().Be(TaskProgress.CannotStart);
         }
 
         [Theory]
