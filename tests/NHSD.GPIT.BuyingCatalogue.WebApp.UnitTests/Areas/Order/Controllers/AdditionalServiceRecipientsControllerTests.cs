@@ -124,10 +124,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers
 
             var model = new SelectAdditionalServiceRecipientsModel(internalOrgId, state, selectionMode);
 
-            orderSessionServiceMock
-                .Setup(s => s.GetOrderStateFromSession(state.CallOffId))
-                .Returns(state);
-
             state.ServiceRecipients = null;
 
             orderSessionServiceMock
@@ -149,9 +145,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers
 
             orderSessionServiceMock.VerifyAll();
             orderItemServiceMock.VerifyAll();
-            odsServiceMock.VerifyAll();
-
-            orderSessionServiceMock.VerifyAll();
             odsServiceMock.VerifyAll();
 
             actualResult.Should().BeOfType<ViewResult>();

@@ -80,11 +80,11 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers
 
             var model = new SelectSolutionServiceRecipientsModel(internalOrgId, state, selectionMode);
 
+            state.ServiceRecipients = null;
+
             orderSessionServiceMock
                 .Setup(s => s.GetOrderStateFromSession(state.CallOffId))
                 .Returns(state);
-
-            state.ServiceRecipients = null;
 
             odsServiceMock
                 .Setup(s => s.GetServiceRecipientsByParentInternalIdentifier(internalOrgId))
@@ -102,7 +102,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers
         [Theory]
         [CommonAutoData]
         public static async Task Post_SelectSolutionRecipients_StateUpdatedCorrectly(
-            string odsCode,
+            string internalOrgId,
             CreateOrderItemModel state,
             List<OrderItemRecipientModel> serviceRecipients,
             [Frozen] Mock<IOrderSessionService> orderSessionServiceMock,
@@ -126,7 +126,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers
                 ServiceRecipients = serviceRecipients,
             };
 
-            await controller.SelectSolutionServiceRecipients(odsCode, state.CallOffId, model);
+            await controller.SelectSolutionServiceRecipients(internalOrgId, state.CallOffId, model);
 
             orderSessionServiceMock.VerifyAll();
 
