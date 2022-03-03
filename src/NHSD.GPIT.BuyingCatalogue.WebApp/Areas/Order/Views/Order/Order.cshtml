@@ -43,33 +43,18 @@
                                                 new { Model.InternalOrgId, Model.CallOffId})"
                                             status="@Model.SectionStatuses.CommencementDateStatus" />
                     </nhs-task-list-section>
-                    <nhs-task-list-section label-text="Add services">
-                        <nhs-task-list-item label-text="Add Catalogue Solutions to your order"
-                                            url="@Url.Action(
-                                                nameof(CatalogueSolutionsController.Index),
-                                                typeof(CatalogueSolutionsController).ControllerName(),
-                                                new { Model.InternalOrgId, Model.CallOffId})"
-                                            status="@Model.SectionStatuses.CatalogueSolutionsStatus" />
-                        <nhs-task-list-item label-text="Add Additional Services to your order"
-                                            url="@Url.Action(
-                                                nameof(AdditionalServicesController.Index),
-                                                typeof(AdditionalServicesController).ControllerName(),
-                                                new { Model.InternalOrgId, Model.CallOffId})"
-                                            status="@Model.SectionStatuses.AdditionalServiceStatus" />
-                        <nhs-task-list-item label-text="Add Associated Services to your order"
-                                            url="@Url.Action(
-                                                nameof(AssociatedServicesController.Index),
-                                                typeof(AssociatedServicesController).ControllerName(),
-                                                new { Model.InternalOrgId, Model.CallOffId})"
-                                            status="@Model.SectionStatuses.AssociatedServiceStatus" />
-                    </nhs-task-list-section>
-                    <nhs-task-list-section label-text="Complete order">
-                        <nhs-task-list-item label-text="Indicate funding source"
+                    <nhs-task-list-section label-text="Add solutions and services">
+                        <nhs-task-list-item label-text="Select solutions and services"
+                                            url="#"
+                                            status="NotStarted" />
+						<nhs-task-list-item label-text="Indicate funding source"
                                             url="@Url.Action(
                                                     nameof(FundingSourceController.FundingSource),
                                                     typeof(FundingSourceController).ControllerName(),
                                                     new { Model.InternalOrgId, Model.CallOffId})"
                                             status="@Model.SectionStatuses.FundingSourceStatus" />
+                    </nhs-task-list-section>
+                    <nhs-task-list-section label-text="Complete order">                        
                         <nhs-task-list-item label-text="Review and complete order"
                                             url="@Url.Action(
                                                     nameof(OrderController.Summary),

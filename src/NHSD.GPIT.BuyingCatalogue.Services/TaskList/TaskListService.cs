@@ -41,29 +41,6 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.TaskList
                 _ => TaskProgress.CannotStart,
             };
 
-            model.CatalogueSolutionsStatus = completedSections switch
-            {
-                var cs when cs.HasFlag(TaskListOrderSections.CatalogueSolutionsComplete) => TaskProgress.Completed,
-                var cs when cs.HasFlag(TaskListOrderSections.AssociatedServicesComplete) => TaskProgress.Optional,
-                var cs when cs.HasFlag(TaskListOrderSections.CommencementDateComplete) => TaskProgress.NotStarted,
-                _ => TaskProgress.CannotStart,
-            };
-
-            model.AdditionalServiceStatus = completedSections switch
-            {
-                var cs when cs.HasFlag(TaskListOrderSections.AdditionalServicesComplete) => TaskProgress.Completed,
-                var cs when cs.HasFlag(TaskListOrderSections.CatalogueSolutionsComplete) => TaskProgress.Optional,
-                _ => TaskProgress.CannotStart,
-            };
-
-            model.AssociatedServiceStatus = completedSections switch
-            {
-                var cs when cs.HasFlag(TaskListOrderSections.AssociatedServicesComplete) => TaskProgress.Completed,
-                var cs when cs.HasFlag(TaskListOrderSections.CatalogueSolutionsComplete) => TaskProgress.Optional,
-                var cs when cs.HasFlag(TaskListOrderSections.CommencementDateComplete) => TaskProgress.NotStarted,
-                _ => TaskProgress.CannotStart,
-            };
-
             model.FundingSourceStatus = completedSections switch
             {
                 var cs when cs.HasFlag(TaskListOrderSections.FundingSourceComplete) => TaskProgress.Completed,
