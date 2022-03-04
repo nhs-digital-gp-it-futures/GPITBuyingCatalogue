@@ -12,7 +12,17 @@
                                  nameof(OrganisationsController.Find),
                                  typeof(OrganisationsController).ControllerName())"
                         text="Add an organisation"/>
+
+    <vc:nhs-secondary-button text="Import practice lists"
+                             url="@Url.Action(
+                                      nameof(ImportController.ImportGpPracticeList),
+                                      typeof(ImportController).ControllerName())"
+                             use-primary-colour="false" />
     
+    <p>
+        Import the latest practice list sizes for buyer organisations.
+    </p>
+
     <vc:nhs-autocomplete id="organisations-autocomplete"
                          ajax-url="@Url.Action(
                                        nameof(OrganisationsController.SearchResults),

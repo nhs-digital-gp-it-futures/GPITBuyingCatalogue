@@ -35,5 +35,7 @@ module "webapp" {
   create_host_binding = local.coreEnv == "dev" ? 1 : 0 
   ssl_thumbprint = data.azurerm_key_vault_certificate.ssl_cert.thumbprint
   notify_api_key = var.notify_api_key
+  hangfire_username = azurerm_key_vault_secret.sqlhangfireusername.value
+  hangfire_password = azurerm_key_vault_secret.sqlhangfirepassword.value
   depends_on = [module.sql_server_pri]
 }

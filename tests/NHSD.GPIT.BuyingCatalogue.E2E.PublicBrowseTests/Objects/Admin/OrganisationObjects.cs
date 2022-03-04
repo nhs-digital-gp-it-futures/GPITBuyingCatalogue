@@ -16,6 +16,8 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Objects.Admin
 
         internal static By AddOrganisationLink => By.LinkText("Add an organisation");
 
+        internal static By ImportPracticeListsButton => By.LinkText("Import practice lists");
+
         internal static By AddRelatedOrgButton => ByExtensions.DataTestId("add-organisation-button", "a");
 
         internal static By OdsCodes => ByExtensions.DataTestId("org-ods-code");

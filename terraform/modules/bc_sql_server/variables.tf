@@ -22,6 +22,7 @@ variable "sql_admin_username" {
 variable "sql_admin_password" {
   type = string
 }
+
 variable "sqladmins" {
   type = string
 }
