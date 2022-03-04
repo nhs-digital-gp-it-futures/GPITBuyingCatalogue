@@ -46,7 +46,6 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.TaskList
             actual.OrderingPartyStatus.Should().Be(TaskProgress.Completed);
             actual.SupplierStatus.Should().Be(TaskProgress.Completed);
             actual.CommencementDateStatus.Should().Be(TaskProgress.Completed);
-            actual.FundingSourceStatus.Should().Be(TaskProgress.Completed);
             actual.ReviewAndCompleteStatus.Should().Be(TaskProgress.NotStarted);
         }
 
@@ -128,52 +127,6 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.TaskList
             var actual = service.GetTaskListStatusModelForOrder(order);
 
             actual.CommencementDateStatus.Should().Be(TaskProgress.CannotStart);
-        }
-
-        [Theory]
-        [CommonAutoData]
-        public static void WithSolutions_NoAssociatedServices_FundingSourceStatus_NotStarted(
-            Order order,
-            OrderItem orderItem,
-            TaskListService service)
-        {
-            orderItem.CatalogueItem.CatalogueItemType = CatalogueItemType.Solution;
-            order.AddOrUpdateOrderItem(orderItem);
-
-            order.FundingSourceOnlyGms = null;
-
-            var actual = service.GetTaskListStatusModelForOrder(order);
-
-            actual.FundingSourceStatus.Should().Be(TaskProgress.NotStarted);
-        }
-
-        [Theory]
-        [CommonAutoData]
-        public static void NoSolutions_WithAssociatedServices_FundingSourceStatus_NotStarted(
-            Order order,
-            OrderItem orderItem,
-            TaskListService service)
-        {
-            orderItem.CatalogueItem.CatalogueItemType = CatalogueItemType.AssociatedService;
-            order.AddOrUpdateOrderItem(orderItem);
-            order.FundingSourceOnlyGms = null;
-
-            var actual = service.GetTaskListStatusModelForOrder(order);
-
-            actual.FundingSourceStatus.Should().Be(TaskProgress.NotStarted);
-        }
-
-        [Theory]
-        [CommonAutoData]
-        public static void NoSolutions_NoAssociatedServices_FundingSourceStatus_CannotStart(
-            Order order,
-            TaskListService service)
-        {
-            order.FundingSourceOnlyGms = null;
-
-            var actual = service.GetTaskListStatusModelForOrder(order);
-
-            actual.FundingSourceStatus.Should().Be(TaskProgress.CannotStart);
         }
 
         [Theory]

@@ -7,7 +7,6 @@ using Microsoft.AspNetCore.Mvc;
 using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Enums;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Organisations;
-using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.FundingSource;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.OrderTriage;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.Shared;
 
@@ -162,8 +161,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
                 return RedirectToAction(nameof(StepsNotCompleted), new { internalOrgId, option });
 
             return RedirectToAction(
-                nameof(TriageFunding),
-                new { internalOrgId, option });
+                   nameof(OrderController.ReadyToStart),
+                   typeof(OrderController).ControllerName(),
+                   new { internalOrgId, option });
         }
 
         [HttpGet("{option}/steps-incomplete")]
@@ -189,32 +189,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
             };
 
             return View(viewName, model);
-        }
-
-        [HttpGet("funding")]
-        public async Task<IActionResult> TriageFunding(string internalOrgId, TriageOption option, FundingSource? fundingSource = null)
-        {
-            var organisation = await organisationsService.GetOrganisationByInternalIdentifier(internalOrgId);
-
-            var model = new FundingSourceModel(organisation)
-            {
-                BackLink = Url.Action(nameof(TriageSelection), new { internalOrgId, option, selected = true }),
-                SelectedFundingSource = fundingSource,
-            };
-
-            return View(model);
-        }
-
-        [HttpPost("funding")]
-        public IActionResult TriageFunding(string internalOrgId, TriageOption option, FundingSourceModel model)
-        {
-            if (!ModelState.IsValid)
-                return View(model);
-
-            return RedirectToAction(
-                   nameof(OrderController.ReadyToStart),
-                   typeof(OrderController).ControllerName(),
-                   new { internalOrgId, option, fundingSource = model.SelectedFundingSource!.Value });
         }
 
         private static (string Title, string Advice, string ValidationError) GetTriageSelectionContent(TriageOption option)

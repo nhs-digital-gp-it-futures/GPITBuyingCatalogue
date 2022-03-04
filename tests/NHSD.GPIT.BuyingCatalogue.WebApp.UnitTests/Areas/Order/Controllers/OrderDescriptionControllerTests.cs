@@ -177,24 +177,5 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers
             actualResult.ViewData.ModelState.Keys.Single().Should().Be(errorKey);
             actualResult.ViewData.ModelState.Values.Single().Errors.Single().ErrorMessage.Should().Be(errorMessage);
         }
-
-        [Theory]
-        [CommonAutoData]
-        public static async Task Post_NewOrderDescription_WithFundingSource_SetsFundingSource(
-            EntityFramework.Ordering.Models.Order order,
-            string internalOrgId,
-            FundingSource fundingSource,
-            OrderDescriptionModel model,
-            [Frozen] Mock<IOrderService> orderService,
-            [Frozen] Mock<IFundingSourceService> fundingSourceService,
-            OrderDescriptionController controller)
-        {
-            orderService.Setup(s => s.CreateOrder(model.Description, model.InternalOrgId))
-                .ReturnsAsync(order);
-
-            _ = await controller.NewOrderDescription(internalOrgId, model, fundingSource);
-
-            fundingSourceService.Verify(s => s.SetFundingSource(order.CallOffId, internalOrgId, fundingSource == FundingSource.Central, false));
-        }
     }
 }

@@ -48,11 +48,8 @@
                                             url="#"
                                             status="NotStarted" />
 						<nhs-task-list-item label-text="Indicate funding source"
-                                            url="@Url.Action(
-                                                    nameof(FundingSourceController.FundingSource),
-                                                    typeof(FundingSourceController).ControllerName(),
-                                                    new { Model.InternalOrgId, Model.CallOffId})"
-                                            status="@Model.SectionStatuses.FundingSourceStatus" />
+                                            url="#"
+                                            status="NotStarted" />
                     </nhs-task-list-section>
                     <nhs-task-list-section label-text="Complete order">                        
                         <nhs-task-list-item label-text="Review and complete order"

@@ -156,8 +156,8 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering.OrderTriage
             CommonActions.ClickSave();
 
             CommonActions.PageLoadedCorrectGetIndex(
-                typeof(OrderTriageController),
-                nameof(OrderTriageController.TriageFunding)).Should().BeTrue();
+                typeof(OrderController),
+                nameof(OrderController.ReadyToStart)).Should().BeTrue();
         }
 
         [Fact]

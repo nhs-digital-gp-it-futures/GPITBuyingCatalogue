@@ -75,7 +75,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
         }
 
         [HttpGet("~/order/organisation/{internalOrgId}/order/ready-to-start")]
-        public async Task<IActionResult> ReadyToStart(string internalOrgId, TriageOption? option = null, FundingSource? fundingSource = null)
+        public async Task<IActionResult> ReadyToStart(string internalOrgId, TriageOption? option = null)
         {
             var organisation = await organisationsService.GetOrganisationByInternalIdentifier(internalOrgId);
 
@@ -83,24 +83,24 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
             {
                 Option = option,
                 BackLink = Url.Action(
-                    nameof(OrderTriageController.TriageFunding),
+                    nameof(OrderTriageController.TriageSelection),
                     typeof(OrderTriageController).ControllerName(),
-                    new { internalOrgId, option, selected = true, fundingSource }),
+                    new { internalOrgId, option, selected = true }),
             };
 
             return View(model);
         }
 
         [HttpPost("~/order/organisation/{internalOrgId}/order/ready-to-start")]
-        public IActionResult ReadyToStart(string internalOrgId, ReadyToStartModel model, TriageOption? option = null, FundingSource? fundingSource = null)
+        public IActionResult ReadyToStart(string internalOrgId, ReadyToStartModel model, TriageOption? option = null)
         {
             return RedirectToAction(
                 nameof(NewOrder),
-                new { internalOrgId, option, fundingSource });
+                new { internalOrgId, option });
         }
 
         [HttpGet("~/order/organisation/{internalOrgId}/order/neworder")]
-        public async Task<IActionResult> NewOrder(string internalOrgId, TriageOption? option = null, FundingSource? fundingSource = null)
+        public async Task<IActionResult> NewOrder(string internalOrgId, TriageOption? option = null)
         {
             var organisation = await organisationsService.GetOrganisationByInternalIdentifier(internalOrgId);
 
@@ -109,11 +109,11 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
                 DescriptionUrl = Url.Action(
                     nameof(OrderDescriptionController.NewOrderDescription),
                     typeof(OrderDescriptionController).ControllerName(),
-                    new { internalOrgId, option, fundingSource }),
+                    new { internalOrgId, option }),
                 BackLink = Url.Action(
                     nameof(OrderController.ReadyToStart),
                     typeof(OrderController).ControllerName(),
-                    new { internalOrgId, option, fundingSource }),
+                    new { internalOrgId, option }),
             };
 
             return View("Order", orderModel);

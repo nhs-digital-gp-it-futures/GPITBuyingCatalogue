@@ -41,15 +41,6 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.TaskList
                 _ => TaskProgress.CannotStart,
             };
 
-            model.FundingSourceStatus = completedSections switch
-            {
-                var cs when cs.HasFlag(TaskListOrderSections.FundingSourceComplete) => TaskProgress.Completed,
-                var cs when
-                cs.HasFlag(TaskListOrderSections.CatalogueSolutionsComplete)
-                || cs.HasFlag(TaskListOrderSections.AssociatedServicesComplete) => TaskProgress.NotStarted,
-                _ => TaskProgress.CannotStart,
-            };
-
             model.ReviewAndCompleteStatus = completedSections switch
             {
                 var cs when cs.HasFlag(TaskListOrderSections.FundingSourceComplete) => TaskProgress.NotStarted,

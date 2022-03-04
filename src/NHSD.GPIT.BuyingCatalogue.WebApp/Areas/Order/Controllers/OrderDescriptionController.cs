@@ -69,7 +69,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
         }
 
         [HttpGet("~/organisation/{internalOrgId}/order/neworder/description")]
-        public async Task<IActionResult> NewOrderDescription(string internalOrgId, TriageOption? option = null, FundingSource? fundingSource = null)
+        public async Task<IActionResult> NewOrderDescription(string internalOrgId, TriageOption? option = null)
         {
             var user = await usersService.GetUser(User.UserId());
             var organisation = await organisationsService.GetOrganisation(user?.PrimaryOrganisationId ?? 0);
@@ -79,21 +79,19 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
                 BackLink = Url.Action(
                     nameof(OrderController.NewOrder),
                     typeof(OrderController).ControllerName(),
-                    new { internalOrgId, option, fundingSource }),
+                    new { internalOrgId, option }),
             };
 
             return View("OrderDescription", descriptionModel);
         }
 
         [HttpPost("~/organisation/{internalOrgId}/order/neworder/description")]
-        public async Task<IActionResult> NewOrderDescription(string internalOrgId, OrderDescriptionModel model, FundingSource? fundingSource = null)
+        public async Task<IActionResult> NewOrderDescription(string internalOrgId, OrderDescriptionModel model)
         {
             if (!ModelState.IsValid)
                 return View("OrderDescription", model);
 
             var order = await orderService.CreateOrder(model.Description, model.InternalOrgId);
-            if (fundingSource != null)
-                await fundingSourceService.SetFundingSource(order.CallOffId, internalOrgId, fundingSource!.Value.IsCentralFunding(), false);
 
             return RedirectToAction(
                 nameof(OrderController.Order),

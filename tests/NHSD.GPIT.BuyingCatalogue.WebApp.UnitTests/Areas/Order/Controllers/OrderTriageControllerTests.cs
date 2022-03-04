@@ -9,16 +9,12 @@ using AutoFixture.Xunit2;
 using FluentAssertions;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Routing;
 using Moq;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Organisations.Models;
 using NHSD.GPIT.BuyingCatalogue.Framework.Constants;
-using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
-using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Enums;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Organisations;
 using NHSD.GPIT.BuyingCatalogue.Test.Framework.AutoFixtureCustomisations;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers;
-using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.FundingSource;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.OrderTriage;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.Shared;
 using Xunit;
@@ -207,7 +203,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers
             var result = controller.TriageSelection(internalOrgId, option, model);
 
             result.As<RedirectToActionResult>().Should().NotBeNull();
-            result.As<RedirectToActionResult>().ActionName.Should().Be(nameof(OrderTriageController.TriageFunding));
+            result.As<RedirectToActionResult>().ActionName.Should().Be(nameof(OrderController.ReadyToStart));
         }
 
         [Theory]
@@ -389,79 +385,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers
 
             result.Should().NotBeNull();
             result.ActionName.Should().Be(nameof(OrderTriageController.Index));
-        }
-
-        [Theory]
-        [CommonAutoData]
-        public static async Task Get_TriageFunding_ReturnsViewWithModel(
-            Organisation organisation,
-            TriageOption option,
-            [Frozen] Mock<IOrganisationsService> service,
-            OrderTriageController controller)
-        {
-            var model = new FundingSourceModel(organisation);
-
-            service.Setup(s => s.GetOrganisationByInternalIdentifier(organisation.InternalIdentifier))
-                .ReturnsAsync(organisation);
-
-            var result = (await controller.TriageFunding(organisation.InternalIdentifier, option)).As<ViewResult>();
-
-            result.Should().NotBeNull();
-            result.Model.Should().BeEquivalentTo(model, opt => opt.Excluding(m => m.BackLink));
-        }
-
-        [Theory]
-        [CommonAutoData]
-        public static async Task Get_TriageFunding_PreselectsFundingSource(
-            Organisation organisation,
-            TriageOption option,
-            FundingSource fundingSource,
-            [Frozen] Mock<IOrganisationsService> service,
-            OrderTriageController controller)
-        {
-            service.Setup(s => s.GetOrganisationByInternalIdentifier(organisation.InternalIdentifier))
-                .ReturnsAsync(organisation);
-
-            var result = (await controller.TriageFunding(organisation.InternalIdentifier, option, fundingSource)).As<ViewResult>();
-
-            result.Model.As<FundingSourceModel>().SelectedFundingSource.Should().Be(fundingSource);
-        }
-
-        [Theory]
-        [CommonAutoData]
-        public static void Post_TriageFunding_InvalidModel_ReturnsView(
-            string internalOrgId,
-            TriageOption option,
-            FundingSourceModel model,
-            OrderTriageController controller)
-        {
-            controller.ModelState.AddModelError("some-key", "some-error");
-
-            var result = controller.TriageFunding(internalOrgId, option, model).As<ViewResult>();
-
-            result.Should().NotBeNull();
-            result.Model.Should().BeEquivalentTo(model);
-        }
-
-        [Theory]
-        [CommonAutoData]
-        public static void Post_TriageFunding_ValidModel_Redirects(
-            string internalOrgId,
-            TriageOption option,
-            FundingSourceModel model,
-            OrderTriageController controller)
-        {
-            var result = controller.TriageFunding(internalOrgId, option, model).As<RedirectToActionResult>();
-
-            result.Should().NotBeNull();
-            result.ActionName.Should().Be(nameof(OrderController.ReadyToStart));
-            result.ControllerName.Should().Be(typeof(OrderController).ControllerName());
-            result.RouteValues.Should().BeEquivalentTo(new RouteValueDictionary
-            {
-                { nameof(internalOrgId), internalOrgId },
-                { nameof(option), option },
-                { "fundingSource", model.SelectedFundingSource!.Value },
-            });
         }
     }
 }

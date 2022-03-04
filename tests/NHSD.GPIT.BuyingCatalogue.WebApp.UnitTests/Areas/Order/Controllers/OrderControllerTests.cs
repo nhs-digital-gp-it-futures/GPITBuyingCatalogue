@@ -232,7 +232,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers
                 {
                     { nameof(internalOrgId), internalOrgId },
                     { nameof(option), option },
-                    { "fundingSource", null },
                 });
         }
 
@@ -242,10 +241,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers
             string internalOrgId,
             ReadyToStartModel model,
             TriageOption option,
-            FundingSource fundingSource,
             OrderController controller)
         {
-            var result = controller.ReadyToStart(internalOrgId, model, option, fundingSource).As<RedirectToActionResult>();
+            var result = controller.ReadyToStart(internalOrgId, model, option).As<RedirectToActionResult>();
 
             result.Should().NotBeNull();
             result.ActionName.Should().Be(nameof(controller.NewOrder));
@@ -254,7 +252,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers
                 {
                     { nameof(internalOrgId), internalOrgId },
                     { nameof(option), option },
-                    { nameof(fundingSource), fundingSource },
                 });
         }
 
