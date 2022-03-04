@@ -51,16 +51,12 @@
 <body class="nhsuk-bc-print">
     <div class="nhsuk-width-container">
         <main class="nhsuk-main-wrapper" id="maincontent">
-            <div class="bc-print-header">
-                <h1 style="margin-bottom: 0.5em;">GP IT Futures Framework Agreement</h1>
-                <h2>Call Off Order Form</h2>
-                <br />
-            </div>
             <div class="nhsuk-grid-row">
                 <div class="nhsuk-grid-column-two-thirds">
                     <nhs-validation-summary />
-                    <nhs-page-title title="@ViewBag.Title"
-                                    advice="@Model.AdviceText" />
+                    <nhs-page-title title="Call-off Order Form"
+                                    advice="@Model.AdviceText" 
+                                    caption="@ViewBag.Title"/>
                 </div>
             </div>
             <div class="nhsuk-grid-row">

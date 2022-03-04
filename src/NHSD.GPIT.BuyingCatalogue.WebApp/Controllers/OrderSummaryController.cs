@@ -27,7 +27,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Controllers
             {
                 Title = order.OrderStatus switch
                 {
-                    OrderStatus.Complete => $"Order confirmed for {callOffId}",
+                    OrderStatus.Complete => $"Order completed for {callOffId}",
                     _ => order.CanComplete()
                         ? $"Review order summary for {callOffId}"
                         : $"Order summary for {callOffId}",
@@ -35,7 +35,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Controllers
 
                 AdviceText = order.OrderStatus switch
                 {
-                    OrderStatus.Complete => "This order has been confirmed and can no longer be changed.",
+                    OrderStatus.Complete => "This order has been completed and can no longer be changed.",
                     _ => order.CanComplete()
                         ? "Review your order summary and confirm the content is correct. Once confirmed, you'll be unable to make changes."
                         : "This is what's been added to your order so far. You must complete all mandatory steps before you can confirm your order.",
