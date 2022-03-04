@@ -5,7 +5,11 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Objects.Ordering
 {
     internal static class OrderTriageObjects
     {
-        public static By ProcurementHubLink => By.Id("procurement-hub-link");
+        public static By ReturnToDashboardLink => By.LinkText("Return to orders dashboard");
+
+        public static By ProcurementHubLink => By.LinkText("Get procurement support");
+
+        public static By ProcurementHubHyperLink => By.Id("procurement-hub-link");
 
         public static By ProcurementHubActionLink => By.LinkText("Contact Procurement Hub");
 

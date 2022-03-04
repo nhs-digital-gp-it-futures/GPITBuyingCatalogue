@@ -17,11 +17,10 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering
     {
         private const string InternalOrgId = "03F";
 
-        private static readonly Dictionary<string, string> Parameters =
-            new()
-            {
-                { nameof(InternalOrgId), InternalOrgId },
-            };
+        private static readonly Dictionary<string, string> Parameters = new()
+        {
+            { nameof(InternalOrgId), InternalOrgId },
+        };
 
         public OrderReadyToStart(LocalWebApplicationFactory factory)
             : base(
@@ -41,13 +40,13 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering
             CommonActions.PageTitle().Should().BeEquivalentTo($"Before you start an order - {organisation.Name}".FormatForComparison());
             CommonActions.GoBackLinkDisplayed().Should().BeTrue();
             CommonActions.ElementIsDisplayed(CommonSelectors.SubmitButton).Should().BeTrue();
-            CommonActions.ElementIsDisplayed(OrderTriageObjects.ProcurementHubLink).Should().BeTrue();
+            CommonActions.ElementIsDisplayed(OrderTriageObjects.ProcurementHubHyperLink).Should().BeTrue();
         }
 
         [Fact]
         public void ReadyToStart_ClickProcurementHubLink_RedirectsToCorrectPage()
         {
-            CommonActions.ClickLinkElement(OrderTriageObjects.ProcurementHubLink);
+            CommonActions.ClickLinkElement(OrderTriageObjects.ProcurementHubHyperLink);
 
             CommonActions.PageLoadedCorrectGetIndex(
                 typeof(ProcurementHubController),
