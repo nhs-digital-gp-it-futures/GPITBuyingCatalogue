@@ -44,4 +44,4 @@
 :r ./ProdLikeData/MergeFrameworkSolutions.sql
 :r ./ProdLikeData/MergeCataloguePrices.sql
 
-:r ./OrderSeedData/InsertTextOrderSeedData.sql
+:r ./OrderSeedData/InsertTestOrderSeedData.sql
