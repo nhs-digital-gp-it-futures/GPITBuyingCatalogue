@@ -23,6 +23,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.Organisations
         public void BuyerOrganisations_AllElementsDisplayed()
         {
             CommonActions.ElementIsDisplayed(OrganisationObjects.AddOrganisationLink).Should().BeTrue();
+            CommonActions.ElementIsDisplayed(OrganisationObjects.ImportPracticeListsButton).Should().BeTrue();
             CommonActions.ElementIsDisplayed(OrganisationObjects.SearchBar).Should().BeTrue();
             CommonActions.ElementIsDisplayed(OrganisationObjects.SearchButton).Should().BeTrue();
             CommonActions.ElementIsDisplayed(OrganisationObjects.OrganisationsTable).Should().BeTrue();
@@ -44,6 +45,16 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.Organisations
             CommonActions.PageLoadedCorrectGetIndex(
                 typeof(OrganisationsController),
                 nameof(OrganisationsController.Find)).Should().BeTrue();
+        }
+
+        [Fact]
+        public void BuyerOrganisations_ClickImportPracticeLists_DisplaysCorrectPage()
+        {
+            CommonActions.ClickLinkElement(OrganisationObjects.ImportPracticeListsButton);
+
+            CommonActions.PageLoadedCorrectGetIndex(
+                typeof(ImportController),
+                nameof(ImportController.ImportGpPracticeList)).Should().BeTrue();
         }
 
         [Fact]

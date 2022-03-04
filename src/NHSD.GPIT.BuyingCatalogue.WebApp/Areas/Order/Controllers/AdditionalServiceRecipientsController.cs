@@ -20,22 +20,28 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
     [Route("order/organisation/{internalOrgId}/order/{callOffId}/additional-services/select/additional-service/price/recipients")]
     public sealed class AdditionalServiceRecipientsController : Controller
     {
+        private readonly IGpPracticeCacheService gpPracticeService;
         private readonly IOdsService odsService;
         private readonly IOrderItemService orderItemService;
         private readonly IOrderSessionService orderSessionService;
 
         public AdditionalServiceRecipientsController(
+            IGpPracticeCacheService gpPracticeService,
             IOdsService odsService,
             IOrderItemService orderItemService,
             IOrderSessionService orderSessionService)
         {
+            this.gpPracticeService = gpPracticeService ?? throw new ArgumentNullException(nameof(gpPracticeService));
             this.odsService = odsService ?? throw new ArgumentNullException(nameof(odsService));
             this.orderItemService = orderItemService ?? throw new ArgumentNullException(nameof(orderItemService));
             this.orderSessionService = orderSessionService ?? throw new ArgumentNullException(nameof(orderSessionService));
         }
 
         [HttpGet]
-        public async Task<IActionResult> SelectAdditionalServiceRecipients(string internalOrgId, CallOffId callOffId, string selectionMode)
+        public async Task<IActionResult> SelectAdditionalServiceRecipients(
+            string internalOrgId,
+            CallOffId callOffId,
+            string selectionMode)
         {
             var state = orderSessionService.GetOrderStateFromSession(callOffId);
 
@@ -60,12 +66,24 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
         }
 
         [HttpPost]
-        public IActionResult SelectAdditionalServiceRecipients(string internalOrgId, CallOffId callOffId, SelectAdditionalServiceRecipientsModel model)
+        public async Task<IActionResult> SelectAdditionalServiceRecipients(
+            string internalOrgId,
+            CallOffId callOffId,
+            SelectAdditionalServiceRecipientsModel model)
         {
             if (!ModelState.IsValid)
                 return View(model);
 
             var state = orderSessionService.GetOrderStateFromSession(callOffId);
+
+            if (state.CataloguePrice.ProvisioningType == ProvisioningType.Patient)
+            {
+                foreach (var serviceRecipient in model.ServiceRecipients)
+                {
+                    serviceRecipient.Quantity = await gpPracticeService.GetNumberOfPatients(serviceRecipient.OdsCode);
+                }
+            }
+
             state.ServiceRecipients = model.ServiceRecipients;
 
             orderSessionService.SetOrderStateToSession(state);

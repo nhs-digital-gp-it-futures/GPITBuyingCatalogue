@@ -94,6 +94,11 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils
             }
         }
 
+        ~LocalWebApplicationFactory()
+        {
+            Dispose(true);
+        }
+
         public string BcDbName { get; private set; }
 
         public string RootUri { get; }

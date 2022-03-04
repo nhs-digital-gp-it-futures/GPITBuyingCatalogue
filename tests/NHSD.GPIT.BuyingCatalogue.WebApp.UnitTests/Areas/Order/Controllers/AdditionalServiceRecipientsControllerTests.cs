@@ -53,13 +53,18 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers
             [Frozen] Mock<IOrderSessionService> orderSessionServiceMock,
             AdditionalServiceRecipientsController controller)
         {
-            var expectedViewData = new SelectAdditionalServiceRecipientsModel(internalOrgId, state, selectionMode);
-            orderSessionServiceMock.Setup(s => s.GetOrderStateFromSession(state.CallOffId)).Returns(state);
+            var model = new SelectAdditionalServiceRecipientsModel(internalOrgId, state, selectionMode);
+
+            orderSessionServiceMock
+                .Setup(s => s.GetOrderStateFromSession(state.CallOffId))
+                .Returns(state);
 
             var actualResult = await controller.SelectAdditionalServiceRecipients(internalOrgId, state.CallOffId, selectionMode);
 
+            orderSessionServiceMock.VerifyAll();
+
             actualResult.Should().BeOfType<ViewResult>();
-            actualResult.As<ViewResult>().ViewData.Model.Should().BeEquivalentTo(expectedViewData);
+            actualResult.As<ViewResult>().ViewData.Model.Should().BeEquivalentTo(model);
         }
 
         [Theory]
@@ -148,7 +153,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers
 
         [Theory]
         [CommonAutoData]
-        public static void Post_SelectAdditionalServiceRecipients_StateUpdatedCorrectly(
+        public static async Task Post_SelectAdditionalServiceRecipients_StateUpdatedCorrectly(
             string internalOrgId,
             CreateOrderItemModel state,
             List<OrderItemRecipientModel> serviceRecipients,
@@ -157,26 +162,32 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers
         {
             serviceRecipients.First().Selected = true;
 
-            orderSessionServiceMock.Setup(s => s.GetOrderStateFromSession(state.CallOffId)).Returns(state);
+            orderSessionServiceMock
+                .Setup(s => s.GetOrderStateFromSession(state.CallOffId))
+                .Returns(state);
 
             CreateOrderItemModel updatedState = null;
 
-            orderSessionServiceMock.Setup(s => s.SetOrderStateToSession(It.IsAny<CreateOrderItemModel>()))
-                .Callback<CreateOrderItemModel>(s => updatedState = s);
+            orderSessionServiceMock
+                .Setup(s => s.SetOrderStateToSession(It.IsAny<CreateOrderItemModel>()))
+                .Callback<CreateOrderItemModel>(s => updatedState = s)
+                .Verifiable();
 
             var model = new SelectAdditionalServiceRecipientsModel
             {
                 ServiceRecipients = serviceRecipients,
             };
 
-            controller.SelectAdditionalServiceRecipients(internalOrgId, state.CallOffId, model);
+            await controller.SelectAdditionalServiceRecipients(internalOrgId, state.CallOffId, model);
+
+            orderSessionServiceMock.VerifyAll();
 
             updatedState.ServiceRecipients.Should().BeEquivalentTo(serviceRecipients);
         }
 
         [Theory]
         [CommonAutoData]
-        public static void Post_SelectAdditionalServiceRecipients_NewSolution_CorrectlyRedirects(
+        public static async Task Post_SelectAdditionalServiceRecipients_NewSolution_CorrectlyRedirects(
             string internalOrgId,
             CreateOrderItemModel state,
             List<OrderItemRecipientModel> serviceRecipients,
@@ -187,24 +198,32 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers
             state.IsNewSolution = true;
             state.HasHitEditSolution = false;
 
-            orderSessionServiceMock.Setup(s => s.GetOrderStateFromSession(state.CallOffId)).Returns(state);
+            orderSessionServiceMock
+                .Setup(s => s.GetOrderStateFromSession(state.CallOffId))
+                .Returns(state);
 
             var model = new SelectAdditionalServiceRecipientsModel
             {
                 ServiceRecipients = serviceRecipients,
             };
 
-            var actualResult = controller.SelectAdditionalServiceRecipients(internalOrgId, state.CallOffId, model);
+            var actualResult = await controller.SelectAdditionalServiceRecipients(internalOrgId, state.CallOffId, model);
+
+            orderSessionServiceMock.VerifyAll();
 
             actualResult.Should().BeOfType<RedirectToActionResult>();
             actualResult.As<RedirectToActionResult>().ActionName.Should().Be(nameof(AdditionalServiceRecipientsDateController.SelectAdditionalServiceRecipientsDate));
             actualResult.As<RedirectToActionResult>().ControllerName.Should().Be(typeof(AdditionalServiceRecipientsDateController).ControllerName());
-            actualResult.As<RedirectToActionResult>().RouteValues.Should().BeEquivalentTo(new RouteValueDictionary { { "internalOrgId", internalOrgId }, { "callOffId", state.CallOffId } });
+            actualResult.As<RedirectToActionResult>().RouteValues.Should().BeEquivalentTo(new RouteValueDictionary
+            {
+                { "internalOrgId", internalOrgId },
+                { "callOffId", state.CallOffId },
+            });
         }
 
         [Theory]
         [CommonAutoData]
-        public static void Post_SelectAdditionalServiceRecipients_ExistingSolution_CorrectlyRedirects(
+        public static async Task Post_SelectAdditionalServiceRecipients_ExistingSolution_CorrectlyRedirects(
             string internalOrgId,
             CreateOrderItemModel state,
             List<OrderItemRecipientModel> serviceRecipients,
@@ -215,19 +234,28 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers
             state.IsNewSolution = false;
             state.HasHitEditSolution = true;
 
-            orderSessionServiceMock.Setup(s => s.GetOrderStateFromSession(state.CallOffId)).Returns(state);
+            orderSessionServiceMock
+                .Setup(s => s.GetOrderStateFromSession(state.CallOffId))
+                .Returns(state);
 
             var model = new SelectAdditionalServiceRecipientsModel
             {
                 ServiceRecipients = serviceRecipients,
             };
 
-            var actualResult = controller.SelectAdditionalServiceRecipients(internalOrgId, state.CallOffId, model);
+            var actualResult = await controller.SelectAdditionalServiceRecipients(internalOrgId, state.CallOffId, model);
+
+            orderSessionServiceMock.VerifyAll();
 
             actualResult.Should().BeOfType<RedirectToActionResult>();
             actualResult.As<RedirectToActionResult>().ActionName.Should().Be(nameof(AdditionalServicesController.EditAdditionalService));
             actualResult.As<RedirectToActionResult>().ControllerName.Should().Be(typeof(AdditionalServicesController).ControllerName());
-            actualResult.As<RedirectToActionResult>().RouteValues.Should().BeEquivalentTo(new RouteValueDictionary { { "internalOrgId", internalOrgId }, { "callOffId", state.CallOffId }, { "CatalogueItemId", state.CatalogueItemId } });
+            actualResult.As<RedirectToActionResult>().RouteValues.Should().BeEquivalentTo(new RouteValueDictionary
+            {
+                { "internalOrgId", internalOrgId },
+                { "callOffId", state.CallOffId },
+                { "CatalogueItemId", state.CatalogueItemId },
+            });
         }
     }
 }
