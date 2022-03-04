@@ -40,13 +40,13 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering
             CommonActions.PageTitle().Should().BeEquivalentTo($"Before you start an order - {organisation.Name}".FormatForComparison());
             CommonActions.GoBackLinkDisplayed().Should().BeTrue();
             CommonActions.ElementIsDisplayed(CommonSelectors.SubmitButton).Should().BeTrue();
-            CommonActions.ElementIsDisplayed(OrderTriageObjects.ProcurementHubHyperLink).Should().BeTrue();
+            CommonActions.ElementIsDisplayed(OrderTriageObjects.ProcurementHubLink).Should().BeTrue();
         }
 
         [Fact]
         public void ReadyToStart_ClickProcurementHubLink_RedirectsToCorrectPage()
         {
-            CommonActions.ClickLinkElement(OrderTriageObjects.ProcurementHubHyperLink);
+            CommonActions.ClickLinkElement(OrderTriageObjects.ProcurementHubLink);
 
             CommonActions.PageLoadedCorrectGetIndex(
                 typeof(ProcurementHubController),
