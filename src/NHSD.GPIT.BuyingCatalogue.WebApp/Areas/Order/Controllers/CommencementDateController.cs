@@ -11,7 +11,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
 {
     [Authorize]
     [Area("Order")]
-    [Route("order/organisation/{odsCode}/order/{callOffId}/commencement-date")]
+    [Route("order/organisation/{internalOrgId}/order/{callOffId}/commencement-date")]
     public sealed class CommencementDateController : Controller
     {
         private readonly IOrderService orderService;
@@ -27,30 +27,30 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> CommencementDate(string odsCode, CallOffId callOffId)
+        public async Task<IActionResult> CommencementDate(string internalOrgId, CallOffId callOffId)
         {
-            var order = await orderService.GetOrderThin(callOffId, odsCode);
+            var order = await orderService.GetOrderThin(callOffId, internalOrgId);
 
-            var model = new CommencementDateModel(odsCode, callOffId, order.CommencementDate, order.InitialPeriod, order.MaximumTerm)
+            var model = new CommencementDateModel(internalOrgId, callOffId, order.CommencementDate, order.InitialPeriod, order.MaximumTerm)
             {
                 BackLink = Url.Action(
                     nameof(OrderController.Order),
                     typeof(OrderController).ControllerName(),
-                    new { odsCode, callOffId }),
+                    new { internalOrgId, callOffId }),
             };
 
             return View(model);
         }
 
         [HttpPost]
-        public async Task<IActionResult> CommencementDate(string odsCode, CallOffId callOffId, CommencementDateModel model)
+        public async Task<IActionResult> CommencementDate(string internalOrgId, CallOffId callOffId, CommencementDateModel model)
         {
             if (!ModelState.IsValid)
                 return View(model);
 
             await commencementDateService.SetCommencementDate(
                 callOffId,
-                odsCode,
+                internalOrgId,
                 model.CommencementDate!.Value,
                 model.InitialPeriodValue,
                 model.MaximumTermValue);
@@ -58,7 +58,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
             return RedirectToAction(
                 nameof(OrderController.Order),
                 typeof(OrderController).ControllerName(),
-                new { odsCode, callOffId });
+                new { internalOrgId, callOffId });
         }
     }
 }

@@ -1,8 +1,10 @@
-﻿using System.Globalization;
+﻿using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using FluentAssertions;
 using Microsoft.EntityFrameworkCore;
+using NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.RandomData;
+using NHSD.GPIT.BuyingCatalogue.E2ETests.Objects.Admin;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Utils;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.TestBases;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers;
@@ -13,46 +15,162 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.Organisations
     public sealed class BuyerOrganisations : AuthorityTestBase, IClassFixture<LocalWebApplicationFactory>
     {
         public BuyerOrganisations(LocalWebApplicationFactory factory)
-            : base(
-                  factory,
-                  typeof(HomeController),
-                  nameof(HomeController.BuyerOrganisations),
-                  null)
+            : base(factory, typeof(OrganisationsController), nameof(OrganisationsController.Index), null)
         {
         }
 
         [Fact]
-        public void BuyerOrganisations_ManageBuyerOrgsAndUsers_AddOrgLinkDisplayed()
+        public void BuyerOrganisations_AllElementsDisplayed()
         {
-            AdminPages.Dashboard.AddOrgLinkDisplayed().Should().BeTrue();
+            CommonActions.ElementIsDisplayed(OrganisationObjects.AddOrganisationLink).Should().BeTrue();
+            CommonActions.ElementIsDisplayed(OrganisationObjects.ImportPracticeListsButton).Should().BeTrue();
+            CommonActions.ElementIsDisplayed(OrganisationObjects.SearchBar).Should().BeTrue();
+            CommonActions.ElementIsDisplayed(OrganisationObjects.SearchButton).Should().BeTrue();
+            CommonActions.ElementIsDisplayed(OrganisationObjects.OrganisationsTable).Should().BeTrue();
+            CommonActions.ElementIsDisplayed(OrganisationObjects.SearchErrorMessage).Should().BeFalse();
+            CommonActions.ElementIsDisplayed(OrganisationObjects.SearchErrorMessageLink).Should().BeFalse();
         }
 
         [Fact]
-        public void BuyerOrganisations_ManageBuyerOrgsAndUsers_OrganisationTableListDisplayed()
+        public async Task BuyerOrganisations_AllOrganisationsDisplayed()
         {
-            AdminPages.Organisation.BuyerOrgsTableDisplayed().Should().BeTrue();
+            await VerifyAllOrganisationsDisplayed();
         }
 
         [Fact]
-        public async Task BuyerOrganisations_ManageBuyerOrgsAndUsers_AllOrgsDisplayed()
+        public void BuyerOrganisations_ClickAddOrganisationLink_DisplaysCorrectPage()
         {
-            var actualOrganisationNames = AdminPages.Dashboard.GetOrganisationNamesOnPage();
-            var actualOrganisationCodes = AdminPages.Dashboard.GetOrganisationOdsCodesOnPage();
-            var actualOrganisationIdLinks = AdminPages.Dashboard.GetOrganisationLinkIdsOnPage();
+            CommonActions.ClickLinkElement(OrganisationObjects.AddOrganisationLink);
 
+            CommonActions.PageLoadedCorrectGetIndex(
+                typeof(OrganisationsController),
+                nameof(OrganisationsController.Find)).Should().BeTrue();
+        }
+
+        [Fact]
+        public void BuyerOrganisations_ClickImportPracticeLists_DisplaysCorrectPage()
+        {
+            CommonActions.ClickLinkElement(OrganisationObjects.ImportPracticeListsButton);
+
+            CommonActions.PageLoadedCorrectGetIndex(
+                typeof(ImportController),
+                nameof(ImportController.ImportGpPracticeList)).Should().BeTrue();
+        }
+
+        [Fact]
+        public async Task BuyerOrganisations_SearchTermEmpty_AllOrganisationsDisplayed()
+        {
+            CommonActions.ElementAddValue(OrganisationObjects.SearchBar, string.Empty);
+            CommonActions.ClickLinkElement(OrganisationObjects.SearchButton);
+
+            CommonActions.PageLoadedCorrectGetIndex(
+                typeof(OrganisationsController),
+                nameof(OrganisationsController.Index)).Should().BeTrue();
+
+            await VerifyAllOrganisationsDisplayed();
+        }
+
+        [Fact]
+        public async Task BuyerOrganisations_SearchTermValid_FilteredOrganisationsDisplayed()
+        {
+            await using var context = GetEndToEndDbContext();
+
+            var sampleOrganisation = context.Organisations.First();
+
+            await CommonActions.InputCharactersWithDelay(OrganisationObjects.SearchBar, sampleOrganisation.ExternalIdentifier);
+            CommonActions.WaitUntilElementIsDisplayed(OrganisationObjects.SearchListBox);
+
+            CommonActions.ElementExists(OrganisationObjects.SearchResult(0)).Should().BeTrue();
+            CommonActions.ElementTextEqualTo(OrganisationObjects.SearchResultTitle(0), sampleOrganisation.Name).Should().BeTrue();
+            CommonActions.ElementTextEqualTo(OrganisationObjects.SearchResultDescription(0), sampleOrganisation.ExternalIdentifier).Should().BeTrue();
+
+            CommonActions.ClickLinkElement(OrganisationObjects.SearchButton);
+
+            CommonActions.PageLoadedCorrectGetIndex(
+                typeof(OrganisationsController),
+                nameof(OrganisationsController.Index)).Should().BeTrue();
+
+            var pageSummary = GetPageSummary();
+
+            pageSummary.OdsCodes.Single().Should().Be(sampleOrganisation.ExternalIdentifier);
+            pageSummary.OrganisationIds.Single().Should().Be(sampleOrganisation.Id);
+            pageSummary.OrganisationNames.Single().Should().Be(sampleOrganisation.Name);
+        }
+
+        [Fact]
+        public async Task BuyerOrganisations_SearchTermValid_NoMatches_ErrorMessageDisplayed()
+        {
+            await using var context = GetEndToEndDbContext();
+
+            await CommonActions.InputCharactersWithDelay(OrganisationObjects.SearchBar, Strings.RandomString(10));
+            CommonActions.WaitUntilElementIsDisplayed(OrganisationObjects.SearchListBox);
+
+            CommonActions.ElementIsDisplayed(OrganisationObjects.SearchResultsErrorMessage).Should().BeTrue();
+
+            CommonActions.ClickLinkElement(OrganisationObjects.SearchButton);
+
+            CommonActions.PageLoadedCorrectGetIndex(
+                typeof(OrganisationsController),
+                nameof(OrganisationsController.Index)).Should().BeTrue();
+
+            CommonActions.ElementIsDisplayed(OrganisationObjects.AddOrganisationLink).Should().BeTrue();
+            CommonActions.ElementIsDisplayed(OrganisationObjects.SearchBar).Should().BeTrue();
+            CommonActions.ElementIsDisplayed(OrganisationObjects.SearchButton).Should().BeTrue();
+            CommonActions.ElementIsDisplayed(OrganisationObjects.OrganisationsTable).Should().BeFalse();
+            CommonActions.ElementIsDisplayed(OrganisationObjects.SearchErrorMessage).Should().BeTrue();
+            CommonActions.ElementIsDisplayed(OrganisationObjects.SearchErrorMessageLink).Should().BeTrue();
+
+            var pageSummary = GetPageSummary();
+
+            pageSummary.OdsCodes.Should().BeEmpty();
+            pageSummary.OrganisationIds.Should().BeEmpty();
+            pageSummary.OrganisationNames.Should().BeEmpty();
+
+            CommonActions.ClickLinkElement(OrganisationObjects.SearchErrorMessageLink);
+
+            CommonActions.PageLoadedCorrectGetIndex(
+                typeof(OrganisationsController),
+                nameof(OrganisationsController.Index)).Should().BeTrue();
+
+            CommonActions.ElementIsDisplayed(OrganisationObjects.AddOrganisationLink).Should().BeTrue();
+            CommonActions.ElementIsDisplayed(OrganisationObjects.SearchBar).Should().BeTrue();
+            CommonActions.ElementIsDisplayed(OrganisationObjects.SearchButton).Should().BeTrue();
+            CommonActions.ElementIsDisplayed(OrganisationObjects.OrganisationsTable).Should().BeTrue();
+            CommonActions.ElementIsDisplayed(OrganisationObjects.SearchErrorMessage).Should().BeFalse();
+            CommonActions.ElementIsDisplayed(OrganisationObjects.SearchErrorMessageLink).Should().BeFalse();
+        }
+
+        private async Task VerifyAllOrganisationsDisplayed()
+        {
             await using var context = GetEndToEndDbContext();
             var organisations = await context.Organisations.Select(o => new
             {
                 o.Name,
-                o.OdsCode,
+                o.InternalIdentifier,
                 OrganisationId = o.Id,
             }).ToListAsync();
 
-            actualOrganisationNames
-                .Should().HaveCount(organisations.Select(o => o.Name).Count())
-                .And.BeEquivalentTo(organisations.Select(o => o.Name));
-            actualOrganisationCodes.Should().BeEquivalentTo(organisations.Select(o => o.OdsCode));
-            actualOrganisationIdLinks.Select(o => int.Parse(o, CultureInfo.InvariantCulture)).Should().BeEquivalentTo(organisations.Select(o => o.OrganisationId));
+            var pageSummary = GetPageSummary();
+
+            pageSummary.OdsCodes.Should().BeEquivalentTo(organisations.Select(o => o.InternalIdentifier)).And.HaveCount(organisations.Count);
+            pageSummary.OrganisationIds.Should().BeEquivalentTo(organisations.Select(o => o.OrganisationId)).And.HaveCount(organisations.Count);
+            pageSummary.OrganisationNames.Should().BeEquivalentTo(organisations.Select(o => o.Name)).And.HaveCount(organisations.Count);
+        }
+
+        private PageSummary GetPageSummary() => new()
+        {
+            OdsCodes = Driver.FindElements(OrganisationObjects.OdsCodes).Select(x => x.Text.Trim()),
+            OrganisationIds = Driver.FindElements(OrganisationObjects.OrganisationLinks).Select(s => int.Parse(s.GetAttribute("org-id").Trim())),
+            OrganisationNames = Driver.FindElements(OrganisationObjects.OrganisationNames).Select(x => x.Text.Trim()),
+        };
+
+        private class PageSummary
+        {
+            public IEnumerable<string> OdsCodes { get; init; }
+
+            public IEnumerable<string> OrganisationNames { get; init; }
+
+            public IEnumerable<int> OrganisationIds { get; init; }
         }
     }
 }

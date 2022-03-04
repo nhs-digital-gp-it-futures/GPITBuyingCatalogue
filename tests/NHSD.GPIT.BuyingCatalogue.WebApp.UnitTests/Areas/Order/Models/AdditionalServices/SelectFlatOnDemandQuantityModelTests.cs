@@ -12,16 +12,16 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.Addition
         [Theory]
         [CommonAutoData]
         public static void WithValidArguments_PropertiesCorrectlySet(
-            string odsCode,
+            string internalOrgId,
             CallOffId callOffId,
             string solutionName,
             int? quantity,
             TimeUnit? estimationPeriod)
         {
-            var model = new SelectFlatOnDemandQuantityModel(odsCode, callOffId, solutionName, quantity, estimationPeriod);
+            var model = new SelectFlatOnDemandQuantityModel(internalOrgId, callOffId, solutionName, quantity, estimationPeriod);
 
             model.Title.Should().Be($"Quantity of {solutionName} for {callOffId}");
-            model.OdsCode.Should().Be(odsCode);
+            model.InternalOrgId.Should().Be(internalOrgId);
             model.CallOffId.Should().Be(callOffId);
             model.SolutionName.Should().Be(solutionName);
             model.Quantity.Should().Be(quantity.ToString());

@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using FluentAssertions;
+using NHSD.GPIT.BuyingCatalogue.E2ETests.Objects.Common;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Utils;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.TestBases;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Controllers;
@@ -29,6 +30,20 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.PublicBrowse.Homepage
             CommonActions.PageLoadedCorrectGetIndex(
                     typeof(ConsentController),
                     nameof(ConsentController.CookieSettings))
+                .Should()
+                .BeTrue();
+        }
+
+        [Theory]
+        [InlineData("first-contact-us")]
+        [InlineData("second-contact-us")]
+        public void PrivacyPolicy_ContactLinks_Click(string dataTestId)
+        {
+            CommonActions.ClickLinkElement(ByExtensions.DataTestId(dataTestId));
+
+            CommonActions.PageLoadedCorrectGetIndex(
+                typeof(HomeController),
+                nameof(HomeController.ContactUs))
                 .Should()
                 .BeTrue();
         }

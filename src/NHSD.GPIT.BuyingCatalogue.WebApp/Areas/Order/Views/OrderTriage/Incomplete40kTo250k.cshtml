@@ -1,4 +1,8 @@
-﻿@model NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.OrderTriage.GenericOrderTriageModel
+﻿@using NHSD.GPIT.BuyingCatalogue.WebApp.Controllers
+@using NHSD.GPIT.BuyingCatalogue.Framework.Extensions
+@using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
+@using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.OrderTriage
+@model NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.OrderTriage.GenericOrderTriageModel
 @{
     ViewBag.Title = "Orders with a value between £40k and £250k";
 }
@@ -7,7 +11,8 @@
     <partial name="Partials/_BackLink" model="Model" />
     <div class="nhsuk-grid-row nhsuk-u-margin-bottom-6">
         <div class="nhsuk-grid-column-full">
-            <nhs-page-title title="@ViewBag.Title" />
+            <nhs-page-title title="@ViewBag.Title"
+                            caption="@Model.OrganisationName" />
 
             <p>For orders between £40k and £250k, you must execute an On-Catalogue Competition procedure. This means you must carry out a competition of similar Catalogue Solutions using information available on <a href="https://buyingcatalogue.digital.nhs.uk/">the Buying Catalogue</a>.</p>
 
@@ -17,7 +22,18 @@
 
             <h2>Need help?</h2>
 
-            <p>For help using the Buying Catalogue, contact the National and Commercial Procurement Hub: <a href="mailto:commercial.procurementhub@nhs.net">commercial.procurementhub@nhs.net</a>.</p>
+            <p>
+                For help using the Buying Catalogue, contact the
+                <a id="procurement-hub-link"
+                   href="@Url.Action(
+                             nameof(ProcurementHubController.Index),
+                             typeof(ProcurementHubController).ControllerName(),
+                             new { returnUrl = Url.Action(
+                                 nameof(OrderTriageController.StepsNotCompleted),
+                                 typeof(OrderTriageController).ControllerName(),
+                                 new { Model!.InternalOrgId, option = TriageOption.Between40kTo250k }),
+                             })">National Commercial and Procurement Hub</a>.
+            </p>
 
             <vc:nhs-secondary-button text="Return to orders dashboard"
                                      use-primary-colour="true"

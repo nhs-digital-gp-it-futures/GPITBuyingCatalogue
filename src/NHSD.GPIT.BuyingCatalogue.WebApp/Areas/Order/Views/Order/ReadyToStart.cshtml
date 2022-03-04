@@ -1,5 +1,6 @@
-﻿@using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
-@using NHSD.GPIT.BuyingCatalogue.Framework.Extensions
+﻿@using NHSD.GPIT.BuyingCatalogue.Framework.Extensions
+@using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
+@using NHSD.GPIT.BuyingCatalogue.WebApp.Controllers
 @model NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.Order.ReadyToStartModel
 @{
     ViewBag.Title = "Before you start an order";
@@ -11,7 +12,8 @@
         <div class="nhsuk-grid-column-full">
             <nhs-validation-summary />
             <nhs-page-title title="@ViewBag.Title"
-                            advice="Based on the answers given, you’re ready to start your order. You should also know:" />
+                            advice="Based on the answers given, you’re ready to start your order. You should also know:"
+                            caption="@Model.OrganisationName" />
             <ul>
                 <li>how you’re going to pay for your order</li>
                 <li>which practices will be receiving the Catalogue Solutions and services being ordered</li>
@@ -21,7 +23,18 @@
                 <li>if any price has been agreed with the supplier other than the list price</li>
             </ul>
 
-            <p>For help using the Buying Catalogue, contact the National and Commercial Procurement Hub: <a href="mailto:commercial.procurementhub@nhs.net">commercial.procurementhub@nhs.net</a>.</p>
+            <p>
+                For help using the Buying Catalogue, contact the
+                <a id="procurement-hub-link"
+                   href="@Url.Action(
+                             nameof(ProcurementHubController.Index),
+                             typeof(ProcurementHubController).ControllerName(),
+                             new { returnUrl = Url.Action(
+                                 nameof(OrderController.ReadyToStart),
+                                 typeof(OrderController).ControllerName(),
+                                 new { Model!.InternalOrgId, Model.Option }),
+                             })">National Commercial and Procurement Hub</a>.
+            </p>
 
             <form method="post">
                 <input type="hidden" asp-for="BackLink" />

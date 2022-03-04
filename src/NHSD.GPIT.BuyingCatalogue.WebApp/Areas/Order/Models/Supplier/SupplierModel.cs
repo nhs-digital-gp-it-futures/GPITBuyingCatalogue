@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using NHSD.GPIT.BuyingCatalogue.EntityFramework.Addresses.Models;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 
@@ -8,40 +8,45 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.Supplier
 {
     public sealed class SupplierModel : OrderingBaseModel
     {
-        public SupplierModel(string odsCode, EntityFramework.Ordering.Models.Order order, ICollection<SupplierContact> supplierContacts)
+        public SupplierModel(string internalOrgId, CallOffId callOffId, EntityFramework.Ordering.Models.Order order)
         {
-            Title = $"Supplier information for {order.CallOffId}";
-            OdsCode = odsCode;
-            Id = order.Supplier.Id;
-            Name = order.Supplier.Name;
-            Address = order.Supplier.Address;
-
-            if (order.SupplierContact == null && supplierContacts.Any())
-            {
-                PrimaryContact = new Contact
-                {
-                    FirstName = supplierContacts.First().FirstName,
-                    LastName = supplierContacts.First().LastName,
-                    Email = supplierContacts.First().Email,
-                    Phone = supplierContacts.First().PhoneNumber,
-                };
-            }
-            else
-            {
-                PrimaryContact = order.SupplierContact;
-            }
+            Title = "Supplier contact details";
+            InternalOrgId = internalOrgId;
+            CallOffId = callOffId;
+            SupplierId = order.Supplier.Id;
+            SupplierName = order.Supplier.Name;
         }
 
         public SupplierModel()
         {
         }
 
-        public int Id { get; set; }
+        public CallOffId CallOffId { get; set; }
 
-        public string Name { get; set; }
+        public int SupplierId { get; set; }
 
-        public Address Address { get; set; }
+        public string SupplierName { get; set; }
 
-        public Contact PrimaryContact { get; init; }
+        public int? SelectedContactId { get; set; }
+
+        public List<SupplierContact> Contacts { get; set; }
+
+        public List<SelectListItem> FormattedContacts => Contacts?
+            .Select(x => new SelectListItem(FormatSupplierContact(x), $"{x?.Id}"))
+            .ToList();
+
+        public SupplierContact TemporaryContact => Contacts?.FirstOrDefault(x => x?.Id == SupplierContact.TemporaryContactId);
+
+        private static string FormatSupplierContact(SupplierContact contact)
+        {
+            if (contact == null)
+                return string.Empty;
+
+            var output = $"{contact.FirstName} {contact.LastName}";
+
+            return string.IsNullOrWhiteSpace(contact.Department)
+                ? output
+                : $"{output} ({contact.Department})";
+        }
     }
 }

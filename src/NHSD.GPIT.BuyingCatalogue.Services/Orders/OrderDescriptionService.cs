@@ -17,11 +17,11 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
             this.dbContext = dbContext ?? throw new ArgumentNullException(nameof(dbContext));
         }
 
-        public async Task SetOrderDescription(CallOffId callOffId, string odsCode, string description)
+        public async Task SetOrderDescription(CallOffId callOffId, string internalOrgId, string description)
         {
             description.ValidateNotNullOrWhiteSpace(nameof(description));
 
-            var order = await dbContext.Orders.SingleAsync(o => o.Id == callOffId.Id && o.OrderingParty.OdsCode == odsCode);
+            var order = await dbContext.Orders.SingleAsync(o => o.Id == callOffId.Id && o.OrderingParty.InternalIdentifier == internalOrgId);
             order.Description = description;
             await dbContext.SaveChangesAsync();
         }

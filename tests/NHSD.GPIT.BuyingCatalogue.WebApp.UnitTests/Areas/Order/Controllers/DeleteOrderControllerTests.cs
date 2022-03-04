@@ -40,16 +40,16 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers
         [Theory]
         [CommonAutoData]
         public static async Task Get_DeleteOrder_ReturnsExpectedResult(
-            string odsCode,
+            string internalOrgId,
             EntityFramework.Ordering.Models.Order order,
             [Frozen] Mock<IOrderService> orderServiceMock,
             DeleteOrderController controller)
         {
-            var expectedViewData = new DeleteOrderModel(odsCode, order);
+            var expectedViewData = new DeleteOrderModel(internalOrgId, order);
 
-            orderServiceMock.Setup(s => s.GetOrderThin(order.CallOffId, odsCode)).ReturnsAsync(order);
+            orderServiceMock.Setup(s => s.GetOrderThin(order.CallOffId, internalOrgId)).ReturnsAsync(order);
 
-            var actualResult = await controller.DeleteOrder(odsCode, order.CallOffId);
+            var actualResult = await controller.DeleteOrder(internalOrgId, order.CallOffId);
 
             actualResult.Should().BeOfType<ViewResult>();
             actualResult.As<ViewResult>().ViewData.Model.Should().BeEquivalentTo(expectedViewData, opt => opt.Excluding(m => m.BackLink));
@@ -58,19 +58,19 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers
         [Theory]
         [CommonAutoData]
         public static async Task Post_DeleteOrder_Deletes_CorrectlyRedirects(
-            string odsCode,
+            string internalOrgId,
             CallOffId callOffId,
             DeleteOrderModel model,
             [Frozen] Mock<IOrderService> orderServiceMock,
             DeleteOrderController controller)
         {
-            var actualResult = await controller.DeleteOrder(odsCode, callOffId, model);
+            var actualResult = await controller.DeleteOrder(internalOrgId, callOffId, model);
 
             actualResult.Should().BeOfType<RedirectToActionResult>();
             actualResult.As<RedirectToActionResult>().ActionName.Should().Be(nameof(DashboardController.Organisation));
             actualResult.As<RedirectToActionResult>().ControllerName.Should().Be(typeof(DashboardController).ControllerName());
-            actualResult.As<RedirectToActionResult>().RouteValues.Should().BeEquivalentTo(new RouteValueDictionary { { "odsCode", odsCode } });
-            orderServiceMock.Verify(o => o.DeleteOrder(callOffId, odsCode), Times.Once);
+            actualResult.As<RedirectToActionResult>().RouteValues.Should().BeEquivalentTo(new RouteValueDictionary { { "internalOrgId", internalOrgId } });
+            orderServiceMock.Verify(o => o.DeleteOrder(callOffId, internalOrgId), Times.Once);
         }
     }
 }

@@ -13,12 +13,12 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering
     public sealed class NewOrderDashboard
         : BuyerTestBase, IClassFixture<LocalWebApplicationFactory>
     {
-        private const string OdsCode = "03F";
+        private const string InternalOrgId = "03F";
 
         private static readonly Dictionary<string, string> Parameters =
             new()
             {
-                { nameof(OdsCode), OdsCode },
+                { nameof(InternalOrgId), InternalOrgId },
             };
 
         public NewOrderDashboard(LocalWebApplicationFactory factory)
@@ -34,7 +34,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering
         public async Task NewOrderDashboard_AllSectionsDisplayed()
         {
             await using var context = GetEndToEndDbContext();
-            var organisation = await context.Organisations.SingleAsync(o => o.OdsCode == Parameters["OdsCode"]);
+            var organisation = await context.Organisations.SingleAsync(o => o.InternalIdentifier == Parameters["InternalOrgId"]);
 
             CommonActions.PageTitle().Should().BeEquivalentTo($"New Order-{organisation.Name}".FormatForComparison());
             CommonActions.GoBackLinkDisplayed().Should().BeTrue();

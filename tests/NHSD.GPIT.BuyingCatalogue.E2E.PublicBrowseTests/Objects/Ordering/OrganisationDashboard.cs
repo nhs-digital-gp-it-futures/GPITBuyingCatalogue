@@ -5,6 +5,8 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Objects.Ordering
 {
     internal static class OrganisationDashboard
     {
+        internal static By ActOnBehalf => Common.ByExtensions.DataTestId("dashboard-page-proxy-on-behalf");
+
         internal static By CreateOrderLink => By.ClassName("nhsuk-action-link__text");
 
         internal static By SearchBar => By.Id("orders-dashboard-autocomplete");

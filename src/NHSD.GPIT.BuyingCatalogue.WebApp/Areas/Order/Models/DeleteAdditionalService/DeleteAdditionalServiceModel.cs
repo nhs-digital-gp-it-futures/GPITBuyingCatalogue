@@ -8,10 +8,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.DeleteAdditionalSe
         {
         }
 
-        public DeleteAdditionalServiceModel(string odsCode, CallOffId callOffId, CatalogueItemId additionalServiceId, string solutionName, string orderDescription)
+        public DeleteAdditionalServiceModel(string internalOrgId, CallOffId callOffId, CatalogueItemId additionalServiceId, string solutionName, string orderDescription)
         {
             Title = $"Delete {solutionName} from {callOffId}?";
-            OdsCode = odsCode;
+            InternalOrgId = internalOrgId;
             CallOffId = callOffId;
             AdditionalServiceId = additionalServiceId;
             SolutionName = solutionName;

@@ -26,51 +26,90 @@
 
         <vc:nhs-action-link text="Add a solution"
                             url="@Url.Action(
-                            nameof(AddCatalogueSolutionController.Index),
-                            typeof(AddCatalogueSolutionController).ControllerName(),
-                            null)" />
+                                     nameof(AddCatalogueSolutionController.Index),
+                                     typeof(AddCatalogueSolutionController).ControllerName(),
+                                     null)" />
+        
+        <vc:nhs-autocomplete id="solutions-autocomplete"
+                             ajax-url="@Url.Action(
+                                           nameof(CatalogueSolutionsController.SearchResults),
+                                           typeof(CatalogueSolutionsController).ControllerName())"
+                             title-text="Search by supplier or solution name"
+                             query-parameter-name="search"/>
+
         <form method="post">
+            <input type="hidden" asp-for="SearchTerm"/>
             <nhs-expander label-text="Filter Catalogue Solutions">
                 <nhs-fieldset-form-label asp-for="@Model"
                                          label-hint="Select one option.">
                     <nhs-radio-buttons asp-for="SelectedPublicationStatus"
                                        values="@Model.PublicationStatuses.Cast<object>()"
                                        value-name="EnumMemberName"
-                                       display-name="Name" />
+                                       display-name="Name"/>
                 </nhs-fieldset-form-label>
-                <nhs-submit-button text="Apply filter" />
-                <br />
-                <a asp-action="@nameof(AddCatalogueSolutionController.Index)"
-                   asp-controller="@typeof(AddCatalogueSolutionController).ControllerName()">
+                <nhs-submit-button text="Apply filter"/>
+                <br/>
+                <a asp-action="@nameof(CatalogueSolutionsController.Index)"
+                   asp-controller="@typeof(CatalogueSolutionsController).ControllerName()">
                     Clear filter
                 </a>
             </nhs-expander>
         </form>
 
-        <nhs-table data-test-id="manage-catalogue-solution-list">
-            @foreach (var heading in ViewBag.HeadingTitles)
-            {
-            <nhs-table-column>@heading</nhs-table-column>
-            }
+        @if (Model.Solutions.Any())
+        {
+            <nhs-table data-test-id="manage-catalogue-solution-list">
+                @foreach (var heading in ViewBag.HeadingTitles)
+                {
+                    <nhs-table-column>@heading</nhs-table-column>
+                }
 
-            @foreach (var item in Model.Solutions)
-            {
-            <nhs-table-row-container>
-                <nhs-table-cell>@item.CatalogueItemId</nhs-table-cell>
-                <nhs-table-cell>@item.Name</nhs-table-cell>
-                <nhs-table-cell>@item.Supplier</nhs-table-cell>
-                <nhs-table-cell>@(item.LastUpdated == DateTime.MinValue ? string.Empty : item.LastUpdated.ToString("dd/MM/yyy"))</nhs-table-cell>
-                <nhs-table-cell>
-                    <nhs-tag status-enum="@item.PublishedStatus" />
-                </nhs-table-cell>
-                <nhs-table-cell>
-                    <a asp-action="@nameof(CatalogueSolutionsController.ManageCatalogueSolution)"
+                @foreach (var item in Model.Solutions)
+                {
+                    <nhs-table-row-container>
+                        <nhs-table-cell>
+                            <span data-test-id="solution-id">
+                                @item.CatalogueItemId
+                            </span>
+                        </nhs-table-cell>
+                        <nhs-table-cell>
+                            <span data-test-id="solution-name">
+                                @item.Name
+                            </span>
+                        </nhs-table-cell>
+                        <nhs-table-cell>
+                            <span data-test-id="supplier-name">
+                                @item.Supplier
+                            </span>
+                        </nhs-table-cell>
+                        <nhs-table-cell>
+                            @(item.LastUpdated == DateTime.MinValue ? string.Empty : item.LastUpdated.ToString("dd/MM/yyy"))
+                        </nhs-table-cell>
+                        <nhs-table-cell>
+                            <nhs-tag status-enum="@item.PublishedStatus" />
+                        </nhs-table-cell>
+                        <nhs-table-cell>
+                            <a asp-action="@nameof(CatalogueSolutionsController.ManageCatalogueSolution)"
+                               asp-controller="@typeof(CatalogueSolutionsController).ControllerName()"
+                               asp-route-solutionId="@item.CatalogueItemId"
+                               style="white-space: nowrap;">Edit</a>
+                        </nhs-table-cell>
+                    </nhs-table-row-container>
+                }
+            </nhs-table>
+        }
+        else
+        {
+            <div id="search-error-message" class="nhsuk-u-margin-top-9"> 
+                <h3>No results found for "@(Model.SearchTerm)"</h3>
+                <p>
+                    Try entering a different search term, or
+                    <a id="reset-search-link"
+                       asp-area="@typeof(CatalogueSolutionsController).AreaName()"
                        asp-controller="@typeof(CatalogueSolutionsController).ControllerName()"
-                       asp-route-solutionId="@item.CatalogueItemId"
-                       style="white-space: nowrap;">Edit</a>
-                </nhs-table-cell>
-            </nhs-table-row-container>
-            }
-        </nhs-table>
+                       asp-action="@nameof(CatalogueSolutionsController.Index)">select a solution from the complete list</a>.
+                </p>
+            </div>
+        }
     </div>
 </div>

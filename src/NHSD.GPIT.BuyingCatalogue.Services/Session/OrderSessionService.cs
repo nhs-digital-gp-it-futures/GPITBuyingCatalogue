@@ -84,7 +84,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Session
             return model;
         }
 
-        public async Task<CreateOrderItemModel> InitialiseStateForEdit(string odsCode, CallOffId callOffId, CatalogueItemId catalogueItemId)
+        public async Task<CreateOrderItemModel> InitialiseStateForEdit(string internalOrgId, CallOffId callOffId, CatalogueItemId catalogueItemId)
         {
             var state = GetOrderStateFromSession(callOffId);
 
@@ -95,11 +95,11 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Session
                 return state;
             }
 
-            var orderItem = await orderItemService.GetOrderItem(callOffId, odsCode, catalogueItemId);
+            var orderItem = await orderItemService.GetOrderItem(callOffId, internalOrgId, catalogueItemId);
 
             if (state is null)
             {
-                var order = await orderService.GetOrderThin(callOffId, odsCode);
+                var order = await orderService.GetOrderThin(callOffId, internalOrgId);
                 var solution = await solutionsService.GetSolutionListPrices(orderItem.CatalogueItemId);
 
                 state = new CreateOrderItemModel
@@ -119,12 +119,12 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Session
 
                 if (state.CatalogueItemType == CatalogueItemType.AssociatedService)
                 {
-                    var organisation = await organisationService.GetOrganisationByOdsCode(odsCode);
-                    state.ServiceRecipients = new List<OrderItemRecipientModel> { new() { OdsCode = odsCode, Name = organisation.Name } };
+                    var organisation = await organisationService.GetOrganisationByInternalIdentifier(internalOrgId);
+                    state.ServiceRecipients = new List<OrderItemRecipientModel> { new() { OdsCode = organisation.ExternalIdentifier, Name = organisation.Name } };
                 }
                 else
                 {
-                    var recipients = await odsService.GetServiceRecipientsByParentOdsCode(odsCode);
+                    var recipients = await odsService.GetServiceRecipientsByParentInternalIdentifier(internalOrgId);
                     state.ServiceRecipients = recipients.Select(r => new OrderItemRecipientModel(r)).ToList();
                 }
 

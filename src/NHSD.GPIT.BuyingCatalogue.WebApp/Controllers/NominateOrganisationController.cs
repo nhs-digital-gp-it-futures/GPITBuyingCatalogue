@@ -32,7 +32,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Controllers
         {
             var model = new NominateOrganisationDetailsModel
             {
-                BackLink = "/nominate-organisation",
+                BackLink = Url.Action(nameof(Index)),
                 BackLinkText = "Go back",
             };
 
@@ -59,7 +59,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Controllers
         {
             var model = new NavBaseModel
             {
-                BackLink = "/",
+                BackLink = Url.Action(
+                    nameof(HomeController.Index),
+                    typeof(HomeController).ControllerName()),
                 BackLinkText = "Go back to homepage",
             };
 

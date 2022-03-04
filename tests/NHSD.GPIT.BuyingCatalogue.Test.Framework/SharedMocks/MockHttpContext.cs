@@ -4,7 +4,7 @@ using System.Text.Json.Serialization;
 using Microsoft.AspNetCore.Http;
 using Moq;
 using NHSD.GPIT.BuyingCatalogue.Framework.Constants;
-using NHSD.GPIT.BuyingCatalogue.Framework.Middleware.CookieConsent;
+using NHSD.GPIT.BuyingCatalogue.WebApp.ActionFilters;
 
 namespace NHSD.GPIT.BuyingCatalogue.Test.Framework.SharedMocks
 {

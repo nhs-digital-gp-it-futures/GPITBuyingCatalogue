@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+﻿using System;
 using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
@@ -7,16 +7,18 @@ using AutoFixture.AutoMoq;
 using AutoFixture.Idioms;
 using AutoFixture.Xunit2;
 using FluentAssertions;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.AspNetCore.Routing;
 using Moq;
+using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Organisations.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Users.Models;
+using NHSD.GPIT.BuyingCatalogue.Framework.Constants;
 using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
+using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Enums;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Models.TaskList;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Orders;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Organisations;
@@ -25,13 +27,15 @@ using NHSD.GPIT.BuyingCatalogue.ServiceContracts.TaskList;
 using NHSD.GPIT.BuyingCatalogue.Test.Framework.AutoFixtureCustomisations;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.Order;
-using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.Shared;
+using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.OrderTriage;
 using Xunit;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers
 {
     public static class OrderControllerTests
     {
+        private const int UserId = 1;
+
         [Fact]
         public static void Constructors_VerifyGuardClauses()
         {
@@ -45,7 +49,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers
         [Theory]
         [CommonAutoData]
         public static async Task Get_InProgressOrder_ReturnsExpectedResult(
-            string odsCode,
+            string internalOrgId,
             EntityFramework.Ordering.Models.Order order,
             AspNetUser aspNetUser,
             OrderTaskList orderTaskList,
@@ -56,13 +60,13 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers
             order.LastUpdatedByUser = aspNetUser;
             order.OrderStatus = OrderStatus.InProgress;
 
-            var expectedViewData = new OrderModel(odsCode, order, orderTaskList) { DescriptionUrl = "testUrl" };
+            var expectedViewData = new OrderModel(internalOrgId, order, orderTaskList) { DescriptionUrl = "testUrl" };
 
-            orderServiceMock.Setup(s => s.GetOrderThin(order.CallOffId, odsCode)).ReturnsAsync(order);
+            orderServiceMock.Setup(s => s.GetOrderThin(order.CallOffId, internalOrgId)).ReturnsAsync(order);
 
             taskListServiceMock.Setup(s => s.GetTaskListStatusModelForOrder(order)).Returns(orderTaskList);
 
-            var actualResult = await controller.Order(odsCode, order.CallOffId);
+            var actualResult = await controller.Order(internalOrgId, order.CallOffId);
 
             actualResult.Should().BeOfType<ViewResult>();
             actualResult.As<ViewResult>().ViewData.Model.Should().BeEquivalentTo(expectedViewData, opt => opt.Excluding(m => m.BackLink).Excluding(m => m.BackLinkText));
@@ -71,37 +75,37 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers
         [Theory]
         [CommonAutoData]
         public static async Task Get_CompleteOrder_RedirectsCorrectly(
-            string odsCode,
+            string internalOrgId,
             EntityFramework.Ordering.Models.Order order,
             [Frozen] Mock<IOrderService> orderServiceMock,
             OrderController controller)
         {
             order.OrderStatus = OrderStatus.Complete;
 
-            orderServiceMock.Setup(s => s.GetOrderThin(order.CallOffId, odsCode)).ReturnsAsync(order);
+            orderServiceMock.Setup(s => s.GetOrderThin(order.CallOffId, internalOrgId)).ReturnsAsync(order);
 
-            var actualResult = await controller.Order(odsCode, order.CallOffId);
+            var actualResult = await controller.Order(internalOrgId, order.CallOffId);
 
             actualResult.Should().BeOfType<RedirectToActionResult>();
             actualResult.As<RedirectToActionResult>().ActionName.Should().Be(nameof(OrderController.Summary));
             actualResult.As<RedirectToActionResult>().ControllerName.Should().Be(typeof(OrderController).ControllerName());
-            actualResult.As<RedirectToActionResult>().RouteValues.Should().BeEquivalentTo(new RouteValueDictionary { { "odsCode", odsCode }, { "callOffId", order.CallOffId } });
+            actualResult.As<RedirectToActionResult>().RouteValues.Should().BeEquivalentTo(new RouteValueDictionary { { "internalOrgId", internalOrgId }, { "callOffId", order.CallOffId } });
         }
 
         [Theory]
         [CommonAutoData]
         public static async Task Get_NewOrder_ReturnsExpectedResult(
-            string odsCode,
+            string internalOrgId,
             [Frozen] Mock<IOrganisationsService> organisationsService,
             Organisation organisation,
             OrderController controller)
         {
-            organisationsService.Setup(s => s.GetOrganisationByOdsCode(odsCode))
+            organisationsService.Setup(s => s.GetOrganisationByInternalIdentifier(internalOrgId))
                 .ReturnsAsync(organisation);
 
-            var expectedViewData = new OrderModel(odsCode, null, new OrderTaskList(), organisation.Name) { DescriptionUrl = "testUrl" };
+            var expectedViewData = new OrderModel(internalOrgId, null, new OrderTaskList(), organisation.Name) { DescriptionUrl = "testUrl" };
 
-            var actualResult = await controller.NewOrder(odsCode);
+            var actualResult = await controller.NewOrder(internalOrgId);
 
             actualResult.Should().BeOfType<ViewResult>();
             actualResult.As<ViewResult>().ViewData.Model.Should().BeEquivalentTo(expectedViewData, opt => opt.Excluding(m => m.BackLink));
@@ -110,16 +114,20 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers
         [Theory]
         [CommonAutoData]
         public static async Task Post_Summary_CannotComplete_ReturnsErrorResult(
-            string odsCode,
+            string internalOrgId,
             EntityFramework.Ordering.Models.Order order,
             [Frozen] Mock<IOrderService> orderServiceMock,
             OrderController controller)
         {
             order.Description = null;
 
-            orderServiceMock.Setup(s => s.GetOrderForSummary(order.CallOffId, odsCode)).ReturnsAsync(order);
+            orderServiceMock
+                .Setup(s => s.GetOrderForSummary(order.CallOffId, internalOrgId))
+                .ReturnsAsync(order);
 
-            var actualResult = await controller.Summary(odsCode, order.CallOffId, new SummaryModel());
+            var actualResult = await controller.Summary(internalOrgId, order.CallOffId, new SummaryModel());
+
+            orderServiceMock.VerifyAll();
 
             actualResult.Should().BeOfType<ViewResult>();
             actualResult.As<ViewResult>().ViewData.ModelState.ValidationState.Should().Be(ModelValidationState.Invalid);
@@ -138,82 +146,122 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers
 
         [Theory]
         [CommonAutoData]
-        public static void Get_ReadyToStart_ReturnsView(
-            string odsCode,
+        public static async Task Post_Summary_ReadyToComplete_ReturnsExpectedResult(
+            string internalOrgId,
+            EntityFramework.Ordering.Models.Order order,
+            OrderItem orderItem,
+            CatalogueItem catalogueItem,
+            [Frozen] Mock<IOrderService> orderServiceMock,
+            OrderController systemUnderTest)
+        {
+            catalogueItem.CatalogueItemType = CatalogueItemType.Solution;
+            orderItem.CatalogueItem = catalogueItem;
+            order.AddOrUpdateOrderItem(orderItem);
+            order.OrderStatus = OrderStatus.InProgress;
+
+            orderServiceMock
+                .Setup(s => s.GetOrderForSummary(order.CallOffId, internalOrgId))
+                .ReturnsAsync(order);
+
+            orderServiceMock
+                .Setup(x => x.CompleteOrder(order.CallOffId, internalOrgId, UserId, It.IsAny<Uri>()))
+                .Returns(Task.CompletedTask);
+
+            SetControllerHttpContext(systemUnderTest);
+
+            var result = await systemUnderTest.Summary(internalOrgId, order.CallOffId, new SummaryModel());
+
+            orderServiceMock.VerifyAll();
+
+            var actualResult = result.Should().BeOfType<RedirectToActionResult>().Subject;
+
+            actualResult.ActionName.Should().Be(nameof(OrderController.Completed));
+            actualResult.ControllerName.Should().Be(typeof(OrderController).ControllerName());
+            actualResult.RouteValues.Should().BeEquivalentTo(new RouteValueDictionary
+            {
+                { "internalOrgId", internalOrgId },
+                { "callOffId", order.CallOffId },
+            });
+        }
+
+        [Theory]
+        [CommonAutoData]
+        public static async Task Get_ReadyToStart_ReturnsView(
+            Organisation organisation,
+            [Frozen] Mock<IOrganisationsService> service,
             OrderController controller)
         {
-            var result = controller.ReadyToStart(odsCode);
+            service.Setup(s => s.GetOrganisationByInternalIdentifier(organisation.InternalIdentifier))
+                .ReturnsAsync(organisation);
+
+            var result = await controller.ReadyToStart(organisation.InternalIdentifier);
 
             result.As<ViewResult>().Should().NotBeNull();
         }
 
         [Theory]
         [CommonAutoData]
-        public static async Task Get_SelectOrganisation_ReturnsView(
-            [Frozen] Mock<IOrganisationsService> organisationService,
-            List<Organisation> organisations,
-            OrderController controller)
+        public static void Get_Completed_ReturnsExpectedResult(
+            string internalOrgId,
+            CallOffId callOffId,
+            OrderController systemUnderTest)
         {
-            var user = new ClaimsPrincipal(new ClaimsIdentity(
-                new Claim[]
-                {
-                    new("organisationFunction", "Buyer"),
-                    new("primaryOrganisationOdsCode", organisations.First().OdsCode),
-                    new("secondaryOrganisationOdsCode", organisations.Last().OdsCode),
-                },
-                "mock"));
+            var result = systemUnderTest.Completed(internalOrgId, callOffId);
 
-            controller.ControllerContext =
-                new ControllerContext
-                {
-                    HttpContext = new DefaultHttpContext { User = user },
-                };
+            result.Should().BeOfType<ViewResult>();
+            var model = result.As<ViewResult>().Model.Should().BeAssignableTo<CompletedModel>().Subject;
 
-            organisationService.Setup(s => s.GetOrganisationsByOdsCodes(It.IsAny<string[]>())).ReturnsAsync(organisations);
-
-            var expected = new SelectOrganisationModel(organisations.First().OdsCode, organisations)
-            {
-                Title = "Which organisation are you ordering for?",
-            };
-
-            var result = (await controller.SelectOrganisation(organisations.First().OdsCode)).As<ViewResult>();
-
-            result.Should().NotBeNull();
-            result.Model.Should().BeEquivalentTo(expected, opt => opt.Excluding(m => m.BackLink));
+            model.InternalOrgId.Should().Be(internalOrgId);
+            model.CallOffId.Should().Be(callOffId);
         }
 
         [Theory]
         [CommonAutoData]
-        public static void Post_SelectOrganisation_InvalidModel_ReturnsView(
-            string odsCode,
-            SelectOrganisationModel model,
+        public static void Post_ReadyToStart_Redirects(
+            string internalOrgId,
+            ReadyToStartModel model,
+            TriageOption option,
             OrderController controller)
         {
-            controller.ModelState.AddModelError("some-key", "some-error");
-
-            var result = controller.SelectOrganisation(odsCode, model).As<ViewResult>();
+            var result = controller.ReadyToStart(internalOrgId, model, option).As<RedirectToActionResult>();
 
             result.Should().NotBeNull();
-            result.Model.Should().BeEquivalentTo(model, opt => opt.Excluding(m => m.BackLink));
+            result.ActionName.Should().Be(nameof(controller.NewOrder));
+            result.RouteValues.Should().BeEquivalentTo(
+                new RouteValueDictionary
+                {
+                    { nameof(internalOrgId), internalOrgId },
+                    { nameof(option), option },
+                    { "fundingSource", null },
+                });
         }
 
         [Theory]
         [CommonAutoData]
-        public static void Post_SelectOrganisation_RedirectsToNewOrder(
-            string odsCode,
-            SelectOrganisationModel model,
+        public static void Post_ReadyToStart_WithFundingSource_Redirects(
+            string internalOrgId,
+            ReadyToStartModel model,
+            TriageOption option,
+            FundingSource fundingSource,
             OrderController controller)
         {
-            var result = controller.SelectOrganisation(odsCode, model).As<RedirectToActionResult>();
+            var result = controller.ReadyToStart(internalOrgId, model, option, fundingSource).As<RedirectToActionResult>();
 
             result.Should().NotBeNull();
-            result.ActionName.Should().Be(nameof(OrderController.NewOrder));
+            result.ActionName.Should().Be(nameof(controller.NewOrder));
+            result.RouteValues.Should().BeEquivalentTo(
+                new RouteValueDictionary
+                {
+                    { nameof(internalOrgId), internalOrgId },
+                    { nameof(option), option },
+                    { nameof(fundingSource), fundingSource },
+                });
         }
 
         [Theory]
         [CommonAutoData]
         public static async Task Get_Download_CompleteOrder_ReturnsExpectedResult(
-            string odsCode,
+            string internalOrgId,
             EntityFramework.Ordering.Models.Order order,
             [Frozen] Mock<IOrderService> orderServiceMock,
             [Frozen] Mock<IPdfService> pdfServiceMock,
@@ -222,20 +270,20 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers
         {
             order.OrderStatus = OrderStatus.Complete;
 
-            orderServiceMock.Setup(s => s.GetOrderForSummary(order.CallOffId, odsCode)).ReturnsAsync(order);
+            orderServiceMock
+                .Setup(s => s.GetOrderForSummary(order.CallOffId, internalOrgId))
+                .ReturnsAsync(order);
 
-            pdfServiceMock.Setup(s => s.Convert(It.IsAny<System.Uri>())).Returns(result);
+            pdfServiceMock
+                .Setup(s => s.Convert(It.IsAny<System.Uri>()))
+                .Returns(result);
 
-            var httpContext = new DefaultHttpContext();
-            httpContext.Request.Scheme = "https";
-            httpContext.Request.Host = new HostString("localhost");
+            SetControllerHttpContext(controller);
 
-            controller.ControllerContext = new ControllerContext
-            {
-                HttpContext = httpContext,
-            };
+            var actualResult = await controller.Download(internalOrgId, order.CallOffId);
 
-            var actualResult = await controller.Download(odsCode, order.CallOffId);
+            orderServiceMock.VerifyAll();
+            pdfServiceMock.VerifyAll();
 
             actualResult.Should().BeOfType<FileContentResult>();
             actualResult.As<FileContentResult>().ContentType.Should().Be("application/pdf");
@@ -246,7 +294,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers
         [Theory]
         [CommonAutoData]
         public static async Task Get_Download_InProgressOrder_ReturnsExpectedResult(
-            string odsCode,
+            string internalOrgId,
             EntityFramework.Ordering.Models.Order order,
             [Frozen] Mock<IOrderService> orderServiceMock,
             [Frozen] Mock<IPdfService> pdfServiceMock,
@@ -255,25 +303,40 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers
         {
             order.OrderStatus = OrderStatus.InProgress;
 
-            orderServiceMock.Setup(s => s.GetOrderForSummary(order.CallOffId, odsCode)).ReturnsAsync(order);
+            orderServiceMock
+                .Setup(s => s.GetOrderForSummary(order.CallOffId, internalOrgId))
+                .ReturnsAsync(order);
 
-            pdfServiceMock.Setup(s => s.Convert(It.IsAny<System.Uri>())).Returns(result);
+            pdfServiceMock
+                .Setup(s => s.Convert(It.IsAny<System.Uri>()))
+                .Returns(result);
 
-            var httpContext = new DefaultHttpContext();
-            httpContext.Request.Scheme = "https";
-            httpContext.Request.Host = new HostString("localhost");
+            SetControllerHttpContext(controller);
 
-            controller.ControllerContext = new ControllerContext
-            {
-                HttpContext = httpContext,
-            };
+            var actualResult = await controller.Download(internalOrgId, order.CallOffId);
 
-            var actualResult = await controller.Download(odsCode, order.CallOffId);
+            orderServiceMock.VerifyAll();
+            pdfServiceMock.VerifyAll();
 
             actualResult.Should().BeOfType<FileContentResult>();
             actualResult.As<FileContentResult>().ContentType.Should().Be("application/pdf");
             actualResult.As<FileContentResult>().FileDownloadName.Should().Be($"order-summary-in-progress-{order.CallOffId}.pdf");
             actualResult.As<FileContentResult>().FileContents.Should().BeEquivalentTo(result);
+        }
+
+        private static void SetControllerHttpContext(ControllerBase controller)
+        {
+            controller.ControllerContext = new ControllerContext
+            {
+                HttpContext = new DefaultHttpContext
+                {
+                    Request = { Scheme = "https", Host = new HostString("localhost") },
+                    User = new ClaimsPrincipal(new ClaimsIdentity(new Claim[]
+                    {
+                        new(CatalogueClaims.UserId, $"{UserId}"),
+                    })),
+                },
+            };
         }
     }
 }

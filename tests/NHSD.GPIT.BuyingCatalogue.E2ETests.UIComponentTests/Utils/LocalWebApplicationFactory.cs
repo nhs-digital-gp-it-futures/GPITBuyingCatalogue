@@ -25,7 +25,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.UIComponentTests.Utils
             host = CreateWebHostBuilder().Build();
             host.Start();
 
-            RootUri = host.ServerFeatures.Get<IServerAddressesFeature>().Addresses.LastOrDefault();
+            RootUri = host.ServerFeatures.Get<IServerAddressesFeature>()!.Addresses.LastOrDefault();
 
             Driver = new BrowserFactory(BrowserName).Driver;
         }

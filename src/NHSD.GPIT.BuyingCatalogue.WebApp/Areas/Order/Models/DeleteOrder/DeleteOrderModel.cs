@@ -8,12 +8,12 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.DeleteOrder
         {
         }
 
-        public DeleteOrderModel(string odsCode, EntityFramework.Ordering.Models.Order order)
+        public DeleteOrderModel(string internalOrgId, EntityFramework.Ordering.Models.Order order)
         {
             Title = $"Delete order {order.CallOffId}?";
             Description = order.Description;
             CallOffId = order.CallOffId;
-            OdsCode = odsCode;
+            InternalOrgId = internalOrgId;
         }
 
         public string Description { get; set; }

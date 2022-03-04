@@ -17,7 +17,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering.AdditionalServices
     public sealed class AdditionalServicesEditRecipients
         : BuyerTestBase, IClassFixture<LocalWebApplicationFactory>, IAsyncLifetime
     {
-        private const string OdsCode = "03F";
+        private const string InternalOrgId = "03F";
         private const string CatalogueItemName = "E2E No Contact Single Price Additional Service";
         private static readonly CallOffId CallOffId = new(90007, 1);
         private static readonly CatalogueItemId CatalogueItemId = new(99998, "002A999");
@@ -25,7 +25,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering.AdditionalServices
         private static readonly Dictionary<string, string> Parameters =
         new()
         {
-            { nameof(OdsCode), OdsCode },
+            { nameof(InternalOrgId), InternalOrgId },
             { nameof(CallOffId), CallOffId.ToString() },
         };
 
@@ -156,7 +156,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering.AdditionalServices
         {
             InitializeSessionHandler();
 
-            InitializeServiceRecipientMemoryCacheHandler(OdsCode);
+            InitializeServiceRecipientMemoryCacheHandler(InternalOrgId);
 
             using var context = GetEndToEndDbContext();
             var price = context

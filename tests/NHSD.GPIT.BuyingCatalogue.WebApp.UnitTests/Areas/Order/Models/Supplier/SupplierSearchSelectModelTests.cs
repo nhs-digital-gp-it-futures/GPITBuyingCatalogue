@@ -12,14 +12,14 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.Supplier
         [Theory]
         [CommonAutoData]
         public static void WithValidArguments_PropertiesCorrectlySet(
-            string odsCode,
+            string internalOrgId,
             CallOffId callOffId,
             List<EntityFramework.Catalogue.Models.Supplier> suppliers)
         {
-            var model = new SupplierSearchSelectModel(odsCode, callOffId, suppliers);
+            var model = new SupplierSearchSelectModel(internalOrgId, callOffId, suppliers);
 
             model.Title.Should().Be("Suppliers found");
-            model.OdsCode.Should().Be(odsCode);
+            model.InternalOrgId.Should().Be(internalOrgId);
             model.Suppliers.Should().BeEquivalentTo(suppliers);
         }
     }

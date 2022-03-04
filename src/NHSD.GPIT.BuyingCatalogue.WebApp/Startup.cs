@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Diagnostics.CodeAnalysis;
 using System.Threading.Tasks;
+using Hangfire;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.AspNetCore.Hosting;
@@ -13,6 +14,7 @@ using Microsoft.Extensions.Logging;
 using NHSD.GPIT.BuyingCatalogue.Framework.Logging;
 using NHSD.GPIT.BuyingCatalogue.Services;
 using NHSD.GPIT.BuyingCatalogue.WebApp.ActionFilters;
+using NHSD.GPIT.BuyingCatalogue.WebApp.Fakes;
 using NHSD.GPIT.BuyingCatalogue.WebApp.ModelBinders;
 using Serilog;
 
@@ -42,6 +44,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp
             {
                 options.Filters.Add(typeof(ActionArgumentNullFilter));
                 options.Filters.Add(typeof(OrdersActionFilter));
+                options.Filters.Add(typeof(CookieConsentActionFilter));
                 options.Filters.Add<SerilogMvcLoggingAttribute>();
             }).AddControllersAsServices();
 
@@ -68,8 +71,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp
 
             services.ConfigureCacheKeySettings(Configuration)
                 .ConfigureGovNotify(Configuration)
+                .ConfigureImportPracticeListMessageSettings(Configuration)
                 .ConfigureNominateOrganisationMessageSettings(Configuration)
                 .ConfigureOrderMessageSettings(Configuration)
+                .ConfigureProcurementHubMessageSettings(Configuration)
                 .ConfigureRequestAccountMessageSettings(Configuration)
                 .ConfigureConsentCookieSettings(Configuration)
                 .ConfigureAnalyticsSettings(Configuration);
@@ -80,9 +85,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp
 
             services.ConfigureRegistration(Configuration);
 
-            services.ConfigureOds(Configuration);
+            services.ConfigureContactUs(Configuration);
 
-            services.ConfigureEmail(Configuration);
+            services.ConfigureOds(Configuration);
 
             services.ConfigureDomainName();
 
@@ -91,6 +96,15 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp
             services.ConfigureDisabledErrorMessage(Configuration);
 
             services.ConfigureAuthorization();
+
+            if (IsE2ETestEnvironment())
+            {
+                services.AddScoped<IBackgroundJobClient, FakeBackgroundJobClient>();
+            }
+            else
+            {
+                services.AddHangFire();
+            }
 
             ServicesStartup.Configure(services);
 
@@ -152,8 +166,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp
 
             app.UseHttpsRedirection();
 
-            app.UseMiddleware<Framework.Middleware.CookieConsent.CookieConsentMiddleware>();
-
             app.UseStaticFiles(new StaticFileOptions()
             {
                 OnPrepareResponse = (context) =>
@@ -190,6 +202,11 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp
                 endpoints.MapControllers();
                 endpoints.MapDefaultControllerRoute();
             });
+
+            if (!IsE2ETestEnvironment())
+            {
+                app.UseHangfireDashboard();
+            }
         }
 
         private static bool IsE2ETestEnvironment() => Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT") == "E2ETest";

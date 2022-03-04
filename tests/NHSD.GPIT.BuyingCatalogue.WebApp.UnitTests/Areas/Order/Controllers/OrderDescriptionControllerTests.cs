@@ -13,6 +13,7 @@ using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Organisations.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Users.Models;
 using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
+using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Enums;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Orders;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Organisations;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Users;
@@ -45,16 +46,16 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers
         [Theory]
         [CommonAutoData]
         public static async Task Get_OrderDescription_ReturnsExpectedResult(
-            string odsCode,
+            string internalOrgId,
             EntityFramework.Ordering.Models.Order order,
             [Frozen] Mock<IOrderService> orderServiceMock,
             OrderDescriptionController controller)
         {
-            var expectedViewData = new OrderDescriptionModel(odsCode, order) { BackLink = "testUrl" };
+            var expectedViewData = new OrderDescriptionModel(internalOrgId, order) { BackLink = "testUrl" };
 
-            orderServiceMock.Setup(s => s.GetOrderThin(order.CallOffId, odsCode)).ReturnsAsync(order);
+            orderServiceMock.Setup(s => s.GetOrderThin(order.CallOffId, internalOrgId)).ReturnsAsync(order);
 
-            var actualResult = await controller.OrderDescription(odsCode, order.CallOffId);
+            var actualResult = await controller.OrderDescription(internalOrgId, order.CallOffId);
 
             actualResult.Should().BeOfType<ViewResult>();
             actualResult.As<ViewResult>().ViewData.Model.Should().BeEquivalentTo(expectedViewData);
@@ -63,25 +64,25 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers
         [Theory]
         [CommonAutoData]
         public static async Task Post_OrderDescription_SetsDescription_CorrectlyRedirects(
-            string odsCode,
+            string internalOrgId,
             CallOffId callOffId,
             OrderDescriptionModel model,
             [Frozen] Mock<IOrderDescriptionService> orderDescriptionServiceMock,
             OrderDescriptionController controller)
         {
-            var actualResult = await controller.OrderDescription(odsCode, callOffId, model);
+            var actualResult = await controller.OrderDescription(internalOrgId, callOffId, model);
 
             actualResult.Should().BeOfType<RedirectToActionResult>();
             actualResult.As<RedirectToActionResult>().ActionName.Should().Be(nameof(OrderController.Order));
             actualResult.As<RedirectToActionResult>().ControllerName.Should().Be(typeof(OrderController).ControllerName());
-            actualResult.As<RedirectToActionResult>().RouteValues.Should().BeEquivalentTo(new RouteValueDictionary { { "odsCode", odsCode }, { "callOffId", callOffId } });
-            orderDescriptionServiceMock.Verify(o => o.SetOrderDescription(callOffId, odsCode, model.Description), Times.Once);
+            actualResult.As<RedirectToActionResult>().RouteValues.Should().BeEquivalentTo(new RouteValueDictionary { { "internalOrgId", internalOrgId }, { "callOffId", callOffId } });
+            orderDescriptionServiceMock.Verify(o => o.SetOrderDescription(callOffId, internalOrgId, model.Description), Times.Once);
         }
 
         [Theory]
         [CommonAutoData]
         public static async Task Post_OrderDescription_InvalidModelState_ReturnsView(
-            string odsCode,
+            string internalOrgId,
             CallOffId callOffId,
             string errorKey,
             string errorMessage,
@@ -90,7 +91,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers
         {
             controller.ModelState.AddModelError(errorKey, errorMessage);
 
-            var actualResult = (await controller.OrderDescription(odsCode, callOffId, model)).As<ViewResult>();
+            var actualResult = (await controller.OrderDescription(internalOrgId, callOffId, model)).As<ViewResult>();
 
             actualResult.Should().NotBeNull();
             actualResult.ViewName.Should().BeNull();
@@ -103,7 +104,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers
         [Theory]
         [CommonAutoData]
         public static async Task Get_NewOrderDescription_ReturnsExpectedResult(
-            string odsCode,
+            string internalOrgId,
             string organisationName,
             [Frozen] Mock<IUsersService> mockUsersService,
             [Frozen] Mock<IOrganisationsService> mockOrganisationsService,
@@ -125,9 +126,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers
                     Name = organisationName,
                 });
 
-            var expectedViewData = new OrderDescriptionModel(odsCode, organisationName) { BackLink = "testUrl" };
+            var expectedViewData = new OrderDescriptionModel(internalOrgId, organisationName) { BackLink = "testUrl" };
 
-            var actualResult = await controller.NewOrderDescription(odsCode);
+            var actualResult = await controller.NewOrderDescription(internalOrgId);
 
             mockUsersService.VerifyAll();
             mockOrganisationsService.VerifyAll();
@@ -139,27 +140,27 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers
         [Theory]
         [CommonAutoData]
         public static async Task Post_NewOrderDescription_CreatesOrder_CorrectlyRedirects(
-            string odsCode,
+            string internalOrgId,
             OrderDescriptionModel model,
             EntityFramework.Ordering.Models.Order order,
             [Frozen] Mock<IOrderService> orderServiceMock,
             OrderDescriptionController controller)
         {
-            orderServiceMock.Setup(s => s.CreateOrder(model.Description, model.OdsCode)).ReturnsAsync(order);
+            orderServiceMock.Setup(s => s.CreateOrder(model.Description, model.InternalOrgId)).ReturnsAsync(order);
 
-            var actualResult = await controller.NewOrderDescription(odsCode, model);
+            var actualResult = await controller.NewOrderDescription(internalOrgId, model);
 
             actualResult.Should().BeOfType<RedirectToActionResult>();
             actualResult.As<RedirectToActionResult>().ActionName.Should().Be(nameof(OrderController.Order));
             actualResult.As<RedirectToActionResult>().ControllerName.Should().Be(typeof(OrderController).ControllerName());
-            actualResult.As<RedirectToActionResult>().RouteValues.Should().BeEquivalentTo(new RouteValueDictionary { { "odsCode", odsCode }, { "callOffId", order.CallOffId } });
-            orderServiceMock.Verify(o => o.CreateOrder(model.Description, model.OdsCode), Times.Once);
+            actualResult.As<RedirectToActionResult>().RouteValues.Should().BeEquivalentTo(new RouteValueDictionary { { "internalOrgId", internalOrgId }, { "callOffId", order.CallOffId } });
+            orderServiceMock.Verify(o => o.CreateOrder(model.Description, model.InternalOrgId), Times.Once);
         }
 
         [Theory]
         [CommonAutoData]
         public static async Task Post_NewOrderDescription_InvalidModelState_ReturnsView(
-            string odsCode,
+            string internalOrgId,
             string errorKey,
             string errorMessage,
             OrderDescriptionModel model,
@@ -167,7 +168,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers
         {
             controller.ModelState.AddModelError(errorKey, errorMessage);
 
-            var actualResult = (await controller.NewOrderDescription(odsCode, model)).As<ViewResult>();
+            var actualResult = (await controller.NewOrderDescription(internalOrgId, model)).As<ViewResult>();
 
             actualResult.Should().NotBeNull();
             actualResult.ViewName.Should().Be("OrderDescription");
@@ -175,6 +176,25 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers
             actualResult.ViewData.ModelState.ErrorCount.Should().Be(1);
             actualResult.ViewData.ModelState.Keys.Single().Should().Be(errorKey);
             actualResult.ViewData.ModelState.Values.Single().Errors.Single().ErrorMessage.Should().Be(errorMessage);
+        }
+
+        [Theory]
+        [CommonAutoData]
+        public static async Task Post_NewOrderDescription_WithFundingSource_SetsFundingSource(
+            EntityFramework.Ordering.Models.Order order,
+            string internalOrgId,
+            FundingSource fundingSource,
+            OrderDescriptionModel model,
+            [Frozen] Mock<IOrderService> orderService,
+            [Frozen] Mock<IFundingSourceService> fundingSourceService,
+            OrderDescriptionController controller)
+        {
+            orderService.Setup(s => s.CreateOrder(model.Description, model.InternalOrgId))
+                .ReturnsAsync(order);
+
+            _ = await controller.NewOrderDescription(internalOrgId, model, fundingSource);
+
+            fundingSourceService.Verify(s => s.SetFundingSource(order.CallOffId, internalOrgId, fundingSource == FundingSource.Central, false));
         }
     }
 }

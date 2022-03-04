@@ -14,13 +14,13 @@
             <form method="post">
                 <input type="hidden" asp-for="@Model.BackLink" />
                 <input type="hidden" asp-for="@Model.BackLinkText" />
-                <input type="hidden" asp-for="@Model.OdsCode" />
+                <input type="hidden" asp-for="@Model.InternalOrgId" />
                 <input type="hidden" asp-for="@Model.Title" />
                 <nhs-submit-button text="Delete" />
                 <br/>
                 <a asp-action="@nameof(CatalogueSolutionsController.EditSolution)"
                     asp-controller="@typeof(CatalogueSolutionsController).ControllerName()"
-                    asp-route-odsCode="@Model.OdsCode"
+                    asp-route-internalOrgId="@Model.InternalOrgId"
                     asp-route-callOffId="@Model.CallOffId"
                     asp-route-catalogueItemId="@Model.SolutionId">Cancel</a>
             </form>

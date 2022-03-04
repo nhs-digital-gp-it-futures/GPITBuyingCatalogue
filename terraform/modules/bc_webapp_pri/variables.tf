@@ -46,6 +46,7 @@ variable "auth_pwd" {
   type      = string
   sensitive = true
 }
+
 variable "cert_name" {
   type      = string
 }
@@ -132,5 +133,13 @@ variable "ssl_thumbprint" {
 }
 
 variable "notify_api_key" {
+  type = string
+}
+
+variable "hangfire_username" {
+  type = string
+}
+
+variable "hangfire_password" {
   type = string
 }

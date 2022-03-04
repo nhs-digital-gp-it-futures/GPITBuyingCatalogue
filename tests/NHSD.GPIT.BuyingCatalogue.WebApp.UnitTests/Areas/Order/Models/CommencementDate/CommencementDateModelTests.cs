@@ -15,14 +15,14 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.Commence
         [Theory]
         [CommonAutoData]
         public static void WithValidArguments_PropertiesCorrectlySet(
-            string odsCode,
+            string internalOrgId,
             CallOffId callOffId,
             DateTime commencementDate)
         {
-            var model = new CommencementDateModel(odsCode, callOffId, commencementDate, InitialPeriod, MaximumTerm);
+            var model = new CommencementDateModel(internalOrgId, callOffId, commencementDate, InitialPeriod, MaximumTerm);
 
             model.Title.Should().Be("Timescales for Call-off Agreement");
-            model.OdsCode.Should().Be(odsCode);
+            model.InternalOrgId.Should().Be(internalOrgId);
             model.Day.Should().Be(commencementDate.Day.ToString("00"));
             model.Month.Should().Be(commencementDate.Month.ToString("00"));
             model.Year.Should().Be(commencementDate.Year.ToString("00"));

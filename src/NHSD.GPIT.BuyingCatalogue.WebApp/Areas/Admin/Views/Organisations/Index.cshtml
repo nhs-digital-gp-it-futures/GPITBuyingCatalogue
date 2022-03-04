@@ -1,0 +1,78 @@
+﻿@using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
+@using NHSD.GPIT.BuyingCatalogue.Framework.Extensions
+@model NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.OrganisationModels.IndexModel
+@{
+    ViewBag.Title = "Manage buyer organisations and users";
+}
+<div data-test-id="organisations">
+    <nhs-page-title title="@ViewBag.Title"
+                    advice="Add a new buyer organisation or edit the details and user accounts for one that's already been created." />
+
+    <vc:nhs-action-link url="@Url.Action(
+                                 nameof(OrganisationsController.Find),
+                                 typeof(OrganisationsController).ControllerName())"
+                        text="Add an organisation"/>
+
+    <vc:nhs-secondary-button text="Import practice lists"
+                             url="@Url.Action(
+                                      nameof(ImportController.ImportGpPracticeList),
+                                      typeof(ImportController).ControllerName())"
+                             use-primary-colour="false" />
+    
+    <p>
+        Import the latest practice list sizes for buyer organisations.
+    </p>
+
+    <vc:nhs-autocomplete id="organisations-autocomplete"
+                         ajax-url="@Url.Action(
+                                       nameof(OrganisationsController.SearchResults),
+                                       typeof(OrganisationsController).ControllerName())"
+                         title-text="Search for organisation by organisation name or ODS code"
+                         query-parameter-name="search"/>
+
+    @if (Model!.Organisations.Any())
+    {
+        <nhs-table data-test-id="org-table">
+            <nhs-table-column>Organisation</nhs-table-column>
+            <nhs-table-column class="nhsuk-u-nowrap">ODS code</nhs-table-column>
+            <nhs-table-column></nhs-table-column>
+
+            @foreach (var organisationModel in Model.Organisations)
+            {
+                <nhs-table-row-container>
+                    <nhs-table-cell>
+                        <span data-test-id="org-name">
+                            @organisationModel.Name
+                        </span>
+                    </nhs-table-cell>
+                    <nhs-table-cell>
+                        <span data-test-id="org-ods-code">
+                            @organisationModel.OdsCode
+                        </span>
+                    </nhs-table-cell>
+                    <nhs-table-cell>
+                        <a data-test-id="org-link"
+                           org-id="@organisationModel.Id"
+                           asp-area="@typeof(OrganisationsController).AreaName()"
+                           asp-controller="@typeof(OrganisationsController).ControllerName()"
+                           asp-action="@nameof(OrganisationsController.Details)"
+                           asp-route-organisationId="@organisationModel.Id">Edit</a>
+                    </nhs-table-cell>
+                </nhs-table-row-container>
+            }
+        </nhs-table>
+    }
+    else
+    {
+        <div id="search-error-message" class="nhsuk-u-margin-top-9"> 
+            <h3>No results found for "@(Model.SearchTerm)"</h3>
+            <p>
+                Try entering a different search term, or
+                <a id="reset-search-link"
+                   asp-area="@typeof(OrganisationsController).AreaName()"
+                   asp-controller="@typeof(OrganisationsController).ControllerName()"
+                   asp-action="@nameof(OrganisationsController.Index)">select an organisation from the complete list</a>.
+            </p>
+        </div>
+    }
+</div>

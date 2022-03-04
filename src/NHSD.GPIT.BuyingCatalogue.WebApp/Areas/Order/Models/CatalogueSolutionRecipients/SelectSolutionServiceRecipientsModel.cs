@@ -11,18 +11,18 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.CatalogueSolutionR
         }
 
         public SelectSolutionServiceRecipientsModel(
-            string odsCode,
+            string internalOrgId,
             CreateOrderItemModel state,
             string selectionMode)
         {
             BackLink = state.IsNewSolution
                 ? state.SkipPriceSelection
-                    ? $"/order/organisation/{odsCode}/order/{state.CallOffId}/catalogue-solutions/select/solution"
-                    : $"/order/organisation/{odsCode}/order/{state.CallOffId}/catalogue-solutions/select/solution/price"
-                : $"/order/organisation/{odsCode}/order/{state.CallOffId}/catalogue-solutions/{state.CatalogueItemId}";
+                    ? $"/order/organisation/{internalOrgId}/order/{state.CallOffId}/catalogue-solutions/select/solution"
+                    : $"/order/organisation/{internalOrgId}/order/{state.CallOffId}/catalogue-solutions/select/solution/price"
+                : $"/order/organisation/{internalOrgId}/order/{state.CallOffId}/catalogue-solutions/{state.CatalogueItemId}";
 
             Title = $"Service Recipients for {state.CatalogueItemName} for {state.CallOffId}";
-            OdsCode = odsCode;
+            InternalOrgId = internalOrgId;
             CallOffId = state.CallOffId;
             ServiceRecipients = state.ServiceRecipients;
 

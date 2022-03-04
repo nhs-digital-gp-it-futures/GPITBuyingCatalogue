@@ -1,10 +1,13 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using FluentAssertions;
+using NHSD.GPIT.BuyingCatalogue.E2ETests.Objects.Ordering;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Utils;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.TestBases;
 using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.OrderTriage;
+using NHSD.GPIT.BuyingCatalogue.WebApp.Controllers;
 using Xunit;
 
 namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering.OrderTriage
@@ -12,13 +15,13 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering.OrderTriage
     public sealed class OrderTriageSelection
         : BuyerTestBase, IClassFixture<LocalWebApplicationFactory>
     {
-        private const string OdsCode = "03F";
+        private const string InternalOrgId = "03F";
         private const TriageOption Option = TriageOption.Under40k;
 
         private static readonly Dictionary<string, string> Parameters =
             new()
             {
-                { nameof(OdsCode), OdsCode },
+                { nameof(InternalOrgId), InternalOrgId },
                 { nameof(Option), Option.ToString() },
             };
 
@@ -45,9 +48,12 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering.OrderTriage
         [InlineData(TriageOption.Over250k, "Have you sent out Invitations to Tender to suppliers?")]
         public void TriageSelection_ShowsCorrectTitle(TriageOption option, string title)
         {
+            using var context = GetEndToEndDbContext();
+            var organisation = context.Organisations.Single(o => string.Equals(o.InternalIdentifier, InternalOrgId));
+
             var parameters = new Dictionary<string, string>
             {
-                { nameof(OdsCode), OdsCode },
+                { nameof(InternalOrgId), InternalOrgId },
                 { nameof(option), option.ToString() },
             };
 
@@ -56,7 +62,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering.OrderTriage
                  nameof(OrderTriageController.TriageSelection),
                  parameters);
 
-            CommonActions.PageTitle().Should().BeEquivalentTo(title.FormatForComparison());
+            CommonActions.PageTitle().Should().BeEquivalentTo($"{title} - {organisation.Name}".FormatForComparison());
         }
 
         [Theory]
@@ -67,7 +73,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering.OrderTriage
         {
             var parameters = new Dictionary<string, string>
             {
-                { nameof(OdsCode), OdsCode },
+                { nameof(InternalOrgId), InternalOrgId },
                 { nameof(option), option.ToString() },
             };
 
@@ -85,9 +91,12 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering.OrderTriage
         [InlineData(TriageOption.Over250k, "Orders with a value over £250k")]
         public void StepsNotCompleted_LoadsCorrectPage(TriageOption option, string title)
         {
+            using var context = GetEndToEndDbContext();
+            var organisation = context.Organisations.Single(o => string.Equals(o.InternalIdentifier, InternalOrgId));
+
             var parameters = new Dictionary<string, string>
             {
-                { nameof(OdsCode), OdsCode },
+                { nameof(InternalOrgId), InternalOrgId },
                 { nameof(option), option.ToString() },
             };
 
@@ -96,19 +105,47 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering.OrderTriage
                 nameof(OrderTriageController.StepsNotCompleted),
                 parameters);
 
-            CommonActions.PageTitle().Should().BeEquivalentTo(title.FormatForComparison());
+            CommonActions.PageTitle().Should().BeEquivalentTo($"{title} - {organisation.Name}".FormatForComparison());
         }
 
-        [Fact]
-        public void TriageSelection_No_RedirectsToCorrectPage()
+        [Theory]
+        [InlineData(TriageOption.Under40k)]
+        [InlineData(TriageOption.Between40kTo250k)]
+        [InlineData(TriageOption.Over250k)]
+        public void TriageSelection_No_RedirectsToCorrectPage(TriageOption option)
         {
+            var parameters = new Dictionary<string, string>
+            {
+                { nameof(InternalOrgId), InternalOrgId },
+                { nameof(option), option.ToString() },
+            };
+
+            NavigateToUrl(
+                typeof(OrderTriageController),
+                nameof(OrderTriageController.TriageSelection),
+                parameters);
+
             CommonActions.ClickRadioButtonWithText("No");
 
             CommonActions.ClickSave();
 
             CommonActions.PageLoadedCorrectGetIndex(
                 typeof(OrderTriageController),
-                nameof(OrderTriageController.StepsNotCompleted));
+                nameof(OrderTriageController.StepsNotCompleted)).Should().BeTrue();
+
+            CommonActions.ElementIsDisplayed(OrderTriageObjects.ProcurementHubLink).Should().BeTrue();
+
+            CommonActions.ClickLinkElement(OrderTriageObjects.ProcurementHubLink);
+
+            CommonActions.PageLoadedCorrectGetIndex(
+                typeof(ProcurementHubController),
+                nameof(ProcurementHubController.Index)).Should().BeTrue();
+
+            CommonActions.ClickGoBackLink();
+
+            CommonActions.PageLoadedCorrectGetIndex(
+                typeof(OrderTriageController),
+                nameof(OrderTriageController.StepsNotCompleted)).Should().BeTrue();
         }
 
         [Fact]
@@ -119,8 +156,8 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering.OrderTriage
             CommonActions.ClickSave();
 
             CommonActions.PageLoadedCorrectGetIndex(
-                typeof(OrderController),
-                nameof(OrderController.ReadyToStart));
+                typeof(OrderTriageController),
+                nameof(OrderTriageController.TriageFunding)).Should().BeTrue();
         }
 
         [Fact]
@@ -128,8 +165,14 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering.OrderTriage
         {
             CommonActions.ClickSave();
 
-            CommonActions.ErrorSummaryDisplayed();
-            CommonActions.ErrorSummaryLinksExist();
+            CommonActions.ErrorSummaryDisplayed().Should().BeTrue();
+            CommonActions.ErrorSummaryLinksExist().Should().BeTrue();
+
+            CommonActions.ElementShowingCorrectErrorMessage(
+                OrderTriageObjects.DueDiligenceError,
+                "Error: Select yes if you’ve identified what you want to order")
+                .Should()
+                .BeTrue();
         }
     }
 }

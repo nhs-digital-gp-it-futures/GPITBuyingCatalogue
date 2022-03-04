@@ -1,0 +1,34 @@
+﻿@model NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.ImportModels.ImportGpPracticeListModel
+@{
+    ViewBag.Title = "Import practice lists";
+}
+
+<div data-test-id="import-gp-practice-list-page">
+    <partial name="Partials/_BackLink" model="Model" />
+
+    <div class="nhsuk-grid-row">
+        <div class="nhsuk-grid-column-two-thirds">
+            <nhs-validation-summary />
+
+            <nhs-page-title title="@ViewBag.Title"
+                            caption="Import the latest practice list sizes for buyer organisations."/>
+            
+            <div class="nhsuk-inset-text">
+                <span class="nhsuk-u-visually-hidden">Information: </span>
+                <p>
+                    The link to the latest Totals (GP practice-all persons) csv file can be
+                    <a href="https://digital.nhs.uk/data-and-information/publications/statistical/patients-registered-at-a-gp-practice"
+                       target="_blank">copied from the NHS Digital website (opens in a new tab)</a>.
+                </p>
+            </div>
+            
+            <form method="post">
+                <nhs-input asp-for="@Model.CsvUrl" 
+                           label-text="Practice lists url"
+                           label-hint="Enter the url of the latest practice list size csv file. It should take between 60 and 90 seconds to import."/>
+
+                <nhs-submit-button text="Import practice lists" />
+            </form>
+        </div>
+    </div>
+</div>

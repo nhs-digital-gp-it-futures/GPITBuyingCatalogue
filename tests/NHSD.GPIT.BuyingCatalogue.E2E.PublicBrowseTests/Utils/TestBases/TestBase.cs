@@ -117,7 +117,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.TestBases
                 return;
 
             using var context = GetEndToEndDbContext();
-            var user = context.AspNetUsers.First(s => s.OrganisationFunction == "Authority").Email;
+            var user = context.AspNetUsers.First(s => s.OrganisationFunction == "Authority").UserName;
             AuthorizationPages.LoginActions.Login(user, DefaultPassword);
         }
 
@@ -127,7 +127,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.TestBases
                 return;
 
             using var context = GetEndToEndDbContext();
-            var user = context.AspNetUsers.First(s => s.OrganisationFunction == "Buyer").Email;
+            var user = context.AspNetUsers.First(s => s.OrganisationFunction == "Buyer").UserName;
             AuthorizationPages.LoginActions.Login(user, DefaultPassword);
         }
 

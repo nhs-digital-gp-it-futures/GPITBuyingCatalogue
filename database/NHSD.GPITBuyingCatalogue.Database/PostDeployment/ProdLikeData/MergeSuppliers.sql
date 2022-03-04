@@ -1,5 +1,10 @@
 ﻿IF (UPPER('$(INSERT_TEST_DATA)') = 'TRUE')
 BEGIN
+
+DECLARE @bobEmail AS nvarchar(50) = N'BobSmith@email.com';
+DECLARE @bobUser AS int = (SELECT Id FROM users.AspNetUsers WHERE Email = @bobEmail);
+DECLARE @now AS datetime = GETUTCDATE();
+
 /*********************************************************************************************************************************************/
 /* Supplier */
 /*********************************************************************************************************************************************/
@@ -17,9 +22,6 @@ BEGIN
         LastUpdatedBy int NULL,
         IsActive bit NOT NULL DEFAULT 1,
     );
-
-    DECLARE @bobEmail AS nvarchar(50) = N'BobSmith@email.com';
-    DECLARE @bobUser AS int = (SELECT Id FROM users.AspNetUsers WHERE Email = @bobEmail);
 
     INSERT INTO #Supplier (Id, [Name], LegalName, Summary, SupplierUrl, [Address], Deleted, LastUpdated, LastUpdatedBy)
          VALUES (10000, N'EMIS Health', N'EMIS Health', N'We’re the UK leader in connected healthcare software & services. Through innovative IT, we help healthcare professionals access the information they need to provide better, faster and more cost effective patient care.
@@ -197,5 +199,118 @@ WHEN MATCHED THEN
 WHEN NOT MATCHED BY TARGET THEN  
         INSERT (Id, [Name], LegalName, Summary, SupplierUrl, [Address], Deleted, LastUpdated, LastUpdatedBy, IsActive)
         VALUES (SOURCE.Id, SOURCE.[Name], SOURCE.LegalName, SOURCE.Summary, SOURCE.SupplierUrl, SOURCE.[Address], SOURCE.Deleted, SOURCE.LastUpdated, SOURCE.LastUpdatedBy, SOURCE.IsActive);
-END;
+
+/*********************************************************************************************************************************************/
+/* SupplierContacts */
+/*********************************************************************************************************************************************/
+
+    CREATE TABLE #SupplierContacts
+    (
+         SupplierId int NOT NULL,
+         FirstName nvarchar(35) NOT NULL,
+         LastName nvarchar(35) NOT NULL,
+         Email nvarchar(255) NOT NULL,
+         PhoneNumber nvarchar(35) NULL,
+         Department nvarchar(50) NULL,
+         LastUpdated datetime2(7) NOT NULL,
+         LastUpdatedBy int NULL,
+    );
+
+    INSERT INTO #SupplierContacts (SupplierId, FirstName, LastName, Email, PhoneNumber, LastUpdated, LastUpdatedBy)
+    VALUES
+    (10000, 'Jonas',      'Chan',    'jonaschan@test.test',       '01234 567891',      @now, @bobUser),
+    (10001, 'Madelyn',      'Conner',    'madelynconner@test.test',       '01234 567891',      @now, @bobUser),
+    (10002, 'Cristian',      'Chang',    'cristianchang@test.test',       '01234 567891',      @now, @bobUser),
+    (10003, 'Kaelynn',      'Archer',    'kaelynnarcher@test.test',       '01234 567891',      @now, @bobUser),
+    (10004, 'Ezra',      'Horn',    'ezrahorn@test.test',       '01234 567891',      @now, @bobUser),
+    (10005, 'Briley',      'Marsh',    'brileymarsh@test.test',       '01234 567891',      @now, @bobUser),
+    (10006, 'Augustine',      'Wagner',    'augustinewagner@test.test',       '01234 567891',      @now, @bobUser),
+    (10007, 'Charlee',      'Mcdowell',    'charleemcdowell@test.test',       '01234 567891',      @now, @bobUser),
+    (10008, 'Cassius',      'Wilkinson',    'cassiuswilkinson@test.test',       '01234 567891',      @now, @bobUser),
+    (10009, 'Maliah',      'Mcconnell',    'maliahmcconnell@test.test',       '01234 567891',      @now, @bobUser),
+    (10010, 'Aiden',      'Nguyen',    'aidennguyen@test.test',       '01234 567891',      @now, @bobUser),
+    (10011, 'Evie',      'Ryan',    'evieryan@test.test',       '01234 567891',      @now, @bobUser),
+    (10012, 'Gary',      'Becker',    'garybecker@test.test',       '01234 567891',      @now, @bobUser),
+    (10013, 'Sutton',      'Walsh',    'suttonwalsh@test.test',       '01234 567891',      @now, @bobUser),
+    (10014, 'Joshua',      'Schwartz',    'joshuaschwartz@test.test',       '01234 567891',      @now, @bobUser),
+    (10015, 'Karla',      'Acevedo',    'karlaacevedo@test.test',       '01234 567891',      @now, @bobUser),
+    (10016, 'Ishaan',      'Richards',    'ishaanrichards@test.test',       '01234 567891',      @now, @bobUser),
+    (10017, 'Hunter',      'Romero',    'hunterromero@test.test',       '01234 567891',      @now, @bobUser),
+    (10018, 'Ronin',      'Shepherd',    'roninshepherd@test.test',       '01234 567891',      @now, @bobUser),
+    (10019, 'Jasmin',      'Gomez',    'jasmingomez@test.test',       '01234 567891',      @now, @bobUser),
+    (10020, 'Corey',      'Matthews',    'coreymatthews@test.test',       '01234 567891',      @now, @bobUser),
+    (10021, 'Gemma',      'Stanley',    'gemmastanley@test.test',       '01234 567891',      @now, @bobUser),
+    (10022, 'Leonard',      'Whitehead',    'leonardwhitehead@test.test',       '01234 567891',      @now, @bobUser),
+    (10023, 'Yaretzi',      'Farrell',    'yaretzifarrell@test.test',       '01234 567891',      @now, @bobUser),
+    (10024, 'Dylan',      'Brady',    'dylanbrady@test.test',       '01234 567891',      @now, @bobUser),
+    (10025, 'Jimena',      'House',    'jimenahouse@test.test',       '01234 567891',      @now, @bobUser),
+    (10026, 'Miguel',      'Parks',    'miguelparks@test.test',       '01234 567891',      @now, @bobUser),
+    (10027, 'Kaitlynn',      'Cummings',    'kaitlynncummings@test.test',       '01234 567891',      @now, @bobUser),
+    (10028, 'Avi',      'Stuart',    'avistuart@test.test',       '01234 567891',      @now, @bobUser),
+    (10029, 'Julianne',      'Downs',    'juliannedowns@test.test',       '01234 567891',      @now, @bobUser),
+    (10030, 'Joziah',      'Tanner',    'joziahtanner@test.test',       '01234 567891',      @now, @bobUser),
+    (10031, 'Vienna',      'Morse',    'viennamorse@test.test',       '01234 567891',      @now, @bobUser),
+    (10032, 'Asher',      'Barnes',    'asherbarnes@test.test',       '01234 567891',      @now, @bobUser),
+    (10033, 'Mabel',      'Chase',    'mabelchase@test.test',       '01234 567891',      @now, @bobUser),
+    (10034, 'Pedro',      'Ruiz',    'pedroruiz@test.test',       '01234 567891',      @now, @bobUser),
+    (10035, 'Rose',      'Alvarez',    'rosealvarez@test.test',       '01234 567891',      @now, @bobUser),
+    (10036, 'Langston',      'Finley',    'langstonfinley@test.test',       '01234 567891',      @now, @bobUser),
+    (10037, 'Elsie',      'Villa',    'elsievilla@test.test',       '01234 567891',      @now, @bobUser),
+    (10038, 'Enoch',      'Watkins',    'enochwatkins@test.test',       '01234 567891',      @now, @bobUser),
+    (10039, 'Alani',      'Frye',    'alanifrye@test.test',       '01234 567891',      @now, @bobUser),
+    (10040, 'Grey',      'Richardson',    'greyrichardson@test.test',       '01234 567891',      @now, @bobUser),
+    (10041, 'Katelyn',      'Boyer',    'katelynboyer@test.test',       '01234 567891',      @now, @bobUser),
+    (10042, 'Jordy',      'Bartlett',    'jordybartlett@test.test',       '01234 567891',      @now, @bobUser),
+    (10043, 'Alaia',      'Rosales',    'alaiarosales@test.test',       '01234 567891',      @now, @bobUser),
+    (10044, 'Beckett',      'Walton',    'beckettwalton@test.test',       '01234 567891',      @now, @bobUser),
+    (10045, 'Stephanie',      'Wyatt',    'stephaniewyatt@test.test',       '01234 567891',      @now, @bobUser),
+    (10046, 'Douglas',      'Irwin',    'douglasirwin@test.test',       '01234 567891',      @now, @bobUser),
+    (10047, 'Amanda',      'Durham',    'amandadurham@test.test',       '01234 567891',      @now, @bobUser),
+    (10048, 'Arthur',      'Roman',    'arthurroman@test.test',       '01234 567891',      @now, @bobUser),
+    (10049, 'Makenzie',      'Guerra',    'makenzieguerra@test.test',       '01234 567891',      @now, @bobUser),
+    (10050, 'Jameson',      'Fitzpatrick',    'jamesonfitzpatrick@test.test',       '01234 567891',      @now, @bobUser),
+    (10051, 'Cali',      'Schmitt',    'calischmitt@test.test',       '01234 567891',      @now, @bobUser),
+    (10052, 'Stephen',      'Barker',    'stephenbarker@test.test',       '01234 567891',      @now, @bobUser),
+    (10053, 'Ashley',      'Leonard',    'ashleyleonard@test.test',       '01234 567891',      @now, @bobUser),
+    (10054, 'Steve',      'Carroll',    'stevecarroll@test.test',       '01234 567891',      @now, @bobUser),
+    (10055, 'Emilee',      'Meadows',    'emileemeadows@test.test',       '01234 567891',      @now, @bobUser),
+    (10056, 'Roberto',      'Scott',    'robertoscott@test.test',       '01234 567891',      @now, @bobUser),
+    (10057, 'Allison',      'Beasley',    'allisonbeasley@test.test',       '01234 567891',      @now, @bobUser),
+    (10058, 'Maximilian',      'Lambert',    'maximilianlambert@test.test',       '01234 567891',      @now, @bobUser),
+    (10059, 'Kristen',      'Mann',    'kristenmann@test.test',       '01234 567891',      @now, @bobUser),
+    (10060, 'Kayson',      'Cooley',    'kaysoncooley@test.test',       '01234 567891',      @now, @bobUser),
+    (10061, 'Carly',      'Andersen',    'carlyandersen@test.test',       '01234 567891',      @now, @bobUser),
+    (10062, 'Valentin',      'Houston',    'valentinhouston@test.test',       '01234 567891',      @now, @bobUser),
+    (10063, 'Frances',      'Mccall',    'francesmccall@test.test',       '01234 567891',      @now, @bobUser),
+    (10064, 'Luciano',      'Sawyer',    'lucianosawyer@test.test',       '01234 567891',      @now, @bobUser),
+    (10065, 'Savanna',      'Delgado',    'savannadelgado@test.test',       '01234 567891',      @now, @bobUser),
+    (10066, 'Daniel',      'Esparza',    'danielesparza@test.test',       '01234 567891',      @now, @bobUser),
+    (10067, 'Ivory',      'Murray',    'ivorymurray@test.test',       '01234 567891',      @now, @bobUser),
+    (10068, 'Henrik',      'Haynes',    'henrikhaynes@test.test',       '01234 567891',      @now, @bobUser),
+    (10069, 'Journee',      'Calderon',    'journeecalderon@test.test',       '01234 567891',      @now, @bobUser),
+    (10070, 'Jaxen',      'Joseph',    'jaxenjoseph@test.test',       '01234 567891',      @now, @bobUser),
+    (10071, 'Avah',      'Martin',    'avahmartin@test.test',       '01234 567891',      @now, @bobUser),
+    (10072, 'Junior',      'Bauer',    'juniorbauer@test.test',       '01234 567891',      @now, @bobUser),
+    (10073, 'Camille',      'Kirk',    'camillekirk@test.test',       '01234 567891',      @now, @bobUser);
+    MERGE INTO catalogue.SupplierContacts AS TARGET
+    USING #SupplierContacts AS SOURCE
+    ON TARGET.SupplierId = SOURCE.SupplierId 
+    WHEN MATCHED THEN  
+           UPDATE SET TARGET.SupplierId = SOURCE.SupplierId,
+                      TARGET.FirstName = SOURCE.FirstName,
+                      TARGET.LastName = SOURCE.LastName,
+                      TARGET.Email = SOURCE.Email,
+                      TARGET.PhoneNumber = SOURCE.PhoneNumber,
+                      TARGET.Department = SOURCE.Department,
+                      TARGET.LastUpdated = SOURCE.LastUpdated,
+                      TARGET.LastUpdatedBy = SOURCE.LastUpdatedBy
+    WHEN NOT MATCHED BY TARGET THEN  
+            INSERT (SupplierId, FirstName, LastName, Email, PhoneNumber, Department, LastUpdated, LastUpdatedBy)
+            VALUES (SOURCE.SupplierId, SOURCE.FirstName, SOURCE.LastName, SOURCE.Email, SOURCE.PhoneNumber, SOURCE.Department, SOURCE.LastUpdated, SOURCE.LastUpdatedBy);
+        
+END
 GO
+
+
+
+

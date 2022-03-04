@@ -1,17 +1,15 @@
-﻿namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.SupplierDefinedEpics
+﻿using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
+
+namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.SupplierDefinedEpics
 {
     public struct SupplierDefinedEpicModel
     {
-        public SupplierDefinedEpicModel(
-            string id,
-            string name,
-            string capability,
-            bool isActive)
+        public SupplierDefinedEpicModel(Epic epic)
         {
-            Id = id;
-            Name = name;
-            Capability = capability;
-            IsActive = isActive;
+            Id = epic.Id;
+            Name = epic.Name;
+            Capability = epic.Capability?.Name;
+            IsActive = epic.IsActive;
         }
 
         public string Id { get; }

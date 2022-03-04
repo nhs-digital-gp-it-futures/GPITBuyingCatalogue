@@ -6,9 +6,9 @@
         {
         }
 
-        public SummaryModel(string odsCode, EntityFramework.Ordering.Models.Order order)
+        public SummaryModel(string internalOrgId, EntityFramework.Ordering.Models.Order order)
         {
-            OdsCode = odsCode;
+            InternalOrgId = internalOrgId;
             Order = order;
         }
 

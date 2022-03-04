@@ -4,6 +4,8 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.Models
 {
     public sealed class PrimaryContactModel
     {
+        public int? SupplierContactId { get; set; }
+
         [StringLength(100)]
         public string FirstName { get; set; }
 
@@ -15,5 +17,8 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.Models
 
         [StringLength(35)]
         public string TelephoneNumber { get; set; }
+
+        [StringLength(50)]
+        public string Department { get; set; }
     }
 }
