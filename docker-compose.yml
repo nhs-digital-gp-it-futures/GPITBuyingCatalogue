@@ -18,6 +18,7 @@ services:
         environment:
             SA_PASSWORD: "Abc123Abc123"
             NHSD_PASSWORD: "DisruptTheMarket1!"
+            HANGFIRE_PASSWORD: "Abc123Abc123"
             DB_NAME: "GPITBuyingCatalogue"
             DB_SERVER: sqlserver            
             INCLUDE_IMPORT: "TRUE"

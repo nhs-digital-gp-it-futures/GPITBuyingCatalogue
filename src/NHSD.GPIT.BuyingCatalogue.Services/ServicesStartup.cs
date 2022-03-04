@@ -16,6 +16,9 @@ namespace NHSD.GPIT.BuyingCatalogue.Services
 
         public static void Configure(IServiceCollection services)
         {
+            if (services == null)
+                throw new ArgumentNullException(nameof(services));
+
             ConfigureInterfaceClasses(services);
         }
 
