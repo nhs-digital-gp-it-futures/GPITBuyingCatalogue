@@ -5,19 +5,19 @@ using NHSD.GPIT.BuyingCatalogue.WebApp.Models;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.ListPriceModels
 {
-    public sealed class EditListPriceStatus : NavBaseModel
+    public sealed class EditListPriceStatusModel : NavBaseModel
     {
-        public EditListPriceStatus()
+        public EditListPriceStatusModel()
         {
         }
 
-        public EditListPriceStatus(CatalogueItem catalogueItem)
+        public EditListPriceStatusModel(CatalogueItem catalogueItem)
         {
             CatalogueItemId = catalogueItem.Id;
             SolutionName = catalogueItem.Name;
         }
 
-        public EditListPriceStatus(CatalogueItem catalogueItem, CataloguePrice cataloguePrice)
+        public EditListPriceStatusModel(CatalogueItem catalogueItem, CataloguePrice cataloguePrice)
             : this(catalogueItem)
         {
             CataloguePriceId = cataloguePrice.CataloguePriceId;
@@ -25,7 +25,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.ListPriceModels
             Status = cataloguePrice.PublishedStatus;
         }
 
-        public EditListPriceStatus(CatalogueItem catalogueItem, CataloguePrice cataloguePrice, CatalogueItemId relatedCatalogueItemId)
+        public EditListPriceStatusModel(CatalogueItem catalogueItem, CataloguePrice cataloguePrice, CatalogueItemId relatedCatalogueItemId)
             : this(catalogueItem, cataloguePrice)
         {
             RelatedCatalogueItemId = relatedCatalogueItemId;
@@ -58,5 +58,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.ListPriceModels
         public string Advice { get; init; }
 
         public PublicationStatus Status { get; init; }
+
+        public int? ListPriceId { get; init; }
+
+        public EditListPriceSource CalledFrom { get; init; }
     }
 }
