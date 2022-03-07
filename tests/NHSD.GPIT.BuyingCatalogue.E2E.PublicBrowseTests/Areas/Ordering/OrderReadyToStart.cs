@@ -17,11 +17,10 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering
     {
         private const string InternalOrgId = "03F";
 
-        private static readonly Dictionary<string, string> Parameters =
-            new()
-            {
-                { nameof(InternalOrgId), InternalOrgId },
-            };
+        private static readonly Dictionary<string, string> Parameters = new()
+        {
+            { nameof(InternalOrgId), InternalOrgId },
+        };
 
         public OrderReadyToStart(LocalWebApplicationFactory factory)
             : base(

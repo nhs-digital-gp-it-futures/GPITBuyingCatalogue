@@ -434,6 +434,49 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
 
         [Theory]
         [CommonAutoData]
+        public static async Task Get_AddListPrice_ValidId_WithValidListPriceId_ReturnsModel(
+            CatalogueItemId catalogueItemId,
+            CatalogueItemId associatedServiceId,
+            [Frozen] Mock<IAssociatedServicesService> mockAssociatedServicesService,
+            [Frozen] Mock<ISolutionsService> mockSolutionsService,
+            AssociatedServicesController controller,
+            CatalogueItem catalogueItem,
+            CatalogueItem associatedService)
+        {
+            var priceToClone = associatedService.CataloguePrices.First();
+
+            mockSolutionsService
+                .Setup(s => s.GetSolutionThin(catalogueItemId))
+                .ReturnsAsync(catalogueItem);
+
+            mockAssociatedServicesService
+                .Setup(s => s.GetAssociatedService(associatedServiceId))
+                .ReturnsAsync(associatedService);
+
+            var actual = await controller.AddListPrice(catalogueItemId, associatedServiceId, priceToClone.CataloguePriceId);
+
+            mockSolutionsService.VerifyAll();
+            mockAssociatedServicesService.VerifyAll();
+
+            actual.Should().NotBeNull();
+            actual.Should().BeOfType<ViewResult>();
+
+            var model = actual.As<ViewResult>().Model.Should().BeAssignableTo<EditListPriceModel>().Subject;
+
+            model.ItemId.Should().Be(associatedService.Id);
+            model.ItemName.Should().Be(associatedService.Name);
+            model.IsAdding.Should().BeTrue();
+            model.CataloguePriceId.Should().BeNull();
+
+            model.CatalogueItemType.Should().Be(catalogueItem.CatalogueItemType);
+            model.Price.Should().Be(priceToClone.Price);
+            model.Unit.Should().Be(priceToClone.PricingUnit.Description);
+            model.UnitDefinition.Should().Be(priceToClone.PricingUnit.Definition);
+            model.SelectedProvisioningType.Should().Be(priceToClone.ProvisioningType);
+        }
+
+        [Theory]
+        [CommonAutoData]
         public static async Task Get_AddListPrice_InvalidSolutionId_ReturnsBadRequestResult(
             CatalogueItemId catalogueItemId,
             CatalogueItemId associatedServiceId,

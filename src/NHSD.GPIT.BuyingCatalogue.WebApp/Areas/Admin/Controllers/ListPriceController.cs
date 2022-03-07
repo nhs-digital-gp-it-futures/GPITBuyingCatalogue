@@ -48,17 +48,22 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
         }
 
         [HttpGet("add-list-price")]
-        public async Task<IActionResult> AddListPrice(CatalogueItemId solutionId)
+        public async Task<IActionResult> AddListPrice(CatalogueItemId solutionId, int? basedOn = null)
         {
             var solution = await listPricesService.GetCatalogueItemWithPrices(solutionId);
 
             if (solution is null)
                 return BadRequest($"No Solution found for Id: {solutionId}");
 
-            var model = new EditListPriceModel(solution)
-            {
-                BackLink = Url.Action(nameof(ManageListPrices), new { solutionId }),
-            };
+            var currentPrice = solution.CataloguePrices.FirstOrDefault(cp => cp.CataloguePriceId == basedOn);
+
+            var model = currentPrice == null
+                ? new EditListPriceModel(solution)
+                : new EditListPriceModel(solution, currentPrice);
+
+            model.BackLink = Url.Action(nameof(ManageListPrices), new { solutionId });
+            model.CataloguePriceId = null;
+            model.Title = EditListPriceModel.AddListPriceTitle;
 
             return View("EditListPrice", model);
         }
@@ -140,7 +145,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
             if (cataloguePrice is null)
                 return RedirectToAction(nameof(ManageListPrices), new { solutionId });
 
-            var editListPriceModel = new EditListPriceStatus(solution, cataloguePrice)
+            var editListPriceModel = new EditListPriceStatusModel(solution, cataloguePrice)
             {
                 BackLink = Url.Action(nameof(EditListPrice), new { solutionId, listPriceId }),
                 Title = "Publish list price",
@@ -151,7 +156,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
         }
 
         [HttpPost("{listPriceId}/publish-list-price")]
-        public async Task<IActionResult> PublishListPrice(CatalogueItemId solutionId, int listPriceId, EditListPriceStatus model)
+        public async Task<IActionResult> PublishListPrice(CatalogueItemId solutionId, int listPriceId, EditListPriceStatusModel model)
         {
             if (!ModelState.IsValid)
                 return View("EditListPriceStatus", model);
@@ -183,18 +188,20 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
             if (cataloguePrice is null)
                 return RedirectToAction(nameof(ManageListPrices), new { solutionId });
 
-            var editListPriceModel = new EditListPriceStatus(solution, cataloguePrice)
+            var editListPriceModel = new EditListPriceStatusModel(solution, cataloguePrice)
             {
                 BackLink = Url.Action(nameof(ManageListPrices), new { solutionId }),
                 Title = "Edit list price",
                 Advice = "Change the publication status for this list price.",
+                ListPriceId = listPriceId,
+                CalledFrom = EditListPriceSource.CatalogueSolution,
             };
 
             return View("EditListPriceStatus", editListPriceModel);
         }
 
         [HttpPost("{listPriceId}/edit-status")]
-        public async Task<IActionResult> EditListPriceStatus(CatalogueItemId solutionId, int listPriceId, EditListPriceStatus model)
+        public async Task<IActionResult> EditListPriceStatus(CatalogueItemId solutionId, int listPriceId, EditListPriceStatusModel model)
         {
             if (!ModelState.IsValid)
                 return View("EditListPriceStatus", model);
