@@ -10,6 +10,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.ListPriceModels
 {
     public sealed class EditListPriceModel : NavBaseModel
     {
+        public const string AddListPriceTitle = "Add a list price";
+
         public EditListPriceModel()
         {
         }
@@ -19,13 +21,12 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.ListPriceModels
             CatalogueItemType = catalogueItem.CatalogueItemType;
             ItemId = catalogueItem.Id;
             ItemName = catalogueItem.Name;
-            Title = "Add a list price";
+            Title = AddListPriceTitle;
         }
 
         public EditListPriceModel(CatalogueItem catalogueItem, CataloguePrice cataloguePrice)
             : this(catalogueItem)
         {
-            CatalogueItemType = catalogueItem.CatalogueItemType;
             CataloguePriceId = cataloguePrice.CataloguePriceId;
             Price = cataloguePrice.Price;
             Unit = cataloguePrice.PricingUnit.Description;
@@ -65,7 +66,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.ListPriceModels
 
         public CatalogueItemType CatalogueItemType { get; init; }
 
-        public int? CataloguePriceId { get; init; }
+        public int? CataloguePriceId { get; set; }
 
         public CatalogueItemId ItemId { get; init; }
 
@@ -85,11 +86,13 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.ListPriceModels
         [StringLength(1000)]
         public string UnitDefinition { get; init; }
 
-        public string Title { get; init; }
+        public string Title { get; set; }
 
         public string DeleteLink { get; init; }
 
         public CatalogueItemId RelatedCatalogueItemId { get; }
+
+        public bool IsAdding => Title == AddListPriceTitle;
 
         public PricingUnit GetPricingUnit()
             => new()

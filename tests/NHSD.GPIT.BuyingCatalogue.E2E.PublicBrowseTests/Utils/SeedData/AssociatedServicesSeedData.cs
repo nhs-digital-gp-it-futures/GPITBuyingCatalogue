@@ -130,7 +130,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
                             },
                             TimeUnit = TimeUnit.PerYear,
                             CurrencyCode = "GBP",
-                            Price = 999.9999M,
+                            Price = 123.4567M,
                             LastUpdated = DateTime.UtcNow,
                         },
                     },

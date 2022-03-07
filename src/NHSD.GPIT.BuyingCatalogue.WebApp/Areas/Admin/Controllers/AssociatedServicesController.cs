@@ -237,24 +237,27 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
         }
 
         [HttpGet("{associatedServiceId}/list-price/add-list-price")]
-        public async Task<IActionResult> AddListPrice(CatalogueItemId solutionId, CatalogueItemId associatedServiceId)
+        public async Task<IActionResult> AddListPrice(CatalogueItemId solutionId, CatalogueItemId associatedServiceId, int? basedOn = null)
         {
             var solution = await solutionsService.GetSolutionThin(solutionId);
+
             if (solution is null)
                 return BadRequest($"No Solution found for Id: {solutionId}");
 
             var associatedService = await associatedServicesService.GetAssociatedService(associatedServiceId);
+
             if (associatedService is null)
                 return BadRequest($"No Associated Service found for Id: {associatedServiceId}");
 
-            var model = new EditListPriceModel(associatedService)
-            {
-                Title = "Associated Service list price",
-                BackLink = Url.Action(
-                    nameof(ManageListPrices),
-                    typeof(AssociatedServicesController).ControllerName(),
-                    new { solutionId, associatedServiceId }),
-            };
+            var currentPrice = associatedService.CataloguePrices.FirstOrDefault(x => x.CataloguePriceId == basedOn);
+
+            var model = currentPrice == null
+                ? new EditListPriceModel(associatedService)
+                : new EditListPriceModel(associatedService, currentPrice);
+
+            model.BackLink = Url.Action(nameof(ManageListPrices), new { solutionId, associatedServiceId });
+            model.CataloguePriceId = null;
+            model.Title = EditListPriceModel.AddListPriceTitle;
 
             return View("EditListPrice", model);
         }
@@ -340,7 +343,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
             if (cataloguePrice.IsLocked)
                 return RedirectToAction(nameof(EditListPriceStatus), new { solutionId, associatedServiceId, listPriceId });
 
-            var editListPriceModel = new EditListPriceStatus(associatedService, cataloguePrice, solutionId)
+            var editListPriceModel = new EditListPriceStatusModel(associatedService, cataloguePrice, solutionId)
             {
                 BackLink = Url.Action(nameof(EditListPrice), new { solutionId, associatedServiceId, listPriceId }),
                 Title = "Publish list price",
@@ -351,7 +354,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
         }
 
         [HttpPost("{associatedServiceId}/list-price/{listPriceId}/publish-list-price")]
-        public async Task<IActionResult> PublishListPrice(CatalogueItemId solutionId, CatalogueItemId associatedServiceId, int listPriceId, EditListPriceStatus model)
+        public async Task<IActionResult> PublishListPrice(CatalogueItemId solutionId, CatalogueItemId associatedServiceId, int listPriceId, EditListPriceStatusModel model)
         {
             if (!ModelState.IsValid)
                 return View("EditListPriceStatus", model);
@@ -380,24 +383,27 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
         {
             var associatedService = await listPricesService.GetCatalogueItemWithPrices(associatedServiceId);
             var cataloguePrice = associatedService.CataloguePrices.FirstOrDefault(cp => cp.CataloguePriceId == listPriceId);
+
             if (cataloguePrice is null)
                 return RedirectToAction(nameof(ManageListPrices), new { solutionId, associatedServiceId });
 
             if (!cataloguePrice.IsLocked)
                 return RedirectToAction(nameof(PublishListPrice), new { solutionId, associatedServiceId, listPriceId });
 
-            var editListPriceModel = new EditListPriceStatus(associatedService, cataloguePrice, solutionId)
+            var editListPriceModel = new EditListPriceStatusModel(associatedService, cataloguePrice, solutionId)
             {
                 BackLink = Url.Action(nameof(ManageListPrices), new { solutionId, associatedServiceId }),
                 Title = "Edit list price",
                 Advice = "Change the publication status for this list price.",
+                ListPriceId = listPriceId,
+                CalledFrom = EditListPriceSource.AssociatedService,
             };
 
             return View("EditListPriceStatus", editListPriceModel);
         }
 
         [HttpPost("{associatedServiceId}/list-price/{listPriceId}/edit-status")]
-        public async Task<IActionResult> EditListPriceStatus(CatalogueItemId solutionId, CatalogueItemId associatedServiceId, int listPriceId, EditListPriceStatus model)
+        public async Task<IActionResult> EditListPriceStatus(CatalogueItemId solutionId, CatalogueItemId associatedServiceId, int listPriceId, EditListPriceStatusModel model)
         {
             if (!ModelState.IsValid)
                 return View("EditListPriceStatus", model);

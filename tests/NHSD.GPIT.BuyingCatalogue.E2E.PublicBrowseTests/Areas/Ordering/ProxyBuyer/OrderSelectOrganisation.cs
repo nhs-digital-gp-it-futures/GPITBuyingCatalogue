@@ -14,7 +14,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering.ProxyBuyer
     public class OrderSelectOrganisation
         : BuyerTestBase, IClassFixture<LocalWebApplicationFactory>
     {
-        private const string InternalOrgId = "15F";
+        private const string InternalOrgId = "CG-15F";
 
         private static readonly Dictionary<string, string> Parameters =
             new()
