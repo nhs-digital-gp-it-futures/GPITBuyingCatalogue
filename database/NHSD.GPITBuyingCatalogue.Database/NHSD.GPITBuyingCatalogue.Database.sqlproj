@@ -97,6 +97,7 @@
     <Folder Include="Catalogue\TemporalTables" />
     <Folder Include="Ordering\TemporalTables" />
     <Folder Include="Users\TemporalTables" />
+    <Folder Include="PostDeployment\OrderSeedData" />
   </ItemGroup>
   <ItemGroup>
     <Build Include="Security\Users\NHSD.sql" />
@@ -315,6 +316,7 @@
     <None Include="PostDeployment\InsertStandardTypes.sql" />
     <None Include="PostDeployment\InsertRelatedOrganisations.sql" />
     <None Include="PostDeployment\InsertOrganisationTypes.sql" />
+    <None Include="PostDeployment\OrderSeedData\InsertTestOrderSeedData.sql" />
     <None Include="Security\Schemas\HangFire.sql" />
     <None Include="Security\Users\HangFire.sql" />
     <None Include="Security\Logins\HangFire.sql" />

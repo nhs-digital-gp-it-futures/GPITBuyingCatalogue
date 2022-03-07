@@ -60,6 +60,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering.OrderTriage
                 nameof(OrderTriageController.NotSure)).Should().BeTrue();
 
             CommonActions.ElementIsDisplayed(OrderTriageObjects.ProcurementHubLink).Should().BeTrue();
+            CommonActions.ElementIsDisplayed(OrderTriageObjects.ReturnToDashboardLink).Should().BeTrue();
 
             CommonActions.ClickLinkElement(OrderTriageObjects.ProcurementHubLink);
 
@@ -72,6 +73,12 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering.OrderTriage
             CommonActions.PageLoadedCorrectGetIndex(
                 typeof(OrderTriageController),
                 nameof(OrderTriageController.NotSure)).Should().BeTrue();
+
+            CommonActions.ClickLinkElement(OrderTriageObjects.ReturnToDashboardLink);
+
+            CommonActions.PageLoadedCorrectGetIndex(
+                typeof(DashboardController),
+                nameof(DashboardController.Organisation)).Should().BeTrue();
         }
 
         [Theory]

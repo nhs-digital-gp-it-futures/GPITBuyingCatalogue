@@ -17,5 +17,16 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.TestBases
         {
             AuthorityLogin();
         }
+
+        protected AuthorityTestBase(
+            LocalWebApplicationFactory factory,
+            Type controller,
+            string methodName,
+            IDictionary<string, string> parameters,
+            IDictionary<string, string> queryParameters)
+            : base(factory, UrlGenerator.GenerateUrlFromMethod(controller, methodName, parameters, queryParameters))
+        {
+            AuthorityLogin();
+        }
     }
 }

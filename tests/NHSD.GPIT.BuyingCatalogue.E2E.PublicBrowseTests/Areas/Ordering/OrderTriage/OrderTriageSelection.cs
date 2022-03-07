@@ -18,12 +18,11 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering.OrderTriage
         private const string InternalOrgId = "CG-03F";
         private const TriageOption Option = TriageOption.Under40k;
 
-        private static readonly Dictionary<string, string> Parameters =
-            new()
-            {
-                { nameof(InternalOrgId), InternalOrgId },
-                { nameof(Option), Option.ToString() },
-            };
+        private static readonly Dictionary<string, string> Parameters = new()
+        {
+            { nameof(InternalOrgId), InternalOrgId },
+            { nameof(Option), Option.ToString() },
+        };
 
         public OrderTriageSelection(LocalWebApplicationFactory factory)
             : base(
@@ -134,6 +133,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering.OrderTriage
                 nameof(OrderTriageController.StepsNotCompleted)).Should().BeTrue();
 
             CommonActions.ElementIsDisplayed(OrderTriageObjects.ProcurementHubLink).Should().BeTrue();
+            CommonActions.ElementIsDisplayed(OrderTriageObjects.ReturnToDashboardLink).Should().BeTrue();
 
             CommonActions.ClickLinkElement(OrderTriageObjects.ProcurementHubLink);
 
@@ -146,6 +146,12 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering.OrderTriage
             CommonActions.PageLoadedCorrectGetIndex(
                 typeof(OrderTriageController),
                 nameof(OrderTriageController.StepsNotCompleted)).Should().BeTrue();
+
+            CommonActions.ClickLinkElement(OrderTriageObjects.ReturnToDashboardLink);
+
+            CommonActions.PageLoadedCorrectGetIndex(
+                typeof(DashboardController),
+                nameof(DashboardController.Organisation)).Should().BeTrue();
         }
 
         [Fact]

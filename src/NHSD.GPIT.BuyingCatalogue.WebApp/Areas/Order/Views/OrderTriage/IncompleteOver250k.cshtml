@@ -1,5 +1,4 @@
 ﻿@using NHSD.GPIT.BuyingCatalogue.WebApp.Controllers
-@using NHSD.GPIT.BuyingCatalogue.Framework.Extensions
 @using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
 @using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.OrderTriage
 @model NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.OrderTriage.GenericOrderTriageModel
@@ -12,7 +11,7 @@
     <div class="nhsuk-grid-row nhsuk-u-margin-bottom-6">
         <div class="nhsuk-grid-column-full">
             <nhs-page-title title="@ViewBag.Title"
-                            caption="@Model.OrganisationName" />
+                            caption="@Model!.OrganisationName" />
 
             <p>For orders over £250k, you must execute an Off-Catalogue Competition procedure.</p>
 
@@ -20,24 +19,34 @@
 
             <p>You’ll not be ready to place an order of this value until this procedure has been carried out.</p>
 
-            <h2>Need help?</h2>
-
-            <p>
-                For help using the Buying Catalogue, contact the
-                <a id="procurement-hub-link"
-                   href="@Url.Action(
-                             nameof(ProcurementHubController.Index),
-                             typeof(ProcurementHubController).ControllerName(),
-                             new { returnUrl = Url.Action(
-                                 nameof(OrderTriageController.StepsNotCompleted),
-                                 typeof(OrderTriageController).ControllerName(),
-                                 new { Model!.InternalOrgId, option = TriageOption.Over250k }),
-                             })">National Commercial and Procurement Hub</a>.
-            </p>
-
             <vc:nhs-secondary-button text="Return to orders dashboard"
                                      use-primary-colour="true"
                                      url="@Model.OrdersDashboardLink" />
+
+            <h2>Need help?</h2>
+
+            <p>
+                We've developed a
+                <a href="https://gpitbjss.atlassian.net/wiki/spaces/BG/pages/1931116641/Executing+a+procurement+a+step+by+step+guide"
+                   target="_blank">step-by-step guide to the procurement process</a>
+                (opens in a new tab) and have
+                <a href="https://gpitbjss.atlassian.net/wiki/spaces/BG/pages/1846902822/Further+Competition+-+Off+Catalogue"
+                   target="_blank">more information about executing an Off-Catalogue Competition procedure</a>
+                (opens in a new tab).
+            </p>
+
+            <p>
+                For help using the Buying Catalogue, contact the National Commercial and Procurement Hub:
+            </p>
+
+            <vc:nhs-action-link url="@Url.Action(
+                                         nameof(ProcurementHubController.Index),
+                                         typeof(ProcurementHubController).ControllerName(),
+                                         new { returnUrl = Url.Action(
+                                             nameof(OrderTriageController.StepsNotCompleted),
+                                             typeof(OrderTriageController).ControllerName(),
+                                             new { Model.InternalOrgId, option = TriageOption.Over250k }) })"
+                                text="Get procurement support" />
         </div>
     </div>
 </div>
