@@ -203,6 +203,8 @@ BEGIN
         INSERT (CataloguePriceId, CatalogueItemId, ProvisioningTypeId, CataloguePriceTypeId, PricingUnitId, TimeUnitId, CurrencyCode, LastUpdated, Price, PublishedStatusId)
         VALUES (SOURCE.CataloguePriceId, SOURCE.CatalogueItemId, SOURCE.ProvisioningTypeId, SOURCE.CataloguePriceTypeId, SOURCE.PricingUnitId, SOURCE.TimeUnitId, SOURCE.CurrencyCode, SOURCE.LastUpdated, SOURCE.Price, SOURCE.PublishedStatusId);
 
+    UPDATE catalogue.CataloguePrices SET IsLocked = 1 WHERE PublishedStatusId = 3
+
     SET IDENTITY_INSERT catalogue.CataloguePrices OFF;
 
     DROP TABLE #CataloguePrice;
