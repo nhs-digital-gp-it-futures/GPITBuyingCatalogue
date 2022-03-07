@@ -12,7 +12,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering.Supplier
 {
     public sealed class NewContact : BuyerTestBase, IClassFixture<LocalWebApplicationFactory>
     {
-        private const string InternalOrgId = "03F";
+        private const string InternalOrgId = "CG-03F";
         private static readonly CallOffId CallOffId = new(91002, 1);
 
         private static readonly Dictionary<string, string> Parameters = new()
