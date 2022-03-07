@@ -146,13 +146,13 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.Organisations
             var organisations = await context.Organisations.Select(o => new
             {
                 o.Name,
-                o.InternalIdentifier,
+                o.ExternalIdentifier,
                 OrganisationId = o.Id,
             }).ToListAsync();
 
             var pageSummary = GetPageSummary();
 
-            pageSummary.OdsCodes.Should().BeEquivalentTo(organisations.Select(o => o.InternalIdentifier)).And.HaveCount(organisations.Count);
+            pageSummary.OdsCodes.Should().BeEquivalentTo(organisations.Select(o => o.ExternalIdentifier)).And.HaveCount(organisations.Count);
             pageSummary.OrganisationIds.Should().BeEquivalentTo(organisations.Select(o => o.OrganisationId)).And.HaveCount(organisations.Count);
             pageSummary.OrganisationNames.Should().BeEquivalentTo(organisations.Select(o => o.Name)).And.HaveCount(organisations.Count);
         }

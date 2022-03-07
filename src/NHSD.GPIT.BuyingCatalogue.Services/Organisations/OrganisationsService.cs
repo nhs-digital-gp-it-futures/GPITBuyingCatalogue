@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using EnumsNET;
 using Microsoft.EntityFrameworkCore;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Organisations.Models;
@@ -41,7 +42,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Organisations
                 LastUpdated = DateTime.UtcNow,
                 Name = odsOrganisation.OrganisationName,
                 ExternalIdentifier = odsOrganisation.OdsCode,
-                InternalIdentifier = odsOrganisation.OdsCode,
+                InternalIdentifier = $"{OrganisationType.CCG.AsString(EnumFormat.EnumMemberValue)}-{odsOrganisation.OdsCode}",
                 PrimaryRoleId = odsOrganisation.PrimaryRoleId,
             };
 

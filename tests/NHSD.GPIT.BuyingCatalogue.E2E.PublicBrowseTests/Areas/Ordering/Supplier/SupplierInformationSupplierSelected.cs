@@ -15,7 +15,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering.Supplier
 {
     public sealed class SupplierInformationSupplierSelected : BuyerTestBase, IClassFixture<LocalWebApplicationFactory>, IAsyncLifetime
     {
-        private const string InternalOrgId = "03F";
+        private const string InternalOrgId = "CG-03F";
         private const int SupplierContactId = 2;
         private static readonly CallOffId CallOffId = new(91002, 1);
 
