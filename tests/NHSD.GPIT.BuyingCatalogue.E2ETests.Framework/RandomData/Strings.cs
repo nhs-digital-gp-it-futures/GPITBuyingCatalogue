@@ -42,7 +42,11 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.RandomData
         public static DateTime RandomDateSoon()
         {
             var faker = new Faker("en_GB");
-            return faker.Date.Soon(5);
+            var date = faker.Date.Soon(5);
+
+            return date.Day <= DateTime.UtcNow.Day
+                ? date.AddDays(2)
+                : date;
         }
     }
 }
