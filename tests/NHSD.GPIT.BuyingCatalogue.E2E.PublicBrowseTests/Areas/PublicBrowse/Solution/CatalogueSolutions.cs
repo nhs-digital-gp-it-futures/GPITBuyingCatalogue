@@ -259,8 +259,6 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.PublicBrowse.Solution
 
             var gpitFramework = await context.Frameworks.Where(f => f.Id == "NHSDGP001").SingleAsync();
 
-            CommonActions.WaitUntilElementExists(CommonSelectors.BreadcrumbItem);
-
             Driver.FindElements(CommonSelectors.BreadcrumbItem).Count.Should().Be(1);
 
             CommonActions.ClickRadioButtonWithValue(gpitFramework.Id);
