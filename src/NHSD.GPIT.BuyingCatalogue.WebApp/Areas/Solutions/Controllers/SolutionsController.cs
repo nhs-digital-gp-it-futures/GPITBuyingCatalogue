@@ -54,6 +54,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers
                 search);
 
             var frameworks = await solutionsFilterService.GetAllFrameworksAndCountForFilter();
+            var capabilitiesAndEpics = await solutionsFilterService.GetCapabilityNamesWithEpics(capabilities);
+            var frameworkShortName = await solutionsFilterService.GetFrameworkName(selectedFramework);
 
             return View(new SolutionsModel(frameworks)
             {
@@ -64,6 +66,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers
                 FoundationCapabilities = default,
                 CountOfSolutionsWithFoundationCapability = default,
                 SelectedCapabilities = capabilities,
+                SearchSummary = new(capabilitiesAndEpics, frameworkShortName, search),
             });
         }
 
