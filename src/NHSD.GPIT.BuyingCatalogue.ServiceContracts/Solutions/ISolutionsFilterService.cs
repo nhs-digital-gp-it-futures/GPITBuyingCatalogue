@@ -19,5 +19,9 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions
         Task<CategoryFilterModel> GetAllCategoriesAndCountForFilter(string frameworkId = null);
 
         Task<List<SearchFilterModel>> GetSolutionsBySearchTerm(string searchTerm, int maxToBringBack = 15);
+
+        Task<Dictionary<string, int>> GetCapabilityNamesWithEpics(string capabilities);
+
+        Task<string> GetFrameworkName(string frameworkId);
     }
 }

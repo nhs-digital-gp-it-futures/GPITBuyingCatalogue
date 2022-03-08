@@ -93,7 +93,8 @@
                           number-of-rows="5" />
             <nhs-submit-button />
         </form>
-        @if (Model.CataloguePriceId is not null)
+        @if (Model.CataloguePriceId is not null
+            && !Model.IsAdding)
         {
             <vc:nhs-delete-button url="@Model.DeleteLink" text="Delete price" />
         }

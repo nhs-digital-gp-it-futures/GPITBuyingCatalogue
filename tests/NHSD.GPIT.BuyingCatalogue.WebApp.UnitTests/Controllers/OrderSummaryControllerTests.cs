@@ -48,8 +48,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Controllers
 
             var expectedViewData = new OrderSummaryModel(order)
             {
-                AdviceText = "This order has been confirmed and can no longer be changed.",
-                Title = $"Order confirmed for {order.CallOffId}",
+                AdviceText = "This order has been completed and can no longer be changed.",
+                Title = $"Order completed for {order.CallOffId}",
             };
 
             var actualResult = await controller.Index(internalOrgId, order.CallOffId);
