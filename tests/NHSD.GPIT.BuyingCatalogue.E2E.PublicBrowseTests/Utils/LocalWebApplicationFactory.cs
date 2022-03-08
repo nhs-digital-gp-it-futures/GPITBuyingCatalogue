@@ -230,6 +230,8 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils
             SetEnvironmentVariable("ASPNETCORE_ENVIRONMENT", "E2ETest");
 
             SetEnvironmentVariable(nameof(DOMAIN_NAME), DOMAIN_NAME);
+
+            SetEnvironmentVariable("DOTNET_USE_POLLING_FILE_WATCHER", "true");
         }
 
         private static void SetEnvironmentVariable(string name, string value)
