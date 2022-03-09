@@ -9,7 +9,6 @@ using Microsoft.AspNetCore.Session;
 using Microsoft.Extensions.Caching.Distributed;
 using Microsoft.Extensions.Logging;
 using NHSD.GPIT.BuyingCatalogue.Framework.Serialization;
-using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Models;
 using OpenQA.Selenium;
 
 namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.Session
@@ -50,16 +49,6 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.Session
             return value is null ?
                 default :
                 JsonDeserializer.Deserialize<T>(value, ReferenceHandler.Preserve);
-        }
-
-        public CreateOrderItemModel GetOrderStateFromSession(string key)
-        {
-            return GetObject<CreateOrderItemModel>(key);
-        }
-
-        public Task SetOrderStateToSessionAsync(CreateOrderItemModel model)
-        {
-            return SetObjectAsync(model.CallOffId.ToString(), model);
         }
 
         public Task SetStringAsync(string key, string value)

@@ -79,6 +79,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
                 .SingleOrDefaultAsync();
         }
 
+        // TODO - Tiered Pricing - Reintroduct Pricing Information
         public Task<Order> GetOrderForSummary(CallOffId callOffId, string internalOrgId)
         {
             return dbContext.Orders
@@ -93,7 +94,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
                 .Include(o => o.LastUpdatedByUser)
                 .Include(o => o.OrderItems).ThenInclude(i => i.CatalogueItem)
                 .Include(o => o.OrderItems).ThenInclude(i => i.OrderItemRecipients).ThenInclude(r => r.Recipient)
-                .Include(o => o.OrderItems).ThenInclude(i => i.CataloguePrice).ThenInclude(p => p.PricingUnit)
+                /*.Include(o => o.OrderItems).ThenInclude(i => i.CataloguePrice).ThenInclude(p => p.PricingUnit)*/
                 .SingleOrDefaultAsync();
         }
 
@@ -160,6 +161,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
                 .SingleOrDefaultAsync();
         }
 
+        // TODO - Tiered Pricing - Reintroduct Pricing Data
         public Task<Order> GetOrderForStatusUpdate(CallOffId callOffId, string internalOrgId)
         {
             return dbContext.Orders
@@ -170,7 +172,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
                 .Include(o => o.Supplier)
                 .Include(o => o.OrderItems).ThenInclude(i => i.CatalogueItem)
                 .Include(o => o.OrderItems).ThenInclude(i => i.OrderItemRecipients).ThenInclude(r => r.Recipient)
-                .Include(o => o.OrderItems).ThenInclude(i => i.CataloguePrice).ThenInclude(p => p.PricingUnit)
+                /*.Include(o => o.OrderItems).ThenInclude(i => i.CataloguePrice).ThenInclude(p => p.PricingUnit)*/
                 .SingleOrDefaultAsync();
         }
 

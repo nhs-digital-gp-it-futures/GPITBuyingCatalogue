@@ -15,18 +15,6 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models
 
         public IReadOnlyList<ServiceInstanceItem> ServiceInstanceItems => serviceInstanceItems.AsReadOnly();
 
-        public decimal CalculateCostPerYear(CostType costType)
-        {
-            return OrderItems.Where(i => i.CostType == costType).Sum(i => i.CalculateTotalCostPerYear());
-        }
-
-        public decimal CalculateTotalOwnershipCost()
-        {
-            const int defaultContractLength = 3;
-
-            return CalculateCostPerYear(CostType.OneOff) + (defaultContractLength * CalculateCostPerYear(CostType.Recurring));
-        }
-
         public void Complete()
         {
             OrderStatus = OrderStatus.Complete;

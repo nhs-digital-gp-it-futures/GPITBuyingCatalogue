@@ -25,6 +25,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Csv
             this.dbContext = dbContext ?? throw new ArgumentNullException(nameof(dbContext));
         }
 
+        // TODO - Tiered Pricing - Fix CSVs
         public async Task CreateFullOrderCsvAsync(int orderId, MemoryStream stream)
         {
             var items = await dbContext.OrderItemRecipients.AsNoTracking()
@@ -43,11 +44,11 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Csv
                     ProductName = oir.OrderItem.CatalogueItem.Name,
                     ProductType = oir.OrderItem.CatalogueItem.CatalogueItemType.DisplayName(),
                     QuantityOrdered = oir.Quantity,
-                    UnitOfOrder = oir.OrderItem.CataloguePrice.PricingUnit.Description,
-                    UnitTime = !oir.OrderItem.CataloguePrice.TimeUnit.HasValue ? string.Empty : oir.OrderItem.CataloguePrice.TimeUnit.Value.Description(),
+                    /*UnitOfOrder = oir.OrderItem.CataloguePrice.PricingUnit.Description,
+                    UnitTime = !oir.OrderItem.CataloguePrice.TimeUnit.HasValue ? string.Empty : oir.OrderItem.CataloguePrice.TimeUnit.Value.Description(),*/
                     EstimationPeriod = !oir.OrderItem.EstimationPeriod.HasValue ? string.Empty : oir.OrderItem.EstimationPeriod.Value.Description(),
                     Price = oir.OrderItem.Price.GetValueOrDefault(),
-                    OrderType = (int)oir.OrderItem.CataloguePrice.ProvisioningType,
+                    /*OrderType = (int)oir.OrderItem.CataloguePrice.ProvisioningType,*/
                     M1Planned = oir.DeliveryDate,
                     Framework =
                     oir.OrderItem.CatalogueItem.CatalogueItemType == CatalogueItemType.Solution
@@ -67,7 +68,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Csv
         public async Task<int> CreatePatientNumberCsvAsync(int orderId, MemoryStream stream)
         {
             var items = await dbContext.OrderItemRecipients.AsNoTracking()
-                .Where(oir => oir.OrderId == orderId && oir.OrderItem.CataloguePrice.ProvisioningType == ProvisioningType.Patient)
+                .Where(oir => oir.OrderId == orderId /*&& oir.OrderItem.CataloguePrice.ProvisioningType == ProvisioningType.Patient*/)
                 .Select(oir => new PatientOrderCsvModel
                 {
                     CallOffId = oir.OrderItem.Order.CallOffId,
@@ -82,7 +83,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Csv
                     ProductName = oir.OrderItem.CatalogueItem.Name,
                     ProductType = oir.OrderItem.CatalogueItem.CatalogueItemType.DisplayName(),
                     QuantityOrdered = oir.Quantity,
-                    UnitOfOrder = oir.OrderItem.CataloguePrice.PricingUnit.Description,
+                    /*UnitOfOrder = oir.OrderItem.CataloguePrice.PricingUnit.Description,*/
                     Price = oir.OrderItem.Price.GetValueOrDefault(),
                     M1Planned = oir.DeliveryDate,
                     Framework =

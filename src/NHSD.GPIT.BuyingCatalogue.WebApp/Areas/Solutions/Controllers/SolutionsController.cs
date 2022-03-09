@@ -357,18 +357,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers
         }
 
         [HttpGet("{solutionId}/list-price")]
-        public async Task<IActionResult> ListPrice(CatalogueItemId solutionId)
+        public IActionResult ListPrice(CatalogueItemId solutionId)
         {
-            var item = await solutionsService.GetSolutionWithListPrices(solutionId);
-            if (item is null)
-                return BadRequest($"No Catalogue Item found for Id: {solutionId}");
-
-            if (item.PublishedStatus == PublicationStatus.Suspended)
-                return RedirectToAction(nameof(Description), new { solutionId });
-
-            var contentStatus = await solutionsService.GetContentStatusForCatalogueItem(solutionId);
-
-            return View(new ListPriceModel(item, contentStatus));
+            // TODO - Tiered Price - Fix endpoint
+            return View();
         }
 
         [HttpGet("{solutionId}/service-level-agreements")]

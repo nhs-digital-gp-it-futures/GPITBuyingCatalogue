@@ -55,29 +55,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators
         }
 
         [Theory]
-        [CommonAutoData]
-        public static void Validate_MissingListPrices_SetsModelError(
-            Solution solution,
-            AssociatedService associatedService,
-            EditAssociatedServiceModelValidator validator)
-        {
-            associatedService.CatalogueItem.PublishedStatus = PublicationStatus.Draft;
-            associatedService.CatalogueItem.CataloguePrices = new HashSet<CataloguePrice>();
-
-            var model = new EditAssociatedServiceModel(solution.CatalogueItem, associatedService.CatalogueItem)
-            {
-                SelectedPublicationStatus = PublicationStatus.Published,
-            };
-
-            var result = validator.TestValidate(model);
-
-            model.DetailsStatus.Should().Be(TaskProgress.Completed);
-            model.ListPriceStatus.Should().Be(TaskProgress.NotStarted);
-            result.ShouldHaveValidationErrorFor(m => m.SelectedPublicationStatus)
-                .WithErrorMessage("Complete all mandatory sections before publishing");
-        }
-
-        [Theory]
         [CommonInlineAutoData(PublicationStatus.Published)]
         [CommonInlineAutoData(PublicationStatus.Suspended)]
         [CommonInlineAutoData(PublicationStatus.InRemediation)]

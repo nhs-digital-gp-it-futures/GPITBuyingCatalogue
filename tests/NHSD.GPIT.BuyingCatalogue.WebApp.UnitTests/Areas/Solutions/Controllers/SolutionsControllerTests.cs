@@ -799,68 +799,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Controllers
 
         [Theory]
         [CommonAutoData]
-        public static async Task Get_ListPrice_ValidId_GetsSolutionFromService(
-            [Frozen] Mock<ISolutionsService> mockService,
-            SolutionsController controller,
-            Solution solution,
-            CatalogueItemContentStatus contentStatus)
-        {
-            var catalogueItem = solution.CatalogueItem;
-            mockService.Setup(s => s.GetSolutionWithListPrices(It.IsAny<CatalogueItemId>()))
-                .ReturnsAsync(catalogueItem);
-
-            mockService.Setup(s => s.GetContentStatusForCatalogueItem(catalogueItem.Id))
-                .ReturnsAsync(contentStatus);
-
-            await controller.ListPrice(catalogueItem.Id);
-
-            mockService.Verify(s => s.GetSolutionWithListPrices(catalogueItem.Id));
-            mockService.Verify(s => s.GetContentStatusForCatalogueItem(catalogueItem.Id));
-        }
-
-        [Theory]
-        [CommonAutoData]
-        public static async Task Get_ListPrice_NullSolutionForId_ReturnsBadRequestResult(
-            [Frozen] Mock<ISolutionsService> mockService,
-            SolutionsController controller,
-            CatalogueItemId id)
-        {
-            mockService.Setup(s => s.GetSolutionWithListPrices(id))
-                .ReturnsAsync(default(CatalogueItem));
-
-            var actual = (await controller.ListPrice(id)).As<BadRequestObjectResult>();
-
-            actual.Should().NotBeNull();
-            actual.Value.Should().Be($"No Catalogue Item found for Id: {id}");
-        }
-
-        [Theory]
-        [CommonAutoData]
-        public static async Task Get_ListPrice_ValidSolutionForId_ReturnsExpectedViewResult(
-            [Frozen] Mock<ISolutionsService> mockService,
-            SolutionsController controller,
-            Solution solution,
-            CatalogueItemContentStatus contentStatus)
-        {
-            var catalogueItem = solution.CatalogueItem;
-            catalogueItem.PublishedStatus = PublicationStatus.Published;
-            var mockSolutionListPriceModel = new ListPriceModel(catalogueItem, contentStatus);
-
-            mockService.Setup(s => s.GetSolutionWithListPrices(catalogueItem.Id))
-                .ReturnsAsync(catalogueItem);
-
-            mockService.Setup(s => s.GetContentStatusForCatalogueItem(catalogueItem.Id))
-                .ReturnsAsync(contentStatus);
-
-            var actual = (await controller.ListPrice(catalogueItem.Id)).As<ViewResult>();
-
-            actual.Should().NotBeNull();
-            actual.ViewName.Should().BeNullOrEmpty();
-            actual.Model.Should().BeEquivalentTo(mockSolutionListPriceModel);
-        }
-
-        [Theory]
-        [CommonAutoData]
         public static async Task Get_Interoperability_ValidId_GetsSolutionFromService(
             Solution solution,
             [Frozen] Mock<ISolutionsService> mockService,

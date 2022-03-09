@@ -23,13 +23,6 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models
             Updated();
         }
 
-        public decimal CalculateTotalCostPerYear()
-        {
-            return OrderItemRecipients.Sum(r => r.CalculateTotalCostPerYear(
-                Price.GetValueOrDefault(),
-                CataloguePrice.TimeUnit ?? EstimationPeriod));
-        }
-
         public bool Equals(OrderItem other)
         {
             if (other is null)

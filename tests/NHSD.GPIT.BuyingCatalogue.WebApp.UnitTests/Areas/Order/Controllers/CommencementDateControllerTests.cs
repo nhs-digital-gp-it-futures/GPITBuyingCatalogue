@@ -10,7 +10,6 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Routing;
 using Moq;
 using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
-using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Models;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Orders;
 using NHSD.GPIT.BuyingCatalogue.Test.Framework.AutoFixtureCustomisations;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers;
@@ -60,7 +59,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers
         [CommonAutoData]
         public static async Task Post_CommencementDate_SetsDate_CorrectlyRedirects(
             string internalOrgId,
-            CreateOrderItemModel state,
+            EntityFramework.Ordering.Models.Order order,
             [Frozen] Mock<ICommencementDateService> commencementDateServiceMock,
             CommencementDateController controller)
         {
@@ -78,10 +77,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers
             };
 
             commencementDateServiceMock
-                .Setup(x => x.SetCommencementDate(state.CallOffId, internalOrgId, date, initialPeriod, maximumTerm))
+                .Setup(x => x.SetCommencementDate(order.CallOffId, internalOrgId, date, initialPeriod, maximumTerm))
                 .Returns(Task.CompletedTask);
 
-            var result = await controller.CommencementDate(internalOrgId, state.CallOffId, model);
+            var result = await controller.CommencementDate(internalOrgId, order.CallOffId, model);
 
             commencementDateServiceMock.VerifyAll();
 
@@ -91,7 +90,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers
             actualResult.RouteValues.Should().BeEquivalentTo(new RouteValueDictionary
             {
                 { "internalOrgId", internalOrgId },
-                { "callOffId", state.CallOffId },
+                { "callOffId", order.CallOffId },
             });
         }
     }

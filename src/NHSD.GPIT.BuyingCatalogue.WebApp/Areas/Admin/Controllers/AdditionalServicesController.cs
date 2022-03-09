@@ -7,14 +7,12 @@ using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.AdditionalServices;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Capabilities;
-using NHSD.GPIT.BuyingCatalogue.ServiceContracts.ListPrices;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Models;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Models.AdditionalServices;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.PublishStatus;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.AdditionalServices;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.CapabilityModels;
-using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.ListPriceModels;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
 {
@@ -25,21 +23,18 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
     {
         private readonly ISolutionsService solutionsService;
         private readonly IAdditionalServicesService additionalServicesService;
-        private readonly IListPricesService listPricesService;
         private readonly ICapabilitiesService capabilitiesService;
         private readonly IPublicationStatusService publicationStatusService;
 
         public AdditionalServicesController(
             ISolutionsService solutionsService,
             IAdditionalServicesService additionalServicesService,
-            IListPricesService listPricesService,
             ICapabilitiesService capabilitiesService,
             IPublicationStatusService publicationStatusService)
         {
             this.solutionsService = solutionsService ?? throw new ArgumentNullException(nameof(solutionsService));
             this.additionalServicesService = additionalServicesService ?? throw new ArgumentNullException(nameof(additionalServicesService));
             this.capabilitiesService = capabilitiesService ?? throw new ArgumentNullException(nameof(capabilitiesService));
-            this.listPricesService = listPricesService ?? throw new ArgumentNullException(nameof(listPricesService));
             this.publicationStatusService = publicationStatusService ?? throw new ArgumentNullException(nameof(publicationStatusService));
         }
 
@@ -169,249 +164,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
             await additionalServicesService.EditAdditionalService(solutionId, additionalServiceId, additionalServiceDetailsModel);
 
             return RedirectToAction(nameof(EditAdditionalService), new { solutionId, additionalServiceId });
-        }
-
-        [HttpGet("{additionalServiceId}/list-prices")]
-        public async Task<IActionResult> ManageListPrices(CatalogueItemId solutionId, CatalogueItemId additionalServiceId)
-        {
-            var solution = await solutionsService.GetSolutionThin(solutionId);
-            if (solution is null)
-                return BadRequest($"No Solution found for Id: {solutionId}");
-
-            var additionalService = await additionalServicesService.GetAdditionalService(solutionId, additionalServiceId);
-            if (additionalService is null)
-                return BadRequest($"No Additional Service found for Id: {additionalServiceId}");
-
-            var model = new ManageListPricesModel(additionalService, solutionId)
-            {
-                BackLink = Url.Action(
-                    nameof(EditAdditionalService),
-                    typeof(AdditionalServicesController).ControllerName(),
-                    new { solutionId, additionalServiceId }),
-                AddLink = Url.Action(
-                    nameof(AddListPrice),
-                    typeof(AdditionalServicesController).ControllerName(),
-                    new { solutionId, additionalServiceId }),
-                EditPriceStatusActionName = nameof(EditListPriceStatus),
-                EditPriceActionName = nameof(EditListPrice),
-                ControllerName = typeof(AdditionalServicesController).ControllerName(),
-            };
-
-            return View(model);
-        }
-
-        [HttpGet("{additionalServiceId}/list-price/add-list-price")]
-        public async Task<IActionResult> AddListPrice(CatalogueItemId solutionId, CatalogueItemId additionalServiceId, int? basedOn = null)
-        {
-            var solution = await solutionsService.GetSolutionThin(solutionId);
-
-            if (solution is null)
-                return BadRequest($"No Solution found for Id: {solutionId}");
-
-            var additionalService = await additionalServicesService.GetAdditionalService(solutionId, additionalServiceId);
-
-            if (additionalService is null)
-                return BadRequest($"No Additional Service found for Id: {additionalServiceId}");
-
-            var currentPrice = additionalService.CataloguePrices.FirstOrDefault(x => x.CataloguePriceId == basedOn);
-
-            var model = currentPrice == null
-                ? new EditListPriceModel(additionalService)
-                : new EditListPriceModel(additionalService, currentPrice);
-
-            model.BackLink = Url.Action(nameof(ManageListPrices), new { solutionId, additionalServiceId });
-            model.CataloguePriceId = null;
-            model.Title = EditListPriceModel.AddListPriceTitle;
-
-            return View("EditListPrice", model);
-        }
-
-        [HttpPost("{additionalServiceId}/list-price/add-list-price")]
-        public async Task<IActionResult> AddListPrice(CatalogueItemId solutionId, CatalogueItemId additionalServiceId, EditListPriceModel model)
-        {
-            if (!ModelState.IsValid)
-                return View("EditListPrice", model);
-
-            var provisioningType = model.SelectedProvisioningType!.Value;
-            var saveListPriceModel = new SaveListPriceModel
-            {
-                Price = model.Price,
-                ProvisioningType = provisioningType,
-                PricingUnit = model.GetPricingUnit(),
-                TimeUnit = model.GetTimeUnit(provisioningType),
-            };
-
-            var listPriceId = await listPricesService.SaveListPrice(additionalServiceId, saveListPriceModel);
-
-            return RedirectToAction(nameof(PublishListPrice), new { solutionId, additionalServiceId, listPriceId });
-        }
-
-        [HttpGet("{additionalServiceId}/list-price/{listPriceId}")]
-        public async Task<IActionResult> EditListPrice(CatalogueItemId solutionId, CatalogueItemId additionalServiceId, int listPriceId)
-        {
-            var additionalService = await listPricesService.GetCatalogueItemWithPrices(additionalServiceId);
-            var cataloguePrice = additionalService.CataloguePrices.FirstOrDefault(cp => cp.CataloguePriceId == listPriceId);
-            if (cataloguePrice is null)
-                return RedirectToAction(nameof(ManageListPrices), new { solutionId, additionalServiceId });
-
-            if (cataloguePrice.IsLocked)
-                return RedirectToAction(nameof(EditListPriceStatus), new { solutionId, additionalServiceId, listPriceId });
-
-            var editListPriceModel = new EditListPriceModel(additionalService, cataloguePrice, solutionId)
-            {
-                BackLink = Url.Action(nameof(ManageListPrices), new { solutionId, additionalServiceId }),
-                DeleteLink = Url.Action(nameof(DeleteListPrice), new { solutionId, additionalServiceId, listPriceId }),
-                Title = $"{additionalService.Name} list price",
-            };
-
-            return View("EditListPrice", editListPriceModel);
-        }
-
-        [HttpPost("{additionalServiceId}/list-price/{listPriceId}")]
-        public async Task<IActionResult> EditListPrice(CatalogueItemId solutionId, CatalogueItemId additionalServiceId, int listPriceId, EditListPriceModel model)
-        {
-            if (!ModelState.IsValid)
-                return View("EditListPrice", model);
-
-            var additionalService = await listPricesService.GetCatalogueItemWithPrices(additionalServiceId);
-            var cataloguePrice = additionalService.CataloguePrices.FirstOrDefault(cp => cp.CataloguePriceId == listPriceId);
-            if (cataloguePrice is null)
-                return RedirectToAction(nameof(ManageListPrices), new { solutionId, additionalServiceId });
-
-            if (cataloguePrice.IsLocked)
-                throw new ArgumentException($"List price {listPriceId} cannot be edited due to being locked");
-
-            var provisioningType = model.SelectedProvisioningType!.Value;
-            var saveListPriceModel = new SaveListPriceModel
-            {
-                CataloguePriceId = listPriceId,
-                Price = model.Price,
-                ProvisioningType = provisioningType,
-                PricingUnit = model.GetPricingUnit(),
-                TimeUnit = model.GetTimeUnit(provisioningType),
-            };
-
-            await listPricesService.UpdateListPrice(additionalServiceId, saveListPriceModel);
-
-            return RedirectToAction(nameof(PublishListPrice), new { solutionId, additionalServiceId, listPriceId });
-        }
-
-        [HttpGet("{additionalServiceId}/list-price/{listPriceId}/publish-list-price")]
-        public async Task<IActionResult> PublishListPrice(CatalogueItemId solutionId, CatalogueItemId additionalServiceId, int listPriceId)
-        {
-            var additionalService = await listPricesService.GetCatalogueItemWithPrices(additionalServiceId);
-            var cataloguePrice = additionalService.CataloguePrices.FirstOrDefault(cp => cp.CataloguePriceId == listPriceId);
-            if (cataloguePrice is null)
-                return RedirectToAction(nameof(ManageListPrices), new { solutionId, additionalServiceId });
-
-            if (cataloguePrice.IsLocked)
-                return RedirectToAction(nameof(EditListPriceStatus), new { solutionId, additionalServiceId, listPriceId });
-
-            var editListPriceModel = new EditListPriceStatusModel(additionalService, cataloguePrice, solutionId)
-            {
-                BackLink = Url.Action(nameof(EditListPrice), new { solutionId, additionalServiceId, listPriceId }),
-                Title = "Publish list price",
-                Advice = "Are you sure you want to publish this list price? Once you do, you'll no longer be able to edit or delete it.",
-            };
-
-            return View("EditListPriceStatus", editListPriceModel);
-        }
-
-        [HttpPost("{additionalServiceId}/list-price/{listPriceId}/publish-list-price")]
-        public async Task<IActionResult> PublishListPrice(CatalogueItemId solutionId, CatalogueItemId additionalServiceId, int listPriceId, EditListPriceStatusModel model)
-        {
-            if (!ModelState.IsValid)
-                return View("EditListPriceStatus", model);
-
-            var additionalService = await listPricesService.GetCatalogueItemWithPrices(additionalServiceId);
-            var cataloguePrice = additionalService.CataloguePrices.FirstOrDefault(cp => cp.CataloguePriceId == listPriceId);
-            if (cataloguePrice is null)
-                return RedirectToAction(nameof(ManageListPrices), new { solutionId, additionalServiceId });
-
-            if (cataloguePrice.IsLocked)
-                return RedirectToAction(nameof(EditListPriceStatus), new { solutionId, additionalServiceId, listPriceId });
-
-            var saveSolutionListPriceModel = new SaveListPriceModel
-            {
-                Status = model.Status,
-                CataloguePriceId = listPriceId,
-            };
-
-            await listPricesService.UpdateListPriceStatus(additionalServiceId, saveSolutionListPriceModel);
-
-            return RedirectToAction(nameof(ManageListPrices), new { solutionId, additionalServiceId });
-        }
-
-        [HttpGet("{additionalServiceId}/list-price/{listPriceId}/edit-status")]
-        public async Task<IActionResult> EditListPriceStatus(CatalogueItemId solutionId, CatalogueItemId additionalServiceId, int listPriceId)
-        {
-            var additionalService = await listPricesService.GetCatalogueItemWithPrices(additionalServiceId);
-            var cataloguePrice = additionalService.CataloguePrices.FirstOrDefault(cp => cp.CataloguePriceId == listPriceId);
-
-            if (cataloguePrice is null)
-                return RedirectToAction(nameof(ManageListPrices), new { solutionId, additionalServiceId });
-
-            if (!cataloguePrice.IsLocked)
-                return RedirectToAction(nameof(PublishListPrice), new { solutionId, additionalServiceId, listPriceId });
-
-            var editListPriceModel = new EditListPriceStatusModel(additionalService, cataloguePrice, solutionId)
-            {
-                BackLink = Url.Action(nameof(ManageListPrices), new { solutionId, additionalServiceId }),
-                Title = "Edit list price",
-                Advice = "Change the publication status for this list price.",
-                ListPriceId = listPriceId,
-                CalledFrom = EditListPriceSource.AdditionalService,
-            };
-
-            return View("EditListPriceStatus", editListPriceModel);
-        }
-
-        [HttpPost("{additionalServiceId}/list-price/{listPriceId}/edit-status")]
-        public async Task<IActionResult> EditListPriceStatus(CatalogueItemId solutionId, CatalogueItemId additionalServiceId, int listPriceId, EditListPriceStatusModel model)
-        {
-            if (!ModelState.IsValid)
-                return View("EditListPriceStatus", model);
-
-            var additionalService = await listPricesService.GetCatalogueItemWithPrices(additionalServiceId);
-            var cataloguePrice = additionalService.CataloguePrices.FirstOrDefault(cp => cp.CataloguePriceId == listPriceId);
-            if (cataloguePrice is null)
-                return RedirectToAction(nameof(ManageListPrices), new { solutionId, additionalServiceId });
-
-            if (!cataloguePrice.IsLocked)
-                return RedirectToAction(nameof(PublishListPrice), new { solutionId, additionalServiceId, listPriceId });
-
-            var saveSolutionListPriceModel = new SaveListPriceModel
-            {
-                Status = model.Status,
-                CataloguePriceId = listPriceId,
-            };
-
-            await listPricesService.UpdateListPriceStatus(additionalServiceId, saveSolutionListPriceModel);
-
-            return RedirectToAction(nameof(ManageListPrices), new { solutionId, additionalServiceId });
-        }
-
-        [HttpGet("{additionalServiceId}/list-price/{listPriceId}/delete")]
-        public async Task<IActionResult> DeleteListPrice(CatalogueItemId solutionId, CatalogueItemId additionalServiceId, int listPriceId)
-        {
-            var additionalService = await listPricesService.GetCatalogueItemWithPrices(additionalServiceId);
-
-            var model = new DeleteListPriceModel(additionalService)
-            {
-                BackLink = Url.Action(nameof(EditListPrice), new { solutionId, additionalServiceId, listPriceId }),
-            };
-
-            return View(model);
-        }
-
-        [HttpPost("{additionalServiceId}/list-price/{listPriceId}/delete")]
-        public async Task<IActionResult> DeleteListPrice(CatalogueItemId solutionId, CatalogueItemId additionalServiceId, int listPriceId, DeleteListPriceModel model)
-        {
-            _ = model;
-
-            await listPricesService.DeleteListPrice(additionalServiceId, listPriceId);
-
-            return RedirectToAction(nameof(ManageListPrices), new { solutionId, additionalServiceId });
         }
 
         [HttpGet("{additionalServiceId}/edit-capabilities")]

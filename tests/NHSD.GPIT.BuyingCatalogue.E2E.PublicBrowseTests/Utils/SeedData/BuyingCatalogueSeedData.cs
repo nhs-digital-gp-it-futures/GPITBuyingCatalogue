@@ -45,7 +45,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
             context.AddRange(frameworkSolutions);
 
             context.SaveChanges();
-
+            /* TODO - Tiered Pricing - Reintroduce Pricing Data
             List<CataloguePrice> prices = new()
             {
                 new CataloguePrice
@@ -82,7 +82,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
                     LastUpdated = DateTime.UtcNow,
                 },
             };
-            context.AddRange(prices);
+            context.AddRange(prices);*/
         }
 
         private static void AddDefaultData(EndToEndDbContext context)

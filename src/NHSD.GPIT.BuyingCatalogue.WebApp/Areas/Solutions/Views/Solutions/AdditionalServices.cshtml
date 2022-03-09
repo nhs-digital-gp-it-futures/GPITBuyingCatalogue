@@ -15,17 +15,10 @@
 
     <nhs-table label-text="Additional Services available" data-test-id="additional-services-table">
         <nhs-table-column> Additional Service </nhs-table-column>
-        <nhs-table-column> Price </nhs-table-column>
         @foreach (var solution in Model.Services)
         {
             <nhs-table-row-container>
                 <nhs-table-cell><a href="#@solution.Id">@solution.Name</a></nhs-table-cell>
-                <nhs-table-cell>
-                    @foreach (var price in solution.CataloguePrices.Where(cp => cp.PublishedStatus == PublicationStatus.Published))
-                    {
-                        <p style="white-space: nowrap; margin-bottom:0;">@price.ToString()</p>
-                    }
-                </nhs-table-cell>
             </nhs-table-row-container>
         }
     </nhs-table>
@@ -45,12 +38,6 @@
                        asp-route-solutionId="@Model.SolutionId"
                        asp-route-additionalServiceId="@solution.Id"
                        class="nhsuk-breadcrumb__link">Check Capabilities and Epics</a>
-                </nhs-summary-list-row>
-                <nhs-summary-list-row label-text="Price">
-                    @foreach (var price in solution.CataloguePrices.Where(cp => cp.PublishedStatus == PublicationStatus.Published))
-                    {
-                        <p style="white-space: nowrap;">@price.ToString()</p>
-                    }
                 </nhs-summary-list-row>
             </nhs-summary-list>
 

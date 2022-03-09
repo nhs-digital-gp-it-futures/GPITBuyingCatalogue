@@ -31,25 +31,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.PublicBrowse.Solution
         {
         }
 
-        [Fact]
-        public void ListPriceDetails_FlatListPriceTableDisplayed()
-        {
-            PublicBrowsePages.SolutionAction.FlatListPriceTableDisplayed().Should().BeTrue();
-        }
-
-        [Fact]
-        public async Task ListPriceDetails_FlatListPricesDisplayedCorrectlyAsync()
-        {
-            var prices = PublicBrowsePages.SolutionAction.GetPrices();
-
-            await using var context = GetEndToEndDbContext();
-            var dbPrices = await context.CataloguePrices.Where(s =>
-            s.CatalogueItemId == new CatalogueItemId(99999, "001")
-            && s.PublishedStatus == PublicationStatus.Published).ToListAsync();
-
-            prices.Should().Contain(dbPrices.Select(s => s.Price.ToString()));
-        }
-
+        /* TODO - Tiered Pricing - Reintroduce tests
         [Fact]
         public async Task ListPriceDetails_SolutionIsSuspended_Redirect()
         {
@@ -66,7 +48,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.PublicBrowse.Solution
                     nameof(SolutionsController.Description))
                 .Should()
                 .BeTrue();
-        }
+        }*/
 
         public void Dispose()
         {

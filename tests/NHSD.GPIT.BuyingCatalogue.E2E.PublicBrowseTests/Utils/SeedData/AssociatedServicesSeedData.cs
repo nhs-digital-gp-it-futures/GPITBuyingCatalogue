@@ -55,6 +55,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
                         OrderGuidance = "This is how to order",
                         LastUpdated = DateTime.UtcNow,
                     },
+                    /* TODO - Tiered Pricing - Reintroduce Pricing Data
                     CataloguePrices = new List<CataloguePrice>
                     {
                         new()
@@ -133,7 +134,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
                             Price = 123.4567M,
                             LastUpdated = DateTime.UtcNow,
                         },
-                    },
+                    },*/
                 },
                 new()
                 {
@@ -149,6 +150,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
                         OrderGuidance = "This is how to order",
                         LastUpdated = DateTime.UtcNow,
                     },
+                    /* TODO - Tiered Pricing - Reintroduce Pricing Data
                     CataloguePrices = new List<CataloguePrice>
                     {
                         new()
@@ -170,7 +172,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
                             Price = 999.9999M,
                             LastUpdated = DateTime.UtcNow,
                         },
-                    },
+                    },*/
                 },
                 new()
                 {
@@ -186,6 +188,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
                         OrderGuidance = "This is how to order",
                         LastUpdated = DateTime.UtcNow,
                     },
+                    /* TODO - Tiered Pricing - Reintroduce Pricing Data
                     CataloguePrices = new List<CataloguePrice>
                     {
                         new()
@@ -207,7 +210,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
                             Price = 999.9999M,
                             LastUpdated = DateTime.UtcNow,
                         },
-                    },
+                    },*/
                 },
             };
         }

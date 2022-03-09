@@ -20,18 +20,11 @@
     {
 <nhs-table label-text="Associated Services available" data-test-id="associated-services-table">
     <nhs-table-column>Associated Service</nhs-table-column>
-    <nhs-table-column>Price</nhs-table-column>
 
     @foreach (var solution in Model.Services)
     {
         <nhs-table-row-container>
             <nhs-table-cell><a href="#@solution.Id">@solution.Name</a></nhs-table-cell>
-            <nhs-table-cell>
-                @foreach (var price in solution.CataloguePrices.Where(cp => cp.PublishedStatus == PublicationStatus.Published))
-                {
-                    <p style="white-space: nowrap; margin-bottom:0;">@price.ToString()</p>
-                }
-            </nhs-table-cell>
         </nhs-table-row-container>
     }
 </nhs-table>
@@ -51,14 +44,6 @@
                 <p data-test-id="order-guidance">
                     @solution.AssociatedService.OrderGuidance
                 </p>
-            </nhs-summary-list-row>
-            <nhs-summary-list-row label-text="Price">
-                <div data-test-id="price">
-                    @foreach (var price in solution.CataloguePrices.Where(cp => cp.PublishedStatus == PublicationStatus.Published))
-                    {
-                        <p style="white-space: nowrap;">@price.ToString()</p>
-                    }
-                </div>
             </nhs-summary-list-row>
         </nhs-summary-list>
         <partial name="_BackToTop" />

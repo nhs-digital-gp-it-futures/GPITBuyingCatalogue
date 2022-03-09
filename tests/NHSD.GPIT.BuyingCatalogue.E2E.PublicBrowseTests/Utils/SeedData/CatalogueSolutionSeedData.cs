@@ -265,6 +265,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
                         new() { CapabilityId = 43, EpicId = "S00006", StatusId = 1 },
                     },
                     PublishedStatus = PublicationStatus.Published,
+                    /* TODO - Tiered Pricing - Reintroduce Pricing Data
                     CataloguePrices = new List<CataloguePrice>
                     {
                         new()
@@ -305,7 +306,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
                             Price = 999.9999M,
                             LastUpdated = DateTime.UtcNow,
                         },
-                    },
+                    },*/
                 },
                 new CatalogueItem
                 {
@@ -657,6 +658,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
                         new() { CapabilityId = 46, EpicId = "C46E5", LastUpdated = DateTime.UtcNow, StatusId = 1 },
                     },
                     PublishedStatus = PublicationStatus.Published,
+                    /* TODO - Tiered Pricing - Reintroduce Pricing Data
                     CataloguePrices = new List<CataloguePrice>
                     {
                         new()
@@ -678,7 +680,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
                             Price = 999.9999M,
                             LastUpdated = DateTime.UtcNow,
                         },
-                    },
+                    },*/
                 },
                 new CatalogueItem
                 {
@@ -850,6 +852,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
                         new() { CapabilityId = 46, EpicId = "C46E1", LastUpdated = DateTime.UtcNow, StatusId = 1 },
                     },
                     PublishedStatus = PublicationStatus.Published,
+                    /* TODO - Tiered Pricing - Reintroduce Pricing Data
                     CataloguePrices = new List<CataloguePrice>
                     {
                         new()
@@ -909,7 +912,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
                             Price = 999.9999M,
                             LastUpdated = DateTime.UtcNow,
                         },
-                    },
+                    },*/
                 },
                 new CatalogueItem
                 {
@@ -1082,6 +1085,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
                         new() { CapabilityId = 47, EpicId = "C47E1", LastUpdated = DateTime.UtcNow, StatusId = 1 },
                     },
                     PublishedStatus = PublicationStatus.Published,
+                    /* TODO - Tiered Pricing - Reintroduce Pricing Data
                     CataloguePrices = new List<CataloguePrice>
                     {
                         new()
@@ -1103,7 +1107,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
                             Price = 999.9999M,
                             LastUpdated = DateTime.UtcNow,
                         },
-                    },
+                    },*/
                 },
             };
 

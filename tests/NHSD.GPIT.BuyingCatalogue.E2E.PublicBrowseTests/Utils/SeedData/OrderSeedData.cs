@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using Microsoft.EntityFrameworkCore;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
@@ -11,6 +10,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
 {
     internal static class OrderSeedData
     {
+        // TODO - Tiered Pricing - Reintroduce Pricing Information into Orders
         internal static void Initialize(BuyingCatalogueDbContext context)
         {
             AddOrderAtDescriptionStage(context);
@@ -237,14 +237,14 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
                 CommencementDate = DateTime.UtcNow.AddDays(1),
             };
 
-            var price = context.CatalogueItems
+            /*var price = context.CatalogueItems
                 .Include(c => c.CataloguePrices).ThenInclude(s => s.PricingUnit)
                 .Single(c => c.Id == new CatalogueItemId(99999, "001"))
-                .CataloguePrices.First();
+                .CataloguePrices.First();*/
 
             var addedSolution = new OrderItem
             {
-                CataloguePrice = price,
+                /*CataloguePrice = price,*/
                 Price = 1.01M,
                 DefaultDeliveryDate = order.CommencementDate,
                 Created = DateTime.UtcNow,
@@ -313,14 +313,14 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
 
             var user = GetBuyerUser(context, order.OrderingPartyId);
 
-            var price = context.CatalogueItems
+            /*var price = context.CatalogueItems
                 .Include(c => c.CataloguePrices).ThenInclude(s => s.PricingUnit)
                 .Single(c => c.Id == new CatalogueItemId(99998, "002"))
-                .CataloguePrices.First();
+                .CataloguePrices.First();*/
 
             var addedSolution = new OrderItem
             {
-                CataloguePrice = price,
+                /*CataloguePrice = price,*/
                 Price = 1.01M,
                 DefaultDeliveryDate = order.CommencementDate,
                 Created = DateTime.UtcNow,
@@ -386,7 +386,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
 
             var user = GetBuyerUser(context, order.OrderingPartyId);
 
-            var priceSinglePriceSolution = context.CatalogueItems
+            /*var priceSinglePriceSolution = context.CatalogueItems
                 .Include(c => c.CataloguePrices).ThenInclude(s => s.PricingUnit)
                 .Single(c => c.Id == new CatalogueItemId(99998, "002"))
                 .CataloguePrices.First();
@@ -399,11 +399,11 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
             var additionalPrice = context.CatalogueItems
                 .Include(c => c.CataloguePrices).ThenInclude(s => s.PricingUnit)
                 .Single(c => c.Id == new CatalogueItemId(99998, "002A999"))
-                .CataloguePrices.First();
+                .CataloguePrices.First();*/
 
             var addedSinglePriceCatalogueSolution = new OrderItem
             {
-                CataloguePrice = priceSinglePriceSolution,
+                /*CataloguePrice = priceSinglePriceSolution,*/
                 Price = 1.01M,
                 DefaultDeliveryDate = order.CommencementDate,
                 Created = DateTime.UtcNow,
@@ -414,7 +414,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
 
             var addedMultiplePriceCatalogueSolution = new OrderItem
             {
-                CataloguePrice = priceMultiplePriceSolution,
+                /*CataloguePrice = priceMultiplePriceSolution,*/
                 Price = 1.01M,
                 DefaultDeliveryDate = order.CommencementDate,
                 Created = DateTime.UtcNow,
@@ -425,7 +425,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
 
             var addedAdditionalSolution = new OrderItem
             {
-                CataloguePrice = additionalPrice,
+                /*CataloguePrice = additionalPrice,*/
                 Price = 1.01M,
                 DefaultDeliveryDate = order.CommencementDate,
                 Created = DateTime.UtcNow,
@@ -499,14 +499,14 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
 
             var user = GetBuyerUser(context, order.OrderingPartyId);
 
-            var price = context.CatalogueItems
+            /*var price = context.CatalogueItems
                 .Include(c => c.CataloguePrices).ThenInclude(s => s.PricingUnit)
                 .Single(c => c.Id == new CatalogueItemId(99998, "S-999"))
-                .CataloguePrices.First();
+                .CataloguePrices.First();*/
 
             var addedSolution = new OrderItem
             {
-                CataloguePrice = price,
+                /*CataloguePrice = price,*/
                 Price = 1.01M,
                 DefaultDeliveryDate = order.CommencementDate,
                 Created = DateTime.UtcNow,
@@ -555,14 +555,14 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
 
             var user = GetBuyerUser(context, order.OrderingPartyId);
 
-            var price = context.CatalogueItems
+            /*var price = context.CatalogueItems
                 .Include(c => c.CataloguePrices).ThenInclude(s => s.PricingUnit)
                 .Single(c => c.Id == new CatalogueItemId(99998, "S-999"))
-                .CataloguePrices.First();
+                .CataloguePrices.First();*/
 
             var addedSolution = new OrderItem
             {
-                CataloguePrice = price,
+                /*CataloguePrice = price,*/
                 Price = 1.01M,
                 DefaultDeliveryDate = order.CommencementDate,
                 Created = DateTime.UtcNow,
@@ -612,14 +612,14 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
 
             var user = GetBuyerUser(context, order.OrderingPartyId);
 
-            var price = context.CatalogueItems
+            /*var price = context.CatalogueItems
                 .Include(c => c.CataloguePrices).ThenInclude(s => s.PricingUnit)
                 .Single(c => c.Id == new CatalogueItemId(99998, "S-999"))
-                .CataloguePrices.First();
+                .CataloguePrices.First();*/
 
             var addedSolution = new OrderItem
             {
-                CataloguePrice = price,
+                /*CataloguePrice = price,*/
                 Price = 1.01M,
                 DefaultDeliveryDate = order.CommencementDate,
                 Created = DateTime.UtcNow,

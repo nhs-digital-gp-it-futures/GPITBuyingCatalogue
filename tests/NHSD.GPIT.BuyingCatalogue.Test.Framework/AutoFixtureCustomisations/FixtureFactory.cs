@@ -14,7 +14,6 @@ namespace NHSD.GPIT.BuyingCatalogue.Test.Framework.AutoFixtureCustomisations
             new CapabilityCustomization(),
             new EpicCustomization(),
             new CatalogueItemEpicCustomization(),
-            new CataloguePriceCustomization(),
             new CatalogueItemCustomization(),
             new CatalogueItemCapabilityCustomization(),
             new CatalogueItemIdCustomization(),

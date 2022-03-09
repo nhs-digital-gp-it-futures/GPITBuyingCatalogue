@@ -26,14 +26,6 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
             this.dbContext = dbContext ?? throw new ArgumentNullException(nameof(dbContext));
         }
 
-        public Task<CatalogueItem> GetSolutionListPrices(CatalogueItemId solutionId)
-        {
-            return dbContext.CatalogueItems
-                .Include(i => i.CataloguePrices).ThenInclude(p => p.PricingUnit)
-                .Where(i => i.Id == solutionId)
-                .SingleOrDefaultAsync();
-        }
-
         public Task<CatalogueItem> GetSolutionThin(CatalogueItemId solutionId) =>
             dbContext.CatalogueItems.AsNoTracking()
             .Include(ci => ci.Supplier)
@@ -55,13 +47,6 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
                     .ThenInclude(cic => cic.Capability)
                 .Include(ci => ci.CatalogueItemEpics)
                     .ThenInclude(cie => cie.Epic)
-                .SingleOrDefaultAsync(ci => ci.Id == solutionId);
-
-        public async Task<CatalogueItem> GetSolutionWithListPrices(CatalogueItemId solutionId) =>
-            await dbContext.CatalogueItems.AsNoTracking()
-                .Include(ci => ci.Solution)
-                .Include(ci => ci.CataloguePrices)
-                    .ThenInclude(cp => cp.PricingUnit)
                 .SingleOrDefaultAsync(ci => ci.Id == solutionId);
 
         public async Task<CatalogueItem> GetSolutionWithServiceLevelAgreements(CatalogueItemId solutionId) =>
@@ -122,11 +107,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
                     Implementation = !string.IsNullOrWhiteSpace(ci.Solution.ImplementationDetail)
                         ? TaskProgress.Completed
                         : TaskProgress.Optional,
-                    ListPrice = ci.CataloguePrices.Any(cp => cp.PublishedStatus == PublicationStatus.Published)
-                        ? TaskProgress.Completed
-                        : ci.CataloguePrices.Any()
-                            ? TaskProgress.InProgress
-                            : TaskProgress.NotStarted,
+                    ListPrice = TaskProgress.Completed,
                     ClientApplicationType = !string.IsNullOrEmpty(ci.Solution.ClientApplication)
                         ? TaskProgress.Completed
                         : TaskProgress.NotStarted,
@@ -235,14 +216,17 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
                     ShowHosting = ci.Solution.Hosting != null && ci.Solution.Hosting.IsValid(),
                 }).SingleOrDefaultAsync();
 
+        /* TODO - Tiered Pricing - Reintroduce Pricing Data*/
+
         public async Task<List<CatalogueItem>> GetPublishedAdditionalServicesForSolution(CatalogueItemId solutionId) =>
             await dbContext.CatalogueItems
                 .Include(ci => ci.AdditionalService)
-                .Include(ci => ci.CataloguePrices).ThenInclude(cp => cp.PricingUnit)
                 .Where(ci =>
                 ci.AdditionalService.SolutionId == solutionId
                 && ci.PublishedStatus == PublicationStatus.Published)
                 .ToListAsync();
+
+        /* TODO - Tiered Pricing - Reintroduce Pricing Data*/
 
         public async Task<List<CatalogueItem>> GetPublishedAssociatedServicesForSolution(CatalogueItemId solutionId)
         {
@@ -252,7 +236,6 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
 
             return await dbContext.CatalogueItems
                     .Include(ci => ci.AssociatedService)
-                    .Include(ci => ci.CataloguePrices).ThenInclude(cp => cp.PricingUnit)
                     .Where(ci =>
                         ci.PublishedStatus == PublicationStatus.Published
                         && selectedAssociatedServices.Any(sas => sas.AssociatedServiceId == ci.Id))

@@ -15,6 +15,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.AdditionalServices
         {
         }
 
+        /* TODO - Tiered Price - Fix List Price Status*/
+
         public EditAdditionalServiceModel(CatalogueItem solution, CatalogueItem additionalService)
             : this()
         {
@@ -34,7 +36,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.AdditionalServices
                 ? TaskProgress.Completed
                 : TaskProgress.NotStarted;
 
-            ListPriceStatus = new ListPriceModels.ManageListPricesModel(additionalService).Status();
+            ListPriceStatus = TaskProgress.Completed;
         }
 
         public CatalogueItemId SolutionId { get; init; }

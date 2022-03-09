@@ -10,15 +10,11 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions
 {
     public interface ISolutionsService
     {
-        Task<CatalogueItem> GetSolutionListPrices(CatalogueItemId solutionId);
-
         Task<CatalogueItem> GetSolutionThin(CatalogueItemId solutionId);
 
         Task<CatalogueItem> GetSolutionWithBasicInformation(CatalogueItemId solutionId);
 
         Task<CatalogueItem> GetSolutionWithCapabilities(CatalogueItemId solutionId);
-
-        Task<CatalogueItem> GetSolutionWithListPrices(CatalogueItemId solutionId);
 
         Task<CatalogueItem> GetSolutionWithServiceLevelAgreements(CatalogueItemId solutionId);
 

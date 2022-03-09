@@ -6,7 +6,6 @@
 @model NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.Order.SummaryModel;
 @{
     ViewBag.Title = Model.Title;
-    var itemId = 0;
 }
 <style>
     .nhsuk-table-responsive th {
@@ -25,155 +24,11 @@
         <nhs-validation-summary />
         <nhs-page-title title="@ViewBag.Title"
                         advice="@Model.AdviceText" />
-
-        @if (Model.Order.OrderStatus == OrderStatus.Complete)
-        {
-
-            <nhs-fieldset-form-container asp-for="@Model"
-                                         label-text="Get order summary"
-                                         label-hint="You can use the button to get a copy of the order summary.">
-                <vc:nhs-secondary-button text="Download order summary PDF"
-                                         use-primary-colour="false"
-                                         url="@Url.Action(
-                nameof(OrderController.Download),
-                typeof(OrderController).ControllerName(),
-                new { Model.InternalOrgId, Model.Order.CallOffId})" />
-            </nhs-fieldset-form-container>
-        }
+      
     </div>
 </div>
 
 <div class="nhsuk-grid-row">
     <div class="nhsuk-grid-column-full">
-        <nhs-summary-list>
-            <nhs-summary-list-row label-text="Date order summary created">
-                @DateTime.UtcNow.ToLongDateString()
-            </nhs-summary-list-row>
-            @if (Model.Order.OrderStatus == OrderStatus.Complete)
-            {
-                <nhs-summary-list-row label-text="Date order summary completed">
-                    @Model.Order.Completed.Value.ToLongDateString()
-                </nhs-summary-list-row>
-            }
-            <nhs-summary-list-row label-text="Call-off Ordering Party">
-                @Model.Order.OrderingPartyContact.FirstName @Model.Order.OrderingPartyContact.LastName<br />
-                @Model.Order.OrderingParty.Name<br />
-                @Model.Order.OrderingParty.ExternalIdentifier<br />
-                <vc:nhs-address address="@Model.Order.OrderingParty.Address" />
-            </nhs-summary-list-row>
-            <nhs-summary-list-row label-text="Supplier">
-                @Model.Order.SupplierContact.FirstName @Model.Order.SupplierContact.LastName<br />
-                @Model.Order.Supplier.Name<br />
-                <vc:nhs-address address="@Model.Order.Supplier.Address" />
-            </nhs-summary-list-row>
-            <nhs-summary-list-row label-text="Commencement date of the Call-off Agreement">
-                @Model.Order.CommencementDate?.ToLongDateString()
-            </nhs-summary-list-row>
-        </nhs-summary-list>
-
-                <h2 class="nhsuk-u-margin-bottom-3">Order items (one-off cost)</h2>
-                <p class="nhsuk-u-font-size-19 nhsuk-u-font-weight-normal">The following items carry a one-off cost for the duration of this Call-off Agreement. They're the Associated Services in this order you can use as and when required.</p>
-                <nhs-table>
-                    <nhs-table-column>Recipient name (ODS code)</nhs-table-column>
-                    <nhs-table-column>Item ID</nhs-table-column>
-                    <nhs-table-column>Item name</nhs-table-column>
-                    <nhs-table-column>Price unit of order (£)</nhs-table-column>
-                    <nhs-table-column>Quantity</nhs-table-column>
-                    <nhs-table-column>Item cost (£)</nhs-table-column>
-                    @foreach (var orderItem in Model.Order.OrderItems.Where(oi => oi.CostType == CostType.OneOff))
-                    {
-                        @foreach (var recipient in orderItem.OrderItemRecipients)
-                        {
-                            <nhs-table-row-container>
-                                <nhs-table-cell>@recipient.Recipient.Name</nhs-table-cell>
-                                <nhs-table-cell>@($"{Model.Order.CallOffId}-{recipient.Recipient.OdsCode}-{itemId++}")</nhs-table-cell>
-                                <nhs-table-cell>@orderItem.CatalogueItem.Name</nhs-table-cell>
-                                <nhs-table-cell>@orderItem.Price.Value.ToString("N") @orderItem.CataloguePrice.PricingUnit.Description</nhs-table-cell>
-                                <nhs-table-cell>@recipient.Quantity</nhs-table-cell>
-                                <nhs-table-cell>@((recipient.Quantity * orderItem.Price).Value.ToString("N"))</nhs-table-cell>
-                            </nhs-table-row-container>
-                        }
-                    }
-                </nhs-table>
-                <nhs-summary-list>
-                    <nhs-summary-list-row label-text="Total one off cost (indicative)">
-                        @Model.Order.OrderItems.Where(oi => oi.CostType == CostType.OneOff).Sum(oi => oi.OrderItemRecipients.Sum(r => r.Quantity * oi.Price)).Value.ToString("N")
-                    </nhs-summary-list-row>
-                </nhs-summary-list>
-
-                <h2 class="nhsuk-u-margin-bottom-3">Order items (recurring cost)</h2>
-                <p class="nhsuk-u-font-size-19 nhsuk-u-font-weight-normal">The following items carry a recurring annual cost for the duration of this Call-off Agreement. They're the Catalogue Solutions, Additional Services and Associated Services in this order that you'll be charged for at a monthly rate.</p>
-                <nhs-table>
-                    <nhs-table-column>Recipient name (ODS code)</nhs-table-column>
-                    <nhs-table-column>Item ID/name</nhs-table-column>
-                    <nhs-table-column>Service instance ID</nhs-table-column>
-                    <nhs-table-column>Price unit of order (£)</nhs-table-column>
-                    <nhs-table-column>Quantity/period</nhs-table-column>
-                    <nhs-table-column>Planned delivery date</nhs-table-column>
-                    <nhs-table-column>Item cost per year (£)</nhs-table-column>
-                    @foreach (var orderItem in Model.Order.OrderItems.Where(oi => oi.CostType == CostType.Recurring))
-                    {
-                        @foreach (var recipient in orderItem.OrderItemRecipients)
-                        {
-                            <nhs-table-row-container>
-                                <nhs-table-cell>@recipient.Recipient.Name</nhs-table-cell>
-                                <nhs-table-cell>
-                                    @($"{Model.Order.CallOffId}-{recipient.Recipient.OdsCode}-{itemId++}") <br />
-                                    @orderItem.CatalogueItem.Name
-                                </nhs-table-cell>
-                                <nhs-table-cell>
-                                    @(Model.Order.ServiceInstanceItems.FirstOrDefault(
-                                            si => si.OdsCode == recipient.Recipient.OdsCode
-                                            && si.CatalogueItemId == orderItem.CatalogueItemId)?.ServiceInstanceId)
-                                </nhs-table-cell>
-                                <nhs-table-cell>@orderItem.Price.Value.ToString("N") @orderItem.CataloguePrice.PricingUnit.Description</nhs-table-cell>
-                                <nhs-table-cell>@($"{recipient.Quantity} {orderItem.EstimationPeriod?.Description()}")</nhs-table-cell>
-                                <nhs-table-cell>@recipient.DeliveryDate?.ToLongDateString()</nhs-table-cell>
-                                <nhs-table-cell>@((recipient.Quantity * orderItem.Price).Value.ToString("N"))</nhs-table-cell>
-                            </nhs-table-row-container>
-                        }
-                    }
-                </nhs-table>
-                <nhs-summary-list>
-                    <nhs-summary-list-row label-text="Total cost for one year (indicative)">
-                        @Model.Order.OrderItems.Where(oi => oi.CostType == CostType.Recurring).Sum(oi => oi.OrderItemRecipients.Sum(r => r.Quantity * oi.Price)).Value.ToString("N")
-                    </nhs-summary-list-row>
-                    <nhs-summary-list-row label-text="Total monthly cost(indicitive)">
-                        @((Model.Order.OrderItems.Where(oi => oi.CostType == CostType.Recurring).Sum(oi => oi.OrderItemRecipients.Sum(r => r.Quantity * oi.Price)).Value / 12).ToString("N"))
-                    </nhs-summary-list-row>
-                </nhs-summary-list>
-                <nhs-summary-list>
-                    <nhs-summary-list-row label-text="Total cost of contract (indicative)">
-                        @((Model.Order.OrderItems.Where(oi => oi.CostType == CostType.OneOff).Sum(oi => oi.OrderItemRecipients.Sum(r => r.Quantity * oi.Price)).Value
-                        + (Model.Order.OrderItems.Where(oi => oi.CostType == CostType.Recurring).Sum(oi => oi.OrderItemRecipients.Sum(r => r.Quantity * oi.Price)) * 3).Value)
-                        .ToString("N"))
-                        <p>
-                            This is the total estimated cost for the entire duration of the Call-off Agreement, which is usually 3 years.
-                            The figure is made up of the one-off costs and the estimated yearly cost multiplied by 3.
-                        </p>
-                    </nhs-summary-list-row>
-                </nhs-summary-list>
-        @if (Model.Order.OrderStatus == OrderStatus.InProgress && Model.Order.CanComplete())
-        {
-            <div class="nhsuk-grid-row">
-                <div class="nhsuk-grid-column-two-thirds">
-                    <nhs-fieldset-form-container asp-for="@Model"
-                                                 label-text="Get order summary"
-                                                 label-hint="Using this button will download a PDF version of your order summary so you can check it’s correct.">
-                        <vc:nhs-secondary-button text="Download PDF"
-                                                 use-primary-colour="false"
-                                                 url="@Url.Action(
-                                                        nameof(OrderController.Download),
-                                                        typeof(OrderController).ControllerName(),
-                                                        new { Model.InternalOrgId, Model.Order.CallOffId })" />
-                        <hr />
-                    </nhs-fieldset-form-container>
-                    <form method="post">
-                        <nhs-submit-button text="Confirm order" />
-                    </form>
-                </div>
-            </div>
-        }
-        <nhs-endnote data-test-id="last-updated-endnote">Order last updated by @Model.Order.LastUpdatedByUser.FullName on @Model.Order.LastUpdated.ToString("dd MMMM yyyy")</nhs-endnote>
     </div>
 </div>
