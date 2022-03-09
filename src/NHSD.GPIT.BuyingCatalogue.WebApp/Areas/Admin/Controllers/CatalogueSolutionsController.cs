@@ -4,7 +4,6 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
@@ -32,22 +31,19 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
         private readonly ISuppliersService suppliersService;
         private readonly ICapabilitiesService capabilitiesService;
         private readonly IPublicationStatusService publicationStatusService;
-        private readonly ILogger<CatalogueSolutionsController> logger;
 
         public CatalogueSolutionsController(
             ISolutionsService solutionsService,
             IFilterCache filterCache,
             ISuppliersService suppliersService,
             ICapabilitiesService capabilitiesService,
-            IPublicationStatusService publicationStatusService,
-            ILogger<CatalogueSolutionsController> logger)
+            IPublicationStatusService publicationStatusService)
         {
             this.solutionsService = solutionsService ?? throw new ArgumentNullException(nameof(solutionsService));
             this.filterCache = filterCache ?? throw new ArgumentNullException(nameof(filterCache));
             this.suppliersService = suppliersService ?? throw new ArgumentNullException(nameof(suppliersService));
             this.capabilitiesService = capabilitiesService ?? throw new ArgumentNullException(nameof(capabilitiesService));
             this.publicationStatusService = publicationStatusService ?? throw new ArgumentNullException(nameof(publicationStatusService));
-            this.logger = logger ?? throw new ArgumentNullException(nameof(logger));
         }
 
         [HttpGet]
@@ -206,9 +202,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
             if (solution is null)
                 return BadRequest($"No Solution found for Id: {solutionId}");
 
-            throw new Exception("Intentional exception for test purposes");
-
-            // return View(new DescriptionModel(solution));
+            return View(new DescriptionModel(solution));
         }
 
         [HttpPost("manage/{solutionId}/description")]
