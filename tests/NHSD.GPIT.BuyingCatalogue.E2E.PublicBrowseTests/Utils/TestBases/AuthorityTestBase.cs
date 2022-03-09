@@ -12,11 +12,11 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.TestBases
             Type controller,
             string methodName,
             IDictionary<string, string> parameters,
-            ITestOutputHelper output = null)
+            ITestOutputHelper testOutputHelper = null)
             : base(
                   factory,
-                  UrlGenerator.GenerateUrlFromMethod(controller, methodName, parameters),
-                  output)
+                  testOutputHelper,
+                  UrlGenerator.GenerateUrlFromMethod(controller, methodName, parameters))
         {
             AuthorityLogin();
         }
@@ -26,8 +26,12 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.TestBases
             Type controller,
             string methodName,
             IDictionary<string, string> parameters,
-            IDictionary<string, string> queryParameters)
-            : base(factory, UrlGenerator.GenerateUrlFromMethod(controller, methodName, parameters, queryParameters))
+            IDictionary<string, string> queryParameters,
+            ITestOutputHelper testOutputHelper = null)
+            : base(
+                  factory,
+                  testOutputHelper,
+                  UrlGenerator.GenerateUrlFromMethod(controller, methodName, parameters, queryParameters))
         {
             AuthorityLogin();
         }

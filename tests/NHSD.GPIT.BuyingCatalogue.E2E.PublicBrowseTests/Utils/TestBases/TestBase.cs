@@ -27,12 +27,11 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.TestBases
 
         protected TestBase(
             LocalWebApplicationFactory factory,
-            string urlArea = "",
-            ITestOutputHelper output = null)
+            ITestOutputHelper testOutputHelper,
+            string urlArea = "")
         {
-            Factory = factory;
-            LocalWebApplicationFactory.LogOutput = output;
-
+            Factory = factory;            
+            LocalWebApplicationFactory.TestOutputHelper = testOutputHelper;
             Driver = Factory.Driver;
             PublicBrowsePages = new PublicBrowsePages(Driver).PageActions;
             MarketingPages = new MarketingPageActions(Driver).PageActions;

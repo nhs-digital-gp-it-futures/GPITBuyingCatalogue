@@ -93,7 +93,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils
             Dispose(true);
         }
 
-        public static ITestOutputHelper LogOutput
+        public static ITestOutputHelper TestOutputHelper
         {
             set
             {
@@ -103,6 +103,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils
                         .MinimumLevel.Information()
                         .MinimumLevel.Override("Microsoft", LogEventLevel.Information)
                         .MinimumLevel.Override("Microsoft.AspNetCore", LogEventLevel.Warning)
+                        .MinimumLevel.Override("Microsoft.EntityFrameworkCore", LogEventLevel.Warning)
                         .Enrich.FromLogContext()
                         .WriteTo.TestOutput(value)
                         .CreateLogger();
