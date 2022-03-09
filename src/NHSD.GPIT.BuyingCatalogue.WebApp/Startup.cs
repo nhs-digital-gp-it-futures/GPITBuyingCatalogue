@@ -53,6 +53,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp
                     {
                         options.Filters.Add(new AutoValidateAntiforgeryTokenAttribute());
                         options.Filters.Add(new BadRequestActionFilter());
+                        options.Filters.Add(typeof(LogFilter));
                         options.ModelBinderProviders.Insert(0, new NewlinesNormalizingModelBinderProvider());
                     });
 
@@ -114,7 +115,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env, ILogger<Startup> logger)
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
             app.UseResponseCompression();
 
@@ -144,13 +145,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp
                     builder.Run(
                         context =>
                         {
-                            var exceptionHandlerFeature = context.Features.Get<IExceptionHandlerFeature>();
-
-                            if (exceptionHandlerFeature != null)
-                            {
-                                logger.LogError("Exception occured {Error}:", exceptionHandlerFeature.Error);
-                            }
-
                             context.Response.Redirect("/Home/Error");
                             return Task.CompletedTask;
                         });
