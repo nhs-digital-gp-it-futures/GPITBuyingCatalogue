@@ -84,22 +84,6 @@ variable "customer_network_range" {
   type = string
 }
 
-variable "smtp_server_host" {
-  type = string
-}
-
-variable "smtp_server_port" {
-  type = string
-}
-
-variable "smtp_server_username" {
-  type = string
-}
-
-variable "smtp_server_password" {
-  type = string
-}
-
 variable "vnet_subnet_id" {
   type = string
 }
