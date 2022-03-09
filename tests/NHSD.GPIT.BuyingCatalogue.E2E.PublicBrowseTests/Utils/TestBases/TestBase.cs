@@ -30,7 +30,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.TestBases
             ITestOutputHelper testOutputHelper,
             string urlArea = "")
         {
-            Factory = factory;            
+            Factory = factory;
             LocalWebApplicationFactory.TestOutputHelper = testOutputHelper;
             Driver = Factory.Driver;
             PublicBrowsePages = new PublicBrowsePages(Driver).PageActions;
