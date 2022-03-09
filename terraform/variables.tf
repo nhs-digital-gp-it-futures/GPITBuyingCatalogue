@@ -64,22 +64,6 @@ variable "sql_admin_group" {
   type = string
 }
 
-variable "smtp_server_host" {
-  type = string
-}
-
-variable "smtp_server_port" {
-  type = string
-}
-
-variable "smtp_server_username" {
-  type = string
-}
-
-variable "smtp_server_password" {
-  type = string
-}
-
 variable "cicd_range" {
   type = string
 }

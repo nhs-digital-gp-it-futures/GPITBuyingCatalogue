@@ -26,10 +26,6 @@ module "webapp" {
   app_gateway_ip = module.appgateway.appgateway_pip_ipaddress
   ssl_cert = data.azurerm_key_vault_secret.ssl_cert.value
   customer_network_range = var.nhsd_network_range
-  smtp_server_host = var.smtp_server_host
-  smtp_server_port = var.smtp_server_port
-  smtp_server_username = var.smtp_server_username
-  smtp_server_password = var.smtp_server_password
   vnet_subnet_id = azurerm_subnet.gateway.id
   app_dns_url = var.app_url
   docker_registry_server_url = data.azurerm_container_registry.acr.login_server
