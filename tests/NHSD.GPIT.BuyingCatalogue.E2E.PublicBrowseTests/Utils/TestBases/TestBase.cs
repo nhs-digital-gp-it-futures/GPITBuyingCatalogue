@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Actions.Admin;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Actions.Authorization;
@@ -212,5 +214,47 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.TestBases
         }
 
         protected bool UserAlreadyLoggedIn() => Driver.Manage().Cookies.GetCookieNamed("user-session") != null;
+
+        protected async Task RunTestAsync(Func<Task> task, [CallerMemberName] string callerMemberName = "", [CallerFilePath] string callerFilePath = "")
+        {
+            try
+            {
+                await task();
+            }
+            catch
+            {
+                TakeScreenShot(callerMemberName, callerFilePath);
+                throw;
+            }
+        }
+
+        protected void RunTest(Action action, [CallerMemberName] string callerMemberName = "", [CallerFilePath] string callerFilePath = "")
+        {
+            try
+            {
+                action();
+            }
+            catch
+            {
+                TakeScreenShot(callerMemberName, callerFilePath);
+                throw;
+            }
+        }
+
+        private void TakeScreenShot(string memberName, string fileName)
+        {
+            var outputFolder = @"..\..\..\ScreenShots";
+
+            if (!Directory.Exists(outputFolder))
+                Directory.CreateDirectory(outputFolder);
+
+            var filePath = $@"{outputFolder}\{Path.GetFileNameWithoutExtension(fileName)}-{memberName}.png";
+
+            if (File.Exists(filePath))
+                File.Delete(filePath);
+
+            var screenshot = (Driver as ITakesScreenshot).GetScreenshot();
+            screenshot.SaveAsFile(filePath);
+        }
     }
 }

@@ -35,12 +35,16 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.AddNewSolution
         [Fact]
         public async Task Description_TitleDisplayedCorrectly()
         {
-            await using var context = GetEndToEndDbContext();
-            var solutionName = (await context.CatalogueItems.SingleAsync(s => s.Id == SolutionId)).Name;
+            await RunTestAsync(async () =>
+            {
+                await using var context = GetEndToEndDbContext();
+                var solutionName = (await context.CatalogueItems.SingleAsync(s => s.Id == SolutionId)).Name;
 
-            CommonActions.PageTitle()
-                .Should()
-                .BeEquivalentTo($"Description - {solutionName}".FormatForComparison());
+                // TODO - Intentional error in test to test screenshots in pipeline
+                CommonActions.PageTitle()
+                    .Should()
+                    .BeEquivalentTo($"MYDescription - {solutionName}".FormatForComparison());
+            });
         }
 
         [Fact]
