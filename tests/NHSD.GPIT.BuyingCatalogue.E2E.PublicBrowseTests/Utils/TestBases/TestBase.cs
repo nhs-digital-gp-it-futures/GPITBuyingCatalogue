@@ -243,7 +243,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.TestBases
 
         private void TakeScreenShot(string memberName, string fileName)
         {
-            var outputFolder = @"..\..\..\ScreenShots";
+            var outputFolder = $"{AppContext.BaseDirectory.Substring(0, AppContext.BaseDirectory.IndexOf("bin"))}ScreenShots";
 
             if (!Directory.Exists(outputFolder))
                 Directory.CreateDirectory(outputFolder);
