@@ -9,10 +9,16 @@
         <div class="nhsuk-grid-column-two-thirds">
             <nhs-validation-summary />
             <nhs-page-title title="@ViewBag.Title"
-                            caption="@Model.OrganisationName"
-                            advice="Provide the following information to create a new user account." />
+                            caption="@Model!.OrganisationName"
+                            advice="Provide the following information about this user." />
+
             <form method="post">
                 <input type="hidden" asp-for="OrganisationName" />
+                
+                <nhs-input
+                    asp-for="@Model.EmailAddress" 
+                    label-text="Email address"
+                    label-hint="This will also become the user's username" />
                 <nhs-input
                     asp-for="@Model.FirstName" 
                     label-text="First name" />
@@ -21,11 +27,8 @@
                     label-text="Last name" />
                 <nhs-input
                     asp-for="@Model.TelephoneNumber" 
-                    label-text="Telephone number" />
-                <nhs-input
-                    asp-for="@Model.EmailAddress" 
-                    label-text="Email address"
-                />
+                    label-text="Telephone number (optional)" />
+
                 <div data-test-id="add-user-button">
                     <nhs-submit-button />
                 </div>

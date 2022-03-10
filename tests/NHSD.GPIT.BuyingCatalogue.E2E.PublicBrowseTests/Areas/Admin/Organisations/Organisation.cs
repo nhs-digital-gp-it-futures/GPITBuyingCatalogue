@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using FluentAssertions;
 using Microsoft.EntityFrameworkCore;
+using NHSD.GPIT.BuyingCatalogue.E2ETests.Objects.Admin;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Utils;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.RandomData;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.TestBases;
@@ -62,72 +63,22 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.Organisations
         }
 
         [Fact]
-        public void Organisation_UsersSectionDisplayed()
+        public void Organisation_AllLinksDisplayed()
         {
-            AdminPages.Organisation.AddUserButtonDisplayed().Should().BeTrue();
-            AdminPages.Organisation.UserTableDisplayed().Should().BeTrue();
-        }
+            CommonActions.ElementIsDisplayed(OrganisationObjects.UserAccountsLink).Should().BeTrue();
 
-        [Fact]
-        public void Organisation_RelatedOrganisationsSectionDisplayed()
-        {
             AdminPages.Organisation.AddRelatedOrganisationButtonDisplayed().Should().BeTrue();
             AdminPages.Organisation.RelatedOrganisationTableDisplayed().Should().BeTrue();
         }
 
         [Fact]
-        public async Task Organisation_ViewUserDetails()
+        public void Organisation_ClickUserAccountsLink_ExpectedResult()
         {
-            var user = await AddUser();
-
-            AdminPages.Organisation.ViewUserDetails(user.Id);
-
-            await using var context = GetEndToEndDbContext();
-            var organisationName = (await context.Organisations.SingleAsync(s => s.Id == OrganisationId)).Name;
-
-            AdminPages.UserDetails.GetUserName().Should().BeEquivalentTo($"{user.FirstName} {user.LastName}");
-            AdminPages.UserDetails.GetContactDetails().Should().BeEquivalentTo(user.PhoneNumber);
-            AdminPages.UserDetails.GetEmailAddress().Should().BeEquivalentTo(user.Email);
-        }
-
-        [Fact]
-        public void Organisation_ClickAddUserButton_ExpectedResult()
-        {
-            AdminPages.Organisation.ClickAddUserButton();
+            CommonActions.ClickLinkElement(OrganisationObjects.UserAccountsLink);
 
             CommonActions.PageLoadedCorrectGetIndex(
                 typeof(OrganisationsController),
-                nameof(OrganisationsController.AddUser))
-            .Should()
-            .BeTrue();
-        }
-
-        [Fact]
-        public async Task Organisation_DisableUser()
-        {
-            var user = await AddUser();
-
-            AdminPages.Organisation.ViewUserDetails(user.Id);
-
-            AdminPages.UserDetails.DisableEnableUser();
-
-            await using var context = GetEndToEndDbContext();
-            var dbUser = await context.AspNetUsers.SingleAsync(u => u.Id == user.Id);
-            dbUser.Disabled.Should().BeTrue();
-        }
-
-        [Fact]
-        public async Task Organisation_EnableUser()
-        {
-            var user = await AddUser(false);
-
-            AdminPages.Organisation.ViewUserDetails(user.Id);
-
-            AdminPages.UserDetails.DisableEnableUser();
-
-            await using var context = GetEndToEndDbContext();
-            var dbUser = await context.AspNetUsers.SingleAsync(u => u.Id == user.Id);
-            dbUser.Disabled.Should().BeFalse();
+                nameof(OrganisationsController.Users)).Should().BeTrue();
         }
 
         [Fact]

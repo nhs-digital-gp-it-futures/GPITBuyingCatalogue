@@ -1,0 +1,86 @@
+﻿@using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
+@using NHSD.GPIT.BuyingCatalogue.Framework.Extensions
+@using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Enums
+@model NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.OrganisationModels.UsersModel
+@{
+    ViewBag.Title = "User Accounts";
+}
+<partial name="Partials/_BackLink" model="Model" />
+<div class="nhsuk-grid-row">
+    <div class="nhsuk-grid-column-full">
+        <nhs-page-title title="@ViewBag.Title"
+                        caption="@Model!.OrganisationName"
+                        advice="Add, edit and view user accounts for this organisation." />
+
+        <vc:nhs-action-link text="Add a user"
+                            url="@Url.Action(
+                                     nameof(OrganisationsController.AddUser),
+                                     typeof(OrganisationsController).ControllerName(),
+                                     new { @Model.OrganisationId })" />
+
+        <h3>Existing users</h3>
+
+        @if (Model.Users.Any())
+        {
+            <div data-test-id="users-table">
+                <nhs-table>
+                    @foreach (var heading in new[] { "Name", "Telephone number", "Email address", "Account Status", "Action" })
+                    {
+                        <nhs-table-column>@heading</nhs-table-column>
+                    }
+
+                    @foreach (var item in Model.Users)
+                    {
+                        <nhs-table-row-container>
+                            <nhs-table-cell>
+                                <span data-test-id="user-name">
+                                    @item.GetDisplayName()
+                                </span>
+                            </nhs-table-cell>
+                            <nhs-table-cell>
+                                <span data-test-id="user-phone">
+                                    @item.PhoneNumber
+                                </span>
+                            </nhs-table-cell>
+                            <nhs-table-cell>
+                                <span data-test-id="user-email">
+                                    @item.Email
+                                </span>
+                            </nhs-table-cell>
+                            <nhs-table-cell>
+                                @{
+                                    var status = item.Disabled ? AccountStatus.Inactive : AccountStatus.Active;
+                                    <nhs-tag status-enum="@status"/>
+                                }
+                            </nhs-table-cell>
+                            <nhs-table-cell>
+                                <span data-test-id="user-status-link">
+                                    @{
+                                        var text = item.Disabled ? "Activate" : "Deactivate";
+                                        <a asp-action="@nameof(OrganisationsController.UserStatus)"
+                                           asp-controller="@typeof(OrganisationsController).ControllerName()"
+                                           asp-route-organisationId="@Model.OrganisationId"
+                                           asp-route-userId="@item.Id">@text</a>
+                                    }
+                                </span>
+                            </nhs-table-cell>
+                        </nhs-table-row-container>
+                    }
+                </nhs-table>
+            </div>
+        }
+        else
+        {
+            <div data-test-id="users-error-message">
+                <p>No user accounts have been created for this organisation.</p>
+            </div>
+        }
+
+        <vc:nhs-secondary-button text="Continue" 
+                                 url="@Url.Action(
+                                          nameof(OrganisationsController.Details),
+                                          typeof(OrganisationsController).ControllerName(),
+                                          new { Model.OrganisationId })"
+                                 use-primary-colour="true" />
+    </div>
+</div>

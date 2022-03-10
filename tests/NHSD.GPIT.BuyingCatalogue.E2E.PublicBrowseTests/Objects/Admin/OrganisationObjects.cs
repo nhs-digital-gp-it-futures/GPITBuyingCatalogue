@@ -10,6 +10,8 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Objects.Admin
 
         internal static By OdsCode => ByExtensions.DataTestId("org-page-external-identifier");
 
+        internal static By UserAccountsLink => By.LinkText("User accounts");
+
         internal static By AddUserButton => ByExtensions.DataTestId("add-user-button", "a");
 
         internal static By UserTable => ByExtensions.DataTestId("user-table", "table");

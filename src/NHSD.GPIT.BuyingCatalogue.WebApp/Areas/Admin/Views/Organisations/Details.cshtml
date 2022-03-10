@@ -8,7 +8,7 @@
 <div data-test-id="organisation-page">
     <partial name="Partials/_BackLink" model="Model" />
     <nhs-page-title title="@ViewBag.Title"
-                    caption="@Model.Organisation.Name"
+                    caption="@Model!.Organisation.Name"
                     advice="These are the details for the organisation and its users." />
     <nhs-summary-list>
         <nhs-summary-list-row label-text="ODS code">
@@ -26,63 +26,18 @@
                 <vc:nhs-address address="@Model.OrganisationAddress" />
             </div>
         </nhs-summary-list-row>
-        <nhs-summary-list-row label-text="Contract">
-            <p>
-                <a data-test-id="edit-org-button" 
-                   asp-area="@typeof(OrganisationsController).AreaName()"
-                   asp-controller="@typeof(OrganisationsController).ControllerName()" 
-                   asp-action="@nameof(OrganisationsController.EditOrganisation)" 
-                   asp-route-organisationId="@Model.Organisation.Id" 
-                   class="bc-u-float-right nhsuk-u-margin-left-2">Edit</a>
-                @Model.CatalogueAgreementText
-            </p>
-        </nhs-summary-list-row>
     </nhs-summary-list>
 
-    <h2 data-test-id="accounts-subheading">User accounts</h2>
-    <p>These users are the buyers for this organisation.</p>
-
-    <div data-test-id="add-user-button">
-        <vc:nhs-action-link url="/admin/organisations/@Model.Organisation.Id/adduser" text="Add a new user" />
-    </div>
-
-    <div data-test-id="user-table">
-        <nhs-table>
-            <nhs-table-column>
-                Name
-            </nhs-table-column>
-            <nhs-table-column>
-                Telephone number
-            </nhs-table-column>
-            <nhs-table-column>
-                Email address
-            </nhs-table-column>
-            <nhs-table-column>
-            </nhs-table-column>
-            @foreach (var user in Model.Users)
-            {
-                <nhs-table-row-container>
-                    <nhs-table-cell>
-                        @user.GetDisplayName()
-                    </nhs-table-cell>
-                    <nhs-table-cell>
-                        <div data-test-id="user-phone-@user.Id">@user.PhoneNumber</div>
-                    </nhs-table-cell>
-                    <nhs-table-cell>
-                        <div data-test-id="user-email-@user.Id">@user.Email</div>
-                    </nhs-table-cell>
-                    <nhs-table-cell>
-                        <a data-test-id="user-name-@user.Id" 
-                           asp-area="@typeof(OrganisationsController).AreaName()" 
-                           asp-controller="@typeof(OrganisationsController).ControllerName()"
-                           asp-action="@nameof(OrganisationsController.UserDetails)"
-                           asp-route-organisationId="@Model.Organisation.Id"
-                           asp-route-userId="@user.Id">Edit</a>
-                    </nhs-table-cell>
-                </nhs-table-row-container>
-            }
-        </nhs-table>
-    </div>
+    <h2>Further details</h2>
+    <ul>
+        <li>
+            <a href="@Url.Action(
+                         nameof(OrganisationsController.Users),
+                         typeof(OrganisationsController).ControllerName(),
+                         new { organisationId = @Model.Organisation.Id })"><strong>User accounts</strong></a>
+            <p>Add, edit and view user accounts for @Model.Organisation.Name.</p>
+        </li>
+    </ul>
 
     <h2>Related organisations</h2>
     <p>These are the organisations this organisation can create orders on behalf of.</p>
