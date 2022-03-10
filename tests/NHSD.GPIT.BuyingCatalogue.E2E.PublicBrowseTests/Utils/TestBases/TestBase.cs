@@ -15,6 +15,7 @@ using NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.Session;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using OpenQA.Selenium;
 using OpenQA.Selenium.Support.UI;
+using Xunit.Abstractions;
 
 namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.TestBases
 {
@@ -26,10 +27,11 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.TestBases
 
         protected TestBase(
             LocalWebApplicationFactory factory,
+            ITestOutputHelper testOutputHelper,
             string urlArea = "")
         {
             Factory = factory;
-
+            LocalWebApplicationFactory.TestOutputHelper = testOutputHelper;
             Driver = Factory.Driver;
             PublicBrowsePages = new PublicBrowsePages(Driver).PageActions;
             MarketingPages = new MarketingPageActions(Driver).PageActions;
