@@ -106,6 +106,14 @@ jobs:
       projects: '**/*E2ETests.csproj'
       arguments: '-v n --no-build --configuration $(buildConfiguration) -- xunit.parallelizeTestCollections=true'
 
+  - task: PowerShell@2
+    displayName: Create screen shots folder
+    condition: failed()
+    inputs:
+      targetType: 'inline'
+      script: |        
+        mkdir $(Build.ArtifactStagingDirectory)/screen-shots        
+
   - task: CopyFiles@2
     displayName: Copy screen shots
     condition: failed()
@@ -117,6 +125,7 @@ jobs:
       OverWrite: true
 
   - publish: $(build.artifactStagingDirectory)/screen-shots
+    displayName: Publish screen shots
     condition: failed()
     artifact: screen-shots 
 

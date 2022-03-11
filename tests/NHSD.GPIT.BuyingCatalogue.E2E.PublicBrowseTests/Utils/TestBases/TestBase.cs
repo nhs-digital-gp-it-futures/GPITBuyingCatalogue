@@ -27,11 +27,14 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.TestBases
 
         private readonly Uri uri;
 
+        private readonly ITestOutputHelper testOutputHelper;
+
         protected TestBase(
             LocalWebApplicationFactory factory,
             ITestOutputHelper testOutputHelper,
             string urlArea = "")
         {
+            this.testOutputHelper = testOutputHelper;
             Factory = factory;
             LocalWebApplicationFactory.TestOutputHelper = testOutputHelper;
             Driver = Factory.Driver;
@@ -245,16 +248,40 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.TestBases
         {
             var outputFolder = $"{AppContext.BaseDirectory.Substring(0, AppContext.BaseDirectory.IndexOf("bin"))}ScreenShots";
 
-            if (!Directory.Exists(outputFolder))
-                Directory.CreateDirectory(outputFolder);
+            DebugLog($"Writing screenshot to {outputFolder} folder");
 
-            var filePath = $@"{outputFolder}\{Path.GetFileNameWithoutExtension(fileName)}-{memberName}.png";
+            try
+            {
+                if (!Directory.Exists(outputFolder))
+                    Directory.CreateDirectory(outputFolder);
 
-            if (File.Exists(filePath))
-                File.Delete(filePath);
+                var filePath = $@"{outputFolder}\{Path.GetFileNameWithoutExtension(fileName)}-{memberName}.png";
 
-            var screenshot = (Driver as ITakesScreenshot).GetScreenshot();
-            screenshot.SaveAsFile(filePath);
+                DebugLog($"Writing screenshot to {filePath}");
+
+                if (File.Exists(filePath))
+                    File.Delete(filePath);
+
+                var screenshot = (Driver as ITakesScreenshot).GetScreenshot();
+                screenshot.SaveAsFile(filePath);
+
+                if (!File.Exists(filePath))
+                    DebugLog("File was not written");
+                else
+                    DebugLog("File was written");
+            }
+            catch (Exception ex)
+            {
+                DebugLog($"Error occured. {ex.Message}");
+            }
+        }
+
+        private void DebugLog(string message)
+        {
+            if (testOutputHelper != null)
+            {
+                testOutputHelper.WriteLine(message);
+            }
         }
     }
 }
