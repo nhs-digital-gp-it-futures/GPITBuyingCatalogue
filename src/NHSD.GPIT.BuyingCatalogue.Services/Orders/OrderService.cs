@@ -64,7 +64,6 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
                     && o.OrderingParty.InternalIdentifier == internalOrgId)
                 .Include(o => o.OrderItems).ThenInclude(i => i.CatalogueItem)
                 .Include(o => o.OrderItems).ThenInclude(i => i.OrderItemRecipients).ThenInclude(r => r.Recipient)
-                .Include(o => o.DefaultDeliveryDates)
                 .SingleOrDefaultAsync();
         }
 

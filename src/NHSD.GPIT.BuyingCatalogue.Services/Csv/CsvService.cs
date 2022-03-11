@@ -45,18 +45,18 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Csv
                     ProductType = oir.OrderItem.CatalogueItem.CatalogueItemType.DisplayName(),
                     QuantityOrdered = oir.Quantity,
                     /*UnitOfOrder = oir.OrderItem.CataloguePrice.PricingUnit.Description,
-                    UnitTime = !oir.OrderItem.CataloguePrice.TimeUnit.HasValue ? string.Empty : oir.OrderItem.CataloguePrice.TimeUnit.Value.Description(),*/
+                    UnitTime = !oir.OrderItem.CataloguePrice.TimeUnit.HasValue ? string.Empty : oir.OrderItem.CataloguePrice.TimeUnit.Value.Description(),
                     EstimationPeriod = !oir.OrderItem.EstimationPeriod.HasValue ? string.Empty : oir.OrderItem.EstimationPeriod.Value.Description(),
                     Price = oir.OrderItem.Price.GetValueOrDefault(),
-                    /*OrderType = (int)oir.OrderItem.CataloguePrice.ProvisioningType,*/
-                    M1Planned = oir.DeliveryDate,
+                    OrderType = (int)oir.OrderItem.CataloguePrice.ProvisioningType,
+                    M1Planned = oir.DeliveryDate*/
                     Framework =
                     oir.OrderItem.CatalogueItem.CatalogueItemType == CatalogueItemType.Solution
                     ? oir.OrderItem.CatalogueItem.Solution.FrameworkSolutions.FirstOrDefault(fs => fs.FrameworkId != "COVID").FrameworkId
                     : oir.OrderItem.CatalogueItem.CatalogueItemType == CatalogueItemType.AdditionalService
                         ? oir.OrderItem.CatalogueItem.AdditionalService.Solution.FrameworkSolutions.FirstOrDefault(fs => fs.FrameworkId != "COVID").FrameworkId
                         : oir.OrderItem.CatalogueItem.AssociatedService.CatalogueItem.Solution.FrameworkSolutions.FirstOrDefault(fs => fs.FrameworkId != "COVID").FrameworkId,
-                    FundingType = oir.OrderItem.Order.FundingSourceOnlyGms.Value ? "Central" : "Local",
+                    /*FundingType = oir.OrderItem.Order.FundingSourceOnlyGms.Value ? "Central" : "Local",*/
                 }).ToListAsync();
 
             for (int i = 0; i < items.Count; i++)
@@ -83,16 +83,16 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Csv
                     ProductName = oir.OrderItem.CatalogueItem.Name,
                     ProductType = oir.OrderItem.CatalogueItem.CatalogueItemType.DisplayName(),
                     QuantityOrdered = oir.Quantity,
-                    /*UnitOfOrder = oir.OrderItem.CataloguePrice.PricingUnit.Description,*/
+                    /*UnitOfOrder = oir.OrderItem.CataloguePrice.PricingUnit.Description,
                     Price = oir.OrderItem.Price.GetValueOrDefault(),
-                    M1Planned = oir.DeliveryDate,
+                    M1Planned = oir.DeliveryDate,*/
                     Framework =
                     oir.OrderItem.CatalogueItem.CatalogueItemType == CatalogueItemType.Solution
                     ? oir.OrderItem.CatalogueItem.Solution.FrameworkSolutions.FirstOrDefault(fs => fs.FrameworkId != "COVID").FrameworkId
                     : oir.OrderItem.CatalogueItem.CatalogueItemType == CatalogueItemType.AdditionalService
                         ? oir.OrderItem.CatalogueItem.AdditionalService.Solution.FrameworkSolutions.FirstOrDefault(fs => fs.FrameworkId != "COVID").FrameworkId
                         : oir.OrderItem.CatalogueItem.AssociatedService.CatalogueItem.Solution.FrameworkSolutions.FirstOrDefault(fs => fs.FrameworkId != "COVID").FrameworkId,
-                    FundingType = oir.OrderItem.Order.FundingSourceOnlyGms.Value ? "Central" : "Local",
+                    /*FundingType = oir.OrderItem.Order.FundingSourceOnlyGms.Value ? "Central" : "Local",*/
                 }).ToListAsync();
 
             if (items.Count == 0)

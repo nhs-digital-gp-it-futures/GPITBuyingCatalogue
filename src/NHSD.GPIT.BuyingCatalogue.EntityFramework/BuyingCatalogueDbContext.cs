@@ -55,7 +55,7 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework
 
         public DbSet<CataloguePrice> CataloguePrices { get; set; }
 
-        public DbSet<DefaultDeliveryDate> DefaultDeliveryDates { get; set; }
+        public DbSet<CataloguePriceTier> CataloguePriceTiers { get; set; }
 
         public DbSet<FrameworkCapability> FrameworkCapabilities { get; set; }
 

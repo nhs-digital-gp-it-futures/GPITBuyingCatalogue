@@ -1,8 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
+using Microsoft.EntityFrameworkCore;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework;
-using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Users.Models;
 
@@ -237,19 +236,19 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
                 CommencementDate = DateTime.UtcNow.AddDays(1),
             };
 
-            /*var price = context.CatalogueItems
-                .Include(c => c.CataloguePrices).ThenInclude(s => s.PricingUnit)
-                .Single(c => c.Id == new CatalogueItemId(99999, "001"))
-                .CataloguePrices.First();*/
+            var price = context.CatalogueItems
+                    .Where(c => c.Id == new CatalogueItemId(99998, "002"))
+                    .Select(ci => ci.CataloguePrices.First())
+                    .Include(cp => cp.CataloguePriceTiers)
+                    .Include(cp => cp.PricingUnit)
+                    .Select(cp => new OrderItemPrice(cp))
+                    .Single();
 
             var addedSolution = new OrderItem
             {
-                /*CataloguePrice = price,*/
-                Price = 1.01M,
-                DefaultDeliveryDate = order.CommencementDate,
+                OrderItemPrice = price,
                 Created = DateTime.UtcNow,
                 OrderId = orderId,
-                EstimationPeriod = TimeUnit.PerMonth,
                 CatalogueItem = context.CatalogueItems.Single(c => c.Id == new CatalogueItemId(99999, "001")),
             };
 
@@ -259,21 +258,16 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
                 Name = "Test Recipient",
             };
 
-            var orderItemRecipients = new List<OrderItemRecipient>
-            {
-                new()
+            addedSolution.OrderItemRecipients
+                .Add(new()
                 {
                     Recipient = recipient,
-                    DeliveryDate = order.CommencementDate,
                     Quantity = 1000,
-                },
-            };
-
-            addedSolution.SetRecipients(orderItemRecipients);
+                });
 
             var user = GetBuyerUser(context, order.OrderingPartyId);
 
-            order.AddOrUpdateOrderItem(addedSolution);
+            order.OrderItems.Add(addedSolution);
 
             context.Add(order);
 
@@ -313,40 +307,34 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
 
             var user = GetBuyerUser(context, order.OrderingPartyId);
 
-            /*var price = context.CatalogueItems
-                .Include(c => c.CataloguePrices).ThenInclude(s => s.PricingUnit)
-                .Single(c => c.Id == new CatalogueItemId(99998, "002"))
-                .CataloguePrices.First();*/
+            var price = context.CatalogueItems
+                .Where(c => c.Id == new CatalogueItemId(99998, "002"))
+                .Select(ci => ci.CataloguePrices.First())
+                .Include(cp => cp.CataloguePriceTiers)
+                .Include(cp => cp.PricingUnit)
+                .Select(cp => new OrderItemPrice(cp))
+                .Single();
 
             var addedSolution = new OrderItem
             {
-                /*CataloguePrice = price,*/
-                Price = 1.01M,
-                DefaultDeliveryDate = order.CommencementDate,
+                OrderItemPrice = price,
                 Created = DateTime.UtcNow,
                 OrderId = orderId,
-                EstimationPeriod = TimeUnit.PerMonth,
                 CatalogueItem = context.CatalogueItems.Single(c => c.Id == new CatalogueItemId(99998, "002")),
             };
 
             var recipients = context.ServiceRecipients.ToList();
 
-            var orderItemRecipients = new List<OrderItemRecipient>();
-
-            foreach (var recipient in recipients)
+            recipients.ForEach(r =>
             {
-                orderItemRecipients
-                    .Add(new()
-                    {
-                        Recipient = recipient,
-                        DeliveryDate = order.CommencementDate,
-                        Quantity = 1000,
-                    });
-            }
+                addedSolution.OrderItemRecipients.Add(new()
+                {
+                    Recipient = r,
+                    Quantity = 1000,
+                });
+            });
 
-            addedSolution.SetRecipients(orderItemRecipients);
-
-            order.AddOrUpdateOrderItem(addedSolution);
+            order.OrderItems.Add(addedSolution);
 
             context.Add(order);
 
@@ -386,80 +374,72 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
 
             var user = GetBuyerUser(context, order.OrderingPartyId);
 
-            /*var priceSinglePriceSolution = context.CatalogueItems
-                .Include(c => c.CataloguePrices).ThenInclude(s => s.PricingUnit)
-                .Single(c => c.Id == new CatalogueItemId(99998, "002"))
-                .CataloguePrices.First();
+            var priceSinglePriceSolution = context.CatalogueItems
+                .Where(c => c.Id == new CatalogueItemId(99998, "002"))
+                .Select(ci => ci.CataloguePrices.First())
+                .Include(cp => cp.CataloguePriceTiers)
+                .Include(cp => cp.PricingUnit)
+                .Select(cp => new OrderItemPrice(cp))
+                .Single();
 
             var priceMultiplePriceSolution = context.CatalogueItems
-                .Include(c => c.CataloguePrices).ThenInclude(s => s.PricingUnit)
-                .Single(c => c.Id == new CatalogueItemId(99998, "001"))
-                .CataloguePrices.First();
+                .Where(c => c.Id == new CatalogueItemId(99998, "001"))
+                .Select(ci => ci.CataloguePrices.First())
+                .Include(cp => cp.CataloguePriceTiers)
+                .Include(cp => cp.PricingUnit)
+                .Select(cp => new OrderItemPrice(cp))
+                .Single();
 
             var additionalPrice = context.CatalogueItems
-                .Include(c => c.CataloguePrices).ThenInclude(s => s.PricingUnit)
-                .Single(c => c.Id == new CatalogueItemId(99998, "002A999"))
-                .CataloguePrices.First();*/
+                .Where(c => c.Id == new CatalogueItemId(99998, "002A999"))
+                .Select(ci => ci.CataloguePrices.First())
+                .Include(cp => cp.CataloguePriceTiers)
+                .Include(cp => cp.PricingUnit)
+                .Select(cp => new OrderItemPrice(cp))
+                .Single();
 
             var addedSinglePriceCatalogueSolution = new OrderItem
             {
-                /*CataloguePrice = priceSinglePriceSolution,*/
-                Price = 1.01M,
-                DefaultDeliveryDate = order.CommencementDate,
+                OrderItemPrice = priceSinglePriceSolution,
                 Created = DateTime.UtcNow,
                 OrderId = orderId,
-                EstimationPeriod = TimeUnit.PerMonth,
                 CatalogueItem = context.CatalogueItems.Single(c => c.Id == new CatalogueItemId(99998, "002")),
             };
 
             var addedMultiplePriceCatalogueSolution = new OrderItem
             {
-                /*CataloguePrice = priceMultiplePriceSolution,*/
-                Price = 1.01M,
-                DefaultDeliveryDate = order.CommencementDate,
+                OrderItemPrice = priceMultiplePriceSolution,
                 Created = DateTime.UtcNow,
                 OrderId = orderId,
-                EstimationPeriod = TimeUnit.PerMonth,
                 CatalogueItem = context.CatalogueItems.Single(c => c.Id == new CatalogueItemId(99998, "001")),
             };
 
             var addedAdditionalSolution = new OrderItem
             {
-                /*CataloguePrice = additionalPrice,*/
-                Price = 1.01M,
-                DefaultDeliveryDate = order.CommencementDate,
+                OrderItemPrice = additionalPrice,
                 Created = DateTime.UtcNow,
                 OrderId = orderId,
-                EstimationPeriod = TimeUnit.PerMonth,
                 CatalogueItem = context.CatalogueItems.Single(c => c.Id == new CatalogueItemId(99998, "002A999")),
             };
 
             var recipients = context.ServiceRecipients.ToList();
 
-            var orderItemRecipients = new List<OrderItemRecipient>();
-
-            foreach (var recipient in recipients)
+            recipients.ForEach(r =>
             {
-                orderItemRecipients
-                    .Add(new()
-                    {
-                        Recipient = recipient,
-                        DeliveryDate = order.CommencementDate,
-                        Quantity = 1000,
-                    });
-            }
+                var recipient = new OrderItemRecipient
+                {
+                    Recipient = r,
+                    Quantity = 1000,
+                };
 
-            addedSinglePriceCatalogueSolution.SetRecipients(orderItemRecipients);
+                addedSinglePriceCatalogueSolution.OrderItemRecipients.Add(recipient);
+                addedMultiplePriceCatalogueSolution.OrderItemRecipients.Add(recipient);
+                addedAdditionalSolution.OrderItemRecipients.Add(recipient);
+            });
 
-            addedMultiplePriceCatalogueSolution.SetRecipients(orderItemRecipients);
-
-            addedAdditionalSolution.SetRecipients(orderItemRecipients);
-
-            order.AddOrUpdateOrderItem(addedSinglePriceCatalogueSolution);
-
-            order.AddOrUpdateOrderItem(addedMultiplePriceCatalogueSolution);
-
-            order.AddOrUpdateOrderItem(addedAdditionalSolution);
+            order.OrderItems.Add(addedSinglePriceCatalogueSolution);
+            order.OrderItems.Add(addedMultiplePriceCatalogueSolution);
+            order.OrderItems.Add(addedAdditionalSolution);
 
             context.Add(order);
 
@@ -499,23 +479,23 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
 
             var user = GetBuyerUser(context, order.OrderingPartyId);
 
-            /*var price = context.CatalogueItems
-                .Include(c => c.CataloguePrices).ThenInclude(s => s.PricingUnit)
-                .Single(c => c.Id == new CatalogueItemId(99998, "S-999"))
-                .CataloguePrices.First();*/
+            var price = context.CatalogueItems
+                .Where(c => c.Id == new CatalogueItemId(99998, "S-999"))
+                .Select(ci => ci.CataloguePrices.First())
+                .Include(cp => cp.CataloguePriceTiers)
+                .Include(cp => cp.PricingUnit)
+                .Select(cp => new OrderItemPrice(cp))
+                .Single();
 
             var addedSolution = new OrderItem
             {
-                /*CataloguePrice = price,*/
-                Price = 1.01M,
-                DefaultDeliveryDate = order.CommencementDate,
+                OrderItemPrice = price,
                 Created = DateTime.UtcNow,
                 OrderId = orderId,
-                EstimationPeriod = TimeUnit.PerMonth,
                 CatalogueItem = context.CatalogueItems.Single(c => c.Id == new CatalogueItemId(99998, "S-999")),
             };
 
-            order.AddOrUpdateOrderItem(addedSolution);
+            order.OrderItems.Add(addedSolution);
 
             context.Add(order);
 
@@ -555,25 +535,45 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
 
             var user = GetBuyerUser(context, order.OrderingPartyId);
 
-            /*var price = context.CatalogueItems
-                .Include(c => c.CataloguePrices).ThenInclude(s => s.PricingUnit)
-                .Single(c => c.Id == new CatalogueItemId(99998, "S-999"))
-                .CataloguePrices.First();*/
+            var price = context.CatalogueItems
+                .Where(c => c.Id == new CatalogueItemId(99998, "S-999"))
+                .Select(ci => ci.CataloguePrices.First())
+                .Include(cp => cp.CataloguePriceTiers)
+                .Include(cp => cp.PricingUnit)
+                .Select(cp => new OrderItemPrice(cp))
+                .Single();
 
             var addedSolution = new OrderItem
             {
-                /*CataloguePrice = price,*/
-                Price = 1.01M,
-                DefaultDeliveryDate = order.CommencementDate,
+                OrderItemPrice = price,
                 Created = DateTime.UtcNow,
                 OrderId = orderId,
-                EstimationPeriod = TimeUnit.PerMonth,
                 CatalogueItem = context.CatalogueItems.Single(c => c.Id == new CatalogueItemId(99998, "S-999")),
             };
 
-            order.FundingSourceOnlyGms = true;
+            var recipients = context.ServiceRecipients.ToList();
 
-            order.AddOrUpdateOrderItem(addedSolution);
+            recipients.ForEach(r =>
+            {
+                var recipient = new OrderItemRecipient
+                {
+                    Recipient = r,
+                    Quantity = 1000,
+                };
+
+                addedSolution.OrderItemRecipients.Add(recipient);
+            });
+
+            addedSolution.OrderItemFunding = new OrderItemFunding
+            {
+                OrderId = addedSolution.OrderId,
+                CatalogueItemId = addedSolution.CatalogueItemId,
+                TotalPrice = addedSolution.CalculateTotalCost(),
+                CentralAllocation = addedSolution.CalculateTotalCost(),
+                LocalAllocation = 0,
+            };
+
+            order.OrderItems.Add(addedSolution);
 
             context.Add(order);
 
@@ -612,27 +612,47 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
 
             var user = GetBuyerUser(context, order.OrderingPartyId);
 
-            /*var price = context.CatalogueItems
-                .Include(c => c.CataloguePrices).ThenInclude(s => s.PricingUnit)
-                .Single(c => c.Id == new CatalogueItemId(99998, "001"))
-                .CataloguePrices.First();*/
+            var price = context.CatalogueItems
+                .Where(c => c.Id == new CatalogueItemId(99998, "001"))
+                .Select(ci => ci.CataloguePrices.First())
+                .Include(cp => cp.CataloguePriceTiers)
+                .Include(cp => cp.PricingUnit)
+                .Select(cp => new OrderItemPrice(cp))
+                .Single();
 
             var addedSolution = new OrderItem
             {
-                /*CataloguePrice = price,*/
-                Price = 1.01M,
-                DefaultDeliveryDate = order.CommencementDate,
+                OrderItemPrice = price,
                 Created = DateTime.UtcNow,
                 OrderId = orderId,
-                EstimationPeriod = TimeUnit.PerMonth,
                 CatalogueItem = context.CatalogueItems.Single(c => c.Id == new CatalogueItemId(99998, "001")),
             };
 
-            order.FundingSourceOnlyGms = true;
+            var recipients = context.ServiceRecipients.ToList();
+
+            recipients.ForEach(r =>
+            {
+                var recipient = new OrderItemRecipient
+                {
+                    Recipient = r,
+                    Quantity = 1000,
+                };
+
+                addedSolution.OrderItemRecipients.Add(recipient);
+            });
+
+            addedSolution.OrderItemFunding = new OrderItemFunding
+            {
+                OrderId = addedSolution.OrderId,
+                CatalogueItemId = addedSolution.CatalogueItemId,
+                TotalPrice = addedSolution.CalculateTotalCost(),
+                CentralAllocation = addedSolution.CalculateTotalCost(),
+                LocalAllocation = 0,
+            };
 
             order.Complete();
 
-            order.AddOrUpdateOrderItem(addedSolution);
+            order.OrderItems.Add(addedSolution);
 
             context.Add(order);
 

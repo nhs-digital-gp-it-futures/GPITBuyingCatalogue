@@ -1,0 +1,53 @@
+﻿using System;
+using System.Linq;
+using AutoFixture;
+using AutoFixture.Dsl;
+using AutoFixture.Kernel;
+using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
+using NHSD.GPIT.BuyingCatalogue.Test.Framework.AutoFixtureCustomisations.AutoFixtureExtensions;
+
+namespace NHSD.GPIT.BuyingCatalogue.Test.Framework.AutoFixtureCustomisations
+{
+    internal sealed class OrderItemCustomization : ICustomization
+    {
+        public void Customize(IFixture fixture)
+        {
+            static ISpecimenBuilder ComposerTransformation(ICustomizationComposer<OrderItem> composer) => composer
+                .FromFactory(new OrderItemSpeciminBuilder())
+                .Without(oi => oi.OrderItemFunding);
+
+            fixture.Customize<OrderItem>(ComposerTransformation);
+        }
+
+        private sealed class OrderItemSpeciminBuilder : ISpecimenBuilder
+        {
+            public object Create(object request, ISpecimenContext context)
+            {
+                if (!(request as Type == typeof(OrderItemFunding)))
+                    return new NoSpecimen();
+
+                var item = new OrderItem();
+
+                AddOrderItemFunding(item, context);
+
+                return item;
+            }
+
+            private static void AddOrderItemFunding(OrderItem item, ISpecimenContext context)
+            {
+                var funding = context.Create<OrderItemFunding>();
+
+                funding.CatalogueItemId = item.CatalogueItemId;
+                funding.OrderId = item.OrderId;
+                funding.OrderItem = item;
+
+                var totalQuantity = item.OrderItemRecipients.Sum(oir => oir.Quantity);
+
+                funding.TotalPrice = item.CalculateTotalCost();
+
+                funding.CentralAllocation = context.CreateDecimalWithRange(0, funding.TotalPrice);
+                funding.LocalAllocation = funding.TotalPrice - funding.CentralAllocation;
+            }
+        }
+    }
+}

@@ -19,13 +19,8 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Configuration
                 .HasConversion(id => id.ToString(), id => CatalogueItemId.ParseExact(id));
 
             builder.Property(oi => oi.Created).HasDefaultValue(DateTime.UtcNow);
-            builder.Property(oi => oi.DefaultDeliveryDate).HasColumnType("date");
-            builder.Property(oi => oi.EstimationPeriod)
-                .HasConversion<int>()
-                .HasColumnName("EstimationPeriodId");
 
             builder.Property(oi => oi.LastUpdated).HasDefaultValue(DateTime.UtcNow);
-            builder.Property(oi => oi.Price).HasColumnType("decimal(18, 4)");
 
             builder.HasOne(oi => oi.CatalogueItem)
                 .WithMany()
@@ -37,11 +32,6 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Configuration
                 .WithMany(o => o.OrderItems)
                 .HasForeignKey(oi => oi.OrderId)
                 .HasConstraintName("FK_OrderItems_Order");
-
-            builder.HasOne(oi => oi.CataloguePrice)
-                .WithMany()
-                .HasForeignKey(oi => oi.PriceId)
-                .HasConstraintName("FK_OrderItems_PriceId");
 
             builder.HasOne(oi => oi.LastUpdatedByUser)
                 .WithMany()

@@ -7,8 +7,6 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models
 {
     public sealed partial class Order
     {
-        private readonly List<DefaultDeliveryDate> defaultDeliveryDates = new();
-        private readonly List<OrderItem> orderItems = new();
         private readonly List<ServiceInstanceItem> serviceInstanceItems = new();
 
         private DateTime? completed;
@@ -21,47 +19,6 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models
             completed = DateTime.UtcNow;
         }
 
-        public DeliveryDateResult SetDefaultDeliveryDate(CatalogueItemId catalogueItemId, DateTime date)
-        {
-            var result = DeliveryDateResult.Updated;
-
-            var existingDate = DefaultDeliveryDates.SingleOrDefault(d => d.CatalogueItemId == catalogueItemId);
-            if (existingDate is null)
-            {
-                existingDate = new DefaultDeliveryDate
-                {
-                    CatalogueItemId = catalogueItemId,
-                    OrderId = Id,
-                };
-
-                DefaultDeliveryDates.Add(existingDate);
-                result = DeliveryDateResult.Added;
-            }
-
-            existingDate.DeliveryDate = date;
-            return result;
-        }
-
-        public OrderItem AddOrUpdateOrderItem(OrderItem orderItem)
-        {
-            if (orderItem is null)
-                throw new ArgumentNullException(nameof(orderItem));
-
-            var existingItem = orderItems.SingleOrDefault(o => o.Equals(orderItem));
-            if (existingItem is null)
-            {
-                orderItems.Add(orderItem);
-
-                return orderItem;
-            }
-
-            existingItem.EstimationPeriod = orderItem.EstimationPeriod;
-            existingItem.PriceId = orderItem.PriceId;
-            existingItem.Price = orderItem.Price;
-
-            return existingItem;
-        }
-
         public bool CanComplete()
         {
             return
@@ -70,19 +27,9 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models
                 && Supplier is not null
                 && CommencementDate is not null
                 && (HasSolution() || HasAssociatedService())
-                && FundingSourceOnlyGms.HasValue
+                && OrderItems.Count > 0
+                && OrderItems.All(oi => oi.OrderItemFunding is not null)
                 && OrderStatus != OrderStatus.Complete;
-        }
-
-        public void DeleteOrderItemAndUpdateProgress(CatalogueItemId catalogueItemId)
-        {
-            orderItems.RemoveAll(o => o.CatalogueItem.Id == catalogueItemId
-                || o.CatalogueItem.AdditionalService?.SolutionId == catalogueItemId);
-
-            if (orderItems.Count == 0)
-            {
-                FundingSourceOnlyGms = null;
-            }
         }
 
         public bool HasAssociatedService()

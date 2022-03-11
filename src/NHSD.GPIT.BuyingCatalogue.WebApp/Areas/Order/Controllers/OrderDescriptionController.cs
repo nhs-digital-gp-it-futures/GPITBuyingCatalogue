@@ -19,7 +19,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
     public sealed class OrderDescriptionController : Controller
     {
         private readonly IOrderService orderService;
-        private readonly IFundingSourceService fundingSourceService;
         private readonly IOrderDescriptionService orderDescriptionService;
         private readonly IOrganisationsService organisationsService;
         private readonly IUsersService usersService;
@@ -28,14 +27,12 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
             IOrderService orderService,
             IOrderDescriptionService orderDescriptionService,
             IOrganisationsService organisationsService,
-            IUsersService usersService,
-            IFundingSourceService fundingSourceService)
+            IUsersService usersService)
         {
             this.orderService = orderService ?? throw new ArgumentNullException(nameof(orderService));
             this.orderDescriptionService = orderDescriptionService ?? throw new ArgumentNullException(nameof(orderDescriptionService));
             this.organisationsService = organisationsService ?? throw new ArgumentNullException(nameof(organisationsService));
             this.usersService = usersService ?? throw new ArgumentNullException(nameof(usersService));
-            this.fundingSourceService = fundingSourceService ?? throw new ArgumentNullException(nameof(fundingSourceService));
         }
 
         [HttpGet]

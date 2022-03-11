@@ -146,46 +146,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers
 
         [Theory]
         [CommonAutoData]
-        public static async Task Post_Summary_ReadyToComplete_ReturnsExpectedResult(
-            string internalOrgId,
-            EntityFramework.Ordering.Models.Order order,
-            OrderItem orderItem,
-            CatalogueItem catalogueItem,
-            [Frozen] Mock<IOrderService> orderServiceMock,
-            OrderController systemUnderTest)
-        {
-            catalogueItem.CatalogueItemType = CatalogueItemType.Solution;
-            orderItem.CatalogueItem = catalogueItem;
-            order.AddOrUpdateOrderItem(orderItem);
-            order.OrderStatus = OrderStatus.InProgress;
-
-            orderServiceMock
-                .Setup(s => s.GetOrderForSummary(order.CallOffId, internalOrgId))
-                .ReturnsAsync(order);
-
-            orderServiceMock
-                .Setup(x => x.CompleteOrder(order.CallOffId, internalOrgId, UserId, It.IsAny<Uri>()))
-                .Returns(Task.CompletedTask);
-
-            SetControllerHttpContext(systemUnderTest);
-
-            var result = await systemUnderTest.Summary(internalOrgId, order.CallOffId, new SummaryModel());
-
-            orderServiceMock.VerifyAll();
-
-            var actualResult = result.Should().BeOfType<RedirectToActionResult>().Subject;
-
-            actualResult.ActionName.Should().Be(nameof(OrderController.Completed));
-            actualResult.ControllerName.Should().Be(typeof(OrderController).ControllerName());
-            actualResult.RouteValues.Should().BeEquivalentTo(new RouteValueDictionary
-            {
-                { "internalOrgId", internalOrgId },
-                { "callOffId", order.CallOffId },
-            });
-        }
-
-        [Theory]
-        [CommonAutoData]
         public static async Task Get_ReadyToStart_ReturnsView(
             Organisation organisation,
             [Frozen] Mock<IOrganisationsService> service,

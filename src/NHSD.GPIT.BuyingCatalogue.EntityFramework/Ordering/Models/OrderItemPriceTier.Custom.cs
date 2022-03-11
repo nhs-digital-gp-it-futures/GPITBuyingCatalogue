@@ -1,0 +1,17 @@
+﻿using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
+
+namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models
+{
+    public sealed partial class OrderItemPriceTier
+    {
+        public OrderItemPriceTier(OrderItemPrice price, CataloguePriceTier tier)
+        {
+            OrderId = price.OrderId;
+            CatalogueItemId = tier.CataloguePrice.CatalogueItemId;
+            Price = tier.Price;
+            LowerRange = tier.LowerRange;
+            UpperRange = tier.UpperRange;
+            OrderItemPrice = price;
+        }
+    }
+}

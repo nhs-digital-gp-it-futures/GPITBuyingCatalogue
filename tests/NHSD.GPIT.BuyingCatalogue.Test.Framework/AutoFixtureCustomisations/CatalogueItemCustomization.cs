@@ -10,10 +10,9 @@ namespace NHSD.GPIT.BuyingCatalogue.Test.Framework.AutoFixtureCustomisations
 {
     public sealed class CatalogueItemCustomization : ICustomization
     {
-        /* TODO - Tiered Pricing - Reintroduce Pricing Data*/
         public void Customize(IFixture fixture)
         {
-            ISpecimenBuilder ComposerTransformation(ICustomizationComposer<CatalogueItem> composer) => composer
+            static ISpecimenBuilder ComposerTransformation(ICustomizationComposer<CatalogueItem> composer) => composer
                 .FromFactory(new CatalogueItemSpecimenBuilder())
                 .Without(i => i.AdditionalService)
                 .Without(i => i.AssociatedService)
@@ -21,7 +20,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Test.Framework.AutoFixtureCustomisations
                 .Without(i => i.CatalogueItemContacts)
                 .Without(i => i.CatalogueItemEpics)
                 .Without(i => i.CatalogueItemType)
-                /*.Without(i => i.CataloguePrices)*/
+                .Without(i => i.CataloguePrices)
                 .Without(i => i.Solution)
                 .Without(i => i.Supplier)
                 .Without(i => i.SupplierId)
@@ -46,7 +45,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Test.Framework.AutoFixtureCustomisations
                 };
 
                 AddCapabilities(item, context);
-                /*AddPrices(item, context);*/
+                AddPrices(item, context);
                 InitializeSupplier(item, context);
                 AddCatalogueItemContacts(item, context);
 
@@ -64,7 +63,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Test.Framework.AutoFixtureCustomisations
                 });
             }
 
-            /*private static void AddPrices(CatalogueItem item, ISpecimenContext context)
+            private static void AddPrices(CatalogueItem item, ISpecimenContext context)
             {
                 var prices = context.CreateMany<CataloguePrice>().ToList();
                 prices.ForEach(p =>
@@ -73,7 +72,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Test.Framework.AutoFixtureCustomisations
                     p.CatalogueItemId = item.Id;
                     item.CataloguePrices.Add(p);
                 });
-            }*/
+            }
 
             private static void InitializeSupplier(CatalogueItem item, ISpecimenContext context)
             {

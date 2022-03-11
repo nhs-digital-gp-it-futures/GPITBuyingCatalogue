@@ -10,6 +10,7 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models
     {
         public CataloguePrice()
         {
+            CataloguePriceTiers = new HashSet<CataloguePriceTier>();
         }
 
         public int CataloguePriceId { get; set; }
@@ -26,10 +27,6 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models
 
         public AspNetUser LastUpdatedByUser { get; set; }
 
-        public decimal? Price { get; set; }
-
-        public bool IsLocked { get; set; }
-
         public PublicationStatus PublishedStatus { get; set; }
 
         public CatalogueItem CatalogueItem { get; set; }
@@ -40,12 +37,11 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models
 
         public ProvisioningType ProvisioningType { get; set; }
 
+        public CataloguePriceCalculationType CataloguePriceCalculationType { get; set; }
+
         public TimeUnit? TimeUnit { get; set; }
 
-        public override string ToString()
-        {
-            return $"£{Price.Value:N4} {PricingUnit?.Description}".Trim();
-        }
+        public ICollection<CataloguePriceTier> CataloguePriceTiers { get; set; }
 
         public string ToPriceUnitString()
         {

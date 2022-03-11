@@ -15,6 +15,7 @@
 :r ./InsertFrameworks.sql
 :r ./InsertCapabilities.sql
 :r ./InsertCataloguePriceTypes.sql
+:r ./InsertCataloguePriceCalculationTypes.sql
 :r ./InsertEpics.sql
 :r ./InsertPricingUnits.sql
 :r ./InsertProvisioningTypes.sql
