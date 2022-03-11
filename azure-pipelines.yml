@@ -106,6 +106,20 @@ jobs:
       projects: '**/*E2ETests.csproj'
       arguments: '-v n --no-build --configuration $(buildConfiguration) -- xunit.parallelizeTestCollections=true'
 
+  steps:
+  - task: CopyFiles@2
+    displayName: Copy screen shots
+    condition: failed()
+    inputs:
+      SourceFolder: 'tests/NHSD.GPIT.BuyingCatalogue.E2E.PublicBrowseTests/ScreenShots'
+      Contents: '**'
+      TargetFolder: '$(build.artifactStagingDirectory)/screen-shots'
+      CleanTargetFolder: false
+      OverWrite: true
+
+  - publish: $(build.artifactStagingDirectory)/screen-shots
+    artifact: screen-shots 
+
   - task: DockerInstaller@0
     inputs:
       dockerVersion: $(dockerVersion)
