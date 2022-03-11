@@ -106,7 +106,7 @@ jobs:
       projects: '**/*E2ETests.csproj'
       arguments: '-v n --no-build --configuration $(buildConfiguration) -- xunit.parallelizeTestCollections=true'
 
- - task: PowerShell@2
+  - task: PowerShell@2
     displayName: Create screen shots folder
     condition: failed()
     inputs:
