@@ -106,7 +106,6 @@ jobs:
       projects: '**/*E2ETests.csproj'
       arguments: '-v n --no-build --configuration $(buildConfiguration) -- xunit.parallelizeTestCollections=true'
 
-  steps:
   - task: CopyFiles@2
     displayName: Copy screen shots
     condition: failed()
