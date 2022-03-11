@@ -27,6 +27,8 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.TestBases
 
         private readonly Uri uri;
 
+        private readonly ITestOutputHelper testOutputHelper;
+
         protected TestBase(
             LocalWebApplicationFactory factory,
             ITestOutputHelper testOutputHelper,
@@ -34,6 +36,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.TestBases
         {
             Factory = factory;
             LocalWebApplicationFactory.TestOutputHelper = testOutputHelper;
+            this.testOutputHelper = testOutputHelper;
             Driver = Factory.Driver;
             PublicBrowsePages = new PublicBrowsePages(Driver).PageActions;
             MarketingPages = new MarketingPageActions(Driver).PageActions;
@@ -245,16 +248,33 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.TestBases
         {
             var outputFolder = $"{AppContext.BaseDirectory.Substring(0, AppContext.BaseDirectory.IndexOf("bin"))}ScreenShots";
 
+            LogMessage($"Writing screenshot to {outputFolder} folder");
+
             if (!Directory.Exists(outputFolder))
                 Directory.CreateDirectory(outputFolder);
 
-            var filePath = $@"{outputFolder}\{Path.GetFileNameWithoutExtension(fileName)}-{memberName}.png";
+            var filePath = $@"{outputFolder}/{Path.GetFileNameWithoutExtension(fileName)}-{memberName}.png";
+
+            LogMessage($"Writing screenshot to {filePath}");
 
             if (File.Exists(filePath))
                 File.Delete(filePath);
 
             var screenshot = (Driver as ITakesScreenshot).GetScreenshot();
             screenshot.SaveAsFile(filePath);
+
+            if (!File.Exists(filePath))
+                LogMessage("Screenshot file was not written");
+            else
+                LogMessage("Screenshot file was written");
+        }
+
+        private void LogMessage(string message)
+        {
+            if (testOutputHelper != null)
+            {
+                testOutputHelper.WriteLine(message);
+            }
         }
     }
 }
