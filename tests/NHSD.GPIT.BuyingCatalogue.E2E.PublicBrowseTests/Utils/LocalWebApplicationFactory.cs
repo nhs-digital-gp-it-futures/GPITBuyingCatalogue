@@ -28,6 +28,7 @@ using NHSD.GPIT.BuyingCatalogue.WebApp;
 using OpenQA.Selenium;
 using Serilog;
 using Serilog.Events;
+using Xunit.Abstractions;
 
 namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils
 {
@@ -73,13 +74,6 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils
 
             SetEnvVariables();
 
-            Log.Logger = new LoggerConfiguration()
-                .MinimumLevel.Debug()
-                .MinimumLevel.Override("Microsoft", LogEventLevel.Information)
-                .MinimumLevel.Override("Microsoft.AspNetCore", LogEventLevel.Warning)
-                .Enrich.FromLogContext()
-                .CreateLogger();
-
             host = CreateWebHostBuilder().Build();
             host.Start();
 
@@ -97,6 +91,24 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils
         ~LocalWebApplicationFactory()
         {
             Dispose(true);
+        }
+
+        public static ITestOutputHelper TestOutputHelper
+        {
+            set
+            {
+                if (value != null)
+                {
+                    Log.Logger = new LoggerConfiguration()
+                        .MinimumLevel.Information()
+                        .MinimumLevel.Override("Microsoft", LogEventLevel.Information)
+                        .MinimumLevel.Override("Microsoft.AspNetCore", LogEventLevel.Warning)
+                        .MinimumLevel.Override("Microsoft.EntityFrameworkCore", LogEventLevel.Warning)
+                        .Enrich.FromLogContext()
+                        .WriteTo.TestOutput(value)
+                        .CreateLogger();
+                }
+            }
         }
 
         public string BcDbName { get; private set; }

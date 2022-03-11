@@ -364,6 +364,9 @@ MigrationBackup/
 **/wwwroot/**/*.min.js
 !**/wwwroot/js/accessible-autocomplete/accessible-autocomplete.min.js
 
+# Selenium ScreenShots
+**/ScreenShots/*.png
+
 # vscode files
 .vscode/*
 

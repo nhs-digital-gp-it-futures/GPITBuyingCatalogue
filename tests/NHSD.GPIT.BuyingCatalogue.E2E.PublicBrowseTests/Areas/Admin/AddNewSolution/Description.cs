@@ -11,6 +11,7 @@ using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers;
 using Xunit;
+using Xunit.Abstractions;
 
 namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.AddNewSolution
 {
@@ -23,24 +24,28 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.AddNewSolution
             { nameof(SolutionId), SolutionId.ToString() },
         };
 
-        public Description(LocalWebApplicationFactory factory)
+        public Description(LocalWebApplicationFactory factory, ITestOutputHelper testOutputHelper)
             : base(
                   factory,
                   typeof(CatalogueSolutionsController),
                   nameof(CatalogueSolutionsController.Description),
-                  Parameters)
+                  Parameters,
+                  testOutputHelper)
         {
         }
 
         [Fact]
         public async Task Description_TitleDisplayedCorrectly()
         {
-            await using var context = GetEndToEndDbContext();
-            var solutionName = (await context.CatalogueItems.SingleAsync(s => s.Id == SolutionId)).Name;
+            await RunTestAsync(async () =>
+            {
+                await using var context = GetEndToEndDbContext();
+                var solutionName = (await context.CatalogueItems.SingleAsync(s => s.Id == SolutionId)).Name;
 
-            CommonActions.PageTitle()
-                .Should()
-                .BeEquivalentTo($"Description - {solutionName}".FormatForComparison());
+                CommonActions.PageTitle()
+                    .Should()
+                    .BeEquivalentTo($"Description - {solutionName}".FormatForComparison());
+            });
         }
 
         [Fact]

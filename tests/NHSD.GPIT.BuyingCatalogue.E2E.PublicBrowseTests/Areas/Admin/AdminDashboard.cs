@@ -4,13 +4,14 @@ using NHSD.GPIT.BuyingCatalogue.E2ETests.Utils;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.TestBases;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers;
 using Xunit;
+using Xunit.Abstractions;
 
 namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin
 {
     public sealed class AdminDashboard : AuthorityTestBase, IClassFixture<LocalWebApplicationFactory>
     {
-        public AdminDashboard(LocalWebApplicationFactory factory)
-            : base(factory, typeof(HomeController), nameof(HomeController.Index), null)
+        public AdminDashboard(LocalWebApplicationFactory factory, ITestOutputHelper testOutputHelper)
+            : base(factory, typeof(HomeController), nameof(HomeController.Index), null, testOutputHelper)
         {
         }
 
