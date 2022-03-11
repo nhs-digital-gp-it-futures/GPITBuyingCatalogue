@@ -10,7 +10,11 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Organisations.Models;
+using NHSD.GPIT.BuyingCatalogue.EntityFramework.Users.Models;
+using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
+using NHSD.GPIT.BuyingCatalogue.ServiceContracts.CreateBuyer;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Organisations;
+using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Users;
 using NHSD.GPIT.BuyingCatalogue.Test.Framework.AutoFixtureCustomisations;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.OrganisationModels;
@@ -208,6 +212,158 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
                 .ToList();
 
             actualResult.Should().BeEmpty();
+        }
+
+        [Theory]
+        [CommonAutoData]
+        public static async Task Get_UserAccounts_ReturnsExpectedResult(
+            Organisation organisation,
+            List<AspNetUser> users,
+            [Frozen] Mock<IOrganisationsService> mockOrganisationsService,
+            [Frozen] Mock<IUsersService> mockUsersService,
+            OrganisationsController controller)
+        {
+            mockOrganisationsService
+                .Setup(x => x.GetOrganisation(organisation.Id))
+                .ReturnsAsync(organisation);
+
+            mockUsersService
+                .Setup(x => x.GetAllUsersForOrganisation(organisation.Id))
+                .ReturnsAsync(users);
+
+            var result = (await controller.Users(organisation.Id)).As<ViewResult>();
+
+            mockOrganisationsService.VerifyAll();
+            mockUsersService.VerifyAll();
+
+            result.Should().NotBeNull();
+            result.ViewName.Should().BeNullOrEmpty();
+
+            var model = result.Model.Should().BeAssignableTo<UsersModel>().Subject;
+
+            model.OrganisationId.Should().Be(organisation.Id);
+            model.OrganisationName.Should().Be(organisation.Name);
+            model.Users.Should().BeEquivalentTo(users);
+        }
+
+        [Theory]
+        [CommonAutoData]
+        public static async Task Get_AddUser_ReturnsExpectedResult(
+            Organisation organisation,
+            [Frozen] Mock<IOrganisationsService> mockOrganisationsService,
+            OrganisationsController controller)
+        {
+            mockOrganisationsService
+                .Setup(x => x.GetOrganisation(organisation.Id))
+                .ReturnsAsync(organisation);
+
+            var result = (await controller.AddUser(organisation.Id)).As<ViewResult>();
+
+            mockOrganisationsService.VerifyAll();
+
+            result.Should().NotBeNull();
+            result.ViewName.Should().BeNullOrEmpty();
+
+            var model = result.Model.Should().BeAssignableTo<AddUserModel>().Subject;
+
+            model.OrganisationName.Should().Be(organisation.Name);
+        }
+
+        [Theory]
+        [CommonAutoData]
+        public static async Task Post_AddUser_WithModelErrors_ReturnsExpectedResult(
+            int organisationId,
+            AddUserModel model,
+            OrganisationsController controller)
+        {
+            controller.ModelState.AddModelError("key", "errorMessage");
+
+            var result = (await controller.AddUser(organisationId, model)).As<ViewResult>();
+
+            result.Should().NotBeNull();
+            result.ViewName.Should().BeNull();
+
+            var actualModel = result.Model.Should().BeAssignableTo<AddUserModel>().Subject;
+
+            actualModel.Should().BeEquivalentTo(model);
+        }
+
+        [Theory]
+        [CommonAutoData]
+        public static async Task Post_AddUser_ValidModel_ReturnsExpectedResult(
+            int organisationId,
+            AddUserModel model,
+            [Frozen] Mock<ICreateBuyerService> mockCreateBuyerService,
+            OrganisationsController controller)
+        {
+            model.EmailAddress = "a@b.com";
+
+            mockCreateBuyerService
+                .Setup(x => x.Create(organisationId, model.FirstName, model.LastName, model.TelephoneNumber, model.EmailAddress, false))
+                .ReturnsAsync((AspNetUser)null);
+
+            var result = (await controller.AddUser(organisationId, model)).As<RedirectToActionResult>();
+
+            mockCreateBuyerService.VerifyAll();
+
+            result.Should().NotBeNull();
+            result.ControllerName.Should().Be(typeof(OrganisationsController).ControllerName());
+            result.ActionName.Should().Be(nameof(OrganisationsController.Users));
+        }
+
+        [Theory]
+        [CommonAutoData]
+        public static async Task Get_UserStatus_ReturnsExpectedResult(
+            Organisation organisation,
+            AspNetUser user,
+            [Frozen] Mock<IOrganisationsService> mockOrganisationsService,
+            [Frozen] Mock<IUsersService> mockUsersService,
+            OrganisationsController controller)
+        {
+            mockOrganisationsService
+                .Setup(x => x.GetOrganisation(organisation.Id))
+                .ReturnsAsync(organisation);
+
+            mockUsersService
+                .Setup(x => x.GetUser(user.Id))
+                .ReturnsAsync(user);
+
+            var result = (await controller.UserStatus(organisation.Id, user.Id)).As<ViewResult>();
+
+            mockOrganisationsService.VerifyAll();
+            mockUsersService.VerifyAll();
+
+            result.Should().NotBeNull();
+            result.ViewName.Should().BeNull();
+
+            var model = result.Model.Should().BeAssignableTo<UserStatusModel>().Subject;
+
+            model.OrganisationId.Should().Be(organisation.Id);
+            model.OrganisationName.Should().Be(organisation.Name);
+            model.UserId.Should().Be(user.Id);
+            model.UserEmail.Should().Be(user.Email);
+            model.IsActive.Should().Be(!user.Disabled);
+        }
+
+        [Theory]
+        [CommonAutoData]
+        public static async Task Post_UserStatus_ReturnsExpectedResult(
+            int organisationId,
+            int userId,
+            UserStatusModel viewModel,
+            [Frozen] Mock<IUsersService> mockUsersService,
+            OrganisationsController controller)
+        {
+            mockUsersService
+                .Setup(x => x.EnableOrDisableUser(userId, viewModel.IsActive))
+                .Returns(Task.CompletedTask);
+
+            var result = (await controller.UserStatus(organisationId, userId, viewModel)).As<RedirectToActionResult>();
+
+            mockUsersService.VerifyAll();
+
+            result.Should().NotBeNull();
+            result.ActionName.Should().Be(nameof(OrganisationsController.Users));
         }
     }
 }

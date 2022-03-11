@@ -12,16 +12,17 @@ using Xunit;
 
 namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.Organisations
 {
-    public sealed class BuyerOrganisations : AuthorityTestBase, IClassFixture<LocalWebApplicationFactory>
+    public sealed class Index : AuthorityTestBase, IClassFixture<LocalWebApplicationFactory>
     {
-        public BuyerOrganisations(LocalWebApplicationFactory factory)
+        public Index(LocalWebApplicationFactory factory)
             : base(factory, typeof(OrganisationsController), nameof(OrganisationsController.Index), null)
         {
         }
 
         [Fact]
-        public void BuyerOrganisations_AllElementsDisplayed()
+        public void Index_AllElementsDisplayed()
         {
+            CommonActions.ElementIsDisplayed(OrganisationObjects.HomeBreadcrumbLink).Should().BeTrue();
             CommonActions.ElementIsDisplayed(OrganisationObjects.AddOrganisationLink).Should().BeTrue();
             CommonActions.ElementIsDisplayed(OrganisationObjects.ImportPracticeListsButton).Should().BeTrue();
             CommonActions.ElementIsDisplayed(OrganisationObjects.SearchBar).Should().BeTrue();
@@ -32,13 +33,23 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.Organisations
         }
 
         [Fact]
-        public async Task BuyerOrganisations_AllOrganisationsDisplayed()
+        public async Task Index_AllOrganisationsDisplayed()
         {
             await VerifyAllOrganisationsDisplayed();
         }
 
         [Fact]
-        public void BuyerOrganisations_ClickAddOrganisationLink_DisplaysCorrectPage()
+        public void Index_ClickHomeBreadcrumbLink_DisplaysCorrectPage()
+        {
+            CommonActions.ClickLinkElement(OrganisationObjects.HomeBreadcrumbLink);
+
+            CommonActions.PageLoadedCorrectGetIndex(
+                typeof(HomeController),
+                nameof(HomeController.Index)).Should().BeTrue();
+        }
+
+        [Fact]
+        public void Index_ClickAddOrganisationLink_DisplaysCorrectPage()
         {
             CommonActions.ClickLinkElement(OrganisationObjects.AddOrganisationLink);
 
@@ -48,7 +59,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.Organisations
         }
 
         [Fact]
-        public void BuyerOrganisations_ClickImportPracticeLists_DisplaysCorrectPage()
+        public void Index_ClickImportPracticeLists_DisplaysCorrectPage()
         {
             CommonActions.ClickLinkElement(OrganisationObjects.ImportPracticeListsButton);
 
@@ -58,7 +69,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.Organisations
         }
 
         [Fact]
-        public async Task BuyerOrganisations_SearchTermEmpty_AllOrganisationsDisplayed()
+        public async Task Index_SearchTermEmpty_AllOrganisationsDisplayed()
         {
             CommonActions.ElementAddValue(OrganisationObjects.SearchBar, string.Empty);
             CommonActions.ClickLinkElement(OrganisationObjects.SearchButton);
@@ -71,7 +82,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.Organisations
         }
 
         [Fact]
-        public async Task BuyerOrganisations_SearchTermValid_FilteredOrganisationsDisplayed()
+        public async Task Index_SearchTermValid_FilteredOrganisationsDisplayed()
         {
             await using var context = GetEndToEndDbContext();
 
@@ -98,7 +109,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.Organisations
         }
 
         [Fact]
-        public async Task BuyerOrganisations_SearchTermValid_NoMatches_ErrorMessageDisplayed()
+        public async Task Index_SearchTermValid_NoMatches_ErrorMessageDisplayed()
         {
             await using var context = GetEndToEndDbContext();
 

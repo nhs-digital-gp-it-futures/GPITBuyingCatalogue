@@ -23,10 +23,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Validators.Organisation
                 .NotEmpty()
                 .WithMessage("Enter a last name");
 
-            RuleFor(m => m.TelephoneNumber)
-                .NotEmpty()
-                .WithMessage("Enter a telephone number");
-
             RuleFor(m => m.EmailAddress)
                 .Cascade(CascadeMode.Stop)
                 .NotEmpty()

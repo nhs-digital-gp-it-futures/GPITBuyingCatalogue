@@ -238,105 +238,81 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
             return View(model);
         }
 
-        [HttpGet("{organisationId}/adduser")]
+        [HttpGet("{organisationId}/users")]
+        public async Task<IActionResult> Users(int organisationId)
+        {
+            var organisation = await organisationsService.GetOrganisation(organisationId);
+            var users = await userService.GetAllUsersForOrganisation(organisationId);
+
+            var model = new UsersModel
+            {
+                BackLink = Url.Action(nameof(Details), new { organisationId }),
+                OrganisationId = organisationId,
+                OrganisationName = organisation.Name,
+                Users = users.OrderBy(x => x.LastName).ThenBy(x => x.FirstName),
+            };
+
+            return View(model);
+        }
+
+        [HttpGet("{organisationId}/users/add")]
         public async Task<IActionResult> AddUser(int organisationId)
         {
             var organisation = await organisationsService.GetOrganisation(organisationId);
 
             var model = new AddUserModel(organisation)
             {
-                BackLink = Url.Action(nameof(Details), new { organisationId }),
+                BackLink = Url.Action(nameof(Users), new { organisationId }),
             };
 
             return View(model);
         }
 
-        [HttpPost("{organisationId}/adduser")]
+        [HttpPost("{organisationId}/users/add")]
         public async Task<IActionResult> AddUser(int organisationId, AddUserModel model)
         {
             if (!ModelState.IsValid)
                 return View(model);
 
-            var user = await createBuyerService.Create(organisationId, model.FirstName, model.LastName, model.TelephoneNumber, model.EmailAddress, User.IsAdmin());
+            await createBuyerService.Create(
+                organisationId,
+                model.FirstName,
+                model.LastName,
+                model.TelephoneNumber,
+                model.EmailAddress,
+                isAdmin: false);
 
             return RedirectToAction(
-                nameof(AddUserConfirmation),
+                nameof(Users),
                 typeof(OrganisationsController).ControllerName(),
-                new { organisationId, userId = user.Id });
+                new { organisationId });
         }
 
-        [HttpGet("{organisationId}/adduser/confirmation/{userId}")]
-        public async Task<IActionResult> AddUserConfirmation(int organisationId, int userId)
-        {
-            var user = await userService.GetUser(userId);
-
-            var model = new AddUserConfirmationModel(user.GetDisplayName(), organisationId)
-            {
-                BackLink = Url.Action(nameof(Details), new { organisationId }),
-            };
-
-            return View(model);
-        }
-
-        [HttpGet("{organisationId}/{userId}")]
-        public async Task<IActionResult> UserDetails(int organisationId, int userId)
-        {
-            var user = await userService.GetUser(userId);
-            var organisation = await organisationsService.GetOrganisation(organisationId);
-
-            var model = new UserDetailsModel(organisation, user)
-            {
-                BackLink = Url.Action(nameof(Details), new { organisationId }),
-            };
-
-            return View(model);
-        }
-
-        [HttpPost("{organisationId}/{userId}")]
-        public async Task<IActionResult> UserDetails(int organisationId, string userId, UserDetailsModel model)
-        {
-            await userService.EnableOrDisableUser(model.User.Id, !model.User.Disabled);
-
-            if (model.User.Disabled)
-            {
-                return RedirectToAction(
-                    nameof(UserEnabled),
-                    typeof(OrganisationsController).ControllerName(),
-                    new { organisationId, userId = model.User.Id });
-            }
-
-            return RedirectToAction(
-                nameof(UserDisabled),
-                typeof(OrganisationsController).ControllerName(),
-                new { organisationId, userId = model.User.Id });
-        }
-
-        [HttpGet("{organisationId}/{userId}/disable")]
-        public async Task<IActionResult> UserDisabled(int organisationId, int userId)
+        [HttpGet("{organisationId}/users/{userId}/status")]
+        public async Task<IActionResult> UserStatus(int organisationId, int userId)
         {
             var organisation = await organisationsService.GetOrganisation(organisationId);
             var user = await userService.GetUser(userId);
 
-            var model = new UserEnablingModel(organisation, user)
+            var model = new UserStatusModel
             {
-                BackLink = Url.Action(nameof(UserDetails), new { organisationId, userId }),
+                BackLink = Url.Action(nameof(Users), new { organisationId }),
+                OrganisationId = organisationId,
+                OrganisationName = organisation.Name,
+                UserId = user.Id,
+                UserEmail = user.Email,
+                IsActive = !user.Disabled,
             };
 
             return View(model);
         }
 
-        [HttpGet("{organisationId}/{userId}/enable")]
-        public async Task<IActionResult> UserEnabled(int organisationId, int userId)
+        [HttpPost("{organisationId}/users/{userId}/status")]
+        public async Task<IActionResult> UserStatus(int organisationId, int userId, UserStatusModel model)
         {
-            var organisation = await organisationsService.GetOrganisation(organisationId);
-            var user = await userService.GetUser(userId);
+            await userService.EnableOrDisableUser(userId, model.IsActive);
 
-            var model = new UserEnablingModel(organisation, user)
-            {
-                BackLink = Url.Action(nameof(UserDetails), new { organisationId, userId }),
-            };
-
-            return View(model);
+            return RedirectToAction(nameof(Users), new { organisationId });
         }
 
         [HttpGet("proxy/{organisationId}")]

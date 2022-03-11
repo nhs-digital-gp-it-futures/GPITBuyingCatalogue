@@ -6,9 +6,15 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Objects.Admin
 {
     internal static class OrganisationObjects
     {
+        internal static By HomeBreadcrumbLink => By.LinkText("Home");
+
+        internal static By ManageBuyerOrganisationsBreadcrumbLink => By.LinkText("Manage buyer organisations");
+
         internal static By AddressLines => ByExtensions.DataTestId("org-page-address");
 
         internal static By OdsCode => ByExtensions.DataTestId("org-page-external-identifier");
+
+        internal static By UserAccountsLink => By.LinkText("User accounts");
 
         internal static By AddUserButton => ByExtensions.DataTestId("add-user-button", "a");
 

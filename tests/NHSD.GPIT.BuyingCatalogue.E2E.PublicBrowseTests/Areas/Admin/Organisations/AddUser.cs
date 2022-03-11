@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 using FluentAssertions;
 using Microsoft.EntityFrameworkCore;
@@ -14,13 +13,12 @@ using Xunit;
 
 namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.Organisations
 {
-    public sealed class AddUsers : AuthorityTestBase, IClassFixture<LocalWebApplicationFactory>
+    public sealed class AddUser : AuthorityTestBase, IClassFixture<LocalWebApplicationFactory>
     {
         private const int OrganisationId = 2;
 
         private const string FirstNameRequired = "Enter a first name";
         private const string LastNameRequired = "Enter a last name";
-        private const string TelephoneNumberRequired = "Enter a telephone number";
         private const string EmailAddressRequired = "Enter an email address";
         private const string EmailFormatIncorrect = "Enter an email address in the correct format, like name@example.com";
         private const string EmailAlreadyExists = "A user with this email address is already registered on the Buying Catalogue";
@@ -30,7 +28,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.Organisations
             { nameof(OrganisationId), OrganisationId.ToString() },
         };
 
-        public AddUsers(LocalWebApplicationFactory factory)
+        public AddUser(LocalWebApplicationFactory factory)
             : base(
                   factory,
                   typeof(OrganisationsController),
@@ -63,9 +61,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.Organisations
 
             CommonActions.PageLoadedCorrectGetIndex(
                 typeof(OrganisationsController),
-                nameof(OrganisationsController.Details))
-                .Should()
-                .BeTrue();
+                nameof(OrganisationsController.Users)).Should().BeTrue();
         }
 
         [Fact]
@@ -82,13 +78,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.Organisations
 
             CommonActions.PageLoadedCorrectGetIndex(
                 typeof(OrganisationsController),
-                nameof(OrganisationsController.AddUserConfirmation))
-                .Should()
-                .BeTrue();
-
-            var confirmationMessage = AdminPages.AddUser.GetConfirmationMessage();
-
-            confirmationMessage.Should().BeEquivalentTo($"{user.FirstName} {user.LastName} account added");
+                nameof(OrganisationsController.Users)).Should().BeTrue();
         }
 
         [Fact]
@@ -107,7 +97,6 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.Organisations
 
             CommonActions.ElementShowingCorrectErrorMessage(AddUserObjects.FirstNameError, FirstNameRequired).Should().BeTrue();
             CommonActions.ElementShowingCorrectErrorMessage(AddUserObjects.LastNameError, LastNameRequired).Should().BeTrue();
-            CommonActions.ElementShowingCorrectErrorMessage(AddUserObjects.TelephoneNumberError, TelephoneNumberRequired).Should().BeTrue();
             CommonActions.ElementShowingCorrectErrorMessage(AddUserObjects.EmailError, EmailAddressRequired).Should().BeTrue();
         }
 
@@ -138,7 +127,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.Organisations
         [Fact]
         public async void AddUser_EmailAlreadyExists_ThrowsError()
         {
-            var user = await AddUser();
+            var user = await CreateUser();
 
             AdminPages.AddUser.EnterFirstName(user.FirstName);
             AdminPages.AddUser.EnterLastName(user.LastName);
@@ -159,7 +148,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.Organisations
             CommonActions.ElementShowingCorrectErrorMessage(AddUserObjects.EmailError, EmailAlreadyExists).Should().BeTrue();
         }
 
-        private async Task<AspNetUser> AddUser(bool isEnabled = true)
+        private async Task<AspNetUser> CreateUser(bool isEnabled = true)
         {
             var user = GenerateUser.GenerateAspNetUser(OrganisationId, DefaultPassword, isEnabled);
             await using var context = GetEndToEndDbContext();
