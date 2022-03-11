@@ -117,6 +117,7 @@ jobs:
       OverWrite: true
 
   - publish: $(build.artifactStagingDirectory)/screen-shots
+    condition: failed()
     artifact: screen-shots 
 
   - task: DockerInstaller@0
