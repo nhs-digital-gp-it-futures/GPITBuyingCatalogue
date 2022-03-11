@@ -4,9 +4,25 @@
 @{
     ViewBag.Title = "Organisation details";
 }
-
+@section Breadcrumbs {
+    <nav class="nhsuk-breadcrumb" aria-label="Breadcrumb">
+        <div class="nhsuk-width-container">
+            <ol class="nhsuk-breadcrumb__list">
+                <li class="nhsuk-breadcrumb__item">
+                    <a asp-action="@nameof(HomeController.Index)" 
+                       asp-controller="@typeof(HomeController).ControllerName()" 
+                       class="nhsuk-breadcrumb__link">Home</a>
+                </li>
+                <li class="nhsuk-breadcrumb__item">
+                    <a asp-action="@nameof(OrganisationsController.Index)" 
+                       asp-controller="@typeof(OrganisationsController).ControllerName()" 
+                       class="nhsuk-breadcrumb__link">Manage buyer organisations</a>
+                </li>
+            </ol>
+        </div>
+    </nav>
+}
 <div data-test-id="organisation-page">
-    <partial name="Partials/_BackLink" model="Model" />
     <nhs-page-title title="@ViewBag.Title"
                     caption="@Model!.Organisation.Name"
                     advice="These are the details for the organisation and its users." />

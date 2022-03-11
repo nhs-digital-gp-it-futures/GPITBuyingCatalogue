@@ -5,7 +5,30 @@
 @{
     ViewBag.Title = "User Accounts";
 }
-<partial name="Partials/_BackLink" model="Model" />
+@section Breadcrumbs {
+    <nav class="nhsuk-breadcrumb" aria-label="Breadcrumb">
+        <div class="nhsuk-width-container">
+            <ol class="nhsuk-breadcrumb__list">
+                <li class="nhsuk-breadcrumb__item">
+                    <a asp-action="@nameof(HomeController.Index)" 
+                       asp-controller="@typeof(HomeController).ControllerName()" 
+                       class="nhsuk-breadcrumb__link">Home</a>
+                </li>
+                <li class="nhsuk-breadcrumb__item">
+                    <a asp-action="@nameof(OrganisationsController.Index)" 
+                       asp-controller="@typeof(OrganisationsController).ControllerName()" 
+                       class="nhsuk-breadcrumb__link">Manage buyer organisations</a>
+                </li>
+                <li class="nhsuk-breadcrumb__item">
+                    <a asp-action="@nameof(OrganisationsController.Details)" 
+                       asp-controller="@typeof(OrganisationsController).ControllerName()" 
+                       asp-route-organisationId="@Model!.OrganisationId"
+                       class="nhsuk-breadcrumb__link">Organisation details</a>
+                </li>
+            </ol>
+        </div>
+    </nav>
+}
 <div class="nhsuk-grid-row">
     <div class="nhsuk-grid-column-full">
         <nhs-page-title title="@ViewBag.Title"
@@ -16,7 +39,7 @@
                             url="@Url.Action(
                                      nameof(OrganisationsController.AddUser),
                                      typeof(OrganisationsController).ControllerName(),
-                                     new { @Model.OrganisationId })" />
+                                     new { Model.OrganisationId })" />
 
         <h3>Existing users</h3>
 

@@ -32,7 +32,9 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.Organisations
         [Fact]
         public void Users_WithNoUsers_AllElementsDisplayed()
         {
-            CommonActions.ElementIsDisplayed(CommonObjects.GoBackLink).Should().BeTrue();
+            CommonActions.ElementIsDisplayed(OrganisationUsersObjects.HomeBreadcrumbLink).Should().BeTrue();
+            CommonActions.ElementIsDisplayed(OrganisationUsersObjects.ManageBuyerOrganisationsBreadcrumbLink).Should().BeTrue();
+            CommonActions.ElementIsDisplayed(OrganisationUsersObjects.OrganisationDetailsBreadcrumbLink).Should().BeTrue();
             CommonActions.ElementIsDisplayed(CommonSelectors.Header1).Should().BeTrue();
             CommonActions.ElementIsDisplayed(OrganisationUsersObjects.AddUserLink).Should().BeTrue();
             CommonActions.ElementExists(OrganisationUsersObjects.UsersTable).Should().BeFalse();
@@ -45,7 +47,9 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.Organisations
         {
             var user = await AddUser();
 
-            CommonActions.ElementIsDisplayed(CommonObjects.GoBackLink).Should().BeTrue();
+            CommonActions.ElementIsDisplayed(OrganisationUsersObjects.HomeBreadcrumbLink).Should().BeTrue();
+            CommonActions.ElementIsDisplayed(OrganisationUsersObjects.ManageBuyerOrganisationsBreadcrumbLink).Should().BeTrue();
+            CommonActions.ElementIsDisplayed(OrganisationUsersObjects.OrganisationDetailsBreadcrumbLink).Should().BeTrue();
             CommonActions.ElementIsDisplayed(CommonSelectors.Header1).Should().BeTrue();
             CommonActions.ElementIsDisplayed(OrganisationUsersObjects.AddUserLink).Should().BeTrue();
             CommonActions.ElementIsDisplayed(OrganisationUsersObjects.UsersTable).Should().BeTrue();
@@ -59,9 +63,29 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.Organisations
         }
 
         [Fact]
-        public void Users_ClickGoBackLink_DisplaysCorrectPage()
+        public void Users_ClickHomeBreadcrumbLink_DisplaysCorrectPage()
         {
-            CommonActions.ClickLinkElement(CommonObjects.GoBackLink);
+            CommonActions.ClickLinkElement(OrganisationUsersObjects.HomeBreadcrumbLink);
+
+            CommonActions.PageLoadedCorrectGetIndex(
+                typeof(HomeController),
+                nameof(HomeController.Index)).Should().BeTrue();
+        }
+
+        [Fact]
+        public void Users_ClickManageBuyerOrganisationsBreadcrumbLink_DisplaysCorrectPage()
+        {
+            CommonActions.ClickLinkElement(OrganisationUsersObjects.ManageBuyerOrganisationsBreadcrumbLink);
+
+            CommonActions.PageLoadedCorrectGetIndex(
+                typeof(OrganisationsController),
+                nameof(OrganisationsController.Index)).Should().BeTrue();
+        }
+
+        [Fact]
+        public void Users_ClickOrganisationDetailsBreadcrumbLink_DisplaysCorrectPage()
+        {
+            CommonActions.ClickLinkElement(OrganisationUsersObjects.OrganisationDetailsBreadcrumbLink);
 
             CommonActions.PageLoadedCorrectGetIndex(
                 typeof(OrganisationsController),

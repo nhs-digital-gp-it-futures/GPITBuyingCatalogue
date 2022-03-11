@@ -5,6 +5,12 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Objects.Admin
 {
     internal static class OrganisationUsersObjects
     {
+        public static By HomeBreadcrumbLink => By.LinkText("Home");
+
+        public static By ManageBuyerOrganisationsBreadcrumbLink => By.LinkText("Manage buyer organisations");
+
+        public static By OrganisationDetailsBreadcrumbLink => By.LinkText("Organisation details");
+
         public static By AddUserLink => By.LinkText("Add a user");
 
         public static By CancelLink => By.LinkText("Cancel");

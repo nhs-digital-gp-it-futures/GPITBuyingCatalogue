@@ -4,6 +4,19 @@
 @{
     ViewBag.Title = "Manage buyer organisations and users";
 }
+@section Breadcrumbs {
+    <nav class="nhsuk-breadcrumb" aria-label="Breadcrumb">
+        <div class="nhsuk-width-container">
+            <ol class="nhsuk-breadcrumb__list">
+                <li class="nhsuk-breadcrumb__item">
+                    <a asp-action="@nameof(HomeController.Index)" 
+                       asp-controller="@typeof(HomeController).ControllerName()" 
+                       class="nhsuk-breadcrumb__link">Home</a>
+                </li>
+            </ol>
+        </div>
+    </nav>
+}
 <div data-test-id="organisations">
     <nhs-page-title title="@ViewBag.Title"
                     advice="Add a new buyer organisation or edit the details and user accounts for one that's already been created." />

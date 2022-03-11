@@ -6,16 +6,14 @@ using FluentAssertions;
 using Microsoft.EntityFrameworkCore;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Objects.Admin;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Utils;
-using NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.RandomData;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.TestBases;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Organisations.Models;
-using NHSD.GPIT.BuyingCatalogue.EntityFramework.Users.Models;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers;
 using Xunit;
 
 namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.Organisations
 {
-    public sealed class Organisation : AuthorityTestBase, IClassFixture<LocalWebApplicationFactory>
+    public sealed class Details : AuthorityTestBase, IClassFixture<LocalWebApplicationFactory>
     {
         private const int OrganisationId = 2;
 
@@ -24,7 +22,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.Organisations
             { nameof(OrganisationId), OrganisationId.ToString() },
         };
 
-        public Organisation(LocalWebApplicationFactory factory)
+        public Details(LocalWebApplicationFactory factory)
             : base(
                   factory,
                   typeof(OrganisationsController),
@@ -34,7 +32,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.Organisations
         }
 
         [Fact]
-        public async Task Organisation_OrganisationDetailsDisplayed()
+        public async Task Details_OrganisationDetailsDisplayed()
         {
             await using var context = GetEndToEndDbContext();
             var dbAddress = (await context.Organisations.SingleAsync(s => s.Id == OrganisationId)).Address;
@@ -52,7 +50,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.Organisations
         }
 
         [Fact]
-        public async Task Organisation_OdsCodeDisplayed()
+        public async Task Details_OdsCodeDisplayed()
         {
             await using var context = GetEndToEndDbContext();
             var dbOdsCode = (await context.Organisations.SingleAsync(s => s.Id == OrganisationId)).ExternalIdentifier;
@@ -63,8 +61,10 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.Organisations
         }
 
         [Fact]
-        public void Organisation_AllLinksDisplayed()
+        public void Details_AllLinksDisplayed()
         {
+            CommonActions.ElementIsDisplayed(OrganisationObjects.HomeBreadcrumbLink).Should().BeTrue();
+            CommonActions.ElementIsDisplayed(OrganisationObjects.ManageBuyerOrganisationsBreadcrumbLink).Should().BeTrue();
             CommonActions.ElementIsDisplayed(OrganisationObjects.UserAccountsLink).Should().BeTrue();
 
             AdminPages.Organisation.AddRelatedOrganisationButtonDisplayed().Should().BeTrue();
@@ -72,7 +72,27 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.Organisations
         }
 
         [Fact]
-        public void Organisation_ClickUserAccountsLink_ExpectedResult()
+        public void Details_ClickHomeBreadcrumbLink_ExpectedResult()
+        {
+            CommonActions.ClickLinkElement(OrganisationObjects.HomeBreadcrumbLink);
+
+            CommonActions.PageLoadedCorrectGetIndex(
+                typeof(HomeController),
+                nameof(HomeController.Index)).Should().BeTrue();
+        }
+
+        [Fact]
+        public void Details_ClickManageBuyerOrganisationsBreadcrumbLink_ExpectedResult()
+        {
+            CommonActions.ClickLinkElement(OrganisationObjects.ManageBuyerOrganisationsBreadcrumbLink);
+
+            CommonActions.PageLoadedCorrectGetIndex(
+                typeof(OrganisationsController),
+                nameof(OrganisationsController.Index)).Should().BeTrue();
+        }
+
+        [Fact]
+        public void Details_ClickUserAccountsLink_ExpectedResult()
         {
             CommonActions.ClickLinkElement(OrganisationObjects.UserAccountsLink);
 
@@ -82,7 +102,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.Organisations
         }
 
         [Fact]
-        public async Task Organisation_AddRelatedOrganisation()
+        public async Task Details_AddRelatedOrganisation()
         {
             AdminPages.Organisation.ClickAddRelatedOrgButton();
 
@@ -103,7 +123,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.Organisations
         }
 
         [Fact]
-        public async Task Organisation_RemoveRelatedOrganisation()
+        public async Task Details_RemoveRelatedOrganisation()
         {
             var relatedOrgId = await AddRelatedOrganisation();
 
@@ -133,17 +153,6 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.Organisations
             Driver.Navigate().Refresh();
 
             return relatedOrganisation.RelatedOrganisationId;
-        }
-
-        private async Task<AspNetUser> AddUser(bool isEnabled = true)
-        {
-            var user = GenerateUser.GenerateAspNetUser(OrganisationId, DefaultPassword, isEnabled);
-            await using var context = GetEndToEndDbContext();
-            context.Add(user);
-            await context.SaveChangesAsync();
-            Driver.Navigate().Refresh();
-
-            return user;
         }
     }
 }
