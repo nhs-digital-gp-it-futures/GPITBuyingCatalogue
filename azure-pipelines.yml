@@ -119,7 +119,7 @@ jobs:
     condition: failed()
     inputs:
       SourceFolder: 'tests/NHSD.GPIT.BuyingCatalogue.E2E.PublicBrowseTests/ScreenShots'
-      Contents: '**'
+      Contents: '*'
       TargetFolder: '$(build.artifactStagingDirectory)/screen-shots'
       CleanTargetFolder: false
       OverWrite: true

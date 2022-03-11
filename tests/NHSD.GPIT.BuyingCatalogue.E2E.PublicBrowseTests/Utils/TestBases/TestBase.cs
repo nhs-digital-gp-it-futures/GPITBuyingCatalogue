@@ -255,7 +255,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.TestBases
                 if (!Directory.Exists(outputFolder))
                     Directory.CreateDirectory(outputFolder);
 
-                var filePath = $@"{outputFolder}\{Path.GetFileNameWithoutExtension(fileName)}-{memberName}.png";
+                var filePath = $@"{outputFolder}/{Path.GetFileNameWithoutExtension(fileName)}-{memberName}.png";
 
                 DebugLog($"Writing screenshot to {filePath}");
 
