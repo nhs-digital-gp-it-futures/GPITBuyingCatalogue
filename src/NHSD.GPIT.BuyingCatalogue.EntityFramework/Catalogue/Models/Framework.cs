@@ -15,6 +15,8 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models
 
         public string Owner { get; set; }
 
+        public bool LocalFundingOnly { get; set; }
+
         public DateTime? ActiveDate { get; set; }
 
         public DateTime? ExpiryDate { get; set; }

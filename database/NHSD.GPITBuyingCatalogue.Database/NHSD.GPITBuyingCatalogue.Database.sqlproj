@@ -238,6 +238,13 @@
     <Build Include="Import\Functions\GetLastPublishedDate.sql" />
     <Build Include="Organisations\Tables\OrganisationTypes.sql" />
     <Build Include="Organisations\Tables\GpPracticeSize.sql" />
+    <Build Include="Ordering\Tables\OrderItemPriceTiers.sql" />
+    <Build Include="Ordering\TemporalTables\OrderItemPriceTiers_History.sql" />
+    <Build Include="Ordering\Tables\OrderItemFunding.sql" />
+    <Build Include="Ordering\TemporalTables\OrderItemFunding_History.sql" />
+    <Build Include="Ordering\Tables\OrderItemPrices.sql" />
+    <Build Include="Ordering\TemporalTables\OrderItemPrices_History.sql" />
+    <Build Include="Catalogue\Tables\CataloguePriceCalculationTypes.sql" />
   </ItemGroup>
   <ItemGroup>
     <SqlCmdVariable Include="CREATE_EA_USER">
@@ -321,6 +328,7 @@
     <None Include="Security\Users\HangFire.sql" />
     <None Include="Security\Logins\HangFire.sql" />
     <None Include="Security\Roles\BackgroundProcessor.sql" />
+    <None Include="PostDeployment\InsertCataloguePriceCalculationTypes.sql" />
   </ItemGroup>
   <ItemGroup>
     <PostDeploy Include="PostDeployment\PostDeployment.sql" />

@@ -9,7 +9,7 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models
 
         public string Name { get; set; }
 
-        public string TierName { get; set; }
+        public string RangeDescription { get; set; }
 
         public string Description { get; set; }
 

@@ -1,12 +1,12 @@
 ﻿CREATE TABLE catalogue.CataloguePriceTiers_History
 (
-    Id int NOT NULL,
-    CataloguePriceId int NOT NULL,
-    BandStart int NOT NULL,
-    BandEnd int NULL,
-    Price decimal(18, 3) NOT NULL,
-    LastUpdated datetime2(7) NOT NULL,
-    LastUpdatedBy int NULL,
-    SysStartTime datetime2(0) NOT NULL,
-    SysEndTime datetime2(0) NOT NULL
+    Id INT NOT NULL,
+    CataloguePriceId INT NOT NULL,
+    LowerRange INT NOT NULL,
+    UpperRange INT NULL,
+    Price DECIMAL(18, 4) NOT NULL,
+    LastUpdated DATETIME2(7) NOT NULL,
+    LastUpdatedBy INT NULL,
+    SysStartTime DATETIME2(0) NOT NULL,
+    SysEndTime DATETIME2(0) NOT NULL
 );

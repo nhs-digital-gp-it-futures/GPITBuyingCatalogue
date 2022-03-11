@@ -1,0 +1,25 @@
+﻿CREATE TABLE [ordering].[OrderItemPrices]
+(
+	OrderId INT NOT NULL,
+    CatalogueItemId NVARCHAR(14) NOT NULL,
+    EstimationPeriodId INT NOT NULL,
+    ProvisioningTypeId INT NOT NULL,
+    CataloguePriceTypeId INT NOT NULL,
+    CataloguePriceCalculationTypeId INT NOT NULL,
+    CurrencyCode NVARCHAR(3) NOT NULL,
+    [Description] NVARCHAR(100) NOT NULL,
+    LastUpdated DATETIME2(0) NOT NULL CONSTRAINT DF_OrderItemPrices_LastUpdated DEFAULT GETUTCDATE(),
+    LastUpdatedBy INT NOT NULL,
+    SysStartTime DATETIME2(0) GENERATED ALWAYS AS ROW START NOT NULL,
+    SysEndTime DATETIME2(0) GENERATED ALWAYS AS ROW END NOT NULL,
+    PERIOD FOR SYSTEM_TIME (SysStartTime, SysEndTime),
+    CONSTRAINT PK_OrderItemPrices PRIMARY KEY (OrderId, CatalogueItemId),
+    CONSTRAINT FK_OrderItemPrices_OrderItem FOREIGN KEY (OrderId, CatalogueItemId) REFERENCES ordering.OrderItems (OrderId, CatalogueItemId) ON DELETE CASCADE,
+    CONSTRAINT FK_OrderItemPrices_Order FOREIGN KEY (OrderId) REFERENCES ordering.Orders(Id),
+    CONSTRAINT FK_OrderItemPrices_CatalogueItem FOREIGN KEY (CatalogueItemId) REFERENCES catalogue.CatalogueItems (Id),
+    CONSTRAINT FK_OrderItemPrices_EstimationPeriod FOREIGN KEY (EstimationPeriodId) REFERENCES catalogue.TimeUnits (Id),
+    CONSTRAINT FK_OrderItemPrices_CataloguePriceType FOREIGN KEY (CataloguePriceTypeId) REFERENCES catalogue.CataloguePriceTypes (Id),
+    CONSTRAINT FK_OrderItemPrices_ProvisioningType FOREIGN KEY (ProvisioningTypeId) REFERENCES catalogue.ProvisioningTypes (Id),
+    CONSTRAINT FK_OrderItemPrices_CataloguePriceCalculationType FOREIGN KEY (CataloguePriceCalculationTypeId) REFERENCES catalogue.CataloguePriceCalculationTypes (Id),
+    CONSTRAINT FK_OrderItemPrices_LastUpdatedBy FOREIGN KEY (LastUpdatedBy) REFERENCES users.AspNetUsers (Id)
+) WITH (SYSTEM_VERSIONING = ON (HISTORY_TABLE = ordering.OrderItemPrice_History));

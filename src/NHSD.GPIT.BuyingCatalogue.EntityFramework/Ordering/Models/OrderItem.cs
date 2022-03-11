@@ -7,6 +7,11 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models
 {
     public sealed partial class OrderItem : IAudited
     {
+        public OrderItem()
+        {
+            OrderItemRecipients = new HashSet<OrderItemRecipient>();
+        }
+
         public int OrderId { get; set; }
 
         public Order Order { get; set; }
@@ -14,16 +19,6 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models
         public CatalogueItemId CatalogueItemId { get; set; }
 
         public CatalogueItem CatalogueItem { get; set; }
-
-        public int PriceId { get; set; }
-
-        public CataloguePrice CataloguePrice { get; set; }
-
-        public decimal? Price { get; set; }
-
-        public TimeUnit? EstimationPeriod { get; set; }
-
-        public DateTime? DefaultDeliveryDate { get; set; }
 
         public DateTime Created { get; set; }
 
@@ -33,6 +28,10 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models
 
         public AspNetUser LastUpdatedByUser { get; set; }
 
-        public IReadOnlyList<OrderItemRecipient> OrderItemRecipients => recipients;
+        public OrderItemFunding OrderItemFunding { get; set; }
+
+        public OrderItemPrice OrderItemPrice { get; set; }
+
+        public ICollection<OrderItemRecipient> OrderItemRecipients { get; set; }
     }
 }

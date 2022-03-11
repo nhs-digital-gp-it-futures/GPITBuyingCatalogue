@@ -1,5 +1,4 @@
 ﻿using System.Linq;
-using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Enums;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Models.TaskList;
@@ -41,6 +40,21 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.TaskList
                 _ => TaskProgress.CannotStart,
             };
 
+            model.SolutionOrService = completedSections switch
+            {
+                var cs when cs.HasFlag(TaskListOrderSections.SolutionOrServiceComplete) => TaskProgress.Completed,
+                var cs when cs.HasFlag(TaskListOrderSections.CommencementDateComplete) => TaskProgress.NotStarted,
+                _ => TaskProgress.CannotStart,
+            };
+
+            model.FundingSource = completedSections switch
+            {
+                var cs when cs.HasFlag(TaskListOrderSections.SolutionOrServiceComplete) => TaskProgress.Completed,
+                var cs when cs.HasFlag(TaskListOrderSections.FundingSourceInProgress) => TaskProgress.InProgress,
+                var cs when cs.HasFlag(TaskListOrderSections.SolutionOrServiceComplete) => TaskProgress.NotStarted,
+                _ => TaskProgress.CannotStart,
+            };
+
             model.ReviewAndCompleteStatus = completedSections switch
             {
                 var cs when cs.HasFlag(TaskListOrderSections.FundingSourceComplete) => TaskProgress.NotStarted,
@@ -66,16 +80,13 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.TaskList
             if (order.CommencementDate is not null)
                 completedSections |= TaskListOrderSections.CommencementDate;
 
-            if (order.HasSolution())
-                completedSections |= TaskListOrderSections.CatalogueSolutions;
+            if (order.HasSolution() || order.HasAssociatedService())
+                completedSections |= TaskListOrderSections.SolutionOrService;
 
-            if (order.OrderItems.Any(oi => oi.CatalogueItem.CatalogueItemType == CatalogueItemType.AdditionalService))
-                completedSections |= TaskListOrderSections.AdditionalServices;
+            if (order.OrderItems.Any(oi => oi.OrderItemFunding is not null) && !order.OrderItems.All(oi => oi.OrderItemFunding is not null))
+                completedSections |= TaskListOrderSections.FundingSourceInProgress;
 
-            if (order.HasAssociatedService())
-                completedSections |= TaskListOrderSections.AssociatedServices;
-
-            if (order.ConfirmedFundingSource.HasValue && order.ConfirmedFundingSource.Value is true)
+            if (order.OrderItems.All(oi => oi.OrderItemFunding is not null))
                 completedSections |= TaskListOrderSections.FundingSource;
 
             return completedSections;

@@ -2,16 +2,6 @@
 DECLARE @bobUser AS int = (SELECT Id FROM users.AspNetUsers WHERE Email = @bobEmail);
 DECLARE @now AS datetime = GETUTCDATE();
 
-DECLARE @declarative AS int = (SELECT Id FROM catalogue.ProvisioningTypes WHERE [Name] = 'Declarative');
-DECLARE @onDemand AS int = (SELECT Id FROM catalogue.ProvisioningTypes WHERE [Name] = 'OnDemand');
-
-DECLARE @flat AS int = (SELECT Id FROM catalogue.CataloguePriceTypes WHERE [Name] = 'Flat');
-DECLARE @tiered AS int = (SELECT Id FROM catalogue.CataloguePriceTypes WHERE [Name] = 'Tiered');
-
-DECLARE @halfDay AS smallint = -6;
-DECLARE @hour AS smallint = -7;
-DECLARE @course AS smallint = -8;
-
 DECLARE @associatedServiceItemType AS int = (SELECT Id FROM catalogue.CatalogueItemTypes WHERE [Name] = 'Associated Service');
 DECLARE @publishedStatus AS int = (SELECT Id FROM catalogue.PublicationStatus WHERE [Name] = 'Published');
 
@@ -32,9 +22,7 @@ BEGIN
                 N'The typical unit of order for practice mergers and splits is likely to be on an individual basis (one). This is a fixed fee per practice regardless of size.',
                 @now, @bobUser);
 
-    INSERT INTO catalogue.CataloguePrices (CatalogueItemId, ProvisioningTypeId, CataloguePriceTypeId, PricingUnitId, TimeUnitId, CurrencyCode, LastUpdated, Price, PublishedStatusId)
-         VALUES (@associatedServiceId, @declarative, @flat, @course, NULL, @gbp, @now, 99.99, 3),
-                (@associatedServiceId, @onDemand, @flat, @halfDay, NULL, @gbp, @now, 150.00, 3);
+    /***************************************************************************************************************************/
 
     SET @associatedServiceId = '100000-S-002';
 
@@ -47,14 +35,7 @@ BEGIN
                 N'Dependent on the issue, a typical range is 1-7 days. Additional Engineering is available and would be dependant on scale and user needs. This could be one day or purchased in bulk.',
                 @now, @bobUser);
 
-    INSERT INTO catalogue.CataloguePrices (CatalogueItemId, ProvisioningTypeId, CataloguePriceTypeId, PricingUnitId, TimeUnitId, CurrencyCode, LastUpdated, Price, PublishedStatusId)
-         VALUES (@associatedServiceId, @onDemand, @tiered, @hour, NULL, @gbp, @now, 595, 3);
-
-    DECLARE @tieredPriceId AS int = (SELECT CataloguePriceId FROM catalogue.CataloguePrices WHERE CatalogueItemId = @associatedServiceId AND CataloguePriceTypeId = @tiered);
-
-    INSERT INTO catalogue.CataloguePriceTiers (CataloguePriceId, BandStart, BandEnd, Price)
-         VALUES (@tieredPriceId, 1, 9, 100),
-                (@tieredPriceId, 10, NULL, 49.99);
+    /***************************************************************************************************************************/
 
      SET @associatedServiceId = '100000-S-003';
 
@@ -67,9 +48,7 @@ BEGIN
                  N'The typical volume would be an average of eight thousand which is the typical practice capitation. The largest practice size is the maximum.',
                 @now, @bobUser);
 
-    INSERT INTO catalogue.CataloguePrices (CatalogueItemId, ProvisioningTypeId, CataloguePriceTypeId, PricingUnitId, TimeUnitId, CurrencyCode, LastUpdated, Price, PublishedStatusId)
-         VALUES (@associatedServiceId, @onDemand, @flat, @hour, NULL, @gbp, @now, 4.35, 3);
-
+    /***************************************************************************************************************************/
 
      SET @associatedServiceId = '100000-S-004';
 
@@ -82,9 +61,7 @@ BEGIN
                 N'The typical volume would be an average of eight thousand which is the typical practice capitation. The largest practice size is the maximum.',
                 @now, @bobUser);
 
-    INSERT INTO catalogue.CataloguePrices (CatalogueItemId, ProvisioningTypeId, CataloguePriceTypeId, PricingUnitId, TimeUnitId, CurrencyCode, LastUpdated, Price, PublishedStatusId)
-         VALUES (@associatedServiceId, @onDemand, @flat, @hour, NULL, @gbp, @now, 1.25, 3);
-
+    /***************************************************************************************************************************/
 
      SET @associatedServiceId = '100000-S-005';
 
@@ -97,8 +74,100 @@ BEGIN
                  N'Project Management resource is anticipated to be low for standard installations. For more complex deployments it is anticipated to be higher. The minimum is 1 day, maximum is 10 days per practice',
                 @now, @bobUser);
 
-    INSERT INTO catalogue.CataloguePrices (CatalogueItemId, ProvisioningTypeId, CataloguePriceTypeId, PricingUnitId, TimeUnitId, CurrencyCode, LastUpdated, Price, PublishedStatusId)
-         VALUES (@associatedServiceId, @onDemand, @flat, @hour, NULL, @gbp, @now, 205, 3);
+    /* Insert Prices */
+    /* TODO - Tiered Pricing - Update Price inserting logic to not require the price field on Catalogue Prices */
+
+    DECLARE @declarative INT = (SELECT Id FROM catalogue.ProvisioningTypes WHERE [Name] = 'Declarative');
+    DECLARE @onDemand INT = (SELECT Id FROM catalogue.ProvisioningTypes WHERE [Name] = 'OnDemand');
+
+    DECLARE @flat INT = (SELECT Id FROM catalogue.CataloguePriceTypes WHERE [Name] = 'Flat');
+    DECLARE @tiered INT = (SELECT Id FROM catalogue.CataloguePriceTypes WHERE [Name] = 'Tiered');
+
+    DECLARE @halfDay AS SMALLINT = -6;
+    DECLARE @hour AS SMALLINT = -7;
+    DECLARE @course AS SMALLINT = -8;
+
+    DECLARE @InsertedPriceIds TABLE(
+         Id INT,
+         Price DECIMAL(18,4),
+         CataloguePriceTypeId INT
+     );
+
+    DECLARE @AssociatedServicesPrices TABLE(
+        CatalogueItemId NVARCHAR(14),
+        ProvisioningTypeId INT,
+        CataloguePriceTypeId INT,
+        PricingUnitId INT,
+        TimeUnitId INT,
+        CataloguePriceCalculationTypeId INT,
+        CurrencyCode NVARCHAR(3),
+        LastUpdated DATETIME2(0),
+        Price DECIMAL(18,4),
+        PublishedStatusId INT
+    );    
+
+    INSERT INTO @AssociatedServicesPrices (CatalogueItemId, ProvisioningTypeId, CataloguePriceTypeId, PricingUnitId, TimeUnitId, CataloguePriceCalculationTypeId, CurrencyCode, LastUpdated, Price, PublishedStatusId)
+    VALUES
+    ('100000-S-001', @declarative, @flat, @course, NULL, 1, @gbp, @now, 99.99, 3),
+    ('100000-S-001', @onDemand, @flat, @halfDay, NULL, 1, @gbp, @now, 150.00, 3),
+    ('100000-S-002', @onDemand, @tiered, @hour, NULL, 1, @gbp, @now, 595, 3),
+    ('100000-S-003', @onDemand, @flat, @hour, NULL, 1, @gbp, @now, 4.35, 3),
+    ('100000-S-004', @onDemand, @flat, @hour, NULL, 1, @gbp, @now, 1.25, 3),
+    ('100000-S-005', @onDemand, @flat, @hour, NULL, 1, @gbp, @now, 205, 3);
+
+    INSERT INTO catalogue.CataloguePrices (CatalogueItemId, ProvisioningTypeId, CataloguePriceTypeId, PricingUnitId, TimeUnitId, CataloguePriceCalculationTypeId, CurrencyCode, Price, LastUpdated, PublishedStatusId)
+    OUTPUT INSERTED.CataloguePriceId, INSERTED.Price, INSERTED.CataloguePriceTypeId INTO @InsertedPriceIds (Id, Price, CataloguePriceTypeId)
+    SELECT 
+    ASP.CatalogueItemId,
+    ASP.ProvisioningTypeId,
+    ASP.CataloguePriceTypeId,
+    ASP.PricingUnitId,
+    ASP.TimeUnitId,
+    ASP.CataloguePriceCalculationTypeId,
+    ASP.CurrencyCode,
+    ASP.Price,
+    ASP.LastUpdated,
+    ASP.PublishedStatusId
+    FROM @AssociatedServicesPrices ASP
+    INNER JOIN catalogue.CatalogueItems CI
+        ON CI.Id = ASP.CatalogueItemId
+
+    UPDATE catalogue.CataloguePrices SET Price = NULL;
+
+    --Insert flat Prices
+    INSERT INTO catalogue.CataloguePriceTiers(CataloguePriceId, LowerRange, UpperRange, Price)
+    SELECT
+        IPI.Id, 1, NULL, IPI.Price
+    FROM @InsertedPriceIds IPI
+    WHERE CataloguePriceTypeId = 1
+
+    --Insert Tiered Prices
+    INSERT INTO catalogue.CataloguePriceTiers(CataloguePriceId, LowerRange, UpperRange, Price)
+        SELECT
+            IPI.Id AS CataloguePriceId,
+            1 AS LowerRange,
+            9, 
+            IPI.Price
+        FROM @InsertedPriceIds IPI
+        WHERE CataloguePriceTypeId = 2
+    UNION ALL
+        SELECT
+            IPI.Id AS CataloguePriceId,
+            10 AS LowerRange, 
+            99,
+            IPI.Price / 2
+        FROM @InsertedPriceIds IPI
+        WHERE CataloguePriceTypeId = 2
+    UNION ALL
+        SELECT
+            IPI.Id AS CataloguePriceId,
+            100 AS LowerRange,
+            NULL,
+            IPI.Price / 4
+        FROM @InsertedPriceIds IPI
+        WHERE CataloguePriceTypeId = 2
+    ORDER BY
+        CataloguePriceId, LowerRange;
 
 END;
 GO
