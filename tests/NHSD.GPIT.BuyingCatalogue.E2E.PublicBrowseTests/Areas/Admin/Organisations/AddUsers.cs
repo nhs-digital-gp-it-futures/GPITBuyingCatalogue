@@ -61,9 +61,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.Organisations
 
             CommonActions.PageLoadedCorrectGetIndex(
                 typeof(OrganisationsController),
-                nameof(OrganisationsController.Details))
-                .Should()
-                .BeTrue();
+                nameof(OrganisationsController.Users)).Should().BeTrue();
         }
 
         [Fact]

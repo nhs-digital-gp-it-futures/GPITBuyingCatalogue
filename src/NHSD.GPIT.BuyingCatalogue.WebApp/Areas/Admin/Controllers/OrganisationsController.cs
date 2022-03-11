@@ -262,7 +262,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
 
             var model = new AddUserModel(organisation)
             {
-                BackLink = Url.Action(nameof(Details), new { organisationId }),
+                BackLink = Url.Action(nameof(Users), new { organisationId }),
             };
 
             return View(model);
