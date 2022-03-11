@@ -53,43 +53,12 @@
                          new { organisationId = @Model.Organisation.Id })"><strong>User accounts</strong></a>
             <p>Add, edit and view user accounts for @Model.Organisation.Name.</p>
         </li>
+        <li>
+            <a href="@Url.Action(
+                         nameof(OrganisationsController.RelatedOrganisations),
+                         typeof(OrganisationsController).ControllerName(),
+                         new { organisationId = @Model.Organisation.Id })"><strong>Related organisations</strong></a>
+            <p>View and remove organisations that @Model.Organisation.Name can act on behalf of.</p>
+        </li>
     </ul>
-
-    <h2>Related organisations</h2>
-    <p>These are the organisations this organisation can create orders on behalf of.</p>
-    <div data-test-id="add-organisation-button">
-        <vc:nhs-action-link url="/admin/organisations/proxy/@Model.Organisation.Id" text="Relate to an organisation" />
-    </div>
-
-    <div id="related-org-table" data-test-id="related-org-table">
-        <nhs-table>
-            <nhs-table-column>
-                Organisation name
-            </nhs-table-column>
-            <nhs-table-column>
-                ODS code
-            </nhs-table-column>
-            <nhs-table-column>
-            </nhs-table-column>
-            @foreach (var relatedOrganisation in Model.RelatedOrganisations)
-            {
-                <nhs-table-row-container>
-                    <nhs-table-cell>
-                        <div data-test-id="related-org-name-@relatedOrganisation.Id">@relatedOrganisation.Name</div>
-                    </nhs-table-cell>
-                    <nhs-table-cell>
-                        <div data-test-id="related-org-externalIdentifier-@relatedOrganisation.Id">@relatedOrganisation.ExternalIdentifier</div>
-                    </nhs-table-cell>
-                    <nhs-table-cell>
-                        <a data-test-id="related-org-remove-@relatedOrganisation.Id" 
-                           asp-area="@typeof(OrganisationsController).AreaName()" 
-                           asp-controller="@typeof(OrganisationsController).ControllerName()" 
-                           asp-action="@nameof(OrganisationsController.RemoveAnOrganisation)" 
-                           asp-route-organisationId="@Model.Organisation.Id" 
-                           asp-route-relatedOrganisationId="@relatedOrganisation.Id">Remove</a>
-                    </nhs-table-cell>
-                </nhs-table-row-container>
-            }
-        </nhs-table>
-    </div>
 </div>

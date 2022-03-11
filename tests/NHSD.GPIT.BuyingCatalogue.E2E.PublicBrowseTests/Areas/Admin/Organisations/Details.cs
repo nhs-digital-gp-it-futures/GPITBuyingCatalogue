@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using FluentAssertions;
@@ -7,7 +6,6 @@ using Microsoft.EntityFrameworkCore;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Objects.Admin;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Utils;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.TestBases;
-using NHSD.GPIT.BuyingCatalogue.EntityFramework.Organisations.Models;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers;
 using Xunit;
 
@@ -63,18 +61,16 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.Organisations
         [Fact]
         public void Details_AllLinksDisplayed()
         {
-            CommonActions.ElementIsDisplayed(OrganisationObjects.HomeBreadcrumbLink).Should().BeTrue();
-            CommonActions.ElementIsDisplayed(OrganisationObjects.ManageBuyerOrganisationsBreadcrumbLink).Should().BeTrue();
+            CommonActions.ElementIsDisplayed(BreadcrumbObjects.HomeBreadcrumbLink).Should().BeTrue();
+            CommonActions.ElementIsDisplayed(BreadcrumbObjects.ManageBuyerOrganisationsBreadcrumbLink).Should().BeTrue();
             CommonActions.ElementIsDisplayed(OrganisationObjects.UserAccountsLink).Should().BeTrue();
-
-            AdminPages.Organisation.AddRelatedOrganisationButtonDisplayed().Should().BeTrue();
-            AdminPages.Organisation.RelatedOrganisationTableDisplayed().Should().BeTrue();
+            CommonActions.ElementIsDisplayed(OrganisationObjects.RelatedOrganisationsLink).Should().BeTrue();
         }
 
         [Fact]
         public void Details_ClickHomeBreadcrumbLink_ExpectedResult()
         {
-            CommonActions.ClickLinkElement(OrganisationObjects.HomeBreadcrumbLink);
+            CommonActions.ClickLinkElement(BreadcrumbObjects.HomeBreadcrumbLink);
 
             CommonActions.PageLoadedCorrectGetIndex(
                 typeof(HomeController),
@@ -84,7 +80,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.Organisations
         [Fact]
         public void Details_ClickManageBuyerOrganisationsBreadcrumbLink_ExpectedResult()
         {
-            CommonActions.ClickLinkElement(OrganisationObjects.ManageBuyerOrganisationsBreadcrumbLink);
+            CommonActions.ClickLinkElement(BreadcrumbObjects.ManageBuyerOrganisationsBreadcrumbLink);
 
             CommonActions.PageLoadedCorrectGetIndex(
                 typeof(OrganisationsController),
@@ -102,57 +98,13 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.Organisations
         }
 
         [Fact]
-        public async Task Details_AddRelatedOrganisation()
+        public void Details_ClickRelatedOrganisationsLink_ExpectedResult()
         {
-            AdminPages.Organisation.ClickAddRelatedOrgButton();
+            CommonActions.ClickLinkElement(OrganisationObjects.RelatedOrganisationsLink);
 
-            var relatedOrgId = AdminPages.AddRelatedOrganisation.SelectOrganisation(OrganisationId);
-
-            AdminPages.AddRelatedOrganisation.ClickAddRelatedOrgButton();
-
-            var organisation = AdminPages.Organisation.GetRelatedOrganisation(relatedOrgId);
-
-            await using var context = GetEndToEndDbContext();
-            var relatedOrgIds = await context.RelatedOrganisations.Where(s => s.OrganisationId == OrganisationId).ToListAsync();
-            relatedOrgIds.Select(s => s.RelatedOrganisationId).Should().Contain(relatedOrgId);
-
-            var relatedOrganisation = await context.Organisations.SingleAsync(s => s.Id == relatedOrgId);
-
-            organisation.OrganisationName.Should().BeEquivalentTo(relatedOrganisation.Name);
-            organisation.OdsCode.Should().BeEquivalentTo(relatedOrganisation.ExternalIdentifier);
-        }
-
-        [Fact]
-        public async Task Details_RemoveRelatedOrganisation()
-        {
-            var relatedOrgId = await AddRelatedOrganisation();
-
-            AdminPages.Organisation.RemoveRelatedOrganisation(relatedOrgId);
-
-            await using var context = GetEndToEndDbContext();
-            var relationships = await context.RelatedOrganisations.ToListAsync();
-            var selectedRelationships = relationships.Where(o => o.OrganisationId == OrganisationId);
-
-            selectedRelationships.Select(s => s.RelatedOrganisationId).Should().NotContain(relatedOrgId);
-        }
-
-        private async Task<int> AddRelatedOrganisation()
-        {
-            await using var context = GetEndToEndDbContext();
-            var organisations = await context.Organisations.Where(o => o.Id != OrganisationId).ToListAsync();
-
-            var relatedOrganisation = new RelatedOrganisation
-            {
-                OrganisationId = OrganisationId,
-                RelatedOrganisationId = organisations[new Random().Next(organisations.Count)].Id,
-            };
-
-            context.RelatedOrganisations.Add(relatedOrganisation);
-            await context.SaveChangesAsync();
-
-            Driver.Navigate().Refresh();
-
-            return relatedOrganisation.RelatedOrganisationId;
+            CommonActions.PageLoadedCorrectGetIndex(
+                typeof(OrganisationsController),
+                nameof(OrganisationsController.RelatedOrganisations)).Should().BeTrue();
         }
     }
 }
