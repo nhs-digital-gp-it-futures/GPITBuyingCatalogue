@@ -19,6 +19,9 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Organisations
 {
     public static class OrganisationsServiceTests
     {
+        private const int OrganisationId = 2;
+        private const int NominatedOrganisationId = 3;
+
         private const string OdsCode = "OdsCode";
         private const string OrganisationName = "OrganisationName";
         private const string Junk = "Junk";
@@ -105,6 +108,157 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Organisations
             var results = await service.GetOrganisationsBySearchTerm(searchTerm);
 
             results.Should().BeEquivalentTo(organisations.Except(new[] { noMatch }));
+        }
+
+        [Theory]
+        [InMemoryDbAutoData]
+        public static async Task GetNominatedOrganisations_NoRelationshipsExist_EmptySetReturned(
+            [Frozen] BuyingCatalogueDbContext context,
+            OrganisationsService service)
+        {
+            var existing = await context.RelatedOrganisations
+                .Where(x => x.RelatedOrganisationId == OrganisationId)
+                .ToListAsync();
+
+            if (existing.Any())
+            {
+                existing.ForEach(x => context.RelatedOrganisations.Remove(x));
+                await context.SaveChangesAsync();
+            }
+
+            var actual = await service.GetNominatedOrganisations(OrganisationId);
+
+            actual.Should().BeEmpty();
+        }
+
+        [Theory]
+        [InMemoryDbAutoData]
+        public static async Task GetNominatedOrganisations_RelationshipsExist_CorrectResultsReturned(
+            Organisation organisation,
+            [Frozen] BuyingCatalogueDbContext context,
+            OrganisationsService service)
+        {
+            var existing = await context.RelatedOrganisations
+                .Where(x => x.RelatedOrganisationId == OrganisationId)
+                .ToListAsync();
+
+            if (existing.Any())
+            {
+                existing.ForEach(x => context.RelatedOrganisations.Remove(x));
+            }
+
+            context.Organisations.Add(organisation);
+            context.RelatedOrganisations.Add(new RelatedOrganisation(organisation.Id, OrganisationId));
+
+            await context.SaveChangesAsync();
+
+            var actual = await service.GetNominatedOrganisations(OrganisationId);
+
+            actual.Should().ContainSingle().Which.Id.Should().Be(organisation.Id);
+        }
+
+        [Theory]
+        [InMemoryDbAutoData]
+        public static async Task AddNominatedOrganisation_RelationshipAlreadyExists_NoActionTaken(
+            [Frozen] BuyingCatalogueDbContext context,
+            OrganisationsService service)
+        {
+            var existing = await context.RelatedOrganisations
+                .FirstOrDefaultAsync(x => x.OrganisationId == NominatedOrganisationId
+                    && x.RelatedOrganisationId == OrganisationId);
+
+            if (existing == null)
+            {
+                context.RelatedOrganisations.Add(new RelatedOrganisation(NominatedOrganisationId, OrganisationId));
+                await context.SaveChangesAsync();
+            }
+
+            await service.AddNominatedOrganisation(OrganisationId, NominatedOrganisationId);
+
+            var actual = await context.RelatedOrganisations
+                .FirstOrDefaultAsync(x => x.OrganisationId == NominatedOrganisationId
+                    && x.RelatedOrganisationId == OrganisationId);
+
+            actual.Should().NotBeNull();
+            actual!.OrganisationId.Should().Be(NominatedOrganisationId);
+            actual.RelatedOrganisationId.Should().Be(OrganisationId);
+        }
+
+        [Theory]
+        [InMemoryDbAutoData]
+        public static async Task AddNominatedOrganisation_RelationshipDoesNotExist_CreatesNewRelationship(
+            [Frozen] BuyingCatalogueDbContext context,
+            OrganisationsService service)
+        {
+            var existing = await context.RelatedOrganisations
+                .FirstOrDefaultAsync(x => x.OrganisationId == NominatedOrganisationId
+                    && x.RelatedOrganisationId == OrganisationId);
+
+            if (existing != null)
+            {
+                context.RelatedOrganisations.Remove(existing);
+                await context.SaveChangesAsync();
+            }
+
+            await service.AddNominatedOrganisation(OrganisationId, NominatedOrganisationId);
+
+            var actual = await context.RelatedOrganisations
+                .FirstOrDefaultAsync(x => x.OrganisationId == NominatedOrganisationId
+                    && x.RelatedOrganisationId == OrganisationId);
+
+            actual.Should().NotBeNull();
+            actual!.OrganisationId.Should().Be(NominatedOrganisationId);
+            actual.RelatedOrganisationId.Should().Be(OrganisationId);
+        }
+
+        [Theory]
+        [InMemoryDbAutoData]
+        public static async Task RemoveNominatedOrganisation_RelationshipAlreadyExists_RemovesRelationship(
+            [Frozen] BuyingCatalogueDbContext context,
+            OrganisationsService service)
+        {
+            var existing = await context.RelatedOrganisations
+                .FirstOrDefaultAsync(x => x.OrganisationId == NominatedOrganisationId
+                    && x.RelatedOrganisationId == OrganisationId);
+
+            if (existing == null)
+            {
+                context.RelatedOrganisations.Add(new RelatedOrganisation(NominatedOrganisationId, OrganisationId));
+                await context.SaveChangesAsync();
+            }
+
+            await service.RemoveNominatedOrganisation(OrganisationId, NominatedOrganisationId);
+
+            var actual = await context.RelatedOrganisations
+                .FirstOrDefaultAsync(x => x.OrganisationId == NominatedOrganisationId
+                    && x.RelatedOrganisationId == OrganisationId);
+
+            actual.Should().BeNull();
+        }
+
+        [Theory]
+        [InMemoryDbAutoData]
+        public static async Task RemoveNominatedOrganisation_RelationshipDoesNotExist_NoActionTaken(
+            [Frozen] BuyingCatalogueDbContext context,
+            OrganisationsService service)
+        {
+            var existing = await context.RelatedOrganisations
+                .FirstOrDefaultAsync(x => x.OrganisationId == NominatedOrganisationId
+                    && x.RelatedOrganisationId == OrganisationId);
+
+            if (existing != null)
+            {
+                context.RelatedOrganisations.Remove(existing);
+                await context.SaveChangesAsync();
+            }
+
+            await service.RemoveNominatedOrganisation(OrganisationId, NominatedOrganisationId);
+
+            var actual = await context.RelatedOrganisations
+                .FirstOrDefaultAsync(x => x.OrganisationId == NominatedOrganisationId
+                    && x.RelatedOrganisationId == OrganisationId);
+
+            actual.Should().BeNull();
         }
 
         private static List<Organisation> GetOrganisationsForSearchTerm(string searchTerm)

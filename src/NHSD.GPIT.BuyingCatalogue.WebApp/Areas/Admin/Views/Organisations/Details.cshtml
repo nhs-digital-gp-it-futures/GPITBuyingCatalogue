@@ -60,5 +60,12 @@
                          new { organisationId = @Model.Organisation.Id })"><strong>Related organisations</strong></a>
             <p>View and remove organisations that @Model.Organisation.Name can act on behalf of.</p>
         </li>
+        <li>
+            <a href="@Url.Action(
+                         nameof(OrganisationsController.NominatedOrganisations),
+                         typeof(OrganisationsController).ControllerName(),
+                         new { organisationId = @Model.Organisation.Id })"><strong>Nominated organisations</strong></a>
+            <p>Add, remove and view organisations that can act on behalf of @Model.Organisation.Name.</p>
+        </li>
     </ul>
 </div>
