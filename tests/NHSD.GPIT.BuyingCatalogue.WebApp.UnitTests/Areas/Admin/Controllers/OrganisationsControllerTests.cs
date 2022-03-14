@@ -216,7 +216,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
 
         [Theory]
         [CommonAutoData]
-        public static async Task Get_UserAccounts_ReturnsExpectedResult(
+        public static async Task Get_Users_ReturnsExpectedResult(
             Organisation organisation,
             List<AspNetUser> users,
             [Frozen] Mock<IOrganisationsService> mockOrganisationsService,
@@ -364,6 +364,96 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
 
             result.Should().NotBeNull();
             result.ActionName.Should().Be(nameof(OrganisationsController.Users));
+        }
+
+        [Theory]
+        [CommonAutoData]
+        public static async Task Get_RelatedOrganisations_ReturnsExpectedResult(
+            Organisation organisation,
+            Organisation relatedOrganisation,
+            [Frozen] Mock<IOrganisationsService> mockOrganisationsService,
+            OrganisationsController controller)
+        {
+            mockOrganisationsService
+                .Setup(x => x.GetOrganisation(organisation.Id))
+                .ReturnsAsync(organisation);
+
+            mockOrganisationsService
+                .Setup(x => x.GetRelatedOrganisations(organisation.Id))
+                .ReturnsAsync(new List<Organisation> { relatedOrganisation });
+
+            var result = (await controller.RelatedOrganisations(organisation.Id)).As<ViewResult>();
+
+            mockOrganisationsService.VerifyAll();
+
+            result.Should().NotBeNull();
+            result.ViewName.Should().BeNullOrEmpty();
+
+            var model = result.Model.Should().BeAssignableTo<RelatedOrganisationsModel>().Subject;
+
+            model.OrganisationId.Should().Be(organisation.Id);
+            model.OrganisationName.Should().Be(organisation.Name);
+            model.RelatedOrganisations.Should().BeEquivalentTo(new[] { relatedOrganisation });
+        }
+
+        [Theory]
+        [CommonAutoData]
+        public static async Task Get_RemoveRelatedOrganisation_ReturnsExpectedResult(
+            Organisation organisation,
+            Organisation relatedOrganisation,
+            [Frozen] Mock<IOrganisationsService> mockOrganisationsService,
+            OrganisationsController controller)
+        {
+            mockOrganisationsService
+                .Setup(x => x.GetOrganisation(organisation.Id))
+                .ReturnsAsync(organisation);
+
+            mockOrganisationsService
+                .Setup(x => x.GetOrganisation(relatedOrganisation.Id))
+                .ReturnsAsync(relatedOrganisation);
+
+            var result = (await controller.RemoveRelatedOrganisation(organisation.Id, relatedOrganisation.Id)).As<ViewResult>();
+
+            mockOrganisationsService.VerifyAll();
+
+            result.Should().NotBeNull();
+            result.ViewName.Should().BeNullOrEmpty();
+
+            var model = result.Model.Should().BeAssignableTo<RemoveRelatedOrganisationModel>().Subject;
+
+            model.OrganisationId.Should().Be(organisation.Id);
+            model.OrganisationName.Should().Be(organisation.Name);
+            model.RelatedOrganisationId.Should().Be(relatedOrganisation.Id);
+            model.RelatedOrganisationName.Should().Be(relatedOrganisation.Name);
+        }
+
+        [Theory]
+        [CommonAutoData]
+        public static async Task Post_RemoveRelatedOrganisation_ReturnsExpectedResult(
+            RemoveRelatedOrganisationModel model,
+            [Frozen] Mock<IOrganisationsService> mockOrganisationsService,
+            OrganisationsController controller)
+        {
+            mockOrganisationsService
+                .Setup(x => x.RemoveRelatedOrganisations(model.OrganisationId, model.RelatedOrganisationId))
+                .Returns(Task.CompletedTask);
+
+            var result = await controller.RemoveRelatedOrganisation(
+                model.OrganisationId,
+                model.RelatedOrganisationId,
+                model);
+
+            mockOrganisationsService.VerifyAll();
+
+            result.Should().NotBeNull();
+
+            var redirectResult = result.Should().BeAssignableTo<RedirectToActionResult>().Subject;
+
+            redirectResult.ActionName.Should().Be(nameof(OrganisationsController.RelatedOrganisations));
+            redirectResult.RouteValues.Should().BeEquivalentTo(new Dictionary<string, int>
+            {
+                { "organisationId", model.OrganisationId },
+            });
         }
     }
 }

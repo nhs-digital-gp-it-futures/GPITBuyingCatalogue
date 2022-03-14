@@ -6,64 +6,60 @@ using FluentAssertions;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Objects.Admin;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Objects.Common;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Utils;
-using NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.RandomData;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.TestBases;
-using NHSD.GPIT.BuyingCatalogue.EntityFramework.Users.Models;
-using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
+using NHSD.GPIT.BuyingCatalogue.EntityFramework.Organisations.Models;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers;
 using Xunit;
 
 namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.Organisations
 {
-    public class Users : AuthorityTestBase, IClassFixture<LocalWebApplicationFactory>, IDisposable
+    public class RelatedOrganisations : AuthorityTestBase, IClassFixture<LocalWebApplicationFactory>, IDisposable
     {
         private const int OrganisationId = 2;
+        private const int RelatedOrganisationId = 3;
 
         private static readonly Dictionary<string, string> Parameters = new()
         {
             { nameof(OrganisationId), OrganisationId.ToString() },
         };
 
-        public Users(LocalWebApplicationFactory factory)
-            : base(factory, typeof(OrganisationsController), nameof(OrganisationsController.Users), Parameters)
+        public RelatedOrganisations(LocalWebApplicationFactory factory)
+            : base(factory, typeof(OrganisationsController), nameof(OrganisationsController.RelatedOrganisations), Parameters)
         {
         }
 
         [Fact]
-        public void Users_WithNoUsers_AllElementsDisplayed()
+        public void RelatedOrganisations_WithNoRelatedOrganisations_AllElementsDisplayed()
         {
             CommonActions.ElementIsDisplayed(BreadcrumbObjects.HomeBreadcrumbLink).Should().BeTrue();
             CommonActions.ElementIsDisplayed(BreadcrumbObjects.ManageBuyerOrganisationsBreadcrumbLink).Should().BeTrue();
             CommonActions.ElementIsDisplayed(BreadcrumbObjects.OrganisationDetailsBreadcrumbLink).Should().BeTrue();
             CommonActions.ElementIsDisplayed(CommonSelectors.Header1).Should().BeTrue();
-            CommonActions.ElementIsDisplayed(OrganisationUsersObjects.AddUserLink).Should().BeTrue();
-            CommonActions.ElementExists(OrganisationUsersObjects.UsersTable).Should().BeFalse();
-            CommonActions.ElementIsDisplayed(OrganisationUsersObjects.UsersErrorMessage).Should().BeTrue();
-            CommonActions.ElementIsDisplayed(OrganisationUsersObjects.ContinueLink).Should().BeTrue();
+            CommonActions.ElementExists(RelatedOrganisationObjects.RelatedOrganisationsTable).Should().BeFalse();
+            CommonActions.ElementIsDisplayed(RelatedOrganisationObjects.RelatedOrganisationsErrorMessage).Should().BeTrue();
+            CommonActions.ElementIsDisplayed(RelatedOrganisationObjects.ContinueLink).Should().BeTrue();
         }
 
         [Fact]
-        public async Task Users_WithUsers_AllElementsDisplayed()
+        public async Task RelatedOrganisations_WithRelatedOrganisations_AllElementsDisplayed()
         {
-            var user = await AddUser();
+            var organisation = await AddRelatedOrganisation();
 
             CommonActions.ElementIsDisplayed(BreadcrumbObjects.HomeBreadcrumbLink).Should().BeTrue();
             CommonActions.ElementIsDisplayed(BreadcrumbObjects.ManageBuyerOrganisationsBreadcrumbLink).Should().BeTrue();
             CommonActions.ElementIsDisplayed(BreadcrumbObjects.OrganisationDetailsBreadcrumbLink).Should().BeTrue();
             CommonActions.ElementIsDisplayed(CommonSelectors.Header1).Should().BeTrue();
-            CommonActions.ElementIsDisplayed(OrganisationUsersObjects.AddUserLink).Should().BeTrue();
-            CommonActions.ElementIsDisplayed(OrganisationUsersObjects.UsersTable).Should().BeTrue();
-            CommonActions.ElementExists(OrganisationUsersObjects.UsersErrorMessage).Should().BeFalse();
-            CommonActions.ElementIsDisplayed(OrganisationUsersObjects.ContinueLink).Should().BeTrue();
+            CommonActions.ElementIsDisplayed(RelatedOrganisationObjects.RelatedOrganisationsTable).Should().BeTrue();
+            CommonActions.ElementExists(RelatedOrganisationObjects.RelatedOrganisationsErrorMessage).Should().BeFalse();
+            CommonActions.ElementIsDisplayed(RelatedOrganisationObjects.ContinueLink).Should().BeTrue();
 
-            CommonActions.ElementTextEqualTo(OrganisationUsersObjects.UserName, user.GetDisplayName());
-            CommonActions.ElementTextEqualTo(OrganisationUsersObjects.UserPhone, user.PhoneNumber);
-            CommonActions.ElementTextEqualTo(OrganisationUsersObjects.UserEmail, user.Email);
-            CommonActions.ElementIsDisplayed(OrganisationUsersObjects.UserStatusLink).Should().BeTrue();
+            CommonActions.ElementTextEqualTo(RelatedOrganisationObjects.RelatedOrganisationName, organisation.Name);
+            CommonActions.ElementTextEqualTo(RelatedOrganisationObjects.RelatedOrganisationsOdsCode, organisation.ExternalIdentifier);
+            CommonActions.ElementIsDisplayed(RelatedOrganisationObjects.RemoveRelatedOrganisationLink).Should().BeTrue();
         }
 
         [Fact]
-        public void Users_ClickHomeBreadcrumbLink_DisplaysCorrectPage()
+        public void RelatedOrganisations_ClickHomeBreadcrumbLink_DisplaysCorrectPage()
         {
             CommonActions.ClickLinkElement(BreadcrumbObjects.HomeBreadcrumbLink);
 
@@ -73,7 +69,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.Organisations
         }
 
         [Fact]
-        public void Users_ClickManageBuyerOrganisationsBreadcrumbLink_DisplaysCorrectPage()
+        public void RelatedOrganisations_ClickManageBuyerOrganisationsBreadcrumbLink_DisplaysCorrectPage()
         {
             CommonActions.ClickLinkElement(BreadcrumbObjects.ManageBuyerOrganisationsBreadcrumbLink);
 
@@ -83,7 +79,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.Organisations
         }
 
         [Fact]
-        public void Users_ClickOrganisationDetailsBreadcrumbLink_DisplaysCorrectPage()
+        public void RelatedOrganisations_ClickOrganisationDetailsBreadcrumbLink_DisplaysCorrectPage()
         {
             CommonActions.ClickLinkElement(BreadcrumbObjects.OrganisationDetailsBreadcrumbLink);
 
@@ -93,31 +89,23 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.Organisations
         }
 
         [Fact]
-        public void Users_ClickAddUserLink_DisplaysCorrectPage()
+        public async Task RelatedOrganisations_ClickRemoveRelatedOrganisationLink_DisplaysCorrectPage()
         {
-            CommonActions.ClickLinkElement(OrganisationUsersObjects.AddUserLink);
+            await AddRelatedOrganisation();
+
+            CommonActions.ClickLinkElement(RelatedOrganisationObjects.RemoveRelatedOrganisationLink);
 
             CommonActions.PageLoadedCorrectGetIndex(
                 typeof(OrganisationsController),
-                nameof(OrganisationsController.AddUser)).Should().BeTrue();
+                nameof(OrganisationsController.RemoveRelatedOrganisation)).Should().BeTrue();
         }
 
         [Fact]
-        public async Task Users_ClickUserStatusLink_DisplaysCorrectPage()
+        public async Task RelatedOrganisations_ClickContinueLink_DisplaysCorrectPage()
         {
-            await AddUser();
+            await AddRelatedOrganisation();
 
-            CommonActions.ClickLinkElement(OrganisationUsersObjects.UserStatusLink);
-
-            CommonActions.PageLoadedCorrectGetIndex(
-                typeof(OrganisationsController),
-                nameof(OrganisationsController.UserStatus)).Should().BeTrue();
-        }
-
-        [Fact]
-        public void Users_ClickContinueLink_DisplaysCorrectPage()
-        {
-            CommonActions.ClickLinkElement(OrganisationUsersObjects.ContinueLink);
+            CommonActions.ClickLinkElement(RelatedOrganisationObjects.ContinueLink);
 
             CommonActions.PageLoadedCorrectGetIndex(
                 typeof(OrganisationsController),
@@ -127,20 +115,20 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.Organisations
         public void Dispose()
         {
             using var context = GetEndToEndDbContext();
-            var users = context.AspNetUsers.Where(x => x.PrimaryOrganisationId == OrganisationId).ToList();
-            users.ForEach(x => context.AspNetUsers.Remove(x));
+            var relationships = context.RelatedOrganisations.Where(x => x.OrganisationId == OrganisationId).ToList();
+            relationships.ForEach(x => context.RelatedOrganisations.Remove(x));
             context.SaveChanges();
         }
 
-        private async Task<AspNetUser> AddUser()
+        private async Task<Organisation> AddRelatedOrganisation()
         {
-            var user = GenerateUser.GenerateAspNetUser(OrganisationId, DefaultPassword, isEnabled: true);
             await using var context = GetEndToEndDbContext();
-            context.Add(user);
+            var organisation = context.Organisations.Single(x => x.Id == RelatedOrganisationId);
+            context.RelatedOrganisations.Add(new RelatedOrganisation(OrganisationId, RelatedOrganisationId));
             await context.SaveChangesAsync();
             Driver.Navigate().Refresh();
 
-            return user;
+            return organisation;
         }
     }
 }

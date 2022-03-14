@@ -315,70 +315,47 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
             return RedirectToAction(nameof(Users), new { organisationId });
         }
 
-        [HttpGet("proxy/{organisationId}")]
-        public async Task<IActionResult> AddAnOrganisation(int organisationId)
+        [HttpGet("{organisationId}/related")]
+        public async Task<IActionResult> RelatedOrganisations(int organisationId)
         {
             var organisation = await organisationsService.GetOrganisation(organisationId);
+            var relatedOrganisations = await organisationsService.GetRelatedOrganisations(organisationId);
 
-            if (organisation is null)
-                return BadRequest($"No Organisation found for Id: {organisationId}");
-
-            var availableOrganisations = await organisationsService.GetUnrelatedOrganisations(organisationId);
-
-            var model = new AddAnOrganisationModel(organisation, availableOrganisations)
+            var model = new RelatedOrganisationsModel
             {
                 BackLink = Url.Action(nameof(Details), new { organisationId }),
+                OrganisationId = organisationId,
+                OrganisationName = organisation.Name,
+                RelatedOrganisations = relatedOrganisations,
             };
 
             return View(model);
         }
 
-        [HttpPost("proxy/{organisationId}")]
-        public async Task<IActionResult> AddAnOrganisation(AddAnOrganisationModel model, int organisationId)
+        [HttpGet("{organisationId}/related/{relatedOrganisationId}/remove")]
+        public async Task<IActionResult> RemoveRelatedOrganisation(int organisationId, int relatedOrganisationId)
         {
-            if (!ModelState.IsValid)
-                return View(model);
-
-            await organisationsService.AddRelatedOrganisations(organisationId, model.SelectedOrganisation!.Value);
-
-            return RedirectToAction(
-                nameof(Details),
-                typeof(OrganisationsController).ControllerName(),
-                new { organisationId });
-        }
-
-        [HttpGet("removeproxy/{organisationId}/{relatedOrganisationId}")]
-        public async Task<IActionResult> RemoveAnOrganisation(int organisationId, int relatedOrganisationId)
-        {
-            var currentOrganisation = await organisationsService.GetOrganisation(organisationId);
-
-            if (currentOrganisation is null)
-                return BadRequest($"No Organisation found for Id: {organisationId}");
-
+            var organisation = await organisationsService.GetOrganisation(organisationId);
             var relatedOrganisation = await organisationsService.GetOrganisation(relatedOrganisationId);
 
-            if (relatedOrganisation is null)
-                return BadRequest($"No Organisation found for Id: {relatedOrganisationId}");
-
-            var model = new RemoveAnOrganisationModel(currentOrganisation, relatedOrganisation)
+            var model = new RemoveRelatedOrganisationModel
             {
-                BackLink = Url.Action(nameof(Details), new { organisationId }),
+                BackLink = Url.Action(nameof(RelatedOrganisations), new { organisationId }),
+                OrganisationId = organisationId,
+                OrganisationName = organisation.Name,
+                RelatedOrganisationId = relatedOrganisationId,
+                RelatedOrganisationName = relatedOrganisation.Name,
             };
 
             return View(model);
         }
 
-        [HttpPost("removeproxy/{organisationId}/{relatedOrganisationId}")]
-        public async Task<IActionResult> RemoveAnOrganisation(int organisationId, int relatedOrganisationId, RemoveAnOrganisationModel model)
+        [HttpPost("{organisationId}/related/{relatedOrganisationId}/remove")]
+        public async Task<IActionResult> RemoveRelatedOrganisation(int organisationId, int relatedOrganisationId, RemoveRelatedOrganisationModel model)
         {
-            if (!ModelState.IsValid)
-                return View(model);
-
             await organisationsService.RemoveRelatedOrganisations(organisationId, relatedOrganisationId);
-            return RedirectToAction(
-                nameof(Details),
-                typeof(OrganisationsController).ControllerName(),
-                new { organisationId });
+
+            return RedirectToAction(nameof(RelatedOrganisations), new { organisationId });
         }
 
         private async Task<IEnumerable<Organisation>> GetFilteredOrganisations(string search)
