@@ -207,13 +207,16 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.ManageOrders
             var callOffId = order.CallOffId.ToString();
             var solutionName = order.OrderItems.First().CatalogueItem.Name;
 
-            CommonActions.ElementAddValue(ManageOrdersDashboardObjects.SearchBar, solutionName);
+            RunTest(() =>
+            {
+                CommonActions.ElementAddValue(ManageOrdersDashboardObjects.SearchBar, solutionName);
 
-            CommonActions.WaitUntilElementIsDisplayed(ManageOrdersDashboardObjects.SearchListBox);
-            CommonActions.WaitUntilElementIsDisplayed(ManageOrdersDashboardObjects.SearchResultDescription(0));
+                CommonActions.WaitUntilElementIsDisplayed(ManageOrdersDashboardObjects.SearchListBox);
+                CommonActions.WaitUntilElementIsDisplayed(ManageOrdersDashboardObjects.SearchResultDescription(0));
 
-            CommonActions.ElementTextEqualTo(ManageOrdersDashboardObjects.SearchResultDescription(0), callOffId.FormatForComparison()).Should().BeTrue();
-            CommonActions.ElementTextEqualTo(ManageOrdersDashboardObjects.SearchResultTitle(0), "Solution".FormatForComparison()).Should().BeTrue();
+                CommonActions.ElementTextEqualTo(ManageOrdersDashboardObjects.SearchResultDescription(0), callOffId.FormatForComparison()).Should().BeTrue();
+                CommonActions.ElementTextEqualTo(ManageOrdersDashboardObjects.SearchResultTitle(0), "Solution".FormatForComparison()).Should().BeTrue();
+            });
         }
     }
 }
