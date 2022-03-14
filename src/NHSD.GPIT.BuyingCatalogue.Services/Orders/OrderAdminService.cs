@@ -73,7 +73,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
                     {
                         CallOffId = o.CallOffId,
                         OrganisationName = o.OrderingParty.Name,
-                        Created = o.LastUpdated,
+                        Created = o.Created,
                         Status = o.OrderStatus,
                     }).ToListAsync();
 
