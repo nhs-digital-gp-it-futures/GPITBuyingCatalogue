@@ -22,7 +22,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.Organisations
         [Fact]
         public void Index_AllElementsDisplayed()
         {
-            CommonActions.ElementIsDisplayed(OrganisationObjects.HomeBreadcrumbLink).Should().BeTrue();
+            CommonActions.ElementIsDisplayed(BreadcrumbObjects.HomeBreadcrumbLink).Should().BeTrue();
             CommonActions.ElementIsDisplayed(OrganisationObjects.AddOrganisationLink).Should().BeTrue();
             CommonActions.ElementIsDisplayed(OrganisationObjects.ImportPracticeListsButton).Should().BeTrue();
             CommonActions.ElementIsDisplayed(OrganisationObjects.SearchBar).Should().BeTrue();
@@ -41,7 +41,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.Organisations
         [Fact]
         public void Index_ClickHomeBreadcrumbLink_DisplaysCorrectPage()
         {
-            CommonActions.ClickLinkElement(OrganisationObjects.HomeBreadcrumbLink);
+            CommonActions.ClickLinkElement(BreadcrumbObjects.HomeBreadcrumbLink);
 
             CommonActions.PageLoadedCorrectGetIndex(
                 typeof(HomeController),
