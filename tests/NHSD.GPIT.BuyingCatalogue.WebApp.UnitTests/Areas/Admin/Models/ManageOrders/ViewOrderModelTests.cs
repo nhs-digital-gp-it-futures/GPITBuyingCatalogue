@@ -70,6 +70,5 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Models.ManageOr
 
             model.OrderItems.Should().AllSatisfy(oi => oi.Framework.Should().Be(framework));
         }
-
     }
 }
