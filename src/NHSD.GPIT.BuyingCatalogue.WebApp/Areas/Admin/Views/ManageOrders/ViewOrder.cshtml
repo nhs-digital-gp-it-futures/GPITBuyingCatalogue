@@ -41,7 +41,7 @@
         </nhs-summary-list-row>
         <nhs-summary-list-row label-text="Current status">
             <p data-test-id="view-order-status">
-                <nhs-tag colour="@GetTagColour(Model.OrderStatus)" text="@Model.OrderStatus.AsString(EnumFormat.EnumMemberValue)" />
+                <nhs-tag status-enum="@Model.OrderStatus" />
             </p>
         </nhs-summary-list-row>
     </nhs-summary-list>
@@ -122,11 +122,4 @@
 
 @{
     static string FundingType(bool? gmsOnly) => gmsOnly.GetValueOrDefault() ? "Central funding" : "Local funding";
-
-    NhsTagsTagHelper.TagColour GetTagColour(OrderStatus orderStatus) => orderStatus switch
-    {
-        OrderStatus.Complete => NhsTagsTagHelper.TagColour.Green,
-        OrderStatus.InProgress => NhsTagsTagHelper.TagColour.Yellow,
-        _ => NhsTagsTagHelper.TagColour.Grey,
-    };
 }
