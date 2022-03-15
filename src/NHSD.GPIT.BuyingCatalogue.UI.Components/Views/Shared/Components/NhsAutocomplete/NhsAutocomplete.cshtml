@@ -8,7 +8,7 @@
             <div id="@(Model.Id + "-container")"></div>
         </div>
         <input class="nhsuk-search__input" id="@(Model.Id + "-form-input")" name="@Model.QueryParameterName" type="search" autocomplete="off" value="@Model.SearchText">
-        @foreach(var queryParam in Context.Request.Query.Where(q => q.Key != Model.QueryParameterName))
+        @foreach(var queryParam in Context.Request.Query.Where(q => q.Key != Model.QueryParameterName || q.Key != "page"))
         {
             <input type="hidden" name="@queryParam.Key" value="@queryParam.Value">
         }

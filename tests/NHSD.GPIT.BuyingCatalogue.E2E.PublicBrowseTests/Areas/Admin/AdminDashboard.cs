@@ -127,8 +127,8 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin
             CommonActions.ClickLinkElement(HomeObjects.ManageAllOrdersLink);
 
             CommonActions.PageLoadedCorrectGetIndex(
-                typeof(HomeController),
-                nameof(HomeController.Index)).Should().BeTrue();
+                typeof(ManageOrdersController),
+                nameof(ManageOrdersController.Index)).Should().BeTrue();
         }
     }
 }

@@ -420,12 +420,12 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.PublicBrowse.Solution
         }
 
         [Fact]
-        public void CatalogueSolutions_SearchValid_DisplaysSolutions()
+        public async Task CatalogueSolutions_SearchValid_DisplaysSolutions()
         {
             using var context = GetEndToEndDbContext();
             var solution = context.Solutions.Include(s => s.CatalogueItem).First(s => s.CatalogueItem.PublishedStatus == PublicationStatus.Published);
 
-            CommonActions.ElementAddValue(Objects.PublicBrowse.SolutionsObjects.SearchBar, solution.CatalogueItem.Name);
+            await CommonActions.ElementAddValueWithDelay(Objects.PublicBrowse.SolutionsObjects.SearchBar, solution.CatalogueItem.Name);
 
             CommonActions.WaitUntilElementIsDisplayed(Objects.PublicBrowse.SolutionsObjects.SearchListBox);
 
