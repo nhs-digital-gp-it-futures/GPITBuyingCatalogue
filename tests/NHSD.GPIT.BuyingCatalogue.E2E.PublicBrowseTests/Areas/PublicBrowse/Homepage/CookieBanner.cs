@@ -12,6 +12,7 @@ using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Controllers;
 using OpenQA.Selenium;
 using Xunit;
+using Xunit.Abstractions;
 
 namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.PublicBrowse.Homepage
 {
@@ -20,89 +21,105 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.PublicBrowse.Homepage
     {
         private static readonly Dictionary<string, string> Parameters = new();
 
-        public CookieBanner(LocalWebApplicationFactory factory)
+        public CookieBanner(LocalWebApplicationFactory factory, ITestOutputHelper testOutputHelper)
             : base(
                 factory,
                 typeof(HomeController),
                 nameof(HomeController.Index),
-                Parameters)
+                Parameters,
+                testOutputHelper)
         {
-            Driver.Manage().Cookies.DeleteAllCookies();
+            RunTest(() =>
+            {
+                Driver.Manage().Cookies.DeleteAllCookies();
+            });
         }
 
         [Fact]
         public void CookieBanner_NoCookie_ClickAcceptAnalytics_HidesBanner()
         {
-            CommonActions.ElementIsDisplayed(Objects.Common.CookieBanner.Banner).Should().BeTrue();
-            CommonActions.ElementExists(Objects.Common.CookieBanner.HotjarScript).Should().BeFalse();
+            RunTest(() =>
+            {
+                CommonActions.ElementIsDisplayed(Objects.Common.CookieBanner.Banner).Should().BeTrue();
+                CommonActions.ElementExists(Objects.Common.CookieBanner.HotjarScript).Should().BeFalse();
 
-            CommonActions.ClickLinkElement(Objects.Common.CookieBanner.AcceptAnalyticsLink);
+                CommonActions.ClickLinkElement(Objects.Common.CookieBanner.AcceptAnalyticsLink);
 
-            CommonActions.PageLoadedCorrectGetIndex(
-                    typeof(HomeController),
-                    nameof(HomeController.Index))
-                .Should()
-                .BeTrue();
+                CommonActions.PageLoadedCorrectGetIndex(
+                        typeof(HomeController),
+                        nameof(HomeController.Index))
+                    .Should()
+                    .BeTrue();
 
-            CommonActions.ElementIsDisplayed(Objects.Common.CookieBanner.Banner).Should().BeFalse();
+                CommonActions.ElementIsDisplayed(Objects.Common.CookieBanner.Banner).Should().BeFalse();
 
-            CommonActions.ElementExists(Objects.Common.CookieBanner.AdobeAnalyticsScript).Should().BeTrue();
-            CommonActions.ElementExists(Objects.Common.CookieBanner.AdobeAnalyticsDataScript).Should().BeTrue();
-            CommonActions.ElementExists(Objects.Common.CookieBanner.HotjarScript).Should().BeTrue();
+                CommonActions.ElementExists(Objects.Common.CookieBanner.AdobeAnalyticsScript).Should().BeTrue();
+                CommonActions.ElementExists(Objects.Common.CookieBanner.AdobeAnalyticsDataScript).Should().BeTrue();
+                CommonActions.ElementExists(Objects.Common.CookieBanner.HotjarScript).Should().BeTrue();
 
-            Driver.Manage().Cookies.GetCookieNamed(CatalogueCookies.BuyingCatalogueConsent).Should().NotBeNull();
+                Driver.Manage().Cookies.GetCookieNamed(CatalogueCookies.BuyingCatalogueConsent).Should().NotBeNull();
+            });
         }
 
         [Fact]
         public void CookieBanner_NoCookie_ClickRejectAnalytics_HidesBanner()
         {
-            CommonActions.ElementIsDisplayed(Objects.Common.CookieBanner.Banner).Should().BeTrue();
-            CommonActions.ElementExists(Objects.Common.CookieBanner.HotjarScript).Should().BeFalse();
+            RunTest(() =>
+            {
+                CommonActions.ElementIsDisplayed(Objects.Common.CookieBanner.Banner).Should().BeTrue();
+                CommonActions.ElementExists(Objects.Common.CookieBanner.HotjarScript).Should().BeFalse();
 
-            CommonActions.ClickLinkElement(Objects.Common.CookieBanner.RejectAnalyticsLink);
+                CommonActions.ClickLinkElement(Objects.Common.CookieBanner.RejectAnalyticsLink);
 
-            CommonActions.PageLoadedCorrectGetIndex(
-                    typeof(HomeController),
-                    nameof(HomeController.Index))
-                .Should()
-                .BeTrue();
+                CommonActions.PageLoadedCorrectGetIndex(
+                        typeof(HomeController),
+                        nameof(HomeController.Index))
+                    .Should()
+                    .BeTrue();
 
-            CommonActions.ElementIsDisplayed(Objects.Common.CookieBanner.Banner).Should().BeFalse();
+                CommonActions.ElementIsDisplayed(Objects.Common.CookieBanner.Banner).Should().BeFalse();
 
-            CommonActions.ElementExists(Objects.Common.CookieBanner.AdobeAnalyticsScript).Should().BeFalse();
-            CommonActions.ElementExists(Objects.Common.CookieBanner.AdobeAnalyticsDataScript).Should().BeFalse();
-            CommonActions.ElementExists(Objects.Common.CookieBanner.HotjarScript).Should().BeFalse();
+                CommonActions.ElementExists(Objects.Common.CookieBanner.AdobeAnalyticsScript).Should().BeFalse();
+                CommonActions.ElementExists(Objects.Common.CookieBanner.AdobeAnalyticsDataScript).Should().BeFalse();
+                CommonActions.ElementExists(Objects.Common.CookieBanner.HotjarScript).Should().BeFalse();
 
-            Driver.Manage().Cookies.GetCookieNamed(CatalogueCookies.BuyingCatalogueConsent).Should().NotBeNull();
+                Driver.Manage().Cookies.GetCookieNamed(CatalogueCookies.BuyingCatalogueConsent).Should().NotBeNull();
+            });
         }
 
         [Fact]
         public void CookieBanner_NoCookie_CookieBannerDisplayed()
         {
-            CommonActions.ElementIsDisplayed(Objects.Common.CookieBanner.Banner).Should().BeTrue();
-            CommonActions.ElementExists(Objects.Common.CookieBanner.HotjarScript).Should().BeFalse();
+            RunTest(() =>
+            {
+                CommonActions.ElementIsDisplayed(Objects.Common.CookieBanner.Banner).Should().BeTrue();
+                CommonActions.ElementExists(Objects.Common.CookieBanner.HotjarScript).Should().BeFalse();
 
-            NavigateToUrl(
-                typeof(SolutionsController),
-                nameof(SolutionsController.Index));
+                NavigateToUrl(
+                    typeof(SolutionsController),
+                    nameof(SolutionsController.Index));
 
-            CommonActions.ElementIsDisplayed(Objects.Common.CookieBanner.Banner).Should().BeTrue();
+                CommonActions.ElementIsDisplayed(Objects.Common.CookieBanner.Banner).Should().BeTrue();
 
-            CommonActions.ElementExists(Objects.Common.CookieBanner.AdobeAnalyticsScript).Should().BeFalse();
-            CommonActions.ElementExists(Objects.Common.CookieBanner.AdobeAnalyticsDataScript).Should().BeFalse();
-            CommonActions.ElementExists(Objects.Common.CookieBanner.HotjarScript).Should().BeFalse();
+                CommonActions.ElementExists(Objects.Common.CookieBanner.AdobeAnalyticsScript).Should().BeFalse();
+                CommonActions.ElementExists(Objects.Common.CookieBanner.AdobeAnalyticsDataScript).Should().BeFalse();
+                CommonActions.ElementExists(Objects.Common.CookieBanner.HotjarScript).Should().BeFalse();
+            });
         }
 
         [Fact]
         public void CookieBanner_WithCookie_WithoutAnalytics_CookieBannerDisplayed()
         {
-            AddConsentCookie(new CookieData { CreationDate = DateTime.UtcNow.Ticks });
+            RunTest(() =>
+            {
+                AddConsentCookie(new CookieData { CreationDate = DateTime.UtcNow.Ticks });
 
-            CommonActions.ElementIsDisplayed(Objects.Common.CookieBanner.Banner).Should().BeTrue();
+                CommonActions.ElementIsDisplayed(Objects.Common.CookieBanner.Banner).Should().BeTrue();
 
-            CommonActions.ElementExists(Objects.Common.CookieBanner.AdobeAnalyticsScript).Should().BeFalse();
-            CommonActions.ElementExists(Objects.Common.CookieBanner.AdobeAnalyticsDataScript).Should().BeFalse();
-            CommonActions.ElementExists(Objects.Common.CookieBanner.HotjarScript).Should().BeFalse();
+                CommonActions.ElementExists(Objects.Common.CookieBanner.AdobeAnalyticsScript).Should().BeFalse();
+                CommonActions.ElementExists(Objects.Common.CookieBanner.AdobeAnalyticsDataScript).Should().BeFalse();
+                CommonActions.ElementExists(Objects.Common.CookieBanner.HotjarScript).Should().BeFalse();
+            });
         }
 
         public void Dispose()

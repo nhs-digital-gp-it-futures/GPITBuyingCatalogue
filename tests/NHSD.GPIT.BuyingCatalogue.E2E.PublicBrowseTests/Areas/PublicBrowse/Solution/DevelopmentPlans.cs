@@ -11,6 +11,7 @@ using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers;
 using Xunit;
+using Xunit.Abstractions;
 
 namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.PublicBrowse.Solution
 {
@@ -29,51 +30,61 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.PublicBrowse.Solution
             { "SolutionId", SolutionWithDefaultSection.ToString() },
         };
 
-        public DevelopmentPlans(LocalWebApplicationFactory factory)
+        public DevelopmentPlans(LocalWebApplicationFactory factory, ITestOutputHelper testOutputHelper)
             : base(
                   factory,
                   typeof(SolutionsController),
                   nameof(SolutionsController.DevelopmentPlans),
-                  ParametersWithAllSections)
+                  ParametersWithAllSections,
+                  testOutputHelper)
         {
         }
 
         [Fact]
         public void DevelopmentPlans_HasAllSections_SectionsDisplayed()
         {
-            CommonActions.ElementTextContains(DevelopmentPlansObjects.RoadmapTitle, "Roadmaps").Should().BeTrue();
-            CommonActions.ElementIsDisplayed(DevelopmentPlansObjects.SupplierRoadmapSection).Should().BeTrue();
-            CommonActions.ElementIsDisplayed(DevelopmentPlansObjects.ProgramRoadmapSection).Should().BeTrue();
-            CommonActions.ElementIsDisplayed(DevelopmentPlansObjects.WorkOffPlansSection).Should().BeTrue();
+            RunTest(() =>
+            {
+                CommonActions.ElementTextContains(DevelopmentPlansObjects.RoadmapTitle, "Roadmaps").Should().BeTrue();
+                CommonActions.ElementIsDisplayed(DevelopmentPlansObjects.SupplierRoadmapSection).Should().BeTrue();
+                CommonActions.ElementIsDisplayed(DevelopmentPlansObjects.ProgramRoadmapSection).Should().BeTrue();
+                CommonActions.ElementIsDisplayed(DevelopmentPlansObjects.WorkOffPlansSection).Should().BeTrue();
+            });
         }
 
         [Fact]
         public void DevelopmentPlans_HasDefaultSections_SectionsDisplayed()
         {
-            NavigateToUrl(typeof(SolutionsController), nameof(SolutionsController.DevelopmentPlans), ParametersWithDefaultSections);
+            RunTest(() =>
+            {
+                NavigateToUrl(typeof(SolutionsController), nameof(SolutionsController.DevelopmentPlans), ParametersWithDefaultSections);
 
-            CommonActions.ElementTextContains(DevelopmentPlansObjects.RoadmapTitle, "Roadmap").Should().BeTrue();
-            CommonActions.ElementIsDisplayed(DevelopmentPlansObjects.SupplierRoadmapSection).Should().BeFalse();
-            CommonActions.ElementIsDisplayed(DevelopmentPlansObjects.ProgramRoadmapSection).Should().BeTrue();
-            CommonActions.ElementIsDisplayed(DevelopmentPlansObjects.WorkOffPlansSection).Should().BeFalse();
+                CommonActions.ElementTextContains(DevelopmentPlansObjects.RoadmapTitle, "Roadmap").Should().BeTrue();
+                CommonActions.ElementIsDisplayed(DevelopmentPlansObjects.SupplierRoadmapSection).Should().BeFalse();
+                CommonActions.ElementIsDisplayed(DevelopmentPlansObjects.ProgramRoadmapSection).Should().BeTrue();
+                CommonActions.ElementIsDisplayed(DevelopmentPlansObjects.WorkOffPlansSection).Should().BeFalse();
+            });
         }
 
         [Fact]
         public async Task DevelopmentPlans_SolutionIsSuspended_Redirect()
         {
-            await using var context = GetEndToEndDbContext();
-            var solution = await context.CatalogueItems.SingleAsync(ci => ci.Id == SolutionWithAllSections);
-            solution.PublishedStatus = PublicationStatus.Suspended;
-            await context.SaveChangesAsync();
+            await RunTestAsync(async () =>
+            {
+                await using var context = GetEndToEndDbContext();
+                var solution = await context.CatalogueItems.SingleAsync(ci => ci.Id == SolutionWithAllSections);
+                solution.PublishedStatus = PublicationStatus.Suspended;
+                await context.SaveChangesAsync();
 
-            Driver.Navigate().Refresh();
+                Driver.Navigate().Refresh();
 
-            CommonActions
-                .PageLoadedCorrectGetIndex(
-                    typeof(SolutionsController),
-                    nameof(SolutionsController.Description))
-                .Should()
-                .BeTrue();
+                CommonActions
+                    .PageLoadedCorrectGetIndex(
+                        typeof(SolutionsController),
+                        nameof(SolutionsController.Description))
+                    .Should()
+                    .BeTrue();
+            });
         }
 
         public void Dispose()
