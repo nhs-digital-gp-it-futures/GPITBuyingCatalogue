@@ -5,31 +5,43 @@ using NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.TestBases;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Identity.Controllers;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Controllers;
 using Xunit;
+using Xunit.Abstractions;
 
 namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.PublicBrowse.Registration
 {
     public sealed class Confirmation : AnonymousTestBase, IClassFixture<LocalWebApplicationFactory>
     {
-        public Confirmation(LocalWebApplicationFactory factory)
-            : base(factory, typeof(RegistrationController), nameof(RegistrationController.Confirmation), null)
+        public Confirmation(LocalWebApplicationFactory factory, ITestOutputHelper testOutputHelper)
+            : base(
+                  factory,
+                  typeof(RegistrationController),
+                  nameof(RegistrationController.Confirmation),
+                  null,
+                  testOutputHelper)
         {
         }
 
         [Fact]
         public void Confirmation_AllSectionsDisplayed()
         {
-            CommonActions.GoBackLinkDisplayed().Should().BeTrue();
-            CommonActions.ElementIsDisplayed(CommonSelectors.Header1).Should().BeTrue();
+            RunTest(() =>
+            {
+                CommonActions.GoBackLinkDisplayed().Should().BeTrue();
+                CommonActions.ElementIsDisplayed(CommonSelectors.Header1).Should().BeTrue();
+            });
         }
 
         [Fact]
         public void Confirmation_ClickGoBackLink_ExpectedResult()
         {
-            CommonActions.ClickGoBackLink();
+            RunTest(() =>
+            {
+                CommonActions.ClickGoBackLink();
 
-            CommonActions.PageLoadedCorrectGetIndex(
-                typeof(HomeController),
-                nameof(HomeController.Index)).Should().BeTrue();
+                CommonActions.PageLoadedCorrectGetIndex(
+                    typeof(HomeController),
+                    nameof(HomeController.Index)).Should().BeTrue();
+            });
         }
     }
 }

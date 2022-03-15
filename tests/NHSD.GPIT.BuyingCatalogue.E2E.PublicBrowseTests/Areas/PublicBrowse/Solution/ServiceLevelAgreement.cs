@@ -11,6 +11,7 @@ using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers;
 using Xunit;
+using Xunit.Abstractions;
 
 namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.PublicBrowse.Solution
 {
@@ -23,50 +24,57 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.PublicBrowse.Solution
             { nameof(SolutionId), SolutionId.ToString() },
         };
 
-        public ServiceLevelAgreement(LocalWebApplicationFactory factory)
+        public ServiceLevelAgreement(LocalWebApplicationFactory factory, ITestOutputHelper testOutputHelper)
             : base(
                   factory,
                   typeof(SolutionsController),
                   nameof(SolutionsController.ServiceLevelAgreement),
-                  Parameters)
+                  Parameters,
+                  testOutputHelper)
         {
         }
 
         [Fact]
         public void ServiceLevelAgreement_AllSectionsDisplayed()
         {
-            CommonActions
-                .ElementIsDisplayed(ByExtensions.DataTestId("service-availability-table"))
-                .Should()
-                .BeTrue();
+            RunTest(() =>
+            {
+                CommonActions
+                    .ElementIsDisplayed(ByExtensions.DataTestId("service-availability-table"))
+                    .Should()
+                    .BeTrue();
 
-            CommonActions
-                .ElementIsDisplayed(ByExtensions.DataTestId("service-contacts-table"))
-                .Should()
-                .BeTrue();
+                CommonActions
+                    .ElementIsDisplayed(ByExtensions.DataTestId("service-contacts-table"))
+                    .Should()
+                    .BeTrue();
 
-            CommonActions
-                .ElementIsDisplayed(ByExtensions.DataTestId("service-levels-table"))
-                .Should()
-                .BeTrue();
+                CommonActions
+                    .ElementIsDisplayed(ByExtensions.DataTestId("service-levels-table"))
+                    .Should()
+                    .BeTrue();
+            });
         }
 
         [Fact]
         public async Task ServiceLevelAgreement_SolutionIsSuspended_Redirect()
         {
-            await using var context = GetEndToEndDbContext();
-            var solution = await context.CatalogueItems.SingleAsync(ci => ci.Id == SolutionId);
-            solution.PublishedStatus = PublicationStatus.Suspended;
-            await context.SaveChangesAsync();
+            await RunTestAsync(async () =>
+            {
+                await using var context = GetEndToEndDbContext();
+                var solution = await context.CatalogueItems.SingleAsync(ci => ci.Id == SolutionId);
+                solution.PublishedStatus = PublicationStatus.Suspended;
+                await context.SaveChangesAsync();
 
-            Driver.Navigate().Refresh();
+                Driver.Navigate().Refresh();
 
-            CommonActions
-                .PageLoadedCorrectGetIndex(
-                    typeof(SolutionsController),
-                    nameof(SolutionsController.Description))
-                .Should()
-                .BeTrue();
+                CommonActions
+                    .PageLoadedCorrectGetIndex(
+                        typeof(SolutionsController),
+                        nameof(SolutionsController.Description))
+                    .Should()
+                    .BeTrue();
+            });
         }
 
         public void Dispose()

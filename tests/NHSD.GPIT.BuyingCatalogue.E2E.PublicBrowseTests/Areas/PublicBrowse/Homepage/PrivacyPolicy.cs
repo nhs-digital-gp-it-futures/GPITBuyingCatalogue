@@ -6,6 +6,7 @@ using NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.TestBases;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Controllers;
 using OpenQA.Selenium;
 using Xunit;
+using Xunit.Abstractions;
 
 namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.PublicBrowse.Homepage
 {
@@ -13,25 +14,29 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.PublicBrowse.Homepage
     {
         private static readonly Dictionary<string, string> Parameters = new();
 
-        public PrivacyPolicy(LocalWebApplicationFactory factory)
+        public PrivacyPolicy(LocalWebApplicationFactory factory, ITestOutputHelper testOutputHelper)
             : base(
                 factory,
                 typeof(HomeController),
                 nameof(HomeController.PrivacyPolicy),
-                Parameters)
+                Parameters,
+                testOutputHelper)
         {
         }
 
         [Fact]
         public void PrivacyPolicy_ClickCookieSettings()
         {
-            CommonActions.ClickLinkElement(By.LinkText("Cookies that measure website use"));
+            RunTest(() =>
+            {
+                CommonActions.ClickLinkElement(By.LinkText("Cookies that measure website use"));
 
-            CommonActions.PageLoadedCorrectGetIndex(
-                    typeof(ConsentController),
-                    nameof(ConsentController.CookieSettings))
-                .Should()
-                .BeTrue();
+                CommonActions.PageLoadedCorrectGetIndex(
+                        typeof(ConsentController),
+                        nameof(ConsentController.CookieSettings))
+                    .Should()
+                    .BeTrue();
+            });
         }
 
         [Theory]
@@ -39,13 +44,16 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.PublicBrowse.Homepage
         [InlineData("second-contact-us")]
         public void PrivacyPolicy_ContactLinks_Click(string dataTestId)
         {
-            CommonActions.ClickLinkElement(ByExtensions.DataTestId(dataTestId));
+            RunTest(() =>
+            {
+                CommonActions.ClickLinkElement(ByExtensions.DataTestId(dataTestId));
 
-            CommonActions.PageLoadedCorrectGetIndex(
-                typeof(HomeController),
-                nameof(HomeController.ContactUs))
-                .Should()
-                .BeTrue();
+                CommonActions.PageLoadedCorrectGetIndex(
+                    typeof(HomeController),
+                    nameof(HomeController.ContactUs))
+                    .Should()
+                    .BeTrue();
+            });
         }
     }
 }

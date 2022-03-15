@@ -11,6 +11,7 @@ using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers;
 using Xunit;
+using Xunit.Abstractions;
 
 namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.PublicBrowse.Solution
 {
@@ -29,21 +30,25 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.PublicBrowse.Solution
             { "SolutionId", SolutionWithDefaultSection.ToString() },
         };
 
-        public Standards(LocalWebApplicationFactory factory)
+        public Standards(LocalWebApplicationFactory factory, ITestOutputHelper testOutputHelper)
             : base(
                   factory,
                   typeof(SolutionsController),
                   nameof(SolutionsController.Standards),
-                  ParametersWithAllSections)
+                  ParametersWithAllSections,
+                  testOutputHelper)
         {
         }
 
         [Fact]
         public void Standards_HasAllSections_SectionsDisplayed()
         {
-            CommonActions.ElementIsDisplayed(StandardsObjects.OverarchingTable).Should().BeTrue();
-            CommonActions.ElementIsDisplayed(StandardsObjects.InteroperabilityTable).Should().BeTrue();
-            CommonActions.ElementIsDisplayed(StandardsObjects.CapabilityTable).Should().BeTrue();
+            RunTest(() =>
+            {
+                CommonActions.ElementIsDisplayed(StandardsObjects.OverarchingTable).Should().BeTrue();
+                CommonActions.ElementIsDisplayed(StandardsObjects.InteroperabilityTable).Should().BeTrue();
+                CommonActions.ElementIsDisplayed(StandardsObjects.CapabilityTable).Should().BeTrue();
+            });
         }
 
         [Fact]
@@ -59,19 +64,22 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.PublicBrowse.Solution
         [Fact]
         public async Task Standards_SolutionIsSuspended_Redirect()
         {
-            await using var context = GetEndToEndDbContext();
-            var solution = await context.CatalogueItems.SingleAsync(ci => ci.Id == SolutionWithAllSections);
-            solution.PublishedStatus = PublicationStatus.Suspended;
-            await context.SaveChangesAsync();
+            await RunTestAsync(async () =>
+            {
+                await using var context = GetEndToEndDbContext();
+                var solution = await context.CatalogueItems.SingleAsync(ci => ci.Id == SolutionWithAllSections);
+                solution.PublishedStatus = PublicationStatus.Suspended;
+                await context.SaveChangesAsync();
 
-            Driver.Navigate().Refresh();
+                Driver.Navigate().Refresh();
 
-            CommonActions
-                .PageLoadedCorrectGetIndex(
-                    typeof(SolutionsController),
-                    nameof(SolutionsController.Description))
-                .Should()
-                .BeTrue();
+                CommonActions
+                    .PageLoadedCorrectGetIndex(
+                        typeof(SolutionsController),
+                        nameof(SolutionsController.Description))
+                    .Should()
+                    .BeTrue();
+            });
         }
 
         public void Dispose()

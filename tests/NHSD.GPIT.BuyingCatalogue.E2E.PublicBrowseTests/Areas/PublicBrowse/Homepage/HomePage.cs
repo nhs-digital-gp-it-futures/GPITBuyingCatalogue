@@ -9,6 +9,7 @@ using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Controllers;
 using Xunit;
+using Xunit.Abstractions;
 
 namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.PublicBrowse.Homepage
 {
@@ -17,130 +18,158 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.PublicBrowse.Homepage
     {
         private static readonly Dictionary<string, string> Parameters = new();
 
-        public HomePage(LocalWebApplicationFactory factory)
+        public HomePage(LocalWebApplicationFactory factory, ITestOutputHelper testOutputHelper)
             : base(
                   factory,
                   typeof(HomeController),
                   nameof(HomeController.Index),
-                  Parameters)
+                  Parameters,
+                  testOutputHelper)
         {
         }
 
         [Fact]
         public void HomePage_AllSectionsDisplayed()
         {
-            CommonActions.ElementIsDisplayed(CommonSelectors.ActionLink).Should().BeTrue();
-            CommonActions.ElementIsDisplayed(Objects.Home.HomeSelectors.ManageOrdersLink).Should().BeTrue();
-            CommonActions.ElementIsDisplayed(Objects.Home.HomeSelectors.RequestAccountLink).Should().BeTrue();
-            CommonActions.ElementIsDisplayed(Objects.Home.HomeSelectors.NominateOrganisationLink).Should().BeTrue();
+            RunTest(() =>
+            {
+                CommonActions.ElementIsDisplayed(CommonSelectors.ActionLink).Should().BeTrue();
+                CommonActions.ElementIsDisplayed(Objects.Home.HomeSelectors.ManageOrdersLink).Should().BeTrue();
+                CommonActions.ElementIsDisplayed(Objects.Home.HomeSelectors.RequestAccountLink).Should().BeTrue();
+                CommonActions.ElementIsDisplayed(Objects.Home.HomeSelectors.NominateOrganisationLink).Should().BeTrue();
+            });
         }
 
         [Fact]
         public void HomePage_ClickBrowseSolutions_ExpectedResult()
         {
-            CommonActions.ClickLinkElement(CommonSelectors.ActionLink);
+            RunTest(() =>
+            {
+                CommonActions.ClickLinkElement(CommonSelectors.ActionLink);
 
-            CommonActions.PageLoadedCorrectGetIndex(
-                typeof(SolutionsController),
-                nameof(SolutionsController.Index))
-                .Should()
-                .BeTrue();
+                CommonActions.PageLoadedCorrectGetIndex(
+                    typeof(SolutionsController),
+                    nameof(SolutionsController.Index))
+                    .Should()
+                    .BeTrue();
+            });
         }
 
         [Fact]
         public void HomePage_ClickManageOrders_ExpectedResult()
         {
-            CommonActions.ClickLinkElement(Objects.Home.HomeSelectors.ManageOrdersLink);
+            RunTest(() =>
+            {
+                CommonActions.ClickLinkElement(Objects.Home.HomeSelectors.ManageOrdersLink);
 
-            CommonActions.PageLoadedCorrectGetIndex(
-                typeof(AccountController),
-                nameof(AccountController.Login))
-                .Should()
-                .BeTrue();
+                CommonActions.PageLoadedCorrectGetIndex(
+                    typeof(AccountController),
+                    nameof(AccountController.Login))
+                    .Should()
+                    .BeTrue();
+            });
         }
 
         [Fact]
         public void HomePage_ClickRequestAccount_ExpectedResult()
         {
-            CommonActions.ClickLinkElement(Objects.Home.HomeSelectors.RequestAccountLink);
+            RunTest(() =>
+            {
+                CommonActions.ClickLinkElement(Objects.Home.HomeSelectors.RequestAccountLink);
 
-            CommonActions.PageLoadedCorrectGetIndex(
-            typeof(RegistrationController),
-            nameof(RegistrationController.Index))
-            .Should()
-            .BeTrue();
+                CommonActions.PageLoadedCorrectGetIndex(
+                typeof(RegistrationController),
+                nameof(RegistrationController.Index))
+                .Should()
+                .BeTrue();
+            });
         }
 
         [Fact]
         public void HomePage_ClickNominateOrganisation_ExpectedResult()
         {
-            NavigateToUrl(
-                typeof(AccountController),
-                nameof(AccountController.Login));
+            RunTest(() =>
+            {
+                NavigateToUrl(
+                    typeof(AccountController),
+                    nameof(AccountController.Login));
 
-            BuyerLogin();
+                BuyerLogin();
 
-            CommonActions.ClickLinkElement(Objects.Home.HomeSelectors.NominateOrganisationLink);
+                CommonActions.ClickLinkElement(Objects.Home.HomeSelectors.NominateOrganisationLink);
 
-            CommonActions.PageLoadedCorrectGetIndex(
-                typeof(NominateOrganisationController),
-                nameof(NominateOrganisationController.Index))
-                .Should()
-                .BeTrue();
+                CommonActions.PageLoadedCorrectGetIndex(
+                    typeof(NominateOrganisationController),
+                    nameof(NominateOrganisationController.Index))
+                    .Should()
+                    .BeTrue();
+            });
         }
 
         [Fact]
         public void HomePage_ClickContactUs_ExpectedResult()
         {
-            CommonActions.ClickLinkElement(Objects.Home.HomeSelectors.ContactUsLink);
+            RunTest(() =>
+            {
+                CommonActions.ClickLinkElement(Objects.Home.HomeSelectors.ContactUsLink);
 
-            CommonActions.PageLoadedCorrectGetIndex(
-            typeof(HomeController),
-            nameof(HomeController.ContactUs))
-            .Should()
-            .BeTrue();
+                CommonActions.PageLoadedCorrectGetIndex(
+                typeof(HomeController),
+                nameof(HomeController.ContactUs))
+                .Should()
+                .BeTrue();
+            });
         }
 
         [Fact]
         public void HomePage_Buyer_ClickManageOrders_ExpectedResult()
         {
-            NavigateToUrl(
-                typeof(AccountController),
-                nameof(AccountController.Login));
+            RunTest(() =>
+            {
+                NavigateToUrl(
+                    typeof(AccountController),
+                    nameof(AccountController.Login));
 
-            BuyerLogin();
+                BuyerLogin();
 
-            CommonActions.ClickLinkElement(Objects.Home.HomeSelectors.ManageOrdersLink);
+                CommonActions.ClickLinkElement(Objects.Home.HomeSelectors.ManageOrdersLink);
 
-            CommonActions.PageLoadedCorrectGetIndex(
-                typeof(DashboardController),
-                nameof(DashboardController.Organisation))
-                .Should()
-                .BeTrue();
+                CommonActions.PageLoadedCorrectGetIndex(
+                    typeof(DashboardController),
+                    nameof(DashboardController.Organisation))
+                    .Should()
+                    .BeTrue();
+            });
         }
 
         [Fact]
         public void HomePage_Authority_ClickManageOrders_ExpectedResult()
         {
-            NavigateToUrl(
-                typeof(AccountController),
-                nameof(AccountController.Login));
+            RunTest(() =>
+            {
+                NavigateToUrl(
+                    typeof(AccountController),
+                    nameof(AccountController.Login));
 
-            AuthorityLogin();
+                AuthorityLogin();
 
-            CommonActions.ClickLinkElement(Objects.Home.HomeSelectors.ManageOrdersLink);
+                CommonActions.ClickLinkElement(Objects.Home.HomeSelectors.ManageOrdersLink);
 
-            CommonActions.PageLoadedCorrectGetIndex(
-            typeof(DashboardController),
-            nameof(DashboardController.Index))
-            .Should()
-            .BeTrue();
+                CommonActions.PageLoadedCorrectGetIndex(
+                typeof(DashboardController),
+                nameof(DashboardController.Index))
+                .Should()
+                .BeTrue();
+            });
         }
 
         [Fact]
         public void Hompage_NewTest()
         {
-            CommonActions.ElementIsDisplayed(Objects.Home.HomeSelectors.RequestAccountLink).Should().BeTrue();
+            RunTest(() =>
+            {
+                CommonActions.ElementIsDisplayed(Objects.Home.HomeSelectors.RequestAccountLink).Should().BeTrue();
+            });
         }
 
         public void Dispose()
