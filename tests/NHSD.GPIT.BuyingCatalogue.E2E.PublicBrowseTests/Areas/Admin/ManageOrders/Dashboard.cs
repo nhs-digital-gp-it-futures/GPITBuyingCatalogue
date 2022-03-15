@@ -183,24 +183,27 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.ManageOrders
         }
 
         [Fact]
-        public void Search_Supplier_ResultsDisplayedCorrectly()
+        public async Task Search_Supplier_ResultsDisplayedCorrectly()
         {
             using var context = GetEndToEndDbContext();
             var order = context.Orders.Include(o => o.Supplier).First(o => o.Supplier != null);
             var callOffId = order.CallOffId.ToString();
             var supplierName = order.Supplier.Name;
 
-            CommonActions.ElementAddValue(ManageOrdersDashboardObjects.SearchBar, supplierName);
+            await RunTestAsync(async () =>
+            {
+                await CommonActions.ElementAddValueWithDelay(ManageOrdersDashboardObjects.SearchBar, supplierName);
 
-            CommonActions.WaitUntilElementIsDisplayed(ManageOrdersDashboardObjects.SearchListBox);
-            CommonActions.WaitUntilElementIsDisplayed(ManageOrdersDashboardObjects.SearchResultDescription(0));
+                CommonActions.WaitUntilElementIsDisplayed(ManageOrdersDashboardObjects.SearchListBox);
+                CommonActions.WaitUntilElementIsDisplayed(ManageOrdersDashboardObjects.SearchResultDescription(0));
 
-            CommonActions.ElementTextEqualTo(ManageOrdersDashboardObjects.SearchResultDescription(0), callOffId.FormatForComparison()).Should().BeTrue();
-            CommonActions.ElementTextEqualTo(ManageOrdersDashboardObjects.SearchResultTitle(0), "Supplier".FormatForComparison()).Should().BeTrue();
+                CommonActions.ElementTextEqualTo(ManageOrdersDashboardObjects.SearchResultDescription(0), callOffId.FormatForComparison()).Should().BeTrue();
+                CommonActions.ElementTextEqualTo(ManageOrdersDashboardObjects.SearchResultTitle(0), "Supplier".FormatForComparison()).Should().BeTrue();
+            });
         }
 
         [Fact]
-        public void Search_Solution_ResultsDisplayedCorrectly()
+        public async Task Search_Solution_ResultsDisplayedCorrectly()
         {
             using var context = GetEndToEndDbContext();
             var orders = context.Orders.Include(o => o.OrderItems).ThenInclude(oi => oi.CatalogueItem).Where(o => o.OrderItems.Any());
@@ -208,9 +211,9 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.ManageOrders
             var callOffId = order.CallOffId.ToString();
             var solutionName = order.OrderItems.First().CatalogueItem.Name;
 
-            RunTest(() =>
+            await RunTestAsync(async () =>
             {
-                CommonActions.ElementAddValue(ManageOrdersDashboardObjects.SearchBar, solutionName);
+                await CommonActions.ElementAddValueWithDelay(ManageOrdersDashboardObjects.SearchBar, solutionName);
 
                 CommonActions.WaitUntilElementIsDisplayed(ManageOrdersDashboardObjects.SearchListBox);
                 CommonActions.WaitUntilElementIsDisplayed(ManageOrdersDashboardObjects.SearchResultDescription(0));
