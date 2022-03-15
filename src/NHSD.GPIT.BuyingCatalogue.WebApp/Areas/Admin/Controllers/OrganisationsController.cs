@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Organisations.Models;
 using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.CreateBuyer;
@@ -323,7 +324,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
 
             var model = new RelatedOrganisationsModel
             {
-                BackLink = Url.Action(nameof(Details), new { organisationId }),
                 OrganisationId = organisationId,
                 OrganisationName = organisation.Name,
                 RelatedOrganisations = relatedOrganisations,
@@ -358,11 +358,99 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
             return RedirectToAction(nameof(RelatedOrganisations), new { organisationId });
         }
 
+        [HttpGet("{organisationId}/nominated")]
+        public async Task<IActionResult> NominatedOrganisations(int organisationId)
+        {
+            var organisation = await organisationsService.GetOrganisation(organisationId);
+            var nominatedOrganisations = await organisationsService.GetNominatedOrganisations(organisationId);
+
+            var model = new NominatedOrganisationsModel
+            {
+                OrganisationId = organisationId,
+                OrganisationName = organisation.Name,
+                NominatedOrganisations = nominatedOrganisations,
+            };
+
+            return View(model);
+        }
+
+        [HttpGet("{organisationId}/nominated/add")]
+        public async Task<IActionResult> AddNominatedOrganisation(int organisationId)
+        {
+            var organisation = await organisationsService.GetOrganisation(organisationId);
+
+            var model = new AddNominatedOrganisationModel
+            {
+                BackLink = Url.Action(nameof(NominatedOrganisations), new { organisationId }),
+                OrganisationId = organisationId,
+                OrganisationName = organisation.Name,
+                PotentialOrganisations = await GetPotentialOrganisations(organisationId),
+            };
+
+            return View(model);
+        }
+
+        [HttpPost("{organisationId}/nominated/add")]
+        public async Task<IActionResult> AddNominatedOrganisation(int organisationId, AddNominatedOrganisationModel model)
+        {
+            if (!ModelState.IsValid)
+            {
+                model.PotentialOrganisations = await GetPotentialOrganisations(organisationId);
+
+                return View(model);
+            }
+
+            await organisationsService.AddNominatedOrganisation(organisationId, int.Parse(model.SelectedOrganisationId));
+
+            return RedirectToAction(nameof(NominatedOrganisations), new { organisationId });
+        }
+
+        [HttpGet("{organisationId}/nominated/{nominatedOrganisationId}/remove")]
+        public async Task<IActionResult> RemoveNominatedOrganisation(int organisationId, int nominatedOrganisationId)
+        {
+            var organisation = await organisationsService.GetOrganisation(organisationId);
+            var nominatedOrganisation = await organisationsService.GetOrganisation(nominatedOrganisationId);
+
+            var model = new RemoveNominatedOrganisationModel
+            {
+                BackLink = Url.Action(nameof(NominatedOrganisations), new { organisationId }),
+                OrganisationId = organisationId,
+                OrganisationName = organisation.Name,
+                NominatedOrganisationId = nominatedOrganisationId,
+                NominatedOrganisationName = nominatedOrganisation.Name,
+            };
+
+            return View(model);
+        }
+
+        [HttpPost("{organisationId}/nominated/{nominatedOrganisationId}/remove")]
+        public async Task<IActionResult> RemoveNominatedOrganisation(int organisationId, int nominatedOrganisationId, RemoveNominatedOrganisationModel model)
+        {
+            await organisationsService.RemoveNominatedOrganisation(organisationId, nominatedOrganisationId);
+
+            return RedirectToAction(nameof(NominatedOrganisations), new { organisationId });
+        }
+
         private async Task<IEnumerable<Organisation>> GetFilteredOrganisations(string search)
         {
             return string.IsNullOrWhiteSpace(search)
                 ? await organisationsService.GetAllOrganisations()
                 : await organisationsService.GetOrganisationsBySearchTerm(search);
+        }
+
+        private async Task<IEnumerable<SelectListItem>> GetPotentialOrganisations(int organisationId)
+        {
+            var allOrganisations = await organisationsService.GetAllOrganisations();
+            var nominatedOrganisations = await organisationsService.GetNominatedOrganisations(organisationId);
+
+            var excludedOrganisationIds = nominatedOrganisations
+                .Select(x => x.Id)
+                .Union(new[] { organisationId });
+
+            return allOrganisations
+                .Where(x => !excludedOrganisationIds.Contains(x.Id))
+                .OrderBy(x => x.Name)
+                .Select(x => new SelectListItem(x.Name, $"{x.Id}"));
         }
     }
 }
