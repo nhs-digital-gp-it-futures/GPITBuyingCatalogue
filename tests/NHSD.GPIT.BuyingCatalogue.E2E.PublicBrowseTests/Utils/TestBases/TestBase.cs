@@ -17,6 +17,7 @@ using NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.Session;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using OpenQA.Selenium;
 using OpenQA.Selenium.Support.UI;
+using Polly;
 using Xunit.Abstractions;
 
 namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.TestBases
@@ -24,6 +25,11 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.TestBases
     public abstract class TestBase
     {
         public static readonly string DefaultPassword = "Th1sIsP4ssword!";
+
+        private const int MaxRetries = 3;
+
+        private static readonly PolicyBuilder RetryPolicy = Policy
+                .Handle<Exception>();
 
         private readonly Uri uri;
 
@@ -218,30 +224,47 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.TestBases
 
         protected bool UserAlreadyLoggedIn() => Driver.Manage().Cookies.GetCookieNamed("user-session") != null;
 
-        protected async Task RunTestAsync(Func<Task> task, [CallerMemberName] string callerMemberName = "", [CallerFilePath] string callerFilePath = "")
+        protected Task RunTestAsync(
+            Func<Task> task,
+            [CallerMemberName] string callerMemberName = "",
+            [CallerFilePath] string callerFilePath = "",
+            TimeSpan? retryInterval = null)
         {
-            try
-            {
-                await task();
-            }
-            catch
-            {
-                TakeScreenShot(callerMemberName, callerFilePath);
-                throw;
-            }
+            var policy = RetryPolicy
+                .WaitAndRetryAsync(
+                    MaxRetries,
+                    _ => retryInterval ?? TimeSpan.FromSeconds(2),
+                    (ex, sleepDuration, attempt, context) =>
+                    {
+                        if (attempt != MaxRetries)
+                            return Task.CompletedTask;
+
+                        TakeScreenShot(callerMemberName, callerFilePath);
+                        return Task.CompletedTask;
+                    });
+
+            return policy.ExecuteAsync(task);
         }
 
-        protected void RunTest(Action action, [CallerMemberName] string callerMemberName = "", [CallerFilePath] string callerFilePath = "")
+        protected void RunTest(
+            Action action,
+            [CallerMemberName] string callerMemberName = "",
+            [CallerFilePath] string callerFilePath = "",
+            TimeSpan? retryInterval = null)
         {
-            try
-            {
-                action();
-            }
-            catch
-            {
-                TakeScreenShot(callerMemberName, callerFilePath);
-                throw;
-            }
+            var policy = RetryPolicy
+                .WaitAndRetry(
+                    MaxRetries,
+                    _ => retryInterval ?? TimeSpan.FromSeconds(2),
+                    (ex, sleepDuration, attempt, context) =>
+                    {
+                        if (attempt != MaxRetries)
+                            return;
+
+                        TakeScreenShot(callerMemberName, callerFilePath);
+                    });
+
+            policy.Execute(action);
         }
 
         private void TakeScreenShot(string memberName, string fileName)
