@@ -1,4 +1,5 @@
 ﻿using System.Linq;
+using System.Threading.Tasks;
 using FluentAssertions;
 using Microsoft.EntityFrameworkCore;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Objects.Admin.ManageOrders;
@@ -146,15 +147,15 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.ManageOrders
         }
 
         [Fact]
-        public void Search_CallOffId_ResultsDisplayedCorrectly()
+        public async Task Search_CallOffId_ResultsDisplayedCorrectly()
         {
             using var context = GetEndToEndDbContext();
             var order = context.Orders.First();
             var callOffId = order.CallOffId.ToString();
 
-            RunTest(() =>
+            await RunTestAsync(async () =>
             {
-                CommonActions.ElementAddValue(ManageOrdersDashboardObjects.SearchBar, callOffId);
+                await CommonActions.ElementAddValueWithDelay(ManageOrdersDashboardObjects.SearchBar, callOffId);
 
                 CommonActions.WaitUntilElementIsDisplayed(ManageOrdersDashboardObjects.SearchListBox);
                 CommonActions.WaitUntilElementIsDisplayed(ManageOrdersDashboardObjects.SearchResultDescription(0));
