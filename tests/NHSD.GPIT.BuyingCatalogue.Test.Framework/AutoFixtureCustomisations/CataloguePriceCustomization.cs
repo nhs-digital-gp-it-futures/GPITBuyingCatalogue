@@ -15,6 +15,9 @@ namespace NHSD.GPIT.BuyingCatalogue.Test.Framework.AutoFixtureCustomisations
             static ISpecimenBuilder ComposerTransformation(ICustomizationComposer<CataloguePrice> composer) => composer
                 .FromFactory(new CataloguePriceSpecimenBuilder())
                 .Without(p => p.CataloguePriceTiers)
+                .Without(p => p.CatalogueItem)
+                .Without(p => p.CatalogueItemId)
+                .Without(p => p.CataloguePriceId)
                 .Without(p => p.TimeUnit)
                 .With(p => p.PublishedStatus, PublicationStatus.Published);
 

@@ -32,7 +32,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Models.ManageOr
                 new() { CatalogueItem = additionalService.CatalogueItem },
             };
 
-            orderItems.ForEach(oi => order.AddOrUpdateOrderItem(oi));
+            orderItems.ForEach(oi => order.OrderItems.Add(oi));
 
             order.LastUpdatedByUser = user;
             order.OrderingParty = orderingParty;
@@ -60,7 +60,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Models.ManageOr
                 new() { CatalogueItem = additionalService.CatalogueItem },
             };
 
-            orderItems.ForEach(oi => order.AddOrUpdateOrderItem(oi));
+            orderItems.ForEach(oi => order.OrderItems.Add(oi));
 
             order.LastUpdatedByUser = user;
             order.OrderingParty = orderingParty;

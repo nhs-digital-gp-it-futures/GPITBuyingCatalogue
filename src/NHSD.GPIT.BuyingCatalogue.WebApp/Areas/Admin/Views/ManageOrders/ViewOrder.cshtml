@@ -99,12 +99,8 @@
                         <nhs-table-cell>
                             @orderItem.Framework
                         </nhs-table-cell>
-                        <nhs-table-cell>
-                            @{
-                                var fundingType = orderItem.ConfirmedFundingSource.HasValue && orderItem.ConfirmedFundingSource is true ? FundingType(orderItem.FundingSourceOnlyGms)
-                             : "Not selected";
-                            }
-                            <span data-test-id="funding-type">@fundingType</span>
+                        <nhs-table-cell>                            
+                            <span data-test-id="funding-type">@FundingType(orderItem.SelectedFundingType)</span>
                         </nhs-table-cell>
                     </nhs-table-row-container>
                 }
@@ -121,5 +117,12 @@
 </div>
 
 @{
-    static string FundingType(bool? gmsOnly) => gmsOnly.GetValueOrDefault() ? "Central funding" : "Local funding";
+    static string FundingType(OrderItemFundingType fundingType) => fundingType switch
+    {
+        var ft when ft.HasFlag(OrderItemFundingType.MixedAllocation) => "Mixed funding",
+        var ft when ft.HasFlag(OrderItemFundingType.CentralAllocation) => "Central funding",
+        var ft when ft.HasFlag(OrderItemFundingType.LocalAllocation) => "Local funding",
+        _ => "Not started"
+    };
+
 }
