@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using EnumsNET;
 using Microsoft.EntityFrameworkCore;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Organisations.Models;
@@ -41,7 +42,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Organisations
                 LastUpdated = DateTime.UtcNow,
                 Name = odsOrganisation.OrganisationName,
                 ExternalIdentifier = odsOrganisation.OdsCode,
-                InternalIdentifier = odsOrganisation.OdsCode,
+                InternalIdentifier = $"{OrganisationType.CCG.AsString(EnumFormat.EnumMemberValue)}-{odsOrganisation.OdsCode}",
                 PrimaryRoleId = odsOrganisation.PrimaryRoleId,
             };
 
@@ -129,6 +130,52 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Organisations
                 return;
 
             organisation.RelatedOrganisationOrganisations.Remove(relatedItem);
+
+            await dbContext.SaveChangesAsync();
+        }
+
+        public async Task<List<Organisation>> GetNominatedOrganisations(int organisationId)
+        {
+            var nominatedOrganisationIds = await dbContext.RelatedOrganisations
+                .Where(x => x.RelatedOrganisationId == organisationId)
+                .Select(x => x.OrganisationId)
+                .ToListAsync();
+
+            var output = await dbContext.Organisations
+                .Where(x => nominatedOrganisationIds.Contains(x.Id))
+                .ToListAsync();
+
+            return output;
+        }
+
+        public async Task AddNominatedOrganisation(int organisationId, int nominatedOrganisationId)
+        {
+            var existingRelationship = await dbContext.RelatedOrganisations
+                .FirstOrDefaultAsync(x => x.OrganisationId == nominatedOrganisationId
+                    && x.RelatedOrganisationId == organisationId);
+
+            if (existingRelationship != null)
+            {
+                return;
+            }
+
+            dbContext.RelatedOrganisations.Add(new RelatedOrganisation(nominatedOrganisationId, organisationId));
+
+            await dbContext.SaveChangesAsync();
+        }
+
+        public async Task RemoveNominatedOrganisation(int organisationId, int nominatedOrganisationId)
+        {
+            var existingRelationship = await dbContext.RelatedOrganisations
+                .FirstOrDefaultAsync(x => x.OrganisationId == nominatedOrganisationId
+                    && x.RelatedOrganisationId == organisationId);
+
+            if (existingRelationship == null)
+            {
+                return;
+            }
+
+            dbContext.RelatedOrganisations.Remove(existingRelationship);
 
             await dbContext.SaveChangesAsync();
         }

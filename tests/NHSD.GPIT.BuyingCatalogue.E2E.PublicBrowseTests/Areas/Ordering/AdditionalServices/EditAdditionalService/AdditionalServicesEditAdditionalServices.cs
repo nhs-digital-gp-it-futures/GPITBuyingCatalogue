@@ -32,7 +32,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering.AdditionalServices
                 },
             };
 
-        private const string InternalOrgId = "03F";
+        private const string InternalOrgId = "CG-03F";
         private const string CatalogueItemName = "E2E Multiple Prices Additional Service";
         private static readonly CallOffId CallOffId = new(90007, 1);
         private static readonly CatalogueItemId CatalogueItemId = new(99998, "001A99");

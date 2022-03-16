@@ -16,7 +16,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering.CatalogueSolutions
     public sealed class CatalogueSolutionsEditSolutionOnDemandGoBackLink
         : BuyerTestBase, IClassFixture<LocalWebApplicationFactory>, IAsyncLifetime
     {
-        private const string InternalOrgId = "03F";
+        private const string InternalOrgId = "CG-03F";
         private const string CatalogueItemName = "E2E With Contact Multiple Prices";
         private static readonly CallOffId CallOffId = new(90004, 01);
         private static readonly CatalogueItemId CatalogueItemId = new(99998, "001");

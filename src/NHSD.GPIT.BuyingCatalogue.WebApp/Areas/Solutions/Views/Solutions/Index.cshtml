@@ -10,14 +10,12 @@
 
     string sortText = Model.Options.Sort switch
     {
-
         PageOptions.SortOptions.LastPublished => "last published.",
         _ => "A-Z."
     };
 
     string sortLinkText = Model.Options.Sort switch
     {
-
         PageOptions.SortOptions.LastPublished => "A-Z",
         _ => "last published",
     };
@@ -28,9 +26,10 @@
         _ => PageOptions.SortOptions.LastPublished.ToString().ToLower(),
     };
 
-    bool showFrameworkAndCapabilitiesItems =
+    bool searchCriteriaApplied =
         (!string.IsNullOrWhiteSpace(Model.SelectedFramework) && Model.SelectedFramework != "All")
-        || !string.IsNullOrWhiteSpace(Model.SelectedCapabilities);
+        || !string.IsNullOrWhiteSpace(Model.SelectedCapabilities)
+        || !string.IsNullOrWhiteSpace(Model.SearchSummary.SearchTerm);
 }
 
 @section Scripts{ 
@@ -48,7 +47,7 @@
                    asp-controller="@typeof(HomeController).ControllerName()"
                    asp-area="@typeof(HomeController).AreaName()">Home</a>
             </li>
-            @if (showFrameworkAndCapabilitiesItems)
+            @if (searchCriteriaApplied)
             {
                 <li class="nhsuk-breadcrumb__item">
                     <a class="nhsuk-breadcrumb__link"
@@ -78,25 +77,46 @@
         <div id="filter-container">
             <partial name="_FilterNoJavascript" model="@Model" />
         </div>
-        @if (showFrameworkAndCapabilitiesItems)
+        @if (searchCriteriaApplied)
         {
-            <h2>Showing results for selected filters (@Model.Options.TotalNumberOfItems)</h2>
+            <h2>@Model.Options.TotalNumberOfItems Catalogue Solutions found with this search criteria:</h2>
+
+            var filterContext = GetSearchSummary();
+            <ul data-test-id="search-criteria-summary">
+                @foreach(var item in filterContext)
+                {
+                    <li>@item</li>
+                }
+            </ul>
+
+            @if(Model.CatalogueItems.Count == 0)
+            {
+                <p id="no-results">
+                    Try a different search term or change any filters you've selected.
+                    <a data-test-id="clear-results-link"
+                       asp-controller="@typeof(SolutionsController).ControllerName()"
+                       asp-action="@nameof(SolutionsController.Index)">
+                       Clear search criteria.
+                   </a>
+                    </p>
+            }
         }
-        <p id="sorting">
-            Results sorted by @sortText
-            <a id="sortby-link"
-               asp-area="@typeof(SolutionsController).AreaName()"
-               asp-controller="@typeof(SolutionsController).ControllerName()"
-               asp-action="@nameof(SolutionsController.Index)"
-               asp-route-sortBy="@sortQueryParam"
-               asp-route-selectedframework="@Model.SelectedFramework"
-               asp-route-capabilities ="@Model.SelectedCapabilities">
-                Sort by @sortLinkText
-            </a>
-        </p>
-        <hr />
+
         @if (Model.CatalogueItems is not null && Model.CatalogueItems.Count > 0)
         {
+            <p id="sorting">
+                Results sorted by @sortText
+                <a id="sortby-link"
+                   asp-area="@typeof(SolutionsController).AreaName()"
+                   asp-controller="@typeof(SolutionsController).ControllerName()"
+                   asp-action="@nameof(SolutionsController.Index)"
+                   asp-route-sortBy="@sortQueryParam"
+                   asp-route-selectedframework="@Model.SelectedFramework"
+                   asp-route-capabilities="@Model.SelectedCapabilities">
+                    Sort by @sortLinkText
+                </a>
+            </p>
+            <hr />
             <div id="solutions-list">
                 @foreach (var item in Model.CatalogueItems)
                 {
@@ -109,20 +129,38 @@
 
 			</div>
 		}
-		else
-		{
-			@if(Context.Request.Query["search"].Count > 0){
-				<h2 id="no-results-search">No results were found for "@Context.Request.Query["search"].FirstOrDefault()"</h2>
-				<p>Try a different search term or change any filters you've selected.</p>
-			}
-			else
-			{				
-				<h2 id="no-results">No results found that match your search criteria</h2>
-				<p>Try a different search term or change any filters you've selected.</p>
-			}
-
-
-        }
     </div>
 </div>
 
+@{
+    List<string> GetSearchSummary()
+    {
+        var searchSummary = new List<string>();
+
+        if (!string.IsNullOrWhiteSpace(Model.SearchSummary.SearchTerm))
+            searchSummary.Add($"Search term '{Model.SearchSummary.SearchTerm}'");
+
+        if (!string.IsNullOrWhiteSpace(Model.SearchSummary.FrameworkName))
+            searchSummary.Add($"Framework '{Model.SearchSummary.FrameworkName}'");
+
+        if (Model.SearchSummary.CapabilitiesAndEpics.Count > 0)
+        {
+            var capabilities = Model.SearchSummary.CapabilitiesAndEpics;
+            foreach (var capabilityContext in capabilities)
+            {
+                var capabilityText = capabilityContext.Key;
+                var numberOfEpics = capabilityContext.Value;
+                if (numberOfEpics > 0)
+                {
+                    capabilityText += $" and {numberOfEpics} {GetEpicDescriptor(numberOfEpics)}";
+                }
+
+                searchSummary.Add(capabilityText);
+            }
+        }
+
+        return searchSummary;
+    }
+
+    static string GetEpicDescriptor(int numberOfEpics) => numberOfEpics == 1 ? "Epic" : "Epics";
+}

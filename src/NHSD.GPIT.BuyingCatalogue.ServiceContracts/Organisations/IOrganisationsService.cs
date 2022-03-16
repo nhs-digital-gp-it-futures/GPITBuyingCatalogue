@@ -27,5 +27,11 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.Organisations
         Task AddRelatedOrganisations(int organisationId, int relatedOrganisationId);
 
         Task RemoveRelatedOrganisations(int organisationId, int relatedOrganisationId);
+
+        Task<List<Organisation>> GetNominatedOrganisations(int organisationId);
+
+        Task AddNominatedOrganisation(int organisationId, int nominatedOrganisationId);
+
+        Task RemoveNominatedOrganisation(int organisationId, int nominatedOrganisationId);
     }
 }

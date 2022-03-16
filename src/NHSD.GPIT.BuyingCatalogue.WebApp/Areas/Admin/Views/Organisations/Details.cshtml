@@ -4,11 +4,27 @@
 @{
     ViewBag.Title = "Organisation details";
 }
-
+@section Breadcrumbs {
+    <nav class="nhsuk-breadcrumb" aria-label="Breadcrumb">
+        <div class="nhsuk-width-container">
+            <ol class="nhsuk-breadcrumb__list">
+                <li class="nhsuk-breadcrumb__item">
+                    <a asp-action="@nameof(HomeController.Index)" 
+                       asp-controller="@typeof(HomeController).ControllerName()" 
+                       class="nhsuk-breadcrumb__link">Home</a>
+                </li>
+                <li class="nhsuk-breadcrumb__item">
+                    <a asp-action="@nameof(OrganisationsController.Index)" 
+                       asp-controller="@typeof(OrganisationsController).ControllerName()" 
+                       class="nhsuk-breadcrumb__link">Manage buyer organisations</a>
+                </li>
+            </ol>
+        </div>
+    </nav>
+}
 <div data-test-id="organisation-page">
-    <partial name="Partials/_BackLink" model="Model" />
     <nhs-page-title title="@ViewBag.Title"
-                    caption="@Model.Organisation.Name"
+                    caption="@Model!.Organisation.Name"
                     advice="These are the details for the organisation and its users." />
     <nhs-summary-list>
         <nhs-summary-list-row label-text="ODS code">
@@ -26,99 +42,30 @@
                 <vc:nhs-address address="@Model.OrganisationAddress" />
             </div>
         </nhs-summary-list-row>
-        <nhs-summary-list-row label-text="Contract">
-            <p>
-                <a data-test-id="edit-org-button" 
-                   asp-area="@typeof(OrganisationsController).AreaName()"
-                   asp-controller="@typeof(OrganisationsController).ControllerName()" 
-                   asp-action="@nameof(OrganisationsController.EditOrganisation)" 
-                   asp-route-organisationId="@Model.Organisation.Id" 
-                   class="bc-u-float-right nhsuk-u-margin-left-2">Edit</a>
-                @Model.CatalogueAgreementText
-            </p>
-        </nhs-summary-list-row>
     </nhs-summary-list>
 
-    <h2 data-test-id="accounts-subheading">User accounts</h2>
-    <p>These users are the buyers for this organisation.</p>
-
-    <div data-test-id="add-user-button">
-        <vc:nhs-action-link url="/admin/organisations/@Model.Organisation.Id/adduser" text="Add a new user" />
-    </div>
-
-    <div data-test-id="user-table">
-        <nhs-table>
-            <nhs-table-column>
-                Name
-            </nhs-table-column>
-            <nhs-table-column>
-                Telephone number
-            </nhs-table-column>
-            <nhs-table-column>
-                Email address
-            </nhs-table-column>
-            <nhs-table-column>
-            </nhs-table-column>
-            @foreach (var user in Model.Users)
-            {
-                <nhs-table-row-container>
-                    <nhs-table-cell>
-                        @user.GetDisplayName()
-                    </nhs-table-cell>
-                    <nhs-table-cell>
-                        <div data-test-id="user-phone-@user.Id">@user.PhoneNumber</div>
-                    </nhs-table-cell>
-                    <nhs-table-cell>
-                        <div data-test-id="user-email-@user.Id">@user.Email</div>
-                    </nhs-table-cell>
-                    <nhs-table-cell>
-                        <a data-test-id="user-name-@user.Id" 
-                           asp-area="@typeof(OrganisationsController).AreaName()" 
-                           asp-controller="@typeof(OrganisationsController).ControllerName()"
-                           asp-action="@nameof(OrganisationsController.UserDetails)"
-                           asp-route-organisationId="@Model.Organisation.Id"
-                           asp-route-userId="@user.Id">Edit</a>
-                    </nhs-table-cell>
-                </nhs-table-row-container>
-            }
-        </nhs-table>
-    </div>
-
-    <h2>Related organisations</h2>
-    <p>These are the organisations this organisation can create orders on behalf of.</p>
-    <div data-test-id="add-organisation-button">
-        <vc:nhs-action-link url="/admin/organisations/proxy/@Model.Organisation.Id" text="Relate to an organisation" />
-    </div>
-
-    <div id="related-org-table" data-test-id="related-org-table">
-        <nhs-table>
-            <nhs-table-column>
-                Organisation name
-            </nhs-table-column>
-            <nhs-table-column>
-                ODS code
-            </nhs-table-column>
-            <nhs-table-column>
-            </nhs-table-column>
-            @foreach (var relatedOrganisation in Model.RelatedOrganisations)
-            {
-                <nhs-table-row-container>
-                    <nhs-table-cell>
-                        <div data-test-id="related-org-name-@relatedOrganisation.Id">@relatedOrganisation.Name</div>
-                    </nhs-table-cell>
-                    <nhs-table-cell>
-                        <div data-test-id="related-org-externalIdentifier-@relatedOrganisation.Id">@relatedOrganisation.ExternalIdentifier</div>
-                    </nhs-table-cell>
-                    <nhs-table-cell>
-                        <a data-test-id="related-org-remove-@relatedOrganisation.Id" 
-                           asp-area="@typeof(OrganisationsController).AreaName()" 
-                           asp-controller="@typeof(OrganisationsController).ControllerName()" 
-                           asp-action="@nameof(OrganisationsController.RemoveAnOrganisation)" 
-                           asp-route-organisationId="@Model.Organisation.Id" 
-                           asp-route-relatedOrganisationId="@relatedOrganisation.Id">Remove</a>
-                    </nhs-table-cell>
-                </nhs-table-row-container>
-            }
-        </nhs-table>
-    </div>
+    <h2>Further details</h2>
+    <ul>
+        <li>
+            <a href="@Url.Action(
+                         nameof(OrganisationsController.Users),
+                         typeof(OrganisationsController).ControllerName(),
+                         new { organisationId = @Model.Organisation.Id })"><strong>User accounts</strong></a>
+            <p>Add, edit and view user accounts for @Model.Organisation.Name.</p>
+        </li>
+        <li>
+            <a href="@Url.Action(
+                         nameof(OrganisationsController.RelatedOrganisations),
+                         typeof(OrganisationsController).ControllerName(),
+                         new { organisationId = @Model.Organisation.Id })"><strong>Related organisations</strong></a>
+            <p>View and remove organisations that @Model.Organisation.Name can act on behalf of.</p>
+        </li>
+        <li>
+            <a href="@Url.Action(
+                         nameof(OrganisationsController.NominatedOrganisations),
+                         typeof(OrganisationsController).ControllerName(),
+                         new { organisationId = @Model.Organisation.Id })"><strong>Nominated organisations</strong></a>
+            <p>Add, remove and view organisations that can act on behalf of @Model.Organisation.Name.</p>
+        </li>
+    </ul>
 </div>

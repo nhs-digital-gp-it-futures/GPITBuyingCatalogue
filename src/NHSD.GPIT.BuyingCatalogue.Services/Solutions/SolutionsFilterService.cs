@@ -15,6 +15,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
 {
     public sealed class SolutionsFilterService : ISolutionsFilterService
     {
+        private const string FoundationCapabilitiesName = "Foundation";
         private const string FoundationCapabilitiesKey = "FC";
         private const string AllSolutionsFrameworkKey = "All";
         private const char CapabilitiesDelimiter = '|';
@@ -229,6 +230,42 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
                 .OrderBy(ssfm => ssfm.Title)
                 .Take(maxToBringBack)
                 .ToListAsync();
+        }
+
+        public async Task<Dictionary<string, int>> GetCapabilityNamesWithEpics(string capabilities)
+        {
+            if (string.IsNullOrWhiteSpace(capabilities))
+                return new Dictionary<string, int>();
+
+            var capabilityAndEpicIds = DecodeCapabilitiesFilter(capabilities);
+            var capabilityRefIds = capabilityAndEpicIds.Select(c => c.Key).ToArray();
+
+            var capabilitiesWithEpicsCount = await dbContext
+                .Capabilities
+                .AsNoTracking()
+                .Where(o => capabilityRefIds.Contains(o.CapabilityRef))
+                .ToDictionaryAsync(
+                    o => o.Name,
+                    o => capabilityAndEpicIds[o.CapabilityRef].Count);
+
+            if (capabilityAndEpicIds.ContainsKey(FoundationCapabilitiesKey))
+                capabilitiesWithEpicsCount.Add(FoundationCapabilitiesName, 0);
+
+            return capabilitiesWithEpicsCount;
+        }
+
+        public async Task<string> GetFrameworkName(string frameworkId)
+        {
+            if (string.IsNullOrWhiteSpace(frameworkId))
+                return frameworkId;
+
+            if (string.Equals(frameworkId, AllSolutionsFrameworkKey, StringComparison.OrdinalIgnoreCase))
+                return AllSolutionsFrameworkKey;
+
+            var framework = await dbContext.Frameworks.AsNoTracking()
+                .FirstOrDefaultAsync(fs => fs.Id == frameworkId);
+
+            return framework?.ShortName;
         }
 
         /// <summary>

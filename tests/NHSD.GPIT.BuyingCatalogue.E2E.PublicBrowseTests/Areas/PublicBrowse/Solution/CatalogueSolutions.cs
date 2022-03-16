@@ -12,6 +12,7 @@ using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Models;
 using NHSD.GPIT.BuyingCatalogue.Services.Solutions;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers;
 using OpenQA.Selenium;
+using SeleniumExtras.PageObjects;
 using Xunit;
 
 namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.PublicBrowse.Solution
@@ -361,7 +362,176 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.PublicBrowse.Solution
 
             NavigateToUrl(typeof(SolutionsController), nameof(SolutionsController.Index), queryParameters: queryParams);
 
-            CommonActions.ElementIsDisplayed(By.Id("no-results")).Should().BeTrue();
+            CommonActions.ElementIsDisplayed(Objects.PublicBrowse.SolutionsObjects.NoResultsElement).Should().BeTrue();
+        }
+
+        [Fact]
+        public void CatalogueSolutions_Filter_DisplaysFilterSummary()
+        {
+            using var context = GetEndToEndDbContext();
+            var capability = context.Capabilities.First(c => c.CapabilityRef == "C46");
+            CommonActions.WaitUntilElementExists(Objects.PublicBrowse.SolutionsObjects.FilterCapabilities);
+
+            Driver.FindElement(Objects.PublicBrowse.SolutionsObjects.FilterSolutionsExpander).Click();
+            Driver.FindElement(Objects.PublicBrowse.SolutionsObjects.FilterCapabilities).Click();
+
+            Driver.FindElement(By.XPath($"//input[@value='C46']/../input[contains(@class, 'nhsuk-checkboxes__input')]")).Click();
+            Driver.FindElement(By.XPath($"//input[@value='C46E6']/../input[contains(@class, 'nhsuk-checkboxes__input')]")).Click();
+
+            CommonActions.ClickSave();
+
+            CommonActions.PageLoadedCorrectGetIndex(typeof(SolutionsController), nameof(SolutionsController.Index)).Should().BeTrue();
+
+            var text = Driver.FindElement(ByExtensions.DataTestId("search-criteria-summary")).Text;
+            CommonActions.ElementTextContains(Objects.PublicBrowse.SolutionsObjects.SearchCriteriaSummary, $"{capability.Name} and 1 Epic").Should().BeTrue();
+        }
+
+        [Fact]
+        public void CatalogueSolutions_SearchTerm_DisplaysFilterSummary()
+        {
+            using var context = GetEndToEndDbContext();
+            var solution = context.Solutions.Include(s => s.CatalogueItem).First(s => s.CatalogueItem.PublishedStatus == PublicationStatus.Published);
+            var solutionName = solution.CatalogueItem.Name;
+
+            CommonActions.ElementAddValue(Objects.PublicBrowse.SolutionsObjects.SearchBar, solutionName);
+
+            CommonActions.ClickLinkElement(Objects.PublicBrowse.SolutionsObjects.SearchButton);
+
+            CommonActions.ElementIsDisplayed(Objects.PublicBrowse.SolutionsObjects.SearchCriteriaSummary).Should().BeTrue();
+            CommonActions.ElementTextContains(Objects.PublicBrowse.SolutionsObjects.SearchCriteriaSummary, $"Search term '{solutionName}'").Should().BeTrue();
+        }
+
+        [Fact]
+        public void CatalogueSolutions_FilterByFramework_DisplaysFilterSummary()
+        {
+            CommonActions.WaitUntilElementExists(Objects.PublicBrowse.SolutionsObjects.FilterCapabilities);
+
+            Driver.FindElement(Objects.PublicBrowse.SolutionsObjects.FilterSolutionsExpander).Click();
+            Driver.FindElement(Objects.PublicBrowse.SolutionsObjects.FilterSolutionsFramework).Click();
+
+            using var context = GetEndToEndDbContext();
+            var gpitFramework = context.Frameworks.Where(f => f.Id == "NHSDGP001").Single();
+
+            CommonActions.ClickRadioButtonWithValue(gpitFramework.Id);
+            CommonActions.ClickSave();
+
+            CommonActions.ElementIsDisplayed(Objects.PublicBrowse.SolutionsObjects.SearchCriteriaSummary).Should().BeTrue();
+            CommonActions.ElementTextContains(Objects.PublicBrowse.SolutionsObjects.SearchCriteriaSummary, $"Framework '{gpitFramework.ShortName}'").Should().BeTrue();
+        }
+
+        [Fact]
+        public async Task CatalogueSolutions_SearchValid_DisplaysSolutions()
+        {
+            using var context = GetEndToEndDbContext();
+            var solution = context.Solutions.Include(s => s.CatalogueItem).First(s => s.CatalogueItem.PublishedStatus == PublicationStatus.Published);
+
+            await CommonActions.ElementAddValueWithDelay(Objects.PublicBrowse.SolutionsObjects.SearchBar, solution.CatalogueItem.Name);
+
+            CommonActions.WaitUntilElementIsDisplayed(Objects.PublicBrowse.SolutionsObjects.SearchListBox);
+
+            CommonActions.ElementExists(Objects.PublicBrowse.SolutionsObjects.SearchResult(0))
+                .Should()
+                .BeTrue();
+
+            CommonActions.ElementTextEqualTo(
+                Objects.PublicBrowse.SolutionsObjects.SearchResultTitle(0),
+                solution.CatalogueItem.Name)
+                .Should()
+                .BeTrue();
+
+            CommonActions.ElementTextEqualTo(
+                Objects.PublicBrowse.SolutionsObjects.SearchResultDescription(0),
+                "Solution")
+                .Should()
+                .BeTrue();
+        }
+
+        [Fact]
+        public void CatalogueSolutions_SearchInvalid_NoResults()
+        {
+            TextGenerators.TextInputAddText(Objects.PublicBrowse.SolutionsObjects.SearchBar, 5);
+
+            CommonActions.WaitUntilElementIsDisplayed(Objects.PublicBrowse.SolutionsObjects.SearchListBox);
+
+            CommonActions.ElementIsDisplayed(Objects.PublicBrowse.SolutionsObjects.NoResults)
+                .Should()
+                .BeTrue();
+
+            CommonActions.ClickLinkElement(Objects.PublicBrowse.SolutionsObjects.SearchButton);
+
+            CommonActions.ElementIsDisplayed(Objects.PublicBrowse.SolutionsObjects.SearchBar).Should().BeTrue();
+            CommonActions.ElementIsDisplayed(Objects.PublicBrowse.SolutionsObjects.NoResultsElement).Should().BeTrue();
+            CommonActions.ElementIsDisplayed(Objects.PublicBrowse.SolutionsObjects.SolutionsList).Should().BeFalse();
+        }
+
+        [Fact]
+        public void CatalogueSolutions_SearchInvalid_ClickLink_NavigatesCorrectly()
+        {
+            TextGenerators.TextInputAddText(Objects.PublicBrowse.SolutionsObjects.SearchBar, 5);
+            CommonActions.WaitUntilElementIsDisplayed(Objects.PublicBrowse.SolutionsObjects.SearchListBox);
+
+            CommonActions.ClickLinkElement(Objects.PublicBrowse.SolutionsObjects.SearchButton);
+            CommonActions.WaitUntilElementIsDisplayed(Objects.PublicBrowse.SolutionsObjects.NoResultsElement);
+
+            CommonActions.ClickLinkElement(ByExtensions.DataTestId("clear-results-link"));
+
+            CommonActions.PageLoadedCorrectGetIndex(
+                typeof(SolutionsController),
+                nameof(SolutionsController.Index))
+                .Should().BeTrue();
+        }
+
+        [Fact]
+        public void CatalogueSolutions_Search_FiltersResults()
+        {
+            using var context = GetEndToEndDbContext();
+            var solution = context.Solutions.Include(s => s.CatalogueItem).First(s => s.CatalogueItem.PublishedStatus == PublicationStatus.Published);
+
+            CommonActions.ElementAddValue(Objects.PublicBrowse.SolutionsObjects.SearchBar, solution.CatalogueItem.Name);
+            CommonActions.WaitUntilElementIsDisplayed(Objects.PublicBrowse.SolutionsObjects.SearchListBox);
+
+            CommonActions.ClickLinkElement(Objects.PublicBrowse.SolutionsObjects.SearchButton);
+
+            var solutions = new ByChained(Objects.PublicBrowse.SolutionsObjects.SolutionsList, ByExtensions.DataTestId("solutions-card"));
+            Driver.FindElements(solutions).Count.Should().Be(1);
+        }
+
+        [Fact]
+        public void CatalogueSolutions_Search_PreservesFilters()
+        {
+            void ExpandCapabilitiesFilter()
+            {
+                CommonActions.WaitUntilElementExists(Objects.PublicBrowse.SolutionsObjects.FilterCapabilities);
+
+                Driver.FindElement(Objects.PublicBrowse.SolutionsObjects.FilterSolutionsExpander).Click();
+                Driver.FindElement(Objects.PublicBrowse.SolutionsObjects.FilterSolutionsFramework).Click();
+            }
+
+            void ValidateFilterSelection()
+            {
+                ExpandCapabilitiesFilter();
+                CommonActions.GetNumberOfSelectedRadioButtons().Should().Be(1);
+            }
+
+            ExpandCapabilitiesFilter();
+
+            using var context = GetEndToEndDbContext();
+            var solution = context.Solutions.Include(s => s.CatalogueItem).First(s => s.CatalogueItem.PublishedStatus == PublicationStatus.Published);
+            var gpitFramework = context.Frameworks.Where(f => f.Id == "NHSDGP001").Single();
+
+            CommonActions.ClickRadioButtonWithValue(gpitFramework.Id);
+            CommonActions.ClickSave();
+
+            ValidateFilterSelection();
+
+            CommonActions.ElementAddValue(Objects.PublicBrowse.SolutionsObjects.SearchBar, solution.CatalogueItem.Name);
+            CommonActions.ClickLinkElement(Objects.PublicBrowse.SolutionsObjects.SearchButton);
+
+            ValidateFilterSelection();
+
+            CommonActions.ElementIsDisplayed(Objects.PublicBrowse.SolutionsObjects.SearchCriteriaSummary).Should().BeTrue();
+            CommonActions.ElementTextContains(Objects.PublicBrowse.SolutionsObjects.SearchCriteriaSummary, $"Search term '{solution.CatalogueItem.Name}'").Should().BeTrue();
+            CommonActions.ElementTextContains(Objects.PublicBrowse.SolutionsObjects.SearchCriteriaSummary, $"Framework '{gpitFramework.ShortName}'").Should().BeTrue();
         }
 
         public Task InitializeAsync()

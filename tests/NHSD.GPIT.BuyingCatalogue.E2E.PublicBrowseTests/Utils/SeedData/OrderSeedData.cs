@@ -25,7 +25,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
             AddOrderWithAddedAssociatedService(context);
             AddOrderReadyToComplete(context);
             AddCompletedOrder(context, 90010, GetOrganisationId(context));
-            AddCompletedOrder(context, 90011, GetOrganisationId(context, "15F"));
+            AddCompletedOrder(context, 90011, GetOrganisationId(context, "CG-15F"));
         }
 
         private static void AddOrderAtDescriptionStage(BuyingCatalogueDbContext context)
@@ -614,7 +614,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
 
             var price = context.CatalogueItems
                 .Include(c => c.CataloguePrices).ThenInclude(s => s.PricingUnit)
-                .Single(c => c.Id == new CatalogueItemId(99998, "S-999"))
+                .Single(c => c.Id == new CatalogueItemId(99998, "001"))
                 .CataloguePrices.First();
 
             var addedSolution = new OrderItem
@@ -625,7 +625,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
                 Created = DateTime.UtcNow,
                 OrderId = orderId,
                 EstimationPeriod = TimeUnit.PerMonth,
-                CatalogueItem = context.CatalogueItems.Single(c => c.Id == new CatalogueItemId(99998, "S-999")),
+                CatalogueItem = context.CatalogueItems.Single(c => c.Id == new CatalogueItemId(99998, "001")),
             };
 
             order.FundingSourceOnlyGms = true;
@@ -639,7 +639,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
             context.SaveChangesAs(user.Id);
         }
 
-        private static int GetOrganisationId(BuyingCatalogueDbContext context, string internalOrgId = "03F")
+        private static int GetOrganisationId(BuyingCatalogueDbContext context, string internalOrgId = "CG-03F")
         {
             return context.Organisations.First(o => o.InternalIdentifier == internalOrgId).Id;
         }
