@@ -29,13 +29,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Test.Framework.AutoFixtureCustomisations
                 if (!(request as Type == typeof(OrderItemFunding)))
                     return new NoSpecimen();
 
-                var orderItem = context.Create<OrderItem>();
-                var item = new OrderItemFunding
-                {
-                    OrderItem = orderItem,
-                    OrderId = orderItem.OrderId,
-                    CatalogueItemId = orderItem.CatalogueItemId,
-                };
+                var item = new OrderItemFunding();
 
                 var split = context.CreateIntWithRange(0, (int)item.TotalPrice);
 
