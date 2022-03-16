@@ -8,6 +8,7 @@ using AutoFixture.Xunit2;
 using FluentAssertions;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using Moq;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Organisations.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Users.Models;
@@ -450,6 +451,198 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
             var redirectResult = result.Should().BeAssignableTo<RedirectToActionResult>().Subject;
 
             redirectResult.ActionName.Should().Be(nameof(OrganisationsController.RelatedOrganisations));
+            redirectResult.RouteValues.Should().BeEquivalentTo(new Dictionary<string, int>
+            {
+                { "organisationId", model.OrganisationId },
+            });
+        }
+
+        [Theory]
+        [CommonAutoData]
+        public static async Task Get_NominatedOrganisations_ReturnsExpectedResult(
+            Organisation organisation,
+            Organisation nominatedOrganisation,
+            [Frozen] Mock<IOrganisationsService> mockOrganisationsService,
+            OrganisationsController controller)
+        {
+            mockOrganisationsService
+                .Setup(x => x.GetOrganisation(organisation.Id))
+                .ReturnsAsync(organisation);
+
+            mockOrganisationsService
+                .Setup(x => x.GetNominatedOrganisations(organisation.Id))
+                .ReturnsAsync(new List<Organisation> { nominatedOrganisation });
+
+            var result = (await controller.NominatedOrganisations(organisation.Id)).As<ViewResult>();
+
+            mockOrganisationsService.VerifyAll();
+
+            result.Should().NotBeNull();
+            result.ViewName.Should().BeNullOrEmpty();
+
+            var model = result.Model.Should().BeAssignableTo<NominatedOrganisationsModel>().Subject;
+
+            model.OrganisationId.Should().Be(organisation.Id);
+            model.OrganisationName.Should().Be(organisation.Name);
+            model.NominatedOrganisations.Should().BeEquivalentTo(new[] { nominatedOrganisation });
+        }
+
+        [Theory]
+        [CommonAutoData]
+        public static async Task Get_AddNominatedOrganisation_ReturnsExpectedResult(
+            Organisation organisation,
+            Organisation nominatedOrganisation,
+            Organisation potentialOrganisation,
+            [Frozen] Mock<IOrganisationsService> mockOrganisationsService,
+            OrganisationsController controller)
+        {
+            mockOrganisationsService
+                .Setup(x => x.GetOrganisation(organisation.Id))
+                .ReturnsAsync(organisation);
+
+            mockOrganisationsService
+                .Setup(x => x.GetAllOrganisations())
+                .ReturnsAsync(new List<Organisation>
+                {
+                    organisation,
+                    nominatedOrganisation,
+                    potentialOrganisation,
+                });
+
+            mockOrganisationsService
+                .Setup(x => x.GetNominatedOrganisations(organisation.Id))
+                .ReturnsAsync(new List<Organisation> { nominatedOrganisation });
+
+            var result = (await controller.AddNominatedOrganisation(organisation.Id)).As<ViewResult>();
+
+            mockOrganisationsService.VerifyAll();
+
+            result.Should().NotBeNull();
+            result.ViewName.Should().BeNullOrEmpty();
+
+            var model = result.Model.Should().BeAssignableTo<AddNominatedOrganisationModel>().Subject;
+            var expected = new SelectListItem(potentialOrganisation.Name, $"{potentialOrganisation.Id}");
+
+            model.OrganisationId.Should().Be(organisation.Id);
+            model.OrganisationName.Should().Be(organisation.Name);
+            model.PotentialOrganisations.Should().BeEquivalentTo(new[] { expected });
+        }
+
+        [Theory]
+        [CommonAutoData]
+        public static async Task Post_AddNominatedOrganisation_WithModelErrors_ReturnsExpectedResult(
+            Organisation organisation,
+            Organisation potentialOrganisation,
+            AddNominatedOrganisationModel model,
+            [Frozen] Mock<IOrganisationsService> mockOrganisationsService,
+            OrganisationsController controller)
+        {
+            controller.ModelState.AddModelError("key", "errorMessage");
+
+            mockOrganisationsService
+                .Setup(x => x.GetOrganisation(organisation.Id))
+                .ReturnsAsync(organisation);
+
+            mockOrganisationsService
+                .Setup(x => x.GetAllOrganisations())
+                .ReturnsAsync(new List<Organisation> { potentialOrganisation });
+
+            mockOrganisationsService
+                .Setup(x => x.GetNominatedOrganisations(organisation.Id))
+                .ReturnsAsync(new List<Organisation>());
+
+            model.SelectedOrganisationId = string.Empty;
+            model.PotentialOrganisations = new[]
+            {
+                new SelectListItem(potentialOrganisation.Name, $"{potentialOrganisation.Id}"),
+            };
+
+            var result = (await controller.AddNominatedOrganisation(organisation.Id, model)).As<ViewResult>();
+
+            result.Should().NotBeNull();
+            result.ViewName.Should().BeNull();
+
+            var actualModel = result.Model.Should().BeAssignableTo<AddNominatedOrganisationModel>().Subject;
+
+            actualModel.Should().BeEquivalentTo(model);
+        }
+
+        [Theory]
+        [CommonAutoData]
+        public static async Task Post_AddNominatedOrganisation_ValidModel_ReturnsExpectedResult(
+            int nominatedOrganisationId,
+            AddNominatedOrganisationModel model,
+            [Frozen] Mock<IOrganisationsService> mockOrganisationsService,
+            OrganisationsController controller)
+        {
+            model.SelectedOrganisationId = $"{nominatedOrganisationId}";
+
+            mockOrganisationsService
+                .Setup(x => x.AddNominatedOrganisation(model.OrganisationId, nominatedOrganisationId))
+                .Returns(Task.CompletedTask);
+
+            var result = (await controller.AddNominatedOrganisation(model.OrganisationId, model)).As<RedirectToActionResult>();
+
+            mockOrganisationsService.VerifyAll();
+
+            result.Should().NotBeNull();
+            result.ActionName.Should().Be(nameof(OrganisationsController.NominatedOrganisations));
+        }
+
+        [Theory]
+        [CommonAutoData]
+        public static async Task Get_RemoveNominatedOrganisation_ReturnsExpectedResult(
+            Organisation organisation,
+            Organisation nominatedOrganisation,
+            [Frozen] Mock<IOrganisationsService> mockOrganisationsService,
+            OrganisationsController controller)
+        {
+            mockOrganisationsService
+                .Setup(x => x.GetOrganisation(organisation.Id))
+                .ReturnsAsync(organisation);
+
+            mockOrganisationsService
+                .Setup(x => x.GetOrganisation(nominatedOrganisation.Id))
+                .ReturnsAsync(nominatedOrganisation);
+
+            var result = (await controller.RemoveNominatedOrganisation(organisation.Id, nominatedOrganisation.Id)).As<ViewResult>();
+
+            mockOrganisationsService.VerifyAll();
+
+            result.Should().NotBeNull();
+            result.ViewName.Should().BeNullOrEmpty();
+
+            var model = result.Model.Should().BeAssignableTo<RemoveNominatedOrganisationModel>().Subject;
+
+            model.OrganisationId.Should().Be(organisation.Id);
+            model.OrganisationName.Should().Be(organisation.Name);
+            model.NominatedOrganisationId.Should().Be(nominatedOrganisation.Id);
+            model.NominatedOrganisationName.Should().Be(nominatedOrganisation.Name);
+        }
+
+        [Theory]
+        [CommonAutoData]
+        public static async Task Post_RemoveNominatedOrganisation_ReturnsExpectedResult(
+            RemoveNominatedOrganisationModel model,
+            [Frozen] Mock<IOrganisationsService> mockOrganisationsService,
+            OrganisationsController controller)
+        {
+            mockOrganisationsService
+                .Setup(x => x.RemoveNominatedOrganisation(model.OrganisationId, model.NominatedOrganisationId))
+                .Returns(Task.CompletedTask);
+
+            var result = await controller.RemoveNominatedOrganisation(
+                model.OrganisationId,
+                model.NominatedOrganisationId,
+                model);
+
+            mockOrganisationsService.VerifyAll();
+
+            result.Should().NotBeNull();
+
+            var redirectResult = result.Should().BeAssignableTo<RedirectToActionResult>().Subject;
+
+            redirectResult.ActionName.Should().Be(nameof(OrganisationsController.NominatedOrganisations));
             redirectResult.RouteValues.Should().BeEquivalentTo(new Dictionary<string, int>
             {
                 { "organisationId", model.OrganisationId },

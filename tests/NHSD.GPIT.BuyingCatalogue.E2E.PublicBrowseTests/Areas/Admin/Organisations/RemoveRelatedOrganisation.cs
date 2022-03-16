@@ -57,7 +57,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.Organisations
         {
             await AddRelatedOrganisation();
 
-            CommonActions.ClickLinkElement(OrganisationUsersObjects.CancelLink);
+            CommonActions.ClickLinkElement(RelatedOrganisationObjects.CancelLink);
 
             CommonActions.PageLoadedCorrectGetIndex(
                 typeof(OrganisationsController),
