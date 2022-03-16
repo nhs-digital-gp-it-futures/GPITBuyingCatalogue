@@ -176,16 +176,13 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.ManageOrders
                 var order = context.Orders.First();
                 var callOffId = order.CallOffId.ToString();
 
-                await RunTestAsync(async () =>
-                {
-                    await CommonActions.ElementAddValueWithDelay(ManageOrdersDashboardObjects.SearchBar, callOffId);
+                await CommonActions.ElementAddValueWithDelay(ManageOrdersDashboardObjects.SearchBar, callOffId);
 
-                    CommonActions.WaitUntilElementIsDisplayed(ManageOrdersDashboardObjects.SearchListBox);
-                    CommonActions.WaitUntilElementIsDisplayed(ManageOrdersDashboardObjects.SearchResultDescription(0));
+                CommonActions.WaitUntilElementIsDisplayed(ManageOrdersDashboardObjects.SearchListBox);
+                CommonActions.WaitUntilElementIsDisplayed(ManageOrdersDashboardObjects.SearchResultDescription(0));
 
-                    CommonActions.ElementTextEqualTo(ManageOrdersDashboardObjects.SearchResultDescription(0), callOffId.FormatForComparison()).Should().BeTrue();
-                    CommonActions.ElementTextEqualTo(ManageOrdersDashboardObjects.SearchResultTitle(0), "Call-off ID".FormatForComparison()).Should().BeTrue();
-                });
+                CommonActions.ElementTextEqualTo(ManageOrdersDashboardObjects.SearchResultDescription(0), callOffId.FormatForComparison()).Should().BeTrue();
+                CommonActions.ElementTextEqualTo(ManageOrdersDashboardObjects.SearchResultTitle(0), "Call-off ID".FormatForComparison()).Should().BeTrue();
             });
         }
 
@@ -219,16 +216,13 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.ManageOrders
                 var callOffId = order.CallOffId.ToString();
                 var supplierName = order.Supplier.Name;
 
-                await RunTestAsync(async () =>
-                {
-                    await CommonActions.ElementAddValueWithDelay(ManageOrdersDashboardObjects.SearchBar, supplierName);
+                await CommonActions.ElementAddValueWithDelay(ManageOrdersDashboardObjects.SearchBar, supplierName);
 
-                    CommonActions.WaitUntilElementIsDisplayed(ManageOrdersDashboardObjects.SearchListBox);
-                    CommonActions.WaitUntilElementIsDisplayed(ManageOrdersDashboardObjects.SearchResultDescription(0));
+                CommonActions.WaitUntilElementIsDisplayed(ManageOrdersDashboardObjects.SearchListBox);
+                CommonActions.WaitUntilElementIsDisplayed(ManageOrdersDashboardObjects.SearchResultDescription(0));
 
-                    CommonActions.ElementTextEqualTo(ManageOrdersDashboardObjects.SearchResultDescription(0), callOffId.FormatForComparison()).Should().BeTrue();
-                    CommonActions.ElementTextEqualTo(ManageOrdersDashboardObjects.SearchResultTitle(0), "Supplier".FormatForComparison()).Should().BeTrue();
-                });
+                CommonActions.ElementTextEqualTo(ManageOrdersDashboardObjects.SearchResultDescription(0), callOffId.FormatForComparison()).Should().BeTrue();
+                CommonActions.ElementTextEqualTo(ManageOrdersDashboardObjects.SearchResultTitle(0), "Supplier".FormatForComparison()).Should().BeTrue();
             });
         }
 
@@ -243,16 +237,13 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.ManageOrders
                 var callOffId = order.CallOffId.ToString();
                 var solutionName = order.OrderItems.First().CatalogueItem.Name;
 
-                await RunTestAsync(async () =>
-                {
-                    await CommonActions.ElementAddValueWithDelay(ManageOrdersDashboardObjects.SearchBar, solutionName);
+                await CommonActions.ElementAddValueWithDelay(ManageOrdersDashboardObjects.SearchBar, solutionName);
 
-                    CommonActions.WaitUntilElementIsDisplayed(ManageOrdersDashboardObjects.SearchListBox);
-                    CommonActions.WaitUntilElementIsDisplayed(ManageOrdersDashboardObjects.SearchResultDescription(0));
+                CommonActions.WaitUntilElementIsDisplayed(ManageOrdersDashboardObjects.SearchListBox);
+                CommonActions.WaitUntilElementIsDisplayed(ManageOrdersDashboardObjects.SearchResultDescription(0));
 
-                    CommonActions.ElementTextEqualTo(ManageOrdersDashboardObjects.SearchResultDescription(0), callOffId.FormatForComparison()).Should().BeTrue();
-                    CommonActions.ElementTextEqualTo(ManageOrdersDashboardObjects.SearchResultTitle(0), "Solution".FormatForComparison()).Should().BeTrue();
-                });
+                CommonActions.ElementTextEqualTo(ManageOrdersDashboardObjects.SearchResultDescription(0), callOffId.FormatForComparison()).Should().BeTrue();
+                CommonActions.ElementTextEqualTo(ManageOrdersDashboardObjects.SearchResultTitle(0), "Solution".FormatForComparison()).Should().BeTrue();
             });
         }
     }
