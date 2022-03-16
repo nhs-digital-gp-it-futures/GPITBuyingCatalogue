@@ -142,7 +142,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.ManageOrders
         [Fact]
         public void Search_NoMatch_CorrectSectionsDisplayed()
         {
-            RunTest(() =>
+            RunTestWithRetry(() =>
             {
                 var searchText = TextGenerators.TextInputAddText(ManageOrdersDashboardObjects.SearchBar, 15);
 
@@ -170,7 +170,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.ManageOrders
         [Fact]
         public async Task Search_CallOffId_ResultsDisplayedCorrectly()
         {
-            await RunTestAsync(async () =>
+            await RunTestWithRetryAsync(async () =>
             {
                 using var context = GetEndToEndDbContext();
                 var order = context.Orders.First();
@@ -189,7 +189,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.ManageOrders
         [Fact]
         public void Search_Organisation_ResultsDisplayedCorrectly()
         {
-            RunTest(() =>
+            RunTestWithRetry(() =>
             {
                 using var context = GetEndToEndDbContext();
                 var order = context.Orders.Include(o => o.OrderingParty).First();
@@ -209,7 +209,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.ManageOrders
         [Fact]
         public async Task Search_Supplier_ResultsDisplayedCorrectly()
         {
-            await RunTestAsync(async () =>
+            await RunTestWithRetryAsync(async () =>
             {
                 using var context = GetEndToEndDbContext();
                 var order = context.Orders.Include(o => o.Supplier).First(o => o.Supplier != null);
@@ -229,7 +229,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.ManageOrders
         [Fact]
         public async Task Search_Solution_ResultsDisplayedCorrectly()
         {
-            await RunTestAsync(async () =>
+            await RunTestWithRetryAsync(async () =>
             {
                 using var context = GetEndToEndDbContext();
                 var orders = context.Orders.Include(o => o.OrderItems).ThenInclude(oi => oi.CatalogueItem).Where(o => o.OrderItems.Any());

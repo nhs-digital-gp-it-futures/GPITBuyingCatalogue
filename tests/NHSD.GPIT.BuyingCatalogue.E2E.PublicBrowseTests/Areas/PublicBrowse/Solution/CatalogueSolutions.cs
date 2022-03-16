@@ -442,7 +442,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.PublicBrowse.Solution
         [Fact]
         public void CatalogueSolutions_SearchTerm_DisplaysFilterSummary()
         {
-            RunTest(() =>
+            RunTestWithRetry(() =>
             {
                 using var context = GetEndToEndDbContext();
                 var solution = context.Solutions.Include(s => s.CatalogueItem).First(s => s.CatalogueItem.PublishedStatus == PublicationStatus.Published);
@@ -481,7 +481,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.PublicBrowse.Solution
         [Fact]
         public async Task CatalogueSolutions_SearchValid_DisplaysSolutions()
         {
-            await RunTestAsync(async () =>
+            await RunTestWithRetryAsync(async () =>
             {
                 using var context = GetEndToEndDbContext();
                 var solution = context.Solutions.Include(s => s.CatalogueItem).First(s => s.CatalogueItem.PublishedStatus == PublicationStatus.Published);
@@ -511,7 +511,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.PublicBrowse.Solution
         [Fact]
         public void CatalogueSolutions_SearchInvalid_NoResults()
         {
-            RunTest(() =>
+            RunTestWithRetry(() =>
             {
                 TextGenerators.TextInputAddText(Objects.PublicBrowse.SolutionsObjects.SearchBar, 5);
 
@@ -532,7 +532,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.PublicBrowse.Solution
         [Fact]
         public void CatalogueSolutions_SearchInvalid_ClickLink_NavigatesCorrectly()
         {
-            RunTest(() =>
+            RunTestWithRetry(() =>
             {
                 TextGenerators.TextInputAddText(Objects.PublicBrowse.SolutionsObjects.SearchBar, 5);
                 CommonActions.WaitUntilElementIsDisplayed(Objects.PublicBrowse.SolutionsObjects.SearchListBox);
@@ -552,7 +552,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.PublicBrowse.Solution
         [Fact]
         public void CatalogueSolutions_Search_FiltersResults()
         {
-            RunTest(() =>
+            RunTestWithRetry(() =>
             {
                 using var context = GetEndToEndDbContext();
                 var solution = context.Solutions.Include(s => s.CatalogueItem).First(s => s.CatalogueItem.PublishedStatus == PublicationStatus.Published);
@@ -570,7 +570,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.PublicBrowse.Solution
         [Fact]
         public void CatalogueSolutions_Search_PreservesFilters()
         {
-            RunTest(() =>
+            RunTestWithRetry(() =>
             {
                 void ExpandCapabilitiesFilter()
                 {

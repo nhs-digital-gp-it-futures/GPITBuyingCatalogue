@@ -71,84 +71,93 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.Organisations
         [Fact]
         public async Task Index_SearchTermEmpty_AllOrganisationsDisplayed()
         {
-            CommonActions.ElementAddValue(OrganisationObjects.SearchBar, string.Empty);
-            CommonActions.ClickLinkElement(OrganisationObjects.SearchButton);
+            await RunTestWithRetryAsync(async () =>
+            {
+                CommonActions.ElementAddValue(OrganisationObjects.SearchBar, string.Empty);
+                CommonActions.ClickLinkElement(OrganisationObjects.SearchButton);
 
-            CommonActions.PageLoadedCorrectGetIndex(
-                typeof(OrganisationsController),
-                nameof(OrganisationsController.Index)).Should().BeTrue();
+                CommonActions.PageLoadedCorrectGetIndex(
+                    typeof(OrganisationsController),
+                    nameof(OrganisationsController.Index)).Should().BeTrue();
 
-            await VerifyAllOrganisationsDisplayed();
+                await VerifyAllOrganisationsDisplayed();
+            });
         }
 
         [Fact]
         public async Task Index_SearchTermValid_FilteredOrganisationsDisplayed()
         {
-            await using var context = GetEndToEndDbContext();
+            await RunTestWithRetryAsync(async () =>
+            {
+                await using var context = GetEndToEndDbContext();
 
-            var sampleOrganisation = context.Organisations.First();
+                var sampleOrganisation = context.Organisations.First();
 
-            await CommonActions.InputCharactersWithDelay(OrganisationObjects.SearchBar, sampleOrganisation.ExternalIdentifier);
-            CommonActions.WaitUntilElementIsDisplayed(OrganisationObjects.SearchListBox);
+                await CommonActions.InputCharactersWithDelay(OrganisationObjects.SearchBar, sampleOrganisation.ExternalIdentifier);
+                CommonActions.WaitUntilElementIsDisplayed(OrganisationObjects.SearchListBox);
 
-            CommonActions.ElementExists(OrganisationObjects.SearchResult(0)).Should().BeTrue();
-            CommonActions.ElementTextEqualTo(OrganisationObjects.SearchResultTitle(0), sampleOrganisation.Name).Should().BeTrue();
-            CommonActions.ElementTextEqualTo(OrganisationObjects.SearchResultDescription(0), sampleOrganisation.ExternalIdentifier).Should().BeTrue();
+                CommonActions.ElementExists(OrganisationObjects.SearchResult(0)).Should().BeTrue();
+                CommonActions.ElementTextEqualTo(OrganisationObjects.SearchResultTitle(0), sampleOrganisation.Name).Should().BeTrue();
+                CommonActions.ElementTextEqualTo(OrganisationObjects.SearchResultDescription(0), sampleOrganisation.ExternalIdentifier).Should().BeTrue();
 
-            CommonActions.ClickLinkElement(OrganisationObjects.SearchButton);
+                CommonActions.ClickLinkElement(OrganisationObjects.SearchButton);
 
-            CommonActions.PageLoadedCorrectGetIndex(
-                typeof(OrganisationsController),
-                nameof(OrganisationsController.Index)).Should().BeTrue();
+                CommonActions.PageLoadedCorrectGetIndex(
+                    typeof(OrganisationsController),
+                    nameof(OrganisationsController.Index)).Should().BeTrue();
 
-            var pageSummary = GetPageSummary();
+                var pageSummary = GetPageSummary();
 
-            pageSummary.OdsCodes.Single().Should().Be(sampleOrganisation.ExternalIdentifier);
-            pageSummary.OrganisationIds.Single().Should().Be(sampleOrganisation.Id);
-            pageSummary.OrganisationNames.Single().Should().Be(sampleOrganisation.Name);
+                pageSummary.OdsCodes.Single().Should().Be(sampleOrganisation.ExternalIdentifier);
+                pageSummary.OrganisationIds.Single().Should().Be(sampleOrganisation.Id);
+                pageSummary.OrganisationNames.Single().Should().Be(sampleOrganisation.Name);
+            });
         }
 
         [Fact]
         public async Task Index_SearchTermValid_NoMatches_ErrorMessageDisplayed()
         {
-            await using var context = GetEndToEndDbContext();
+            await RunTestWithRetryAsync(async () =>
+            {
+                await using var context = GetEndToEndDbContext();
 
-            await CommonActions.InputCharactersWithDelay(OrganisationObjects.SearchBar, Strings.RandomString(10));
-            CommonActions.WaitUntilElementIsDisplayed(OrganisationObjects.SearchListBox);
+                await CommonActions.InputCharactersWithDelay(OrganisationObjects.SearchBar, Strings.RandomString(10));
+                CommonActions.WaitUntilElementIsDisplayed(OrganisationObjects.SearchListBox);
 
-            CommonActions.ElementIsDisplayed(OrganisationObjects.SearchResultsErrorMessage).Should().BeTrue();
+                CommonActions.ElementIsDisplayed(OrganisationObjects.SearchResultsErrorMessage).Should().BeTrue();
 
-            CommonActions.ClickLinkElement(OrganisationObjects.SearchButton);
+                CommonActions.ClickLinkElement(OrganisationObjects.SearchButton);
 
-            CommonActions.PageLoadedCorrectGetIndex(
-                typeof(OrganisationsController),
-                nameof(OrganisationsController.Index)).Should().BeTrue();
+                CommonActions.PageLoadedCorrectGetIndex(
+                    typeof(OrganisationsController),
+                    nameof(OrganisationsController.Index)).Should().BeTrue();
 
-            CommonActions.ElementIsDisplayed(OrganisationObjects.AddOrganisationLink).Should().BeTrue();
-            CommonActions.ElementIsDisplayed(OrganisationObjects.SearchBar).Should().BeTrue();
-            CommonActions.ElementIsDisplayed(OrganisationObjects.SearchButton).Should().BeTrue();
-            CommonActions.ElementIsDisplayed(OrganisationObjects.OrganisationsTable).Should().BeFalse();
-            CommonActions.ElementIsDisplayed(OrganisationObjects.SearchErrorMessage).Should().BeTrue();
-            CommonActions.ElementIsDisplayed(OrganisationObjects.SearchErrorMessageLink).Should().BeTrue();
+                CommonActions.ElementIsDisplayed(OrganisationObjects.AddOrganisationLink).Should().BeTrue();
+                CommonActions.ElementIsDisplayed(OrganisationObjects.SearchBar).Should().BeTrue();
+                CommonActions.ElementIsDisplayed(OrganisationObjects.SearchButton).Should().BeTrue();
+                CommonActions.ElementIsDisplayed(OrganisationObjects.OrganisationsTable).Should().BeFalse();
+                CommonActions.ElementIsDisplayed(OrganisationObjects.SearchErrorMessage).Should().BeTrue();
+                CommonActions.ElementIsDisplayed(OrganisationObjects.SearchErrorMessageLink).Should().BeTrue();
 
-            var pageSummary = GetPageSummary();
+                var pageSummary = GetPageSummary();
 
-            pageSummary.OdsCodes.Should().BeEmpty();
-            pageSummary.OrganisationIds.Should().BeEmpty();
-            pageSummary.OrganisationNames.Should().BeEmpty();
+                pageSummary.OdsCodes.Should().BeEmpty();
+                pageSummary.OrganisationIds.Should().BeEmpty();
+                pageSummary.OrganisationNames.Should().BeEmpty();
 
-            CommonActions.ClickLinkElement(OrganisationObjects.SearchErrorMessageLink);
+                CommonActions.ClickLinkElement(OrganisationObjects.SearchErrorMessageLink);
 
-            CommonActions.PageLoadedCorrectGetIndex(
-                typeof(OrganisationsController),
-                nameof(OrganisationsController.Index)).Should().BeTrue();
+                CommonActions.PageLoadedCorrectGetIndex(
+                    typeof(OrganisationsController),
+                    nameof(OrganisationsController.Index)).Should().BeTrue();
 
-            CommonActions.ElementIsDisplayed(OrganisationObjects.AddOrganisationLink).Should().BeTrue();
-            CommonActions.ElementIsDisplayed(OrganisationObjects.SearchBar).Should().BeTrue();
-            CommonActions.ElementIsDisplayed(OrganisationObjects.SearchButton).Should().BeTrue();
-            CommonActions.ElementIsDisplayed(OrganisationObjects.OrganisationsTable).Should().BeTrue();
-            CommonActions.ElementIsDisplayed(OrganisationObjects.SearchErrorMessage).Should().BeFalse();
-            CommonActions.ElementIsDisplayed(OrganisationObjects.SearchErrorMessageLink).Should().BeFalse();
+                CommonActions.ElementIsDisplayed(OrganisationObjects.AddOrganisationLink).Should().BeTrue();
+                CommonActions.ElementIsDisplayed(OrganisationObjects.SearchBar).Should().BeTrue();
+                CommonActions.ElementIsDisplayed(OrganisationObjects.SearchButton).Should().BeTrue();
+                CommonActions.ElementIsDisplayed(OrganisationObjects.OrganisationsTable).Should().BeTrue();
+                CommonActions.ElementIsDisplayed(OrganisationObjects.SearchErrorMessage).Should().BeFalse();
+                CommonActions.ElementIsDisplayed(OrganisationObjects.SearchErrorMessageLink).Should().BeFalse();
+            });
         }
 
         private async Task VerifyAllOrganisationsDisplayed()

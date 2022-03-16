@@ -224,7 +224,20 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.TestBases
 
         protected bool UserAlreadyLoggedIn() => Driver.Manage().Cookies.GetCookieNamed("user-session") != null;
 
-        protected Task RunTestAsync(
+        protected async Task RunTestAsync(Func<Task> task, [CallerMemberName] string callerMemberName = "", [CallerFilePath] string callerFilePath = "")
+        {
+            try
+            {
+                await task();
+            }
+            catch
+            {
+                TakeScreenShot(callerMemberName, callerFilePath);
+                throw;
+            }
+        }
+
+        protected Task RunTestWithRetryAsync(
             Func<Task> task,
             [CallerMemberName] string callerMemberName = "",
             [CallerFilePath] string callerFilePath = "",
@@ -246,7 +259,20 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.TestBases
             return policy.ExecuteAsync(task);
         }
 
-        protected void RunTest(
+        protected void RunTest(Action action, [CallerMemberName] string callerMemberName = "", [CallerFilePath] string callerFilePath = "")
+        {
+            try
+            {
+                action();
+            }
+            catch
+            {
+                TakeScreenShot(callerMemberName, callerFilePath);
+                throw;
+            }
+        }
+
+        protected void RunTestWithRetry(
             Action action,
             [CallerMemberName] string callerMemberName = "",
             [CallerFilePath] string callerFilePath = "",
