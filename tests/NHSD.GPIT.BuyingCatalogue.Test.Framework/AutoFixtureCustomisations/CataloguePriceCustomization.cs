@@ -32,12 +32,9 @@ namespace NHSD.GPIT.BuyingCatalogue.Test.Framework.AutoFixtureCustomisations
                     return new NoSpecimen();
 
                 var id = context.Create<int>();
-                var catalogueItem = context.Create<CatalogueItem>();
                 var price = new CataloguePrice
                 {
                     CataloguePriceId = id,
-                    CatalogueItem = catalogueItem,
-                    CatalogueItemId = catalogueItem.Id,
                 };
 
                 if (price.CataloguePriceType == CataloguePriceType.Flat)

@@ -14,7 +14,10 @@ namespace NHSD.GPIT.BuyingCatalogue.Test.Framework.AutoFixtureCustomisations
         {
             static ISpecimenBuilder ComposerTransformation(ICustomizationComposer<OrderItem> composer) => composer
                 .FromFactory(new OrderItemSpeciminBuilder())
-                .Without(oi => oi.OrderItemFunding);
+                .Without(oi => oi.OrderItemFunding)
+                .Without(oi => oi.Order)
+                .Without(oi => oi.OrderId)
+                .Without(oi => oi.OrderItemPrice);
 
             fixture.Customize<OrderItem>(ComposerTransformation);
         }
@@ -29,6 +32,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Test.Framework.AutoFixtureCustomisations
                 var item = new OrderItem();
 
                 AddOrderItemFunding(item, context);
+                AddOrderItemPrice(item, context);
 
                 return item;
             }
@@ -47,6 +51,17 @@ namespace NHSD.GPIT.BuyingCatalogue.Test.Framework.AutoFixtureCustomisations
 
                 funding.CentralAllocation = context.CreateDecimalWithRange(0, funding.TotalPrice);
                 funding.LocalAllocation = funding.TotalPrice - funding.CentralAllocation;
+            }
+
+            private static void AddOrderItemPrice(OrderItem item, ISpecimenContext context)
+            {
+                var price = context.Create<OrderItemPrice>();
+
+                price.CatalogueItemId = item.CatalogueItemId;
+                price.OrderId = item.OrderId;
+                price.OrderItem = item;
+
+                item.OrderItemPrice = price;
             }
         }
     }
