@@ -130,6 +130,12 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Actions.Common
             Driver.FindElement(targetElement).SendKeys(value);
         }
 
+        internal async Task ElementAddValueWithDelay(By targetElement, string value, int milliseconds = 2500)
+        {
+            ElementAddValue(targetElement, value);
+            await Task.Delay(milliseconds);
+        }
+
         // Element Displayed
         internal bool ElementIsDisplayed(By targetElement) =>
             ElementExists(targetElement) && Driver.FindElement(targetElement).Displayed;

@@ -43,5 +43,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models
         public string SelectedFramework { get; init; }
 
         public string SelectedCapabilities { get; init; }
+
+        public CatalogueFilterSearchSummary SearchSummary { get; set; }
     }
 }

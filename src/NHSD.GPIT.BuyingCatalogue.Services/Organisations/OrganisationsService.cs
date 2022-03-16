@@ -133,5 +133,51 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Organisations
 
             await dbContext.SaveChangesAsync();
         }
+
+        public async Task<List<Organisation>> GetNominatedOrganisations(int organisationId)
+        {
+            var nominatedOrganisationIds = await dbContext.RelatedOrganisations
+                .Where(x => x.RelatedOrganisationId == organisationId)
+                .Select(x => x.OrganisationId)
+                .ToListAsync();
+
+            var output = await dbContext.Organisations
+                .Where(x => nominatedOrganisationIds.Contains(x.Id))
+                .ToListAsync();
+
+            return output;
+        }
+
+        public async Task AddNominatedOrganisation(int organisationId, int nominatedOrganisationId)
+        {
+            var existingRelationship = await dbContext.RelatedOrganisations
+                .FirstOrDefaultAsync(x => x.OrganisationId == nominatedOrganisationId
+                    && x.RelatedOrganisationId == organisationId);
+
+            if (existingRelationship != null)
+            {
+                return;
+            }
+
+            dbContext.RelatedOrganisations.Add(new RelatedOrganisation(nominatedOrganisationId, organisationId));
+
+            await dbContext.SaveChangesAsync();
+        }
+
+        public async Task RemoveNominatedOrganisation(int organisationId, int nominatedOrganisationId)
+        {
+            var existingRelationship = await dbContext.RelatedOrganisations
+                .FirstOrDefaultAsync(x => x.OrganisationId == nominatedOrganisationId
+                    && x.RelatedOrganisationId == organisationId);
+
+            if (existingRelationship == null)
+            {
+                return;
+            }
+
+            dbContext.RelatedOrganisations.Remove(existingRelationship);
+
+            await dbContext.SaveChangesAsync();
+        }
     }
 }

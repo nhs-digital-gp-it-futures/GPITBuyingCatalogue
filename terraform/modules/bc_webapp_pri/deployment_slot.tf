@@ -12,10 +12,6 @@ resource "azurerm_app_service_slot" "slot" {
     ASPNETCORE_ENVIRONMENT              = var.aspnet_environment
 
     APPINSIGHTS_INSTRUMENTATIONKEY      = var.instrumentation_key
-    BC_SMTP_HOST                        = var.smtp_server_host
-    BC_SMTP_PORT                        = var.smtp_server_port   
-    BC_SMTP_USERNAME                    = var.smtp_server_username
-    BC_SMTP_PASSWORD                    = var.smtp_server_password
 
     # Settings for Container Registy  
     DOCKER_REGISTRY_SERVER_URL          = "https://${var.docker_registry_server_url}" 

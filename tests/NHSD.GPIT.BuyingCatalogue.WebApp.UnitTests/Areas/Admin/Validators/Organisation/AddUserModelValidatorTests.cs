@@ -46,7 +46,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators.Orga
         [Theory]
         [CommonInlineAutoData(null)]
         [CommonInlineAutoData("")]
-        public static void Validate_TelephoneNumberNullOrEmpty_SetsModelError(
+        [CommonInlineAutoData(" ")]
+        public static void Validate_TelephoneNumberNullOrEmpty_NoValidationErrors(
             string telephoneNumber,
             AddUserModel model,
             AddUserModelValidator validator)
@@ -55,8 +56,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators.Orga
 
             var result = validator.TestValidate(model);
 
-            result.ShouldHaveValidationErrorFor(m => m.TelephoneNumber)
-                .WithErrorMessage("Enter a telephone number");
+            result.ShouldNotHaveValidationErrorFor(x => x.TelephoneNumber);
         }
 
         [Theory]
