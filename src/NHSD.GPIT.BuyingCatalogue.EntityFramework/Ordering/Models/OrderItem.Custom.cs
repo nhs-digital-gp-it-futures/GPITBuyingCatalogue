@@ -43,6 +43,21 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models
             return HashCode.Combine(OrderId, CatalogueItem);
         }
 
+        public OrderItemFundingType CurrentFundingType()
+        {
+            var fundingType = OrderItemFundingType.None;
+
+            if (OrderItemFunding is null)
+                return fundingType;
+
+            if (OrderItemFunding.CentralAllocation > 0)
+                fundingType |= OrderItemFundingType.CentralAllocation;
+            if (OrderItemFunding.LocalAllocation > 0)
+                fundingType |= OrderItemFundingType.LocalAllocation;
+
+            return fundingType;
+        }
+
         private decimal CalculateTotalCostCumilative(int quantity)
         {
             var lastUpperRange = 0;
@@ -81,6 +96,6 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models
         private decimal CalculateTotalCostFlatSingle(int quantity) =>
             OrderItemPrice.OrderItemPriceTiers
             .OrderBy(t => t.LowerRange)
-            .First(t => (t.UpperRange.HasValue && t.UpperRange.Value > quantity) || !t.UpperRange.HasValue).Price;
+            .First(t => (t.UpperRange.HasValue && t.UpperRange.Value >= quantity) || !t.UpperRange.HasValue).Price;
     }
 }

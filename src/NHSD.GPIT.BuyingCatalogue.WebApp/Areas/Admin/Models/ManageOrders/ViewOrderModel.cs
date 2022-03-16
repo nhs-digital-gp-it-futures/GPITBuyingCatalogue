@@ -25,8 +25,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.ManageOrders
             {
                 Name = oi.CatalogueItem.Name,
                 Type = oi.CatalogueItem.CatalogueItemType,
-                FundingSourceOnlyGms = order.FundingSourceOnlyGms,
-                ConfirmedFundingSource = order.ConfirmedFundingSource,
+                SelectedFundingType = oi.CurrentFundingType(),
                 Framework = framework?.Framework?.ShortName ?? string.Empty,
             });
         }

@@ -71,7 +71,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
 
             orderItem.CatalogueItem = solution.CatalogueItem;
 
-            order.AddOrUpdateOrderItem(orderItem);
+            order.OrderItems.Add(orderItem);
+
             order.OrderingParty = organisation;
             order.LastUpdatedByUser = user;
             order.Supplier = supplier;

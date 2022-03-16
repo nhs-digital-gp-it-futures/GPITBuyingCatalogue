@@ -1,4 +1,5 @@
 ﻿using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
+using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.ManageOrders
 {
@@ -10,8 +11,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.ManageOrders
 
         public string Framework { get; set; }
 
-        public bool? FundingSourceOnlyGms { get; set; }
-
-        public bool? ConfirmedFundingSource { get; set; }
+        public OrderItemFundingType SelectedFundingType { get; set; }
     }
 }

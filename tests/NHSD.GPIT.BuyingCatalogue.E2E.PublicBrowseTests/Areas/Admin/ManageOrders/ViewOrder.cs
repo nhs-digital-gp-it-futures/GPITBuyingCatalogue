@@ -157,36 +157,52 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.ManageOrders
         }
 
         [Fact]
-        public void Funding_NotConfirmed_AsExpected()
+        public void Funding_NotStarted_AsExpected()
         {
             using var context = GetEndToEndDbContext();
             var order = context.Orders.Single(o => o.Id == CallOffId.Id);
 
-            order.ConfirmedFundingSource = false;
+            var fundingLocalCopy = order.OrderItems.First().OrderItemFunding;
+
+            order.OrderItems.First().OrderItemFunding = null;
+
             context.SaveChangesAs(UserSeedData.SueId);
 
             Driver.Navigate().Refresh();
 
-            CommonActions.ElementTextEqualTo(ViewOrderObjects.FundingType, "Not selected".FormatForComparison()).Should().BeTrue();
+            CommonActions.ElementTextEqualTo(ViewOrderObjects.FundingType, "Not started".FormatForComparison()).Should().BeTrue();
+
+            order.OrderItems.First().OrderItemFunding = fundingLocalCopy;
+
+            context.SaveChangesAs(UserSeedData.SueId);
         }
 
-        [Theory]
-        [InlineData(true, "Central funding")]
-        [InlineData(false, "Local funding")]
-        public void Funding_AsExpected(
-            bool fundingOnlyGms,
-            string expectedFundingSource)
+        [Fact]
+        public void Funding_CentalFunding_AsExpected()
+        {
+            CommonActions.ElementTextEqualTo(ViewOrderObjects.FundingType, "Central funding".FormatForComparison()).Should().BeTrue();
+        }
+
+        [Fact]
+        public void Funding_LocalFunding_AsExpected()
         {
             using var context = GetEndToEndDbContext();
             var order = context.Orders.Single(o => o.Id == CallOffId.Id);
 
-            order.FundingSourceOnlyGms = fundingOnlyGms;
-            order.ConfirmedFundingSource = true;
+            var fundingLocalCopy = order.OrderItems.First().OrderItemFunding;
+
+            order.OrderItems.First().OrderItemFunding.CentralAllocation = 0;
+            order.OrderItems.First().OrderItemFunding.LocalAllocation = order.OrderItems.First().OrderItemFunding.TotalPrice;
+
             context.SaveChangesAs(UserSeedData.SueId);
 
             Driver.Navigate().Refresh();
 
-            CommonActions.ElementTextEqualTo(ViewOrderObjects.FundingType, expectedFundingSource.FormatForComparison()).Should().BeTrue();
+            CommonActions.ElementTextEqualTo(ViewOrderObjects.FundingType, "Local funding".FormatForComparison()).Should().BeTrue();
+
+            order.OrderItems.First().OrderItemFunding = fundingLocalCopy;
+
+            context.SaveChangesAs(UserSeedData.SueId);
         }
     }
 }
