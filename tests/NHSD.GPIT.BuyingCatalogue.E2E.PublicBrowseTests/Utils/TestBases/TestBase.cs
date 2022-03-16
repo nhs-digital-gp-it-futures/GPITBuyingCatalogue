@@ -236,10 +236,10 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.TestBases
                     _ => retryInterval ?? TimeSpan.FromSeconds(2),
                     (ex, sleepDuration, attempt, context) =>
                     {
-                        if (attempt != MaxRetries)
-                            return Task.CompletedTask;
+                        if (attempt == MaxRetries)
+                            TakeScreenShot(callerMemberName, callerFilePath);
 
-                        TakeScreenShot(callerMemberName, callerFilePath);
+                        Driver.Navigate().Refresh();
                         return Task.CompletedTask;
                     });
 
@@ -258,10 +258,10 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.TestBases
                     _ => retryInterval ?? TimeSpan.FromSeconds(2),
                     (ex, sleepDuration, attempt, context) =>
                     {
-                        if (attempt != MaxRetries)
-                            return;
+                        if (attempt == MaxRetries)
+                            TakeScreenShot(callerMemberName, callerFilePath);
 
-                        TakeScreenShot(callerMemberName, callerFilePath);
+                        Driver.Navigate().Refresh();
                     });
 
             policy.Execute(action);
