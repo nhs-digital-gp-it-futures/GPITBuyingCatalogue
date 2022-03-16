@@ -15,7 +15,7 @@
    * 10. Custom padding to stop text jumping on focus
 */
 
-.autocomplete-container {
+.suggestion-search-container {
     display: inline-block;
     z-index: 1; /* [9] */
 
@@ -27,7 +27,7 @@
 
 @include mq($until: tablet) {
     /* duplicate of .nhsuk-search__input in _header.scss, for non javascript version */
-    .autocomplete__input {
+    .suggestion-search__input {
         -ms-flex-positive: 2; /* [1] */
         -webkit-appearance: listbox; // sass-lint:disable-line prefixes /* [2] */
         border-bottom: 1px solid $color_nhsuk-grey-3;
@@ -58,7 +58,7 @@
 
 @include mq($from: tablet) {
     /* duplicate of .nhsuk-search__input in _header.scss, for non javascript version */
-    .autocomplete__input {
+    .suggestion-search__input {
         -webkit-appearance: listbox; // sass-lint:disable-line prefixes /* [2] */
         border: 1px solid $color_nhsuk-white;
         border-bottom-left-radius: $nhsuk-border-radius;
@@ -85,7 +85,7 @@
     }
 }
 
-.autocomplete__menu {
+.suggestion-search__menu {
     // sass-lint:disable-block no-vendor-prefixes, no-color-literals
     -moz-box-shadow: 0 3px 5px rgba($nhsuk-box-shadow-color, $alpha-transparency-50); /* [6] */
     -webkit-box-shadow: 0 3px 5px rgba($nhsuk-box-shadow-color, $alpha-transparency-50); /* [6] */
@@ -116,15 +116,15 @@
     }
 }
 
-.autocomplete__menu--visible {
+.suggestion-search__menu--visible {
     display: block;
 }
 
-.autocomplete__menu--hidden {
+.suggestion-search__menu--hidden {
     display: none;
 }
 
-.autocomplete__option {
+.suggestion-search__option {
     border-bottom: 1px solid $color_nhsuk-grey-5;
     color: $color_nhsuk-blue;
     cursor: pointer;
@@ -162,7 +162,7 @@
     }
 }
 
-.autocomplete__option--no-results {
+.suggestion-search__option--no-results {
     border-bottom: 0;
     color: $color_nhsuk-black;
     font-size: $nhsuk-base-font-size;

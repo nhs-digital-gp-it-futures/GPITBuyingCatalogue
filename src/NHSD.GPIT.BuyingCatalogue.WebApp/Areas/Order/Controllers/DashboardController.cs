@@ -10,7 +10,7 @@ using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Orders;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Organisations;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.Dashboard;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.Shared;
-using NHSD.GPIT.BuyingCatalogue.WebApp.Models.Autocomplete;
+using NHSD.GPIT.BuyingCatalogue.WebApp.Models.SuggestionSearch;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
 {
@@ -105,7 +105,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
             var results = await orderService.GetOrdersBySearchTerm(organisation.Id, search);
 
             return Json(results.Select(r =>
-                new AutocompleteResult
+                new SuggestionSearchResult
                 {
                     Title = r.Title,
                     Category = r.Category,

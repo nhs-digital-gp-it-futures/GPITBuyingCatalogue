@@ -5,16 +5,9 @@ using Microsoft.AspNetCore.Razor.TagHelpers;
 namespace NHSD.GPIT.BuyingCatalogue.UI.Components.TagHelpers
 {
     [HtmlTargetElement(TagHelperName)]
-    public sealed class SelectListTagHelper : TagHelper
+    public class SelectListTagHelper : TagHelper
     {
         public const string TagHelperName = "nhs-select";
-
-        private const string ItemsName = "asp-items";
-
-        private const string AllowMultipleName = "allow-multiple";
-        private const string NhsSelect = "nhsuk-select";
-
-        private const string DefaultSelectListMessage = "Please select";
 
         private readonly IHtmlGenerator htmlGenerator;
 
@@ -30,7 +23,7 @@ namespace NHSD.GPIT.BuyingCatalogue.UI.Components.TagHelpers
         [HtmlAttributeName(TagHelperConstants.For)]
         public ModelExpression For { get; set; }
 
-        [HtmlAttributeName(ItemsName)]
+        [HtmlAttributeName(TagHelperConstants.ItemsName)]
         public SelectList Items { get; set; }
 
         [HtmlAttributeName(TagHelperConstants.LabelTextName)]
@@ -39,16 +32,23 @@ namespace NHSD.GPIT.BuyingCatalogue.UI.Components.TagHelpers
         [HtmlAttributeName(TagHelperConstants.LabelHintName)]
         public string LabelHint { get; set; }
 
-        [HtmlAttributeName(AllowMultipleName)]
+        [HtmlAttributeName(TagHelperConstants.AllowMultipleName)]
         public bool? AllowMultiple { get; set; }
 
         public override void Process(TagHelperContext context, TagHelperOutput output)
+        {
+            var formGroup = BuildSelect();
+
+            TagHelperBuilders.UpdateOutputDiv(output, For, ViewContext, formGroup, true);
+        }
+
+        protected TagBuilder BuildSelect()
         {
             var formGroup = TagHelperBuilders.GetFormGroupBuilder();
             var label = TagHelperBuilders.GetLabelBuilder(ViewContext, For, htmlGenerator, null, LabelText);
             var errorMessage = TagHelperBuilders.GetValidationBuilder(ViewContext, For, htmlGenerator);
             var hint = TagHelperBuilders.GetLabelHintBuilder(For, LabelHint);
-            var selectList = GetSelectListBuilder();
+            var selectList = TagHelperBuilders.GetSelectListBuilder(htmlGenerator, ViewContext, For, Items, AllowMultiple);
 
             formGroup.InnerHtml
                 .AppendHtml(label)
@@ -56,19 +56,7 @@ namespace NHSD.GPIT.BuyingCatalogue.UI.Components.TagHelpers
                 .AppendHtml(hint)
                 .AppendHtml(selectList);
 
-            TagHelperBuilders.UpdateOutputDiv(output, For, ViewContext, formGroup, true);
-        }
-
-        private TagBuilder GetSelectListBuilder()
-        {
-            return htmlGenerator.GenerateSelect(
-                ViewContext,
-                For.ModelExplorer,
-                DefaultSelectListMessage,
-                For.Name,
-                Items,
-                AllowMultiple == true,
-                new { @class = NhsSelect });
+            return formGroup;
         }
     }
 }

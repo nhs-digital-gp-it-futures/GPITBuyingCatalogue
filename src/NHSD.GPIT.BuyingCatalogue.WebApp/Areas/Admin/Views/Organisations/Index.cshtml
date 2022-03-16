@@ -36,12 +36,12 @@
         Import the latest practice list sizes for buyer organisations.
     </p>
 
-    <vc:nhs-autocomplete id="organisations-autocomplete"
-                         ajax-url="@Url.Action(
-                                       nameof(OrganisationsController.SearchResults),
-                                       typeof(OrganisationsController).ControllerName())"
-                         title-text="Search for organisation by organisation name or ODS code"
-                         query-parameter-name="search"/>
+    <vc:nhs-suggestion-search id="organisations-suggestion-search"
+                              ajax-url="@Url.Action(
+                                            nameof(OrganisationsController.SearchResults),
+                                            typeof(OrganisationsController).ControllerName())"
+                              title-text="Search for organisation by organisation name or ODS code"
+                              query-parameter-name="search"/>
 
     @if (Model!.Organisations.Any())
     {

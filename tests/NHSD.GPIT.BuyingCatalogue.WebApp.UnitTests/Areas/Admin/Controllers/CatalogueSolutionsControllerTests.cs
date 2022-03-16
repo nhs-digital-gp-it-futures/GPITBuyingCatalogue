@@ -22,7 +22,7 @@ using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.CapabilityModels;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.CatalogueSolutionsModels;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.ClientApplicationTypeModels;
-using NHSD.GPIT.BuyingCatalogue.WebApp.Models.Autocomplete;
+using NHSD.GPIT.BuyingCatalogue.WebApp.Models.SuggestionSearch;
 using Xunit;
 using PublicationStatus = NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models.PublicationStatus;
 
@@ -57,7 +57,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
             mockSolutionsService.VerifyAll();
 
             var actualResult = result.As<JsonResult>()
-                .Value.As<IEnumerable<AutocompleteResult>>()
+                .Value.As<IEnumerable<SuggestionSearchResult>>()
                 .ToList();
 
             foreach (var solution in solutions)
@@ -82,7 +82,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
             mockSolutionsService.VerifyAll();
 
             var actualResult = result.As<JsonResult>()
-                .Value.As<IEnumerable<AutocompleteResult>>()
+                .Value.As<IEnumerable<SuggestionSearchResult>>()
                 .ToList();
 
             actualResult.Should().BeEmpty();
@@ -99,7 +99,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
             var result = await controller.SearchResults(searchTerm);
 
             var actualResult = result.As<JsonResult>()
-                .Value.As<IEnumerable<AutocompleteResult>>()
+                .Value.As<IEnumerable<SuggestionSearchResult>>()
                 .ToList();
 
             actualResult.Should().BeEmpty();

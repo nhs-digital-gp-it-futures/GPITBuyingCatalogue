@@ -36,23 +36,23 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Objects.Admin
 
         internal static By RelatedOrganisationRemoveConfirm => ByExtensions.DataTestId("submit-button", "button");
 
-        internal static By SearchBar => By.Id("organisations-autocomplete");
+        internal static By SearchBar => By.Id("organisations-suggestion-search");
 
-        internal static By SearchButton => By.ClassName("autocomplete-search__submit");
+        internal static By SearchButton => By.ClassName("suggestion-search-search__submit");
 
         internal static By SearchErrorMessage => By.Id("search-error-message");
 
         internal static By SearchErrorMessageLink => By.Id("reset-search-link");
 
-        internal static By SearchListBox => By.Id("organisations-autocomplete__listbox");
+        internal static By SearchListBox => By.Id("organisations-suggestion-search__listbox");
 
-        internal static By SearchResultsErrorMessage => By.ClassName("autocomplete__option--no-results");
+        internal static By SearchResultsErrorMessage => By.ClassName("suggestion-search__option--no-results");
 
-        internal static By SearchResult(uint index) => By.Id($"organisations-autocomplete__option--{index}");
+        internal static By SearchResult(uint index) => By.Id($"organisations-suggestion-search__option--{index}");
 
-        internal static By SearchResultTitle(uint index) => new ByChained(SearchResult(index), By.ClassName("autocomplete__option-title"));
+        internal static By SearchResultTitle(uint index) => new ByChained(SearchResult(index), By.ClassName("suggestion-search__option-title"));
 
-        internal static By SearchResultDescription(uint index) => new ByChained(SearchResult(index), By.ClassName("autocomplete__option-category"));
+        internal static By SearchResultDescription(uint index) => new ByChained(SearchResult(index), By.ClassName("suggestion-search__option-category"));
 
         internal static By RelatedOrgTableOrgName(int orgId) => ByExtensions.DataTestId($"related-org-name-{orgId}");
 

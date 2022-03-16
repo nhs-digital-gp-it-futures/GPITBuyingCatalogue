@@ -15,7 +15,7 @@ using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Models.SupplierDefinedEpics;
 using NHSD.GPIT.BuyingCatalogue.Test.Framework.AutoFixtureCustomisations;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.SupplierDefinedEpics;
-using NHSD.GPIT.BuyingCatalogue.WebApp.Models.Autocomplete;
+using NHSD.GPIT.BuyingCatalogue.WebApp.Models.SuggestionSearch;
 using Xunit;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
@@ -122,7 +122,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
             mockEpicsService.VerifyAll();
 
             var actualResult = result.As<JsonResult>()
-                .Value.As<IEnumerable<AutocompleteResult>>()
+                .Value.As<IEnumerable<SuggestionSearchResult>>()
                 .ToList();
 
             foreach (var epic in epics)
@@ -147,7 +147,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
             mockEpicsService.VerifyAll();
 
             var actualResult = result.As<JsonResult>()
-                .Value.As<IEnumerable<AutocompleteResult>>()
+                .Value.As<IEnumerable<SuggestionSearchResult>>()
                 .ToList();
 
             actualResult.Should().BeEmpty();

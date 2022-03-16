@@ -158,5 +158,25 @@ namespace NHSD.GPIT.BuyingCatalogue.UI.Components.TagHelpers
 
             return builder;
         }
+
+        public static TagBuilder GetSelectListBuilder(
+            IHtmlGenerator htmlGenerator,
+            ViewContext viewContext,
+            ModelExpression aspFor,
+            SelectList items,
+            bool? allowMultiple = null)
+        {
+            const string defaultSelectListMessage = "Please select";
+            const string nhsSelectClass = "nhsuk-select";
+
+            return htmlGenerator.GenerateSelect(
+                viewContext,
+                aspFor.ModelExplorer,
+                defaultSelectListMessage,
+                aspFor.Name,
+                items,
+                allowMultiple == true,
+                new { @class = nhsSelectClass });
+        }
     }
 }
