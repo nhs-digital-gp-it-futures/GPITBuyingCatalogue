@@ -91,44 +91,53 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
 
             var parsedSearch = ParseCallOffId(search);
 
-            var orderIdSearch = baseQuery.Where(o => o.Id.ToString().Contains(parsedSearch)).Select(o => new SearchFilterModel
+            var orderIdSearch = await baseQuery.Where(o => o.Id.ToString().Contains(parsedSearch)).Select(o => new SearchFilterModel
             {
-                Title = "Call-off ID",
-                Category = o.CallOffId.ToString(),
-            });
+                Title = o.CallOffId.ToString(),
+                Category = OrderSearchTerms.CallOffID,
+            }).Distinct().ToListAsync();
 
             var organisationSearch = await baseQuery.Where(o => o.OrderingParty.Name.Contains(search)).Select(o => new SearchFilterModel
             {
-                Title = "Organisation",
-                Category = o.CallOffId.ToString(),
-            }).ToListAsync();
+                Title = o.OrderingParty.Name,
+                Category = OrderSearchTerms.Organisation,
+            }).Distinct().ToListAsync();
 
             var supplierSearch = await baseQuery.Where(o => o.Supplier.Name.Contains(search)).Select(o => new SearchFilterModel
             {
-                Title = "Supplier",
-                Category = o.CallOffId.ToString(),
-            }).ToListAsync();
+                Title = o.Supplier.Name,
+                Category = OrderSearchTerms.Supplier,
+            }).Distinct().ToListAsync();
 
             var solutionSearch = await baseQuery
-                .Where(o => o.OrderItems.Any(oi =>
-                    oi.CatalogueItem.CatalogueItemType == CatalogueItemType.Solution
-                    && oi.CatalogueItem.Name.Contains(search)))
+                .SelectMany(o => o.OrderItems)
+                .Select(oi => oi.CatalogueItem)
+                .Where(o => o.CatalogueItemType == CatalogueItemType.Solution && o.Name.Contains(search))
                 .Select(o => new SearchFilterModel
                 {
-                    Title = "Solution",
-                    Category = o.CallOffId.ToString(),
-                }).ToListAsync();
+                    Title = o.Name,
+                    Category = OrderSearchTerms.Solution,
+                }).Distinct().ToListAsync();
 
             return organisationSearch
                 .Concat(supplierSearch)
                 .Concat(solutionSearch)
                 .Concat(orderIdSearch)
                 .Take(15)
+                .OrderBy(s => s.Title)
                 .ToList();
         }
 
         private static string ParseCallOffId(string search) => search
                     .Replace("C0", string.Empty, StringComparison.OrdinalIgnoreCase)
                     .Replace("-01", string.Empty, StringComparison.OrdinalIgnoreCase);
+
+        private static class OrderSearchTerms
+        {
+            internal const string CallOffID = "Call-off ID";
+            internal const string Organisation = "Organisation";
+            internal const string Supplier = "Supplier";
+            internal const string Solution = "Solution";
+        }
     }
 }
