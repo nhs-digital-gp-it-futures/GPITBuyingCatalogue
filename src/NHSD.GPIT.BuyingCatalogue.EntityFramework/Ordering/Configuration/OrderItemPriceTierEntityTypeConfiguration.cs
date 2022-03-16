@@ -27,9 +27,6 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Configuration
                 .IsRequired()
                 .HasDefaultValue(DateTime.UtcNow);
 
-            builder.Property(oipt => oipt.LastUpdatedBy)
-                .IsRequired();
-
             builder.HasOne(oipt => oipt.LastUpdatedByUser)
                 .WithMany()
                 .HasForeignKey(oipt => oipt.LastUpdatedBy)

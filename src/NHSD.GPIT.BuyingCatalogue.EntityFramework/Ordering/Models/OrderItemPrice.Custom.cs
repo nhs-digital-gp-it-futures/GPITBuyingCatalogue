@@ -5,7 +5,7 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models
     public sealed partial class OrderItemPrice
     {
         public OrderItemPrice(OrderItem item, CataloguePrice cataloguePrice)
-            : base()
+            : this()
         {
             OrderId = item.OrderId;
             CatalogueItemId = cataloguePrice.CatalogueItemId;
@@ -21,7 +21,7 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models
         }
 
         public OrderItemPrice(CataloguePrice cataloguePrice)
-            : base()
+            : this()
         {
             CatalogueItemId = cataloguePrice.CatalogueItemId;
             ProvisioningType = cataloguePrice.ProvisioningType;

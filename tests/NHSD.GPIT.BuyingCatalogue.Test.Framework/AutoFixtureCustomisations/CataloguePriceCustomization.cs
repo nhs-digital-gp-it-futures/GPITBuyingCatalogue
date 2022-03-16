@@ -68,7 +68,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Test.Framework.AutoFixtureCustomisations
 
                     tiers[i].UpperRange = i == tiers.Count - 1
                         ? null :
-                        (lastUpperRange = context.CreateIntWithRange(lastUpperRange + 1, 500));
+                        (lastUpperRange = context.CreateIntWithRange(1, 500) + lastUpperRange);
 
                     tiers[i].CataloguePrice = price;
                     tiers[i].CataloguePriceId = price.CataloguePriceId;

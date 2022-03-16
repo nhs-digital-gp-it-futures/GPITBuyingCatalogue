@@ -45,7 +45,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
             context.AddRange(frameworkSolutions);
 
             context.SaveChanges();
-            /* TODO - Tiered Pricing - Reintroduce Pricing Data
+
             List<CataloguePrice> prices = new()
             {
                 new CataloguePrice
@@ -56,14 +56,25 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
                     PricingUnit = new PricingUnit
                     {
                         Id = -1,
-                        TierName = "patient",
+                        RangeDescription = "patients",
                         Description = "per patient",
                     },
                     CurrencyCode = "GBP",
-                    Price = 100.01M,
                     ProvisioningType = ProvisioningType.Patient,
                     TimeUnit = TimeUnit.PerYear,
                     LastUpdated = DateTime.UtcNow,
+                    CataloguePriceTiers = new List<CataloguePriceTier>
+                    {
+                        new()
+                        {
+                            Id = -1,
+                            CataloguePriceId = -1,
+                            LowerRange = 1,
+                            UpperRange = null,
+                            Price = 100.01M,
+                            LastUpdated = DateTime.UtcNow,
+                        },
+                    },
                 },
                 new CataloguePrice
                 {
@@ -72,17 +83,28 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
                     PricingUnit = new PricingUnit
                     {
                         Id = -2,
-                        TierName = "thing",
+                        RangeDescription = "things",
                         Description = "per thing",
                     },
                     CurrencyCode = "GBP",
-                    Price = 0.01M,
                     ProvisioningType = ProvisioningType.Declarative,
                     TimeUnit = TimeUnit.PerYear,
                     LastUpdated = DateTime.UtcNow,
+                    CataloguePriceTiers = new List<CataloguePriceTier>
+                    {
+                        new()
+                        {
+                            Id = -2,
+                            CataloguePriceId = -2,
+                            LowerRange = 1,
+                            UpperRange = null,
+                            Price = 100.01M,
+                            LastUpdated = DateTime.UtcNow,
+                        },
+                    },
                 },
             };
-            context.AddRange(prices);*/
+            context.AddRange(prices);
         }
 
         private static void AddDefaultData(EndToEndDbContext context)

@@ -17,7 +17,8 @@ namespace NHSD.GPIT.BuyingCatalogue.Test.Framework.AutoFixtureCustomisations
                 .Without(oi => oi.OrderItemFunding)
                 .Without(oi => oi.Order)
                 .Without(oi => oi.OrderId)
-                .Without(oi => oi.OrderItemPrice);
+                .Without(oi => oi.OrderItemPrice)
+                .Without(oi => oi.OrderItemRecipients);
 
             fixture.Customize<OrderItem>(ComposerTransformation);
         }
@@ -26,15 +27,29 @@ namespace NHSD.GPIT.BuyingCatalogue.Test.Framework.AutoFixtureCustomisations
         {
             public object Create(object request, ISpecimenContext context)
             {
-                if (!(request as Type == typeof(OrderItemFunding)))
+                if (!(request as Type == typeof(OrderItem)))
                     return new NoSpecimen();
 
                 var item = new OrderItem();
 
-                AddOrderItemFunding(item, context);
+                AddOrderItemRecipients(item, context);
                 AddOrderItemPrice(item, context);
+                AddOrderItemFunding(item, context);
 
                 return item;
+            }
+
+            private static void AddOrderItemRecipients(OrderItem item, ISpecimenContext context)
+            {
+                var recipients = context.CreateMany<OrderItemRecipient>();
+
+                foreach (var recipient in recipients)
+                {
+                    recipient.OrderItem = item;
+                    recipient.OrderId = item.OrderId;
+                    recipient.CatalogueItemId = item.CatalogueItemId;
+                    item.OrderItemRecipients.Add(recipient);
+                }
             }
 
             private static void AddOrderItemFunding(OrderItem item, ISpecimenContext context)
