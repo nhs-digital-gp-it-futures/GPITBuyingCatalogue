@@ -64,7 +64,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Test.Framework.AutoFixtureCustomisations
 
                     tiers[i].UpperRange = i == tiers.Count - 1
                         ? null :
-                        (lastUpperRange = context.CreateIntWithRange(lastUpperRange + 1, 500));
+                        (lastUpperRange = context.CreateIntWithRange(1, 500) + lastUpperRange);
 
                     tiers[i].OrderId = price.OrderId;
                     tiers[i].CatalogueItemId = price.CatalogueItemId;
@@ -72,8 +72,6 @@ namespace NHSD.GPIT.BuyingCatalogue.Test.Framework.AutoFixtureCustomisations
                     price.OrderItemPriceTiers.Add(tiers[i]);
                 }
             }
-
-
         }
     }
 }

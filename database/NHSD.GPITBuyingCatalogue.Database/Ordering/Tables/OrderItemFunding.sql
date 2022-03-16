@@ -6,7 +6,7 @@
     CentralAllocation DECIMAL(18,4) NOT NULL CONSTRAINT OrderItemFunding_PositiveCentralAllocation CHECK (CentralAllocation >= 0.00),
     LocalAllocation DECIMAL(18,4) NOT NULL CONSTRAINT OrderItemFunding_PositiveLocalAllocation CHECK (LocalAllocation >= 0.00),
     LastUpdated DATETIME2(7) NOT NULL,
-    LastUpdatedBy INT NOT NULL,
+    LastUpdatedBy INT NULL,
     SysStartTime DATETIME2(0) GENERATED ALWAYS AS ROW START NOT NULL,
     SysEndTime DATETIME2(0) GENERATED ALWAYS AS ROW END NOT NULL,
     PERIOD FOR SYSTEM_TIME (SysStartTime, SysEndTime),

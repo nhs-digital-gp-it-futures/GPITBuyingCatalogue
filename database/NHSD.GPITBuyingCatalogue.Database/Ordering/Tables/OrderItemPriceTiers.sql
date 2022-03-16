@@ -7,7 +7,7 @@
     LowerRange INT NOT NULL CONSTRAINT OrderItemPriceTiers_PositiveLowerRange CHECK (LowerRange >= 1),
     UpperRange INT NULL,
     LastUpdated DATETIME2(7) NOT NULL CONSTRAINT DF_OrderItemPriceTiers_Default DEFAULT GETUTCDATE(),
-    LastUpdatedBy INT NOT NULL,
+    LastUpdatedBy INT NULL,
     SysStartTime DATETIME2(0) GENERATED ALWAYS AS ROW START NOT NULL,
     SysEndTime DATETIME2(0) GENERATED ALWAYS AS ROW END NOT NULL,
     PERIOD FOR SYSTEM_TIME (SysStartTime, SysEndTime),

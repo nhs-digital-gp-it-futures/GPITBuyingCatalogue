@@ -7,7 +7,7 @@
     LowerRange INT NOT NULL,
     UpperRange INT NULL,
     LastUpdated DATETIME2(7) NOT NULL,
-    LastUpdatedBy INT NOT NULL,
+    LastUpdatedBy INT NULL,
     SysStartTime DATETIME2(0) NOT NULL,
     SysEndTime DATETIME2(0) NOT NULL
 )

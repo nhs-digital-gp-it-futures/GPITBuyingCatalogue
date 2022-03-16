@@ -160,49 +160,87 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.ManageOrders
         public void Funding_NotStarted_AsExpected()
         {
             using var context = GetEndToEndDbContext();
-            var order = context.Orders.Single(o => o.Id == CallOffId.Id);
+            var orderItem = context.Orders
+                .Include(o => o.OrderItems)
+                .ThenInclude(oi => oi.OrderItemFunding)
+                .Where(o => o.Id == CallOffId.Id)
+                .Select(o => o.OrderItems.First())
+                .Single();
 
-            var fundingLocalCopy = order.OrderItems.First().OrderItemFunding;
-
-            order.OrderItems.First().OrderItemFunding = null;
+            orderItem.OrderItemFunding = null;
 
             context.SaveChangesAs(UserSeedData.SueId);
 
             Driver.Navigate().Refresh();
 
-            CommonActions.ElementTextEqualTo(ViewOrderObjects.FundingType, "Not started".FormatForComparison()).Should().BeTrue();
-
-            order.OrderItems.First().OrderItemFunding = fundingLocalCopy;
-
-            context.SaveChangesAs(UserSeedData.SueId);
+            RunTest(() =>
+            {
+                CommonActions.ElementTextEqualTo(ViewOrderObjects.FundingType, "Not started".FormatForComparison()).Should().BeTrue();
+            });
         }
 
         [Fact]
         public void Funding_CentalFunding_AsExpected()
         {
-            CommonActions.ElementTextEqualTo(ViewOrderObjects.FundingType, "Central funding".FormatForComparison()).Should().BeTrue();
+            using var context = GetEndToEndDbContext();
+            var orderItem = context.Orders
+                .Include(o => o.OrderItems)
+                .ThenInclude(oi => oi.OrderItemFunding)
+                .Where(o => o.Id == CallOffId.Id)
+                .Select(o => o.OrderItems.First())
+                .Single();
+
+            if (orderItem.OrderItemFunding is null)
+                SetOrderItemFunding(orderItem);
+
+            orderItem.OrderItemFunding.CentralAllocation = orderItem.OrderItemFunding.TotalPrice;
+            orderItem.OrderItemFunding.LocalAllocation = 0;
+
+            context.SaveChangesAs(UserSeedData.SueId);
+
+            Driver.Navigate().Refresh();
+            RunTest(() =>
+            {
+                CommonActions.ElementTextEqualTo(ViewOrderObjects.FundingType, "Central funding".FormatForComparison()).Should().BeTrue();
+            });
         }
 
         [Fact]
         public void Funding_LocalFunding_AsExpected()
         {
             using var context = GetEndToEndDbContext();
-            var order = context.Orders.Single(o => o.Id == CallOffId.Id);
+            var orderItem = context.Orders
+                .Include(o => o.OrderItems)
+                .ThenInclude(oi => oi.OrderItemFunding)
+                .Where(o => o.Id == CallOffId.Id)
+                .Select(o => o.OrderItems.First())
+                .Single();
 
-            var fundingLocalCopy = order.OrderItems.First().OrderItemFunding;
+            if (orderItem.OrderItemFunding is null)
+                SetOrderItemFunding(orderItem);
 
-            order.OrderItems.First().OrderItemFunding.CentralAllocation = 0;
-            order.OrderItems.First().OrderItemFunding.LocalAllocation = order.OrderItems.First().OrderItemFunding.TotalPrice;
+            orderItem.OrderItemFunding.CentralAllocation = 0;
+            orderItem.OrderItemFunding.LocalAllocation = orderItem.OrderItemFunding.TotalPrice;
 
             context.SaveChangesAs(UserSeedData.SueId);
 
             Driver.Navigate().Refresh();
 
-            CommonActions.ElementTextEqualTo(ViewOrderObjects.FundingType, "Local funding".FormatForComparison()).Should().BeTrue();
+            RunTest(() =>
+            {
+                CommonActions.ElementTextEqualTo(ViewOrderObjects.FundingType, "Local funding".FormatForComparison()).Should().BeTrue();
+            });
+        }
 
-            order.OrderItems.First().OrderItemFunding = fundingLocalCopy;
-
-            context.SaveChangesAs(UserSeedData.SueId);
+        private static void SetOrderItemFunding(OrderItem item)
+        {
+            item.OrderItemFunding = new OrderItemFunding
+            {
+                OrderId = item.OrderId,
+                CatalogueItemId = item.CatalogueItemId,
+                OrderItem = item,
+                TotalPrice = 1000,
+            };
         }
     }
 }

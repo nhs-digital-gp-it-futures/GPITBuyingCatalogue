@@ -8,7 +8,7 @@
     CurrencyCode NVARCHAR(3) NOT NULL,
     [Description] NVARCHAR(100) NOT NULL,
     LastUpdated DATETIME2(0) NOT NULL,
-    LastUpdatedBy INT NOT NULL,
+    LastUpdatedBy INT NULL,
     SysStartTime DATETIME2(0) NOT NULL,
     SysEndTime DATETIME2(0) NOT NULL,
 )

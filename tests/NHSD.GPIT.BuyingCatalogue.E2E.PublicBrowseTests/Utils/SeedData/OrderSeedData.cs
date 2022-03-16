@@ -9,7 +9,6 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
 {
     internal static class OrderSeedData
     {
-        // TODO - Tiered Pricing - Reintroduce Pricing Information into Orders
         internal static void Initialize(BuyingCatalogueDbContext context)
         {
             AddOrderAtDescriptionStage(context);
@@ -238,10 +237,9 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
 
             var price = context.CatalogueItems
                     .Where(c => c.Id == new CatalogueItemId(99998, "002"))
-                    .Select(ci => ci.CataloguePrices.First())
-                    .Include(cp => cp.CataloguePriceTiers)
-                    .Include(cp => cp.PricingUnit)
-                    .Select(cp => new OrderItemPrice(cp))
+                    .Include(c => c.CataloguePrices).ThenInclude(cp => cp.CataloguePriceTiers)
+                    .Include(c => c.CataloguePrices).ThenInclude(cp => cp.PricingUnit)
+                    .Select(ci => new OrderItemPrice(ci.CataloguePrices.First()))
                     .Single();
 
             var addedSolution = new OrderItem
@@ -309,10 +307,9 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
 
             var price = context.CatalogueItems
                 .Where(c => c.Id == new CatalogueItemId(99998, "002"))
-                .Select(ci => ci.CataloguePrices.First())
-                .Include(cp => cp.CataloguePriceTiers)
-                .Include(cp => cp.PricingUnit)
-                .Select(cp => new OrderItemPrice(cp))
+                .Include(c => c.CataloguePrices).ThenInclude(cp => cp.CataloguePriceTiers)
+                .Include(c => c.CataloguePrices).ThenInclude(cp => cp.PricingUnit)
+                .Select(ci => new OrderItemPrice(ci.CataloguePrices.First()))
                 .Single();
 
             var addedSolution = new OrderItem
@@ -376,26 +373,23 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
 
             var priceSinglePriceSolution = context.CatalogueItems
                 .Where(c => c.Id == new CatalogueItemId(99998, "002"))
-                .Select(ci => ci.CataloguePrices.First())
-                .Include(cp => cp.CataloguePriceTiers)
-                .Include(cp => cp.PricingUnit)
-                .Select(cp => new OrderItemPrice(cp))
+                .Include(c => c.CataloguePrices).ThenInclude(cp => cp.CataloguePriceTiers)
+                .Include(c => c.CataloguePrices).ThenInclude(cp => cp.PricingUnit)
+                .Select(ci => new OrderItemPrice(ci.CataloguePrices.First()))
                 .Single();
 
             var priceMultiplePriceSolution = context.CatalogueItems
                 .Where(c => c.Id == new CatalogueItemId(99998, "001"))
-                .Select(ci => ci.CataloguePrices.First())
-                .Include(cp => cp.CataloguePriceTiers)
-                .Include(cp => cp.PricingUnit)
-                .Select(cp => new OrderItemPrice(cp))
+                .Include(c => c.CataloguePrices).ThenInclude(cp => cp.CataloguePriceTiers)
+                .Include(c => c.CataloguePrices).ThenInclude(cp => cp.PricingUnit)
+                .Select(ci => new OrderItemPrice(ci.CataloguePrices.First()))
                 .Single();
 
             var additionalPrice = context.CatalogueItems
                 .Where(c => c.Id == new CatalogueItemId(99998, "002A999"))
-                .Select(ci => ci.CataloguePrices.First())
-                .Include(cp => cp.CataloguePriceTiers)
-                .Include(cp => cp.PricingUnit)
-                .Select(cp => new OrderItemPrice(cp))
+                .Include(c => c.CataloguePrices).ThenInclude(cp => cp.CataloguePriceTiers)
+                .Include(c => c.CataloguePrices).ThenInclude(cp => cp.PricingUnit)
+                .Select(ci => new OrderItemPrice(ci.CataloguePrices.First()))
                 .Single();
 
             var addedSinglePriceCatalogueSolution = new OrderItem
@@ -481,10 +475,9 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
 
             var price = context.CatalogueItems
                 .Where(c => c.Id == new CatalogueItemId(99998, "S-999"))
-                .Select(ci => ci.CataloguePrices.First())
-                .Include(cp => cp.CataloguePriceTiers)
-                .Include(cp => cp.PricingUnit)
-                .Select(cp => new OrderItemPrice(cp))
+                .Include(c => c.CataloguePrices).ThenInclude(cp => cp.CataloguePriceTiers)
+                .Include(c => c.CataloguePrices).ThenInclude(cp => cp.PricingUnit)
+                .Select(ci => new OrderItemPrice(ci.CataloguePrices.First()))
                 .Single();
 
             var addedSolution = new OrderItem
@@ -537,10 +530,9 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
 
             var price = context.CatalogueItems
                 .Where(c => c.Id == new CatalogueItemId(99998, "S-999"))
-                .Select(ci => ci.CataloguePrices.First())
-                .Include(cp => cp.CataloguePriceTiers)
-                .Include(cp => cp.PricingUnit)
-                .Select(cp => new OrderItemPrice(cp))
+                .Include(c => c.CataloguePrices).ThenInclude(cp => cp.CataloguePriceTiers)
+                .Include(c => c.CataloguePrices).ThenInclude(cp => cp.PricingUnit)
+                .Select(ci => new OrderItemPrice(ci.CataloguePrices.First()))
                 .Single();
 
             var addedSolution = new OrderItem
@@ -614,10 +606,9 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
 
             var price = context.CatalogueItems
                 .Where(c => c.Id == new CatalogueItemId(99998, "001"))
-                .Select(ci => ci.CataloguePrices.First())
-                .Include(cp => cp.CataloguePriceTiers)
-                .Include(cp => cp.PricingUnit)
-                .Select(cp => new OrderItemPrice(cp))
+                .Include(c => c.CataloguePrices).ThenInclude(cp => cp.CataloguePriceTiers)
+                .Include(c => c.CataloguePrices).ThenInclude(cp => cp.PricingUnit)
+                .Select(ci => new OrderItemPrice(ci.CataloguePrices.First()))
                 .Single();
 
             var addedSolution = new OrderItem

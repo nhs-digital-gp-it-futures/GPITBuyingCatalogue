@@ -963,7 +963,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
                             {
                                 new()
                                 {
-                                    Id = 3,
+                                    Id = 999,
                                     CataloguePriceId = 3,
                                     LowerRange = 1,
                                     UpperRange = null,

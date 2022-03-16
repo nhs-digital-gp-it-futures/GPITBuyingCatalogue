@@ -29,9 +29,6 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Configuration
                 .IsRequired()
                 .HasDefaultValue(DateTime.UtcNow);
 
-            builder.Property(pt => pt.LastUpdatedBy)
-                .IsRequired();
-
             builder.HasOne(pt => pt.LastUpdatedByUser)
                 .WithMany()
                 .HasForeignKey(pt => pt.LastUpdatedBy)
