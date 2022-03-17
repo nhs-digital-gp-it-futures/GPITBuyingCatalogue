@@ -46,12 +46,13 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
         [HttpGet]
         public async Task<IActionResult> Index(
             [FromQuery] string page = "",
-            [FromQuery] string search = "")
+            [FromQuery] string search = "",
+            [FromQuery] string searchTermType = "")
         {
             const int PageSize = 10;
             var pageOptions = new PageOptions(page, PageSize);
 
-            var orders = await orderAdminService.GetPagedOrders(pageOptions, search);
+            var orders = await orderAdminService.GetPagedOrders(pageOptions, search, searchTermType);
 
             var model = new ManageOrdersDashboardModel(orders.Items, orders.Options)
             {
@@ -74,7 +75,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
                 {
                     Title = r.Title,
                     Category = r.Category,
-                    Url = currentPageUrl.AppendQueryParameterToUrl(nameof(search), r.Title).ToString(),
+                    Url = currentPageUrl.AppendQueryParameterToUrl(nameof(search), r.Title).AppendQueryParameterToUrl("searchTermType", r.Category).ToString(),
                 }));
         }
 

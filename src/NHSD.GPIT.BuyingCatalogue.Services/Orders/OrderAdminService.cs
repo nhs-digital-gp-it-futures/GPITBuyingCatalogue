@@ -43,7 +43,8 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
 
         public async Task<PagedList<AdminManageOrder>> GetPagedOrders(
             PageOptions options,
-            string search = null)
+            string search = null,
+            string searchTermType = null)
         {
             if (options is null)
                 throw new ArgumentNullException(nameof(options));
@@ -51,15 +52,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
             var baseQuery = dbContext.Orders.AsNoTracking().AsQueryable();
 
             if (!string.IsNullOrWhiteSpace(search))
-            {
-                var parsedSearch = ParseCallOffId(search);
-
-                baseQuery = baseQuery.Where(o => o.Id.ToString().Contains(parsedSearch)
-                    || o.OrderingParty.Name.Contains(search)
-                    || o.Supplier.Name.Contains(search)
-                    || o.OrderItems.Any(oi => oi.CatalogueItem.CatalogueItemType == CatalogueItemType.Solution
-                    && oi.CatalogueItem.Name.Contains(search)));
-            }
+                baseQuery = GetSearchTermBySearchType(baseQuery, search, searchTermType);
 
             options.TotalNumberOfItems = await baseQuery.CountAsync();
 
@@ -128,6 +121,21 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
                 .ToList();
         }
 
+        private static IQueryable<Order> GetSearchTermBySearchType(IQueryable<Order> baseQuery, string searchTerm, string searchTermType)
+        {
+            if (!OrderSearchTerms.SearchTermFilters.ContainsKey(searchTermType))
+            {
+                var parsedCallOffId = ParseCallOffId(searchTerm);
+                return baseQuery.Where(o => o.Id.ToString().Contains(parsedCallOffId)
+                    || o.OrderingParty.Name.Contains(searchTerm)
+                    || o.Supplier.Name.Contains(searchTerm)
+                    || o.OrderItems.Any(oi => oi.CatalogueItem.CatalogueItemType == CatalogueItemType.Solution
+                    && oi.CatalogueItem.Name.Contains(searchTerm)));
+            }
+
+            return OrderSearchTerms.SearchTermFilters[searchTermType](baseQuery, searchTerm);
+        }
+
         private static string ParseCallOffId(string search) => search
                     .Replace("C0", string.Empty, StringComparison.OrdinalIgnoreCase)
                     .Replace("-01", string.Empty, StringComparison.OrdinalIgnoreCase);
@@ -138,6 +146,26 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
             internal const string Organisation = "Organisation";
             internal const string Supplier = "Supplier";
             internal const string Solution = "Solution";
+
+            internal static readonly Dictionary<string, Func<IQueryable<Order>, string, IQueryable<Order>>> SearchTermFilters = new()
+            {
+                {
+                    CallOffID,
+                    (baseQuery, searchTerm) =>
+                    {
+                        var parsedCallOffId = ParseCallOffId(searchTerm);
+                        return baseQuery.Where(o => o.Id.ToString().Contains(parsedCallOffId));
+                    }
+                },
+                {
+                    Solution,
+                    (baseQuery, searchTerm)
+                        => baseQuery.Where(o => o.OrderItems.Any(oi => oi.CatalogueItem.CatalogueItemType == CatalogueItemType.Solution
+                            && oi.CatalogueItem.Name.Contains(searchTerm)))
+                },
+                { Organisation, (baseQuery, searchTerm) => baseQuery.Where(o => o.OrderingParty.Name.Contains(searchTerm)) },
+                { Supplier, (baseQuery, searchTerm) => baseQuery.Where(o => o.Supplier.Name.Contains(searchTerm)) },
+            };
         }
     }
 }

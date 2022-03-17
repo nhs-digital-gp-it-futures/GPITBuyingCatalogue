@@ -1,7 +1,11 @@
 ﻿@model NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.Components.Autocomplete.NhsAutocompleteModel;
 @{
     var blacklistedQueryStrings = new[]
-            { Model.QueryParameterName, "page" };
+            { 
+                Model.QueryParameterName,
+                "searchTermType",
+                "page"
+            };
 }
 
 <div id="@(Model.Id + "-form-input-wrap-search")" class="autocomplete-wrap-search">
