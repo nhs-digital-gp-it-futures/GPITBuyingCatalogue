@@ -54,6 +54,8 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils
 
         private static readonly string SqlliteConnectionStringFileSystem = $"DataSource={SqlliteFileSystemFileLocation}";
 
+        private static bool disposed = false;
+
         private readonly string pathToServiceInstanceViewSqlFile =
             Path.GetFullPath(Path.Combine(
                 Directory.GetCurrentDirectory(),
@@ -228,10 +230,11 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils
         {
             Driver?.Quit();
             base.Dispose(disposing);
-            if (disposing)
+            if (disposing && !disposed)
             {
                 host?.Dispose();
                 sqliteConnection?.Dispose();
+                disposed = true;
             }
         }
 
