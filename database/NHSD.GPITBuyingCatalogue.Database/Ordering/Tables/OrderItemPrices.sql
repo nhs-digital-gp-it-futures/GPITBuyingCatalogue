@@ -1,6 +1,6 @@
 ﻿CREATE TABLE [ordering].[OrderItemPrices]
 (
-	OrderId INT NOT NULL,
+    OrderId INT NOT NULL,
     CatalogueItemId NVARCHAR(14) NOT NULL,
     EstimationPeriodId INT NOT NULL,
     ProvisioningTypeId INT NOT NULL,

@@ -1,6 +1,6 @@
 ﻿CREATE TABLE [ordering].[OrderItemFunding]
 (
-	OrderId INT NOT NULL,
+    OrderId INT NOT NULL,
     CatalogueItemId NVARCHAR(14) NOT NULL,
     TotalPrice DECIMAL(18,4) NOT NULL CONSTRAINT OrderItemFunding_PositiveTotalPrice CHECK (TotalPrice >= 0.00),
     CentralAllocation DECIMAL(18,4) NOT NULL CONSTRAINT OrderItemFunding_PositiveCentralAllocation CHECK (CentralAllocation >= 0.00),
