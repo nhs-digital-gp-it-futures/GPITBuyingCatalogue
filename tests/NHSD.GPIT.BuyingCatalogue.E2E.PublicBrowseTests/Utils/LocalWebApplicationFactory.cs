@@ -54,7 +54,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils
 
         private static readonly string SqlliteConnectionStringFileSystem = $"DataSource={SqlliteFileSystemFileLocation}";
 
-        private static bool disposed = false;
+        private bool disposed = false;
 
         private readonly string pathToServiceInstanceViewSqlFile =
             Path.GetFullPath(Path.Combine(
