@@ -35,6 +35,12 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Users.Models
 
         public int? LastUpdatedBy { get; set; }
 
+        public bool HasOptedInUserResearch { get; set; }
+
+        public bool HasAcceptedTermsOfUse { get; set; }
+
+        public DateTime? AcceptedTermsOfUseDate { get; set; }
+
         public AspNetUser LastUpdatedByUser { get; set; }
 
         public ICollection<AspNetUserClaim> AspNetUserClaims { get; set; }
@@ -44,5 +50,8 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Users.Models
         public ICollection<AspNetUserRole> AspNetUserRoles { get; set; }
 
         public ICollection<AspNetUserToken> AspNetUserTokens { get; set; }
+
+        public bool HasAcceptedLatestTermsOfUse(DateTime revisionDate)
+            => HasAcceptedTermsOfUse && AcceptedTermsOfUseDate.GetValueOrDefault() >= revisionDate;
     }
 }

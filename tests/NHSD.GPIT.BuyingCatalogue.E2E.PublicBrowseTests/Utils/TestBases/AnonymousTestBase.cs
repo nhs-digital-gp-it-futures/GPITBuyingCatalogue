@@ -11,7 +11,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.TestBases
             LocalWebApplicationFactory factory,
             Type controller,
             string methodName,
-            IDictionary<string, string> parameters,
+            IDictionary<string, string> parameters = null,
             ITestOutputHelper testOutputHelper = null)
             : base(
                   factory,

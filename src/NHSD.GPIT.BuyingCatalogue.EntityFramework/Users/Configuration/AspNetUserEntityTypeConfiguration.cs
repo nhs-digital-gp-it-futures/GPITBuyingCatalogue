@@ -51,6 +51,10 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Users.Configuration
                 .WithMany()
                 .HasForeignKey(u => u.LastUpdatedBy)
                 .HasConstraintName("FK_AspNetUsers_LastUpdatedBy");
+
+            builder.Property(u => u.AcceptedTermsOfUseDate);
+            builder.Property(u => u.HasOptedInUserResearch);
+            builder.Property(u => u.HasAcceptedTermsOfUse);
         }
     }
 }
