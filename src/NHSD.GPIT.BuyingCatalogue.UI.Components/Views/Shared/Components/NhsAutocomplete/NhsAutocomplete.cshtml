@@ -1,6 +1,6 @@
 ﻿@model NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.Components.Autocomplete.NhsAutocompleteModel;
 @{
-    var blacklistedQueryStrings = new[]
+    var ignoredQueryStrings = new[]
             { 
                 Model.QueryParameterName,
                 "searchTermType",
@@ -16,7 +16,7 @@
             <div id="@(Model.Id + "-container")"></div>
         </div>
         <input class="nhsuk-search__input" id="@(Model.Id + "-form-input")" name="@Model.QueryParameterName" type="search" autocomplete="off" value="@Model.SearchText">
-        @foreach(var queryParam in Context.Request.Query.Where(q => !blacklistedQueryStrings.Contains(q.Key)))
+        @foreach(var queryParam in Context.Request.Query.Where(q => !ignoredQueryStrings.Contains(q.Key)))
         {
             <input type="hidden" name="@queryParam.Key" value="@queryParam.Value">
         }
