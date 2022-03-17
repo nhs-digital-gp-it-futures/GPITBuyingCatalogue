@@ -165,79 +165,91 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering
         [Fact]
         public async Task OrderDashboard_SearchValid_DisplaysOrders()
         {
-            using var context = GetEndToEndDbContext();
-            var organisation = await context.Organisations.Include(o => o.Orders).SingleAsync(o => o.InternalIdentifier == InternalOrgId);
-            var order = organisation.Orders.First();
+            await RunTestWithRetryAsync(async () =>
+            {
+                using var context = GetEndToEndDbContext();
+                var organisation = await context.Organisations.Include(o => o.Orders).SingleAsync(o => o.InternalIdentifier == InternalOrgId);
+                var order = organisation.Orders.First();
 
-            CommonActions.ElementAddValue(Objects.Ordering.OrganisationDashboard.SearchBar, order.CallOffId.ToString());
+                CommonActions.ElementAddValue(Objects.Ordering.OrganisationDashboard.SearchBar, order.CallOffId.ToString());
 
-            CommonActions.WaitUntilElementIsDisplayed(Objects.Ordering.OrganisationDashboard.SearchListBox);
+                CommonActions.WaitUntilElementIsDisplayed(Objects.Ordering.OrganisationDashboard.SearchListBox);
 
-            CommonActions.ElementExists(Objects.Ordering.OrganisationDashboard.SearchResult(0))
-                .Should()
-                .BeTrue();
+                CommonActions.ElementExists(Objects.Ordering.OrganisationDashboard.SearchResult(0))
+                    .Should()
+                    .BeTrue();
 
-            CommonActions.ElementTextEqualTo(
-                Objects.Ordering.OrganisationDashboard.SearchResultTitle(0),
-                order.Description)
-                .Should()
-                .BeTrue();
+                CommonActions.ElementTextEqualTo(
+                    Objects.Ordering.OrganisationDashboard.SearchResultTitle(0),
+                    order.Description)
+                    .Should()
+                    .BeTrue();
 
-            CommonActions.ElementTextEqualTo(
-                Objects.Ordering.OrganisationDashboard.SearchResultDescription(0),
-                order.CallOffId.ToString())
-                .Should()
-                .BeTrue();
+                CommonActions.ElementTextEqualTo(
+                    Objects.Ordering.OrganisationDashboard.SearchResultDescription(0),
+                    order.CallOffId.ToString())
+                    .Should()
+                    .BeTrue();
+            });
         }
 
         [Fact]
         public void OrderDashboard_SearchInvalid_NoResults()
         {
-            TextGenerators.TextInputAddText(Objects.Ordering.OrganisationDashboard.SearchBar, 5);
+            RunTestWithRetry(() =>
+            {
+                TextGenerators.TextInputAddText(Objects.Ordering.OrganisationDashboard.SearchBar, 5);
 
-            CommonActions.WaitUntilElementIsDisplayed(Objects.Ordering.OrganisationDashboard.SearchListBox);
+                CommonActions.WaitUntilElementIsDisplayed(Objects.Ordering.OrganisationDashboard.SearchListBox);
 
-            CommonActions.ElementIsDisplayed(Objects.Ordering.OrganisationDashboard.NoResults)
-                .Should()
-                .BeTrue();
+                CommonActions.ElementIsDisplayed(Objects.Ordering.OrganisationDashboard.NoResults)
+                    .Should()
+                    .BeTrue();
 
-            CommonActions.ClickLinkElement(Objects.Ordering.OrganisationDashboard.SearchButton);
+                CommonActions.ClickLinkElement(Objects.Ordering.OrganisationDashboard.SearchButton);
 
-            CommonActions.ElementIsDisplayed(Objects.Ordering.OrganisationDashboard.SearchBar).Should().BeTrue();
-            CommonActions.ElementIsDisplayed(Objects.Ordering.OrganisationDashboard.NoResultsElement).Should().BeTrue();
-            CommonActions.ElementIsDisplayed(ByExtensions.DataTestId("orders-table")).Should().BeFalse();
+                CommonActions.ElementIsDisplayed(Objects.Ordering.OrganisationDashboard.SearchBar).Should().BeTrue();
+                CommonActions.ElementIsDisplayed(Objects.Ordering.OrganisationDashboard.NoResultsElement).Should().BeTrue();
+                CommonActions.ElementIsDisplayed(ByExtensions.DataTestId("orders-table")).Should().BeFalse();
+            });
         }
 
         [Fact]
         public void OrderingDashboard_SearchInvalid_ClickLink_NavigatesCorrectly()
         {
-            TextGenerators.TextInputAddText(Objects.Ordering.OrganisationDashboard.SearchBar, 5);
-            CommonActions.WaitUntilElementIsDisplayed(Objects.Ordering.OrganisationDashboard.SearchListBox);
+            RunTestWithRetry(() =>
+            {
+                TextGenerators.TextInputAddText(Objects.Ordering.OrganisationDashboard.SearchBar, 5);
+                CommonActions.WaitUntilElementIsDisplayed(Objects.Ordering.OrganisationDashboard.SearchListBox);
 
-            CommonActions.ClickLinkElement(Objects.Ordering.OrganisationDashboard.SearchButton);
-            CommonActions.WaitUntilElementIsDisplayed(Objects.Ordering.OrganisationDashboard.NoResultsElement);
+                CommonActions.ClickLinkElement(Objects.Ordering.OrganisationDashboard.SearchButton);
+                CommonActions.WaitUntilElementIsDisplayed(Objects.Ordering.OrganisationDashboard.NoResultsElement);
 
-            CommonActions.ClickLinkElement(ByExtensions.DataTestId("clear-results-link"));
+                CommonActions.ClickLinkElement(ByExtensions.DataTestId("clear-results-link"));
 
-            CommonActions.PageLoadedCorrectGetIndex(
-                typeof(DashboardController),
-                nameof(DashboardController.Organisation))
-                .Should().BeTrue();
+                CommonActions.PageLoadedCorrectGetIndex(
+                    typeof(DashboardController),
+                    nameof(DashboardController.Organisation))
+                    .Should().BeTrue();
+            });
         }
 
         [Fact]
         public async Task OrderDashboard_Search_FiltersTable()
         {
-            using var context = GetEndToEndDbContext();
-            var organisation = await context.Organisations.Include(o => o.Orders).SingleAsync(o => o.InternalIdentifier == InternalOrgId);
-            var order = organisation.Orders.First();
+            await RunTestWithRetryAsync(async () =>
+            {
+                using var context = GetEndToEndDbContext();
+                var organisation = await context.Organisations.Include(o => o.Orders).SingleAsync(o => o.InternalIdentifier == InternalOrgId);
+                var order = organisation.Orders.First();
 
-            CommonActions.ElementAddValue(Objects.Ordering.OrganisationDashboard.SearchBar, order.CallOffId.ToString());
-            CommonActions.WaitUntilElementIsDisplayed(Objects.Ordering.OrganisationDashboard.SearchListBox);
+                CommonActions.ElementAddValue(Objects.Ordering.OrganisationDashboard.SearchBar, order.CallOffId.ToString());
+                CommonActions.WaitUntilElementIsDisplayed(Objects.Ordering.OrganisationDashboard.SearchListBox);
 
-            CommonActions.ClickLinkElement(Objects.Ordering.OrganisationDashboard.SearchButton);
+                CommonActions.ClickLinkElement(Objects.Ordering.OrganisationDashboard.SearchButton);
 
-            CommonActions.GetNumberOfTableRowsDisplayed().Should().Be(1);
+                CommonActions.GetNumberOfTableRowsDisplayed().Should().Be(1);
+            });
         }
 
         [Fact]

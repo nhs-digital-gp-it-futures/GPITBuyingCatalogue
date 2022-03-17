@@ -7,6 +7,7 @@ using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Controllers;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Models;
 using Xunit;
+using Xunit.Abstractions;
 
 namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.PublicBrowse.Homepage
 {
@@ -14,31 +15,38 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.PublicBrowse.Homepage
     {
         private static readonly Dictionary<string, string> Parameters = new();
 
-        public ContactUsConfirmation(LocalWebApplicationFactory factory)
+        public ContactUsConfirmation(LocalWebApplicationFactory factory, ITestOutputHelper testOutputHelper)
                : base(
                    factory,
                    typeof(HomeController),
                    nameof(HomeController.ContactUsConfirmation),
-                   null)
+                   null,
+                   testOutputHelper)
         {
         }
 
         [Fact]
         public void ContactUsConfirmation_AllSectionsDisplayed()
         {
-            CommonActions.PageTitle().Should().Be("Your message has been sent".FormatForComparison());
-            CommonActions.GoBackLinkDisplayed().Should().BeTrue();
+            RunTest(() =>
+            {
+                CommonActions.PageTitle().Should().Be("Your message has been sent".FormatForComparison());
+                CommonActions.GoBackLinkDisplayed().Should().BeTrue();
+            });
         }
 
         [Fact]
         public void ContactUsConfirmation_ClickBacklink()
         {
-            CommonActions.ClickGoBackLink();
+            RunTest(() =>
+            {
+                CommonActions.ClickGoBackLink();
 
-            CommonActions.PageLoadedCorrectGetIndex(
-                typeof(HomeController),
-                nameof(HomeController.Index))
-                .Should().BeTrue();
+                CommonActions.PageLoadedCorrectGetIndex(
+                    typeof(HomeController),
+                    nameof(HomeController.Index))
+                    .Should().BeTrue();
+            });
         }
 
         [Theory]
@@ -48,18 +56,21 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.PublicBrowse.Homepage
             ContactUsModel.ContactMethodTypes contactReason,
             string expectedContactMethod)
         {
-            var parameters = new Dictionary<string, string>
+            RunTest(() =>
+            {
+                var parameters = new Dictionary<string, string>
             {
                 { "ContactReason", contactReason.ToString() },
             };
 
-            NavigateToUrl(
-                typeof(HomeController),
-                nameof(HomeController.ContactUsConfirmation),
-                null,
-                parameters);
+                NavigateToUrl(
+                    typeof(HomeController),
+                    nameof(HomeController.ContactUsConfirmation),
+                    null,
+                    parameters);
 
-            CommonActions.ElementTextContains(ByExtensions.DataTestId("contact-method-text"), expectedContactMethod).Should().BeTrue();
+                CommonActions.ElementTextContains(ByExtensions.DataTestId("contact-method-text"), expectedContactMethod).Should().BeTrue();
+            });
         }
     }
 }

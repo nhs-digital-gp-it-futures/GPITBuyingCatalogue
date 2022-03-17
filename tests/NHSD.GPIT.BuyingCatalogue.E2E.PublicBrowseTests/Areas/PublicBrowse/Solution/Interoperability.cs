@@ -12,6 +12,7 @@ using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers;
 using Xunit;
+using Xunit.Abstractions;
 
 namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.PublicBrowse.Solution
 {
@@ -23,135 +24,145 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.PublicBrowse.Solution
             { nameof(SolutionId), SolutionId.ToString() },
         };
 
-        public Interoperability(LocalWebApplicationFactory factory)
+        public Interoperability(LocalWebApplicationFactory factory, ITestOutputHelper testOutputHelper)
             : base(
                   factory,
                   typeof(SolutionsController),
                   nameof(SolutionsController.Interoperability),
-                  Parameters)
+                  Parameters,
+                  testOutputHelper)
         {
         }
 
         [Fact]
         public void Interoperability_AllSectionsDisplayed()
         {
-            CommonActions
-                .ElementIsDisplayed(CommonSelectors.Header2)
-                .Should()
-                .BeTrue();
+            RunTest(() =>
+            {
+                CommonActions
+                    .ElementIsDisplayed(CommonSelectors.Header2)
+                    .Should()
+                    .BeTrue();
 
-            CommonActions
-                .ElementIsDisplayed(InteroperabilityObjects.IMIntegrationsHeading)
-                .Should()
-                .BeTrue();
+                CommonActions
+                    .ElementIsDisplayed(InteroperabilityObjects.IMIntegrationsHeading)
+                    .Should()
+                    .BeTrue();
 
-            CommonActions
-                .ElementIsDisplayed(InteroperabilityObjects.GpConnectHeading)
-                .Should()
-                .BeTrue();
+                CommonActions
+                    .ElementIsDisplayed(InteroperabilityObjects.GpConnectHeading)
+                    .Should()
+                    .BeTrue();
 
-            CommonActions
-                .ElementIsDisplayed(InteroperabilityObjects.TableAppointmentBooking)
-                .Should()
-                .BeTrue();
+                CommonActions
+                    .ElementIsDisplayed(InteroperabilityObjects.TableAppointmentBooking)
+                    .Should()
+                    .BeTrue();
 
-            CommonActions
-                .ElementIsDisplayed(InteroperabilityObjects.TableBulk)
-                .Should()
-                .BeTrue();
+                CommonActions
+                    .ElementIsDisplayed(InteroperabilityObjects.TableBulk)
+                    .Should()
+                    .BeTrue();
 
-            CommonActions
-                .ElementIsDisplayed(InteroperabilityObjects.TableHtmlView)
-                .Should()
-                .BeTrue();
+                CommonActions
+                    .ElementIsDisplayed(InteroperabilityObjects.TableHtmlView)
+                    .Should()
+                    .BeTrue();
 
-            CommonActions
-                .ElementIsDisplayed(InteroperabilityObjects.TablePatientFacing)
-                .Should()
-                .BeTrue();
+                CommonActions
+                    .ElementIsDisplayed(InteroperabilityObjects.TablePatientFacing)
+                    .Should()
+                    .BeTrue();
 
-            CommonActions
-                .ElementIsDisplayed(InteroperabilityObjects.TableStructuredRecord)
-                .Should()
-                .BeTrue();
+                CommonActions
+                    .ElementIsDisplayed(InteroperabilityObjects.TableStructuredRecord)
+                    .Should()
+                    .BeTrue();
 
-            CommonActions
-                .ElementIsDisplayed(InteroperabilityObjects.TableTransactional)
-                .Should()
-                .BeTrue();
+                CommonActions
+                    .ElementIsDisplayed(InteroperabilityObjects.TableTransactional)
+                    .Should()
+                    .BeTrue();
+            });
         }
 
         [Fact]
         public void Interoperability_NoIntegrations_NoSectionsDisplayed()
         {
-            using var context = GetEndToEndDbContext();
-            var solution = context.Solutions.Single(s => s.CatalogueItemId == SolutionId);
-            var originalIntegrations = solution.Integrations;
-            solution.Integrations = null;
-            context.SaveChanges();
+            RunTest(() =>
+            {
+                using var context = GetEndToEndDbContext();
+                var solution = context.Solutions.Single(s => s.CatalogueItemId == SolutionId);
+                var originalIntegrations = solution.Integrations;
+                solution.Integrations = null;
+                context.SaveChanges();
 
-            Driver.Navigate().Refresh();
+                Driver.Navigate().Refresh();
 
-            CommonActions
-                .ElementExists(InteroperabilityObjects.IMIntegrationsHeading)
-                .Should()
-                .BeFalse();
+                CommonActions
+                    .ElementExists(InteroperabilityObjects.IMIntegrationsHeading)
+                    .Should()
+                    .BeFalse();
 
-            CommonActions
-                .ElementExists(InteroperabilityObjects.GpConnectHeading)
-                .Should()
-                .BeFalse();
+                CommonActions
+                    .ElementExists(InteroperabilityObjects.GpConnectHeading)
+                    .Should()
+                    .BeFalse();
 
-            CommonActions
-                .ElementExists(InteroperabilityObjects.TableAppointmentBooking)
-                .Should()
-                .BeFalse();
+                CommonActions
+                    .ElementExists(InteroperabilityObjects.TableAppointmentBooking)
+                    .Should()
+                    .BeFalse();
 
-            CommonActions
-                .ElementExists(InteroperabilityObjects.TableBulk)
-                .Should()
-                .BeFalse();
+                CommonActions
+                    .ElementExists(InteroperabilityObjects.TableBulk)
+                    .Should()
+                    .BeFalse();
 
-            CommonActions
-                .ElementExists(InteroperabilityObjects.TableHtmlView)
-                .Should()
-                .BeFalse();
+                CommonActions
+                    .ElementExists(InteroperabilityObjects.TableHtmlView)
+                    .Should()
+                    .BeFalse();
 
-            CommonActions
-                .ElementExists(InteroperabilityObjects.TablePatientFacing)
-                .Should()
-                .BeFalse();
+                CommonActions
+                    .ElementExists(InteroperabilityObjects.TablePatientFacing)
+                    .Should()
+                    .BeFalse();
 
-            CommonActions
-                .ElementExists(InteroperabilityObjects.TableStructuredRecord)
-                .Should()
-                .BeFalse();
+                CommonActions
+                    .ElementExists(InteroperabilityObjects.TableStructuredRecord)
+                    .Should()
+                    .BeFalse();
 
-            CommonActions
-                .ElementExists(InteroperabilityObjects.TableTransactional)
-                .Should()
-                .BeFalse();
+                CommonActions
+                    .ElementExists(InteroperabilityObjects.TableTransactional)
+                    .Should()
+                    .BeFalse();
 
-            solution.Integrations = originalIntegrations;
-            context.SaveChanges();
+                solution.Integrations = originalIntegrations;
+                context.SaveChanges();
+            });
         }
 
         [Fact]
         public async Task Interoperability_SolutionIsSuspended_Redirect()
         {
-            await using var context = GetEndToEndDbContext();
-            var solution = await context.CatalogueItems.SingleAsync(ci => ci.Id == SolutionId);
-            solution.PublishedStatus = PublicationStatus.Suspended;
-            await context.SaveChangesAsync();
+            await RunTestAsync(async () =>
+            {
+                await using var context = GetEndToEndDbContext();
+                var solution = await context.CatalogueItems.SingleAsync(ci => ci.Id == SolutionId);
+                solution.PublishedStatus = PublicationStatus.Suspended;
+                await context.SaveChangesAsync();
 
-            Driver.Navigate().Refresh();
+                Driver.Navigate().Refresh();
 
-            CommonActions
-                .PageLoadedCorrectGetIndex(
-                    typeof(SolutionsController),
-                    nameof(SolutionsController.Description))
-                .Should()
-                .BeTrue();
+                CommonActions
+                    .PageLoadedCorrectGetIndex(
+                        typeof(SolutionsController),
+                        nameof(SolutionsController.Description))
+                    .Should()
+                    .BeTrue();
+            });
         }
 
         public void Dispose()

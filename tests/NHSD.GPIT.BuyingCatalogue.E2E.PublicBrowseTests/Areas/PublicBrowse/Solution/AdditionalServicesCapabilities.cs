@@ -10,6 +10,7 @@ using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers;
 using Xunit;
+using Xunit.Abstractions;
 
 namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.PublicBrowse.Solution
 {
@@ -25,44 +26,51 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.PublicBrowse.Solution
             { nameof(AdditionalServiceId), AdditionalServiceId.ToString() },
         };
 
-        public AdditionalServicesCapabilities(LocalWebApplicationFactory factory)
+        public AdditionalServicesCapabilities(LocalWebApplicationFactory factory, ITestOutputHelper testOutputHelper)
             : base(
                   factory,
                   typeof(SolutionsController),
                   nameof(SolutionsController.CapabilitiesAdditionalServices),
-                  Parameters)
+                  Parameters,
+                  testOutputHelper)
         {
         }
 
         [Fact]
         public async Task AdditionalServicesCapabilities_AllCapabilitiesDisplayed()
         {
-            var capabilitiesNames = PublicBrowsePages.SolutionAction.GetCapabilitiesListNames().OrderBy(c => c);
-            var numberEpicLinks = PublicBrowsePages.SolutionAction.GetCheckEpicLinks();
+            await RunTestAsync(async () =>
+            {
+                var capabilitiesNames = PublicBrowsePages.SolutionAction.GetCapabilitiesListNames().OrderBy(c => c);
+                var numberEpicLinks = PublicBrowsePages.SolutionAction.GetCheckEpicLinks();
 
-            await using var context = GetEndToEndDbContext();
-            var dbCapabilities = await context.CatalogueItemCapabilities.Include(c => c.Capability).Where(c => c.CatalogueItemId == new CatalogueItemId(99999, "001A99")).ToListAsync();
+                await using var context = GetEndToEndDbContext();
+                var dbCapabilities = await context.CatalogueItemCapabilities.Include(c => c.Capability).Where(c => c.CatalogueItemId == new CatalogueItemId(99999, "001A99")).ToListAsync();
 
-            capabilitiesNames.Should().HaveCount(dbCapabilities.Count);
-            numberEpicLinks.Should().HaveCount(dbCapabilities.Count);
+                capabilitiesNames.Should().HaveCount(dbCapabilities.Count);
+                numberEpicLinks.Should().HaveCount(dbCapabilities.Count);
+            });
         }
 
         [Fact]
         public async Task AdditionalServicesCapabilities_SolutionIsSuspended_Redirect()
         {
-            await using var context = GetEndToEndDbContext();
-            var solution = await context.CatalogueItems.SingleAsync(ci => ci.Id == SolutionId);
-            solution.PublishedStatus = PublicationStatus.Suspended;
-            await context.SaveChangesAsync();
+            await RunTestAsync(async () =>
+            {
+                await using var context = GetEndToEndDbContext();
+                var solution = await context.CatalogueItems.SingleAsync(ci => ci.Id == SolutionId);
+                solution.PublishedStatus = PublicationStatus.Suspended;
+                await context.SaveChangesAsync();
 
-            Driver.Navigate().Refresh();
+                Driver.Navigate().Refresh();
 
-            CommonActions
-                .PageLoadedCorrectGetIndex(
-                    typeof(SolutionsController),
-                    nameof(SolutionsController.Description))
-                .Should()
-                .BeTrue();
+                CommonActions
+                    .PageLoadedCorrectGetIndex(
+                        typeof(SolutionsController),
+                        nameof(SolutionsController.Description))
+                    .Should()
+                    .BeTrue();
+            });
         }
 
         public void Dispose()

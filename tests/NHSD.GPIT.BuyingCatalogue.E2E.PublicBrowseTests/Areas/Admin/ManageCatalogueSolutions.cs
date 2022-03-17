@@ -49,101 +49,110 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin
         [Fact]
         public async Task ManageCatalogueSolutions_SearchTermEmpty_AllSolutionsDisplayed()
         {
-            await using var context = GetEndToEndDbContext();
+            await RunTestWithRetryAsync(async () =>
+            {
+                await using var context = GetEndToEndDbContext();
 
-            var solutions = await context.CatalogueItems
-                .Include(x => x.Supplier)
-                .Where(x => x.CatalogueItemType == CatalogueItemType.Solution)
-                .ToListAsync();
+                var solutions = await context.CatalogueItems
+                    .Include(x => x.Supplier)
+                    .Where(x => x.CatalogueItemType == CatalogueItemType.Solution)
+                    .ToListAsync();
 
-            CommonActions.ElementAddValue(CatalogueSolutionObjects.SearchBar, string.Empty);
-            CommonActions.ClickLinkElement(CatalogueSolutionObjects.SearchButton);
+                CommonActions.ElementAddValue(CatalogueSolutionObjects.SearchBar, string.Empty);
+                CommonActions.ClickLinkElement(CatalogueSolutionObjects.SearchButton);
 
-            CommonActions.PageLoadedCorrectGetIndex(
-                typeof(CatalogueSolutionsController),
-                nameof(CatalogueSolutionsController.Index)).Should().BeTrue();
+                CommonActions.PageLoadedCorrectGetIndex(
+                    typeof(CatalogueSolutionsController),
+                    nameof(CatalogueSolutionsController.Index)).Should().BeTrue();
 
-            var pageSummary = GetPageSummary();
+                var pageSummary = GetPageSummary();
 
-            pageSummary.SolutionIds.Should().BeEquivalentTo(solutions.Select(x => $"{x.Id}"));
-            pageSummary.SolutionNames.Should().BeEquivalentTo(solutions.Select(x => x.Name.Trim()));
-            pageSummary.SupplierNames.Should().BeEquivalentTo(solutions.Select(x => x.Supplier.Name.Trim()));
+                pageSummary.SolutionIds.Should().BeEquivalentTo(solutions.Select(x => $"{x.Id}"));
+                pageSummary.SolutionNames.Should().BeEquivalentTo(solutions.Select(x => x.Name.Trim()));
+                pageSummary.SupplierNames.Should().BeEquivalentTo(solutions.Select(x => x.Supplier.Name.Trim()));
+            });
         }
 
         [Fact]
         public async Task ManageCatalogueSolutions_SearchTermValid_FilteredEpicsDisplayed()
         {
-            await using var context = GetEndToEndDbContext();
+            await RunTestWithRetryAsync(async () =>
+            {
+                await using var context = GetEndToEndDbContext();
 
-            var sampleSolution = context.CatalogueItems
-                .Include(x => x.Supplier)
-                .Where(x => x.CatalogueItemType == CatalogueItemType.Solution)
-                .OrderByDescending(x => x.Name.Length)
-                .First();
+                var sampleSolution = context.CatalogueItems
+                    .Include(x => x.Supplier)
+                    .Where(x => x.CatalogueItemType == CatalogueItemType.Solution)
+                    .OrderByDescending(x => x.Name.Length)
+                    .First();
 
-            await CommonActions.InputCharactersWithDelay(CatalogueSolutionObjects.SearchBar, sampleSolution.Name);
-            CommonActions.WaitUntilElementIsDisplayed(CatalogueSolutionObjects.SearchListBox);
+                await CommonActions.InputCharactersWithDelay(CatalogueSolutionObjects.SearchBar, sampleSolution.Name);
+                CommonActions.WaitUntilElementIsDisplayed(CatalogueSolutionObjects.SearchListBox);
 
-            CommonActions.ElementExists(CatalogueSolutionObjects.SearchResult(0)).Should().BeTrue();
-            CommonActions.ElementTextEqualTo(
-                CatalogueSolutionObjects.SearchResultTitle(0),
-                sampleSolution.Name).Should().BeTrue();
-            CommonActions.ElementTextEqualTo(
-                CatalogueSolutionObjects.SearchResultDescription(0),
-                sampleSolution.Supplier.Name).Should().BeTrue();
+                CommonActions.ElementExists(CatalogueSolutionObjects.SearchResult(0)).Should().BeTrue();
+                CommonActions.ElementTextEqualTo(
+                    CatalogueSolutionObjects.SearchResultTitle(0),
+                    sampleSolution.Name).Should().BeTrue();
+                CommonActions.ElementTextEqualTo(
+                    CatalogueSolutionObjects.SearchResultDescription(0),
+                    sampleSolution.Supplier.Name).Should().BeTrue();
 
-            CommonActions.ClickLinkElement(CatalogueSolutionObjects.SearchButton);
+                CommonActions.ClickLinkElement(CatalogueSolutionObjects.SearchButton);
 
-            CommonActions.PageLoadedCorrectGetIndex(
-                typeof(CatalogueSolutionsController),
-                nameof(CatalogueSolutionsController.Index)).Should().BeTrue();
+                CommonActions.PageLoadedCorrectGetIndex(
+                    typeof(CatalogueSolutionsController),
+                    nameof(CatalogueSolutionsController.Index)).Should().BeTrue();
 
-            var pageSummary = GetPageSummary();
+                var pageSummary = GetPageSummary();
 
-            pageSummary.SolutionIds.Single().Should().Be($"{sampleSolution.Id}");
-            pageSummary.SolutionNames.Single().Should().Be(sampleSolution.Name.Trim());
-            pageSummary.SupplierNames.Single().Should().Be(sampleSolution.Supplier.Name.Trim());
+                pageSummary.SolutionIds.Single().Should().Be($"{sampleSolution.Id}");
+                pageSummary.SolutionNames.Single().Should().Be(sampleSolution.Name.Trim());
+                pageSummary.SupplierNames.Single().Should().Be(sampleSolution.Supplier.Name.Trim());
+            });
         }
 
         [Fact]
         public async Task ManageCatalogueSolutions_SearchTermValid_NoMatches_ErrorMessageDisplayed()
         {
-            await using var context = GetEndToEndDbContext();
+            await RunTestWithRetryAsync(async () =>
+            {
+                await using var context = GetEndToEndDbContext();
 
-            await CommonActions.InputCharactersWithDelay(CatalogueSolutionObjects.SearchBar, Strings.RandomString(10));
-            CommonActions.WaitUntilElementIsDisplayed(CatalogueSolutionObjects.SearchListBox);
+                await CommonActions.InputCharactersWithDelay(CatalogueSolutionObjects.SearchBar, Strings.RandomString(10));
+                CommonActions.WaitUntilElementIsDisplayed(CatalogueSolutionObjects.SearchListBox);
 
-            CommonActions.ElementIsDisplayed(CatalogueSolutionObjects.SearchResultsErrorMessage).Should().BeTrue();
+                CommonActions.ElementIsDisplayed(CatalogueSolutionObjects.SearchResultsErrorMessage).Should().BeTrue();
 
-            CommonActions.ClickLinkElement(CatalogueSolutionObjects.SearchButton);
+                CommonActions.ClickLinkElement(CatalogueSolutionObjects.SearchButton);
 
-            CommonActions.PageLoadedCorrectGetIndex(
-                typeof(CatalogueSolutionsController),
-                nameof(CatalogueSolutionsController.Index)).Should().BeTrue();
+                CommonActions.PageLoadedCorrectGetIndex(
+                    typeof(CatalogueSolutionsController),
+                    nameof(CatalogueSolutionsController.Index)).Should().BeTrue();
 
-            CommonActions.ElementIsDisplayed(CatalogueSolutionObjects.AddSolutionLink).Should().BeTrue();
-            CommonActions.ElementIsDisplayed(CatalogueSolutionObjects.SearchBar).Should().BeTrue();
-            CommonActions.ElementIsDisplayed(CatalogueSolutionObjects.SearchButton).Should().BeTrue();
-            CommonActions.ElementIsDisplayed(CatalogueSolutionObjects.SearchErrorMessage).Should().BeTrue();
-            CommonActions.ElementIsDisplayed(CatalogueSolutionObjects.SearchErrorMessageLink).Should().BeTrue();
+                CommonActions.ElementIsDisplayed(CatalogueSolutionObjects.AddSolutionLink).Should().BeTrue();
+                CommonActions.ElementIsDisplayed(CatalogueSolutionObjects.SearchBar).Should().BeTrue();
+                CommonActions.ElementIsDisplayed(CatalogueSolutionObjects.SearchButton).Should().BeTrue();
+                CommonActions.ElementIsDisplayed(CatalogueSolutionObjects.SearchErrorMessage).Should().BeTrue();
+                CommonActions.ElementIsDisplayed(CatalogueSolutionObjects.SearchErrorMessageLink).Should().BeTrue();
 
-            var pageSummary = GetPageSummary();
+                var pageSummary = GetPageSummary();
 
-            pageSummary.SolutionIds.Should().BeEmpty();
-            pageSummary.SolutionNames.Should().BeEmpty();
-            pageSummary.SupplierNames.Should().BeEmpty();
+                pageSummary.SolutionIds.Should().BeEmpty();
+                pageSummary.SolutionNames.Should().BeEmpty();
+                pageSummary.SupplierNames.Should().BeEmpty();
 
-            CommonActions.ClickLinkElement(CatalogueSolutionObjects.SearchErrorMessageLink);
+                CommonActions.ClickLinkElement(CatalogueSolutionObjects.SearchErrorMessageLink);
 
-            CommonActions.PageLoadedCorrectGetIndex(
-                typeof(CatalogueSolutionsController),
-                nameof(CatalogueSolutionsController.Index)).Should().BeTrue();
+                CommonActions.PageLoadedCorrectGetIndex(
+                    typeof(CatalogueSolutionsController),
+                    nameof(CatalogueSolutionsController.Index)).Should().BeTrue();
 
-            CommonActions.ElementIsDisplayed(CatalogueSolutionObjects.AddSolutionLink).Should().BeTrue();
-            CommonActions.ElementIsDisplayed(CatalogueSolutionObjects.SearchBar).Should().BeTrue();
-            CommonActions.ElementIsDisplayed(CatalogueSolutionObjects.SearchButton).Should().BeTrue();
-            CommonActions.ElementIsDisplayed(CatalogueSolutionObjects.SearchErrorMessage).Should().BeFalse();
-            CommonActions.ElementIsDisplayed(CatalogueSolutionObjects.SearchErrorMessageLink).Should().BeFalse();
+                CommonActions.ElementIsDisplayed(CatalogueSolutionObjects.AddSolutionLink).Should().BeTrue();
+                CommonActions.ElementIsDisplayed(CatalogueSolutionObjects.SearchBar).Should().BeTrue();
+                CommonActions.ElementIsDisplayed(CatalogueSolutionObjects.SearchButton).Should().BeTrue();
+                CommonActions.ElementIsDisplayed(CatalogueSolutionObjects.SearchErrorMessage).Should().BeFalse();
+                CommonActions.ElementIsDisplayed(CatalogueSolutionObjects.SearchErrorMessageLink).Should().BeFalse();
+            });
         }
 
         [Theory]
