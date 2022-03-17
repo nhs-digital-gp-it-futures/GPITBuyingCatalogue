@@ -15,7 +15,7 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models
             return OrderItemPrice.CataloguePriceCalculationType switch
             {
                 CataloguePriceCalculationType.SingleFixed => CalculateTotalCostFlatSingle(quantity),
-                CataloguePriceCalculationType.Cumulative or _ => CalculateTotalCostCumilative(quantity),
+                CataloguePriceCalculationType.Cumulative or _ => CalculateTotalCostcumulative(quantity),
             };
         }
 
@@ -58,7 +58,7 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models
             return fundingType;
         }
 
-        private decimal CalculateTotalCostCumilative(int quantity)
+        private decimal CalculateTotalCostcumulative(int quantity)
         {
             var lastUpperRange = 0;
             var totalCost = 0M;

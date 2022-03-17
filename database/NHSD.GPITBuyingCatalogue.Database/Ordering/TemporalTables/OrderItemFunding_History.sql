@@ -1,6 +1,6 @@
 ﻿CREATE TABLE [ordering].[OrderItemFunding_History]
 (
-	OrderId INT NOT NULL,
+    OrderId INT NOT NULL,
     CatalogueItemId NVARCHAR(14) NOT NULL,
     TotalPrice DECIMAL(18,4) NOT NULL,
     CentralAllocation DECIMAL(18,4) NOT NULL,

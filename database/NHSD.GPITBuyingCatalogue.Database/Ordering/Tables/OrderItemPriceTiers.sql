@@ -1,7 +1,7 @@
 ﻿CREATE TABLE [ordering].[OrderItemPriceTiers]
 (
     Id INT IDENTITY(1, 1) NOT NULL,
-	OrderId INT NOT NULL,
+    OrderId INT NOT NULL,
     CatalogueItemId NVARCHAR(14) NOT NULL,
     Price DECIMAL(18,4) NOT NULL CONSTRAINT OrderItemPriceTiers_PositivePrice CHECK (Price >= 0.00),
     LowerRange INT NOT NULL CONSTRAINT OrderItemPriceTiers_PositiveLowerRange CHECK (LowerRange >= 1),
