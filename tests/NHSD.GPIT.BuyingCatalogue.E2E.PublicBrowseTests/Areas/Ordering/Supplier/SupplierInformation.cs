@@ -244,30 +244,33 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering.Supplier
         [Fact]
         public async Task SupplierInformation_SupplierSearch_SupplierAlreadySelected_Expected()
         {
-            await using var context = GetEndToEndDbContext();
-            var supplier = context.Suppliers.First();
-            var order = context.Orders
-                .Include(o => o.Supplier)
-                .Include(o => o.SupplierContact)
-                .Single(o => o.Id == CallOffId.Id);
+            await RunTestWithRetryAsync(async () =>
+            {
+                await using var context = GetEndToEndDbContext();
+                var supplier = context.Suppliers.First();
+                var order = context.Orders
+                    .Include(o => o.Supplier)
+                    .Include(o => o.SupplierContact)
+                    .Single(o => o.Id == CallOffId.Id);
 
-            order.Supplier = supplier;
-            await context.SaveChangesAsync();
+                order.Supplier = supplier;
+                await context.SaveChangesAsync();
 
-            var queryParameters = new Dictionary<string, string>
+                var queryParameters = new Dictionary<string, string>
             {
                 { "search", SearchWithContact },
             };
 
-            NavigateToUrl(
-                typeof(SupplierController),
-                nameof(SupplierController.SupplierSearchSelect),
-                Parameters,
-                queryParameters);
+                NavigateToUrl(
+                    typeof(SupplierController),
+                    nameof(SupplierController.SupplierSearchSelect),
+                    Parameters,
+                    queryParameters);
 
-            CommonActions.PageLoadedCorrectGetIndex(
-                typeof(SupplierController),
-                nameof(SupplierController.Supplier)).Should().BeTrue();
+                CommonActions.PageLoadedCorrectGetIndex(
+                    typeof(SupplierController),
+                    nameof(SupplierController.Supplier)).Should().BeTrue();
+            });
         }
 
         public void Dispose()

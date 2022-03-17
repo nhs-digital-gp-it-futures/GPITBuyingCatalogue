@@ -11,6 +11,7 @@ using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers;
 using Xunit;
+using Xunit.Abstractions;
 
 namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.PublicBrowse.Solution
 {
@@ -23,56 +24,66 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.PublicBrowse.Solution
             { nameof(SolutionId), SolutionId.ToString() },
         };
 
-        public ImplementationDetails(LocalWebApplicationFactory factory)
+        public ImplementationDetails(LocalWebApplicationFactory factory, ITestOutputHelper testOutputHelper)
             : base(
                   factory,
                   typeof(SolutionsController),
                   nameof(SolutionsController.Implementation),
-                  Parameters)
+                  Parameters,
+                  testOutputHelper)
         {
         }
 
         [Fact]
         public async Task ImplementationDetails_ImplementationNameDisplayedAsync()
         {
-            await using var context = GetEndToEndDbContext();
-            var pageTitle = (await context.CatalogueItems.SingleAsync(s => s.Id == new CatalogueItemId(99999, "001"))).Name;
+            await RunTestAsync(async () =>
+            {
+                await using var context = GetEndToEndDbContext();
+                var pageTitle = (await context.CatalogueItems.SingleAsync(s => s.Id == new CatalogueItemId(99999, "001"))).Name;
 
-            CommonActions
-            .PageTitle()
-            .Should()
-            .BeEquivalentTo($"implementation - {pageTitle}".FormatForComparison());
+                CommonActions
+                .PageTitle()
+                .Should()
+                .BeEquivalentTo($"implementation - {pageTitle}".FormatForComparison());
+            });
         }
 
         [Fact]
         public async Task ImplementationDetails_VerifyContent()
         {
-            await using var context = GetEndToEndDbContext();
-            var info = (await context.Solutions.SingleAsync(s => s.CatalogueItemId == new CatalogueItemId(99999, "001"))).ImplementationDetail;
+            await RunTestAsync(async () =>
+            {
+                await using var context = GetEndToEndDbContext();
+                var info = (await context.Solutions.SingleAsync(s => s.CatalogueItemId == new CatalogueItemId(99999, "001"))).ImplementationDetail;
 
-            var implementationContent = PublicBrowsePages.SolutionAction.GetSummaryAndDescriptions();
+                var implementationContent = PublicBrowsePages.SolutionAction.GetSummaryAndDescriptions();
 
-            implementationContent
-                .Any(s => s.Contains(info, StringComparison.CurrentCultureIgnoreCase))
-                .Should().BeTrue();
+                implementationContent
+                    .Any(s => s.Contains(info, StringComparison.CurrentCultureIgnoreCase))
+                    .Should().BeTrue();
+            });
         }
 
         [Fact]
         public async Task ImplementationDetails_SolutionIsSuspended_Redirect()
         {
-            await using var context = GetEndToEndDbContext();
-            var solution = await context.CatalogueItems.SingleAsync(ci => ci.Id == SolutionId);
-            solution.PublishedStatus = PublicationStatus.Suspended;
-            await context.SaveChangesAsync();
+            await RunTestAsync(async () =>
+            {
+                await using var context = GetEndToEndDbContext();
+                var solution = await context.CatalogueItems.SingleAsync(ci => ci.Id == SolutionId);
+                solution.PublishedStatus = PublicationStatus.Suspended;
+                await context.SaveChangesAsync();
 
-            Driver.Navigate().Refresh();
+                Driver.Navigate().Refresh();
 
-            CommonActions
-                .PageLoadedCorrectGetIndex(
-                    typeof(SolutionsController),
-                    nameof(SolutionsController.Description))
-                .Should()
-                .BeTrue();
+                CommonActions
+                    .PageLoadedCorrectGetIndex(
+                        typeof(SolutionsController),
+                        nameof(SolutionsController.Description))
+                    .Should()
+                    .BeTrue();
+            });
         }
 
         public void Dispose()

@@ -11,6 +11,7 @@ using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers;
 using Xunit;
+using Xunit.Abstractions;
 
 namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.PublicBrowse.Solution
 {
@@ -23,87 +24,103 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.PublicBrowse.Solution
             { nameof(SolutionId), SolutionId.ToString() },
         };
 
-        public AssociatedServicesDetails(LocalWebApplicationFactory factory)
+        public AssociatedServicesDetails(LocalWebApplicationFactory factory, ITestOutputHelper testOutputHelper)
             : base(
                   factory,
                   typeof(SolutionsController),
                   nameof(SolutionsController.AssociatedServices),
-                  Parameters)
+                  Parameters,
+                  testOutputHelper)
         {
         }
 
         [Fact]
         public async Task AssociatedServicesDetails_AssociatedServicesNameDisplayedAsync()
         {
-            await using var context = GetEndToEndDbContext();
-            var pageTitle = (await context.CatalogueItems.SingleAsync(s => s.Id == new CatalogueItemId(99999, "001"))).Name;
+            await RunTestAsync(async () =>
+            {
+                await using var context = GetEndToEndDbContext();
+                var pageTitle = (await context.CatalogueItems.SingleAsync(s => s.Id == new CatalogueItemId(99999, "001"))).Name;
 
-            CommonActions
-                .PageTitle()
-                .Should()
-                .BeEquivalentTo($"associated services - {pageTitle}".FormatForComparison());
+                CommonActions
+                    .PageTitle()
+                    .Should()
+                    .BeEquivalentTo($"associated services - {pageTitle}".FormatForComparison());
+            });
         }
 
         [Fact]
         public void AssociatedServicesDetails_AssociatedServicesTableDisplayed()
         {
-            PublicBrowsePages.SolutionAction.AssociatedServicesTableDisplayed().Should().BeTrue();
+            RunTest(() =>
+            {
+                PublicBrowsePages.SolutionAction.AssociatedServicesTableDisplayed().Should().BeTrue();
+            });
         }
 
         [Fact]
         public async Task AssociatedServicesDetails_AssociatedServicesListedInTable()
         {
-            await using var context = GetEndToEndDbContext();
+            await RunTestAsync(async () =>
+            {
+                await using var context = GetEndToEndDbContext();
 
-            var associatedServicesInDb = await context.CatalogueItems.Where(c => c.CatalogueItemType == CatalogueItemType.AssociatedService).Where(c => c.SupplierId == 99999).ToListAsync();
+                var associatedServicesInDb = await context.CatalogueItems.Where(c => c.CatalogueItemType == CatalogueItemType.AssociatedService).Where(c => c.SupplierId == 99999).ToListAsync();
 
-            var solution = await context.CatalogueItems.Include(s => s.SupplierServiceAssociations).SingleAsync(s => s.Id == SolutionId);
-            associatedServicesInDb = associatedServicesInDb.Where(x => solution.SupplierServiceAssociations.Any(y => y.AssociatedServiceId == x.Id)).ToList();
+                var solution = await context.CatalogueItems.Include(s => s.SupplierServiceAssociations).SingleAsync(s => s.Id == SolutionId);
+                associatedServicesInDb = associatedServicesInDb.Where(x => solution.SupplierServiceAssociations.Any(y => y.AssociatedServiceId == x.Id)).ToList();
 
-            var associatedServicesInTable = PublicBrowsePages.SolutionAction.GetAssociatedServicesNamesFromTable();
+                var associatedServicesInTable = PublicBrowsePages.SolutionAction.GetAssociatedServicesNamesFromTable();
 
-            associatedServicesInTable.Should().BeEquivalentTo(associatedServicesInDb.Select(s => s.Name));
+                associatedServicesInTable.Should().BeEquivalentTo(associatedServicesInDb.Select(s => s.Name));
+            });
         }
 
         [Fact]
         public async Task AssociatedServicesDetails_AssociatedServicesDetailsListed()
         {
-            await using var context = GetEndToEndDbContext();
+            await RunTestAsync(async () =>
+            {
+                await using var context = GetEndToEndDbContext();
 
-            var associatedServicesInDb = await context.CatalogueItems
-                .Include(s => s.AssociatedService)
-                .Where(c => c.CatalogueItemType == CatalogueItemType.AssociatedService)
-                .Where(c => c.SupplierId == 99999)
-                .ToListAsync();
+                var associatedServicesInDb = await context.CatalogueItems
+                    .Include(s => s.AssociatedService)
+                    .Where(c => c.CatalogueItemType == CatalogueItemType.AssociatedService)
+                    .Where(c => c.SupplierId == 99999)
+                    .ToListAsync();
 
-            var solution = await context.CatalogueItems.Include(s => s.SupplierServiceAssociations).SingleAsync(s => s.Id == SolutionId);
-            associatedServicesInDb = associatedServicesInDb.Where(x => solution.SupplierServiceAssociations.Any(y => y.AssociatedServiceId == x.Id)).ToList();
+                var solution = await context.CatalogueItems.Include(s => s.SupplierServiceAssociations).SingleAsync(s => s.Id == SolutionId);
+                associatedServicesInDb = associatedServicesInDb.Where(x => solution.SupplierServiceAssociations.Any(y => y.AssociatedServiceId == x.Id)).ToList();
 
-            var associatedServicesOnPage = PublicBrowsePages.SolutionAction.GetAssociatedServicesInfo();
+                var associatedServicesOnPage = PublicBrowsePages.SolutionAction.GetAssociatedServicesInfo();
 
-            associatedServicesOnPage.Should().BeEquivalentTo(
-                associatedServicesInDb.Select(s => s.AssociatedService),
-                options =>
-                    options.Including(s => s.Description)
-                    .Including(s => s.OrderGuidance));
+                associatedServicesOnPage.Should().BeEquivalentTo(
+                    associatedServicesInDb.Select(s => s.AssociatedService),
+                    options =>
+                        options.Including(s => s.Description)
+                        .Including(s => s.OrderGuidance));
+            });
         }
 
         [Fact]
         public async Task AssociatedServicesDetails_SolutionIsSuspended_Redirect()
         {
-            await using var context = GetEndToEndDbContext();
-            var solution = await context.CatalogueItems.SingleAsync(ci => ci.Id == SolutionId);
-            solution.PublishedStatus = PublicationStatus.Suspended;
-            await context.SaveChangesAsync();
+            await RunTestAsync(async () =>
+            {
+                await using var context = GetEndToEndDbContext();
+                var solution = await context.CatalogueItems.SingleAsync(ci => ci.Id == SolutionId);
+                solution.PublishedStatus = PublicationStatus.Suspended;
+                await context.SaveChangesAsync();
 
-            Driver.Navigate().Refresh();
+                Driver.Navigate().Refresh();
 
-            CommonActions
-                .PageLoadedCorrectGetIndex(
-                    typeof(SolutionsController),
-                    nameof(SolutionsController.Description))
-                .Should()
-                .BeTrue();
+                CommonActions
+                    .PageLoadedCorrectGetIndex(
+                        typeof(SolutionsController),
+                        nameof(SolutionsController.Description))
+                    .Should()
+                    .BeTrue();
+            });
         }
 
         public void Dispose()

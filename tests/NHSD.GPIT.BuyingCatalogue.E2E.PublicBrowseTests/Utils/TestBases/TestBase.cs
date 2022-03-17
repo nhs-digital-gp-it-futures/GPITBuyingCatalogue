@@ -17,6 +17,7 @@ using NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.Session;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using OpenQA.Selenium;
 using OpenQA.Selenium.Support.UI;
+using Polly;
 using Xunit.Abstractions;
 
 namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.TestBases
@@ -24,6 +25,11 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.TestBases
     public abstract class TestBase
     {
         public static readonly string DefaultPassword = "Th1sIsP4ssword!";
+
+        private const int MaxRetries = 3;
+
+        private static readonly PolicyBuilder RetryPolicy = Policy
+                .Handle<Exception>();
 
         private readonly Uri uri;
 
@@ -231,6 +237,28 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.TestBases
             }
         }
 
+        protected Task RunTestWithRetryAsync(
+            Func<Task> task,
+            [CallerMemberName] string callerMemberName = "",
+            [CallerFilePath] string callerFilePath = "",
+            TimeSpan? retryInterval = null)
+        {
+            var policy = RetryPolicy
+                .WaitAndRetryAsync(
+                    MaxRetries,
+                    _ => retryInterval ?? TimeSpan.FromSeconds(2),
+                    (ex, sleepDuration, attempt, context) =>
+                    {
+                        if (attempt == MaxRetries)
+                            TakeScreenShot(callerMemberName, callerFilePath);
+
+                        Driver.Navigate().Refresh();
+                        return Task.CompletedTask;
+                    });
+
+            return policy.ExecuteAsync(task);
+        }
+
         protected void RunTest(Action action, [CallerMemberName] string callerMemberName = "", [CallerFilePath] string callerFilePath = "")
         {
             try
@@ -242,6 +270,27 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.TestBases
                 TakeScreenShot(callerMemberName, callerFilePath);
                 throw;
             }
+        }
+
+        protected void RunTestWithRetry(
+            Action action,
+            [CallerMemberName] string callerMemberName = "",
+            [CallerFilePath] string callerFilePath = "",
+            TimeSpan? retryInterval = null)
+        {
+            var policy = RetryPolicy
+                .WaitAndRetry(
+                    MaxRetries,
+                    _ => retryInterval ?? TimeSpan.FromSeconds(2),
+                    (ex, sleepDuration, attempt, context) =>
+                    {
+                        if (attempt == MaxRetries)
+                            TakeScreenShot(callerMemberName, callerFilePath);
+
+                        Driver.Navigate().Refresh();
+                    });
+
+            policy.Execute(action);
         }
 
         private void TakeScreenShot(string memberName, string fileName)
