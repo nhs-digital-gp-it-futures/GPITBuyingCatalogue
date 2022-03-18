@@ -1,0 +1,62 @@
+﻿@model NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.UserModels.AddModel
+@{
+    ViewBag.Title = "Add user";
+}
+
+<partial name="Partials/_BackLink" model="Model" />
+
+<div class="nhsuk-grid-row">
+    <div class="nhsuk-grid-column-two-thirds">
+        <nhs-validation-summary RadioId="SelectedAccountType,SelectedAccountStatusId" />
+
+        <nhs-page-title title="@ViewBag.Title"
+                        advice="Provide the following information about this user:"/>
+
+        <form method="post">
+            <div class="nhsuk-u-margin-bottom-9">
+                <nhs-auto-complete asp-for="SelectedOrganisationId"
+                                   asp-items="@(new SelectList(Model!.Organisations, "Value", "Text"))"
+                                   label-text="Organisation"/>
+                <nhs-input asp-for="FirstName"
+                           label-text="First name"/>
+                <nhs-input asp-for="LastName"
+                           label-text="Last name"/>
+                <nhs-input asp-for="TelephoneNumber"
+                           label-text="Telephone number (optional)"
+                           input-width="Ten"/>
+                <nhs-input asp-for="Email"
+                           label-text="Email"/>
+                
+                <hr/>
+                
+                <div class="nhsuk-u-margin-bottom-6">
+                    <nhs-fieldset-form-label asp-for="SelectedAccountType"
+                                             label-text="Account type"
+                                             label-hint="Select an option"
+                                             size="Medium">
+                        <nhs-radio-buttons asp-for="SelectedAccountType"
+                                           values="Model.AccountTypeOptions.Cast<object>()"
+                                           value-name="Value"
+                                           display-name="Text" />
+                    </nhs-fieldset-form-label>
+                </div>
+
+                <hr/>
+
+                <div class="nhsuk-u-margin-bottom-6">
+                    <nhs-fieldset-form-label asp-for="SelectedAccountStatusId"
+                                             label-text="Account status"
+                                             label-hint="Select an option"
+                                             size="Medium">
+                        <nhs-radio-buttons asp-for="SelectedAccountStatusId"
+                                           values="Model.AccountStatusOptions.Cast<object>()"
+                                           value-name="Value"
+                                           display-name="Text" />
+                    </nhs-fieldset-form-label>
+                </div>
+            </div>
+
+            <nhs-submit-button/>
+        </form>
+    </div>
+</div>

@@ -12,22 +12,23 @@ using NHSD.GPIT.BuyingCatalogue.EntityFramework;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Users.Models;
 using NHSD.GPIT.BuyingCatalogue.Framework.Settings;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Email;
+using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Enums;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Identity;
-using NHSD.GPIT.BuyingCatalogue.Services.CreateBuyer;
+using NHSD.GPIT.BuyingCatalogue.Services.Users;
 using NHSD.GPIT.BuyingCatalogue.Test.Framework.AutoFixtureCustomisations;
 using NHSD.GPIT.BuyingCatalogue.Test.Framework.Builders;
 using Xunit;
 
-namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.CreateBuyer
+namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Users
 {
-    public static class CreateBuyerServiceTests
+    public static class CreateUserServiceTests
     {
         [Fact]
         public static void Constructors_VerifyGuardClauses()
         {
             var fixture = new Fixture().Customize(new AutoMoqCustomization());
             var assertion = new GuardClauseAssertion(fixture);
-            var constructors = typeof(CreateBuyerService).GetConstructors();
+            var constructors = typeof(CreateUserService).GetConstructors();
 
             assertion.Verify(constructors);
         }
@@ -38,9 +39,17 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.CreateBuyer
         [CommonInlineAutoData("\t")]
         public static Task Create_NullOrEmptyEmailAddress_ThrowsException(
             string emailAddress,
-            CreateBuyerService service)
+            CreateUserService service)
         {
-            return Assert.ThrowsAsync<ArgumentException>(() => service.Create(1, "a", "b", "c", emailAddress, false));
+            return Assert.ThrowsAsync<ArgumentException>(
+                () => service.Create(
+                    1,
+                    "a",
+                    "b",
+                    "c",
+                    emailAddress,
+                    OrganisationFunction.BuyerName,
+                    AccountStatus.Active));
         }
 
         [Theory]
@@ -49,7 +58,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.CreateBuyer
             string expectedToken,
             [Frozen] Mock<IPasswordResetCallback> mockPasswordResetCallback,
             [Frozen] Mock<IPasswordService> mockPasswordService,
-            CreateBuyerService service)
+            CreateUserService service)
         {
             var expectedUser = CreateAspNetUser();
 
@@ -60,7 +69,14 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.CreateBuyer
                 p => p.GeneratePasswordResetTokenAsync(It.Is<string>(e => e == expectedUser.Email)))
                 .ReturnsAsync(new PasswordResetToken(expectedToken, expectedUser));
 
-            var actual = await service.Create(1, "Test", "Smith", "0123456789", "a.b@c.com", false);
+            var actual = await service.Create(
+                1,
+                "Test",
+                "Smith",
+                "0123456789",
+                "a.b@c.com",
+                OrganisationFunction.BuyerName,
+                AccountStatus.Active);
 
             actual.Id.Should().Be(1);
         }
@@ -72,7 +88,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.CreateBuyer
             [Frozen] Mock<IPasswordResetCallback> mockPasswordResetCallback,
             [Frozen] Mock<IPasswordService> mockPasswordService,
             [Frozen] BuyingCatalogueDbContext dbContext,
-            CreateBuyerService service)
+            CreateUserService service)
         {
             var expectedUser = CreateAspNetUser();
 
@@ -89,7 +105,8 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.CreateBuyer
                 expectedUser.LastName,
                 expectedUser.PhoneNumber,
                 expectedUser.Email,
-                false);
+                OrganisationFunction.BuyerName,
+                AccountStatus.Active);
 
             var actual = await dbContext.AspNetUsers.SingleAsync(u => u.Id == result.Id);
 
@@ -108,7 +125,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.CreateBuyer
             [Frozen] Mock<IPasswordResetCallback> mockPasswordResetCallback,
             [Frozen] Mock<IPasswordService> mockPasswordService,
             [Frozen] BuyingCatalogueDbContext dbContext,
-            CreateBuyerService service)
+            CreateUserService service)
         {
             var expectedUser = CreateAspNetUser();
 
@@ -125,7 +142,8 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.CreateBuyer
                 expectedUser.LastName,
                 expectedUser.PhoneNumber,
                 expectedUser.Email,
-                true);
+                OrganisationFunction.AuthorityName,
+                AccountStatus.Active);
 
             var actual = await dbContext.AspNetUsers.SingleAsync(u => u.Id == result.Id);
 
@@ -145,7 +163,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.CreateBuyer
             [Frozen] Mock<IPasswordResetCallback> mockPasswordResetCallback,
             [Frozen] Mock<IPasswordService> mockPasswordService,
             [Frozen] Mock<IGovNotifyEmailService> mockEmailService,
-            CreateBuyerService service)
+            CreateUserService service)
         {
             var expectedUser = CreateAspNetUser();
 
@@ -162,7 +180,8 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.CreateBuyer
                 expectedUser.LastName,
                 expectedUser.PhoneNumber,
                 expectedUser.Email,
-                false);
+                OrganisationFunction.BuyerName,
+                AccountStatus.Active);
 
             mockEmailService.Verify(e => e.SendEmailAsync(
                 expectedUser.Email,

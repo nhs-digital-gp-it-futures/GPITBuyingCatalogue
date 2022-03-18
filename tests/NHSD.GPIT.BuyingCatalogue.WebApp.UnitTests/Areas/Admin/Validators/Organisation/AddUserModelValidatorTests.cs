@@ -1,7 +1,7 @@
 ﻿using AutoFixture.Xunit2;
 using FluentValidation.TestHelper;
 using Moq;
-using NHSD.GPIT.BuyingCatalogue.ServiceContracts.CreateBuyer;
+using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Users;
 using NHSD.GPIT.BuyingCatalogue.Test.Framework.AutoFixtureCustomisations;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.OrganisationModels;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Validators.Organisation;
@@ -93,13 +93,14 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators.Orga
         [Theory]
         [CommonAutoData]
         public static void Validate_UserWithEmailExists_SetsModelError(
-            [Frozen] Mock<ICreateBuyerService> createBuyerService,
+            [Frozen] Mock<IUsersService> mockUsersService,
             AddUserModel model,
             AddUserModelValidator validator)
         {
             var emailAddress = "test@test.com";
 
-            createBuyerService.Setup(cbs => cbs.UserExistsWithEmail(emailAddress))
+            mockUsersService
+                .Setup(x => x.EmailAddressExists(emailAddress, 0))
                 .ReturnsAsync(true);
 
             model.EmailAddress = emailAddress;

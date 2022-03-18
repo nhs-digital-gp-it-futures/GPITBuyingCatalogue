@@ -1,17 +1,17 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Users.Models;
 using NHSD.GPIT.BuyingCatalogue.Framework.Settings;
-using NHSD.GPIT.BuyingCatalogue.ServiceContracts.CreateBuyer;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Email;
+using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Enums;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Identity;
+using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Users;
 
-namespace NHSD.GPIT.BuyingCatalogue.Services.CreateBuyer
+namespace NHSD.GPIT.BuyingCatalogue.Services.Users
 {
-    public sealed class CreateBuyerService : ICreateBuyerService
+    public sealed class CreateUserService : ICreateUserService
     {
         private readonly BuyingCatalogueDbContext dbContext;
         private readonly IPasswordService passwordService;
@@ -19,7 +19,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.CreateBuyer
         private readonly IGovNotifyEmailService govNotifyEmailService;
         private readonly RegistrationSettings settings;
 
-        public CreateBuyerService(
+        public CreateUserService(
             BuyingCatalogueDbContext dbContext,
             IPasswordService passwordService,
             IPasswordResetCallback passwordResetCallback,
@@ -33,17 +33,17 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.CreateBuyer
             this.settings = settings ?? throw new ArgumentNullException(nameof(settings));
         }
 
-        public async Task<AspNetUser> Create(int primaryOrganisationId, string firstName, string lastName, string phoneNumber, string emailAddress, bool isAdmin)
+        public async Task<AspNetUser> Create(
+            int primaryOrganisationId,
+            string firstName,
+            string lastName,
+            string phoneNumber,
+            string emailAddress,
+            string organisationFunction,
+            AccountStatus accountStatus)
         {
             if (string.IsNullOrWhiteSpace(emailAddress))
                 throw new ArgumentException($"{nameof(emailAddress)} must be provided.", nameof(emailAddress));
-
-            // If the account is being created for the NHS Digital organisation by an Authority user
-            // then they are creating another authority user
-            var organisationFunction =
-                primaryOrganisationId == 1 && isAdmin
-                    ? OrganisationFunction.Authority.DisplayName
-                    : OrganisationFunction.Buyer.DisplayName;
 
             var aspNetUser = new AspNetUser
             {
@@ -70,8 +70,6 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.CreateBuyer
 
             return aspNetUser;
         }
-
-        public Task<bool> UserExistsWithEmail(string emailAddress) => Task.FromResult(dbContext.AspNetUsers.Any(u => u.NormalizedUserName == emailAddress.ToUpperInvariant()));
 
         private Task SendInitialEmailAsync(PasswordResetToken token)
         {
