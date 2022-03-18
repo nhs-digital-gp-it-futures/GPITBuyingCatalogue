@@ -107,14 +107,7 @@ BEGIN
                  VALUES (@additionalServiceId,'Addition to Diagnostics XYZ', 'Diagnostics XYZ Addition Full Description', @now , @bobUser, @solutionId);
 
             INSERT INTO catalogue.CataloguePrices(CatalogueItemId, ProvisioningTypeId, CataloguePriceTypeId, PricingUnitId, TimeUnitId, CurrencyCode, LastUpdated, Price, PublishedStatusId) 
-                 VALUES (@additionalServiceId, 2, 2, @bed, 2, 'GBP', @now, 499.99, 3);
-
-            SET @cataloguePriceId = (SELECT CataloguePriceId FROM catalogue.CataloguePrices WHERE CatalogueItemId = @additionalServiceId);
-
-            INSERT INTO catalogue.CataloguePriceTiers(CataloguePriceId, BandStart, BandEnd, Price)
-                 VALUES (@cataloguePriceId, 1, 999, 123.45),
-                        (@cataloguePriceId, 1000, 1999, 49.99),
-                        (@cataloguePriceId, 2000, NULL, 19.99);
+                 VALUES (@additionalServiceId, 2, 1, @bed, 2, 'GBP', @now, 499.99, 3);
                         
             INSERT INTO catalogue.CatalogueItemCapabilities(CatalogueItemId, CapabilityId, StatusId, LastUpdated, LastUpdatedBy)
              SELECT @additionalServiceId, Id, 1, @now, @bobUser
@@ -139,14 +132,7 @@ BEGIN
                  VALUES (@additionalServiceId,'Addition to Document Wizard', 'Document Wizard Addition Full Description', @now , @bobUser, @solutionId);
 
             INSERT INTO catalogue.CataloguePrices(CatalogueItemId, ProvisioningTypeId, CataloguePriceTypeId, PricingUnitId, TimeUnitId, CurrencyCode, LastUpdated, Price, PublishedStatusId) 
-                 VALUES (@additionalServiceId, 1, 2, @patient, 1, 'GBP', @now, 499.99, 3);
-
-            SET @cataloguePriceId = (SELECT CataloguePriceId FROM catalogue.CataloguePrices WHERE CatalogueItemId = @additionalServiceId);
-
-            INSERT INTO catalogue.CataloguePriceTiers(CataloguePriceId, BandStart, BandEnd, Price)
-                 VALUES (@cataloguePriceId, 1, 9, 100.45),
-                        (@cataloguePriceId, 10, 199, 200.99),
-                        (@cataloguePriceId, 200, NULL,300.99);
+                 VALUES (@additionalServiceId, 1, 1, @patient, 1, 'GBP', @now, 499.99, 3);
                         
             INSERT INTO catalogue.CatalogueItemCapabilities(CatalogueItemId, CapabilityId, StatusId, LastUpdated, LastUpdatedBy)
              SELECT @additionalServiceId, Id, 1, @now, @bobUser

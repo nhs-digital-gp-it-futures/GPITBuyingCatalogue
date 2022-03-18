@@ -6,7 +6,6 @@ DECLARE @declarative AS int = (SELECT Id FROM catalogue.ProvisioningTypes WHERE 
 DECLARE @onDemand AS int = (SELECT Id FROM catalogue.ProvisioningTypes WHERE [Name] = 'OnDemand');
 
 DECLARE @flat AS int = (SELECT Id FROM catalogue.CataloguePriceTypes WHERE [Name] = 'Flat');
-DECLARE @tiered AS int = (SELECT Id FROM catalogue.CataloguePriceTypes WHERE [Name] = 'Tiered');
 
 DECLARE @halfDay AS smallint = -6;
 DECLARE @hour AS smallint = -7;
@@ -48,13 +47,7 @@ BEGIN
                 @now, @bobUser);
 
     INSERT INTO catalogue.CataloguePrices (CatalogueItemId, ProvisioningTypeId, CataloguePriceTypeId, PricingUnitId, TimeUnitId, CurrencyCode, LastUpdated, Price, PublishedStatusId)
-         VALUES (@associatedServiceId, @onDemand, @tiered, @hour, NULL, @gbp, @now, 595, 3);
-
-    DECLARE @tieredPriceId AS int = (SELECT CataloguePriceId FROM catalogue.CataloguePrices WHERE CatalogueItemId = @associatedServiceId AND CataloguePriceTypeId = @tiered);
-
-    INSERT INTO catalogue.CataloguePriceTiers (CataloguePriceId, BandStart, BandEnd, Price)
-         VALUES (@tieredPriceId, 1, 9, 100),
-                (@tieredPriceId, 10, NULL, 49.99);
+         VALUES (@associatedServiceId, @onDemand, @flat, @hour, NULL, @gbp, @now, 595, 3);
 
      SET @associatedServiceId = '100000-S-003';
 

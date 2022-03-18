@@ -9,7 +9,6 @@ namespace NHSD.GPIT.BuyingCatalogue.Test.Framework.AutoFixtureCustomisations
         {
             fixture.Customize<CataloguePrice>(composer => composer
                 .Without(cp => cp.CatalogueItem)
-                .Without(cp => cp.CataloguePriceTiers)
                 .With(cp => cp.CurrencyCode, "GBP")
                 .With(cp => cp.CataloguePriceType, CataloguePriceType.Flat));
         }
