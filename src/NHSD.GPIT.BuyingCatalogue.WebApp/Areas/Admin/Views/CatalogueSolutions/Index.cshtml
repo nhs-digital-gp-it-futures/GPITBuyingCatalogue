@@ -30,12 +30,12 @@
                                      typeof(AddCatalogueSolutionController).ControllerName(),
                                      null)" />
         
-        <vc:nhs-autocomplete id="solutions-autocomplete"
-                             ajax-url="@Url.Action(
-                                           nameof(CatalogueSolutionsController.SearchResults),
-                                           typeof(CatalogueSolutionsController).ControllerName())"
-                             title-text="Search by supplier or solution name"
-                             query-parameter-name="search"/>
+        <vc:nhs-suggestion-search id="solutions-search"
+                                  ajax-url="@Url.Action(
+                                                nameof(CatalogueSolutionsController.SearchResults),
+                                                typeof(CatalogueSolutionsController).ControllerName())"
+                                  title-text="Search by supplier or solution name"
+                                  query-parameter-name="search"/>
 
         <form method="post">
             <input type="hidden" asp-for="SearchTerm"/>

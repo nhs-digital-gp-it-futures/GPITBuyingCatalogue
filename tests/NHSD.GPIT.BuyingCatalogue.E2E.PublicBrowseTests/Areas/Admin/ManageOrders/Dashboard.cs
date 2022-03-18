@@ -176,7 +176,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.ManageOrders
                 var order = context.Orders.First();
                 var callOffId = order.CallOffId.ToString();
 
-                await CommonActions.ElementAddValueWithDelay(ManageOrdersDashboardObjects.SearchBar, callOffId);
+                await CommonActions.InputCharactersWithDelay(ManageOrdersDashboardObjects.SearchBar, callOffId);
 
                 CommonActions.WaitUntilElementIsDisplayed(ManageOrdersDashboardObjects.SearchListBox);
                 CommonActions.WaitUntilElementIsDisplayed(ManageOrdersDashboardObjects.SearchResultDescription(0));

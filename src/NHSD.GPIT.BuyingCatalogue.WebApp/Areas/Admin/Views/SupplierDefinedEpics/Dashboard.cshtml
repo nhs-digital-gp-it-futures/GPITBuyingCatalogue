@@ -21,12 +21,12 @@
                              typeof(SupplierDefinedEpicsController).ControllerName())"
                     text="Add a supplier defined Epic"/>
 
-<vc:nhs-autocomplete id="sde-autocomplete"
-                     ajax-url="@Url.Action(
-                                   nameof(SupplierDefinedEpicsController.SearchResults),
-                                   typeof(SupplierDefinedEpicsController).ControllerName())"
-                     title-text="Search by epic or capability"
-                     query-parameter-name="search"/>
+<vc:nhs-suggestion-search id="sde-suggestion-search"
+                          ajax-url="@Url.Action(
+                                        nameof(SupplierDefinedEpicsController.SearchResults),
+                                        typeof(SupplierDefinedEpicsController).ControllerName())"
+                          title-text="Search by epic or capability"
+                          query-parameter-name="search"/>
 
 @if (Model.SupplierDefinedEpics.Any())
 {

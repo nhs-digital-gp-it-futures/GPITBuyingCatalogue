@@ -3,7 +3,11 @@
     ViewBag.Title = "Nominate an organisation";
 }
 
+@section Scripts {
+}
+
 <partial name="Partials/_BackLink" model="Model" />
+
 <div class="nhsuk-grid-row">
     <div class="nhsuk-grid-column-full">
         <nhs-validation-summary />
@@ -16,12 +20,13 @@
             <input type="hidden" asp-for="@Model.OrganisationName" />
             
             <div class="nhsuk-u-margin-bottom-9">
-                <nhs-select asp-for="SelectedOrganisationId"
-                            asp-items="@(new SelectList(Model.PotentialOrganisations,"Value","Text"))"
-                            label-text="Organisation" />
+                <nhs-auto-complete asp-for="SelectedOrganisationId"
+                                   label-text="Organisation"
+                                   asp-items="@(new SelectList(Model.PotentialOrganisations, "Value", "Text"))" />
             </div>
 
             <nhs-submit-button text="Save and continue" />
         </form>
     </div>
 </div>
+

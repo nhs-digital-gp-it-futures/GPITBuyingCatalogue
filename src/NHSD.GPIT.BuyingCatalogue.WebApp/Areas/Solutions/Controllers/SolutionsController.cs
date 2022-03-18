@@ -12,7 +12,7 @@ using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Models;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Models;
-using NHSD.GPIT.BuyingCatalogue.WebApp.Models.Autocomplete;
+using NHSD.GPIT.BuyingCatalogue.WebApp.Models.SuggestionSearch;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers
 {
@@ -108,7 +108,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers
             var results = await solutionsFilterService.GetSolutionsBySearchTerm(search);
 
             return Json(results.Select(r =>
-                new AutocompleteResult
+                new SuggestionSearchResult
                 {
                     Title = r.Title,
                     Category = r.Category,

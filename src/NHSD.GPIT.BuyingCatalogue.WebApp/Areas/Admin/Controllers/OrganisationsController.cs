@@ -11,7 +11,7 @@ using NHSD.GPIT.BuyingCatalogue.ServiceContracts.CreateBuyer;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Organisations;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Users;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.OrganisationModels;
-using NHSD.GPIT.BuyingCatalogue.WebApp.Models.Autocomplete;
+using NHSD.GPIT.BuyingCatalogue.WebApp.Models.SuggestionSearch;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
 {
@@ -59,7 +59,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
         {
             var results = (await GetFilteredOrganisations(search)).Take(15);
 
-            return Json(results.Select(x => new AutocompleteResult
+            return Json(results.Select(x => new SuggestionSearchResult
             {
                 Title = x.Name,
                 Category = x.ExternalIdentifier,

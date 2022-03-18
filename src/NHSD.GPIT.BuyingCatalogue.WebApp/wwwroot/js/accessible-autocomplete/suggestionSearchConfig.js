@@ -1,4 +1,4 @@
-class autocompleteConfig {
+class suggestionSearchConfig {
     constructor(modelId, ajaxUrl, queryParameterName, titleText, currentPageUrl) {
         this.modelId = modelId;
         this.ajaxUrl = ajaxUrl;
@@ -22,6 +22,7 @@ class autocompleteConfig {
             onConfirm: this.onConfirm.bind(this),
             defaultValue: this.defaultValue(),
             minLength: 2,
+            cssNamespace: "suggestion-search",
             templates: {
                 inputValue: this.inputValue.bind(this),
                 suggestion: this.suggestion.bind(this),
@@ -53,7 +54,7 @@ class autocompleteConfig {
             const truncateLength = 100;
             const dots = result.title.length > truncateLength ? '...' : '';
             const resultTruncated = result.title.substring(0, truncateLength) + dots;
-            return `<span class="autocomplete__option-title">${resultTruncated}</span>${result.category ? `<span class="autocomplete__option-category">${result.category}</span>` : ''}`;
+            return `<span class="suggestion-search__option-title">${resultTruncated}</span>${result.category ? `<span class="suggestion-search__option-category">${result.category}</span>` : ''}`;
         }
         return '';
     }

@@ -14,7 +14,7 @@ using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Orders;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Pdf;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.ManageOrders;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Controllers;
-using NHSD.GPIT.BuyingCatalogue.WebApp.Models.Autocomplete;
+using NHSD.GPIT.BuyingCatalogue.WebApp.Models.SuggestionSearch;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
 {
@@ -71,7 +71,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
             var results = await orderAdminService.GetOrdersBySearchTerm(search);
 
             return Json(results.Select(r =>
-                new AutocompleteResult
+                new SuggestionSearchResult
                 {
                     Title = r.Title,
                     Category = r.Category,

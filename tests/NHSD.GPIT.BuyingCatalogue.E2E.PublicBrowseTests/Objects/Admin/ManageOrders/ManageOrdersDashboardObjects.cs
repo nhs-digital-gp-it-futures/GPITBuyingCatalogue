@@ -12,24 +12,24 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Objects.Admin.ManageOrders
 
         public static By NoOrdersElement => By.Id("no-orders");
 
-        internal static By SearchBar => By.Id("orders-dashboard-autocomplete");
+        internal static By SearchBar => By.Id("orders-suggestion-search");
 
-        internal static By SearchListBox => By.Id("orders-dashboard-autocomplete__listbox");
+        internal static By SearchListBox => By.Id("orders-suggestion-search__listbox");
 
-        internal static By SearchButton => By.ClassName("autocomplete-search__submit");
+        internal static By SearchButton => By.ClassName("suggestion-search-search__submit");
 
-        internal static By NoSearchResults => By.ClassName("autocomplete__option--no-results");
+        internal static By NoSearchResults => By.ClassName("suggestion-search__option--no-results");
 
         internal static By NoResultsElement => By.Id("no-results-search");
 
-        internal static By SearchResult(uint index) => By.Id($"orders-dashboard-autocomplete__option--{index}");
+        internal static By SearchResult(uint index) => By.Id($"orders-suggestion-search__option--{index}");
 
         internal static By SearchResultTitle(uint index) => new ByChained(
             SearchResult(index),
-            By.ClassName("autocomplete__option-title"));
+            By.ClassName("suggestion-search__option-title"));
 
         internal static By SearchResultDescription(uint index) => new ByChained(
             SearchResult(index),
-            By.ClassName("autocomplete__option-category"));
+            By.ClassName("suggestion-search__option-category"));
     }
 }
