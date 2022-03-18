@@ -40,13 +40,13 @@
         <div class="nhsuk-grid-column-full">
             @if((Model.Orders.Count == 0 && Context.Request.Query["search"].Count > 0) || Model.Orders.Count > 0)
             {
-                <vc:nhs-autocomplete id="orders-dashboard-autocomplete"
-                    ajax-url="@Url.Action(
-                        nameof(DashboardController.FilterSearchSuggestions),
-                        typeof(DashboardController).ControllerName(),
-                        new { Model.InternalOrgId })"
-                    title-text="Search for order by order description or Call-off ID"
-                    query-parameter-name="search"/>
+                <vc:nhs-suggestion-search id="orders-suggestion-search"
+                                          ajax-url="@Url.Action(
+                                                        nameof(DashboardController.FilterSearchSuggestions),
+                                                        typeof(DashboardController).ControllerName(),
+                                                        new { Model.InternalOrgId })"
+                                          title-text="Search for order by order description or Call-off ID"
+                                          query-parameter-name="search"/>
             }
             @if (Model.Orders is not null && Model.Orders.Count > 0)
             {

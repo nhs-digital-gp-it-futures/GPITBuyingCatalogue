@@ -1,6 +1,6 @@
-﻿namespace NHSD.GPIT.BuyingCatalogue.WebApp.Models.Autocomplete
+﻿namespace NHSD.GPIT.BuyingCatalogue.WebApp.Models.SuggestionSearch
 {
-    public sealed class AutocompleteResult
+    public sealed class SuggestionSearchResult
     {
         public string Title { get; set; }
 

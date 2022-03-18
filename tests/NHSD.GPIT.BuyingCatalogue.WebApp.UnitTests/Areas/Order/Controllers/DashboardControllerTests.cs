@@ -23,7 +23,7 @@ using NHSD.GPIT.BuyingCatalogue.Test.Framework.AutoFixtureCustomisations;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.Dashboard;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.Shared;
-using NHSD.GPIT.BuyingCatalogue.WebApp.Models.Autocomplete;
+using NHSD.GPIT.BuyingCatalogue.WebApp.Models.SuggestionSearch;
 using Xunit;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers
@@ -223,7 +223,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers
                 },
             };
             var requestUri = new UriBuilder(controller.HttpContext.Request.Headers.Referer.ToString());
-            var expected = searchResults.Select(r => new AutocompleteResult
+            var expected = searchResults.Select(r => new SuggestionSearchResult
             {
                 Title = r.Title,
                 Category = r.Category,

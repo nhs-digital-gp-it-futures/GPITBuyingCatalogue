@@ -96,24 +96,24 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Objects.Admin.ManageSuppliers
 
         public static By DeleteSupplierContactCancelLink => By.LinkText("Cancel");
 
-        internal static By SearchBar => By.Id("manage-suppliers-autocomplete");
+        internal static By SearchBar => By.Id("suppliers-suggestion-search");
 
-        internal static By SearchListBox => By.Id("manage-suppliers-autocomplete__listbox");
+        internal static By SearchListBox => By.Id("suppliers-suggestion-search__listbox");
 
-        internal static By SearchButton => By.ClassName("autocomplete-search__submit");
+        internal static By SearchButton => By.ClassName("suggestion-search-search__submit");
 
-        internal static By NoResults => By.ClassName("autocomplete__option--no-results");
+        internal static By NoResults => By.ClassName("suggestion-search__option--no-results");
 
         internal static By NoResultsElement => By.Id("no-results-search");
 
-        internal static By SearchResult(uint index) => By.Id($"manage-suppliers-autocomplete__option--{index}");
+        internal static By SearchResult(uint index) => By.Id($"suppliers-suggestion-search__option--{index}");
 
         internal static By SearchResultTitle(uint index) => new ByChained(
             SearchResult(index),
-            By.ClassName("autocomplete__option-title"));
+            By.ClassName("suggestion-search__option-title"));
 
         internal static By SearchResultDescription(uint index) => new ByChained(
             SearchResult(index),
-            By.ClassName("autocomplete__option-category"));
+            By.ClassName("suggestion-search__option-category"));
     }
 }
