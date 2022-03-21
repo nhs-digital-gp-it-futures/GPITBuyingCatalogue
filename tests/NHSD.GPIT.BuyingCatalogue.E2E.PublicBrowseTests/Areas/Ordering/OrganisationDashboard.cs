@@ -120,7 +120,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering
 
         [Theory]
         [InlineData(OrderStatus.InProgress, "Edit")]
-        [InlineData(OrderStatus.Complete, "View")]
+        [InlineData(OrderStatus.Completed, "View")]
         public void OrganisationDashboard_OrderStatus_DisplaysCorrectLinkText(
             OrderStatus status,
             string expectedLinkText)
@@ -152,7 +152,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering
         {
             using var context = GetEndToEndDbContext();
             var orders = context.Organisations.SelectMany(o => o.Orders).OrderByDescending(o => o.LastUpdated).ToList();
-            var order = orders.First(o => o.OrderStatus == OrderStatus.Complete);
+            var order = orders.First(o => o.OrderStatus == OrderStatus.Completed);
 
             CommonActions.ClickLinkElement(ByExtensions.DataTestId($"link-{order.CallOffId}"));
 
