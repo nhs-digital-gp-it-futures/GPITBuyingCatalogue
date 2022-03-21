@@ -16,6 +16,7 @@ BEGIN
         @ConfirmedFundingSource BIT = 0,
         @OrderStatus INT = 2,
         @SupplierId INT = 99999, --notEmis Health
+        @AssociatedServicesOnly INT = 0,
         @LastBuyerContactId INT,
         @LastSupplierContactId INT;
 
@@ -63,7 +64,7 @@ BEGIN
     --Order with description
 
     INSERT INTO ordering.Orders 
-    (Description, OrderingPartyId, FundingSourceOnlyGMS, ConfirmedFundingSource, Created, LastUpdated, LastUpdatedBy, OrderStatusId, IsDeleted)
+    (Description, OrderingPartyId, FundingSourceOnlyGMS, ConfirmedFundingSource, Created, LastUpdated, LastUpdatedBy, OrderStatusId, IsDeleted, AssociatedServicesOnly)
     VALUES
     (
     'Order with description',
@@ -74,7 +75,8 @@ BEGIN
     SYSDATETIME(),
     @sueId,
     @OrderStatus,
-    0);
+    0,
+    @AssociatedServicesOnly);
 
     --Order with description and ordering party contact
 
@@ -87,7 +89,7 @@ BEGIN
     SELECT @LastBuyerContactId = IDENT_CURRENT('ordering.Contacts');
 
     INSERT INTO ordering.Orders 
-    (Description, OrderingPartyId, OrderingPartyContactId, FundingSourceOnlyGMS, ConfirmedFundingSource, Created, LastUpdated, LastUpdatedBy, OrderStatusId, IsDeleted)
+    (Description, OrderingPartyId, OrderingPartyContactId, FundingSourceOnlyGMS, ConfirmedFundingSource, Created, LastUpdated, LastUpdatedBy, OrderStatusId, IsDeleted, AssociatedServicesOnly)
     VALUES
     (
     'Order with description and ordering party contact',
@@ -99,7 +101,8 @@ BEGIN
     SYSDATETIME(),
     @sueId,
     @OrderStatus,
-    0);
+    0,
+    @AssociatedServicesOnly);
 
     --Order with description, ordering party contact and supplier with it's contact
 
@@ -121,7 +124,7 @@ BEGIN
 
     INSERT INTO ordering.Orders 
     (Description, OrderingPartyId, OrderingPartyContactId, SupplierId, SupplierContactId, FundingSourceOnlyGMS,
-     ConfirmedFundingSource, Created, LastUpdated, LastUpdatedBy, OrderStatusId, IsDeleted)
+     ConfirmedFundingSource, Created, LastUpdated, LastUpdatedBy, OrderStatusId, IsDeleted, AssociatedServicesOnly)
     VALUES
     (
     'Order with description, ordering party contact and supplier with contact',
@@ -135,7 +138,8 @@ BEGIN
     SYSDATETIME(),
     @sueId,
     @OrderStatus,
-    0);
+    0,
+    @AssociatedServicesOnly);
 
     --Order with description, ordering party contact, supplier with it's contact and timescales
 
@@ -157,7 +161,7 @@ BEGIN
 
     INSERT INTO ordering.Orders 
     (Description, OrderingPartyId, OrderingPartyContactId, SupplierId, SupplierContactId, CommencementDate, FundingSourceOnlyGMS,
-     ConfirmedFundingSource, Created, LastUpdated, LastUpdatedBy, OrderStatusId, IsDeleted, InitialPeriod, MaximumTerm)
+     ConfirmedFundingSource, Created, LastUpdated, LastUpdatedBy, OrderStatusId, IsDeleted, InitialPeriod, MaximumTerm, AssociatedServicesOnly)
     VALUES
     (
     'Order with description, ordering party contact and supplier with contact and timescales',
@@ -174,5 +178,6 @@ BEGIN
     @OrderStatus,
     0,
     6,
-    36);    
+    36,
+    @AssociatedServicesOnly);    
 END
