@@ -12,10 +12,12 @@ BEGIN
         UserName = 'SueSmith@email.com';
 
     DECLARE 
-        @FundingSource BIT = 1,
-        @ConfirmedFundingSource BIT = 0,
         @OrderStatus INT = 2,
-        @SupplierId INT = 99999, --notEmis Health
+        @SupplierId INT = 99999, --notEmis Health,
+        @CatalogueSolutionId NVARCHAR(14) = '99999-89', --NotEmis Web GP
+        @CatalogueSolutionPriceId INT = 19, --NotEmis Web GP Tiered Price
+        @AdditionalServiceId NVARCHAR(14) = '99999-89-A01', --NotEmis Web GP additional service
+        @AdditionalServicePriceId INT = 29, --NotEmis Web GP Additional Service Flat Price
         @AssociatedServicesOnly INT = 0,
         @LastBuyerContactId INT,
         @LastSupplierContactId INT;
@@ -61,24 +63,27 @@ BEGIN
     -- Insert Orders
     -------------------------------------------------------
 
+    
+    -------------------------------------------------------
     --Order with description
+    -------------------------------------------------------
 
     INSERT INTO ordering.Orders 
-    (Description, OrderingPartyId, FundingSourceOnlyGMS, ConfirmedFundingSource, Created, LastUpdated, LastUpdatedBy, OrderStatusId, IsDeleted, AssociatedServicesOnly)
+    (Description, OrderingPartyId, Created, LastUpdated, LastUpdatedBy, OrderStatusId, IsDeleted, AssociatedServicesOnly)
     VALUES
     (
     'Order with description',
     @OrderingParty,
-    @FundingSource,
-    @ConfirmedFundingSource,
     SYSDATETIME(),
     SYSDATETIME(),
     @sueId,
     @OrderStatus,
     0,
     @AssociatedServicesOnly);
-
+    
+    -------------------------------------------------------
     --Order with description and ordering party contact
+    -------------------------------------------------------
 
     INSERT INTO ordering.Contacts (FirstName, LastName, Email, Phone, LastUpdated, LastUpdatedBy)
     SELECT
@@ -89,22 +94,22 @@ BEGIN
     SELECT @LastBuyerContactId = IDENT_CURRENT('ordering.Contacts');
 
     INSERT INTO ordering.Orders 
-    (Description, OrderingPartyId, OrderingPartyContactId, FundingSourceOnlyGMS, ConfirmedFundingSource, Created, LastUpdated, LastUpdatedBy, OrderStatusId, IsDeleted, AssociatedServicesOnly)
+    (Description, OrderingPartyId, OrderingPartyContactId, Created, LastUpdated, LastUpdatedBy, OrderStatusId, IsDeleted, AssociatedServicesOnly)
     VALUES
     (
     'Order with description and ordering party contact',
     @OrderingParty,
     @LastBuyerContactId,
-    @FundingSource,
-    @ConfirmedFundingSource,
     SYSDATETIME(),
     SYSDATETIME(),
     @sueId,
     @OrderStatus,
     0,
     @AssociatedServicesOnly);
-
+    
+    -------------------------------------------------------
     --Order with description, ordering party contact and supplier with it's contact
+    -------------------------------------------------------
 
     INSERT INTO ordering.Contacts (FirstName, LastName, Email, Phone, LastUpdated, LastUpdatedBy)
     SELECT
@@ -123,8 +128,8 @@ BEGIN
     SELECT @LastSupplierContactId = IDENT_CURRENT('ordering.Contacts');
 
     INSERT INTO ordering.Orders 
-    (Description, OrderingPartyId, OrderingPartyContactId, SupplierId, SupplierContactId, FundingSourceOnlyGMS,
-     ConfirmedFundingSource, Created, LastUpdated, LastUpdatedBy, OrderStatusId, IsDeleted, AssociatedServicesOnly)
+    (Description, OrderingPartyId, OrderingPartyContactId, SupplierId, SupplierContactId,
+        Created, LastUpdated, LastUpdatedBy, OrderStatusId, IsDeleted, AssociatedServicesOnly)
     VALUES
     (
     'Order with description, ordering party contact and supplier with contact',
@@ -132,16 +137,16 @@ BEGIN
     @LastBuyerContactId,
     @SupplierId,
     @LastSupplierContactId,
-    @FundingSource,
-    @ConfirmedFundingSource,
     SYSDATETIME(),
     SYSDATETIME(),
     @sueId,
     @OrderStatus,
     0,
-    @AssociatedServicesOnly);
+    @AssociatedServicesOnly);    
 
+    -------------------------------------------------------
     --Order with description, ordering party contact, supplier with it's contact and timescales
+    -------------------------------------------------------
 
     INSERT INTO ordering.Contacts (FirstName, LastName, Email, Phone, LastUpdated, LastUpdatedBy)
     SELECT
@@ -160,8 +165,8 @@ BEGIN
     SELECT @LastSupplierContactId = IDENT_CURRENT('ordering.Contacts');
 
     INSERT INTO ordering.Orders 
-    (Description, OrderingPartyId, OrderingPartyContactId, SupplierId, SupplierContactId, CommencementDate, FundingSourceOnlyGMS,
-     ConfirmedFundingSource, Created, LastUpdated, LastUpdatedBy, OrderStatusId, IsDeleted, InitialPeriod, MaximumTerm, AssociatedServicesOnly)
+    (Description, OrderingPartyId, OrderingPartyContactId, SupplierId, SupplierContactId, CommencementDate,
+        Created, LastUpdated, LastUpdatedBy, OrderStatusId, IsDeleted, InitialPeriod, MaximumTerm, AssociatedServicesOnly)
     VALUES
     (
     'Order with description, ordering party contact and supplier with contact and timescales',
@@ -170,8 +175,6 @@ BEGIN
     @SupplierId,
     @LastSupplierContactId,
     DATEADD(day, 1, SYSDATETIME()),
-    @FundingSource,
-    @ConfirmedFundingSource,
     SYSDATETIME(),
     SYSDATETIME(),
     @sueId,
@@ -179,5 +182,138 @@ BEGIN
     0,
     6,
     36,
-    @AssociatedServicesOnly);    
+    @AssociatedServicesOnly);
+
+    -------------------------------------------------------
+    -- order with catalogue solution and additional service
+    -------------------------------------------------------
+
+    DECLARE @OrderIdCatSolAdditional TABLE(
+        Id INT
+    );
+
+    INSERT INTO ordering.Contacts (FirstName, LastName, Email, Phone, LastUpdated, LastUpdatedBy)
+    SELECT
+    FirstName, LastName, Email, Phone, SYSDATETIME(), @sueId
+    FROM @TestOrdersContacts
+    WHERE Id = 1 -- buyer contact id
+
+    SELECT @LastBuyerContactId = IDENT_CURRENT('ordering.Contacts');
+
+    INSERT INTO ordering.Contacts (FirstName, LastName, Email, Phone, LastUpdated, LastUpdatedBy)
+    SELECT
+    FirstName, LastName, Email, Phone, SYSDATETIME(), @sueId
+    FROM @TestOrdersContacts
+    WHERE Id = 2 -- supplier contact id
+
+    SELECT @LastSupplierContactId = IDENT_CURRENT('ordering.Contacts');
+
+    INSERT INTO ordering.Orders 
+    (Description, OrderingPartyId, OrderingPartyContactId, SupplierId, SupplierContactId, CommencementDate,
+        Created, LastUpdated, LastUpdatedBy, OrderStatusId, IsDeleted, InitialPeriod, MaximumTerm, AssociatedServicesOnly)
+        OUTPUT INSERTED.Id INTO @OrderIdCatSolAdditional (Id)
+    VALUES
+    (
+    'Order with catalogue solution and additional service',
+    @OrderingParty,
+    @LastBuyerContactId,
+    @SupplierId,
+    @LastSupplierContactId,
+    DATEADD(day, 1, SYSDATETIME()),
+    SYSDATETIME(),
+    SYSDATETIME(),
+    @sueId,
+    @OrderStatus,
+    0,
+    6,
+    36,
+    @AssociatedServicesOnly);
+
+    DECLARE @OrderId INT;
+    SELECT @OrderId = Id FROM @OrderIdCatSolAdditional
+
+	--insert service recipients
+	INSERT INTO ordering.ServiceRecipients (OdsCode, Name)
+	VALUES
+	('Y00427', 'Service Recipient 1'),
+	('Y03450', 'Service Recipient 2'),
+	('Y03508', 'Service Recipient 3'),
+	('Y04461', 'Service Recipient 4');
+
+    --insert cat sol
+
+    INSERT INTO ordering.OrderItems (OrderId, CatalogueItemId, Created, LastUpdated)
+    VALUES(@orderId, @CatalogueSolutionId, SYSDATETIME(), SYSDATETIME())
+
+    INSERT INTO ordering.OrderItemPrices (OrderId, CatalogueItemId, EstimationPeriodId, ProvisioningTypeId,
+        CataloguePriceTypeId, CataloguePriceCalculationTypeId, CurrencyCode, Description)
+    SELECT
+        @orderId,
+        @CatalogueSolutionId,
+        CP.TimeUnitId,
+        CP.ProvisioningTypeId,
+        CP.CataloguePriceTypeId,
+        CP.CataloguePriceCalculationTypeId,
+        CP.CurrencyCode,
+        PU.Description
+    FROM catalogue.CataloguePrices CP
+    INNER JOIN catalogue.PricingUnits PU
+	    ON CP.PricingUnitId = PU.Id
+    WHERE CataloguePriceId = @CatalogueSolutionPriceId
+
+    INSERT INTO ordering.OrderItemPriceTiers (OrderId, CatalogueItemId, Price, LowerRange, UpperRange)
+    SELECT
+        @OrderId,
+        @CatalogueSolutionId,
+        Price,
+        LowerRange,
+        UpperRange
+    FROM catalogue.CataloguePriceTiers
+    WHERE CataloguePriceId = @CatalogueSolutionPriceId
+
+
+    INSERT INTO ordering.OrderItemRecipients (OrderId, CatalogueItemId, OdsCode, Quantity)
+    VALUES
+    (@OrderId, @CatalogueSolutionId, 'Y00427', 123),
+    (@OrderId, @CatalogueSolutionId, 'Y03450', 234),
+    (@OrderId, @CatalogueSolutionId, 'Y03508', 345),
+    (@OrderId, @CatalogueSolutionId, 'Y04461', 456);
+
+    --insert add ser
+
+    INSERT INTO ordering.OrderItems (OrderId, CatalogueItemId, Created, LastUpdated)
+    VALUES(@orderId, @AdditionalServiceId, SYSDATETIME(), SYSDATETIME());
+
+    INSERT INTO ordering.OrderItemPrices (OrderId, CatalogueItemId, EstimationPeriodId, ProvisioningTypeId,
+        CataloguePriceTypeId, CataloguePriceCalculationTypeId, CurrencyCode, Description)
+    SELECT
+        @orderId,
+        @AdditionalServiceId,
+        CP.TimeUnitId,
+        CP.ProvisioningTypeId,
+        CP.CataloguePriceTypeId,
+        CP.CataloguePriceCalculationTypeId,
+        CP.CurrencyCode,
+        PU.Description
+    FROM catalogue.CataloguePrices CP
+    INNER JOIN catalogue.PricingUnits PU
+	    ON CP.PricingUnitId = PU.Id
+    WHERE CataloguePriceId = @AdditionalServicePriceId
+
+    INSERT INTO ordering.OrderItemPriceTiers (OrderId, CatalogueItemId, Price, LowerRange, UpperRange)
+    SELECT
+        @OrderId,
+        @AdditionalServiceId,
+        Price,
+        LowerRange,
+        UpperRange
+    FROM catalogue.CataloguePriceTiers
+    WHERE CataloguePriceId = @AdditionalServicePriceId
+
+    INSERT INTO ordering.OrderItemRecipients (OrderId, CatalogueItemId, OdsCode, Quantity)
+    VALUES
+    (@OrderId, @AdditionalServiceId, 'Y00427', 123),
+    (@OrderId, @AdditionalServiceId, 'Y03450', 234),
+    (@OrderId, @AdditionalServiceId, 'Y03508', 345),
+    (@OrderId, @AdditionalServiceId, 'Y04461', 456);
 END

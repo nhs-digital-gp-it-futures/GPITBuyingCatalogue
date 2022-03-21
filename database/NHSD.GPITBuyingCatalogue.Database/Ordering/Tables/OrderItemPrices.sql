@@ -22,4 +22,4 @@
     CONSTRAINT FK_OrderItemPrices_ProvisioningType FOREIGN KEY (ProvisioningTypeId) REFERENCES catalogue.ProvisioningTypes (Id),
     CONSTRAINT FK_OrderItemPrices_CataloguePriceCalculationType FOREIGN KEY (CataloguePriceCalculationTypeId) REFERENCES catalogue.CataloguePriceCalculationTypes (Id),
     CONSTRAINT FK_OrderItemPrices_LastUpdatedBy FOREIGN KEY (LastUpdatedBy) REFERENCES users.AspNetUsers (Id)
-) WITH (SYSTEM_VERSIONING = ON (HISTORY_TABLE = ordering.OrderItemPrice_History));
+) WITH (SYSTEM_VERSIONING = ON (HISTORY_TABLE = ordering.OrderItemPrices_History));
