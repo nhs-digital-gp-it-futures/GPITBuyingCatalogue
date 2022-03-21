@@ -14,7 +14,6 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.UnitTests.Models.Users
         {
             var termsRevisionDate = DateTime.UtcNow.AddDays(-1);
 
-            user.HasAcceptedTermsOfUse = true;
             user.AcceptedTermsOfUseDate = DateTime.UtcNow;
 
             user.HasAcceptedLatestTermsOfUse(termsRevisionDate).Should().BeTrue();
@@ -26,7 +25,6 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.UnitTests.Models.Users
         {
             var termsRevisionDate = DateTime.UtcNow;
 
-            user.HasAcceptedTermsOfUse = true;
             user.AcceptedTermsOfUseDate = termsRevisionDate.AddDays(-5);
 
             user.HasAcceptedLatestTermsOfUse(termsRevisionDate).Should().BeFalse();
@@ -38,7 +36,6 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.UnitTests.Models.Users
         {
             var termsRevisionDate = DateTime.UtcNow;
 
-            user.HasAcceptedTermsOfUse = false;
             user.AcceptedTermsOfUseDate = null;
 
             user.HasAcceptedLatestTermsOfUse(termsRevisionDate).Should().BeFalse();

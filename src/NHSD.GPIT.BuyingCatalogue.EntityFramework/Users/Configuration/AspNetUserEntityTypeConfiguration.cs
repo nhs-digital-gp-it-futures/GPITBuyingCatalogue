@@ -54,7 +54,6 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Users.Configuration
 
             builder.Property(u => u.AcceptedTermsOfUseDate);
             builder.Property(u => u.HasOptedInUserResearch);
-            builder.Property(u => u.HasAcceptedTermsOfUse);
         }
     }
 }

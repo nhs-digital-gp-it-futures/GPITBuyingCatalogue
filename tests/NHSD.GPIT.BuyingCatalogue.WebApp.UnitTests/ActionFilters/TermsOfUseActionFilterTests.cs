@@ -119,7 +119,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.ActionFilters
 
             settings.RevisionDate = DateTime.UtcNow.AddDays(-1);
             user.AcceptedTermsOfUseDate = DateTime.UtcNow;
-            user.HasAcceptedTermsOfUse = true;
 
             userManager.Setup(u => u.FindByIdAsync(It.IsAny<string>()))
                 .ReturnsAsync(user);
@@ -155,7 +154,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.ActionFilters
 
             settings.RevisionDate = DateTime.UtcNow.AddDays(-1);
             user.AcceptedTermsOfUseDate = DateTime.UtcNow;
-            user.HasAcceptedTermsOfUse = true;
 
             userManager.Setup(u => u.FindByIdAsync(It.IsAny<string>()))
                 .ReturnsAsync(user);

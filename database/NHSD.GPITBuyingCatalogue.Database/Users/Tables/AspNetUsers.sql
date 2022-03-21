@@ -24,7 +24,6 @@
      LastUpdated datetime2(7) DEFAULT GETUTCDATE() NOT NULL,
      LastUpdatedBy int NULL,
      HasOptedInUserResearch BIT DEFAULT 0 NOT NULL,
-     HasAcceptedTermsOfUse BIT DEFAULT 0 NOT NULL,
      AcceptedTermsOfUseDate DATETIME2(7) NULL,
      SysStartTime datetime2(0) GENERATED ALWAYS AS ROW START NOT NULL,
      SysEndTime datetime2(0) GENERATED ALWAYS AS ROW END NOT NULL,

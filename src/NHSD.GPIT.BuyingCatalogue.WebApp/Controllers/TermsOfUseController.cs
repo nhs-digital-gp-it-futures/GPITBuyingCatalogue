@@ -48,7 +48,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Controllers
 
             if (!user.HasAcceptedLatestTermsOfUse(settings.RevisionDate))
             {
-                user.HasAcceptedTermsOfUse = model.HasAcceptedTermsOfUse;
                 user.AcceptedTermsOfUseDate = DateTime.UtcNow;
             }
 
