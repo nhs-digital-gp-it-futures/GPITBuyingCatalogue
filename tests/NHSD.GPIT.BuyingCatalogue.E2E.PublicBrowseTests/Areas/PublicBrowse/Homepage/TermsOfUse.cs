@@ -102,7 +102,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.PublicBrowse.Homepage
 
             using var context = GetEndToEndDbContext();
             var updatedUser = context.AspNetUsers.AsNoTracking().First(u => u.Email == UserSeedData.AliceEmail);
-            updatedUser.HasAcceptedTermsOfUse.Should().BeTrue();
+            updatedUser.AcceptedTermsOfUseDate.Should().NotBeNull();
         }
 
         [Fact]
@@ -151,7 +151,6 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.PublicBrowse.Homepage
         {
             using var context = GetEndToEndDbContext();
             var user = context.AspNetUsers.First(u => u.Email == UserSeedData.AliceEmail);
-            user.HasAcceptedTermsOfUse = true;
             user.AcceptedTermsOfUseDate = DateTime.UtcNow;
 
             context.SaveChanges();
@@ -161,7 +160,6 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.PublicBrowse.Homepage
         {
             using var context = GetEndToEndDbContext();
             var user = context.AspNetUsers.First(u => u.Email == UserSeedData.AliceEmail);
-            user.HasAcceptedTermsOfUse = false;
             user.AcceptedTermsOfUseDate = null;
 
             context.SaveChanges();

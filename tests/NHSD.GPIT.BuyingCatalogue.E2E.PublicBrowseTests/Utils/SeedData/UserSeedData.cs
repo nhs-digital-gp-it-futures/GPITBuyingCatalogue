@@ -314,7 +314,6 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
                 PrimaryOrganisation = bobOrganisation,
                 PrimaryOrganisationId = bobOrganisation.Id,
                 SecurityStamp = Guid.NewGuid().ToString(),
-                HasAcceptedTermsOfUse = true,
                 HasOptedInUserResearch = false,
                 AcceptedTermsOfUseDate = DateTime.UtcNow,
             };
@@ -338,7 +337,6 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
                 PrimaryOrganisation = sueOrganisation,
                 PrimaryOrganisationId = sueOrganisation.Id,
                 SecurityStamp = Guid.NewGuid().ToString(),
-                HasAcceptedTermsOfUse = true,
                 HasOptedInUserResearch = false,
                 AcceptedTermsOfUseDate = DateTime.UtcNow,
             };
@@ -362,7 +360,6 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
                 PrimaryOrganisation = aliceOrganisation,
                 PrimaryOrganisationId = aliceOrganisation.Id,
                 SecurityStamp = Guid.NewGuid().ToString(),
-                HasAcceptedTermsOfUse = true,
                 HasOptedInUserResearch = true,
                 AcceptedTermsOfUseDate = DateTime.UtcNow,
             };

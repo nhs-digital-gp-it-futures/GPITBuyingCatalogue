@@ -64,7 +64,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Controllers
             [Frozen] TermsOfUseSettings settings)
         {
             user.AcceptedTermsOfUseDate = null;
-            user.HasAcceptedTermsOfUse = user.HasOptedInUserResearch = false;
+            user.HasOptedInUserResearch = false;
 
             model.HasAcceptedTermsOfUse
                 = model.HasAcceptedPrivacyPolicy
@@ -91,8 +91,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Controllers
             var result = (await controller.TermsOfUse(model)).As<RedirectResult>();
 
             result.Should().NotBeNull();
-            userManager.Verify(um => um.UpdateAsync(It.Is<AspNetUser>(u =>
-                u.HasAcceptedTermsOfUse && u.HasOptedInUserResearch)));
+            userManager.Verify(um => um.UpdateAsync(It.Is<AspNetUser>(u => u.HasOptedInUserResearch == true)));
         }
     }
 }
