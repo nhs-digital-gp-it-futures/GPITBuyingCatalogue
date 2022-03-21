@@ -36,24 +36,14 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Capabilities
         [Theory]
         [InMemoryDbAutoData]
         public static async Task GetSupplierDefinedEpics_ReturnsExpectedResult(
-            Capability capability,
-            List<Epic> epics,
             [Frozen] BuyingCatalogueDbContext context,
             SupplierDefinedEpicsService service)
         {
-            epics.ForEach(e =>
-            {
-                e.SupplierDefined = true;
-                e.CapabilityId = capability.Id;
-            });
-
-            context.Capabilities.Add(capability);
-            context.Epics.AddRange(epics);
-            await context.SaveChangesAsync();
+            var expectedCount = context.Epics.Where(e => e.SupplierDefined).Count();
 
             var supplierDefinedEpics = await service.GetSupplierDefinedEpics();
 
-            supplierDefinedEpics.Count.Should().Be(epics.Count);
+            supplierDefinedEpics.Count.Should().Be(expectedCount);
         }
 
         [Theory]
