@@ -6,9 +6,6 @@
 @model NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.Dashboard.OrganisationModel;
 @{
     ViewBag.Title = "Orders dashboard";
-    string newOrderAction = Model.CanActOnBehalf
-        ? nameof(OrderTriageController.SelectOrganisation)
-        : nameof(OrderTriageController.Index);
 }
 
 <div data-test-id="dashboard-page">
@@ -32,7 +29,7 @@
             }
             <vc:nhs-action-link text="Create a new order"
                                      url="@Url.Action(
-                                         newOrderAction,
+                                         nameof(OrderTriageController.OrderItemType),
                                          typeof(OrderTriageController).ControllerName(),
                                          new { Model.InternalOrgId })" />
         </div>

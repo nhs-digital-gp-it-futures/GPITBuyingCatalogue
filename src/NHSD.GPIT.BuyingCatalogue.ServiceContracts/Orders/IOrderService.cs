@@ -25,7 +25,7 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.Orders
 
         public Task<Order> GetOrderForStatusUpdate(CallOffId callOffId, string internalOrgId);
 
-        public Task<Order> CreateOrder(string description, string internalOrgId);
+        public Task<Order> CreateOrder(string description, string internalOrgId, bool isAssociatedServiceOnly);
 
         public Task DeleteOrder(CallOffId callOffId, string internalOrgId);
 

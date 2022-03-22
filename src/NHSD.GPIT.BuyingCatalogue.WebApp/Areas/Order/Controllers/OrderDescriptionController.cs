@@ -2,6 +2,7 @@
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Enums;
@@ -66,7 +67,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
         }
 
         [HttpGet("~/organisation/{internalOrgId}/order/neworder/description")]
-        public async Task<IActionResult> NewOrderDescription(string internalOrgId, TriageOption? option = null)
+        public async Task<IActionResult> NewOrderDescription(string internalOrgId, TriageOption? option = null, CatalogueItemType? orderType = null)
         {
             var user = await usersService.GetUser(User.UserId());
             var organisation = await organisationsService.GetOrganisation(user?.PrimaryOrganisationId ?? 0);
@@ -76,19 +77,22 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
                 BackLink = Url.Action(
                     nameof(OrderController.NewOrder),
                     typeof(OrderController).ControllerName(),
-                    new { internalOrgId, option }),
+                    new { internalOrgId, option, orderType }),
             };
 
             return View("OrderDescription", descriptionModel);
         }
 
         [HttpPost("~/organisation/{internalOrgId}/order/neworder/description")]
-        public async Task<IActionResult> NewOrderDescription(string internalOrgId, OrderDescriptionModel model)
+        public async Task<IActionResult> NewOrderDescription(string internalOrgId, OrderDescriptionModel model, CatalogueItemType? orderType = null)
         {
             if (!ModelState.IsValid)
                 return View("OrderDescription", model);
 
-            var order = await orderService.CreateOrder(model.Description, model.InternalOrgId);
+            var isAssociatedServiceOnly = orderType.HasValue
+                && orderType!.Value == CatalogueItemType.AssociatedService;
+
+            var order = await orderService.CreateOrder(model.Description, model.InternalOrgId, isAssociatedServiceOnly);
 
             return RedirectToAction(
                 nameof(OrderController.Order),

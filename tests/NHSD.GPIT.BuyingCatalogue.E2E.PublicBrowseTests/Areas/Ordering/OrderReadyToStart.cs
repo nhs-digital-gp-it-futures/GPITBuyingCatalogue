@@ -5,8 +5,10 @@ using NHSD.GPIT.BuyingCatalogue.E2ETests.Objects.Common;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Objects.Ordering;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Utils;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.TestBases;
+using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers;
+using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.OrderTriage;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Controllers;
 using Xunit;
 
@@ -16,10 +18,16 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering
         : BuyerTestBase, IClassFixture<LocalWebApplicationFactory>
     {
         private const string InternalOrgId = "CG-03F";
+        private const TriageOption Option = TriageOption.Between40kTo250k;
 
         private static readonly Dictionary<string, string> Parameters = new()
         {
             { nameof(InternalOrgId), InternalOrgId },
+        };
+
+        private static readonly Dictionary<string, string> QueryParameters = new()
+        {
+            { nameof(Option), Option.ToString() },
         };
 
         public OrderReadyToStart(LocalWebApplicationFactory factory)
@@ -27,7 +35,8 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering
                   factory,
                   typeof(OrderController),
                   nameof(OrderController.ReadyToStart),
-                  Parameters)
+                  Parameters,
+                  queryParameters: QueryParameters)
         {
         }
 
@@ -38,6 +47,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering
             var organisation = context.Organisations.Single(o => string.Equals(o.InternalIdentifier, InternalOrgId));
 
             CommonActions.PageTitle().Should().BeEquivalentTo($"Before you start an order - {organisation.Name}".FormatForComparison());
+            CommonActions.LedeText().Should().Be("Before you start your order, you should know:".FormatForComparison());
             CommonActions.GoBackLinkDisplayed().Should().BeTrue();
             CommonActions.ElementIsDisplayed(CommonSelectors.SubmitButton).Should().BeTrue();
             CommonActions.ElementIsDisplayed(OrderTriageObjects.ProcurementHubLink).Should().BeTrue();
@@ -67,6 +77,37 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering
             CommonActions.PageLoadedCorrectGetIndex(
                 typeof(OrderController),
                 nameof(OrderController.NewOrder));
+        }
+
+        [Fact]
+        public void ClickBacklink_RedirectsToCorrectPage()
+        {
+            CommonActions.ClickGoBackLink();
+
+            CommonActions.PageLoadedCorrectGetIndex(
+                typeof(OrderTriageController),
+                nameof(OrderTriageController.TriageSelection)).Should().BeTrue();
+        }
+
+        [Fact]
+        public void AssociatedService_ClickBackLink_RedirectsToCorrectPage()
+        {
+            var queryParams = new Dictionary<string, string>
+            {
+                { "orderType", CatalogueItemType.AssociatedService.ToString() },
+            };
+
+            NavigateToUrl(
+                typeof(OrderController),
+                nameof(OrderController.ReadyToStart),
+                Parameters,
+                queryParams);
+
+            CommonActions.ClickGoBackLink();
+
+            CommonActions.PageLoadedCorrectGetIndex(
+                typeof(OrderTriageController),
+                nameof(OrderTriageController.OrderItemType)).Should().BeTrue();
         }
     }
 }
