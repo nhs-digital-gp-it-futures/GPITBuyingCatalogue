@@ -127,7 +127,6 @@ namespace NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.TagHelpers.Radios
             int index)
         {
             var itemValue = GetGenericValueFromName(item, hintName);
-            // {id}-item-hint
 
             return itemValue is null
                 ? null
