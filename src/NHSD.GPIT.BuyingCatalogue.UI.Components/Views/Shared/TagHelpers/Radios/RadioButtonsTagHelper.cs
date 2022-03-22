@@ -32,6 +32,9 @@ namespace NHSD.GPIT.BuyingCatalogue.UI.Components.TagHelpers
         [HtmlAttributeName(TagHelperConstants.DisplayName)]
         public string DisplayName { get; set; }
 
+        [HtmlAttributeName(TagHelperConstants.HintName)]
+        public string HintName { get; set; }
+
         public override void Process(TagHelperContext context, TagHelperOutput output)
         {
             if (!Values.Any() || string.IsNullOrWhiteSpace(ValueName) || string.IsNullOrWhiteSpace(DisplayName))
@@ -51,6 +54,6 @@ namespace NHSD.GPIT.BuyingCatalogue.UI.Components.TagHelpers
         }
 
         private IEnumerable<TagBuilder> BuildRadiosFromValueList() =>
-            Values.Select((value, index) => RadioButtonBuilders.BuildRadioItem(ViewContext, For, htmlGenerator, value, index, ValueName, DisplayName));
+            Values.Select((value, index) => RadioButtonBuilders.BuildRadioItem(ViewContext, For, htmlGenerator, value, index, ValueName, DisplayName, HintName));
     }
 }
