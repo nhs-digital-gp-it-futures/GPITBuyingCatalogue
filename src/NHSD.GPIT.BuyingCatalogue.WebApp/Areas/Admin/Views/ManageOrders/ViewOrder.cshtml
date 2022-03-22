@@ -56,7 +56,7 @@
                                                   typeof(ManageOrdersController).ControllerName(),
                                                   new { internalOrgId = Model.OrganisationInternalIdentifier, callOffId = Model.CallOffId })"
                                          use-primary-colour="false" />
-            @if(Model.OrderStatus == OrderStatus.Complete)
+            @if(Model.OrderStatus == OrderStatus.Completed)
             {
                 <vc:nhs-secondary-button text="Download full order CSV"
                                              url="@Url.Action(

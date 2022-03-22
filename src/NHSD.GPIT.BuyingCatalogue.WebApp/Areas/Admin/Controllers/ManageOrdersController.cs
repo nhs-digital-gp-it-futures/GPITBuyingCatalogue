@@ -119,7 +119,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
 
             var result = pdfService.Convert(OrderSummaryUri(internalOrgId, callOffId));
 
-            var fileName = order.OrderStatus == OrderStatus.Complete
+            var fileName = order.OrderStatus == OrderStatus.Completed
                 ? $"order-summary-completed-{callOffId}.pdf"
                 : $"order-summary-in-progress-{callOffId}.pdf";
 
