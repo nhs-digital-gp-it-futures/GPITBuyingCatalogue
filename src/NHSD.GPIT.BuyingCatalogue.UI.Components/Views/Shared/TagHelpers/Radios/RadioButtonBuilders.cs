@@ -126,6 +126,9 @@ namespace NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.TagHelpers.Radios
             string hintName,
             int index)
         {
+            if (string.IsNullOrWhiteSpace(hintName))
+                return null;
+
             var itemValue = GetGenericValueFromName(item, hintName);
 
             return itemValue is null
