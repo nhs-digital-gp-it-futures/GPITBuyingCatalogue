@@ -15,7 +15,7 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models
 
         public void Complete()
         {
-            OrderStatus = OrderStatus.Complete;
+            OrderStatus = OrderStatus.Completed;
             completed = DateTime.UtcNow;
         }
 
@@ -29,7 +29,7 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models
                 && (HasSolution() || HasAssociatedService())
                 && OrderItems.Count > 0
                 && OrderItems.All(oi => oi.OrderItemFunding is not null)
-                && OrderStatus != OrderStatus.Complete;
+                && OrderStatus != OrderStatus.Completed;
         }
 
         public bool HasAssociatedService()
