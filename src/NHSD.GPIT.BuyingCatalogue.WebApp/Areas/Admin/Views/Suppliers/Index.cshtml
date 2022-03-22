@@ -22,12 +22,12 @@
                     text="Add a supplier"
                     data-test-id="add-supplier" />
 
-<vc:nhs-autocomplete id="manage-suppliers-autocomplete"
-    ajax-url="@Url.Action(
-    nameof(SuppliersController.FilterSearchSuggestions),
-    typeof(SuppliersController).ControllerName())"
-    title-text="Search by supplier name or Supplier ID"
-    query-parameter-name="search"/>
+<vc:nhs-suggestion-search id="suppliers-suggestion-search"
+                          ajax-url="@Url.Action(
+                                        nameof(SuppliersController.FilterSearchSuggestions),
+                                        typeof(SuppliersController).ControllerName())"
+                          title-text="Search by supplier name or Supplier ID"
+                          query-parameter-name="search"/>
 
 @if (Model.Suppliers?.Count > 0)
 {

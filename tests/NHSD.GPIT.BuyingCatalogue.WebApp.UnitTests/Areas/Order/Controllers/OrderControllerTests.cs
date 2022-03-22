@@ -80,7 +80,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers
             [Frozen] Mock<IOrderService> orderServiceMock,
             OrderController controller)
         {
-            order.OrderStatus = OrderStatus.Complete;
+            order.OrderStatus = OrderStatus.Completed;
 
             orderServiceMock.Setup(s => s.GetOrderThin(order.CallOffId, internalOrgId)).ReturnsAsync(order);
 
@@ -225,7 +225,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers
             byte[] result,
             OrderController controller)
         {
-            order.OrderStatus = OrderStatus.Complete;
+            order.OrderStatus = OrderStatus.Completed;
 
             orderServiceMock
                 .Setup(s => s.GetOrderForSummary(order.CallOffId, internalOrgId))

@@ -48,7 +48,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
         {
             var order = await orderService.GetOrderThin(callOffId, internalOrgId);
 
-            if (order.OrderStatus == OrderStatus.Complete)
+            if (order.OrderStatus == OrderStatus.Completed)
             {
                 return RedirectToAction(
                     nameof(Summary),
@@ -126,7 +126,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
 
             var model = new SummaryModel(internalOrgId, order)
             {
-                BackLink = order.OrderStatus == OrderStatus.Complete
+                BackLink = order.OrderStatus == OrderStatus.Completed
                     ? Url.Action(
                         nameof(DashboardController.Organisation),
                         typeof(DashboardController).ControllerName(),
@@ -138,7 +138,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
 
                 Title = order.OrderStatus switch
                 {
-                    OrderStatus.Complete => $"Order confirmed for {callOffId}",
+                    OrderStatus.Completed => $"Order confirmed for {callOffId}",
                     _ => order.CanComplete()
                         ? $"Review order summary for {callOffId}"
                         : $"Order summary for {callOffId}",
@@ -146,7 +146,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
 
                 AdviceText = order.OrderStatus switch
                 {
-                    OrderStatus.Complete => "This order has been confirmed and can no longer be changed. You can use the button to get a copy of the order summary.",
+                    OrderStatus.Completed => "This order has been confirmed and can no longer be changed. You can use the button to get a copy of the order summary.",
                     _ => order.CanComplete()
                         ? "Review your order summary and confirm the content is correct. Once confirmed, you'll be unable to make changes."
                         : "This is what's been added to your order so far. You must complete all mandatory steps before you can confirm your order.",
@@ -200,7 +200,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
 
             var result = pdfService.Convert(OrderSummaryUri(internalOrgId, callOffId));
 
-            var fileName = order.OrderStatus == OrderStatus.Complete
+            var fileName = order.OrderStatus == OrderStatus.Completed
                 ? $"order-summary-completed-{callOffId}.pdf"
                 : $"order-summary-in-progress-{callOffId}.pdf";
 

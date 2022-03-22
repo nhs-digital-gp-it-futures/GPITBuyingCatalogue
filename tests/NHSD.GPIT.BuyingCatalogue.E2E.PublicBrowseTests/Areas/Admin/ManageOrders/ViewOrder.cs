@@ -152,7 +152,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.ManageOrders
             CommonActions.ElementIsDisplayed(ViewOrderObjects.FullOrderCsv).Should().BeFalse();
             CommonActions.ElementIsDisplayed(ViewOrderObjects.PatientOnlyCsv).Should().BeFalse();
 
-            order.OrderStatus = OrderStatus.Complete;
+            order.OrderStatus = OrderStatus.Completed;
             context.SaveChangesAs(UserSeedData.SueId);
         }
 

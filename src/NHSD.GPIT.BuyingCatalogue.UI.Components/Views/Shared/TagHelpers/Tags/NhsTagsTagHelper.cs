@@ -155,7 +155,7 @@ namespace NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.TagHelpers.Tags
         {
             var selectedColourClass = orderStatus switch
             {
-                OrderStatus.Complete => TagColour.Green,
+                OrderStatus.Completed => TagColour.Green,
                 OrderStatus.InProgress => TagColour.Yellow,
                 _ => TagColour.Grey,
             };

@@ -146,7 +146,6 @@
     <Build Include="Catalogue\Tables\CatalogueItemEpicStatus.sql" />
     <Build Include="Catalogue\Tables\CatalogueItemTypes.sql" />
     <Build Include="Catalogue\Tables\CataloguePrices.sql" />
-    <Build Include="Catalogue\Tables\CataloguePriceTiers.sql" />
     <Build Include="Catalogue\Tables\CataloguePriceTypes.sql" />
     <Build Include="Catalogue\Tables\CompliancyLevels.sql" />
     <Build Include="Catalogue\Tables\Epics.sql" />
@@ -209,7 +208,6 @@
     <Build Include="Catalogue\TemporalTables\CatalogueItemEpicStatus_History.sql" />
     <Build Include="Catalogue\TemporalTables\CatalogueItems_History.sql" />
     <Build Include="Catalogue\TemporalTables\CataloguePrices_History.sql" />
-    <Build Include="Catalogue\TemporalTables\CataloguePriceTiers_History.sql" />
     <Build Include="Catalogue\TemporalTables\Epics_History.sql" />
     <Build Include="Catalogue\TemporalTables\FrameworkCapabilities_History.sql" />
     <Build Include="Catalogue\TemporalTables\Frameworks_History.sql" />

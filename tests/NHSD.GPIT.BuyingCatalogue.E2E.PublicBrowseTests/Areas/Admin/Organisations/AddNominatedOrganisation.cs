@@ -17,6 +17,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.Organisations
     public class AddNominatedOrganisation : AuthorityTestBase, IClassFixture<LocalWebApplicationFactory>, IDisposable
     {
         private const int OrganisationId = 1;
+        private const string ValidOrganisationName = "NHS Leeds CCG";
 
         private static readonly Dictionary<string, string> Parameters = new()
         {
@@ -65,6 +66,25 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.Organisations
         }
 
         [Fact]
+        public void AddNominatedOrganisation_FilterOrganisations_WithMatches_ExpectedResult()
+        {
+            CommonActions.ElementAddValue(NominatedOrganisationObjects.SelectedOrganisation, ValidOrganisationName);
+            CommonActions.WaitUntilElementIsDisplayed(NominatedOrganisationObjects.SearchListBox);
+
+            CommonActions.ElementIsDisplayed(NominatedOrganisationObjects.SearchResult(0)).Should().BeTrue();
+            CommonActions.ElementTextEqualTo(NominatedOrganisationObjects.SearchResult(0), ValidOrganisationName).Should().BeTrue();
+        }
+
+        [Fact]
+        public void AddNominatedOrganisation_FilterOrganisations_WithNoMatches_ExpectedResult()
+        {
+            CommonActions.ElementAddValue(NominatedOrganisationObjects.SelectedOrganisation, ValidOrganisationName + "XYZ");
+            CommonActions.WaitUntilElementIsDisplayed(NominatedOrganisationObjects.SearchListBox);
+
+            CommonActions.ElementIsDisplayed(NominatedOrganisationObjects.SearchResultsErrorMessage).Should().BeTrue();
+        }
+
+        [Fact]
         public async Task AddNominatedOrganisation_SelectOrganisation_ClickContinue_ExpectedResult()
         {
             await using var context = GetEndToEndDbContext();
@@ -75,7 +95,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.Organisations
 
             existingRelationships.Should().BeEmpty();
 
-            CommonActions.SelectDropDownItem(NominatedOrganisationObjects.SelectedOrganisation, index: 1);
+            CommonActions.ElementAddValue(NominatedOrganisationObjects.SelectedOrganisation, ValidOrganisationName);
             CommonActions.ClickLinkElement(CommonSelectors.SubmitButton);
 
             CommonActions.PageLoadedCorrectGetIndex(

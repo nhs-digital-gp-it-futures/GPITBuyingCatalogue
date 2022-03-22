@@ -176,13 +176,13 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.ManageOrders
                 var order = context.Orders.First();
                 var callOffId = order.CallOffId.ToString();
 
-                await CommonActions.ElementAddValueWithDelay(ManageOrdersDashboardObjects.SearchBar, callOffId);
+                await CommonActions.InputCharactersWithDelay(ManageOrdersDashboardObjects.SearchBar, callOffId);
 
                 CommonActions.WaitUntilElementIsDisplayed(ManageOrdersDashboardObjects.SearchListBox);
                 CommonActions.WaitUntilElementIsDisplayed(ManageOrdersDashboardObjects.SearchResultDescription(0));
 
-                CommonActions.ElementTextEqualTo(ManageOrdersDashboardObjects.SearchResultDescription(0), callOffId.FormatForComparison()).Should().BeTrue();
-                CommonActions.ElementTextEqualTo(ManageOrdersDashboardObjects.SearchResultTitle(0), "Call-off ID".FormatForComparison()).Should().BeTrue();
+                CommonActions.ElementTextEqualTo(ManageOrdersDashboardObjects.SearchResultTitle(0), callOffId.FormatForComparison()).Should().BeTrue();
+                CommonActions.ElementTextEqualTo(ManageOrdersDashboardObjects.SearchResultDescription(0), "Call-off ID".FormatForComparison()).Should().BeTrue();
             });
         }
 
@@ -201,8 +201,8 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.ManageOrders
                 CommonActions.WaitUntilElementIsDisplayed(ManageOrdersDashboardObjects.SearchListBox);
                 CommonActions.WaitUntilElementIsDisplayed(ManageOrdersDashboardObjects.SearchResultDescription(0));
 
-                CommonActions.ElementTextEqualTo(ManageOrdersDashboardObjects.SearchResultDescription(0), callOffId.FormatForComparison()).Should().BeTrue();
-                CommonActions.ElementTextEqualTo(ManageOrdersDashboardObjects.SearchResultTitle(0), "Organisation".FormatForComparison()).Should().BeTrue();
+                CommonActions.ElementTextEqualTo(ManageOrdersDashboardObjects.SearchResultTitle(0), organisationName.FormatForComparison()).Should().BeTrue();
+                CommonActions.ElementTextEqualTo(ManageOrdersDashboardObjects.SearchResultDescription(0), "Organisation".FormatForComparison()).Should().BeTrue();
             });
         }
 
@@ -213,7 +213,6 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.ManageOrders
             {
                 using var context = GetEndToEndDbContext();
                 var order = context.Orders.Include(o => o.Supplier).First(o => o.Supplier != null);
-                var callOffId = order.CallOffId.ToString();
                 var supplierName = order.Supplier.Name;
 
                 await CommonActions.ElementAddValueWithDelay(ManageOrdersDashboardObjects.SearchBar, supplierName);
@@ -221,8 +220,8 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.ManageOrders
                 CommonActions.WaitUntilElementIsDisplayed(ManageOrdersDashboardObjects.SearchListBox);
                 CommonActions.WaitUntilElementIsDisplayed(ManageOrdersDashboardObjects.SearchResultDescription(0));
 
-                CommonActions.ElementTextEqualTo(ManageOrdersDashboardObjects.SearchResultDescription(0), callOffId.FormatForComparison()).Should().BeTrue();
-                CommonActions.ElementTextEqualTo(ManageOrdersDashboardObjects.SearchResultTitle(0), "Supplier".FormatForComparison()).Should().BeTrue();
+                CommonActions.ElementTextEqualTo(ManageOrdersDashboardObjects.SearchResultTitle(0), supplierName.FormatForComparison()).Should().BeTrue();
+                CommonActions.ElementTextEqualTo(ManageOrdersDashboardObjects.SearchResultDescription(0), "Supplier".FormatForComparison()).Should().BeTrue();
             });
         }
 
@@ -234,7 +233,6 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.ManageOrders
                 using var context = GetEndToEndDbContext();
                 var orders = context.Orders.Include(o => o.OrderItems).ThenInclude(oi => oi.CatalogueItem).Where(o => o.OrderItems.Any());
                 var order = orders.First(o => o.OrderItems.Any(oi => oi.CatalogueItem.CatalogueItemType == CatalogueItemType.Solution));
-                var callOffId = order.CallOffId.ToString();
                 var solutionName = order.OrderItems.First().CatalogueItem.Name;
 
                 await CommonActions.ElementAddValueWithDelay(ManageOrdersDashboardObjects.SearchBar, solutionName);
@@ -242,8 +240,8 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.ManageOrders
                 CommonActions.WaitUntilElementIsDisplayed(ManageOrdersDashboardObjects.SearchListBox);
                 CommonActions.WaitUntilElementIsDisplayed(ManageOrdersDashboardObjects.SearchResultDescription(0));
 
-                CommonActions.ElementTextEqualTo(ManageOrdersDashboardObjects.SearchResultDescription(0), callOffId.FormatForComparison()).Should().BeTrue();
-                CommonActions.ElementTextEqualTo(ManageOrdersDashboardObjects.SearchResultTitle(0), "Solution".FormatForComparison()).Should().BeTrue();
+                CommonActions.ElementTextEqualTo(ManageOrdersDashboardObjects.SearchResultTitle(0), solutionName.FormatForComparison()).Should().BeTrue();
+                CommonActions.ElementTextEqualTo(ManageOrdersDashboardObjects.SearchResultDescription(0), "Solution".FormatForComparison()).Should().BeTrue();
             });
         }
     }

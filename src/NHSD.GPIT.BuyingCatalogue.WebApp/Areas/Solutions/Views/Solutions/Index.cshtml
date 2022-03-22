@@ -67,12 +67,12 @@
         <nhs-page-title title="@ViewBag.Title"
                         advice="Search for Catalogue Solutions that match the needs of your organisation." />
 
-		<vc:nhs-autocomplete id="marketing-autocomplete"
-						ajax-url="@Url.Action(
-						nameof(SolutionsController.FilterSearchSuggestions),
-						typeof(SolutionsController).ControllerName())"
-						title-text="Search for solution by solution name or supplier name"
-						query-parameter-name="search"/>
+        <vc:nhs-suggestion-search id="marketing-suggestion-search"
+                                  ajax-url="@Url.Action(
+                                                nameof(SolutionsController.FilterSearchSuggestions),
+                                                typeof(SolutionsController).ControllerName())"
+                                  title-text="Search for solution by solution name or supplier name"
+                                  query-parameter-name="search"/>
 
         <div id="filter-container">
             <partial name="_FilterNoJavascript" model="@Model" />

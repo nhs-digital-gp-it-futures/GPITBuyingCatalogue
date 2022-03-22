@@ -42,7 +42,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Controllers
             [Frozen] Mock<IOrderService> orderServiceMock,
             OrderSummaryController controller)
         {
-            order.OrderStatus = OrderStatus.Complete;
+            order.OrderStatus = OrderStatus.Completed;
 
             orderServiceMock.Setup(s => s.GetOrderForSummary(order.CallOffId, internalOrgId)).ReturnsAsync(order);
 

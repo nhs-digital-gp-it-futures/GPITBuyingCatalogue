@@ -1,5 +1,6 @@
 ﻿using NHSD.GPIT.BuyingCatalogue.E2ETests.Objects.Common;
 using OpenQA.Selenium;
+using SeleniumExtras.PageObjects;
 
 namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Objects.Admin
 {
@@ -22,5 +23,11 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Objects.Admin
         public static By SelectedOrganisation => By.Id("SelectedOrganisationId");
 
         public static By SelectedOrganisationError => By.Id("SelectedOrganisationId-error");
+
+        internal static By SearchListBox => By.Id("SelectedOrganisationId__listbox");
+
+        internal static By SearchResultsErrorMessage => new ByChained(SearchListBox, By.ClassName("autocomplete__option--no-results"));
+
+        internal static By SearchResult(uint index) => By.Id($"SelectedOrganisationId__option--{index}");
     }
 }

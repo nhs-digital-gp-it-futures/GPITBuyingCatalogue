@@ -14,7 +14,7 @@ using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Orders;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Pdf;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.ManageOrders;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Controllers;
-using NHSD.GPIT.BuyingCatalogue.WebApp.Models.Autocomplete;
+using NHSD.GPIT.BuyingCatalogue.WebApp.Models.SuggestionSearch;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
 {
@@ -46,12 +46,13 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
         [HttpGet]
         public async Task<IActionResult> Index(
             [FromQuery] string page = "",
-            [FromQuery] string search = "")
+            [FromQuery] string search = "",
+            [FromQuery] string searchTermType = "")
         {
             const int PageSize = 10;
             var pageOptions = new PageOptions(page, PageSize);
 
-            var orders = await orderAdminService.GetPagedOrders(pageOptions, search);
+            var orders = await orderAdminService.GetPagedOrders(pageOptions, search, searchTermType);
 
             var model = new ManageOrdersDashboardModel(orders.Items, orders.Options)
             {
@@ -70,11 +71,11 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
             var results = await orderAdminService.GetOrdersBySearchTerm(search);
 
             return Json(results.Select(r =>
-                new AutocompleteResult
+                new SuggestionSearchResult
                 {
                     Title = r.Title,
                     Category = r.Category,
-                    Url = currentPageUrl.AppendQueryParameterToUrl(nameof(search), r.Category).ToString(),
+                    Url = currentPageUrl.AppendQueryParameterToUrl(nameof(search), r.Title).AppendQueryParameterToUrl("searchTermType", r.Category).ToString(),
                 }));
         }
 
@@ -118,7 +119,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
 
             var result = pdfService.Convert(OrderSummaryUri(internalOrgId, callOffId));
 
-            var fileName = order.OrderStatus == OrderStatus.Complete
+            var fileName = order.OrderStatus == OrderStatus.Completed
                 ? $"order-summary-completed-{callOffId}.pdf"
                 : $"order-summary-in-progress-{callOffId}.pdf";
 

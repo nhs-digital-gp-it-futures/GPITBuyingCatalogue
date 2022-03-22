@@ -1,6 +1,6 @@
-﻿namespace NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.Components.Autocomplete
+﻿namespace NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.Components.NhsSuggestionSearch
 {
-    public sealed class NhsAutocompleteModel
+    public sealed class NhsSuggestionSearchModel
     {
         public string Id { get; set; }
 

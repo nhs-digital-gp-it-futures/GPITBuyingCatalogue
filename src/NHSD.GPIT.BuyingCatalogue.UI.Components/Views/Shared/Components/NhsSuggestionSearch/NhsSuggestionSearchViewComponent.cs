@@ -2,13 +2,13 @@
 using Microsoft.AspNetCore.Http.Extensions;
 using Microsoft.AspNetCore.Mvc;
 
-namespace NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.Components.Autocomplete
+namespace NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.Components.NhsSuggestionSearch
 {
-    public sealed class NhsAutocompleteViewComponent : ViewComponent
+    public sealed class NhsSuggestionSearchViewComponent : ViewComponent
     {
         public async Task<IViewComponentResult> InvokeAsync(string id, string ajaxUrl, string queryParameterName, string titleText)
         {
-            var model = new NhsAutocompleteModel
+            var model = new NhsSuggestionSearchModel
             {
                 Id = id,
                 AjaxUrl = ajaxUrl,
@@ -18,7 +18,7 @@ namespace NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.Components.Autoco
                 SearchText = HttpContext.Request.Query[queryParameterName],
             };
 
-            return await Task.FromResult(View("NhsAutocomplete", model));
+            return await Task.FromResult(View("NhsSuggestionSearch", model));
         }
     }
 }

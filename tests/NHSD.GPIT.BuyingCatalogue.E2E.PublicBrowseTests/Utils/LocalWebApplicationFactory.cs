@@ -62,6 +62,8 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils
 
         private readonly IWebHost host;
 
+        private bool disposed = false;
+
         private SqliteConnection sqliteConnection;
 
         private IServiceProvider scopedServices;
@@ -228,10 +230,11 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils
         {
             Driver?.Quit();
             base.Dispose(disposing);
-            if (disposing)
+            if (disposing && !disposed)
             {
                 host?.Dispose();
                 sqliteConnection?.Dispose();
+                disposed = true;
             }
         }
 
