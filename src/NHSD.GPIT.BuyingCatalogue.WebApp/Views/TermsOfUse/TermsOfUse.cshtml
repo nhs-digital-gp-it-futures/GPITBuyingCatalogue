@@ -117,21 +117,13 @@
 
             <h4 class="nhsuk-heading-xs">3.4.1</h4>
             <p>
-                Reproduce, duplicate, copy or re-sell any part of the Buying Catalogue; 
+                Resell any part of the Buying Catalogue; 
             </p>
         
             <h4 class="nhsuk-heading-xs">3.4.2</h4>
-            <p>Attempt to:</p>
-            <ul>
-                <li>copy, adapt, duplicate, modify, create derivative works from or distribute all or any portion of any application program interface technology you access through the Buying Catalogue; or</li>
-                <li>reverse compile, decompile, disassemble, reverse engineer or otherwise reduce to human-perceivable form all or any part of the Buying Catalogue; or</li>
-                <li>make changes or error corrections to the Buying Catalogue in whole or in part;</li>
-            </ul>
-        
-            <h4 class="nhsuk-heading-xs">3.4.3</h4>
             <p>Access without permission, interfere with, damage or disrupt:</p>
             <ul>
-                <li>any equipment or network on which the Buying Catalogue is stored;</li>
+                <li>any equipment or network on which the Buying Catalogue is hosted;</li>
                 <li>any software used in the provision of the Buying Catalogue; or</li>
                 <li>any equipment or network or software owned or used by any third party.</li>
             </ul>
@@ -371,15 +363,25 @@
             <form method="post" data-test-id="terms-form">                
                 <input type="hidden" asp-for="ReturnUrl" />
                 <input type="hidden" asp-for="AlreadyAcceptedLatestTerms" />
+                @if (!Model.AlreadyAcceptedLatestTerms)
+                {
+                    var privacyPolicyUrl = Url.Action(nameof(HomeController.PrivacyPolicy), typeof(HomeController).ControllerName());
 
-                <nhs-fieldset-form-label asp-for="@Model">
-                    <nhs-checkbox-container>
-                        @if(!Model.AlreadyAcceptedLatestTerms)
-                        {
-                            var privacyPolicyUrl = Url.Action(nameof(HomeController.PrivacyPolicy), typeof(HomeController).ControllerName());
+                    <nhs-fieldset-form-label asp-for="HasAcceptedTermsOfUse">
+                        <nhs-checkbox-container>
                             <nhs-checkbox asp-for="HasAcceptedTermsOfUse" label-text="I have read and agree to comply with these terms of use" />
+                        </nhs-checkbox-container>
+                    </nhs-fieldset-form-label>
+
+                    <nhs-fieldset-form-label asp-for="HasAcceptedPrivacyPolicy">
+                        <nhs-checkbox-container>
                             <nhs-checkbox asp-for="HasAcceptedPrivacyPolicy" label-text="I have read and understood the <a href='@privacyPolicyUrl' target='_blank'>privacy policy (opens in a new tab)</a>" use-embedded-html="true" />
-                        }
+                        </nhs-checkbox-container>
+                    </nhs-fieldset-form-label>
+                }
+
+                <nhs-fieldset-form-label asp-for="HasOptedInUserResearch">
+                    <nhs-checkbox-container>
                         <nhs-checkbox asp-for="HasOptedInUserResearch" label-text="I am happy to be contacted about taking part in user research (optional)" />
                     </nhs-checkbox-container>
                 </nhs-fieldset-form-label>
