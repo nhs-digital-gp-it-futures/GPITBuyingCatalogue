@@ -107,14 +107,14 @@
 @{
     string GetLinkName(OrderStatus orderStatus) => orderStatus switch
     {
-        OrderStatus.Complete => "View",
+        OrderStatus.Completed => "View",
         OrderStatus.InProgress => "Edit",
         _ => string.Empty,
     };
 
     NhsTagsTagHelper.TagColour GetTagColour(OrderStatus orderStatus) => orderStatus switch
     {
-        OrderStatus.Complete => NhsTagsTagHelper.TagColour.Green,
+        OrderStatus.Completed => NhsTagsTagHelper.TagColour.Green,
         OrderStatus.InProgress => NhsTagsTagHelper.TagColour.Yellow,
         _ => throw new ArgumentOutOfRangeException(nameof(orderStatus)),
     };

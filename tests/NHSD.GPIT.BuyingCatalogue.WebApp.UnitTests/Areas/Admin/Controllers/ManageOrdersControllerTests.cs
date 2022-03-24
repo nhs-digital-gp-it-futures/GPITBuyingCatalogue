@@ -96,7 +96,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
             byte[] fileContents,
             ManageOrdersController controller)
         {
-            order.OrderStatus = OrderStatus.Complete;
+            order.OrderStatus = OrderStatus.Completed;
 
             orderServiceMock
                 .Setup(s => s.GetOrderForSummary(order.CallOffId, internalOrgId))

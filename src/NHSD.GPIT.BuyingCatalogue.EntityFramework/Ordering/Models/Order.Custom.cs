@@ -29,7 +29,7 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models
 
         public void Complete()
         {
-            OrderStatus = OrderStatus.Complete;
+            OrderStatus = OrderStatus.Completed;
             completed = DateTime.UtcNow;
         }
 
@@ -83,7 +83,7 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models
                 && CommencementDate is not null
                 && (HasSolution() || HasAssociatedService())
                 && FundingSourceOnlyGms.HasValue
-                && OrderStatus != OrderStatus.Complete;
+                && OrderStatus != OrderStatus.Completed;
         }
 
         public void DeleteOrderItemAndUpdateProgress(CatalogueItemId catalogueItemId)

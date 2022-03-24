@@ -65,7 +65,7 @@
                         <nhs-summary-list-row label-text="Date order summary created">
                             @DateTime.UtcNow.ToLongDateString()
                         </nhs-summary-list-row>
-                        @if (Model.Order.OrderStatus == OrderStatus.Complete)
+                        @if (Model.Order.OrderStatus == OrderStatus.Completed)
                         {
                             <nhs-summary-list-row label-text="Date order summary completed">
                                 @Model.Order.Completed.Value.ToLongDateString()
