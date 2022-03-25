@@ -48,6 +48,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Validation
             TermsOfUseModel model,
             TermsOfUseModelValidator validator)
         {
+            model.IsBuyer = true;
             model.AlreadyAcceptedLatestTerms = true;
             model.HasAcceptedPrivacyPolicy = false;
             model.HasAcceptedTermsOfUse = false;

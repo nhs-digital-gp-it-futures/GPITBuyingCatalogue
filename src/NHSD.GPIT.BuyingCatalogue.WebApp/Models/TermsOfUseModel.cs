@@ -19,6 +19,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Models
                 = AlreadyAcceptedLatestTerms
                 = user.HasAcceptedLatestTermsOfUse(termsOfUseRevisionDate);
 
+            IsBuyer = user.IsBuyer();
+
             HasOptedInUserResearch = user.HasOptedInUserResearch;
         }
 
@@ -29,6 +31,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Models
         public bool HasOptedInUserResearch { get; set; }
 
         public bool AlreadyAcceptedLatestTerms { get; set; }
+
+        public bool IsBuyer { get; set; }
+
+        public bool ShouldShowCheckboxes => IsBuyer && !AlreadyAcceptedLatestTerms;
 
         public bool IsAuthenticated { get; set; }
 

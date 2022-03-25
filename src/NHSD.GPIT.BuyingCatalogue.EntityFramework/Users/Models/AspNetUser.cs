@@ -51,5 +51,7 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Users.Models
 
         public bool HasAcceptedLatestTermsOfUse(DateTime revisionDate)
             => AcceptedTermsOfUseDate.GetValueOrDefault() >= revisionDate;
+
+        public bool IsBuyer() => string.Equals(OrganisationFunction, "Buyer", StringComparison.OrdinalIgnoreCase);
     }
 }

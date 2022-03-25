@@ -362,8 +362,10 @@
         {
             <form method="post" data-test-id="terms-form">                
                 <input type="hidden" asp-for="ReturnUrl" />
+                <input type="hidden" asp-for="IsBuyer" />
                 <input type="hidden" asp-for="AlreadyAcceptedLatestTerms" />
-                @if (!Model.AlreadyAcceptedLatestTerms)
+                <input type="hidden" asp-for="ShouldShowCheckboxes" />
+                @if (Model.ShouldShowCheckboxes)
                 {
                     var privacyPolicyUrl = Url.Action(nameof(HomeController.PrivacyPolicy), typeof(HomeController).ControllerName());
 

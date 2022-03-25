@@ -13,12 +13,12 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Validation
             RuleFor(m => m.HasAcceptedTermsOfUse)
                 .Equal(true)
                 .WithMessage(TermsOfUseErrorMessage)
-                .Unless(m => m.AlreadyAcceptedLatestTerms);
+                .Unless(m => m.AlreadyAcceptedLatestTerms || !m.IsBuyer);
 
             RuleFor(m => m.HasAcceptedPrivacyPolicy)
                 .Equal(true)
                 .WithMessage(PrivacyPolicyErrorMessage)
-                .Unless(m => m.AlreadyAcceptedLatestTerms);
+                .Unless(m => m.AlreadyAcceptedLatestTerms || !m.IsBuyer);
         }
     }
 }
