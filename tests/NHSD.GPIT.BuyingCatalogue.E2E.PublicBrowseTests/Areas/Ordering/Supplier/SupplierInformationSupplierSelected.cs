@@ -3,6 +3,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using FluentAssertions;
 using Microsoft.EntityFrameworkCore;
+using NHSD.GPIT.BuyingCatalogue.E2ETests.Objects.Ordering;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Utils;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.TestBases;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
@@ -39,7 +40,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering.Supplier
         {
             NavigateToUrl(
                 typeof(SupplierController),
-                nameof(SupplierController.SupplierSearch),
+                nameof(SupplierController.SelectSupplier),
                 Parameters);
 
             CommonActions.PageLoadedCorrectGetIndex(
@@ -53,9 +54,9 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering.Supplier
             CommonActions.PageTitle().Should().BeEquivalentTo($"Supplier contact details - Order {CallOffId}".FormatForComparison());
             CommonActions.GoBackLinkDisplayed().Should().BeTrue();
             CommonActions.SaveButtonDisplayed().Should().BeTrue();
-            CommonActions.ElementIsDisplayed(Objects.Ordering.SupplierInformation.CreateNewContactLink).Should().BeTrue();
+            CommonActions.ElementIsDisplayed(SupplierObjects.CreateNewContactLink).Should().BeTrue();
 
-            CommonActions.ElementIsDisplayed(Objects.Ordering.SupplierInformation.SupplierRadioContainer).Should().BeTrue();
+            CommonActions.ElementIsDisplayed(SupplierObjects.SupplierRadioContainer).Should().BeTrue();
             CommonActions.GetNumberOfRadioButtonsDisplayed().Should().Be(3);
             CommonActions.GetNumberOfSelectedRadioButtons().Should().Be(0);
         }
@@ -73,7 +74,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering.Supplier
             CommonActions.ErrorSummaryLinksExist().Should().BeTrue();
 
             CommonActions.ElementShowingCorrectErrorMessage(
-                Objects.Ordering.SupplierInformation.SupplierContactRadioErrorMessage,
+                SupplierObjects.SupplierContactRadioErrorMessage,
                 $"Error:{SupplierModelValidator.ContactNotSelectedErrorMessage}").Should().BeTrue();
         }
 
@@ -92,7 +93,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering.Supplier
         [Fact]
         public void SupplierInformation_NoContactSelected_AddNewContact_NewContactSelected()
         {
-            CommonActions.ClickLinkElement(Objects.Ordering.SupplierInformation.CreateNewContactLink);
+            CommonActions.ClickLinkElement(SupplierObjects.CreateNewContactLink);
 
             CommonActions.PageLoadedCorrectGetIndex(
                 typeof(SupplierController),
@@ -110,7 +111,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering.Supplier
                 typeof(SupplierController),
                 nameof(SupplierController.Supplier)).Should().BeTrue();
 
-            CommonActions.ElementIsDisplayed(Objects.Ordering.SupplierInformation.SupplierRadioContainer).Should().BeTrue();
+            CommonActions.ElementIsDisplayed(SupplierObjects.SupplierRadioContainer).Should().BeTrue();
             CommonActions.GetNumberOfRadioButtonsDisplayed().Should().Be(4);
             CommonActions.GetNumberOfSelectedRadioButtons().Should().Be(1);
         }
@@ -128,9 +129,9 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering.Supplier
             CommonActions.PageTitle().Should().BeEquivalentTo($"Supplier contact details - Order {CallOffId}".FormatForComparison());
             CommonActions.GoBackLinkDisplayed().Should().BeTrue();
             CommonActions.SaveButtonDisplayed().Should().BeTrue();
-            CommonActions.ElementIsDisplayed(Objects.Ordering.SupplierInformation.CreateNewContactLink).Should().BeTrue();
+            CommonActions.ElementIsDisplayed(SupplierObjects.CreateNewContactLink).Should().BeTrue();
 
-            CommonActions.ElementIsDisplayed(Objects.Ordering.SupplierInformation.SupplierRadioContainer).Should().BeTrue();
+            CommonActions.ElementIsDisplayed(SupplierObjects.SupplierRadioContainer).Should().BeTrue();
             CommonActions.GetNumberOfRadioButtonsDisplayed().Should().Be(3);
             CommonActions.GetNumberOfSelectedRadioButtons().Should().Be(1);
         }
