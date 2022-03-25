@@ -4,22 +4,23 @@ using System.Linq;
 using System.Threading.Tasks;
 using FluentAssertions;
 using Microsoft.EntityFrameworkCore;
+using NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.RandomData;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Objects.Common;
+using NHSD.GPIT.BuyingCatalogue.E2ETests.Objects.Ordering;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Utils;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.TestBases;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers;
+using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Validators.Supplier;
 using Xunit;
 
 namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering.Supplier
 {
-    public sealed class SupplierInformation
-        : BuyerTestBase, IClassFixture<LocalWebApplicationFactory>, IDisposable
+    public sealed class SupplierInformation : BuyerTestBase, IClassFixture<LocalWebApplicationFactory>, IDisposable
     {
         private const string InternalOrgId = "CG-03F";
-        private const string SearchWithContact = "E2E Test Supplier With Contact";
-        private const string SearchNoContact = "E2E Test Supplier";
+        private const string SupplierName = "E2E Test Supplier With Contact";
         private static readonly CallOffId CallOffId = new(90002, 1);
 
         private static readonly Dictionary<string, string> Parameters = new()
@@ -29,144 +30,89 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering.Supplier
         };
 
         public SupplierInformation(LocalWebApplicationFactory factory)
-            : base(
-                  factory,
-                  typeof(SupplierController),
-                  nameof(SupplierController.Supplier),
-                  Parameters)
+            : base(factory, typeof(SupplierController), nameof(SupplierController.Supplier), Parameters)
         {
         }
 
         [Fact]
-        public void SupplierInformation_AllSectionsDisplayed()
+        public void SupplierInformation_SelectSupplier_AllSectionsDisplayed()
         {
-            CommonActions.PageTitle().Should().BeEquivalentTo($"Find supplier information - Order {CallOffId}".FormatForComparison());
+            CommonActions.PageTitle().Should().BeEquivalentTo($"Select supplier - Order {CallOffId}".FormatForComparison());
             CommonActions.GoBackLinkDisplayed().Should().BeTrue();
+            CommonActions.ElementIsDisplayed(SupplierObjects.SupplierAutoComplete).Should().BeTrue();
             CommonActions.SaveButtonDisplayed().Should().BeTrue();
-            CommonActions.ElementIsDisplayed(Objects.Ordering.SupplierInformation.SupplierSearchInput).Should().BeTrue();
         }
 
         [Fact]
-        public void SupplierInformation_ClickGoBackLink_ExpectedResult()
+        public void SupplierInformation_SelectSupplier_FilterSuppliers_WithMatches_ExpectedResult()
+        {
+            CommonActions.AutoCompleteAddValue(SupplierObjects.SupplierAutoComplete, SupplierName);
+            CommonActions.WaitUntilElementIsDisplayed(SupplierObjects.SearchListBox);
+
+            CommonActions.ElementIsDisplayed(SupplierObjects.SearchResult(0)).Should().BeTrue();
+            CommonActions.ElementTextEqualTo(SupplierObjects.SearchResult(0), SupplierName).Should().BeTrue();
+        }
+
+        [Fact]
+        public void SupplierInformation_SelectSupplier_FilterSuppliers_WithNoMatches_ExpectedResult()
+        {
+            CommonActions.ElementAddValue(SupplierObjects.SupplierAutoComplete, SupplierName + "XYZ");
+            CommonActions.WaitUntilElementIsDisplayed(SupplierObjects.SearchListBox);
+
+            CommonActions.ElementIsDisplayed(SupplierObjects.SearchResultsErrorMessage).Should().BeTrue();
+        }
+
+        [Fact]
+        public void SupplierInformation_SelectSupplier_ClickGoBackLink_ExpectedResult()
         {
             CommonActions.ClickGoBackLink();
 
-            CommonActions
-            .PageLoadedCorrectGetIndex(
+            CommonActions.PageLoadedCorrectGetIndex(
                 typeof(OrderController),
-                nameof(OrderController.Order))
-            .Should()
-            .BeTrue();
+                nameof(OrderController.Order)).Should().BeTrue();
         }
 
         [Fact]
-        public void SupplierInformation_NoInput_ReturnsNoSupplierFound()
+        public void SupplierInformation_SelectSupplier_NoInput_DisplaysValidationErrors()
         {
             CommonActions.ClickSave();
 
             CommonActions.PageLoadedCorrectGetIndex(
                 typeof(SupplierController),
-                nameof(SupplierController.SupplierSearchSelect)).Should().BeTrue();
-
-            CommonActions.PageTitle().Should().BeEquivalentTo("No supplier found".FormatForComparison());
-        }
-
-        [Fact]
-        public void SupplierInformation_InvalidSupplierNameSupplied_ReturnsNoSupplierFound()
-        {
-            TextGenerators.TextInputAddText(Objects.Ordering.SupplierInformation.SupplierSearchInput, 500);
-
-            CommonActions.ClickSave();
-
-            CommonActions.PageLoadedCorrectGetIndex(
-                typeof(SupplierController),
-                nameof(SupplierController.SupplierSearchSelect)).Should().BeTrue();
-
-            CommonActions.PageTitle().Should().BeEquivalentTo("No supplier found".FormatForComparison());
-        }
-
-        [Fact]
-        public void SupplierInformation_ValidSupplierNameSupplied_ReturnsMultipleSuppliers()
-        {
-            // Supplier name set in BuyingCatalogueSeedData
-            CommonActions.ElementAddValue(Objects.Ordering.SupplierInformation.SupplierSearchInput, "E2E Test Supplier");
-
-            CommonActions.ClickSave();
-
-            CommonActions.PageLoadedCorrectGetIndex(
-                    typeof(SupplierController),
-                    nameof(SupplierController.SupplierSearchSelect)).Should().BeTrue();
-
-            CommonActions.PageTitle().Should().BeEquivalentTo($"Suppliers found - Order {CallOffId}".FormatForComparison());
-
-            CommonActions.ElementIsDisplayed(Objects.Ordering.SupplierInformation.SupplierRadioContainer);
-
-            CommonActions.GetNumberOfRadioButtonsDisplayed().Should().Be(2);
-        }
-
-        [Fact]
-        public void SupplierInformation_ValidSupplierNameSupplied_ReturnsSingleSupplier()
-        {
-            // Supplier name set in BuyingCatalogueSeedData
-            CommonActions.ElementAddValue(Objects.Ordering.SupplierInformation.SupplierSearchInput, "E2E Test Supplier With Contact");
-
-            CommonActions.ClickSave();
-
-            CommonActions.PageLoadedCorrectGetIndex(
-                    typeof(SupplierController),
-                    nameof(SupplierController.SupplierSearchSelect)).Should().BeTrue();
-
-            CommonActions.PageTitle().Should().BeEquivalentTo($"Suppliers found - Order {CallOffId}".FormatForComparison());
-
-            CommonActions.ElementIsDisplayed(Objects.Ordering.SupplierInformation.SupplierRadioContainer);
-
-            CommonActions.GetNumberOfRadioButtonsDisplayed().Should().Be(1);
-        }
-
-        [Fact]
-        public void SupplierInformation_ValidSupplierWithExistingContact_DontSelectSupplier_ThrowsError()
-        {
-            var queryParameters = new Dictionary<string, string>
-            {
-                { "search", SearchWithContact },
-            };
-
-            NavigateToUrl(
-                typeof(SupplierController),
-                nameof(SupplierController.SupplierSearchSelect),
-                Parameters,
-                queryParameters);
-
-            CommonActions.ClickSave();
-
-            CommonActions.PageLoadedCorrectGetIndex(
-                typeof(SupplierController),
-                nameof(SupplierController.SupplierSearchSelect)).Should().BeTrue();
+                nameof(SupplierController.SelectSupplier)).Should().BeTrue();
 
             CommonActions.ErrorSummaryDisplayed().Should().BeTrue();
             CommonActions.ErrorSummaryLinksExist().Should().BeTrue();
 
             CommonActions.ElementShowingCorrectErrorMessage(
-                Objects.Ordering.SupplierInformation.SupplierRadioErrorMessage,
-                "Error: Please select a supplier").Should().BeTrue();
+                SupplierObjects.SupplierAutoCompleteError,
+                SelectSupplierModelValidator.SupplierMissingErrorMessage).Should().BeTrue();
+        }
+
+        [Fact]
+        public void SupplierInformation_SelectSupplier_InvalidSupplierNameSupplied_DisplaysValidationErrors()
+        {
+            CommonActions.AutoCompleteAddValue(SupplierObjects.SupplierAutoComplete, Strings.RandomString(50));
+            CommonActions.ClickLinkElement(SupplierObjects.SearchResultsErrorMessage);
+            CommonActions.ClickSave();
+
+            CommonActions.PageLoadedCorrectGetIndex(
+                typeof(SupplierController),
+                nameof(SupplierController.SelectSupplier)).Should().BeTrue();
+
+            CommonActions.ErrorSummaryDisplayed().Should().BeTrue();
+            CommonActions.ErrorSummaryLinksExist().Should().BeTrue();
+
+            CommonActions.ElementShowingCorrectErrorMessage(
+                SupplierObjects.SupplierAutoCompleteError,
+                SelectSupplierModelValidator.SupplierMissingErrorMessage).Should().BeTrue();
         }
 
         [Fact]
         public void SupplierInformation_ValidSupplierWithExistingContact_ConfirmSupplier_Expected()
         {
-            var queryParameters = new Dictionary<string, string>
-            {
-                { "search", SearchWithContact },
-            };
-
-            NavigateToUrl(
-                typeof(SupplierController),
-                nameof(SupplierController.SupplierSearchSelect),
-                Parameters,
-                queryParameters);
-
-            CommonActions.ClickRadioButtonWithText(queryParameters["search"]);
-
+            CommonActions.AutoCompleteAddValue(SupplierObjects.SupplierAutoComplete, SupplierName);
+            CommonActions.ClickLinkElement(SupplierObjects.SearchResult(0));
             CommonActions.ClickSave();
 
             CommonActions.PageLoadedCorrectGetIndex(
@@ -182,19 +128,8 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering.Supplier
         [Fact]
         public void SupplierInformation_ValidSupplierWithExistingContact_ConfirmSupplier_GoBack_Expected()
         {
-            var queryParameters = new Dictionary<string, string>
-            {
-                { "search", SearchWithContact },
-            };
-
-            NavigateToUrl(
-                typeof(SupplierController),
-                nameof(SupplierController.SupplierSearchSelect),
-                Parameters,
-                queryParameters);
-
-            CommonActions.ClickRadioButtonWithText(queryParameters["search"]);
-
+            CommonActions.AutoCompleteAddValue(SupplierObjects.SupplierAutoComplete, SupplierName);
+            CommonActions.ClickLinkElement(SupplierObjects.SearchResult(0));
             CommonActions.ClickSave();
 
             CommonActions.PageLoadedCorrectGetIndex(
@@ -205,27 +140,14 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering.Supplier
 
             CommonActions.PageLoadedCorrectGetIndex(
                 typeof(SupplierController),
-                nameof(SupplierController.SupplierSearchSelect)).Should().BeTrue();
-
-            CommonActions.GetNumberOfSelectedRadioButtons().Should().Be(1);
+                nameof(SupplierController.SelectSupplier)).Should().BeTrue();
         }
 
         [Fact]
         public void SupplierInformation_ValidSupplierWithExistingContact_ConfirmSupplier_ClickActionLick_Expected()
         {
-            var queryParameters = new Dictionary<string, string>
-            {
-                { "search", SearchWithContact },
-            };
-
-            NavigateToUrl(
-                typeof(SupplierController),
-                nameof(SupplierController.SupplierSearchSelect),
-                Parameters,
-                queryParameters);
-
-            CommonActions.ClickRadioButtonWithText(queryParameters["search"]);
-
+            CommonActions.AutoCompleteAddValue(SupplierObjects.SupplierAutoComplete, SupplierName);
+            CommonActions.ClickLinkElement(SupplierObjects.SearchResult(0));
             CommonActions.ClickSave();
 
             CommonActions.PageLoadedCorrectGetIndex(
@@ -236,13 +158,11 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering.Supplier
 
             CommonActions.PageLoadedCorrectGetIndex(
                 typeof(SupplierController),
-                nameof(SupplierController.SupplierSearchSelect)).Should().BeTrue();
-
-            CommonActions.GetNumberOfSelectedRadioButtons().Should().Be(1);
+                nameof(SupplierController.SelectSupplier)).Should().BeTrue();
         }
 
         [Fact]
-        public async Task SupplierInformation_SupplierSearch_SupplierAlreadySelected_Expected()
+        public async Task SupplierInformation_SelectSupplier_SupplierAlreadySelected_Expected()
         {
             await RunTestWithRetryAsync(async () =>
             {
@@ -256,16 +176,10 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering.Supplier
                 order.Supplier = supplier;
                 await context.SaveChangesAsync();
 
-                var queryParameters = new Dictionary<string, string>
-            {
-                { "search", SearchWithContact },
-            };
-
                 NavigateToUrl(
                     typeof(SupplierController),
-                    nameof(SupplierController.SupplierSearchSelect),
-                    Parameters,
-                    queryParameters);
+                    nameof(SupplierController.SelectSupplier),
+                    Parameters);
 
                 CommonActions.PageLoadedCorrectGetIndex(
                     typeof(SupplierController),
