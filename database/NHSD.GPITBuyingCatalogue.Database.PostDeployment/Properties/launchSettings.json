@@ -1,0 +1,10 @@
+{
+  "profiles": {
+    "NHSD.GPITBuyingCatalogue.Database.PostDeployment": {
+      "commandName": "Project"
+    },
+    "Docker": {
+      "commandName": "Docker"
+    }
+  }
+}

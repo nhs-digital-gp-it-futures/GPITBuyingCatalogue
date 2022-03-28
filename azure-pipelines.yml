@@ -192,6 +192,18 @@ jobs:
       docker rm dacpaccontainer
     displayName: 'Copy DACPACs'
 
+  - task: CopyFiles@2
+    displayName: Copy SQL Scripts
+    inputs:
+      SourceFolder: 'database/NHSD.GPITBuyingCatalogue.Database.PostDeployment/Scripts'
+      Contents: '**'
+      TargetFolder: '$(build.artifactStagingDirectory)/scripts'
+      CleanTargetFolder: false
+      OverWrite: true
+
+  - publish: $(build.artifactStagingDirectory)/scripts
+    artifact: sql-scripts 
+
   - publish: $(build.artifactStagingDirectory)/dacpacs
     artifact: dacpacs
   
