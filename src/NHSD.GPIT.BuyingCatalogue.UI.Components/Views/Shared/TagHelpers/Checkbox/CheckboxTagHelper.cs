@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Html;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.AspNetCore.Mvc.ViewFeatures;
 using Microsoft.AspNetCore.Razor.TagHelpers;
@@ -33,6 +34,9 @@ namespace NHSD.GPIT.BuyingCatalogue.UI.Components.TagHelpers
 
         [HtmlAttributeName(TagHelperConstants.LabelTextName)]
         public string LabelText { get; set; }
+
+        [HtmlAttributeName(TagHelperConstants.LabelEmbedHtml)]
+        public bool EmbedHtml { get; set; } = false;
 
         public override async Task ProcessAsync(TagHelperContext context, TagHelperOutput output)
         {
@@ -87,12 +91,20 @@ namespace NHSD.GPIT.BuyingCatalogue.UI.Components.TagHelpers
         {
             var labelText = LabelText ?? TagHelperFunctions.GetCustomAttribute<CheckboxAttribute>(For)?.DisplayText ?? string.Empty;
 
-            return htmlGenerator.GenerateLabel(
+            var tagBuilder = htmlGenerator.GenerateLabel(
                 ViewContext,
                 For.ModelExplorer,
                 For.Name,
                 labelText,
                 new { @class = $"{TagHelperConstants.NhsLabel} {NhsCheckboxLabel}" });
+
+            if (EmbedHtml)
+            {
+                tagBuilder.InnerHtml.Clear();
+                tagBuilder.InnerHtml.AppendHtml(labelText);
+            }
+
+            return tagBuilder;
         }
 
         private TagBuilder GetHiddenInputBuilder()

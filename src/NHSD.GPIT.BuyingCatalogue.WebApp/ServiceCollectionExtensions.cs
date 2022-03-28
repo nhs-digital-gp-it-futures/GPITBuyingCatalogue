@@ -150,6 +150,15 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp
             services.AddSingleton(pdfSettings);
         }
 
+        public static IServiceCollection ConfigureTermsOfUseSettings(this IServiceCollection services, IConfiguration configuration)
+        {
+            var termsOfUseSettings = configuration.GetSection("termsOfUse").Get<TermsOfUseSettings>();
+
+            services.AddSingleton(termsOfUseSettings);
+
+            return services;
+        }
+
         public static IServiceCollection ConfigureConsentCookieSettings(this IServiceCollection services, IConfiguration configuration)
         {
             var cookieExpiration = configuration.GetSection("cookieExpiration").Get<CookieExpirationSettings>();
