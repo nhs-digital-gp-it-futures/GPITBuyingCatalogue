@@ -45,18 +45,18 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models
 
         public OrderItemFundingType CurrentFundingType()
         {
-            var fundingType = OrderItemFundingType.None;
-
             if (OrderItemFunding is null)
-                return fundingType;
+                return OrderItemFundingType.None;
 
-            if (OrderItemFunding.CentralAllocation > 0)
-                fundingType |= OrderItemFundingType.CentralAllocation;
-            if (OrderItemFunding.LocalAllocation > 0)
-                fundingType |= OrderItemFundingType.LocalAllocation;
-
-            return fundingType;
+            return OrderItemFunding.CentralAllocation switch
+            {
+                var c when c > 0 && OrderItemFunding.LocalAllocation == 0 => OrderItemFundingType.CentralFunding,
+                var c when c == 0 && OrderItemFunding.LocalAllocation > 0 => OrderItemFundingType.LocalFunding,
+                _ => OrderItemFundingType.MixedFunding,
+            };
         }
+
+        public bool ItemIsLocalFundingOnly() => CatalogueItem?.Solution?.FrameworkSolutions?.All(fs => fs.Framework.LocalFundingOnly) ?? false;
 
         private decimal CalculateTotalCostcumulative(int quantity)
         {
@@ -76,7 +76,7 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models
                 }
                 else
                 {
-                    range = tier.UpperRange.Value + 1;
+                    range = tier.UpperRange.Value;
                     range -= lastUpperRange;
 
                     if (range > quantity)
@@ -87,7 +87,7 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models
                 quantity -= range;
 
                 if (tier.UpperRange.HasValue)
-                    lastUpperRange = tier.UpperRange.Value + 1;
+                    lastUpperRange = tier.UpperRange.Value;
             }
 
             return totalCost;

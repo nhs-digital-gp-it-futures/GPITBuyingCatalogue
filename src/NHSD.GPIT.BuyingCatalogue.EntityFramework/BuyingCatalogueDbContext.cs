@@ -103,7 +103,6 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework
 
         public DbSet<WorkOffPlan> WorkOffPlans { get; set; }
 
-        // TODO - This is purely for the migration and can be removed post go-live
         public DbSet<OrderItem> OrderItems { get; set; }
 
         // TODO - This is purely for the migration and can be removed post go-live

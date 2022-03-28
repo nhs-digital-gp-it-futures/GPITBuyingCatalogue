@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System.Collections.Generic;
+using System.Linq;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Enums;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Models.TaskList;
@@ -49,7 +50,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.TaskList
 
             model.FundingSource = completedSections switch
             {
-                var cs when cs.HasFlag(TaskListOrderSections.SolutionOrServiceComplete) => TaskProgress.Completed,
+                var cs when cs.HasFlag(TaskListOrderSections.FundingSourceComplete) => TaskProgress.Completed,
                 var cs when cs.HasFlag(TaskListOrderSections.FundingSourceInProgress) => TaskProgress.InProgress,
                 var cs when cs.HasFlag(TaskListOrderSections.SolutionOrServiceComplete) => TaskProgress.NotStarted,
                 _ => TaskProgress.CannotStart,
@@ -83,13 +84,35 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.TaskList
             if (order.HasSolution() || order.HasAssociatedService())
                 completedSections |= TaskListOrderSections.SolutionOrService;
 
-            if (order.OrderItems.Any(oi => oi.OrderItemFunding is not null) && !order.OrderItems.All(oi => oi.OrderItemFunding is not null))
+            if (IsFundingSourceInProgress(order.OrderItems))
+            {
                 completedSections |= TaskListOrderSections.FundingSourceInProgress;
+            }
 
-            if (order.OrderItems.All(oi => oi.OrderItemFunding is not null))
+            if (IsFundingSourceCompleted(order.OrderItems))
                 completedSections |= TaskListOrderSections.FundingSource;
 
             return completedSections;
+        }
+
+        private static bool IsFundingSourceInProgress(ICollection<OrderItem> orderItems)
+        {
+            if (orderItems.All(oi => oi.ItemIsLocalFundingOnly()))
+                return true;
+
+            var selectableOrderItems = orderItems.Where(oi => !oi.ItemIsLocalFundingOnly());
+
+            return selectableOrderItems.Any(oi => oi.OrderItemFunding is not null) && !selectableOrderItems.All(oi => oi.OrderItemFunding is not null);
+        }
+
+        private static bool IsFundingSourceCompleted(ICollection<OrderItem> orderItems)
+        {
+            if (orderItems.All(oi => oi.ItemIsLocalFundingOnly()))
+                return true;
+
+            var selectableOrderItems = orderItems.Where(oi => !oi.ItemIsLocalFundingOnly());
+
+            return selectableOrderItems.All(oi => oi.OrderItemFunding is not null);
         }
     }
 }
