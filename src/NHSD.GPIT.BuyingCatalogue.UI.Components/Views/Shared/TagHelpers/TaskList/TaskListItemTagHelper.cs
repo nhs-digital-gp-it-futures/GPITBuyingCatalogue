@@ -94,10 +94,10 @@ namespace NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.TagHelpers.TaskLi
 
                 TagText = Status switch
                 {
-                    TaskProgress.CannotStart => "Cannot Start Yet",
+                    TaskProgress.CannotStart => "Cannot start yet",
                     TaskProgress.Optional => "Optional",
-                    TaskProgress.InProgress => "In Progress",
-                    TaskProgress.NotStarted => "Not Started",
+                    TaskProgress.InProgress => "In&nbsp;progress",
+                    TaskProgress.NotStarted => "Not started",
                     _ => "Completed",
                 },
             };

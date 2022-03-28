@@ -19,6 +19,6 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.Models.TaskList
         SupplierContactComplete = SupplierContact | SupplierComplete,
         CommencementDateComplete = CommencementDate | SupplierContactComplete,
         SolutionOrServiceComplete = SolutionOrService | CommencementDateComplete,
-        FundingSourceComplete = FundingSource | FundingSourceInProgress | SolutionOrServiceComplete,
+        FundingSourceComplete = FundingSource | SolutionOrServiceComplete,
     }
 }

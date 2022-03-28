@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using System.Reflection;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.AspNetCore.Mvc.ViewFeatures;
@@ -15,6 +14,7 @@ namespace NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.TagHelpers.Radios
         public const string TagHelperName = "nhs-radio-button";
 
         private const string IndexName = "index";
+        private const string HintTextName = "hint-text";
 
         private readonly IHtmlGenerator htmlGenerator;
 
@@ -36,6 +36,12 @@ namespace NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.TagHelpers.Radios
         [HtmlAttributeName(TagHelperConstants.DisplayName)]
         public string DisplayName { get; set; }
 
+        [HtmlAttributeName(TagHelperConstants.HintName)]
+        public string HintName { get; set; }
+
+        [HtmlAttributeName(HintTextName)]
+        public string HintText { get; set; }
+
         [HtmlAttributeName(IndexName)]
         public int Index { get; set; }
 
@@ -46,32 +52,21 @@ namespace NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.TagHelpers.Radios
 
             output.Attributes.Add(new TagHelperAttribute(TagHelperConstants.Class, TagHelperConstants.RadioItemClass));
 
-            var input = RadioButtonBuilders.GetRadioInputBuilder(ViewContext, For, htmlGenerator, Value, ValueName, Index);
+            var hint = BuildHintFromTextOrValue();
+            var input = RadioButtonBuilders.GetRadioInputBuilder(ViewContext, For, htmlGenerator, Value, ValueName, Index, hint);
             var label = RadioButtonBuilders.GetRadioLabelBuilder(ViewContext, For, htmlGenerator, Value, DisplayName, Index);
 
             var childContent = await output.GetChildContentAsync();
 
             if (!childContent.IsEmptyOrWhiteSpace)
             {
-                bool IsTheCurrentItemChecked()
-                {
-                    var radioCheckedValue = Value
-                        .GetType()
-                        .GetProperties(BindingFlags.Public | BindingFlags.Instance)
-                        .Where(p => string.Equals(p.Name, ValueName))
-                        .Select(p => p.GetValue(Value, null))
-                        .FirstOrDefault();
-
-                    return radioCheckedValue is not null && Equals(radioCheckedValue, For.Model?.ToString());
-                }
-
                 var tags = new List<string>(2)
                 {
                     TagHelperConstants.NhsRadiosChildConditional,
                     TagHelperConstants.NhsRadiosChildConditionalHidden,
                 };
 
-                if (IsTheCurrentItemChecked())
+                if (input.Attributes.Keys.Any(key => key == "checked"))
                     tags.Remove(TagHelperConstants.NhsRadiosChildConditionalHidden);
 
                 TagHelperFunctions.ProcessOutputForConditionalContent(
@@ -86,7 +81,17 @@ namespace NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.TagHelpers.Radios
 
             output.Content
                 .AppendHtml(input)
-                .AppendHtml(label);
+                .AppendHtml(label)
+                .AppendHtml(hint);
+        }
+
+        private TagBuilder BuildHintFromTextOrValue()
+        {
+            if (!string.IsNullOrWhiteSpace(HintName))
+                return RadioButtonBuilders.GetRadioHintBuilder(For, Value, HintName, Index);
+            else if (!string.IsNullOrWhiteSpace(HintText))
+                return RadioButtonBuilders.GetRadioHintBuilder(For, HintText, Index);
+            return null;
         }
     }
 }

@@ -32,6 +32,9 @@ namespace NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.TagHelpers.Table
         [HtmlAttributeName(TagHelperConstants.LabelTextName)]
         public string LabelText { get; set; }
 
+        [HtmlAttributeName(TagHelperConstants.LabelHintName)]
+        public string HintText { get; set; }
+
         [HtmlAttributeName(DisableHeaderName)]
         public bool DisableHeader { get; set; }
 
@@ -124,7 +127,31 @@ namespace NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.TagHelpers.Table
 
             builder.AddCssClass(TableCaptionClass);
 
-            builder.InnerHtml.Append(LabelText);
+            builder.InnerHtml
+                .Append(LabelText)
+                .AppendHtml(GetCaptionHintBuilder());
+
+            return builder;
+        }
+
+        private TagBuilder GetCaptionHintBuilder()
+        {
+            if (string.IsNullOrWhiteSpace(HintText))
+                return null;
+
+            var builder = new TagBuilder("span");
+
+            builder.AddCssClass(TagHelperConstants.NhsHint);
+            builder.MergeAttribute("style", "margin-bottom:0;");
+
+            var hiddenSpanBuilder = new TagBuilder("span");
+
+            hiddenSpanBuilder.AddCssClass(TagHelperConstants.NhsVisuallyHidden);
+            hiddenSpanBuilder.InnerHtml.Append("-");
+
+            builder.InnerHtml
+                .AppendHtml(hiddenSpanBuilder)
+                .AppendHtml(HintText);
 
             return builder;
         }

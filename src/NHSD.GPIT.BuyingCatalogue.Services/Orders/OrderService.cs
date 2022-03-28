@@ -56,14 +56,38 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
                 .SingleOrDefaultAsync();
         }
 
-        public Task<Order> GetOrderWithDefaultDeliveryDatesAndOrderItems(CallOffId callOffId, string internalOrgId)
+        public Task<Order> GetOrderWithOrderItems(CallOffId callOffId, string internalOrgId)
         {
             return dbContext.Orders
                 .Where(o =>
                     o.Id == callOffId.Id
                     && o.OrderingParty.InternalIdentifier == internalOrgId)
                 .Include(o => o.OrderItems).ThenInclude(i => i.CatalogueItem)
+                .Include(o => o.OrderItems).ThenInclude(i => i.OrderItemFunding)
+                .Include(o => o.OrderItems).ThenInclude(i => i.OrderItemPrice).ThenInclude(ip => ip.OrderItemPriceTiers)
                 .Include(o => o.OrderItems).ThenInclude(i => i.OrderItemRecipients).ThenInclude(r => r.Recipient)
+                .SingleOrDefaultAsync();
+        }
+
+        public Task<Order> GetOrderWithOrderItemsForFunding(CallOffId callOffId, string internalOrgId)
+        {
+            return dbContext.Orders
+                .Where(o =>
+                    o.Id == callOffId.Id
+                    && o.OrderingParty.InternalIdentifier == internalOrgId)
+                .Include(o => o.OrderItems)
+                    .ThenInclude(i => i.CatalogueItem)
+                    .ThenInclude(ci => ci.Solution)
+                    .ThenInclude(s => s.FrameworkSolutions)
+                    .ThenInclude(fs => fs.Framework)
+                .Include(o => o.OrderItems)
+                    .ThenInclude(i => i.OrderItemFunding)
+                .Include(o => o.OrderItems)
+                    .ThenInclude(i => i.OrderItemPrice)
+                    .ThenInclude(ip => ip.OrderItemPriceTiers)
+                .Include(o => o.OrderItems)
+                    .ThenInclude(i => i.OrderItemRecipients)
+                    .ThenInclude(r => r.Recipient)
                 .SingleOrDefaultAsync();
         }
 
@@ -78,13 +102,9 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
                 .SingleOrDefaultAsync();
         }
 
-        // TODO - Tiered Pricing - Reintroduct Pricing Information
         public Task<Order> GetOrderForSummary(CallOffId callOffId, string internalOrgId)
         {
             return dbContext.Orders
-                .Where(o =>
-                    o.Id == callOffId.Id
-                    && o.OrderingParty.InternalIdentifier == internalOrgId)
                 .Include(o => o.OrderingParty)
                 .Include(o => o.OrderingPartyContact)
                 .Include(o => o.Supplier)
@@ -92,9 +112,12 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
                 .Include(o => o.ServiceInstanceItems)
                 .Include(o => o.LastUpdatedByUser)
                 .Include(o => o.OrderItems).ThenInclude(i => i.CatalogueItem)
+                .Include(o => o.OrderItems).ThenInclude(i => i.OrderItemFunding)
+                .Include(o => o.OrderItems).ThenInclude(i => i.OrderItemPrice).ThenInclude(ip => ip.OrderItemPriceTiers)
                 .Include(o => o.OrderItems).ThenInclude(i => i.OrderItemRecipients).ThenInclude(r => r.Recipient)
-                /*.Include(o => o.OrderItems).ThenInclude(i => i.CataloguePrice).ThenInclude(p => p.PricingUnit)*/
-                .SingleOrDefaultAsync();
+                .SingleOrDefaultAsync(o =>
+                    o.Id == callOffId.Id
+                    && o.OrderingParty.InternalIdentifier == internalOrgId);
         }
 
         public async Task<PagedList<Order>> GetPagedOrders(int organisationId, PageOptions options, string search = null)
