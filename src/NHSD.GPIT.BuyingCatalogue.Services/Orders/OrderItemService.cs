@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework;
@@ -30,9 +29,6 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
 
         public async Task<OrderItem> SaveOrUpdateOrderItemFunding(CallOffId callOffId, string internalOrgId, CatalogueItemId catalogueItemId, OrderItemFundingType selectedFundingType, decimal? centrallyAllocatedAmount = null)
         {
-            var centrallyAllocated = 0M;
-            var locallyAllocated = 0M;
-
             var item = await dbContext.OrderItems
                 .Include(oi => oi.OrderItemFunding)
                 .Include(oi => oi.CatalogueItem)
@@ -45,22 +41,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
 
             decimal totalCost = item.CalculateTotalCost();
 
-            switch (selectedFundingType)
-            {
-                case OrderItemFundingType.CentralFunding:
-                    centrallyAllocated = totalCost;
-                    break;
-                case OrderItemFundingType.LocalFunding:
-                    locallyAllocated = totalCost;
-                    break;
-                case OrderItemFundingType.MixedFunding:
-                    centrallyAllocated = centrallyAllocatedAmount.Value;
-                    locallyAllocated = totalCost - centrallyAllocatedAmount.Value;
-                    break;
-                case OrderItemFundingType.None:
-                default:
-                    throw new ArgumentOutOfRangeException(nameof(selectedFundingType));
-            }
+            var (localAllocation, centralAllocation) = CalculateFundingSplit(totalCost, selectedFundingType, centrallyAllocatedAmount);
 
             if (item.OrderItemFunding is null)
             {
@@ -69,20 +50,29 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
                     OrderId = callOffId.Id,
                     CatalogueItemId = catalogueItemId,
                     TotalPrice = totalCost,
-                    CentralAllocation = centrallyAllocated,
-                    LocalAllocation = locallyAllocated,
+                    CentralAllocation = centralAllocation,
+                    LocalAllocation = localAllocation,
                 };
             }
             else
             {
                 item.OrderItemFunding.TotalPrice = totalCost;
-                item.OrderItemFunding.CentralAllocation = centrallyAllocated;
-                item.OrderItemFunding.LocalAllocation = locallyAllocated;
+                item.OrderItemFunding.CentralAllocation = centralAllocation;
+                item.OrderItemFunding.LocalAllocation = localAllocation;
             }
 
             await dbContext.SaveChangesAsync();
 
             return item;
         }
+
+        private static (decimal LocalAllocation, decimal CentralAllocation) CalculateFundingSplit(decimal totalCost, OrderItemFundingType fundingType, decimal? centralAllocation) =>
+            fundingType switch
+            {
+                OrderItemFundingType.CentralFunding => (0M, totalCost),
+                OrderItemFundingType.LocalFunding => (totalCost, 0M),
+                OrderItemFundingType.MixedFunding => (totalCost - centralAllocation.Value, centralAllocation.Value),
+                _ or OrderItemFundingType.None => throw new ArgumentOutOfRangeException(nameof(fundingType)),
+            };
     }
 }

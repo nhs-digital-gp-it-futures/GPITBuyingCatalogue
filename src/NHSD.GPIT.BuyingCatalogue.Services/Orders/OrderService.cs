@@ -111,7 +111,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
                 .Include(o => o.SupplierContact)
                 .Include(o => o.ServiceInstanceItems)
                 .Include(o => o.LastUpdatedByUser)
-                .Include(o => o.OrderItems).ThenInclude(i => i.CatalogueItem)
+                .Include(o => o.OrderItems).ThenInclude(i => i.CatalogueItem).ThenInclude(ci => ci.Solution).ThenInclude(s => s.FrameworkSolutions).ThenInclude(fs => fs.Framework)
                 .Include(o => o.OrderItems).ThenInclude(i => i.OrderItemFunding)
                 .Include(o => o.OrderItems).ThenInclude(i => i.OrderItemPrice).ThenInclude(ip => ip.OrderItemPriceTiers)
                 .Include(o => o.OrderItems).ThenInclude(i => i.OrderItemRecipients).ThenInclude(r => r.Recipient)

@@ -46,7 +46,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
         [HttpGet]
         public async Task<IActionResult> Order(string internalOrgId, CallOffId callOffId)
         {
-            var order = await orderService.GetOrderForSummary(callOffId, internalOrgId);
+            var order = await orderService.GetOrderThin(callOffId, internalOrgId);
 
             if (order.OrderStatus == OrderStatus.Completed)
             {
@@ -56,7 +56,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
                     new { internalOrgId, callOffId });
             }
 
-            var sectionStatuses = taskListService.GetTaskListStatusModelForOrder(order);
+            var sectionStatuses = await taskListService.GetTaskListStatusModelForOrder(order.Id);
 
             var orderModel = new OrderModel(internalOrgId, order, sectionStatuses)
             {
