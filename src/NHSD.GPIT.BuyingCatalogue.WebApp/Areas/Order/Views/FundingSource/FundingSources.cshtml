@@ -56,9 +56,9 @@
 				}           
 				<nhs-table-row-container>
 					<nhs-table-cell><b>Total</b></nhs-table-cell>
-					<nhs-table-cell>@($"£{Model.OrderItemsSelectable.Sum(oi => oi.CalculateTotalCost()).ToString("N2")}")</nhs-table-cell>
 					<nhs-table-cell>@($"£{Model.OrderItemsSelectable.Sum(oi => oi.OrderItemFunding?.CentralAllocation ?? 0M).ToString("N2")}")</nhs-table-cell>
 					<nhs-table-cell>@($"£{Model.OrderItemsSelectable.Sum(oi => oi.OrderItemFunding?.LocalAllocation ?? 0M).ToString("N2")}")</nhs-table-cell>
+					<nhs-table-cell>@($"£{Model.OrderItemsSelectable.Sum(oi => oi.CalculateTotalCost()).ToString("N2")}")</nhs-table-cell>
 					<nhs-table-cell></nhs-table-cell>
 					<nhs-table-cell></nhs-table-cell>
 				</nhs-table-row-container>

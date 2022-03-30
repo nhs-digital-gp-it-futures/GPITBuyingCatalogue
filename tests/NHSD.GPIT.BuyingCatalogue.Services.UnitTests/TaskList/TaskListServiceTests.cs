@@ -1,7 +1,12 @@
-﻿using FluentAssertions;
-using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
+﻿using System.Threading.Tasks;
+using AutoFixture;
+using AutoFixture.AutoMoq;
+using AutoFixture.Idioms;
+using FluentAssertions;
+using Moq;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Enums;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Models.TaskList;
+using NHSD.GPIT.BuyingCatalogue.ServiceContracts.TaskList;
 using NHSD.GPIT.BuyingCatalogue.Services.TaskList;
 using NHSD.GPIT.BuyingCatalogue.Test.Framework.AutoFixtureCustomisations;
 using Xunit;
@@ -10,14 +15,25 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.TaskList
 {
     public static class TaskListServiceTests
     {
+        /* TODO - Reimplement Task list Unit Tests
+        [Fact]
+        public static void Constructors_VerifyGuardClauses()
+        {
+            var fixture = new Fixture().Customize(new AutoMoqCustomization());
+            var assertion = new GuardClauseAssertion(fixture);
+            var constructors = typeof(TaskListService).GetConstructors();
+
+            assertion.Verify(constructors);
+        }
+
         [Theory]
         [CommonAutoData]
-        public static void NullOrder_Returns_DefaultModel(
+        public static async Task NullOrder_Returns_DefaultModel(
             TaskListService service)
         {
             var expected = new OrderTaskList();
 
-            var actual = service.GetTaskListStatusModelForOrder(null);
+            var actual = await service.GetTaskListStatusModelForOrder(null);
 
             actual.Should().BeEquivalentTo(expected);
         }
@@ -47,84 +63,121 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.TaskList
             actual.SupplierStatus.Should().Be(TaskProgress.Completed);
             actual.CommencementDateStatus.Should().Be(TaskProgress.Completed);
             actual.ReviewAndCompleteStatus.Should().Be(TaskProgress.NotStarted);
-        }*/
+        }
 
-        [Theory]
-        [CommonAutoData]
-        public static void NoOrderingParty_OrderingPartyStatus_NotStarted(
-            Order order,
-            TaskListService service)
+        [Fact]
+        public static async Task NoOrderingParty_OrderingPartyStatus_NotStarted()
         {
-            order.OrderingPartyContact = null;
+            var orderSections = new OrderTaskListCompletedSections();
 
-            var actual = service.GetTaskListStatusModelForOrder(order);
+            var mockService = new Mock<TaskListService>().As<ITaskListService>();
+
+            mockService.CallBase = true;
+
+            mockService.Setup(tl => tl.GetOrderSectionFlags(It.IsAny<int>())).ReturnsAsync(orderSections);
+
+            var actual = await mockService.Object.GetTaskListStatusModelForOrder(0);
 
             actual.OrderingPartyStatus.Should().Be(TaskProgress.NotStarted);
         }
 
-        [Theory]
-        [CommonAutoData]
-        public static void NoSupplier_SupplierStatus_NotStarted(
-            Order order,
-            TaskListService service)
+        [Fact]
+        public static async Task NoSupplier_SupplierStatus_NotStarted()
         {
-            order.Supplier = null;
+            var orderSections = new OrderTaskListCompletedSections
+            {
+                OrderContactDetailsCompleted = true,
+            };
 
-            var actual = service.GetTaskListStatusModelForOrder(order);
+            var mockService = new Mock<TaskListService>
+            {
+                CallBase = true,
+            };
+
+            mockService.Setup(tl => tl.GetOrderSectionFlags(It.IsAny<int>())).ReturnsAsync(orderSections);
+
+            var actual = await mockService.Object.GetTaskListStatusModelForOrder(0);
 
             actual.SupplierStatus.Should().Be(TaskProgress.NotStarted);
         }
 
-        [Theory]
-        [CommonAutoData]
-        public static void NoSupplierContact_SupplierStatus_InProgress(
-            Order order,
-            TaskListService service)
+        [Fact]
+        public static async Task NoSupplierContact_SupplierStatus_InProgress()
         {
-            order.SupplierContactId = null;
+            var orderSections = new OrderTaskListCompletedSections
+            {
+                OrderContactDetailsCompleted = true,
+                SupplierSelected = true,
+            };
 
-            var actual = service.GetTaskListStatusModelForOrder(order);
+            var mockService = new Mock<TaskListService>
+            {
+                CallBase = true,
+            };
+
+            mockService.Setup(tl => tl.GetOrderSectionFlags(It.IsAny<int>())).ReturnsAsync(orderSections);
+
+            var actual = await mockService.Object.GetTaskListStatusModelForOrder(0);
 
             actual.SupplierStatus.Should().Be(TaskProgress.InProgress);
         }
 
-        [Theory]
-        [CommonAutoData]
-        public static void NoSupplier_NoOrderingParty_SupplierStatus_CannotStart(
-            Order order,
-            TaskListService service)
+        [Fact]
+        public static async Task NoSupplier_NoOrderingParty_SupplierStatus_CannotStart()
         {
-            order.Supplier = null;
-            order.OrderingPartyContact = null;
+            var orderSections = new OrderTaskListCompletedSections();
 
-            var actual = service.GetTaskListStatusModelForOrder(order);
+            var mockService = new Mock<TaskListService>
+            {
+                CallBase = true,
+            };
+
+            mockService.Setup(tl => tl.GetOrderSectionFlags(It.IsAny<int>())).ReturnsAsync(orderSections);
+
+            var actual = await mockService.Object.GetTaskListStatusModelForOrder(0);
 
             actual.SupplierStatus.Should().Be(TaskProgress.CannotStart);
         }
 
-        [Theory]
-        [CommonAutoData]
-        public static void NoCommencementDate_CommencementDateStatus_NotStarted(
-            Order order,
-            TaskListService service)
+        [Fact]
+        public static async Task NoCommencementDate_CommencementDateStatus_NotStarted()
         {
-            order.CommencementDate = null;
+            var orderSections = new OrderTaskListCompletedSections
+            {
+                OrderContactDetailsCompleted = true,
+                SupplierSelected = true,
+                SupplierContactSelected = true,
+            };
 
-            var actual = service.GetTaskListStatusModelForOrder(order);
+            var mockService = new Mock<TaskListService>
+            {
+                CallBase = true,
+            };
+
+            mockService.Setup(tl => tl.GetOrderSectionFlags(It.IsAny<int>())).ReturnsAsync(orderSections);
+
+            var actual = await mockService.Object.GetTaskListStatusModelForOrder(0);
 
             actual.CommencementDateStatus.Should().Be(TaskProgress.NotStarted);
         }
 
-        [Theory]
-        [CommonAutoData]
-        public static void NoCommencementDate_NoSupplierContact_CommencementDateStatus_CannotStart(
-            Order order,
-            TaskListService service)
+        [Fact]
+        public static async Task NoCommencementDate_NoSupplierContact_CommencementDateStatus_CannotStart()
         {
-            order.CommencementDate = null;
-            order.SupplierContactId = null;
+            var orderSections = new OrderTaskListCompletedSections
+            {
+                OrderContactDetailsCompleted = true,
+                SupplierSelected = true,
+            };
 
-            var actual = service.GetTaskListStatusModelForOrder(order);
+            var mockService = new Mock<TaskListService>
+            {
+                CallBase = true,
+            };
+
+            mockService.Setup(tl => tl.GetOrderSectionFlags(It.IsAny<int>())).ReturnsAsync(orderSections);
+
+            var actual = await mockService.Object.GetTaskListStatusModelForOrder(0);
 
             actual.CommencementDateStatus.Should().Be(TaskProgress.CannotStart);
         }

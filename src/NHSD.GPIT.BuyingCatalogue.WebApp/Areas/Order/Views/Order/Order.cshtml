@@ -47,8 +47,8 @@
                     <nhs-task-list-section label-text="Add solutions and services">
                         <nhs-task-list-item label-text="Select solutions and services"
                                             url="#"
-                                            status="NotStarted" />
-						<nhs-task-list-item label-text="Indicate funding source"
+                                            status="@Model.SectionStatuses.SolutionOrService" />
+						<nhs-task-list-item label-text="Select funding sources"
                                             url="@Url.Action(
                                                     nameof(FundingSourceController.FundingSources),
                                                     typeof(FundingSourceController).ControllerName(),
