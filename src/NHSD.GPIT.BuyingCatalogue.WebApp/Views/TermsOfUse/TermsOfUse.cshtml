@@ -358,14 +358,14 @@
             </p>
         </section>
 
-        @if (Model.IsAuthenticated)
+        @if (Model.IsAuthenticated && Model.IsBuyer)
         {
             <form method="post" data-test-id="terms-form">                
                 <input type="hidden" asp-for="ReturnUrl" />
                 <input type="hidden" asp-for="IsBuyer" />
                 <input type="hidden" asp-for="AlreadyAcceptedLatestTerms" />
-                <input type="hidden" asp-for="ShouldShowCheckboxes" />
-                @if (Model.ShouldShowCheckboxes)
+
+                @if (!Model.AlreadyAcceptedLatestTerms)
                 {
                     var privacyPolicyUrl = Url.Action(nameof(HomeController.PrivacyPolicy), typeof(HomeController).ControllerName());
 
