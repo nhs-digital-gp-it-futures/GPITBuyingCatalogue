@@ -34,8 +34,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Models
 
         public bool IsBuyer { get; set; }
 
-        public bool ShouldShowCheckboxes => IsBuyer && !AlreadyAcceptedLatestTerms;
-
         public bool IsAuthenticated { get; set; }
 
         public string ReturnUrl { get; set; }

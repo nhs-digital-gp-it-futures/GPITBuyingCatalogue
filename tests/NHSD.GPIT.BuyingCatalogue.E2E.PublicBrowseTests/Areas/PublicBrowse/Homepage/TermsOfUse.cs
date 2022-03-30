@@ -81,6 +81,14 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.PublicBrowse.Homepage
         }
 
         [Fact]
+        public void Authenticated_Admin_NoFormVisible()
+        {
+            LoginAsAdmin();
+
+            CommonActions.ElementIsDisplayed(TermsOfUseObjects.Form).Should().BeFalse();
+        }
+
+        [Fact]
         public void Submit_NoSelection_ThrowsError()
         {
             ClearPrivacyPolicySelection();
@@ -170,10 +178,31 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.PublicBrowse.Homepage
         private void Login()
         {
             NavigateToUrl(
+                typeof(AccountController),
+                nameof(AccountController.Logout));
+
+            NavigateToUrl(
                     typeof(AccountController),
                     nameof(AccountController.Login));
 
             BuyerLogin(UserSeedData.AliceEmail);
+
+            NavigateToUrl(
+                typeof(TermsOfUseController),
+                nameof(TermsOfUseController.TermsOfUse));
+        }
+
+        private void LoginAsAdmin()
+        {
+            NavigateToUrl(
+                typeof(AccountController),
+                nameof(AccountController.Logout));
+
+            NavigateToUrl(
+                    typeof(AccountController),
+                    nameof(AccountController.Login));
+
+            AuthorityLogin();
 
             NavigateToUrl(
                 typeof(TermsOfUseController),
