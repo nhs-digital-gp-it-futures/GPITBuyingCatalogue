@@ -22,7 +22,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Users
         {
             return dbContext.AspNetUsers
                 .Include(x => x.PrimaryOrganisation)
-                .SingleAsync(u => u.Id == userId);
+                .FirstOrDefaultAsync(u => u.Id == userId);
         }
 
         public async Task<List<AspNetUser>> GetAllUsers()

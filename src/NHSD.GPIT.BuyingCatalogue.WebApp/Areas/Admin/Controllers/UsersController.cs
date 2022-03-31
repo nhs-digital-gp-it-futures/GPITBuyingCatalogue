@@ -123,6 +123,12 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
         public async Task<IActionResult> Details(int userId)
         {
             var user = await usersService.GetUser(userId);
+
+            if (user == null)
+            {
+                return new NotFoundResult();
+            }
+
             var orders = await orderService.GetUserOrders(userId);
 
             return View(new DetailsModel
@@ -136,6 +142,11 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
         public async Task<IActionResult> AccountStatus(int userId)
         {
             var user = await usersService.GetUser(userId);
+
+            if (user == null)
+            {
+                return new NotFoundResult();
+            }
 
             var status = user.Disabled
                 ? ServiceContracts.Enums.AccountStatus.Inactive
@@ -167,6 +178,11 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
         {
             var user = await usersService.GetUser(userId);
 
+            if (user == null)
+            {
+                return new NotFoundResult();
+            }
+
             return View(new AccountTypeModel
             {
                 BackLink = Url.Action(nameof(Details), new { userId }),
@@ -190,6 +206,12 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
         public async Task<IActionResult> Organisation(int userId)
         {
             var user = await usersService.GetUser(userId);
+
+            if (user == null)
+            {
+                return new NotFoundResult();
+            }
+
             var organisations = await organisationsService.GetAllOrganisations();
 
             return View(new OrganisationModel
@@ -224,6 +246,11 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
         {
             var user = await usersService.GetUser(userId);
 
+            if (user == null)
+            {
+                return new NotFoundResult();
+            }
+
             return View(new PersonalDetailsModel
             {
                 BackLink = Url.Action(nameof(Details), new { userId }),
@@ -254,6 +281,11 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
         public async Task<IActionResult> ResetPassword(int userId)
         {
             var user = await usersService.GetUser(userId);
+
+            if (user == null)
+            {
+                return new NotFoundResult();
+            }
 
             return View(new ResetPasswordModel
             {

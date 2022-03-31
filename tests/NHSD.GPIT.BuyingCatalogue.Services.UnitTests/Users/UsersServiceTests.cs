@@ -42,6 +42,16 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Users
 
         [Theory]
         [InMemoryDbAutoData]
+        public static async Task GetUser_NoMatchingRecord_ReturnsNull(
+            UsersService service)
+        {
+            var actual = await service.GetUser(int.MaxValue);
+
+            actual.Should().BeNull();
+        }
+
+        [Theory]
+        [InMemoryDbAutoData]
         public static async Task GetAllUsers_GetsCorrectUsersFromDatabase(
             [Frozen] BuyingCatalogueDbContext context,
             Organisation organisation,
