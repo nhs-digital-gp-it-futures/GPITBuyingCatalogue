@@ -1,12 +1,20 @@
-﻿namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models
+﻿using System.ComponentModel;
+using System.ComponentModel.DataAnnotations;
+
+namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models
 {
     public enum CataloguePriceCalculationType
     {
-        // Cumulative is where for each band, you times the quantity covered by that band by the price
-        // e.g if a tier is 1-10 items, and you have 10 items, you times the price by 10
-        Cumulative = 1,
+        [Display(Name = "Single fixed")]
+        [Description("Buyers pay one fixed price no matter what quantity they want to buy.")]
+        SingleFixed = 1,
 
-        // SingleFixed returns one price depending on which band you land in, eg, if a tier is 1-10 items, and you have 1, you pay one price, if you have 10, you pay the same price
-        SingleFixed = 2,
+        [Display(Name = "Tiered cumulative")]
+        [Description("Buyers pay one price for the quantity of units that fall into the first tier, another price for units that fall into the next tier and so on.")]
+        Cumulative = 2,
+
+        [Display(Name = "Tiered volume")]
+        [Description("Buyers pay the same price for all units based on how many they buy and the tier that quantity falls into.")]
+        Volume = 3,
     }
 }

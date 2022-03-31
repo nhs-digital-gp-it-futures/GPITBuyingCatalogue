@@ -149,7 +149,9 @@
                         <nhs-tag status-enum="@Model.ListPriceStatus" />
                     </nhs-table-cell>
                     <nhs-table-cell>
-                        <a href="#">Edit</a>
+                        <a asp-controller="@typeof(CatalogueSolutionListPriceController).ControllerName()"
+                           asp-action="@nameof(CatalogueSolutionListPriceController.Index)"
+                           asp-route-solutionId="@Model.SolutionId">Edit</a>
                     </nhs-table-cell>
                 </nhs-table-row-container>
                 <nhs-table-row-container>

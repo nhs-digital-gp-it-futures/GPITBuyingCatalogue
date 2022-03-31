@@ -6,3 +6,4 @@
 using System.Diagnostics.CodeAnalysis;
 
 [assembly: SuppressMessage("Performance", "CA1848:Use the LoggerMessage delegates", Justification = "Logger extension methods are the preferred approach for the team.")]
+[assembly: SuppressMessage("Globalization", "CA1309:Use ordinal string comparison", Justification = "LINQ to SQL")]

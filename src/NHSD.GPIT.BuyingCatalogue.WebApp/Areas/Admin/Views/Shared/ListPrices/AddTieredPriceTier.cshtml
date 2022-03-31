@@ -1,0 +1,47 @@
+﻿@using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.ListPriceModels
+@model AddTieredPriceTierModel
+
+@{
+    ViewBag.Title = "Add a pricing tier";
+}
+
+<partial name="Partials/_BackLink" model="Model" />
+<div class="nhsuk-grid-row">
+    <div class="nhsuk-grid-column-two-thirds">
+        <nhs-validation-summary RadioId="@nameof(Model.IsInfiniteRange)" />
+        <nhs-page-title title="@ViewBag.Title"
+            caption="@Model.CatalogueItemName"
+            advice="Provide information about this tier.">
+        </nhs-page-title>
+
+        <form method="post">
+            <input type="hidden" asp-for="BackLink" />
+            <input type="hidden" asp-for="CataloguePriceId" />
+            <input type="hidden" asp-for="CatalogueItemId" />
+            <input type="hidden" asp-for="CatalogueItemName" />
+
+            <nhs-bookended-input asp-for="Price" label-text="Price" label-hint="Provide the list price in pounds to a maximum of 4 decimal places." prefix="£" />
+
+            <nhs-input asp-for="LowerRange" label-text="Lower range" label-hint="Enter the number where this tier begins." input-width="Ten" />
+
+            <nhs-fieldset-form-label asp-for="IsInfiniteRange" label-text="How would you like to define the upper range?" label-hint="Select one option." size="Small">
+                <nhs-radio-button-container>
+                    <nhs-radio-button asp-for="IsInfiniteRange"
+                                      value="AddTieredPriceTierModel.AvailableRangeOptions[0]"
+                                      value-name="Value"
+                                      display-name="Name"
+                                      index="0"></nhs-radio-button>
+                    <nhs-radio-button asp-for="IsInfiniteRange"
+                                      value="AddTieredPriceTierModel.AvailableRangeOptions[1]"
+                                      value-name="Value"
+                                      display-name="Name"
+                                      index="1">
+                        <nhs-input asp-for="UpperRange" label-text="Upper range" label-hint="This is the number where this tier ends." />
+                    </nhs-radio-button>
+                </nhs-radio-button-container>
+            </nhs-fieldset-form-label>
+
+            <nhs-submit-button />
+        </form>
+    </div>
+</div>
