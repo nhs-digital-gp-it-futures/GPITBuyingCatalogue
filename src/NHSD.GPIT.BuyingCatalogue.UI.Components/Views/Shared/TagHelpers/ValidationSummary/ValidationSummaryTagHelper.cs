@@ -68,8 +68,11 @@ namespace NHSD.GPIT.BuyingCatalogue.UI.Components.TagHelpers
 
         private TagBuilder GetListItemBuilder(string linkElement, string errorMessage)
         {
-            if (!string.IsNullOrWhiteSpace(RadioId) && linkElement == RadioId)
-                linkElement = $"{RadioId}_0";
+            if (!string.IsNullOrWhiteSpace(RadioId)
+                && RadioId.Split(',').Contains(linkElement))
+            {
+                linkElement = $"{linkElement}_0";
+            }
 
             var sanitizedLinkElement = TagBuilder.CreateSanitizedId(linkElement, "_");
 

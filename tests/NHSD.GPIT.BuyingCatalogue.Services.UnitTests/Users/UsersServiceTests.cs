@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using AutoFixture.Xunit2;
 using FluentAssertions;
@@ -17,8 +18,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Users
         [Fact]
         public static void Constructor_NullRepository_ThrowsException()
         {
-            Assert.Throws<ArgumentNullException>(() => _ = new UsersService(
-                null));
+            Assert.Throws<ArgumentNullException>(() => _ = new UsersService(null));
         }
 
         [Theory]
@@ -26,14 +26,47 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Users
         public static async Task GetUser_GetsUserFromDatabase(
             [Frozen] BuyingCatalogueDbContext context,
             AspNetUser user,
+            Organisation organisation,
             UsersService service)
         {
+            user.PrimaryOrganisationId = organisation.Id;
+
             context.AspNetUsers.Add(user);
+            context.Organisations.Add(organisation);
             await context.SaveChangesAsync();
 
             var actual = await service.GetUser(user.Id);
 
             actual.Should().BeEquivalentTo(user);
+        }
+
+        [Theory]
+        [InMemoryDbAutoData]
+        public static async Task GetUser_NoMatchingRecord_ReturnsNull(
+            UsersService service)
+        {
+            var actual = await service.GetUser(int.MaxValue);
+
+            actual.Should().BeNull();
+        }
+
+        [Theory]
+        [InMemoryDbAutoData]
+        public static async Task GetAllUsers_GetsCorrectUsersFromDatabase(
+            [Frozen] BuyingCatalogueDbContext context,
+            Organisation organisation,
+            List<AspNetUser> users,
+            UsersService service)
+        {
+            users.ForEach(x => x.PrimaryOrganisationId = organisation.Id);
+
+            context.Organisations.Add(organisation);
+            context.AspNetUsers.AddRange(users);
+            await context.SaveChangesAsync();
+
+            var actual = await service.GetAllUsers();
+
+            actual.Should().BeEquivalentTo(users);
         }
 
         [Theory]
@@ -59,6 +92,46 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Users
             actual.Count.Should().Be(2);
             actual[0].UserName.Should().Be(user1.UserName);
             actual[1].UserName.Should().Be(user2.UserName);
+        }
+
+        [Theory]
+        [CommonInlineAutoData(null)]
+        [CommonInlineAutoData("")]
+        [CommonInlineAutoData(" ")]
+        public static void GetAllUsersBySearchTerm_NullSearchTerm_GetsCorrectUsersFromDatabase(
+            string searchTerm,
+            UsersService service)
+        {
+            FluentActions
+                .Awaiting(() => service.GetAllUsersBySearchTerm(searchTerm))
+                .Should().ThrowAsync<ArgumentNullException>();
+        }
+
+        [Theory]
+        [InMemoryDbAutoData]
+        public static async Task GetAllUsersBySearchTerm_GetsCorrectUsersFromDatabase(
+            string searchTerm,
+            [Frozen] BuyingCatalogueDbContext context,
+            Organisation organisation,
+            AspNetUser noMatchUser,
+            List<AspNetUser> matchUsers,
+            UsersService service)
+        {
+            noMatchUser.PrimaryOrganisationId = organisation.Id;
+            matchUsers.ForEach(x => x.PrimaryOrganisationId = organisation.Id);
+
+            matchUsers[0].FirstName = searchTerm;
+            matchUsers[1].LastName = searchTerm;
+            matchUsers[2].Email = $"{searchTerm}@x.com";
+
+            context.Organisations.Add(organisation);
+            context.AspNetUsers.Add(noMatchUser);
+            context.AspNetUsers.AddRange(matchUsers);
+            await context.SaveChangesAsync();
+
+            var actual = await service.GetAllUsersBySearchTerm(searchTerm);
+
+            actual.Should().BeEquivalentTo(matchUsers);
         }
 
         [Theory]
@@ -101,6 +174,103 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Users
             var actual = await context.AspNetUsers.SingleAsync(u => u.Id == user.Id);
 
             actual.Disabled.Should().BeFalse();
+        }
+
+        [Theory]
+        [InMemoryDbAutoData]
+        public static async Task UpdateUserAccountType_UpdatesDatabaseCorrectly(
+            string accountType,
+            [Frozen] BuyingCatalogueDbContext context,
+            AspNetUser user,
+            UsersService service)
+        {
+            context.AspNetUsers.Add(user);
+            await context.SaveChangesAsync();
+
+            await service.UpdateUserAccountType(user.Id, accountType);
+
+            var actual = await context.AspNetUsers.SingleAsync(u => u.Id == user.Id);
+
+            actual.OrganisationFunction.Should().Be(accountType);
+        }
+
+        [Theory]
+        [InMemoryDbAutoData]
+        public static async Task UpdateUserDetails_UpdatesDatabaseCorrectly(
+            string firstName,
+            string lastName,
+            string phoneNumber,
+            string email,
+            [Frozen] BuyingCatalogueDbContext context,
+            AspNetUser user,
+            UsersService service)
+        {
+            context.AspNetUsers.Add(user);
+            await context.SaveChangesAsync();
+
+            await service.UpdateUserDetails(user.Id, firstName, lastName, phoneNumber, email);
+
+            var actual = await context.AspNetUsers.SingleAsync(u => u.Id == user.Id);
+
+            actual.FirstName.Should().Be(firstName);
+            actual.LastName.Should().Be(lastName);
+            actual.PhoneNumber.Should().Be(phoneNumber);
+            actual.Email.Should().Be(email);
+            actual.NormalizedEmail.Should().Be(email.ToUpperInvariant());
+            actual.NormalizedUserName.Should().Be(email.ToUpperInvariant());
+            actual.UserName.Should().Be(email);
+        }
+
+        [Theory]
+        [InMemoryDbAutoData]
+        public static async Task UpdateUserOrganisation_UpdatesDatabaseCorrectly(
+            int organisationId,
+            [Frozen] BuyingCatalogueDbContext context,
+            AspNetUser user,
+            UsersService service)
+        {
+            context.AspNetUsers.Add(user);
+            await context.SaveChangesAsync();
+
+            await service.UpdateUserOrganisation(user.Id, organisationId);
+
+            var actual = await context.AspNetUsers.SingleAsync(u => u.Id == user.Id);
+
+            actual.PrimaryOrganisationId.Should().Be(organisationId);
+        }
+
+        [Theory]
+        [InMemoryDbAutoData]
+        public static async Task EmailAddressExists_ReturnsCorrectResult(
+            string emailAddress,
+            [Frozen] BuyingCatalogueDbContext context,
+            AspNetUser user,
+            UsersService service)
+        {
+            user.NormalizedEmail = emailAddress.ToUpperInvariant();
+            context.AspNetUsers.Add(user);
+            await context.SaveChangesAsync();
+
+            var result = await service.EmailAddressExists(emailAddress);
+
+            result.Should().BeTrue();
+        }
+
+        [Theory]
+        [InMemoryDbAutoData]
+        public static async Task EmailAddressExists_ForCurrentUser_ReturnsCorrectResult(
+            string emailAddress,
+            [Frozen] BuyingCatalogueDbContext context,
+            AspNetUser user,
+            UsersService service)
+        {
+            user.NormalizedEmail = emailAddress.ToUpperInvariant();
+            context.AspNetUsers.Add(user);
+            await context.SaveChangesAsync();
+
+            var result = await service.EmailAddressExists(emailAddress, user.Id);
+
+            result.Should().BeFalse();
         }
     }
 }

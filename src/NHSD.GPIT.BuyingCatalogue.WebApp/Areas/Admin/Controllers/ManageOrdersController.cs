@@ -80,13 +80,13 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
         }
 
         [HttpGet("{callOffId}")]
-        public async Task<IActionResult> ViewOrder(CallOffId callOffId)
+        public async Task<IActionResult> ViewOrder(CallOffId callOffId, string returnUrl = null)
         {
             var order = await orderAdminService.GetOrder(callOffId);
 
             var model = new ViewOrderModel(order)
             {
-                BackLink = Url.Action(nameof(Index)),
+                BackLink = returnUrl ?? Url.Action(nameof(Index)),
             };
 
             return View(model);

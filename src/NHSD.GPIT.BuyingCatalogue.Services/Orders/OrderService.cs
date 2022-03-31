@@ -244,5 +244,14 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
                 emailService.SendEmailAsync(userEmail, orderMessageSettings.UserTemplateId, userTokens),
                 dbContext.SaveChangesAsync());
         }
+
+        public async Task<List<Order>> GetUserOrders(int userId)
+        {
+            return await dbContext.Orders
+                .Where(o => o.LastUpdatedBy == userId)
+                .OrderByDescending(o => o.LastUpdated)
+                .AsNoTracking()
+                .ToListAsync();
+        }
     }
 }

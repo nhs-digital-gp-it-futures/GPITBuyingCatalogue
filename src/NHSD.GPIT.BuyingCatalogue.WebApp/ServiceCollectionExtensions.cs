@@ -46,7 +46,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp
                     "AdminOnly",
                     policy => policy.RequireClaim(
                         "organisationFunction",
-                        new[] { OrganisationFunction.Authority.DisplayName }));
+                        new[] { OrganisationFunction.AuthorityName }));
             });
         }
 

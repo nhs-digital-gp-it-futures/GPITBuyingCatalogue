@@ -6,8 +6,11 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.Identity
 {
     public sealed class OrganisationFunction : IEquatable<OrganisationFunction>
     {
-        public static readonly OrganisationFunction Authority = new(1, nameof(Authority));
-        public static readonly OrganisationFunction Buyer = new(2, nameof(Buyer));
+        public const string AuthorityName = "Authority";
+        public const string BuyerName = "Buyer";
+
+        public static readonly OrganisationFunction Authority = new(1, AuthorityName);
+        public static readonly OrganisationFunction Buyer = new(2, BuyerName);
 
         private static readonly IEnumerable<OrganisationFunction> Values = new[] { Authority, Buyer };
 
