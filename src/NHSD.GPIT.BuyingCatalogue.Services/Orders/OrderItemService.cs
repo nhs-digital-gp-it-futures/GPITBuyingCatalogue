@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework;
@@ -7,13 +9,46 @@ using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Orders;
 
 namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
 {
-    public sealed class OrderItemService : IOrderItemService
+    public class OrderItemService : IOrderItemService
     {
         private readonly BuyingCatalogueDbContext dbContext;
 
-        public OrderItemService(BuyingCatalogueDbContext dbContext)
+        private readonly IOrderService orderService;
+
+        public OrderItemService(BuyingCatalogueDbContext dbContext, IOrderService orderService)
         {
             this.dbContext = dbContext ?? throw new ArgumentNullException(nameof(dbContext));
+            this.orderService = orderService ?? throw new ArgumentNullException(nameof(orderService));
+        }
+
+        public async Task AddOrderItems(string internalOrgId, CallOffId callOffId, IEnumerable<CatalogueItemId> itemIds)
+        {
+            if (itemIds == null)
+            {
+                throw new ArgumentNullException(nameof(itemIds));
+            }
+
+            var order = await orderService.GetOrderThin(callOffId, internalOrgId);
+
+            if (order == null)
+            {
+                return;
+            }
+
+            foreach (var id in itemIds)
+            {
+                var catalogueItem = dbContext.CatalogueItems.Single(x => x.Id == id);
+
+                dbContext.OrderItems.Add(new OrderItem
+                {
+                    OrderId = order.Id,
+                    CatalogueItemId = id,
+                    CatalogueItem = catalogueItem,
+                    Created = DateTime.UtcNow,
+                });
+            }
+
+            await dbContext.SaveChangesAsync();
         }
 
         public Task<OrderItem> GetOrderItem(CallOffId callOffId, string internalOrgId, CatalogueItemId catalogueItemId) =>

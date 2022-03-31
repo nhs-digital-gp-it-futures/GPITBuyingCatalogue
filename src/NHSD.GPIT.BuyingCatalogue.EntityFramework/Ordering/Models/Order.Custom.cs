@@ -32,6 +32,40 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models
                 && OrderStatus != OrderStatus.Completed;
         }
 
+        public OrderItem GetSolution()
+        {
+            return OrderItems
+                .FirstOrDefault(x => x.CatalogueItem.CatalogueItemType == CatalogueItemType.Solution);
+        }
+
+        public OrderItem GetAdditionalService(CatalogueItemId catalogueItemId)
+        {
+            return OrderItems
+                .FirstOrDefault(x => x.CatalogueItem.CatalogueItemType == CatalogueItemType.AdditionalService
+                    && x.CatalogueItem.Id == catalogueItemId);
+        }
+
+        public IEnumerable<OrderItem> GetAdditionalServices()
+        {
+            return OrderItems
+                .Where(x => x.CatalogueItem.CatalogueItemType == CatalogueItemType.AdditionalService)
+                .OrderBy(x => x.CatalogueItem.Name);
+        }
+
+        public OrderItem GetAssociatedService(CatalogueItemId catalogueItemId)
+        {
+            return OrderItems
+                .FirstOrDefault(x => x.CatalogueItem.CatalogueItemType == CatalogueItemType.AssociatedService
+                    && x.CatalogueItem.Id == catalogueItemId);
+        }
+
+        public IEnumerable<OrderItem> GetAssociatedServices()
+        {
+            return OrderItems
+                .Where(x => x.CatalogueItem.CatalogueItemType == CatalogueItemType.AssociatedService)
+                .OrderBy(x => x.CatalogueItem.Name);
+        }
+
         public bool HasAssociatedService()
         {
             return OrderItems.Any(o => o.CatalogueItem.CatalogueItemType == CatalogueItemType.AssociatedService);

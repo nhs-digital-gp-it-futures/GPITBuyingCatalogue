@@ -1,0 +1,80 @@
+﻿@using EnumsNET;
+@using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models
+@model NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.ServiceRecipients.SelectRecipientsModel;
+@{
+    ViewBag.Title = "Service Recipients";
+}
+
+<partial name="Partials/_BackLink" model="Model" />
+
+<div class="nhsuk-grid-row">
+    <div class="nhsuk-grid-column-full">
+        <nhs-validation-summary />
+
+        <nhs-page-title title="@ViewBag.Title"
+                        caption="@Model!.ItemName"
+                        advice="Select the organisations you want to receive this @Model.ItemType.AsString(EnumFormat.DisplayName)." />
+
+        @if (Model.PreSelected)
+        {
+            <div id="pre-selected" class="nhsuk-inset-text">
+                <span class="nhsuk-u-visually-hidden">Information: </span>
+                <p>The recipients you selected for your Catalogue Solution have been pre-selected.</p>
+            </div>
+        }
+
+        <h2>Select Service Recipients</h2>
+        
+        @{
+            var actionName = Model.ItemType switch
+            {
+                CatalogueItemType.AdditionalService => nameof(ServiceRecipientsController.AdditionalServiceRecipients),
+                CatalogueItemType.AssociatedService => nameof(ServiceRecipientsController.AssociatedServiceRecipients),
+                CatalogueItemType.Solution => nameof(ServiceRecipientsController.SolutionRecipients),
+                _ => throw new ArgumentOutOfRangeException(nameof(Model.ItemType), Model.ItemType, null),
+            };
+
+            var controllerName = typeof(ServiceRecipientsController).ControllerName();
+
+            object routeValues = Model.ItemType == CatalogueItemType.Solution
+                ? new { Model.InternalOrgId, Model.CallOffId, Model.SelectionMode }
+                : new { Model.InternalOrgId, Model.CallOffId, Model.CatalogueItemId, Model.SelectionMode };
+        }
+
+        <vc:nhs-secondary-button url="@Url.Action(actionName, controllerName, routeValues)"
+                                 text="@Model.SelectionCaption"
+                                 use-primary-colour="false" />
+        
+        <form method="post">
+            <input type="hidden" asp-for="@Model.BackLink" />
+            <input type="hidden" asp-for="@Model.CatalogueItemId" />
+            <input type="hidden" asp-for="@Model.ItemName" />
+            <input type="hidden" asp-for="@Model.ItemType" />
+            <input type="hidden" asp-for="@Model.SelectionCaption" />
+            <input type="hidden" asp-for="@Model.SelectionMode" />
+
+            <nhs-table>
+                <nhs-table-column>Organisation</nhs-table-column>
+                <nhs-table-column>ODS code</nhs-table-column>
+                @foreach (var (item, i) in Model.ServiceRecipients.Select((x, i) => (x, i)))
+                {
+                    <nhs-table-row-container>
+                        <nhs-table-cell>
+                            <nhs-checkbox-container>
+                                <nhs-checkbox asp-for="@Model.ServiceRecipients[i].Selected"
+                                              label-text="@item.Name"
+                                              hidden-input="@Model.ServiceRecipients[i].Name" />
+                            </nhs-checkbox-container>
+                        </nhs-table-cell>
+                        <nhs-table-cell>
+                            <div class="nhsuk-input--width-10 nhsuk-u-margin-top-2">@item.OdsCode</div>
+                            <input type="hidden" asp-for="@Model.ServiceRecipients[i].OdsCode" />
+                        </nhs-table-cell>
+                    </nhs-table-row-container>
+                }
+            </nhs-table>
+            <br />
+            <nhs-submit-button />
+        </form>
+    </div>
+</div>

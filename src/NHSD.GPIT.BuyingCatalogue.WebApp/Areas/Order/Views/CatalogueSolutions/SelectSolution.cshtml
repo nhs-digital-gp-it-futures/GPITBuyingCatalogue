@@ -1,0 +1,55 @@
+﻿@model NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.CatalogueSolutions.SelectSolutionModel;
+@{
+    ViewBag.Title = "Catalogue Solutions";
+}
+
+<partial name="Partials/_BackLink" model="Model" />
+
+<div class="nhsuk-grid-row">
+    <div class="nhsuk-grid-column-full">
+        <nhs-validation-summary RadioId="SelectedCatalogueSolutionId"/>
+
+        <nhs-page-title title="@ViewBag.Title"
+                        caption="@Model!.SupplierName"
+                        advice="These are the Catalogue Solutions provided by the supplier you’ve chosen. Select the one you want and any of its Additional Services you want to order."/>
+
+        <form method="post">
+            <input type="hidden" asp-for="@Model.SupplierName"/>
+
+            <nhs-fieldset-form-label asp-for="@Model">
+                <nhs-radio-button-container>
+                    @foreach (var (selectListItem, i) in Model.CatalogueSolutions.Select((x, i) => (x, i)))
+                    {
+                        <nhs-radio-button asp-for="SelectedCatalogueSolutionId"
+                                          display-name="Text"
+                                          index="i"
+                                          value="selectListItem"
+                                          value-name="Value">
+                            @if (Model.AdditionalServices.Any(x => $"{x.CatalogueItemId}".StartsWith(selectListItem.Value)))
+                            {
+                                <p><strong>Do you want to add any Additional Services?</strong></p>
+                                <p>These are optional add-ons to the main solution that provide extra functionality.</p>
+                                <nhs-checkbox-container>
+                                    @foreach (var (service, j) in Model.AdditionalServices.Select((x, j) => (x, j)))
+                                    {
+                                        if (!$"{service.CatalogueItemId}".StartsWith(selectListItem.Value))
+                                            continue;
+
+                                        <input type="hidden" asp-for="@Model.AdditionalServices[j].CatalogueItemId"/>
+                                        <input type="hidden" asp-for="@Model.AdditionalServices[j].Description"/>
+                                        <nhs-checkbox asp-for="@Model.AdditionalServices[j].IsSelected"
+                                                      label-text="@service.Description"/>
+                                    }
+                                </nhs-checkbox-container>
+                            }
+                        </nhs-radio-button>
+                    }
+                </nhs-radio-button-container>
+            </nhs-fieldset-form-label>
+                
+            <div class="nhsuk-u-margin-top-9">
+                <nhs-submit-button/>
+            </div>
+        </form>
+    </div>
+</div>

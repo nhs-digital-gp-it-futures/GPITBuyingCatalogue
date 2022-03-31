@@ -250,19 +250,6 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
                 CatalogueItem = context.CatalogueItems.Single(c => c.Id == new CatalogueItemId(99999, "001")),
             };
 
-            var recipient = new ServiceRecipient
-            {
-                OdsCode = "03F",
-                Name = "Test Recipient",
-            };
-
-            addedSolution.OrderItemRecipients
-                .Add(new()
-                {
-                    Recipient = recipient,
-                    Quantity = 1000,
-                });
-
             var user = GetBuyerUser(context, order.OrderingPartyId);
 
             order.OrderItems.Add(addedSolution);
