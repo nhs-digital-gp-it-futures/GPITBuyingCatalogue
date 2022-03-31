@@ -9,6 +9,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Routing;
 using Moq;
+using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Organisations.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Users.Models;
@@ -138,6 +139,27 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers
         }
 
         [Theory]
+        [CommonInlineAutoData(null)]
+        [CommonInlineAutoData(CatalogueItemType.AssociatedService)]
+        [CommonInlineAutoData(CatalogueItemType.Solution)]
+        public static async Task Post_NewOrderDescription_AssociatedServicesOnly_AsExpected(
+            CatalogueItemType? catalogueItemType,
+            OrderDescriptionModel model,
+            EntityFramework.Ordering.Models.Order order,
+            [Frozen] Mock<IOrderService> orderServiceMock,
+            OrderDescriptionController controller)
+        {
+            var isAssociatedServiceOnly = catalogueItemType.HasValue
+                && catalogueItemType!.Value == CatalogueItemType.AssociatedService;
+
+            orderServiceMock.Setup(s => s.CreateOrder(model.Description, model.InternalOrgId, isAssociatedServiceOnly)).ReturnsAsync(order);
+
+            _ = await controller.NewOrderDescription(model.InternalOrgId, model, catalogueItemType);
+
+            orderServiceMock.Verify(s => s.CreateOrder(model.Description, model.InternalOrgId, isAssociatedServiceOnly));
+        }
+
+        [Theory]
         [CommonAutoData]
         public static async Task Post_NewOrderDescription_CreatesOrder_CorrectlyRedirects(
             string internalOrgId,
@@ -146,7 +168,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers
             [Frozen] Mock<IOrderService> orderServiceMock,
             OrderDescriptionController controller)
         {
-            orderServiceMock.Setup(s => s.CreateOrder(model.Description, model.InternalOrgId)).ReturnsAsync(order);
+            orderServiceMock.Setup(s => s.CreateOrder(model.Description, model.InternalOrgId, It.IsAny<bool>())).ReturnsAsync(order);
 
             var actualResult = await controller.NewOrderDescription(internalOrgId, model);
 
@@ -154,7 +176,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers
             actualResult.As<RedirectToActionResult>().ActionName.Should().Be(nameof(OrderController.Order));
             actualResult.As<RedirectToActionResult>().ControllerName.Should().Be(typeof(OrderController).ControllerName());
             actualResult.As<RedirectToActionResult>().RouteValues.Should().BeEquivalentTo(new RouteValueDictionary { { "internalOrgId", internalOrgId }, { "callOffId", order.CallOffId } });
-            orderServiceMock.Verify(o => o.CreateOrder(model.Description, model.InternalOrgId), Times.Once);
         }
 
         [Theory]

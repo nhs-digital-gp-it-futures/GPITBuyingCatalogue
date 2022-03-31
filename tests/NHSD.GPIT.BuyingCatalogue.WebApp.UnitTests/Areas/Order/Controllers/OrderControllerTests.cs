@@ -181,9 +181,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers
             string internalOrgId,
             ReadyToStartModel model,
             TriageOption option,
+            CatalogueItemType orderType,
             OrderController controller)
         {
-            var result = controller.ReadyToStart(internalOrgId, model, option).As<RedirectToActionResult>();
+            var result = controller.ReadyToStart(internalOrgId, model, option, orderType).As<RedirectToActionResult>();
 
             result.Should().NotBeNull();
             result.ActionName.Should().Be(nameof(controller.NewOrder));
@@ -192,6 +193,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers
                 {
                     { nameof(internalOrgId), internalOrgId },
                     { nameof(option), option },
+                    { nameof(orderType), orderType },
                 });
         }
 
@@ -201,9 +203,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers
             string internalOrgId,
             ReadyToStartModel model,
             TriageOption option,
+            CatalogueItemType orderType,
             OrderController controller)
         {
-            var result = controller.ReadyToStart(internalOrgId, model, option).As<RedirectToActionResult>();
+            var result = controller.ReadyToStart(internalOrgId, model, option, orderType).As<RedirectToActionResult>();
 
             result.Should().NotBeNull();
             result.ActionName.Should().Be(nameof(controller.NewOrder));
@@ -212,6 +215,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers
                 {
                     { nameof(internalOrgId), internalOrgId },
                     { nameof(option), option },
+                    { nameof(orderType), orderType },
                 });
         }
 

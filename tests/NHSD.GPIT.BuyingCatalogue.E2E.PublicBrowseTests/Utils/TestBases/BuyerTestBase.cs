@@ -12,11 +12,12 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.TestBases
             Type controller,
             string methodName,
             IDictionary<string, string> parameters,
-            ITestOutputHelper testOutputHelper = null)
+            ITestOutputHelper testOutputHelper = null,
+            IDictionary<string, string> queryParameters = null)
             : base(
                   factory,
                   testOutputHelper,
-                  UrlGenerator.GenerateUrlFromMethod(controller, methodName, parameters))
+                  UrlGenerator.GenerateUrlFromMethod(controller, methodName, parameters, queryParameters))
         {
             BuyerLogin();
         }

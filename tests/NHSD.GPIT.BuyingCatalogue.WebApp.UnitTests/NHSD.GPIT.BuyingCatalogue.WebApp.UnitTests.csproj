@@ -45,8 +45,4 @@
     <ProjectReference Include="..\NHSD.GPIT.BuyingCatalogue.Test.Framework\NHSD.GPIT.BuyingCatalogue.Test.Framework.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Areas\Order\Validators\Shared\" />
-  </ItemGroup>
-
 </Project>

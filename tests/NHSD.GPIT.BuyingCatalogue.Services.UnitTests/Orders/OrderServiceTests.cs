@@ -41,7 +41,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Orders
             await context.Organisations.AddAsync(organisation);
             await context.SaveChangesAsync();
 
-            await service.CreateOrder(description, organisation.InternalIdentifier);
+            await service.CreateOrder(description, organisation.InternalIdentifier, false);
 
             var order = await context.Orders.Include(o => o.OrderingParty).SingleAsync();
             order.Description.Should().Be(description);
