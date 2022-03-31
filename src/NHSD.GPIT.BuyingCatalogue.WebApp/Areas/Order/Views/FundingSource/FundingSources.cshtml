@@ -13,14 +13,14 @@
 	<div class="nhsuk-grid-column-two-thirds">
 		<nhs-validation-summary />
 		<nhs-page-title title="@ViewBag.Title"
-						advice="Provide information on how you’ll be paying for this order."
+						advice="Provide information on how you'll be paying for this order."
 						caption="@Model.Caption" />
 
 		@if (Model.OrderItemsSelectable.Any())
 		{
 			<nhs-details label-text="What is central, local and mixed funding?">
 				<h2 class="nhsuk-heading-m">Central funding</h2>
-				<p>Central funding means you’re using your centrally held allocation to pay for the order. Any solutions or services you order will be paid for by either NHS England or NHS Digital. The supplier will invoice the relevant organisation directly.</p>
+				<p>Central funding means you're using your centrally held allocation to pay for the order. Any solutions or services you order will be paid for by either NHS England or NHS Digital. The supplier will invoice the relevant organisation directly.</p>
 				<p>You should make sure you have enough of your central allocation available to pay for your order before placing it.</p>
 				<h2 class="nhsuk-heading-m">Local funding</h2>
 				<p>Local funding means your organisation will be paying for the order. The supplier will invoice you directly.</p>
