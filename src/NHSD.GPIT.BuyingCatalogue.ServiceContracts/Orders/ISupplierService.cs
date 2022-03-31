@@ -12,6 +12,8 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.Orders
             CatalogueItemType? catalogueItemType,
             PublicationStatus? publicationStatus);
 
+        public Task<List<Supplier>> GetAllSuppliersFromBuyingCatalogue();
+
         public Task<Supplier> GetSupplierFromBuyingCatalogue(int id);
 
         public Task AddOrderSupplier(CallOffId callOffId, string internalOrgId, int supplierId);
