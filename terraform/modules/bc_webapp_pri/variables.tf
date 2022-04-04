@@ -46,6 +46,7 @@ variable "auth_pwd" {
   type      = string
   sensitive = true
 }
+
 variable "cert_name" {
   type      = string
 }
@@ -83,22 +84,6 @@ variable "customer_network_range" {
   type = string
 }
 
-variable "smtp_server_host" {
-  type = string
-}
-
-variable "smtp_server_port" {
-  type = string
-}
-
-variable "smtp_server_username" {
-  type = string
-}
-
-variable "smtp_server_password" {
-  type = string
-}
-
 variable "vnet_subnet_id" {
   type = string
 }
@@ -132,5 +117,13 @@ variable "ssl_thumbprint" {
 }
 
 variable "notify_api_key" {
+  type = string
+}
+
+variable "hangfire_username" {
+  type = string
+}
+
+variable "hangfire_password" {
   type = string
 }

@@ -15,13 +15,13 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering.CatalogueSolutions
     public sealed class CatalogueSolutions
         : BuyerTestBase, IClassFixture<LocalWebApplicationFactory>
     {
-        private const string OdsCode = "03F";
+        private const string InternalOrgId = "CG-03F";
         private static readonly CallOffId CallOffId = new(90006, 1);
 
         private static readonly Dictionary<string, string> Parameters =
             new()
             {
-                { nameof(OdsCode), OdsCode },
+                { nameof(InternalOrgId), InternalOrgId },
                 { nameof(CallOffId), CallOffId.ToString() },
             };
 

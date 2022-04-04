@@ -1,0 +1,95 @@
+﻿@using EnumsNET
+@using NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.TagHelpers.Tags;
+@using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
+@using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers;
+@using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
+@model NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.ManageOrders.ManageOrdersDashboardModel;
+@{
+    ViewBag.Title = "Manage orders";
+}
+
+@section Breadcrumbs {
+<nav class="nhsuk-breadcrumb" aria-label="Breadcrumb">
+    <div class="nhsuk-width-container">
+        <ol class="nhsuk-breadcrumb__list">
+            <li class="nhsuk-breadcrumb__item">
+                <a class="nhsuk-breadcrumb__link"
+                   data-test-id="home-crumb"
+                   asp-action="@nameof(HomeController.Index)"
+                   asp-controller="@typeof(HomeController).ControllerName()"
+                   asp-area="@typeof(HomeController).AreaName()">Home</a>
+            </li>
+        </ol>
+    </div>
+</nav>
+}
+
+<div class="nhsuk-grid-row">
+    <div class="nhsuk-grid-column-two-thirds">
+        <nhs-page-title title="@ViewBag.Title"
+                        advice="View all orders that have been created on the Buying Catalogue." />
+    </div>
+
+    <div class="nhsuk-grid-column-full">
+        @if((Model.Orders.Count == 0 && Context.Request.Query["search"].Count > 0) || Model.Orders.Count > 0)
+        {
+            <vc:nhs-suggestion-search id="orders-suggestion-search"
+                                      ajax-url="@Url.Action(
+                                                    nameof(ManageOrdersController.FilterSearchSuggestions),
+                                                    typeof(ManageOrdersController).ControllerName())"
+                                      title-text="Search by Call-off ID, organisation name, supplier or solution"
+                                      query-parameter-name="search"/>
+        }
+        @if (Model.Orders is not null && Model.Orders.Count > 0)
+        {
+            <nhs-table data-test-id="orders-table">
+                <nhs-table-column>Call-off ID</nhs-table-column>
+                <nhs-table-column>Organisation</nhs-table-column>
+                <nhs-table-column>Date created</nhs-table-column>
+                <nhs-table-column>Status</nhs-table-column>
+                <nhs-table-column>Action</nhs-table-column>
+                @foreach(var order in Model.Orders)
+                {
+                    <nhs-table-row-container>
+                        <nhs-table-cell>@order.CallOffId</nhs-table-cell>
+                        <nhs-table-cell>@order.OrganisationName</nhs-table-cell>
+                        <nhs-table-cell>@order.Created.ToString("dd/MM/yyyy")</nhs-table-cell>
+                        <nhs-table-cell>
+                            <nhs-tag status-enum="@order.Status" />
+                        </nhs-table-cell>
+                        <nhs-table-cell>
+                            <a data-test-id="link-@order.CallOffId"
+                                asp-action="@nameof(ManageOrdersController.ViewOrder)"
+                                asp-controller="@typeof(ManageOrdersController).ControllerName()",
+                                asp-route-callOffId="@order.CallOffId">
+                                View
+                            </a>
+                        </nhs-table-cell>
+                    </nhs-table-row-container>
+                }
+            </nhs-table>
+            <div id="pagination">
+                <nhs-page-number-pagination current-page-number="@Model.Options.PageNumber"
+                                            total-number-of-pages="@Model.Options.NumberOfPages" />
+
+            </div>
+        }
+        else
+        {
+            @if(Context.Request.Query["search"].Count > 0)
+            {
+                <h2 id="no-results-search">No results were found for "@Context.Request.Query["search"].FirstOrDefault()"</h2>
+                <p style="white-space:nowrap;">
+                    Try entering a different search term, or <a
+                    data-test-id="clear-results-link"
+                    asp-action="@nameof(ManageOrdersController.Index)"
+                    asp-controller="@typeof(ManageOrdersController).ControllerName()"
+                    >select an order from the complete list</a>.
+                    </p>
+            } else
+            {
+                <p id="no-orders">There are currently no orders available.</p>
+            }
+        }
+    </div>
+</div>

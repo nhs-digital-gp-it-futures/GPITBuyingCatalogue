@@ -14,7 +14,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering.AdditionalServices
     public sealed class AdditionalServicesDeleteAdditionalServices
         : BuyerTestBase, IClassFixture<LocalWebApplicationFactory>, IAsyncLifetime
     {
-        private const string OdsCode = "03F";
+        private const string InternalOrgId = "CG-03F";
         private const string CatalogueItemName = "E2E No Contact Single Price Additional Service";
         private static readonly CallOffId CallOffId = new(90007, 1);
         private static readonly CatalogueItemId CatalogueItemId = new(99998, "002A999");
@@ -22,7 +22,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering.AdditionalServices
         private static readonly Dictionary<string, string> Parameters =
             new()
             {
-                { nameof(OdsCode), OdsCode },
+                { nameof(InternalOrgId), InternalOrgId },
                 { nameof(CallOffId), CallOffId.ToString() },
                 { nameof(CatalogueItemId), CatalogueItemId.ToString() },
                 { nameof(CatalogueItemName), CatalogueItemName },
@@ -96,7 +96,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering.AdditionalServices
         {
             InitializeSessionHandler();
 
-            InitializeServiceRecipientMemoryCacheHandler(OdsCode);
+            InitializeServiceRecipientMemoryCacheHandler(InternalOrgId);
 
             NavigateToUrl(
                 typeof(DeleteAdditionalServiceController),

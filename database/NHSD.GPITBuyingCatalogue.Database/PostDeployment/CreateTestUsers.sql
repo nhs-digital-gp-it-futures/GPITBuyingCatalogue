@@ -13,14 +13,14 @@ BEGIN
     DECLARE @hullCCGOdsCode AS nchar(3) = '03F';
     DECLARE @northLincsCcgOdsCode AS nchar(3) = '03K';
 
-    DECLARE @aliceOrganisationId AS int = (SELECT TOP (1) Id FROM organisations.Organisations WHERE PrimaryRoleId = @ccgRoleId AND OdsCode = @northLincsCcgOdsCode ORDER BY OdsCode);
-    DECLARE @aliceOrganisationName AS nvarchar(255) =  (SELECT TOP (1) [Name] FROM organisations.Organisations WHERE PrimaryRoleId = @ccgRoleId ORDER BY OdsCode);
+    DECLARE @aliceOrganisationId AS int = (SELECT TOP (1) Id FROM organisations.Organisations WHERE PrimaryRoleId = @ccgRoleId AND ExternalIdentifier = @northLincsCcgOdsCode);
+    DECLARE @aliceOrganisationName AS nvarchar(255) =  (SELECT TOP (1) [Name] FROM organisations.Organisations WHERE PrimaryRoleId = @ccgRoleId AND ExternalIdentifier = @northLincsCcgOdsCode);
 
     DECLARE @bobOrganisationId AS int = (SELECT Id FROM organisations.Organisations WHERE PrimaryRoleId = @executiveAgencyRoleId);
-    DECLARE @bobOrganisationName AS nvarchar(255) =  (SELECT TOP (1) [Name] FROM organisations.Organisations WHERE PrimaryRoleId = @ccgRoleId ORDER BY OdsCode);
+    DECLARE @bobOrganisationName AS nvarchar(255) =  (SELECT TOP (1) [Name] FROM organisations.Organisations WHERE PrimaryRoleId = @executiveAgencyRoleId);
 
-    DECLARE @sueOrganisationId AS int = (SELECT TOP (1) Id FROM organisations.Organisations WHERE PrimaryRoleId = @ccgRoleId AND OdsCode = @hullCCGOdsCode);
-    DECLARE @sueOrganisationName AS nvarchar(255) =  (SELECT TOP (1) [Name] FROM organisations.Organisations WHERE PrimaryRoleId = @ccgRoleId AND OdsCode = @hullCCGOdsCode);
+    DECLARE @sueOrganisationId AS int = (SELECT TOP (1) Id FROM organisations.Organisations WHERE PrimaryRoleId = @ccgRoleId AND ExternalIdentifier = @hullCCGOdsCode);
+    DECLARE @sueOrganisationName AS nvarchar(255) =  (SELECT TOP (1) [Name] FROM organisations.Organisations WHERE PrimaryRoleId = @ccgRoleId AND ExternalIdentifier = @hullCCGOdsCode);
 
     DECLARE @address AS nchar(108) = N'{ "street_address": "One Hacker Way", "locality": "Heidelberg", "postal_code": 69118, "country": "Germany" }';
 

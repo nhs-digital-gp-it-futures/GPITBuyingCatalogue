@@ -28,10 +28,6 @@ resource "azurerm_app_service" "webapp" {
     ASPNETCORE_ENVIRONMENT              = var.aspnet_environment
 
     APPINSIGHTS_INSTRUMENTATIONKEY      = var.instrumentation_key
-    BC_SMTP_HOST                        = var.smtp_server_host
-    BC_SMTP_PORT                        = var.smtp_server_port   
-    BC_SMTP_USERNAME                    = var.smtp_server_username
-    BC_SMTP_PASSWORD                    = var.smtp_server_password
     
     # Settings for Container Registy  
     DOCKER_REGISTRY_SERVER_URL          = "https://${var.docker_registry_server_url}" 
@@ -42,6 +38,7 @@ resource "azurerm_app_service" "webapp" {
     
     # Settings for sql
     BC_DB_CONNECTION                    = "Server=tcp:${data.azurerm_sql_server.sql_server.fqdn},1433;Initial Catalog=${var.db_name_main};Persist Security Info=False;User ID=${data.azurerm_sql_server.sql_server.administrator_login};Password=${var.auth_pwd};MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;"    
+    HANGFIRE_DB_CONNECTION              = "Server=tcp:${data.azurerm_sql_server.sql_server.fqdn},1433;Initial Catalog=${var.db_name_main};Persist Security Info=False;User ID=${var.hangfire_username};Password=${var.hangfire_password};MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;"    
     
     NOTIFY_API_KEY                      = var.notify_api_key
 

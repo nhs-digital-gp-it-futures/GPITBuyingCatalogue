@@ -1,10 +1,14 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Capabilities;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Models.SupplierDefinedEpics;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.SupplierDefinedEpics;
+using NHSD.GPIT.BuyingCatalogue.WebApp.Models.SuggestionSearch;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
 {
@@ -25,13 +29,26 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> Dashboard()
+        public async Task<IActionResult> Dashboard([FromQuery] string search = null)
         {
-            var supplierDefinedEpics = await supplierDefinedEpicsService.GetSupplierDefinedEpics();
+            var supplierDefinedEpics = await GetFilteredEpics(search);
 
-            var model = new SupplierDefinedEpicsDashboardModel(supplierDefinedEpics);
+            var model = new SupplierDefinedEpicsDashboardModel(supplierDefinedEpics, search);
 
             return View(model);
+        }
+
+        [HttpGet("search-results")]
+        public async Task<IActionResult> SearchResults([FromQuery] string search)
+        {
+            var results = await GetFilteredEpics(search);
+
+            return Json(results.Take(15).Select(x => new SuggestionSearchResult
+            {
+                Title = x.Name,
+                Category = x.Capability.Name,
+                Url = Url.Action(nameof(EditEpic), new { epicId = $"{x.Id}" }),
+            }));
         }
 
         [HttpGet("add-epic")]
@@ -132,6 +149,13 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
             await supplierDefinedEpicsService.DeleteSupplierDefinedEpic(epicId);
 
             return RedirectToAction(nameof(Dashboard));
+        }
+
+        private async Task<IEnumerable<Epic>> GetFilteredEpics(string search)
+        {
+            return string.IsNullOrWhiteSpace(search)
+                ? await supplierDefinedEpicsService.GetSupplierDefinedEpics()
+                : await supplierDefinedEpicsService.GetSupplierDefinedEpicsBySearchTerm(search);
         }
     }
 }

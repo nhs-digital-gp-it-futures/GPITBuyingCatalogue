@@ -16,6 +16,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
             AddOrderAtDescriptionStage(context);
             AddOrderAtCallOffPartyStage(context);
             AddOrderAtSupplierStage(context);
+            AddOrderAtSupplierContactStage(context);
             AddOrderAtCommencementDateStage(context);
             AddOrderAtCatalogueSolutionStage(context);
             AddOrderWithAddedCatalogueSolution(context);
@@ -23,7 +24,8 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
             AddOrderWithAddedNoContactSolutionAndNoContactAdditionalSolution(context);
             AddOrderWithAddedAssociatedService(context);
             AddOrderReadyToComplete(context);
-            AddCompletedOrder(context);
+            AddCompletedOrder(context, 90010, GetOrganisationId(context));
+            AddCompletedOrder(context, 90011, GetOrganisationId(context, "CG-15F"));
         }
 
         private static void AddOrderAtDescriptionStage(BuyingCatalogueDbContext context)
@@ -90,6 +92,36 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
                     Email = "Clark.Kent@TheDailyPlanet.com",
                     Phone = "123456789",
                 },
+            };
+
+            var user = GetBuyerUser(context, order.OrderingPartyId);
+
+            context.Add(order);
+
+            context.SaveChangesAs(user.Id);
+        }
+
+        private static void AddOrderAtSupplierContactStage(BuyingCatalogueDbContext context)
+        {
+            const int orderId = 91002;
+            var timeNow = DateTime.UtcNow;
+
+            var order = new Order
+            {
+                Id = orderId,
+                OrderingPartyId = GetOrganisationId(context),
+                Created = timeNow,
+                OrderStatus = OrderStatus.InProgress,
+                IsDeleted = false,
+                Description = "This is an Order Description",
+                OrderingPartyContact = new Contact
+                {
+                    FirstName = "Clark",
+                    LastName = "Kent",
+                    Email = "Clark.Kent@TheDailyPlanet.com",
+                    Phone = "123456789",
+                },
+                SupplierId = 99998,
             };
 
             var user = GetBuyerUser(context, order.OrderingPartyId);
@@ -548,15 +580,14 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
             context.SaveChangesAs(user.Id);
         }
 
-        private static void AddCompletedOrder(BuyingCatalogueDbContext context)
+        private static void AddCompletedOrder(BuyingCatalogueDbContext context, int orderId, int organisationId)
         {
-            const int orderId = 90010;
             var timeNow = DateTime.UtcNow;
 
             var order = new Order
             {
                 Id = orderId,
-                OrderingPartyId = GetOrganisationId(context),
+                OrderingPartyId = organisationId,
                 Created = timeNow,
                 OrderStatus = OrderStatus.InProgress,
                 IsDeleted = false,
@@ -583,7 +614,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
 
             var price = context.CatalogueItems
                 .Include(c => c.CataloguePrices).ThenInclude(s => s.PricingUnit)
-                .Single(c => c.Id == new CatalogueItemId(99998, "S-999"))
+                .Single(c => c.Id == new CatalogueItemId(99998, "001"))
                 .CataloguePrices.First();
 
             var addedSolution = new OrderItem
@@ -594,7 +625,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
                 Created = DateTime.UtcNow,
                 OrderId = orderId,
                 EstimationPeriod = TimeUnit.PerMonth,
-                CatalogueItem = context.CatalogueItems.Single(c => c.Id == new CatalogueItemId(99998, "S-999")),
+                CatalogueItem = context.CatalogueItems.Single(c => c.Id == new CatalogueItemId(99998, "001")),
             };
 
             order.FundingSourceOnlyGms = true;
@@ -608,9 +639,9 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
             context.SaveChangesAs(user.Id);
         }
 
-        private static int GetOrganisationId(BuyingCatalogueDbContext context, string odsCode = "03F")
+        private static int GetOrganisationId(BuyingCatalogueDbContext context, string internalOrgId = "CG-03F")
         {
-            return context.Organisations.First(o => o.OdsCode == odsCode).Id;
+            return context.Organisations.First(o => o.InternalIdentifier == internalOrgId).Id;
         }
 
         private static AspNetUser GetBuyerUser(BuyingCatalogueDbContext context, int organisationId)

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.UrlGenerators;
+using Xunit.Abstractions;
 
 namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.TestBases
 {
@@ -10,9 +11,11 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.TestBases
             LocalWebApplicationFactory factory,
             Type controller,
             string methodName,
-            IDictionary<string, string> parameters)
+            IDictionary<string, string> parameters = null,
+            ITestOutputHelper testOutputHelper = null)
             : base(
                   factory,
+                  testOutputHelper,
                   UrlGenerator.GenerateUrlFromMethod(controller, methodName, parameters))
         {
             BuyerLogin();
@@ -23,9 +26,11 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.TestBases
             Type controller,
             string methodName,
             IDictionary<string, string> parameters,
-            string buyerEmail)
+            string buyerEmail,
+            ITestOutputHelper testOutputHelper = null)
             : base(
                   factory,
+                  testOutputHelper,
                   UrlGenerator.GenerateUrlFromMethod(controller, methodName, parameters))
         {
             BuyerLogin(buyerEmail);

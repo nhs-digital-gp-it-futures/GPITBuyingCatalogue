@@ -10,10 +10,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.OrderDes
         [Theory]
         [CommonAutoData]
         public static void WithValidArguments_PropertiesCorrectlySet(
-            string odsCode,
+            string internalOrgId,
             EntityFramework.Ordering.Models.Order order)
         {
-            var model = new OrderDescriptionModel(odsCode, order);
+            var model = new OrderDescriptionModel(internalOrgId, order);
 
             model.Title.Should().Be("Order description");
             model.Description.Should().Be(order.Description);

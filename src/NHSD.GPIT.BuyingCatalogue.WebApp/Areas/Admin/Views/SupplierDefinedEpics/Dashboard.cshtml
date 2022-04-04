@@ -7,50 +7,82 @@
 }
 
 @section Scripts{
-    <script type="text/javascript" src="@Url.Content("~/js/InactiveItemManagement.min.js")" asp-append-version="true"></script>
+    @if (string.IsNullOrWhiteSpace(Model!.SearchTerm))
+    {
+        <script type="text/javascript" src="@Url.Content("~/js/InactiveItemManagement.min.js")" asp-append-version="true"></script>
+    }
 }
 
 <nhs-page-title title="@ViewBag.Title"
-                advice="Add a supplier defined Epic or edit an existing one." />
+                advice="Add a supplier defined Epic or edit an existing one."/>
 
 <vc:nhs-action-link url="@Url.Action(
-    nameof(SupplierDefinedEpicsController.AddEpic),
-    typeof(SupplierDefinedEpicsController).ControllerName())"
-    text="Add a supplier defined Epic"/>
+                             nameof(SupplierDefinedEpicsController.AddEpic),
+                             typeof(SupplierDefinedEpicsController).ControllerName())"
+                    text="Add a supplier defined Epic"/>
 
-<nhs-checkbox-container Id="inactive-items-checkbox" style="display:none;">
-    <nhs-checkbox asp-for="ShowInactiveItems"
-                    label-text="Show inactive supplier defined Epics" />
-</nhs-checkbox-container>
+<vc:nhs-suggestion-search id="sde-suggestion-search"
+                          ajax-url="@Url.Action(
+                                        nameof(SupplierDefinedEpicsController.SearchResults),
+                                        typeof(SupplierDefinedEpicsController).ControllerName())"
+                          title-text="Search by epic or capability"
+                          query-parameter-name="search"/>
 
-<nhs-table data-test-id="sde-table">
-    <nhs-table-column>Epic</nhs-table-column>
-    <nhs-table-column>Capability</nhs-table-column>
-    <nhs-table-column>Status</nhs-table-column>
-    <nhs-table-column></nhs-table-column>
-    @foreach (var supplierDefinedEpic in Model.SupplierDefinedEpics)
-    {
-        <nhs-table-row-container class="@(!supplierDefinedEpic.IsActive ? "inactive" : null)">
-            <nhs-table-cell>
-                    @supplierDefinedEpic.Name
-            </nhs-table-cell>
-            <nhs-table-cell>
-                    @supplierDefinedEpic.Capability
-            </nhs-table-cell>
-            <nhs-table-cell>
-                <nhs-tag colour="@GetTagColour(supplierDefinedEpic.IsActive)"
-                    text="@GetTagText(supplierDefinedEpic.IsActive)"/>
-            </nhs-table-cell>
-            <nhs-table-cell>
-                <a
-                    asp-area="@typeof(SupplierDefinedEpicsController).AreaName()"
-                    asp-controller="@(typeof(SupplierDefinedEpicsController).ControllerName())"
-                    asp-action="@nameof(SupplierDefinedEpicsController.EditEpic)"
-                    asp-route-epicId="@supplierDefinedEpic.Id">Edit</a>
-            </nhs-table-cell>
-        </nhs-table-row-container>
-    }
-</nhs-table>
+@if (Model.SupplierDefinedEpics.Any())
+{
+    <nhs-checkbox-container Id="inactive-items-checkbox" style="display: none;">
+        <nhs-checkbox asp-for="ShowInactiveItems"
+                      label-text="Show inactive supplier defined Epics" />
+    </nhs-checkbox-container>
+
+    <nhs-table data-test-id="sde-table">
+        <nhs-table-column>Epic</nhs-table-column>
+        <nhs-table-column>Capability</nhs-table-column>
+        <nhs-table-column>Status</nhs-table-column>
+        <nhs-table-column></nhs-table-column>
+        @foreach (var supplierDefinedEpic in Model.SupplierDefinedEpics)
+        {
+            <nhs-table-row-container class="@(!supplierDefinedEpic.IsActive ? "inactive" : null)">
+                <nhs-table-cell>
+                    <span data-test-id="epic-name" data-name="@supplierDefinedEpic.Name">
+                        @supplierDefinedEpic.Name
+                    </span>
+                </nhs-table-cell>
+                <nhs-table-cell>
+                    <span data-test-id="capability-name" data-capability="@supplierDefinedEpic.Capability">
+                        @supplierDefinedEpic.Capability
+                    </span>
+                </nhs-table-cell>
+                <nhs-table-cell>
+                    <nhs-tag colour="@GetTagColour(supplierDefinedEpic.IsActive)"
+                             text="@GetTagText(supplierDefinedEpic.IsActive)"/>
+                </nhs-table-cell>
+                <nhs-table-cell>
+                    <a data-test-id="epic-link"
+                       data-id="@supplierDefinedEpic.Id"
+                       asp-area="@typeof(SupplierDefinedEpicsController).AreaName()"
+                       asp-controller="@(typeof(SupplierDefinedEpicsController).ControllerName())"
+                       asp-action="@nameof(SupplierDefinedEpicsController.EditEpic)"
+                       asp-route-epicId="@supplierDefinedEpic.Id">Edit</a>
+                </nhs-table-cell>
+            </nhs-table-row-container>
+        }
+    </nhs-table>
+}
+else
+{
+    <div id="search-error-message" class="nhsuk-u-margin-top-9">
+        <h3>No results found for "@Model.SearchTerm"</h3>
+        <p>
+            Try entering a different search term, or
+            <a id="reset-search-link"
+               asp-area="@typeof(SupplierDefinedEpicsController).AreaName()"
+               asp-controller="@typeof(SupplierDefinedEpicsController).ControllerName()"
+               asp-action="@nameof(SupplierDefinedEpicsController.Dashboard)">select an epic from the complete list</a>.
+        </p>
+    </div>
+}
+
 @{
     NhsTagsTagHelper.TagColour GetTagColour(bool status) =>
         status ? NhsTagsTagHelper.TagColour.Green : NhsTagsTagHelper.TagColour.Grey;

@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using AutoFixture;
 using AutoFixture.AutoMoq;
@@ -13,6 +14,7 @@ using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Orders;
+using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Session;
 using NHSD.GPIT.BuyingCatalogue.Test.Framework.AutoFixtureCustomisations;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.Supplier;
@@ -42,230 +44,273 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers
         [Theory]
         [CommonAutoData]
         public static async Task Get_Supplier_NoSupplier_RedirectsCorrectly(
-            string odsCode,
+            string internalOrgId,
             EntityFramework.Ordering.Models.Order order,
             [Frozen] Mock<IOrderService> orderServiceMock,
             SupplierController controller)
         {
             order.Supplier = null;
 
-            orderServiceMock.Setup(s => s.GetOrderWithSupplier(order.CallOffId, odsCode)).ReturnsAsync(order);
+            orderServiceMock.Setup(s => s.GetOrderWithSupplier(order.CallOffId, internalOrgId)).ReturnsAsync(order);
 
-            var actualResult = await controller.Supplier(odsCode, order.CallOffId);
+            var actualResult = await controller.Supplier(internalOrgId, order.CallOffId);
 
             actualResult.Should().BeOfType<RedirectToActionResult>();
-            actualResult.As<RedirectToActionResult>().ActionName.Should().Be(nameof(SupplierController.SupplierSearch));
+            actualResult.As<RedirectToActionResult>().ActionName.Should().Be(nameof(SupplierController.SelectSupplier));
             actualResult.As<RedirectToActionResult>().ControllerName.Should().Be(typeof(SupplierController).ControllerName());
-            actualResult.As<RedirectToActionResult>().RouteValues.Should().BeEquivalentTo(new RouteValueDictionary { { "odsCode", odsCode }, { "callOffId", order.CallOffId } });
+            actualResult.As<RedirectToActionResult>().RouteValues.Should().BeEquivalentTo(new RouteValueDictionary
+            {
+                { "internalOrgId", internalOrgId },
+                { "callOffId", order.CallOffId },
+            });
         }
 
         [Theory]
         [CommonAutoData]
         public static async Task Get_Supplier_WithSupplier_ReturnsExpectedResult(
-            string odsCode,
+            string internalOrgId,
             EntityFramework.Ordering.Models.Order order,
             Supplier supplier,
             [Frozen] Mock<IOrderService> orderServiceMock,
             [Frozen] Mock<ISupplierService> supplierServiceMock,
             SupplierController controller)
         {
-            var expectedViewData = new SupplierModel(odsCode, order, supplier.SupplierContacts);
+            var model = new SupplierModel(internalOrgId, order.CallOffId, order)
+            {
+                Contacts = supplier.SupplierContacts.ToList(),
+                SelectedContactId = order.SupplierContact.SupplierContactId,
+            };
 
-            orderServiceMock.Setup(s => s.GetOrderWithSupplier(order.CallOffId, odsCode)).ReturnsAsync(order);
-            supplierServiceMock.Setup(s => s.GetSupplierFromBuyingCatalogue(order.Supplier.Id)).ReturnsAsync(supplier);
+            orderServiceMock
+                .Setup(s => s.GetOrderWithSupplier(order.CallOffId, internalOrgId))
+                .ReturnsAsync(order);
 
-            var actualResult = await controller.Supplier(odsCode, order.CallOffId);
+            supplierServiceMock
+                .Setup(s => s.GetSupplierFromBuyingCatalogue(order.Supplier.Id))
+                .ReturnsAsync(supplier);
 
-            actualResult.Should().BeOfType<ViewResult>();
-            actualResult.As<ViewResult>().ViewData.Model.Should().BeEquivalentTo(expectedViewData, opt => opt.Excluding(m => m.BackLink));
+            var result = await controller.Supplier(internalOrgId, order.CallOffId);
+
+            orderServiceMock.VerifyAll();
+            supplierServiceMock.VerifyAll();
+
+            var actualResult = result.Should().BeOfType<ViewResult>().Subject;
+            actualResult.ViewData.Model.Should().BeEquivalentTo(model, opt => opt.Excluding(m => m.BackLink));
+        }
+
+        [Theory]
+        [CommonAutoData]
+        public static async Task Get_Supplier_WithTemporaryContact_ReturnsExpectedResult(
+            string internalOrgId,
+            EntityFramework.Ordering.Models.Order order,
+            Supplier supplier,
+            [Frozen] Mock<IOrderService> mockOrderService,
+            [Frozen] Mock<ISupplierService> mockSupplierService,
+            [Frozen] Mock<ISupplierContactSessionService> mockSessionService,
+            SupplierController controller)
+        {
+            var model = new SupplierModel(internalOrgId, order.CallOffId, order)
+            {
+                Contacts = supplier.SupplierContacts.ToList(),
+                SelectedContactId = SupplierContact.TemporaryContactId,
+            };
+
+            order.SupplierContact.SupplierContactId = null;
+
+            mockOrderService
+                .Setup(s => s.GetOrderWithSupplier(order.CallOffId, internalOrgId))
+                .ReturnsAsync(order);
+
+            mockSupplierService
+                .Setup(s => s.GetSupplierFromBuyingCatalogue(order.Supplier.Id))
+                .ReturnsAsync(supplier);
+
+            SupplierContact actual = null;
+
+            mockSessionService
+                .Setup(x => x.SetSupplierContact(order.CallOffId, supplier.Id, It.IsAny<SupplierContact>()))
+                .Callback<CallOffId, int, SupplierContact>((_, _, x) => actual = x)
+                .Verifiable();
+
+            var result = await controller.Supplier(internalOrgId, order.CallOffId);
+
+            mockOrderService.VerifyAll();
+            mockSupplierService.VerifyAll();
+            mockSessionService.VerifyAll();
+
+            actual.Id.Should().Be(SupplierContact.TemporaryContactId);
+            actual.SupplierId.Should().Be(supplier.Id);
+            actual.FirstName.Should().Be(order.SupplierContact.FirstName);
+            actual.LastName.Should().Be(order.SupplierContact.LastName);
+            actual.Department.Should().Be(order.SupplierContact.Department);
+            actual.PhoneNumber.Should().Be(order.SupplierContact.Phone);
+            actual.Email.Should().Be(order.SupplierContact.Email);
+
+            var actualResult = result.Should().BeOfType<ViewResult>().Subject;
+
+            actualResult.ViewData.Model.Should().BeEquivalentTo(model, opt => opt.Excluding(m => m.BackLink));
         }
 
         [Theory]
         [CommonAutoData]
         public static async Task Post_Supplier_UpdatesContact_CorrectlyRedirects(
-            string odsCode,
+            string internalOrgId,
             CallOffId callOffId,
             SupplierModel model,
-            [Frozen] Mock<ISupplierService> supplierServiceMock,
+            Supplier supplier,
+            [Frozen] Mock<ISupplierService> mockSupplierService,
             SupplierController controller)
         {
-            var actualResult = await controller.Supplier(odsCode, callOffId, model);
+            var supplierContact = supplier.SupplierContacts.First();
 
-            actualResult.Should().BeOfType<RedirectToActionResult>();
-            actualResult.As<RedirectToActionResult>().ActionName.Should().Be(nameof(OrderController.Order));
-            actualResult.As<RedirectToActionResult>().ControllerName.Should().Be(typeof(OrderController).ControllerName());
-            actualResult.As<RedirectToActionResult>().RouteValues.Should().BeEquivalentTo(new RouteValueDictionary { { "odsCode", odsCode }, { "callOffId", callOffId } });
-            supplierServiceMock.Verify(s => s.AddOrUpdateOrderSupplierContact(callOffId, odsCode, model.PrimaryContact), Times.Once);
+            model.SupplierId = supplier.Id;
+            model.SelectedContactId = supplierContact.Id;
+
+            mockSupplierService
+                .Setup(x => x.GetSupplierFromBuyingCatalogue(supplier.Id))
+                .ReturnsAsync(supplier);
+
+            mockSupplierService
+                .Setup(x => x.AddOrUpdateOrderSupplierContact(callOffId, internalOrgId, supplierContact))
+                .Returns(Task.CompletedTask);
+
+            var result = await controller.Supplier(internalOrgId, callOffId, model);
+
+            mockSupplierService.VerifyAll();
+
+            var actualResult = result.Should().BeOfType<RedirectToActionResult>().Subject;
+            actualResult.ActionName.Should().Be(nameof(OrderController.Order));
+            actualResult.ControllerName.Should().Be(typeof(OrderController).ControllerName());
+            actualResult.RouteValues.Should().BeEquivalentTo(new RouteValueDictionary
+            {
+                { "internalOrgId", internalOrgId },
+                { "callOffId", callOffId },
+            });
         }
 
         [Theory]
         [CommonAutoData]
-        public static async Task Get_SupplierSearch_WithSupplier_RedirectsCorrectly(
-            string odsCode,
+        public static async Task Get_SelectSupplier_WithSupplier_RedirectsCorrectly(
+            string internalOrgId,
             EntityFramework.Ordering.Models.Order order,
             [Frozen] Mock<IOrderService> orderServiceMock,
             SupplierController controller)
         {
-            orderServiceMock.Setup(s => s.GetOrderWithSupplier(order.CallOffId, odsCode)).ReturnsAsync(order);
+            orderServiceMock
+                .Setup(s => s.GetOrderWithSupplier(order.CallOffId, internalOrgId))
+                .ReturnsAsync(order);
 
-            var actualResult = await controller.SupplierSearch(odsCode, order.CallOffId);
+            var result = await controller.SelectSupplier(internalOrgId, order.CallOffId);
 
-            actualResult.Should().BeOfType<RedirectToActionResult>();
-            actualResult.As<RedirectToActionResult>().ActionName.Should().Be(nameof(SupplierController.Supplier));
-            actualResult.As<RedirectToActionResult>().ControllerName.Should().Be(typeof(SupplierController).ControllerName());
-            actualResult.As<RedirectToActionResult>().RouteValues.Should().BeEquivalentTo(new RouteValueDictionary { { "odsCode", odsCode }, { "callOffId", order.CallOffId } });
+            var actualResult = result.Should().BeOfType<RedirectToActionResult>().Subject;
+
+            actualResult.ActionName.Should().Be(nameof(SupplierController.Supplier));
+            actualResult.ControllerName.Should().Be(typeof(SupplierController).ControllerName());
+            actualResult.RouteValues.Should().BeEquivalentTo(new RouteValueDictionary
+            {
+                { "internalOrgId", internalOrgId },
+                { "callOffId", order.CallOffId },
+            });
         }
 
         [Theory]
         [CommonAutoData]
-        public static async Task Get_SupplierSearch_NoSupplier_ReturnsExpectedResult(
-            string odsCode,
+        public static async Task Get_SelectSupplier_NoSupplier_ReturnsExpectedResult(
+            string internalOrgId,
             EntityFramework.Ordering.Models.Order order,
+            List<Supplier> suppliers,
             [Frozen] Mock<IOrderService> orderServiceMock,
+            [Frozen] Mock<ISupplierService> mockSupplierService,
             SupplierController controller)
         {
             order.Supplier = null;
 
-            var expectedViewData = new SupplierSearchModel(odsCode, order);
-
-            orderServiceMock.Setup(s => s.GetOrderWithSupplier(order.CallOffId, odsCode)).ReturnsAsync(order);
-
-            var actualResult = await controller.SupplierSearch(odsCode, order.CallOffId);
-
-            actualResult.Should().BeOfType<ViewResult>();
-            actualResult.As<ViewResult>().ViewData.Model.Should().BeEquivalentTo(expectedViewData, opt => opt.Excluding(m => m.BackLink));
-        }
-
-        [Theory]
-        [CommonAutoData]
-        public static void Post_SupplierSearch_RedirectsCorrectly(
-            string odsCode,
-            CallOffId callOffId,
-            SupplierSearchModel model,
-            SupplierController controller)
-        {
-            var actualResult = controller.SupplierSearch(odsCode, callOffId, model);
-
-            actualResult.Should().BeOfType<RedirectToActionResult>();
-            actualResult.As<RedirectToActionResult>().ActionName.Should().Be(nameof(SupplierController.SupplierSearchSelect));
-            actualResult.As<RedirectToActionResult>().ControllerName.Should().Be(typeof(SupplierController).ControllerName());
-            actualResult.As<RedirectToActionResult>().RouteValues.Should().BeEquivalentTo(new RouteValueDictionary { { "odsCode", odsCode }, { "callOffId", callOffId }, { "search", model.SearchString } });
-        }
-
-        [Theory]
-        [CommonInlineAutoData(null)]
-        [CommonInlineAutoData("")]
-        [CommonInlineAutoData(" ")]
-        public static async Task Get_SupplierSearchSelect_NoSearch_ReturnsExpectedResult(
-            string search,
-            string odsCode,
-            CallOffId callOffId,
-            SupplierController controller)
-        {
-            var expectedViewData = new NoSupplierFoundModel();
-
-            var actualResult = await controller.SupplierSearchSelect(odsCode, callOffId, search);
-
-            actualResult.Should().BeOfType<ViewResult>();
-            actualResult.As<ViewResult>().ViewData.Model.Should().BeEquivalentTo(expectedViewData, opt => opt.Excluding(m => m.BackLink));
-            actualResult.As<ViewResult>().ViewName.Should().Be("NoSupplierFound");
-        }
-
-        [Theory]
-        [CommonAutoData]
-        public static async Task Get_SupplierSearchSelect_NoSuppliersFound_ReturnsExpectedResult(
-            string odsCode,
-            CallOffId callOffId,
-            [Frozen] Mock<ISupplierService> supplierServiceMock,
-            SupplierController controller)
-        {
-            var expectedViewData = new NoSupplierFoundModel();
-
-            supplierServiceMock.Setup(s => s.GetListFromBuyingCatalogue(It.IsAny<string>(), null, null))
-                .ReturnsAsync(new List<Supplier>());
-
-            var actualResult = await controller.SupplierSearchSelect(odsCode, callOffId, "searchTerm");
-
-            actualResult.Should().BeOfType<ViewResult>();
-            actualResult.As<ViewResult>().ViewData.Model.Should().BeEquivalentTo(expectedViewData, opt => opt.Excluding(m => m.BackLink));
-            actualResult.As<ViewResult>().ViewName.Should().Be("NoSupplierFound");
-        }
-
-        [Theory]
-        [CommonAutoData]
-        public static async Task Get_SupplierSearchSelect_SuppliersFound_ReturnsExpectedResult(
-            string odsCode,
-            CallOffId callOffId,
-            List<Supplier> suppliers,
-            [Frozen] Mock<ISupplierService> supplierServiceMock,
-            SupplierController controller)
-        {
-            var expectedViewData = new SupplierSearchSelectModel(odsCode, callOffId, suppliers);
-
-            supplierServiceMock.Setup(s => s.GetListFromBuyingCatalogue(It.IsAny<string>(), null, null))
-                .ReturnsAsync(suppliers);
-
-            var actualResult = await controller.SupplierSearchSelect(odsCode, callOffId, "searchTerm");
-
-            actualResult.Should().BeOfType<ViewResult>();
-            actualResult.As<ViewResult>().ViewData.Model.Should().BeEquivalentTo(expectedViewData, opt => opt.Excluding(m => m.BackLink));
-        }
-
-        [Theory]
-        [CommonAutoData]
-        public static async Task Get_SupplierSearchSelect_ExistingSupplierOnOrder_ReturnsRedirectResult(
-            string odsCode,
-            CallOffId callOffId,
-            string search,
-            Supplier supplier,
-            EntityFramework.Ordering.Models.Order order,
-            [Frozen] Mock<IOrderService> orderServiceMock,
-            SupplierController controller)
-        {
-            order.Supplier = supplier;
-            orderServiceMock.Setup(_ => _.GetOrderWithSupplier(callOffId, odsCode))
+            orderServiceMock
+                .Setup(s => s.GetOrderWithSupplier(order.CallOffId, internalOrgId))
                 .ReturnsAsync(order);
 
-            var result = await controller.SupplierSearchSelect(odsCode, callOffId, search);
+            mockSupplierService
+                .Setup(x => x.GetAllSuppliersFromBuyingCatalogue())
+                .ReturnsAsync(suppliers);
 
-            var redirectResult = result.As<RedirectToActionResult>();
-            redirectResult.Should().NotBeNull();
-            redirectResult.ActionName.Should().Be(nameof(SupplierController.Supplier));
-            redirectResult.ControllerName.Should().Be(typeof(SupplierController).ControllerName());
+            var result = await controller.SelectSupplier(internalOrgId, order.CallOffId);
+
+            orderServiceMock.VerifyAll();
+            mockSupplierService.VerifyAll();
+
+            var actualResult = result.Should().BeOfType<ViewResult>().Subject;
+
+            var model = actualResult.ViewData.Model.Should().BeAssignableTo<SelectSupplierModel>().Subject;
+
+            model.CallOffId.Should().Be(order.CallOffId);
+            model.InternalOrgId.Should().Be(internalOrgId);
+
+            foreach (var supplier in suppliers)
+            {
+                model.Suppliers.Should().Contain(x => x.Text == supplier.Name && x.Value == $"{supplier.Id}");
+            }
         }
 
         [Theory]
         [CommonAutoData]
-        public static async Task Post_SupplierSearchSelect_ValidModelState_AddsSupplier_RedirectsCorrectly(
-            string odsCode,
-            CallOffId callOffId,
-            string search,
-            int supplierId,
-            SupplierSearchSelectModel model,
+        public static async Task Post_SelectSupplier_WithModelErrors_ReturnsExpectedResult(
+            SelectSupplierModel model,
+            List<Supplier> suppliers,
+            [Frozen] Mock<ISupplierService> mockSupplierService,
             SupplierController controller)
         {
-            model.SelectedSupplierId = supplierId;
+            controller.ModelState.AddModelError("key", "errorMessage");
 
-            var actualResult = await controller.SupplierSearchSelect(odsCode, callOffId, model, search);
+            mockSupplierService
+                .Setup(x => x.GetAllSuppliersFromBuyingCatalogue())
+                .ReturnsAsync(suppliers);
 
-            actualResult.Should().BeOfType<RedirectToActionResult>();
-            actualResult.As<RedirectToActionResult>().ActionName.Should().Be(nameof(SupplierController.ConfirmSupplier));
-            actualResult.As<RedirectToActionResult>().ControllerName.Should().Be(typeof(SupplierController).ControllerName());
-            actualResult.As<RedirectToActionResult>().RouteValues.Should().BeEquivalentTo(new RouteValueDictionary
+            var result = await controller.SelectSupplier(model.InternalOrgId, model.CallOffId, model);
+
+            mockSupplierService.VerifyAll();
+
+            var actualResult = result.Should().BeOfType<ViewResult>().Subject;
+
+            var actualModel = actualResult.ViewData.Model.Should().BeAssignableTo<SelectSupplierModel>().Subject;
+
+            actualModel.CallOffId.Should().Be(model.CallOffId);
+            actualModel.InternalOrgId.Should().Be(model.InternalOrgId);
+
+            foreach (var supplier in suppliers)
             {
-                { "odsCode", odsCode },
+                actualModel.Suppliers.Should().Contain(x => x.Text == supplier.Name && x.Value == $"{supplier.Id}");
+            }
+        }
+
+        [Theory]
+        [CommonAutoData]
+        public static async Task Post_SelectSupplier_RedirectsCorrectly(
+            string internalOrgId,
+            CallOffId callOffId,
+            SelectSupplierModel model,
+            SupplierController controller)
+        {
+            model.SelectedSupplierId = $"{1}";
+
+            var result = await controller.SelectSupplier(internalOrgId, callOffId, model);
+
+            var actualResult = result.Should().BeOfType<RedirectToActionResult>().Subject;
+
+            actualResult.ActionName.Should().Be(nameof(SupplierController.ConfirmSupplier));
+            actualResult.ControllerName.Should().Be(typeof(SupplierController).ControllerName());
+            actualResult.RouteValues.Should().BeEquivalentTo(new RouteValueDictionary
+            {
+                { "internalOrgId", internalOrgId },
                 { "callOffId", callOffId },
-                { "search", search },
-                { "supplierId", supplierId },
+                { "supplierId", int.Parse(model.SelectedSupplierId) },
             });
         }
 
         [Theory]
         [CommonAutoData]
         public static async Task Get_ConfirmSupplier_ExistingSupplierOnOrder_ReturnsRedirectResult(
-            string odsCode,
+            string internalOrgId,
             CallOffId callOffId,
-            string search,
             Supplier supplier,
             EntityFramework.Ordering.Models.Order order,
             [Frozen] Mock<IOrderService> mockOrderService,
@@ -274,10 +319,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers
             order.Supplier = supplier;
 
             mockOrderService
-                .Setup(_ => _.GetOrderWithSupplier(callOffId, odsCode))
+                .Setup(_ => _.GetOrderWithSupplier(callOffId, internalOrgId))
                 .ReturnsAsync(order);
 
-            var result = await controller.ConfirmSupplier(odsCode, callOffId, search, order.Supplier.Id);
+            var result = await controller.ConfirmSupplier(internalOrgId, callOffId, order.Supplier.Id);
 
             var redirectResult = result.As<RedirectToActionResult>();
             redirectResult.Should().NotBeNull();
@@ -288,9 +333,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers
         [Theory]
         [CommonAutoData]
         public static async Task Get_ConfirmSupplier_SupplierIdNotFound_ReturnsRedirectResult(
-            string odsCode,
+            string internalOrgId,
             CallOffId callOffId,
-            string search,
             int supplierId,
             [Frozen] Mock<ISupplierService> mockSupplierService,
             SupplierController controller)
@@ -299,30 +343,33 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers
                 .Setup(x => x.GetSupplierFromBuyingCatalogue(supplierId))
                 .ReturnsAsync((Supplier)null);
 
-            var result = await controller.ConfirmSupplier(odsCode, callOffId, search, supplierId);
+            var result = await controller.ConfirmSupplier(internalOrgId, callOffId, supplierId);
 
             var redirectResult = result.As<RedirectToActionResult>();
             redirectResult.Should().NotBeNull();
-            redirectResult.ActionName.Should().Be(nameof(SupplierController.SupplierSearch));
+            redirectResult.ActionName.Should().Be(nameof(SupplierController.SelectSupplier));
             redirectResult.ControllerName.Should().Be(typeof(SupplierController).ControllerName());
         }
 
         [Theory]
         [CommonAutoData]
         public static async Task Get_ConfirmSupplier_EverythingOk_ReturnsExpectedResult(
-            string odsCode,
+            string internalOrgId,
             CallOffId callOffId,
-            List<Supplier> suppliers,
-            [Frozen] Mock<ISupplierService> supplierServiceMock,
+            Supplier supplier,
+            int supplierId,
+            [Frozen] Mock<ISupplierService> mockSupplierService,
             SupplierController controller)
         {
-            var model = new SupplierSearchSelectModel(odsCode, callOffId, suppliers);
+            var model = new ConfirmSupplierModel(internalOrgId, callOffId, supplier);
 
-            supplierServiceMock
-                .Setup(s => s.GetListFromBuyingCatalogue(It.IsAny<string>(), null, null))
-                .ReturnsAsync(suppliers);
+            mockSupplierService
+                .Setup(x => x.GetSupplierFromBuyingCatalogue(supplierId))
+                .ReturnsAsync(supplier);
 
-            var result = await controller.SupplierSearchSelect(odsCode, callOffId, "search");
+            var result = await controller.ConfirmSupplier(internalOrgId, callOffId, supplierId);
+
+            mockSupplierService.VerifyAll();
 
             result.Should().BeOfType<ViewResult>();
             result.As<ViewResult>().ViewData.Model.Should().BeEquivalentTo(model, x => x.Excluding(m => m.BackLink));
@@ -331,27 +378,167 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers
         [Theory]
         [CommonAutoData]
         public static async Task Post_ConfirmSupplier_ValidModelState_AddsSupplier_RedirectsCorrectly(
-            string odsCode,
+            string internalOrgId,
             CallOffId callOffId,
             ConfirmSupplierModel model,
             [Frozen] Mock<ISupplierService> mockSupplierService,
             SupplierController controller)
         {
             mockSupplierService
-                .Setup(x => x.AddOrderSupplier(callOffId, odsCode, model.SupplierId))
+                .Setup(x => x.AddOrderSupplier(callOffId, internalOrgId, model.SupplierId))
                 .Returns(Task.CompletedTask);
 
-            var result = await controller.ConfirmSupplier(odsCode, callOffId, model);
+            var result = await controller.ConfirmSupplier(internalOrgId, callOffId, model);
 
             mockSupplierService.VerifyAll();
 
-            result.Should().BeOfType<RedirectToActionResult>();
-            result.As<RedirectToActionResult>().ActionName.Should().Be(nameof(SupplierController.Supplier));
-            result.As<RedirectToActionResult>().ControllerName.Should().Be(typeof(SupplierController).ControllerName());
-            result.As<RedirectToActionResult>().RouteValues.Should().BeEquivalentTo(new RouteValueDictionary
+            var actualResult = result.Should().BeOfType<RedirectToActionResult>().Subject;
+
+            actualResult.ActionName.Should().Be(nameof(SupplierController.Supplier));
+            actualResult.ControllerName.Should().Be(typeof(SupplierController).ControllerName());
+            actualResult.RouteValues.Should().BeEquivalentTo(new RouteValueDictionary
             {
-                { "odsCode", odsCode },
+                { "internalOrgId", internalOrgId },
                 { "callOffId", callOffId },
+            });
+        }
+
+        [Theory]
+        [CommonAutoData]
+        public static async Task Get_NewContact_NoSupplierOnOrder_ReturnsRedirectResult(
+            string internalOrgId,
+            CallOffId callOffId,
+            EntityFramework.Ordering.Models.Order order,
+            [Frozen] Mock<IOrderService> mockOrderService,
+            SupplierController systemUnderTest)
+        {
+            order.SupplierId = null;
+
+            mockOrderService
+                .Setup(_ => _.GetOrderWithSupplier(callOffId, internalOrgId))
+                .ReturnsAsync(order);
+
+            var result = await systemUnderTest.NewContact(internalOrgId, callOffId);
+
+            mockOrderService.VerifyAll();
+
+            var redirectResult = result.As<RedirectToActionResult>();
+            redirectResult.Should().NotBeNull();
+            redirectResult.ActionName.Should().Be(nameof(SupplierController.SelectSupplier));
+            redirectResult.ControllerName.Should().Be(typeof(SupplierController).ControllerName());
+        }
+
+        [Theory]
+        [CommonAutoData]
+        public static async Task Get_NewContact_NoSupplierContactInSession_ReturnsExpectedResult(
+            string internalOrgId,
+            CallOffId callOffId,
+            int supplierId,
+            string supplierName,
+            EntityFramework.Ordering.Models.Order order,
+            [Frozen] Mock<IOrderService> mockOrderService,
+            SupplierController systemUnderTest)
+        {
+            var model = new NewContactModel(callOffId, supplierId, supplierName)
+            {
+                Title = "Add a contact",
+            };
+
+            order.SupplierId = supplierId;
+            order.Supplier.Name = supplierName;
+
+            mockOrderService
+                .Setup(x => x.GetOrderWithSupplier(callOffId, internalOrgId))
+                .ReturnsAsync(order);
+
+            var result = await systemUnderTest.NewContact(internalOrgId, callOffId);
+
+            mockOrderService.VerifyAll();
+
+            result.Should().BeOfType<ViewResult>();
+            result.As<ViewResult>().ViewData.Model.Should().BeEquivalentTo(model, x => x.Excluding(m => m.BackLink));
+        }
+
+        [Theory]
+        [CommonAutoData]
+        public static async Task Get_NewContact_SupplierContactInSession_ReturnsExpectedResult(
+            string internalOrgId,
+            CallOffId callOffId,
+            int supplierId,
+            string supplierName,
+            EntityFramework.Ordering.Models.Order order,
+            SupplierContact supplierContact,
+            [Frozen] Mock<IOrderService> mockOrderService,
+            [Frozen] Mock<ISupplierContactSessionService> mockSessionService,
+            SupplierController systemUnderTest)
+        {
+            var model = new NewContactModel(callOffId, supplierId, supplierName)
+            {
+                Title = $"{supplierContact.FirstName} {supplierContact.LastName} details",
+                FirstName = supplierContact.FirstName,
+                LastName = supplierContact.LastName,
+                Department = supplierContact.Department,
+                PhoneNumber = supplierContact.PhoneNumber,
+                Email = supplierContact.Email,
+            };
+
+            order.SupplierId = supplierId;
+            order.Supplier.Name = supplierName;
+
+            mockOrderService
+                .Setup(x => x.GetOrderWithSupplier(callOffId, internalOrgId))
+                .ReturnsAsync(order);
+
+            mockSessionService
+                .Setup(x => x.GetSupplierContact(callOffId, supplierId))
+                .Returns(supplierContact);
+
+            var result = await systemUnderTest.NewContact(internalOrgId, callOffId);
+
+            mockOrderService.VerifyAll();
+            mockSessionService.VerifyAll();
+
+            result.Should().BeOfType<ViewResult>();
+            result.As<ViewResult>().ViewData.Model.Should().BeEquivalentTo(model, x => x.Excluding(m => m.BackLink));
+        }
+
+        [Theory]
+        [CommonAutoData]
+        public static void Post_NewContact_AddsContactToSession_RedirectsCorrectly(
+            string internalOrgId,
+            CallOffId callOffId,
+            NewContactModel model,
+            [Frozen] Mock<ISupplierContactSessionService> mockSessionService,
+            SupplierController systemUnderTest)
+        {
+            SupplierContact supplierContact = null;
+
+            mockSessionService
+                .Setup(x => x.SetSupplierContact(callOffId, model.SupplierId, It.IsAny<SupplierContact>()))
+                .Callback<CallOffId, int, SupplierContact>((_, _, x) => supplierContact = x)
+                .Verifiable();
+
+            var result = systemUnderTest.NewContact(internalOrgId, callOffId, model);
+
+            mockSessionService.VerifyAll();
+
+            supplierContact.Id.Should().Be(SupplierContact.TemporaryContactId);
+            supplierContact.SupplierId.Should().Be(model.SupplierId);
+            supplierContact.FirstName.Should().Be(model.FirstName);
+            supplierContact.LastName.Should().Be(model.LastName);
+            supplierContact.Department.Should().Be(model.Department);
+            supplierContact.PhoneNumber.Should().Be(model.PhoneNumber);
+            supplierContact.Email.Should().Be(model.Email);
+
+            var actualResult = result.Should().BeOfType<RedirectToActionResult>().Subject;
+
+            actualResult.ActionName.Should().Be(nameof(SupplierController.Supplier));
+            actualResult.ControllerName.Should().Be(typeof(SupplierController).ControllerName());
+            actualResult.RouteValues.Should().BeEquivalentTo(new RouteValueDictionary
+            {
+                { "internalOrgId", internalOrgId },
+                { "callOffId", callOffId },
+                { "selected", SupplierContact.TemporaryContactId },
             });
         }
     }

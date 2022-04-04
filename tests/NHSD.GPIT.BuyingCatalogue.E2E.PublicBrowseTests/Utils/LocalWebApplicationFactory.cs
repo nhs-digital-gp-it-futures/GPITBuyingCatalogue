@@ -14,6 +14,7 @@ using Microsoft.Data.Sqlite;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Caching.Distributed;
 using Microsoft.Extensions.Caching.Memory;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Database;
@@ -27,6 +28,7 @@ using NHSD.GPIT.BuyingCatalogue.WebApp;
 using OpenQA.Selenium;
 using Serilog;
 using Serilog.Events;
+using Xunit.Abstractions;
 
 namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils
 {
@@ -37,12 +39,6 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils
         // Need to find a better way of doing this
         [SuppressMessage("StyleCop.CSharp.NamingRules", "SA1310:Field names should not contain underscore", Justification = "This name is used by the Webapp, so needs to be kept")]
         private const string BC_DB_CONNECTION = "Server=localhost,1450;Database=GPITBuyingCatalogue;User=SA;password=8VSKwQ8xgk35qWFm8VSKwQ8xgk35qWFm!;Integrated Security=false";
-
-        [SuppressMessage("StyleCop.CSharp.NamingRules", "SA1310:Field names should not contain underscore", Justification = "This name is used by the Webapp, so needs to be kept")]
-        private const string BC_SMTP_HOST = "localhost";
-
-        [SuppressMessage("StyleCop.CSharp.NamingRules", "SA1310:Field names should not contain underscore", Justification = "This name is used by the Webapp, so needs to be kept")]
-        private const string BC_SMTP_PORT = "9999";
 
         [SuppressMessage("StyleCop.CSharp.NamingRules", "SA1310:Field names should not contain underscore", Justification = "This name is used by the Webapp, so needs to be kept")]
         private const string DOMAIN_NAME = "127.0.0.1";
@@ -66,6 +62,8 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils
 
         private readonly IWebHost host;
 
+        private bool disposed = false;
+
         private SqliteConnection sqliteConnection;
 
         private IServiceProvider scopedServices;
@@ -77,13 +75,6 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils
             BcDbName = Guid.NewGuid().ToString();
 
             SetEnvVariables();
-
-            Log.Logger = new LoggerConfiguration()
-                .MinimumLevel.Debug()
-                .MinimumLevel.Override("Microsoft", LogEventLevel.Information)
-                .MinimumLevel.Override("Microsoft.AspNetCore", LogEventLevel.Warning)
-                .Enrich.FromLogContext()
-                .CreateLogger();
 
             host = CreateWebHostBuilder().Build();
             host.Start();
@@ -99,7 +90,28 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils
             }
         }
 
-        public static int SmtpPort => int.Parse(BC_SMTP_PORT);
+        ~LocalWebApplicationFactory()
+        {
+            Dispose(true);
+        }
+
+        public static ITestOutputHelper TestOutputHelper
+        {
+            set
+            {
+                if (value != null)
+                {
+                    Log.Logger = new LoggerConfiguration()
+                        .MinimumLevel.Information()
+                        .MinimumLevel.Override("Microsoft", LogEventLevel.Information)
+                        .MinimumLevel.Override("Microsoft.AspNetCore", LogEventLevel.Warning)
+                        .MinimumLevel.Override("Microsoft.EntityFrameworkCore", LogEventLevel.Warning)
+                        .Enrich.FromLogContext()
+                        .WriteTo.TestOutput(value)
+                        .CreateLogger();
+                }
+            }
+        }
 
         public string BcDbName { get; private set; }
 
@@ -202,7 +214,14 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils
             });
 
             builder.UseUrls($"{LocalhostBaseAddress}:0");
-
+            builder.ConfigureAppConfiguration((hostContext, config) =>
+            {
+                foreach (var s in config.Sources)
+                {
+                    if (s is FileConfigurationSource)
+                        ((FileConfigurationSource)s).ReloadOnChange = false;
+                }
+            });
             return builder;
         }
 
@@ -211,10 +230,11 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils
         {
             Driver?.Quit();
             base.Dispose(disposing);
-            if (disposing)
+            if (disposing && !disposed)
             {
                 host?.Dispose();
                 sqliteConnection?.Dispose();
+                disposed = true;
             }
         }
 
@@ -224,13 +244,9 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils
 
             SetEnvironmentVariable("ASPNETCORE_ENVIRONMENT", "E2ETest");
 
-            SetEnvironmentVariable("SMTPSERVER__PORT", BC_SMTP_PORT);
-
-            SetEnvironmentVariable(nameof(BC_SMTP_HOST), BC_SMTP_HOST);
-
-            SetEnvironmentVariable(nameof(BC_SMTP_PORT), BC_SMTP_PORT);
-
             SetEnvironmentVariable(nameof(DOMAIN_NAME), DOMAIN_NAME);
+
+            SetEnvironmentVariable("DOTNET_USE_POLLING_FILE_WATCHER", "true");
         }
 
         private static void SetEnvironmentVariable(string name, string value)

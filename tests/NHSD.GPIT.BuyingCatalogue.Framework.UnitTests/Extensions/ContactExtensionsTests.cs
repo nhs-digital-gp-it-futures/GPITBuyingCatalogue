@@ -23,10 +23,12 @@ namespace NHSD.GPIT.BuyingCatalogue.Framework.UnitTests.Extensions
 
             var expected = new Contact
             {
+                SupplierContactId = model.SupplierContactId,
                 FirstName = model.FirstName,
                 LastName = model.LastName,
                 Email = model.EmailAddress,
                 Phone = model.TelephoneNumber,
+                Department = model.Department,
             };
 
             actual.Should().BeEquivalentTo(expected);

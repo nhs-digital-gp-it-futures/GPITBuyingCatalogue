@@ -68,93 +68,108 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.ManageSuppliers
         [Fact]
         public void ManageSupplier_SearchValid_DisplaysOrders()
         {
-            using var context = GetEndToEndDbContext();
-            var supplier = context.Suppliers.First();
+            RunTestWithRetry(() =>
+            {
+                using var context = GetEndToEndDbContext();
+                var supplier = context.Suppliers.First();
 
-            CommonActions.ElementAddValue(Objects.Admin.ManageSuppliers.ManageSuppliers.SearchBar, supplier.Name);
+                CommonActions.ElementAddValue(Objects.Admin.ManageSuppliers.ManageSuppliers.SearchBar, supplier.Name);
 
-            CommonActions.WaitUntilElementIsDisplayed(Objects.Admin.ManageSuppliers.ManageSuppliers.SearchListBox);
+                CommonActions.WaitUntilElementIsDisplayed(Objects.Admin.ManageSuppliers.ManageSuppliers.SearchListBox);
 
-            CommonActions.ElementExists(Objects.Admin.ManageSuppliers.ManageSuppliers.SearchResult(0))
-                .Should()
-                .BeTrue();
+                CommonActions.ElementExists(Objects.Admin.ManageSuppliers.ManageSuppliers.SearchResult(0))
+                    .Should()
+                    .BeTrue();
 
-            CommonActions.ElementTextEqualTo(
-                Objects.Admin.ManageSuppliers.ManageSuppliers.SearchResultTitle(0),
-                supplier.Name)
-                .Should()
-                .BeTrue();
+                CommonActions.ElementTextEqualTo(
+                    Objects.Admin.ManageSuppliers.ManageSuppliers.SearchResultTitle(0),
+                    supplier.Name)
+                    .Should()
+                    .BeTrue();
 
-            CommonActions.ElementTextEqualTo(
-                Objects.Admin.ManageSuppliers.ManageSuppliers.SearchResultDescription(0),
-                supplier.Id.ToString())
-                .Should()
-                .BeTrue();
+                CommonActions.ElementTextEqualTo(
+                    Objects.Admin.ManageSuppliers.ManageSuppliers.SearchResultDescription(0),
+                    supplier.Id.ToString())
+                    .Should()
+                    .BeTrue();
+            });
         }
 
         [Fact]
         public void ManageSupplier_SearchInvalid_NoResults()
         {
-            TextGenerators.TextInputAddText(Objects.Admin.ManageSuppliers.ManageSuppliers.SearchBar, 5);
+            RunTestWithRetry(() =>
+            {
+                TextGenerators.TextInputAddText(Objects.Admin.ManageSuppliers.ManageSuppliers.SearchBar, 5);
 
-            CommonActions.WaitUntilElementIsDisplayed(Objects.Admin.ManageSuppliers.ManageSuppliers.SearchListBox);
+                CommonActions.WaitUntilElementIsDisplayed(Objects.Admin.ManageSuppliers.ManageSuppliers.SearchListBox);
 
-            CommonActions.ElementIsDisplayed(Objects.Admin.ManageSuppliers.ManageSuppliers.NoResults)
-                .Should()
-                .BeTrue();
+                CommonActions.ElementIsDisplayed(Objects.Admin.ManageSuppliers.ManageSuppliers.NoResults)
+                    .Should()
+                    .BeTrue();
 
-            CommonActions.ClickLinkElement(Objects.Admin.ManageSuppliers.ManageSuppliers.SearchButton);
+                CommonActions.ClickLinkElement(Objects.Admin.ManageSuppliers.ManageSuppliers.SearchButton);
 
-            CommonActions.ElementIsDisplayed(Objects.Admin.ManageSuppliers.ManageSuppliers.SearchBar).Should().BeTrue();
-            CommonActions.ElementIsDisplayed(Objects.Admin.ManageSuppliers.ManageSuppliers.NoResultsElement).Should().BeTrue();
-            CommonActions.ElementIsDisplayed(Objects.Admin.ManageSuppliers.ManageSuppliers.SuppliersTable).Should().BeFalse();
+                CommonActions.ElementIsDisplayed(Objects.Admin.ManageSuppliers.ManageSuppliers.SearchBar).Should().BeTrue();
+                CommonActions.ElementIsDisplayed(Objects.Admin.ManageSuppliers.ManageSuppliers.NoResultsElement).Should().BeTrue();
+                CommonActions.ElementIsDisplayed(Objects.Admin.ManageSuppliers.ManageSuppliers.SuppliersTable).Should().BeFalse();
+            });
         }
 
         [Fact]
         public void OrderingDashboard_SearchInvalid_ClickLink_NavigatesCorrectly()
         {
-            TextGenerators.TextInputAddText(Objects.Admin.ManageSuppliers.ManageSuppliers.SearchBar, 5);
-            CommonActions.WaitUntilElementIsDisplayed(Objects.Admin.ManageSuppliers.ManageSuppliers.SearchListBox);
+            RunTestWithRetry(() =>
+            {
+                TextGenerators.TextInputAddText(Objects.Admin.ManageSuppliers.ManageSuppliers.SearchBar, 5);
+                CommonActions.WaitUntilElementIsDisplayed(Objects.Admin.ManageSuppliers.ManageSuppliers.SearchListBox);
 
-            CommonActions.ClickLinkElement(Objects.Admin.ManageSuppliers.ManageSuppliers.SearchButton);
-            CommonActions.WaitUntilElementIsDisplayed(Objects.Admin.ManageSuppliers.ManageSuppliers.NoResultsElement);
+                CommonActions.ClickLinkElement(Objects.Admin.ManageSuppliers.ManageSuppliers.SearchButton);
+                CommonActions.WaitUntilElementIsDisplayed(Objects.Admin.ManageSuppliers.ManageSuppliers.NoResultsElement);
 
-            CommonActions.ClickLinkElement(ByExtensions.DataTestId("clear-results-link"));
+                CommonActions.ClickLinkElement(ByExtensions.DataTestId("clear-results-link"));
 
-            CommonActions.PageLoadedCorrectGetIndex(
-                typeof(SuppliersController),
-                nameof(SuppliersController.Index))
-                .Should().BeTrue();
+                CommonActions.PageLoadedCorrectGetIndex(
+                    typeof(SuppliersController),
+                    nameof(SuppliersController.Index))
+                    .Should().BeTrue();
+            });
         }
 
         [Fact]
         public void ManageSupplier_Search_FiltersTable()
         {
-            using var context = GetEndToEndDbContext();
-            var supplier = context.Suppliers.First(s => s.IsActive);
+            RunTestWithRetry(() =>
+            {
+                using var context = GetEndToEndDbContext();
+                var supplier = context.Suppliers.First(s => s.IsActive);
 
-            CommonActions.ElementAddValue(Objects.Admin.ManageSuppliers.ManageSuppliers.SearchBar, supplier.Name);
-            CommonActions.WaitUntilElementIsDisplayed(Objects.Admin.ManageSuppliers.ManageSuppliers.SearchListBox);
+                CommonActions.ElementAddValue(Objects.Admin.ManageSuppliers.ManageSuppliers.SearchBar, supplier.Name);
+                CommonActions.WaitUntilElementIsDisplayed(Objects.Admin.ManageSuppliers.ManageSuppliers.SearchListBox);
 
-            CommonActions.ClickLinkElement(Objects.Admin.ManageSuppliers.ManageSuppliers.SearchButton);
+                CommonActions.ClickLinkElement(Objects.Admin.ManageSuppliers.ManageSuppliers.SearchButton);
 
-            CommonActions.ElementIsDisplayed(Objects.Admin.ManageSuppliers.ManageSuppliers.InactiveSuppliersContainer).Should().BeFalse();
-            CommonActions.GetNumberOfTableRowsDisplayed().Should().Be(2); // Count is original item, plus another item that matches the same name
+                CommonActions.ElementIsDisplayed(Objects.Admin.ManageSuppliers.ManageSuppliers.InactiveSuppliersContainer).Should().BeFalse();
+                CommonActions.GetNumberOfTableRowsDisplayed().Should().Be(2); // Count is original item, plus another item that matches the same name
+            });
         }
 
         [Fact]
         public void ManageSupplier_SearchInactiveSupplier_FiltersTable()
         {
-            using var context = GetEndToEndDbContext();
-            var supplier = context.Suppliers.First(s => !s.IsActive);
+            RunTestWithRetry(() =>
+            {
+                using var context = GetEndToEndDbContext();
+                var supplier = context.Suppliers.First(s => !s.IsActive);
 
-            CommonActions.ElementAddValue(Objects.Admin.ManageSuppliers.ManageSuppliers.SearchBar, supplier.Name);
-            CommonActions.WaitUntilElementIsDisplayed(Objects.Admin.ManageSuppliers.ManageSuppliers.SearchListBox);
+                CommonActions.ElementAddValue(Objects.Admin.ManageSuppliers.ManageSuppliers.SearchBar, supplier.Name);
+                CommonActions.WaitUntilElementIsDisplayed(Objects.Admin.ManageSuppliers.ManageSuppliers.SearchListBox);
 
-            CommonActions.ClickLinkElement(Objects.Admin.ManageSuppliers.ManageSuppliers.SearchButton);
+                CommonActions.ClickLinkElement(Objects.Admin.ManageSuppliers.ManageSuppliers.SearchButton);
 
-            CommonActions.ElementIsDisplayed(Objects.Admin.ManageSuppliers.ManageSuppliers.InactiveSuppliersContainer).Should().BeFalse();
-            CommonActions.GetNumberOfTableRowsDisplayed().Should().Be(1);
+                CommonActions.ElementIsDisplayed(Objects.Admin.ManageSuppliers.ManageSuppliers.InactiveSuppliersContainer).Should().BeFalse();
+                CommonActions.GetNumberOfTableRowsDisplayed().Should().Be(1);
+            });
         }
     }
 }

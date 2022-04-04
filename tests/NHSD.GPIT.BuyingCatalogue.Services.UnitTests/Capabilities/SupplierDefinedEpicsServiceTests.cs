@@ -19,6 +19,10 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Capabilities
 {
     public static class SupplierDefinedEpicsServiceTests
     {
+        private const string CapabilityName = "CapabilityName";
+        private const string EpicName = "EpicName";
+        private const string Junk = "Junk";
+
         [Fact]
         public static void Constructors_VerifyGuardClauses()
         {
@@ -32,24 +36,71 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Capabilities
         [Theory]
         [InMemoryDbAutoData]
         public static async Task GetSupplierDefinedEpics_ReturnsExpectedResult(
-            Capability capability,
-            List<Epic> epics,
             [Frozen] BuyingCatalogueDbContext context,
             SupplierDefinedEpicsService service)
         {
-            epics.ForEach(e =>
-            {
-                e.SupplierDefined = true;
-                e.CapabilityId = capability.Id;
-            });
-
-            context.Capabilities.Add(capability);
-            context.Epics.AddRange(epics);
-            await context.SaveChangesAsync();
+            var expectedCount = context.Epics.Where(e => e.SupplierDefined).Count();
 
             var supplierDefinedEpics = await service.GetSupplierDefinedEpics();
 
-            supplierDefinedEpics.Count.Should().Be(epics.Count);
+            supplierDefinedEpics.Count.Should().Be(expectedCount);
+        }
+
+        [Theory]
+        [CommonInlineAutoData(null)]
+        [CommonInlineAutoData("")]
+        [CommonInlineAutoData(" ")]
+        public static void GetSupplierDefinedEpicsBySearchTerm_SearchTermNull_ThrowsException(
+            string searchTerm,
+            SupplierDefinedEpicsService service)
+        {
+            FluentActions
+                .Awaiting(() => service.GetSupplierDefinedEpicsBySearchTerm(searchTerm))
+                .Should().ThrowAsync<ArgumentNullException>();
+        }
+
+        [Theory]
+        [InMemoryDbAutoData]
+        public static async Task GetSupplierDefinedEpicsBySearchTerm_ReturnsExpectedResult(
+            string searchTerm,
+            [Frozen] BuyingCatalogueDbContext context,
+            SupplierDefinedEpicsService service)
+        {
+            var epics = GetEpicsForSearchTerm(searchTerm);
+            var noMatch = epics.Single(x => x.Name == EpicName && x.Capability.Name == CapabilityName);
+
+            for (var i = 0; i < epics.Count; i++)
+            {
+                var capability = epics[i].Capability;
+
+                capability.Id = i;
+                capability.CapabilityRef = $"{i}";
+                capability.Description = $"{i}";
+                capability.Version = $"{i}";
+
+                context.Capabilities.Add(capability);
+
+                var epic = epics[i];
+
+                epic.CapabilityId = epic.Capability.Id;
+                epic.Id = $"S{i}";
+                epic.SupplierDefined = true;
+
+                context.Epics.Add(epic);
+            }
+
+            await context.SaveChangesAsync();
+
+            var results = await service.GetSupplierDefinedEpicsBySearchTerm(searchTerm);
+
+            foreach (var result in results)
+            {
+                epics.Should().Contain(x => x.Name == result.Name
+                    && x.Capability.Name == result.Capability.Name);
+            }
+
+            results.Should().NotContain(x => x.Name == noMatch.Name
+                && x.Capability.Name == noMatch.Capability.Name);
         }
 
         [Theory]
@@ -461,6 +512,22 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Capabilities
             await service.DeleteSupplierDefinedEpic(invalidEpicId);
 
             context.Epics.AsNoTracking().Count().Should().Be(expectedCount);
+        }
+
+        private static List<Epic> GetEpicsForSearchTerm(string searchTerm)
+        {
+            return new List<Epic>
+            {
+                new() { Name = EpicName, Capability = new Capability { Name = CapabilityName } },
+                new() { Name = $"{searchTerm}", Capability = new Capability { Name = CapabilityName } },
+                new() { Name = $"{searchTerm}{Junk}", Capability = new Capability { Name = CapabilityName } },
+                new() { Name = $"{Junk}{searchTerm}", Capability = new Capability { Name = CapabilityName } },
+                new() { Name = $"{Junk}{searchTerm}{Junk}", Capability = new Capability { Name = CapabilityName } },
+                new() { Name = EpicName, Capability = new Capability { Name = $"{searchTerm}" } },
+                new() { Name = EpicName, Capability = new Capability { Name = $"{searchTerm}{Junk}" } },
+                new() { Name = EpicName, Capability = new Capability { Name = $"{Junk}{searchTerm}" } },
+                new() { Name = EpicName, Capability = new Capability { Name = $"{Junk}{searchTerm}{Junk}" } },
+            };
         }
     }
 }

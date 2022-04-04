@@ -1,12 +1,18 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
+using NHSD.GPIT.BuyingCatalogue.EntityFramework.Organisations.Models;
 using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
-using NHSD.GPIT.BuyingCatalogue.ServiceContracts.CreateBuyer;
+using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Enums;
+using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Identity;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Organisations;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Users;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.OrganisationModels;
+using NHSD.GPIT.BuyingCatalogue.WebApp.Models.SuggestionSearch;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
 {
@@ -17,19 +23,49 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
     {
         private readonly IOrganisationsService organisationsService;
         private readonly IOdsService odsService;
-        private readonly ICreateBuyerService createBuyerService;
+        private readonly ICreateUserService createBuyerService;
         private readonly IUsersService userService;
 
         public OrganisationsController(
             IOrganisationsService organisationsService,
             IOdsService odsService,
-            ICreateBuyerService createBuyerService,
+            ICreateUserService createBuyerService,
             IUsersService userService)
         {
             this.organisationsService = organisationsService ?? throw new ArgumentNullException(nameof(organisationsService));
             this.odsService = odsService ?? throw new ArgumentNullException(nameof(odsService));
             this.createBuyerService = createBuyerService ?? throw new ArgumentNullException(nameof(createBuyerService));
             this.userService = userService ?? throw new ArgumentNullException(nameof(userService));
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> Index([FromQuery] string search = null)
+        {
+            var organisations = await GetFilteredOrganisations(search);
+
+            var organisationModel = organisations
+                .Select(o => new OrganisationModel
+                {
+                    Id = o.Id,
+                    Name = o.Name,
+                    OdsCode = o.ExternalIdentifier,
+                })
+                .ToList();
+
+            return View(new IndexModel(search, organisationModel));
+        }
+
+        [HttpGet("search-results")]
+        public async Task<IActionResult> SearchResults([FromQuery] string search)
+        {
+            var results = (await GetFilteredOrganisations(search)).Take(15);
+
+            return Json(results.Select(x => new SuggestionSearchResult
+            {
+                Title = x.Name,
+                Category = x.ExternalIdentifier,
+                Url = Url.Action(nameof(Details), new { organisationId = $"{x.Id}" }),
+            }));
         }
 
         [HttpGet("{organisationId}")]
@@ -41,7 +77,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
 
             var model = new DetailsModel(organisation, users, relatedOrganisations)
             {
-                BackLink = Url.Action(nameof(HomeController.BuyerOrganisations), typeof(HomeController).ControllerName()),
+                BackLink = Url.Action(nameof(Index)),
             };
 
             return View(model);
@@ -92,7 +128,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
         {
             var model = new FindOrganisationModel(ods)
             {
-                BackLink = Url.Action(nameof(HomeController.BuyerOrganisations), typeof(HomeController).ControllerName()),
+                BackLink = Url.Action(nameof(Index)),
             };
 
             return View(model);
@@ -164,7 +200,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
 
             (OdsOrganisation organisation, _) = await odsService.GetOrganisationByOdsCode(model.OdsOrganisation.OdsCode);
 
-            var (orgId, error) = await organisationsService.AddOdsOrganisation(organisation, model.CatalogueAgreementSigned);
+            var (orgId, error) = await organisationsService.AddCcgOrganisation(organisation, model.CatalogueAgreementSigned);
 
             if (orgId == 0)
             {
@@ -198,177 +234,225 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
 
             var model = new ConfirmationModel(organisation.Name)
             {
-                BackLink = Url.Action(nameof(HomeController.BuyerOrganisations), typeof(HomeController).ControllerName()),
+                BackLink = Url.Action(nameof(Index)),
             };
 
             return View(model);
         }
 
-        [HttpGet("{organisationId}/adduser")]
+        [HttpGet("{organisationId}/users")]
+        public async Task<IActionResult> Users(int organisationId)
+        {
+            var organisation = await organisationsService.GetOrganisation(organisationId);
+            var users = await userService.GetAllUsersForOrganisation(organisationId);
+
+            var model = new UsersModel
+            {
+                BackLink = Url.Action(nameof(Details), new { organisationId }),
+                OrganisationId = organisationId,
+                OrganisationName = organisation.Name,
+                Users = users.OrderBy(x => x.LastName).ThenBy(x => x.FirstName),
+            };
+
+            return View(model);
+        }
+
+        [HttpGet("{organisationId}/users/add")]
         public async Task<IActionResult> AddUser(int organisationId)
         {
             var organisation = await organisationsService.GetOrganisation(organisationId);
 
             var model = new AddUserModel(organisation)
             {
-                BackLink = Url.Action(nameof(Details), new { organisationId }),
+                BackLink = Url.Action(nameof(Users), new { organisationId }),
             };
 
             return View(model);
         }
 
-        [HttpPost("{organisationId}/adduser")]
+        [HttpPost("{organisationId}/users/add")]
         public async Task<IActionResult> AddUser(int organisationId, AddUserModel model)
         {
             if (!ModelState.IsValid)
                 return View(model);
 
-            var user = await createBuyerService.Create(organisationId, model.FirstName, model.LastName, model.TelephoneNumber, model.EmailAddress, User.IsAdmin());
+            await createBuyerService.Create(
+                organisationId,
+                model.FirstName,
+                model.LastName,
+                model.TelephoneNumber,
+                model.EmailAddress,
+                OrganisationFunction.BuyerName,
+                AccountStatus.Active);
 
             return RedirectToAction(
-                nameof(AddUserConfirmation),
-                typeof(OrganisationsController).ControllerName(),
-                new { organisationId, userId = user.Id });
-        }
-
-        [HttpGet("{organisationId}/adduser/confirmation/{userId}")]
-        public async Task<IActionResult> AddUserConfirmation(int organisationId, int userId)
-        {
-            var user = await userService.GetUser(userId);
-
-            var model = new AddUserConfirmationModel(user.GetDisplayName(), organisationId)
-            {
-                BackLink = Url.Action(nameof(Details), new { organisationId }),
-            };
-
-            return View(model);
-        }
-
-        [HttpGet("{organisationId}/{userId}")]
-        public async Task<IActionResult> UserDetails(int organisationId, int userId)
-        {
-            var user = await userService.GetUser(userId);
-            var organisation = await organisationsService.GetOrganisation(organisationId);
-
-            var model = new UserDetailsModel(organisation, user)
-            {
-                BackLink = Url.Action(nameof(Details), new { organisationId }),
-            };
-
-            return View(model);
-        }
-
-        [HttpPost("{organisationId}/{userId}")]
-        public async Task<IActionResult> UserDetails(int organisationId, string userId, UserDetailsModel model)
-        {
-            await userService.EnableOrDisableUser(model.User.Id, !model.User.Disabled);
-
-            if (model.User.Disabled)
-            {
-                return RedirectToAction(
-                    nameof(UserEnabled),
-                    typeof(OrganisationsController).ControllerName(),
-                    new { organisationId, userId = model.User.Id });
-            }
-
-            return RedirectToAction(
-                nameof(UserDisabled),
-                typeof(OrganisationsController).ControllerName(),
-                new { organisationId, userId = model.User.Id });
-        }
-
-        [HttpGet("{organisationId}/{userId}/disable")]
-        public async Task<IActionResult> UserDisabled(int organisationId, int userId)
-        {
-            var organisation = await organisationsService.GetOrganisation(organisationId);
-            var user = await userService.GetUser(userId);
-
-            var model = new UserEnablingModel(organisation, user)
-            {
-                BackLink = Url.Action(nameof(UserDetails), new { organisationId, userId }),
-            };
-
-            return View(model);
-        }
-
-        [HttpGet("{organisationId}/{userId}/enable")]
-        public async Task<IActionResult> UserEnabled(int organisationId, int userId)
-        {
-            var organisation = await organisationsService.GetOrganisation(organisationId);
-            var user = await userService.GetUser(userId);
-
-            var model = new UserEnablingModel(organisation, user)
-            {
-                BackLink = Url.Action(nameof(UserDetails), new { organisationId, userId }),
-            };
-
-            return View(model);
-        }
-
-        [HttpGet("proxy/{organisationId}")]
-        public async Task<IActionResult> AddAnOrganisation(int organisationId)
-        {
-            var organisation = await organisationsService.GetOrganisation(organisationId);
-
-            if (organisation is null)
-                return BadRequest($"No Organisation found for Id: {organisationId}");
-
-            var availableOrganisations = await organisationsService.GetUnrelatedOrganisations(organisationId);
-
-            var model = new AddAnOrganisationModel(organisation, availableOrganisations)
-            {
-                BackLink = Url.Action(nameof(Details), new { organisationId }),
-            };
-
-            return View(model);
-        }
-
-        [HttpPost("proxy/{organisationId}")]
-        public async Task<IActionResult> AddAnOrganisation(AddAnOrganisationModel model, int organisationId)
-        {
-            if (!ModelState.IsValid)
-                return View(model);
-
-            await organisationsService.AddRelatedOrganisations(organisationId, model.SelectedOrganisation!.Value);
-
-            return RedirectToAction(
-                nameof(Details),
+                nameof(Users),
                 typeof(OrganisationsController).ControllerName(),
                 new { organisationId });
         }
 
-        [HttpGet("removeproxy/{organisationId}/{relatedOrganisationId}")]
-        public async Task<IActionResult> RemoveAnOrganisation(int organisationId, int relatedOrganisationId)
+        [HttpGet("{organisationId}/users/{userId}/status")]
+        public async Task<IActionResult> UserStatus(int organisationId, int userId)
         {
-            var currentOrganisation = await organisationsService.GetOrganisation(organisationId);
+            var organisation = await organisationsService.GetOrganisation(organisationId);
+            var user = await userService.GetUser(userId);
 
-            if (currentOrganisation is null)
-                return BadRequest($"No Organisation found for Id: {organisationId}");
+            var model = new UserStatusModel
+            {
+                BackLink = Url.Action(nameof(Users), new { organisationId }),
+                OrganisationId = organisationId,
+                OrganisationName = organisation.Name,
+                UserId = user.Id,
+                UserEmail = user.Email,
+                IsActive = !user.Disabled,
+            };
 
+            return View(model);
+        }
+
+        [HttpPost("{organisationId}/users/{userId}/status")]
+        public async Task<IActionResult> UserStatus(int organisationId, int userId, UserStatusModel model)
+        {
+            await userService.EnableOrDisableUser(userId, model.IsActive);
+
+            return RedirectToAction(nameof(Users), new { organisationId });
+        }
+
+        [HttpGet("{organisationId}/related")]
+        public async Task<IActionResult> RelatedOrganisations(int organisationId)
+        {
+            var organisation = await organisationsService.GetOrganisation(organisationId);
+            var relatedOrganisations = await organisationsService.GetRelatedOrganisations(organisationId);
+
+            var model = new RelatedOrganisationsModel
+            {
+                OrganisationId = organisationId,
+                OrganisationName = organisation.Name,
+                RelatedOrganisations = relatedOrganisations,
+            };
+
+            return View(model);
+        }
+
+        [HttpGet("{organisationId}/related/{relatedOrganisationId}/remove")]
+        public async Task<IActionResult> RemoveRelatedOrganisation(int organisationId, int relatedOrganisationId)
+        {
+            var organisation = await organisationsService.GetOrganisation(organisationId);
             var relatedOrganisation = await organisationsService.GetOrganisation(relatedOrganisationId);
 
-            if (relatedOrganisation is null)
-                return BadRequest($"No Organisation found for Id: {relatedOrganisationId}");
-
-            var model = new RemoveAnOrganisationModel(currentOrganisation, relatedOrganisation)
+            var model = new RemoveRelatedOrganisationModel
             {
-                BackLink = Url.Action(nameof(Details), new { organisationId }),
+                BackLink = Url.Action(nameof(RelatedOrganisations), new { organisationId }),
+                OrganisationId = organisationId,
+                OrganisationName = organisation.Name,
+                RelatedOrganisationId = relatedOrganisationId,
+                RelatedOrganisationName = relatedOrganisation.Name,
             };
 
             return View(model);
         }
 
-        [HttpPost("removeproxy/{organisationId}/{relatedOrganisationId}")]
-        public async Task<IActionResult> RemoveAnOrganisation(int organisationId, int relatedOrganisationId, RemoveAnOrganisationModel model)
+        [HttpPost("{organisationId}/related/{relatedOrganisationId}/remove")]
+        public async Task<IActionResult> RemoveRelatedOrganisation(int organisationId, int relatedOrganisationId, RemoveRelatedOrganisationModel model)
+        {
+            await organisationsService.RemoveRelatedOrganisations(organisationId, relatedOrganisationId);
+
+            return RedirectToAction(nameof(RelatedOrganisations), new { organisationId });
+        }
+
+        [HttpGet("{organisationId}/nominated")]
+        public async Task<IActionResult> NominatedOrganisations(int organisationId)
+        {
+            var organisation = await organisationsService.GetOrganisation(organisationId);
+            var nominatedOrganisations = await organisationsService.GetNominatedOrganisations(organisationId);
+
+            var model = new NominatedOrganisationsModel
+            {
+                OrganisationId = organisationId,
+                OrganisationName = organisation.Name,
+                NominatedOrganisations = nominatedOrganisations,
+            };
+
+            return View(model);
+        }
+
+        [HttpGet("{organisationId}/nominated/add")]
+        public async Task<IActionResult> AddNominatedOrganisation(int organisationId)
+        {
+            var organisation = await organisationsService.GetOrganisation(organisationId);
+
+            var model = new AddNominatedOrganisationModel
+            {
+                BackLink = Url.Action(nameof(NominatedOrganisations), new { organisationId }),
+                OrganisationId = organisationId,
+                OrganisationName = organisation.Name,
+                PotentialOrganisations = await GetPotentialOrganisations(organisationId),
+            };
+
+            return View(model);
+        }
+
+        [HttpPost("{organisationId}/nominated/add")]
+        public async Task<IActionResult> AddNominatedOrganisation(int organisationId, AddNominatedOrganisationModel model)
         {
             if (!ModelState.IsValid)
-                return View(model);
+            {
+                model.PotentialOrganisations = await GetPotentialOrganisations(organisationId);
 
-            await organisationsService.RemoveRelatedOrganisations(organisationId, relatedOrganisationId);
-            return RedirectToAction(
-                nameof(Details),
-                typeof(OrganisationsController).ControllerName(),
-                new { organisationId });
+                return View(model);
+            }
+
+            await organisationsService.AddNominatedOrganisation(organisationId, int.Parse(model.SelectedOrganisationId));
+
+            return RedirectToAction(nameof(NominatedOrganisations), new { organisationId });
+        }
+
+        [HttpGet("{organisationId}/nominated/{nominatedOrganisationId}/remove")]
+        public async Task<IActionResult> RemoveNominatedOrganisation(int organisationId, int nominatedOrganisationId)
+        {
+            var organisation = await organisationsService.GetOrganisation(organisationId);
+            var nominatedOrganisation = await organisationsService.GetOrganisation(nominatedOrganisationId);
+
+            var model = new RemoveNominatedOrganisationModel
+            {
+                BackLink = Url.Action(nameof(NominatedOrganisations), new { organisationId }),
+                OrganisationId = organisationId,
+                OrganisationName = organisation.Name,
+                NominatedOrganisationId = nominatedOrganisationId,
+                NominatedOrganisationName = nominatedOrganisation.Name,
+            };
+
+            return View(model);
+        }
+
+        [HttpPost("{organisationId}/nominated/{nominatedOrganisationId}/remove")]
+        public async Task<IActionResult> RemoveNominatedOrganisation(int organisationId, int nominatedOrganisationId, RemoveNominatedOrganisationModel model)
+        {
+            await organisationsService.RemoveNominatedOrganisation(organisationId, nominatedOrganisationId);
+
+            return RedirectToAction(nameof(NominatedOrganisations), new { organisationId });
+        }
+
+        private async Task<IEnumerable<Organisation>> GetFilteredOrganisations(string search)
+        {
+            return string.IsNullOrWhiteSpace(search)
+                ? await organisationsService.GetAllOrganisations()
+                : await organisationsService.GetOrganisationsBySearchTerm(search);
+        }
+
+        private async Task<IEnumerable<SelectListItem>> GetPotentialOrganisations(int organisationId)
+        {
+            var allOrganisations = await organisationsService.GetAllOrganisations();
+            var nominatedOrganisations = await organisationsService.GetNominatedOrganisations(organisationId);
+
+            var excludedOrganisationIds = nominatedOrganisations
+                .Select(x => x.Id)
+                .Union(new[] { organisationId });
+
+            return allOrganisations
+                .Where(x => !excludedOrganisationIds.Contains(x.Id))
+                .OrderBy(x => x.Name)
+                .Select(x => new SelectListItem(x.Name, $"{x.Id}"));
         }
     }
 }

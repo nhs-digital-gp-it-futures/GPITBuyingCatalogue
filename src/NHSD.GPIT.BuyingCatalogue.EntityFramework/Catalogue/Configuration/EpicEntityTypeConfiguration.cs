@@ -18,6 +18,9 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Configuration
                 .HasMaxLength(10)
                 .HasValueGenerator<EpicIdValueGenerator>();
 
+            builder.Property(e => e.Description)
+                .HasMaxLength(1500);
+
             builder.Property(e => e.CompliancyLevel)
                 .HasConversion<int>()
                 .HasColumnName("CompliancyLevelId");

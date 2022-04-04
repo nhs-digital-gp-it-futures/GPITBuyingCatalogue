@@ -2,7 +2,7 @@
 (
      Id nvarchar(10) NOT NULL,
      [Name] nvarchar(500) NOT NULL,
-     [Description] nvarchar(1000) NULL,
+     [Description] nvarchar(1500) NULL,
      CapabilityId int NOT NULL,
      SourceUrl nvarchar(max) NULL,
      CompliancyLevelId int NULL,

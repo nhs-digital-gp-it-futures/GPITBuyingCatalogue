@@ -12,13 +12,13 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.Catalogu
         [Theory]
         [CommonAutoData]
         public static void WithValidArguments_PropertiesCorrectlySet(
-            string odsCode,
+            string internalOrgId,
             CreateOrderItemModel state)
         {
-            var model = new EditSolutionModel(odsCode, state);
+            var model = new EditSolutionModel(internalOrgId, state);
 
             model.Title.Should().Be($"{state.CatalogueItemName} information for {state.CallOffId}");
-            model.OdsCode.Should().Be(odsCode);
+            model.InternalOrgId.Should().Be(internalOrgId);
             model.OrderItem.Should().Be(state);
             model.OrderItem.ServiceRecipients.Should().BeEquivalentTo(model.OrderItem.ServiceRecipients.Where(m => m.Selected).ToList());
         }
@@ -26,12 +26,12 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.Catalogu
         [Theory]
         [CommonAutoData]
         public static void WithNoQuantityOnServiceRecipients_StateQuantity_IsApplied(
-           string odsCode,
+           string internalOrgId,
            CreateOrderItemModel state)
         {
             state.ServiceRecipients.ForEach(sr => sr.Quantity = null);
 
-            var model = new EditSolutionModel(odsCode, state);
+            var model = new EditSolutionModel(internalOrgId, state);
 
             model.OrderItem.ServiceRecipients.ForEach(oi => oi.Quantity.Should().Be(state.Quantity));
         }
@@ -39,7 +39,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.Catalogu
         [Theory]
         [CommonAutoData]
         public static void WithNoDeliveryDateOnServiceRecipients_StatePlannedDeliveryDate_IsApplied(
-            string odsCode,
+            string internalOrgId,
             CreateOrderItemModel state)
         {
             foreach (var sr in state.ServiceRecipients)
@@ -52,7 +52,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.Catalogu
 
             state.PlannedDeliveryDate = state.PlannedDeliveryDate.Value.Date;
 
-            var model = new EditSolutionModel(odsCode, state);
+            var model = new EditSolutionModel(internalOrgId, state);
 
             model.OrderItem.ServiceRecipients.ForEach(oi => oi.DeliveryDate.Should().Be(state.PlannedDeliveryDate));
         }

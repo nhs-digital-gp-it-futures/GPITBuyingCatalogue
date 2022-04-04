@@ -1,0 +1,32 @@
+﻿@model NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.OrganisationModels.AddNominatedOrganisationModel
+@{
+    ViewBag.Title = "Nominate an organisation";
+}
+
+@section Scripts {
+}
+
+<partial name="Partials/_BackLink" model="Model" />
+
+<div class="nhsuk-grid-row">
+    <div class="nhsuk-grid-column-full">
+        <nhs-validation-summary />
+        <nhs-page-title title="@ViewBag.Title"
+                        caption="@Model!.OrganisationName"
+                        advice="Provide the following information to nominate an organisation that can create orders on your behalf." />
+
+        <form method="post">
+            <input type="hidden" asp-for="@Model.BackLink" />
+            <input type="hidden" asp-for="@Model.OrganisationName" />
+            
+            <div class="nhsuk-u-margin-bottom-9">
+                <nhs-auto-complete asp-for="SelectedOrganisationId"
+                                   label-text="Organisation"
+                                   asp-items="@(new SelectList(Model.PotentialOrganisations, "Value", "Text"))" />
+            </div>
+
+            <nhs-submit-button text="Save and continue" />
+        </form>
+    </div>
+</div>
+

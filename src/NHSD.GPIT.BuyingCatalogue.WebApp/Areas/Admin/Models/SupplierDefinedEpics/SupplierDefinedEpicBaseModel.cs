@@ -16,7 +16,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.SupplierDefinedEpi
         [StringLength(500)]
         public string Name { get; set; }
 
-        [StringLength(1000)]
+        [StringLength(1500)]
         public string Description { get; set; }
 
         public bool? IsActive { get; set; }

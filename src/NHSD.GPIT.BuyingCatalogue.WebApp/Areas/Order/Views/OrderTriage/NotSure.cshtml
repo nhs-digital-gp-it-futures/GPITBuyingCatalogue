@@ -1,4 +1,6 @@
-﻿@model NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.OrderTriage.GenericOrderTriageModel
+﻿@using NHSD.GPIT.BuyingCatalogue.WebApp.Controllers
+@using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
+@model NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.OrderTriage.GenericOrderTriageModel
 @{
     ViewBag.Title = "What is the approximate value of the order you want to place?";
 }
@@ -8,29 +10,59 @@
     <div class="nhsuk-grid-row nhsuk-u-margin-bottom-6">
         <div class="nhsuk-grid-column-full">
             <nhs-page-title title="You’re not ready to start an order"
-                            advice="You need to know the approximate value of your contract so you can follow the correct procurement procedure." />
+                            advice="You need to know the approximate value of your contract so you can follow the correct procurement procedure."
+                            caption="@Model!.OrganisationName"/>
 
             <h2>For orders worth under £40k (excluding VAT)</h2>
-
             <p>You can browse the Buying Catalogue and select any solution you want to order.</p>
+            <p>
+                <a href ="https://gpitbjss.atlassian.net/wiki/spaces/BG/pages/1846870055/Direct+Award"
+                   target="_blank">More information about executing a Direct Award procedure</a>
+                (opens in a new tab).
+            </p>
 
             <h2>For orders between £40k and £250k (excluding VAT)</h2>
-
             <p>You must carry out a competition of similar solutions using information available on the Buying Catalogue. Score solutions based on how they perform against certain criteria, for example, price, implementation timescales or service levels.</p>
+            <p>
+                <a href ="https://gpitbjss.atlassian.net/wiki/spaces/BG/pages/1846968344/Further+Competition+-+On+Catalogue"
+                   target="_blank">More information about executing an On-Catalogue Competition procedure</a>
+                (opens in a new tab).
+            </p>
 
             <h2>For orders over £250k</h2>
-
             <p>You must invite shortlisted suppliers to provide written tenders. You can select the solution you want to order based on this information.</p>
+            <p>
+                <a href ="https://gpitbjss.atlassian.net/wiki/spaces/BG/pages/1846902822/Further+Competition+-+Off+Catalogue"
+                   target="_blank">More information about executing an Off-Catalogue Competition procedure</a>
+                (opens in a new tab).
+            </p>
 
             <p>Once you have carried out one of these procurement processes and identified the most appropriate solution, you’ll be ready to place your order.</p>
-
-            <h2>Need help?</h2>
-
-            <p>For help using the Buying Catalogue, contact the National and Commercial Procurement Hub: <a href="mailto:commercial.procurementhub@nhs.net">commercial.procurementhub@nhs.net</a>.</p>
 
             <vc:nhs-secondary-button text="Return to orders dashboard"
                                      use-primary-colour="true"
                                      url="@Model.OrdersDashboardLink" />
+
+            <h2>Need help?</h2>
+            <p>
+                We've developed a
+                <a href="https://gpitbjss.atlassian.net/wiki/spaces/BG/pages/1931116641/Executing+a+procurement+a+step+by+step+guide"
+                   target="_blank">step-by-step guide to the procurement process</a>
+                (opens in a new tab).
+            </p>
+
+            <p>
+                For help using the Buying Catalogue, contact the National Commercial and Procurement Hub:
+            </p>
+
+            <vc:nhs-action-link url="@Url.Action(
+                                         nameof(ProcurementHubController.Index),
+                                         typeof(ProcurementHubController).ControllerName(),
+                                         new { returnUrl = Url.Action(
+                                             nameof(OrderTriageController.NotSure),
+                                             typeof(OrderTriageController).ControllerName(),
+                                             new { Model.InternalOrgId }) })"
+                                text="Get procurement support" />
         </div>
     </div>
 </div>

@@ -10,6 +10,8 @@ namespace NHSD.GPIT.BuyingCatalogue.Framework.Settings
 
         public string DualCsvTemplateId { get; set; }
 
+        public string UserTemplateId { get; set; }
+
         public EmailAddressTemplate Recipient { get; set; }
     }
 }

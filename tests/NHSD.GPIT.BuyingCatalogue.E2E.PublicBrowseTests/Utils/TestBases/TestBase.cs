@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Actions.Admin;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Actions.Authorization;
@@ -15,6 +17,8 @@ using NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.Session;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using OpenQA.Selenium;
 using OpenQA.Selenium.Support.UI;
+using Polly;
+using Xunit.Abstractions;
 
 namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.TestBases
 {
@@ -22,14 +26,23 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.TestBases
     {
         public static readonly string DefaultPassword = "Th1sIsP4ssword!";
 
+        private const int MaxRetries = 3;
+
+        private static readonly PolicyBuilder RetryPolicy = Policy
+                .Handle<Exception>();
+
         private readonly Uri uri;
+
+        private readonly ITestOutputHelper testOutputHelper;
 
         protected TestBase(
             LocalWebApplicationFactory factory,
+            ITestOutputHelper testOutputHelper,
             string urlArea = "")
         {
             Factory = factory;
-
+            LocalWebApplicationFactory.TestOutputHelper = testOutputHelper;
+            this.testOutputHelper = testOutputHelper;
             Driver = Factory.Driver;
             PublicBrowsePages = new PublicBrowsePages(Driver).PageActions;
             MarketingPages = new MarketingPageActions(Driver).PageActions;
@@ -117,7 +130,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.TestBases
                 return;
 
             using var context = GetEndToEndDbContext();
-            var user = context.AspNetUsers.First(s => s.OrganisationFunction == "Authority").Email;
+            var user = context.AspNetUsers.First(s => s.OrganisationFunction == "Authority").UserName;
             AuthorizationPages.LoginActions.Login(user, DefaultPassword);
         }
 
@@ -127,7 +140,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.TestBases
                 return;
 
             using var context = GetEndToEndDbContext();
-            var user = context.AspNetUsers.First(s => s.OrganisationFunction == "Buyer").Email;
+            var user = context.AspNetUsers.First(s => s.OrganisationFunction == "Buyer").UserName;
             AuthorizationPages.LoginActions.Login(user, DefaultPassword);
         }
 
@@ -210,5 +223,107 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.TestBases
         }
 
         protected bool UserAlreadyLoggedIn() => Driver.Manage().Cookies.GetCookieNamed("user-session") != null;
+
+        protected async Task RunTestAsync(Func<Task> task, [CallerMemberName] string callerMemberName = "", [CallerFilePath] string callerFilePath = "")
+        {
+            try
+            {
+                await task();
+            }
+            catch
+            {
+                TakeScreenShot(callerMemberName, callerFilePath);
+                throw;
+            }
+        }
+
+        protected Task RunTestWithRetryAsync(
+            Func<Task> task,
+            [CallerMemberName] string callerMemberName = "",
+            [CallerFilePath] string callerFilePath = "",
+            TimeSpan? retryInterval = null)
+        {
+            var policy = RetryPolicy
+                .WaitAndRetryAsync(
+                    MaxRetries,
+                    _ => retryInterval ?? TimeSpan.FromSeconds(2),
+                    (ex, sleepDuration, attempt, context) =>
+                    {
+                        if (attempt == MaxRetries)
+                            TakeScreenShot(callerMemberName, callerFilePath);
+
+                        Driver.Navigate().Refresh();
+                        return Task.CompletedTask;
+                    });
+
+            return policy.ExecuteAsync(task);
+        }
+
+        protected void RunTest(Action action, [CallerMemberName] string callerMemberName = "", [CallerFilePath] string callerFilePath = "")
+        {
+            try
+            {
+                action();
+            }
+            catch
+            {
+                TakeScreenShot(callerMemberName, callerFilePath);
+                throw;
+            }
+        }
+
+        protected void RunTestWithRetry(
+            Action action,
+            [CallerMemberName] string callerMemberName = "",
+            [CallerFilePath] string callerFilePath = "",
+            TimeSpan? retryInterval = null)
+        {
+            var policy = RetryPolicy
+                .WaitAndRetry(
+                    MaxRetries,
+                    _ => retryInterval ?? TimeSpan.FromSeconds(2),
+                    (ex, sleepDuration, attempt, context) =>
+                    {
+                        if (attempt == MaxRetries)
+                            TakeScreenShot(callerMemberName, callerFilePath);
+
+                        Driver.Navigate().Refresh();
+                    });
+
+            policy.Execute(action);
+        }
+
+        private void TakeScreenShot(string memberName, string fileName)
+        {
+            var outputFolder = $"{AppContext.BaseDirectory.Substring(0, AppContext.BaseDirectory.IndexOf("bin"))}ScreenShots";
+
+            LogMessage($"Writing screenshot to {outputFolder} folder");
+
+            if (!Directory.Exists(outputFolder))
+                Directory.CreateDirectory(outputFolder);
+
+            var filePath = $@"{outputFolder}/{Path.GetFileNameWithoutExtension(fileName)}-{memberName}.png";
+
+            LogMessage($"Writing screenshot to {filePath}");
+
+            if (File.Exists(filePath))
+                File.Delete(filePath);
+
+            var screenshot = (Driver as ITakesScreenshot).GetScreenshot();
+            screenshot.SaveAsFile(filePath);
+
+            if (!File.Exists(filePath))
+                LogMessage("Screenshot file was not written");
+            else
+                LogMessage("Screenshot file was written");
+        }
+
+        private void LogMessage(string message)
+        {
+            if (testOutputHelper != null)
+            {
+                testOutputHelper.WriteLine(message);
+            }
+        }
     }
 }

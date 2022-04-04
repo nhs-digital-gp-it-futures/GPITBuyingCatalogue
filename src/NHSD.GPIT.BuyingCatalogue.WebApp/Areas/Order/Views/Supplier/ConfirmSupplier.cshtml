@@ -1,8 +1,7 @@
 ﻿@using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
-@using NHSD.GPIT.BuyingCatalogue.Framework.Extensions
 @model NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.Supplier.ConfirmSupplierModel;
 @{
-    ViewBag.Title = Model.Title;
+    ViewBag.Title = Model!.Title;
 }
 
 <div data-test-id="supplier-page">
@@ -34,10 +33,10 @@
             </nhs-summary-list>
             
             <vc:nhs-action-link url="@Url.Action(
-                                         nameof(SupplierController.SupplierSearchSelect),
+                                         nameof(SupplierController.SelectSupplier),
                                          typeof(SupplierController).ControllerName(),
-                                         new { Model.OdsCode, Model.CallOffId, Model.Search, Model.SupplierId })"
-                                text="Search for a different supplier" />
+                                         new { Model.InternalOrgId, Model.CallOffId })"
+                                text="Select a different supplier" />
 
             <div class="nhsuk-inset-text">
                 <span class="nhsuk-u-visually-hidden">Information: </span>

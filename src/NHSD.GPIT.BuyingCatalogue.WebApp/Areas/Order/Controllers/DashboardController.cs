@@ -10,7 +10,7 @@ using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Orders;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Organisations;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.Dashboard;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.Shared;
-using NHSD.GPIT.BuyingCatalogue.WebApp.Models.Autocomplete;
+using NHSD.GPIT.BuyingCatalogue.WebApp.Models.SuggestionSearch;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
 {
@@ -35,24 +35,24 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
             if (!User.IsBuyer())
                 return View("NotBuyer");
 
-            var odsCode = User.GetPrimaryOdsCode();
+            var internalOrgId = User.GetPrimaryOrganisationInternalIdentifier();
 
             return RedirectToAction(
                 nameof(Organisation),
                 typeof(DashboardController).ControllerName(),
-                new { odsCode });
+                new { internalOrgId });
         }
 
-        [HttpGet("organisation/{odsCode}")]
+        [HttpGet("organisation/{internalOrgId}")]
         public async Task<IActionResult> Organisation(
-            string odsCode,
+            string internalOrgId,
             [FromQuery] string page = "",
             [FromQuery] string search = "")
         {
             const int PageSize = 10;
             var options = new PageOptions(page, PageSize);
 
-            var organisation = await organisationsService.GetOrganisationByOdsCode(odsCode);
+            var organisation = await organisationsService.GetOrganisationByInternalIdentifier(internalOrgId);
 
             var orders = await orderService.GetPagedOrders(organisation.Id, options, search);
 
@@ -64,26 +64,26 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
             return View(model);
         }
 
-        [HttpGet("organisation/{odsCode}/select")]
-        public async Task<IActionResult> SelectOrganisation(string odsCode)
+        [HttpGet("organisation/{internalOrgId}/select")]
+        public async Task<IActionResult> SelectOrganisation(string internalOrgId)
         {
-            var odsCodes = new List<string>(User.GetSecondaryOdsCodes())
+            var internalOrgIds = new List<string>(User.GetSecondaryOrganisationInternalIdentifiers())
             {
-                User.GetPrimaryOdsCode(),
+                User.GetPrimaryOrganisationInternalIdentifier(),
             };
 
-            var organisations = await organisationsService.GetOrganisationsByOdsCodes(odsCodes.ToArray());
+            var organisations = await organisationsService.GetOrganisationsByInternalIdentifiers(internalOrgIds.ToArray());
 
-            var model = new SelectOrganisationModel(odsCode, organisations)
+            var model = new SelectOrganisationModel(internalOrgId, organisations)
             {
-                BackLink = Url.Action(nameof(Organisation), new { odsCode }),
+                BackLink = Url.Action(nameof(Organisation), new { internalOrgId }),
             };
 
             return View(model);
         }
 
-        [HttpPost("organisation/{odsCode}/select")]
-        public IActionResult SelectOrganisation(string odsCode, SelectOrganisationModel model)
+        [HttpPost("organisation/{internalOrgId}/select")]
+        public IActionResult SelectOrganisation(string internalOrgId, SelectOrganisationModel model)
         {
             if (!ModelState.IsValid)
                 return View(model);
@@ -91,21 +91,21 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
             return RedirectToAction(
                 nameof(Organisation),
                 typeof(DashboardController).ControllerName(),
-                new { odsCode = model.SelectedOrganisation });
+                new { internalOrgId = model.SelectedOrganisation });
         }
 
-        [HttpGet("organisation/{odsCode}/search-suggestions")]
+        [HttpGet("organisation/{internalOrgId}/search-suggestions")]
         public async Task<IActionResult> FilterSearchSuggestions(
-            string odsCode,
+            string internalOrgId,
             [FromQuery] string search)
         {
             var currentPageUrl = new UriBuilder(HttpContext.Request.Headers.Referer.ToString());
 
-            var organisation = await organisationsService.GetOrganisationByOdsCode(odsCode);
+            var organisation = await organisationsService.GetOrganisationByInternalIdentifier(internalOrgId);
             var results = await orderService.GetOrdersBySearchTerm(organisation.Id, search);
 
             return Json(results.Select(r =>
-                new AutocompleteResult
+                new SuggestionSearchResult
                 {
                     Title = r.Title,
                     Category = r.Category,

@@ -29,8 +29,8 @@ BEGIN
             INSERT INTO catalogue.AdditionalServices(CatalogueItemId, Summary, FullDescription, LastUpdated, LastUpdatedBy, SolutionId)
                  VALUES (@additionalServiceId,'Addition to Write on Time', 'Write on time Addttion Full Description', @now , @bobUser, @solutionId);
 
-            INSERT INTO catalogue.CataloguePrices(CatalogueItemId, ProvisioningTypeId, CataloguePriceTypeId, PricingUnitId, TimeUnitId, CurrencyCode, LastUpdated, Price) 
-                 VALUES (@additionalServiceId, 1, 1, @patient, 2, 'GBP', @now, 199.99);
+            INSERT INTO catalogue.CataloguePrices(CatalogueItemId, ProvisioningTypeId, CataloguePriceTypeId, PricingUnitId, TimeUnitId, CurrencyCode, LastUpdated, Price, PublishedStatusId) 
+                 VALUES (@additionalServiceId, 1, 1, @patient, 2, 'GBP', @now, 199.99, 3);
 
             INSERT INTO catalogue.CatalogueItemCapabilities(CatalogueItemId, CapabilityId, StatusId, LastUpdated, LastUpdatedBy)
                  VALUES (@additionalServiceId, 1, 1, @now, @bobUser),
@@ -53,8 +53,8 @@ BEGIN
             INSERT INTO catalogue.AdditionalServices(CatalogueItemId, Summary, FullDescription, LastUpdated, LastUpdatedBy, SolutionId)
                  VALUES (@additionalServiceId,'Addition to Appointment Gateway', 'Appointment Gateway Addition Full Description', @now , @bobUser, @solutionId);
 
-            INSERT INTO catalogue.CataloguePrices(CatalogueItemId, ProvisioningTypeId, CataloguePriceTypeId, PricingUnitId, TimeUnitId, CurrencyCode, LastUpdated, Price) 
-                 VALUES (@additionalServiceId, 2, 1, @bed, 2, 'GBP', @now, 299.99);
+            INSERT INTO catalogue.CataloguePrices(CatalogueItemId, ProvisioningTypeId, CataloguePriceTypeId, PricingUnitId, TimeUnitId, CurrencyCode, LastUpdated, Price, PublishedStatusId) 
+                 VALUES (@additionalServiceId, 2, 1, @bed, 2, 'GBP', @now, 299.99, 3);
                  
             INSERT INTO catalogue.CatalogueItemCapabilities(CatalogueItemId, CapabilityId, StatusId, LastUpdated, LastUpdatedBy)
              SELECT @additionalServiceId, Id, 1, @now, @bobUser
@@ -80,9 +80,9 @@ BEGIN
             INSERT INTO catalogue.AdditionalServices(CatalogueItemId, Summary, FullDescription, LastUpdated, LastUpdatedBy, SolutionId)
                  VALUES (@additionalServiceId,'Addition to Zen Guidance', 'Zen Guidance Addition Full Description', @now , @bobUser, @solutionId);
 
-            INSERT INTO catalogue.CataloguePrices(CatalogueItemId, ProvisioningTypeId, CataloguePriceTypeId, PricingUnitId, TimeUnitId, CurrencyCode, LastUpdated, Price) 
-                 VALUES (@additionalServiceId, 2, 1, @bed, 2, 'GBP', @now, 399.99),
-                        (@additionalServiceId2, 2, 1, @consultation, 2, 'GBP', @now, 389.99);
+            INSERT INTO catalogue.CataloguePrices(CatalogueItemId, ProvisioningTypeId, CataloguePriceTypeId, PricingUnitId, TimeUnitId, CurrencyCode, LastUpdated, Price, PublishedStatusId) 
+                 VALUES (@additionalServiceId, 2, 1, @bed, 2, 'GBP', @now, 399.99, 3),
+                        (@additionalServiceId2, 2, 1, @consultation, 2, 'GBP', @now, 389.99, 3);
                         
             INSERT INTO catalogue.CatalogueItemCapabilities(CatalogueItemId, CapabilityId, StatusId, LastUpdated, LastUpdatedBy)
              SELECT @additionalServiceId, Id, 1, @now, @bobUser
@@ -106,15 +106,8 @@ BEGIN
             INSERT INTO catalogue.AdditionalServices(CatalogueItemId, Summary, FullDescription, LastUpdated, LastUpdatedBy, SolutionId)
                  VALUES (@additionalServiceId,'Addition to Diagnostics XYZ', 'Diagnostics XYZ Addition Full Description', @now , @bobUser, @solutionId);
 
-            INSERT INTO catalogue.CataloguePrices(CatalogueItemId, ProvisioningTypeId, CataloguePriceTypeId, PricingUnitId, TimeUnitId, CurrencyCode, LastUpdated, Price) 
-                 VALUES (@additionalServiceId, 2, 2, @bed, 2, 'GBP', @now, 499.99);
-
-            SET @cataloguePriceId = (SELECT CataloguePriceId FROM catalogue.CataloguePrices WHERE CatalogueItemId = @additionalServiceId);
-
-            INSERT INTO catalogue.CataloguePriceTiers(CataloguePriceId, BandStart, BandEnd, Price)
-                 VALUES (@cataloguePriceId, 1, 999, 123.45),
-                        (@cataloguePriceId, 1000, 1999, 49.99),
-                        (@cataloguePriceId, 2000, NULL, 19.99);
+            INSERT INTO catalogue.CataloguePrices(CatalogueItemId, ProvisioningTypeId, CataloguePriceTypeId, PricingUnitId, TimeUnitId, CurrencyCode, LastUpdated, Price, PublishedStatusId) 
+                 VALUES (@additionalServiceId, 2, 1, @bed, 2, 'GBP', @now, 499.99, 3);
                         
             INSERT INTO catalogue.CatalogueItemCapabilities(CatalogueItemId, CapabilityId, StatusId, LastUpdated, LastUpdatedBy)
              SELECT @additionalServiceId, Id, 1, @now, @bobUser
@@ -138,15 +131,8 @@ BEGIN
             INSERT INTO catalogue.AdditionalServices(CatalogueItemId, Summary, FullDescription, LastUpdated, LastUpdatedBy, SolutionId)
                  VALUES (@additionalServiceId,'Addition to Document Wizard', 'Document Wizard Addition Full Description', @now , @bobUser, @solutionId);
 
-            INSERT INTO catalogue.CataloguePrices(CatalogueItemId, ProvisioningTypeId, CataloguePriceTypeId, PricingUnitId, TimeUnitId, CurrencyCode, LastUpdated, Price) 
-                 VALUES (@additionalServiceId, 1, 2, @patient, 1, 'GBP', @now, 499.99);
-
-            SET @cataloguePriceId = (SELECT CataloguePriceId FROM catalogue.CataloguePrices WHERE CatalogueItemId = @additionalServiceId);
-
-            INSERT INTO catalogue.CataloguePriceTiers(CataloguePriceId, BandStart, BandEnd, Price)
-                 VALUES (@cataloguePriceId, 1, 9, 100.45),
-                        (@cataloguePriceId, 10, 199, 200.99),
-                        (@cataloguePriceId, 200, NULL,300.99);
+            INSERT INTO catalogue.CataloguePrices(CatalogueItemId, ProvisioningTypeId, CataloguePriceTypeId, PricingUnitId, TimeUnitId, CurrencyCode, LastUpdated, Price, PublishedStatusId) 
+                 VALUES (@additionalServiceId, 1, 1, @patient, 1, 'GBP', @now, 499.99, 3);
                         
             INSERT INTO catalogue.CatalogueItemCapabilities(CatalogueItemId, CapabilityId, StatusId, LastUpdated, LastUpdatedBy)
              SELECT @additionalServiceId, Id, 1, @now, @bobUser
@@ -170,8 +156,8 @@ BEGIN
             INSERT INTO catalogue.AdditionalServices(CatalogueItemId, Summary, FullDescription, LastUpdated, LastUpdatedBy, SolutionId)
                  VALUES (@additionalServiceId,'Addition to Paperlite', 'Paperlite Addition Full Description', @now , @bobUser, @solutionId);
 
-            INSERT INTO catalogue.CataloguePrices(CatalogueItemId, ProvisioningTypeId, CataloguePriceTypeId, PricingUnitId, TimeUnitId, CurrencyCode, LastUpdated, Price) 
-                 VALUES (@additionalServiceId, 3, 1, @licence, null, 'GBP', @now, 499.99);
+            INSERT INTO catalogue.CataloguePrices(CatalogueItemId, ProvisioningTypeId, CataloguePriceTypeId, PricingUnitId, TimeUnitId, CurrencyCode, LastUpdated, Price, PublishedStatusId) 
+                 VALUES (@additionalServiceId, 3, 1, @licence, null, 'GBP', @now, 499.99, 3);
                  
             INSERT INTO catalogue.CatalogueItemCapabilities(CatalogueItemId, CapabilityId, StatusId, LastUpdated, LastUpdatedBy)
                  SELECT @additionalServiceId, Id, 1, @now, @bobUser
@@ -195,8 +181,8 @@ BEGIN
             INSERT INTO catalogue.AdditionalServices(CatalogueItemId, Summary, FullDescription, LastUpdated, LastUpdatedBy, SolutionId)
                  VALUES (@additionalServiceId,'Addition to Medsort', 'Medsort Addition Full Description', @now , @bobUser, @solutionId);
 
-            INSERT INTO catalogue.CataloguePrices(CatalogueItemId, ProvisioningTypeId, CataloguePriceTypeId, PricingUnitId, TimeUnitId, CurrencyCode, LastUpdated, Price) 
-                 VALUES (@additionalServiceId, 1, 1, @patient, 2, 'GBP', @now, 599.99);
+            INSERT INTO catalogue.CataloguePrices(CatalogueItemId, ProvisioningTypeId, CataloguePriceTypeId, PricingUnitId, TimeUnitId, CurrencyCode, LastUpdated, Price, PublishedStatusId) 
+                 VALUES (@additionalServiceId, 1, 1, @patient, 2, 'GBP', @now, 599.99, 3);
                  
             INSERT INTO catalogue.CatalogueItemCapabilities(CatalogueItemId, CapabilityId, StatusId, LastUpdated, LastUpdatedBy)
                  SELECT @additionalServiceId, Id, 1, @now, @bobUser
@@ -220,8 +206,8 @@ BEGIN
             INSERT INTO catalogue.AdditionalServices(CatalogueItemId, Summary, FullDescription, LastUpdated, LastUpdatedBy, SolutionId)
                  VALUES (@additionalServiceId,'Addition to Boston Dynamics', 'Boston Dynamics Addition Full Description', @now , @bobUser, @solutionId);
 
-            INSERT INTO catalogue.CataloguePrices(CatalogueItemId, ProvisioningTypeId, CataloguePriceTypeId, PricingUnitId, TimeUnitId, CurrencyCode, LastUpdated, Price) 
-                 VALUES (@additionalServiceId, 1, 1, @patient, 2, 'GBP', @now, 599.99);
+            INSERT INTO catalogue.CataloguePrices(CatalogueItemId, ProvisioningTypeId, CataloguePriceTypeId, PricingUnitId, TimeUnitId, CurrencyCode, LastUpdated, Price, PublishedStatusId) 
+                 VALUES (@additionalServiceId, 1, 1, @patient, 2, 'GBP', @now, 599.99, 3);
                  
             INSERT INTO catalogue.CatalogueItemCapabilities(CatalogueItemId, CapabilityId, StatusId, LastUpdated, LastUpdatedBy)
                  SELECT @additionalServiceId, Id, 1, @now, @bobUser
@@ -245,8 +231,8 @@ BEGIN
             INSERT INTO catalogue.AdditionalServices(CatalogueItemId, Summary, FullDescription, LastUpdated, LastUpdatedBy, SolutionId)
                  VALUES (@additionalServiceId,'Addition to NotEmis Web GP', 'NotEmis Web GP Addition Full Description', @now , @bobUser, @solutionId);
 
-            INSERT INTO catalogue.CataloguePrices(CatalogueItemId, ProvisioningTypeId, CataloguePriceTypeId, PricingUnitId, TimeUnitId, CurrencyCode, LastUpdated, Price) 
-                 VALUES (@additionalServiceId, 2, 1, @bed, 1, 'GBP', @now, 699.99);
+            INSERT INTO catalogue.CataloguePrices(CatalogueItemId, ProvisioningTypeId, CataloguePriceTypeId, PricingUnitId, TimeUnitId, CurrencyCode, LastUpdated, Price, PublishedStatusId) 
+                 VALUES (@additionalServiceId, 2, 1, @bed, 1, 'GBP', @now, 699.99, 3);
         END;
     END;
 END;

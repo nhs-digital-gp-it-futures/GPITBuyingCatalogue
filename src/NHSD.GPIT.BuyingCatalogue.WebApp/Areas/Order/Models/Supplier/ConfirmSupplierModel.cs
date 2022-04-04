@@ -9,12 +9,11 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.Supplier
         {
         }
 
-        public ConfirmSupplierModel(string odsCode, CallOffId callOffId, EntityFramework.Catalogue.Models.Supplier supplier, string search)
+        public ConfirmSupplierModel(string internalOrgId, CallOffId callOffId, EntityFramework.Catalogue.Models.Supplier supplier)
         {
             Title = "Supplier details";
-            OdsCode = odsCode;
+            InternalOrgId = internalOrgId;
             CallOffId = callOffId;
-            Search = search;
             SupplierId = supplier.Id;
             Name = supplier.Name;
             LegalName = supplier.LegalName;
@@ -24,8 +23,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.Supplier
         public CallOffId CallOffId { get; set; }
 
         public int SupplierId { get; set; }
-
-        public string Search { get; set; }
 
         public string Name { get; set; }
 

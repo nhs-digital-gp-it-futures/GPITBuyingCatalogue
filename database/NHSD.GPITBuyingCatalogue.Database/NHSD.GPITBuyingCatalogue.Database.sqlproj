@@ -97,6 +97,7 @@
     <Folder Include="Catalogue\TemporalTables" />
     <Folder Include="Ordering\TemporalTables" />
     <Folder Include="Users\TemporalTables" />
+    <Folder Include="PostDeployment\OrderSeedData" />
   </ItemGroup>
   <ItemGroup>
     <Build Include="Security\Users\NHSD.sql" />
@@ -145,7 +146,6 @@
     <Build Include="Catalogue\Tables\CatalogueItemEpicStatus.sql" />
     <Build Include="Catalogue\Tables\CatalogueItemTypes.sql" />
     <Build Include="Catalogue\Tables\CataloguePrices.sql" />
-    <Build Include="Catalogue\Tables\CataloguePriceTiers.sql" />
     <Build Include="Catalogue\Tables\CataloguePriceTypes.sql" />
     <Build Include="Catalogue\Tables\CompliancyLevels.sql" />
     <Build Include="Catalogue\Tables\Epics.sql" />
@@ -208,7 +208,6 @@
     <Build Include="Catalogue\TemporalTables\CatalogueItemEpicStatus_History.sql" />
     <Build Include="Catalogue\TemporalTables\CatalogueItems_History.sql" />
     <Build Include="Catalogue\TemporalTables\CataloguePrices_History.sql" />
-    <Build Include="Catalogue\TemporalTables\CataloguePriceTiers_History.sql" />
     <Build Include="Catalogue\TemporalTables\Epics_History.sql" />
     <Build Include="Catalogue\TemporalTables\FrameworkCapabilities_History.sql" />
     <Build Include="Catalogue\TemporalTables\Frameworks_History.sql" />
@@ -236,6 +235,7 @@
     <Build Include="Users\TemporalTables\AspNetUsers_History.sql" />
     <Build Include="Import\Functions\GetLastPublishedDate.sql" />
     <Build Include="Organisations\Tables\OrganisationTypes.sql" />
+    <Build Include="Organisations\Tables\GpPracticeSize.sql" />
   </ItemGroup>
   <ItemGroup>
     <SqlCmdVariable Include="CREATE_EA_USER">
@@ -314,6 +314,11 @@
     <None Include="PostDeployment\InsertStandardTypes.sql" />
     <None Include="PostDeployment\InsertRelatedOrganisations.sql" />
     <None Include="PostDeployment\InsertOrganisationTypes.sql" />
+    <None Include="PostDeployment\OrderSeedData\InsertTestOrderSeedData.sql" />
+    <None Include="Security\Schemas\HangFire.sql" />
+    <None Include="Security\Users\HangFire.sql" />
+    <None Include="Security\Logins\HangFire.sql" />
+    <None Include="Security\Roles\BackgroundProcessor.sql" />
   </ItemGroup>
   <ItemGroup>
     <PostDeploy Include="PostDeployment\PostDeployment.sql" />

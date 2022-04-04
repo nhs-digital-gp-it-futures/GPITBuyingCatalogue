@@ -12,14 +12,14 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.Addition
         [Theory]
         [CommonAutoData]
         public static void WithValidArguments_PropertiesCorrectlySet(
-            string odsCode,
+            string internalOrgId,
             EntityFramework.Ordering.Models.Order order,
             List<OrderItem> orderItems)
         {
-            var model = new AdditionalServiceModel(odsCode, order, orderItems);
+            var model = new AdditionalServiceModel(internalOrgId, order, orderItems);
 
             model.Title.Should().Be($"Additional Services for {order.CallOffId}");
-            model.OdsCode.Should().Be(odsCode);
+            model.InternalOrgId.Should().Be(internalOrgId);
             model.OrderDescription.Should().Be(order.Description);
             model.CallOffId.Should().Be(order.CallOffId);
             model.OrderItems.Should().BeEquivalentTo(orderItems);

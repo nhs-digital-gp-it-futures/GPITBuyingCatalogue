@@ -25,6 +25,10 @@ variable "kv_sqlusername" {
   type = string
 }
 
+variable "kv_sql_hangfire_username" {
+  type = string
+}
+
 variable "coreurl" {
   type = string
 }
@@ -57,22 +61,6 @@ variable "kv_access_group" {
 }
 
 variable "sql_admin_group" {
-  type = string
-}
-
-variable "smtp_server_host" {
-  type = string
-}
-
-variable "smtp_server_port" {
-  type = string
-}
-
-variable "smtp_server_username" {
-  type = string
-}
-
-variable "smtp_server_password" {
   type = string
 }
 

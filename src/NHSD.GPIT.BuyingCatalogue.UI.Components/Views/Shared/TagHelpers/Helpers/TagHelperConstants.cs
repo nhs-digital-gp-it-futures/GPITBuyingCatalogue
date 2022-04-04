@@ -20,6 +20,7 @@
         internal const string Button = "button";
         internal const string Input = "input";
         internal const string Nav = "nav";
+        internal const string Script = "script";
 
         /* Attributes*/
         internal const string For = "asp-for";
@@ -43,6 +44,7 @@
         internal const string AriaLive = "aria-live";
         internal const string Class = "class";
         internal const string PathD = "d";
+        internal const string Source = "src";
 
         /* Attribute Values */
         internal const string AriaLivePolite = "polite";
@@ -58,6 +60,7 @@
         internal const string ConditionalContextName = "ConditionalContext";
         internal const string ColumnNameContextName = "ColumnNamesContext";
         internal const string CellColumnContextName = "CellColumnContext";
+        internal const string Javascript = "text/javascript";
 
         /* Classes */
         internal const string NhsErrorMessage = "nhsuk-error-message";
@@ -110,8 +113,11 @@
         internal const string CharacterCountMessage = "Maximum character length {0}";
 
         /* Html Attributes */
+        internal const string AllowMultipleName = "allow-multiple";
+        internal const string ItemsName = "asp-items";
         internal const string LabelTextName = "label-text";
         internal const string LabelHintName = "label-hint";
+        internal const string LabelEmbedHtml = "use-embedded-html";
         internal const string CharacterCountName = "character-count";
         internal const string MaxCharacterLength = "max-character-length";
     }

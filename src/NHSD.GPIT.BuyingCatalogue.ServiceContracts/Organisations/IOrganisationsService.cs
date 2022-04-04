@@ -10,11 +10,13 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.Organisations
 
         Task<Organisation> GetOrganisation(int id);
 
-        Task<Organisation> GetOrganisationByOdsCode(string odsCode);
+        Task<Organisation> GetOrganisationByInternalIdentifier(string internalIdentifier);
 
-        Task<List<Organisation>> GetOrganisationsByOdsCodes(string[] odsCodes);
+        Task<List<Organisation>> GetOrganisationsByInternalIdentifiers(string[] internalIdentifiers);
 
-        Task<(int OrganisationId, string Error)> AddOdsOrganisation(OdsOrganisation odsOrganisation, bool agreementSigned);
+        Task<List<Organisation>> GetOrganisationsBySearchTerm(string searchTerm);
+
+        Task<(int OrganisationId, string Error)> AddCcgOrganisation(OdsOrganisation odsOrganisation, bool agreementSigned);
 
         Task UpdateCatalogueAgreementSigned(int organisationId, bool signed);
 
@@ -25,5 +27,11 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.Organisations
         Task AddRelatedOrganisations(int organisationId, int relatedOrganisationId);
 
         Task RemoveRelatedOrganisations(int organisationId, int relatedOrganisationId);
+
+        Task<List<Organisation>> GetNominatedOrganisations(int organisationId);
+
+        Task AddNominatedOrganisation(int organisationId, int nominatedOrganisationId);
+
+        Task RemoveNominatedOrganisation(int organisationId, int nominatedOrganisationId);
     }
 }

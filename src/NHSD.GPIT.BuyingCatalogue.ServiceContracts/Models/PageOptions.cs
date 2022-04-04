@@ -52,5 +52,9 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.Models
                 return (int)Math.Ceiling((double)TotalNumberOfItems / PageSize);
             }
         }
+
+        public int NumberToSkip => PageNumber > 0
+            ? PageSize * (PageNumber - 1)
+            : 0;
     }
 }

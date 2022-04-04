@@ -26,10 +26,6 @@ module "webapp" {
   app_gateway_ip = module.appgateway.appgateway_pip_ipaddress
   ssl_cert = data.azurerm_key_vault_secret.ssl_cert.value
   customer_network_range = var.nhsd_network_range
-  smtp_server_host = var.smtp_server_host
-  smtp_server_port = var.smtp_server_port
-  smtp_server_username = var.smtp_server_username
-  smtp_server_password = var.smtp_server_password
   vnet_subnet_id = azurerm_subnet.gateway.id
   app_dns_url = var.app_url
   docker_registry_server_url = data.azurerm_container_registry.acr.login_server
@@ -39,5 +35,7 @@ module "webapp" {
   create_host_binding = local.coreEnv == "dev" ? 1 : 0 
   ssl_thumbprint = data.azurerm_key_vault_certificate.ssl_cert.thumbprint
   notify_api_key = var.notify_api_key
+  hangfire_username = azurerm_key_vault_secret.sqlhangfireusername.value
+  hangfire_password = azurerm_key_vault_secret.sqlhangfirepassword.value
   depends_on = [module.sql_server_pri]
 }

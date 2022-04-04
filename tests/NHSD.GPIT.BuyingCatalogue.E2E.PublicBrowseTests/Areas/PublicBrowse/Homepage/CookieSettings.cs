@@ -8,11 +8,12 @@ using FluentAssertions;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Utils;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.TestBases;
 using NHSD.GPIT.BuyingCatalogue.Framework.Constants;
-using NHSD.GPIT.BuyingCatalogue.Framework.Middleware.CookieConsent;
 using NHSD.GPIT.BuyingCatalogue.Framework.Serialization;
+using NHSD.GPIT.BuyingCatalogue.WebApp.ActionFilters;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Controllers;
 using OpenQA.Selenium;
 using Xunit;
+using Xunit.Abstractions;
 
 namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.PublicBrowse.Homepage
 {
@@ -23,12 +24,13 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.PublicBrowse.Homepage
 
         private static readonly Dictionary<string, string> Parameters = new();
 
-        public CookieSettings(LocalWebApplicationFactory factory)
+        public CookieSettings(LocalWebApplicationFactory factory, ITestOutputHelper testOutputHelper)
             : base(
                 factory,
                 typeof(ConsentController),
                 nameof(ConsentController.CookieSettings),
-                Parameters)
+                Parameters,
+                testOutputHelper)
         {
         }
 
@@ -37,21 +39,24 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.PublicBrowse.Homepage
         [InlineData(false, OptOutRadioButtonText)]
         public void CookieSettings_SetsCookieData(bool expectedSetting, string radioButtonText)
         {
-            CommonActions.ClickRadioButtonWithText(radioButtonText);
+            RunTest(() =>
+            {
+                CommonActions.ClickRadioButtonWithText(radioButtonText);
 
-            CommonActions.ClickSave();
+                CommonActions.ClickSave();
 
-            CommonActions.PageLoadedCorrectGetIndex(
-                    typeof(HomeController),
-                    nameof(HomeController.PrivacyPolicy))
-                .Should()
-                .BeTrue();
+                CommonActions.PageLoadedCorrectGetIndex(
+                        typeof(HomeController),
+                        nameof(HomeController.PrivacyPolicy))
+                    .Should()
+                    .BeTrue();
 
-            var cookie = Driver.Manage().Cookies.GetCookieNamed(CatalogueCookies.BuyingCatalogueConsent);
-            var decodedValue = HttpUtility.UrlDecode(cookie.Value);
-            var cookieData = JsonDeserializer.Deserialize<CookieData>(decodedValue);
+                var cookie = Driver.Manage().Cookies.GetCookieNamed(CatalogueCookies.BuyingCatalogueConsent);
+                var decodedValue = HttpUtility.UrlDecode(cookie.Value);
+                var cookieData = JsonDeserializer.Deserialize<CookieData>(decodedValue);
 
-            cookieData.Analytics.Should().Be(expectedSetting);
+                cookieData.Analytics.Should().Be(expectedSetting);
+            });
         }
 
         [Theory]
@@ -59,35 +64,41 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.PublicBrowse.Homepage
         [InlineData(OptOutRadioButtonText)]
         public void CookieSettings_DoesNotDeleteMandatoryCookies(string radioButtonText)
         {
-            Driver.Manage().Cookies.AddCookie(new Cookie("user-session", "user-session-value"));
+            RunTest(() =>
+            {
+                Driver.Manage().Cookies.AddCookie(new Cookie("user-session", "user-session-value"));
 
-            CommonActions.ClickRadioButtonWithText(radioButtonText);
+                CommonActions.ClickRadioButtonWithText(radioButtonText);
 
-            CommonActions.ClickSave();
+                CommonActions.ClickSave();
 
-            CommonActions.PageLoadedCorrectGetIndex(
-                    typeof(HomeController),
-                    nameof(HomeController.PrivacyPolicy))
-                .Should()
-                .BeTrue();
+                CommonActions.PageLoadedCorrectGetIndex(
+                        typeof(HomeController),
+                        nameof(HomeController.PrivacyPolicy))
+                    .Should()
+                    .BeTrue();
 
-            var cookie = Driver.Manage().Cookies.AllCookies.Should().Contain(c => c.Name == "user-session");
+                var cookie = Driver.Manage().Cookies.AllCookies.Should().Contain(c => c.Name == "user-session");
+            });
         }
 
         [Fact]
         public void CookieSettings_PreviouslyOptedIn_DeletesNonMandatoryCookies()
         {
-            Driver.Manage().Cookies.AddCookie(new Cookie("non-mandatory-cookie", "non-mandatory-cookie-value"));
-            AddConsentCookie();
+            RunTest(() =>
+            {
+                Driver.Manage().Cookies.AddCookie(new Cookie("non-mandatory-cookie", "non-mandatory-cookie-value"));
+                AddConsentCookie();
 
-            Driver.Navigate().Refresh();
+                Driver.Navigate().Refresh();
 
-            CommonActions.ClickRadioButtonWithText(OptOutRadioButtonText);
+                CommonActions.ClickRadioButtonWithText(OptOutRadioButtonText);
 
-            CommonActions.ClickSave();
+                CommonActions.ClickSave();
 
-            var updatedCookes = GetCookies();
-            updatedCookes.Should().NotContain("non-mandatory-cookie");
+                var updatedCookes = GetCookies();
+                updatedCookes.Should().NotContain("non-mandatory-cookie");
+            });
         }
 
         public void Dispose()

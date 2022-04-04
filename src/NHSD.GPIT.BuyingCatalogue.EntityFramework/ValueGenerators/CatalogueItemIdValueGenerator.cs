@@ -25,10 +25,13 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.ValueGenerators
             if (catalogueItem.Id != default)
                 return catalogueItem.Id;
 
-            var latestCatalogueItem = await entry.Context.Set<CatalogueItem>()
-                .Where(i => i.CatalogueItemType == catalogueItem.CatalogueItemType && i.SupplierId == catalogueItem.SupplierId)
-                .OrderByDescending(i => i.Id)
-                .FirstOrDefaultAsync(cancellationToken);
+            var baseQuery = entry.Context.Set<CatalogueItem>()
+                .Where(i => i.CatalogueItemType == catalogueItem.CatalogueItemType && i.SupplierId == catalogueItem.SupplierId);
+
+            if (catalogueItem.CatalogueItemType == CatalogueItemType.AdditionalService)
+                baseQuery = baseQuery.Where(i => i.AdditionalService.SolutionId == catalogueItem.AdditionalService.SolutionId);
+
+            var latestCatalogueItem = await baseQuery.OrderByDescending(i => i.Id).FirstOrDefaultAsync(cancellationToken);
 
             var incrementedCatalogueItemId = catalogueItem.CatalogueItemType switch
             {

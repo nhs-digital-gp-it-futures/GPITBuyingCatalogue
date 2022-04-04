@@ -9,6 +9,7 @@
     SupplierContactId int NULL,
     CommencementDate date NULL,
     FundingSourceOnlyGMS bit NULL,
+    ConfirmedFundingSource bit NULL,
     Created datetime2 CONSTRAINT DF_Order_Created DEFAULT GETUTCDATE() NOT NULL,
     LastUpdated datetime2 CONSTRAINT DF_Order_LastUpdated DEFAULT GETUTCDATE() NOT NULL CONSTRAINT Order_LastUpdatedNotBeforeCreated CHECK (LastUpdated >= Created),
     LastUpdatedBy int NULL,

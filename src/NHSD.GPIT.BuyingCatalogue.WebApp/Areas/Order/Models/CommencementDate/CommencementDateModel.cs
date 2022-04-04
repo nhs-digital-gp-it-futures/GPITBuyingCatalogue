@@ -12,10 +12,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.CommencementDate
         {
         }
 
-        public CommencementDateModel(string odsCode, CallOffId callOffId, DateTime? commencementDate, int? initialPeriod, int? maximumTerm)
+        public CommencementDateModel(string internalOrgId, CallOffId callOffId, DateTime? commencementDate, int? initialPeriod, int? maximumTerm)
         {
             Title = "Timescales for Call-off Agreement";
-            OdsCode = odsCode;
+            InternalOrgId = internalOrgId;
             CallOffId = callOffId;
 
             if (commencementDate.HasValue)
@@ -52,7 +52,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.CommencementDate
         {
             get
             {
-                if (!DateTime.TryParseExact($"{Day}/{Month}/{Year}", "d/M/yyyy", CultureInfo.InvariantCulture, DateTimeStyles.None, out var deliveryDate))
+                if (!DateTime.TryParseExact($"{Day}/{Month}/{Year}", "d/M/yyyy", CultureInfo.InvariantCulture, DateTimeStyles.AssumeUniversal, out var deliveryDate))
                     return null;
 
                 return deliveryDate.ToUniversalTime();

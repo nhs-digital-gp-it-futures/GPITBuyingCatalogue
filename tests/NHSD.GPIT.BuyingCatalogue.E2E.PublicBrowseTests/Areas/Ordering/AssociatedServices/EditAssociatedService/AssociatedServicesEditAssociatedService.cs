@@ -18,7 +18,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering.AssociatedServices
     public sealed class AssociatedServicesEditAssociatedService
         : BuyerTestBase, IClassFixture<LocalWebApplicationFactory>, IAsyncLifetime
     {
-        private const string OdsCode = "03F";
+        private const string InternalOrgId = "CG-03F";
         private const string CatalogueItemName = "E2E Multiple Prices Associated Service";
         private static readonly CallOffId CallOffId = new(90008, 1);
         private static readonly CatalogueItemId CatalogueItemId = new(99998, "S-997");
@@ -26,7 +26,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering.AssociatedServices
         private static readonly Dictionary<string, string> Parameters =
             new()
             {
-                { nameof(OdsCode), OdsCode },
+                { nameof(InternalOrgId), InternalOrgId },
                 { nameof(CallOffId), CallOffId.ToString() },
                 { nameof(CatalogueItemId), CatalogueItemId.ToString() },
             };
@@ -225,7 +225,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering.AssociatedServices
                 {
                     new()
                     {
-                        OdsCode = OdsCode,
+                        OdsCode = InternalOrgId,
                         Selected = true,
                         Name = "Hull CCG",
                         Quantity = 123,

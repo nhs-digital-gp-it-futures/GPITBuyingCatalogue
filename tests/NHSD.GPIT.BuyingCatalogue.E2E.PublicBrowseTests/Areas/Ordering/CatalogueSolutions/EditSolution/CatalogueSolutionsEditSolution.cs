@@ -32,7 +32,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering.CatalogueSolutions
                 },
             };
 
-        private const string OdsCode = "03F";
+        private const string InternalOrgId = "CG-03F";
         private const string CatalogueItemName = "E2E With Contact Multiple Prices";
         private static readonly CallOffId CallOffId = new(90004, 01);
         private static readonly CatalogueItemId CatalogueItemId = new(99998, "001");
@@ -40,7 +40,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering.CatalogueSolutions
         private static readonly Dictionary<string, string> Parameters =
             new()
             {
-                { nameof(OdsCode), OdsCode },
+                { nameof(InternalOrgId), InternalOrgId },
                 { nameof(CallOffId), CallOffId.ToString() },
                 { nameof(CatalogueItemId), CatalogueItemId.ToString() },
             };
@@ -292,7 +292,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering.CatalogueSolutions
         {
             InitializeSessionHandler();
 
-            InitializeServiceRecipientMemoryCacheHandler(OdsCode);
+            InitializeServiceRecipientMemoryCacheHandler(InternalOrgId);
 
             using var context = GetEndToEndDbContext();
             var price = context

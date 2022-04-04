@@ -17,7 +17,7 @@ using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Suppliers;
 using NHSD.GPIT.BuyingCatalogue.Test.Framework.AutoFixtureCustomisations;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.SupplierModels;
-using NHSD.GPIT.BuyingCatalogue.WebApp.Models.Autocomplete;
+using NHSD.GPIT.BuyingCatalogue.WebApp.Models.SuggestionSearch;
 using Xunit;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
@@ -397,7 +397,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
                 },
             };
             var requestUri = new UriBuilder(controller.HttpContext.Request.Headers.Referer.ToString());
-            var expected = searchResults.Select(r => new AutocompleteResult
+            var expected = searchResults.Select(r => new SuggestionSearchResult
             {
                 Title = r.Name,
                 Category = r.Id.ToString(),
@@ -439,7 +439,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
             var result = (await controller.FilterSearchSuggestions(searchTerm)).As<JsonResult>();
 
             result.Should().NotBeNull();
-            result.Value.As<IEnumerable<AutocompleteResult>>().Should().BeEmpty();
+            result.Value.As<IEnumerable<SuggestionSearchResult>>().Should().BeEmpty();
         }
     }
 }

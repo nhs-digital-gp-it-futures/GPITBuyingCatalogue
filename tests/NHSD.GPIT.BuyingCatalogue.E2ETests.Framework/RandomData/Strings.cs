@@ -32,13 +32,21 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.RandomData
         {
             var faker = new Faker("en_GB");
             var email = faker.Internet.Email();
-            return string.Join(string.Empty, faker.Random.AlphaNumeric(numChars - email.Length), email);
+            var length = numChars - email.Length;
+            if(length > 0)
+                return string.Join(string.Empty, faker.Random.AlphaNumeric(numChars - email.Length), email);
+
+            return email;
         }
 
         public static DateTime RandomDateSoon()
         {
             var faker = new Faker("en_GB");
-            return faker.Date.Soon(5);
+            var date = faker.Date.Soon(5);
+
+            return date.Day <= DateTime.UtcNow.Day
+                ? date.AddDays(2)
+                : date;
         }
     }
 }

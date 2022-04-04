@@ -22,6 +22,7 @@ using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.CapabilityModels;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.CatalogueSolutionsModels;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.ClientApplicationTypeModels;
+using NHSD.GPIT.BuyingCatalogue.WebApp.Models.SuggestionSearch;
 using Xunit;
 using PublicationStatus = NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models.PublicationStatus;
 
@@ -37,6 +38,71 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
             var constructors = typeof(CatalogueSolutionsController).GetConstructors();
 
             assertion.Verify(constructors);
+        }
+
+        [Theory]
+        [CommonAutoData]
+        public static async Task Get_SearchResults_ValidSearchTerm_ReturnsExpectedResult(
+            string searchTerm,
+            List<CatalogueItem> solutions,
+            [Frozen] Mock<ISolutionsService> mockSolutionsService,
+            CatalogueSolutionsController controller)
+        {
+            mockSolutionsService
+                .Setup(o => o.GetAllSolutionsForSearchTerm(searchTerm))
+                .ReturnsAsync(solutions);
+
+            var result = await controller.SearchResults(searchTerm);
+
+            mockSolutionsService.VerifyAll();
+
+            var actualResult = result.As<JsonResult>()
+                .Value.As<IEnumerable<SuggestionSearchResult>>()
+                .ToList();
+
+            foreach (var solution in solutions)
+            {
+                actualResult.Should().Contain(x => x.Title == solution.Name && x.Category == solution.Supplier.Name);
+            }
+        }
+
+        [Theory]
+        [CommonAutoData]
+        public static async Task Get_SearchResults_ValidSearchTerm_NoMatches_ReturnsExpectedResult(
+            string searchTerm,
+            [Frozen] Mock<ISolutionsService> mockSolutionsService,
+            CatalogueSolutionsController controller)
+        {
+            mockSolutionsService
+                .Setup(o => o.GetAllSolutionsForSearchTerm(searchTerm))
+                .ReturnsAsync(new List<CatalogueItem>());
+
+            var result = await controller.SearchResults(searchTerm);
+
+            mockSolutionsService.VerifyAll();
+
+            var actualResult = result.As<JsonResult>()
+                .Value.As<IEnumerable<SuggestionSearchResult>>()
+                .ToList();
+
+            actualResult.Should().BeEmpty();
+        }
+
+        [Theory]
+        [CommonInlineAutoData(null)]
+        [CommonInlineAutoData("")]
+        [CommonInlineAutoData(" ")]
+        public static async Task Get_SearchResults_InvalidSearchTerm_ReturnsExpectedResult(
+            string searchTerm,
+            CatalogueSolutionsController controller)
+        {
+            var result = await controller.SearchResults(searchTerm);
+
+            var actualResult = result.As<JsonResult>()
+                .Value.As<IEnumerable<SuggestionSearchResult>>()
+                .ToList();
+
+            actualResult.Should().BeEmpty();
         }
 
         [Theory]
@@ -144,22 +210,57 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
 
         [Theory]
         [CommonAutoData]
-        public static async Task Get_Index_SolutionsInDatabase_ReturnsViewWithExpectedModel(
+        public static async Task Get_Index_ReturnsViewWithExpectedModel(
             List<CatalogueItem> solutions,
             [Frozen] Mock<ISolutionsService> mockService,
             CatalogueSolutionsController controller)
         {
             var expected = solutions.Select(s => new CatalogueModel(s)).ToList();
-            mockService.Setup(s => s.GetAllSolutions(null))
+
+            mockService
+                .Setup(s => s.GetAllSolutions(null))
                 .ReturnsAsync(solutions);
 
             var actual = (await controller.Index()).As<ViewResult>();
 
+            mockService.VerifyAll();
+
             actual.Should().NotBeNull();
             actual.ViewName.Should().BeNull();
+
             var model = actual.Model.As<CatalogueSolutionsModel>();
+
             model.Solutions.Should().BeEquivalentTo(expected);
             model.SelectedPublicationStatus.Should().BeNullOrWhiteSpace();
+            model.SearchTerm.Should().BeNull();
+        }
+
+        [Theory]
+        [CommonAutoData]
+        public static async Task Get_Index_WithSearchTerm_ReturnsViewWithExpectedModel(
+            string searchTerm,
+            List<CatalogueItem> solutions,
+            [Frozen] Mock<ISolutionsService> mockService,
+            CatalogueSolutionsController controller)
+        {
+            var expected = solutions.Select(x => new CatalogueModel(x));
+
+            mockService
+                .Setup(s => s.GetAllSolutionsForSearchTerm(searchTerm))
+                .ReturnsAsync(solutions);
+
+            var actual = (await controller.Index(searchTerm)).As<ViewResult>();
+
+            mockService.VerifyAll();
+
+            actual.Should().NotBeNull();
+            actual.ViewName.Should().BeNull();
+
+            var model = actual.Model.As<CatalogueSolutionsModel>();
+
+            model.Solutions.Should().BeEquivalentTo(expected);
+            model.SelectedPublicationStatus.Should().BeNullOrWhiteSpace();
+            model.SearchTerm.Should().Be(searchTerm);
         }
 
         [Theory]
@@ -171,14 +272,50 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
             CatalogueSolutionsController controller)
         {
             var model = new CatalogueSolutionsModel { SelectedPublicationStatus = status.ToString() };
-            mockService.Setup(s => s.GetAllSolutions(status))
+
+            mockService
+                .Setup(s => s.GetAllSolutions(status))
                 .ReturnsAsync(solutions);
 
             var actual = (await controller.Index(model)).As<ViewResult>();
 
             actual.Should().NotBeNull();
             actual.ViewName.Should().BeNull();
+
             model.SetSolutions(solutions);
+
+            actual.Model.As<CatalogueSolutionsModel>().Should().BeEquivalentTo(model);
+        }
+
+        [Theory]
+        [CommonAutoData]
+        public static async Task Post_Index_StatusInput_WithSearchTerm_FiltersIntersectionOfBothSets_ReturnsViewWithModel(
+            List<CatalogueItem> solutions,
+            PublicationStatus status,
+            [Frozen] Mock<ISolutionsService> mockService,
+            CatalogueSolutionsController controller)
+        {
+            var expected = solutions.First();
+            var searchTerm = expected.Name;
+            var model = new CatalogueSolutionsModel
+            {
+                SearchTerm = searchTerm,
+                SelectedPublicationStatus = status.ToString(),
+            };
+
+            model.SetSolutions(new[] { expected });
+
+            mockService
+                .Setup(s => s.GetAllSolutions(status))
+                .ReturnsAsync(solutions);
+
+            var actual = (await controller.Index(model)).As<ViewResult>();
+
+            actual.Should().NotBeNull();
+            actual.ViewName.Should().BeNull();
+
+            model.SetSolutions(solutions);
+
             actual.Model.As<CatalogueSolutionsModel>().Should().BeEquivalentTo(model);
         }
 

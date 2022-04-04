@@ -2,18 +2,18 @@
 using System.Threading;
 using System.Threading.Tasks;
 using FluentValidation;
-using NHSD.GPIT.BuyingCatalogue.ServiceContracts.CreateBuyer;
+using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Users;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.OrganisationModels;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Validators.Organisation
 {
     public sealed class AddUserModelValidator : AbstractValidator<AddUserModel>
     {
-        private readonly ICreateBuyerService createBuyerService;
+        private readonly IUsersService usersService;
 
-        public AddUserModelValidator(ICreateBuyerService createBuyerService)
+        public AddUserModelValidator(IUsersService usersService)
         {
-            this.createBuyerService = createBuyerService ?? throw new ArgumentNullException(nameof(createBuyerService));
+            this.usersService = usersService ?? throw new ArgumentNullException(nameof(usersService));
 
             RuleFor(m => m.FirstName)
                 .NotEmpty()
@@ -22,10 +22,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Validators.Organisation
             RuleFor(m => m.LastName)
                 .NotEmpty()
                 .WithMessage("Enter a last name");
-
-            RuleFor(m => m.TelephoneNumber)
-                .NotEmpty()
-                .WithMessage("Enter a telephone number");
 
             RuleFor(m => m.EmailAddress)
                 .Cascade(CascadeMode.Stop)
@@ -37,6 +33,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Validators.Organisation
                 .WithMessage("A user with this email address is already registered on the Buying Catalogue");
         }
 
-        private async Task<bool> NotBeDuplicateUserEmail(string emailAddress, CancellationToken cancellationToken) => !await createBuyerService.UserExistsWithEmail(emailAddress);
+        private async Task<bool> NotBeDuplicateUserEmail(string emailAddress, CancellationToken cancellationToken) => !await usersService.EmailAddressExists(emailAddress);
     }
 }

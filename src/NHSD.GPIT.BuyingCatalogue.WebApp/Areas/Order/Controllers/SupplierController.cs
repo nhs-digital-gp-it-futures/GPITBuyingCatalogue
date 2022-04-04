@@ -1,169 +1,174 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
+using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Orders;
+using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Session;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.Supplier;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
 {
     [Authorize]
     [Area("Order")]
-    [Route("order/organisation/{odsCode}/order/{callOffId}/supplier")]
+    [Route("order/organisation/{internalOrgId}/order/{callOffId}/supplier")]
     public sealed class SupplierController : Controller
     {
         private readonly IOrderService orderService;
+        private readonly ISupplierContactSessionService sessionService;
         private readonly ISupplierService supplierService;
 
         public SupplierController(
             IOrderService orderService,
+            ISupplierContactSessionService sessionService,
             ISupplierService supplierService)
         {
             this.orderService = orderService ?? throw new ArgumentNullException(nameof(orderService));
+            this.sessionService = sessionService ?? throw new ArgumentNullException(nameof(sessionService));
             this.supplierService = supplierService ?? throw new ArgumentNullException(nameof(supplierService));
         }
 
         [HttpGet]
-        public async Task<IActionResult> Supplier(string odsCode, CallOffId callOffId)
+        public async Task<IActionResult> Supplier(string internalOrgId, CallOffId callOffId, int? selected = null)
         {
-            var order = await orderService.GetOrderWithSupplier(callOffId, odsCode);
+            var order = await orderService.GetOrderWithSupplier(callOffId, internalOrgId);
 
             if (order.Supplier is null)
             {
                 return RedirectToAction(
-                    nameof(SupplierSearch),
+                    nameof(SelectSupplier),
                     typeof(SupplierController).ControllerName(),
-                    new { odsCode, callOffId });
+                    new { internalOrgId, callOffId });
             }
 
             var supplier = await supplierService.GetSupplierFromBuyingCatalogue(order.Supplier.Id);
+            var temporaryContact = sessionService.GetSupplierContact(callOffId, supplier.Id);
 
-            var model = new SupplierModel(odsCode, order, supplier.SupplierContacts)
+            if (temporaryContact == null)
+            {
+                if (order.SupplierContact is { SupplierContactId: null })
+                {
+                    temporaryContact = new SupplierContact
+                    {
+                        Id = SupplierContact.TemporaryContactId,
+                        SupplierId = supplier.Id,
+                        FirstName = order.SupplierContact.FirstName,
+                        LastName = order.SupplierContact.LastName,
+                        Department = order.SupplierContact.Department,
+                        PhoneNumber = order.SupplierContact.Phone,
+                        Email = order.SupplierContact.Email,
+                    };
+                }
+
+                sessionService.SetSupplierContact(callOffId, supplier.Id, temporaryContact);
+            }
+
+            if (selected == null
+                && order.SupplierContact != null)
+            {
+                selected = order.SupplierContact.SupplierContactId ?? SupplierContact.TemporaryContactId;
+            }
+
+            var model = new SupplierModel(internalOrgId, callOffId, order)
             {
                 BackLink = Url.Action(
                     nameof(OrderController.Order),
                     typeof(OrderController).ControllerName(),
-                    new { odsCode, callOffId }),
+                    new { internalOrgId, callOffId }),
+                Contacts = GetSupplierContacts(callOffId, supplier),
+                SelectedContactId = selected,
             };
 
             return View(model);
         }
 
         [HttpPost]
-        public async Task<IActionResult> Supplier(string odsCode, CallOffId callOffId, SupplierModel model)
+        public async Task<IActionResult> Supplier(string internalOrgId, CallOffId callOffId, SupplierModel model)
         {
+            var supplier = await supplierService.GetSupplierFromBuyingCatalogue(model.SupplierId);
+            var contacts = GetSupplierContacts(callOffId, supplier);
+
             if (!ModelState.IsValid)
             {
-                var supplier = await supplierService.GetSupplierFromBuyingCatalogue(model.Id);
-                model.Address = supplier.Address;
+                model.Contacts = contacts;
                 return View(model);
             }
 
-            await supplierService.AddOrUpdateOrderSupplierContact(callOffId, odsCode, model.PrimaryContact);
+            var contact = contacts.FirstOrDefault(x => x.Id == model.SelectedContactId);
+
+            await supplierService.AddOrUpdateOrderSupplierContact(callOffId, internalOrgId, contact);
 
             return RedirectToAction(
                 nameof(OrderController.Order),
                 typeof(OrderController).ControllerName(),
-                new { odsCode, callOffId });
+                new { internalOrgId, callOffId });
         }
 
-        [HttpGet("search")]
-        public async Task<IActionResult> SupplierSearch(string odsCode, CallOffId callOffId)
+        [HttpGet("select")]
+        public async Task<IActionResult> SelectSupplier(string internalOrgId, CallOffId callOffId)
         {
-            var order = await orderService.GetOrderWithSupplier(callOffId, odsCode);
+            var order = await orderService.GetOrderWithSupplier(callOffId, internalOrgId);
 
             if (order.Supplier is not null)
             {
                 return RedirectToAction(
                     nameof(SupplierController.Supplier),
                     typeof(SupplierController).ControllerName(),
-                    new { odsCode, callOffId });
+                    new { internalOrgId, callOffId });
             }
 
-            var model = new SupplierSearchModel(odsCode, order)
+            var suppliers = await supplierService.GetAllSuppliersFromBuyingCatalogue();
+
+            var model = new SelectSupplierModel
             {
                 BackLink = Url.Action(
                     nameof(OrderController.Order),
                     typeof(OrderController).ControllerName(),
-                    new { odsCode, callOffId }),
+                    new { internalOrgId, callOffId }),
+                CallOffId = callOffId,
+                InternalOrgId = internalOrgId,
+                Suppliers = suppliers.Select(x => new SelectListItem(x.Name, $"{x.Id}")),
             };
 
             return View(model);
         }
 
-        [HttpPost("search")]
-        public IActionResult SupplierSearch(string odsCode, CallOffId callOffId, SupplierSearchModel model)
-        {
-            return RedirectToAction(
-                nameof(SupplierSearchSelect),
-                typeof(SupplierController).ControllerName(),
-                new { odsCode, callOffId, search = model.SearchString });
-        }
-
-        [HttpGet("search/select")]
-        public async Task<IActionResult> SupplierSearchSelect(string odsCode, CallOffId callOffId, [FromQuery] string search, int? supplierId = null)
-        {
-            var order = await orderService.GetOrderWithSupplier(callOffId, odsCode);
-
-            if (order?.Supplier is not null)
-            {
-                return RedirectToAction(
-                    nameof(SupplierController.Supplier),
-                    typeof(SupplierController).ControllerName(),
-                    new { odsCode, callOffId });
-            }
-
-            var backlink = Url.Action(nameof(SupplierSearch), new { odsCode, callOffId });
-
-            if (string.IsNullOrWhiteSpace(search))
-                return View("NoSupplierFound", new NoSupplierFoundModel() { BackLink = backlink });
-
-            var suppliers = await supplierService.GetListFromBuyingCatalogue(search, null, null);
-
-            if (suppliers.Count == 0)
-                return View("NoSupplierFound", new NoSupplierFoundModel() { BackLink = backlink });
-
-            return View(new SupplierSearchSelectModel(odsCode, callOffId, suppliers, supplierId)
-            {
-                BackLink = backlink,
-                SelectedSupplierId = supplierId,
-            });
-        }
-
-        [HttpPost("search/select")]
-        public async Task<IActionResult> SupplierSearchSelect(string odsCode, CallOffId callOffId, SupplierSearchSelectModel model, [FromQuery] string search)
+        [HttpPost("select")]
+        public async Task<IActionResult> SelectSupplier(string internalOrgId, CallOffId callOffId, SelectSupplierModel model)
         {
             if (!ModelState.IsValid)
             {
-                model.Suppliers = await supplierService.GetListFromBuyingCatalogue(search, null, null);
+                var suppliers = await supplierService.GetAllSuppliersFromBuyingCatalogue();
+
+                model.Suppliers = suppliers.Select(x => new SelectListItem(x.Name, $"{x.Id}"));
+
                 return View(model);
             }
+
+            var supplierId = int.Parse(model.SelectedSupplierId);
 
             return RedirectToAction(
                 nameof(ConfirmSupplier),
                 typeof(SupplierController).ControllerName(),
-                new
-                {
-                    odsCode,
-                    callOffId,
-                    search,
-                    supplierId = model.SelectedSupplierId!.Value,
-                });
+                new { internalOrgId, callOffId, supplierId });
         }
 
         [HttpGet("confirm")]
-        public async Task<IActionResult> ConfirmSupplier(string odsCode, CallOffId callOffId, string search, int supplierId)
+        public async Task<IActionResult> ConfirmSupplier(string internalOrgId, CallOffId callOffId, int supplierId)
         {
-            var order = await orderService.GetOrderWithSupplier(callOffId, odsCode);
+            var order = await orderService.GetOrderWithSupplier(callOffId, internalOrgId);
 
             if (order?.Supplier is not null)
             {
                 return RedirectToAction(
                     nameof(Supplier),
                     typeof(SupplierController).ControllerName(),
-                    new { odsCode, callOffId });
+                    new { internalOrgId, callOffId });
             }
 
             var supplier = await supplierService.GetSupplierFromBuyingCatalogue(supplierId);
@@ -171,29 +176,97 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
             if (supplier == null)
             {
                 return RedirectToAction(
-                    nameof(SupplierSearch),
+                    nameof(SelectSupplier),
                     typeof(SupplierController).ControllerName(),
-                    new { odsCode, callOffId });
+                    new { internalOrgId, callOffId });
             }
 
-            return View(new ConfirmSupplierModel(odsCode, callOffId, supplier, search)
+            return View(new ConfirmSupplierModel(internalOrgId, callOffId, supplier)
             {
-                BackLink = Url.Action(nameof(SupplierSearchSelect), new { odsCode, callOffId, search, supplierId }),
+                BackLink = Url.Action(
+                    nameof(SelectSupplier),
+                    new { internalOrgId, callOffId }),
             });
         }
 
         [HttpPost("confirm")]
-        public async Task<IActionResult> ConfirmSupplier(string odsCode, CallOffId callOffId, ConfirmSupplierModel model)
+        public async Task<IActionResult> ConfirmSupplier(string internalOrgId, CallOffId callOffId, ConfirmSupplierModel model)
         {
             if (!ModelState.IsValid)
                 return View(model);
 
-            await supplierService.AddOrderSupplier(callOffId, odsCode, model.SupplierId);
+            await supplierService.AddOrderSupplier(callOffId, internalOrgId, model.SupplierId);
 
             return RedirectToAction(
                 nameof(Supplier),
                 typeof(SupplierController).ControllerName(),
-                new { odsCode, callOffId });
+                new { internalOrgId, callOffId });
+        }
+
+        [HttpGet("new-contact")]
+        public async Task<IActionResult> NewContact(string internalOrgId, CallOffId callOffId)
+        {
+            var order = await orderService.GetOrderWithSupplier(callOffId, internalOrgId);
+
+            if (order?.SupplierId is null)
+            {
+                return RedirectToAction(
+                    nameof(SelectSupplier),
+                    typeof(SupplierController).ControllerName(),
+                    new { internalOrgId, callOffId });
+            }
+
+            var newContact = sessionService.GetSupplierContact(callOffId, order.SupplierId.Value);
+
+            return View(new NewContactModel(callOffId, order.SupplierId.Value, order.Supplier.Name)
+            {
+                Title = newContact == null
+                    ? "Add a contact"
+                    : $"{newContact.FirstName} {newContact.LastName} details",
+                BackLink = Url.Action(nameof(Supplier), new { internalOrgId, callOffId }),
+                FirstName = newContact?.FirstName,
+                LastName = newContact?.LastName,
+                Department = newContact?.Department,
+                PhoneNumber = newContact?.PhoneNumber,
+                Email = newContact?.Email,
+            });
+        }
+
+        [HttpPost("new-contact")]
+        public IActionResult NewContact(string internalOrgId, CallOffId callOffId, NewContactModel model)
+        {
+            if (!ModelState.IsValid)
+                return View(model);
+
+            sessionService.SetSupplierContact(callOffId, model.SupplierId, new SupplierContact
+            {
+                Id = SupplierContact.TemporaryContactId,
+                SupplierId = model.SupplierId,
+                FirstName = model.FirstName,
+                LastName = model.LastName,
+                Department = model.Department,
+                PhoneNumber = model.PhoneNumber,
+                Email = model.Email,
+            });
+
+            return RedirectToAction(
+                nameof(Supplier),
+                typeof(SupplierController).ControllerName(),
+                new { internalOrgId, callOffId, selected = SupplierContact.TemporaryContactId });
+        }
+
+        private List<SupplierContact> GetSupplierContacts(CallOffId callOffId, Supplier supplier)
+        {
+            var temporaryContact = sessionService.GetSupplierContact(callOffId, supplier.Id);
+
+            var contacts = temporaryContact == null
+                ? supplier.SupplierContacts
+                : supplier.SupplierContacts.Union(new[] { temporaryContact });
+
+            return contacts
+                .OrderBy(x => x.FirstName)
+                .ThenBy(x => x.LastName)
+                .ToList();
         }
     }
 }

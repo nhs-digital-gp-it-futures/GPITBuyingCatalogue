@@ -616,7 +616,6 @@ TPP maintain close contact with staff at the unit throughout these phases to ens
     END;
 
     DECLARE @flatPriceType AS int = 1;
-    DECLARE @tieredPriceType AS int = 2;
 
     DECLARE @patientProvisioningType AS int = 1;
     DECLARE @declarativeProvisioningType AS int = 2;
@@ -634,49 +633,22 @@ TPP maintain close contact with staff at the unit throughout these phases to ens
     /* Insert prices */
     IF NOT EXISTS (SELECT * FROM catalogue.CataloguePrices)
     BEGIN
-     INSERT INTO catalogue.CataloguePrices(CatalogueItemId, ProvisioningTypeId, CataloguePriceTypeId, PricingUnitId, TimeUnitId, CurrencyCode, LastUpdated, Price)
-          VALUES ('100000-001', @patientProvisioningType, @flatPriceType, @patient, @yearTimeUnit, 'GBP', @now, 99.99),
-                 ('100000-001', @patientProvisioningType, @tieredPriceType, @patient, @yearTimeUnit, 'GBP', @now, NULL),
-                 ('100000-001', @onDemandProvisioningType, @flatPriceType, @consultation, NULL, 'GBP', @now, 1001.010),
-                 ('100001-001', @onDemandProvisioningType, @flatPriceType, @licence, NULL, 'GBP', @now, 3.142),
-                 ('100002-001', @declarativeProvisioningType, @flatPriceType, @patient, @monthTimeUnit, 'GBP', @now, 4.85),
-                 ('100002-001', @declarativeProvisioningType, @tieredPriceType, @patient, @monthTimeUnit, 'GBP', @now, NULL),
-                 ('100003-001', @declarativeProvisioningType, @flatPriceType, @bed, @monthTimeUnit, 'GBP', @now, 19.987),
-                 ('100004-001', @declarativeProvisioningType, @flatPriceType, @licence, @monthTimeUnit, 'GBP', @now, 10101.65),
-                 ('100005-001', @onDemandProvisioningType, @flatPriceType, @licence, NULL, 'GBP', @now, 456),
-                 ('100006-001', @declarativeProvisioningType, @flatPriceType, @sms, @monthTimeUnit, 'GBP', @now, 7),
-                 ('100007-001', @onDemandProvisioningType, @flatPriceType, @sms, NULL, 'GBP', @now, 0.15),
-                 ('100007-002', @onDemandProvisioningType, @tieredPriceType, @sms, NULL, 'GBP', @now, NULL),
-                 ('99998-98', @patientProvisioningType, @flatPriceType, @licence, @yearTimeUnit, 'GBP', @now, 30000),
-                 ('99998-98', @patientProvisioningType, @tieredPriceType, @licence, @yearTimeUnit, 'GBP', @now, NULL),
-                 ('99999-01', @patientProvisioningType, @flatPriceType, @patient, @yearTimeUnit, 'GBP', @now, 1.25),
-                 ('99999-02', @patientProvisioningType, @flatPriceType, @patient, @yearTimeUnit, 'GBP', @now, 1.55),
-                 ('99999-89', @patientProvisioningType, @flatPriceType, @licence, @yearTimeUnit, 'GBP', @now, 500.49),
-                 ('99999-89', @patientProvisioningType, @tieredPriceType, @licence, @yearTimeUnit, 'GBP', @now, NULL);
+     INSERT INTO catalogue.CataloguePrices(CatalogueItemId, ProvisioningTypeId, CataloguePriceTypeId, PricingUnitId, TimeUnitId, CurrencyCode, LastUpdated, Price, PublishedStatusId)
+          VALUES ('100000-001', @patientProvisioningType, @flatPriceType, @patient, @yearTimeUnit, 'GBP', @now, 99.99, 3),
+                 ('100000-001', @onDemandProvisioningType, @flatPriceType, @consultation, NULL, 'GBP', @now, 1001.010, 3),
+                 ('100001-001', @onDemandProvisioningType, @flatPriceType, @licence, NULL, 'GBP', @now, 3.142, 3),
+                 ('100002-001', @declarativeProvisioningType, @flatPriceType, @patient, @monthTimeUnit, 'GBP', @now, 4.85, 3),
+                 ('100003-001', @declarativeProvisioningType, @flatPriceType, @bed, @monthTimeUnit, 'GBP', @now, 19.987, 3),
+                 ('100004-001', @declarativeProvisioningType, @flatPriceType, @licence, @monthTimeUnit, 'GBP', @now, 10101.65, 3),
+                 ('100005-001', @onDemandProvisioningType, @flatPriceType, @licence, NULL, 'GBP', @now, 456, 3),
+                 ('100006-001', @declarativeProvisioningType, @flatPriceType, @sms, @monthTimeUnit, 'GBP', @now, 7, 3),
+                 ('100007-001', @onDemandProvisioningType, @flatPriceType, @sms, NULL, 'GBP', @now, 0.15, 3),
+                 ('100007-002', @onDemandProvisioningType, @flatPriceType, @sms, NULL, 'GBP', @now, 99.99, 3),
+                 ('99998-98', @patientProvisioningType, @flatPriceType, @licence, @yearTimeUnit, 'GBP', @now, 30000, 3),
+                 ('99999-01', @patientProvisioningType, @flatPriceType, @patient, @yearTimeUnit, 'GBP', @now, 1.25, 3),
+                 ('99999-02', @patientProvisioningType, @flatPriceType, @patient, @yearTimeUnit, 'GBP', @now, 1.55, 3),
+                 ('99999-89', @patientProvisioningType, @flatPriceType, @licence, @yearTimeUnit, 'GBP', @now, 500.49, 3);
 
-          -- Tiered price IDs
-          DECLARE @priceId1000001 AS int = (SELECT CataloguePriceId from catalogue.CataloguePrices WHERE CatalogueItemId = '100000-001' AND CataloguePriceTypeId = @tieredPriceType);
-          DECLARE @priceId1000021 AS int = (SELECT CataloguePriceId from catalogue.CataloguePrices WHERE CatalogueItemId = '100002-001' AND CataloguePriceTypeId = @tieredPriceType);
-          DECLARE @priceId1000072 AS int = (SELECT CataloguePriceId from catalogue.CataloguePrices WHERE CatalogueItemId = '100007-002' AND CataloguePriceTypeId = @tieredPriceType);
-          DECLARE @priceId9999898 AS int = (SELECT CataloguePriceId from catalogue.CataloguePrices WHERE CatalogueItemId = '99998-98' AND CataloguePriceTypeId = @tieredPriceType);
-          DECLARE @priceId9999989 AS int = (SELECT CataloguePriceId from catalogue.CataloguePrices WHERE CatalogueItemId = '99999-89' AND CataloguePriceTypeId = @tieredPriceType);
-
-          INSERT INTO catalogue.CataloguePriceTiers(CataloguePriceId, BandStart, BandEnd, Price)
-               VALUES (@priceId1000001, 1, 999, 123.45),
-                      (@priceId1000001, 1000, 1999, 49.99),
-                      (@priceId1000001, 2000, NULL, 19.99),
-                      (@priceId1000021, 1, 10, 200),
-                      (@priceId1000021, 11, 99, 150.15),
-                      (@priceId1000021, 100, NULL, 99.99),
-                      (@priceId9999898, 1, 10000, 500),
-                      (@priceId9999898, 10001, NULL, 499.99),
-                      (@priceId9999989, 1, 8, 42.42),
-                      (@priceId9999989, 9, 33,33.33),
-                      (@priceId9999989, 34, 1004, 50),
-                      (@priceId9999989, 1005, NULL, 0.02),
-                      (@priceId1000072, 1, 10, 20),
-                      (@priceId1000072, 11, 99, 30.15),
-                      (@priceId1000072, 100, NULL, 40.99);
      END;
 END;
 GO

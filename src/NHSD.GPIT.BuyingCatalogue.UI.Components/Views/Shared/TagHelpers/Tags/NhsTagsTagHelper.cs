@@ -2,6 +2,7 @@
 using EnumsNET;
 using Microsoft.AspNetCore.Razor.TagHelpers;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
+using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Enums;
 using NHSD.GPIT.BuyingCatalogue.UI.Components.TagHelpers;
 
@@ -90,6 +91,25 @@ namespace NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.TagHelpers.Tags
             output.Content.AppendHtml(TagText);
         }
 
+        private static (TagColour SelectedColourClass, string TagText) GetAccountStatus(AccountStatus status)
+        {
+            var tagColour = status switch
+            {
+                AccountStatus.Active => TagColour.Green,
+                AccountStatus.Inactive => TagColour.Grey,
+                _ => TagColour.Grey,
+            };
+
+            var text = status switch
+            {
+                AccountStatus.Active => "Active",
+                AccountStatus.Inactive => "Inactive",
+                _ => string.Empty,
+            };
+
+            return (tagColour, text);
+        }
+
         private static (TagColour SelectedColourClass, string TagText) GetTaskProgressStatus(TaskProgress progress)
         {
             var selectedColourClass = progress switch
@@ -131,10 +151,26 @@ namespace NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.TagHelpers.Tags
             return (selectedColourClass, tagText);
         }
 
+        private static (TagColour SelectedColourClass, string TagText) GetOrderStatus(OrderStatus orderStatus)
+        {
+            var selectedColourClass = orderStatus switch
+            {
+                OrderStatus.Completed => TagColour.Green,
+                OrderStatus.InProgress => TagColour.Yellow,
+                _ => TagColour.Grey,
+            };
+
+            var tagText = orderStatus.AsString(EnumFormat.EnumMemberValue);
+
+            return (selectedColourClass, tagText);
+        }
+
         private (TagColour SelectedColourClass, string TagText) GetStatusFromEnum()
         {
             return TagStatus switch
             {
+                OrderStatus orderStatus => GetOrderStatus(orderStatus),
+                AccountStatus status => GetAccountStatus(status),
                 TaskProgress progress => GetTaskProgressStatus(progress),
                 PublicationStatus publicationStatus => GetPublicationStatus(publicationStatus),
                 _ => throw new ArgumentOutOfRangeException(nameof(PublicationStatus)),

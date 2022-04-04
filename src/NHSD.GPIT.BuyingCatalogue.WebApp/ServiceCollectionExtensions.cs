@@ -2,8 +2,8 @@
 using System.IO.Compression;
 using System.Threading.Tasks;
 using FluentValidation.AspNetCore;
-using MailKit;
-using MailKit.Net.Smtp;
+using Hangfire;
+using Hangfire.SqlServer;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.DataProtection;
@@ -34,12 +34,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp
     public static class ServiceCollectionExtensions
     {
         private const string BuyingCatalogueDbConnectionEnvironmentVariable = "BC_DB_CONNECTION";
-        private const string BuyingCatalogueSmtpHostEnvironmentVariable = "BC_SMTP_HOST";
-        private const string BuyingCatalogueSmtpPortEnvironmentVariable = "BC_SMTP_PORT";
-        private const string BuyingCatalogueSmtpUserNameEnvironmentVariable = "BC_SMTP_USERNAME";
-        private const string BuyingCatalogueSmtpPasswordEnvironmentVariable = "BC_SMTP_PASSWORD";
         private const string BuyingCatalogueDomainNameEnvironmentVariable = "DOMAIN_NAME";
         private const string BuyingCataloguePdfEnvironmentVariable = "USE_SSL_FOR_PDF";
+        private const string HangFireDbConnectionEnvironmentVariable = "HANGFIRE_DB_CONNECTION";
 
         public static void ConfigureAuthorization(this IServiceCollection services)
         {
@@ -49,7 +46,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp
                     "AdminOnly",
                     policy => policy.RequireClaim(
                         "organisationFunction",
-                        new[] { OrganisationFunction.Authority.DisplayName }));
+                        new[] { OrganisationFunction.AuthorityName }));
             });
         }
 
@@ -131,43 +128,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp
             services.AddSingleton(disabledErrorMessage);
         }
 
-        public static void ConfigureEmail(
-            this IServiceCollection services,
-            IConfiguration configuration)
-        {
-            var host = Environment.GetEnvironmentVariable(BuyingCatalogueSmtpHostEnvironmentVariable);
-
-            if (string.IsNullOrWhiteSpace(host))
-                throw new InvalidOperationException($"Environment variable '{BuyingCatalogueSmtpHostEnvironmentVariable}' must be set for the smtp host");
-
-            var port = Environment.GetEnvironmentVariable(BuyingCatalogueSmtpPortEnvironmentVariable);
-
-            if (string.IsNullOrWhiteSpace(port))
-                throw new InvalidOperationException($"Environment variable '{BuyingCatalogueSmtpPortEnvironmentVariable}' must be set for the smtp port");
-
-            if (!int.TryParse(port, out var portNumber))
-                throw new InvalidOperationException($"Environment variable '{BuyingCatalogueSmtpPortEnvironmentVariable}' must be a valid smtp port number");
-
-            var userName = Environment.GetEnvironmentVariable(BuyingCatalogueSmtpUserNameEnvironmentVariable);
-            var password = Environment.GetEnvironmentVariable(BuyingCatalogueSmtpPasswordEnvironmentVariable);
-
-            var allowInvalidCertificate = configuration.GetValue<bool>("AllowInvalidCertificate");
-            var smtpSettings = configuration.GetSection("SmtpServer").Get<SmtpSettings>();
-            smtpSettings.AllowInvalidCertificate ??= allowInvalidCertificate;
-            smtpSettings.Host = host;
-            smtpSettings.Port = portNumber;
-
-            if (!string.IsNullOrWhiteSpace(userName))
-                smtpSettings.SenderAddress = userName;
-
-            if (!string.IsNullOrWhiteSpace(password))
-                smtpSettings.Authentication = new SmtpAuthenticationSettings { IsRequired = true, UserName = userName, Password = password };
-
-            services.AddSingleton(smtpSettings);
-            services.AddScoped<IMailTransport, SmtpClient>();
-            services.AddTransient<IEmailService, MailKitEmailService>();
-        }
-
         public static void ConfigureDomainName(this IServiceCollection services)
         {
             var domain = Environment.GetEnvironmentVariable(BuyingCatalogueDomainNameEnvironmentVariable);
@@ -190,6 +150,15 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp
             services.AddSingleton(pdfSettings);
         }
 
+        public static IServiceCollection ConfigureTermsOfUseSettings(this IServiceCollection services, IConfiguration configuration)
+        {
+            var termsOfUseSettings = configuration.GetSection("termsOfUse").Get<TermsOfUseSettings>();
+
+            services.AddSingleton(termsOfUseSettings);
+
+            return services;
+        }
+
         public static IServiceCollection ConfigureConsentCookieSettings(this IServiceCollection services, IConfiguration configuration)
         {
             var cookieExpiration = configuration.GetSection("cookieExpiration").Get<CookieExpirationSettings>();
@@ -204,6 +173,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp
         {
             var filterCacheKeySettings = configuration.GetSection(FilterCacheKeysSettings.SectionName).Get<FilterCacheKeysSettings>();
             services.AddSingleton(filterCacheKeySettings);
+
+            var gpPracticeCacheKeySettings = configuration.GetSection(GpPracticeCacheKeysSettings.SectionName).Get<GpPracticeCacheKeysSettings>();
+            services.AddSingleton(gpPracticeCacheKeySettings);
 
             return services;
         }
@@ -259,6 +231,14 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp
             return services;
         }
 
+        public static IServiceCollection ConfigureImportPracticeListMessageSettings(this IServiceCollection services, IConfiguration configuration)
+        {
+            var settings = configuration.GetSection("importPracticeListMessage").Get<ImportPracticeListMessageSettings>();
+            services.AddSingleton(settings);
+
+            return services;
+        }
+
         public static IServiceCollection ConfigureNominateOrganisationMessageSettings(this IServiceCollection services, IConfiguration configuration)
         {
             var settings = configuration.GetSection("nominateOrganisationMessage").Get<NominateOrganisationMessageSettings>();
@@ -275,6 +255,14 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp
             return services;
         }
 
+        public static IServiceCollection ConfigureProcurementHubMessageSettings(this IServiceCollection services, IConfiguration configuration)
+        {
+            var settings = configuration.GetSection("procurementHubMessage").Get<ProcurementHubMessageSettings>();
+            services.AddSingleton(settings);
+
+            return services;
+        }
+
         public static IServiceCollection ConfigureRequestAccountMessageSettings(this IServiceCollection services, IConfiguration configuration)
         {
             var settings = configuration.GetSection("requestAccountMessage").Get<RequestAccountMessageSettings>();
@@ -287,6 +275,12 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp
         {
             var registrationSettings = configuration.GetSection("Registration").Get<RegistrationSettings>();
             services.AddSingleton(registrationSettings);
+        }
+
+        public static void ConfigureContactUs(this IServiceCollection services, IConfiguration configuration)
+        {
+            var contactUsSettings = configuration.GetSection("contactUs").Get<ContactUsSettings>();
+            services.AddSingleton(contactUsSettings);
         }
 
         public static void ConfigureDataProtection(this IServiceCollection services, IConfiguration configuration)
@@ -317,6 +311,22 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp
                     {
                         options.RegisterValidatorsFromAssemblyContaining<SolutionModelValidator>();
                     }).AddSingleton<IValidatorInterceptor, FluentValidatorInterceptor>();
+        }
+
+        public static IServiceCollection AddHangFire(this IServiceCollection services)
+        {
+            var connectionString = Environment.GetEnvironmentVariable(HangFireDbConnectionEnvironmentVariable);
+
+            return services
+                .AddHangfire(x => x.UseSqlServerStorage(connectionString, new SqlServerStorageOptions
+                {
+                    CommandBatchMaxTimeout = TimeSpan.FromMinutes(5),
+                    SlidingInvisibilityTimeout = TimeSpan.FromMinutes(5),
+                    QueuePollInterval = TimeSpan.Zero,
+                    UseRecommendedIsolationLevel = true,
+                    DisableGlobalLocks = true,
+                }))
+                .AddHangfireServer();
         }
     }
 }

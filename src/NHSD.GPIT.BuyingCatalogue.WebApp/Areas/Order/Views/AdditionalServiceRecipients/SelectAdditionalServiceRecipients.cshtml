@@ -20,14 +20,14 @@
             <vc:nhs-secondary-button url="@Url.Action(
                                                 nameof(AdditionalServiceRecipientsController.SelectAdditionalServiceRecipients),
                                                 typeof(AdditionalServiceRecipientsController).ControllerName(),
-                                                new { Model.OdsCode, Model.CallOffId, selectionMode = Model.SelectionParameter})"
+                                                new { Model.InternalOrgId, Model.CallOffId, selectionMode = Model.SelectionParameter})"
                                      text="@Model.SelectionPrompt"
                                      use-primary-colour="false" />
 
             <form method="post">
                 <input type="hidden" asp-for="@Model.BackLink" />
                 <input type="hidden" asp-for="@Model.BackLinkText" />
-                <input type="hidden" asp-for="@Model.OdsCode" />
+                <input type="hidden" asp-for="@Model.InternalOrgId" />
                 <input type="hidden" asp-for="@Model.Title" />
 
                 <nhs-table>
