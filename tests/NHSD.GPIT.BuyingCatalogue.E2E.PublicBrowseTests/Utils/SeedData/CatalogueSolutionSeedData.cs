@@ -1246,6 +1246,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
                             ProvisioningType = ProvisioningType.Declarative,
                             CataloguePriceType = CataloguePriceType.Flat,
                             PublishedStatus = PublicationStatus.Published,
+                            CataloguePriceCalculationType = CataloguePriceCalculationType.Cumulative,
                             PricingUnit = new PricingUnit
                             {
                                 Id = 6,

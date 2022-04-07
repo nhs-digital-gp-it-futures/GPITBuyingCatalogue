@@ -27,6 +27,35 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Actions.Common
         }
 
         /// <summary>
+        /// Generates a Random Price for Price inputs between 0.0001 and maxValue.
+        /// </summary>
+        /// <param name="targetField">the field which to add the random string.</param>
+        /// <param name="maxValue">the maximum value of the Price, Defaults to 1000.</param>
+        /// <returns>random string.</returns>
+        public string PriceInputAddPrice(By targetField, decimal maxValue = 1000M)
+        {
+            Driver.FindElement(targetField).Clear();
+            var price = Strings.RandomPrice(maxValue);
+            Driver.FindElement(targetField).SendKeys(price);
+            return price;
+        }
+
+        /// <summary>
+        /// Generates a Random Price for Price inputs between a minimum and maximum value.
+        /// </summary>
+        /// <param name="targetField">the field which to add the random string.</param>
+        /// <param name="minValue">the minimum value of the Price, Defaults to 0.0001.</param>
+        /// <param name="maxValue">the maximum value of the Price, Defaults to 1000.</param>
+        /// <returns>random string.</returns>
+        public string PriceInputAddPriceBetweenRange(By targetField, decimal minValue = 0.001M, decimal maxValue = 1000M)
+        {
+            Driver.FindElement(targetField).Clear();
+            var price = Strings.RandomPriceBetweenRange(minValue, maxValue);
+            Driver.FindElement(targetField).SendKeys(price);
+            return price;
+        }
+
+        /// <summary>
         /// Generates a Valid random URL for TextArea's or TextInputs to the Target Length.
         /// </summary>
         /// <param name="targetField">the field which to add the random URL.</param>

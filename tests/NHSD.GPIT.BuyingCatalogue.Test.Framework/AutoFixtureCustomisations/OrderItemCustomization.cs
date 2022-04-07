@@ -66,6 +66,8 @@ namespace NHSD.GPIT.BuyingCatalogue.Test.Framework.AutoFixtureCustomisations
 
                 funding.CentralAllocation = context.CreateDecimalWithRange(0, funding.TotalPrice);
                 funding.LocalAllocation = funding.TotalPrice - funding.CentralAllocation;
+
+                item.OrderItemFunding = funding;
             }
 
             private static void AddOrderItemPrice(OrderItem item, ISpecimenContext context)
