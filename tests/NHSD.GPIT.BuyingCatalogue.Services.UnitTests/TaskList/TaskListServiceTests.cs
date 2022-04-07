@@ -3,10 +3,8 @@ using AutoFixture;
 using AutoFixture.AutoMoq;
 using AutoFixture.Idioms;
 using FluentAssertions;
-using Moq;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Enums;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Models.TaskList;
-using NHSD.GPIT.BuyingCatalogue.ServiceContracts.TaskList;
 using NHSD.GPIT.BuyingCatalogue.Services.TaskList;
 using NHSD.GPIT.BuyingCatalogue.Test.Framework.AutoFixtureCustomisations;
 using Xunit;
@@ -15,7 +13,6 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.TaskList
 {
     public static class TaskListServiceTests
     {
-        /* TODO - Reimplement Task list Unit Tests
         [Fact]
         public static void Constructors_VerifyGuardClauses()
         {
@@ -38,163 +35,244 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.TaskList
             actual.Should().BeEquivalentTo(expected);
         }
 
-        /*TODO - Tiered Pricing - Fix Test
-        [Theory]
-        [CommonAutoData]
-        public static void CompleteOrder_AllStatuses_Correct(
-            Order order,
-            OrderItem solutionOrderItem,
-            OrderItem associatedServiceOrderItem,
-            OrderItem additionalServiceOrderItem,
-            TaskListService service)
+        [Fact]
+        public static void SetOrderTaskList_NullModel_Returns()
         {
-            order.ConfirmedFundingSource = true;
-            solutionOrderItem.CatalogueItem.CatalogueItemType = CatalogueItemType.Solution;
-            associatedServiceOrderItem.CatalogueItem.CatalogueItemType = CatalogueItemType.AssociatedService;
-            additionalServiceOrderItem.CatalogueItem.CatalogueItemType = CatalogueItemType.AdditionalService;
-            order.AddOrUpdateOrderItem(solutionOrderItem);
-            order.AddOrUpdateOrderItem(associatedServiceOrderItem);
-            order.AddOrUpdateOrderItem(additionalServiceOrderItem);
+            var expected = new OrderTaskList()
+            {
+                DescriptionStatus = TaskProgress.Completed,
+                OrderingPartyStatus = TaskProgress.NotStarted,
+            };
 
-            var actual = service.GetTaskListStatusModelForOrder(order);
+            var model = new OrderTaskList();
 
-            actual.DescriptionStatus.Should().Be(TaskProgress.Completed);
-            actual.OrderingPartyStatus.Should().Be(TaskProgress.Completed);
-            actual.SupplierStatus.Should().Be(TaskProgress.Completed);
-            actual.CommencementDateStatus.Should().Be(TaskProgress.Completed);
-            actual.ReviewAndCompleteStatus.Should().Be(TaskProgress.NotStarted);
+            TaskListService.SetOrderTaskList(TaskListOrderSections.Description, model);
+
+            model.Should().BeEquivalentTo(expected);
         }
 
         [Fact]
-        public static async Task NoOrderingParty_OrderingPartyStatus_NotStarted()
+        public static void SetOrderTaskList_OrderingPartyCompleted_Returns()
         {
-            var orderSections = new OrderTaskListCompletedSections();
+            var expected = new OrderTaskList()
+            {
+                DescriptionStatus = TaskProgress.Completed,
+                OrderingPartyStatus = TaskProgress.Completed,
+                SupplierStatus = TaskProgress.NotStarted,
+            };
 
-            var mockService = new Mock<TaskListService>().As<ITaskListService>();
+            var model = new OrderTaskList();
 
-            mockService.CallBase = true;
+            var completedSections = TaskListOrderSections.Description | TaskListOrderSections.OrderingParty;
 
-            mockService.Setup(tl => tl.GetOrderSectionFlags(It.IsAny<int>())).ReturnsAsync(orderSections);
+            TaskListService.SetOrderTaskList(completedSections, model);
 
-            var actual = await mockService.Object.GetTaskListStatusModelForOrder(0);
-
-            actual.OrderingPartyStatus.Should().Be(TaskProgress.NotStarted);
+            model.Should().BeEquivalentTo(expected);
         }
 
         [Fact]
-        public static async Task NoSupplier_SupplierStatus_NotStarted()
+        public static void SetOrderTaskList_SupplierInProgress_Returns()
         {
-            var orderSections = new OrderTaskListCompletedSections
+            var expected = new OrderTaskList()
             {
-                OrderContactDetailsCompleted = true,
+                DescriptionStatus = TaskProgress.Completed,
+                OrderingPartyStatus = TaskProgress.Completed,
+                SupplierStatus = TaskProgress.InProgress,
             };
 
-            var mockService = new Mock<TaskListService>
-            {
-                CallBase = true,
-            };
+            var model = new OrderTaskList();
 
-            mockService.Setup(tl => tl.GetOrderSectionFlags(It.IsAny<int>())).ReturnsAsync(orderSections);
+            var completedSections = TaskListOrderSections.Description | TaskListOrderSections.OrderingParty | TaskListOrderSections.Supplier;
 
-            var actual = await mockService.Object.GetTaskListStatusModelForOrder(0);
+            TaskListService.SetOrderTaskList(completedSections, model);
 
-            actual.SupplierStatus.Should().Be(TaskProgress.NotStarted);
+            model.Should().BeEquivalentTo(expected);
         }
 
         [Fact]
-        public static async Task NoSupplierContact_SupplierStatus_InProgress()
+        public static void SetOrderTaskList_Supplier_PreviousSectionNotCompleted_Returns()
         {
-            var orderSections = new OrderTaskListCompletedSections
+            var expected = new OrderTaskList()
             {
-                OrderContactDetailsCompleted = true,
-                SupplierSelected = true,
+                DescriptionStatus = TaskProgress.Completed,
+                OrderingPartyStatus = TaskProgress.NotStarted,
             };
 
-            var mockService = new Mock<TaskListService>
-            {
-                CallBase = true,
-            };
+            var model = new OrderTaskList();
 
-            mockService.Setup(tl => tl.GetOrderSectionFlags(It.IsAny<int>())).ReturnsAsync(orderSections);
+            var completedSections = TaskListOrderSections.Description | TaskListOrderSections.Supplier;
 
-            var actual = await mockService.Object.GetTaskListStatusModelForOrder(0);
+            TaskListService.SetOrderTaskList(completedSections, model);
 
-            actual.SupplierStatus.Should().Be(TaskProgress.InProgress);
+            model.Should().BeEquivalentTo(expected);
         }
 
         [Fact]
-        public static async Task NoSupplier_NoOrderingParty_SupplierStatus_CannotStart()
+        public static void SetOrderTaskList_SupplierComplete_Returns()
         {
-            var orderSections = new OrderTaskListCompletedSections();
-
-            var mockService = new Mock<TaskListService>
+            var expected = new OrderTaskList()
             {
-                CallBase = true,
+                DescriptionStatus = TaskProgress.Completed,
+                OrderingPartyStatus = TaskProgress.Completed,
+                SupplierStatus = TaskProgress.Completed,
+                CommencementDateStatus = TaskProgress.NotStarted,
             };
 
-            mockService.Setup(tl => tl.GetOrderSectionFlags(It.IsAny<int>())).ReturnsAsync(orderSections);
+            var model = new OrderTaskList();
 
-            var actual = await mockService.Object.GetTaskListStatusModelForOrder(0);
+            var completedSections =
+                TaskListOrderSections.Description
+                | TaskListOrderSections.OrderingParty
+                | TaskListOrderSections.Supplier
+                | TaskListOrderSections.SupplierContact;
 
-            actual.SupplierStatus.Should().Be(TaskProgress.CannotStart);
+            TaskListService.SetOrderTaskList(completedSections, model);
+
+            model.Should().BeEquivalentTo(expected);
         }
 
         [Fact]
-        public static async Task NoCommencementDate_CommencementDateStatus_NotStarted()
+        public static void SetOrderTaskList_CommencementDateComplete_Returns()
         {
-            var orderSections = new OrderTaskListCompletedSections
+            var expected = new OrderTaskList()
             {
-                OrderContactDetailsCompleted = true,
-                SupplierSelected = true,
-                SupplierContactSelected = true,
+                DescriptionStatus = TaskProgress.Completed,
+                OrderingPartyStatus = TaskProgress.Completed,
+                SupplierStatus = TaskProgress.Completed,
+                CommencementDateStatus = TaskProgress.Completed,
+                SolutionOrService = TaskProgress.NotStarted,
             };
 
-            var mockService = new Mock<TaskListService>
-            {
-                CallBase = true,
-            };
+            var model = new OrderTaskList();
 
-            mockService.Setup(tl => tl.GetOrderSectionFlags(It.IsAny<int>())).ReturnsAsync(orderSections);
+            var completedSections =
+                TaskListOrderSections.Description
+                | TaskListOrderSections.OrderingParty
+                | TaskListOrderSections.Supplier
+                | TaskListOrderSections.SupplierContact
+                | TaskListOrderSections.CommencementDate;
 
-            var actual = await mockService.Object.GetTaskListStatusModelForOrder(0);
+            TaskListService.SetOrderTaskList(completedSections, model);
 
-            actual.CommencementDateStatus.Should().Be(TaskProgress.NotStarted);
+            model.Should().BeEquivalentTo(expected);
         }
 
         [Fact]
-        public static async Task NoCommencementDate_NoSupplierContact_CommencementDateStatus_CannotStart()
+        public static void SetOrderTaskList_SolutionInProgress_Returns()
         {
-            var orderSections = new OrderTaskListCompletedSections
+            var expected = new OrderTaskList()
             {
-                OrderContactDetailsCompleted = true,
-                SupplierSelected = true,
+                DescriptionStatus = TaskProgress.Completed,
+                OrderingPartyStatus = TaskProgress.Completed,
+                SupplierStatus = TaskProgress.Completed,
+                CommencementDateStatus = TaskProgress.Completed,
+                SolutionOrService = TaskProgress.InProgress,
             };
 
-            var mockService = new Mock<TaskListService>
-            {
-                CallBase = true,
-            };
+            var model = new OrderTaskList();
 
-            mockService.Setup(tl => tl.GetOrderSectionFlags(It.IsAny<int>())).ReturnsAsync(orderSections);
+            var completedSections =
+                TaskListOrderSections.Description
+                | TaskListOrderSections.OrderingParty
+                | TaskListOrderSections.Supplier
+                | TaskListOrderSections.SupplierContact
+                | TaskListOrderSections.CommencementDate
+                | TaskListOrderSections.SolutionOrServiceInProgress;
 
-            var actual = await mockService.Object.GetTaskListStatusModelForOrder(0);
+            TaskListService.SetOrderTaskList(completedSections, model);
 
-            actual.CommencementDateStatus.Should().Be(TaskProgress.CannotStart);
+            model.Should().BeEquivalentTo(expected);
         }
 
-        /*TODO - Tiered Pricing - Fix Test
-        [Theory]
-        [CommonAutoData]
-        public static void NoFundingSource_ReviewAndCompleteStatus_CannotStart(
-            Order order,
-            TaskListService service)
+        [Fact]
+        public static void SetOrderTaskList_SolutionCompleted_Returns()
         {
-            order.FundingSourceOnlyGms = null;
-            order.ConfirmedFundingSource = null;
+            var expected = new OrderTaskList()
+            {
+                DescriptionStatus = TaskProgress.Completed,
+                OrderingPartyStatus = TaskProgress.Completed,
+                SupplierStatus = TaskProgress.Completed,
+                CommencementDateStatus = TaskProgress.Completed,
+                SolutionOrService = TaskProgress.Completed,
+                FundingSource = TaskProgress.NotStarted,
+            };
 
-            var actual = service.GetTaskListStatusModelForOrder(order);
+            var model = new OrderTaskList();
 
-            actual.ReviewAndCompleteStatus.Should().Be(TaskProgress.CannotStart);
-        }*/
+            var completedSections =
+                TaskListOrderSections.Description
+                | TaskListOrderSections.OrderingParty
+                | TaskListOrderSections.Supplier
+                | TaskListOrderSections.SupplierContact
+                | TaskListOrderSections.CommencementDate
+                | TaskListOrderSections.SolutionOrServiceInProgress
+                | TaskListOrderSections.SolutionOrService;
+
+            TaskListService.SetOrderTaskList(completedSections, model);
+
+            model.Should().BeEquivalentTo(expected);
+        }
+
+        [Fact]
+        public static void SetOrderTaskList_FundingInProgress_Returns()
+        {
+            var expected = new OrderTaskList()
+            {
+                DescriptionStatus = TaskProgress.Completed,
+                OrderingPartyStatus = TaskProgress.Completed,
+                SupplierStatus = TaskProgress.Completed,
+                CommencementDateStatus = TaskProgress.Completed,
+                SolutionOrService = TaskProgress.Completed,
+                FundingSource = TaskProgress.InProgress,
+            };
+
+            var model = new OrderTaskList();
+
+            var completedSections =
+                TaskListOrderSections.Description
+                | TaskListOrderSections.OrderingParty
+                | TaskListOrderSections.Supplier
+                | TaskListOrderSections.SupplierContact
+                | TaskListOrderSections.CommencementDate
+                | TaskListOrderSections.SolutionOrServiceInProgress
+                | TaskListOrderSections.SolutionOrService
+                | TaskListOrderSections.FundingSourceInProgress;
+
+            TaskListService.SetOrderTaskList(completedSections, model);
+
+            model.Should().BeEquivalentTo(expected);
+        }
+
+        [Fact]
+        public static void SetOrderTaskList_FundingComplete_Returns()
+        {
+            var expected = new OrderTaskList()
+            {
+                DescriptionStatus = TaskProgress.Completed,
+                OrderingPartyStatus = TaskProgress.Completed,
+                SupplierStatus = TaskProgress.Completed,
+                CommencementDateStatus = TaskProgress.Completed,
+                SolutionOrService = TaskProgress.Completed,
+                FundingSource = TaskProgress.Completed,
+                ReviewAndCompleteStatus = TaskProgress.NotStarted,
+            };
+
+            var model = new OrderTaskList();
+
+            var completedSections =
+                TaskListOrderSections.Description
+                | TaskListOrderSections.OrderingParty
+                | TaskListOrderSections.Supplier
+                | TaskListOrderSections.SupplierContact
+                | TaskListOrderSections.CommencementDate
+                | TaskListOrderSections.SolutionOrServiceInProgress
+                | TaskListOrderSections.SolutionOrService
+                | TaskListOrderSections.FundingSourceInProgress
+                | TaskListOrderSections.FundingSource;
+
+            TaskListService.SetOrderTaskList(completedSections, model);
+
+            model.Should().BeEquivalentTo(expected);
+        }
     }
 }

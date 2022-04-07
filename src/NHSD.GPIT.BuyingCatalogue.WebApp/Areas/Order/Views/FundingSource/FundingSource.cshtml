@@ -12,7 +12,7 @@
 <partial name="Partials/_BackLink" model="Model" />
 <div class="nhsuk-grid-row">
 	<div class="nhsuk-grid-column-two-thirds">
-		<nhs-validation-summary />
+		<nhs-validation-summary RadioId="@nameof(Model.SelectedFundingType)"/>
 		<nhs-page-title title="@ViewBag.Title"
 						advice="Confirm how you'll be paying for this solution or service. If you're using both local and central funding, select mixed funding"
 						caption="@Model.Caption" />
