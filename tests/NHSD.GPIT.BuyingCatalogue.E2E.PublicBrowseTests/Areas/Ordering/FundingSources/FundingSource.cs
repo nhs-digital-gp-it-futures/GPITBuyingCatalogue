@@ -116,7 +116,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering.FundingSources
 
                 var totalCost = orderItem.CalculateTotalCost();
 
-                var centralAllocation = TextGenerators.PriceInputAddPrice(Objects.Ordering.FundingSources.AmountOfCentralFunding, totalCost > 999999M ? 999999M : totalCost);
+                var centralAllocation = TextGenerators.PriceInputAddPrice(Objects.Ordering.FundingSources.AmountOfCentralFunding, totalCost > 99999M ? 99999M : totalCost);
 
                 var centralAllocationDecimal = decimal.Parse(centralAllocation);
 
