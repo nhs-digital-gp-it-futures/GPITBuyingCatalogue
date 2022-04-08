@@ -7,7 +7,8 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Organisations.Models;
 using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
-using NHSD.GPIT.BuyingCatalogue.ServiceContracts.CreateBuyer;
+using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Enums;
+using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Identity;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Organisations;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Users;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.OrganisationModels;
@@ -22,13 +23,13 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
     {
         private readonly IOrganisationsService organisationsService;
         private readonly IOdsService odsService;
-        private readonly ICreateBuyerService createBuyerService;
+        private readonly ICreateUserService createBuyerService;
         private readonly IUsersService userService;
 
         public OrganisationsController(
             IOrganisationsService organisationsService,
             IOdsService odsService,
-            ICreateBuyerService createBuyerService,
+            ICreateUserService createBuyerService,
             IUsersService userService)
         {
             this.organisationsService = organisationsService ?? throw new ArgumentNullException(nameof(organisationsService));
@@ -281,7 +282,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
                 model.LastName,
                 model.TelephoneNumber,
                 model.EmailAddress,
-                isAdmin: false);
+                OrganisationFunction.BuyerName,
+                AccountStatus.Active);
 
             return RedirectToAction(
                 nameof(Users),

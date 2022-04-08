@@ -20,19 +20,89 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Users
 
         public Task<AspNetUser> GetUser(int userId)
         {
-            return dbContext.AspNetUsers.SingleAsync(u => u.Id == userId);
+            return dbContext.AspNetUsers
+                .Include(x => x.PrimaryOrganisation)
+                .FirstOrDefaultAsync(u => u.Id == userId);
+        }
+
+        public async Task<List<AspNetUser>> GetAllUsers()
+        {
+            return await dbContext.AspNetUsers
+                .Include(x => x.PrimaryOrganisation)
+                .OrderBy(x => x.LastName)
+                .ThenBy(x => x.FirstName)
+                .ToListAsync();
+        }
+
+        public async Task<List<AspNetUser>> GetAllUsersBySearchTerm(string searchTerm)
+        {
+            if (string.IsNullOrWhiteSpace(searchTerm))
+                throw new ArgumentNullException(nameof(searchTerm));
+
+            var users = await GetAllUsers();
+
+            return users
+                .Where(x => x.FullName.Contains(searchTerm, StringComparison.OrdinalIgnoreCase)
+                    || x.Email.Contains(searchTerm, StringComparison.OrdinalIgnoreCase))
+                .ToList();
         }
 
         public async Task<List<AspNetUser>> GetAllUsersForOrganisation(int organisationId)
         {
-            return await dbContext.AspNetUsers.Where(u => u.PrimaryOrganisationId == organisationId).ToListAsync();
+            return await dbContext.AspNetUsers
+                .Where(u => u.PrimaryOrganisationId == organisationId)
+                .ToListAsync();
         }
 
         public async Task EnableOrDisableUser(int userId, bool disabled)
         {
             var user = await dbContext.AspNetUsers.SingleAsync(u => u.Id == userId);
+
             user.Disabled = disabled;
+
             await dbContext.SaveChangesAsync();
+        }
+
+        public async Task UpdateUserAccountType(int userId, string organisationFunction)
+        {
+            var user = await dbContext.AspNetUsers.SingleAsync(u => u.Id == userId);
+
+            user.OrganisationFunction = organisationFunction;
+
+            await dbContext.SaveChangesAsync();
+        }
+
+        public async Task UpdateUserDetails(int userId, string firstName, string lastName, string phoneNumber, string email)
+        {
+            var user = await dbContext.AspNetUsers.SingleAsync(u => u.Id == userId);
+
+            user.FirstName = firstName;
+            user.LastName = lastName;
+            user.PhoneNumber = phoneNumber;
+            user.Email = email;
+            user.NormalizedEmail = email?.ToUpperInvariant();
+            user.NormalizedUserName = email?.ToUpperInvariant();
+            user.UserName = email;
+
+            await dbContext.SaveChangesAsync();
+        }
+
+        public async Task UpdateUserOrganisation(int userId, int organisationId)
+        {
+            var user = await dbContext.AspNetUsers.SingleAsync(u => u.Id == userId);
+
+            user.PrimaryOrganisationId = organisationId;
+
+            await dbContext.SaveChangesAsync();
+        }
+
+        public async Task<bool> EmailAddressExists(string emailAddress, int userId = 0)
+        {
+            var user = await dbContext.AspNetUsers
+                .Where(x => x.Id != userId)
+                .FirstOrDefaultAsync(x => x.NormalizedEmail == emailAddress.ToUpperInvariant());
+
+            return user != null;
         }
     }
 }

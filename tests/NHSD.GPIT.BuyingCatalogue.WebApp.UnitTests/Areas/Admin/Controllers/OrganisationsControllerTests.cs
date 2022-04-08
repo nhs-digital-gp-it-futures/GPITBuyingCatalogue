@@ -13,7 +13,8 @@ using Moq;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Organisations.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Users.Models;
 using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
-using NHSD.GPIT.BuyingCatalogue.ServiceContracts.CreateBuyer;
+using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Enums;
+using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Identity;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Organisations;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Users;
 using NHSD.GPIT.BuyingCatalogue.Test.Framework.AutoFixtureCustomisations;
@@ -294,13 +295,13 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
         public static async Task Post_AddUser_ValidModel_ReturnsExpectedResult(
             int organisationId,
             AddUserModel model,
-            [Frozen] Mock<ICreateBuyerService> mockCreateBuyerService,
+            [Frozen] Mock<ICreateUserService> mockCreateBuyerService,
             OrganisationsController controller)
         {
             model.EmailAddress = "a@b.com";
 
             mockCreateBuyerService
-                .Setup(x => x.Create(organisationId, model.FirstName, model.LastName, model.TelephoneNumber, model.EmailAddress, false))
+                .Setup(x => x.Create(organisationId, model.FirstName, model.LastName, model.TelephoneNumber, model.EmailAddress, OrganisationFunction.BuyerName, AccountStatus.Active))
                 .ReturnsAsync((AspNetUser)null);
 
             var result = (await controller.AddUser(organisationId, model)).As<RedirectToActionResult>();

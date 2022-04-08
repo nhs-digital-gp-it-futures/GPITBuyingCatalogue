@@ -46,6 +46,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp
                 options.Filters.Add(typeof(ActionArgumentNullFilter));
                 options.Filters.Add(typeof(OrdersActionFilter));
                 options.Filters.Add(typeof(CookieConsentActionFilter));
+                options.Filters.Add(typeof(TermsOfUseActionFilter));
                 options.Filters.Add<SerilogMvcLoggingAttribute>();
             }).AddControllersAsServices();
 
@@ -78,6 +79,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp
                 .ConfigureProcurementHubMessageSettings(Configuration)
                 .ConfigureRequestAccountMessageSettings(Configuration)
                 .ConfigureConsentCookieSettings(Configuration)
+                .ConfigureTermsOfUseSettings(Configuration)
                 .ConfigureAnalyticsSettings(Configuration);
 
             services.ConfigureCookies(Configuration);

@@ -8,7 +8,9 @@ using AutoFixture.Idioms;
 using AutoFixture.Xunit2;
 using FluentAssertions;
 using Microsoft.EntityFrameworkCore;
+using Moq;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework;
+using NHSD.GPIT.BuyingCatalogue.EntityFramework.Identity;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Organisations.Models;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Models;
@@ -158,7 +160,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Orders
             context.SaveChanges();
 
             var order = orders.First();
-            var searchTerm = order.Description.ToString()[..15];
+            var searchTerm = order.Description[..15];
 
             var results = await service.GetOrdersBySearchTerm(organisation.Id, searchTerm);
 
@@ -167,6 +169,27 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Orders
             var actual = results.First();
             actual.Category.Should().Be(order.CallOffId.ToString());
             actual.Title.Should().Be(order.Description);
+        }
+
+        [Theory]
+        [InMemoryDbAutoData]
+        public static async Task GetUserOrders_ReturnsExpectedResults(
+            int userId,
+            List<Order> orders,
+            [Frozen] Mock<IIdentityService> mockIdentityService,
+            [Frozen] BuyingCatalogueDbContext context,
+            OrderService service)
+        {
+            mockIdentityService
+                .Setup(x => x.GetUserId())
+                .Returns(userId);
+
+            context.Orders.AddRange(orders);
+            context.SaveChanges();
+
+            var results = await service.GetUserOrders(userId);
+
+            results.Should().BeEquivalentTo(orders);
         }
     }
 }

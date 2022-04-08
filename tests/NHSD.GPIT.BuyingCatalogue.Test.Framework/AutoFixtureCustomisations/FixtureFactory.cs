@@ -47,6 +47,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Test.Framework.AutoFixtureCustomisations
             new ServiceLevelAgreementCustomization(),
             new ActionContextCustomization(),
             new ActionExecutedContextCustomization(),
+            new ActionExecutingContextCustomization(),
             new ServiceAvailabilityTimesCustomization(),
             new WorkOffPlanCustomization(),
             new HttpClientCustomization(),

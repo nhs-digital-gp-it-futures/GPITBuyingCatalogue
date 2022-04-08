@@ -71,7 +71,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Validators.DevelopmentPla
         }
 
         private static bool IsValidDate(EditWorkOffPlanModel model) =>
-            DateTime.TryParseExact($"{model.Day}/{model.Month}/{model.Year}", "d/M/yyyy", CultureInfo.InvariantCulture, DateTimeStyles.None, out _);
+            DateTime.TryParseExact($"{model.Day}/{model.Month}/{model.Year}", "d/M/yyyy", CultureInfo.InvariantCulture, DateTimeStyles.AssumeUniversal, out _);
 
         private static DateTime ParseDate(EditWorkOffPlanModel model)
         {

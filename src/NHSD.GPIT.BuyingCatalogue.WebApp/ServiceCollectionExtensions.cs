@@ -46,7 +46,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp
                     "AdminOnly",
                     policy => policy.RequireClaim(
                         "organisationFunction",
-                        new[] { OrganisationFunction.Authority.DisplayName }));
+                        new[] { OrganisationFunction.AuthorityName }));
             });
         }
 
@@ -148,6 +148,15 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp
 
             var pdfSettings = new PdfSettings { UseSslForPdf = useSsl.EqualsIgnoreCase("true") };
             services.AddSingleton(pdfSettings);
+        }
+
+        public static IServiceCollection ConfigureTermsOfUseSettings(this IServiceCollection services, IConfiguration configuration)
+        {
+            var termsOfUseSettings = configuration.GetSection("termsOfUse").Get<TermsOfUseSettings>();
+
+            services.AddSingleton(termsOfUseSettings);
+
+            return services;
         }
 
         public static IServiceCollection ConfigureConsentCookieSettings(this IServiceCollection services, IConfiguration configuration)

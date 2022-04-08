@@ -119,6 +119,7 @@
         internal const string ItemsName = "asp-items";
         internal const string LabelTextName = "label-text";
         internal const string LabelHintName = "label-hint";
+        internal const string LabelEmbedHtml = "use-embedded-html";
         internal const string CharacterCountName = "character-count";
         internal const string MaxCharacterLength = "max-character-length";
     }

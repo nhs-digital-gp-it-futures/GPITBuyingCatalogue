@@ -124,6 +124,12 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Actions.Common
         internal void ClearInputElement(By targetElement) =>
             Driver.FindElement(targetElement).Clear();
 
+        internal void AutoCompleteAddValue(By targetElement, string value)
+        {
+            Driver.FindElement(targetElement).Click();
+            Driver.FindElement(targetElement).SendKeys(value);
+        }
+
         internal void ElementAddValue(By targetElement, string value)
         {
             Driver.FindElement(targetElement).Clear();

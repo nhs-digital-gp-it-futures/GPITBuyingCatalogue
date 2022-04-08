@@ -1,0 +1,33 @@
+﻿@model NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.UserModels.AccountTypeModel
+@{
+    ViewBag.Title = "Edit account type";
+}
+
+<partial name="Partials/_BackLink" model="Model" />
+
+<div class="nhsuk-grid-row">
+    <div class="nhsuk-grid-column-two-thirds">
+        <nhs-validation-summary RadioId="SelectedAccountType" />
+
+        <nhs-page-title title="@ViewBag.Title"
+                        caption="@Model!.Email" />
+                
+        <form method="post">
+            <input type="hidden" asp-for="Email"/>
+
+            <div class="nhsuk-u-margin-bottom-9">
+                <nhs-fieldset-form-label asp-for="SelectedAccountType"
+                                         label-text="Account type"
+                                         label-hint="Select an option"
+                                         size="Medium">
+                    <nhs-radio-buttons asp-for="SelectedAccountType"
+                                       values="Model.AccountTypeOptions.Cast<object>()"
+                                       value-name="Value"
+                                       display-name="Text" />
+                </nhs-fieldset-form-label>
+            </div>
+
+            <nhs-submit-button/>
+        </form>
+    </div>
+</div>
