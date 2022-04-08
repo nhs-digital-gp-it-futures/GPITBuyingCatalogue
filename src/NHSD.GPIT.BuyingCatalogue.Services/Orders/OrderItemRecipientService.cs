@@ -42,7 +42,6 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
                         OrderId = orderId,
                         CatalogueItemId = catalogueItemId,
                         OdsCode = recipient.OdsCode,
-                        Quantity = 1,
                     });
                 }
             }

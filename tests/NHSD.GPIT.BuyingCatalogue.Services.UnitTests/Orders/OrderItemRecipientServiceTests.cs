@@ -73,7 +73,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Orders
                     && x.OdsCode == recipient.OdsCode);
 
                 actual.Should().NotBeNull();
-                actual!.Quantity.Should().Be(1);
+                actual!.Quantity.Should().Be(null);
             }
         }
     }

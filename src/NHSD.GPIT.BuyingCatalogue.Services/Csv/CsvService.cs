@@ -43,7 +43,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Csv
                     ProductId = oir.OrderItem.CatalogueItemId.ToString(),
                     ProductName = oir.OrderItem.CatalogueItem.Name,
                     ProductType = oir.OrderItem.CatalogueItem.CatalogueItemType.DisplayName(),
-                    QuantityOrdered = oir.Quantity,
+                    QuantityOrdered = oir.Quantity ?? 0,
                     /*UnitOfOrder = oir.OrderItem.CataloguePrice.PricingUnit.Description,
                     UnitTime = !oir.OrderItem.CataloguePrice.TimeUnit.HasValue ? string.Empty : oir.OrderItem.CataloguePrice.TimeUnit.Value.Description(),
                     EstimationPeriod = !oir.OrderItem.EstimationPeriod.HasValue ? string.Empty : oir.OrderItem.EstimationPeriod.Value.Description(),
@@ -82,7 +82,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Csv
                     ProductId = oir.OrderItem.CatalogueItemId.ToString(),
                     ProductName = oir.OrderItem.CatalogueItem.Name,
                     ProductType = oir.OrderItem.CatalogueItem.CatalogueItemType.DisplayName(),
-                    QuantityOrdered = oir.Quantity,
+                    QuantityOrdered = oir.Quantity ?? 0,
                     /*UnitOfOrder = oir.OrderItem.CataloguePrice.PricingUnit.Description,
                     Price = oir.OrderItem.Price.GetValueOrDefault(),
                     M1Planned = oir.DeliveryDate,*/
