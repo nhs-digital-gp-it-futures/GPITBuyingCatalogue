@@ -6,7 +6,7 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models
 {
     public sealed partial class OrderItem
     {
-        public int GetTotalRecipientQuantity() => OrderItemRecipients.ToList().Sum(oir => oir.Quantity);
+        public int GetTotalRecipientQuantity() => OrderItemRecipients.ToList().Sum(oir => oir.Quantity ?? 0);
 
         public decimal CalculateTotalCost()
         {

@@ -1,0 +1,61 @@
+﻿@model NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.Shared.SelectServicesModel
+@{
+    ViewBag.Title = "Associated Services";
+}
+
+<partial name="Partials/_BackLink" model="Model" />
+
+<div class="nhsuk-grid-row">
+    <div class="nhsuk-grid-column-full">
+        <nhs-validation-summary/>
+
+        <nhs-page-title title="@ViewBag.Title"
+                        caption="Order @Model.CallOffId"
+                        advice="Select any Associated Services you want to add to this order or continue if you do not want to add any."/>
+
+        @if (Model!.ExistingServices.Any())
+        {
+            <div id="existing-services">
+                <h2>Selected Associated Services</h2>
+                <p>These services have already been added to your order:</p>
+                <ul>
+                    @foreach (var item in Model.ExistingServices)
+                    {
+                        <li>@item</li>
+                    }
+                </ul>
+                <hr/>
+            </div>
+        }
+        
+        <form method="post">
+            @if (Model.Services.Any())
+            {
+                <div id="services-to-select">
+                    <h3>Select Associated Services</h3>
+                    <p>These are products that support the implementation of a solution and can be bought independently. For example, training or data migration or arranging the merging or splitting of existing practices.</p>
+
+                    <nhs-checkbox-container>
+                        @foreach (var (service, i) in Model.Services.Select((x, i) => (x, i)))
+                        {
+                            <input type="hidden" asp-for="@Model.Services[i].CatalogueItemId"/>
+                            <input type="hidden" asp-for="@Model.Services[i].Description"/>
+                            <nhs-checkbox asp-for="@Model.Services[i].IsSelected"
+                                          label-text="@service.Description"/>
+                        }
+                    </nhs-checkbox-container>
+                </div>
+            }
+            else
+            {
+                <div id="nothing-to-select">
+                    <p>There are no Associated Services available for this Catalogue Solution.</p>
+                </div>
+            }
+
+            <div class="nhsuk-u-margin-top-9">
+                <nhs-submit-button/>
+            </div>
+        </form>
+    </div>
+</div>

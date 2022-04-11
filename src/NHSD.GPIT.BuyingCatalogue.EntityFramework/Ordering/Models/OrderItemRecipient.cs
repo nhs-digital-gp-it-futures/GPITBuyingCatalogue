@@ -11,7 +11,7 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models
 
         public string OdsCode { get; set; }
 
-        public int Quantity { get; set; }
+        public int? Quantity { get; set; }
 
         public DateTime LastUpdated { get; set; }
 

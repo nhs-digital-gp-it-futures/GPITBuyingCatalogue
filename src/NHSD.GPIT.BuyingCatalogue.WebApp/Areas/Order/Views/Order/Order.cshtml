@@ -46,7 +46,10 @@
                     </nhs-task-list-section>
                     <nhs-task-list-section label-text="Add solutions and services">
                         <nhs-task-list-item label-text="Select solutions and services"
-                                            url="#"
+                                            url="@Url.Action(
+                                                     nameof(CatalogueSolutionsController.SelectSolution),
+                                                     typeof(CatalogueSolutionsController).ControllerName(),
+                                                     new { Model.InternalOrgId, Model.CallOffId})"
                                             status="@Model.SectionStatuses.SolutionOrService" />
 						<nhs-task-list-item label-text="Select funding sources"
                                             url="@Url.Action(
