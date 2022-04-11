@@ -165,55 +165,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.ListPrice
 
         [Theory]
         [InMemoryDbAutoData]
-        public static async Task HasDuplicatePriceTier_Self_ReturnsFalse(
-            Solution solution,
-            [Frozen] BuyingCatalogueDbContext dbContext,
-            DuplicateListPriceService service)
-        {
-            var priceTier = new CataloguePriceTier
-            {
-                LowerRange = 1,
-                Price = 3.21M,
-            };
-            var price = new CataloguePrice
-            {
-                CataloguePriceCalculationType = CataloguePriceCalculationType.Volume,
-                CataloguePriceType = CataloguePriceType.Tiered,
-                ProvisioningType = ProvisioningType.Declarative,
-                TimeUnit = null,
-                CurrencyCode = "GBP",
-                PricingUnit = new PricingUnit
-                {
-                    Definition = "Definition",
-                    Description = "Description",
-                    RangeDescription = "Range",
-                },
-                CataloguePriceTiers = new HashSet<CataloguePriceTier>
-                {
-                    priceTier,
-                },
-            };
-
-            solution.CatalogueItem.CataloguePrices = new HashSet<CataloguePrice>
-            {
-                price,
-            };
-            dbContext.CatalogueItems.Add(solution.CatalogueItem);
-            dbContext.SaveChanges();
-
-            var result = await service.HasDuplicatePriceTier(
-                solution.CatalogueItemId,
-                priceTier.CataloguePriceId,
-                priceTier.Price,
-                priceTier.LowerRange,
-                priceTier.UpperRange);
-
-            result.Should().BeFalse();
-        }
-
-        [Theory]
-        [InMemoryDbAutoData]
-        public static async Task HasDuplicatePriceTier_Duplicate_ReturnsFalse(
+        public static async Task HasDuplicatePriceTier_Duplicate_ReturnsTrue(
             Solution solution,
             [Frozen] BuyingCatalogueDbContext dbContext,
             DuplicateListPriceService service)
@@ -223,6 +175,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.ListPrice
                 LowerRange = 1,
                 Price = 3.21M,
             };
+
             var priceTier = new CataloguePriceTier
             {
                 LowerRange = 1,
@@ -257,12 +210,84 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.ListPrice
 
             var result = await service.HasDuplicatePriceTier(
                 solution.CatalogueItemId,
-                null,
+                price.CataloguePriceId,
                 priceTier.Price,
                 priceTier.LowerRange,
                 priceTier.UpperRange);
 
             result.Should().BeTrue();
+        }
+
+        [Theory]
+        [InMemoryDbAutoData]
+        public static async Task HasDuplicatePriceTier_DifferentListPrice_ReturnsFalse(
+            Solution solution,
+            [Frozen] BuyingCatalogueDbContext dbContext,
+            DuplicateListPriceService service)
+        {
+            var existingPriceTier = new CataloguePriceTier
+            {
+                LowerRange = 1,
+                Price = 3.21M,
+            };
+
+            var priceTier = new CataloguePriceTier
+            {
+                LowerRange = 1,
+                Price = 3.21M,
+            };
+
+            var firstPrice = new CataloguePrice
+            {
+                CataloguePriceCalculationType = CataloguePriceCalculationType.Volume,
+                CataloguePriceType = CataloguePriceType.Tiered,
+                ProvisioningType = ProvisioningType.Declarative,
+                TimeUnit = null,
+                CurrencyCode = "GBP",
+                PricingUnit = new PricingUnit
+                {
+                    Definition = "Definition",
+                    Description = "Description",
+                    RangeDescription = "Range",
+                },
+                CataloguePriceTiers = new HashSet<CataloguePriceTier>(),
+            };
+
+            var secondPrice = new CataloguePrice
+            {
+                CataloguePriceCalculationType = CataloguePriceCalculationType.Volume,
+                CataloguePriceType = CataloguePriceType.Tiered,
+                ProvisioningType = ProvisioningType.Declarative,
+                TimeUnit = null,
+                CurrencyCode = "GBP",
+                PricingUnit = new PricingUnit
+                {
+                    Definition = "Definition",
+                    Description = "Description",
+                    RangeDescription = "Range",
+                },
+                CataloguePriceTiers = new HashSet<CataloguePriceTier>
+                {
+                    existingPriceTier,
+                },
+            };
+
+            solution.CatalogueItem.CataloguePrices = new HashSet<CataloguePrice>
+            {
+                firstPrice,
+                secondPrice,
+            };
+            dbContext.CatalogueItems.Add(solution.CatalogueItem);
+            dbContext.SaveChanges();
+
+            var result = await service.HasDuplicatePriceTier(
+                solution.CatalogueItemId,
+                firstPrice.CataloguePriceId,
+                priceTier.Price,
+                priceTier.LowerRange,
+                priceTier.UpperRange);
+
+            result.Should().BeFalse();
         }
     }
 }

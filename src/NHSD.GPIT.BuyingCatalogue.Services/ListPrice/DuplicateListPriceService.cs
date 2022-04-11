@@ -42,7 +42,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.ListPrice
             int? upperRange)
             => await dbContext
             .CataloguePriceTiers
-            .Where(p => p.CataloguePriceId != cataloguePriceId)
+            .Where(p => p.CataloguePriceId == cataloguePriceId)
             .AnyAsync(p => p.CataloguePrice.CatalogueItemId == catalogueItemId
                 && p.Price == price
                 && p.LowerRange == lowerRange
