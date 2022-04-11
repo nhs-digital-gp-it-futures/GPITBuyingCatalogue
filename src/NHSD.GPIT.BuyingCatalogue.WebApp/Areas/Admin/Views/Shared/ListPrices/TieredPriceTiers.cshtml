@@ -1,0 +1,91 @@
+﻿@using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models
+@using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.ListPriceModels
+@model TieredPriceTiersModel
+
+@{
+    ViewBag.Title = "Tiered list price information";
+}
+
+<partial name="Partials/_BackLink" model="Model" />
+<div class="nhsuk-grid-row">
+    <div class="nhsuk-grid-column-two-thirds">
+        <nhs-validation-summary RadioId="@nameof(Model.SelectedPublicationStatus)"/>
+        <nhs-page-title
+            title="@ViewBag.Title"
+            caption="@Model.CatalogueItemName"
+            advice="Provide information about the pricing tiers available for your Catalogue Solution.">
+        </nhs-page-title>
+
+        <vc:nhs-action-link 
+            text="Add a pricing tier"
+             url="@Url.Action(
+                nameof(CatalogueSolutionListPriceController.AddTieredPriceTier),
+                typeof(CatalogueSolutionListPriceController).ControllerName(),
+                new { solutionId = Model.CatalogueItemId, cataloguePriceId = Model.CataloguePriceId }
+                )" />
+
+        @if(Model.Tiers.Any())
+        {
+            var orderedTiers = Model.Tiers.OrderBy(p => p.LowerRange).ToList();
+            <div data-test-id="tiered-price-table">
+                <nhs-table>
+                    <nhs-table-column>Tier</nhs-table-column>
+                    <nhs-table-column>Price</nhs-table-column>
+                    <nhs-table-column>Range</nhs-table-column>
+                    <nhs-table-column>Action</nhs-table-column>
+                    @for(int i = 0; i < orderedTiers.Count; i++)
+                    {
+                        var tier = orderedTiers[i];
+                        <nhs-table-row-container>
+                            <nhs-table-cell>
+                                @GetTierName(i)
+                            </nhs-table-cell>
+                            <nhs-table-cell>
+                                £@tier.Price
+                            </nhs-table-cell>
+                            <nhs-table-cell>
+                                @GetRange(tier)
+                            </nhs-table-cell>
+                            <nhs-table-cell>
+                                <a href="#">Edit</a>
+                            </nhs-table-cell>
+                        </nhs-table-row-container>
+                    }
+                </nhs-table>
+            </div>
+        }
+
+        <form method="post">
+            <input type="hidden" asp-for="BackLink" />
+            <input type="hidden" asp-for="CataloguePriceId" />
+            <input type="hidden" asp-for="CatalogueItemId" />
+            <input type="hidden" asp-for="CatalogueItemName" />
+            <nhs-fieldset-form-label label-text="Publication status" size="Medium" asp-for="SelectedPublicationStatus">
+                <nhs-radio-buttons
+                    asp-for="SelectedPublicationStatus"
+                    values="@TieredPriceTiersModel.AvailablePublicationStatuses.Cast<object>()"
+                    display-name="Name"
+                    value-name="Value">
+                </nhs-radio-buttons>
+            </nhs-fieldset-form-label>
+
+            <nhs-submit-button />
+        </form>
+    </div>
+</div>
+
+@{
+    static string GetTierName(int index) => $"Tier {index + 1}";
+    static string GetRange(CataloguePriceTier tier)
+    {
+        var rangeContent = $"{tier.LowerRange.ToString("#,##0.###")}";
+
+        rangeContent += (tier.UpperRange is not null)
+            ? $" to {tier.UpperRange!.Value.ToString("#,##0.###")}"
+            : "+";
+
+        rangeContent += $" {tier.CataloguePrice.PricingUnit.RangeDescription}";
+
+        return rangeContent;
+    }
+}
