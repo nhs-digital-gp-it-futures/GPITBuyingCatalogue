@@ -15,11 +15,11 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Validators.ListPrices
         internal const string RangeDefinitionError = "Enter a range definition";
         internal const string DuplicateListPriceError = "A list price with these details already exists";
 
-        private readonly IDuplicateListPriceService duplicateListPriceService;
+        private readonly IListPriceService listPriceService;
 
-        public AddTieredListPriceModelValidator(IDuplicateListPriceService duplicateListPriceService)
+        public AddTieredListPriceModelValidator(IListPriceService listPriceService)
         {
-            this.duplicateListPriceService = duplicateListPriceService;
+            this.listPriceService = listPriceService;
 
             RuleFor(m => m.SelectedProvisioningType)
                 .NotNull()
@@ -52,7 +52,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Validators.ListPrices
         {
             _ = token;
 
-            return !await duplicateListPriceService.HasDuplicateTieredPrice(
+            return !await listPriceService.HasDuplicateTieredPrice(
                 model.CatalogueItemId,
                 model.CataloguePriceId,
                 model.SelectedProvisioningType!.Value,

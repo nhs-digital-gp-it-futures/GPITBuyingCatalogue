@@ -90,10 +90,10 @@
         @if (Model.CataloguePriceId is not null)
         {
             <vc:nhs-delete-button url="@Url.Action(
-                nameof(CatalogueSolutionListPriceController.AddTieredListPrice),
+                nameof(CatalogueSolutionListPriceController.DeleteListPrice),
                 typeof(CatalogueSolutionListPriceController).ControllerName(),
                 new { solutionId = Model.CatalogueItemId, cataloguePriceId = Model.CataloguePriceId })"
-                text="Delete tiered list price"></vc:nhs-delete-button>
+                text="Delete list price"></vc:nhs-delete-button>
         }
     </div>
 </div>

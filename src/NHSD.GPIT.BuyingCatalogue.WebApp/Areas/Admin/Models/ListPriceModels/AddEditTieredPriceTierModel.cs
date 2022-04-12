@@ -5,17 +5,29 @@ using NHSD.GPIT.BuyingCatalogue.WebApp.Models;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.ListPriceModels
 {
-    public class AddTieredPriceTierModel : NavBaseModel
+    public class AddEditTieredPriceTierModel : NavBaseModel
     {
-        public AddTieredPriceTierModel()
+        public AddEditTieredPriceTierModel()
         {
         }
 
-        public AddTieredPriceTierModel(CatalogueItem catalogueItem, CataloguePrice cataloguePrice)
+        public AddEditTieredPriceTierModel(CatalogueItem catalogueItem, CataloguePrice cataloguePrice)
         {
             CataloguePriceId = cataloguePrice.CataloguePriceId;
             CatalogueItemId = catalogueItem.Id;
             CatalogueItemName = catalogueItem.Name;
+            Title = "Add a pricing tier";
+        }
+
+        public AddEditTieredPriceTierModel(CatalogueItem catalogueItem, CataloguePrice cataloguePrice, CataloguePriceTier cataloguePriceTier)
+            : this(catalogueItem, cataloguePrice)
+        {
+            TierId = cataloguePriceTier.Id;
+            Price = cataloguePriceTier.Price;
+            LowerRange = cataloguePriceTier.LowerRange;
+            UpperRange = cataloguePriceTier.UpperRange;
+            IsInfiniteRange = cataloguePriceTier.UpperRange == null;
+            Title = "Edit a pricing tier";
         }
 
         public static IList<SelectableRadioOption<bool>> AvailableRangeOptions => new List<SelectableRadioOption<bool>>
@@ -30,6 +42,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.ListPriceModels
 
         public int CataloguePriceId { get; set; }
 
+        public int? TierId { get; set; }
+
+        public string Title { get; set; }
+
         public decimal? Price { get; set; }
 
         public int? LowerRange { get; set; }
@@ -37,5 +53,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.ListPriceModels
         public int? UpperRange { get; set; }
 
         public bool? IsInfiniteRange { get; set; }
+
+        public bool? IsEditing { get; set; }
     }
 }

@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using NHSD.GPIT.BuyingCatalogue.E2ETests.Objects.Common;
+﻿using NHSD.GPIT.BuyingCatalogue.E2ETests.Objects.Common;
 using OpenQA.Selenium;
 
 namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Objects.Admin.ListPrices
@@ -20,6 +15,6 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Objects.Admin.ListPrices
 
         internal static By FlatPrice(int cataloguePriceId) => ByExtensions.DataTestId($"flat-price-{cataloguePriceId}");
 
-        internal static By EditPriceLink(int cataloguePriceId) => ByExtensions.DataTestId($"edit-price-{cataloguePriceId}");
+        internal static By EditPriceLink(int cataloguePriceId) => By.XPath($"//a[contains(@href, '/list-prices/{cataloguePriceId}/edit')]");
     }
 }

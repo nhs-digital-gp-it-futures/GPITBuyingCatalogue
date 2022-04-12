@@ -6,6 +6,7 @@ using AutoFixture.Idioms;
 using AutoFixture.Xunit2;
 using FluentAssertions;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Routing;
 using Microsoft.AspNetCore.Routing;
 using Moq;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
@@ -53,7 +54,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
 
         [Theory]
         [CommonAutoData]
-        public static async Task Get_Index_SolutionNotFound_ReturnsNotFoundResult(
+        public static async Task Get_Index_SolutionNotFound(
             CatalogueItemId solutionId,
             [Frozen] Mock<ISolutionListPriceService> solutionListPriceService,
             CatalogueSolutionListPriceController controller)
@@ -86,7 +87,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
 
         [Theory]
         [CommonAutoData]
-        public static async Task Get_ListPriceType_SolutionNotFound_ReturnsNotFoundResult(
+        public static async Task Get_ListPriceType_SolutionNotFound(
             CatalogueItemId solutionId,
             [Frozen] Mock<ISolutionListPriceService> solutionListPriceService,
             CatalogueSolutionListPriceController controller)
@@ -185,7 +186,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
 
         [Theory]
         [CommonAutoData]
-        public static async Task Get_AddTieredListPrice_SolutionNotFound_ReturnsNotFoundResult(
+        public static async Task Get_AddTieredListPrice_SolutionNotFound(
             CatalogueItemId solutionId,
             [Frozen] Mock<ISolutionListPriceService> solutionListPriceService,
             CatalogueSolutionListPriceController controller)
@@ -252,23 +253,23 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
 
         [Theory]
         [CommonAutoData]
-        public static async Task Get_TieredPriceTiers_SolutionNotFound_ReturnsNotFound(
+        public static async Task Get_TieredPriceTiers_SolutionNotFound(
             CatalogueItemId solutionId,
-            CataloguePrice price,
+            int cataloguePriceId,
             [Frozen] Mock<ISolutionListPriceService> solutionListPriceService,
             CatalogueSolutionListPriceController controller)
         {
             solutionListPriceService.Setup(s => s.GetSolutionWithListPrices(solutionId))
                 .ReturnsAsync((CatalogueItem)null);
 
-            var result = (await controller.TieredPriceTiers(solutionId, price.CataloguePriceId)).As<NotFoundResult>();
+            var result = (await controller.TieredPriceTiers(solutionId, cataloguePriceId)).As<NotFoundResult>();
 
             result.Should().NotBeNull();
         }
 
         [Theory]
         [CommonAutoData]
-        public static async Task Get_TieredPriceTiers_PriceNotFound_ReturnsNotFound(
+        public static async Task Get_TieredPriceTiers_PriceNotFound(
             Solution solution,
             int cataloguePriceId,
             [Frozen] Mock<ISolutionListPriceService> solutionListPriceService,
@@ -337,12 +338,15 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
         {
             solution.CatalogueItem.CataloguePrices.Add(price);
 
-            var model = new AddTieredPriceTierModel(solution.CatalogueItem, price);
+            var model = new AddEditTieredPriceTierModel(solution.CatalogueItem, price)
+            {
+                IsEditing = false,
+            };
 
             solutionListPriceService.Setup(s => s.GetSolutionWithListPrices(solution.CatalogueItemId))
                 .ReturnsAsync(solution.CatalogueItem);
 
-            var result = (await controller.AddTieredPriceTier(solution.CatalogueItemId, price.CataloguePriceId)).As<ViewResult>();
+            var result = (await controller.AddTieredPriceTier(solution.CatalogueItemId, price.CataloguePriceId, false)).As<ViewResult>();
 
             result.Should().NotBeNull();
             result.Model.Should().BeEquivalentTo(model, opt => opt.Excluding(m => m.BackLink));
@@ -350,23 +354,61 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
 
         [Theory]
         [CommonAutoData]
-        public static async Task Get_AddTieredPriceTier_SolutionNotFound_ReturnsNotFound(
-            CatalogueItemId solutionId,
+        public static async Task Get_AddTieredPriceTier_IsEditing_CorrectBacklink(
+            Solution solution,
             CataloguePrice price,
+            [Frozen] Mock<IUrlHelper> urlHelper,
+            [Frozen] Mock<ISolutionListPriceService> solutionListPriceService,
+            CatalogueSolutionListPriceController controller)
+        {
+            solution.CatalogueItem.CataloguePrices.Add(price);
+
+            solutionListPriceService.Setup(s => s.GetSolutionWithListPrices(solution.CatalogueItemId))
+                .ReturnsAsync(solution.CatalogueItem);
+
+            var result = (await controller.AddTieredPriceTier(solution.CatalogueItemId, price.CataloguePriceId, true)).As<ViewResult>();
+
+            urlHelper.Verify(u => u.Action(It.Is<UrlActionContext>(match => match.Action == nameof(controller.EditTieredListPrice))));
+        }
+
+        [Theory]
+        [CommonAutoData]
+        public static async Task Get_AddTieredPriceTier_IsNotEditing_CorrectBacklink(
+            Solution solution,
+            CataloguePrice price,
+            [Frozen] Mock<IUrlHelper> urlHelper,
+            [Frozen] Mock<ISolutionListPriceService> solutionListPriceService,
+            CatalogueSolutionListPriceController controller)
+        {
+            solution.CatalogueItem.CataloguePrices.Add(price);
+
+            solutionListPriceService.Setup(s => s.GetSolutionWithListPrices(solution.CatalogueItemId))
+                .ReturnsAsync(solution.CatalogueItem);
+
+            var result = (await controller.AddTieredPriceTier(solution.CatalogueItemId, price.CataloguePriceId, false)).As<ViewResult>();
+
+            urlHelper.Verify(u => u.Action(It.Is<UrlActionContext>(match => match.Action == nameof(controller.TieredPriceTiers))));
+        }
+
+        [Theory]
+        [CommonAutoData]
+        public static async Task Get_AddTieredPriceTier_SolutionNotFound(
+            CatalogueItemId solutionId,
+            int cataloguePriceId,
             [Frozen] Mock<ISolutionListPriceService> solutionListPriceService,
             CatalogueSolutionListPriceController controller)
         {
             solutionListPriceService.Setup(s => s.GetSolutionWithListPrices(solutionId))
                 .ReturnsAsync((CatalogueItem)null);
 
-            var result = (await controller.AddTieredPriceTier(solutionId, price.CataloguePriceId)).As<NotFoundResult>();
+            var result = (await controller.AddTieredPriceTier(solutionId, cataloguePriceId, false)).As<NotFoundResult>();
 
             result.Should().NotBeNull();
         }
 
         [Theory]
         [CommonAutoData]
-        public static async Task Get_AddTieredPriceTier_PriceNotFound_ReturnsNotFound(
+        public static async Task Get_AddTieredPriceTier_PriceNotFound(
             Solution solution,
             int cataloguePriceId,
             [Frozen] Mock<ISolutionListPriceService> solutionListPriceService,
@@ -375,7 +417,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
             solutionListPriceService.Setup(s => s.GetSolutionWithListPrices(solution.CatalogueItemId))
                 .ReturnsAsync(solution.CatalogueItem);
 
-            var result = (await controller.AddTieredPriceTier(solution.CatalogueItemId, cataloguePriceId)).As<NotFoundResult>();
+            var result = (await controller.AddTieredPriceTier(solution.CatalogueItemId, cataloguePriceId, false)).As<NotFoundResult>();
 
             result.Should().NotBeNull();
         }
@@ -385,7 +427,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
         public static async Task Post_AddTieredPriceTier_InvalidModel_ReturnsView(
             Solution solution,
             CataloguePrice price,
-            AddTieredPriceTierModel model,
+            AddEditTieredPriceTierModel model,
             CatalogueSolutionListPriceController controller)
         {
             controller.ModelState.AddModelError("some-key", "some-error");
@@ -401,7 +443,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
         public static async Task Post_AddTieredPriceTier_Redirects(
             Solution solution,
             CataloguePrice price,
-            AddTieredPriceTierModel model,
+            AddEditTieredPriceTierModel model,
             [Frozen] Mock<ISolutionListPriceService> solutionListPriceService,
             CatalogueSolutionListPriceController controller)
         {
@@ -416,6 +458,610 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
                 { "solutionId", solution.CatalogueItemId },
                 { "cataloguePriceId", price.CataloguePriceId },
             });
+        }
+
+        [Theory]
+        [CommonAutoData]
+        public static async Task Get_EditTieredListPrice_SolutionNotFound(
+            CatalogueItemId solutionId,
+            int cataloguePriceId,
+            [Frozen] Mock<ISolutionListPriceService> solutionListPriceService,
+            CatalogueSolutionListPriceController controller)
+        {
+            solutionListPriceService.Setup(s => s.GetSolutionWithListPrices(solutionId))
+                .ReturnsAsync((CatalogueItem)null);
+
+            var result = (await controller.EditTieredListPrice(solutionId, cataloguePriceId)).As<NotFoundResult>();
+
+            result.Should().NotBeNull();
+        }
+
+        [Theory]
+        [CommonAutoData]
+        public static async Task Get_EditTieredListPrice_PriceNotFound(
+            Solution solution,
+            int cataloguePriceId,
+            [Frozen] Mock<ISolutionListPriceService> solutionListPriceService,
+            CatalogueSolutionListPriceController controller)
+        {
+            solutionListPriceService.Setup(s => s.GetSolutionWithListPrices(solution.CatalogueItemId))
+                .ReturnsAsync(solution.CatalogueItem);
+
+            var result = (await controller.EditTieredListPrice(solution.CatalogueItemId, cataloguePriceId)).As<NotFoundResult>();
+
+            result.Should().NotBeNull();
+        }
+
+        [Theory]
+        [CommonAutoData]
+        public static async Task Get_EditTieredListPrice_ReturnsViewWithModel(
+            Solution solution,
+            CataloguePrice price,
+            [Frozen] Mock<ISolutionListPriceService> solutionListPriceService,
+            CatalogueSolutionListPriceController controller)
+        {
+            solution.CatalogueItem.CataloguePrices.Add(price);
+
+            solutionListPriceService.Setup(s => s.GetSolutionWithListPrices(solution.CatalogueItemId))
+                .ReturnsAsync(solution.CatalogueItem);
+
+            var model = new EditTieredListPriceModel(solution.CatalogueItem, price);
+
+            var result = (await controller.EditTieredListPrice(solution.CatalogueItemId, price.CataloguePriceId)).As<ViewResult>();
+
+            result.Should().NotBeNull();
+            result.Model.Should().BeEquivalentTo(model, opt => opt.Excluding(m => m.BackLink));
+        }
+
+        [Theory]
+        [CommonAutoData]
+        public static async Task Post_EditTieredListPrice_InvalidModel_ReturnsView(
+            Solution solution,
+            CataloguePrice price,
+            EditTieredListPriceModel model,
+            [Frozen] Mock<ISolutionListPriceService> solutionListPriceService,
+            CatalogueSolutionListPriceController controller)
+        {
+            controller.ModelState.AddModelError("some-key", "some-error");
+
+            solution.CatalogueItem.CataloguePrices.Add(price);
+
+            model.Tiers = price.CataloguePriceTiers.ToList();
+
+            solutionListPriceService.Setup(s => s.GetSolutionWithListPrices(solution.CatalogueItemId))
+                .ReturnsAsync(solution.CatalogueItem);
+
+            var result = (await controller.EditTieredListPrice(solution.CatalogueItemId, price.CataloguePriceId, model)).As<ViewResult>();
+
+            result.Should().NotBeNull();
+            result.Model.Should().BeEquivalentTo(model, opt => opt.Excluding(m => m.BackLink));
+        }
+
+        [Theory]
+        [CommonAutoData]
+        public static async Task Post_EditTieredListPrice_SamePublicationStatus(
+            Solution solution,
+            CataloguePrice price,
+            EditTieredListPriceModel model,
+            [Frozen] Mock<ISolutionListPriceService> solutionListPriceService,
+            CatalogueSolutionListPriceController controller)
+        {
+            price.PublishedStatus = PublicationStatus.Published;
+            solution.CatalogueItem.CataloguePrices.Add(price);
+            model.SelectedPublicationStatus = PublicationStatus.Published;
+
+            solutionListPriceService.Setup(s => s.GetSolutionWithListPrices(solution.CatalogueItemId))
+                .ReturnsAsync(solution.CatalogueItem);
+
+            var pricingUnit = model.GetPricingUnit();
+            var timeUnit = model.GetTimeUnit();
+
+            var result = (await controller.EditTieredListPrice(solution.CatalogueItemId, price.CataloguePriceId, model)).As<RedirectToActionResult>();
+
+            solutionListPriceService.Verify(
+                s => s.UpdateListPrice(
+                    solution.CatalogueItemId,
+                    price.CataloguePriceId,
+                    It.Is<PricingUnit>(match => match.Description == pricingUnit.Description
+                        && match.Definition == pricingUnit.Definition
+                        && match.RangeDescription == pricingUnit.RangeDescription),
+                    model.SelectedProvisioningType!.Value,
+                    model.SelectedCalculationType!.Value,
+                    model.GetTimeUnit()),
+                Times.Once());
+
+            solutionListPriceService.Verify(
+                s => s.SetPublicationStatus(
+                        solution.CatalogueItemId,
+                        price.CataloguePriceId,
+                        model.SelectedPublicationStatus),
+                Times.Never());
+
+            result.Should().NotBeNull();
+        }
+
+        [Theory]
+        [CommonAutoData]
+        public static async Task Post_EditTieredListPrice_Redirects(
+            Solution solution,
+            CataloguePrice price,
+            EditTieredListPriceModel model,
+            [Frozen] Mock<ISolutionListPriceService> solutionListPriceService,
+            CatalogueSolutionListPriceController controller)
+        {
+            price.PublishedStatus = PublicationStatus.Draft;
+            solution.CatalogueItem.CataloguePrices.Add(price);
+            model.SelectedPublicationStatus = PublicationStatus.Published;
+
+            solutionListPriceService.Setup(s => s.GetSolutionWithListPrices(solution.CatalogueItemId))
+                .ReturnsAsync(solution.CatalogueItem);
+
+            var pricingUnit = model.GetPricingUnit();
+            var timeUnit = model.GetTimeUnit();
+
+            var result = (await controller.EditTieredListPrice(solution.CatalogueItemId, price.CataloguePriceId, model)).As<RedirectToActionResult>();
+
+            solutionListPriceService.Verify(
+                s => s.UpdateListPrice(
+                    solution.CatalogueItemId,
+                    price.CataloguePriceId,
+                    It.Is<PricingUnit>(match => match.Description == pricingUnit.Description
+                        && match.Definition == pricingUnit.Definition
+                        && match.RangeDescription == pricingUnit.RangeDescription),
+                    model.SelectedProvisioningType!.Value,
+                    model.SelectedCalculationType!.Value,
+                    model.GetTimeUnit()),
+                Times.Once());
+
+            solutionListPriceService.Verify(
+                s => s.SetPublicationStatus(
+                        solution.CatalogueItemId,
+                        price.CataloguePriceId,
+                        model.SelectedPublicationStatus),
+                Times.Once());
+
+            result.Should().NotBeNull();
+        }
+
+        [Theory]
+        [CommonAutoData]
+        public static async Task Get_EditTieredPriceTier_SolutionNotFound(
+            CatalogueItemId solutionId,
+            int cataloguePriceId,
+            int cataloguePriceTierId,
+            [Frozen] Mock<ISolutionListPriceService> solutionListPriceService,
+            CatalogueSolutionListPriceController controller)
+        {
+            solutionListPriceService.Setup(s => s.GetSolutionWithListPrices(solutionId))
+                .ReturnsAsync((CatalogueItem)null);
+
+            var result = (await controller.EditTieredPriceTier(solutionId, cataloguePriceId, cataloguePriceTierId)).As<NotFoundResult>();
+
+            result.Should().NotBeNull();
+        }
+
+        [Theory]
+        [CommonAutoData]
+        public static async Task Get_EditTieredPriceTier_PriceNotFound(
+            Solution solution,
+            int cataloguePriceId,
+            int cataloguePriceTierId,
+            [Frozen] Mock<ISolutionListPriceService> solutionListPriceService,
+            CatalogueSolutionListPriceController controller)
+        {
+            solutionListPriceService.Setup(s => s.GetSolutionWithListPrices(solution.CatalogueItemId))
+                .ReturnsAsync(solution.CatalogueItem);
+
+            var result = (await controller.EditTieredPriceTier(solution.CatalogueItemId, cataloguePriceId, cataloguePriceTierId)).As<NotFoundResult>();
+
+            result.Should().NotBeNull();
+        }
+
+        [Theory]
+        [CommonAutoData]
+        public static async Task Get_EditTieredPriceTier_PriceTierNotFound(
+            Solution solution,
+            CataloguePrice price,
+            int cataloguePriceTierId,
+            [Frozen] Mock<ISolutionListPriceService> solutionListPriceService,
+            CatalogueSolutionListPriceController controller)
+        {
+            solution.CatalogueItem.CataloguePrices.Add(price);
+
+            solutionListPriceService.Setup(s => s.GetSolutionWithListPrices(solution.CatalogueItemId))
+                .ReturnsAsync(solution.CatalogueItem);
+
+            var result = (await controller.EditTieredPriceTier(solution.CatalogueItemId, price.CataloguePriceId, cataloguePriceTierId)).As<NotFoundResult>();
+
+            result.Should().NotBeNull();
+        }
+
+        [Theory]
+        [CommonAutoData]
+        public static async Task Get_EditTieredPriceTier_IsEditing_CorrectBacklink(
+            Solution solution,
+            CataloguePrice price,
+            CataloguePriceTier tier,
+            [Frozen] Mock<IUrlHelper> urlHelper,
+            [Frozen] Mock<ISolutionListPriceService> solutionListPriceService,
+            CatalogueSolutionListPriceController controller)
+        {
+            price.CataloguePriceTiers.Add(tier);
+            solution.CatalogueItem.CataloguePrices.Add(price);
+
+            solutionListPriceService.Setup(s => s.GetSolutionWithListPrices(solution.CatalogueItemId))
+                .ReturnsAsync(solution.CatalogueItem);
+
+            _ = await controller.EditTieredPriceTier(solution.CatalogueItemId, price.CataloguePriceId, tier.Id, true);
+
+            urlHelper.Verify(u => u.Action(
+                It.Is<UrlActionContext>(match => match.Action == nameof(controller.EditTieredListPrice))));
+        }
+
+        [Theory]
+        [CommonAutoData]
+        public static async Task Get_EditTieredPriceTier_IsNotEditing_CorrectBacklink(
+            Solution solution,
+            CataloguePrice price,
+            CataloguePriceTier tier,
+            [Frozen] Mock<IUrlHelper> urlHelper,
+            [Frozen] Mock<ISolutionListPriceService> solutionListPriceService,
+            CatalogueSolutionListPriceController controller)
+        {
+            price.CataloguePriceTiers.Add(tier);
+            solution.CatalogueItem.CataloguePrices.Add(price);
+
+            solutionListPriceService.Setup(s => s.GetSolutionWithListPrices(solution.CatalogueItemId))
+                .ReturnsAsync(solution.CatalogueItem);
+
+            _ = await controller.EditTieredPriceTier(solution.CatalogueItemId, price.CataloguePriceId, tier.Id, false);
+
+            urlHelper.Verify(u => u.Action(
+                It.Is<UrlActionContext>(match => match.Action == nameof(controller.TieredPriceTiers))));
+        }
+
+        [Theory]
+        [CommonAutoData]
+        public static async Task Get_EditTieredPriceTier_ReturnsViewWithModel(
+            Solution solution,
+            CataloguePrice price,
+            CataloguePriceTier tier,
+            [Frozen] Mock<ISolutionListPriceService> solutionListPriceService,
+            CatalogueSolutionListPriceController controller)
+        {
+            price.CataloguePriceTiers.Add(tier);
+            solution.CatalogueItem.CataloguePrices.Add(price);
+
+            var model = new AddEditTieredPriceTierModel(solution.CatalogueItem, price, tier);
+
+            solutionListPriceService.Setup(s => s.GetSolutionWithListPrices(solution.CatalogueItemId))
+                .ReturnsAsync(solution.CatalogueItem);
+
+            var result = (await controller.EditTieredPriceTier(solution.CatalogueItemId, price.CataloguePriceId, tier.Id, (bool?)null)).As<ViewResult>();
+
+            result.Should().NotBeNull();
+            result.Model.Should().BeEquivalentTo(model, opt => opt.Excluding(m => m.BackLink));
+        }
+
+        [Theory]
+        [CommonAutoData]
+        public static async Task Post_EditTieredPriceTier_InvalidModel_ReturnsView(
+            AddEditTieredPriceTierModel model,
+            CatalogueSolutionListPriceController controller)
+        {
+            controller.ModelState.AddModelError("some-key", "some-error");
+
+            var result = (await controller.EditTieredPriceTier(model.CatalogueItemId, model.CataloguePriceId, model.TierId!.Value, model)).As<ViewResult>();
+
+            result.Should().NotBeNull();
+            result.Model.Should().BeEquivalentTo(model);
+        }
+
+        [Theory]
+        [CommonAutoData]
+        public static async Task Post_EditTieredPriceTier_IsInfiniteRange(
+            AddEditTieredPriceTierModel model,
+            [Frozen] Mock<ISolutionListPriceService> solutionListPriceService,
+            CatalogueSolutionListPriceController controller)
+        {
+            model.IsInfiniteRange = true;
+
+            _ = await controller.EditTieredPriceTier(model.CatalogueItemId, model.CataloguePriceId, model.TierId!.Value, model);
+
+            solutionListPriceService.Verify(
+                s => s.UpdateListPriceTier(
+                    model.CatalogueItemId,
+                    model.CataloguePriceId,
+                    model.TierId!.Value,
+                    model.Price!.Value,
+                    model.LowerRange!.Value,
+                    null),
+                Times.Once());
+        }
+
+        [Theory]
+        [CommonAutoData]
+        public static async Task Post_EditTieredPriceTier_IsNotInfiniteRange(
+            AddEditTieredPriceTierModel model,
+            [Frozen] Mock<ISolutionListPriceService> solutionListPriceService,
+            CatalogueSolutionListPriceController controller)
+        {
+            model.IsInfiniteRange = false;
+
+            _ = await controller.EditTieredPriceTier(model.CatalogueItemId, model.CataloguePriceId, model.TierId!.Value, model);
+
+            solutionListPriceService.Verify(
+                s => s.UpdateListPriceTier(
+                    model.CatalogueItemId,
+                    model.CataloguePriceId,
+                    model.TierId!.Value,
+                    model.Price!.Value,
+                    model.LowerRange!.Value,
+                    model.UpperRange),
+                Times.Once());
+        }
+
+        [Theory]
+        [CommonAutoData]
+        public static async Task Post_EditTieredPriceTier_IsEditing_Redirects(
+            AddEditTieredPriceTierModel model,
+            [Frozen] Mock<ISolutionListPriceService> solutionListPriceService,
+            CatalogueSolutionListPriceController controller)
+        {
+            model.IsEditing = true;
+            model.IsInfiniteRange = true;
+
+            var result = (await controller.EditTieredPriceTier(model.CatalogueItemId, model.CataloguePriceId, model.TierId!.Value, model)).As<RedirectToActionResult>();
+
+            solutionListPriceService.Verify(
+                s => s.UpdateListPriceTier(
+                    model.CatalogueItemId,
+                    model.CataloguePriceId,
+                    model.TierId!.Value,
+                    model.Price!.Value,
+                    model.LowerRange!.Value,
+                    null),
+                Times.Once());
+
+            result.Should().NotBeNull();
+            result.ActionName.Should().Be(nameof(controller.EditTieredListPrice));
+        }
+
+        [Theory]
+        [CommonAutoData]
+        public static async Task Post_EditTieredPriceTier_IsNotEditing_Redirects(
+            AddEditTieredPriceTierModel model,
+            [Frozen] Mock<ISolutionListPriceService> solutionListPriceService,
+            CatalogueSolutionListPriceController controller)
+        {
+            model.IsEditing = false;
+            model.IsInfiniteRange = true;
+
+            var result = (await controller.EditTieredPriceTier(model.CatalogueItemId, model.CataloguePriceId, model.TierId!.Value, model)).As<RedirectToActionResult>();
+
+            solutionListPriceService.Verify(
+                s => s.UpdateListPriceTier(
+                    model.CatalogueItemId,
+                    model.CataloguePriceId,
+                    model.TierId!.Value,
+                    model.Price!.Value,
+                    model.LowerRange!.Value,
+                    null),
+                Times.Once());
+
+            result.Should().NotBeNull();
+            result.ActionName.Should().Be(nameof(controller.TieredPriceTiers));
+        }
+
+        [Theory]
+        [CommonAutoData]
+        public static async Task Get_EditTierPrice_SolutionNotFound(
+            CatalogueItemId solutionId,
+            int cataloguePriceId,
+            int tierId,
+            [Frozen] Mock<ISolutionListPriceService> solutionListPriceService,
+            CatalogueSolutionListPriceController controller)
+        {
+            solutionListPriceService.Setup(s => s.GetSolutionWithListPrices(solutionId))
+                .ReturnsAsync((CatalogueItem)null);
+
+            var result = (await controller.EditTierPrice(solutionId, cataloguePriceId, tierId, 0)).As<NotFoundResult>();
+
+            result.Should().NotBeNull();
+        }
+
+        [Theory]
+        [CommonAutoData]
+        public static async Task Get_EditTierPrice_PriceNotFound(
+            Solution solution,
+            int cataloguePriceId,
+            int tierId,
+            [Frozen] Mock<ISolutionListPriceService> solutionListPriceService,
+            CatalogueSolutionListPriceController controller)
+        {
+            solutionListPriceService.Setup(s => s.GetSolutionWithListPrices(solution.CatalogueItemId))
+                .ReturnsAsync(solution.CatalogueItem);
+
+            var result = (await controller.EditTierPrice(solution.CatalogueItemId, cataloguePriceId, tierId, 0)).As<NotFoundResult>();
+
+            result.Should().NotBeNull();
+        }
+
+        [Theory]
+        [CommonAutoData]
+        public static async Task Get_EditTierPrice_TierNotFound(
+            Solution solution,
+            CataloguePrice price,
+            int tierId,
+            [Frozen] Mock<ISolutionListPriceService> solutionListPriceService,
+            CatalogueSolutionListPriceController controller)
+        {
+            solution.CatalogueItem.CataloguePrices.Add(price);
+
+            solutionListPriceService.Setup(s => s.GetSolutionWithListPrices(solution.CatalogueItemId))
+                .ReturnsAsync(solution.CatalogueItem);
+
+            var result = (await controller.EditTierPrice(solution.CatalogueItemId, price.CataloguePriceId, tierId, 0)).As<NotFoundResult>();
+
+            result.Should().NotBeNull();
+        }
+
+        [Theory]
+        [CommonAutoData]
+        public static async Task Get_EditTierPrice_ReturnsViewWithModel(
+            Solution solution,
+            CataloguePrice price,
+            CataloguePriceTier tier,
+            [Frozen] Mock<ISolutionListPriceService> solutionListPriceService,
+            CatalogueSolutionListPriceController controller)
+        {
+            price.CataloguePriceTiers.Add(tier);
+            solution.CatalogueItem.CataloguePrices.Add(price);
+
+            var model = new EditTierPriceModel(solution.CatalogueItem, price, tier)
+            {
+                TierIndex = 0,
+            };
+
+            solutionListPriceService.Setup(s => s.GetSolutionWithListPrices(solution.CatalogueItemId))
+                .ReturnsAsync(solution.CatalogueItem);
+
+            var result = (await controller.EditTierPrice(solution.CatalogueItemId, price.CataloguePriceId, tier.Id, model.TierIndex)).As<ViewResult>();
+
+            result.Should().NotBeNull();
+            result.Model.Should().BeEquivalentTo(model, opt => opt.Excluding(m => m.BackLink));
+        }
+
+        [Theory]
+        [CommonAutoData]
+        public static async Task Post_EditTierPrice_InvalidModel_ReturnsView(
+            CatalogueItemId solutionId,
+            int cataloguePriceId,
+            int tierId,
+            EditTierPriceModel model,
+            CatalogueSolutionListPriceController controller)
+        {
+            controller.ModelState.AddModelError("some-key", "some-error");
+
+            var result = (await controller.EditTierPrice(solutionId, cataloguePriceId, tierId, model)).As<ViewResult>();
+
+            result.Should().NotBeNull();
+            result.Model.Should().BeEquivalentTo(model);
+        }
+
+        [Theory]
+        [CommonAutoData]
+        public static async Task Post_EditTierPrice_Redirects(
+            CatalogueItemId solutionId,
+            int cataloguePriceId,
+            int tierId,
+            EditTierPriceModel model,
+            [Frozen] Mock<ISolutionListPriceService> service,
+            CatalogueSolutionListPriceController controller)
+        {
+            var result = (await controller.EditTierPrice(solutionId, cataloguePriceId, tierId, model)).As<RedirectToActionResult>();
+
+            service.Verify(s => s.UpdateTierPrice(solutionId, cataloguePriceId, tierId, model.Price!.Value), Times.Once());
+
+            result.Should().NotBeNull();
+        }
+
+        [Theory]
+        [CommonAutoData]
+        public static async Task Get_DeleteListPrice_ReturnsViewWithModel(
+            Solution solution,
+            int cataloguePriceId,
+            [Frozen] Mock<ISolutionListPriceService> service,
+            CatalogueSolutionListPriceController controller)
+        {
+            service.Setup(s => s.GetSolutionWithListPrices(solution.CatalogueItemId))
+                .ReturnsAsync(solution.CatalogueItem);
+
+            var model = new DeleteItemConfirmationModel(
+                "Delete list price",
+                solution.CatalogueItem.Name,
+                "This list price will be deleted");
+
+            var result = (await controller.DeleteListPrice(solution.CatalogueItemId, cataloguePriceId)).As<ViewResult>();
+
+            result.Should().NotBeNull();
+            result.Model.Should().BeEquivalentTo(model, opt => opt.Excluding(m => m.BackLink));
+        }
+
+        [Theory]
+        [CommonAutoData]
+        public static async Task Post_DeleteListPrice_Redirects(
+            CatalogueItemId solutionId,
+            int cataloguePriceId,
+            DeleteItemConfirmationModel model,
+            [Frozen] Mock<ISolutionListPriceService> solutionListPriceService,
+            CatalogueSolutionListPriceController controller)
+        {
+            var result = (await controller.DeleteListPrice(solutionId, cataloguePriceId, model)).As<RedirectToActionResult>();
+
+            solutionListPriceService.Verify(s => s.DeleteListPrice(solutionId, cataloguePriceId), Times.Once());
+
+            result.Should().NotBeNull();
+            result.ActionName.Should().Be(nameof(controller.Index));
+        }
+
+        [Theory]
+        [CommonAutoData]
+        public static async Task Get_DeleteTieredPriceTier_ReturnsViewWithModel(
+            Solution solution,
+            int cataloguePriceId,
+            int tierId,
+            [Frozen] Mock<ISolutionListPriceService> service,
+            CatalogueSolutionListPriceController controller)
+        {
+            service.Setup(s => s.GetSolutionWithListPrices(solution.CatalogueItemId))
+                .ReturnsAsync(solution.CatalogueItem);
+
+            var model = new DeleteItemConfirmationModel(
+                "Delete pricing tier",
+                solution.CatalogueItem.Name,
+                "This pricing tier will be deleted");
+
+            var result = (await controller.DeleteTieredPriceTier(solution.CatalogueItemId, cataloguePriceId, tierId)).As<ViewResult>();
+
+            result.Should().NotBeNull();
+            result.Model.Should().BeEquivalentTo(model, opt => opt.Excluding(m => m.BackLink));
+        }
+
+        [Theory]
+        [CommonAutoData]
+        public static async Task Post_DeleteTieredPriceTier_Redirects(
+            CatalogueItemId solutionId,
+            int cataloguePriceId,
+            int tierId,
+            DeleteItemConfirmationModel model,
+            [Frozen] Mock<ISolutionListPriceService> solutionListPriceService,
+            CatalogueSolutionListPriceController controller)
+        {
+            var result = (await controller.DeleteTieredPriceTier(solutionId, cataloguePriceId, tierId, model)).As<RedirectToActionResult>();
+
+            solutionListPriceService.Verify(s => s.DeletePriceTier(solutionId, cataloguePriceId, tierId), Times.Once());
+
+            result.Should().NotBeNull();
+            result.ActionName.Should().Be(nameof(controller.TieredPriceTiers));
+        }
+
+        [Theory]
+        [CommonAutoData]
+        public static async Task Post_DeleteTieredPriceTier_IsEditing_Redirects(
+            CatalogueItemId solutionId,
+            int cataloguePriceId,
+            int tierId,
+            DeleteItemConfirmationModel model,
+            [Frozen] Mock<ISolutionListPriceService> solutionListPriceService,
+            CatalogueSolutionListPriceController controller)
+        {
+            var result = (await controller.DeleteTieredPriceTier(solutionId, cataloguePriceId, tierId, model, true)).As<RedirectToActionResult>();
+
+            solutionListPriceService.Verify(s => s.DeletePriceTier(solutionId, cataloguePriceId, tierId), Times.Once());
+
+            result.Should().NotBeNull();
+            result.ActionName.Should().Be(nameof(controller.EditTieredListPrice));
         }
     }
 }

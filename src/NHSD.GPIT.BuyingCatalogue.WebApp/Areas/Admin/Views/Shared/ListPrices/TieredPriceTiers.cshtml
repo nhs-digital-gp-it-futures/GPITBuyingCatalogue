@@ -47,7 +47,12 @@
                                 @GetRange(tier)
                             </nhs-table-cell>
                             <nhs-table-cell>
-                                <a href="#">Edit</a>
+                                <a asp-action="@nameof(CatalogueSolutionListPriceController.EditTieredPriceTier)"
+                                   asp-controller="@typeof(CatalogueSolutionListPriceController).ControllerName()",
+                                   asp-route-solutionId="@Model.CatalogueItemId"
+                                   asp-route-cataloguePriceId="@tier.CataloguePriceId"
+                                   asp-route-tierId="@tier.Id"
+                                   data-test-id="edit-tier-price-@(i+1)">Edit</a>
                             </nhs-table-cell>
                         </nhs-table-row-container>
                     }

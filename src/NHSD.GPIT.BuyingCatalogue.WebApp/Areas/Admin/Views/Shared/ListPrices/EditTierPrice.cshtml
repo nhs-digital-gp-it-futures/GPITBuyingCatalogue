@@ -1,0 +1,28 @@
+﻿@using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.ListPriceModels
+@model EditTierPriceModel
+
+@{
+    ViewBag.Title = $"Edit Tier {Model.TierIndex} price";
+}
+
+<partial name="Partials/_BackLink" model="Model" />
+<div class="nhsuk-grid-row">
+    <div class="nhsuk-grid-column-two-thirds">
+        <nhs-validation-summary />
+        <nhs-page-title title="@ViewBag.Title"
+            caption="@Model.CatalogueItemName"
+            advice="Provide information about this tier.">
+        </nhs-page-title>
+
+        <form method="post">
+            <input type="hidden" asp-for="BackLink" />
+            <input type="hidden" asp-for="CatalogueItemName" />
+            <input type="hidden" asp-for="TierIndex" />
+            <input type="hidden" asp-for="Unit" />
+
+            <nhs-bookended-input asp-for="Price" label-text="Price" Suffix="@Model.Unit" label-hint="Provide the list price in pounds to a maximum of 4 decimal places." prefix="£" />
+
+            <nhs-submit-button />
+        </form>
+    </div>
+</div>

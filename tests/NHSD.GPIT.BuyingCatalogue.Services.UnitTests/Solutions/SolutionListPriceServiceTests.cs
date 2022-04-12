@@ -92,11 +92,17 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Solutions
 
         [Theory]
         [InMemoryDbAutoData]
-        public static Task UpdateListPrice_NullCataloguePrice_ThrowsArgumentNullException(
+        public static Task UpdateListPrice_NullPricingUnit_ThrowsArgumentNullException(
             Solution solution,
-            int cataloguePriceId,
+            CataloguePrice price,
             SolutionListPriceService service)
-            => Assert.ThrowsAsync<ArgumentNullException>(() => service.UpdateListPrice(solution.CatalogueItemId, cataloguePriceId, null));
+            => Assert.ThrowsAsync<ArgumentNullException>(() => service.UpdateListPrice(
+                solution.CatalogueItemId,
+                price.CataloguePriceId,
+                null,
+                price.ProvisioningType,
+                price.CataloguePriceCalculationType,
+                price.TimeUnit));
 
         [Theory]
         [InMemoryDbAutoData]
@@ -128,7 +134,13 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Solutions
             dbContext.CatalogueItems.Add(solution.CatalogueItem);
             dbContext.SaveChanges();
 
-            await service.UpdateListPrice(solution.CatalogueItemId, price.CataloguePriceId, priceUpdates);
+            await service.UpdateListPrice(
+                solution.CatalogueItemId,
+                price.CataloguePriceId,
+                priceUpdates.PricingUnit,
+                priceUpdates.ProvisioningType,
+                priceUpdates.CataloguePriceCalculationType,
+                priceUpdates.TimeUnit);
 
             price.ProvisioningType.Should().Be(priceUpdates.ProvisioningType);
             price.CataloguePriceCalculationType.Should().Be(priceUpdates.CataloguePriceCalculationType);
@@ -222,6 +234,119 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Solutions
 
             price.CataloguePriceTiers.Should().HaveCount(1);
             price.CataloguePriceTiers.Should().Contain(priceTier);
+        }
+
+        [Theory]
+        [InMemoryDbAutoData]
+        public static async Task UpdateListPriceTier_Valid_Updates(
+            Solution solution,
+            CataloguePrice price,
+            CataloguePriceTier tier,
+            CataloguePriceTier updatedTier,
+            [Frozen] BuyingCatalogueDbContext dbContext,
+            SolutionListPriceService service)
+        {
+            price.CataloguePriceTiers.Add(tier);
+            solution.CatalogueItem.CataloguePrices = new HashSet<CataloguePrice>
+            {
+                price,
+            };
+
+            dbContext.Add(solution.CatalogueItem);
+            dbContext.SaveChanges();
+
+            await service.UpdateListPriceTier(
+                solution.CatalogueItemId,
+                price.CataloguePriceId,
+                tier.Id,
+                updatedTier.Price,
+                updatedTier.LowerRange,
+                updatedTier.UpperRange);
+
+            tier.Price.Should().Be(updatedTier.Price);
+            tier.LowerRange.Should().Be(updatedTier.LowerRange);
+            tier.UpperRange.Should().Be(updatedTier.UpperRange);
+        }
+
+        [Theory]
+        [InMemoryDbAutoData]
+        public static async Task UpdateTierPrice_Valid_Updates(
+            Solution solution,
+            CataloguePrice price,
+            CataloguePriceTier tier,
+            CataloguePriceTier updatedTier,
+            [Frozen] BuyingCatalogueDbContext dbContext,
+            SolutionListPriceService service)
+        {
+            price.CataloguePriceTiers.Add(tier);
+            solution.CatalogueItem.CataloguePrices = new HashSet<CataloguePrice>
+            {
+                price,
+            };
+
+            dbContext.Add(solution.CatalogueItem);
+            dbContext.SaveChanges();
+
+            await service.UpdateTierPrice(
+                solution.CatalogueItemId,
+                price.CataloguePriceId,
+                tier.Id,
+                updatedTier.Price);
+
+            tier.Price.Should().Be(updatedTier.Price);
+        }
+
+        [Theory]
+        [InMemoryDbAutoData]
+        public static async Task DeleteListPrice_Valid_Deletes(
+            Solution solution,
+            CataloguePrice price,
+            [Frozen] BuyingCatalogueDbContext dbContext,
+            SolutionListPriceService service)
+        {
+            solution.CatalogueItem.CataloguePrices = new HashSet<CataloguePrice>
+            {
+                price,
+            };
+
+            dbContext.Add(solution.CatalogueItem);
+            dbContext.SaveChanges();
+
+            solution.CatalogueItem.CataloguePrices.Contains(price).Should().BeTrue();
+
+            await service.DeleteListPrice(
+                solution.CatalogueItemId,
+                price.CataloguePriceId);
+
+            solution.CatalogueItem.CataloguePrices.Contains(price).Should().BeFalse();
+        }
+
+        [Theory]
+        [InMemoryDbAutoData]
+        public static async Task DeletePriceTier_Valid_Deletes(
+            Solution solution,
+            CataloguePrice price,
+            CataloguePriceTier tier,
+            [Frozen] BuyingCatalogueDbContext dbContext,
+            SolutionListPriceService service)
+        {
+            price.CataloguePriceTiers.Add(tier);
+            solution.CatalogueItem.CataloguePrices = new HashSet<CataloguePrice>
+            {
+                price,
+            };
+
+            dbContext.Add(solution.CatalogueItem);
+            dbContext.SaveChanges();
+
+            price.CataloguePriceTiers.Contains(tier).Should().BeTrue();
+
+            await service.DeletePriceTier(
+                solution.CatalogueItemId,
+                price.CataloguePriceId,
+                tier.Id);
+
+            price.CataloguePriceTiers.Contains(tier).Should().BeFalse();
         }
     }
 }

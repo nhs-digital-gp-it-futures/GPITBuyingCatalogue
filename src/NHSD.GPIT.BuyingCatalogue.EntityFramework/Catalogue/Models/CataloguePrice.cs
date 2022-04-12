@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Users.Models;
@@ -46,6 +47,47 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models
         public string ToPriceUnitString()
         {
             return $"{PricingUnit?.Description ?? string.Empty} {(TimeUnit.HasValue ? TimeUnit.Value.Description() : string.Empty)}".Trim();
+        }
+
+        public bool HasTierRangeOverlap()
+        {
+            var tiers = CataloguePriceTiers.OrderBy(t => t.LowerRange).ToList();
+
+            for (int i = 0; i < tiers.Count; ++i)
+            {
+                if (i == (tiers.Count - 1))
+                    continue;
+
+                var current = tiers[i];
+                if (tiers.Any(t => t != current && t.UpperRange == current.UpperRange))
+                    return true;
+
+                var next = tiers[i + 1];
+
+                if ((next.LowerRange - current.UpperRange) < 1)
+                    return true;
+            }
+
+            return false;
+        }
+
+        public bool HasTierRangeGaps()
+        {
+            var tiers = CataloguePriceTiers.OrderBy(t => t.LowerRange).ToList();
+
+            for (int i = 0; i < tiers.Count; ++i)
+            {
+                if (i == (tiers.Count - 1))
+                    continue;
+
+                var next = tiers[i + 1];
+                var current = tiers[i];
+
+                if ((next.LowerRange - current.UpperRange) > 1)
+                    return true;
+            }
+
+            return false;
         }
     }
 }

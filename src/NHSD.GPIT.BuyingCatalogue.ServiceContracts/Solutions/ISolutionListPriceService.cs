@@ -10,10 +10,34 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions
 
         Task AddListPrice(CatalogueItemId solutionId, CataloguePrice cataloguePrice);
 
-        Task UpdateListPrice(CatalogueItemId solutionId, int cataloguePriceId, CataloguePrice cataloguePrice);
+        Task<CataloguePrice> UpdateListPrice(
+            CatalogueItemId solutionId,
+            int cataloguePriceId,
+            PricingUnit pricingUnit,
+            ProvisioningType provisioningType,
+            CataloguePriceCalculationType calculationType,
+            TimeUnit? timeUnit);
 
         Task AddListPriceTier(CatalogueItemId solutionId, int cataloguePriceId, CataloguePriceTier tier);
 
+        Task UpdateListPriceTier(
+            CatalogueItemId solutionId,
+            int cataloguePriceId,
+            int tierId,
+            decimal price,
+            int lowerRange,
+            int? upperRange);
+
+        Task UpdateTierPrice(
+            CatalogueItemId solutionId,
+            int cataloguePriceId,
+            int tierId,
+            decimal price);
+
         Task SetPublicationStatus(CatalogueItemId solutionId, int cataloguePriceId, PublicationStatus status);
+
+        Task DeleteListPrice(CatalogueItemId solutionId, int cataloguePriceId);
+
+        Task DeletePriceTier(CatalogueItemId solutionId, int cataloguePriceId, int tierId);
     }
 }

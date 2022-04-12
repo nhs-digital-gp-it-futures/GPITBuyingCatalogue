@@ -33,22 +33,30 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
             await dbContext.SaveChangesAsync();
         }
 
-        public async Task UpdateListPrice(CatalogueItemId solutionId, int cataloguePriceId, CataloguePrice cataloguePrice)
+        public async Task<CataloguePrice> UpdateListPrice(
+            CatalogueItemId solutionId,
+            int cataloguePriceId,
+            PricingUnit pricingUnit,
+            ProvisioningType provisioningType,
+            CataloguePriceCalculationType calculationType,
+            TimeUnit? timeUnit)
         {
-            if (cataloguePrice is null)
-                throw new ArgumentNullException(nameof(cataloguePrice));
+            if (pricingUnit is null)
+                throw new ArgumentNullException(nameof(pricingUnit));
 
             var solution = await GetSolutionWithListPrices(solutionId, true);
-            var price = solution.CataloguePrices.First(p => p.CataloguePriceId == cataloguePriceId);
+            var price = solution.CataloguePrices.Single(p => p.CataloguePriceId == cataloguePriceId);
 
-            price.ProvisioningType = cataloguePrice.ProvisioningType;
-            price.CataloguePriceCalculationType = cataloguePrice.CataloguePriceCalculationType;
-            price.TimeUnit = cataloguePrice.TimeUnit;
-            price.PricingUnit.RangeDescription = cataloguePrice.PricingUnit.RangeDescription;
-            price.PricingUnit.Definition = cataloguePrice.PricingUnit.Definition;
-            price.PricingUnit.Description = cataloguePrice.PricingUnit.Description;
+            price.ProvisioningType = provisioningType;
+            price.CataloguePriceCalculationType = calculationType;
+            price.TimeUnit = timeUnit;
+            price.PricingUnit.RangeDescription = pricingUnit.RangeDescription;
+            price.PricingUnit.Definition = pricingUnit.Definition;
+            price.PricingUnit.Description = pricingUnit.Description;
 
             await dbContext.SaveChangesAsync();
+
+            return price;
         }
 
         public async Task SetPublicationStatus(CatalogueItemId solutionId, int cataloguePriceId, PublicationStatus status)
@@ -74,6 +82,70 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
 
             cataloguePrice.CataloguePriceTiers.Add(tier);
 
+            await dbContext.SaveChangesAsync();
+        }
+
+        public async Task UpdateListPriceTier(
+            CatalogueItemId solutionId,
+            int cataloguePriceId,
+            int tierId,
+            decimal price,
+            int lowerRange,
+            int? upperRange)
+        {
+            var cataloguePrice = await dbContext
+                .CataloguePrices
+                .Include(p => p.CataloguePriceTiers)
+                .SingleAsync(cp => cp.CatalogueItemId == solutionId && cp.CataloguePriceId == cataloguePriceId);
+
+            var tier = cataloguePrice.CataloguePriceTiers.Single(p => p.Id == tierId);
+
+            tier.Price = price;
+            tier.LowerRange = lowerRange;
+            tier.UpperRange = upperRange;
+
+            await dbContext.SaveChangesAsync();
+        }
+
+        public async Task UpdateTierPrice(CatalogueItemId solutionId, int cataloguePriceId, int tierId, decimal price)
+        {
+            var cataloguePrice = await dbContext
+                   .CataloguePrices
+                   .Include(p => p.CataloguePriceTiers)
+                   .SingleAsync(cp => cp.CatalogueItemId == solutionId && cp.CataloguePriceId == cataloguePriceId);
+
+            var tier = cataloguePrice.CataloguePriceTiers.Single(p => p.Id == tierId);
+
+            tier.Price = price;
+
+            await dbContext.SaveChangesAsync();
+        }
+
+        public async Task DeleteListPrice(CatalogueItemId solutionId, int cataloguePriceId)
+        {
+            var solution = await GetSolutionWithListPrices(solutionId, true);
+            var price = solution.CataloguePrices.SingleOrDefault(p => p.CataloguePriceId == cataloguePriceId);
+
+            if (price is null)
+                return;
+
+            dbContext.Remove(price);
+            await dbContext.SaveChangesAsync();
+        }
+
+        public async Task DeletePriceTier(CatalogueItemId solutionId, int cataloguePriceId, int tierId)
+        {
+            var cataloguePrice = await dbContext
+                   .CataloguePrices
+                   .Include(p => p.CataloguePriceTiers)
+                   .SingleAsync(cp => cp.CatalogueItemId == solutionId && cp.CataloguePriceId == cataloguePriceId);
+
+            var tier = cataloguePrice.CataloguePriceTiers.SingleOrDefault(p => p.Id == tierId);
+
+            if (tier is null)
+                return;
+
+            dbContext.Remove(tier);
             await dbContext.SaveChangesAsync();
         }
 

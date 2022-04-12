@@ -1,0 +1,30 @@
+﻿@model NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.ListPriceModels.DeleteItemConfirmationModel
+@{
+    ViewBag.Title = $"{Model.Title}?";
+}
+
+<partial name="Partials/_BackLink" model="Model" />
+<div class="nhsuk-grid-row">
+    <div class="nhsuk-grid-column-two-thirds">
+        <nhs-validation-summary />
+        <nhs-page-title title="@ViewBag.Title"
+                        caption="@Model.CatalogueItemName"
+                        advice="@Model.Advice" />
+        <div class="nhsuk-grid-row">
+            <div class="nhsuk-grid-column-two-thirds">
+                <form method="post">
+                    <input type="hidden" asp-for="Title" />
+                    <input type="hidden" asp-for="Advice" />
+                    <input type="hidden" asp-for="BackLink" />
+                    <div>
+                        <nhs-submit-button text="@Model.Title" />
+                    </div>
+                    <div>
+                        <a href="@Model.BackLink">Cancel</a>
+                    </div>
+                </form>
+
+            </div>
+        </div>
+    </div>
+</div>

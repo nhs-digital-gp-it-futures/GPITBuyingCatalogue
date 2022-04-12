@@ -20,7 +20,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.ListPrice
         {
             var fixture = new Fixture().Customize(new AutoMoqCustomization());
             var assertion = new GuardClauseAssertion(fixture);
-            var constructors = typeof(DuplicateListPriceService).GetConstructors();
+            var constructors = typeof(ListPriceService).GetConstructors();
 
             assertion.Verify(constructors);
         }
@@ -31,7 +31,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.ListPrice
             Solution solution,
             CataloguePrice price,
             [Frozen] BuyingCatalogueDbContext dbContext,
-            DuplicateListPriceService service)
+            ListPriceService service)
         {
             dbContext.CatalogueItems.Add(solution.CatalogueItem);
             dbContext.SaveChanges();
@@ -52,7 +52,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.ListPrice
         public static async Task HasDuplicateTieredPrice_Self_ReturnsFalse(
             Solution solution,
             [Frozen] BuyingCatalogueDbContext dbContext,
-            DuplicateListPriceService service)
+            ListPriceService service)
         {
             var price = new CataloguePrice
             {
@@ -92,7 +92,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.ListPrice
         public static async Task HasDuplicateTieredPrice_Duplicate_ReturnsTrue(
             Solution solution,
             [Frozen] BuyingCatalogueDbContext dbContext,
-            DuplicateListPriceService service)
+            ListPriceService service)
         {
             var existingPrice = new CataloguePrice
             {
@@ -148,13 +148,14 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.ListPrice
             Solution solution,
             CataloguePriceTier priceTier,
             [Frozen] BuyingCatalogueDbContext dbContext,
-            DuplicateListPriceService service)
+            ListPriceService service)
         {
             dbContext.CatalogueItems.Add(solution.CatalogueItem);
             dbContext.SaveChanges();
 
             var result = await service.HasDuplicatePriceTier(
                 solution.CatalogueItemId,
+                null,
                 null,
                 priceTier.Price,
                 priceTier.LowerRange,
@@ -168,7 +169,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.ListPrice
         public static async Task HasDuplicatePriceTier_Duplicate_ReturnsTrue(
             Solution solution,
             [Frozen] BuyingCatalogueDbContext dbContext,
-            DuplicateListPriceService service)
+            ListPriceService service)
         {
             var existingPriceTier = new CataloguePriceTier
             {
@@ -211,6 +212,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.ListPrice
             var result = await service.HasDuplicatePriceTier(
                 solution.CatalogueItemId,
                 price.CataloguePriceId,
+                priceTier.Id,
                 priceTier.Price,
                 priceTier.LowerRange,
                 priceTier.UpperRange);
@@ -223,7 +225,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.ListPrice
         public static async Task HasDuplicatePriceTier_DifferentListPrice_ReturnsFalse(
             Solution solution,
             [Frozen] BuyingCatalogueDbContext dbContext,
-            DuplicateListPriceService service)
+            ListPriceService service)
         {
             var existingPriceTier = new CataloguePriceTier
             {
@@ -283,6 +285,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.ListPrice
             var result = await service.HasDuplicatePriceTier(
                 solution.CatalogueItemId,
                 firstPrice.CataloguePriceId,
+                priceTier.Id,
                 priceTier.Price,
                 priceTier.LowerRange,
                 priceTier.UpperRange);

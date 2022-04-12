@@ -984,7 +984,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
                             {
                                 Id = 4,
                                 RangeDescription = "Patients",
-                                Description = "per tiered accumalitive test patient",
+                                Description = "per tiered cumulative test patient",
                             },
                             TimeUnit = TimeUnit.PerYear,
                             CurrencyCode = "GBP",

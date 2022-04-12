@@ -1,8 +1,8 @@
 ﻿@using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.ListPriceModels
-@model AddTieredPriceTierModel
+@model AddEditTieredPriceTierModel
 
 @{
-    ViewBag.Title = "Add a pricing tier";
+    ViewBag.Title = Model.Title;
 }
 
 <partial name="Partials/_BackLink" model="Model" />
@@ -19,6 +19,8 @@
             <input type="hidden" asp-for="CataloguePriceId" />
             <input type="hidden" asp-for="CatalogueItemId" />
             <input type="hidden" asp-for="CatalogueItemName" />
+            <input type="hidden" asp-for="IsEditing" />
+            <input type="hidden" asp-for="Title" />
 
             <nhs-bookended-input asp-for="Price" label-text="Price" label-hint="Provide the list price in pounds to a maximum of 4 decimal places." prefix="£" />
 
@@ -27,12 +29,12 @@
             <nhs-fieldset-form-label asp-for="IsInfiniteRange" label-text="How would you like to define the upper range?" label-hint="Select one option." size="Small">
                 <nhs-radio-button-container>
                     <nhs-radio-button asp-for="IsInfiniteRange"
-                                      value="AddTieredPriceTierModel.AvailableRangeOptions[0]"
+                                      value="AddEditTieredPriceTierModel.AvailableRangeOptions[0]"
                                       value-name="Value"
                                       display-name="Name"
                                       index="0"></nhs-radio-button>
                     <nhs-radio-button asp-for="IsInfiniteRange"
-                                      value="AddTieredPriceTierModel.AvailableRangeOptions[1]"
+                                      value="AddEditTieredPriceTierModel.AvailableRangeOptions[1]"
                                       value-name="Value"
                                       display-name="Name"
                                       index="1">
@@ -43,5 +45,14 @@
 
             <nhs-submit-button />
         </form>
+
+        @if (Model.TierId is not null)
+        {
+            <vc:nhs-delete-button url="@Url.Action(
+                nameof(CatalogueSolutionListPriceController.DeleteTieredPriceTier),
+                typeof(CatalogueSolutionListPriceController).ControllerName(),
+                new { solutionId = Model.CatalogueItemId, cataloguePriceId = Model.CataloguePriceId, tierId = Model.TierId, isEditing = Model.IsEditing })"
+                text="Delete pricing tier"></vc:nhs-delete-button>
+        }
     </div>
 </div>
