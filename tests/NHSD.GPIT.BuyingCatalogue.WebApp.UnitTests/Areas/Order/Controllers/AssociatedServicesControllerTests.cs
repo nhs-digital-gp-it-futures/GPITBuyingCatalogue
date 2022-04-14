@@ -149,6 +149,46 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers
             {
                 InternalOrgId = internalOrgId,
                 CallOffId = callOffId,
+                AssociatedServicesOnly = true,
+            };
+
+            actualResult.Model.Should().BeEquivalentTo(expected, x => x.Excluding(o => o.BackLink));
+        }
+
+        [Theory]
+        [CommonAutoData]
+        public static async Task Post_SelectAssociatedServices_WithModelErrors_ReturnsExpectedResult(
+            string internalOrgId,
+            CallOffId callOffId,
+            EntityFramework.Ordering.Models.Order order,
+            List<CatalogueItem> services,
+            [Frozen] Mock<IOrderService> mockOrderService,
+            [Frozen] Mock<IAssociatedServicesService> mockAssociatedServicesService,
+            SelectServicesModel model,
+            AssociatedServicesController controller)
+        {
+            controller.ModelState.AddModelError("key", "errorMessage");
+
+            mockOrderService
+                .Setup(x => x.GetOrderThin(callOffId, internalOrgId))
+                .ReturnsAsync(order);
+
+            mockAssociatedServicesService
+                .Setup(x => x.GetPublishedAssociatedServicesForSupplier(order.SupplierId))
+                .ReturnsAsync(services);
+
+            var result = await controller.SelectAssociatedServices(internalOrgId, callOffId, model);
+
+            mockOrderService.VerifyAll();
+            mockAssociatedServicesService.VerifyAll();
+
+            var actualResult = result.Should().BeOfType<ViewResult>().Subject;
+
+            var expected = new SelectServicesModel(order, services, CatalogueItemType.AssociatedService)
+            {
+                InternalOrgId = internalOrgId,
+                CallOffId = callOffId,
+                AssociatedServicesOnly = true,
             };
 
             actualResult.Model.Should().BeEquivalentTo(expected, x => x.Excluding(o => o.BackLink));

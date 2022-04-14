@@ -8,6 +8,8 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Objects.Ordering
 
         public static By AdditionalServicesRequiredErrorMessage => By.Id("add-associated-services-error");
 
+        public static By SelectedServicesErrorMessage => By.Id("select-services-error");
+
         public static By ExistingServices => By.Id("existing-services");
 
         public static By ServicesToSelect => By.Id("services-to-select");

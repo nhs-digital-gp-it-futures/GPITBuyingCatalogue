@@ -75,23 +75,17 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
         [HttpGet("select")]
         public async Task<IActionResult> SelectAssociatedServices(string internalOrgId, CallOffId callOffId)
         {
-            var order = await orderService.GetOrderThin(callOffId, internalOrgId);
-            var associatedServices = await associatedServicesService.GetPublishedAssociatedServicesForSupplier(order.SupplierId);
-
-            return View(new SelectServicesModel(order, associatedServices, CatalogueItemType.AssociatedService)
-            {
-                BackLink = Url.Action(
-                    nameof(OrderController.Order),
-                    typeof(OrderController).ControllerName(),
-                    new { internalOrgId, callOffId }),
-                InternalOrgId = internalOrgId,
-                CallOffId = callOffId,
-            });
+            return View(await GetModel(internalOrgId, callOffId));
         }
 
         [HttpPost("select")]
         public async Task<IActionResult> SelectAssociatedServices(string internalOrgId, CallOffId callOffId, SelectServicesModel model)
         {
+            if (!ModelState.IsValid)
+            {
+                return View(await GetModel(internalOrgId, callOffId));
+            }
+
             var serviceIds = model.Services?
                 .Where(x => x.IsSelected)
                 .Select(x => x.CatalogueItemId)
@@ -114,6 +108,23 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
                 nameof(OrderController.Order),
                 typeof(OrderController).ControllerName(),
                 new { internalOrgId, callOffId });
+        }
+
+        private async Task<SelectServicesModel> GetModel(string internalOrgId, CallOffId callOffId)
+        {
+            var order = await orderService.GetOrderThin(callOffId, internalOrgId);
+            var associatedServices = await associatedServicesService.GetPublishedAssociatedServicesForSupplier(order.SupplierId);
+
+            return new SelectServicesModel(order, associatedServices, CatalogueItemType.AssociatedService)
+            {
+                BackLink = Url.Action(
+                    nameof(OrderController.Order),
+                    typeof(OrderController).ControllerName(),
+                    new { internalOrgId, callOffId }),
+                InternalOrgId = internalOrgId,
+                CallOffId = callOffId,
+                AssociatedServicesOnly = order.AssociatedServicesOnly,
+            };
         }
     }
 }
