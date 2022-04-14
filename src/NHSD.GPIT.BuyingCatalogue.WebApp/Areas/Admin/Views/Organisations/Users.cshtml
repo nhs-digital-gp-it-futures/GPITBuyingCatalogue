@@ -47,7 +47,7 @@
         {
             <div data-test-id="users-table">
                 <nhs-table>
-                    @foreach (var heading in new[] { "Name", "Telephone number", "Email address", "Account Status", "Action" })
+                    @foreach (var heading in new[] { "Name", "Email address", "Account Status", "Action" })
                     {
                         <nhs-table-column>@heading</nhs-table-column>
                     }
@@ -58,11 +58,6 @@
                             <nhs-table-cell>
                                 <span data-test-id="user-name">
                                     @item.GetDisplayName()
-                                </span>
-                            </nhs-table-cell>
-                            <nhs-table-cell>
-                                <span data-test-id="user-phone">
-                                    @item.PhoneNumber
                                 </span>
                             </nhs-table-cell>
                             <nhs-table-cell>

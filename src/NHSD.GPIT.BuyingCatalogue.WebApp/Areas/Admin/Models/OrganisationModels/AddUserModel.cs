@@ -23,9 +23,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.OrganisationModels
         [StringLength(100)]
         public string LastName { get; set; }
 
-        [StringLength(35)]
-        public string TelephoneNumber { get; set; }
-
         [StringLength(256)]
         public string EmailAddress { get; set; }
     }
