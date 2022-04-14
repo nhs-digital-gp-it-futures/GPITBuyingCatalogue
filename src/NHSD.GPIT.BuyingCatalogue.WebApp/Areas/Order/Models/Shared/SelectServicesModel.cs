@@ -28,7 +28,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.Shared
 
             var existingServiceIds = existingServices.Select(x => x.CatalogueItem.Id);
 
-            ExistingServices = existingServices.Select(x => x.CatalogueItem.Name);
+            ExistingServices = existingServices
+                .Select(x => x.CatalogueItem.Name)
+                .ToList();
+
             Services = services
                 .Where(x => !existingServiceIds.Contains(x.Id))
                 .Select(x => new ServiceModel
@@ -43,7 +46,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.Shared
 
         public CallOffId CallOffId { get; set; }
 
-        public IEnumerable<string> ExistingServices { get; set; }
+        public bool AssociatedServicesOnly { get; set; }
+
+        public List<string> ExistingServices { get; set; }
 
         public List<ServiceModel> Services { get; set; }
     }

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using FluentAssertions;
+using Microsoft.EntityFrameworkCore;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Objects.Ordering;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Utils;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.TestBases;
@@ -9,6 +10,7 @@ using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers;
+using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Validators.Shared;
 using Xunit;
 
 namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering.AssociatedServices
@@ -84,6 +86,30 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering.AssociatedServices
         }
 
         [Fact]
+        public void SelectAssociatedServices_NoSelectionMade_AssociatedServicesOnly_ExpectedResult()
+        {
+            var context = GetEndToEndDbContext();
+
+            context.Orders.First(x => x.Id == OrderId).AssociatedServicesOnly = true;
+            context.SaveChanges();
+
+            Driver.Navigate().Refresh();
+
+            CommonActions.ClickSave();
+
+            CommonActions.PageLoadedCorrectGetIndex(
+                typeof(AssociatedServicesController),
+                nameof(AssociatedServicesController.SelectAssociatedServices)).Should().BeTrue();
+
+            CommonActions.ErrorSummaryDisplayed().Should().BeTrue();
+            CommonActions.ErrorSummaryLinksExist().Should().BeTrue();
+
+            CommonActions.ElementShowingCorrectErrorMessage(
+                AssociatedServicesObjects.SelectedServicesErrorMessage,
+                $"Error:{SelectServicesModelValidator.NoSelectionMadeErrorMessage}").Should().BeTrue();
+        }
+
+        [Fact]
         public void SelectAssociatedServices_NoSelectionMade_ExpectedResult()
         {
             CommonActions.ClickSave();
@@ -117,6 +143,8 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering.AssociatedServices
                 context.OrderItems.Remove(service);
             }
 
+            context.Orders.First(x => x.Id == OrderId).AssociatedServicesOnly = false;
+
             context.SaveChanges();
         }
 
@@ -125,6 +153,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering.AssociatedServices
             var context = GetEndToEndDbContext();
 
             return context.OrderItems
+                .Include(x => x.CatalogueItem)
                 .Where(x => x.OrderId == OrderId
                     && x.CatalogueItem.CatalogueItemType == CatalogueItemType.AssociatedService)
                 .ToList();
