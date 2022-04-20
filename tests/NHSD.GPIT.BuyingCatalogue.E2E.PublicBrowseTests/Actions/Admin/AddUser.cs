@@ -20,11 +20,6 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Actions.Admin
             Driver.FindElement(Objects.Admin.AddUserObjects.LastName).SendKeys(lastName);
         }
 
-        internal void EnterTelephoneNumber(string telephoneNumber)
-        {
-            Driver.FindElement(Objects.Admin.AddUserObjects.TelephoneNumber).SendKeys(telephoneNumber);
-        }
-
         internal void EnterEmailAddress(string emailAddress)
         {
             Driver.FindElement(Objects.Admin.AddUserObjects.Email).SendKeys(emailAddress);

@@ -38,7 +38,6 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.Users
 
             CommonActions.ElementIsDisplayed(UserObjects.FirstNameDisplay).Should().BeTrue();
             CommonActions.ElementIsDisplayed(UserObjects.LastNameDisplay).Should().BeTrue();
-            CommonActions.ElementIsDisplayed(UserObjects.TelephoneNumberDisplay).Should().BeTrue();
             CommonActions.ElementIsDisplayed(UserObjects.EmailDisplay).Should().BeTrue();
 
             CommonActions.ElementIsDisplayed(UserObjects.OrganisationDisplay).Should().BeTrue();
@@ -66,7 +65,6 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.Users
 
             CommonActions.ElementTextEqualTo(UserObjects.FirstNameDisplay, user.FirstName).Should().BeTrue();
             CommonActions.ElementTextEqualTo(UserObjects.LastNameDisplay, user.LastName).Should().BeTrue();
-            CommonActions.ElementTextEqualTo(UserObjects.TelephoneNumberDisplay, user.PhoneNumber ?? string.Empty).Should().BeTrue();
             CommonActions.ElementTextEqualTo(UserObjects.EmailDisplay, user.Email).Should().BeTrue();
             CommonActions.ElementTextEqualTo(UserObjects.OrganisationDisplay, user.PrimaryOrganisation.Name).Should().BeTrue();
             CommonActions.ElementTextEqualTo(UserObjects.AccountTypeDisplay, organisationFunction).Should().BeTrue();

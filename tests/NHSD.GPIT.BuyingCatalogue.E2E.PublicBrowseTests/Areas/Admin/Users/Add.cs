@@ -29,7 +29,6 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.Users
             CommonActions.ElementIsDisplayed(UserObjects.SelectedOrganisation).Should().BeTrue();
             CommonActions.ElementIsDisplayed(UserObjects.FirstNameInput).Should().BeTrue();
             CommonActions.ElementIsDisplayed(UserObjects.LastNameInput).Should().BeTrue();
-            CommonActions.ElementIsDisplayed(UserObjects.TelephoneNumberInput).Should().BeTrue();
             CommonActions.ElementIsDisplayed(UserObjects.EmailInput).Should().BeTrue();
             CommonActions.ElementIsDisplayed(UserObjects.AccountTypeRadioButtons).Should().BeTrue();
             CommonActions.ElementIsDisplayed(UserObjects.AccountStatusRadioButtons).Should().BeTrue();
