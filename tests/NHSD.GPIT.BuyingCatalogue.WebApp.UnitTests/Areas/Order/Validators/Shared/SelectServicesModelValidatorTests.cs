@@ -2,8 +2,8 @@
 using System.Linq;
 using FluentValidation.TestHelper;
 using NHSD.GPIT.BuyingCatalogue.Test.Framework.AutoFixtureCustomisations;
-using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.Shared;
-using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Validators.Shared;
+using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.SolutionSelection;
+using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Validators.SolutionSelection;
 using Xunit;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Validators.Shared
