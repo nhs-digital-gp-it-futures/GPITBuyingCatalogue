@@ -49,29 +49,25 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models
             return $"{PricingUnit?.Description ?? string.Empty} {(TimeUnit.HasValue ? TimeUnit.Value.Description() : string.Empty)}".Trim();
         }
 
-        public bool HasTierRangeOverlap()
+        public (bool HasOverlap, int? LowerTierIndex, int? UpperTierIndex) HasTierRangeOverlap()
         {
             var tiers = CataloguePriceTiers.OrderBy(t => t.LowerRange).ToList();
-
             for (int i = 0; i < tiers.Count; ++i)
             {
                 if (i == (tiers.Count - 1))
                     continue;
 
                 var current = tiers[i];
-                if (tiers.Any(t => t != current && t.UpperRange == current.UpperRange))
-                    return true;
-
                 var next = tiers[i + 1];
 
-                if ((next.LowerRange - current.UpperRange) < 1)
-                    return true;
+                if ((next.LowerRange - current.UpperRange) != 1)
+                    return (true, i + 1, i + 2);
             }
 
-            return false;
+            return (false, null, null);
         }
 
-        public bool HasTierRangeGaps()
+        public (bool HasGaps, int? LowerTierIndex, int? UpperTierIndex) HasTierRangeGaps()
         {
             var tiers = CataloguePriceTiers.OrderBy(t => t.LowerRange).ToList();
 
@@ -80,14 +76,14 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models
                 if (i == (tiers.Count - 1))
                     continue;
 
-                var next = tiers[i + 1];
                 var current = tiers[i];
+                var next = tiers[i + 1];
 
                 if ((next.LowerRange - current.UpperRange) > 1)
-                    return true;
+                    return (true, i + 1, i + 2);
             }
 
-            return false;
+            return (false, null, null);
         }
     }
 }

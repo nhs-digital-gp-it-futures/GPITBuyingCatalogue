@@ -609,7 +609,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.ListPrices.Solution
 
             CommonActions.ErrorSummaryDisplayed().Should().BeTrue();
             CommonActions.ErrorSummaryLinksExist().Should().BeTrue();
-            CommonActions.ElementShowingCorrectErrorMessage(TieredPriceTiersObjects.PublicationStatusInputError, "Error: A tier’s lower range overlaps with another tier’s upper range").Should().BeTrue();
+            CommonActions.ElementShowingCorrectErrorMessage(AddEditTieredListPriceObjects.PublicationStatusInputError, "Error: Tier 1's lower range overlaps with Tier 2's upper range").Should().BeTrue();
 
             catalogueItem.CataloguePrices.Remove(price);
             context.SaveChanges();
@@ -669,7 +669,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.ListPrices.Solution
 
             CommonActions.ErrorSummaryDisplayed().Should().BeTrue();
             CommonActions.ErrorSummaryLinksExist().Should().BeTrue();
-            CommonActions.ElementShowingCorrectErrorMessage(TieredPriceTiersObjects.PublicationStatusInputError, "Error: There’s a gap between a tier’s upper range and another tier’s lower range").Should().BeTrue();
+            CommonActions.ElementShowingCorrectErrorMessage(AddEditTieredListPriceObjects.PublicationStatusInputError, "Error: There's a gap between Tier 1's upper range and Tier 2's lower range").Should().BeTrue();
 
             catalogueItem.CataloguePrices.Remove(price);
             context.SaveChanges();

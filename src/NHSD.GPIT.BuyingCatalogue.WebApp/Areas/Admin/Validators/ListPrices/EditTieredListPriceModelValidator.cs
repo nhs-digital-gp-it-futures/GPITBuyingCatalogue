@@ -39,10 +39,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Validators.ListPrices
                 .WithMessage(SharedListPriceValidationErrors.InvalidStartingRangeError)
                 .MustAsync(HaveTierWithInfiniteRange)
                 .WithMessage(SharedListPriceValidationErrors.InvalidEndingRangeError)
-                .MustAsync(NotHaveRangeGaps)
-                .WithMessage(SharedListPriceValidationErrors.RangeGapError)
-                .MustAsync(NotHaveRangeOverlap)
-                .WithMessage(SharedListPriceValidationErrors.RangeOverlapError)
+                .CustomAsync(EnsureNoGapsOrOverlap)
                 .When(m => m.SelectedPublicationStatus == PublicationStatus.Published);
         }
 
@@ -90,24 +87,29 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Validators.ListPrices
             return price.CataloguePriceTiers.Any(p => p.UpperRange is null);
         }
 
-        private async Task<bool> NotHaveRangeOverlap(EditTieredListPriceModel model, PublicationStatus status, CancellationToken token)
+        private async Task EnsureNoGapsOrOverlap(PublicationStatus status, ValidationContext<EditTieredListPriceModel> validationContext, CancellationToken token)
         {
             _ = status;
             _ = token;
 
-            var price = await GetCataloguePrice(model.CatalogueItemId, model.CataloguePriceId);
-
-            return !price.HasTierRangeOverlap();
-        }
-
-        private async Task<bool> NotHaveRangeGaps(EditTieredListPriceModel model, PublicationStatus status, CancellationToken token)
-        {
-            _ = status;
-            _ = token;
+            var model = validationContext.InstanceToValidate;
 
             var price = await GetCataloguePrice(model.CatalogueItemId, model.CataloguePriceId);
 
-            return !price.HasTierRangeGaps();
+            (bool hasGaps, int? gapLowerTierIndex, int? gapUpperTierIndex) = price.HasTierRangeGaps();
+            (bool hasOverlap, int? overlapLowerTierIndex, int? overlapUpperTierIndex) = price.HasTierRangeOverlap();
+            if (hasGaps)
+            {
+                validationContext.AddFailure(string.Format(SharedListPriceValidationErrors.RangeGapError, gapLowerTierIndex, gapUpperTierIndex));
+
+                return;
+            }
+            else if (hasOverlap)
+            {
+                validationContext.AddFailure(string.Format(SharedListPriceValidationErrors.RangeOverlapError, overlapLowerTierIndex, overlapUpperTierIndex));
+
+                return;
+            }
         }
     }
 }

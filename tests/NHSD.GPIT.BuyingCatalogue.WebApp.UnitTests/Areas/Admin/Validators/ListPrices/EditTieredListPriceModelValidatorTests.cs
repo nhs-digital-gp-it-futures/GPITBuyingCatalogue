@@ -143,7 +143,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators.List
             var result = validator.TestValidate(model);
 
             result.ShouldHaveValidationErrorFor(m => m.SelectedPublicationStatus)
-                .WithErrorMessage(SharedListPriceValidationErrors.RangeGapError);
+                .WithErrorMessage(string.Format(SharedListPriceValidationErrors.RangeGapError, "1", "2"));
         }
 
         [Theory]
@@ -182,12 +182,12 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators.List
             var result = validator.TestValidate(model);
 
             result.ShouldHaveValidationErrorFor(m => m.SelectedPublicationStatus)
-                .WithErrorMessage(SharedListPriceValidationErrors.RangeOverlapError);
+                .WithErrorMessage(string.Format(SharedListPriceValidationErrors.RangeOverlapError, "1", "2"));
         }
 
         [Theory]
         [CommonAutoData]
-        public static void Validate_MultipleInfiniteRanges_SetsModelError(
+        public static void Validate_Valid_NoModelErrors(
             Solution solution,
             CataloguePrice price,
             CataloguePriceTier firstTier,
@@ -197,23 +197,18 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators.List
             [Frozen] Mock<ISolutionListPriceService> service,
             EditTieredListPriceModelValidator validator)
         {
-            model.SelectedPublicationStatus = PublicationStatus.Published;
-
             firstTier.LowerRange = 1;
-            firstTier.UpperRange = null;
+            firstTier.UpperRange = 9;
 
-            secondTier.LowerRange = 8;
-            secondTier.UpperRange = 9;
+            secondTier.LowerRange = 10;
+            secondTier.UpperRange = 19;
 
-            thirdTier.LowerRange = 10;
+            thirdTier.LowerRange = 20;
             thirdTier.UpperRange = null;
 
-            price.CataloguePriceTiers = new HashSet<CataloguePriceTier>
-            {
-                firstTier,
-                secondTier,
-                thirdTier,
-            };
+            price.CataloguePriceTiers = new HashSet<CataloguePriceTier>();
+            price.CataloguePriceTiers.Add(firstTier);
+            price.CataloguePriceTiers.Add(secondTier);
 
             solution.CatalogueItem.CataloguePrices.Add(price);
 
@@ -225,8 +220,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators.List
 
             var result = validator.TestValidate(model);
 
-            result.ShouldHaveValidationErrorFor(m => m.SelectedPublicationStatus)
-                .WithErrorMessage(SharedListPriceValidationErrors.RangeOverlapError);
+            result.ShouldNotHaveAnyValidationErrors();
         }
     }
 }

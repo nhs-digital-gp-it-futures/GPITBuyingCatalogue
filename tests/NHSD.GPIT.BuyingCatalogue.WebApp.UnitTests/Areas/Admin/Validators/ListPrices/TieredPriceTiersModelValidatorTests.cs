@@ -143,7 +143,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators.List
             var result = validator.TestValidate(model);
 
             result.ShouldHaveValidationErrorFor(m => m.SelectedPublicationStatus)
-                .WithErrorMessage(SharedListPriceValidationErrors.RangeGapError);
+                .WithErrorMessage(string.Format(SharedListPriceValidationErrors.RangeGapError, "1", "2"));
         }
 
         [Theory]
@@ -182,51 +182,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators.List
             var result = validator.TestValidate(model);
 
             result.ShouldHaveValidationErrorFor(m => m.SelectedPublicationStatus)
-                .WithErrorMessage(SharedListPriceValidationErrors.RangeOverlapError);
-        }
-
-        [Theory]
-        [CommonAutoData]
-        public static void Validate_MultipleInfiniteRanges_SetsModelError(
-            Solution solution,
-            CataloguePrice price,
-            CataloguePriceTier firstTier,
-            CataloguePriceTier secondTier,
-            CataloguePriceTier thirdTier,
-            TieredPriceTiersModel model,
-            [Frozen] Mock<ISolutionListPriceService> service,
-            TieredPriceTiersModelValidator validator)
-        {
-            model.SelectedPublicationStatus = PublicationStatus.Published;
-
-            firstTier.LowerRange = 1;
-            firstTier.UpperRange = null;
-
-            secondTier.LowerRange = 8;
-            secondTier.UpperRange = 9;
-
-            thirdTier.LowerRange = 10;
-            thirdTier.UpperRange = null;
-
-            price.CataloguePriceTiers = new HashSet<CataloguePriceTier>
-            {
-                firstTier,
-                secondTier,
-                thirdTier,
-            };
-
-            solution.CatalogueItem.CataloguePrices.Add(price);
-
-            model.CatalogueItemId = solution.CatalogueItemId;
-            model.CataloguePriceId = price.CataloguePriceId;
-
-            service.Setup(s => s.GetSolutionWithListPrices(solution.CatalogueItemId))
-                .ReturnsAsync(solution.CatalogueItem);
-
-            var result = validator.TestValidate(model);
-
-            result.ShouldHaveValidationErrorFor(m => m.SelectedPublicationStatus)
-                .WithErrorMessage(SharedListPriceValidationErrors.RangeOverlapError);
+                .WithErrorMessage(string.Format(SharedListPriceValidationErrors.RangeOverlapError, "1", "2"));
         }
 
         [Theory]

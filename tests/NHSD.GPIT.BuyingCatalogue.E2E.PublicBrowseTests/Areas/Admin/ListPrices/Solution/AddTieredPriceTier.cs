@@ -116,7 +116,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.ListPrices.Solution
                 new Dictionary<string, string> { { "isEditing", true.ToString() } });
 
             CommonActions.ElementAddValue(AddTieredPriceTierObjects.PriceInput, "3.10");
-            CommonActions.ElementAddValue(AddTieredPriceTierObjects.LowerRangeInput, "1");
+            CommonActions.ElementAddValue(AddTieredPriceTierObjects.LowerRangeInput, "15");
             CommonActions.ClickRadioButtonWithText("Infinite upper range");
 
             CommonActions.ClickSave();
