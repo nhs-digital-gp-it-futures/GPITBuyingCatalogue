@@ -50,7 +50,6 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.Organisations
 
             CommonActions.ElementIsDisplayed(AddUserObjects.FirstName).Should().BeTrue();
             CommonActions.ElementIsDisplayed(AddUserObjects.LastName).Should().BeTrue();
-            CommonActions.ElementIsDisplayed(AddUserObjects.TelephoneNumber).Should().BeTrue();
             CommonActions.ElementIsDisplayed(AddUserObjects.Email).Should().BeTrue();
         }
 
@@ -71,7 +70,6 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.Organisations
 
             AdminPages.AddUser.EnterFirstName(user.FirstName);
             AdminPages.AddUser.EnterLastName(user.LastName);
-            AdminPages.AddUser.EnterTelephoneNumber(user.TelephoneNumber);
             AdminPages.AddUser.EnterEmailAddress(user.EmailAddress);
 
             CommonActions.ClickSave();
@@ -107,7 +105,6 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.Organisations
 
             AdminPages.AddUser.EnterFirstName(user.FirstName);
             AdminPages.AddUser.EnterLastName(user.LastName);
-            AdminPages.AddUser.EnterTelephoneNumber(user.TelephoneNumber);
             AdminPages.AddUser.EnterEmailAddress("test");
 
             CommonActions.ClickSave();
@@ -131,7 +128,6 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.Organisations
 
             AdminPages.AddUser.EnterFirstName(user.FirstName);
             AdminPages.AddUser.EnterLastName(user.LastName);
-            AdminPages.AddUser.EnterTelephoneNumber(user.PhoneNumber);
             AdminPages.AddUser.EnterEmailAddress(user.Email);
 
             CommonActions.ClickSave();

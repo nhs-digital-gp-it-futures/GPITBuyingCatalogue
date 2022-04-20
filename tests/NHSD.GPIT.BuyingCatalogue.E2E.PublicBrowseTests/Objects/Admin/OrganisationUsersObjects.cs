@@ -17,8 +17,6 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Objects.Admin
 
         public static By UserName => ByExtensions.DataTestId("user-name");
 
-        public static By UserPhone => ByExtensions.DataTestId("user-phone");
-
         public static By UserEmail => ByExtensions.DataTestId("user-email");
 
         public static By UserStatusLink => ByExtensions.DataTestId("user-status-link");

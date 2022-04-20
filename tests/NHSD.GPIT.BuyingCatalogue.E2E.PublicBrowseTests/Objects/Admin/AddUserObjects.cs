@@ -17,10 +17,6 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Objects.Admin
 
         internal static By LastNameError => By.Id("LastName-error");
 
-        internal static By TelephoneNumber => By.Id("TelephoneNumber");
-
-        internal static By TelephoneNumberError => By.Id("TelephoneNumber-error");
-
         internal static By Email => By.Id("EmailAddress");
 
         internal static By EmailError => By.Id("EmailAddress-error");
