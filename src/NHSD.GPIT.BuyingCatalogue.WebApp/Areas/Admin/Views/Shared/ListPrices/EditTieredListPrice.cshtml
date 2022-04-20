@@ -97,6 +97,7 @@
             }
             else
             {
+                <br />
                 <vc:nhs-action-link text="Add a pricing tier" url="@Url.Action(
                     nameof(CatalogueSolutionListPriceController.AddTieredPriceTier),
                     typeof(CatalogueSolutionListPriceController).ControllerName(),
@@ -134,7 +135,7 @@
                     </nhs-table>
                 </div>
             }
-
+            <br />
             <nhs-fieldset-form-label label-text="Publication status" size="Medium" asp-for="SelectedPublicationStatus">
                 <nhs-radio-buttons
                     asp-for="SelectedPublicationStatus"

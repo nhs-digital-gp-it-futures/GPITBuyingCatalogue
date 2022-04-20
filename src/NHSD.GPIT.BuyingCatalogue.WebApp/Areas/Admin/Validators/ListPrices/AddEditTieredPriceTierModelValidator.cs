@@ -64,7 +64,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Validators.ListPrices
                 model.CatalogueItemId,
                 model.CataloguePriceId,
                 model.TierId,
-                model.Price!.Value,
                 model.LowerRange!.Value,
                 model.UpperRange);
         }

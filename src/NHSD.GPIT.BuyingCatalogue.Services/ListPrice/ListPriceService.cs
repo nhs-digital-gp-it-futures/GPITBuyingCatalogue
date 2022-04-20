@@ -40,14 +40,12 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.ListPrice
             CatalogueItemId catalogueItemId,
             int? cataloguePriceId,
             int? tierId,
-            decimal price,
             int lowerRange,
             int? upperRange)
             => await dbContext
             .CataloguePriceTiers
             .Where(p => p.CataloguePriceId == cataloguePriceId && p.CataloguePrice.CatalogueItemId == catalogueItemId && p.Id != tierId)
-            .AnyAsync(p => p.Price == price
-                && p.LowerRange == lowerRange
+            .AnyAsync(p => p.LowerRange == lowerRange
                 && p.UpperRange == upperRange);
 
         public async Task<int> GetNumberOfListPrices(CatalogueItemId catalogueItemId, int cataloguePriceId)

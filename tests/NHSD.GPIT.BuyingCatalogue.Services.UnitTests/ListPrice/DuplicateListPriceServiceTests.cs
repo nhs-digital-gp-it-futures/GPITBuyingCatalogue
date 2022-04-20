@@ -157,7 +157,6 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.ListPrice
                 solution.CatalogueItemId,
                 null,
                 null,
-                priceTier.Price,
                 priceTier.LowerRange,
                 priceTier.UpperRange);
 
@@ -213,84 +212,10 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.ListPrice
                 solution.CatalogueItemId,
                 price.CataloguePriceId,
                 priceTier.Id,
-                priceTier.Price,
                 priceTier.LowerRange,
                 priceTier.UpperRange);
 
             result.Should().BeTrue();
-        }
-
-        [Theory]
-        [InMemoryDbAutoData]
-        public static async Task HasDuplicatePriceTier_DifferentListPrice_ReturnsFalse(
-            Solution solution,
-            [Frozen] BuyingCatalogueDbContext dbContext,
-            ListPriceService service)
-        {
-            var existingPriceTier = new CataloguePriceTier
-            {
-                LowerRange = 1,
-                Price = 3.21M,
-            };
-
-            var priceTier = new CataloguePriceTier
-            {
-                LowerRange = 1,
-                Price = 3.21M,
-            };
-
-            var firstPrice = new CataloguePrice
-            {
-                CataloguePriceCalculationType = CataloguePriceCalculationType.Volume,
-                CataloguePriceType = CataloguePriceType.Tiered,
-                ProvisioningType = ProvisioningType.Declarative,
-                TimeUnit = null,
-                CurrencyCode = "GBP",
-                PricingUnit = new PricingUnit
-                {
-                    Definition = "Definition",
-                    Description = "Description",
-                    RangeDescription = "Range",
-                },
-                CataloguePriceTiers = new HashSet<CataloguePriceTier>(),
-            };
-
-            var secondPrice = new CataloguePrice
-            {
-                CataloguePriceCalculationType = CataloguePriceCalculationType.Volume,
-                CataloguePriceType = CataloguePriceType.Tiered,
-                ProvisioningType = ProvisioningType.Declarative,
-                TimeUnit = null,
-                CurrencyCode = "GBP",
-                PricingUnit = new PricingUnit
-                {
-                    Definition = "Definition",
-                    Description = "Description",
-                    RangeDescription = "Range",
-                },
-                CataloguePriceTiers = new HashSet<CataloguePriceTier>
-                {
-                    existingPriceTier,
-                },
-            };
-
-            solution.CatalogueItem.CataloguePrices = new HashSet<CataloguePrice>
-            {
-                firstPrice,
-                secondPrice,
-            };
-            dbContext.CatalogueItems.Add(solution.CatalogueItem);
-            dbContext.SaveChanges();
-
-            var result = await service.HasDuplicatePriceTier(
-                solution.CatalogueItemId,
-                firstPrice.CataloguePriceId,
-                priceTier.Id,
-                priceTier.Price,
-                priceTier.LowerRange,
-                priceTier.UpperRange);
-
-            result.Should().BeFalse();
         }
     }
 }

@@ -18,7 +18,6 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.ListPrice
             CatalogueItemId catalogueItemId,
             int? cataloguePriceId,
             int? tierId,
-            decimal price,
             int lowerRange,
             int? upperRange);
 

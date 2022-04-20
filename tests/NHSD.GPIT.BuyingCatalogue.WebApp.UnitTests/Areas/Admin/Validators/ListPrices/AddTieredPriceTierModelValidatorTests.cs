@@ -127,7 +127,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators.List
                 model.CatalogueItemId,
                 model.CataloguePriceId,
                 model.TierId,
-                model.Price!.Value,
                 model.LowerRange!.Value,
                 model.UpperRange)).ReturnsAsync(true);
 
@@ -153,7 +152,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators.List
                 model.CatalogueItemId,
                 model.CataloguePriceId,
                 model.TierId,
-                model.Price!.Value,
                 model.LowerRange!.Value,
                 model.UpperRange)).ReturnsAsync(true);
 
@@ -179,7 +177,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators.List
                 model.CatalogueItemId,
                 model.CataloguePriceId,
                 model.TierId,
-                model.Price!.Value,
                 model.LowerRange!.Value,
                 model.UpperRange)).ReturnsAsync(false);
 
