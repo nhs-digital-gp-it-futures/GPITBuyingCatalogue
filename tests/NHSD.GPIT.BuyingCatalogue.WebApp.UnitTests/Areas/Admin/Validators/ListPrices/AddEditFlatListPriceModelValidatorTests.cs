@@ -5,22 +5,24 @@ using NHSD.GPIT.BuyingCatalogue.ServiceContracts.ListPrice;
 using NHSD.GPIT.BuyingCatalogue.Test.Framework.AutoFixtureCustomisations;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.ListPriceModels;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Validators.ListPrices;
+using NHSD.GPIT.BuyingCatalogue.WebApp.Validation;
 using Xunit;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators.ListPrices
 {
-    public static class AddTieredListPriceModelValidatorTests
+    public static class AddEditFlatListPriceModelValidatorTests
     {
         [Theory]
         [CommonAutoData]
         public static void Validate_InvalidModel_SetsModelError(
-            AddTieredListPriceModel model,
-            AddTieredListPriceModelValidator validator)
+            AddEditFlatListPriceModel model,
+            AddEditFlatListPriceModelValidator validator)
         {
             model.SelectedProvisioningType = null;
             model.SelectedCalculationType = null;
+            model.Price = null;
             model.UnitDescription = null;
-            model.RangeDefinition = null;
+            model.SelectedPublicationStatus = null;
 
             var result = validator.TestValidate(model);
 
@@ -30,54 +32,85 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators.List
             result.ShouldHaveValidationErrorFor(m => m.SelectedCalculationType)
                 .WithErrorMessage(SharedListPriceValidationErrors.SelectedCalculationTypeError);
 
+            result.ShouldHaveValidationErrorFor(m => m.Price)
+                .WithErrorMessage(FluentValidationExtensions.PriceEmptyError);
+
             result.ShouldHaveValidationErrorFor(m => m.UnitDescription)
                 .WithErrorMessage(SharedListPriceValidationErrors.UnitError);
 
-            result.ShouldHaveValidationErrorFor(m => m.RangeDefinition)
-                .WithErrorMessage(AddTieredListPriceModelValidator.RangeDefinitionError);
+            result.ShouldHaveValidationErrorFor(m => m.SelectedPublicationStatus)
+                .WithErrorMessage(AddEditFlatListPriceModelValidator.SelectedPublicationStatusError);
+        }
+
+        [Theory]
+        [CommonAutoData]
+        public static void Validate_NegativePrice_SetsModelError(
+            AddEditFlatListPriceModel model,
+            AddEditFlatListPriceModelValidator validator)
+        {
+            model.Price = -1;
+
+            var result = validator.TestValidate(model);
+
+            result.ShouldHaveValidationErrorFor(m => m.Price)
+                .WithErrorMessage(FluentValidationExtensions.PriceNegativeError);
+        }
+
+        [Theory]
+        [CommonAutoData]
+        public static void Validate_PriceGreaterThan4DecimalPlaces_SetsModelError(
+                AddEditFlatListPriceModel model,
+                AddEditFlatListPriceModelValidator validator)
+        {
+            model.Price = 1.23456M;
+
+            var result = validator.TestValidate(model);
+
+            result.ShouldHaveValidationErrorFor(m => m.Price)
+                .WithErrorMessage(FluentValidationExtensions.PriceGreaterThanDecimalPlacesError);
         }
 
         [Theory]
         [CommonAutoData]
         public static void Validate_Duplicate_SetsModelError(
-            AddTieredListPriceModel model,
+            AddEditFlatListPriceModel model,
             [Frozen] Mock<IListPriceService> service,
-            AddTieredListPriceModelValidator validator)
+            AddEditFlatListPriceModelValidator validator)
         {
             model.SelectedCalculationType = EntityFramework.Catalogue.Models.CataloguePriceCalculationType.Volume;
             model.SelectedProvisioningType = EntityFramework.Catalogue.Models.ProvisioningType.Declarative;
 
-            service.Setup(s => s.HasDuplicateTieredPrice(
+            service.Setup(s => s.HasDuplicateFlatPrice(
                 model.CatalogueItemId,
                 model.CataloguePriceId,
                 model.SelectedProvisioningType!.Value,
                 model.SelectedCalculationType!.Value,
-                model.UnitDescription,
-                model.RangeDefinition)).ReturnsAsync(true);
+                model.Price!.Value,
+                model.UnitDescription)).ReturnsAsync(true);
 
             var result = validator.TestValidate(model);
 
-            result.ShouldHaveValidationErrorFor("SelectedProvisioningType|SelectedCalculationType|UnitDescription|RangeDefinition")
+            result.ShouldHaveValidationErrorFor("SelectedProvisioningType|SelectedCalculationType|Price|UnitDescription")
                 .WithErrorMessage(SharedListPriceValidationErrors.DuplicateListPriceError);
         }
 
         [Theory]
         [CommonAutoData]
         public static void Validate_Valid_NoModelError(
-            AddTieredListPriceModel model,
+            AddEditFlatListPriceModel model,
             [Frozen] Mock<IListPriceService> service,
-            AddTieredListPriceModelValidator validator)
+            AddEditFlatListPriceModelValidator validator)
         {
             model.SelectedCalculationType = EntityFramework.Catalogue.Models.CataloguePriceCalculationType.Volume;
             model.SelectedProvisioningType = EntityFramework.Catalogue.Models.ProvisioningType.Declarative;
 
-            service.Setup(s => s.HasDuplicateTieredPrice(
+            service.Setup(s => s.HasDuplicateFlatPrice(
                 model.CatalogueItemId,
                 model.CataloguePriceId,
                 model.SelectedProvisioningType!.Value,
                 model.SelectedCalculationType!.Value,
-                model.UnitDescription,
-                model.RangeDefinition)).ReturnsAsync(false);
+                model.Price!.Value,
+                model.UnitDescription)).ReturnsAsync(false);
 
             var result = validator.TestValidate(model);
 

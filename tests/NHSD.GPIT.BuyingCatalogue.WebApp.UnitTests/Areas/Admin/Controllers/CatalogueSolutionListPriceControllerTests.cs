@@ -127,7 +127,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
             var result = controller.ListPriceType(solution.CatalogueItemId, model).As<RedirectToActionResult>();
 
             result.Should().NotBeNull();
-            result.ActionName.Should().Be(nameof(controller.ListPriceType));
+            result.ActionName.Should().Be(nameof(controller.AddFlatListPrice));
         }
 
         [Theory]
@@ -1062,6 +1062,82 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
 
             result.Should().NotBeNull();
             result.ActionName.Should().Be(nameof(controller.EditTieredListPrice));
+        }
+
+        [Theory]
+        [CommonAutoData]
+        public static async Task Get_AddFlatListPrice_SolutionNotFound(
+            CatalogueItemId solutionId,
+            [Frozen] Mock<ISolutionListPriceService> solutionListPriceService,
+            CatalogueSolutionListPriceController controller)
+        {
+            solutionListPriceService.Setup(s => s.GetSolutionWithListPrices(solutionId))
+                .ReturnsAsync((CatalogueItem)null);
+
+            var result = (await controller.AddFlatListPrice(solutionId)).As<NotFoundResult>();
+
+            result.Should().NotBeNull();
+        }
+
+        [Theory]
+        [CommonAutoData]
+        public static async Task Get_AddFlatListPrice_ReturnsViewWithModel(
+            Solution solution,
+            [Frozen] Mock<ISolutionListPriceService> solutionListPriceService,
+            CatalogueSolutionListPriceController controller)
+        {
+            var model = new AddEditFlatListPriceModel(solution.CatalogueItem);
+
+            solutionListPriceService.Setup(s => s.GetSolutionWithListPrices(solution.CatalogueItemId))
+                .ReturnsAsync(solution.CatalogueItem);
+
+            var result = (await controller.AddFlatListPrice(solution.CatalogueItemId)).As<ViewResult>();
+
+            result.Should().NotBeNull();
+            result.Model.Should().BeEquivalentTo(model, opt => opt.Excluding(m => m.BackLink));
+        }
+
+        [Theory]
+        [CommonAutoData]
+        public static async Task Post_AddFlatListPrice_InvalidModel(
+            CatalogueItemId solutionId,
+            AddEditFlatListPriceModel model,
+            CatalogueSolutionListPriceController controller)
+        {
+            controller.ModelState.AddModelError("some-key", "some-error");
+
+            var result = (await controller.AddFlatListPrice(solutionId, model)).As<ViewResult>();
+
+            result.Should().NotBeNull();
+            result.Model.Should().BeEquivalentTo(model);
+        }
+
+        [Theory]
+        [CommonAutoData]
+        public static async Task Post_AddFlatListPrice_Redirects(
+            CatalogueItemId solutionId,
+            AddEditFlatListPriceModel model,
+            [Frozen] Mock<ISolutionListPriceService> solutionListPriceService,
+            CatalogueSolutionListPriceController controller)
+        {
+            var result = (await controller.AddFlatListPrice(solutionId, model)).As<RedirectToActionResult>();
+
+            var pricingUnit = model.GetPricingUnit();
+            solutionListPriceService.Verify(
+                s => s.AddListPrice(
+                    solutionId,
+                    It.Is<CataloguePrice>(
+                        p => p.CataloguePriceType == CataloguePriceType.Flat
+                            && p.ProvisioningType == model.SelectedProvisioningType!.Value
+                            && p.TimeUnit == model.GetTimeUnit()
+                            && p.PricingUnit.Description == pricingUnit.Description
+                            && p.PricingUnit.Definition == pricingUnit.Definition
+                            && p.CataloguePriceCalculationType == model.SelectedCalculationType!.Value
+                            && p.PublishedStatus == model.SelectedPublicationStatus!.Value
+                            && p.CataloguePriceTiers.First().Price == model.Price!.Value)));
+
+            result.Should().NotBeNull();
+            result.ActionName.Should().Be(nameof(controller.Index));
         }
     }
 }

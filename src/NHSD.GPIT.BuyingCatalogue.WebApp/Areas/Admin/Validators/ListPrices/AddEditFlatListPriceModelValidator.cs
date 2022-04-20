@@ -7,12 +7,13 @@ using NHSD.GPIT.BuyingCatalogue.WebApp.Validation;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Validators.ListPrices
 {
-    public class AddTieredListPriceModelValidator : AbstractValidator<AddTieredListPriceModel>
+    public class AddEditFlatListPriceModelValidator : AbstractValidator<AddEditFlatListPriceModel>
     {
-        internal const string RangeDefinitionError = "Enter a range definition";
+        internal const string SelectedPublicationStatusError = "Select a publication status";
+        internal const string DuplicateListPriceError = "A list price with these details already exists";
         private readonly IListPriceService listPriceService;
 
-        public AddTieredListPriceModelValidator(IListPriceService listPriceService)
+        public AddEditFlatListPriceModelValidator(IListPriceService listPriceService)
         {
             this.listPriceService = listPriceService;
 
@@ -24,36 +25,39 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Validators.ListPrices
                 .NotNull()
                 .WithMessage(SharedListPriceValidationErrors.SelectedCalculationTypeError);
 
+            RuleFor(m => m.Price)
+                .IsValidPrice();
+
             RuleFor(m => m.UnitDescription)
                 .NotEmpty()
                 .WithMessage(SharedListPriceValidationErrors.UnitError);
 
-            RuleFor(m => m.RangeDefinition)
-                .NotEmpty()
-                .WithMessage(RangeDefinitionError);
+            RuleFor(m => m.SelectedPublicationStatus)
+                .NotNull()
+                .WithMessage(SelectedPublicationStatusError);
 
             RuleFor(m => m)
                 .MustAsync(NotBeADuplicate)
                 .WithMessage(SharedListPriceValidationErrors.DuplicateListPriceError)
-                .Unless(m => m.SelectedProvisioningType is null || m.SelectedCalculationType is null)
+                .Unless(m => m.SelectedProvisioningType is null || m.SelectedCalculationType is null || m.Price is null)
                 .OverridePropertyName(
                     m => m.SelectedProvisioningType,
                     m => m.SelectedCalculationType,
-                    m => m.UnitDescription,
-                    m => m.RangeDefinition);
+                    m => m.Price,
+                    m => m.UnitDescription);
         }
 
-        private async Task<bool> NotBeADuplicate(AddTieredListPriceModel model, CancellationToken token)
+        private async Task<bool> NotBeADuplicate(AddEditFlatListPriceModel model, CancellationToken token)
         {
             _ = token;
 
-            return !await listPriceService.HasDuplicateTieredPrice(
+            return !await listPriceService.HasDuplicateFlatPrice(
                 model.CatalogueItemId,
                 model.CataloguePriceId,
                 model.SelectedProvisioningType!.Value,
                 model.SelectedCalculationType!.Value,
-                model.UnitDescription,
-                model.RangeDefinition);
+                model.Price!.Value,
+                model.UnitDescription);
         }
     }
 }

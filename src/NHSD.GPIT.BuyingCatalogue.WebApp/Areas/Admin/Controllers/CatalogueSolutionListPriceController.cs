@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
@@ -67,7 +68,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
             var redirectAction = model.SelectedCataloguePriceType switch
             {
                 CataloguePriceType.Tiered => nameof(AddTieredListPrice),
-                CataloguePriceType.Flat => nameof(ListPriceType),
+                CataloguePriceType.Flat => nameof(AddFlatListPrice),
                 _ => string.Empty,
             };
 
@@ -99,6 +100,52 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
             var cataloguePrice = await AddOrUpdateCataloguePrice(solutionId, model);
 
             return RedirectToAction(nameof(TieredPriceTiers), new { solutionId, cataloguePriceId = model.CataloguePriceId ?? cataloguePrice.CataloguePriceId });
+        }
+
+        [HttpGet("add-flat-list-price")]
+        public async Task<IActionResult> AddFlatListPrice(CatalogueItemId solutionId)
+        {
+            var solution = await solutionListPriceService.GetSolutionWithListPrices(solutionId);
+            if (solution is null)
+                return NotFound();
+
+            var model = new AddEditFlatListPriceModel(solution)
+            {
+                BackLink = Url.Action(nameof(ListPriceType), new { solutionId }),
+            };
+
+            return View("ListPrices/AddEditFlatListPrice", model);
+        }
+
+        [HttpPost("add-flat-list-price")]
+        public async Task<IActionResult> AddFlatListPrice(CatalogueItemId solutionId, AddEditFlatListPriceModel model)
+        {
+            if (!ModelState.IsValid)
+                return View("ListPrices/AddEditFlatListPrice", model);
+
+            var price = new CataloguePrice
+            {
+                CataloguePriceType = CataloguePriceType.Flat,
+                ProvisioningType = model.SelectedProvisioningType!.Value,
+                TimeUnit = model.GetTimeUnit(),
+                PricingUnit = model.GetPricingUnit(),
+                CataloguePriceCalculationType = model.SelectedCalculationType!.Value,
+                CataloguePriceTiers = new HashSet<CataloguePriceTier>
+                {
+                    new()
+                    {
+                        Price = model.Price!.Value,
+                        LowerRange = 1,
+                        UpperRange = null,
+                    },
+                },
+                CurrencyCode = "GBP",
+                PublishedStatus = model.SelectedPublicationStatus!.Value,
+            };
+
+            await solutionListPriceService.AddListPrice(solutionId, price);
+
+            return RedirectToAction(nameof(Index), new { solutionId });
         }
 
         [HttpGet("{cataloguePriceId}/tiers")]
