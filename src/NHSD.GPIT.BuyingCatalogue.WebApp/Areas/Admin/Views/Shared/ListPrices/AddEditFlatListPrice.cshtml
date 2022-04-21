@@ -3,7 +3,9 @@
 @model AddEditFlatListPriceModel
 
 @{
-    ViewBag.Title = "Add a flat list price";
+    ViewBag.Title = Model.CataloguePriceId is null
+        ? "Add a flat list price"
+        : "Edit a flat list price";
 }
 
 <partial name="Partials/_BackLink" model="Model" />

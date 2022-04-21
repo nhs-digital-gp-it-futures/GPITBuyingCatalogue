@@ -8,7 +8,6 @@ using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions;
-using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.ListPriceModels;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
@@ -227,7 +226,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
             return RedirectToAction(actionName, new { solutionId, cataloguePriceId });
         }
 
-        [HttpGet("{cataloguePriceId}/edit")]
+        [HttpGet("tiered/{cataloguePriceId}/edit")]
         public async Task<IActionResult> EditTieredListPrice(CatalogueItemId solutionId, int cataloguePriceId)
         {
             var solution = await solutionListPriceService.GetSolutionWithListPrices(solutionId);
@@ -246,7 +245,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
             return View("ListPrices/EditTieredListPrice", model);
         }
 
-        [HttpPost("{cataloguePriceId}/edit")]
+        [HttpPost("tiered/{cataloguePriceId}/edit")]
         public async Task<IActionResult> EditTieredListPrice(CatalogueItemId solutionId, int cataloguePriceId, EditTieredListPriceModel model)
         {
             var solution = await solutionListPriceService.GetSolutionWithListPrices(solutionId);
@@ -269,6 +268,49 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
 
             if (model.SelectedPublicationStatus != price.PublishedStatus)
                 await solutionListPriceService.SetPublicationStatus(solutionId, cataloguePriceId, model.SelectedPublicationStatus);
+
+            return RedirectToAction(nameof(Index), new { solutionId });
+        }
+
+        [HttpGet("flat/{cataloguePriceId}/edit")]
+        public async Task<IActionResult> EditFlatListPrice(CatalogueItemId solutionId, int cataloguePriceId)
+        {
+            var solution = await solutionListPriceService.GetSolutionWithListPrices(solutionId);
+            if (solution is null)
+                return NotFound();
+
+            var price = solution.CataloguePrices.SingleOrDefault(p => p.CataloguePriceId == cataloguePriceId);
+            if (price is null)
+                return NotFound();
+
+            var model = new AddEditFlatListPriceModel(solution, price)
+            {
+                BackLink = Url.Action(nameof(Index), new { solutionId }),
+            };
+
+            return View("ListPrices/AddEditFlatListPrice", model);
+        }
+
+        [HttpPost("flat/{cataloguePriceId}/edit")]
+        public async Task<IActionResult> EditFlatListPrice(CatalogueItemId solutionId, int cataloguePriceId, AddEditFlatListPriceModel model)
+        {
+            if (!ModelState.IsValid)
+                return View("ListPrices/AddEditFlatListPrice", model);
+
+            var solution = await solutionListPriceService.GetSolutionWithListPrices(solutionId);
+            var price = solution.CataloguePrices.SingleOrDefault(p => p.CataloguePriceId == cataloguePriceId);
+
+            await solutionListPriceService.UpdateListPrice(
+                solutionId,
+                cataloguePriceId,
+                model.GetPricingUnit(),
+                model.SelectedProvisioningType!.Value,
+                model.SelectedCalculationType!.Value,
+                model.GetTimeUnit(),
+                model.Price!.Value);
+
+            if (model.SelectedPublicationStatus!.Value != price.PublishedStatus)
+                await solutionListPriceService.SetPublicationStatus(solutionId, cataloguePriceId, model.SelectedPublicationStatus!.Value);
 
             return RedirectToAction(nameof(Index), new { solutionId });
         }

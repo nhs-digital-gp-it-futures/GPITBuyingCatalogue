@@ -59,6 +59,34 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
             return price;
         }
 
+        public async Task UpdateListPrice(
+            CatalogueItemId solutionId,
+            int cataloguePriceId,
+            PricingUnit pricingUnit,
+            ProvisioningType provisioningType,
+            CataloguePriceCalculationType calculationType,
+            TimeUnit? timeUnit,
+            decimal price)
+        {
+            if (pricingUnit is null)
+                throw new ArgumentNullException(nameof(pricingUnit));
+
+            var solution = await GetSolutionWithListPrices(solutionId, true);
+            var cataloguePrice = solution.CataloguePrices.Single(p => p.CataloguePriceId == cataloguePriceId);
+
+            cataloguePrice.ProvisioningType = provisioningType;
+            cataloguePrice.CataloguePriceCalculationType = calculationType;
+            cataloguePrice.TimeUnit = timeUnit;
+            cataloguePrice.PricingUnit.RangeDescription = pricingUnit.RangeDescription;
+            cataloguePrice.PricingUnit.Definition = pricingUnit.Definition;
+            cataloguePrice.PricingUnit.Description = pricingUnit.Description;
+
+            var tier = cataloguePrice.CataloguePriceTiers.First();
+            tier.Price = price;
+
+            await dbContext.SaveChangesAsync();
+        }
+
         public async Task SetPublicationStatus(CatalogueItemId solutionId, int cataloguePriceId, PublicationStatus status)
         {
             var cataloguePrice = await dbContext

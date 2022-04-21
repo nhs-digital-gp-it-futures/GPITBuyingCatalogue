@@ -18,6 +18,15 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions
             CataloguePriceCalculationType calculationType,
             TimeUnit? timeUnit);
 
+        Task UpdateListPrice(
+            CatalogueItemId solutionId,
+            int cataloguePriceId,
+            PricingUnit pricingUnit,
+            ProvisioningType provisioningType,
+            CataloguePriceCalculationType calculationType,
+            TimeUnit? timeUnit,
+            decimal price);
+
         Task AddListPriceTier(CatalogueItemId solutionId, int cataloguePriceId, CataloguePriceTier tier);
 
         Task UpdateListPriceTier(

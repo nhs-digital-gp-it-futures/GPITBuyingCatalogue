@@ -11,22 +11,24 @@ using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers;
 using Xunit;
 
-namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.ListPrices.Solution.Tiered
+namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.ListPrices.Solution.Flat
 {
-    public sealed class AddFlatListPrice : AuthorityTestBase, IClassFixture<LocalWebApplicationFactory>
+    public sealed class EditFlatListPrice : AuthorityTestBase, IClassFixture<LocalWebApplicationFactory>
     {
         private static readonly CatalogueItemId SolutionId = new CatalogueItemId(99998, "001");
+        private static readonly int CataloguePriceId = 1;
 
         private static readonly Dictionary<string, string> Parameters = new()
         {
             { nameof(SolutionId), SolutionId.ToString() },
+            { nameof(CataloguePriceId), CataloguePriceId.ToString() },
         };
 
-        public AddFlatListPrice(LocalWebApplicationFactory factory)
+        public EditFlatListPrice(LocalWebApplicationFactory factory)
             : base(
                 factory,
                 typeof(CatalogueSolutionListPriceController),
-                nameof(CatalogueSolutionListPriceController.AddFlatListPrice),
+                nameof(CatalogueSolutionListPriceController.EditFlatListPrice),
                 Parameters)
         {
         }
@@ -37,7 +39,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.ListPrices.Solution.Tie
             using var context = GetEndToEndDbContext();
             var catalogueItem = context.CatalogueItems.Single(c => c.Id == SolutionId);
 
-            CommonActions.PageTitle().Should().Be($"Add a flat list price - {catalogueItem.Name}".FormatForComparison());
+            CommonActions.PageTitle().Should().Be($"Edit a flat list price - {catalogueItem.Name}".FormatForComparison());
             CommonActions.LedeText().Should().Be("Provide the following information about the pricing model for your Catalogue Solution.".FormatForComparison());
 
             CommonActions.GoBackLinkDisplayed().Should().BeTrue();
@@ -50,10 +52,10 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.ListPrices.Solution.Tie
             CommonActions.ElementIsDisplayed(AddEditFlatListPriceObjects.PriceInput).Should().BeTrue();
             CommonActions.ElementIsDisplayed(AddEditFlatListPriceObjects.PublicationStatusInput).Should().BeTrue();
 
-            CommonActions.ElementIsDisplayed(AddEditFlatListPriceObjects.DeletePriceLink).Should().BeFalse();
-
             CommonActions.ElementIsDisplayed(AddEditFlatListPriceObjects.OnDemandBillingPeriodInput).Should().BeFalse();
             CommonActions.ElementIsDisplayed(AddEditFlatListPriceObjects.DeclarativeBillingPeriodInput).Should().BeFalse();
+
+            CommonActions.ElementIsDisplayed(AddEditFlatListPriceObjects.DeletePriceLink).Should().BeTrue();
 
             CommonActions.ClickRadioButtonWithValue(ProvisioningType.OnDemand.ToString());
             CommonActions.ElementIsDisplayed(AddEditFlatListPriceObjects.OnDemandBillingPeriodInput).Should().BeTrue();
@@ -69,29 +71,24 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.ListPrices.Solution.Tie
 
             CommonActions.PageLoadedCorrectGetIndex(
                 typeof(CatalogueSolutionListPriceController),
-                nameof(CatalogueSolutionListPriceController.ListPriceType)).Should().BeTrue();
+                nameof(CatalogueSolutionListPriceController.Index)).Should().BeTrue();
         }
 
         [Fact]
-        public void Submit_NoInput_ThrowsError()
+        public void ClickDelete_NavigatesToCorrectPage()
         {
-            CommonActions.ClickSave();
+            CommonActions.ClickLinkElement(AddEditFlatListPriceObjects.DeletePriceLink);
 
-            CommonActions.ErrorSummaryDisplayed().Should().BeTrue();
-            CommonActions.ErrorSummaryLinksExist().Should().BeTrue();
-
-            CommonActions.ElementShowingCorrectErrorMessage(AddEditFlatListPriceObjects.ProvisioningTypeInputError, "Error: Select a provisioning type").Should().BeTrue();
-            CommonActions.ElementShowingCorrectErrorMessage(AddEditFlatListPriceObjects.CalculationTypeInputError, "Error: Select a calculation type").Should().BeTrue();
-            CommonActions.ElementShowingCorrectErrorMessage(AddEditFlatListPriceObjects.PublicationStatusInputError, "Error: Select a publication status").Should().BeTrue();
-            CommonActions.ElementShowingCorrectErrorMessage(AddEditFlatListPriceObjects.UnitDescriptionInputError, "Enter a unit").Should().BeTrue();
-            CommonActions.ElementShowingCorrectErrorMessage(AddEditFlatListPriceObjects.PriceInputError, "Enter a price").Should().BeTrue();
+            CommonActions.PageLoadedCorrectGetIndex(
+                typeof(CatalogueSolutionListPriceController),
+                nameof(CatalogueSolutionListPriceController.DeleteListPrice)).Should().BeTrue();
         }
 
         [Fact]
         public void Submit_Duplicate_ThrowsError()
         {
             var catalogueItem = GetCatalogueItemWithPrices(SolutionId);
-            var price = catalogueItem.CataloguePrices.First(p => p.CataloguePriceType == CataloguePriceType.Flat);
+            var price = catalogueItem.CataloguePrices.First(p => p.CataloguePriceType == CataloguePriceType.Flat && p.CataloguePriceId != CataloguePriceId);
 
             CommonActions.ClickRadioButtonWithValue(price.ProvisioningType.ToString());
             CommonActions.ClickRadioButtonWithValue(price.CataloguePriceCalculationType.ToString());
@@ -114,12 +111,64 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.ListPrices.Solution.Tie
         [Fact]
         public void Submit_Input_NavigatesToCorrectPage()
         {
-            CommonActions.ClickRadioButtonWithValue(ProvisioningType.Patient.ToString());
-            CommonActions.ClickRadioButtonWithValue(CataloguePriceCalculationType.Volume.ToString());
-            CommonActions.ClickRadioButtonWithValue(PublicationStatus.Published.ToString());
+            CommonActions.ClickSave();
 
-            TextGenerators.TextInputAddText(AddEditFlatListPriceObjects.UnitDescriptionInput, 100);
-            CommonActions.ElementAddValue(AddEditFlatListPriceObjects.PriceInput, "3.14");
+            CommonActions.PageLoadedCorrectGetIndex(
+                typeof(CatalogueSolutionListPriceController),
+                nameof(CatalogueSolutionListPriceController.Index)).Should().BeTrue();
+        }
+
+        [Fact]
+        public void DeletePrice_Redirects()
+        {
+            using var context = GetEndToEndDbContext();
+            var catalogueItem = context.CatalogueItems.Include(c => c.CataloguePrices).First(c => c.Id == SolutionId);
+
+            var price = new CataloguePrice
+            {
+                ProvisioningType = ProvisioningType.Patient,
+                CataloguePriceType = CataloguePriceType.Flat,
+                CataloguePriceCalculationType = CataloguePriceCalculationType.SingleFixed,
+                PublishedStatus = PublicationStatus.Draft,
+                PricingUnit = new PricingUnit
+                {
+                    RangeDescription = "patients test",
+                    Description = "per flat single fixed test patient",
+                },
+                TimeUnit = TimeUnit.PerYear,
+                CurrencyCode = "GBP",
+                CataloguePriceTiers = new HashSet<CataloguePriceTier>
+                {
+                    new()
+                    {
+                        Price = 3.14M,
+                        LowerRange = 1,
+                        UpperRange = null,
+                    },
+                },
+            };
+
+            catalogueItem.CataloguePrices.Add(price);
+            context.SaveChanges();
+
+            var parameters = new Dictionary<string, string>
+            {
+                { nameof(SolutionId), SolutionId.ToString() },
+                { nameof(CataloguePriceId), price.CataloguePriceId.ToString() },
+            };
+
+            NavigateToUrl(
+                typeof(CatalogueSolutionListPriceController),
+                nameof(CatalogueSolutionListPriceController.EditFlatListPrice),
+                parameters);
+
+            CommonActions.ElementIsDisplayed(AddEditFlatListPriceObjects.DeletePriceLink).Should().BeTrue();
+
+            CommonActions.ClickLinkElement(AddEditFlatListPriceObjects.DeletePriceLink);
+
+            CommonActions.PageLoadedCorrectGetIndex(
+                typeof(CatalogueSolutionListPriceController),
+                nameof(CatalogueSolutionListPriceController.DeleteListPrice)).Should().BeTrue();
 
             CommonActions.ClickSave();
 
