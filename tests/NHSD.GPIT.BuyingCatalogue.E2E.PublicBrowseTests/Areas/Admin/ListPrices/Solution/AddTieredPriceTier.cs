@@ -54,13 +54,29 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.ListPrices.Solution
         }
 
         [Fact]
-        public void ClickGoBackLink_NavigatesCorrectly()
+        public void ClickGoBackLink_Adding_NavigatesCorrectly()
         {
             CommonActions.ClickGoBackLink();
 
             CommonActions.PageLoadedCorrectGetIndex(
                 typeof(CatalogueSolutionListPriceController),
                 nameof(CatalogueSolutionListPriceController.TieredPriceTiers)).Should().BeTrue();
+        }
+
+        [Fact]
+        public void ClickGoBackLink_Editing_NavigatesCorrectly()
+        {
+            NavigateToUrl(
+                typeof(CatalogueSolutionListPriceController),
+                nameof(CatalogueSolutionListPriceController.AddTieredPriceTier),
+                Parameters,
+                new Dictionary<string, string> { { "isEditing", true.ToString() } });
+
+            CommonActions.ClickGoBackLink();
+
+            CommonActions.PageLoadedCorrectGetIndex(
+                typeof(CatalogueSolutionListPriceController),
+                nameof(CatalogueSolutionListPriceController.EditTieredListPrice)).Should().BeTrue();
         }
 
         [Fact]
@@ -88,6 +104,26 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.ListPrices.Solution
             CommonActions.PageLoadedCorrectGetIndex(
                 typeof(CatalogueSolutionListPriceController),
                 nameof(CatalogueSolutionListPriceController.TieredPriceTiers)).Should().BeTrue();
+        }
+
+        [Fact]
+        public void ClickSubmit_Input_Editing_RedirectsCorrectly()
+        {
+            NavigateToUrl(
+                typeof(CatalogueSolutionListPriceController),
+                nameof(CatalogueSolutionListPriceController.AddTieredPriceTier),
+                Parameters,
+                new Dictionary<string, string> { { "isEditing", true.ToString() } });
+
+            CommonActions.ElementAddValue(AddTieredPriceTierObjects.PriceInput, "3.10");
+            CommonActions.ElementAddValue(AddTieredPriceTierObjects.LowerRangeInput, "15");
+            CommonActions.ClickRadioButtonWithText("Infinite upper range");
+
+            CommonActions.ClickSave();
+
+            CommonActions.PageLoadedCorrectGetIndex(
+                typeof(CatalogueSolutionListPriceController),
+                nameof(CatalogueSolutionListPriceController.EditTieredListPrice)).Should().BeTrue();
         }
 
         [Fact]

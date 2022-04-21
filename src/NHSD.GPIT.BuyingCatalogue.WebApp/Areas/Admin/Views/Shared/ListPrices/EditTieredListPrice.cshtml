@@ -1,0 +1,187 @@
+﻿@using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models
+@using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.ListPriceModels
+@model EditTieredListPriceModel
+
+@{
+    ViewBag.Title = "Edit a tiered list price";
+}
+
+<partial name="Partials/_BackLink" model="Model" />
+<div class="nhsuk-grid-row">
+    <div class="nhsuk-grid-column-two-thirds">
+        <nhs-validation-summary RadioId="@nameof(Model.SelectedProvisioningType),@nameof(Model.SelectedCalculationType),@nameof(Model.SelectedPublicationStatus)" />
+        <nhs-page-title
+            title="@ViewBag.Title"
+            caption="@Model.CatalogueItemName"
+            advice="Provide the following information about the pricing model for your Catalogue Solution.">
+        </nhs-page-title>
+
+        <form method="post">
+            <input type="hidden" asp-for="BackLink" />
+            <input type="hidden" asp-for="CataloguePriceId" />
+            <input type="hidden" asp-for="CatalogueItemId" />
+            <input type="hidden" asp-for="CatalogueItemName" />
+            <input type="hidden" asp-for="CataloguePricePublicationStatus" />
+
+            <nhs-fieldset-form-label asp-for="SelectedProvisioningType" label-text="Provisioning type" size="Medium">
+                <nhs-radio-button-container>
+                    @{
+                        var provisioningTypes = new SelectList(Model.AvailableProvisioningTypes, "Value", "Text").ToList();
+                        var timeUnitsSelectList = new SelectList(Model.AvailableBillingPeriods, "Value", "Text");
+                    }
+                    <nhs-radio-button asp-for="SelectedProvisioningType"
+                                      value="provisioningTypes[0]"
+                                      value-name="Value"
+                                      display-name="Text"
+                                      index="0" />
+
+                    <nhs-radio-button asp-for="SelectedProvisioningType"
+                                      value="provisioningTypes[1]"
+                                      value-name="Value"
+                                      display-name="Text"
+                                      index="1">
+
+                        <nhs-select asp-for="DeclarativeBillingPeriod"
+                                    asp-items="timeUnitsSelectList"
+                                    label-text="Billing period (optional)"
+                                    label-hint="Select if it’s monthly or yearly." />
+                    </nhs-radio-button>
+
+                    <nhs-radio-button asp-for="SelectedProvisioningType"
+                                      value="provisioningTypes[2]"
+                                      value-name="Value"
+                                      display-name="Text"
+                                      index="2">
+
+                        <nhs-select asp-for="OnDemandBillingPeriod"
+                                    asp-items="timeUnitsSelectList"
+                                    label-text="Billing period (optional)"
+                                    label-hint="Select if it’s monthly or yearly." />
+                    </nhs-radio-button>
+                </nhs-radio-button-container>
+            </nhs-fieldset-form-label>
+
+            <nhs-fieldset-form-label asp-for="SelectedCalculationType" label-text="Calculation type" size="Medium">
+                    <nhs-radio-buttons asp-for="SelectedCalculationType"
+                                        values="@Model.AvailableCalculationTypes.Cast<object>()"
+                                        display-name="Name"
+                                        value-name="Value"
+                                        hint-name="Advice" />
+            </nhs-fieldset-form-label>
+
+            <nhs-input
+                label-text="Unit"
+                label-hint="For example, per consultation, per practice, per licence."
+                asp-for="UnitDescription" />
+
+            <nhs-textarea
+                label-text="Unit definition (optional)"
+                label-hint="For example, if the unit is per day, between what hours?"
+                asp-for="UnitDefinition"
+                character-count="false" />
+
+            <nhs-input
+                label-text="Range definition"
+                label-hint="For example, patients, users, licences."
+                asp-for="RangeDefinition" />
+
+            @if(Model.CataloguePricePublicationStatus == PublicationStatus.Published)
+            {
+                <nhs-inset-text data-test-id="published-price-inset">
+                    <p>This is a published list price, which means you can only update the price for each tier</p>
+
+                    <p>To edit tier ranges, add further pricing tiers or to delete this price, you must first unpublish this list price.</p>
+
+                    <p>You can also create a new list price populated with the values from this price which you can then edit.</p>
+                </nhs-inset-text>
+            }
+            else
+            {
+                <br />
+                <vc:nhs-action-link text="Add a pricing tier" url="@Url.Action(
+                    nameof(CatalogueSolutionListPriceController.AddTieredPriceTier),
+                    typeof(CatalogueSolutionListPriceController).ControllerName(),
+                    new { solutionId = Model.CatalogueItemId, cataloguePriceId = Model.CataloguePriceId, isEditing = true })" />
+            }
+
+            @if(Model.Tiers.Any())
+            {
+                var orderedTiers = Model.Tiers.OrderBy(p => p.LowerRange).ToList();
+                <div data-test-id="tiered-price-table">
+                    <nhs-table label-text="Pricing tiers">
+                        <nhs-table-column>Tier</nhs-table-column>
+                        <nhs-table-column>Price</nhs-table-column>
+                        <nhs-table-column>Range</nhs-table-column>
+                        <nhs-table-column>Action</nhs-table-column>
+                        @for(int i = 0; i < orderedTiers.Count; i++)
+                        {
+                            var tier = orderedTiers[i];
+                            var tierIndex = i + 1;
+                            <nhs-table-row-container>
+                                <nhs-table-cell>
+                                    @GetTierName(i)
+                                </nhs-table-cell>
+                                <nhs-table-cell>
+                                    £@tier.Price
+                                </nhs-table-cell>
+                                <nhs-table-cell>
+                                    @GetRange(tier)
+                                </nhs-table-cell>
+                                <nhs-table-cell>
+                                    <a href="@GetTierEditLink(tier, tierIndex)" data-test-id="edit-tier-price-@tierIndex">Edit</a>
+                                </nhs-table-cell>
+                            </nhs-table-row-container>
+                        }
+                    </nhs-table>
+                </div>
+            }
+            <br />
+            <nhs-fieldset-form-label label-text="Publication status" size="Medium" asp-for="SelectedPublicationStatus">
+                <nhs-radio-buttons
+                    asp-for="SelectedPublicationStatus"
+                    values="Model.AvailablePublicationStatuses.Cast<object>()"
+                    display-name="Name"
+                    value-name="Value">
+                </nhs-radio-buttons>
+            </nhs-fieldset-form-label>
+
+            <nhs-submit-button />
+        </form>
+
+        @if (Model.CataloguePriceId is not null)
+        {
+            <vc:nhs-delete-button url="@Url.Action(
+                nameof(CatalogueSolutionListPriceController.DeleteListPrice),
+                typeof(CatalogueSolutionListPriceController).ControllerName(),
+                new { solutionId = Model.CatalogueItemId, cataloguePriceId = Model.CataloguePriceId })"
+                text="Delete list price"></vc:nhs-delete-button>
+        }
+    </div>
+</div>
+@{
+    static string GetTierName(int index) => $"Tier {index + 1}";
+    static string GetRange(CataloguePriceTier tier)
+    {
+        var rangeContent = $"{tier.LowerRange.ToString("#,##0.###")}";
+
+        rangeContent += (tier.UpperRange is not null)
+            ? $" to {tier.UpperRange!.Value.ToString("#,##0.###")}"
+            : "+";
+
+        rangeContent += $" {tier.CataloguePrice.PricingUnit.RangeDescription}";
+
+        return rangeContent;
+    }
+
+    string GetTierEditLink(CataloguePriceTier tier, int index){
+        return tier.CataloguePrice.PublishedStatus == PublicationStatus.Published
+               ? Url.Action(
+                   nameof(CatalogueSolutionListPriceController.EditTierPrice),
+                   typeof(CatalogueSolutionListPriceController).ControllerName(),
+                   new { solutionId = Model.CatalogueItemId, cataloguePriceId = tier.CataloguePriceId, tierId = tier.Id, tierIndex = index })
+               : Url.Action(
+                   nameof(CatalogueSolutionListPriceController.EditTieredPriceTier),
+                   typeof(CatalogueSolutionListPriceController).ControllerName(),
+                   new { solutionId = Model.CatalogueItemId, cataloguePriceId = tier.CataloguePriceId, tierId = tier.Id, isEditing = true });
+    }
+}

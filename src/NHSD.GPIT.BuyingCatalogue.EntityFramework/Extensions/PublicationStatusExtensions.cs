@@ -41,7 +41,7 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Extensions
                    },
                };
 
-        private static readonly IDictionary<PublicationStatus, IReadOnlyList<PublicationStatus>> ServicesPublicationStatuses
+        private static readonly IDictionary<PublicationStatus, IReadOnlyList<PublicationStatus>> GenericPublicationStatuses
                    = new Dictionary<PublicationStatus, IReadOnlyList<PublicationStatus>>
                    {
                        [PublicationStatus.Draft] = new List<PublicationStatus>(2)
@@ -69,11 +69,19 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Extensions
 
         public static IReadOnlyList<PublicationStatus> GetAvailablePublicationStatuses(this PublicationStatus publicationStatus, CatalogueItemType catalogueItemType)
         {
-            var publicationStatuses = catalogueItemType == CatalogueItemType.Solution ? CatalogueSolutionPublicationStatuses : ServicesPublicationStatuses;
+            var publicationStatuses = catalogueItemType == CatalogueItemType.Solution ? CatalogueSolutionPublicationStatuses : GenericPublicationStatuses;
             if (!publicationStatuses.TryGetValue(publicationStatus, out var availablePublicationStatuses))
             {
                 throw new KeyNotFoundException($"{publicationStatus} is not a valid key");
             }
+
+            return availablePublicationStatuses;
+        }
+
+        public static IReadOnlyList<PublicationStatus> GetAvailablePublicationStatuses(this PublicationStatus publicationStatus)
+        {
+            if (!GenericPublicationStatuses.TryGetValue(publicationStatus, out var availablePublicationStatuses))
+                throw new KeyNotFoundException($"{publicationStatus} is not a valid key");
 
             return availablePublicationStatuses;
         }

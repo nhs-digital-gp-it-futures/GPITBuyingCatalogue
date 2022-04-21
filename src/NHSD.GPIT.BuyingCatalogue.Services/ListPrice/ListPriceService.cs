@@ -9,11 +9,11 @@ using NHSD.GPIT.BuyingCatalogue.ServiceContracts.ListPrice;
 
 namespace NHSD.GPIT.BuyingCatalogue.Services.ListPrice
 {
-    public class DuplicateListPriceService : IDuplicateListPriceService
+    public class ListPriceService : IListPriceService
     {
         private readonly BuyingCatalogueDbContext dbContext;
 
-        public DuplicateListPriceService(BuyingCatalogueDbContext dbContext)
+        public ListPriceService(BuyingCatalogueDbContext dbContext)
         {
             this.dbContext = dbContext ?? throw new ArgumentNullException(nameof(dbContext));
         }
@@ -25,27 +25,33 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.ListPrice
             CataloguePriceCalculationType calculationType,
             string unitDescription,
             string rangeDefinition)
-            => await dbContext
-            .CataloguePrices
-            .Where(p => p.CataloguePriceId != cataloguePriceId)
-            .AnyAsync(p => p.CatalogueItemId == catalogueItemId
-                && p.ProvisioningType == provisioningType
+        {
+            var results = dbContext
+                .CataloguePrices
+                .Where(p => p.CataloguePriceId != cataloguePriceId && p.CatalogueItemId == catalogueItemId);
+
+            return await results.AnyAsync(p => p.ProvisioningType == provisioningType
                 && p.CataloguePriceCalculationType == calculationType
                 && string.Equals(p.PricingUnit.Description, unitDescription)
                 && string.Equals(p.PricingUnit.RangeDescription, rangeDefinition));
+        }
 
         public async Task<bool> HasDuplicatePriceTier(
             CatalogueItemId catalogueItemId,
             int? cataloguePriceId,
-            decimal price,
+            int? tierId,
             int lowerRange,
             int? upperRange)
             => await dbContext
             .CataloguePriceTiers
-            .Where(p => p.CataloguePriceId == cataloguePriceId)
-            .AnyAsync(p => p.CataloguePrice.CatalogueItemId == catalogueItemId
-                && p.Price == price
-                && p.LowerRange == lowerRange
+            .Where(p => p.CataloguePriceId == cataloguePriceId && p.CataloguePrice.CatalogueItemId == catalogueItemId && p.Id != tierId)
+            .AnyAsync(p => p.LowerRange == lowerRange
                 && p.UpperRange == upperRange);
+
+        public async Task<int> GetNumberOfListPrices(CatalogueItemId catalogueItemId, int cataloguePriceId)
+            => await dbContext
+            .CataloguePrices
+            .Where(p => p.CatalogueItemId == catalogueItemId && p.CataloguePriceId != cataloguePriceId)
+            .CountAsync();
     }
 }

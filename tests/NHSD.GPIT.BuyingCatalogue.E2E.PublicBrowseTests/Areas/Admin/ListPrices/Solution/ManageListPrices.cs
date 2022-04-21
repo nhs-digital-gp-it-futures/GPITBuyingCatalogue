@@ -51,7 +51,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.ListPrices.Solution
 
             tieredPrices.ForEach(p => CommonActions.ElementIsDisplayed(ManageListPricesObjects.TieredPrice(p.CataloguePriceId)).Should().BeTrue());
             flatPrices.ForEach(p => CommonActions.ElementIsDisplayed(ManageListPricesObjects.FlatPrice(p.CataloguePriceId)).Should().BeTrue());
-            catalogueItem.CataloguePrices.ToList().ForEach(p => CommonActions.ElementIsDisplayed(ManageListPricesObjects.EditPriceLink(p.CataloguePriceId)).Should().BeTrue());
+            catalogueItem.CataloguePrices.Where(p => p.CataloguePriceType == CataloguePriceType.Tiered).ToList().ForEach(p => CommonActions.ElementIsDisplayed(ManageListPricesObjects.EditPriceLink(p.CataloguePriceId)).Should().BeTrue());
         }
 
         [Fact]
@@ -95,21 +95,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.ListPrices.Solution
 
             CommonActions.PageLoadedCorrectGetIndex(
                 typeof(CatalogueSolutionListPriceController),
-                nameof(CatalogueSolutionListPriceController.Index)).Should().BeTrue();
-        }
-
-        [Fact]
-        public void ClickEditPrice_Flat_NavigatesToCorrectPage()
-        {
-            var catalogueItem = GetCatalogueItemWithPrices(SolutionId);
-
-            var tieredPrice = catalogueItem.CataloguePrices.First(p => p.CataloguePriceType == CataloguePriceType.Flat);
-
-            CommonActions.ClickLinkElement(ManageListPricesObjects.EditPriceLink(tieredPrice.CataloguePriceId));
-
-            CommonActions.PageLoadedCorrectGetIndex(
-                typeof(CatalogueSolutionListPriceController),
-                nameof(CatalogueSolutionListPriceController.Index)).Should().BeTrue();
+                nameof(CatalogueSolutionListPriceController.EditTieredListPrice)).Should().BeTrue();
         }
 
         private CatalogueItem GetCatalogueItemWithPrices(CatalogueItemId id)

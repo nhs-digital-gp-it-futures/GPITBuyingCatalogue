@@ -41,7 +41,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators.List
         [CommonAutoData]
         public static void Validate_Duplicate_SetsModelError(
             AddTieredListPriceModel model,
-            [Frozen] Mock<IDuplicateListPriceService> service,
+            [Frozen] Mock<IListPriceService> service,
             AddTieredListPriceModelValidator validator)
         {
             model.SelectedCalculationType = EntityFramework.Catalogue.Models.CataloguePriceCalculationType.Volume;
@@ -65,7 +65,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators.List
         [CommonAutoData]
         public static void Validate_Valid_NoModelError(
             AddTieredListPriceModel model,
-            [Frozen] Mock<IDuplicateListPriceService> service,
+            [Frozen] Mock<IListPriceService> service,
             AddTieredListPriceModelValidator validator)
         {
             model.SelectedCalculationType = EntityFramework.Catalogue.Models.CataloguePriceCalculationType.Volume;

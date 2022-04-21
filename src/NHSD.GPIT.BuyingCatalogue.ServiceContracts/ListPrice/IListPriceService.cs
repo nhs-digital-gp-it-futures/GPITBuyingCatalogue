@@ -4,7 +4,7 @@ using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 
 namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.ListPrice
 {
-    public interface IDuplicateListPriceService
+    public interface IListPriceService
     {
         Task<bool> HasDuplicateTieredPrice(
             CatalogueItemId catalogueItemId,
@@ -17,8 +17,12 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.ListPrice
         Task<bool> HasDuplicatePriceTier(
             CatalogueItemId catalogueItemId,
             int? cataloguePriceId,
-            decimal price,
+            int? tierId,
             int lowerRange,
             int? upperRange);
+
+        Task<int> GetNumberOfListPrices(
+            CatalogueItemId catalogueItemId,
+            int cataloguePriceId);
     }
 }
