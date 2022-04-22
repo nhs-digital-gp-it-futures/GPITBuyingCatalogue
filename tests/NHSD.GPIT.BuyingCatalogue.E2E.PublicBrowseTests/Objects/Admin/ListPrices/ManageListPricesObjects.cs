@@ -15,6 +15,8 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Objects.Admin.ListPrices
 
         internal static By FlatPrice(int cataloguePriceId) => ByExtensions.DataTestId($"flat-price-{cataloguePriceId}");
 
-        internal static By EditPriceLink(int cataloguePriceId) => By.XPath($"//a[contains(@href, '/list-prices/{cataloguePriceId}/edit')]");
+        internal static By EditTieredPriceLink(int cataloguePriceId) => By.XPath($"//a[contains(@href, '/list-prices/tiered/{cataloguePriceId}/edit')]");
+
+        internal static By EditFlatPriceLink(int cataloguePriceId) => By.XPath($"//a[contains(@href, '/list-prices/flat/{cataloguePriceId}/edit')]");
     }
 }

@@ -14,16 +14,23 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models
 
             return OrderItemPrice.CataloguePriceCalculationType switch
             {
-                CataloguePriceCalculationType.SingleFixed => CalculateTotalCostFlatSingle(quantity),
-                CataloguePriceCalculationType.Cumulative or _ => CalculateTotalCostcumulative(quantity),
+                CataloguePriceCalculationType.SingleFixed => CalculateTotalCostSingleFixed(quantity),
+                CataloguePriceCalculationType.Cumulative => CalculateTotalCostCumulative(quantity),
+                CataloguePriceCalculationType.Volume or _ => CalculateTotalCostVolume(quantity),
             };
         }
 
-        public decimal CalculateCostPerMonth() =>
-            OrderItemPrice.EstimationPeriod.Value == TimeUnit.PerMonth ? CalculateTotalCost() : CalculateTotalCost() / 12;
+        public decimal CalculateCostPerMonth()
+        {
+            var cost = CalculateTotalCost();
+            return OrderItemPrice.EstimationPeriod.Value == TimeUnit.PerMonth ? cost : cost / 12;
+        }
 
-        public decimal CalculateCostPerYear() =>
-            OrderItemPrice.EstimationPeriod.Value == TimeUnit.PerYear ? CalculateTotalCost() : CalculateTotalCost() * 12;
+        public decimal CalculateCostPerYear()
+        {
+            var cost = CalculateTotalCost();
+            return OrderItemPrice.EstimationPeriod.Value == TimeUnit.PerYear ? cost : cost * 12;
+        }
 
         public bool Equals(OrderItem other)
         {
@@ -58,7 +65,7 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models
 
         public bool ItemIsLocalFundingOnly() => CatalogueItem?.Solution?.FrameworkSolutions?.All(fs => fs.Framework.LocalFundingOnly) ?? false;
 
-        private decimal CalculateTotalCostcumulative(int quantity)
+        private decimal CalculateTotalCostCumulative(int quantity)
         {
             var lastUpperRange = 0;
             var totalCost = 0M;
@@ -78,6 +85,7 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models
                 {
                     range = tier.UpperRange.Value;
                     range -= lastUpperRange;
+                    lastUpperRange = tier.UpperRange.Value;
 
                     if (range > quantity)
                         range = quantity;
@@ -85,17 +93,21 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models
 
                 totalCost += tier.Price * range;
                 quantity -= range;
-
-                if (tier.UpperRange.HasValue)
-                    lastUpperRange = tier.UpperRange.Value;
             }
 
             return totalCost;
         }
 
-        private decimal CalculateTotalCostFlatSingle(int quantity) =>
+        private decimal CalculateTotalCostSingleFixed(int quantity) =>
             OrderItemPrice.OrderItemPriceTiers
             .OrderBy(t => t.LowerRange)
             .First(t => (t.UpperRange.HasValue && t.UpperRange.Value >= quantity) || !t.UpperRange.HasValue).Price;
+
+        private decimal CalculateTotalCostVolume(int quantity)
+        {
+            var tier = OrderItemPrice.OrderItemPriceTiers.First(t => quantity > t.LowerRange && ((t.UpperRange.HasValue && quantity < t.UpperRange) || t.UpperRange is null));
+
+            return quantity * tier.Price;
+        }
     }
 }
