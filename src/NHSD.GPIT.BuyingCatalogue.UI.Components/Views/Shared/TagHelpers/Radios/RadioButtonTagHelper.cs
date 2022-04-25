@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc.Rendering;
@@ -15,6 +16,7 @@ namespace NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.TagHelpers.Radios
 
         private const string IndexName = "index";
         private const string HintTextName = "hint-text";
+        private const string DisplayedTextName = "display-text";
 
         private readonly IHtmlGenerator htmlGenerator;
 
@@ -36,6 +38,9 @@ namespace NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.TagHelpers.Radios
         [HtmlAttributeName(TagHelperConstants.DisplayName)]
         public string DisplayName { get; set; }
 
+        [HtmlAttributeName(DisplayedTextName)]
+        public string DisplayText { get; set; }
+
         [HtmlAttributeName(TagHelperConstants.HintName)]
         public string HintName { get; set; }
 
@@ -47,14 +52,27 @@ namespace NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.TagHelpers.Radios
 
         public override async Task ProcessAsync(TagHelperContext context, TagHelperOutput output)
         {
+            var valueIsComplexObject = !Value.GetType().IsPrimitive && Value.GetType() != typeof(string);
+
+            if (!valueIsComplexObject && string.IsNullOrWhiteSpace(DisplayText))
+                throw new ArgumentException("Primitive value types must be used with DisplayText");
+
+            if (valueIsComplexObject && (string.IsNullOrWhiteSpace(ValueName) || string.IsNullOrWhiteSpace(DisplayName)))
+                throw new ArgumentException("Complex value types must be used with ValueName and DisplayName");
+
             output.TagName = TagHelperConstants.Div;
             output.TagMode = TagMode.StartTagAndEndTag;
 
             output.Attributes.Add(new TagHelperAttribute(TagHelperConstants.Class, TagHelperConstants.RadioItemClass));
 
             var hint = BuildHintFromTextOrValue();
-            var input = RadioButtonBuilders.GetRadioInputBuilder(ViewContext, For, htmlGenerator, Value, ValueName, Index, hint);
-            var label = RadioButtonBuilders.GetRadioLabelBuilder(ViewContext, For, htmlGenerator, Value, DisplayName, Index);
+            var input = valueIsComplexObject
+                ? RadioButtonBuilders.GetRadioInputBuilder(ViewContext, For, htmlGenerator, Value, ValueName, Index, hint)
+                : RadioButtonBuilders.GetRadioInputBuilder(ViewContext, For, htmlGenerator, Value, Index, hintBuilder: hint);
+
+            var label = valueIsComplexObject
+                ? RadioButtonBuilders.GetRadioLabelBuilder(ViewContext, For, htmlGenerator, Value, DisplayName, Index)
+                : RadioButtonBuilders.GetRadioLabelBuilder(ViewContext, For, htmlGenerator, DisplayText, Index);
 
             var childContent = await output.GetChildContentAsync();
 

@@ -9,6 +9,7 @@ using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Orders;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Organisations;
+using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.SolutionSelection.ServiceRecipients;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers.SolutionSelection
@@ -21,15 +22,18 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers.SolutionSelec
         private readonly IOdsService odsService;
         private readonly IOrderItemRecipientService orderItemRecipientService;
         private readonly IOrderService orderService;
+        private readonly ISolutionListPriceService listPriceService;
 
         public ServiceRecipientsController(
             IOdsService odsService,
             IOrderItemRecipientService orderItemRecipientService,
-            IOrderService orderService)
+            IOrderService orderService,
+            ISolutionListPriceService listPriceService)
         {
             this.odsService = odsService ?? throw new ArgumentNullException(nameof(odsService));
             this.orderItemRecipientService = orderItemRecipientService ?? throw new ArgumentNullException(nameof(orderItemRecipientService));
             this.orderService = orderService ?? throw new ArgumentNullException(nameof(orderService));
+            this.listPriceService = listPriceService ?? throw new ArgumentNullException(nameof(listPriceService));
         }
 
         [HttpGet("solution")]
@@ -63,9 +67,17 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers.SolutionSelec
             }
 
             var order = await orderService.GetOrderThin(callOffId, internalOrgId);
-            var solution = order.GetSolution();
+            var solution = await listPriceService.GetSolutionWithPublishedListPrices(order.GetSolution().CatalogueItemId);
 
-            await AddServiceRecipients(order.Id, solution.CatalogueItem.Id, model);
+            await AddServiceRecipients(order.Id, solution.Id, model);
+
+            if (solution.CataloguePrices.Count > 1)
+            {
+                return RedirectToAction(
+                    nameof(PricesController.SelectPrice),
+                    typeof(PricesController).ControllerName(),
+                    new { internalOrgId, callOffId });
+            }
 
             // TODO: Replace
             return RedirectToAction(
