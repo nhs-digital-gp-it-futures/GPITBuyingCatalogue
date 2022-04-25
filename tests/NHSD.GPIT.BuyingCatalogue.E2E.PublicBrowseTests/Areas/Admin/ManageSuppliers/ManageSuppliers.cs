@@ -1,5 +1,6 @@
 ﻿using System.Linq;
 using FluentAssertions;
+using NHSD.GPIT.BuyingCatalogue.E2ETests.Objects.Admin;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Objects.Common;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Utils;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.TestBases;
@@ -26,6 +27,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.ManageSuppliers
         {
             CommonActions.WaitUntilElementIsDisplayed(Objects.Admin.ManageSuppliers.ManageSuppliers.InactiveSuppliersContainer);
 
+            CommonActions.ElementIsDisplayed(BreadcrumbObjects.HomeBreadcrumbLink).Should().BeTrue();
             CommonActions.ElementIsDisplayed(CommonSelectors.Header1).Should().BeTrue();
             CommonActions.ElementIsDisplayed(CommonSelectors.ActionLink).Should().BeTrue();
             CommonActions.ElementIsDisplayed(Objects.Admin.ManageSuppliers.ManageSuppliers.SearchBar).Should().BeTrue();
@@ -33,6 +35,16 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.ManageSuppliers
             CommonActions.ElementIsDisplayed(Objects.Admin.ManageSuppliers.ManageSuppliers.SuppliersTable).Should().BeTrue();
             CommonActions.ElementIsNotDisplayed(Objects.Admin.ManageSuppliers.ManageSuppliers.InactiveSupplierRow).Should().BeTrue();
             CommonActions.ElementIsDisplayed(Objects.Admin.ManageSuppliers.ManageSuppliers.NoResultsElement).Should().BeFalse();
+        }
+
+        [Fact]
+        public void ManageSuppliers_ClickHomeBreadcrumbLink_DisplaysCorrectPage()
+        {
+            CommonActions.ClickLinkElement(BreadcrumbObjects.HomeBreadcrumbLink);
+
+            CommonActions.PageLoadedCorrectGetIndex(
+                typeof(HomeController),
+                nameof(HomeController.Index)).Should().BeTrue();
         }
 
         [Fact]
