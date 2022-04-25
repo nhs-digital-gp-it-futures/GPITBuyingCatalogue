@@ -302,6 +302,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
             EntityFramework.Ordering.Models.Order order,
             [Frozen] Mock<IOrderService> mockOrderService,
             [Frozen] Mock<IOrderItemRecipientService> mockOrderRecipientService,
+            [Frozen] Mock<ISolutionListPriceService> mockListPriceService,
             ServiceRecipientsController controller)
         {
             IEnumerable<ServiceRecipientDto> serviceRecipients = null;
@@ -309,6 +310,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
             mockOrderService
                 .Setup(x => x.GetOrderThin(model.CallOffId, model.InternalOrgId))
                 .ReturnsAsync(order);
+
+            mockListPriceService
+                .Setup(x => x.GetSolutionWithPublishedListPrices(model.CatalogueItemId.Value))
+                .ReturnsAsync(order.OrderItems.First().CatalogueItem);
 
             mockOrderRecipientService
                 .Setup(x => x.AddOrderItemRecipients(order.Id, model.CatalogueItemId.Value, It.IsAny<IEnumerable<ServiceRecipientDto>>()))
@@ -323,6 +328,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
 
             mockOrderService.VerifyAll();
             mockOrderRecipientService.VerifyAll();
+            mockListPriceService.VerifyAll();
 
             var expected = model.ServiceRecipients
                 .Where(x => x.Selected)
@@ -332,8 +338,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
 
             var actualResult = result.Should().BeOfType<RedirectToActionResult>().Subject;
 
-            actualResult.ControllerName.Should().Be(typeof(OrderController).ControllerName());
-            actualResult.ActionName.Should().Be(nameof(OrderController.Order));
+            actualResult.ControllerName.Should().Be(typeof(PricesController).ControllerName());
+            actualResult.ActionName.Should().Be(nameof(PricesController.AdditionalServiceSelectPrice));
             actualResult.RouteValues.Should().BeEquivalentTo(new RouteValueDictionary
             {
                 { "internalOrgId", model.InternalOrgId },
@@ -423,6 +429,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
             EntityFramework.Ordering.Models.Order order,
             [Frozen] Mock<IOrderService> mockOrderService,
             [Frozen] Mock<IOrderItemRecipientService> mockOrderRecipientService,
+            [Frozen] Mock<ISolutionListPriceService> mockListPriceService,
             ServiceRecipientsController controller)
         {
             IEnumerable<ServiceRecipientDto> serviceRecipients = null;
@@ -430,6 +437,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
             mockOrderService
                 .Setup(x => x.GetOrderThin(model.CallOffId, model.InternalOrgId))
                 .ReturnsAsync(order);
+
+            mockListPriceService
+                .Setup(x => x.GetSolutionWithPublishedListPrices(model.CatalogueItemId.Value))
+                .ReturnsAsync(order.OrderItems.First().CatalogueItem);
 
             mockOrderRecipientService
                 .Setup(x => x.AddOrderItemRecipients(order.Id, model.CatalogueItemId.Value, It.IsAny<IEnumerable<ServiceRecipientDto>>()))
@@ -444,6 +455,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
 
             mockOrderService.VerifyAll();
             mockOrderRecipientService.VerifyAll();
+            mockListPriceService.VerifyAll();
 
             var expected = model.ServiceRecipients
                 .Where(x => x.Selected)
@@ -453,8 +465,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
 
             var actualResult = result.Should().BeOfType<RedirectToActionResult>().Subject;
 
-            actualResult.ControllerName.Should().Be(typeof(OrderController).ControllerName());
-            actualResult.ActionName.Should().Be(nameof(OrderController.Order));
+            actualResult.ControllerName.Should().Be(typeof(PricesController).ControllerName());
+            actualResult.ActionName.Should().Be(nameof(PricesController.AssociatedServiceSelectPrice));
             actualResult.RouteValues.Should().BeEquivalentTo(new RouteValueDictionary
             {
                 { "internalOrgId", model.InternalOrgId },

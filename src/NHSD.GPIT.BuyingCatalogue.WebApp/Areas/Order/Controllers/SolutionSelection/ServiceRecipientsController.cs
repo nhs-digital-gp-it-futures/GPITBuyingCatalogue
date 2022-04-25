@@ -121,8 +121,17 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers.SolutionSelec
             }
 
             var order = await orderService.GetOrderThin(callOffId, internalOrgId);
+            var solution = await listPriceService.GetSolutionWithPublishedListPrices(catalogueItemId);
 
             await AddServiceRecipients(order.Id, catalogueItemId, model);
+
+            if (solution.CataloguePrices.Count > 1)
+            {
+                return RedirectToAction(
+                    nameof(PricesController.AdditionalServiceSelectPrice),
+                    typeof(PricesController).ControllerName(),
+                    new { internalOrgId, callOffId });
+            }
 
             // TODO: Replace
             return RedirectToAction(
@@ -166,8 +175,17 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers.SolutionSelec
             }
 
             var order = await orderService.GetOrderThin(callOffId, internalOrgId);
+            var solution = await listPriceService.GetSolutionWithPublishedListPrices(catalogueItemId);
 
             await AddServiceRecipients(order.Id, catalogueItemId, model);
+
+            if (solution.CataloguePrices.Count > 1)
+            {
+                return RedirectToAction(
+                    nameof(PricesController.AssociatedServiceSelectPrice),
+                    typeof(PricesController).ControllerName(),
+                    new { internalOrgId, callOffId });
+            }
 
             // TODO: Replace
             return RedirectToAction(
