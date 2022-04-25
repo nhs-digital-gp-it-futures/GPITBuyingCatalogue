@@ -109,7 +109,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
 
         [Theory]
         [CommonAutoData]
-        public static async Task Post_SolutionRecipients_ReturnsExpectedResult(
+        public static async Task Post_SolutionRecipients_MultiplePrices_ReturnsExpectedResult(
             SelectRecipientsModel model,
             EntityFramework.Ordering.Models.Order order,
             [Frozen] Mock<IOrderService> mockOrderService,
@@ -128,7 +128,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
                 .Setup(x => x.GetOrderThin(model.CallOffId, model.InternalOrgId))
                 .ReturnsAsync(order);
 
-            mockListPriceService.Setup(x => x.GetSolutionWithPublishedListPrices(catalogueItemId)).ReturnsAsync(order.OrderItems.First().CatalogueItem);
+            mockListPriceService
+                .Setup(x => x.GetSolutionWithPublishedListPrices(catalogueItemId))
+                .ReturnsAsync(order.OrderItems.First().CatalogueItem);
 
             mockOrderRecipientService
                 .Setup(x => x.AddOrderItemRecipients(order.Id, catalogueItemId, It.IsAny<IEnumerable<ServiceRecipientDto>>()))
@@ -138,8 +140,68 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
             var result = await controller.SolutionRecipients(model.InternalOrgId, model.CallOffId, model);
 
             mockOrderService.VerifyAll();
-            mockOrderRecipientService.VerifyAll();
             mockListPriceService.VerifyAll();
+            mockOrderRecipientService.VerifyAll();
+
+            var expected = model.ServiceRecipients
+                .Where(x => x.Selected)
+                .Select(x => x.Dto);
+
+            serviceRecipients.Should().BeEquivalentTo(expected);
+
+            var actualResult = result.Should().BeOfType<RedirectToActionResult>().Subject;
+
+            actualResult.ControllerName.Should().Be(typeof(PricesController).ControllerName());
+            actualResult.ActionName.Should().Be(nameof(PricesController.SelectPrice));
+            actualResult.RouteValues.Should().BeEquivalentTo(new RouteValueDictionary
+            {
+                { "internalOrgId", model.InternalOrgId },
+                { "callOffId", model.CallOffId },
+            });
+        }
+
+        [Theory]
+        [CommonAutoData]
+        public static async Task Post_SolutionRecipients_SinglePrice_ReturnsExpectedResult(
+            SelectRecipientsModel model,
+            EntityFramework.Ordering.Models.Order order,
+            [Frozen] Mock<IOrderService> mockOrderService,
+            [Frozen] Mock<IOrderItemRecipientService> mockOrderRecipientService,
+            [Frozen] Mock<ISolutionListPriceService> mockListPriceService,
+            ServiceRecipientsController controller)
+        {
+            IEnumerable<ServiceRecipientDto> serviceRecipients = null;
+
+            order.OrderItems.ForEach(x => x.CatalogueItem.CatalogueItemType = CatalogueItemType.AdditionalService);
+
+            var solution = order.OrderItems.First();
+
+            solution.CatalogueItem.CatalogueItemType = CatalogueItemType.Solution;
+            solution.CatalogueItem.CataloguePrices = new List<CataloguePrice>
+            {
+                solution.CatalogueItem.CataloguePrices.First(),
+            };
+
+            var catalogueItemId = solution.CatalogueItem.Id;
+
+            mockOrderService
+                .Setup(x => x.GetOrderThin(model.CallOffId, model.InternalOrgId))
+                .ReturnsAsync(order);
+
+            mockListPriceService
+                .Setup(x => x.GetSolutionWithPublishedListPrices(catalogueItemId))
+                .ReturnsAsync(solution.CatalogueItem);
+
+            mockOrderRecipientService
+                .Setup(x => x.AddOrderItemRecipients(order.Id, catalogueItemId, It.IsAny<IEnumerable<ServiceRecipientDto>>()))
+                .Callback<int, CatalogueItemId, IEnumerable<ServiceRecipientDto>>((_, _, recipients) => serviceRecipients = recipients)
+                .Returns(Task.CompletedTask);
+
+            var result = await controller.SolutionRecipients(model.InternalOrgId, model.CallOffId, model);
+
+            mockOrderService.VerifyAll();
+            mockListPriceService.VerifyAll();
+            mockOrderRecipientService.VerifyAll();
 
             var expected = model.ServiceRecipients
                 .Where(x => x.Selected)

@@ -67,7 +67,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers.SolutionSelec
             }
 
             var order = await orderService.GetOrderThin(callOffId, internalOrgId);
-            var solution = await listPriceService.GetSolutionWithPublishedListPrices(order.GetSolution().CatalogueItemId);
+            var solution = await listPriceService.GetSolutionWithPublishedListPrices(order.GetSolution().CatalogueItem.Id);
 
             await AddServiceRecipients(order.Id, solution.Id, model);
 
