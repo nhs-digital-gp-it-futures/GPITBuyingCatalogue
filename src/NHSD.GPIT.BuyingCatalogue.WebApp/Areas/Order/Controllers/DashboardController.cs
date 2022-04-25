@@ -14,7 +14,7 @@ using NHSD.GPIT.BuyingCatalogue.WebApp.Models.SuggestionSearch;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
 {
-    [Authorize]
+    [Authorize("Buyer")]
     [Area("Order")]
     [Route("order")]
     public sealed class DashboardController : Controller
@@ -32,9 +32,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
 
         public IActionResult Index()
         {
-            if (!User.IsBuyer())
-                return View("NotBuyer");
-
             var internalOrgId = User.GetPrimaryOrganisationInternalIdentifier();
 
             return RedirectToAction(
