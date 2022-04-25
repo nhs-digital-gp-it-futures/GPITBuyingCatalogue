@@ -3,7 +3,7 @@ using NHSD.GPIT.BuyingCatalogue.EntityFramework.Users.Models;
 
 namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models
 {
-    public sealed class CataloguePriceTier : IAudited
+    public sealed partial class CataloguePriceTier : IAudited
     {
         public int Id { get; set; }
 

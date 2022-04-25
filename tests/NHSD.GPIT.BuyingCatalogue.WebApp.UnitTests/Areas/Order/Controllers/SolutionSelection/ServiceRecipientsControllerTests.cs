@@ -16,6 +16,7 @@ using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Orders;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Organisations;
+using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions;
 using NHSD.GPIT.BuyingCatalogue.Test.Framework.AutoFixtureCustomisations;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers.SolutionSelection;
@@ -113,6 +114,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
             EntityFramework.Ordering.Models.Order order,
             [Frozen] Mock<IOrderService> mockOrderService,
             [Frozen] Mock<IOrderItemRecipientService> mockOrderRecipientService,
+            [Frozen] Mock<ISolutionListPriceService> mockListPriceService,
             ServiceRecipientsController controller)
         {
             IEnumerable<ServiceRecipientDto> serviceRecipients = null;
@@ -126,6 +128,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
                 .Setup(x => x.GetOrderThin(model.CallOffId, model.InternalOrgId))
                 .ReturnsAsync(order);
 
+            mockListPriceService.Setup(x => x.GetSolutionWithPublishedListPrices(catalogueItemId)).ReturnsAsync(order.OrderItems.First().CatalogueItem);
+
             mockOrderRecipientService
                 .Setup(x => x.AddOrderItemRecipients(order.Id, catalogueItemId, It.IsAny<IEnumerable<ServiceRecipientDto>>()))
                 .Callback<int, CatalogueItemId, IEnumerable<ServiceRecipientDto>>((_, _, recipients) => serviceRecipients = recipients)
@@ -135,6 +139,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
 
             mockOrderService.VerifyAll();
             mockOrderRecipientService.VerifyAll();
+            mockListPriceService.VerifyAll();
 
             var expected = model.ServiceRecipients
                 .Where(x => x.Selected)

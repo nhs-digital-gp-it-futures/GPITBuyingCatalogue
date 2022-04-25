@@ -21,6 +21,15 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
         public async Task<CatalogueItem> GetSolutionWithListPrices(CatalogueItemId solutionId)
             => await GetSolutionWithListPrices(solutionId, tracked: false);
 
+        public async Task<CatalogueItem> GetSolutionWithPublishedListPrices(CatalogueItemId solutionId)
+        {
+            var solution = await GetSolutionWithListPrices(solutionId, tracked: false);
+
+            solution.CataloguePrices = solution.CataloguePrices.Where(cp => cp.PublishedStatus == PublicationStatus.Published).ToList();
+
+            return solution;
+        }
+
         public async Task AddListPrice(CatalogueItemId solutionId, CataloguePrice cataloguePrice)
         {
             if (cataloguePrice is null)

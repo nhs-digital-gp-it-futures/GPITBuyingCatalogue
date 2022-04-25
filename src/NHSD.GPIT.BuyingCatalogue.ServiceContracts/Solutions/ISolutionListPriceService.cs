@@ -8,6 +8,8 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions
     {
         Task<CatalogueItem> GetSolutionWithListPrices(CatalogueItemId solutionId);
 
+        Task<CatalogueItem> GetSolutionWithPublishedListPrices(CatalogueItemId solutionId);
+
         Task AddListPrice(CatalogueItemId solutionId, CataloguePrice cataloguePrice);
 
         Task<CataloguePrice> UpdateListPrice(

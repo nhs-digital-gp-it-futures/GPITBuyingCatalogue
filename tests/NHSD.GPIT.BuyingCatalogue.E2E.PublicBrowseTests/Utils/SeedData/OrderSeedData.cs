@@ -17,6 +17,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
             AddOrderAtSupplierContactStage(context);
             AddOrderAtCommencementDateStage(context);
             AddOrderAtCatalogueSolutionStage(context);
+            AddOrderWithAddedCatalogueSolutionButNoData(context);
             AddOrderWithAddedCatalogueSolution(context);
             AddOrderWithAddedNoContactCatalogueSolution(context);
             AddOrderWithAddedNoContactSolutionAndNoContactAdditionalSolution(context);
@@ -196,6 +197,53 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
                 },
                 CommencementDate = timeNow.AddDays(1),
             };
+
+            var user = GetBuyerUser(context, order.OrderingPartyId);
+
+            context.Add(order);
+
+            context.SaveChangesAs(user.Id);
+        }
+
+        private static void AddOrderWithAddedCatalogueSolutionButNoData(BuyingCatalogueDbContext context)
+        {
+            const int orderId = 90012;
+            var timeNow = DateTime.UtcNow;
+
+            var order = new Order
+            {
+                Id = orderId,
+                OrderingPartyId = GetOrganisationId(context),
+                Created = timeNow,
+                OrderStatus = OrderStatus.InProgress,
+                IsDeleted = false,
+                Description = "This is an Order Description",
+                OrderingPartyContact = new Contact
+                {
+                    FirstName = "Clark",
+                    LastName = "Kent",
+                    Email = "Clark.Kent@TheDailyPlanet.Fake",
+                    Phone = "123456789",
+                },
+                SupplierId = 99998,
+                SupplierContact = new Contact
+                {
+                    FirstName = "Bruce",
+                    LastName = "Wayne",
+                    Email = "bat.man@Gotham.Fake",
+                    Phone = "123456789",
+                },
+                CommencementDate = timeNow.AddDays(1),
+            };
+
+            var addedSolution = new OrderItem
+            {
+                Created = DateTime.UtcNow,
+                OrderId = orderId,
+                CatalogueItem = context.CatalogueItems.Single(c => c.Id == new CatalogueItemId(99998, "001")),
+            };
+
+            order.OrderItems.Add(addedSolution);
 
             var user = GetBuyerUser(context, order.OrderingPartyId);
 

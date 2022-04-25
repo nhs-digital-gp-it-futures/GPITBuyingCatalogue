@@ -3,6 +3,7 @@ using System.Linq;
 using AutoFixture;
 using AutoFixture.Dsl;
 using AutoFixture.Kernel;
+using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.Test.Framework.AutoFixtureCustomisations.AutoFixtureExtensions;
 
@@ -18,7 +19,8 @@ namespace NHSD.GPIT.BuyingCatalogue.Test.Framework.AutoFixtureCustomisations
                 .Without(oi => oi.Order)
                 .Without(oi => oi.OrderId)
                 .Without(oi => oi.OrderItemPrice)
-                .Without(oi => oi.OrderItemRecipients);
+                .Without(oi => oi.OrderItemRecipients)
+                .Without(oi => oi.CatalogueItem);
 
             fixture.Customize<OrderItem>(ComposerTransformation);
         }
@@ -35,6 +37,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Test.Framework.AutoFixtureCustomisations
                 AddOrderItemRecipients(item, context);
                 AddOrderItemPrice(item, context);
                 AddOrderItemFunding(item, context);
+                AddOrderItemCatalogueItem(item, context);
 
                 return item;
             }
@@ -79,6 +82,14 @@ namespace NHSD.GPIT.BuyingCatalogue.Test.Framework.AutoFixtureCustomisations
                 price.OrderItem = item;
 
                 item.OrderItemPrice = price;
+            }
+
+            private static void AddOrderItemCatalogueItem(OrderItem item, ISpecimenContext context)
+            {
+                var solution = context.Create<CatalogueItem>();
+
+                item.CatalogueItemId = solution.Id;
+                item.CatalogueItem = solution;
             }
         }
     }
