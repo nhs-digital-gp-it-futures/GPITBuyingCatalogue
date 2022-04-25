@@ -20,7 +20,8 @@ namespace NHSD.GPIT.BuyingCatalogue.Test.Framework.AutoFixtureCustomisations
                 .Without(oi => oi.OrderId)
                 .Without(oi => oi.OrderItemPrice)
                 .Without(oi => oi.OrderItemRecipients)
-                .Without(oi => oi.CatalogueItem);
+                .Without(oi => oi.CatalogueItem)
+                .Without(oi => oi.CatalogueItemId);
 
             fixture.Customize<OrderItem>(ComposerTransformation);
         }
