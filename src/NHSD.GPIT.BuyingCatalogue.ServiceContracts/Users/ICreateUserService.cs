@@ -10,7 +10,6 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.Users
             int primaryOrganisationId,
             string firstName,
             string lastName,
-            string phoneNumber,
             string emailAddress,
             string organisationFunction,
             AccountStatus accountStatus);

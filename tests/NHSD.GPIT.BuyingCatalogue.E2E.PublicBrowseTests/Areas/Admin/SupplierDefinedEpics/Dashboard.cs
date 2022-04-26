@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using FluentAssertions;
 using Microsoft.EntityFrameworkCore;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.RandomData;
+using NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.Objects.Admin;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.Objects.Admin.SupplierDefinedEpics;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Utils;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.TestBases;
@@ -30,6 +31,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.SupplierDefinedEpics
         {
             CommonActions.WaitUntilElementIsDisplayed(SupplierDefinedEpicsDashboardObjects.InactiveItemsContainer);
 
+            CommonActions.ElementIsDisplayed(BreadcrumbObjects.HomeBreadcrumbLink).Should().BeTrue();
             CommonActions.PageTitle().Should().Be("Supplier defined Epics".FormatForComparison());
             CommonActions.LedeText().Should().Be("Add a supplier defined Epic or edit an existing one.".FormatForComparison());
 
@@ -39,6 +41,16 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.SupplierDefinedEpics
             CommonActions.ElementIsDisplayed(SupplierDefinedEpicsDashboardObjects.SearchBar).Should().BeTrue();
             CommonActions.ElementIsDisplayed(SupplierDefinedEpicsDashboardObjects.SearchButton).Should().BeTrue();
             CommonActions.ElementIsNotDisplayed(SupplierDefinedEpicsDashboardObjects.InactiveItemRow).Should().BeTrue();
+        }
+
+        [Fact]
+        public void Dashboard_ClickHomeBreadcrumbLink_DisplaysCorrectPage()
+        {
+            CommonActions.ClickLinkElement(BreadcrumbObjects.HomeBreadcrumbLink);
+
+            CommonActions.PageLoadedCorrectGetIndex(
+                typeof(HomeController),
+                nameof(HomeController.Index)).Should().BeTrue();
         }
 
         [Fact]

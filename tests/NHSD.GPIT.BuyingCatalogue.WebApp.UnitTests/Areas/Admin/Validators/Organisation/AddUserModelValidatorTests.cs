@@ -46,22 +46,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators.Orga
         [Theory]
         [CommonInlineAutoData(null)]
         [CommonInlineAutoData("")]
-        [CommonInlineAutoData(" ")]
-        public static void Validate_TelephoneNumberNullOrEmpty_NoValidationErrors(
-            string telephoneNumber,
-            AddUserModel model,
-            AddUserModelValidator validator)
-        {
-            model.TelephoneNumber = telephoneNumber;
-
-            var result = validator.TestValidate(model);
-
-            result.ShouldNotHaveValidationErrorFor(x => x.TelephoneNumber);
-        }
-
-        [Theory]
-        [CommonInlineAutoData(null)]
-        [CommonInlineAutoData("")]
         public static void Validate_EmailAddressNullOrEmpty_SetsModelError(
             string emailAddress,
             AddUserModel model,
@@ -116,13 +100,11 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators.Orga
         public static void Validate_Valid_NoModelError(
             string firstName,
             string lastName,
-            string telephoneNumber,
             AddUserModel model,
             AddUserModelValidator validator)
         {
             model.FirstName = firstName;
             model.LastName = lastName;
-            model.TelephoneNumber = telephoneNumber;
             model.EmailAddress = "a@a.com";
 
             var result = validator.TestValidate(model);

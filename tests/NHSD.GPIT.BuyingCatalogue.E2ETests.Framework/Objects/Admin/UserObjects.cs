@@ -84,10 +84,6 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.Objects.Admin
 
         public static By SelectedOrganisationError => By.Id("SelectedOrganisationId-error");
 
-        public static By TelephoneNumberDisplay => ByExtensions.DataTestId("user-telephone-number");
-
-        public static By TelephoneNumberInput => By.Id("TelephoneNumber");
-
         public static By UserEmail => ByExtensions.DataTestId("user-email");
 
         public static By UserFullName => ByExtensions.DataTestId("user-full-name");

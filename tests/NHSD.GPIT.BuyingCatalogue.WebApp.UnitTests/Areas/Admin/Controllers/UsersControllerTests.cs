@@ -229,7 +229,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
                     OrganisationConstants.NhsDigitalOrganisationId,
                     model.FirstName,
                     model.LastName,
-                    model.TelephoneNumber,
                     model.Email,
                     model.SelectedAccountType,
                     model.SelectedAccountStatus))
@@ -513,7 +512,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
 
             model.FirstName.Should().Be(user.FirstName);
             model.LastName.Should().Be(user.LastName);
-            model.TelephoneNumber.Should().Be(user.PhoneNumber);
             model.Email.Should().Be(user.Email);
         }
 
@@ -541,7 +539,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
             UsersController controller)
         {
             mockUsersService
-                .Setup(x => x.UpdateUserDetails(UserId, model.FirstName, model.LastName, model.TelephoneNumber, model.Email))
+                .Setup(x => x.UpdateUserDetails(UserId, model.FirstName, model.LastName, model.Email))
                 .Returns(Task.CompletedTask);
 
             var result = await controller.PersonalDetails(UserId, model);
