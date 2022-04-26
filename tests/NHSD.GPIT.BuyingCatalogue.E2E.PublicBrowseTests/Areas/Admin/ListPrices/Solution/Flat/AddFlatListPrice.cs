@@ -11,7 +11,7 @@ using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers;
 using Xunit;
 
-namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.ListPrices.Solution.Tiered
+namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.ListPrices.Solution.Flat
 {
     public sealed class AddFlatListPrice : AuthorityTestBase, IClassFixture<LocalWebApplicationFactory>
     {
@@ -44,7 +44,6 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.ListPrices.Solution.Tie
             CommonActions.SaveButtonDisplayed().Should().BeTrue();
 
             CommonActions.ElementIsDisplayed(AddEditFlatListPriceObjects.ProvisioningTypeInput).Should().BeTrue();
-            CommonActions.ElementIsDisplayed(AddEditFlatListPriceObjects.CalculationTypeInput).Should().BeTrue();
             CommonActions.ElementIsDisplayed(AddEditFlatListPriceObjects.UnitDescriptionInput).Should().BeTrue();
             CommonActions.ElementIsDisplayed(AddEditFlatListPriceObjects.UnitDefinitionInput).Should().BeTrue();
             CommonActions.ElementIsDisplayed(AddEditFlatListPriceObjects.PriceInput).Should().BeTrue();
@@ -81,7 +80,6 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.ListPrices.Solution.Tie
             CommonActions.ErrorSummaryLinksExist().Should().BeTrue();
 
             CommonActions.ElementShowingCorrectErrorMessage(AddEditFlatListPriceObjects.ProvisioningTypeInputError, "Error: Select a provisioning type").Should().BeTrue();
-            CommonActions.ElementShowingCorrectErrorMessage(AddEditFlatListPriceObjects.CalculationTypeInputError, "Error: Select a calculation type").Should().BeTrue();
             CommonActions.ElementShowingCorrectErrorMessage(AddEditFlatListPriceObjects.PublicationStatusInputError, "Error: Select a publication status").Should().BeTrue();
             CommonActions.ElementShowingCorrectErrorMessage(AddEditFlatListPriceObjects.UnitDescriptionInputError, "Enter a unit").Should().BeTrue();
             CommonActions.ElementShowingCorrectErrorMessage(AddEditFlatListPriceObjects.PriceInputError, "Enter a price").Should().BeTrue();
@@ -94,7 +92,6 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.ListPrices.Solution.Tie
             var price = catalogueItem.CataloguePrices.First(p => p.CataloguePriceType == CataloguePriceType.Flat);
 
             CommonActions.ClickRadioButtonWithValue(price.ProvisioningType.ToString());
-            CommonActions.ClickRadioButtonWithValue(price.CataloguePriceCalculationType.ToString());
             CommonActions.ClickRadioButtonWithValue(price.PublishedStatus.ToString());
 
             CommonActions.ElementAddValue(AddEditFlatListPriceObjects.UnitDescriptionInput, price.PricingUnit.Description);
@@ -106,7 +103,6 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.ListPrices.Solution.Tie
             CommonActions.ErrorSummaryLinksExist().Should().BeTrue();
 
             CommonActions.ElementShowingCorrectErrorMessage(AddEditFlatListPriceObjects.ProvisioningTypeInputError, "Error: A list price with these details already exists").Should().BeTrue();
-            CommonActions.ElementShowingCorrectErrorMessage(AddEditFlatListPriceObjects.CalculationTypeInputError, "Error: A list price with these details already exists").Should().BeTrue();
             CommonActions.ElementShowingCorrectErrorMessage(AddEditFlatListPriceObjects.UnitDescriptionInputError, "A list price with these details already exists").Should().BeTrue();
             CommonActions.ElementShowingCorrectErrorMessage(AddEditFlatListPriceObjects.PriceInputError, "A list price with these details already exists").Should().BeTrue();
         }
@@ -115,7 +111,6 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.ListPrices.Solution.Tie
         public void Submit_Input_NavigatesToCorrectPage()
         {
             CommonActions.ClickRadioButtonWithValue(ProvisioningType.Patient.ToString());
-            CommonActions.ClickRadioButtonWithValue(CataloguePriceCalculationType.Volume.ToString());
             CommonActions.ClickRadioButtonWithValue(PublicationStatus.Published.ToString());
 
             TextGenerators.TextInputAddText(AddEditFlatListPriceObjects.UnitDescriptionInput, 100);

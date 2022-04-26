@@ -34,7 +34,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.ListPriceModels
             Price = flatTier.Price;
 
             SelectedPublicationStatus = CataloguePricePublicationStatus = cataloguePrice.PublishedStatus;
-            SelectedCalculationType = cataloguePrice.CataloguePriceCalculationType;
             SelectedProvisioningType = cataloguePrice.ProvisioningType;
 
             if (SelectedProvisioningType == ProvisioningType.OnDemand)
@@ -56,18 +55,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.ListPriceModels
             new(TimeUnit.PerYear.Description(), TimeUnit.PerYear.ToString()),
         };
 
-        public IList<SelectableRadioOption<CataloguePriceCalculationType>> AvailableCalculationTypes => new List<SelectableRadioOption<CataloguePriceCalculationType>>
-        {
-            new(
-                CataloguePriceCalculationType.SingleFixed.Name(),
-                CataloguePriceCalculationType.SingleFixed.Description(),
-                CataloguePriceCalculationType.SingleFixed),
-            new(
-                "Volume",
-                "Buyers pay the same price for all units based on how many they buy.",
-                CataloguePriceCalculationType.Volume),
-        };
-
         public PublicationStatus CataloguePricePublicationStatus { get; set; }
 
         public int? CataloguePriceId { get; set; }
@@ -83,8 +70,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.ListPriceModels
         public TimeUnit? DeclarativeBillingPeriod { get; set; }
 
         public TimeUnit? OnDemandBillingPeriod { get; set; }
-
-        public CataloguePriceCalculationType? SelectedCalculationType { get; set; }
 
         public decimal? Price { get; set; }
 

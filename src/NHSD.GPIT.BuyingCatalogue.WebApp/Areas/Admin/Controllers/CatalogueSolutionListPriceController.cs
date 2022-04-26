@@ -128,7 +128,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
                 ProvisioningType = model.SelectedProvisioningType!.Value,
                 TimeUnit = model.GetTimeUnit(),
                 PricingUnit = model.GetPricingUnit(),
-                CataloguePriceCalculationType = model.SelectedCalculationType!.Value,
+                CataloguePriceCalculationType = CataloguePriceCalculationType.SingleFixed,
                 CataloguePriceTiers = new HashSet<CataloguePriceTier>
                 {
                     new()
@@ -305,7 +305,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
                 cataloguePriceId,
                 model.GetPricingUnit(),
                 model.SelectedProvisioningType!.Value,
-                model.SelectedCalculationType!.Value,
+                CataloguePriceCalculationType.SingleFixed,
                 model.GetTimeUnit(),
                 model.Price!.Value);
 

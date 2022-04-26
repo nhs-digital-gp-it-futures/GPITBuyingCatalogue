@@ -1132,7 +1132,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
                             && p.TimeUnit == model.GetTimeUnit()
                             && p.PricingUnit.Description == pricingUnit.Description
                             && p.PricingUnit.Definition == pricingUnit.Definition
-                            && p.CataloguePriceCalculationType == model.SelectedCalculationType!.Value
+                            && p.CataloguePriceCalculationType == CataloguePriceCalculationType.SingleFixed
                             && p.PublishedStatus == model.SelectedPublicationStatus!.Value
                             && p.CataloguePriceTiers.First().Price == model.Price!.Value)));
 
@@ -1238,7 +1238,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
                         && match.Definition == pricingUnit.Definition
                         && match.RangeDescription == pricingUnit.RangeDescription),
                     model.SelectedProvisioningType!.Value,
-                    model.SelectedCalculationType!.Value,
+                    CataloguePriceCalculationType.SingleFixed,
                     model.GetTimeUnit(),
                     model.Price!.Value),
                 Times.Once());
@@ -1283,7 +1283,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
                         && match.Definition == pricingUnit.Definition
                         && match.RangeDescription == pricingUnit.RangeDescription),
                     model.SelectedProvisioningType!.Value,
-                    model.SelectedCalculationType!.Value,
+                    CataloguePriceCalculationType.SingleFixed,
                     model.GetTimeUnit(),
                     model.Price!.Value),
                 Times.Once());

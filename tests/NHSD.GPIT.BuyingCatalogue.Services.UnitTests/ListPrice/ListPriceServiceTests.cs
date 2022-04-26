@@ -241,7 +241,6 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.ListPrice
                 solution.CatalogueItemId,
                 null,
                 price.ProvisioningType,
-                price.CataloguePriceCalculationType,
                 tier.Price,
                 price.PricingUnit.Description);
 
@@ -269,7 +268,6 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.ListPrice
                 solution.CatalogueItemId,
                 price.CataloguePriceId,
                 price.ProvisioningType,
-                price.CataloguePriceCalculationType,
                 tier.Price,
                 price.PricingUnit.Description);
 
@@ -299,7 +297,6 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.ListPrice
                 solution.CatalogueItemId,
                 null,
                 newPrice.ProvisioningType,
-                newPrice.CataloguePriceCalculationType,
                 newTier.Price,
                 newPrice.PricingUnit.Description);
 

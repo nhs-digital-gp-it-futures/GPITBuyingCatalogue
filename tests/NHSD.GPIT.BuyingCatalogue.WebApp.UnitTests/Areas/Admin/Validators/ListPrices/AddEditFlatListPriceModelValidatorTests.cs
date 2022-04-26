@@ -19,7 +19,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators.List
             AddEditFlatListPriceModelValidator validator)
         {
             model.SelectedProvisioningType = null;
-            model.SelectedCalculationType = null;
             model.Price = null;
             model.UnitDescription = null;
             model.SelectedPublicationStatus = null;
@@ -28,9 +27,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators.List
 
             result.ShouldHaveValidationErrorFor(m => m.SelectedProvisioningType)
                 .WithErrorMessage(SharedListPriceValidationErrors.SelectedProvisioningTypeError);
-
-            result.ShouldHaveValidationErrorFor(m => m.SelectedCalculationType)
-                .WithErrorMessage(SharedListPriceValidationErrors.SelectedCalculationTypeError);
 
             result.ShouldHaveValidationErrorFor(m => m.Price)
                 .WithErrorMessage(FluentValidationExtensions.PriceEmptyError);
@@ -77,20 +73,18 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators.List
             [Frozen] Mock<IListPriceService> service,
             AddEditFlatListPriceModelValidator validator)
         {
-            model.SelectedCalculationType = EntityFramework.Catalogue.Models.CataloguePriceCalculationType.Volume;
             model.SelectedProvisioningType = EntityFramework.Catalogue.Models.ProvisioningType.Declarative;
 
             service.Setup(s => s.HasDuplicateFlatPrice(
                 model.CatalogueItemId,
                 model.CataloguePriceId,
                 model.SelectedProvisioningType!.Value,
-                model.SelectedCalculationType!.Value,
                 model.Price!.Value,
                 model.UnitDescription)).ReturnsAsync(true);
 
             var result = validator.TestValidate(model);
 
-            result.ShouldHaveValidationErrorFor("SelectedProvisioningType|SelectedCalculationType|Price|UnitDescription")
+            result.ShouldHaveValidationErrorFor("SelectedProvisioningType|Price|UnitDescription")
                 .WithErrorMessage(SharedListPriceValidationErrors.DuplicateListPriceError);
         }
 
@@ -101,14 +95,12 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators.List
             [Frozen] Mock<IListPriceService> service,
             AddEditFlatListPriceModelValidator validator)
         {
-            model.SelectedCalculationType = EntityFramework.Catalogue.Models.CataloguePriceCalculationType.Volume;
             model.SelectedProvisioningType = EntityFramework.Catalogue.Models.ProvisioningType.Declarative;
 
             service.Setup(s => s.HasDuplicateFlatPrice(
                 model.CatalogueItemId,
                 model.CataloguePriceId,
                 model.SelectedProvisioningType!.Value,
-                model.SelectedCalculationType!.Value,
                 model.Price!.Value,
                 model.UnitDescription)).ReturnsAsync(false);
 

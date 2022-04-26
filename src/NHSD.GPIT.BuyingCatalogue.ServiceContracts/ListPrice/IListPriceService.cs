@@ -10,7 +10,6 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.ListPrice
             CatalogueItemId catalogueItemId,
             int? cataloguePriceId,
             ProvisioningType provisioningType,
-            CataloguePriceCalculationType calculationType,
             decimal price,
             string unitDescription);
 
