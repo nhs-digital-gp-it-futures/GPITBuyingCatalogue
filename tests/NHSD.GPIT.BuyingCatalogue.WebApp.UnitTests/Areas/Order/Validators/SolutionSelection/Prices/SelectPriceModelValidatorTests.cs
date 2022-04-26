@@ -21,5 +21,16 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Validators.Solu
             result.ShouldHaveValidationErrorFor(nameof(model.SelectedPriceId))
                 .WithErrorMessage(SelectPriceModelValidator.NoSelectionMadeErrorMessage);
         }
+
+        [Theory]
+        [CommonAutoData]
+        public static void Validate_AllCorrect_NoErrorThrown(
+            SelectPriceModel model,
+            SelectPriceModelValidator validator)
+        {
+            var result = validator.TestValidate(model);
+
+            result.ShouldNotHaveAnyValidationErrors();
+        }
     }
 }
