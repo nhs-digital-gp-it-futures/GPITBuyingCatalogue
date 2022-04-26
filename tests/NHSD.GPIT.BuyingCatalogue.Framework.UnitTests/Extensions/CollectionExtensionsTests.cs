@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using FluentAssertions;
 using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
-using NHSD.GPIT.BuyingCatalogue.Test.Framework.AutoFixtureCustomisations;
+using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.AutoFixtureCustomisations;
 using Xunit;
 
 namespace NHSD.GPIT.BuyingCatalogue.Framework.UnitTests.Extensions

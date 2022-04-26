@@ -14,7 +14,7 @@ using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.DevelopmentPlans;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Models.DevelopmentPlans;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions;
-using NHSD.GPIT.BuyingCatalogue.Test.Framework.AutoFixtureCustomisations;
+using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.AutoFixtureCustomisations;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.DevelopmentPlans;
 using Xunit;

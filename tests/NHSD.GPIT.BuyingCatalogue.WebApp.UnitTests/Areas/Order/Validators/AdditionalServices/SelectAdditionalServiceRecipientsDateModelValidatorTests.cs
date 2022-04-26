@@ -1,7 +1,7 @@
 ﻿using System;
 using FluentValidation.TestHelper;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Constants;
-using NHSD.GPIT.BuyingCatalogue.Test.Framework.AutoFixtureCustomisations;
+using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.AutoFixtureCustomisations;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.AdditionalServiceRecipientsDate;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Validators.AdditionalServices;
 using Xunit;

@@ -1,6 +1,6 @@
 ﻿using FluentAssertions;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Identity;
-using NHSD.GPIT.BuyingCatalogue.Test.Framework.Builders;
+using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.Builders;
 using Xunit;
 
 namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.UnitTests.Identity

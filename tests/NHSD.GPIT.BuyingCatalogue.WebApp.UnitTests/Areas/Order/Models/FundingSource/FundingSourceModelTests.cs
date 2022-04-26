@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using FluentAssertions;
 using Microsoft.AspNetCore.Mvc.Rendering;
-using NHSD.GPIT.BuyingCatalogue.Test.Framework.AutoFixtureCustomisations;
+using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.AutoFixtureCustomisations;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.FundingSource;
 using Xunit;
 

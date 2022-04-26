@@ -8,7 +8,7 @@ using Microsoft.AspNetCore.Mvc;
 using Moq;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Orders;
-using NHSD.GPIT.BuyingCatalogue.Test.Framework.AutoFixtureCustomisations;
+using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.AutoFixtureCustomisations;
 using NHSD.GPIT.BuyingCatalogue.WebApp.ActionFilters;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Controllers;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Models;

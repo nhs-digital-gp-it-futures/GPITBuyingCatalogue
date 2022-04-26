@@ -12,7 +12,7 @@ using Moq;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Organisations;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Streaming;
 using NHSD.GPIT.BuyingCatalogue.Services.Organisations;
-using NHSD.GPIT.BuyingCatalogue.Test.Framework.AutoFixtureCustomisations;
+using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.AutoFixtureCustomisations;
 using Xunit;
 
 namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Organisations

@@ -15,7 +15,7 @@ using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Moq;
 using NHSD.GPIT.BuyingCatalogue.Framework.Constants;
 using NHSD.GPIT.BuyingCatalogue.Framework.Settings;
-using NHSD.GPIT.BuyingCatalogue.Test.Framework.AutoFixtureCustomisations;
+using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.AutoFixtureCustomisations;
 using NHSD.GPIT.BuyingCatalogue.WebApp.ActionFilters;
 using Xunit;
 

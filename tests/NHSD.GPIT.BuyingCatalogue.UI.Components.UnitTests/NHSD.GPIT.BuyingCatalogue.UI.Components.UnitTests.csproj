@@ -23,7 +23,7 @@
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
       <PrivateAssets>all</PrivateAssets>
     </PackageReference>
-    <PackageReference Include="FluentAssertions" Version="6.5.1" />
+    <PackageReference Include="FluentAssertions" Version="6.6.0" />
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.0.0" />
     <PackageReference Include="Moq" Version="4.16.1" />
     <PackageReference Include="StyleCop.Analyzers" Version="1.2.0-beta.354">
@@ -40,7 +40,7 @@
   <ItemGroup>
     <ProjectReference Include="..\..\src\NHSD.GPIT.BuyingCatalogue.EntityFramework\NHSD.GPIT.BuyingCatalogue.EntityFramework.csproj" />
     <ProjectReference Include="..\..\src\NHSD.GPIT.BuyingCatalogue.UI.Components\NHSD.GPIT.BuyingCatalogue.UI.Components.csproj" />
-    <ProjectReference Include="..\NHSD.GPIT.BuyingCatalogue.Test.Framework\NHSD.GPIT.BuyingCatalogue.Test.Framework.csproj" />
+    <ProjectReference Include="..\NHSD.GPIT.BuyingCatalogue.UnitTest.Framework\NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.csproj" />
   </ItemGroup>
 
 </Project>

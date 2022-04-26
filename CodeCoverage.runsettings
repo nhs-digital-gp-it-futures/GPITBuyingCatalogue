@@ -35,7 +35,7 @@ Included items must then not match any entries in the exclude list to remain inc
                             <Exclude>
                                 <ModulePath>.*CPPUnitTestFramework.*</ModulePath>                                
                                 <ModulePath>.*tests.dll</ModulePath>
-                                <ModulePath>.*NHSD.GPIT.BuyingCatalogue.Test.Framework.*</ModulePath>
+                                <ModulePath>.*NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.*</ModulePath>
                                 <ModulePath>.*NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.*</ModulePath>
                                 <ModulePath>.*NHSD.GPIT.BuyingCatalogue.UI.Components.WebApp.*</ModulePath>
                                 <ModulePath>.*NHSD.GPIT.BuyingCatalogue.UI.Components.*</ModulePath>

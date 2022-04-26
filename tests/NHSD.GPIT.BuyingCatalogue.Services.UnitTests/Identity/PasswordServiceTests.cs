@@ -12,8 +12,8 @@ using NHSD.GPIT.BuyingCatalogue.EntityFramework.Users.Models;
 using NHSD.GPIT.BuyingCatalogue.Framework.Settings;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Email;
 using NHSD.GPIT.BuyingCatalogue.Services.Identity;
-using NHSD.GPIT.BuyingCatalogue.Test.Framework.AutoFixtureCustomisations;
-using NHSD.GPIT.BuyingCatalogue.Test.Framework.Builders;
+using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.AutoFixtureCustomisations;
+using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.Builders;
 using Xunit;
 
 namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Identity
