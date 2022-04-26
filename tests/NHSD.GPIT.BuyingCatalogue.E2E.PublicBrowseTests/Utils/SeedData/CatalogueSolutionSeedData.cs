@@ -887,7 +887,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
                             CataloguePriceId = 1,
                             CatalogueItemId = new CatalogueItemId(99998, "001"),
                             ProvisioningType = ProvisioningType.Patient,
-                            CataloguePriceCalculationType = CataloguePriceCalculationType.Cumulative,
+                            CataloguePriceCalculationType = CataloguePriceCalculationType.Volume,
                             CataloguePriceType = CataloguePriceType.Flat,
                             PublishedStatus = PublicationStatus.Published,
                             PricingUnit = new PricingUnit
@@ -918,7 +918,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
                             CatalogueItemId = new CatalogueItemId(99998, "001"),
                             ProvisioningType = ProvisioningType.OnDemand,
                             CataloguePriceType = CataloguePriceType.Flat,
-                            CataloguePriceCalculationType = CataloguePriceCalculationType.Cumulative,
+                            CataloguePriceCalculationType = CataloguePriceCalculationType.Volume,
                             PublishedStatus = PublicationStatus.Published,
                             PricingUnit = new PricingUnit
                             {
@@ -948,7 +948,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
                             CatalogueItemId = new CatalogueItemId(99998, "001"),
                             ProvisioningType = ProvisioningType.Declarative,
                             CataloguePriceType = CataloguePriceType.Flat,
-                            CataloguePriceCalculationType = CataloguePriceCalculationType.Cumulative,
+                            CataloguePriceCalculationType = CataloguePriceCalculationType.Volume,
                             PublishedStatus = PublicationStatus.Published,
                             PricingUnit = new PricingUnit
                             {

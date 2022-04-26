@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using AutoFixture;
 using AutoFixture.AutoMoq;
@@ -148,6 +149,80 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Solutions
             price.PricingUnit.RangeDescription.Should().Be(priceUpdates.PricingUnit.RangeDescription);
             price.PricingUnit.Definition.Should().Be(priceUpdates.PricingUnit.Definition);
             price.PricingUnit.Description.Should().Be(priceUpdates.PricingUnit.Description);
+        }
+
+        [Theory]
+        [InMemoryDbAutoData]
+        public static Task UpdateFlatListPrice_NullPricingUnit_ThrowsArgumentNullException(
+            Solution solution,
+            CataloguePrice cataloguePrice,
+            decimal price,
+            SolutionListPriceService service)
+            => Assert.ThrowsAsync<ArgumentNullException>(() => service.UpdateListPrice(
+                solution.CatalogueItemId,
+                cataloguePrice.CataloguePriceId,
+                null,
+                cataloguePrice.ProvisioningType,
+                cataloguePrice.CataloguePriceCalculationType,
+                cataloguePrice.TimeUnit,
+                price));
+
+        [Theory]
+        [InMemoryDbAutoData]
+        public static async Task UpdateFlatListPrice_Valid_Updates(
+            Solution solution,
+            CataloguePrice priceUpdates,
+            decimal price,
+            [Frozen] BuyingCatalogueDbContext dbContext,
+            SolutionListPriceService service)
+        {
+            var cataloguePrice = new CataloguePrice
+            {
+                CataloguePriceCalculationType = CataloguePriceCalculationType.Volume,
+                CataloguePriceType = CataloguePriceType.Flat,
+                ProvisioningType = ProvisioningType.Declarative,
+                TimeUnit = null,
+                CurrencyCode = "GBP",
+                PricingUnit = new PricingUnit
+                {
+                    Definition = "Definition",
+                    Description = "Description",
+                    RangeDescription = "Range",
+                },
+                CataloguePriceTiers = new HashSet<CataloguePriceTier>
+                {
+                    new()
+                    {
+                        Price = 3.14M,
+                        LowerRange = 1,
+                        UpperRange = null,
+                    },
+                },
+            };
+
+            solution.CatalogueItem.CataloguePrices = new HashSet<CataloguePrice>
+            {
+                cataloguePrice,
+            };
+            dbContext.CatalogueItems.Add(solution.CatalogueItem);
+            dbContext.SaveChanges();
+
+            await service.UpdateListPrice(
+                solution.CatalogueItemId,
+                cataloguePrice.CataloguePriceId,
+                priceUpdates.PricingUnit,
+                priceUpdates.ProvisioningType,
+                priceUpdates.CataloguePriceCalculationType,
+                priceUpdates.TimeUnit,
+                price);
+
+            cataloguePrice.ProvisioningType.Should().Be(priceUpdates.ProvisioningType);
+            cataloguePrice.CataloguePriceCalculationType.Should().Be(priceUpdates.CataloguePriceCalculationType);
+            cataloguePrice.TimeUnit.Should().Be(priceUpdates.TimeUnit);
+            cataloguePrice.PricingUnit.RangeDescription.Should().Be(priceUpdates.PricingUnit.RangeDescription);
+            cataloguePrice.PricingUnit.Definition.Should().Be(priceUpdates.PricingUnit.Definition);
+            cataloguePrice.PricingUnit.Description.Should().Be(priceUpdates.PricingUnit.Description);
+            cataloguePrice.CataloguePriceTiers.First().Price.Should().Be(price);
         }
 
         [Theory]

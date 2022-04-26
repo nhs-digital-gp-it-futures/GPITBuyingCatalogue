@@ -13,7 +13,7 @@ using Xunit;
 
 namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.ListPrice
 {
-    public static class DuplicateListPriceServiceTests
+    public static class ListPriceServiceTests
     {
         [Fact]
         public static void Constructors_VerifyGuardClauses()
@@ -33,6 +33,8 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.ListPrice
             [Frozen] BuyingCatalogueDbContext dbContext,
             ListPriceService service)
         {
+            price.CataloguePriceType = CataloguePriceType.Tiered;
+
             dbContext.CatalogueItems.Add(solution.CatalogueItem);
             dbContext.SaveChanges();
 
@@ -216,6 +218,89 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.ListPrice
                 priceTier.UpperRange);
 
             result.Should().BeTrue();
+        }
+
+        [Theory]
+        [InMemoryDbAutoData]
+        public static async Task HasDuplicateFlatPrice_Duplicate_ReturnsTrue(
+            Solution solution,
+            CataloguePrice price,
+            CataloguePriceTier tier,
+            [Frozen] BuyingCatalogueDbContext dbContext,
+            ListPriceService service)
+        {
+            price.CataloguePriceTiers = new HashSet<CataloguePriceTier> { tier };
+            price.CataloguePriceType = CataloguePriceType.Flat;
+
+            solution.CatalogueItem.CataloguePrices.Add(price);
+
+            dbContext.CatalogueItems.Add(solution.CatalogueItem);
+            dbContext.SaveChanges();
+
+            var result = await service.HasDuplicateFlatPrice(
+                solution.CatalogueItemId,
+                null,
+                price.ProvisioningType,
+                tier.Price,
+                price.PricingUnit.Description);
+
+            result.Should().BeTrue();
+        }
+
+        [Theory]
+        [InMemoryDbAutoData]
+        public static async Task HasDuplicateFlatPrice_Self_ReturnsFalse(
+            Solution solution,
+            CataloguePrice price,
+            CataloguePriceTier tier,
+            [Frozen] BuyingCatalogueDbContext dbContext,
+            ListPriceService service)
+        {
+            price.CataloguePriceTiers = new HashSet<CataloguePriceTier> { tier };
+            price.CataloguePriceType = CataloguePriceType.Flat;
+
+            solution.CatalogueItem.CataloguePrices.Add(price);
+
+            dbContext.CatalogueItems.Add(solution.CatalogueItem);
+            dbContext.SaveChanges();
+
+            var result = await service.HasDuplicateFlatPrice(
+                solution.CatalogueItemId,
+                price.CataloguePriceId,
+                price.ProvisioningType,
+                tier.Price,
+                price.PricingUnit.Description);
+
+            result.Should().BeFalse();
+        }
+
+        [Theory]
+        [InMemoryDbAutoData]
+        public static async Task HasDuplicateFlatPrice_Unique_ReturnsFalse(
+            Solution solution,
+            CataloguePrice price,
+            CataloguePriceTier tier,
+            CataloguePrice newPrice,
+            CataloguePriceTier newTier,
+            [Frozen] BuyingCatalogueDbContext dbContext,
+            ListPriceService service)
+        {
+            price.CataloguePriceTiers = new HashSet<CataloguePriceTier> { tier };
+            price.CataloguePriceType = CataloguePriceType.Flat;
+
+            solution.CatalogueItem.CataloguePrices.Add(price);
+
+            dbContext.CatalogueItems.Add(solution.CatalogueItem);
+            dbContext.SaveChanges();
+
+            var result = await service.HasDuplicateFlatPrice(
+                solution.CatalogueItemId,
+                null,
+                newPrice.ProvisioningType,
+                newTier.Price,
+                newPrice.PricingUnit.Description);
+
+            result.Should().BeFalse();
         }
     }
 }

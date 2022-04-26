@@ -6,6 +6,13 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.ListPrice
 {
     public interface IListPriceService
     {
+        Task<bool> HasDuplicateFlatPrice(
+            CatalogueItemId catalogueItemId,
+            int? cataloguePriceId,
+            ProvisioningType provisioningType,
+            decimal price,
+            string unitDescription);
+
         Task<bool> HasDuplicateTieredPrice(
             CatalogueItemId catalogueItemId,
             int? cataloguePriceId,

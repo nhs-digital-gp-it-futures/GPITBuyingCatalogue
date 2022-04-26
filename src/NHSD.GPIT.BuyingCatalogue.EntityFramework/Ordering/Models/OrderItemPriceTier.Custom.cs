@@ -7,7 +7,7 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models
         public OrderItemPriceTier(OrderItemPrice price, CataloguePriceTier tier)
         {
             OrderId = price.OrderId;
-            CatalogueItemId = tier.CataloguePrice.CatalogueItemId;
+            CatalogueItemId = price.CatalogueItemId;
             Price = tier.Price;
             LowerRange = tier.LowerRange;
             UpperRange = tier.UpperRange;

@@ -11,7 +11,7 @@ using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers;
 using Xunit;
 
-namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.ListPrices.Solution
+namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.ListPrices.Solution.Tiered
 {
     public sealed class EditTieredListPrice : AuthorityTestBase, IClassFixture<LocalWebApplicationFactory>
     {
@@ -68,6 +68,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.ListPrices.Solution
 
             CommonActions.ElementIsDisplayed(AddEditTieredListPriceObjects.PublishedInsetSection).Should().BeTrue();
             CommonActions.ElementIsDisplayed(AddEditTieredListPriceObjects.AddTierLink).Should().BeFalse();
+            CommonActions.ElementIsDisplayed(AddEditTieredListPriceObjects.DeletePriceLink).Should().BeFalse();
 
             price.PublishedStatus = PublicationStatus.Unpublished;
             context.SaveChanges();
@@ -75,6 +76,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.ListPrices.Solution
 
             CommonActions.ElementIsDisplayed(AddEditTieredListPriceObjects.PublishedInsetSection).Should().BeFalse();
             CommonActions.ElementIsDisplayed(AddEditTieredListPriceObjects.AddTierLink).Should().BeTrue();
+            CommonActions.ElementIsDisplayed(AddEditTieredListPriceObjects.DeletePriceLink).Should().BeTrue();
 
             price.PublishedStatus = publishStatus;
             context.SaveChanges();
@@ -116,7 +118,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.ListPrices.Solution
         public void Submit_Duplicate_ThrowsError()
         {
             var catalogueItem = GetCatalogueItemWithPrices(SolutionId);
-            var price = catalogueItem.CataloguePrices.First(p => p.CataloguePriceId != CataloguePriceId);
+            var price = catalogueItem.CataloguePrices.First(p => p.CataloguePriceId != CataloguePriceId && p.CataloguePriceType == CataloguePriceType.Tiered);
 
             CommonActions.ClickRadioButtonWithValue(price.ProvisioningType.ToString());
             CommonActions.ClickRadioButtonWithValue(price.CataloguePriceCalculationType.ToString());

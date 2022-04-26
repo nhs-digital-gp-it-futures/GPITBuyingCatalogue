@@ -51,7 +51,8 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.ListPrices.Solution
 
             tieredPrices.ForEach(p => CommonActions.ElementIsDisplayed(ManageListPricesObjects.TieredPrice(p.CataloguePriceId)).Should().BeTrue());
             flatPrices.ForEach(p => CommonActions.ElementIsDisplayed(ManageListPricesObjects.FlatPrice(p.CataloguePriceId)).Should().BeTrue());
-            catalogueItem.CataloguePrices.Where(p => p.CataloguePriceType == CataloguePriceType.Tiered).ToList().ForEach(p => CommonActions.ElementIsDisplayed(ManageListPricesObjects.EditPriceLink(p.CataloguePriceId)).Should().BeTrue());
+            catalogueItem.CataloguePrices.Where(p => p.CataloguePriceType == CataloguePriceType.Tiered).ToList().ForEach(p => CommonActions.ElementIsDisplayed(ManageListPricesObjects.EditTieredPriceLink(p.CataloguePriceId)).Should().BeTrue());
+            catalogueItem.CataloguePrices.Where(p => p.CataloguePriceType == CataloguePriceType.Flat).ToList().ForEach(p => CommonActions.ElementIsDisplayed(ManageListPricesObjects.EditFlatPriceLink(p.CataloguePriceId)).Should().BeTrue());
         }
 
         [Fact]
@@ -91,11 +92,25 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.ListPrices.Solution
 
             var tieredPrice = catalogueItem.CataloguePrices.First(p => p.CataloguePriceType == CataloguePriceType.Tiered);
 
-            CommonActions.ClickLinkElement(ManageListPricesObjects.EditPriceLink(tieredPrice.CataloguePriceId));
+            CommonActions.ClickLinkElement(ManageListPricesObjects.EditTieredPriceLink(tieredPrice.CataloguePriceId));
 
             CommonActions.PageLoadedCorrectGetIndex(
                 typeof(CatalogueSolutionListPriceController),
                 nameof(CatalogueSolutionListPriceController.EditTieredListPrice)).Should().BeTrue();
+        }
+
+        [Fact]
+        public void ClickEditPrice_Flat_NavigatesToCorrectPage()
+        {
+            var catalogueItem = GetCatalogueItemWithPrices(SolutionId);
+
+            var tieredPrice = catalogueItem.CataloguePrices.First(p => p.CataloguePriceType == CataloguePriceType.Flat);
+
+            CommonActions.ClickLinkElement(ManageListPricesObjects.EditFlatPriceLink(tieredPrice.CataloguePriceId));
+
+            CommonActions.PageLoadedCorrectGetIndex(
+                typeof(CatalogueSolutionListPriceController),
+                nameof(CatalogueSolutionListPriceController.EditFlatListPrice)).Should().BeTrue();
         }
 
         private CatalogueItem GetCatalogueItemWithPrices(CatalogueItemId id)

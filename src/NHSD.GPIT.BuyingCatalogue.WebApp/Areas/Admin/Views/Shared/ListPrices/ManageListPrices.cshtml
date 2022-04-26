@@ -75,7 +75,10 @@
                         </div>
                         <br />
                         <div data-test-id="edit-price-@price.CataloguePriceId">
-                            <vc:nhs-action-link text="Edit price" url="#" />
+                            <vc:nhs-action-link text="Edit price" url="@Url.Action(
+                                nameof(CatalogueSolutionListPriceController.EditFlatListPrice),
+                                typeof(CatalogueSolutionListPriceController).ControllerName(),
+                                new { solutionId = Model.CatalogueItemId, price.CataloguePriceId })" />
                         </div>
 
                         <nhs-summary-list>

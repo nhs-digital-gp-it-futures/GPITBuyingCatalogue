@@ -25,13 +25,13 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators.List
             var result = validator.TestValidate(model);
 
             result.ShouldHaveValidationErrorFor(m => m.SelectedProvisioningType)
-                .WithErrorMessage(AddTieredListPriceModelValidator.SelectedProvisioningTypeError);
+                .WithErrorMessage(SharedListPriceValidationErrors.SelectedProvisioningTypeError);
 
             result.ShouldHaveValidationErrorFor(m => m.SelectedCalculationType)
-                .WithErrorMessage(AddTieredListPriceModelValidator.SelectedCalculationTypeError);
+                .WithErrorMessage(SharedListPriceValidationErrors.SelectedCalculationTypeError);
 
             result.ShouldHaveValidationErrorFor(m => m.UnitDescription)
-                .WithErrorMessage(AddTieredListPriceModelValidator.UnitError);
+                .WithErrorMessage(SharedListPriceValidationErrors.UnitError);
 
             result.ShouldHaveValidationErrorFor(m => m.RangeDefinition)
                 .WithErrorMessage(AddTieredListPriceModelValidator.RangeDefinitionError);
@@ -58,7 +58,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators.List
             var result = validator.TestValidate(model);
 
             result.ShouldHaveValidationErrorFor("SelectedProvisioningType|SelectedCalculationType|UnitDescription|RangeDefinition")
-                .WithErrorMessage(AddTieredListPriceModelValidator.DuplicateListPriceError);
+                .WithErrorMessage(SharedListPriceValidationErrors.DuplicateListPriceError);
         }
 
         [Theory]

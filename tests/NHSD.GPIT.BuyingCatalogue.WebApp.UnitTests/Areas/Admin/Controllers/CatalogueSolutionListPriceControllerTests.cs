@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using AutoFixture;
 using AutoFixture.AutoMoq;
@@ -127,7 +128,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
             var result = controller.ListPriceType(solution.CatalogueItemId, model).As<RedirectToActionResult>();
 
             result.Should().NotBeNull();
-            result.ActionName.Should().Be(nameof(controller.ListPriceType));
+            result.ActionName.Should().Be(nameof(controller.AddFlatListPrice));
         }
 
         [Theory]
@@ -991,15 +992,44 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
         [Theory]
         [CommonAutoData]
         public static async Task Post_DeleteListPrice_Redirects(
-            CatalogueItemId solutionId,
-            int cataloguePriceId,
+            Solution solution,
+            CataloguePrice price,
             DeleteItemConfirmationModel model,
             [Frozen] Mock<ISolutionListPriceService> solutionListPriceService,
             CatalogueSolutionListPriceController controller)
         {
-            var result = (await controller.DeleteListPrice(solutionId, cataloguePriceId, model)).As<RedirectToActionResult>();
+            price.PublishedStatus = PublicationStatus.Unpublished;
+            solution.CatalogueItem.CataloguePrices = new HashSet<CataloguePrice> { price };
 
-            solutionListPriceService.Verify(s => s.DeleteListPrice(solutionId, cataloguePriceId), Times.Once());
+            solutionListPriceService.Setup(s => s.GetSolutionWithListPrices(solution.CatalogueItemId))
+                .ReturnsAsync(solution.CatalogueItem);
+
+            var result = (await controller.DeleteListPrice(solution.CatalogueItemId, price.CataloguePriceId, model)).As<RedirectToActionResult>();
+
+            solutionListPriceService.Verify(s => s.DeleteListPrice(solution.CatalogueItemId, price.CataloguePriceId), Times.Once());
+
+            result.Should().NotBeNull();
+            result.ActionName.Should().Be(nameof(controller.Index));
+        }
+
+        [Theory]
+        [CommonAutoData]
+        public static async Task Post_DeleteListPrice_PublishedPrice_DoesNotDelete(
+            Solution solution,
+            CataloguePrice price,
+            DeleteItemConfirmationModel model,
+            [Frozen] Mock<ISolutionListPriceService> solutionListPriceService,
+            CatalogueSolutionListPriceController controller)
+        {
+            price.PublishedStatus = PublicationStatus.Published;
+            solution.CatalogueItem.CataloguePrices = new HashSet<CataloguePrice> { price };
+
+            solutionListPriceService.Setup(s => s.GetSolutionWithListPrices(solution.CatalogueItemId))
+                .ReturnsAsync(solution.CatalogueItem);
+
+            var result = (await controller.DeleteListPrice(solution.CatalogueItemId, price.CataloguePriceId, model)).As<RedirectToActionResult>();
+
+            solutionListPriceService.Verify(s => s.DeleteListPrice(solution.CatalogueItemId, price.CataloguePriceId), Times.Never());
 
             result.Should().NotBeNull();
             result.ActionName.Should().Be(nameof(controller.Index));
@@ -1031,16 +1061,23 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
         [Theory]
         [CommonAutoData]
         public static async Task Post_DeleteTieredPriceTier_Redirects(
-            CatalogueItemId solutionId,
-            int cataloguePriceId,
-            int tierId,
+            Solution solution,
+            CataloguePrice price,
+            CataloguePriceTier tier,
             DeleteItemConfirmationModel model,
             [Frozen] Mock<ISolutionListPriceService> solutionListPriceService,
             CatalogueSolutionListPriceController controller)
         {
-            var result = (await controller.DeleteTieredPriceTier(solutionId, cataloguePriceId, tierId, model)).As<RedirectToActionResult>();
+            price.PublishedStatus = PublicationStatus.Unpublished;
+            price.CataloguePriceTiers.Add(tier);
+            solution.CatalogueItem.CataloguePrices.Add(price);
 
-            solutionListPriceService.Verify(s => s.DeletePriceTier(solutionId, cataloguePriceId, tierId), Times.Once());
+            solutionListPriceService.Setup(s => s.GetSolutionWithListPrices(solution.CatalogueItemId))
+                .ReturnsAsync(solution.CatalogueItem);
+
+            var result = (await controller.DeleteTieredPriceTier(solution.CatalogueItemId, price.CataloguePriceId, tier.Id, model)).As<RedirectToActionResult>();
+
+            solutionListPriceService.Verify(s => s.DeletePriceTier(solution.CatalogueItemId, price.CataloguePriceId, tier.Id), Times.Once());
 
             result.Should().NotBeNull();
             result.ActionName.Should().Be(nameof(controller.TieredPriceTiers));
@@ -1048,20 +1085,287 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
 
         [Theory]
         [CommonAutoData]
-        public static async Task Post_DeleteTieredPriceTier_IsEditing_Redirects(
-            CatalogueItemId solutionId,
-            int cataloguePriceId,
-            int tierId,
+        public static async Task Post_DeleteTieredPriceTier_PublishedPrice_DoesNotDelete(
+            Solution solution,
+            CataloguePrice price,
+            CataloguePriceTier tier,
             DeleteItemConfirmationModel model,
             [Frozen] Mock<ISolutionListPriceService> solutionListPriceService,
             CatalogueSolutionListPriceController controller)
         {
-            var result = (await controller.DeleteTieredPriceTier(solutionId, cataloguePriceId, tierId, model, true)).As<RedirectToActionResult>();
+            price.PublishedStatus = PublicationStatus.Published;
+            price.CataloguePriceTiers.Add(tier);
+            solution.CatalogueItem.CataloguePrices.Add(price);
 
-            solutionListPriceService.Verify(s => s.DeletePriceTier(solutionId, cataloguePriceId, tierId), Times.Once());
+            solutionListPriceService.Setup(s => s.GetSolutionWithListPrices(solution.CatalogueItemId))
+                .ReturnsAsync(solution.CatalogueItem);
+
+            var result = (await controller.DeleteTieredPriceTier(solution.CatalogueItemId, price.CataloguePriceId, tier.Id, model)).As<RedirectToActionResult>();
+
+            solutionListPriceService.Verify(s => s.DeletePriceTier(solution.CatalogueItemId, price.CataloguePriceId, tier.Id), Times.Never());
 
             result.Should().NotBeNull();
             result.ActionName.Should().Be(nameof(controller.EditTieredListPrice));
+        }
+
+        [Theory]
+        [CommonAutoData]
+        public static async Task Post_DeleteTieredPriceTier_IsEditing_Redirects(
+            Solution solution,
+            CataloguePrice price,
+            CataloguePriceTier tier,
+            DeleteItemConfirmationModel model,
+            [Frozen] Mock<ISolutionListPriceService> solutionListPriceService,
+            CatalogueSolutionListPriceController controller)
+        {
+            price.PublishedStatus = PublicationStatus.Unpublished;
+            price.CataloguePriceTiers.Add(tier);
+            solution.CatalogueItem.CataloguePrices.Add(price);
+
+            solutionListPriceService.Setup(s => s.GetSolutionWithListPrices(solution.CatalogueItemId))
+                .ReturnsAsync(solution.CatalogueItem);
+
+            var result = (await controller.DeleteTieredPriceTier(solution.CatalogueItemId, price.CataloguePriceId, tier.Id, model, true)).As<RedirectToActionResult>();
+
+            solutionListPriceService.Verify(s => s.DeletePriceTier(solution.CatalogueItemId, price.CataloguePriceId, tier.Id), Times.Once());
+
+            result.Should().NotBeNull();
+            result.ActionName.Should().Be(nameof(controller.EditTieredListPrice));
+        }
+
+        [Theory]
+        [CommonAutoData]
+        public static async Task Get_AddFlatListPrice_SolutionNotFound(
+            CatalogueItemId solutionId,
+            [Frozen] Mock<ISolutionListPriceService> solutionListPriceService,
+            CatalogueSolutionListPriceController controller)
+        {
+            solutionListPriceService.Setup(s => s.GetSolutionWithListPrices(solutionId))
+                .ReturnsAsync((CatalogueItem)null);
+
+            var result = (await controller.AddFlatListPrice(solutionId)).As<NotFoundResult>();
+
+            result.Should().NotBeNull();
+        }
+
+        [Theory]
+        [CommonAutoData]
+        public static async Task Get_AddFlatListPrice_ReturnsViewWithModel(
+            Solution solution,
+            [Frozen] Mock<ISolutionListPriceService> solutionListPriceService,
+            CatalogueSolutionListPriceController controller)
+        {
+            var model = new AddEditFlatListPriceModel(solution.CatalogueItem);
+
+            solutionListPriceService.Setup(s => s.GetSolutionWithListPrices(solution.CatalogueItemId))
+                .ReturnsAsync(solution.CatalogueItem);
+
+            var result = (await controller.AddFlatListPrice(solution.CatalogueItemId)).As<ViewResult>();
+
+            result.Should().NotBeNull();
+            result.Model.Should().BeEquivalentTo(model, opt => opt.Excluding(m => m.BackLink));
+        }
+
+        [Theory]
+        [CommonAutoData]
+        public static async Task Post_AddFlatListPrice_InvalidModel(
+            CatalogueItemId solutionId,
+            AddEditFlatListPriceModel model,
+            CatalogueSolutionListPriceController controller)
+        {
+            controller.ModelState.AddModelError("some-key", "some-error");
+
+            var result = (await controller.AddFlatListPrice(solutionId, model)).As<ViewResult>();
+
+            result.Should().NotBeNull();
+            result.Model.Should().BeEquivalentTo(model);
+        }
+
+        [Theory]
+        [CommonAutoData]
+        public static async Task Post_AddFlatListPrice_Redirects(
+            CatalogueItemId solutionId,
+            AddEditFlatListPriceModel model,
+            [Frozen] Mock<ISolutionListPriceService> solutionListPriceService,
+            CatalogueSolutionListPriceController controller)
+        {
+            var result = (await controller.AddFlatListPrice(solutionId, model)).As<RedirectToActionResult>();
+
+            var pricingUnit = model.GetPricingUnit();
+            solutionListPriceService.Verify(
+                s => s.AddListPrice(
+                    solutionId,
+                    It.Is<CataloguePrice>(
+                        p => p.CataloguePriceType == CataloguePriceType.Flat
+                            && p.ProvisioningType == model.SelectedProvisioningType!.Value
+                            && p.TimeUnit == model.GetTimeUnit()
+                            && p.PricingUnit.Description == pricingUnit.Description
+                            && p.PricingUnit.Definition == pricingUnit.Definition
+                            && p.CataloguePriceCalculationType == CataloguePriceCalculationType.SingleFixed
+                            && p.PublishedStatus == model.SelectedPublicationStatus!.Value
+                            && p.CataloguePriceTiers.First().Price == model.Price!.Value)));
+
+            result.Should().NotBeNull();
+            result.ActionName.Should().Be(nameof(controller.Index));
+        }
+
+        [Theory]
+        [CommonAutoData]
+        public static async Task Get_EditFlatListPrice_SolutionNotFound(
+            CatalogueItemId solutionId,
+            int cataloguePriceId,
+            [Frozen] Mock<ISolutionListPriceService> solutionListPriceService,
+            CatalogueSolutionListPriceController controller)
+        {
+            solutionListPriceService.Setup(s => s.GetSolutionWithListPrices(solutionId))
+                .ReturnsAsync((CatalogueItem)null);
+
+            var result = (await controller.EditFlatListPrice(solutionId, cataloguePriceId)).As<NotFoundResult>();
+
+            result.Should().NotBeNull();
+        }
+
+        [Theory]
+        [CommonAutoData]
+        public static async Task Get_EditFlatListPrice_PriceNotFound(
+            Solution solution,
+            int cataloguePriceId,
+            [Frozen] Mock<ISolutionListPriceService> solutionListPriceService,
+            CatalogueSolutionListPriceController controller)
+        {
+            solutionListPriceService.Setup(s => s.GetSolutionWithListPrices(solution.CatalogueItemId))
+                .ReturnsAsync(solution.CatalogueItem);
+
+            var result = (await controller.EditFlatListPrice(solution.CatalogueItemId, cataloguePriceId)).As<NotFoundResult>();
+
+            result.Should().NotBeNull();
+        }
+
+        [Theory]
+        [CommonAutoData]
+        public static async Task Get_EditFlatListPrice_ReturnsViewWithModel(
+            Solution solution,
+            CataloguePrice price,
+            [Frozen] Mock<ISolutionListPriceService> solutionListPriceService,
+            CatalogueSolutionListPriceController controller)
+        {
+            solution.CatalogueItem.CataloguePrices.Add(price);
+
+            var model = new AddEditFlatListPriceModel(solution.CatalogueItem, price);
+
+            solutionListPriceService.Setup(s => s.GetSolutionWithListPrices(solution.CatalogueItemId))
+                .ReturnsAsync(solution.CatalogueItem);
+
+            var result = (await controller.EditFlatListPrice(solution.CatalogueItemId, price.CataloguePriceId)).As<ViewResult>();
+
+            result.Should().NotBeNull();
+            result.Model.Should().BeEquivalentTo(model, opt => opt.Excluding(m => m.BackLink));
+        }
+
+        [Theory]
+        [CommonAutoData]
+        public static async Task Post_EditFlatListPrice_InvalidModel(
+            CatalogueItemId solutionId,
+            int cataloguePriceId,
+            AddEditFlatListPriceModel model,
+            CatalogueSolutionListPriceController controller)
+        {
+            controller.ModelState.AddModelError("some-key", "some-error");
+
+            var result = (await controller.EditFlatListPrice(solutionId, cataloguePriceId, model)).As<ViewResult>();
+
+            result.Should().NotBeNull();
+            result.Model.Should().Be(model);
+        }
+
+        [Theory]
+        [CommonAutoData]
+        public static async Task Post_EditFlatListPrice_SamePublicationStatus(
+            Solution solution,
+            CataloguePrice price,
+            AddEditFlatListPriceModel model,
+            [Frozen] Mock<ISolutionListPriceService> solutionListPriceService,
+            CatalogueSolutionListPriceController controller)
+        {
+            price.PublishedStatus = PublicationStatus.Published;
+            solution.CatalogueItem.CataloguePrices.Add(price);
+            model.SelectedPublicationStatus = PublicationStatus.Published;
+
+            solutionListPriceService.Setup(s => s.GetSolutionWithListPrices(solution.CatalogueItemId))
+                .ReturnsAsync(solution.CatalogueItem);
+
+            var pricingUnit = model.GetPricingUnit();
+            var timeUnit = model.GetTimeUnit();
+
+            var result = (await controller.EditFlatListPrice(solution.CatalogueItemId, price.CataloguePriceId, model)).As<RedirectToActionResult>();
+
+            solutionListPriceService.Verify(
+                s => s.UpdateListPrice(
+                    solution.CatalogueItemId,
+                    price.CataloguePriceId,
+                    It.Is<PricingUnit>(match => match.Description == pricingUnit.Description
+                        && match.Definition == pricingUnit.Definition
+                        && match.RangeDescription == pricingUnit.RangeDescription),
+                    model.SelectedProvisioningType!.Value,
+                    CataloguePriceCalculationType.SingleFixed,
+                    model.GetTimeUnit(),
+                    model.Price!.Value),
+                Times.Once());
+
+            solutionListPriceService.Verify(
+                s => s.SetPublicationStatus(
+                        solution.CatalogueItemId,
+                        price.CataloguePriceId,
+                        model.SelectedPublicationStatus!.Value),
+                Times.Never());
+
+            result.Should().NotBeNull();
+            result.ActionName.Should().Be(nameof(controller.Index));
+        }
+
+        [Theory]
+        [CommonAutoData]
+        public static async Task Post_EditFlatListPrice_Redirects(
+            Solution solution,
+            CataloguePrice price,
+            AddEditFlatListPriceModel model,
+            [Frozen] Mock<ISolutionListPriceService> solutionListPriceService,
+            CatalogueSolutionListPriceController controller)
+        {
+            price.PublishedStatus = PublicationStatus.Draft;
+            solution.CatalogueItem.CataloguePrices.Add(price);
+            model.SelectedPublicationStatus = PublicationStatus.Published;
+
+            solutionListPriceService.Setup(s => s.GetSolutionWithListPrices(solution.CatalogueItemId))
+                .ReturnsAsync(solution.CatalogueItem);
+
+            var pricingUnit = model.GetPricingUnit();
+            var timeUnit = model.GetTimeUnit();
+
+            var result = (await controller.EditFlatListPrice(solution.CatalogueItemId, price.CataloguePriceId, model)).As<RedirectToActionResult>();
+
+            solutionListPriceService.Verify(
+                s => s.UpdateListPrice(
+                    solution.CatalogueItemId,
+                    price.CataloguePriceId,
+                    It.Is<PricingUnit>(match => match.Description == pricingUnit.Description
+                        && match.Definition == pricingUnit.Definition
+                        && match.RangeDescription == pricingUnit.RangeDescription),
+                    model.SelectedProvisioningType!.Value,
+                    CataloguePriceCalculationType.SingleFixed,
+                    model.GetTimeUnit(),
+                    model.Price!.Value),
+                Times.Once());
+
+            solutionListPriceService.Verify(
+                s => s.SetPublicationStatus(
+                        solution.CatalogueItemId,
+                        price.CataloguePriceId,
+                        model.SelectedPublicationStatus!.Value),
+                Times.Once());
+
+            result.Should().NotBeNull();
+            result.ActionName.Should().Be(nameof(controller.Index));
         }
     }
 }

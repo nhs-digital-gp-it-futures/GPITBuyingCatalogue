@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
@@ -7,7 +8,6 @@ using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions;
-using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.ListPriceModels;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
@@ -67,7 +67,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
             var redirectAction = model.SelectedCataloguePriceType switch
             {
                 CataloguePriceType.Tiered => nameof(AddTieredListPrice),
-                CataloguePriceType.Flat => nameof(ListPriceType),
+                CataloguePriceType.Flat => nameof(AddFlatListPrice),
                 _ => string.Empty,
             };
 
@@ -99,6 +99,52 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
             var cataloguePrice = await AddOrUpdateCataloguePrice(solutionId, model);
 
             return RedirectToAction(nameof(TieredPriceTiers), new { solutionId, cataloguePriceId = model.CataloguePriceId ?? cataloguePrice.CataloguePriceId });
+        }
+
+        [HttpGet("add-flat-list-price")]
+        public async Task<IActionResult> AddFlatListPrice(CatalogueItemId solutionId)
+        {
+            var solution = await solutionListPriceService.GetSolutionWithListPrices(solutionId);
+            if (solution is null)
+                return NotFound();
+
+            var model = new AddEditFlatListPriceModel(solution)
+            {
+                BackLink = Url.Action(nameof(ListPriceType), new { solutionId }),
+            };
+
+            return View("ListPrices/AddEditFlatListPrice", model);
+        }
+
+        [HttpPost("add-flat-list-price")]
+        public async Task<IActionResult> AddFlatListPrice(CatalogueItemId solutionId, AddEditFlatListPriceModel model)
+        {
+            if (!ModelState.IsValid)
+                return View("ListPrices/AddEditFlatListPrice", model);
+
+            var price = new CataloguePrice
+            {
+                CataloguePriceType = CataloguePriceType.Flat,
+                ProvisioningType = model.SelectedProvisioningType!.Value,
+                TimeUnit = model.GetTimeUnit(),
+                PricingUnit = model.GetPricingUnit(),
+                CataloguePriceCalculationType = CataloguePriceCalculationType.SingleFixed,
+                CataloguePriceTiers = new HashSet<CataloguePriceTier>
+                {
+                    new()
+                    {
+                        Price = model.Price!.Value,
+                        LowerRange = 1,
+                        UpperRange = null,
+                    },
+                },
+                CurrencyCode = "GBP",
+                PublishedStatus = model.SelectedPublicationStatus!.Value,
+            };
+
+            await solutionListPriceService.AddListPrice(solutionId, price);
+
+            return RedirectToAction(nameof(Index), new { solutionId });
         }
 
         [HttpGet("{cataloguePriceId}/tiers")]
@@ -180,7 +226,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
             return RedirectToAction(actionName, new { solutionId, cataloguePriceId });
         }
 
-        [HttpGet("{cataloguePriceId}/edit")]
+        [HttpGet("tiered/{cataloguePriceId}/edit")]
         public async Task<IActionResult> EditTieredListPrice(CatalogueItemId solutionId, int cataloguePriceId)
         {
             var solution = await solutionListPriceService.GetSolutionWithListPrices(solutionId);
@@ -199,7 +245,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
             return View("ListPrices/EditTieredListPrice", model);
         }
 
-        [HttpPost("{cataloguePriceId}/edit")]
+        [HttpPost("tiered/{cataloguePriceId}/edit")]
         public async Task<IActionResult> EditTieredListPrice(CatalogueItemId solutionId, int cataloguePriceId, EditTieredListPriceModel model)
         {
             var solution = await solutionListPriceService.GetSolutionWithListPrices(solutionId);
@@ -222,6 +268,49 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
 
             if (model.SelectedPublicationStatus != price.PublishedStatus)
                 await solutionListPriceService.SetPublicationStatus(solutionId, cataloguePriceId, model.SelectedPublicationStatus);
+
+            return RedirectToAction(nameof(Index), new { solutionId });
+        }
+
+        [HttpGet("flat/{cataloguePriceId}/edit")]
+        public async Task<IActionResult> EditFlatListPrice(CatalogueItemId solutionId, int cataloguePriceId)
+        {
+            var solution = await solutionListPriceService.GetSolutionWithListPrices(solutionId);
+            if (solution is null)
+                return NotFound();
+
+            var price = solution.CataloguePrices.SingleOrDefault(p => p.CataloguePriceId == cataloguePriceId);
+            if (price is null)
+                return NotFound();
+
+            var model = new AddEditFlatListPriceModel(solution, price)
+            {
+                BackLink = Url.Action(nameof(Index), new { solutionId }),
+            };
+
+            return View("ListPrices/AddEditFlatListPrice", model);
+        }
+
+        [HttpPost("flat/{cataloguePriceId}/edit")]
+        public async Task<IActionResult> EditFlatListPrice(CatalogueItemId solutionId, int cataloguePriceId, AddEditFlatListPriceModel model)
+        {
+            if (!ModelState.IsValid)
+                return View("ListPrices/AddEditFlatListPrice", model);
+
+            var solution = await solutionListPriceService.GetSolutionWithListPrices(solutionId);
+            var price = solution.CataloguePrices.SingleOrDefault(p => p.CataloguePriceId == cataloguePriceId);
+
+            await solutionListPriceService.UpdateListPrice(
+                solutionId,
+                cataloguePriceId,
+                model.GetPricingUnit(),
+                model.SelectedProvisioningType!.Value,
+                CataloguePriceCalculationType.SingleFixed,
+                model.GetTimeUnit(),
+                model.Price!.Value);
+
+            if (model.SelectedPublicationStatus!.Value != price.PublishedStatus)
+                await solutionListPriceService.SetPublicationStatus(solutionId, cataloguePriceId, model.SelectedPublicationStatus!.Value);
 
             return RedirectToAction(nameof(Index), new { solutionId });
         }
@@ -331,7 +420,14 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
         [HttpPost("{cataloguePriceId}/delete")]
         public async Task<IActionResult> DeleteListPrice(CatalogueItemId solutionId, int cataloguePriceId, DeleteItemConfirmationModel model)
         {
-            await solutionListPriceService.DeleteListPrice(solutionId, cataloguePriceId);
+            // TODO:
+            // In a scenario where a user unpublishes a price, opens the delete link in a second tab but first publishes the price again,
+            // Replace with an error page that explains why the price hasn't been deleted
+            var solution = await solutionListPriceService.GetSolutionWithListPrices(solutionId);
+            var price = solution.CataloguePrices.First(p => p.CataloguePriceId == cataloguePriceId);
+
+            if (price.PublishedStatus != PublicationStatus.Published)
+                await solutionListPriceService.DeleteListPrice(solutionId, cataloguePriceId);
 
             return RedirectToAction(nameof(Index), new { solutionId });
         }
@@ -355,6 +451,15 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
         [HttpPost("{cataloguePriceId}/tiers/{tierId}/delete")]
         public async Task<IActionResult> DeleteTieredPriceTier(CatalogueItemId solutionId, int cataloguePriceId, int tierId, DeleteItemConfirmationModel model, bool? isEditing = null)
         {
+            // TODO:
+            // In a scenario where a user unpublishes a price, opens the delete pricing tier link in a second tab but first publishes the price again,
+            // Replace with an error page that explains why the pricing tier hasn't been deleted
+            var solution = await solutionListPriceService.GetSolutionWithListPrices(solutionId);
+            var price = solution.CataloguePrices.First(p => p.CataloguePriceId == cataloguePriceId);
+
+            if (price.PublishedStatus == PublicationStatus.Published)
+                return RedirectToAction(nameof(EditTieredListPrice), new { solutionId, cataloguePriceId });
+
             await solutionListPriceService.DeletePriceTier(solutionId, cataloguePriceId, tierId);
 
             var actionName = GetAddOrEditBacklink(isEditing);

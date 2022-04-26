@@ -18,6 +18,24 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.ListPrice
             this.dbContext = dbContext ?? throw new ArgumentNullException(nameof(dbContext));
         }
 
+        public async Task<bool> HasDuplicateFlatPrice(
+            CatalogueItemId catalogueItemId,
+            int? cataloguePriceId,
+            ProvisioningType provisioningType,
+            decimal price,
+            string unitDescription)
+        {
+            var results = dbContext
+                .CataloguePrices
+                .Where(p => p.CataloguePriceId != cataloguePriceId
+                    && p.CatalogueItemId == catalogueItemId
+                    && p.CataloguePriceType == CataloguePriceType.Flat);
+
+            return await results.AnyAsync(p => p.ProvisioningType == provisioningType
+                && p.CataloguePriceTiers.Any(pt => pt.Price == price)
+                && string.Equals(p.PricingUnit.Description, unitDescription));
+        }
+
         public async Task<bool> HasDuplicateTieredPrice(
             CatalogueItemId catalogueItemId,
             int? cataloguePriceId,
@@ -28,7 +46,9 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.ListPrice
         {
             var results = dbContext
                 .CataloguePrices
-                .Where(p => p.CataloguePriceId != cataloguePriceId && p.CatalogueItemId == catalogueItemId);
+                .Where(p => p.CataloguePriceId != cataloguePriceId
+                    && p.CatalogueItemId == catalogueItemId
+                    && p.CataloguePriceType == CataloguePriceType.Tiered);
 
             return await results.AnyAsync(p => p.ProvisioningType == provisioningType
                 && p.CataloguePriceCalculationType == calculationType
