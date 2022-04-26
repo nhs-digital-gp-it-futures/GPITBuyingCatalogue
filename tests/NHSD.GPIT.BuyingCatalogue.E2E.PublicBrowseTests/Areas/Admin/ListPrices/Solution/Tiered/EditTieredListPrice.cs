@@ -68,6 +68,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.ListPrices.Solution.Tie
 
             CommonActions.ElementIsDisplayed(AddEditTieredListPriceObjects.PublishedInsetSection).Should().BeTrue();
             CommonActions.ElementIsDisplayed(AddEditTieredListPriceObjects.AddTierLink).Should().BeFalse();
+            CommonActions.ElementIsDisplayed(AddEditTieredListPriceObjects.DeletePriceLink).Should().BeFalse();
 
             price.PublishedStatus = PublicationStatus.Unpublished;
             context.SaveChanges();
@@ -75,6 +76,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.ListPrices.Solution.Tie
 
             CommonActions.ElementIsDisplayed(AddEditTieredListPriceObjects.PublishedInsetSection).Should().BeFalse();
             CommonActions.ElementIsDisplayed(AddEditTieredListPriceObjects.AddTierLink).Should().BeTrue();
+            CommonActions.ElementIsDisplayed(AddEditTieredListPriceObjects.DeletePriceLink).Should().BeTrue();
 
             price.PublishedStatus = publishStatus;
             context.SaveChanges();

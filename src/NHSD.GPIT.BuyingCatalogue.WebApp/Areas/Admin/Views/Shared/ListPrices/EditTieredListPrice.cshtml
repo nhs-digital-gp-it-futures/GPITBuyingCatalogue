@@ -148,7 +148,7 @@
             <nhs-submit-button />
         </form>
 
-        @if (Model.CataloguePriceId is not null)
+        @if (Model.CataloguePriceId is not null && Model.CataloguePricePublicationStatus != PublicationStatus.Published)
         {
             <vc:nhs-delete-button url="@Url.Action(
                 nameof(CatalogueSolutionListPriceController.DeleteListPrice),

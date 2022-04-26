@@ -55,13 +55,31 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.ListPrices.Solution.Fla
             CommonActions.ElementIsDisplayed(AddEditFlatListPriceObjects.OnDemandBillingPeriodInput).Should().BeFalse();
             CommonActions.ElementIsDisplayed(AddEditFlatListPriceObjects.DeclarativeBillingPeriodInput).Should().BeFalse();
 
-            CommonActions.ElementIsDisplayed(AddEditFlatListPriceObjects.DeletePriceLink).Should().BeTrue();
+            CommonActions.ElementIsDisplayed(AddEditFlatListPriceObjects.DeletePriceLink).Should().BeFalse();
 
             CommonActions.ClickRadioButtonWithValue(ProvisioningType.OnDemand.ToString());
             CommonActions.ElementIsDisplayed(AddEditFlatListPriceObjects.OnDemandBillingPeriodInput).Should().BeTrue();
 
             CommonActions.ClickRadioButtonWithValue(ProvisioningType.Declarative.ToString());
             CommonActions.ElementIsDisplayed(AddEditFlatListPriceObjects.DeclarativeBillingPeriodInput).Should().BeTrue();
+        }
+
+        [Fact]
+        public void Unpublished_DeleteLinkVisible()
+        {
+            using var context = GetEndToEndDbContext();
+            var cataloguePrice = context.CataloguePrices.Single(p => p.CataloguePriceId == CataloguePriceId);
+            var originalPublishStatus = cataloguePrice.PublishedStatus;
+
+            cataloguePrice.PublishedStatus = PublicationStatus.Unpublished;
+            context.SaveChanges();
+
+            Driver.Navigate().Refresh();
+
+            CommonActions.ElementIsDisplayed(AddEditFlatListPriceObjects.DeletePriceLink).Should().BeTrue();
+
+            cataloguePrice.PublishedStatus = originalPublishStatus;
+            context.SaveChanges();
         }
 
         [Fact]
@@ -77,11 +95,23 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.ListPrices.Solution.Fla
         [Fact]
         public void ClickDelete_NavigatesToCorrectPage()
         {
+            using var context = GetEndToEndDbContext();
+            var cataloguePrice = context.CataloguePrices.Single(p => p.CataloguePriceId == CataloguePriceId);
+            var originalPublishStatus = cataloguePrice.PublishedStatus;
+
+            cataloguePrice.PublishedStatus = PublicationStatus.Unpublished;
+            context.SaveChanges();
+
+            Driver.Navigate().Refresh();
+
             CommonActions.ClickLinkElement(AddEditFlatListPriceObjects.DeletePriceLink);
 
             CommonActions.PageLoadedCorrectGetIndex(
                 typeof(CatalogueSolutionListPriceController),
                 nameof(CatalogueSolutionListPriceController.DeleteListPrice)).Should().BeTrue();
+
+            cataloguePrice.PublishedStatus = originalPublishStatus;
+            context.SaveChanges();
         }
 
         [Fact]

@@ -63,8 +63,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.ListPriceModels
                 CataloguePriceCalculationType.SingleFixed.Description(),
                 CataloguePriceCalculationType.SingleFixed),
             new(
-                CataloguePriceCalculationType.Volume.Name(),
-                CataloguePriceCalculationType.Volume.Description(),
+                "Volume",
+                "Buyers pay the same price for all units based on how many they buy.",
                 CataloguePriceCalculationType.Volume),
         };
 
