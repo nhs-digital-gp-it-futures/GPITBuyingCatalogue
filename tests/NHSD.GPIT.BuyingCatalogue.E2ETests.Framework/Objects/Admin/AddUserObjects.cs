@@ -15,7 +15,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.Objects.Admin
 
         public static By LastName => By.Id("LastName");
 
-        public static By LastNameError => By.Id("LastName-error");`www
+        public static By LastNameError => By.Id("LastName-error");
 
         public static By Email => By.Id("EmailAddress");
 

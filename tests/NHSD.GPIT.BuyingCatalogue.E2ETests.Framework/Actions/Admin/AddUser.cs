@@ -20,7 +20,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.Actions.Admin
             Driver.FindElement(Objects.Admin.AddUserObjects.LastName).SendKeys(lastName);
         }
 
-        internal void EnterEmailAddress(string emailAddress)
+        public void EnterEmailAddress(string emailAddress)
         {
             Driver.FindElement(Objects.Admin.AddUserObjects.Email).SendKeys(emailAddress);
         }
