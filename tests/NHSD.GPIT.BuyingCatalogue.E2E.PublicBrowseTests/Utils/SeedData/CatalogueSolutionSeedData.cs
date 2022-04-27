@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text.Json;
-using NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.RandomData;
+using NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.Utils.RandomData;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 

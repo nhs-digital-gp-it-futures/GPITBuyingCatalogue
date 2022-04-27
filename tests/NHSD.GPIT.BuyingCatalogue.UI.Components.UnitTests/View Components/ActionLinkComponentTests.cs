@@ -1,7 +1,7 @@
 ﻿using System.Threading.Tasks;
 using FluentAssertions;
 using Microsoft.AspNetCore.Mvc.ViewComponents;
-using NHSD.GPIT.BuyingCatalogue.Test.Framework.AutoFixtureCustomisations;
+using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.AutoFixtureCustomisations;
 using NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.Components.ActionLink;
 using Xunit;
 

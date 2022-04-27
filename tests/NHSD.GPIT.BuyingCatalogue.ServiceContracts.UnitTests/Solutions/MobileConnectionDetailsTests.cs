@@ -2,7 +2,7 @@
 using AutoFixture;
 using FluentAssertions;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions;
-using NHSD.GPIT.BuyingCatalogue.Test.Framework.TestData;
+using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.TestData;
 using Xunit;
 
 namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.UnitTests.Solutions

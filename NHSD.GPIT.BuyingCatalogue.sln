@@ -41,9 +41,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NHSD.GPIT.BuyingCatalogue.F
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NHSD.GPIT.BuyingCatalogue.Services.UnitTests", "tests\NHSD.GPIT.BuyingCatalogue.Services.UnitTests\NHSD.GPIT.BuyingCatalogue.Services.UnitTests.csproj", "{8605DC87-313F-4238-9617-604151EEBE82}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NHSD.GPIT.BuyingCatalogue.Test.Framework", "tests\NHSD.GPIT.BuyingCatalogue.Test.Framework\NHSD.GPIT.BuyingCatalogue.Test.Framework.csproj", "{C518EAC3-32B1-4F6C-BA6D-AAC887A649EB}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NHSD.GPIT.BuyingCatalogue.UnitTest.Framework", "tests\NHSD.GPIT.BuyingCatalogue.UnitTest.Framework\NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.csproj", "{C518EAC3-32B1-4F6C-BA6D-AAC887A649EB}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NHSD.GPIT.BuyingCatalogue.E2ETests", "tests\NHSD.GPIT.BuyingCatalogue.E2E.PublicBrowseTests\NHSD.GPIT.BuyingCatalogue.E2ETests.csproj", "{7520A1C2-FA69-4E13-B217-62A277B51914}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NHSD.GPIT.BuyingCatalogue.IntegrationTests", "tests\NHSD.GPIT.BuyingCatalogue.E2E.PublicBrowseTests\NHSD.GPIT.BuyingCatalogue.IntegrationTests.csproj", "{7520A1C2-FA69-4E13-B217-62A277B51914}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NHSD.GPIT.BuyingCatalogue.EntityFramework.UnitTests", "tests\NHSD.GPIT.BuyingCatalogue.EntityFramework.UnitTests\NHSD.GPIT.BuyingCatalogue.EntityFramework.UnitTests.csproj", "{0BBE4303-14C5-47A5-8BF3-EEA63AF819B3}"
 EndProject

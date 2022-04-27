@@ -1,5 +1,5 @@
 ﻿using FluentValidation.TestHelper;
-using NHSD.GPIT.BuyingCatalogue.Test.Framework.AutoFixtureCustomisations;
+using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.AutoFixtureCustomisations;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Models.NominateOrganisation;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Validation.NominateOrganisation;
 using Xunit;

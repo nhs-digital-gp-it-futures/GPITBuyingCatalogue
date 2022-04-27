@@ -39,7 +39,7 @@
   <ItemGroup>
     <ProjectReference Include="..\..\src\NHSD.GPIT.BuyingCatalogue.Framework\NHSD.GPIT.BuyingCatalogue.Framework.csproj" />
     <ProjectReference Include="..\..\src\NHSD.GPIT.BuyingCatalogue.Services\NHSD.GPIT.BuyingCatalogue.Services.csproj" />
-    <ProjectReference Include="..\NHSD.GPIT.BuyingCatalogue.Test.Framework\NHSD.GPIT.BuyingCatalogue.Test.Framework.csproj" />
+    <ProjectReference Include="..\NHSD.GPIT.BuyingCatalogue.UnitTest.Framework\NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.csproj" />
   </ItemGroup>
 
 </Project>

@@ -8,8 +8,22 @@
 
   <ItemGroup>
     <PackageReference Include="Bogus" Version="34.0.1" />
+    <PackageReference Include="DotNetSeleniumExtras.PageObjects" Version="3.11.0" />
+    <PackageReference Include="FluentAssertions" Version="6.6.0" />
     <PackageReference Include="Microsoft.AspNetCore.Mvc.Testing" Version="6.0.2" />
+    <PackageReference Include="Polly" Version="7.2.3" />
+    <PackageReference Include="Selenium.Support" Version="4.1.0" />
     <PackageReference Include="Selenium.WebDriver" Version="4.1.0" />
+    <PackageReference Include="xunit.abstractions" Version="2.0.3" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\src\NHSD.GPIT.BuyingCatalogue.Framework\NHSD.GPIT.BuyingCatalogue.Framework.csproj" />
+    <ProjectReference Include="..\..\src\NHSD.GPIT.BuyingCatalogue.WebApp\NHSD.GPIT.BuyingCatalogue.WebApp.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Utils" />
   </ItemGroup>
 
 </Project>
