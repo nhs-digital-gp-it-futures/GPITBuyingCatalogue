@@ -228,7 +228,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.PublicBrowse.Solution
         }
 
         [Fact]
-        public async void CatalogueSolutions_Filter_AllFrameworksShown()
+        public async Task CatalogueSolutions_Filter_AllFrameworksShown()
         {
             await RunTestAsync(async () =>
             {
@@ -250,7 +250,26 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.PublicBrowse.Solution
         }
 
         [Fact]
-        public async void CatalogueSolutions_Filter_FilterByOption_ExpectedNumberOfResults()
+        public Task CatalogueSolutions_Filter_HasCorrectEpicHeadings()
+        {
+            return RunTestAsync(async () =>
+            {
+                const int capabilityId = 43;
+
+                CommonActions.WaitUntilElementExists(Objects.PublicBrowse.SolutionsObjects.FilterCapabilities);
+
+                Driver.FindElement(Objects.PublicBrowse.SolutionsObjects.FilterSolutionsExpander).Click();
+                Driver.FindElement(Objects.PublicBrowse.SolutionsObjects.FilterCapabilities).Click();
+
+                Driver.FindElement(By.XPath($"//input[@value='C{capabilityId}']/../input[contains(@class, 'nhsuk-checkboxes__input')]")).Click();
+
+                CommonActions.ElementExists(By.XPath($"//label[text()='Supplier defined Epics']")).Should().BeTrue();
+                CommonActions.ElementExists(By.XPath($"//label[text()='NHS defined Epics']")).Should().BeTrue();
+            });
+        }
+
+        [Fact]
+        public async Task CatalogueSolutions_Filter_FilterByOption_ExpectedNumberOfResults()
         {
             await RunTestAsync(async () =>
             {
@@ -281,7 +300,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.PublicBrowse.Solution
         }
 
         [Fact]
-        public async void CatalogueSolutions_Filter_FilterByOption_BreadcrumbsCorrect()
+        public async Task CatalogueSolutions_Filter_FilterByOption_BreadcrumbsCorrect()
         {
             await RunTestAsync(async () =>
             {
@@ -307,7 +326,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.PublicBrowse.Solution
         }
 
         [Fact]
-        public async void CatalogueSolutions_Filter_FilterByFoundationCapability_CorrectResult()
+        public async Task CatalogueSolutions_Filter_FilterByFoundationCapability_CorrectResult()
         {
             await RunTestAsync(async () =>
             {
