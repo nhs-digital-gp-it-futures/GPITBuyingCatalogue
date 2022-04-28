@@ -127,7 +127,11 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering
             string expectedLinkText)
         {
             using var context = GetEndToEndDbContext();
-            var orders = context.Organisations.SelectMany(o => o.Orders).OrderByDescending(o => o.LastUpdated).ToList();
+            var orders = context.Organisations
+                .Where(o => o.InternalIdentifier == InternalOrgId)
+                .SelectMany(o => o.Orders)
+                .OrderByDescending(o => o.LastUpdated)
+                .ToList();
             var order = orders.First(o => o.OrderStatus == status);
 
             CommonActions.ElementTextContains(ByExtensions.DataTestId($"link-{order.CallOffId}"), expectedLinkText).Should().BeTrue();
@@ -137,7 +141,11 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering
         public void OrganisationDashboard_OrderInProgress_ClickEdit_Redirects()
         {
             using var context = GetEndToEndDbContext();
-            var orders = context.Organisations.SelectMany(o => o.Orders).OrderByDescending(o => o.LastUpdated).ToList();
+            var orders = context.Organisations
+                .Where(o => o.InternalIdentifier == InternalOrgId)
+                .SelectMany(o => o.Orders)
+                .OrderByDescending(o => o.LastUpdated)
+                .ToList(); 
             var order = orders.First(o => o.OrderStatus == OrderStatus.InProgress);
 
             CommonActions.ClickLinkElement(ByExtensions.DataTestId($"link-{order.CallOffId}"));
@@ -152,7 +160,11 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering
         public void OrganisationDashboard_OrderCompleted_ClickView_Redirects()
         {
             using var context = GetEndToEndDbContext();
-            var orders = context.Organisations.SelectMany(o => o.Orders).OrderByDescending(o => o.LastUpdated).ToList();
+            var orders = context.Organisations
+                .Where(o => o.InternalIdentifier == InternalOrgId)
+                .SelectMany(o => o.Orders)
+                .OrderByDescending(o => o.LastUpdated)
+                .ToList();
             var order = orders.First(o => o.OrderStatus == OrderStatus.Completed);
 
             CommonActions.ClickLinkElement(ByExtensions.DataTestId($"link-{order.CallOffId}"));

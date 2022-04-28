@@ -8,6 +8,7 @@ using NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.Objects.Admin.ServiceLevelAgr
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.Objects.Common;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Utils;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.TestBases;
+using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers;
@@ -151,13 +152,33 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.AddNewSolution.ServiceL
         }
 
         [Fact]
-        public async Task EditSLAContact_DuplicateContact_ErrorThrown()
+        public void EditSLAContact_DuplicateContact_ErrorThrown()
         {
-            await using var context = GetEndToEndDbContext();
-            var existingContact = await context.SlaContacts.SingleAsync(slac => slac.Id == 3);
+            using var context = GetEndToEndDbContext();
+            var serviceLevelAgreement = context.ServiceLevelAgreements.Include(p => p.Contacts).First(p => p.SolutionId == SolutionId);
 
-            CommonActions.ElementAddValue(SLAContactObjects.Channel, existingContact.Channel);
-            CommonActions.ElementAddValue(SLAContactObjects.ContactInformation, existingContact.ContactInformation);
+            var contact = new SlaContact()
+            {
+                SolutionId = new CatalogueItemId(99998, "002"),
+                Channel = "This is a Channel 2",
+                ContactInformation = "This is Contact Information 2",
+                TimeFrom = DateTime.UtcNow,
+                TimeUntil = DateTime.UtcNow.AddHours(5),
+            };
+
+            serviceLevelAgreement.Contacts.Add(contact);
+            context.SaveChanges();
+
+            var parameters = new Dictionary<string, string>
+            {
+                { nameof(SolutionId), SolutionId.ToString() },
+                { nameof(ContactId), contact.Id.ToString() },
+            };
+
+            Driver.Navigate().Refresh();
+
+            CommonActions.ElementAddValue(SLAContactObjects.Channel, contact.Channel);
+            CommonActions.ElementAddValue(SLAContactObjects.ContactInformation, contact.ContactInformation);
 
             CommonActions.ClickSave();
 
@@ -222,10 +243,36 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.AddNewSolution.ServiceL
         }
 
         [Fact]
-        public async Task EditSLAContact_ValidContact_ExpectedResult()
+        public void EditSLAContact_ValidContact_ExpectedResult()
         {
             const string timefrom = "12:30";
             const string timeUntil = "13:30";
+
+            using var context = GetEndToEndDbContext();
+            var serviceLevelAgreement = context.ServiceLevelAgreements.Include(p => p.Contacts).First(p => p.SolutionId == SolutionId);
+
+            var contact = new SlaContact()
+            {
+                SolutionId = new CatalogueItemId(99998, "002"),
+                Channel = "This is a Channel 2",
+                ContactInformation = "This is Contact Information 2",
+                TimeFrom = DateTime.UtcNow,
+                TimeUntil = DateTime.UtcNow.AddHours(5),
+            };
+
+            serviceLevelAgreement.Contacts.Add(contact);
+            context.SaveChanges();
+
+            var parameters = new Dictionary<string, string>
+            {
+                { nameof(SolutionId), SolutionId.ToString() },
+                { nameof(ContactId), contact.Id.ToString() },
+            };
+
+            NavigateToUrl(
+                  typeof(ServiceLevelAgreementsController),
+                  nameof(ServiceLevelAgreementsController.EditContact),
+                  parameters);
 
             var channel = TextGenerators.TextInputAddText(SLAContactObjects.Channel, 300);
             var contactInformation = TextGenerators.TextInputAddText(SLAContactObjects.ContactInformation, 1000);
@@ -240,22 +287,51 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.AddNewSolution.ServiceL
                 .Should()
                 .BeTrue();
 
-            await using var context = GetEndToEndDbContext();
-            var contact = await context.SlaContacts.SingleOrDefaultAsync(slac => slac.Id == ContactId);
+            using var updatedContext = GetEndToEndDbContext();
+            var updatedContact = updatedContext.SlaContacts.SingleOrDefault(slac => slac.Id == contact.Id);
 
-            contact.Should().NotBeNull();
+            updatedContact.Should().NotBeNull();
 
-            contact.Channel.FormatForComparison().Should().Be(channel.FormatForComparison());
-            contact.ContactInformation.FormatForComparison().Should().Be(contactInformation.FormatForComparison());
-            contact.TimeFrom.ToString("HH:mm").FormatForComparison().Should().Be(timefrom.FormatForComparison());
-            contact.TimeUntil.ToString("HH:mm").FormatForComparison().Should().Be(timeUntil.FormatForComparison());
+            updatedContact.Channel.FormatForComparison().Should().Be(channel.FormatForComparison());
+            updatedContact.ContactInformation.FormatForComparison().Should().Be(contactInformation.FormatForComparison());
+            updatedContact.TimeFrom.ToString("HH:mm").FormatForComparison().Should().Be(timefrom.FormatForComparison());
+            updatedContact.TimeUntil.ToString("HH:mm").FormatForComparison().Should().Be(timeUntil.FormatForComparison());
+
+            updatedContext.Remove(updatedContact);
+            updatedContext.SaveChanges();
         }
 
         [Fact]
-        public async Task EditSLAContact_ValidContactWithApplicableDays_ExpectedResult()
+        public void EditSLAContact_ValidContactWithApplicableDays_ExpectedResult()
         {
             const string timefrom = "12:30";
             const string timeUntil = "13:30";
+
+            using var context = GetEndToEndDbContext();
+            var serviceLevelAgreement = context.ServiceLevelAgreements.Include(p => p.Contacts).First(p => p.SolutionId == SolutionId);
+
+            var contact = new SlaContact()
+            {
+                SolutionId = new CatalogueItemId(99998, "002"),
+                Channel = "This is a Channel 2",
+                ContactInformation = "This is Contact Information 2",
+                TimeFrom = DateTime.UtcNow,
+                TimeUntil = DateTime.UtcNow.AddHours(5),
+            };
+
+            serviceLevelAgreement.Contacts.Add(contact);
+            context.SaveChanges();
+
+            var parameters = new Dictionary<string, string>
+            {
+                { nameof(SolutionId), SolutionId.ToString() },
+                { nameof(ContactId), contact.Id.ToString() },
+            };
+
+            NavigateToUrl(
+                  typeof(ServiceLevelAgreementsController),
+                  nameof(ServiceLevelAgreementsController.EditContact),
+                  parameters);
 
             var channel = TextGenerators.TextInputAddText(SLAContactObjects.Channel, 300);
             var contactInformation = TextGenerators.TextInputAddText(SLAContactObjects.ContactInformation, 1000);
@@ -271,15 +347,18 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.AddNewSolution.ServiceL
                 .Should()
                 .BeTrue();
 
-            await using var context = GetEndToEndDbContext();
-            var contact = await context.SlaContacts.SingleOrDefaultAsync(slac => slac.Id == ContactId);
+            using var updatedContext = GetEndToEndDbContext();
+            var updatedContact = updatedContext.SlaContacts.SingleOrDefault(slac => slac.Id == contact.Id);
 
-            contact.Should().NotBeNull();
+            updatedContact.Should().NotBeNull();
+            updatedContact.Channel.FormatForComparison().Should().Be(channel.FormatForComparison());
+            updatedContact.ContactInformation.FormatForComparison().Should().Be(contactInformation.FormatForComparison());
+            updatedContact.ApplicableDays.FormatForComparison().Should().Be(applicableDays.FormatForComparison());
+            updatedContact.TimeFrom.ToString("HH:mm").FormatForComparison().Should().Be(timefrom.FormatForComparison());
+            updatedContact.TimeUntil.ToString("HH:mm").FormatForComparison().Should().Be(timeUntil.FormatForComparison());
 
-            contact.Channel.FormatForComparison().Should().Be(channel.FormatForComparison());
-            contact.ContactInformation.FormatForComparison().Should().Be(contactInformation.FormatForComparison());
-            contact.TimeFrom.ToString("HH:mm").FormatForComparison().Should().Be(timefrom.FormatForComparison());
-            contact.TimeUntil.ToString("HH:mm").FormatForComparison().Should().Be(timeUntil.FormatForComparison());
+            updatedContext.Remove(updatedContact);
+            updatedContext.SaveChanges();
         }
 
         public void Dispose()
