@@ -250,9 +250,9 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.PublicBrowse.Solution
         }
 
         [Fact]
-        public Task CatalogueSolutions_Filter_HasCorrectEpicHeadings()
+        public void CatalogueSolutions_Filter_HasCorrectEpicHeadings()
         {
-            return RunTestAsync(async () =>
+            RunTest(() =>
             {
                 const int capabilityId = 43;
 
