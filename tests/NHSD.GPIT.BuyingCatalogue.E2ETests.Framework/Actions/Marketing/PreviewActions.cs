@@ -1,6 +1,4 @@
-﻿using System;
-using System.Linq;
-using NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.Actions.Common;
+﻿using NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.Actions.Common;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.Objects.Marketing;
 using OpenQA.Selenium;
 using CommonSelectors = NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.Objects.Common.CommonSelectors;

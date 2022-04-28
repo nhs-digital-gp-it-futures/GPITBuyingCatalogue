@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using FluentAssertions;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Utils;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.TestBases;
@@ -23,7 +24,11 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering.Supplier
         };
 
         public NewContact(LocalWebApplicationFactory factory)
-            : base(factory, typeof(SupplierController), nameof(SupplierController.NewContact), Parameters)
+            : base(
+                  factory,
+                  typeof(SupplierController),
+                  nameof(SupplierController.NewContact),
+                  Parameters)
         {
         }
 
@@ -105,6 +110,41 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering.Supplier
         [Fact]
         public void NewContact_AcceptableValues_ExpectedResult()
         {
+            using var context = GetEndToEndDbContext();
+            var organisationId = context.Organisations.First(o => o.InternalIdentifier == InternalOrgId).Id;
+
+            var order = new Order
+            {
+                OrderingPartyId = organisationId,
+                Created = System.DateTime.UtcNow,
+                OrderStatus = OrderStatus.InProgress,
+                IsDeleted = false,
+                Description = "This is an Order Description",
+                OrderingPartyContact = new Contact
+                {
+                    FirstName = "Clark",
+                    LastName = "Kent",
+                    Email = "Clark.Kent@TheDailyPlanet.com",
+                    Phone = "123456789",
+                },
+                SupplierId = 99998,
+            };
+
+            context.Orders.Add(order);
+            context.SaveChanges();
+
+            var callOffId = new CallOffId(order.Id, 1);
+            var parameters = new Dictionary<string, string>()
+            {
+                { nameof(InternalOrgId), InternalOrgId },
+                { nameof(CallOffId), callOffId.ToString() },
+            };
+
+            NavigateToUrl(
+                typeof(SupplierController),
+                nameof(SupplierController.NewContact),
+                parameters);
+
             TextGenerators.TextInputAddText(Objects.Ordering.NewContact.FirstNameInput, 20);
             TextGenerators.TextInputAddText(Objects.Ordering.NewContact.LastNameInput, 20);
             TextGenerators.EmailInputAddText(Objects.Ordering.NewContact.EmailInput, 50);
@@ -119,6 +159,42 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering.Supplier
         [Fact]
         public void NewContact_AcceptableValues_EditContact_ExpectedResult()
         {
+
+            using var context = GetEndToEndDbContext();
+            var organisationId = context.Organisations.First(o => o.InternalIdentifier == InternalOrgId).Id;
+
+            var order = new Order
+            {
+                OrderingPartyId = organisationId,
+                Created = System.DateTime.UtcNow,
+                OrderStatus = OrderStatus.InProgress,
+                IsDeleted = false,
+                Description = "This is an Order Description",
+                OrderingPartyContact = new Contact
+                {
+                    FirstName = "Clark",
+                    LastName = "Kent",
+                    Email = "Clark.Kent@TheDailyPlanet.com",
+                    Phone = "123456789",
+                },
+                SupplierId = 99998,
+            };
+
+            context.Orders.Add(order);
+            context.SaveChanges();
+
+            var callOffId = new CallOffId(order.Id, 1);
+            var parameters = new Dictionary<string, string>()
+            {
+                { nameof(InternalOrgId), InternalOrgId },
+                { nameof(CallOffId), callOffId.ToString() },
+            };
+
+            NavigateToUrl(
+                typeof(SupplierController),
+                nameof(SupplierController.NewContact),
+                parameters);
+
             var firstName = TextGenerators.TextInputAddText(Objects.Ordering.NewContact.FirstNameInput, 20);
             var lastName = TextGenerators.TextInputAddText(Objects.Ordering.NewContact.LastNameInput, 20);
             var department = TextGenerators.TextInputAddText(Objects.Ordering.NewContact.DepartmentInput, 20);
@@ -134,7 +210,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering.Supplier
             NavigateToUrl(
                 typeof(SupplierController),
                 nameof(SupplierController.NewContact),
-                Parameters);
+                parameters);
 
             CommonActions.ElementIsDisplayed(Objects.Ordering.NewContact.FirstNameInput).Should().BeTrue();
             CommonActions.ElementIsDisplayed(Objects.Ordering.NewContact.LastNameInput).Should().BeTrue();

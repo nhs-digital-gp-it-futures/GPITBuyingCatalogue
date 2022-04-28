@@ -1,6 +1,4 @@
-﻿using System;
-using System.Linq;
-using NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.Actions.Common;
+﻿using NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.Actions.Common;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.Objects.PublicBrowse;
 using OpenQA.Selenium;
 

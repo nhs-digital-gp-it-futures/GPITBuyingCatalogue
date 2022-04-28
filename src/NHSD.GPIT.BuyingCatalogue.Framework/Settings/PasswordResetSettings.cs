@@ -1,5 +1,4 @@
 ﻿using System.Diagnostics.CodeAnalysis;
-using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Email;
 
 namespace NHSD.GPIT.BuyingCatalogue.Framework.Settings
 {
