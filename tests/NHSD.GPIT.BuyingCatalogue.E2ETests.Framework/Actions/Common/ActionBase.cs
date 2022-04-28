@@ -1,5 +1,4 @@
-﻿using System;
-using OpenQA.Selenium;
+﻿using OpenQA.Selenium;
 using OpenQA.Selenium.Support.UI;
 
 namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.Actions.Common

@@ -1,6 +1,4 @@
-﻿using System.IO;
-using System.Text;
-using System.Threading;
+﻿using System.Text;
 using FluentAssertions;
 
 namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.Utils.Files

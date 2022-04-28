@@ -1,6 +1,4 @@
-﻿using System.Collections.Generic;
-using System.Globalization;
-using System.Linq;
+﻿using System.Globalization;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.Actions.Common;
 using OpenQA.Selenium;
 
