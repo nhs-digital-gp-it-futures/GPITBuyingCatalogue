@@ -11,7 +11,7 @@ using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.CatalogueSolutionRecip
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
 {
-    [Authorize]
+    [Authorize("Buyer")]
     [Area("Order")]
     [Route("order/organisation/{internalOrgId}/order/{callOffId}/catalogue-solutions/select/solution/price/recipients/date")]
     public sealed class CatalogueSolutionRecipientsDateController : Controller
