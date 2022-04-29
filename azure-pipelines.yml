@@ -108,7 +108,7 @@ jobs:
 
   - task: DotNetCoreCLI@2
     displayName: 'Run Regression Tests'
-    variables:    
+    env:
       buyerUsername: $(RegressionBuyerUsername)
       buyerPassword: $(RegressionBuyerPassword)
       adminUsername: $(RegressionAdminUsername)
