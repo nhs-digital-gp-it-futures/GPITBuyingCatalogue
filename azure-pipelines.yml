@@ -39,11 +39,11 @@ jobs:
       latestTag: latest
     ${{ if ne(variables['Build.SourceBranchName'], 'main') }}: 
       latestTag: latestbuild
-     buyerUsername: $(RegressionBuyerUsername)
-     buyerPassword: $(RegressionBuyerPassword)
-     adminUsername: $(RegressionAdminUsername)
-     adminPassword: $(RegressionAdminUsername)
-     rootUri: $(RegressionTestUrl)
+    buyerUsername: $(RegressionBuyerUsername)
+    buyerPassword: $(RegressionBuyerPassword)
+    adminUsername: $(RegressionAdminUsername)
+    adminPassword: $(RegressionAdminUsername)
+    rootUri: $(RegressionTestUrl)
 
   dependsOn: version
   pool:
