@@ -50,7 +50,7 @@ jobs:
     vmImage: 'ubuntu-latest'
 
   steps:
-  - powershell: 'Write-Host "rootUri variable=$(rootUri) adminUsername variable=$(adminUsername)"'
+  - powershell: 'Write-Host "rootUri variable=$(RegressionTestUrl) adminUsername variable=$(RegressionAdminUsername)"'
     displayName: 'Display Sample Variable'  
 
   - task: UseDotNet@2
