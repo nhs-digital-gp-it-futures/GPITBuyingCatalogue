@@ -39,11 +39,11 @@ jobs:
       latestTag: latest
     ${{ if ne(variables['Build.SourceBranchName'], 'main') }}: 
       latestTag: latestbuild
-    buyerUsername: $(RegressionBuyerUsername)
-    buyerPassword: $(RegressionBuyerPassword)
-    adminUsername: $(RegressionAdminUsername)
-    adminPassword: $(RegressionAdminPassword)
-    rootUri: $(RegressionTestUrl)
+    RegressionBuyerUsername: $(RegressionBuyerUsername)
+    RegressionBuyerPassword: $(RegressionBuyerPassword)
+    RegressionAdminUsername: $(RegressionAdminUsername)
+    RegressionAdminPassword: $(RegressionAdminPassword)
+    RegressionTestUrl: $(RegressionTestUrl)
 
   dependsOn: version
   pool:
@@ -115,6 +115,8 @@ jobs:
 #   arguments: '-v n --no-build --configuration $(buildConfiguration) -- xunit.parallelizeTestCollections=true'
   - task: DotNetCoreCLI@2
     displayName: 'Run Regression Tests'
+    env:
+      RegressionTestUrl: $(RegressionTestUrl)
     inputs:
       command: test
       projects: '**/*RegressionTests.csproj'
