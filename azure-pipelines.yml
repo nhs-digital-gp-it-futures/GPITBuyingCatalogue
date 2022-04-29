@@ -39,18 +39,18 @@ jobs:
       latestTag: latest
     ${{ if ne(variables['Build.SourceBranchName'], 'main') }}: 
       latestTag: latestbuild
-    RegressionBuyerUsername: $(RegressionBuyerUsername)
-    RegressionBuyerPassword: $(RegressionBuyerPassword)
-    RegressionAdminUsername: $(RegressionAdminUsername)
-    RegressionAdminPassword: $(RegressionAdminPassword)
-    RegressionTestUrl: $(RegressionTestUrl)
+    buyerUsername: $(RegressionBuyerUsername)
+    buyerPassword: $(RegressionBuyerPassword)
+    adminUsername: $(RegressionAdminUsername)
+    adminPassword: $(RegressionAdminPassword)
+    rootUri: $(RegressionTestUrl)
 
   dependsOn: version
   pool:
     vmImage: 'ubuntu-latest'
 
   steps:
-  - powershell: 'Write-Host "rootUri variable=$(RegressionTestUrl) adminUsername variable=$(RegressionAdminUsername)"'
+  - powershell: 'Write-Host "rootUri variable=$(rootUri) adminUsername variable=$(adminUsername)"'
     displayName: 'Display Sample Variable'  
 
   - task: UseDotNet@2
@@ -116,7 +116,7 @@ jobs:
   - task: DotNetCoreCLI@2
     displayName: 'Run Regression Tests'
     env:
-      RegressionTestUrl: $(RegressionTestUrl)
+      RegressionTestUrl: $(rootUri)
     inputs:
       command: test
       projects: '**/*RegressionTests.csproj'
