@@ -39,12 +39,20 @@ jobs:
       latestTag: latest
     ${{ if ne(variables['Build.SourceBranchName'], 'main') }}: 
       latestTag: latestbuild
+     buyerUsername: $(RegressionBuyerUsername)
+     buyerPassword: $(RegressionBuyerPassword)
+     adminUsername: $(RegressionAdminUsername)
+     adminPassword: $(RegressionAdminUsername)
+     rootUri: $(RegressionTestUrl)
 
   dependsOn: version
   pool:
     vmImage: 'ubuntu-latest'
 
   steps:
+  - powershell: 'Write-Host "rootUri variable=$(rootUri) adminUsername variable=$(adminUsername)"'
+    displayName: 'Display Sample Variable'  
+
   - task: UseDotNet@2
     displayName: 'Use DotNet $(dotnetVersion)'
     inputs:
@@ -107,12 +115,6 @@ jobs:
 #   arguments: '-v n --no-build --configuration $(buildConfiguration) -- xunit.parallelizeTestCollections=true'
   - task: DotNetCoreCLI@2
     displayName: 'Run Regression Tests'
-    env:
-      buyerUsername: $(RegressionBuyerUsername)
-      buyerPassword: $(RegressionBuyerPassword)
-      adminUsername: $(RegressionAdminUsername)
-      adminPassword: $(RegressionAdminUsername)
-      rootUri: $(RegressionTestUrl)
     inputs:
       command: test
       projects: '**/*RegressionTests.csproj'
