@@ -9,11 +9,11 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Utils
 {
     public class TestBase
     {        
-        public readonly string BuyerUsername = Environment.GetEnvironmentVariable("BuyerUsername");
-        public readonly string BuyerPassword = Environment.GetEnvironmentVariable("BuyerPassword");
+        public readonly string BuyerUsername = Environment.GetEnvironmentVariable("RegressionBuyerUsername");
+        public readonly string BuyerPassword = Environment.GetEnvironmentVariable("RegressionBuyerPassword");
 
-        public readonly string AdminUsername = Environment.GetEnvironmentVariable("AdminUsername");
-        public readonly string AdminPassword = Environment.GetEnvironmentVariable("AdminPassword");
+        public readonly string AdminUsername = Environment.GetEnvironmentVariable("RegressionAdminUsername");
+        public readonly string AdminPassword = Environment.GetEnvironmentVariable("RegressionAdminPassword");
 
         public readonly Uri uri;
 

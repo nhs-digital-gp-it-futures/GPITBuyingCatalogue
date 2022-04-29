@@ -42,7 +42,7 @@ jobs:
     buyerUsername: $(RegressionBuyerUsername)
     buyerPassword: $(RegressionBuyerPassword)
     adminUsername: $(RegressionAdminUsername)
-    adminPassword: $(RegressionAdminUsername)
+    adminPassword: $(RegressionAdminPassword)
     rootUri: $(RegressionTestUrl)
 
   dependsOn: version

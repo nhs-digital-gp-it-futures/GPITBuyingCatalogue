@@ -17,7 +17,7 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Utils
             var browserFactory = new BrowserFactory(Browser);
             Driver = browserFactory.Driver;
 
-            RootUri = Environment.GetEnvironmentVariable("RootUri");
+            RootUri = Environment.GetEnvironmentVariable("RegressionTestUrl");
         }
 
         ~WebApplicationConnector()
