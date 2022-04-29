@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using FluentAssertions;
 using NHSD.GPIT.BuyingCatalogue.RegressionTests.Utils;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers;
@@ -33,6 +34,7 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
             int a = 1;
             int b = 2;
 
+            BuyerUsername.Should().Be("abc");
         }
     }
 }

@@ -85,27 +85,26 @@ jobs:
       targets: 'min'      
       workingDirectory: 'src/NHSD.GPIT.BuyingCatalogue.WebApp'
 
-  - task: DotNetCoreCLI@2
-    displayName: 'Run unit tests'
-    inputs:
-      command: test
-      projects: '**/*UnitTests.csproj'
-      arguments: '-v n --no-build --configuration $(buildConfiguration) -- xunit.parallelizeTestCollections=true'
-
-  - task: DotNetCoreCLI@2
-    displayName: 'Run UI Component Tests'
-    inputs:
-      command: test
-      projects: '**/*UIComponentTests.csproj'
-      arguments: '-v n --no-build --configuration $(buildConfiguration) -- xunit.parallelizeTestCollections=true'
-
-  - task: DotNetCoreCLI@2
-    displayName: 'Run Integration Tests'
-    inputs:
-      command: test
-      projects: '**/*IntegrationTests.csproj'
-      arguments: '-v n --no-build --configuration $(buildConfiguration) -- xunit.parallelizeTestCollections=true'
-
+#  - task: DotNetCoreCLI@2
+#    displayName: 'Run unit tests'
+#    inputs:
+#      command: test
+#      projects: '**/*UnitTests.csproj'
+#      arguments: '-v n --no-build --configuration $(buildConfiguration) -- xunit.parallelizeTestCollections=true'
+#
+# - task: DotNetCoreCLI@2
+#   displayName: 'Run UI Component Tests'
+#   inputs:
+#     command: test
+#     projects: '**/*UIComponentTests.csproj'
+#     arguments: '-v n --no-build --configuration $(buildConfiguration) -- xunit.parallelizeTestCollections=true'
+#
+# - task: DotNetCoreCLI@2
+#   displayName: 'Run Integration Tests'
+#   inputs:
+#     command: test
+#     projects: '**/*IntegrationTests.csproj'
+#   arguments: '-v n --no-build --configuration $(buildConfiguration) -- xunit.parallelizeTestCollections=true'
   - task: DotNetCoreCLI@2
     displayName: 'Run Regression Tests'
     env:
