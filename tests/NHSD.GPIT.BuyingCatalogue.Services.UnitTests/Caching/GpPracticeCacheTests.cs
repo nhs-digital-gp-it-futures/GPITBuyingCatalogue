@@ -1,5 +1,4 @@
-﻿using System.Threading;
-using AutoFixture.Xunit2;
+﻿using AutoFixture.Xunit2;
 using FluentAssertions;
 using Microsoft.Extensions.Caching.Memory;
 using Moq;

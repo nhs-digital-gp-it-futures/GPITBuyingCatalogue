@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-using NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.Actions.Common;
+﻿using NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.Actions.Common;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.RandomData;
 using OpenQA.Selenium;
 

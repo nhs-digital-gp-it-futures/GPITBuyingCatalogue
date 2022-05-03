@@ -118,7 +118,7 @@ jobs:
     displayName: Copy screen shots
     condition: failed()
     inputs:
-      SourceFolder: 'tests/NHSD.GPIT.BuyingCatalogue.E2E.PublicBrowseTests/ScreenShots'
+      SourceFolder: 'tests/**/ScreenShots'
       Contents: '*'
       TargetFolder: '$(build.artifactStagingDirectory)/screen-shots'
       CleanTargetFolder: false

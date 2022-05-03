@@ -1,6 +1,4 @@
-﻿using System;
-using NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.RandomData;
-using NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.Utils.RandomData;
+﻿using NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.RandomData;
 using OpenQA.Selenium;
 
 namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.Actions.Common

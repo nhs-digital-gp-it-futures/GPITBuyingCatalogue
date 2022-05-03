@@ -71,26 +71,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.ActionFilters
         }
 
         [Fact]
-        public async Task UserNotBuyer_Returns_BadRequest()
-        {
-            const string requestPath = "/order/organisation/ABC";
-            httpRequestMock.Setup(r => r.Path).Returns(requestPath);
-
-            httpContextMock.Setup(c => c.User).Returns(new ClaimsPrincipal(
-                     new ClaimsIdentity(new Claim[] { new("organisationFunction", "Authority") })));
-
-            var mockLogger = new Mock<ILogWrapper<OrdersActionFilter>>();
-            mockLogger.Setup(l => l.LogWarning(It.IsAny<string>()));
-
-            var ordersActionFilter = new OrdersActionFilter(mockLogger.Object);
-
-            await ordersActionFilter.OnActionExecutionAsync(actionExecutingContext, () => Task.FromResult(actionExecutedContext));
-
-            actionExecutingContext.Result.Should().BeOfType<NotFoundResult>();
-            mockLogger.Verify(l => l.LogWarning($"Attempt was made to access {requestPath} when user is not a buyer."), Times.Once);
-        }
-
-        [Fact]
         public async Task OrderMatchesUsersPrimaryInternalOrgId_ReturnsOk()
         {
             httpRequestMock.Setup(r => r.Path).Returns("/order/organisation/ABC/edit");
