@@ -1,0 +1,35 @@
+﻿@using NHSD.GPIT.BuyingCatalogue.WebApp.Models
+@model NavBaseModel
+
+@{
+    Layout = "~/Views/Shared/Layouts/_AllBannersLayout.cshtml";
+    ViewBag.Title = "Pilot Catalogue Solutions";
+}
+
+<partial name="Partials/_BackLink" model="@Model" />
+
+<div class="nhsuk-grid-row">
+    <div class="nhsuk-grid-column-two-thirds">
+        <nhs-page-title title="@ViewBag.Title" />
+
+        <p>
+            Pilot Catalogue Solutions are clinical IT systems yet to be deployed in a live, patient facing environment.
+            Therefore, the supplier can only sell it to one buyer organisation and this will be considered a pilot deployment.
+        </p>
+
+        <p>
+            The buyer organisation must agree to complete their obligations under NHS Digital’s Clinical Risk Management Standard DCB0160 and risk assess the solution in the knowledge that it has not yet been tested in live.
+        </p>
+
+        <p>
+            Once both the buyer and supplier are satisfied that the pilot has been successful, the supplier may present the evidence to NHS Digital who’ll mark the Work-off Plan item complete if satisfied.
+            A Work-off Plan means the supplier has agreed to complete any outstanding work to meet the standard within a certain timeframe.
+        </p>
+
+        <p>
+            Prior to deploying the supplier should agree their exit criteria for a successful pilot with both the buyer organisation and NHS Digital.
+            This will form the basis of the caveated CATR (clinical authority to release) to support the supplier with this initial deployment.
+            The supplier must not deploy to any more than one buyer organisation without first seeking approval from NHS Digital.
+        </p>
+    </div>
+</div>

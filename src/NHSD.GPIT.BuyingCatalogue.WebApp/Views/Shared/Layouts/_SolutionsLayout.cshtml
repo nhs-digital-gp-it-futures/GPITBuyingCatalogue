@@ -52,6 +52,21 @@
 
     <div class="nhsuk-width-container nhsuk-main-wrapper">
         <main role="main" id="maincontent">
+            @if (Model.ShouldShowPilotWarning())
+            {
+                <div class="nhsuk-grid-column-two-thirds">
+                    <nhs-warning-callout label-text="Available as a pilot procurement only" data-test-id="pilot-warning-callout">
+                        <p>This solution is yet to be deployed in a live, patient facing environment. Therefore, the supplier can only allow organisations to use it free of charge. This will be considered a pilot deployment.</p>
+                        <p>You should check that the supplier is still accepting pilot deployments before you place an order for the solution.</p>
+                        <p>
+                            <a asp-action="@nameof(SolutionsController.AboutPilotSolutions)"
+                               asp-controller="@typeof(SolutionsController).ControllerName()">
+                               Find out more about pilot procurements
+                            </a>
+                        </p>
+                    </nhs-warning-callout>
+                </div>
+            }
             <div class="nhsuk-grid-row">
                 <div class="nhsuk-grid-column-two-thirds">
                     <nhs-page-title title="@ViewBag.Title"
@@ -63,7 +78,7 @@
             {
                 <div class="nhsuk-grid-row">
                     <div class="nhsuk-grid-column-two-thirds">
-                        <nhs-warning-callout label-text="Solution in remediation" style="margin-top:0px">
+                        <nhs-warning-callout label-text="Solution in remediation" style="margin-top:0px" data-test-id="in-remediation-warning-callout">
                             <p>This Catalogue Solution is in remediation while the supplier works to meet compliance with the required standards.</p>
                             <p>It can still be ordered while the work is carried out, however if this situation is not remedied within an agreed timeframe the Solution will be suspended from the Buying Catalogue.</p>
                         </nhs-warning-callout>

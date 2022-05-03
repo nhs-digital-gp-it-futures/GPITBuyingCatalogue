@@ -214,11 +214,12 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Solutions
         {
             const string expectedSolutionName = "Expected Name";
             const int expectedSupplierId = 247;
+            const bool expectedPilotState = true;
 
             context.Solutions.Add(solution);
             await context.SaveChangesAsync();
 
-            await service.SaveSolutionDetails(solution.CatalogueItemId, expectedSolutionName, expectedSupplierId, new List<FrameworkModel>());
+            await service.SaveSolutionDetails(solution.CatalogueItemId, expectedSolutionName, expectedSupplierId, expectedPilotState, new List<FrameworkModel>());
 
             var dbSolution = await context.CatalogueItems
                 .Include(s => s.Solution)
@@ -227,6 +228,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Solutions
 
             dbSolution.Name.Should().BeEquivalentTo(expectedSolutionName);
             dbSolution.SupplierId.Should().Be(expectedSupplierId);
+            dbSolution.Solution.IsPilotSolution.Should().Be(expectedPilotState);
         }
 
         [Theory]

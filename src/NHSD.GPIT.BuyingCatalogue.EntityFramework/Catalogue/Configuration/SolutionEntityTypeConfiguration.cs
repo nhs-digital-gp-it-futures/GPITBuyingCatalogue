@@ -23,6 +23,7 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Configuration
             builder.Property(s => s.FullDescription).HasMaxLength(3000);
             builder.Property(s => s.ImplementationDetail).HasMaxLength(1100);
             builder.Property(s => s.IntegrationsUrl).HasMaxLength(1000);
+            builder.Property(s => s.IsPilotSolution).HasDefaultValue(false);
             builder.Property(s => s.LastUpdated).HasDefaultValue(DateTime.UtcNow);
 
             builder.Property(s => s.Hosting)
