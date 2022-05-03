@@ -39,20 +39,12 @@ jobs:
       latestTag: latest
     ${{ if ne(variables['Build.SourceBranchName'], 'main') }}: 
       latestTag: latestbuild
-    buyerUsername: $(RegressionBuyerUsername)
-    buyerPassword: $(RegressionBuyerPassword)
-    adminUsername: $(RegressionAdminUsername)
-    adminPassword: $(RegressionAdminPassword)
-    rootUri: $(RegressionTestUrl)
 
   dependsOn: version
   pool:
     vmImage: 'ubuntu-latest'
 
   steps:
-  - powershell: 'Write-Host "rootUri variable=$(rootUri) adminUsername variable=$(adminUsername)"'
-    displayName: 'Display Sample Variable'  
-
   - task: UseDotNet@2
     displayName: 'Use DotNet $(dotnetVersion)'
     inputs:
@@ -93,33 +85,25 @@ jobs:
       targets: 'min'      
       workingDirectory: 'src/NHSD.GPIT.BuyingCatalogue.WebApp'
 
-#  - task: DotNetCoreCLI@2
-#    displayName: 'Run unit tests'
-#    inputs:
-#      command: test
-#      projects: '**/*UnitTests.csproj'
-#      arguments: '-v n --no-build --configuration $(buildConfiguration) -- xunit.parallelizeTestCollections=true'
-#
-# - task: DotNetCoreCLI@2
-#   displayName: 'Run UI Component Tests'
-#   inputs:
-#     command: test
-#     projects: '**/*UIComponentTests.csproj'
-#     arguments: '-v n --no-build --configuration $(buildConfiguration) -- xunit.parallelizeTestCollections=true'
-#
-# - task: DotNetCoreCLI@2
-#   displayName: 'Run Integration Tests'
-#   inputs:
-#     command: test
-#     projects: '**/*IntegrationTests.csproj'
-#   arguments: '-v n --no-build --configuration $(buildConfiguration) -- xunit.parallelizeTestCollections=true'
   - task: DotNetCoreCLI@2
-    displayName: 'Run Regression Tests'
-    env:
-      RegressionTestUrl: $(rootUri)
+    displayName: 'Run unit tests'
     inputs:
       command: test
-      projects: '**/*RegressionTests.csproj'
+      projects: '**/*UnitTests.csproj'
+      arguments: '-v n --no-build --configuration $(buildConfiguration) -- xunit.parallelizeTestCollections=true'
+
+  - task: DotNetCoreCLI@2
+    displayName: 'Run UI Component Tests'
+    inputs:
+      command: test
+      projects: '**/*UIComponentTests.csproj'
+      arguments: '-v n --no-build --configuration $(buildConfiguration) -- xunit.parallelizeTestCollections=true'
+
+  - task: DotNetCoreCLI@2
+    displayName: 'Run Integration Tests'
+    inputs:
+      command: test
+      projects: '**/*IntegrationTests.csproj'
       arguments: '-v n --no-build --configuration $(buildConfiguration) -- xunit.parallelizeTestCollections=true'
 
   - task: PowerShell@2
