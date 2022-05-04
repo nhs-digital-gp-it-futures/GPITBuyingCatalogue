@@ -44,8 +44,6 @@ jobs:
 
 - job: dockerBuildAndPush
   displayName: Run all tests and build & push docker containers to the ACR
-  services:
-    mssql: mssql
   variables:
     dacpacTag: dacpac-$[ dependencies.version.outputs['setVersionStep.semVer'] ] 
     semVer: $[ dependencies.version.outputs['setVersionStep.semVer'] ]   
@@ -53,11 +51,6 @@ jobs:
       latestTag: latest
     ${{ if ne(variables['Build.SourceBranchName'], 'main') }}: 
       latestTag: latestbuild
-    buyerUsername: $(RegressionBuyerUsername)
-    buyerPassword: $(RegressionBuyerPassword)
-    adminUsername: $(RegressionAdminUsername)
-    adminPassword: $(RegressionAdminPassword)
-    rootUri: $(RegressionTestUrl)
 
   dependsOn: version
   pool:
@@ -66,13 +59,6 @@ jobs:
   steps:
   - powershell: 'Write-Host "rootUri variable=$(rootUri) adminUsername variable=$(adminUsername)"'
     displayName: 'Display Sample Variable'  
-
-  - powershell: 'docker ps -a'
-    displayName: 'Output docker status'  
-
-  - task: CmdLine@2
-    inputs:
-      script: 'sqlcmd -S localhost -d master -U sa -P $(SQLPassword) -Q "SELECT @@version;"'
 
   - task: UseDotNet@2
     displayName: 'Use DotNet $(dotnetVersion)'
@@ -134,18 +120,6 @@ jobs:
 #     command: test
 #     projects: '**/*IntegrationTests.csproj'
 #   arguments: '-v n --no-build --configuration $(buildConfiguration) -- xunit.parallelizeTestCollections=true'
-  - task: DotNetCoreCLI@2
-    displayName: 'Run Regression Tests'
-    env:
-      RegressionBuyerUsername: $(buyerUsername)
-      RegressionBuyerPassword: $(buyerPassword)
-      RegressionAdminUsername: $(adminUsername)
-      RegressionAdminPassword: $(adminPassword)
-      RegressionTestUrl: $(rootUri)
-    inputs:
-      command: test
-      projects: '**/*RegressionTests.csproj'
-      arguments: '-v n --no-build --configuration $(buildConfiguration) -- xunit.parallelizeTestCollections=true'
 
   - task: PowerShell@2
     displayName: Create screen shots folder
@@ -200,18 +174,28 @@ jobs:
 
 - job: buildDatabaseDacpacs
   displayName: Build all Dacpacs and push
+  services:
+    mssql: mssql
   variables:    
     semVer: $[ dependencies.version.outputs['setVersionStep.semVer'] ]   
     ${{ if eq(variables['Build.SourceBranchName'], 'main') }}: 
       latestTag: latest
     ${{ if ne(variables['Build.SourceBranchName'], 'main') }}: 
       latestTag: latestbuild
+    buyerUsername: $(RegressionBuyerUsername)
+    buyerPassword: $(RegressionBuyerPassword)
+    adminUsername: $(RegressionAdminUsername)
+    adminPassword: $(RegressionAdminPassword)
+    rootUri: $(RegressionTestUrl)
 
   dependsOn: dockerBuildAndPush
   pool:
     vmImage: 'ubuntu-latest'
 
   steps:
+  - powershell: 'docker ps -a'
+    displayName: 'Output docker status'  
+
   - task: Docker@2
     displayName: 'Docker: Build Dacpacs'
     condition: succeeded()
@@ -232,6 +216,41 @@ jobs:
       docker cp dacpaccontainer:/deploy-db/. $(Build.ArtifactStagingDirectory)/dacpacs
       docker rm dacpaccontainer
     displayName: 'Copy DACPACs'
+
+  - task: SqlAzureDacpacDeployment@1
+    inputs:
+      AuthenticationType: 'server'
+      ServerName: '127.0.0.1'
+      DatabaseName: 'BuyingCatalogue-pipeline'
+      SqlUsername: 'sa'
+      SqlPassword: '$(SQLPassword)'
+      deployType: 'DacpacTask'
+      DeploymentAction: 'Publish'
+      DacpacFile: '$(Build.ArtifactStagingDirectory)/NHSD.GPITBuyingCatalogue.Database.Deployment.dacpac'
+      AdditionalArguments: '/DiagnosticsFile:$(System.DefaultWorkingDirectory)/output.log  /p:BlockOnPossibleDataLoss=false /Variables:HANGFIRE_PASSWORD=$(SQLPassword)'
+      IpDetectionMethod: 'AutoDetect'
+
+  - task: CmdLine@2
+    inputs:
+      script: 'sqlcmd -S localhost -d master -U sa -P $(SQLPassword) -Q "SELECT * FROM sys.databases;"'
+
+  - task: CmdLine@2
+    inputs:
+      script: 'sqlcmd -S localhost -d BuyingCatalogue-pipeline -U sa -P $(SQLPassword) -Q "SELECT * FROM sys.databases;"'
+
+  - task: DotNetCoreCLI@2
+    displayName: 'Run Regression Tests'
+    env:
+      RegressionBuyerUsername: $(buyerUsername)
+      RegressionBuyerPassword: $(buyerPassword)
+      RegressionAdminUsername: $(adminUsername)
+      RegressionAdminPassword: $(adminPassword)
+      RegressionTestUrl: $(rootUri)
+    inputs:
+      command: test
+      projects: '**/*RegressionTests.csproj'
+      arguments: '-v n --no-build --configuration $(buildConfiguration) -- xunit.parallelizeTestCollections=true'
+
 
   - publish: $(build.artifactStagingDirectory)/dacpacs
     artifact: dacpacs
