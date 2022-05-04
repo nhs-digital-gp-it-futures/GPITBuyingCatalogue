@@ -15,6 +15,15 @@ trigger:
 pr:
 - develop
 
+resources:
+  containers:
+  - container: mssql
+    image: mcr.microsoft.com/mssql/server:2017-latest
+    env:
+      ACCEPT_EULA: Y
+      SA_PASSWORD: $(SQLPassword)
+      MSSQL_PID: Developer
+
 jobs:
 - job: version
   displayName: Work out version
@@ -52,6 +61,9 @@ jobs:
   steps:
   - powershell: 'Write-Host "rootUri variable=$(rootUri) adminUsername variable=$(adminUsername)"'
     displayName: 'Display Sample Variable'  
+
+  - powershell: 'docker ps -a'
+    displayName: 'Output docker status'  
 
   - task: UseDotNet@2
     displayName: 'Use DotNet $(dotnetVersion)'
