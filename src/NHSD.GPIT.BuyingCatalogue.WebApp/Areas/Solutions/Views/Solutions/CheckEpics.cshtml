@@ -32,9 +32,9 @@ else
         </p>
 
         <ul data-test-id="nhs-defined-epics">
-            @foreach (string epic in Model.NhsDefined)
+            @foreach (var epic in Model.NhsDefined)
             {
-                <li>@epic</li>
+                <li>@epic.Name</li>
             }
         </ul>
     }
@@ -43,11 +43,18 @@ else
     {
         <h2>Supplier defined Epics</h2>
 
-        <ul data-test-id="supplier-defined-epics">
-            @foreach (string epic in Model.SupplierDefined)
+
+        <nhs-table data-test-id="supplier-defined-epics">
+            <nhs-table-column>Name</nhs-table-column>
+            <nhs-table-column>Description</nhs-table-column>
+
+            @foreach (var epic in Model.SupplierDefined)
             {
-                <li>@epic</li>
+                <nhs-table-row-container>
+                    <nhs-table-cell data-test-id="supplier-defined-epic-name">@epic.Name</nhs-table-cell>
+                    <nhs-table-cell>@epic.Description</nhs-table-cell>
+                </nhs-table-row-container>
             }
-        </ul>
+        </nhs-table>
     }
 }

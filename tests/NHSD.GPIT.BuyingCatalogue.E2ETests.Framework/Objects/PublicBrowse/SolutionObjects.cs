@@ -15,7 +15,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.Objects.PublicBrowse
 
         public static By NhsSolutionEpics => ByExtensions.DataTestId("nhs-defined-epics", "li");
 
-        public static By SupplierSolutionEpics => ByExtensions.DataTestId("supplier-defined-epics", "li");
+        public static By SupplierSolutionEpics => ByExtensions.DataTestId("supplier-defined-epic-name");
 
         public static By CapabilitiesContent => By.CssSelector("tbody tr td:nth-child(1)");
 

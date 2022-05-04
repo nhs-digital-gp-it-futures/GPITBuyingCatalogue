@@ -16,6 +16,8 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.Models.FilterModels
 
         public string DisplayText => $"{Name} ({Count})";
 
-        public List<EpicsFilter> Epics { get; } = new();
+        public List<EpicsFilter> NhsDefinedEpics { get; } = new();
+
+        public List<EpicsFilter> SupplierDefinedEpics { get; } = new();
     }
 }
