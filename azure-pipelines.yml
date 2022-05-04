@@ -57,9 +57,9 @@ jobs:
     vmImage: 'ubuntu-latest'
 
   steps:
-  - powershell: 'Write-Host "rootUri variable=$(rootUri) adminUsername variable=$(adminUsername)"'
-    displayName: 'Display Sample Variable'  
-
+#  - powershell: 'Write-Host "rootUri variable=$(rootUri) adminUsername variable=$(adminUsername)"'
+#    displayName: 'Display Sample Variable'  
+#
   - task: UseDotNet@2
     displayName: 'Use DotNet $(dotnetVersion)'
     inputs:
