@@ -23,12 +23,17 @@ resources:
       ACCEPT_EULA: Y
       SA_PASSWORD: $(SQLPassword)
       MSSQL_PID: Developer
+    ports: 
+      - 1433:1433
+    options: --name mssql
 
 jobs:
 - job: version
   displayName: Work out version
   pool:
     vmImage: 'ubuntu-latest'
+  services:
+    mssql: mssql
   steps:
   - task: UseGitVersion@5
     displayName: gitversion
@@ -64,6 +69,10 @@ jobs:
 
   - powershell: 'docker ps -a'
     displayName: 'Output docker status'  
+
+  - task: CmdLine@2
+    inputs:
+      script: 'sqlcmd -S localhost -d master -U sa -P $(SQLPassword) -Q "SELECT @@version;"'
 
   - task: UseDotNet@2
     displayName: 'Use DotNet $(dotnetVersion)'
