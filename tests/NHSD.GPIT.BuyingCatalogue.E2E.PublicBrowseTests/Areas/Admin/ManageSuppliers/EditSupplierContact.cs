@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Threading.Tasks;
 using FluentAssertions;
 using Microsoft.EntityFrameworkCore;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.Objects.Common;
@@ -59,7 +60,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.ManageSuppliers
         }
 
         [Fact]
-        public async void EditSupplierContact_DuplicateDetails_ThrowsError()
+        public async Task EditSupplierContact_DuplicateDetails_ThrowsError()
         {
             await using var context = GetEndToEndDbContext();
 
@@ -90,7 +91,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.ManageSuppliers
         }
 
         [Fact]
-        public async void EditSupplierContact_ChangeValues_ExpectedResult()
+        public async Task EditSupplierContact_ChangeValues_ExpectedResult()
         {
             var firstName = TextGenerators.TextInputAddText(Objects.Admin.ManageSuppliers.ManageSuppliers.EditSupplierContactFirstName, 35);
             var lastName = TextGenerators.TextInputAddText(Objects.Admin.ManageSuppliers.ManageSuppliers.EditSupplierContactLastName, 35);

@@ -181,9 +181,12 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
             // catalogue items reference that epic
             categories.ForEach(
                 c => c.Capabilities.ForEach(
-                    cap => cap.Epics.AddRange(
-                        epics.Where(e => e.CapabilityId == cap.CapabilityId)
-                            .Select(e => new EpicsFilter
+                    cap =>
+                    {
+                        var capabilityEpics = epics.Where(e => e.CapabilityId == cap.CapabilityId);
+                        var nhsDefinedEpics = capabilityEpics.Where(e => e.SupplierDefined is false);
+                        var supplierDefinedEpics = capabilityEpics.Where(e => e.SupplierDefined is true);
+                        cap.NhsDefinedEpics.AddRange(nhsDefinedEpics.Select(e => new EpicsFilter
                             {
                                 Id = e.Id,
                                 Name = e.Name,
@@ -191,7 +194,18 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
                                     .Count(ci => ci.CatalogueItemEpics.Any(cie => cie.EpicId == e.Id)),
                             })
                             .OrderByDescending(e => e.Count)
-                            .ThenBy(e => e.Name))));
+                            .ThenBy(e => e.Name));
+
+                        cap.SupplierDefinedEpics.AddRange(supplierDefinedEpics.Select(e => new EpicsFilter
+                            {
+                                Id = e.Id,
+                                Name = e.Name,
+                                Count = results.Where(ci => ci.CatalogueItemCapabilities.Any(cic => cic.CapabilityId == e.CapabilityId))
+                                            .Count(ci => ci.CatalogueItemEpics.Any(cie => cie.EpicId == e.Id)),
+                            })
+                            .OrderByDescending(e => e.Count)
+                            .ThenBy(e => e.Name));
+                    }));
 
             var response = new CategoryFilterModel
             {

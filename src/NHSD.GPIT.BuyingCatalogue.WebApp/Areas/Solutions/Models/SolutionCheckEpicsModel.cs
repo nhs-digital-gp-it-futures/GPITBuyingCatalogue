@@ -46,13 +46,13 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models
 
         public string Url { get; init; }
 
-        public string[] NhsDefined { get; init; }
+        public Epic[] NhsDefined { get; init; }
 
         public CatalogueItemId SolutionId { get; set; }
 
         public string SolutionName { get; set; }
 
-        public string[] SupplierDefined { get; init; }
+        public Epic[] SupplierDefined { get; init; }
 
         public bool HasNhsDefined() => NhsDefined != null && NhsDefined.Length > 0;
 
@@ -60,11 +60,11 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models
 
         public bool HasSupplierDefined() => SupplierDefined != null && SupplierDefined.Length > 0;
 
-        private static string[] GetEpics(CatalogueItem item, bool supplierDefined) =>
+        private static Epic[] GetEpics(CatalogueItem item, bool supplierDefined) =>
             item.CatalogueItemEpics?
                 .Where(e => e.Epic.SupplierDefined == supplierDefined)
-                .Select(epic => epic.Epic.Name)
-                .OrderBy(name => name)
+                .Select(epic => epic.Epic)
+                .OrderBy(epic => epic.Name)
                 .ToArray();
     }
 }

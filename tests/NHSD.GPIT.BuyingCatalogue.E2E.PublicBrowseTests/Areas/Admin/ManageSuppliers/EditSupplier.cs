@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Threading.Tasks;
 using FluentAssertions;
 using Microsoft.EntityFrameworkCore;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.Objects.Common;
@@ -83,7 +84,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.ManageSuppliers
         }
 
         [Fact]
-        public async void EditSupplier_SupplierHasPublishedSolutions_TryToSetInactive_ThrowsError()
+        public async Task EditSupplier_SupplierHasPublishedSolutions_TryToSetInactive_ThrowsError()
         {
             await using var context = GetEndToEndDbContext();
 
