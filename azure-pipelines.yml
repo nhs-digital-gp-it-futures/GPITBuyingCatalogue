@@ -31,7 +31,7 @@ jobs:
 - job: version
   displayName: Work out version
   pool:
-    vmImage: 'windows-latest'
+    vmImage: 'ubuntu-latest'
   steps:
   - task: UseGitVersion@5
     displayName: gitversion
