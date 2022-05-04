@@ -81,8 +81,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models
             PaginationFooter.Next = index < (sectionsToShow.Count - 1) ? sectionsToShow[index + 1] : null;
         }
 
-        public bool ShouldShowPilotWarning() => !NotFirstSection() && IsPilotSolution;
-
         public bool IsInRemediation() => PublicationStatus == PublicationStatus.InRemediation;
 
         public bool IsSuspended() => PublicationStatus == PublicationStatus.Suspended;
