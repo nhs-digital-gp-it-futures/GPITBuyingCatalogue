@@ -190,7 +190,7 @@ jobs:
 
   dependsOn: dockerBuildAndPush
   pool:
-    vmImage: 'ubuntu-latest'
+    vmImage: 'windows-latest'
 
   steps:
   - powershell: 'docker ps -a'
