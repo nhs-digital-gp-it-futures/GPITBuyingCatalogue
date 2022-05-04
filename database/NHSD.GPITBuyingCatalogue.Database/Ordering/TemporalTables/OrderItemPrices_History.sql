@@ -10,5 +10,6 @@
     LastUpdated DATETIME2(0) NOT NULL,
     LastUpdatedBy INT NULL,
     SysStartTime DATETIME2(0) NOT NULL,
-    SysEndTime DATETIME2(0) NOT NULL,
+    SysEndTime DATETIME2(0) NOT NULL, 
+    [RangeDescription] NVARCHAR(100) NOT NULL,
 )

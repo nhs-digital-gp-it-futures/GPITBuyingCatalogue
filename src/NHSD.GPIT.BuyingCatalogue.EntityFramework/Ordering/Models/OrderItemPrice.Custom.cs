@@ -15,6 +15,7 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models
             EstimationPeriod = cataloguePrice.TimeUnit;
             CurrencyCode = cataloguePrice.CurrencyCode;
             Description = cataloguePrice.PricingUnit.Description;
+            RangeDescription = cataloguePrice.PricingUnit.RangeDescription;
             OrderItem = item;
 
             AddTiers(cataloguePrice);
@@ -30,6 +31,7 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models
             EstimationPeriod = cataloguePrice.TimeUnit;
             CurrencyCode = cataloguePrice.CurrencyCode;
             Description = cataloguePrice.PricingUnit.Description;
+            RangeDescription = cataloguePrice.PricingUnit.RangeDescription;
 
             AddTiers(cataloguePrice);
         }

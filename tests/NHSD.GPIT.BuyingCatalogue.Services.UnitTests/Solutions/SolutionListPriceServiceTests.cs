@@ -37,7 +37,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Solutions
             dbContext.CatalogueItems.Add(solution.CatalogueItem);
             dbContext.SaveChanges();
 
-            var result = await service.GetSolutionWithListPrices(solution.CatalogueItemId);
+            var result = await service.GetCatalogueItemWithListPrices(solution.CatalogueItemId);
 
             result.Should().NotBeNull();
         }
@@ -48,7 +48,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Solutions
             Solution solution,
             SolutionListPriceService service)
         {
-            var result = await service.GetSolutionWithListPrices(solution.CatalogueItemId);
+            var result = await service.GetCatalogueItemWithListPrices(solution.CatalogueItemId);
 
             result.Should().BeNull();
         }

@@ -108,6 +108,8 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework
         // TODO - This is purely for the migration and can be removed post go-live
         public DbSet<OrderItemRecipient> OrderItemRecipients { get; set; }
 
+        public DbSet<OrderItemPrice> OrderItemPrices { get; set; }
+
         public override Task<int> SaveChangesAsync(bool acceptAllChangesOnSuccess, CancellationToken cancellationToken = default)
         {
             UpdateAuditFields();

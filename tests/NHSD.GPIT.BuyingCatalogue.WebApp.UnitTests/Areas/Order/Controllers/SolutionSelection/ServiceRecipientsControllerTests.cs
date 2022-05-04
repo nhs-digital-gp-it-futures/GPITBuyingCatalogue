@@ -18,7 +18,6 @@ using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Orders;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Organisations;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions;
 using NHSD.GPIT.BuyingCatalogue.Test.Framework.AutoFixtureCustomisations;
-using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers.SolutionSelection;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.SolutionSelection.ServiceRecipients;
 using Xunit;
@@ -120,20 +119,21 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
             IEnumerable<ServiceRecipientDto> serviceRecipients = null;
 
             order.OrderItems.ForEach(x => x.CatalogueItem.CatalogueItemType = CatalogueItemType.AdditionalService);
-            order.OrderItems.First().CatalogueItem.CatalogueItemType = CatalogueItemType.Solution;
 
-            var catalogueItemId = order.OrderItems.First().CatalogueItem.Id;
+            var orderItem = order.OrderItems.First().CatalogueItem;
+
+            orderItem.CatalogueItemType = CatalogueItemType.Solution;
 
             mockOrderService
                 .Setup(x => x.GetOrderThin(model.CallOffId, model.InternalOrgId))
                 .ReturnsAsync(order);
 
             mockListPriceService
-                .Setup(x => x.GetSolutionWithPublishedListPrices(catalogueItemId))
+                .Setup(x => x.GetCatalogueItemWithPublishedListPrices(orderItem.Id))
                 .ReturnsAsync(order.OrderItems.First().CatalogueItem);
 
             mockOrderRecipientService
-                .Setup(x => x.AddOrderItemRecipients(order.Id, catalogueItemId, It.IsAny<IEnumerable<ServiceRecipientDto>>()))
+                .Setup(x => x.AddOrderItemRecipients(order.Id, orderItem.Id, It.IsAny<IEnumerable<ServiceRecipientDto>>()))
                 .Callback<int, CatalogueItemId, IEnumerable<ServiceRecipientDto>>((_, _, recipients) => serviceRecipients = recipients)
                 .Returns(Task.CompletedTask);
 
@@ -174,23 +174,23 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
 
             order.OrderItems.ForEach(x => x.CatalogueItem.CatalogueItemType = CatalogueItemType.AdditionalService);
 
-            var solution = order.OrderItems.First();
+            var solution = order.OrderItems.First().CatalogueItem;
 
-            solution.CatalogueItem.CatalogueItemType = CatalogueItemType.Solution;
-            solution.CatalogueItem.CataloguePrices = new List<CataloguePrice>
+            solution.CatalogueItemType = CatalogueItemType.Solution;
+            solution.CataloguePrices = new List<CataloguePrice>
             {
-                solution.CatalogueItem.CataloguePrices.First(),
+                solution.CataloguePrices.First(),
             };
 
-            var catalogueItemId = solution.CatalogueItem.Id;
+            var catalogueItemId = solution.Id;
 
             mockOrderService
                 .Setup(x => x.GetOrderThin(model.CallOffId, model.InternalOrgId))
                 .ReturnsAsync(order);
 
             mockListPriceService
-                .Setup(x => x.GetSolutionWithPublishedListPrices(catalogueItemId))
-                .ReturnsAsync(solution.CatalogueItem);
+                .Setup(x => x.GetCatalogueItemWithPublishedListPrices(catalogueItemId))
+                .ReturnsAsync(solution);
 
             mockOrderRecipientService
                 .Setup(x => x.AddOrderItemRecipients(order.Id, catalogueItemId, It.IsAny<IEnumerable<ServiceRecipientDto>>()))
@@ -211,12 +211,13 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
 
             var actualResult = result.Should().BeOfType<RedirectToActionResult>().Subject;
 
-            actualResult.ControllerName.Should().Be(typeof(OrderController).ControllerName());
-            actualResult.ActionName.Should().Be(nameof(OrderController.Order));
+            actualResult.ControllerName.Should().Be(typeof(PricesController).ControllerName());
+            actualResult.ActionName.Should().Be(nameof(PricesController.ConfirmPrice));
             actualResult.RouteValues.Should().BeEquivalentTo(new RouteValueDictionary
             {
                 { "internalOrgId", model.InternalOrgId },
                 { "callOffId", model.CallOffId },
+                { "priceId", solution.CataloguePrices.First().CataloguePriceId },
             });
         }
 
@@ -312,7 +313,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
                 .ReturnsAsync(order);
 
             mockListPriceService
-                .Setup(x => x.GetSolutionWithPublishedListPrices(model.CatalogueItemId.Value))
+                .Setup(x => x.GetCatalogueItemWithPublishedListPrices(model.CatalogueItemId.Value))
                 .ReturnsAsync(order.OrderItems.First().CatalogueItem);
 
             mockOrderRecipientService
@@ -439,7 +440,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
                 .ReturnsAsync(order);
 
             mockListPriceService
-                .Setup(x => x.GetSolutionWithPublishedListPrices(model.CatalogueItemId.Value))
+                .Setup(x => x.GetCatalogueItemWithPublishedListPrices(model.CatalogueItemId.Value))
                 .ReturnsAsync(order.OrderItems.First().CatalogueItem);
 
             mockOrderRecipientService

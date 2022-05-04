@@ -9,5 +9,6 @@
     LastUpdated DATETIME2(7) NOT NULL,
     LastUpdatedBy INT NULL,
     SysStartTime DATETIME2(0) NOT NULL,
-    SysEndTime DATETIME2(0) NOT NULL
+    SysEndTime DATETIME2(0) NOT NULL, 
+    [ListPrice] DECIMAL(18, 4) NOT NULL
 )

@@ -12,6 +12,7 @@
     LastUpdatedBy INT NULL,
     SysStartTime DATETIME2(0) GENERATED ALWAYS AS ROW START NOT NULL,
     SysEndTime DATETIME2(0) GENERATED ALWAYS AS ROW END NOT NULL,
+    [RangeDescription] NVARCHAR(100) NOT NULL, 
     PERIOD FOR SYSTEM_TIME (SysStartTime, SysEndTime),
     CONSTRAINT PK_OrderItemPrices PRIMARY KEY (OrderId, CatalogueItemId),
     CONSTRAINT FK_OrderItemPrices_OrderItem FOREIGN KEY (OrderId, CatalogueItemId) REFERENCES ordering.OrderItems (OrderId, CatalogueItemId) ON DELETE CASCADE,

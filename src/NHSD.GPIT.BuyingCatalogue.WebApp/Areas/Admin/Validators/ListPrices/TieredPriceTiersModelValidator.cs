@@ -32,7 +32,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Validators.ListPrices
 
         private async Task<CataloguePrice> GetCataloguePrice(CatalogueItemId solutionId, int cataloguePriceId)
         {
-            var solution = await solutionListPriceService.GetSolutionWithListPrices(solutionId);
+            var solution = await solutionListPriceService.GetCatalogueItemWithListPrices(solutionId);
             var price = solution.CataloguePrices.Single(p => p.CataloguePriceId == cataloguePriceId);
             return price;
         }

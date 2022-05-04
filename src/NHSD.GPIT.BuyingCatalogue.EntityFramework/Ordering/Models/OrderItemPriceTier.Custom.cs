@@ -9,6 +9,7 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models
             OrderId = price.OrderId;
             CatalogueItemId = price.CatalogueItemId;
             Price = tier.Price;
+            ListPrice = tier.Price;
             LowerRange = tier.LowerRange;
             UpperRange = tier.UpperRange;
             OrderItemPrice = price;

@@ -27,7 +27,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
         [HttpGet]
         public async Task<IActionResult> Index(CatalogueItemId solutionId)
         {
-            var solution = await solutionListPriceService.GetSolutionWithListPrices(solutionId);
+            var solution = await solutionListPriceService.GetCatalogueItemWithListPrices(solutionId);
             if (solution is null)
                 return NotFound();
 
@@ -45,7 +45,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
         [HttpGet("list-price-type")]
         public async Task<IActionResult> ListPriceType(CatalogueItemId solutionId, CataloguePriceType? selectedPriceType = null)
         {
-            var solution = await solutionListPriceService.GetSolutionWithListPrices(solutionId);
+            var solution = await solutionListPriceService.GetCatalogueItemWithListPrices(solutionId);
             if (solution is null)
                 return NotFound();
 
@@ -77,7 +77,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
         [HttpGet("add-tiered-list-price")]
         public async Task<IActionResult> AddTieredListPrice(CatalogueItemId solutionId, int? cataloguePriceId = null)
         {
-            var solution = await solutionListPriceService.GetSolutionWithListPrices(solutionId);
+            var solution = await solutionListPriceService.GetCatalogueItemWithListPrices(solutionId);
             if (solution is null)
                 return NotFound();
 
@@ -104,7 +104,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
         [HttpGet("add-flat-list-price")]
         public async Task<IActionResult> AddFlatListPrice(CatalogueItemId solutionId)
         {
-            var solution = await solutionListPriceService.GetSolutionWithListPrices(solutionId);
+            var solution = await solutionListPriceService.GetCatalogueItemWithListPrices(solutionId);
             if (solution is null)
                 return NotFound();
 
@@ -150,7 +150,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
         [HttpGet("{cataloguePriceId}/tiers")]
         public async Task<IActionResult> TieredPriceTiers(CatalogueItemId solutionId, int cataloguePriceId)
         {
-            var solution = await solutionListPriceService.GetSolutionWithListPrices(solutionId);
+            var solution = await solutionListPriceService.GetCatalogueItemWithListPrices(solutionId);
             if (solution is null)
                 return NotFound();
 
@@ -171,7 +171,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
         {
             if (!ModelState.IsValid)
             {
-                var solution = await solutionListPriceService.GetSolutionWithListPrices(solutionId);
+                var solution = await solutionListPriceService.GetCatalogueItemWithListPrices(solutionId);
                 var price = solution.CataloguePrices.Single(p => p.CataloguePriceId == cataloguePriceId);
 
                 model.Tiers = price.CataloguePriceTiers.ToList();
@@ -187,7 +187,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
         [HttpGet("{cataloguePriceId}/tiers/add")]
         public async Task<IActionResult> AddTieredPriceTier(CatalogueItemId solutionId, int cataloguePriceId, bool? isEditing)
         {
-            var solution = await solutionListPriceService.GetSolutionWithListPrices(solutionId);
+            var solution = await solutionListPriceService.GetCatalogueItemWithListPrices(solutionId);
             if (solution is null)
                 return NotFound();
 
@@ -229,7 +229,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
         [HttpGet("tiered/{cataloguePriceId}/edit")]
         public async Task<IActionResult> EditTieredListPrice(CatalogueItemId solutionId, int cataloguePriceId)
         {
-            var solution = await solutionListPriceService.GetSolutionWithListPrices(solutionId);
+            var solution = await solutionListPriceService.GetCatalogueItemWithListPrices(solutionId);
             if (solution is null)
                 return NotFound();
 
@@ -248,7 +248,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
         [HttpPost("tiered/{cataloguePriceId}/edit")]
         public async Task<IActionResult> EditTieredListPrice(CatalogueItemId solutionId, int cataloguePriceId, EditTieredListPriceModel model)
         {
-            var solution = await solutionListPriceService.GetSolutionWithListPrices(solutionId);
+            var solution = await solutionListPriceService.GetCatalogueItemWithListPrices(solutionId);
             var price = solution.CataloguePrices.SingleOrDefault(p => p.CataloguePriceId == cataloguePriceId);
 
             if (!ModelState.IsValid)
@@ -275,7 +275,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
         [HttpGet("flat/{cataloguePriceId}/edit")]
         public async Task<IActionResult> EditFlatListPrice(CatalogueItemId solutionId, int cataloguePriceId)
         {
-            var solution = await solutionListPriceService.GetSolutionWithListPrices(solutionId);
+            var solution = await solutionListPriceService.GetCatalogueItemWithListPrices(solutionId);
             if (solution is null)
                 return NotFound();
 
@@ -297,7 +297,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
             if (!ModelState.IsValid)
                 return View("ListPrices/AddEditFlatListPrice", model);
 
-            var solution = await solutionListPriceService.GetSolutionWithListPrices(solutionId);
+            var solution = await solutionListPriceService.GetCatalogueItemWithListPrices(solutionId);
             var price = solution.CataloguePrices.SingleOrDefault(p => p.CataloguePriceId == cataloguePriceId);
 
             await solutionListPriceService.UpdateListPrice(
@@ -318,7 +318,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
         [HttpGet("{cataloguePriceId}/tiers/{tierId}/edit")]
         public async Task<IActionResult> EditTieredPriceTier(CatalogueItemId solutionId, int cataloguePriceId, int tierId, bool? isEditing = null)
         {
-            var solution = await solutionListPriceService.GetSolutionWithListPrices(solutionId);
+            var solution = await solutionListPriceService.GetCatalogueItemWithListPrices(solutionId);
             if (solution is null)
                 return NotFound();
 
@@ -367,7 +367,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
         [HttpGet("{cataloguePriceId}/tiers/{tierId}/edit-price")]
         public async Task<IActionResult> EditTierPrice(CatalogueItemId solutionId, int cataloguePriceId, int tierId, int tierIndex)
         {
-            var solution = await solutionListPriceService.GetSolutionWithListPrices(solutionId);
+            var solution = await solutionListPriceService.GetCatalogueItemWithListPrices(solutionId);
             if (solution is null)
                 return NotFound();
 
@@ -404,7 +404,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
         {
             _ = cataloguePriceId;
 
-            var solution = await solutionListPriceService.GetSolutionWithListPrices(solutionId);
+            var solution = await solutionListPriceService.GetCatalogueItemWithListPrices(solutionId);
 
             var model = new DeleteItemConfirmationModel(
                 "Delete list price",
@@ -423,7 +423,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
             // TODO:
             // In a scenario where a user unpublishes a price, opens the delete link in a second tab but first publishes the price again,
             // Replace with an error page that explains why the price hasn't been deleted
-            var solution = await solutionListPriceService.GetSolutionWithListPrices(solutionId);
+            var solution = await solutionListPriceService.GetCatalogueItemWithListPrices(solutionId);
             var price = solution.CataloguePrices.First(p => p.CataloguePriceId == cataloguePriceId);
 
             if (price.PublishedStatus != PublicationStatus.Published)
@@ -435,7 +435,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
         [HttpGet("{cataloguePriceId}/tiers/{tierId}/delete")]
         public async Task<IActionResult> DeleteTieredPriceTier(CatalogueItemId solutionId, int cataloguePriceId, int tierId, bool? isEditing = null)
         {
-            var solution = await solutionListPriceService.GetSolutionWithListPrices(solutionId);
+            var solution = await solutionListPriceService.GetCatalogueItemWithListPrices(solutionId);
 
             var model = new DeleteItemConfirmationModel(
                 "Delete pricing tier",
@@ -454,7 +454,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
             // TODO:
             // In a scenario where a user unpublishes a price, opens the delete pricing tier link in a second tab but first publishes the price again,
             // Replace with an error page that explains why the pricing tier hasn't been deleted
-            var solution = await solutionListPriceService.GetSolutionWithListPrices(solutionId);
+            var solution = await solutionListPriceService.GetCatalogueItemWithListPrices(solutionId);
             var price = solution.CataloguePrices.First(p => p.CataloguePriceId == cataloguePriceId);
 
             if (price.PublishedStatus == PublicationStatus.Published)

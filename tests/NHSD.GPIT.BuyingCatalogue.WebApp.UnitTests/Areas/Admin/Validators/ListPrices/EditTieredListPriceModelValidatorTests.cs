@@ -30,7 +30,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators.List
             model.CatalogueItemId = solution.CatalogueItemId;
             model.CataloguePriceId = price.CataloguePriceId;
 
-            service.Setup(s => s.GetSolutionWithListPrices(solution.CatalogueItemId))
+            service.Setup(s => s.GetCatalogueItemWithListPrices(solution.CatalogueItemId))
                 .ReturnsAsync(solution.CatalogueItem);
 
             var result = validator.TestValidate(model);
@@ -64,7 +64,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators.List
             model.CatalogueItemId = solution.CatalogueItemId;
             model.CataloguePriceId = price.CataloguePriceId;
 
-            service.Setup(s => s.GetSolutionWithListPrices(solution.CatalogueItemId))
+            service.Setup(s => s.GetCatalogueItemWithListPrices(solution.CatalogueItemId))
                 .ReturnsAsync(solution.CatalogueItem);
 
             var result = validator.TestValidate(model);
@@ -98,7 +98,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators.List
             model.CatalogueItemId = solution.CatalogueItemId;
             model.CataloguePriceId = price.CataloguePriceId;
 
-            service.Setup(s => s.GetSolutionWithListPrices(solution.CatalogueItemId))
+            service.Setup(s => s.GetCatalogueItemWithListPrices(solution.CatalogueItemId))
                 .ReturnsAsync(solution.CatalogueItem);
 
             var result = validator.TestValidate(model);
@@ -137,7 +137,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators.List
             model.CatalogueItemId = solution.CatalogueItemId;
             model.CataloguePriceId = price.CataloguePriceId;
 
-            service.Setup(s => s.GetSolutionWithListPrices(solution.CatalogueItemId))
+            service.Setup(s => s.GetCatalogueItemWithListPrices(solution.CatalogueItemId))
                 .ReturnsAsync(solution.CatalogueItem);
 
             var result = validator.TestValidate(model);
@@ -176,7 +176,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators.List
             model.CatalogueItemId = solution.CatalogueItemId;
             model.CataloguePriceId = price.CataloguePriceId;
 
-            service.Setup(s => s.GetSolutionWithListPrices(solution.CatalogueItemId))
+            service.Setup(s => s.GetCatalogueItemWithListPrices(solution.CatalogueItemId))
                 .ReturnsAsync(solution.CatalogueItem);
 
             var result = validator.TestValidate(model);
@@ -215,7 +215,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators.List
             model.CatalogueItemId = solution.CatalogueItemId;
             model.CataloguePriceId = price.CataloguePriceId;
 
-            service.Setup(s => s.GetSolutionWithListPrices(solution.CatalogueItemId))
+            service.Setup(s => s.GetCatalogueItemWithListPrices(solution.CatalogueItemId))
                 .ReturnsAsync(solution.CatalogueItem);
 
             var result = validator.TestValidate(model);

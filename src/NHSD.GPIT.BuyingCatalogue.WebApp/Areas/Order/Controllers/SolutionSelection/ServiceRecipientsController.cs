@@ -67,7 +67,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers.SolutionSelec
             }
 
             var order = await orderService.GetOrderThin(callOffId, internalOrgId);
-            var solution = await listPriceService.GetSolutionWithPublishedListPrices(order.GetSolution().CatalogueItem.Id);
+            var solution = await listPriceService.GetCatalogueItemWithPublishedListPrices(order.GetSolution().CatalogueItem.Id);
 
             await AddServiceRecipients(order.Id, solution.Id, model);
 
@@ -79,11 +79,12 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers.SolutionSelec
                     new { internalOrgId, callOffId });
             }
 
-            // TODO: Replace
+            var priceId = solution.CataloguePrices.First().CataloguePriceId;
+
             return RedirectToAction(
-                nameof(OrderController.Order),
-                typeof(OrderController).ControllerName(),
-                new { internalOrgId, callOffId });
+                nameof(PricesController.ConfirmPrice),
+                typeof(PricesController).ControllerName(),
+                new { internalOrgId, callOffId, priceId });
         }
 
         [HttpGet("additional-service/{catalogueItemId}")]
@@ -121,11 +122,11 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers.SolutionSelec
             }
 
             var order = await orderService.GetOrderThin(callOffId, internalOrgId);
-            var solution = await listPriceService.GetSolutionWithPublishedListPrices(catalogueItemId);
+            var additionalService = await listPriceService.GetCatalogueItemWithPublishedListPrices(catalogueItemId);
 
             await AddServiceRecipients(order.Id, catalogueItemId, model);
 
-            if (solution.CataloguePrices.Count > 1)
+            if (additionalService.CataloguePrices.Count > 1)
             {
                 return RedirectToAction(
                     nameof(PricesController.AdditionalServiceSelectPrice),
@@ -133,11 +134,12 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers.SolutionSelec
                     new { internalOrgId, callOffId });
             }
 
-            // TODO: Replace
+            var priceId = additionalService.CataloguePrices.First().CataloguePriceId;
+
             return RedirectToAction(
-                nameof(OrderController.Order),
-                typeof(OrderController).ControllerName(),
-                new { internalOrgId, callOffId });
+                nameof(PricesController.AdditionalServiceConfirmPrice),
+                typeof(PricesController).ControllerName(),
+                new { internalOrgId, callOffId, catalogueItemId, priceId });
         }
 
         [HttpGet("associated-service/{catalogueItemId}")]
@@ -175,11 +177,11 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers.SolutionSelec
             }
 
             var order = await orderService.GetOrderThin(callOffId, internalOrgId);
-            var solution = await listPriceService.GetSolutionWithPublishedListPrices(catalogueItemId);
+            var associatedService = await listPriceService.GetCatalogueItemWithPublishedListPrices(catalogueItemId);
 
             await AddServiceRecipients(order.Id, catalogueItemId, model);
 
-            if (solution.CataloguePrices.Count > 1)
+            if (associatedService.CataloguePrices.Count > 1)
             {
                 return RedirectToAction(
                     nameof(PricesController.AssociatedServiceSelectPrice),
@@ -187,11 +189,12 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers.SolutionSelec
                     new { internalOrgId, callOffId });
             }
 
-            // TODO: Replace
+            var priceId = associatedService.CataloguePrices.First().CataloguePriceId;
+
             return RedirectToAction(
-                nameof(OrderController.Order),
-                typeof(OrderController).ControllerName(),
-                new { internalOrgId, callOffId });
+                nameof(PricesController.AssociatedServiceConfirmPrice),
+                typeof(PricesController).ControllerName(),
+                new { internalOrgId, callOffId, catalogueItemId, priceId });
         }
 
         private async Task AddServiceRecipients(int orderId, CatalogueItemId catalogueItemId, SelectRecipientsModel model)

@@ -6,9 +6,9 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions
 {
     public interface ISolutionListPriceService
     {
-        Task<CatalogueItem> GetSolutionWithListPrices(CatalogueItemId solutionId);
+        Task<CatalogueItem> GetCatalogueItemWithListPrices(CatalogueItemId catalogueItemId);
 
-        Task<CatalogueItem> GetSolutionWithPublishedListPrices(CatalogueItemId solutionId);
+        Task<CatalogueItem> GetCatalogueItemWithPublishedListPrices(CatalogueItemId catalogueItemId);
 
         Task AddListPrice(CatalogueItemId solutionId, CataloguePrice cataloguePrice);
 
