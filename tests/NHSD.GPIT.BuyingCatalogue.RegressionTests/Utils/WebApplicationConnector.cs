@@ -8,7 +8,7 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Utils
     public class WebApplicationConnector
     {
         private const string Browser = "chrome";
-        private bool disposed = false;
+
         internal IWebDriver Driver { get; }
         public string RootUri { get; }
 
@@ -28,11 +28,6 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Utils
         protected void Dispose(bool disposing)
         {
             Driver?.Quit();
-
-            if (disposing && !disposed)
-            {
-                disposed = true;
-            }
         }
     }
 }
