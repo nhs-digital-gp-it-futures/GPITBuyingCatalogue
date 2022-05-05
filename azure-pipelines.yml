@@ -100,7 +100,7 @@ jobs:
       arguments: '-v n --no-build --configuration $(buildConfiguration) -- xunit.parallelizeTestCollections=true'
 
   - task: DotNetCoreCLI@2
-    displayName: 'Run E2E Tests'
+    displayName: 'Run Integration Tests'
     inputs:
       command: test
       projects: '**/*IntegrationTests.csproj'
