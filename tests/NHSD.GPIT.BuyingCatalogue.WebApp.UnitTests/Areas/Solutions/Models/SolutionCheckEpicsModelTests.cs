@@ -32,7 +32,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Models
         [Fact]
         public static void NhsDefined_NhsDefinedArrayEmpty_ReturnsFalse()
         {
-            var model = new SolutionCheckEpicsModel { NhsDefined = System.Array.Empty<string>() };
+            var model = new SolutionCheckEpicsModel { NhsDefined = Array.Empty<Epic>() };
 
             model.HasNhsDefined().Should().BeFalse();
         }
@@ -57,7 +57,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Models
         [Fact]
         public static void SupplierDefined_SupplierDefinedArrayEmpty_ReturnsFalse()
         {
-            var model = new SolutionCheckEpicsModel { SupplierDefined = System.Array.Empty<string>() };
+            var model = new SolutionCheckEpicsModel { SupplierDefined = Array.Empty<Epic>() };
 
             model.HasSupplierDefined().Should().BeFalse();
         }

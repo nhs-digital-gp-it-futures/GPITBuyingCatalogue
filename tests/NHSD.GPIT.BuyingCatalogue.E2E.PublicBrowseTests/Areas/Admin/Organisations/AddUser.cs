@@ -38,7 +38,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.Organisations
         }
 
         [Fact]
-        public async void AddUser_AllSectionsDisplayed()
+        public async Task AddUser_AllSectionsDisplayed()
         {
             await using var context = GetEndToEndDbContext();
 
@@ -122,7 +122,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.Organisations
         }
 
         [Fact]
-        public async void AddUser_EmailAlreadyExists_ThrowsError()
+        public async Task AddUser_EmailAlreadyExists_ThrowsError()
         {
             var user = await CreateUser();
 
