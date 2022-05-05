@@ -21,7 +21,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
         private static readonly Dictionary<TriageOption, (string Title, string Advice, string ValidationError)> TriageSelectionContent = new()
         {
             [TriageOption.Under40k] = ("Have you identified what you want to order?",
-                   "As your order is under £40k, you should have executed a Direct Award. You can procure any Catalogue Solution or service on the Buying Catalogue without carrying out a competition.",
+                   "As your order is under £40k, you can execute a Direct Award. Any Catalogue Solution or service on the Buying Catalogue can be procured without carrying out a competition.",
                    "Select yes if you’ve identified what you want to order"),
             [TriageOption.Between40kTo250k] = ("Have you carried out a competition using the Buying Catalogue?",
                    "As your order is between £40k and £250k, you should have executed an On-Catalogue Competition to identify the Catalogue Solution that best meets your needs.",
@@ -141,6 +141,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
                 Advice = advice,
                 Title = title,
                 Selected = selected,
+                Option = option,
             };
 
             return View(model);

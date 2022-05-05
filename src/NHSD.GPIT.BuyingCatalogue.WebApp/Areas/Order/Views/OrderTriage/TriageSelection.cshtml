@@ -1,4 +1,5 @@
-﻿@model NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.OrderTriage.TriageDueDiligenceModel
+﻿@using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.OrderTriage
+@model NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.OrderTriage.TriageDueDiligenceModel
 @{
     ViewBag.Title = Model.Title;
 }
@@ -17,8 +18,23 @@
                 <input type="hidden" asp-for="BackLinkText" />
                 <input type="hidden" asp-for="Title" />
                 <input type="hidden" asp-for="Advice" />
+                <input type="hidden" asp-for="Option" />
                 <input type="hidden" asp-for="OrganisationName" />
-                <nhs-fieldset-form-label asp-for="@Model">
+
+                @if (Model.Option == TriageOption.Under40k)
+                {
+                    <nhs-inset-text data-test-id="triage-selection-inset">
+                        <p>Your contract value should include everything you intend to spend.</p>
+                        <p>It would not, for example, be acceptable to execute a number of Direct Awards to the same supplier to avoid carrying out a competition.</p>
+                    </nhs-inset-text>
+                } else if (Model.Option == TriageOption.Between40kTo250k)
+                {
+                    <nhs-inset-text data-test-id="triage-selection-inset">
+                        <p>When executing a competition, you cannot create requirements that result in a shortlist of one Catalogue Solution.</p>
+                    </nhs-inset-text>
+                }
+
+                <nhs-fieldset-form-label asp-for="@Model" label-text="Have you identified what you want to order?" size="Medium">
                     <nhs-radio-buttons asp-for="Selected"
                                        values="Model.SelectListItems.Cast<object>()"
                                        value-name="Value"
