@@ -426,7 +426,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
 
             await controller.Details(id, model);
 
-            mockSolutionService.Verify(s => s.SaveSolutionDetails(id, model.SolutionName, model.SupplierId ?? default, model.Frameworks));
+            mockSolutionService.Verify(s => s.SaveSolutionDetails(id, model.SolutionName, model.SupplierId ?? default, model.IsPilotSolution, model.Frameworks));
         }
 
         [Theory]

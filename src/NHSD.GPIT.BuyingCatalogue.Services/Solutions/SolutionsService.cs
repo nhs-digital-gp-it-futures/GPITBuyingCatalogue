@@ -259,12 +259,18 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
                     .ToListAsync();
         }
 
-        public async Task SaveSolutionDetails(CatalogueItemId id, string solutionName, int supplierId, IList<FrameworkModel> selectedFrameworks)
+        public async Task SaveSolutionDetails(
+            CatalogueItemId id,
+            string solutionName,
+            int supplierId,
+            bool isPilotSolution,
+            IList<FrameworkModel> selectedFrameworks)
         {
             var data = await GetCatalogueItem(id);
 
             data.Name = solutionName;
             data.SupplierId = supplierId;
+            data.Solution.IsPilotSolution = isPilotSolution;
 
             var frameworks = data.Solution.FrameworkSolutions.ToList();
             frameworks.RemoveAll(f => selectedFrameworks.Any(sf => f.FrameworkId == sf.FrameworkId && sf.Selected == false));
@@ -468,6 +474,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
                         new Solution
                         {
                             FrameworkSolutions = frameworkSolutions,
+                            IsPilotSolution = model.IsPilotSolution,
                         },
                 Name = model.Name,
                 PublishedStatus = PublicationStatus.Draft,

@@ -441,5 +441,17 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers
 
             return View(new DevelopmentPlansModel(item, workOffPlans, contentStatus));
         }
+
+        [HttpGet("about-pilot-solutions")]
+        public IActionResult AboutPilotSolutions()
+        {
+            var backlink = Request.Headers.Referer.ToString();
+            var model = new NavBaseModel();
+
+            if (!string.IsNullOrWhiteSpace(backlink))
+                model.BackLink = backlink;
+
+            return View(model);
+        }
     }
 }

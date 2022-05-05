@@ -9,6 +9,7 @@ using NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.TestBases;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers;
+using OpenQA.Selenium;
 using Xunit;
 
 namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.AddNewSolution
@@ -32,7 +33,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.AddNewSolution
         }
 
         [Fact]
-        public async Task Details_TitleDisplayedCorrectly()
+        public async Task Details_SectionsDisplayedCorrectly()
         {
             await using var context = GetEndToEndDbContext();
             var solutionName = (await context.CatalogueItems.SingleAsync(s => s.Id == SolutionId)).Name;
@@ -40,6 +41,22 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.AddNewSolution
             CommonActions.PageTitle()
                 .Should()
                 .BeEquivalentTo($"Details - {solutionName}".FormatForComparison());
+
+            CommonActions.ElementIsDisplayed(By.Id("is-pilot-solution")).Should().BeTrue();
+        }
+
+        [Fact]
+        public async Task IsPilotSolution_UpdatesSolutionCorrectly()
+        {
+            CommonActions.ClickCheckboxByLabel("Yes, this solution is available for pilot");
+
+            CommonActions.ClickSave();
+
+            await using var context = GetEndToEndDbContext();
+            var solution = await context.Solutions
+                .SingleAsync(s => s.CatalogueItemId == SolutionId);
+
+            solution.IsPilotSolution.Should().BeTrue();
         }
 
         [Fact]

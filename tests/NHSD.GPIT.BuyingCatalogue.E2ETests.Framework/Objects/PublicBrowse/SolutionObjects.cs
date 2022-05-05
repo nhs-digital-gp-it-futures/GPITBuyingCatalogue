@@ -45,7 +45,9 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.Objects.PublicBrowse
 
         public static By CapabilityName => ByExtensions.DataTestId("capability-name");
 
-        public static By InRemediationNotice => By.ClassName("nhsuk-warning-callout");
+        public static By PilotWarningCallout => ByExtensions.DataTestId("pilot-warning-callout");
+
+        public static By InRemediationNotice => ByExtensions.DataTestId("in-remediation-warning-callout");
 
         public static By SolutionSuspendedNotice => ByExtensions.DataTestId("solution-suspended-notice");
 

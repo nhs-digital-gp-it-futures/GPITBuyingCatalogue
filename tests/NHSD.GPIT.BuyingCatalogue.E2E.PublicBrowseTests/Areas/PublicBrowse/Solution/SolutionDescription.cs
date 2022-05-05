@@ -37,6 +37,57 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.PublicBrowse.Solution
         }
 
         [Fact]
+        public async Task PilotSolution_WarningDisplayed()
+        {
+            await RunTestAsync(async () =>
+            {
+                await using var context = GetEndToEndDbContext();
+                var solution = await context.Solutions.SingleAsync(ci => ci.CatalogueItemId == SolutionId);
+                solution.IsPilotSolution = true;
+                await context.SaveChangesAsync();
+
+                Driver.Navigate().Refresh();
+
+                CommonActions
+                    .ElementExists(Objects.PublicBrowse.SolutionObjects.PilotWarningCallout)
+                    .Should()
+                    .BeTrue();
+            });
+        }
+
+        [Fact]
+        public async Task PilotSolution_ClickLink_NavigatesCorrectly()
+        {
+            await RunTestAsync(async () =>
+            {
+                await using var context = GetEndToEndDbContext();
+                var solution = await context.Solutions.SingleAsync(ci => ci.CatalogueItemId == SolutionId);
+                solution.IsPilotSolution = true;
+                await context.SaveChangesAsync();
+
+                Driver.Navigate().Refresh();
+
+                CommonActions.ClickLinkElement(By.LinkText("Find out more about pilot procurements"));
+
+                CommonActions.PageLoadedCorrectGetIndex(
+                    typeof(SolutionsController),
+                    nameof(SolutionsController.AboutPilotSolutions)).Should().BeTrue();
+            });
+        }
+
+        [Fact]
+        public void PilotSolution_WarningNotDisplayed()
+        {
+            RunTest(() =>
+            {
+                CommonActions
+                    .ElementExists(Objects.PublicBrowse.SolutionObjects.PilotWarningCallout)
+                    .Should()
+                    .BeFalse();
+            });
+        }
+
+        [Fact]
         public async Task Description_InRemediationDisplayed()
         {
             await RunTestAsync(async () =>

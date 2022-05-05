@@ -37,6 +37,8 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models
 
         public string AboutUrl { get; set; }
 
+        public bool IsPilotSolution { get; set; }
+
         public DateTime LastUpdated { get; set; }
 
         public int? LastUpdatedBy { get; set; }
