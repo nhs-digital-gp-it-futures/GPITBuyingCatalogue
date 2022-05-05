@@ -102,8 +102,8 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering.SolutionSelection.Ca
             CommonActions.ClickSave();
 
             CommonActions.PageLoadedCorrectGetIndex(
-                typeof(OrderController),
-                nameof(OrderController.Order)).Should().BeTrue();
+                typeof(PricesController),
+                nameof(PricesController.ConfirmPrice)).Should().BeTrue();
 
             GetSolution().OrderItemRecipients.Count.Should().Be(1);
         }

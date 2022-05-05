@@ -23,6 +23,10 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Configuration
                 .IsRequired()
                 .HasPrecision(18, 4);
 
+            builder.Property(oipt => oipt.ListPrice)
+                .IsRequired()
+                .HasPrecision(18, 4);
+
             builder.Property(oipt => oipt.LastUpdated)
                 .IsRequired()
                 .HasDefaultValue(DateTime.UtcNow);

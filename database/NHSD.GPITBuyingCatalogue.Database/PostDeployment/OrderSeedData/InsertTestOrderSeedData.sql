@@ -246,7 +246,7 @@ BEGIN
     VALUES(@orderId, @CatalogueSolutionId, SYSDATETIME(), SYSDATETIME())
 
     INSERT INTO ordering.OrderItemPrices (OrderId, CatalogueItemId, EstimationPeriodId, ProvisioningTypeId,
-        CataloguePriceTypeId, CataloguePriceCalculationTypeId, CurrencyCode, Description)
+        CataloguePriceTypeId, CataloguePriceCalculationTypeId, CurrencyCode, Description, RangeDescription)
     SELECT
         @orderId,
         @CatalogueSolutionId,
@@ -255,16 +255,18 @@ BEGIN
         CP.CataloguePriceTypeId,
         CP.CataloguePriceCalculationTypeId,
         CP.CurrencyCode,
-        PU.Description
+        PU.Description,
+        PU.RangeDescription
     FROM catalogue.CataloguePrices CP
     INNER JOIN catalogue.PricingUnits PU
 	    ON CP.PricingUnitId = PU.Id
     WHERE CataloguePriceId = @CatalogueSolutionPriceId
 
-    INSERT INTO ordering.OrderItemPriceTiers (OrderId, CatalogueItemId, Price, LowerRange, UpperRange)
+    INSERT INTO ordering.OrderItemPriceTiers (OrderId, CatalogueItemId, Price, ListPrice, LowerRange, UpperRange)
     SELECT
         @OrderId,
         @CatalogueSolutionId,
+        Price,
         Price,
         LowerRange,
         UpperRange
@@ -285,7 +287,7 @@ BEGIN
     VALUES(@orderId, @AdditionalServiceId, SYSDATETIME(), SYSDATETIME());
 
     INSERT INTO ordering.OrderItemPrices (OrderId, CatalogueItemId, EstimationPeriodId, ProvisioningTypeId,
-        CataloguePriceTypeId, CataloguePriceCalculationTypeId, CurrencyCode, Description)
+        CataloguePriceTypeId, CataloguePriceCalculationTypeId, CurrencyCode, Description, RangeDescription)
     SELECT
         @orderId,
         @AdditionalServiceId,
@@ -294,16 +296,18 @@ BEGIN
         CP.CataloguePriceTypeId,
         CP.CataloguePriceCalculationTypeId,
         CP.CurrencyCode,
-        PU.Description
+        PU.Description,
+        PU.RangeDescription
     FROM catalogue.CataloguePrices CP
     INNER JOIN catalogue.PricingUnits PU
 	    ON CP.PricingUnitId = PU.Id
     WHERE CataloguePriceId = @AdditionalServicePriceId
 
-    INSERT INTO ordering.OrderItemPriceTiers (OrderId, CatalogueItemId, Price, LowerRange, UpperRange)
+    INSERT INTO ordering.OrderItemPriceTiers (OrderId, CatalogueItemId, Price, ListPrice, LowerRange, UpperRange)
     SELECT
         @OrderId,
         @AdditionalServiceId,
+        Price,
         Price,
         LowerRange,
         UpperRange

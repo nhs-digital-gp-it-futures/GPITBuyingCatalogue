@@ -41,7 +41,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
         {
             var model = new ManageListPricesModel(solution.CatalogueItem, solution.CatalogueItem.CataloguePrices);
 
-            solutionListPriceService.Setup(s => s.GetSolutionWithListPrices(solution.CatalogueItemId))
+            solutionListPriceService.Setup(s => s.GetCatalogueItemWithListPrices(solution.CatalogueItemId))
                 .ReturnsAsync(solution.CatalogueItem);
 
             var result = (await controller.Index(solution.CatalogueItemId)).As<ViewResult>();
@@ -60,7 +60,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
             [Frozen] Mock<ISolutionListPriceService> solutionListPriceService,
             CatalogueSolutionListPriceController controller)
         {
-            solutionListPriceService.Setup(s => s.GetSolutionWithListPrices(solutionId))
+            solutionListPriceService.Setup(s => s.GetCatalogueItemWithListPrices(solutionId))
                 .ReturnsAsync((CatalogueItem)null);
 
             var result = (await controller.Index(solutionId)).As<NotFoundResult>();
@@ -77,7 +77,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
         {
             var model = new ListPriceTypeModel(solution.CatalogueItem);
 
-            solutionListPriceService.Setup(s => s.GetSolutionWithListPrices(solution.CatalogueItemId))
+            solutionListPriceService.Setup(s => s.GetCatalogueItemWithListPrices(solution.CatalogueItemId))
                 .ReturnsAsync(solution.CatalogueItem);
 
             var result = (await controller.ListPriceType(solution.CatalogueItemId)).As<ViewResult>();
@@ -93,7 +93,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
             [Frozen] Mock<ISolutionListPriceService> solutionListPriceService,
             CatalogueSolutionListPriceController controller)
         {
-            solutionListPriceService.Setup(s => s.GetSolutionWithListPrices(solutionId))
+            solutionListPriceService.Setup(s => s.GetCatalogueItemWithListPrices(solutionId))
                 .ReturnsAsync((CatalogueItem)null);
 
             var result = (await controller.ListPriceType(solutionId)).As<NotFoundResult>();
@@ -155,7 +155,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
         {
             var model = new AddTieredListPriceModel(solution.CatalogueItem);
 
-            solutionListPriceService.Setup(s => s.GetSolutionWithListPrices(solution.CatalogueItemId))
+            solutionListPriceService.Setup(s => s.GetCatalogueItemWithListPrices(solution.CatalogueItemId))
                 .ReturnsAsync(solution.CatalogueItem);
 
             var result = (await controller.AddTieredListPrice(solution.CatalogueItemId, (int?)null)).As<ViewResult>();
@@ -176,7 +176,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
 
             var model = new AddTieredListPriceModel(solution.CatalogueItem, cataloguePrice);
 
-            solutionListPriceService.Setup(s => s.GetSolutionWithListPrices(solution.CatalogueItemId))
+            solutionListPriceService.Setup(s => s.GetCatalogueItemWithListPrices(solution.CatalogueItemId))
                 .ReturnsAsync(solution.CatalogueItem);
 
             var result = (await controller.AddTieredListPrice(solution.CatalogueItemId, cataloguePrice.CataloguePriceId)).As<ViewResult>();
@@ -192,7 +192,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
             [Frozen] Mock<ISolutionListPriceService> solutionListPriceService,
             CatalogueSolutionListPriceController controller)
         {
-            solutionListPriceService.Setup(s => s.GetSolutionWithListPrices(solutionId))
+            solutionListPriceService.Setup(s => s.GetCatalogueItemWithListPrices(solutionId))
                 .ReturnsAsync((CatalogueItem)null);
 
             var result = (await controller.AddTieredListPrice(solutionId, (int?)null)).As<NotFoundResult>();
@@ -243,7 +243,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
 
             var model = new TieredPriceTiersModel(solution.CatalogueItem, price);
 
-            solutionListPriceService.Setup(s => s.GetSolutionWithListPrices(solution.CatalogueItemId))
+            solutionListPriceService.Setup(s => s.GetCatalogueItemWithListPrices(solution.CatalogueItemId))
                 .ReturnsAsync(solution.CatalogueItem);
 
             var result = (await controller.TieredPriceTiers(solution.CatalogueItemId, price.CataloguePriceId)).As<ViewResult>();
@@ -260,7 +260,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
             [Frozen] Mock<ISolutionListPriceService> solutionListPriceService,
             CatalogueSolutionListPriceController controller)
         {
-            solutionListPriceService.Setup(s => s.GetSolutionWithListPrices(solutionId))
+            solutionListPriceService.Setup(s => s.GetCatalogueItemWithListPrices(solutionId))
                 .ReturnsAsync((CatalogueItem)null);
 
             var result = (await controller.TieredPriceTiers(solutionId, cataloguePriceId)).As<NotFoundResult>();
@@ -276,7 +276,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
             [Frozen] Mock<ISolutionListPriceService> solutionListPriceService,
             CatalogueSolutionListPriceController controller)
         {
-            solutionListPriceService.Setup(s => s.GetSolutionWithListPrices(solution.CatalogueItemId))
+            solutionListPriceService.Setup(s => s.GetCatalogueItemWithListPrices(solution.CatalogueItemId))
                 .ReturnsAsync(solution.CatalogueItem);
 
             var result = (await controller.TieredPriceTiers(solution.CatalogueItemId, cataloguePriceId)).As<NotFoundResult>();
@@ -297,7 +297,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
 
             solution.CatalogueItem.CataloguePrices.Add(price);
 
-            solutionListPriceService.Setup(s => s.GetSolutionWithListPrices(solution.CatalogueItemId))
+            solutionListPriceService.Setup(s => s.GetCatalogueItemWithListPrices(solution.CatalogueItemId))
                 .ReturnsAsync(solution.CatalogueItem);
 
             model.Tiers = price.CataloguePriceTiers.ToList();
@@ -344,7 +344,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
                 IsEditing = false,
             };
 
-            solutionListPriceService.Setup(s => s.GetSolutionWithListPrices(solution.CatalogueItemId))
+            solutionListPriceService.Setup(s => s.GetCatalogueItemWithListPrices(solution.CatalogueItemId))
                 .ReturnsAsync(solution.CatalogueItem);
 
             var result = (await controller.AddTieredPriceTier(solution.CatalogueItemId, price.CataloguePriceId, false)).As<ViewResult>();
@@ -364,7 +364,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
         {
             solution.CatalogueItem.CataloguePrices.Add(price);
 
-            solutionListPriceService.Setup(s => s.GetSolutionWithListPrices(solution.CatalogueItemId))
+            solutionListPriceService.Setup(s => s.GetCatalogueItemWithListPrices(solution.CatalogueItemId))
                 .ReturnsAsync(solution.CatalogueItem);
 
             var result = (await controller.AddTieredPriceTier(solution.CatalogueItemId, price.CataloguePriceId, true)).As<ViewResult>();
@@ -383,7 +383,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
         {
             solution.CatalogueItem.CataloguePrices.Add(price);
 
-            solutionListPriceService.Setup(s => s.GetSolutionWithListPrices(solution.CatalogueItemId))
+            solutionListPriceService.Setup(s => s.GetCatalogueItemWithListPrices(solution.CatalogueItemId))
                 .ReturnsAsync(solution.CatalogueItem);
 
             var result = (await controller.AddTieredPriceTier(solution.CatalogueItemId, price.CataloguePriceId, false)).As<ViewResult>();
@@ -399,7 +399,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
             [Frozen] Mock<ISolutionListPriceService> solutionListPriceService,
             CatalogueSolutionListPriceController controller)
         {
-            solutionListPriceService.Setup(s => s.GetSolutionWithListPrices(solutionId))
+            solutionListPriceService.Setup(s => s.GetCatalogueItemWithListPrices(solutionId))
                 .ReturnsAsync((CatalogueItem)null);
 
             var result = (await controller.AddTieredPriceTier(solutionId, cataloguePriceId, false)).As<NotFoundResult>();
@@ -415,7 +415,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
             [Frozen] Mock<ISolutionListPriceService> solutionListPriceService,
             CatalogueSolutionListPriceController controller)
         {
-            solutionListPriceService.Setup(s => s.GetSolutionWithListPrices(solution.CatalogueItemId))
+            solutionListPriceService.Setup(s => s.GetCatalogueItemWithListPrices(solution.CatalogueItemId))
                 .ReturnsAsync(solution.CatalogueItem);
 
             var result = (await controller.AddTieredPriceTier(solution.CatalogueItemId, cataloguePriceId, false)).As<NotFoundResult>();
@@ -469,7 +469,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
             [Frozen] Mock<ISolutionListPriceService> solutionListPriceService,
             CatalogueSolutionListPriceController controller)
         {
-            solutionListPriceService.Setup(s => s.GetSolutionWithListPrices(solutionId))
+            solutionListPriceService.Setup(s => s.GetCatalogueItemWithListPrices(solutionId))
                 .ReturnsAsync((CatalogueItem)null);
 
             var result = (await controller.EditTieredListPrice(solutionId, cataloguePriceId)).As<NotFoundResult>();
@@ -485,7 +485,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
             [Frozen] Mock<ISolutionListPriceService> solutionListPriceService,
             CatalogueSolutionListPriceController controller)
         {
-            solutionListPriceService.Setup(s => s.GetSolutionWithListPrices(solution.CatalogueItemId))
+            solutionListPriceService.Setup(s => s.GetCatalogueItemWithListPrices(solution.CatalogueItemId))
                 .ReturnsAsync(solution.CatalogueItem);
 
             var result = (await controller.EditTieredListPrice(solution.CatalogueItemId, cataloguePriceId)).As<NotFoundResult>();
@@ -503,7 +503,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
         {
             solution.CatalogueItem.CataloguePrices.Add(price);
 
-            solutionListPriceService.Setup(s => s.GetSolutionWithListPrices(solution.CatalogueItemId))
+            solutionListPriceService.Setup(s => s.GetCatalogueItemWithListPrices(solution.CatalogueItemId))
                 .ReturnsAsync(solution.CatalogueItem);
 
             var model = new EditTieredListPriceModel(solution.CatalogueItem, price);
@@ -529,7 +529,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
 
             model.Tiers = price.CataloguePriceTiers.ToList();
 
-            solutionListPriceService.Setup(s => s.GetSolutionWithListPrices(solution.CatalogueItemId))
+            solutionListPriceService.Setup(s => s.GetCatalogueItemWithListPrices(solution.CatalogueItemId))
                 .ReturnsAsync(solution.CatalogueItem);
 
             var result = (await controller.EditTieredListPrice(solution.CatalogueItemId, price.CataloguePriceId, model)).As<ViewResult>();
@@ -551,7 +551,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
             solution.CatalogueItem.CataloguePrices.Add(price);
             model.SelectedPublicationStatus = PublicationStatus.Published;
 
-            solutionListPriceService.Setup(s => s.GetSolutionWithListPrices(solution.CatalogueItemId))
+            solutionListPriceService.Setup(s => s.GetCatalogueItemWithListPrices(solution.CatalogueItemId))
                 .ReturnsAsync(solution.CatalogueItem);
 
             var pricingUnit = model.GetPricingUnit();
@@ -594,7 +594,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
             solution.CatalogueItem.CataloguePrices.Add(price);
             model.SelectedPublicationStatus = PublicationStatus.Published;
 
-            solutionListPriceService.Setup(s => s.GetSolutionWithListPrices(solution.CatalogueItemId))
+            solutionListPriceService.Setup(s => s.GetCatalogueItemWithListPrices(solution.CatalogueItemId))
                 .ReturnsAsync(solution.CatalogueItem);
 
             var pricingUnit = model.GetPricingUnit();
@@ -633,7 +633,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
             [Frozen] Mock<ISolutionListPriceService> solutionListPriceService,
             CatalogueSolutionListPriceController controller)
         {
-            solutionListPriceService.Setup(s => s.GetSolutionWithListPrices(solutionId))
+            solutionListPriceService.Setup(s => s.GetCatalogueItemWithListPrices(solutionId))
                 .ReturnsAsync((CatalogueItem)null);
 
             var result = (await controller.EditTieredPriceTier(solutionId, cataloguePriceId, cataloguePriceTierId)).As<NotFoundResult>();
@@ -650,7 +650,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
             [Frozen] Mock<ISolutionListPriceService> solutionListPriceService,
             CatalogueSolutionListPriceController controller)
         {
-            solutionListPriceService.Setup(s => s.GetSolutionWithListPrices(solution.CatalogueItemId))
+            solutionListPriceService.Setup(s => s.GetCatalogueItemWithListPrices(solution.CatalogueItemId))
                 .ReturnsAsync(solution.CatalogueItem);
 
             var result = (await controller.EditTieredPriceTier(solution.CatalogueItemId, cataloguePriceId, cataloguePriceTierId)).As<NotFoundResult>();
@@ -669,7 +669,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
         {
             solution.CatalogueItem.CataloguePrices.Add(price);
 
-            solutionListPriceService.Setup(s => s.GetSolutionWithListPrices(solution.CatalogueItemId))
+            solutionListPriceService.Setup(s => s.GetCatalogueItemWithListPrices(solution.CatalogueItemId))
                 .ReturnsAsync(solution.CatalogueItem);
 
             var result = (await controller.EditTieredPriceTier(solution.CatalogueItemId, price.CataloguePriceId, cataloguePriceTierId)).As<NotFoundResult>();
@@ -690,7 +690,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
             price.CataloguePriceTiers.Add(tier);
             solution.CatalogueItem.CataloguePrices.Add(price);
 
-            solutionListPriceService.Setup(s => s.GetSolutionWithListPrices(solution.CatalogueItemId))
+            solutionListPriceService.Setup(s => s.GetCatalogueItemWithListPrices(solution.CatalogueItemId))
                 .ReturnsAsync(solution.CatalogueItem);
 
             _ = await controller.EditTieredPriceTier(solution.CatalogueItemId, price.CataloguePriceId, tier.Id, true);
@@ -712,7 +712,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
             price.CataloguePriceTiers.Add(tier);
             solution.CatalogueItem.CataloguePrices.Add(price);
 
-            solutionListPriceService.Setup(s => s.GetSolutionWithListPrices(solution.CatalogueItemId))
+            solutionListPriceService.Setup(s => s.GetCatalogueItemWithListPrices(solution.CatalogueItemId))
                 .ReturnsAsync(solution.CatalogueItem);
 
             _ = await controller.EditTieredPriceTier(solution.CatalogueItemId, price.CataloguePriceId, tier.Id, false);
@@ -735,7 +735,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
 
             var model = new AddEditTieredPriceTierModel(solution.CatalogueItem, price, tier);
 
-            solutionListPriceService.Setup(s => s.GetSolutionWithListPrices(solution.CatalogueItemId))
+            solutionListPriceService.Setup(s => s.GetCatalogueItemWithListPrices(solution.CatalogueItemId))
                 .ReturnsAsync(solution.CatalogueItem);
 
             var result = (await controller.EditTieredPriceTier(solution.CatalogueItemId, price.CataloguePriceId, tier.Id, (bool?)null)).As<ViewResult>();
@@ -863,7 +863,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
             [Frozen] Mock<ISolutionListPriceService> solutionListPriceService,
             CatalogueSolutionListPriceController controller)
         {
-            solutionListPriceService.Setup(s => s.GetSolutionWithListPrices(solutionId))
+            solutionListPriceService.Setup(s => s.GetCatalogueItemWithListPrices(solutionId))
                 .ReturnsAsync((CatalogueItem)null);
 
             var result = (await controller.EditTierPrice(solutionId, cataloguePriceId, tierId, 0)).As<NotFoundResult>();
@@ -880,7 +880,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
             [Frozen] Mock<ISolutionListPriceService> solutionListPriceService,
             CatalogueSolutionListPriceController controller)
         {
-            solutionListPriceService.Setup(s => s.GetSolutionWithListPrices(solution.CatalogueItemId))
+            solutionListPriceService.Setup(s => s.GetCatalogueItemWithListPrices(solution.CatalogueItemId))
                 .ReturnsAsync(solution.CatalogueItem);
 
             var result = (await controller.EditTierPrice(solution.CatalogueItemId, cataloguePriceId, tierId, 0)).As<NotFoundResult>();
@@ -899,7 +899,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
         {
             solution.CatalogueItem.CataloguePrices.Add(price);
 
-            solutionListPriceService.Setup(s => s.GetSolutionWithListPrices(solution.CatalogueItemId))
+            solutionListPriceService.Setup(s => s.GetCatalogueItemWithListPrices(solution.CatalogueItemId))
                 .ReturnsAsync(solution.CatalogueItem);
 
             var result = (await controller.EditTierPrice(solution.CatalogueItemId, price.CataloguePriceId, tierId, 0)).As<NotFoundResult>();
@@ -924,7 +924,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
                 TierIndex = 0,
             };
 
-            solutionListPriceService.Setup(s => s.GetSolutionWithListPrices(solution.CatalogueItemId))
+            solutionListPriceService.Setup(s => s.GetCatalogueItemWithListPrices(solution.CatalogueItemId))
                 .ReturnsAsync(solution.CatalogueItem);
 
             var result = (await controller.EditTierPrice(solution.CatalogueItemId, price.CataloguePriceId, tier.Id, model.TierIndex)).As<ViewResult>();
@@ -975,7 +975,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
             [Frozen] Mock<ISolutionListPriceService> service,
             CatalogueSolutionListPriceController controller)
         {
-            service.Setup(s => s.GetSolutionWithListPrices(solution.CatalogueItemId))
+            service.Setup(s => s.GetCatalogueItemWithListPrices(solution.CatalogueItemId))
                 .ReturnsAsync(solution.CatalogueItem);
 
             var model = new DeleteItemConfirmationModel(
@@ -1001,7 +1001,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
             price.PublishedStatus = PublicationStatus.Unpublished;
             solution.CatalogueItem.CataloguePrices = new HashSet<CataloguePrice> { price };
 
-            solutionListPriceService.Setup(s => s.GetSolutionWithListPrices(solution.CatalogueItemId))
+            solutionListPriceService.Setup(s => s.GetCatalogueItemWithListPrices(solution.CatalogueItemId))
                 .ReturnsAsync(solution.CatalogueItem);
 
             var result = (await controller.DeleteListPrice(solution.CatalogueItemId, price.CataloguePriceId, model)).As<RedirectToActionResult>();
@@ -1024,7 +1024,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
             price.PublishedStatus = PublicationStatus.Published;
             solution.CatalogueItem.CataloguePrices = new HashSet<CataloguePrice> { price };
 
-            solutionListPriceService.Setup(s => s.GetSolutionWithListPrices(solution.CatalogueItemId))
+            solutionListPriceService.Setup(s => s.GetCatalogueItemWithListPrices(solution.CatalogueItemId))
                 .ReturnsAsync(solution.CatalogueItem);
 
             var result = (await controller.DeleteListPrice(solution.CatalogueItemId, price.CataloguePriceId, model)).As<RedirectToActionResult>();
@@ -1044,7 +1044,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
             [Frozen] Mock<ISolutionListPriceService> service,
             CatalogueSolutionListPriceController controller)
         {
-            service.Setup(s => s.GetSolutionWithListPrices(solution.CatalogueItemId))
+            service.Setup(s => s.GetCatalogueItemWithListPrices(solution.CatalogueItemId))
                 .ReturnsAsync(solution.CatalogueItem);
 
             var model = new DeleteItemConfirmationModel(
@@ -1072,7 +1072,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
             price.CataloguePriceTiers.Add(tier);
             solution.CatalogueItem.CataloguePrices.Add(price);
 
-            solutionListPriceService.Setup(s => s.GetSolutionWithListPrices(solution.CatalogueItemId))
+            solutionListPriceService.Setup(s => s.GetCatalogueItemWithListPrices(solution.CatalogueItemId))
                 .ReturnsAsync(solution.CatalogueItem);
 
             var result = (await controller.DeleteTieredPriceTier(solution.CatalogueItemId, price.CataloguePriceId, tier.Id, model)).As<RedirectToActionResult>();
@@ -1097,7 +1097,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
             price.CataloguePriceTiers.Add(tier);
             solution.CatalogueItem.CataloguePrices.Add(price);
 
-            solutionListPriceService.Setup(s => s.GetSolutionWithListPrices(solution.CatalogueItemId))
+            solutionListPriceService.Setup(s => s.GetCatalogueItemWithListPrices(solution.CatalogueItemId))
                 .ReturnsAsync(solution.CatalogueItem);
 
             var result = (await controller.DeleteTieredPriceTier(solution.CatalogueItemId, price.CataloguePriceId, tier.Id, model)).As<RedirectToActionResult>();
@@ -1122,7 +1122,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
             price.CataloguePriceTiers.Add(tier);
             solution.CatalogueItem.CataloguePrices.Add(price);
 
-            solutionListPriceService.Setup(s => s.GetSolutionWithListPrices(solution.CatalogueItemId))
+            solutionListPriceService.Setup(s => s.GetCatalogueItemWithListPrices(solution.CatalogueItemId))
                 .ReturnsAsync(solution.CatalogueItem);
 
             var result = (await controller.DeleteTieredPriceTier(solution.CatalogueItemId, price.CataloguePriceId, tier.Id, model, true)).As<RedirectToActionResult>();
@@ -1140,7 +1140,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
             [Frozen] Mock<ISolutionListPriceService> solutionListPriceService,
             CatalogueSolutionListPriceController controller)
         {
-            solutionListPriceService.Setup(s => s.GetSolutionWithListPrices(solutionId))
+            solutionListPriceService.Setup(s => s.GetCatalogueItemWithListPrices(solutionId))
                 .ReturnsAsync((CatalogueItem)null);
 
             var result = (await controller.AddFlatListPrice(solutionId)).As<NotFoundResult>();
@@ -1157,7 +1157,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
         {
             var model = new AddEditFlatListPriceModel(solution.CatalogueItem);
 
-            solutionListPriceService.Setup(s => s.GetSolutionWithListPrices(solution.CatalogueItemId))
+            solutionListPriceService.Setup(s => s.GetCatalogueItemWithListPrices(solution.CatalogueItemId))
                 .ReturnsAsync(solution.CatalogueItem);
 
             var result = (await controller.AddFlatListPrice(solution.CatalogueItemId)).As<ViewResult>();
@@ -1217,7 +1217,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
             [Frozen] Mock<ISolutionListPriceService> solutionListPriceService,
             CatalogueSolutionListPriceController controller)
         {
-            solutionListPriceService.Setup(s => s.GetSolutionWithListPrices(solutionId))
+            solutionListPriceService.Setup(s => s.GetCatalogueItemWithListPrices(solutionId))
                 .ReturnsAsync((CatalogueItem)null);
 
             var result = (await controller.EditFlatListPrice(solutionId, cataloguePriceId)).As<NotFoundResult>();
@@ -1233,7 +1233,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
             [Frozen] Mock<ISolutionListPriceService> solutionListPriceService,
             CatalogueSolutionListPriceController controller)
         {
-            solutionListPriceService.Setup(s => s.GetSolutionWithListPrices(solution.CatalogueItemId))
+            solutionListPriceService.Setup(s => s.GetCatalogueItemWithListPrices(solution.CatalogueItemId))
                 .ReturnsAsync(solution.CatalogueItem);
 
             var result = (await controller.EditFlatListPrice(solution.CatalogueItemId, cataloguePriceId)).As<NotFoundResult>();
@@ -1253,7 +1253,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
 
             var model = new AddEditFlatListPriceModel(solution.CatalogueItem, price);
 
-            solutionListPriceService.Setup(s => s.GetSolutionWithListPrices(solution.CatalogueItemId))
+            solutionListPriceService.Setup(s => s.GetCatalogueItemWithListPrices(solution.CatalogueItemId))
                 .ReturnsAsync(solution.CatalogueItem);
 
             var result = (await controller.EditFlatListPrice(solution.CatalogueItemId, price.CataloguePriceId)).As<ViewResult>();
@@ -1291,7 +1291,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
             solution.CatalogueItem.CataloguePrices.Add(price);
             model.SelectedPublicationStatus = PublicationStatus.Published;
 
-            solutionListPriceService.Setup(s => s.GetSolutionWithListPrices(solution.CatalogueItemId))
+            solutionListPriceService.Setup(s => s.GetCatalogueItemWithListPrices(solution.CatalogueItemId))
                 .ReturnsAsync(solution.CatalogueItem);
 
             var pricingUnit = model.GetPricingUnit();
@@ -1336,7 +1336,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
             solution.CatalogueItem.CataloguePrices.Add(price);
             model.SelectedPublicationStatus = PublicationStatus.Published;
 
-            solutionListPriceService.Setup(s => s.GetSolutionWithListPrices(solution.CatalogueItemId))
+            solutionListPriceService.Setup(s => s.GetCatalogueItemWithListPrices(solution.CatalogueItemId))
                 .ReturnsAsync(solution.CatalogueItem);
 
             var pricingUnit = model.GetPricingUnit();

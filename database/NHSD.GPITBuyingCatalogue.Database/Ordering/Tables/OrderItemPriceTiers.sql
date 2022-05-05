@@ -11,6 +11,7 @@
     SysStartTime DATETIME2(0) GENERATED ALWAYS AS ROW START NOT NULL,
     SysEndTime DATETIME2(0) GENERATED ALWAYS AS ROW END NOT NULL,
     PERIOD FOR SYSTEM_TIME (SysStartTime, SysEndTime),
+    [ListPrice] DECIMAL(18, 4) NOT NULL, 
     CONSTRAINT PK_OrderItemPriceTiers PRIMARY KEY (Id),
     CONSTRAINT FK_OrderItemPriceTiers_Order FOREIGN KEY (OrderId) REFERENCES ordering.Orders (Id),
     CONSTRAINT FK_OrderItemPriceTiers_OrderItems FOREIGN KEY (OrderId, CatalogueItemId) REFERENCES ordering.OrderItems(OrderId, CatalogueItemId),

@@ -33,6 +33,10 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Configuration
                 .IsRequired()
                 .HasMaxLength(100);
 
+            builder.Property(oip => oip.RangeDescription)
+                .IsRequired()
+                .HasMaxLength(100);
+
             builder.Property(oip => oip.EstimationPeriod)
                 .HasConversion<int>()
                 .HasColumnName("EstimationPeriodId");

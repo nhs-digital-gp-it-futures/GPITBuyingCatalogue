@@ -1,0 +1,67 @@
+﻿@model NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.SolutionSelection.Prices.ConfirmPriceModel;
+@{
+    ViewBag.Title = $"Price of {Model!.ItemType}";
+}
+
+<partial name="Partials/_BackLink" model="Model" />
+
+<div class="nhsuk-grid-row">
+    <div class="nhsuk-grid-column-two-thirds">
+		<nhs-validation-summary/>
+
+		<nhs-page-title title="@ViewBag.Title"
+                caption="@Model!.ItemName"
+                advice="Confirm the price you'll be paying. We've included the list price, but this can be changed if you’ve agreed a different rate with the supplier." />
+
+        <form method="post">
+            <input type="hidden" asp-for="@Model.BackLink"/>
+            <input type="hidden" asp-for="@Model.Basis"/>
+            <input type="hidden" asp-for="@Model.NumberOfTiers"/>
+            <input type="hidden" asp-for="@Model.ItemName"/>
+            <input type="hidden" asp-for="@Model.ItemType"/>
+            
+            @{
+                var labelTextValue = $"What price have you agreed, in pounds {Model.Basis}?";
+                var labelHintValue = "You can change the list price if you’ve agreed a different rate with the supplier.";
+            }
+
+            @if (Model.NumberOfTiers > 1)
+            {
+                <div class="nhsuk-u-margin-bottom-6">
+                    <div class="nhsuk-label">
+                        <strong>@labelTextValue</strong>
+                    </div>
+                    <div class="nhsuk-hint">
+                        @labelHintValue
+                    </div>
+                </div>
+            }
+
+            @for (var i = 0; i < Model.NumberOfTiers; i++)
+            {
+                <input type="hidden" asp-for="Tiers[i].Id"/>
+                <input type="hidden" asp-for="Tiers[i].ListPrice"/>
+                <input type="hidden" asp-for="Tiers[i].Description"/>
+
+                var labelText = Model.NumberOfTiers > 1
+                    ? $"For Tier {i + 1}"
+                    : labelTextValue;
+
+                var labelHint = Model.NumberOfTiers > 1
+                    ? Model.Tiers[i].Description  
+                    : labelHintValue;
+
+                <div class="nhsuk-u-margin-bottom-6">
+                    <nhs-bookended-input asp-for="Tiers[i].AgreedPrice"
+                                         label-text="@labelText"
+                                         label-hint="@labelHint"
+                                         Prefix="£"
+                                         Suffix="@Model.Basis"/>
+                </div>
+            }
+            
+            <br/>
+            <nhs-submit-button text="Continue"/>
+        </form>
+	</div>
+</div>

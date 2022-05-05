@@ -18,16 +18,18 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
             this.dbContext = dbContext ?? throw new ArgumentNullException(nameof(dbContext));
         }
 
-        public async Task<CatalogueItem> GetSolutionWithListPrices(CatalogueItemId solutionId)
-            => await GetSolutionWithListPrices(solutionId, tracked: false);
+        public async Task<CatalogueItem> GetCatalogueItemWithListPrices(CatalogueItemId catalogueItemId)
+            => await GetCatalogueItemWithListPrices(catalogueItemId, tracked: false);
 
-        public async Task<CatalogueItem> GetSolutionWithPublishedListPrices(CatalogueItemId solutionId)
+        public async Task<CatalogueItem> GetCatalogueItemWithPublishedListPrices(CatalogueItemId catalogueItemId)
         {
-            var solution = await GetSolutionWithListPrices(solutionId, tracked: false);
+            var item = await GetCatalogueItemWithListPrices(catalogueItemId, tracked: false);
 
-            solution.CataloguePrices = solution.CataloguePrices.Where(cp => cp.PublishedStatus == PublicationStatus.Published).ToList();
+            item.CataloguePrices = item.CataloguePrices
+                .Where(cp => cp.PublishedStatus == PublicationStatus.Published)
+                .ToList();
 
-            return solution;
+            return item;
         }
 
         public async Task AddListPrice(CatalogueItemId solutionId, CataloguePrice cataloguePrice)
@@ -35,7 +37,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
             if (cataloguePrice is null)
                 throw new ArgumentNullException(nameof(cataloguePrice));
 
-            var solution = await GetSolutionWithListPrices(solutionId, true);
+            var solution = await GetCatalogueItemWithListPrices(solutionId, true);
 
             solution.CataloguePrices.Add(cataloguePrice);
 
@@ -53,7 +55,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
             if (pricingUnit is null)
                 throw new ArgumentNullException(nameof(pricingUnit));
 
-            var solution = await GetSolutionWithListPrices(solutionId, true);
+            var solution = await GetCatalogueItemWithListPrices(solutionId, true);
             var price = solution.CataloguePrices.Single(p => p.CataloguePriceId == cataloguePriceId);
 
             price.ProvisioningType = provisioningType;
@@ -80,7 +82,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
             if (pricingUnit is null)
                 throw new ArgumentNullException(nameof(pricingUnit));
 
-            var solution = await GetSolutionWithListPrices(solutionId, true);
+            var solution = await GetCatalogueItemWithListPrices(solutionId, true);
             var cataloguePrice = solution.CataloguePrices.Single(p => p.CataloguePriceId == cataloguePriceId);
 
             cataloguePrice.ProvisioningType = provisioningType;
@@ -160,7 +162,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
 
         public async Task DeleteListPrice(CatalogueItemId solutionId, int cataloguePriceId)
         {
-            var solution = await GetSolutionWithListPrices(solutionId, true);
+            var solution = await GetCatalogueItemWithListPrices(solutionId, true);
             var price = solution.CataloguePrices.SingleOrDefault(p => p.CataloguePriceId == cataloguePriceId);
 
             if (price is null)
@@ -186,10 +188,9 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
             await dbContext.SaveChangesAsync();
         }
 
-        private Task<CatalogueItem> GetSolutionWithListPrices(CatalogueItemId solutionId, bool tracked)
+        private Task<CatalogueItem> GetCatalogueItemWithListPrices(CatalogueItemId catalogueItemId, bool tracked)
         {
-            var baseQuery = dbContext
-                .CatalogueItems
+            var baseQuery = dbContext.CatalogueItems
                 .Include(ci => ci.CataloguePrices)
                 .ThenInclude(cp => cp.PricingUnit)
                 .Include(ci => ci.CataloguePrices)
@@ -199,7 +200,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
             if (!tracked)
                 baseQuery = baseQuery.AsNoTracking();
 
-            return baseQuery.SingleOrDefaultAsync(ci => ci.Id == solutionId);
+            return baseQuery.SingleOrDefaultAsync(ci => ci.Id == catalogueItemId);
         }
     }
 }
