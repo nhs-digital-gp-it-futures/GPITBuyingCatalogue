@@ -43,7 +43,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.PublicBrowse.Solution
             {
                 await using var context = GetEndToEndDbContext();
                 var solution = await context.Solutions.SingleAsync(ci => ci.CatalogueItemId == SolutionId);
-                solution.IsPilotSolution = true; ;
+                solution.IsPilotSolution = true;
                 await context.SaveChangesAsync();
 
                 Driver.Navigate().Refresh();
@@ -62,7 +62,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.PublicBrowse.Solution
             {
                 await using var context = GetEndToEndDbContext();
                 var solution = await context.Solutions.SingleAsync(ci => ci.CatalogueItemId == SolutionId);
-                solution.IsPilotSolution = true; ;
+                solution.IsPilotSolution = true;
                 await context.SaveChangesAsync();
 
                 Driver.Navigate().Refresh();
