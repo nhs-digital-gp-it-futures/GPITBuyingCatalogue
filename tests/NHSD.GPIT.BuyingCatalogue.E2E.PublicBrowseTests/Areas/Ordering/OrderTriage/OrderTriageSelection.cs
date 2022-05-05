@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using FluentAssertions;
+using NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.Objects.Common;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.Objects.Ordering;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Utils;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.TestBases;
@@ -65,7 +66,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering.OrderTriage
         }
 
         [Theory]
-        [InlineData(TriageOption.Under40k, "As your order is under £40k, you should have executed a Direct Award. You can procure any Catalogue Solution or service on the Buying Catalogue without carrying out a competition.")]
+        [InlineData(TriageOption.Under40k, "As your order is under £40k, you can execute a Direct Award. Any Catalogue Solution or service on the Buying Catalogue can be procured without carrying out a competition.")]
         [InlineData(TriageOption.Between40kTo250k, "As your order is between £40k and £250k, you should have executed an On-Catalogue Competition to identify the Catalogue Solution that best meets your needs.")]
         [InlineData(TriageOption.Over250k, "As your order is over £250k, you should have executed an Off-Catalogue Competition to identify the Catalogue Solution that best meets your needs.")]
         public void TriageSelection_ShowsCorrectAdvice(TriageOption option, string advice)
@@ -82,6 +83,26 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering.OrderTriage
                  parameters);
 
             CommonActions.LedeText().Should().BeEquivalentTo(advice.FormatForComparison());
+        }
+
+        [Theory]
+        [InlineData(TriageOption.Under40k, true)]
+        [InlineData(TriageOption.Between40kTo250k, true)]
+        [InlineData(TriageOption.Over250k, false)]
+        public void TriageSelection_ShowsInset(TriageOption option, bool insetVisible)
+        {
+            var parameters = new Dictionary<string, string>
+            {
+                { nameof(InternalOrgId), InternalOrgId },
+                { nameof(option), option.ToString() },
+            };
+
+            NavigateToUrl(
+                 typeof(OrderTriageController),
+                 nameof(OrderTriageController.TriageSelection),
+                 parameters);
+
+            CommonActions.ElementIsDisplayed(ByExtensions.DataTestId("triage-selection-inset")).Should().Be(insetVisible);
         }
 
         [Theory]

@@ -25,6 +25,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.OrderTriage
 
         public bool? Selected { get; set; }
 
+        public TriageOption? Option { get; set; }
+
         public IEnumerable<SelectListItem> SelectListItems => new[]
         {
             new SelectListItem(true.ToYesNo(), true.ToString()),
