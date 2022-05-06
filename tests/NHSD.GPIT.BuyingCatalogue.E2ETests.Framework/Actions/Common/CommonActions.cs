@@ -36,12 +36,11 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.Actions.Common
 
         public void ClickFirstCheckbox() =>
             Driver.FindElements(By.CssSelector("input[type=checkbox]")).First().Click();
-
-        public void ClickAllCheckboxes() =>
-        internal void ClickFirstRadio() =>
+        
+        public void ClickFirstRadio() =>
             Driver.FindElements(By.CssSelector("input[type=radio]")).First().Click();
 
-        internal void ClickAllCheckboxes() =>
+        public void ClickAllCheckboxes() =>
             Driver.FindElements(By.CssSelector("input[type=checkbox]")).ToList().ForEach(element => element.Click());
 
         public void ClickSection(By targetField, string section) =>

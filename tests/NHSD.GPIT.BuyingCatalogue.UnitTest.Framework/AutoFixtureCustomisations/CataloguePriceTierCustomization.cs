@@ -3,7 +3,7 @@ using AutoFixture.Dsl;
 using AutoFixture.Kernel;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 
-namespace NHSD.GPIT.BuyingCatalogue.Test.Framework.AutoFixtureCustomisations
+namespace NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.AutoFixtureCustomisations
 {
     internal sealed class CataloguePriceTierCustomization : ICustomization
     {
