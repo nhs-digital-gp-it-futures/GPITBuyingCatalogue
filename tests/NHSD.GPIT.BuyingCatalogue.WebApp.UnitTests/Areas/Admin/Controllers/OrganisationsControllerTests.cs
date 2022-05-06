@@ -17,7 +17,7 @@ using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Enums;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Identity;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Organisations;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Users;
-using NHSD.GPIT.BuyingCatalogue.Test.Framework.AutoFixtureCustomisations;
+using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.AutoFixtureCustomisations;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.OrganisationModels;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Models.SuggestionSearch;
@@ -301,7 +301,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
             model.EmailAddress = "a@b.com";
 
             mockCreateBuyerService
-                .Setup(x => x.Create(organisationId, model.FirstName, model.LastName, model.TelephoneNumber, model.EmailAddress, OrganisationFunction.BuyerName, AccountStatus.Active))
+                .Setup(x => x.Create(organisationId, model.FirstName, model.LastName, model.EmailAddress, OrganisationFunction.BuyerName, AccountStatus.Active))
                 .ReturnsAsync((AspNetUser)null);
 
             var result = (await controller.AddUser(organisationId, model)).As<RedirectToActionResult>();

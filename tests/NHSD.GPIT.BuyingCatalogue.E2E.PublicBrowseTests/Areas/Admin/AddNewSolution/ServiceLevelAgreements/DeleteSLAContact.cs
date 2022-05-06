@@ -1,11 +1,13 @@
-﻿using System.Collections.Generic;
-using System.Threading.Tasks;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using FluentAssertions;
 using Microsoft.EntityFrameworkCore;
-using NHSD.GPIT.BuyingCatalogue.E2ETests.Objects.Admin.ServiceLevelAgreements;
-using NHSD.GPIT.BuyingCatalogue.E2ETests.Objects.Common;
+using NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.Objects.Admin.ServiceLevelAgreements;
+using NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.Objects.Common;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Utils;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.TestBases;
+using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers;
 using Xunit;
@@ -67,8 +69,33 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.AddNewSolution.ServiceL
         }
 
         [Fact]
-        public async Task DeleteSLAContact_ClickDelete_ExpectedResult()
+        public void DeleteSLAContact_ClickDelete_ExpectedResult()
         {
+            using var context = GetEndToEndDbContext();
+            var serviceLevelAgreement = context.ServiceLevelAgreements.Include(p => p.Contacts).First(p => p.SolutionId == SolutionId);
+            var serviceContact = new SlaContact()
+            {
+                SolutionId = new CatalogueItemId(99998, "002"),
+                Channel = "This is a Channel 2",
+                ContactInformation = "This is Contact Information 2",
+                TimeFrom = DateTime.UtcNow,
+                TimeUntil = DateTime.UtcNow.AddHours(5),
+            };
+
+            serviceLevelAgreement.Contacts.Add(serviceContact);
+            context.SaveChanges();
+
+            var parameters = new Dictionary<string, string>
+            {
+                { nameof(SolutionId), SolutionId.ToString() },
+                { nameof(ContactId), serviceContact.Id.ToString() },
+            };
+
+            NavigateToUrl(
+                  typeof(ServiceLevelAgreementsController),
+                  nameof(ServiceLevelAgreementsController.DeleteContact),
+                  parameters);
+
             CommonActions.ClickSave();
 
             CommonActions.PageLoadedCorrectGetIndex(
@@ -76,12 +103,6 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.AddNewSolution.ServiceL
                 nameof(ServiceLevelAgreementsController.EditServiceLevelAgreement))
                 .Should()
                 .BeTrue();
-
-            await using var context = GetEndToEndDbContext();
-
-            var contact = await context.SlaContacts.SingleOrDefaultAsync(slac => slac.Id == ContactId);
-
-            contact.Should().BeNull();
         }
     }
 }

@@ -21,13 +21,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.ActionFilters
         {
             if (context.HttpContext.Request.Path.StartsWithSegments("/order/organisation", StringComparison.InvariantCultureIgnoreCase))
             {
-                if (!context.HttpContext.User.IsBuyer())
-                {
-                    logger.LogWarning($"Attempt was made to access {context.HttpContext.Request.Path} when user is not a buyer.");
-                    context.Result = new NotFoundResult();
-                    return;
-                }
-
                 var internalOrgId = context.HttpContext.Request.Path.ToString().Split('/', StringSplitOptions.RemoveEmptyEntries)[2];
 
                 if (!internalOrgId.Equals(context.HttpContext.User.GetPrimaryOrganisationInternalIdentifier(), StringComparison.InvariantCultureIgnoreCase))

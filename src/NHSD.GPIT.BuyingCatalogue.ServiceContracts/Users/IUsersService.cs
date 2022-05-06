@@ -18,7 +18,7 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.Users
 
         Task UpdateUserAccountType(int userId, string organisationFunction);
 
-        Task UpdateUserDetails(int userId, string firstName, string lastName, string phoneNumber, string email);
+        Task UpdateUserDetails(int userId, string firstName, string lastName, string email);
 
         Task UpdateUserOrganisation(int userId, int organisationId);
 

@@ -47,6 +47,12 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp
                     policy => policy.RequireClaim(
                         "organisationFunction",
                         new[] { OrganisationFunction.AuthorityName }));
+
+                options.AddPolicy(
+                    "Buyer",
+                    policy => policy.RequireClaim(
+                        "organisationFunction",
+                        new[] { OrganisationFunction.BuyerName }));
             });
         }
 
@@ -62,7 +68,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp
                 options.Cookie.SecurePolicy = CookieSecurePolicy.Always;
                 options.ExpireTimeSpan = cookieExpiration.ExpireTimeSpan;
                 options.SlidingExpiration = cookieExpiration.SlidingExpiration;
-                options.AccessDeniedPath = "/404";
+                options.AccessDeniedPath = "/unauthorized";
 
                 options.Events = new CookieAuthenticationEvents
                 {

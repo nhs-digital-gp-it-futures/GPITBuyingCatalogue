@@ -4,7 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using FluentAssertions;
 using Microsoft.EntityFrameworkCore;
-using NHSD.GPIT.BuyingCatalogue.E2ETests.Objects.Common;
+using NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.Objects.Common;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Utils;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.TestBases;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
@@ -63,6 +63,18 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.AddNewSolution.ServiceL
         [Fact]
         public void AddSlaType_ClickSaveAndContinue_ErrorMessageThrown()
         {
+            var solutionId = new CatalogueItemId(99999, "004");
+
+            var parameters = new Dictionary<string, string>()
+            {
+                { nameof(SolutionId), solutionId.ToString() },
+            };
+
+            NavigateToUrl(
+                typeof(ServiceLevelAgreementsController),
+                nameof(ServiceLevelAgreementsController.AddServiceLevelAgreement),
+                parameters);
+
             CommonActions.ClickSave();
 
             CommonActions.PageLoadedCorrectGetIndex(

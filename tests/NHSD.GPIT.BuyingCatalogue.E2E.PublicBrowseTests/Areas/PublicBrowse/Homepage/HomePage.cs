@@ -1,15 +1,17 @@
 ﻿using System;
 using System.Collections.Generic;
 using FluentAssertions;
-using NHSD.GPIT.BuyingCatalogue.E2ETests.Objects.Common;
+using NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.Objects.Common;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Utils;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.TestBases;
+using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Identity.Controllers;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Controllers;
 using Xunit;
 using Xunit.Abstractions;
+using Objects = NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.Objects;
 
 namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.PublicBrowse.Homepage
 {
@@ -156,10 +158,39 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.PublicBrowse.Homepage
                 CommonActions.ClickLinkElement(Objects.Home.HomeSelectors.ManageOrdersLink);
 
                 CommonActions.PageLoadedCorrectGetIndex(
-                typeof(DashboardController),
-                nameof(DashboardController.Index))
+                typeof(HomeController),
+                nameof(HomeController.NotAuthorized))
                 .Should()
                 .BeTrue();
+
+                CommonActions.PageTitle().Should().Be("You're not logged in as a buyer".FormatForComparison());
+                CommonActions.LedeText().Should().Be("Only users with a buyer account can create and manage orders on the Buying Catalogue.".FormatForComparison());
+            });
+        }
+
+        [Fact]
+        public void HomePage_Buyer_AdminDashboard_ExpectedResult()
+        {
+            RunTest(() =>
+            {
+                NavigateToUrl(
+                    typeof(AccountController),
+                    nameof(AccountController.Login));
+
+                BuyerLogin();
+
+                NavigateToUrl(
+                    typeof(WebApp.Areas.Admin.Controllers.HomeController),
+                    nameof(WebApp.Areas.Admin.Controllers.HomeController.Index));
+
+                CommonActions.PageLoadedCorrectGetIndex(
+                typeof(HomeController),
+                nameof(HomeController.NotAuthorized))
+                .Should()
+                .BeTrue();
+
+                CommonActions.PageTitle().Should().Be("You're not logged in as an admin".FormatForComparison());
+                CommonActions.LedeText().Should().Be("Only users with an admin account can access this section of the Buying Catalogue.".FormatForComparison());
             });
         }
 

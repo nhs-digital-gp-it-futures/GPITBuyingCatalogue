@@ -115,6 +115,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
                 .Include(o => o.OrderItems).ThenInclude(i => i.OrderItemFunding)
                 .Include(o => o.OrderItems).ThenInclude(i => i.OrderItemPrice).ThenInclude(ip => ip.OrderItemPriceTiers)
                 .Include(o => o.OrderItems).ThenInclude(i => i.OrderItemRecipients).ThenInclude(r => r.Recipient)
+                .AsSplitQuery()
                 .SingleOrDefaultAsync(o =>
                     o.Id == callOffId.Id
                     && o.OrderingParty.InternalIdentifier == internalOrgId);
@@ -183,7 +184,6 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
                 .SingleOrDefaultAsync();
         }
 
-        // TODO - Tiered Pricing - Reintroduct Pricing Data
         public Task<Order> GetOrderForStatusUpdate(CallOffId callOffId, string internalOrgId)
         {
             return dbContext.Orders
@@ -195,6 +195,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
                 .Include(o => o.OrderItems).ThenInclude(i => i.CatalogueItem)
                 .Include(o => o.OrderItems).ThenInclude(i => i.OrderItemRecipients).ThenInclude(r => r.Recipient)
                 /*.Include(o => o.OrderItems).ThenInclude(i => i.CataloguePrice).ThenInclude(p => p.PricingUnit)*/
+                .AsSplitQuery()
                 .SingleOrDefaultAsync();
         }
 

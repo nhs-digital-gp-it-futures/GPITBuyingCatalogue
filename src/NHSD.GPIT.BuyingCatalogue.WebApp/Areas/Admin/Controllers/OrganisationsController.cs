@@ -280,7 +280,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
                 organisationId,
                 model.FirstName,
                 model.LastName,
-                model.TelephoneNumber,
                 model.EmailAddress,
                 OrganisationFunction.BuyerName,
                 AccountStatus.Active);

@@ -13,8 +13,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.UserModels
 
         public string LastName { get; set; }
 
-        public string TelephoneNumber { get; set; }
-
         public string Email { get; set; }
 
         public string SelectedAccountStatusId { get; set; }

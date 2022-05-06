@@ -72,13 +72,12 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Users
             await dbContext.SaveChangesAsync();
         }
 
-        public async Task UpdateUserDetails(int userId, string firstName, string lastName, string phoneNumber, string email)
+        public async Task UpdateUserDetails(int userId, string firstName, string lastName, string email)
         {
             var user = await dbContext.AspNetUsers.SingleAsync(u => u.Id == userId);
 
             user.FirstName = firstName;
             user.LastName = lastName;
-            user.PhoneNumber = phoneNumber;
             user.Email = email;
             user.NormalizedEmail = email?.ToUpperInvariant();
             user.NormalizedUserName = email?.ToUpperInvariant();

@@ -111,7 +111,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
                 int.Parse(model.SelectedOrganisationId),
                 model.FirstName,
                 model.LastName,
-                model.TelephoneNumber,
                 model.Email,
                 model.SelectedAccountType,
                 model.SelectedAccountStatus);
@@ -256,7 +255,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
                 BackLink = Url.Action(nameof(Details), new { userId }),
                 FirstName = user.FirstName,
                 LastName = user.LastName,
-                TelephoneNumber = user.PhoneNumber,
                 Email = user.Email,
             });
         }
@@ -271,7 +269,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
                 userId,
                 model.FirstName,
                 model.LastName,
-                model.TelephoneNumber,
                 model.Email);
 
             return RedirectToAction(nameof(Details), new { userId });

@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using FluentAssertions;
-using NHSD.GPIT.BuyingCatalogue.E2ETests.Objects.Admin;
+using NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.Objects.Admin;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Utils;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.TestBases;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Users.Models;
@@ -31,7 +31,6 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.Users
             CommonActions.ElementIsDisplayed(CommonObjects.GoBackLink).Should().BeTrue();
             CommonActions.ElementIsDisplayed(UserObjects.FirstNameInput).Should().BeTrue();
             CommonActions.ElementIsDisplayed(UserObjects.LastNameInput).Should().BeTrue();
-            CommonActions.ElementIsDisplayed(UserObjects.TelephoneNumberInput).Should().BeTrue();
             CommonActions.ElementIsDisplayed(UserObjects.EmailInput).Should().BeTrue();
             CommonActions.ElementIsDisplayed(CommonObjects.SaveButton).Should().BeTrue();
 
@@ -39,7 +38,6 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.Users
 
             CommonActions.InputValueEqualTo(UserObjects.FirstNameInput, user.FirstName).Should().BeTrue();
             CommonActions.InputValueEqualTo(UserObjects.LastNameInput, user.LastName).Should().BeTrue();
-            CommonActions.InputValueEqualTo(UserObjects.TelephoneNumberInput, user.PhoneNumber ?? string.Empty).Should().BeTrue();
             CommonActions.InputValueEqualTo(UserObjects.EmailInput, user.Email).Should().BeTrue();
         }
 

@@ -7,7 +7,7 @@ using FluentAssertions;
 using Microsoft.AspNetCore.Http;
 using Moq;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Identity;
-using NHSD.GPIT.BuyingCatalogue.Test.Framework.AutoFixtureCustomisations;
+using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.AutoFixtureCustomisations;
 using Xunit;
 
 namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.UnitTests.Identity

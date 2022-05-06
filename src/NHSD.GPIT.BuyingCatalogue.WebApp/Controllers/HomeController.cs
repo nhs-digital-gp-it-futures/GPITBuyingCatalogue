@@ -56,6 +56,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Controllers
         [HttpGet("accessibility-statement")]
         public IActionResult AccessibilityStatement() => View();
 
+        [HttpGet("unauthorized")]
+        public IActionResult NotAuthorized() => View();
+
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error(int? statusCode = null, string error = null)
         {

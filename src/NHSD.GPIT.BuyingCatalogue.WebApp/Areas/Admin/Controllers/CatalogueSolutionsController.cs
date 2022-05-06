@@ -187,6 +187,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
                 solutionId,
                 model.SolutionName,
                 model.SupplierId ?? default,
+                model.IsPilotSolution,
                 model.Frameworks);
 
             filterCache.RemoveAll();

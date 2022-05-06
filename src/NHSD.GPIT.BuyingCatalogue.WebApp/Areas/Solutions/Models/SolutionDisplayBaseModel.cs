@@ -32,6 +32,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models
             SolutionName = catalogueItem.Name;
             PublicationStatus = catalogueItem.PublishedStatus;
 
+            IsPilotSolution = catalogueItem.Solution.IsPilotSolution;
             LastReviewed = catalogueItem.Solution.LastUpdated;
 
             SetSections(contentStatus);
@@ -51,6 +52,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models
         public string SolutionName { get; set; }
 
         public PublicationStatus PublicationStatus { get; }
+
+        public bool IsPilotSolution { get; }
 
         public virtual IList<SectionModel> GetSections()
         {

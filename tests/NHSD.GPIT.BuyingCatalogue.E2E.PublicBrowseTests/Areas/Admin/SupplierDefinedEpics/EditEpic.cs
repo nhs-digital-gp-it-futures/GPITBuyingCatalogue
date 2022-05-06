@@ -2,8 +2,7 @@
 using System.Linq;
 using FluentAssertions;
 using Microsoft.EntityFrameworkCore;
-using NHSD.GPIT.BuyingCatalogue.E2ETests.Objects.Admin;
-using NHSD.GPIT.BuyingCatalogue.E2ETests.Objects.Admin.SupplierDefinedEpics;
+using NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.Objects.Admin.SupplierDefinedEpics;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Utils;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.TestBases;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
@@ -218,7 +217,6 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.SupplierDefinedEpics
         [Fact]
         public void EditEpic_InactiveToActive_BecomesActive()
         {
-            using var context = GetEndToEndDbContext();
             var parameters = new Dictionary<string, string>
             {
                 { nameof(EpicId), "S00003" },
@@ -233,8 +231,8 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.SupplierDefinedEpics
 
             CommonActions.ClickSave();
 
-            var epic = context.Epics.Find("S00003");
-            epic.IsActive.Should().BeTrue();
+            using var updatedContext = GetEndToEndDbContext();
+            updatedContext.Epics.Find("S00003").IsActive.Should().BeTrue();
         }
 
         [Fact]
@@ -295,6 +293,9 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.SupplierDefinedEpics
         public void EditEpic_Inactive_DeleteLinkVisible()
         {
             using var context = GetEndToEndDbContext();
+            context.Epics.Single(p => p.Id == "S00003").IsActive = false;
+            context.SaveChanges();
+
             var parameters = new Dictionary<string, string>
             {
                 { nameof(EpicId), "S00003" },

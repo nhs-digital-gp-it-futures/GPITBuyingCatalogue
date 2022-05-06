@@ -8,6 +8,7 @@ using AutoFixture.AutoMoq;
 using AutoFixture.Idioms;
 using AutoFixture.Xunit2;
 using FluentAssertions;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
@@ -16,9 +17,10 @@ using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Models;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Models.FilterModels;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions.Models;
-using NHSD.GPIT.BuyingCatalogue.Test.Framework.AutoFixtureCustomisations;
+using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.AutoFixtureCustomisations;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models;
+using NHSD.GPIT.BuyingCatalogue.WebApp.Models;
 using Xunit;
 using JsonSerializer = System.Text.Json.JsonSerializer;
 
@@ -1093,6 +1095,21 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Controllers
             actual.ViewName.Should().BeNullOrEmpty();
 
             actual.Model.Should().BeEquivalentTo(expectedModel);
+        }
+
+        [Theory]
+        [CommonAutoData]
+        public static void Get_AboutPilotSolutions_ReturnsViewWithModel(
+            SolutionsController controller)
+        {
+            controller.ControllerContext.HttpContext = new DefaultHttpContext();
+            controller.ControllerContext.HttpContext.Request.Headers.Referer = "http://test.com";
+
+            var result = controller.AboutPilotSolutions().As<ViewResult>();
+
+            result.Should().NotBeNull();
+            result.Model.Should().BeOfType<NavBaseModel>();
+            result.Model.As<NavBaseModel>().BackLink.Should().Be(controller.Request.Headers.Referer);
         }
 
         private static string GetIntegrationsJson()

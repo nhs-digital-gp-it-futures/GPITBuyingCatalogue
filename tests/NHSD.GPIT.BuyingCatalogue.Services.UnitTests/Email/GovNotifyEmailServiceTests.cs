@@ -6,7 +6,7 @@ using AutoFixture.Idioms;
 using AutoFixture.Xunit2;
 using Moq;
 using NHSD.GPIT.BuyingCatalogue.Services.Email;
-using NHSD.GPIT.BuyingCatalogue.Test.Framework.AutoFixtureCustomisations;
+using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.AutoFixtureCustomisations;
 using Notify.Interfaces;
 using Xunit;
 

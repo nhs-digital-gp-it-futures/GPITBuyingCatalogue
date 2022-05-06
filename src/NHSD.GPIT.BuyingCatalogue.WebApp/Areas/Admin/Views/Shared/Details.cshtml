@@ -1,14 +1,14 @@
 ﻿@model NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.CatalogueSolutionsModels.SolutionModel
 @{
     Layout = "~/Views/Shared/Layouts/_NoBannersLayout.cshtml";
-    ViewBag.Title = "Add a Solution";
+    ViewBag.Title = Model.Heading;
 }
 <partial name="Partials/_BackLink" model="Model"/>
 <div class="nhsuk-grid-row">
     <nhs-validation-summary />
 
     <div class="nhsuk-grid-column-two-thirds">
-        <nhs-page-title title="@Model.Heading"
+        <nhs-page-title title="@ViewBag.Title"
                         caption="@Model.SolutionDisplayName"
                         advice="@Model.Description" />
 
@@ -61,7 +61,16 @@
             {
                 <input type="hidden" asp-for="@Model.Frameworks[i].Name" />
             }
-            <br>
+
+            <nhs-fieldset-form-label 
+                label-text="Is this solution available for pilot?"
+                label-hint="A solution available for pilot is yet to be deployed in a live, patient facing environment and can only be sold to a single buyer organisation."
+                asp-for="IsPilotSolution">
+                <nhs-checkbox-container>
+                    <nhs-checkbox asp-for="IsPilotSolution" label-text="Yes, this solution is available for pilot"></nhs-checkbox>
+                </nhs-checkbox-container>
+            </nhs-fieldset-form-label>
+            <br/>
             <nhs-submit-button />
         </form>
     </div>
