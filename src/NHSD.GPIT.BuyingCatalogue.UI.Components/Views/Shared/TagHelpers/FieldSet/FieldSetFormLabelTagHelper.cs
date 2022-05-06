@@ -17,7 +17,8 @@ namespace NHSD.GPIT.BuyingCatalogue.UI.Components.TagHelpers
         NhsDateInputTagHelper.TagHelperName,
         RadioButtonContainerTagHelper.TagHelperName,
         DetailsTagHelper.TagHelperName,
-        NhsTimeRangeInputTagHelper.TagHelperName)]
+        NhsTimeRangeInputTagHelper.TagHelperName,
+        ExpanderTagHelper.TagHelperName)]
     public sealed class FieldSetFormLabelTagHelper : TagHelper
     {
         public const string TagHelperName = "nhs-fieldset-form-label";
