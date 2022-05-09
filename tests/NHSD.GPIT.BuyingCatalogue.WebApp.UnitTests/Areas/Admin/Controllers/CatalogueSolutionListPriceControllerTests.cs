@@ -448,6 +448,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
             [Frozen] Mock<ISolutionListPriceService> solutionListPriceService,
             CatalogueSolutionListPriceController controller)
         {
+            model.IsEditing = false;
+
             var result = (await controller.AddTieredPriceTier(solution.CatalogueItemId, price.CataloguePriceId, model)).As<RedirectToActionResult>();
 
             solutionListPriceService.VerifyAll();
