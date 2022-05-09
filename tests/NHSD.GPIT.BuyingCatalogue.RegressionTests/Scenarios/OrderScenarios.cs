@@ -34,7 +34,7 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
             int a = 1;
             int b = 2;
 
-            BuyerUsername.Should().Be("abc");
+            // BuyerUsername.Should().Be("abc");
         }
     }
 }
