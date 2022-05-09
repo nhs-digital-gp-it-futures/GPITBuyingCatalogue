@@ -294,7 +294,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering
 
             CommonActions.PageLoadedCorrectGetIndex(
                 typeof(OrderTriageController),
-                nameof(OrderTriageController.Index)).Should().BeTrue();
+                nameof(OrderTriageController.OrderItemType)).Should().BeTrue();
         }
     }
 }
