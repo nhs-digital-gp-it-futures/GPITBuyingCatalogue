@@ -1,8 +1,8 @@
 ﻿using OpenQA.Selenium;
 
-namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Objects.Ordering
+namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.Objects.Ordering
 {
-    internal static class CatalogueSolutionObjects
+    public static class CatalogueSolutionObjects
     {
         public static By SelectSolution => By.Id("select-solution");
 
