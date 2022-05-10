@@ -112,10 +112,14 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering.SolutionSelection.Pr
                 PricingTierModelValidator.PriceNotWithinFourDecimalPlacesErrorMessage).Should().BeTrue();
         }
 
-        [Fact]
-        public void EditPrice_PriceHigherThanListPrice_Error()
+        [Theory]
+        [InlineData(1000)]
+        [InlineData(10000000.0001)]
+        [InlineData(9999999.9999)]
+        [InlineData(int.MaxValue)]
+        public void EditPrice_PriceHigherThanListPrice_Error(decimal value)
         {
-            CommonActions.ElementAddValue(ConfirmPriceObjects.AgreedPriceInput(0), $"{int.MaxValue}");
+            CommonActions.ElementAddValue(ConfirmPriceObjects.AgreedPriceInput(0), $"{value}");
             CommonActions.ClickSave();
 
             CommonActions.PageLoadedCorrectGetIndex(
@@ -150,10 +154,14 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering.SolutionSelection.Pr
             tier.Price.Should().Be(999.9999M);
         }
 
-        [Fact]
-        public void EditPrice_PriceLowerThanListPrice_ExpectedResult()
+        [Theory]
+        [InlineData(999.9998)]
+        [InlineData(100)]
+        [InlineData(1)]
+        [InlineData(0.0001)]
+        public void EditPrice_PriceLowerThanListPrice_ExpectedResult(decimal value)
         {
-            CommonActions.ElementAddValue(ConfirmPriceObjects.AgreedPriceInput(0), "0.0001");
+            CommonActions.ElementAddValue(ConfirmPriceObjects.AgreedPriceInput(0), $"{value}");
             CommonActions.ClickSave();
 
             CommonActions.PageLoadedCorrectGetIndex(
@@ -168,7 +176,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering.SolutionSelection.Pr
             var tier = prices[0].OrderItemPriceTiers.First();
 
             tier.ListPrice.Should().Be(999.9999M);
-            tier.Price.Should().Be(0.0001M);
+            tier.Price.Should().Be(value);
         }
 
         [Fact]
