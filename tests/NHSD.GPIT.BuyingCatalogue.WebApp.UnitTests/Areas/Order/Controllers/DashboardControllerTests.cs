@@ -19,7 +19,7 @@ using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Models;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Models.FilterModels;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Orders;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Organisations;
-using NHSD.GPIT.BuyingCatalogue.Test.Framework.AutoFixtureCustomisations;
+using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.AutoFixtureCustomisations;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.Dashboard;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.Shared;
@@ -45,27 +45,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers
             var constructors = typeof(DashboardController).GetConstructors();
 
             assertion.Verify(constructors);
-        }
-
-        [Fact]
-        public static void Get_Order_NotBuyer_ReturnsNotBuyerView()
-        {
-            var user = new ClaimsPrincipal(new ClaimsIdentity(
-                new Claim[] { new("organisationFunction", "Authority") },
-                "mock"));
-
-            var controller = new DashboardController(Mock.Of<IOrganisationsService>(), Mock.Of<IOrderService>())
-            {
-                ControllerContext = new ControllerContext
-                {
-                    HttpContext = new DefaultHttpContext { User = user },
-                },
-            };
-
-            var result = controller.Index();
-
-            Assert.IsAssignableFrom<ViewResult>(result);
-            Assert.Equal("NotBuyer", ((ViewResult)result).ViewName);
         }
 
         [Theory]

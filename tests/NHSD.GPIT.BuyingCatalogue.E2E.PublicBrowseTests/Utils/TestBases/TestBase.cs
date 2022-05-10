@@ -4,13 +4,13 @@ using System.IO;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
-using NHSD.GPIT.BuyingCatalogue.E2ETests.Actions.Admin;
-using NHSD.GPIT.BuyingCatalogue.E2ETests.Actions.Authorization;
-using NHSD.GPIT.BuyingCatalogue.E2ETests.Actions.Common;
-using NHSD.GPIT.BuyingCatalogue.E2ETests.Actions.Marketing;
-using NHSD.GPIT.BuyingCatalogue.E2ETests.Actions.Ordering;
-using NHSD.GPIT.BuyingCatalogue.E2ETests.Actions.PublicBrowse;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Database;
+using NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.Actions.Admin;
+using NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.Actions.Authorization;
+using NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.Actions.Common;
+using NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.Actions.Marketing;
+using NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.Actions.Ordering;
+using NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.Actions.PublicBrowse;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.UrlGenerators;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.MemoryCache;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.Session;
@@ -19,6 +19,7 @@ using OpenQA.Selenium;
 using OpenQA.Selenium.Support.UI;
 using Polly;
 using Xunit.Abstractions;
+using Actions = NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.Actions;
 
 namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.TestBases
 {

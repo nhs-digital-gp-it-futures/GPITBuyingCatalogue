@@ -15,8 +15,8 @@ using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Email;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Enums;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Identity;
 using NHSD.GPIT.BuyingCatalogue.Services.Users;
-using NHSD.GPIT.BuyingCatalogue.Test.Framework.AutoFixtureCustomisations;
-using NHSD.GPIT.BuyingCatalogue.Test.Framework.Builders;
+using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.AutoFixtureCustomisations;
+using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.Builders;
 using Xunit;
 
 namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Users
@@ -46,7 +46,6 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Users
                     1,
                     "a",
                     "b",
-                    "c",
                     emailAddress,
                     OrganisationFunction.BuyerName,
                     AccountStatus.Active));
@@ -73,7 +72,6 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Users
                 1,
                 "Test",
                 "Smith",
-                "0123456789",
                 "a.b@c.com",
                 OrganisationFunction.BuyerName,
                 AccountStatus.Active);
@@ -103,7 +101,6 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Users
                 expectedUser.PrimaryOrganisationId,
                 expectedUser.FirstName,
                 expectedUser.LastName,
-                expectedUser.PhoneNumber,
                 expectedUser.Email,
                 OrganisationFunction.BuyerName,
                 AccountStatus.Active);
@@ -113,7 +110,6 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Users
             actual.PrimaryOrganisationId.Should().Be(expectedUser.PrimaryOrganisationId);
             actual.FirstName.Should().Be(expectedUser.FirstName);
             actual.LastName.Should().Be(expectedUser.LastName);
-            actual.PhoneNumber.Should().Be(expectedUser.PhoneNumber);
             actual.Email.Should().Be(expectedUser.Email);
             actual.OrganisationFunction.Should().Be("Buyer");
         }
@@ -140,7 +136,6 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Users
                 expectedUser.PrimaryOrganisationId,
                 expectedUser.FirstName,
                 expectedUser.LastName,
-                expectedUser.PhoneNumber,
                 expectedUser.Email,
                 OrganisationFunction.AuthorityName,
                 AccountStatus.Active);
@@ -150,7 +145,6 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Users
             actual.PrimaryOrganisationId.Should().Be(expectedUser.PrimaryOrganisationId);
             actual.FirstName.Should().Be(expectedUser.FirstName);
             actual.LastName.Should().Be(expectedUser.LastName);
-            actual.PhoneNumber.Should().Be(expectedUser.PhoneNumber);
             actual.Email.Should().Be(expectedUser.Email);
             actual.OrganisationFunction.Should().Be("Authority");
         }
@@ -178,7 +172,6 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Users
                 expectedUser.PrimaryOrganisationId,
                 expectedUser.FirstName,
                 expectedUser.LastName,
-                expectedUser.PhoneNumber,
                 expectedUser.Email,
                 OrganisationFunction.BuyerName,
                 AccountStatus.Active);

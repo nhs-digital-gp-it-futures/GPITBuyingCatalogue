@@ -2,7 +2,7 @@
 using System.Linq;
 using FluentAssertions;
 using Microsoft.EntityFrameworkCore;
-using NHSD.GPIT.BuyingCatalogue.E2ETests.Objects.PublicBrowse;
+using NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.Objects.PublicBrowse;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Utils;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.TestBases;

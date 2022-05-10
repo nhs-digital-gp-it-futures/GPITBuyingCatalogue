@@ -3,7 +3,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using FluentAssertions;
 using Microsoft.EntityFrameworkCore;
-using NHSD.GPIT.BuyingCatalogue.E2ETests.Objects.Common;
+using NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.Objects.Common;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Utils;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.TestBases;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
@@ -13,6 +13,7 @@ using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Controllers;
 using OpenQA.Selenium;
 using Xunit;
+using Objects = NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.Objects;
 
 namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering
 {
@@ -126,8 +127,11 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering
             string expectedLinkText)
         {
             using var context = GetEndToEndDbContext();
-            var order = context.Organisations.Where(o => o.InternalIdentifier == InternalOrgId)
-                .SelectMany(o => o.Orders).OrderByDescending(o => o.LastUpdated).First(o => o.OrderStatus == status);
+            var orders = context.Organisations
+                .Where(o => o.InternalIdentifier == InternalOrgId)
+                .SelectMany(o => o.Orders)
+                .OrderByDescending(o => o.LastUpdated);
+            var order = orders.First(o => o.OrderStatus == status);
 
             CommonActions.ElementTextContains(ByExtensions.DataTestId($"link-{order.CallOffId}"), expectedLinkText).Should().BeTrue();
         }
@@ -136,8 +140,11 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering
         public void OrganisationDashboard_OrderInProgress_ClickEdit_Redirects()
         {
             using var context = GetEndToEndDbContext();
-            var order = context.Organisations.Where(o => o.InternalIdentifier == InternalOrgId)
-                .SelectMany(o => o.Orders).OrderByDescending(o => o.LastUpdated).First(o => o.OrderStatus == OrderStatus.InProgress);
+            var orders = context.Organisations
+                .Where(o => o.InternalIdentifier == InternalOrgId)
+                .SelectMany(o => o.Orders)
+                .OrderByDescending(o => o.LastUpdated);
+            var order = orders.First(o => o.OrderStatus == OrderStatus.InProgress);
 
             CommonActions.ClickLinkElement(ByExtensions.DataTestId($"link-{order.CallOffId}"));
 
@@ -151,8 +158,11 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering
         public void OrganisationDashboard_OrderCompleted_ClickView_Redirects()
         {
             using var context = GetEndToEndDbContext();
-            var order = context.Organisations.Where(o => o.InternalIdentifier == InternalOrgId)
-                .SelectMany(o => o.Orders).OrderByDescending(o => o.LastUpdated).First(o => o.OrderStatus == OrderStatus.Completed);
+            var orders = context.Organisations
+                .Where(o => o.InternalIdentifier == InternalOrgId)
+                .SelectMany(o => o.Orders)
+                .OrderByDescending(o => o.LastUpdated);
+            var order = orders.First(o => o.OrderStatus == OrderStatus.Completed);
 
             CommonActions.ClickLinkElement(ByExtensions.DataTestId($"link-{order.CallOffId}"));
 

@@ -14,7 +14,7 @@ using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.SolutionSelection.Asso
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers.SolutionSelection
 {
-    [Authorize]
+    [Authorize("Buyer")]
     [Area("Order")]
     [Route("order/organisation/{internalOrgId}/order/{callOffId}/associated-services")]
     public class AssociatedServicesController : Controller

@@ -37,7 +37,6 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Users
             int primaryOrganisationId,
             string firstName,
             string lastName,
-            string phoneNumber,
             string emailAddress,
             string organisationFunction,
             AccountStatus accountStatus)
@@ -49,7 +48,6 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Users
             {
                 FirstName = firstName,
                 LastName = lastName,
-                PhoneNumber = phoneNumber,
                 UserName = emailAddress,
                 NormalizedUserName = emailAddress.ToUpperInvariant(),
                 Email = emailAddress,

@@ -13,7 +13,7 @@ using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.SolutionSelection.Pric
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers.SolutionSelection
 {
-    [Authorize]
+    [Authorize("Buyer")]
     [Area("Order")]
     [Route("order/organisation/{internalOrgId}/order/{callOffId}")]
     public class PricesController : Controller

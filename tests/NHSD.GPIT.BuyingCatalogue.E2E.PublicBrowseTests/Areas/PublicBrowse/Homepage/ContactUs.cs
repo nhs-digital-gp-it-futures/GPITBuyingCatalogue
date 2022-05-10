@@ -1,10 +1,9 @@
 ﻿using FluentAssertions;
-using NHSD.GPIT.BuyingCatalogue.E2ETests.Objects.PublicBrowse;
+using NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.Objects.PublicBrowse;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Utils;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.TestBases;
 using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Controllers;
-using OpenQA.Selenium;
 using Xunit;
 using Xunit.Abstractions;
 

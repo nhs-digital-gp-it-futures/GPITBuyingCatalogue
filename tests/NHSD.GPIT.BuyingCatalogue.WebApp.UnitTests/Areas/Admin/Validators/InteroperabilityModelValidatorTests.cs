@@ -3,7 +3,7 @@ using AutoFixture.Xunit2;
 using FluentValidation.TestHelper;
 using Moq;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Validation;
-using NHSD.GPIT.BuyingCatalogue.Test.Framework.AutoFixtureCustomisations;
+using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.AutoFixtureCustomisations;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.InteroperabilityModels;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Validators;
 using Xunit;

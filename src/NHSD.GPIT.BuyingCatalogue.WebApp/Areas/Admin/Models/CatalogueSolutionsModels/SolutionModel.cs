@@ -15,12 +15,13 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.CatalogueSolutions
         {
         }
 
-        public SolutionModel(CatalogueItem solution)
+        public SolutionModel(CatalogueItem catalogueItem)
         {
-            SolutionId = solution.Id;
-            SupplierId = solution.SupplierId;
-            SolutionName = solution.Name;
-            SolutionDisplayName = solution.Name;
+            SolutionId = catalogueItem.Id;
+            SupplierId = catalogueItem.SupplierId;
+            SolutionName = catalogueItem.Name;
+            SolutionDisplayName = catalogueItem.Name;
+            IsPilotSolution = catalogueItem.Solution.IsPilotSolution;
         }
 
         public CatalogueItemId? SolutionId { get; set; }
@@ -28,6 +29,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.CatalogueSolutions
         public string SolutionName { get; set; }
 
         public string SolutionDisplayName { get; set; }
+
+        public bool IsPilotSolution { get; set; }
 
         public int? SupplierId { get; set; }
 

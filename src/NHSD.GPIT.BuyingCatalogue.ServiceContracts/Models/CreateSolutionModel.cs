@@ -10,6 +10,8 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.Models
 
         public int SupplierId { get; set; }
 
+        public bool IsPilotSolution { get; set; }
+
         public int UserId { get; set; }
     }
 }

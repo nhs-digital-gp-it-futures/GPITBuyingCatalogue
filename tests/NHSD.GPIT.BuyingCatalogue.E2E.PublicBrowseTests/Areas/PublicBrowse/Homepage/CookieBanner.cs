@@ -13,6 +13,7 @@ using NHSD.GPIT.BuyingCatalogue.WebApp.Controllers;
 using OpenQA.Selenium;
 using Xunit;
 using Xunit.Abstractions;
+using Objects = NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.Objects;
 
 namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.PublicBrowse.Homepage
 {

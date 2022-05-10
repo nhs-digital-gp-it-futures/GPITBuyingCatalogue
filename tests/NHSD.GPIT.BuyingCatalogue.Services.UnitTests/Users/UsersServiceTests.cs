@@ -8,7 +8,7 @@ using NHSD.GPIT.BuyingCatalogue.EntityFramework;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Organisations.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Users.Models;
 using NHSD.GPIT.BuyingCatalogue.Services.Users;
-using NHSD.GPIT.BuyingCatalogue.Test.Framework.AutoFixtureCustomisations;
+using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.AutoFixtureCustomisations;
 using Xunit;
 
 namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Users
@@ -199,7 +199,6 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Users
         public static async Task UpdateUserDetails_UpdatesDatabaseCorrectly(
             string firstName,
             string lastName,
-            string phoneNumber,
             string email,
             [Frozen] BuyingCatalogueDbContext context,
             AspNetUser user,
@@ -208,13 +207,12 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Users
             context.AspNetUsers.Add(user);
             await context.SaveChangesAsync();
 
-            await service.UpdateUserDetails(user.Id, firstName, lastName, phoneNumber, email);
+            await service.UpdateUserDetails(user.Id, firstName, lastName, email);
 
             var actual = await context.AspNetUsers.SingleAsync(u => u.Id == user.Id);
 
             actual.FirstName.Should().Be(firstName);
             actual.LastName.Should().Be(lastName);
-            actual.PhoneNumber.Should().Be(phoneNumber);
             actual.Email.Should().Be(email);
             actual.NormalizedEmail.Should().Be(email.ToUpperInvariant());
             actual.NormalizedUserName.Should().Be(email.ToUpperInvariant());

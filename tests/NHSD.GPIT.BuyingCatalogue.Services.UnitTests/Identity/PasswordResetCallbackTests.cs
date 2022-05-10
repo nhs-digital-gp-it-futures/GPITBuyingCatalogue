@@ -7,7 +7,7 @@ using Moq;
 using NHSD.GPIT.BuyingCatalogue.Framework.Settings;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Identity;
 using NHSD.GPIT.BuyingCatalogue.Services.Identity;
-using NHSD.GPIT.BuyingCatalogue.Test.Framework.Builders;
+using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.Builders;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Identity.Controllers;
 using Xunit;
 

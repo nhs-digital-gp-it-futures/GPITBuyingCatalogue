@@ -2,8 +2,8 @@
 using System.Linq;
 using FluentAssertions;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.RandomData;
-using NHSD.GPIT.BuyingCatalogue.E2ETests.Objects.Admin;
-using NHSD.GPIT.BuyingCatalogue.E2ETests.Objects.Common;
+using NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.Objects.Admin;
+using NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.Objects.Common;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Utils;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.TestBases;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers;
@@ -29,7 +29,6 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.Users
             CommonActions.ElementIsDisplayed(UserObjects.SelectedOrganisation).Should().BeTrue();
             CommonActions.ElementIsDisplayed(UserObjects.FirstNameInput).Should().BeTrue();
             CommonActions.ElementIsDisplayed(UserObjects.LastNameInput).Should().BeTrue();
-            CommonActions.ElementIsDisplayed(UserObjects.TelephoneNumberInput).Should().BeTrue();
             CommonActions.ElementIsDisplayed(UserObjects.EmailInput).Should().BeTrue();
             CommonActions.ElementIsDisplayed(UserObjects.AccountTypeRadioButtons).Should().BeTrue();
             CommonActions.ElementIsDisplayed(UserObjects.AccountStatusRadioButtons).Should().BeTrue();

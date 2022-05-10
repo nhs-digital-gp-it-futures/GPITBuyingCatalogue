@@ -2,13 +2,13 @@
 using System.Threading.Tasks;
 using FluentAssertions;
 using Microsoft.EntityFrameworkCore;
-using NHSD.GPIT.BuyingCatalogue.E2ETests.Objects.Marketing;
+using NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.Objects.Marketing;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Utils;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.TestBases;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers;
 using Xunit;
-using CommonSelectors = NHSD.GPIT.BuyingCatalogue.E2ETests.Objects.Common.CommonSelectors;
+using CommonSelectors = NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.Objects.Common.CommonSelectors;
 
 namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.AddNewSolution.HostingTypes
 {

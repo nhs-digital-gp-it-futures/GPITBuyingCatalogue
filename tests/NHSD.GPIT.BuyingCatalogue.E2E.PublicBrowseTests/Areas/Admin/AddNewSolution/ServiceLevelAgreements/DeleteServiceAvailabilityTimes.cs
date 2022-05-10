@@ -1,11 +1,13 @@
-﻿using System.Collections.Generic;
-using System.Threading.Tasks;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using FluentAssertions;
 using Microsoft.EntityFrameworkCore;
-using NHSD.GPIT.BuyingCatalogue.E2ETests.Objects.Admin.ServiceLevelAgreements;
-using NHSD.GPIT.BuyingCatalogue.E2ETests.Objects.Common;
+using NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.Objects.Admin.ServiceLevelAgreements;
+using NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.Objects.Common;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Utils;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.TestBases;
+using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers;
 using Xunit;
@@ -22,12 +24,6 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.AddNewSolution.ServiceL
         {
             { nameof(SolutionId), SolutionId.ToString() },
             { nameof(ServiceAvailabilityTimesId), ServiceAvailabilityTimesId.ToString() },
-        };
-
-        private static readonly Dictionary<string, string> CancelLinkParameters = new()
-        {
-            { nameof(SolutionId), SolutionId.ToString() },
-            { nameof(ServiceAvailabilityTimesId), CancelLinkServiceAvailabilityTimesId.ToString() },
         };
 
         public DeleteServiceAvailabilityTimes(LocalWebApplicationFactory factory)
@@ -52,11 +48,6 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.AddNewSolution.ServiceL
         [Fact]
         public void DeleteServiceAvailabilityTimes_ClickCancel_ExpectedResult()
         {
-            NavigateToUrl(
-                typeof(ServiceLevelAgreementsController),
-                nameof(ServiceLevelAgreementsController.DeleteServiceAvailabilityTimes),
-                CancelLinkParameters);
-
             CommonActions.ClickLinkElement(ServiceAvailabilityTimesObjects.CancelLink);
 
             CommonActions.PageLoadedCorrectGetIndex(
@@ -79,8 +70,32 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.AddNewSolution.ServiceL
         }
 
         [Fact]
-        public async Task DeleteServiceAvailabilityTimes_ClickDelete_ExpectedResult()
+        public void DeleteServiceAvailabilityTimes_ClickDelete_ExpectedResult()
         {
+            using var context = GetEndToEndDbContext();
+            var serviceLevelAgreement = context.ServiceLevelAgreements.Include(p => p.ServiceHours).First(p => p.SolutionId == SolutionId);
+            var serviceLevelHours = new ServiceAvailabilityTimes()
+            {
+                ApplicableDays = "Applicable Days 02",
+                Category = "Support Type 02",
+                TimeFrom = DateTime.UtcNow.AddHours(-5),
+                TimeUntil = DateTime.UtcNow,
+            };
+
+            serviceLevelAgreement.ServiceHours.Add(serviceLevelHours);
+            context.SaveChanges();
+
+            var parameters = new Dictionary<string, string>
+            {
+                { nameof(SolutionId), SolutionId.ToString() },
+                { nameof(ServiceAvailabilityTimesId), serviceLevelHours.Id.ToString() },
+            };
+
+            NavigateToUrl(
+                  typeof(ServiceLevelAgreementsController),
+                  nameof(ServiceLevelAgreementsController.DeleteServiceAvailabilityTimes),
+                  parameters);
+
             CommonActions.ClickSave();
 
             CommonActions.PageLoadedCorrectGetIndex(
@@ -88,12 +103,6 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.AddNewSolution.ServiceL
                 nameof(ServiceLevelAgreementsController.EditServiceLevelAgreement))
                 .Should()
                 .BeTrue();
-
-            await using var context = GetEndToEndDbContext();
-
-            var serviceAvailabilityTimes = await context.ServiceAvailabilityTimes.SingleOrDefaultAsync(slac => slac.Id == ServiceAvailabilityTimesId);
-
-            serviceAvailabilityTimes.Should().BeNull();
         }
     }
 }

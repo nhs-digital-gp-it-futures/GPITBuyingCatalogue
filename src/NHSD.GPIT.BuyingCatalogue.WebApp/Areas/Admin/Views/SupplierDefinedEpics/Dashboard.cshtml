@@ -13,6 +13,20 @@
     }
 }
 
+@section Breadcrumbs {
+    <nav class="nhsuk-breadcrumb" aria-label="Breadcrumb">
+        <div class="nhsuk-width-container">
+            <ol class="nhsuk-breadcrumb__list">
+                <li class="nhsuk-breadcrumb__item">
+                    <a asp-action="@nameof(HomeController.Index)" 
+                       asp-controller="@typeof(HomeController).ControllerName()" 
+                       class="nhsuk-breadcrumb__link">Home</a>
+                </li>
+            </ol>
+        </div>
+    </nav>
+}
+
 <nhs-page-title title="@ViewBag.Title"
                 advice="Add a supplier defined Epic or edit an existing one."/>
 

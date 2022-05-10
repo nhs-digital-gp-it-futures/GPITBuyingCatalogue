@@ -56,6 +56,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
                 Frameworks = model.Frameworks,
                 Name = model.SolutionName,
                 SupplierId = model.SupplierId!.Value,
+                IsPilotSolution = model.IsPilotSolution,
                 UserId = User.UserId(),
             });
 

@@ -12,7 +12,7 @@ using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.SolutionSelection.Cata
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers.SolutionSelection
 {
-    [Authorize]
+    [Authorize("Buyer")]
     [Area("Order")]
     [Route("order/organisation/{internalOrgId}/order/{callOffId}/solutions")]
     public class CatalogueSolutionsController : Controller

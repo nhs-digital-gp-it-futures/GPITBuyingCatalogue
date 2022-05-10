@@ -8,6 +8,8 @@ using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers.FundingSource;
 using Xunit;
 
+using Objects = NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.Objects;
+
 namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering.FundingSources
 {
     public sealed class FundingSources : BuyerTestBase, IClassFixture<LocalWebApplicationFactory>

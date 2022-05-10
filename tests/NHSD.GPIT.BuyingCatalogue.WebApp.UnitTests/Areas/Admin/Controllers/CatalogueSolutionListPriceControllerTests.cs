@@ -13,7 +13,7 @@ using Moq;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions;
-using NHSD.GPIT.BuyingCatalogue.Test.Framework.AutoFixtureCustomisations;
+using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.AutoFixtureCustomisations;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.ListPriceModels;
 using Xunit;
@@ -448,6 +448,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
             [Frozen] Mock<ISolutionListPriceService> solutionListPriceService,
             CatalogueSolutionListPriceController controller)
         {
+            model.IsEditing = false;
+
             var result = (await controller.AddTieredPriceTier(solution.CatalogueItemId, price.CataloguePriceId, model)).As<RedirectToActionResult>();
 
             solutionListPriceService.VerifyAll();

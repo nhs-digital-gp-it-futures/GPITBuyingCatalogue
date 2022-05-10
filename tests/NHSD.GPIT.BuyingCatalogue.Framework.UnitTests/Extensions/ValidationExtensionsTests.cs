@@ -1,7 +1,7 @@
 ﻿using System;
 using FluentAssertions;
 using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
-using NHSD.GPIT.BuyingCatalogue.Test.Framework.TestData;
+using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.TestData;
 using Xunit;
 
 namespace NHSD.GPIT.BuyingCatalogue.Framework.UnitTests.Extensions

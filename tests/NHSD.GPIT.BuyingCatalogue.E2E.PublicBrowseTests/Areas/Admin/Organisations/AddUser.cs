@@ -2,9 +2,9 @@
 using System.Threading.Tasks;
 using FluentAssertions;
 using Microsoft.EntityFrameworkCore;
-using NHSD.GPIT.BuyingCatalogue.E2ETests.Objects.Admin;
+using NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.Objects.Admin;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Utils;
-using NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.RandomData;
+using NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.Utils.RandomData;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.TestBases;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Users.Models;
 using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
@@ -38,7 +38,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.Organisations
         }
 
         [Fact]
-        public async void AddUser_AllSectionsDisplayed()
+        public async Task AddUser_AllSectionsDisplayed()
         {
             await using var context = GetEndToEndDbContext();
 
@@ -50,7 +50,6 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.Organisations
 
             CommonActions.ElementIsDisplayed(AddUserObjects.FirstName).Should().BeTrue();
             CommonActions.ElementIsDisplayed(AddUserObjects.LastName).Should().BeTrue();
-            CommonActions.ElementIsDisplayed(AddUserObjects.TelephoneNumber).Should().BeTrue();
             CommonActions.ElementIsDisplayed(AddUserObjects.Email).Should().BeTrue();
         }
 
@@ -71,7 +70,6 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.Organisations
 
             AdminPages.AddUser.EnterFirstName(user.FirstName);
             AdminPages.AddUser.EnterLastName(user.LastName);
-            AdminPages.AddUser.EnterTelephoneNumber(user.TelephoneNumber);
             AdminPages.AddUser.EnterEmailAddress(user.EmailAddress);
 
             CommonActions.ClickSave();
@@ -107,7 +105,6 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.Organisations
 
             AdminPages.AddUser.EnterFirstName(user.FirstName);
             AdminPages.AddUser.EnterLastName(user.LastName);
-            AdminPages.AddUser.EnterTelephoneNumber(user.TelephoneNumber);
             AdminPages.AddUser.EnterEmailAddress("test");
 
             CommonActions.ClickSave();
@@ -125,13 +122,12 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.Organisations
         }
 
         [Fact]
-        public async void AddUser_EmailAlreadyExists_ThrowsError()
+        public async Task AddUser_EmailAlreadyExists_ThrowsError()
         {
             var user = await CreateUser();
 
             AdminPages.AddUser.EnterFirstName(user.FirstName);
             AdminPages.AddUser.EnterLastName(user.LastName);
-            AdminPages.AddUser.EnterTelephoneNumber(user.PhoneNumber);
             AdminPages.AddUser.EnterEmailAddress(user.Email);
 
             CommonActions.ClickSave();
