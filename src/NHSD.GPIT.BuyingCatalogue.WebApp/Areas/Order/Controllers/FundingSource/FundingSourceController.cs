@@ -9,7 +9,7 @@ using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.FundingSources;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers.FundingSource
 {
-    [Authorize]
+    [Authorize("Buyer")]
     [Area("Order")]
     [Route("order/organisation/{internalOrgId}/order/{callOffId}/funding-sources")]
     public sealed class FundingSourceController : Controller
