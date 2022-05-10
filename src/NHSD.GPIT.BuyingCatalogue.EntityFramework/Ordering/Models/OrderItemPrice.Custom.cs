@@ -1,4 +1,5 @@
 ﻿using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
+using NHSD.GPIT.BuyingCatalogue.EntityFramework.Extensions;
 
 namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models
 {
@@ -41,6 +42,15 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models
             ProvisioningType == ProvisioningType.Declarative
                 ? CostType.OneOff
                 : CostType.Recurring;
+
+        public string ToPriceUnitString()
+        {
+            var timeUnit = EstimationPeriod.HasValue
+                ? $" {EstimationPeriod.Value.Description()}"
+                : string.Empty;
+
+            return $"{Description}{timeUnit}";
+        }
 
         private void AddTiers(CataloguePrice cataloguePrice)
         {

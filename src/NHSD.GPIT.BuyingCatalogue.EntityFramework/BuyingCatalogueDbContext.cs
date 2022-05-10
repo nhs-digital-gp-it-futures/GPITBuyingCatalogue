@@ -110,6 +110,8 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework
 
         public DbSet<OrderItemPrice> OrderItemPrices { get; set; }
 
+        public DbSet<OrderItemPriceTier> OrderItemPriceTiers { get; set; }
+
         public override Task<int> SaveChangesAsync(bool acceptAllChangesOnSuccess, CancellationToken cancellationToken = default)
         {
             UpdateAuditFields();

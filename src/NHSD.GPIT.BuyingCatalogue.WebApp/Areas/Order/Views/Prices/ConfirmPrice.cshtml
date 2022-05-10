@@ -42,6 +42,8 @@
                 <input type="hidden" asp-for="Tiers[i].Id"/>
                 <input type="hidden" asp-for="Tiers[i].ListPrice"/>
                 <input type="hidden" asp-for="Tiers[i].Description"/>
+                <input type="hidden" asp-for="Tiers[i].LowerRange"/>
+                <input type="hidden" asp-for="Tiers[i].UpperRange"/>
 
                 var labelText = Model.NumberOfTiers > 1
                     ? $"For Tier {i + 1}"

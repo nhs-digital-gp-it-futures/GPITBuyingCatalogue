@@ -10,5 +10,6 @@
     LastUpdated datetime2 NOT NULL ,
     LastUpdatedBy INT NULL, 
     SysStartTime datetime2(0) NOT NULL,
-    SysEndTime datetime2(0) NOT NULL,   
+    SysEndTime datetime2(0) NOT NULL, 
+    [Quantity] INT NULL,   
 );

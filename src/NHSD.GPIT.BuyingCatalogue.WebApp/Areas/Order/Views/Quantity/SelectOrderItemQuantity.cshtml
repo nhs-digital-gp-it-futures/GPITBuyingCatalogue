@@ -1,0 +1,30 @@
+﻿@model NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.SolutionSelection.Quantity.SelectOrderItemQuantityModel;
+@{
+	ViewBag.Title = $"Quantity of {Model.ItemType}";
+}
+
+<partial name="Partials/_BackLink" model="Model" />
+
+<div class="nhsuk-grid-row">
+    <div class="nhsuk-grid-column-two-thirds">
+		<nhs-validation-summary/>
+
+		<nhs-page-title title="@ViewBag.Title"
+                caption="@Model!.ItemName"
+                advice="Enter the total amount you want to order." />
+
+        <form method="post">
+            <input type="hidden" asp-for="@Model.BackLink" />
+            <input type="hidden" asp-for="@Model.ItemName" />
+            <input type="hidden" asp-for="@Model.ItemType" />
+            
+            <nhs-bookended-input asp-for="Quantity" 
+                                 label-text="Quantity"
+                                 Suffix="items"/>
+
+            <br/>
+
+			<nhs-submit-button text="Continue"/>
+		</form>
+	</div>
+</div>
