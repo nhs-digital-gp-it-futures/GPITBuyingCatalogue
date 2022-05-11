@@ -159,7 +159,6 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering.Supplier
         [Fact]
         public void NewContact_AcceptableValues_EditContact_ExpectedResult()
         {
-
             using var context = GetEndToEndDbContext();
             var organisationId = context.Organisations.First(o => o.InternalIdentifier == InternalOrgId).Id;
 

@@ -19,6 +19,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.PublicBrowse.Solution
     public sealed class Interoperability : AnonymousTestBase, IClassFixture<LocalWebApplicationFactory>, IDisposable
     {
         private static readonly CatalogueItemId SolutionId = new(99999, "001");
+
         private static readonly Dictionary<string, string> Parameters = new()
         {
             { nameof(SolutionId), SolutionId.ToString() },
