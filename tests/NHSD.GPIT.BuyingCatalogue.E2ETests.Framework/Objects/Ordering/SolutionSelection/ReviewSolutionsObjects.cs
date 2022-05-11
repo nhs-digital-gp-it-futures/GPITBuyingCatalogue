@@ -1,8 +1,8 @@
 ﻿using OpenQA.Selenium;
 
-namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Objects.Ordering.SolutionSelection
+namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.Objects.Ordering.SolutionSelection
 {
-    internal static class ReviewSolutionsObjects
+    public static class ReviewSolutionsObjects
     {
         public static By CatalogueSolutionSectionTitle => By.Id("catalogue-solutions-title");
 

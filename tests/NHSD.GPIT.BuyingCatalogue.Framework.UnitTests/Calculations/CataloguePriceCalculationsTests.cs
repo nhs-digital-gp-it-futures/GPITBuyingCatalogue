@@ -3,7 +3,7 @@ using FluentAssertions;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.Framework.Calculations;
-using NHSD.GPIT.BuyingCatalogue.Test.Framework.AutoFixtureCustomisations;
+using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.AutoFixtureCustomisations;
 using Xunit;
 
 namespace NHSD.GPIT.BuyingCatalogue.Framework.UnitTests.Calculations
@@ -30,7 +30,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Framework.UnitTests.Calculations
             orderItem.OrderItemRecipients = new HashSet<OrderItemRecipient> { orderItemRecipient };
             orderItem.OrderItemPrice = new(price);
 
-            var result = CataloguePriceCalculations.CalculateTotalCost(orderItem.OrderItemPrice, orderItem.GetTotalRecipientQuantity());
+            var result = orderItem.OrderItemPrice.CalculateTotalCost(orderItem.GetTotalRecipientQuantity());
 
             result.Should().Be(3.14M);
         }
@@ -58,7 +58,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Framework.UnitTests.Calculations
             orderItem.OrderItemRecipients = new HashSet<OrderItemRecipient> { orderItemRecipient };
             orderItem.OrderItemPrice = new(price);
 
-            var result = CataloguePriceCalculations.CalculateTotalCostPerTier(orderItem.OrderItemPrice, orderItem.GetTotalRecipientQuantity());
+            var result = orderItem.OrderItemPrice.CalculateTotalCostPerTier(orderItem.GetTotalRecipientQuantity());
 
             var expected = new PriceCalculationModel(1, expectedQuantity, expectedPrice);
 
@@ -88,7 +88,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Framework.UnitTests.Calculations
             orderItem.OrderItemRecipients = new HashSet<OrderItemRecipient> { orderItemRecipient };
             orderItem.OrderItemPrice = new(price);
 
-            var result = CataloguePriceCalculations.CalculateTotalCost(orderItem.OrderItemPrice, orderItem.GetTotalRecipientQuantity());
+            var result = orderItem.OrderItemPrice.CalculateTotalCost(orderItem.GetTotalRecipientQuantity());
 
             result.Should().Be(11263.18M);
         }
@@ -116,7 +116,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Framework.UnitTests.Calculations
             orderItem.OrderItemRecipients = new HashSet<OrderItemRecipient> { orderItemRecipient };
             orderItem.OrderItemPrice = new(price);
 
-            var result = CataloguePriceCalculations.CalculateTotalCostPerTier(orderItem.OrderItemPrice, orderItem.GetTotalRecipientQuantity());
+            var result = orderItem.OrderItemPrice.CalculateTotalCostPerTier(orderItem.GetTotalRecipientQuantity());
 
             var expected = new PriceCalculationModel(1, expectedQuantity, expectedCost);
 
@@ -165,7 +165,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Framework.UnitTests.Calculations
             orderItem.OrderItemRecipients = new HashSet<OrderItemRecipient> { orderItemRecipient };
             orderItem.OrderItemPrice = new(price);
 
-            var result = CataloguePriceCalculations.CalculateTotalCost(orderItem.OrderItemPrice, orderItem.GetTotalRecipientQuantity());
+            var result = orderItem.OrderItemPrice.CalculateTotalCost(orderItem.GetTotalRecipientQuantity());
 
             result.Should().Be(expected);
         }
@@ -209,7 +209,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Framework.UnitTests.Calculations
             orderItem.OrderItemRecipients = new HashSet<OrderItemRecipient> { orderItemRecipient };
             orderItem.OrderItemPrice = new(price);
 
-            var result = CataloguePriceCalculations.CalculateTotalCostPerTier(orderItem.OrderItemPrice, orderItem.GetTotalRecipientQuantity());
+            var result = orderItem.OrderItemPrice.CalculateTotalCostPerTier(orderItem.GetTotalRecipientQuantity());
 
             var expected = TieredSingleFixedExpected(index, quantity);
 
@@ -263,7 +263,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Framework.UnitTests.Calculations
             orderItem.OrderItemRecipients = new HashSet<OrderItemRecipient> { orderItemRecipient };
             orderItem.OrderItemPrice = new(price);
 
-            var result = CataloguePriceCalculations.CalculateTotalCost(orderItem.OrderItemPrice, orderItem.GetTotalRecipientQuantity());
+            var result = orderItem.OrderItemPrice.CalculateTotalCost(orderItem.GetTotalRecipientQuantity());
 
             result.Should().Be(expected);
         }
@@ -310,7 +310,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Framework.UnitTests.Calculations
             orderItem.OrderItemRecipients = new HashSet<OrderItemRecipient> { orderItemRecipient };
             orderItem.OrderItemPrice = new(price);
 
-            var result = CataloguePriceCalculations.CalculateTotalCostPerTier(orderItem.OrderItemPrice, orderItem.GetTotalRecipientQuantity());
+            var result = orderItem.OrderItemPrice.CalculateTotalCostPerTier(orderItem.GetTotalRecipientQuantity());
 
             var expected = TieredCumulativeExpected(index);
 
@@ -361,7 +361,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Framework.UnitTests.Calculations
             orderItem.OrderItemRecipients = new HashSet<OrderItemRecipient> { orderItemRecipient };
             orderItem.OrderItemPrice = new(price);
 
-            var result = CataloguePriceCalculations.CalculateTotalCost(orderItem.OrderItemPrice, orderItem.GetTotalRecipientQuantity());
+            var result = orderItem.OrderItemPrice.CalculateTotalCost(orderItem.GetTotalRecipientQuantity());
 
             result.Should().Be(expected);
         }
@@ -405,7 +405,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Framework.UnitTests.Calculations
             orderItem.OrderItemRecipients = new HashSet<OrderItemRecipient> { orderItemRecipient };
             orderItem.OrderItemPrice = new(price);
 
-            var result = CataloguePriceCalculations.CalculateTotalCostPerTier(orderItem.OrderItemPrice, orderItem.GetTotalRecipientQuantity());
+            var result = orderItem.OrderItemPrice.CalculateTotalCostPerTier(orderItem.GetTotalRecipientQuantity());
 
             var expected = TieredVolumeExpected(index);
 

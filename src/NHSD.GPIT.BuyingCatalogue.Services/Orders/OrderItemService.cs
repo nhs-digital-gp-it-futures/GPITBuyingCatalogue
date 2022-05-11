@@ -75,7 +75,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
                     && oi.CatalogueItemId == catalogueItemId
                     && oi.Order.OrderingParty.InternalIdentifier == internalOrgId);
 
-            decimal totalCost = CataloguePriceCalculations.CalculateTotalCost(item.OrderItemPrice, item.GetTotalRecipientQuantity());
+            decimal totalCost = item.OrderItemPrice.CalculateTotalCost(item.GetTotalRecipientQuantity());
 
             var (localAllocation, centralAllocation) = CalculateFundingSplit(totalCost, selectedFundingType, centrallyAllocatedAmount);
 

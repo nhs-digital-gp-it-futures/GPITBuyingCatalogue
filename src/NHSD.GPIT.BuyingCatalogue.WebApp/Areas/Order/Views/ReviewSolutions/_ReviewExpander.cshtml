@@ -6,7 +6,7 @@
 @model NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models.OrderItem
 
 @{
-	var TotalCosts = CataloguePriceCalculations.CalculateTotalCostPerTier(Model.OrderItemPrice, Model.GetTotalRecipientQuantity());
+	var TotalCosts = Model.OrderItemPrice.CalculateTotalCostPerTier(Model.GetTotalRecipientQuantity());
 	var TotalCost = TotalCosts.Sum(tc => tc.Cost);
 	var subTotalDescription = Model.OrderItemPrice.EstimationPeriod != null ? Model.OrderItemPrice.EstimationPeriod!.Value.Description() : "";
 }
@@ -14,7 +14,7 @@
 <nhs-expander label-text="@Model.CatalogueItem.Name"
 			  colour-mode="BlackAndWhite" 
 			  secondary-text-title="Subtotal: "
-			  secondary-text="£@TotalCost.ToString("N") @subTotalDescription"
+			  secondary-text="£@TotalCost.ToString("N4") @subTotalDescription"
 			  open="true"
 			  bold-title="true">
 	<br/>
@@ -40,7 +40,7 @@
 				var price = Model.OrderItemPrice.OrderItemPriceTiers.ElementAt(i);
 				<nhs-table-row-container>
 					<nhs-table-cell>Tier @TotalCosts[i].Id</nhs-table-cell>
-					<nhs-table-cell>£@price.Price @Model.OrderItemPrice.Description</nhs-table-cell>
+					<nhs-table-cell>£@price.Price.ToString("N4") @Model.OrderItemPrice.Description</nhs-table-cell>
 					<nhs-table-cell>@TotalCosts[i].Quantity</nhs-table-cell>
 				</nhs-table-row-container>
 			}
@@ -55,7 +55,7 @@
 			{
 				var price = Model.OrderItemPrice.OrderItemPriceTiers.ElementAt(i);
 				<nhs-table-row-container>
-					<nhs-table-cell>£@price.Price @Model.OrderItemPrice.Description</nhs-table-cell>
+					<nhs-table-cell>£@price.Price.ToString("N4") @Model.OrderItemPrice.Description</nhs-table-cell>
 					<nhs-table-cell>@TotalCosts[i].Quantity</nhs-table-cell>
 				</nhs-table-row-container>
 			}

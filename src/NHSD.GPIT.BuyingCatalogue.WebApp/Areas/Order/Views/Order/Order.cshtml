@@ -107,6 +107,7 @@
 							nameof(ReviewSolutionsController.ReviewSolutions),
 							typeof(ReviewSolutionsController).ControllerName(),
 							new { Model.InternalOrgId, Model.CallOffId }),
+					TaskProgress.CannotStart => string.Empty,
 					_ => throw new ArgumentException("Orders solution selection currently in a status that it should not be able to be in."),
 				};
 }
