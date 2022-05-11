@@ -469,8 +469,6 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
             context.SaveChangesAs(user.Id);
         }
 
-
-
         private static void AddOrderWithAddedAssociatedService(BuyingCatalogueDbContext context)
         {
             const int orderId = 90008;

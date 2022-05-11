@@ -18,7 +18,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.Users
 
         private static readonly Dictionary<string, string> Parameters = new()
         {
-            { nameof(UserId),  $"{UserId}" },
+            { nameof(UserId), $"{UserId}" },
         };
 
         public AccountStatus(LocalWebApplicationFactory factory)

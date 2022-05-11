@@ -45,7 +45,6 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.AddNewSolution.HostingT
         }
 
         [Fact]
-
         public async Task HostingType_PublicCloud_CompleteAllFields()
         {
             AdminPages.CommonActions.ClickAddHostingTypeLink();
