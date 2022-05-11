@@ -7,6 +7,7 @@ using Microsoft.EntityFrameworkCore;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Utils;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.TestBases;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
+using NHSD.GPIT.BuyingCatalogue.Framework.Calculations;
 using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers.FundingSource;
 using Xunit;
@@ -116,7 +117,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering.FundingSources
 
                 CommonActions.ClickRadioButtonWithText("Mixed funding");
 
-                var totalCost = orderItem.CalculateTotalCost();
+                var totalCost = CataloguePriceCalculations.CalculateTotalCost(orderItem.OrderItemPrice, orderItem.GetTotalRecipientQuantity());
 
                 var centralAllocation = TextGenerators.PriceInputAddPrice(Objects.Ordering.FundingSources.AmountOfCentralFunding, totalCost > 99999M ? 99999M : totalCost);
 
@@ -134,7 +135,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering.FundingSources
                 .FirstOrDefaultAsync(oi => oi.OrderId == CallOffId.Id && oi.CatalogueItemId == CatalogueItemId);
 
                 orderItemSaved.OrderItemFunding.CentralAllocation.Should().Be(centralAllocationDecimal);
-                orderItemSaved.OrderItemFunding.LocalAllocation.Should().Be(orderItem.CalculateTotalCost() - centralAllocationDecimal);
+                orderItemSaved.OrderItemFunding.LocalAllocation.Should().Be(totalCost - centralAllocationDecimal);
                 orderItemSaved.CurrentFundingType().Should().Be(OrderItemFundingType.MixedFunding);
             });
         }

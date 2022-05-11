@@ -4,6 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Users.Models;
+using NHSD.GPIT.BuyingCatalogue.Framework.Calculations;
 
 namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
 {
@@ -22,6 +23,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
             AddOrderWithAddedNoContactCatalogueSolution(context);
             AddOrderWithAddedNoContactSolutionAndNoContactAdditionalSolution(context);
             AddOrderWithAddedAssociatedService(context);
+            AddOrderWithAddedNoContactSolutionAdditionalServiceAndAssociatedService(context);
             AddOrderReadyToComplete(context);
             AddCompletedOrder(context, 90010, GetOrganisationId(context));
             AddCompletedOrder(context, 90011, GetOrganisationId(context, "CG-15F"));
@@ -467,6 +469,8 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
             context.SaveChangesAs(user.Id);
         }
 
+
+
         private static void AddOrderWithAddedAssociatedService(BuyingCatalogueDbContext context)
         {
             const int orderId = 90008;
@@ -575,16 +579,122 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
                 addedSolution.OrderItemRecipients.Add(recipient);
             });
 
+            var totalCost = CataloguePriceCalculations.CalculateTotalCost(addedSolution.OrderItemPrice, addedSolution.GetTotalRecipientQuantity());
+
             addedSolution.OrderItemFunding = new OrderItemFunding
             {
                 OrderId = addedSolution.OrderId,
                 CatalogueItemId = addedSolution.CatalogueItemId,
-                TotalPrice = addedSolution.CalculateTotalCost(),
-                CentralAllocation = addedSolution.CalculateTotalCost(),
+                TotalPrice = totalCost,
+                CentralAllocation = totalCost,
                 LocalAllocation = 0,
             };
 
             order.OrderItems.Add(addedSolution);
+
+            context.Add(order);
+
+            context.SaveChangesAs(user.Id);
+        }
+
+        private static void AddOrderWithAddedNoContactSolutionAdditionalServiceAndAssociatedService(BuyingCatalogueDbContext context)
+        {
+            const int orderId = 90013;
+            var timeNow = DateTime.UtcNow;
+
+            var order = new Order
+            {
+                Id = orderId,
+                OrderingPartyId = GetOrganisationId(context),
+                Created = timeNow,
+                OrderStatus = OrderStatus.InProgress,
+                IsDeleted = false,
+                Description = "This is an Order Description",
+                OrderingPartyContact = new Contact
+                {
+                    FirstName = "Clark",
+                    LastName = "Kent",
+                    Email = "Clark.Kent@TheDailyPlanet.Fake",
+                    Phone = "123456789",
+                },
+                SupplierId = 99998,
+                SupplierContact = new Contact
+                {
+                    FirstName = "Bruce",
+                    LastName = "Wayne",
+                    Email = "bat.man@Gotham.Fake",
+                    Phone = "123456789",
+                },
+                CommencementDate = timeNow.AddDays(1),
+                InitialPeriod = 6,
+                MaximumTerm = 36,
+            };
+
+            var user = GetBuyerUser(context, order.OrderingPartyId);
+
+            var priceMultiplePriceSolution = context.CatalogueItems
+                .Where(c => c.Id == new CatalogueItemId(99998, "001"))
+                .Include(c => c.CataloguePrices).ThenInclude(cp => cp.CataloguePriceTiers)
+                .Include(c => c.CataloguePrices).ThenInclude(cp => cp.PricingUnit)
+                .Select(ci => new OrderItemPrice(ci.CataloguePrices.First()))
+                .Single();
+
+            var additionalPrice = context.CatalogueItems
+                .Where(c => c.Id == new CatalogueItemId(99998, "002A999"))
+                .Include(c => c.CataloguePrices).ThenInclude(cp => cp.CataloguePriceTiers)
+                .Include(c => c.CataloguePrices).ThenInclude(cp => cp.PricingUnit)
+                .Select(ci => new OrderItemPrice(ci.CataloguePrices.First()))
+                .Single();
+
+            var associatedPrice = context.CatalogueItems
+                .Where(c => c.Id == new CatalogueItemId(99998, "S-997"))
+                .Include(c => c.CataloguePrices).ThenInclude(cp => cp.CataloguePriceTiers)
+                .Include(c => c.CataloguePrices).ThenInclude(cp => cp.PricingUnit)
+                .Select(ci => new OrderItemPrice(ci.CataloguePrices.First()))
+                .Single();
+
+            var addedMultiplePriceCatalogueSolution = new OrderItem
+            {
+                OrderItemPrice = priceMultiplePriceSolution,
+                Created = DateTime.UtcNow,
+                OrderId = orderId,
+                CatalogueItem = context.CatalogueItems.Single(c => c.Id == new CatalogueItemId(99998, "001")),
+            };
+
+            var addedAdditionalSolution = new OrderItem
+            {
+                OrderItemPrice = additionalPrice,
+                Created = DateTime.UtcNow,
+                OrderId = orderId,
+                CatalogueItem = context.CatalogueItems.Single(c => c.Id == new CatalogueItemId(99998, "002A999")),
+            };
+
+            var addedAssociatedSolution = new OrderItem
+            {
+                OrderItemPrice = associatedPrice,
+                Created = DateTime.UtcNow,
+                OrderId = orderId,
+                CatalogueItem = context.CatalogueItems.Single(c => c.Id == new CatalogueItemId(99998, "S-997")),
+            };
+
+            var recipients = context.ServiceRecipients.ToList();
+
+            recipients.ForEach(r =>
+            {
+                var recipient = new OrderItemRecipient
+                {
+                    Recipient = r,
+                    Quantity = 1000,
+                };
+
+                addedMultiplePriceCatalogueSolution.OrderItemRecipients.Add(recipient);
+                addedAdditionalSolution.OrderItemRecipients.Add(recipient);
+                addedAssociatedSolution.OrderItemRecipients.Add(recipient);
+            });
+
+            order.OrderItems.Add(addedMultiplePriceCatalogueSolution);
+            order.OrderItems.Add(addedAdditionalSolution);
+            order.OrderItems.Add(addedAssociatedSolution);
 
             context.Add(order);
 
@@ -651,12 +761,14 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
                 addedSolution.OrderItemRecipients.Add(recipient);
             });
 
+            var totalCost = CataloguePriceCalculations.CalculateTotalCost(addedSolution.OrderItemPrice, addedSolution.GetTotalRecipientQuantity());
+
             addedSolution.OrderItemFunding = new OrderItemFunding
             {
                 OrderId = addedSolution.OrderId,
                 CatalogueItemId = addedSolution.CatalogueItemId,
-                TotalPrice = addedSolution.CalculateTotalCost(),
-                CentralAllocation = addedSolution.CalculateTotalCost(),
+                TotalPrice = totalCost,
+                CentralAllocation = totalCost,
                 LocalAllocation = 0,
             };
 

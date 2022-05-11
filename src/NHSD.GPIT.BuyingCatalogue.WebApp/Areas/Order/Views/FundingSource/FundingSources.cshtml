@@ -2,6 +2,7 @@
 @using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models
 @using NHSD.GPIT.BuyingCatalogue.Framework.Extensions
 @using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers.FundingSource
+@using NHSD.GPIT.BuyingCatalogue.Framework.Calculations
 @using static NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.TagHelpers.Tags.NhsTagsTagHelper
 @model NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.FundingSources.FundingSources
 @{
@@ -43,7 +44,7 @@
 					<nhs-table-cell>@item.CatalogueItem.Name</nhs-table-cell>
 					<nhs-table-cell>@($"£{(item.OrderItemFunding?.CentralAllocation ?? 0M).ToString("N2")}")</nhs-table-cell>
 					<nhs-table-cell>@($"£{(item.OrderItemFunding?.LocalAllocation ?? 0M).ToString("N2")}")</nhs-table-cell>
-					<nhs-table-cell>@($"£{item.CalculateTotalCost().ToString("N2")}")</nhs-table-cell>
+					<nhs-table-cell>@($"£{CalculateTotalCost(item).ToString("N2")}")</nhs-table-cell>
 					<nhs-table-cell><nhs-tag text="@FormatFundingType(item.CurrentFundingType())" colour="@FormatFundingTypeColour(item.CurrentFundingType())"></nhs-tag></nhs-table-cell>
 					<nhs-table-cell>
 						<a asp-controller="@typeof(FundingSourceController).ControllerName()"
@@ -58,7 +59,7 @@
 					<nhs-table-cell><b>Total</b></nhs-table-cell>
 					<nhs-table-cell>@($"£{Model.OrderItemsSelectable.Sum(oi => oi.OrderItemFunding?.CentralAllocation ?? 0M).ToString("N2")}")</nhs-table-cell>
 					<nhs-table-cell>@($"£{Model.OrderItemsSelectable.Sum(oi => oi.OrderItemFunding?.LocalAllocation ?? 0M).ToString("N2")}")</nhs-table-cell>
-					<nhs-table-cell>@($"£{Model.OrderItemsSelectable.Sum(oi => oi.CalculateTotalCost()).ToString("N2")}")</nhs-table-cell>
+					<nhs-table-cell>@($"£{Model.OrderItemsSelectable.Sum(oi => CalculateTotalCost(oi)).ToString("N2")}")</nhs-table-cell>
 					<nhs-table-cell></nhs-table-cell>
 					<nhs-table-cell></nhs-table-cell>
 				</nhs-table-row-container>
@@ -80,15 +81,15 @@
 				{
 				<nhs-table-row-container>
 					<nhs-table-cell>@item.CatalogueItem.Name</nhs-table-cell>
-					<nhs-table-cell>@($"£{item.CalculateTotalCost().ToString("N2")}")</nhs-table-cell>
-					<nhs-table-cell>@($"£{item.CalculateTotalCost().ToString("N2")}")</nhs-table-cell>
+					<nhs-table-cell>@($"£{CalculateTotalCost(item).ToString("N2")}")</nhs-table-cell>
+					<nhs-table-cell>@($"£{CalculateTotalCost(item).ToString("N2")}")</nhs-table-cell>
 					<nhs-table-cell></nhs-table-cell>					
 				</nhs-table-row-container>
 				}           
 				<nhs-table-row-container>
 					<nhs-table-cell><b>Total</b></nhs-table-cell>
-					<nhs-table-cell>@($"£{Model.OrderItemsLocalOnly.Sum(oi => oi.CalculateTotalCost()).ToString("N2")}")</nhs-table-cell>
-					<nhs-table-cell>@($"£{Model.OrderItemsLocalOnly.Sum(oi => oi.CalculateTotalCost()).ToString("N2")}")</nhs-table-cell>
+					<nhs-table-cell>@($"£{Model.OrderItemsLocalOnly.Sum(oi => CalculateTotalCost(oi)).ToString("N2")}")</nhs-table-cell>
+					<nhs-table-cell>@($"£{Model.OrderItemsLocalOnly.Sum(oi => CalculateTotalCost(oi)).ToString("N2")}")</nhs-table-cell>
 					<nhs-table-cell></nhs-table-cell>
 					<nhs-table-cell></nhs-table-cell>
 				</nhs-table-row-container>
@@ -112,5 +113,7 @@
 
 	TagColour FormatFundingTypeColour(OrderItemFundingType fundingType) => 
 	fundingType == OrderItemFundingType.None ? TagColour.Grey : TagColour.Green;
+
+	decimal CalculateTotalCost(OrderItem item) => CataloguePriceCalculations.CalculateTotalCost(item.OrderItemPrice, item.GetTotalRecipientQuantity());
 }
 

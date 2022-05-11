@@ -1,10 +1,18 @@
-﻿using System.Linq;
+﻿using System.Collections.Generic;
+using System.Linq;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Extensions;
+using NHSD.GPIT.BuyingCatalogue.EntityFramework.Interfaces;
 
 namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models
 {
-    public sealed partial class CataloguePrice
+    public sealed partial class CataloguePrice : IPrice
     {
+        public ICollection<IPriceTier> PriceTiers => CataloguePriceTiers.Cast<IPriceTier>().ToList();
+
+        public string Description => PricingUnit.Description;
+
+        public TimeUnit? EstimationPeriod => TimeUnit;
+
         public string ToPriceUnitString()
         {
             return $"{PricingUnit?.Description ?? string.Empty} {(TimeUnit.HasValue ? TimeUnit.Value.Description() : string.Empty)}".Trim();

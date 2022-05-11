@@ -1,9 +1,12 @@
-﻿using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
+﻿using System.Collections.Generic;
+using System.Linq;
+using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Extensions;
+using NHSD.GPIT.BuyingCatalogue.EntityFramework.Interfaces;
 
 namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models
 {
-    public sealed partial class OrderItemPrice
+    public sealed partial class OrderItemPrice : IPrice
     {
         public OrderItemPrice(OrderItem item, CataloguePrice cataloguePrice)
             : this()
@@ -36,6 +39,8 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models
 
             AddTiers(cataloguePrice);
         }
+
+        public ICollection<IPriceTier> PriceTiers => OrderItemPriceTiers.Cast<IPriceTier>().ToList();
 
         public CostType CostType =>
             OrderItem.CatalogueItem.CatalogueItemType == CatalogueItemType.AssociatedService &&

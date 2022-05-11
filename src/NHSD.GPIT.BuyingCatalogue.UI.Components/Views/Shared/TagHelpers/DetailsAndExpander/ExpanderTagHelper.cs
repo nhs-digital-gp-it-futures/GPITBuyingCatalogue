@@ -12,6 +12,7 @@ namespace NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.TagHelpers.Detail
         public const string ColourModeName = "colour-mode";
         public const string SecondaryTextTitleName = "secondary-text-title";
         public const string SecondaryTextName = "secondary-text";
+        public const string OpenName = "open";
 
         private const string ExpanderClass = "nhsuk-expander";
         private const string ExpanderBlackAndWhite = "nhsuk-expander-black-and-white";
@@ -34,6 +35,12 @@ namespace NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.TagHelpers.Detail
         [HtmlAttributeName(SecondaryTextName)]
         public string SecondaryText { get; set; }
 
+        [HtmlAttributeName(OpenName)]
+        public bool Open { get; set; }
+
+        [HtmlAttributeName(DetailsAndExpanderTagHelperBuilders.BoldTitle)]
+        public bool BoldTitle { get; set; }
+
         public override void Init(TagHelperContext context)
         {
             if (!context.Items.TryGetValue("InExpanderContext", out _))
@@ -49,8 +56,8 @@ namespace NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.TagHelpers.Detail
             output.TagMode = TagMode.StartTagAndEndTag;
 
             var summary = string.IsNullOrWhiteSpace(SecondaryTextTitle)
-                ? DetailsAndExpanderTagHelperBuilders.GetSummaryLabelBuilder(LabelText)
-                : DetailsAndExpanderTagHelperBuilders.GetSummaryLabelBuilderWithSecondaryInformation(LabelText, SecondaryTextTitle, SecondaryText);
+                ? DetailsAndExpanderTagHelperBuilders.GetSummaryLabelBuilder(LabelText, BoldTitle)
+                : DetailsAndExpanderTagHelperBuilders.GetSummaryLabelBuilderWithSecondaryInformation(LabelText, SecondaryTextTitle, SecondaryText, BoldTitle);
 
             var textItem = DetailsAndExpanderTagHelperBuilders.GetTextItem();
 
@@ -61,6 +68,9 @@ namespace NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.TagHelpers.Detail
             output.Attributes.Add(new TagHelperAttribute(TagHelperConstants.Class, $"{DetailsAndExpanderTagHelperBuilders.DetailsClass} {ExpanderClass} {blackAndWhiteClass}"));
 
             textItem.InnerHtml.AppendHtml(children);
+
+            if (Open)
+                output.Attributes.Add("open", string.Empty);
 
             output.Content
                 .AppendHtml(summary)

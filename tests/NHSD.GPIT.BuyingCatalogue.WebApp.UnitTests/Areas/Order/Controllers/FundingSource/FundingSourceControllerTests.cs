@@ -9,6 +9,7 @@ using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.AspNetCore.Routing;
 using Moq;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
+using NHSD.GPIT.BuyingCatalogue.Framework.Calculations;
 using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Orders;
 using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.AutoFixtureCustomisations;
@@ -83,7 +84,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Fun
             var model = new WebApp.Areas.Order.Models.FundingSources.FundingSource(internalOrgId, order.CallOffId, orderItem)
             {
                 SelectedFundingType = OrderItemFundingType.CentralFunding,
-                AmountOfCentralFunding = orderItem.CalculateTotalCost(),
+                AmountOfCentralFunding = CataloguePriceCalculations.CalculateTotalCost(orderItem.OrderItemPrice, orderItem.GetTotalRecipientQuantity()),
             };
 
             orderItemServiceMock.Setup(oi => oi.SaveOrUpdateOrderItemFunding(order.CallOffId, internalOrgId, orderItem.CatalogueItemId, model.SelectedFundingType, model.AmountOfCentralFunding))
