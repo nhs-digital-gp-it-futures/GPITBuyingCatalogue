@@ -8,7 +8,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Framework.Calculations
 {
     public static class CataloguePriceCalculations
     {
-        public static decimal CalculateTotalCost(IPrice price, int quantity)
+        public static decimal CalculateTotalCost(this IPrice price, int quantity)
         {
             if (price == null)
                 throw new ArgumentNullException(nameof(price));
@@ -21,7 +21,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Framework.Calculations
             };
         }
 
-        public static IList<PriceCalculationModel> CalculateTotalCostPerTier(IPrice price, int quantity)
+        public static IList<PriceCalculationModel> CalculateTotalCostPerTier(this IPrice price, int quantity)
         {
             if (price == null)
                 throw new ArgumentNullException(nameof(price));
@@ -34,19 +34,19 @@ namespace NHSD.GPIT.BuyingCatalogue.Framework.Calculations
             };
         }
 
-        public static decimal CalculateCostPerMonth(IPrice price, int quantity)
+        public static decimal CalculateCostPerMonth(this IPrice price, int quantity)
         {
             var cost = CalculateTotalCost(price, quantity);
             return price.EstimationPeriod.Value == TimeUnit.PerMonth ? cost : cost / 12;
         }
 
-        public static decimal CalculateCostPerYear(IPrice price, int quantity)
+        public static decimal CalculateCostPerYear(this IPrice price, int quantity)
         {
             var cost = CalculateTotalCost(price, quantity);
             return price.EstimationPeriod.Value == TimeUnit.PerYear ? cost : cost * 12;
         }
 
-        public static decimal CalculateTotalCostForContractLength(IPrice price, int quantity, int maxTerm) =>
+        public static decimal CalculateTotalCostForContractLength(this IPrice price, int quantity, int maxTerm) =>
             CalculateCostPerMonth(price, quantity) * maxTerm;
 
         private static decimal CalculateTotalCostCumulative(IPrice price, int quantity) =>

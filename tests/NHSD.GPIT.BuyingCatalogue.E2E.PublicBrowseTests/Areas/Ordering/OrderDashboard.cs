@@ -75,6 +75,16 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering
         [Fact]
         public void OrderDashboard_ClickSolutionSelection_SectionNotStarted_ExpectedResult()
         {
+            var completedSectionOrder = new CallOffId(90004, 1);
+
+            var completedSectionParameters = new Dictionary<string, string>()
+            {
+                { nameof(InternalOrgId), InternalOrgId },
+                { nameof(CallOffId), completedSectionOrder.ToString() },
+            };
+
+            NavigateToUrl(typeof(OrderController), nameof(OrderController.Order), completedSectionParameters);
+
             CommonActions.ClickLinkElement(Objects.Ordering.OrderDashboard.SolutionSelectionLink);
 
             CommonActions.PageLoadedCorrectGetIndex(

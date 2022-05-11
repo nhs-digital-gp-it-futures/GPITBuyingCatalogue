@@ -9,18 +9,18 @@
 
 	var oneOffCost = Model.AllOrderItems
 		.Where(oi => oi.OrderItemPrice?.EstimationPeriod == null)
-		.Sum(oi => CataloguePriceCalculations.CalculateTotalCost(oi.OrderItemPrice, oi.GetTotalRecipientQuantity()));
+		.Sum(oi => oi.OrderItemPrice.CalculateTotalCost(oi.GetTotalRecipientQuantity()));
 
 	var monthlyCost = Model.AllOrderItems
 		.Where(oi => oi.OrderItemPrice?.EstimationPeriod != null)
-		.Sum(oi => CataloguePriceCalculations.CalculateCostPerMonth(oi.OrderItemPrice, oi.GetTotalRecipientQuantity()));
+		.Sum(oi => oi.OrderItemPrice.CalculateCostPerMonth(oi.GetTotalRecipientQuantity()));
 
 	var yearlyCost = Model.AllOrderItems
 		.Where(oi => oi.OrderItemPrice?.EstimationPeriod != null)
-		.Sum(oi => CataloguePriceCalculations.CalculateCostPerYear(oi.OrderItemPrice, oi.GetTotalRecipientQuantity()));
+		.Sum(oi => oi.OrderItemPrice.CalculateCostPerYear(oi.GetTotalRecipientQuantity()));
 
 	var totalCost = Model.AllOrderItems
-		.Sum(oi => CataloguePriceCalculations.CalculateTotalCostForContractLength(oi.OrderItemPrice, oi.GetTotalRecipientQuantity(), Model.ContractLength));
+		.Sum(oi => oi.OrderItemPrice.CalculateTotalCostForContractLength(oi.GetTotalRecipientQuantity(), Model.ContractLength));
 
 }
 

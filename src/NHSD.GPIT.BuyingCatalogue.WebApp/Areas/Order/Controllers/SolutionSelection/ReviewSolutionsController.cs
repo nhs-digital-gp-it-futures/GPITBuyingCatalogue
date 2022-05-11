@@ -9,7 +9,7 @@ using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.SolutionSelection.Revi
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers.SolutionSelection
 {
-    [Authorize]
+    [Authorize("Buyer")]
     [Area("Order")]
     [Route("order/organisation/{internalOrgId}/order/{callOffId}/review-solutions-and-services")]
     public class ReviewSolutionsController : Controller
