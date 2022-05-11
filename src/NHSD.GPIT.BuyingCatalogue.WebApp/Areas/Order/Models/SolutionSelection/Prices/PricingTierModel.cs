@@ -9,5 +9,9 @@
         public string AgreedPrice { get; set; }
 
         public string Description { get; set; }
+
+        public int LowerRange { get; set; }
+
+        public int? UpperRange { get; set; }
     }
 }

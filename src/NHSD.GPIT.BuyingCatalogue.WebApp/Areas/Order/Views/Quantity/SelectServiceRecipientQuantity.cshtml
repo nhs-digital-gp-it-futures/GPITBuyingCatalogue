@@ -1,0 +1,75 @@
+﻿@model NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.SolutionSelection.Quantity.SelectServiceRecipientQuantityModel;
+@{
+    ViewBag.Title = $"Quantity of {Model.ItemType}";
+}
+
+<partial name="Partials/_BackLink" model="Model" />
+
+<div class="nhsuk-grid-row">
+    <div class="nhsuk-grid-column-two-thirds">
+        <nhs-validation-summary />
+
+        <nhs-page-title title="@ViewBag.Title"
+                        caption="@Model!.ItemName"
+                        advice="We’ve included the latest practice list sizes published by NHS Digital." />
+                        
+        <nhs-inset-text>
+            The latest practice list sizes are published on
+            <a href="https://digital.nhs.uk/data-and-information/publications/statistical/patients-registered-at-a-gp-practice"
+               target="_blank">the NHS Digital website (opens in a new tab)</a>.
+        </nhs-inset-text>
+
+        <form method="post">
+            <input type="hidden" asp-for="@Model.BackLink" />
+            <input type="hidden" asp-for="@Model.ItemName" />
+            <input type="hidden" asp-for="@Model.ItemType" />
+
+            <h3>Quantity per practice</h3>
+            <nhs-table data-test-id="additional-service-dashboard-table">
+                <nhs-table-column>Recipient name (ODS code)</nhs-table-column>
+                <nhs-table-column>Practice list size</nhs-table-column>
+
+                @for (var i = 0; i < Model.ServiceRecipients.Length; i++)
+                {
+                    <nhs-table-row-container>
+                        <nhs-table-cell>
+                            <input type="hidden" asp-for="@Model.ServiceRecipients[i].Name" />
+                            <input type="hidden" asp-for="@Model.ServiceRecipients[i].OdsCode" />
+                            <input type="hidden" asp-for="@Model.ServiceRecipients[i].Quantity" />
+                            @if (Model.ServiceRecipients[i].Quantity > 0)
+                            {
+                                @Model.ServiceRecipients[i].Description
+                            }
+                            else
+                            {
+                                <div style="margin-top: 6px">
+                                    @Model.ServiceRecipients[i].Description
+                                </div>
+                            }
+                        </nhs-table-cell>
+                        <nhs-table-cell>
+                            @if (Model.ServiceRecipients[i].Quantity > 0)
+                            {
+                                var quantity = $"{Model.ServiceRecipients[i].Quantity:#,##0}";
+                                <div style="text-align: right">
+                                    @quantity
+                                </div>
+                            }
+                            else
+                            {
+                                <div style="text-align: right">
+                                    <nhs-input asp-for="@Model.ServiceRecipients[i].InputQuantity"
+                                               input-width="Five"/>
+                                </div>
+                            }
+                        </nhs-table-cell>
+                    </nhs-table-row-container>
+                }
+            </nhs-table>
+
+            <br/>
+
+            <nhs-submit-button text="Continue"/>
+        </form>
+    </div>
+</div>

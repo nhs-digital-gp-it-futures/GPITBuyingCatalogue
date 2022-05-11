@@ -14,5 +14,14 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models
             UpperRange = tier.UpperRange;
             OrderItemPrice = price;
         }
+
+        public string GetRangeDescription()
+        {
+            var upperRange = UpperRange == null
+                ? "+"
+                : $" to {UpperRange.Value}";
+
+            return $"{LowerRange}{upperRange} {OrderItemPrice.RangeDescription}";
+        }
     }
 }

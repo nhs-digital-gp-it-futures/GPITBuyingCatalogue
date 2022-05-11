@@ -11,6 +11,7 @@
     LastUpdatedBy INT NULL, 
     SysStartTime DATETIME2(0) GENERATED ALWAYS AS ROW START NOT NULL,
     SysEndTime DATETIME2(0) GENERATED ALWAYS AS ROW END NOT NULL,
+    [Quantity] INT NULL CONSTRAINT OrderItem_PositiveQuantity CHECK (Quantity > 0),
     PERIOD FOR SYSTEM_TIME (SysStartTime, SysEndTime),
     CONSTRAINT PK_OrderItems PRIMARY KEY (OrderId, CatalogueItemId),
     CONSTRAINT FK_OrderItems_Order FOREIGN KEY (OrderId) REFERENCES ordering.Orders (Id) ON DELETE CASCADE,

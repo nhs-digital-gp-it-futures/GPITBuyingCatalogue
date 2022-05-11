@@ -35,7 +35,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers.SolutionSelec
             this.listPriceService = listPriceService ?? throw new ArgumentNullException(nameof(listPriceService));
         }
 
-        [HttpGet("select-price")]
+        [HttpGet("price/select")]
         public async Task<IActionResult> SelectPrice(string internalOrgId, CallOffId callOffId, int? selectedPriceId = null)
         {
             var order = await orderService.GetOrderThin(callOffId, internalOrgId);
@@ -53,7 +53,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers.SolutionSelec
             return View(model);
         }
 
-        [HttpPost("select-price")]
+        [HttpPost("price/select")]
         public async Task<IActionResult> SelectPrice(string internalOrgId, CallOffId callOffId, SelectPriceModel model)
         {
             if (!ModelState.IsValid)
@@ -98,14 +98,48 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers.SolutionSelec
             }
 
             var (orderId, price) = await GetOrderIdAndCataloguePrice(internalOrgId, callOffId, priceId);
-            var agreedPrices = GetAgreedPricesFromModel(price, model);
+            var agreedPrices = GetAgreedPricesFromModel(model);
 
             await orderPriceService.AddPrice(orderId, price, agreedPrices);
 
-            // TODO: Replace with version that goes to quantity
             return RedirectToAction(
-                nameof(OrderController.Order),
-                typeof(OrderController).ControllerName(),
+                nameof(QuantityController.SelectQuantity),
+                typeof(QuantityController).ControllerName(),
+                new { internalOrgId, callOffId });
+        }
+
+        [HttpGet("price/edit")]
+        public async Task<IActionResult> EditPrice(string internalOrgId, CallOffId callOffId)
+        {
+            var order = await orderService.GetOrderWithOrderItems(callOffId, internalOrgId);
+
+            var model = new ConfirmPriceModel(order.GetSolution())
+            {
+                BackLink = Url.Action(
+                    nameof(SelectPrice),
+                    typeof(PricesController).ControllerName(),
+                    new { internalOrgId, callOffId }),
+            };
+
+            return View(ConfirmPriceViewName, model);
+        }
+
+        [HttpPost("price/edit")]
+        public async Task<IActionResult> EditPrice(string internalOrgId, CallOffId callOffId, ConfirmPriceModel model)
+        {
+            if (!ModelState.IsValid)
+            {
+                return View(ConfirmPriceViewName, model);
+            }
+
+            var order = await orderService.GetOrderThin(callOffId, internalOrgId);
+            var agreedPrices = GetAgreedPricesFromModel(model);
+
+            await orderPriceService.UpdatePrice(order.Id, order.GetSolution().CatalogueItemId, agreedPrices);
+
+            return RedirectToAction(
+                nameof(QuantityController.SelectQuantity),
+                typeof(QuantityController).ControllerName(),
                 new { internalOrgId, callOffId });
         }
 
@@ -180,7 +214,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers.SolutionSelec
             }
 
             var (orderId, price) = await GetOrderIdAndCataloguePrice(internalOrgId, callOffId, priceId, catalogueItemId);
-            var agreedPrices = GetAgreedPricesFromModel(price, model);
+            var agreedPrices = GetAgreedPricesFromModel(model);
 
             await orderPriceService.AddPrice(orderId, price, agreedPrices);
 
@@ -266,7 +300,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers.SolutionSelec
             }
 
             var (orderId, price) = await GetOrderIdAndCataloguePrice(internalOrgId, callOffId, priceId, catalogueItemId);
-            var agreedPrices = GetAgreedPricesFromModel(price, model);
+            var agreedPrices = GetAgreedPricesFromModel(model);
 
             await orderPriceService.AddPrice(orderId, price, agreedPrices);
 
@@ -277,23 +311,16 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers.SolutionSelec
                 new { internalOrgId, callOffId });
         }
 
-        private static List<OrderPricingTierDto> GetAgreedPricesFromModel(CataloguePrice price, ConfirmPriceModel model)
+        private static List<OrderPricingTierDto> GetAgreedPricesFromModel(ConfirmPriceModel model)
         {
-            var output = new List<OrderPricingTierDto>();
-
-            foreach (var tier in model.Tiers)
-            {
-                var pricingTier = price.CataloguePriceTiers.Single(x => x.Id == tier.Id);
-
-                output.Add(new OrderPricingTierDto
+            return model.Tiers
+                .Select(x => new OrderPricingTierDto
                 {
-                    Price = decimal.Parse(tier.AgreedPrice),
-                    LowerRange = pricingTier.LowerRange,
-                    UpperRange = pricingTier.UpperRange,
-                });
-            }
-
-            return output;
+                    Price = decimal.Parse(x.AgreedPrice),
+                    LowerRange = x.LowerRange,
+                    UpperRange = x.UpperRange,
+                })
+                .ToList();
         }
 
         private async Task<(int OrderId, CataloguePrice Price)> GetOrderIdAndCataloguePrice(
