@@ -13,7 +13,7 @@ using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.SolutionSelection.Quan
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers.SolutionSelection
 {
-    [Authorize]
+    [Authorize("Buyer")]
     [Area("Order")]
     [Route("order/organisation/{internalOrgId}/order/{callOffId}")]
     public class QuantityController : Controller
@@ -72,7 +72,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers.SolutionSelec
 
             var order = await orderService.GetOrderWithOrderItems(callOffId, internalOrgId);
 
-            await orderPriceService.SetQuantity(
+            await orderPriceService.SetOrderItemQuantity(
                 order.Id,
                 order.GetSolution().CatalogueItemId,
                 int.Parse(model.Quantity));
@@ -86,23 +86,23 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers.SolutionSelec
             var order = await orderService.GetOrderWithOrderItems(callOffId, internalOrgId);
             var solution = order.GetSolution();
 
-            var model = new SelectServiceRecipientQuantityModel
+            var model = new SelectServiceRecipientQuantityModel(solution)
             {
                 BackLink = Url.Action(
                     nameof(PricesController.EditPrice),
                     typeof(PricesController).ControllerName(),
                     new { internalOrgId, callOffId }),
-                ItemName = solution.CatalogueItem.Name,
-                ItemType = solution.CatalogueItem.CatalogueItemType.Name(),
-                ServiceRecipients = solution.OrderItemRecipients
-                    .Select(x => new ServiceRecipientQuantityModel
-                    {
-                        OdsCode = x.OdsCode,
-                        Name = x.Recipient?.Name,
-                        Quantity = gpPracticeCache.GetNumberOfPatients(x.OdsCode).Result ?? 0,
-                    })
-                    .ToArray(),
             };
+
+            foreach (var serviceRecipient in model.ServiceRecipients)
+            {
+                var quantity = await gpPracticeCache.GetNumberOfPatients(serviceRecipient.OdsCode);
+
+                if (quantity.HasValue)
+                {
+                    serviceRecipient.Quantity = quantity.Value;
+                }
+            }
 
             model.ServiceRecipients = model.ServiceRecipients
                 .OrderBy(x => x.Quantity == 0 ? 0 : 1)
@@ -132,7 +132,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers.SolutionSelec
                 })
                 .ToList();
 
-            await orderPriceService.SetQuantities(order.Id, catalogueItemId, quantities);
+            await orderPriceService.SetServiceRecipientQuantities(order.Id, catalogueItemId, quantities);
 
             return GetRedirect(internalOrgId, callOffId, order);
         }

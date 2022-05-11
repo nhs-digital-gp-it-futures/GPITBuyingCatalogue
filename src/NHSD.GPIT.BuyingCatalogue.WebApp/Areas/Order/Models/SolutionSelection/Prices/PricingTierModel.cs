@@ -2,10 +2,6 @@
 {
     public class PricingTierModel
     {
-        public PricingTierModel()
-        {
-        }
-
         public int Id { get; set; }
 
         public decimal ListPrice { get; set; }

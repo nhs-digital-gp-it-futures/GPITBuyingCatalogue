@@ -57,8 +57,10 @@
                             }
                             else
                             {
-                                <nhs-input asp-for="@Model.ServiceRecipients[i].InputQuantity"
-                                           input-width="Five"/>
+                                <div style="text-align: right">
+                                    <nhs-input asp-for="@Model.ServiceRecipients[i].InputQuantity"
+                                               input-width="Five"/>
+                                </div>
                             }
                         </nhs-table-cell>
                     </nhs-table-row-container>

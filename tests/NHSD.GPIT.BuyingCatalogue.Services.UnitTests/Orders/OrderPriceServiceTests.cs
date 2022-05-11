@@ -276,7 +276,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Orders
 
         [Theory]
         [InMemoryDbAutoData]
-        public static async Task SetQuantity_OrderItemNotInDatabase_NoActionTaken(
+        public static async Task SetOrderItemQuantity_OrderItemNotInDatabase_NoActionTaken(
             [Frozen] BuyingCatalogueDbContext context,
             int orderId,
             CatalogueItemId catalogueItemId,
@@ -288,7 +288,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Orders
 
             expected.Should().BeNull();
 
-            await service.SetQuantity(orderId, catalogueItemId, 1);
+            await service.SetOrderItemQuantity(orderId, catalogueItemId, 1);
 
             var actual = context.OrderItems
                 .FirstOrDefault(x => x.OrderId == orderId
@@ -299,7 +299,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Orders
 
         [Theory]
         [InMemoryDbAutoData]
-        public static async Task SetQuantity_OrderItemInDatabase_UpdatesQuantity(
+        public static async Task SetOrderItemQuantity_OrderItemInDatabase_UpdatesQuantity(
             [Frozen] BuyingCatalogueDbContext context,
             Order order,
             int quantity,
@@ -320,7 +320,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Orders
 
             expected.Quantity.Should().Be(1);
 
-            await service.SetQuantity(order.Id, solutionId, quantity);
+            await service.SetOrderItemQuantity(order.Id, solutionId, quantity);
 
             var actual = context.OrderItems
                 .Single(x => x.OrderId == order.Id
@@ -331,19 +331,19 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Orders
 
         [Theory]
         [InMemoryDbAutoData]
-        public static void SetQuantities_QuantitiesIsNull_ThrowsException(
+        public static void SetServiceRecipientQuantities_QuantitiesIsNull_ThrowsException(
             int orderId,
             CatalogueItemId catalogueItemId,
             OrderPriceService service)
         {
             FluentActions
-                .Awaiting(() => service.SetQuantities(orderId, catalogueItemId, null))
+                .Awaiting(() => service.SetServiceRecipientQuantities(orderId, catalogueItemId, null))
                 .Should().ThrowAsync<ArgumentNullException>();
         }
 
         [Theory]
         [InMemoryDbAutoData]
-        public static async Task SetQuantities_OrderItemNotInDatabase_NoActionTaken(
+        public static async Task SetServiceRecipientQuantities_OrderItemNotInDatabase_NoActionTaken(
             [Frozen] BuyingCatalogueDbContext context,
             int orderId,
             CatalogueItemId catalogueItemId,
@@ -356,7 +356,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Orders
 
             expected.Should().BeNull();
 
-            await service.SetQuantities(orderId, catalogueItemId, quantities);
+            await service.SetServiceRecipientQuantities(orderId, catalogueItemId, quantities);
 
             var actual = context.OrderItems
                 .FirstOrDefault(x => x.OrderId == orderId
@@ -367,7 +367,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Orders
 
         [Theory]
         [InMemoryDbAutoData]
-        public static async Task SetQuantities_OrderItemInDatabase_UpdatesQuantities(
+        public static async Task SetServiceRecipientQuantities_OrderItemInDatabase_UpdatesQuantities(
             [Frozen] BuyingCatalogueDbContext context,
             Order order,
             List<OrderPricingTierQuantityDto> quantities,
@@ -392,7 +392,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Orders
                 quantities[i].OdsCode = expected.OrderItemRecipients.ElementAt(i).OdsCode;
             }
 
-            await service.SetQuantities(order.Id, solutionId, quantities);
+            await service.SetServiceRecipientQuantities(order.Id, solutionId, quantities);
 
             var actual = context.OrderItems
                 .Single(x => x.OrderId == order.Id

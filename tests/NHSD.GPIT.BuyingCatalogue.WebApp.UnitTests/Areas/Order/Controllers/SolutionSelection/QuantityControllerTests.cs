@@ -143,7 +143,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
                 .ReturnsAsync(order);
 
             mockOrderPriceService
-                .Setup(x => x.SetQuantity(order.Id, orderItem.CatalogueItemId, quantity))
+                .Setup(x => x.SetOrderItemQuantity(order.Id, orderItem.CatalogueItemId, quantity))
                 .Returns(Task.CompletedTask);
 
             model.Quantity = $"{quantity}";
@@ -189,7 +189,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
                 .ReturnsAsync(order);
 
             mockOrderPriceService
-                .Setup(x => x.SetQuantity(order.Id, solution.CatalogueItemId, quantity))
+                .Setup(x => x.SetOrderItemQuantity(order.Id, solution.CatalogueItemId, quantity))
                 .Returns(Task.CompletedTask);
 
             model.Quantity = $"{quantity}";
@@ -288,7 +288,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
             List<OrderPricingTierQuantityDto> actual = null;
 
             mockOrderPriceService
-                .Setup(x => x.SetQuantities(order.Id, orderItem.CatalogueItemId, It.IsAny<List<OrderPricingTierQuantityDto>>()))
+                .Setup(x => x.SetServiceRecipientQuantities(order.Id, orderItem.CatalogueItemId, It.IsAny<List<OrderPricingTierQuantityDto>>()))
                 .Callback<int, CatalogueItemId, List<OrderPricingTierQuantityDto>>((_, _, x) => actual = x)
                 .Returns(Task.CompletedTask);
 
@@ -343,7 +343,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
             List<OrderPricingTierQuantityDto> actual = null;
 
             mockOrderPriceService
-                .Setup(x => x.SetQuantities(order.Id, solution.CatalogueItemId, It.IsAny<List<OrderPricingTierQuantityDto>>()))
+                .Setup(x => x.SetServiceRecipientQuantities(order.Id, solution.CatalogueItemId, It.IsAny<List<OrderPricingTierQuantityDto>>()))
                 .Callback<int, CatalogueItemId, List<OrderPricingTierQuantityDto>>((_, _, x) => actual = x)
                 .Returns(Task.CompletedTask);
 

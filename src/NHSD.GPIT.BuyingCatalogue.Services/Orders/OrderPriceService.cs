@@ -90,7 +90,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
             }
         }
 
-        public async Task SetQuantity(int orderId, CatalogueItemId catalogueItemId, int quantity)
+        public async Task SetOrderItemQuantity(int orderId, CatalogueItemId catalogueItemId, int quantity)
         {
             var orderItem = await dbContext.OrderItems
                 .SingleOrDefaultAsync(x => x.OrderId == orderId
@@ -108,7 +108,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
             await dbContext.SaveChangesAsync();
         }
 
-        public async Task SetQuantities(int orderId, CatalogueItemId catalogueItemId, List<OrderPricingTierQuantityDto> quantities)
+        public async Task SetServiceRecipientQuantities(int orderId, CatalogueItemId catalogueItemId, List<OrderPricingTierQuantityDto> quantities)
         {
             if (quantities == null)
             {
