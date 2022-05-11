@@ -2,6 +2,7 @@
 @using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers.FundingSource
 @using NHSD.GPIT.BuyingCatalogue.Framework.Extensions
 @using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers.SolutionSelection;
+@using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Enums;
 @model NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.Order.OrderModel
 @{
     ViewBag.Title = Model.Title;
@@ -47,10 +48,7 @@
                     </nhs-task-list-section>
                     <nhs-task-list-section label-text="Add solutions and services">
                         <nhs-task-list-item label-text="Select solutions and services"
-                                            url="@Url.Action(
-                                                     nameof(CatalogueSolutionsController.SelectSolution),
-                                                     typeof(CatalogueSolutionsController).ControllerName(),
-                                                     new { Model.InternalOrgId, Model.CallOffId})"
+                                            url="@SolutionSelectionUrlTarget(Model.SectionStatuses.SolutionOrService)"
                                             status="@Model.SectionStatuses.SolutionOrService" />
 						<nhs-task-list-item label-text="Select funding sources"
                                             url="@Url.Action(
@@ -89,3 +87,26 @@
         </div>
     </div>
 </div>
+
+@{
+	string SolutionSelectionUrlTarget(TaskProgress solutionSelectionProgress) =>
+				solutionSelectionProgress switch
+				{
+					TaskProgress.NotStarted =>
+						Url.Action(
+							nameof(CatalogueSolutionsController.SelectSolution),
+							typeof(CatalogueSolutionsController).ControllerName(),
+							new { Model.InternalOrgId, Model.CallOffId }),
+					TaskProgress.InProgress =>
+						Url.Action(
+							nameof(CatalogueSolutionsController.SelectSolution),
+							typeof(CatalogueSolutionsController).ControllerName(),
+							new { Model.InternalOrgId, Model.CallOffId }),
+					TaskProgress.Completed =>
+						Url.Action(
+							nameof(ReviewSolutionsController.ReviewSolutions),
+							typeof(ReviewSolutionsController).ControllerName(),
+							new { Model.InternalOrgId, Model.CallOffId }),
+					_ => throw new ArgumentException("Orders solution selection currently in a status that it should not be able to be in."),
+				};
+}

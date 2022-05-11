@@ -6,6 +6,7 @@ using AutoFixture.Kernel;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.AutoFixtureCustomisations.AutoFixtureExtensions;
+using NHSD.GPIT.BuyingCatalogue.Framework.Calculations;
 
 namespace NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.AutoFixtureCustomisations
 {
@@ -66,7 +67,9 @@ namespace NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.AutoFixtureCustomisations
 
                 var totalQuantity = item.OrderItemRecipients.Sum(oir => oir.Quantity);
 
-                funding.TotalPrice = item.CalculateTotalCost();
+                var totalCost = CataloguePriceCalculations.CalculateTotalCost(item.OrderItemPrice, item.GetTotalRecipientQuantity());
+
+                funding.TotalPrice = totalCost;
 
                 funding.CentralAllocation = context.CreateDecimalWithRange(0, funding.TotalPrice);
                 funding.LocalAllocation = funding.TotalPrice - funding.CentralAllocation;

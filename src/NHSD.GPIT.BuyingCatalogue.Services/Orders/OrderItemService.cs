@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
+using NHSD.GPIT.BuyingCatalogue.Framework.Calculations;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Orders;
 
 namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
@@ -74,7 +75,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
                     && oi.CatalogueItemId == catalogueItemId
                     && oi.Order.OrderingParty.InternalIdentifier == internalOrgId);
 
-            decimal totalCost = item.CalculateTotalCost();
+            decimal totalCost = CataloguePriceCalculations.CalculateTotalCost(item.OrderItemPrice, item.GetTotalRecipientQuantity());
 
             var (localAllocation, centralAllocation) = CalculateFundingSplit(totalCost, selectedFundingType, centrallyAllocatedAmount);
 

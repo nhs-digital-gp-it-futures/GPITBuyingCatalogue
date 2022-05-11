@@ -12,5 +12,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.Objects.Ordering
         public static By OrderDescriptionStatus => By.Id("Order_description-status");
 
         public static By LastUpdatedEndNote => ByExtensions.DataTestId("last-updated-endnote");
+
+        public static By SolutionSelectionLink => By.LinkText("Select solutions and services");
     }
 }

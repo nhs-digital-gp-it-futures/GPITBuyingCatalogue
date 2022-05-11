@@ -1,9 +1,10 @@
 ﻿using System;
+using NHSD.GPIT.BuyingCatalogue.EntityFramework.Interfaces;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Users.Models;
 
 namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models
 {
-    public sealed partial class CataloguePriceTier : IAudited
+    public sealed partial class CataloguePriceTier : IAudited, IPriceTier
     {
         public int Id { get; set; }
 

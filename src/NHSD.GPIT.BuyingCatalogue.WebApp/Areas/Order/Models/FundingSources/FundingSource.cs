@@ -1,4 +1,5 @@
 ﻿using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
+using NHSD.GPIT.BuyingCatalogue.Framework.Calculations;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.FundingSources
 {
@@ -18,7 +19,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.FundingSources
             AmountOfCentralFunding = orderItem.OrderItemFunding?.CentralAllocation ?? null;
             SelectedFundingType = orderItem.CurrentFundingType();
 
-            TotalCost = orderItem.CalculateTotalCost();
+            TotalCost = CataloguePriceCalculations.CalculateTotalCost(orderItem.OrderItemPrice, orderItem.GetTotalRecipientQuantity());
         }
 
         public string CatalogueItemName { get; set; }

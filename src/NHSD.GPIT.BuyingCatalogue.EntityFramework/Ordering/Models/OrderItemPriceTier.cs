@@ -1,9 +1,10 @@
 ﻿using System;
+using NHSD.GPIT.BuyingCatalogue.EntityFramework.Interfaces;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Users.Models;
 
 namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models
 {
-    public sealed partial class OrderItemPriceTier : IAudited
+    public sealed partial class OrderItemPriceTier : IAudited, IPriceTier
     {
         public OrderItemPriceTier()
         {
