@@ -1,9 +1,6 @@
 ﻿@using System.Linq
 @using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models
-@using NHSD.GPIT.BuyingCatalogue.EntityFramework.Extensions
 @using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models
-@using NHSD.GPIT.BuyingCatalogue.Framework.Extensions
-@using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
 @model NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.Order.SummaryModel;
 @{
     ViewBag.Title = Model.Title;
@@ -21,7 +18,7 @@
 <partial name="Partials/_BackLink" model="Model" />
 
 <div class="nhsuk-grid-row">
-    <div class="nhsuk-grid-column-full">
+    <div class="nhsuk-grid-column-full-width">
         <nhs-validation-summary />
         <nhs-page-title title="@ViewBag.Title"
                         caption="@Model.Order.CallOffId"
@@ -38,7 +35,7 @@
             var endDateFormatted = Model.Order.CommencementDate.HasValue && Model.Order.MaximumTerm.HasValue
                 ? Model.Order.CommencementDate?.AddMonths(Model.Order.MaximumTerm!.Value).ToString("dd MMMM yyyy", System.Globalization.CultureInfo.InvariantCulture)
                 : "Not specified";
-                
+
             var solutionOrderItem = Model.Order.OrderItems?.FirstOrDefault(p => p.CatalogueItem.CatalogueItemType == CatalogueItemType.Solution);
             var additionalServices = Model.Order.OrderItems?.Where(p => p.CatalogueItem.CatalogueItemType == CatalogueItemType.AdditionalService).ToList();
             var associatedServices = Model.Order.OrderItems?.Where(p => p.CatalogueItem.CatalogueItemType == CatalogueItemType.AssociatedService).ToList();
@@ -95,54 +92,54 @@
         </nhs-summary-list>
 
         <h2>Items added to this order</h2>
+        @if (!Model.Order.OrderItems.Any())
+        {
+            <p>No items have been added to this order yet</p>
+        }
+        else
+        {
+            <br/>
+            @if (solutionOrderItem is not null)
+            {
+                <h3 id="catalogue-solutions-title">Catalogue Solution</h3>
+                <partial name="_OrderItemSummary" model="solutionOrderItem"/>
+            }
+
+            @if (additionalServices is not null && additionalServices.Any())
+            {
+                <h3 id="additional-services-title">Additional Services</h3>
+                @foreach (var additionalService in additionalServices)
+                {
+                    <partial name="_OrderItemSummary" model="additionalService"/>
+                }
+            }
+
+            @if (associatedServices is not null && associatedServices.Any())
+            {
+                <h3 id="associated-services-title">Associated Services</h3>
+                @foreach (var associatedService in associatedServices)
+                {
+                    <partial name="_OrderItemSummary" model="associatedService"/>
+                }
+            }
+        }
+
         <br/>
-        @if (solutionOrderItem is not null){
-            <nhs-fieldset-form-label label-text="Catalogue Solution" asp-for="@Model" size="Medium" data-test-id="solution-section">
-                <nhs-expander colour-mode="BlackAndWhite" label-text="@solutionOrderItem.CatalogueItem.Name" secondary-text-title="Subtotal: " secondary-text="£@solutionOrderItem.CalculateTotalCost().ToString("N2")">
-                   <partial name="_OrderItemSummary" model="solutionOrderItem" />
-                </nhs-expander>
-            </nhs-fieldset-form-label>
-        }
-
-        @if (additionalServices.Any())
-        {
-            <nhs-fieldset-form-label label-text="Additional Services" asp-for="@Model" size="Medium" data-test-id="additional-services-section">
-                @foreach(var additionalService in additionalServices)
-                {
-                    <nhs-expander colour-mode="BlackAndWhite" label-text="@additionalService.CatalogueItem.Name" secondary-text-title="Subtotal: " secondary-text="£@additionalService.CalculateTotalCost().ToString("N2")">
-                       <partial name="_OrderItemSummary" model="additionalService" />
-                    </nhs-expander>
-                }
-            </nhs-fieldset-form-label>
-        }
-
-        @if (associatedServices.Any())
-        {
-            <nhs-fieldset-form-label label-text="Associated Services" asp-for="@Model" size="Medium" data-test-id="associated-services-section">
-                @foreach(var associatedService in associatedServices)
-                {
-                    <nhs-expander colour-mode="BlackAndWhite" label-text="@associatedService.CatalogueItem.Name" secondary-text-title="Subtotal: " secondary-text="£@associatedService.CalculateTotalCost().ToString("N2")">
-                       <partial name="_OrderItemSummary" model="associatedService" />
-                    </nhs-expander>
-                }
-            </nhs-fieldset-form-label>
-        }
-
         <nhs-summary-list>
             <nhs-summary-list-row label-text="Total one-off cost:" data-test-id="one-off-cost-summary">
-                £@((oneOffOrderItems?.Sum(item => item.CalculateTotalCost()) ?? 0M).ToString("N2"))
+                £@((oneOffOrderItems?.Sum(orderItem => orderItem.OrderItemPrice.CalculateTotalCost(orderItem.GetTotalRecipientQuantity())) ?? 0M).ToString("N2"))
             </nhs-summary-list-row>
             <nhs-summary-list-row label-text="Total monthly cost:" data-test-id="monthly-cost-summary">
-                £@((recurringOrderItems?.Sum(cost => cost.CalculateCostPerMonth()) ?? 0M).ToString("N2"))
+                £@((recurringOrderItems?.Sum(orderItem => orderItem.OrderItemPrice.CalculateCostPerMonth(orderItem.GetTotalRecipientQuantity())) ?? 0M).ToString("N2"))
             </nhs-summary-list-row>
             <nhs-summary-list-row label-text="Total cost for one year:" data-test-id="one-year-cost-summary">
-                £@((recurringOrderItems?.Sum(cost => cost.CalculateCostPerYear()) ?? 0M).ToString("N2"))
+                £@((recurringOrderItems?.Sum(orderItem => orderItem.OrderItemPrice.CalculateCostPerYear(orderItem.GetTotalRecipientQuantity())) ?? 0M).ToString("N2"))
             </nhs-summary-list-row>
             <nhs-summary-list-row label-text="@(Model.Order.MaximumTerm.HasValue ? $"Total cost of contract: ({Model.Order.MaximumTerm} months)" : "Total cost of contract:")" data-test-id="total-cost-summary">
-                £@(((recurringOrderItems?.Sum(cost => cost.CalculateCostPerMonth()) * Model.Order.MaximumTerm.GetValueOrDefault()) ?? 0M).ToString("N2"))
+                £@((recurringOrderItems?.Sum(orderItem => orderItem.OrderItemPrice.CalculateTotalCostForContractLength(orderItem.GetTotalRecipientQuantity(), Model.Order.MaximumTerm.GetValueOrDefault())) ?? 0M).ToString("N2"))
             </nhs-summary-list-row>
         </nhs-summary-list>
-        
+
         <br />
         <div class="nhsuk-grid-row">
             <div class="nhsuk-grid-column-two-thirds">
@@ -152,13 +149,21 @@
                                                     nameof(OrderController.Download),
                                                     typeof(OrderController).ControllerName(),
                                                     new { Model.InternalOrgId, Model.Order.CallOffId })" />
-                                                
+
                 @if (Model.Order.OrderStatus == OrderStatus.InProgress && Model.Order.CanComplete())
                 {
                     <br />
                     <form method="post">
                         <nhs-submit-button text="Complete order summary" />
                     </form>
+                }
+                else
+                {
+                    <br />
+                    <vc:nhs-secondary-button
+                        text="Continue"
+                        use-primary-colour="true"
+                        url="@Model.BackLink"/>
                 }
             </div>
         </div>

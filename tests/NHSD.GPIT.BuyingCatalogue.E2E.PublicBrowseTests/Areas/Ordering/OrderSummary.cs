@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using FluentAssertions;
 using Microsoft.EntityFrameworkCore;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.Objects.Ordering;
@@ -12,11 +10,12 @@ using NHSD.GPIT.BuyingCatalogue.EntityFramework;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Users.Models;
+using NHSD.GPIT.BuyingCatalogue.Framework.Calculations;
 using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers;
 using Xunit;
 
-namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering.OrderSummary
+namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering
 {
     public class OrderSummary : BuyerTestBase, IClassFixture<LocalWebApplicationFactory>
     {
@@ -181,13 +180,39 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering.OrderSummary
             RemoveOrder(order);
         }
 
+        [Fact]
+        public void ClickGoBackLink_ExpectedResult()
+        {
+            var order = CreateOrder(
+                CreateSolutionOrderItem(),
+                CreateAdditionalServiceOrderItem(),
+                CreateAssociatedServiceOrderItem());
+
+            var parameters = new Dictionary<string, string>
+            {
+                { nameof(InternalOrgId), InternalOrgId },
+                { nameof(CallOffId), order.CallOffId.ToString() },
+            };
+
+            NavigateToUrl(
+                typeof(OrderController),
+                nameof(OrderController.Summary),
+                parameters);
+
+            CommonActions.ClickGoBackLink();
+
+            CommonActions.PageLoadedCorrectGetIndex(
+                typeof(OrderController),
+                nameof(OrderController.Order)).Should().BeTrue();
+        }
+
         private static OrderItemFunding CreateOrderItemFunding(OrderItem orderItem)
             => new()
             {
                 OrderItem = orderItem,
                 CatalogueItemId = orderItem.CatalogueItemId,
-                TotalPrice = orderItem.CalculateTotalCost(),
-                CentralAllocation = orderItem.CalculateTotalCost(),
+                TotalPrice = orderItem.OrderItemPrice.CalculateTotalCost(orderItem.GetTotalRecipientQuantity()),
+                CentralAllocation = orderItem.OrderItemPrice.CalculateTotalCost(orderItem.GetTotalRecipientQuantity()),
                 LocalAllocation = 0,
             };
 

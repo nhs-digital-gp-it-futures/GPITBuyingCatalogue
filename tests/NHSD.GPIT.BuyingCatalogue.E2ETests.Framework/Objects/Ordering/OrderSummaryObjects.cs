@@ -23,11 +23,11 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.Objects.Ordering
 
         public static By EndDateSummary => ByExtensions.DataTestId("end-date-summary");
 
-        public static By SolutionSection => ByExtensions.DataTestId("solution-section");
+        public static By SolutionSection => By.Id("catalogue-solutions-title");
 
-        public static By AdditionalServicesSection => ByExtensions.DataTestId("additional-services-section");
+        public static By AdditionalServicesSection => By.Id("additional-services-title");
 
-        public static By AssociatedServicesSection => ByExtensions.DataTestId("associated-services-section");
+        public static By AssociatedServicesSection => By.Id("associated-services-title");
 
         public static By OneOffCostSummary => ByExtensions.DataTestId("one-off-cost-summary");
 
