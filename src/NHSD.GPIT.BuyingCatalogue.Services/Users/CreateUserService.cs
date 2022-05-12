@@ -38,8 +38,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Users
             string firstName,
             string lastName,
             string emailAddress,
-            string organisationFunction,
-            AccountStatus accountStatus)
+            string organisationFunction)
         {
             if (string.IsNullOrWhiteSpace(emailAddress))
                 throw new ArgumentException($"{nameof(emailAddress)} must be provided.", nameof(emailAddress));

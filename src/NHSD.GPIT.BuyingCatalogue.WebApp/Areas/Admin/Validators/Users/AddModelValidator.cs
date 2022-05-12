@@ -8,7 +8,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Validators.Users
 {
     public class AddModelValidator : AbstractValidator<AddModel>
     {
-        public const string AccountStatusMissingErrorMessage = "Select an account status";
         public const string AccountTypeMissingErrorMessage = "Select an account type";
         public const string EmailInUseErrorMessage = "A user with this email address already exists on the Buying Catalogue.";
         public const string EmailMissingErrorMessage = "Enter an email address";
@@ -44,10 +43,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Validators.Users
                 .WithMessage(EmailWrongFormatErrorMessage)
                 .Must(NotBeDuplicateUserEmail)
                 .WithMessage(EmailInUseErrorMessage);
-
-            RuleFor(x => x.SelectedAccountStatusId)
-                .NotEmpty()
-                .WithMessage(AccountStatusMissingErrorMessage);
 
             RuleFor(x => x.SelectedAccountType)
                 .Cascade(CascadeMode.Stop)

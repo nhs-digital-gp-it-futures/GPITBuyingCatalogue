@@ -47,8 +47,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Users
                     "a",
                     "b",
                     emailAddress,
-                    OrganisationFunction.BuyerName,
-                    AccountStatus.Active));
+                    OrganisationFunction.BuyerName));
         }
 
         [Theory]
@@ -73,8 +72,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Users
                 "Test",
                 "Smith",
                 "a.b@c.com",
-                OrganisationFunction.BuyerName,
-                AccountStatus.Active);
+                OrganisationFunction.BuyerName);
 
             actual.Id.Should().Be(1);
         }
@@ -102,8 +100,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Users
                 expectedUser.FirstName,
                 expectedUser.LastName,
                 expectedUser.Email,
-                OrganisationFunction.BuyerName,
-                AccountStatus.Active);
+                OrganisationFunction.BuyerName);
 
             var actual = await dbContext.AspNetUsers.SingleAsync(u => u.Id == result.Id);
 
@@ -137,8 +134,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Users
                 expectedUser.FirstName,
                 expectedUser.LastName,
                 expectedUser.Email,
-                OrganisationFunction.AuthorityName,
-                AccountStatus.Active);
+                OrganisationFunction.AuthorityName);
 
             var actual = await dbContext.AspNetUsers.SingleAsync(u => u.Id == result.Id);
 
@@ -173,8 +169,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Users
                 expectedUser.FirstName,
                 expectedUser.LastName,
                 expectedUser.Email,
-                OrganisationFunction.BuyerName,
-                AccountStatus.Active);
+                OrganisationFunction.BuyerName);
 
             mockEmailService.Verify(e => e.SendEmailAsync(
                 expectedUser.Email,
