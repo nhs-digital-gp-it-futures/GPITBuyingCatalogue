@@ -55,7 +55,7 @@
                 {
                     if(Model.Order.OrderingPartyContact is not null)
                     {
-                        @Model.Order.OrderingPartyContact.FirstName @Model.Order.OrderingPartyContact.LastName<br />
+                        @($"{Model.Order.OrderingPartyContact.FirstName} {Model.Order.OrderingPartyContact.LastName}")<br />
                     }
                     @Model.Order.OrderingParty.Name<br />
                     @Model.Order.OrderingParty.ExternalIdentifier<br />
@@ -69,7 +69,7 @@
                 {
                     if (Model.Order.SupplierContact is not null)
                     {
-                        @Model.Order.SupplierContact.FirstName @Model.Order.SupplierContact.LastName<br />
+                        @($"{Model.Order.SupplierContact.FirstName} {Model.Order.SupplierContact.LastName}")<br />
                     }
                     @Model.Order.Supplier.Name<br />
                     <vc:nhs-address address="@Model.Order.Supplier.Address" />
@@ -135,7 +135,7 @@
             <nhs-summary-list-row label-text="Total cost for one year:" data-test-id="one-year-cost-summary">
                 £@((recurringOrderItems?.Sum(orderItem => orderItem.OrderItemPrice.CalculateCostPerYear(orderItem.GetTotalRecipientQuantity())) ?? 0M).ToString("N2"))
             </nhs-summary-list-row>
-            <nhs-summary-list-row label-text="@(Model.Order.MaximumTerm.HasValue ? $"Total cost of contract: ({Model.Order.MaximumTerm} months)" : "Total cost of contract:")" data-test-id="total-cost-summary">
+            <nhs-summary-list-row label-text="@(Model.Order.MaximumTerm.HasValue ? $"Total cost of contract ({Model.Order.MaximumTerm} months):" : "Total cost of contract:")" data-test-id="total-cost-summary">
                 £@((recurringOrderItems?.Sum(orderItem => orderItem.OrderItemPrice.CalculateTotalCostForContractLength(orderItem.GetTotalRecipientQuantity(), Model.Order.MaximumTerm.GetValueOrDefault())) ?? 0M).ToString("N2"))
             </nhs-summary-list-row>
         </nhs-summary-list>

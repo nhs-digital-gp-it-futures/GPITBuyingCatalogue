@@ -58,7 +58,7 @@
                 <nhs-table-row-container>
                     <nhs-table-cell>£@price.Price.ToString("N2") @Model.OrderItemPrice.Description</nhs-table-cell>
                     <nhs-table-cell>@Model.GetTotalRecipientQuantity()</nhs-table-cell>
-                    <nhs-table-cell>£@totalCost.ToString("N4")</nhs-table-cell>
+                    <nhs-table-cell>£@totalCost.ToString("N2")</nhs-table-cell>
                 </nhs-table-row-container>
             } else
             {
@@ -75,7 +75,7 @@
                         <nhs-table-cell>Tier @tier.Id</nhs-table-cell>
                         <nhs-table-cell>£@price.Price.ToString("N4") @Model.OrderItemPrice.Description</nhs-table-cell>
                         <nhs-table-cell>@tier.Quantity</nhs-table-cell>
-                        <nhs-table-cell>£@tier.Cost.ToString("N4")</nhs-table-cell>
+                        <nhs-table-cell>£@tier.Cost.ToString("N2")</nhs-table-cell>
                     </nhs-table-row-container>
                 }
             }
