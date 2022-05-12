@@ -8,7 +8,7 @@ using Actions = NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.Actions;
 namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Utils
 {
     public class TestBase
-    {        
+    {
         public readonly string BuyerUsername = Environment.GetEnvironmentVariable("RegressionBuyerUsername");
         public readonly string BuyerPassword = Environment.GetEnvironmentVariable("RegressionBuyerPassword");
 
@@ -17,15 +17,7 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Utils
 
         public readonly Uri uri;
 
-        public WebApplicationConnector Connector { get; protected set; }
-
-        public IWebDriver Driver { get; protected set; }
-
-        internal Actions.Common.CommonActions CommonActions { get; }
-        internal Actions.Authorization.ActionCollection AuthorizationPages { get; }
-
         private readonly ITestOutputHelper testOutputHelper;
-        internal WebDriverWait Wait { get; }
 
         public TestBase(WebApplicationConnector connector,
             ITestOutputHelper testOutputHelper,
@@ -42,6 +34,40 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Utils
             uri = new Uri(connector.RootUri);
 
             NavigateToUrl(urlArea);
+        }
+
+        public WebApplicationConnector Connector { get; protected set; }
+
+        public IWebDriver Driver { get; protected set; }
+
+        internal Actions.Common.CommonActions CommonActions { get; }
+
+        internal Actions.Authorization.ActionCollection AuthorizationPages { get; }
+
+        internal WebDriverWait Wait { get; }
+
+        internal void AuthorityLogin()
+        {
+            if (UserAlreadyLoggedIn() || !AuthorizationPages.LoginActions.EmailAddressInputDisplayed())
+                return;
+
+            AuthorizationPages.LoginActions.Login(AdminUsername, AdminPassword);
+        }
+
+        internal void BuyerLogin()
+        {
+            if (UserAlreadyLoggedIn() || !AuthorizationPages.LoginActions.EmailAddressInputDisplayed())
+                return;
+
+            AuthorizationPages.LoginActions.Login(BuyerUsername, BuyerPassword);
+        }
+
+        internal void BuyerLogin(string buyerEmail)
+        {
+            if (UserAlreadyLoggedIn() || !AuthorizationPages.LoginActions.EmailAddressInputDisplayed())
+                return;
+
+            AuthorizationPages.LoginActions.Login(buyerEmail, BuyerPassword);
         }
 
         protected bool UserAlreadyLoggedIn() => Driver.Manage().Cookies.GetCookieNamed("user-session") != null;
@@ -64,30 +90,6 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Utils
             IDictionary<string, string> queryParameters = null)
         {
             NavigateToUrl(new Uri(UrlGenerator.GenerateUrlFromMethod(controller, methodName, parameters, queryParameters), UriKind.Relative));
-        }
-
-        internal void AuthorityLogin()
-        {
-            if (UserAlreadyLoggedIn() || !AuthorizationPages.LoginActions.EmailAddressInputDisplayed())
-                return;
-            
-            AuthorizationPages.LoginActions.Login(AdminUsername, AdminPassword);
-        }
-
-        internal void BuyerLogin()
-        {
-            if (UserAlreadyLoggedIn() || !AuthorizationPages.LoginActions.EmailAddressInputDisplayed())
-                return;
-
-            AuthorizationPages.LoginActions.Login(BuyerUsername, BuyerPassword);
-        }
-
-        internal void BuyerLogin(string buyerEmail)
-        {
-            if (UserAlreadyLoggedIn() || !AuthorizationPages.LoginActions.EmailAddressInputDisplayed())
-                return;
-
-            AuthorizationPages.LoginActions.Login(buyerEmail, BuyerPassword);
         }
     }
 }

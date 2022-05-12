@@ -40,10 +40,10 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.AssociatedServices
         {
             var expected = new List<SupplierServiceAssociation>();
             expected.AddRange(associatedServices.Select(s => new SupplierServiceAssociation
-                {
-                    CatalogueItemId = solution.CatalogueItem.Id,
-                    AssociatedServiceId = s.CatalogueItem.Id,
-                }));
+            {
+                CatalogueItemId = solution.CatalogueItem.Id,
+                AssociatedServiceId = s.CatalogueItem.Id,
+            }));
 
             context.Solutions.Add(solution);
             context.AssociatedServices.AddRange(associatedServices);

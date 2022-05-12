@@ -30,6 +30,10 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.UIComponentTests.Utils
             Driver = new BrowserFactory(BrowserName).Driver;
         }
 
+        public string? RootUri { get; }
+
+        public IWebDriver Driver { get; }
+
         protected override IWebHostBuilder CreateWebHostBuilder()
         {
             var builder = WebHost.CreateDefaultBuilder(Array.Empty<string>());
@@ -40,9 +44,6 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.UIComponentTests.Utils
 
             return builder;
         }
-
-        public string? RootUri { get; }
-        public IWebDriver Driver { get; }
 
         protected override void Dispose(bool disposing)
         {

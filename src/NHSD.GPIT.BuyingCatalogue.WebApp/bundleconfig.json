@@ -27,7 +27,7 @@
     "outputFileName": "wwwroot/js/accessible-autocomplete/autoCompleteConfig.min.js",
     "inputFiles": [
       "wwwroot/js/accessible-autocomplete/autoCompleteConfig.js"
-    ]      
+    ]
   },
   {
     "outputFileName": "wwwroot/js/accessible-autocomplete/suggestionSearchConfig.min.js",

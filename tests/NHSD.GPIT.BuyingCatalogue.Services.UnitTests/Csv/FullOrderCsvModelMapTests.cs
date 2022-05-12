@@ -31,7 +31,6 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Csv
         [InlineData(21, nameof(FullOrderCsvModel.VerficationDate), "Buyer verification date (M2)")]
         [InlineData(22, nameof(FullOrderCsvModel.CeaseDate), "Cease Date")]
         [InlineData(23, nameof(FullOrderCsvModel.Framework), "Framework")]
-
         public static void ModelMap_ShouldBe_CorrectlyMapped(int index, string memberName, string name)
         {
             var map = new FullOrderCsvModelMap();

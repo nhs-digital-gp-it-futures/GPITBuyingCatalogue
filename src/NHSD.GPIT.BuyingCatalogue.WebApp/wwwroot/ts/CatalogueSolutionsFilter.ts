@@ -176,7 +176,7 @@ function reselectCapabilityAndEpicsFiltersAndFrameworkFilter() {
             if (capability === FoundationCapabilitiesId || (!capability.includes(EpicSplitCharacter) && !capability.includes(SupplierSplitCharacter))) {
                 CheckCheckboxWithHiddenInputValue(capability);
             }
-            else {                
+            else {
                 const epics = capability.split(SupplierSplitCharacter).map(s => s.split(EpicSplitCharacter)).flat();
 
                 epics.forEach(epic => {
@@ -214,7 +214,7 @@ function CheckCheckboxWithHiddenInputValue(value) {
         .parentNode
         .querySelector(NhsukCheckboxesInput) as HTMLInputElement;
 
-        input.click();
+    input.click();
 }
 
 function GetSelectedFramework() {
@@ -223,7 +223,6 @@ function GetSelectedFramework() {
     let selectedFramework = "All";
 
     for (let i = 0; i < radioInputs.length; i++) {
-
         const input = radioInputs[i] as HTMLInputElement;
 
         if (input.checked) {
