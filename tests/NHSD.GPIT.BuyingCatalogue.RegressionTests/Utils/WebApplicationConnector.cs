@@ -1,6 +1,4 @@
-﻿using System.Diagnostics;
-using System.Diagnostics.CodeAnalysis;
-using NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.Browsers;
+﻿using NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.Browsers;
 using OpenQA.Selenium;
 
 namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Utils
@@ -8,9 +6,6 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Utils
     public class WebApplicationConnector
     {
         private const string Browser = "chrome";
-
-        internal IWebDriver Driver { get; }
-        public string RootUri { get; }
 
         public WebApplicationConnector()
         {
@@ -21,9 +16,13 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Utils
         }
 
         ~WebApplicationConnector()
-        { 
+        {
             Dispose(true);
         }
+
+        public string RootUri { get; }
+
+        internal IWebDriver Driver { get; }
 
         protected void Dispose(bool disposing)
         {

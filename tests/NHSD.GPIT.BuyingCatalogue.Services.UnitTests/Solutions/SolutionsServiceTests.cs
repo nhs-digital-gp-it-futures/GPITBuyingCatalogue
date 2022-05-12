@@ -330,7 +330,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Solutions
         [Theory]
         [InMemoryDbAutoData]
         public static async Task SaveHosting_UpdatesDatabase(
-            [Frozen]BuyingCatalogueDbContext context,
+            [Frozen] BuyingCatalogueDbContext context,
             Solution solution,
             Hosting hosting,
             SolutionsService service)

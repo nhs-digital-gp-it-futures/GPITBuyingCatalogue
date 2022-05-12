@@ -2,7 +2,7 @@
 "use strict";
 const gulp = require("gulp"),
     concat = require("gulp-concat"),
-    cssmin = require("gulp-clean-css"),   
+    cssmin = require("gulp-clean-css"),
     terser = require('gulp-terser'),
     merge = require("merge-stream"),
     del = require("del"),
@@ -28,7 +28,7 @@ gulp.task("min:js", async function () {
     const tasks = getBundles(regex.js).map(function (bundle) {
         return gulp.src(bundle.inputFiles, { base: "." })
             .pipe(concat(bundle.outputFileName))
-            .pipe(terser())            
+            .pipe(terser())
             .pipe(gulp.dest("."));
     });
     return merge(tasks);

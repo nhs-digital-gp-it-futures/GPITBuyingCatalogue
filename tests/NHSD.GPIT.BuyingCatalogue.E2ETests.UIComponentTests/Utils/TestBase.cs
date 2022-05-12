@@ -34,20 +34,24 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.UIComponentTests.Utils
                 parameters));
         }
 
+        public LocalWebApplicationFactory Factory { get; }
+
+        public IWebDriver Driver { get; }
+
+        public WebDriverWait Wait { get; }
+
+        internal CommonActions CommonActions { get; }
+
+        internal YesNoRadioButtonAction YesNoRadioButtonActions { get; }
+
+        internal RadioListsActions RadioListsActions { get; }
+
+        internal CheckboxesActions CheckboxesActions { get; }
+
         private void NavigateToUrl(string relativeUri)
         {
             var combinedUri = new Uri(uri, relativeUri);
             Driver.Navigate().GoToUrl(combinedUri);
         }
-
-        public LocalWebApplicationFactory Factory { get; }
-
-        public IWebDriver Driver { get; }
-        internal CommonActions CommonActions { get; }
-        internal YesNoRadioButtonAction YesNoRadioButtonActions { get; }
-        internal RadioListsActions RadioListsActions { get; }
-        internal CheckboxesActions CheckboxesActions { get; }
-
-        public WebDriverWait Wait { get; }
     }
 }

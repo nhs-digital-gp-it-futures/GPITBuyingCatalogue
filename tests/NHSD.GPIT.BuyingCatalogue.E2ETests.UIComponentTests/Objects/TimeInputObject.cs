@@ -7,6 +7,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.UIComponentTests.Objects
         internal static By SingleFrom => By.Id("SingleFrom");
 
         internal static By From => By.Id("From");
+
         internal static By Until => By.Id("Until");
     }
 }

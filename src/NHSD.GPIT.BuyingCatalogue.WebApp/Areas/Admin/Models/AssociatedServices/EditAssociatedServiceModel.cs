@@ -16,6 +16,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.AssociatedServices
         }
 
         /* TODO - Tiered Price - Fix List Price Status*/
+
         public EditAssociatedServiceModel(CatalogueItem solution, CatalogueItem associatedService)
             : this()
         {

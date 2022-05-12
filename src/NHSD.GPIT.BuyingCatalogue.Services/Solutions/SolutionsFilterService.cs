@@ -187,22 +187,22 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
                         var nhsDefinedEpics = capabilityEpics.Where(e => e.SupplierDefined is false);
                         var supplierDefinedEpics = capabilityEpics.Where(e => e.SupplierDefined is true);
                         cap.NhsDefinedEpics.AddRange(nhsDefinedEpics.Select(e => new EpicsFilter
-                            {
-                                Id = e.Id,
-                                Name = e.Name,
-                                Count = results.Where(ci => ci.CatalogueItemCapabilities.Any(cic => cic.CapabilityId == e.CapabilityId))
+                        {
+                            Id = e.Id,
+                            Name = e.Name,
+                            Count = results.Where(ci => ci.CatalogueItemCapabilities.Any(cic => cic.CapabilityId == e.CapabilityId))
                                     .Count(ci => ci.CatalogueItemEpics.Any(cie => cie.EpicId == e.Id)),
-                            })
+                        })
                             .OrderByDescending(e => e.Count)
                             .ThenBy(e => e.Name));
 
                         cap.SupplierDefinedEpics.AddRange(supplierDefinedEpics.Select(e => new EpicsFilter
-                            {
-                                Id = e.Id,
-                                Name = e.Name,
-                                Count = results.Where(ci => ci.CatalogueItemCapabilities.Any(cic => cic.CapabilityId == e.CapabilityId))
+                        {
+                            Id = e.Id,
+                            Name = e.Name,
+                            Count = results.Where(ci => ci.CatalogueItemCapabilities.Any(cic => cic.CapabilityId == e.CapabilityId))
                                             .Count(ci => ci.CatalogueItemEpics.Any(cie => cie.EpicId == e.Id)),
-                            })
+                        })
                             .OrderByDescending(e => e.Count)
                             .ThenBy(e => e.Name));
                     }));
