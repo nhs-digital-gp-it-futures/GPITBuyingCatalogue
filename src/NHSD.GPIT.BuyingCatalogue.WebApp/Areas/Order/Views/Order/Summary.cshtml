@@ -28,14 +28,6 @@
             var oneOffOrderItems = Model.Order.OrderItems?.Where(p => p.OrderItemPrice is not null && p.OrderItemPrice?.CostType == CostType.OneOff);
             var recurringOrderItems = Model.Order.OrderItems?.Where(p => p.OrderItemPrice is not null && p.OrderItemPrice?.CostType != CostType.OneOff);
 
-            var startDateFormatted = Model.Order.CommencementDate.HasValue ?
-                Model.Order.CommencementDate!.Value.ToString("dd MMMM yyyy", System.Globalization.CultureInfo.InvariantCulture)
-                : "Not specified";
-
-            var endDateFormatted = Model.Order.CommencementDate.HasValue && Model.Order.MaximumTerm.HasValue
-                ? Model.Order.CommencementDate?.AddMonths(Model.Order.MaximumTerm!.Value).ToString("dd MMMM yyyy", System.Globalization.CultureInfo.InvariantCulture)
-                : "Not specified";
-
             var solutionOrderItem = Model.Order.OrderItems?.FirstOrDefault(p => p.CatalogueItem.CatalogueItemType == CatalogueItemType.Solution);
             var additionalServices = Model.Order.OrderItems?.Where(p => p.CatalogueItem.CatalogueItemType == CatalogueItemType.AdditionalService).ToList();
             var associatedServices = Model.Order.OrderItems?.Where(p => p.CatalogueItem.CatalogueItemType == CatalogueItemType.AssociatedService).ToList();
@@ -50,45 +42,53 @@
             <nhs-summary-list-row label-text="Date created" data-test-id="date-created-summary">
                 @Model.Order.Created.ToString("dd MMMM yyyy", System.Globalization.CultureInfo.InvariantCulture)
             </nhs-summary-list-row>
-            <nhs-summary-list-row label-text="Call-off Ordering Party" data-test-id="ordering-party-summary">
-                @if(Model.Order.OrderingParty is not null)
+            @if (Model.Order.OrderingParty is not null)
+            {
+                if (Model.Order.OrderingPartyContact is not null)
                 {
-                    if(Model.Order.OrderingPartyContact is not null)
-                    {
-                        @($"{Model.Order.OrderingPartyContact.FirstName} {Model.Order.OrderingPartyContact.LastName}")<br />
-                    }
-                    @Model.Order.OrderingParty.Name<br />
-                    @Model.Order.OrderingParty.ExternalIdentifier<br />
-                    <vc:nhs-address address="@Model.Order.OrderingParty.Address" />
-                } else {
-                    <p>Not specified</p>
+                    <nhs-summary-list-row label-text="Call-off Ordering Party" data-test-id="ordering-party-summary">
+                        @($"{Model.Order.OrderingPartyContact.FirstName} {Model.Order.OrderingPartyContact.LastName}")<br/>
+                        @Model.Order.OrderingParty.Name<br/>
+                        @Model.Order.OrderingParty.ExternalIdentifier<br/>
+                        <vc:nhs-address address="@Model.Order.OrderingParty.Address"/>
+                    </nhs-summary-list-row>
                 }
-            </nhs-summary-list-row>
-            <nhs-summary-list-row label-text="Supplier" data-test-id="supplier-summary">
-                @if (Model.Order.Supplier is not null)
+            }
+            @if (Model.Order.Supplier is not null)
+            {
+                if (Model.Order.SupplierContact is not null)
                 {
-                    if (Model.Order.SupplierContact is not null)
-                    {
-                        @($"{Model.Order.SupplierContact.FirstName} {Model.Order.SupplierContact.LastName}")<br />
-                    }
-                    @Model.Order.Supplier.Name<br />
-                    <vc:nhs-address address="@Model.Order.Supplier.Address" />
-                } else {
-                    <p>Not specified</p>
+                    <nhs-summary-list-row label-text="Supplier" data-test-id="supplier-summary">
+                        @($"{Model.Order.SupplierContact.FirstName} {Model.Order.SupplierContact.LastName}")<br/>
+                        @Model.Order.Supplier.Name<br/>
+                        <vc:nhs-address address="@Model.Order.Supplier.Address"/>
+                    </nhs-summary-list-row>
                 }
-            </nhs-summary-list-row>
-            <nhs-summary-list-row label-text="Approximate start date" data-test-id="start-date-summary">
-                @startDateFormatted
-            </nhs-summary-list-row>
-            <nhs-summary-list-row label-text="Initial period" data-test-id="initial-period-summary">
-                @(Model.Order.InitialPeriod.HasValue ? $"{Model.Order.InitialPeriod} months" : "Not specified")
-            </nhs-summary-list-row>
-            <nhs-summary-list-row label-text="Maximum term" data-test-id="maximum-term-summary">
-                @(Model.Order.MaximumTerm.HasValue ? $"{Model.Order.MaximumTerm} months" : "Not specified")
-            </nhs-summary-list-row>
-            <nhs-summary-list-row label-text="End date" data-test-id="end-date-summary">
-                @endDateFormatted
-            </nhs-summary-list-row>
+            }
+            @if (Model.Order.CommencementDate.HasValue)
+            {
+                <nhs-summary-list-row label-text="Approximate start date" data-test-id="start-date-summary">
+                    @Model.Order.CommencementDate!.Value.ToString("dd MMMM yyyy", System.Globalization.CultureInfo.InvariantCulture)
+                </nhs-summary-list-row>
+            }
+            @if (Model.Order.InitialPeriod.HasValue)
+            {
+                <nhs-summary-list-row label-text="Initial period" data-test-id="initial-period-summary">
+                    @($"{Model.Order.InitialPeriod} months")
+                </nhs-summary-list-row>
+            }
+            @if (Model.Order.MaximumTerm.HasValue)
+            {
+                <nhs-summary-list-row label-text="Maximum term" data-test-id="maximum-term-summary">
+                    @($"{Model.Order.MaximumTerm} months")
+                </nhs-summary-list-row>
+            }
+            @if (Model.Order.CommencementDate.HasValue && Model.Order.MaximumTerm.HasValue)
+            {
+                <nhs-summary-list-row label-text="End date" data-test-id="end-date-summary">
+                    @Model.Order.CommencementDate?.AddMonths(Model.Order.MaximumTerm!.Value).ToString("dd MMMM yyyy", System.Globalization.CultureInfo.InvariantCulture)
+                </nhs-summary-list-row>
+            }
         </nhs-summary-list>
 
         <h2>Items added to this order</h2>
@@ -122,23 +122,24 @@
                     <partial name="_OrderItemSummary" model="associatedService"/>
                 }
             }
+
+            <br/>
+            <nhs-summary-list>
+                <nhs-summary-list-row label-text="Total one-off cost:" data-test-id="one-off-cost-summary">
+                    £@((oneOffOrderItems?.Sum(orderItem => orderItem.OrderItemPrice.CalculateTotalCost(orderItem.GetTotalRecipientQuantity())) ?? 0M).ToString("N2"))
+                </nhs-summary-list-row>
+                <nhs-summary-list-row label-text="Total monthly cost:" data-test-id="monthly-cost-summary">
+                    £@((recurringOrderItems?.Sum(orderItem => orderItem.OrderItemPrice.CalculateCostPerMonth(orderItem.GetTotalRecipientQuantity())) ?? 0M).ToString("N2"))
+                </nhs-summary-list-row>
+                <nhs-summary-list-row label-text="Total cost for one year:" data-test-id="one-year-cost-summary">
+                    £@((recurringOrderItems?.Sum(orderItem => orderItem.OrderItemPrice.CalculateCostPerYear(orderItem.GetTotalRecipientQuantity())) ?? 0M).ToString("N2"))
+                </nhs-summary-list-row>
+                <nhs-summary-list-row label-text="@(Model.Order.MaximumTerm.HasValue ? $"Total cost of contract ({Model.Order.MaximumTerm} months):" : "Total cost of contract:")" data-test-id="total-cost-summary">
+                    £@((recurringOrderItems?.Sum(orderItem => orderItem.OrderItemPrice.CalculateTotalCostForContractLength(orderItem.GetTotalRecipientQuantity(), Model.Order.MaximumTerm.GetValueOrDefault())) ?? 0M).ToString("N2"))
+                </nhs-summary-list-row>
+            </nhs-summary-list>
         }
 
-        <br/>
-        <nhs-summary-list>
-            <nhs-summary-list-row label-text="Total one-off cost:" data-test-id="one-off-cost-summary">
-                £@((oneOffOrderItems?.Sum(orderItem => orderItem.OrderItemPrice.CalculateTotalCost(orderItem.GetTotalRecipientQuantity())) ?? 0M).ToString("N2"))
-            </nhs-summary-list-row>
-            <nhs-summary-list-row label-text="Total monthly cost:" data-test-id="monthly-cost-summary">
-                £@((recurringOrderItems?.Sum(orderItem => orderItem.OrderItemPrice.CalculateCostPerMonth(orderItem.GetTotalRecipientQuantity())) ?? 0M).ToString("N2"))
-            </nhs-summary-list-row>
-            <nhs-summary-list-row label-text="Total cost for one year:" data-test-id="one-year-cost-summary">
-                £@((recurringOrderItems?.Sum(orderItem => orderItem.OrderItemPrice.CalculateCostPerYear(orderItem.GetTotalRecipientQuantity())) ?? 0M).ToString("N2"))
-            </nhs-summary-list-row>
-            <nhs-summary-list-row label-text="@(Model.Order.MaximumTerm.HasValue ? $"Total cost of contract ({Model.Order.MaximumTerm} months):" : "Total cost of contract:")" data-test-id="total-cost-summary">
-                £@((recurringOrderItems?.Sum(orderItem => orderItem.OrderItemPrice.CalculateTotalCostForContractLength(orderItem.GetTotalRecipientQuantity(), Model.Order.MaximumTerm.GetValueOrDefault())) ?? 0M).ToString("N2"))
-            </nhs-summary-list-row>
-        </nhs-summary-list>
 
         <br />
         <div class="nhsuk-grid-row">
