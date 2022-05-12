@@ -5,14 +5,13 @@
 @{
     var startDate = Model.Order.CommencementDate!.Value;
     var endDate = Model.Order.CommencementDate!.Value.AddMonths(Model.Order.MaximumTerm!.Value);
-    var totalDays = endDate.Subtract(startDate).TotalDays;
 
     var fundingType = Model.CurrentFundingType();
-    var totalCost = Model.OrderItemPrice.CalculateTotalCost(Model.GetTotalRecipientQuantity());
-	var subTotalDescription = $"£{totalCost.ToString("N2")}{(Model.OrderItemPrice.EstimationPeriod != null ? $" {Model.OrderItemPrice.EstimationPeriod!.Value.Description()}" : string.Empty)}";
+    var totalCost = Model.OrderItemPrice.CalculateTotalCost(Model.GetQuantity());
+	var subTotalDescription = $"£{totalCost:N2}{(Model.OrderItemPrice.EstimationPeriod != null ? $" {Model.OrderItemPrice.EstimationPeriod!.Value.Description()}" : string.Empty)}";
 
-    var startDateFormatted = @startDate.ToString("dd MMMM yyyy", System.Globalization.CultureInfo.InvariantCulture);
-    var endDateFormatted = @endDate.ToString("dd MMMM yyyy", System.Globalization.CultureInfo.InvariantCulture);
+    var startDateFormatted = startDate.ToString("dd MMMM yyyy", System.Globalization.CultureInfo.InvariantCulture);
+    var endDateFormatted = endDate.ToString("dd MMMM yyyy", System.Globalization.CultureInfo.InvariantCulture);
 }
 <nhs-expander colour-mode="BlackAndWhite"
               label-text="@Model.CatalogueItem.Name"
@@ -30,7 +29,7 @@
             <nhs-table-column>Service instance ID</nhs-table-column>
             <nhs-table-column>Quantity per practice</nhs-table-column>
 
-            @for (int i = 0; i < Model.OrderItemRecipients.Count; i++)
+            @for (var i = 0; i < Model.OrderItemRecipients.Count; i++)
             {
                 var serviceRecipient = Model.OrderItemRecipients.ElementAt(i);
                 <nhs-table-row-container>
@@ -57,12 +56,12 @@
                 var price = Model.OrderItemPrice.OrderItemPriceTiers.First();
                 <nhs-table-row-container>
                     <nhs-table-cell>£@price.Price.ToString("N2") @Model.OrderItemPrice.Description</nhs-table-cell>
-                    <nhs-table-cell>@Model.GetTotalRecipientQuantity()</nhs-table-cell>
+                    <nhs-table-cell>@Model.GetQuantity()</nhs-table-cell>
                     <nhs-table-cell>£@totalCost.ToString("N2")</nhs-table-cell>
                 </nhs-table-row-container>
             } else
             {
-                var tiers = Model.OrderItemPrice.CalculateTotalCostPerTier(Model.GetTotalRecipientQuantity()).Select((t, i) => (t, i));
+                var tiers = Model.OrderItemPrice.CalculateTotalCostPerTier(Model.GetQuantity()).Select((t, i) => (t, i));
                 <nhs-table-column>Pricing tier</nhs-table-column>
                 <nhs-table-column>Price per unit</nhs-table-column>
                 <nhs-table-column>Quantity</nhs-table-column>
@@ -92,7 +91,7 @@
 
             @if (fundingType == OrderItemFundingType.MixedFunding && totalCost > 0)
             {
-                var centralEndDate = GetAllocationEndDate();
+                var centralEndDate = Model.GetCentralAllocationEndDate(totalCost)!.Value;
                 var localStartDate = centralEndDate.AddDays(1);
 
                 var centralEndDateFormatted = centralEndDate.ToString("dd MMMM yyyy", System.Globalization.CultureInfo.InvariantCulture);
@@ -141,14 +140,4 @@
         OrderItemFundingType.LocalFunding => "Local",
         OrderItemFundingType.MixedFunding or _ => "Mixed",
     };
-
-    DateTime GetAllocationEndDate()
-    {
-        var centralAllocation = Model.OrderItemFunding.CentralAllocation;
-
-        var percentage = (double)Math.Round(centralAllocation / totalCost, 2);
-        var estimateDays = percentage * totalDays;
-
-        return startDate.AddDays(estimateDays);
-    }
 }

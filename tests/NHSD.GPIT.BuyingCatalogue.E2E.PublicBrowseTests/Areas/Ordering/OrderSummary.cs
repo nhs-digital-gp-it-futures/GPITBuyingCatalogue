@@ -211,8 +211,8 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering
             {
                 OrderItem = orderItem,
                 CatalogueItemId = orderItem.CatalogueItemId,
-                TotalPrice = orderItem.OrderItemPrice.CalculateTotalCost(orderItem.GetTotalRecipientQuantity()),
-                CentralAllocation = orderItem.OrderItemPrice.CalculateTotalCost(orderItem.GetTotalRecipientQuantity()),
+                TotalPrice = orderItem.OrderItemPrice.CalculateTotalCost(orderItem.GetQuantity()),
+                CentralAllocation = orderItem.OrderItemPrice.CalculateTotalCost(orderItem.GetQuantity()),
                 LocalAllocation = 0,
             };
 

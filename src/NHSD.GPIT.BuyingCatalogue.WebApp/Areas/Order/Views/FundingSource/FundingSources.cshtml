@@ -114,6 +114,6 @@
 	TagColour FormatFundingTypeColour(OrderItemFundingType fundingType) => 
 	fundingType == OrderItemFundingType.None ? TagColour.Grey : TagColour.Green;
 
-	decimal CalculateTotalCost(OrderItem item) => item.OrderItemPrice.CalculateTotalCost(item.GetTotalRecipientQuantity());
+	decimal CalculateTotalCost(OrderItem item) => item.OrderItemPrice.CalculateTotalCost(item.GetQuantity());
 }
 

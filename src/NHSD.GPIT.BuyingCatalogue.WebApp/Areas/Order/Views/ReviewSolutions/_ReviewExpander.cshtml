@@ -6,7 +6,7 @@
 @model NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models.OrderItem
 
 @{
-	var TotalCosts = Model.OrderItemPrice.CalculateTotalCostPerTier(Model.GetTotalRecipientQuantity());
+	var TotalCosts = Model.OrderItemPrice.CalculateTotalCostPerTier(Model.GetQuantity());
 	var TotalCost = TotalCosts.Sum(tc => tc.Cost);
 	var subTotalDescription = Model.OrderItemPrice.EstimationPeriod != null ? Model.OrderItemPrice.EstimationPeriod!.Value.Description() : "";
 }
