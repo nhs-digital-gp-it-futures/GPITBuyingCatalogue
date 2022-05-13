@@ -78,6 +78,12 @@
 				@(Model.Order.CommencementDate?.ToLongDateString())
 			</nhs-summary-list-row>
 			}
+			<nhs-summary-list-row label-text="Initial period for the Call-off Agreement">
+				@(Model.Order.InitialPeriod != null ? $"{Model.Order.InitialPeriod} Months" : "Not Specified")
+			</nhs-summary-list-row>
+			<nhs-summary-list-row label-text="Maximum term for the Call-off Agreement">
+				@(Model.Order.MaximumTerm != null ? $"{Model.Order.MaximumTerm} Months" : "Not Specified")
+			</nhs-summary-list-row>
         </nhs-summary-list>
 
                 <h2 class="nhsuk-u-margin-bottom-3">Order items (one-off cost)</h2>
