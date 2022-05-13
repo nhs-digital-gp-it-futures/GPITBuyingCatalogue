@@ -1,5 +1,5 @@
 ﻿@using NHSD.GPIT.BuyingCatalogue.Framework.Extensions
-@using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers; 
+@using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers;
 
 @model NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.SupplierModels.ManageSupplierContactsModel
 @{
@@ -23,7 +23,7 @@
             <nhs-table-column>Name</nhs-table-column>
             <nhs-table-column>Telephone number</nhs-table-column>
             <nhs-table-column>Email address</nhs-table-column>
-            <nhs-table-column></nhs-table-column>
+            <nhs-table-column>Action</nhs-table-column>
             @foreach (var contact in Model.Contacts)
             {
             <nhs-table-row-container>
