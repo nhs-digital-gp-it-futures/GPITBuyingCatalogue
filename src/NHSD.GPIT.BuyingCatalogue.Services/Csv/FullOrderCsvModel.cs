@@ -54,5 +54,9 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Csv
         public DateTime? CeaseDate { get; set; }
 
         public string Framework { get; set; }
+
+        public int? InitialTerm { get; set; }
+
+        public int? MaximumTerm { get; set; }
     }
 }
