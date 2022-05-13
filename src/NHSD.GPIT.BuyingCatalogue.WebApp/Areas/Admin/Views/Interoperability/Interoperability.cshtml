@@ -1,5 +1,5 @@
 ﻿@using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers;
-@using NHSD.GPIT.BuyingCatalogue.Framework.Extensions; 
+@using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
 @model NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.InteroperabilityModels.InteroperabilityModel;
 @{
     ViewBag.Title = "Interoperability";
@@ -48,7 +48,7 @@
                         <nhs-table-column>
                             Description
                         </nhs-table-column>
-                        <nhs-table-column></nhs-table-column>
+                        <nhs-table-column>Action</nhs-table-column>
                         @foreach (var integration in Model.IM1Integrations.Where(i => i.Qualifier == qualifier))
                         {
                             <nhs-table-row-container>
@@ -100,7 +100,7 @@
                         <nhs-table-column>
                             Additional information
                         </nhs-table-column>
-                        <nhs-table-column></nhs-table-column>
+                        <nhs-table-column>Action</nhs-table-column>
                         @foreach (var integration in Model.GpConnectIntegrations.Where(i => i.Qualifier == qualifier))
                         {
                             <nhs-table-row-container>
