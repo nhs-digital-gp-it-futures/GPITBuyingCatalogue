@@ -5,7 +5,7 @@
     ViewBag.Title = $"{Model.AssociatedServiceName} information";
 }
 <partial name="Partials/_BackLink" model="Model" />
-<div class="nhsuk-grid-row">    
+<div class="nhsuk-grid-row">
     <div class="nhsuk-grid-column-two-thirds">
         <nhs-validation-summary RadioId="@nameof(Model.SelectedPublicationStatus)" />
         <nhs-page-title title="@ViewBag.Title"
@@ -16,7 +16,7 @@
             <nhs-table-column>Section</nhs-table-column>
             <nhs-table-column>Mandatory</nhs-table-column>
             <nhs-table-column>Status</nhs-table-column>
-            <nhs-table-column></nhs-table-column>
+            <nhs-table-column>Action</nhs-table-column>
             <nhs-table-row-container>
                 <nhs-table-cell>Details</nhs-table-cell>
                 <nhs-table-cell>Yes</nhs-table-cell>
@@ -46,7 +46,7 @@
             <nhs-table data-test-id="associated-service-related-solutions-table" label-text="Solutions referencing this Associated Service">
                 <nhs-table-column>Solution ID</nhs-table-column>
                 <nhs-table-column>Solution name</nhs-table-column>
-                <nhs-table-column></nhs-table-column>
+                <nhs-table-column>Action</nhs-table-column>
                     @foreach(var referentialSolution in Model.RelatedSolutions)
                     {
                         <nhs-table-row-container>

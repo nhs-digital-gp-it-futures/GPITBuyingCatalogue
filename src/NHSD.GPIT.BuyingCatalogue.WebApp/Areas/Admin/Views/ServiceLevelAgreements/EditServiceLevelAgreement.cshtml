@@ -31,7 +31,7 @@
     <nhs-table-column>Type of support</nhs-table-column>
     <nhs-table-column>Time period</nhs-table-column>
     <nhs-table-column>Applicable days</nhs-table-column>
-    <nhs-table-column></nhs-table-column>
+    <nhs-table-column>Action</nhs-table-column>
     @foreach (var item in Model.ServiceLevelAgreements.ServiceHours)
     {
         <nhs-table-row-container>
@@ -63,7 +63,7 @@
     <nhs-table-column>Contact</nhs-table-column>
     <nhs-table-column>Hours available</nhs-table-column>
     <nhs-table-column>Applicable days</nhs-table-column>
-    <nhs-table-column></nhs-table-column>
+    <nhs-table-column>Action</nhs-table-column>
     @foreach (var item in Model.ServiceLevelAgreements.Contacts)
     {
         <nhs-table-row-container>
@@ -95,7 +95,7 @@
     <nhs-table-column>Service level</nhs-table-column>
     <nhs-table-column>How the service levels are measured</nhs-table-column>
     <nhs-table-column>Are service credits applied?</nhs-table-column>
-    <nhs-table-column></nhs-table-column>
+    <nhs-table-column>Action</nhs-table-column>
     @foreach (var item in Model.ServiceLevelAgreements.ServiceLevels)
     {
         <nhs-table-row-container>
