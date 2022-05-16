@@ -1,6 +1,6 @@
-﻿@using EnumsNET;
-@using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
-@using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers.SolutionSelection;
+﻿@using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers.SolutionSelection;
+@using NHSD.GPIT.BuyingCatalogue.EntityFramework.Extensions
+@using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models
 @model NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.SolutionSelection.ServiceRecipients.SelectRecipientsModel;
 @{
     ViewBag.Title = "Service Recipients";
@@ -11,12 +11,12 @@
 <div class="nhsuk-grid-row">
     <div class="nhsuk-grid-column-full">
         <nhs-validation-summary />
-
+        
         <nhs-page-title title="@ViewBag.Title"
                         caption="@Model!.ItemName"
-                        advice="Select the organisations you want to receive this @Model.ItemType.AsString(EnumFormat.DisplayName)." />
+                        advice="Select the organisations you want to receive this @(Model.ItemType.Name())." />
 
-        @if (Model.PreSelected)
+        @if (Model.PreSelected && Model.ItemType != CatalogueItemType.Solution)
         {
             <div id="pre-selected" class="nhsuk-inset-text">
                 <span class="nhsuk-u-visually-hidden">Information: </span>
@@ -25,24 +25,11 @@
         }
 
         <h2>Select Service Recipients</h2>
-        
-        @{
-            var actionName = Model.ItemType switch
-            {
-                CatalogueItemType.AdditionalService => nameof(ServiceRecipientsController.AdditionalServiceRecipients),
-                CatalogueItemType.AssociatedService => nameof(ServiceRecipientsController.AssociatedServiceRecipients),
-                CatalogueItemType.Solution => nameof(ServiceRecipientsController.SolutionRecipients),
-                _ => throw new ArgumentOutOfRangeException(nameof(Model.ItemType), Model.ItemType, null),
-            };
 
-            var controllerName = typeof(ServiceRecipientsController).ControllerName();
-
-            object routeValues = Model.ItemType == CatalogueItemType.Solution
-                ? new { Model.InternalOrgId, Model.CallOffId, Model.SelectionMode }
-                : new { Model.InternalOrgId, Model.CallOffId, Model.CatalogueItemId, Model.SelectionMode };
-        }
-
-        <vc:nhs-secondary-button url="@Url.Action(actionName, controllerName, routeValues)"
+        <vc:nhs-secondary-button url="@Url.Action(
+                                          nameof(ServiceRecipientsController.ServiceRecipients),
+                                          typeof(ServiceRecipientsController).ControllerName(),
+                                          new { Model.InternalOrgId, Model.CallOffId, Model.CatalogueItemId, Model.SelectionMode })"
                                  text="@Model.SelectionCaption"
                                  use-primary-colour="false" />
         

@@ -1,6 +1,6 @@
 ﻿namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.Orders
 {
-    public class OrderPricingTierQuantityDto
+    public class OrderItemRecipientQuantityDto
     {
         public string OdsCode { get; set; }
 

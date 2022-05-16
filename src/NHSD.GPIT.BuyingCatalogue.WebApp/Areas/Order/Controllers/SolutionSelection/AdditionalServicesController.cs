@@ -73,7 +73,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers.SolutionSelec
                 var catalogueItemId = serviceIds.First();
 
                 return RedirectToAction(
-                    nameof(ServiceRecipientsController.AdditionalServiceRecipients),
+                    nameof(ServiceRecipientsController.ServiceRecipients),
                     typeof(ServiceRecipientsController).ControllerName(),
                     new { internalOrgId, callOffId, catalogueItemId });
             }

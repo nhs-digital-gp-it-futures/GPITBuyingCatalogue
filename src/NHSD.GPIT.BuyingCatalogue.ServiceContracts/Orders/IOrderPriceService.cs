@@ -10,9 +10,5 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.Orders
         Task AddPrice(int orderId, CataloguePrice price, List<OrderPricingTierDto> agreedPrices);
 
         Task UpdatePrice(int orderId, CatalogueItemId catalogueItemId, List<OrderPricingTierDto> agreedPrices);
-
-        Task SetOrderItemQuantity(int orderId, CatalogueItemId catalogueItemId, int quantity);
-
-        Task SetServiceRecipientQuantities(int orderId, CatalogueItemId catalogueItemId, List<OrderPricingTierQuantityDto> quantities);
     }
 }

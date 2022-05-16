@@ -11,6 +11,8 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.Orders
     {
         public Task<Order> GetOrderThin(CallOffId callOffId, string internalOrgId);
 
+        public Task<Order> GetOrderWithCatalogueItemAndPrices(CallOffId callOffId, string internalOrgId);
+
         public Task<Order> GetOrderWithOrderItems(CallOffId callOffId, string internalOrgId);
 
         public Task<Order> GetOrderWithOrderItemsForFunding(CallOffId callOffId, string internalOrgId);

@@ -17,7 +17,6 @@ using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Orders;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions;
 using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.AutoFixtureCustomisations;
-using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers.SolutionSelection;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.SolutionSelection.Prices;
 using Xunit;
@@ -51,7 +50,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
             string internalOrgId,
             CallOffId callOffId,
             EntityFramework.Ordering.Models.Order order,
-            [Frozen] Mock<IOrderService> mockOrderService,
             [Frozen] Mock<ISolutionListPriceService> mockListPriceService,
             PricesController controller)
         {
@@ -59,17 +57,12 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
 
             orderItem.CatalogueItemType = CatalogueItemType.Solution;
 
-            mockOrderService
-                .Setup(x => x.GetOrderThin(callOffId, internalOrgId))
-                .ReturnsAsync(order);
-
             mockListPriceService
                 .Setup(lps => lps.GetCatalogueItemWithPublishedListPrices(orderItem.Id))
                 .ReturnsAsync(orderItem);
 
-            var result = await controller.SelectPrice(internalOrgId, callOffId);
+            var result = await controller.SelectPrice(internalOrgId, callOffId, orderItem.Id);
 
-            mockOrderService.VerifyAll();
             mockListPriceService.VerifyAll();
 
             var actualResult = result.Should().BeOfType<ViewResult>().Subject;
@@ -84,6 +77,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
         public static async Task Post_SelectPrice_ExpectedResult(
             string internalOrgId,
             CallOffId callOffId,
+            CatalogueItemId catalogueItemId,
             PricesController controller)
         {
             var model = new SelectPriceModel
@@ -91,7 +85,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
                 SelectedPriceId = PriceId,
             };
 
-            var result = await controller.SelectPrice(internalOrgId, callOffId, model);
+            var result = await controller.SelectPrice(internalOrgId, callOffId, catalogueItemId, model);
 
             var actualResult = result.Should().BeOfType<RedirectToActionResult>().Subject;
 
@@ -101,6 +95,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
             {
                 { "internalOrgId", internalOrgId },
                 { "callOffId", callOffId },
+                { "catalogueItemId", catalogueItemId },
                 { "priceId", PriceId },
             });
         }
@@ -130,7 +125,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
 
             controller.ModelState.AddModelError("key", "message");
 
-            var result = await controller.SelectPrice(internalOrgId, callOffId, model);
+            var result = await controller.SelectPrice(internalOrgId, callOffId, orderItem.Id, model);
 
             mockOrderService.VerifyAll();
             mockListPriceService.VerifyAll();
@@ -153,7 +148,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
             string internalOrgId,
             CallOffId callOffId,
             EntityFramework.Ordering.Models.Order order,
-            [Frozen] Mock<IOrderService> mockOrderService,
             [Frozen] Mock<ISolutionListPriceService> mockListPriceService,
             PricesController controller)
         {
@@ -162,17 +156,12 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
 
             orderItem.CatalogueItemType = CatalogueItemType.Solution;
 
-            mockOrderService
-                .Setup(x => x.GetOrderThin(callOffId, internalOrgId))
-                .ReturnsAsync(order);
-
             mockListPriceService
                 .Setup(lps => lps.GetCatalogueItemWithPublishedListPrices(orderItem.Id))
                 .ReturnsAsync(orderItem);
 
-            var result = await controller.ConfirmPrice(internalOrgId, callOffId, priceId);
+            var result = await controller.ConfirmPrice(internalOrgId, callOffId, orderItem.Id, priceId);
 
-            mockOrderService.VerifyAll();
             mockListPriceService.VerifyAll();
 
             var actualResult = result.Should().BeOfType<ViewResult>().Subject;
@@ -187,12 +176,13 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
         public static async Task Post_ConfirmPrice_ModelError_ReturnsModel(
             string internalOrgId,
             CallOffId callOffId,
+            CatalogueItemId catalogueItemId,
             ConfirmPriceModel model,
             PricesController controller)
         {
             controller.ModelState.AddModelError("key", "message");
 
-            var result = await controller.ConfirmPrice(internalOrgId, callOffId, PriceId, model);
+            var result = await controller.ConfirmPrice(internalOrgId, callOffId, catalogueItemId, PriceId, model);
 
             var actualResult = result.Should().BeOfType<ViewResult>().Subject;
 
@@ -210,18 +200,18 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
             [Frozen] Mock<IOrderPriceService> mockOrderPriceService,
             PricesController controller)
         {
-            var orderItem = order.OrderItems.First().CatalogueItem;
-            var price = orderItem.CataloguePrices.First();
+            var catalogueItem = order.OrderItems.First().CatalogueItem;
+            var price = catalogueItem.CataloguePrices.First();
 
-            orderItem.CatalogueItemType = CatalogueItemType.Solution;
+            catalogueItem.CatalogueItemType = CatalogueItemType.Solution;
 
             mockOrderService
                 .Setup(x => x.GetOrderThin(callOffId, internalOrgId))
                 .ReturnsAsync(order);
 
             mockListPriceService
-                .Setup(lps => lps.GetCatalogueItemWithPublishedListPrices(orderItem.Id))
-                .ReturnsAsync(orderItem);
+                .Setup(lps => lps.GetCatalogueItemWithPublishedListPrices(catalogueItem.Id))
+                .ReturnsAsync(catalogueItem);
 
             List<OrderPricingTierDto> actual = null;
 
@@ -230,9 +220,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
                 .Callback<int, CataloguePrice, List<OrderPricingTierDto>>((_, _, x) => actual = x)
                 .Returns(Task.CompletedTask);
 
-            var model = new ConfirmPriceModel(orderItem, price.CataloguePriceId);
+            var model = new ConfirmPriceModel(catalogueItem, price.CataloguePriceId);
 
-            var result = await controller.ConfirmPrice(internalOrgId, callOffId, price.CataloguePriceId, model);
+            var result = await controller.ConfirmPrice(internalOrgId, callOffId, catalogueItem.Id, price.CataloguePriceId, model);
 
             mockOrderService.VerifyAll();
             mockListPriceService.VerifyAll();
@@ -253,6 +243,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
             {
                 { "internalOrgId", internalOrgId },
                 { "callOffId", callOffId },
+                { "catalogueItemId", catalogueItem.Id },
             });
         }
 
@@ -273,7 +264,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
                 .Setup(x => x.GetOrderWithOrderItems(callOffId, internalOrgId))
                 .ReturnsAsync(order);
 
-            var result = await controller.EditPrice(internalOrgId, callOffId);
+            var result = await controller.EditPrice(internalOrgId, callOffId, orderItem.CatalogueItemId);
 
             mockOrderService.VerifyAll();
 
@@ -288,12 +279,13 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
         public static async Task Post_EditPrice_ModelError_ReturnsModel(
             string internalOrgId,
             CallOffId callOffId,
+            CatalogueItemId catalogueItemId,
             ConfirmPriceModel model,
             PricesController controller)
         {
             controller.ModelState.AddModelError("key", "message");
 
-            var result = await controller.EditPrice(internalOrgId, callOffId, model);
+            var result = await controller.EditPrice(internalOrgId, callOffId, catalogueItemId, model);
 
             var actualResult = result.Should().BeOfType<ViewResult>().Subject;
 
@@ -333,7 +325,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
                 x.AgreedPrice = $"{newPrice:#,##0.00##}";
             });
 
-            var result = await controller.EditPrice(internalOrgId, callOffId, model);
+            var result = await controller.EditPrice(internalOrgId, callOffId, orderItem.CatalogueItemId, model);
 
             mockOrderService.VerifyAll();
             mockOrderPriceService.VerifyAll();
@@ -353,397 +345,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
             {
                 { "internalOrgId", internalOrgId },
                 { "callOffId", callOffId },
-            });
-        }
-
-        [Theory]
-        [CommonAutoData]
-        public static async Task Get_AdditionalServiceSelectPrice_ExpectedResult(
-            string internalOrgId,
-            CallOffId callOffId,
-            EntityFramework.Ordering.Models.Order order,
-            [Frozen] Mock<ISolutionListPriceService> mockListPriceService,
-            PricesController controller)
-        {
-            var orderItem = order.OrderItems.First().CatalogueItem;
-
-            orderItem.CatalogueItemType = CatalogueItemType.AdditionalService;
-
-            mockListPriceService
-                .Setup(lps => lps.GetCatalogueItemWithPublishedListPrices(orderItem.Id))
-                .ReturnsAsync(orderItem);
-
-            var result = await controller.AdditionalServiceSelectPrice(internalOrgId, callOffId, orderItem.Id);
-
-            mockListPriceService.VerifyAll();
-
-            var actualResult = result.Should().BeOfType<ViewResult>().Subject;
-
-            var expected = new SelectPriceModel(orderItem);
-
-            actualResult.Model.Should().BeEquivalentTo(expected, m => m.Excluding(o => o.BackLink));
-        }
-
-        [Theory]
-        [CommonAutoData]
-        public static async Task Post_AdditionalServiceSelectPrice_ExpectedResult(
-            string internalOrgId,
-            CallOffId callOffId,
-            CatalogueItemId catalogueItemId,
-            PricesController controller)
-        {
-            var model = new SelectPriceModel
-            {
-                SelectedPriceId = PriceId,
-            };
-
-            var result = await controller.AdditionalServiceSelectPrice(internalOrgId, callOffId, catalogueItemId, model);
-
-            var actualResult = result.Should().BeOfType<RedirectToActionResult>().Subject;
-
-            actualResult.ControllerName.Should().Be(typeof(PricesController).ControllerName());
-            actualResult.ActionName.Should().Be(nameof(PricesController.AdditionalServiceConfirmPrice));
-            actualResult.RouteValues.Should().BeEquivalentTo(new RouteValueDictionary
-            {
-                { "internalOrgId", internalOrgId },
-                { "callOffId", callOffId },
-                { "catalogueItemId", catalogueItemId },
-                { "priceId", PriceId },
-            });
-        }
-
-        [Theory]
-        [CommonAutoData]
-        public static async Task Post_AdditionalServiceSelectPrice_ModelError_ReturnsModel(
-        string internalOrgId,
-        CallOffId callOffId,
-        SelectPriceModel model,
-        EntityFramework.Ordering.Models.Order order,
-        [Frozen] Mock<ISolutionListPriceService> mockListPriceService,
-        PricesController controller)
-        {
-            var orderItem = order.OrderItems.First().CatalogueItem;
-
-            orderItem.CatalogueItemType = CatalogueItemType.Solution;
-
-            mockListPriceService
-                .Setup(lps => lps.GetCatalogueItemWithPublishedListPrices(orderItem.Id))
-                .ReturnsAsync(orderItem);
-
-            controller.ModelState.AddModelError("key", "message");
-
-            var result = await controller.AdditionalServiceSelectPrice(internalOrgId, callOffId, orderItem.Id, model);
-
-            mockListPriceService.VerifyAll();
-
-            var actualResult = result.Should().BeOfType<ViewResult>().Subject;
-
-            var expected = new SelectPriceModel(orderItem)
-            {
-                SelectedPriceId = model.SelectedPriceId,
-                SolutionName = model.SolutionName,
-                SolutionType = model.SolutionType,
-            };
-
-            actualResult.Model.Should().BeEquivalentTo(expected, m => m.Excluding(o => o.BackLink).Excluding(o => o.BackLinkText));
-        }
-
-        [Theory]
-        [CommonAutoData]
-        public static async Task Get_AdditionalServiceConfirmPrice_ExpectedResult(
-            string internalOrgId,
-            CallOffId callOffId,
-            EntityFramework.Ordering.Models.Order order,
-            [Frozen] Mock<ISolutionListPriceService> mockListPriceService,
-            PricesController controller)
-        {
-            var orderItem = order.OrderItems.First().CatalogueItem;
-            var priceId = orderItem.CataloguePrices.First().CataloguePriceId;
-
-            orderItem.CatalogueItemType = CatalogueItemType.AdditionalService;
-
-            mockListPriceService
-                .Setup(lps => lps.GetCatalogueItemWithPublishedListPrices(orderItem.Id))
-                .ReturnsAsync(orderItem);
-
-            var result = await controller.AdditionalServiceConfirmPrice(internalOrgId, callOffId, orderItem.Id, priceId);
-
-            mockListPriceService.VerifyAll();
-
-            var actualResult = result.Should().BeOfType<ViewResult>().Subject;
-
-            var expected = new ConfirmPriceModel(orderItem, priceId);
-
-            actualResult.Model.Should().BeEquivalentTo(expected, m => m.Excluding(o => o.BackLink));
-        }
-
-        [Theory]
-        [CommonAutoData]
-        public static async Task Post_AdditionalServiceConfirmPrice_ModelError_ReturnsModel(
-            string internalOrgId,
-            CallOffId callOffId,
-            CatalogueItemId catalogueItemId,
-            ConfirmPriceModel model,
-            PricesController controller)
-        {
-            controller.ModelState.AddModelError("key", "message");
-
-            var result = await controller.AdditionalServiceConfirmPrice(internalOrgId, callOffId, catalogueItemId, PriceId, model);
-
-            var actualResult = result.Should().BeOfType<ViewResult>().Subject;
-
-            actualResult.Model.Should().BeEquivalentTo(model);
-        }
-
-        [Theory]
-        [CommonAutoData]
-        public static async Task Post_AdditionalServiceConfirmPrice_ExpectedResult(
-            string internalOrgId,
-            CallOffId callOffId,
-            EntityFramework.Ordering.Models.Order order,
-            [Frozen] Mock<IOrderService> mockOrderService,
-            [Frozen] Mock<ISolutionListPriceService> mockListPriceService,
-            [Frozen] Mock<IOrderPriceService> mockOrderPriceService,
-            PricesController controller)
-        {
-            var orderItem = order.OrderItems.First().CatalogueItem;
-            var price = orderItem.CataloguePrices.First();
-
-            orderItem.CatalogueItemType = CatalogueItemType.AdditionalService;
-
-            mockOrderService
-                .Setup(x => x.GetOrderThin(callOffId, internalOrgId))
-                .ReturnsAsync(order);
-
-            mockListPriceService
-                .Setup(lps => lps.GetCatalogueItemWithPublishedListPrices(orderItem.Id))
-                .ReturnsAsync(orderItem);
-
-            List<OrderPricingTierDto> actual = null;
-
-            mockOrderPriceService
-                .Setup(x => x.AddPrice(order.Id, price, It.IsAny<List<OrderPricingTierDto>>()))
-                .Callback<int, CataloguePrice, List<OrderPricingTierDto>>((_, _, x) => actual = x)
-                .Returns(Task.CompletedTask);
-
-            var model = new ConfirmPriceModel(orderItem, price.CataloguePriceId);
-
-            var result = await controller.AdditionalServiceConfirmPrice(internalOrgId, callOffId, orderItem.Id, price.CataloguePriceId, model);
-
-            mockOrderService.VerifyAll();
-            mockListPriceService.VerifyAll();
-            mockOrderPriceService.VerifyAll();
-
-            actual.ForEach(x =>
-            {
-                price.CataloguePriceTiers
-                    .Single(t => t.LowerRange == x.LowerRange && t.UpperRange == x.UpperRange)
-                    .Price.Should().Be(x.Price);
-            });
-
-            var actualResult = result.Should().BeOfType<RedirectToActionResult>().Subject;
-
-            actualResult.ControllerName.Should().Be(typeof(OrderController).ControllerName());
-            actualResult.ActionName.Should().Be(nameof(OrderController.Order));
-            actualResult.RouteValues.Should().BeEquivalentTo(new RouteValueDictionary
-            {
-                { "internalOrgId", internalOrgId },
-                { "callOffId", callOffId },
-            });
-        }
-
-        [Theory]
-        [CommonAutoData]
-        public static async Task Get_AssociatedServiceSelectPrice_ExpectedResult(
-            string internalOrgId,
-            CallOffId callOffId,
-            EntityFramework.Ordering.Models.Order order,
-            [Frozen] Mock<ISolutionListPriceService> mockListPriceService,
-            PricesController controller)
-        {
-            var orderItem = order.OrderItems.First().CatalogueItem;
-
-            orderItem.CatalogueItemType = CatalogueItemType.AssociatedService;
-
-            mockListPriceService
-                .Setup(lps => lps.GetCatalogueItemWithPublishedListPrices(orderItem.Id))
-                .ReturnsAsync(orderItem);
-
-            var result = await controller.AssociatedServiceSelectPrice(internalOrgId, callOffId, orderItem.Id);
-
-            mockListPriceService.VerifyAll();
-
-            var actualResult = result.Should().BeOfType<ViewResult>().Subject;
-            var expected = new SelectPriceModel(orderItem);
-
-            actualResult.Model.Should().BeEquivalentTo(expected, m => m.Excluding(o => o.BackLink));
-        }
-
-        [Theory]
-        [CommonAutoData]
-        public static async Task Post_AssociatedServiceSelectPrice_ExpectedResult(
-            string internalOrgId,
-            CallOffId callOffId,
-            CatalogueItemId catalogueItemId,
-            PricesController controller)
-        {
-            var model = new SelectPriceModel
-            {
-                SelectedPriceId = PriceId,
-            };
-
-            var result = await controller.AssociatedServiceSelectPrice(internalOrgId, callOffId, catalogueItemId, model);
-
-            var actualResult = result.Should().BeOfType<RedirectToActionResult>().Subject;
-
-            actualResult.ControllerName.Should().Be(typeof(PricesController).ControllerName());
-            actualResult.ActionName.Should().Be(nameof(PricesController.AssociatedServiceConfirmPrice));
-            actualResult.RouteValues.Should().BeEquivalentTo(new RouteValueDictionary
-            {
-                { "internalOrgId", internalOrgId },
-                { "callOffId", callOffId },
-                { "catalogueItemId", catalogueItemId },
-                { "priceId", PriceId },
-            });
-        }
-
-        [Theory]
-        [CommonAutoData]
-        public static async Task Post_AssociatedServiceSelectPrice_ModelError_ReturnsModel(
-            string internalOrgId,
-            CallOffId callOffId,
-            SelectPriceModel model,
-            EntityFramework.Ordering.Models.Order order,
-            [Frozen] Mock<ISolutionListPriceService> mockListPriceService,
-            PricesController controller)
-        {
-            var orderItem = order.OrderItems.First().CatalogueItem;
-
-            orderItem.CatalogueItemType = CatalogueItemType.Solution;
-
-            mockListPriceService
-                .Setup(lps => lps.GetCatalogueItemWithPublishedListPrices(orderItem.Id))
-                .ReturnsAsync(orderItem);
-
-            controller.ModelState.AddModelError("key", "message");
-
-            var result = await controller.AssociatedServiceSelectPrice(internalOrgId, callOffId, orderItem.Id, model);
-
-            mockListPriceService.VerifyAll();
-
-            var actualResult = result.Should().BeOfType<ViewResult>().Subject;
-
-            var expected = new SelectPriceModel(orderItem)
-            {
-                SelectedPriceId = model.SelectedPriceId,
-                SolutionName = model.SolutionName,
-                SolutionType = model.SolutionType,
-            };
-
-            actualResult.Model.Should().BeEquivalentTo(expected, m => m.Excluding(o => o.BackLink).Excluding(o => o.BackLinkText));
-        }
-
-        [Theory]
-        [CommonAutoData]
-        public static async Task Get_AssociatedServiceConfirmPrice_ExpectedResult(
-            string internalOrgId,
-            CallOffId callOffId,
-            EntityFramework.Ordering.Models.Order order,
-            [Frozen] Mock<ISolutionListPriceService> mockListPriceService,
-            PricesController controller)
-        {
-            var orderItem = order.OrderItems.First().CatalogueItem;
-            var priceId = orderItem.CataloguePrices.First().CataloguePriceId;
-
-            orderItem.CatalogueItemType = CatalogueItemType.AssociatedService;
-
-            mockListPriceService
-                .Setup(lps => lps.GetCatalogueItemWithPublishedListPrices(orderItem.Id))
-                .ReturnsAsync(orderItem);
-
-            var result = await controller.AssociatedServiceConfirmPrice(internalOrgId, callOffId, orderItem.Id, priceId);
-
-            mockListPriceService.VerifyAll();
-
-            var actualResult = result.Should().BeOfType<ViewResult>().Subject;
-
-            var expected = new ConfirmPriceModel(orderItem, priceId);
-
-            actualResult.Model.Should().BeEquivalentTo(expected, m => m.Excluding(o => o.BackLink));
-        }
-
-        [Theory]
-        [CommonAutoData]
-        public static async Task Post_AssociatedServiceConfirmPrice_ModelError_ReturnsModel(
-            string internalOrgId,
-            CallOffId callOffId,
-            CatalogueItemId catalogueItemId,
-            ConfirmPriceModel model,
-            PricesController controller)
-        {
-            controller.ModelState.AddModelError("key", "message");
-
-            var result = await controller.AssociatedServiceConfirmPrice(internalOrgId, callOffId, catalogueItemId, PriceId, model);
-
-            var actualResult = result.Should().BeOfType<ViewResult>().Subject;
-
-            actualResult.Model.Should().BeEquivalentTo(model);
-        }
-
-        [Theory]
-        [CommonAutoData]
-        public static async Task Post_AssociatedServiceConfirmPrice_ExpectedResult(
-            string internalOrgId,
-            CallOffId callOffId,
-            EntityFramework.Ordering.Models.Order order,
-            [Frozen] Mock<IOrderService> mockOrderService,
-            [Frozen] Mock<ISolutionListPriceService> mockListPriceService,
-            [Frozen] Mock<IOrderPriceService> mockOrderPriceService,
-            PricesController controller)
-        {
-            var orderItem = order.OrderItems.First().CatalogueItem;
-            var price = orderItem.CataloguePrices.First();
-
-            orderItem.CatalogueItemType = CatalogueItemType.AssociatedService;
-
-            mockOrderService
-                .Setup(x => x.GetOrderThin(callOffId, internalOrgId))
-                .ReturnsAsync(order);
-
-            mockListPriceService
-                .Setup(lps => lps.GetCatalogueItemWithPublishedListPrices(orderItem.Id))
-                .ReturnsAsync(orderItem);
-
-            List<OrderPricingTierDto> actual = null;
-
-            mockOrderPriceService
-                .Setup(x => x.AddPrice(order.Id, price, It.IsAny<List<OrderPricingTierDto>>()))
-                .Callback<int, CataloguePrice, List<OrderPricingTierDto>>((_, _, x) => actual = x)
-                .Returns(Task.CompletedTask);
-
-            var model = new ConfirmPriceModel(orderItem, price.CataloguePriceId);
-
-            var result = await controller.AssociatedServiceConfirmPrice(internalOrgId, callOffId, orderItem.Id, price.CataloguePriceId, model);
-
-            mockOrderService.VerifyAll();
-            mockListPriceService.VerifyAll();
-            mockOrderPriceService.VerifyAll();
-
-            actual.ForEach(x =>
-            {
-                price.CataloguePriceTiers
-                    .Single(t => t.LowerRange == x.LowerRange && t.UpperRange == x.UpperRange)
-                    .Price.Should().Be(x.Price);
-            });
-
-            var actualResult = result.Should().BeOfType<RedirectToActionResult>().Subject;
-
-            actualResult.ControllerName.Should().Be(typeof(OrderController).ControllerName());
-            actualResult.ActionName.Should().Be(nameof(OrderController.Order));
-            actualResult.RouteValues.Should().BeEquivalentTo(new RouteValueDictionary
-            {
-                { "internalOrgId", internalOrgId },
-                { "callOffId", callOffId },
+                { "catalogueItemId", orderItem.CatalogueItemId },
             });
         }
     }

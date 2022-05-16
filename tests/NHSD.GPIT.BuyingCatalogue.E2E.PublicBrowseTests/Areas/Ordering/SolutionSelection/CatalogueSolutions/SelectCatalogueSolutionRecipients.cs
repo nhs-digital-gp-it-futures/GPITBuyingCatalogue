@@ -21,15 +21,17 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering.SolutionSelection.Ca
         private const string InternalOrgId = "CG-03F";
         private const int OrderId = 90005;
         private static readonly CallOffId CallOffId = new(OrderId, 1);
+        private static readonly CatalogueItemId CatalogueItemId = new(99999, "001");
 
         private static readonly Dictionary<string, string> Parameters = new()
         {
             { nameof(InternalOrgId), InternalOrgId },
             { nameof(CallOffId), $"{CallOffId}" },
+            { nameof(CatalogueItemId), $"{CatalogueItemId}" },
         };
 
         public SelectCatalogueSolutionRecipients(LocalWebApplicationFactory factory)
-            : base(factory, typeof(ServiceRecipientsController), nameof(ServiceRecipientsController.SolutionRecipients), Parameters)
+            : base(factory, typeof(ServiceRecipientsController), nameof(ServiceRecipientsController.ServiceRecipients), Parameters)
         {
         }
 
@@ -61,7 +63,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering.SolutionSelection.Ca
 
             CommonActions.PageLoadedCorrectGetIndex(
                 typeof(ServiceRecipientsController),
-                nameof(ServiceRecipientsController.SolutionRecipients)).Should().BeTrue();
+                nameof(ServiceRecipientsController.ServiceRecipients)).Should().BeTrue();
 
             CommonActions.ElementIsDisplayed(ServiceRecipientObjects.PreSelectedInset).Should().BeFalse();
             CommonActions.GetNumberOfSelectedCheckBoxes().Should().Be(CommonActions.GetNumberOfCheckBoxesDisplayed());
@@ -70,7 +72,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering.SolutionSelection.Ca
 
             CommonActions.PageLoadedCorrectGetIndex(
                 typeof(ServiceRecipientsController),
-                nameof(ServiceRecipientsController.SolutionRecipients)).Should().BeTrue();
+                nameof(ServiceRecipientsController.ServiceRecipients)).Should().BeTrue();
 
             CommonActions.ElementIsDisplayed(ServiceRecipientObjects.PreSelectedInset).Should().BeFalse();
             CommonActions.GetNumberOfSelectedCheckBoxes().Should().Be(0);
@@ -83,7 +85,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering.SolutionSelection.Ca
 
             CommonActions.PageLoadedCorrectGetIndex(
                 typeof(ServiceRecipientsController),
-                nameof(ServiceRecipientsController.SolutionRecipients)).Should().BeTrue();
+                nameof(ServiceRecipientsController.ServiceRecipients)).Should().BeTrue();
 
             CommonActions.ErrorSummaryDisplayed().Should().BeTrue();
             CommonActions.ErrorSummaryLinksExist().Should().BeTrue();
@@ -103,7 +105,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering.SolutionSelection.Ca
 
             CommonActions.PageLoadedCorrectGetIndex(
                 typeof(PricesController),
-                nameof(PricesController.ConfirmPrice)).Should().BeTrue();
+                nameof(PricesController.EditPrice)).Should().BeTrue();
 
             GetSolution().OrderItemRecipients.Count.Should().Be(1);
         }

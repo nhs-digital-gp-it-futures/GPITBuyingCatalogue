@@ -19,10 +19,16 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.SolutionSelection.
         {
         }
 
-        public SelectRecipientsModel(List<ServiceRecipientModel> serviceRecipients, SelectionMode? selectionMode)
+        public SelectRecipientsModel(
+            OrderItem orderItem,
+            List<ServiceRecipientModel> serviceRecipients,
+            SelectionMode? selectionMode)
         {
             this.selectionMode = selectionMode;
             ServiceRecipients = serviceRecipients;
+
+            ItemName = orderItem.CatalogueItem.Name;
+            ItemType = orderItem.CatalogueItem.CatalogueItemType;
 
             switch (selectionMode)
             {
@@ -48,7 +54,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.SolutionSelection.
 
         public CallOffId CallOffId { get; set; }
 
-        public CatalogueItemId? CatalogueItemId { get; set; }
+        public CatalogueItemId CatalogueItemId { get; set; }
 
         public string ItemName { get; set; }
 

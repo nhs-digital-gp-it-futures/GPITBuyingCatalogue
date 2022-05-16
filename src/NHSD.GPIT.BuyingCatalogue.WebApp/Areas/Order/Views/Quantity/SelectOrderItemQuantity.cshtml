@@ -17,10 +17,11 @@
             <input type="hidden" asp-for="@Model.BackLink" />
             <input type="hidden" asp-for="@Model.ItemName" />
             <input type="hidden" asp-for="@Model.ItemType" />
+            <input type="hidden" asp-for="@Model.QuantityDescription" />
             
             <nhs-bookended-input asp-for="Quantity" 
                                  label-text="Quantity"
-                                 Suffix="items"/>
+                                 Suffix="@Model.QuantityDescription"/>
 
             <br/>
 

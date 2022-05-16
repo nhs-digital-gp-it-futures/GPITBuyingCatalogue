@@ -12,29 +12,26 @@ using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers.SolutionSelection
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Validators.SolutionSelection.Quantity;
 using Xunit;
 
-namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering.SolutionSelection.Quantity
+namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering.SolutionSelection.Quantity.Base
 {
-    public class SelectServiceRecipientQuantity : BuyerTestBase, IClassFixture<LocalWebApplicationFactory>, IDisposable
+    public abstract class SelectRecipientQuantity : BuyerTestBase, IClassFixture<LocalWebApplicationFactory>, IDisposable
     {
-        private const string InternalOrgId = "CG-03F";
-        private const int OrderId = 90006;
-        private static readonly CallOffId CallOffId = new(OrderId, 1);
+        private readonly int orderId;
+        private readonly CatalogueItemId catalogueItemId;
 
-        private static readonly Dictionary<string, string> Parameters = new()
+        protected SelectRecipientQuantity(LocalWebApplicationFactory factory, Dictionary<string, string> parameters)
+            : base(factory, typeof(QuantityController), nameof(QuantityController.SelectServiceRecipientQuantity), parameters)
         {
-            { nameof(InternalOrgId), InternalOrgId },
-            { nameof(CallOffId), $"{CallOffId}" },
-        };
-
-        public SelectServiceRecipientQuantity(LocalWebApplicationFactory factory)
-            : base(factory, typeof(QuantityController), nameof(QuantityController.SelectServiceRecipientQuantity), Parameters)
-        {
+            orderId = int.Parse(parameters["OrderId"]);
+            catalogueItemId = CatalogueItemId.ParseExact(parameters["CatalogueItemId"]);
         }
 
+        protected abstract string PageTitle { get; }
+
         [Fact]
-        public void SelectQuantity_AllSectionsDisplayed()
+        public void SelectServiceRecipientQuantity_AllSectionsDisplayed()
         {
-            CommonActions.PageTitle().Should().BeEquivalentTo("Quantity of Catalogue Solution - E2E With Contact With Single Price".FormatForComparison());
+            CommonActions.PageTitle().Should().BeEquivalentTo(PageTitle.FormatForComparison());
             CommonActions.GoBackLinkDisplayed().Should().BeTrue();
 
             for (var i = 0; i < 3; i++)
@@ -46,7 +43,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering.SolutionSelection.Qu
         }
 
         [Fact]
-        public void SelectQuantity_QuantityIsBlank_Error()
+        public void SelectServiceRecipientQuantity_QuantityIsBlank_Error()
         {
             CommonActions.ClearInputElement(QuantityObjects.InputQuantityInput(0));
             CommonActions.ClickSave();
@@ -64,7 +61,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering.SolutionSelection.Qu
         }
 
         [Fact]
-        public void SelectQuantity_QuantityNotANumber_Error()
+        public void SelectServiceRecipientQuantity_QuantityNotANumber_Error()
         {
             CommonActions.ElementAddValue(QuantityObjects.InputQuantityInput(0), "abc");
             CommonActions.ClickSave();
@@ -82,7 +79,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering.SolutionSelection.Qu
         }
 
         [Fact]
-        public void SelectQuantity_QuantityNegative_Error()
+        public void SelectServiceRecipientQuantity_QuantityNegative_Error()
         {
             CommonActions.ElementAddValue(QuantityObjects.InputQuantityInput(0), "-1");
             CommonActions.ClickSave();
@@ -100,7 +97,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering.SolutionSelection.Qu
         }
 
         [Fact]
-        public void SelectQuantity_QuantityHasDecimalPlaces_Error()
+        public void SelectServiceRecipientQuantity_QuantityHasDecimalPlaces_Error()
         {
             CommonActions.ElementAddValue(QuantityObjects.InputQuantityInput(0), "1.1");
             CommonActions.ClickSave();
@@ -118,7 +115,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering.SolutionSelection.Qu
         }
 
         [Fact]
-        public void SelectQuantity_QuantityIsValid_ExpectedResult()
+        public void SelectServiceRecipientQuantity_QuantityIsValid_ExpectedResult()
         {
             for (var i = 0; i < 3; i++)
             {
@@ -156,7 +153,8 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering.SolutionSelection.Qu
         {
             return GetEndToEndDbContext().OrderItems
                 .Include(x => x.OrderItemRecipients)
-                .Where(x => x.OrderId == OrderId)
+                .Where(x => x.OrderId == orderId
+                    && x.CatalogueItemId == catalogueItemId)
                 .ToList();
         }
     }
