@@ -4,12 +4,14 @@ using System.Linq;
 using System.Threading.Tasks;
 using FluentAssertions;
 using Microsoft.EntityFrameworkCore;
+using NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.Objects.PublicBrowse;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Utils;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.TestBases;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers;
+using OpenQA.Selenium;
 using Xunit;
 using Xunit.Abstractions;
 
@@ -54,7 +56,8 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.PublicBrowse.Solution
         {
             RunTest(() =>
             {
-                PublicBrowsePages.SolutionAction.AssociatedServicesTableDisplayed().Should().BeTrue();
+                CommonActions.ElementIsDisplayed(SolutionObjects.AssociatedServicesTieredTable).Should().BeTrue();
+                CommonActions.ElementIsDisplayed(SolutionObjects.AssociatedServicesFlatTable).Should().BeTrue();
             });
         }
 
@@ -70,7 +73,8 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.PublicBrowse.Solution
                 var solution = await context.CatalogueItems.Include(s => s.SupplierServiceAssociations).SingleAsync(s => s.Id == SolutionId);
                 associatedServicesInDb = associatedServicesInDb.Where(x => solution.SupplierServiceAssociations.Any(y => y.AssociatedServiceId == x.Id)).ToList();
 
-                var associatedServicesInTable = PublicBrowsePages.SolutionAction.GetAssociatedServicesNamesFromTable();
+                var associatedServicesInTable = Driver.FindElement(SolutionObjects.AssociatedServicesTieredTable).FindElements(By.TagName("a"))
+                    .Concat(Driver.FindElement(SolutionObjects.AssociatedServicesFlatTable).FindElements(By.TagName("a"))).Select(s => s.Text);
 
                 associatedServicesInTable.Should().BeEquivalentTo(associatedServicesInDb.Select(s => s.Name));
             });
