@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using FluentAssertions;
 using Microsoft.EntityFrameworkCore;
@@ -163,9 +164,9 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.ManageSuppliers
 
             var contact = await context.SupplierContacts.SingleAsync(sc => sc.Id == ReferencedContactId);
 
-            var solution = await context.CatalogueItems.SingleAsync(ci => ci.Id == ReferencingSolutionId);
+            var solution = await context.CatalogueItems.Include(ci => ci.CatalogueItemContacts).SingleAsync(ci => ci.Id == ReferencingSolutionId);
 
-            if (!solution.CatalogueItemContacts.Contains(contact))
+            if (!solution.CatalogueItemContacts.Any(cic => cic.Id == ReferencedContactId))
             {
                 solution.CatalogueItemContacts.Add(contact);
 
