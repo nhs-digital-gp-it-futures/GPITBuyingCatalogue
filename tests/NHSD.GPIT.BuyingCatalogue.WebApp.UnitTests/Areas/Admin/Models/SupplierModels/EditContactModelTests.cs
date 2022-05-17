@@ -37,7 +37,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Models.Supplier
         [Fact]
         public static void ConstructorOverload_NullReferencingSolutions_ThrowsException()
         {
-            var actual = Assert.Throws <ArgumentNullException>(() => new EditContactModel(new SupplierContact(), new Supplier(), null));
+            var actual = Assert.Throws<ArgumentNullException>(() => new EditContactModel(new SupplierContact(), new Supplier(), null));
             actual.ParamName.Should().Be("solutionsReferencing");
         }
 
