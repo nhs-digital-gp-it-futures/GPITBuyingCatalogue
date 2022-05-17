@@ -321,12 +321,16 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
         [CommonAutoData]
         public static async Task Get_EditSupplierContact_ReturnsViewWithExpectedViewModel(
             Supplier supplier,
+            List<CatalogueItem> solutions,
             [Frozen] Mock<ISuppliersService> mockSuppliersService,
             SuppliersController controller)
         {
             mockSuppliersService.Setup(s => s.GetSupplier(supplier.Id)).ReturnsAsync(supplier);
 
-            var expectedResult = new EditContactModel(supplier.SupplierContacts.First(), supplier)
+            mockSuppliersService.Setup(s => s.GetSolutionsReferencingSupplierContact(supplier.SupplierContacts.First().Id))
+                .ReturnsAsync(solutions);
+
+            var expectedResult = new EditContactModel(supplier.SupplierContacts.First(), supplier, solutions)
             {
                 BackLink = "testUrl",
             };
