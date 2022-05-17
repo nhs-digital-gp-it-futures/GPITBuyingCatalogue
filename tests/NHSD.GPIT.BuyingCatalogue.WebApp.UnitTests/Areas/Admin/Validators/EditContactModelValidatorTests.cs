@@ -31,7 +31,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators
             suppliersService.Setup(s => s.GetSupplier(existingContact.SupplierId))
                 .ReturnsAsync(supplier);
 
-            var model = new EditContactModel(existingContact, supplier);
+            var model = new EditContactModel(existingContact, supplier, new List<CatalogueItem>());
 
             var result = validator.TestValidate(model);
 
@@ -57,7 +57,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators
             suppliersService.Setup(s => s.GetSupplier(existingContact.SupplierId))
                 .ReturnsAsync(supplier);
 
-            var model = new EditContactModel(existingContact, supplier);
+            var model = new EditContactModel(existingContact, supplier,new List<CatalogueItem>());
 
             var result = validator.TestValidate(model);
 
@@ -83,7 +83,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators
             suppliersService.Setup(s => s.GetSupplier(existingContact.SupplierId))
                 .ReturnsAsync(supplier);
 
-            var model = new EditContactModel(existingContact, supplier);
+            var model = new EditContactModel(existingContact, supplier, new List<CatalogueItem>());
 
             var result = validator.TestValidate(model);
 
@@ -109,7 +109,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators
             suppliersService.Setup(s => s.GetSupplier(existingContact.SupplierId))
                 .ReturnsAsync(supplier);
 
-            var model = new EditContactModel(existingContact, supplier);
+            var model = new EditContactModel(existingContact, supplier, new List<CatalogueItem>());
 
             var result = validator.TestValidate(model);
 
@@ -135,7 +135,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators
             suppliersService.Setup(s => s.GetSupplier(existingContact.SupplierId))
                 .ReturnsAsync(supplier);
 
-            var model = new EditContactModel(existingContact, supplier);
+            var model = new EditContactModel(existingContact, supplier, new List<CatalogueItem>());
 
             var result = validator.TestValidate(model);
 
@@ -159,7 +159,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators
             suppliersService.Setup(s => s.GetSupplier(existingContact.SupplierId))
                 .ReturnsAsync(supplier);
 
-            var model = new EditContactModel(existingContact, supplier);
+            var model = new EditContactModel(existingContact, supplier, new List<CatalogueItem>());
 
             var result = validator.TestValidate(model);
 
@@ -238,7 +238,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators
             suppliersService.Setup(s => s.GetSupplier(existingContact.SupplierId))
                 .ReturnsAsync(supplier);
 
-            var model = new EditContactModel(existingContact, supplier)
+            var model = new EditContactModel(existingContact, supplier, new List<CatalogueItem>())
             {
                 ContactId = existingContact.Id + 1,
             };
@@ -265,7 +265,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators
             suppliersService.Setup(s => s.GetSupplier(existingContact.SupplierId))
                 .ReturnsAsync(supplier);
 
-            var model = new EditContactModel(existingContact, supplier);
+            var model = new EditContactModel(existingContact, supplier, new List<CatalogueItem>());
 
             var result = validator.TestValidate(model);
 
