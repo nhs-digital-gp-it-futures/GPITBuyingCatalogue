@@ -78,6 +78,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers
             var model = new SupplierModel(internalOrgId, order.CallOffId, order)
             {
                 Contacts = supplier.SupplierContacts.ToList(),
+                SelectedContactId = SupplierContact.TemporaryContactId,
             };
 
             orderServiceMock

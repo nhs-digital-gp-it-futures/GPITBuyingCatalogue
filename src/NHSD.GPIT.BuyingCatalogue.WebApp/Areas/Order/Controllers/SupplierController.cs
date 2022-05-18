@@ -47,28 +47,35 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
             }
 
             var supplier = await supplierService.GetSupplierFromBuyingCatalogue(order.Supplier.Id);
+            var supplierContact = supplier.SupplierContacts.FirstOrDefault(x => AreEqual(x, order.SupplierContact));
             var temporaryContact = sessionService.GetSupplierContact(callOffId, supplier.Id);
 
-            if (temporaryContact == null && order.SupplierContact != null)
+            if (temporaryContact == null)
             {
-                temporaryContact = new SupplierContact
+                if (order.SupplierContact != null
+                    && supplierContact == null)
                 {
-                    Id = SupplierContact.TemporaryContactId,
-                    SupplierId = supplier.Id,
-                    FirstName = order.SupplierContact.FirstName,
-                    LastName = order.SupplierContact.LastName,
-                    Department = order.SupplierContact.Department,
-                    PhoneNumber = order.SupplierContact.Phone,
-                    Email = order.SupplierContact.Email,
-                };
+                    temporaryContact = new SupplierContact
+                    {
+                        Id = SupplierContact.TemporaryContactId,
+                        SupplierId = supplier.Id,
+                        FirstName = order.SupplierContact.FirstName,
+                        LastName = order.SupplierContact.LastName,
+                        Department = order.SupplierContact.Department,
+                        PhoneNumber = order.SupplierContact.Phone,
+                        Email = order.SupplierContact.Email,
+                    };
+                }
 
+                // we need something written to the session so the e2e tests don't break
+                // hence possibly writing a null temporary contact here
                 sessionService.SetSupplierContact(callOffId, supplier.Id, temporaryContact);
             }
 
             if (selected == null
                 && order.SupplierContact != null)
             {
-                selected = SupplierContact.TemporaryContactId;
+                selected = supplierContact?.Id ?? SupplierContact.TemporaryContactId;
             }
 
             var model = new SupplierModel(internalOrgId, callOffId, order)
@@ -250,6 +257,17 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
                 nameof(Supplier),
                 typeof(SupplierController).ControllerName(),
                 new { internalOrgId, callOffId, selected = SupplierContact.TemporaryContactId });
+        }
+
+        private static bool AreEqual(SupplierContact a, Contact b)
+        {
+            if (a == null
+                || b == null)
+            {
+                return false;
+            }
+
+            return $"{a.FirstName}{a.LastName}{a.Department}{a.Email}" == $"{b.FirstName}{b.LastName}{b.Department}{b.Email}";
         }
 
         private List<SupplierContact> GetSupplierContacts(CallOffId callOffId, Supplier supplier)
