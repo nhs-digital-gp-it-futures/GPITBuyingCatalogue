@@ -195,7 +195,6 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering.Supplier
                 Department = contact.LastName,
                 Email = contact.Email,
                 Phone = contact.PhoneNumber,
-                SupplierContactId = contact.Id,
             };
 
             await context.SaveChangesAsync();

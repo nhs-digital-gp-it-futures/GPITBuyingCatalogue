@@ -88,7 +88,6 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
 
             order.SupplierContact ??= new Contact();
 
-            order.SupplierContact.SupplierContactId = contact.Id == SupplierContact.TemporaryContactId ? null : contact.Id;
             order.SupplierContact.FirstName = contact.FirstName;
             order.SupplierContact.LastName = contact.LastName;
             order.SupplierContact.Department = contact.Department;

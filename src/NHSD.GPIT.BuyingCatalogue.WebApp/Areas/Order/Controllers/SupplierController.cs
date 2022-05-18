@@ -49,21 +49,18 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
             var supplier = await supplierService.GetSupplierFromBuyingCatalogue(order.Supplier.Id);
             var temporaryContact = sessionService.GetSupplierContact(callOffId, supplier.Id);
 
-            if (temporaryContact == null)
+            if (temporaryContact == null && order.SupplierContact != null)
             {
-                if (order.SupplierContact is { SupplierContactId: null })
+                temporaryContact = new SupplierContact
                 {
-                    temporaryContact = new SupplierContact
-                    {
-                        Id = SupplierContact.TemporaryContactId,
-                        SupplierId = supplier.Id,
-                        FirstName = order.SupplierContact.FirstName,
-                        LastName = order.SupplierContact.LastName,
-                        Department = order.SupplierContact.Department,
-                        PhoneNumber = order.SupplierContact.Phone,
-                        Email = order.SupplierContact.Email,
-                    };
-                }
+                    Id = SupplierContact.TemporaryContactId,
+                    SupplierId = supplier.Id,
+                    FirstName = order.SupplierContact.FirstName,
+                    LastName = order.SupplierContact.LastName,
+                    Department = order.SupplierContact.Department,
+                    PhoneNumber = order.SupplierContact.Phone,
+                    Email = order.SupplierContact.Email,
+                };
 
                 sessionService.SetSupplierContact(callOffId, supplier.Id, temporaryContact);
             }
@@ -71,7 +68,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
             if (selected == null
                 && order.SupplierContact != null)
             {
-                selected = order.SupplierContact.SupplierContactId ?? SupplierContact.TemporaryContactId;
+                selected = SupplierContact.TemporaryContactId;
             }
 
             var model = new SupplierModel(internalOrgId, callOffId, order)
