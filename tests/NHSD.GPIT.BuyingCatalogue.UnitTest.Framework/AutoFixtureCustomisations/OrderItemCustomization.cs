@@ -67,7 +67,7 @@ namespace NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.AutoFixtureCustomisations
 
                 var totalQuantity = item.OrderItemRecipients.Sum(oir => oir.Quantity);
 
-                var totalCost = item.OrderItemPrice.CalculateTotalCost(item.GetTotalRecipientQuantity());
+                var totalCost = item.OrderItemPrice.CalculateTotalCost(item.GetQuantity());
 
                 funding.TotalPrice = totalCost;
 

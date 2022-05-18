@@ -626,7 +626,7 @@ TPP maintain close contact with staff at the unit throughout these phases to ens
     @monthTimeUnit INT = 1,
     @yearTimeUnit INT = 2,
 
-    @CataloguePriceCalculationTypeCumilativeId INT = 1,
+    @CataloguePriceCalculationTypeCumulativeId INT = 2,
     @CataloguePriceCalculationTypeSingleFixed INT = 2,
 
     @patient SMALLINT = -1,
@@ -647,25 +647,25 @@ TPP maintain close contact with staff at the unit throughout these phases to ens
      -- Use the price field to store the unique prices, but then clear it out once done
         INSERT INTO catalogue.CataloguePrices(CatalogueItemId, ProvisioningTypeId, CataloguePriceTypeId, PricingUnitId, TimeUnitId, CataloguePriceCalculationTypeId, CurrencyCode, LastUpdated, Price, PublishedStatusId)
         OUTPUT INSERTED.CataloguePriceId, INSERTED.Price, INSERTED.CataloguePriceTypeId INTO @InsertedPriceIds (Id, Price, CataloguePriceTypeId)
-            VALUES ('100000-001', @patientProvisioningType, @flatPriceType, @patient, @yearTimeUnit, @CataloguePriceCalculationTypeCumilativeId, 'GBP', @now, 99.99, 3),
-                    ('100000-001', @patientProvisioningType, @tieredPriceType, @patient, @yearTimeUnit, @CataloguePriceCalculationTypeCumilativeId, 'GBP', @now, 0.5, 3),
-                    ('100000-001', @onDemandProvisioningType, @flatPriceType, @consultation, NULL, @CataloguePriceCalculationTypeCumilativeId, 'GBP', @now, 1001.010, 3),
-                    ('100001-001', @onDemandProvisioningType, @flatPriceType, @licence, NULL, @CataloguePriceCalculationTypeCumilativeId, 'GBP', @now, 3.142, 3),
-                    ('100002-001', @declarativeProvisioningType, @flatPriceType, @patient, @monthTimeUnit, @CataloguePriceCalculationTypeCumilativeId, 'GBP', @now, 4.85, 3),
-                    ('100002-001', @declarativeProvisioningType, @tieredPriceType, @patient, @monthTimeUnit, @CataloguePriceCalculationTypeCumilativeId, 'GBP', @now, 20, 3),
+            VALUES ('100000-001', @patientProvisioningType, @flatPriceType, @patient, @yearTimeUnit, @CataloguePriceCalculationTypeCumulativeId, 'GBP', @now, 99.99, 3),
+                    ('100000-001', @patientProvisioningType, @tieredPriceType, @patient, @yearTimeUnit, @CataloguePriceCalculationTypeCumulativeId, 'GBP', @now, 0.5, 3),
+                    ('100000-001', @onDemandProvisioningType, @flatPriceType, @consultation, NULL, @CataloguePriceCalculationTypeCumulativeId, 'GBP', @now, 1001.010, 3),
+                    ('100001-001', @onDemandProvisioningType, @flatPriceType, @licence, NULL, @CataloguePriceCalculationTypeCumulativeId, 'GBP', @now, 3.142, 3),
+                    ('100002-001', @declarativeProvisioningType, @flatPriceType, @patient, @monthTimeUnit, @CataloguePriceCalculationTypeCumulativeId, 'GBP', @now, 4.85, 3),
+                    ('100002-001', @declarativeProvisioningType, @tieredPriceType, @patient, @monthTimeUnit, @CataloguePriceCalculationTypeCumulativeId, 'GBP', @now, 20, 3),
                     ('100002-001', @declarativeProvisioningType, @tieredPriceType, @patient, @monthTimeUnit, @CataloguePriceCalculationTypeSingleFixed, 'GBP', @now, 10, 3),
-                    ('100003-001', @declarativeProvisioningType, @flatPriceType, @bed, @monthTimeUnit, @CataloguePriceCalculationTypeCumilativeId, 'GBP', @now, 19.987, 3),
-                    ('100004-001', @declarativeProvisioningType, @flatPriceType, @licence, @monthTimeUnit, @CataloguePriceCalculationTypeCumilativeId, 'GBP', @now, 10101.65, 3),
-                    ('100005-001', @onDemandProvisioningType, @flatPriceType, @licence, NULL, @CataloguePriceCalculationTypeCumilativeId, 'GBP', @now, 456, 3),
-                    ('100006-001', @declarativeProvisioningType, @flatPriceType, @sms, @monthTimeUnit, @CataloguePriceCalculationTypeCumilativeId, 'GBP', @now, 7, 3),
-                    ('100007-001', @onDemandProvisioningType, @flatPriceType, @sms, NULL, @CataloguePriceCalculationTypeCumilativeId, 'GBP', @now, 0.15, 3),
-                    ('100007-002', @onDemandProvisioningType, @tieredPriceType, @sms, NULL, @CataloguePriceCalculationTypeCumilativeId, 'GBP', @now, 6, 3),
-                    ('99998-98', @patientProvisioningType, @flatPriceType, @licence, @yearTimeUnit, @CataloguePriceCalculationTypeCumilativeId, 'GBP', @now, 30000, 3),
-                    ('99998-98', @patientProvisioningType, @tieredPriceType, @licence, @yearTimeUnit, @CataloguePriceCalculationTypeCumilativeId, 'GBP', @now, 0.1, 3),
-                    ('99999-01', @patientProvisioningType, @flatPriceType, @patient, @yearTimeUnit, @CataloguePriceCalculationTypeCumilativeId, 'GBP', @now, 1.25, 3),
-                    ('99999-02', @patientProvisioningType, @flatPriceType, @patient, @yearTimeUnit, @CataloguePriceCalculationTypeCumilativeId, 'GBP', @now, 1.55, 3),
-                    ('99999-89', @patientProvisioningType, @flatPriceType, @licence, @yearTimeUnit, @CataloguePriceCalculationTypeCumilativeId, 'GBP', @now, 500.49, 3),
-                    ('99999-89', @patientProvisioningType, @tieredPriceType, @licence, @yearTimeUnit, @CataloguePriceCalculationTypeCumilativeId, 'GBP', @now, 3.5, 3);
+                    ('100003-001', @declarativeProvisioningType, @flatPriceType, @bed, @monthTimeUnit, @CataloguePriceCalculationTypeCumulativeId, 'GBP', @now, 19.987, 3),
+                    ('100004-001', @declarativeProvisioningType, @flatPriceType, @licence, @monthTimeUnit, @CataloguePriceCalculationTypeCumulativeId, 'GBP', @now, 10101.65, 3),
+                    ('100005-001', @onDemandProvisioningType, @flatPriceType, @licence, NULL, @CataloguePriceCalculationTypeCumulativeId, 'GBP', @now, 456, 3),
+                    ('100006-001', @declarativeProvisioningType, @flatPriceType, @sms, @monthTimeUnit, @CataloguePriceCalculationTypeCumulativeId, 'GBP', @now, 7, 3),
+                    ('100007-001', @onDemandProvisioningType, @flatPriceType, @sms, NULL, @CataloguePriceCalculationTypeCumulativeId, 'GBP', @now, 0.15, 3),
+                    ('100007-002', @onDemandProvisioningType, @tieredPriceType, @sms, NULL, @CataloguePriceCalculationTypeCumulativeId, 'GBP', @now, 6, 3),
+                    ('99998-98', @patientProvisioningType, @flatPriceType, @licence, @yearTimeUnit, @CataloguePriceCalculationTypeCumulativeId, 'GBP', @now, 30000, 3),
+                    ('99998-98', @patientProvisioningType, @tieredPriceType, @licence, @yearTimeUnit, @CataloguePriceCalculationTypeCumulativeId, 'GBP', @now, 0.1, 3),
+                    ('99999-01', @patientProvisioningType, @flatPriceType, @patient, @yearTimeUnit, @CataloguePriceCalculationTypeCumulativeId, 'GBP', @now, 1.25, 3),
+                    ('99999-02', @patientProvisioningType, @flatPriceType, @patient, @yearTimeUnit, @CataloguePriceCalculationTypeCumulativeId, 'GBP', @now, 1.55, 3),
+                    ('99999-89', @patientProvisioningType, @flatPriceType, @licence, @yearTimeUnit, @CataloguePriceCalculationTypeCumulativeId, 'GBP', @now, 500.49, 3),
+                    ('99999-89', @patientProvisioningType, @tieredPriceType, @licence, @yearTimeUnit, @CataloguePriceCalculationTypeCumulativeId, 'GBP', @now, 3.5, 3);
 
         UPDATE catalogue.CataloguePrices SET Price = NULL;
 

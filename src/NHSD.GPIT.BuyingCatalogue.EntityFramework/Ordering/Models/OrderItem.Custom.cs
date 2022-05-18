@@ -6,25 +6,7 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models
 {
     public sealed partial class OrderItem
     {
-        public int GetTotalRecipientQuantity() => OrderItemRecipients.ToList().Sum(oir => oir.Quantity ?? 0);
-
-        public bool Equals(OrderItem other)
-        {
-            if (other is null)
-                return false;
-
-            if (ReferenceEquals(this, other))
-                return true;
-
-            return CatalogueItem.Equals(other.CatalogueItem) && OrderId == other.OrderId;
-        }
-
-        public override bool Equals(object obj) => Equals(obj as OrderItem);
-
-        public override int GetHashCode()
-        {
-            return HashCode.Combine(OrderId, CatalogueItem);
-        }
+        public int GetQuantity() => Quantity ?? OrderItemRecipients.ToList().Sum(oir => oir.Quantity ?? 0);
 
         public OrderItemFundingType CurrentFundingType()
         {
@@ -40,5 +22,21 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models
         }
 
         public bool ItemIsLocalFundingOnly() => CatalogueItem?.Solution?.FrameworkSolutions?.All(fs => fs.Framework.LocalFundingOnly) ?? false;
+
+        public DateTime? GetCentralAllocationEndDate(decimal totalCost)
+        {
+            if (CurrentFundingType() is not OrderItemFundingType.MixedFunding)
+                return null;
+
+            var startDate = Order.CommencementDate!.Value;
+            var endDate = startDate.AddMonths(Order.MaximumTerm!.Value);
+            var totalDays = endDate.Subtract(startDate).TotalDays;
+
+            var centralAllocation = OrderItemFunding.CentralAllocation;
+            var percentage = (double)Math.Round(centralAllocation / totalCost, 2);
+            var estimatedDays = percentage * totalDays;
+
+            return startDate.AddDays(estimatedDays);
+        }
     }
 }

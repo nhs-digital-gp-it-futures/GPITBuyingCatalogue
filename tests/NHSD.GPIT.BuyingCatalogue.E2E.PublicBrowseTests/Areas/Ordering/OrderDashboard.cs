@@ -57,7 +57,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering
                 .Should().BeTrue();
 
             CommonActions.ElementTextEqualTo(
-                Objects.Ordering.OrderSummary.LastUpdatedEndNote,
+                Objects.Ordering.OrderDashboard.LastUpdatedEndNote,
                 $"Order last updated by Sue Smith on {DateTime.UtcNow.ToString("dd MMMM yyyy")}");
         }
 

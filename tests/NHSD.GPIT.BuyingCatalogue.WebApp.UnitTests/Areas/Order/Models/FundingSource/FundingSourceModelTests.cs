@@ -26,7 +26,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.FundingS
             model.Caption.Should().Be($"Order {callOffId}");
             model.SelectedFundingType.Should().Be(OrderItemFundingType.None);
             model.AmountOfCentralFunding.Should().BeNull();
-            model.TotalCost.Should().Be(orderItem.OrderItemPrice.CalculateTotalCost(orderItem.GetTotalRecipientQuantity()));
+            model.TotalCost.Should().Be(orderItem.OrderItemPrice.CalculateTotalCost(orderItem.GetQuantity()));
         }
 
         [Theory]
@@ -44,7 +44,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.FundingS
             model.Caption.Should().Be($"Order {callOffId}");
             model.SelectedFundingType.Should().Be(orderItem.CurrentFundingType());
             model.AmountOfCentralFunding.Should().Be(orderItem.OrderItemFunding.CentralAllocation);
-            model.TotalCost.Should().Be(orderItem.OrderItemPrice.CalculateTotalCost(orderItem.GetTotalRecipientQuantity()));
+            model.TotalCost.Should().Be(orderItem.OrderItemPrice.CalculateTotalCost(orderItem.GetQuantity()));
         }
     }
 }

@@ -116,7 +116,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering.FundingSources
 
                 CommonActions.ClickRadioButtonWithText("Mixed funding");
 
-                var totalCost = orderItem.OrderItemPrice.CalculateTotalCost(orderItem.GetTotalRecipientQuantity());
+                var totalCost = orderItem.OrderItemPrice.CalculateTotalCost(orderItem.GetQuantity());
 
                 var centralAllocation = TextGenerators.PriceInputAddPrice(Objects.Ordering.FundingSources.AmountOfCentralFunding, totalCost > 99999M ? 99999M : totalCost);
 
