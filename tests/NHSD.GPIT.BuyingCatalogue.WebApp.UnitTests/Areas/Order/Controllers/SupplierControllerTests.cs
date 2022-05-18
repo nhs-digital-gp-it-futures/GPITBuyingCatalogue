@@ -78,7 +78,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers
             var model = new SupplierModel(internalOrgId, order.CallOffId, order)
             {
                 Contacts = supplier.SupplierContacts.ToList(),
-                SelectedContactId = order.SupplierContact.SupplierContactId,
             };
 
             orderServiceMock
@@ -114,8 +113,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers
                 Contacts = supplier.SupplierContacts.ToList(),
                 SelectedContactId = SupplierContact.TemporaryContactId,
             };
-
-            order.SupplierContact.SupplierContactId = null;
 
             mockOrderService
                 .Setup(s => s.GetOrderWithSupplier(order.CallOffId, internalOrgId))
