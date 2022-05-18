@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
+using NHSD.GPIT.BuyingCatalogue.Framework.Settings;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.ListPriceModels;
 
@@ -18,10 +19,12 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
     public class CatalogueSolutionListPriceController : Controller
     {
         private readonly ISolutionListPriceService solutionListPriceService;
+        private readonly PriceTiersCapSettings priceTiersCapSettings;
 
-        public CatalogueSolutionListPriceController(ISolutionListPriceService solutionListPriceService)
+        public CatalogueSolutionListPriceController(ISolutionListPriceService solutionListPriceService, PriceTiersCapSettings tiersCapSettings)
         {
             this.solutionListPriceService = solutionListPriceService ?? throw new ArgumentNullException(nameof(solutionListPriceService));
+            priceTiersCapSettings = tiersCapSettings ?? throw new ArgumentNullException(nameof(tiersCapSettings));
         }
 
         [HttpGet]
@@ -158,7 +161,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
             if (price is null)
                 return NotFound();
 
-            var model = new TieredPriceTiersModel(solution, price)
+            var model = new TieredPriceTiersModel(solution, price, priceTiersCapSettings.MaximumNumberOfPriceTiers)
             {
                 BackLink = Url.Action(nameof(AddTieredListPrice), new { solutionId, cataloguePriceId }),
             };
@@ -175,6 +178,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
                 var price = solution.CataloguePrices.Single(p => p.CataloguePriceId == cataloguePriceId);
 
                 model.Tiers = price.CataloguePriceTiers.ToList();
+
+                model.MaximumNumberOfTiers = priceTiersCapSettings.MaximumNumberOfPriceTiers;
 
                 return View("ListPrices/TieredPriceTiers", model);
             }
@@ -237,7 +242,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
             if (price is null)
                 return NotFound();
 
-            var model = new EditTieredListPriceModel(solution, price)
+            var model = new EditTieredListPriceModel(solution, price, priceTiersCapSettings.MaximumNumberOfPriceTiers)
             {
                 BackLink = Url.Action(nameof(Index), new { solutionId }),
             };

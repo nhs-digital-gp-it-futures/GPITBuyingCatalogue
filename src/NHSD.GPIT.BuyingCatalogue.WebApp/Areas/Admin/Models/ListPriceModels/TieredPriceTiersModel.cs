@@ -13,12 +13,13 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.ListPriceModels
         {
         }
 
-        public TieredPriceTiersModel(CatalogueItem catalogueItem, CataloguePrice price)
+        public TieredPriceTiersModel(CatalogueItem catalogueItem, CataloguePrice price, int maximumNumberOfTiers)
         {
             CataloguePriceId = price.CataloguePriceId;
             CatalogueItemId = catalogueItem.Id;
             CatalogueItemName = catalogueItem.Name;
             Tiers = price.CataloguePriceTiers?.ToList();
+            MaximumNumberOfTiers = maximumNumberOfTiers;
         }
 
         public static IList<SelectableRadioOption<PublicationStatus>> AvailablePublicationStatuses => new List<SelectableRadioOption<PublicationStatus>>
@@ -36,5 +37,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.ListPriceModels
         public IList<CataloguePriceTier> Tiers { get; set; }
 
         public PublicationStatus? SelectedPublicationStatus { get; set; } = PublicationStatus.Draft;
+
+        public int MaximumNumberOfTiers { get; set; }
     }
 }

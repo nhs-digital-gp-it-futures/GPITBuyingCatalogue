@@ -17,11 +17,18 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.ListPrices.Solution.Tie
     {
         private static readonly CatalogueItemId SolutionId = new CatalogueItemId(99998, "001");
         private static readonly int CataloguePriceId = 4;
+        private static readonly int MaximumTiersPriceId = 23;
 
         private static readonly Dictionary<string, string> Parameters = new()
         {
             { nameof(SolutionId), SolutionId.ToString() },
             { nameof(CataloguePriceId), CataloguePriceId.ToString() },
+        };
+
+        private static readonly Dictionary<string, string> MaximumTiersParameters = new()
+        {
+            { nameof(SolutionId), SolutionId.ToString() },
+            { nameof(CataloguePriceId), MaximumTiersPriceId.ToString() },
         };
 
         public EditTieredListPrice(LocalWebApplicationFactory factory)
@@ -52,6 +59,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.ListPrices.Solution.Tie
             CommonActions.ElementIsDisplayed(AddEditTieredListPriceObjects.UnitDescriptionInput).Should().BeTrue();
             CommonActions.ElementIsDisplayed(AddEditTieredListPriceObjects.UnitDefinitionInput).Should().BeTrue();
             CommonActions.ElementIsDisplayed(AddEditTieredListPriceObjects.RangeDefinitionInput).Should().BeTrue();
+            CommonActions.ElementExists(AddEditTieredListPriceObjects.MaximumTiersInset).Should().BeFalse();
 
             CommonActions.ElementIsDisplayed(AddEditTieredListPriceObjects.OnDemandBillingPeriodInput).Should().BeFalse();
             CommonActions.ElementIsDisplayed(AddEditTieredListPriceObjects.DeclarativeBillingPeriodInput).Should().BeFalse();
@@ -80,6 +88,15 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.ListPrices.Solution.Tie
 
             price.PublishedStatus = publishStatus;
             context.SaveChanges();
+        }
+
+        [Fact]
+        public void MaximumTiersReached_CorrectInsetDisplayed()
+        {
+            NavigateToUrl(typeof(CatalogueSolutionListPriceController), nameof(CatalogueSolutionListPriceController.EditTieredListPrice), MaximumTiersParameters);
+
+            CommonActions.ElementIsDisplayed(AddEditTieredListPriceObjects.AddTierLink).Should().BeFalse();
+            CommonActions.ElementIsDisplayed(AddEditTieredListPriceObjects.MaximumTiersInset).Should().BeTrue();
         }
 
         [Fact]

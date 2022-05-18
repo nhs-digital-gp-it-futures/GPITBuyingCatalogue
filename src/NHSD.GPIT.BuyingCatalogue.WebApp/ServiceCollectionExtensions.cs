@@ -156,6 +156,14 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp
             services.AddSingleton(pdfSettings);
         }
 
+        public static IServiceCollection ConfigurePriceTiersCap(this IServiceCollection services, IConfiguration configuration)
+        {
+            var priceTiersCapSettings = configuration.GetSection("PriceTiersCap").Get<PriceTiersCapSettings>();
+            services.AddSingleton(priceTiersCapSettings);
+
+            return services;
+        }
+
         public static IServiceCollection ConfigureTermsOfUseSettings(this IServiceCollection services, IConfiguration configuration)
         {
             var termsOfUseSettings = configuration.GetSection("termsOfUse").Get<TermsOfUseSettings>();
