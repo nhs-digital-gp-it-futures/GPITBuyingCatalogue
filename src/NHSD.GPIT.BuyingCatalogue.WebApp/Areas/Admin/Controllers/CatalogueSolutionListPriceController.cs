@@ -259,6 +259,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
             if (!ModelState.IsValid)
             {
                 model.Tiers = price.CataloguePriceTiers.ToList();
+                model.MaximumNumberOfTiers = priceTiersCapSettings.MaximumNumberOfPriceTiers;
 
                 return View("ListPrices/EditTieredListPrice", model);
             }
