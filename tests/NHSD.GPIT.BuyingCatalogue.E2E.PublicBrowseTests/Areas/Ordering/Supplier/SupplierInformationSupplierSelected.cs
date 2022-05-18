@@ -192,7 +192,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering.Supplier
             {
                 FirstName = contact.FirstName,
                 LastName = contact.LastName,
-                Department = contact.LastName,
+                Department = contact.Department,
                 Email = contact.Email,
                 Phone = contact.PhoneNumber,
             };
