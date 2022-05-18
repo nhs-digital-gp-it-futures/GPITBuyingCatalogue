@@ -237,12 +237,13 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
         public static async Task Get_TieredPriceTiers_ReturnsViewWithModel(
             Solution solution,
             CataloguePrice price,
+            [Frozen] PriceTiersCapSettings priceTiersSetting,
             [Frozen] Mock<ISolutionListPriceService> solutionListPriceService,
             CatalogueSolutionListPriceController controller)
         {
             solution.CatalogueItem.CataloguePrices.Add(price);
 
-            var model = new TieredPriceTiersModel(solution.CatalogueItem, price, 0);
+            var model = new TieredPriceTiersModel(solution.CatalogueItem, price, priceTiersSetting.MaximumNumberOfPriceTiers);
 
             solutionListPriceService.Setup(s => s.GetCatalogueItemWithListPrices(solution.CatalogueItemId))
                 .ReturnsAsync(solution.CatalogueItem);
