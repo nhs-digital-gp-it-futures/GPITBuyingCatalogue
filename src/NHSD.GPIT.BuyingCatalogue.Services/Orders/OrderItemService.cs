@@ -29,7 +29,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
                 throw new ArgumentNullException(nameof(itemIds));
             }
 
-            var order = await orderService.GetOrderThin(callOffId, internalOrgId);
+            var order = await orderService.GetOrderWithOrderItems(callOffId, internalOrgId);
 
             if (order == null)
             {
@@ -38,6 +38,11 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
 
             foreach (var id in itemIds)
             {
+                if (order.OrderItem(id) != null)
+                {
+                    continue;
+                }
+
                 var catalogueItem = dbContext.CatalogueItems.Single(x => x.Id == id);
 
                 dbContext.OrderItems.Add(new OrderItem

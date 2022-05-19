@@ -11,29 +11,26 @@ using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers.SolutionSelection
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Validators.SolutionSelection.Quantity;
 using Xunit;
 
-namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering.SolutionSelection.Quantity
+namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering.SolutionSelection.Quantity.Base
 {
-    public class SelectQuantity : BuyerTestBase, IClassFixture<LocalWebApplicationFactory>, IDisposable
+    public abstract class SelectQuantity : BuyerTestBase, IClassFixture<LocalWebApplicationFactory>, IDisposable
     {
-        private const string InternalOrgId = "CG-03F";
-        private const int OrderId = 90005;
-        private static readonly CallOffId CallOffId = new(OrderId, 1);
+        private readonly int orderId;
+        private readonly CatalogueItemId catalogueItemId;
 
-        private static readonly Dictionary<string, string> Parameters = new()
+        protected SelectQuantity(LocalWebApplicationFactory factory, Dictionary<string, string> parameters)
+            : base(factory, typeof(QuantityController), nameof(QuantityController.SelectQuantity), parameters)
         {
-            { nameof(InternalOrgId), InternalOrgId },
-            { nameof(CallOffId), $"{CallOffId}" },
-        };
-
-        public SelectQuantity(LocalWebApplicationFactory factory)
-            : base(factory, typeof(QuantityController), nameof(QuantityController.SelectQuantity), Parameters)
-        {
+            orderId = int.Parse(parameters["OrderId"]);
+            catalogueItemId = CatalogueItemId.ParseExact(parameters["CatalogueItemId"]);
         }
+
+        protected abstract string PageTitle { get; }
 
         [Fact]
         public void SelectQuantity_AllSectionsDisplayed()
         {
-            CommonActions.PageTitle().Should().BeEquivalentTo("Quantity of Catalogue Solution - DFOCVC Solution Full".FormatForComparison());
+            CommonActions.PageTitle().Should().BeEquivalentTo(PageTitle.FormatForComparison());
             CommonActions.GoBackLinkDisplayed().Should().BeTrue();
             CommonActions.ElementIsDisplayed(QuantityObjects.QuantityInput).Should().BeTrue();
             CommonActions.SaveButtonDisplayed().Should().BeTrue();
@@ -141,7 +138,8 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering.SolutionSelection.Qu
         private List<OrderItem> GetOrderItems()
         {
             return GetEndToEndDbContext().OrderItems
-                .Where(x => x.OrderId == OrderId)
+                .Where(x => x.OrderId == orderId
+                    && x.CatalogueItemId == catalogueItemId)
                 .ToList();
         }
     }

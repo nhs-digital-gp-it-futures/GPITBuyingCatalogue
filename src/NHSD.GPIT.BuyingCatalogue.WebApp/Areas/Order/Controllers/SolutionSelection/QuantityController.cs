@@ -4,11 +4,11 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
-using NHSD.GPIT.BuyingCatalogue.EntityFramework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Orders;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Organisations;
+using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Routing;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.SolutionSelection.Quantity;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers.SolutionSelection
@@ -23,47 +23,52 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers.SolutionSelec
 
         private readonly IGpPracticeCacheService gpPracticeCache;
         private readonly IOrderService orderService;
-        private readonly IOrderPriceService orderPriceService;
+        private readonly IOrderQuantityService orderQuantityService;
+        private readonly IRoutingService routingService;
 
         public QuantityController(
             IGpPracticeCacheService gpPracticeCache,
             IOrderService orderService,
-            IOrderPriceService orderPriceService)
+            IOrderQuantityService orderQuantityService,
+            IRoutingService routingService)
         {
             this.gpPracticeCache = gpPracticeCache ?? throw new ArgumentNullException(nameof(gpPracticeCache));
             this.orderService = orderService ?? throw new ArgumentNullException(nameof(orderService));
-            this.orderPriceService = orderPriceService ?? throw new ArgumentNullException(nameof(orderPriceService));
+            this.orderQuantityService = orderQuantityService ?? throw new ArgumentNullException(nameof(orderQuantityService));
+            this.routingService = routingService ?? throw new ArgumentNullException(nameof(routingService));
         }
 
-        [HttpGet("quantity/select")]
-        public async Task<IActionResult> SelectQuantity(string internalOrgId, CallOffId callOffId)
+        [HttpGet("quantity/{catalogueItemId}/select")]
+        public async Task<IActionResult> SelectQuantity(string internalOrgId, CallOffId callOffId, CatalogueItemId catalogueItemId)
         {
             var order = await orderService.GetOrderWithOrderItems(callOffId, internalOrgId);
-            var solution = order.GetSolution();
+            var orderItem = order.OrderItem(catalogueItemId);
 
-            if (solution.OrderItemPrice.ProvisioningType == ProvisioningType.Patient)
+            if (orderItem.OrderItemPrice.ProvisioningType == ProvisioningType.Patient)
             {
                 return RedirectToAction(
                     nameof(SelectServiceRecipientQuantity),
                     typeof(QuantityController).ControllerName(),
-                    new { internalOrgId, callOffId });
+                    new { internalOrgId, callOffId, catalogueItemId });
             }
 
-            var model = new SelectOrderItemQuantityModel
+            var model = new SelectOrderItemQuantityModel(orderItem)
             {
                 BackLink = Url.Action(
                     nameof(PricesController.EditPrice),
                     typeof(PricesController).ControllerName(),
-                    new { internalOrgId, callOffId }),
-                ItemName = solution.CatalogueItem.Name,
-                ItemType = solution.CatalogueItem.CatalogueItemType.Name(),
+                    new { internalOrgId, callOffId, catalogueItemId }),
             };
 
             return View(OrderItemViewName, model);
         }
 
-        [HttpPost("quantity/select")]
-        public async Task<IActionResult> SelectQuantity(string internalOrgId, CallOffId callOffId, SelectOrderItemQuantityModel model)
+        [HttpPost("quantity/{catalogueItemId}/select")]
+        public async Task<IActionResult> SelectQuantity(
+            string internalOrgId,
+            CallOffId callOffId,
+            CatalogueItemId catalogueItemId,
+            SelectOrderItemQuantityModel model)
         {
             if (!ModelState.IsValid)
             {
@@ -72,28 +77,72 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers.SolutionSelec
 
             var order = await orderService.GetOrderWithOrderItems(callOffId, internalOrgId);
 
-            await orderPriceService.SetOrderItemQuantity(
+            await orderQuantityService.SetOrderItemQuantity(
                 order.Id,
-                order.GetSolution().CatalogueItemId,
+                catalogueItemId,
                 int.Parse(model.Quantity));
 
-            return GetRedirect(internalOrgId, callOffId, order);
+            var route = routingService.GetRoute(
+                RoutingSource.SelectQuantity,
+                order,
+                new RouteValues(internalOrgId, callOffId));
+
+            return RedirectToAction(route.ActionName, route.ControllerName, route.RouteValues);
         }
 
-        [HttpGet("quantity/service-recipient/select")]
-        public async Task<IActionResult> SelectServiceRecipientQuantity(string internalOrgId, CallOffId callOffId)
+        [HttpGet("quantity/{catalogueItemId}/service-recipient/select")]
+        public async Task<IActionResult> SelectServiceRecipientQuantity(string internalOrgId, CallOffId callOffId, CatalogueItemId catalogueItemId)
         {
             var order = await orderService.GetOrderWithOrderItems(callOffId, internalOrgId);
-            var solution = order.GetSolution();
 
-            var model = new SelectServiceRecipientQuantityModel(solution)
+            var model = new SelectServiceRecipientQuantityModel(order.OrderItem(catalogueItemId))
             {
                 BackLink = Url.Action(
                     nameof(PricesController.EditPrice),
                     typeof(PricesController).ControllerName(),
-                    new { internalOrgId, callOffId }),
+                    new { internalOrgId, callOffId, catalogueItemId }),
             };
 
+            await SetPracticeSizes(model);
+
+            return View(ServiceRecipientViewName, model);
+        }
+
+        [HttpPost("quantity/{catalogueItemId}/service-recipient/select")]
+        public async Task<IActionResult> SelectServiceRecipientQuantity(
+            string internalOrgId,
+            CallOffId callOffId,
+            CatalogueItemId catalogueItemId,
+            SelectServiceRecipientQuantityModel model)
+        {
+            if (!ModelState.IsValid)
+            {
+                return View(ServiceRecipientViewName, model);
+            }
+
+            var order = await orderService.GetOrderWithOrderItems(callOffId, internalOrgId);
+            var quantities = model.ServiceRecipients
+                .Select(x => new OrderItemRecipientQuantityDto
+                {
+                    OdsCode = x.OdsCode,
+                    Quantity = x.Quantity > 0
+                        ? x.Quantity
+                        : int.Parse(x.InputQuantity),
+                })
+                .ToList();
+
+            await orderQuantityService.SetServiceRecipientQuantities(order.Id, catalogueItemId, quantities);
+
+            var route = routingService.GetRoute(
+                RoutingSource.SelectQuantity,
+                order,
+                new RouteValues(internalOrgId, callOffId));
+
+            return RedirectToAction(route.ActionName, route.ControllerName, route.RouteValues);
+        }
+
+        private async Task SetPracticeSizes(SelectServiceRecipientQuantityModel model)
+        {
             foreach (var serviceRecipient in model.ServiceRecipients)
             {
                 var quantity = await gpPracticeCache.GetNumberOfPatients(serviceRecipient.OdsCode);
@@ -108,51 +157,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers.SolutionSelec
                 .OrderBy(x => x.Quantity == 0 ? 0 : 1)
                 .ThenBy(x => x.Name)
                 .ToArray();
-
-            return View(ServiceRecipientViewName, model);
-        }
-
-        [HttpPost("quantity/service-recipient/select")]
-        public async Task<IActionResult> SelectServiceRecipientQuantity(string internalOrgId, CallOffId callOffId, SelectServiceRecipientQuantityModel model)
-        {
-            if (!ModelState.IsValid)
-            {
-                return View(ServiceRecipientViewName, model);
-            }
-
-            var order = await orderService.GetOrderWithOrderItems(callOffId, internalOrgId);
-            var catalogueItemId = order.GetSolution().CatalogueItemId;
-            var quantities = model.ServiceRecipients
-                .Select(x => new OrderPricingTierQuantityDto
-                {
-                    OdsCode = x.OdsCode,
-                    Quantity = x.Quantity > 0
-                        ? x.Quantity
-                        : int.Parse(x.InputQuantity),
-                })
-                .ToList();
-
-            await orderPriceService.SetServiceRecipientQuantities(order.Id, catalogueItemId, quantities);
-
-            return GetRedirect(internalOrgId, callOffId, order);
-        }
-
-        private IActionResult GetRedirect(string internalOrgId, CallOffId callOffId, EntityFramework.Ordering.Models.Order order)
-        {
-            var additionalService = order.GetAdditionalServices().FirstOrDefault(x => x.OrderItemRecipients.Count == 0);
-
-            if (additionalService != null)
-            {
-                return RedirectToAction(
-                    nameof(ServiceRecipientsController.AdditionalServiceRecipients),
-                    typeof(ServiceRecipientsController).ControllerName(),
-                    new { internalOrgId, callOffId, additionalService.CatalogueItemId });
-            }
-
-            return RedirectToAction(
-                nameof(AssociatedServicesController.AddAssociatedServices),
-                typeof(AssociatedServicesController).ControllerName(),
-                new { internalOrgId, callOffId });
         }
     }
 }

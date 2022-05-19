@@ -57,7 +57,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Orders
             await context.SaveChangesAsync();
 
             mockOrderService
-                .Setup(x => x.GetOrderThin(callOffId, internalOrgId))
+                .Setup(x => x.GetOrderWithOrderItems(callOffId, internalOrgId))
                 .ReturnsAsync((Order)null);
 
             await service.AddOrderItems(internalOrgId, callOffId, itemIds);
@@ -87,7 +87,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Orders
             await context.SaveChangesAsync();
 
             mockOrderService
-                .Setup(x => x.GetOrderThin(callOffId, internalOrgId))
+                .Setup(x => x.GetOrderWithOrderItems(callOffId, internalOrgId))
                 .ReturnsAsync(order);
 
             await service.AddOrderItems(internalOrgId, callOffId, itemIds);

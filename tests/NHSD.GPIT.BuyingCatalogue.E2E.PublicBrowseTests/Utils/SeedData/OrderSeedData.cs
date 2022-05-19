@@ -22,7 +22,10 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
             AddOrderWithAddedCatalogueSolution(context);
             AddOrderWithAddedNoContactCatalogueSolution(context);
             AddOrderWithAddedNoContactSolutionAndNoContactAdditionalSolution(context);
+            AddOrderWithAddedNoContactSolutionAndNoContactAdditionalSolutionAndPrice(context);
             AddOrderWithAddedAssociatedService(context);
+            AddOrderWithAddedAssociatedServiceAndOrderItemPrice(context);
+            AddOrderWithAddedAssociatedServiceAndServiceRecipientPrice(context);
             AddOrderWithAddedNoContactSolutionAdditionalServiceAndAssociatedService(context);
             AddOrderReadyToComplete(context);
             AddCompletedOrder(context, 90010, GetOrganisationId(context));
@@ -469,6 +472,101 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
             context.SaveChangesAs(user.Id);
         }
 
+        private static void AddOrderWithAddedNoContactSolutionAndNoContactAdditionalSolutionAndPrice(BuyingCatalogueDbContext context)
+        {
+            const int orderId = 91007;
+            var timeNow = DateTime.UtcNow;
+
+            var order = new Order
+            {
+                Id = orderId,
+                OrderingPartyId = GetOrganisationId(context),
+                Created = timeNow,
+                OrderStatus = OrderStatus.InProgress,
+                IsDeleted = false,
+                Description = "This is an Order Description",
+                OrderingPartyContact = new Contact
+                {
+                    FirstName = "Clark",
+                    LastName = "Kent",
+                    Email = "Clark.Kent@TheDailyPlanet.Fake",
+                    Phone = "123456789",
+                },
+                SupplierId = 99998,
+                SupplierContact = new Contact
+                {
+                    FirstName = "Bruce",
+                    LastName = "Wayne",
+                    Email = "bat.man@Gotham.Fake",
+                    Phone = "123456789",
+                },
+                CommencementDate = timeNow.AddDays(1),
+            };
+
+            var user = GetBuyerUser(context, order.OrderingPartyId);
+
+            var priceSinglePriceSolution = context.CatalogueItems
+                .Where(c => c.Id == new CatalogueItemId(99998, "002"))
+                .Include(c => c.CataloguePrices).ThenInclude(cp => cp.CataloguePriceTiers)
+                .Include(c => c.CataloguePrices).ThenInclude(cp => cp.PricingUnit)
+                .Select(ci => new OrderItemPrice(ci.CataloguePrices.First()))
+                .Single();
+
+            var priceMultiplePriceSolution = context.CatalogueItems
+                .Where(c => c.Id == new CatalogueItemId(99998, "001"))
+                .Include(c => c.CataloguePrices).ThenInclude(cp => cp.CataloguePriceTiers)
+                .Include(c => c.CataloguePrices).ThenInclude(cp => cp.PricingUnit)
+                .Select(ci => new OrderItemPrice(ci.CataloguePrices.First()))
+                .Single();
+
+            var addedSinglePriceCatalogueSolution = new OrderItem
+            {
+                OrderItemPrice = priceSinglePriceSolution,
+                Created = DateTime.UtcNow,
+                OrderId = orderId,
+                CatalogueItem = context.CatalogueItems.Single(c => c.Id == new CatalogueItemId(99998, "002")),
+            };
+
+            var addedMultiplePriceCatalogueSolution = new OrderItem
+            {
+                OrderItemPrice = priceMultiplePriceSolution,
+                Created = DateTime.UtcNow,
+                OrderId = orderId,
+                CatalogueItem = context.CatalogueItems.Single(c => c.Id == new CatalogueItemId(99998, "001")),
+            };
+
+            var addedAdditionalSolution = new OrderItem
+            {
+                OrderItemPrice = priceSinglePriceSolution,
+                Created = DateTime.UtcNow,
+                OrderId = orderId,
+                CatalogueItem = context.CatalogueItems.Single(c => c.Id == new CatalogueItemId(99998, "002A999")),
+            };
+
+            var recipients = context.ServiceRecipients.ToList();
+
+            recipients.ForEach(r =>
+            {
+                var recipient = new OrderItemRecipient
+                {
+                    Recipient = r,
+                    Quantity = 1000,
+                };
+
+                addedSinglePriceCatalogueSolution.OrderItemRecipients.Add(recipient);
+                addedMultiplePriceCatalogueSolution.OrderItemRecipients.Add(recipient);
+                addedAdditionalSolution.OrderItemRecipients.Add(recipient);
+            });
+
+            order.OrderItems.Add(addedSinglePriceCatalogueSolution);
+            order.OrderItems.Add(addedMultiplePriceCatalogueSolution);
+            order.OrderItems.Add(addedAdditionalSolution);
+
+            context.Add(order);
+
+            context.SaveChangesAs(user.Id);
+        }
+
         private static void AddOrderWithAddedAssociatedService(BuyingCatalogueDbContext context)
         {
             const int orderId = 90008;
@@ -513,6 +611,119 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
 
             context.Add(order);
 
+            context.SaveChangesAs(user.Id);
+        }
+
+        private static void AddOrderWithAddedAssociatedServiceAndOrderItemPrice(BuyingCatalogueDbContext context)
+        {
+            const int orderId = 91008;
+            var timeNow = DateTime.UtcNow;
+
+            var order = new Order
+            {
+                Id = orderId,
+                OrderingPartyId = GetOrganisationId(context),
+                Created = timeNow,
+                OrderStatus = OrderStatus.InProgress,
+                IsDeleted = false,
+                Description = "This is an Order Description",
+                OrderingPartyContact = new Contact
+                {
+                    FirstName = "Clark",
+                    LastName = "Kent",
+                    Email = "Clark.Kent@TheDailyPlanet.Fake",
+                    Phone = "123456789",
+                },
+                SupplierId = 99998,
+                SupplierContact = new Contact
+                {
+                    FirstName = "Bruce",
+                    LastName = "Wayne",
+                    Email = "bat.man@Gotham.Fake",
+                    Phone = "123456789",
+                },
+                CommencementDate = timeNow.AddDays(1),
+            };
+
+            var user = GetBuyerUser(context, order.OrderingPartyId);
+
+            var price = context.CatalogueItems
+                .Where(c => c.Id == new CatalogueItemId(99998, "002"))
+                .Include(c => c.CataloguePrices).ThenInclude(cp => cp.CataloguePriceTiers)
+                .Include(c => c.CataloguePrices).ThenInclude(cp => cp.PricingUnit)
+                .Select(ci => new OrderItemPrice(ci.CataloguePrices.First()))
+                .Single();
+
+            var addedSolution = new OrderItem
+            {
+                OrderItemPrice = price,
+                Created = DateTime.UtcNow,
+                OrderId = orderId,
+                CatalogueItem = context.CatalogueItems.Single(c => c.Id == new CatalogueItemId(99998, "S-999")),
+            };
+
+            order.OrderItems.Add(addedSolution);
+
+            context.Add(order);
+
+            context.SaveChangesAs(user.Id);
+        }
+
+        private static void AddOrderWithAddedAssociatedServiceAndServiceRecipientPrice(BuyingCatalogueDbContext context)
+        {
+            const int orderId = 92008;
+            var timeNow = DateTime.UtcNow;
+
+            var order = new Order
+            {
+                Id = orderId,
+                OrderingPartyId = GetOrganisationId(context),
+                Created = timeNow,
+                OrderStatus = OrderStatus.InProgress,
+                IsDeleted = false,
+                Description = "This is an Order Description",
+                OrderingPartyContact = new Contact
+                {
+                    FirstName = "Clark",
+                    LastName = "Kent",
+                    Email = "Clark.Kent@TheDailyPlanet.Fake",
+                    Phone = "123456789",
+                },
+                SupplierId = 99998,
+                SupplierContact = new Contact
+                {
+                    FirstName = "Bruce",
+                    LastName = "Wayne",
+                    Email = "bat.man@Gotham.Fake",
+                    Phone = "123456789",
+                },
+                CommencementDate = timeNow.AddDays(1),
+            };
+
+            var user = GetBuyerUser(context, order.OrderingPartyId);
+
+            var price = context.CatalogueItems
+                .Where(c => c.Id == new CatalogueItemId(99999, "001"))
+                .Include(c => c.CataloguePrices).ThenInclude(cp => cp.CataloguePriceTiers)
+                .Include(c => c.CataloguePrices).ThenInclude(cp => cp.PricingUnit)
+                .Select(ci => new OrderItemPrice(ci.CataloguePrices.First()))
+                .Single();
+
+            var addedSolution = new OrderItem
+            {
+                OrderItemPrice = price,
+                Created = DateTime.UtcNow,
+                OrderId = orderId,
+                CatalogueItem = context.CatalogueItems.Single(c => c.Id == new CatalogueItemId(99998, "S-999")),
+            };
+
+            var recipients = context.ServiceRecipients.ToList();
+
+            recipients.ForEach(r => addedSolution.OrderItemRecipients.Add(new OrderItemRecipient { Recipient = r }));
+
+            order.OrderItems.Add(addedSolution);
+
+            context.Add(order);
             context.SaveChangesAs(user.Id);
         }
 

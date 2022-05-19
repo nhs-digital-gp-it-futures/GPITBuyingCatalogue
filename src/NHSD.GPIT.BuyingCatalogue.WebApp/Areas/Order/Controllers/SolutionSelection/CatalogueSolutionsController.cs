@@ -62,16 +62,16 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers.SolutionSelec
                 return View(model);
             }
 
-            var solutionId = CatalogueItemId.ParseExact(model.SelectedCatalogueSolutionId);
+            var catalogueItemId = CatalogueItemId.ParseExact(model.SelectedCatalogueSolutionId);
             var additionalServiceIds = model.GetAdditionalServicesIdsForSelectedCatalogueSolution();
-            var ids = additionalServiceIds.Union(new[] { solutionId });
+            var ids = additionalServiceIds.Union(new[] { catalogueItemId });
 
             await orderItemService.AddOrderItems(internalOrgId, callOffId, ids);
 
             return RedirectToAction(
-                nameof(ServiceRecipientsController.SolutionRecipients),
+                nameof(ServiceRecipientsController.ServiceRecipients),
                 typeof(ServiceRecipientsController).ControllerName(),
-                new { internalOrgId, callOffId });
+                new { internalOrgId, callOffId, catalogueItemId });
         }
 
         private async Task<SelectSolutionModel> GetSelectModel(string internalOrgId, CallOffId callOffId, string selected = null)

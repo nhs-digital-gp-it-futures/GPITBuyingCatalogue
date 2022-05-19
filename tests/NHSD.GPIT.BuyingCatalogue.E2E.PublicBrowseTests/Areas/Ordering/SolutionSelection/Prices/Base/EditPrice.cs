@@ -12,29 +12,28 @@ using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers.SolutionSelection
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Validators.SolutionSelection.Prices;
 using Xunit;
 
-namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering.SolutionSelection.Prices
+namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering.SolutionSelection.Prices.Base
 {
-    public class EditPrice : BuyerTestBase, IClassFixture<LocalWebApplicationFactory>, IDisposable
+    public abstract class EditPrice : BuyerTestBase, IClassFixture<LocalWebApplicationFactory>, IDisposable
     {
-        private const string InternalOrgId = "CG-03F";
-        private const int OrderId = 90005;
-        private static readonly CallOffId CallOffId = new(OrderId, 1);
+        private readonly int orderId;
+        private readonly CatalogueItemId catalogueItemId;
 
-        private static readonly Dictionary<string, string> Parameters = new()
+        protected EditPrice(LocalWebApplicationFactory factory, Dictionary<string, string> parameters)
+            : base(factory, typeof(PricesController), nameof(PricesController.EditPrice), parameters)
         {
-            { nameof(InternalOrgId), InternalOrgId },
-            { nameof(CallOffId), $"{CallOffId}" },
-        };
-
-        public EditPrice(LocalWebApplicationFactory factory)
-            : base(factory, typeof(PricesController), nameof(PricesController.EditPrice), Parameters)
-        {
+            orderId = int.Parse(parameters["OrderId"]);
+            catalogueItemId = CatalogueItemId.ParseExact(parameters["CatalogueItemId"]);
         }
+
+        protected abstract decimal ListPrice { get; }
+
+        protected abstract string PageTitle { get; }
 
         [Fact]
         public void EditPrice_AllSectionsDisplayed()
         {
-            CommonActions.PageTitle().Should().BeEquivalentTo("Price of Catalogue Solution - DFOCVC Solution Full".FormatForComparison());
+            CommonActions.PageTitle().Should().BeEquivalentTo(PageTitle.FormatForComparison());
             CommonActions.GoBackLinkDisplayed().Should().BeTrue();
             CommonActions.ElementIsDisplayed(ConfirmPriceObjects.AgreedPriceInput(0)).Should().BeTrue();
             CommonActions.SaveButtonDisplayed().Should().BeTrue();
@@ -150,8 +149,8 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering.SolutionSelection.Pr
 
             var tier = prices[0].OrderItemPriceTiers.First();
 
-            tier.ListPrice.Should().Be(999.9999M);
-            tier.Price.Should().Be(999.9999M);
+            tier.ListPrice.Should().Be(ListPrice);
+            tier.Price.Should().Be(ListPrice);
         }
 
         [Theory]
@@ -175,7 +174,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering.SolutionSelection.Pr
 
             var tier = prices[0].OrderItemPriceTiers.First();
 
-            tier.ListPrice.Should().Be(999.9999M);
+            tier.ListPrice.Should().Be(ListPrice);
             tier.Price.Should().Be(value);
         }
 
@@ -196,7 +195,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering.SolutionSelection.Pr
 
             var tier = prices[0].OrderItemPriceTiers.First();
 
-            tier.ListPrice.Should().Be(999.9999M);
+            tier.ListPrice.Should().Be(ListPrice);
             tier.Price.Should().Be(0M);
         }
 
@@ -206,7 +205,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering.SolutionSelection.Pr
 
             foreach (var price in GetPrices())
             {
-                price.OrderItemPriceTiers.First().Price = 999.9999M;
+                price.OrderItemPriceTiers.First().Price = ListPrice;
 
                 context.OrderItemPrices.Update(price);
             }
@@ -218,7 +217,8 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering.SolutionSelection.Pr
         {
             return GetEndToEndDbContext().OrderItemPrices
                 .Include(x => x.OrderItemPriceTiers)
-                .Where(x => x.OrderId == OrderId)
+                .Where(x => x.OrderId == orderId
+                    && x.CatalogueItemId == catalogueItemId)
                 .ToList();
         }
     }

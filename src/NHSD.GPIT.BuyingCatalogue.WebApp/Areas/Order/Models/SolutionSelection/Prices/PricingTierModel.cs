@@ -1,4 +1,6 @@
-﻿namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.SolutionSelection.Prices
+﻿using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Orders;
+
+namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.SolutionSelection.Prices
 {
     public class PricingTierModel
     {
@@ -13,5 +15,12 @@
         public int LowerRange { get; set; }
 
         public int? UpperRange { get; set; }
+
+        public OrderPricingTierDto AgreedPriceDto => new OrderPricingTierDto
+        {
+            LowerRange = LowerRange,
+            UpperRange = UpperRange,
+            Price = decimal.TryParse(AgreedPrice, out var price) ? price : decimal.Zero,
+        };
     }
 }

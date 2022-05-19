@@ -2,7 +2,7 @@
 (
     OrderId INT NOT NULL,
     CatalogueItemId NVARCHAR(14) NOT NULL,
-    EstimationPeriodId INT NOT NULL,
+    EstimationPeriodId INT NULL,
     ProvisioningTypeId INT NOT NULL,
     CataloguePriceTypeId INT NOT NULL,
     CataloguePriceCalculationTypeId INT NOT NULL,

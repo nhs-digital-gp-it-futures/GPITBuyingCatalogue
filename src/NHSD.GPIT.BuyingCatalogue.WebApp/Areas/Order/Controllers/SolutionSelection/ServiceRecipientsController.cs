@@ -4,46 +4,49 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Orders;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Organisations;
-using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions;
+using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Routing;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.SolutionSelection.ServiceRecipients;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers.SolutionSelection
 {
     [Authorize("Buyer")]
     [Area("Order")]
-    [Route("order/organisation/{internalOrgId}/order/{callOffId}/service-recipients")]
+    [Route("order/organisation/{internalOrgId}/order/{callOffId}/item/{catalogueItemId}")]
     public class ServiceRecipientsController : Controller
     {
         private readonly IOdsService odsService;
         private readonly IOrderItemRecipientService orderItemRecipientService;
         private readonly IOrderService orderService;
-        private readonly ISolutionListPriceService listPriceService;
+        private readonly IRoutingService routingService;
 
         public ServiceRecipientsController(
             IOdsService odsService,
             IOrderItemRecipientService orderItemRecipientService,
             IOrderService orderService,
-            ISolutionListPriceService listPriceService)
+            IRoutingService routingService)
         {
             this.odsService = odsService ?? throw new ArgumentNullException(nameof(odsService));
             this.orderItemRecipientService = orderItemRecipientService ?? throw new ArgumentNullException(nameof(orderItemRecipientService));
             this.orderService = orderService ?? throw new ArgumentNullException(nameof(orderService));
-            this.listPriceService = listPriceService ?? throw new ArgumentNullException(nameof(listPriceService));
+            this.routingService = routingService ?? throw new ArgumentNullException(nameof(routingService));
         }
 
-        [HttpGet("solution")]
-        public async Task<IActionResult> SolutionRecipients(string internalOrgId, CallOffId callOffId, SelectionMode? selectionMode)
+        [HttpGet("service-recipients")]
+        public async Task<IActionResult> ServiceRecipients(
+            string internalOrgId,
+            CallOffId callOffId,
+            CatalogueItemId catalogueItemId,
+            SelectionMode? selectionMode)
         {
-            var order = await orderService.GetOrderThin(callOffId, internalOrgId);
-            var solution = order.GetSolution();
+            var order = await orderService.GetOrderWithOrderItems(callOffId, internalOrgId);
+            var orderItem = order.OrderItem(catalogueItemId);
             var serviceRecipients = await GetServiceRecipients(internalOrgId);
 
-            var model = new SelectRecipientsModel(serviceRecipients, selectionMode)
+            var model = new SelectRecipientsModel(orderItem, serviceRecipients, selectionMode)
             {
                 BackLink = Url.Action(
                     nameof(OrderController.Order),
@@ -51,150 +54,36 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers.SolutionSelec
                     new { internalOrgId, callOffId }),
                 InternalOrgId = internalOrgId,
                 CallOffId = callOffId,
-                ItemName = solution.CatalogueItem.Name,
-                ItemType = CatalogueItemType.Solution,
+                CatalogueItemId = catalogueItemId,
             };
+
+            model.PreSelectRecipients(order.GetSolution());
 
             return View("SelectRecipients", model);
         }
 
-        [HttpPost("solution")]
-        public async Task<IActionResult> SolutionRecipients(string internalOrgId, CallOffId callOffId, SelectRecipientsModel model)
+        [HttpPost("service-recipients")]
+        public async Task<IActionResult> ServiceRecipients(
+            string internalOrgId,
+            CallOffId callOffId,
+            CatalogueItemId catalogueItemId,
+            SelectRecipientsModel model)
         {
             if (!ModelState.IsValid)
             {
                 return View("SelectRecipients", model);
             }
 
-            var order = await orderService.GetOrderThin(callOffId, internalOrgId);
-            var solution = await listPriceService.GetCatalogueItemWithPublishedListPrices(order.GetSolution().CatalogueItem.Id);
-
-            await AddServiceRecipients(order.Id, solution.Id, model);
-
-            if (solution.CataloguePrices.Count > 1)
-            {
-                return RedirectToAction(
-                    nameof(PricesController.SelectPrice),
-                    typeof(PricesController).ControllerName(),
-                    new { internalOrgId, callOffId });
-            }
-
-            var priceId = solution.CataloguePrices.First().CataloguePriceId;
-
-            return RedirectToAction(
-                nameof(PricesController.ConfirmPrice),
-                typeof(PricesController).ControllerName(),
-                new { internalOrgId, callOffId, priceId });
-        }
-
-        [HttpGet("additional-service/{catalogueItemId}")]
-        public async Task<IActionResult> AdditionalServiceRecipients(string internalOrgId, CallOffId callOffId, CatalogueItemId catalogueItemId, SelectionMode? selectionMode)
-        {
-            var order = await orderService.GetOrderSummary(callOffId, internalOrgId);
-            var solution = order.GetSolution();
-            var service = order.GetAdditionalService(catalogueItemId);
-            var serviceRecipients = await GetServiceRecipients(internalOrgId);
-
-            var model = new SelectRecipientsModel(serviceRecipients, selectionMode)
-            {
-                BackLink = Url.Action(
-                    nameof(OrderController.Order),
-                    typeof(OrderController).ControllerName(),
-                    new { internalOrgId, callOffId }),
-                InternalOrgId = internalOrgId,
-                CallOffId = callOffId,
-                CatalogueItemId = service.CatalogueItem.Id,
-                ItemName = service.CatalogueItem.Name,
-                ItemType = CatalogueItemType.AdditionalService,
-            };
-
-            model.PreSelectRecipients(solution);
-
-            return View("SelectRecipients", model);
-        }
-
-        [HttpPost("additional-service/{catalogueItemId}")]
-        public async Task<IActionResult> AdditionalServiceRecipients(string internalOrgId, CallOffId callOffId, CatalogueItemId catalogueItemId, SelectRecipientsModel model)
-        {
-            if (!ModelState.IsValid)
-            {
-                return View("SelectRecipients", model);
-            }
-
-            var order = await orderService.GetOrderThin(callOffId, internalOrgId);
-            var additionalService = await listPriceService.GetCatalogueItemWithPublishedListPrices(catalogueItemId);
+            var order = await orderService.GetOrderWithCatalogueItemAndPrices(callOffId, internalOrgId);
 
             await AddServiceRecipients(order.Id, catalogueItemId, model);
 
-            if (additionalService.CataloguePrices.Count > 1)
-            {
-                return RedirectToAction(
-                    nameof(PricesController.AdditionalServiceSelectPrice),
-                    typeof(PricesController).ControllerName(),
-                    new { internalOrgId, callOffId });
-            }
+            var route = routingService.GetRoute(
+                RoutingSource.SelectServiceRecipients,
+                order,
+                new RouteValues(internalOrgId, callOffId, catalogueItemId));
 
-            var priceId = additionalService.CataloguePrices.First().CataloguePriceId;
-
-            return RedirectToAction(
-                nameof(PricesController.AdditionalServiceConfirmPrice),
-                typeof(PricesController).ControllerName(),
-                new { internalOrgId, callOffId, catalogueItemId, priceId });
-        }
-
-        [HttpGet("associated-service/{catalogueItemId}")]
-        public async Task<IActionResult> AssociatedServiceRecipients(string internalOrgId, CallOffId callOffId, CatalogueItemId catalogueItemId, SelectionMode? selectionMode)
-        {
-            var order = await orderService.GetOrderSummary(callOffId, internalOrgId);
-            var solution = order.GetSolution();
-            var service = order.GetAssociatedService(catalogueItemId);
-            var serviceRecipients = await GetServiceRecipients(internalOrgId);
-
-            var model = new SelectRecipientsModel(serviceRecipients, selectionMode)
-            {
-                BackLink = Url.Action(
-                    nameof(OrderController.Order),
-                    typeof(OrderController).ControllerName(),
-                    new { internalOrgId, callOffId }),
-                InternalOrgId = internalOrgId,
-                CallOffId = callOffId,
-                CatalogueItemId = service.CatalogueItem.Id,
-                ItemName = service.CatalogueItem.Name,
-                ItemType = CatalogueItemType.AssociatedService,
-            };
-
-            model.PreSelectRecipients(solution);
-
-            return View("SelectRecipients", model);
-        }
-
-        [HttpPost("associated-service/{catalogueItemId}")]
-        public async Task<IActionResult> AssociatedServiceRecipients(string internalOrgId, CallOffId callOffId, CatalogueItemId catalogueItemId, SelectRecipientsModel model)
-        {
-            if (!ModelState.IsValid)
-            {
-                return View("SelectRecipients", model);
-            }
-
-            var order = await orderService.GetOrderThin(callOffId, internalOrgId);
-            var associatedService = await listPriceService.GetCatalogueItemWithPublishedListPrices(catalogueItemId);
-
-            await AddServiceRecipients(order.Id, catalogueItemId, model);
-
-            if (associatedService.CataloguePrices.Count > 1)
-            {
-                return RedirectToAction(
-                    nameof(PricesController.AssociatedServiceSelectPrice),
-                    typeof(PricesController).ControllerName(),
-                    new { internalOrgId, callOffId });
-            }
-
-            var priceId = associatedService.CataloguePrices.First().CataloguePriceId;
-
-            return RedirectToAction(
-                nameof(PricesController.AssociatedServiceConfirmPrice),
-                typeof(PricesController).ControllerName(),
-                new { internalOrgId, callOffId, catalogueItemId, priceId });
+            return RedirectToAction(route.ActionName, route.ControllerName, route.RouteValues);
         }
 
         private async Task AddServiceRecipients(int orderId, CatalogueItemId catalogueItemId, SelectRecipientsModel model)

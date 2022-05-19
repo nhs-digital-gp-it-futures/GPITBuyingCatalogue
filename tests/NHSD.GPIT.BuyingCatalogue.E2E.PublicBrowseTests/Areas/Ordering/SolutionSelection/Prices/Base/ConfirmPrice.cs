@@ -12,31 +12,28 @@ using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers.SolutionSelection
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Validators.SolutionSelection.Prices;
 using Xunit;
 
-namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering.SolutionSelection.Prices
+namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering.SolutionSelection.Prices.Base
 {
-    public class ConfirmPrice : BuyerTestBase, IClassFixture<LocalWebApplicationFactory>, IDisposable
+    public abstract class ConfirmPrice : BuyerTestBase, IClassFixture<LocalWebApplicationFactory>, IDisposable
     {
-        private const string InternalOrgId = "CG-03F";
-        private const int OrderId = 90012;
-        private const int PriceId = 1;
-        private static readonly CallOffId CallOffId = new(OrderId, 1);
+        private readonly int orderId;
+        private readonly CatalogueItemId catalogueItemId;
 
-        private static readonly Dictionary<string, string> Parameters = new()
+        protected ConfirmPrice(LocalWebApplicationFactory factory, Dictionary<string, string> parameters)
+            : base(factory, typeof(PricesController), nameof(PricesController.ConfirmPrice), parameters)
         {
-            { nameof(InternalOrgId), InternalOrgId },
-            { nameof(CallOffId), $"{CallOffId}" },
-            { nameof(PriceId), $"{PriceId}" },
-        };
-
-        public ConfirmPrice(LocalWebApplicationFactory factory)
-            : base(factory, typeof(PricesController), nameof(PricesController.ConfirmPrice), Parameters)
-        {
+            orderId = int.Parse(parameters["OrderId"]);
+            catalogueItemId = CatalogueItemId.ParseExact(parameters["CatalogueItemId"]);
         }
+
+        protected abstract decimal ListPrice { get; }
+
+        protected abstract string PageTitle { get; }
 
         [Fact]
         public void ConfirmPrice_AllSectionsDisplayed()
         {
-            CommonActions.PageTitle().Should().BeEquivalentTo("Price of Catalogue Solution - E2E With Contact Multiple Prices".FormatForComparison());
+            CommonActions.PageTitle().Should().BeEquivalentTo(PageTitle.FormatForComparison());
             CommonActions.GoBackLinkDisplayed().Should().BeTrue();
             CommonActions.ElementIsDisplayed(ConfirmPriceObjects.AgreedPriceInput(0)).Should().BeTrue();
             CommonActions.SaveButtonDisplayed().Should().BeTrue();
@@ -114,10 +111,14 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering.SolutionSelection.Pr
                 PricingTierModelValidator.PriceNotWithinFourDecimalPlacesErrorMessage).Should().BeTrue();
         }
 
-        [Fact]
-        public void ConfirmPrice_PriceHigherThanListPrice_Error()
+        [Theory]
+        [InlineData(1000)]
+        [InlineData(100000)]
+        [InlineData(99999.9999)]
+        [InlineData(int.MaxValue)]
+        public void ConfirmPrice_PriceHigherThanListPrice_Error(decimal value)
         {
-            CommonActions.ElementAddValue(ConfirmPriceObjects.AgreedPriceInput(0), $"{int.MaxValue}");
+            CommonActions.ElementAddValue(ConfirmPriceObjects.AgreedPriceInput(0), $"{value:#,#0.00##}");
             CommonActions.ClickSave();
 
             CommonActions.PageLoadedCorrectGetIndex(
@@ -148,14 +149,18 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering.SolutionSelection.Pr
 
             var tier = prices[0].OrderItemPriceTiers.First();
 
-            tier.ListPrice.Should().Be(999.9999M);
-            tier.Price.Should().Be(999.9999M);
+            tier.ListPrice.Should().Be(ListPrice);
+            tier.Price.Should().Be(ListPrice);
         }
 
-        [Fact]
-        public void ConfirmPrice_PriceLowerThanListPrice_ExpectedResult()
+        [Theory]
+        [InlineData(999.9998)]
+        [InlineData(100)]
+        [InlineData(1)]
+        [InlineData(0.0001)]
+        public void ConfirmPrice_PriceLowerThanListPrice_ExpectedResult(decimal value)
         {
-            CommonActions.ElementAddValue(ConfirmPriceObjects.AgreedPriceInput(0), "0.0001");
+            CommonActions.ElementAddValue(ConfirmPriceObjects.AgreedPriceInput(0), $"{value:#,##0.00##}");
             CommonActions.ClickSave();
 
             CommonActions.PageLoadedCorrectGetIndex(
@@ -169,8 +174,8 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering.SolutionSelection.Pr
 
             var tier = prices[0].OrderItemPriceTiers.First();
 
-            tier.ListPrice.Should().Be(999.9999M);
-            tier.Price.Should().Be(0.0001M);
+            tier.ListPrice.Should().Be(ListPrice);
+            tier.Price.Should().Be(value);
         }
 
         public void Dispose()
@@ -189,7 +194,8 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering.SolutionSelection.Pr
         {
             return GetEndToEndDbContext().OrderItemPrices
                 .Include(x => x.OrderItemPriceTiers)
-                .Where(x => x.OrderId == OrderId)
+                .Where(x => x.OrderId == orderId
+                    && x.CatalogueItemId == catalogueItemId)
                 .ToList();
         }
     }

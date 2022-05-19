@@ -130,7 +130,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering.SolutionSelection.As
 
             CommonActions.PageLoadedCorrectGetIndex(
                 typeof(ServiceRecipientsController),
-                nameof(ServiceRecipientsController.AssociatedServiceRecipients)).Should().BeTrue();
+                nameof(ServiceRecipientsController.ServiceRecipients)).Should().BeTrue();
 
             GetAssociatedServices().Count.Should().Be(1);
         }

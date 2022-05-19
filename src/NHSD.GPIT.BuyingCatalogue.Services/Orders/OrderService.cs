@@ -56,6 +56,16 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
                 .SingleOrDefaultAsync();
         }
 
+        public Task<Order> GetOrderWithCatalogueItemAndPrices(CallOffId callOffId, string internalOrgId)
+        {
+            return dbContext.Orders
+                .Where(o => o.Id == callOffId.Id && o.OrderingParty.InternalIdentifier == internalOrgId)
+                .Include(o => o.OrderItems).ThenInclude(i => i.CatalogueItem).ThenInclude(x => x.CataloguePrices).ThenInclude(x => x.CataloguePriceTiers)
+                .Include(o => o.OrderItems).ThenInclude(i => i.OrderItemPrice).ThenInclude(ip => ip.OrderItemPriceTiers)
+                .Include(o => o.OrderItems).ThenInclude(i => i.OrderItemRecipients).ThenInclude(r => r.Recipient)
+                .SingleOrDefaultAsync();
+        }
+
         public Task<Order> GetOrderWithOrderItems(CallOffId callOffId, string internalOrgId)
         {
             return dbContext.Orders

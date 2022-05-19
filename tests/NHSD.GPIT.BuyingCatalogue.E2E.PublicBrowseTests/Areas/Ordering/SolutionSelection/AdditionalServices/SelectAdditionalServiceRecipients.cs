@@ -30,7 +30,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering.SolutionSelection.Ad
         };
 
         public SelectAdditionalServiceRecipients(LocalWebApplicationFactory factory)
-            : base(factory, typeof(ServiceRecipientsController), nameof(ServiceRecipientsController.AdditionalServiceRecipients), Parameters)
+            : base(factory, typeof(ServiceRecipientsController), nameof(ServiceRecipientsController.ServiceRecipients), Parameters)
         {
         }
 
@@ -62,7 +62,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering.SolutionSelection.Ad
 
             CommonActions.PageLoadedCorrectGetIndex(
                 typeof(ServiceRecipientsController),
-                nameof(ServiceRecipientsController.AdditionalServiceRecipients)).Should().BeTrue();
+                nameof(ServiceRecipientsController.ServiceRecipients)).Should().BeTrue();
 
             CommonActions.ElementIsDisplayed(ServiceRecipientObjects.PreSelectedInset).Should().BeFalse();
             CommonActions.GetNumberOfSelectedCheckBoxes().Should().Be(CommonActions.GetNumberOfCheckBoxesDisplayed());
@@ -71,7 +71,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering.SolutionSelection.Ad
 
             CommonActions.PageLoadedCorrectGetIndex(
                 typeof(ServiceRecipientsController),
-                nameof(ServiceRecipientsController.AdditionalServiceRecipients)).Should().BeTrue();
+                nameof(ServiceRecipientsController.ServiceRecipients)).Should().BeTrue();
 
             CommonActions.ElementIsDisplayed(ServiceRecipientObjects.PreSelectedInset).Should().BeFalse();
             CommonActions.GetNumberOfSelectedCheckBoxes().Should().Be(0);
@@ -84,7 +84,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering.SolutionSelection.Ad
 
             CommonActions.PageLoadedCorrectGetIndex(
                 typeof(ServiceRecipientsController),
-                nameof(ServiceRecipientsController.AdditionalServiceRecipients)).Should().BeTrue();
+                nameof(ServiceRecipientsController.ServiceRecipients)).Should().BeTrue();
 
             CommonActions.ErrorSummaryDisplayed().Should().BeTrue();
             CommonActions.ErrorSummaryLinksExist().Should().BeTrue();
@@ -104,7 +104,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering.SolutionSelection.Ad
 
             CommonActions.PageLoadedCorrectGetIndex(
                 typeof(PricesController),
-                nameof(PricesController.AdditionalServiceConfirmPrice)).Should().BeTrue();
+                nameof(PricesController.ConfirmPrice)).Should().BeTrue();
 
             GetOrderItem().OrderItemRecipients.Count.Should().Be(1);
         }
