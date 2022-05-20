@@ -158,7 +158,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp
 
         public static IServiceCollection ConfigurePriceTiersCap(this IServiceCollection services, IConfiguration configuration)
         {
-            var priceTiersCapSettings = configuration.GetSection("PriceTiersCap").Get<PriceTiersCapSettings>();
+            var priceTiersCapSettings = configuration.GetSection("priceTiersCap").Get<PriceTiersCapSettings>();
             services.AddSingleton(priceTiersCapSettings);
 
             return services;

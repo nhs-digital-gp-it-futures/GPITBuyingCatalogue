@@ -1124,6 +1124,22 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
                                     UpperRange = null,
                                     LastUpdated = DateTime.UtcNow,
                                 },
+                                new()
+                                {
+                                    Id = 35,
+                                    CataloguePriceId = 23,
+                                    LowerRange = 150000,
+                                    UpperRange = null,
+                                    LastUpdated = DateTime.UtcNow,
+                                },
+                                new()
+                                {
+                                    Id = 36,
+                                    CataloguePriceId = 23,
+                                    LowerRange = 150000,
+                                    UpperRange = null,
+                                    LastUpdated = DateTime.UtcNow,
+                                },
                             },
                         },
                     },
