@@ -57,7 +57,7 @@
                                                     new { Model.InternalOrgId, Model.CallOffId })"
                                             status="@Model.SectionStatuses.FundingSource" />
                     </nhs-task-list-section>
-                    <nhs-task-list-section label-text="Complete order">                        
+                    <nhs-task-list-section label-text="Complete order">
                         <nhs-task-list-item label-text="Review and complete order"
                                             url="@Url.Action(
                                                     nameof(OrderController.Summary),
@@ -67,18 +67,16 @@
                     </nhs-task-list-section>
                 </nhs-task-list>
 
-            <vc:nhs-secondary-button text="Preview order summary"
-                                     url="@Url.Action(
-                                            nameof(OrderController.Summary),
-                                            typeof(OrderController).ControllerName(),
-                                            new { Model.InternalOrgId, Model.CallOffId })"
-                                     use-primary-colour="false" /><br />
+            @if (Model.CallOffId != default)
+            {
 
-            <vc:nhs-delete-button text="Delete order"
-                                  url="@Url.Action(
-                                            nameof(DeleteOrderController.DeleteOrder),
-                                            typeof(DeleteOrderController).ControllerName(),
-                                            new { Model.InternalOrgId, Model.CallOffId })"/>
+                <vc:nhs-secondary-button text="Preview order summary"
+                                         url="@Url.Action(nameof(OrderController.Summary), typeof(OrderController).ControllerName(), new { Model.InternalOrgId, Model.CallOffId })"
+                                         use-primary-colour="false"/>
+                <br/>
+                <vc:nhs-delete-button text="Delete order"
+                                      url="@Url.Action(nameof(DeleteOrderController.DeleteOrder), typeof(DeleteOrderController).ControllerName(), new { Model.InternalOrgId, Model.CallOffId })"/>
+            }
 
             @if (Model.LastUpdated is not null && !string.IsNullOrWhiteSpace(Model.LastUpdatedByUserName))
             {
