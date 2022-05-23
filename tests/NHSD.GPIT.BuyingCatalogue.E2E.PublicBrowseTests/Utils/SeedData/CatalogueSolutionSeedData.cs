@@ -1066,7 +1066,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
                         },
                         new()
                         {
-                            CataloguePriceId = 23,
+                            CataloguePriceId = 27,
                             CatalogueItemId = new CatalogueItemId(99998, "001"),
                             ProvisioningType = ProvisioningType.Patient,
                             CataloguePriceType = CataloguePriceType.Tiered,
@@ -1085,8 +1085,8 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
                             {
                                 new()
                                 {
-                                    Id = 30,
-                                    CataloguePriceId = 23,
+                                    Id = 38,
+                                    CataloguePriceId = 27,
                                     LowerRange = 1,
                                     UpperRange = 9999,
                                     Price = 999.9999M,
@@ -1094,48 +1094,48 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
                                 },
                                 new()
                                 {
-                                    Id = 31,
-                                    CataloguePriceId = 23,
+                                    Id = 39,
+                                    CataloguePriceId = 27,
                                     LowerRange = 10000,
                                     UpperRange = 49000,
                                     LastUpdated = DateTime.UtcNow,
                                 },
                                 new()
                                 {
-                                    Id = 32,
-                                    CataloguePriceId = 23,
+                                    Id = 40,
+                                    CataloguePriceId = 27,
                                     LowerRange = 50000,
                                     UpperRange = 99999,
                                     LastUpdated = DateTime.UtcNow,
                                 },
                                 new()
                                 {
-                                    Id = 33,
-                                    CataloguePriceId = 23,
+                                    Id = 41,
+                                    CataloguePriceId = 27,
                                     LowerRange = 100000,
                                     UpperRange = 149999,
                                     LastUpdated = DateTime.UtcNow,
                                 },
                                 new()
                                 {
-                                    Id = 34,
-                                    CataloguePriceId = 23,
+                                    Id = 42,
+                                    CataloguePriceId = 27,
                                     LowerRange = 150000,
                                     UpperRange = null,
                                     LastUpdated = DateTime.UtcNow,
                                 },
                                 new()
                                 {
-                                    Id = 35,
-                                    CataloguePriceId = 23,
+                                    Id = 43,
+                                    CataloguePriceId = 27,
                                     LowerRange = 150000,
                                     UpperRange = null,
                                     LastUpdated = DateTime.UtcNow,
                                 },
                                 new()
                                 {
-                                    Id = 36,
-                                    CataloguePriceId = 23,
+                                    Id = 44,
+                                    CataloguePriceId = 27,
                                     LowerRange = 150000,
                                     UpperRange = null,
                                     LastUpdated = DateTime.UtcNow,
