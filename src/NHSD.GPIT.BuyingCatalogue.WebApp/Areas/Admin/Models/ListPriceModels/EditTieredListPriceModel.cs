@@ -12,13 +12,15 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.ListPriceModels
         {
         }
 
-        public EditTieredListPriceModel(CatalogueItem catalogueItem, CataloguePrice price)
+        public EditTieredListPriceModel(CatalogueItem catalogueItem, CataloguePrice price, int maximumNumberOfTiers)
             : base(catalogueItem, price)
         {
             Tiers = price.CataloguePriceTiers.ToList();
             SelectedPublicationStatus
                 = CataloguePricePublicationStatus
                 = price.PublishedStatus;
+
+            MaximumNumberOfTiers = maximumNumberOfTiers;
         }
 
         public PublicationStatus CataloguePricePublicationStatus { get; set; }
@@ -31,5 +33,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.ListPriceModels
             .ToList();
 
         public IList<CataloguePriceTier> Tiers { get; set; }
+
+        public int MaximumNumberOfTiers { get; set; }
     }
 }

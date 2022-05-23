@@ -12,6 +12,7 @@ using Microsoft.AspNetCore.Routing;
 using Moq;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
+using NHSD.GPIT.BuyingCatalogue.Framework.Settings;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions;
 using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.AutoFixtureCustomisations;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers;
@@ -236,12 +237,13 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
         public static async Task Get_TieredPriceTiers_ReturnsViewWithModel(
             Solution solution,
             CataloguePrice price,
+            [Frozen] PriceTiersCapSettings priceTiersSetting,
             [Frozen] Mock<ISolutionListPriceService> solutionListPriceService,
             CatalogueSolutionListPriceController controller)
         {
             solution.CatalogueItem.CataloguePrices.Add(price);
 
-            var model = new TieredPriceTiersModel(solution.CatalogueItem, price);
+            var model = new TieredPriceTiersModel(solution.CatalogueItem, price, priceTiersSetting.MaximumNumberOfPriceTiers);
 
             solutionListPriceService.Setup(s => s.GetCatalogueItemWithListPrices(solution.CatalogueItemId))
                 .ReturnsAsync(solution.CatalogueItem);
@@ -500,6 +502,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
         public static async Task Get_EditTieredListPrice_ReturnsViewWithModel(
             Solution solution,
             CataloguePrice price,
+            [Frozen] PriceTiersCapSettings priceTiersSetting,
             [Frozen] Mock<ISolutionListPriceService> solutionListPriceService,
             CatalogueSolutionListPriceController controller)
         {
@@ -508,7 +511,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
             solutionListPriceService.Setup(s => s.GetCatalogueItemWithListPrices(solution.CatalogueItemId))
                 .ReturnsAsync(solution.CatalogueItem);
 
-            var model = new EditTieredListPriceModel(solution.CatalogueItem, price);
+            var model = new EditTieredListPriceModel(solution.CatalogueItem, price, priceTiersSetting.MaximumNumberOfPriceTiers);
 
             var result = (await controller.EditTieredListPrice(solution.CatalogueItemId, price.CataloguePriceId)).As<ViewResult>();
 

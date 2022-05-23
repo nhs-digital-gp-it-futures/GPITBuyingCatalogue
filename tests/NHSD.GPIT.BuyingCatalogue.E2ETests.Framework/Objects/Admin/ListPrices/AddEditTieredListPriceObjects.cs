@@ -19,6 +19,8 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.Objects.Admin.ListPrices
 
         public static By PublishedInsetSection => ByExtensions.DataTestId("published-price-inset");
 
+        public static By MaximumTiersInset => ByExtensions.DataTestId("maximum-tiers-reached-inset");
+
         public static By TieredPriceTable => ByExtensions.DataTestId("tiered-price-table");
 
         public static By DeclarativeBillingPeriodInput => By.Id("conditional-SelectedProvisioningType_1");

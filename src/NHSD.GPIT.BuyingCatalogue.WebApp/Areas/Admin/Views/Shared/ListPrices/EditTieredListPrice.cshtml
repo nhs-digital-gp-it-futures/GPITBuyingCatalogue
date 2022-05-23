@@ -97,11 +97,19 @@
             }
             else
             {
-                <br />
-                <vc:nhs-action-link text="Add a pricing tier" url="@Url.Action(
-                    nameof(CatalogueSolutionListPriceController.AddTieredPriceTier),
-                    typeof(CatalogueSolutionListPriceController).ControllerName(),
-                    new { solutionId = Model.CatalogueItemId, cataloguePriceId = Model.CataloguePriceId, isEditing = true })" />
+				if(Model.Tiers.Count < Model.MaximumNumberOfTiers){
+				<vc:nhs-action-link
+					text="Add a pricing tier"
+					 url="@Url.Action(
+						nameof(CatalogueSolutionListPriceController.AddTieredPriceTier),
+						typeof(CatalogueSolutionListPriceController).ControllerName(),
+						new { solutionId = Model.CatalogueItemId, cataloguePriceId = Model.CataloguePriceId, isEditing = true }
+						)" />
+				}else{
+					<nhs-inset-text data-test-id="maximum-tiers-reached-inset">
+						The maximum number of tiers you can add is @Model.MaximumNumberOfTiers. You cannot add any more tiers for this price.
+					</nhs-inset-text>
+				}
             }
 
             @if(Model.Tiers.Any())

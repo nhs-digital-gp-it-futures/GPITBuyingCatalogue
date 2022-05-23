@@ -48,6 +48,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.ListPrices.Solution.Tie
             CommonActions.ElementIsDisplayed(AddEditTieredListPriceObjects.UnitDescriptionInput).Should().BeTrue();
             CommonActions.ElementIsDisplayed(AddEditTieredListPriceObjects.UnitDefinitionInput).Should().BeTrue();
             CommonActions.ElementIsDisplayed(AddEditTieredListPriceObjects.RangeDefinitionInput).Should().BeTrue();
+            CommonActions.ElementExists(AddEditTieredListPriceObjects.MaximumTiersInset).Should().BeFalse();
 
             CommonActions.ElementIsDisplayed(AddEditTieredListPriceObjects.OnDemandBillingPeriodInput).Should().BeFalse();
             CommonActions.ElementIsDisplayed(AddEditTieredListPriceObjects.DeclarativeBillingPeriodInput).Should().BeFalse();
