@@ -69,7 +69,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers.SolutionSelec
             await orderItemService.AddOrderItems(internalOrgId, callOffId, ids);
 
             return RedirectToAction(
-                nameof(ServiceRecipientsController.ServiceRecipients),
+                nameof(ServiceRecipientsController.AddServiceRecipients),
                 typeof(ServiceRecipientsController).ControllerName(),
                 new { internalOrgId, callOffId, catalogueItemId });
         }

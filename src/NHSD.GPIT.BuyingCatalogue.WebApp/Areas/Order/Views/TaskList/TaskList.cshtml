@@ -1,0 +1,68 @@
+﻿@using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.SolutionSelection.TaskList
+@using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers.SolutionSelection
+@model NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.SolutionSelection.TaskList.TaskListModel;
+
+<partial name="Partials/_BackLink" model="Model" />
+
+<div class="nhsuk-grid-row">
+    <div class="nhsuk-grid-column-two-thirds">
+        <nhs-validation-summary />
+            
+        <nhs-page-title title="Edit solutions and services"
+                        caption="Order @Model!.CallOffId"
+                        advice="Select the sections that you want to edit." />
+        
+        @if (!Model.AssociatedServicesOnly)
+        {
+            <div id="SolutionDetails" class="nhsuk-u-margin-bottom-9">
+                <h2>Catalogue Solution</h2>
+                <vc:nhs-action-link text="Change Catalogue Solution"
+                                    url="#"/>
+                                
+                @if (Model.CatalogueSolution != null)
+                {
+                    <div class="nhsuk-u-margin-bottom-9">
+                        <partial name="TaskListOrderItem"
+                                 model="new TaskListOrderItemModel(Model.InternalOrgId, Model.CallOffId, Model.CatalogueSolution)"/>
+                    </div>
+                }
+            </div>
+
+            <div id="AdditionalServiceDetails" class="nhsuk-u-margin-bottom-9">
+                <h2>Additional Services</h2>
+                <vc:nhs-action-link text="Change Additional Services"
+                                    url="#"/>
+
+                @foreach (var service in Model.AdditionalServices)
+                {
+                    <div class="nhsuk-u-margin-bottom-9">
+                        <partial name="TaskListOrderItem"
+                                 model="new TaskListOrderItemModel(Model.InternalOrgId, Model.CallOffId, service)"/>
+                    </div>
+                }
+            </div>
+        }
+        
+        <div id="AssociatedServiceDetails" class="nhsuk-u-margin-bottom-9">
+            <h2>Associated Services</h2>
+            <vc:nhs-action-link text="Change Associated Services"
+                                url="#"/>
+
+            @foreach (var service in Model.AssociatedServices)
+            {
+                <div class="nhsuk-u-margin-bottom-9">
+                    <partial name="TaskListOrderItem"
+                             model="new TaskListOrderItemModel(Model.InternalOrgId, Model.CallOffId, service)"/>
+                </div>
+            }
+        </div>
+        
+        <vc:nhs-secondary-button 
+            text="Continue" 
+            use-primary-colour="true" 
+            url="@Url.Action(
+                     nameof(ReviewSolutionsController.ReviewSolutions), 
+                     typeof(ReviewSolutionsController).ControllerName(), 
+                     new { Model.InternalOrgId, Model.CallOffId })"/>
+    </div>
+</div>

@@ -6,6 +6,8 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.Orders
 {
     public interface IOrderItemRecipientService
     {
-        Task AddOrderItemRecipients(int orderId, CatalogueItemId catalogueItemId, IEnumerable<ServiceRecipientDto> recipients);
+        Task AddOrderItemRecipients(int orderId, CatalogueItemId catalogueItemId, List<ServiceRecipientDto> recipients);
+
+        Task UpdateOrderItemRecipients(int orderId, CatalogueItemId catalogueItemId, List<ServiceRecipientDto> recipients);
     }
 }

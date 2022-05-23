@@ -82,8 +82,8 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering.SolutionSelection.As
             CommonActions.ClickSave();
 
             CommonActions.PageLoadedCorrectGetIndex(
-                typeof(OrderController),
-                nameof(OrderController.Order)).Should().BeTrue();
+                typeof(ReviewSolutionsController),
+                nameof(ReviewSolutionsController.ReviewSolutions)).Should().BeTrue();
         }
     }
 }

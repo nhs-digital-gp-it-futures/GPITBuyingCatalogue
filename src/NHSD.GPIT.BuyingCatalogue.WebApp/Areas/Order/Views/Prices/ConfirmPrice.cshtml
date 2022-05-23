@@ -23,7 +23,8 @@
             <input type="hidden" asp-for="@Model.ItemType"/>
             <input type="hidden" asp-for="@Model.PriceType"/>
             <input type="hidden" asp-for="@Model.CalculationType"/>
-
+            <input type="hidden" asp-for="@Model.Source"/>
+            
             @{
                 var labelTextValue = $"What price have you agreed, in pounds {Model.Basis}?";
                 var labelHintValue = "You can change the list price if you’ve agreed a different rate with the supplier.";

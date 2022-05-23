@@ -82,7 +82,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering.SolutionSelection.Ca
 
             CommonActions.PageLoadedCorrectGetIndex(
                 typeof(ServiceRecipientsController),
-                nameof(ServiceRecipientsController.ServiceRecipients)).Should().BeTrue();
+                nameof(ServiceRecipientsController.AddServiceRecipients)).Should().BeTrue();
 
             var orderItems = GetOrderItems();
 
@@ -102,7 +102,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering.SolutionSelection.Ca
 
             CommonActions.PageLoadedCorrectGetIndex(
                 typeof(ServiceRecipientsController),
-                nameof(ServiceRecipientsController.ServiceRecipients)).Should().BeTrue();
+                nameof(ServiceRecipientsController.AddServiceRecipients)).Should().BeTrue();
 
             var orderItems = GetOrderItems();
 

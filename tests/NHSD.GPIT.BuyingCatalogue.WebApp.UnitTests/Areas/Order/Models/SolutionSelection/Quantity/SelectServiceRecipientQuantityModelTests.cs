@@ -34,6 +34,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.Solution
                 var recipient = item.OrderItemRecipients.Single(x => x.OdsCode == serviceRecipient.OdsCode);
 
                 serviceRecipient.Name.Should().Be(recipient.Recipient?.Name);
+                serviceRecipient.InputQuantity.Should().Be($"{recipient.Quantity}");
             }
         }
     }

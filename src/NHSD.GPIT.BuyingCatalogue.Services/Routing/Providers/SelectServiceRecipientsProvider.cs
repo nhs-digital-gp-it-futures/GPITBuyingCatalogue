@@ -20,6 +20,16 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Routing.Providers
                 throw new ArgumentNullException(nameof(routeValues));
             }
 
+            if (routeValues.Source == RoutingSource.TaskList)
+            {
+                return new RoutingResult
+                {
+                    ActionName = Constants.Actions.TaskList,
+                    ControllerName = Constants.Controllers.TaskList,
+                    RouteValues = new { routeValues.InternalOrgId, routeValues.CallOffId },
+                };
+            }
+
             var orderItem = order.OrderItem(routeValues.CatalogueItemId.Value);
 
             if (orderItem.OrderItemPrice != null)

@@ -2,6 +2,7 @@
 using System.Linq;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
+using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Routing;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Models;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.SolutionSelection.Quantity
@@ -26,6 +27,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.SolutionSelection.
                 {
                     OdsCode = x.OdsCode,
                     Name = x.Recipient?.Name,
+                    InputQuantity = x.Quantity.HasValue ? $"{x.Quantity}" : string.Empty,
                 })
                 .ToArray();
         }
@@ -35,5 +37,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.SolutionSelection.
         public string ItemType { get; set; }
 
         public ServiceRecipientQuantityModel[] ServiceRecipients { get; set; }
+
+        public RoutingSource? Source { get; set; }
     }
 }

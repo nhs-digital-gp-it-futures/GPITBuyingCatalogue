@@ -2,8 +2,7 @@
 {
     public enum RoutingSource
     {
-        ConfirmPriceBackLink,
-        SelectQuantity,
-        SelectServiceRecipients,
+        Dashboard,
+        TaskList,
     }
 }

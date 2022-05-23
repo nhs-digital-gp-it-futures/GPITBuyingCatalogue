@@ -20,7 +20,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.SolutionSelection.
             CatalogueSolution = order.OrderItems.SingleOrDefault(oi => oi.CatalogueItem.CatalogueItemType == CatalogueItemType.Solution);
             AdditionalServices = order.OrderItems.Where(oi => oi.CatalogueItem.CatalogueItemType == CatalogueItemType.AdditionalService).ToList();
             AssociatedServices = order.OrderItems.Where(oi => oi.CatalogueItem.CatalogueItemType == CatalogueItemType.AssociatedService).ToList();
-            ContractLength = order.MaximumTerm.Value;
+            ContractLength = order.MaximumTerm ?? 0;
         }
 
         public CallOffId CallOffId { get; set; }

@@ -19,34 +19,58 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Routing.Providers
                 throw new ArgumentNullException(nameof(routeValues));
             }
 
+            if (routeValues.Source == RoutingSource.TaskList)
+            {
+                return new RoutingResult
+                {
+                    ControllerName = Constants.Controllers.TaskList,
+                    ActionName = Constants.Actions.TaskList,
+                    RouteValues = new { routeValues.InternalOrgId, routeValues.CallOffId },
+                };
+            }
+
             var additionalService = order.GetAdditionalServices()
-                .FirstOrDefault(x => x.OrderItemRecipients.Count == 0);
+                .FirstOrDefault(x => (x.OrderItemRecipients?.Count ?? 0) == 0);
 
             if (additionalService != null)
             {
                 return new RoutingResult
                 {
                     ControllerName = Constants.Controllers.ServiceRecipients,
-                    ActionName = Constants.Actions.SelectServiceRecipients,
-                    RouteValues = new
-                    {
-                        routeValues.InternalOrgId,
-                        routeValues.CallOffId,
-                        additionalService.CatalogueItemId,
-                    },
+                    ActionName = Constants.Actions.AddServiceRecipients,
+                    RouteValues = new { routeValues.InternalOrgId, routeValues.CallOffId, additionalService.CatalogueItemId },
                 };
             }
 
-            // TODO: check for existing / catalogue associated services, task list otherwise
+            var associatedService = order.GetAssociatedServices()
+                .FirstOrDefault(x => (x.OrderItemRecipients?.Count ?? 0) == 0);
+
+            if (associatedService != null)
+            {
+                return new RoutingResult
+                {
+                    ControllerName = Constants.Controllers.ServiceRecipients,
+                    ActionName = Constants.Actions.AddServiceRecipients,
+                    RouteValues = new { routeValues.InternalOrgId, routeValues.CallOffId, associatedService.CatalogueItemId },
+                };
+            }
+
+            if (!order.GetAssociatedServices().Any())
+            {
+                // TODO: task list if no associated services available
+                return new RoutingResult
+                {
+                    ControllerName = Constants.Controllers.AssociatedServices,
+                    ActionName = Constants.Actions.AddAssociatedServices,
+                    RouteValues = new { routeValues.InternalOrgId, routeValues.CallOffId },
+                };
+            }
+
             return new RoutingResult
             {
-                ControllerName = Constants.Controllers.AssociatedServices,
-                ActionName = Constants.Actions.AddAssociatedServices,
-                RouteValues = new
-                {
-                    routeValues.InternalOrgId,
-                    routeValues.CallOffId,
-                },
+                ControllerName = Constants.Controllers.Review,
+                ActionName = Constants.Actions.Review,
+                RouteValues = new { routeValues.InternalOrgId, routeValues.CallOffId },
             };
         }
     }

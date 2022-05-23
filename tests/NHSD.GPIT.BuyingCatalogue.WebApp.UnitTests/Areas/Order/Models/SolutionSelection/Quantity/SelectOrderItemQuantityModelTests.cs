@@ -26,6 +26,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.Solution
 
             model.ItemName.Should().Be(item.CatalogueItem.Name);
             model.ItemType.Should().Be(item.CatalogueItem.CatalogueItemType.Description());
+            model.Quantity.Should().Be($"{item.Quantity}");
             model.QuantityDescription.Should().Be(item.OrderItemPrice.RangeDescription);
         }
     }

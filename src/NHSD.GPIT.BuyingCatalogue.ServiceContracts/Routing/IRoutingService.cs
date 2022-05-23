@@ -4,6 +4,6 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.Routing
 {
     public interface IRoutingService
     {
-        RoutingResult GetRoute(RoutingSource source, Order order, RouteValues routeValues);
+        RoutingResult GetRoute(RoutingPoint point, Order order, RouteValues routeValues);
     }
 }

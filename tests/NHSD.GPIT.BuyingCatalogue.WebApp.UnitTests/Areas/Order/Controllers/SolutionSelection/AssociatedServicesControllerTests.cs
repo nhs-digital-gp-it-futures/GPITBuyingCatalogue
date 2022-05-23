@@ -17,7 +17,6 @@ using NHSD.GPIT.BuyingCatalogue.ServiceContracts.AssociatedServices;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Orders;
 using NHSD.GPIT.BuyingCatalogue.UI.Components.TagHelpers;
 using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.AutoFixtureCustomisations;
-using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers.SolutionSelection;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.SolutionSelection;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.SolutionSelection.AssociatedServices;
@@ -111,8 +110,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
 
             var actualResult = result.Should().BeOfType<RedirectToActionResult>().Subject;
 
-            actualResult.ControllerName.Should().Be(typeof(OrderController).ControllerName());
-            actualResult.ActionName.Should().Be(nameof(OrderController.Order));
+            actualResult.ControllerName.Should().Be(typeof(ReviewSolutionsController).ControllerName());
+            actualResult.ActionName.Should().Be(nameof(ReviewSolutionsController.ReviewSolutions));
             actualResult.RouteValues.Should().BeEquivalentTo(new RouteValueDictionary
             {
                 { "internalOrgId", model.InternalOrgId },
@@ -209,8 +208,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
 
             var actualResult = result.Should().BeOfType<RedirectToActionResult>().Subject;
 
-            actualResult.ControllerName.Should().Be(typeof(OrderController).ControllerName());
-            actualResult.ActionName.Should().Be(nameof(OrderController.Order));
+            actualResult.ControllerName.Should().Be(typeof(ReviewSolutionsController).ControllerName());
+            actualResult.ActionName.Should().Be(nameof(ReviewSolutionsController.ReviewSolutions));
             actualResult.RouteValues.Should().BeEquivalentTo(new RouteValueDictionary
             {
                 { "internalOrgId", internalOrgId },
@@ -243,7 +242,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
             var actualResult = result.Should().BeOfType<RedirectToActionResult>().Subject;
 
             actualResult.ControllerName.Should().Be(typeof(ServiceRecipientsController).ControllerName());
-            actualResult.ActionName.Should().Be(nameof(ServiceRecipientsController.ServiceRecipients));
+            actualResult.ActionName.Should().Be(nameof(ServiceRecipientsController.AddServiceRecipients));
             actualResult.RouteValues.Should().BeEquivalentTo(new RouteValueDictionary
             {
                 { "internalOrgId", internalOrgId },

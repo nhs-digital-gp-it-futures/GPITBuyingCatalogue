@@ -5,6 +5,7 @@ using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Orders;
+using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Routing;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Models;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.SolutionSelection.Prices
@@ -88,6 +89,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.SolutionSelection.
         public CatalogueItemType ItemType { get; set; }
 
         public string Basis { get; set; }
+
+        public RoutingSource? Source { get; set; }
 
         public List<OrderPricingTierDto> AgreedPrices => Tiers
             .Select(x => x.AgreedPriceDto)

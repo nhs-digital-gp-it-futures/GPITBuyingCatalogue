@@ -49,6 +49,31 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Routing.Providers
 
         [Theory]
         [CommonAutoData]
+        public void Process_FromTaskList_ExpectedResult(
+            string internalOrgId,
+            CallOffId callOffId,
+            CatalogueItemId catalogueItemId,
+            Order order,
+            SelectServiceRecipientsProvider provider)
+        {
+            var result = provider.Process(order, new RouteValues(internalOrgId, callOffId, catalogueItemId)
+            {
+                Source = RoutingSource.TaskList,
+            });
+
+            var expected = new
+            {
+                InternalOrgId = internalOrgId,
+                CallOffId = callOffId,
+            };
+
+            result.ActionName.Should().Be(Constants.Actions.TaskList);
+            result.ControllerName.Should().Be(Constants.Controllers.TaskList);
+            result.RouteValues.Should().BeEquivalentTo(expected);
+        }
+
+        [Theory]
+        [CommonAutoData]
         public void Process_OrderItemHasAnExistingPrice_ExpectedResult(
             string internalOrgId,
             CallOffId callOffId,

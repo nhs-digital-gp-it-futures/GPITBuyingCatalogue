@@ -71,5 +71,38 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.Solution
             model.ServiceRecipients[1].Selected.Should().BeFalse();
             model.ServiceRecipients[2].Selected.Should().BeFalse();
         }
+
+        [Theory]
+        [CommonAutoData]
+        public static void GetSelectedItems_NoSelectionMade_ExpectedResult(
+            OrderItem orderItem,
+            List<ServiceRecipientModel> serviceRecipients)
+        {
+            var model = new SelectRecipientsModel(orderItem, serviceRecipients, SelectionMode.None);
+
+            var result = model.GetSelectedItems();
+
+            result.Should().BeEmpty();
+        }
+
+        [Theory]
+        [CommonAutoData]
+        public static void GetSelectedItems_SelectionMade_ExpectedResult(
+            OrderItem orderItem,
+            List<ServiceRecipientModel> serviceRecipients)
+        {
+            var model = new SelectRecipientsModel(orderItem, serviceRecipients, SelectionMode.All);
+
+            var result = model.GetSelectedItems();
+
+            result.Count.Should().Be(serviceRecipients.Count);
+
+            serviceRecipients.ForEach(x =>
+            {
+                var dto = result.Single(s => s.OdsCode == x.OdsCode);
+
+                dto.Name.Should().Be(x.Name);
+            });
+        }
     }
 }

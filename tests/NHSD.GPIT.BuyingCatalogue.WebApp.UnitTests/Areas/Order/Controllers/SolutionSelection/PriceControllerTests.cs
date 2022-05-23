@@ -15,6 +15,7 @@ using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Orders;
+using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Routing;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions;
 using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.AutoFixtureCustomisations;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers.SolutionSelection;
@@ -300,6 +301,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
             EntityFramework.Ordering.Models.Order order,
             [Frozen] Mock<IOrderService> mockOrderService,
             [Frozen] Mock<IOrderPriceService> mockOrderPriceService,
+            [Frozen] Mock<IRoutingService> mockRoutingService,
             PricesController controller)
         {
             var orderItem = order.OrderItems.First();
@@ -325,10 +327,20 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
                 x.AgreedPrice = $"{newPrice:#,##0.00##}";
             });
 
+            mockRoutingService
+                .Setup(x => x.GetRoute(RoutingPoint.EditPrice, order, It.IsAny<RouteValues>()))
+                .Returns(new RoutingResult
+                {
+                    ActionName = nameof(QuantityController.SelectQuantity),
+                    ControllerName = typeof(QuantityController).ControllerName(),
+                    RouteValues = new { internalOrgId, callOffId, orderItem.CatalogueItemId },
+                });
+
             var result = await controller.EditPrice(internalOrgId, callOffId, orderItem.CatalogueItemId, model);
 
             mockOrderService.VerifyAll();
             mockOrderPriceService.VerifyAll();
+            mockRoutingService.VerifyAll();
 
             actual.ForEach(x =>
             {

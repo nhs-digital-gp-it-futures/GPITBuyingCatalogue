@@ -19,7 +19,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
             this.serviceRecipientService = serviceRecipientService ?? throw new ArgumentNullException(nameof(serviceRecipientService));
         }
 
-        public async Task AddOrderItemRecipients(int orderId, CatalogueItemId catalogueItemId, IEnumerable<ServiceRecipientDto> recipients)
+        public async Task AddOrderItemRecipients(int orderId, CatalogueItemId catalogueItemId, List<ServiceRecipientDto> recipients)
         {
             if (recipients == null)
             {
@@ -44,6 +44,43 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
                         OdsCode = recipient.OdsCode,
                     });
                 }
+            }
+
+            await context.SaveChangesAsync();
+        }
+
+        public async Task UpdateOrderItemRecipients(int orderId, CatalogueItemId catalogueItemId, List<ServiceRecipientDto> recipients)
+        {
+            if (recipients == null)
+            {
+                throw new ArgumentNullException(nameof(recipients));
+            }
+
+            var existingRecipients = context.OrderItemRecipients
+                .Where(x => x.OrderId == orderId
+                    && x.CatalogueItemId == catalogueItemId)
+                .ToList();
+
+            foreach (var recipient in recipients)
+            {
+                await serviceRecipientService.AddServiceRecipient(recipient);
+
+                var orderItemRecipient = existingRecipients.FirstOrDefault(x => x.OdsCode == recipient.OdsCode);
+
+                if (orderItemRecipient == null)
+                {
+                    context.OrderItemRecipients.Add(new OrderItemRecipient
+                    {
+                        OrderId = orderId,
+                        CatalogueItemId = catalogueItemId,
+                        OdsCode = recipient.OdsCode,
+                    });
+                }
+            }
+
+            foreach (var existing in existingRecipients.Where(x => recipients.All(r => r.OdsCode != x.OdsCode)))
+            {
+                context.OrderItemRecipients.Remove(existing);
             }
 
             await context.SaveChangesAsync();

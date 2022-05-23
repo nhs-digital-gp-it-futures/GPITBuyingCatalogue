@@ -64,10 +64,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers.SolutionSelec
                     new { internalOrgId, callOffId });
             }
 
-            // TODO: Replace
             return RedirectToAction(
-                nameof(OrderController.Order),
-                typeof(OrderController).ControllerName(),
+                nameof(ReviewSolutionsController.ReviewSolutions),
+                typeof(ReviewSolutionsController).ControllerName(),
                 new { internalOrgId, callOffId });
         }
 
@@ -97,15 +96,14 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers.SolutionSelec
                 var catalogueItemId = serviceIds.First();
 
                 return RedirectToAction(
-                    nameof(ServiceRecipientsController.ServiceRecipients),
+                    nameof(ServiceRecipientsController.AddServiceRecipients),
                     typeof(ServiceRecipientsController).ControllerName(),
                     new { internalOrgId, callOffId, catalogueItemId });
             }
 
-            // TODO: Replace
             return RedirectToAction(
-                nameof(OrderController.Order),
-                typeof(OrderController).ControllerName(),
+                nameof(ReviewSolutionsController.ReviewSolutions),
+                typeof(ReviewSolutionsController).ControllerName(),
                 new { internalOrgId, callOffId });
         }
 

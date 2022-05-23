@@ -105,6 +105,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
                 { "internalOrgId", internalOrgId },
                 { "callOffId", callOffId },
                 { "catalogueItemId", orderItem.CatalogueItemId },
+                { "source", null },
             });
         }
 
@@ -152,7 +153,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
                 .Returns(Task.CompletedTask);
 
             mockRoutingService
-                .Setup(x => x.GetRoute(RoutingSource.SelectQuantity, order, It.IsAny<RouteValues>()))
+                .Setup(x => x.GetRoute(RoutingPoint.SelectQuantity, order, It.IsAny<RouteValues>()))
                 .Returns(Route(internalOrgId, callOffId));
 
             model.Quantity = $"{quantity}";
@@ -212,6 +213,54 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
 
         [Theory]
         [CommonAutoData]
+        public static async Task Get_SelectServiceRecipientQuantity_WithPrePopulatedSolutionRecipients_ExpectedResult(
+            string internalOrgId,
+            CallOffId callOffId,
+            EntityFramework.Ordering.Models.Order order,
+            [Frozen] Mock<IGpPracticeCacheService> mockCacheService,
+            [Frozen] Mock<IOrderService> mockOrderService,
+            QuantityController controller)
+        {
+            order.OrderItems.ForEach(x => x.CatalogueItem.CatalogueItemType = CatalogueItemType.AdditionalService);
+
+            var solution = order.OrderItems.First();
+
+            solution.CatalogueItem.CatalogueItemType = CatalogueItemType.Solution;
+            solution.OrderItemRecipients.ForEach(x => x.Quantity = NumberOfPatients);
+
+            var orderItem = order.OrderItems.ElementAt(1);
+
+            orderItem.OrderItemRecipients.ForEach(x => x.Quantity = null);
+
+            for (var i = 0; i < solution.OrderItemRecipients.Count; i++)
+            {
+                orderItem.OrderItemRecipients.ElementAt(i).OdsCode = solution.OrderItemRecipients.ElementAt(i).OdsCode;
+            }
+
+            mockOrderService
+                .Setup(x => x.GetOrderWithOrderItems(callOffId, internalOrgId))
+                .ReturnsAsync(order);
+
+            mockCacheService
+                .Setup(x => x.GetNumberOfPatients(It.IsAny<string>()))
+                .ReturnsAsync((int?)null);
+
+            var result = await controller.SelectServiceRecipientQuantity(internalOrgId, callOffId, orderItem.CatalogueItemId);
+
+            mockOrderService.VerifyAll();
+            mockCacheService.VerifyAll();
+
+            var actualResult = result.Should().BeOfType<ViewResult>().Subject;
+            var model = actualResult.Model.Should().BeOfType<SelectServiceRecipientQuantityModel>().Subject;
+            var expected = new SelectServiceRecipientQuantityModel(orderItem);
+
+            expected.ServiceRecipients.ForEach(x => x.InputQuantity = $"{NumberOfPatients}");
+
+            model.Should().BeEquivalentTo(expected, x => x.Excluding(m => m.BackLink));
+        }
+
+        [Theory]
+        [CommonAutoData]
         public static async Task Post_SelectServiceRecipientQuantity_ModelError_ReturnsModel(
             string internalOrgId,
             CallOffId callOffId,
@@ -258,7 +307,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
                 .Returns(Task.CompletedTask);
 
             mockRoutingService
-                .Setup(x => x.GetRoute(RoutingSource.SelectQuantity, order, It.IsAny<RouteValues>()))
+                .Setup(x => x.GetRoute(RoutingPoint.SelectQuantity, order, It.IsAny<RouteValues>()))
                 .Returns(Route(internalOrgId, callOffId));
 
             model.ServiceRecipients.ForEach(x => x.InputQuantity = x.Quantity > 0 ? string.Empty : "1");
@@ -288,8 +337,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
 
         private static RoutingResult Route(string internalOrgId, CallOffId callOffId) => new()
         {
-            ActionName = "AddAssociatedServices",
-            ControllerName = "AssociatedServices",
+            ActionName = Constants.Actions.AddAssociatedServices,
+            ControllerName = Constants.Controllers.AssociatedServices,
             RouteValues = new { internalOrgId, callOffId },
         };
     }

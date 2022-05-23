@@ -1,7 +1,9 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering.SolutionSelection.Quantity.Base;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Utils;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
+using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers.SolutionSelection;
 
 namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering.SolutionSelection.Quantity
 {
@@ -26,5 +28,9 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering.SolutionSelection.Qu
         }
 
         protected override string PageTitle => "Quantity of Additional Service - E2E No Contact Single Price Additional Service";
+
+        protected override Type OnwardController => typeof(AssociatedServicesController);
+
+        protected override string OnwardActionName => nameof(AssociatedServicesController.AddAssociatedServices);
     }
 }

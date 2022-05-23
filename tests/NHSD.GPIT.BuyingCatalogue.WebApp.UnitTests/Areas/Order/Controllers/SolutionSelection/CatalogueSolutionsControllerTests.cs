@@ -199,7 +199,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
             var actualResult = result.Should().BeOfType<RedirectToActionResult>().Subject;
 
             actualResult.ControllerName.Should().Be(typeof(ServiceRecipientsController).ControllerName());
-            actualResult.ActionName.Should().Be(nameof(ServiceRecipientsController.ServiceRecipients));
+            actualResult.ActionName.Should().Be(nameof(ServiceRecipientsController.AddServiceRecipients));
             actualResult.RouteValues.Should().BeEquivalentTo(new RouteValueDictionary
             {
                 { "internalOrgId", internalOrgId },

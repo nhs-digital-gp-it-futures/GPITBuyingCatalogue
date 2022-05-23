@@ -64,7 +64,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Routing.Providers
                 solution.CatalogueItemId,
             };
 
-            result.ActionName.Should().Be(Constants.Actions.SelectServiceRecipients);
+            result.ActionName.Should().Be(Constants.Actions.EditServiceRecipients);
             result.ControllerName.Should().Be(Constants.Controllers.ServiceRecipients);
             result.RouteValues.Should().BeEquivalentTo(expected);
         }
