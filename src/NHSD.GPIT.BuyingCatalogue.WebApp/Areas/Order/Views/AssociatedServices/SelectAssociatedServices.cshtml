@@ -8,10 +8,23 @@
 <div class="nhsuk-grid-row">
     <div class="nhsuk-grid-column-full">
         <nhs-validation-summary/>
+        
+        @{
+            var advice = "Select any Associated Services you want to add to this order"
+                + (Model.AssociatedServicesOnly ? string.Empty : " or continue if you do not want to add any")
+                + ".";
+        }
 
         <nhs-page-title title="@ViewBag.Title"
                         caption="Order @Model.CallOffId"
-                        advice="Select any Associated Services you want to add to this order or continue if you do not want to add any."/>
+                        advice="@advice"/>
+                        
+        @if (Model.AssociatedServicesOnly)
+        {
+            <nhs-inset-text>
+                <p>These are all the Associated Services provided by this supplier. Ensure any you select are relevant to the Catalogue Solution they'll be used to support.</p>
+            </nhs-inset-text>
+        }
 
         <form method="post">
             <input type="hidden" asp-for="@Model.AssociatedServicesOnly"/>
