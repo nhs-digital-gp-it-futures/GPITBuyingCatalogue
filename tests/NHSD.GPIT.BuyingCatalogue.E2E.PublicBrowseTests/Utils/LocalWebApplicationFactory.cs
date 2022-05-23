@@ -206,8 +206,8 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils
                 }
                 catch (Exception ex)
                 {
-                    // figure out error logging here
                     Trace.WriteLine(ex.Message);
+                    throw;
                 }
 
                 bcDb.Dispose();

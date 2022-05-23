@@ -17,7 +17,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.ListPrices.Solution.Tie
     {
         private static readonly CatalogueItemId SolutionId = new CatalogueItemId(99998, "001");
         private static readonly int CataloguePriceId = 4;
-        private static readonly int MaximumTiersPriceId = 23;
+        private static readonly int MaximumTiersPriceId = 27;
 
         private static readonly Dictionary<string, string> Parameters = new()
         {
