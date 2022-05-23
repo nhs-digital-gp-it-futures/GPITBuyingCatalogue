@@ -247,6 +247,8 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils
             SetEnvironmentVariable(nameof(DOMAIN_NAME), DOMAIN_NAME);
 
             SetEnvironmentVariable("DOTNET_USE_POLLING_FILE_WATCHER", "true");
+
+            SetEnvironmentVariable("SESSION_IDLE_TIMEOUT", "60");
         }
 
         private static void SetEnvironmentVariable(string name, string value)
