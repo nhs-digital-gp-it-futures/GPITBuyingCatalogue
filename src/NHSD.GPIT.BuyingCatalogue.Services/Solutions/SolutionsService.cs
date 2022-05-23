@@ -216,11 +216,13 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
                     ShowHosting = ci.Solution.Hosting != null && ci.Solution.Hosting.IsValid(),
                 }).SingleOrDefaultAsync();
 
-        /* TODO - Tiered Pricing - Reintroduce Pricing Data*/
-
         public async Task<List<CatalogueItem>> GetPublishedAdditionalServicesForSolution(CatalogueItemId solutionId) =>
             await dbContext.CatalogueItems
                 .Include(ci => ci.AdditionalService)
+                .Include(ci => ci.CataloguePrices.Where(cp => cp.PublishedStatus == PublicationStatus.Published))
+                .ThenInclude(p => p.CataloguePriceTiers)
+                .Include(ci => ci.CataloguePrices.Where(cp => cp.PublishedStatus == PublicationStatus.Published))
+                .ThenInclude(p => p.PricingUnit)
                 .Where(ci =>
                 ci.AdditionalService.SolutionId == solutionId
                 && ci.PublishedStatus == PublicationStatus.Published)
@@ -236,6 +238,10 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
 
             return await dbContext.CatalogueItems
                     .Include(ci => ci.AssociatedService)
+                    .Include(ci => ci.CataloguePrices.Where(cp => cp.PublishedStatus == PublicationStatus.Published))
+                    .ThenInclude(p => p.CataloguePriceTiers)
+                    .Include(ci => ci.CataloguePrices.Where(cp => cp.PublishedStatus == PublicationStatus.Published))
+                    .ThenInclude(p => p.PricingUnit)
                     .Where(ci =>
                         ci.PublishedStatus == PublicationStatus.Published
                         && selectedAssociatedServices.Any(sas => sas.AssociatedServiceId == ci.Id))

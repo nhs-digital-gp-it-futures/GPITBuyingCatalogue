@@ -19,11 +19,63 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
                     Created = DateTime.UtcNow,
                     PublishedStatus = PublicationStatus.Published,
                     SupplierId = 99999,
-                    AssociatedService = new AssociatedService
+                    AssociatedService =
+                        new AssociatedService
+                        {
+                            Description = "This is the description of the Associated Service",
+                            OrderGuidance = "This is how to order",
+                            LastUpdated = DateTime.UtcNow,
+                        },
+                    CataloguePrices = new List<CataloguePrice>()
                     {
-                        Description = "This is the description of the Associated Service",
-                        OrderGuidance = "This is how to order",
-                        LastUpdated = DateTime.UtcNow,
+                        new()
+                        {
+                            CataloguePriceId = 23,
+                            CatalogueItemId = new CatalogueItemId(99999, "S-999"),
+                            ProvisioningType = ProvisioningType.Patient,
+                            CataloguePriceType = CataloguePriceType.Tiered,
+                            PublishedStatus = PublicationStatus.Published,
+                            PricingUnit =
+                                new()
+                                {
+                                    Id = 30,
+                                    RangeDescription = "Test Tier",
+                                    Description = "per tiered price test per patient",
+                                },
+                            TimeUnit = TimeUnit.PerYear,
+                            CurrencyCode = "GBP",
+                            LastUpdated = DateTime.UtcNow,
+                            CataloguePriceTiers = new List<CataloguePriceTier>
+                            {
+                                new()
+                                {
+                                    Id = 30,
+                                    CataloguePriceId = 23,
+                                    LowerRange = 1,
+                                    UpperRange = 99,
+                                    Price = 100.9999M,
+                                    LastUpdated = DateTime.UtcNow,
+                                },
+                                new()
+                                {
+                                    Id = 31,
+                                    CataloguePriceId = 23,
+                                    LowerRange = 100,
+                                    UpperRange = 299,
+                                    Price = 50.9999M,
+                                    LastUpdated = DateTime.UtcNow,
+                                },
+                                new()
+                                {
+                                    Id = 32,
+                                    CataloguePriceId = 23,
+                                    LowerRange = 300,
+                                    UpperRange = null,
+                                    Price = 25.9999M,
+                                    LastUpdated = DateTime.UtcNow,
+                                },
+                            },
+                        },
                     },
                 },
                 new()
@@ -40,6 +92,40 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
                         OrderGuidance = "This is how to order",
                         LastUpdated = DateTime.UtcNow,
                     },
+                    CataloguePrices = new List<CataloguePrice>()
+                    {
+                        new()
+                        {
+                            CataloguePriceId = 24,
+                            CatalogueItemId = new CatalogueItemId(99999, "S-998"),
+                            ProvisioningType = ProvisioningType.Patient,
+                            CataloguePriceType = CataloguePriceType.Flat,
+                            PublishedStatus = PublicationStatus.Published,
+                            CataloguePriceCalculationType = CataloguePriceCalculationType.Cumulative,
+                            PricingUnit =
+                                new PricingUnit
+                                {
+                                    Id = 31,
+                                    RangeDescription = "Test Tier",
+                                    Description = "per test patient",
+                                },
+                            TimeUnit = TimeUnit.PerYear,
+                            CurrencyCode = "GBP",
+                            LastUpdated = DateTime.UtcNow,
+                            CataloguePriceTiers = new List<CataloguePriceTier>
+                            {
+                                new()
+                                {
+                                    Id = 33,
+                                    CataloguePriceId = 24,
+                                    LowerRange = 1,
+                                    UpperRange = null,
+                                    Price = 999.9999M,
+                                    LastUpdated = DateTime.UtcNow,
+                                },
+                            },
+                        },
+                    },
                 },
                 new()
                 {
@@ -49,12 +135,13 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
                     Created = DateTime.UtcNow,
                     PublishedStatus = PublicationStatus.Published,
                     SupplierId = 99998,
-                    AssociatedService = new AssociatedService
-                    {
-                        Description = "This is the description of the Associated Service",
-                        OrderGuidance = "This is how to order",
-                        LastUpdated = DateTime.UtcNow,
-                    },
+                    AssociatedService =
+                        new AssociatedService
+                        {
+                            Description = "This is the description of the Associated Service",
+                            OrderGuidance = "This is how to order",
+                            LastUpdated = DateTime.UtcNow,
+                        },
                     CataloguePrices = new List<CataloguePrice>
                     {
                         new()
@@ -65,12 +152,11 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
                             CataloguePriceType = CataloguePriceType.Flat,
                             PublishedStatus = PublicationStatus.Published,
                             CataloguePriceCalculationType = CataloguePriceCalculationType.Cumulative,
-                            PricingUnit = new PricingUnit
-                            {
-                                Id = 16,
-                                RangeDescription = "Test Tier",
-                                Description = "per test patient",
-                            },
+                            PricingUnit =
+                                new PricingUnit
+                                {
+                                    Id = 16, RangeDescription = "Test Tier", Description = "per test patient",
+                                },
                             TimeUnit = TimeUnit.PerYear,
                             CurrencyCode = "GBP",
                             LastUpdated = DateTime.UtcNow,
@@ -95,12 +181,11 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
                             CataloguePriceType = CataloguePriceType.Flat,
                             PublishedStatus = PublicationStatus.Published,
                             CataloguePriceCalculationType = CataloguePriceCalculationType.Cumulative,
-                            PricingUnit = new PricingUnit
-                            {
-                                Id = 17,
-                                RangeDescription = "Test Tier",
-                                Description = "per test on demand",
-                            },
+                            PricingUnit =
+                                new PricingUnit
+                                {
+                                    Id = 17, RangeDescription = "Test Tier", Description = "per test on demand",
+                                },
                             TimeUnit = TimeUnit.PerYear,
                             CurrencyCode = "GBP",
                             LastUpdated = DateTime.UtcNow,
@@ -124,12 +209,11 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
                             ProvisioningType = ProvisioningType.Declarative,
                             CataloguePriceType = CataloguePriceType.Flat,
                             PublishedStatus = PublicationStatus.Published,
-                            PricingUnit = new PricingUnit
-                            {
-                                Id = 18,
-                                RangeDescription = "Test Tier",
-                                Description = "per test declarative",
-                            },
+                            PricingUnit =
+                                new PricingUnit
+                                {
+                                    Id = 18, RangeDescription = "Test Tier", Description = "per test declarative",
+                                },
                             TimeUnit = TimeUnit.PerYear,
                             CurrencyCode = "GBP",
                             LastUpdated = DateTime.UtcNow,
@@ -153,12 +237,11 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
                             ProvisioningType = ProvisioningType.Patient,
                             CataloguePriceType = CataloguePriceType.Flat,
                             PublishedStatus = PublicationStatus.Draft,
-                            PricingUnit = new PricingUnit
-                            {
-                                Id = 19,
-                                RangeDescription = "Test Tier",
-                                Description = "per test declarative",
-                            },
+                            PricingUnit =
+                                new PricingUnit
+                                {
+                                    Id = 19, RangeDescription = "Test Tier", Description = "per test declarative",
+                                },
                             TimeUnit = TimeUnit.PerYear,
                             CurrencyCode = "GBP",
                             LastUpdated = DateTime.UtcNow,
@@ -182,12 +265,13 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
                             ProvisioningType = ProvisioningType.Patient,
                             CataloguePriceType = CataloguePriceType.Tiered,
                             PublishedStatus = PublicationStatus.Draft,
-                            PricingUnit = new PricingUnit
-                            {
-                                Id = 20,
-                                RangeDescription = "Test Tier",
-                                Description = "per tiered price test per patient",
-                            },
+                            PricingUnit =
+                                new PricingUnit
+                                {
+                                    Id = 20,
+                                    RangeDescription = "Test Tier",
+                                    Description = "per tiered price test per patient",
+                                },
                             TimeUnit = TimeUnit.PerYear,
                             CurrencyCode = "GBP",
                             LastUpdated = DateTime.UtcNow,
@@ -232,12 +316,13 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
                     Created = DateTime.UtcNow,
                     PublishedStatus = PublicationStatus.Published,
                     SupplierId = 99998,
-                    AssociatedService = new AssociatedService
-                    {
-                        Description = "This is the description of the Associated Service",
-                        OrderGuidance = "This is how to order",
-                        LastUpdated = DateTime.UtcNow,
-                    },
+                    AssociatedService =
+                        new AssociatedService
+                        {
+                            Description = "This is the description of the Associated Service",
+                            OrderGuidance = "This is how to order",
+                            LastUpdated = DateTime.UtcNow,
+                        },
                     CataloguePrices = new List<CataloguePrice>
                     {
                         new()
@@ -247,12 +332,11 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
                             ProvisioningType = ProvisioningType.Patient,
                             CataloguePriceType = CataloguePriceType.Flat,
                             PublishedStatus = PublicationStatus.Published,
-                            PricingUnit = new PricingUnit
-                            {
-                                Id = 21,
-                                RangeDescription = "Test Tier",
-                                Description = "per test patient",
-                            },
+                            PricingUnit =
+                                new PricingUnit
+                                {
+                                    Id = 21, RangeDescription = "Test Tier", Description = "per test patient",
+                                },
                             TimeUnit = TimeUnit.PerYear,
                             CurrencyCode = "GBP",
                             LastUpdated = DateTime.UtcNow,
@@ -279,12 +363,13 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
                     Created = DateTime.UtcNow,
                     PublishedStatus = PublicationStatus.Published,
                     SupplierId = 99998,
-                    AssociatedService = new AssociatedService
-                    {
-                        Description = "This is the description of the Associated Service",
-                        OrderGuidance = "This is how to order",
-                        LastUpdated = DateTime.UtcNow,
-                    },
+                    AssociatedService =
+                        new AssociatedService
+                        {
+                            Description = "This is the description of the Associated Service",
+                            OrderGuidance = "This is how to order",
+                            LastUpdated = DateTime.UtcNow,
+                        },
                     CataloguePrices = new List<CataloguePrice>
                     {
                         new()
@@ -294,12 +379,11 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
                             ProvisioningType = ProvisioningType.Patient,
                             CataloguePriceType = CataloguePriceType.Flat,
                             PublishedStatus = PublicationStatus.Published,
-                            PricingUnit = new PricingUnit
-                            {
-                                Id = 22,
-                                RangeDescription = "Test Tier",
-                                Description = "per test patient",
-                            },
+                            PricingUnit =
+                                new PricingUnit
+                                {
+                                    Id = 22, RangeDescription = "Test Tier", Description = "per test patient",
+                                },
                             TimeUnit = TimeUnit.PerYear,
                             CurrencyCode = "GBP",
                             LastUpdated = DateTime.UtcNow,

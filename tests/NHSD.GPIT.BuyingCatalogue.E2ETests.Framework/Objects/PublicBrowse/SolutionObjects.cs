@@ -25,7 +25,9 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.Objects.PublicBrowse
 
         public static By CheckEpicLink => ByExtensions.DataTestId("check-epics-link");
 
-        public static By AssociatedServicesTable => ByExtensions.DataTestId("associated-services-table");
+        public static By AssociatedServicesTieredTable => ByExtensions.DataTestId("associated-services-tiered-table");
+
+        public static By AssociatedServicesFlatTable => ByExtensions.DataTestId("associated-services-flat-table");
 
         public static By AssociatedServicesInformation => ByExtensions.DataTestId("associated-services-details");
 
@@ -33,9 +35,11 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.Objects.PublicBrowse
 
         public static By OrderGuidance => ByExtensions.DataTestId("order-guidance");
 
-        public static By AdditionalServicesTable => ByExtensions.DataTestId("additional-services-table");
+        public static By AdditionalServicesTieredTable => ByExtensions.DataTestId("additional-services-tiered-table");
 
-        public static By FullDescription => ByExtensions.DataTestId("full-description");
+        public static By AdditionalServicesFlatTable => ByExtensions.DataTestId("additional-services-flat-table");
+
+        public static By FullDescription => ByExtensions.DataTestId("description");
 
         public static By BreadcrumbsBanner => By.ClassName("nhsuk-breadcrumb__item");
 
