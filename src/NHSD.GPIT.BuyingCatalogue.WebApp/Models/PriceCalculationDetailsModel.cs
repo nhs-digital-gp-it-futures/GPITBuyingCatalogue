@@ -1,18 +1,15 @@
 ﻿using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Extensions;
-using NHSD.GPIT.BuyingCatalogue.EntityFramework.Interfaces;
 
-namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models
+namespace NHSD.GPIT.BuyingCatalogue.WebApp.Models
 {
     public class PriceCalculationDetailsModel
     {
         public PriceCalculationDetailsModel(
             CatalogueItemType catalogueItemType,
-            IPrice price)
+            CataloguePriceType priceType,
+            CataloguePriceCalculationType calculationType)
         {
-            var priceType = price.CataloguePriceType;
-            var calculationType = price.CataloguePriceCalculationType;
-
             DetailsHeading = GetHeading(catalogueItemType, priceType, calculationType);
             DetailsTitle = GetTitle(priceType, calculationType);
             PartialName = $"_{priceType.ToString()}{calculationType.ToString()}";

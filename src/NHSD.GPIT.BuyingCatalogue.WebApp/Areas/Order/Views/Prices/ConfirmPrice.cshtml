@@ -1,6 +1,8 @@
-﻿@model NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.SolutionSelection.Prices.ConfirmPriceModel;
+﻿@using NHSD.GPIT.BuyingCatalogue.EntityFramework.Extensions
+@using NHSD.GPIT.BuyingCatalogue.WebApp.Models
+@model NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.SolutionSelection.Prices.ConfirmPriceModel;
 @{
-    ViewBag.Title = $"Price of {Model!.ItemType}";
+    ViewBag.Title = $"Price of {Model!.ItemType.Name()}";
 }
 
 <partial name="Partials/_BackLink" model="Model" />
@@ -19,7 +21,9 @@
             <input type="hidden" asp-for="@Model.NumberOfTiers"/>
             <input type="hidden" asp-for="@Model.ItemName"/>
             <input type="hidden" asp-for="@Model.ItemType"/>
-            
+            <input type="hidden" asp-for="@Model.PriceType"/>
+            <input type="hidden" asp-for="@Model.CalculationType"/>
+
             @{
                 var labelTextValue = $"What price have you agreed, in pounds {Model.Basis}?";
                 var labelHintValue = "You can change the list price if you’ve agreed a different rate with the supplier.";
@@ -50,7 +54,7 @@
                     : labelTextValue;
 
                 var labelHint = Model.NumberOfTiers > 1
-                    ? Model.Tiers[i].Description  
+                    ? Model.Tiers[i].Description
                     : labelHintValue;
 
                 <div class="nhsuk-u-margin-bottom-6">
@@ -61,7 +65,11 @@
                                          Suffix="@Model.Basis"/>
                 </div>
             }
-            
+
+            <div data-test-id="price-details">
+                <partial name="PriceDetails/_PriceDetailsComponent" model="new PriceCalculationDetailsModel(Model.ItemType, Model.PriceType, Model.CalculationType)" />
+            </div>
+
             <br/>
             <nhs-submit-button text="Continue"/>
         </form>

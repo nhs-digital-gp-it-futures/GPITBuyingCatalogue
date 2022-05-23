@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using FluentAssertions;
 using Microsoft.EntityFrameworkCore;
+using NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.Objects.Common;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.Objects.Ordering.Prices;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Utils;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.TestBases;
@@ -36,6 +37,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering.SolutionSelection.Pr
             CommonActions.PageTitle().Should().BeEquivalentTo(PageTitle.FormatForComparison());
             CommonActions.GoBackLinkDisplayed().Should().BeTrue();
             CommonActions.ElementIsDisplayed(ConfirmPriceObjects.AgreedPriceInput(0)).Should().BeTrue();
+            CommonActions.ElementIsDisplayed(CommonSelectors.PriceDetailsHelp).Should().BeTrue();
             CommonActions.SaveButtonDisplayed().Should().BeTrue();
         }
 

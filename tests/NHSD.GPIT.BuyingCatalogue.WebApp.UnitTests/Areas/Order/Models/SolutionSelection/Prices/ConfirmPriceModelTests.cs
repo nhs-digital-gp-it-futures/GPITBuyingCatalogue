@@ -39,7 +39,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.Solution
 
             model.Basis.Should().Be(price.ToPriceUnitString());
             model.ItemName.Should().Be(item.Name);
-            model.ItemType.Should().Be(item.CatalogueItemType.Description());
+            model.ItemType.Should().Be(item.CatalogueItemType);
             model.NumberOfTiers.Should().Be(price.CataloguePriceTiers.Count);
 
             foreach (var tier in model.Tiers)
@@ -64,7 +64,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.Solution
 
             model.Basis.Should().Be(price.ToPriceUnitString());
             model.ItemName.Should().Be(item.CatalogueItem.Name);
-            model.ItemType.Should().Be(item.CatalogueItem.CatalogueItemType.Description());
+            model.ItemType.Should().Be(item.CatalogueItem.CatalogueItemType);
             model.NumberOfTiers.Should().Be(price.OrderItemPriceTiers.Count);
 
             foreach (var tier in model.Tiers)
