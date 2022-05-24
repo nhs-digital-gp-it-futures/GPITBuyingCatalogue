@@ -10,8 +10,6 @@ namespace NHSD.GPIT.BuyingCatalogue.Framework.Settings
 
         public TimeSpan ConsentExpiration { get; set; }
 
-        public TimeSpan ExpireTimeSpan { get; set; }
-
         public bool SlidingExpiration { get; set; }
     }
 }

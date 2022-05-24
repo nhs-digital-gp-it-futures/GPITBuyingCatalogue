@@ -126,25 +126,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators.User
         [CommonInlineAutoData(null)]
         [CommonInlineAutoData("")]
         [CommonInlineAutoData(" ")]
-        public static void Validate_AccountStatusNullOrEmpty_SetsModelError(
-            string accountStatus,
-            AddModelValidator validator)
-        {
-            var model = new AddModel
-            {
-                SelectedAccountStatusId = accountStatus,
-            };
-
-            var result = validator.TestValidate(model);
-
-            result.ShouldHaveValidationErrorFor(m => m.SelectedAccountStatusId)
-                .WithErrorMessage(AddModelValidator.AccountStatusMissingErrorMessage);
-        }
-
-        [Theory]
-        [CommonInlineAutoData(null)]
-        [CommonInlineAutoData("")]
-        [CommonInlineAutoData(" ")]
         public static void Validate_AccountTypeNullOrEmpty_SetsModelError(
             string accountType,
             AddModelValidator validator)
