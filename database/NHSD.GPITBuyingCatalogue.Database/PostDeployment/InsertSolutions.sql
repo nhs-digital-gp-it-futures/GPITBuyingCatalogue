@@ -47,7 +47,7 @@ BEGIN
         VALUES (
             @solutionId,
             '["Flexible Pricing", "Lightweight interface designed for maximum usability", "DNA tracking and automatic improvement suggestions", "Web-based", "Remotely accessible"]',
-            '{"PublicCloud":{"Summary":"Summary description","Link":"External URL link","RequiresHSCN":"Link to HSCN or N3 network required to access service"},"PrivateCloud":{"Summary":"Summary description","Link":"External URL link","HostingModel":"Hosting environment description","RequiresHSCN":"Link to HSCN or N3 network required to access service"},"HybridHostingType":{"Summary":"Summary description","Link":"External URL link","HostingModel":"Hosting environment description","RequiresHSCN":"Link to HSCN or N3 network required to access service"},"OnPremise":{"Summary":"Summary description","Link":"External URL link","HostingModel":"Hosting environment description","RequiresHSCN":"Link to HSCN or N3 network required to access service"}}', 
+            '{"PublicCloud":{"Summary":"Summary description","Link":"External URL link","RequiresHSCN":"Link to HSCN or N3 network required to access service"},"PrivateCloud":{"Summary":"Summary description","Link":"External URL link","HostingModel":"Hosting environment description","RequiresHSCN":"Link to HSCN or N3 network required to access service"},"HybridHostingType":{"Summary":"Summary description","Link":"External URL link","HostingModel":"Hosting environment description","RequiresHSCN":"Link to HSCN or N3 network required to access service"},"OnPremise":{"Summary":"Summary description","Link":"External URL link","HostingModel":"Hosting environment description","RequiresHSCN":"Link to HSCN or N3 network required to access service"}}',
             '[{"Id":"1c8be5da-5775-4517-8a13-f3f15a113cc2","IntegrationType":"IM1","Qualifier":"Bulk","IsConsumer":false,"IntegratesWith":"Audit+","Description":"Audit+ utilises a bulk extraction of full clinical records (including confidential and deceased patients) from EMIS Web to provide General Practices with a crossplatform clinical decision support and management tool; supporting QOF performance management, improvement and NHS Health Checks.","AdditionalInformation":""},{"Id":"f10b30e0-b590-463f-aef7-1cf950c5ca22","IntegrationType":"IM1","Qualifier":"Bulk","IsConsumer":false,"IntegratesWith":"Informatics Platform","Description":"A Risk Stratification tool","AdditionalInformation":""},{"Id":"0bf49a99-4e1f-4824-bb61-d1d3bb4fe0d4","IntegrationType":"IM1","Qualifier":"Bulk","IsConsumer":false,"IntegratesWith":"Censure","Description":"Storm is a sophisticated management information reporting interface that presents EMIS Web, allowing users to display their data in the most impactful and effective format; selecting from a range of arrangements and graphical forms.","AdditionalInformation":""},{"Id":"228f6b1e-951d-485b-938c-6a872bd996f5","IntegrationType":"IM1","Qualifier":"Transactional","IsConsumer":false,"IntegratesWith":"Audit+","Description":"Audit+ utilises a bulk extraction of full clinical records (including confidential and deceased patients) from EMIS Web to provide General Practices with a crossplatform clinical decision support and management tool; supporting QOF performance management, improvement and NHS Health Checks.","AdditionalInformation":""},{"Id":"0a0da5c2-6609-4fd3-a7d4-b07227a3296f","IntegrationType":"IM1","Qualifier":"Transactional","IsConsumer":false,"IntegratesWith":"Informatics Platform","Description":"A Risk Stratification tool","AdditionalInformation":""},{"Id":"d5c05642-63f3-4897-8d22-faf16b113936","IntegrationType":"IM1","Qualifier":"Transactional","IsConsumer":false,"IntegratesWith":"Censure","Description":"Storm is a sophisticated management information reporting interface that presents EMIS Web, allowing users to display their data in the most impactful and effective format; selecting from a range of arrangements and graphical forms.","AdditionalInformation":""},{"Id":"5504ccc8-4852-4901-a55c-36f49ac2271a","IntegrationType":"GP Connect","Qualifier":"Access Record HTML","IsConsumer":false,"IntegratesWith":"","Description":"","AdditionalInformation":"EMIS Web received Full Roll Out Approval from NHS Digital for GP Connect HTML View Provision on 20/06/19"},{"Id":"a28b4c39-ac70-4acc-b47e-470a3d9726f4","IntegrationType":"GP Connect","Qualifier":"Access Record HTML","IsConsumer":true,"IntegratesWith":"","Description":"","AdditionalInformation":"EMIS Web is accredited to consume GP Connect HTML views"},{"Id":"b7eb68af-0fb6-4cc1-9c24-f2f7a0719760","IntegrationType":"GP Connect","Qualifier":"Appointment Management","IsConsumer":false,"IntegratesWith":"","Description":"","AdditionalInformation":"EMIS Web received Full Roll Out Approval from NHS Digital for GP Connect HTML View Provision on 20/06/19"},{"Id":"0700d184-eaf8-4e01-98f6-7d3029da43c2","IntegrationType":"GP Connect","Qualifier":"Appointment Management","IsConsumer":true,"IntegratesWith":"","Description":"","AdditionalInformation":"EMIS Web is accredited to consume GP Connect HTML views"}]',
             'http://www.writeontime.com/about',
             'Write on Time is a Citizen-facing Appointments Management system specifically designed to reduce the number of DNAs in your practice.',
@@ -615,7 +615,7 @@ TPP maintain close contact with staff at the unit throughout these phases to ens
                     (@dfocvcframeworkId, @solutionId, 0, @now, @bobUser);
     END;
 
-    DECLARE 
+    DECLARE
     @flatPriceType INT = 1,
     @tieredPriceType INT = 2,
 
@@ -627,7 +627,7 @@ TPP maintain close contact with staff at the unit throughout these phases to ens
     @yearTimeUnit INT = 2,
 
     @CataloguePriceCalculationTypeCumulativeId INT = 2,
-    @CataloguePriceCalculationTypeSingleFixed INT = 2,
+    @CataloguePriceCalculationTypeSingleFixed INT = 1,
 
     @patient SMALLINT = -1,
     @bed SMALLINT = -2,
@@ -647,24 +647,24 @@ TPP maintain close contact with staff at the unit throughout these phases to ens
      -- Use the price field to store the unique prices, but then clear it out once done
         INSERT INTO catalogue.CataloguePrices(CatalogueItemId, ProvisioningTypeId, CataloguePriceTypeId, PricingUnitId, TimeUnitId, CataloguePriceCalculationTypeId, CurrencyCode, LastUpdated, Price, PublishedStatusId)
         OUTPUT INSERTED.CataloguePriceId, INSERTED.Price, INSERTED.CataloguePriceTypeId INTO @InsertedPriceIds (Id, Price, CataloguePriceTypeId)
-            VALUES ('100000-001', @patientProvisioningType, @flatPriceType, @patient, @yearTimeUnit, @CataloguePriceCalculationTypeCumulativeId, 'GBP', @now, 99.99, 3),
+            VALUES ('100000-001', @patientProvisioningType, @flatPriceType, @patient, @yearTimeUnit, @CataloguePriceCalculationTypeSingleFixed, 'GBP', @now, 99.99, 3),
                     ('100000-001', @patientProvisioningType, @tieredPriceType, @patient, @yearTimeUnit, @CataloguePriceCalculationTypeCumulativeId, 'GBP', @now, 0.5, 3),
-                    ('100000-001', @onDemandProvisioningType, @flatPriceType, @consultation, NULL, @CataloguePriceCalculationTypeCumulativeId, 'GBP', @now, 1001.010, 3),
-                    ('100001-001', @onDemandProvisioningType, @flatPriceType, @licence, NULL, @CataloguePriceCalculationTypeCumulativeId, 'GBP', @now, 3.142, 3),
-                    ('100002-001', @declarativeProvisioningType, @flatPriceType, @patient, @monthTimeUnit, @CataloguePriceCalculationTypeCumulativeId, 'GBP', @now, 4.85, 3),
+                    ('100000-001', @onDemandProvisioningType, @flatPriceType, @consultation, NULL, @CataloguePriceCalculationTypeSingleFixed, 'GBP', @now, 1001.010, 3),
+                    ('100001-001', @onDemandProvisioningType, @flatPriceType, @licence, NULL, @CataloguePriceCalculationTypeSingleFixed, 'GBP', @now, 3.142, 3),
+                    ('100002-001', @declarativeProvisioningType, @flatPriceType, @patient, @monthTimeUnit, @CataloguePriceCalculationTypeSingleFixed, 'GBP', @now, 4.85, 3),
                     ('100002-001', @declarativeProvisioningType, @tieredPriceType, @patient, @monthTimeUnit, @CataloguePriceCalculationTypeCumulativeId, 'GBP', @now, 20, 3),
                     ('100002-001', @declarativeProvisioningType, @tieredPriceType, @patient, @monthTimeUnit, @CataloguePriceCalculationTypeSingleFixed, 'GBP', @now, 10, 3),
-                    ('100003-001', @declarativeProvisioningType, @flatPriceType, @bed, @monthTimeUnit, @CataloguePriceCalculationTypeCumulativeId, 'GBP', @now, 19.987, 3),
-                    ('100004-001', @declarativeProvisioningType, @flatPriceType, @licence, @monthTimeUnit, @CataloguePriceCalculationTypeCumulativeId, 'GBP', @now, 10101.65, 3),
-                    ('100005-001', @onDemandProvisioningType, @flatPriceType, @licence, NULL, @CataloguePriceCalculationTypeCumulativeId, 'GBP', @now, 456, 3),
-                    ('100006-001', @declarativeProvisioningType, @flatPriceType, @sms, @monthTimeUnit, @CataloguePriceCalculationTypeCumulativeId, 'GBP', @now, 7, 3),
-                    ('100007-001', @onDemandProvisioningType, @flatPriceType, @sms, NULL, @CataloguePriceCalculationTypeCumulativeId, 'GBP', @now, 0.15, 3),
+                    ('100003-001', @declarativeProvisioningType, @flatPriceType, @bed, @monthTimeUnit, @CataloguePriceCalculationTypeSingleFixed, 'GBP', @now, 19.987, 3),
+                    ('100004-001', @declarativeProvisioningType, @flatPriceType, @licence, @monthTimeUnit, @CataloguePriceCalculationTypeSingleFixed, 'GBP', @now, 10101.65, 3),
+                    ('100005-001', @onDemandProvisioningType, @flatPriceType, @licence, NULL, @CataloguePriceCalculationTypeSingleFixed, 'GBP', @now, 456, 3),
+                    ('100006-001', @declarativeProvisioningType, @flatPriceType, @sms, @monthTimeUnit, @CataloguePriceCalculationTypeSingleFixed, 'GBP', @now, 7, 3),
+                    ('100007-001', @onDemandProvisioningType, @flatPriceType, @sms, NULL, @CataloguePriceCalculationTypeSingleFixed, 'GBP', @now, 0.15, 3),
                     ('100007-002', @onDemandProvisioningType, @tieredPriceType, @sms, NULL, @CataloguePriceCalculationTypeCumulativeId, 'GBP', @now, 6, 3),
-                    ('99998-98', @patientProvisioningType, @flatPriceType, @licence, @yearTimeUnit, @CataloguePriceCalculationTypeCumulativeId, 'GBP', @now, 30000, 3),
+                    ('99998-98', @patientProvisioningType, @flatPriceType, @licence, @yearTimeUnit, @CataloguePriceCalculationTypeSingleFixed, 'GBP', @now, 30000, 3),
                     ('99998-98', @patientProvisioningType, @tieredPriceType, @licence, @yearTimeUnit, @CataloguePriceCalculationTypeCumulativeId, 'GBP', @now, 0.1, 3),
-                    ('99999-01', @patientProvisioningType, @flatPriceType, @patient, @yearTimeUnit, @CataloguePriceCalculationTypeCumulativeId, 'GBP', @now, 1.25, 3),
-                    ('99999-02', @patientProvisioningType, @flatPriceType, @patient, @yearTimeUnit, @CataloguePriceCalculationTypeCumulativeId, 'GBP', @now, 1.55, 3),
-                    ('99999-89', @patientProvisioningType, @flatPriceType, @licence, @yearTimeUnit, @CataloguePriceCalculationTypeCumulativeId, 'GBP', @now, 500.49, 3),
+                    ('99999-01', @patientProvisioningType, @flatPriceType, @patient, @yearTimeUnit, @CataloguePriceCalculationTypeSingleFixed, 'GBP', @now, 1.25, 3),
+                    ('99999-02', @patientProvisioningType, @flatPriceType, @patient, @yearTimeUnit, @CataloguePriceCalculationTypeSingleFixed, 'GBP', @now, 1.55, 3),
+                    ('99999-89', @patientProvisioningType, @flatPriceType, @licence, @yearTimeUnit, @CataloguePriceCalculationTypeSingleFixed, 'GBP', @now, 500.49, 3),
                     ('99999-89', @patientProvisioningType, @tieredPriceType, @licence, @yearTimeUnit, @CataloguePriceCalculationTypeCumulativeId, 'GBP', @now, 3.5, 3);
 
         UPDATE catalogue.CataloguePrices SET Price = NULL;

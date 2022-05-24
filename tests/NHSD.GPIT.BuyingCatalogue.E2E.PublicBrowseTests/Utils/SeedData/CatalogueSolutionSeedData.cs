@@ -274,6 +274,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
                             ProvisioningType = ProvisioningType.Patient,
                             CataloguePriceType = CataloguePriceType.Flat,
                             PublishedStatus = PublicationStatus.Published,
+                            CataloguePriceCalculationType = CataloguePriceCalculationType.SingleFixed,
                             PricingUnit = new PricingUnit
                             {
                                 Id = 7,
@@ -303,6 +304,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
                             ProvisioningType = ProvisioningType.Patient,
                             CataloguePriceType = CataloguePriceType.Flat,
                             PublishedStatus = PublicationStatus.Draft,
+                            CataloguePriceCalculationType = CataloguePriceCalculationType.SingleFixed,
                             PricingUnit = new PricingUnit
                             {
                                 Id = 8,
@@ -686,6 +688,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
                             ProvisioningType = ProvisioningType.Patient,
                             CataloguePriceType = CataloguePriceType.Flat,
                             PublishedStatus = PublicationStatus.Published,
+                            CataloguePriceCalculationType = CataloguePriceCalculationType.SingleFixed,
                             PricingUnit = new PricingUnit
                             {
                                 Id = 9,
@@ -1324,7 +1327,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
                             ProvisioningType = ProvisioningType.Declarative,
                             CataloguePriceType = CataloguePriceType.Flat,
                             PublishedStatus = PublicationStatus.Published,
-                            CataloguePriceCalculationType = CataloguePriceCalculationType.Cumulative,
+                            CataloguePriceCalculationType = CataloguePriceCalculationType.SingleFixed,
                             PricingUnit = new PricingUnit
                             {
                                 Id = 6,

@@ -69,6 +69,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
                             CatalogueItemId = new CatalogueItemId(99999, "001A99"),
                             ProvisioningType = ProvisioningType.Patient,
                             CataloguePriceType = CataloguePriceType.Tiered,
+                            CataloguePriceCalculationType = CataloguePriceCalculationType.Cumulative,
                             PublishedStatus = PublicationStatus.Published,
                             PricingUnit = new PricingUnit
                             {
@@ -176,6 +177,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
                             CatalogueItemId = new CatalogueItemId(99999, "001A98"),
                             ProvisioningType = ProvisioningType.Patient,
                             CataloguePriceType = CataloguePriceType.Flat,
+                            CataloguePriceCalculationType = CataloguePriceCalculationType.SingleFixed,
                             PublishedStatus = PublicationStatus.Published,
                             PricingUnit = new PricingUnit
                             {
@@ -258,6 +260,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
                             CatalogueItemId = new CatalogueItemId(99998, "001A99"),
                             ProvisioningType = ProvisioningType.Patient,
                             CataloguePriceType = CataloguePriceType.Flat,
+                            CataloguePriceCalculationType = CataloguePriceCalculationType.SingleFixed,
                             PublishedStatus = PublicationStatus.Published,
                             PricingUnit = new PricingUnit
                             {
@@ -288,6 +291,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
                             ProvisioningType = ProvisioningType.OnDemand,
                             CataloguePriceType = CataloguePriceType.Flat,
                             PublishedStatus = PublicationStatus.Published,
+                            CataloguePriceCalculationType = CataloguePriceCalculationType.SingleFixed,
                             PricingUnit = new PricingUnit
                             {
                                 Id = 11,
@@ -316,6 +320,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
                             CatalogueItemId = new CatalogueItemId(99998, "001A99"),
                             ProvisioningType = ProvisioningType.Declarative,
                             CataloguePriceType = CataloguePriceType.Flat,
+                            CataloguePriceCalculationType = CataloguePriceCalculationType.SingleFixed,
                             PublishedStatus = PublicationStatus.Published,
                             PricingUnit = new PricingUnit
                             {
@@ -345,6 +350,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
                             CatalogueItemId = new CatalogueItemId(99998, "001A99"),
                             ProvisioningType = ProvisioningType.Patient,
                             CataloguePriceType = CataloguePriceType.Flat,
+                            CataloguePriceCalculationType = CataloguePriceCalculationType.SingleFixed,
                             PublishedStatus = PublicationStatus.Draft,
                             PricingUnit = new PricingUnit
                             {
@@ -374,6 +380,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
                             CatalogueItemId = new CatalogueItemId(99998, "001A99"),
                             ProvisioningType = ProvisioningType.Patient,
                             CataloguePriceType = CataloguePriceType.Tiered,
+                            CataloguePriceCalculationType = CataloguePriceCalculationType.Cumulative,
                             PublishedStatus = PublicationStatus.Draft,
                             PricingUnit = new PricingUnit
                             {
@@ -474,6 +481,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
                             CatalogueItemId = new CatalogueItemId(99998, "002A999"),
                             ProvisioningType = ProvisioningType.Patient,
                             CataloguePriceType = CataloguePriceType.Flat,
+                            CataloguePriceCalculationType = CataloguePriceCalculationType.SingleFixed,
                             PublishedStatus = PublicationStatus.Published,
                             PricingUnit = new PricingUnit
                             {

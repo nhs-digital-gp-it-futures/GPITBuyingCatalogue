@@ -37,10 +37,12 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.SolutionSelection.
                 })
                 .ToArray();
 
+            PriceType = price.CataloguePriceType;
+            CalculationType = price.CataloguePriceCalculationType;
             Basis = price.ToPriceUnitString();
             NumberOfTiers = price.CataloguePriceTiers.Count;
             ItemName = item.Name;
-            ItemType = item.CatalogueItemType.Name();
+            ItemType = item.CatalogueItemType;
         }
 
         public ConfirmPriceModel(OrderItem item)
@@ -65,11 +67,17 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.SolutionSelection.
                 })
                 .ToArray();
 
+            PriceType = price.CataloguePriceType;
+            CalculationType = price.CataloguePriceCalculationType;
             Basis = price.ToPriceUnitString();
             NumberOfTiers = price.OrderItemPriceTiers.Count;
             ItemName = item.CatalogueItem.Name;
-            ItemType = item.CatalogueItem.CatalogueItemType.Name();
+            ItemType = item.CatalogueItem.CatalogueItemType;
         }
+
+        public CataloguePriceType PriceType { get; set; }
+
+        public CataloguePriceCalculationType CalculationType { get; set; }
 
         public PricingTierModel[] Tiers { get; set; }
 
@@ -77,7 +85,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.SolutionSelection.
 
         public string ItemName { get; set; }
 
-        public string ItemType { get; set; }
+        public CatalogueItemType ItemType { get; set; }
 
         public string Basis { get; set; }
 
