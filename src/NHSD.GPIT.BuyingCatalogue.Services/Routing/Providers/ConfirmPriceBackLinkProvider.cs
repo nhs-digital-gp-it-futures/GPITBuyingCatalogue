@@ -43,7 +43,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Routing.Providers
 
             return new RoutingResult
             {
-                ActionName = Constants.Actions.SelectServiceRecipients,
+                ActionName = Constants.Actions.EditServiceRecipients,
                 ControllerName = Constants.Controllers.ServiceRecipients,
                 RouteValues = new
                 {

@@ -8,25 +8,30 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Routing
 {
     public class RoutingService : IRoutingService
     {
-        private readonly Dictionary<RoutingSource, IRoutingResultProvider> providers = new();
+        private readonly Dictionary<RoutingPoint, IRoutingResultProvider> providers = new();
 
         public RoutingService()
         {
-            providers.Add(RoutingSource.ConfirmPriceBackLink, new ConfirmPriceBackLinkProvider());
-            providers.Add(RoutingSource.SelectQuantity, new SelectQuantityProvider());
-            providers.Add(RoutingSource.SelectServiceRecipients, new SelectServiceRecipientsProvider());
+            providers.Add(RoutingPoint.ConfirmPriceBackLink, new ConfirmPriceBackLinkProvider());
+            providers.Add(RoutingPoint.EditPrice, new EditPriceProvider());
+            providers.Add(RoutingPoint.EditPriceBackLink, new EditPriceBackLinkProvider());
+            providers.Add(RoutingPoint.SelectPriceBackLink, new SelectPriceBackLinkProvider());
+            providers.Add(RoutingPoint.SelectQuantity, new SelectQuantityProvider());
+            providers.Add(RoutingPoint.SelectQuantityBackLink, new SelectQuantityBackLinkProvider());
+            providers.Add(RoutingPoint.SelectServiceRecipients, new SelectServiceRecipientsProvider());
+            providers.Add(RoutingPoint.SelectServiceRecipientsBackLink, new SelectServiceRecipientsBackLinkProvider());
         }
 
-        public RoutingResult GetRoute(RoutingSource source, Order order, RouteValues routeValues)
+        public RoutingResult GetRoute(RoutingPoint point, Order order, RouteValues routeValues)
         {
-            return GetProvider(source).Process(order, routeValues);
+            return GetProvider(point).Process(order, routeValues);
         }
 
-        private IRoutingResultProvider GetProvider(RoutingSource source)
+        private IRoutingResultProvider GetProvider(RoutingPoint point)
         {
-            return providers.ContainsKey(source)
-                ? providers[source]
-                : throw new ArgumentOutOfRangeException(nameof(source), source, null);
+            return providers.ContainsKey(point)
+                ? providers[point]
+                : throw new ArgumentOutOfRangeException(nameof(point), point, null);
         }
     }
 }

@@ -28,6 +28,10 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering.SolutionSelection.Qu
 
         protected abstract string PageTitle { get; }
 
+        protected abstract Type OnwardController { get; }
+
+        protected abstract string OnwardActionName { get; }
+
         [Fact]
         public void SelectServiceRecipientQuantity_AllSectionsDisplayed()
         {
@@ -124,9 +128,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering.SolutionSelection.Qu
 
             CommonActions.ClickSave();
 
-            CommonActions.PageLoadedCorrectGetIndex(
-                typeof(AssociatedServicesController),
-                nameof(AssociatedServicesController.AddAssociatedServices)).Should().BeTrue();
+            CommonActions.PageLoadedCorrectGetIndex(OnwardController, OnwardActionName).Should().BeTrue();
 
             var orderItems = GetOrderItems();
 

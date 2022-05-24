@@ -39,7 +39,11 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers.SolutionSelec
         }
 
         [HttpGet("quantity/{catalogueItemId}/select")]
-        public async Task<IActionResult> SelectQuantity(string internalOrgId, CallOffId callOffId, CatalogueItemId catalogueItemId)
+        public async Task<IActionResult> SelectQuantity(
+            string internalOrgId,
+            CallOffId callOffId,
+            CatalogueItemId catalogueItemId,
+            RoutingSource? source = null)
         {
             var order = await orderService.GetOrderWithOrderItems(callOffId, internalOrgId);
             var orderItem = order.OrderItem(catalogueItemId);
@@ -49,15 +53,18 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers.SolutionSelec
                 return RedirectToAction(
                     nameof(SelectServiceRecipientQuantity),
                     typeof(QuantityController).ControllerName(),
-                    new { internalOrgId, callOffId, catalogueItemId });
+                    new { internalOrgId, callOffId, catalogueItemId, source });
             }
+
+            var route = routingService.GetRoute(
+                RoutingPoint.SelectQuantityBackLink,
+                order,
+                new RouteValues(internalOrgId, callOffId, catalogueItemId) { Source = source });
 
             var model = new SelectOrderItemQuantityModel(orderItem)
             {
-                BackLink = Url.Action(
-                    nameof(PricesController.EditPrice),
-                    typeof(PricesController).ControllerName(),
-                    new { internalOrgId, callOffId, catalogueItemId }),
+                BackLink = Url.Action(route.ActionName, route.ControllerName, route.RouteValues),
+                Source = source,
             };
 
             return View(OrderItemViewName, model);
@@ -83,27 +90,42 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers.SolutionSelec
                 int.Parse(model.Quantity));
 
             var route = routingService.GetRoute(
-                RoutingSource.SelectQuantity,
+                RoutingPoint.SelectQuantity,
                 order,
-                new RouteValues(internalOrgId, callOffId));
+                new RouteValues(internalOrgId, callOffId) { Source = model.Source });
 
             return RedirectToAction(route.ActionName, route.ControllerName, route.RouteValues);
         }
 
         [HttpGet("quantity/{catalogueItemId}/service-recipient/select")]
-        public async Task<IActionResult> SelectServiceRecipientQuantity(string internalOrgId, CallOffId callOffId, CatalogueItemId catalogueItemId)
+        public async Task<IActionResult> SelectServiceRecipientQuantity(
+            string internalOrgId,
+            CallOffId callOffId,
+            CatalogueItemId catalogueItemId,
+            RoutingSource? source = null)
         {
             var order = await orderService.GetOrderWithOrderItems(callOffId, internalOrgId);
 
+            var route = routingService.GetRoute(
+                RoutingPoint.SelectQuantityBackLink,
+                order,
+                new RouteValues(internalOrgId, callOffId, catalogueItemId) { Source = source });
+
             var model = new SelectServiceRecipientQuantityModel(order.OrderItem(catalogueItemId))
             {
-                BackLink = Url.Action(
-                    nameof(PricesController.EditPrice),
-                    typeof(PricesController).ControllerName(),
-                    new { internalOrgId, callOffId, catalogueItemId }),
+                BackLink = Url.Action(route.ActionName, route.ControllerName, route.RouteValues),
+                Source = source,
             };
 
             await SetPracticeSizes(model);
+
+            var solution = order.GetSolution();
+
+            if (solution != null
+                && solution.CatalogueItemId != catalogueItemId)
+            {
+                SetPracticeSizesFromSolution(model, solution);
+            }
 
             return View(ServiceRecipientViewName, model);
         }
@@ -134,11 +156,31 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers.SolutionSelec
             await orderQuantityService.SetServiceRecipientQuantities(order.Id, catalogueItemId, quantities);
 
             var route = routingService.GetRoute(
-                RoutingSource.SelectQuantity,
+                RoutingPoint.SelectQuantity,
                 order,
-                new RouteValues(internalOrgId, callOffId));
+                new RouteValues(internalOrgId, callOffId) { Source = model.Source });
 
             return RedirectToAction(route.ActionName, route.ControllerName, route.RouteValues);
+        }
+
+        private static void SetPracticeSizesFromSolution(SelectServiceRecipientQuantityModel model, OrderItem solution)
+        {
+            foreach (var serviceRecipient in model.ServiceRecipients)
+            {
+                if (serviceRecipient.Quantity != 0
+                    || !string.IsNullOrWhiteSpace(serviceRecipient.InputQuantity))
+                {
+                    continue;
+                }
+
+                var existing = solution.OrderItemRecipients
+                    .FirstOrDefault(x => x.OdsCode == serviceRecipient.OdsCode);
+
+                if (existing?.Quantity != null)
+                {
+                    serviceRecipient.InputQuantity = $"{existing.Quantity}";
+                }
+            }
         }
 
         private async Task SetPracticeSizes(SelectServiceRecipientQuantityModel model)

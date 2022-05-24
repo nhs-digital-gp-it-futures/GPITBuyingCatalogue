@@ -54,6 +54,7 @@
     <GenerateSerializationAssemblies>Off</GenerateSerializationAssemblies>
     <TreatTSqlWarningsAsErrors>False</TreatTSqlWarningsAsErrors>
     <RunSqlCodeAnalysis>True</RunSqlCodeAnalysis>
+    <SqlCodeAnalysisRules>-Microsoft.Rules.Data.SR0014</SqlCodeAnalysisRules>
   </PropertyGroup>
   <PropertyGroup>
     <DisableFastUpToDateCheck>true</DisableFastUpToDateCheck>

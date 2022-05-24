@@ -31,7 +31,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Orders
 
         [Theory]
         [InMemoryDbAutoData]
-        public static void AddServiceRecipient_NullRecipients_ThrowsException(
+        public static void AddOrderItemRecipients_NullRecipients_ThrowsException(
             int orderId,
             CatalogueItemId catalogueItemId,
             OrderItemRecipientService service)
@@ -43,7 +43,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Orders
 
         [Theory]
         [InMemoryDbAutoData]
-        public static async Task AddServiceRecipient_AddsServiceRecipientsToDatabase(
+        public static async Task AddOrderItemRecipients_AddsServiceRecipientsToDatabase(
             [Frozen] BuyingCatalogueDbContext context,
             int orderId,
             CatalogueItemId catalogueItemId,
@@ -74,6 +74,72 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Orders
 
                 actual.Should().NotBeNull();
                 actual!.Quantity.Should().Be(null);
+            }
+        }
+
+        [Theory]
+        [InMemoryDbAutoData]
+        public static void UpdateOrderItemRecipients_NullRecipients_ThrowsException(
+            int orderId,
+            CatalogueItemId catalogueItemId,
+            OrderItemRecipientService service)
+        {
+            FluentActions
+                .Awaiting(() => service.UpdateOrderItemRecipients(orderId, catalogueItemId, null))
+                .Should().ThrowAsync<ArgumentNullException>();
+        }
+
+        [Theory]
+        [InMemoryDbAutoData]
+        public static async Task UpdateOrderItemRecipients_UpdatesServiceRecipientsInDatabase(
+            [Frozen] BuyingCatalogueDbContext context,
+            int orderId,
+            CatalogueItemId catalogueItemId,
+            string odsCode,
+            List<ServiceRecipientDto> serviceRecipients,
+            [Frozen] Mock<IServiceRecipientService> mockServiceRecipientService,
+            OrderItemRecipientService service)
+        {
+            foreach (var recipient in serviceRecipients)
+            {
+                context.ServiceRecipients.Add(new ServiceRecipient { OdsCode = recipient.OdsCode });
+            }
+
+            context.ServiceRecipients.Add(new ServiceRecipient { OdsCode = odsCode });
+
+            context.OrderItemRecipients.Add(new OrderItemRecipient
+            {
+                OrderId = orderId,
+                CatalogueItemId = catalogueItemId,
+                OdsCode = serviceRecipients.First().OdsCode,
+            });
+
+            context.OrderItemRecipients.Add(new OrderItemRecipient
+            {
+                OrderId = orderId,
+                CatalogueItemId = catalogueItemId,
+                OdsCode = odsCode,
+            });
+
+            await context.SaveChangesAsync();
+
+            mockServiceRecipientService
+                .Setup(x => x.AddServiceRecipient(It.IsAny<ServiceRecipientDto>()))
+                .Returns(Task.CompletedTask);
+
+            await service.UpdateOrderItemRecipients(orderId, catalogueItemId, serviceRecipients);
+
+            mockServiceRecipientService.VerifyAll();
+
+            var recipients = context.OrderItemRecipients
+                .Where(x => x.OrderId == orderId && x.CatalogueItemId == catalogueItemId)
+                .ToList();
+
+            recipients.Count.Should().Be(serviceRecipients.Count);
+
+            foreach (var recipient in serviceRecipients)
+            {
+                recipients.Should().ContainSingle(x => x.OdsCode == recipient.OdsCode);
             }
         }
     }

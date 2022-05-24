@@ -27,6 +27,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
             AddOrderWithAddedAssociatedServiceAndOrderItemPrice(context);
             AddOrderWithAddedAssociatedServiceAndServiceRecipientPrice(context);
             AddOrderWithAddedNoContactSolutionAdditionalServiceAndAssociatedService(context);
+            AddAssociatedServicesOnlyOrder(context);
             AddOrderReadyToComplete(context);
             AddCompletedOrder(context, 90010, GetOrganisationId(context));
             AddCompletedOrder(context, 90011, GetOrganisationId(context, "CG-15F"));
@@ -904,6 +905,77 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
             order.OrderItems.Add(addedMultiplePriceCatalogueSolution);
             order.OrderItems.Add(addedAdditionalSolution);
             order.OrderItems.Add(addedAssociatedSolution);
+
+            context.Add(order);
+
+            context.SaveChangesAs(user.Id);
+        }
+
+        private static void AddAssociatedServicesOnlyOrder(BuyingCatalogueDbContext context)
+        {
+            const int orderId = 90014;
+            var timeNow = DateTime.UtcNow;
+
+            var order = new Order
+            {
+                Id = orderId,
+                AssociatedServicesOnly = true,
+                OrderingPartyId = GetOrganisationId(context),
+                Created = timeNow,
+                OrderStatus = OrderStatus.InProgress,
+                IsDeleted = false,
+                Description = "Associated services only",
+                OrderingPartyContact = new Contact
+                {
+                    FirstName = "Clark",
+                    LastName = "Kent",
+                    Email = "Clark.Kent@TheDailyPlanet.Fake",
+                    Phone = "123456789",
+                },
+                SupplierId = 99998,
+                SupplierContact = new Contact
+                {
+                    FirstName = "Bruce",
+                    LastName = "Wayne",
+                    Email = "bat.man@Gotham.Fake",
+                    Phone = "123456789",
+                },
+                CommencementDate = timeNow.AddDays(1),
+                InitialPeriod = 6,
+                MaximumTerm = 36,
+            };
+
+            var user = GetBuyerUser(context, order.OrderingPartyId);
+
+            var price = context.CatalogueItems
+                .Where(c => c.Id == new CatalogueItemId(99998, "S-997"))
+                .Include(c => c.CataloguePrices).ThenInclude(cp => cp.CataloguePriceTiers)
+                .Include(c => c.CataloguePrices).ThenInclude(cp => cp.PricingUnit)
+                .Select(ci => new OrderItemPrice(ci.CataloguePrices.First()))
+                .Single();
+
+            var service = new OrderItem
+            {
+                OrderItemPrice = price,
+                Created = DateTime.UtcNow,
+                OrderId = orderId,
+                CatalogueItem = context.CatalogueItems.Single(c => c.Id == new CatalogueItemId(99998, "S-997")),
+            };
+
+            var recipients = context.ServiceRecipients.ToList();
+
+            recipients.ForEach(r =>
+            {
+                var recipient = new OrderItemRecipient
+                {
+                    Recipient = r,
+                    Quantity = 1000,
+                };
+
+                service.OrderItemRecipients.Add(recipient);
+            });
+
+            order.OrderItems.Add(service);
 
             context.Add(order);
 

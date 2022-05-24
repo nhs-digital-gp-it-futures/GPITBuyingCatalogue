@@ -38,6 +38,31 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Routing.Providers
 
         [Theory]
         [CommonAutoData]
+        public void Process_FromTaskList_ExpectedResult(
+            string internalOrgId,
+            CallOffId callOffId,
+            CatalogueItemId catalogueItemId,
+            Order order,
+            SelectQuantityProvider provider)
+        {
+            var result = provider.Process(order, new RouteValues(internalOrgId, callOffId, catalogueItemId)
+            {
+                Source = RoutingSource.TaskList,
+            });
+
+            var expected = new
+            {
+                InternalOrgId = internalOrgId,
+                CallOffId = callOffId,
+            };
+
+            result.ActionName.Should().Be(Constants.Actions.TaskList);
+            result.ControllerName.Should().Be(Constants.Controllers.TaskList);
+            result.RouteValues.Should().BeEquivalentTo(expected);
+        }
+
+        [Theory]
+        [CommonAutoData]
         public void Process_OrderHasAdditionalServiceWithNoServiceRecipients_ExpectedResult(
             string internalOrgId,
             CallOffId callOffId,
@@ -61,7 +86,37 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Routing.Providers
                 additionalService.CatalogueItemId,
             };
 
-            result.ActionName.Should().Be(Constants.Actions.SelectServiceRecipients);
+            result.ActionName.Should().Be(Constants.Actions.AddServiceRecipients);
+            result.ControllerName.Should().Be(Constants.Controllers.ServiceRecipients);
+            result.RouteValues.Should().BeEquivalentTo(expected);
+        }
+
+        [Theory]
+        [CommonAutoData]
+        public void Process_OrderHasAssociatedServiceWithNoServiceRecipients_ExpectedResult(
+            string internalOrgId,
+            CallOffId callOffId,
+            Order order,
+            SelectQuantityProvider provider)
+        {
+            order.OrderItems.ToList().ForEach(x => x.CatalogueItem.CatalogueItemType = CatalogueItemType.AssociatedService);
+
+            var solution = order.OrderItems.First();
+            solution.CatalogueItem.CatalogueItemType = CatalogueItemType.Solution;
+
+            var service = order.OrderItems.ElementAt(1);
+            service.OrderItemRecipients.Clear();
+
+            var result = provider.Process(order, new RouteValues(internalOrgId, callOffId, solution.CatalogueItemId));
+
+            var expected = new
+            {
+                InternalOrgId = internalOrgId,
+                CallOffId = callOffId,
+                service.CatalogueItemId,
+            };
+
+            result.ActionName.Should().Be(Constants.Actions.AddServiceRecipients);
             result.ControllerName.Should().Be(Constants.Controllers.ServiceRecipients);
             result.RouteValues.Should().BeEquivalentTo(expected);
         }
@@ -89,6 +144,34 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Routing.Providers
 
             result.ActionName.Should().Be(Constants.Actions.AddAssociatedServices);
             result.ControllerName.Should().Be(Constants.Controllers.AssociatedServices);
+            result.RouteValues.Should().BeEquivalentTo(expected);
+        }
+
+        [Theory]
+        [CommonAutoData]
+        public void Process_OrderHasPopulatedAdditionalAndAssociatedServices_ExpectedResult(
+            string internalOrgId,
+            CallOffId callOffId,
+            Order order,
+            SelectQuantityProvider provider)
+        {
+            order.OrderItems.ElementAt(0).CatalogueItem.CatalogueItemType = CatalogueItemType.Solution;
+            order.OrderItems.ElementAt(1).CatalogueItem.CatalogueItemType = CatalogueItemType.AdditionalService;
+            order.OrderItems.ElementAt(2).CatalogueItem.CatalogueItemType = CatalogueItemType.AssociatedService;
+
+            var result = provider.Process(order, new RouteValues(
+                internalOrgId,
+                callOffId,
+                order.OrderItems.First().CatalogueItemId));
+
+            var expected = new
+            {
+                InternalOrgId = internalOrgId,
+                CallOffId = callOffId,
+            };
+
+            result.ActionName.Should().Be(Constants.Actions.Review);
+            result.ControllerName.Should().Be(Constants.Controllers.Review);
             result.RouteValues.Should().BeEquivalentTo(expected);
         }
     }

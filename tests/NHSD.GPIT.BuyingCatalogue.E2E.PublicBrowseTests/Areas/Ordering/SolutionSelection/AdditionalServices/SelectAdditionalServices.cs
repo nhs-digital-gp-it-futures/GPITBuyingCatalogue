@@ -90,8 +90,8 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering.SolutionSelection.Ad
             CommonActions.ClickSave();
 
             CommonActions.PageLoadedCorrectGetIndex(
-                typeof(OrderController),
-                nameof(OrderController.Order)).Should().BeTrue();
+                typeof(ReviewSolutionsController),
+                nameof(ReviewSolutionsController.ReviewSolutions)).Should().BeTrue();
         }
 
         [Fact]
@@ -104,7 +104,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering.SolutionSelection.Ad
 
             CommonActions.PageLoadedCorrectGetIndex(
                 typeof(ServiceRecipientsController),
-                nameof(ServiceRecipientsController.ServiceRecipients)).Should().BeTrue();
+                nameof(ServiceRecipientsController.AddServiceRecipients)).Should().BeTrue();
 
             GetAdditionalServices().Count.Should().Be(1);
         }

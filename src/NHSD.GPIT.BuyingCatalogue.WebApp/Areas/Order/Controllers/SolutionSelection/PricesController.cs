@@ -42,12 +42,14 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers.SolutionSelec
         {
             var catalogueItem = await listPriceService.GetCatalogueItemWithPublishedListPrices(catalogueItemId);
 
+            var route = routingService.GetRoute(
+                RoutingPoint.SelectPriceBackLink,
+                null,
+                new RouteValues(internalOrgId, callOffId, catalogueItemId));
+
             var model = new SelectPriceModel(catalogueItem)
             {
-                BackLink = Url.Action(
-                    nameof(ServiceRecipientsController.ServiceRecipients),
-                    typeof(ServiceRecipientsController).ControllerName(),
-                    new { internalOrgId, callOffId, catalogueItemId }),
+                BackLink = Url.Action(route.ActionName, route.ControllerName, route.RouteValues),
                 SelectedPriceId = selectedPriceId,
             };
 
@@ -79,7 +81,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers.SolutionSelec
             var catalogueItem = await listPriceService.GetCatalogueItemWithPublishedListPrices(catalogueItemId);
 
             var route = routingService.GetRoute(
-                RoutingSource.ConfirmPriceBackLink,
+                RoutingPoint.ConfirmPriceBackLink,
                 await orderService.GetOrderWithCatalogueItemAndPrices(callOffId, internalOrgId),
                 new RouteValues(internalOrgId, callOffId, catalogueItemId) { SelectedPriceId = priceId });
 
@@ -116,16 +118,23 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers.SolutionSelec
         }
 
         [HttpGet("price/edit")]
-        public async Task<IActionResult> EditPrice(string internalOrgId, CallOffId callOffId, CatalogueItemId catalogueItemId)
+        public async Task<IActionResult> EditPrice(
+            string internalOrgId,
+            CallOffId callOffId,
+            CatalogueItemId catalogueItemId,
+            RoutingSource? source = null)
         {
             var order = await orderService.GetOrderWithOrderItems(callOffId, internalOrgId);
 
+            var route = routingService.GetRoute(
+                RoutingPoint.EditPriceBackLink,
+                order,
+                new RouteValues(internalOrgId, callOffId, catalogueItemId) { Source = source });
+
             var model = new ConfirmPriceModel(order.OrderItem(catalogueItemId))
             {
-                BackLink = Url.Action(
-                    nameof(SelectPrice),
-                    typeof(PricesController).ControllerName(),
-                    new { internalOrgId, callOffId, catalogueItemId }),
+                BackLink = Url.Action(route.ActionName, route.ControllerName, route.RouteValues),
+                Source = source,
             };
 
             return View(ConfirmPriceViewName, model);
@@ -143,10 +152,12 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers.SolutionSelec
 
             await orderPriceService.UpdatePrice(order.Id, catalogueItemId, model.AgreedPrices);
 
-            return RedirectToAction(
-                nameof(QuantityController.SelectQuantity),
-                typeof(QuantityController).ControllerName(),
-                new { internalOrgId, callOffId, catalogueItemId });
+            var route = routingService.GetRoute(
+                RoutingPoint.EditPrice,
+                order,
+                new RouteValues(internalOrgId, callOffId, catalogueItemId) { Source = model.Source });
+
+            return RedirectToAction(route.ActionName, route.ControllerName, route.RouteValues);
         }
 
         private async Task<CataloguePrice> GetCataloguePrice(int priceId, CatalogueItemId catalogueItemId)

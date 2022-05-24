@@ -27,7 +27,7 @@
         <h2>Select Service Recipients</h2>
 
         <vc:nhs-secondary-button url="@Url.Action(
-                                          nameof(ServiceRecipientsController.ServiceRecipients),
+                                          nameof(ServiceRecipientsController.AddServiceRecipients),
                                           typeof(ServiceRecipientsController).ControllerName(),
                                           new { Model.InternalOrgId, Model.CallOffId, Model.CatalogueItemId, Model.SelectionMode })"
                                  text="@Model.SelectionCaption"
@@ -40,6 +40,7 @@
             <input type="hidden" asp-for="@Model.ItemType" />
             <input type="hidden" asp-for="@Model.SelectionCaption" />
             <input type="hidden" asp-for="@Model.SelectionMode" />
+            <input type="hidden" asp-for="@Model.Source" />
 
             <nhs-table>
                 <nhs-table-column>Organisation</nhs-table-column>

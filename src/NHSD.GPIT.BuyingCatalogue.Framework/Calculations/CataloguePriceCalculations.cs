@@ -37,13 +37,19 @@ namespace NHSD.GPIT.BuyingCatalogue.Framework.Calculations
         public static decimal CalculateCostPerMonth(this IPrice price, int quantity)
         {
             var cost = CalculateTotalCost(price, quantity);
-            return price.EstimationPeriod.Value == TimeUnit.PerMonth ? cost : cost / 12;
+
+            return price.EstimationPeriod is TimeUnit.PerMonth
+                ? cost
+                : cost / 12;
         }
 
         public static decimal CalculateCostPerYear(this IPrice price, int quantity)
         {
             var cost = CalculateTotalCost(price, quantity);
-            return price.EstimationPeriod.Value == TimeUnit.PerYear ? cost : cost * 12;
+
+            return price.EstimationPeriod is TimeUnit.PerYear
+                ? cost
+                : cost * 12;
         }
 
         public static decimal CalculateTotalCostForContractLength(this IPrice price, int quantity, int maxTerm) =>
