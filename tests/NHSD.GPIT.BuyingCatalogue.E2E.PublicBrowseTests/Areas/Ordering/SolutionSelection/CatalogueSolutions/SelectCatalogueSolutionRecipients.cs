@@ -37,7 +37,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering.SolutionSelection.Ca
         [Fact]
         public void SelectCatalogueSolutionRecipients_AllSectionsDisplayed()
         {
-            CommonActions.PageTitle().Should().BeEquivalentTo("Service Recipients - DFOCVC Solution Full".FormatForComparison());
+            CommonActions.PageTitle().Should().BeEquivalentTo("Service Recipients for Catalogue Solution - DFOCVC Solution Full".FormatForComparison());
             CommonActions.GoBackLinkDisplayed().Should().BeTrue();
             CommonActions.ElementIsDisplayed(ServiceRecipientObjects.PreSelectedInset).Should().BeFalse();
             CommonActions.ElementIsDisplayed(ServiceRecipientObjects.SelectAllLink).Should().BeTrue();
