@@ -3,7 +3,7 @@
 @using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models
 @model NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.SolutionSelection.ServiceRecipients.SelectRecipientsModel;
 @{
-    ViewBag.Title = "Service Recipients";
+    ViewBag.Title = $"Service Recipients for {Model.ItemType.Name()}";
 }
 
 <partial name="Partials/_BackLink" model="Model" />
