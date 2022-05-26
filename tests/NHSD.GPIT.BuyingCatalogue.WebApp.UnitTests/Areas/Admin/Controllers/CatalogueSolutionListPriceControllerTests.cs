@@ -560,7 +560,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
                 .ReturnsAsync(solution.CatalogueItem);
 
             var pricingUnit = model.GetPricingUnit();
-            var timeUnit = model.GetTimeUnit();
+            var timeUnit = model.GetBillingPeriod();
 
             var result = (await controller.EditTieredListPrice(solution.CatalogueItemId, price.CataloguePriceId, model)).As<RedirectToActionResult>();
 
@@ -573,7 +573,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
                         && match.RangeDescription == pricingUnit.RangeDescription),
                     model.SelectedProvisioningType!.Value,
                     model.SelectedCalculationType!.Value,
-                    model.GetTimeUnit()),
+                    model.GetBillingPeriod()),
                 Times.Once());
 
             solutionListPriceService.Verify(
@@ -603,7 +603,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
                 .ReturnsAsync(solution.CatalogueItem);
 
             var pricingUnit = model.GetPricingUnit();
-            var timeUnit = model.GetTimeUnit();
+            var timeUnit = model.GetBillingPeriod();
 
             var result = (await controller.EditTieredListPrice(solution.CatalogueItemId, price.CataloguePriceId, model)).As<RedirectToActionResult>();
 
@@ -616,7 +616,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
                         && match.RangeDescription == pricingUnit.RangeDescription),
                     model.SelectedProvisioningType!.Value,
                     model.SelectedCalculationType!.Value,
-                    model.GetTimeUnit()),
+                    model.GetBillingPeriod()),
                 Times.Once());
 
             solutionListPriceService.Verify(
@@ -1203,7 +1203,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
                     It.Is<CataloguePrice>(
                         p => p.CataloguePriceType == CataloguePriceType.Flat
                             && p.ProvisioningType == model.SelectedProvisioningType!.Value
-                            && p.TimeUnit == model.GetTimeUnit()
+                            && p.TimeUnit == model.GetBillingPeriod()
                             && p.PricingUnit.Description == pricingUnit.Description
                             && p.PricingUnit.Definition == pricingUnit.Definition
                             && p.CataloguePriceCalculationType == CataloguePriceCalculationType.SingleFixed
@@ -1300,7 +1300,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
                 .ReturnsAsync(solution.CatalogueItem);
 
             var pricingUnit = model.GetPricingUnit();
-            var timeUnit = model.GetTimeUnit();
+            var timeUnit = model.GetBillingPeriod();
 
             var result = (await controller.EditFlatListPrice(solution.CatalogueItemId, price.CataloguePriceId, model)).As<RedirectToActionResult>();
 
@@ -1313,7 +1313,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
                         && match.RangeDescription == pricingUnit.RangeDescription),
                     model.SelectedProvisioningType!.Value,
                     CataloguePriceCalculationType.SingleFixed,
-                    model.GetTimeUnit(),
+                    model.GetBillingPeriod(),
                     model.Price!.Value),
                 Times.Once());
 
@@ -1345,7 +1345,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
                 .ReturnsAsync(solution.CatalogueItem);
 
             var pricingUnit = model.GetPricingUnit();
-            var timeUnit = model.GetTimeUnit();
+            var timeUnit = model.GetBillingPeriod();
 
             var result = (await controller.EditFlatListPrice(solution.CatalogueItemId, price.CataloguePriceId, model)).As<RedirectToActionResult>();
 
@@ -1358,7 +1358,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
                         && match.RangeDescription == pricingUnit.RangeDescription),
                     model.SelectedProvisioningType!.Value,
                     CataloguePriceCalculationType.SingleFixed,
-                    model.GetTimeUnit(),
+                    model.GetBillingPeriod(),
                     model.Price!.Value),
                 Times.Once());
 

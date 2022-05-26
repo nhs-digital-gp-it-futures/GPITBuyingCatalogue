@@ -40,11 +40,11 @@
                                       value-name="Value"
                                       display-name="Text"
                                       index="1">
-
-                        <nhs-select asp-for="DeclarativeBillingPeriod"
+                        <nhs-select asp-for="PerServiceRecipientBillingPeriod"
                                     asp-items="timeUnitsSelectList"
                                     label-text="Billing period (optional)"
-                                    label-hint="Select if it’s monthly or yearly." />
+                                    label-hint="Select if it’s a recurring payment either per month or per year."
+                                    use-default-value="false" />
                     </nhs-radio-button>
 
                     <nhs-radio-button asp-for="SelectedProvisioningType"
@@ -53,10 +53,24 @@
                                       display-name="Text"
                                       index="2">
 
+                        <nhs-select asp-for="DeclarativeBillingPeriod"
+                                    asp-items="timeUnitsSelectList"
+                                    label-text="Billing period (optional)"
+                                    label-hint="Select if it’s a recurring payment either per month or per year."
+                                    use-default-value="false" />
+                    </nhs-radio-button>
+
+                    <nhs-radio-button asp-for="SelectedProvisioningType"
+                                      value="provisioningTypes[3]"
+                                      value-name="Value"
+                                      display-name="Text"
+                                      index="3">
+
                         <nhs-select asp-for="OnDemandBillingPeriod"
                                     asp-items="timeUnitsSelectList"
                                     label-text="Billing period (optional)"
-                                    label-hint="Select if it’s monthly or yearly." />
+                                    label-hint="Select if it’s a recurring payment either per month or per year."
+                                    use-default-value="false" />
                     </nhs-radio-button>
                 </nhs-radio-button-container>
             </nhs-fieldset-form-label>

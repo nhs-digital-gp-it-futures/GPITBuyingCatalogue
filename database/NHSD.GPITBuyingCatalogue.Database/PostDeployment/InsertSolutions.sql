@@ -619,9 +619,10 @@ TPP maintain close contact with staff at the unit throughout these phases to ens
     @flatPriceType INT = 1,
     @tieredPriceType INT = 2,
 
-    @patientProvisioningType INT = 1,
-    @declarativeProvisioningType INT = 2,
-    @onDemandProvisioningType INT = 3,
+    @patientProvisioningType INT = (SELECT Id FROM catalogue.ProvisioningTypes WHERE [Name] = 'Patient'),
+    @declarativeProvisioningType INT = (SELECT Id FROM catalogue.ProvisioningTypes WHERE [Name] = 'Declarative'),
+    @onDemandProvisioningType INT = (SELECT Id FROM catalogue.ProvisioningTypes WHERE [Name] = 'OnDemand'),
+    @perServiceRecipientProvisioningType INT = (Select Id FROM catalogue.ProvisioningTypes WHERE [Name] = 'PerServiceRecipient'),
 
     @monthTimeUnit INT = 1,
     @yearTimeUnit INT = 2,
@@ -649,12 +650,12 @@ TPP maintain close contact with staff at the unit throughout these phases to ens
         OUTPUT INSERTED.CataloguePriceId, INSERTED.Price, INSERTED.CataloguePriceTypeId INTO @InsertedPriceIds (Id, Price, CataloguePriceTypeId)
             VALUES ('100000-001', @patientProvisioningType, @flatPriceType, @patient, @yearTimeUnit, @CataloguePriceCalculationTypeSingleFixed, 'GBP', @now, 99.99, 3),
                     ('100000-001', @patientProvisioningType, @tieredPriceType, @patient, @yearTimeUnit, @CataloguePriceCalculationTypeCumulativeId, 'GBP', @now, 0.5, 3),
-                    ('100000-001', @onDemandProvisioningType, @flatPriceType, @consultation, NULL, @CataloguePriceCalculationTypeSingleFixed, 'GBP', @now, 1001.010, 3),
+                    ('100000-001', @perServiceRecipientProvisioningType, @flatPriceType, @consultation, NULL, @CataloguePriceCalculationTypeSingleFixed, 'GBP', @now, 1001.010, 3),
                     ('100001-001', @onDemandProvisioningType, @flatPriceType, @licence, NULL, @CataloguePriceCalculationTypeSingleFixed, 'GBP', @now, 3.142, 3),
                     ('100002-001', @declarativeProvisioningType, @flatPriceType, @patient, @monthTimeUnit, @CataloguePriceCalculationTypeSingleFixed, 'GBP', @now, 4.85, 3),
-                    ('100002-001', @declarativeProvisioningType, @tieredPriceType, @patient, @monthTimeUnit, @CataloguePriceCalculationTypeCumulativeId, 'GBP', @now, 20, 3),
+                    ('100002-001', @perServiceRecipientProvisioningType, @tieredPriceType, @patient, @monthTimeUnit, @CataloguePriceCalculationTypeCumulativeId, 'GBP', @now, 20, 3),
                     ('100002-001', @declarativeProvisioningType, @tieredPriceType, @patient, @monthTimeUnit, @CataloguePriceCalculationTypeSingleFixed, 'GBP', @now, 10, 3),
-                    ('100003-001', @declarativeProvisioningType, @flatPriceType, @bed, @monthTimeUnit, @CataloguePriceCalculationTypeSingleFixed, 'GBP', @now, 19.987, 3),
+                    ('100003-001', @perServiceRecipientProvisioningType, @flatPriceType, @bed, @monthTimeUnit, @CataloguePriceCalculationTypeSingleFixed, 'GBP', @now, 19.987, 3),
                     ('100004-001', @declarativeProvisioningType, @flatPriceType, @licence, @monthTimeUnit, @CataloguePriceCalculationTypeSingleFixed, 'GBP', @now, 10101.65, 3),
                     ('100005-001', @onDemandProvisioningType, @flatPriceType, @licence, NULL, @CataloguePriceCalculationTypeSingleFixed, 'GBP', @now, 456, 3),
                     ('100006-001', @declarativeProvisioningType, @flatPriceType, @sms, @monthTimeUnit, @CataloguePriceCalculationTypeSingleFixed, 'GBP', @now, 7, 3),
@@ -663,9 +664,9 @@ TPP maintain close contact with staff at the unit throughout these phases to ens
                     ('99998-98', @patientProvisioningType, @flatPriceType, @licence, @yearTimeUnit, @CataloguePriceCalculationTypeSingleFixed, 'GBP', @now, 30000, 3),
                     ('99998-98', @patientProvisioningType, @tieredPriceType, @licence, @yearTimeUnit, @CataloguePriceCalculationTypeCumulativeId, 'GBP', @now, 0.1, 3),
                     ('99999-01', @patientProvisioningType, @flatPriceType, @patient, @yearTimeUnit, @CataloguePriceCalculationTypeSingleFixed, 'GBP', @now, 1.25, 3),
-                    ('99999-02', @patientProvisioningType, @flatPriceType, @patient, @yearTimeUnit, @CataloguePriceCalculationTypeSingleFixed, 'GBP', @now, 1.55, 3),
+                    ('99999-02', @perServiceRecipientProvisioningType, @flatPriceType, @patient, @yearTimeUnit, @CataloguePriceCalculationTypeSingleFixed, 'GBP', @now, 1.55, 3),
                     ('99999-89', @patientProvisioningType, @flatPriceType, @licence, @yearTimeUnit, @CataloguePriceCalculationTypeSingleFixed, 'GBP', @now, 500.49, 3),
-                    ('99999-89', @patientProvisioningType, @tieredPriceType, @licence, @yearTimeUnit, @CataloguePriceCalculationTypeCumulativeId, 'GBP', @now, 3.5, 3);
+                    ('99999-89', @perServiceRecipientProvisioningType, @tieredPriceType, @licence, @yearTimeUnit, @CataloguePriceCalculationTypeCumulativeId, 'GBP', @now, 3.5, 3);
 
         UPDATE catalogue.CataloguePrices SET Price = NULL;
 

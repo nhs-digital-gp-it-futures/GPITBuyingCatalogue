@@ -129,7 +129,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
             {
                 CataloguePriceType = CataloguePriceType.Flat,
                 ProvisioningType = model.SelectedProvisioningType!.Value,
-                TimeUnit = model.GetTimeUnit(),
+                TimeUnit = model.GetBillingPeriod(),
                 PricingUnit = model.GetPricingUnit(),
                 CataloguePriceCalculationType = CataloguePriceCalculationType.SingleFixed,
                 CataloguePriceTiers = new HashSet<CataloguePriceTier>
@@ -270,7 +270,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
                     model.GetPricingUnit(),
                     model.SelectedProvisioningType!.Value,
                     model.SelectedCalculationType!.Value,
-                    model.GetTimeUnit());
+                    model.GetBillingPeriod());
 
             if (model.SelectedPublicationStatus != price.PublishedStatus)
                 await solutionListPriceService.SetPublicationStatus(solutionId, cataloguePriceId, model.SelectedPublicationStatus);
@@ -312,7 +312,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
                 model.GetPricingUnit(),
                 model.SelectedProvisioningType!.Value,
                 CataloguePriceCalculationType.SingleFixed,
-                model.GetTimeUnit(),
+                model.GetBillingPeriod(),
                 model.Price!.Value);
 
             if (model.SelectedPublicationStatus!.Value != price.PublishedStatus)
@@ -488,7 +488,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
                     model.GetPricingUnit(),
                     model.SelectedProvisioningType!.Value,
                     model.SelectedCalculationType!.Value,
-                    model.GetTimeUnit());
+                    model.GetBillingPeriod());
             }
             else
             {
@@ -497,7 +497,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
                     CataloguePriceType = CataloguePriceType.Tiered,
                     CataloguePriceCalculationType = model.SelectedCalculationType!.Value,
                     ProvisioningType = model.SelectedProvisioningType!.Value,
-                    TimeUnit = model.GetTimeUnit(),
+                    TimeUnit = model.GetBillingPeriod(),
                     PricingUnit = model.GetPricingUnit(),
                     CurrencyCode = "GBP",
                 };

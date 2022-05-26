@@ -64,6 +64,9 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.ListPrices.Solution.Tie
             CommonActions.ElementIsDisplayed(AddEditTieredListPriceObjects.OnDemandBillingPeriodInput).Should().BeFalse();
             CommonActions.ElementIsDisplayed(AddEditTieredListPriceObjects.DeclarativeBillingPeriodInput).Should().BeFalse();
 
+            CommonActions.ClickRadioButtonWithValue(ProvisioningType.PerServiceRecipient.ToString());
+            CommonActions.ElementIsDisplayed(AddEditFlatListPriceObjects.PerServiceRecipientBillingPeriodInput).Should().BeTrue();
+
             CommonActions.ClickRadioButtonWithValue(ProvisioningType.OnDemand.ToString());
             CommonActions.ElementIsDisplayed(AddEditTieredListPriceObjects.OnDemandBillingPeriodInput).Should().BeTrue();
 

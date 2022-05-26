@@ -31,26 +31,36 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.ListPriceModels
             SelectedCalculationType = cataloguePrice.CataloguePriceCalculationType;
             SelectedProvisioningType = cataloguePrice.ProvisioningType;
 
-            if (SelectedProvisioningType == ProvisioningType.OnDemand)
-                OnDemandBillingPeriod = cataloguePrice.TimeUnit;
-            else if (SelectedProvisioningType == ProvisioningType.Declarative)
-                DeclarativeBillingPeriod = cataloguePrice.TimeUnit;
+            switch (SelectedProvisioningType)
+            {
+                case ProvisioningType.OnDemand:
+                    OnDemandBillingPeriod = cataloguePrice.TimeUnit;
+                    break;
+                case ProvisioningType.Declarative:
+                    DeclarativeBillingPeriod = cataloguePrice.TimeUnit;
+                    break;
+                case ProvisioningType.PerServiceRecipient:
+                    PerServiceRecipientBillingPeriod = cataloguePrice.TimeUnit;
+                    break;
+            }
         }
 
         public IEnumerable<SelectListItem> AvailableProvisioningTypes => new SelectListItem[]
         {
             new(ProvisioningType.Patient.Name(), ProvisioningType.Patient.ToString()),
+            new(ProvisioningType.PerServiceRecipient.Name(), ProvisioningType.PerServiceRecipient.ToString()),
             new(ProvisioningType.Declarative.Name(), ProvisioningType.Declarative.ToString()),
             new(ProvisioningType.OnDemand.Name(), ProvisioningType.OnDemand.ToString()),
         };
 
-        public IList<SelectListItem> AvailableBillingPeriods => new List<SelectListItem>
+        public IEnumerable<SelectListItem> AvailableBillingPeriods => new List<SelectListItem>
         {
-            new(TimeUnit.PerMonth.Description(), TimeUnit.PerMonth.ToString()),
-            new(TimeUnit.PerYear.Description(), TimeUnit.PerYear.ToString()),
+            new("None", null, true),
+            new(TimeUnit.PerMonth.Description(), TimeUnit.PerMonth.ToString(), false),
+            new(TimeUnit.PerYear.Description(), TimeUnit.PerYear.ToString(), false),
         };
 
-        public IList<SelectableRadioOption<CataloguePriceCalculationType>> AvailableCalculationTypes => new List<SelectableRadioOption<CataloguePriceCalculationType>>
+        public IEnumerable<SelectableRadioOption<CataloguePriceCalculationType>> AvailableCalculationTypes => new List<SelectableRadioOption<CataloguePriceCalculationType>>
         {
             new(
                 CataloguePriceCalculationType.SingleFixed.Name(),
@@ -76,6 +86,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.ListPriceModels
 
         public ProvisioningType? SelectedProvisioningType { get; set; }
 
+        public TimeUnit? PerServiceRecipientBillingPeriod { get; set; }
+
         public TimeUnit? DeclarativeBillingPeriod { get; set; }
 
         public TimeUnit? OnDemandBillingPeriod { get; set; }
@@ -99,10 +111,11 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.ListPriceModels
                 RangeDescription = RangeDefinition,
             };
 
-        public TimeUnit? GetTimeUnit()
+        public TimeUnit? GetBillingPeriod()
             => SelectedProvisioningType!.Value switch
             {
                 ProvisioningType.Patient => TimeUnit.PerYear,
+                ProvisioningType.PerServiceRecipient when PerServiceRecipientBillingPeriod.HasValue => PerServiceRecipientBillingPeriod.Value,
                 ProvisioningType.Declarative when CatalogueItemType == CatalogueItemType.AssociatedService => null,
                 ProvisioningType.Declarative when DeclarativeBillingPeriod.HasValue => DeclarativeBillingPeriod.Value,
                 ProvisioningType.OnDemand when OnDemandBillingPeriod.HasValue => OnDemandBillingPeriod.Value,
