@@ -3,8 +3,8 @@
 
 @model NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models.SolutionsModel;
 
-<nhs-expander label-text="Filter Catalogue Solutions">
-    <nhs-details label-text="Filter by framework">
+<nhs-expander label-text="Filter Catalogue Solutions" data-test-id="filter-solutions-expander">
+    <nhs-details label-text="Filter by framework" data-test-id="filter-framework-details">
         <nhs-fieldset-form-label asp-for="@Model"
                                  label-hint="See what’s available if you’re using funding from a specific framework.">
             <nhs-radio-buttons asp-for="SelectedFramework"
@@ -60,7 +60,7 @@
                                     </nhs-checkbox-container>
                                 </nhs-fieldset-form-label>
                             }
-                            
+
                             @if (Model.CategoryFilters[i].Capabilities[j].SupplierDefinedEpics.Any())
                             {
                                 <nhs-fieldset-form-label asp-for="@Model.CategoryFilters[i].Capabilities[j]" label-text="Supplier defined Epics" size="Small">
