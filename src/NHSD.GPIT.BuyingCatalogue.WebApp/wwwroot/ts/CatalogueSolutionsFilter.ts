@@ -50,12 +50,13 @@ function ReplaceFilterAndAddBinders(html) {
     const filterForm = "filter-form";
     const SubmitButtonId = "Submit";
 
-    const formContainer = document.getElementById(filterContainer);
     const form = document.getElementById(filterForm);
 
-    form.parentNode.removeChild(form);
-
-    formContainer.innerHTML = html;
+    form.innerHTML = html;
+    form.onsubmit = (e) => {
+        e.preventDefault();
+        return false;
+    };
 
     const submitButton = document.getElementById(SubmitButtonId);
 
@@ -63,7 +64,7 @@ function ReplaceFilterAndAddBinders(html) {
     submitButton.addEventListener('click', generateQueryParam);
 
     document.querySelectorAll(NhsRadiosInput).forEach(item => {
-        item.addEventListener('click', reload)
+        item.addEventListener('click', reload);
     });
 
     RefireDomContentLoadedEvent();
