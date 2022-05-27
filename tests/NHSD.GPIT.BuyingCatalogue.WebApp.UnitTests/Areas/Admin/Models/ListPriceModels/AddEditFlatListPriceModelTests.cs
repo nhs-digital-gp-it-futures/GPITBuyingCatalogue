@@ -6,7 +6,7 @@ using Xunit;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Models.ListPriceModels;
 
-public static class AddTieredListPriceModelTests
+public static class AddEditFlatListPriceModelTests
 {
     [Theory]
     [CommonInlineAutoData(null)]
@@ -20,7 +20,7 @@ public static class AddTieredListPriceModelTests
         price.ProvisioningType = ProvisioningType.OnDemand;
         price.TimeUnit = billingPeriod;
 
-        var model = new AddTieredListPriceModel(catalogueItem, price);
+        var model = new AddEditFlatListPriceModel(catalogueItem, price);
 
         model.OnDemandBillingPeriod.Should().Be(billingPeriod);
         model.DeclarativeBillingPeriod.Should().BeNull();
@@ -39,7 +39,7 @@ public static class AddTieredListPriceModelTests
         price.ProvisioningType = ProvisioningType.Declarative;
         price.TimeUnit = billingPeriod;
 
-        var model = new AddTieredListPriceModel(catalogueItem, price);
+        var model = new AddEditFlatListPriceModel(catalogueItem, price);
 
         model.OnDemandBillingPeriod.Should().BeNull();
         model.DeclarativeBillingPeriod.Should().Be(billingPeriod);
@@ -58,7 +58,7 @@ public static class AddTieredListPriceModelTests
         price.ProvisioningType = ProvisioningType.PerServiceRecipient;
         price.TimeUnit = billingPeriod;
 
-        var model = new AddTieredListPriceModel(catalogueItem, price);
+        var model = new AddEditFlatListPriceModel(catalogueItem, price);
 
         model.OnDemandBillingPeriod.Should().BeNull();
         model.DeclarativeBillingPeriod.Should().BeNull();
@@ -76,7 +76,7 @@ public static class AddTieredListPriceModelTests
         price.ProvisioningType = ProvisioningType.OnDemand;
         price.CataloguePriceQuantityCalculationType = calculationType;
 
-        var model = new AddTieredListPriceModel(catalogueItem, price);
+        var model = new AddEditFlatListPriceModel(catalogueItem, price);
 
         model.OnDemandQuantityCalculationType.Should().Be(calculationType);
         model.DeclarativeQuantityCalculationType.Should().BeNull();
@@ -93,7 +93,7 @@ public static class AddTieredListPriceModelTests
         price.ProvisioningType = ProvisioningType.Declarative;
         price.CataloguePriceQuantityCalculationType = calculationType;
 
-        var model = new AddTieredListPriceModel(catalogueItem, price);
+        var model = new AddEditFlatListPriceModel(catalogueItem, price);
 
         model.OnDemandQuantityCalculationType.Should().BeNull();
         model.DeclarativeQuantityCalculationType.Should().Be(calculationType);
@@ -110,7 +110,7 @@ public static class AddTieredListPriceModelTests
         price.ProvisioningType = ProvisioningType.PerServiceRecipient;
         price.CataloguePriceQuantityCalculationType = calculationType;
 
-        var model = new AddTieredListPriceModel(catalogueItem, price);
+        var model = new AddEditFlatListPriceModel(catalogueItem, price);
 
         model.OnDemandQuantityCalculationType.Should().BeNull();
         model.DeclarativeQuantityCalculationType.Should().BeNull();
@@ -119,7 +119,7 @@ public static class AddTieredListPriceModelTests
     [Theory]
     [CommonAutoData]
     public static void GetBillingPeriod_Patient_PerYear(
-        AddTieredListPriceModel model)
+        AddEditFlatListPriceModel model)
     {
         model.SelectedProvisioningType = ProvisioningType.Patient;
 
@@ -132,7 +132,7 @@ public static class AddTieredListPriceModelTests
     [CommonInlineAutoData(TimeUnit.PerYear)]
     public static void GetBillingPeriod_PerServiceRecipient_SelectedTimeUnit(
         TimeUnit? selectedBillingPeriod,
-        AddTieredListPriceModel model)
+        AddEditFlatListPriceModel model)
     {
         model.SelectedProvisioningType = ProvisioningType.PerServiceRecipient;
         model.PerServiceRecipientBillingPeriod = selectedBillingPeriod;
@@ -143,7 +143,7 @@ public static class AddTieredListPriceModelTests
     [Theory]
     [CommonAutoData]
     public static void GetBillingPeriod_DeclarativeAssociatedService_Null(
-        AddTieredListPriceModel model)
+        AddEditFlatListPriceModel model)
     {
         model.SelectedProvisioningType = ProvisioningType.Declarative;
         model.CatalogueItemType = CatalogueItemType.AssociatedService;
@@ -157,7 +157,7 @@ public static class AddTieredListPriceModelTests
     [CommonInlineAutoData(TimeUnit.PerYear)]
     public static void GetBillingPeriod_Declarative_SelectedTimeUnit(
         TimeUnit? selectedBillingPeriod,
-        AddTieredListPriceModel model)
+        AddEditFlatListPriceModel model)
     {
         model.SelectedProvisioningType = ProvisioningType.Declarative;
         model.DeclarativeBillingPeriod = selectedBillingPeriod;
@@ -172,7 +172,7 @@ public static class AddTieredListPriceModelTests
     [CommonInlineAutoData(TimeUnit.PerYear)]
     public static void GetBillingPeriod_OnDemand_SelectedTimeUnit(
         TimeUnit? selectedBillingPeriod,
-        AddTieredListPriceModel model)
+        AddEditFlatListPriceModel model)
     {
         model.SelectedProvisioningType = ProvisioningType.OnDemand;
         model.OnDemandBillingPeriod = selectedBillingPeriod;
@@ -186,7 +186,7 @@ public static class AddTieredListPriceModelTests
     [CommonInlineAutoData(CataloguePriceQuantityCalculationType.PerSolutionOrService)]
     public static void GetQuantityCalculationType_Declarative_SelectedQuantityCalculationType(
         CataloguePriceQuantityCalculationType quantityCalculationType,
-        AddTieredListPriceModel model)
+        AddEditFlatListPriceModel model)
     {
         model.SelectedProvisioningType = ProvisioningType.Declarative;
         model.DeclarativeQuantityCalculationType = quantityCalculationType;
@@ -200,7 +200,7 @@ public static class AddTieredListPriceModelTests
     [CommonInlineAutoData(CataloguePriceQuantityCalculationType.PerSolutionOrService)]
     public static void GetQuantityCalculationType_OnDemand_SelectedQuantityCalculationType(
         CataloguePriceQuantityCalculationType quantityCalculationType,
-        AddTieredListPriceModel model)
+        AddEditFlatListPriceModel model)
     {
         model.SelectedProvisioningType = ProvisioningType.OnDemand;
         model.DeclarativeQuantityCalculationType = null;

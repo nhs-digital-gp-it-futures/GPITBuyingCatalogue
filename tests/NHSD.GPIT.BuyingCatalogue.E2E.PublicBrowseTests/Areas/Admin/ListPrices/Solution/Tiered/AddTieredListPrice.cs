@@ -43,24 +43,29 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.ListPrices.Solution.Tie
             CommonActions.GoBackLinkDisplayed().Should().BeTrue();
             CommonActions.SaveButtonDisplayed().Should().BeTrue();
 
-            CommonActions.ElementIsDisplayed(AddEditTieredListPriceObjects.ProvisioningTypeInput).Should().BeTrue();
-            CommonActions.ElementIsDisplayed(AddEditTieredListPriceObjects.CalculationTypeInput).Should().BeTrue();
-            CommonActions.ElementIsDisplayed(AddEditTieredListPriceObjects.UnitDescriptionInput).Should().BeTrue();
-            CommonActions.ElementIsDisplayed(AddEditTieredListPriceObjects.UnitDefinitionInput).Should().BeTrue();
-            CommonActions.ElementIsDisplayed(AddEditTieredListPriceObjects.RangeDefinitionInput).Should().BeTrue();
-            CommonActions.ElementExists(AddEditTieredListPriceObjects.MaximumTiersInset).Should().BeFalse();
+            CommonActions.ElementIsDisplayed(ListPriceObjects.ProvisioningTypeInput).Should().BeTrue();
+            CommonActions.ElementIsDisplayed(ListPriceObjects.CalculationTypeInput).Should().BeTrue();
+            CommonActions.ElementIsDisplayed(ListPriceObjects.UnitDescriptionInput).Should().BeTrue();
+            CommonActions.ElementIsDisplayed(ListPriceObjects.UnitDefinitionInput).Should().BeTrue();
+            CommonActions.ElementIsDisplayed(ListPriceObjects.RangeDefinitionInput).Should().BeTrue();
+            CommonActions.ElementExists(ListPriceObjects.MaximumTiersInset).Should().BeFalse();
 
-            CommonActions.ElementIsDisplayed(AddEditTieredListPriceObjects.OnDemandBillingPeriodInput).Should().BeFalse();
-            CommonActions.ElementIsDisplayed(AddEditTieredListPriceObjects.DeclarativeBillingPeriodInput).Should().BeFalse();
+            CommonActions.ElementIsDisplayed(ListPriceObjects.OnDemandBillingPeriodInput).Should().BeFalse();
+            CommonActions.ElementIsDisplayed(ListPriceObjects.DeclarativeBillingPeriodInput).Should().BeFalse();
 
-            CommonActions.ClickRadioButtonWithValue(ProvisioningType.PerServiceRecipient.ToString());
-            CommonActions.ElementIsDisplayed(AddEditFlatListPriceObjects.PerServiceRecipientBillingPeriodInput).Should().BeTrue();
+            CommonActions.ElementIsDisplayed(ListPriceObjects.OnDemandQuantityCalculationRadioButtons).Should().BeFalse();
+            CommonActions.ElementIsDisplayed(ListPriceObjects.DeclarativeQuantityCalculationRadioButtons).Should().BeFalse();
 
-            CommonActions.ClickRadioButtonWithValue(ProvisioningType.OnDemand.ToString());
-            CommonActions.ElementIsDisplayed(AddEditTieredListPriceObjects.OnDemandBillingPeriodInput).Should().BeTrue();
+            CommonActions.ClickRadioButtonWithValue(ListPriceObjects.ProvisioningTypeRadioButtons, ProvisioningType.PerServiceRecipient.ToString());
+            CommonActions.ElementIsDisplayed(ListPriceObjects.PerServiceRecipientBillingPeriodInput).Should().BeTrue();
 
-            CommonActions.ClickRadioButtonWithValue(ProvisioningType.Declarative.ToString());
-            CommonActions.ElementIsDisplayed(AddEditTieredListPriceObjects.DeclarativeBillingPeriodInput).Should().BeTrue();
+            CommonActions.ClickRadioButtonWithValue(ListPriceObjects.ProvisioningTypeRadioButtons, ProvisioningType.OnDemand.ToString());
+            CommonActions.ElementIsDisplayed(ListPriceObjects.OnDemandQuantityCalculationRadioButtons).Should().BeTrue();
+            CommonActions.ElementIsDisplayed(ListPriceObjects.OnDemandBillingPeriodInput).Should().BeTrue();
+
+            CommonActions.ClickRadioButtonWithValue(ListPriceObjects.ProvisioningTypeRadioButtons, ProvisioningType.Declarative.ToString());
+            CommonActions.ElementIsDisplayed(ListPriceObjects.DeclarativeQuantityCalculationRadioButtons).Should().BeTrue();
+            CommonActions.ElementIsDisplayed(ListPriceObjects.DeclarativeBillingPeriodInput).Should().BeTrue();
         }
 
         [Fact]
@@ -81,10 +86,10 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.ListPrices.Solution.Tie
             CommonActions.ErrorSummaryDisplayed().Should().BeTrue();
             CommonActions.ErrorSummaryLinksExist().Should().BeTrue();
 
-            CommonActions.ElementShowingCorrectErrorMessage(AddEditTieredListPriceObjects.ProvisioningTypeInputError, "Error: Select a provisioning type").Should().BeTrue();
-            CommonActions.ElementShowingCorrectErrorMessage(AddEditTieredListPriceObjects.CalculationTypeInputError, "Error: Select a calculation type").Should().BeTrue();
-            CommonActions.ElementShowingCorrectErrorMessage(AddEditTieredListPriceObjects.UnitDescriptionInputError, "Enter a unit").Should().BeTrue();
-            CommonActions.ElementShowingCorrectErrorMessage(AddEditTieredListPriceObjects.RangeDefinitionInputError, "Enter a range definition").Should().BeTrue();
+            CommonActions.ElementShowingCorrectErrorMessage(ListPriceObjects.ProvisioningTypeInputError, "Error: Select a provisioning type").Should().BeTrue();
+            CommonActions.ElementShowingCorrectErrorMessage(ListPriceObjects.CalculationTypeInputError, "Error: Select a calculation type").Should().BeTrue();
+            CommonActions.ElementShowingCorrectErrorMessage(ListPriceObjects.UnitDescriptionInputError, "Enter a unit").Should().BeTrue();
+            CommonActions.ElementShowingCorrectErrorMessage(ListPriceObjects.RangeDefinitionInputError, "Enter a range definition").Should().BeTrue();
         }
 
         [Fact]
@@ -96,18 +101,18 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.ListPrices.Solution.Tie
             CommonActions.ClickRadioButtonWithValue(price.ProvisioningType.ToString());
             CommonActions.ClickRadioButtonWithValue(price.CataloguePriceCalculationType.ToString());
 
-            CommonActions.ElementAddValue(AddEditTieredListPriceObjects.UnitDescriptionInput, price.PricingUnit.Description);
-            CommonActions.ElementAddValue(AddEditTieredListPriceObjects.RangeDefinitionInput, price.PricingUnit.RangeDescription);
+            CommonActions.ElementAddValue(ListPriceObjects.UnitDescriptionInput, price.PricingUnit.Description);
+            CommonActions.ElementAddValue(ListPriceObjects.RangeDefinitionInput, price.PricingUnit.RangeDescription);
 
             CommonActions.ClickSave();
 
             CommonActions.ErrorSummaryDisplayed().Should().BeTrue();
             CommonActions.ErrorSummaryLinksExist().Should().BeTrue();
 
-            CommonActions.ElementShowingCorrectErrorMessage(AddEditTieredListPriceObjects.ProvisioningTypeInputError, "Error: A list price with these details already exists").Should().BeTrue();
-            CommonActions.ElementShowingCorrectErrorMessage(AddEditTieredListPriceObjects.CalculationTypeInputError, "Error: A list price with these details already exists").Should().BeTrue();
-            CommonActions.ElementShowingCorrectErrorMessage(AddEditTieredListPriceObjects.UnitDescriptionInputError, "A list price with these details already exists").Should().BeTrue();
-            CommonActions.ElementShowingCorrectErrorMessage(AddEditTieredListPriceObjects.RangeDefinitionInputError, "A list price with these details already exists").Should().BeTrue();
+            CommonActions.ElementShowingCorrectErrorMessage(ListPriceObjects.ProvisioningTypeInputError, "Error: A list price with these details already exists").Should().BeTrue();
+            CommonActions.ElementShowingCorrectErrorMessage(ListPriceObjects.CalculationTypeInputError, "Error: A list price with these details already exists").Should().BeTrue();
+            CommonActions.ElementShowingCorrectErrorMessage(ListPriceObjects.UnitDescriptionInputError, "A list price with these details already exists").Should().BeTrue();
+            CommonActions.ElementShowingCorrectErrorMessage(ListPriceObjects.RangeDefinitionInputError, "A list price with these details already exists").Should().BeTrue();
         }
 
         [Fact]
@@ -116,8 +121,8 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.ListPrices.Solution.Tie
             CommonActions.ClickRadioButtonWithValue(ProvisioningType.Patient.ToString());
             CommonActions.ClickRadioButtonWithValue(CataloguePriceCalculationType.Volume.ToString());
 
-            TextGenerators.TextInputAddText(AddEditTieredListPriceObjects.UnitDescriptionInput, 100);
-            TextGenerators.TextInputAddText(AddEditTieredListPriceObjects.RangeDefinitionInput, 100);
+            TextGenerators.TextInputAddText(ListPriceObjects.UnitDescriptionInput, 100);
+            TextGenerators.TextInputAddText(ListPriceObjects.RangeDefinitionInput, 100);
 
             CommonActions.ClickSave();
 

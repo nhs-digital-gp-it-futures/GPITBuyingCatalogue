@@ -110,9 +110,9 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.ListPrices.Solution.Tie
 
             CommonActions.ClickGoBackLink();
 
-            CommonActions.ElementIsDisplayed(AddEditTieredListPriceObjects.DeletePriceLink).Should().BeTrue();
+            CommonActions.ElementIsDisplayed(ListPriceObjects.DeletePriceLink).Should().BeTrue();
 
-            CommonActions.ClickLinkElement(AddEditTieredListPriceObjects.DeletePriceLink);
+            CommonActions.ClickLinkElement(ListPriceObjects.DeletePriceLink);
 
             CommonActions.PageLoadedCorrectGetIndex(
                 typeof(CatalogueSolutionListPriceController),
@@ -176,9 +176,9 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.ListPrices.Solution.Tie
 
             CommonActions.ClickGoBackLink();
 
-            CommonActions.ElementIsDisplayed(AddEditTieredListPriceObjects.DeletePriceLink).Should().BeTrue();
+            CommonActions.ElementIsDisplayed(ListPriceObjects.DeletePriceLink).Should().BeTrue();
 
-            CommonActions.ClickLinkElement(AddEditTieredListPriceObjects.DeletePriceLink);
+            CommonActions.ClickLinkElement(ListPriceObjects.DeletePriceLink);
 
             CommonActions.PageLoadedCorrectGetIndex(
                 typeof(CatalogueSolutionListPriceController),
@@ -243,9 +243,9 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.ListPrices.Solution.Tie
                 nameof(CatalogueSolutionListPriceController.TieredPriceTiers),
                 parameters);
 
-            CommonActions.ClickLinkElement(AddEditTieredListPriceObjects.EditTierPriceLink(1));
+            CommonActions.ClickLinkElement(ListPriceObjects.EditTierPriceLink(1));
 
-            CommonActions.ClickLinkElement(AddEditTieredListPriceObjects.DeleteTieredPriceTierLink);
+            CommonActions.ClickLinkElement(ListPriceObjects.DeleteTieredPriceTierLink);
 
             CommonActions.PageLoadedCorrectGetIndex(
                 typeof(CatalogueSolutionListPriceController),
@@ -307,9 +307,9 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.ListPrices.Solution.Tie
                 nameof(CatalogueSolutionListPriceController.TieredPriceTiers),
                 parameters);
 
-            CommonActions.ClickLinkElement(AddEditTieredListPriceObjects.EditTierPriceLink(1));
+            CommonActions.ClickLinkElement(ListPriceObjects.EditTierPriceLink(1));
 
-            CommonActions.ClickLinkElement(AddEditTieredListPriceObjects.DeleteTieredPriceTierLink);
+            CommonActions.ClickLinkElement(ListPriceObjects.DeleteTieredPriceTierLink);
 
             CommonActions.PageLoadedCorrectGetIndex(
                 typeof(CatalogueSolutionListPriceController),
@@ -609,7 +609,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.ListPrices.Solution.Tie
 
             CommonActions.ErrorSummaryDisplayed().Should().BeTrue();
             CommonActions.ErrorSummaryLinksExist().Should().BeTrue();
-            CommonActions.ElementShowingCorrectErrorMessage(AddEditTieredListPriceObjects.PublicationStatusInputError, "Error: Tier 1's lower range overlaps with Tier 2's upper range").Should().BeTrue();
+            CommonActions.ElementShowingCorrectErrorMessage(ListPriceObjects.PublicationStatusInputError, "Error: Tier 1's lower range overlaps with Tier 2's upper range").Should().BeTrue();
 
             catalogueItem.CataloguePrices.Remove(price);
             context.SaveChanges();
@@ -669,7 +669,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.ListPrices.Solution.Tie
 
             CommonActions.ErrorSummaryDisplayed().Should().BeTrue();
             CommonActions.ErrorSummaryLinksExist().Should().BeTrue();
-            CommonActions.ElementShowingCorrectErrorMessage(AddEditTieredListPriceObjects.PublicationStatusInputError, "Error: There's a gap between Tier 1's upper range and Tier 2's lower range").Should().BeTrue();
+            CommonActions.ElementShowingCorrectErrorMessage(ListPriceObjects.PublicationStatusInputError, "Error: There's a gap between Tier 1's upper range and Tier 2's lower range").Should().BeTrue();
 
             catalogueItem.CataloguePrices.Remove(price);
             context.SaveChanges();

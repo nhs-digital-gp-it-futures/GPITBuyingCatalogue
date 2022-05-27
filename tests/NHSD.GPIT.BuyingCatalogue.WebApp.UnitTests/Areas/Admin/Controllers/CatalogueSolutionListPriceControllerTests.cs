@@ -159,7 +159,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
             solutionListPriceService.Setup(s => s.GetCatalogueItemWithListPrices(solution.CatalogueItemId))
                 .ReturnsAsync(solution.CatalogueItem);
 
-            var result = (await controller.AddTieredListPrice(solution.CatalogueItemId, (int?)null)).As<ViewResult>();
+            var result = (await controller.AddTieredListPrice(solution.CatalogueItemId)).As<ViewResult>();
 
             result.Should().NotBeNull();
             result.Model.Should().BeEquivalentTo(model, opt => opt.Excluding(m => m.BackLink));
@@ -196,7 +196,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
             solutionListPriceService.Setup(s => s.GetCatalogueItemWithListPrices(solutionId))
                 .ReturnsAsync((CatalogueItem)null);
 
-            var result = (await controller.AddTieredListPrice(solutionId, (int?)null)).As<NotFoundResult>();
+            var result = (await controller.AddTieredListPrice(solutionId)).As<NotFoundResult>();
 
             result.Should().NotBeNull();
         }
@@ -369,7 +369,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
             solutionListPriceService.Setup(s => s.GetCatalogueItemWithListPrices(solution.CatalogueItemId))
                 .ReturnsAsync(solution.CatalogueItem);
 
-            var result = (await controller.AddTieredPriceTier(solution.CatalogueItemId, price.CataloguePriceId, true)).As<ViewResult>();
+            _ = (await controller.AddTieredPriceTier(solution.CatalogueItemId, price.CataloguePriceId, true)).As<ViewResult>();
 
             urlHelper.Verify(u => u.Action(It.Is<UrlActionContext>(match => match.Action == nameof(controller.EditTieredListPrice))));
         }
@@ -388,7 +388,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
             solutionListPriceService.Setup(s => s.GetCatalogueItemWithListPrices(solution.CatalogueItemId))
                 .ReturnsAsync(solution.CatalogueItem);
 
-            var result = (await controller.AddTieredPriceTier(solution.CatalogueItemId, price.CataloguePriceId, false)).As<ViewResult>();
+            _ = (await controller.AddTieredPriceTier(solution.CatalogueItemId, price.CataloguePriceId, false)).As<ViewResult>();
 
             urlHelper.Verify(u => u.Action(It.Is<UrlActionContext>(match => match.Action == nameof(controller.TieredPriceTiers))));
         }
@@ -560,7 +560,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
                 .ReturnsAsync(solution.CatalogueItem);
 
             var pricingUnit = model.GetPricingUnit();
-            var timeUnit = model.GetBillingPeriod();
 
             var result = (await controller.EditTieredListPrice(solution.CatalogueItemId, price.CataloguePriceId, model)).As<RedirectToActionResult>();
 
@@ -573,7 +572,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
                         && match.RangeDescription == pricingUnit.RangeDescription),
                     model.SelectedProvisioningType!.Value,
                     model.SelectedCalculationType!.Value,
-                    model.GetBillingPeriod()),
+                    model.GetBillingPeriod(),
+                    model.GetQuantityCalculationType()),
                 Times.Once());
 
             solutionListPriceService.Verify(
@@ -603,7 +603,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
                 .ReturnsAsync(solution.CatalogueItem);
 
             var pricingUnit = model.GetPricingUnit();
-            var timeUnit = model.GetBillingPeriod();
 
             var result = (await controller.EditTieredListPrice(solution.CatalogueItemId, price.CataloguePriceId, model)).As<RedirectToActionResult>();
 
@@ -616,7 +615,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
                         && match.RangeDescription == pricingUnit.RangeDescription),
                     model.SelectedProvisioningType!.Value,
                     model.SelectedCalculationType!.Value,
-                    model.GetBillingPeriod()),
+                    model.GetBillingPeriod(),
+                    model.GetQuantityCalculationType()),
                 Times.Once());
 
             solutionListPriceService.Verify(
@@ -743,7 +743,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
             solutionListPriceService.Setup(s => s.GetCatalogueItemWithListPrices(solution.CatalogueItemId))
                 .ReturnsAsync(solution.CatalogueItem);
 
-            var result = (await controller.EditTieredPriceTier(solution.CatalogueItemId, price.CataloguePriceId, tier.Id, (bool?)null)).As<ViewResult>();
+            var result = (await controller.EditTieredPriceTier(solution.CatalogueItemId, price.CataloguePriceId, tier.Id)).As<ViewResult>();
 
             result.Should().NotBeNull();
             result.Model.Should().BeEquivalentTo(model, opt => opt.Excluding(m => m.BackLink));
@@ -1300,7 +1300,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
                 .ReturnsAsync(solution.CatalogueItem);
 
             var pricingUnit = model.GetPricingUnit();
-            var timeUnit = model.GetBillingPeriod();
 
             var result = (await controller.EditFlatListPrice(solution.CatalogueItemId, price.CataloguePriceId, model)).As<RedirectToActionResult>();
 
@@ -1314,6 +1313,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
                     model.SelectedProvisioningType!.Value,
                     CataloguePriceCalculationType.SingleFixed,
                     model.GetBillingPeriod(),
+                    model.GetQuantityCalculationType(),
                     model.Price!.Value),
                 Times.Once());
 
@@ -1345,7 +1345,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
                 .ReturnsAsync(solution.CatalogueItem);
 
             var pricingUnit = model.GetPricingUnit();
-            var timeUnit = model.GetBillingPeriod();
 
             var result = (await controller.EditFlatListPrice(solution.CatalogueItemId, price.CataloguePriceId, model)).As<RedirectToActionResult>();
 
@@ -1359,6 +1358,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
                     model.SelectedProvisioningType!.Value,
                     CataloguePriceCalculationType.SingleFixed,
                     model.GetBillingPeriod(),
+                    model.GetQuantityCalculationType(),
                     model.Price!.Value),
                 Times.Once());
 

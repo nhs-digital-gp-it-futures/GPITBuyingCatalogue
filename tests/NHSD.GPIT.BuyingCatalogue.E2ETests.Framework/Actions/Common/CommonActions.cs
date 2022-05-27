@@ -96,6 +96,13 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.Actions.Common
                 .Click();
         }
 
+        public void ClickRadioButtonWithValue(By parent, string value)
+        {
+            Driver.FindElements(parent)
+                .Single(rbi => rbi.GetAttribute("value") == value)
+                .Click();
+        }
+
         public string SelectDropDownItem(By targetField, int index = 0)
         {
             var selectElement = new SelectElement(Driver.FindElement(targetField));

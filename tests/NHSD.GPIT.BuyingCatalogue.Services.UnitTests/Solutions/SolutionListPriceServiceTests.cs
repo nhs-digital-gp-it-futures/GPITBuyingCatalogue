@@ -103,7 +103,8 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Solutions
                 null,
                 price.ProvisioningType,
                 price.CataloguePriceCalculationType,
-                price.TimeUnit));
+                price.TimeUnit,
+                price.CataloguePriceQuantityCalculationType));
 
         [Theory]
         [InMemoryDbAutoData]
@@ -141,7 +142,8 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Solutions
                 priceUpdates.PricingUnit,
                 priceUpdates.ProvisioningType,
                 priceUpdates.CataloguePriceCalculationType,
-                priceUpdates.TimeUnit);
+                priceUpdates.TimeUnit,
+                priceUpdates.CataloguePriceQuantityCalculationType);
 
             price.ProvisioningType.Should().Be(priceUpdates.ProvisioningType);
             price.CataloguePriceCalculationType.Should().Be(priceUpdates.CataloguePriceCalculationType);
@@ -149,6 +151,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Solutions
             price.PricingUnit.RangeDescription.Should().Be(priceUpdates.PricingUnit.RangeDescription);
             price.PricingUnit.Definition.Should().Be(priceUpdates.PricingUnit.Definition);
             price.PricingUnit.Description.Should().Be(priceUpdates.PricingUnit.Description);
+            price.CataloguePriceQuantityCalculationType.Should().Be(priceUpdates.CataloguePriceQuantityCalculationType);
         }
 
         [Theory]
@@ -165,6 +168,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Solutions
                 cataloguePrice.ProvisioningType,
                 cataloguePrice.CataloguePriceCalculationType,
                 cataloguePrice.TimeUnit,
+                cataloguePrice.CataloguePriceQuantityCalculationType,
                 price));
 
         [Theory]
@@ -214,6 +218,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Solutions
                 priceUpdates.ProvisioningType,
                 priceUpdates.CataloguePriceCalculationType,
                 priceUpdates.TimeUnit,
+                priceUpdates.CataloguePriceQuantityCalculationType,
                 price);
 
             cataloguePrice.ProvisioningType.Should().Be(priceUpdates.ProvisioningType);
@@ -222,6 +227,8 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Solutions
             cataloguePrice.PricingUnit.RangeDescription.Should().Be(priceUpdates.PricingUnit.RangeDescription);
             cataloguePrice.PricingUnit.Definition.Should().Be(priceUpdates.PricingUnit.Definition);
             cataloguePrice.PricingUnit.Description.Should().Be(priceUpdates.PricingUnit.Description);
+            cataloguePrice.CataloguePriceQuantityCalculationType.Should()
+                .Be(priceUpdates.CataloguePriceQuantityCalculationType);
             cataloguePrice.CataloguePriceTiers.First().Price.Should().Be(price);
         }
 

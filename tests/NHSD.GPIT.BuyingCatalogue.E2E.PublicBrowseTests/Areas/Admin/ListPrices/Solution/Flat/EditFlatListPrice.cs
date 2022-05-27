@@ -9,6 +9,7 @@ using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers;
+using OpenQA.Selenium;
 using Xunit;
 
 namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.ListPrices.Solution.Flat
@@ -45,25 +46,30 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.ListPrices.Solution.Fla
             CommonActions.GoBackLinkDisplayed().Should().BeTrue();
             CommonActions.SaveButtonDisplayed().Should().BeTrue();
 
-            CommonActions.ElementIsDisplayed(AddEditFlatListPriceObjects.ProvisioningTypeInput).Should().BeTrue();
-            CommonActions.ElementIsDisplayed(AddEditFlatListPriceObjects.UnitDescriptionInput).Should().BeTrue();
-            CommonActions.ElementIsDisplayed(AddEditFlatListPriceObjects.UnitDefinitionInput).Should().BeTrue();
-            CommonActions.ElementIsDisplayed(AddEditFlatListPriceObjects.PriceInput).Should().BeTrue();
-            CommonActions.ElementIsDisplayed(AddEditFlatListPriceObjects.PublicationStatusInput).Should().BeTrue();
+            CommonActions.ElementIsDisplayed(ListPriceObjects.ProvisioningTypeInput).Should().BeTrue();
+            CommonActions.ElementIsDisplayed(ListPriceObjects.UnitDescriptionInput).Should().BeTrue();
+            CommonActions.ElementIsDisplayed(ListPriceObjects.UnitDefinitionInput).Should().BeTrue();
+            CommonActions.ElementIsDisplayed(ListPriceObjects.PriceInput).Should().BeTrue();
+            CommonActions.ElementIsDisplayed(ListPriceObjects.PublicationStatusInput).Should().BeTrue();
 
-            CommonActions.ElementIsDisplayed(AddEditFlatListPriceObjects.OnDemandBillingPeriodInput).Should().BeFalse();
-            CommonActions.ElementIsDisplayed(AddEditFlatListPriceObjects.DeclarativeBillingPeriodInput).Should().BeFalse();
+            CommonActions.ElementIsDisplayed(ListPriceObjects.OnDemandBillingPeriodInput).Should().BeFalse();
+            CommonActions.ElementIsDisplayed(ListPriceObjects.DeclarativeBillingPeriodInput).Should().BeFalse();
 
-            CommonActions.ElementIsDisplayed(AddEditFlatListPriceObjects.DeletePriceLink).Should().BeFalse();
+            CommonActions.ElementIsDisplayed(ListPriceObjects.DeletePriceLink).Should().BeFalse();
 
-            CommonActions.ClickRadioButtonWithValue(ProvisioningType.PerServiceRecipient.ToString());
-            CommonActions.ElementIsDisplayed(AddEditFlatListPriceObjects.PerServiceRecipientBillingPeriodInput).Should().BeTrue();
+            CommonActions.ElementIsDisplayed(ListPriceObjects.OnDemandQuantityCalculationRadioButtons).Should().BeFalse();
+            CommonActions.ElementIsDisplayed(ListPriceObjects.DeclarativeQuantityCalculationRadioButtons).Should().BeFalse();
 
-            CommonActions.ClickRadioButtonWithValue(ProvisioningType.OnDemand.ToString());
-            CommonActions.ElementIsDisplayed(AddEditFlatListPriceObjects.OnDemandBillingPeriodInput).Should().BeTrue();
+            CommonActions.ClickRadioButtonWithValue(ListPriceObjects.ProvisioningTypeRadioButtons, ProvisioningType.PerServiceRecipient.ToString());
+            CommonActions.ElementIsDisplayed(ListPriceObjects.PerServiceRecipientBillingPeriodInput).Should().BeTrue();
 
-            CommonActions.ClickRadioButtonWithValue(ProvisioningType.Declarative.ToString());
-            CommonActions.ElementIsDisplayed(AddEditFlatListPriceObjects.DeclarativeBillingPeriodInput).Should().BeTrue();
+            CommonActions.ClickRadioButtonWithValue(ListPriceObjects.ProvisioningTypeRadioButtons, ProvisioningType.OnDemand.ToString());
+            CommonActions.ElementIsDisplayed(ListPriceObjects.OnDemandQuantityCalculationRadioButtons).Should().BeTrue();
+            CommonActions.ElementIsDisplayed(ListPriceObjects.OnDemandBillingPeriodInput).Should().BeTrue();
+
+            CommonActions.ClickRadioButtonWithValue(ListPriceObjects.ProvisioningTypeRadioButtons, ProvisioningType.Declarative.ToString());
+            CommonActions.ElementIsDisplayed(ListPriceObjects.DeclarativeQuantityCalculationRadioButtons).Should().BeTrue();
+            CommonActions.ElementIsDisplayed(ListPriceObjects.DeclarativeBillingPeriodInput).Should().BeTrue();
         }
 
         [Fact]
@@ -78,7 +84,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.ListPrices.Solution.Fla
 
             Driver.Navigate().Refresh();
 
-            CommonActions.ElementIsDisplayed(AddEditFlatListPriceObjects.DeletePriceLink).Should().BeTrue();
+            CommonActions.ElementIsDisplayed(ListPriceObjects.DeletePriceLink).Should().BeTrue();
 
             cataloguePrice.PublishedStatus = originalPublishStatus;
             context.SaveChanges();
@@ -106,7 +112,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.ListPrices.Solution.Fla
 
             Driver.Navigate().Refresh();
 
-            CommonActions.ClickLinkElement(AddEditFlatListPriceObjects.DeletePriceLink);
+            CommonActions.ClickLinkElement(ListPriceObjects.DeletePriceLink);
 
             CommonActions.PageLoadedCorrectGetIndex(
                 typeof(CatalogueSolutionListPriceController),
@@ -125,17 +131,17 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.ListPrices.Solution.Fla
             CommonActions.ClickRadioButtonWithValue(price.ProvisioningType.ToString());
             CommonActions.ClickRadioButtonWithValue(price.PublishedStatus.ToString());
 
-            CommonActions.ElementAddValue(AddEditFlatListPriceObjects.UnitDescriptionInput, price.PricingUnit.Description);
-            CommonActions.ElementAddValue(AddEditFlatListPriceObjects.PriceInput, price.CataloguePriceTiers.First().Price.ToString());
+            CommonActions.ElementAddValue(ListPriceObjects.UnitDescriptionInput, price.PricingUnit.Description);
+            CommonActions.ElementAddValue(ListPriceObjects.PriceInput, price.CataloguePriceTiers.First().Price.ToString());
 
             CommonActions.ClickSave();
 
             CommonActions.ErrorSummaryDisplayed().Should().BeTrue();
             CommonActions.ErrorSummaryLinksExist().Should().BeTrue();
 
-            CommonActions.ElementShowingCorrectErrorMessage(AddEditFlatListPriceObjects.ProvisioningTypeInputError, "Error: A list price with these details already exists").Should().BeTrue();
-            CommonActions.ElementShowingCorrectErrorMessage(AddEditFlatListPriceObjects.UnitDescriptionInputError, "A list price with these details already exists").Should().BeTrue();
-            CommonActions.ElementShowingCorrectErrorMessage(AddEditFlatListPriceObjects.PriceInputError, "A list price with these details already exists").Should().BeTrue();
+            CommonActions.ElementShowingCorrectErrorMessage(ListPriceObjects.ProvisioningTypeInputError, "Error: A list price with these details already exists").Should().BeTrue();
+            CommonActions.ElementShowingCorrectErrorMessage(ListPriceObjects.UnitDescriptionInputError, "A list price with these details already exists").Should().BeTrue();
+            CommonActions.ElementShowingCorrectErrorMessage(ListPriceObjects.PriceInputError, "A list price with these details already exists").Should().BeTrue();
         }
 
         [Fact]
@@ -192,9 +198,9 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.ListPrices.Solution.Fla
                 nameof(CatalogueSolutionListPriceController.EditFlatListPrice),
                 parameters);
 
-            CommonActions.ElementIsDisplayed(AddEditFlatListPriceObjects.DeletePriceLink).Should().BeTrue();
+            CommonActions.ElementIsDisplayed(ListPriceObjects.DeletePriceLink).Should().BeTrue();
 
-            CommonActions.ClickLinkElement(AddEditFlatListPriceObjects.DeletePriceLink);
+            CommonActions.ClickLinkElement(ListPriceObjects.DeletePriceLink);
 
             CommonActions.PageLoadedCorrectGetIndex(
                 typeof(CatalogueSolutionListPriceController),
