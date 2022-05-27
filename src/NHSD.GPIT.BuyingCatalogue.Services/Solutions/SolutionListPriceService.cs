@@ -2,6 +2,7 @@
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
@@ -50,7 +51,8 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
             PricingUnit pricingUnit,
             ProvisioningType provisioningType,
             CataloguePriceCalculationType calculationType,
-            TimeUnit? timeUnit)
+            TimeUnit? timeUnit,
+            CataloguePriceQuantityCalculationType? quantityCalculationType)
         {
             if (pricingUnit is null)
                 throw new ArgumentNullException(nameof(pricingUnit));
@@ -61,6 +63,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
             price.ProvisioningType = provisioningType;
             price.CataloguePriceCalculationType = calculationType;
             price.TimeUnit = timeUnit;
+            price.CataloguePriceQuantityCalculationType = quantityCalculationType;
             price.PricingUnit.RangeDescription = pricingUnit.RangeDescription;
             price.PricingUnit.Definition = pricingUnit.Definition;
             price.PricingUnit.Description = pricingUnit.Description;
@@ -77,6 +80,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
             ProvisioningType provisioningType,
             CataloguePriceCalculationType calculationType,
             TimeUnit? timeUnit,
+            CataloguePriceQuantityCalculationType? quantityCalculationType,
             decimal price)
         {
             if (pricingUnit is null)
@@ -88,6 +92,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
             cataloguePrice.ProvisioningType = provisioningType;
             cataloguePrice.CataloguePriceCalculationType = calculationType;
             cataloguePrice.TimeUnit = timeUnit;
+            cataloguePrice.CataloguePriceQuantityCalculationType = quantityCalculationType;
             cataloguePrice.PricingUnit.RangeDescription = pricingUnit.RangeDescription;
             cataloguePrice.PricingUnit.Definition = pricingUnit.Definition;
             cataloguePrice.PricingUnit.Description = pricingUnit.Description;

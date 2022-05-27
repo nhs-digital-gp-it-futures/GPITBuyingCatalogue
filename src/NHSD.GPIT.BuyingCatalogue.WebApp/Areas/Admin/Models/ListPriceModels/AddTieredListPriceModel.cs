@@ -31,18 +31,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.ListPriceModels
             SelectedCalculationType = cataloguePrice.CataloguePriceCalculationType;
             SelectedProvisioningType = cataloguePrice.ProvisioningType;
 
-            switch (SelectedProvisioningType)
-            {
-                case ProvisioningType.OnDemand:
-                    OnDemandBillingPeriod = cataloguePrice.TimeUnit;
-                    break;
-                case ProvisioningType.Declarative:
-                    DeclarativeBillingPeriod = cataloguePrice.TimeUnit;
-                    break;
-                case ProvisioningType.PerServiceRecipient:
-                    PerServiceRecipientBillingPeriod = cataloguePrice.TimeUnit;
-                    break;
-            }
+            AssignBillingPeriod(cataloguePrice);
+            AssignQuantityCalculationType(cataloguePrice);
         }
 
         public IEnumerable<SelectListItem> AvailableProvisioningTypes => new SelectListItem[]
@@ -60,20 +50,32 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.ListPriceModels
             new(TimeUnit.PerYear.Description(), TimeUnit.PerYear.ToString(), false),
         };
 
-        public IEnumerable<SelectableRadioOption<CataloguePriceCalculationType>> AvailableCalculationTypes => new List<SelectableRadioOption<CataloguePriceCalculationType>>
+        public IEnumerable<SelectableRadioOption<CataloguePriceCalculationType>> AvailableCalculationTypes =>
+            new List<SelectableRadioOption<CataloguePriceCalculationType>>
+            {
+                new(
+                    CataloguePriceCalculationType.SingleFixed.Name(),
+                    CataloguePriceCalculationType.SingleFixed.Description(),
+                    CataloguePriceCalculationType.SingleFixed),
+                new(
+                    CataloguePriceCalculationType.Cumulative.Name(),
+                    CataloguePriceCalculationType.Cumulative.Description(),
+                    CataloguePriceCalculationType.Cumulative),
+                new(
+                    CataloguePriceCalculationType.Volume.Name(),
+                    CataloguePriceCalculationType.Volume.Description(),
+                    CataloguePriceCalculationType.Volume),
+            };
+
+        public IEnumerable<SelectableRadioOption<CataloguePriceQuantityCalculationType>>
+            AvailableQuantityCalculationTypes => new List<SelectableRadioOption<CataloguePriceQuantityCalculationType>>
         {
             new(
-                CataloguePriceCalculationType.SingleFixed.Name(),
-                CataloguePriceCalculationType.SingleFixed.Description(),
-                CataloguePriceCalculationType.SingleFixed),
+                CataloguePriceQuantityCalculationType.PerSolutionOrService.Name(),
+                CataloguePriceQuantityCalculationType.PerSolutionOrService),
             new(
-                CataloguePriceCalculationType.Cumulative.Name(),
-                CataloguePriceCalculationType.Cumulative.Description(),
-                CataloguePriceCalculationType.Cumulative),
-            new(
-                CataloguePriceCalculationType.Volume.Name(),
-                CataloguePriceCalculationType.Volume.Description(),
-                CataloguePriceCalculationType.Volume),
+                CataloguePriceQuantityCalculationType.PerServiceRecipient.Name(),
+                CataloguePriceQuantityCalculationType.PerServiceRecipient),
         };
 
         public int? CataloguePriceId { get; set; }
@@ -91,6 +93,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.ListPriceModels
         public TimeUnit? DeclarativeBillingPeriod { get; set; }
 
         public TimeUnit? OnDemandBillingPeriod { get; set; }
+
+        public CataloguePriceQuantityCalculationType? DeclarativeQuantityCalculationType { get; set; }
+
+        public CataloguePriceQuantityCalculationType? OnDemandQuantityCalculationType { get; set; }
 
         public CataloguePriceCalculationType? SelectedCalculationType { get; set; }
 
@@ -121,5 +127,42 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.ListPriceModels
                 ProvisioningType.OnDemand when OnDemandBillingPeriod.HasValue => OnDemandBillingPeriod.Value,
                 _ => null,
             };
+
+        public CataloguePriceQuantityCalculationType? GetQuantityCalculationType()
+            => SelectedProvisioningType!.Value switch
+            {
+                ProvisioningType.Declarative => DeclarativeQuantityCalculationType,
+                ProvisioningType.OnDemand => OnDemandQuantityCalculationType,
+                _ => null,
+            };
+
+        private void AssignBillingPeriod(CataloguePrice cataloguePrice)
+        {
+            switch (SelectedProvisioningType)
+            {
+                case ProvisioningType.OnDemand:
+                    OnDemandBillingPeriod = cataloguePrice.TimeUnit;
+                    break;
+                case ProvisioningType.Declarative:
+                    DeclarativeBillingPeriod = cataloguePrice.TimeUnit;
+                    break;
+                case ProvisioningType.PerServiceRecipient:
+                    PerServiceRecipientBillingPeriod = cataloguePrice.TimeUnit;
+                    break;
+            }
+        }
+
+        private void AssignQuantityCalculationType(CataloguePrice cataloguePrice)
+        {
+            switch (SelectedProvisioningType)
+            {
+                case ProvisioningType.OnDemand:
+                    OnDemandQuantityCalculationType = cataloguePrice.CataloguePriceQuantityCalculationType;
+                    break;
+                case ProvisioningType.Declarative:
+                    DeclarativeQuantityCalculationType = cataloguePrice.CataloguePriceQuantityCalculationType;
+                    break;
+            }
+        }
     }
 }

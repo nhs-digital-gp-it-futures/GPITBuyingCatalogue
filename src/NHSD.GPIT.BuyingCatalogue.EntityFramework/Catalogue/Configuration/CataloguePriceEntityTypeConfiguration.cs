@@ -35,6 +35,10 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Configuration
                 .HasConversion<int>()
                 .HasColumnName("CataloguePriceCalculationTypeId");
 
+            builder.Property(p => p.CataloguePriceQuantityCalculationType)
+                .HasConversion<int>()
+                .HasColumnName("CataloguePriceQuantityCalculationTypeId");
+
             builder.Property(p => p.TimeUnit)
                 .HasConversion<int>()
                 .HasColumnName("TimeUnitId");

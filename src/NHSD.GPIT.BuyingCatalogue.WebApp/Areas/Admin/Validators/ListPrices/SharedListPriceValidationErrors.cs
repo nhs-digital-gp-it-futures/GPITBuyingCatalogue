@@ -11,5 +11,6 @@
         internal const string SelectedCalculationTypeError = "Select a calculation type";
         internal const string UnitError = "Enter a unit";
         internal const string DuplicateListPriceError = "A list price with these details already exists";
+        internal const string QuantitiesCalculationError = "Select how quantities are calculated";
     }
 }

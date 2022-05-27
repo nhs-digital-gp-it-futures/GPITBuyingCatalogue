@@ -1,6 +1,7 @@
 ﻿using System.Threading;
 using System.Threading.Tasks;
 using FluentValidation;
+using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.ListPrice;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.ListPriceModels;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Validation;
@@ -40,6 +41,16 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Validators.ListPrices
                     m => m.SelectedProvisioningType,
                     m => m.Price,
                     m => m.UnitDescription);
+
+            RuleFor(m => m.DeclarativeQuantityCalculationType)
+                .NotNull()
+                .WithMessage(SharedListPriceValidationErrors.QuantitiesCalculationError)
+                .When(m => m.SelectedProvisioningType.GetValueOrDefault() is ProvisioningType.Declarative);
+
+            RuleFor(m => m.OnDemandQuantityCalculationType)
+                .NotNull()
+                .WithMessage(SharedListPriceValidationErrors.QuantitiesCalculationError)
+                .When(m => m.SelectedProvisioningType.GetValueOrDefault() is ProvisioningType.OnDemand);
         }
 
         private async Task<bool> NotBeADuplicate(AddEditFlatListPriceModel model, CancellationToken token)

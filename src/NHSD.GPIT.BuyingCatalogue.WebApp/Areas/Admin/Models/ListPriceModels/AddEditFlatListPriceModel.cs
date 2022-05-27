@@ -36,19 +36,16 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.ListPriceModels
             SelectedPublicationStatus = CataloguePricePublicationStatus = cataloguePrice.PublishedStatus;
             SelectedProvisioningType = cataloguePrice.ProvisioningType;
 
-            switch (SelectedProvisioningType)
-            {
-                case ProvisioningType.OnDemand:
-                    OnDemandBillingPeriod = cataloguePrice.TimeUnit;
-                    break;
-                case ProvisioningType.Declarative:
-                    DeclarativeBillingPeriod = cataloguePrice.TimeUnit;
-                    break;
-                case ProvisioningType.PerServiceRecipient:
-                    PerServiceRecipientBillingPeriod = cataloguePrice.TimeUnit;
-                    break;
-            }
+            AssignBillingPeriod(cataloguePrice);
+            AssignQuantityCalculationType(cataloguePrice);
         }
+
+        public IEnumerable<SelectListItem> AvailableBillingPeriods => new List<SelectListItem>
+        {
+            new("None", null, true),
+            new(TimeUnit.PerMonth.Description(), TimeUnit.PerMonth.ToString(), false),
+            new(TimeUnit.PerYear.Description(), TimeUnit.PerYear.ToString(), false),
+        };
 
         public IEnumerable<SelectListItem> AvailableProvisioningTypes => new SelectListItem[]
         {
@@ -58,11 +55,15 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.ListPriceModels
             new(ProvisioningType.OnDemand.Name(), ProvisioningType.OnDemand.ToString()),
         };
 
-        public IEnumerable<SelectListItem> AvailableBillingPeriods => new List<SelectListItem>
+        public IEnumerable<SelectableRadioOption<CataloguePriceQuantityCalculationType>>
+            AvailableQuantityCalculationTypes => new List<SelectableRadioOption<CataloguePriceQuantityCalculationType>>
         {
-            new("None", null, true),
-            new(TimeUnit.PerMonth.Description(), TimeUnit.PerMonth.ToString(), false),
-            new(TimeUnit.PerYear.Description(), TimeUnit.PerYear.ToString(), false),
+            new(
+                CataloguePriceQuantityCalculationType.PerSolutionOrService.Name(),
+                CataloguePriceQuantityCalculationType.PerSolutionOrService),
+            new(
+                CataloguePriceQuantityCalculationType.PerServiceRecipient.Name(),
+                CataloguePriceQuantityCalculationType.PerServiceRecipient),
         };
 
         public PublicationStatus CataloguePricePublicationStatus { get; set; }
@@ -82,6 +83,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.ListPriceModels
         public TimeUnit? DeclarativeBillingPeriod { get; set; }
 
         public TimeUnit? OnDemandBillingPeriod { get; set; }
+
+        public CataloguePriceQuantityCalculationType? DeclarativeQuantityCalculationType { get; set; }
+
+        public CataloguePriceQuantityCalculationType? OnDemandQuantityCalculationType { get; set; }
 
         public decimal? Price { get; set; }
 
@@ -115,5 +120,42 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.ListPriceModels
                 ProvisioningType.OnDemand when OnDemandBillingPeriod.HasValue => OnDemandBillingPeriod.Value,
                 _ => null,
             };
+
+        public CataloguePriceQuantityCalculationType? GetQuantityCalculationType()
+            => SelectedProvisioningType!.Value switch
+            {
+                ProvisioningType.Declarative => DeclarativeQuantityCalculationType,
+                ProvisioningType.OnDemand => OnDemandQuantityCalculationType,
+                _ => null,
+            };
+
+        private void AssignBillingPeriod(CataloguePrice cataloguePrice)
+        {
+            switch (SelectedProvisioningType)
+            {
+                case ProvisioningType.OnDemand:
+                    OnDemandBillingPeriod = cataloguePrice.TimeUnit;
+                    break;
+                case ProvisioningType.Declarative:
+                    DeclarativeBillingPeriod = cataloguePrice.TimeUnit;
+                    break;
+                case ProvisioningType.PerServiceRecipient:
+                    PerServiceRecipientBillingPeriod = cataloguePrice.TimeUnit;
+                    break;
+            }
+        }
+
+        private void AssignQuantityCalculationType(CataloguePrice cataloguePrice)
+        {
+            switch (SelectedProvisioningType)
+            {
+                case ProvisioningType.OnDemand:
+                    OnDemandQuantityCalculationType = cataloguePrice.CataloguePriceQuantityCalculationType;
+                    break;
+                case ProvisioningType.Declarative:
+                    DeclarativeQuantityCalculationType = cataloguePrice.CataloguePriceQuantityCalculationType;
+                    break;
+            }
+        }
     }
 }
