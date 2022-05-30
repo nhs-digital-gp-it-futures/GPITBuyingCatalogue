@@ -94,6 +94,12 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.Objects.Admin.ManageSuppl
 
         public static By EditSupplierContactContainerError => By.Id("edit-contact-error");
 
+        public static By EditSupplierContactReferencingSolutionsTable => ByExtensions.DataTestId("supplier-contact-related-solutions-table");
+
+        public static By EditSupplierContactNoReferencingSolutionsInset => ByExtensions.DataTestId("no-related-solutions-inset");
+
+        public static By EditSupplierContactDeleteLink => By.LinkText("Delete contact");
+
         public static By DeleteSupplierContactCancelLink => By.LinkText("Cancel");
 
         public static By SearchBar => By.Id("suppliers-suggestion-search");
