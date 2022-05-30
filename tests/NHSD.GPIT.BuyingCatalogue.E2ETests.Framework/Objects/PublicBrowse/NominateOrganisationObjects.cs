@@ -4,7 +4,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.Objects.PublicBrowse
 {
     public static class NominateOrganisationObjects
     {
-        public static By ProcurementHubLink => By.Id("procurement-hub-link");
+        public static By ProcurementHubLink => By.LinkText("Get procurement support");
 
         public static By NominateAnOrganisationLink => By.LinkText("Nominate an organisation");
 
