@@ -66,7 +66,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
         }
 
         [HttpGet("~/organisation/{internalOrgId}/order/neworder/description")]
-        public async Task<IActionResult> NewOrderDescription(string internalOrgId, TriageOption? option = null, CatalogueItemType? orderType = null)
+        public async Task<IActionResult> NewOrderDescription(string internalOrgId, OrderTriageValue? option = null, CatalogueItemType? orderType = null)
         {
             var user = await usersService.GetUser(User.UserId());
             var organisation = await organisationsService.GetOrganisation(user?.PrimaryOrganisationId ?? 0);
@@ -83,15 +83,14 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
         }
 
         [HttpPost("~/organisation/{internalOrgId}/order/neworder/description")]
-        public async Task<IActionResult> NewOrderDescription(string internalOrgId, OrderDescriptionModel model, CatalogueItemType? orderType = null)
+        public async Task<IActionResult> NewOrderDescription(string internalOrgId, OrderDescriptionModel model, OrderTriageValue? option = null, CatalogueItemType? orderType = null)
         {
             if (!ModelState.IsValid)
                 return View("OrderDescription", model);
 
-            var isAssociatedServiceOnly = orderType.HasValue
-                && orderType!.Value == CatalogueItemType.AssociatedService;
+            var isAssociatedServiceOnly = orderType is CatalogueItemType.AssociatedService;
 
-            var order = await orderService.CreateOrder(model.Description, model.InternalOrgId, isAssociatedServiceOnly);
+            var order = await orderService.CreateOrder(model.Description, model.InternalOrgId, option!.Value, isAssociatedServiceOnly);
 
             return RedirectToAction(
                 nameof(OrderController.Order),

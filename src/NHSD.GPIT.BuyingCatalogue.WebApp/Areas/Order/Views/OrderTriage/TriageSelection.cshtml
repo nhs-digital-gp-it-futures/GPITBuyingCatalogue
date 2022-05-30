@@ -1,4 +1,9 @@
 ﻿@using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.OrderTriage
+@using Microsoft.AspNetCore.Mvc.TagHelpers
+@using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models
+@using NHSD.GPIT.BuyingCatalogue.UI.Components.TagHelpers
+@using NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.TagHelpers.InsetText
+@using ValidationSummaryTagHelper = Microsoft.AspNetCore.Mvc.TagHelpers.ValidationSummaryTagHelper
 @model NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.OrderTriage.TriageDueDiligenceModel
 @{
     ViewBag.Title = Model.Title;
@@ -21,13 +26,13 @@
                 <input type="hidden" asp-for="Option" />
                 <input type="hidden" asp-for="OrganisationName" />
 
-                @if (Model.Option == TriageOption.Under40k)
+                @if (Model.Option == OrderTriageValue.Under40K)
                 {
                     <nhs-inset-text data-test-id="triage-selection-inset">
                         <p>Your contract value should include everything you intend to spend.</p>
                         <p>It would not, for example, be acceptable to execute a number of Direct Awards to the same supplier to avoid carrying out a competition.</p>
                     </nhs-inset-text>
-                } else if (Model.Option == TriageOption.Between40kTo250k)
+                } else if (Model.Option == OrderTriageValue.Between40KTo250K)
                 {
                     <nhs-inset-text data-test-id="triage-selection-inset">
                         <p>When executing a competition, you cannot create requirements that result in a shortlist of one Catalogue Solution.</p>

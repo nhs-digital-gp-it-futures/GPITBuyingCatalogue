@@ -144,6 +144,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers
         public static async Task Post_NewOrderDescription_AssociatedServicesOnly_AsExpected(
             CatalogueItemType? catalogueItemType,
             OrderDescriptionModel model,
+            OrderTriageValue value,
             EntityFramework.Ordering.Models.Order order,
             [Frozen] Mock<IOrderService> orderServiceMock,
             OrderDescriptionController controller)
@@ -151,25 +152,26 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers
             var isAssociatedServiceOnly = catalogueItemType.HasValue
                 && catalogueItemType!.Value == CatalogueItemType.AssociatedService;
 
-            orderServiceMock.Setup(s => s.CreateOrder(model.Description, model.InternalOrgId, isAssociatedServiceOnly)).ReturnsAsync(order);
+            orderServiceMock.Setup(s => s.CreateOrder(model.Description, model.InternalOrgId, value, isAssociatedServiceOnly)).ReturnsAsync(order);
 
-            _ = await controller.NewOrderDescription(model.InternalOrgId, model, catalogueItemType);
+            _ = await controller.NewOrderDescription(model.InternalOrgId, model, value, catalogueItemType);
 
-            orderServiceMock.Verify(s => s.CreateOrder(model.Description, model.InternalOrgId, isAssociatedServiceOnly));
+            orderServiceMock.Verify(s => s.CreateOrder(model.Description, model.InternalOrgId, value, isAssociatedServiceOnly));
         }
 
         [Theory]
         [CommonAutoData]
         public static async Task Post_NewOrderDescription_CreatesOrder_CorrectlyRedirects(
             string internalOrgId,
+            OrderTriageValue option,
             OrderDescriptionModel model,
             EntityFramework.Ordering.Models.Order order,
             [Frozen] Mock<IOrderService> orderServiceMock,
             OrderDescriptionController controller)
         {
-            orderServiceMock.Setup(s => s.CreateOrder(model.Description, model.InternalOrgId, It.IsAny<bool>())).ReturnsAsync(order);
+            orderServiceMock.Setup(s => s.CreateOrder(model.Description, model.InternalOrgId, It.IsAny<OrderTriageValue>(), It.IsAny<bool>())).ReturnsAsync(order);
 
-            var actualResult = await controller.NewOrderDescription(internalOrgId, model);
+            var actualResult = await controller.NewOrderDescription(internalOrgId, model, option);
 
             actualResult.Should().BeOfType<RedirectToActionResult>();
             actualResult.As<RedirectToActionResult>().ActionName.Should().Be(nameof(OrderController.Order));

@@ -6,6 +6,7 @@ using NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.Objects.Ordering;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Utils;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.TestBases;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
+using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.OrderTriage;
@@ -18,7 +19,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering
         : BuyerTestBase, IClassFixture<LocalWebApplicationFactory>
     {
         private const string InternalOrgId = "CG-03F";
-        private const TriageOption Option = TriageOption.Between40kTo250k;
+        private const OrderTriageValue Option = OrderTriageValue.Between40KTo250K;
 
         private static readonly Dictionary<string, string> Parameters = new()
         {

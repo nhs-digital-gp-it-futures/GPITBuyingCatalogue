@@ -1,5 +1,5 @@
-﻿using NHSD.GPIT.BuyingCatalogue.EntityFramework.Organisations.Models;
-using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.OrderTriage;
+﻿using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
+using NHSD.GPIT.BuyingCatalogue.EntityFramework.Organisations.Models;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Models;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.Order
@@ -20,6 +20,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.Order
 
         public string InternalOrgId { get; set; }
 
-        public TriageOption? Option { get; set; }
+        public OrderTriageValue? Option { get; set; }
     }
 }

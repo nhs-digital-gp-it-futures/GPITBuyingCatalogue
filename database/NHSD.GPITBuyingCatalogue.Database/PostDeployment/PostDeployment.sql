@@ -25,6 +25,7 @@
 :r ./InsertStandardsCapabilities.sql
 
 :r ./InsertOrderStatuses.sql
+:r ./InsertOrderTriageValues.sql
 :r ./InsertTimeUnits.sql
 :r ./InsertSolutions.sql
 :r ./InsertAdditionalServices.sql

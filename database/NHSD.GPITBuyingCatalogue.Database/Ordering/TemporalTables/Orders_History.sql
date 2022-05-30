@@ -10,6 +10,7 @@
     CommencementDate DATE NULL,
     FundingSourceOnlyGMS BIT NULL,
     ConfirmedFundingSource BIT NULL,
+    OrderTriageValueId INT NULL,
     Created DATETIME2 NOT NULL,
     LastUpdated DATETIME2 NOT NULL,
     LastUpdatedBy INT NULL,
@@ -17,8 +18,8 @@
     OrderStatusId INT NOT NULL,
     IsDeleted BIT NOT NULL,
     SysStartTime DATETIME2(0) NOT NULL,
-    SysEndTime DATETIME2(0) NOT NULL, 
-    InitialPeriod INT NULL, 
+    SysEndTime DATETIME2(0) NOT NULL,
+    InitialPeriod INT NULL,
     MaximumTerm INT NULL,
     AssociatedServicesOnly BIT NULL
 );

@@ -7,7 +7,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Validators
 {
     public sealed class CommencementDateModelValidator : AbstractValidator<CommencementDateModel>
     {
-        public const int MaximumInitialPeriod = 6;
+        public const int MaximumInitialPeriod = 12;
         public const int MaximumMaximumTerm = 36;
 
         public const string CommencementDateDayMissingErrorMessage = "Approximate start date must include a day";
