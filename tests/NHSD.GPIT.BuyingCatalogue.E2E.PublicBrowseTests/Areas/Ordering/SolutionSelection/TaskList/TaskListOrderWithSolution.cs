@@ -23,7 +23,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering.SolutionSelection.Ta
         {
         }
 
-        protected override string PageTitle => "Edit solutions and services - Order C090012-01";
+        protected override string PageTitle => "Review your progress - Order C090012-01";
 
         protected override bool SolutionDisplayed => true;
 

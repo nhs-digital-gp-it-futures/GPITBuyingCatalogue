@@ -3,6 +3,7 @@
 @using NHSD.GPIT.BuyingCatalogue.Framework.Extensions
 @using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers.SolutionSelection;
 @using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Enums;
+@using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Routing
 @model NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.Order.OrderModel
 @{
     ViewBag.Title = Model.Title;
@@ -97,9 +98,9 @@
 							new { Model.InternalOrgId, Model.CallOffId }),
 					TaskProgress.InProgress =>
 						Url.Action(
-							nameof(CatalogueSolutionsController.SelectSolution),
-							typeof(CatalogueSolutionsController).ControllerName(),
-							new { Model.InternalOrgId, Model.CallOffId }),
+							nameof(TaskListController.TaskList),
+							typeof(TaskListController).ControllerName(),
+							new { Model.InternalOrgId, Model.CallOffId, Source = RoutingSource.Dashboard }),
 					TaskProgress.Completed =>
 						Url.Action(
 							nameof(ReviewSolutionsController.ReviewSolutions),

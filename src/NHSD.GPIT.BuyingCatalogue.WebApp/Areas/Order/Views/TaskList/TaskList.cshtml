@@ -1,5 +1,4 @@
-﻿@using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.SolutionSelection.TaskList
-@using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers.SolutionSelection
+﻿@using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Enums
 @model NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.SolutionSelection.TaskList.TaskListModel;
 
 <partial name="Partials/_BackLink" model="Model" />
@@ -7,10 +6,20 @@
 <div class="nhsuk-grid-row">
     <div class="nhsuk-grid-column-two-thirds">
         <nhs-validation-summary />
-            
-        <nhs-page-title title="Edit solutions and services"
+        
+        @{
+            var title = Model.Progress == TaskProgress.Completed
+                ? "Edit solutions and services"
+                : "Review your progress";
+
+            var advice = Model.Progress == TaskProgress.Completed
+                ? "Select the sections that you want to edit."
+                : "Review the progress of your order. Make sure you’ve included everything you want to order and that all sections are completed.";
+        }
+
+        <nhs-page-title title="@title"
                         caption="Order @Model!.CallOffId"
-                        advice="Select the sections that you want to edit." />
+                        advice="@advice" />
         
         @if (!Model.AssociatedServicesOnly)
         {
@@ -23,7 +32,7 @@
                 {
                     <div class="nhsuk-u-margin-bottom-9">
                         <partial name="TaskListOrderItem"
-                                 model="new TaskListOrderItemModel(Model.InternalOrgId, Model.CallOffId, Model.CatalogueSolution)"/>
+                                 model="@Model.OrderItemModel(Model.CatalogueSolution.CatalogueItemId)"/>
                     </div>
                 }
             </div>
@@ -37,7 +46,7 @@
                 {
                     <div class="nhsuk-u-margin-bottom-9">
                         <partial name="TaskListOrderItem"
-                                 model="new TaskListOrderItemModel(Model.InternalOrgId, Model.CallOffId, service)"/>
+                                 model="@Model.OrderItemModel(service.CatalogueItemId)"/>
                     </div>
                 }
             </div>
@@ -52,7 +61,7 @@
             {
                 <div class="nhsuk-u-margin-bottom-9">
                     <partial name="TaskListOrderItem"
-                             model="new TaskListOrderItemModel(Model.InternalOrgId, Model.CallOffId, service)"/>
+                             model="@Model.OrderItemModel(service.CatalogueItemId)"/>
                 </div>
             }
         </div>
@@ -60,9 +69,6 @@
         <vc:nhs-secondary-button 
             text="Continue" 
             use-primary-colour="true" 
-            url="@Url.Action(
-                     nameof(ReviewSolutionsController.ReviewSolutions), 
-                     typeof(ReviewSolutionsController).ControllerName(), 
-                     new { Model.InternalOrgId, Model.CallOffId })"/>
+            url="@Model.BackLink"/>
     </div>
 </div>

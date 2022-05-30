@@ -5,7 +5,7 @@
         public static class Controllers
         {
             public const string AssociatedServices = "AssociatedServices";
-            public const string Orders = "Orders";
+            public const string Orders = "Order";
             public const string Prices = "Prices";
             public const string Quantity = "Quantity";
             public const string Review = "ReviewSolutions";
