@@ -1,6 +1,11 @@
-﻿@model NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.CommencementDate.CommencementDateModel;
+﻿@using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models
+@model NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.CommencementDate.CommencementDateModel;
 @{
     ViewBag.Title = Model!.Title;
+
+    var maximumTermLimit = Model.OrderTriageValue == OrderTriageValue.Under40K
+        ? 12
+        : 36;
 }
 
 <partial name="Partials/_BackLink" model="Model" />
@@ -21,6 +26,7 @@
             <input type="hidden" asp-for="@Model.BackLink" />
             <input type="hidden" asp-for="@Model.BackLinkText" />
             <input type="hidden" asp-for="@Model.Title" />
+            <input type="hidden" asp-for="@Model.OrderTriageValue" />
 
             <div class="nhsuk-u-margin-bottom-9">
                 <nhs-fieldset-form-label asp-for="@Model"
@@ -41,7 +47,7 @@
             <div class="nhsuk-u-margin-bottom-9">
                 <nhs-bookended-input asp-for="@Model.MaximumTerm"
                                      label-text="What is the maximum term for this Call-off Agreement (in months)?"
-                                     label-hint="This is the maximum length the Call-off Agreement can run for, which includes the initial period. It cannot exceed 36 months."
+                                     label-hint="This is the maximum length the Call-off Agreement can run for, which includes the initial period. It cannot exceed @(maximumTermLimit) months."
                                      Suffix="months" />
             </div>
 

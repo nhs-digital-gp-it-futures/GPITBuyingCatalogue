@@ -12,21 +12,22 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.CommencementDate
         {
         }
 
-        public CommencementDateModel(string internalOrgId, CallOffId callOffId, DateTime? commencementDate, int? initialPeriod, int? maximumTerm)
+        public CommencementDateModel(string internalOrgId, EntityFramework.Ordering.Models.Order order)
         {
             Title = "Timescales for Call-off Agreement";
             InternalOrgId = internalOrgId;
-            CallOffId = callOffId;
+            CallOffId = order.CallOffId;
+            OrderTriageValue = order.OrderTriageValue;
 
-            if (commencementDate.HasValue)
+            if (order.CommencementDate.HasValue)
             {
-                Day = commencementDate.Value.Day.ToString("00");
-                Month = commencementDate.Value.Month.ToString("00");
-                Year = commencementDate.Value.Year.ToString("0000");
+                Day = order.CommencementDate.Value.Day.ToString("00");
+                Month = order.CommencementDate.Value.Month.ToString("00");
+                Year = order.CommencementDate.Value.Year.ToString("0000");
             }
 
-            InitialPeriod = $"{initialPeriod}";
-            MaximumTerm = $"{maximumTerm}";
+            InitialPeriod = $"{order.InitialPeriod}";
+            MaximumTerm = $"{order.MaximumTerm}";
         }
 
         public CallOffId CallOffId { get; set; }
@@ -47,6 +48,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.CommencementDate
         public string MaximumTerm { get; set; }
 
         public int? MaximumTermValue => MaximumTerm.AsNullableInt();
+
+        public OrderTriageValue? OrderTriageValue { get; set; }
 
         public DateTime? CommencementDate
         {

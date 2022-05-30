@@ -149,6 +149,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
                 OrderStatus = OrderStatus.InProgress,
                 IsDeleted = false,
                 Description = "This is an Order Description",
+                OrderTriageValue = OrderTriageValue.Over250K,
                 OrderingPartyContact = new Contact
                 {
                     FirstName = "Clark",
