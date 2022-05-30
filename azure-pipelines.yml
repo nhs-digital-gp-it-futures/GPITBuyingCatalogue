@@ -31,7 +31,7 @@ jobs:
 - job: version
   displayName: Work out version
   pool:
-    vmImage: 'windows-latest'
+    vmImage: 'ubuntu-latest'
   steps:
   - task: UseGitVersion@5
     displayName: gitversion
@@ -54,7 +54,7 @@ jobs:
 
   dependsOn: version
   pool:
-    vmImage: 'windows-latest'
+    vmImage: 'ubuntu-latest'
 
   steps:
 #  - powershell: 'Write-Host "rootUri variable=$(rootUri) adminUsername variable=$(adminUsername)"'
@@ -190,7 +190,7 @@ jobs:
 
   dependsOn: dockerBuildAndPush
   pool:
-    vmImage: 'windows-latest'
+    vmImage: 'ubuntu-latest'
 
   steps:
   - powershell: 'docker ps -a'
@@ -258,7 +258,7 @@ jobs:
 - job: createBuildArtifact
   displayName: Create Build Artifact
   pool:
-    vmImage: 'windows-latest'  
+    vmImage: 'ubuntu-latest'  
     
   steps:
   - task: CopyFiles@2
