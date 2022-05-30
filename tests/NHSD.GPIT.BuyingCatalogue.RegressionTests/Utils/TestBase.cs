@@ -1,5 +1,6 @@
 ﻿using NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.Actions.Authorization;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.UrlGenerators;
+using NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering;
 using OpenQA.Selenium;
 using OpenQA.Selenium.Support.UI;
 using Xunit.Abstractions;
@@ -33,6 +34,8 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Utils
             Wait = new WebDriverWait(Driver, TimeSpan.FromSeconds(10));
             uri = new Uri(connector.RootUri);
 
+            OrderingPages = new OrderingPages(Driver, CommonActions);
+
             NavigateToUrl(urlArea);
         }
 
@@ -42,9 +45,11 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Utils
 
         internal Actions.Common.CommonActions CommonActions { get; }
 
-        internal Actions.Authorization.ActionCollection AuthorizationPages { get; }
+        internal ActionCollection AuthorizationPages { get; }
 
         internal WebDriverWait Wait { get; }
+
+        internal OrderingPages OrderingPages { get; }
 
         internal void AuthorityLogin()
         {
