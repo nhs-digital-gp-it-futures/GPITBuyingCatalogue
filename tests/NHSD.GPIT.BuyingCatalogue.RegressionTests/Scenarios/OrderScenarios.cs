@@ -23,7 +23,7 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
             };
 
         public OrderScenarios(WebApplicationConnector connector, ITestOutputHelper testOutputHelper)
-           : base(connector, typeof(OrderController), nameof(OrderController.NewOrder), Parameters, testOutputHelper)
+           : base(connector, typeof(DashboardController), nameof(DashboardController.Organisation), Parameters, testOutputHelper)
         {
         }
 
@@ -31,10 +31,13 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
         public void FirstTest_DoesThing()
         {
 
-            int a = 1;
-            int b = 2;
+            OrderingPages.OrderingDashboard.CreateNewOrder();
 
-            // BuyerUsername.Should().Be("abc");
+            OrderingPages.OrderType.ChooseOrderType(EntityFramework.Catalogue.Models.CatalogueItemType.Solution);
+
+            OrderingPages.OrderingTriage.SelectTriageOrderValue();
+
+            OrderingPages.OrderingTriage.SelectIdentifiedOrder();
         }
     }
 }
