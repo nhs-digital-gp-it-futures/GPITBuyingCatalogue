@@ -157,7 +157,9 @@ jobs:
       command: 'buildAndPush'
       Dockerfile: 'src/**/NHSD.GPIT.BuyingCatalogue.WebApp/Dockerfile'
       buildContext: './'
-      tags: $(semVer)
+      tags: |
+        $(semVer)
+        $(latestTag)
 
   - task: PowerShell@2
     inputs:
