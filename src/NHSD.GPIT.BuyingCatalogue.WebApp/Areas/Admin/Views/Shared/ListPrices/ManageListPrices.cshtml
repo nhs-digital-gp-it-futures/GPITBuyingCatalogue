@@ -28,7 +28,7 @@
                 {
                     <div data-test-id="tiered-price-@price.CataloguePriceId">
                         <h2>@GetHeadingTitle(price)</h2>
-                        
+
                         <div>
                             <b>Status: </b>
                             <nhs-tag status-enum="@price.PublishedStatus"/>
@@ -52,7 +52,7 @@
                                 <nhs-table-row-container>
                                     <nhs-table-cell>@GetTierName(i)</nhs-table-cell>
                                     <nhs-table-cell>£@priceTier.Price</nhs-table-cell>
-                                    <nhs-table-cell>@GetRange(priceTier)</nhs-table-cell>
+                                    <nhs-table-cell>@priceTier.GetRangeDescription()</nhs-table-cell>
                                 </nhs-table-row-container>
                             }
                         </nhs-table>
@@ -84,7 +84,7 @@
                         <nhs-summary-list>
                             @foreach(var priceFlat in price.CataloguePriceTiers)
                             {
-                                <nhs-summary-list-row label-text="Provisioning type">@price.ProvisioningType.Name().ToLowerInvariant()</nhs-summary-list-row>
+                                <nhs-summary-list-row label-text="Provisioning type">@price.ProvisioningType.Name()</nhs-summary-list-row>
                                 @if(price.TimeUnit is not null)
                                 {
                                     <nhs-summary-list-row label-text="Time unit">@GetTimeUnit(price)</nhs-summary-list-row>
@@ -96,7 +96,7 @@
                 }
             </div>
         }
-        
+
         <vc:nhs-secondary-button text="Continue"
                                     use-primary-colour="true"
                                     url="@Model.BackLink" />
@@ -107,19 +107,6 @@
     static string GetTierName(int index) => $"Tier {index + 1}";
 
     static string GetHeadingTitle(CataloguePrice cataloguePrice) => $"{Enum.GetName(cataloguePrice.CataloguePriceType)} price - {cataloguePrice.PricingUnit.Description}";
-
-    static string GetRange(CataloguePriceTier tier)
-    {
-        var rangeContent = $"{tier.LowerRange.ToString("#,##0.###")}";
-
-        rangeContent += (tier.UpperRange is not null)
-            ? $" to {tier.UpperRange!.Value.ToString("#,##0.###")}"
-            : "+";
-
-        rangeContent += $" {tier.CataloguePrice.PricingUnit.RangeDescription}";
-
-        return rangeContent;
-    }
 
     static string GetTimeUnit(CataloguePrice price) => price.TimeUnit!.Value.Description() ?? "None";
 }

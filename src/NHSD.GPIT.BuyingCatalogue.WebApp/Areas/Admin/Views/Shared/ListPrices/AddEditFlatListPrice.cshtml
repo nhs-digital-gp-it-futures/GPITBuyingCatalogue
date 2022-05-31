@@ -55,7 +55,7 @@
                                       display-name="Text"
                                       index="2">
 
-                        <nhs-fieldset-form-label asp-for="DeclarativeQuantityCalculationType" label-text="How are quantities for your solution or service calculated?" size="Small">
+                        <nhs-fieldset-form-label asp-for="DeclarativeQuantityCalculationType" label-text="How are quantities for this price calculated?" size="Small">
                             <nhs-radio-buttons asp-for="DeclarativeQuantityCalculationType"
                                                values="@Model.AvailableQuantityCalculationTypes.Cast<object>()"
                                                display-name="Name"
@@ -75,7 +75,7 @@
                                       display-name="Text"
                                       index="3">
 
-                        <nhs-fieldset-form-label asp-for="OnDemandQuantityCalculationType"  label-text="How are quantities for your solution or service calculated?" size="Small">
+                        <nhs-fieldset-form-label asp-for="OnDemandQuantityCalculationType"  label-text="How are quantities for this price calculated?" size="Small">
                             <nhs-radio-buttons asp-for="OnDemandQuantityCalculationType"
                                                values="@Model.AvailableQuantityCalculationTypes.Cast<object>()"
                                                display-name="Name"
