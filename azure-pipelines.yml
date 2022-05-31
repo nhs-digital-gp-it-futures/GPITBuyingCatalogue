@@ -190,7 +190,7 @@ jobs:
 
   dependsOn: dockerBuildAndPush
   pool:
-    vmImage: 'windows-latest'
+    vmImage: 'ubuntu-latest'
 
   steps:
   - powershell: 'docker ps -a'
@@ -216,6 +216,10 @@ jobs:
       docker cp dacpaccontainer:/deploy-db/. $(Build.ArtifactStagingDirectory)/dacpacs
       docker rm dacpaccontainer
     displayName: 'Copy DACPACs'
+
+  - pwsh: |
+      docker inspect mssql | grep -v Secondary | grep -m1 IPAddress |  sed 's/"IPAddress": "//' | sed 's/",//'  | sed 's/ *$//g' | sed 's/^ *//'  
+    displayName: 'Get SQL Server IP'
 
   - task: SqlAzureDacpacDeployment@1
     inputs:
