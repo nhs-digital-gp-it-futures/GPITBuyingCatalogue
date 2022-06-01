@@ -36,7 +36,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Validators.Users
                 .WithMessage(LastNameMissingErrorMessage);
 
             RuleFor(x => x.Email)
-                .Cascade(CascadeMode.Stop)
                 .NotEmpty()
                 .WithMessage(EmailMissingErrorMessage)
                 .EmailAddress()
@@ -45,7 +44,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Validators.Users
                 .WithMessage(EmailInUseErrorMessage);
 
             RuleFor(x => x.SelectedAccountType)
-                .Cascade(CascadeMode.Stop)
                 .NotEmpty()
                 .WithMessage(AccountTypeMissingErrorMessage)
                 .Must((model, accountType) => BelongToCorrectOrganisation(accountType, model.SelectedOrganisationId))

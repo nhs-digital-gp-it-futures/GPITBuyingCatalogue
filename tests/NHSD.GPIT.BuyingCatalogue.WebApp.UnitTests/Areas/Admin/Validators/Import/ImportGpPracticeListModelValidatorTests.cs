@@ -1,4 +1,5 @@
-﻿using AutoFixture.Xunit2;
+﻿using System.Threading.Tasks;
+using AutoFixture.Xunit2;
 using FluentValidation.TestHelper;
 using Moq;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Validation;
@@ -18,14 +19,14 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators.Impo
         [CommonInlineAutoData(null)]
         [CommonInlineAutoData("")]
         [CommonInlineAutoData(" ")]
-        public static void Validate_NoCsvUrl_SetsModelError(
+        public static async Task Validate_NoCsvUrl_SetsModelError(
             string csvUrl,
             ImportGpPracticeListModel model,
             ImportGpPracticeListModelValidator validator)
         {
             model.CsvUrl = csvUrl;
 
-            var result = validator.TestValidate(model);
+            var result = await validator.TestValidateAsync(model);
 
             result.ShouldHaveValidationErrorFor(m => m.CsvUrl)
                 .WithErrorMessage(ImportGpPracticeListModelValidator.CSvUrlErrorMessage);
@@ -33,7 +34,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators.Impo
 
         [Theory]
         [CommonAutoData]
-        public static void Validate_InvalidCsvUrl_SetsModelError(
+        public static async Task Validate_InvalidCsvUrl_SetsModelError(
             ImportGpPracticeListModel model,
             [Frozen] Mock<IUrlValidator> mockUrlValidator,
             ImportGpPracticeListModelValidator validator)
@@ -42,9 +43,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators.Impo
 
             mockUrlValidator
                 .Setup(x => x.IsValidUrl(Url))
-                .ReturnsAsync(false);
+                .Returns(false);
 
-            var result = validator.TestValidate(model);
+            var result = await validator.TestValidateAsync(model);
 
             mockUrlValidator.VerifyAll();
 
@@ -54,7 +55,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators.Impo
 
         [Theory]
         [CommonAutoData]
-        public static void Validate_ValidCsvUrl_NoErrors(
+        public static async Task Validate_ValidCsvUrl_NoErrors(
             ImportGpPracticeListModel model,
             [Frozen] Mock<IUrlValidator> mockUrlValidator,
             ImportGpPracticeListModelValidator validator)
@@ -63,9 +64,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators.Impo
 
             mockUrlValidator
                 .Setup(x => x.IsValidUrl(Url))
-                .ReturnsAsync(true);
+                .Returns(true);
 
-            var result = validator.TestValidate(model);
+            var result = await validator.TestValidateAsync(model);
 
             mockUrlValidator.VerifyAll();
 

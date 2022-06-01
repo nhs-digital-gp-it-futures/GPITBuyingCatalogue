@@ -9,11 +9,11 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Utils
 {
     public class TestBase
     {        
-        public readonly string BuyerUsername = Environment.GetEnvironmentVariable("RegressionBuyerUsername");
-        public readonly string BuyerPassword = Environment.GetEnvironmentVariable("RegressionBuyerPassword");
+        public readonly string BuyerUsername = Environment.GetEnvironmentVariable("RegressionBuyerUsername")!;
+        public readonly string BuyerPassword = Environment.GetEnvironmentVariable("RegressionBuyerPassword")!;
 
-        public readonly string AdminUsername = Environment.GetEnvironmentVariable("RegressionAdminUsername");
-        public readonly string AdminPassword = Environment.GetEnvironmentVariable("RegressionAdminPassword");
+        public readonly string AdminUsername = Environment.GetEnvironmentVariable("RegressionAdminUsername")!;
+        public readonly string AdminPassword = Environment.GetEnvironmentVariable("RegressionAdminPassword")!;
 
         public readonly Uri uri;
 
@@ -22,13 +22,13 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Utils
         public IWebDriver Driver { get; protected set; }
 
         internal Actions.Common.CommonActions CommonActions { get; }
-        internal Actions.Authorization.ActionCollection AuthorizationPages { get; }
+        internal ActionCollection AuthorizationPages { get; }
 
-        private readonly ITestOutputHelper testOutputHelper;
+        private readonly ITestOutputHelper? testOutputHelper;
         internal WebDriverWait Wait { get; }
 
         public TestBase(WebApplicationConnector connector,
-            ITestOutputHelper testOutputHelper,
+            ITestOutputHelper? testOutputHelper,
             string urlArea = "")
         {
             Connector = connector;
@@ -60,8 +60,8 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Utils
         protected void NavigateToUrl(
             Type controller,
             string methodName,
-            IDictionary<string, string> parameters = null,
-            IDictionary<string, string> queryParameters = null)
+            IDictionary<string, string>? parameters = null,
+            IDictionary<string, string>? queryParameters = null)
         {
             NavigateToUrl(new Uri(UrlGenerator.GenerateUrlFromMethod(controller, methodName, parameters, queryParameters), UriKind.Relative));
         }

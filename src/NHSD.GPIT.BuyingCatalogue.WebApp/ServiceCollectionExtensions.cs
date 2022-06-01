@@ -323,6 +323,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp
                     options =>
                     {
                         options.RegisterValidatorsFromAssemblyContaining<SolutionModelValidator>();
+                        options.ValidatorOptions.DefaultClassLevelCascadeMode = FluentValidation.CascadeMode.Continue;
+                        options.ValidatorOptions.DefaultRuleLevelCascadeMode = FluentValidation.CascadeMode.Stop;
                     }).AddSingleton<IValidatorInterceptor, FluentValidatorInterceptor>();
         }
 

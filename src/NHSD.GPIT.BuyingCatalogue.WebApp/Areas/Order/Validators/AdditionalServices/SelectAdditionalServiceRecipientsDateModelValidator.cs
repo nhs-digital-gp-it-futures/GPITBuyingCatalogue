@@ -10,7 +10,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Validators.AdditionalServ
         public SelectAdditionalServiceRecipientsDateModelValidator()
         {
             RuleFor(m => m.DeliveryDate)
-                .Cascade(CascadeMode.Stop)
                 .NotNull()
                 .WithMessage("Planned delivery date must be a real date")
                 .Must(d => d > DateTime.UtcNow)

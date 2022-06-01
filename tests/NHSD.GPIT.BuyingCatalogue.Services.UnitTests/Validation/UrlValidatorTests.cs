@@ -32,14 +32,14 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Validation
         [CommonInlineAutoData(null)]
         [CommonInlineAutoData("")]
         [CommonInlineAutoData(" ")]
-        public static Task IsValidUrl_InvalidUrl_ThrowsArgumentException(
+        public static void IsValidUrl_InvalidUrl_ThrowsArgumentException(
             string url,
             UrlValidator validator)
-            => Assert.ThrowsAsync<ArgumentException>(() => validator.IsValidUrl(url));
+            => Assert.Throws<ArgumentException>(() => validator.IsValidUrl(url));
 
         [Theory]
         [CommonAutoData]
-        public static async Task IsValidUrl_InvalidDomain_ReturnsFalse(
+        public static void IsValidUrl_InvalidDomain_ReturnsFalse(
             Uri uri,
             [Frozen] Mock<HttpMessageHandler> handler,
             UrlValidator validator)
@@ -49,14 +49,14 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Validation
                 .Setup<Task<HttpResponseMessage>>("SendAsync", ItExpr.IsAny<HttpRequestMessage>(), ItExpr.IsAny<CancellationToken>())
                 .ReturnsAsync(new HttpResponseMessage { StatusCode = HttpStatusCode.NotFound });
 
-            var result = await validator.IsValidUrl(uri.ToString());
+            var result = validator.IsValidUrl(uri.ToString());
 
             result.Should().BeFalse();
         }
 
         [Theory]
         [CommonAutoData]
-        public static async Task IsValidUrl_Timeout_ReturnsFalse(
+        public static void IsValidUrl_Timeout_ReturnsFalse(
             Uri uri,
             [Frozen] Mock<HttpMessageHandler> handler,
             UrlValidator validator)
@@ -66,14 +66,14 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Validation
                    .Setup<Task<HttpResponseMessage>>("SendAsync", ItExpr.IsAny<HttpRequestMessage>(), ItExpr.IsAny<CancellationToken>())
                    .ThrowsAsync(new TaskCanceledException());
 
-            var result = await validator.IsValidUrl(uri.ToString());
+            var result = validator.IsValidUrl(uri.ToString());
 
             result.Should().BeFalse();
         }
 
         [Theory]
         [CommonAutoData]
-        public static async Task IsValidUrl_HttpRequestException_ReturnsFalse(
+        public static void IsValidUrl_HttpRequestException_ReturnsFalse(
             Uri uri,
             [Frozen] Mock<HttpMessageHandler> handler,
             UrlValidator validator)
@@ -83,14 +83,14 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Validation
                    .Setup<Task<HttpResponseMessage>>("SendAsync", ItExpr.IsAny<HttpRequestMessage>(), ItExpr.IsAny<CancellationToken>())
                    .ThrowsAsync(new HttpRequestException());
 
-            var result = await validator.IsValidUrl(uri.ToString());
+            var result = validator.IsValidUrl(uri.ToString());
 
             result.Should().BeFalse();
         }
 
         [Theory]
         [CommonAutoData]
-        public static async Task IsValidUrl_ValidDomain_ReturnsTrue(
+        public static void IsValidUrl_ValidDomain_ReturnsTrue(
             Uri uri,
             [Frozen] Mock<HttpMessageHandler> handler,
             UrlValidator validator)
@@ -100,7 +100,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Validation
                 .Setup<Task<HttpResponseMessage>>("SendAsync", ItExpr.IsAny<HttpRequestMessage>(), ItExpr.IsAny<CancellationToken>())
                 .ReturnsAsync(new HttpResponseMessage { StatusCode = HttpStatusCode.OK });
 
-            var result = await validator.IsValidUrl(uri.ToString());
+            var result = validator.IsValidUrl(uri.ToString());
 
             result.Should().BeTrue();
         }

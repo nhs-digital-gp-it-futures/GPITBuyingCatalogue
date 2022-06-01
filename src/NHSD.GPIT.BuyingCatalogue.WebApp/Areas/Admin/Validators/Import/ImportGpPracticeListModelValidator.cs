@@ -12,7 +12,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Validators.Import
         public ImportGpPracticeListModelValidator(IUrlValidator urlValidator)
         {
             RuleFor(x => x.CsvUrl)
-                .Cascade(CascadeMode.Stop)
                 .NotEmpty()
                 .WithMessage(CSvUrlErrorMessage);
 

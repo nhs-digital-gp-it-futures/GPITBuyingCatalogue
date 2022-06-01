@@ -11,7 +11,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Validators.Shared
         public OrderItemRecipientModelValidator(DateTime? commencementDate = null)
         {
             RuleFor(r => r.DeliveryDate)
-                .Cascade(CascadeMode.Stop)
                 .NotNull()
                 .WithMessage("Planned delivery date must be a real date")
                 .Must(d => d > DateTime.UtcNow)
