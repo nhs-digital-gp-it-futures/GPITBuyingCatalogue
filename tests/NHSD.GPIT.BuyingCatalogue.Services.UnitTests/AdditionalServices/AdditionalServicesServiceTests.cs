@@ -51,11 +51,10 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.AdditionalServices
         public static async Task AddAdditionalService_UpdatesDatabase(
             [Frozen] BuyingCatalogueDbContext context,
             CatalogueItem solution,
-            CatalogueItemId catalogueItemId,
             AdditionalServicesDetailsModel model,
             AdditionalServicesService service)
         {
-            solution.Id = catalogueItemId;
+            solution.Id = solution.Id = new CatalogueItemId(solution.Id.SupplierId, solution.Id.ItemId[4..]);
             context.CatalogueItems.Add(solution);
             await context.SaveChangesAsync();
 
