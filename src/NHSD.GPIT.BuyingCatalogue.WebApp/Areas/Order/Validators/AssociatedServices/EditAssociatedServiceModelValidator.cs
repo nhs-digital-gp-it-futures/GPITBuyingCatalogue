@@ -14,7 +14,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Validators.AssociatedServ
                     .IsValidQuantity());
 
             RuleFor(m => m.OrderItem.AgreedPrice)
-                .Cascade(CascadeMode.Stop)
                 .NotNull()
                 .WithMessage("Enter an agreed price")
                 .GreaterThanOrEqualTo(0)

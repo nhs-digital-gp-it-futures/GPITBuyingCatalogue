@@ -8,7 +8,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Validators.Shared
         public CreateOrderItemModelValidator()
         {
             RuleFor(m => m.AgreedPrice)
-                .Cascade(CascadeMode.Stop)
                 .NotNull()
                 .WithMessage("Enter an agreed price")
                 .GreaterThanOrEqualTo(0)

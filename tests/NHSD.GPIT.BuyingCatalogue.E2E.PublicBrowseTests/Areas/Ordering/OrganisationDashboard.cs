@@ -145,7 +145,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering
                 .Where(o => o.InternalIdentifier == InternalOrgId)
                 .SelectMany(o => o.Orders)
                 .OrderByDescending(o => o.LastUpdated)
-                .ToList(); 
+                .ToList();
             var order = orders.First(o => o.OrderStatus == OrderStatus.InProgress);
 
             CommonActions.ClickLinkElement(ByExtensions.DataTestId($"link-{order.CallOffId}"));

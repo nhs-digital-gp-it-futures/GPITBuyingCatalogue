@@ -1,6 +1,4 @@
-﻿using System.Threading;
-using System.Threading.Tasks;
-using FluentValidation;
+﻿using FluentValidation;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Suppliers;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Validation;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.SupplierModels;
@@ -31,32 +29,28 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Validators.Suppliers
                 .Unless(m => string.IsNullOrWhiteSpace(m.SupplierWebsite));
 
             RuleFor(m => m)
-                .MustAsync(NotBeADuplicateSupplierName)
+                .Must(NotBeADuplicateSupplierName)
                 .WithMessage("Supplier name already exists. Enter a different name")
                 .OverridePropertyName(m => m.SupplierName);
 
             RuleFor(m => m)
-                .MustAsync(NotBeADuplicateSupplierLegalName)
+                .Must(NotBeADuplicateSupplierLegalName)
                 .WithMessage("Supplier legal name already exists. Enter a different name")
                 .OverridePropertyName(m => m.SupplierLegalName);
         }
 
-        private async Task<bool> NotBeADuplicateSupplierName(EditSupplierDetailsModel model, CancellationToken cancellationToken)
+        private bool NotBeADuplicateSupplierName(EditSupplierDetailsModel model)
         {
-            _ = cancellationToken;
-
-            var supplier = await suppliersService.GetSupplierByName(model.SupplierName);
+            var supplier = suppliersService.GetSupplierByName(model.SupplierName).GetAwaiter().GetResult();
             if (supplier is null)
                 return true;
 
             return supplier.Id == model.SupplierId;
         }
 
-        private async Task<bool> NotBeADuplicateSupplierLegalName(EditSupplierDetailsModel model, CancellationToken cancellationToken)
+        private bool NotBeADuplicateSupplierLegalName(EditSupplierDetailsModel model)
         {
-            _ = cancellationToken;
-
-            var supplier = await suppliersService.GetSupplierByLegalName(model.SupplierLegalName);
+            var supplier = suppliersService.GetSupplierByLegalName(model.SupplierLegalName).GetAwaiter().GetResult();
             if (supplier is null)
                 return true;
 

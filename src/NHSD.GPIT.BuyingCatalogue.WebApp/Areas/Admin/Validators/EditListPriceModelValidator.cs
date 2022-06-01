@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Linq;
 using System.Text.RegularExpressions;
-using System.Threading;
-using System.Threading.Tasks;
 using FluentValidation;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.ListPrices;
@@ -20,7 +18,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Validators
             this.listPriceService = listPriceService ?? throw new ArgumentNullException(nameof(listPriceService));
 
             RuleFor(p => p.Price)
-                .Cascade(CascadeMode.Stop)
                 .NotNull()
                 .WithMessage("Enter a price")
                 .GreaterThanOrEqualTo(0)
@@ -29,7 +26,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Validators
                 .WithMessage("Price must be to a maximum of 4 decimal places");
 
             RuleFor(p => p.Unit)
-                .Cascade(CascadeMode.Stop)
                 .NotEmpty()
                 .WithMessage("Enter a unit");
 
@@ -39,20 +35,17 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Validators
                 .When(p => !string.IsNullOrWhiteSpace(p.UnitDefinition));
 
             RuleFor(p => p.SelectedProvisioningType)
-                .Cascade(CascadeMode.Stop)
                 .NotNull()
                 .WithMessage("Select a provisioning type");
 
             RuleFor(p => p.DeclarativeTimeUnit)
-                .Cascade(CascadeMode.Stop)
                 .NotNull()
                 .WithMessage(TimeUnitErrorMessage)
                 .When(p => p.CatalogueItemType == CatalogueItemType.Solution && Equals(p.SelectedProvisioningType, ProvisioningType.Declarative));
 
             RuleFor(p => p)
-                .Cascade(CascadeMode.Stop)
                 .NotNull()
-                .MustAsync(NotBeDuplicateOfAnExistingPrice)
+                .Must(NotBeDuplicateOfAnExistingPrice)
                 .WithMessage("A list price with these details already exists for this Catalogue Solution")
                 .When(TheModelIsPopulated);
         }
@@ -61,11 +54,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Validators
             => model.Unit is not null
                && model.SelectedProvisioningType.HasValue;
 
-        private async Task<bool> NotBeDuplicateOfAnExistingPrice(
-            EditListPriceModel model,
-            CancellationToken cancellationToken)
+        private bool NotBeDuplicateOfAnExistingPrice(EditListPriceModel model)
         {
-            var catalogue = await listPriceService.GetCatalogueItemWithPrices(model.ItemId);
+            var catalogue = listPriceService.GetCatalogueItemWithPrices(model.ItemId).GetAwaiter().GetResult();
 
             var duplicatePrices = catalogue!.DuplicateListPrices(
                 model.SelectedProvisioningType!.Value,

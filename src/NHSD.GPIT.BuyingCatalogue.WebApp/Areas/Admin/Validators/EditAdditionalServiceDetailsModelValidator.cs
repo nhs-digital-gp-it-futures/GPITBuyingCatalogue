@@ -1,6 +1,4 @@
-﻿using System.Threading;
-using System.Threading.Tasks;
-using FluentValidation;
+﻿using FluentValidation;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.AdditionalServices;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.AdditionalServices;
 
@@ -15,7 +13,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Validators
             this.additionalServicesService = additionalServicesService;
 
             RuleFor(m => m)
-                .MustAsync(NotBeADuplicateService)
+                .Must(NotBeADuplicateService)
                 .WithMessage("Additional Service name already exists. Enter a different name")
                 .OverridePropertyName(m => m.Name);
 
@@ -30,12 +28,12 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Validators
                 .WithMessage("Enter an Additional Service description");
         }
 
-        private async Task<bool> NotBeADuplicateService(EditAdditionalServiceDetailsModel model, CancellationToken cancellationToken)
+        private bool NotBeADuplicateService(EditAdditionalServiceDetailsModel model)
         {
-            return !await additionalServicesService.AdditionalServiceExistsWithNameForSolution(
+            return !additionalServicesService.AdditionalServiceExistsWithNameForSolution(
                 model.Name,
                 model.CatalogueItemId,
-                model.Id.HasValue ? model.Id.Value : default);
+                model.Id.HasValue ? model.Id.Value : default).GetAwaiter().GetResult();
         }
     }
 }

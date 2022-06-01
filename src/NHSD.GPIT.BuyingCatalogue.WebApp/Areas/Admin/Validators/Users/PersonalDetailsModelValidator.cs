@@ -27,7 +27,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Validators.Users
                 .WithMessage(LastNameMissingErrorMessage);
 
             RuleFor(x => x.Email)
-                .Cascade(CascadeMode.Stop)
                 .NotEmpty()
                 .WithMessage(EmailMissingErrorMessage)
                 .EmailAddress()

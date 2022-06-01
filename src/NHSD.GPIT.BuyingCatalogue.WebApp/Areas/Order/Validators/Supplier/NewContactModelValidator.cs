@@ -22,7 +22,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Validators.Supplier
                 .WithMessage(LastNameErrorMessage);
 
             RuleFor(x => x.Email)
-                .Cascade(CascadeMode.Stop)
                 .NotNull()
                 .WithMessage(EmailErrorMessage)
                 .EmailAddress()

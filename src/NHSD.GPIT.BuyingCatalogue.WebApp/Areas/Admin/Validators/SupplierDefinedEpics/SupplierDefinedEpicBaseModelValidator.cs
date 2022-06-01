@@ -1,6 +1,4 @@
-﻿using System.Threading;
-using System.Threading.Tasks;
-using FluentValidation;
+﻿using FluentValidation;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Capabilities;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.SupplierDefinedEpics;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Validation;
@@ -33,7 +31,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Validators.SupplierDefine
                 .WithMessage("Select a status");
 
             RuleFor(m => m)
-                .MustAsync(NotBeADuplicateEpic)
+                .Must(NotBeADuplicateEpic)
                 .WithMessage("A supplier defined Epic with these details already exists")
                 .When(m => m.SelectedCapabilityId.HasValue && m.IsActive.HasValue)
                 .OverridePropertyName(
@@ -43,16 +41,14 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Validators.SupplierDefine
                     m => m.IsActive);
         }
 
-        private async Task<bool> NotBeADuplicateEpic(SupplierDefinedEpicBaseModel model, CancellationToken token)
+        private bool NotBeADuplicateEpic(SupplierDefinedEpicBaseModel model)
         {
-            _ = token;
-
-            return !await supplierDefinedEpicsService.EpicExists(
+            return !supplierDefinedEpicsService.EpicExists(
                 model.Id,
                 model.SelectedCapabilityId!.Value,
                 model.Name,
                 model.Description,
-                model.IsActive!.Value);
+                model.IsActive!.Value).GetAwaiter().GetResult();
         }
     }
 }
