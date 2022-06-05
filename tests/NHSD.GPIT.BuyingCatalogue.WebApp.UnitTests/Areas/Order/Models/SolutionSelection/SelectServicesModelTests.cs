@@ -4,7 +4,7 @@ using System.Linq;
 using FluentAssertions;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.AutoFixtureCustomisations;
-using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.SolutionSelection;
+using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.SolutionSelection.Shared;
 using Xunit;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.SolutionSelection
@@ -26,11 +26,14 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.Solution
 
             var model = new SelectServicesModel(order, services, catalogueItemType);
 
-            model.ExistingServices.Should().ContainSingle(existingItem.CatalogueItem.Name);
+            model.Services.Count.Should().Be(services.Count);
 
-            model.Services.Count.Should().Be(2);
-            model.Services.Should().Contain(x => x.CatalogueItemId == services[1].Id && x.Description == services[1].Name);
-            model.Services.Should().Contain(x => x.CatalogueItemId == services[2].Id && x.Description == services[2].Name);
+            for (var i = 0; i < services.Count; i++)
+            {
+                model.Services.Should().Contain(x => x.CatalogueItemId == services[i].Id && x.Description == services[i].Name);
+            }
+
+            model.Services.First(x => x.CatalogueItemId == existingItem.CatalogueItem.Id).IsSelected.Should().BeTrue();
         }
 
         [Theory]

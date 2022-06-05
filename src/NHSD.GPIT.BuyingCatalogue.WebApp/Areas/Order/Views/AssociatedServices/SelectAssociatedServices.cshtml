@@ -1,4 +1,4 @@
-﻿@model NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.SolutionSelection.SelectServicesModel
+﻿@model NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.SolutionSelection.Shared.SelectServicesModel
 @{
     ViewBag.Title = "Associated Services";
 }
@@ -28,22 +28,6 @@
 
         <form method="post">
             <input type="hidden" asp-for="@Model.AssociatedServicesOnly"/>
-
-            @if (Model!.ExistingServices.Any())
-            {
-                <div id="existing-services">
-                    <h2>Selected Associated Services</h2>
-                    <p>These services have already been added to your order:</p>
-                    <ul>
-                        @for (var i = 0; i < Model.ExistingServices.Count; i++)
-                        {
-                            <input type="hidden" asp-for="@Model.ExistingServices[i]"/>
-                            <li>@Model.ExistingServices[i]</li>
-                        }
-                    </ul>
-                    <hr/>
-                </div>
-            }
         
             @if (Model.Services.Any())
             {

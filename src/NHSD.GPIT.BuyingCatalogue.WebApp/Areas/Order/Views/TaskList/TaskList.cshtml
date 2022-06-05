@@ -1,4 +1,5 @@
 ﻿@using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Enums
+@using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers.SolutionSelection
 @model NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.SolutionSelection.TaskList.TaskListModel;
 
 <partial name="Partials/_BackLink" model="Model" />
@@ -26,7 +27,10 @@
             <div id="SolutionDetails" class="nhsuk-u-margin-bottom-9">
                 <h2>Catalogue Solution</h2>
                 <vc:nhs-action-link text="Change Catalogue Solution"
-                                    url="#"/>
+                                    url="@Url.Action(
+                                             nameof(CatalogueSolutionsController.EditSolution),
+                                             typeof(CatalogueSolutionsController).ControllerName(),
+                                             new { Model.InternalOrgId, Model.CallOffId })"/>
                                 
                 @if (Model.CatalogueSolution != null)
                 {
@@ -40,7 +44,10 @@
             <div id="AdditionalServiceDetails" class="nhsuk-u-margin-bottom-9">
                 <h2>Additional Services</h2>
                 <vc:nhs-action-link text="Change Additional Services"
-                                    url="#"/>
+                                    url="@Url.Action(
+                                             nameof(AdditionalServicesController.EditAdditionalServices),
+                                             typeof(AdditionalServicesController).ControllerName(),
+                                             new { Model.InternalOrgId, Model.CallOffId })"/>
 
                 @foreach (var service in Model.AdditionalServices)
                 {
@@ -55,7 +62,10 @@
         <div id="AssociatedServiceDetails" class="nhsuk-u-margin-bottom-9">
             <h2>Associated Services</h2>
             <vc:nhs-action-link text="Change Associated Services"
-                                url="#"/>
+                                url="@Url.Action(
+                                         nameof(AssociatedServicesController.EditAssociatedServices),
+                                         typeof(AssociatedServicesController).ControllerName(),
+                                         new { Model.InternalOrgId, Model.CallOffId })"/>
 
             @foreach (var service in Model.AssociatedServices)
             {

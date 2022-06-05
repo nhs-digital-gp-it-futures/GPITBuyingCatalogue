@@ -1,6 +1,6 @@
 ﻿using System.Linq;
 using FluentValidation;
-using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.SolutionSelection;
+using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.SolutionSelection.Shared;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Validators.SolutionSelection
 {
@@ -18,12 +18,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Validators.SolutionSelect
 
         private static bool HaveMadeASelection(SelectServicesModel model)
         {
-            if (!model.AssociatedServicesOnly)
-            {
-                return true;
-            }
-
-            return model.ExistingServices?.Any() ?? model.Services.Any(x => x.IsSelected);
+            return !model.AssociatedServicesOnly
+                || model.Services.Any(x => x.IsSelected);
         }
     }
 }

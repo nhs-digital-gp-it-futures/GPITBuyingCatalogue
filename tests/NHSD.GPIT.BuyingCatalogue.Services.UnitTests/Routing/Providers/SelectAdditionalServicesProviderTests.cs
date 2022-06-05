@@ -11,13 +11,13 @@ using Xunit;
 
 namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Routing.Providers
 {
-    public class TaskListBackLinkProviderTests
+    public class SelectAdditionalServicesProviderTests
     {
         [Theory]
         [CommonAutoData]
         public void Process_OrderIsNull_ThrowsException(
             RouteValues routeValues,
-            TaskListBackLinkProvider provider)
+            SelectAdditionalServicesProvider provider)
         {
             FluentActions
                 .Invoking(() => provider.Process(null, routeValues))
@@ -29,7 +29,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Routing.Providers
         [CommonAutoData]
         public void Process_RouteValuesIsNull_ThrowsException(
             Order order,
-            TaskListBackLinkProvider provider)
+            SelectAdditionalServicesProvider provider)
         {
             FluentActions
                 .Invoking(() => provider.Process(order, null))
@@ -38,80 +38,75 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Routing.Providers
         }
 
         [Theory]
-        [CommonInlineAutoData(true)]
-        [CommonInlineAutoData(false)]
-        public void Process_ExpectedResult(
-            bool associatedServicesOnly,
-            string internalOrgId,
-            CallOffId callOffId,
-            CatalogueItemId catalogueItemId,
-            Order order,
-            TaskListBackLinkProvider provider)
-        {
-            order.AssociatedServicesOnly = associatedServicesOnly;
-            order.OrderItems.ForEach(x => x.CatalogueItem.CatalogueItemType = CatalogueItemType.AssociatedService);
-
-            if (!associatedServicesOnly)
-            {
-                order.OrderItems.First().CatalogueItem.CatalogueItemType = CatalogueItemType.Solution;
-            }
-
-            var result = provider.Process(order, new RouteValues(internalOrgId, callOffId, catalogueItemId));
-
-            var expected = new
-            {
-                InternalOrgId = internalOrgId,
-                CallOffId = callOffId,
-            };
-
-            result.ActionName.Should().Be(Constants.Actions.Review);
-            result.ControllerName.Should().Be(Constants.Controllers.Review);
-            result.RouteValues.Should().BeEquivalentTo(expected);
-        }
-
-        [Theory]
         [CommonAutoData]
-        public void Process_IncompleteSolution_ExpectedResult(
+        public void Process_NoSolutionRecipients_ExpectedResult(
             string internalOrgId,
             CallOffId callOffId,
-            CatalogueItemId catalogueItemId,
             Order order,
-            TaskListBackLinkProvider provider)
+            SelectAdditionalServicesProvider provider)
         {
-            order.AssociatedServicesOnly = false;
             order.OrderItems.ForEach(x => x.CatalogueItem.CatalogueItemType = CatalogueItemType.AdditionalService);
 
             var solution = order.OrderItems.First();
 
             solution.CatalogueItem.CatalogueItemType = CatalogueItemType.Solution;
-            solution.OrderItemPrice = null;
+            solution.OrderItemRecipients.Clear();
 
-            var result = provider.Process(order, new RouteValues(internalOrgId, callOffId, catalogueItemId));
+            var result = provider.Process(order, new RouteValues(internalOrgId, callOffId));
 
             var expected = new
             {
                 InternalOrgId = internalOrgId,
                 CallOffId = callOffId,
+                solution.CatalogueItemId,
             };
 
-            result.ActionName.Should().Be(Constants.Actions.OrderDashboard);
-            result.ControllerName.Should().Be(Constants.Controllers.Orders);
+            result.ActionName.Should().Be(Constants.Actions.AddServiceRecipients);
+            result.ControllerName.Should().Be(Constants.Controllers.ServiceRecipients);
             result.RouteValues.Should().BeEquivalentTo(expected);
         }
 
         [Theory]
         [CommonAutoData]
-        public void Process_FromDashboard_ExpectedResult(
+        public void Process_NoAdditionalServiceRecipients_ExpectedResult(
             string internalOrgId,
             CallOffId callOffId,
-            CatalogueItemId catalogueItemId,
             Order order,
-            TaskListBackLinkProvider provider)
+            SelectAdditionalServicesProvider provider)
         {
-            var result = provider.Process(order, new RouteValues(internalOrgId, callOffId, catalogueItemId)
+            order.OrderItems.ForEach(x => x.CatalogueItem.CatalogueItemType = CatalogueItemType.AdditionalService);
+            order.OrderItems.First().CatalogueItem.CatalogueItemType = CatalogueItemType.Solution;
+
+            var service = order.OrderItems.ElementAt(1);
+
+            service.OrderItemRecipients.Clear();
+
+            var result = provider.Process(order, new RouteValues(internalOrgId, callOffId));
+
+            var expected = new
             {
-                Source = RoutingSource.Dashboard,
-            });
+                InternalOrgId = internalOrgId,
+                CallOffId = callOffId,
+                service.CatalogueItemId,
+            };
+
+            result.ActionName.Should().Be(Constants.Actions.AddServiceRecipients);
+            result.ControllerName.Should().Be(Constants.Controllers.ServiceRecipients);
+            result.RouteValues.Should().BeEquivalentTo(expected);
+        }
+
+        [Theory]
+        [CommonAutoData]
+        public void Process_ExpectedResult(
+            string internalOrgId,
+            CallOffId callOffId,
+            Order order,
+            SelectAdditionalServicesProvider provider)
+        {
+            order.OrderItems.ForEach(x => x.CatalogueItem.CatalogueItemType = CatalogueItemType.AdditionalService);
+            order.OrderItems.First().CatalogueItem.CatalogueItemType = CatalogueItemType.Solution;
+
+            var result = provider.Process(order, new RouteValues(internalOrgId, callOffId));
 
             var expected = new
             {
@@ -119,8 +114,8 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Routing.Providers
                 CallOffId = callOffId,
             };
 
-            result.ActionName.Should().Be(Constants.Actions.OrderDashboard);
-            result.ControllerName.Should().Be(Constants.Controllers.Orders);
+            result.ActionName.Should().Be(Constants.Actions.TaskList);
+            result.ControllerName.Should().Be(Constants.Controllers.TaskList);
             result.RouteValues.Should().BeEquivalentTo(expected);
         }
     }

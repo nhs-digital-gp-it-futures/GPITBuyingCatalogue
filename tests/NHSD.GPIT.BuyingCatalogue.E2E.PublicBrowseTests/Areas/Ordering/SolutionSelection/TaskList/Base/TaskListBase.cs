@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using FluentAssertions;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.Objects.Ordering;
@@ -24,6 +25,10 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering.SolutionSelection.Ta
         protected abstract bool AdditionalServicesDisplayed { get; }
 
         protected abstract List<TaskListOrderItem> OrderItems { get; }
+
+        protected abstract Type OnwardController { get; }
+
+        protected abstract string OnwardAction { get; }
 
         [Fact]
         public void TaskList_AllSectionsDisplayed()
@@ -54,9 +59,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering.SolutionSelection.Ta
         {
             CommonActions.ClickLinkElement(TaskListObjects.ContinueButton);
 
-            CommonActions.PageLoadedCorrectGetIndex(
-                typeof(ReviewSolutionsController),
-                nameof(ReviewSolutionsController.ReviewSolutions)).Should().BeTrue();
+            CommonActions.PageLoadedCorrectGetIndex(OnwardController, OnwardAction).Should().BeTrue();
         }
 
         [Fact]
@@ -70,8 +73,8 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering.SolutionSelection.Ta
             CommonActions.ClickLinkElement(TaskListObjects.ChangeSolutionLink);
 
             CommonActions.PageLoadedCorrectGetIndex(
-                    typeof(TaskListController),
-                    nameof(TaskListController.TaskList)).Should().BeTrue();
+                typeof(CatalogueSolutionsController),
+                nameof(CatalogueSolutionsController.EditSolution)).Should().BeTrue();
         }
 
         [Fact]
@@ -85,8 +88,8 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering.SolutionSelection.Ta
             CommonActions.ClickLinkElement(TaskListObjects.ChangeAdditionalServicesLink);
 
             CommonActions.PageLoadedCorrectGetIndex(
-                typeof(TaskListController),
-                nameof(TaskListController.TaskList)).Should().BeTrue();
+                typeof(AdditionalServicesController),
+                nameof(AdditionalServicesController.EditAdditionalServices)).Should().BeTrue();
         }
 
         [Fact]
@@ -95,8 +98,8 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering.SolutionSelection.Ta
             CommonActions.ClickLinkElement(TaskListObjects.ChangeAssociatedServicesLink);
 
             CommonActions.PageLoadedCorrectGetIndex(
-                typeof(TaskListController),
-                nameof(TaskListController.TaskList)).Should().BeTrue();
+                typeof(AssociatedServicesController),
+                nameof(AssociatedServicesController.EditAssociatedServices)).Should().BeTrue();
         }
 
         [Fact]

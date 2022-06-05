@@ -5,6 +5,7 @@
         ConfirmPriceBackLink,
         EditPrice,
         EditPriceBackLink,
+        SelectAdditionalServices,
         SelectPriceBackLink,
         SelectQuantity,
         SelectQuantityBackLink,
