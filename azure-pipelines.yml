@@ -226,7 +226,11 @@ jobs:
       echo "$(SQLIP)"
       echo "----"
       echo "$SQLIPAddress"
+      echo "Starting container"
       docker start dacpaccontainer
+      echo "Waiting for container"
+      docker wait dacpaccontainer
+      echo "Exited container"
       docker ps -a
     displayName: 'Get SQL Server IP'
 
