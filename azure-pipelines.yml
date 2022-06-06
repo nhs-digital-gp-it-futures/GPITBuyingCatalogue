@@ -222,7 +222,7 @@ jobs:
     displayName: 'Inspect Containers'
 
   - bash: |
-      docker inspect mssql | grep -v Secondary | grep IPAddress |  sed 's/"IPAddress": "//' | sed 's/",//'  | sed 's/ *$//g' | sed 's/^ *//' | grep -P SQLIPAddress .
+      export SQLIPAddress=`docker inspect mssql | grep -v Secondary | grep IPAddress |  sed 's/"IPAddress": "//' | sed 's/",//'  | sed 's/ *$//g' | sed 's/^ *//'`
     displayName: 'Get SQL Server IP'
 
   - bash: echo $SQLIPAddress
