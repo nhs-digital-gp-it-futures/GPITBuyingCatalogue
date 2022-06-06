@@ -72,12 +72,14 @@
     <Folder Include="Security\" />
     <Folder Include="Security\Users" />
     <Folder Include="Security\Logins" />
+    <Folder Include="PostDeployment" />
     <Folder Include="Security\Roles" />
     <Folder Include="PostDeployment\IntegrationTests" />
     <Folder Include="Security\Schemas" />
     <Folder Include="PostDeployment\ProdLikeData" />
     <Folder Include="PreDeployment" />
     <Folder Include="Ordering" />
+    <Folder Include="Ordering\Tables" />
     <Folder Include="Ordering\Views" />
     <Folder Include="Catalogue" />
     <Folder Include="Catalogue\Tables" />
