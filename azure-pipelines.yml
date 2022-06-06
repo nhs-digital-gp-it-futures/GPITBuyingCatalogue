@@ -226,7 +226,7 @@ jobs:
       echo "$(SQLIP)"
       echo "----"
       echo "$SQLIPAddress"
-      docker run dacpaccontainer
+      docker start dacpaccontainer
       docker ps -a
     displayName: 'Get SQL Server IP'
 
