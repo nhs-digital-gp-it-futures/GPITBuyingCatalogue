@@ -214,7 +214,6 @@ jobs:
       docker create --name dacpaccontainer $id      
       mkdir $(Build.ArtifactStagingDirectory)/dacpacs
       docker cp dacpaccontainer:/deploy-db/. $(Build.ArtifactStagingDirectory)/dacpacs
-      docker rm dacpaccontainer
     displayName: 'Copy DACPACs'
 
   - bash: |
