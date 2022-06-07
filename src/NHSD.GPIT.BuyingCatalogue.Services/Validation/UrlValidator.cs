@@ -17,7 +17,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Validation
         }
 
         [SuppressMessage("Design", "CA1054:URI-like parameters should not be strings", Justification = "URL as string is intentional")]
-        public async Task<bool> IsValidUrl(string url)
+        public bool IsValidUrl(string url)
         {
             if (string.IsNullOrWhiteSpace(url))
                 throw new ArgumentException("Url cannot be null, empty or whitespace", nameof(url));
@@ -31,7 +31,9 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Validation
                 httpRequestMessage.Headers.UserAgent.Add(new System.Net.Http.Headers.ProductInfoHeaderValue("BuyingCatalogue", "1.0"));
 
                 using var cancellationTokenSource = new CancellationTokenSource(TimeSpan.FromSeconds(3));
-                using var response = await httpClient.SendAsync(httpRequestMessage, HttpCompletionOption.ResponseHeadersRead, cancellationTokenSource.Token);
+                using var response = httpClient.SendAsync(httpRequestMessage, HttpCompletionOption.ResponseHeadersRead, cancellationTokenSource.Token)
+                                        .GetAwaiter()
+                                        .GetResult();
 
                 return response.IsSuccessStatusCode;
             }

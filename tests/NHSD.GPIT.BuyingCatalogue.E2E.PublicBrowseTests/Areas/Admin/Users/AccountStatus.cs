@@ -31,7 +31,6 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.Users
         {
             CommonActions.ElementIsDisplayed(CommonSelectors.GoBackLink).Should().BeTrue();
             CommonActions.ElementIsDisplayed(CommonSelectors.Header1).Should().BeTrue();
-            CommonActions.ElementIsDisplayed(UserObjects.AccountStatusRadioButtons).Should().BeTrue();
             CommonActions.ElementIsDisplayed(CommonSelectors.SubmitButton).Should().BeTrue();
 
             var user = GetUser();

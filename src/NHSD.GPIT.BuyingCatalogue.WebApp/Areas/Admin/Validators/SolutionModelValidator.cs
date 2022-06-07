@@ -17,17 +17,15 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Validators
             this.solutionsService = solutionsService;
 
             RuleFor(s => s.SolutionName)
-                .Cascade(CascadeMode.Stop)
                 .NotEmpty()
                 .WithMessage("Enter a solution name");
 
             RuleFor(s => s)
-                .MustAsync(NotBeADuplicateName)
+                .Must(NotBeADuplicateName)
                 .WithMessage("A solution with this name already exists")
                 .OverridePropertyName(m => m.SolutionName);
 
             RuleFor(s => s.SupplierId)
-                .Cascade(CascadeMode.Stop)
                 .NotNull()
                 .WithMessage("Select a supplier name");
 
@@ -42,13 +40,11 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Validators
                 .When(s => s.SupplierId.HasValue && !string.IsNullOrWhiteSpace(s.SolutionName));
         }
 
-        private async Task<bool> NotBeADuplicateName(SolutionModel model, CancellationToken cancellationToken)
+        private bool NotBeADuplicateName(SolutionModel model)
         {
-            _ = cancellationToken;
-
             return !(model.SolutionId is null
-                ? await solutionsService.CatalogueSolutionExistsWithName(model.SolutionName)
-                : await solutionsService.CatalogueSolutionExistsWithName(model.SolutionName, model.SolutionId!.Value));
+                ? solutionsService.CatalogueSolutionExistsWithName(model.SolutionName).GetAwaiter().GetResult()
+                : solutionsService.CatalogueSolutionExistsWithName(model.SolutionName, model.SolutionId!.Value).GetAwaiter().GetResult());
         }
     }
 }

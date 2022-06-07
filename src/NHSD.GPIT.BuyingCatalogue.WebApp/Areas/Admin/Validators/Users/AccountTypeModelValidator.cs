@@ -18,7 +18,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Validators.Users
             this.usersService = usersService;
 
             RuleFor(x => x.SelectedAccountType)
-                .Cascade(CascadeMode.Stop)
                 .NotEmpty()
                 .WithMessage(SelectedAccountTypeEmptyErrorMessage)
                 .Must((model, accountType) => BelongToCorrectOrganisation(model.UserId, accountType))

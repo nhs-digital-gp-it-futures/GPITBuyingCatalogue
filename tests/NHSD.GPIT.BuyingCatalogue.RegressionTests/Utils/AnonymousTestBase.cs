@@ -9,8 +9,8 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Utils
             WebApplicationConnector connector,
             Type controller,
             string methodName,
-            IDictionary<string, string> parameters = null,
-            ITestOutputHelper testOutputHelper = null)
+            IDictionary<string, string>? parameters = null,
+            ITestOutputHelper? testOutputHelper = null)
             : base(
                   connector,
                   testOutputHelper,
@@ -24,7 +24,7 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Utils
             string methodName,
             IDictionary<string, string> parameters,
             string buyerEmail,
-            ITestOutputHelper testOutputHelper = null)
+            ITestOutputHelper? testOutputHelper = null)
             : base(
                   connector,
                   testOutputHelper,

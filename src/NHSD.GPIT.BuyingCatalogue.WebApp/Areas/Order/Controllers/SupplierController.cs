@@ -47,11 +47,13 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
             }
 
             var supplier = await supplierService.GetSupplierFromBuyingCatalogue(order.Supplier.Id);
+            var supplierContact = supplier.SupplierContacts.FirstOrDefault(x => AreEqual(x, order.SupplierContact));
             var temporaryContact = sessionService.GetSupplierContact(callOffId, supplier.Id);
 
             if (temporaryContact == null)
             {
-                if (order.SupplierContact is { SupplierContactId: null })
+                if (order.SupplierContact != null
+                    && supplierContact == null)
                 {
                     temporaryContact = new SupplierContact
                     {
@@ -65,13 +67,15 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
                     };
                 }
 
+                // we need something written to the session so the e2e tests don't break
+                // hence possibly writing a null temporary contact here
                 sessionService.SetSupplierContact(callOffId, supplier.Id, temporaryContact);
             }
 
             if (selected == null
                 && order.SupplierContact != null)
             {
-                selected = order.SupplierContact.SupplierContactId ?? SupplierContact.TemporaryContactId;
+                selected = supplierContact?.Id ?? SupplierContact.TemporaryContactId;
             }
 
             var model = new SupplierModel(internalOrgId, callOffId, order)
@@ -253,6 +257,17 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
                 nameof(Supplier),
                 typeof(SupplierController).ControllerName(),
                 new { internalOrgId, callOffId, selected = SupplierContact.TemporaryContactId });
+        }
+
+        private static bool AreEqual(SupplierContact a, Contact b)
+        {
+            if (a == null
+                || b == null)
+            {
+                return false;
+            }
+
+            return $"{a.FirstName}{a.LastName}{a.Department}{a.Email}" == $"{b.FirstName}{b.LastName}{b.Department}{b.Email}";
         }
 
         private List<SupplierContact> GetSupplierContacts(CallOffId callOffId, Supplier supplier)

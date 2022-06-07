@@ -575,8 +575,8 @@ SET @capabilityId = 43;
 
 INSERT INTO #Epics(Id, [Name], CapabilityId, CompliancyLevelId, IsActive)
 VALUES
-('E00001', 'Conduct online consultation', @capabilityId, 1, 1),
-('E00002', 'Conduct online consultation with a proxy', @capabilityId, 3, 1),
+('E00001', 'Online consultation', @capabilityId, 1, 1),
+('E00002', 'Online consultation with a proxy', @capabilityId, 3, 1),
 ('E00003', 'Patient or service user requests for online consultation support and provides information', @capabilityId, 3, 1),
 ('E00004', 'Proxy requests for online consultation support and provides information', @capabilityId, 3, 1),
 ('E00005', 'Respond to Online Consultation requests for support from patients or service users', @capabilityId, 3, 1),
@@ -648,7 +648,7 @@ VALUES
 ('E00055', 'Record video consultation outcome to the Patient Record ', @capabilityId, 3, 1),
 ('E00059', 'Health or care professional can record a video consultation', @capabilityId, 3, 1),
 ('E00060', 'Patient or service user can record a video consultation', @capabilityId, 3, 1),
-('E00061', 'Accessibility options', @capabilityId, 3, 1),
+('E00061', 'Accessibility options for video consultation', @capabilityId, 3, 1),
 ('E00062', 'Waiting room', @capabilityId, 3, 1),
 ('E00063', 'Disable and enable direct messaging during a video consultation for the patient or service user', @capabilityId, 3, 1),
 ('E00064', 'Record direct messages to the Patient Record', @capabilityId, 3, 1),

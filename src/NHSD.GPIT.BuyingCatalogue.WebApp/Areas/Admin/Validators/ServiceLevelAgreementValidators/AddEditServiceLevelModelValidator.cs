@@ -1,6 +1,4 @@
 ﻿using System.Linq;
-using System.Threading;
-using System.Threading.Tasks;
 using FluentValidation;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.ServiceLevelAgreements;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.ServiceLevelAgreements;
@@ -17,7 +15,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Validators.ServiceLevelAg
             this.serviceLevelAgreementsService = serviceLevelAgreementsService;
 
             RuleFor(m => m)
-                .MustAsync(NotBeADuplicateServiceLevel)
+                .Must(NotBeADuplicateServiceLevel)
                 .WithMessage("Service level with these details already exists")
                 .Unless(m => m.CreditsApplied is null)
                 .OverridePropertyName(
@@ -43,11 +41,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Validators.ServiceLevelAg
                 .WithMessage("Select if service credits are applied");
         }
 
-        private async Task<bool> NotBeADuplicateServiceLevel(AddEditServiceLevelModel model, CancellationToken cancellationToken)
+        private bool NotBeADuplicateServiceLevel(AddEditServiceLevelModel model)
         {
-            _ = cancellationToken;
-
-            var serviceLevelAgreement = await serviceLevelAgreementsService.GetServiceLevelAgreementForSolution(model.SolutionId);
+            var serviceLevelAgreement = serviceLevelAgreementsService.GetServiceLevelAgreementForSolution(model.SolutionId).GetAwaiter().GetResult();
 
             return !serviceLevelAgreement.ServiceLevels.Any(
                 sl => sl.Id != model.ServiceLevelId

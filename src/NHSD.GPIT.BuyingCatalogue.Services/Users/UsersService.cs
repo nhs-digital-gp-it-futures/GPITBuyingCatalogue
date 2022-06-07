@@ -97,9 +97,9 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Users
 
         public async Task<bool> EmailAddressExists(string emailAddress, int userId = 0)
         {
+            var testAddress = (emailAddress ?? string.Empty).ToUpperInvariant();
             var user = await dbContext.AspNetUsers
-                .Where(x => x.Id != userId)
-                .FirstOrDefaultAsync(x => x.NormalizedEmail == emailAddress.ToUpperInvariant());
+                .FirstOrDefaultAsync(x => x.Id != userId && x.NormalizedEmail == testAddress);
 
             return user != null;
         }

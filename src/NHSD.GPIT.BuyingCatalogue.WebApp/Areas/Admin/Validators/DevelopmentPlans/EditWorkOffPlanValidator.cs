@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Globalization;
 using System.Linq;
-using System.Threading;
-using System.Threading.Tasks;
 using FluentValidation;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.DevelopmentPlans;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.DevelopmentPlans;
@@ -58,7 +56,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Validators.DevelopmentPla
                 .WithMessage("Enter an agreed completion date in a valid format");
 
             RuleFor(wp => wp)
-                .MustAsync(NotBeDuplicateWorkOffPlan)
+                .Must(NotBeDuplicateWorkOffPlan)
                 .Unless(wp => !IsValidDate(wp))
                 .OverridePropertyName(wp => wp.Details, wp => wp.SelectedStandard)
                 .WithMessage("A Work-Off Plan with these details already exists");
@@ -86,11 +84,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Validators.DevelopmentPla
             return DateTime.MinValue;
         }
 
-        private async Task<bool> NotBeDuplicateWorkOffPlan(EditWorkOffPlanModel model, CancellationToken cancellationToken)
+        private bool NotBeDuplicateWorkOffPlan(EditWorkOffPlanModel model)
         {
-            _ = cancellationToken;
-
-            var workoffPlans = await developmentPlansService.GetWorkOffPlans(model.SolutionId);
+            var workoffPlans = developmentPlansService.GetWorkOffPlans(model.SolutionId).GetAwaiter().GetResult();
 
             return !workoffPlans.Any(wp =>
             wp.Id != model.WorkOffPlanId

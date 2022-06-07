@@ -1,6 +1,4 @@
-﻿using System.Threading;
-using System.Threading.Tasks;
-using FluentValidation;
+﻿using FluentValidation;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.ListPrice;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.ListPriceModels;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Validation;
@@ -33,7 +31,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Validators.ListPrices
                 .WithMessage(SelectedPublicationStatusError);
 
             RuleFor(m => m)
-                .MustAsync(NotBeADuplicate)
+                .Must(NotBeADuplicate)
                 .WithMessage(SharedListPriceValidationErrors.DuplicateListPriceError)
                 .Unless(m => m.SelectedProvisioningType is null || m.Price is null)
                 .OverridePropertyName(
@@ -42,16 +40,14 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Validators.ListPrices
                     m => m.UnitDescription);
         }
 
-        private async Task<bool> NotBeADuplicate(AddEditFlatListPriceModel model, CancellationToken token)
+        private bool NotBeADuplicate(AddEditFlatListPriceModel model)
         {
-            _ = token;
-
-            return !await listPriceService.HasDuplicateFlatPrice(
+            return !listPriceService.HasDuplicateFlatPrice(
                 model.CatalogueItemId,
                 model.CataloguePriceId,
                 model.SelectedProvisioningType!.Value,
                 model.Price!.Value,
-                model.UnitDescription);
+                model.UnitDescription).GetAwaiter().GetResult();
         }
     }
 }

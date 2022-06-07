@@ -262,7 +262,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
             return RedirectToAction(
                 nameof(ManageSupplierContacts),
                 typeof(SuppliersController).ControllerName(),
-                new { supplierId = supplierId });
+                new { supplierId });
         }
 
         [HttpGet("{supplierId}/contacts/{contactId}")]
@@ -270,9 +270,11 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
         {
             var supplier = await suppliersService.GetSupplier(supplierId);
 
+            var solutions = await suppliersService.GetSolutionsReferencingSupplierContact(contactId);
+
             var contact = supplier.SupplierContacts.Single(sc => sc.Id == contactId);
 
-            var model = new EditContactModel(contact, supplier)
+            var model = new EditContactModel(contact, supplier, solutions)
             {
                 BackLink = Url.Action(
                     nameof(ManageSupplierContacts),
@@ -287,7 +289,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
         public async Task<IActionResult> EditSupplierContact(int supplierId, int contactId, EditContactModel model)
         {
             if (!ModelState.IsValid)
+            {
+                model.SolutionsReferencingThisContact = await suppliersService.GetSolutionsReferencingSupplierContact(contactId);
                 return View(model);
+            }
 
             var updatedContact = new SupplierContact
             {
@@ -304,7 +309,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
             return RedirectToAction(
                 nameof(ManageSupplierContacts),
                 typeof(SuppliersController).ControllerName(),
-                new { supplierId = supplierId });
+                new { supplierId });
         }
 
         [HttpGet("{supplierId}/contacts/{contactId}/delete")]

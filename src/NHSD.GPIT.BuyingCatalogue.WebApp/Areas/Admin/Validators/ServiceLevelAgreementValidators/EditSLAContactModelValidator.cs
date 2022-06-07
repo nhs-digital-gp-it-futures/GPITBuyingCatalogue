@@ -1,7 +1,5 @@
 ﻿using System;
 using System.Linq;
-using System.Threading;
-using System.Threading.Tasks;
 using FluentValidation;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.ServiceLevelAgreements;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.ServiceLevelAgreements;
@@ -20,7 +18,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Validators.ServiceLevelAg
                 ?? throw new ArgumentNullException(nameof(serviceLevelAgreementsService));
 
             RuleFor(slac => slac)
-            .MustAsync(NotBeDuplicateContact)
+            .Must(NotBeDuplicateContact)
             .OverridePropertyName(
                 slac => slac.Channel,
                 slac => slac.ContactInformation)
@@ -28,7 +26,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Validators.ServiceLevelAg
             .When(slac => string.IsNullOrWhiteSpace(slac.ApplicableDays));
 
             RuleFor(slac => slac)
-            .MustAsync(NotBeDuplicateContact)
+            .Must(NotBeDuplicateContact)
             .OverridePropertyName(
                 slac => slac.Channel,
                 slac => slac.ContactInformation,
@@ -54,11 +52,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Validators.ServiceLevelAg
                 .WithMessage("Enter an until time");
         }
 
-        private async Task<bool> NotBeDuplicateContact(EditSLAContactModel model, CancellationToken cancellationToken)
+        private bool NotBeDuplicateContact(EditSLAContactModel model)
         {
-            _ = cancellationToken;
-
-            var serviceLevelAgreements = await serviceLevelAgreementsService.GetServiceLevelAgreementForSolution(model.SolutionId);
+            var serviceLevelAgreements = serviceLevelAgreementsService.GetServiceLevelAgreementForSolution(model.SolutionId).GetAwaiter().GetResult();
 
             return !serviceLevelAgreements
                 .Contacts

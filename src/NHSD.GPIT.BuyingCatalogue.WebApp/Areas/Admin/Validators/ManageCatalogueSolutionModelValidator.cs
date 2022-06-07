@@ -1,6 +1,4 @@
 ﻿using System.Linq;
-using System.Threading;
-using System.Threading.Tasks;
 using FluentValidation;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions;
@@ -17,16 +15,14 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Validators
             this.solutionsService = solutionsService;
 
             RuleFor(m => m)
-                .MustAsync(HaveCompletedAllMandatorySections)
+                .Must(HaveCompletedAllMandatorySections)
                 .WithMessage("Complete all mandatory sections before publishing")
                 .OverridePropertyName(m => m.SelectedPublicationStatus);
         }
 
-        private async Task<bool> HaveCompletedAllMandatorySections(ManageCatalogueSolutionModel model, CancellationToken cancellationToken)
+        private bool HaveCompletedAllMandatorySections(ManageCatalogueSolutionModel model)
         {
-            _ = cancellationToken;
-
-            var solution = await solutionsService.GetSolutionThin(model.SolutionId);
+            var solution = solutionsService.GetSolutionThin(model.SolutionId).GetAwaiter().GetResult();
             if (model.SelectedPublicationStatus != PublicationStatus.Published || model.SelectedPublicationStatus == solution.PublishedStatus)
                 return true;
 

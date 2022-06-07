@@ -23,7 +23,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Identity.Validators.Registratio
                 .WithMessage(TelephoneNumberErrorMessage);
 
             RuleFor(x => x.EmailAddress)
-                .Cascade(CascadeMode.Stop)
                 .NotEmpty()
                 .WithMessage(EmailAddressMissingErrorMessage)
                 .EmailAddress()

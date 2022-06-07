@@ -18,8 +18,8 @@
         <div class="nhsuk-width-container">
             <ol class="nhsuk-breadcrumb__list">
                 <li class="nhsuk-breadcrumb__item">
-                    <a asp-action="@nameof(HomeController.Index)" 
-                       asp-controller="@typeof(HomeController).ControllerName()" 
+                    <a asp-action="@nameof(HomeController.Index)"
+                       asp-controller="@typeof(HomeController).ControllerName()"
                        class="nhsuk-breadcrumb__link">Home</a>
                 </li>
             </ol>
@@ -53,7 +53,7 @@
         <nhs-table-column>Epic</nhs-table-column>
         <nhs-table-column>Capability</nhs-table-column>
         <nhs-table-column>Status</nhs-table-column>
-        <nhs-table-column></nhs-table-column>
+        <nhs-table-column>Action</nhs-table-column>
         @foreach (var supplierDefinedEpic in Model.SupplierDefinedEpics)
         {
             <nhs-table-row-container class="@(!supplierDefinedEpic.IsActive ? "inactive" : null)">

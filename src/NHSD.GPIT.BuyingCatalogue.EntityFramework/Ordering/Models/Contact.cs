@@ -16,8 +16,6 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models
 
         public int Id { get; set; }
 
-        public int? SupplierContactId { get; set; }
-
         [Required(ErrorMessage = "First Name Required")]
         [StringLength(100)]
         public string FirstName { get; set; }
@@ -41,8 +39,6 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models
         public DateTime LastUpdated { get; set; }
 
         public int? LastUpdatedBy { get; set; }
-
-        public SupplierContact SupplierContact { get; set; }
 
         public AspNetUser LastUpdatedByUser { get; set; }
 

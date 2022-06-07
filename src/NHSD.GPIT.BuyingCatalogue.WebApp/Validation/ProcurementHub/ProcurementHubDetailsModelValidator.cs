@@ -19,7 +19,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Validation.ProcurementHub
                 .WithMessage(FullNameMissingErrorMessage);
 
             RuleFor(x => x.EmailAddress)
-                .Cascade(CascadeMode.Stop)
                 .NotEmpty()
                 .WithMessage(EmailAddressMissingErrorMessage)
                 .EmailAddress()

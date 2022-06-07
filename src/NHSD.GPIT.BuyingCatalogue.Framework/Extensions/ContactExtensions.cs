@@ -11,7 +11,6 @@ namespace NHSD.GPIT.BuyingCatalogue.Framework.Extensions
                 ? new Contact()
                 : new Contact
                 {
-                    SupplierContactId = model.SupplierContactId,
                     FirstName = model.FirstName,
                     LastName = model.LastName,
                     Email = model.EmailAddress,

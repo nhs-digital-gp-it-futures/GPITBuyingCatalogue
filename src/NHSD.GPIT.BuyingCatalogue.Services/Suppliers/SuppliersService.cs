@@ -63,6 +63,11 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Suppliers
                 .ToListAsync();
         }
 
+        public async Task<IList<CatalogueItem>> GetSolutionsReferencingSupplierContact(int supplierContactId) =>
+            await dbContext.CatalogueItems
+                .Where(ci => ci.CatalogueItemContacts.Any(cic => cic.Id == supplierContactId))
+                .ToListAsync();
+
         public async Task<Supplier> AddSupplier(EditSupplierModel model)
         {
             if (model is null)

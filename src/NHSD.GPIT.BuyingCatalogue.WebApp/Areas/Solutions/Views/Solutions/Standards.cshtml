@@ -1,7 +1,17 @@
 ﻿@using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models
-@using NHSD.GPIT.BuyingCatalogue.Framework.Extensions 
-@using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers 
+@using NHSD.GPIT.BuyingCatalogue.Framework.Extensions
+@using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers
 @model NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models.SolutionStandardsModel
+
+@{
+    var overarchingStandards = Model.Standards.Where(s => s.StandardType == StandardType.Overarching).OrderBy(s => s.Name).ToList();
+    var interoperabilityStandards = Model.Standards.Where(s => s.StandardType == StandardType.Interoperability).OrderBy(s => s.Name).ToList();
+    var capabilityStandards = Model.Standards.Where(s => s.StandardType == StandardType.Capability).OrderBy(s => s.Name).ToList();
+
+    var shouldShowOverarchingAction = overarchingStandards.Any(s => Model.StandardsWithWorkOffPlans.Any(swp => swp == s.Id));
+    var shouldShowInteroperabilityAction = interoperabilityStandards.Any(s => Model.StandardsWithWorkOffPlans.Any(swp => swp == s.Id));
+    var shouldShowCapabilityAction = capabilityStandards.Any(s => Model.StandardsWithWorkOffPlans.Any(swp => swp == s.Id));
+}
 
 <p><b>Standards describe the technical specifications or operating conditions required for a Catalogue Solution to be published on the Buying Catalogue. This is how @Model.SolutionName has performed against the relevant Standards:</b></p>
 
@@ -18,8 +28,15 @@
     <nhs-table-column>Standard</nhs-table-column>
     <nhs-table-column>Description</nhs-table-column>
     <nhs-table-column>Status</nhs-table-column>
-    <nhs-table-column></nhs-table-column>
-    @foreach (var standard in Model.Standards.Where(s => s.StandardType == StandardType.Overarching).OrderBy(s => s.Name))
+    @if (shouldShowOverarchingAction)
+    {
+        <nhs-table-column>Action</nhs-table-column>
+    }
+    else
+    {
+        <nhs-table-column></nhs-table-column>
+    }
+    @foreach (var standard in overarchingStandards)
     {
         <nhs-table-row-container>
             <nhs-table-cell>@standard.Name</nhs-table-cell>
@@ -58,8 +75,15 @@
         <nhs-table-column>Standard</nhs-table-column>
         <nhs-table-column>Description</nhs-table-column>
         <nhs-table-column>Status</nhs-table-column>
-        <nhs-table-column></nhs-table-column>
-        @foreach (var standard in Model.Standards.Where(s => s.StandardType == StandardType.Interoperability).OrderBy(s => s.Name))
+        @if (shouldShowInteroperabilityAction)
+        {
+            <nhs-table-column>Action</nhs-table-column>
+        }
+        else
+        {
+            <nhs-table-column></nhs-table-column>
+        }
+        @foreach (var standard in interoperabilityStandards)
         {
             <nhs-table-row-container>
                 <nhs-table-cell>@standard.Name</nhs-table-cell>
@@ -99,8 +123,15 @@
         <nhs-table-column>Standard</nhs-table-column>
         <nhs-table-column>Description</nhs-table-column>
         <nhs-table-column>Status</nhs-table-column>
-        <nhs-table-column></nhs-table-column>
-        @foreach (var standard in Model.Standards.Where(s => s.StandardType == StandardType.Capability).OrderBy(s => s.Name))
+        @if (shouldShowCapabilityAction)
+        {
+            <nhs-table-column>Action</nhs-table-column>
+        }
+        else
+        {
+            <nhs-table-column></nhs-table-column>
+        }
+        @foreach (var standard in capabilityStandards)
         {
             <nhs-table-row-container>
                 <nhs-table-cell>@standard.Name</nhs-table-cell>

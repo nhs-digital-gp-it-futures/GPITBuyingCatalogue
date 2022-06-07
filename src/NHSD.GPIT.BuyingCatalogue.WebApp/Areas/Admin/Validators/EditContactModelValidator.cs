@@ -1,7 +1,5 @@
 ﻿using System;
 using System.Linq;
-using System.Threading;
-using System.Threading.Tasks;
 using FluentValidation;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Suppliers;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.SupplierModels;
@@ -33,23 +31,20 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Validators
                 .WithMessage("Enter a department name");
 
             RuleFor(m => m.Email)
-                .Cascade(CascadeMode.Stop)
                 .NotEmpty()
                 .WithMessage("Enter an email address")
                 .EmailAddress()
                 .WithMessage("Enter an email address in the correct format, like name@example.com");
 
             RuleFor(m => m)
-                .MustAsync(NotBeADuplicateContact)
+                .Must(NotBeADuplicateContact)
                 .WithMessage("A contact with these contact details already exists for this supplier")
                 .OverridePropertyName("edit-contact");
         }
 
-        private async Task<bool> NotBeADuplicateContact(EditContactModel model, CancellationToken cancellationToken)
+        private bool NotBeADuplicateContact(EditContactModel model)
         {
-            _ = cancellationToken;
-
-            var supplier = await suppliersService.GetSupplier(model.SupplierId);
+            var supplier = suppliersService.GetSupplier(model.SupplierId).GetAwaiter().GetResult();
 
             return !supplier.SupplierContacts
                 .Where(sc => sc.Id != model.ContactId)

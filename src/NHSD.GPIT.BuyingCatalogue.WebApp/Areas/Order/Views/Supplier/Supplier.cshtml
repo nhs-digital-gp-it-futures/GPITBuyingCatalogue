@@ -11,7 +11,7 @@
     <div class="nhsuk-grid-row">
         <div class="nhsuk-grid-column-two-thirds">
             <nhs-validation-summary RadioId="SelectedContactId" />
-            <nhs-page-title title="@ViewBag.Title" 
+            <nhs-page-title title="@ViewBag.Title"
                             caption="Order @(Model.CallOffId)"
                             advice="Select an existing contact for @Model.SupplierName or add a new one." />
 
@@ -27,7 +27,7 @@
                 <input type="hidden" asp-for="BackLink" />
                 <input type="hidden" asp-for="SupplierName" />
                 <input type="hidden" asp-for="Title" />
-                
+
                 <div class="nhsuk-u-margin-bottom-9">
                     @if (Model.Contacts.Count > 1)
                     {
@@ -56,7 +56,7 @@
                     <nhs-table label-text="Contacts added to this order">
                         <nhs-table-column>Name</nhs-table-column>
                         <nhs-table-column>Department</nhs-table-column>
-                        <nhs-table-column></nhs-table-column>
+                        <nhs-table-column>Action</nhs-table-column>
 
                         <nhs-table-row-container>
                             <nhs-table-cell>@Model.TemporaryContact.FirstName @Model.TemporaryContact.LastName</nhs-table-cell>
@@ -75,7 +75,7 @@
                     <vc:nhs-action-link url="@Url.Action(
                                                  nameof(SupplierController.NewContact),
                                                  typeof(SupplierController).ControllerName(),
-                                                 new { Model.InternalOrgId, Model.CallOffId })" 
+                                                 new { Model.InternalOrgId, Model.CallOffId })"
                                         text="Add a new contact" />
                     <p>
                         If your contact for this supplier is not listed, you can add their details using the link. The information will only appear on this order.

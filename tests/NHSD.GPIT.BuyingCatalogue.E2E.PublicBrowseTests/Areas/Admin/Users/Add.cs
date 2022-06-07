@@ -31,7 +31,6 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.Users
             CommonActions.ElementIsDisplayed(UserObjects.LastNameInput).Should().BeTrue();
             CommonActions.ElementIsDisplayed(UserObjects.EmailInput).Should().BeTrue();
             CommonActions.ElementIsDisplayed(UserObjects.AccountTypeRadioButtons).Should().BeTrue();
-            CommonActions.ElementIsDisplayed(UserObjects.AccountStatusRadioButtons).Should().BeTrue();
             CommonActions.ElementIsDisplayed(CommonSelectors.SubmitButton).Should().BeTrue();
         }
 
@@ -76,10 +75,6 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.Users
             CommonActions.ElementShowingCorrectErrorMessage(
                 UserObjects.AccountTypeRadioButtonsError,
                 $"Error: {AddModelValidator.AccountTypeMissingErrorMessage}").Should().BeTrue();
-
-            CommonActions.ElementShowingCorrectErrorMessage(
-                UserObjects.AccountStatusRadioButtonsError,
-                $"Error: {AddModelValidator.AccountStatusMissingErrorMessage}").Should().BeTrue();
         }
 
         [Fact]
@@ -138,7 +133,6 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.Users
             CommonActions.ElementAddValue(UserObjects.LastNameInput, Strings.RandomString(10));
             CommonActions.ElementAddValue(UserObjects.EmailInput, ValidEmailAddress);
             CommonActions.ClickRadioButtonWithText("Buyer");
-            CommonActions.ClickRadioButtonWithText("Active");
 
             CommonActions.ClickLinkElement(CommonSelectors.SubmitButton);
 
@@ -181,7 +175,6 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.Users
             CommonActions.ElementAddValue(UserObjects.LastNameInput, Strings.RandomString(10));
             CommonActions.ElementAddValue(UserObjects.EmailInput, ValidEmailAddress);
             CommonActions.ClickRadioButtonWithText("Admin");
-            CommonActions.ClickRadioButtonWithText("Active");
 
             CommonActions.ClickLinkElement(CommonSelectors.SubmitButton);
 

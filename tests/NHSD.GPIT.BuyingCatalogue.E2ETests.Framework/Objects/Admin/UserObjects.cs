@@ -8,10 +8,6 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.Objects.Admin
     {
         public static By AccountStatusDisplay => ByExtensions.DataTestId("user-account-status");
 
-        public static By AccountStatusRadioButtons => By.Id("selected-account-status-id");
-
-        public static By AccountStatusRadioButtonsError => By.Id("selected-account-status-id-error");
-
         public static By AccountTypeDisplay => ByExtensions.DataTestId("user-account-type");
 
         public static By AccountTypeRadioButtons => By.Id("selected-account-type");

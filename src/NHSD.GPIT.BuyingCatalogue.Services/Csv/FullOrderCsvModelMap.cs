@@ -30,6 +30,8 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Csv
             Map(o => o.VerficationDate).Index(21).Name("Buyer verification date (M2)");
             Map(o => o.CeaseDate).Index(22).Name("Cease Date");
             Map(o => o.Framework).Index(23).Name("Framework");
+            Map(o => o.InitialTerm).Index(24).Name("Initial Term");
+            Map(o => o.MaximumTerm).Index(25).Name("Contract Length (Months)");
         }
     }
 }

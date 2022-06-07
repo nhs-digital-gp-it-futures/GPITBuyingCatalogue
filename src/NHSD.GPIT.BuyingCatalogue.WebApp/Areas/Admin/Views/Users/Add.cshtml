@@ -23,9 +23,9 @@
                            label-text="Last name"/>
                 <nhs-input asp-for="Email"
                            label-text="Email"/>
-                
+
                 <hr/>
-                
+
                 <div class="nhsuk-u-margin-bottom-6">
                     <nhs-fieldset-form-label asp-for="SelectedAccountType"
                                              label-text="Account type"
@@ -33,20 +33,6 @@
                                              size="Medium">
                         <nhs-radio-buttons asp-for="SelectedAccountType"
                                            values="Model.AccountTypeOptions.Cast<object>()"
-                                           value-name="Value"
-                                           display-name="Text" />
-                    </nhs-fieldset-form-label>
-                </div>
-
-                <hr/>
-
-                <div class="nhsuk-u-margin-bottom-6">
-                    <nhs-fieldset-form-label asp-for="SelectedAccountStatusId"
-                                             label-text="Account status"
-                                             label-hint="Select an option"
-                                             size="Medium">
-                        <nhs-radio-buttons asp-for="SelectedAccountStatusId"
-                                           values="Model.AccountStatusOptions.Cast<object>()"
                                            value-name="Value"
                                            display-name="Text" />
                     </nhs-fieldset-form-label>

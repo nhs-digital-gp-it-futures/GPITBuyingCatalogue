@@ -4,15 +4,15 @@
 @{
     ViewBag.Title = "Manage Catalogue Solutions";
 
-    ViewBag.HeadingTitles = new[] { "Solution ID", "Solution name", "Supplier", "Last updated", "Status", string.Empty, };
+    ViewBag.HeadingTitles = new[] { "Solution ID", "Solution name", "Supplier", "Last updated", "Status", "Action", };
 }
 @section Breadcrumbs {
 <nav class="nhsuk-breadcrumb" aria-label="Breadcrumb">
     <div class="nhsuk-width-container">
         <ol class="nhsuk-breadcrumb__list">
             <li class="nhsuk-breadcrumb__item">
-                <a asp-action="@nameof(HomeController.Index)" 
-                   asp-controller="@typeof(HomeController).ControllerName()" 
+                <a asp-action="@nameof(HomeController.Index)"
+                   asp-controller="@typeof(HomeController).ControllerName()"
                    class="nhsuk-breadcrumb__link">Home</a>
             </li>
         </ol>
@@ -29,7 +29,7 @@
                                      nameof(AddCatalogueSolutionController.Index),
                                      typeof(AddCatalogueSolutionController).ControllerName(),
                                      null)" />
-        
+
         <vc:nhs-suggestion-search id="solutions-search"
                                   ajax-url="@Url.Action(
                                                 nameof(CatalogueSolutionsController.SearchResults),
@@ -100,7 +100,7 @@
         }
         else
         {
-            <div id="search-error-message" class="nhsuk-u-margin-top-9"> 
+            <div id="search-error-message" class="nhsuk-u-margin-top-9">
                 <h3>No results found for "@(Model.SearchTerm)"</h3>
                 <p>
                     Try entering a different search term, or

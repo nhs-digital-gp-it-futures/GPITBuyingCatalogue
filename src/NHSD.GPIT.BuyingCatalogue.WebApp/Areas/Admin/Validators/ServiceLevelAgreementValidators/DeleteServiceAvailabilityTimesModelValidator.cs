@@ -1,6 +1,4 @@
-﻿using System.Threading;
-using System.Threading.Tasks;
-using FluentValidation;
+﻿using FluentValidation;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.ServiceLevelAgreements;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions;
@@ -21,17 +19,18 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Validators.ServiceLevelAg
             this.serviceLevelAgreementsService = serviceLevelAgreementsService;
 
             RuleFor(m => m)
-                .MustAsync(NotBeTheOnlyEntry)
+                .Must(NotBeTheOnlyEntry)
                 .WithMessage("These are the only service availability times provided and can only be deleted if you unpublish your solution first");
         }
 
-        private async Task<bool> NotBeTheOnlyEntry(DeleteServiceAvailabilityTimesModel model, CancellationToken token)
+        private bool NotBeTheOnlyEntry(DeleteServiceAvailabilityTimesModel model)
         {
-            var solution = await solutionsService.GetSolutionThin(model.SolutionId);
+            var solution = solutionsService.GetSolutionThin(model.SolutionId).GetAwaiter().GetResult();
 
             var isNotPublished = solution.PublishedStatus != PublicationStatus.Published;
 
-            return isNotPublished || ((await serviceLevelAgreementsService.GetCountOfServiceAvailabilityTimes(model.SolutionId, model.ServiceAvailabilityTimesId)) > 0);
+            return isNotPublished
+                || serviceLevelAgreementsService.GetCountOfServiceAvailabilityTimes(model.SolutionId, model.ServiceAvailabilityTimesId).GetAwaiter().GetResult() > 0;
         }
     }
 }

@@ -1,6 +1,4 @@
 ﻿using System.Linq;
-using System.Threading;
-using System.Threading.Tasks;
 using FluentValidation;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions;
@@ -17,13 +15,13 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Validators.ServiceLevelAg
             this.solutionsService = solutionsService;
 
             RuleFor(m => m)
-                .MustAsync(NotBeTheOnlyEntry)
+                .Must(NotBeTheOnlyEntry)
                 .WithMessage("This is the only service level provided and can only be deleted if you unpublish your solution first");
         }
 
-        private async Task<bool> NotBeTheOnlyEntry(DeleteServiceLevelModel model, CancellationToken token)
+        private bool NotBeTheOnlyEntry(DeleteServiceLevelModel model)
         {
-            var catalogueItem = await solutionsService.GetSolutionWithServiceLevelAgreements(model.SolutionId);
+            var catalogueItem = solutionsService.GetSolutionWithServiceLevelAgreements(model.SolutionId).GetAwaiter().GetResult();
 
             var isNotPublished = catalogueItem.PublishedStatus != PublicationStatus.Published;
 

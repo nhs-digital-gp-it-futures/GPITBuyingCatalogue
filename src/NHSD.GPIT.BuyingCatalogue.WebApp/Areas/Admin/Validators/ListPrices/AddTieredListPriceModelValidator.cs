@@ -33,7 +33,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Validators.ListPrices
                 .WithMessage(RangeDefinitionError);
 
             RuleFor(m => m)
-                .MustAsync(NotBeADuplicate)
+                .Must(NotBeADuplicate)
                 .WithMessage(SharedListPriceValidationErrors.DuplicateListPriceError)
                 .Unless(m => m.SelectedProvisioningType is null || m.SelectedCalculationType is null)
                 .OverridePropertyName(
@@ -43,17 +43,15 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Validators.ListPrices
                     m => m.RangeDefinition);
         }
 
-        private async Task<bool> NotBeADuplicate(AddTieredListPriceModel model, CancellationToken token)
+        private bool NotBeADuplicate(AddTieredListPriceModel model)
         {
-            _ = token;
-
-            return !await listPriceService.HasDuplicateTieredPrice(
+            return !listPriceService.HasDuplicateTieredPrice(
                 model.CatalogueItemId,
                 model.CataloguePriceId,
                 model.SelectedProvisioningType!.Value,
                 model.SelectedCalculationType!.Value,
                 model.UnitDescription,
-                model.RangeDefinition);
+                model.RangeDefinition).GetAwaiter().GetResult();
         }
     }
 }

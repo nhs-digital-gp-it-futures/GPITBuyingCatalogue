@@ -1,5 +1,5 @@
 ﻿@using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
-@using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers; 
+@using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers;
 
 @model NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.DevelopmentPlans.DevelopmentPlanModel
 @{
@@ -28,7 +28,7 @@
             <nhs-table-column>Name of Standard</nhs-table-column>
             <nhs-table-column>Details</nhs-table-column>
             <nhs-table-column>Agreed&nbsp;completion&nbsp;date</nhs-table-column>
-            <nhs-table-column></nhs-table-column>
+            <nhs-table-column>Action</nhs-table-column>
             @foreach (var workOffPlan in Model.WorkOffPlans.OrderBy(wp => wp.Standard.Name).OrderBy(wp => wp.Details))
             {
                 <nhs-table-row-container>

@@ -1,6 +1,4 @@
-﻿using System.Threading;
-using System.Threading.Tasks;
-using FluentValidation;
+﻿using FluentValidation;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.AssociatedServices;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.AssociatedServices;
 
@@ -27,19 +25,17 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Validators
                 .WithMessage("Enter order guidance");
 
             RuleFor(m => m)
-                .MustAsync(NotBeADuplicateServiceName)
+                .Must(NotBeADuplicateServiceName)
                 .WithMessage("Associated Service name already exists. Enter a different name")
                 .OverridePropertyName(m => m.Name);
         }
 
-        private async Task<bool> NotBeADuplicateServiceName(EditAssociatedServiceDetailsModel model, CancellationToken cancellationToken)
+        private bool NotBeADuplicateServiceName(EditAssociatedServiceDetailsModel model)
         {
-            _ = cancellationToken;
-
-            return !(await associatedServicesService.AssociatedServiceExistsWithNameForSupplier(
+            return !associatedServicesService.AssociatedServiceExistsWithNameForSupplier(
                 model.Name,
                 model.SolutionId.SupplierId,
-                model.Id.HasValue ? model.Id.Value : default));
+                model.Id.HasValue ? model.Id.Value : default).GetAwaiter().GetResult();
         }
     }
 }

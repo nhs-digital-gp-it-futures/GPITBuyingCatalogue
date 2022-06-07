@@ -1,6 +1,4 @@
 ﻿using System.Linq;
-using System.Threading;
-using System.Threading.Tasks;
 using FluentValidation;
 using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions;
@@ -19,14 +17,13 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Validators
             this.solutionsService = solutionsService;
 
             RuleFor(m => m)
-                .Cascade(CascadeMode.Stop)
-                .MustAsync(NotBeTheOnlyHostingType)
+                .Must(NotBeTheOnlyHostingType)
                 .WithMessage(ErrorMessage);
         }
 
-        private async Task<bool> NotBeTheOnlyHostingType(DeleteHostingTypeConfirmationModel model, CancellationToken token)
+        private bool NotBeTheOnlyHostingType(DeleteHostingTypeConfirmationModel model)
         {
-            var solution = await solutionsService.GetSolutionThin(model.SolutionId);
+            var solution = solutionsService.GetSolutionThin(model.SolutionId).GetAwaiter().GetResult();
             var solutionHostingOptions = solution.Solution.Hosting.AvailableHosting();
 
             return solutionHostingOptions.Count > 1

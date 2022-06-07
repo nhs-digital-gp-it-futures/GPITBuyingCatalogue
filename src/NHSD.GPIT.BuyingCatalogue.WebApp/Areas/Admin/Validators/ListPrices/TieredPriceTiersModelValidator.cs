@@ -1,6 +1,4 @@
 ﻿using System.Linq;
-using System.Threading;
-using System.Threading.Tasks;
 using FluentValidation;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
@@ -19,62 +17,49 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Validators.ListPrices
             this.solutionListPriceService = solutionListPriceService;
 
             RuleFor(m => m.SelectedPublicationStatus)
-                .Cascade(CascadeMode.Stop)
-                .MustAsync(HaveAtLeastOneTier)
+                .Must(HaveAtLeastOneTier)
                 .WithMessage(SharedListPriceValidationErrors.MissingTiersError)
-                .MustAsync(HaveTierWithStartingRange)
+                .Must(HaveTierWithStartingRange)
                 .WithMessage(SharedListPriceValidationErrors.InvalidStartingRangeError)
-                .MustAsync(HaveTierWithInfiniteRange)
+                .Must(HaveTierWithInfiniteRange)
                 .WithMessage(SharedListPriceValidationErrors.InvalidEndingRangeError)
-                .CustomAsync(EnsureNoGapsOrOverlap)
+                .Custom(EnsureNoGapsOrOverlap)
                 .When(m => m.SelectedPublicationStatus == PublicationStatus.Published);
         }
 
-        private async Task<CataloguePrice> GetCataloguePrice(CatalogueItemId solutionId, int cataloguePriceId)
+        private CataloguePrice GetCataloguePrice(CatalogueItemId solutionId, int cataloguePriceId)
         {
-            var solution = await solutionListPriceService.GetCatalogueItemWithListPrices(solutionId);
+            var solution = solutionListPriceService.GetCatalogueItemWithListPrices(solutionId).GetAwaiter().GetResult();
             var price = solution.CataloguePrices.Single(p => p.CataloguePriceId == cataloguePriceId);
             return price;
         }
 
-        private async Task<bool> HaveAtLeastOneTier(TieredPriceTiersModel model, PublicationStatus? status, CancellationToken token)
+        private bool HaveAtLeastOneTier(TieredPriceTiersModel model, PublicationStatus? status)
         {
-            _ = status;
-            _ = token;
-
-            var price = await GetCataloguePrice(model.CatalogueItemId, model.CataloguePriceId);
+            var price = GetCataloguePrice(model.CatalogueItemId, model.CataloguePriceId);
 
             return price.CataloguePriceTiers.Any();
         }
 
-        private async Task<bool> HaveTierWithStartingRange(TieredPriceTiersModel model, PublicationStatus? status, CancellationToken token)
+        private bool HaveTierWithStartingRange(TieredPriceTiersModel model, PublicationStatus? status)
         {
-            _ = status;
-            _ = token;
-
-            var price = await GetCataloguePrice(model.CatalogueItemId, model.CataloguePriceId);
+            var price = GetCataloguePrice(model.CatalogueItemId, model.CataloguePriceId);
 
             return price.CataloguePriceTiers.Any(p => p.LowerRange == StartingLowerRange);
         }
 
-        private async Task<bool> HaveTierWithInfiniteRange(TieredPriceTiersModel model, PublicationStatus? status, CancellationToken token)
+        private bool HaveTierWithInfiniteRange(TieredPriceTiersModel model, PublicationStatus? status)
         {
-            _ = status;
-            _ = token;
-
-            var price = await GetCataloguePrice(model.CatalogueItemId, model.CataloguePriceId);
+            var price = GetCataloguePrice(model.CatalogueItemId, model.CataloguePriceId);
 
             return price.CataloguePriceTiers.Any(p => p.UpperRange is null);
         }
 
-        private async Task EnsureNoGapsOrOverlap(PublicationStatus? status, ValidationContext<TieredPriceTiersModel> validationContext, CancellationToken token)
+        private void EnsureNoGapsOrOverlap(PublicationStatus? status, ValidationContext<TieredPriceTiersModel> validationContext)
         {
-            _ = status;
-            _ = token;
-
             var model = validationContext.InstanceToValidate;
 
-            var price = await GetCataloguePrice(model.CatalogueItemId, model.CataloguePriceId);
+            var price = GetCataloguePrice(model.CatalogueItemId, model.CataloguePriceId);
 
             (bool hasGaps, int? gapLowerTierIndex, int? gapUpperTierIndex) = price.HasTierRangeGaps();
             (bool hasOverlap, int? overlapLowerTierIndex, int? overlapUpperTierIndex) = price.HasTierRangeOverlap();

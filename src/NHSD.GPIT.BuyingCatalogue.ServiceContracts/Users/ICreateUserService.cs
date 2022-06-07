@@ -11,7 +11,6 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.Users
             string firstName,
             string lastName,
             string emailAddress,
-            string organisationFunction,
-            AccountStatus accountStatus);
+            string organisationFunction);
     }
 }
