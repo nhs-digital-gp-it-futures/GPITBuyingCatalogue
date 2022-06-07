@@ -214,11 +214,11 @@ jobs:
     displayName: 'Inspect Containers'
 
   - bash: |
-      $SQLIPAddress=`docker inspect mssql | grep -v Secondary | grep IPAddress |  sed 's/"IPAddress": "//' | sed 's/",//'  | sed 's/ *$//g' | sed 's/^ *//'`
+      export SQLIPAddress=`docker inspect mssql | grep -v Secondary | grep IPAddress |  sed 's/"IPAddress": "//' | sed 's/",//'  | sed 's/ *$//g' | sed 's/^ *//'`
       echo "$SQLIPAddress"
 
       echo "Creating container"
-      $id=docker images --filter "label=dacpac=true" -q | head -n 1
+      export id=docker images --filter "label=dacpac=true" -q | head -n 1
       docker create -e DB_SERVER=$SQLIPAddress -e SA_PASSWORD="$(SQLPassword)" -e NHSD_PASSWORD="DisruptTheMarket1!" -e HANGFIRE_PASSWORD="$(SQLPassword)" -e DB_NAME="BuyingCatalogue-pipeline" -e INCLUDE_IMPORT="TRUE" -e INCLUDE_PUBLISH="TRUE" -e INSERT_TEST_DATA="TRUE" -e SEED_ORGANISATIONS="TRUE" -e CREATE_EA_USER="True" -e EA_USER_FIRST_NAME="Agency" -e EA_USER_LAST_NAME="User" -e EA_USER_EMAIL="user@agency.com" -e EA_USER_PASSWORD_HASH="AQAAAAEAACcQAAAAEEOFkNNrFpKmDC2TBv2CP/dzxfnjdXk97RoqRlunE/CGs2tmFcewKZj4M/fITiP2tg==" -e EA_USER_PHONE="01234567890" --name dacpaccontainer $id
       mkdir $(Build.ArtifactStagingDirectory)/dacpacs
 
