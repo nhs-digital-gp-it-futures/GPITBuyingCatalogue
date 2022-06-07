@@ -214,7 +214,7 @@ jobs:
     displayName: 'Inspect Containers'
 
   - pwsh: |
-      $SQLIPAddress=`docker inspect mssql | grep -v Secondary | grep IPAddress |  sed 's/"IPAddress": "//' | sed 's/",//'  | sed 's/ *$//g' | sed 's/^ *//'`
+      export SQLIPAddress=`docker inspect mssql | grep -v Secondary | grep IPAddress |  sed 's/"IPAddress": "//' | sed 's/",//'  | sed 's/ *$//g' | sed 's/^ *//'`
       echo "$SQLIPAddress"
 
       echo "Creating container"
@@ -231,10 +231,8 @@ jobs:
       docker wait dacpaccontainer
       echo "Exited container"
       docker ps -a
+      docker logs dacpaccontainer
     displayName: 'Copy DACPACs and Deploy'
-
-  - bash: echo "$(SQLIP)"
-    displayName: 'Test ENV variable'
 
   - task: CmdLine@2
     inputs:
