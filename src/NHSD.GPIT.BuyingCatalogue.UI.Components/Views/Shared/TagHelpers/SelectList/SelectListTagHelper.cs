@@ -35,6 +35,9 @@ namespace NHSD.GPIT.BuyingCatalogue.UI.Components.TagHelpers
         [HtmlAttributeName(TagHelperConstants.AllowMultipleName)]
         public bool? AllowMultiple { get; set; }
 
+        [HtmlAttributeName(TagHelperConstants.UseDefaultValue)]
+        public bool? UseDefaultValue { get; set; } = true;
+
         public override void Process(TagHelperContext context, TagHelperOutput output)
         {
             var formGroup = BuildSelect();
@@ -48,7 +51,14 @@ namespace NHSD.GPIT.BuyingCatalogue.UI.Components.TagHelpers
             var label = TagHelperBuilders.GetLabelBuilder(ViewContext, For, htmlGenerator, null, LabelText);
             var errorMessage = TagHelperBuilders.GetValidationBuilder(ViewContext, For, htmlGenerator);
             var hint = TagHelperBuilders.GetLabelHintBuilder(For, LabelHint);
-            var selectList = TagHelperBuilders.GetSelectListBuilder(htmlGenerator, ViewContext, For, Items, AllowMultiple);
+
+            var selectList = TagHelperBuilders.GetSelectListBuilder(
+                htmlGenerator,
+                ViewContext,
+                For,
+                Items,
+                AllowMultiple,
+                UseDefaultValue);
 
             formGroup.InnerHtml
                 .AppendHtml(label)

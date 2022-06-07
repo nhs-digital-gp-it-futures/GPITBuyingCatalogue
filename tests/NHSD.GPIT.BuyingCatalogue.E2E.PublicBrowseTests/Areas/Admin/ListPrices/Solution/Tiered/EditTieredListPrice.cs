@@ -54,37 +54,45 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.ListPrices.Solution.Tie
             CommonActions.GoBackLinkDisplayed().Should().BeTrue();
             CommonActions.SaveButtonDisplayed().Should().BeTrue();
 
-            CommonActions.ElementIsDisplayed(AddEditTieredListPriceObjects.ProvisioningTypeInput).Should().BeTrue();
-            CommonActions.ElementIsDisplayed(AddEditTieredListPriceObjects.CalculationTypeInput).Should().BeTrue();
-            CommonActions.ElementIsDisplayed(AddEditTieredListPriceObjects.UnitDescriptionInput).Should().BeTrue();
-            CommonActions.ElementIsDisplayed(AddEditTieredListPriceObjects.UnitDefinitionInput).Should().BeTrue();
-            CommonActions.ElementIsDisplayed(AddEditTieredListPriceObjects.RangeDefinitionInput).Should().BeTrue();
-            CommonActions.ElementExists(AddEditTieredListPriceObjects.MaximumTiersInset).Should().BeFalse();
+            CommonActions.ElementIsDisplayed(ListPriceObjects.ProvisioningTypeInput).Should().BeTrue();
+            CommonActions.ElementIsDisplayed(ListPriceObjects.CalculationTypeInput).Should().BeTrue();
+            CommonActions.ElementIsDisplayed(ListPriceObjects.UnitDescriptionInput).Should().BeTrue();
+            CommonActions.ElementIsDisplayed(ListPriceObjects.UnitDefinitionInput).Should().BeTrue();
+            CommonActions.ElementIsDisplayed(ListPriceObjects.RangeDefinitionInput).Should().BeTrue();
+            CommonActions.ElementExists(ListPriceObjects.MaximumTiersInset).Should().BeFalse();
 
-            CommonActions.ElementIsDisplayed(AddEditTieredListPriceObjects.OnDemandBillingPeriodInput).Should().BeFalse();
-            CommonActions.ElementIsDisplayed(AddEditTieredListPriceObjects.DeclarativeBillingPeriodInput).Should().BeFalse();
+            CommonActions.ElementIsDisplayed(ListPriceObjects.OnDemandBillingPeriodInput).Should().BeFalse();
+            CommonActions.ElementIsDisplayed(ListPriceObjects.DeclarativeBillingPeriodInput).Should().BeFalse();
 
-            CommonActions.ClickRadioButtonWithValue(ProvisioningType.OnDemand.ToString());
-            CommonActions.ElementIsDisplayed(AddEditTieredListPriceObjects.OnDemandBillingPeriodInput).Should().BeTrue();
+            CommonActions.ElementIsDisplayed(ListPriceObjects.OnDemandQuantityCalculationRadioButtons).Should().BeFalse();
+            CommonActions.ElementIsDisplayed(ListPriceObjects.DeclarativeQuantityCalculationRadioButtons).Should().BeFalse();
 
-            CommonActions.ClickRadioButtonWithValue(ProvisioningType.Declarative.ToString());
-            CommonActions.ElementIsDisplayed(AddEditTieredListPriceObjects.DeclarativeBillingPeriodInput).Should().BeTrue();
+            CommonActions.ClickRadioButtonWithValue(ListPriceObjects.ProvisioningTypeRadioButtons, ProvisioningType.PerServiceRecipient.ToString());
+            CommonActions.ElementIsDisplayed(ListPriceObjects.PerServiceRecipientBillingPeriodInput).Should().BeTrue();
 
-            CommonActions.ElementIsDisplayed(AddEditTieredListPriceObjects.TieredPriceTable).Should().BeTrue();
+            CommonActions.ClickRadioButtonWithValue(ListPriceObjects.ProvisioningTypeRadioButtons, ProvisioningType.OnDemand.ToString());
+            CommonActions.ElementIsDisplayed(ListPriceObjects.OnDemandQuantityCalculationRadioButtons).Should().BeTrue();
+            CommonActions.ElementIsDisplayed(ListPriceObjects.OnDemandBillingPeriodInput).Should().BeTrue();
 
-            CommonActions.ElementIsDisplayed(AddEditTieredListPriceObjects.PublicationStatusInput).Should().BeTrue();
+            CommonActions.ClickRadioButtonWithValue(ListPriceObjects.ProvisioningTypeRadioButtons, ProvisioningType.Declarative.ToString());
+            CommonActions.ElementIsDisplayed(ListPriceObjects.DeclarativeQuantityCalculationRadioButtons).Should().BeTrue();
+            CommonActions.ElementIsDisplayed(ListPriceObjects.DeclarativeBillingPeriodInput).Should().BeTrue();
 
-            CommonActions.ElementIsDisplayed(AddEditTieredListPriceObjects.PublishedInsetSection).Should().BeTrue();
-            CommonActions.ElementIsDisplayed(AddEditTieredListPriceObjects.AddTierLink).Should().BeFalse();
-            CommonActions.ElementIsDisplayed(AddEditTieredListPriceObjects.DeletePriceLink).Should().BeFalse();
+            CommonActions.ElementIsDisplayed(ListPriceObjects.TieredPriceTable).Should().BeTrue();
+
+            CommonActions.ElementIsDisplayed(ListPriceObjects.PublicationStatusInput).Should().BeTrue();
+
+            CommonActions.ElementIsDisplayed(ListPriceObjects.PublishedInsetSection).Should().BeTrue();
+            CommonActions.ElementIsDisplayed(ListPriceObjects.AddTierLink).Should().BeFalse();
+            CommonActions.ElementIsDisplayed(ListPriceObjects.DeletePriceLink).Should().BeFalse();
 
             price.PublishedStatus = PublicationStatus.Unpublished;
             context.SaveChanges();
             Driver.Navigate().Refresh();
 
-            CommonActions.ElementIsDisplayed(AddEditTieredListPriceObjects.PublishedInsetSection).Should().BeFalse();
-            CommonActions.ElementIsDisplayed(AddEditTieredListPriceObjects.AddTierLink).Should().BeTrue();
-            CommonActions.ElementIsDisplayed(AddEditTieredListPriceObjects.DeletePriceLink).Should().BeTrue();
+            CommonActions.ElementIsDisplayed(ListPriceObjects.PublishedInsetSection).Should().BeFalse();
+            CommonActions.ElementIsDisplayed(ListPriceObjects.AddTierLink).Should().BeTrue();
+            CommonActions.ElementIsDisplayed(ListPriceObjects.DeletePriceLink).Should().BeTrue();
 
             price.PublishedStatus = publishStatus;
             context.SaveChanges();
@@ -95,8 +103,8 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.ListPrices.Solution.Tie
         {
             NavigateToUrl(typeof(CatalogueSolutionListPriceController), nameof(CatalogueSolutionListPriceController.EditTieredListPrice), MaximumTiersParameters);
 
-            CommonActions.ElementIsDisplayed(AddEditTieredListPriceObjects.AddTierLink).Should().BeFalse();
-            CommonActions.ElementIsDisplayed(AddEditTieredListPriceObjects.MaximumTiersInset).Should().BeTrue();
+            CommonActions.ElementIsDisplayed(ListPriceObjects.AddTierLink).Should().BeFalse();
+            CommonActions.ElementIsDisplayed(ListPriceObjects.MaximumTiersInset).Should().BeTrue();
         }
 
         [Fact]
@@ -121,7 +129,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.ListPrices.Solution.Tie
 
             Driver.Navigate().Refresh();
 
-            CommonActions.ClickLinkElement(AddEditTieredListPriceObjects.AddTierLink);
+            CommonActions.ClickLinkElement(ListPriceObjects.AddTierLink);
 
             CommonActions.PageLoadedCorrectGetIndex(
                 typeof(CatalogueSolutionListPriceController),
@@ -140,18 +148,18 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.ListPrices.Solution.Tie
             CommonActions.ClickRadioButtonWithValue(price.ProvisioningType.ToString());
             CommonActions.ClickRadioButtonWithValue(price.CataloguePriceCalculationType.ToString());
 
-            CommonActions.ElementAddValue(AddEditTieredListPriceObjects.UnitDescriptionInput, price.PricingUnit.Description);
-            CommonActions.ElementAddValue(AddEditTieredListPriceObjects.RangeDefinitionInput, price.PricingUnit.RangeDescription);
+            CommonActions.ElementAddValue(ListPriceObjects.UnitDescriptionInput, price.PricingUnit.Description);
+            CommonActions.ElementAddValue(ListPriceObjects.RangeDefinitionInput, price.PricingUnit.RangeDescription);
 
             CommonActions.ClickSave();
 
             CommonActions.ErrorSummaryDisplayed().Should().BeTrue();
             CommonActions.ErrorSummaryLinksExist().Should().BeTrue();
 
-            CommonActions.ElementShowingCorrectErrorMessage(AddEditTieredListPriceObjects.ProvisioningTypeInputError, "Error: A list price with these details already exists").Should().BeTrue();
-            CommonActions.ElementShowingCorrectErrorMessage(AddEditTieredListPriceObjects.CalculationTypeInputError, "Error: A list price with these details already exists").Should().BeTrue();
-            CommonActions.ElementShowingCorrectErrorMessage(AddEditTieredListPriceObjects.UnitDescriptionInputError, "A list price with these details already exists").Should().BeTrue();
-            CommonActions.ElementShowingCorrectErrorMessage(AddEditTieredListPriceObjects.RangeDefinitionInputError, "A list price with these details already exists").Should().BeTrue();
+            CommonActions.ElementShowingCorrectErrorMessage(ListPriceObjects.ProvisioningTypeInputError, "Error: A list price with these details already exists").Should().BeTrue();
+            CommonActions.ElementShowingCorrectErrorMessage(ListPriceObjects.CalculationTypeInputError, "Error: A list price with these details already exists").Should().BeTrue();
+            CommonActions.ElementShowingCorrectErrorMessage(ListPriceObjects.UnitDescriptionInputError, "A list price with these details already exists").Should().BeTrue();
+            CommonActions.ElementShowingCorrectErrorMessage(ListPriceObjects.RangeDefinitionInputError, "A list price with these details already exists").Should().BeTrue();
         }
 
         [Fact]
@@ -199,7 +207,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.ListPrices.Solution.Tie
                 nameof(CatalogueSolutionListPriceController.EditTieredListPrice),
                 parameters);
 
-            CommonActions.ElementIsDisplayed(AddEditTieredListPriceObjects.TieredPriceTable).Should().BeFalse();
+            CommonActions.ElementIsDisplayed(ListPriceObjects.TieredPriceTable).Should().BeFalse();
 
             catalogueItem.CataloguePrices.Remove(price);
             context.SaveChanges();
@@ -245,7 +253,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.ListPrices.Solution.Tie
 
             CommonActions.ErrorSummaryDisplayed().Should().BeTrue();
             CommonActions.ErrorSummaryLinksExist().Should().BeTrue();
-            CommonActions.ElementShowingCorrectErrorMessage(AddEditTieredListPriceObjects.PublicationStatusInputError, "Error: Add at least 1 tier").Should().BeTrue();
+            CommonActions.ElementShowingCorrectErrorMessage(ListPriceObjects.PublicationStatusInputError, "Error: Add at least 1 tier").Should().BeTrue();
 
             catalogueItem.CataloguePrices.Remove(price);
             context.SaveChanges();
@@ -299,7 +307,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.ListPrices.Solution.Tie
 
             CommonActions.ErrorSummaryDisplayed().Should().BeTrue();
             CommonActions.ErrorSummaryLinksExist().Should().BeTrue();
-            CommonActions.ElementShowingCorrectErrorMessage(AddEditTieredListPriceObjects.PublicationStatusInputError, "Error: Lowest tier must have a low range of 1").Should().BeTrue();
+            CommonActions.ElementShowingCorrectErrorMessage(ListPriceObjects.PublicationStatusInputError, "Error: Lowest tier must have a low range of 1").Should().BeTrue();
 
             catalogueItem.CataloguePrices.Remove(price);
             context.SaveChanges();
@@ -354,7 +362,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.ListPrices.Solution.Tie
 
             CommonActions.ErrorSummaryDisplayed().Should().BeTrue();
             CommonActions.ErrorSummaryLinksExist().Should().BeTrue();
-            CommonActions.ElementShowingCorrectErrorMessage(AddEditTieredListPriceObjects.PublicationStatusInputError, "Error: Highest tier must have an infinite upper range").Should().BeTrue();
+            CommonActions.ElementShowingCorrectErrorMessage(ListPriceObjects.PublicationStatusInputError, "Error: Highest tier must have an infinite upper range").Should().BeTrue();
 
             catalogueItem.CataloguePrices.Remove(price);
             context.SaveChanges();
@@ -414,7 +422,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.ListPrices.Solution.Tie
 
             CommonActions.ErrorSummaryDisplayed().Should().BeTrue();
             CommonActions.ErrorSummaryLinksExist().Should().BeTrue();
-            CommonActions.ElementShowingCorrectErrorMessage(AddEditTieredListPriceObjects.PublicationStatusInputError, "Error: Tier 1's lower range overlaps with Tier 2's upper range").Should().BeTrue();
+            CommonActions.ElementShowingCorrectErrorMessage(ListPriceObjects.PublicationStatusInputError, "Error: Tier 1's lower range overlaps with Tier 2's upper range").Should().BeTrue();
 
             catalogueItem.CataloguePrices.Remove(price);
             context.SaveChanges();
@@ -474,7 +482,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.ListPrices.Solution.Tie
 
             CommonActions.ErrorSummaryDisplayed().Should().BeTrue();
             CommonActions.ErrorSummaryLinksExist().Should().BeTrue();
-            CommonActions.ElementShowingCorrectErrorMessage(AddEditTieredListPriceObjects.PublicationStatusInputError, "Error: There's a gap between Tier 1's upper range and Tier 2's lower range").Should().BeTrue();
+            CommonActions.ElementShowingCorrectErrorMessage(ListPriceObjects.PublicationStatusInputError, "Error: There's a gap between Tier 1's upper range and Tier 2's lower range").Should().BeTrue();
 
             catalogueItem.CataloguePrices.Remove(price);
             context.SaveChanges();
@@ -492,7 +500,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.ListPrices.Solution.Tie
 
             Driver.Navigate().Refresh();
 
-            CommonActions.ClickLinkElement(AddEditTieredListPriceObjects.EditTierPriceLink(1));
+            CommonActions.ClickLinkElement(ListPriceObjects.EditTierPriceLink(1));
 
             CommonActions.PageLoadedCorrectGetIndex(
                 typeof(CatalogueSolutionListPriceController),
@@ -514,7 +522,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.ListPrices.Solution.Tie
 
             Driver.Navigate().Refresh();
 
-            CommonActions.ClickLinkElement(AddEditTieredListPriceObjects.EditTierPriceLink(1));
+            CommonActions.ClickLinkElement(ListPriceObjects.EditTierPriceLink(1));
 
             CommonActions.PageLoadedCorrectGetIndex(
                 typeof(CatalogueSolutionListPriceController),
@@ -573,9 +581,9 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.ListPrices.Solution.Tie
                 nameof(CatalogueSolutionListPriceController.EditTieredListPrice),
                 parameters);
 
-            CommonActions.ElementIsDisplayed(AddEditTieredListPriceObjects.DeletePriceLink).Should().BeTrue();
+            CommonActions.ElementIsDisplayed(ListPriceObjects.DeletePriceLink).Should().BeTrue();
 
-            CommonActions.ClickLinkElement(AddEditTieredListPriceObjects.DeletePriceLink);
+            CommonActions.ClickLinkElement(ListPriceObjects.DeletePriceLink);
 
             CommonActions.PageLoadedCorrectGetIndex(
                 typeof(CatalogueSolutionListPriceController),
@@ -637,9 +645,9 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.ListPrices.Solution.Tie
                 nameof(CatalogueSolutionListPriceController.EditTieredListPrice),
                 parameters);
 
-            CommonActions.ElementIsDisplayed(AddEditTieredListPriceObjects.DeletePriceLink).Should().BeTrue();
+            CommonActions.ElementIsDisplayed(ListPriceObjects.DeletePriceLink).Should().BeTrue();
 
-            CommonActions.ClickLinkElement(AddEditTieredListPriceObjects.DeletePriceLink);
+            CommonActions.ClickLinkElement(ListPriceObjects.DeletePriceLink);
 
             CommonActions.PageLoadedCorrectGetIndex(
                 typeof(CatalogueSolutionListPriceController),
@@ -704,9 +712,9 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.ListPrices.Solution.Tie
                 nameof(CatalogueSolutionListPriceController.EditTieredListPrice),
                 parameters);
 
-            CommonActions.ClickLinkElement(AddEditTieredListPriceObjects.EditTierPriceLink(1));
+            CommonActions.ClickLinkElement(ListPriceObjects.EditTierPriceLink(1));
 
-            CommonActions.ClickLinkElement(AddEditTieredListPriceObjects.DeleteTieredPriceTierLink);
+            CommonActions.ClickLinkElement(ListPriceObjects.DeleteTieredPriceTierLink);
 
             CommonActions.PageLoadedCorrectGetIndex(
                 typeof(CatalogueSolutionListPriceController),
@@ -768,9 +776,9 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.ListPrices.Solution.Tie
                 nameof(CatalogueSolutionListPriceController.EditTieredListPrice),
                 parameters);
 
-            CommonActions.ClickLinkElement(AddEditTieredListPriceObjects.EditTierPriceLink(1));
+            CommonActions.ClickLinkElement(ListPriceObjects.EditTierPriceLink(1));
 
-            CommonActions.ClickLinkElement(AddEditTieredListPriceObjects.DeleteTieredPriceTierLink);
+            CommonActions.ClickLinkElement(ListPriceObjects.DeleteTieredPriceTierLink);
 
             CommonActions.PageLoadedCorrectGetIndex(
                 typeof(CatalogueSolutionListPriceController),

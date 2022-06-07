@@ -63,9 +63,11 @@ namespace NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.TagHelpers.Detail
 
             var children = await output.GetChildContentAsync();
 
-            var blackAndWhiteClass = ColourMode == ExpanderColourMode.BlackAndWhite ? ExpanderBlackAndWhite : string.Empty;
+            var classAttribute = $"{DetailsAndExpanderTagHelperBuilders.DetailsClass} {ExpanderClass}";
+            if (ColourMode == ExpanderColourMode.BlackAndWhite)
+                classAttribute += $" {ExpanderBlackAndWhite}";
 
-            output.Attributes.Add(new TagHelperAttribute(TagHelperConstants.Class, $"{DetailsAndExpanderTagHelperBuilders.DetailsClass} {ExpanderClass} {blackAndWhiteClass}"));
+            output.Attributes.Add(new TagHelperAttribute(TagHelperConstants.Class, classAttribute));
 
             textItem.InnerHtml.AppendHtml(children);
 

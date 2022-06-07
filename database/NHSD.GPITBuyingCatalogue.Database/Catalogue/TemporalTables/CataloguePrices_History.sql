@@ -15,4 +15,5 @@
     SysStartTime DATETIME2(0) NOT NULL,
     SysEndTime DATETIME2(0) NOT NULL,
     CataloguePriceCalculationTypeId INT NULL,
+    CataloguePriceQuantityCalculationTypeId INT NULL,
 );

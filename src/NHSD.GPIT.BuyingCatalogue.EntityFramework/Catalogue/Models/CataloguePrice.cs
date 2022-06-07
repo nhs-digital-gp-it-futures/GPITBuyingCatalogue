@@ -38,6 +38,8 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models
 
         public CataloguePriceCalculationType CataloguePriceCalculationType { get; set; }
 
+        public CataloguePriceQuantityCalculationType? CataloguePriceQuantityCalculationType { get; set; }
+
         public TimeUnit? TimeUnit { get; set; }
 
         public ICollection<CataloguePriceTier> CataloguePriceTiers { get; set; }

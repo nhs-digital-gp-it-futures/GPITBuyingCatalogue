@@ -11,7 +11,7 @@
 <partial name="Partials/_BackLink" model="Model" />
 <div class="nhsuk-grid-row">
     <div class="nhsuk-grid-column-two-thirds">
-        <nhs-validation-summary RadioId="@nameof(Model.SelectedProvisioningType),@nameof(Model.SelectedPublicationStatus)" />
+        <nhs-validation-summary RadioId="@nameof(Model.SelectedProvisioningType),@nameof(Model.SelectedPublicationStatus),@nameof(Model.OnDemandQuantityCalculationType),@nameof(Model.DeclarativeQuantityCalculationType)" />
         <nhs-page-title
             title="@ViewBag.Title"
             caption="@Model.CatalogueItemName"
@@ -42,11 +42,11 @@
                                       value-name="Value"
                                       display-name="Text"
                                       index="1">
-
-                        <nhs-select asp-for="DeclarativeBillingPeriod"
+                        <nhs-select asp-for="PerServiceRecipientBillingPeriod"
                                     asp-items="timeUnitsSelectList"
                                     label-text="Billing period (optional)"
-                                    label-hint="Select if it’s monthly or yearly." />
+                                    label-hint="Select if it’s a recurring payment either per month or per year."
+                                    use-default-value="false" />
                     </nhs-radio-button>
 
                     <nhs-radio-button asp-for="SelectedProvisioningType"
@@ -55,14 +55,42 @@
                                       display-name="Text"
                                       index="2">
 
+                        <nhs-fieldset-form-label asp-for="DeclarativeQuantityCalculationType" label-text="How are quantities for this price calculated?" size="Small">
+                            <nhs-radio-buttons asp-for="DeclarativeQuantityCalculationType"
+                                               values="@Model.AvailableQuantityCalculationTypes.Cast<object>()"
+                                               display-name="Name"
+                                               value-name="Value"/>
+                        </nhs-fieldset-form-label>
+
+                        <nhs-select asp-for="DeclarativeBillingPeriod"
+                                    asp-items="timeUnitsSelectList"
+                                    label-text="Billing period (optional)"
+                                    label-hint="Select if it’s a recurring payment either per month or per year."
+                                    use-default-value="false" />
+                    </nhs-radio-button>
+
+                    <nhs-radio-button asp-for="SelectedProvisioningType"
+                                      value="provisioningTypes[3]"
+                                      value-name="Value"
+                                      display-name="Text"
+                                      index="3">
+
+                        <nhs-fieldset-form-label asp-for="OnDemandQuantityCalculationType"  label-text="How are quantities for this price calculated?" size="Small">
+                            <nhs-radio-buttons asp-for="OnDemandQuantityCalculationType"
+                                               values="@Model.AvailableQuantityCalculationTypes.Cast<object>()"
+                                               display-name="Name"
+                                               value-name="Value"/>
+                        </nhs-fieldset-form-label>
+
                         <nhs-select asp-for="OnDemandBillingPeriod"
                                     asp-items="timeUnitsSelectList"
                                     label-text="Billing period (optional)"
-                                    label-hint="Select if it’s monthly or yearly." />
+                                    label-hint="Select if it’s a recurring payment either per month or per year."
+                                    use-default-value="false"/>
                     </nhs-radio-button>
                 </nhs-radio-button-container>
             </nhs-fieldset-form-label>
-            
+
             <nhs-bookended-input
                 asp-for="Price"
                 label-text="Price"

@@ -12,5 +12,8 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models
 
         [Display(Name = "On demand")]
         OnDemand = 3,
+
+        [Display(Name = "Per Service Recipient")]
+        PerServiceRecipient = 4,
     }
 }
