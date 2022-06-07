@@ -213,26 +213,25 @@ jobs:
       docker inspect mssql
     displayName: 'Inspect Containers'
 
-  - bash: |
-      export SQLIPAddress=`docker inspect mssql | grep -v Secondary | grep IPAddress |  sed 's/"IPAddress": "//' | sed 's/",//'  | sed 's/ *$//g' | sed 's/^ *//'`
-      echo "##vso[task.setvariable variable=SQLIP;]$SQLIPAddress"
-      echo "$(SQLIP)"
-      echo "----"
+  - pwsh: |
+      $SQLIPAddress=`docker inspect mssql | grep -v Secondary | grep IPAddress |  sed 's/"IPAddress": "//' | sed 's/",//'  | sed 's/ *$//g' | sed 's/^ *//'`
       echo "$SQLIPAddress"
+
+      echo "Creating container"
+      $id=docker images --filter "label=dacpac=true" -q | Select-Object -First 1
+      docker create -e DB_SERVER=$SQLIPAddress -e SA_PASSWORD="$(SQLPassword)" -e NHSD_PASSWORD="DisruptTheMarket1!" -e HANGFIRE_PASSWORD="$(SQLPassword)" -e DB_NAME="BuyingCatalogue-pipeline" -e INCLUDE_IMPORT="TRUE" -e INCLUDE_PUBLISH="TRUE" -e INSERT_TEST_DATA="TRUE" -e SEED_ORGANISATIONS="TRUE" -e CREATE_EA_USER="True" -e EA_USER_FIRST_NAME="Agency" -e EA_USER_LAST_NAME="User" -e EA_USER_EMAIL="user@agency.com" -e EA_USER_PASSWORD_HASH="AQAAAAEAACcQAAAAEEOFkNNrFpKmDC2TBv2CP/dzxfnjdXk97RoqRlunE/CGs2tmFcewKZj4M/fITiP2tg==" -e EA_USER_PHONE="01234567890" --name dacpaccontainer $id
+      mkdir $(Build.ArtifactStagingDirectory)/dacpacs
+
+      echo "Copying files"
+      docker cp dacpaccontainer:/deploy-db/. $(Build.ArtifactStagingDirectory)/dacpacs    
+      
       echo "Starting container"
       docker start dacpaccontainer
       echo "Waiting for container"
       docker wait dacpaccontainer
       echo "Exited container"
       docker ps -a
-    displayName: 'Get SQL Server IP'
-
-  - pwsh: |
-      $id=docker images --filter "label=dacpac=true" -q | Select-Object -First 1
-      docker create -e DB_SERVER=$SQLIPAddress -e SA_PASSWORD="$(SQLPassword)" -e NHSD_PASSWORD="DisruptTheMarket1!" -e HANGFIRE_PASSWORD="$(SQLPassword)" -e DB_NAME="BuyingCatalogue-pipeline" -e INCLUDE_IMPORT="TRUE" -e INCLUDE_PUBLISH="TRUE" -e INSERT_TEST_DATA="TRUE" -e SEED_ORGANISATIONS="TRUE" -e CREATE_EA_USER="True" -e EA_USER_FIRST_NAME="Agency" -e EA_USER_LAST_NAME="User" -e EA_USER_EMAIL="user@agency.com" -e EA_USER_PASSWORD_HASH="AQAAAAEAACcQAAAAEEOFkNNrFpKmDC2TBv2CP/dzxfnjdXk97RoqRlunE/CGs2tmFcewKZj4M/fITiP2tg==" -e EA_USER_PHONE="01234567890" --name dacpaccontainer $id
-      mkdir $(Build.ArtifactStagingDirectory)/dacpacs
-      docker cp dacpaccontainer:/deploy-db/. $(Build.ArtifactStagingDirectory)/dacpacs
-    displayName: 'Copy DACPACs'
+    displayName: 'Copy DACPACs and Deploy'
 
   - bash: echo "$(SQLIP)"
     displayName: 'Test ENV variable'
