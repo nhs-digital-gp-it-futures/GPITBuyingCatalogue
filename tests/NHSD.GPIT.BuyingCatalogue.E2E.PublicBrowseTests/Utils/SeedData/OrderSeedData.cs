@@ -447,7 +447,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
             {
                 Created = DateTime.UtcNow,
                 OrderId = orderId,
-                CatalogueItem = context.CatalogueItems.Single(c => c.Id == new CatalogueItemId(99998, "002A999")),
+                CatalogueItem = context.CatalogueItems.Single(c => c.Id == new CatalogueItemId(99998, "001A99")),
             };
 
             var recipients = context.ServiceRecipients.ToList();
@@ -462,7 +462,6 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
 
                 addedSinglePriceCatalogueSolution.OrderItemRecipients.Add(recipient);
                 addedMultiplePriceCatalogueSolution.OrderItemRecipients.Add(recipient);
-                addedAdditionalSolution.OrderItemRecipients.Add(recipient);
             });
 
             order.OrderItems.Add(addedSinglePriceCatalogueSolution);

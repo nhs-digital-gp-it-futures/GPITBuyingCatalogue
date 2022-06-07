@@ -19,7 +19,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering.SolutionSelection.Ad
         private const string InternalOrgId = "CG-03F";
         private const int OrderId = 90007;
         private static readonly CallOffId CallOffId = new(OrderId, 1);
-        private static readonly CatalogueItemId CatalogueItemId = new(99998, "002A999");
+        private static readonly CatalogueItemId CatalogueItemId = new(99998, "001A99");
 
         private static readonly Dictionary<string, string> Parameters = new()
         {
@@ -36,7 +36,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering.SolutionSelection.Ad
         [Fact]
         public void SelectAdditionalServiceRecipients_AllSectionsDisplayed()
         {
-            CommonActions.PageTitle().Should().BeEquivalentTo("Service Recipients for Additional Service - E2E No Contact Single Price Additional Service".FormatForComparison());
+            CommonActions.PageTitle().Should().BeEquivalentTo("Service Recipients for Additional Service - E2E Multiple Prices Additional Service".FormatForComparison());
             CommonActions.GoBackLinkDisplayed().Should().BeTrue();
             CommonActions.ElementIsDisplayed(ServiceRecipientObjects.PreSelectedInset).Should().BeTrue();
             CommonActions.ElementIsDisplayed(ServiceRecipientObjects.SelectAllLink).Should().BeTrue();
@@ -103,7 +103,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering.SolutionSelection.Ad
 
             CommonActions.PageLoadedCorrectGetIndex(
                 typeof(PricesController),
-                nameof(PricesController.ConfirmPrice)).Should().BeTrue();
+                nameof(PricesController.SelectPrice)).Should().BeTrue();
 
             GetOrderItem().OrderItemRecipients.Count.Should().Be(1);
         }

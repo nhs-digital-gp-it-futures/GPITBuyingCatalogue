@@ -13,7 +13,7 @@
 
 <div class="nhsuk-grid-row">
     <div class="nhsuk-grid-column-two-thirds">
-        <nhs-validation-summary/>
+        <nhs-validation-summary RadioId="@nameof(Model.ConfirmChanges)"/>
         
         @{
             var article = Model.CatalogueItemType == CatalogueItemType.Solution 
@@ -42,32 +42,37 @@
             
             <h2>Changes to your @itemName</h2>
             <p>You've made the following changes to your order:</p>
-
-            <h3>Removed:</h3>
-            <ul>
-                @for (var i = 0; i < Model.ToRemove.Count; i++)
-                {
-                    <input type="hidden" asp-for="ToRemove[i].CatalogueItemId"/>
-                    <input type="hidden" asp-for="ToRemove[i].Description"/>
-                    <li>@Model.ToRemove[i].Description</li>
-                }
-            </ul>
+            
+            <div id="removed-items">
+                <h3>Removed:</h3>
+                <ul>
+                    @for (var i = 0; i < Model.ToRemove.Count; i++)
+                    {
+                        <input type="hidden" asp-for="ToRemove[i].CatalogueItemId"/>
+                        <input type="hidden" asp-for="ToRemove[i].Description"/>
+                        <li>@Model.ToRemove[i].Description</li>
+                    }
+                </ul>
+            </div>
 
             @if (Model.ToAdd?.Any() ?? false)
             {
-                <h3>Added:</h3>
-                <ul>
-                    @for (var i = 0; i < Model.ToAdd.Count; i++)
-                    {
-                        <input type="hidden" asp-for="ToAdd[i].CatalogueItemId"/>
-                        <input type="hidden" asp-for="ToAdd[i].Description"/>
-                        <li>@Model.ToAdd[i].Description</li>
-                    }
-                </ul>
+                <div id="added-items">
+                    <h3>Added:</h3>
+                    <ul>
+                        @for (var i = 0; i < Model.ToAdd.Count; i++)
+                        {
+                            <input type="hidden" asp-for="ToAdd[i].CatalogueItemId"/>
+                            <input type="hidden" asp-for="ToAdd[i].Description"/>
+                            <li>@Model.ToAdd[i].Description</li>
+                        }
+                    </ul>
+                </div>
             }
             
             <hr/>
-            
+
+            <h2>Do you want to confirm your changes?</h2>
             <nhs-fieldset-form-label asp-for="@Model">
                 <nhs-radio-buttons asp-for="ConfirmChanges"
                                    values="Model.SelectListItems.Cast<object>()"

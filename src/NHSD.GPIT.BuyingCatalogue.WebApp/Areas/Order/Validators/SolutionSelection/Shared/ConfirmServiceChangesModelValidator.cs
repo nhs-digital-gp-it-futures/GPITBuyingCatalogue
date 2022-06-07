@@ -5,7 +5,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Validators.SolutionSelect
 {
     public class ConfirmServiceChangesModelValidator : AbstractValidator<ConfirmServiceChangesModel>
     {
-        public const string ErrorMessage = "Select an option";
+        public const string ErrorMessage = "Select yes if you want to confirm your changes";
 
         public ConfirmServiceChangesModelValidator()
         {
