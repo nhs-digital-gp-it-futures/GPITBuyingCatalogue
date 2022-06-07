@@ -1,4 +1,5 @@
 ﻿using FluentValidation.TestHelper;
+using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.AutoFixtureCustomisations;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.OrderTriage;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Validators;
@@ -14,11 +15,11 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Validators
             OrderTriageModel model,
             OrderTriageModelValidator validator)
         {
-            model.SelectedTriageOption = null;
+            model.SelectedOrderTriageValue = null;
 
             var result = validator.TestValidate(model);
 
-            result.ShouldHaveValidationErrorFor(m => m.SelectedTriageOption)
+            result.ShouldHaveValidationErrorFor(m => m.SelectedOrderTriageValue)
                 .WithErrorMessage("Select the approximate value of your order, or ‘I’m not sure’ if you do not know");
         }
 
@@ -28,7 +29,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Validators
             OrderTriageModel model,
             OrderTriageModelValidator validator)
         {
-            model.SelectedTriageOption = TriageOption.Under40k;
+            model.SelectedOrderTriageValue = OrderTriageValue.Under40K;
 
             var result = validator.TestValidate(model);
 

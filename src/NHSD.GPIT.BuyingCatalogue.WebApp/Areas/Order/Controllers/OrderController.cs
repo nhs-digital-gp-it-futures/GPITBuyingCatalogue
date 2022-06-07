@@ -76,9 +76,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
         }
 
         [HttpGet("~/order/organisation/{internalOrgId}/order/ready-to-start")]
-        public async Task<IActionResult> ReadyToStart(string internalOrgId, TriageOption? option = null, CatalogueItemType? orderType = null)
+        public async Task<IActionResult> ReadyToStart(string internalOrgId, OrderTriageValue? option = null, CatalogueItemType? orderType = null)
         {
-            string GetBacklink(string internalOrgId, TriageOption? option = null, CatalogueItemType? orderType = null)
+            string GetBacklink(string internalOrgId, OrderTriageValue? option = null, CatalogueItemType? orderType = null)
             {
                 if (orderType == CatalogueItemType.AssociatedService)
                 {
@@ -106,7 +106,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
         }
 
         [HttpPost("~/order/organisation/{internalOrgId}/order/ready-to-start")]
-        public IActionResult ReadyToStart(string internalOrgId, ReadyToStartModel model, TriageOption? option = null, CatalogueItemType? orderType = null)
+        public IActionResult ReadyToStart(string internalOrgId, ReadyToStartModel model, OrderTriageValue? option = null, CatalogueItemType? orderType = null)
         {
             return RedirectToAction(
                 nameof(NewOrder),
@@ -114,7 +114,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
         }
 
         [HttpGet("~/order/organisation/{internalOrgId}/order/neworder")]
-        public async Task<IActionResult> NewOrder(string internalOrgId, TriageOption? option = null, CatalogueItemType? orderType = null)
+        public async Task<IActionResult> NewOrder(string internalOrgId, OrderTriageValue? option = null, CatalogueItemType? orderType = null)
         {
             var organisation = await organisationsService.GetOrganisationByInternalIdentifier(internalOrgId);
 

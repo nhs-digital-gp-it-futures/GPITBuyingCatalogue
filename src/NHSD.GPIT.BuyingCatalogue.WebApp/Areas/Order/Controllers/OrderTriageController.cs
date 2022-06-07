@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
+using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Organisations;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.OrderTriage;
@@ -17,15 +18,15 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
     [Route("order/organisation/{internalOrgId}/order/triage")]
     public class OrderTriageController : Controller
     {
-        private static readonly Dictionary<TriageOption, (string Title, string Advice, string ValidationError)> TriageSelectionContent = new()
+        private static readonly Dictionary<OrderTriageValue, (string Title, string Advice, string ValidationError)> TriageSelectionContent = new()
         {
-            [TriageOption.Under40k] = ("Have you identified what you want to order?",
+            [OrderTriageValue.Under40K] = ("Have you identified what you want to order?",
                    "As your order is under £40k, you can execute a Direct Award. Any Catalogue Solution or service on the Buying Catalogue can be procured without carrying out a competition.",
                    "Select yes if you’ve identified what you want to order"),
-            [TriageOption.Between40kTo250k] = ("Have you carried out a competition using the Buying Catalogue?",
+            [OrderTriageValue.Between40KTo250K] = ("Have you carried out a competition using the Buying Catalogue?",
                    "As your order is between £40k and £250k, you should have executed an On-Catalogue Competition to identify the Catalogue Solution that best meets your needs.",
                    "Select yes if you’ve carried out a competition on the Buying Catalogue"),
-            [TriageOption.Over250k] = ("Have you sent out Invitations to Tender to suppliers?",
+            [OrderTriageValue.Over250K] = ("Have you sent out Invitations to Tender to suppliers?",
                    "As your order is over £250k, you should have executed an Off-Catalogue Competition to identify the Catalogue Solution that best meets your needs.",
                    "Select yes if you’ve carried out an Off-Catalogue Competition with suppliers"),
         };
@@ -66,7 +67,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
         }
 
         [HttpGet("proxy-select")]
-        public async Task<IActionResult> SelectOrganisation(string internalOrgId, TriageOption? option = null, CatalogueItemType? orderType = null)
+        public async Task<IActionResult> SelectOrganisation(string internalOrgId, OrderTriageValue? option = null, CatalogueItemType? orderType = null)
         {
             if (!User.GetSecondaryOrganisationInternalIdentifiers().Any())
                 return RedirectToAction(nameof(Index), new { internalOrgId, option, orderType });
@@ -88,7 +89,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
         }
 
         [HttpPost("proxy-select")]
-        public IActionResult SelectOrganisation(string internalOrgId, SelectOrganisationModel model, TriageOption? option = null, CatalogueItemType? orderType = null)
+        public IActionResult SelectOrganisation(string internalOrgId, SelectOrganisationModel model, OrderTriageValue? option = null, CatalogueItemType? orderType = null)
         {
             if (!User.GetSecondaryOrganisationInternalIdentifiers().Any())
                 return RedirectToAction(nameof(Index), new { internalOrgId, option, orderType });
@@ -103,7 +104,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> Index(string internalOrgId, TriageOption? option = null, CatalogueItemType? orderType = null)
+        public async Task<IActionResult> Index(string internalOrgId, OrderTriageValue? option = null, CatalogueItemType? orderType = null)
         {
             if (orderType == CatalogueItemType.AssociatedService)
                 return RedirectToAction(nameof(OrderController.ReadyToStart), typeof(OrderController).ControllerName(), new { internalOrgId, orderType });
@@ -120,7 +121,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
             var model = new OrderTriageModel(organisation)
             {
                 BackLink = backlink,
-                SelectedTriageOption = option,
+                SelectedOrderTriageValue = option,
             };
 
             return View(model);
@@ -132,10 +133,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
             if (!ModelState.IsValid)
                 return View(model);
 
-            if (model.SelectedTriageOption == TriageOption.NotSure)
+            if (model.SelectedOrderTriageValue == OrderTriageValue.NotSure)
                 return RedirectToAction(nameof(NotSure), new { internalOrgId });
 
-            return RedirectToAction(nameof(TriageSelection), new { internalOrgId, option = model.SelectedTriageOption, orderType });
+            return RedirectToAction(nameof(TriageSelection), new { internalOrgId, option = model.SelectedOrderTriageValue, orderType });
         }
 
         [HttpGet("not-sure")]
@@ -144,7 +145,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
             var organisation = await organisationsService.GetOrganisationByInternalIdentifier(internalOrgId);
             var model = new GenericOrderTriageModel(organisation)
             {
-                BackLink = Url.Action(nameof(Index), new { internalOrgId, option = TriageOption.NotSure }),
+                BackLink = Url.Action(nameof(Index), new { internalOrgId, option = OrderTriageValue.NotSure }),
                 InternalOrgId = internalOrgId,
                 OrdersDashboardLink = Url.Action(
                     nameof(DashboardController.Organisation),
@@ -156,7 +157,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
         }
 
         [HttpGet("{option}")]
-        public async Task<IActionResult> TriageSelection(string internalOrgId, TriageOption? option, bool? selected = null, CatalogueItemType? orderType = null)
+        public async Task<IActionResult> TriageSelection(string internalOrgId, OrderTriageValue? option, bool? selected = null, CatalogueItemType? orderType = null)
         {
             if (option is null)
                 return RedirectToAction(nameof(Index), new { internalOrgId });
@@ -177,7 +178,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
         }
 
         [HttpPost("{option}")]
-        public IActionResult TriageSelection(string internalOrgId, TriageDueDiligenceModel model, TriageOption? option, CatalogueItemType? orderType = null)
+        public IActionResult TriageSelection(string internalOrgId, TriageDueDiligenceModel model, OrderTriageValue? option, CatalogueItemType? orderType = null)
         {
             if (!model.Selected.HasValue)
             {
@@ -198,13 +199,13 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
         }
 
         [HttpGet("{option}/steps-incomplete")]
-        public async Task<IActionResult> StepsNotCompleted(string internalOrgId, TriageOption option)
+        public async Task<IActionResult> StepsNotCompleted(string internalOrgId, OrderTriageValue option)
         {
             var viewName = option switch
             {
-                TriageOption.Under40k => "Incomplete40k",
-                TriageOption.Between40kTo250k => "Incomplete40kTo250k",
-                TriageOption.Over250k => "IncompleteOver250k",
+                OrderTriageValue.Under40K => "Incomplete40k",
+                OrderTriageValue.Between40KTo250K => "Incomplete40kTo250k",
+                OrderTriageValue.Over250K => "IncompleteOver250k",
                 _ => throw new KeyNotFoundException(),
             };
 
@@ -222,7 +223,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
             return View(viewName, model);
         }
 
-        private static (string Title, string Advice, string ValidationError) GetTriageSelectionContent(TriageOption option)
+        private static (string Title, string Advice, string ValidationError) GetTriageSelectionContent(OrderTriageValue option)
         {
             if (!TriageSelectionContent.TryGetValue(option, out var content))
                 throw new KeyNotFoundException($"Key '{option}' is not a valid triage selection");

@@ -218,7 +218,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
                 .SingleOrDefaultAsync();
         }
 
-        public async Task<Order> CreateOrder(string description, string internalOrgId, bool isAssociatedServiceOnly)
+        public async Task<Order> CreateOrder(string description, string internalOrgId, OrderTriageValue orderTriageValue, bool isAssociatedServiceOnly)
         {
             var orderingParty = await dbContext.Organisations.SingleAsync(o => o.InternalIdentifier == internalOrgId);
 
@@ -227,6 +227,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
                 Description = description,
                 OrderingParty = orderingParty,
                 AssociatedServicesOnly = isAssociatedServiceOnly,
+                OrderTriageValue = orderTriageValue,
             };
 
             dbContext.Add(order);

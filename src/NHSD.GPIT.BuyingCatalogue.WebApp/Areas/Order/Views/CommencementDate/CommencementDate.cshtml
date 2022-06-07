@@ -1,6 +1,11 @@
-﻿@model NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.CommencementDate.CommencementDateModel;
+﻿@using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models
+@model NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.CommencementDate.CommencementDateModel;
 @{
     ViewBag.Title = Model!.Title;
+
+    var maximumTermLimit = Model.OrderTriageValue == OrderTriageValue.Under40K
+        ? 12
+        : 36;
 }
 
 <partial name="Partials/_BackLink" model="Model" />
@@ -10,7 +15,7 @@
         <nhs-page-title title="@ViewBag.Title"
                         caption="Order @Model.CallOffId"
                         advice="Provide the approximate start date and the length of the Call-off Agreement and its initial period." />
-        
+
         <div class="nhsuk-inset-text">
             <span class="nhsuk-u-visually-hidden">Information: </span>
             <p>The Call-off Agreement will extend automatically up to the maximum of 36 months unless notice to terminate is given 30 working days before the end of the initial period.</p>
@@ -21,6 +26,7 @@
             <input type="hidden" asp-for="@Model.BackLink" />
             <input type="hidden" asp-for="@Model.BackLinkText" />
             <input type="hidden" asp-for="@Model.Title" />
+            <input type="hidden" asp-for="@Model.OrderTriageValue" />
 
             <div class="nhsuk-u-margin-bottom-9">
                 <nhs-fieldset-form-label asp-for="@Model"
@@ -34,15 +40,15 @@
             <div class="nhsuk-u-margin-bottom-9">
                 <nhs-bookended-input asp-for="@Model.InitialPeriod"
                                      label-text="What is the initial period for this Call-off Agreement (in months)?"
-                                     label-hint="This is the period after which the Call-off Agreement can be terminated without incurring charges. It cannot exceed 6 months."
-                                     Suffix="months" />            
+                                     label-hint="This is the period after which the Call-off Agreement can be terminated without incurring charges. It cannot exceed 12 months."
+                                     Suffix="months" />
             </div>
 
             <div class="nhsuk-u-margin-bottom-9">
                 <nhs-bookended-input asp-for="@Model.MaximumTerm"
                                      label-text="What is the maximum term for this Call-off Agreement (in months)?"
-                                     label-hint="This is the maximum length the Call-off Agreement can run for, which includes the initial period. It cannot exceed 36 months."
-                                     Suffix="months" />            
+                                     label-hint="This is the maximum length the Call-off Agreement can run for, which includes the initial period. It cannot exceed @(maximumTermLimit) months."
+                                     Suffix="months" />
             </div>
 
             <nhs-submit-button />

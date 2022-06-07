@@ -45,7 +45,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers
             [Frozen] Mock<IOrderService> orderServiceMock,
             CommencementDateController controller)
         {
-            var expectedViewData = new CommencementDateModel(internalOrgId, order.CallOffId, order.CommencementDate, order.InitialPeriod, order.MaximumTerm);
+            var expectedViewData = new CommencementDateModel(internalOrgId, order);
 
             orderServiceMock.Setup(s => s.GetOrderThin(order.CallOffId, internalOrgId)).ReturnsAsync(order);
 

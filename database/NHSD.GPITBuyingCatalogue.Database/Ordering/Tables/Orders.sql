@@ -10,6 +10,7 @@
     CommencementDate DATE NULL,
     FundingSourceOnlyGMS BIT NULL,
     ConfirmedFundingSource BIT NULL,
+    OrderTriageValueId INT NULL,
     Created DATETIME2 CONSTRAINT DF_Order_Created DEFAULT GETUTCDATE() NOT NULL,
     LastUpdated DATETIME2 CONSTRAINT DF_Order_LastUpdated DEFAULT GETUTCDATE() NOT NULL CONSTRAINT Order_LastUpdatedNotBeforeCreated CHECK (LastUpdated >= Created),
     LastUpdatedBy INT NULL,
@@ -19,15 +20,16 @@
     SysStartTime DATETIME2(0) GENERATED ALWAYS AS ROW START NOT NULL,
     SysEndTime DATETIME2(0) GENERATED ALWAYS AS ROW END NOT NULL,
     PERIOD FOR SYSTEM_TIME (SysStartTime, SysEndTime),
-    InitialPeriod INT NULL CONSTRAINT Order_PositiveInitialPeriod CHECK (InitialPeriod >= 0), 
-    MaximumTerm INT NULL CONSTRAINT Order_PositiveMaximumTerm CHECK (MaximumTerm >= 0), 
+    InitialPeriod INT NULL CONSTRAINT Order_PositiveInitialPeriod CHECK (InitialPeriod >= 0),
+    MaximumTerm INT NULL CONSTRAINT Order_PositiveMaximumTerm CHECK (MaximumTerm >= 0),
     AssociatedServicesOnly BIT NULL,
     CONSTRAINT PK_Orders PRIMARY KEY (Id),
     CONSTRAINT FK_Orders_OrderingParty FOREIGN KEY (OrderingPartyId) REFERENCES organisations.Organisations (Id),
     CONSTRAINT FK_Orders_OrderingPartyContact FOREIGN KEY (OrderingPartyContactId) REFERENCES ordering.Contacts (Id),
     CONSTRAINT FK_Orders_Supplier FOREIGN KEY (SupplierId) REFERENCES catalogue.Suppliers (Id),
     CONSTRAINT FK_Orders_SupplierContact FOREIGN KEY (SupplierContactId) REFERENCES ordering.Contacts (Id),
+    CONSTRAINT FK_Orders_OrderTriageValue FOREIGN KEY (OrderTriageValueId) REFERENCES ordering.OrderTriageValues(Id),
     CONSTRAINT FK_Orders_OrderStatus FOREIGN KEY (OrderStatusId) REFERENCES ordering.OrderStatus (Id),
     CONSTRAINT FK_Orders_LastUpdatedBy FOREIGN KEY (LastUpdatedBy) REFERENCES users.AspNetUsers(Id),
-    INDEX IX_Orders_IsDeleted (IsDeleted)        
+    INDEX IX_Orders_IsDeleted (IsDeleted)
 ) WITH (SYSTEM_VERSIONING = ON (HISTORY_TABLE = ordering.Orders_History));

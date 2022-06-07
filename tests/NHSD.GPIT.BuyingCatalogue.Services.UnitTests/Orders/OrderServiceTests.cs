@@ -37,13 +37,14 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Orders
         public static async Task CreateOrder_UpdatesDatabase(
             [Frozen] BuyingCatalogueDbContext context,
             string description,
+            OrderTriageValue orderTriageValue,
             Organisation organisation,
             OrderService service)
         {
             await context.Organisations.AddAsync(organisation);
             await context.SaveChangesAsync();
 
-            await service.CreateOrder(description, organisation.InternalIdentifier, false);
+            await service.CreateOrder(description, organisation.InternalIdentifier, orderTriageValue, false);
 
             var order = await context.Orders.Include(o => o.OrderingParty).SingleAsync();
             order.Description.Should().Be(description);

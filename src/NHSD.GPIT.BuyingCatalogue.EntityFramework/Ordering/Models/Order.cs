@@ -37,6 +37,8 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models
 
         public bool AssociatedServicesOnly { get; set; }
 
+        public OrderTriageValue? OrderTriageValue { get; set; }
+
         public DateTime Created { get; set; } = DateTime.UtcNow;
 
         public DateTime LastUpdated { get; set; }

@@ -19,6 +19,10 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Configuration
                 .IsRequired()
                 .HasMaxLength(100);
 
+            builder.Property(o => o.OrderTriageValue)
+                .HasConversion<int>()
+                .HasColumnName("OrderTriageValueId");
+
             builder.Property(o => o.LastUpdated).HasDefaultValue(DateTime.UtcNow);
             builder.Property(o => o.OrderStatus)
                 .HasConversion<int>()

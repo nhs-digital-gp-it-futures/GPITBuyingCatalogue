@@ -344,6 +344,12 @@
       <DatabaseVariableLiteralValue>master</DatabaseVariableLiteralValue>
     </ArtifactReference>
   </ItemGroup>
+  <ItemGroup>
+    <Content Include="Ordering\Tables\OrderTriageValues.sql" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="PostDeployment\InsertOrderTriageValues.sql" />
+  </ItemGroup>
   <PropertyGroup>
     <PreBuildEvent>
     </PreBuildEvent>

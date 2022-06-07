@@ -5,6 +5,7 @@ using NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.Objects.Common;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.Objects.Ordering;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Utils;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.TestBases;
+using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.OrderTriage;
@@ -17,7 +18,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering.OrderTriage
         : BuyerTestBase, IClassFixture<LocalWebApplicationFactory>
     {
         private const string InternalOrgId = "CG-03F";
-        private const TriageOption Option = TriageOption.Under40k;
+        private const OrderTriageValue Option = OrderTriageValue.Under40K;
 
         private static readonly Dictionary<string, string> Parameters = new()
         {
@@ -43,10 +44,10 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering.OrderTriage
         }
 
         [Theory]
-        [InlineData(TriageOption.Under40k, "Have you identified what you want to order?")]
-        [InlineData(TriageOption.Between40kTo250k, "Have you carried out a competition using the Buying Catalogue?")]
-        [InlineData(TriageOption.Over250k, "Have you sent out Invitations to Tender to suppliers?")]
-        public void TriageSelection_ShowsCorrectTitle(TriageOption option, string title)
+        [InlineData(OrderTriageValue.Under40K, "Have you identified what you want to order?")]
+        [InlineData(OrderTriageValue.Between40KTo250K, "Have you carried out a competition using the Buying Catalogue?")]
+        [InlineData(OrderTriageValue.Over250K, "Have you sent out Invitations to Tender to suppliers?")]
+        public void TriageSelection_ShowsCorrectTitle(OrderTriageValue option, string title)
         {
             using var context = GetEndToEndDbContext();
             var organisation = context.Organisations.Single(o => string.Equals(o.InternalIdentifier, InternalOrgId));
@@ -66,10 +67,10 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering.OrderTriage
         }
 
         [Theory]
-        [InlineData(TriageOption.Under40k, "As your order is under £40k, you can execute a Direct Award. Any Catalogue Solution or service on the Buying Catalogue can be procured without carrying out a competition.")]
-        [InlineData(TriageOption.Between40kTo250k, "As your order is between £40k and £250k, you should have executed an On-Catalogue Competition to identify the Catalogue Solution that best meets your needs.")]
-        [InlineData(TriageOption.Over250k, "As your order is over £250k, you should have executed an Off-Catalogue Competition to identify the Catalogue Solution that best meets your needs.")]
-        public void TriageSelection_ShowsCorrectAdvice(TriageOption option, string advice)
+        [InlineData(OrderTriageValue.Under40K, "As your order is under £40k, you can execute a Direct Award. Any Catalogue Solution or service on the Buying Catalogue can be procured without carrying out a competition.")]
+        [InlineData(OrderTriageValue.Between40KTo250K, "As your order is between £40k and £250k, you should have executed an On-Catalogue Competition to identify the Catalogue Solution that best meets your needs.")]
+        [InlineData(OrderTriageValue.Over250K, "As your order is over £250k, you should have executed an Off-Catalogue Competition to identify the Catalogue Solution that best meets your needs.")]
+        public void TriageSelection_ShowsCorrectAdvice(OrderTriageValue option, string advice)
         {
             var parameters = new Dictionary<string, string>
             {
@@ -86,10 +87,10 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering.OrderTriage
         }
 
         [Theory]
-        [InlineData(TriageOption.Under40k, true)]
-        [InlineData(TriageOption.Between40kTo250k, true)]
-        [InlineData(TriageOption.Over250k, false)]
-        public void TriageSelection_ShowsInset(TriageOption option, bool insetVisible)
+        [InlineData(OrderTriageValue.Under40K, true)]
+        [InlineData(OrderTriageValue.Between40KTo250K, true)]
+        [InlineData(OrderTriageValue.Over250K, false)]
+        public void TriageSelection_ShowsInset(OrderTriageValue option, bool insetVisible)
         {
             var parameters = new Dictionary<string, string>
             {
@@ -106,10 +107,10 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering.OrderTriage
         }
 
         [Theory]
-        [InlineData(TriageOption.Under40k, "Orders with a value less than £40k")]
-        [InlineData(TriageOption.Between40kTo250k, "Orders with a value between £40k and £250k")]
-        [InlineData(TriageOption.Over250k, "Orders with a value over £250k")]
-        public void StepsNotCompleted_LoadsCorrectPage(TriageOption option, string title)
+        [InlineData(OrderTriageValue.Under40K, "Orders with a value less than £40k")]
+        [InlineData(OrderTriageValue.Between40KTo250K, "Orders with a value between £40k and £250k")]
+        [InlineData(OrderTriageValue.Over250K, "Orders with a value over £250k")]
+        public void StepsNotCompleted_LoadsCorrectPage(OrderTriageValue option, string title)
         {
             using var context = GetEndToEndDbContext();
             var organisation = context.Organisations.Single(o => string.Equals(o.InternalIdentifier, InternalOrgId));
@@ -129,10 +130,10 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering.OrderTriage
         }
 
         [Theory]
-        [InlineData(TriageOption.Under40k)]
-        [InlineData(TriageOption.Between40kTo250k)]
-        [InlineData(TriageOption.Over250k)]
-        public void TriageSelection_No_RedirectsToCorrectPage(TriageOption option)
+        [InlineData(OrderTriageValue.Under40K)]
+        [InlineData(OrderTriageValue.Between40KTo250K)]
+        [InlineData(OrderTriageValue.Over250K)]
+        public void TriageSelection_No_RedirectsToCorrectPage(OrderTriageValue option)
         {
             var parameters = new Dictionary<string, string>
             {

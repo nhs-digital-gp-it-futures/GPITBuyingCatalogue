@@ -178,7 +178,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers
         public static void Post_ReadyToStart_Redirects(
             string internalOrgId,
             ReadyToStartModel model,
-            TriageOption option,
+            OrderTriageValue option,
             CatalogueItemType orderType,
             OrderController controller)
         {
@@ -200,7 +200,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers
         public static void Post_ReadyToStart_WithFundingSource_Redirects(
             string internalOrgId,
             ReadyToStartModel model,
-            TriageOption option,
+            OrderTriageValue option,
             CatalogueItemType orderType,
             OrderController controller)
         {
