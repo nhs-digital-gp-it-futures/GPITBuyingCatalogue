@@ -55,7 +55,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Csv
                     ? oir.OrderItem.CatalogueItem.Solution.FrameworkSolutions.FirstOrDefault(fs => fs.FrameworkId != "COVID").FrameworkId
                     : oir.OrderItem.CatalogueItem.CatalogueItemType == CatalogueItemType.AdditionalService
                         ? oir.OrderItem.CatalogueItem.AdditionalService.Solution.FrameworkSolutions.FirstOrDefault(fs => fs.FrameworkId != "COVID").FrameworkId
-                        : oir.OrderItem.CatalogueItem.AssociatedService.CatalogueItem.Solution.FrameworkSolutions.FirstOrDefault(fs => fs.FrameworkId != "COVID").FrameworkId
+                        : oir.OrderItem.CatalogueItem.AssociatedService.CatalogueItem.Solution.FrameworkSolutions.FirstOrDefault(fs => fs.FrameworkId != "COVID").FrameworkId,
                     /*FundingType = oir.OrderItem.Order.FundingSourceOnlyGms.Value ? "Central" : "Local",
                     InitialTerm = oir.OrderItem.Order.InitialPeriod,
                     MaximumTerm = oir.OrderItem.Order.MaximumTerm,*/
@@ -93,7 +93,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Csv
                     ? oir.OrderItem.CatalogueItem.Solution.FrameworkSolutions.FirstOrDefault(fs => fs.FrameworkId != "COVID").FrameworkId
                     : oir.OrderItem.CatalogueItem.CatalogueItemType == CatalogueItemType.AdditionalService
                         ? oir.OrderItem.CatalogueItem.AdditionalService.Solution.FrameworkSolutions.FirstOrDefault(fs => fs.FrameworkId != "COVID").FrameworkId
-                        : oir.OrderItem.CatalogueItem.AssociatedService.CatalogueItem.Solution.FrameworkSolutions.FirstOrDefault(fs => fs.FrameworkId != "COVID").FrameworkId
+                        : oir.OrderItem.CatalogueItem.AssociatedService.CatalogueItem.Solution.FrameworkSolutions.FirstOrDefault(fs => fs.FrameworkId != "COVID").FrameworkId,
                     /*
                     FundingType = oir.OrderItem.Order.FundingSourceOnlyGms.Value ? "Central" : "Local",
                     InitialTerm = oir.OrderItem.Order.InitialPeriod,

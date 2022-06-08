@@ -101,7 +101,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators.Orga
         public static async Task Validate_Valid_NoModelError(
             string firstName,
             string lastName,
-            string telephoneNumber,
             AddUserModel model,
             AddUserModelValidator validator)
         {
