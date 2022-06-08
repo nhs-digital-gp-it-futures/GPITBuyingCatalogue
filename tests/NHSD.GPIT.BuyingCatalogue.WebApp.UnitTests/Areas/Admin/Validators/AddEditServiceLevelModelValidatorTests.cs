@@ -1,4 +1,5 @@
-﻿using AutoFixture.Xunit2;
+﻿using System.Threading.Tasks;
+using AutoFixture.Xunit2;
 using FluentValidation.TestHelper;
 using Moq;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
@@ -14,7 +15,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators
     {
         [Theory]
         [CommonAutoData]
-        public static void Validate_WithNoServiceType_SetsModelError(
+        public static async Task Validate_WithNoServiceType_SetsModelError(
             AddEditServiceLevelModelValidator validator)
         {
             var model = new AddEditServiceLevelModel
@@ -24,7 +25,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators
                 CreditsApplied = true,
             };
 
-            var result = validator.TestValidate(model);
+            var result = await validator.TestValidateAsync(model);
 
             result.ShouldHaveValidationErrorFor(m => m.ServiceType)
                 .WithErrorMessage("Enter a type of service");
@@ -32,7 +33,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators
 
         [Theory]
         [CommonAutoData]
-        public static void Validate_WithNoServiceLevel_SetsModelError(
+        public static async Task Validate_WithNoServiceLevel_SetsModelError(
             AddEditServiceLevelModelValidator validator)
         {
             var model = new AddEditServiceLevelModel
@@ -42,7 +43,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators
                 CreditsApplied = true,
             };
 
-            var result = validator.TestValidate(model);
+            var result = await validator.TestValidateAsync(model);
 
             result.ShouldHaveValidationErrorFor(m => m.ServiceLevel)
                 .WithErrorMessage("Enter a service level");
@@ -50,7 +51,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators
 
         [Theory]
         [CommonAutoData]
-        public static void Validate_WithNoHowMeasured_SetsModelError(
+        public static async Task Validate_WithNoHowMeasured_SetsModelError(
             AddEditServiceLevelModelValidator validator)
         {
             var model = new AddEditServiceLevelModel
@@ -60,7 +61,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators
                 CreditsApplied = true,
             };
 
-            var result = validator.TestValidate(model);
+            var result = await validator.TestValidateAsync(model);
 
             result.ShouldHaveValidationErrorFor(m => m.HowMeasured)
                 .WithErrorMessage("Enter how service levels are measured");
@@ -68,7 +69,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators
 
         [Theory]
         [CommonAutoData]
-        public static void Validate_WithNoCreditsSelection_SetsModelError(
+        public static async Task Validate_WithNoCreditsSelection_SetsModelError(
             AddEditServiceLevelModelValidator validator)
         {
             var model = new AddEditServiceLevelModel
@@ -78,7 +79,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators
                 HowMeasured = "How Measured",
             };
 
-            var result = validator.TestValidate(model);
+            var result = await validator.TestValidateAsync(model);
 
             result.ShouldHaveValidationErrorFor(m => m.CreditsApplied)
                 .WithErrorMessage("Select if service credits are applied");
@@ -86,7 +87,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators
 
         [Theory]
         [CommonAutoData]
-        public static void Validate_Duplicate_SetsModelError(
+        public static async Task Validate_Duplicate_SetsModelError(
             Solution solution,
             ServiceLevelAgreements serviceLevelAgreement,
             SlaServiceLevel serviceLevel,
@@ -106,7 +107,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators
                 CreditsApplied = serviceLevel.ServiceCredits,
             };
 
-            var result = validator.TestValidate(model);
+            var result = await validator.TestValidateAsync(model);
 
             result.ShouldHaveAnyValidationError()
                 .WithErrorMessage("Service level with these details already exists");

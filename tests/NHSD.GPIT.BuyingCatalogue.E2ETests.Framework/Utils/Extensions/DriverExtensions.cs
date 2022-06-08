@@ -5,6 +5,9 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.Utils.Extensions
 {
     public static class DriverExtensions
     {
+        internal static Uri GetUri(this IWebDriver driver)
+            => new(driver.Url);
+
         public static string GetQueryValue(this IWebDriver driver, string queryStringKey)
         {
             var uri = driver.GetUri();

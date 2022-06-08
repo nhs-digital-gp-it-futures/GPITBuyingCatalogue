@@ -191,6 +191,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
                             Id = e.Id,
                             Name = e.Name,
                             Count = results.Where(ci => ci.CatalogueItemCapabilities.Any(cic => cic.CapabilityId == e.CapabilityId))
+
                                     .Count(ci => ci.CatalogueItemEpics.Any(cie => cie.EpicId == e.Id)),
                         })
                             .OrderByDescending(e => e.Count)

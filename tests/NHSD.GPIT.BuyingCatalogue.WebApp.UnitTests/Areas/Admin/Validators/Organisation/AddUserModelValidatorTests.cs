@@ -14,14 +14,14 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators.Orga
         [Theory]
         [CommonInlineAutoData(null)]
         [CommonInlineAutoData("")]
-        public static void Validate_FirstNameNullOrEmpty_SetsModelError(
+        public static async Task Validate_FirstNameNullOrEmpty_SetsModelError(
             string firstName,
             AddUserModel model,
             AddUserModelValidator validator)
         {
             model.FirstName = firstName;
 
-            var result = validator.TestValidate(model);
+            var result = await validator.TestValidateAsync(model);
 
             result.ShouldHaveValidationErrorFor(m => m.FirstName)
                 .WithErrorMessage("Enter a first name");
@@ -30,14 +30,14 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators.Orga
         [Theory]
         [CommonInlineAutoData(null)]
         [CommonInlineAutoData("")]
-        public static void Validate_LastNameNullOrEmpty_SetsModelError(
+        public static async Task Validate_LastNameNullOrEmpty_SetsModelError(
             string lastName,
             AddUserModel model,
             AddUserModelValidator validator)
         {
             model.LastName = lastName;
 
-            var result = validator.TestValidate(model);
+            var result = await validator.TestValidateAsync(model);
 
             result.ShouldHaveValidationErrorFor(m => m.LastName)
                 .WithErrorMessage("Enter a last name");
@@ -46,14 +46,14 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators.Orga
         [Theory]
         [CommonInlineAutoData(null)]
         [CommonInlineAutoData("")]
-        public static void Validate_EmailAddressNullOrEmpty_SetsModelError(
+        public static async Task Validate_EmailAddressNullOrEmpty_SetsModelError(
             string emailAddress,
             AddUserModel model,
             AddUserModelValidator validator)
         {
             model.EmailAddress = emailAddress;
 
-            var result = validator.TestValidate(model);
+            var result = await validator.TestValidateAsync(model);
 
             result.ShouldHaveValidationErrorFor(m => m.EmailAddress)
                 .WithErrorMessage("Enter an email address");
@@ -61,14 +61,14 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators.Orga
 
         [Theory]
         [CommonInlineAutoData("test")]
-        public static void Validate_EmailAddressInvalidFormat_SetsModelError(
+        public static async Task Validate_EmailAddressInvalidFormat_SetsModelError(
             string emailAddress,
             AddUserModel model,
             AddUserModelValidator validator)
         {
             model.EmailAddress = emailAddress;
 
-            var result = validator.TestValidate(model);
+            var result = await validator.TestValidateAsync(model);
 
             result.ShouldHaveValidationErrorFor(model => model.EmailAddress)
                 .WithErrorMessage("Enter an email address in the correct format, like name@example.com");
@@ -76,7 +76,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators.Orga
 
         [Theory]
         [CommonAutoData]
-        public static void Validate_UserWithEmailExists_SetsModelError(
+        public static async Task Validate_UserWithEmailExists_SetsModelError(
             [Frozen] Mock<IUsersService> mockUsersService,
             AddUserModel model,
             AddUserModelValidator validator)
@@ -89,7 +89,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators.Orga
 
             model.EmailAddress = emailAddress;
 
-            var result = validator.TestValidate(model);
+            var result = await validator.TestValidateAsync(model);
 
             result.ShouldHaveValidationErrorFor(model => model.EmailAddress)
                 .WithErrorMessage("A user with this email address is already registered on the Buying Catalogue");
@@ -97,9 +97,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators.Orga
 
         [Theory]
         [CommonAutoData]
-        public static void Validate_Valid_NoModelError(
+        public static async Task Validate_Valid_NoModelError(
             string firstName,
             string lastName,
+            string telephoneNumber,
             AddUserModel model,
             AddUserModelValidator validator)
         {
@@ -107,7 +108,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators.Orga
             model.LastName = lastName;
             model.EmailAddress = "a@a.com";
 
-            var result = validator.TestValidate(model);
+            var result = await validator.TestValidateAsync(model);
 
             result.ShouldNotHaveAnyValidationErrors();
         }

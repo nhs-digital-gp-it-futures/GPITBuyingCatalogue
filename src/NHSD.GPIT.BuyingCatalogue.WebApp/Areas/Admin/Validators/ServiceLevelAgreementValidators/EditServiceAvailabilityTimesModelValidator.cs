@@ -1,7 +1,5 @@
 ﻿using System;
 using System.Linq;
-using System.Threading;
-using System.Threading.Tasks;
 using FluentValidation;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.ServiceLevelAgreements;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.ServiceLevelAgreements;
@@ -18,7 +16,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Validators.ServiceLevelAg
             this.serviceLevelAgreementsService = serviceLevelAgreementsService;
 
             RuleFor(m => m)
-                .MustAsync(NotBeADuplicateServiceAvailabilityTime)
+                .Must(NotBeADuplicateServiceAvailabilityTime)
                 .WithMessage("Service availability time with these details already exists")
                 .OverridePropertyName(
                     m => m.SupportType,
@@ -51,9 +49,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Validators.ServiceLevelAg
 
         private static DateTime CreateDateFromInput(DateTime input) => new(1970, 1, 1, input.Hour, input.Minute, 0);
 
-        private async Task<bool> NotBeADuplicateServiceAvailabilityTime(EditServiceAvailabilityTimesModel model, CancellationToken cancellationToken)
+        private bool NotBeADuplicateServiceAvailabilityTime(EditServiceAvailabilityTimesModel model)
         {
-            var serviceLevelAgreement = await serviceLevelAgreementsService.GetServiceLevelAgreementForSolution(model.SolutionId);
+            var serviceLevelAgreement = serviceLevelAgreementsService.GetServiceLevelAgreementForSolution(model.SolutionId).GetAwaiter().GetResult();
 
             return !serviceLevelAgreement.ServiceHours.Any(s =>
                 s.Id != model.ServiceAvailabilityTimesId

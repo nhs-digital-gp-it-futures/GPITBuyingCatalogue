@@ -24,15 +24,14 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Validators.Organisation
                 .WithMessage("Enter a last name");
 
             RuleFor(m => m.EmailAddress)
-                .Cascade(CascadeMode.Stop)
                 .NotEmpty()
                 .WithMessage("Enter an email address")
                 .EmailAddress()
                 .WithMessage("Enter an email address in the correct format, like name@example.com")
-                .MustAsync(NotBeDuplicateUserEmail)
+                .Must(NotBeDuplicateUserEmail)
                 .WithMessage("A user with this email address is already registered on the Buying Catalogue");
         }
 
-        private async Task<bool> NotBeDuplicateUserEmail(string emailAddress, CancellationToken cancellationToken) => !await usersService.EmailAddressExists(emailAddress);
+        private bool NotBeDuplicateUserEmail(string emailAddress) => !usersService.EmailAddressExists(emailAddress).GetAwaiter().GetResult();
     }
 }

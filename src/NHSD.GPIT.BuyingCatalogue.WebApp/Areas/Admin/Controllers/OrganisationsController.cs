@@ -281,8 +281,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
                 model.FirstName,
                 model.LastName,
                 model.EmailAddress,
-                OrganisationFunction.BuyerName,
-                AccountStatus.Active);
+                OrganisationFunction.BuyerName);
 
             return RedirectToAction(
                 nameof(Users),

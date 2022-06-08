@@ -53,7 +53,7 @@
         <nhs-table-column>Epic</nhs-table-column>
         <nhs-table-column>Capability</nhs-table-column>
         <nhs-table-column>Status</nhs-table-column>
-        <nhs-table-column></nhs-table-column>
+        <nhs-table-column>Action</nhs-table-column>
         @foreach (var supplierDefinedEpic in Model.SupplierDefinedEpics)
         {
             <nhs-table-row-container class="@(!supplierDefinedEpic.IsActive ? "inactive" : null)">

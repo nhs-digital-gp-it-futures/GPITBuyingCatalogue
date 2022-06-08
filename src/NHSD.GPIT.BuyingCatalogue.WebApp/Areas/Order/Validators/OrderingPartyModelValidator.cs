@@ -20,7 +20,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Validators
                 .WithMessage("Enter a telephone number");
 
             RuleFor(m => m.Contact.EmailAddress)
-                .Cascade(CascadeMode.Stop)
                 .NotEmpty()
                 .WithMessage("Enter an email address")
                 .EmailAddress()

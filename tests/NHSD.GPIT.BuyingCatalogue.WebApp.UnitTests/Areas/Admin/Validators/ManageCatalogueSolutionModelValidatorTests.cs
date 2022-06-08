@@ -17,7 +17,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators
     {
         [Theory]
         [CommonAutoData]
-        public static void Validate_SamePublicationStatus_NoModelError(
+        public static async Task Validate_SamePublicationStatus_NoModelError(
             Solution solution,
             [Frozen] Mock<ISolutionsService> solutionsService,
             ManageCatalogueSolutionModelValidator validator)
@@ -32,14 +32,14 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators
                 SelectedPublicationStatus = PublicationStatus.Published,
             };
 
-            var result = validator.TestValidate(model);
+            var result = await validator.TestValidateAsync(model);
 
             result.ShouldNotHaveAnyValidationErrors();
         }
 
         [Theory]
         [CommonAutoData]
-        public static void Validate_NonPublishedStatus_NoModelError(
+        public static async Task Validate_NonPublishedStatus_NoModelError(
             ManageCatalogueSolutionModelValidator validator)
         {
             var model = new ManageCatalogueSolutionModel
@@ -47,14 +47,14 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators
                 SelectedPublicationStatus = PublicationStatus.Unpublished,
             };
 
-            var result = validator.TestValidate(model);
+            var result = await validator.TestValidateAsync(model);
 
             result.ShouldNotHaveAnyValidationErrors();
         }
 
         [Theory]
         [CommonAutoData]
-        public static void Validate_IncompleteDescription_SetsModelError(
+        public static async Task Validate_IncompleteDescription_SetsModelError(
             Solution solution,
             List<ServiceAvailabilityTimes> serviceAvailabilityTimes,
             List<SlaContact> slaContacts,
@@ -79,7 +79,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators
                 SelectedPublicationStatus = PublicationStatus.Published,
             };
 
-            var result = validator.TestValidate(model);
+            var result = await validator.TestValidateAsync(model);
 
             result.ShouldHaveAnyValidationError()
                 .WithErrorMessage("Complete all mandatory sections before publishing");
@@ -87,7 +87,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators
 
         [Theory]
         [CommonAutoData]
-        public static void Validate_IncompleteClientApplicationType_SetsModelError(
+        public static async Task Validate_IncompleteClientApplicationType_SetsModelError(
             Solution solution,
             List<ServiceAvailabilityTimes> serviceAvailabilityTimes,
             List<SlaContact> slaContacts,
@@ -110,7 +110,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators
                 SelectedPublicationStatus = PublicationStatus.Published,
             };
 
-            var result = validator.TestValidate(model);
+            var result = await validator.TestValidateAsync(model);
 
             result.ShouldHaveAnyValidationError()
                 .WithErrorMessage("Complete all mandatory sections before publishing");
@@ -118,7 +118,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators
 
         [Theory]
         [CommonAutoData]
-        public static void Validate_IncompleteHostingType_SetsModelError(
+        public static async Task Validate_IncompleteHostingType_SetsModelError(
             Solution solution,
             List<ServiceAvailabilityTimes> serviceAvailabilityTimes,
             List<SlaContact> slaContacts,
@@ -145,7 +145,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators
                 SelectedPublicationStatus = PublicationStatus.Published,
             };
 
-            var result = validator.TestValidate(model);
+            var result = await validator.TestValidateAsync(model);
 
             result.ShouldHaveAnyValidationError()
                 .WithErrorMessage("Complete all mandatory sections before publishing");
@@ -153,7 +153,39 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators
 
         [Theory]
         [CommonAutoData]
-        public static void Validate_IncompleteSupplierDetails_SetsModelError(
+        public static async Task Validate_IncompleteListPrices_SetsModelError(
+            Solution solution,
+            List<ServiceAvailabilityTimes> serviceAvailabilityTimes,
+            List<SlaContact> slaContacts,
+            List<SlaServiceLevel> slaServiceLevels,
+            [Frozen] Mock<ISolutionsService> solutionsService,
+            ManageCatalogueSolutionModelValidator validator)
+        {
+            solution.CatalogueItem.CataloguePrices = new List<CataloguePrice>();
+
+            solution.ServiceLevelAgreement.ServiceHours = serviceAvailabilityTimes;
+            solution.ServiceLevelAgreement.ServiceLevels = slaServiceLevels;
+            solution.ServiceLevelAgreement.Contacts = slaContacts;
+            solution.CatalogueItem.CatalogueItemContacts.Add(solution.CatalogueItem.Supplier.SupplierContacts.First());
+            solution.CatalogueItem.PublishedStatus = PublicationStatus.Draft;
+            solutionsService.Setup(s => s.GetSolutionThin(solution.CatalogueItemId))
+                .ReturnsAsync(solution.CatalogueItem);
+
+            var model = new ManageCatalogueSolutionModel
+            {
+                SolutionId = solution.CatalogueItemId,
+                SelectedPublicationStatus = PublicationStatus.Published,
+            };
+
+            var result = await validator.TestValidateAsync(model);
+
+            result.ShouldHaveAnyValidationError()
+                .WithErrorMessage("Complete all mandatory sections before publishing");
+        }
+
+        [Theory]
+        [CommonAutoData]
+        public static async Task Validate_IncompleteSupplierDetails_SetsModelError(
             Solution solution,
             List<ServiceAvailabilityTimes> serviceAvailabilityTimes,
             List<SlaContact> slaContacts,
@@ -176,7 +208,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators
                 SelectedPublicationStatus = PublicationStatus.Published,
             };
 
-            var result = validator.TestValidate(model);
+            var result = await validator.TestValidateAsync(model);
 
             result.ShouldHaveAnyValidationError()
                 .WithErrorMessage("Complete all mandatory sections before publishing");
@@ -184,7 +216,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators
 
         [Theory]
         [CommonAutoData]
-        public static void Validate_IncompleteCapabilities_SetsModelError(
+        public static async Task Validate_IncompleteCapabilities_SetsModelError(
             Solution solution,
             List<ServiceAvailabilityTimes> serviceAvailabilityTimes,
             List<SlaContact> slaContacts,
@@ -208,7 +240,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators
                 SelectedPublicationStatus = PublicationStatus.Published,
             };
 
-            var result = validator.TestValidate(model);
+            var result = await validator.TestValidateAsync(model);
 
             result.ShouldHaveAnyValidationError()
                 .WithErrorMessage("Complete all mandatory sections before publishing");
@@ -216,7 +248,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators
 
         [Theory]
         [CommonAutoData]
-        public static void Validate_IncompleteServiceLevelAgreement_SetsModelError(
+        public static async Task Validate_IncompleteServiceLevelAgreement_SetsModelError(
             Solution solution,
             [Frozen] Mock<ISolutionsService> solutionsService,
             ManageCatalogueSolutionModelValidator validator)
@@ -232,7 +264,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators
                 SelectedPublicationStatus = PublicationStatus.Published,
             };
 
-            var result = validator.TestValidate(model);
+            var result = await validator.TestValidateAsync(model);
 
             result.ShouldHaveAnyValidationError()
                 .WithErrorMessage("Complete all mandatory sections before publishing");
@@ -240,7 +272,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators
 
         [Theory]
         [CommonAutoData]
-        public static void Validate_Valid_NoModelError(
+        public static async Task Validate_Valid_NoModelError(
             Solution solution,
             [Frozen] Mock<ISolutionsService> solutionsService,
             ManageCatalogueSolutionModelValidator validator)
@@ -271,7 +303,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators
                 SelectedPublicationStatus = PublicationStatus.Published,
             };
 
-            var result = validator.TestValidate(model);
+            var result = await validator.TestValidateAsync(model);
 
             result.ShouldNotHaveAnyValidationErrors();
         }

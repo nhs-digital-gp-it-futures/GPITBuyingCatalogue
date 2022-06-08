@@ -130,7 +130,8 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering
             var orders = context.Organisations
                 .Where(o => o.InternalIdentifier == InternalOrgId)
                 .SelectMany(o => o.Orders)
-                .OrderByDescending(o => o.LastUpdated);
+                .OrderByDescending(o => o.LastUpdated)
+                .ToList();
             var order = orders.First(o => o.OrderStatus == status);
 
             CommonActions.ElementTextContains(ByExtensions.DataTestId($"link-{order.CallOffId}"), expectedLinkText).Should().BeTrue();
@@ -143,7 +144,8 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering
             var orders = context.Organisations
                 .Where(o => o.InternalIdentifier == InternalOrgId)
                 .SelectMany(o => o.Orders)
-                .OrderByDescending(o => o.LastUpdated);
+                .OrderByDescending(o => o.LastUpdated)
+                .ToList();
             var order = orders.First(o => o.OrderStatus == OrderStatus.InProgress);
 
             CommonActions.ClickLinkElement(ByExtensions.DataTestId($"link-{order.CallOffId}"));
@@ -161,7 +163,8 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering
             var orders = context.Organisations
                 .Where(o => o.InternalIdentifier == InternalOrgId)
                 .SelectMany(o => o.Orders)
-                .OrderByDescending(o => o.LastUpdated);
+                .OrderByDescending(o => o.LastUpdated)
+                .ToList();
             var order = orders.First(o => o.OrderStatus == OrderStatus.Completed);
 
             CommonActions.ClickLinkElement(ByExtensions.DataTestId($"link-{order.CallOffId}"));

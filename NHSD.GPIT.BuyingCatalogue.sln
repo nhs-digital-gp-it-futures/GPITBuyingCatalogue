@@ -115,7 +115,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NHSD.GPIT.BuyingCatalogue.U
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NHSD.GPIT.BuyingCatalogue.E2ETests.Framework", "tests\NHSD.GPIT.BuyingCatalogue.E2ETests.Framework\NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.csproj", "{98B5F3D2-BCD0-4545-BBE6-B6F6A69EDA0E}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NHSD.GPIT.BuyingCatalogue.E2ETests.UIComponentTests", "tests\NHSD.GPIT.BuyingCatalogue.E2ETests.UIComponentTests\NHSD.GPIT.BuyingCatalogue.E2ETests.UIComponentTests.csproj", "{14D4E116-CC67-46C2-8FEC-4883EAC07EBA}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NHSD.GPIT.BuyingCatalogue.RegressionTests", "tests\NHSD.GPIT.BuyingCatalogue.RegressionTests\NHSD.GPIT.BuyingCatalogue.RegressionTests.csproj", "{70F0C2ED-2E2C-48F8-86AC-9AB21C9D5D17}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NHSD.GPIT.BuyingCatalogue.RegressionTests", "tests\NHSD.GPIT.BuyingCatalogue.RegressionTests\NHSD.GPIT.BuyingCatalogue.RegressionTests.csproj", "{70F0C2ED-2E2C-48F8-86AC-9AB21C9D5D17}"
 EndProject

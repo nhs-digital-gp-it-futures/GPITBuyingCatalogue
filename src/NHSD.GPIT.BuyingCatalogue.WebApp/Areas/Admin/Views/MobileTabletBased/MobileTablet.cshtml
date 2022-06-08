@@ -20,14 +20,14 @@
                 <nhs-table-column>Section</nhs-table-column>
                 <nhs-table-column>Mandatory</nhs-table-column>
                 <nhs-table-column>Status</nhs-table-column>
-                <nhs-table-column></nhs-table-column>
+                <nhs-table-column>Action</nhs-table-column>
 
                 <nhs-table-row-container>
                     <nhs-table-cell>Supported operating systems</nhs-table-cell>
                     <nhs-table-cell>Yes</nhs-table-cell>
                     <nhs-table-cell><nhs-tag status-enum="@Model.SupportedOperatingSystemsStatus()"/></nhs-table-cell>
                     <nhs-table-cell>
-                        <a asp-action="@nameof(MobileTabletBasedController.OperatingSystems)" 
+                        <a asp-action="@nameof(MobileTabletBasedController.OperatingSystems)"
                            asp-controller="@typeof(MobileTabletBasedController).ControllerName()"
                            asp-route-solutionId="@Model.SolutionId"
                            class="nhsuk-breadcrumb__link">Edit</a>
@@ -53,7 +53,7 @@
                     <nhs-table-cell>
                         <a asp-action="@nameof(MobileTabletBasedController.MemoryAndStorage)"
                            asp-controller="@typeof(MobileTabletBasedController).ControllerName()"
-                           asp-route-solutionId="@Model.SolutionId" 
+                           asp-route-solutionId="@Model.SolutionId"
                            class="nhsuk-breadcrumb__link">Edit</a>
                     </nhs-table-cell>
                 </nhs-table-row-container>
@@ -77,7 +77,7 @@
                     <nhs-table-cell>
                         <a asp-action="@nameof(MobileTabletBasedController.HardwareRequirements)"
                            asp-controller="@typeof(MobileTabletBasedController).ControllerName()"
-                           asp-route-solutionId="@Model.SolutionId" 
+                           asp-route-solutionId="@Model.SolutionId"
                            class="nhsuk-breadcrumb__link">Edit</a>
                     </nhs-table-cell>
                 </nhs-table-row-container>
@@ -89,7 +89,7 @@
                     <nhs-table-cell>
                         <a asp-action="@nameof(MobileTabletBasedController.AdditionalInformation)"
                            asp-controller="@typeof(MobileTabletBasedController).ControllerName()"
-                           asp-route-solutionId="@Model.SolutionId" 
+                           asp-route-solutionId="@Model.SolutionId"
                            class="nhsuk-breadcrumb__link">Edit</a>
                     </nhs-table-cell>
                 </nhs-table-row-container>

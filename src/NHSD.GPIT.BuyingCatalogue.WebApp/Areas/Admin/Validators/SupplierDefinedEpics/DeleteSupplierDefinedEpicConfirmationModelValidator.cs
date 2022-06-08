@@ -1,6 +1,4 @@
-﻿using System.Threading;
-using System.Threading.Tasks;
-using FluentValidation;
+﻿using FluentValidation;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Capabilities;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.SupplierDefinedEpics;
 
@@ -17,15 +15,13 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Validators.SupplierDefine
             this.supplierDefinedEpicsService = supplierDefinedEpicsService;
 
             RuleFor(m => m)
-                .MustAsync(NotBeActiveOrReferenced);
+                .Must(NotBeActiveOrReferenced);
         }
 
-        private async Task<bool> NotBeActiveOrReferenced(DeleteSupplierDefinedEpicConfirmationModel model, CancellationToken cancellationToken)
+        private bool NotBeActiveOrReferenced(DeleteSupplierDefinedEpicConfirmationModel model)
         {
-            _ = cancellationToken;
-
-            var epic = await supplierDefinedEpicsService.GetEpic(model.Id);
-            var referencingItems = await supplierDefinedEpicsService.GetItemsReferencingEpic(model.Id);
+            var epic = supplierDefinedEpicsService.GetEpic(model.Id).GetAwaiter().GetResult();
+            var referencingItems = supplierDefinedEpicsService.GetItemsReferencingEpic(model.Id).GetAwaiter().GetResult();
 
             return !epic.IsActive && referencingItems.Count == 0;
         }

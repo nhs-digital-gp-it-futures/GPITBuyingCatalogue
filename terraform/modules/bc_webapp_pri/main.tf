@@ -42,6 +42,7 @@ resource "azurerm_app_service" "webapp" {
     
     NOTIFY_API_KEY                      = var.notify_api_key
 
+    SESSION_IDLE_TIMEOUT                = "60"      
     WEBSITE_HTTPLOGGING_RETENTION_DAYS  = "2"
   }
   

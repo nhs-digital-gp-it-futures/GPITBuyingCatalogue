@@ -50,7 +50,6 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Utils
         {
             if (UserAlreadyLoggedIn() || !AuthorizationPages.LoginActions.EmailAddressInputDisplayed())
                 return;
-
             AuthorizationPages.LoginActions.Login(AdminUsername, AdminPassword);
         }
 
