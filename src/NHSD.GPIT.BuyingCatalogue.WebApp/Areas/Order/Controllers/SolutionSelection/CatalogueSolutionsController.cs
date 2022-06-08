@@ -160,6 +160,12 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers.SolutionSelec
                 Description = x.CatalogueItem.Name,
             }));
 
+            toRemove.AddRange(order.GetAssociatedServices().Select(x => new ServiceModel
+            {
+                CatalogueItemId = x.CatalogueItemId,
+                Description = x.CatalogueItem.Name,
+            }));
+
             var model = new ConfirmServiceChangesModel(internalOrgId, callOffId, CatalogueItemType.Solution)
             {
                 BackLink = Url.Action(
