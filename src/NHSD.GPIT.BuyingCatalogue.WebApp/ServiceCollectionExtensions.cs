@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.DataProtection;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Http.Features;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.ResponseCompression;
 using Microsoft.EntityFrameworkCore;
@@ -326,6 +327,14 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp
                         options.ValidatorOptions.DefaultClassLevelCascadeMode = FluentValidation.CascadeMode.Continue;
                         options.ValidatorOptions.DefaultRuleLevelCascadeMode = FluentValidation.CascadeMode.Stop;
                     }).AddSingleton<IValidatorInterceptor, FluentValidatorInterceptor>();
+        }
+
+        public static void ConfigureFormOptions(this IServiceCollection services)
+        {
+            services.Configure<FormOptions>(options =>
+            {
+                options.ValueCountLimit = 16384;
+            });
         }
 
         public static IServiceCollection AddHangFire(this IServiceCollection services)
