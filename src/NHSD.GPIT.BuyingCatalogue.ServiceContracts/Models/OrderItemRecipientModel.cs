@@ -33,7 +33,9 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.Models
                 {
                     try
                     {
-                        deliveryDate = DateTime.ParseExact($"{Day}/{Month}/{Year}", "d/M/yyyy", CultureInfo.InvariantCulture);
+                        deliveryDate = Day is null || Month is null || Year is null
+                                            ? null
+                                            : DateTime.ParseExact($"{Day}/{Month}/{Year}", "d/M/yyyy", CultureInfo.InvariantCulture);
                     }
                     catch (FormatException)
                     {
