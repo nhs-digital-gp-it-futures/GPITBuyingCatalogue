@@ -69,7 +69,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
             if (!ModelState.IsValid)
             {
                 var capabilities = await capabilitiesService.GetCapabilities();
-                return View(model.WithSelectListCapabilities(capabilities));
+                return View((EditSupplierDefinedEpicModel)model.WithSelectListCapabilities(capabilities));
             }
 
             var createEpicModel = new AddEditSupplierDefinedEpic(
@@ -98,7 +98,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
                 BackLink = Url.Action(nameof(Dashboard)),
             };
 
-            return View(model.WithSelectListCapabilities(capabilities));
+            return View((EditSupplierDefinedEpicModel)model.WithSelectListCapabilities(capabilities));
         }
 
         [HttpPost("edit/{epicId}")]
@@ -110,7 +110,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
                 var relatedSolutions = await supplierDefinedEpicsService.GetItemsReferencingEpic(epicId);
                 model.RelatedItems = relatedSolutions;
 
-                return View(model.WithSelectListCapabilities(capabilities));
+                return View((EditSupplierDefinedEpicModel)model.WithSelectListCapabilities(capabilities));
             }
 
             var editEpicModel = new AddEditSupplierDefinedEpic(
