@@ -17,10 +17,10 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Utils
 
         public readonly Uri uri;
 
-        private readonly ITestOutputHelper testOutputHelper;
+        private readonly ITestOutputHelper? testOutputHelper;
 
         public TestBase(WebApplicationConnector connector,
-            ITestOutputHelper testOutputHelper,
+            ITestOutputHelper? testOutputHelper,
             string urlArea = "")
         {
             Connector = connector;
