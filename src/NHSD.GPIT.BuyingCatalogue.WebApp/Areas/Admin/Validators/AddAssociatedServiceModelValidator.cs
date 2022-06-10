@@ -27,16 +27,14 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Validators
                 .WithMessage("Enter order guidance");
 
             RuleFor(m => m)
-                .MustAsync(NotBeADuplicateServiceName)
+                .Must(NotBeADuplicateServiceName)
                 .WithMessage("Associated Service name already exists. Enter a different name")
                 .OverridePropertyName(m => m.Name);
         }
 
-        private async Task<bool> NotBeADuplicateServiceName(AddAssociatedServiceModel model, CancellationToken cancellationToken)
+        private bool NotBeADuplicateServiceName(AddAssociatedServiceModel model)
         {
-            _ = cancellationToken;
-
-            return !(await associatedServicesService.AssociatedServiceExistsWithNameForSupplier(model.Name, model.SolutionId.SupplierId, default));
+            return !associatedServicesService.AssociatedServiceExistsWithNameForSupplier(model.Name, model.SolutionId.SupplierId, default).GetAwaiter().GetResult();
         }
     }
 }

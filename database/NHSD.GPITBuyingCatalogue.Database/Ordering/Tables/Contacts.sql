@@ -11,8 +11,6 @@
     SysEndTime datetime2(0) GENERATED ALWAYS AS ROW END NOT NULL,
     PERIOD FOR SYSTEM_TIME (SysStartTime, SysEndTime),
     [Department] NVARCHAR(50) NULL, 
-    [SupplierContactId] INT NULL, 
     CONSTRAINT PK_Contacts PRIMARY KEY (Id),
-    CONSTRAINT FK_Contacts_LastUpdatedBy FOREIGN KEY (LastUpdatedBy) REFERENCES users.AspNetUsers(Id),
-    CONSTRAINT FK_Contacts_SupplierContact FOREIGN KEY (SupplierContactId) REFERENCES catalogue.SupplierContacts(Id),
+    CONSTRAINT FK_Contacts_LastUpdatedBy FOREIGN KEY (LastUpdatedBy) REFERENCES users.AspNetUsers(Id)
 ) WITH (SYSTEM_VERSIONING = ON (HISTORY_TABLE = ordering.Contacts_History));

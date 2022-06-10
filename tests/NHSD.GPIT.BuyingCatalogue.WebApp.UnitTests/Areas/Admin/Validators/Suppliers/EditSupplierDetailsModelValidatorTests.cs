@@ -35,7 +35,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators
             EditSupplierDetailsModelValidator validator)
         {
             urlValidator.Setup(uv => uv.IsValidUrl(model.SupplierWebsite))
-                .ReturnsAsync(false);
+                .Returns(false);
 
             var result = validator.TestValidate(model);
 
@@ -52,7 +52,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators
             var model = new EditSupplierDetailsModel { SupplierWebsite = "http://wiothaoih" };
 
             urlValidator.Setup(uv => uv.IsValidUrl(model.SupplierWebsite))
-                .ReturnsAsync(false);
+                .Returns(false);
 
             var result = validator.TestValidate(model);
 
@@ -69,7 +69,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators
         {
             var model = new EditSupplierDetailsModel { SupplierWebsite = uri.ToString() };
             urlValidator.Setup(uv => uv.IsValidUrl(model.SupplierWebsite))
-                .ReturnsAsync(true);
+                .Returns(true);
 
             var result = validator.TestValidate(model);
 

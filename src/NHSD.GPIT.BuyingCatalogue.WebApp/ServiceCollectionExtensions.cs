@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.DataProtection;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Http.Features;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.ResponseCompression;
 using Microsoft.EntityFrameworkCore;
@@ -37,6 +38,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp
         private const string BuyingCatalogueDomainNameEnvironmentVariable = "DOMAIN_NAME";
         private const string BuyingCataloguePdfEnvironmentVariable = "USE_SSL_FOR_PDF";
         private const string HangFireDbConnectionEnvironmentVariable = "HANGFIRE_DB_CONNECTION";
+        private const string SessionIdleTimeoutEnvironmentVariable = "SESSION_IDLE_TIMEOUT";
 
         public static void ConfigureAuthorization(this IServiceCollection services)
         {
@@ -60,13 +62,16 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp
         {
             var cookieExpiration = configuration.GetSection("cookieExpiration").Get<CookieExpirationSettings>();
 
+            if (!int.TryParse(Environment.GetEnvironmentVariable(SessionIdleTimeoutEnvironmentVariable), out int sessionIdleTimeout))
+                throw new InvalidOperationException($"Environment variable '{SessionIdleTimeoutEnvironmentVariable}' must be set to an integer representing the number of minutes before timing out the session");
+
             services.ConfigureApplicationCookie(options =>
             {
                 options.Cookie.Name = "user-session";
                 options.LoginPath = "/Identity/Account/Login";
                 options.LogoutPath = "/Identity/Account/Logout";
                 options.Cookie.SecurePolicy = CookieSecurePolicy.Always;
-                options.ExpireTimeSpan = cookieExpiration.ExpireTimeSpan;
+                options.ExpireTimeSpan = TimeSpan.FromMinutes(sessionIdleTimeout);
                 options.SlidingExpiration = cookieExpiration.SlidingExpiration;
                 options.AccessDeniedPath = "/unauthorized";
 
@@ -113,6 +118,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp
             if (string.IsNullOrWhiteSpace(buyingCatalogueConnectionString))
                 throw new InvalidOperationException($"Environment variable '{BuyingCatalogueDbConnectionEnvironmentVariable}' must be set for the database connection string");
 
+            if (!int.TryParse(Environment.GetEnvironmentVariable(SessionIdleTimeoutEnvironmentVariable), out int sessionIdleTimeout))
+                throw new InvalidOperationException($"Environment variable '{SessionIdleTimeoutEnvironmentVariable}' must be set to an integer representing the number of minutes before timing out the session");
+
             services.AddDistributedSqlServerCache(options =>
             {
                 options.ConnectionString = buyingCatalogueConnectionString;
@@ -122,7 +130,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp
 
             services.AddSession(options =>
             {
-                options.IdleTimeout = TimeSpan.FromMinutes(60);
+                options.IdleTimeout = TimeSpan.FromMinutes(sessionIdleTimeout);
                 options.Cookie.IsEssential = true;
                 options.Cookie.SecurePolicy = CookieSecurePolicy.Always;
             });
@@ -318,12 +326,22 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp
             services.Configure<GzipCompressionProviderOptions>(options => options.Level = CompressionLevel.Fastest);
         }
 
+        public static void ConfigureFormOptions(this IServiceCollection services)
+        {
+            services.Configure<FormOptions>(options =>
+            {
+                options.ValueCountLimit = 8192;
+            });
+        }
+
         public static IServiceCollection AddFluentValidation(this IServiceCollection services)
         {
             return services.AddFluentValidation(
                     options =>
                     {
                         options.RegisterValidatorsFromAssemblyContaining<SolutionModelValidator>();
+                        options.ValidatorOptions.DefaultClassLevelCascadeMode = FluentValidation.CascadeMode.Continue;
+                        options.ValidatorOptions.DefaultRuleLevelCascadeMode = FluentValidation.CascadeMode.Stop;
                     }).AddSingleton<IValidatorInterceptor, FluentValidatorInterceptor>();
         }
 

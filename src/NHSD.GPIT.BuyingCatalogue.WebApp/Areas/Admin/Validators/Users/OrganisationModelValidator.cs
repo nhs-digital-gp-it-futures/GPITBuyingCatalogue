@@ -18,7 +18,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Validators.Users
             this.usersService = usersService;
 
             RuleFor(x => x.SelectedOrganisationId)
-                .Cascade(CascadeMode.Stop)
                 .NotEmpty()
                 .WithMessage(OrganisationMissingErrorMessage)
                 .Must((model, selectedOrganisationId) => BelongToCorrectOrganisation(model.UserId, selectedOrganisationId))

@@ -131,6 +131,7 @@
     <Build Include="Ordering\Tables\OrderItemRecipients.sql" />
     <Build Include="Ordering\Tables\OrderItems.sql" />
     <Build Include="Ordering\Tables\Orders.sql" />
+    <Build Include="Ordering\Tables\OrderTriageValues.sql" />
     <Build Include="Ordering\Tables\OrderStatus.sql" />
     <Build Include="Ordering\Tables\ServiceRecipients.sql" />
     <Build Include="Ordering\Views\ServiceInstanceItems.sql" />
@@ -343,9 +344,6 @@
       <SuppressMissingDependenciesErrors>False</SuppressMissingDependenciesErrors>
       <DatabaseVariableLiteralValue>master</DatabaseVariableLiteralValue>
     </ArtifactReference>
-  </ItemGroup>
-  <ItemGroup>
-    <Content Include="Ordering\Tables\OrderTriageValues.sql" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="PostDeployment\InsertOrderTriageValues.sql" />

@@ -23,7 +23,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Validation
                 .WithMessage(MessageMissingErrorMessage);
 
             RuleFor(m => m.EmailAddress)
-                .Cascade(CascadeMode.Stop)
                 .NotEmpty()
                 .WithMessage(EmailAddressMissingErrorMessage)
                 .EmailAddress()

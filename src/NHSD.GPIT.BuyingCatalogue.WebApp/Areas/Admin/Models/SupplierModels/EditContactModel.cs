@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Models;
@@ -21,13 +22,16 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.SupplierModels
             SupplierName = supplier.Name;
         }
 
-        public EditContactModel(SupplierContact contact, Supplier supplier)
+        public EditContactModel(SupplierContact contact, Supplier supplier, IList<CatalogueItem> solutionsReferencing)
         {
             if (contact is null)
                 throw new ArgumentNullException(nameof(contact));
 
             if (supplier is null)
                 throw new ArgumentNullException(nameof(supplier));
+
+            if (solutionsReferencing is null)
+                throw new ArgumentNullException(nameof(solutionsReferencing));
 
             ContactId = contact.Id;
             SupplierId = contact.SupplierId;
@@ -39,6 +43,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.SupplierModels
 
             Title = $"{FirstName} {LastName} contact details";
             SupplierName = supplier.Name;
+            SolutionsReferencingThisContact = solutionsReferencing;
         }
 
         public int? ContactId { get; init; }
@@ -63,5 +68,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.SupplierModels
         public string Title { get; init; }
 
         public string SupplierName { get; init; }
+
+        public IList<CatalogueItem> SolutionsReferencingThisContact { get; set; }
     }
 }

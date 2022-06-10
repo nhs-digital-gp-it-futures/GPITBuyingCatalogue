@@ -39,7 +39,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Validation
             var article = vowels.Contains(name.First()) ? "an" : "a";
 
             return ruleBuilder
-                .Cascade(CascadeMode.Stop)
                 .NotEmpty()
                 .WithMessage($"Enter {article} {name}")
                 .Must(x => int.TryParse(x, out _))
@@ -53,7 +52,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Validation
 
         public static IRuleBuilderOptions<T, int?> IsValidQuantity<T>(this IRuleBuilderInitial<T, int?> ruleBuilder)
             => ruleBuilder
-                .Cascade(CascadeMode.Stop)
                 .NotNull()
                 .WithMessage("Enter a quantity")
                 .GreaterThan(0)
@@ -61,10 +59,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Validation
 
         public static IRuleBuilderOptions<T, string> IsValidUrl<T>(this IRuleBuilderInitial<T, string> ruleBuilder, IUrlValidator urlValidator)
             => ruleBuilder
-                .Cascade(CascadeMode.Stop)
                 .Must(BePrefixedCorrectly)
                 .WithMessage(InvalidUrlPrefixErrorMessage)
-                .MustAsync((link, _) => urlValidator.IsValidUrl(link))
+                .Must(link => urlValidator.IsValidUrl(link))
                 .WithMessage(InvalidUrlErrorMessage);
 
         public static IRuleBuilderOptions<T, decimal?> IsValidPrice<T>(this IRuleBuilderInitial<T, decimal?> ruleBuilder)

@@ -40,7 +40,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Validators
                 .OverridePropertyName(x => x.Day);
 
             RuleFor(x => x.Year)
-                .Cascade(CascadeMode.Stop)
                 .NotEmpty()
                 .Unless(x => string.IsNullOrWhiteSpace(x.Month))
                 .WithMessage(CommencementDateYearMissingErrorMessage)
@@ -49,7 +48,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Validators
                 .OverridePropertyName(x => x.Day);
 
             RuleFor(x => x)
-                .Cascade(CascadeMode.Stop)
                 .Must(x => x.CommencementDate != null)
                 .Unless(CommencementDateIsInvalid)
                 .WithMessage(CommencementDateInvalidErrorMessage)
@@ -59,13 +57,11 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Validators
                 .OverridePropertyName(wp => wp.Day);
 
             RuleFor(x => x.InitialPeriod)
-                .Cascade(CascadeMode.Stop)
                 .IsNumericAndNonZero("initial period")
                 .Must(InitialPeriodLessThanOrEqualToMaximum)
                 .WithMessage(InitialPeriodTooHighErrorMessage);
 
             RuleFor(x => x.MaximumTerm)
-                .Cascade(CascadeMode.Stop)
                 .IsNumericAndNonZero("maximum term")
                 .Must(MaximumTermLessThanOrEqualToMaximum)
                 .WithMessage(model => string.Format(MaximumTermTooHighErrorMessage, GetMaximumTerm(model)))

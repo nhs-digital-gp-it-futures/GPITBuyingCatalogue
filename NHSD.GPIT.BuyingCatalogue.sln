@@ -115,9 +115,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NHSD.GPIT.BuyingCatalogue.U
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NHSD.GPIT.BuyingCatalogue.E2ETests.Framework", "tests\NHSD.GPIT.BuyingCatalogue.E2ETests.Framework\NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.csproj", "{98B5F3D2-BCD0-4545-BBE6-B6F6A69EDA0E}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NHSD.GPIT.BuyingCatalogue.E2ETests.UIComponentTests", "tests\NHSD.GPIT.BuyingCatalogue.E2ETests.UIComponentTests\NHSD.GPIT.BuyingCatalogue.E2ETests.UIComponentTests.csproj", "{14D4E116-CC67-46C2-8FEC-4883EAC07EBA}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NHSD.GPIT.BuyingCatalogue.RegressionTests", "tests\NHSD.GPIT.BuyingCatalogue.RegressionTests\NHSD.GPIT.BuyingCatalogue.RegressionTests.csproj", "{70F0C2ED-2E2C-48F8-86AC-9AB21C9D5D17}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NHSD.GPIT.BuyingCatalogue.RegressionTests", "tests\NHSD.GPIT.BuyingCatalogue.RegressionTests\NHSD.GPIT.BuyingCatalogue.RegressionTests.csproj", "{3CE3516A-1C8E-4CA6-90AA-91798B881280}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -205,10 +203,10 @@ Global
 		{14D4E116-CC67-46C2-8FEC-4883EAC07EBA}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{14D4E116-CC67-46C2-8FEC-4883EAC07EBA}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{14D4E116-CC67-46C2-8FEC-4883EAC07EBA}.Release|Any CPU.Build.0 = Release|Any CPU
-		{70F0C2ED-2E2C-48F8-86AC-9AB21C9D5D17}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{70F0C2ED-2E2C-48F8-86AC-9AB21C9D5D17}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{70F0C2ED-2E2C-48F8-86AC-9AB21C9D5D17}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{70F0C2ED-2E2C-48F8-86AC-9AB21C9D5D17}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3CE3516A-1C8E-4CA6-90AA-91798B881280}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3CE3516A-1C8E-4CA6-90AA-91798B881280}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3CE3516A-1C8E-4CA6-90AA-91798B881280}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3CE3516A-1C8E-4CA6-90AA-91798B881280}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -238,7 +236,7 @@ Global
 		{0A9411BA-8BEC-4472-B21E-79077727F99E} = {D1172DF2-850A-4CCD-949F-8CB9AE7A2DE8}
 		{98B5F3D2-BCD0-4545-BBE6-B6F6A69EDA0E} = {D1172DF2-850A-4CCD-949F-8CB9AE7A2DE8}
 		{14D4E116-CC67-46C2-8FEC-4883EAC07EBA} = {D1172DF2-850A-4CCD-949F-8CB9AE7A2DE8}
-		{70F0C2ED-2E2C-48F8-86AC-9AB21C9D5D17} = {D1172DF2-850A-4CCD-949F-8CB9AE7A2DE8}
+		{3CE3516A-1C8E-4CA6-90AA-91798B881280} = {D1172DF2-850A-4CCD-949F-8CB9AE7A2DE8}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {141F787F-5876-42E9-90BB-1A87A9EE130D}

@@ -51,10 +51,10 @@
     </nhs-checkbox-container>
 
     <nhs-table data-test-id="manage-suppliers-table">
-        <nhs-table-column> Supplier name </nhs-table-column>
-        <nhs-table-column> Supplier ID </nhs-table-column>
-        <nhs-table-column></nhs-table-column>
-        <nhs-table-column></nhs-table-column>
+        <nhs-table-column>Supplier name</nhs-table-column>
+        <nhs-table-column>Supplier ID</nhs-table-column>
+        <nhs-table-column>Status</nhs-table-column>
+        <nhs-table-column>Action</nhs-table-column>
         @foreach (var supplierModel in Model.Suppliers)
         {
             <nhs-table-row-container class="nhsuk-table__row @(!supplierModel.IsActive ? "inactive" : null)">
@@ -68,6 +68,10 @@
                     @if (!supplierModel.IsActive)
                     {
                         <nhs-tag colour="Grey" text="Inactive" />
+                    }
+                    else
+                    {
+                        <nhs-tag colour="Green" text="Active" />
                     }
                 </nhs-table-cell>
                 <nhs-table-cell>

@@ -153,6 +153,38 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators
 
         [Theory]
         [CommonAutoData]
+        public static void Validate_IncompleteListPrices_SetsModelError(
+            Solution solution,
+            List<ServiceAvailabilityTimes> serviceAvailabilityTimes,
+            List<SlaContact> slaContacts,
+            List<SlaServiceLevel> slaServiceLevels,
+            [Frozen] Mock<ISolutionsService> solutionsService,
+            ManageCatalogueSolutionModelValidator validator)
+        {
+            solution.CatalogueItem.CataloguePrices = new List<CataloguePrice>();
+
+            solution.ServiceLevelAgreement.ServiceHours = serviceAvailabilityTimes;
+            solution.ServiceLevelAgreement.ServiceLevels = slaServiceLevels;
+            solution.ServiceLevelAgreement.Contacts = slaContacts;
+            solution.CatalogueItem.CatalogueItemContacts.Add(solution.CatalogueItem.Supplier.SupplierContacts.First());
+            solution.CatalogueItem.PublishedStatus = PublicationStatus.Draft;
+            solutionsService.Setup(s => s.GetSolutionThin(solution.CatalogueItemId))
+                .ReturnsAsync(solution.CatalogueItem);
+
+            var model = new ManageCatalogueSolutionModel
+            {
+                SolutionId = solution.CatalogueItemId,
+                SelectedPublicationStatus = PublicationStatus.Published,
+            };
+
+            var result = validator.TestValidate(model);
+
+            result.ShouldHaveAnyValidationError()
+                .WithErrorMessage("Complete all mandatory sections before publishing");
+        }
+
+        [Theory]
+        [CommonAutoData]
         public static void Validate_IncompleteSupplierDetails_SetsModelError(
             Solution solution,
             List<ServiceAvailabilityTimes> serviceAvailabilityTimes,

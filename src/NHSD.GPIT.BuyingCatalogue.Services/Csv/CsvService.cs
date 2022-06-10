@@ -56,7 +56,9 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Csv
                     : oir.OrderItem.CatalogueItem.CatalogueItemType == CatalogueItemType.AdditionalService
                         ? oir.OrderItem.CatalogueItem.AdditionalService.Solution.FrameworkSolutions.FirstOrDefault(fs => fs.FrameworkId != "COVID").FrameworkId
                         : oir.OrderItem.CatalogueItem.AssociatedService.CatalogueItem.Solution.FrameworkSolutions.FirstOrDefault(fs => fs.FrameworkId != "COVID").FrameworkId,
-                    /*FundingType = oir.OrderItem.Order.FundingSourceOnlyGms.Value ? "Central" : "Local",*/
+                    /*FundingType = oir.OrderItem.Order.FundingSourceOnlyGms.Value ? "Central" : "Local",
+                    InitialTerm = oir.OrderItem.Order.InitialPeriod,
+                    MaximumTerm = oir.OrderItem.Order.MaximumTerm,*/
                 }).ToListAsync();
 
             for (int i = 0; i < items.Count; i++)
@@ -92,7 +94,10 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Csv
                     : oir.OrderItem.CatalogueItem.CatalogueItemType == CatalogueItemType.AdditionalService
                         ? oir.OrderItem.CatalogueItem.AdditionalService.Solution.FrameworkSolutions.FirstOrDefault(fs => fs.FrameworkId != "COVID").FrameworkId
                         : oir.OrderItem.CatalogueItem.AssociatedService.CatalogueItem.Solution.FrameworkSolutions.FirstOrDefault(fs => fs.FrameworkId != "COVID").FrameworkId,
-                    /*FundingType = oir.OrderItem.Order.FundingSourceOnlyGms.Value ? "Central" : "Local",*/
+                    /*
+                    FundingType = oir.OrderItem.Order.FundingSourceOnlyGms.Value ? "Central" : "Local",
+                    InitialTerm = oir.OrderItem.Order.InitialPeriod,
+                    MaximumTerm = oir.OrderItem.Order.MaximumTerm,*/
                 }).ToListAsync();
 
             if (items.Count == 0)

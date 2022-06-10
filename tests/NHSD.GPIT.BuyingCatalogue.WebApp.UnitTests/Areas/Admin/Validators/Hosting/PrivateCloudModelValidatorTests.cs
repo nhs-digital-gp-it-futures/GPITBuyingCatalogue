@@ -49,7 +49,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators.Host
             PrivateCloudModelValidator validator)
         {
             urlValidator.Setup(uv => uv.IsValidUrl(model.Link))
-                .ReturnsAsync(false);
+                .Returns(false);
 
             var result = validator.TestValidate(model);
 
@@ -66,7 +66,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators.Host
             var model = new PrivateCloudModel { Link = "http://wiothaoih" };
 
             urlValidator.Setup(uv => uv.IsValidUrl(model.Link))
-                .ReturnsAsync(false);
+                .Returns(false);
 
             var result = validator.TestValidate(model);
 
@@ -83,7 +83,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators.Host
         {
             var model = new PrivateCloudModel { Link = uri.ToString() };
             urlValidator.Setup(uv => uv.IsValidUrl(model.Link))
-                .ReturnsAsync(true);
+                .Returns(true);
 
             var result = validator.TestValidate(model);
 
