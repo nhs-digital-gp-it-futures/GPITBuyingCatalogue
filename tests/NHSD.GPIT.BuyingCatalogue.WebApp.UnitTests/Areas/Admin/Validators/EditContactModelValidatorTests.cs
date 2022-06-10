@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using System.Threading.Tasks;
 using AutoFixture.Xunit2;
 using FluentValidation.TestHelper;
 using Moq;
@@ -17,7 +16,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators
         [Theory]
         [CommonInlineAutoData(null)]
         [CommonInlineAutoData("")]
-        public static async Task Validate_FirstNameNullOrEmpty_SetsModelError(
+        public static void Validate_FirstNameNullOrEmpty_SetsModelError(
             string firstName,
             List<SupplierContact> supplierContacts,
             Supplier supplier,
@@ -34,7 +33,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators
 
             var model = new EditContactModel(existingContact, supplier, new List<CatalogueItem>());
 
-            var result = await validator.TestValidateAsync(model);
+            var result = validator.TestValidate(model);
 
             result.ShouldHaveValidationErrorFor(m => m.FirstName)
                 .WithErrorMessage("Enter a first name");
@@ -43,7 +42,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators
         [Theory]
         [CommonInlineAutoData(null)]
         [CommonInlineAutoData("")]
-        public static async Task Validate_LastNameNullOrEmpty_SetsModelError(
+        public static void Validate_LastNameNullOrEmpty_SetsModelError(
             string lastName,
             List<SupplierContact> supplierContacts,
             Supplier supplier,
@@ -60,7 +59,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators
 
             var model = new EditContactModel(existingContact, supplier, new List<CatalogueItem>());
 
-            var result = await validator.TestValidateAsync(model);
+            var result = validator.TestValidate(model);
 
             result.ShouldHaveValidationErrorFor(m => m.LastName)
                 .WithErrorMessage("Enter a last name");
@@ -69,7 +68,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators
         [Theory]
         [CommonInlineAutoData(null)]
         [CommonInlineAutoData("")]
-        public static async Task Validate_PhoneNumberNullOrEmpty_SetsModelError(
+        public static void Validate_PhoneNumberNullOrEmpty_SetsModelError(
             string phoneNumber,
             List<SupplierContact> supplierContacts,
             Supplier supplier,
@@ -86,7 +85,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators
 
             var model = new EditContactModel(existingContact, supplier, new List<CatalogueItem>());
 
-            var result = await validator.TestValidateAsync(model);
+            var result = validator.TestValidate(model);
 
             result.ShouldHaveValidationErrorFor(m => m.PhoneNumber)
                 .WithErrorMessage("Enter a phone number");
@@ -95,7 +94,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators
         [Theory]
         [CommonInlineAutoData(null)]
         [CommonInlineAutoData("")]
-        public static async Task Validate_DepartmentNullOrEmpty_SetsModelError(
+        public static void Validate_DepartmentNullOrEmpty_SetsModelError(
             string department,
             List<SupplierContact> supplierContacts,
             Supplier supplier,
@@ -112,7 +111,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators
 
             var model = new EditContactModel(existingContact, supplier, new List<CatalogueItem>());
 
-            var result = await validator.TestValidateAsync(model);
+            var result = validator.TestValidate(model);
 
             result.ShouldHaveValidationErrorFor(m => m.Department)
                 .WithErrorMessage("Enter a department name");
@@ -121,7 +120,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators
         [Theory]
         [CommonInlineAutoData(null)]
         [CommonInlineAutoData("")]
-        public static async Task Validate_EmailNullOrEmpty_SetsModelError(
+        public static void Validate_EmailNullOrEmpty_SetsModelError(
             string email,
             List<SupplierContact> supplierContacts,
             Supplier supplier,
@@ -138,7 +137,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators
 
             var model = new EditContactModel(existingContact, supplier, new List<CatalogueItem>());
 
-            var result = await validator.TestValidateAsync(model);
+            var result = validator.TestValidate(model);
 
             result.ShouldHaveValidationErrorFor(m => m.Email)
                 .WithErrorMessage("Enter an email address");
@@ -146,7 +145,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators
 
         [Theory]
         [CommonAutoData]
-        public static async Task Validate_EmailFormatInvalid_SetsModelError(
+        public static void Validate_EmailFormatInvalid_SetsModelError(
             List<SupplierContact> supplierContacts,
             Supplier supplier,
             [Frozen] Mock<ISuppliersService> suppliersService,
@@ -162,7 +161,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators
 
             var model = new EditContactModel(existingContact, supplier, new List<CatalogueItem>());
 
-            var result = await validator.TestValidateAsync(model);
+            var result = validator.TestValidate(model);
 
             result.ShouldHaveValidationErrorFor(m => m.Email)
                 .WithErrorMessage("Enter an email address in the correct format, like name@example.com");
@@ -170,7 +169,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators
 
         [Theory]
         [CommonAutoData]
-        public static async Task Validate_AddDuplicateContact_SetsModelError(
+        public static void Validate_AddDuplicateContact_SetsModelError(
             List<SupplierContact> supplierContacts,
             Supplier supplier,
             [Frozen] Mock<ISuppliersService> suppliersService,
@@ -191,7 +190,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators
                 Department = existingContact.Department,
             };
 
-            var result = await validator.TestValidateAsync(model);
+            var result = validator.TestValidate(model);
 
             result.ShouldHaveValidationErrorFor("edit-contact")
                 .WithErrorMessage("A contact with these contact details already exists for this supplier");
@@ -199,7 +198,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators
 
         [Theory]
         [CommonAutoData]
-        public static async Task Validate_AddContact_SetsModelError(
+        public static void Validate_AddContact_SetsModelError(
             SupplierContact supplierContact,
             Supplier supplier,
             [Frozen] Mock<ISuppliersService> suppliersService,
@@ -220,14 +219,14 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators
                 Department = supplierContact.Department,
             };
 
-            var result = await validator.TestValidateAsync(model);
+            var result = validator.TestValidate(model);
 
             result.ShouldNotHaveAnyValidationErrors();
         }
 
         [Theory]
         [CommonAutoData]
-        public static async Task Validate_EditDuplicateContact_SetsModelError(
+        public static void Validate_EditDuplicateContact_SetsModelError(
             List<SupplierContact> supplierContacts,
             Supplier supplier,
             [Frozen] Mock<ISuppliersService> suppliersService,
@@ -244,7 +243,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators
                 ContactId = existingContact.Id + 1,
             };
 
-            var result = await validator.TestValidateAsync(model);
+            var result = validator.TestValidate(model);
 
             result.ShouldHaveValidationErrorFor("edit-contact")
                 .WithErrorMessage("A contact with these contact details already exists for this supplier");
@@ -252,7 +251,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators
 
         [Theory]
         [CommonAutoData]
-        public static async Task Validate_EditContact_NoModelError(
+        public static void Validate_EditContact_NoModelError(
             List<SupplierContact> supplierContacts,
             Supplier supplier,
             [Frozen] Mock<ISuppliersService> suppliersService,
@@ -268,7 +267,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators
 
             var model = new EditContactModel(existingContact, supplier, new List<CatalogueItem>());
 
-            var result = await validator.TestValidateAsync(model);
+            var result = validator.TestValidate(model);
 
             result.ShouldNotHaveAnyValidationErrors();
         }

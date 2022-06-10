@@ -1,6 +1,4 @@
-﻿using System.Threading;
-using System.Threading.Tasks;
-using FluentValidation;
+﻿using FluentValidation;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.ListPrice;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.ListPriceModels;
@@ -34,7 +32,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Validators.ListPrices
                 .WithMessage(RangeDefinitionError);
 
             RuleFor(m => m)
-                .MustAsync(NotBeADuplicate)
+                .Must(NotBeADuplicate)
                 .WithMessage(SharedListPriceValidationErrors.DuplicateListPriceError)
                 .Unless(m => m.SelectedProvisioningType is null || m.SelectedCalculationType is null)
                 .OverridePropertyName(
@@ -54,17 +52,13 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Validators.ListPrices
                 .When(m => m.SelectedProvisioningType.GetValueOrDefault() is ProvisioningType.OnDemand);
         }
 
-        private async Task<bool> NotBeADuplicate(AddTieredListPriceModel model, CancellationToken token)
-        {
-            _ = token;
-
-            return !await listPriceService.HasDuplicateTieredPrice(
+        private bool NotBeADuplicate(AddTieredListPriceModel model) =>
+            !listPriceService.HasDuplicateTieredPrice(
                 model.CatalogueItemId,
                 model.CataloguePriceId,
                 model.SelectedProvisioningType!.Value,
                 model.SelectedCalculationType!.Value,
                 model.UnitDescription,
-                model.RangeDefinition);
-        }
+                model.RangeDefinition).GetAwaiter().GetResult();
     }
 }

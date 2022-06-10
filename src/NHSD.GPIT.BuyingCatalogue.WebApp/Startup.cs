@@ -99,6 +99,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp
 
             services.ConfigurePdf();
 
+            services.ConfigureFormOptions();
+
             services.ConfigureDisabledErrorMessage(Configuration);
 
             services.ConfigureAuthorization();

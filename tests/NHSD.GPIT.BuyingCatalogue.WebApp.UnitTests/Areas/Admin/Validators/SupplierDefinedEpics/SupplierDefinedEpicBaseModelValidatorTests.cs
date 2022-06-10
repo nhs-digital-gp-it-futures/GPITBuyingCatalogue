@@ -1,5 +1,4 @@
-﻿using System.Threading.Tasks;
-using AutoFixture.Xunit2;
+﻿using AutoFixture.Xunit2;
 using FluentValidation.TestHelper;
 using Moq;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Capabilities;
@@ -14,13 +13,13 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators.Supp
     {
         [Theory]
         [CommonAutoData]
-        public static async Task Validate_NoSelectedCapability_SetsModelError(
+        public static void Validate_NoSelectedCapability_SetsModelError(
             SupplierDefinedEpicBaseModel model,
             SupplierDefinedEpicBaseModelValidator validator)
         {
             model.SelectedCapabilityId = null;
 
-            var result = await validator.TestValidateAsync(model);
+            var result = validator.TestValidate(model);
 
             result.ShouldHaveValidationErrorFor(m => m.SelectedCapabilityId)
                 .WithErrorMessage("Select a Capability");
@@ -29,14 +28,14 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators.Supp
         [Theory]
         [CommonInlineAutoData(null)]
         [CommonInlineAutoData("")]
-        public static async Task Validate_NameNullOrEmpty_SetsModelError(
+        public static void Validate_NameNullOrEmpty_SetsModelError(
             string name,
             SupplierDefinedEpicBaseModel model,
             SupplierDefinedEpicBaseModelValidator validator)
         {
             model.Name = name;
 
-            var result = await validator.TestValidateAsync(model);
+            var result = validator.TestValidate(model);
 
             result.ShouldHaveValidationErrorFor(m => m.Name)
                 .WithErrorMessage("Enter an Epic name");
@@ -45,14 +44,14 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators.Supp
         [Theory]
         [CommonInlineAutoData(null)]
         [CommonInlineAutoData("")]
-        public static async Task Validate_DescriptionNullOrEmpty_SetsModelError(
+        public static void Validate_DescriptionNullOrEmpty_SetsModelError(
             string description,
             SupplierDefinedEpicBaseModel model,
             SupplierDefinedEpicBaseModelValidator validator)
         {
             model.Description = description;
 
-            var result = await validator.TestValidateAsync(model);
+            var result = validator.TestValidate(model);
 
             result.ShouldHaveValidationErrorFor(m => m.Description)
                 .WithErrorMessage("Enter a description");
@@ -60,13 +59,13 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators.Supp
 
         [Theory]
         [CommonAutoData]
-        public static async Task Validate_IsActiveNull_SetsModelError(
+        public static void Validate_IsActiveNull_SetsModelError(
             SupplierDefinedEpicBaseModel model,
             SupplierDefinedEpicBaseModelValidator validator)
         {
             model.IsActive = null;
 
-            var result = await validator.TestValidateAsync(model);
+            var result = validator.TestValidate(model);
 
             result.ShouldHaveValidationErrorFor(m => m.IsActive)
                 .WithErrorMessage("Select a status");
@@ -74,7 +73,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators.Supp
 
         [Theory]
         [CommonAutoData]
-        public static async Task Validate_AddingDuplicate_SetsModelError(
+        public static void Validate_AddingDuplicate_SetsModelError(
             SupplierDefinedEpicBaseModel model,
             [Frozen] Mock<ISupplierDefinedEpicsService> service,
             SupplierDefinedEpicBaseModelValidator validator)
@@ -88,7 +87,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators.Supp
                     model.IsActive!.Value))
                 .ReturnsAsync(true);
 
-            var result = await validator.TestValidateAsync(model);
+            var result = validator.TestValidate(model);
 
             var expectedErrorProperty = string.Format(
                 "{0}|{1}|{2}|{3}",
@@ -103,7 +102,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators.Supp
 
         [Theory]
         [CommonAutoData]
-        public static async Task Validate_AddingNew_NoModelError(
+        public static void Validate_AddingNew_NoModelError(
             SupplierDefinedEpicBaseModel model,
             [Frozen] Mock<ISupplierDefinedEpicsService> service,
             SupplierDefinedEpicBaseModelValidator validator)
@@ -117,7 +116,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators.Supp
                     model.IsActive!.Value))
                 .ReturnsAsync(false);
 
-            var result = await validator.TestValidateAsync(model);
+            var result = validator.TestValidate(model);
 
             result.ShouldNotHaveAnyValidationErrors();
         }

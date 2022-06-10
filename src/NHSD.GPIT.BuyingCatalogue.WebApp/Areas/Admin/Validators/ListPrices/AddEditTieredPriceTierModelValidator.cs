@@ -1,6 +1,4 @@
-﻿using System.Threading;
-using System.Threading.Tasks;
-using FluentValidation;
+﻿using FluentValidation;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.ListPrice;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.ListPriceModels;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Validation;
@@ -37,7 +35,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Validators.ListPrices
                 .WithMessage(RangeTypeMissing);
 
             RuleFor(m => m)
-                .MustAsync(NotBeADuplicate)
+                .Must(NotBeADuplicate)
                 .WithMessage(DuplicateListPriceTierError)
                 .When(m => m.Price is not null && m.LowerRange is not null && m.IsInfiniteRange.HasValue && m.IsInfiniteRange is false)
                 .OverridePropertyName(
@@ -47,7 +45,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Validators.ListPrices
                     m => m.IsInfiniteRange);
 
             RuleFor(m => m)
-                .MustAsync(NotBeADuplicate)
+                .Must(NotBeADuplicate)
                 .WithMessage(DuplicateListPriceTierError)
                 .When(m => m.Price is not null && m.LowerRange is not null && m.IsInfiniteRange.HasValue && m.IsInfiniteRange is true)
                 .OverridePropertyName(
@@ -56,16 +54,12 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Validators.ListPrices
                     m => m.IsInfiniteRange);
         }
 
-        private async Task<bool> NotBeADuplicate(AddEditTieredPriceTierModel model, CancellationToken token)
-        {
-            _ = token;
-
-            return !await listPriceService.HasDuplicatePriceTier(
+        private bool NotBeADuplicate(AddEditTieredPriceTierModel model) =>
+            !listPriceService.HasDuplicatePriceTier(
                 model.CatalogueItemId,
                 model.CataloguePriceId,
                 model.TierId,
                 model.LowerRange!.Value,
-                model.UpperRange);
-        }
+                model.UpperRange).GetAwaiter().GetResult();
     }
 }

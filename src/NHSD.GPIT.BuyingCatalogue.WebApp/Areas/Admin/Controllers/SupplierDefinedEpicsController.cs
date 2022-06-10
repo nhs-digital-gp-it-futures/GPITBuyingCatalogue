@@ -69,7 +69,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
             if (!ModelState.IsValid)
             {
                 var capabilities = await capabilitiesService.GetCapabilities();
-                return View((EditSupplierDefinedEpicModel)model.WithSelectListCapabilities(capabilities));
+                return View(model.WithSelectListCapabilities(capabilities));
             }
 
             var createEpicModel = new AddEditSupplierDefinedEpic(

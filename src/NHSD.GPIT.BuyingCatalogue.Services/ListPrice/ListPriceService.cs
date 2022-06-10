@@ -34,7 +34,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.ListPrice
             return await results.AnyAsync(
                 p => p.ProvisioningType == provisioningType
                     && p.CataloguePriceTiers.Any(pt => pt.Price == price)
-                    && string.Equals(p.PricingUnit.Description, unitDescription, StringComparison.Ordinal));
+                    && p.PricingUnit.Description == unitDescription);
         }
 
         public async Task<bool> HasDuplicateTieredPrice(
@@ -53,8 +53,8 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.ListPrice
 
             return await results.AnyAsync(p => p.ProvisioningType == provisioningType
                 && p.CataloguePriceCalculationType == calculationType
-                && string.Equals(p.PricingUnit.Description, unitDescription, StringComparison.Ordinal)
-                && string.Equals(p.PricingUnit.RangeDescription, rangeDefinition));
+                && p.PricingUnit.Description == unitDescription
+                && p.PricingUnit.RangeDescription == rangeDefinition);
         }
 
         public async Task<bool> HasDuplicatePriceTier(

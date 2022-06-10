@@ -9,11 +9,11 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Utils
 {
     public class TestBase
     {
-        public readonly string BuyerUsername = Environment.GetEnvironmentVariable("RegressionBuyerUsername");
-        public readonly string BuyerPassword = Environment.GetEnvironmentVariable("RegressionBuyerPassword");
+        public readonly string BuyerUsername = Environment.GetEnvironmentVariable("RegressionBuyerUsername")!;
+        public readonly string BuyerPassword = Environment.GetEnvironmentVariable("RegressionBuyerPassword")!;
 
-        public readonly string AdminUsername = Environment.GetEnvironmentVariable("RegressionAdminUsername");
-        public readonly string AdminPassword = Environment.GetEnvironmentVariable("RegressionAdminPassword");
+        public readonly string AdminUsername = Environment.GetEnvironmentVariable("RegressionAdminUsername")!;
+        public readonly string AdminPassword = Environment.GetEnvironmentVariable("RegressionAdminPassword")!;
 
         public readonly Uri uri;
 
@@ -85,8 +85,8 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Utils
         protected void NavigateToUrl(
             Type controller,
             string methodName,
-            IDictionary<string, string> parameters = null,
-            IDictionary<string, string> queryParameters = null)
+            IDictionary<string, string>? parameters = null,
+            IDictionary<string, string>? queryParameters = null)
         {
             NavigateToUrl(new Uri(UrlGenerator.GenerateUrlFromMethod(controller, methodName, parameters, queryParameters), UriKind.Relative));
         }
