@@ -45,11 +45,22 @@
         <nhs-table-cell>
             @if (Model.PriceStatus == TaskProgress.NotStarted)
             {
-                <a id="Price_@Model.CatalogueItemId" 
-                   href="@Url.Action(
-                             nameof(PricesController.SelectPrice),
-                             typeof(PricesController).ControllerName(),
-                             new { Model.InternalOrgId, Model.CallOffId, Model.CatalogueItemId, source })">Edit</a>
+                if (Model.NumberOfPrices == 1)
+                {
+                    <a id="Price_@Model.CatalogueItemId" 
+                       href="@Url.Action(
+                                 nameof(PricesController.ConfirmPrice),
+                                 typeof(PricesController).ControllerName(),
+                                 new { Model.InternalOrgId, Model.CallOffId, Model.CatalogueItemId, Model.PriceId, source })">Edit</a>
+                }
+                else
+                {
+                    <a id="Price_@Model.CatalogueItemId" 
+                       href="@Url.Action(
+                                 nameof(PricesController.SelectPrice),
+                                 typeof(PricesController).ControllerName(),
+                                 new { Model.InternalOrgId, Model.CallOffId, Model.CatalogueItemId, source })">Edit</a>
+                }
             }
             @if (Model.PriceStatus == TaskProgress.Completed)
             {

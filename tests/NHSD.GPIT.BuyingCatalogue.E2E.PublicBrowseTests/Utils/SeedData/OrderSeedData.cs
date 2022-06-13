@@ -664,15 +664,11 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
             };
 
             var user = GetBuyerUser(context, order.OrderingPartyId);
+            var solution = context.CatalogueItems.Single(c => c.Id == new CatalogueItemId(99998, "001"));
+            var additionalService = context.CatalogueItems.Single(c => c.Id == new CatalogueItemId(99998, "S-999"));
 
-            var addedSolution = new OrderItem
-            {
-                Created = DateTime.UtcNow,
-                OrderId = orderId,
-                CatalogueItem = context.CatalogueItems.Single(c => c.Id == new CatalogueItemId(99998, "S-999")),
-            };
-
-            order.OrderItems.Add(addedSolution);
+            order.OrderItems.Add(new OrderItem { Created = DateTime.UtcNow, OrderId = orderId, CatalogueItem = solution });
+            order.OrderItems.Add(new OrderItem { Created = DateTime.UtcNow, OrderId = orderId, CatalogueItem = additionalService });
 
             context.Add(order);
 
@@ -1007,6 +1003,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
                 CommencementDate = timeNow.AddDays(1),
                 InitialPeriod = 6,
                 MaximumTerm = 36,
+                SolutionId = new CatalogueItemId(99998, "001"),
             };
 
             var user = GetBuyerUser(context, order.OrderingPartyId);

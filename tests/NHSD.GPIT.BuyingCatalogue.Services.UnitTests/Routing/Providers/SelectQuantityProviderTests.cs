@@ -142,8 +142,8 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Routing.Providers
                 CallOffId = callOffId,
             };
 
-            result.ActionName.Should().Be(Constants.Actions.AddAssociatedServices);
-            result.ControllerName.Should().Be(Constants.Controllers.AssociatedServices);
+            result.ActionName.Should().Be(Constants.Actions.Review);
+            result.ControllerName.Should().Be(Constants.Controllers.Review);
             result.RouteValues.Should().BeEquivalentTo(expected);
         }
 

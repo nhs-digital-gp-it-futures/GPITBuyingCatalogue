@@ -2,6 +2,7 @@
 using System.Linq;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Extensions;
+using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Routing;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Models;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.SolutionSelection.Prices
@@ -26,5 +27,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.SolutionSelection.
         public string SolutionName { get; set; }
 
         public string SolutionType { get; set; }
+
+        public RoutingSource? Source { get; set; }
     }
 }

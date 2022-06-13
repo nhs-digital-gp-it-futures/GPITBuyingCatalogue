@@ -62,6 +62,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
             return dbContext.Orders
                 .Where(o => o.Id == callOffId.Id
                     && o.OrderingParty.InternalIdentifier == internalOrgId)
+                .Include(x => x.Solution)
                 .Include(o => o.OrderItems)
                     .ThenInclude(i => i.CatalogueItem)
                     .ThenInclude(x => x.CataloguePrices.Where(p => p.PublishedStatus == PublicationStatus.Published))
@@ -81,10 +82,17 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
                 .Where(o =>
                     o.Id == callOffId.Id
                     && o.OrderingParty.InternalIdentifier == internalOrgId)
-                .Include(o => o.OrderItems).ThenInclude(i => i.CatalogueItem)
-                .Include(o => o.OrderItems).ThenInclude(i => i.OrderItemFunding)
-                .Include(o => o.OrderItems).ThenInclude(i => i.OrderItemPrice).ThenInclude(ip => ip.OrderItemPriceTiers)
-                .Include(o => o.OrderItems).ThenInclude(i => i.OrderItemRecipients).ThenInclude(r => r.Recipient)
+                .Include(x => x.Solution)
+                .Include(o => o.OrderItems)
+                    .ThenInclude(i => i.CatalogueItem)
+                .Include(o => o.OrderItems)
+                    .ThenInclude(i => i.OrderItemFunding)
+                .Include(o => o.OrderItems)
+                    .ThenInclude(i => i.OrderItemPrice)
+                    .ThenInclude(ip => ip.OrderItemPriceTiers)
+                .Include(o => o.OrderItems)
+                    .ThenInclude(i => i.OrderItemRecipients)
+                    .ThenInclude(r => r.Recipient)
                 .SingleOrDefaultAsync();
         }
 
@@ -218,7 +226,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
                 .SingleOrDefaultAsync();
         }
 
-        public async Task<Order> CreateOrder(string description, string internalOrgId, OrderTriageValue orderTriageValue, bool isAssociatedServiceOnly)
+        public async Task<Order> CreateOrder(string description, string internalOrgId, OrderTriageValue? orderTriageValue, bool isAssociatedServiceOnly)
         {
             var orderingParty = await dbContext.Organisations.SingleAsync(o => o.InternalIdentifier == internalOrgId);
 
@@ -298,6 +306,18 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
                 .OrderByDescending(o => o.LastUpdated)
                 .AsNoTracking()
                 .ToListAsync();
+        }
+
+        public async Task SetSolutionId(string internalOrgId, CallOffId callOffId, CatalogueItemId solutionId)
+        {
+            var order = await dbContext.Orders
+                .Where(o => o.Id == callOffId.Id
+                    && o.OrderingParty.InternalIdentifier == internalOrgId)
+                .SingleAsync();
+
+            order.SolutionId = solutionId;
+
+            await dbContext.SaveChangesAsync();
         }
     }
 }

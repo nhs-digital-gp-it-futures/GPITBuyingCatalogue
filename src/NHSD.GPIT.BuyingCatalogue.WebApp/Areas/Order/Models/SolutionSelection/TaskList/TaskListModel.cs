@@ -33,13 +33,37 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.SolutionSelection.
             AdditionalServices = order.GetAdditionalServices();
             AssociatedServices = order.GetAssociatedServices();
 
-            if (CatalogueSolution != null)
+            if (order.AssociatedServicesOnly)
             {
-                taskModels.Add(CatalogueSolution.CatalogueItemId, new TaskListOrderItemModel(internalOrgId, callOffId, CatalogueSolution));
+                SolutionName = order.Solution?.Name;
             }
 
-            AdditionalServices.ForEach(x => taskModels.Add(x.CatalogueItemId, new TaskListOrderItemModel(internalOrgId, callOffId, x)));
-            AssociatedServices.ForEach(x => taskModels.Add(x.CatalogueItemId, new TaskListOrderItemModel(internalOrgId, callOffId, x)));
+            if (CatalogueSolution != null)
+            {
+                taskModels.Add(CatalogueSolution.CatalogueItemId, new TaskListOrderItemModel(internalOrgId, callOffId, CatalogueSolution)
+                {
+                    NumberOfPrices = CatalogueSolution.CatalogueItem.CataloguePrices.Count,
+                    PriceId = CatalogueSolution.CatalogueItem.CataloguePrices.Count == 1
+                        ? CatalogueSolution.CatalogueItem.CataloguePrices.First().CataloguePriceId
+                        : 0,
+                });
+            }
+
+            AdditionalServices.ForEach(x => taskModels.Add(x.CatalogueItemId, new TaskListOrderItemModel(internalOrgId, callOffId, x)
+            {
+                NumberOfPrices = x.CatalogueItem.CataloguePrices.Count,
+                PriceId = x.CatalogueItem.CataloguePrices.Count == 1
+                    ? x.CatalogueItem.CataloguePrices.First().CataloguePriceId
+                    : 0,
+            }));
+
+            AssociatedServices.ForEach(x => taskModels.Add(x.CatalogueItemId, new TaskListOrderItemModel(internalOrgId, callOffId, x)
+            {
+                NumberOfPrices = x.CatalogueItem.CataloguePrices.Count,
+                PriceId = x.CatalogueItem.CataloguePrices.Count == 1
+                    ? x.CatalogueItem.CataloguePrices.First().CataloguePriceId
+                    : 0,
+            }));
         }
 
         public string InternalOrgId { get; set; }
@@ -48,9 +72,15 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.SolutionSelection.
 
         public bool AssociatedServicesOnly { get; set; }
 
+        public string SolutionName { get; set; }
+
         public OrderItem CatalogueSolution { get; set; }
 
+        public bool AdditionalServicesAvailable { get; set; }
+
         public IEnumerable<OrderItem> AdditionalServices { get; set; }
+
+        public bool AssociatedServicesAvailable { get; set; }
 
         public IEnumerable<OrderItem> AssociatedServices { get; set; }
 

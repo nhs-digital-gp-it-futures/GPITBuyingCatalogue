@@ -1,7 +1,4 @@
-﻿@model NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.SolutionSelection.CatalogueSolutions.SelectSolutionModel;
-@{
-    ViewBag.Title = "Catalogue Solutions";
-}
+﻿@model NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.SolutionSelection.Shared.SelectSolutionModel;
 
 <partial name="Partials/_BackLink" model="Model" />
 
@@ -10,14 +7,28 @@
         <nhs-validation-summary RadioId="SelectedCatalogueSolutionId"/>
         
         @{
+            var title = Model.AssociatedServicesOnly
+                ? "Which Catalogue Solution does the service help implement?"
+                : "Catalogue Solutions";
+
+            const string prefix = "These are the Catalogue Solutions provided by the supplier you’ve chosen. Select the one you want ";
+
             var suffix = Model.AdditionalServices?.Any() ?? false
                 ? "and any of its Additional Services you want to order."
                 : "to order.";
+
+            var advice = Model.AssociatedServicesOnly
+                ? "Select the Catalogue Solution the Associated Service you want to order supports."
+                : $"{prefix}{suffix}";
+
+            var caption = Model.AssociatedServicesOnly
+                ? $"Order {Model.CallOffId}"
+                : Model.SupplierName;
         }
 
-        <nhs-page-title title="@ViewBag.Title"
-                        caption="@Model!.SupplierName"
-                        advice="These are the Catalogue Solutions provided by the supplier you’ve chosen. Select the one you want @suffix"/>
+        <nhs-page-title title="@title"
+                        caption="@caption"
+                        advice="@advice"/>
 
         <form method="post">
             <input type="hidden" asp-for="@Model.SupplierName"/>

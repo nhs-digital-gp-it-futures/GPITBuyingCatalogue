@@ -49,6 +49,23 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.AssociatedServices
                 .ToListAsync();
         }
 
+        public async Task<List<CatalogueItem>> GetPublishedAssociatedServicesForSolution(CatalogueItemId? catalogueItemId)
+        {
+            if (catalogueItemId is null)
+            {
+                return new List<CatalogueItem>();
+            }
+
+            return await dbContext.SupplierServiceAssociations
+                .Include(x => x.AssociatedService)
+                .ThenInclude(x => x.CatalogueItem)
+                .Where(x => x.CatalogueItemId == catalogueItemId)
+                .Select(x => x.AssociatedService.CatalogueItem)
+                .Where(x => x.PublishedStatus == PublicationStatus.Published)
+                .OrderBy(x => x.Name)
+                .ToListAsync();
+        }
+
         /* TODO - Tiered Pricing - Reintroduct Pricing Data */
 
         public Task<CatalogueItem> GetAssociatedService(CatalogueItemId associatedServiceId)

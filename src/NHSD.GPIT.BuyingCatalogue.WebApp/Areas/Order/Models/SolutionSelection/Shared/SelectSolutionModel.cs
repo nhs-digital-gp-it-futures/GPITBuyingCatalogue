@@ -3,10 +3,9 @@ using System.Linq;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
-using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.SolutionSelection.Shared;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Models;
 
-namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.SolutionSelection.CatalogueSolutions
+namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.SolutionSelection.Shared
 {
     public class SelectSolutionModel : NavBaseModel
     {
@@ -19,7 +18,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.SolutionSelection.
             IEnumerable<CatalogueItem> solutions,
             IEnumerable<CatalogueItem> additionalServices)
         {
-            SupplierName = order.Supplier.Name;
+            AssociatedServicesOnly = order.AssociatedServicesOnly;
+            SupplierName = order.Supplier?.Name;
 
             CatalogueSolutions = solutions
                 .Select(x => new SelectListItem(x.Name, $"{x.Id}"))
@@ -34,6 +34,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.SolutionSelection.
                 })
                 .ToList();
         }
+
+        public bool AssociatedServicesOnly { get; set; }
+
+        public CallOffId CallOffId { get; set; }
 
         public string SupplierName { get; set; }
 

@@ -56,6 +56,11 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Configuration
                 .HasForeignKey(o => o.LastUpdatedBy)
                 .HasConstraintName("FK_Orders_LastUpdatedBy");
 
+            builder.HasOne(x => x.Solution)
+                .WithMany()
+                .HasForeignKey(x => x.SolutionId)
+                .HasConstraintName("FK_Orders_Solution");
+
             builder.HasIndex(o => o.IsDeleted, "IX_Orders_IsDeleted");
 
             builder.HasQueryFilter(o => !o.IsDeleted);

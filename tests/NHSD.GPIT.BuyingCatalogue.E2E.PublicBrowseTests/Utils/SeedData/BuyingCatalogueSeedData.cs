@@ -18,6 +18,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
             context.SaveChanges();
         }
 
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("StyleCop.CSharp.LayoutRules", "SA1519:Braces should not be omitted from multi-line child statement", Justification = "<Pending>")]
         private static void AddCatalogueItems(EndToEndDbContext context)
         {
             var catalogueSolutions = CatalogueSolutionSeedData.GetCatalogueSolutionItems();
@@ -28,6 +29,13 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
 
             var additionalServices = AdditionalServicesSeedData.GetAdditionalServices(catalogueSolutions);
             context.AddRange(additionalServices);
+
+            foreach (var supplierId in new[] { 99999, 99998 })
+            foreach (var solution in catalogueSolutions.Where(x => x.SupplierId == supplierId))
+            foreach (var service in associatedServices.Where(x => x.SupplierId == supplierId))
+            {
+                context.SupplierServiceAssociations.Add(new SupplierServiceAssociation(solution.Id, service.Id));
+            }
 
             context.SaveChanges();
 

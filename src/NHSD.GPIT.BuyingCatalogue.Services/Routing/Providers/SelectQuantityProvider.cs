@@ -1,12 +1,20 @@
 ﻿using System;
 using System.Linq;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
+using NHSD.GPIT.BuyingCatalogue.ServiceContracts.AssociatedServices;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Routing;
 
 namespace NHSD.GPIT.BuyingCatalogue.Services.Routing.Providers
 {
     public class SelectQuantityProvider : IRoutingResultProvider
     {
+        private readonly IAssociatedServicesService associatedServicesService;
+
+        public SelectQuantityProvider(IAssociatedServicesService associatedServicesService)
+        {
+            this.associatedServicesService = associatedServicesService ?? throw new ArgumentNullException(nameof(associatedServicesService));
+        }
+
         public RoutingResult Process(Order order, RouteValues routeValues)
         {
             if (order == null)
@@ -55,9 +63,24 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Routing.Providers
                 };
             }
 
-            if (!order.GetAssociatedServices().Any())
+            if (order.GetAssociatedServices().Any())
             {
-                // TODO: task list if no associated services available
+                return new RoutingResult
+                {
+                    ControllerName = Constants.Controllers.Review,
+                    ActionName = Constants.Actions.Review,
+                    RouteValues = new { routeValues.InternalOrgId, routeValues.CallOffId },
+                };
+            }
+
+            var solutionId = order.AssociatedServicesOnly
+                ? order.SolutionId
+                : order.GetSolution()?.CatalogueItemId;
+
+            var associatedServices = associatedServicesService.GetPublishedAssociatedServicesForSolution(solutionId).Result;
+
+            if (associatedServices.Any())
+            {
                 return new RoutingResult
                 {
                     ControllerName = Constants.Controllers.AssociatedServices,

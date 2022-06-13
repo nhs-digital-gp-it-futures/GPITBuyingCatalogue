@@ -19,7 +19,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering.SolutionSelection.As
     public class SelectAssociatedServices : BuyerTestBase, IClassFixture<LocalWebApplicationFactory>, IDisposable
     {
         private const string InternalOrgId = "CG-03F";
-        private const int OrderId = 90004;
+        private const int OrderId = 90012;
         private static readonly CallOffId CallOffId = new(OrderId, 1);
 
         private static readonly Dictionary<string, string> Parameters = new()
@@ -90,7 +90,11 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering.SolutionSelection.As
         {
             var context = GetEndToEndDbContext();
 
-            context.Orders.First(x => x.Id == OrderId).AssociatedServicesOnly = true;
+            var order = context.Orders.Single(x => x.Id == OrderId);
+
+            order.AssociatedServicesOnly = true;
+            order.SolutionId = new CatalogueItemId(99998, "001");
+
             context.SaveChanges();
 
             Driver.Navigate().Refresh();
@@ -144,6 +148,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering.SolutionSelection.As
             }
 
             context.Orders.First(x => x.Id == OrderId).AssociatedServicesOnly = false;
+            context.Orders.First(x => x.Id == OrderId).SolutionId = null;
 
             context.SaveChanges();
         }

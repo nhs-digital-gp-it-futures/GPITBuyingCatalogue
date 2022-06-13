@@ -6,6 +6,7 @@ using NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.Objects.Ordering;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Utils;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.TestBases;
 using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
+using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers.SolutionSelection;
 using Xunit;
 
@@ -20,15 +21,19 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering.SolutionSelection.Ta
 
         protected abstract string PageTitle { get; }
 
-        protected abstract bool SolutionDisplayed { get; }
+        protected virtual bool AdditionalServicesDisplayed => true;
 
-        protected abstract bool AdditionalServicesDisplayed { get; }
+        protected virtual bool ChangeAdditionalServicesLinkVisible => true;
+
+        protected virtual bool ChangeAssociatedServicesLinkVisible => true;
 
         protected abstract List<TaskListOrderItem> OrderItems { get; }
 
-        protected abstract Type OnwardController { get; }
+        protected virtual Type ContinueController => typeof(OrderController);
 
-        protected abstract string OnwardAction { get; }
+        protected virtual string ContinueAction => nameof(OrderController.Order);
+
+        protected virtual string ChangeSolutionAction => nameof(CatalogueSolutionsController.EditSolution);
 
         [Fact]
         public void TaskList_AllSectionsDisplayed()
@@ -36,12 +41,12 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering.SolutionSelection.Ta
             CommonActions.PageTitle().Should().BeEquivalentTo(PageTitle.FormatForComparison());
             CommonActions.GoBackLinkDisplayed().Should().BeTrue();
 
-            CommonActions.ElementIsDisplayed(TaskListObjects.SolutionDetails).Should().Be(SolutionDisplayed);
-            CommonActions.ElementIsDisplayed(TaskListObjects.ChangeSolutionLink).Should().Be(SolutionDisplayed);
+            CommonActions.ElementIsDisplayed(TaskListObjects.SolutionDetails).Should().Be(true);
+            CommonActions.ElementIsDisplayed(TaskListObjects.ChangeSolutionLink).Should().Be(true);
             CommonActions.ElementIsDisplayed(TaskListObjects.AdditionalServiceDetails).Should().Be(AdditionalServicesDisplayed);
-            CommonActions.ElementIsDisplayed(TaskListObjects.ChangeAdditionalServicesLink).Should().Be(AdditionalServicesDisplayed);
+            CommonActions.ElementIsDisplayed(TaskListObjects.ChangeAdditionalServicesLink).Should().Be(ChangeAdditionalServicesLinkVisible);
             CommonActions.ElementIsDisplayed(TaskListObjects.AssociatedServiceDetails).Should().BeTrue();
-            CommonActions.ElementIsDisplayed(TaskListObjects.ChangeAssociatedServicesLink).Should().BeTrue();
+            CommonActions.ElementIsDisplayed(TaskListObjects.ChangeAssociatedServicesLink).Should().Be(ChangeAssociatedServicesLinkVisible);
             CommonActions.ElementIsDisplayed(TaskListObjects.ContinueButton).Should().BeTrue();
 
             foreach (var orderItem in OrderItems)
@@ -59,28 +64,21 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering.SolutionSelection.Ta
         {
             CommonActions.ClickLinkElement(TaskListObjects.ContinueButton);
 
-            CommonActions.PageLoadedCorrectGetIndex(OnwardController, OnwardAction).Should().BeTrue();
+            CommonActions.PageLoadedCorrectGetIndex(ContinueController, ContinueAction).Should().BeTrue();
         }
 
         [Fact]
         public void TaskList_ClickChangeCatalogueSolutionLink_ExpectedResult()
         {
-            if (!SolutionDisplayed)
-            {
-                return;
-            }
-
             CommonActions.ClickLinkElement(TaskListObjects.ChangeSolutionLink);
 
-            CommonActions.PageLoadedCorrectGetIndex(
-                typeof(CatalogueSolutionsController),
-                nameof(CatalogueSolutionsController.EditSolution)).Should().BeTrue();
+            CommonActions.PageLoadedCorrectGetIndex(typeof(CatalogueSolutionsController), ChangeSolutionAction).Should().BeTrue();
         }
 
         [Fact]
         public void TaskList_ClickChangeAdditionalServicesLink_ExpectedResult()
         {
-            if (!AdditionalServicesDisplayed)
+            if (!ChangeAdditionalServicesLinkVisible)
             {
                 return;
             }
@@ -95,6 +93,11 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering.SolutionSelection.Ta
         [Fact]
         public void TaskList_ClickChangeAssociatedServicesLink_ExpectedResult()
         {
+            if (!ChangeAssociatedServicesLinkVisible)
+            {
+                return;
+            }
+
             CommonActions.ClickLinkElement(TaskListObjects.ChangeAssociatedServicesLink);
 
             CommonActions.PageLoadedCorrectGetIndex(

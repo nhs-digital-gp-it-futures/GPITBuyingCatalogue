@@ -94,8 +94,8 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.AddNewSolution
             CommonActions.GoBackLinkDisplayed().Should().BeTrue();
             CommonActions.ElementIsDisplayed(Objects.Admin.CommonObjects.SaveButton).Should().BeTrue();
             CommonActions.ElementIsDisplayed(AssociatedServicesObjects.AssociatedServiceDashboardTable).Should().BeTrue();
-            CommonActions.ElementIsDisplayed(AssociatedServicesObjects.AssociatedServiceRelatedSolutionsTable).Should().BeFalse();
-            CommonActions.ElementIsDisplayed(AssociatedServicesObjects.AssociatedServiceRelatedSolutionsInset).Should().BeTrue();
+            CommonActions.ElementIsDisplayed(AssociatedServicesObjects.AssociatedServiceRelatedSolutionsTable).Should().BeTrue();
+            CommonActions.ElementIsDisplayed(AssociatedServicesObjects.AssociatedServiceRelatedSolutionsInset).Should().BeFalse();
         }
 
         [Fact]

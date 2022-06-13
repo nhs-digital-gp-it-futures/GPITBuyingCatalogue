@@ -73,9 +73,15 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.AdditionalServices
                     .ThenInclude(cie => cie.Epic)
                 .SingleOrDefaultAsync(ci => ci.Id == additionalServiceId);
 
-        public Task<List<CatalogueItem>> GetAdditionalServicesBySolutionId(CatalogueItemId catalogueItemId)
-            => BaseQuery(catalogueItemId)
-                .ToListAsync();
+        public async Task<List<CatalogueItem>> GetAdditionalServicesBySolutionId(CatalogueItemId? catalogueItemId)
+        {
+            if (!catalogueItemId.HasValue)
+            {
+                return new List<CatalogueItem>();
+            }
+
+            return await BaseQuery(catalogueItemId.Value).ToListAsync();
+        }
 
         /* TODO - Tiered Pricing - Reintroduce Pricing Information*/
 

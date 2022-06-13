@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
+using NHSD.GPIT.BuyingCatalogue.ServiceContracts.AssociatedServices;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Routing;
 using NHSD.GPIT.BuyingCatalogue.Services.Routing.Providers;
 
@@ -10,14 +11,15 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Routing
     {
         private readonly Dictionary<RoutingPoint, IRoutingResultProvider> providers = new();
 
-        public RoutingService()
+        public RoutingService(IAssociatedServicesService associatedServicesService)
         {
+            providers.Add(RoutingPoint.ConfirmPrice, new ConfirmPriceProvider());
             providers.Add(RoutingPoint.ConfirmPriceBackLink, new ConfirmPriceBackLinkProvider());
             providers.Add(RoutingPoint.EditPrice, new EditPriceProvider());
             providers.Add(RoutingPoint.EditPriceBackLink, new EditPriceBackLinkProvider());
             providers.Add(RoutingPoint.SelectAdditionalServices, new SelectAdditionalServicesProvider());
             providers.Add(RoutingPoint.SelectPriceBackLink, new SelectPriceBackLinkProvider());
-            providers.Add(RoutingPoint.SelectQuantity, new SelectQuantityProvider());
+            providers.Add(RoutingPoint.SelectQuantity, new SelectQuantityProvider(associatedServicesService));
             providers.Add(RoutingPoint.SelectQuantityBackLink, new SelectQuantityBackLinkProvider());
             providers.Add(RoutingPoint.SelectServiceRecipients, new SelectServiceRecipientsProvider());
             providers.Add(RoutingPoint.SelectServiceRecipientsBackLink, new SelectServiceRecipientsBackLinkProvider());

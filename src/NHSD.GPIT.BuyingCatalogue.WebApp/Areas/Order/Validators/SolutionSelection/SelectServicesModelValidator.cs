@@ -19,7 +19,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Validators.SolutionSelect
         private static bool HaveMadeASelection(SelectServicesModel model)
         {
             return !model.AssociatedServicesOnly
-                || model.Services.Any(x => x.IsSelected);
+                || (model.Services?.Any(x => x.IsSelected) ?? false);
         }
     }
 }

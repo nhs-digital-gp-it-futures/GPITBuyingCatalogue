@@ -9,6 +9,7 @@ using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.AssociatedServices;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Orders;
+using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions;
 using NHSD.GPIT.BuyingCatalogue.UI.Components.TagHelpers;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.SolutionSelection.AssociatedServices;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.SolutionSelection.Shared;
@@ -20,21 +21,25 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers.SolutionSelec
     [Route("order/organisation/{internalOrgId}/order/{callOffId}/associated-services")]
     public class AssociatedServicesController : Controller
     {
+        private const string SelectSolutionViewName = "SelectSolution";
         private const string SelectViewName = "SelectAssociatedServices";
         private const char Separator = ',';
 
         private readonly IAssociatedServicesService associatedServicesService;
         private readonly IOrderItemService orderItemService;
         private readonly IOrderService orderService;
+        private readonly ISolutionsService solutionsService;
 
         public AssociatedServicesController(
             IAssociatedServicesService associatedServicesService,
             IOrderItemService orderItemService,
-            IOrderService orderService)
+            IOrderService orderService,
+            ISolutionsService solutionsService)
         {
             this.associatedServicesService = associatedServicesService ?? throw new ArgumentNullException(nameof(associatedServicesService));
             this.orderItemService = orderItemService ?? throw new ArgumentNullException(nameof(orderItemService));
             this.orderService = orderService ?? throw new ArgumentNullException(nameof(orderService));
+            this.solutionsService = solutionsService ?? throw new ArgumentNullException(nameof(solutionsService));
         }
 
         [HttpGet("add")]
@@ -77,7 +82,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers.SolutionSelec
         [HttpGet("select")]
         public async Task<IActionResult> SelectAssociatedServices(string internalOrgId, CallOffId callOffId)
         {
-            return View(await GetModel(internalOrgId, callOffId));
+            return View(await GetSelectServicesModel(internalOrgId, callOffId));
         }
 
         [HttpPost("select")]
@@ -85,7 +90,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers.SolutionSelec
         {
             if (!ModelState.IsValid)
             {
-                return View(await GetModel(internalOrgId, callOffId));
+                return View(await GetSelectServicesModel(internalOrgId, callOffId));
             }
 
             var serviceIds = model.Services?
@@ -114,7 +119,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers.SolutionSelec
         [HttpGet("edit")]
         public async Task<IActionResult> EditAssociatedServices(string internalOrgId, CallOffId callOffId)
         {
-            return View(SelectViewName, await GetModel(internalOrgId, callOffId, returnToTaskList: true));
+            return View(SelectViewName, await GetSelectServicesModel(internalOrgId, callOffId, returnToTaskList: true));
         }
 
         [HttpPost("edit")]
@@ -122,7 +127,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers.SolutionSelec
         {
             if (!ModelState.IsValid)
             {
-                return View(SelectViewName, await GetModel(internalOrgId, callOffId, returnToTaskList: true));
+                return View(SelectViewName, await GetSelectServicesModel(internalOrgId, callOffId, returnToTaskList: true));
             }
 
             var order = await orderService.GetOrderWithOrderItems(callOffId, internalOrgId);
@@ -244,10 +249,15 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers.SolutionSelec
                 new { internalOrgId, callOffId, model.ToAdd.First().CatalogueItemId });
         }
 
-        private async Task<SelectServicesModel> GetModel(string internalOrgId, CallOffId callOffId, bool returnToTaskList = false)
+        private async Task<SelectServicesModel> GetSelectServicesModel(string internalOrgId, CallOffId callOffId, bool returnToTaskList = false)
         {
             var order = await orderService.GetOrderThin(callOffId, internalOrgId);
-            var associatedServices = await associatedServicesService.GetPublishedAssociatedServicesForSupplier(order.SupplierId);
+
+            var solutionId = order.AssociatedServicesOnly
+                ? order.SolutionId
+                : order.GetSolution().CatalogueItemId;
+
+            var associatedServices = await associatedServicesService.GetPublishedAssociatedServicesForSolution(solutionId);
 
             var backLink = returnToTaskList
                 ? Url.Action(nameof(TaskListController.TaskList), typeof(TaskListController).ControllerName(), new { internalOrgId, callOffId })
@@ -259,6 +269,25 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers.SolutionSelec
                 InternalOrgId = internalOrgId,
                 CallOffId = callOffId,
                 AssociatedServicesOnly = order.AssociatedServicesOnly,
+            };
+        }
+
+        private async Task<SelectSolutionModel> GetSelectSolutionModel(
+            string internalOrgId,
+            CallOffId callOffId,
+            string selected = null)
+        {
+            var order = await orderService.GetOrderThin(callOffId, internalOrgId);
+            var solutions = await solutionsService.GetSupplierSolutions(order.SupplierId);
+
+            return new SelectSolutionModel(order, solutions, Enumerable.Empty<CatalogueItem>())
+            {
+                BackLink = Url.Action(
+                    nameof(OrderController.Order),
+                    typeof(OrderController).ControllerName(),
+                    new { internalOrgId, callOffId }),
+                CallOffId = callOffId,
+                SelectedCatalogueSolutionId = selected ?? $"{order.SolutionId}",
             };
         }
     }
