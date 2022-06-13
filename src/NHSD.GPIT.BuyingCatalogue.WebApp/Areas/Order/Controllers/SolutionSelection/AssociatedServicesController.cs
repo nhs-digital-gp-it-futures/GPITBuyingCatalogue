@@ -9,6 +9,7 @@ using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.AssociatedServices;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Orders;
+using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions;
 using NHSD.GPIT.BuyingCatalogue.UI.Components.TagHelpers;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.SolutionSelection.AssociatedServices;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.SolutionSelection.Shared;
@@ -20,21 +21,25 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers.SolutionSelec
     [Route("order/organisation/{internalOrgId}/order/{callOffId}/associated-services")]
     public class AssociatedServicesController : Controller
     {
+        private const string SelectSolutionViewName = "SelectSolution";
         private const string SelectViewName = "SelectAssociatedServices";
         private const char Separator = ',';
 
         private readonly IAssociatedServicesService associatedServicesService;
         private readonly IOrderItemService orderItemService;
         private readonly IOrderService orderService;
+        private readonly ISolutionsService solutionsService;
 
         public AssociatedServicesController(
             IAssociatedServicesService associatedServicesService,
             IOrderItemService orderItemService,
-            IOrderService orderService)
+            IOrderService orderService,
+            ISolutionsService solutionsService)
         {
             this.associatedServicesService = associatedServicesService ?? throw new ArgumentNullException(nameof(associatedServicesService));
             this.orderItemService = orderItemService ?? throw new ArgumentNullException(nameof(orderItemService));
             this.orderService = orderService ?? throw new ArgumentNullException(nameof(orderService));
+            this.solutionsService = solutionsService ?? throw new ArgumentNullException(nameof(solutionsService));
         }
 
         [HttpGet("add")]
@@ -264,6 +269,25 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers.SolutionSelec
                 InternalOrgId = internalOrgId,
                 CallOffId = callOffId,
                 AssociatedServicesOnly = order.AssociatedServicesOnly,
+            };
+        }
+
+        private async Task<SelectSolutionModel> GetSelectSolutionModel(
+            string internalOrgId,
+            CallOffId callOffId,
+            string selected = null)
+        {
+            var order = await orderService.GetOrderThin(callOffId, internalOrgId);
+            var solutions = await solutionsService.GetSupplierSolutions(order.SupplierId);
+
+            return new SelectSolutionModel(order, solutions, Enumerable.Empty<CatalogueItem>())
+            {
+                BackLink = Url.Action(
+                    nameof(OrderController.Order),
+                    typeof(OrderController).ControllerName(),
+                    new { internalOrgId, callOffId }),
+                CallOffId = callOffId,
+                SelectedCatalogueSolutionId = selected ?? $"{order.SolutionId}",
             };
         }
     }

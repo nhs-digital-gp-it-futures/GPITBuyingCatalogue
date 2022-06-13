@@ -113,6 +113,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
             var expected = new SelectSolutionModel(order, supplierSolutions, additionalServices)
             {
                 SelectedCatalogueSolutionId = string.Empty,
+                CallOffId = callOffId,
             };
 
             actualResult.Model.Should().BeEquivalentTo(expected, x => x.Excluding(o => o.BackLink));
@@ -161,6 +162,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
             var expected = new SelectSolutionModel(order, supplierSolutions, additionalServices)
             {
                 SelectedCatalogueSolutionId = model.SelectedCatalogueSolutionId,
+                CallOffId = callOffId,
             };
 
             actualResult.Model.Should().BeEquivalentTo(expected, x => x.Excluding(o => o.BackLink));
@@ -412,6 +414,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
             var expected = new SelectSolutionModel(order, solutions, Enumerable.Empty<CatalogueItem>())
             {
                 SelectedCatalogueSolutionId = $"{order.OrderItems.First().CatalogueItemId}",
+                CallOffId = order.CallOffId,
             };
 
             actualResult.Model.Should().BeEquivalentTo(expected, x => x.Excluding(m => m.BackLink));

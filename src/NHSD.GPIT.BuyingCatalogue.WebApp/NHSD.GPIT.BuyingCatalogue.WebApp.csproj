@@ -56,6 +56,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Folder Include="Areas\Order\Models\SolutionSelection\CatalogueSolutions\" />
     <Folder Include="wwwroot\css\" />
   </ItemGroup>
 
