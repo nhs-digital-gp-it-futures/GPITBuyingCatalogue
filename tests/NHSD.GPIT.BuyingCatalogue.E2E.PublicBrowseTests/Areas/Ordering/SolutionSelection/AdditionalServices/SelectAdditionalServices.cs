@@ -36,7 +36,6 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering.SolutionSelection.Ad
         {
             CommonActions.PageTitle().Should().BeEquivalentTo($"Additional Services - Order {CallOffId}".FormatForComparison());
             CommonActions.GoBackLinkDisplayed().Should().BeTrue();
-            CommonActions.ElementIsDisplayed(AdditionalServicesObjects.ExistingServices).Should().BeFalse();
             CommonActions.ElementIsDisplayed(AdditionalServicesObjects.ServicesToSelect).Should().BeTrue();
             CommonActions.ElementIsDisplayed(AdditionalServicesObjects.NothingToSelect).Should().BeFalse();
             CommonActions.SaveButtonDisplayed().Should().BeTrue();
@@ -63,7 +62,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering.SolutionSelection.Ad
                 nameof(AdditionalServicesController.SelectAdditionalServices),
                 Parameters);
 
-            CommonActions.ElementIsDisplayed(AdditionalServicesObjects.ExistingServices).Should().BeTrue();
+            CommonActions.GetNumberOfSelectedCheckBoxes().Should().Be(1);
             CommonActions.ElementIsDisplayed(AdditionalServicesObjects.ServicesToSelect).Should().BeTrue();
             CommonActions.ElementIsDisplayed(AdditionalServicesObjects.NothingToSelect).Should().BeFalse();
         }
@@ -79,9 +78,9 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering.SolutionSelection.Ad
                 nameof(AdditionalServicesController.SelectAdditionalServices),
                 Parameters);
 
-            CommonActions.ElementIsDisplayed(AdditionalServicesObjects.ExistingServices).Should().BeTrue();
-            CommonActions.ElementIsDisplayed(AdditionalServicesObjects.ServicesToSelect).Should().BeFalse();
-            CommonActions.ElementIsDisplayed(AdditionalServicesObjects.NothingToSelect).Should().BeTrue();
+            CommonActions.GetNumberOfSelectedCheckBoxes().Should().Be(2);
+            CommonActions.ElementIsDisplayed(AdditionalServicesObjects.ServicesToSelect).Should().BeTrue();
+            CommonActions.ElementIsDisplayed(AdditionalServicesObjects.NothingToSelect).Should().BeFalse();
         }
 
         [Fact]
@@ -90,8 +89,8 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering.SolutionSelection.Ad
             CommonActions.ClickSave();
 
             CommonActions.PageLoadedCorrectGetIndex(
-                typeof(ReviewSolutionsController),
-                nameof(ReviewSolutionsController.ReviewSolutions)).Should().BeTrue();
+                typeof(ServiceRecipientsController),
+                nameof(ServiceRecipientsController.AddServiceRecipients)).Should().BeTrue();
         }
 
         [Fact]

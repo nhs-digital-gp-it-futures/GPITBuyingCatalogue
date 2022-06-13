@@ -38,7 +38,6 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering.SolutionSelection.As
         {
             CommonActions.PageTitle().Should().BeEquivalentTo($"Associated Services - Order {CallOffId}".FormatForComparison());
             CommonActions.GoBackLinkDisplayed().Should().BeTrue();
-            CommonActions.ElementIsDisplayed(AssociatedServicesObjects.ExistingServices).Should().BeFalse();
             CommonActions.ElementIsDisplayed(AssociatedServicesObjects.ServicesToSelect).Should().BeTrue();
             CommonActions.ElementIsDisplayed(AssociatedServicesObjects.NothingToSelect).Should().BeFalse();
             CommonActions.SaveButtonDisplayed().Should().BeTrue();
@@ -65,7 +64,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering.SolutionSelection.As
                 nameof(AssociatedServicesController.SelectAssociatedServices),
                 Parameters);
 
-            CommonActions.ElementIsDisplayed(AssociatedServicesObjects.ExistingServices).Should().BeTrue();
+            CommonActions.GetNumberOfSelectedCheckBoxes().Should().Be(1);
             CommonActions.ElementIsDisplayed(AssociatedServicesObjects.ServicesToSelect).Should().BeTrue();
             CommonActions.ElementIsDisplayed(AssociatedServicesObjects.NothingToSelect).Should().BeFalse();
         }
@@ -81,9 +80,9 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering.SolutionSelection.As
                 nameof(AssociatedServicesController.SelectAssociatedServices),
                 Parameters);
 
-            CommonActions.ElementIsDisplayed(AssociatedServicesObjects.ExistingServices).Should().BeTrue();
-            CommonActions.ElementIsDisplayed(AssociatedServicesObjects.ServicesToSelect).Should().BeFalse();
-            CommonActions.ElementIsDisplayed(AssociatedServicesObjects.NothingToSelect).Should().BeTrue();
+            CommonActions.GetNumberOfSelectedCheckBoxes().Should().Be(3);
+            CommonActions.ElementIsDisplayed(AssociatedServicesObjects.ServicesToSelect).Should().BeTrue();
+            CommonActions.ElementIsDisplayed(AssociatedServicesObjects.NothingToSelect).Should().BeFalse();
         }
 
         [Fact]

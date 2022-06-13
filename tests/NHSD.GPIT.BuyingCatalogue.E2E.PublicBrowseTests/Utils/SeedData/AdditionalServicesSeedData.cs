@@ -426,6 +426,89 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
                 },
                 new()
                 {
+                    Id = new CatalogueItemId(99998, "001A98"),
+                    Name = "E2E Single Price Additional Service",
+                    CatalogueItemType = CatalogueItemType.AdditionalService,
+                    Created = DateTime.UtcNow,
+                    PublishedStatus = PublicationStatus.Published,
+                    SupplierId = 99998,
+                    AdditionalService = new AdditionalService
+                    {
+                        Summary = "This is the summary of the Additional Service",
+                        FullDescription = "This is the description of the Additional Service",
+                        LastUpdated = DateTime.UtcNow,
+                        Solution = catalogueSolutions.Single(s => s.Id == new CatalogueItemId(99998, "001")).Solution,
+                    },
+                    CatalogueItemCapabilities = new List<CatalogueItemCapability>
+                    {
+                        new()
+                        {
+                            CatalogueItemId = new CatalogueItemId(99998, "001A98"),
+                            CapabilityId = 2,
+                            LastUpdated = DateTime.UtcNow,
+                            StatusId = 1,
+                        },
+                    },
+                    CatalogueItemEpics = new List<CatalogueItemEpic>
+                    {
+                        new()
+                        {
+                            CatalogueItemId = new CatalogueItemId(99998, "001A98"),
+                            CapabilityId = 27,
+                            EpicId = "C27E4",
+                            StatusId = 1,
+                        },
+                        new()
+                        {
+                            CatalogueItemId = new CatalogueItemId(99998, "001A98"),
+                            CapabilityId = 27,
+                            EpicId = "C27E5",
+                            StatusId = 1,
+                        },
+                        new()
+                        {
+                            CatalogueItemId = new CatalogueItemId(99998, "001A98"),
+                            CapabilityId = 27,
+                            EpicId = "C27E6",
+                            StatusId = 1,
+                        },
+                    },
+                    CataloguePrices = new List<CataloguePrice>
+                    {
+                        new()
+                        {
+                            CataloguePriceId = 30,
+                            CatalogueItemId = new CatalogueItemId(99998, "001A98"),
+                            ProvisioningType = ProvisioningType.Patient,
+                            CataloguePriceType = CataloguePriceType.Flat,
+                            CataloguePriceCalculationType = CataloguePriceCalculationType.SingleFixed,
+                            PublishedStatus = PublicationStatus.Published,
+                            PricingUnit = new PricingUnit
+                            {
+                                Id = 1234,
+                                RangeDescription = "Test Tier",
+                                Description = "per test patient",
+                            },
+                            TimeUnit = TimeUnit.PerYear,
+                            CurrencyCode = "GBP",
+                            LastUpdated = DateTime.UtcNow,
+                            CataloguePriceTiers = new List<CataloguePriceTier>
+                            {
+                                new()
+                                {
+                                    Id = 4567,
+                                    CataloguePriceId = 30,
+                                    LowerRange = 1,
+                                    UpperRange = null,
+                                    Price = 999.9999M,
+                                    LastUpdated = DateTime.UtcNow,
+                                },
+                            },
+                        },
+                    },
+                },
+                new()
+                {
                     Id = new CatalogueItemId(99998, "002A999"),
                     Name = "E2E No Contact Single Price Additional Service",
                     CatalogueItemType = CatalogueItemType.AdditionalService,

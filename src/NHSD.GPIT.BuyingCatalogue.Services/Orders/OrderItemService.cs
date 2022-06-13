@@ -57,6 +57,35 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
             await dbContext.SaveChangesAsync();
         }
 
+        public async Task DeleteOrderItems(string internalOrgId, CallOffId callOffId, IEnumerable<CatalogueItemId> itemIds)
+        {
+            if (itemIds == null)
+            {
+                throw new ArgumentNullException(nameof(itemIds));
+            }
+
+            var order = await orderService.GetOrderWithOrderItems(callOffId, internalOrgId);
+
+            if (order == null)
+            {
+                return;
+            }
+
+            foreach (var id in itemIds)
+            {
+                var orderItem = order.OrderItem(id);
+
+                if (orderItem == null)
+                {
+                    continue;
+                }
+
+                dbContext.OrderItems.Remove(orderItem);
+            }
+
+            await dbContext.SaveChangesAsync();
+        }
+
         public Task<OrderItem> GetOrderItem(CallOffId callOffId, string internalOrgId, CatalogueItemId catalogueItemId) =>
             dbContext.OrderItems.AsNoTracking()
                 .Include(oi => oi.OrderItemFunding)

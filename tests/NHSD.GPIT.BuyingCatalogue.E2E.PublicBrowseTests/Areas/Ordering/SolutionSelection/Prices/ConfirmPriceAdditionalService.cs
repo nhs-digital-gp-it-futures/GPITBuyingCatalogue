@@ -9,9 +9,9 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering.SolutionSelection.Pr
     {
         private const string InternalOrgId = "CG-03F";
         private const int OrderId = 90007;
-        private const int PriceId = 15;
+        private const int PriceId = 10;
         private static readonly CallOffId CallOffId = new(OrderId, 1);
-        private static readonly CatalogueItemId CatalogueItemId = new(99998, "002A999");
+        private static readonly CatalogueItemId CatalogueItemId = new(99998, "001A99");
 
         private static readonly Dictionary<string, string> Parameters = new()
         {
@@ -29,6 +29,6 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering.SolutionSelection.Pr
 
         protected override decimal ListPrice => 999.9999M;
 
-        protected override string PageTitle => "Price of Additional Service - E2E No Contact Single Price Additional Service";
+        protected override string PageTitle => "Price of Additional Service - E2E Multiple Prices Additional Service";
     }
 }

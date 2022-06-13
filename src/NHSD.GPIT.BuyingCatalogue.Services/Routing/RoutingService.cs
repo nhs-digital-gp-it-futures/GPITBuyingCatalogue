@@ -15,6 +15,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Routing
             providers.Add(RoutingPoint.ConfirmPriceBackLink, new ConfirmPriceBackLinkProvider());
             providers.Add(RoutingPoint.EditPrice, new EditPriceProvider());
             providers.Add(RoutingPoint.EditPriceBackLink, new EditPriceBackLinkProvider());
+            providers.Add(RoutingPoint.SelectAdditionalServices, new SelectAdditionalServicesProvider());
             providers.Add(RoutingPoint.SelectPriceBackLink, new SelectPriceBackLinkProvider());
             providers.Add(RoutingPoint.SelectQuantity, new SelectQuantityProvider());
             providers.Add(RoutingPoint.SelectQuantityBackLink, new SelectQuantityBackLinkProvider());

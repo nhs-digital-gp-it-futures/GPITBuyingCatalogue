@@ -1,8 +1,7 @@
-﻿using System.Collections.Generic;
-using System.Linq;
+﻿using System.Linq;
 using FluentValidation.TestHelper;
 using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.AutoFixtureCustomisations;
-using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.SolutionSelection;
+using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.SolutionSelection.Shared;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Validators.SolutionSelection;
 using Xunit;
 
@@ -17,7 +16,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Validators.Shar
             SelectServicesModelValidator systemUnderTest)
         {
             model.AssociatedServicesOnly = false;
-            model.ExistingServices = new List<string>();
             model.Services.ForEach(x => x.IsSelected = false);
 
             var result = systemUnderTest.TestValidate(model);
@@ -42,27 +40,11 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Validators.Shar
 
         [Theory]
         [CommonAutoData]
-        public static void Validate_NoSelectionMade_WithPreviousSelection_NoValidationErrors(
+        public static void Validate_NoSelectionMade_ThrowsValidationError(
             SelectServicesModel model,
             SelectServicesModelValidator systemUnderTest)
         {
             model.AssociatedServicesOnly = true;
-            model.ExistingServices = new List<string> { "ExistingService" };
-            model.Services.ForEach(x => x.IsSelected = false);
-
-            var result = systemUnderTest.TestValidate(model);
-
-            result.ShouldNotHaveAnyValidationErrors();
-        }
-
-        [Theory]
-        [CommonAutoData]
-        public static void Validate_NoSelectionMade_WithNoPreviousSelection_ThrowsValidationError(
-            SelectServicesModel model,
-            SelectServicesModelValidator systemUnderTest)
-        {
-            model.AssociatedServicesOnly = true;
-            model.ExistingServices = new List<string>();
             model.Services.ForEach(x => x.IsSelected = false);
 
             var result = systemUnderTest.TestValidate(model);
