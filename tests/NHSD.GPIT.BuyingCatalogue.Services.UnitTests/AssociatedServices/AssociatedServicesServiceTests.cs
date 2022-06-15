@@ -163,5 +163,40 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.AssociatedServices
             relatedSolutions.Should().NotBeEmpty();
             relatedSolutions.Count.Should().Be(solutions.Count);
         }
+
+        [Theory]
+        [InMemoryDbAutoData]
+        public static async Task GetPublishedAssociatedServicesForSolution_NullCatalogueItemId_ReturnsEmptySet(
+            AssociatedServicesService service)
+        {
+            var result = await service.GetPublishedAssociatedServicesForSolution(null);
+
+            result.Should().NotBeNull();
+            result.Should().BeEmpty();
+        }
+
+        [Theory]
+        [InMemoryDbAutoData]
+        public static async Task GetPublishedAssociatedServicesForSolution_ReturnsExpectedResult(
+            [Frozen] BuyingCatalogueDbContext context,
+            CatalogueItem solution,
+            CatalogueItem associatedService,
+            AssociatedServicesService service)
+        {
+            solution.CatalogueItemType = CatalogueItemType.Solution;
+            associatedService.CatalogueItemType = CatalogueItemType.AssociatedService;
+            associatedService.PublishedStatus = PublicationStatus.Published;
+
+            context.CatalogueItems.AddRange(solution, associatedService);
+            context.AssociatedServices.Add(new AssociatedService { CatalogueItem = associatedService });
+            context.SupplierServiceAssociations.Add(new SupplierServiceAssociation(solution.Id, associatedService.Id));
+
+            await context.SaveChangesAsync();
+
+            var result = await service.GetPublishedAssociatedServicesForSolution(solution.Id);
+
+            result.Should().NotBeNull();
+            result.Should().BeEquivalentTo(new[] { associatedService });
+        }
     }
 }

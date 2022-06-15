@@ -20,6 +20,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.Solution
         {
             var model = new SelectSolutionModel(order, solutions, additionalServices);
 
+            model.AssociatedServicesOnly.Should().Be(order.AssociatedServicesOnly);
+            model.CallOffId.Should().Be(order.CallOffId);
             model.SupplierName.Should().Be(order.Supplier.Name);
 
             foreach (var solution in solutions)

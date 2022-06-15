@@ -392,7 +392,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers.SolutionSelec
                     nameof(OrderController.Order),
                     typeof(OrderController).ControllerName(),
                     new { internalOrgId, callOffId }),
-                CallOffId = callOffId,
                 SelectedCatalogueSolutionId = selected ?? $"{solutionId}",
             };
         }

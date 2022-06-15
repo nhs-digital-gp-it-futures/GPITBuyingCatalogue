@@ -19,6 +19,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.SolutionSelection.
             IEnumerable<CatalogueItem> additionalServices)
         {
             AssociatedServicesOnly = order.AssociatedServicesOnly;
+            CallOffId = order.CallOffId;
             SupplierName = order.Supplier?.Name;
 
             CatalogueSolutions = solutions

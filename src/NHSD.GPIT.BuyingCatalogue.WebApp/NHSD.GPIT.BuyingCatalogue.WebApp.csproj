@@ -23,13 +23,18 @@
 
   <ItemGroup>
     <Compile Remove="Areas\Admin\Views\SolutionSections\**" />
+    <Compile Remove="Areas\Order\Models\SolutionSelection\CatalogueSolutions\**" />
     <Compile Remove="DataAttributes\**" />
     <Content Remove="Areas\Admin\Views\SolutionSections\**" />
+    <Content Remove="Areas\Order\Models\SolutionSelection\CatalogueSolutions\**" />
     <Content Remove="DataAttributes\**" />
     <EmbeddedResource Remove="Areas\Admin\Views\SolutionSections\**" />
+    <EmbeddedResource Remove="Areas\Order\Models\SolutionSelection\CatalogueSolutions\**" />
     <EmbeddedResource Remove="DataAttributes\**" />
     <None Remove="Areas\Admin\Views\SolutionSections\**" />
+    <None Remove="Areas\Order\Models\SolutionSelection\CatalogueSolutions\**" />
     <None Remove="DataAttributes\**" />
+    <TypeScriptCompile Remove="Areas\Order\Models\SolutionSelection\CatalogueSolutions\**" />
   </ItemGroup>
 
   <ItemGroup>
@@ -67,7 +72,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Areas\Order\Models\SolutionSelection\CatalogueSolutions\" />
     <Folder Include="wwwroot\css\" />
   </ItemGroup>
 
