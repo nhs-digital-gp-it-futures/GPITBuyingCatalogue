@@ -129,7 +129,11 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers.SolutionSelec
                     new { internalOrgId, callOffId });
             }
 
-            var model = await GetSelectModel(internalOrgId, callOffId, includeAdditionalServices: false);
+            var model = await GetSelectModel(
+                internalOrgId,
+                callOffId,
+                includeAdditionalServices: false,
+                returnToTaskList: true);
 
             return View(SelectViewName, model);
         }
@@ -143,7 +147,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers.SolutionSelec
                     internalOrgId,
                     callOffId,
                     model.SelectedCatalogueSolutionId,
-                    includeAdditionalServices: false);
+                    includeAdditionalServices: false,
+                    returnToTaskList: true);
 
                 return View(SelectViewName, model);
             }
@@ -179,7 +184,11 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers.SolutionSelec
                     new { internalOrgId, callOffId });
             }
 
-            var model = await GetSelectModel(internalOrgId, callOffId, includeAdditionalServices: false);
+            var model = await GetSelectModel(
+                internalOrgId,
+                callOffId,
+                includeAdditionalServices: false,
+                returnToTaskList: true);
 
             return View(SelectViewName, model);
         }
@@ -193,7 +202,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers.SolutionSelec
                     internalOrgId,
                     callOffId,
                     model.SelectedCatalogueSolutionId,
-                    includeAdditionalServices: false);
+                    includeAdditionalServices: false,
+                    returnToTaskList: true);
 
                 return View(SelectViewName, model);
             }
@@ -373,7 +383,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers.SolutionSelec
             string internalOrgId,
             CallOffId callOffId,
             string selected = null,
-            bool includeAdditionalServices = true)
+            bool includeAdditionalServices = true,
+            bool returnToTaskList = false)
         {
             var order = await orderService.GetOrderThin(callOffId, internalOrgId);
             var solutions = await solutionsService.GetSupplierSolutions(order.SupplierId);
@@ -386,12 +397,13 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers.SolutionSelec
                 ? order.SolutionId
                 : order.GetSolution()?.CatalogueItemId;
 
+            var backLink = returnToTaskList
+                ? Url.Action(nameof(TaskListController.TaskList), typeof(TaskListController).ControllerName(), new { internalOrgId, callOffId })
+                : Url.Action(nameof(OrderController.Order), typeof(OrderController).ControllerName(), new { internalOrgId, callOffId });
+
             return new SelectSolutionModel(order, solutions, additionalServices)
             {
-                BackLink = Url.Action(
-                    nameof(OrderController.Order),
-                    typeof(OrderController).ControllerName(),
-                    new { internalOrgId, callOffId }),
+                BackLink = backLink,
                 SelectedCatalogueSolutionId = selected ?? $"{solutionId}",
             };
         }

@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using System.Linq;
 using FluentAssertions;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Utils;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.TestBases;
@@ -10,14 +9,11 @@ using Xunit;
 
 namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering.SolutionSelection.CatalogueSolutions
 {
-    public class EditCatalogueSolution : BuyerTestBase, IClassFixture<LocalWebApplicationFactory>
+    public class EditCatalogueSolutionAssociatedServicesOnly : BuyerTestBase, IClassFixture<LocalWebApplicationFactory>
     {
         private const string InternalOrgId = "CG-03F";
-        private const int OrderId = 90012;
+        private const int OrderId = 90014;
         private static readonly CallOffId CallOffId = new(OrderId, 1);
-
-        private static readonly CatalogueItemId ExistingSolutionId = new(99998, "001");
-        private static readonly CatalogueItemId NewSolutionId = new(99998, "002");
 
         private static readonly Dictionary<string, string> Parameters = new()
         {
@@ -25,64 +21,49 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering.SolutionSelection.Ca
             { nameof(CallOffId), $"{CallOffId}" },
         };
 
-        public EditCatalogueSolution(LocalWebApplicationFactory factory)
-            : base(factory, typeof(CatalogueSolutionsController), nameof(CatalogueSolutionsController.EditSolution), Parameters)
+        public EditCatalogueSolutionAssociatedServicesOnly(LocalWebApplicationFactory factory)
+            : base(factory, typeof(CatalogueSolutionsController), nameof(CatalogueSolutionsController.EditSolutionAssociatedServicesOnly), Parameters)
         {
         }
 
-        private OrderItem ExistingSolution => GetEndToEndDbContext().OrderItems
-            .FirstOrDefault(x => x.OrderId == OrderId && x.CatalogueItemId == ExistingSolutionId);
-
-        private OrderItem NewSolution => GetEndToEndDbContext().OrderItems
-            .FirstOrDefault(x => x.OrderId == OrderId && x.CatalogueItemId == NewSolutionId);
-
         [Fact]
-        public void EditCatalogueSolution_AllSectionsDisplayed()
+        public void EditSolutionAssociatedServicesOnly_AllSectionsDisplayed()
         {
-            CommonActions.PageTitle().Should().BeEquivalentTo("Catalogue Solutions - E2E Test Supplier With Contact".FormatForComparison());
+            CommonActions.PageTitle().Should().BeEquivalentTo($"Which Catalogue Solution does the service help implement? - Order {CallOffId}".FormatForComparison());
             CommonActions.GoBackLinkDisplayed().Should().BeTrue();
             CommonActions.SaveButtonDisplayed().Should().BeTrue();
             CommonActions.GetNumberOfSelectedRadioButtons().Should().Be(1);
         }
 
         [Fact]
-        public void EditCatalogueSolution_ClickGoBackLink_ExpectedResult()
+        public void EditSolutionAssociatedServicesOnly_ClickGoBackLink_ExpectedResult()
         {
             CommonActions.ClickGoBackLink();
 
             CommonActions.PageLoadedCorrectGetIndex(
                 typeof(TaskListController),
                 nameof(TaskListController.TaskList)).Should().BeTrue();
-
-            ExistingSolution.Should().NotBeNull();
-            NewSolution.Should().BeNull();
         }
 
         [Fact]
-        public void EditCatalogueSolution_ClickSave_ExpectedResult()
+        public void EditSolutionAssociatedServicesOnly_ClickSave_ExpectedResult()
         {
             CommonActions.ClickSave();
 
             CommonActions.PageLoadedCorrectGetIndex(
                 typeof(TaskListController),
                 nameof(TaskListController.TaskList)).Should().BeTrue();
-
-            ExistingSolution.Should().NotBeNull();
-            NewSolution.Should().BeNull();
         }
 
         [Fact]
-        public void EditCatalogueSolution_ChangeSolution_ExpectedResult()
+        public void EditSolutionAssociatedServicesOnly_ChangeSolution_ExpectedResult()
         {
             CommonActions.ClickRadioButtonWithText("E2E With Contact With Single Price");
             CommonActions.ClickSave();
 
             CommonActions.PageLoadedCorrectGetIndex(
                 typeof(CatalogueSolutionsController),
-                nameof(CatalogueSolutionsController.ConfirmSolutionChanges)).Should().BeTrue();
-
-            ExistingSolution.Should().NotBeNull();
-            NewSolution.Should().BeNull();
+                nameof(CatalogueSolutionsController.ConfirmSolutionChangesAssociatedServicesOnly)).Should().BeTrue();
         }
     }
 }

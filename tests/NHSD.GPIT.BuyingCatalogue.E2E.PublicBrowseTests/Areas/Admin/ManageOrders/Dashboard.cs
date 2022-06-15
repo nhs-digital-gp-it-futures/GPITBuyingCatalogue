@@ -106,11 +106,26 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.ManageOrders
                 CommonActions.ElementIsDisplayed(CommonSelectors.PaginationPreviousSubText).Should().BeFalse();
 
                 CommonActions.ClickLinkElement(CommonSelectors.PaginationNext);
+
                 CommonActions.PageLoadedCorrectGetIndex(
                     typeof(ManageOrdersController),
                     nameof(ManageOrdersController.Index)).Should().BeTrue();
 
                 Driver.GetQueryValue("page").Should().Be("2");
+
+                CommonActions.ElementIsDisplayed(CommonSelectors.Pagination).Should().BeTrue();
+                CommonActions.ElementIsDisplayed(CommonSelectors.PaginationNext).Should().BeTrue();
+                CommonActions.ElementIsDisplayed(CommonSelectors.PaginationNextSubText).Should().BeTrue();
+                CommonActions.ElementIsDisplayed(CommonSelectors.PaginationPrevious).Should().BeTrue();
+                CommonActions.ElementIsDisplayed(CommonSelectors.PaginationPreviousSubText).Should().BeTrue();
+
+                CommonActions.ClickLinkElement(CommonSelectors.PaginationNext);
+
+                CommonActions.PageLoadedCorrectGetIndex(
+                    typeof(ManageOrdersController),
+                    nameof(ManageOrdersController.Index)).Should().BeTrue();
+
+                Driver.GetQueryValue("page").Should().Be("3");
 
                 CommonActions.ElementIsDisplayed(CommonSelectors.Pagination).Should().BeTrue();
                 CommonActions.ElementIsDisplayed(CommonSelectors.PaginationNext).Should().BeFalse();
