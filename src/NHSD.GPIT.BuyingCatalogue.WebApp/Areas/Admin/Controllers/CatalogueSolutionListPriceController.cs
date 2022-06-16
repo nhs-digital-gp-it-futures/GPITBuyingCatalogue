@@ -8,7 +8,7 @@ using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.Framework.Settings;
-using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions;
+using NHSD.GPIT.BuyingCatalogue.ServiceContracts.ListPrice;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.ListPriceModels;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
@@ -18,10 +18,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
     [Route("admin/catalogue-solutions/manage/{solutionId}/list-prices")]
     public class CatalogueSolutionListPriceController : Controller
     {
-        private readonly ISolutionListPriceService solutionListPriceService;
+        private readonly IListPriceService solutionListPriceService;
         private readonly PriceTiersCapSettings priceTiersCapSettings;
 
-        public CatalogueSolutionListPriceController(ISolutionListPriceService solutionListPriceService, PriceTiersCapSettings tiersCapSettings)
+        public CatalogueSolutionListPriceController(IListPriceService solutionListPriceService, PriceTiersCapSettings tiersCapSettings)
         {
             this.solutionListPriceService = solutionListPriceService ?? throw new ArgumentNullException(nameof(solutionListPriceService));
             priceTiersCapSettings = tiersCapSettings ?? throw new ArgumentNullException(nameof(tiersCapSettings));

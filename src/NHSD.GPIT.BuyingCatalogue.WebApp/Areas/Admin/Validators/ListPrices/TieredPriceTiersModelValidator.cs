@@ -2,7 +2,7 @@
 using FluentValidation;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
-using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions;
+using NHSD.GPIT.BuyingCatalogue.ServiceContracts.ListPrice;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.ListPriceModels;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Validators.ListPrices
@@ -10,9 +10,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Validators.ListPrices
     public class TieredPriceTiersModelValidator : AbstractValidator<TieredPriceTiersModel>
     {
         private const int StartingLowerRange = 1;
-        private readonly ISolutionListPriceService solutionListPriceService;
+        private readonly IListPriceService solutionListPriceService;
 
-        public TieredPriceTiersModelValidator(ISolutionListPriceService solutionListPriceService)
+        public TieredPriceTiersModelValidator(IListPriceService solutionListPriceService)
         {
             this.solutionListPriceService = solutionListPriceService;
 

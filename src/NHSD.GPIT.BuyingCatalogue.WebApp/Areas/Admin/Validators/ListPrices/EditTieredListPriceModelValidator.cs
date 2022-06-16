@@ -15,11 +15,11 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Validators.ListPrices
         private const int StartingLowerRange = 1;
 
         private readonly IListPriceService listPriceService;
-        private readonly ISolutionListPriceService solutionListPriceService;
+        private readonly IListPriceService solutionListPriceService;
 
         public EditTieredListPriceModelValidator(
             IListPriceService listPriceService,
-            ISolutionListPriceService solutionListPriceService)
+            IListPriceService solutionListPriceService)
         {
             this.listPriceService = listPriceService;
             this.solutionListPriceService = solutionListPriceService;

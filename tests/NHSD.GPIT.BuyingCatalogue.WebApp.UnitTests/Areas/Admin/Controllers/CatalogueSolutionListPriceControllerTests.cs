@@ -13,7 +13,7 @@ using Moq;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.Framework.Settings;
-using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions;
+using NHSD.GPIT.BuyingCatalogue.ServiceContracts.ListPrice;
 using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.AutoFixtureCustomisations;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.ListPriceModels;
@@ -37,7 +37,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
         [CommonAutoData]
         public static async Task Get_Index_ReturnsViewWithModel(
             Solution solution,
-            [Frozen] Mock<ISolutionListPriceService> solutionListPriceService,
+            [Frozen] Mock<IListPriceService> solutionListPriceService,
             CatalogueSolutionListPriceController controller)
         {
             var model = new ManageListPricesModel(solution.CatalogueItem, solution.CatalogueItem.CataloguePrices);
@@ -58,7 +58,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
         [CommonAutoData]
         public static async Task Get_Index_SolutionNotFound(
             CatalogueItemId solutionId,
-            [Frozen] Mock<ISolutionListPriceService> solutionListPriceService,
+            [Frozen] Mock<IListPriceService> solutionListPriceService,
             CatalogueSolutionListPriceController controller)
         {
             solutionListPriceService.Setup(s => s.GetCatalogueItemWithListPrices(solutionId))
@@ -73,7 +73,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
         [CommonAutoData]
         public static async Task Get_ListPriceType_ReturnsViewWithModel(
             Solution solution,
-            [Frozen] Mock<ISolutionListPriceService> solutionListPriceService,
+            [Frozen] Mock<IListPriceService> solutionListPriceService,
             CatalogueSolutionListPriceController controller)
         {
             var model = new ListPriceTypeModel(solution.CatalogueItem);
@@ -91,7 +91,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
         [CommonAutoData]
         public static async Task Get_ListPriceType_SolutionNotFound(
             CatalogueItemId solutionId,
-            [Frozen] Mock<ISolutionListPriceService> solutionListPriceService,
+            [Frozen] Mock<IListPriceService> solutionListPriceService,
             CatalogueSolutionListPriceController controller)
         {
             solutionListPriceService.Setup(s => s.GetCatalogueItemWithListPrices(solutionId))
@@ -151,7 +151,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
         [CommonAutoData]
         public static async Task Get_AddTieredListPrice_ReturnsViewWithModel(
             Solution solution,
-            [Frozen] Mock<ISolutionListPriceService> solutionListPriceService,
+            [Frozen] Mock<IListPriceService> solutionListPriceService,
             CatalogueSolutionListPriceController controller)
         {
             var model = new AddTieredListPriceModel(solution.CatalogueItem);
@@ -170,7 +170,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
         public static async Task Get_AddTieredListPrice_WithPriceId_ReturnsViewWithModel(
             Solution solution,
             CataloguePrice cataloguePrice,
-            [Frozen] Mock<ISolutionListPriceService> solutionListPriceService,
+            [Frozen] Mock<IListPriceService> solutionListPriceService,
             CatalogueSolutionListPriceController controller)
         {
             solution.CatalogueItem.CataloguePrices.Add(cataloguePrice);
@@ -190,7 +190,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
         [CommonAutoData]
         public static async Task Get_AddTieredListPrice_SolutionNotFound(
             CatalogueItemId solutionId,
-            [Frozen] Mock<ISolutionListPriceService> solutionListPriceService,
+            [Frozen] Mock<IListPriceService> solutionListPriceService,
             CatalogueSolutionListPriceController controller)
         {
             solutionListPriceService.Setup(s => s.GetCatalogueItemWithListPrices(solutionId))
@@ -221,7 +221,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
         public static async Task Post_AddTieredListPrice_Redirects(
             Solution solution,
             AddTieredListPriceModel model,
-            [Frozen] Mock<ISolutionListPriceService> solutionListPriceService,
+            [Frozen] Mock<IListPriceService> solutionListPriceService,
             CatalogueSolutionListPriceController controller)
         {
             var result = (await controller.AddTieredListPrice(solution.CatalogueItemId, model)).As<RedirectToActionResult>();
@@ -238,7 +238,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
             Solution solution,
             CataloguePrice price,
             [Frozen] PriceTiersCapSettings priceTiersSetting,
-            [Frozen] Mock<ISolutionListPriceService> solutionListPriceService,
+            [Frozen] Mock<IListPriceService> solutionListPriceService,
             CatalogueSolutionListPriceController controller)
         {
             solution.CatalogueItem.CataloguePrices.Add(price);
@@ -259,7 +259,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
         public static async Task Get_TieredPriceTiers_SolutionNotFound(
             CatalogueItemId solutionId,
             int cataloguePriceId,
-            [Frozen] Mock<ISolutionListPriceService> solutionListPriceService,
+            [Frozen] Mock<IListPriceService> solutionListPriceService,
             CatalogueSolutionListPriceController controller)
         {
             solutionListPriceService.Setup(s => s.GetCatalogueItemWithListPrices(solutionId))
@@ -275,7 +275,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
         public static async Task Get_TieredPriceTiers_PriceNotFound(
             Solution solution,
             int cataloguePriceId,
-            [Frozen] Mock<ISolutionListPriceService> solutionListPriceService,
+            [Frozen] Mock<IListPriceService> solutionListPriceService,
             CatalogueSolutionListPriceController controller)
         {
             solutionListPriceService.Setup(s => s.GetCatalogueItemWithListPrices(solution.CatalogueItemId))
@@ -292,7 +292,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
             Solution solution,
             CataloguePrice price,
             TieredPriceTiersModel model,
-            [Frozen] Mock<ISolutionListPriceService> solutionListPriceService,
+            [Frozen] Mock<IListPriceService> solutionListPriceService,
             CatalogueSolutionListPriceController controller)
         {
             controller.ModelState.AddModelError("some-key", "some-error");
@@ -316,7 +316,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
             Solution solution,
             CataloguePrice price,
             TieredPriceTiersModel model,
-            [Frozen] Mock<ISolutionListPriceService> solutionListPriceService,
+            [Frozen] Mock<IListPriceService> solutionListPriceService,
             CatalogueSolutionListPriceController controller)
         {
             var result = (await controller.TieredPriceTiers(solution.CatalogueItemId, price.CataloguePriceId, model)).As<RedirectToActionResult>();
@@ -336,7 +336,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
         public static async Task Get_AddTieredPriceTier_ReturnsViewWithModel(
             Solution solution,
             CataloguePrice price,
-            [Frozen] Mock<ISolutionListPriceService> solutionListPriceService,
+            [Frozen] Mock<IListPriceService> solutionListPriceService,
             CatalogueSolutionListPriceController controller)
         {
             solution.CatalogueItem.CataloguePrices.Add(price);
@@ -361,7 +361,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
             Solution solution,
             CataloguePrice price,
             [Frozen] Mock<IUrlHelper> urlHelper,
-            [Frozen] Mock<ISolutionListPriceService> solutionListPriceService,
+            [Frozen] Mock<IListPriceService> solutionListPriceService,
             CatalogueSolutionListPriceController controller)
         {
             solution.CatalogueItem.CataloguePrices.Add(price);
@@ -380,7 +380,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
             Solution solution,
             CataloguePrice price,
             [Frozen] Mock<IUrlHelper> urlHelper,
-            [Frozen] Mock<ISolutionListPriceService> solutionListPriceService,
+            [Frozen] Mock<IListPriceService> solutionListPriceService,
             CatalogueSolutionListPriceController controller)
         {
             solution.CatalogueItem.CataloguePrices.Add(price);
@@ -398,7 +398,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
         public static async Task Get_AddTieredPriceTier_SolutionNotFound(
             CatalogueItemId solutionId,
             int cataloguePriceId,
-            [Frozen] Mock<ISolutionListPriceService> solutionListPriceService,
+            [Frozen] Mock<IListPriceService> solutionListPriceService,
             CatalogueSolutionListPriceController controller)
         {
             solutionListPriceService.Setup(s => s.GetCatalogueItemWithListPrices(solutionId))
@@ -414,7 +414,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
         public static async Task Get_AddTieredPriceTier_PriceNotFound(
             Solution solution,
             int cataloguePriceId,
-            [Frozen] Mock<ISolutionListPriceService> solutionListPriceService,
+            [Frozen] Mock<IListPriceService> solutionListPriceService,
             CatalogueSolutionListPriceController controller)
         {
             solutionListPriceService.Setup(s => s.GetCatalogueItemWithListPrices(solution.CatalogueItemId))
@@ -447,7 +447,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
             Solution solution,
             CataloguePrice price,
             AddEditTieredPriceTierModel model,
-            [Frozen] Mock<ISolutionListPriceService> solutionListPriceService,
+            [Frozen] Mock<IListPriceService> solutionListPriceService,
             CatalogueSolutionListPriceController controller)
         {
             model.IsEditing = false;
@@ -470,7 +470,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
         public static async Task Get_EditTieredListPrice_SolutionNotFound(
             CatalogueItemId solutionId,
             int cataloguePriceId,
-            [Frozen] Mock<ISolutionListPriceService> solutionListPriceService,
+            [Frozen] Mock<IListPriceService> solutionListPriceService,
             CatalogueSolutionListPriceController controller)
         {
             solutionListPriceService.Setup(s => s.GetCatalogueItemWithListPrices(solutionId))
@@ -486,7 +486,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
         public static async Task Get_EditTieredListPrice_PriceNotFound(
             Solution solution,
             int cataloguePriceId,
-            [Frozen] Mock<ISolutionListPriceService> solutionListPriceService,
+            [Frozen] Mock<IListPriceService> solutionListPriceService,
             CatalogueSolutionListPriceController controller)
         {
             solutionListPriceService.Setup(s => s.GetCatalogueItemWithListPrices(solution.CatalogueItemId))
@@ -503,7 +503,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
             Solution solution,
             CataloguePrice price,
             [Frozen] PriceTiersCapSettings priceTiersSetting,
-            [Frozen] Mock<ISolutionListPriceService> solutionListPriceService,
+            [Frozen] Mock<IListPriceService> solutionListPriceService,
             CatalogueSolutionListPriceController controller)
         {
             solution.CatalogueItem.CataloguePrices.Add(price);
@@ -525,7 +525,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
             Solution solution,
             CataloguePrice price,
             EditTieredListPriceModel model,
-            [Frozen] Mock<ISolutionListPriceService> solutionListPriceService,
+            [Frozen] Mock<IListPriceService> solutionListPriceService,
             CatalogueSolutionListPriceController controller)
         {
             controller.ModelState.AddModelError("some-key", "some-error");
@@ -549,7 +549,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
             Solution solution,
             CataloguePrice price,
             EditTieredListPriceModel model,
-            [Frozen] Mock<ISolutionListPriceService> solutionListPriceService,
+            [Frozen] Mock<IListPriceService> solutionListPriceService,
             CatalogueSolutionListPriceController controller)
         {
             price.PublishedStatus = PublicationStatus.Published;
@@ -592,7 +592,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
             Solution solution,
             CataloguePrice price,
             EditTieredListPriceModel model,
-            [Frozen] Mock<ISolutionListPriceService> solutionListPriceService,
+            [Frozen] Mock<IListPriceService> solutionListPriceService,
             CatalogueSolutionListPriceController controller)
         {
             price.PublishedStatus = PublicationStatus.Draft;
@@ -635,7 +635,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
             CatalogueItemId solutionId,
             int cataloguePriceId,
             int cataloguePriceTierId,
-            [Frozen] Mock<ISolutionListPriceService> solutionListPriceService,
+            [Frozen] Mock<IListPriceService> solutionListPriceService,
             CatalogueSolutionListPriceController controller)
         {
             solutionListPriceService.Setup(s => s.GetCatalogueItemWithListPrices(solutionId))
@@ -652,7 +652,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
             Solution solution,
             int cataloguePriceId,
             int cataloguePriceTierId,
-            [Frozen] Mock<ISolutionListPriceService> solutionListPriceService,
+            [Frozen] Mock<IListPriceService> solutionListPriceService,
             CatalogueSolutionListPriceController controller)
         {
             solutionListPriceService.Setup(s => s.GetCatalogueItemWithListPrices(solution.CatalogueItemId))
@@ -669,7 +669,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
             Solution solution,
             CataloguePrice price,
             int cataloguePriceTierId,
-            [Frozen] Mock<ISolutionListPriceService> solutionListPriceService,
+            [Frozen] Mock<IListPriceService> solutionListPriceService,
             CatalogueSolutionListPriceController controller)
         {
             solution.CatalogueItem.CataloguePrices.Add(price);
@@ -689,7 +689,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
             CataloguePrice price,
             CataloguePriceTier tier,
             [Frozen] Mock<IUrlHelper> urlHelper,
-            [Frozen] Mock<ISolutionListPriceService> solutionListPriceService,
+            [Frozen] Mock<IListPriceService> solutionListPriceService,
             CatalogueSolutionListPriceController controller)
         {
             price.CataloguePriceTiers.Add(tier);
@@ -711,7 +711,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
             CataloguePrice price,
             CataloguePriceTier tier,
             [Frozen] Mock<IUrlHelper> urlHelper,
-            [Frozen] Mock<ISolutionListPriceService> solutionListPriceService,
+            [Frozen] Mock<IListPriceService> solutionListPriceService,
             CatalogueSolutionListPriceController controller)
         {
             price.CataloguePriceTiers.Add(tier);
@@ -732,7 +732,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
             Solution solution,
             CataloguePrice price,
             CataloguePriceTier tier,
-            [Frozen] Mock<ISolutionListPriceService> solutionListPriceService,
+            [Frozen] Mock<IListPriceService> solutionListPriceService,
             CatalogueSolutionListPriceController controller)
         {
             price.CataloguePriceTiers.Add(tier);
@@ -767,7 +767,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
         [CommonAutoData]
         public static async Task Post_EditTieredPriceTier_IsInfiniteRange(
             AddEditTieredPriceTierModel model,
-            [Frozen] Mock<ISolutionListPriceService> solutionListPriceService,
+            [Frozen] Mock<IListPriceService> solutionListPriceService,
             CatalogueSolutionListPriceController controller)
         {
             model.IsInfiniteRange = true;
@@ -789,7 +789,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
         [CommonAutoData]
         public static async Task Post_EditTieredPriceTier_IsNotInfiniteRange(
             AddEditTieredPriceTierModel model,
-            [Frozen] Mock<ISolutionListPriceService> solutionListPriceService,
+            [Frozen] Mock<IListPriceService> solutionListPriceService,
             CatalogueSolutionListPriceController controller)
         {
             model.IsInfiniteRange = false;
@@ -811,7 +811,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
         [CommonAutoData]
         public static async Task Post_EditTieredPriceTier_IsEditing_Redirects(
             AddEditTieredPriceTierModel model,
-            [Frozen] Mock<ISolutionListPriceService> solutionListPriceService,
+            [Frozen] Mock<IListPriceService> solutionListPriceService,
             CatalogueSolutionListPriceController controller)
         {
             model.IsEditing = true;
@@ -837,7 +837,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
         [CommonAutoData]
         public static async Task Post_EditTieredPriceTier_IsNotEditing_Redirects(
             AddEditTieredPriceTierModel model,
-            [Frozen] Mock<ISolutionListPriceService> solutionListPriceService,
+            [Frozen] Mock<IListPriceService> solutionListPriceService,
             CatalogueSolutionListPriceController controller)
         {
             model.IsEditing = false;
@@ -865,7 +865,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
             CatalogueItemId solutionId,
             int cataloguePriceId,
             int tierId,
-            [Frozen] Mock<ISolutionListPriceService> solutionListPriceService,
+            [Frozen] Mock<IListPriceService> solutionListPriceService,
             CatalogueSolutionListPriceController controller)
         {
             solutionListPriceService.Setup(s => s.GetCatalogueItemWithListPrices(solutionId))
@@ -882,7 +882,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
             Solution solution,
             int cataloguePriceId,
             int tierId,
-            [Frozen] Mock<ISolutionListPriceService> solutionListPriceService,
+            [Frozen] Mock<IListPriceService> solutionListPriceService,
             CatalogueSolutionListPriceController controller)
         {
             solutionListPriceService.Setup(s => s.GetCatalogueItemWithListPrices(solution.CatalogueItemId))
@@ -899,7 +899,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
             Solution solution,
             CataloguePrice price,
             int tierId,
-            [Frozen] Mock<ISolutionListPriceService> solutionListPriceService,
+            [Frozen] Mock<IListPriceService> solutionListPriceService,
             CatalogueSolutionListPriceController controller)
         {
             solution.CatalogueItem.CataloguePrices.Add(price);
@@ -918,7 +918,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
             Solution solution,
             CataloguePrice price,
             CataloguePriceTier tier,
-            [Frozen] Mock<ISolutionListPriceService> solutionListPriceService,
+            [Frozen] Mock<IListPriceService> solutionListPriceService,
             CatalogueSolutionListPriceController controller)
         {
             price.CataloguePriceTiers.Add(tier);
@@ -962,7 +962,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
             int cataloguePriceId,
             int tierId,
             EditTierPriceModel model,
-            [Frozen] Mock<ISolutionListPriceService> service,
+            [Frozen] Mock<IListPriceService> service,
             CatalogueSolutionListPriceController controller)
         {
             var result = (await controller.EditTierPrice(solutionId, cataloguePriceId, tierId, model)).As<RedirectToActionResult>();
@@ -977,7 +977,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
         public static async Task Get_DeleteListPrice_ReturnsViewWithModel(
             Solution solution,
             int cataloguePriceId,
-            [Frozen] Mock<ISolutionListPriceService> service,
+            [Frozen] Mock<IListPriceService> service,
             CatalogueSolutionListPriceController controller)
         {
             service.Setup(s => s.GetCatalogueItemWithListPrices(solution.CatalogueItemId))
@@ -1000,7 +1000,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
             Solution solution,
             CataloguePrice price,
             DeleteItemConfirmationModel model,
-            [Frozen] Mock<ISolutionListPriceService> solutionListPriceService,
+            [Frozen] Mock<IListPriceService> solutionListPriceService,
             CatalogueSolutionListPriceController controller)
         {
             price.PublishedStatus = PublicationStatus.Unpublished;
@@ -1023,7 +1023,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
             Solution solution,
             CataloguePrice price,
             DeleteItemConfirmationModel model,
-            [Frozen] Mock<ISolutionListPriceService> solutionListPriceService,
+            [Frozen] Mock<IListPriceService> solutionListPriceService,
             CatalogueSolutionListPriceController controller)
         {
             price.PublishedStatus = PublicationStatus.Published;
@@ -1046,7 +1046,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
             Solution solution,
             int cataloguePriceId,
             int tierId,
-            [Frozen] Mock<ISolutionListPriceService> service,
+            [Frozen] Mock<IListPriceService> service,
             CatalogueSolutionListPriceController controller)
         {
             service.Setup(s => s.GetCatalogueItemWithListPrices(solution.CatalogueItemId))
@@ -1070,7 +1070,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
             CataloguePrice price,
             CataloguePriceTier tier,
             DeleteItemConfirmationModel model,
-            [Frozen] Mock<ISolutionListPriceService> solutionListPriceService,
+            [Frozen] Mock<IListPriceService> solutionListPriceService,
             CatalogueSolutionListPriceController controller)
         {
             price.PublishedStatus = PublicationStatus.Unpublished;
@@ -1095,7 +1095,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
             CataloguePrice price,
             CataloguePriceTier tier,
             DeleteItemConfirmationModel model,
-            [Frozen] Mock<ISolutionListPriceService> solutionListPriceService,
+            [Frozen] Mock<IListPriceService> solutionListPriceService,
             CatalogueSolutionListPriceController controller)
         {
             price.PublishedStatus = PublicationStatus.Published;
@@ -1120,7 +1120,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
             CataloguePrice price,
             CataloguePriceTier tier,
             DeleteItemConfirmationModel model,
-            [Frozen] Mock<ISolutionListPriceService> solutionListPriceService,
+            [Frozen] Mock<IListPriceService> solutionListPriceService,
             CatalogueSolutionListPriceController controller)
         {
             price.PublishedStatus = PublicationStatus.Unpublished;
@@ -1142,7 +1142,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
         [CommonAutoData]
         public static async Task Get_AddFlatListPrice_SolutionNotFound(
             CatalogueItemId solutionId,
-            [Frozen] Mock<ISolutionListPriceService> solutionListPriceService,
+            [Frozen] Mock<IListPriceService> solutionListPriceService,
             CatalogueSolutionListPriceController controller)
         {
             solutionListPriceService.Setup(s => s.GetCatalogueItemWithListPrices(solutionId))
@@ -1157,7 +1157,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
         [CommonAutoData]
         public static async Task Get_AddFlatListPrice_ReturnsViewWithModel(
             Solution solution,
-            [Frozen] Mock<ISolutionListPriceService> solutionListPriceService,
+            [Frozen] Mock<IListPriceService> solutionListPriceService,
             CatalogueSolutionListPriceController controller)
         {
             var model = new AddEditFlatListPriceModel(solution.CatalogueItem);
@@ -1191,7 +1191,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
         public static async Task Post_AddFlatListPrice_Redirects(
             CatalogueItemId solutionId,
             AddEditFlatListPriceModel model,
-            [Frozen] Mock<ISolutionListPriceService> solutionListPriceService,
+            [Frozen] Mock<IListPriceService> solutionListPriceService,
             CatalogueSolutionListPriceController controller)
         {
             var result = (await controller.AddFlatListPrice(solutionId, model)).As<RedirectToActionResult>();
@@ -1219,7 +1219,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
         public static async Task Get_EditFlatListPrice_SolutionNotFound(
             CatalogueItemId solutionId,
             int cataloguePriceId,
-            [Frozen] Mock<ISolutionListPriceService> solutionListPriceService,
+            [Frozen] Mock<IListPriceService> solutionListPriceService,
             CatalogueSolutionListPriceController controller)
         {
             solutionListPriceService.Setup(s => s.GetCatalogueItemWithListPrices(solutionId))
@@ -1235,7 +1235,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
         public static async Task Get_EditFlatListPrice_PriceNotFound(
             Solution solution,
             int cataloguePriceId,
-            [Frozen] Mock<ISolutionListPriceService> solutionListPriceService,
+            [Frozen] Mock<IListPriceService> solutionListPriceService,
             CatalogueSolutionListPriceController controller)
         {
             solutionListPriceService.Setup(s => s.GetCatalogueItemWithListPrices(solution.CatalogueItemId))
@@ -1251,7 +1251,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
         public static async Task Get_EditFlatListPrice_ReturnsViewWithModel(
             Solution solution,
             CataloguePrice price,
-            [Frozen] Mock<ISolutionListPriceService> solutionListPriceService,
+            [Frozen] Mock<IListPriceService> solutionListPriceService,
             CatalogueSolutionListPriceController controller)
         {
             solution.CatalogueItem.CataloguePrices.Add(price);
@@ -1289,7 +1289,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
             Solution solution,
             CataloguePrice price,
             AddEditFlatListPriceModel model,
-            [Frozen] Mock<ISolutionListPriceService> solutionListPriceService,
+            [Frozen] Mock<IListPriceService> solutionListPriceService,
             CatalogueSolutionListPriceController controller)
         {
             price.PublishedStatus = PublicationStatus.Published;
@@ -1334,7 +1334,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
             Solution solution,
             CataloguePrice price,
             AddEditFlatListPriceModel model,
-            [Frozen] Mock<ISolutionListPriceService> solutionListPriceService,
+            [Frozen] Mock<IListPriceService> solutionListPriceService,
             CatalogueSolutionListPriceController controller)
         {
             price.PublishedStatus = PublicationStatus.Draft;
