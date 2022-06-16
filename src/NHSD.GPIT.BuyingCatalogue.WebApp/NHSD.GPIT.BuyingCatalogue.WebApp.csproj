@@ -22,17 +22,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Compile Remove="Areas\Admin\Views\SolutionSections\**" />
-    <Compile Remove="DataAttributes\**" />
-    <Content Remove="Areas\Admin\Views\SolutionSections\**" />
-    <Content Remove="DataAttributes\**" />
-    <EmbeddedResource Remove="Areas\Admin\Views\SolutionSections\**" />
-    <EmbeddedResource Remove="DataAttributes\**" />
-    <None Remove="Areas\Admin\Views\SolutionSections\**" />
-    <None Remove="DataAttributes\**" />
-  </ItemGroup>
-
-  <ItemGroup>
     <AssemblyAttribute Include="System.Runtime.CompilerServices.InternalsVisibleToAttribute">
       <_Parameter1>$(AssemblyName).UnitTests</_Parameter1>
       <!-- We use the value of AssemblyName to declare the value of the attribute -->

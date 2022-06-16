@@ -1,9 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering.SolutionSelection.TaskList.Base;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Utils;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
-using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers;
 
 namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering.SolutionSelection.TaskList
 {
@@ -26,14 +24,10 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering.SolutionSelection.Ta
 
         protected override string PageTitle => "Edit solutions and services - Order C090000-01";
 
-        protected override bool SolutionDisplayed => true;
+        protected override bool ChangeAdditionalServicesLinkVisible => false;
 
-        protected override bool AdditionalServicesDisplayed => true;
+        protected override bool ChangeAssociatedServicesLinkVisible => false;
 
         protected override List<TaskListOrderItem> OrderItems => new();
-
-        protected override Type OnwardController => typeof(OrderController);
-
-        protected override string OnwardAction => nameof(OrderController.Order);
     }
 }

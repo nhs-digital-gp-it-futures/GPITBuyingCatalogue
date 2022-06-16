@@ -96,11 +96,17 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering
 
             CommonActions.PageLoadedCorrectGetIndex(
                 typeof(DashboardController),
-                nameof(DashboardController.Organisation))
-                .Should()
-                .BeTrue();
+                nameof(DashboardController.Organisation)).Should().BeTrue();
 
             Driver.Url.Should().EndWith("page=2");
+
+            CommonActions.ClickLinkElement(CommonSelectors.PaginationNext);
+
+            CommonActions.PageLoadedCorrectGetIndex(
+                typeof(DashboardController),
+                nameof(DashboardController.Organisation)).Should().BeTrue();
+
+            Driver.Url.Should().EndWith("page=3");
 
             CommonActions.ElementIsDisplayed(CommonSelectors.PaginationPrevious).Should().BeTrue();
             CommonActions.ElementIsDisplayed(CommonSelectors.PaginationNext).Should().BeFalse();
@@ -108,13 +114,13 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering
             using var context = GetEndToEndDbContext();
             var countOfOrders = context.Organisations.Where(o => o.InternalIdentifier == InternalOrgId).SelectMany(o => o.Orders).AsNoTracking().Count();
 
-            var expectedNumberOfPages = new PageOptions()
+            var expectedNumberOfPages = new PageOptions
             {
                 TotalNumberOfItems = countOfOrders,
                 PageSize = 10,
             }.NumberOfPages;
 
-            CommonActions.ElementTextEqualTo(CommonSelectors.PaginationPreviousSubText, $"1 of {expectedNumberOfPages}")
+            CommonActions.ElementTextEqualTo(CommonSelectors.PaginationPreviousSubText, $"2 of {expectedNumberOfPages}")
                 .Should()
                 .BeTrue();
         }

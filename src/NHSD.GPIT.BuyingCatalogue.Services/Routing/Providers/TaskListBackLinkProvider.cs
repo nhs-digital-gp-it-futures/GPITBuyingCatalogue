@@ -45,6 +45,18 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Routing.Providers
                     };
                 }
             }
+            else
+            {
+                if (order.GetAssociatedServices().Any(x => !(x.OrderItemRecipients?.Any() ?? false) || x.OrderItemPrice == null))
+                {
+                    return new RoutingResult
+                    {
+                        ActionName = Constants.Actions.OrderDashboard,
+                        ControllerName = Constants.Controllers.Orders,
+                        RouteValues = new { routeValues.InternalOrgId, routeValues.CallOffId },
+                    };
+                }
+            }
 
             return new RoutingResult
             {

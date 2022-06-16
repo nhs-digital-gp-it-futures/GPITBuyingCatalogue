@@ -23,6 +23,7 @@
     InitialPeriod INT NULL CONSTRAINT Order_PositiveInitialPeriod CHECK (InitialPeriod >= 0),
     MaximumTerm INT NULL CONSTRAINT Order_PositiveMaximumTerm CHECK (MaximumTerm >= 0),
     AssociatedServicesOnly BIT NULL,
+    [SolutionId] NVARCHAR(14) NULL, 
     CONSTRAINT PK_Orders PRIMARY KEY (Id),
     CONSTRAINT FK_Orders_OrderingParty FOREIGN KEY (OrderingPartyId) REFERENCES organisations.Organisations (Id),
     CONSTRAINT FK_Orders_OrderingPartyContact FOREIGN KEY (OrderingPartyContactId) REFERENCES ordering.Contacts (Id),
@@ -31,5 +32,6 @@
     CONSTRAINT FK_Orders_OrderTriageValue FOREIGN KEY (OrderTriageValueId) REFERENCES ordering.OrderTriageValues(Id),
     CONSTRAINT FK_Orders_OrderStatus FOREIGN KEY (OrderStatusId) REFERENCES ordering.OrderStatus (Id),
     CONSTRAINT FK_Orders_LastUpdatedBy FOREIGN KEY (LastUpdatedBy) REFERENCES users.AspNetUsers(Id),
-    INDEX IX_Orders_IsDeleted (IsDeleted)
+    CONSTRAINT FK_Orders_Solution FOREIGN KEY (SolutionId) REFERENCES catalogue.CatalogueItems(Id),
+    INDEX IX_Orders_IsDeleted (IsDeleted)        
 ) WITH (SYSTEM_VERSIONING = ON (HISTORY_TABLE = ordering.Orders_History));

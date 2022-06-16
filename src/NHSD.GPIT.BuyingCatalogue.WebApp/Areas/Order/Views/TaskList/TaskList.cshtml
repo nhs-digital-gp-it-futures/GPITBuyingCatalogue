@@ -22,32 +22,44 @@
                         caption="Order @Model!.CallOffId"
                         advice="@advice" />
         
+        <div id="SolutionDetails" class="nhsuk-u-margin-bottom-9">
+            <h2>Catalogue Solution</h2>
+            <vc:nhs-action-link text="Change Catalogue Solution"
+                                url="@Url.Action(
+                                         nameof(CatalogueSolutionsController.EditSolution),
+                                         typeof(CatalogueSolutionsController).ControllerName(),
+                                         new { Model.InternalOrgId, Model.CallOffId })"/>
+
+            @if (Model.AssociatedServicesOnly)
+            {
+                <h3>@Model.SolutionName</h3>
+            }
+
+            @if (Model.CatalogueSolution != null)
+            {
+                <div class="nhsuk-u-margin-bottom-9">
+                    <partial name="TaskListOrderItem"
+                             model="@Model.OrderItemModel(Model.CatalogueSolution.CatalogueItemId)"/>
+                </div>
+            }
+        </div>
+
         @if (!Model.AssociatedServicesOnly)
         {
-            <div id="SolutionDetails" class="nhsuk-u-margin-bottom-9">
-                <h2>Catalogue Solution</h2>
-                <vc:nhs-action-link text="Change Catalogue Solution"
-                                    url="@Url.Action(
-                                             nameof(CatalogueSolutionsController.EditSolution),
-                                             typeof(CatalogueSolutionsController).ControllerName(),
-                                             new { Model.InternalOrgId, Model.CallOffId })"/>
-                                
-                @if (Model.CatalogueSolution != null)
-                {
-                    <div class="nhsuk-u-margin-bottom-9">
-                        <partial name="TaskListOrderItem"
-                                 model="@Model.OrderItemModel(Model.CatalogueSolution.CatalogueItemId)"/>
-                    </div>
-                }
-            </div>
-
             <div id="AdditionalServiceDetails" class="nhsuk-u-margin-bottom-9">
                 <h2>Additional Services</h2>
-                <vc:nhs-action-link text="Change Additional Services"
-                                    url="@Url.Action(
-                                             nameof(AdditionalServicesController.EditAdditionalServices),
-                                             typeof(AdditionalServicesController).ControllerName(),
-                                             new { Model.InternalOrgId, Model.CallOffId })"/>
+                @if (Model.AdditionalServicesAvailable)
+                {
+                    <vc:nhs-action-link text="Change Additional Services"
+                                        url="@Url.Action(
+                                                 nameof(AdditionalServicesController.EditAdditionalServices),
+                                                 typeof(AdditionalServicesController).ControllerName(),
+                                                 new { Model.InternalOrgId, Model.CallOffId })"/>
+                }
+                else
+                {
+                    <p>There are no Additional Services available for this Catalogue Solution.</p>
+                }
 
                 @foreach (var service in Model.AdditionalServices)
                 {
@@ -61,11 +73,18 @@
         
         <div id="AssociatedServiceDetails" class="nhsuk-u-margin-bottom-9">
             <h2>Associated Services</h2>
-            <vc:nhs-action-link text="Change Associated Services"
-                                url="@Url.Action(
-                                         nameof(AssociatedServicesController.EditAssociatedServices),
-                                         typeof(AssociatedServicesController).ControllerName(),
-                                         new { Model.InternalOrgId, Model.CallOffId })"/>
+            @if (Model.AssociatedServicesAvailable)
+            {
+                <vc:nhs-action-link text="Change Associated Services"
+                                    url="@Url.Action(
+                                             nameof(AssociatedServicesController.EditAssociatedServices),
+                                             typeof(AssociatedServicesController).ControllerName(),
+                                             new { Model.InternalOrgId, Model.CallOffId })"/>
+            }
+            else
+            {
+                <p>There are no Associated Services available for this Catalogue Solution.</p>
+            }
 
             @foreach (var service in Model.AssociatedServices)
             {
@@ -76,9 +95,8 @@
             }
         </div>
         
-        <vc:nhs-secondary-button 
-            text="Continue" 
-            use-primary-colour="true" 
-            url="@Model.BackLink"/>
+        <vc:nhs-secondary-button text="Continue" 
+                                 url="@Model.BackLink"
+                                 use-primary-colour="true"/>
     </div>
 </div>

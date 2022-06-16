@@ -2,6 +2,7 @@
 {
     public enum RoutingPoint
     {
+        ConfirmPrice,
         ConfirmPriceBackLink,
         EditPrice,
         EditPriceBackLink,

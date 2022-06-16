@@ -29,12 +29,14 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.Orders
 
         public Task<Order> GetOrderForStatusUpdate(CallOffId callOffId, string internalOrgId);
 
-        public Task<Order> CreateOrder(string description, string internalOrgId, OrderTriageValue orderTriageValue, bool isAssociatedServiceOnly);
+        public Task<Order> CreateOrder(string description, string internalOrgId, OrderTriageValue? orderTriageValue, bool isAssociatedServiceOnly);
 
         public Task DeleteOrder(CallOffId callOffId, string internalOrgId);
 
         public Task CompleteOrder(CallOffId callOffId, string internalOrgId, int userId, Uri orderSummaryUri);
 
         public Task<List<Order>> GetUserOrders(int userId);
+
+        public Task SetSolutionId(string internalOrgId, CallOffId callOffId, CatalogueItemId solutionId);
     }
 }

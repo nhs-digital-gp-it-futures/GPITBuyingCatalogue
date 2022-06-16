@@ -9,7 +9,6 @@ using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Orders;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Organisations;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Users;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.OrderDescription;
-using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.OrderTriage;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
 {
@@ -90,7 +89,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
 
             var isAssociatedServiceOnly = orderType is CatalogueItemType.AssociatedService;
 
-            var order = await orderService.CreateOrder(model.Description, model.InternalOrgId, option!.Value, isAssociatedServiceOnly);
+            var order = await orderService.CreateOrder(model.Description, model.InternalOrgId, option, isAssociatedServiceOnly);
 
             return RedirectToAction(
                 nameof(OrderController.Order),

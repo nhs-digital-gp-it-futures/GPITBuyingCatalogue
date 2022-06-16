@@ -77,7 +77,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers.SolutionSelec
         [HttpGet("select")]
         public async Task<IActionResult> SelectAssociatedServices(string internalOrgId, CallOffId callOffId)
         {
-            return View(await GetModel(internalOrgId, callOffId));
+            return View(await GetSelectServicesModel(internalOrgId, callOffId));
         }
 
         [HttpPost("select")]
@@ -85,7 +85,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers.SolutionSelec
         {
             if (!ModelState.IsValid)
             {
-                return View(await GetModel(internalOrgId, callOffId));
+                return View(await GetSelectServicesModel(internalOrgId, callOffId));
             }
 
             var serviceIds = model.Services?
@@ -114,7 +114,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers.SolutionSelec
         [HttpGet("edit")]
         public async Task<IActionResult> EditAssociatedServices(string internalOrgId, CallOffId callOffId)
         {
-            return View(SelectViewName, await GetModel(internalOrgId, callOffId, returnToTaskList: true));
+            return View(SelectViewName, await GetSelectServicesModel(internalOrgId, callOffId, returnToTaskList: true));
         }
 
         [HttpPost("edit")]
@@ -122,7 +122,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers.SolutionSelec
         {
             if (!ModelState.IsValid)
             {
-                return View(SelectViewName, await GetModel(internalOrgId, callOffId, returnToTaskList: true));
+                return View(SelectViewName, await GetSelectServicesModel(internalOrgId, callOffId, returnToTaskList: true));
             }
 
             var order = await orderService.GetOrderWithOrderItems(callOffId, internalOrgId);
@@ -244,10 +244,15 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers.SolutionSelec
                 new { internalOrgId, callOffId, model.ToAdd.First().CatalogueItemId });
         }
 
-        private async Task<SelectServicesModel> GetModel(string internalOrgId, CallOffId callOffId, bool returnToTaskList = false)
+        private async Task<SelectServicesModel> GetSelectServicesModel(string internalOrgId, CallOffId callOffId, bool returnToTaskList = false)
         {
             var order = await orderService.GetOrderThin(callOffId, internalOrgId);
-            var associatedServices = await associatedServicesService.GetPublishedAssociatedServicesForSupplier(order.SupplierId);
+
+            var solutionId = order.AssociatedServicesOnly
+                ? order.SolutionId
+                : order.GetSolution().CatalogueItemId;
+
+            var associatedServices = await associatedServicesService.GetPublishedAssociatedServicesForSolution(solutionId);
 
             var backLink = returnToTaskList
                 ? Url.Action(nameof(TaskListController.TaskList), typeof(TaskListController).ControllerName(), new { internalOrgId, callOffId })

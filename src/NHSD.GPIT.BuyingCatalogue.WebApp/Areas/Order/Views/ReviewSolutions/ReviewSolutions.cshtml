@@ -6,7 +6,17 @@
 
 @model NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.SolutionSelection.Review.ReviewSolutionsModel
 @{
-	ViewBag.Title = "Catalogue Solution and services";
+	ViewBag.Title = Model.AssociatedServicesOnly
+        ? "Associated Services"
+	    : "Catalogue Solution and services";
+
+    var advice = Model.AssociatedServicesOnly
+        ? "Review the Associated Services that you've added to this order. You can edit the items that you've added at any time."
+        : "Review the Catalogue Solution and any services that you've added to this order. You can edit the items that you've added at any time.";
+
+    var editLinkTitle = Model.AssociatedServicesOnly
+        ? "Edit Associated Services"
+        : "Edit solution and services";
 
 	var oneOffCost = Model.AllOrderItems
 		.Where(oi => oi.OrderItemPrice?.EstimationPeriod == null)
@@ -22,19 +32,17 @@
 
 	var totalCost = Model.AllOrderItems
 		.Sum(oi => oi.OrderItemPrice.CalculateTotalCostForContractLength(oi.GetQuantity(), Model.ContractLength));
-
 }
 
 <partial name="Partials/_BackLink" model="Model" />
 
 <div class="nhsuk-grid-row">
     <div class="nhsuk-grid-column-full">
-		
-		<nhs-page-title title="@ViewBag.Title"
+        <nhs-page-title title="@ViewBag.Title"
 						caption="Order @Model.CallOffId"
-						advice="Review the Catalogue Solution and any services that you've added to this order. You can edit the items that you've added at any time."/>
+						advice="@advice"/>
 
-        <vc:nhs-action-link text="Edit solution and services" 
+        <vc:nhs-action-link text="@editLinkTitle" 
                             url="@Url.Action(
                                      nameof(TaskListController.TaskList),
                                      typeof(TaskListController).ControllerName(),

@@ -136,7 +136,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
                 .ReturnsAsync(order);
 
             mockAssociatedServicesService
-                .Setup(x => x.GetPublishedAssociatedServicesForSupplier(order.SupplierId))
+                .Setup(x => x.GetPublishedAssociatedServicesForSolution(order.SolutionId))
                 .ReturnsAsync(services);
 
             var result = await controller.SelectAssociatedServices(internalOrgId, callOffId);
@@ -175,7 +175,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
                 .ReturnsAsync(order);
 
             mockAssociatedServicesService
-                .Setup(x => x.GetPublishedAssociatedServicesForSupplier(order.SupplierId))
+                .Setup(x => x.GetPublishedAssociatedServicesForSolution(order.SolutionId))
                 .ReturnsAsync(services);
 
             var result = await controller.SelectAssociatedServices(internalOrgId, callOffId, model);
@@ -270,7 +270,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
                 .ReturnsAsync(order);
 
             mockAssociatedServicesService
-                .Setup(x => x.GetPublishedAssociatedServicesForSupplier(order.SupplierId))
+                .Setup(x => x.GetPublishedAssociatedServicesForSolution(order.SolutionId))
                 .ReturnsAsync(services);
 
             var result = await controller.EditAssociatedServices(internalOrgId, order.CallOffId);

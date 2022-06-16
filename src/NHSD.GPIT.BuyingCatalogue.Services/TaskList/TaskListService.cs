@@ -93,8 +93,12 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.TaskList
                      SupplierSelected = o.Supplier != null,
                      SupplierContactSelected = o.SupplierContact != null,
                      TimeScalesCompleted = o.CommencementDate != null,
-                     SolutionsSelected = o.OrderItems.Any(),
-                     SolutionsCompleted = o.OrderItems.All(oi => oi.CatalogueItem != null && oi.OrderItemPrice != null && oi.OrderItemRecipients != null && oi.OrderItemRecipients.All(oir => oir.Quantity > 0)),
+                     SolutionsSelected = (o.AssociatedServicesOnly && o.SolutionId != null) || (!o.AssociatedServicesOnly && o.OrderItems.Any()),
+                     SolutionsCompleted = o.OrderItems.Any() && o.OrderItems.All(
+                         oi => oi.CatalogueItem != null
+                         && oi.OrderItemPrice != null
+                         && oi.OrderItemRecipients != null
+                         && oi.OrderItemRecipients.All(oir => oir.Quantity > 0)),
                      FundingInProgress = // true if any associated services or non-locally funded solutions have a funding but not all
                         o.OrderItems.Where(oi =>
                              oi.CatalogueItem.CatalogueItemType == CatalogueItemType.AssociatedService

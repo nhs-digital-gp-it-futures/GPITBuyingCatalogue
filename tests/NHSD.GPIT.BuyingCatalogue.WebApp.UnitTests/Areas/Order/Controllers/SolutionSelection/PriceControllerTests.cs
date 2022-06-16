@@ -98,6 +98,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
                 { "callOffId", callOffId },
                 { "catalogueItemId", catalogueItemId },
                 { "priceId", PriceId },
+                { "source", model.Source },
             });
         }
 
@@ -138,6 +139,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
                 SelectedPriceId = model.SelectedPriceId,
                 SolutionName = model.SolutionName,
                 SolutionType = model.SolutionType,
+                Source = model.Source,
             };
 
             actualResult.Model.Should().BeEquivalentTo(expected, m => m.Excluding(o => o.BackLink).Excluding(o => o.BackLinkText));
@@ -199,6 +201,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
             [Frozen] Mock<IOrderService> mockOrderService,
             [Frozen] Mock<ISolutionListPriceService> mockListPriceService,
             [Frozen] Mock<IOrderPriceService> mockOrderPriceService,
+            [Frozen] Mock<IRoutingService> mockRoutingService,
             PricesController controller)
         {
             var catalogueItem = order.OrderItems.First().CatalogueItem;
@@ -214,6 +217,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
                 .Setup(lps => lps.GetCatalogueItemWithPublishedListPrices(catalogueItem.Id))
                 .ReturnsAsync(catalogueItem);
 
+            mockRoutingService
+                .Setup(x => x.GetRoute(RoutingPoint.ConfirmPrice, order, It.IsAny<RouteValues>()))
+                .Returns(new RoutingResult { ActionName = Constants.Actions.SelectQuantity, ControllerName = Constants.Controllers.Quantity });
+
             List<OrderPricingTierDto> actual = null;
 
             mockOrderPriceService
@@ -228,6 +235,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
             mockOrderService.VerifyAll();
             mockListPriceService.VerifyAll();
             mockOrderPriceService.VerifyAll();
+            mockRoutingService.VerifyAll();
 
             actual.ForEach(x =>
             {
@@ -240,12 +248,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
 
             actualResult.ControllerName.Should().Be(typeof(QuantityController).ControllerName());
             actualResult.ActionName.Should().Be(nameof(QuantityController.SelectQuantity));
-            actualResult.RouteValues.Should().BeEquivalentTo(new RouteValueDictionary
-            {
-                { "internalOrgId", internalOrgId },
-                { "callOffId", callOffId },
-                { "catalogueItemId", catalogueItem.Id },
-            });
         }
 
         [Theory]
