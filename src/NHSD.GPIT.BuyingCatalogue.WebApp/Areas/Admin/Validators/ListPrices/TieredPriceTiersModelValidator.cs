@@ -10,11 +10,11 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Validators.ListPrices
     public class TieredPriceTiersModelValidator : AbstractValidator<TieredPriceTiersModel>
     {
         private const int StartingLowerRange = 1;
-        private readonly IListPriceService solutionListPriceService;
+        private readonly IListPriceService listPriceService;
 
-        public TieredPriceTiersModelValidator(IListPriceService solutionListPriceService)
+        public TieredPriceTiersModelValidator(IListPriceService listPriceService)
         {
-            this.solutionListPriceService = solutionListPriceService;
+            this.listPriceService = listPriceService;
 
             RuleFor(m => m.SelectedPublicationStatus)
                 .Must(HaveAtLeastOneTier)
@@ -29,7 +29,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Validators.ListPrices
 
         private CataloguePrice GetCataloguePrice(CatalogueItemId solutionId, int cataloguePriceId)
         {
-            var solution = solutionListPriceService.GetCatalogueItemWithListPrices(solutionId).GetAwaiter().GetResult();
+            var solution = listPriceService.GetCatalogueItemWithListPrices(solutionId).GetAwaiter().GetResult();
             var price = solution.CataloguePrices.Single(p => p.CataloguePriceId == cataloguePriceId);
             return price;
         }

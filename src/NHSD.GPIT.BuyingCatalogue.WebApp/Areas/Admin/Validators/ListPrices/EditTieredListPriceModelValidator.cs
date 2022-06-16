@@ -15,14 +15,11 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Validators.ListPrices
         private const int StartingLowerRange = 1;
 
         private readonly IListPriceService listPriceService;
-        private readonly IListPriceService solutionListPriceService;
 
         public EditTieredListPriceModelValidator(
-            IListPriceService listPriceService,
-            IListPriceService solutionListPriceService)
+            IListPriceService listPriceService)
         {
             this.listPriceService = listPriceService;
-            this.solutionListPriceService = solutionListPriceService;
 
             Include(new AddTieredListPriceModelValidator(listPriceService));
 
@@ -47,7 +44,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Validators.ListPrices
 
         private CataloguePrice GetCataloguePrice(CatalogueItemId solutionId, int? cataloguePriceId)
         {
-            var solution = solutionListPriceService.GetCatalogueItemWithListPrices(solutionId).GetAwaiter().GetResult();
+            var solution = listPriceService.GetCatalogueItemWithListPrices(solutionId).GetAwaiter().GetResult();
             var price = solution.CataloguePrices.Single(p => p.CataloguePriceId == cataloguePriceId);
             return price;
         }
