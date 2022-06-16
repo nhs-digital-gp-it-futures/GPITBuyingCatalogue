@@ -56,15 +56,30 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.Solution
 
         [Theory]
         [CommonAutoData]
-        public static void PreSelectRecipients_PropertiesCorrectlySet(
+        public static void PreSelectRecipients_WithSameOrderItem_PropertiesCorrectlySet(
             OrderItem orderItem,
             List<ServiceRecipientModel> serviceRecipients)
         {
             var model = new SelectRecipientsModel(orderItem, serviceRecipients, null);
 
-            orderItem.OrderItemRecipients.First().OdsCode = serviceRecipients.First().OdsCode;
-
             model.PreSelectRecipients(orderItem);
+
+            model.PreSelected.Should().BeFalse();
+            model.ServiceRecipients.ForEach(x => x.Selected.Should().BeFalse());
+        }
+
+        [Theory]
+        [CommonAutoData]
+        public static void PreSelectRecipients_WithDifferentOrderItem_PropertiesCorrectlySet(
+            OrderItem orderItem,
+            OrderItem baseOrderItem,
+            List<ServiceRecipientModel> serviceRecipients)
+        {
+            var model = new SelectRecipientsModel(orderItem, serviceRecipients, null);
+
+            baseOrderItem.OrderItemRecipients.First().OdsCode = serviceRecipients.First().OdsCode;
+
+            model.PreSelectRecipients(baseOrderItem);
 
             model.PreSelected.Should().BeTrue();
             model.ServiceRecipients[0].Selected.Should().BeTrue();

@@ -31,11 +31,8 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Routing.Providers
 
             if (!order.AssociatedServicesOnly)
             {
-                var solution = order.GetSolution();
-
-                if (solution == null
-                    || !(solution.OrderItemRecipients?.Any() ?? false)
-                    || solution.OrderItemPrice == null)
+                if (order.GetSolution() == null
+                    || order.OrderItems.Any(x => !x.IsReadyForReview))
                 {
                     return new RoutingResult
                     {
@@ -47,7 +44,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Routing.Providers
             }
             else
             {
-                if (order.GetAssociatedServices().Any(x => !(x.OrderItemRecipients?.Any() ?? false) || x.OrderItemPrice == null))
+                if (order.GetAssociatedServices().Any(x => !x.IsReadyForReview))
                 {
                     return new RoutingResult
                     {

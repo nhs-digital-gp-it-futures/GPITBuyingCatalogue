@@ -35,14 +35,19 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.SolutionSelection.
             switch (selectionMode)
             {
                 case SelectionMode.All:
-                    serviceRecipients.ForEach(x => x.Selected = true);
+                    ServiceRecipients.ForEach(x => x.Selected = true);
                     SelectionMode = SelectionMode.None;
                     SelectionCaption = SelectNone;
                     break;
 
                 case SelectionMode.None:
+                    ServiceRecipients.ForEach(x => x.Selected = false);
+                    SelectionMode = SelectionMode.All;
+                    SelectionCaption = SelectAll;
+                    break;
+
                 case null:
-                    serviceRecipients.ForEach(x => x.Selected = false);
+                    ServiceRecipients.ForEach(x => x.Selected = orderItem.OrderItemRecipients?.Any(r => r.OdsCode == x.OdsCode) ?? false);
                     SelectionMode = SelectionMode.All;
                     SelectionCaption = SelectAll;
                     break;
@@ -57,6 +62,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.SolutionSelection.
         public CallOffId CallOffId { get; set; }
 
         public CatalogueItemId CatalogueItemId { get; set; }
+
+        public bool AssociatedServicesOnly { get; set; }
 
         public string ItemName { get; set; }
 
@@ -80,15 +87,16 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.SolutionSelection.
                 .ToList();
         }
 
-        public void PreSelectRecipients(OrderItem solution)
+        public void PreSelectRecipients(OrderItem orderItem)
         {
             if (selectionMode != null
-                || solution?.OrderItemRecipients == null)
+                || orderItem?.OrderItemRecipients == null
+                || orderItem.CatalogueItem.Name == ItemName)
             {
                 return;
             }
 
-            var odsCodes = solution.OrderItemRecipients.Select(x => x.OdsCode);
+            var odsCodes = orderItem.OrderItemRecipients.Select(x => x.OdsCode);
 
             ServiceRecipients
                 .Where(x => odsCodes.Contains(x.OdsCode))
