@@ -37,32 +37,32 @@
 			}
 			</p>
 		}
-		<form method="post">
-			<nhs-fieldset-form-label 
-				asp-for="@Model"
-				label-text ="Select a price"
-				label-hint ="Select one option.">
-				<nhs-radio-button-container>
-					@for(int i = 0; i < Model.Prices.Count; i++)
-					{
-						var price = Model.Prices[i];
-						<nhs-radio-button 
-							asp-for="SelectedPriceId"
-							value="price.CataloguePriceId"
-							display-text="@($"Price {i + 1}: {price.PricingUnit.Description}")"
-							index="i"></nhs-radio-button>
-					}
-				</nhs-radio-button-container>
-			</nhs-fieldset-form-label>
-			<br/>
 
-			<input type="hidden" asp-for="@Model.BackLink" />
-			<input type="hidden" asp-for="@Model.SolutionName" />
-			<input type="hidden" asp-for="@Model.SolutionType" />
+        <form method="post">
+            <input type="hidden" asp-for="BackLink"/>
+            <input type="hidden" asp-for="SolutionName"/>
+            <input type="hidden" asp-for="SolutionType"/>
+            <input type="hidden" asp-for="Source"/>
 
-			<nhs-submit-button text="Continue"/>
+            <nhs-fieldset-form-label asp-for="@Model"
+                                     label-text="Select a price"
+                                     label-hint="Select one option.">
+                <nhs-radio-button-container>
+                    @for (int i = 0; i < Model.Prices.Count; i++)
+                    {
+                        var price = Model.Prices[i];
+                        <nhs-radio-button
+                            asp-for="SelectedPriceId"
+                            value="price.CataloguePriceId"
+                            display-text="@($"Price {i + 1}: {price.PricingUnit.Description}")"
+                            index="i"></nhs-radio-button>
+                    }
+                </nhs-radio-button-container>
+            </nhs-fieldset-form-label>
 
-		</form>
+            <br/>
 
+            <nhs-submit-button text="Continue"/>
+        </form>
 	</div>
 </div>

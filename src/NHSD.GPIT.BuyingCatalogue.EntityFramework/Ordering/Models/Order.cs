@@ -39,6 +39,8 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models
 
         public OrderTriageValue? OrderTriageValue { get; set; }
 
+        public CatalogueItemId? SolutionId { get; set; }
+
         public DateTime Created { get; set; } = DateTime.UtcNow;
 
         public DateTime LastUpdated { get; set; }
@@ -62,5 +64,7 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models
         public Contact SupplierContact { get; set; }
 
         public ICollection<OrderItem> OrderItems { get; set; }
+
+        public CatalogueItem Solution { get; set; }
     }
 }

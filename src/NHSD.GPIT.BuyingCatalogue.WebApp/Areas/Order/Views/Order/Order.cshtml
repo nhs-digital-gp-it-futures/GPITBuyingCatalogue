@@ -70,7 +70,6 @@
 
             @if (Model.CallOffId != default)
             {
-
                 <vc:nhs-secondary-button text="Preview order summary"
                                          url="@Url.Action(nameof(OrderController.Summary), typeof(OrderController).ControllerName(), new { Model.InternalOrgId, Model.CallOffId })"
                                          use-primary-colour="false"/>

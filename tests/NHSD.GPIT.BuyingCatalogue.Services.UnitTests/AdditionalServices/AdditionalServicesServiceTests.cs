@@ -104,5 +104,38 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.AdditionalServices
             dbSolution.Name.Should().Be(model.Name);
             dbSolution.AdditionalService.FullDescription.Should().Be(model.Description);
         }
+
+        [Theory]
+        [CommonAutoData]
+        public static async Task GetAdditionalServicesByServiceId_NullCatalogueItemId_ReturnsEmptySet(
+            AdditionalServicesService service)
+        {
+            var result = await service.GetAdditionalServicesBySolutionId(null);
+
+            result.Should().NotBeNull();
+            result.Should().BeEmpty();
+        }
+
+        [Theory]
+        [InMemoryDbAutoData]
+        public static async Task GetAdditionalServicesByServiceId_ExpectedResult(
+            [Frozen] BuyingCatalogueDbContext context,
+            CatalogueItem solution,
+            CatalogueItem additionalService,
+            AdditionalServicesService service)
+        {
+            additionalService.CatalogueItemType = CatalogueItemType.AdditionalService;
+            additionalService.AdditionalService = new AdditionalService { SolutionId = solution.Id };
+
+            context.CatalogueItems.Add(solution);
+            context.CatalogueItems.Add(additionalService);
+
+            await context.SaveChangesAsync();
+
+            var result = await service.GetAdditionalServicesBySolutionId(solution.Id);
+
+            result.Should().NotBeNull();
+            result.Should().BeEquivalentTo(new[] { additionalService });
+        }
     }
 }

@@ -31,6 +31,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.SolutionSelection.
 
         public string Name { get; set; }
 
+        public int NumberOfPrices { get; set; }
+
+        public int PriceId { get; set; }
+
         public TaskProgress ServiceRecipientsStatus { get; set; }
 
         public TaskProgress PriceStatus { get; set; }

@@ -1,8 +1,13 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
+using AutoFixture.Xunit2;
 using FluentAssertions;
+using LinqKit;
+using Moq;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
+using NHSD.GPIT.BuyingCatalogue.ServiceContracts.AssociatedServices;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Routing;
 using NHSD.GPIT.BuyingCatalogue.Services.Routing.Providers;
 using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.AutoFixtureCustomisations;
@@ -135,6 +140,42 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Routing.Providers
             solution.CatalogueItem.CatalogueItemType = CatalogueItemType.Solution;
 
             var result = provider.Process(order, new RouteValues(internalOrgId, callOffId, solution.CatalogueItemId));
+
+            var expected = new
+            {
+                InternalOrgId = internalOrgId,
+                CallOffId = callOffId,
+            };
+
+            result.ActionName.Should().Be(Constants.Actions.Review);
+            result.ControllerName.Should().Be(Constants.Controllers.Review);
+            result.RouteValues.Should().BeEquivalentTo(expected);
+        }
+
+        [Theory]
+        [CommonAutoData]
+        public void Process_OrderHasNoAssociatedServices_AndSomeAreAvailable_ExpectedResult(
+            string internalOrgId,
+            CallOffId callOffId,
+            Order order,
+            List<CatalogueItem> associatedServices,
+            [Frozen] Mock<IAssociatedServicesService> mockAssociatedServicesService,
+            SelectQuantityProvider provider)
+        {
+            order.AssociatedServicesOnly = false;
+            order.OrderItems.ForEach(x => x.CatalogueItem.CatalogueItemType = CatalogueItemType.AdditionalService);
+            order.OrderItems.ElementAt(0).CatalogueItem.CatalogueItemType = CatalogueItemType.Solution;
+
+            mockAssociatedServicesService
+                .Setup(x => x.GetPublishedAssociatedServicesForSolution(order.OrderItems.First().CatalogueItemId))
+                .ReturnsAsync(associatedServices);
+
+            var result = provider.Process(order, new RouteValues(
+                internalOrgId,
+                callOffId,
+                order.OrderItems.First().CatalogueItemId));
+
+            mockAssociatedServicesService.VerifyAll();
 
             var expected = new
             {

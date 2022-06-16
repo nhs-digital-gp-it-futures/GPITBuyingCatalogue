@@ -26,9 +26,9 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering.SolutionSelection.Ta
 
         protected override string PageTitle => "Edit solutions and services - Order C090014-01";
 
-        protected override bool SolutionDisplayed => false;
-
         protected override bool AdditionalServicesDisplayed => false;
+
+        protected override bool ChangeAdditionalServicesLinkVisible => false;
 
         protected override List<TaskListOrderItem> OrderItems => new()
         {
@@ -44,8 +44,10 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering.SolutionSelection.Ta
             },
         };
 
-        protected override Type OnwardController => typeof(ReviewSolutionsController);
+        protected override Type ContinueController => typeof(ReviewSolutionsController);
 
-        protected override string OnwardAction => nameof(ReviewSolutionsController.ReviewSolutions);
+        protected override string ContinueAction => nameof(ReviewSolutionsController.ReviewSolutions);
+
+        protected override string ChangeSolutionAction => nameof(CatalogueSolutionsController.EditSolutionAssociatedServicesOnly);
     }
 }

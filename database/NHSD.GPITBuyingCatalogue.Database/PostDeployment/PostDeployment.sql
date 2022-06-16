@@ -49,3 +49,4 @@
 :r ./ProdLikeData/MergeCataloguePrices.sql
 
 :r ./OrderSeedData/InsertTestOrderSeedData.sql
+:r ./InsertSupplierServiceAssociations.sql

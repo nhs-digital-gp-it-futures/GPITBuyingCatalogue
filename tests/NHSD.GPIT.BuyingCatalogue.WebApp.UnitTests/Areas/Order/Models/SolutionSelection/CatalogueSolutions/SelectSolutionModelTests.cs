@@ -4,7 +4,7 @@ using FluentAssertions;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.AutoFixtureCustomisations;
-using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.SolutionSelection.CatalogueSolutions;
+using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.SolutionSelection.Shared;
 using Xunit;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.SolutionSelection.CatalogueSolutions
@@ -20,6 +20,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.Solution
         {
             var model = new SelectSolutionModel(order, solutions, additionalServices);
 
+            model.AssociatedServicesOnly.Should().Be(order.AssociatedServicesOnly);
+            model.CallOffId.Should().Be(order.CallOffId);
             model.SupplierName.Should().Be(order.Supplier.Name);
 
             foreach (var solution in solutions)
