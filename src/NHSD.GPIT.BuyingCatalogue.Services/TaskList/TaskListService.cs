@@ -95,11 +95,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.TaskList
                      TimeScalesCompleted = o.CommencementDate != null,
                      SolutionsSelected = o.OrderItems.Any(),
                      SolutionsCompleted = o.OrderItems.All(oi => oi.CatalogueItem != null && oi.OrderItemPrice != null && oi.OrderItemRecipients != null && oi.OrderItemRecipients.All(oir => oir.Quantity > 0)),
-                     FundingInProgress = // true if any associated services or non-locally funded solutions have a funding but not all
-                        o.OrderItems.Where(oi =>
-                             oi.CatalogueItem.CatalogueItemType == CatalogueItemType.AssociatedService
-                             || (oi.CatalogueItem.CatalogueItemType == CatalogueItemType.Solution && oi.CatalogueItem.Solution.FrameworkSolutions.Any(fs => !fs.Framework.LocalFundingOnly)))
-                             .Any(oi => oi.OrderItemFunding != null),
+                     FundingInProgress = o.OrderItems.Any(oi => oi.OrderItemFunding != null),
                      FundingCompleted = o.OrderItems.All(oi => oi.OrderItemFunding != null),
                      OrderCompleted = o.Completed != null,
                  }).SingleOrDefaultAsync();

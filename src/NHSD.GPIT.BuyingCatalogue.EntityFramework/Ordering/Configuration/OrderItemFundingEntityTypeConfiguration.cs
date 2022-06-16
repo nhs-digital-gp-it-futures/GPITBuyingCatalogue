@@ -17,17 +17,9 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Configuration
                 .HasMaxLength(14)
                 .HasConversion(id => id.ToString(), id => CatalogueItemId.ParseExact(id));
 
-            builder.Property(oif => oif.TotalPrice)
+            builder.Property(oif => oif.OrderItemFundingType)
                 .IsRequired()
-                .HasPrecision(18, 4);
-
-            builder.Property(oif => oif.CentralAllocation)
-                .IsRequired()
-                .HasPrecision(18, 4);
-
-            builder.Property(oif => oif.LocalAllocation)
-                .IsRequired()
-                .HasPrecision(18, 4);
+                .HasConversion<int>();
 
             builder.Property(oif => oif.LastUpdated)
                 .IsRequired()

@@ -193,8 +193,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.ManageOrders
             if (orderItem.OrderItemFunding is null)
                 SetOrderItemFunding(orderItem);
 
-            orderItem.OrderItemFunding.CentralAllocation = orderItem.OrderItemFunding.TotalPrice;
-            orderItem.OrderItemFunding.LocalAllocation = 0;
+            orderItem.OrderItemFunding.OrderItemFundingType = OrderItemFundingType.CentralFunding;
 
             context.SaveChangesAs(UserSeedData.SueId);
 
@@ -219,8 +218,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.ManageOrders
             if (orderItem.OrderItemFunding is null)
                 SetOrderItemFunding(orderItem);
 
-            orderItem.OrderItemFunding.CentralAllocation = 0;
-            orderItem.OrderItemFunding.LocalAllocation = orderItem.OrderItemFunding.TotalPrice;
+            orderItem.OrderItemFunding.OrderItemFundingType = OrderItemFundingType.LocalFunding;
 
             context.SaveChangesAs(UserSeedData.SueId);
 
@@ -239,7 +237,6 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.ManageOrders
                 OrderId = item.OrderId,
                 CatalogueItemId = item.CatalogueItemId,
                 OrderItem = item,
-                TotalPrice = 1000,
             };
         }
     }

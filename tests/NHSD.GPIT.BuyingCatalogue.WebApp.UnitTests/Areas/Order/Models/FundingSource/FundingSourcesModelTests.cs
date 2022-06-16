@@ -1,6 +1,7 @@
 ﻿using System.Linq;
 using FluentAssertions;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
+using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.AutoFixtureCustomisations;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.FundingSources;
 using Xunit;
@@ -36,11 +37,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.FundingS
             EntityFramework.Ordering.Models.Order order,
             Solution solution)
         {
-            solution.FrameworkSolutions.First().Framework.LocalFundingOnly = true;
-            solution.FrameworkSolutions = solution.FrameworkSolutions.Where(fs => fs.Framework.LocalFundingOnly).ToList();
-
             order.OrderItems.First().CatalogueItem.CatalogueItemType = CatalogueItemType.Solution;
             order.OrderItems.First().CatalogueItem.Solution = solution;
+            order.OrderItems.First().OrderItemFunding.OrderItemFundingType = OrderItemFundingType.LocalFundingOnly;
 
             order.OrderItems = order.OrderItems.Where(oi => oi.CatalogueItem.CatalogueItemType == CatalogueItemType.Solution).ToList();
 
@@ -61,11 +60,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.FundingS
             EntityFramework.Ordering.Models.Order order,
             Solution solution)
         {
-            solution.FrameworkSolutions.First().Framework.LocalFundingOnly = true;
-            solution.FrameworkSolutions = solution.FrameworkSolutions.Where(fs => fs.Framework.LocalFundingOnly).ToList();
-
             order.OrderItems.First().CatalogueItem.CatalogueItemType = CatalogueItemType.Solution;
             order.OrderItems.Where(oi => oi.CatalogueItem.CatalogueItemType != CatalogueItemType.Solution).ToList().ForEach(oi => oi.CatalogueItem.CatalogueItemType = CatalogueItemType.AdditionalService);
+            order.OrderItems.ToList().ForEach(oi => oi.OrderItemFunding.OrderItemFundingType = OrderItemFundingType.LocalFundingOnly);
             order.OrderItems.First().CatalogueItem.Solution = solution;
 
             var model = new FundingSources(internalOrgId, order.CallOffId, order);
@@ -89,6 +86,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.FundingS
 
             order.OrderItems.First().CatalogueItem.CatalogueItemType = CatalogueItemType.Solution;
             order.OrderItems.First().CatalogueItem.Solution = solution;
+            order.OrderItems.First().OrderItemFunding.OrderItemFundingType = OrderItemFundingType.MixedFunding;
 
             order.OrderItems = order.OrderItems.Where(oi => oi.CatalogueItem.CatalogueItemType == CatalogueItemType.Solution).ToList();
 
@@ -109,10 +107,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.FundingS
             EntityFramework.Ordering.Models.Order order,
             Solution solution)
         {
-            solution.FrameworkSolutions.First().Framework.LocalFundingOnly = true;
-            solution.FrameworkSolutions = solution.FrameworkSolutions.Where(fs => fs.Framework.LocalFundingOnly).ToList();
-
             order.OrderItems.First().CatalogueItem.CatalogueItemType = CatalogueItemType.Solution;
+            order.OrderItems.First().OrderItemFunding.OrderItemFundingType = OrderItemFundingType.LocalFundingOnly;
             order.OrderItems.Where(oi => oi.CatalogueItem.CatalogueItemType != CatalogueItemType.Solution).ToList().ForEach(oi => oi.CatalogueItem.CatalogueItemType = CatalogueItemType.AssociatedService);
             order.OrderItems.First().CatalogueItem.Solution = solution;
 

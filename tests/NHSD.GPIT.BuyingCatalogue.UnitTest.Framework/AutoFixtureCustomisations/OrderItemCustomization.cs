@@ -1,12 +1,9 @@
 ﻿using System;
-using System.Linq;
 using AutoFixture;
 using AutoFixture.Dsl;
 using AutoFixture.Kernel;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
-using NHSD.GPIT.BuyingCatalogue.Framework.Calculations;
-using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.AutoFixtureCustomisations.AutoFixtureExtensions;
 
 namespace NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.AutoFixtureCustomisations
 {
@@ -27,7 +24,7 @@ namespace NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.AutoFixtureCustomisations
             fixture.Customize<OrderItem>(ComposerTransformation);
         }
 
-        private sealed class OrderItemSpeciminBuilder : ISpecimenBuilder
+        public sealed class OrderItemSpeciminBuilder : ISpecimenBuilder
         {
             public object Create(object request, ISpecimenContext context)
             {
@@ -36,10 +33,10 @@ namespace NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.AutoFixtureCustomisations
 
                 var item = new OrderItem();
 
+                AddOrderItemCatalogueItem(item, context);
                 AddOrderItemRecipients(item, context);
                 AddOrderItemPrice(item, context);
                 AddOrderItemFunding(item, context);
-                AddOrderItemCatalogueItem(item, context);
 
                 return item;
             }
@@ -64,15 +61,6 @@ namespace NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.AutoFixtureCustomisations
                 funding.CatalogueItemId = item.CatalogueItemId;
                 funding.OrderId = item.OrderId;
                 funding.OrderItem = item;
-
-                var totalQuantity = item.OrderItemRecipients.Sum(oir => oir.Quantity);
-
-                var totalCost = item.OrderItemPrice.CalculateTotalCost(item.GetQuantity());
-
-                funding.TotalPrice = totalCost;
-
-                funding.CentralAllocation = context.CreateDecimalWithRange(0, funding.TotalPrice);
-                funding.LocalAllocation = funding.TotalPrice - funding.CentralAllocation;
 
                 item.OrderItemFunding = funding;
             }

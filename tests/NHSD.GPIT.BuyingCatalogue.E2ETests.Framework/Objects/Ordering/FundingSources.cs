@@ -9,14 +9,12 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.Objects.Ordering
 
         public static By LocalOnlyFundingSourcesTable => ByExtensions.DataTestId("funding-sources-items-local-only");
 
+        public static By NoFundingRequiredSourcesTable => ByExtensions.DataTestId("funding-sources-items-no-funding-required");
+
         public static By EditLink => By.LinkText("Edit");
 
         public static By FundingSource => By.Id("funding-source");
 
         public static By FundingSourceError => By.Id("funding-source-error");
-
-        public static By AmountOfCentralFunding => By.Id("AmountOfCentralFunding");
-
-        public static By AmountOfCentralFundingError => By.Id("AmountOfCentralFunding-error");
     }
 }

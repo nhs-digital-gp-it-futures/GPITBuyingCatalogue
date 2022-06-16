@@ -9,11 +9,7 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models
 
         public CatalogueItemId CatalogueItemId { get; set; }
 
-        public decimal TotalPrice { get; set; }
-
-        public decimal CentralAllocation { get; set; }
-
-        public decimal LocalAllocation { get; set; }
+        public OrderItemFundingType OrderItemFundingType { get; set; }
 
         public DateTime LastUpdated { get; set; }
 

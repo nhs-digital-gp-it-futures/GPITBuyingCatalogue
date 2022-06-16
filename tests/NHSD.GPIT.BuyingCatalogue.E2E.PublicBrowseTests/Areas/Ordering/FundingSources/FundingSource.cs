@@ -7,7 +7,6 @@ using Microsoft.EntityFrameworkCore;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Utils;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.TestBases;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
-using NHSD.GPIT.BuyingCatalogue.Framework.Calculations;
 using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers.FundingSource;
 using Xunit;
@@ -52,12 +51,6 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering.FundingSources
                 CommonActions.GoBackLinkDisplayed().Should().BeTrue();
                 CommonActions.SaveButtonDisplayed().Should().BeTrue();
                 CommonActions.GetNumberOfRadioButtonsDisplayed().Should().Be(3);
-
-                CommonActions.ElementIsDisplayed(Objects.Ordering.FundingSources.AmountOfCentralFunding).Should().BeFalse();
-
-                CommonActions.ClickRadioButtonWithText("Mixed funding");
-
-                CommonActions.ElementIsDisplayed(Objects.Ordering.FundingSources.AmountOfCentralFunding).Should().BeTrue();
             });
         }
 
@@ -81,46 +74,11 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering.FundingSources
         }
 
         [Fact]
-        public void FundingSource_MixedFunding_NoCentralAllocation_Errors()
-        {
-            RunTest(() =>
-            {
-                CommonActions.ClickRadioButtonWithText("Mixed funding");
-
-                CommonActions.ClickSave();
-
-                CommonActions.PageLoadedCorrectGetIndex(
-                    typeof(FundingSourceController),
-                    nameof(FundingSourceController.FundingSource))
-                    .Should().BeTrue();
-
-                CommonActions.ErrorSummaryDisplayed().Should().BeTrue();
-                CommonActions.ErrorSummaryLinksExist().Should().BeTrue();
-
-                CommonActions.ElementIsDisplayed(Objects.Ordering.FundingSources.AmountOfCentralFundingError).Should().BeTrue();
-            });
-        }
-
-        [Fact]
         public async Task FundingSource_ExpectedInput_CorrectResults()
         {
             await RunTestAsync(async () =>
             {
-                await using var dbcontext = GetEndToEndDbContext();
-
-                var orderItem = await dbcontext.OrderItems
-                    .Include(oi => oi.OrderItemRecipients)
-                    .Include(oi => oi.OrderItemPrice).ThenInclude(oi => oi.OrderItemPriceTiers)
-                    .Include(oi => oi.OrderItemFunding)
-                    .FirstOrDefaultAsync(oi => oi.OrderId == CallOffId.Id && oi.CatalogueItemId == CatalogueItemId);
-
                 CommonActions.ClickRadioButtonWithText("Mixed funding");
-
-                var totalCost = orderItem.OrderItemPrice.CalculateTotalCost(orderItem.GetQuantity());
-
-                var centralAllocation = TextGenerators.PriceInputAddPrice(Objects.Ordering.FundingSources.AmountOfCentralFunding, totalCost > 99999M ? 99999M : totalCost);
-
-                var centralAllocationDecimal = decimal.Parse(centralAllocation);
 
                 CommonActions.ClickSave();
 
@@ -129,12 +87,12 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering.FundingSources
                     nameof(FundingSourceController.FundingSources))
                     .Should().BeTrue();
 
+                await using var dbcontext = GetEndToEndDbContext();
+
                 var orderItemSaved = await dbcontext.OrderItems
                 .Include(oi => oi.OrderItemFunding)
                 .FirstOrDefaultAsync(oi => oi.OrderId == CallOffId.Id && oi.CatalogueItemId == CatalogueItemId);
 
-                orderItemSaved.OrderItemFunding.CentralAllocation.Should().Be(centralAllocationDecimal);
-                orderItemSaved.OrderItemFunding.LocalAllocation.Should().Be(totalCost - centralAllocationDecimal);
                 orderItemSaved.CurrentFundingType().Should().Be(OrderItemFundingType.MixedFunding);
             });
         }

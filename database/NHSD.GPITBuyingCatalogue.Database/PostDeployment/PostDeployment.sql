@@ -27,6 +27,7 @@
 
 :r ./InsertOrderStatuses.sql
 :r ./InsertOrderTriageValues.sql
+:r ./InsertOrderItemFundingTypes.sql
 :r ./InsertTimeUnits.sql
 :r ./InsertSolutions.sql
 :r ./InsertAdditionalServices.sql

@@ -1,7 +1,6 @@
 ﻿using AutoFixture.Xunit2;
 using FluentAssertions;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
-using NHSD.GPIT.BuyingCatalogue.Framework.Calculations;
 using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.AutoFixtureCustomisations;
 using Xunit;
 
@@ -25,8 +24,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.FundingS
             model.InternalOrgId.Should().Be(internalOrgId);
             model.Caption.Should().Be($"Order {callOffId}");
             model.SelectedFundingType.Should().Be(OrderItemFundingType.None);
-            model.AmountOfCentralFunding.Should().BeNull();
-            model.TotalCost.Should().Be(orderItem.OrderItemPrice.CalculateTotalCost(orderItem.GetQuantity()));
         }
 
         [Theory]
@@ -43,8 +40,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.FundingS
             model.InternalOrgId.Should().Be(internalOrgId);
             model.Caption.Should().Be($"Order {callOffId}");
             model.SelectedFundingType.Should().Be(orderItem.CurrentFundingType());
-            model.AmountOfCentralFunding.Should().Be(orderItem.OrderItemFunding.CentralAllocation);
-            model.TotalCost.Should().Be(orderItem.OrderItemPrice.CalculateTotalCost(orderItem.GetQuantity()));
         }
     }
 }

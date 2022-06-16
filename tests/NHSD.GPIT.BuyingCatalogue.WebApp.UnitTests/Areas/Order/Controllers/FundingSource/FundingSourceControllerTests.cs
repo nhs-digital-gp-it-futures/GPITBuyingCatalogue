@@ -84,10 +84,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Fun
             var model = new WebApp.Areas.Order.Models.FundingSources.FundingSource(internalOrgId, order.CallOffId, orderItem)
             {
                 SelectedFundingType = OrderItemFundingType.CentralFunding,
-                AmountOfCentralFunding = orderItem.OrderItemPrice.CalculateTotalCost(orderItem.GetQuantity()),
             };
 
-            orderItemServiceMock.Setup(oi => oi.SaveOrUpdateOrderItemFunding(order.CallOffId, internalOrgId, orderItem.CatalogueItemId, model.SelectedFundingType, model.AmountOfCentralFunding))
+            orderItemServiceMock.Setup(oi => oi.SaveOrUpdateOrderItemFunding(order.CallOffId, internalOrgId, orderItem.CatalogueItemId, model.SelectedFundingType))
                 .ReturnsAsync(orderItem);
 
             var actual = await controller.FundingSource(internalOrgId, order.CallOffId, orderItem.CatalogueItemId, model);

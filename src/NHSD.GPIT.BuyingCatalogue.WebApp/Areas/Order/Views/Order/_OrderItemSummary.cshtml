@@ -83,61 +83,17 @@
 
     @if(fundingType != OrderItemFundingType.None) {
         <br />
-        <nhs-table label-text="Funding source" catches-errors="false">
-            <nhs-table-column>Funding type</nhs-table-column>
-            <nhs-table-column>Allocation</nhs-table-column>
-            <nhs-table-column>Start date</nhs-table-column>
-            <nhs-table-column>End date</nhs-table-column>
-
-            @if (fundingType == OrderItemFundingType.MixedFunding && totalCost > 0)
-            {
-                var centralEndDate = Model.GetCentralAllocationEndDate(totalCost)!.Value;
-                var localStartDate = centralEndDate.AddDays(1);
-
-                var centralEndDateFormatted = centralEndDate.ToString("dd MMMM yyyy", System.Globalization.CultureInfo.InvariantCulture);
-                var localStartDateFormatted = localStartDate.ToString("dd MMMM yyyy", System.Globalization.CultureInfo.InvariantCulture);
-                <nhs-table-row-container>
-                    <nhs-table-cell>@GetFundingName(OrderItemFundingType.CentralFunding)</nhs-table-cell>
-                    <nhs-table-cell>£@Model.OrderItemFunding.CentralAllocation.ToString("N2")</nhs-table-cell>
-                    <nhs-table-cell>@startDateFormatted</nhs-table-cell>
-                    <nhs-table-cell>@centralEndDateFormatted</nhs-table-cell>
-                </nhs-table-row-container>
-                <nhs-table-row-container>
-                    <nhs-table-cell>@GetFundingName(OrderItemFundingType.LocalFunding)</nhs-table-cell>
-                    <nhs-table-cell>£@Model.OrderItemFunding.LocalAllocation.ToString("N2")</nhs-table-cell>
-                    <nhs-table-cell>@localStartDateFormatted</nhs-table-cell>
-                    <nhs-table-cell>@endDateFormatted</nhs-table-cell>
-                </nhs-table-row-container>
-            } else {
-                <nhs-table-row-container>
-                    <nhs-table-cell>@GetFundingName(fundingType)</nhs-table-cell>
-                    <nhs-table-cell>£@GetAllocation().ToString("N2")</nhs-table-cell>
-                    <nhs-table-cell>@startDateFormatted</nhs-table-cell>
-                    <nhs-table-cell>@endDateFormatted</nhs-table-cell>
-                </nhs-table-row-container>
-            }
-        </nhs-table>
+        <b>*@GetFundingTypeContent(fundingType, Model.CatalogueItem.CatalogueItemType)</b>
     }
 </nhs-expander>
 
 @{
-    decimal GetAllocation()
-    {
-        var fundingType = Model.CurrentFundingType();
-
-        return fundingType switch
-        {
-            OrderItemFundingType.CentralFunding => Model.OrderItemFunding.CentralAllocation,
-            OrderItemFundingType.LocalFunding => Model.OrderItemFunding.LocalAllocation,
-            _ => throw new InvalidOperationException(),
-        };
-    }
-
-    string GetFundingName(OrderItemFundingType fundingType)
-    => fundingType switch
-    {
-        OrderItemFundingType.CentralFunding => "Central",
-        OrderItemFundingType.LocalFunding => "Local",
-        OrderItemFundingType.MixedFunding or _ => "Mixed",
-    };
+	string GetFundingTypeContent(OrderItemFundingType fundingType, CatalogueItemType typeofSolution)
+	=> fundingType switch
+	{
+		OrderItemFundingType.CentralFunding => $"This {typeofSolution.DisplayName()} is being paid for using central funding.",
+		OrderItemFundingType.LocalFunding => $"This {typeofSolution.DisplayName()} is being paid for using local funding.",
+		OrderItemFundingType.NoFundingRequired => $"This {typeofSolution.DisplayName()} does not require funding.",
+		OrderItemFundingType.MixedFunding or _ => $"This {typeofSolution.DisplayName()} is being paid for using a mix of central and local funding.",
+	};
 }

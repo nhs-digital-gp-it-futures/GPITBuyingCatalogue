@@ -97,21 +97,79 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
                     && oi.CatalogueItemId == catalogueItemId
                     && oi.Order.OrderingParty.InternalIdentifier == internalOrgId);
 
-        public async Task<OrderItem> SaveOrUpdateOrderItemFunding(CallOffId callOffId, string internalOrgId, CatalogueItemId catalogueItemId, OrderItemFundingType selectedFundingType, decimal? centrallyAllocatedAmount = null)
+        public async Task<OrderItem> SaveOrUpdateFundingIfItemIsLocalOrNoFunding(CallOffId callOffId, string internalOrgId, CatalogueItemId catalogueItemId)
         {
-            var item = await dbContext.OrderItems
+            var item = await GetOrderItemTracked(callOffId, internalOrgId, catalogueItemId);
+
+            var (isForcedFunding, fundingType) = await OrderItemShouldHaveForcedFundingType(item);
+
+            if (isForcedFunding && !item.IsCurrentlyForcedFunding())
+            {
+                return await SaveOrUpdateOrderItemFunding(item, callOffId, catalogueItemId, fundingType);
+            }
+            else if (!isForcedFunding && item.IsCurrentlyForcedFunding())
+            {
+                item.OrderItemFunding = null;
+
+                _ = await dbContext.SaveChangesAsync();
+            }
+
+            return item;
+        }
+
+        public async Task<OrderItem> SaveOrUpdateOrderItemFunding(CallOffId callOffId, string internalOrgId, CatalogueItemId catalogueItemId, OrderItemFundingType selectedFundingType)
+        {
+            var item = await GetOrderItemTracked(callOffId, internalOrgId, catalogueItemId);
+
+            return await SaveOrUpdateOrderItemFunding(item, callOffId, catalogueItemId, selectedFundingType);
+        }
+
+        public async Task<(bool IsForcedFunding, OrderItemFundingType FundingType)> OrderItemShouldHaveForcedFundingType(OrderItem item)
+        {
+            if (item is null)
+                throw new ArgumentNullException(nameof(item));
+
+            if (item.OrderItemPrice.CalculateTotalCost(item.GetQuantity()) == 0)
+                return (true, OrderItemFundingType.NoFundingRequired);
+
+            if (item.CatalogueItem.CatalogueItemType == EntityFramework.Catalogue.Models.CatalogueItemType.AssociatedService)
+                return (false, OrderItemFundingType.None);
+
+            if (item.CatalogueItem.CatalogueItemType == EntityFramework.Catalogue.Models.CatalogueItemType.Solution
+                && await dbContext.CatalogueItems.Where(ci => ci.Id == item.CatalogueItemId && ci.Solution.FrameworkSolutions.All(fs => fs.Framework.LocalFundingOnly)).AnyAsync())
+                return (true, OrderItemFundingType.LocalFundingOnly);
+
+            if (await dbContext.CatalogueItems.Where(ci =>
+            ci.Id == item.CatalogueItemId
+            && ci.CatalogueItemType == EntityFramework.Catalogue.Models.CatalogueItemType.AdditionalService
+            && ci.AdditionalService.Solution.FrameworkSolutions.All(fs => fs.Framework.LocalFundingOnly)).AnyAsync())
+                return (true, OrderItemFundingType.LocalFundingOnly);
+
+            return (false, OrderItemFundingType.None);
+        }
+
+        public Task<OrderItem> GetOrderItemTracked(CallOffId callOffId, string internalOrgId, CatalogueItemId catalogueItemId) =>
+            dbContext.OrderItems
                 .Include(oi => oi.OrderItemFunding)
                 .Include(oi => oi.CatalogueItem)
                 .Include(oi => oi.OrderItemPrice).ThenInclude(ip => ip.OrderItemPriceTiers)
-                .Include(oi => oi.OrderItemRecipients)
+                .Include(oi => oi.OrderItemRecipients).ThenInclude(ir => ir.Recipient)
                 .SingleOrDefaultAsync(oi =>
                     oi.OrderId == callOffId.Id
                     && oi.CatalogueItemId == catalogueItemId
                     && oi.Order.OrderingParty.InternalIdentifier == internalOrgId);
 
-            decimal totalCost = item.OrderItemPrice.CalculateTotalCost(item.GetQuantity());
+        public async Task<OrderItem> SaveOrUpdateOrderItemFunding(
+            OrderItem item,
+            CallOffId callOffId,
+            CatalogueItemId catalogueItemId,
+            OrderItemFundingType selectedFundingType)
+        {
+            if (item is null)
+                throw new ArgumentNullException(nameof(item));
 
-            var (localAllocation, centralAllocation) = CalculateFundingSplit(totalCost, selectedFundingType, centrallyAllocatedAmount);
+            if (item.CurrentFundingType() == selectedFundingType)
+                return item;
 
             if (item.OrderItemFunding is null)
             {
@@ -119,30 +177,17 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
                 {
                     OrderId = callOffId.Id,
                     CatalogueItemId = catalogueItemId,
-                    TotalPrice = totalCost,
-                    CentralAllocation = centralAllocation,
-                    LocalAllocation = localAllocation,
+                    OrderItemFundingType = selectedFundingType,
                 };
             }
             else
             {
-                item.OrderItemFunding.TotalPrice = totalCost;
-                item.OrderItemFunding.CentralAllocation = centralAllocation;
-                item.OrderItemFunding.LocalAllocation = localAllocation;
+                item.OrderItemFunding.OrderItemFundingType = selectedFundingType;
             }
 
             await dbContext.SaveChangesAsync();
 
             return item;
         }
-
-        private static (decimal LocalAllocation, decimal CentralAllocation) CalculateFundingSplit(decimal totalCost, OrderItemFundingType fundingType, decimal? centralAllocation) =>
-            fundingType switch
-            {
-                OrderItemFundingType.CentralFunding => (0M, totalCost),
-                OrderItemFundingType.LocalFunding => (totalCost, 0M),
-                OrderItemFundingType.MixedFunding => (totalCost - centralAllocation.Value, centralAllocation.Value),
-                _ or OrderItemFundingType.None => throw new ArgumentOutOfRangeException(nameof(fundingType)),
-            };
     }
 }
