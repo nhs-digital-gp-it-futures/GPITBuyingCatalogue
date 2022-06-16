@@ -150,7 +150,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
             {
                 InternalOrgId = internalOrgId,
                 CallOffId = callOffId,
-                AssociatedServicesOnly = true,
+                AssociatedServicesOnly = order.AssociatedServicesOnly,
             };
 
             actualResult.Model.Should().BeEquivalentTo(expected, x => x.Excluding(o => o.BackLink));
@@ -189,7 +189,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
             {
                 InternalOrgId = internalOrgId,
                 CallOffId = callOffId,
-                AssociatedServicesOnly = true,
+                AssociatedServicesOnly = order.AssociatedServicesOnly,
             };
 
             actualResult.Model.Should().BeEquivalentTo(expected, x => x.Excluding(o => o.BackLink));

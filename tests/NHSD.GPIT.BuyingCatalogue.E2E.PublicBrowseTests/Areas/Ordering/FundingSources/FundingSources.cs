@@ -80,7 +80,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering.FundingSources
                 nameof(FundingSourceController.FundingSources),
                 ParametersNoFunding);
 
-            CommonActions.PageTitle().Should().BeEquivalentTo($"Select funding sources - Order {DFOCVCCallOffId}".FormatForComparison());
+            CommonActions.PageTitle().Should().BeEquivalentTo($"Select funding sources - Order {NoFundingCallOffId}".FormatForComparison());
             CommonActions.GoBackLinkDisplayed().Should().BeTrue();
             CommonActions.SaveButtonDisplayed().Should().BeTrue();
             CommonActions.ElementIsDisplayed(Objects.Ordering.FundingSources.LocalOnlyFundingSourcesTable).Should().BeFalse();

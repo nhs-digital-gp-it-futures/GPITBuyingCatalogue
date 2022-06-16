@@ -332,7 +332,6 @@
     <None Include="Security\Roles\BackgroundProcessor.sql" />
     <None Include="PostDeployment\InsertCataloguePriceCalculationTypes.sql" />
     <None Include="PostDeployment\InsertCataloguePriceQuantityCalculationTypes.sql" />
-    <None Include="PostDeployment\InsertOrderItemFundingTypes.sql" />
   </ItemGroup>
   <ItemGroup>
     <PostDeploy Include="PostDeployment\PostDeployment.sql" />
