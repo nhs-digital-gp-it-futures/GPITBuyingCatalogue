@@ -110,6 +110,7 @@
     string GetEditPriceUrl(CataloguePrice cataloguePrice) => cataloguePrice.CataloguePriceType switch {
         CataloguePriceType.Flat => GetEditFlatPriceUrl(cataloguePrice),
         CataloguePriceType.Tiered => GetEditTieredPriceUrl(cataloguePrice),
+        _ => string.Empty,
         };
 
     string GetEditTieredPriceUrl(CataloguePrice cataloguePrice) => Model.CatalogueItemType switch {
@@ -121,6 +122,7 @@
             nameof(AdditionalServiceListPriceController.EditTieredListPrice),
             typeof(AdditionalServiceListPriceController).ControllerName(),
             new { solutionId = Model.CatalogueItemId, AdditionalServiceId = Model.ServiceId, cataloguePrice.CataloguePriceId }),
+        _ => string.Empty,
         };
 
     string GetEditFlatPriceUrl(CataloguePrice cataloguePrice) => Model.CatalogueItemType switch {
@@ -132,5 +134,6 @@
             nameof(AdditionalServiceListPriceController.EditFlatListPrice),
             typeof(AdditionalServiceListPriceController).ControllerName(),
             new { solutionId = Model.CatalogueItemId, AdditionalServiceId = Model.ServiceId, cataloguePrice.CataloguePriceId }),
+        _ => string.Empty,
         };
 }

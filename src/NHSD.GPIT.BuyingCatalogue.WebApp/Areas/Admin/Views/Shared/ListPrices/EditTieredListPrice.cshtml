@@ -194,6 +194,7 @@
     string GetEditTierLink(CataloguePriceTier tier, int index) => Model.CatalogueItemType switch {
         CatalogueItemType.Solution => GetSolutionTierEditLink(tier, index),
         CatalogueItemType.AdditionalService => GetAdditionalServiceTierEditLink(tier, index),
+        _ => string.Empty,
         };
 
     string GetSolutionTierEditLink(CataloguePriceTier tier, int index)
