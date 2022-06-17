@@ -15,7 +15,7 @@
         <nhs-page-title
             title="@ViewBag.Title"
             caption="@Model.CatalogueItemName"
-            advice="Provide the following information about the pricing model for your Catalogue Solution.">
+            advice="Provide the following information about the pricing model for your @(Model.CatalogueItemType.Name()).">
         </nhs-page-title>
 
         <form method="post">
@@ -24,6 +24,7 @@
             <input type="hidden" asp-for="CatalogueItemId" />
             <input type="hidden" asp-for="CatalogueItemName" />
             <input type="hidden" asp-for="CataloguePricePublicationStatus" />
+            <input type="hidden" asp-for="DeleteListPriceUrl" />
 
             <nhs-fieldset-form-label asp-for="SelectedProvisioningType" label-text="Provisioning type" size="Medium">
                 <nhs-radio-button-container>
@@ -122,11 +123,7 @@
 
         @if (Model.CataloguePriceId is not null && Model.CataloguePricePublicationStatus != PublicationStatus.Published)
         {
-            <vc:nhs-delete-button url="@Url.Action(
-                nameof(CatalogueSolutionListPriceController.DeleteListPrice),
-                typeof(CatalogueSolutionListPriceController).ControllerName(),
-                new { solutionId = Model.CatalogueItemId, cataloguePriceId = Model.CataloguePriceId })"
-                text="Delete list price"></vc:nhs-delete-button>
+            <vc:nhs-delete-button url="@Model.DeleteListPriceUrl" text="Delete list price"></vc:nhs-delete-button>
         }
     </div>
 </div>

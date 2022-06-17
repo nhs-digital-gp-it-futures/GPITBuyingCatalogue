@@ -51,7 +51,12 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
 
             result.Should().NotBeNull();
             result.ViewName.Should().Be("ListPrices/ManageListPrices");
-            result.Model.Should().BeEquivalentTo(model, opt => opt.Excluding(m => m.BackLink));
+            result.Model.Should()
+                .BeEquivalentTo(
+                    model,
+                    opt =>
+                        opt.Excluding(m => m.BackLink)
+                            .Excluding(m => m.AddListPriceUrl));
         }
 
         [Theory]
@@ -183,7 +188,12 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
             var result = (await controller.AddTieredListPrice(solution.CatalogueItemId, cataloguePrice.CataloguePriceId)).As<ViewResult>();
 
             result.Should().NotBeNull();
-            result.Model.Should().BeEquivalentTo(model, opt => opt.Excluding(m => m.BackLink));
+            result.Model.Should()
+                .BeEquivalentTo(
+                    model,
+                    opt =>
+                        opt.Excluding(m => m.BackLink)
+                            .Excluding(m => m.DeleteListPriceUrl));
         }
 
         [Theory]
@@ -251,7 +261,12 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
             var result = (await controller.TieredPriceTiers(solution.CatalogueItemId, price.CataloguePriceId)).As<ViewResult>();
 
             result.Should().NotBeNull();
-            result.Model.Should().BeEquivalentTo(model, opt => opt.Excluding(m => m.BackLink));
+            result.Model.Should()
+                .BeEquivalentTo(
+                    model,
+                    opt =>
+                        opt.Excluding(m => m.BackLink)
+                            .Excluding(m => m.AddTieredPriceTierUrl));
         }
 
         [Theory]
@@ -516,7 +531,13 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
             var result = (await controller.EditTieredListPrice(solution.CatalogueItemId, price.CataloguePriceId)).As<ViewResult>();
 
             result.Should().NotBeNull();
-            result.Model.Should().BeEquivalentTo(model, opt => opt.Excluding(m => m.BackLink));
+            result.Model.Should()
+                .BeEquivalentTo(
+                    model,
+                    opt =>
+                        opt.Excluding(m => m.BackLink)
+                            .Excluding(m => m.AddPricingTierUrl)
+                            .Excluding(m => m.DeleteListPriceUrl));
         }
 
         [Theory]
@@ -746,7 +767,12 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
             var result = (await controller.EditTieredPriceTier(solution.CatalogueItemId, price.CataloguePriceId, tier.Id)).As<ViewResult>();
 
             result.Should().NotBeNull();
-            result.Model.Should().BeEquivalentTo(model, opt => opt.Excluding(m => m.BackLink));
+            result.Model.Should()
+                .BeEquivalentTo(
+                    model,
+                    opt =>
+                        opt.Excluding(m => m.BackLink)
+                            .Excluding(m => m.DeleteTieredPriceTierUrl));
         }
 
         [Theory]
@@ -1264,7 +1290,12 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
             var result = (await controller.EditFlatListPrice(solution.CatalogueItemId, price.CataloguePriceId)).As<ViewResult>();
 
             result.Should().NotBeNull();
-            result.Model.Should().BeEquivalentTo(model, opt => opt.Excluding(m => m.BackLink));
+            result.Model.Should()
+                .BeEquivalentTo(
+                    model,
+                    opt =>
+                        opt.Excluding(m => m.BackLink)
+                            .Excluding(m => m.DeleteListPriceUrl));
         }
 
         [Theory]

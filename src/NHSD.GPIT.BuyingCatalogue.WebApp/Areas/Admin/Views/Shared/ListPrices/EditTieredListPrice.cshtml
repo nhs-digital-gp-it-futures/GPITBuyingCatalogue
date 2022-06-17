@@ -13,15 +13,19 @@
         <nhs-page-title
             title="@ViewBag.Title"
             caption="@Model.CatalogueItemName"
-            advice="Provide the following information about the pricing model for your Catalogue Solution.">
+            advice="Provide the following information about the pricing model for your @(Model.CatalogueItemType.Name()).">
         </nhs-page-title>
 
         <form method="post">
             <input type="hidden" asp-for="BackLink" />
             <input type="hidden" asp-for="CataloguePriceId" />
             <input type="hidden" asp-for="CatalogueItemId" />
+            <input type="hidden" asp-for="ServiceId" />
             <input type="hidden" asp-for="CatalogueItemName" />
+            <input type="hidden" asp-for="CatalogueItemType" />
             <input type="hidden" asp-for="CataloguePricePublicationStatus" />
+            <input type="hidden" asp-for="AddPricingTierUrl" />
+            <input type="hidden" asp-for="DeleteListPriceUrl" />
 
             <nhs-fieldset-form-label asp-for="SelectedProvisioningType" label-text="Provisioning type" size="Medium">
                 <nhs-radio-button-container>
@@ -126,13 +130,7 @@
             else
             {
 				if(Model.Tiers.Count < Model.MaximumNumberOfTiers){
-				<vc:nhs-action-link
-					text="Add a pricing tier"
-					 url="@Url.Action(
-						nameof(CatalogueSolutionListPriceController.AddTieredPriceTier),
-						typeof(CatalogueSolutionListPriceController).ControllerName(),
-						new { solutionId = Model.CatalogueItemId, cataloguePriceId = Model.CataloguePriceId, isEditing = true }
-						)" />
+				<vc:nhs-action-link text="Add a pricing tier" url="@Model.AddPricingTierUrl" />
 				}else{
 					<nhs-inset-text data-test-id="maximum-tiers-reached-inset">
 						The maximum number of tiers you can add is @Model.MaximumNumberOfTiers. You cannot add any more tiers for this price.
@@ -161,10 +159,10 @@
                                     £@tier.Price
                                 </nhs-table-cell>
                                 <nhs-table-cell>
-                                    @GetRange(tier)
+                                    @tier.GetRangeDescription()
                                 </nhs-table-cell>
                                 <nhs-table-cell>
-                                    <a href="@GetTierEditLink(tier, tierIndex)" data-test-id="edit-tier-price-@tierIndex">Edit</a>
+                                    <a href="@GetEditTierLink(tier, tierIndex)" data-test-id="edit-tier-price-@tierIndex">Edit</a>
                                 </nhs-table-cell>
                             </nhs-table-row-container>
                         }
@@ -186,38 +184,41 @@
 
         @if (Model.CataloguePriceId is not null && Model.CataloguePricePublicationStatus != PublicationStatus.Published)
         {
-            <vc:nhs-delete-button url="@Url.Action(
-                nameof(CatalogueSolutionListPriceController.DeleteListPrice),
-                typeof(CatalogueSolutionListPriceController).ControllerName(),
-                new { solutionId = Model.CatalogueItemId, cataloguePriceId = Model.CataloguePriceId })"
-                text="Delete list price"></vc:nhs-delete-button>
+            <vc:nhs-delete-button url="@Model.DeleteListPriceUrl" text="Delete list price"></vc:nhs-delete-button>
         }
     </div>
 </div>
 @{
     static string GetTierName(int index) => $"Tier {index + 1}";
-    static string GetRange(CataloguePriceTier tier)
+
+    string GetEditTierLink(CataloguePriceTier tier, int index) => Model.CatalogueItemType switch {
+        CatalogueItemType.Solution => GetSolutionTierEditLink(tier, index),
+        CatalogueItemType.AdditionalService => GetAdditionalServiceTierEditLink(tier, index),
+        };
+
+    string GetSolutionTierEditLink(CataloguePriceTier tier, int index)
     {
-        var rangeContent = $"{tier.LowerRange.ToString("#,##0.###")}";
-
-        rangeContent += (tier.UpperRange is not null)
-            ? $" to {tier.UpperRange!.Value.ToString("#,##0.###")}"
-            : "+";
-
-        rangeContent += $" {tier.CataloguePrice.PricingUnit.RangeDescription}";
-
-        return rangeContent;
+        return tier.CataloguePrice.PublishedStatus == PublicationStatus.Published
+            ? Url.Action(
+                nameof(CatalogueSolutionListPriceController.EditTierPrice),
+                typeof(CatalogueSolutionListPriceController).ControllerName(),
+                new { solutionId = Model.CatalogueItemId, cataloguePriceId = tier.CataloguePriceId, tierId = tier.Id, tierIndex = index })
+            : Url.Action(
+                nameof(CatalogueSolutionListPriceController.EditTieredPriceTier),
+                typeof(CatalogueSolutionListPriceController).ControllerName(),
+                new { solutionId = Model.CatalogueItemId, cataloguePriceId = tier.CataloguePriceId, tierId = tier.Id, isEditing = true });
     }
 
-    string GetTierEditLink(CataloguePriceTier tier, int index){
+    string GetAdditionalServiceTierEditLink(CataloguePriceTier tier, int index)
+    {
         return tier.CataloguePrice.PublishedStatus == PublicationStatus.Published
-               ? Url.Action(
-                   nameof(CatalogueSolutionListPriceController.EditTierPrice),
-                   typeof(CatalogueSolutionListPriceController).ControllerName(),
-                   new { solutionId = Model.CatalogueItemId, cataloguePriceId = tier.CataloguePriceId, tierId = tier.Id, tierIndex = index })
-               : Url.Action(
-                   nameof(CatalogueSolutionListPriceController.EditTieredPriceTier),
-                   typeof(CatalogueSolutionListPriceController).ControllerName(),
-                   new { solutionId = Model.CatalogueItemId, cataloguePriceId = tier.CataloguePriceId, tierId = tier.Id, isEditing = true });
+            ? Url.Action(
+                nameof(AdditionalServiceListPriceController.EditTierPrice),
+                typeof(AdditionalServiceListPriceController).ControllerName(),
+                new { solutionId = Model.CatalogueItemId, additionalServiceId = Model.ServiceId, cataloguePriceId = tier.CataloguePriceId, tierId = tier.Id, tierIndex = index })
+            : Url.Action(
+                nameof(AdditionalServiceListPriceController.EditTieredPriceTier),
+                typeof(AdditionalServiceListPriceController).ControllerName(),
+                new { solutionId = Model.CatalogueItemId, additionalServiceId = Model.ServiceId, cataloguePriceId = tier.CataloguePriceId, tierId = tier.Id, isEditing = true });
     }
 }

@@ -27,30 +27,34 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Validators.ListPrices
                 .When(m => m.SelectedPublicationStatus == PublicationStatus.Published);
         }
 
-        private CataloguePrice GetCataloguePrice(CatalogueItemId solutionId, int cataloguePriceId)
+        private CataloguePrice GetCataloguePrice(TieredPriceTiersModel model, int cataloguePriceId)
         {
-            var solution = listPriceService.GetCatalogueItemWithListPrices(solutionId).GetAwaiter().GetResult();
-            var price = solution.CataloguePrices.Single(p => p.CataloguePriceId == cataloguePriceId);
+            var catalogueItemId = model.CatalogueItemType == CatalogueItemType.Solution
+                ? model.CatalogueItemId
+                : model.ServiceId!.Value;
+
+            var catalogueItem = listPriceService.GetCatalogueItemWithListPrices(catalogueItemId).GetAwaiter().GetResult();
+            var price = catalogueItem.CataloguePrices.Single(p => p.CataloguePriceId == cataloguePriceId);
             return price;
         }
 
         private bool HaveAtLeastOneTier(TieredPriceTiersModel model, PublicationStatus? status)
         {
-            var price = GetCataloguePrice(model.CatalogueItemId, model.CataloguePriceId);
+            var price = GetCataloguePrice(model, model.CataloguePriceId);
 
             return price.CataloguePriceTiers.Any();
         }
 
         private bool HaveTierWithStartingRange(TieredPriceTiersModel model, PublicationStatus? status)
         {
-            var price = GetCataloguePrice(model.CatalogueItemId, model.CataloguePriceId);
+            var price = GetCataloguePrice(model, model.CataloguePriceId);
 
             return price.CataloguePriceTiers.Any(p => p.LowerRange == StartingLowerRange);
         }
 
         private bool HaveTierWithInfiniteRange(TieredPriceTiersModel model, PublicationStatus? status)
         {
-            var price = GetCataloguePrice(model.CatalogueItemId, model.CataloguePriceId);
+            var price = GetCataloguePrice(model, model.CataloguePriceId);
 
             return price.CataloguePriceTiers.Any(p => p.UpperRange is null);
         }
@@ -59,7 +63,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Validators.ListPrices
         {
             var model = validationContext.InstanceToValidate;
 
-            var price = GetCataloguePrice(model.CatalogueItemId, model.CataloguePriceId);
+            var price = GetCataloguePrice(model, model.CataloguePriceId);
 
             (bool hasGaps, int? gapLowerTierIndex, int? gapUpperTierIndex) = price.HasTierRangeGaps();
             (bool hasOverlap, int? overlapLowerTierIndex, int? overlapUpperTierIndex) = price.HasTierRangeOverlap();

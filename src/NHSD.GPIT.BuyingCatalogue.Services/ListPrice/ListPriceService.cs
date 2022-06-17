@@ -94,9 +94,9 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.ListPrice
             if (cataloguePrice is null)
                 throw new ArgumentNullException(nameof(cataloguePrice));
 
-            var solution = await GetCatalogueItemWithListPrices(solutionId, true);
+            var item = await GetCatalogueItemWithListPrices(solutionId, true);
 
-            solution.CataloguePrices.Add(cataloguePrice);
+            item.CataloguePrices.Add(cataloguePrice);
 
             await dbContext.SaveChangesAsync();
         }

@@ -40,6 +40,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
                     nameof(CatalogueSolutionsController.ManageCatalogueSolution),
                     typeof(CatalogueSolutionsController).ControllerName(),
                     new { solutionId }),
+                AddListPriceUrl = Url.Action(
+                    nameof(ListPriceType),
+                    new { solutionId }),
             };
 
             return View("ListPrices/ManageListPrices", model);
@@ -86,6 +89,11 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
 
             AddTieredListPriceModel model = cataloguePriceId is not null
                 ? new AddTieredListPriceModel(solution, solution.CataloguePrices.Single(p => p.CataloguePriceId == cataloguePriceId))
+                {
+                    DeleteListPriceUrl = Url.Action(
+                        nameof(DeleteListPrice),
+                        new { solutionId, cataloguePriceId }),
+                }
                 : new AddTieredListPriceModel(solution);
 
             model.BackLink = Url.Action(nameof(ListPriceType), new { solutionId, selectedPriceType = CataloguePriceType.Tiered });
@@ -165,6 +173,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
             var model = new TieredPriceTiersModel(solution, price, priceTiersCapSettings.MaximumNumberOfPriceTiers)
             {
                 BackLink = Url.Action(nameof(AddTieredListPrice), new { solutionId, cataloguePriceId }),
+                AddTieredPriceTierUrl = Url.Action(
+                    nameof(CatalogueSolutionListPriceController.AddTieredPriceTier),
+                    typeof(CatalogueSolutionListPriceController).ControllerName(),
+                    new { solutionId, cataloguePriceId }),
             };
 
             return View("ListPrices/TieredPriceTiers", model);
@@ -246,6 +258,12 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
             var model = new EditTieredListPriceModel(solution, price, priceTiersCapSettings.MaximumNumberOfPriceTiers)
             {
                 BackLink = Url.Action(nameof(Index), new { solutionId }),
+                AddPricingTierUrl = Url.Action(
+                    nameof(AddTieredPriceTier),
+                    new { solutionId, cataloguePriceId, isEditing = true }),
+                DeleteListPriceUrl = Url.Action(
+                    nameof(DeleteListPrice),
+                    new { solutionId, cataloguePriceId }),
             };
 
             return View("ListPrices/EditTieredListPrice", model);
@@ -294,6 +312,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
             var model = new AddEditFlatListPriceModel(solution, price)
             {
                 BackLink = Url.Action(nameof(Index), new { solutionId }),
+                DeleteListPriceUrl = Url.Action(
+                    nameof(DeleteListPrice),
+                    new { solutionId, cataloguePriceId }),
             };
 
             return View("ListPrices/AddEditFlatListPrice", model);
@@ -345,6 +366,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
             {
                 BackLink = Url.Action(actionName, new { solutionId, cataloguePriceId }),
                 IsEditing = isEditing,
+                DeleteTieredPriceTierUrl = Url.Action(
+                    nameof(DeleteTieredPriceTier),
+                    new { solutionId, cataloguePriceId, tierId, isEditing }),
             };
 
             return View("ListPrices/AddEditTieredPriceTier", model);

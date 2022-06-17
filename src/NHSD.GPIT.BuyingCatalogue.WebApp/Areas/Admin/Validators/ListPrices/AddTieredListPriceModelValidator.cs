@@ -1,5 +1,6 @@
 ﻿using FluentValidation;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
+using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.ListPrice;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.ListPriceModels;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Validation;
@@ -52,9 +53,14 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Validators.ListPrices
                 .When(m => m.SelectedProvisioningType.GetValueOrDefault() is ProvisioningType.OnDemand);
         }
 
+        private static CatalogueItemId GetCatalogueItemId(AddTieredListPriceModel model) =>
+            model.CatalogueItemType == CatalogueItemType.Solution
+                ? model.CatalogueItemId
+                : model.ServiceId!.Value;
+
         private bool NotBeADuplicate(AddTieredListPriceModel model) =>
             !listPriceService.HasDuplicateTieredPrice(
-                model.CatalogueItemId,
+                GetCatalogueItemId(model),
                 model.CataloguePriceId,
                 model.SelectedProvisioningType!.Value,
                 model.SelectedCalculationType!.Value,

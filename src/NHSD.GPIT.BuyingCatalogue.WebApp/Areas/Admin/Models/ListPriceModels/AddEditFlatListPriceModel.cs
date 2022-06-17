@@ -19,6 +19,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.ListPriceModels
         {
             CatalogueItemId = catalogueItem.Id;
             CatalogueItemName = catalogueItem.Name;
+            CatalogueItemType = catalogueItem.CatalogueItemType;
 
             CataloguePricePublicationStatus = PublicationStatus.Draft;
         }
@@ -97,6 +98,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.ListPriceModels
         public string UnitDefinition { get; set; }
 
         public PublicationStatus? SelectedPublicationStatus { get; set; }
+
+        public string DeleteListPriceUrl { get; set; }
 
         public IList<SelectableRadioOption<PublicationStatus>> AvailablePublicationStatuses => CataloguePricePublicationStatus
             .GetAvailablePublicationStatuses()
