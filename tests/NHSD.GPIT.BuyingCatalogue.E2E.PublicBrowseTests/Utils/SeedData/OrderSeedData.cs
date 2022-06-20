@@ -32,6 +32,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
             AddAssociatedServicesOnlyOrder(context);
             AddEmptyAssociatedServicesOnlyOrder(context);
             AddAssociatedServicesOnlyOrderWithNoPriceOrServiceRecipients(context);
+            AddAssociatedServicesOnlyOrderWithOnePopulatedOrderItem(context);
             AddOrderReadyToComplete(context);
             AddCompletedOrder(context, 90010, GetOrganisationId(context));
             AddCompletedOrder(context, 90011, GetOrganisationId(context, "CG-15F"));
@@ -1200,6 +1201,69 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
             };
 
             order.OrderItems.Add(service);
+
+            context.Add(order);
+
+            context.SaveChangesAs(user.Id);
+        }
+
+        private static void AddAssociatedServicesOnlyOrderWithOnePopulatedOrderItem(BuyingCatalogueDbContext context)
+        {
+            const int orderId = 90017;
+            var timeNow = DateTime.UtcNow;
+
+            var order = new Order
+            {
+                Id = orderId,
+                AssociatedServicesOnly = true,
+                OrderingPartyId = GetOrganisationId(context),
+                Created = timeNow,
+                OrderStatus = OrderStatus.InProgress,
+                IsDeleted = false,
+                Description = "Associated services only",
+                OrderingPartyContact = new Contact
+                {
+                    FirstName = "Clark",
+                    LastName = "Kent",
+                    Email = "Clark.Kent@TheDailyPlanet.Fake",
+                    Phone = "123456789",
+                },
+                SupplierId = 99998,
+                SupplierContact = new Contact
+                {
+                    FirstName = "Bruce",
+                    LastName = "Wayne",
+                    Email = "bat.man@Gotham.Fake",
+                    Phone = "123456789",
+                },
+                CommencementDate = timeNow.AddDays(1),
+                InitialPeriod = 6,
+                MaximumTerm = 36,
+                SolutionId = new CatalogueItemId(99998, "001"),
+            };
+
+            var user = GetBuyerUser(context, order.OrderingPartyId);
+
+            var recipients = context.ServiceRecipients.Select(x => new OrderItemRecipient
+            {
+                Recipient = x,
+                Quantity = 1,
+            });
+
+            order.OrderItems.Add(new OrderItem
+            {
+                Created = DateTime.UtcNow,
+                OrderId = orderId,
+                CatalogueItem = context.CatalogueItems.Single(c => c.Id == new CatalogueItemId(99998, "S-997")),
+                OrderItemRecipients = recipients.ToList(),
+            });
+
+            order.OrderItems.Add(new OrderItem
+            {
+                Created = DateTime.UtcNow,
+                OrderId = orderId,
+                CatalogueItem = context.CatalogueItems.Single(c => c.Id == new CatalogueItemId(99998, "S-998")),
+            });
 
             context.Add(order);
 

@@ -58,9 +58,14 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers.SolutionSelec
                 CallOffId = callOffId,
                 CatalogueItemId = catalogueItemId,
                 Source = source,
+                AssociatedServicesOnly = order.AssociatedServicesOnly,
             };
 
-            model.PreSelectRecipients(order.GetSolution());
+            var baseOrderItem = model.AssociatedServicesOnly
+                ? order.GetAssociatedServices().FirstOrDefault()
+                : order.GetSolution();
+
+            model.PreSelectRecipients(baseOrderItem);
 
             return View("SelectRecipients", model);
         }
@@ -116,9 +121,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers.SolutionSelec
                 CallOffId = callOffId,
                 CatalogueItemId = catalogueItemId,
                 Source = source,
+                AssociatedServicesOnly = order.AssociatedServicesOnly,
             };
-
-            model.PreSelectRecipients(orderItem);
 
             return View("SelectRecipients", model);
         }

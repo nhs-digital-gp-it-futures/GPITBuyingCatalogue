@@ -18,9 +18,13 @@
 
         @if (Model.PreSelected && Model.ItemType != CatalogueItemType.Solution)
         {
+            var itemType = Model.AssociatedServicesOnly 
+                ? "first Associated Service"
+                : "Catalogue Solution";
+
             <div id="pre-selected" class="nhsuk-inset-text">
                 <span class="nhsuk-u-visually-hidden">Information: </span>
-                <p>The recipients you selected for your Catalogue Solution have been pre-selected.</p>
+                <p>The recipients you selected for your @itemType have been pre-selected.</p>
             </div>
         }
 
@@ -34,6 +38,7 @@
                                  use-primary-colour="false" />
         
         <form method="post">
+            <input type="hidden" asp-for="@Model.AssociatedServicesOnly" />
             <input type="hidden" asp-for="@Model.BackLink" />
             <input type="hidden" asp-for="@Model.CatalogueItemId" />
             <input type="hidden" asp-for="@Model.ItemName" />
