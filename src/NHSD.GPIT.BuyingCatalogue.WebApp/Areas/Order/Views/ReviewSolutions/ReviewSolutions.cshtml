@@ -79,8 +79,17 @@
 			<nhs-summary-list-row label-text="Total cost for one year:">£@yearlyCost.ToString("N")</nhs-summary-list-row>
 			<nhs-summary-list-row label-text="Total cost of contract (@Model.ContractLength months):">£@totalCost.ToString("N")</nhs-summary-list-row>
 		</nhs-summary-list>
+        
+        <div class="nhsuk-u-margin-bottom-3">
+            <vc:nhs-secondary-button text="Download PDF" 
+                                     use-primary-colour="false" 
+                                     url="@Url.Action(
+                                              nameof(ReviewSolutionsController.Download), 
+                                              typeof(ReviewSolutionsController).ControllerName(), 
+                                              new { Model.InternalOrgId, Model.CallOffId })"/>
+        </div>
 
-		<vc:nhs-secondary-button 
+        <vc:nhs-secondary-button 
 			text="Continue" 
 			use-primary-colour="true" 
 			url="@Url.Action(
