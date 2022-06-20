@@ -20,7 +20,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering.SolutionSelection.Ca
     {
         private const string InternalOrgId = "CG-03F";
         private const string SolutionName = "E2E With Contact With Single Price";
-        private const int OrderId = 90015;
+        private const int OrderId = 90018;
 
         private static readonly CallOffId CallOffId = new(OrderId, 1);
 

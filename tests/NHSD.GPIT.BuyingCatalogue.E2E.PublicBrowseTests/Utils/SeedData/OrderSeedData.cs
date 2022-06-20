@@ -1117,7 +1117,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
 
         private static void AddEmptyAssociatedServicesOnlyOrder(BuyingCatalogueDbContext context)
         {
-            const int orderId = 90015;
+            const int orderId = 90018;
             var timeNow = DateTime.UtcNow;
 
             var order = new Order
