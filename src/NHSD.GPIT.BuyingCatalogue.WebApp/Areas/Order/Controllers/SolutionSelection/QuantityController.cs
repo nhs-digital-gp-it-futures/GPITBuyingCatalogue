@@ -92,7 +92,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers.SolutionSelec
                 catalogueItemId,
                 int.Parse(model.Quantity));
 
-            await orderItemService.SaveOrUpdateFundingIfItemIsLocalOrNoFunding(callOffId, internalOrgId, catalogueItemId);
+            await orderItemService.SetOrderItemFunding(callOffId, internalOrgId, catalogueItemId);
 
             var route = routingService.GetRoute(
                 RoutingPoint.SelectQuantity,
@@ -160,7 +160,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers.SolutionSelec
 
             await orderQuantityService.SetServiceRecipientQuantities(order.Id, catalogueItemId, quantities);
 
-            await orderItemService.SaveOrUpdateFundingIfItemIsLocalOrNoFunding(callOffId, internalOrgId, catalogueItemId);
+            await orderItemService.SetOrderItemFunding(callOffId, internalOrgId, catalogueItemId);
 
             var route = routingService.GetRoute(
                 RoutingPoint.SelectQuantity,

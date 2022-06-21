@@ -39,7 +39,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.FundingS
             model.CallOffId.Should().Be(callOffId);
             model.InternalOrgId.Should().Be(internalOrgId);
             model.Caption.Should().Be($"Order {callOffId}");
-            model.SelectedFundingType.Should().Be(orderItem.CurrentFundingType());
+            model.SelectedFundingType.Should().Be(orderItem.FundingType);
         }
     }
 }

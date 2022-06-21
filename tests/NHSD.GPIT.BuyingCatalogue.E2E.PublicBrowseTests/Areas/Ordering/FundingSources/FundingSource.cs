@@ -93,7 +93,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering.FundingSources
                 .Include(oi => oi.OrderItemFunding)
                 .FirstOrDefaultAsync(oi => oi.OrderId == CallOffId.Id && oi.CatalogueItemId == CatalogueItemId);
 
-                orderItemSaved.CurrentFundingType().Should().Be(OrderItemFundingType.MixedFunding);
+                orderItemSaved?.FundingType.Should().Be(OrderItemFundingType.MixedFunding);
             });
         }
 

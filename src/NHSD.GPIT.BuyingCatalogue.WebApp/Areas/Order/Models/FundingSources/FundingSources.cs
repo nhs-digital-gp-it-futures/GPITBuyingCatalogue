@@ -17,15 +17,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.FundingSources
             CallOffId = callOffId;
             Caption = $"Order {CallOffId}";
 
-            OrderItemsSelectable = new List<OrderItem>();
-            OrderItemsLocalOnly = new List<OrderItem>();
-            OrderItemsNoFundingRequired = new List<OrderItem>(0);
-
-            var catSol = order.OrderItems.FirstOrDefault(oi => oi.CatalogueItem.CatalogueItemType == EntityFramework.Catalogue.Models.CatalogueItemType.Solution);
-
-            OrderItemsNoFundingRequired = order.OrderItems.Where(oi => oi.CurrentFundingType() == OrderItemFundingType.NoFundingRequired).ToList();
-            OrderItemsLocalOnly = order.OrderItems.Where(oi => oi.CurrentFundingType() == OrderItemFundingType.LocalFundingOnly).ToList();
-            OrderItemsSelectable = order.OrderItems.Where(oi => !oi.IsCurrentlyForcedFunding()).ToList();
+            OrderItemsNoFundingRequired = order.OrderItems.Where(oi => oi.FundingType == OrderItemFundingType.NoFundingRequired).ToList();
+            OrderItemsLocalOnly = order.OrderItems.Where(oi => oi.FundingType == OrderItemFundingType.LocalFundingOnly).ToList();
+            OrderItemsSelectable = order.OrderItems.Where(oi => !oi.IsForcedFunding).ToList();
         }
 
         public CallOffId CallOffId { get; set; }

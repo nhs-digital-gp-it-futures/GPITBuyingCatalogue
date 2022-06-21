@@ -43,8 +43,8 @@
 				<nhs-table-row-container>
 					<nhs-table-cell>@item.CatalogueItem.Name</nhs-table-cell>
 					<nhs-table-cell>@($"£{CalculateTotalCost(item).ToString("N2")}")</nhs-table-cell>
-					<nhs-table-cell>@item.CurrentFundingType().Description()</nhs-table-cell>
-					<nhs-table-cell><nhs-tag text="@FormatFundingType(item.CurrentFundingType())" colour="@FormatFundingTypeColour(item.CurrentFundingType())"></nhs-tag></nhs-table-cell>
+					<nhs-table-cell>@item.FundingType.Description()</nhs-table-cell>
+					<nhs-table-cell><nhs-tag text="@FormatFundingType(item.FundingType)" colour="@FormatFundingTypeColour(item.FundingType)"></nhs-tag></nhs-table-cell>
 					<nhs-table-cell>
 						<a asp-controller="@typeof(FundingSourceController).ControllerName()"
 							asp-action="@nameof(FundingSourceController.FundingSource)"

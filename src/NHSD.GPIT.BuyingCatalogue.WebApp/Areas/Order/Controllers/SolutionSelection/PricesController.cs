@@ -173,7 +173,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers.SolutionSelec
 
             await orderPriceService.UpdatePrice(order.Id, catalogueItemId, model.AgreedPrices);
 
-            await orderItemService.SaveOrUpdateFundingIfItemIsLocalOrNoFunding(callOffId, internalOrgId, catalogueItemId);
+            await orderItemService.SetOrderItemFunding(callOffId, internalOrgId, catalogueItemId);
 
             var route = routingService.GetRoute(
                 RoutingPoint.EditPrice,

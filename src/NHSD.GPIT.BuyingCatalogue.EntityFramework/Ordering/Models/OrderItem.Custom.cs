@@ -1,4 +1,5 @@
 ﻿using System.Linq;
+using NHSD.GPIT.BuyingCatalogue.EntityFramework.Extensions;
 
 namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models
 {
@@ -6,16 +7,10 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models
     {
         public bool IsReadyForReview => (OrderItemRecipients?.Any() ?? false) && OrderItemPrice != null;
 
-        public int GetQuantity() => Quantity ?? OrderItemRecipients.ToList().Sum(oir => oir.Quantity ?? 0);
+        public bool IsForcedFunding => FundingType.IsForcedFunding();
 
-        public OrderItemFundingType CurrentFundingType()
-        {
-            if (OrderItemFunding is null)
-                return OrderItemFundingType.None;
+        public OrderItemFundingType FundingType => OrderItemFunding?.OrderItemFundingType ?? OrderItemFundingType.None;
 
-            return OrderItemFunding.OrderItemFundingType;
-        }
-
-        public bool IsCurrentlyForcedFunding() => CurrentFundingType() is OrderItemFundingType.NoFundingRequired or OrderItemFundingType.LocalFundingOnly;
+        public int GetQuantity() => Quantity ?? OrderItemRecipients.Sum(oir => oir.Quantity ?? 0);
     }
 }

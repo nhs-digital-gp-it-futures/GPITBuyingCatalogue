@@ -4,6 +4,8 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework;
+using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
+using NHSD.GPIT.BuyingCatalogue.EntityFramework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.Framework.Calculations;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Orders;
@@ -97,58 +99,70 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
                     && oi.CatalogueItemId == catalogueItemId
                     && oi.Order.OrderingParty.InternalIdentifier == internalOrgId);
 
-        public async Task<OrderItem> SaveOrUpdateFundingIfItemIsLocalOrNoFunding(CallOffId callOffId, string internalOrgId, CatalogueItemId catalogueItemId)
+        public async Task SetOrderItemFunding(CallOffId callOffId, string internalOrgId, CatalogueItemId catalogueItemId)
+        {
+            var item = await GetOrderItemTracked(callOffId, internalOrgId, catalogueItemId);
+            var fundingType = await GetFundingType(item);
+
+            switch (fundingType.IsForcedFunding())
+            {
+                case true when item.FundingType != fundingType:
+                    await SaveOrUpdateOrderItemFunding(item, callOffId, catalogueItemId, fundingType);
+                    break;
+
+                case false when item.IsForcedFunding:
+                    item.OrderItemFunding = null;
+                    await dbContext.SaveChangesAsync();
+                    break;
+            }
+        }
+
+        public async Task UpdateOrderItemFunding(CallOffId callOffId, string internalOrgId, CatalogueItemId catalogueItemId, OrderItemFundingType selectedFundingType)
         {
             var item = await GetOrderItemTracked(callOffId, internalOrgId, catalogueItemId);
 
-            var (isForcedFunding, fundingType) = await OrderItemShouldHaveForcedFundingType(item);
-
-            if (isForcedFunding && !item.IsCurrentlyForcedFunding())
-            {
-                return await SaveOrUpdateOrderItemFunding(item, callOffId, catalogueItemId, fundingType);
-            }
-            else if (!isForcedFunding && item.IsCurrentlyForcedFunding())
-            {
-                item.OrderItemFunding = null;
-
-                _ = await dbContext.SaveChangesAsync();
-            }
-
-            return item;
+            await SaveOrUpdateOrderItemFunding(item, callOffId, catalogueItemId, selectedFundingType);
         }
 
-        public async Task<OrderItem> SaveOrUpdateOrderItemFunding(CallOffId callOffId, string internalOrgId, CatalogueItemId catalogueItemId, OrderItemFundingType selectedFundingType)
-        {
-            var item = await GetOrderItemTracked(callOffId, internalOrgId, catalogueItemId);
-
-            return await SaveOrUpdateOrderItemFunding(item, callOffId, catalogueItemId, selectedFundingType);
-        }
-
-        public async Task<(bool IsForcedFunding, OrderItemFundingType FundingType)> OrderItemShouldHaveForcedFundingType(OrderItem item)
+        private async Task<OrderItemFundingType> GetFundingType(OrderItem item)
         {
             if (item is null)
                 throw new ArgumentNullException(nameof(item));
 
             if (item.OrderItemPrice.CalculateTotalCost(item.GetQuantity()) == 0)
-                return (true, OrderItemFundingType.NoFundingRequired);
+                return OrderItemFundingType.NoFundingRequired;
 
-            if (item.CatalogueItem.CatalogueItemType == EntityFramework.Catalogue.Models.CatalogueItemType.AssociatedService)
-                return (false, OrderItemFundingType.None);
+            if (item.CatalogueItem.CatalogueItemType == CatalogueItemType.AssociatedService)
+                return OrderItemFundingType.None;
 
-            if (item.CatalogueItem.CatalogueItemType == EntityFramework.Catalogue.Models.CatalogueItemType.Solution
-                && await dbContext.CatalogueItems.Where(ci => ci.Id == item.CatalogueItemId && ci.Solution.FrameworkSolutions.All(fs => fs.Framework.LocalFundingOnly)).AnyAsync())
-                return (true, OrderItemFundingType.LocalFundingOnly);
+            if (await IsLocallyFundedSolution(item)
+                || await IsLocallyFundedAdditionalService(item))
+                return OrderItemFundingType.LocalFundingOnly;
 
-            if (await dbContext.CatalogueItems.Where(ci =>
-            ci.Id == item.CatalogueItemId
-            && ci.CatalogueItemType == EntityFramework.Catalogue.Models.CatalogueItemType.AdditionalService
-            && ci.AdditionalService.Solution.FrameworkSolutions.All(fs => fs.Framework.LocalFundingOnly)).AnyAsync())
-                return (true, OrderItemFundingType.LocalFundingOnly);
-
-            return (false, OrderItemFundingType.None);
+            return OrderItemFundingType.None;
         }
 
-        public Task<OrderItem> GetOrderItemTracked(CallOffId callOffId, string internalOrgId, CatalogueItemId catalogueItemId) =>
+        private async Task<bool> IsLocallyFundedAdditionalService(OrderItem orderItem)
+        {
+            if (orderItem.CatalogueItem.CatalogueItemType != CatalogueItemType.AdditionalService)
+                return false;
+
+            return await dbContext.CatalogueItems.AnyAsync(ci => ci.Id == orderItem.CatalogueItemId
+                && ci.CatalogueItemType == CatalogueItemType.AdditionalService
+                && ci.AdditionalService.Solution.FrameworkSolutions.All(fs => fs.Framework.LocalFundingOnly));
+        }
+
+        private async Task<bool> IsLocallyFundedSolution(OrderItem orderItem)
+        {
+            if (orderItem.CatalogueItem.CatalogueItemType != CatalogueItemType.Solution)
+                return false;
+
+            return await dbContext.CatalogueItems.AnyAsync(ci => ci.Id == orderItem.CatalogueItemId
+                && ci.CatalogueItemType == CatalogueItemType.Solution
+                && ci.Solution.FrameworkSolutions.All(fs => fs.Framework.LocalFundingOnly));
+        }
+
+        private Task<OrderItem> GetOrderItemTracked(CallOffId callOffId, string internalOrgId, CatalogueItemId catalogueItemId) =>
             dbContext.OrderItems
                 .Include(oi => oi.OrderItemFunding)
                 .Include(oi => oi.CatalogueItem)
@@ -159,7 +173,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
                     && oi.CatalogueItemId == catalogueItemId
                     && oi.Order.OrderingParty.InternalIdentifier == internalOrgId);
 
-        public async Task<OrderItem> SaveOrUpdateOrderItemFunding(
+        private async Task SaveOrUpdateOrderItemFunding(
             OrderItem item,
             CallOffId callOffId,
             CatalogueItemId catalogueItemId,
@@ -168,8 +182,8 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
             if (item is null)
                 throw new ArgumentNullException(nameof(item));
 
-            if (item.CurrentFundingType() == selectedFundingType)
-                return item;
+            if (item.FundingType == selectedFundingType)
+                return;
 
             if (item.OrderItemFunding is null)
             {
@@ -186,8 +200,6 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
             }
 
             await dbContext.SaveChangesAsync();
-
-            return item;
         }
     }
 }

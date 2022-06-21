@@ -86,8 +86,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Fun
                 SelectedFundingType = OrderItemFundingType.CentralFunding,
             };
 
-            orderItemServiceMock.Setup(oi => oi.SaveOrUpdateOrderItemFunding(order.CallOffId, internalOrgId, orderItem.CatalogueItemId, model.SelectedFundingType))
-                .ReturnsAsync(orderItem);
+            orderItemServiceMock.Setup(oi => oi.UpdateOrderItemFunding(order.CallOffId, internalOrgId, orderItem.CatalogueItemId, model.SelectedFundingType))
+                .Verifiable();
 
             var actual = await controller.FundingSource(internalOrgId, order.CallOffId, orderItem.CatalogueItemId, model);
 

@@ -6,7 +6,7 @@
     var startDate = Model.Order.CommencementDate!.Value;
     var endDate = Model.Order.CommencementDate!.Value.AddMonths(Model.Order.MaximumTerm!.Value);
 
-    var fundingType = Model.CurrentFundingType();
+    var fundingType = Model.FundingType;
     var totalCost = Model.OrderItemPrice.CalculateTotalCost(Model.GetQuantity());
 	var subTotalDescription = $"£{totalCost:N2}{(Model.OrderItemPrice.EstimationPeriod != null ? $" {Model.OrderItemPrice.EstimationPeriod!.Value.Description()}" : string.Empty)}";
 
