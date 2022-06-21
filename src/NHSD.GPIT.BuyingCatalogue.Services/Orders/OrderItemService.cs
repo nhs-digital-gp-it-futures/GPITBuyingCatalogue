@@ -4,10 +4,8 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework;
-using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
-using NHSD.GPIT.BuyingCatalogue.Framework.Calculations;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Orders;
 
 namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
@@ -17,11 +15,13 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
         private readonly BuyingCatalogueDbContext dbContext;
 
         private readonly IOrderService orderService;
+        private readonly IOrderItemFundingService orderItemFundingService;
 
-        public OrderItemService(BuyingCatalogueDbContext dbContext, IOrderService orderService)
+        public OrderItemService(BuyingCatalogueDbContext dbContext, IOrderService orderService, IOrderItemFundingService orderItemFundingService)
         {
             this.dbContext = dbContext ?? throw new ArgumentNullException(nameof(dbContext));
             this.orderService = orderService ?? throw new ArgumentNullException(nameof(orderService));
+            this.orderItemFundingService = orderItemFundingService ?? throw new ArgumentNullException(nameof(orderItemFundingService));
         }
 
         public async Task AddOrderItems(string internalOrgId, CallOffId callOffId, IEnumerable<CatalogueItemId> itemIds)
@@ -102,7 +102,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
         public async Task SetOrderItemFunding(CallOffId callOffId, string internalOrgId, CatalogueItemId catalogueItemId)
         {
             var item = await GetOrderItemTracked(callOffId, internalOrgId, catalogueItemId);
-            var fundingType = await GetFundingType(item);
+            var fundingType = await orderItemFundingService.GetFundingType(item);
 
             switch (fundingType.IsForcedFunding())
             {
@@ -122,44 +122,6 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
             var item = await GetOrderItemTracked(callOffId, internalOrgId, catalogueItemId);
 
             await SaveOrUpdateOrderItemFunding(item, callOffId, catalogueItemId, selectedFundingType);
-        }
-
-        private async Task<OrderItemFundingType> GetFundingType(OrderItem item)
-        {
-            if (item is null)
-                throw new ArgumentNullException(nameof(item));
-
-            if (item.OrderItemPrice.CalculateTotalCost(item.GetQuantity()) == 0)
-                return OrderItemFundingType.NoFundingRequired;
-
-            if (item.CatalogueItem.CatalogueItemType == CatalogueItemType.AssociatedService)
-                return OrderItemFundingType.None;
-
-            if (await IsLocallyFundedSolution(item)
-                || await IsLocallyFundedAdditionalService(item))
-                return OrderItemFundingType.LocalFundingOnly;
-
-            return OrderItemFundingType.None;
-        }
-
-        private async Task<bool> IsLocallyFundedAdditionalService(OrderItem orderItem)
-        {
-            if (orderItem.CatalogueItem.CatalogueItemType != CatalogueItemType.AdditionalService)
-                return false;
-
-            return await dbContext.CatalogueItems.AnyAsync(ci => ci.Id == orderItem.CatalogueItemId
-                && ci.CatalogueItemType == CatalogueItemType.AdditionalService
-                && ci.AdditionalService.Solution.FrameworkSolutions.All(fs => fs.Framework.LocalFundingOnly));
-        }
-
-        private async Task<bool> IsLocallyFundedSolution(OrderItem orderItem)
-        {
-            if (orderItem.CatalogueItem.CatalogueItemType != CatalogueItemType.Solution)
-                return false;
-
-            return await dbContext.CatalogueItems.AnyAsync(ci => ci.Id == orderItem.CatalogueItemId
-                && ci.CatalogueItemType == CatalogueItemType.Solution
-                && ci.Solution.FrameworkSolutions.All(fs => fs.Framework.LocalFundingOnly));
         }
 
         private Task<OrderItem> GetOrderItemTracked(CallOffId callOffId, string internalOrgId, CatalogueItemId catalogueItemId) =>
