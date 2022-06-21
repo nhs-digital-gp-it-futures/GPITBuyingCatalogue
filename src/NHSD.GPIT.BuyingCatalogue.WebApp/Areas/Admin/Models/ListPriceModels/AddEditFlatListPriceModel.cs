@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
+using Humanizer;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Extensions;
@@ -20,8 +21,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.ListPriceModels
             CatalogueItemId = catalogueItem.Id;
             CatalogueItemName = catalogueItem.Name;
             CatalogueItemType = catalogueItem.CatalogueItemType;
-
-            CataloguePricePublicationStatus = PublicationStatus.Draft;
         }
 
         public AddEditFlatListPriceModel(CatalogueItem catalogueItem, CataloguePrice cataloguePrice)
@@ -67,7 +66,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.ListPriceModels
                 CataloguePriceQuantityCalculationType.PerServiceRecipient),
         };
 
-        public PublicationStatus CataloguePricePublicationStatus { get; set; }
+        public PublicationStatus CataloguePricePublicationStatus { get; set; } = PublicationStatus.Draft;
 
         public int? CataloguePriceId { get; set; }
 
@@ -106,11 +105,12 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.ListPriceModels
             .Select(p => new SelectableRadioOption<PublicationStatus>(p.Description(), p))
             .ToList();
 
-        public PricingUnit GetPricingUnit()
+        public virtual PricingUnit GetPricingUnit()
             => new()
             {
                 Description = UnitDescription,
                 Definition = UnitDefinition,
+                RangeDescription = UnitDescription.Replace("per ", string.Empty).Pluralize(false),
             };
 
         public TimeUnit? GetBillingPeriod()
@@ -132,7 +132,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.ListPriceModels
                 _ => null,
             };
 
-        private void AssignBillingPeriod(CataloguePrice cataloguePrice)
+        protected void AssignBillingPeriod(CataloguePrice cataloguePrice)
         {
             switch (SelectedProvisioningType)
             {
@@ -148,7 +148,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.ListPriceModels
             }
         }
 
-        private void AssignQuantityCalculationType(CataloguePrice cataloguePrice)
+        protected void AssignQuantityCalculationType(CataloguePrice cataloguePrice)
         {
             switch (SelectedProvisioningType)
             {

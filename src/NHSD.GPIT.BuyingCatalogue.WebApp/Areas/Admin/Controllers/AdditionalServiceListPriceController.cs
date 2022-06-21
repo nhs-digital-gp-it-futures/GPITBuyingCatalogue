@@ -364,7 +364,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
                     model.GetQuantityCalculationType());
 
             if (model.SelectedPublicationStatus != price.PublishedStatus)
-                await listPriceService.SetPublicationStatus(additionalServiceId, cataloguePriceId, model.SelectedPublicationStatus);
+                await listPriceService.SetPublicationStatus(additionalServiceId, cataloguePriceId, model.SelectedPublicationStatus!.Value);
 
             return RedirectToAction(nameof(Index), new { solutionId, additionalServiceId });
         }
