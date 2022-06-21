@@ -1,4 +1,10 @@
 ﻿@using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models
+@using NHSD.GPIT.BuyingCatalogue.UI.Components.TagHelpers
+@using NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.Components.ActionLink
+@using NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.Components.NhsSecondaryButton
+@using NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.TagHelpers.SummaryList
+@using NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.TagHelpers.Table
+@using NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.TagHelpers.Tags
 @using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.ListPriceModels
 @model ManageListPricesModel
 
@@ -11,15 +17,12 @@
     <div class="nhsuk-grid-column-two-thirds">
         <nhs-page-title title="@ViewBag.Title"
                         caption="@Model.CatalogueItemName"
-                        advice="Provide details of how much your Catalogue Solution costs. You must add at least one price type." />
+                        advice="Provide details of how much your @(Model.CatalogueItemType.Name()) costs. You must add at least one price type." />
 
 
-        <vc:nhs-action-link text="Add a list price" url="@Url.Action(
-                nameof(CatalogueSolutionListPriceController.ListPriceType),
-                typeof(CatalogueSolutionListPriceController).ControllerName(),
-                new { solutionId = Model.CatalogueItemId })" />
+        <vc:nhs-action-link text="Add a list price" url="@Model.AddListPriceUrl" />
 
-        <p>Use the link to add information on each pricing type for your Catalogue Solution.</p>
+        <p>Use the link to add information on each pricing type for your @(Model.CatalogueItemType.Name()).</p>
 
         @if(Model.TieredPrices.Any())
         {
@@ -35,10 +38,7 @@
                         </div>
                         <br />
                         <div data-test-id="edit-price-@price.CataloguePriceId">
-                            <vc:nhs-action-link text="Edit price" url="@Url.Action(
-                                nameof(CatalogueSolutionListPriceController.EditTieredListPrice),
-                                typeof(CatalogueSolutionListPriceController).ControllerName(),
-                                new { solutionId = Model.CatalogueItemId, price.CataloguePriceId })" />
+                            <vc:nhs-action-link text="Edit price" url="@GetEditPriceUrl(price)" />
                         </div>
 
                         <nhs-table label-text="Pricing tiers">
@@ -46,7 +46,7 @@
                             <nhs-table-column>Price</nhs-table-column>
                             <nhs-table-column>Range</nhs-table-column>
 
-                            @for(int i = 0; i < price.CataloguePriceTiers.Count; i++)
+                            @for(var i = 0; i < price.CataloguePriceTiers.Count; i++)
                             {
                                 var priceTier = price.CataloguePriceTiers.OrderBy(p => p.LowerRange).ElementAt(i);
                                 <nhs-table-row-container>
@@ -75,10 +75,7 @@
                         </div>
                         <br />
                         <div data-test-id="edit-price-@price.CataloguePriceId">
-                            <vc:nhs-action-link text="Edit price" url="@Url.Action(
-                                nameof(CatalogueSolutionListPriceController.EditFlatListPrice),
-                                typeof(CatalogueSolutionListPriceController).ControllerName(),
-                                new { solutionId = Model.CatalogueItemId, price.CataloguePriceId })" />
+                            <vc:nhs-action-link text="Edit price" url="@GetEditPriceUrl(price)" />
                         </div>
 
                         <nhs-summary-list>
@@ -109,4 +106,34 @@
     static string GetHeadingTitle(CataloguePrice cataloguePrice) => $"{Enum.GetName(cataloguePrice.CataloguePriceType)} price - {cataloguePrice.PricingUnit.Description}";
 
     static string GetTimeUnit(CataloguePrice price) => price.TimeUnit!.Value.Description() ?? "None";
+
+    string GetEditPriceUrl(CataloguePrice cataloguePrice) => cataloguePrice.CataloguePriceType switch {
+        CataloguePriceType.Flat => GetEditFlatPriceUrl(cataloguePrice),
+        CataloguePriceType.Tiered => GetEditTieredPriceUrl(cataloguePrice),
+        _ => string.Empty,
+        };
+
+    string GetEditTieredPriceUrl(CataloguePrice cataloguePrice) => Model.CatalogueItemType switch {
+        CatalogueItemType.Solution => Url.Action(
+            nameof(CatalogueSolutionListPriceController.EditTieredListPrice),
+            typeof(CatalogueSolutionListPriceController).ControllerName(),
+            new { solutionId = Model.CatalogueItemId, cataloguePrice.CataloguePriceId }),
+        CatalogueItemType.AdditionalService => Url.Action(
+            nameof(AdditionalServiceListPriceController.EditTieredListPrice),
+            typeof(AdditionalServiceListPriceController).ControllerName(),
+            new { solutionId = Model.CatalogueItemId, AdditionalServiceId = Model.ServiceId, cataloguePrice.CataloguePriceId }),
+        _ => string.Empty,
+        };
+
+    string GetEditFlatPriceUrl(CataloguePrice cataloguePrice) => Model.CatalogueItemType switch {
+        CatalogueItemType.Solution => Url.Action(
+            nameof(CatalogueSolutionListPriceController.EditFlatListPrice),
+            typeof(CatalogueSolutionListPriceController).ControllerName(),
+            new { solutionId = Model.CatalogueItemId, cataloguePrice.CataloguePriceId }),
+        CatalogueItemType.AdditionalService => Url.Action(
+            nameof(AdditionalServiceListPriceController.EditFlatListPrice),
+            typeof(AdditionalServiceListPriceController).ControllerName(),
+            new { solutionId = Model.CatalogueItemId, AdditionalServiceId = Model.ServiceId, cataloguePrice.CataloguePriceId }),
+        _ => string.Empty,
+        };
 }

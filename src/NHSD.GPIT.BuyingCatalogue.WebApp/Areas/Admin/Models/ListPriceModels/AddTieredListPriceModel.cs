@@ -18,10 +18,40 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.ListPriceModels
         {
             CatalogueItemId = catalogueItem.Id;
             CatalogueItemName = catalogueItem.Name;
+            CatalogueItemType = catalogueItem.CatalogueItemType;
         }
 
         public AddTieredListPriceModel(CatalogueItem catalogueItem, CataloguePrice cataloguePrice)
-            : this(catalogueItem)
+            : this(cataloguePrice)
+        {
+            CatalogueItemId = catalogueItem.Id;
+            CatalogueItemName = catalogueItem.Name;
+            CatalogueItemType = catalogueItem.CatalogueItemType;
+        }
+
+        public AddTieredListPriceModel(
+            CatalogueItem solution,
+            CatalogueItem service)
+        {
+            CatalogueItemId = solution.Id;
+            CatalogueItemName = service.Name;
+            CatalogueItemType = service.CatalogueItemType;
+            ServiceId = service.Id;
+        }
+
+        public AddTieredListPriceModel(
+            CatalogueItem solution,
+            CatalogueItem service,
+            CataloguePrice cataloguePrice)
+            : this(cataloguePrice)
+        {
+            CatalogueItemId = solution.Id;
+            CatalogueItemName = service.Name;
+            CatalogueItemType = service.CatalogueItemType;
+            ServiceId = service.Id;
+        }
+
+        private AddTieredListPriceModel(CataloguePrice cataloguePrice)
         {
             CataloguePriceId = cataloguePrice.CataloguePriceId;
             UnitDescription = cataloguePrice.PricingUnit.Description;
@@ -82,6 +112,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.ListPriceModels
 
         public CatalogueItemId CatalogueItemId { get; set; }
 
+        public CatalogueItemId? ServiceId { get; set; }
+
         public string CatalogueItemName { get; set; }
 
         public CatalogueItemType CatalogueItemType { get; set; }
@@ -108,6 +140,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.ListPriceModels
 
         [StringLength(100)]
         public string RangeDefinition { get; set; }
+
+        public string DeleteListPriceUrl { get; set; }
 
         public PricingUnit GetPricingUnit()
             => new()

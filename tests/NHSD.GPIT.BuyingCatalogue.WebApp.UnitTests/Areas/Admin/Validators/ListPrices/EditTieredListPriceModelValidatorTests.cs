@@ -3,7 +3,7 @@ using AutoFixture.Xunit2;
 using FluentValidation.TestHelper;
 using Moq;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
-using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions;
+using NHSD.GPIT.BuyingCatalogue.ServiceContracts.ListPrice;
 using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.AutoFixtureCustomisations;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.ListPriceModels;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Validators.ListPrices;
@@ -19,7 +19,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators.List
             Solution solution,
             CataloguePrice price,
             EditTieredListPriceModel model,
-            [Frozen] Mock<ISolutionListPriceService> service,
+            [Frozen] Mock<IListPriceService> service,
             EditTieredListPriceModelValidator validator)
         {
             model.SelectedPublicationStatus = PublicationStatus.Published;
@@ -46,7 +46,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators.List
             CataloguePrice price,
             CataloguePriceTier tier,
             EditTieredListPriceModel model,
-            [Frozen] Mock<ISolutionListPriceService> service,
+            [Frozen] Mock<IListPriceService> service,
             EditTieredListPriceModelValidator validator)
         {
             model.SelectedPublicationStatus = PublicationStatus.Published;
@@ -80,7 +80,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators.List
             CataloguePrice price,
             CataloguePriceTier tier,
             EditTieredListPriceModel model,
-            [Frozen] Mock<ISolutionListPriceService> service,
+            [Frozen] Mock<IListPriceService> service,
             EditTieredListPriceModelValidator validator)
         {
             model.SelectedPublicationStatus = PublicationStatus.Published;
@@ -115,7 +115,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators.List
             CataloguePriceTier firstTier,
             CataloguePriceTier secondTier,
             EditTieredListPriceModel model,
-            [Frozen] Mock<ISolutionListPriceService> service,
+            [Frozen] Mock<IListPriceService> service,
             EditTieredListPriceModelValidator validator)
         {
             model.SelectedPublicationStatus = PublicationStatus.Published;
@@ -154,7 +154,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators.List
             CataloguePriceTier firstTier,
             CataloguePriceTier secondTier,
             EditTieredListPriceModel model,
-            [Frozen] Mock<ISolutionListPriceService> service,
+            [Frozen] Mock<IListPriceService> service,
             EditTieredListPriceModelValidator validator)
         {
             model.SelectedPublicationStatus = PublicationStatus.Published;
@@ -194,7 +194,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators.List
             CataloguePriceTier secondTier,
             CataloguePriceTier thirdTier,
             EditTieredListPriceModel model,
-            [Frozen] Mock<ISolutionListPriceService> service,
+            [Frozen] Mock<IListPriceService> service,
             EditTieredListPriceModelValidator validator)
         {
             firstTier.LowerRange = 1;

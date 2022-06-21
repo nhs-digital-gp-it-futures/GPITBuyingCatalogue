@@ -15,14 +15,11 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Validators.ListPrices
         private const int StartingLowerRange = 1;
 
         private readonly IListPriceService listPriceService;
-        private readonly ISolutionListPriceService solutionListPriceService;
 
         public EditTieredListPriceModelValidator(
-            IListPriceService listPriceService,
-            ISolutionListPriceService solutionListPriceService)
+            IListPriceService listPriceService)
         {
             this.listPriceService = listPriceService;
-            this.solutionListPriceService = solutionListPriceService;
 
             Include(new AddTieredListPriceModelValidator(listPriceService));
 
@@ -40,35 +37,42 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Validators.ListPrices
                 .When(m => m.SelectedPublicationStatus == PublicationStatus.Published);
         }
 
+        private static CatalogueItemId GetCatalogueItemId(EditTieredListPriceModel model) =>
+            model.CatalogueItemType == CatalogueItemType.Solution
+                ? model.CatalogueItemId
+                : model.ServiceId!.Value;
+
         private bool NotBeTheLastRemainingListPrice(EditTieredListPriceModel model, PublicationStatus status)
         {
-            return listPriceService.GetNumberOfListPrices(model.CatalogueItemId, model.CataloguePriceId!.Value).GetAwaiter().GetResult() > 0;
+            return listPriceService.GetNumberOfListPrices(GetCatalogueItemId(model), model.CataloguePriceId!.Value).GetAwaiter().GetResult() > 0;
         }
 
-        private CataloguePrice GetCataloguePrice(CatalogueItemId solutionId, int? cataloguePriceId)
+        private CataloguePrice GetCataloguePrice(EditTieredListPriceModel model, int? cataloguePriceId)
         {
-            var solution = solutionListPriceService.GetCatalogueItemWithListPrices(solutionId).GetAwaiter().GetResult();
-            var price = solution.CataloguePrices.Single(p => p.CataloguePriceId == cataloguePriceId);
+            var catalogueItemId = GetCatalogueItemId(model);
+
+            var catalogueItem = listPriceService.GetCatalogueItemWithListPrices(catalogueItemId).GetAwaiter().GetResult();
+            var price = catalogueItem.CataloguePrices.Single(p => p.CataloguePriceId == cataloguePriceId);
             return price;
         }
 
         private bool HaveAtLeastOneTier(EditTieredListPriceModel model, PublicationStatus status)
         {
-            var price = GetCataloguePrice(model.CatalogueItemId, model.CataloguePriceId);
+            var price = GetCataloguePrice(model, model.CataloguePriceId);
 
             return price.CataloguePriceTiers.Any();
         }
 
         private bool HaveTierWithStartingRange(EditTieredListPriceModel model, PublicationStatus status)
         {
-            var price = GetCataloguePrice(model.CatalogueItemId, model.CataloguePriceId);
+            var price = GetCataloguePrice(model, model.CataloguePriceId);
 
             return price.CataloguePriceTiers.Any(p => p.LowerRange == StartingLowerRange);
         }
 
         private bool HaveTierWithInfiniteRange(EditTieredListPriceModel model, PublicationStatus status)
         {
-            var price = GetCataloguePrice(model.CatalogueItemId, model.CataloguePriceId);
+            var price = GetCataloguePrice(model, model.CataloguePriceId);
 
             return price.CataloguePriceTiers.Any(p => p.UpperRange is null);
         }
@@ -77,22 +81,15 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Validators.ListPrices
         {
             var model = validationContext.InstanceToValidate;
 
-            var price = GetCataloguePrice(model.CatalogueItemId, model.CataloguePriceId);
+            var price = GetCataloguePrice(model, model.CataloguePriceId);
 
             (bool hasGaps, int? gapLowerTierIndex, int? gapUpperTierIndex) = price.HasTierRangeGaps();
             (bool hasOverlap, int? overlapLowerTierIndex, int? overlapUpperTierIndex) = price.HasTierRangeOverlap();
+
             if (hasGaps)
-            {
                 validationContext.AddFailure(string.Format(SharedListPriceValidationErrors.RangeGapError, gapLowerTierIndex, gapUpperTierIndex));
-
-                return;
-            }
             else if (hasOverlap)
-            {
                 validationContext.AddFailure(string.Format(SharedListPriceValidationErrors.RangeOverlapError, overlapLowerTierIndex, overlapUpperTierIndex));
-
-                return;
-            }
         }
     }
 }

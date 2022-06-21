@@ -11,24 +11,26 @@ using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers;
 using Xunit;
 
-namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.ListPrices.Solution.Tiered
+namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.ListPrices.AdditionalService.Tiered
 {
     public sealed class TieredPriceTiers : AuthorityTestBase, IClassFixture<LocalWebApplicationFactory>
     {
-        private const int CataloguePriceId = 4;
-        private static readonly CatalogueItemId SolutionId = new CatalogueItemId(99998, "001");
+        private const int CataloguePriceId = 14;
+        private static readonly CatalogueItemId SolutionId = new(99998, "001");
+        private static readonly CatalogueItemId AdditionalServiceId = new(99998, "001A99");
 
         private static readonly Dictionary<string, string> Parameters = new()
         {
             { nameof(SolutionId), SolutionId.ToString() },
+            { nameof(AdditionalServiceId), AdditionalServiceId.ToString() },
             { nameof(CataloguePriceId), CataloguePriceId.ToString() },
         };
 
         public TieredPriceTiers(LocalWebApplicationFactory factory)
             : base(
                 factory,
-                typeof(CatalogueSolutionListPriceController),
-                nameof(CatalogueSolutionListPriceController.TieredPriceTiers),
+                typeof(AdditionalServiceListPriceController),
+                nameof(AdditionalServiceListPriceController.TieredPriceTiers),
                 Parameters)
         {
         }
@@ -37,10 +39,10 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.ListPrices.Solution.Tie
         public void AllSectionsDisplayed()
         {
             using var context = GetEndToEndDbContext();
-            var catalogueItem = context.CatalogueItems.First(context => context.Id == SolutionId);
+            var catalogueItem = context.CatalogueItems.First(c => c.Id == AdditionalServiceId);
 
             CommonActions.PageTitle().Should().Be($"Tiered list price information - {catalogueItem.Name}".FormatForComparison());
-            CommonActions.LedeText().Should().Be("Provide information about the pricing tiers available for your Catalogue Solution.".FormatForComparison());
+            CommonActions.LedeText().Should().Be("Provide information about the pricing tiers available for your Additional Service.".FormatForComparison());
 
             CommonActions.GoBackLinkDisplayed().Should().BeTrue();
             CommonActions.SaveButtonDisplayed().Should().BeTrue();
@@ -55,15 +57,15 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.ListPrices.Solution.Tie
             CommonActions.ClickGoBackLink();
 
             CommonActions.PageLoadedCorrectGetIndex(
-                typeof(CatalogueSolutionListPriceController),
-                nameof(CatalogueSolutionListPriceController.AddTieredListPrice)).Should().BeTrue();
+                typeof(AdditionalServiceListPriceController),
+                nameof(AdditionalServiceListPriceController.AddTieredListPrice)).Should().BeTrue();
         }
 
         [Fact]
         public void DeletePrice_Redirects()
         {
             using var context = GetEndToEndDbContext();
-            var catalogueItem = context.CatalogueItems.Include(c => c.CataloguePrices).First(c => c.Id == SolutionId);
+            var catalogueItem = context.CatalogueItems.Include(c => c.CataloguePrices).First(c => c.Id == AdditionalServiceId);
 
             var price = new CataloguePrice
             {
@@ -100,12 +102,13 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.ListPrices.Solution.Tie
             var parameters = new Dictionary<string, string>
             {
                 { nameof(SolutionId), SolutionId.ToString() },
+                { nameof(AdditionalServiceId), AdditionalServiceId.ToString() },
                 { nameof(CataloguePriceId), price.CataloguePriceId.ToString() },
             };
 
             NavigateToUrl(
-                typeof(CatalogueSolutionListPriceController),
-                nameof(CatalogueSolutionListPriceController.TieredPriceTiers),
+                typeof(AdditionalServiceListPriceController),
+                nameof(AdditionalServiceListPriceController.TieredPriceTiers),
                 parameters);
 
             CommonActions.ClickGoBackLink();
@@ -115,21 +118,21 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.ListPrices.Solution.Tie
             CommonActions.ClickLinkElement(ListPriceObjects.DeletePriceLink);
 
             CommonActions.PageLoadedCorrectGetIndex(
-                typeof(CatalogueSolutionListPriceController),
-                nameof(CatalogueSolutionListPriceController.DeleteListPrice)).Should().BeTrue();
+                typeof(AdditionalServiceListPriceController),
+                nameof(AdditionalServiceListPriceController.DeleteListPrice)).Should().BeTrue();
 
             CommonActions.ClickSave();
 
             CommonActions.PageLoadedCorrectGetIndex(
-                typeof(CatalogueSolutionListPriceController),
-                nameof(CatalogueSolutionListPriceController.Index)).Should().BeTrue();
+                typeof(AdditionalServiceListPriceController),
+                nameof(AdditionalServiceListPriceController.Index)).Should().BeTrue();
         }
 
         [Fact]
         public void DeletePrice_BackLink()
         {
             using var context = GetEndToEndDbContext();
-            var catalogueItem = context.CatalogueItems.Include(c => c.CataloguePrices).First(c => c.Id == SolutionId);
+            var catalogueItem = context.CatalogueItems.Include(c => c.CataloguePrices).First(c => c.Id == AdditionalServiceId);
 
             var price = new CataloguePrice
             {
@@ -166,12 +169,13 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.ListPrices.Solution.Tie
             var parameters = new Dictionary<string, string>
             {
                 { nameof(SolutionId), SolutionId.ToString() },
+                { nameof(AdditionalServiceId), AdditionalServiceId.ToString() },
                 { nameof(CataloguePriceId), price.CataloguePriceId.ToString() },
             };
 
             NavigateToUrl(
-                typeof(CatalogueSolutionListPriceController),
-                nameof(CatalogueSolutionListPriceController.TieredPriceTiers),
+                typeof(AdditionalServiceListPriceController),
+                nameof(AdditionalServiceListPriceController.TieredPriceTiers),
                 parameters);
 
             CommonActions.ClickGoBackLink();
@@ -181,14 +185,14 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.ListPrices.Solution.Tie
             CommonActions.ClickLinkElement(ListPriceObjects.DeletePriceLink);
 
             CommonActions.PageLoadedCorrectGetIndex(
-                typeof(CatalogueSolutionListPriceController),
-                nameof(CatalogueSolutionListPriceController.DeleteListPrice)).Should().BeTrue();
+                typeof(AdditionalServiceListPriceController),
+                nameof(AdditionalServiceListPriceController.DeleteListPrice)).Should().BeTrue();
 
             CommonActions.ClickGoBackLink();
 
             CommonActions.PageLoadedCorrectGetIndex(
-                typeof(CatalogueSolutionListPriceController),
-                nameof(CatalogueSolutionListPriceController.AddTieredListPrice)).Should().BeTrue();
+                typeof(AdditionalServiceListPriceController),
+                nameof(AdditionalServiceListPriceController.AddTieredListPrice)).Should().BeTrue();
 
             catalogueItem.CataloguePrices.Remove(price);
             context.SaveChanges();
@@ -198,7 +202,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.ListPrices.Solution.Tie
         public void DeleteTier_Redirects()
         {
             using var context = GetEndToEndDbContext();
-            var catalogueItem = context.CatalogueItems.Include(c => c.CataloguePrices).First(c => c.Id == SolutionId);
+            var catalogueItem = context.CatalogueItems.Include(c => c.CataloguePrices).First(c => c.Id == AdditionalServiceId);
 
             var price = new CataloguePrice
             {
@@ -235,12 +239,13 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.ListPrices.Solution.Tie
             var parameters = new Dictionary<string, string>
             {
                 { nameof(SolutionId), SolutionId.ToString() },
+                { nameof(AdditionalServiceId), AdditionalServiceId.ToString() },
                 { nameof(CataloguePriceId), price.CataloguePriceId.ToString() },
             };
 
             NavigateToUrl(
-                typeof(CatalogueSolutionListPriceController),
-                nameof(CatalogueSolutionListPriceController.TieredPriceTiers),
+                typeof(AdditionalServiceListPriceController),
+                nameof(AdditionalServiceListPriceController.TieredPriceTiers),
                 parameters);
 
             CommonActions.ClickLinkElement(ListPriceObjects.EditTierPriceLink(1));
@@ -248,21 +253,21 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.ListPrices.Solution.Tie
             CommonActions.ClickLinkElement(ListPriceObjects.DeleteTieredPriceTierLink);
 
             CommonActions.PageLoadedCorrectGetIndex(
-                typeof(CatalogueSolutionListPriceController),
-                nameof(CatalogueSolutionListPriceController.DeleteTieredPriceTier)).Should().BeTrue();
+                typeof(AdditionalServiceListPriceController),
+                nameof(AdditionalServiceListPriceController.DeleteTieredPriceTier)).Should().BeTrue();
 
             CommonActions.ClickSave();
 
             CommonActions.PageLoadedCorrectGetIndex(
-                typeof(CatalogueSolutionListPriceController),
-                nameof(CatalogueSolutionListPriceController.TieredPriceTiers)).Should().BeTrue();
+                typeof(AdditionalServiceListPriceController),
+                nameof(AdditionalServiceListPriceController.TieredPriceTiers)).Should().BeTrue();
         }
 
         [Fact]
         public void DeleteTier_BackLink()
         {
             using var context = GetEndToEndDbContext();
-            var catalogueItem = context.CatalogueItems.Include(c => c.CataloguePrices).First(c => c.Id == SolutionId);
+            var catalogueItem = context.CatalogueItems.Include(c => c.CataloguePrices).First(c => c.Id == AdditionalServiceId);
 
             var price = new CataloguePrice
             {
@@ -299,12 +304,13 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.ListPrices.Solution.Tie
             var parameters = new Dictionary<string, string>
             {
                 { nameof(SolutionId), SolutionId.ToString() },
+                { nameof(AdditionalServiceId), AdditionalServiceId.ToString() },
                 { nameof(CataloguePriceId), price.CataloguePriceId.ToString() },
             };
 
             NavigateToUrl(
-                typeof(CatalogueSolutionListPriceController),
-                nameof(CatalogueSolutionListPriceController.TieredPriceTiers),
+                typeof(AdditionalServiceListPriceController),
+                nameof(AdditionalServiceListPriceController.TieredPriceTiers),
                 parameters);
 
             CommonActions.ClickLinkElement(ListPriceObjects.EditTierPriceLink(1));
@@ -312,14 +318,14 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.ListPrices.Solution.Tie
             CommonActions.ClickLinkElement(ListPriceObjects.DeleteTieredPriceTierLink);
 
             CommonActions.PageLoadedCorrectGetIndex(
-                typeof(CatalogueSolutionListPriceController),
-                nameof(CatalogueSolutionListPriceController.DeleteTieredPriceTier)).Should().BeTrue();
+                typeof(AdditionalServiceListPriceController),
+                nameof(AdditionalServiceListPriceController.DeleteTieredPriceTier)).Should().BeTrue();
 
             CommonActions.ClickGoBackLink();
 
             CommonActions.PageLoadedCorrectGetIndex(
-                typeof(CatalogueSolutionListPriceController),
-                nameof(CatalogueSolutionListPriceController.EditTieredPriceTier)).Should().BeTrue();
+                typeof(AdditionalServiceListPriceController),
+                nameof(AdditionalServiceListPriceController.EditTieredPriceTier)).Should().BeTrue();
 
             catalogueItem.CataloguePrices.Remove(price);
             context.SaveChanges();
@@ -331,8 +337,8 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.ListPrices.Solution.Tie
             CommonActions.ClickLinkElement(TieredPriceTiersObjects.AddTierLink);
 
             CommonActions.PageLoadedCorrectGetIndex(
-                typeof(CatalogueSolutionListPriceController),
-                nameof(CatalogueSolutionListPriceController.AddTieredPriceTier)).Should().BeTrue();
+                typeof(AdditionalServiceListPriceController),
+                nameof(AdditionalServiceListPriceController.AddTieredPriceTier)).Should().BeTrue();
         }
 
         [Fact]
@@ -343,8 +349,8 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.ListPrices.Solution.Tie
             CommonActions.ClickSave();
 
             CommonActions.PageLoadedCorrectGetIndex(
-                typeof(CatalogueSolutionListPriceController),
-                nameof(CatalogueSolutionListPriceController.Index)).Should().BeTrue();
+                typeof(AdditionalServiceListPriceController),
+                nameof(AdditionalServiceListPriceController.Index)).Should().BeTrue();
         }
 
         [Fact]
@@ -355,15 +361,15 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.ListPrices.Solution.Tie
             CommonActions.ClickSave();
 
             CommonActions.PageLoadedCorrectGetIndex(
-                typeof(CatalogueSolutionListPriceController),
-                nameof(CatalogueSolutionListPriceController.Index)).Should().BeTrue();
+                typeof(AdditionalServiceListPriceController),
+                nameof(AdditionalServiceListPriceController.Index)).Should().BeTrue();
         }
 
         [Fact]
         public void NoTiers_TableNotDisplayed()
         {
             using var context = GetEndToEndDbContext();
-            var catalogueItem = context.CatalogueItems.Include(c => c.CataloguePrices).First(c => c.Id == SolutionId);
+            var catalogueItem = context.CatalogueItems.Include(c => c.CataloguePrices).First(c => c.Id == AdditionalServiceId);
 
             var price = new CataloguePrice
             {
@@ -386,12 +392,13 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.ListPrices.Solution.Tie
             var parameters = new Dictionary<string, string>
             {
                 { nameof(SolutionId), SolutionId.ToString() },
+                { nameof(AdditionalServiceId), AdditionalServiceId.ToString() },
                 { nameof(CataloguePriceId), price.CataloguePriceId.ToString() },
             };
 
             NavigateToUrl(
-                typeof(CatalogueSolutionListPriceController),
-                nameof(CatalogueSolutionListPriceController.TieredPriceTiers),
+                typeof(AdditionalServiceListPriceController),
+                nameof(AdditionalServiceListPriceController.TieredPriceTiers),
                 parameters);
 
             CommonActions.ElementIsDisplayed(TieredPriceTiersObjects.TiersTable).Should().BeFalse();
@@ -404,7 +411,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.ListPrices.Solution.Tie
         public void Publish_NoTiers_ThrowsError()
         {
             using var context = GetEndToEndDbContext();
-            var catalogueItem = context.CatalogueItems.Include(c => c.CataloguePrices).First(c => c.Id == SolutionId);
+            var catalogueItem = context.CatalogueItems.Include(c => c.CataloguePrices).First(c => c.Id == AdditionalServiceId);
 
             var price = new CataloguePrice
             {
@@ -427,12 +434,13 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.ListPrices.Solution.Tie
             var parameters = new Dictionary<string, string>
             {
                 { nameof(SolutionId), SolutionId.ToString() },
+                { nameof(AdditionalServiceId), AdditionalServiceId.ToString() },
                 { nameof(CataloguePriceId), price.CataloguePriceId.ToString() },
             };
 
             NavigateToUrl(
-                typeof(CatalogueSolutionListPriceController),
-                nameof(CatalogueSolutionListPriceController.TieredPriceTiers),
+                typeof(AdditionalServiceListPriceController),
+                nameof(AdditionalServiceListPriceController.TieredPriceTiers),
                 parameters);
 
             CommonActions.ClickRadioButtonWithValue(PublicationStatus.Published.ToString());
@@ -450,7 +458,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.ListPrices.Solution.Tie
         public void Publish_InvalidStartingRange_ThrowsError()
         {
             using var context = GetEndToEndDbContext();
-            var catalogueItem = context.CatalogueItems.Include(c => c.CataloguePrices).First(c => c.Id == SolutionId);
+            var catalogueItem = context.CatalogueItems.Include(c => c.CataloguePrices).First(c => c.Id == AdditionalServiceId);
 
             var price = new CataloguePrice
             {
@@ -481,12 +489,13 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.ListPrices.Solution.Tie
             var parameters = new Dictionary<string, string>
             {
                 { nameof(SolutionId), SolutionId.ToString() },
+                { nameof(AdditionalServiceId), AdditionalServiceId.ToString() },
                 { nameof(CataloguePriceId), price.CataloguePriceId.ToString() },
             };
 
             NavigateToUrl(
-                typeof(CatalogueSolutionListPriceController),
-                nameof(CatalogueSolutionListPriceController.TieredPriceTiers),
+                typeof(AdditionalServiceListPriceController),
+                nameof(AdditionalServiceListPriceController.TieredPriceTiers),
                 parameters);
 
             CommonActions.ClickRadioButtonWithValue(PublicationStatus.Published.ToString());
@@ -504,7 +513,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.ListPrices.Solution.Tie
         public void Publish_NoInfiniteRange_ThrowsError()
         {
             using var context = GetEndToEndDbContext();
-            var catalogueItem = context.CatalogueItems.Include(c => c.CataloguePrices).First(c => c.Id == SolutionId);
+            var catalogueItem = context.CatalogueItems.Include(c => c.CataloguePrices).First(c => c.Id == AdditionalServiceId);
 
             var price = new CataloguePrice
             {
@@ -536,12 +545,13 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.ListPrices.Solution.Tie
             var parameters = new Dictionary<string, string>
             {
                 { nameof(SolutionId), SolutionId.ToString() },
+                { nameof(AdditionalServiceId), AdditionalServiceId.ToString() },
                 { nameof(CataloguePriceId), price.CataloguePriceId.ToString() },
             };
 
             NavigateToUrl(
-                typeof(CatalogueSolutionListPriceController),
-                nameof(CatalogueSolutionListPriceController.TieredPriceTiers),
+                typeof(AdditionalServiceListPriceController),
+                nameof(AdditionalServiceListPriceController.TieredPriceTiers),
                 parameters);
 
             CommonActions.ClickRadioButtonWithValue(PublicationStatus.Published.ToString());
@@ -559,7 +569,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.ListPrices.Solution.Tie
         public void Publish_OverlappingTiers_ThrowsError()
         {
             using var context = GetEndToEndDbContext();
-            var catalogueItem = context.CatalogueItems.Include(c => c.CataloguePrices).First(c => c.Id == SolutionId);
+            var catalogueItem = context.CatalogueItems.Include(c => c.CataloguePrices).First(c => c.Id == AdditionalServiceId);
 
             var price = new CataloguePrice
             {
@@ -596,12 +606,13 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.ListPrices.Solution.Tie
             var parameters = new Dictionary<string, string>
             {
                 { nameof(SolutionId), SolutionId.ToString() },
+                { nameof(AdditionalServiceId), AdditionalServiceId.ToString() },
                 { nameof(CataloguePriceId), price.CataloguePriceId.ToString() },
             };
 
             NavigateToUrl(
-                typeof(CatalogueSolutionListPriceController),
-                nameof(CatalogueSolutionListPriceController.TieredPriceTiers),
+                typeof(AdditionalServiceListPriceController),
+                nameof(AdditionalServiceListPriceController.TieredPriceTiers),
                 parameters);
 
             CommonActions.ClickRadioButtonWithValue(PublicationStatus.Published.ToString());
@@ -619,7 +630,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.ListPrices.Solution.Tie
         public void Publish_GapsBetweenTiers_ThrowsError()
         {
             using var context = GetEndToEndDbContext();
-            var catalogueItem = context.CatalogueItems.Include(c => c.CataloguePrices).First(c => c.Id == SolutionId);
+            var catalogueItem = context.CatalogueItems.Include(c => c.CataloguePrices).First(c => c.Id == AdditionalServiceId);
 
             var price = new CataloguePrice
             {
@@ -656,12 +667,13 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.ListPrices.Solution.Tie
             var parameters = new Dictionary<string, string>
             {
                 { nameof(SolutionId), SolutionId.ToString() },
+                { nameof(AdditionalServiceId), AdditionalServiceId.ToString() },
                 { nameof(CataloguePriceId), price.CataloguePriceId.ToString() },
             };
 
             NavigateToUrl(
-                typeof(CatalogueSolutionListPriceController),
-                nameof(CatalogueSolutionListPriceController.TieredPriceTiers),
+                typeof(AdditionalServiceListPriceController),
+                nameof(AdditionalServiceListPriceController.TieredPriceTiers),
                 parameters);
 
             CommonActions.ClickRadioButtonWithValue(PublicationStatus.Published.ToString());

@@ -14,9 +14,9 @@ using Moq;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
+using NHSD.GPIT.BuyingCatalogue.ServiceContracts.ListPrice;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Orders;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Routing;
-using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions;
 using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.AutoFixtureCustomisations;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers.SolutionSelection;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.SolutionSelection.Prices;
@@ -51,7 +51,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
             string internalOrgId,
             CallOffId callOffId,
             EntityFramework.Ordering.Models.Order order,
-            [Frozen] Mock<ISolutionListPriceService> mockListPriceService,
+            [Frozen] Mock<IListPriceService> mockListPriceService,
             PricesController controller)
         {
             var orderItem = order.OrderItems.First().CatalogueItem;
@@ -110,7 +110,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
             SelectPriceModel model,
             EntityFramework.Ordering.Models.Order order,
             [Frozen] Mock<IOrderService> mockOrderService,
-            [Frozen] Mock<ISolutionListPriceService> mockListPriceService,
+            [Frozen] Mock<IListPriceService> mockListPriceService,
             PricesController controller)
         {
             var orderItem = order.OrderItems.First().CatalogueItem;
@@ -151,7 +151,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
             string internalOrgId,
             CallOffId callOffId,
             EntityFramework.Ordering.Models.Order order,
-            [Frozen] Mock<ISolutionListPriceService> mockListPriceService,
+            [Frozen] Mock<IListPriceService> mockListPriceService,
             PricesController controller)
         {
             var orderItem = order.OrderItems.First().CatalogueItem;
@@ -199,7 +199,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
             CallOffId callOffId,
             EntityFramework.Ordering.Models.Order order,
             [Frozen] Mock<IOrderService> mockOrderService,
-            [Frozen] Mock<ISolutionListPriceService> mockListPriceService,
+            [Frozen] Mock<IListPriceService> mockListPriceService,
             [Frozen] Mock<IOrderPriceService> mockOrderPriceService,
             [Frozen] Mock<IRoutingService> mockRoutingService,
             PricesController controller)

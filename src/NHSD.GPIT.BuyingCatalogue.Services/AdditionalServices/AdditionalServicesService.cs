@@ -119,6 +119,10 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.AdditionalServices
                 .Include(i => i.CatalogueItemCapabilities)
                 .Include(i => i.CatalogueItemEpics)
                 .Include(i => i.Supplier)
+                .Include(ci => ci.CataloguePrices)
+                .ThenInclude(cp => cp.PricingUnit)
+                .Include(ci => ci.CataloguePrices)
+                .ThenInclude(cp => cp.CataloguePriceTiers)
                 .Where(i => i.AdditionalService.SolutionId == catalogueItemId && i.CatalogueItemType == CatalogueItemType.AdditionalService)
                 .OrderBy(i => i.Name);
     }

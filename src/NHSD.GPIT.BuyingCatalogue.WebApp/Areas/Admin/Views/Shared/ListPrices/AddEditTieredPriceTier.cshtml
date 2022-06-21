@@ -21,6 +21,7 @@
             <input type="hidden" asp-for="CatalogueItemName" />
             <input type="hidden" asp-for="IsEditing" />
             <input type="hidden" asp-for="Title" />
+            <input type="hidden" asp-for="DeleteTieredPriceTierUrl" />
 
             <nhs-bookended-input asp-for="Price" label-text="Price" label-hint="Provide the list price in pounds to a maximum of 4 decimal places." prefix="£" />
 
@@ -48,11 +49,7 @@
 
         @if (Model.TierId is not null)
         {
-            <vc:nhs-delete-button url="@Url.Action(
-                nameof(CatalogueSolutionListPriceController.DeleteTieredPriceTier),
-                typeof(CatalogueSolutionListPriceController).ControllerName(),
-                new { solutionId = Model.CatalogueItemId, cataloguePriceId = Model.CataloguePriceId, tierId = Model.TierId, isEditing = Model.IsEditing })"
-                text="Delete pricing tier"></vc:nhs-delete-button>
+            <vc:nhs-delete-button url="@Model.DeleteTieredPriceTierUrl" text="Delete pricing tier"></vc:nhs-delete-button>
         }
     </div>
 </div>

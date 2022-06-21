@@ -23,6 +23,21 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.ListPriceModels
             MaximumNumberOfTiers = maximumNumberOfTiers;
         }
 
+        public EditTieredListPriceModel(
+            CatalogueItem solution,
+            CatalogueItem service,
+            CataloguePrice price,
+            int maximumNumberOfTiers)
+            : base(solution, service, price)
+        {
+            Tiers = price.CataloguePriceTiers.ToList();
+            SelectedPublicationStatus
+                = CataloguePricePublicationStatus
+                    = price.PublishedStatus;
+
+            MaximumNumberOfTiers = maximumNumberOfTiers;
+        }
+
         public PublicationStatus CataloguePricePublicationStatus { get; set; }
 
         public PublicationStatus SelectedPublicationStatus { get; set; }
@@ -35,5 +50,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.ListPriceModels
         public IList<CataloguePriceTier> Tiers { get; set; }
 
         public int MaximumNumberOfTiers { get; set; }
+
+        public string AddPricingTierUrl { get; set; }
     }
 }
