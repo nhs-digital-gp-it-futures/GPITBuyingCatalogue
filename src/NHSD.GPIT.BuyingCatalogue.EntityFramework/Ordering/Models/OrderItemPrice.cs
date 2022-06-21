@@ -23,6 +23,8 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models
 
         public CataloguePriceCalculationType CataloguePriceCalculationType { get; set; }
 
+        public CataloguePriceQuantityCalculationType? CataloguePriceQuantityCalculationType { get; set; }
+
         public TimeUnit? EstimationPeriod { get; set; }
 
         public string CurrencyCode { get; set; }

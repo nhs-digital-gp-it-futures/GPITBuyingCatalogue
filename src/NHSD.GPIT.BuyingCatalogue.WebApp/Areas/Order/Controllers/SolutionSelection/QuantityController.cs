@@ -48,7 +48,17 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers.SolutionSelec
             var order = await orderService.GetOrderWithOrderItems(callOffId, internalOrgId);
             var orderItem = order.OrderItem(catalogueItemId);
 
-            if (orderItem.OrderItemPrice.ProvisioningType == ProvisioningType.Patient)
+            if (orderItem.OrderItemPrice.ProvisioningType == ProvisioningType.PerServiceRecipient)
+            {
+                return RedirectToAction(
+                    nameof(SelectServiceRecipientQuantity),
+                    typeof(QuantityController).ControllerName(),
+                    new { internalOrgId, callOffId, catalogueItemId, source });
+            }
+
+            if ((orderItem.OrderItemPrice.ProvisioningType == ProvisioningType.Patient
+                || orderItem.OrderItemPrice.CataloguePriceQuantityCalculationType == CataloguePriceQuantityCalculationType.PerServiceRecipient)
+                && orderItem.OrderItemPrice.CataloguePriceQuantityCalculationType != CataloguePriceQuantityCalculationType.PerSolutionOrService)
             {
                 return RedirectToAction(
                     nameof(SelectServiceRecipientQuantity),
