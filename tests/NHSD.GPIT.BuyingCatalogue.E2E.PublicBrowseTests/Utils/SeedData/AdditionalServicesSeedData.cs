@@ -422,6 +422,84 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
                                 },
                             },
                         },
+                        new()
+                        {
+                            CataloguePriceId = 28,
+                            CatalogueItemId = new CatalogueItemId(99998, "001A99"),
+                            ProvisioningType = ProvisioningType.Patient,
+                            CataloguePriceType = CataloguePriceType.Tiered,
+                            CataloguePriceCalculationType = CataloguePriceCalculationType.Cumulative,
+                            PublishedStatus = PublicationStatus.Draft,
+                            PricingUnit = new PricingUnit
+                            {
+                                Id = 24,
+                                RangeDescription = "Patients",
+                                Description = "per tiered single fixed test patient Maximum Tiers Unpublished",
+                            },
+                            TimeUnit = TimeUnit.PerYear,
+                            CurrencyCode = "GBP",
+                            LastUpdated = DateTime.UtcNow,
+                            CataloguePriceTiers = new List<CataloguePriceTier>
+                            {
+                                new()
+                                {
+                                    Id = 45,
+                                    CataloguePriceId = 28,
+                                    LowerRange = 1,
+                                    UpperRange = 9999,
+                                    Price = 999.9999M,
+                                    LastUpdated = DateTime.UtcNow,
+                                },
+                                new()
+                                {
+                                    Id = 46,
+                                    CataloguePriceId = 28,
+                                    LowerRange = 10000,
+                                    UpperRange = 49000,
+                                    LastUpdated = DateTime.UtcNow,
+                                },
+                                new()
+                                {
+                                    Id = 47,
+                                    CataloguePriceId = 28,
+                                    LowerRange = 50000,
+                                    UpperRange = 99999,
+                                    LastUpdated = DateTime.UtcNow,
+                                },
+                                new()
+                                {
+                                    Id = 48,
+                                    CataloguePriceId = 28,
+                                    LowerRange = 100000,
+                                    UpperRange = 149999,
+                                    LastUpdated = DateTime.UtcNow,
+                                },
+                                new()
+                                {
+                                    Id = 49,
+                                    CataloguePriceId = 28,
+                                    LowerRange = 150000,
+                                    UpperRange = null,
+                                    LastUpdated = DateTime.UtcNow,
+                                },
+                                new()
+                                {
+                                    Id = 50,
+                                    CataloguePriceId = 28,
+                                    LowerRange = 150000,
+                                    UpperRange = null,
+                                    LastUpdated = DateTime.UtcNow,
+                                },
+                                new()
+                                {
+                                    Id = 51,
+                                    CataloguePriceId = 28,
+                                    LowerRange = 150000,
+                                    UpperRange = null,
+                                    LastUpdated = DateTime.UtcNow,
+                                },
+                            },
+                        },
                     },
                 },
                 new()

@@ -55,5 +55,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.ListPriceModels
         public bool? IsInfiniteRange { get; set; }
 
         public bool? IsEditing { get; set; }
+
+        public string DeleteTieredPriceTierUrl { get; set; }
     }
 }
