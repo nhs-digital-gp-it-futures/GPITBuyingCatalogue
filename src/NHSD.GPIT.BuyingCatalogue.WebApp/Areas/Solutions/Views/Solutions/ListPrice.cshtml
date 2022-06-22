@@ -1,15 +1,13 @@
-﻿@*@model NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models.ListPriceModel;
+﻿@model NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models.ListPriceModel;
 @{
-	// TODO - Tiered Pricing - Update Page
+    const string ContextualContent = "This Catalogue Solution is available at the following";
 
-    //const string ContextualContent = "This Catalogue Solution is available at the following";
-
-    //string Contextual() => Model.FlatListPrices.Count > 1 ? $"{ContextualContent} prices:" : $"{ContextualContent} price:";
-}*@
+    string Contextual() => Model.FlatListPrices.Count > 1 ? $"{ContextualContent} prices:" : $"{ContextualContent} price:";
+}
 
 <article class="nhsuk-grid-row">
     <div class="nhsuk-grid-column-two-thirds">
-@*
+
         <p><strong>@Contextual()</strong></p>
 
         @if (Model.HasFlatListPrices())
@@ -30,8 +28,6 @@
                     </nhs-table-row-container>
                 }
             </nhs-table>
-        }*@
+        }
     </div>
 </article>
-
-
