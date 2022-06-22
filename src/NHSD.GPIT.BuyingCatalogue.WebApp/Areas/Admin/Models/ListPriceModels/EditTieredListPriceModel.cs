@@ -38,15 +38,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.ListPriceModels
             MaximumNumberOfTiers = maximumNumberOfTiers;
         }
 
-        public PublicationStatus CataloguePricePublicationStatus { get; set; }
-
-        public PublicationStatus SelectedPublicationStatus { get; set; }
-
-        public IList<SelectableRadioOption<PublicationStatus>> AvailablePublicationStatuses => CataloguePricePublicationStatus
-            .GetAvailablePublicationStatuses()
-            .Select(p => new SelectableRadioOption<PublicationStatus>(p.Description(), p))
-            .ToList();
-
         public IList<CataloguePriceTier> Tiers { get; set; }
 
         public int MaximumNumberOfTiers { get; set; }

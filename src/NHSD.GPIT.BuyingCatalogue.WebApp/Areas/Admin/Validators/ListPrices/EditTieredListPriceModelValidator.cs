@@ -42,7 +42,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Validators.ListPrices
                 ? model.CatalogueItemId
                 : model.ServiceId!.Value;
 
-        private bool NotBeTheLastRemainingListPrice(EditTieredListPriceModel model, PublicationStatus status)
+        private bool NotBeTheLastRemainingListPrice(EditTieredListPriceModel model, PublicationStatus? status)
         {
             return listPriceService.GetNumberOfListPrices(GetCatalogueItemId(model), model.CataloguePriceId!.Value).GetAwaiter().GetResult() > 0;
         }
@@ -56,28 +56,28 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Validators.ListPrices
             return price;
         }
 
-        private bool HaveAtLeastOneTier(EditTieredListPriceModel model, PublicationStatus status)
+        private bool HaveAtLeastOneTier(EditTieredListPriceModel model, PublicationStatus? status)
         {
             var price = GetCataloguePrice(model, model.CataloguePriceId);
 
             return price.CataloguePriceTiers.Any();
         }
 
-        private bool HaveTierWithStartingRange(EditTieredListPriceModel model, PublicationStatus status)
+        private bool HaveTierWithStartingRange(EditTieredListPriceModel model, PublicationStatus? status)
         {
             var price = GetCataloguePrice(model, model.CataloguePriceId);
 
             return price.CataloguePriceTiers.Any(p => p.LowerRange == StartingLowerRange);
         }
 
-        private bool HaveTierWithInfiniteRange(EditTieredListPriceModel model, PublicationStatus status)
+        private bool HaveTierWithInfiniteRange(EditTieredListPriceModel model, PublicationStatus? status)
         {
             var price = GetCataloguePrice(model, model.CataloguePriceId);
 
             return price.CataloguePriceTiers.Any(p => p.UpperRange is null);
         }
 
-        private void EnsureNoGapsOrOverlap(PublicationStatus status, ValidationContext<EditTieredListPriceModel> validationContext)
+        private void EnsureNoGapsOrOverlap(PublicationStatus? status, ValidationContext<EditTieredListPriceModel> validationContext)
         {
             var model = validationContext.InstanceToValidate;
 

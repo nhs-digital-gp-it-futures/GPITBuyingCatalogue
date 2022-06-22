@@ -16,6 +16,7 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models
             ProvisioningType = cataloguePrice.ProvisioningType;
             CataloguePriceType = cataloguePrice.CataloguePriceType;
             CataloguePriceCalculationType = cataloguePrice.CataloguePriceCalculationType;
+            CataloguePriceQuantityCalculationType = cataloguePrice.CataloguePriceQuantityCalculationType;
             EstimationPeriod = cataloguePrice.TimeUnit;
             CurrencyCode = cataloguePrice.CurrencyCode;
             Description = cataloguePrice.PricingUnit.Description;

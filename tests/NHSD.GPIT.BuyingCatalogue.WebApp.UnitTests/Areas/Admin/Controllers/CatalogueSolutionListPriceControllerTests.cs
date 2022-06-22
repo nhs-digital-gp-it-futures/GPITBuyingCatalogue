@@ -601,7 +601,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
                 s => s.SetPublicationStatus(
                         solution.CatalogueItemId,
                         price.CataloguePriceId,
-                        model.SelectedPublicationStatus),
+                        model.SelectedPublicationStatus!.Value),
                 Times.Never());
 
             result.Should().NotBeNull();
@@ -644,7 +644,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
                 s => s.SetPublicationStatus(
                         solution.CatalogueItemId,
                         price.CataloguePriceId,
-                        model.SelectedPublicationStatus),
+                        model.SelectedPublicationStatus!.Value),
                 Times.Once());
 
             result.Should().NotBeNull();

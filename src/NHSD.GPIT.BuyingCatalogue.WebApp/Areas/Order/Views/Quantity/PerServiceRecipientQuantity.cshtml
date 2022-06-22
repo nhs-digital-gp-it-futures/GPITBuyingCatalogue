@@ -1,0 +1,47 @@
+﻿@model NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.SolutionSelection.Quantity.SelectServiceRecipientQuantityModel;
+@{
+    ViewBag.Title = $"Quantity of {Model.ItemType}";
+}
+
+<partial name="Partials/_BackLink" model="Model" />
+
+<div class="nhsuk-grid-row">
+    <div class="nhsuk-grid-column-two-thirds">
+        <nhs-validation-summary />
+
+        <nhs-page-title title="@ViewBag.Title"
+                        caption="@Model!.ItemName"
+                        advice="You can only order one solution per Service Recipient." />
+
+        <form method="post">
+            <input type="hidden" asp-for="@Model.BackLink" />
+            <input type="hidden" asp-for="@Model.ItemName" />
+            <input type="hidden" asp-for="@Model.ItemType" />
+            <input type="hidden" asp-for="@Model.Source" />
+
+            <nhs-table data-test-id="additional-service-dashboard-table" label-text="Quantity per practice">
+                <nhs-table-column>Recipient name (ODS code)</nhs-table-column>
+                <nhs-table-column>Quantity</nhs-table-column>
+
+                @for (var i = 0; i < Model.ServiceRecipients.Length; i++)
+                {
+                    <nhs-table-row-container>
+                        <nhs-table-cell>
+                            <input type="hidden" asp-for="@Model.ServiceRecipients[i].Name" />
+                            <input type="hidden" asp-for="@Model.ServiceRecipients[i].OdsCode" />
+                            <input type="hidden" asp-for="@Model.ServiceRecipients[i].Quantity" />
+                                @Model.ServiceRecipients[i].Description
+                        </nhs-table-cell>
+                        <nhs-table-cell>
+                                @Model.ServiceRecipients[i].Quantity
+                        </nhs-table-cell>
+                    </nhs-table-row-container>
+                }
+            </nhs-table>
+
+            <br/>
+
+            <nhs-submit-button text="Continue"/>
+        </form>
+    </div>
+</div>

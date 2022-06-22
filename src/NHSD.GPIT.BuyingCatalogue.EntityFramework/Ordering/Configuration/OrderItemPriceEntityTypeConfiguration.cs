@@ -25,6 +25,10 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Configuration
                 .HasConversion<int>()
                 .HasColumnName("CataloguePriceCalculationTypeId");
 
+            builder.Property(p => p.CataloguePriceQuantityCalculationType)
+                .HasConversion<int>()
+                .HasColumnName("CataloguePriceQuantityCalculationTypeId");
+
             builder.Property(oip => oip.CurrencyCode)
                 .IsRequired()
                 .HasMaxLength(3);
