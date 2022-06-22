@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Linq;
 using System.Threading.Tasks;
+using LinqKit;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
@@ -20,6 +21,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers.SolutionSelec
     {
         private const string OrderItemViewName = "SelectOrderItemQuantity";
         private const string ServiceRecipientViewName = "SelectServiceRecipientQuantity";
+        private const string PerServiceRecipientViewName = "PerServiceRecipientQuantity";
 
         private readonly IGpPracticeCacheService gpPracticeCache;
         private readonly IOrderService orderService;
@@ -48,17 +50,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers.SolutionSelec
             var order = await orderService.GetOrderWithOrderItems(callOffId, internalOrgId);
             var orderItem = order.OrderItem(catalogueItemId);
 
-            if (orderItem.OrderItemPrice.ProvisioningType == ProvisioningType.PerServiceRecipient)
-            {
-                return RedirectToAction(
-                    nameof(SelectServiceRecipientQuantity),
-                    typeof(QuantityController).ControllerName(),
-                    new { internalOrgId, callOffId, catalogueItemId, source });
-            }
-
-            if ((orderItem.OrderItemPrice.ProvisioningType == ProvisioningType.Patient
-                || orderItem.OrderItemPrice.CataloguePriceQuantityCalculationType == CataloguePriceQuantityCalculationType.PerServiceRecipient)
-                && orderItem.OrderItemPrice.CataloguePriceQuantityCalculationType != CataloguePriceQuantityCalculationType.PerSolutionOrService)
+            if (ShouldUseServiceRecipientView(orderItem.OrderItemPrice))
             {
                 return RedirectToAction(
                     nameof(SelectServiceRecipientQuantity),
@@ -115,17 +107,26 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers.SolutionSelec
             RoutingSource? source = null)
         {
             var order = await orderService.GetOrderWithOrderItems(callOffId, internalOrgId);
+            var orderItem = order.OrderItem(catalogueItemId);
 
             var route = routingService.GetRoute(
                 RoutingPoint.SelectQuantityBackLink,
                 order,
                 new RouteValues(internalOrgId, callOffId, catalogueItemId) { Source = source });
 
-            var model = new SelectServiceRecipientQuantityModel(order.OrderItem(catalogueItemId))
+            var model = new SelectServiceRecipientQuantityModel(orderItem)
             {
                 BackLink = Url.Action(route.ActionName, route.ControllerName, route.RouteValues),
                 Source = source,
             };
+
+            if (orderItem.OrderItemPrice.ProvisioningType == ProvisioningType.PerServiceRecipient)
+            {
+                const int perServiceRecipientQuantity = 1;
+                model.ServiceRecipients.ForEach(sr => sr.Quantity = perServiceRecipientQuantity);
+
+                return View(PerServiceRecipientViewName, model);
+            }
 
             await SetPracticeSizes(model);
 
@@ -192,6 +193,13 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers.SolutionSelec
                 }
             }
         }
+
+        private static bool ShouldUseServiceRecipientView(OrderItemPrice price) =>
+            (price.ProvisioningType is ProvisioningType.Patient or ProvisioningType.PerServiceRecipient
+                || price.CataloguePriceQuantityCalculationType
+                == CataloguePriceQuantityCalculationType.PerServiceRecipient)
+            && price.CataloguePriceQuantityCalculationType
+            != CataloguePriceQuantityCalculationType.PerSolutionOrService;
 
         private async Task SetPracticeSizes(SelectServiceRecipientQuantityModel model)
         {
