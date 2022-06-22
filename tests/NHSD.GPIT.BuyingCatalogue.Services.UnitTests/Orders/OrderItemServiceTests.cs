@@ -253,6 +253,38 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Orders
 
         [Theory]
         [InMemoryDbAutoData]
+        public static async Task SetOrderItemFunding_HasNoFundingRequired_PriceAdded_ChangedToLocalFundingOonly(
+            Order order,
+            [Frozen] BuyingCatalogueDbContext context,
+            [Frozen] Mock<IOrderItemFundingService> mockOrderItemFundingService,
+            OrderItemService orderItemService)
+        {
+            const OrderItemFundingType expected = OrderItemFundingType.LocalFundingOnly;
+
+            var item = order.OrderItems.First();
+
+            item.OrderItemFunding.OrderItemFundingType = OrderItemFundingType.NoFundingRequired;
+
+            context.Orders.Add(order);
+
+            await context.SaveChangesAsync();
+
+            mockOrderItemFundingService
+                .Setup(x => x.GetFundingType(item))
+                .ReturnsAsync(expected);
+
+            await orderItemService.SetOrderItemFunding(order.CallOffId, order.OrderingParty.InternalIdentifier, item.CatalogueItemId);
+
+            mockOrderItemFundingService.VerifyAll();
+
+            var actual = context.OrderItems.FirstOrDefault(o => o.OrderId == item.OrderId && o.CatalogueItemId == item.CatalogueItemId);
+
+            actual?.OrderItemFunding.Should().NotBeNull();
+            actual?.OrderItemFunding.OrderItemFundingType.Should().Be(expected);
+        }
+
+        [Theory]
+        [InMemoryDbAutoData]
         public static async Task SetOrderItemFunding_ForcedFunding_ShouldNotHaveForcedFunding_DeletesFunding(
             Order order,
             [Frozen] BuyingCatalogueDbContext context,
