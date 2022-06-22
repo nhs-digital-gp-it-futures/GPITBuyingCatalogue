@@ -196,10 +196,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers.SolutionSelec
 
         private static bool ShouldUseServiceRecipientView(OrderItemPrice price) =>
             (price.ProvisioningType is ProvisioningType.Patient or ProvisioningType.PerServiceRecipient
-                || price.CataloguePriceQuantityCalculationType
-                == CataloguePriceQuantityCalculationType.PerServiceRecipient)
-            && price.CataloguePriceQuantityCalculationType
-            != CataloguePriceQuantityCalculationType.PerSolutionOrService;
+                || price.CataloguePriceQuantityCalculationType == CataloguePriceQuantityCalculationType.PerServiceRecipient)
+            && price.CataloguePriceQuantityCalculationType != CataloguePriceQuantityCalculationType.PerSolutionOrService;
 
         private async Task SetPracticeSizes(SelectServiceRecipientQuantityModel model)
         {
