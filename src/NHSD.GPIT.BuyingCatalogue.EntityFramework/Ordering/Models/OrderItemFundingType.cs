@@ -20,5 +20,13 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models
         [Description("Mixed funding")]
         [Display(Name = nameof(MixedFunding), Order = 3)]
         MixedFunding = 3,
+
+        [Description("No Funding Required")]
+        [Display(Name = nameof(NoFundingRequired), Order = 4)]
+        NoFundingRequired = 4,
+
+        [Description("Local funding Only")]
+        [Display(Name = nameof(LocalFundingOnly), Order = 5)]
+        LocalFundingOnly = 5,
     }
 }

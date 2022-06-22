@@ -220,34 +220,125 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Orders
 
         [Theory]
         [InMemoryDbAutoData]
-        public static async Task DeleteOrderItems_WithOrder_DeletesOrderItems(
-            string internalOrgId,
-            CallOffId callOffId,
+        public static async Task SetOrderItemFunding_NoFunding_ShouldHaveForcedFunding_SetsForcedFunding(
             Order order,
             [Frozen] BuyingCatalogueDbContext context,
-            [Frozen] Mock<IOrderService> mockOrderService,
-            OrderItemService service)
+            [Frozen] Mock<IOrderItemFundingService> mockOrderItemFundingService,
+            OrderItemService orderItemService)
         {
+            const OrderItemFundingType expected = OrderItemFundingType.NoFundingRequired;
+
+            var item = order.OrderItems.First();
+
+            item.OrderItemFunding = null;
+            item.OrderItemPrice.OrderItemPriceTiers.ForEach(x => x.Price = 0);
+
             context.Orders.Add(order);
 
             await context.SaveChangesAsync();
 
-            mockOrderService
-                .Setup(x => x.GetOrderWithOrderItems(callOffId, internalOrgId))
-                .ReturnsAsync(order);
+            mockOrderItemFundingService
+                .Setup(x => x.GetFundingType(item))
+                .ReturnsAsync(expected);
 
-            var itemIds = order.OrderItems.Select(x => x.CatalogueItemId).ToList();
+            await orderItemService.SetOrderItemFunding(order.CallOffId, order.OrderingParty.InternalIdentifier, item.CatalogueItemId);
 
-            await service.DeleteOrderItems(internalOrgId, callOffId, itemIds);
+            mockOrderItemFundingService.VerifyAll();
 
-            mockOrderService.VerifyAll();
+            var actual = context.OrderItems.FirstOrDefault(o => o.OrderId == item.OrderId && o.CatalogueItemId == item.CatalogueItemId);
 
-            itemIds.ForEach(x =>
-            {
-                var actual = context.OrderItems.FirstOrDefault(o => o.OrderId == order.Id && o.CatalogueItemId == x);
+            actual?.OrderItemFunding.Should().NotBeNull();
+            actual?.OrderItemFunding.OrderItemFundingType.Should().Be(expected);
+        }
 
-                actual.Should().BeNull();
-            });
+        [Theory]
+        [InMemoryDbAutoData]
+        public static async Task SetOrderItemFunding_HasNoFundingRequired_PriceAdded_ChangedToLocalFundingOonly(
+            Order order,
+            [Frozen] BuyingCatalogueDbContext context,
+            [Frozen] Mock<IOrderItemFundingService> mockOrderItemFundingService,
+            OrderItemService orderItemService)
+        {
+            const OrderItemFundingType expected = OrderItemFundingType.LocalFundingOnly;
+
+            var item = order.OrderItems.First();
+
+            item.OrderItemFunding.OrderItemFundingType = OrderItemFundingType.NoFundingRequired;
+
+            context.Orders.Add(order);
+
+            await context.SaveChangesAsync();
+
+            mockOrderItemFundingService
+                .Setup(x => x.GetFundingType(item))
+                .ReturnsAsync(expected);
+
+            await orderItemService.SetOrderItemFunding(order.CallOffId, order.OrderingParty.InternalIdentifier, item.CatalogueItemId);
+
+            mockOrderItemFundingService.VerifyAll();
+
+            var actual = context.OrderItems.FirstOrDefault(o => o.OrderId == item.OrderId && o.CatalogueItemId == item.CatalogueItemId);
+
+            actual?.OrderItemFunding.Should().NotBeNull();
+            actual?.OrderItemFunding.OrderItemFundingType.Should().Be(expected);
+        }
+
+        [Theory]
+        [InMemoryDbAutoData]
+        public static async Task SetOrderItemFunding_ForcedFunding_ShouldNotHaveForcedFunding_DeletesFunding(
+            Order order,
+            [Frozen] BuyingCatalogueDbContext context,
+            [Frozen] Mock<IOrderItemFundingService> mockOrderItemFundingService,
+            OrderItemService orderItemService)
+        {
+            var item = order.OrderItems.First();
+
+            item.OrderItemFunding.OrderItemFundingType = OrderItemFundingType.NoFundingRequired;
+
+            context.Orders.Add(order);
+
+            await context.SaveChangesAsync();
+
+            mockOrderItemFundingService
+                .Setup(x => x.GetFundingType(item))
+                .ReturnsAsync(OrderItemFundingType.None);
+
+            await orderItemService.SetOrderItemFunding(order.CallOffId, order.OrderingParty.InternalIdentifier, item.CatalogueItemId);
+
+            mockOrderItemFundingService.VerifyAll();
+
+            var actual = context.OrderItems.FirstOrDefault(o => o.OrderId == item.OrderId && o.CatalogueItemId == item.CatalogueItemId);
+
+            actual?.OrderItemFunding.Should().BeNull();
+        }
+
+        [Theory]
+        [InMemoryDbAutoData]
+        public static async Task SetOrderItemFunding_NoFunding_ShouldNotHaveForcedFunding_NoFundingSet(
+            Order order,
+            [Frozen] BuyingCatalogueDbContext context,
+            [Frozen] Mock<IOrderItemFundingService> mockOrderItemFundingService,
+            OrderItemService orderItemService)
+        {
+            var item = order.OrderItems.First();
+
+            item.OrderItemFunding = null;
+
+            context.Orders.Add(order);
+
+            await context.SaveChangesAsync();
+
+            mockOrderItemFundingService
+                .Setup(x => x.GetFundingType(item))
+                .ReturnsAsync(OrderItemFundingType.None);
+
+            await orderItemService.SetOrderItemFunding(order.CallOffId, order.OrderingParty.InternalIdentifier, item.CatalogueItemId);
+
+            mockOrderItemFundingService.VerifyAll();
+
+            var actual = context.OrderItems.FirstOrDefault(o => o.OrderId == item.OrderId && o.CatalogueItemId == item.CatalogueItemId);
+
+            actual?.OrderItemFunding.Should().BeNull();
         }
     }
 }

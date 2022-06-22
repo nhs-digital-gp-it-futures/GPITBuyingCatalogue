@@ -21,6 +21,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
             AddOrderWithAddedCatalogueSolutionButNoData(context);
             AddOrderWithAddedCatalogueSolutionAndServicesButNoData(context);
             AddOrderWithAddedCatalogueSolution(context);
+            AddOrderWithAddedCatalogueSolutionNoFundingRequired(context);
             AddOrderWithAddedNoContactCatalogueSolution(context);
             AddOrderWithAddedNoContactSolutionAndNoContactAdditionalSolution(context);
             AddOrderWithAddedNoContactSolutionAndNoContactAdditionalSolutionAndPrice(context);
@@ -370,6 +371,76 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
                 Created = DateTime.UtcNow,
                 OrderId = orderId,
                 CatalogueItem = context.CatalogueItems.Single(c => c.Id == new CatalogueItemId(99999, "001")),
+                OrderItemFunding = new OrderItemFunding
+                {
+                    CatalogueItemId = new CatalogueItemId(99998, "001"),
+                    OrderId = orderId,
+                    OrderItemFundingType = OrderItemFundingType.LocalFundingOnly,
+                },
+            };
+
+            var user = GetBuyerUser(context, order.OrderingPartyId);
+
+            order.OrderItems.Add(addedSolution);
+
+            context.Add(order);
+
+            context.SaveChangesAs(user.Id);
+        }
+
+        private static void AddOrderWithAddedCatalogueSolutionNoFundingRequired(BuyingCatalogueDbContext context)
+        {
+            const int orderId = 90015;
+            var timeNow = DateTime.UtcNow;
+
+            var order = new Order
+            {
+                Id = orderId,
+                OrderingPartyId = GetOrganisationId(context),
+                Created = timeNow,
+                OrderStatus = OrderStatus.InProgress,
+                IsDeleted = false,
+                Description = "This is an Order Description",
+                OrderingPartyContact = new Contact
+                {
+                    FirstName = "Clark",
+                    LastName = "Kent",
+                    Email = "Clark.Kent@TheDailyPlanet.Fake",
+                    Phone = "123456789",
+                },
+                SupplierId = 99999,
+                SupplierContact = new Contact
+                {
+                    FirstName = "Bruce",
+                    LastName = "Wayne",
+                    Email = "bat.man@Gotham.Fake",
+                    Phone = "123456789",
+                },
+                CommencementDate = DateTime.UtcNow.AddDays(1),
+            };
+
+            var price = context.CatalogueItems
+                    .Where(c => c.Id == new CatalogueItemId(99998, "002"))
+                    .Include(c => c.CataloguePrices).ThenInclude(cp => cp.CataloguePriceTiers)
+                    .Include(c => c.CataloguePrices).ThenInclude(cp => cp.PricingUnit)
+                    .Select(ci => new OrderItemPrice(ci.CataloguePrices.First()))
+                    .Single();
+
+            price.CataloguePriceCalculationType = EntityFramework.Catalogue.Models.CataloguePriceCalculationType.SingleFixed;
+            price.OrderItemPriceTiers.First().Price = 0;
+
+            var addedSolution = new OrderItem
+            {
+                OrderItemPrice = price,
+                Created = DateTime.UtcNow,
+                OrderId = orderId,
+                CatalogueItem = context.CatalogueItems.Single(c => c.Id == new CatalogueItemId(99999, "001")),
+                OrderItemFunding = new OrderItemFunding
+                {
+                    CatalogueItemId = new CatalogueItemId(99998, "001"),
+                    OrderId = orderId,
+                    OrderItemFundingType = OrderItemFundingType.NoFundingRequired,
+                },
             };
 
             var user = GetBuyerUser(context, order.OrderingPartyId);
@@ -858,9 +929,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
             {
                 OrderId = addedSolution.OrderId,
                 CatalogueItemId = addedSolution.CatalogueItemId,
-                TotalPrice = totalCost,
-                CentralAllocation = totalCost,
-                LocalAllocation = 0,
+                OrderItemFundingType = OrderItemFundingType.CentralFunding,
             };
 
             order.OrderItems.Add(addedSolution);
@@ -1048,7 +1117,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
 
         private static void AddEmptyAssociatedServicesOnlyOrder(BuyingCatalogueDbContext context)
         {
-            const int orderId = 90015;
+            const int orderId = 90018;
             var timeNow = DateTime.UtcNow;
 
             var order = new Order
@@ -1267,9 +1336,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
             {
                 OrderId = addedSolution.OrderId,
                 CatalogueItemId = addedSolution.CatalogueItemId,
-                TotalPrice = totalCost,
-                CentralAllocation = totalCost,
-                LocalAllocation = 0,
+                OrderItemFundingType = OrderItemFundingType.CentralFunding,
             };
 
             order.Complete();

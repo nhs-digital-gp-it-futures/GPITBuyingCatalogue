@@ -17,30 +17,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.FundingSources
             CallOffId = callOffId;
             Caption = $"Order {CallOffId}";
 
-            OrderItemsSelectable = new List<OrderItem>();
-            OrderItemsLocalOnly = new List<OrderItem>();
-
-            var catSol = order.OrderItems.FirstOrDefault(oi => oi.CatalogueItem.CatalogueItemType == EntityFramework.Catalogue.Models.CatalogueItemType.Solution);
-
-            /* if there is a solution - check if any of its frameworks make it editable
-            if they do, add everything to the editable list, if not, add cat sol and addit serv to uneditable list and only add assoc services to editable list
-            else if there is no cat sol, would be an assoc service order and just dump everything into the editable list */
-            if (catSol is not null)
-            {
-                if (!catSol.ItemIsLocalFundingOnly())
-                {
-                    OrderItemsSelectable.AddRange(order.OrderItems);
-                }
-                else
-                {
-                    OrderItemsLocalOnly.AddRange(order.OrderItems.Where(oi => oi.CatalogueItem.CatalogueItemType != EntityFramework.Catalogue.Models.CatalogueItemType.AssociatedService));
-                    OrderItemsSelectable.AddRange(order.OrderItems.Where(oi => oi.CatalogueItem.CatalogueItemType == EntityFramework.Catalogue.Models.CatalogueItemType.AssociatedService));
-                }
-            }
-            else
-            {
-                OrderItemsSelectable.AddRange(order.OrderItems);
-            }
+            OrderItemsNoFundingRequired = order.OrderItems.Where(oi => oi.FundingType == OrderItemFundingType.NoFundingRequired).ToList();
+            OrderItemsLocalOnly = order.OrderItems.Where(oi => oi.FundingType == OrderItemFundingType.LocalFundingOnly).ToList();
+            OrderItemsSelectable = order.OrderItems.Where(oi => !oi.IsForcedFunding).ToList();
         }
 
         public CallOffId CallOffId { get; set; }
@@ -50,5 +29,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.FundingSources
         public List<OrderItem> OrderItemsSelectable { get; set; }
 
         public List<OrderItem> OrderItemsLocalOnly { get; set; }
+
+        public List<OrderItem> OrderItemsNoFundingRequired { get; set; }
     }
 }

@@ -16,10 +16,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.FundingSources
             InternalOrgId = internalOrgId;
             CallOffId = callOffId;
             CatalogueItemName = orderItem.CatalogueItem.Name;
-            AmountOfCentralFunding = orderItem.OrderItemFunding?.CentralAllocation ?? null;
-            SelectedFundingType = orderItem.CurrentFundingType();
-
-            TotalCost = orderItem.OrderItemPrice.CalculateTotalCost(orderItem.GetQuantity());
+            SelectedFundingType = orderItem.FundingType;
+            TotalCost = CataloguePriceCalculations.CalculateTotalCost(orderItem.OrderItemPrice, orderItem.GetQuantity());
         }
 
         public string CatalogueItemName { get; set; }
@@ -29,8 +27,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.FundingSources
         public CallOffId CallOffId { get; set; }
 
         public OrderItemFundingType SelectedFundingType { get; set; } = OrderItemFundingType.None;
-
-        public decimal? AmountOfCentralFunding { get; set; }
 
         public decimal TotalCost { get; set; }
     }

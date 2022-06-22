@@ -61,7 +61,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers.FundingSource
             if (!ModelState.IsValid)
                 return View(model);
 
-            await orderItemService.SaveOrUpdateOrderItemFunding(callOffId, internalOrgId, catalogueItemId, model.SelectedFundingType, model.AmountOfCentralFunding);
+            await orderItemService.UpdateOrderItemFunding(callOffId, internalOrgId, catalogueItemId, model.SelectedFundingType);
 
             return RedirectToAction(
                 nameof(FundingSources),

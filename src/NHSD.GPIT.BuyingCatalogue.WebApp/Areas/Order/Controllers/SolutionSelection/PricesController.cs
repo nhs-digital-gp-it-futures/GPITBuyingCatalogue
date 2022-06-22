@@ -23,16 +23,19 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers.SolutionSelec
         private readonly IOrderPriceService orderPriceService;
         private readonly IOrderService orderService;
         private readonly IListPriceService listPriceService;
+        private readonly IOrderItemService orderItemService;
         private readonly IRoutingService routingService;
 
         public PricesController(
             IOrderPriceService orderPriceService,
             IOrderService orderService,
             IListPriceService listPriceService,
+            IOrderItemService orderItemService,
             IRoutingService routingService)
         {
             this.orderPriceService = orderPriceService ?? throw new ArgumentNullException(nameof(orderPriceService));
             this.orderService = orderService ?? throw new ArgumentNullException(nameof(orderService));
+            this.orderItemService = orderItemService ?? throw new ArgumentNullException(nameof(orderItemService));
             this.listPriceService = listPriceService ?? throw new ArgumentNullException(nameof(listPriceService));
             this.routingService = routingService ?? throw new ArgumentNullException(nameof(routingService));
         }
@@ -169,6 +172,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers.SolutionSelec
             var order = await orderService.GetOrderThin(callOffId, internalOrgId);
 
             await orderPriceService.UpdatePrice(order.Id, catalogueItemId, model.AgreedPrices);
+
+            await orderItemService.SetOrderItemFunding(callOffId, internalOrgId, catalogueItemId);
 
             var route = routingService.GetRoute(
                 RoutingPoint.EditPrice,

@@ -16,6 +16,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering.FundingSources
         private const string InternalOrgId = "CG-03F";
         private static readonly CallOffId DFOCVCCallOffId = new(90005, 1);
         private static readonly CallOffId GPITFuturesCallOffId = new(90006, 1);
+        private static readonly CallOffId NoFundingCallOffId = new(90015, 1);
 
         private static readonly Dictionary<string, string> ParametersDFOCVC = new()
         {
@@ -27,6 +28,12 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering.FundingSources
         {
             { nameof(InternalOrgId), InternalOrgId },
             { "CallOffId", GPITFuturesCallOffId.ToString() },
+        };
+
+        private static readonly Dictionary<string, string> ParametersNoFunding = new()
+        {
+            { nameof(InternalOrgId), InternalOrgId },
+            { "CallOffId", NoFundingCallOffId.ToString() },
         };
 
         public FundingSources(LocalWebApplicationFactory factory)
@@ -51,6 +58,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering.FundingSources
             CommonActions.SaveButtonDisplayed().Should().BeTrue();
             CommonActions.ElementIsDisplayed(Objects.Ordering.FundingSources.LocalOnlyFundingSourcesTable).Should().BeTrue();
             CommonActions.ElementIsDisplayed(Objects.Ordering.FundingSources.EditableFundingSourcesTable).Should().BeFalse();
+            CommonActions.ElementIsDisplayed(Objects.Ordering.FundingSources.NoFundingRequiredSourcesTable).Should().BeFalse();
         }
 
         [Fact]
@@ -61,6 +69,23 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering.FundingSources
             CommonActions.SaveButtonDisplayed().Should().BeTrue();
             CommonActions.ElementIsDisplayed(Objects.Ordering.FundingSources.LocalOnlyFundingSourcesTable).Should().BeFalse();
             CommonActions.ElementIsDisplayed(Objects.Ordering.FundingSources.EditableFundingSourcesTable).Should().BeTrue();
+            CommonActions.ElementIsDisplayed(Objects.Ordering.FundingSources.NoFundingRequiredSourcesTable).Should().BeFalse();
+        }
+
+        [Fact]
+        public void FundingSources_NoFundingReqired_AllSectionsDisplayed()
+        {
+            NavigateToUrl(
+                typeof(FundingSourceController),
+                nameof(FundingSourceController.FundingSources),
+                ParametersNoFunding);
+
+            CommonActions.PageTitle().Should().BeEquivalentTo($"Select funding sources - Order {NoFundingCallOffId}".FormatForComparison());
+            CommonActions.GoBackLinkDisplayed().Should().BeTrue();
+            CommonActions.SaveButtonDisplayed().Should().BeTrue();
+            CommonActions.ElementIsDisplayed(Objects.Ordering.FundingSources.LocalOnlyFundingSourcesTable).Should().BeFalse();
+            CommonActions.ElementIsDisplayed(Objects.Ordering.FundingSources.EditableFundingSourcesTable).Should().BeFalse();
+            CommonActions.ElementIsDisplayed(Objects.Ordering.FundingSources.NoFundingRequiredSourcesTable).Should().BeTrue();
         }
 
         [Fact]
