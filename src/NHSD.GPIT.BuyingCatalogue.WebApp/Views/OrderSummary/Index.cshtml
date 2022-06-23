@@ -4,7 +4,6 @@
 @model NHSD.GPIT.BuyingCatalogue.WebApp.Models.OrderSummaryModel;
 @{
     Layout = "";
-    ViewBag.Title = Model.Title;
 }
 
 <!DOCTYPE html>
@@ -117,10 +116,9 @@
     <main class="nhsuk-main-wrapper" id="maincontent">
         <div class="nhsuk-grid-row">
             <div class="nhsuk-grid-column-two-thirds">
-                <nhs-validation-summary />
-                <nhs-page-title title="Call-off Order Form"
-                                advice="@Model.AdviceText" 
-                                caption="@ViewBag.Title"/>
+                <nhs-page-title title="Order summary"
+                                caption="@Model.Order.CallOffId"
+                                advice="This is the information that has been added to this order." />
             </div>
         </div>
 
@@ -184,7 +182,9 @@
 
                     @if (Model.Order.MaximumTerm != null)
                     {
-                        var maximumTerm = $"{Model.Order.MaximumTerm} Months";
+                        <pdf-summary-list-row label-text="Maximum term">
+                            @($"{Model.Order.MaximumTerm} Months")
+                        </pdf-summary-list-row>
 
                         if (Model.Order.CommencementDate.HasValue)
                         {
@@ -192,52 +192,20 @@
                                 .AddMonths(Model.Order.MaximumTerm.Value)
                                 .AddDays(-1);
 
-                            maximumTerm += $" ({endDate.ToLongDateString()})";
+                            <pdf-summary-list-row label-text="End date">
+                                @endDate.ToLongDateString()
+                            </pdf-summary-list-row>
                         }
-
-                        <pdf-summary-list-row label-text="Maximum term">
-                            @maximumTerm
-                        </pdf-summary-list-row>
                     }
                 </pdf-summary-list>
-
-                <div class="pdf-container">
-                    <h3>Totals</h3>
-                    <pdf-summary-list>
-                        <pdf-summary-list-row label-text="Total one-off cost">
-                            @($"£{Model.Order.TotalOneOffCost():N2}")
-                        </pdf-summary-list-row>
-                        
-                        <pdf-summary-list-row label-text="Total monthly cost">
-                            @($"£{Model.Order.TotalMonthlyCost():N2}")
-                        </pdf-summary-list-row>
-                        
-                        <pdf-summary-list-row label-text="Total annual cost">
-                            @($"£{Model.Order.TotalAnnualCost():N2}")
-                        </pdf-summary-list-row>
-
-                        <pdf-summary-list-row label-text="Total cost of contract (@(Model.Order.MaximumTerm ?? 0) months)">
-                            @($"£{Model.Order.TotalCost():N2}")
-                        </pdf-summary-list-row>
-                    </pdf-summary-list>
-                </div>
 
                 <div style="page-break-after: always"></div>
 
                 @{
-                    var title = Model.Order.AssociatedServicesOnly
-                        ? "Your Associated Services"
-                        : "Your Catalogue Solution and Additional Services";
-
-                    var advice = Model.Order.AssociatedServicesOnly
-                        ? "Review the Associated Services that you've added to this order."
-                        : "Review the Catalogue Solution and services that you've added to this order.";
-
                     var pagesSoFar = 0;
                 }
 
-                <nhs-page-title title="@title"
-                                advice="@advice"/>
+                <nhs-page-title title="Items added to this order"/>
 
                 @if (Model.Order.GetSolution() != null)
                 {
@@ -268,6 +236,31 @@
                         PageBreak(++pagesSoFar);
                     }
                 }
+                
+                <br/>
+                <nhs-page-title title="Totals for this order"/>
+
+                <div class="pdf-container">
+                    <h3>Totals</h3>
+
+                    <pdf-summary-list>
+                        <pdf-summary-list-row label-text="Total one-off cost">
+                            @($"£{Model.Order.TotalOneOffCost():N2}")
+                        </pdf-summary-list-row>
+                        
+                        <pdf-summary-list-row label-text="Total monthly cost">
+                            @($"£{Model.Order.TotalMonthlyCost():N2}")
+                        </pdf-summary-list-row>
+                        
+                        <pdf-summary-list-row label-text="Total annual cost">
+                            @($"£{Model.Order.TotalAnnualCost():N2}")
+                        </pdf-summary-list-row>
+
+                        <pdf-summary-list-row label-text="Total cost of contract (@(Model.Order.MaximumTerm ?? 0) months)">
+                            @($"£{Model.Order.TotalCost():N2}")
+                        </pdf-summary-list-row>
+                    </pdf-summary-list>
+                </div>
             </div>
         </div>
     </main>

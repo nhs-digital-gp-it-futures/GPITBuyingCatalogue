@@ -46,11 +46,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Controllers
 
             orderServiceMock.Setup(s => s.GetOrderForSummary(order.CallOffId, internalOrgId)).ReturnsAsync(order);
 
-            var expectedViewData = new OrderSummaryModel(order)
-            {
-                AdviceText = "This order has been completed and can no longer be changed.",
-                Title = $"Order completed for {order.CallOffId}",
-            };
+            var expectedViewData = new OrderSummaryModel(order);
 
             var actualResult = await controller.Index(internalOrgId, order.CallOffId);
 
@@ -70,11 +66,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Controllers
 
             orderServiceMock.Setup(s => s.GetOrderForSummary(order.CallOffId, internalOrgId)).ReturnsAsync(order);
 
-            var expectedViewData = new OrderSummaryModel(order)
-            {
-                AdviceText = "This is what's been added to your order so far. You must complete all mandatory steps before you can confirm your order.",
-                Title = $"Order summary for {order.CallOffId}",
-            };
+            var expectedViewData = new OrderSummaryModel(order);
 
             var actualResult = await controller.Index(internalOrgId, order.CallOffId);
 

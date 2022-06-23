@@ -14,14 +14,10 @@
 }
 
 <pdf-summary-list>
-    <pdf-summary-list-row label-text="Item ID">
-        @Model.OrderItem.CatalogueItemId
-    </pdf-summary-list-row>
-                        
     @if (Model.OrderItem.Quantity.HasValue)
     {
         <pdf-summary-list-row label-text="Quantity">
-            @($"{Model.OrderItem.Quantity:N0}")
+            @($"{Model.OrderItem.Quantity:N0} {Model.OrderItem.OrderItemPrice.RangeDescription}")
         </pdf-summary-list-row>
     }
                         
@@ -38,6 +34,7 @@
         <tr>
             <th>Recipient</th>
             <th>ODS Code</th>
+            <th>Item ID</th>
             <th>Service Instance ID</th>
 
             @if (hasServiceRecipientQuantities)
@@ -55,12 +52,21 @@
         }
         else
         {
-            @foreach (var recipient in Model.OrderItem.OrderItemRecipients)
+            @foreach (var (recipient, index) in Model.OrderItem.OrderItemRecipients.Select((x, i) => (x, i)))
             {
                 <tr>
-                    <td>@recipient.Recipient.Name</td>
-                    <td>@recipient.Recipient.OdsCode</td>
-                    <td>@Model.ServiceInstanceId(recipient.OdsCode)</td>
+                    <td>
+                        @recipient.Recipient.Name
+                    </td>
+                    <td>
+                        @recipient.Recipient.OdsCode
+                    </td>
+                    <td>
+                        @($"{Model.OrderItem.Order.CallOffId}-{recipient.Recipient.OdsCode}-{index + 1}")
+                    </td>
+                    <td>
+                        @Model.ServiceInstanceId(recipient.OdsCode)
+                    </td>
 
                     @if (hasServiceRecipientQuantities)
                     {
@@ -74,6 +80,7 @@
             @if (hasServiceRecipientQuantities)
             {
                 <tr>
+                    <td/>
                     <td/>
                     <td/>
                     <td/>
@@ -128,10 +135,18 @@
                 @foreach (var (tier, index) in tiers.Select((x, i) => (x, i)))
                 {
                     <tr>
-                        <td>Tier @(index + 1)</td>
-                        <td>@($"£{tier.Price:#,###,##0.00##}") @tier.OrderItemPrice.ToPriceUnitString()</td>
-                        <td class="numeric">@($"{tierCosts[index].Quantity:N0}")</td>
-                        <td class="numeric">@($"£{tierCosts[index].Cost:N2}")</td>
+                        <td>
+                            Tier @(index + 1)
+                        </td>
+                        <td>
+                            @($"£{tier.Price:#,###,##0.00##}") @tier.OrderItemPrice.ToPriceUnitString()
+                        </td>
+                        <td class="numeric">
+                            @($"{tierCosts[index].Quantity:N0}")
+                        </td>
+                        <td class="numeric">
+                            @($"£{tierCosts[index].Cost:N2}")
+                        </td>
                     </tr>
                 }
                 

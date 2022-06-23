@@ -23,26 +23,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Controllers
         {
             var order = await orderService.GetOrderForSummary(callOffId, internalOrgId);
 
-            var model = new OrderSummaryModel(order)
-            {
-                Title = order.OrderStatus switch
-                {
-                    OrderStatus.Completed => $"Order completed for {callOffId}",
-                    _ => order.CanComplete()
-                        ? $"Review order summary for {callOffId}"
-                        : $"Order summary for {callOffId}",
-                },
-
-                AdviceText = order.OrderStatus switch
-                {
-                    OrderStatus.Completed => "This order has been completed and can no longer be changed.",
-                    _ => order.CanComplete()
-                        ? "Review your order summary and confirm the content is correct. Once confirmed, you'll be unable to make changes."
-                        : "This is what's been added to your order so far. You must complete all mandatory steps before you can confirm your order.",
-                },
-            };
-
-            return View(model);
+            return View(new OrderSummaryModel(order));
         }
     }
 }
