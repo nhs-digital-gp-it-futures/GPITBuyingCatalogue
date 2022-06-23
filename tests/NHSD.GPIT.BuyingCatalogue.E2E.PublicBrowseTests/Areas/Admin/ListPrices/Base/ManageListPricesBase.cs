@@ -19,12 +19,11 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.ListPrices.Base
         protected ManageListPricesBase(
             LocalWebApplicationFactory factory,
             Type controller,
-            string actionName,
             Dictionary<string, string> parameters)
             : base(
                 factory,
                 controller,
-                actionName,
+                "Index",
                 parameters)
         {
         }

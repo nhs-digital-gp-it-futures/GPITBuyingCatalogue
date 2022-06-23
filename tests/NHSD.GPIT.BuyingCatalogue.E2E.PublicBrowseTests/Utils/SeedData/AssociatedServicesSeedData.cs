@@ -41,7 +41,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
                                 {
                                     Id = 30,
                                     RangeDescription = "Test Tier",
-                                    Description = "per tiered price test per patient",
+                                    Description = "per patient",
                                 },
                             TimeUnit = TimeUnit.PerYear,
                             CurrencyCode = "GBP",
@@ -274,7 +274,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
                                 {
                                     Id = 20,
                                     RangeDescription = "Test Tier",
-                                    Description = "per tiered price test per patient",
+                                    Description = "per tiered price",
                                 },
                             TimeUnit = TimeUnit.PerYear,
                             CurrencyCode = "GBP",
@@ -306,6 +306,85 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
                                     LowerRange = 300,
                                     UpperRange = null,
                                     Price = 25.9999M,
+                                    LastUpdated = DateTime.UtcNow,
+                                },
+                            },
+                        },
+                        new()
+                        {
+                            CataloguePriceId = 29,
+                            CatalogueItemId = new CatalogueItemId(99998, "S-997"),
+                            ProvisioningType = ProvisioningType.Patient,
+                            CataloguePriceType = CataloguePriceType.Tiered,
+                            PublishedStatus = PublicationStatus.Draft,
+                            CataloguePriceCalculationType = CataloguePriceCalculationType.Volume,
+                            PricingUnit =
+                                new PricingUnit
+                                {
+                                    Id = 999,
+                                    RangeDescription = "Test Tier",
+                                    Description = "maximum tiers",
+                                },
+                            TimeUnit = TimeUnit.PerYear,
+                            CurrencyCode = "GBP",
+                            LastUpdated = DateTime.UtcNow,
+                            CataloguePriceTiers = new List<CataloguePriceTier>
+                            {
+                                new()
+                                {
+                                    Id = 52,
+                                    CataloguePriceId = 29,
+                                    LowerRange = 1,
+                                    UpperRange = 9999,
+                                    Price = 999.9999M,
+                                    LastUpdated = DateTime.UtcNow,
+                                },
+                                new()
+                                {
+                                    Id = 53,
+                                    CataloguePriceId = 29,
+                                    LowerRange = 10000,
+                                    UpperRange = 49000,
+                                    LastUpdated = DateTime.UtcNow,
+                                },
+                                new()
+                                {
+                                    Id = 54,
+                                    CataloguePriceId = 29,
+                                    LowerRange = 50000,
+                                    UpperRange = 99999,
+                                    LastUpdated = DateTime.UtcNow,
+                                },
+                                new()
+                                {
+                                    Id = 55,
+                                    CataloguePriceId = 29,
+                                    LowerRange = 100000,
+                                    UpperRange = 149999,
+                                    LastUpdated = DateTime.UtcNow,
+                                },
+                                new()
+                                {
+                                    Id = 56,
+                                    CataloguePriceId = 29,
+                                    LowerRange = 150000,
+                                    UpperRange = null,
+                                    LastUpdated = DateTime.UtcNow,
+                                },
+                                new()
+                                {
+                                    Id = 57,
+                                    CataloguePriceId = 29,
+                                    LowerRange = 150000,
+                                    UpperRange = null,
+                                    LastUpdated = DateTime.UtcNow,
+                                },
+                                new()
+                                {
+                                    Id = 58,
+                                    CataloguePriceId = 29,
+                                    LowerRange = 150000,
+                                    UpperRange = null,
                                     LastUpdated = DateTime.UtcNow,
                                 },
                             },
