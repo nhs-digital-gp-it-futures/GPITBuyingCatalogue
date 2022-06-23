@@ -108,7 +108,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.ListPriceModels
             .Select(p => new SelectableRadioOption<PublicationStatus>(p.Description(), p))
             .ToList();
 
-        public IEnumerable<SelectableRadioOption<CataloguePriceCalculationType>> AvailableCalculationTypes =>
+        public virtual IEnumerable<SelectableRadioOption<CataloguePriceCalculationType>> AvailableCalculationTypes =>
             new List<SelectableRadioOption<CataloguePriceCalculationType>>
         {
             new(
