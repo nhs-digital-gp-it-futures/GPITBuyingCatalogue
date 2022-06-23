@@ -40,7 +40,7 @@
                         }
 
                         <nhs-table-cell>Tier @(i + 1)</nhs-table-cell>
-                        <nhs-table-cell>£@tier.Price.ToString("N4")</nhs-table-cell>
+                        <nhs-table-cell>£@tier.Price.ToString("N4") @price.ToPriceUnitString()</nhs-table-cell>
                         <nhs-table-cell>@tier.GetRangeDescription()</nhs-table-cell>
                     </nhs-table-row-container>
                 }
@@ -59,7 +59,7 @@
                 var tier = price.CataloguePriceTiers.First();
                     <nhs-table-row-container>
                         <nhs-table-cell><a href="#@service.Id">@service.Name</a></nhs-table-cell>
-                        <nhs-table-cell>£@tier.Price.ToString("N4")</nhs-table-cell>
+                        <nhs-table-cell>£@tier.Price.ToString("N4") @price.ToPriceUnitString()</nhs-table-cell>
                     </nhs-table-row-container>
             }
         </nhs-table>

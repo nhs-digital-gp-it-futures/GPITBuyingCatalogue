@@ -34,7 +34,6 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.PublicBrowse.Solution
         {
         }
 
-        /* TODO - Tiered Pricing - Reintroduce tests
         [Fact]
         public async Task ListPriceDetails_SolutionIsSuspended_Redirect()
         {
@@ -47,13 +46,14 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.PublicBrowse.Solution
 
                 Driver.Navigate().Refresh();
 
-            CommonActions
-                .PageLoadedCorrectGetIndex(
-                    typeof(SolutionsController),
-                    nameof(SolutionsController.Description))
-                .Should()
-                .BeTrue();
-        }*/
+                CommonActions
+                    .PageLoadedCorrectGetIndex(
+                        typeof(SolutionsController),
+                        nameof(SolutionsController.Description))
+                    .Should()
+                    .BeTrue();
+            });
+        }
 
         public void Dispose()
         {

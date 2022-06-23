@@ -32,7 +32,7 @@
         {
             var tier = price.CataloguePriceTiers.First();
 
-            @($"£{tier.Price:N4}")
+            @($"£{tier.Price:N4} {price.ToPriceUnitString()}")
         }
         else
         {
