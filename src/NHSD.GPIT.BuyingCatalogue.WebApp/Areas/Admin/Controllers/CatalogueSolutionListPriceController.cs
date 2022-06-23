@@ -40,8 +40,15 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
                     nameof(CatalogueSolutionsController.ManageCatalogueSolution),
                     typeof(CatalogueSolutionsController).ControllerName(),
                     new { solutionId }),
-                AddListPriceUrl = Url.Action(
+                /* TODO - Reintroduce when Tiered Pricing is Introduced.
+                  AddListPriceUrl = Url.Action(
                     nameof(ListPriceType),
+                    new { solutionId }),
+                 */
+
+                // TODO - Delete when Tiered Pricing is Introducted.
+                AddListPriceUrl = Url.Action(
+                    nameof(AddFlatListPrice),
                     new { solutionId }),
             };
 
@@ -95,8 +102,16 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
                         new { solutionId, cataloguePriceId }),
                 }
                 : new AddTieredListPriceModel(solution);
+            /* TODO - Reintroduce when Tiered Pricing is Introduced.
+            model.BackLink = Url.Action(
+                nameof(ListPriceType),
+                new { solutionId, selectedPriceType = CataloguePriceType.Tiered });
+            */
 
-            model.BackLink = Url.Action(nameof(ListPriceType), new { solutionId, selectedPriceType = CataloguePriceType.Tiered });
+            // TODO - Delete when Tiered Pricing is Introduced
+            model.BackLink = Url.Action(
+                nameof(Index),
+                new { solutionId });
 
             return View("ListPrices/AddTieredListPrice", model);
         }
@@ -121,7 +136,12 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
 
             var model = new AddEditFlatListPriceModel(solution)
             {
+                /* TODO - Reintroduce when Tiered Pricing is Introduced.
                 BackLink = Url.Action(nameof(ListPriceType), new { solutionId }),
+                */
+
+                // TODO - Delete when Tiered Pricing is Introduced.
+                BackLink = Url.Action(nameof(Index), new { solutionId }),
             };
 
             return View("ListPrices/AddEditFlatListPrice", model);
@@ -139,7 +159,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
                 ProvisioningType = model.SelectedProvisioningType!.Value,
                 TimeUnit = model.GetBillingPeriod(),
                 PricingUnit = model.GetPricingUnit(),
-                CataloguePriceCalculationType = CataloguePriceCalculationType.SingleFixed,
+                CataloguePriceCalculationType = model.SelectedCalculationType!.Value,
                 CataloguePriceTiers = new HashSet<CataloguePriceTier>
                 {
                     new()
@@ -334,7 +354,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
                 cataloguePriceId,
                 model.GetPricingUnit(),
                 model.SelectedProvisioningType!.Value,
-                CataloguePriceCalculationType.SingleFixed,
+                model.SelectedCalculationType!.Value,
                 model.GetBillingPeriod(),
                 model.GetQuantityCalculationType(),
                 model.Price!.Value);

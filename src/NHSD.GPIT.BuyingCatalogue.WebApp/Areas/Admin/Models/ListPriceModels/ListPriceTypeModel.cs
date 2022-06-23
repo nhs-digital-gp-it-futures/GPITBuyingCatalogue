@@ -23,11 +23,11 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.ListPriceModels
         {
             new(
                 "Flat price",
-                "This is where the price remains the same no matter what quantity is ordered.",
+                "A flat price means a buyer is presented with a single pricing unit.",
                 CataloguePriceType.Flat),
             new(
                 "Tiered price",
-                "This is where the price per item changes based on the quantity ordered. Prices are different for each tier.",
+                "A tiered price means a buyer is presented with multiple pricing units.",
                 CataloguePriceType.Tiered),
         };
     }

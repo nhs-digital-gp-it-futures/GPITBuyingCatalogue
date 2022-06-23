@@ -31,6 +31,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Validators.ListPrices
                 .NotNull()
                 .WithMessage(SelectedPublicationStatusError);
 
+            RuleFor(m => m.SelectedCalculationType)
+                .NotNull()
+                .WithMessage(SharedListPriceValidationErrors.SelectedCalculationTypeError);
+
             RuleFor(m => m)
                 .Must(NotBeADuplicate)
                 .WithMessage(SharedListPriceValidationErrors.DuplicateListPriceError)
@@ -38,7 +42,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Validators.ListPrices
                 .OverridePropertyName(
                     m => m.SelectedProvisioningType,
                     m => m.Price,
-                    m => m.UnitDescription);
+                    m => m.UnitDescription,
+                    m => m.SelectedCalculationType);
 
             RuleFor(m => m.DeclarativeQuantityCalculationType)
                 .NotNull()
@@ -56,6 +61,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Validators.ListPrices
                 model.CatalogueItemId,
                 model.CataloguePriceId,
                 model.SelectedProvisioningType!.Value,
+                model.SelectedCalculationType!.Value,
                 model.Price!.Value,
                 model.UnitDescription).GetAwaiter().GetResult();
     }

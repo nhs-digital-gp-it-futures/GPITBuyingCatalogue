@@ -22,6 +22,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.ListPrice
             CatalogueItemId catalogueItemId,
             int? cataloguePriceId,
             ProvisioningType provisioningType,
+            CataloguePriceCalculationType calculationType,
             decimal price,
             string unitDescription)
         {
@@ -33,6 +34,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.ListPrice
 
             return await results.AnyAsync(
                 p => p.ProvisioningType == provisioningType
+                    && p.CataloguePriceCalculationType == calculationType
                     && p.CataloguePriceTiers.Any(pt => pt.Price == price)
                     && p.PricingUnit.Description == unitDescription);
         }

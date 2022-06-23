@@ -35,6 +35,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.ListPriceModels
 
             SelectedPublicationStatus = CataloguePricePublicationStatus = cataloguePrice.PublishedStatus;
             SelectedProvisioningType = cataloguePrice.ProvisioningType;
+            SelectedCalculationType = cataloguePrice.CataloguePriceCalculationType;
 
             AssignBillingPeriod(cataloguePrice);
             AssignQuantityCalculationType(cataloguePrice);
@@ -88,6 +89,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.ListPriceModels
 
         public CataloguePriceQuantityCalculationType? OnDemandQuantityCalculationType { get; set; }
 
+        public CataloguePriceCalculationType? SelectedCalculationType { get; set; }
+
         public decimal? Price { get; set; }
 
         [StringLength(100)]
@@ -104,6 +107,19 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.ListPriceModels
             .GetAvailablePublicationStatuses()
             .Select(p => new SelectableRadioOption<PublicationStatus>(p.Description(), p))
             .ToList();
+
+        public IEnumerable<SelectableRadioOption<CataloguePriceCalculationType>> AvailableCalculationTypes =>
+            new List<SelectableRadioOption<CataloguePriceCalculationType>>
+        {
+            new(
+                CataloguePriceCalculationType.SingleFixed.Name(),
+                CataloguePriceCalculationType.SingleFixed.Description(),
+                CataloguePriceCalculationType.SingleFixed),
+            new(
+                CataloguePriceCalculationType.Volume.Name(),
+                CataloguePriceCalculationType.Volume.Description(),
+                CataloguePriceCalculationType.Volume),
+        };
 
         public virtual PricingUnit GetPricingUnit()
             => new()
@@ -139,9 +155,11 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.ListPriceModels
                 case ProvisioningType.OnDemand:
                     OnDemandBillingPeriod = cataloguePrice.TimeUnit;
                     break;
+
                 case ProvisioningType.Declarative:
                     DeclarativeBillingPeriod = cataloguePrice.TimeUnit;
                     break;
+
                 case ProvisioningType.PerServiceRecipient:
                     PerServiceRecipientBillingPeriod = cataloguePrice.TimeUnit;
                     break;
@@ -155,6 +173,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.ListPriceModels
                 case ProvisioningType.OnDemand:
                     OnDemandQuantityCalculationType = cataloguePrice.CataloguePriceQuantityCalculationType;
                     break;
+
                 case ProvisioningType.Declarative:
                     DeclarativeQuantityCalculationType = cataloguePrice.CataloguePriceQuantityCalculationType;
                     break;

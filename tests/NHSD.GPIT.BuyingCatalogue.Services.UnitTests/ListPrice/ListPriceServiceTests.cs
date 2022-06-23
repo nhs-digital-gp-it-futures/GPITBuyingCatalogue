@@ -233,6 +233,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.ListPrice
         {
             price.CataloguePriceTiers = new HashSet<CataloguePriceTier> { tier };
             price.CataloguePriceType = CataloguePriceType.Flat;
+            price.CataloguePriceCalculationType = CataloguePriceCalculationType.SingleFixed;
 
             solution.CatalogueItem.CataloguePrices.Add(price);
 
@@ -243,6 +244,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.ListPrice
                 solution.CatalogueItemId,
                 null,
                 price.ProvisioningType,
+                price.CataloguePriceCalculationType,
                 tier.Price,
                 price.PricingUnit.Description);
 
@@ -260,6 +262,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.ListPrice
         {
             price.CataloguePriceTiers = new HashSet<CataloguePriceTier> { tier };
             price.CataloguePriceType = CataloguePriceType.Flat;
+            price.CataloguePriceCalculationType = CataloguePriceCalculationType.SingleFixed;
 
             solution.CatalogueItem.CataloguePrices.Add(price);
 
@@ -270,6 +273,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.ListPrice
                 solution.CatalogueItemId,
                 price.CataloguePriceId,
                 price.ProvisioningType,
+                price.CataloguePriceCalculationType,
                 tier.Price,
                 price.PricingUnit.Description);
 
@@ -289,6 +293,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.ListPrice
         {
             price.CataloguePriceTiers = new HashSet<CataloguePriceTier> { tier };
             price.CataloguePriceType = CataloguePriceType.Flat;
+            price.CataloguePriceCalculationType = CataloguePriceCalculationType.SingleFixed;
 
             solution.CatalogueItem.CataloguePrices.Add(price);
 
@@ -299,6 +304,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.ListPrice
                 solution.CatalogueItemId,
                 null,
                 newPrice.ProvisioningType,
+                price.CataloguePriceCalculationType,
                 newTier.Price,
                 newPrice.PricingUnit.Description);
 
