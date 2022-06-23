@@ -122,6 +122,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers.SolutionSelec
                 CatalogueItemId = catalogueItemId,
                 Source = source,
                 AssociatedServicesOnly = order.AssociatedServicesOnly,
+                IsAdding = false,
             };
 
             return View("SelectRecipients", model);

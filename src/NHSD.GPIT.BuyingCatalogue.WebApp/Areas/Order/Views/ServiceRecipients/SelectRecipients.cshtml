@@ -4,6 +4,10 @@
 @model NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.SolutionSelection.ServiceRecipients.SelectRecipientsModel;
 @{
     ViewBag.Title = $"Service Recipients for {Model.ItemType.Name()}";
+
+    var actionName = Model.IsAdding
+        ? nameof(ServiceRecipientsController.AddServiceRecipients)
+        : nameof(ServiceRecipientsController.EditServiceRecipients);
 }
 
 <partial name="Partials/_BackLink" model="Model" />
@@ -31,7 +35,7 @@
         <h2>Select Service Recipients</h2>
 
         <vc:nhs-secondary-button url="@Url.Action(
-                                          nameof(ServiceRecipientsController.AddServiceRecipients),
+                                          @actionName,
                                           typeof(ServiceRecipientsController).ControllerName(),
                                           new { Model.InternalOrgId, Model.CallOffId, Model.CatalogueItemId, Model.SelectionMode })"
                                  text="@Model.SelectionCaption"

@@ -48,8 +48,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.SolutionSelection.
 
                 case null:
                     ServiceRecipients.ForEach(x => x.Selected = orderItem.OrderItemRecipients?.Any(r => r.OdsCode == x.OdsCode) ?? false);
-                    SelectionMode = SelectionMode.All;
-                    SelectionCaption = SelectAll;
+                    SelectionMode = ServiceRecipients.All(x => x.Selected) ? SelectionMode.None : SelectionMode.All;
+                    SelectionCaption = ServiceRecipients.All(x => x.Selected) ? SelectNone : SelectAll;
                     break;
 
                 default:
@@ -78,6 +78,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.SolutionSelection.
         public bool PreSelected { get; set; }
 
         public RoutingSource? Source { get; set; }
+
+        public bool IsAdding { get; set; } = true;
 
         public List<ServiceRecipientDto> GetSelectedItems()
         {

@@ -261,6 +261,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
                 InternalOrgId = internalOrgId,
                 CallOffId = callOffId,
                 CatalogueItemId = solution.CatalogueItemId,
+                IsAdding = false,
             };
 
             actualResult.Model.Should().BeEquivalentTo(expected, x => x.Excluding(o => o.BackLink));
