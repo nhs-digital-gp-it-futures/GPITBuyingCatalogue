@@ -194,6 +194,7 @@
     string GetEditTierLink(CataloguePriceTier tier, int index) => Model.CatalogueItemType switch {
         CatalogueItemType.Solution => GetSolutionTierEditLink(tier, index),
         CatalogueItemType.AdditionalService => GetAdditionalServiceTierEditLink(tier, index),
+        CatalogueItemType.AssociatedService => GetAssociatedServiceTierEditLink(tier, index),
         _ => string.Empty,
         };
 
@@ -221,5 +222,18 @@
                 nameof(AdditionalServiceListPriceController.EditTieredPriceTier),
                 typeof(AdditionalServiceListPriceController).ControllerName(),
                 new { solutionId = Model.CatalogueItemId, additionalServiceId = Model.ServiceId, cataloguePriceId = tier.CataloguePriceId, tierId = tier.Id, isEditing = true });
+    }
+
+    string GetAssociatedServiceTierEditLink(CataloguePriceTier tier, int index)
+    {
+        return tier.CataloguePrice.PublishedStatus == PublicationStatus.Published
+            ? Url.Action(
+                nameof(AssociatedServiceListPriceController.EditTierPrice),
+                typeof(AssociatedServiceListPriceController).ControllerName(),
+                new { solutionId = Model.CatalogueItemId, associatedServiceId = Model.ServiceId, cataloguePriceId = tier.CataloguePriceId, tierId = tier.Id, tierIndex = index })
+            : Url.Action(
+                nameof(AssociatedServiceListPriceController.EditTieredPriceTier),
+                typeof(AssociatedServiceListPriceController).ControllerName(),
+                new { solutionId = Model.CatalogueItemId, associatedServiceId = Model.ServiceId, cataloguePriceId = tier.CataloguePriceId, tierId = tier.Id, isEditing = true });
     }
 }

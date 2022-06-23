@@ -97,6 +97,10 @@
             nameof(AdditionalServiceListPriceController.EditTieredPriceTier),
             typeof(AdditionalServiceListPriceController).ControllerName(),
             new { solutionId = Model.CatalogueItemId, additionalServiceId = Model.ServiceId, cataloguePriceId = tier.CataloguePriceId, tierId = tier.Id }),
+        CatalogueItemType.AssociatedService => Url.Action(
+            nameof(AssociatedServiceListPriceController.EditTieredPriceTier),
+            typeof(AssociatedServiceListPriceController).ControllerName(),
+            new { solutionId = Model.CatalogueItemId, associatedServiceId = Model.ServiceId, cataloguePriceId = tier.CataloguePriceId, tierId = tier.Id }),
         _ => string.Empty,
         };
 }
