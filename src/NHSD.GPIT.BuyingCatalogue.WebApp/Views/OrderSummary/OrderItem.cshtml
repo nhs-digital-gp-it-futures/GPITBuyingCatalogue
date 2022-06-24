@@ -77,7 +77,8 @@
                 </tr>
             }
 
-            @if (hasServiceRecipientQuantities)
+            @if (hasServiceRecipientQuantities
+                && Model.OrderItem.OrderItemRecipients.Count > 1)
             {
                 <tr>
                     <td/>
