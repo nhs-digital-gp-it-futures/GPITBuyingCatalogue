@@ -40,4 +40,4 @@ BEGIN
     INSERT catalogue.SupplierServiceAssociations ( AssociatedServiceId, CatalogueItemId, LastUpdated ) SELECT '10000-S-040', '10000-062', GETDATE()
     INSERT catalogue.SupplierServiceAssociations ( AssociatedServiceId, CatalogueItemId, LastUpdated ) SELECT '10000-S-041', '10000-062', GETDATE()
     INSERT catalogue.SupplierServiceAssociations ( AssociatedServiceId, CatalogueItemId, LastUpdated ) SELECT '10000-S-141', '10000-062', GETDATE()
-END
+END;
