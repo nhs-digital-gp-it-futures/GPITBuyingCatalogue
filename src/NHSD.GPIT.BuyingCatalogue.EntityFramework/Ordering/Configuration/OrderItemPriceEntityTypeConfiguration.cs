@@ -38,7 +38,6 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Configuration
                 .HasMaxLength(100);
 
             builder.Property(oip => oip.RangeDescription)
-                .IsRequired()
                 .HasMaxLength(100);
 
             builder.Property(oip => oip.EstimationPeriod)
