@@ -1,10 +1,9 @@
 ﻿@using System.Linq
-@using NHSD.GPIT.BuyingCatalogue.EntityFramework.Extensions
 @using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models
+@using NHSD.GPIT.BuyingCatalogue.Framework.Calculations
 @model NHSD.GPIT.BuyingCatalogue.WebApp.Models.OrderSummaryModel;
 @{
     Layout = "";
-    ViewBag.Title = Model.Title;
 }
 
 <!DOCTYPE html>
@@ -45,24 +44,236 @@
         .nhsuk-table-responsive td {
             font-size: 1em;
         }
+
+        h3 {
+            border-bottom: 1px solid lightgray;
+            width: 100%;
+        }
+
+        .pdf-container {
+            -webkit-break-inside: avoid;
+            break-inside: avoid;
+        }
+
+        td, thead th {
+            border: 0;
+            padding-top: 4px;
+            padding-right: 12px;
+            padding-bottom: 0;
+        }
+
+        th {
+            white-space: nowrap;
+        }
+
+        td:last-child {
+            padding-right: 0;
+        }
+
+        .total {
+            border-top: 1px solid lightgray;
+            font-weight: 600;
+        }
+
+        .numeric {
+            text-align: right;
+        }
+
+        .pdf-summary-list {
+            -webkit-break-inside: avoid;
+            break-inside: avoid;
+            display: table;
+            font-size: 1.1875rem;
+            font-weight: 400;
+            line-height: 1.47368;
+            margin-bottom: 40px;
+            table-layout: fixed;
+            vertical-align: top;
+            width: 100%;
+        }
+
+        .pdf-summary-list-row {
+            display: table-row;
+            margin-bottom: 32px;
+        }
+
+        .pdf-summary-list-row div {
+            display: table-cell;
+            padding-top: 0;
+            padding-right: 24px;
+            padding-bottom: 0;
+            width: 50%;
+        }
+
+        .pdf-summary-list-row div:first-child {
+            font-weight: 600;
+            width: 30%;
+        }
     </style>
 </head>
 <body class="nhsuk-bc-print">
-    <div class="nhsuk-width-container">
-        <main class="nhsuk-main-wrapper" id="maincontent">
-            <div class="nhsuk-grid-row">
-                <div class="nhsuk-grid-column-two-thirds">
-                    <nhs-validation-summary />
-                    <nhs-page-title title="Call-off Order Form"
-                                    advice="@Model.AdviceText" 
-                                    caption="@ViewBag.Title"/>
+<div class="nhsuk-width-container">
+    <main class="nhsuk-main-wrapper" id="maincontent">
+        <div class="nhsuk-grid-row">
+            <div class="nhsuk-grid-column-two-thirds">
+                <nhs-page-title title="Order summary"
+                                caption="@Model.Order.CallOffId"
+                                advice="This is the information that has been added to this order." />
+            </div>
+        </div>
+
+        <div class="nhsuk-grid-row">
+            <div class="nhsuk-grid-column-full">
+                
+                <pdf-summary-list>
+                    <pdf-summary-list-row label-text="Order ID">
+                        @Model.Order.CallOffId
+                    </pdf-summary-list-row>
+
+                    <pdf-summary-list-row label-text="Description">
+                        @Model.Order.Description
+                    </pdf-summary-list-row>
+
+                    <pdf-summary-list-row label-text="Date order summary created">
+                        @DateTime.UtcNow.ToLongDateString()
+                    </pdf-summary-list-row>
+
+                    @if (Model.Order.OrderStatus == OrderStatus.Completed
+                        && Model.Order.Completed.HasValue)
+                    {
+                        <pdf-summary-list-row label-text="Date order summary completed">
+                            @Model.Order.Completed.Value.ToLongDateString()
+                        </pdf-summary-list-row>
+                    }
+
+                    @if (Model.Order.OrderingPartyContact != null)
+                    {
+                        <pdf-summary-list-row label-text="Call-off ordering party">
+                            @Model.Order.OrderingPartyContact.FirstName @Model.Order.OrderingPartyContact.LastName <br/>
+                            @Model.Order.OrderingParty.Name<br/>
+                            @Model.Order.OrderingParty.ExternalIdentifier<br/>
+                            <vc:nhs-address address="@Model.Order.OrderingParty.Address"/>
+                        </pdf-summary-list-row>
+                    }
+
+                    @if (Model.Order.Supplier != null
+                        && Model.Order.SupplierContact != null)
+                    {
+                        <pdf-summary-list-row label-text="Supplier">
+                            @Model.Order.SupplierContact.FirstName @Model.Order.SupplierContact.LastName <br/>
+                            @Model.Order.Supplier.Name <br/>
+                            <vc:nhs-address address="@Model.Order.Supplier.Address"/>
+                        </pdf-summary-list-row>
+                    }
+
+                    @if (Model.Order.CommencementDate != null)
+                    {
+                        <pdf-summary-list-row label-text="Commencement date">
+                            @Model.Order.CommencementDate?.ToLongDateString()
+                        </pdf-summary-list-row>
+                    }
+
+                    @if (Model.Order.InitialPeriod != null)
+                    {
+                        <pdf-summary-list-row label-text="Initial period">
+                            @($"{Model.Order.InitialPeriod} Months")
+                        </pdf-summary-list-row>
+                    }
+
+                    @if (Model.Order.MaximumTerm != null)
+                    {
+                        <pdf-summary-list-row label-text="Maximum term">
+                            @($"{Model.Order.MaximumTerm} Months")
+                        </pdf-summary-list-row>
+
+                        if (Model.Order.CommencementDate.HasValue)
+                        {
+                            var endDate = Model.Order.CommencementDate.Value
+                                .AddMonths(Model.Order.MaximumTerm.Value)
+                                .AddDays(-1);
+
+                            <pdf-summary-list-row label-text="End date">
+                                @endDate.ToLongDateString()
+                            </pdf-summary-list-row>
+                        }
+                    }
+                </pdf-summary-list>
+
+                <div style="page-break-after: always"></div>
+
+                @{
+                    var pagesSoFar = 0;
+                }
+
+                <nhs-page-title title="Items added to this order"/>
+
+                @if (Model.Order.GetSolution() != null)
+                {
+                    <h2>Catalogue Solution</h2>
+                    <partial name="OrderItem"
+                             model="new OrderSummaryItemModel(Model.Order.GetSolution(), Model.Order.ServiceInstanceItems)"/>
+                    PageBreak(++pagesSoFar);
+                }
+
+                @if (Model.Order.GetAdditionalServices().Any())
+                {
+                    <h2>Additional Services</h2>
+                    @foreach (var service in Model.Order.GetAdditionalServices())
+                    {
+                        <partial name="OrderItem"
+                                 model="new OrderSummaryItemModel(service, Model.Order.ServiceInstanceItems)"/>
+                        PageBreak(++pagesSoFar);
+                    }
+                }
+
+                @if (Model.Order.GetAssociatedServices().Any())
+                {
+                    <h2>Associated Services</h2>
+                    @foreach (var service in Model.Order.GetAssociatedServices())
+                    {
+                        <partial name="OrderItem"
+                                 model="new OrderSummaryItemModel(service, Model.Order.ServiceInstanceItems)"/>
+                        PageBreak(++pagesSoFar);
+                    }
+                }
+                
+                <br/>
+                <nhs-page-title title="Totals for this order"/>
+
+                <div class="pdf-container">
+                    <h3>Totals</h3>
+
+                    <pdf-summary-list>
+                        <pdf-summary-list-row label-text="Total one-off cost">
+                            @($"£{Model.Order.TotalOneOffCost():N2}")
+                        </pdf-summary-list-row>
+                        
+                        <pdf-summary-list-row label-text="Total monthly cost">
+                            @($"£{Model.Order.TotalMonthlyCost():N2}")
+                        </pdf-summary-list-row>
+                        
+                        <pdf-summary-list-row label-text="Total annual cost">
+                            @($"£{Model.Order.TotalAnnualCost():N2}")
+                        </pdf-summary-list-row>
+
+                        <pdf-summary-list-row label-text="Total cost of contract (@(Model.Order.MaximumTerm ?? 0) months)">
+                            @($"£{Model.Order.TotalCost():N2}")
+                        </pdf-summary-list-row>
+                    </pdf-summary-list>
                 </div>
             </div>
-            <div class="nhsuk-grid-row">
-                <div class="nhsuk-grid-column-full">                   
-                </div>
-            </div>
-        </main>
-    </div>
+        </div>
+    </main>
+</div>
 </body>
 </html>
+
+@{
+    void PageBreak(int current)
+    {
+        if (current >= Model.Order.OrderItems.Count)
+            return;
+
+        <div style="page-break-after: always"></div>
+    }
+}

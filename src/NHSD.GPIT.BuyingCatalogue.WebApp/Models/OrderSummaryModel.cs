@@ -12,9 +12,5 @@
         }
 
         public EntityFramework.Ordering.Models.Order Order { get; set; }
-
-        public string AdviceText { get; set; }
-
-        public string Title { get; set; }
     }
 }
