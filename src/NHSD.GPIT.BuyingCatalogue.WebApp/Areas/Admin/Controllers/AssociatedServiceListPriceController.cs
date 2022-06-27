@@ -176,7 +176,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
                 ProvisioningType = model.SelectedProvisioningType!.Value,
                 TimeUnit = model.GetBillingPeriod(),
                 PricingUnit = model.GetPricingUnit(),
-                CataloguePriceCalculationType = CataloguePriceCalculationType.SingleFixed,
+                CataloguePriceCalculationType = model.SelectedCalculationType!.Value,
                 CataloguePriceTiers = new HashSet<CataloguePriceTier>
                 {
                     new()
