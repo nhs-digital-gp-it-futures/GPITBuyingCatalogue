@@ -418,7 +418,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
                 cataloguePriceId,
                 model.GetPricingUnit(),
                 model.SelectedProvisioningType!.Value,
-                CataloguePriceCalculationType.SingleFixed,
+                model.SelectedCalculationType!.Value,
                 model.GetBillingPeriod(),
                 model.GetQuantityCalculationType(),
                 model.Price!.Value);
