@@ -89,7 +89,7 @@
                 {
                     if (index > 0) { <br/> }
                     <p>
-                        @definition
+                        @(string.IsNullOrWhiteSpace(definition) ? "Not specified" : definition)
                     </p>
                 }
             </nhs-summary-list-row>
