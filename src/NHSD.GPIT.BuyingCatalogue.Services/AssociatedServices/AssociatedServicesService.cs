@@ -77,6 +77,16 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.AssociatedServices
                 .FirstOrDefaultAsync();
         }
 
+        public async Task<CatalogueItem> GetAssociatedServiceWithCataloguePrices(CatalogueItemId associatedServiceId)
+            => await dbContext.CatalogueItems
+                .Include(i => i.AssociatedService)
+                .Include(i => i.Supplier)
+                .Include(i => i.CataloguePrices)
+                .ThenInclude(cp => cp.CataloguePriceTiers)
+                .Include(i => i.CataloguePrices)
+                .ThenInclude(cp => cp.PricingUnit)
+                .SingleOrDefaultAsync(i => i.Id == associatedServiceId);
+
         // checks to see if this associated services' name is unique for the supplier
         public Task<bool> AssociatedServiceExistsWithNameForSupplier(
             string additionalServiceName,

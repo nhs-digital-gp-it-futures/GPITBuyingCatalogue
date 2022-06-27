@@ -122,6 +122,10 @@
             nameof(AdditionalServiceListPriceController.EditTieredListPrice),
             typeof(AdditionalServiceListPriceController).ControllerName(),
             new { solutionId = Model.CatalogueItemId, AdditionalServiceId = Model.ServiceId, cataloguePrice.CataloguePriceId }),
+        CatalogueItemType.AssociatedService => Url.Action(
+            nameof(AssociatedServiceListPriceController.EditTieredListPrice),
+            typeof(AssociatedServiceListPriceController).ControllerName(),
+            new { solutionId = Model.CatalogueItemId, associatedServiceId = Model.ServiceId, cataloguePrice.CataloguePriceId }),
         _ => string.Empty,
         };
 
@@ -133,7 +137,11 @@
         CatalogueItemType.AdditionalService => Url.Action(
             nameof(AdditionalServiceListPriceController.EditFlatListPrice),
             typeof(AdditionalServiceListPriceController).ControllerName(),
-            new { solutionId = Model.CatalogueItemId, AdditionalServiceId = Model.ServiceId, cataloguePrice.CataloguePriceId }),
+            new { solutionId = Model.CatalogueItemId, additionalServiceId = Model.ServiceId, cataloguePrice.CataloguePriceId }),
+        CatalogueItemType.AssociatedService => Url.Action(
+            nameof(AssociatedServiceListPriceController.EditFlatListPrice),
+            typeof(AssociatedServiceListPriceController).ControllerName(),
+            new { solutionId = Model.CatalogueItemId, associatedServiceId = Model.ServiceId, cataloguePrice.CataloguePriceId }),
         _ => string.Empty,
         };
 }

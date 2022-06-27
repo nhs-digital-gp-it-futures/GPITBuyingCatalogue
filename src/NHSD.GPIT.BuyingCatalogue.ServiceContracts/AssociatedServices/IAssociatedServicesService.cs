@@ -16,6 +16,8 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.AssociatedServices
 
         Task<CatalogueItem> GetAssociatedService(CatalogueItemId associatedServiceId);
 
+        Task<CatalogueItem> GetAssociatedServiceWithCataloguePrices(CatalogueItemId associatedServiceId);
+
         Task<bool> AssociatedServiceExistsWithNameForSupplier(
             string additionalServiceName,
             int supplierId,
