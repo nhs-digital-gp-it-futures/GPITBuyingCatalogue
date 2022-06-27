@@ -76,7 +76,6 @@
     <div data-test-id="additional-services-details">
         @foreach (var service in Model.Services)
         {
-            var price = service.CataloguePrices.First();
             <hr style="border-width: 4px;">
             <h3 id="@service.Id">
                 @service.Name
@@ -89,7 +88,7 @@
                     nameof(SolutionsController.CapabilitiesAdditionalServices),
                     typeof(SolutionsController).ControllerName(),
                     new { Model.SolutionId, additionalServiceId = service.Id }),
-                Price = price,
+                Prices = service.CataloguePrices,
                 ItemDescription = service.AdditionalService.FullDescription,
             };
             <partial name="_MarketingPriceSummary" model="priceSummaryModel" />

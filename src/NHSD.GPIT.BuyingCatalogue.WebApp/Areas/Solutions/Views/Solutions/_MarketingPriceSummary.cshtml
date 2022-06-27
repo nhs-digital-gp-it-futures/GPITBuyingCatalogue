@@ -1,24 +1,21 @@
 ﻿@using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models
 @model NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models.MarketingPriceSummaryModel
 
-@{
-    var price = Model.Price;
-    var priceType = Model.Price.CataloguePriceType;
-}
-
 <nhs-summary-list>
     <nhs-summary-list-row label-text="Description">
         <p data-test-id="description">
             @Model.ItemDescription
         </p>
     </nhs-summary-list-row>
+
     @if (!string.IsNullOrWhiteSpace(Model.CapabilitiesAndEpicsUrl))
     {
         <nhs-summary-list-row label-text="Capabilities and Epics" data-test-id="capability-epics">
             <a href="@Model.CapabilitiesAndEpicsUrl"
                class="nhsuk-breadcrumb__link">Check Capabilities and Epics</a>
         </nhs-summary-list-row>
-    } else if (!string.IsNullOrWhiteSpace(Model.OrderGuidance))
+    } 
+    else if (!string.IsNullOrWhiteSpace(Model.OrderGuidance))
     {
         <nhs-summary-list-row label-text="Order guidance">
             <p data-test-id="order-guidance">
@@ -26,42 +23,76 @@
             </p>
         </nhs-summary-list-row>
     }
-    <nhs-summary-list-row label-text="Price type">@priceType.ToString()</nhs-summary-list-row>
-    <nhs-summary-list-row label-text="Price">
-        @if (priceType == CataloguePriceType.Flat)
-        {
-            var tier = price.CataloguePriceTiers.First();
-
-            @($"£{tier.Price:N4} {price.ToPriceUnitString()}")
-        }
-        else
-        {
-            @for (var i = 0; i < price.CataloguePriceTiers.Count; i++)
-            {
-                var tier = price.CataloguePriceTiers.ElementAt(i);
-
-                @($"Tier {i + 1}: £{tier.Price:N4} {price.ToPriceUnitString()}")
-                <br/>
-            }
-        }
-    </nhs-summary-list-row>
-    @if (priceType == CataloguePriceType.Tiered)
+    
+    @foreach (var priceType in new[] { CataloguePriceType.Flat, CataloguePriceType.Tiered })
     {
-        <nhs-summary-list-row label-text="Ranges">
-            @for (var i = 0; i < price.CataloguePriceTiers.Count; i++)
+        var prices = Model.Prices
+            .Where(x => x.CataloguePriceType == priceType)
+            .ToList();
+
+        if (!prices.Any())
+        {
+            continue;
+        }
+
+        <nhs-summary-list-row label-text="Price type">
+            @priceType.ToString()
+        </nhs-summary-list-row>
+
+        <nhs-summary-list-row label-text="Price">
+            @foreach (var (price, index) in prices.Select((x, i) => (x, i)))
             {
-                var tier = price.CataloguePriceTiers.ElementAt(i);
-                @($"Tier {i + 1}: {tier.GetRangeDescription()}")
-                <br/>
+                if (index > 0) { <br/> }
+
+                @if (priceType == CataloguePriceType.Flat)
+                {
+                    var tier = price.CataloguePriceTiers.First();
+
+                    @($"£{tier.Price:N4} {price.ToPriceUnitString()}")
+                }
+                else
+                {
+                    @for (var i = 0; i < price.CataloguePriceTiers.Count; i++)
+                    {
+                        var tier = price.CataloguePriceTiers.ElementAt(i);
+
+                        @($"Tier {i + 1}: £{tier.Price:N4} {price.ToPriceUnitString()}")
+                        <br/>
+                    }
+                }
             }
         </nhs-summary-list-row>
-    }
-    @if (!string.IsNullOrWhiteSpace(price.PricingUnit.Definition))
-    {
-        <nhs-summary-list-row label-text="Unit definition">
-            <p>
-                @price.PricingUnit.Definition
-            </p>
-        </nhs-summary-list-row>
+
+        @if (priceType == CataloguePriceType.Tiered)
+        {
+            <nhs-summary-list-row label-text="Ranges">
+                @foreach (var (price, index) in prices.Select((x, i) => (x, i)))
+                {
+                    if (index > 0) { <br/> }
+
+                    @for (var i = 0; i < price.CataloguePriceTiers.Count; i++)
+                    {
+                        var tier = price.CataloguePriceTiers.ElementAt(i);
+                        @($"Tier {i + 1}: {tier.GetRangeDescription()}")
+                        <br/>
+                    }
+                }
+            </nhs-summary-list-row>
+        }
+
+        var priceDefinitions = prices.Select(x => x.PricingUnit.Definition).ToList();
+
+        @if (priceDefinitions.Any(x => !string.IsNullOrWhiteSpace(x)))
+        {
+            <nhs-summary-list-row label-text="Unit definition">
+                @foreach (var (definition, index) in priceDefinitions.Select((x, i) => (x, i)))
+                {
+                    if (index > 0) { <br/> }
+                    <p>
+                        @definition
+                    </p>
+                }
+            </nhs-summary-list-row>
+        }
     }
 </nhs-summary-list>
