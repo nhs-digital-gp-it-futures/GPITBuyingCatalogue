@@ -40,13 +40,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
                     nameof(CatalogueSolutionsController.ManageCatalogueSolution),
                     typeof(CatalogueSolutionsController).ControllerName(),
                     new { solutionId }),
-                /* TODO - Reintroduce when Tiered Pricing is Introduced.
-                  AddListPriceUrl = Url.Action(
-                    nameof(ListPriceType),
-                    new { solutionId }),
-                 */
-
-                // TODO - Delete when Tiered Pricing is Introducted.
                 AddListPriceUrl = Url.Action(
                     nameof(AddFlatListPrice),
                     new { solutionId }),
@@ -95,20 +88,14 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
                 return NotFound();
 
             AddTieredListPriceModel model = cataloguePriceId is not null
-                ? new AddTieredListPriceModel(solution, solution.CataloguePrices.Single(p => p.CataloguePriceId == cataloguePriceId))
+                ? new(solution, solution.CataloguePrices.Single(p => p.CataloguePriceId == cataloguePriceId))
                 {
                     DeleteListPriceUrl = Url.Action(
                         nameof(DeleteListPrice),
                         new { solutionId, cataloguePriceId }),
                 }
-                : new AddTieredListPriceModel(solution);
-            /* TODO - Reintroduce when Tiered Pricing is Introduced.
-            model.BackLink = Url.Action(
-                nameof(ListPriceType),
-                new { solutionId, selectedPriceType = CataloguePriceType.Tiered });
-            */
+                : new(solution);
 
-            // TODO - Delete when Tiered Pricing is Introduced
             model.BackLink = Url.Action(
                 nameof(Index),
                 new { solutionId });
@@ -136,11 +123,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
 
             var model = new AddEditFlatListPriceModel(solution)
             {
-                /* TODO - Reintroduce when Tiered Pricing is Introduced.
-                BackLink = Url.Action(nameof(ListPriceType), new { solutionId }),
-                */
-
-                // TODO - Delete when Tiered Pricing is Introduced.
                 BackLink = Url.Action(nameof(Index), new { solutionId }),
             };
 

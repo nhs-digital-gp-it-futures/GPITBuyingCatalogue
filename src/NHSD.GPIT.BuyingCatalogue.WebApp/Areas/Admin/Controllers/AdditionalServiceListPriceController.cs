@@ -54,13 +54,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
                     nameof(AdditionalServicesController.EditAdditionalService),
                     typeof(AdditionalServicesController).ControllerName(),
                     new { solutionId, additionalServiceId }),
-                /* TODO - Reintroduce when Tiered Pricing is Introduced.
-                    AddListPriceUrl = Url.Action(
-                        nameof(ListPriceType),
-                        new { solutionId, additonalServiceId }),
-                */
-
-                // TODO - Delete when Tiered Pricing is Introducted.
                 AddListPriceUrl = Url.Action(
                     nameof(AddFlatListPrice),
                     new { solutionId, additionalServiceId }),
@@ -131,13 +124,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
                             new { solutionId, additionalServiceId, cataloguePriceId }),
                 }
                 : new(solution, additionalService);
-            /* TODO - Reintroduce when Tiered Pricing is Introduced.
-            model.BackLink = Url.Action(
-                nameof(ListPriceType),
-                new { solutionId, additionalServiceId, selectedPriceType = CataloguePriceType.Tiered });
-            */
 
-            // TODO - Delete when Tiered Pricing is Introduced.
             model.BackLink = Url.Action(
                 nameof(Index),
                 new { solutionId, additionalServiceId });
@@ -169,7 +156,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
 
             var model = new AddEditFlatListPriceModel(additionalService)
             {
-                BackLink = Url.Action(nameof(ListPriceType), new { solutionId, additionalServiceId, selectedPriceType = CataloguePriceType.Flat }),
+                BackLink = Url.Action(nameof(Index), new { solutionId, additionalServiceId }),
             };
 
             return View("ListPrices/AddEditFlatListPrice", model);

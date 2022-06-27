@@ -16,7 +16,10 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.ListPrices.Base.Flat
 {
     public abstract class EditFlatListPriceBase : AuthorityTestBase, IClassFixture<LocalWebApplicationFactory>
     {
+        private const string ActionName = "EditFlatListPrice";
+
         private readonly IDictionary<string, string> parameters;
+
         protected EditFlatListPriceBase(
             LocalWebApplicationFactory factory,
             Type controller,
@@ -24,7 +27,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.ListPrices.Base.Flat
             : base(
                 factory,
                 controller,
-                "EditFlatListPrice",
+                ActionName,
                 parameters)
         {
             this.parameters = parameters;
@@ -132,11 +135,16 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.ListPrices.Base.Flat
 
             CommonActions.ClickRadioButtonWithValue(price.ProvisioningType.ToString());
             CommonActions.ClickRadioButtonWithValue(price.PublishedStatus.ToString());
+            CommonActions.ClickRadioButtonWithValue(price.CataloguePriceCalculationType.ToString());
 
             CommonActions.ElementAddValue(ListPriceObjects.UnitDescriptionInput, price.PricingUnit.Description);
             CommonActions.ElementAddValue(ListPriceObjects.PriceInput, price.CataloguePriceTiers.First().Price.ToString());
 
             CommonActions.ClickSave();
+
+            CommonActions.PageLoadedCorrectGetIndex(
+                Controller,
+                ActionName).Should().BeTrue();
 
             CommonActions.ErrorSummaryDisplayed().Should().BeTrue();
             CommonActions.ErrorSummaryLinksExist().Should().BeTrue();
@@ -144,6 +152,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.ListPrices.Base.Flat
             CommonActions.ElementShowingCorrectErrorMessage(ListPriceObjects.ProvisioningTypeInputError, "Error: A list price with these details already exists").Should().BeTrue();
             CommonActions.ElementShowingCorrectErrorMessage(ListPriceObjects.UnitDescriptionInputError, "A list price with these details already exists").Should().BeTrue();
             CommonActions.ElementShowingCorrectErrorMessage(ListPriceObjects.PriceInputError, "A list price with these details already exists").Should().BeTrue();
+            CommonActions.ElementShowingCorrectErrorMessage(ListPriceObjects.CalculationTypeInputError, "Error: A list price with these details already exists").Should().BeTrue();
         }
 
         [Fact]
@@ -197,7 +206,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.ListPrices.Base.Flat
 
             NavigateToUrl(
                 Controller,
-                "EditFlatListPrice",
+                ActionName,
                 updatedParameters);
 
             CommonActions.ElementIsDisplayed(ListPriceObjects.DeletePriceLink).Should().BeTrue();

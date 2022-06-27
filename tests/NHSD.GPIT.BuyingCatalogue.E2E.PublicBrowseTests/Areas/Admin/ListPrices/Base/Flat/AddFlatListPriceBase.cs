@@ -16,6 +16,8 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.ListPrices.Base.Flat
 {
     public abstract class AddFlatListPriceBase : AuthorityTestBase, IClassFixture<LocalWebApplicationFactory>
     {
+        private const string ActionName = "AddFlatListPrice";
+
         protected AddFlatListPriceBase(
             LocalWebApplicationFactory factory,
             Type controller,
@@ -23,7 +25,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.ListPrices.Base.Flat
             : base(
                 factory,
                 controller,
-                "AddFlatListPrice",
+                ActionName,
                 parameters)
         {
         }
@@ -77,13 +79,17 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.ListPrices.Base.Flat
 
             CommonActions.PageLoadedCorrectGetIndex(
                 Controller,
-                "ListPriceType").Should().BeTrue();
+                "Index").Should().BeTrue();
         }
 
         [Fact]
         public void Submit_NoInput_ThrowsError()
         {
             CommonActions.ClickSave();
+
+            CommonActions.PageLoadedCorrectGetIndex(
+                Controller,
+                ActionName).Should().BeTrue();
 
             CommonActions.ErrorSummaryDisplayed().Should().BeTrue();
             CommonActions.ErrorSummaryLinksExist().Should().BeTrue();
@@ -102,11 +108,16 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.ListPrices.Base.Flat
 
             CommonActions.ClickRadioButtonWithValue(price.ProvisioningType.ToString());
             CommonActions.ClickRadioButtonWithValue(price.PublishedStatus.ToString());
+            CommonActions.ClickRadioButtonWithValue(price.CataloguePriceCalculationType.ToString());
 
             CommonActions.ElementAddValue(ListPriceObjects.UnitDescriptionInput, price.PricingUnit.Description);
             CommonActions.ElementAddValue(ListPriceObjects.PriceInput, price.CataloguePriceTiers.First().Price.ToString());
 
             CommonActions.ClickSave();
+
+            CommonActions.PageLoadedCorrectGetIndex(
+                Controller,
+                ActionName).Should().BeTrue();
 
             CommonActions.ErrorSummaryDisplayed().Should().BeTrue();
             CommonActions.ErrorSummaryLinksExist().Should().BeTrue();
@@ -114,6 +125,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.ListPrices.Base.Flat
             CommonActions.ElementShowingCorrectErrorMessage(ListPriceObjects.ProvisioningTypeInputError, "Error: A list price with these details already exists").Should().BeTrue();
             CommonActions.ElementShowingCorrectErrorMessage(ListPriceObjects.UnitDescriptionInputError, "A list price with these details already exists").Should().BeTrue();
             CommonActions.ElementShowingCorrectErrorMessage(ListPriceObjects.PriceInputError, "A list price with these details already exists").Should().BeTrue();
+            CommonActions.ElementShowingCorrectErrorMessage(ListPriceObjects.CalculationTypeInputError, "Error: A list price with these details already exists").Should().BeTrue();
         }
 
         [Fact]
@@ -121,6 +133,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.ListPrices.Base.Flat
         {
             CommonActions.ClickRadioButtonWithValue(ProvisioningType.Patient.ToString());
             CommonActions.ClickRadioButtonWithValue(PublicationStatus.Published.ToString());
+            CommonActions.ClickRadioButtonWithValue(CataloguePriceCalculationType.SingleFixed.ToString());
 
             TextGenerators.TextInputAddText(ListPriceObjects.UnitDescriptionInput, 100);
             CommonActions.ElementAddValue(ListPriceObjects.PriceInput, "3.14");
