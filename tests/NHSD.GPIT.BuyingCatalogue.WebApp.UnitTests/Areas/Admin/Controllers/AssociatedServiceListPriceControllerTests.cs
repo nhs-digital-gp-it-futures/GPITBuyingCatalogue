@@ -1543,7 +1543,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
                         && match.Definition == pricingUnit.Definition
                         && match.RangeDescription == pricingUnit.RangeDescription),
                     model.SelectedProvisioningType!.Value,
-                    CataloguePriceCalculationType.SingleFixed,
+                    model.SelectedCalculationType!.Value,
                     model.GetBillingPeriod(),
                     model.GetQuantityCalculationType(),
                     model.Price!.Value),
@@ -1591,7 +1591,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
                         && match.Definition == pricingUnit.Definition
                         && match.RangeDescription == pricingUnit.RangeDescription),
                     model.SelectedProvisioningType!.Value,
-                    CataloguePriceCalculationType.SingleFixed,
+                    model.SelectedCalculationType!.Value,
                     model.GetBillingPeriod(),
                     model.GetQuantityCalculationType(),
                     model.Price!.Value),
