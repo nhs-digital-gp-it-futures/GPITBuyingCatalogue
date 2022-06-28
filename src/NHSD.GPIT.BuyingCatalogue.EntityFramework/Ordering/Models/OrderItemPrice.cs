@@ -17,6 +17,8 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models
 
         public CatalogueItemId CatalogueItemId { get; set; }
 
+        public int CataloguePriceId { get; set; }
+
         public ProvisioningType ProvisioningType { get; set; }
 
         public CataloguePriceType CataloguePriceType { get; set; }

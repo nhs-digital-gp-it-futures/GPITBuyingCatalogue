@@ -7,8 +7,8 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.Orders
 {
     public interface IOrderPriceService
     {
-        Task AddPrice(int orderId, CataloguePrice price, List<OrderPricingTierDto> agreedPrices);
-
         Task UpdatePrice(int orderId, CatalogueItemId catalogueItemId, List<OrderPricingTierDto> agreedPrices);
+
+        Task UpsertPrice(int orderId, CataloguePrice price, List<OrderPricingTierDto> agreedPrices);
     }
 }

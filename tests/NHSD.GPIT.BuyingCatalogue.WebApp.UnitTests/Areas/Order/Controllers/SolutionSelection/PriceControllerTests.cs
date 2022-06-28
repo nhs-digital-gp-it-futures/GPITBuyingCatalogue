@@ -151,6 +151,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
             string internalOrgId,
             CallOffId callOffId,
             EntityFramework.Ordering.Models.Order order,
+            [Frozen] Mock<IOrderService> mockOrderService,
             [Frozen] Mock<IListPriceService> mockListPriceService,
             PricesController controller)
         {
@@ -159,17 +160,22 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
 
             orderItem.CatalogueItemType = CatalogueItemType.Solution;
 
+            mockOrderService
+                .Setup(x => x.GetOrderWithOrderItems(callOffId, internalOrgId))
+                .ReturnsAsync(order);
+
             mockListPriceService
                 .Setup(lps => lps.GetCatalogueItemWithPublishedListPrices(orderItem.Id))
                 .ReturnsAsync(orderItem);
 
             var result = await controller.ConfirmPrice(internalOrgId, callOffId, orderItem.Id, priceId);
 
+            mockOrderService.VerifyAll();
             mockListPriceService.VerifyAll();
 
             var actualResult = result.Should().BeOfType<ViewResult>().Subject;
 
-            var expected = new ConfirmPriceModel(orderItem, priceId);
+            var expected = new ConfirmPriceModel(orderItem, priceId, null);
 
             actualResult.Model.Should().BeEquivalentTo(expected, m => m.Excluding(o => o.BackLink));
         }
@@ -224,11 +230,11 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
             List<OrderPricingTierDto> actual = null;
 
             mockOrderPriceService
-                .Setup(x => x.AddPrice(order.Id, price, It.IsAny<List<OrderPricingTierDto>>()))
+                .Setup(x => x.UpsertPrice(order.Id, price, It.IsAny<List<OrderPricingTierDto>>()))
                 .Callback<int, CataloguePrice, List<OrderPricingTierDto>>((_, _, x) => actual = x)
                 .Returns(Task.CompletedTask);
 
-            var model = new ConfirmPriceModel(catalogueItem, price.CataloguePriceId);
+            var model = new ConfirmPriceModel(catalogueItem, price.CataloguePriceId, null);
 
             var result = await controller.ConfirmPrice(internalOrgId, callOffId, catalogueItem.Id, price.CataloguePriceId, model);
 
@@ -275,6 +281,84 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
             var expected = new ConfirmPriceModel(orderItem);
 
             actualResult.Model.Should().BeEquivalentTo(expected, m => m.Excluding(o => o.BackLink));
+        }
+
+        [Theory]
+        [CommonAutoData]
+        public static async Task Get_EditPrice_MultiplePricesAvailable_ExpectedResult(
+            string internalOrgId,
+            CallOffId callOffId,
+            EntityFramework.Ordering.Models.Order order,
+            CatalogueItem catalogueItem,
+            List<CataloguePrice> availablePrices,
+            [Frozen] Mock<IOrderService> mockOrderService,
+            [Frozen] Mock<IListPriceService> mockListPriceService,
+            PricesController controller)
+        {
+            var orderItem = order.OrderItems.First();
+
+            catalogueItem.CataloguePrices = availablePrices;
+
+            mockOrderService
+                .Setup(x => x.GetOrderWithOrderItems(callOffId, internalOrgId))
+                .ReturnsAsync(order);
+
+            mockListPriceService
+                .Setup(x => x.GetCatalogueItemWithPublishedListPrices(orderItem.CatalogueItemId))
+                .ReturnsAsync(catalogueItem);
+
+            var result = await controller.EditPrice(internalOrgId, callOffId, orderItem.CatalogueItemId);
+
+            mockOrderService.VerifyAll();
+            mockListPriceService.VerifyAll();
+
+            var actualResult = result.Should().BeOfType<ViewResult>().Subject;
+            var expected = new ConfirmPriceModel(orderItem);
+
+            actualResult.Model.Should().BeEquivalentTo(expected, x => x.Excluding(m => m.BackLink));
+        }
+
+        [Theory]
+        [CommonAutoData]
+        public static async Task Get_EditPrice_MultiplePricesAvailable_FromTaskList_ExpectedResult(
+            string internalOrgId,
+            CallOffId callOffId,
+            EntityFramework.Ordering.Models.Order order,
+            CatalogueItem catalogueItem,
+            List<CataloguePrice> availablePrices,
+            [Frozen] Mock<IOrderService> mockOrderService,
+            [Frozen] Mock<IListPriceService> mockListPriceService,
+            PricesController controller)
+        {
+            var orderItem = order.OrderItems.First();
+
+            catalogueItem.CataloguePrices = availablePrices;
+
+            mockOrderService
+                .Setup(x => x.GetOrderWithOrderItems(callOffId, internalOrgId))
+                .ReturnsAsync(order);
+
+            mockListPriceService
+                .Setup(x => x.GetCatalogueItemWithPublishedListPrices(orderItem.CatalogueItemId))
+                .ReturnsAsync(catalogueItem);
+
+            var result = await controller.EditPrice(internalOrgId, callOffId, orderItem.CatalogueItemId, RoutingSource.TaskList);
+
+            mockOrderService.VerifyAll();
+            mockListPriceService.VerifyAll();
+
+            var actualResult = result.Should().BeOfType<RedirectToActionResult>().Subject;
+
+            actualResult.ControllerName.Should().Be(typeof(PricesController).ControllerName());
+            actualResult.ActionName.Should().Be(nameof(PricesController.SelectPrice));
+            actualResult.RouteValues.Should().BeEquivalentTo(new RouteValueDictionary
+            {
+                { "internalOrgId", internalOrgId },
+                { "callOffId", callOffId },
+                { "catalogueItemId", orderItem.CatalogueItemId },
+                { "selectedPriceId", orderItem.OrderItemPrice.CataloguePriceId },
+                { "source", RoutingSource.TaskList },
+            });
         }
 
         [Theory]

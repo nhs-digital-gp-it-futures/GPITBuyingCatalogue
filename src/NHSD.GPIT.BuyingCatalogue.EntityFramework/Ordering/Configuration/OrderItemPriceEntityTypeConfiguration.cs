@@ -13,6 +13,9 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Configuration
 
             builder.HasKey(oipp => new { oipp.OrderId, oipp.CatalogueItemId });
 
+            builder.Property(x => x.CataloguePriceId)
+                .IsRequired();
+
             builder.Property(oip => oip.ProvisioningType)
                 .HasConversion<int>()
                 .HasColumnName("ProvisioningTypeId");
