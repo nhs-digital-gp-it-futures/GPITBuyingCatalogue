@@ -55,12 +55,20 @@
             <nhs-table-column>Price per unit</nhs-table-column>
             @foreach (var service in flatPriceServices)
             {
-                var price = service.CataloguePrices.First(p => p.CataloguePriceType == CataloguePriceType.Flat);
-                var tier = price.CataloguePriceTiers.First();
-                    <nhs-table-row-container>
-                        <nhs-table-cell><a href="#@service.Id">@service.Name</a></nhs-table-cell>
-                        <nhs-table-cell>£@tier.Price.ToString("N4") @price.ToPriceUnitString()</nhs-table-cell>
-                    </nhs-table-row-container>
+                var prices = service.CataloguePrices
+                    .Where(p => p.CataloguePriceType == CataloguePriceType.Flat)
+                    .Select(x => $"£{x.CataloguePriceTiers.First().Price:N4} {x.ToPriceUnitString()}");
+
+                <nhs-table-row-container>
+                    <nhs-table-cell><a href="#@service.Id">@service.Name</a></nhs-table-cell>
+                    <nhs-table-cell>
+                        @foreach (var (price, index) in prices.Select((x, i) => (x, i)))
+                        {
+                            @if (index > 0) { <br/> }
+                            @price
+                        }
+                    </nhs-table-cell>
+                </nhs-table-row-container>
             }
         </nhs-table>
     }
@@ -68,7 +76,6 @@
     <div data-test-id="additional-services-details">
         @foreach (var service in Model.Services)
         {
-            var price = service.CataloguePrices.First();
             <hr style="border-width: 4px;">
             <h3 id="@service.Id">
                 @service.Name
@@ -81,7 +88,7 @@
                     nameof(SolutionsController.CapabilitiesAdditionalServices),
                     typeof(SolutionsController).ControllerName(),
                     new { Model.SolutionId, additionalServiceId = service.Id }),
-                Price = price,
+                Prices = service.CataloguePrices,
                 ItemDescription = service.AdditionalService.FullDescription,
             };
             <partial name="_MarketingPriceSummary" model="priceSummaryModel" />
