@@ -7,7 +7,7 @@
 
 @{
     var itemType = Model.OrderItem.CatalogueItem.CatalogueItemType.DisplayName();
-    var orderItemCostBasis = Model.OrderItem.OrderItemPrice?.EstimationPeriod?.Description() ?? string.Empty;
+    var orderItemCostBasis = Model.OrderItem.OrderItemPrice?.BillingPeriod?.Description() ?? string.Empty;
     var hasServiceRecipientQuantities = Model.OrderItem.OrderItemRecipients?.Any(x => x.Quantity.HasValue) ?? false;
     var tierCosts = Model.OrderItem.OrderItemPrice?.CalculateTotalCostPerTier(Model.OrderItem.GetQuantity()) ?? new List<PriceCalculationModel>();
     var tiers = Model.OrderItem.OrderItemPrice?.OrderItemPriceTiers?.OrderBy(x => x.LowerRange).ToList() ?? new List<OrderItemPriceTier>();
@@ -116,7 +116,7 @@
                     @($"{tierCosts[0].Quantity:N0}")
                 </pdf-summary-list-row>
                     
-                <pdf-summary-list-row label-text="Total cost @(tier.OrderItemPrice.EstimationPeriod == null ? "(one-off)" : "")">
+                <pdf-summary-list-row label-text="Total cost @(tier.OrderItemPrice.BillingPeriod == null ? "(one-off)" : "")">
                     @($"£{tierCosts[0].Cost:N2}") @orderItemCostBasis
                 </pdf-summary-list-row>
             </pdf-summary-list>

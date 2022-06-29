@@ -19,7 +19,7 @@ namespace NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.AutoFixtureCustomisations
                 .Without(oip => oip.OrderId)
                 .Without(oip => oip.OrderItemPriceTiers)
                 .Without(oip => oip.CatalogueItemId)
-                .With(oip => oip.EstimationPeriod, TimeUnit.PerMonth)
+                .With(oip => oip.BillingPeriod, TimeUnit.PerMonth)
                 .With(oip => oip.CurrencyCode, "GBP");
 
             fixture.Customize<OrderItemPrice>(ComposerTransformation);

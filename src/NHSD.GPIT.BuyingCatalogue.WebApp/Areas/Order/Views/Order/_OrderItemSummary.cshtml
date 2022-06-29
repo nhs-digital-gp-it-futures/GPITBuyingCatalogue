@@ -8,7 +8,7 @@
 
     var fundingType = Model.FundingType;
     var totalCost = Model.OrderItemPrice.CalculateTotalCost(Model.GetQuantity());
-	var subTotalDescription = $"£{totalCost:N2}{(Model.OrderItemPrice.EstimationPeriod != null ? $" {Model.OrderItemPrice.EstimationPeriod!.Value.Description()}" : string.Empty)}";
+	var subTotalDescription = $"£{totalCost:N2}{(Model.OrderItemPrice.BillingPeriod != null ? $" {Model.OrderItemPrice.BillingPeriod!.Value.Description()}" : string.Empty)}";
 
     var startDateFormatted = startDate.ToString("dd MMMM yyyy", System.Globalization.CultureInfo.InvariantCulture);
     var endDateFormatted = endDate.ToString("dd MMMM yyyy", System.Globalization.CultureInfo.InvariantCulture);

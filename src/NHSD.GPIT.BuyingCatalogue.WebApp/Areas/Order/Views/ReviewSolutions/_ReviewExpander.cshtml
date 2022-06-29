@@ -8,7 +8,7 @@
 @{
 	var TotalCosts = Model.OrderItemPrice.CalculateTotalCostPerTier(Model.GetQuantity());
 	var TotalCost = TotalCosts.Sum(tc => tc.Cost);
-	var subTotalDescription = Model.OrderItemPrice.EstimationPeriod != null ? Model.OrderItemPrice.EstimationPeriod!.Value.Description() : "";
+	var subTotalDescription = Model.OrderItemPrice.BillingPeriod != null ? Model.OrderItemPrice.BillingPeriod!.Value.Description() : "";
 }
 
 <nhs-expander label-text="@Model.CatalogueItem.Name"

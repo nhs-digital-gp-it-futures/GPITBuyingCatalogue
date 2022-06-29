@@ -121,6 +121,11 @@
                 asp-for="UnitDefinition"
                 character-count="false" />
 
+            <nhs-input
+                label-text="Range definition"
+                label-hint="For example, patients, users, licences."
+                asp-for="RangeDefinition" />
+
             <nhs-fieldset-form-label label-text="Publication status" size="Medium" asp-for="SelectedPublicationStatus">
                 <nhs-radio-buttons
                     asp-for="SelectedPublicationStatus"

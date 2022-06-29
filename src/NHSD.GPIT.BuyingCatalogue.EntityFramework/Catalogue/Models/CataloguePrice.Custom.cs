@@ -11,7 +11,7 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models
 
         public string Description => PricingUnit.Description;
 
-        public TimeUnit? EstimationPeriod => TimeUnit;
+        public TimeUnit? BillingPeriod => TimeUnit;
 
         public string ToPriceUnitString()
         {

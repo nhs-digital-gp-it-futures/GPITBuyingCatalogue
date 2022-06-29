@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework;
+using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Orders;
@@ -122,6 +123,27 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
             var item = await GetOrderItemTracked(callOffId, internalOrgId, catalogueItemId);
 
             await SaveOrUpdateOrderItemFunding(item, callOffId, catalogueItemId, selectedFundingType);
+        }
+
+        public async Task SetOrderItemEstimationPeriod(CallOffId callOffId, string internalOrgId, CatalogueItemId catalogueItemId, CataloguePrice price)
+        {
+            if (price is null)
+                throw new ArgumentNullException(nameof(price));
+
+            var orderItem = await dbContext.OrderItems
+                .SingleOrDefaultAsync(oi =>
+                    oi.OrderId == callOffId.Id
+                    && oi.CatalogueItemId == catalogueItemId
+                    && oi.Order.OrderingParty.InternalIdentifier == internalOrgId);
+
+            orderItem.EstimationPeriod = price.ProvisioningType switch
+            {
+                ProvisioningType.Patient => TimeUnit.PerMonth,
+                ProvisioningType.OnDemand => price.BillingPeriod,
+                ProvisioningType.Declarative or ProvisioningType.PerServiceRecipient or _ => TimeUnit.PerYear,
+            };
+
+            await dbContext.SaveChangesAsync();
         }
 
         private Task<OrderItem> GetOrderItemTracked(CallOffId callOffId, string internalOrgId, CatalogueItemId catalogueItemId) =>

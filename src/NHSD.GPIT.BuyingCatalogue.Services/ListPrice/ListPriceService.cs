@@ -24,7 +24,8 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.ListPrice
             ProvisioningType provisioningType,
             CataloguePriceCalculationType calculationType,
             decimal price,
-            string unitDescription)
+            string unitDescription,
+            string rangeDefinition)
         {
             var results = dbContext
                 .CataloguePrices
@@ -36,7 +37,8 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.ListPrice
                 p => p.ProvisioningType == provisioningType
                     && p.CataloguePriceCalculationType == calculationType
                     && p.CataloguePriceTiers.Any(pt => pt.Price == price)
-                    && p.PricingUnit.Description == unitDescription);
+                    && p.PricingUnit.Description == unitDescription
+                    && p.PricingUnit.RangeDescription == rangeDefinition);
         }
 
         public async Task<bool> HasDuplicateTieredPrice(

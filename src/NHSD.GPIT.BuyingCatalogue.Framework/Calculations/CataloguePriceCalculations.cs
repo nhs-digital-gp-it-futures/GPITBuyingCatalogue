@@ -37,42 +37,42 @@ namespace NHSD.GPIT.BuyingCatalogue.Framework.Calculations
 
         public static decimal CalculateOneOffCost(this IPrice price, int quantity)
         {
-            return price?.EstimationPeriod is null
+            return price?.BillingPeriod is null
                 ? CalculateTotalCost(price, quantity)
                 : decimal.Zero;
         }
 
         public static decimal CalculateCostPerMonth(this IPrice price, int quantity)
         {
-            if (price?.EstimationPeriod is null)
+            if (price?.BillingPeriod is null)
             {
                 return decimal.Zero;
             }
 
             var cost = CalculateTotalCost(price, quantity);
 
-            return price.EstimationPeriod == TimeUnit.PerMonth
+            return price.BillingPeriod == TimeUnit.PerMonth
                 ? cost
                 : cost / 12;
         }
 
         public static decimal CalculateCostPerYear(this IPrice price, int quantity)
         {
-            if (price?.EstimationPeriod is null)
+            if (price?.BillingPeriod is null)
             {
                 return decimal.Zero;
             }
 
             var cost = CalculateTotalCost(price, quantity);
 
-            return price.EstimationPeriod == TimeUnit.PerYear
+            return price.BillingPeriod == TimeUnit.PerYear
                 ? cost
                 : cost * 12;
         }
 
         public static decimal CalculateTotalCostForContractLength(this IPrice price, int quantity, int maxTerm)
         {
-            return price?.EstimationPeriod == null
+            return price?.BillingPeriod == null
                 ? CalculateOneOffCost(price, quantity)
                 : CalculateCostPerMonth(price, quantity) * maxTerm;
         }
@@ -112,7 +112,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Framework.Calculations
 
             var quantity = orderItem.GetQuantity();
 
-            return orderItem.OrderItemPrice.EstimationPeriod switch
+            return orderItem.OrderItemPrice.BillingPeriod switch
             {
                 TimeUnit.PerMonth => orderItem.OrderItemPrice.CalculateCostPerMonth(quantity),
                 TimeUnit.PerYear => orderItem.OrderItemPrice.CalculateCostPerYear(quantity),

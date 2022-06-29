@@ -246,7 +246,8 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.ListPrice
                 price.ProvisioningType,
                 price.CataloguePriceCalculationType,
                 tier.Price,
-                price.PricingUnit.Description);
+                price.PricingUnit.Description,
+                price.PricingUnit.RangeDescription);
 
             result.Should().BeTrue();
         }
@@ -275,7 +276,8 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.ListPrice
                 price.ProvisioningType,
                 price.CataloguePriceCalculationType,
                 tier.Price,
-                price.PricingUnit.Description);
+                price.PricingUnit.Description,
+                price.PricingUnit.RangeDescription);
 
             result.Should().BeFalse();
         }
@@ -306,7 +308,8 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.ListPrice
                 newPrice.ProvisioningType,
                 price.CataloguePriceCalculationType,
                 newTier.Price,
-                newPrice.PricingUnit.Description);
+                newPrice.PricingUnit.Description,
+                price.PricingUnit.RangeDescription);
 
             result.Should().BeFalse();
         }

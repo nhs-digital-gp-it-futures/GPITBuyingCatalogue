@@ -85,7 +85,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators.List
                 model.SelectedProvisioningType!.Value,
                 model.SelectedCalculationType!.Value,
                 model.Price!.Value,
-                model.UnitDescription)).ReturnsAsync(true);
+                model.UnitDescription,
+                model.RangeDefinition)).ReturnsAsync(true);
 
             var result = validator.TestValidate(model);
 
@@ -108,7 +109,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators.List
                 model.SelectedProvisioningType!.Value,
                 model.SelectedCalculationType!.Value,
                 model.Price!.Value,
-                model.UnitDescription)).ReturnsAsync(false);
+                model.UnitDescription,
+                model.RangeDefinition)).ReturnsAsync(false);
 
             var result = validator.TestValidate(model);
 

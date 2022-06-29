@@ -16,15 +16,15 @@
         : "Edit solution and services";
 
 	var oneOffCost = Model.AllOrderItems
-		.Where(oi => oi.OrderItemPrice?.EstimationPeriod == null)
+		.Where(oi => oi.OrderItemPrice?.BillingPeriod == null)
 		.Sum(oi => oi.OrderItemPrice.CalculateTotalCost(oi.GetQuantity()));
 
 	var monthlyCost = Model.AllOrderItems
-		.Where(oi => oi.OrderItemPrice?.EstimationPeriod != null)
+		.Where(oi => oi.OrderItemPrice?.BillingPeriod != null)
 		.Sum(oi => oi.OrderItemPrice.CalculateCostPerMonth(oi.GetQuantity()));
 
 	var yearlyCost = Model.AllOrderItems
-		.Where(oi => oi.OrderItemPrice?.EstimationPeriod != null)
+		.Where(oi => oi.OrderItemPrice?.BillingPeriod != null)
 		.Sum(oi => oi.OrderItemPrice.CalculateCostPerYear(oi.GetQuantity()));
 
 	var totalCost = Model.AllOrderItems

@@ -14,6 +14,10 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Configuration
             builder.HasKey(oi => new { oi.OrderId, oi.CatalogueItemId })
                 .HasName("PK_OrderItem");
 
+            builder.Property(oi => oi.EstimationPeriod)
+                .HasConversion<int>()
+                .HasColumnName("EstimationPeriodId");
+
             builder.Property(e => e.CatalogueItemId)
                 .HasMaxLength(14)
                 .HasConversion(id => id.ToString(), id => CatalogueItemId.ParseExact(id));

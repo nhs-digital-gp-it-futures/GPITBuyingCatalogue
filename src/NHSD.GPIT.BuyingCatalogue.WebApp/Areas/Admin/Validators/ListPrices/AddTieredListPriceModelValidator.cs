@@ -9,7 +9,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Validators.ListPrices
 {
     public class AddTieredListPriceModelValidator : AbstractValidator<AddTieredListPriceModel>
     {
-        internal const string RangeDefinitionError = "Enter a range definition";
         private readonly IListPriceService listPriceService;
 
         public AddTieredListPriceModelValidator(IListPriceService listPriceService)
@@ -30,7 +29,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Validators.ListPrices
 
             RuleFor(m => m.RangeDefinition)
                 .NotEmpty()
-                .WithMessage(RangeDefinitionError);
+                .WithMessage(SharedListPriceValidationErrors.RangeDefinitionError);
 
             RuleFor(m => m)
                 .Must(NotBeADuplicate)

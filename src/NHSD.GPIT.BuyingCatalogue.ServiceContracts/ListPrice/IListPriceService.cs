@@ -12,7 +12,8 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.ListPrice
             ProvisioningType provisioningType,
             CataloguePriceCalculationType calculationType,
             decimal price,
-            string unitDescription);
+            string unitDescription,
+            string rangeDefinition);
 
         Task<bool> HasDuplicateTieredPrice(
             CatalogueItemId catalogueItemId,

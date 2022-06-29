@@ -13,7 +13,7 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Interfaces
 
         public CataloguePriceCalculationType CataloguePriceCalculationType { get; set; }
 
-        public TimeUnit? EstimationPeriod { get; }
+        public TimeUnit? BillingPeriod { get; }
 
         public CataloguePriceType CataloguePriceType { get; set; }
 

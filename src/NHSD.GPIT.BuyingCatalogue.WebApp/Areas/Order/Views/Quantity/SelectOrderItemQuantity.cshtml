@@ -1,6 +1,10 @@
-﻿@model NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.SolutionSelection.Quantity.SelectOrderItemQuantityModel;
+﻿@using NHSD.GPIT.BuyingCatalogue.EntityFramework.Extensions;
+
+@model NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.SolutionSelection.Quantity.SelectOrderItemQuantityModel;
 @{
 	ViewBag.Title = $"Quantity of {Model.ItemType}";
+
+	var timeUnit = Model.BillingPeriod?.Description() ?? "";
 }
 
 <partial name="Partials/_BackLink" model="Model" />
@@ -21,8 +25,8 @@
             <input type="hidden" asp-for="@Model.Source" />
             
             <nhs-bookended-input asp-for="Quantity" 
-                                 label-text="How many @Model.QuantityDescription do you want?"
-                                 Suffix="@Model.QuantityDescription"/>
+                                 label-text="How many @Model.QuantityDescription @timeUnit do you want?"
+                                 Suffix="@Model.QuantityDescription @timeUnit"/>
 
             <br/>
 

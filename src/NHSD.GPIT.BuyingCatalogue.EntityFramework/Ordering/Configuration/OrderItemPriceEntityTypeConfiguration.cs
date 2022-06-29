@@ -43,7 +43,7 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Configuration
             builder.Property(oip => oip.RangeDescription)
                 .HasMaxLength(100);
 
-            builder.Property(oip => oip.EstimationPeriod)
+            builder.Property(oip => oip.BillingPeriod)
                 .HasConversion<int>()
                 .HasColumnName("EstimationPeriodId");
 
