@@ -22,6 +22,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators.List
             model.Price = null;
             model.UnitDescription = null;
             model.SelectedPublicationStatus = null;
+            model.SelectedCalculationType = null;
 
             var result = validator.TestValidate(model);
 
@@ -36,6 +37,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators.List
 
             result.ShouldHaveValidationErrorFor(m => m.SelectedPublicationStatus)
                 .WithErrorMessage(AddEditFlatListPriceModelValidator.SelectedPublicationStatusError);
+
+            result.ShouldHaveValidationErrorFor(m => m.SelectedCalculationType)
+                .WithErrorMessage(SharedListPriceValidationErrors.SelectedCalculationTypeError);
         }
 
         [Theory]
@@ -79,12 +83,13 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators.List
                 model.CatalogueItemId,
                 model.CataloguePriceId,
                 model.SelectedProvisioningType!.Value,
+                model.SelectedCalculationType!.Value,
                 model.Price!.Value,
                 model.UnitDescription)).ReturnsAsync(true);
 
             var result = validator.TestValidate(model);
 
-            result.ShouldHaveValidationErrorFor("SelectedProvisioningType|Price|UnitDescription")
+            result.ShouldHaveValidationErrorFor($"{nameof(model.SelectedProvisioningType)}|{nameof(model.Price)}|{nameof(model.UnitDescription)}|{nameof(model.SelectedCalculationType)}")
                 .WithErrorMessage(SharedListPriceValidationErrors.DuplicateListPriceError);
         }
 
@@ -101,6 +106,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators.List
                 model.CatalogueItemId,
                 model.CataloguePriceId,
                 model.SelectedProvisioningType!.Value,
+                model.SelectedCalculationType!.Value,
                 model.Price!.Value,
                 model.UnitDescription)).ReturnsAsync(false);
 

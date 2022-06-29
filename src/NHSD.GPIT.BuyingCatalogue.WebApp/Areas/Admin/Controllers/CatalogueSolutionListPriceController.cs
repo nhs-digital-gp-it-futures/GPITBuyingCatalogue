@@ -41,7 +41,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
                     typeof(CatalogueSolutionsController).ControllerName(),
                     new { solutionId }),
                 AddListPriceUrl = Url.Action(
-                    nameof(ListPriceType),
+                    nameof(AddFlatListPrice),
                     new { solutionId }),
             };
 
@@ -88,15 +88,17 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
                 return NotFound();
 
             AddTieredListPriceModel model = cataloguePriceId is not null
-                ? new AddTieredListPriceModel(solution, solution.CataloguePrices.Single(p => p.CataloguePriceId == cataloguePriceId))
+                ? new(solution, solution.CataloguePrices.Single(p => p.CataloguePriceId == cataloguePriceId))
                 {
                     DeleteListPriceUrl = Url.Action(
                         nameof(DeleteListPrice),
                         new { solutionId, cataloguePriceId }),
                 }
-                : new AddTieredListPriceModel(solution);
+                : new(solution);
 
-            model.BackLink = Url.Action(nameof(ListPriceType), new { solutionId, selectedPriceType = CataloguePriceType.Tiered });
+            model.BackLink = Url.Action(
+                nameof(Index),
+                new { solutionId });
 
             return View("ListPrices/AddTieredListPrice", model);
         }
@@ -121,7 +123,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
 
             var model = new AddEditFlatListPriceModel(solution)
             {
-                BackLink = Url.Action(nameof(ListPriceType), new { solutionId }),
+                BackLink = Url.Action(nameof(Index), new { solutionId }),
             };
 
             return View("ListPrices/AddEditFlatListPrice", model);
@@ -139,7 +141,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
                 ProvisioningType = model.SelectedProvisioningType!.Value,
                 TimeUnit = model.GetBillingPeriod(),
                 PricingUnit = model.GetPricingUnit(),
-                CataloguePriceCalculationType = CataloguePriceCalculationType.SingleFixed,
+                CataloguePriceCalculationType = model.SelectedCalculationType!.Value,
                 CataloguePriceTiers = new HashSet<CataloguePriceTier>
                 {
                     new()
@@ -334,7 +336,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
                 cataloguePriceId,
                 model.GetPricingUnit(),
                 model.SelectedProvisioningType!.Value,
-                CataloguePriceCalculationType.SingleFixed,
+                model.SelectedCalculationType!.Value,
                 model.GetBillingPeriod(),
                 model.GetQuantityCalculationType(),
                 model.Price!.Value);

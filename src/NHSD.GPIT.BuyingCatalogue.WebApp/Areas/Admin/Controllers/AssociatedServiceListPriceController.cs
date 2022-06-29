@@ -55,7 +55,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
                     typeof(AssociatedServicesController).ControllerName(),
                     new { solutionId, associatedServiceId }),
                 AddListPriceUrl = Url.Action(
-                    nameof(ListPriceType),
+                    nameof(AddFlatListPrice),
                     new { solutionId, associatedServiceId }),
             };
 
@@ -125,7 +125,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
                 }
                 : new(solution, associatedService);
 
-            model.BackLink = Url.Action(nameof(ListPriceType), new { solutionId, associatedServiceId, selectedPriceType = CataloguePriceType.Tiered });
+            model.BackLink = Url.Action(nameof(Index), new { solutionId, associatedServiceId });
 
             return View("ListPrices/AddTieredListPrice", model);
         }
@@ -155,7 +155,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
 
             var model = new AddEditFlatListPriceModel(associatedService)
             {
-                BackLink = Url.Action(nameof(ListPriceType), new { solutionId, associatedServiceId, selectedPriceType = CataloguePriceType.Flat }),
+                BackLink = Url.Action(nameof(Index), new { solutionId, associatedServiceId }),
             };
 
             return View("ListPrices/AddEditFlatListPrice", model);
@@ -176,7 +176,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
                 ProvisioningType = model.SelectedProvisioningType!.Value,
                 TimeUnit = model.GetBillingPeriod(),
                 PricingUnit = model.GetPricingUnit(),
-                CataloguePriceCalculationType = CataloguePriceCalculationType.SingleFixed,
+                CataloguePriceCalculationType = model.SelectedCalculationType!.Value,
                 CataloguePriceTiers = new HashSet<CataloguePriceTier>
                 {
                     new()
@@ -417,7 +417,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
                 cataloguePriceId,
                 model.GetPricingUnit(),
                 model.SelectedProvisioningType!.Value,
-                CataloguePriceCalculationType.SingleFixed,
+                model.SelectedCalculationType!.Value,
                 model.GetBillingPeriod(),
                 model.GetQuantityCalculationType(),
                 model.Price!.Value);

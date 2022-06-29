@@ -76,7 +76,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.ListPrices.Base.Tiered
 
             CommonActions.PageLoadedCorrectGetIndex(
                 Controller,
-                "ListPriceType").Should().BeTrue();
+                "Index").Should().BeTrue();
         }
 
         [Fact]

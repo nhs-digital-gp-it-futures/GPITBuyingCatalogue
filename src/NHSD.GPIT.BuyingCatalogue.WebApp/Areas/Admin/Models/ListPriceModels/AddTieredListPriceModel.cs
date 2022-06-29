@@ -63,7 +63,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.ListPriceModels
             AssignQuantityCalculationType(cataloguePrice);
         }
 
-        public IEnumerable<SelectableRadioOption<CataloguePriceCalculationType>> AvailableCalculationTypes =>
+        public override IEnumerable<SelectableRadioOption<CataloguePriceCalculationType>> AvailableCalculationTypes =>
             new List<SelectableRadioOption<CataloguePriceCalculationType>>
             {
                 new(
@@ -81,8 +81,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.ListPriceModels
             };
 
         public CatalogueItemId? ServiceId { get; set; }
-
-        public CataloguePriceCalculationType? SelectedCalculationType { get; set; }
 
         [StringLength(100)]
         public string RangeDefinition { get; set; }

@@ -69,7 +69,7 @@ namespace NHSD.GPIT.BuyingCatalogue.UI.Components.TagHelpers
         private TagBuilder GetListItemBuilder(string linkElement, string errorMessage)
         {
             if (!string.IsNullOrWhiteSpace(RadioId)
-                && RadioId.Split(',').Contains(linkElement))
+                && RadioId.Split(',', StringSplitOptions.TrimEntries).Contains(linkElement))
             {
                 linkElement = $"{linkElement}_0";
             }
