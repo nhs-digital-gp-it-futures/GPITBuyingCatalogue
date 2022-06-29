@@ -16,7 +16,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.Solution
         public static void CatalogueItemIsNull_ThrowsException(int priceId)
         {
             FluentActions
-                .Invoking(() => new ConfirmPriceModel(null, priceId))
+                .Invoking(() => new ConfirmPriceModel(null, priceId, null))
                 .Should().Throw<ArgumentNullException>();
         }
 
@@ -34,7 +34,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.Solution
         {
             var price = item.CataloguePrices.First();
 
-            var model = new ConfirmPriceModel(item, price.CataloguePriceId);
+            var model = new ConfirmPriceModel(item, price.CataloguePriceId, null);
 
             model.Basis.Should().Be(price.ToPriceUnitString());
             model.ItemName.Should().Be(item.Name);
@@ -46,6 +46,40 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.Solution
                 var pricingTier = price.CataloguePriceTiers.Single(x => x.Id == tier.Id);
 
                 tier.AgreedPrice.Should().Be($"{pricingTier.Price:#,##0.00##}");
+                tier.Description.Should().Be(pricingTier.GetRangeDescription());
+                tier.ListPrice.Should().Be(pricingTier.Price);
+                tier.LowerRange.Should().Be(pricingTier.LowerRange);
+                tier.UpperRange.Should().Be(pricingTier.UpperRange);
+            }
+        }
+
+        [Theory]
+        [CommonAutoData]
+        public static void WithValidCatalogueItem_AndExistingOrderItem_PropertiesCorrectlySet(CatalogueItem item, OrderItem orderItem)
+        {
+            var price = item.CataloguePrices.First();
+
+            orderItem.OrderItemPrice.CataloguePriceId = price.CataloguePriceId;
+            orderItem.OrderItemPrice.OrderItemPriceTiers = price.CataloguePriceTiers
+                .Select(x => new OrderItemPriceTier(orderItem.OrderItemPrice, x)
+                {
+                    Price = x.Price / 2,
+                })
+                .ToList();
+
+            var model = new ConfirmPriceModel(item, price.CataloguePriceId, orderItem);
+
+            model.Basis.Should().Be(price.ToPriceUnitString());
+            model.ItemName.Should().Be(item.Name);
+            model.ItemType.Should().Be(item.CatalogueItemType);
+            model.NumberOfTiers.Should().Be(price.CataloguePriceTiers.Count);
+
+            foreach (var tier in model.Tiers)
+            {
+                var pricingTier = price.CataloguePriceTiers.Single(x => x.Id == tier.Id);
+                var tierPrice = pricingTier.Price / 2;
+
+                tier.AgreedPrice.Should().Be($"{tierPrice:#,###,##0.00##}");
                 tier.Description.Should().Be(pricingTier.GetRangeDescription());
                 tier.ListPrice.Should().Be(pricingTier.Price);
                 tier.LowerRange.Should().Be(pricingTier.LowerRange);

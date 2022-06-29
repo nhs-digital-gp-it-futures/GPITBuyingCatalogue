@@ -39,31 +39,6 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Routing.Providers
 
         [Theory]
         [CommonAutoData]
-        public void Process_FromTaskList_ExpectedResult(
-            string internalOrgId,
-            CallOffId callOffId,
-            CatalogueItemId catalogueItemId,
-            Order order,
-            ConfirmPriceBackLinkProvider provider)
-        {
-            var result = provider.Process(order, new RouteValues(internalOrgId, callOffId, catalogueItemId)
-            {
-                Source = RoutingSource.TaskList,
-            });
-
-            var expected = new
-            {
-                InternalOrgId = internalOrgId,
-                CallOffId = callOffId,
-            };
-
-            result.ActionName.Should().Be(Constants.Actions.TaskList);
-            result.ControllerName.Should().Be(Constants.Controllers.TaskList);
-            result.RouteValues.Should().BeEquivalentTo(expected);
-        }
-
-        [Theory]
-        [CommonAutoData]
         public void Process_WithSinglePrice_ExpectedResult(
             string internalOrgId,
             CallOffId callOffId,
@@ -91,6 +66,40 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Routing.Providers
 
             result.ActionName.Should().Be(Constants.Actions.EditServiceRecipients);
             result.ControllerName.Should().Be(Constants.Controllers.ServiceRecipients);
+            result.RouteValues.Should().BeEquivalentTo(expected);
+        }
+
+        [Theory]
+        [CommonAutoData]
+        public void Process_WithSinglePrice_FromTaskList_ExpectedResult(
+            string internalOrgId,
+            CallOffId callOffId,
+            Order order,
+            ConfirmPriceBackLinkProvider provider)
+        {
+            order.OrderItems.ToList().ForEach(x => x.CatalogueItem.CatalogueItemType = CatalogueItemType.AdditionalService);
+
+            var solution = order.OrderItems.First();
+
+            solution.CatalogueItem.CatalogueItemType = CatalogueItemType.Solution;
+            solution.CatalogueItem.CataloguePrices = new List<CataloguePrice>
+            {
+                solution.CatalogueItem.CataloguePrices.First(),
+            };
+
+            var result = provider.Process(order, new RouteValues(internalOrgId, callOffId, solution.CatalogueItemId)
+            {
+                Source = RoutingSource.TaskList,
+            });
+
+            var expected = new
+            {
+                InternalOrgId = internalOrgId,
+                CallOffId = callOffId,
+            };
+
+            result.ActionName.Should().Be(Constants.Actions.TaskList);
+            result.ControllerName.Should().Be(Constants.Controllers.TaskList);
             result.RouteValues.Should().BeEquivalentTo(expected);
         }
 

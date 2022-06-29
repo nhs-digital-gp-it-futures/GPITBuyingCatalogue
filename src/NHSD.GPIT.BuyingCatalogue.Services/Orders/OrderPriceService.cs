@@ -19,40 +19,6 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
             this.dbContext = dbContext ?? throw new ArgumentNullException(nameof(dbContext));
         }
 
-        public async Task AddPrice(int orderId, CataloguePrice price, List<OrderPricingTierDto> agreedPrices)
-        {
-            if (price == null)
-            {
-                throw new ArgumentNullException(nameof(price));
-            }
-
-            if (agreedPrices == null)
-            {
-                throw new ArgumentNullException(nameof(agreedPrices));
-            }
-
-            var orderItem = await dbContext.OrderItems
-                .SingleOrDefaultAsync(x => x.OrderId == orderId
-                    && x.CatalogueItemId == price.CatalogueItemId);
-
-            if (orderItem != null)
-            {
-                var orderItemPrice = new OrderItemPrice(orderItem, price);
-
-                foreach (var agreedPrice in agreedPrices)
-                {
-                    var tier = orderItemPrice.OrderItemPriceTiers
-                        .Single(x => x.LowerRange == agreedPrice.LowerRange && x.UpperRange == agreedPrice.UpperRange);
-
-                    tier.Price = agreedPrice.Price;
-                }
-
-                dbContext.OrderItemPrices.Add(orderItemPrice);
-
-                await dbContext.SaveChangesAsync();
-            }
-        }
-
         public async Task UpdatePrice(int orderId, CatalogueItemId catalogueItemId, List<OrderPricingTierDto> agreedPrices)
         {
             if (agreedPrices == null)
@@ -82,12 +48,54 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
                     }
 
                     tier.Price = agreedPrice.Price;
-
-                    dbContext.OrderItemPriceTiers.Update(tier);
                 }
 
                 await dbContext.SaveChangesAsync();
             }
+        }
+
+        public async Task UpsertPrice(int orderId, CataloguePrice price, List<OrderPricingTierDto> agreedPrices)
+        {
+            if (price == null)
+            {
+                throw new ArgumentNullException(nameof(price));
+            }
+
+            if (agreedPrices == null)
+            {
+                throw new ArgumentNullException(nameof(agreedPrices));
+            }
+
+            var orderItem = await dbContext.OrderItems
+                .Include(x => x.OrderItemPrice)
+                .ThenInclude(x => x.OrderItemPriceTiers)
+                .SingleOrDefaultAsync(x => x.OrderId == orderId
+                    && x.CatalogueItemId == price.CatalogueItemId);
+
+            if (orderItem == null)
+            {
+                return;
+            }
+
+            if (orderItem.OrderItemPrice != null)
+            {
+                dbContext.OrderItemPrices.Remove(orderItem.OrderItemPrice);
+                dbContext.OrderItemPriceTiers.RemoveRange(orderItem.OrderItemPrice.OrderItemPriceTiers);
+            }
+
+            orderItem.OrderItemPrice = new OrderItemPrice(orderItem, price);
+
+            foreach (var agreedPrice in agreedPrices)
+            {
+                var tier = orderItem.OrderItemPrice
+                    .OrderItemPriceTiers
+                    .Single(x => x.LowerRange == agreedPrice.LowerRange
+                        && x.UpperRange == agreedPrice.UpperRange);
+
+                tier.Price = agreedPrice.Price;
+            }
+
+            await dbContext.SaveChangesAsync();
         }
     }
 }

@@ -49,7 +49,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering.SolutionSelection.Ta
                 CatalogueItemId = new CatalogueItemId(99998, "S-997"),
                 ServiceRecipientsAction = nameof(ServiceRecipientsController.EditServiceRecipients),
                 PriceLinkActive = true,
-                PriceAction = nameof(PricesController.EditPrice),
+                PriceAction = nameof(PricesController.SelectPrice),
                 QuantityLinkActive = true,
                 QuantityAction = nameof(QuantityController.SelectServiceRecipientQuantity),
             },

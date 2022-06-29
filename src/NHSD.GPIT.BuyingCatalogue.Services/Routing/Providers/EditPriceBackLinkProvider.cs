@@ -8,9 +8,34 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Routing.Providers
     {
         public RoutingResult Process(Order order, RouteValues routeValues)
         {
-            if (routeValues == null)
+            if (order == null)
+            {
+                throw new ArgumentNullException(nameof(order));
+            }
+
+            if (routeValues?.CatalogueItemId == null)
             {
                 throw new ArgumentNullException(nameof(routeValues));
+            }
+
+            var orderItem = order.OrderItem(routeValues.CatalogueItemId.Value);
+            var numberOfPrices = orderItem?.CatalogueItem?.CataloguePrices?.Count ?? 0;
+
+            if (numberOfPrices > 1)
+            {
+                return new RoutingResult
+                {
+                    ActionName = Constants.Actions.SelectPrice,
+                    ControllerName = Constants.Controllers.Prices,
+                    RouteValues = new
+                    {
+                        routeValues.CallOffId,
+                        routeValues.InternalOrgId,
+                        routeValues.CatalogueItemId,
+                        selectedPriceId = orderItem?.OrderItemPrice?.CataloguePriceId,
+                        routeValues.Source,
+                    },
+                };
             }
 
             if (routeValues.Source == RoutingSource.TaskList)

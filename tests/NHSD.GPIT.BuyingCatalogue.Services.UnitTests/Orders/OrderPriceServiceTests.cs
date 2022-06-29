@@ -32,27 +32,27 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Orders
 
         [Theory]
         [InMemoryDbAutoData]
-        public static void AddPrice_RecipientIsNull_ThrowsException(OrderPriceService service)
+        public static void UpsertPrice_RecipientIsNull_ThrowsException(OrderPriceService service)
         {
             FluentActions
-                .Awaiting(() => service.AddPrice(0, null, new List<OrderPricingTierDto>()))
+                .Awaiting(() => service.UpsertPrice(0, null, new List<OrderPricingTierDto>()))
                 .Should().ThrowAsync<ArgumentNullException>()
                 .WithParameterName("price");
         }
 
         [Theory]
         [InMemoryDbAutoData]
-        public static void AddPrice_AgreedPricesIsNull_ThrowsException(CataloguePrice price, OrderPriceService service)
+        public static void UpsertPrice_AgreedPricesIsNull_ThrowsException(CataloguePrice price, OrderPriceService service)
         {
             FluentActions
-                .Awaiting(() => service.AddPrice(0, price, null))
+                .Awaiting(() => service.UpsertPrice(0, price, null))
                 .Should().ThrowAsync<ArgumentNullException>()
                 .WithParameterName("agreedPrices");
         }
 
         [Theory]
         [InMemoryDbAutoData]
-        public static async Task AddPrice_OrderItemNotInDatabase_NoActionTaken(
+        public static async Task UpsertPrice_OrderItemNotInDatabase_NoActionTaken(
             [Frozen] BuyingCatalogueDbContext context,
             Order order,
             CataloguePrice price,
@@ -61,7 +61,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Orders
             context.Orders.Add(order);
             await context.SaveChangesAsync();
 
-            await service.AddPrice(order.Id, price, new List<OrderPricingTierDto>());
+            await service.UpsertPrice(order.Id, price, new List<OrderPricingTierDto>());
 
             var actual = context.OrderItemPrices
                 .FirstOrDefault(x => x.OrderId == order.Id
@@ -72,7 +72,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Orders
 
         [Theory]
         [InMemoryDbAutoData]
-        public static async Task AddPrice_OrderItemInDatabase_AddsPrice(
+        public static async Task UpsertPrice_OrderItemInDatabase_AddsPrice(
             [Frozen] BuyingCatalogueDbContext context,
             Order order,
             OrderPriceService service)
@@ -86,7 +86,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Orders
 
             var price = orderItem.CatalogueItem.CataloguePrices.First();
 
-            await service.AddPrice(order.Id, price, new List<OrderPricingTierDto>());
+            await service.UpsertPrice(order.Id, price, new List<OrderPricingTierDto>());
 
             var actual = context.OrderItemPrices
                 .FirstOrDefault(x => x.OrderId == order.Id
@@ -95,6 +95,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Orders
             actual.Should().NotBeNull();
             actual!.OrderId.Should().Be(order.Id);
             actual.CatalogueItemId.Should().Be(price.CatalogueItemId);
+            actual.CataloguePriceId.Should().Be(price.CataloguePriceId);
             actual.CataloguePriceCalculationType.Should().Be(price.CataloguePriceCalculationType);
             actual.CataloguePriceType.Should().Be(price.CataloguePriceType);
             actual.CurrencyCode.Should().Be(price.CurrencyCode);
@@ -114,7 +115,56 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Orders
 
         [Theory]
         [InMemoryDbAutoData]
-        public static async Task AddPrice_WithAgreedPrices_OrderItemInDatabase_AddsPrice(
+        public static async Task UpsertPrice_OrderItemInDatabase_WithExistingPrice_RemovesExistingPriceAndTiers(
+            [Frozen] BuyingCatalogueDbContext context,
+            Order order,
+            OrderPriceService service)
+        {
+            var orderItem = order.OrderItems.First();
+
+            context.Orders.Add(order);
+            await context.SaveChangesAsync();
+
+            var existingPrice = context.OrderItemPrices
+                .FirstOrDefault(x => x.OrderId == order.Id
+                    && x.CatalogueItemId == orderItem.CatalogueItemId);
+
+            existingPrice.Should().NotBeNull();
+
+            var price = orderItem.CatalogueItem.CataloguePrices.First();
+
+            await service.UpsertPrice(order.Id, price, new List<OrderPricingTierDto>());
+
+            var actual = context.OrderItemPrices
+                .FirstOrDefault(x => x.OrderId == order.Id
+                    && x.CatalogueItemId == orderItem.CatalogueItemId);
+
+            actual.Should().NotBeNull();
+            actual.Should().NotBe(existingPrice);
+
+            actual!.OrderId.Should().Be(order.Id);
+            actual.CatalogueItemId.Should().Be(price.CatalogueItemId);
+            actual.CataloguePriceId.Should().Be(price.CataloguePriceId);
+            actual.CataloguePriceCalculationType.Should().Be(price.CataloguePriceCalculationType);
+            actual.CataloguePriceType.Should().Be(price.CataloguePriceType);
+            actual.CurrencyCode.Should().Be(price.CurrencyCode);
+            actual.Description.Should().Be(price.PricingUnit.Description);
+            actual.EstimationPeriod.Should().Be(price.TimeUnit);
+            actual.ProvisioningType.Should().Be(price.ProvisioningType);
+            actual.RangeDescription.Should().Be(price.PricingUnit.RangeDescription);
+
+            foreach (var tier in actual.OrderItemPriceTiers)
+            {
+                var pricingTier = price.CataloguePriceTiers.Single(x => x.LowerRange == tier.LowerRange && x.UpperRange == tier.UpperRange);
+
+                tier.ListPrice.Should().Be(pricingTier.Price);
+                tier.Price.Should().Be(pricingTier.Price);
+            }
+        }
+
+        [Theory]
+        [InMemoryDbAutoData]
+        public static async Task UpsertPrice_WithAgreedPrices_OrderItemInDatabase_AddsPrice(
             [Frozen] BuyingCatalogueDbContext context,
             Order order,
             OrderPriceService service)
@@ -137,7 +187,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Orders
                 })
                 .ToList();
 
-            await service.AddPrice(order.Id, price, agreedPrices);
+            await service.UpsertPrice(order.Id, price, agreedPrices);
 
             var actual = context.OrderItemPrices
                 .FirstOrDefault(x => x.OrderId == order.Id

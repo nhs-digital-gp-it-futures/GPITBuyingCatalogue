@@ -15,7 +15,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.SolutionSelection.
         {
         }
 
-        public ConfirmPriceModel(CatalogueItem item, int priceId)
+        public ConfirmPriceModel(CatalogueItem item, int priceId, OrderItem orderItem)
         {
             if (item == null)
             {
@@ -24,19 +24,11 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.SolutionSelection.
 
             var price = item.CataloguePrices.Single(x => x.CataloguePriceId == priceId);
 
-            Tiers = price.CataloguePriceTiers
-                .OrderBy(x => x.LowerRange)
-                .Select(x => new PricingTierModel
-                {
-                    Id = x.Id,
-                    ListPrice = x.Price,
-                    AgreedPrice = $"{x.Price:#,##0.00##}",
-                    Description = x.GetRangeDescription(),
-                    LowerRange = x.LowerRange,
-                    UpperRange = x.UpperRange,
-                })
-                .ToArray();
+            var existingPrice = orderItem?.OrderItemPrice?.CataloguePriceId == priceId
+                ? orderItem.OrderItemPrice
+                : null;
 
+            Tiers = GetTiers(price, existingPrice);
             PriceType = price.CataloguePriceType;
             CalculationType = price.CataloguePriceCalculationType;
             Basis = price.ToPriceUnitString();
@@ -54,19 +46,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.SolutionSelection.
 
             var price = item.OrderItemPrice;
 
-            Tiers = price.OrderItemPriceTiers
-                .OrderBy(x => x.LowerRange)
-                .Select(x => new PricingTierModel
-                {
-                    Id = x.Id,
-                    ListPrice = x.ListPrice,
-                    AgreedPrice = $"{x.Price:#,##0.00##}",
-                    Description = x.GetRangeDescription(),
-                    LowerRange = x.LowerRange,
-                    UpperRange = x.UpperRange,
-                })
-                .ToArray();
-
+            Tiers = GetTiers(price);
             PriceType = price.CataloguePriceType;
             CalculationType = price.CataloguePriceCalculationType;
             Basis = price.ToPriceUnitString();
@@ -94,5 +74,47 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.SolutionSelection.
         public List<OrderPricingTierDto> AgreedPrices => Tiers
             .Select(x => x.AgreedPriceDto)
             .ToList();
+
+        private static PricingTierModel[] GetTiers(CataloguePrice price, OrderItemPrice existingPrice)
+        {
+            return price.CataloguePriceTiers
+                .OrderBy(x => x.LowerRange)
+                .Select(x => new PricingTierModel
+                {
+                    Id = x.Id,
+                    ListPrice = x.Price,
+                    AgreedPrice = AgreedPrice(x, existingPrice),
+                    Description = x.GetRangeDescription(),
+                    LowerRange = x.LowerRange,
+                    UpperRange = x.UpperRange,
+                })
+                .ToArray();
+        }
+
+        private static PricingTierModel[] GetTiers(OrderItemPrice price)
+        {
+            return price.OrderItemPriceTiers
+                .OrderBy(x => x.LowerRange)
+                .Select(x => new PricingTierModel
+                {
+                    Id = x.Id,
+                    ListPrice = x.ListPrice,
+                    AgreedPrice = $"{x.Price:#,###,##0.00##}",
+                    Description = x.GetRangeDescription(),
+                    LowerRange = x.LowerRange,
+                    UpperRange = x.UpperRange,
+                })
+                .ToArray();
+        }
+
+        private static string AgreedPrice(CataloguePriceTier tier, OrderItemPrice existingPrice)
+        {
+            var existingTier = existingPrice?.OrderItemPriceTiers?
+                .FirstOrDefault(x => x.LowerRange == tier.LowerRange && x.UpperRange == tier.UpperRange);
+
+            return existingTier == null
+                ? $"{tier.Price:#,###,##0.00##}"
+                : $"{existingTier.Price:#,###,##0.00##}";
+        }
     }
 }
