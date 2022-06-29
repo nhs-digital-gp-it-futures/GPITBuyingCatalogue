@@ -86,7 +86,7 @@
             @if (Model.Order.CommencementDate.HasValue && Model.Order.MaximumTerm.HasValue)
             {
                 <nhs-summary-list-row label-text="End date" data-test-id="end-date-summary">
-                    @Model.Order.CommencementDate?.AddMonths(Model.Order.MaximumTerm!.Value).ToString("dd MMMM yyyy", System.Globalization.CultureInfo.InvariantCulture)
+                    @Model.Order.CommencementDate?.AddMonths(Model.Order.MaximumTerm!.Value).AddDays(-1).ToString("dd MMMM yyyy", System.Globalization.CultureInfo.InvariantCulture)
                 </nhs-summary-list-row>
             }
         </nhs-summary-list>
@@ -126,16 +126,16 @@
             <br/>
             <nhs-summary-list>
                 <nhs-summary-list-row label-text="Total one-off cost:" data-test-id="one-off-cost-summary">
-                    £@((oneOffOrderItems?.Sum(orderItem => orderItem.OrderItemPrice.CalculateTotalCost(orderItem.GetQuantity())) ?? 0M).ToString("N2"))
+                    £@((oneOffOrderItems?.Sum(orderItem => orderItem.OrderItemPrice.CalculateTotalCost(orderItem.TotalQuantity)) ?? 0M).ToString("N2"))
                 </nhs-summary-list-row>
                 <nhs-summary-list-row label-text="Total monthly cost:" data-test-id="monthly-cost-summary">
-                    £@((recurringOrderItems?.Sum(orderItem => orderItem.OrderItemPrice.CalculateCostPerMonth(orderItem.GetQuantity())) ?? 0M).ToString("N2"))
+                    £@((recurringOrderItems?.Sum(orderItem => orderItem.OrderItemPrice.CalculateCostPerMonth(orderItem.TotalQuantity)) ?? 0M).ToString("N2"))
                 </nhs-summary-list-row>
                 <nhs-summary-list-row label-text="Total cost for one year:" data-test-id="one-year-cost-summary">
-                    £@((recurringOrderItems?.Sum(orderItem => orderItem.OrderItemPrice.CalculateCostPerYear(orderItem.GetQuantity())) ?? 0M).ToString("N2"))
+                    £@((recurringOrderItems?.Sum(orderItem => orderItem.OrderItemPrice.CalculateCostPerYear(orderItem.TotalQuantity)) ?? 0M).ToString("N2"))
                 </nhs-summary-list-row>
                 <nhs-summary-list-row label-text="@(Model.Order.MaximumTerm.HasValue ? $"Total cost of contract ({Model.Order.MaximumTerm} months):" : "Total cost of contract:")" data-test-id="total-cost-summary">
-                    £@((recurringOrderItems?.Sum(orderItem => orderItem.OrderItemPrice.CalculateTotalCostForContractLength(orderItem.GetQuantity(), Model.Order.MaximumTerm.GetValueOrDefault())) ?? 0M).ToString("N2"))
+                    £@((recurringOrderItems?.Sum(orderItem => orderItem.OrderItemPrice.CalculateTotalCostForContractLength(orderItem.TotalQuantity, Model.Order.MaximumTerm.GetValueOrDefault())) ?? 0M).ToString("N2"))
                 </nhs-summary-list-row>
             </nhs-summary-list>
         }

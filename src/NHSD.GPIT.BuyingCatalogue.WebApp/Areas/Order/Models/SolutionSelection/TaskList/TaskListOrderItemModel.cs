@@ -1,4 +1,5 @@
 ﻿using System.Linq;
+using NHSD.GPIT.BuyingCatalogue.EntityFramework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Enums;
 
@@ -68,19 +69,29 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.SolutionSelection.
                 return TaskProgress.CannotStart;
             }
 
-            if (orderItem?.Quantity != null)
+            if (orderItem?.OrderItemPrice == null)
             {
-                return TaskProgress.Completed;
+                return TaskProgress.CannotStart;
             }
 
-            if (orderItem?.OrderItemRecipients?.All(x => x.Quantity != null) ?? false)
+            if (orderItem.OrderItemPrice.ProvisioningType.IsPerServiceRecipient())
             {
-                return TaskProgress.Completed;
-            }
+                if (orderItem.OrderItemRecipients?.All(x => x.Quantity != null) ?? false)
+                {
+                    return TaskProgress.Completed;
+                }
 
-            if (orderItem?.OrderItemRecipients?.Any(x => x.Quantity != null) ?? false)
+                if (orderItem.OrderItemRecipients?.Any(x => x.Quantity != null) ?? false)
+                {
+                    return TaskProgress.InProgress;
+                }
+            }
+            else
             {
-                return TaskProgress.InProgress;
+                if (orderItem.Quantity != null)
+                {
+                    return TaskProgress.Completed;
+                }
             }
 
             return TaskProgress.NotStarted;

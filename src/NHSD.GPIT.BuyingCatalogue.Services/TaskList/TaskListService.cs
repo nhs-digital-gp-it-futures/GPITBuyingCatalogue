@@ -3,7 +3,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework;
-using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
+using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Enums;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Models.TaskList;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.TaskList;
@@ -84,25 +84,37 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.TaskList
             return model;
         }
 
-        public async Task<OrderTaskListCompletedSections> GetOrderSectionFlags(int orderId) =>
-            await dbContext.Orders.AsNoTracking()
-                 .Where(o => o.Id == orderId)
-                 .Select(o => new OrderTaskListCompletedSections
-                 {
-                     OrderContactDetailsCompleted = o.OrderingPartyContact != null,
-                     SupplierSelected = o.Supplier != null,
-                     SupplierContactSelected = o.SupplierContact != null,
-                     TimeScalesCompleted = o.CommencementDate != null,
-                     SolutionsSelected = (o.AssociatedServicesOnly && o.SolutionId != null) || (!o.AssociatedServicesOnly && o.OrderItems.Any()),
-                     SolutionsCompleted = o.OrderItems.Any() && o.OrderItems.All(
-                         oi => oi.CatalogueItem != null
-                         && oi.OrderItemPrice != null
-                         && oi.OrderItemRecipients != null
-                         && oi.OrderItemRecipients.All(oir => oir.Quantity > 0)),
-                     FundingInProgress = o.OrderItems.Any(oi => oi.OrderItemFunding != null),
-                     FundingCompleted = o.OrderItems.All(oi => oi.OrderItemFunding != null),
-                     OrderCompleted = o.Completed != null,
-                 }).SingleOrDefaultAsync();
+        public async Task<OrderTaskListCompletedSections> GetOrderSectionFlags(int orderId)
+        {
+            var order = await dbContext.Orders
+                .Include(x => x.OrderItems).ThenInclude(x => x.CatalogueItem).AsSplitQuery()
+                .Include(x => x.OrderItems).ThenInclude(x => x.OrderItemFunding).AsSplitQuery()
+                .Include(x => x.OrderItems).ThenInclude(x => x.OrderItemPrice).AsSplitQuery()
+                .Include(x => x.OrderItems).ThenInclude(x => x.OrderItemRecipients).AsSplitQuery()
+                .Include(x => x.OrderingPartyContact)
+                .Include(x => x.Supplier)
+                .Include(x => x.SupplierContact)
+                .AsNoTracking()
+                .SingleOrDefaultAsync(x => x.Id == orderId);
+
+            if (order == null)
+            {
+                return null;
+            }
+
+            return new OrderTaskListCompletedSections
+            {
+                OrderContactDetailsCompleted = order.OrderingPartyContact != null,
+                SupplierSelected = order.Supplier != null,
+                SupplierContactSelected = order.SupplierContact != null,
+                TimeScalesCompleted = order.CommencementDate != null,
+                SolutionsSelected = SolutionsSelected(order),
+                SolutionsCompleted = SolutionsCompleted(order),
+                FundingInProgress = order.OrderItems.Any(oi => oi.OrderItemFunding != null),
+                FundingCompleted = order.OrderItems.All(oi => oi.OrderItemFunding != null),
+                OrderCompleted = order.Completed != null,
+            };
+        }
 
         private static TaskListOrderSections SetOrderSectionFlags(OrderTaskListCompletedSections orderStatuses)
         {
@@ -136,6 +148,31 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.TaskList
                 completedSections |= TaskListOrderSections.FundingSource;
 
             return completedSections;
+        }
+
+        private static bool SolutionsSelected(Order order)
+        {
+            if (order.AssociatedServicesOnly)
+            {
+                return order.SolutionId != null;
+            }
+
+            // TODO: Should one of the items be a solution?
+            return order.OrderItems.Any();
+        }
+
+        private static bool SolutionsCompleted(Order order)
+        {
+            if (!order.OrderItems.Any())
+            {
+                return false;
+            }
+
+            return order.OrderItems.All(x =>
+                x.CatalogueItem != null
+                && x.OrderItemPrice != null
+                && (x.OrderItemRecipients?.Any() ?? false)
+                && x.AllQuantitiesEntered);
         }
     }
 }

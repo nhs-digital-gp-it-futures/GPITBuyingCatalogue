@@ -8,8 +8,8 @@
 @{
     var itemType = Model.OrderItem.CatalogueItem.CatalogueItemType.DisplayName();
     var orderItemCostBasis = Model.OrderItem.OrderItemPrice?.BillingPeriod?.Description() ?? string.Empty;
-    var hasServiceRecipientQuantities = Model.OrderItem.OrderItemRecipients?.Any(x => x.Quantity.HasValue) ?? false;
-    var tierCosts = Model.OrderItem.OrderItemPrice?.CalculateTotalCostPerTier(Model.OrderItem.GetQuantity()) ?? new List<PriceCalculationModel>();
+    var hasServiceRecipientQuantities = Model.OrderItem.OrderItemPrice?.ProvisioningType.IsPerServiceRecipient() ?? false;
+    var tierCosts = Model.OrderItem.OrderItemPrice?.CalculateTotalCostPerTier(Model.OrderItem.TotalQuantity) ?? new List<PriceCalculationModel>();
     var tiers = Model.OrderItem.OrderItemPrice?.OrderItemPriceTiers?.OrderBy(x => x.LowerRange).ToList() ?? new List<OrderItemPriceTier>();
 }
 

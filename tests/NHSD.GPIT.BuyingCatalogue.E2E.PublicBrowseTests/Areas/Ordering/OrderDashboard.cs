@@ -94,24 +94,43 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering
         }
 
         [Fact]
-        public void OrderDashboard_ClickSolutionSelection_SectionCompleted_ExpectedResult()
+        public void OrderDashboard_ClickSolutionSelection_SectionInProgress_ExpectedResult()
         {
-            var completedSectionOrder = new CallOffId(90013, 1);
+            var callOffId = new CallOffId(90013, 1);
 
-            var completedSectionParameters = new Dictionary<string, string>()
+            var parameters = new Dictionary<string, string>
             {
                 { nameof(InternalOrgId), InternalOrgId },
-                { nameof(CallOffId), completedSectionOrder.ToString() },
+                { nameof(CallOffId), $"{callOffId}" },
             };
 
-            NavigateToUrl(typeof(OrderController), nameof(OrderController.Order), completedSectionParameters);
+            NavigateToUrl(typeof(OrderController), nameof(OrderController.Order), parameters);
+
+            CommonActions.ClickLinkElement(Objects.Ordering.OrderDashboard.SolutionSelectionLink);
+
+            CommonActions.PageLoadedCorrectGetIndex(
+                typeof(TaskListController),
+                nameof(TaskListController.TaskList)).Should().BeTrue();
+        }
+
+        [Fact]
+        public void OrderDashboard_ClickSolutionSelection_SectionCompleted_ExpectedResult()
+        {
+            var callOffId = new CallOffId(90009, 1);
+
+            var parameters = new Dictionary<string, string>
+            {
+                { nameof(InternalOrgId), InternalOrgId },
+                { nameof(CallOffId), $"{callOffId}" },
+            };
+
+            NavigateToUrl(typeof(OrderController), nameof(OrderController.Order), parameters);
 
             CommonActions.ClickLinkElement(Objects.Ordering.OrderDashboard.SolutionSelectionLink);
 
             CommonActions.PageLoadedCorrectGetIndex(
                 typeof(ReviewSolutionsController),
-                nameof(ReviewSolutionsController.ReviewSolutions))
-                .Should().BeTrue();
+                nameof(ReviewSolutionsController.ReviewSolutions)).Should().BeTrue();
         }
     }
 }
