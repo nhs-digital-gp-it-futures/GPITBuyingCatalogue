@@ -55,6 +55,11 @@
             break-inside: avoid;
         }
 
+        table {
+            -webkit-break-inside: auto;
+            break-inside: auto;
+        }
+
         td, thead th {
             border: 0;
             padding-top: 4px;
@@ -64,6 +69,14 @@
 
         th {
             white-space: nowrap;
+        }
+
+        tr {
+            -ms-break-after: auto;
+            -webkit-break-after: auto;
+            -webkit-break-inside: avoid;
+            break-after: auto;
+            break-inside: avoid;
         }
 
         td:last-child {
