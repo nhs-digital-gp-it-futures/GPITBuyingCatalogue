@@ -115,16 +115,16 @@
                 label-hint="For example, per consultation, per practice, per licence."
                 asp-for="UnitDescription" />
 
+			<nhs-input
+                label-text="Units"
+                label-hint="Pluralised version of your unit. For example, patients, users, licences."
+                asp-for="RangeDefinition" />
+
             <nhs-textarea
                 label-text="Unit definition (optional)"
                 label-hint="For example, if the unit is per day, between what hours?"
                 asp-for="UnitDefinition"
                 character-count="false" />
-
-            <nhs-input
-                label-text="Range definition"
-                label-hint="For example, patients, users, licences."
-                asp-for="RangeDefinition" />
 
             <nhs-fieldset-form-label label-text="Publication status" size="Medium" asp-for="SelectedPublicationStatus">
                 <nhs-radio-buttons
