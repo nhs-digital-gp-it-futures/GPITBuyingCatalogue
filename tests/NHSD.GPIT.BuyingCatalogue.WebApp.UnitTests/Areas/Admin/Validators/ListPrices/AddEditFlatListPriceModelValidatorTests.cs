@@ -23,6 +23,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators.List
             model.UnitDescription = null;
             model.SelectedPublicationStatus = null;
             model.SelectedCalculationType = null;
+            model.RangeDefinition = null;
 
             var result = validator.TestValidate(model);
 
@@ -40,6 +41,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators.List
 
             result.ShouldHaveValidationErrorFor(m => m.SelectedCalculationType)
                 .WithErrorMessage(SharedListPriceValidationErrors.SelectedCalculationTypeError);
+
+            result.ShouldHaveValidationErrorFor(m => m.RangeDefinition)
+                .WithErrorMessage(SharedListPriceValidationErrors.UnitsError);
         }
 
         [Theory]
@@ -85,8 +89,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators.List
                 model.SelectedProvisioningType!.Value,
                 model.SelectedCalculationType!.Value,
                 model.Price!.Value,
-                model.UnitDescription,
-                model.RangeDefinition)).ReturnsAsync(true);
+                model.UnitDescription)).ReturnsAsync(true);
 
             var result = validator.TestValidate(model);
 
@@ -109,8 +112,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators.List
                 model.SelectedProvisioningType!.Value,
                 model.SelectedCalculationType!.Value,
                 model.Price!.Value,
-                model.UnitDescription,
-                model.RangeDefinition)).ReturnsAsync(false);
+                model.UnitDescription)).ReturnsAsync(false);
 
             var result = validator.TestValidate(model);
 
