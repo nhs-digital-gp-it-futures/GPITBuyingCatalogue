@@ -45,7 +45,7 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models
 
         public string ToPriceUnitString()
         {
-            return $"{Description} {EstimationPeriod?.Description() ?? string.Empty}".Trim();
+            return $"{Description} {BillingPeriod?.Description() ?? string.Empty}".Trim();
         }
     }
 }
