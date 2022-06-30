@@ -45,7 +45,7 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Configuration
 
             builder.Property(oip => oip.BillingPeriod)
                 .HasConversion<int>()
-                .HasColumnName("EstimationPeriodId");
+                .HasColumnName("BillingPeriodId");
 
             builder.Property(oipt => oipt.LastUpdated)
                 .IsRequired()
