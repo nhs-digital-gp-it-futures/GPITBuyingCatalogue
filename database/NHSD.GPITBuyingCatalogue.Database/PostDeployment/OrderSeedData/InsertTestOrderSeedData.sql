@@ -245,7 +245,7 @@ BEGIN
     INSERT INTO ordering.OrderItems (OrderId, CatalogueItemId, Created, LastUpdated)
     VALUES(@orderId, @CatalogueSolutionId, SYSDATETIME(), SYSDATETIME())
 
-    INSERT INTO ordering.OrderItemPrices (OrderId, CatalogueItemId, CataloguePriceId, EstimationPeriodId, ProvisioningTypeId,
+    INSERT INTO ordering.OrderItemPrices (OrderId, CatalogueItemId, CataloguePriceId, BillingPeriodId, ProvisioningTypeId,
         CataloguePriceTypeId, CataloguePriceCalculationTypeId, CurrencyCode, Description, RangeDescription)
     SELECT
         @orderId,
@@ -287,7 +287,7 @@ BEGIN
     INSERT INTO ordering.OrderItems (OrderId, CatalogueItemId, Created, LastUpdated)
     VALUES(@orderId, @AdditionalServiceId, SYSDATETIME(), SYSDATETIME());
 
-    INSERT INTO ordering.OrderItemPrices (OrderId, CatalogueItemId, CataloguePriceId, EstimationPeriodId, ProvisioningTypeId,
+    INSERT INTO ordering.OrderItemPrices (OrderId, CatalogueItemId, CataloguePriceId, BillingPeriodId, ProvisioningTypeId,
         CataloguePriceTypeId, CataloguePriceCalculationTypeId, CurrencyCode, Description, RangeDescription)
     SELECT
         @orderId,
