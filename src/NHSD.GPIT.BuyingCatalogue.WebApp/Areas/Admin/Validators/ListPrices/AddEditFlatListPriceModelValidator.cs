@@ -29,7 +29,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Validators.ListPrices
 
             RuleFor(m => m.RangeDefinition)
                 .NotEmpty()
-                .WithMessage(SharedListPriceValidationErrors.RangeDefinitionError);
+                .WithMessage(SharedListPriceValidationErrors.UnitsError);
 
             RuleFor(m => m.SelectedPublicationStatus)
                 .NotNull()
@@ -67,7 +67,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Validators.ListPrices
                 model.SelectedProvisioningType!.Value,
                 model.SelectedCalculationType!.Value,
                 model.Price!.Value,
-                model.UnitDescription,
-                model.RangeDefinition).GetAwaiter().GetResult();
+                model.UnitDescription).GetAwaiter().GetResult();
     }
 }

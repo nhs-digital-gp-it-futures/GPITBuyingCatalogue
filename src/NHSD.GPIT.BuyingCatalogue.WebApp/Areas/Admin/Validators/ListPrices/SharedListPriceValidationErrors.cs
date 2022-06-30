@@ -13,5 +13,6 @@
         internal const string DuplicateListPriceError = "A list price with these details already exists";
         internal const string QuantitiesCalculationError = "Select how quantities are calculated";
         internal const string RangeDefinitionError = "Enter a range definition";
+        internal const string UnitsError = "Enter a pluralised unit";
     }
 }
