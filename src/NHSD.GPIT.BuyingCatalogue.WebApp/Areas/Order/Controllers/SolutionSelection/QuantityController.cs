@@ -5,6 +5,7 @@ using LinqKit;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
+using NHSD.GPIT.BuyingCatalogue.EntityFramework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Orders;
@@ -202,8 +203,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers.SolutionSelec
         }
 
         private static bool ShouldUseServiceRecipientView(OrderItemPrice price) =>
-            (price.ProvisioningType is ProvisioningType.Patient or ProvisioningType.PerServiceRecipient
-                || price.CataloguePriceQuantityCalculationType == CataloguePriceQuantityCalculationType.PerServiceRecipient)
+            (price.ProvisioningType.IsPerServiceRecipient() || price.CataloguePriceQuantityCalculationType == CataloguePriceQuantityCalculationType.PerServiceRecipient)
             && price.CataloguePriceQuantityCalculationType != CataloguePriceQuantityCalculationType.PerSolutionOrService;
 
         private async Task SetPracticeSizes(SelectServiceRecipientQuantityModel model)

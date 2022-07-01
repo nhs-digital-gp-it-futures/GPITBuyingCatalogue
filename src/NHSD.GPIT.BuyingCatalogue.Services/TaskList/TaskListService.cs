@@ -87,13 +87,14 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.TaskList
         public async Task<OrderTaskListCompletedSections> GetOrderSectionFlags(int orderId)
         {
             var order = await dbContext.Orders
-                .Include(x => x.OrderItems).ThenInclude(x => x.CatalogueItem).AsSplitQuery()
-                .Include(x => x.OrderItems).ThenInclude(x => x.OrderItemFunding).AsSplitQuery()
-                .Include(x => x.OrderItems).ThenInclude(x => x.OrderItemPrice).AsSplitQuery()
-                .Include(x => x.OrderItems).ThenInclude(x => x.OrderItemRecipients).AsSplitQuery()
+                .Include(x => x.OrderItems).ThenInclude(x => x.CatalogueItem)
+                .Include(x => x.OrderItems).ThenInclude(x => x.OrderItemFunding)
+                .Include(x => x.OrderItems).ThenInclude(x => x.OrderItemPrice)
+                .Include(x => x.OrderItems).ThenInclude(x => x.OrderItemRecipients)
                 .Include(x => x.OrderingPartyContact)
                 .Include(x => x.Supplier)
                 .Include(x => x.SupplierContact)
+                .AsSplitQuery()
                 .AsNoTracking()
                 .SingleOrDefaultAsync(x => x.Id == orderId);
 
