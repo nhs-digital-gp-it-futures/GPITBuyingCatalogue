@@ -23,6 +23,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators.List
             model.UnitDescription = null;
             model.SelectedPublicationStatus = null;
             model.SelectedCalculationType = null;
+            model.RangeDefinition = null;
 
             var result = validator.TestValidate(model);
 
@@ -40,6 +41,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators.List
 
             result.ShouldHaveValidationErrorFor(m => m.SelectedCalculationType)
                 .WithErrorMessage(SharedListPriceValidationErrors.SelectedCalculationTypeError);
+
+            result.ShouldHaveValidationErrorFor(m => m.RangeDefinition)
+                .WithErrorMessage(SharedListPriceValidationErrors.UnitsError);
         }
 
         [Theory]

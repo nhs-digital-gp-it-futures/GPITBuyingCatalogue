@@ -27,6 +27,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Validators.ListPrices
                 .NotEmpty()
                 .WithMessage(SharedListPriceValidationErrors.UnitError);
 
+            RuleFor(m => m.RangeDefinition)
+                .NotEmpty()
+                .WithMessage(SharedListPriceValidationErrors.UnitsError);
+
             RuleFor(m => m.SelectedPublicationStatus)
                 .NotNull()
                 .WithMessage(SelectedPublicationStatusError);

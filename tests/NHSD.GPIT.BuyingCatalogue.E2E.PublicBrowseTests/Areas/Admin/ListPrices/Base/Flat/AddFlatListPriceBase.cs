@@ -98,6 +98,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.ListPrices.Base.Flat
             CommonActions.ElementShowingCorrectErrorMessage(ListPriceObjects.PublicationStatusInputError, "Error: Select a publication status").Should().BeTrue();
             CommonActions.ElementShowingCorrectErrorMessage(ListPriceObjects.UnitDescriptionInputError, "Enter a unit").Should().BeTrue();
             CommonActions.ElementShowingCorrectErrorMessage(ListPriceObjects.PriceInputError, "Enter a price").Should().BeTrue();
+            CommonActions.ElementShowingCorrectErrorMessage(ListPriceObjects.RangeDefinitionInputError, "Enter a pluralised unit").Should().BeTrue();
         }
 
         [Fact]
@@ -112,6 +113,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.ListPrices.Base.Flat
 
             CommonActions.ElementAddValue(ListPriceObjects.UnitDescriptionInput, price.PricingUnit.Description);
             CommonActions.ElementAddValue(ListPriceObjects.PriceInput, price.CataloguePriceTiers.First().Price.ToString());
+            CommonActions.ElementAddValue(ListPriceObjects.RangeDefinitionInput, price.PricingUnit.RangeDescription);
 
             CommonActions.ClickSave();
 
@@ -136,6 +138,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.ListPrices.Base.Flat
             CommonActions.ClickRadioButtonWithValue(CataloguePriceCalculationType.SingleFixed.ToString());
 
             TextGenerators.TextInputAddText(ListPriceObjects.UnitDescriptionInput, 100);
+            TextGenerators.TextInputAddText(ListPriceObjects.RangeDefinitionInput, 100);
             CommonActions.ElementAddValue(ListPriceObjects.PriceInput, "3.14");
 
             CommonActions.ClickSave();

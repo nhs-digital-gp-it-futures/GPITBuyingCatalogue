@@ -100,7 +100,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Orders
             actual.CataloguePriceType.Should().Be(price.CataloguePriceType);
             actual.CurrencyCode.Should().Be(price.CurrencyCode);
             actual.Description.Should().Be(price.PricingUnit.Description);
-            actual.EstimationPeriod.Should().Be(price.TimeUnit);
+            actual.BillingPeriod.Should().Be(price.TimeUnit);
             actual.ProvisioningType.Should().Be(price.ProvisioningType);
             actual.RangeDescription.Should().Be(price.PricingUnit.RangeDescription);
 
@@ -149,7 +149,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Orders
             actual.CataloguePriceType.Should().Be(price.CataloguePriceType);
             actual.CurrencyCode.Should().Be(price.CurrencyCode);
             actual.Description.Should().Be(price.PricingUnit.Description);
-            actual.EstimationPeriod.Should().Be(price.TimeUnit);
+            actual.BillingPeriod.Should().Be(price.TimeUnit);
             actual.ProvisioningType.Should().Be(price.ProvisioningType);
             actual.RangeDescription.Should().Be(price.PricingUnit.RangeDescription);
 
@@ -200,7 +200,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Orders
             actual.CataloguePriceType.Should().Be(price.CataloguePriceType);
             actual.CurrencyCode.Should().Be(price.CurrencyCode);
             actual.Description.Should().Be(price.PricingUnit.Description);
-            actual.EstimationPeriod.Should().Be(price.TimeUnit);
+            actual.BillingPeriod.Should().Be(price.TimeUnit);
             actual.ProvisioningType.Should().Be(price.ProvisioningType);
             actual.RangeDescription.Should().Be(price.PricingUnit.RangeDescription);
 

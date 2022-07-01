@@ -34,7 +34,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators.List
                 .WithErrorMessage(SharedListPriceValidationErrors.UnitError);
 
             result.ShouldHaveValidationErrorFor(m => m.RangeDefinition)
-                .WithErrorMessage(AddTieredListPriceModelValidator.RangeDefinitionError);
+                .WithErrorMessage(SharedListPriceValidationErrors.RangeDefinitionError);
         }
 
         [Theory]

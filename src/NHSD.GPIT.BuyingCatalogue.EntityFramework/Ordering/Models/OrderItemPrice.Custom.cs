@@ -23,8 +23,8 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models
             ProvisioningType = cataloguePrice.ProvisioningType;
             CataloguePriceType = cataloguePrice.CataloguePriceType;
             CataloguePriceCalculationType = cataloguePrice.CataloguePriceCalculationType;
+            BillingPeriod = cataloguePrice.TimeUnit;
             CataloguePriceQuantityCalculationType = cataloguePrice.CataloguePriceQuantityCalculationType;
-            EstimationPeriod = cataloguePrice.TimeUnit;
             CurrencyCode = cataloguePrice.CurrencyCode;
             Description = cataloguePrice.PricingUnit.Description;
             RangeDescription = cataloguePrice.PricingUnit.RangeDescription;
@@ -45,7 +45,7 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models
 
         public string ToPriceUnitString()
         {
-            return $"{Description} {EstimationPeriod?.Description() ?? string.Empty}".Trim();
+            return $"{Description} {BillingPeriod?.Description() ?? string.Empty}".Trim();
         }
     }
 }

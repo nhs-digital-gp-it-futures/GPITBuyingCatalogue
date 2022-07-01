@@ -1,4 +1,5 @@
 ﻿using System;
+using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Routing;
@@ -23,6 +24,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.SolutionSelection.
             ItemType = orderItem.CatalogueItem.CatalogueItemType.Name();
             Quantity = orderItem.Quantity.HasValue ? $"{orderItem.Quantity}" : string.Empty;
             QuantityDescription = orderItem.OrderItemPrice.RangeDescription;
+            ProvisioningType = orderItem.OrderItemPrice.ProvisioningType;
+            BillingPeriod = orderItem.OrderItemPrice.BillingPeriod;
         }
 
         public string ItemName { get; set; }
@@ -32,6 +35,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.SolutionSelection.
         public string Quantity { get; set; }
 
         public string QuantityDescription { get; set; }
+
+        public ProvisioningType ProvisioningType { get; set; }
+
+        public TimeUnit? BillingPeriod { get; set; }
 
         public RoutingSource? Source { get; set; }
     }

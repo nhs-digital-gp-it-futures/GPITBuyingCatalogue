@@ -340,5 +340,109 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Orders
 
             actual?.OrderItemFunding.Should().BeNull();
         }
+
+        [Theory]
+        [InMemoryDbAutoData]
+        public static async Task SetOrderItemEstimationPeriod_EstimationPeriodSetCorrectly_Patient(
+            Order order,
+            [Frozen] BuyingCatalogueDbContext context,
+            OrderItemService orderItemService)
+        {
+            var item = order.OrderItems.First();
+
+            var price = item.CatalogueItem.CataloguePrices.First();
+
+            price.ProvisioningType = ProvisioningType.Patient;
+
+            item.EstimationPeriod = null;
+
+            context.Orders.Add(order);
+
+            await context.SaveChangesAsync();
+
+            await orderItemService.SetOrderItemEstimationPeriod(order.CallOffId, order.OrderingParty.InternalIdentifier, item.CatalogueItemId, price);
+
+            var actual = context.OrderItems.FirstOrDefault(o => o.OrderId == item.OrderId && o.CatalogueItemId == item.CatalogueItemId);
+
+            actual.EstimationPeriod.Should().Be(TimeUnit.PerMonth);
+        }
+
+        [Theory]
+        [InMemoryDbAutoData]
+        public static async Task SetOrderItemEstimationPeriod_EstimationPeriodSetCorrectly_Declarative(
+            Order order,
+            [Frozen] BuyingCatalogueDbContext context,
+            OrderItemService orderItemService)
+        {
+            var item = order.OrderItems.First();
+
+            var price = item.CatalogueItem.CataloguePrices.First();
+
+            price.ProvisioningType = ProvisioningType.Declarative;
+
+            item.EstimationPeriod = null;
+
+            context.Orders.Add(order);
+
+            await context.SaveChangesAsync();
+
+            await orderItemService.SetOrderItemEstimationPeriod(order.CallOffId, order.OrderingParty.InternalIdentifier, item.CatalogueItemId, price);
+
+            var actual = context.OrderItems.FirstOrDefault(o => o.OrderId == item.OrderId && o.CatalogueItemId == item.CatalogueItemId);
+
+            actual.EstimationPeriod.Should().Be(TimeUnit.PerYear);
+        }
+
+        [Theory]
+        [InMemoryDbAutoData]
+        public static async Task SetOrderItemEstimationPeriod_EstimationPeriodSetCorrectly_PerServiceRecipient(
+            Order order,
+            [Frozen] BuyingCatalogueDbContext context,
+            OrderItemService orderItemService)
+        {
+            var item = order.OrderItems.First();
+
+            var price = item.CatalogueItem.CataloguePrices.First();
+
+            price.ProvisioningType = ProvisioningType.PerServiceRecipient;
+
+            item.EstimationPeriod = null;
+
+            context.Orders.Add(order);
+
+            await context.SaveChangesAsync();
+
+            await orderItemService.SetOrderItemEstimationPeriod(order.CallOffId, order.OrderingParty.InternalIdentifier, item.CatalogueItemId, price);
+
+            var actual = context.OrderItems.FirstOrDefault(o => o.OrderId == item.OrderId && o.CatalogueItemId == item.CatalogueItemId);
+
+            actual.EstimationPeriod.Should().Be(TimeUnit.PerYear);
+        }
+
+        [Theory]
+        [InMemoryDbAutoData]
+        public static async Task SetOrderItemEstimationPeriod_EstimationPeriodSetCorrectly_OnDemand(
+            Order order,
+            [Frozen] BuyingCatalogueDbContext context,
+            OrderItemService orderItemService)
+        {
+            var item = order.OrderItems.First();
+
+            var price = item.CatalogueItem.CataloguePrices.First();
+
+            price.ProvisioningType = ProvisioningType.OnDemand;
+
+            item.EstimationPeriod = null;
+
+            context.Orders.Add(order);
+
+            await context.SaveChangesAsync();
+
+            await orderItemService.SetOrderItemEstimationPeriod(order.CallOffId, order.OrderingParty.InternalIdentifier, item.CatalogueItemId, price);
+
+            var actual = context.OrderItems.FirstOrDefault(o => o.OrderId == item.OrderId && o.CatalogueItemId == item.CatalogueItemId);
+
+            actual.EstimationPeriod.Should().Be(price.BillingPeriod);
+        }
     }
 }

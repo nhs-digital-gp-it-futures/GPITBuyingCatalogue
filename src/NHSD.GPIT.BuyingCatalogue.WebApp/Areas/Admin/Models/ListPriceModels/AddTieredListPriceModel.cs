@@ -82,9 +82,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.ListPriceModels
 
         public CatalogueItemId? ServiceId { get; set; }
 
-        [StringLength(100)]
-        public string RangeDefinition { get; set; }
-
         public override PricingUnit GetPricingUnit()
             => new()
             {

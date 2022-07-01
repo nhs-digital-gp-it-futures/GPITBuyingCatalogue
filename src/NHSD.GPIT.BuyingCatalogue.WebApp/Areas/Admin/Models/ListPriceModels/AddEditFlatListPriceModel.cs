@@ -1,7 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
-using Humanizer;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Extensions;
@@ -29,6 +28,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.ListPriceModels
             CataloguePriceId = cataloguePrice.CataloguePriceId;
             UnitDescription = cataloguePrice.PricingUnit.Description;
             UnitDefinition = cataloguePrice.PricingUnit.Definition;
+            RangeDefinition = cataloguePrice.PricingUnit.RangeDescription;
 
             var flatTier = cataloguePrice.CataloguePriceTiers.First();
             Price = flatTier.Price;
@@ -99,6 +99,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.ListPriceModels
         [StringLength(1000)]
         public string UnitDefinition { get; set; }
 
+        [StringLength(100)]
+        public string RangeDefinition { get; set; }
+
         public PublicationStatus? SelectedPublicationStatus { get; set; }
 
         public string DeleteListPriceUrl { get; set; }
@@ -126,7 +129,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.ListPriceModels
             {
                 Description = UnitDescription,
                 Definition = UnitDefinition,
-                RangeDescription = UnitDescription.Replace("per ", string.Empty).Pluralize(false),
+                RangeDescription = RangeDefinition,
             };
 
         public TimeUnit? GetBillingPeriod()
