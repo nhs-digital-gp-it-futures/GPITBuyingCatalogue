@@ -1,6 +1,7 @@
 ﻿using System.Linq;
 using FluentAssertions;
 using LinqKit;
+using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Enums;
 using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.AutoFixtureCustomisations;
@@ -137,26 +138,30 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.Solution
 
         [Theory]
         [CommonAutoData]
-        public static void QuantityStatus_OrderItemQuantityEntered_ExpectedResult(
+        public static void QuantityStatus_PerServiceRecipientProvisioningType_OrderItemQuantityEntered_ExpectedResult(
             string internalOrgId,
             CallOffId callOffId,
             OrderItem orderItem)
         {
+            orderItem.OrderItemPrice.ProvisioningType = ProvisioningType.PerServiceRecipient;
+
             orderItem.Quantity = 1;
             orderItem.OrderItemRecipients.ForEach(x => x.Quantity = null);
 
             var model = new TaskListOrderItemModel(internalOrgId, callOffId, orderItem);
 
-            model.QuantityStatus.Should().Be(TaskProgress.Completed);
+            model.QuantityStatus.Should().Be(TaskProgress.NotStarted);
         }
 
         [Theory]
         [CommonAutoData]
-        public static void QuantityStatus_OrderItemRecipientQuantitiesEntered_ExpectedResult(
+        public static void QuantityStatus_PerServiceRecipientProvisioningType_OrderItemRecipientQuantitiesEntered_ExpectedResult(
             string internalOrgId,
             CallOffId callOffId,
             OrderItem orderItem)
         {
+            orderItem.OrderItemPrice.ProvisioningType = ProvisioningType.PerServiceRecipient;
+
             orderItem.Quantity = null;
             orderItem.OrderItemRecipients.ForEach(x => x.Quantity = 1);
 
@@ -167,11 +172,47 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.Solution
 
         [Theory]
         [CommonAutoData]
+        public static void QuantityStatus_PerOrderItemProvisioningType_OrderItemQuantityEntered_ExpectedResult(
+            string internalOrgId,
+            CallOffId callOffId,
+            OrderItem orderItem)
+        {
+            orderItem.OrderItemPrice.ProvisioningType = ProvisioningType.Declarative;
+
+            orderItem.Quantity = 1;
+            orderItem.OrderItemRecipients.ForEach(x => x.Quantity = null);
+
+            var model = new TaskListOrderItemModel(internalOrgId, callOffId, orderItem);
+
+            model.QuantityStatus.Should().Be(TaskProgress.Completed);
+        }
+
+        [Theory]
+        [CommonAutoData]
+        public static void QuantityStatus_PerOrderItemProvisioningType_OrderItemRecipientQuantitiesEntered_ExpectedResult(
+            string internalOrgId,
+            CallOffId callOffId,
+            OrderItem orderItem)
+        {
+            orderItem.OrderItemPrice.ProvisioningType = ProvisioningType.Declarative;
+
+            orderItem.Quantity = null;
+            orderItem.OrderItemRecipients.ForEach(x => x.Quantity = 1);
+
+            var model = new TaskListOrderItemModel(internalOrgId, callOffId, orderItem);
+
+            model.QuantityStatus.Should().Be(TaskProgress.NotStarted);
+        }
+
+        [Theory]
+        [CommonAutoData]
         public static void QuantityStatus_OrderItemRecipientQuantitiesPartiallyEntered_ExpectedResult(
             string internalOrgId,
             CallOffId callOffId,
             OrderItem orderItem)
         {
+            orderItem.OrderItemPrice.ProvisioningType = ProvisioningType.PerServiceRecipient;
+
             orderItem.Quantity = null;
             orderItem.OrderItemRecipients.ForEach(x => x.Quantity = null);
             orderItem.OrderItemRecipients.First().Quantity = 1;

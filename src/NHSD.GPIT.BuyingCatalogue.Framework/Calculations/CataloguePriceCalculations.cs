@@ -79,17 +79,17 @@ namespace NHSD.GPIT.BuyingCatalogue.Framework.Calculations
 
         public static decimal TotalOneOffCost(this Order order)
         {
-            return order?.OrderItems.Sum(x => x.OrderItemPrice.CalculateOneOffCost(x.GetQuantity())) ?? decimal.Zero;
+            return order?.OrderItems.Sum(x => x.OrderItemPrice.CalculateOneOffCost(x.TotalQuantity)) ?? decimal.Zero;
         }
 
         public static decimal TotalMonthlyCost(this Order order)
         {
-            return order?.OrderItems.Sum(x => x.OrderItemPrice.CalculateCostPerMonth(x.GetQuantity())) ?? decimal.Zero;
+            return order?.OrderItems.Sum(x => x.OrderItemPrice.CalculateCostPerMonth(x.TotalQuantity)) ?? decimal.Zero;
         }
 
         public static decimal TotalAnnualCost(this Order order)
         {
-            return order?.OrderItems.Sum(x => x.OrderItemPrice.CalculateCostPerYear(x.GetQuantity())) ?? decimal.Zero;
+            return order?.OrderItems.Sum(x => x.OrderItemPrice.CalculateCostPerYear(x.TotalQuantity)) ?? decimal.Zero;
         }
 
         public static decimal TotalCost(this Order order)
@@ -110,7 +110,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Framework.Calculations
                 return decimal.Zero;
             }
 
-            var quantity = orderItem.GetQuantity();
+            var quantity = orderItem.TotalQuantity;
 
             return orderItem.OrderItemPrice.BillingPeriod switch
             {

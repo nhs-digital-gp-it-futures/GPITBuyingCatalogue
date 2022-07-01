@@ -923,8 +923,6 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
                 addedSolution.OrderItemRecipients.Add(recipient);
             });
 
-            var totalCost = addedSolution.OrderItemPrice.CalculateTotalCost(addedSolution.GetQuantity());
-
             addedSolution.OrderItemFunding = new OrderItemFunding
             {
                 OrderId = addedSolution.OrderId,
@@ -1329,8 +1327,6 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
 
                 addedSolution.OrderItemRecipients.Add(recipient);
             });
-
-            var totalCost = addedSolution.OrderItemPrice.CalculateTotalCost(addedSolution.GetQuantity());
 
             addedSolution.OrderItemFunding = new OrderItemFunding
             {

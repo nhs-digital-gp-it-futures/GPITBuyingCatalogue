@@ -2,17 +2,13 @@
 @using NHSD.GPIT.BuyingCatalogue.EntityFramework.Extensions
 @using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models
 @model OrderItem
+
 @{
-    var startDate = Model.Order.CommencementDate!.Value;
-    var endDate = Model.Order.CommencementDate!.Value.AddMonths(Model.Order.MaximumTerm!.Value);
-
-    var fundingType = Model.FundingType;
-    var totalCost = Model.OrderItemPrice.CalculateTotalCost(Model.GetQuantity());
-	var subTotalDescription = $"£{totalCost:N2}{(Model.OrderItemPrice.BillingPeriod != null ? $" {Model.OrderItemPrice.BillingPeriod!.Value.Description()}" : string.Empty)}";
-
-    var startDateFormatted = startDate.ToString("dd MMMM yyyy", System.Globalization.CultureInfo.InvariantCulture);
-    var endDateFormatted = endDate.ToString("dd MMMM yyyy", System.Globalization.CultureInfo.InvariantCulture);
+    var totalCost = Model.TotalCost();
+	var subTotalDescription = $"£{totalCost:N2} {Model.OrderItemPrice.BillingPeriod?.Description() ?? string.Empty}";
+    var hasServiceRecipientQuantities = Model.OrderItemPrice.ProvisioningType.IsPerServiceRecipient();
 }
+
 <nhs-expander colour-mode="BlackAndWhite"
               label-text="@Model.CatalogueItem.Name"
               secondary-text-title="Subtotal: "
@@ -27,7 +23,7 @@
             <nhs-table-column>ODS code</nhs-table-column>
             <nhs-table-column>Item ID</nhs-table-column>
             <nhs-table-column>Service instance ID</nhs-table-column>
-            <nhs-table-column>Quantity per practice</nhs-table-column>
+            <nhs-table-column>Quantity</nhs-table-column>
 
             @for (var i = 0; i < Model.OrderItemRecipients.Count; i++)
             {
@@ -37,43 +33,55 @@
                     <nhs-table-cell>@serviceRecipient.Recipient.OdsCode</nhs-table-cell>
                     <nhs-table-cell>@($"{Model.Order.CallOffId}-{serviceRecipient.Recipient.OdsCode}-{i + 1}")</nhs-table-cell>
                     <nhs-table-cell>@Model.Order.ServiceInstanceItems.First(p => p.OdsCode == serviceRecipient.Recipient.OdsCode).ServiceInstanceId</nhs-table-cell>
-                    <nhs-table-cell>@(serviceRecipient.Quantity?.ToString() ?? "Not specified")</nhs-table-cell>
+                    <nhs-table-cell>
+                        @if (hasServiceRecipientQuantities)
+                        {
+                            @(serviceRecipient.Quantity.HasValue ? $"{serviceRecipient.Quantity:N0}" : "-")
+                        }
+                        else
+                        {
+                            @("N/A")
+                        }
+                    </nhs-table-cell>
                 </nhs-table-row-container>
             }
         </nhs-table>
     }
 
-    @if (Model.OrderItemPrice is not null && Model.OrderItemPrice.OrderItemPriceTiers.Any())
+    @if (Model.OrderItemPrice.OrderItemPriceTiers.Any())
     {
+        var billingPeriod = Model.OrderItemPrice.BillingPeriod?.Description() ?? "one-off";
+
         <br />
         <nhs-table label-text="Pricing" catches-errors="false">
             @if (Model.OrderItemPrice.CataloguePriceType == CataloguePriceType.Flat)
             {
                 <nhs-table-column>Price per unit</nhs-table-column>
                 <nhs-table-column>Quantity</nhs-table-column>
-                <nhs-table-column>Total price (@($"{Model.OrderItemPrice.CostType.Description().ToLowerInvariant()} cost"))</nhs-table-column>
+                <nhs-table-column>Total cost (@billingPeriod)</nhs-table-column>
 
                 var price = Model.OrderItemPrice.OrderItemPriceTiers.First();
                 <nhs-table-row-container>
-                    <nhs-table-cell>£@price.Price.ToString("N2") @Model.OrderItemPrice.Description</nhs-table-cell>
-                    <nhs-table-cell>@Model.GetQuantity()</nhs-table-cell>
+                    <nhs-table-cell>£@price.Price.ToString("N4") @Model.OrderItemPrice.ToPriceUnitString()</nhs-table-cell>
+                    <nhs-table-cell>@($"{Model.TotalQuantity:N0}")</nhs-table-cell>
                     <nhs-table-cell>£@totalCost.ToString("N2")</nhs-table-cell>
                 </nhs-table-row-container>
             } else
             {
-                var tiers = Model.OrderItemPrice.CalculateTotalCostPerTier(Model.GetQuantity()).Select((t, i) => (t, i));
+                var tiers = Model.OrderItemPrice.CalculateTotalCostPerTier(Model.TotalQuantity).Select((t, i) => (t, i));
+
                 <nhs-table-column>Pricing tier</nhs-table-column>
                 <nhs-table-column>Price per unit</nhs-table-column>
                 <nhs-table-column>Quantity</nhs-table-column>
-                <nhs-table-column>Total tier price (@($"{Model.OrderItemPrice.CostType.Description().ToLowerInvariant()} cost"))</nhs-table-column>
+                <nhs-table-column>Total cost (@billingPeriod)</nhs-table-column>
 
                 @foreach(var (tier, index) in tiers)
                 {
                     var price = Model.OrderItemPrice.OrderItemPriceTiers.ElementAt(index);
                     <nhs-table-row-container>
                         <nhs-table-cell>Tier @tier.Id</nhs-table-cell>
-                        <nhs-table-cell>£@price.Price.ToString("N4") @Model.OrderItemPrice.Description</nhs-table-cell>
-                        <nhs-table-cell>@tier.Quantity</nhs-table-cell>
+                        <nhs-table-cell>£@price.Price.ToString("N4") @Model.OrderItemPrice.ToPriceUnitString()</nhs-table-cell>
+                        <nhs-table-cell>@($"{tier.Quantity:N0}")</nhs-table-cell>
                         <nhs-table-cell>£@tier.Cost.ToString("N2")</nhs-table-cell>
                     </nhs-table-row-container>
                 }
@@ -81,19 +89,6 @@
         </nhs-table>
     }
 
-    @if(fundingType != OrderItemFundingType.None) {
-        <br />
-        <b>*@GetFundingTypeContent(fundingType, Model.CatalogueItem.CatalogueItemType)</b>
-    }
+    <br />
+    <b>@Model.FundingTypeDescription</b>
 </nhs-expander>
-
-@{
-	string GetFundingTypeContent(OrderItemFundingType fundingType, CatalogueItemType typeofSolution)
-	=> fundingType switch
-	{
-		OrderItemFundingType.CentralFunding => $"This {typeofSolution.DisplayName()} is being paid for using central funding.",
-		OrderItemFundingType.LocalFunding => $"This {typeofSolution.DisplayName()} is being paid for using local funding.",
-		OrderItemFundingType.NoFundingRequired => $"This {typeofSolution.DisplayName()} does not require funding.",
-		OrderItemFundingType.MixedFunding or _ => $"This {typeofSolution.DisplayName()} is being paid for using a mix of central and local funding.",
-	};
-}

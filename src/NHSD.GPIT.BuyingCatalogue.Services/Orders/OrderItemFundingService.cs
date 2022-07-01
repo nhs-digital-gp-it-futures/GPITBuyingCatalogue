@@ -24,7 +24,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
             if (item is null)
                 throw new ArgumentNullException(nameof(item));
 
-            if (item.OrderItemPrice.CalculateTotalCost(item.GetQuantity()) == 0)
+            if (item.OrderItemPrice.CalculateTotalCost(item.TotalQuantity) == 0)
                 return OrderItemFundingType.NoFundingRequired;
 
             if (item.CatalogueItem.CatalogueItemType == CatalogueItemType.AssociatedService)

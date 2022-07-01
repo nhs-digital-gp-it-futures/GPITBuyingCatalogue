@@ -17,18 +17,18 @@
 
 	var oneOffCost = Model.AllOrderItems
 		.Where(oi => oi.OrderItemPrice?.BillingPeriod == null)
-		.Sum(oi => oi.OrderItemPrice.CalculateTotalCost(oi.GetQuantity()));
+		.Sum(oi => oi.OrderItemPrice.CalculateTotalCost(oi.TotalQuantity));
 
 	var monthlyCost = Model.AllOrderItems
 		.Where(oi => oi.OrderItemPrice?.BillingPeriod != null)
-		.Sum(oi => oi.OrderItemPrice.CalculateCostPerMonth(oi.GetQuantity()));
+		.Sum(oi => oi.OrderItemPrice.CalculateCostPerMonth(oi.TotalQuantity));
 
 	var yearlyCost = Model.AllOrderItems
 		.Where(oi => oi.OrderItemPrice?.BillingPeriod != null)
-		.Sum(oi => oi.OrderItemPrice.CalculateCostPerYear(oi.GetQuantity()));
+		.Sum(oi => oi.OrderItemPrice.CalculateCostPerYear(oi.TotalQuantity));
 
 	var totalCost = Model.AllOrderItems
-		.Sum(oi => oi.OrderItemPrice.CalculateTotalCostForContractLength(oi.GetQuantity(), Model.ContractLength));
+		.Sum(oi => oi.OrderItemPrice.CalculateTotalCostForContractLength(oi.TotalQuantity, Model.ContractLength));
 }
 
 <partial name="Partials/_BackLink" model="Model" />
