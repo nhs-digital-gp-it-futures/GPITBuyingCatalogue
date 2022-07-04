@@ -8,7 +8,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Framework
 {
     public class FrameworkService : IFrameworkService
     {
-        private const string CovidFrameworkId = "COVID";
+        public const string CovidFrameworkId = "COVID";
 
         private readonly BuyingCatalogueDbContext dbContext;
 
