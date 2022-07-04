@@ -11,7 +11,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.Objects.Admin.ListPrices
 
         public static By UnitDefinitionInput => By.Id("UnitDefinition");
 
-        public static By PriceInput => By.Id("Price");
+        public static By PriceInput => By.Id("InputPrice");
 
         public static By PublicationStatusInput => By.Id("selected-publication-status");
 
@@ -25,7 +25,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.Objects.Admin.ListPrices
 
         public static By UnitDescriptionInputError => By.Id("UnitDescription-error");
 
-        public static By PriceInputError => By.Id("Price-error");
+        public static By PriceInputError => By.Id("InputPrice-error");
 
         public static By PublicationStatusInputError => By.Id("selected-publication-status-error");
 

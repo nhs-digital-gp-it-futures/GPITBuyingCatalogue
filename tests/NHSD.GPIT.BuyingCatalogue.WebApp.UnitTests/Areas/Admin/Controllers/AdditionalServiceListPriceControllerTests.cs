@@ -579,6 +579,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
             [Frozen] Mock<IListPriceService> listPriceService,
             AdditionalServiceListPriceController controller)
         {
+            model.InputPrice = "3.14";
             model.IsEditing = false;
 
             var result = (await controller.AddTieredPriceTier(solution.CatalogueItemId, additionalService.CatalogueItemId, price.CataloguePriceId, model)).As<RedirectToActionResult>();
@@ -956,6 +957,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
             [Frozen] Mock<IListPriceService> listPriceService,
             AdditionalServiceListPriceController controller)
         {
+            model.InputPrice = "3.14";
             model.CatalogueItemId = additionalServiceId;
             model.IsInfiniteRange = true;
 
@@ -981,6 +983,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
             [Frozen] Mock<IListPriceService> listPriceService,
             AdditionalServiceListPriceController controller)
         {
+            model.InputPrice = "3.14";
             model.CatalogueItemId = additionalServiceId;
             model.IsInfiniteRange = false;
 
@@ -1006,6 +1009,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
             [Frozen] Mock<IListPriceService> listPriceService,
             AdditionalServiceListPriceController controller)
         {
+            model.InputPrice = "3.14";
             model.CatalogueItemId = additionalServiceId;
             model.IsEditing = true;
             model.IsInfiniteRange = true;
@@ -1035,6 +1039,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
             [Frozen] Mock<IListPriceService> listPriceService,
             AdditionalServiceListPriceController controller)
         {
+            model.InputPrice = "3.14";
             model.CatalogueItemId = additionalServiceId;
             model.IsEditing = false;
             model.IsInfiniteRange = true;
@@ -1167,6 +1172,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
             [Frozen] Mock<IListPriceService> service,
             AdditionalServiceListPriceController controller)
         {
+            model.InputPrice = "3.14";
+
             var result = (await controller.EditTierPrice(solutionId, additionalServiceId, cataloguePriceId, tierId, model)).As<RedirectToActionResult>();
 
             service.Verify(s => s.UpdateTierPrice(additionalServiceId, cataloguePriceId, tierId, model.Price!.Value), Times.Once());
@@ -1412,6 +1419,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
             [Frozen] Mock<IListPriceService> listPriceService,
             AdditionalServiceListPriceController controller)
         {
+            model.InputPrice = "3.14";
+
             var result = (await controller.AddFlatListPrice(solutionId, additionalServiceId, model)).As<RedirectToActionResult>();
 
             var pricingUnit = model.GetPricingUnit();
@@ -1525,6 +1534,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
         {
             price.PublishedStatus = PublicationStatus.Published;
             additionalService.CatalogueItem.CataloguePrices.Add(price);
+            model.InputPrice = "3.14";
             model.SelectedPublicationStatus = PublicationStatus.Published;
 
             additionalServicesService.Setup(
@@ -1573,6 +1583,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
         {
             price.PublishedStatus = PublicationStatus.Draft;
             additionalService.CatalogueItem.CataloguePrices.Add(price);
+            model.InputPrice = "3.14";
             model.SelectedPublicationStatus = PublicationStatus.Published;
 
             additionalServicesService.Setup(

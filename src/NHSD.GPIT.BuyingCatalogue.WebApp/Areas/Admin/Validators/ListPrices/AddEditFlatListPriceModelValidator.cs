@@ -20,7 +20,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Validators.ListPrices
                 .NotNull()
                 .WithMessage(SharedListPriceValidationErrors.SelectedProvisioningTypeError);
 
-            RuleFor(m => m.Price)
+            RuleFor(m => m.InputPrice)
                 .IsValidPrice();
 
             RuleFor(m => m.UnitDescription)
@@ -45,7 +45,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Validators.ListPrices
                 .Unless(m => m.SelectedProvisioningType is null || m.Price is null)
                 .OverridePropertyName(
                     m => m.SelectedProvisioningType,
-                    m => m.Price,
+                    m => m.InputPrice,
                     m => m.UnitDescription,
                     m => m.SelectedCalculationType);
 

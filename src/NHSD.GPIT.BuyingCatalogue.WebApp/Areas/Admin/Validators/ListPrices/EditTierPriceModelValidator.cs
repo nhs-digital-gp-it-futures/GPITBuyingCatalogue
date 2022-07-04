@@ -8,7 +8,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Validators.ListPrices
     {
         public EditTierPriceModelValidator()
         {
-            RuleFor(m => m.Price)
+            RuleFor(m => m.InputPrice)
                 .IsValidPrice();
         }
     }
