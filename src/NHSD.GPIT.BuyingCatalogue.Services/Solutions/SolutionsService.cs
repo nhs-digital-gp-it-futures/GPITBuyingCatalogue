@@ -116,7 +116,11 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
                     Implementation = !string.IsNullOrWhiteSpace(ci.Solution.ImplementationDetail)
                         ? TaskProgress.Completed
                         : TaskProgress.Optional,
-                    ListPrice = TaskProgress.Completed,
+                    ListPrice = ci.CataloguePrices.Any(cp => cp.PublishedStatus == PublicationStatus.Published)
+                        ? TaskProgress.Completed
+                        : ci.CataloguePrices.Any()
+                            ? TaskProgress.InProgress
+                            : TaskProgress.NotStarted,
                     ClientApplicationType = !string.IsNullOrEmpty(ci.Solution.ClientApplication)
                         ? TaskProgress.Completed
                         : TaskProgress.NotStarted,
