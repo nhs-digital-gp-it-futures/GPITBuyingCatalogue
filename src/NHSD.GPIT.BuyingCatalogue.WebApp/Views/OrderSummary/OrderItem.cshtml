@@ -8,7 +8,7 @@
 @{
     var itemType = Model.OrderItem.CatalogueItem.CatalogueItemType.DisplayName();
     var orderItemCostBasis = Model.OrderItem.OrderItemPrice?.BillingPeriod?.Description() ?? string.Empty;
-    var hasServiceRecipientQuantities = Model.OrderItem.OrderItemPrice?.ProvisioningType.IsPerServiceRecipient() ?? false;
+    var hasServiceRecipientQuantities = Model.OrderItem.OrderItemPrice?.IsPerServiceRecipient() ?? false;
     var tierCosts = Model.OrderItem.OrderItemPrice?.CalculateTotalCostPerTier(Model.OrderItem.TotalQuantity) ?? new List<PriceCalculationModel>();
     var tiers = Model.OrderItem.OrderItemPrice?.OrderItemPriceTiers?.OrderBy(x => x.LowerRange).ToList() ?? new List<OrderItemPriceTier>();
 }
@@ -20,7 +20,7 @@
             @($"{Model.OrderItem.Quantity:N0} {Model.OrderItem.OrderItemPrice.RangeDescription}")
         </pdf-summary-list-row>
     }
-                        
+
     <pdf-summary-list-row label-text="Sub-total">
         @($"£{Model.OrderItem.TotalCost():N2} {orderItemCostBasis}")
     </pdf-summary-list-row>
@@ -42,7 +42,7 @@
         }
     </tr>
     </thead>
-    
+
     @if (!(Model.OrderItem.OrderItemRecipients?.Any() ?? false))
     {
         <tr>
@@ -94,7 +94,7 @@
 
 <div class="pdf-container">
     <h3>Pricing</h3>
-    
+
     @if (!tiers.Any())
     {
         <p>Price information has not been entered for this @itemType.</p>
@@ -109,11 +109,11 @@
                 <pdf-summary-list-row label-text="Price per unit">
                     @($"£{tier.Price:#,###,##0.00##}") @tier.OrderItemPrice.ToPriceUnitString()
                 </pdf-summary-list-row>
-                    
+
                 <pdf-summary-list-row label-text="Quantity">
                     @($"{tierCosts[0].Quantity:N0}")
                 </pdf-summary-list-row>
-                    
+
                 <pdf-summary-list-row label-text="Total cost @(tier.OrderItemPrice.BillingPeriod == null ? "(one-off)" : "")">
                     @($"£{tierCosts[0].Cost:N2}") @orderItemCostBasis
                 </pdf-summary-list-row>
@@ -148,7 +148,7 @@
                         </td>
                     </tr>
                 }
-                
+
                 <tr>
                     <td/>
                     <td/>

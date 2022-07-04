@@ -6,7 +6,7 @@
 @{
     var totalCost = Model.TotalCost();
 	var subTotalDescription = $"£{totalCost:N2} {Model.OrderItemPrice.BillingPeriod?.Description() ?? string.Empty}";
-    var hasServiceRecipientQuantities = Model.OrderItemPrice.ProvisioningType.IsPerServiceRecipient();
+    var hasServiceRecipientQuantities = Model.OrderItemPrice.IsPerServiceRecipient();
 }
 
 <nhs-expander colour-mode="BlackAndWhite"

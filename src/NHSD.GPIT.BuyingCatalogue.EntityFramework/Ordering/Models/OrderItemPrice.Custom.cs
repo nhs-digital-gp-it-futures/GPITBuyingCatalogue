@@ -47,5 +47,8 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models
         {
             return $"{Description} {BillingPeriod?.Description() ?? string.Empty}".Trim();
         }
+
+        public bool IsPerServiceRecipient() => ProvisioningType.IsPerServiceRecipient()
+            || CataloguePriceQuantityCalculationType is NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models.CataloguePriceQuantityCalculationType.PerServiceRecipient;
     }
 }
