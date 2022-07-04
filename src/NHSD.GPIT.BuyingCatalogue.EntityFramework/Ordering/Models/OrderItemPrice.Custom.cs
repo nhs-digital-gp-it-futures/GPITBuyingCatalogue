@@ -49,6 +49,6 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models
         }
 
         public bool IsPerServiceRecipient() => ProvisioningType.IsPerServiceRecipient()
-            || CataloguePriceQuantityCalculationType is NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models.CataloguePriceQuantityCalculationType.PerServiceRecipient;
+            || CataloguePriceQuantityCalculationType is Catalogue.Models.CataloguePriceQuantityCalculationType.PerServiceRecipient;
     }
 }

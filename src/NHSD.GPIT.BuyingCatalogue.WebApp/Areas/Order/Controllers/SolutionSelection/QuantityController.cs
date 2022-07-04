@@ -54,7 +54,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers.SolutionSelec
             var order = await orderService.GetOrderWithOrderItems(callOffId, internalOrgId);
             var orderItem = order.OrderItem(catalogueItemId);
 
-            if (ShouldUseServiceRecipientView(orderItem.OrderItemPrice))
+            if (orderItem.OrderItemPrice.IsPerServiceRecipient())
             {
                 return RedirectToAction(
                     nameof(SelectServiceRecipientQuantity),
@@ -201,10 +201,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers.SolutionSelec
                 }
             }
         }
-
-        private static bool ShouldUseServiceRecipientView(OrderItemPrice price) =>
-            price.IsPerServiceRecipient()
-            && price.CataloguePriceQuantityCalculationType != CataloguePriceQuantityCalculationType.PerSolutionOrService;
 
         private async Task SetPracticeSizes(SelectServiceRecipientQuantityModel model)
         {
