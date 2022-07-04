@@ -199,14 +199,10 @@
                             @($"{Model.Order.MaximumTerm} Months")
                         </pdf-summary-list-row>
 
-                        if (Model.Order.CommencementDate.HasValue)
+                        if (Model.Order.CommencementDate != null)
                         {
-                            var endDate = Model.Order.CommencementDate.Value
-                                .AddMonths(Model.Order.MaximumTerm.Value)
-                                .AddDays(-1);
-
                             <pdf-summary-list-row label-text="End date">
-                                @endDate.ToLongDateString()
+                                @Model.Order.EndDate
                             </pdf-summary-list-row>
                         }
                     }

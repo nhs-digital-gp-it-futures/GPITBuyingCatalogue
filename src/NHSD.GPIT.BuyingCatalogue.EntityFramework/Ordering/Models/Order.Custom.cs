@@ -24,6 +24,10 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models
             }
         }
 
+        public string EndDate => CommencementDate.HasValue && MaximumTerm.HasValue
+            ? $"{CommencementDate?.AddMonths(MaximumTerm.Value).AddDays(-1):dd MMMM yyyy}"
+            : string.Empty;
+
         public void Complete()
         {
             OrderStatus = OrderStatus.Completed;

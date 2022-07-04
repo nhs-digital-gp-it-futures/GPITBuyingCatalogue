@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Models;
 
@@ -16,15 +15,18 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.SolutionSelection.
         {
             CallOffId = order.CallOffId;
             InternalOrgId = internalOrgId;
+            Order = order;
             AllOrderItems = order.OrderItems;
-            CatalogueSolution = order.OrderItems.SingleOrDefault(oi => oi.CatalogueItem.CatalogueItemType == CatalogueItemType.Solution);
-            AdditionalServices = order.OrderItems.Where(oi => oi.CatalogueItem.CatalogueItemType == CatalogueItemType.AdditionalService).ToList();
-            AssociatedServices = order.OrderItems.Where(oi => oi.CatalogueItem.CatalogueItemType == CatalogueItemType.AssociatedService).ToList();
+            CatalogueSolution = order.GetSolution();
+            AdditionalServices = order.GetAdditionalServices().ToList();
+            AssociatedServices = order.GetAssociatedServices().ToList();
             ContractLength = order.MaximumTerm ?? 0;
             AssociatedServicesOnly = order.AssociatedServicesOnly;
         }
 
         public CallOffId CallOffId { get; set; }
+
+        public EntityFramework.Ordering.Models.Order Order { get; set; }
 
         public OrderItem CatalogueSolution { get; set; }
 
