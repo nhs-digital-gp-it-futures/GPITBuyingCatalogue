@@ -178,6 +178,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.Solution
             OrderItem orderItem)
         {
             orderItem.OrderItemPrice.ProvisioningType = ProvisioningType.Declarative;
+            orderItem.OrderItemPrice.CataloguePriceQuantityCalculationType =
+                CataloguePriceQuantityCalculationType.PerSolutionOrService;
 
             orderItem.Quantity = 1;
             orderItem.OrderItemRecipients.ForEach(x => x.Quantity = null);
@@ -195,6 +197,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.Solution
             OrderItem orderItem)
         {
             orderItem.OrderItemPrice.ProvisioningType = ProvisioningType.Declarative;
+            orderItem.OrderItemPrice.CataloguePriceQuantityCalculationType =
+                CataloguePriceQuantityCalculationType.PerSolutionOrService;
 
             orderItem.Quantity = null;
             orderItem.OrderItemRecipients.ForEach(x => x.Quantity = 1);
