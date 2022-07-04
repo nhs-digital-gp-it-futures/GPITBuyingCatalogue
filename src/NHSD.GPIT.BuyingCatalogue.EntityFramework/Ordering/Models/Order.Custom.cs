@@ -13,6 +13,17 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models
 
         public IReadOnlyList<ServiceInstanceItem> ServiceInstanceItems => serviceInstanceItems.AsReadOnly();
 
+        // TODO: remove with csv
+        public string ApproximateFundingType
+        {
+            get
+            {
+                return OrderItems.All(x => x.FundingType is OrderItemFundingType.LocalFunding or OrderItemFundingType.LocalFundingOnly)
+                    ? "Local"
+                    : "Central";
+            }
+        }
+
         public void Complete()
         {
             OrderStatus = OrderStatus.Completed;

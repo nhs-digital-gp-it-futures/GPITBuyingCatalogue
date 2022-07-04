@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using System.Linq;
 using FluentAssertions;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
@@ -22,9 +21,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Models.ManageOr
             Solution solution,
             AssociatedService associatedService,
             AdditionalService additionalService,
+            EntityFramework.Catalogue.Models.Framework framework,
             EntityFramework.Ordering.Models.Order order)
         {
-            var framework = solution.FrameworkSolutions.First().Framework.ShortName;
             var orderItems = new List<OrderItem>
             {
                 new() { CatalogueItem = solution.CatalogueItem },
@@ -38,9 +37,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Models.ManageOr
             order.OrderingParty = orderingParty;
             order.Supplier = supplier;
 
-            var model = new ViewOrderModel(order);
+            var model = new ViewOrderModel(order, framework);
 
-            model.OrderItems.Should().AllSatisfy(oi => oi.Framework.Should().Be(framework));
+            model.OrderItems.Should().AllSatisfy(oi => oi.Framework.Should().Be(framework.ShortName));
         }
 
         [Theory]
@@ -53,7 +52,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Models.ManageOr
             AdditionalService additionalService,
             EntityFramework.Ordering.Models.Order order)
         {
-            var framework = string.Empty;
             var orderItems = new List<OrderItem>
             {
                 new() { CatalogueItem = associatedService.CatalogueItem },
@@ -66,9 +64,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Models.ManageOr
             order.OrderingParty = orderingParty;
             order.Supplier = supplier;
 
-            var model = new ViewOrderModel(order);
+            var model = new ViewOrderModel(order, null);
 
-            model.OrderItems.Should().AllSatisfy(oi => oi.Framework.Should().Be(framework));
+            model.OrderItems.Should().AllSatisfy(oi => oi.Framework.Should().Be(string.Empty));
         }
     }
 }

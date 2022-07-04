@@ -39,8 +39,8 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models
                 return OrderItemPrice?.ProvisioningType switch
                 {
                     null => 0,
-                    ProvisioningType.Patient => OrderItemRecipients?.Sum(x => x.Quantity ?? 0) ?? 0,
-                    ProvisioningType.PerServiceRecipient => OrderItemRecipients?.Sum(x => x.Quantity ?? 0) ?? 0,
+                    ProvisioningType.Patient or ProvisioningType.PerServiceRecipient =>
+                        OrderItemRecipients?.Sum(x => x.Quantity ?? 0) ?? 0,
                     _ => Quantity ?? 0,
                 };
             }
@@ -53,8 +53,8 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models
                 return OrderItemPrice?.ProvisioningType switch
                 {
                     null => false,
-                    ProvisioningType.Patient => OrderItemRecipients?.All(x => x.Quantity.HasValue) ?? false,
-                    ProvisioningType.PerServiceRecipient => OrderItemRecipients?.All(x => x.Quantity.HasValue) ?? false,
+                    ProvisioningType.Patient or ProvisioningType.PerServiceRecipient =>
+                        OrderItemRecipients?.All(x => x.Quantity.HasValue) ?? false,
                     _ => Quantity.HasValue,
                 };
             }
