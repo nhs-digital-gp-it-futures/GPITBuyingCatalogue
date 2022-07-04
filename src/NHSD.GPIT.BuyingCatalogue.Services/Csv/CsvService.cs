@@ -33,6 +33,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Csv
         {
             var billingPeriods = await GetBillingPeriods(orderId);
             var framework = await frameworkService.GetFramework(orderId);
+            var frameworkId = framework?.Id ?? string.Empty;
             var fundingType = await GetFundingType(orderId);
             var prices = await GetPrices(orderId);
 
@@ -62,7 +63,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Csv
                     OrderType = (int)oir.OrderItem.OrderItemPrice.ProvisioningType,
                     M1Planned = oir.OrderItem.Order.CommencementDate,
                     FundingType = fundingType,
-                    Framework = framework.Id,
+                    Framework = frameworkId,
                     InitialTerm = oir.OrderItem.Order.InitialPeriod,
                     MaximumTerm = oir.OrderItem.Order.MaximumTerm,
                 }).ToListAsync();
@@ -76,6 +77,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Csv
         public async Task<int> CreatePatientNumberCsvAsync(int orderId, MemoryStream stream)
         {
             var framework = await frameworkService.GetFramework(orderId);
+            var frameworkId = framework?.Id ?? string.Empty;
             var fundingType = await GetFundingType(orderId);
             var prices = await GetPrices(orderId);
 
@@ -102,7 +104,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Csv
                     Price = prices[oir.OrderItem.CatalogueItemId],
                     FundingType = fundingType,
                     M1Planned = oir.OrderItem.Order.CommencementDate,
-                    Framework = framework.Id,
+                    Framework = frameworkId,
                     InitialTerm = oir.OrderItem.Order.InitialPeriod,
                     MaximumTerm = oir.OrderItem.Order.MaximumTerm,
                 }).ToListAsync();
