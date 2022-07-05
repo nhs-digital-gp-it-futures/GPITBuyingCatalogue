@@ -6,6 +6,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Extensions
     {
         public static int? AsNullableInt(this string input) => int.TryParse(input, out var output) ? output : null;
 
+        public static decimal? AsNullableDecimal(this string input) =>
+            decimal.TryParse(input, out var output) ? output : null;
+
         public static string CapitaliseFirstLetter(this string input) => input switch
         {
             null => throw new ArgumentNullException(nameof(input)),

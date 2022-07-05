@@ -152,16 +152,18 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
         public static async Task Get_EditAssociatedService_ValidIds_ReturnsViewWithExpectedModel(
             Solution solution,
             AssociatedService associatedService,
+            List<CataloguePrice> listPrices,
             [Frozen] Mock<ISolutionsService> mockSolutionService,
             [Frozen] Mock<IAssociatedServicesService> mockAssociatedServicesService,
             AssociatedServicesController controller)
         {
             associatedService.CatalogueItem.PublishedStatus = PublicationStatus.Draft;
+            associatedService.CatalogueItem.CataloguePrices.AddRange(listPrices);
 
             mockSolutionService.Setup(s => s.GetSolutionThin(solution.CatalogueItemId))
                 .ReturnsAsync(solution.CatalogueItem);
 
-            mockAssociatedServicesService.Setup(s => s.GetAssociatedService(associatedService.CatalogueItemId))
+            mockAssociatedServicesService.Setup(s => s.GetAssociatedServiceWithCataloguePrices(associatedService.CatalogueItemId))
                 .ReturnsAsync(associatedService.CatalogueItem);
 
             var expectedModel = new EditAssociatedServiceModel(solution.CatalogueItem, associatedService.CatalogueItem);
@@ -169,7 +171,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
             var actual = await controller.EditAssociatedService(solution.CatalogueItemId, associatedService.CatalogueItemId);
 
             mockSolutionService.Verify(s => s.GetSolutionThin(solution.CatalogueItemId));
-            mockAssociatedServicesService.Verify(a => a.GetAssociatedService(associatedService.CatalogueItemId));
+            mockAssociatedServicesService.Verify(a => a.GetAssociatedServiceWithCataloguePrices(associatedService.CatalogueItemId));
 
             actual.Should().BeOfType<ViewResult>();
 
@@ -207,7 +209,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
             mockSolutionService.Setup(s => s.GetSolutionThin(solution.Id))
                 .ReturnsAsync(solution);
 
-            mockAssociatedServicesService.Setup(s => s.GetAssociatedService(associatedServiceId))
+            mockAssociatedServicesService.Setup(s => s.GetAssociatedServiceWithCataloguePrices(associatedServiceId))
                 .ReturnsAsync(default(CatalogueItem));
 
             var actual = await controller.EditAssociatedService(solution.Id, associatedServiceId);

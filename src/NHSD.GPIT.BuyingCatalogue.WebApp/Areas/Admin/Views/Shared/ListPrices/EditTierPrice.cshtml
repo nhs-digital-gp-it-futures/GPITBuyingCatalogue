@@ -20,7 +20,7 @@
             <input type="hidden" asp-for="TierIndex" />
             <input type="hidden" asp-for="Unit" />
 
-            <nhs-bookended-input asp-for="Price" label-text="Price" Suffix="@Model.Unit" label-hint="Provide the list price in pounds to a maximum of 4 decimal places." prefix="£" />
+            <nhs-bookended-input asp-for="InputPrice" label-text="Price" Suffix="@Model.Unit" label-hint="Provide the list price in pounds to a maximum of 4 decimal places." prefix="£" />
 
             <nhs-submit-button />
         </form>

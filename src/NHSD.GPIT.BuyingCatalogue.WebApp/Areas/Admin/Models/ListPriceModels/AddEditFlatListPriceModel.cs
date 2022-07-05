@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
+using NHSD.GPIT.BuyingCatalogue.WebApp.Extensions;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Models;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.ListPriceModels
@@ -31,7 +32,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.ListPriceModels
             RangeDefinition = cataloguePrice.PricingUnit.RangeDescription;
 
             var flatTier = cataloguePrice.CataloguePriceTiers.First();
-            Price = flatTier.Price;
+            InputPrice = $"{flatTier.Price}";
 
             SelectedPublicationStatus = CataloguePricePublicationStatus = cataloguePrice.PublishedStatus;
             SelectedProvisioningType = cataloguePrice.ProvisioningType;
@@ -91,7 +92,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.ListPriceModels
 
         public CataloguePriceCalculationType? SelectedCalculationType { get; set; }
 
-        public decimal? Price { get; set; }
+        public decimal? Price => InputPrice.AsNullableDecimal();
+
+        public string InputPrice { get; set; }
 
         [StringLength(100)]
         public string UnitDescription { get; set; }

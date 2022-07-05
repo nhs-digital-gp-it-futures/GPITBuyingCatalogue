@@ -66,8 +66,6 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.AssociatedServices
                 .ToListAsync();
         }
 
-        /* TODO - Tiered Pricing - Reintroduct Pricing Data */
-
         public Task<CatalogueItem> GetAssociatedService(CatalogueItemId associatedServiceId)
         {
             return dbContext.CatalogueItems

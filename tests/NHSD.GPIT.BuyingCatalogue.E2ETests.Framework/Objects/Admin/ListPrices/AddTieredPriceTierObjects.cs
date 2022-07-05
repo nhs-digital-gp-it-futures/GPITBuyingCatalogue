@@ -4,7 +4,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.Objects.Admin.ListPrices
 {
     public static class AddTieredPriceTierObjects
     {
-        public static By PriceInput => By.Id("Price");
+        public static By PriceInput => By.Id("InputPrice");
 
         public static By LowerRangeInput => By.Id("LowerRange");
 
@@ -12,7 +12,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.Objects.Admin.ListPrices
 
         public static By RangeTypeInput => By.Id("is-infinite-range");
 
-        public static By PriceInputError => By.Id("Price-error");
+        public static By PriceInputError => By.Id("InputPrice-error");
 
         public static By LowerRangeInputError => By.Id("LowerRange-error");
 

@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
+using NHSD.GPIT.BuyingCatalogue.WebApp.Extensions;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Models;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.ListPriceModels
@@ -23,7 +24,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.ListPriceModels
             : this(catalogueItem, cataloguePrice)
         {
             TierId = cataloguePriceTier.Id;
-            Price = cataloguePriceTier.Price;
+            InputPrice = $"{cataloguePriceTier.Price}";
             LowerRange = cataloguePriceTier.LowerRange;
             UpperRange = cataloguePriceTier.UpperRange;
             IsInfiniteRange = cataloguePriceTier.UpperRange == null;
@@ -46,7 +47,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.ListPriceModels
 
         public string Title { get; set; }
 
-        public decimal? Price { get; set; }
+        public decimal? Price => InputPrice.AsNullableDecimal();
+
+        public string InputPrice { get; set; }
 
         public int? LowerRange { get; set; }
 

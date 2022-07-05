@@ -15,11 +15,11 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators.List
             EditTierPriceModel model,
             EditTierPriceModelValidator validator)
         {
-            model.Price = null;
+            model.InputPrice = null;
 
             var result = validator.TestValidate(model);
 
-            result.ShouldHaveValidationErrorFor(m => m.Price)
+            result.ShouldHaveValidationErrorFor(m => m.InputPrice)
                 .WithErrorMessage(FluentValidationExtensions.PriceEmptyError);
         }
 
@@ -29,11 +29,11 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators.List
             EditTierPriceModel model,
             EditTierPriceModelValidator validator)
         {
-            model.Price = -1;
+            model.InputPrice = "-1";
 
             var result = validator.TestValidate(model);
 
-            result.ShouldHaveValidationErrorFor(m => m.Price)
+            result.ShouldHaveValidationErrorFor(m => m.InputPrice)
                 .WithErrorMessage(FluentValidationExtensions.PriceNegativeError);
         }
 
@@ -43,12 +43,26 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators.List
             EditTierPriceModel model,
             EditTierPriceModelValidator validator)
         {
-            model.Price = 1.23456M;
+            model.InputPrice = "1.23456";
 
             var result = validator.TestValidate(model);
 
-            result.ShouldHaveValidationErrorFor(m => m.Price)
+            result.ShouldHaveValidationErrorFor(m => m.InputPrice)
                 .WithErrorMessage(FluentValidationExtensions.PriceGreaterThanDecimalPlacesError);
+        }
+
+        [Theory]
+        [CommonAutoData]
+        public static void Validate_PriceNotNumeric_SetsModelError(
+            EditTierPriceModel model,
+            EditTierPriceModelValidator validator)
+        {
+            model.InputPrice = "abc";
+
+            var result = validator.TestValidate(model);
+
+            result.ShouldHaveValidationErrorFor(m => m.InputPrice)
+                .WithErrorMessage(FluentValidationExtensions.PriceNotANumberError);
         }
 
         [Theory]
@@ -57,7 +71,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators.List
             EditTierPriceModel model,
             EditTierPriceModelValidator validator)
         {
-            model.Price = 3.14M;
+            model.InputPrice = "3.14";
 
             var result = validator.TestValidate(model);
 

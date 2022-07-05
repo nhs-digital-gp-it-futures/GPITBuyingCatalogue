@@ -74,7 +74,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.SolutionSelection.
                 return TaskProgress.CannotStart;
             }
 
-            if (orderItem.OrderItemPrice.ProvisioningType.IsPerServiceRecipient())
+            if (orderItem.OrderItemPrice.IsPerServiceRecipient())
             {
                 if (orderItem.OrderItemRecipients?.All(x => x.Quantity != null) ?? false)
                 {

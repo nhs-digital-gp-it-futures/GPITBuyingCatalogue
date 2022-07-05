@@ -18,7 +18,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Validators.ListPrices
         {
             this.listPriceService = listPriceService;
 
-            RuleFor(m => m.Price)
+            RuleFor(m => m.InputPrice)
                 .IsValidPrice();
 
             RuleFor(m => m.LowerRange)
@@ -39,7 +39,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Validators.ListPrices
                 .WithMessage(DuplicateListPriceTierError)
                 .When(m => m.Price is not null && m.LowerRange is not null && m.IsInfiniteRange.HasValue && m.IsInfiniteRange is false)
                 .OverridePropertyName(
-                    m => m.Price,
+                    m => m.InputPrice,
                     m => m.LowerRange,
                     m => m.UpperRange,
                     m => m.IsInfiniteRange);
@@ -49,7 +49,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Validators.ListPrices
                 .WithMessage(DuplicateListPriceTierError)
                 .When(m => m.Price is not null && m.LowerRange is not null && m.IsInfiniteRange.HasValue && m.IsInfiniteRange is true)
                 .OverridePropertyName(
-                    m => m.Price,
+                    m => m.InputPrice,
                     m => m.LowerRange,
                     m => m.IsInfiniteRange);
         }

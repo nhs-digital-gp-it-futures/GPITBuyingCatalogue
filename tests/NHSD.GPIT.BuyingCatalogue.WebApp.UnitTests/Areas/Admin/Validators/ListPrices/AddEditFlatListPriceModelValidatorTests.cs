@@ -19,7 +19,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators.List
             AddEditFlatListPriceModelValidator validator)
         {
             model.SelectedProvisioningType = null;
-            model.Price = null;
+            model.InputPrice = null;
             model.UnitDescription = null;
             model.SelectedPublicationStatus = null;
             model.SelectedCalculationType = null;
@@ -30,7 +30,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators.List
             result.ShouldHaveValidationErrorFor(m => m.SelectedProvisioningType)
                 .WithErrorMessage(SharedListPriceValidationErrors.SelectedProvisioningTypeError);
 
-            result.ShouldHaveValidationErrorFor(m => m.Price)
+            result.ShouldHaveValidationErrorFor(m => m.InputPrice)
                 .WithErrorMessage(FluentValidationExtensions.PriceEmptyError);
 
             result.ShouldHaveValidationErrorFor(m => m.UnitDescription)
@@ -52,26 +52,40 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators.List
             AddEditFlatListPriceModel model,
             AddEditFlatListPriceModelValidator validator)
         {
-            model.Price = -1;
+            model.InputPrice = "-1";
 
             var result = validator.TestValidate(model);
 
-            result.ShouldHaveValidationErrorFor(m => m.Price)
+            result.ShouldHaveValidationErrorFor(m => m.InputPrice)
                 .WithErrorMessage(FluentValidationExtensions.PriceNegativeError);
         }
 
         [Theory]
         [CommonAutoData]
         public static void Validate_PriceGreaterThan4DecimalPlaces_SetsModelError(
-                AddEditFlatListPriceModel model,
-                AddEditFlatListPriceModelValidator validator)
+            AddEditFlatListPriceModel model,
+            AddEditFlatListPriceModelValidator validator)
         {
-            model.Price = 1.23456M;
+            model.InputPrice = "1.23456";
 
             var result = validator.TestValidate(model);
 
-            result.ShouldHaveValidationErrorFor(m => m.Price)
+            result.ShouldHaveValidationErrorFor(m => m.InputPrice)
                 .WithErrorMessage(FluentValidationExtensions.PriceGreaterThanDecimalPlacesError);
+        }
+
+        [Theory]
+        [CommonAutoData]
+        public static void Validate_PriceNotNumeric_SetsModelError(
+            AddEditFlatListPriceModel model,
+            AddEditFlatListPriceModelValidator validator)
+        {
+            model.InputPrice = "abc";
+
+            var result = validator.TestValidate(model);
+
+            result.ShouldHaveValidationErrorFor(m => m.InputPrice)
+                .WithErrorMessage(FluentValidationExtensions.PriceNotANumberError);
         }
 
         [Theory]
@@ -82,6 +96,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators.List
             AddEditFlatListPriceModelValidator validator)
         {
             model.SelectedProvisioningType = EntityFramework.Catalogue.Models.ProvisioningType.Declarative;
+            model.InputPrice = "3.14";
 
             service.Setup(s => s.HasDuplicateFlatPrice(
                 model.CatalogueItemId,
@@ -93,7 +108,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators.List
 
             var result = validator.TestValidate(model);
 
-            result.ShouldHaveValidationErrorFor($"{nameof(model.SelectedProvisioningType)}|{nameof(model.Price)}|{nameof(model.UnitDescription)}|{nameof(model.SelectedCalculationType)}")
+            result.ShouldHaveValidationErrorFor($"{nameof(model.SelectedProvisioningType)}|{nameof(model.InputPrice)}|{nameof(model.UnitDescription)}|{nameof(model.SelectedCalculationType)}")
                 .WithErrorMessage(SharedListPriceValidationErrors.DuplicateListPriceError);
         }
 
@@ -105,6 +120,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators.List
             AddEditFlatListPriceModelValidator validator)
         {
             model.SelectedProvisioningType = EntityFramework.Catalogue.Models.ProvisioningType.Declarative;
+            model.InputPrice = "3.14";
 
             service.Setup(s => s.HasDuplicateFlatPrice(
                 model.CatalogueItemId,

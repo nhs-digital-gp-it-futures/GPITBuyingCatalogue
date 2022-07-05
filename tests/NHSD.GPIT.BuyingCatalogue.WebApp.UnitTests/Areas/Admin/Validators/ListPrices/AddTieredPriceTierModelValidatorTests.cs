@@ -18,11 +18,11 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators.List
             AddEditTieredPriceTierModel model,
             AddEditTieredPriceTierModelValidator validator)
         {
-            model.Price = null;
+            model.InputPrice = null;
 
             var result = validator.TestValidate(model);
 
-            result.ShouldHaveValidationErrorFor(m => m.Price)
+            result.ShouldHaveValidationErrorFor(m => m.InputPrice)
                 .WithErrorMessage(FluentValidationExtensions.PriceEmptyError);
         }
 
@@ -32,11 +32,11 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators.List
             AddEditTieredPriceTierModel model,
             AddEditTieredPriceTierModelValidator validator)
         {
-            model.Price = -1;
+            model.InputPrice = "-1";
 
             var result = validator.TestValidate(model);
 
-            result.ShouldHaveValidationErrorFor(m => m.Price)
+            result.ShouldHaveValidationErrorFor(m => m.InputPrice)
                 .WithErrorMessage(FluentValidationExtensions.PriceNegativeError);
         }
 
@@ -46,11 +46,11 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators.List
                 AddEditTieredPriceTierModel model,
                 AddEditTieredPriceTierModelValidator validator)
         {
-            model.Price = 1.23456M;
+            model.InputPrice = "1.23456";
 
             var result = validator.TestValidate(model);
 
-            result.ShouldHaveValidationErrorFor(m => m.Price)
+            result.ShouldHaveValidationErrorFor(m => m.InputPrice)
                 .WithErrorMessage(FluentValidationExtensions.PriceGreaterThanDecimalPlacesError);
         }
 
@@ -61,6 +61,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators.List
             AddEditTieredPriceTierModelValidator validator)
         {
             model.LowerRange = null;
+            model.InputPrice = "3.14";
 
             var result = validator.TestValidate(model);
 
@@ -76,6 +77,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators.List
         {
             model.IsInfiniteRange = false;
             model.UpperRange = null;
+            model.InputPrice = "3.14";
 
             var result = validator.TestValidate(model);
 
@@ -91,6 +93,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators.List
         {
             model.IsInfiniteRange = true;
             model.UpperRange = null;
+            model.InputPrice = "3.14";
 
             var result = validator.TestValidate(model);
 
@@ -104,11 +107,26 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators.List
             AddEditTieredPriceTierModelValidator validator)
         {
             model.IsInfiniteRange = null;
+            model.InputPrice = "3.14";
 
             var result = validator.TestValidate(model);
 
             result.ShouldHaveValidationErrorFor(m => m.IsInfiniteRange)
                 .WithErrorMessage(AddEditTieredPriceTierModelValidator.RangeTypeMissing);
+        }
+
+        [Theory]
+        [CommonAutoData]
+        public static void Validate_PriceNotNumeric_SetsModelError(
+            AddEditTieredPriceTierModel model,
+            AddEditTieredPriceTierModelValidator validator)
+        {
+            model.InputPrice = "abc";
+
+            var result = validator.TestValidate(model);
+
+            result.ShouldHaveValidationErrorFor(m => m.InputPrice)
+                .WithErrorMessage(FluentValidationExtensions.PriceNotANumberError);
         }
 
         [Theory]
@@ -119,7 +137,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators.List
             AddEditTieredPriceTierModelValidator validator)
         {
             model.IsInfiniteRange = true;
-            model.Price = 1.23M;
+            model.InputPrice = "1.23";
             model.LowerRange = 1;
             model.UpperRange = null;
 
@@ -132,7 +150,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators.List
 
             var result = validator.TestValidate(model);
 
-            result.ShouldHaveValidationErrorFor("Price|LowerRange|IsInfiniteRange")
+            result.ShouldHaveValidationErrorFor("InputPrice|LowerRange|IsInfiniteRange")
                 .WithErrorMessage(AddEditTieredPriceTierModelValidator.DuplicateListPriceTierError);
         }
 
@@ -144,7 +162,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators.List
             AddEditTieredPriceTierModelValidator validator)
         {
             model.IsInfiniteRange = false;
-            model.Price = 1.23M;
+            model.InputPrice = "1.23";
             model.LowerRange = 1;
             model.UpperRange = 9;
 
@@ -157,7 +175,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators.List
 
             var result = validator.TestValidate(model);
 
-            result.ShouldHaveValidationErrorFor("Price|LowerRange|UpperRange|IsInfiniteRange")
+            result.ShouldHaveValidationErrorFor("InputPrice|LowerRange|UpperRange|IsInfiniteRange")
                 .WithErrorMessage(AddEditTieredPriceTierModelValidator.DuplicateListPriceTierError);
         }
 
@@ -169,7 +187,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators.List
             AddEditTieredPriceTierModelValidator validator)
         {
             model.IsInfiniteRange = false;
-            model.Price = 1.23M;
+            model.InputPrice = "1.23";
             model.LowerRange = 1;
             model.UpperRange = 9;
 

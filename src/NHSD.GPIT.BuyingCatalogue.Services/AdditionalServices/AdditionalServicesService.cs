@@ -112,8 +112,6 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.AdditionalServices
                     && add.CatalogueItem.Name == additionalServiceName
                     && add.CatalogueItemId != currentCatalogueItemId);
 
-        /* TODO - Tiered Pricing - Reintroduce Pricing Data*/
-
         private IQueryable<CatalogueItem> BaseQuery(CatalogueItemId catalogueItemId) => dbContext.CatalogueItems
                 .Include(i => i.AdditionalService)
                 .Include(i => i.CatalogueItemCapabilities)
