@@ -11,6 +11,12 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models
 
         public string OdsCode { get; set; }
 
-        public string ServiceInstanceId { get; set; }
+        public string ServiceInstanceId
+        {
+            get
+            {
+                return $"SI1-{OdsCode}";
+            }
+        }
     }
 }

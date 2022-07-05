@@ -51,9 +51,10 @@
     }
     else
     {
-        @foreach (var (recipient, index) in Model.OrderItem.OrderItemRecipients.Select((x, i) => (x, i)))
+        @for (var i = 0; i < Model.OrderItem.OrderItemRecipients.Count; i++, ViewContext.HttpContext.Items["RowCount"] = (int)ViewContext.HttpContext.Items["RowCount"] + 1)
         {
-            <tr>
+				var recipient = Model.OrderItem.OrderItemRecipients.ElementAt(i);
+				<tr>
                 <td>
                     @recipient.Recipient.Name
                 </td>
@@ -61,7 +62,7 @@
                     @recipient.Recipient.OdsCode
                 </td>
                 <td>
-                    @($"{Model.OrderItem.Order.CallOffId}-{recipient.Recipient.OdsCode}-{index + 1}")
+                    @($"{Model.OrderItem.Order.CallOffId}-{recipient.Recipient.OdsCode}-{ViewContext.HttpContext.Items["RowCount"]}")
                 </td>
                 <td>
                     @Model.ServiceInstanceId(recipient.OdsCode)

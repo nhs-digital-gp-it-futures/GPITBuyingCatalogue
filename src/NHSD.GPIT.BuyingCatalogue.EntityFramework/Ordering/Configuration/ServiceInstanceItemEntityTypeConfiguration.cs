@@ -14,6 +14,8 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Configuration
             builder.Property(e => e.CatalogueItemId)
                 .HasMaxLength(14)
                 .HasConversion(id => id.ToString(), id => CatalogueItemId.ParseExact(id));
+
+            builder.Ignore(e => e.ServiceInstanceId);
         }
     }
 }
