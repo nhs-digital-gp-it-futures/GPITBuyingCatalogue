@@ -3,7 +3,8 @@
 @using NHSD.GPIT.BuyingCatalogue.Framework.Calculations
 @model NHSD.GPIT.BuyingCatalogue.WebApp.Models.OrderSummaryModel;
 @{
-    Layout = "";
+	Layout = "";
+	ViewContext.HttpContext.Items["RowCount"] = 0;
 }
 
 <!DOCTYPE html>
