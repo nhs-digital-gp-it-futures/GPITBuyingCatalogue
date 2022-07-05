@@ -42,7 +42,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Validators.ListPrices
             RuleFor(m => m)
                 .Must(NotBeADuplicate)
                 .WithMessage(SharedListPriceValidationErrors.DuplicateListPriceError)
-                .Unless(m => m.SelectedProvisioningType is null || m.Price is null)
+                .Unless(m => m.SelectedCalculationType is null || m.SelectedProvisioningType is null || m.Price is null)
                 .OverridePropertyName(
                     m => m.SelectedProvisioningType,
                     m => m.InputPrice,
