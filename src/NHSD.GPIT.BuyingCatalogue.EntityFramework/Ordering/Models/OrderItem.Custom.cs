@@ -39,7 +39,7 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models
                 if (OrderItemPrice == null)
                     return 0;
 
-                return (OrderItemPrice?.IsPerServiceRecipient() ?? false)
+                return OrderItemPrice.IsPerServiceRecipient()
                     ? OrderItemRecipients?.Sum(x => x.Quantity ?? 0) ?? 0
                     : Quantity ?? 0;
             }
@@ -52,7 +52,7 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models
                 if (OrderItemPrice == null)
                     return false;
 
-                return (OrderItemPrice?.IsPerServiceRecipient() ?? false)
+                return OrderItemPrice.IsPerServiceRecipient()
                     ? OrderItemRecipients?.All(x => x.Quantity.HasValue) ?? false
                     : Quantity.HasValue;
             }
