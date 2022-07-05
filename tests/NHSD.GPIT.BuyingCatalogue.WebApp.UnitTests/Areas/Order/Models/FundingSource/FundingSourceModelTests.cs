@@ -1,4 +1,5 @@
-﻿using AutoFixture.Xunit2;
+﻿using System.Linq;
+using AutoFixture.Xunit2;
 using FluentAssertions;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.AutoFixtureCustomisations;
@@ -13,11 +14,13 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.FundingS
         public static void FundingSource_WithArguments_FundingNull_SetsCorrectly(
             string internalOrgId,
             [Frozen] CallOffId callOffId,
-            OrderItem orderItem)
+            EntityFramework.Ordering.Models.Order order)
         {
+            var orderItem = order.OrderItems.First();
+
             orderItem.OrderItemFunding = null;
 
-            var model = new WebApp.Areas.Order.Models.FundingSources.FundingSource(internalOrgId, callOffId, orderItem);
+            var model = new WebApp.Areas.Order.Models.FundingSources.FundingSource(internalOrgId, callOffId, order, orderItem);
 
             model.Title.Should().Be($"{orderItem.CatalogueItem.Name} funding source");
             model.CallOffId.Should().Be(callOffId);
@@ -31,9 +34,11 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.FundingS
         public static void FundingSource_WithArguments_FundingSet_SetsCorrectly(
             string internalOrgId,
             [Frozen] CallOffId callOffId,
-            OrderItem orderItem)
+            EntityFramework.Ordering.Models.Order order)
         {
-            var model = new WebApp.Areas.Order.Models.FundingSources.FundingSource(internalOrgId, callOffId, orderItem);
+            var orderItem = order.OrderItems.First();
+
+            var model = new WebApp.Areas.Order.Models.FundingSources.FundingSource(internalOrgId, callOffId, order, orderItem);
 
             model.Title.Should().Be($"{orderItem.CatalogueItem.Name} funding source");
             model.CallOffId.Should().Be(callOffId);

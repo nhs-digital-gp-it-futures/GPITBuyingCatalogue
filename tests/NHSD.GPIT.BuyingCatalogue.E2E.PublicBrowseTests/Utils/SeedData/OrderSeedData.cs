@@ -356,6 +356,8 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
                     Phone = "123456789",
                 },
                 CommencementDate = DateTime.UtcNow.AddDays(1),
+                InitialPeriod = 6,
+                MaximumTerm = 36,
             };
 
             var price = context.CatalogueItems
@@ -370,6 +372,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
                 OrderItemPrice = price,
                 Created = DateTime.UtcNow,
                 OrderId = orderId,
+                Quantity = 10,
                 CatalogueItem = context.CatalogueItems.Single(c => c.Id == new CatalogueItemId(99999, "001")),
                 OrderItemFunding = new OrderItemFunding
                 {
@@ -417,6 +420,8 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
                     Phone = "123456789",
                 },
                 CommencementDate = DateTime.UtcNow.AddDays(1),
+                InitialPeriod = 6,
+                MaximumTerm = 36,
             };
 
             var price = context.CatalogueItems
@@ -434,6 +439,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
                 OrderItemPrice = price,
                 Created = DateTime.UtcNow,
                 OrderId = orderId,
+                Quantity = 10,
                 CatalogueItem = context.CatalogueItems.Single(c => c.Id == new CatalogueItemId(99999, "001")),
                 OrderItemFunding = new OrderItemFunding
                 {
@@ -481,6 +487,8 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
                     Phone = "123456789",
                 },
                 CommencementDate = timeNow.AddDays(1),
+                InitialPeriod = 6,
+                MaximumTerm = 36,
             };
 
             var user = GetBuyerUser(context, order.OrderingPartyId);

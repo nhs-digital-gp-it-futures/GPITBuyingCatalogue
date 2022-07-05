@@ -42,9 +42,11 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers.FundingSource
         [HttpGet("{catalogueItemId}/funding-source")]
         public async Task<IActionResult> FundingSource(string internalOrgId, CallOffId callOffId, CatalogueItemId catalogueItemId)
         {
+            var order = await orderService.GetOrderThin(callOffId, internalOrgId);
+
             var item = await orderItemService.GetOrderItem(callOffId, internalOrgId, catalogueItemId);
 
-            var model = new Models.FundingSources.FundingSource(internalOrgId, callOffId, item)
+            var model = new Models.FundingSources.FundingSource(internalOrgId, callOffId, order, item)
             {
                 BackLink = Url.Action(
                     nameof(FundingSources),

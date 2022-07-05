@@ -9,7 +9,6 @@ using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.AspNetCore.Routing;
 using Moq;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
-using NHSD.GPIT.BuyingCatalogue.Framework.Calculations;
 using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Orders;
 using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.AutoFixtureCustomisations;
@@ -57,12 +56,16 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Fun
             EntityFramework.Ordering.Models.Order order,
             [Frozen] OrderItem orderItem,
             [Frozen] Mock<IOrderItemService> orderItemServiceMock,
+            [Frozen] Mock<IOrderService> orderService,
             FundingSourceController controller)
         {
             orderItemServiceMock.Setup(oi => oi.GetOrderItem(order.CallOffId, internalOrgId, orderItem.CatalogueItemId))
                 .ReturnsAsync(orderItem);
 
-            var expectedViewData = new WebApp.Areas.Order.Models.FundingSources.FundingSource(internalOrgId, order.CallOffId, orderItem);
+            orderService.Setup(o => o.GetOrderThin(order.CallOffId, internalOrgId))
+                .ReturnsAsync(order);
+
+            var expectedViewData = new WebApp.Areas.Order.Models.FundingSources.FundingSource(internalOrgId, order.CallOffId, order, orderItem);
 
             var actual = await controller.FundingSource(internalOrgId, order.CallOffId, orderItem.CatalogueItemId);
 
@@ -81,7 +84,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Fun
             [Frozen] Mock<IOrderItemService> orderItemServiceMock,
             FundingSourceController controller)
         {
-            var model = new WebApp.Areas.Order.Models.FundingSources.FundingSource(internalOrgId, order.CallOffId, orderItem)
+            var model = new WebApp.Areas.Order.Models.FundingSources.FundingSource(internalOrgId, order.CallOffId, order, orderItem)
             {
                 SelectedFundingType = OrderItemFundingType.CentralFunding,
             };
@@ -112,7 +115,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Fun
             [Frozen] Mock<IOrderItemService> orderItemServiceMock,
             FundingSourceController controller)
         {
-            var model = new WebApp.Areas.Order.Models.FundingSources.FundingSource(internalOrgId, order.CallOffId, orderItem);
+            var model = new WebApp.Areas.Order.Models.FundingSources.FundingSource(internalOrgId, order.CallOffId, order, orderItem);
 
             controller.ModelState.AddModelError("test", "test");
 

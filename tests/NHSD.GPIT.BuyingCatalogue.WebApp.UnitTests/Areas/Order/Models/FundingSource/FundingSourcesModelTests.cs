@@ -22,7 +22,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.FundingS
 
             var model = new FundingSources(internalOrgId, order.CallOffId, order);
 
-            model.Title.Should().Be("Select funding sources");
+            model.Title.Should().Be("Funding sources");
             model.CallOffId.Should().Be(order.CallOffId);
             model.InternalOrgId.Should().Be(internalOrgId);
             model.Caption.Should().Be($"Order {order.CallOffId}");
@@ -45,7 +45,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.FundingS
 
             var model = new FundingSources(internalOrgId, order.CallOffId, order);
 
-            model.Title.Should().Be("Select funding sources");
+            model.Title.Should().Be("Funding sources");
             model.CallOffId.Should().Be(order.CallOffId);
             model.InternalOrgId.Should().Be(internalOrgId);
             model.Caption.Should().Be($"Order {order.CallOffId}");
@@ -67,7 +67,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.FundingS
 
             var model = new FundingSources(internalOrgId, order.CallOffId, order);
 
-            model.Title.Should().Be("Select funding sources");
+            model.Title.Should().Be("Funding sources");
             model.CallOffId.Should().Be(order.CallOffId);
             model.InternalOrgId.Should().Be(internalOrgId);
             model.Caption.Should().Be($"Order {order.CallOffId}");
@@ -92,7 +92,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.FundingS
 
             var model = new FundingSources(internalOrgId, order.CallOffId, order);
 
-            model.Title.Should().Be("Select funding sources");
+            model.Title.Should().Be("Funding sources");
             model.CallOffId.Should().Be(order.CallOffId);
             model.InternalOrgId.Should().Be(internalOrgId);
             model.Caption.Should().Be($"Order {order.CallOffId}");
@@ -114,7 +114,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.FundingS
 
             var model = new FundingSources(internalOrgId, order.CallOffId, order);
 
-            model.Title.Should().Be("Select funding sources");
+            model.Title.Should().Be("Funding sources");
             model.CallOffId.Should().Be(order.CallOffId);
             model.InternalOrgId.Should().Be(internalOrgId);
             model.Caption.Should().Be($"Order {order.CallOffId}");
