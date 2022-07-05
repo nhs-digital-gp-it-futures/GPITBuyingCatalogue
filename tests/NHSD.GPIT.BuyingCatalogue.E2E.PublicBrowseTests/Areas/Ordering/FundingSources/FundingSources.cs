@@ -53,7 +53,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering.FundingSources
                 nameof(FundingSourceController.FundingSources),
                 ParametersDFOCVC);
 
-            CommonActions.PageTitle().Should().BeEquivalentTo($"Select funding sources - Order {DFOCVCCallOffId}".FormatForComparison());
+            CommonActions.PageTitle().Should().BeEquivalentTo($"Funding sources - Order {DFOCVCCallOffId}".FormatForComparison());
             CommonActions.GoBackLinkDisplayed().Should().BeTrue();
             CommonActions.SaveButtonDisplayed().Should().BeTrue();
             CommonActions.ElementIsDisplayed(Objects.Ordering.FundingSources.LocalOnlyFundingSourcesTable).Should().BeTrue();
@@ -64,7 +64,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering.FundingSources
         [Fact]
         public void FundingSources_GPITFuturesSolution_AllSectionsDisplayed()
         {
-            CommonActions.PageTitle().Should().BeEquivalentTo($"Select funding sources - Order {GPITFuturesCallOffId}".FormatForComparison());
+            CommonActions.PageTitle().Should().BeEquivalentTo($"Funding sources - Order {GPITFuturesCallOffId}".FormatForComparison());
             CommonActions.GoBackLinkDisplayed().Should().BeTrue();
             CommonActions.SaveButtonDisplayed().Should().BeTrue();
             CommonActions.ElementIsDisplayed(Objects.Ordering.FundingSources.LocalOnlyFundingSourcesTable).Should().BeFalse();
@@ -80,7 +80,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering.FundingSources
                 nameof(FundingSourceController.FundingSources),
                 ParametersNoFunding);
 
-            CommonActions.PageTitle().Should().BeEquivalentTo($"Select funding sources - Order {NoFundingCallOffId}".FormatForComparison());
+            CommonActions.PageTitle().Should().BeEquivalentTo($"Funding sources - Order {NoFundingCallOffId}".FormatForComparison());
             CommonActions.GoBackLinkDisplayed().Should().BeTrue();
             CommonActions.SaveButtonDisplayed().Should().BeTrue();
             CommonActions.ElementIsDisplayed(Objects.Ordering.FundingSources.LocalOnlyFundingSourcesTable).Should().BeFalse();
