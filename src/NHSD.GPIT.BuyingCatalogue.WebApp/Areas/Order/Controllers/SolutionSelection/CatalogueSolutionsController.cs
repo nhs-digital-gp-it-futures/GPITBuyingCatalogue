@@ -9,6 +9,7 @@ using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.AdditionalServices;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Orders;
+using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Routing;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.SolutionSelection.Shared;
 
@@ -79,11 +80,12 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers.SolutionSelec
         }
 
         [HttpGet("select/associated-services-only")]
-        public async Task<IActionResult> SelectSolutionAssociatedServicesOnly(string internalOrgId, CallOffId callOffId)
+        public async Task<IActionResult> SelectSolutionAssociatedServicesOnly(string internalOrgId, CallOffId callOffId, RoutingSource? source = null)
         {
             var order = await orderService.GetOrderThin(callOffId, internalOrgId);
 
-            if (order.SolutionId is not null)
+            if (order.SolutionId is not null
+                && source != RoutingSource.SelectAssociatedServices)
             {
                 return RedirectToAction(
                     nameof(EditSolutionAssociatedServicesOnly),
@@ -113,7 +115,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers.SolutionSelec
             return RedirectToAction(
                 nameof(AssociatedServicesController.SelectAssociatedServices),
                 typeof(AssociatedServicesController).ControllerName(),
-                new { internalOrgId, callOffId });
+                new { internalOrgId, callOffId, source = RoutingSource.SelectSolution });
         }
 
         [HttpGet("edit")]
@@ -376,7 +378,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers.SolutionSelec
             return RedirectToAction(
                 nameof(AssociatedServicesController.SelectAssociatedServices),
                 typeof(AssociatedServicesController).ControllerName(),
-                new { internalOrgId, callOffId });
+                new { internalOrgId, callOffId, source = RoutingSource.EditSolution });
         }
 
         private async Task<SelectSolutionModel> GetSelectModel(

@@ -16,6 +16,7 @@ using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.AssociatedServices;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Orders;
+using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Routing;
 using NHSD.GPIT.BuyingCatalogue.UI.Components.TagHelpers;
 using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.AutoFixtureCustomisations;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers.SolutionSelection;
@@ -66,6 +67,27 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
 
         [Theory]
         [CommonAutoData]
+        public static void Get_AddAssociatedServices_SelectedIsTrue_ReturnsExpectedResult(
+            string internalOrgId,
+            CallOffId callOffId,
+            AssociatedServicesController controller)
+        {
+            var result = controller.AddAssociatedServices(internalOrgId, callOffId, selected: true);
+
+            var actualResult = result.Should().BeOfType<ViewResult>().Subject;
+
+            var expected = new AddAssociatedServicesModel
+            {
+                InternalOrgId = internalOrgId,
+                CallOffId = callOffId,
+                AdditionalServicesRequired = YesNoRadioButtonTagHelper.Yes,
+            };
+
+            actualResult.Model.Should().BeEquivalentTo(expected, x => x.Excluding(o => o.BackLink));
+        }
+
+        [Theory]
+        [CommonAutoData]
         public static void Post_AddAssociatedServices_WithModelErrors_ReturnsExpectedResult(
             AddAssociatedServicesModel model,
             AssociatedServicesController controller)
@@ -96,6 +118,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
             {
                 { "internalOrgId", model.InternalOrgId },
                 { "callOffId", model.CallOffId },
+                { "source", RoutingSource.AddAssociatedServices },
             });
         }
 
