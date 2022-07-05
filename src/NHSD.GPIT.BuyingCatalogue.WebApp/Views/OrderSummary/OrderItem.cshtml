@@ -1,6 +1,7 @@
 ﻿@using NHSD.GPIT.BuyingCatalogue.Framework.Calculations
 @using NHSD.GPIT.BuyingCatalogue.EntityFramework.Extensions
 @using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models
+@using NHSD.GPIT.BuyingCatalogue.WebApp.Extensions
 @model NHSD.GPIT.BuyingCatalogue.WebApp.Models.OrderSummaryItemModel
 
 <h3>@Model.OrderItem.CatalogueItem.Name</h3>
@@ -51,7 +52,7 @@
     }
     else
     {
-        @foreach (var (recipient, index) in Model.OrderItem.OrderItemRecipients.Select((x, i) => (x, i)))
+        @foreach (var recipient in Model.OrderItem.OrderItemRecipients)
         {
             <tr>
                 <td>
@@ -61,7 +62,7 @@
                     @recipient.Recipient.OdsCode
                 </td>
                 <td>
-                    @($"{Model.OrderItem.Order.CallOffId}-{recipient.Recipient.OdsCode}-{index + 1}")
+                    @($"{Model.OrderItem.Order.CallOffId}-{recipient.OdsCode}-{TempData.NextLineId()}")
                 </td>
                 <td>
                     @Model.ServiceInstanceId(recipient.OdsCode)
