@@ -9,6 +9,7 @@ using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.AssociatedServices;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Orders;
+using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Routing;
 using NHSD.GPIT.BuyingCatalogue.UI.Components.TagHelpers;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.SolutionSelection.AssociatedServices;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.SolutionSelection.Shared;
@@ -26,21 +27,24 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers.SolutionSelec
         private readonly IAssociatedServicesService associatedServicesService;
         private readonly IOrderItemService orderItemService;
         private readonly IOrderService orderService;
+        private readonly IRoutingService routingService;
 
         public AssociatedServicesController(
             IAssociatedServicesService associatedServicesService,
             IOrderItemService orderItemService,
-            IOrderService orderService)
+            IOrderService orderService,
+            IRoutingService routingService)
         {
             this.associatedServicesService = associatedServicesService ?? throw new ArgumentNullException(nameof(associatedServicesService));
             this.orderItemService = orderItemService ?? throw new ArgumentNullException(nameof(orderItemService));
             this.orderService = orderService ?? throw new ArgumentNullException(nameof(orderService));
+            this.routingService = routingService ?? throw new ArgumentNullException(nameof(routingService));
         }
 
         [HttpGet("add")]
-        public IActionResult AddAssociatedServices(string internalOrgId, CallOffId callOffId)
+        public IActionResult AddAssociatedServices(string internalOrgId, CallOffId callOffId, bool selected = false)
         {
-            return View(new AddAssociatedServicesModel
+            var model = new AddAssociatedServicesModel
             {
                 BackLink = Url.Action(
                     nameof(OrderController.Order),
@@ -48,7 +52,14 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers.SolutionSelec
                     new { internalOrgId, callOffId }),
                 InternalOrgId = internalOrgId,
                 CallOffId = callOffId,
-            });
+            };
+
+            if (selected)
+            {
+                model.AdditionalServicesRequired = YesNoRadioButtonTagHelper.Yes;
+            }
+
+            return View(model);
         }
 
         [HttpPost("add")]
@@ -65,7 +76,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers.SolutionSelec
             {
                 return RedirectToAction(
                     nameof(SelectAssociatedServices),
-                    new { internalOrgId, callOffId });
+                    new { internalOrgId, callOffId, source = RoutingSource.AddAssociatedServices });
             }
 
             return RedirectToAction(
@@ -75,9 +86,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers.SolutionSelec
         }
 
         [HttpGet("select")]
-        public async Task<IActionResult> SelectAssociatedServices(string internalOrgId, CallOffId callOffId)
+        public async Task<IActionResult> SelectAssociatedServices(string internalOrgId, CallOffId callOffId, RoutingSource? source = null)
         {
-            return View(await GetSelectServicesModel(internalOrgId, callOffId));
+            return View(await GetSelectServicesModel(internalOrgId, callOffId, source));
         }
 
         [HttpPost("select")]
@@ -114,7 +125,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers.SolutionSelec
         [HttpGet("edit")]
         public async Task<IActionResult> EditAssociatedServices(string internalOrgId, CallOffId callOffId)
         {
-            return View(SelectViewName, await GetSelectServicesModel(internalOrgId, callOffId, returnToTaskList: true));
+            return View(SelectViewName, await GetSelectServicesModel(internalOrgId, callOffId, RoutingSource.TaskList));
         }
 
         [HttpPost("edit")]
@@ -122,7 +133,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers.SolutionSelec
         {
             if (!ModelState.IsValid)
             {
-                return View(SelectViewName, await GetSelectServicesModel(internalOrgId, callOffId, returnToTaskList: true));
+                return View(SelectViewName, await GetSelectServicesModel(internalOrgId, callOffId, RoutingSource.TaskList));
             }
 
             var order = await orderService.GetOrderWithOrderItems(callOffId, internalOrgId);
@@ -244,7 +255,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers.SolutionSelec
                 new { internalOrgId, callOffId, model.ToAdd.First().CatalogueItemId });
         }
 
-        private async Task<SelectServicesModel> GetSelectServicesModel(string internalOrgId, CallOffId callOffId, bool returnToTaskList = false)
+        private async Task<SelectServicesModel> GetSelectServicesModel(
+            string internalOrgId,
+            CallOffId callOffId,
+            RoutingSource? source = RoutingSource.Dashboard)
         {
             var order = await orderService.GetOrderThin(callOffId, internalOrgId);
 
@@ -254,13 +268,14 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers.SolutionSelec
 
             var associatedServices = await associatedServicesService.GetPublishedAssociatedServicesForSolution(solutionId);
 
-            var backLink = returnToTaskList
-                ? Url.Action(nameof(TaskListController.TaskList), typeof(TaskListController).ControllerName(), new { internalOrgId, callOffId })
-                : Url.Action(nameof(OrderController.Order), typeof(OrderController).ControllerName(), new { internalOrgId, callOffId });
+            var route = routingService.GetRoute(
+                RoutingPoint.SelectAssociatedServicesBackLink,
+                order,
+                new RouteValues(internalOrgId, callOffId) { Source = source });
 
             return new SelectServicesModel(order, associatedServices, CatalogueItemType.AssociatedService)
             {
-                BackLink = backLink,
+                BackLink = Url.Action(route.ActionName, route.ControllerName, route.RouteValues),
                 InternalOrgId = internalOrgId,
                 CallOffId = callOffId,
                 AssociatedServicesOnly = order.AssociatedServicesOnly,

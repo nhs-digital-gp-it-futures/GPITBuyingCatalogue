@@ -16,6 +16,7 @@ using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.AdditionalServices;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Orders;
+using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Routing;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions;
 using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.AutoFixtureCustomisations;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers.SolutionSelection;
@@ -243,6 +244,44 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
 
         [Theory]
         [CommonAutoData]
+        public static async Task Get_SelectSolutionAssociatedServicesOnly_NonNullSolutionId_FromSelectAssociatedServices_ReturnsExpectedResult(
+            string internalOrgId,
+            CallOffId callOffId,
+            EntityFramework.Ordering.Models.Order order,
+            CatalogueItemId solutionId,
+            List<CatalogueItem> supplierSolutions,
+            [Frozen] Mock<IOrderService> mockOrderService,
+            [Frozen] Mock<ISolutionsService> mockSolutionsService,
+            CatalogueSolutionsController controller)
+        {
+            order.AssociatedServicesOnly = true;
+            order.SolutionId = solutionId;
+
+            mockOrderService
+                .Setup(x => x.GetOrderThin(callOffId, internalOrgId))
+                .ReturnsAsync(order);
+
+            mockSolutionsService
+                .Setup(x => x.GetSupplierSolutions(order.SupplierId))
+                .ReturnsAsync(supplierSolutions);
+
+            var result = await controller.SelectSolutionAssociatedServicesOnly(internalOrgId, callOffId, RoutingSource.SelectAssociatedServices);
+
+            mockOrderService.VerifyAll();
+            mockSolutionsService.VerifyAll();
+
+            var actualResult = result.Should().BeOfType<ViewResult>().Subject;
+
+            var expected = new SelectSolutionModel(order, supplierSolutions, Enumerable.Empty<CatalogueItem>())
+            {
+                SelectedCatalogueSolutionId = $"{solutionId}",
+            };
+
+            actualResult.Model.Should().BeEquivalentTo(expected, x => x.Excluding(o => o.BackLink));
+        }
+
+        [Theory]
+        [CommonAutoData]
         public static async Task Get_SelectSolutionAssociatedServicesOnly_ReturnsExpectedResult(
             string internalOrgId,
             CallOffId callOffId,
@@ -346,6 +385,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
             {
                 { "internalOrgId", internalOrgId },
                 { "callOffId", callOffId },
+                { "source", RoutingSource.SelectSolution },
             });
         }
 
@@ -950,6 +990,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
             {
                 { "internalOrgId", internalOrgId },
                 { "callOffId", callOffId },
+                { "source", RoutingSource.EditSolution },
             });
         }
     }

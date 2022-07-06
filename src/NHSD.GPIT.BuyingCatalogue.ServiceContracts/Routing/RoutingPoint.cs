@@ -7,6 +7,7 @@
         EditPrice,
         EditPriceBackLink,
         SelectAdditionalServices,
+        SelectAssociatedServicesBackLink,
         SelectPriceBackLink,
         SelectQuantity,
         SelectQuantityBackLink,
