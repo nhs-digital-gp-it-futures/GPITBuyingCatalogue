@@ -18,7 +18,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.FundingSources
             Caption = $"Order {CallOffId}";
             MaximumTerm = order.MaximumTerm!.Value;
 
-            var completedOrderItems = order.OrderItems.Where(oi => oi.OrderItemRecipients.Any() && oi.OrderItemPrice is not null && oi.AllQuantitiesEntered).ToList();
+            var completedOrderItems = order.OrderItems.Where(oi => oi.AllQuantitiesEntered).ToList();
 
             OrderItemsNoFundingRequired = completedOrderItems.Where(oi => oi.FundingType == OrderItemFundingType.NoFundingRequired).ToList();
             OrderItemsLocalOnly = completedOrderItems.Where(oi => oi.FundingType == OrderItemFundingType.LocalFundingOnly).ToList();

@@ -888,6 +888,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
                             CataloguePriceCalculationType = CataloguePriceCalculationType.Volume,
                             CataloguePriceType = CataloguePriceType.Flat,
                             PublishedStatus = PublicationStatus.Published,
+                            CataloguePriceQuantityCalculationType = CataloguePriceQuantityCalculationType.PerServiceRecipient,
                             PricingUnit = new PricingUnit
                             {
                                 Id = 1,
@@ -1323,6 +1324,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
                             CataloguePriceType = CataloguePriceType.Flat,
                             PublishedStatus = PublicationStatus.Published,
                             CataloguePriceCalculationType = CataloguePriceCalculationType.SingleFixed,
+                            CataloguePriceQuantityCalculationType = CataloguePriceQuantityCalculationType.PerServiceRecipient,
                             PricingUnit = new PricingUnit
                             {
                                 Id = 6,

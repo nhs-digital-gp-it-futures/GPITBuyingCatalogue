@@ -54,27 +54,27 @@
     {
         @foreach (var recipient in Model.OrderItem.OrderItemRecipients)
         {
-			<tr>
-				<td>
-					@recipient.Recipient.Name
-				</td>
-				<td>
-					@recipient.Recipient.OdsCode
-				</td>
-				<td>
-					@($"{Model.OrderItem.Order.CallOffId}-{recipient.Recipient.OdsCode}-{ViewContext.HttpContext.NextLineId()}")
-				</td>
-				<td>
-					@Model.ServiceInstanceId(recipient.OdsCode)
-				</td>
+            <tr>
+                <td>
+                    @recipient.Recipient.Name
+                </td>
+                <td>
+                    @recipient.Recipient.OdsCode
+                </td>
+                <td>
+                    @($"{Model.OrderItem.Order.CallOffId}-{recipient.Recipient.OdsCode}-{ViewContext.HttpContext.NextLineId()}")
+                </td>
+                <td>
+                    @Model.ServiceInstanceId(recipient.OdsCode)
+                </td>
 
-				@if (hasServiceRecipientQuantities)
-				{
-					<td class="numeric">
-						@(recipient.Quantity.HasValue ? $"{recipient.Quantity:N0}" : "-")
-					</td>
-				}
-			</tr>
+                @if (hasServiceRecipientQuantities)
+                {
+                <td class="numeric">
+	                @(recipient.Quantity.HasValue ? $"{recipient.Quantity:N0}" : "-")
+                </td>
+                }
+            </tr>
         }
 
         @if (hasServiceRecipientQuantities
