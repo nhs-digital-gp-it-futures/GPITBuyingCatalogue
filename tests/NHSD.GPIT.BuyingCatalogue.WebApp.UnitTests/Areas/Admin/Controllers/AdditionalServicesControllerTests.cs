@@ -65,7 +65,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
             solutionsService.Setup(s => s.GetSolutionThin(catalogueItem.Id))
                 .ReturnsAsync(catalogueItem);
 
-            additionalServicesService.Setup(s => s.GetAdditionalServicesBySolutionId(catalogueItem.Id))
+            additionalServicesService.Setup(s => s.GetAdditionalServicesBySolutionId(catalogueItem.Id, false))
                 .ReturnsAsync(additionalServices);
 
             var result = await controller.Index(catalogueItem.Id);

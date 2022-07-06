@@ -85,7 +85,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
                 .ReturnsAsync(order);
 
             mockAdditionalServicesService
-                .Setup(x => x.GetAdditionalServicesBySolutionId(order.OrderItems.First().CatalogueItemId))
+                .Setup(x => x.GetAdditionalServicesBySolutionId(order.OrderItems.First().CatalogueItemId, true))
                 .ReturnsAsync(additionalServices);
 
             var result = await controller.TaskList(internalOrgId, callOffId);

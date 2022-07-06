@@ -52,7 +52,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers.SolutionSelec
 
             var additionalServices = order.AssociatedServicesOnly
                 ? new List<CatalogueItem>()
-                : await additionalServicesService.GetAdditionalServicesBySolutionId(solutionId);
+                : await additionalServicesService.GetAdditionalServicesBySolutionId(solutionId, publishedOnly: true);
 
             var associatedServices = await associatedServicesService.GetPublishedAssociatedServicesForSolution(solutionId);
 
