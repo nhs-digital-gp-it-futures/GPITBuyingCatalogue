@@ -1,6 +1,7 @@
 ﻿@using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models
 @using NHSD.GPIT.BuyingCatalogue.EntityFramework.Extensions
 @using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models
+@using NHSD.GPIT.BuyingCatalogue.WebApp.Extensions;
 @model OrderItem
 
 @{
@@ -25,13 +26,12 @@
             <nhs-table-column>Service instance ID</nhs-table-column>
             <nhs-table-column>Quantity</nhs-table-column>
 
-            @for (var i = 0; i < Model.OrderItemRecipients.Count; i++, ViewContext.HttpContext.Items["RowCount"] = (int)ViewContext.HttpContext.Items["RowCount"] + 1)
+			@foreach(var serviceRecipient in Model.OrderItemRecipients)
             {
-                var serviceRecipient = Model.OrderItemRecipients.ElementAt(i);
                 <nhs-table-row-container>
                     <nhs-table-cell>@serviceRecipient.Recipient.Name</nhs-table-cell>
                     <nhs-table-cell>@serviceRecipient.Recipient.OdsCode</nhs-table-cell>
-                    <nhs-table-cell>@($"{Model.Order.CallOffId}-{serviceRecipient.Recipient.OdsCode}-{ViewContext.HttpContext.Items["RowCount"]}")</nhs-table-cell>
+                    <nhs-table-cell>@($"{Model.Order.CallOffId}-{serviceRecipient.Recipient.OdsCode}-{ViewContext.HttpContext.NextLineId()}")</nhs-table-cell>
                     <nhs-table-cell>@Model.Order.ServiceInstanceItems.First(p => p.OdsCode == serviceRecipient.Recipient.OdsCode).ServiceInstanceId</nhs-table-cell>
                     <nhs-table-cell>
                         @if (hasServiceRecipientQuantities)

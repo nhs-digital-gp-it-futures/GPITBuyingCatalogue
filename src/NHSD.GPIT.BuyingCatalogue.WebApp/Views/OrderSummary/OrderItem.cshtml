@@ -1,6 +1,7 @@
-﻿@using NHSD.GPIT.BuyingCatalogue.Framework.Calculations
-@using NHSD.GPIT.BuyingCatalogue.EntityFramework.Extensions
-@using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models
+﻿@using NHSD.GPIT.BuyingCatalogue.Framework.Calculations;
+@using NHSD.GPIT.BuyingCatalogue.EntityFramework.Extensions;
+@using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
+@using NHSD.GPIT.BuyingCatalogue.WebApp.Extensions;
 @model NHSD.GPIT.BuyingCatalogue.WebApp.Models.OrderSummaryItemModel
 
 <h3>@Model.OrderItem.CatalogueItem.Name</h3>
@@ -51,30 +52,29 @@
     }
     else
     {
-        @for (var i = 0; i < Model.OrderItem.OrderItemRecipients.Count; i++, ViewContext.HttpContext.Items["RowCount"] = (int)ViewContext.HttpContext.Items["RowCount"] + 1)
+        @foreach (var recipient in Model.OrderItem.OrderItemRecipients)
         {
-				var recipient = Model.OrderItem.OrderItemRecipients.ElementAt(i);
-				<tr>
-                <td>
-                    @recipient.Recipient.Name
-                </td>
-                <td>
-                    @recipient.Recipient.OdsCode
-                </td>
-                <td>
-                    @($"{Model.OrderItem.Order.CallOffId}-{recipient.Recipient.OdsCode}-{ViewContext.HttpContext.Items["RowCount"]}")
-                </td>
-                <td>
-                    @Model.ServiceInstanceId(recipient.OdsCode)
-                </td>
+			<tr>
+				<td>
+					@recipient.Recipient.Name
+				</td>
+				<td>
+					@recipient.Recipient.OdsCode
+				</td>
+				<td>
+					@($"{Model.OrderItem.Order.CallOffId}-{recipient.Recipient.OdsCode}-{ViewContext.HttpContext.NextLineId()}")
+				</td>
+				<td>
+					@Model.ServiceInstanceId(recipient.OdsCode)
+				</td>
 
-                @if (hasServiceRecipientQuantities)
-                {
-                    <td class="numeric">
-                        @(recipient.Quantity.HasValue ? $"{recipient.Quantity:N0}" : "-")
-                    </td>
-                }
-            </tr>
+				@if (hasServiceRecipientQuantities)
+				{
+					<td class="numeric">
+						@(recipient.Quantity.HasValue ? $"{recipient.Quantity:N0}" : "-")
+					</td>
+				}
+			</tr>
         }
 
         @if (hasServiceRecipientQuantities
