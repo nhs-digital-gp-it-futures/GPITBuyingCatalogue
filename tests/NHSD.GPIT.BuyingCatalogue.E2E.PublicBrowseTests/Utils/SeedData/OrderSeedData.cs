@@ -505,6 +505,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
                 OrderItemPrice = price,
                 Created = DateTime.UtcNow,
                 OrderId = orderId,
+                Quantity = 10,
                 CatalogueItem = context.CatalogueItems.Single(c => c.Id == new CatalogueItemId(99998, "002")),
             };
 
