@@ -888,7 +888,6 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
                             CataloguePriceCalculationType = CataloguePriceCalculationType.Volume,
                             CataloguePriceType = CataloguePriceType.Flat,
                             PublishedStatus = PublicationStatus.Published,
-                            CataloguePriceQuantityCalculationType = CataloguePriceQuantityCalculationType.PerServiceRecipient,
                             PricingUnit = new PricingUnit
                             {
                                 Id = 1,
@@ -919,6 +918,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
                             CataloguePriceType = CataloguePriceType.Flat,
                             CataloguePriceCalculationType = CataloguePriceCalculationType.Volume,
                             PublishedStatus = PublicationStatus.Published,
+                            CataloguePriceQuantityCalculationType = CataloguePriceQuantityCalculationType.PerServiceRecipient,
                             PricingUnit = new PricingUnit
                             {
                                 Id = 2,
@@ -949,6 +949,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
                             CataloguePriceType = CataloguePriceType.Flat,
                             CataloguePriceCalculationType = CataloguePriceCalculationType.Volume,
                             PublishedStatus = PublicationStatus.Published,
+                            CataloguePriceQuantityCalculationType = CataloguePriceQuantityCalculationType.PerServiceRecipient,
                             PricingUnit = new PricingUnit
                             {
                                 Id = 3,
@@ -1324,7 +1325,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
                             CataloguePriceType = CataloguePriceType.Flat,
                             PublishedStatus = PublicationStatus.Published,
                             CataloguePriceCalculationType = CataloguePriceCalculationType.SingleFixed,
-                            CataloguePriceQuantityCalculationType = CataloguePriceQuantityCalculationType.PerServiceRecipient,
+                            CataloguePriceQuantityCalculationType = CataloguePriceQuantityCalculationType.PerSolutionOrService,
                             PricingUnit = new PricingUnit
                             {
                                 Id = 6,
