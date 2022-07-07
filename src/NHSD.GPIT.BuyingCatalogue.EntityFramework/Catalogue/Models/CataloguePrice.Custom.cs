@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Interfaces;
@@ -16,6 +17,17 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models
         public string ToPriceUnitString()
         {
             return $"{PricingUnit?.Description ?? string.Empty} {(TimeUnit.HasValue ? TimeUnit.Value.Description() : string.Empty)}".Trim();
+        }
+
+        public bool HasDifferentQuantityBasisThan(CataloguePrice price)
+        {
+            if (price == null)
+            {
+                throw new ArgumentNullException(nameof(price));
+            }
+
+            return ProvisioningType != price.ProvisioningType
+                || CataloguePriceQuantityCalculationType != price.CataloguePriceQuantityCalculationType;
         }
 
         public (bool HasOverlap, int? LowerTierIndex, int? UpperTierIndex) HasTierRangeOverlap()

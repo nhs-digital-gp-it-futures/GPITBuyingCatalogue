@@ -32,6 +32,68 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Orders
 
         [Theory]
         [InMemoryDbAutoData]
+        public static async Task ResetItemQuantities_OrderItemNotInDatabase_NoActionTaken(
+            int orderId,
+            CatalogueItemId catalogueItemId,
+            [Frozen] BuyingCatalogueDbContext context,
+            OrderQuantityService service)
+        {
+            var expected = context.OrderItems
+                .FirstOrDefault(x => x.OrderId == orderId
+                    && x.CatalogueItemId == catalogueItemId);
+
+            expected.Should().BeNull();
+
+            await service.ResetItemQuantities(orderId, catalogueItemId);
+
+            var actual = context.OrderItems
+                .FirstOrDefault(x => x.OrderId == orderId
+                    && x.CatalogueItemId == catalogueItemId);
+
+            actual.Should().BeNull();
+        }
+
+        [Theory]
+        [InMemoryDbAutoData]
+        public static async Task ResetItemQuantities_OrderItemInDatabase_ExpectedResult(
+            Order order,
+            [Frozen] BuyingCatalogueDbContext context,
+            OrderQuantityService service)
+        {
+            var orderItem = order.OrderItems.First();
+
+            order.OrderItems = new List<OrderItem> { orderItem };
+            order.OrderItems.ForEach(x =>
+            {
+                x.Quantity = 1;
+                x.OrderItemRecipients.ForEach(r => r.Quantity = 1);
+            });
+
+            context.Orders.Add(order);
+
+            await context.SaveChangesAsync();
+
+            var expected = context.OrderItems
+                .FirstOrDefault(x => x.OrderId == order.Id
+                    && x.CatalogueItemId == orderItem.CatalogueItemId);
+
+            expected.Should().NotBeNull();
+            expected!.Quantity.Should().Be(1);
+            expected.OrderItemRecipients.ForEach(x => x.Quantity.Should().Be(1));
+
+            await service.ResetItemQuantities(order.Id, orderItem.CatalogueItemId);
+
+            var actual = context.OrderItems
+                .FirstOrDefault(x => x.OrderId == order.Id
+                    && x.CatalogueItemId == orderItem.CatalogueItemId);
+
+            actual.Should().NotBeNull();
+            actual!.Quantity.Should().BeNull();
+            actual.OrderItemRecipients.ForEach(x => x.Quantity.Should().BeNull());
+        }
+
+        [Theory]
+        [InMemoryDbAutoData]
         public static async Task SetOrderItemQuantity_OrderItemNotInDatabase_NoActionTaken(
             [Frozen] BuyingCatalogueDbContext context,
             int orderId,

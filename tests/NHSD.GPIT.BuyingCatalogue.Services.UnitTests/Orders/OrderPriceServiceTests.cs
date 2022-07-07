@@ -7,6 +7,7 @@ using AutoFixture.AutoMoq;
 using AutoFixture.Idioms;
 using AutoFixture.Xunit2;
 using FluentAssertions;
+using Moq;
 using MoreLinq;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
@@ -116,13 +117,23 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Orders
         [Theory]
         [InMemoryDbAutoData]
         public static async Task UpsertPrice_OrderItemInDatabase_WithExistingPrice_RemovesExistingPriceAndTiers(
-            [Frozen] BuyingCatalogueDbContext context,
+            CatalogueItem existingCatalogueItem,
+            CataloguePrice existingCataloguePrice,
             Order order,
+            [Frozen] BuyingCatalogueDbContext context,
+            [Frozen] Mock<IOrderQuantityService> mockOrderQuantityService,
             OrderPriceService service)
         {
+            existingCataloguePrice.CatalogueItemId = existingCatalogueItem.Id;
+
             var orderItem = order.OrderItems.First();
 
+            orderItem.OrderItemPrice.CataloguePriceId = existingCataloguePrice.CataloguePriceId;
+
+            context.CatalogueItems.Add(existingCatalogueItem);
+            context.CataloguePrices.Add(existingCataloguePrice);
             context.Orders.Add(order);
+
             await context.SaveChangesAsync();
 
             var existingPrice = context.OrderItemPrices
@@ -133,7 +144,13 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Orders
 
             var price = orderItem.CatalogueItem.CataloguePrices.First();
 
+            mockOrderQuantityService
+                .Setup(x => x.ResetItemQuantities(order.Id, orderItem.CatalogueItemId))
+                .Verifiable();
+
             await service.UpsertPrice(order.Id, price, new List<OrderPricingTierDto>());
+
+            mockOrderQuantityService.VerifyAll();
 
             var actual = context.OrderItemPrices
                 .FirstOrDefault(x => x.OrderId == order.Id

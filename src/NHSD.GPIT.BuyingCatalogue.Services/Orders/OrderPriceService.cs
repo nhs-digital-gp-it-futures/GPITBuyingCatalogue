@@ -13,10 +13,12 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
     public class OrderPriceService : IOrderPriceService
     {
         private readonly BuyingCatalogueDbContext dbContext;
+        private readonly IOrderQuantityService orderQuantityService;
 
-        public OrderPriceService(BuyingCatalogueDbContext dbContext)
+        public OrderPriceService(BuyingCatalogueDbContext dbContext, IOrderQuantityService orderQuantityService)
         {
             this.dbContext = dbContext ?? throw new ArgumentNullException(nameof(dbContext));
+            this.orderQuantityService = orderQuantityService ?? throw new ArgumentNullException(nameof(orderQuantityService));
         }
 
         public async Task UpdatePrice(int orderId, CatalogueItemId catalogueItemId, List<OrderPricingTierDto> agreedPrices)
@@ -79,6 +81,14 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
 
             if (orderItem.OrderItemPrice != null)
             {
+                var existingPrice = await dbContext.CataloguePrices
+                    .SingleAsync(x => x.CataloguePriceId == orderItem.OrderItemPrice.CataloguePriceId);
+
+                if (existingPrice.HasDifferentQuantityBasisThan(price))
+                {
+                    await orderQuantityService.ResetItemQuantities(orderId, orderItem.CatalogueItemId);
+                }
+
                 dbContext.OrderItemPrices.Remove(orderItem.OrderItemPrice);
                 dbContext.OrderItemPriceTiers.RemoveRange(orderItem.OrderItemPrice.OrderItemPriceTiers);
             }
