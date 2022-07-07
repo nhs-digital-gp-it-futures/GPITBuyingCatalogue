@@ -1,11 +1,9 @@
 ﻿using System;
 using System.Linq;
 using System.Threading.Tasks;
-using LinqKit;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
-using NHSD.GPIT.BuyingCatalogue.EntityFramework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Orders;
@@ -22,7 +20,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers.SolutionSelec
     {
         private const string OrderItemViewName = "SelectOrderItemQuantity";
         private const string ServiceRecipientViewName = "SelectServiceRecipientQuantity";
-        private const string PerServiceRecipientViewName = "PerServiceRecipientQuantity";
 
         private readonly IGpPracticeCacheService gpPracticeCache;
         private readonly IOrderService orderService;
@@ -126,13 +123,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers.SolutionSelec
                 Source = source,
             };
 
-            if (orderItem.OrderItemPrice.ProvisioningType == ProvisioningType.PerServiceRecipient)
-            {
-                const int perServiceRecipientQuantity = 1;
-                model.ServiceRecipients.ForEach(sr => sr.Quantity = perServiceRecipientQuantity);
-
-                return View(PerServiceRecipientViewName, model);
-            }
+            if (orderItem.OrderItemPrice.ProvisioningType != ProvisioningType.Patient)
+                return View(ServiceRecipientViewName, model);
 
             await SetPracticeSizes(model);
 
