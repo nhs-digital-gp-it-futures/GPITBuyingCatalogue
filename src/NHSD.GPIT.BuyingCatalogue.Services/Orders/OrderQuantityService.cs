@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using LinqKit;
 using Microsoft.EntityFrameworkCore;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
@@ -16,6 +17,28 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
         public OrderQuantityService(BuyingCatalogueDbContext dbContext)
         {
             this.dbContext = dbContext ?? throw new ArgumentNullException(nameof(dbContext));
+        }
+
+        public async Task ResetItemQuantities(int orderId, CatalogueItemId catalogueItemId)
+        {
+            var orderItem = await dbContext.OrderItems
+                .Include(x => x.OrderItemRecipients)
+                .SingleOrDefaultAsync(x => x.OrderId == orderId
+                    && x.CatalogueItemId == catalogueItemId);
+
+            if (orderItem == null)
+            {
+                return;
+            }
+
+            orderItem.Quantity = null;
+
+            if (orderItem.OrderItemRecipients?.Any() ?? false)
+            {
+                orderItem.OrderItemRecipients.ForEach(x => x.Quantity = null);
+            }
+
+            await dbContext.SaveChangesAsync();
         }
 
         public async Task SetOrderItemQuantity(int orderId, CatalogueItemId catalogueItemId, int quantity)
