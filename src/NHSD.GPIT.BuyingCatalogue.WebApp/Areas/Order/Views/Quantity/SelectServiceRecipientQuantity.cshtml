@@ -11,13 +11,16 @@
 
         <nhs-page-title title="@ViewBag.Title"
                         caption="@Model!.ItemName"
-                        advice="We’ve included the latest practice list sizes published by NHS Digital." />
-                        
-        <nhs-inset-text>
-            The latest practice list sizes are published on
-            <a href="https://digital.nhs.uk/data-and-information/publications/statistical/patients-registered-at-a-gp-practice"
-               target="_blank">the NHS Digital website (opens in a new tab)</a>.
-        </nhs-inset-text>
+                        advice="@Model.LedeText" />
+
+        @if (Model.ShouldShowInset)
+        {
+            <nhs-inset-text>
+                The latest practice list sizes are published on
+                <a href="https://digital.nhs.uk/data-and-information/publications/statistical/patients-registered-at-a-gp-practice"
+                   target="_blank">the NHS Digital website (opens in a new tab)</a>.
+            </nhs-inset-text>
+        }
 
         <form method="post">
             <input type="hidden" asp-for="@Model.BackLink" />
