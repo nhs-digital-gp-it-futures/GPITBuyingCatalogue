@@ -50,10 +50,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.SolutionSelection.
 
         public IEnumerable<CatalogueItemId> GetAdditionalServicesIdsForSelectedCatalogueSolution()
         {
-            return AdditionalServices
+            return AdditionalServices?
                 .Where(x => x.IsSelected
-                        && $"{x.CatalogueItemId}".StartsWith(SelectedCatalogueSolutionId))
-                .Select(x => x.CatalogueItemId);
+                    && $"{x.CatalogueItemId}".StartsWith(SelectedCatalogueSolutionId))
+                .Select(x => x.CatalogueItemId) ?? Enumerable.Empty<CatalogueItemId>();
         }
     }
 }
