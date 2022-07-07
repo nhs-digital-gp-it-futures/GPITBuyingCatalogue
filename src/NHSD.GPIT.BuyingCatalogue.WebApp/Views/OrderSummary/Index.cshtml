@@ -36,6 +36,14 @@
     <meta name="robots" content="noindex">
     <meta name="googlebot" content="noindex">
     <style>
+        @@media print {
+            @@page {
+                size: A4 landscape;
+                max-height:100%;
+                max-width:100%
+            }
+        }
+
         .nhsuk-table-responsive th {
             font-size: 1em;
             white-space: normal;
@@ -77,6 +85,14 @@
             -webkit-break-inside: avoid;
             break-after: auto;
             break-inside: avoid;
+        }
+
+        tbody tr:nth-child(odd) {
+            background-color: #F8F8F8;
+        }
+
+        tbody tr.totals {
+            background-color: #FFFFFF;
         }
 
         td:last-child {
@@ -163,8 +179,7 @@
                     {
                         <pdf-summary-list-row label-text="Call-off ordering party">
                             @Model.Order.OrderingPartyContact.FirstName @Model.Order.OrderingPartyContact.LastName <br/>
-                            @Model.Order.OrderingParty.Name<br/>
-                            @Model.Order.OrderingParty.ExternalIdentifier<br/>
+                            @Model.Order.OrderingParty.Name (@Model.Order.OrderingParty.ExternalIdentifier)<br/>
                             <vc:nhs-address address="@Model.Order.OrderingParty.Address"/>
                         </pdf-summary-list-row>
                     }
