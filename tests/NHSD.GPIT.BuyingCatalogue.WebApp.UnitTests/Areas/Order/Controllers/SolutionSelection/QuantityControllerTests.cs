@@ -267,6 +267,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
             var solution = order.OrderItems.First();
 
             solution.CatalogueItem.CatalogueItemType = CatalogueItemType.Solution;
+            solution.OrderItemPrice.ProvisioningType = ProvisioningType.Patient;
             solution.OrderItemRecipients.ForEach(x => x.Quantity = NumberOfPatients);
 
             var orderItem = order.OrderItems.ElementAt(1);
