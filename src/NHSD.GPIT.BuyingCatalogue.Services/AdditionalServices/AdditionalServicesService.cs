@@ -73,14 +73,16 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.AdditionalServices
                     .ThenInclude(cie => cie.Epic)
                 .SingleOrDefaultAsync(ci => ci.Id == additionalServiceId);
 
-        public async Task<List<CatalogueItem>> GetAdditionalServicesBySolutionId(CatalogueItemId? catalogueItemId)
+        public async Task<List<CatalogueItem>> GetAdditionalServicesBySolutionId(CatalogueItemId? catalogueItemId, bool publishedOnly = false)
         {
             if (!catalogueItemId.HasValue)
             {
                 return new List<CatalogueItem>();
             }
 
-            return await BaseQuery(catalogueItemId.Value).ToListAsync();
+            return publishedOnly
+                ? await BaseQuery(catalogueItemId.Value).Where(x => x.PublishedStatus == PublicationStatus.Published).ToListAsync()
+                : await BaseQuery(catalogueItemId.Value).ToListAsync();
         }
 
         /* TODO - Tiered Pricing - Reintroduce Pricing Information*/
@@ -112,16 +114,19 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.AdditionalServices
                     && add.CatalogueItem.Name == additionalServiceName
                     && add.CatalogueItemId != currentCatalogueItemId);
 
-        private IQueryable<CatalogueItem> BaseQuery(CatalogueItemId catalogueItemId) => dbContext.CatalogueItems
+        private IQueryable<CatalogueItem> BaseQuery(CatalogueItemId catalogueItemId)
+        {
+            return dbContext.CatalogueItems
                 .Include(i => i.AdditionalService)
                 .Include(i => i.CatalogueItemCapabilities)
                 .Include(i => i.CatalogueItemEpics)
                 .Include(i => i.Supplier)
-                .Include(ci => ci.CataloguePrices)
-                .ThenInclude(cp => cp.PricingUnit)
-                .Include(ci => ci.CataloguePrices)
-                .ThenInclude(cp => cp.CataloguePriceTiers)
-                .Where(i => i.AdditionalService.SolutionId == catalogueItemId && i.CatalogueItemType == CatalogueItemType.AdditionalService)
+                .Include(ci => ci.CataloguePrices).ThenInclude(cp => cp.PricingUnit)
+                .Include(ci => ci.CataloguePrices).ThenInclude(cp => cp.CataloguePriceTiers)
+                .AsSplitQuery()
+                .Where(i => i.AdditionalService.SolutionId == catalogueItemId
+                    && i.CatalogueItemType == CatalogueItemType.AdditionalService)
                 .OrderBy(i => i.Name);
+        }
     }
 }

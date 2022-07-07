@@ -803,7 +803,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
                 .Callback<string, CallOffId, IEnumerable<CatalogueItemId>>((_, _, x) => addedItemIds = x);
 
             mockAdditionalServicesService
-                .Setup(x => x.GetAdditionalServicesBySolutionId(newSolutionId))
+                .Setup(x => x.GetAdditionalServicesBySolutionId(newSolutionId, true))
                 .ReturnsAsync(new List<CatalogueItem>());
 
             var result = await controller.ConfirmSolutionChanges(internalOrgId, callOffId, model);
@@ -854,7 +854,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
                 .Callback<string, CallOffId, IEnumerable<CatalogueItemId>>((_, _, x) => addedItemIds = x);
 
             mockAdditionalServicesService
-                .Setup(x => x.GetAdditionalServicesBySolutionId(model.ToAdd.First().CatalogueItemId))
+                .Setup(x => x.GetAdditionalServicesBySolutionId(model.ToAdd.First().CatalogueItemId, true))
                 .ReturnsAsync(additionalServices);
 
             var result = await controller.ConfirmSolutionChanges(internalOrgId, callOffId, model);

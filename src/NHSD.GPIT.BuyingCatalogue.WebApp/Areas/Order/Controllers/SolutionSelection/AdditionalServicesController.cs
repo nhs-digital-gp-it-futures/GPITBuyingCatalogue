@@ -135,7 +135,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers.SolutionSelec
         public async Task<IActionResult> ConfirmAdditionalServiceChanges(string internalOrgId, CallOffId callOffId, string serviceIds)
         {
             var order = await orderService.GetOrderWithOrderItems(callOffId, internalOrgId);
-            var additionalServices = await additionalServicesService.GetAdditionalServicesBySolutionId(order.GetSolution().CatalogueItemId);
+            var additionalServices = await additionalServicesService.GetAdditionalServicesBySolutionId(order.GetSolution().CatalogueItemId, publishedOnly: true);
 
             var existingServiceIds = order.GetAdditionalServices()
                 .Select(x => x.CatalogueItemId)
@@ -214,7 +214,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers.SolutionSelec
         private async Task<SelectServicesModel> GetModel(string internalOrgId, CallOffId callOffId, bool returnToTaskList = false)
         {
             var order = await orderService.GetOrderThin(callOffId, internalOrgId);
-            var additionalServices = await additionalServicesService.GetAdditionalServicesBySolutionId(order.GetSolution().CatalogueItemId);
+            var additionalServices = await additionalServicesService.GetAdditionalServicesBySolutionId(order.GetSolution().CatalogueItemId, publishedOnly: true);
 
             var backLink = returnToTaskList
                 ? Url.Action(nameof(TaskListController.TaskList), typeof(TaskListController).ControllerName(), new { internalOrgId, callOffId })

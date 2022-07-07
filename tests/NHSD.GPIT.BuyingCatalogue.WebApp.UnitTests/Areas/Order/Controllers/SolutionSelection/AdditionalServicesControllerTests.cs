@@ -93,7 +93,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
                 .ReturnsAsync(order);
 
             mockAdditionalServicesService
-                .Setup(x => x.GetAdditionalServicesBySolutionId(solutionId))
+                .Setup(x => x.GetAdditionalServicesBySolutionId(solutionId, true))
                 .ReturnsAsync(services);
 
             var result = await controller.SelectAdditionalServices(internalOrgId, order.CallOffId);
@@ -226,7 +226,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
                 .ReturnsAsync(order);
 
             mockAdditionalServicesService
-                .Setup(x => x.GetAdditionalServicesBySolutionId(solutionId))
+                .Setup(x => x.GetAdditionalServicesBySolutionId(solutionId, true))
                 .ReturnsAsync(services);
 
             var result = await controller.EditAdditionalServices(internalOrgId, order.CallOffId);
@@ -393,7 +393,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
                 .ReturnsAsync(order);
 
             mockAdditionalServicesService
-                .Setup(x => x.GetAdditionalServicesBySolutionId(solutionId))
+                .Setup(x => x.GetAdditionalServicesBySolutionId(solutionId, true))
                 .ReturnsAsync(services);
 
             var serviceIds = string.Join(",", new[]

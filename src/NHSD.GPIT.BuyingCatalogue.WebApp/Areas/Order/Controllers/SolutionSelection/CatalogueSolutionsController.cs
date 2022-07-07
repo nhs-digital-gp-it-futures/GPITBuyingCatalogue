@@ -297,7 +297,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers.SolutionSelec
             await orderItemService.AddOrderItems(internalOrgId, callOffId, model.ToAdd.Select(x => x.CatalogueItemId));
 
             var catalogueItemId = model.ToAdd.First().CatalogueItemId;
-            var additionalServices = await additionalServicesService.GetAdditionalServicesBySolutionId(catalogueItemId);
+            var additionalServices = await additionalServicesService.GetAdditionalServicesBySolutionId(catalogueItemId, publishedOnly: true);
 
             if (additionalServices.Any())
             {
