@@ -124,13 +124,15 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers.SolutionSelec
             };
 
             if (orderItem.OrderItemPrice.ProvisioningType != ProvisioningType.Patient)
+            {
                 return View(ServiceRecipientViewName, model);
+            }
 
             await SetPracticeSizes(model);
 
             var solution = order.GetSolution();
 
-            if (solution != null
+            if (solution?.OrderItemPrice?.ProvisioningType is ProvisioningType.Patient
                 && solution.CatalogueItemId != catalogueItemId)
             {
                 SetPracticeSizesFromSolution(model, solution);
