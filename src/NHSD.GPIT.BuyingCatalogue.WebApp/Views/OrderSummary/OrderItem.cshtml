@@ -35,7 +35,7 @@
         <th>Recipient</th>
         <th>ODS Code</th>
         <th>Item ID</th>
-        <th>Service Instance ID</th>
+        <th>Instance ID</th>
 
         @if (hasServiceRecipientQuantities)
         {
@@ -80,7 +80,7 @@
         @if (hasServiceRecipientQuantities
             && Model.OrderItem.OrderItemRecipients.Count > 1)
         {
-            <tr>
+            <tr class="totals">
                 <td/>
                 <td/>
                 <td/>
