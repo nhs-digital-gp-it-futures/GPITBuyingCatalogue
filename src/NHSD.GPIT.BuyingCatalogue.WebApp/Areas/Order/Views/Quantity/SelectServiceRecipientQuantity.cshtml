@@ -4,7 +4,7 @@
 @{
     ViewBag.Title = $"Quantity of {Model.ItemType}";
 
-    var x = $"{Model.QuantityColumnTitle} per practice {Model.BillingPeriod?.Description() ?? string.Empty}";
+    var quantityTypeTitle = $"{Model.QuantityColumnTitle} per practice {Model.BillingPeriod?.Description() ?? string.Empty}";
 }
 
 <partial name="Partials/_BackLink" model="Model" />
@@ -35,7 +35,7 @@
 			<input type="hidden" asp-for="@Model.RangeDefinition" />
 			<input type="hidden" asp-for="@Model.BillingPeriod" />
 
-            <h2>@x</h2>
+            <h2>@quantityTypeTitle</h2>
             <nhs-table data-test-id="additional-service-dashboard-table">
                 <nhs-table-column>Recipient name (ODS code)</nhs-table-column>
                 <nhs-table-column>Quantity</nhs-table-column>

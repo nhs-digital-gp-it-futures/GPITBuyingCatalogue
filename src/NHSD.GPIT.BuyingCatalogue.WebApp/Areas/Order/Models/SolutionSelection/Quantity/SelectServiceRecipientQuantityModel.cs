@@ -58,7 +58,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.SolutionSelection.
         public string QuantityColumnTitle => ProvisioningType switch
         {
             ProvisioningType.Patient => "Practice list size",
-            _ => "Quantity",
+            _ => RangeDefinition,
         };
 
         private ServiceRecipientQuantityModel CreateServiceRecipient(OrderItemRecipient recipient)
