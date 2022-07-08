@@ -66,7 +66,6 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Routing.Providers
                 };
             }
 
-            // TODO: Error page if no published prices?
             return new RoutingResult
             {
                 ActionName = Constants.Actions.ConfirmPrice,

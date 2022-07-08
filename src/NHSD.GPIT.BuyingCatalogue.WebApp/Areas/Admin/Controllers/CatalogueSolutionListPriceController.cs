@@ -455,9 +455,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
         [HttpPost("{cataloguePriceId}/delete")]
         public async Task<IActionResult> DeleteListPrice(CatalogueItemId solutionId, int cataloguePriceId, DeleteItemConfirmationModel model)
         {
-            // TODO:
-            // In a scenario where a user unpublishes a price, opens the delete link in a second tab but first publishes the price again,
-            // Replace with an error page that explains why the price hasn't been deleted
             var solution = await listPriceService.GetCatalogueItemWithListPrices(solutionId);
             var price = solution.CataloguePrices.First(p => p.CataloguePriceId == cataloguePriceId);
 
@@ -486,9 +483,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
         [HttpPost("{cataloguePriceId}/tiers/{tierId}/delete")]
         public async Task<IActionResult> DeleteTieredPriceTier(CatalogueItemId solutionId, int cataloguePriceId, int tierId, DeleteItemConfirmationModel model, bool? isEditing = null)
         {
-            // TODO:
-            // In a scenario where a user unpublishes a price, opens the delete pricing tier link in a second tab but first publishes the price again,
-            // Replace with an error page that explains why the pricing tier hasn't been deleted
             var solution = await listPriceService.GetCatalogueItemWithListPrices(solutionId);
             var price = solution.CataloguePrices.First(p => p.CataloguePriceId == cataloguePriceId);
 

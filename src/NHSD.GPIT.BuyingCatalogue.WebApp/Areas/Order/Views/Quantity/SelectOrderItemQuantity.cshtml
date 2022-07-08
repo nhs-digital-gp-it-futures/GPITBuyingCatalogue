@@ -2,9 +2,13 @@
 
 @model NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.SolutionSelection.Quantity.SelectOrderItemQuantityModel;
 @{
-	ViewBag.Title = $"Quantity of {Model.ItemType}";
+    ViewBag.Title = $"Quantity of {Model.ItemType}";
 
-	var timeUnit = Model.BillingPeriod?.Description() ?? "";
+    var timeUnit = Model.BillingPeriod?.Description() ?? "";
+
+    var advice = "Enter the total amount you want to order";
+
+    var adviceText = string.IsNullOrWhiteSpace(timeUnit) ? $"{advice}." : $"{advice} {timeUnit}.";
 }
 
 <partial name="Partials/_BackLink" model="Model" />
@@ -15,7 +19,7 @@
 
 		<nhs-page-title title="@ViewBag.Title"
                 caption="@Model!.ItemName"
-                advice="Enter the total amount you want to order." />
+                advice="@adviceText" />
 
         <form method="post">
             <input type="hidden" asp-for="@Model.BackLink" />

@@ -241,8 +241,6 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
                 && ci.PublishedStatus == PublicationStatus.Published)
                 .ToListAsync();
 
-        /* TODO - Tiered Pricing - Reintroduce Pricing Data*/
-
         public async Task<List<CatalogueItem>> GetPublishedAssociatedServicesForSolution(CatalogueItemId solutionId)
         {
             var selectedAssociatedServices = dbContext.CatalogueItems

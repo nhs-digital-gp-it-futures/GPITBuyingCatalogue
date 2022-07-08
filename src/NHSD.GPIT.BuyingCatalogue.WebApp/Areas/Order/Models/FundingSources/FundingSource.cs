@@ -11,8 +11,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.FundingSources
 
         public FundingSource(string internalOrgId, CallOffId callOffId, EntityFramework.Ordering.Models.Order order, OrderItem orderItem)
         {
-            Title = $"{orderItem.CatalogueItem.Name} funding source";
-            Caption = $"Order {callOffId}";
+            Title = "Funding source";
+            Caption = orderItem.CatalogueItem.Name;
             InternalOrgId = internalOrgId;
             CallOffId = callOffId;
             CatalogueItemName = orderItem.CatalogueItem.Name;

@@ -7,7 +7,7 @@
         <nhs-validation-summary RadioId="SelectedCatalogueSolutionId"/>
         
         @{
-            var title = Model.AssociatedServicesOnly
+            ViewBag.Title = Model.AssociatedServicesOnly
                 ? "Which Catalogue Solution does the service help implement?"
                 : "Catalogue Solutions";
 
@@ -26,7 +26,7 @@
                 : Model.SupplierName;
         }
 
-        <nhs-page-title title="@title"
+        <nhs-page-title title="@ViewBag.Title"
                         caption="@caption"
                         advice="@advice"/>
 

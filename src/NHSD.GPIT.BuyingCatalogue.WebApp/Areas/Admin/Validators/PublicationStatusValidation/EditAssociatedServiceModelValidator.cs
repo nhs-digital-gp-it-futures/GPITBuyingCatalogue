@@ -11,8 +11,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Validators.PublicationSta
     {
         private readonly IAssociatedServicesService associatedServicesService;
 
-        /* TODO - Tiered Pricing - Fix Pricing Validation */
-
         public EditAssociatedServiceModelValidator(IAssociatedServicesService associatedServicesService)
         {
             this.associatedServicesService = associatedServicesService;
