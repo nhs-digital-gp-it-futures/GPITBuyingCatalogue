@@ -22,10 +22,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.FundingS
 
             var model = new WebApp.Areas.Order.Models.FundingSources.FundingSource(internalOrgId, callOffId, order, orderItem);
 
-            model.Title.Should().Be($"{orderItem.CatalogueItem.Name} funding source");
+            model.Title.Should().Be("Funding source");
             model.CallOffId.Should().Be(callOffId);
             model.InternalOrgId.Should().Be(internalOrgId);
-            model.Caption.Should().Be($"Order {callOffId}");
+            model.Caption.Should().Be(orderItem.CatalogueItem.Name);
             model.SelectedFundingType.Should().Be(OrderItemFundingType.None);
         }
 
@@ -40,10 +40,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.FundingS
 
             var model = new WebApp.Areas.Order.Models.FundingSources.FundingSource(internalOrgId, callOffId, order, orderItem);
 
-            model.Title.Should().Be($"{orderItem.CatalogueItem.Name} funding source");
+            model.Title.Should().Be("Funding source");
             model.CallOffId.Should().Be(callOffId);
             model.InternalOrgId.Should().Be(internalOrgId);
-            model.Caption.Should().Be($"Order {callOffId}");
+            model.Caption.Should().Be(orderItem.CatalogueItem.Name);
             model.SelectedFundingType.Should().Be(orderItem.FundingType);
         }
     }
