@@ -101,6 +101,40 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Routing.Providers
 
         [Theory]
         [CommonAutoData]
+        public void Process_IncompleteQuantity_ExpectedResult(
+            string internalOrgId,
+            CallOffId callOffId,
+            CatalogueItemId catalogueItemId,
+            Order order,
+            TaskListBackLinkProvider provider)
+        {
+            order.AssociatedServicesOnly = false;
+            order.OrderItems.ForEach(x =>
+            {
+                x.Quantity = 0;
+                x.OrderItemRecipients.ForEach(r => r.Quantity = 0);
+                x.CatalogueItem.CatalogueItemType = CatalogueItemType.AdditionalService;
+            });
+
+            var solution = order.OrderItems.First();
+
+            solution.CatalogueItem.CatalogueItemType = CatalogueItemType.Solution;
+
+            var result = provider.Process(order, new RouteValues(internalOrgId, callOffId, catalogueItemId));
+
+            var expected = new
+            {
+                InternalOrgId = internalOrgId,
+                CallOffId = callOffId,
+            };
+
+            result.ActionName.Should().Be(Constants.Actions.OrderDashboard);
+            result.ControllerName.Should().Be(Constants.Controllers.Orders);
+            result.RouteValues.Should().BeEquivalentTo(expected);
+        }
+
+        [Theory]
+        [CommonAutoData]
         public void Process_IncompleteServices_ExpectedResult(
             string internalOrgId,
             CallOffId callOffId,

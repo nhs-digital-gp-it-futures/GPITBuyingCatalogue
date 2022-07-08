@@ -7,7 +7,10 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models
 {
     public sealed partial class OrderItem
     {
-        public bool IsReadyForReview => (OrderItemRecipients?.Any() ?? false) && OrderItemPrice != null;
+        public bool IsReadyForReview =>
+            (OrderItemRecipients?.Any() ?? false)
+            && OrderItemPrice != null
+            && TotalQuantity > 0;
 
         public bool IsForcedFunding => FundingType.IsForcedFunding();
 
