@@ -85,8 +85,6 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.AdditionalServices
                 : await BaseQuery(catalogueItemId.Value).ToListAsync();
         }
 
-        /* TODO - Tiered Pricing - Reintroduce Pricing Information*/
-
         public Task<List<CatalogueItem>> GetAdditionalServicesBySolutionIds(IEnumerable<CatalogueItemId> solutionIds)
         {
             return dbContext.CatalogueItems

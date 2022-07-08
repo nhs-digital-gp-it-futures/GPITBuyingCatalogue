@@ -193,8 +193,6 @@ BEGIN
         CataloguePriceTypeId INT
      );
 
-     /* TODO - Tiered Pricing - Update Price inserting logic to not require the price field on Catalogue Prices */
-
     SET IDENTITY_INSERT catalogue.CataloguePrices ON;
 
     MERGE INTO catalogue.CataloguePrices AS TARGET
@@ -207,15 +205,12 @@ BEGIN
                       TARGET.PricingUnitId = SOURCE.PricingUnitId,
                       TARGET.CurrencyCode = SOURCE.CurrencyCode,
                       TARGET.LastUpdated = SOURCE.LastUpdated,
-                      TARGET.Price = SOURCE.Price,
                       TARGET.PublishedStatusId = SOURCE.PublishedStatusId,
                       TARGET.CataloguePriceCalculationTypeId = SOURCE.CataloguePriceCalculationTypeId
     WHEN NOT MATCHED BY TARGET THEN
-        INSERT (CataloguePriceId, CatalogueItemId, ProvisioningTypeId, CataloguePriceTypeId, PricingUnitId, TimeUnitId, CataloguePriceCalculationTypeId, CurrencyCode, LastUpdated, Price, PublishedStatusId)
-        VALUES (SOURCE.CataloguePriceId, SOURCE.CatalogueItemId, SOURCE.ProvisioningTypeId, SOURCE.CataloguePriceTypeId, SOURCE.PricingUnitId, SOURCE.TimeUnitId, SOURCE.CataloguePriceCalculationTypeId, SOURCE.CurrencyCode, SOURCE.LastUpdated, SOURCE.Price, SOURCE.PublishedStatusId)
-    OUTPUT INSERTED.CataloguePriceId, INSERTED.Price, INSERTED.CataloguePriceTypeId INTO @InsertedPriceIds (Id, Price, CataloguePriceTypeId);
-
-    UPDATE catalogue.CataloguePrices SET Price = NULL;
+        INSERT (CataloguePriceId, CatalogueItemId, ProvisioningTypeId, CataloguePriceTypeId, PricingUnitId, TimeUnitId, CataloguePriceCalculationTypeId, CurrencyCode, LastUpdated, PublishedStatusId)
+        VALUES (SOURCE.CataloguePriceId, SOURCE.CatalogueItemId, SOURCE.ProvisioningTypeId, SOURCE.CataloguePriceTypeId, SOURCE.PricingUnitId, SOURCE.TimeUnitId, SOURCE.CataloguePriceCalculationTypeId, SOURCE.CurrencyCode, SOURCE.LastUpdated, SOURCE.PublishedStatusId)
+    OUTPUT INSERTED.CataloguePriceId, SOURCE.Price, INSERTED.CataloguePriceTypeId INTO @InsertedPriceIds (Id, Price, CataloguePriceTypeId);
 
     --Insert flat Prices
     INSERT INTO catalogue.CataloguePriceTiers(CataloguePriceId, LowerRange, UpperRange, Price)

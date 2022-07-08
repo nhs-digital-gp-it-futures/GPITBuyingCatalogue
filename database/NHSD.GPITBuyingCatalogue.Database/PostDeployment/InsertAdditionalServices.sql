@@ -204,7 +204,6 @@ BEGIN
     END;
 
     /* Insert Prices */
-    /* TODO - Tiered Pricing - Update Price inserting logic to not require the price field on Catalogue Prices */
 
     DECLARE @patient AS smallint = -1;
     DECLARE @bed AS smallint = -2;
@@ -243,24 +242,21 @@ BEGIN
     ('100007-002-A01', 1, 1, @patient, 2, 1, 'GBP', @now, 599.99, 3),
     ('99999-89-A01', 2, 1, @bed, 1, 1, 'GBP', @now, 699.99, 3);
 
-    INSERT INTO catalogue.CataloguePrices (CatalogueItemId, ProvisioningTypeId, CataloguePriceTypeId, PricingUnitId, TimeUnitId, CataloguePriceCalculationTypeId, CurrencyCode, Price, LastUpdated, PublishedStatusId)
-    OUTPUT INSERTED.CataloguePriceId, INSERTED.Price, INSERTED.CataloguePriceTypeId INTO @InsertedPriceIds (Id, Price, CataloguePriceTypeId)
-    SELECT 
-    ASP.CatalogueItemId,
+	MERGE INTO catalogue.CataloguePrices USING @AdditionalServiesPrices AS ASP ON 1 = 0
+	WHEN NOT MATCHED THEN
+	INSERT (CatalogueItemId, ProvisioningTypeId, CataloguePriceTypeId, PricingUnitId, TimeUnitId, CataloguePriceCalculationTypeId, CurrencyCode, LastUpdated, PublishedStatusId)
+	VALUES(    
+	ASP.CatalogueItemId,
     ASP.ProvisioningTypeId,
     ASP.CataloguePriceTypeId,
     ASP.PricingUnitId,
     ASP.TimeUnitId,
     ASP.CataloguePriceCalculationTypeId,
     ASP.CurrencyCode,
-    ASP.Price,
     ASP.LastUpdated,
-    ASP.PublishedStatusId
-    FROM @AdditionalServiesPrices ASP
-    INNER JOIN catalogue.CatalogueItems CI
-        ON CI.Id = ASP.CatalogueItemId;    
-
-    UPDATE catalogue.CataloguePrices SET Price = NULL;
+    ASP.PublishedStatusId)
+	OUTPUT INSERTED.CataloguePriceId, ASP.Price, INSERTED.CataloguePriceTypeId
+	INTO @InsertedPriceIds (Id, Price, CataloguePriceTypeId);
 
     --Insert flat Prices
     INSERT INTO catalogue.CataloguePriceTiers(CataloguePriceId, LowerRange, UpperRange, Price)

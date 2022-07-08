@@ -637,38 +637,65 @@ TPP maintain close contact with staff at the unit throughout these phases to ens
     @sms SMALLINT = -5;
 
     /* Insert prices */
-    /* TODO - Tiered Pricing - Update Price inserting logic to not require the price field on Catalogue Prices */
+
     IF NOT EXISTS (SELECT * FROM catalogue.CataloguePrices)
     BEGIN
-     DECLARE @InsertedPriceIds TABLE(
-         Id INT,
-         Price DECIMAL(18,4),
-         CataloguePriceTypeId INT
-     );
-     -- Use the price field to store the unique prices, but then clear it out once done
-        INSERT INTO catalogue.CataloguePrices(CatalogueItemId, ProvisioningTypeId, CataloguePriceTypeId, PricingUnitId, TimeUnitId, CataloguePriceCalculationTypeId, CurrencyCode, LastUpdated, Price, PublishedStatusId)
-        OUTPUT INSERTED.CataloguePriceId, INSERTED.Price, INSERTED.CataloguePriceTypeId INTO @InsertedPriceIds (Id, Price, CataloguePriceTypeId)
-            VALUES ('100000-001', @patientProvisioningType, @flatPriceType, @patient, @yearTimeUnit, @CataloguePriceCalculationTypeSingleFixed, 'GBP', @now, 99.99, 3),
-                    ('100000-001', @patientProvisioningType, @tieredPriceType, @patient, @yearTimeUnit, @CataloguePriceCalculationTypeCumulativeId, 'GBP', @now, 0.5, 3),
-                    ('100000-001', @perServiceRecipientProvisioningType, @flatPriceType, @consultation, NULL, @CataloguePriceCalculationTypeSingleFixed, 'GBP', @now, 1001.010, 3),
-                    ('100001-001', @onDemandProvisioningType, @flatPriceType, @licence, NULL, @CataloguePriceCalculationTypeSingleFixed, 'GBP', @now, 3.142, 3),
-                    ('100002-001', @declarativeProvisioningType, @flatPriceType, @patient, @monthTimeUnit, @CataloguePriceCalculationTypeSingleFixed, 'GBP', @now, 4.85, 3),
-                    ('100002-001', @perServiceRecipientProvisioningType, @tieredPriceType, @patient, @monthTimeUnit, @CataloguePriceCalculationTypeCumulativeId, 'GBP', @now, 20, 3),
-                    ('100002-001', @declarativeProvisioningType, @tieredPriceType, @patient, @monthTimeUnit, @CataloguePriceCalculationTypeSingleFixed, 'GBP', @now, 10, 3),
-                    ('100003-001', @perServiceRecipientProvisioningType, @flatPriceType, @bed, @monthTimeUnit, @CataloguePriceCalculationTypeSingleFixed, 'GBP', @now, 19.987, 3),
-                    ('100004-001', @declarativeProvisioningType, @flatPriceType, @licence, @monthTimeUnit, @CataloguePriceCalculationTypeSingleFixed, 'GBP', @now, 10101.65, 3),
-                    ('100005-001', @onDemandProvisioningType, @flatPriceType, @licence, NULL, @CataloguePriceCalculationTypeSingleFixed, 'GBP', @now, 456, 3),
-                    ('100006-001', @declarativeProvisioningType, @flatPriceType, @sms, @monthTimeUnit, @CataloguePriceCalculationTypeSingleFixed, 'GBP', @now, 7, 3),
-                    ('100007-001', @onDemandProvisioningType, @flatPriceType, @sms, NULL, @CataloguePriceCalculationTypeSingleFixed, 'GBP', @now, 0.15, 3),
-                    ('100007-002', @onDemandProvisioningType, @tieredPriceType, @sms, NULL, @CataloguePriceCalculationTypeCumulativeId, 'GBP', @now, 6, 3),
-                    ('99998-98', @patientProvisioningType, @flatPriceType, @licence, @yearTimeUnit, @CataloguePriceCalculationTypeSingleFixed, 'GBP', @now, 30000, 3),
-                    ('99998-98', @patientProvisioningType, @tieredPriceType, @licence, @yearTimeUnit, @CataloguePriceCalculationTypeCumulativeId, 'GBP', @now, 0.1, 3),
-                    ('99999-01', @patientProvisioningType, @flatPriceType, @patient, @yearTimeUnit, @CataloguePriceCalculationTypeSingleFixed, 'GBP', @now, 1.25, 3),
-                    ('99999-02', @perServiceRecipientProvisioningType, @flatPriceType, @patient, @yearTimeUnit, @CataloguePriceCalculationTypeSingleFixed, 'GBP', @now, 1.55, 3),
-                    ('99999-89', @patientProvisioningType, @flatPriceType, @licence, @yearTimeUnit, @CataloguePriceCalculationTypeSingleFixed, 'GBP', @now, 500.49, 3),
-                    ('99999-89', @perServiceRecipientProvisioningType, @tieredPriceType, @licence, @yearTimeUnit, @CataloguePriceCalculationTypeCumulativeId, 'GBP', @now, 3.5, 3);
+         DECLARE @InsertedPriceIds TABLE(
+             Id INT,
+             Price DECIMAL(18,4),
+             CataloguePriceTypeId INT
+         );
 
-        UPDATE catalogue.CataloguePrices SET Price = NULL;
+        DECLARE @SolutionPrices TABLE(
+            CatalogueItemId NVARCHAR(14),
+            ProvisioningTypeId INT,
+            CataloguePriceTypeId INT,
+            PricingUnitId INT,
+            TimeUnitId INT,
+            CataloguePriceCalculationTypeId INT,
+            CurrencyCode NVARCHAR(3),
+            LastUpdated DATETIME2(0),
+            Price DECIMAL(18,4),
+            PublishedStatusId INT
+        );
+
+        INSERT INTO @SolutionPrices (CatalogueItemId, ProvisioningTypeId, CataloguePriceTypeId, PricingUnitId, TimeUnitId, CataloguePriceCalculationTypeId, CurrencyCode, LastUpdated, Price, PublishedStatusId)
+        VALUES 
+        ('100000-001', @patientProvisioningType, @flatPriceType, @patient, @yearTimeUnit, @CataloguePriceCalculationTypeSingleFixed, 'GBP', @now, 99.99, 3),
+        ('100000-001', @patientProvisioningType, @tieredPriceType, @patient, @yearTimeUnit, @CataloguePriceCalculationTypeCumulativeId, 'GBP', @now, 0.5, 3),
+        ('100000-001', @perServiceRecipientProvisioningType, @flatPriceType, @consultation, NULL, @CataloguePriceCalculationTypeSingleFixed, 'GBP', @now, 1001.010, 3),
+        ('100001-001', @onDemandProvisioningType, @flatPriceType, @licence, NULL, @CataloguePriceCalculationTypeSingleFixed, 'GBP', @now, 3.142, 3),
+        ('100002-001', @declarativeProvisioningType, @flatPriceType, @patient, @monthTimeUnit, @CataloguePriceCalculationTypeSingleFixed, 'GBP', @now, 4.85, 3),
+        ('100002-001', @perServiceRecipientProvisioningType, @tieredPriceType, @patient, @monthTimeUnit, @CataloguePriceCalculationTypeCumulativeId, 'GBP', @now, 20, 3),
+        ('100002-001', @declarativeProvisioningType, @tieredPriceType, @patient, @monthTimeUnit, @CataloguePriceCalculationTypeSingleFixed, 'GBP', @now, 10, 3),
+        ('100003-001', @perServiceRecipientProvisioningType, @flatPriceType, @bed, @monthTimeUnit, @CataloguePriceCalculationTypeSingleFixed, 'GBP', @now, 19.987, 3),
+        ('100004-001', @declarativeProvisioningType, @flatPriceType, @licence, @monthTimeUnit, @CataloguePriceCalculationTypeSingleFixed, 'GBP', @now, 10101.65, 3),
+        ('100005-001', @onDemandProvisioningType, @flatPriceType, @licence, NULL, @CataloguePriceCalculationTypeSingleFixed, 'GBP', @now, 456, 3),
+        ('100006-001', @declarativeProvisioningType, @flatPriceType, @sms, @monthTimeUnit, @CataloguePriceCalculationTypeSingleFixed, 'GBP', @now, 7, 3),
+        ('100007-001', @onDemandProvisioningType, @flatPriceType, @sms, NULL, @CataloguePriceCalculationTypeSingleFixed, 'GBP', @now, 0.15, 3),
+        ('100007-002', @onDemandProvisioningType, @tieredPriceType, @sms, NULL, @CataloguePriceCalculationTypeCumulativeId, 'GBP', @now, 6, 3),
+        ('99998-98', @patientProvisioningType, @flatPriceType, @licence, @yearTimeUnit, @CataloguePriceCalculationTypeSingleFixed, 'GBP', @now, 30000, 3),
+        ('99998-98', @patientProvisioningType, @tieredPriceType, @licence, @yearTimeUnit, @CataloguePriceCalculationTypeCumulativeId, 'GBP', @now, 0.1, 3),
+        ('99999-01', @patientProvisioningType, @flatPriceType, @patient, @yearTimeUnit, @CataloguePriceCalculationTypeSingleFixed, 'GBP', @now, 1.25, 3),
+        ('99999-02', @perServiceRecipientProvisioningType, @flatPriceType, @patient, @yearTimeUnit, @CataloguePriceCalculationTypeSingleFixed, 'GBP', @now, 1.55, 3),
+        ('99999-89', @patientProvisioningType, @flatPriceType, @licence, @yearTimeUnit, @CataloguePriceCalculationTypeSingleFixed, 'GBP', @now, 500.49, 3),
+        ('99999-89', @perServiceRecipientProvisioningType, @tieredPriceType, @licence, @yearTimeUnit, @CataloguePriceCalculationTypeCumulativeId, 'GBP', @now, 3.5, 3);
+
+	    MERGE INTO catalogue.CataloguePrices USING @SolutionPrices AS ASP ON 1 = 0
+	    WHEN NOT MATCHED THEN
+	    INSERT (CatalogueItemId, ProvisioningTypeId, CataloguePriceTypeId, PricingUnitId, TimeUnitId, CataloguePriceCalculationTypeId, CurrencyCode, LastUpdated, PublishedStatusId)
+	    VALUES(    
+	    ASP.CatalogueItemId,
+        ASP.ProvisioningTypeId,
+        ASP.CataloguePriceTypeId,
+        ASP.PricingUnitId,
+        ASP.TimeUnitId,
+        ASP.CataloguePriceCalculationTypeId,
+        ASP.CurrencyCode,
+        ASP.LastUpdated,
+        ASP.PublishedStatusId)
+	    OUTPUT INSERTED.CataloguePriceId, ASP.Price, INSERTED.CataloguePriceTypeId
+	    INTO @InsertedPriceIds (Id, Price, CataloguePriceTypeId);
 
         --Insert flat Prices
         INSERT INTO catalogue.CataloguePriceTiers(CataloguePriceId, LowerRange, UpperRange, Price)

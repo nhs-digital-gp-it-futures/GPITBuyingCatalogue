@@ -3,6 +3,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework;
+using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Enums;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Models.TaskList;
@@ -158,8 +159,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.TaskList
                 return order.SolutionId != null;
             }
 
-            // TODO: Should one of the items be a solution?
-            return order.OrderItems.Any();
+            return order.OrderItems.Any(oi => oi.CatalogueItem.CatalogueItemType == CatalogueItemType.Solution);
         }
 
         private static bool SolutionsCompleted(Order order)

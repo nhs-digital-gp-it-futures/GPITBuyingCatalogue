@@ -38,7 +38,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.SolutionSelection.
         public IEnumerable<SelectListItem> SelectListItems => new[]
         {
             new SelectListItem($"Yes, I want to confirm changes to my {ItemDescription}", $"{true}"),
-            new SelectListItem($"No, I do not want to confirm changes to my {ItemDescription}", $"{false}"),
+            new SelectListItem($"No, I want to keep my current {ItemDescription}", $"{false}"),
         };
 
         private string ItemDescription => CatalogueItemType == CatalogueItemType.Solution

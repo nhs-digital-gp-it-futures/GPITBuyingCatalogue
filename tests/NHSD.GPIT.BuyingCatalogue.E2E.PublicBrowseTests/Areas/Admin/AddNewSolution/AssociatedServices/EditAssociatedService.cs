@@ -218,12 +218,13 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.AddNewSolution
                 .BeEquivalentTo(expectedPublicationStatuses.Select(p => p.Description()));
         }
 
-        /* TODO - Tiered Pricing - Fix All Sections not completed Test
         [Fact]
         public async Task Publish_IncompleteSections_ThrowsError()
         {
             await using var context = GetEndToEndDbContext();
             var item = await context.CatalogueItems.FirstAsync(c => c.CatalogueItemType == CatalogueItemType.AssociatedService && c.Id == IncompleteAssociatedServiceId);
+            var prices = await context.CataloguePrices.Where(cp => cp.CatalogueItemId == IncompleteAssociatedServiceId).ToListAsync();
+            prices.ForEach(p => p.PublishedStatus = PublicationStatus.Unpublished);
             item.PublishedStatus = PublicationStatus.Draft;
             await context.SaveChangesAsync();
 
@@ -253,7 +254,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.AddNewSolution
             CommonActions.ElementShowingCorrectErrorMessage(
                 AssociatedServicesObjects.PublicationStatusInputError,
                 "Complete all mandatory sections before publishing");
-        }*/
+        }
 
         [Fact]
         public async Task Publish_CompleteSections_SetPublicationStatus()

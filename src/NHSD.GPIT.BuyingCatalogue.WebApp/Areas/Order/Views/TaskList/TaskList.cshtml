@@ -9,7 +9,7 @@
         <nhs-validation-summary />
         
         @{
-            var title = Model.Progress == TaskProgress.Completed
+            ViewBag.Title = Model.Progress == TaskProgress.Completed
                 ? "Edit solutions and services"
                 : "Review your progress";
 
@@ -18,7 +18,7 @@
                 : "Review the progress of your order. Make sure you’ve included everything you want to order and that all sections are completed.";
         }
 
-        <nhs-page-title title="@title"
+        <nhs-page-title title="@ViewBag.Title"
                         caption="Order @Model!.CallOffId"
                         advice="@advice" />
         

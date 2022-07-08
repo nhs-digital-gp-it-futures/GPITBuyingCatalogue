@@ -105,7 +105,6 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework
 
         public DbSet<OrderItem> OrderItems { get; set; }
 
-        // TODO - This is purely for the migration and can be removed post go-live
         public DbSet<OrderItemRecipient> OrderItemRecipients { get; set; }
 
         public DbSet<OrderItemPrice> OrderItemPrices { get; set; }
@@ -131,12 +130,6 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework
             UpdateAuditFields(userId);
 
             base.SaveChanges();
-        }
-
-        // TODO This is purely for the migration utility and will be removed post go-live
-        public int SaveChangesWithoutAudit()
-        {
-            return base.SaveChanges();
         }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)

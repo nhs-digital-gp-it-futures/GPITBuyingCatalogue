@@ -43,7 +43,6 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Routing.Providers
                 };
             }
 
-            // TODO: verify - review page instead?
             return new RoutingResult
             {
                 ControllerName = Constants.Controllers.TaskList,

@@ -564,9 +564,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
         {
             _ = model;
 
-            // TODO:
-            // In a scenario where a user unpublishes a price, opens the delete link in a second tab but first publishes the price again,
-            // Replace with an error page that explains why the price hasn't been deleted
             var additionalService = await additionalServicesService.GetAdditionalService(solutionId, additionalServiceId);
             if (additionalService is null)
                 return NotFound();
@@ -613,9 +610,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
             DeleteItemConfirmationModel model,
             bool? isEditing = null)
         {
-            // TODO:
-            // In a scenario where a user unpublishes a price, opens the delete pricing tier link in a second tab but first publishes the price again,
-            // Replace with an error page that explains why the pricing tier hasn't been deleted
             var additionalService = await additionalServicesService.GetAdditionalService(solutionId, additionalServiceId);
             if (additionalService is null)
                 return NotFound();
