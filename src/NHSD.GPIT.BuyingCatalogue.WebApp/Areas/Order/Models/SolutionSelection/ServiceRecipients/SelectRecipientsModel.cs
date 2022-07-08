@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using LinqKit;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Orders;
@@ -47,9 +46,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.SolutionSelection.
                     break;
 
                 case null:
-                    ServiceRecipients.ForEach(x => x.Selected = orderItem.OrderItemRecipients?.Any(r => r.OdsCode == x.OdsCode) ?? false);
-                    SelectionMode = ServiceRecipients.All(x => x.Selected) ? SelectionMode.None : SelectionMode.All;
-                    SelectionCaption = ServiceRecipients.All(x => x.Selected) ? SelectNone : SelectAll;
+                    SetSelectionsFromOrderItem(orderItem);
                     break;
 
                 default:
@@ -98,13 +95,21 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.SolutionSelection.
                 return;
             }
 
-            var odsCodes = orderItem.OrderItemRecipients.Select(x => x.OdsCode);
-
-            ServiceRecipients
-                .Where(x => odsCodes.Contains(x.OdsCode))
-                .ForEach(x => x.Selected = true);
-
+            SetSelectionsFromOrderItem(orderItem);
             PreSelected = true;
+        }
+
+        private void SetSelectionsFromOrderItem(OrderItem orderItem)
+        {
+            ServiceRecipients.ForEach(x => x.Selected = orderItem.OrderItemRecipients?.Any(r => r.OdsCode == x.OdsCode) ?? false);
+
+            SelectionMode = ServiceRecipients.All(x => x.Selected)
+                ? SelectionMode.None
+                : SelectionMode.All;
+
+            SelectionCaption = ServiceRecipients.All(x => x.Selected)
+                ? SelectNone
+                : SelectAll;
         }
     }
 }
