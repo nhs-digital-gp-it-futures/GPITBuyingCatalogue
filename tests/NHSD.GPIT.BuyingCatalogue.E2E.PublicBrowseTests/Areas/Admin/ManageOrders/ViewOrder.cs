@@ -175,7 +175,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.ManageOrders
 
             RunTest(() =>
             {
-                CommonActions.ElementTextEqualTo(ViewOrderObjects.FundingType, "Not started".FormatForComparison()).Should().BeTrue();
+                CommonActions.ElementTextEqualTo(ViewOrderObjects.FundingType, "None specified".FormatForComparison()).Should().BeTrue();
             });
         }
 
@@ -200,7 +200,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.ManageOrders
             Driver.Navigate().Refresh();
             RunTest(() =>
             {
-                CommonActions.ElementTextEqualTo(ViewOrderObjects.FundingType, "Central funding".FormatForComparison()).Should().BeTrue();
+                CommonActions.ElementTextEqualTo(ViewOrderObjects.FundingType, "Central".FormatForComparison()).Should().BeTrue();
             });
         }
 
@@ -226,7 +226,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.ManageOrders
 
             RunTest(() =>
             {
-                CommonActions.ElementTextEqualTo(ViewOrderObjects.FundingType, "Local funding".FormatForComparison()).Should().BeTrue();
+                CommonActions.ElementTextEqualTo(ViewOrderObjects.FundingType, "Local".FormatForComparison()).Should().BeTrue();
             });
         }
 

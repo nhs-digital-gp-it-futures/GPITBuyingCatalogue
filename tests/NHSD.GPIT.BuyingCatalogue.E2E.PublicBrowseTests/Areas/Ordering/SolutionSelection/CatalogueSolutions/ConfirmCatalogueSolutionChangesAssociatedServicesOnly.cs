@@ -109,7 +109,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering.SolutionSelection.Ca
         [Fact]
         public void ConfirmCatalogueSolutionChanges_ClickNo_ExpectedResult()
         {
-            CommonActions.ClickRadioButtonWithText("No, I do not want to confirm changes to my Catalogue Solution");
+            CommonActions.ClickRadioButtonWithText("No, I want to keep my current Catalogue Solution");
             CommonActions.ClickSave();
 
             CommonActions.PageLoadedCorrectGetIndex(

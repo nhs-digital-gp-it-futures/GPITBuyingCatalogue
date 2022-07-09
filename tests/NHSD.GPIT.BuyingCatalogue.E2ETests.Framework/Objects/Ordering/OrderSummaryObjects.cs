@@ -37,6 +37,6 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.Objects.Ordering
 
         public static By TotalCostSummary => ByExtensions.DataTestId("total-cost-summary");
 
-        public static By DownloadPdfButton => By.LinkText("Download PDF");
+        public static By DownloadPdfButton => By.LinkText("Download order summary PDF");
     }
 }

@@ -111,7 +111,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering.SolutionSelection.Ad
         [Fact]
         public void ConfirmAdditionalServiceChanges_ClickNo_ExpectedResult()
         {
-            CommonActions.ClickRadioButtonWithText("No, I do not want to confirm changes to my Additional Services");
+            CommonActions.ClickRadioButtonWithText("No, I want to keep my current Additional Services");
             CommonActions.ClickSave();
 
             CommonActions.PageLoadedCorrectGetIndex(

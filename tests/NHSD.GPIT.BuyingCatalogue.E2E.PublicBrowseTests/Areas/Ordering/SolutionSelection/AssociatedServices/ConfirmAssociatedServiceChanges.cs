@@ -111,7 +111,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering.SolutionSelection.As
         [Fact]
         public void ConfirmAssociatedServiceChanges_ClickNo_ExpectedResult()
         {
-            CommonActions.ClickRadioButtonWithText("No, I do not want to confirm changes to my Associated Services");
+            CommonActions.ClickRadioButtonWithText("No, I want to keep my current Associated Services");
             CommonActions.ClickSave();
 
             CommonActions.PageLoadedCorrectGetIndex(
