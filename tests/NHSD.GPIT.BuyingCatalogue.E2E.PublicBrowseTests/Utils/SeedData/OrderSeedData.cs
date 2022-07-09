@@ -905,7 +905,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
             var user = GetBuyerUser(context, order.OrderingPartyId);
 
             var price = context.CatalogueItems
-                .Where(c => c.Id == new CatalogueItemId(99998, "S-999"))
+                .Where(c => c.Id == new CatalogueItemId(99998, "001"))
                 .Include(c => c.CataloguePrices).ThenInclude(cp => cp.CataloguePriceTiers)
                 .Include(c => c.CataloguePrices).ThenInclude(cp => cp.PricingUnit)
                 .Select(ci => new OrderItemPrice(ci.CataloguePrices.First()))
@@ -916,7 +916,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
                 OrderItemPrice = price,
                 Created = DateTime.UtcNow,
                 OrderId = orderId,
-                CatalogueItem = context.CatalogueItems.Single(c => c.Id == new CatalogueItemId(99998, "S-999")),
+                CatalogueItem = context.CatalogueItems.Single(c => c.Id == new CatalogueItemId(99998, "001")),
             };
 
             var recipients = context.ServiceRecipients.ToList();

@@ -47,7 +47,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering.FundingSources
 
                 var catalogueItem = dbcontext.CatalogueItems.FirstOrDefault(ci => ci.Id == CatalogueItemId);
 
-                CommonActions.PageTitle().Should().BeEquivalentTo($"{catalogueItem.Name} funding source -  Order {CallOffId}".FormatForComparison());
+                CommonActions.PageTitle().Should().BeEquivalentTo($"Funding source - {catalogueItem.Name}".FormatForComparison());
                 CommonActions.GoBackLinkDisplayed().Should().BeTrue();
                 CommonActions.SaveButtonDisplayed().Should().BeTrue();
                 CommonActions.GetNumberOfRadioButtonsDisplayed().Should().Be(3);
@@ -78,7 +78,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering.FundingSources
         {
             await RunTestAsync(async () =>
             {
-                CommonActions.ClickRadioButtonWithText("Mixed funding");
+                CommonActions.ClickRadioButtonWithText("Mixed");
 
                 CommonActions.ClickSave();
 
