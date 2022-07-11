@@ -326,14 +326,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp
             services.Configure<GzipCompressionProviderOptions>(options => options.Level = CompressionLevel.Fastest);
         }
 
-        public static void ConfigureFormOptions(this IServiceCollection services)
-        {
-            services.Configure<FormOptions>(options =>
-            {
-                options.ValueCountLimit = 8192;
-            });
-        }
-
         public static IServiceCollection AddFluentValidation(this IServiceCollection services)
         {
             return services.AddFluentValidation(
@@ -343,6 +335,14 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp
                         options.ValidatorOptions.DefaultClassLevelCascadeMode = FluentValidation.CascadeMode.Continue;
                         options.ValidatorOptions.DefaultRuleLevelCascadeMode = FluentValidation.CascadeMode.Stop;
                     }).AddSingleton<IValidatorInterceptor, FluentValidatorInterceptor>();
+        }
+
+        public static void ConfigureFormOptions(this IServiceCollection services)
+        {
+            services.Configure<FormOptions>(options =>
+            {
+                options.ValueCountLimit = 16384;
+            });
         }
 
         public static IServiceCollection AddHangFire(this IServiceCollection services)
