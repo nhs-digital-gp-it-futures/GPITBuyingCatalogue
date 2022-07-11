@@ -52,6 +52,28 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Organisations
             return (organisation.Id, null);
         }
 
+        public async Task UpdateCcgOrganisation(OdsOrganisation organisation)
+        {
+            if (organisation == null)
+            {
+                throw new ArgumentNullException(nameof(organisation));
+            }
+
+            var existing = await dbContext.Organisations
+                .FirstOrDefaultAsync(x => x.ExternalIdentifier == organisation.OdsCode);
+
+            if (existing == null)
+            {
+                return;
+            }
+
+            existing.Name = organisation.OrganisationName;
+            existing.Address = organisation.Address;
+            existing.PrimaryRoleId = organisation.PrimaryRoleId;
+
+            await dbContext.SaveChangesAsync();
+        }
+
         public async Task<Organisation> GetOrganisation(int id)
         {
             return await dbContext.Organisations.SingleAsync(o => o.Id == id);

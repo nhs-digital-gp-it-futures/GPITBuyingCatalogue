@@ -42,7 +42,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering
         [Fact]
         public void NewOrderDescription_AllSectionsDisplayed()
         {
-            CommonActions.PageTitle().Should().BeEquivalentTo("Order description - NHS Hull CCG".FormatForComparison());
+            CommonActions.PageTitle().Should().BeEquivalentTo("Order description - NHS Humber and North Yorkshire ICB - 03F".FormatForComparison());
             CommonActions.LedeText().Should().BeEquivalentTo(OrderDescriptionModel.NewOrderAdviceText.FormatForComparison());
             CommonActions.GoBackLinkDisplayed().Should().BeTrue();
             CommonActions.SaveButtonDisplayed().Should().BeTrue();

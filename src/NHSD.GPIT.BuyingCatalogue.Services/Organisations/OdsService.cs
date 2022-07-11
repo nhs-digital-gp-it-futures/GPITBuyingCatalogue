@@ -121,6 +121,19 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Organisations
             return costCentres;
         }
 
+        public async Task UpdateOrganisationDetails(string odsCode)
+        {
+            var (organisation, errorMessage) = await GetOrganisationByOdsCode(odsCode);
+
+            if (!string.IsNullOrWhiteSpace(errorMessage)
+                || organisation == null)
+            {
+                return;
+            }
+
+            await organisationsService.UpdateCcgOrganisation(organisation);
+        }
+
         private static string GetPrimaryRoleId(OdsResponseOrganisation organisation)
         {
             return organisation.Roles.Role.FirstOrDefault(r => r.PrimaryRole)?.Id;

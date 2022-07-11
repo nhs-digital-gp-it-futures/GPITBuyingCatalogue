@@ -1,143 +1,239 @@
-﻿using System;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
+﻿using System.Threading.Tasks;
+using AutoFixture;
+using AutoFixture.AutoMoq;
+using AutoFixture.Idioms;
+using FluentAssertions;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
+using NHSD.GPIT.BuyingCatalogue.EntityFramework.Organisations.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Users.Models;
 using NHSD.GPIT.BuyingCatalogue.Framework.Settings;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Identity;
+using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Organisations;
+using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.AutoFixtureCustomisations;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Identity.Controllers;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Identity.Models;
 using Xunit;
+using SignInResult = Microsoft.AspNetCore.Identity.SignInResult;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Identity.Controllers
 {
     public static class AccountControllerTests
     {
         [Fact]
-        public static void Constructor_AllServicesPresent_Success()
+        public static void ClassIsCorrectlyDecorated()
         {
-            _ = new AccountController(
-                CreateDefaultMockSignInManager(),
-                CreateDefaultMockUserManager(),
-                Mock.Of<IPasswordService>(),
-                Mock.Of<IPasswordResetCallback>(),
-                new DisabledErrorMessageSettings());
+            typeof(AccountController).Should().BeDecoratedWith<AreaAttribute>(x => x.RouteValue == "Identity");
+            typeof(AccountController).Should().BeDecoratedWith<RouteAttribute>(r => r.Template == "Identity/Account");
         }
 
         [Fact]
-        public static void Constructor_NullSignInManager_ThrowsException()
+        public static void Constructors_VerifyGuardClauses()
         {
-            Assert.Throws<ArgumentNullException>(() =>
-                _ = new AccountController(
-                null,
-                CreateDefaultMockUserManager(),
-                Mock.Of<IPasswordService>(),
-                Mock.Of<IPasswordResetCallback>(),
-                new DisabledErrorMessageSettings()));
+            var fixture = new Fixture().Customize(new AutoMoqCustomization());
+            var assertion = new GuardClauseAssertion(fixture);
+            var constructors = typeof(AccountController).GetConstructors();
+
+            assertion.Verify(constructors);
         }
 
-        [Fact]
-        public static void Constructor_NullUserManager_ThrowsException()
+        [Theory]
+        [CommonAutoData]
+        public static void Get_Login_ReturnsDefaultViewWithReturnUrlSet(
+            AccountController controller)
         {
-            Assert.Throws<ArgumentNullException>(() =>
-                _ = new AccountController(
-                        CreateDefaultMockSignInManager(),
-                        null,
-                        Mock.Of<IPasswordService>(),
-                        Mock.Of<IPasswordResetCallback>(),
-                        new DisabledErrorMessageSettings()));
-        }
-
-        [Fact]
-        public static void Constructor_NullPasswordService_ThrowsException()
-        {
-            Assert.Throws<ArgumentNullException>(() =>
-                _ = new AccountController(
-                        CreateDefaultMockSignInManager(),
-                        CreateDefaultMockUserManager(),
-                        null,
-                        Mock.Of<IPasswordResetCallback>(),
-                        new DisabledErrorMessageSettings()));
-        }
-
-        [Fact]
-        public static void Constructor_NullPasswordResetCallback_ThrowsException()
-        {
-            Assert.Throws<ArgumentNullException>(() =>
-                _ = new AccountController(
-                        CreateDefaultMockSignInManager(),
-                        CreateDefaultMockUserManager(),
-                        Mock.Of<IPasswordService>(),
-                        null,
-                        new DisabledErrorMessageSettings()));
-        }
-
-        [Fact]
-        public static void Constructor_NullDisabledErrorSettings_ThrowsException()
-        {
-            Assert.Throws<ArgumentNullException>(() =>
-                _ = new AccountController(
-                    CreateDefaultMockSignInManager(),
-                    CreateDefaultMockUserManager(),
-                    Mock.Of<IPasswordService>(),
-                    Mock.Of<IPasswordResetCallback>(),
-                    null));
-        }
-
-        [Fact]
-        public static void Get_Login_ReturnsDefaultViewWithReturnUrlSet()
-        {
-            var controller = CreateValidController();
-
             var result = controller.Login("ReturnLink");
+            var actualResult = result.Should().BeAssignableTo<ViewResult>().Subject;
 
-            Assert.IsAssignableFrom<ViewResult>(result);
-            Assert.Null(((ViewResult)result).ViewName);
-            Assert.IsAssignableFrom<LoginViewModel>(((ViewResult)result).Model);
-            Assert.Equal("ReturnLink", ((LoginViewModel)((ViewResult)result).Model).ReturnUrl);
+            actualResult.ViewName.Should().BeNull();
+
+            var model = actualResult.Model.Should().BeAssignableTo<LoginViewModel>().Subject;
+
+            model.ReturnUrl.Should().Be("ReturnLink");
         }
 
-        [Fact]
-        public static async Task Post_Login_InvalidModelState_ReturnsDefaultView()
+        [Theory]
+        [CommonAutoData]
+        public static async Task Post_Login_InvalidModelState_ReturnsDefaultView(
+            AccountController controller)
         {
-            var controller = CreateValidController();
             controller.ModelState.AddModelError("test", "test");
 
             var result = await controller.Login(new LoginViewModel());
+            var actualResult = result.Should().BeAssignableTo<ViewResult>().Subject;
 
-            Assert.IsAssignableFrom<ViewResult>(result);
-            Assert.Null(((ViewResult)result).ViewName);
-            Assert.IsAssignableFrom<LoginViewModel>(((ViewResult)result).Model);
+            actualResult.ViewName.Should().BeNull();
+            actualResult.Model.Should().BeAssignableTo<LoginViewModel>();
         }
 
-        [Fact]
-        public static async Task Get_Logout_WhenNotLoggedIn_RedirectsHome()
+        [Theory]
+        [CommonAutoData]
+        public static async Task Post_Login_UserNotFound_ReturnsDefaultView(
+            LoginViewModel model,
+            Mock<UserManager<AspNetUser>> mockUserManager,
+            Mock<SignInManager<AspNetUser>> mockSignInManager)
         {
-            var controller = CreateValidController();
+            const string expectedErrorMessage = "The username or password were not recognised. Please try again.";
 
+            mockUserManager
+                .Setup(x => x.FindByNameAsync(model.EmailAddress))
+                .ReturnsAsync((AspNetUser)null);
+
+            var controller = CreateController(mockUserManager.Object, mockSignInManager.Object);
+
+            var result = await controller.Login(model);
+
+            mockUserManager.VerifyAll();
+            mockSignInManager.VerifyAll();
+
+            controller.ModelState.Should().ContainKey(nameof(model.EmailAddress));
+            controller.ModelState[nameof(model.EmailAddress)]?.Errors.Should().Contain(x => x.ErrorMessage == expectedErrorMessage);
+
+            controller.ModelState.Should().ContainKey(nameof(model.Password));
+            controller.ModelState[nameof(model.Password)]?.Errors.Should().Contain(x => x.ErrorMessage == expectedErrorMessage);
+
+            var actualResult = result.Should().BeAssignableTo<ViewResult>().Subject;
+
+            actualResult.ViewName.Should().BeNull();
+            actualResult.Model.Should().BeAssignableTo<LoginViewModel>();
+        }
+
+        [Theory]
+        [CommonAutoData]
+        public static async Task Post_Login_FailedSignIn_ReturnsDefaultView(
+            AspNetUser user,
+            LoginViewModel model,
+            Mock<UserManager<AspNetUser>> mockUserManager,
+            Mock<SignInManager<AspNetUser>> mockSignInManager)
+        {
+            const string expectedErrorMessage = "The username or password were not recognised. Please try again.";
+
+            mockUserManager
+                .Setup(x => x.FindByNameAsync(model.EmailAddress))
+                .ReturnsAsync(user);
+
+            mockSignInManager
+                .Setup(x => x.PasswordSignInAsync(user, model.Password, false, true))
+                .ReturnsAsync(SignInResult.Failed);
+
+            var controller = CreateController(mockUserManager.Object, mockSignInManager.Object);
+
+            var result = await controller.Login(model);
+
+            mockUserManager.VerifyAll();
+            mockSignInManager.VerifyAll();
+
+            controller.ModelState.Should().ContainKey(nameof(model.EmailAddress));
+            controller.ModelState[nameof(model.EmailAddress)]?.Errors.Should().Contain(x => x.ErrorMessage == expectedErrorMessage);
+
+            controller.ModelState.Should().ContainKey(nameof(model.Password));
+            controller.ModelState[nameof(model.Password)]?.Errors.Should().Contain(x => x.ErrorMessage == expectedErrorMessage);
+
+            var actualResult = result.Should().BeAssignableTo<ViewResult>().Subject;
+
+            actualResult.ViewName.Should().BeNull();
+            actualResult.Model.Should().BeAssignableTo<LoginViewModel>();
+        }
+
+        [Theory]
+        [CommonAutoData]
+        public static async Task Post_Login_UserAccountDisabled_ReturnsDefaultView(
+            AspNetUser user,
+            LoginViewModel model,
+            Mock<UserManager<AspNetUser>> mockUserManager,
+            Mock<SignInManager<AspNetUser>> mockSignInManager)
+        {
+            const string expectedErrorMessage = "There is a problem accessing your account.";
+
+            user.Disabled = true;
+
+            mockUserManager
+                .Setup(x => x.FindByNameAsync(model.EmailAddress))
+                .ReturnsAsync(user);
+
+            mockSignInManager
+                .Setup(x => x.PasswordSignInAsync(user, model.Password, false, true))
+                .ReturnsAsync(SignInResult.Success);
+
+            var controller = CreateController(mockUserManager.Object, mockSignInManager.Object);
+
+            var result = await controller.Login(model);
+
+            mockUserManager.VerifyAll();
+            mockSignInManager.VerifyAll();
+
+            controller.ModelState.Should().ContainKey(nameof(model.DisabledError));
+            controller.ModelState[nameof(model.DisabledError)]?.Errors.Should().Contain(x => x.ErrorMessage.Contains(expectedErrorMessage));
+
+            var actualResult = result.Should().BeAssignableTo<ViewResult>().Subject;
+
+            actualResult.ViewName.Should().BeNull();
+            actualResult.Model.Should().BeAssignableTo<LoginViewModel>();
+        }
+
+        [Theory]
+        [CommonAutoData]
+        public static async Task Post_Login_UserAccountActive_ReturnsRedirect(
+            string odsCode,
+            AspNetUser user,
+            LoginViewModel model,
+            Mock<UserManager<AspNetUser>> mockUserManager,
+            Mock<SignInManager<AspNetUser>> mockSignInManager,
+            Mock<IOdsService> mockOdsService)
+        {
+            user.Disabled = false;
+            user.PrimaryOrganisation = new Organisation { ExternalIdentifier = odsCode };
+
+            mockUserManager
+                .Setup(x => x.FindByNameAsync(model.EmailAddress))
+                .ReturnsAsync(user);
+
+            mockSignInManager
+                .Setup(x => x.PasswordSignInAsync(user, model.Password, false, true))
+                .ReturnsAsync(SignInResult.Success);
+
+            mockOdsService
+                .Setup(x => x.UpdateOrganisationDetails(odsCode))
+                .Verifiable();
+
+            var controller = CreateController(mockUserManager.Object, mockSignInManager.Object, mockOdsService.Object);
+
+            var result = await controller.Login(model);
+
+            mockUserManager.VerifyAll();
+            mockSignInManager.VerifyAll();
+            mockOdsService.VerifyAll();
+
+            var actualResult = result.Should().BeAssignableTo<RedirectResult>().Subject;
+
+            actualResult.Url.Should().Be(model.ReturnUrl);
+        }
+
+        [Theory]
+        [CommonAutoData]
+        public static async Task Get_Logout_WhenNotLoggedIn_RedirectsHome(AccountController controller)
+        {
             var result = await controller.Logout();
 
             Assert.IsAssignableFrom<LocalRedirectResult>(result);
             Assert.Equal("~/", ((LocalRedirectResult)result).Url);
         }
 
-        [Fact]
-        public static void Get_ForgotPassword_ReturnsDefaultView()
+        [Theory]
+        [CommonAutoData]
+        public static void Get_ForgotPassword_ReturnsDefaultView(AccountController controller)
         {
-            var controller = CreateValidController();
-
             var result = controller.ForgotPassword();
 
             Assert.IsAssignableFrom<ViewResult>(result);
             Assert.Null(((ViewResult)result).ViewName);
         }
 
-        [Fact]
-        public static async Task Post_ForgotPassword_InvalidModelState_ReturnsDefaultView()
+        [Theory]
+        [CommonAutoData]
+        public static async Task Post_ForgotPassword_InvalidModelState_ReturnsDefaultView(AccountController controller)
         {
-            var controller = CreateValidController();
             controller.ModelState.AddModelError("test", "test");
 
             var result = await controller.ForgotPassword(new ForgotPasswordViewModel());
@@ -147,21 +243,20 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Identity.Controllers
             Assert.IsAssignableFrom<ForgotPasswordViewModel>(((ViewResult)result).Model);
         }
 
-        [Fact]
-        public static void Get_ForgotPasswordLinkSent_ReturnsDefaultView()
+        [Theory]
+        [CommonAutoData]
+        public static void Get_ForgotPasswordLinkSent_ReturnsDefaultView(AccountController controller)
         {
-            var controller = CreateValidController();
-
             var result = controller.ForgotPasswordLinkSent();
 
             Assert.IsAssignableFrom<ViewResult>(result);
             Assert.Null(((ViewResult)result).ViewName);
         }
 
-        [Fact]
-        public static async Task Post_ResetPassword_InvalidModelState_ReturnsDefaultView()
+        [Theory]
+        [CommonAutoData]
+        public static async Task Post_ResetPassword_InvalidModelState_ReturnsDefaultView(AccountController controller)
         {
-            var controller = CreateValidController();
             controller.ModelState.AddModelError("test", "test");
 
             var result = await controller.ResetPassword(new ResetPasswordViewModel());
@@ -171,66 +266,38 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Identity.Controllers
             Assert.IsAssignableFrom<ResetPasswordViewModel>(((ViewResult)result).Model);
         }
 
-        [Fact]
-        public static void Get_ResetPasswordConfirmation_ReturnsDefaultView()
+        [Theory]
+        [CommonAutoData]
+        public static void Get_ResetPasswordConfirmation_ReturnsDefaultView(AccountController controller)
         {
-            var controller = CreateValidController();
-
             var result = controller.ResetPasswordConfirmation();
 
             Assert.IsAssignableFrom<ViewResult>(result);
             Assert.Null(((ViewResult)result).ViewName);
         }
 
-        [Fact]
-        public static void Get_ResetPasswordExpired_ReturnsDefaultView()
+        [Theory]
+        [CommonAutoData]
+        public static void Get_ResetPasswordExpired_ReturnsDefaultView(AccountController controller)
         {
-            var controller = CreateValidController();
-
             var result = controller.ResetPasswordExpired();
 
             Assert.IsAssignableFrom<ViewResult>(result);
             Assert.Null(((ViewResult)result).ViewName);
         }
 
-        private static AccountController CreateValidController()
+        private static AccountController CreateController(
+            UserManager<AspNetUser> userManager,
+            SignInManager<AspNetUser> signInManager,
+            IOdsService odsService = null)
         {
-            return new(
-                CreateDefaultMockSignInManager(),
-                CreateDefaultMockUserManager(),
+            return new AccountController(
+                signInManager,
+                userManager,
+                odsService ?? Mock.Of<IOdsService>(),
                 Mock.Of<IPasswordService>(),
                 Mock.Of<IPasswordResetCallback>(),
                 new DisabledErrorMessageSettings());
-        }
-
-        private static UserManager<AspNetUser> CreateDefaultMockUserManager()
-        {
-            var mockUserManager = new Mock<UserManager<AspNetUser>>(
-                Mock.Of<IUserStore<AspNetUser>>(),
-                null,
-                null,
-                null,
-                null,
-                null,
-                null,
-                null,
-                null);
-
-            return mockUserManager.Object;
-        }
-
-        private static SignInManager<AspNetUser> CreateDefaultMockSignInManager()
-        {
-            var mockSignInManager = new Mock<SignInManager<AspNetUser>>(
-                CreateDefaultMockUserManager(),
-                Mock.Of<IHttpContextAccessor>(),
-                Mock.Of<IUserClaimsPrincipalFactory<AspNetUser>>(),
-                null,
-                null,
-                null,
-                null);
-
-            return mockSignInManager.Object;
         }
     }
 }

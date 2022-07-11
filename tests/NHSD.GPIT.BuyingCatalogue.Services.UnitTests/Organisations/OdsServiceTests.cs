@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using AutoFixture;
 using AutoFixture.AutoMoq;
 using AutoFixture.Idioms;
+using AutoFixture.Xunit2;
 using FluentAssertions;
 using Flurl.Http.Testing;
 using Microsoft.Extensions.Caching.Memory;
@@ -101,24 +102,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Organisations
             using var httpTest = new HttpTest();
             httpTest.RespondWith(status: 200, body: ValidResponseBody);
 
-            var expected = new OdsOrganisation
-            {
-                OdsCode = OdsCode,
-                OrganisationName = "SOUTH EAST - H&J COMMISSIONING HUB",
-                PrimaryRoleId = "RO98",
-                Address = new Address
-                {
-                    Line1 = "C/O NHS ENGLAND",
-                    Line2 = "1W09, 1ST FLOOR, QUARRY HOUSE",
-                    Line3 = "QUARRY HILL",
-                    Town = "LEEDS",
-                    Postcode = "LS2 7UA",
-                    Country = "ENGLAND",
-                },
-                IsActive = true,
-                IsBuyerOrganisation = true,
-            };
-
+            var expected = GetOdsOrganisation();
             var memoryCacheMock = new Mock<IMemoryCache>();
 
             object expectedValue = null;
@@ -402,6 +386,89 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Organisations
             result.Should().BeEmpty();
             memoryCacheMock.Verify(v => v.CreateEntry(It.IsAny<object>()), Times.Once);
         }
+
+        [Theory]
+        [CommonInlineAutoData(null)]
+        [CommonInlineAutoData("")]
+        [CommonInlineAutoData(" ")]
+        public static void UpdateOrganisationDetails_NullOdsCode_ThrowsException(
+            string odsCode,
+            OdsService service)
+        {
+            FluentActions
+                .Awaiting(() => service.UpdateOrganisationDetails(odsCode))
+                .Should().ThrowAsync<ArgumentException>();
+        }
+
+        [Theory]
+        [CommonAutoData]
+        public static async Task UpdateOrganisationDetails_OrganisationNotFound_NoActionTaken(
+            string odsCode,
+            [Frozen] Mock<IOrganisationsService> mockOrganisationsService,
+            OdsService service)
+        {
+            new HttpTest().RespondWithJson(new { ErrorCode = 404, ErrorText = "Not Found." }, 404);
+
+            await service.UpdateOrganisationDetails(odsCode);
+
+            mockOrganisationsService.Verify(x => x.UpdateCcgOrganisation(It.IsAny<OdsOrganisation>()), Times.Never);
+        }
+
+        [Theory]
+        [CommonAutoData]
+        public static async Task UpdateOrganisationDetails_OrganisationFound_DetailsUpdated(
+            string odsCode,
+            Mock<IMemoryCache> mockMemoryCache,
+            Mock<IOrganisationsService> mockOrganisationsService)
+        {
+            var settings = new OdsSettings
+            {
+                ApiBaseUrl = new Uri("https://spineservice"),
+                BuyerOrganisationRoleIds = new[] { "RO98", "RO177", "RO213", "RO272" },
+            };
+
+            new HttpTest().RespondWith(status: 200, body: ValidResponseBody);
+
+            object retVal;
+            var expected = GetOdsOrganisation();
+            OdsOrganisation actual = null;
+
+            mockMemoryCache
+                .Setup(x => x.TryGetValue($"ODS-{odsCode}", out retVal))
+                .Returns(false);
+
+            mockOrganisationsService
+                .Setup(x => x.UpdateCcgOrganisation(It.IsAny<OdsOrganisation>()))
+                .Callback<OdsOrganisation>(x => actual = x);
+
+            await new OdsService(
+                settings,
+                mockMemoryCache.Object,
+                mockOrganisationsService.Object).UpdateOrganisationDetails(odsCode);
+
+            mockMemoryCache.VerifyAll();
+            mockOrganisationsService.VerifyAll();
+
+            actual.Should().BeEquivalentTo(expected);
+        }
+
+        private static OdsOrganisation GetOdsOrganisation() => new()
+        {
+            OdsCode = OdsCode,
+            OrganisationName = "SOUTH EAST - H&J COMMISSIONING HUB",
+            PrimaryRoleId = "RO98",
+            Address = new Address
+            {
+                Line1 = "C/O NHS ENGLAND",
+                Line2 = "1W09, 1ST FLOOR, QUARRY HOUSE",
+                Line3 = "QUARRY HILL",
+                Town = "LEEDS",
+                Postcode = "LS2 7UA",
+                Country = "ENGLAND",
+            },
+            IsActive = true,
+            IsBuyerOrganisation = true,
+        };
 
         private static string CreatePageJson(params ServiceRecipient[] serviceRecipients)
         {
