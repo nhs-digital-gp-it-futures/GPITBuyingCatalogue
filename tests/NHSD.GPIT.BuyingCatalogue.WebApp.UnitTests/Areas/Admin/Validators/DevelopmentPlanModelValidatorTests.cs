@@ -15,20 +15,20 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators
     {
         [Theory]
         [CommonAutoData]
-        public static async Task Validate_NoLink_DoesNotValidate(
+        public static void Validate_NoLink_DoesNotValidate(
             [Frozen] Mock<IUrlValidator> urlValidator,
             DevelopmentPlanModelValidator validator)
         {
             var model = new DevelopmentPlanModel();
 
-            var result = await validator.TestValidateAsync(model);
+            var result = validator.TestValidate(model);
 
             urlValidator.Verify(uv => uv.IsValidUrl(It.IsAny<string>()), Times.Never);
         }
 
         [Theory]
         [CommonAutoData]
-        public static async Task Validate_MissingProtocol_SetsModelError(
+        public static void Validate_MissingProtocol_SetsModelError(
             DevelopmentPlanModel model,
             [Frozen] Mock<IUrlValidator> urlValidator,
             DevelopmentPlanModelValidator validator)
@@ -36,7 +36,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators
             urlValidator.Setup(uv => uv.IsValidUrl(model.Link))
                 .Returns(false);
 
-            var result = await validator.TestValidateAsync(model);
+            var result = validator.TestValidate(model);
 
             result.ShouldHaveValidationErrorFor(m => m.Link)
                 .WithErrorMessage("Enter a prefix to the URL, either http or https");
@@ -44,7 +44,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators
 
         [Theory]
         [CommonAutoData]
-        public static async Task Validate_InvalidLink_SetsModelError(
+        public static void Validate_InvalidLink_SetsModelError(
             [Frozen] Mock<IUrlValidator> urlValidator,
             DevelopmentPlanModelValidator validator)
         {
@@ -53,7 +53,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators
             urlValidator.Setup(uv => uv.IsValidUrl(model.Link))
                 .Returns(false);
 
-            var result = await validator.TestValidateAsync(model);
+            var result = validator.TestValidate(model);
 
             result.ShouldHaveValidationErrorFor(m => m.Link)
                 .WithErrorMessage("Enter a valid URL");
@@ -61,7 +61,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators
 
         [Theory]
         [CommonAutoData]
-        public static async Task Validate_ValidLink_NoModelError(
+        public static void Validate_ValidLink_NoModelError(
             Uri uri,
             [Frozen] Mock<IUrlValidator> urlValidator,
             DevelopmentPlanModelValidator validator)
@@ -70,7 +70,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators
             urlValidator.Setup(uv => uv.IsValidUrl(model.Link))
                 .Returns(true);
 
-            var result = await validator.TestValidateAsync(model);
+            var result = validator.TestValidate(model);
 
             result.ShouldNotHaveValidationErrorFor(m => m.Link);
         }

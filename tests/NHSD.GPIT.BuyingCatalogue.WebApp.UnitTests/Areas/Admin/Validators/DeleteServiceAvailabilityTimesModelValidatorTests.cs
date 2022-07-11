@@ -16,7 +16,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators
     {
         [Theory]
         [CommonAutoData]
-        public static async Task Validate_PublishedSolutionWithManyServiceAgreementTimes_NoModelError(
+        public static void Validate_PublishedSolutionWithManyServiceAgreementTimes_NoModelError(
             Solution solution,
             ServiceAvailabilityTimes serviceAvailabilityTimes,
             [Frozen] Mock<ISolutionsService> solutionsService,
@@ -33,14 +33,14 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators
             serviceLevelAgreementsService.Setup(s => s.GetCountOfServiceAvailabilityTimes(solution.CatalogueItemId, serviceAvailabilityTimes.Id))
                 .ReturnsAsync(1);
 
-            var result = await validator.TestValidateAsync(model);
+            var result = validator.TestValidate(model);
 
             result.ShouldNotHaveValidationErrorFor(m => m);
         }
 
         [Theory]
         [CommonAutoData]
-        public static async Task Validate_PublishedSolutionWitSingleServiceAgreementTimes_SetsModelError(
+        public static void Validate_PublishedSolutionWitSingleServiceAgreementTimes_SetsModelError(
             Solution solution,
             ServiceAvailabilityTimes serviceAvailabilityTimes,
             [Frozen] Mock<ISolutionsService> solutionsService,
@@ -57,7 +57,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators
             serviceLevelAgreementsService.Setup(s => s.GetCountOfServiceAvailabilityTimes(solution.CatalogueItemId, serviceAvailabilityTimes.Id))
                 .ReturnsAsync(0);
 
-            var result = await validator.TestValidateAsync(model);
+            var result = validator.TestValidate(model);
 
             result.ShouldHaveValidationErrorFor(m => m)
                 .WithErrorMessage("These are the only service availability times provided and can only be deleted if you unpublish your solution first");
@@ -65,7 +65,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators
 
         [Theory]
         [CommonAutoData]
-        public static async Task Validate_UnpublishedSolutionWithManyServiceAgreementTimes_NoModelError(
+        public static void Validate_UnpublishedSolutionWithManyServiceAgreementTimes_NoModelError(
             Solution solution,
             ServiceAvailabilityTimes serviceAvailabilityTimes,
             [Frozen] Mock<ISolutionsService> solutionsService,
@@ -82,14 +82,14 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators
             serviceLevelAgreementsService.Setup(s => s.GetCountOfServiceAvailabilityTimes(solution.CatalogueItemId, serviceAvailabilityTimes.Id))
                 .ReturnsAsync(1);
 
-            var result = await validator.TestValidateAsync(model);
+            var result = validator.TestValidate(model);
 
             result.ShouldNotHaveValidationErrorFor(m => m);
         }
 
         [Theory]
         [CommonAutoData]
-        public static async Task Validate_UnpublishedSolutionWitSingleServiceAgreementTimes_NoModelError(
+        public static void Validate_UnpublishedSolutionWitSingleServiceAgreementTimes_NoModelError(
             Solution solution,
             ServiceAvailabilityTimes serviceAvailabilityTimes,
             [Frozen] Mock<ISolutionsService> solutionsService,
@@ -106,7 +106,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators
             serviceLevelAgreementsService.Setup(s => s.GetCountOfServiceAvailabilityTimes(solution.CatalogueItemId, serviceAvailabilityTimes.Id))
                 .ReturnsAsync(0);
 
-            var result = await validator.TestValidateAsync(model);
+            var result = validator.TestValidate(model);
 
             result.ShouldNotHaveValidationErrorFor(m => m);
         }

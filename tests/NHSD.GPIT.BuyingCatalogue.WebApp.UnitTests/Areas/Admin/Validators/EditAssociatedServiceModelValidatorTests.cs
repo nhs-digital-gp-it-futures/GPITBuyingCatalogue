@@ -19,21 +19,21 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators
     {
         [Theory]
         [CommonAutoData]
-        public static async Task Validate_SamePublicationStatus_NoModelError(
+        public static void Validate_SamePublicationStatus_NoModelError(
             Solution solution,
             AssociatedService associatedService,
             EditAssociatedServiceModelValidator validator)
         {
             var model = new EditAssociatedServiceModel(solution.CatalogueItem, associatedService.CatalogueItem);
 
-            var result = await validator.TestValidateAsync(model);
+            var result = validator.TestValidate(model);
 
             result.ShouldNotHaveAnyValidationErrors();
         }
 
         [Theory]
         [CommonAutoData]
-        public static async Task Validate_MissingDetails_SetsModelError(
+        public static void Validate_MissingDetails_SetsModelError(
             Solution solution,
             AssociatedService associatedService,
             EditAssociatedServiceModelValidator validator)
@@ -47,7 +47,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators
                 SelectedPublicationStatus = PublicationStatus.Published,
             };
 
-            var result = await validator.TestValidateAsync(model);
+            var result = validator.TestValidate(model);
 
             model.DetailsStatus.Should().Be(TaskProgress.NotStarted);
             model.ListPriceStatus.Should().Be(TaskProgress.Completed);
@@ -59,7 +59,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators
         [CommonInlineAutoData(PublicationStatus.Published)]
         [CommonInlineAutoData(PublicationStatus.Suspended)]
         [CommonInlineAutoData(PublicationStatus.InRemediation)]
-        public static async Task Validate_UnpublishWithActiveSolutions_SetsModelError(
+        public static void Validate_UnpublishWithActiveSolutions_SetsModelError(
             PublicationStatus solutionsPublicationStatus,
             List<Solution> solutions,
             [Frozen] Mock<IAssociatedServicesService> service,
@@ -74,7 +74,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators
             model.AssociatedServicePublicationStatus = PublicationStatus.Published;
             model.SelectedPublicationStatus = PublicationStatus.Unpublished;
 
-            var result = await validator.TestValidateAsync(model);
+            var result = validator.TestValidate(model);
 
             result.ShouldHaveValidationErrorFor(m => m.SelectedPublicationStatus)
                 .WithErrorMessage("This Associated Service cannot be unpublished as it is referenced by at least one solution");
@@ -83,7 +83,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators
         [Theory]
         [CommonInlineAutoData(PublicationStatus.Draft)]
         [CommonInlineAutoData(PublicationStatus.Unpublished)]
-        public static async Task Validate_UnpublishWithInactiveSolutions_NoModelError(
+        public static void Validate_UnpublishWithInactiveSolutions_NoModelError(
             PublicationStatus solutionsPublicationStatus,
             List<Solution> solutions,
             [Frozen] Mock<IAssociatedServicesService> service,
@@ -98,7 +98,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators
             model.AssociatedServicePublicationStatus = PublicationStatus.Published;
             model.SelectedPublicationStatus = PublicationStatus.Unpublished;
 
-            var result = await validator.TestValidateAsync(model);
+            var result = validator.TestValidate(model);
 
             result.ShouldNotHaveValidationErrorFor(m => m.SelectedPublicationStatus);
         }

@@ -16,13 +16,13 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators.Serv
     {
         [Theory]
         [CommonAutoData]
-        public static async Task Validate_EmptyChannel_SetsModelError(
+        public static void Validate_EmptyChannel_SetsModelError(
             EditSLAContactModel model,
             EditSLAContactModelValidator validator)
         {
             model.Channel = string.Empty;
 
-            var result = await validator.TestValidateAsync(model);
+            var result = validator.TestValidate(model);
 
             result.ShouldHaveValidationErrorFor(m => m.Channel)
                 .WithErrorMessage("Enter a contact channel");
@@ -30,13 +30,13 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators.Serv
 
         [Theory]
         [CommonAutoData]
-        public static async Task Validate_EmptyContactInformation_SetsModelError(
+        public static void Validate_EmptyContactInformation_SetsModelError(
             EditSLAContactModel model,
             EditSLAContactModelValidator validator)
         {
             model.ContactInformation = string.Empty;
 
-            var result = await validator.TestValidateAsync(model);
+            var result = validator.TestValidate(model);
 
             result.ShouldHaveValidationErrorFor(m => m.ContactInformation)
                 .WithErrorMessage("Enter contact information");
@@ -44,13 +44,13 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators.Serv
 
         [Theory]
         [CommonAutoData]
-        public static async Task Validate_EmptyFrom_SetsModelError(
+        public static void Validate_EmptyFrom_SetsModelError(
             EditSLAContactModel model,
             EditSLAContactModelValidator validator)
         {
             model.From = null;
 
-            var result = await validator.TestValidateAsync(model);
+            var result = validator.TestValidate(model);
 
             result.ShouldHaveValidationErrorFor(m => m.From)
                 .WithErrorMessage("Enter a from time");
@@ -58,13 +58,13 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators.Serv
 
         [Theory]
         [CommonAutoData]
-        public static async Task Validate_EmptyUntil_SetsModelError(
+        public static void Validate_EmptyUntil_SetsModelError(
             EditSLAContactModel model,
             EditSLAContactModelValidator validator)
         {
             model.Until = null;
 
-            var result = await validator.TestValidateAsync(model);
+            var result = validator.TestValidate(model);
 
             result.ShouldHaveValidationErrorFor(m => m.Until)
                 .WithErrorMessage("Enter an until time");
@@ -72,7 +72,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators.Serv
 
         [Theory]
         [CommonAutoData]
-        public static async Task Validate_Duplicate_SetsModelError(
+        public static void Validate_Duplicate_SetsModelError(
             SlaContact slaContact,
             EditSLAContactModel model,
             [Frozen] Mock<IServiceLevelAgreementsService> serviceLevelAgreementsService,
@@ -93,7 +93,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators.Serv
                     },
                 });
 
-            var result = await validator.TestValidateAsync(model);
+            var result = validator.TestValidate(model);
 
             result.ShouldHaveValidationErrorFor("Channel|ContactInformation")
                 .WithErrorMessage(EditSLAContactModelValidator.DuplicateContactErrorMessage);
@@ -101,7 +101,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators.Serv
 
         [Theory]
         [CommonAutoData]
-        public static async Task Validate_DuplicateWithApplicableDays_SetsModelError(
+        public static void Validate_DuplicateWithApplicableDays_SetsModelError(
             SlaContact slaContact,
             EditSLAContactModel model,
             [Frozen] Mock<IServiceLevelAgreementsService> serviceLevelAgreementsService,
@@ -120,7 +120,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators.Serv
                     },
                 });
 
-            var result = await validator.TestValidateAsync(model);
+            var result = validator.TestValidate(model);
 
             result.ShouldHaveValidationErrorFor("Channel|ContactInformation|ApplicableDays")
                 .WithErrorMessage(EditSLAContactModelValidator.DuplicateContactErrorMessage);
@@ -128,7 +128,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators.Serv
 
         [Theory]
         [CommonAutoData]
-        public static async Task Validate_Edit_NoModelError(
+        public static void Validate_Edit_NoModelError(
             SlaContact slaContact,
             EditSLAContactModel model,
             [Frozen] Mock<IServiceLevelAgreementsService> serviceLevelAgreementsService,
@@ -147,14 +147,14 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators.Serv
                     },
                 });
 
-            var result = await validator.TestValidateAsync(model);
+            var result = validator.TestValidate(model);
 
             result.ShouldNotHaveValidationErrorFor("Channel|ContactInformation");
         }
 
         [Theory]
         [CommonAutoData]
-        public static async Task Validate_EditWithApplicableDays_NoModelError(
+        public static void Validate_EditWithApplicableDays_NoModelError(
             SlaContact slaContact,
             EditSLAContactModel model,
             [Frozen] Mock<IServiceLevelAgreementsService> serviceLevelAgreementsService,
@@ -174,18 +174,18 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators.Serv
                     },
                 });
 
-            var result = await validator.TestValidateAsync(model);
+            var result = validator.TestValidate(model);
 
             result.ShouldNotHaveValidationErrorFor("Channel|ContactInformation|ApplicableDays");
         }
 
         [Theory]
         [CommonAutoData]
-        public static async Task Validate_Valid_NoErrors(
+        public static void Validate_Valid_NoErrors(
             EditSLAContactModel model,
             EditSLAContactModelValidator validator)
         {
-            var result = await validator.TestValidateAsync(model);
+            var result = validator.TestValidate(model);
 
             result.ShouldNotHaveAnyValidationErrors();
         }
