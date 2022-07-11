@@ -345,6 +345,14 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp
                     }).AddSingleton<IValidatorInterceptor, FluentValidatorInterceptor>();
         }
 
+        public static void ConfigureFormOptions(this IServiceCollection services)
+        {
+            services.Configure<FormOptions>(options =>
+            {
+                options.ValueCountLimit = 16384;
+            });
+        }
+
         public static IServiceCollection AddHangFire(this IServiceCollection services)
         {
             var connectionString = Environment.GetEnvironmentVariable(HangFireDbConnectionEnvironmentVariable);

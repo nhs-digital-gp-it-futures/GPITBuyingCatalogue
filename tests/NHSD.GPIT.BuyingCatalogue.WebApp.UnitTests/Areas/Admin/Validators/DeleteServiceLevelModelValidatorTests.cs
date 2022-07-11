@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using AutoFixture.Xunit2;
 using FluentValidation.TestHelper;
 using Moq;
@@ -16,7 +17,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators
     {
         [Theory]
         [CommonAutoData]
-        public static void Validate_PublishedSolutionWithManyServiceLevels_NoModelError(
+        public static async Task Validate_PublishedSolutionWithManyServiceLevels_NoModelError(
                Solution solution,
                ServiceLevelAgreements serviceLevelAgreement,
                List<SlaServiceLevel> serviceLevels,
@@ -33,14 +34,14 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators
             solutionsService.Setup(s => s.GetSolutionThin(solution.CatalogueItemId))
                 .ReturnsAsync(solution.CatalogueItem);
 
-            var result = validator.TestValidate(model);
+            var result = await validator.TestValidateAsync(model);
 
             result.ShouldNotHaveValidationErrorFor(m => m);
         }
 
         [Theory]
         [CommonAutoData]
-        public static void Validate_PublishedSolutionWitSingleServiceLevels_SetsModelError(
+        public static async Task Validate_PublishedSolutionWitSingleServiceLevels_SetsModelError(
             Solution solution,
             ServiceLevelAgreements serviceLevelAgreement,
             SlaServiceLevel serviceLevel,
@@ -57,7 +58,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators
             solutionsService.Setup(s => s.GetSolutionWithServiceLevelAgreements(solution.CatalogueItemId))
                 .ReturnsAsync(solution.CatalogueItem);
 
-            var result = validator.TestValidate(model);
+            var result = await validator.TestValidateAsync(model);
 
             result.ShouldHaveValidationErrorFor(m => m)
                 .WithErrorMessage("This is the only service level provided and can only be deleted if you unpublish your solution first");
@@ -65,7 +66,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators
 
         [Theory]
         [CommonAutoData]
-        public static void Validate_UnpublishedSolutionWithManyServiceAgreementTimes_NoModelError(
+        public static async Task Validate_UnpublishedSolutionWithManyServiceAgreementTimes_NoModelError(
             Solution solution,
             ServiceLevelAgreements serviceLevelAgreement,
             List<SlaServiceLevel> serviceLevels,
@@ -82,14 +83,14 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators
             solutionsService.Setup(s => s.GetSolutionThin(solution.CatalogueItemId))
                 .ReturnsAsync(solution.CatalogueItem);
 
-            var result = validator.TestValidate(model);
+            var result = await validator.TestValidateAsync(model);
 
             result.ShouldNotHaveValidationErrorFor(m => m);
         }
 
         [Theory]
         [CommonAutoData]
-        public static void Validate_UnpublishedSolutionWitSingleServiceAgreementTimes_NoModelError(
+        public static async Task Validate_UnpublishedSolutionWitSingleServiceAgreementTimes_NoModelError(
             Solution solution,
             ServiceLevelAgreements serviceLevelAgreement,
             SlaServiceLevel serviceLevel,
@@ -106,7 +107,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators
             solutionsService.Setup(s => s.GetSolutionThin(solution.CatalogueItemId))
                 .ReturnsAsync(solution.CatalogueItem);
 
-            var result = validator.TestValidate(model);
+            var result = await validator.TestValidateAsync(model);
 
             result.ShouldNotHaveValidationErrorFor(m => m);
         }
