@@ -47,7 +47,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators.Orga
         [Theory]
         [CommonInlineAutoData(null)]
         [CommonInlineAutoData("")]
-        public static void Validate_EmailAddressNullOrEmpty_SetsModelError(
+        public static async Task Validate_EmailAddressNullOrEmpty_SetsModelError(
             string emailAddress,
             AddUserModel model,
             AddUserModelValidator validator)

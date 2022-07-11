@@ -17,7 +17,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators.Supp
     {
         [Theory]
         [CommonAutoData]
-        public static async Task Validate_ActiveNoReferences_SetsModelError(
+        public static void Validate_ActiveNoReferences_SetsModelError(
             Epic epic,
             DeleteSupplierDefinedEpicConfirmationModel model,
             [Frozen] Mock<ISupplierDefinedEpicsService> service,
@@ -35,14 +35,14 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators.Supp
             service.Setup(s => s.GetItemsReferencingEpic(epic.Id))
                 .ReturnsAsync(Array.Empty<CatalogueItem>().ToList());
 
-            var result = await validator.TestValidateAsync(model);
+            var result = validator.TestValidate(model);
 
             result.ShouldHaveValidationErrorFor(m => m);
         }
 
         [Theory]
         [CommonAutoData]
-        public static async Task Validate_ActiveWithReferences_SetsModelError(
+        public static void Validate_ActiveWithReferences_SetsModelError(
             Epic epic,
             List<CatalogueItem> items,
             DeleteSupplierDefinedEpicConfirmationModel model,
@@ -61,14 +61,14 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators.Supp
             service.Setup(s => s.GetItemsReferencingEpic(epic.Id))
                 .ReturnsAsync(items);
 
-            var result = await validator.TestValidateAsync(model);
+            var result = validator.TestValidate(model);
 
             result.ShouldHaveValidationErrorFor(m => m);
         }
 
         [Theory]
         [CommonAutoData]
-        public static async Task Validate_InactiveWithReferences_SetsModelError(
+        public static void Validate_InactiveWithReferences_SetsModelError(
             Epic epic,
             List<CatalogueItem> items,
             DeleteSupplierDefinedEpicConfirmationModel model,
@@ -87,14 +87,14 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators.Supp
             service.Setup(s => s.GetItemsReferencingEpic(epic.Id))
                 .ReturnsAsync(items);
 
-            var result = await validator.TestValidateAsync(model);
+            var result = validator.TestValidate(model);
 
             result.ShouldHaveValidationErrorFor(m => m);
         }
 
         [Theory]
         [CommonAutoData]
-        public static async Task Validate_InactiveNoReferences_NoModelError(
+        public static void Validate_InactiveNoReferences_NoModelError(
             Epic epic,
             DeleteSupplierDefinedEpicConfirmationModel model,
             [Frozen] Mock<ISupplierDefinedEpicsService> service,
@@ -112,7 +112,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators.Supp
             service.Setup(s => s.GetItemsReferencingEpic(epic.Id))
                 .ReturnsAsync(Array.Empty<CatalogueItem>().ToList());
 
-            var result = await validator.TestValidateAsync(model);
+            var result = validator.TestValidate(model);
 
             result.ShouldNotHaveAnyValidationErrors();
         }

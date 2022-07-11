@@ -326,14 +326,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp
             services.Configure<GzipCompressionProviderOptions>(options => options.Level = CompressionLevel.Fastest);
         }
 
-        public static void ConfigureFormOptions(this IServiceCollection services)
-        {
-            services.Configure<FormOptions>(options =>
-            {
-                options.ValueCountLimit = 8192;
-            });
-        }
-
         public static IServiceCollection AddFluentValidation(this IServiceCollection services)
         {
             return services.AddFluentValidation(
