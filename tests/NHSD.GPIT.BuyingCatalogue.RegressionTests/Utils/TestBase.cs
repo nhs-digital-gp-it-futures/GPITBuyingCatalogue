@@ -1,5 +1,6 @@
 ﻿using NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.Actions.Authorization;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.UrlGenerators;
+using NHSD.GPIT.BuyingCatalogue.EntityFramework;
 using NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering;
 using OpenQA.Selenium;
 using OpenQA.Selenium.Support.UI;
@@ -10,36 +11,43 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Utils
 {
     public class TestBase
     {
-        public readonly string BuyerUsername = Environment.GetEnvironmentVariable("RegressionBuyerUsername")!;
-        public readonly string BuyerPassword = Environment.GetEnvironmentVariable("RegressionBuyerPassword")!;
+        /*private readonly string buyerUsername = Environment.GetEnvironmentVariable("RegressionBuyerUsername")!;
+        private readonly string buyerPassword = Environment.GetEnvironmentVariable("RegressionBuyerPassword")!;*/
 
-        public readonly string AdminUsername = Environment.GetEnvironmentVariable("RegressionAdminUsername")!;
-        public readonly string AdminPassword = Environment.GetEnvironmentVariable("RegressionAdminPassword")!;
+        private readonly string buyerUsername = "suesmith@email.com";
+        private readonly string buyerPassword = "Pass123$";
 
-        public readonly Uri uri;
+        /*private readonly string adminUsername = Environment.GetEnvironmentVariable("RegressionAdminUsername")!;
+        private readonly string adminPassword = Environment.GetEnvironmentVariable("RegressionAdminPassword")!;*/
+
+        private readonly string adminUsername = "bobsmith@email.com";
+        private readonly string adminPassword = "Pass123$";
+
+        private readonly Uri uri;
 
         private readonly ITestOutputHelper? testOutputHelper;
 
-        public TestBase(WebApplicationConnector connector,
+        public TestBase(
+            LocalWebApplicationFactory factory,
             ITestOutputHelper? testOutputHelper,
             string urlArea = "")
         {
-            Connector = connector;
-            Driver = connector.Driver;
+            Factory = factory;
+            Driver = factory.Driver;
             this.testOutputHelper = testOutputHelper;
 
             AuthorizationPages = new AuthorizationPages(Driver).PageActions;
             CommonActions = new Actions.Common.CommonActions(Driver);
 
             Wait = new WebDriverWait(Driver, TimeSpan.FromSeconds(10));
-            uri = new Uri(connector.RootUri);
+            uri = new Uri(factory.RootUri);
 
             OrderingPages = new OrderingPages(Driver, CommonActions);
 
             NavigateToUrl(urlArea);
         }
 
-        public WebApplicationConnector Connector { get; protected set; }
+        public LocalWebApplicationFactory Factory { get; protected set; }
 
         public IWebDriver Driver { get; protected set; }
 
@@ -55,7 +63,7 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Utils
         {
             if (UserAlreadyLoggedIn() || !AuthorizationPages.LoginActions.EmailAddressInputDisplayed())
                 return;
-            AuthorizationPages.LoginActions.Login(AdminUsername, AdminPassword);
+            AuthorizationPages.LoginActions.Login(adminUsername, adminPassword);
         }
 
         internal void BuyerLogin()
@@ -63,7 +71,7 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Utils
             if (UserAlreadyLoggedIn() || !AuthorizationPages.LoginActions.EmailAddressInputDisplayed())
                 return;
 
-            AuthorizationPages.LoginActions.Login(BuyerUsername, BuyerPassword);
+            AuthorizationPages.LoginActions.Login(buyerUsername, buyerPassword);
         }
 
         internal void BuyerLogin(string buyerEmail)
@@ -71,7 +79,12 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Utils
             if (UserAlreadyLoggedIn() || !AuthorizationPages.LoginActions.EmailAddressInputDisplayed())
                 return;
 
-            AuthorizationPages.LoginActions.Login(buyerEmail, BuyerPassword);
+            AuthorizationPages.LoginActions.Login(buyerEmail, buyerPassword);
+        }
+
+        internal BuyingCatalogueDbContext GetEndToEndDbContext()
+        {
+            return Factory.DbContext;
         }
 
         protected bool UserAlreadyLoggedIn() => Driver.Manage().Cookies.GetCookieNamed("user-session") != null;

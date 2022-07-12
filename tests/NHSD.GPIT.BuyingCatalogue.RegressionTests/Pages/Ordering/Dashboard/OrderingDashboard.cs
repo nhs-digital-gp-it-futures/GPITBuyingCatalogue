@@ -9,7 +9,8 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering.Dashboard
 {
     public sealed class OrderingDashboard : PageBase
     {
-        public OrderingDashboard(IWebDriver driver, CommonActions commonActions) : base(driver,commonActions)
+        public OrderingDashboard(IWebDriver driver, CommonActions commonActions)
+            : base(driver, commonActions)
         {
         }
 
