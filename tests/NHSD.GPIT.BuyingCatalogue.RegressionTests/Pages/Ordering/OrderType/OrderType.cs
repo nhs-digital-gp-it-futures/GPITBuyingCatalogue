@@ -9,14 +9,15 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering.OrderType
 {
     public sealed class OrderType : PageBase
     {
-        public OrderType(IWebDriver driver, CommonActions commonActions) : base(driver, commonActions)
+        public OrderType(IWebDriver driver, CommonActions commonActions)
+            : base(driver, commonActions)
         {
         }
 
         /// <summary>
-        /// Choose the Order Type, Catalogue Solution or Associated Service
+        /// Choose the Order Type, Catalogue Solution or Associated Service.
         /// </summary>
-        /// <param name="type">Catalogue Order Type, Defaults to Catalogue Solution</param>
+        /// <param name="type">Catalogue Order Type, Defaults to Catalogue Solution.</param>
         public void ChooseOrderType(CatalogueItemType type = CatalogueItemType.Solution)
         {
             CommonActions.ClickRadioButtonWithValue(type.ToString());
