@@ -1,4 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using FluentAssertions;
 using Microsoft.EntityFrameworkCore;
@@ -13,7 +15,7 @@ using Objects = NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.Objects;
 
 namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering
 {
-    public sealed class CommencementDate : BuyerTestBase, IClassFixture<LocalWebApplicationFactory>
+    public sealed class CommencementDate : BuyerTestBase, IClassFixture<LocalWebApplicationFactory>, IDisposable
     {
         private const string InternalOrgId = "CG-03F";
         private static readonly CallOffId CallOffId = new(90003, 1);
@@ -281,7 +283,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering
 
             CommonActions.ElementAddValue(
                 Objects.Ordering.CommencementDate.MaximumTermInput,
-                $"{CommencementDateModelValidator.MaximumMaximumTerm + 1}");
+                $"37");
 
             CommonActions.ClickSave();
 
@@ -298,7 +300,44 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering
 
             CommonActions.ElementShowingCorrectErrorMessage(
                 Objects.Ordering.CommencementDate.MaximumTermError,
-                CommencementDateModelValidator.MaximumTermTooHighErrorMessage).Should().BeTrue();
+                string.Format(CommencementDateModelValidator.MaximumTermTooHighErrorMessage, 36)).Should().BeTrue();
+        }
+
+        [Fact]
+        public void CommencementDate_OrderValue40K_InitialPeriodAndMaximumTermTooHigh_ThrowsError()
+        {
+            using var context = GetEndToEndDbContext();
+            var order = context.Orders.First(o => o.Id == CallOffId.Id);
+            order.OrderTriageValue = OrderTriageValue.Under40K;
+
+            context.SaveChanges();
+
+            Driver.Navigate().Refresh();
+
+            CommonActions.ElementAddValue(
+                Objects.Ordering.CommencementDate.InitialPeriodInput,
+                $"{CommencementDateModelValidator.MaximumInitialPeriod + 1}");
+
+            CommonActions.ElementAddValue(
+                Objects.Ordering.CommencementDate.MaximumTermInput,
+                $"13");
+
+            CommonActions.ClickSave();
+
+            CommonActions.PageLoadedCorrectGetIndex(
+                typeof(CommencementDateController),
+                nameof(CommencementDateController.CommencementDate)).Should().BeTrue();
+
+            CommonActions.ErrorSummaryDisplayed().Should().BeTrue();
+            CommonActions.ErrorSummaryLinksExist().Should().BeTrue();
+
+            CommonActions.ElementShowingCorrectErrorMessage(
+                Objects.Ordering.CommencementDate.InitialPeriodError,
+                CommencementDateModelValidator.InitialPeriodTooHighErrorMessage).Should().BeTrue();
+
+            CommonActions.ElementShowingCorrectErrorMessage(
+                Objects.Ordering.CommencementDate.MaximumTermError,
+                string.Format(CommencementDateModelValidator.MaximumTermTooHighErrorMessage, 12)).Should().BeTrue();
         }
 
         [Fact]
@@ -354,6 +393,15 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering
             order.CommencementDate!.Value.Date.Should().Be(date.Date);
             order.InitialPeriod.Should().Be(initialPeriod);
             order.MaximumTerm.Should().Be(maximumTerm);
+        }
+
+        public void Dispose()
+        {
+            using var context = GetEndToEndDbContext();
+            var order = context.Orders.First(o => o.Id == CallOffId.Id);
+            order.OrderTriageValue = OrderTriageValue.Over250K;
+
+            context.SaveChanges();
         }
     }
 }

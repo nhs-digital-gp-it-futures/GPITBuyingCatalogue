@@ -23,7 +23,7 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Configuration
             builder.Property(u => u.Definition)
                 .HasMaxLength(1000);
 
-            builder.Property(u => u.TierName)
+            builder.Property(u => u.RangeDescription)
                 .HasMaxLength(30);
 
             builder.Property(u => u.LastUpdated).HasDefaultValue(DateTime.UtcNow);

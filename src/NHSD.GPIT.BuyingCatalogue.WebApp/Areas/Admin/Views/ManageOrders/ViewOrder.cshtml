@@ -2,6 +2,7 @@
 @using EnumsNET
 @using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models
 @using NHSD.GPIT.BuyingCatalogue.Framework.Extensions
+@using NHSD.GPIT.BuyingCatalogue.EntityFramework.Extensions
 @using NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.TagHelpers.Tags
 @using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
 @using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
@@ -99,12 +100,8 @@
                         <nhs-table-cell>
                             @orderItem.Framework
                         </nhs-table-cell>
-                        <nhs-table-cell>
-                            @{
-                                var fundingType = orderItem.ConfirmedFundingSource.HasValue && orderItem.ConfirmedFundingSource is true ? FundingType(orderItem.FundingSourceOnlyGms)
-                             : "Not selected";
-                            }
-                            <span data-test-id="funding-type">@fundingType</span>
+                        <nhs-table-cell>                            
+                            <span data-test-id="funding-type">@orderItem.SelectedFundingType.Description()</span>
                         </nhs-table-cell>
                     </nhs-table-row-container>
                 }
@@ -119,7 +116,3 @@
                                                     typeof(ManageOrdersController).ControllerName())"
                                              use-primary-colour="true" />
 </div>
-
-@{
-    static string FundingType(bool? gmsOnly) => gmsOnly.GetValueOrDefault() ? "Central funding" : "Local funding";
-}

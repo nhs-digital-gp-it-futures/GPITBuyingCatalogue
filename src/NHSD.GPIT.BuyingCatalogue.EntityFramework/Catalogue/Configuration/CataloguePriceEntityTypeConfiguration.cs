@@ -12,6 +12,8 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Configuration
         {
             builder.ToTable("CataloguePrices", Schemas.Catalogue);
 
+            builder.HasKey(p => p.CataloguePriceId);
+
             builder.Property(p => p.CatalogueItemId)
                 .IsRequired()
                 .HasMaxLength(14)
@@ -25,10 +27,17 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Configuration
                 .IsRequired()
                 .HasMaxLength(3);
 
-            builder.Property(p => p.Price).HasColumnType("decimal(18, 4)");
             builder.Property(p => p.ProvisioningType)
                 .HasConversion<int>()
                 .HasColumnName("ProvisioningTypeId");
+
+            builder.Property(p => p.CataloguePriceCalculationType)
+                .HasConversion<int>()
+                .HasColumnName("CataloguePriceCalculationTypeId");
+
+            builder.Property(p => p.CataloguePriceQuantityCalculationType)
+                .HasConversion<int>()
+                .HasColumnName("CataloguePriceQuantityCalculationTypeId");
 
             builder.Property(p => p.TimeUnit)
                 .HasConversion<int>()
@@ -45,15 +54,16 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Configuration
                 .HasForeignKey(p => p.PricingUnitId)
                 .OnDelete(DeleteBehavior.ClientSetNull);
 
-            builder.Property(i => i.PublishedStatus)
+            builder.Property(p => p.PublishedStatus)
                 .HasConversion<int>()
                 .HasColumnName("PublishedStatusId")
                 .HasDefaultValue(PublicationStatus.Draft);
 
-            builder.Property(i => i.IsLocked)
-                .HasConversion<bool>()
-                .HasColumnName("IsLocked")
-                .HasDefaultValue(false);
+            builder.HasMany(p => p.CataloguePriceTiers)
+                .WithOne(tp => tp.CataloguePrice)
+                .HasForeignKey(tp => tp.CataloguePriceId)
+                .HasConstraintName("FK_CataloguePriceTiers_CataloguePriceId")
+                .OnDelete(DeleteBehavior.Cascade);
 
             builder.HasOne(p => p.LastUpdatedByUser)
                 .WithMany()

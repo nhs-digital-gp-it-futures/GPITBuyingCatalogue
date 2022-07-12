@@ -59,7 +59,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering.ProxyBuyer
 
             CommonActions.PageLoadedCorrectGetIndex(
                 typeof(OrderTriageController),
-                nameof(OrderTriageController.SelectOrganisation)).Should().BeTrue();
+                nameof(OrderTriageController.OrderItemType)).Should().BeTrue();
         }
     }
 }

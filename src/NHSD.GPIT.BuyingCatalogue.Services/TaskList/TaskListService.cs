@@ -1,4 +1,8 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
+using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore;
+using NHSD.GPIT.BuyingCatalogue.EntityFramework;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Enums;
@@ -9,14 +13,17 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.TaskList
 {
     public sealed class TaskListService : ITaskListService
     {
-        public OrderTaskList GetTaskListStatusModelForOrder(Order order)
+        private readonly BuyingCatalogueDbContext dbContext;
+
+        public TaskListService(BuyingCatalogueDbContext dbContext)
         {
-            var model = new OrderTaskList();
+            this.dbContext = dbContext ?? throw new ArgumentNullException(nameof(dbContext));
+        }
 
-            if (order is null)
-                return model;
-
-            var completedSections = SetOrderSectionFlags(order);
+        public static void SetOrderTaskList(TaskListOrderSections completedSections, OrderTaskList model)
+        {
+            if (model is null)
+                return;
 
             model.DescriptionStatus = TaskProgress.Completed;
 
@@ -41,35 +48,19 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.TaskList
                 _ => TaskProgress.CannotStart,
             };
 
-            model.CatalogueSolutionsStatus = completedSections switch
+            model.SolutionOrService = completedSections switch
             {
-                var cs when cs.HasFlag(TaskListOrderSections.CatalogueSolutionsComplete) => TaskProgress.Completed,
-                var cs when cs.HasFlag(TaskListOrderSections.AssociatedServicesComplete) => TaskProgress.Optional,
+                var cs when cs.HasFlag(TaskListOrderSections.SolutionOrServiceComplete) => TaskProgress.Completed,
+                var cs when cs.HasFlag(TaskListOrderSections.SolutionOrServiceInProgress) => TaskProgress.InProgress,
                 var cs when cs.HasFlag(TaskListOrderSections.CommencementDateComplete) => TaskProgress.NotStarted,
                 _ => TaskProgress.CannotStart,
             };
 
-            model.AdditionalServiceStatus = completedSections switch
-            {
-                var cs when cs.HasFlag(TaskListOrderSections.AdditionalServicesComplete) => TaskProgress.Completed,
-                var cs when cs.HasFlag(TaskListOrderSections.CatalogueSolutionsComplete) => TaskProgress.Optional,
-                _ => TaskProgress.CannotStart,
-            };
-
-            model.AssociatedServiceStatus = completedSections switch
-            {
-                var cs when cs.HasFlag(TaskListOrderSections.AssociatedServicesComplete) => TaskProgress.Completed,
-                var cs when cs.HasFlag(TaskListOrderSections.CatalogueSolutionsComplete) => TaskProgress.Optional,
-                var cs when cs.HasFlag(TaskListOrderSections.CommencementDateComplete) => TaskProgress.NotStarted,
-                _ => TaskProgress.CannotStart,
-            };
-
-            model.FundingSourceStatus = completedSections switch
+            model.FundingSource = completedSections switch
             {
                 var cs when cs.HasFlag(TaskListOrderSections.FundingSourceComplete) => TaskProgress.Completed,
-                var cs when
-                cs.HasFlag(TaskListOrderSections.CatalogueSolutionsComplete)
-                || cs.HasFlag(TaskListOrderSections.AssociatedServicesComplete) => TaskProgress.NotStarted,
+                var cs when cs.HasFlag(TaskListOrderSections.FundingSourceInProgress) => TaskProgress.InProgress,
+                var cs when cs.HasFlag(TaskListOrderSections.SolutionOrServiceComplete) => TaskProgress.NotStarted,
                 _ => TaskProgress.CannotStart,
             };
 
@@ -78,39 +69,111 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.TaskList
                 var cs when cs.HasFlag(TaskListOrderSections.FundingSourceComplete) => TaskProgress.NotStarted,
                 _ => TaskProgress.CannotStart,
             };
+        }
+
+        public async Task<OrderTaskList> GetTaskListStatusModelForOrder(int? orderId)
+        {
+            var model = new OrderTaskList();
+
+            if (orderId is null)
+                return model;
+
+            var completedSections = await GetOrderSectionFlags(orderId.Value);
+            var sectionStatuses = SetOrderSectionFlags(completedSections);
+            SetOrderTaskList(sectionStatuses, model);
 
             return model;
         }
 
-        private static TaskListOrderSections SetOrderSectionFlags(Order order)
+        public async Task<OrderTaskListCompletedSections> GetOrderSectionFlags(int orderId)
+        {
+            var order = await dbContext.Orders
+                .Include(x => x.OrderItems).ThenInclude(x => x.CatalogueItem)
+                .Include(x => x.OrderItems).ThenInclude(x => x.OrderItemFunding)
+                .Include(x => x.OrderItems).ThenInclude(x => x.OrderItemPrice)
+                .Include(x => x.OrderItems).ThenInclude(x => x.OrderItemRecipients)
+                .Include(x => x.OrderingPartyContact)
+                .Include(x => x.Supplier)
+                .Include(x => x.SupplierContact)
+                .AsSplitQuery()
+                .AsNoTracking()
+                .SingleOrDefaultAsync(x => x.Id == orderId);
+
+            if (order == null)
+            {
+                return null;
+            }
+
+            return new OrderTaskListCompletedSections
+            {
+                OrderContactDetailsCompleted = order.OrderingPartyContact != null,
+                SupplierSelected = order.Supplier != null,
+                SupplierContactSelected = order.SupplierContact != null,
+                TimeScalesCompleted = order.CommencementDate != null,
+                SolutionsSelected = SolutionsSelected(order),
+                SolutionsCompleted = SolutionsCompleted(order),
+                FundingInProgress = order.OrderItems.Any(oi => oi.OrderItemFunding != null),
+                FundingCompleted = order.OrderItems.All(oi => oi.OrderItemFunding != null),
+                OrderCompleted = order.Completed != null,
+            };
+        }
+
+        private static TaskListOrderSections SetOrderSectionFlags(OrderTaskListCompletedSections orderStatuses)
         {
             var completedSections = TaskListOrderSections.Description;
 
-            if (order.OrderingPartyContact is not null)
+            if (orderStatuses is null)
+                return completedSections;
+
+            if (orderStatuses.OrderContactDetailsCompleted)
                 completedSections |= TaskListOrderSections.OrderingParty;
 
-            if (order.Supplier is not null)
+            if (orderStatuses.SupplierSelected)
                 completedSections |= TaskListOrderSections.Supplier;
 
-            if (order.SupplierContactId is not null)
+            if (orderStatuses.SupplierContactSelected)
                 completedSections |= TaskListOrderSections.SupplierContact;
 
-            if (order.CommencementDate is not null)
+            if (orderStatuses.TimeScalesCompleted)
                 completedSections |= TaskListOrderSections.CommencementDate;
 
-            if (order.HasSolution())
-                completedSections |= TaskListOrderSections.CatalogueSolutions;
+            if (orderStatuses.SolutionsSelected)
+                completedSections |= TaskListOrderSections.SolutionOrServiceInProgress;
 
-            if (order.OrderItems.Any(oi => oi.CatalogueItem.CatalogueItemType == CatalogueItemType.AdditionalService))
-                completedSections |= TaskListOrderSections.AdditionalServices;
+            if (orderStatuses.SolutionsCompleted)
+                completedSections |= TaskListOrderSections.SolutionOrService;
 
-            if (order.HasAssociatedService())
-                completedSections |= TaskListOrderSections.AssociatedServices;
+            if (orderStatuses.FundingInProgress)
+                completedSections |= TaskListOrderSections.FundingSourceInProgress;
 
-            if (order.ConfirmedFundingSource.HasValue && order.ConfirmedFundingSource.Value is true)
+            if (orderStatuses.FundingCompleted)
                 completedSections |= TaskListOrderSections.FundingSource;
 
             return completedSections;
+        }
+
+        private static bool SolutionsSelected(Order order)
+        {
+            if (order.AssociatedServicesOnly)
+            {
+                return order.SolutionId != null;
+            }
+
+            return order.OrderItems.Any(oi => oi.CatalogueItem.CatalogueItemType == CatalogueItemType.Solution);
+        }
+
+        private static bool SolutionsCompleted(Order order)
+        {
+            if (!order.OrderItems.Any())
+            {
+                return false;
+            }
+
+            return order.OrderItems.All(x =>
+                x.CatalogueItem != null
+                && x.OrderItemPrice != null
+                && (x.OrderItemRecipients?.Any() ?? false)
+                && x.AllQuantitiesEntered);
         }
     }
 }

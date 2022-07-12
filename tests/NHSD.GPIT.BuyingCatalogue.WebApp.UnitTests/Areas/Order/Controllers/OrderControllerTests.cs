@@ -1,5 +1,4 @@
-﻿using System;
-using System.Linq;
+﻿using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
 using AutoFixture;
@@ -18,7 +17,6 @@ using NHSD.GPIT.BuyingCatalogue.EntityFramework.Organisations.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Users.Models;
 using NHSD.GPIT.BuyingCatalogue.Framework.Constants;
 using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
-using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Enums;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Models.TaskList;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Orders;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Organisations;
@@ -27,7 +25,6 @@ using NHSD.GPIT.BuyingCatalogue.ServiceContracts.TaskList;
 using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.AutoFixtureCustomisations;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.Order;
-using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.OrderTriage;
 using Xunit;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers
@@ -64,7 +61,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers
 
             orderServiceMock.Setup(s => s.GetOrderThin(order.CallOffId, internalOrgId)).ReturnsAsync(order);
 
-            taskListServiceMock.Setup(s => s.GetTaskListStatusModelForOrder(order)).Returns(orderTaskList);
+            taskListServiceMock.Setup(s => s.GetTaskListStatusModelForOrder(order.Id)).ReturnsAsync(orderTaskList);
 
             var actualResult = await controller.Order(internalOrgId, order.CallOffId);
 
@@ -146,46 +143,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers
 
         [Theory]
         [CommonAutoData]
-        public static async Task Post_Summary_ReadyToComplete_ReturnsExpectedResult(
-            string internalOrgId,
-            EntityFramework.Ordering.Models.Order order,
-            OrderItem orderItem,
-            CatalogueItem catalogueItem,
-            [Frozen] Mock<IOrderService> orderServiceMock,
-            OrderController systemUnderTest)
-        {
-            catalogueItem.CatalogueItemType = CatalogueItemType.Solution;
-            orderItem.CatalogueItem = catalogueItem;
-            order.AddOrUpdateOrderItem(orderItem);
-            order.OrderStatus = OrderStatus.InProgress;
-
-            orderServiceMock
-                .Setup(s => s.GetOrderForSummary(order.CallOffId, internalOrgId))
-                .ReturnsAsync(order);
-
-            orderServiceMock
-                .Setup(x => x.CompleteOrder(order.CallOffId, internalOrgId, UserId, It.IsAny<Uri>()))
-                .Returns(Task.CompletedTask);
-
-            SetControllerHttpContext(systemUnderTest);
-
-            var result = await systemUnderTest.Summary(internalOrgId, order.CallOffId, new SummaryModel());
-
-            orderServiceMock.VerifyAll();
-
-            var actualResult = result.Should().BeOfType<RedirectToActionResult>().Subject;
-
-            actualResult.ActionName.Should().Be(nameof(OrderController.Completed));
-            actualResult.ControllerName.Should().Be(typeof(OrderController).ControllerName());
-            actualResult.RouteValues.Should().BeEquivalentTo(new RouteValueDictionary
-            {
-                { "internalOrgId", internalOrgId },
-                { "callOffId", order.CallOffId },
-            });
-        }
-
-        [Theory]
-        [CommonAutoData]
         public static async Task Get_ReadyToStart_ReturnsView(
             Organisation organisation,
             [Frozen] Mock<IOrganisationsService> service,
@@ -220,10 +177,11 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers
         public static void Post_ReadyToStart_Redirects(
             string internalOrgId,
             ReadyToStartModel model,
-            TriageOption option,
+            OrderTriageValue option,
+            CatalogueItemType orderType,
             OrderController controller)
         {
-            var result = controller.ReadyToStart(internalOrgId, model, option).As<RedirectToActionResult>();
+            var result = controller.ReadyToStart(internalOrgId, model, option, orderType).As<RedirectToActionResult>();
 
             result.Should().NotBeNull();
             result.ActionName.Should().Be(nameof(controller.NewOrder));
@@ -232,7 +190,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers
                 {
                     { nameof(internalOrgId), internalOrgId },
                     { nameof(option), option },
-                    { "fundingSource", null },
+                    { nameof(orderType), orderType },
                 });
         }
 
@@ -241,11 +199,11 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers
         public static void Post_ReadyToStart_WithFundingSource_Redirects(
             string internalOrgId,
             ReadyToStartModel model,
-            TriageOption option,
-            FundingSource fundingSource,
+            OrderTriageValue option,
+            CatalogueItemType orderType,
             OrderController controller)
         {
-            var result = controller.ReadyToStart(internalOrgId, model, option, fundingSource).As<RedirectToActionResult>();
+            var result = controller.ReadyToStart(internalOrgId, model, option, orderType).As<RedirectToActionResult>();
 
             result.Should().NotBeNull();
             result.ActionName.Should().Be(nameof(controller.NewOrder));
@@ -254,7 +212,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers
                 {
                     { nameof(internalOrgId), internalOrgId },
                     { nameof(option), option },
-                    { nameof(fundingSource), fundingSource },
+                    { nameof(orderType), orderType },
                 });
         }
 

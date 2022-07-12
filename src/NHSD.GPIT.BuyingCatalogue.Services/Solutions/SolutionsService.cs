@@ -26,14 +26,6 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
             this.dbContext = dbContext ?? throw new ArgumentNullException(nameof(dbContext));
         }
 
-        public Task<CatalogueItem> GetSolutionListPrices(CatalogueItemId solutionId)
-        {
-            return dbContext.CatalogueItems
-                .Include(i => i.CataloguePrices).ThenInclude(p => p.PricingUnit)
-                .Where(i => i.Id == solutionId)
-                .SingleOrDefaultAsync();
-        }
-
         public Task<CatalogueItem> GetSolutionThin(CatalogueItemId solutionId) =>
             dbContext.CatalogueItems.AsNoTracking()
             .Include(ci => ci.Supplier)
@@ -57,13 +49,6 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
                     .ThenInclude(cie => cie.Epic)
                 .SingleOrDefaultAsync(ci => ci.Id == solutionId);
 
-        public async Task<CatalogueItem> GetSolutionWithListPrices(CatalogueItemId solutionId) =>
-            await dbContext.CatalogueItems.AsNoTracking()
-                .Include(ci => ci.Solution)
-                .Include(ci => ci.CataloguePrices)
-                    .ThenInclude(cp => cp.PricingUnit)
-                .SingleOrDefaultAsync(ci => ci.Id == solutionId);
-
         public async Task<CatalogueItem> GetSolutionWithServiceLevelAgreements(CatalogueItemId solutionId) =>
             await dbContext.CatalogueItems.AsNoTracking()
                 .Include(ci => ci.Solution)
@@ -71,6 +56,15 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
                 .Include(ci => ci.Solution).ThenInclude(s => s.ServiceLevelAgreement).ThenInclude(sla => sla.ServiceHours)
                 .Include(ci => ci.Solution).ThenInclude(s => s.ServiceLevelAgreement).ThenInclude(sla => sla.ServiceLevels)
             .SingleOrDefaultAsync(ci => ci.Id == solutionId);
+
+        public async Task<CatalogueItem> GetSolutionWithCataloguePrice(CatalogueItemId solutionId) =>
+            await dbContext.CatalogueItems.AsNoTracking()
+                .Include(ci => ci.CataloguePrices)
+                .ThenInclude(p => p.CataloguePriceTiers)
+                .Include(ci => ci.CataloguePrices)
+                .ThenInclude(p => p.PricingUnit)
+                .Include(ci => ci.Solution)
+                .SingleOrDefaultAsync(ci => ci.Id == solutionId);
 
         public async Task<CatalogueItem> GetSolutionWithSupplierDetails(CatalogueItemId solutionId) =>
             await dbContext.CatalogueItems.AsNoTracking()
@@ -238,7 +232,10 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
         public async Task<List<CatalogueItem>> GetPublishedAdditionalServicesForSolution(CatalogueItemId solutionId) =>
             await dbContext.CatalogueItems
                 .Include(ci => ci.AdditionalService)
-                .Include(ci => ci.CataloguePrices).ThenInclude(cp => cp.PricingUnit)
+                .Include(ci => ci.CataloguePrices.Where(cp => cp.PublishedStatus == PublicationStatus.Published))
+                .ThenInclude(p => p.CataloguePriceTiers)
+                .Include(ci => ci.CataloguePrices.Where(cp => cp.PublishedStatus == PublicationStatus.Published))
+                .ThenInclude(p => p.PricingUnit)
                 .Where(ci =>
                 ci.AdditionalService.SolutionId == solutionId
                 && ci.PublishedStatus == PublicationStatus.Published)
@@ -252,7 +249,10 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
 
             return await dbContext.CatalogueItems
                     .Include(ci => ci.AssociatedService)
-                    .Include(ci => ci.CataloguePrices).ThenInclude(cp => cp.PricingUnit)
+                    .Include(ci => ci.CataloguePrices.Where(cp => cp.PublishedStatus == PublicationStatus.Published))
+                    .ThenInclude(p => p.CataloguePriceTiers)
+                    .Include(ci => ci.CataloguePrices.Where(cp => cp.PublishedStatus == PublicationStatus.Published))
+                    .ThenInclude(p => p.PricingUnit)
                     .Where(ci =>
                         ci.PublishedStatus == PublicationStatus.Published
                         && selectedAssociatedServices.Any(sas => sas.AssociatedServiceId == ci.Id))

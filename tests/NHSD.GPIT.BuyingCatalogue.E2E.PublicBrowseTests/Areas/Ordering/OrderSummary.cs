@@ -1,208 +1,356 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
 using FluentAssertions;
-using NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.Objects.Common;
-using NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.Utils.Files;
+using Microsoft.EntityFrameworkCore;
+using NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.Objects.Ordering;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Utils;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.TestBases;
+using NHSD.GPIT.BuyingCatalogue.EntityFramework;
+using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
+using NHSD.GPIT.BuyingCatalogue.EntityFramework.Users.Models;
+using NHSD.GPIT.BuyingCatalogue.Framework.Calculations;
+using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers;
 using Xunit;
 using Objects = NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.Objects;
 
 namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering
 {
-    public sealed class OrderSummary
-        : BuyerTestBase, IClassFixture<LocalWebApplicationFactory>
+    public class OrderSummary : BuyerTestBase, IClassFixture<LocalWebApplicationFactory>
     {
         private const string InternalOrgId = "CG-03F";
-        private static readonly CallOffId CallOffId = new(90009, 1);
 
-        private static readonly Dictionary<string, string> Parameters =
-            new()
-            {
-                { nameof(InternalOrgId), InternalOrgId },
-                { nameof(CallOffId), CallOffId.ToString() },
-            };
+        private static readonly Dictionary<string, string> Parameters = new()
+        {
+            { nameof(InternalOrgId), InternalOrgId },
+        };
 
         public OrderSummary(LocalWebApplicationFactory factory)
             : base(
                   factory,
-                  typeof(OrderController),
-                  nameof(OrderController.Summary),
+                  typeof(DashboardController),
+                  nameof(DashboardController.Organisation),
                   Parameters)
         {
         }
 
         [Fact]
-        public void OrderSummary_OrderNotComplete_AllSectionsDisplayed()
+        public void SolutionAndServices_AllSectionsDisplayed()
         {
-            RedirectToSummaryForOrder(new CallOffId(90004, 1));
+            var order = CreateOrder(
+                CreateSolutionOrderItem(),
+                CreateAdditionalServiceOrderItem(),
+                CreateAssociatedServiceOrderItem());
 
-            CommonActions.ElementIsDisplayed(Objects.Ordering.OrderSummary.DownloadPDFCompletedOrder).Should().BeFalse();
+            var parameters = new Dictionary<string, string>
+            {
+                { nameof(InternalOrgId), InternalOrgId },
+                { nameof(CallOffId), order.CallOffId.ToString() },
+            };
 
-            Driver.FindElements(Objects.Ordering.OrderSummary.DownloadPDFCompletedOrder).Count.Should().Be(0);
-
-            CommonActions.ElementIsDisplayed(Objects.Ordering.OrderSummary.DownloadPDFIncompleteOrder).Should().BeFalse();
-
-            Driver.FindElements(Objects.Ordering.OrderSummary.DownloadPDFIncompleteOrder).Count.Should().Be(0);
-
-            CommonActions.ElementIsDisplayed(CommonSelectors.SubmitButton).Should().BeFalse();
-
-            CommonActions.GoBackLinkDisplayed().Should().BeTrue();
-
-            CommonActions.ElementTextEqualTo(
-                Objects.Ordering.OrderSummary.LastUpdatedEndNote,
-                $"Order last updated by Sue Smith on {DateTime.UtcNow.ToString("dd MMMM yyyy")}");
-        }
-
-        [Fact]
-        public void OrderSummary_ClickGoBackLink_ExpectedResult()
-        {
-            CommonActions.ClickGoBackLink();
-
-            CommonActions
-            .PageLoadedCorrectGetIndex(
+            NavigateToUrl(
                   typeof(OrderController),
-                  nameof(OrderController.Order))
-            .Should()
-            .BeTrue();
+                  nameof(OrderController.Summary),
+                  parameters);
+
+            CommonActions.PageTitle().Should().Be($"Review and complete your order summary - {order.CallOffId}".FormatForComparison());
+            CommonActions.LedeText().Should().Be("Review your order summary before completing it. Once the order summary is completed, you'll be unable to make changes.".FormatForComparison());
+
+            CommonActions.ElementIsDisplayed(OrderSummaryObjects.OrderIdSummary).Should().BeTrue();
+            CommonActions.ElementIsDisplayed(OrderSummaryObjects.OrderDescriptionSummary).Should().BeTrue();
+            CommonActions.ElementIsDisplayed(OrderSummaryObjects.DateCreatedSummary).Should().BeTrue();
+            CommonActions.ElementIsDisplayed(OrderSummaryObjects.OrderingPartySummary).Should().BeTrue();
+            CommonActions.ElementIsDisplayed(OrderSummaryObjects.SupplierSummary).Should().BeTrue();
+            CommonActions.ElementIsDisplayed(OrderSummaryObjects.StartDateSummary).Should().BeTrue();
+            CommonActions.ElementIsDisplayed(OrderSummaryObjects.InitialPeriodSummary).Should().BeTrue();
+            CommonActions.ElementIsDisplayed(OrderSummaryObjects.MaximumTermSummary).Should().BeTrue();
+            CommonActions.ElementIsDisplayed(OrderSummaryObjects.EndDateSummary).Should().BeTrue();
+
+            CommonActions.ElementIsDisplayed(OrderSummaryObjects.SolutionSection).Should().BeTrue();
+            CommonActions.ElementIsDisplayed(OrderSummaryObjects.AdditionalServicesSection).Should().BeTrue();
+            CommonActions.ElementIsDisplayed(OrderSummaryObjects.AssociatedServicesSection).Should().BeTrue();
+
+            CommonActions.ElementIsDisplayed(OrderSummaryObjects.OneOffCostSummary).Should().BeTrue();
+            CommonActions.ElementIsDisplayed(OrderSummaryObjects.MonthlyCostSummary).Should().BeTrue();
+            CommonActions.ElementIsDisplayed(OrderSummaryObjects.OneYearCostSummary).Should().BeTrue();
+            CommonActions.ElementIsDisplayed(OrderSummaryObjects.TotalCostSummary).Should().BeTrue();
+
+            CommonActions.ElementIsDisplayed(OrderSummaryObjects.DownloadPdfButton).Should().BeTrue();
+            CommonActions.SaveButtonDisplayed().Should().BeTrue();
+
+            RemoveOrder(order);
         }
 
         [Fact]
-        public void OrderSummary_OrderCompleted_AllSectionsDisplayed()
+        public void SolutionAndAdditionalService_RelevantSectionsDisplayed()
         {
-            RedirectToSummaryForOrder(new CallOffId(90010, 1));
+            var order = CreateOrder(
+                CreateSolutionOrderItem(),
+                CreateAdditionalServiceOrderItem());
 
-            CommonActions.ElementIsDisplayed(CommonSelectors.SubmitButton).Should().BeFalse();
+            var parameters = new Dictionary<string, string>
+            {
+                { nameof(InternalOrgId), InternalOrgId },
+                { nameof(CallOffId), order.CallOffId.ToString() },
+            };
 
-            CommonActions.ElementIsDisplayed(Objects.Ordering.OrderSummary.DownloadPDFCompletedOrder).Should().BeTrue();
-
-            Driver.FindElements(Objects.Ordering.OrderSummary.DownloadPDFCompletedOrder).Count.Should().Be(1);
-
-            CommonActions.ElementIsDisplayed(Objects.Ordering.OrderSummary.DownloadPDFIncompleteOrder).Should().BeFalse();
-
-            Driver.FindElements(Objects.Ordering.OrderSummary.DownloadPDFIncompleteOrder).Count.Should().Be(0);
-
-            CommonActions.GoBackLinkDisplayed().Should().BeTrue();
-
-            CommonActions.ElementTextEqualTo(
-                Objects.Ordering.OrderSummary.LastUpdatedEndNote,
-                $"Order last updated by Sue Smith on {DateTime.UtcNow.ToString("dd MMMM yyyy")}");
-        }
-
-        [Fact]
-        public void OrderSummary_OrderReadyToComplete_AllSectionsDisplayed()
-        {
-            CommonActions.ElementIsDisplayed(CommonSelectors.SubmitButton).Should().BeTrue();
-
-            CommonActions.ElementIsDisplayed(Objects.Ordering.OrderSummary.DownloadPDFCompletedOrder).Should().BeFalse();
-
-            Driver.FindElements(Objects.Ordering.OrderSummary.DownloadPDFCompletedOrder).Count.Should().Be(0);
-
-            CommonActions.ElementIsDisplayed(Objects.Ordering.OrderSummary.DownloadPDFIncompleteOrder).Should().BeTrue();
-
-            Driver.FindElements(Objects.Ordering.OrderSummary.DownloadPDFIncompleteOrder).Count.Should().Be(1);
-
-            CommonActions.GoBackLinkDisplayed().Should().BeTrue();
-
-            CommonActions.ElementTextEqualTo(
-                Objects.Ordering.OrderSummary.LastUpdatedEndNote,
-                $"Order last updated by Sue Smith on {DateTime.UtcNow.ToString("dd MMMM yyyy")}");
-        }
-
-        [Fact]
-        public void OrderSummary_IncompleteOrder_ClickGoBackLink_ExpectedResult()
-        {
-            CommonActions.ClickGoBackLink();
-
-            CommonActions
-            .PageLoadedCorrectGetIndex(
+            NavigateToUrl(
                   typeof(OrderController),
-                  nameof(OrderController.Order))
-            .Should()
-            .BeTrue();
+                  nameof(OrderController.Summary),
+                  parameters);
+
+            CommonActions.ElementIsDisplayed(OrderSummaryObjects.SolutionSection).Should().BeTrue();
+            CommonActions.ElementIsDisplayed(OrderSummaryObjects.AdditionalServicesSection).Should().BeTrue();
+            CommonActions.ElementIsDisplayed(OrderSummaryObjects.AssociatedServicesSection).Should().BeFalse();
+
+            RemoveOrder(order);
         }
 
         [Fact]
-        public void OrderSummary_CompletedOrder_ClickGoBackLink_ExpectedResult()
+        public void SolutionAndAssociatedService_RelevantSectionsDisplayed()
         {
-            RedirectToSummaryForOrder(new CallOffId(90010, 1));
+            var order = CreateOrder(
+                CreateSolutionOrderItem(),
+                CreateAssociatedServiceOrderItem());
 
-            CommonActions.ClickGoBackLink();
+            var parameters = new Dictionary<string, string>
+            {
+                { nameof(InternalOrgId), InternalOrgId },
+                { nameof(CallOffId), order.CallOffId.ToString() },
+            };
 
-            CommonActions
-            .PageLoadedCorrectGetIndex(
-                  typeof(DashboardController),
-                  nameof(DashboardController.Organisation))
-            .Should()
-            .BeTrue();
+            NavigateToUrl(
+                  typeof(OrderController),
+                  nameof(OrderController.Summary),
+                  parameters);
+
+            CommonActions.ElementIsDisplayed(OrderSummaryObjects.SolutionSection).Should().BeTrue();
+            CommonActions.ElementIsDisplayed(OrderSummaryObjects.AdditionalServicesSection).Should().BeFalse();
+            CommonActions.ElementIsDisplayed(OrderSummaryObjects.AssociatedServicesSection).Should().BeTrue();
+
+            RemoveOrder(order);
         }
 
         [Fact]
-        public void OrderSummary_ClickCompleteOrder_ExpectedResult()
+        public void SolutionOnly_RelevantSectionsDisplayed()
         {
-            CommonActions.ClickSave();
+            var order = CreateOrder(
+                CreateSolutionOrderItem());
 
-            CommonActions.PageLoadedCorrectGetIndex(
-                typeof(OrderController),
-                nameof(OrderController.Completed)).Should().BeTrue();
+            var parameters = new Dictionary<string, string>
+            {
+                { nameof(InternalOrgId), InternalOrgId },
+                { nameof(CallOffId), order.CallOffId.ToString() },
+            };
 
-            using var context = GetEndToEndDbContext();
+            NavigateToUrl(
+                  typeof(OrderController),
+                  nameof(OrderController.Summary),
+                  parameters);
 
-            context.Orders.Single(o => o.Id == CallOffId.Id).Completed.Should().NotBeNull();
+            CommonActions.ElementIsDisplayed(OrderSummaryObjects.SolutionSection).Should().BeTrue();
+            CommonActions.ElementIsDisplayed(OrderSummaryObjects.AdditionalServicesSection).Should().BeFalse();
+            CommonActions.ElementIsDisplayed(OrderSummaryObjects.AssociatedServicesSection).Should().BeFalse();
+
+            RemoveOrder(order);
         }
 
         [Fact]
-        public void OrderSummary_OrderComplete_ClickDownloadPDF_FileDownloaded()
+        public void AssociatedServiceOnly_RelevantSectionsDisplayed()
         {
-            string filePath = @$"{Path.GetTempPath()}order-summary-completed-C090010-01.pdf";
+            var order = CreateOrder(
+                CreateAssociatedServiceOrderItem());
 
-            FileHelper.DeleteDownloadFile(filePath);
+            var parameters = new Dictionary<string, string>
+            {
+                { nameof(InternalOrgId), InternalOrgId },
+                { nameof(CallOffId), order.CallOffId.ToString() },
+            };
 
-            RedirectToSummaryForOrder(new CallOffId(90010, 1));
+            NavigateToUrl(
+                  typeof(OrderController),
+                  nameof(OrderController.Summary),
+                  parameters);
 
-            Driver.FindElement(Objects.Ordering.OrderSummary.DownloadPDFCompletedOrder).Click();
+            CommonActions.ElementIsDisplayed(OrderSummaryObjects.SolutionSection).Should().BeFalse();
+            CommonActions.ElementIsDisplayed(OrderSummaryObjects.AdditionalServicesSection).Should().BeFalse();
+            CommonActions.ElementIsDisplayed(OrderSummaryObjects.AssociatedServicesSection).Should().BeTrue();
 
-            FileHelper.WaitForDownloadFile(filePath);
-
-            FileHelper.FileExists(filePath).Should().BeTrue();
-            FileHelper.FileLength(filePath).Should().BePositive();
-            FileHelper.ValidateIsPdf(filePath);
-
-            FileHelper.DeleteDownloadFile(filePath);
+            RemoveOrder(order);
         }
 
         [Fact]
-        public void OrderSummary_OrderReadyToComplete_ClickDownloadPDF_FileDownloaded()
+        public void ClickGoBackLink_ExpectedResult()
         {
-            string filePath = @$"{Path.GetTempPath()}order-summary-in-progress-C090009-01.pdf";
+            var order = CreateOrder(
+                CreateSolutionOrderItem(),
+                CreateAdditionalServiceOrderItem(),
+                CreateAssociatedServiceOrderItem());
 
-            FileHelper.DeleteDownloadFile(filePath);
+            var parameters = new Dictionary<string, string>
+            {
+                { nameof(InternalOrgId), InternalOrgId },
+                { nameof(CallOffId), order.CallOffId.ToString() },
+            };
 
-            Driver.FindElement(Objects.Ordering.OrderSummary.DownloadPDFIncompleteOrder).Click();
-
-            FileHelper.WaitForDownloadFile(filePath);
-
-            FileHelper.FileExists(filePath).Should().BeTrue();
-            FileHelper.FileLength(filePath).Should().BePositive();
-            FileHelper.ValidateIsPdf(filePath);
-
-            FileHelper.DeleteDownloadFile(filePath);
-        }
-
-        private void RedirectToSummaryForOrder(CallOffId callOffId)
-        {
             NavigateToUrl(
                 typeof(OrderController),
                 nameof(OrderController.Summary),
-                new Dictionary<string, string>
+                parameters);
+
+            CommonActions.ClickGoBackLink();
+
+            CommonActions.PageLoadedCorrectGetIndex(
+                typeof(OrderController),
+                nameof(OrderController.Order)).Should().BeTrue();
+        }
+
+        private static OrderItemFunding CreateOrderItemFunding(OrderItem orderItem)
+            => new()
+            {
+                OrderItem = orderItem,
+                CatalogueItemId = orderItem.CatalogueItemId,
+                OrderItemFundingType = OrderItemFundingType.CentralFunding,
+            };
+
+        private Order CreateOrder(
+            params OrderItem[] orderItems)
+        {
+            int GetOrganisationId(BuyingCatalogueDbContext context, string internalOrgId = "CG-03F")
+                => context.Organisations.First(o => o.InternalIdentifier == internalOrgId).Id;
+
+            AspNetUser GetBuyerUser(BuyingCatalogueDbContext context, int organisationId)
+                => context.Users.FirstOrDefault(u => u.OrganisationFunction == "Buyer" && u.PrimaryOrganisationId == organisationId);
+
+            using var context = GetEndToEndDbContext();
+            var timeNow = DateTime.UtcNow;
+
+            var order = new Order
+            {
+                OrderingPartyId = GetOrganisationId(context),
+                Created = timeNow,
+                OrderStatus = OrderStatus.InProgress,
+                IsDeleted = false,
+                Description = "This is an Order Description",
+                OrderingPartyContact = new Contact
                 {
-                    { nameof(callOffId), callOffId.ToString() },
-                    { nameof(InternalOrgId), InternalOrgId },
-                });
+                    FirstName = "Clark",
+                    LastName = "Kent",
+                    Email = "Clark.Kent@TheDailyPlanet.Fake",
+                    Phone = "123456789",
+                },
+                SupplierId = 99998,
+                SupplierContact = new Contact
+                {
+                    FirstName = "Bruce",
+                    LastName = "Wayne",
+                    Email = "bat.man@Gotham.Fake",
+                    Phone = "123456789",
+                },
+                CommencementDate = timeNow.AddDays(1),
+                InitialPeriod = 6,
+                MaximumTerm = 36,
+            };
+
+            var user = GetBuyerUser(context, order.OrderingPartyId);
+            var recipients = context.ServiceRecipients.ToList();
+
+            recipients.ForEach(r =>
+            {
+                OrderItemRecipient CreateRecipient(CatalogueItemId itemId)
+                    => new()
+                    {
+                        Recipient = r,
+                        Quantity = 1000,
+                        CatalogueItemId = itemId,
+                    };
+
+                foreach (var orderItem in orderItems)
+                    orderItem.OrderItemRecipients.Add(CreateRecipient(orderItem.CatalogueItemId));
+            });
+
+            foreach (var orderItem in orderItems)
+            {
+                orderItem.OrderItemFunding = CreateOrderItemFunding(orderItem);
+                order.OrderItems.Add(orderItem);
+            }
+
+            context.Add(order);
+            context.SaveChangesAs(user.Id);
+
+            return order;
+        }
+
+        private OrderItem CreateSolutionOrderItem(OrderItemPrice price = null)
+        {
+            var addedSolution = new OrderItem
+            {
+                OrderItemPrice = price ?? GetFlatPrice(),
+                Created = DateTime.UtcNow,
+                CatalogueItemId = new CatalogueItemId(99998, "001"),
+            };
+
+            return addedSolution;
+        }
+
+        private OrderItem CreateAdditionalServiceOrderItem(OrderItemPrice price = null)
+        {
+            var addedAdditionalService = new OrderItem
+            {
+                OrderItemPrice = price ?? GetFlatPrice(),
+                Created = DateTime.UtcNow,
+                CatalogueItemId = new CatalogueItemId(99998, "001A99"),
+            };
+
+            return addedAdditionalService;
+        }
+
+        private OrderItem CreateAssociatedServiceOrderItem(OrderItemPrice price = null)
+        {
+            var addedAssociatedService = new OrderItem
+            {
+                OrderItemPrice = price ?? GetFlatPrice(),
+                Created = DateTime.UtcNow,
+                CatalogueItemId = new CatalogueItemId(99998, "S-999"),
+            };
+
+            return addedAssociatedService;
+        }
+
+        private OrderItemPrice GetTieredPrice()
+        {
+            var tierPrice = GetPrice(CataloguePriceType.Tiered);
+
+            return new OrderItemPrice(tierPrice);
+        }
+
+        private OrderItemPrice GetFlatPrice()
+        {
+            var flatPrice = GetPrice(CataloguePriceType.Flat);
+
+            return new OrderItemPrice(flatPrice);
+        }
+
+        private CataloguePrice GetPrice(CataloguePriceType priceType)
+        {
+            using var context = GetEndToEndDbContext();
+
+            return context
+                .CataloguePrices
+                .Include(cp => cp.CataloguePriceTiers)
+                .Include(cp => cp.PricingUnit)
+                .FirstOrDefault(cp =>
+                    cp.CataloguePriceType == priceType);
+        }
+
+        private void RemoveOrder(Order order)
+        {
+            using var context = GetEndToEndDbContext();
+
+            context.Orders.Remove(order);
+            context.SaveChanges();
         }
     }
 }

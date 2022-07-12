@@ -1,6 +1,11 @@
 ﻿@using NHSD.GPIT.BuyingCatalogue.WebApp.Controllers
 @using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
 @using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.OrderTriage
+@using Microsoft.AspNetCore.Mvc.TagHelpers
+@using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models
+@using NHSD.GPIT.BuyingCatalogue.UI.Components.TagHelpers
+@using NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.Components.ActionLink
+@using NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.Components.NhsSecondaryButton
 @model NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.OrderTriage.GenericOrderTriageModel
 @{
     ViewBag.Title = "Orders with a value less than £40k";
@@ -44,7 +49,7 @@
                                          new { returnUrl = Url.Action(
                                              nameof(OrderTriageController.StepsNotCompleted),
                                              typeof(OrderTriageController).ControllerName(),
-                                             new { Model.InternalOrgId, option = TriageOption.Under40k }) })"
+                                             new { Model.InternalOrgId, option = OrderTriageValue.Under40K }) })"
                                 text="Get procurement support" />
         </div>
     </div>

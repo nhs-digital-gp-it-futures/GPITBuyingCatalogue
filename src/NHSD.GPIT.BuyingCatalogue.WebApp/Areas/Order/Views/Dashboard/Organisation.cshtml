@@ -6,9 +6,6 @@
 @model NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.Dashboard.OrganisationModel;
 @{
     ViewBag.Title = "Orders dashboard";
-    string newOrderAction = Model.CanActOnBehalf
-        ? nameof(OrderTriageController.SelectOrganisation)
-        : nameof(OrderTriageController.Index);
 }
 
 <div data-test-id="dashboard-page">
@@ -32,7 +29,7 @@
             }
             <vc:nhs-action-link text="Create a new order"
                                      url="@Url.Action(
-                                         newOrderAction,
+                                         nameof(OrderTriageController.OrderItemType),
                                          typeof(OrderTriageController).ControllerName(),
                                          new { Model.InternalOrgId })" />
         </div>
@@ -59,11 +56,17 @@
                     @foreach(var order in Model.Orders)
                     {
                         <nhs-table-row-container>
-                            <nhs-table-cell>@order.CallOffId</nhs-table-cell>
+                            <nhs-table-cell>
+                                <span style="white-space: nowrap">
+                                    @order.CallOffId
+                                </span>
+                            </nhs-table-cell>
                             <nhs-table-cell>@order.Description</nhs-table-cell>
                             <nhs-table-cell>@order.LastUpdated.ToString("dd/MM/yyyy")</nhs-table-cell>
                             <nhs-table-cell>
-                                <nhs-tag colour="@GetTagColour(order.OrderStatus)" text="@order.OrderStatus.AsString(EnumFormat.EnumMemberValue)" />
+                                <span style="white-space: nowrap">
+                                    <nhs-tag colour="@GetTagColour(order.OrderStatus)" text="@order.OrderStatus.AsString(EnumFormat.EnumMemberValue)"/>
+                                </span>
                             </nhs-table-cell>
                             <nhs-table-cell>
                                 <a data-test-id="link-@order.CallOffId" asp-action="@nameof(OrderController.Order)"

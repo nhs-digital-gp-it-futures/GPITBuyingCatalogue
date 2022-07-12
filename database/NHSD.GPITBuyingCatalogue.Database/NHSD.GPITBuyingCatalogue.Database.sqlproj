@@ -54,6 +54,7 @@
     <GenerateSerializationAssemblies>Off</GenerateSerializationAssemblies>
     <TreatTSqlWarningsAsErrors>False</TreatTSqlWarningsAsErrors>
     <RunSqlCodeAnalysis>True</RunSqlCodeAnalysis>
+    <SqlCodeAnalysisRules>-Microsoft.Rules.Data.SR0014</SqlCodeAnalysisRules>
   </PropertyGroup>
   <PropertyGroup>
     <DisableFastUpToDateCheck>true</DisableFastUpToDateCheck>
@@ -130,6 +131,7 @@
     <Build Include="Ordering\Tables\OrderItemRecipients.sql" />
     <Build Include="Ordering\Tables\OrderItems.sql" />
     <Build Include="Ordering\Tables\Orders.sql" />
+    <Build Include="Ordering\Tables\OrderTriageValues.sql" />
     <Build Include="Ordering\Tables\OrderStatus.sql" />
     <Build Include="Ordering\Tables\ServiceRecipients.sql" />
     <Build Include="Ordering\Views\ServiceInstanceItems.sql" />
@@ -236,6 +238,15 @@
     <Build Include="Import\Functions\GetLastPublishedDate.sql" />
     <Build Include="Organisations\Tables\OrganisationTypes.sql" />
     <Build Include="Organisations\Tables\GpPracticeSize.sql" />
+    <Build Include="Ordering\Tables\OrderItemPriceTiers.sql" />
+    <Build Include="Ordering\TemporalTables\OrderItemPriceTiers_History.sql" />
+    <Build Include="Ordering\Tables\OrderItemFunding.sql" />
+    <Build Include="Ordering\TemporalTables\OrderItemFunding_History.sql" />
+    <Build Include="Ordering\Tables\OrderItemPrices.sql" />
+    <Build Include="Ordering\TemporalTables\OrderItemPrices_History.sql" />
+    <Build Include="Catalogue\Tables\CataloguePriceCalculationTypes.sql" />
+    <Build Include="Catalogue\Tables\CataloguePriceQuantityCalculationTypes.sql" />
+    <Build Include="Ordering\Tables\OrderItemFundingTypes.sql" />
   </ItemGroup>
   <ItemGroup>
     <SqlCmdVariable Include="CREATE_EA_USER">
@@ -319,6 +330,9 @@
     <None Include="Security\Users\HangFire.sql" />
     <None Include="Security\Logins\HangFire.sql" />
     <None Include="Security\Roles\BackgroundProcessor.sql" />
+    <None Include="PostDeployment\InsertCataloguePriceCalculationTypes.sql" />
+    <None Include="PostDeployment\InsertCataloguePriceQuantityCalculationTypes.sql" />
+    <None Include="PostDeployment\InsertSupplierServiceAssociations.sql" />
   </ItemGroup>
   <ItemGroup>
     <PostDeploy Include="PostDeployment\PostDeployment.sql" />
@@ -332,6 +346,9 @@
       <SuppressMissingDependenciesErrors>False</SuppressMissingDependenciesErrors>
       <DatabaseVariableLiteralValue>master</DatabaseVariableLiteralValue>
     </ArtifactReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="PostDeployment\InsertOrderTriageValues.sql" />
   </ItemGroup>
   <PropertyGroup>
     <PreBuildEvent>

@@ -3,5 +3,6 @@
     VALUES
     (1, 'Patient'),
     (2, 'Declarative'),
-    (3, 'OnDemand');
+    (3, 'OnDemand'),
+    (4, 'PerServiceRecipient');
 GO

@@ -55,7 +55,7 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework
 
         public DbSet<CataloguePrice> CataloguePrices { get; set; }
 
-        public DbSet<DefaultDeliveryDate> DefaultDeliveryDates { get; set; }
+        public DbSet<CataloguePriceTier> CataloguePriceTiers { get; set; }
 
         public DbSet<FrameworkCapability> FrameworkCapabilities { get; set; }
 
@@ -103,11 +103,13 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework
 
         public DbSet<WorkOffPlan> WorkOffPlans { get; set; }
 
-        // TODO - This is purely for the migration and can be removed post go-live
         public DbSet<OrderItem> OrderItems { get; set; }
 
-        // TODO - This is purely for the migration and can be removed post go-live
         public DbSet<OrderItemRecipient> OrderItemRecipients { get; set; }
+
+        public DbSet<OrderItemPrice> OrderItemPrices { get; set; }
+
+        public DbSet<OrderItemPriceTier> OrderItemPriceTiers { get; set; }
 
         public override Task<int> SaveChangesAsync(bool acceptAllChangesOnSuccess, CancellationToken cancellationToken = default)
         {
@@ -128,12 +130,6 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework
             UpdateAuditFields(userId);
 
             base.SaveChanges();
-        }
-
-        // TODO This is purely for the migration utility and will be removed post go-live
-        public int SaveChangesWithoutAudit()
-        {
-            return base.SaveChanges();
         }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)

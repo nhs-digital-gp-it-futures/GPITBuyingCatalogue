@@ -75,11 +75,13 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.AddNewSolution.Addition
                 .BeTrue();
         }
 
-        [Fact]
+       [Fact]
         public async Task Publish_IncompleteSections_ThrowsError()
         {
             await using var context = GetEndToEndDbContext();
             var item = await context.CatalogueItems.FirstAsync(c => c.CatalogueItemType == CatalogueItemType.AdditionalService && c.Id == IncompleteAdditionalServiceId);
+            var prices = await context.CataloguePrices.Where(cp => cp.CatalogueItemId == IncompleteAdditionalServiceId).ToListAsync();
+            prices.ForEach(p => p.PublishedStatus = PublicationStatus.Unpublished);
             item.PublishedStatus = PublicationStatus.Draft;
             await context.SaveChangesAsync();
 

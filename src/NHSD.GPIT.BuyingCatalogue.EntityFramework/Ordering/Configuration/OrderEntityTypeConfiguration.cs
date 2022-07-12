@@ -19,7 +19,10 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Configuration
                 .IsRequired()
                 .HasMaxLength(100);
 
-            builder.Property(o => o.FundingSourceOnlyGms).HasColumnName("FundingSourceOnlyGMS");
+            builder.Property(o => o.OrderTriageValue)
+                .HasConversion<int>()
+                .HasColumnName("OrderTriageValueId");
+
             builder.Property(o => o.LastUpdated).HasDefaultValue(DateTime.UtcNow);
             builder.Property(o => o.OrderStatus)
                 .HasConversion<int>()
@@ -52,6 +55,11 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Configuration
                 .WithMany()
                 .HasForeignKey(o => o.LastUpdatedBy)
                 .HasConstraintName("FK_Orders_LastUpdatedBy");
+
+            builder.HasOne(x => x.Solution)
+                .WithMany()
+                .HasForeignKey(x => x.SolutionId)
+                .HasConstraintName("FK_Orders_Solution");
 
             builder.HasIndex(o => o.IsDeleted, "IX_Orders_IsDeleted");
 

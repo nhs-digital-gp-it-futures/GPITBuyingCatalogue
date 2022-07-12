@@ -47,7 +47,7 @@ BEGIN
         VALUES (
             @solutionId,
             '["Flexible Pricing", "Lightweight interface designed for maximum usability", "DNA tracking and automatic improvement suggestions", "Web-based", "Remotely accessible"]',
-            '{"PublicCloud":{"Summary":"Summary description","Link":"External URL link","RequiresHSCN":"Link to HSCN or N3 network required to access service"},"PrivateCloud":{"Summary":"Summary description","Link":"External URL link","HostingModel":"Hosting environment description","RequiresHSCN":"Link to HSCN or N3 network required to access service"},"HybridHostingType":{"Summary":"Summary description","Link":"External URL link","HostingModel":"Hosting environment description","RequiresHSCN":"Link to HSCN or N3 network required to access service"},"OnPremise":{"Summary":"Summary description","Link":"External URL link","HostingModel":"Hosting environment description","RequiresHSCN":"Link to HSCN or N3 network required to access service"}}', 
+            '{"PublicCloud":{"Summary":"Summary description","Link":"External URL link","RequiresHSCN":"Link to HSCN or N3 network required to access service"},"PrivateCloud":{"Summary":"Summary description","Link":"External URL link","HostingModel":"Hosting environment description","RequiresHSCN":"Link to HSCN or N3 network required to access service"},"HybridHostingType":{"Summary":"Summary description","Link":"External URL link","HostingModel":"Hosting environment description","RequiresHSCN":"Link to HSCN or N3 network required to access service"},"OnPremise":{"Summary":"Summary description","Link":"External URL link","HostingModel":"Hosting environment description","RequiresHSCN":"Link to HSCN or N3 network required to access service"}}',
             '[{"Id":"1c8be5da-5775-4517-8a13-f3f15a113cc2","IntegrationType":"IM1","Qualifier":"Bulk","IsConsumer":false,"IntegratesWith":"Audit+","Description":"Audit+ utilises a bulk extraction of full clinical records (including confidential and deceased patients) from EMIS Web to provide General Practices with a crossplatform clinical decision support and management tool; supporting QOF performance management, improvement and NHS Health Checks.","AdditionalInformation":""},{"Id":"f10b30e0-b590-463f-aef7-1cf950c5ca22","IntegrationType":"IM1","Qualifier":"Bulk","IsConsumer":false,"IntegratesWith":"Informatics Platform","Description":"A Risk Stratification tool","AdditionalInformation":""},{"Id":"0bf49a99-4e1f-4824-bb61-d1d3bb4fe0d4","IntegrationType":"IM1","Qualifier":"Bulk","IsConsumer":false,"IntegratesWith":"Censure","Description":"Storm is a sophisticated management information reporting interface that presents EMIS Web, allowing users to display their data in the most impactful and effective format; selecting from a range of arrangements and graphical forms.","AdditionalInformation":""},{"Id":"228f6b1e-951d-485b-938c-6a872bd996f5","IntegrationType":"IM1","Qualifier":"Transactional","IsConsumer":false,"IntegratesWith":"Audit+","Description":"Audit+ utilises a bulk extraction of full clinical records (including confidential and deceased patients) from EMIS Web to provide General Practices with a crossplatform clinical decision support and management tool; supporting QOF performance management, improvement and NHS Health Checks.","AdditionalInformation":""},{"Id":"0a0da5c2-6609-4fd3-a7d4-b07227a3296f","IntegrationType":"IM1","Qualifier":"Transactional","IsConsumer":false,"IntegratesWith":"Informatics Platform","Description":"A Risk Stratification tool","AdditionalInformation":""},{"Id":"d5c05642-63f3-4897-8d22-faf16b113936","IntegrationType":"IM1","Qualifier":"Transactional","IsConsumer":false,"IntegratesWith":"Censure","Description":"Storm is a sophisticated management information reporting interface that presents EMIS Web, allowing users to display their data in the most impactful and effective format; selecting from a range of arrangements and graphical forms.","AdditionalInformation":""},{"Id":"5504ccc8-4852-4901-a55c-36f49ac2271a","IntegrationType":"GP Connect","Qualifier":"Access Record HTML","IsConsumer":false,"IntegratesWith":"","Description":"","AdditionalInformation":"EMIS Web received Full Roll Out Approval from NHS Digital for GP Connect HTML View Provision on 20/06/19"},{"Id":"a28b4c39-ac70-4acc-b47e-470a3d9726f4","IntegrationType":"GP Connect","Qualifier":"Access Record HTML","IsConsumer":true,"IntegratesWith":"","Description":"","AdditionalInformation":"EMIS Web is accredited to consume GP Connect HTML views"},{"Id":"b7eb68af-0fb6-4cc1-9c24-f2f7a0719760","IntegrationType":"GP Connect","Qualifier":"Appointment Management","IsConsumer":false,"IntegratesWith":"","Description":"","AdditionalInformation":"EMIS Web received Full Roll Out Approval from NHS Digital for GP Connect HTML View Provision on 20/06/19"},{"Id":"0700d184-eaf8-4e01-98f6-7d3029da43c2","IntegrationType":"GP Connect","Qualifier":"Appointment Management","IsConsumer":true,"IntegratesWith":"","Description":"","AdditionalInformation":"EMIS Web is accredited to consume GP Connect HTML views"}]',
             'http://www.writeontime.com/about',
             'Write on Time is a Citizen-facing Appointments Management system specifically designed to reduce the number of DNAs in your practice.',
@@ -615,40 +615,122 @@ TPP maintain close contact with staff at the unit throughout these phases to ens
                     (@dfocvcframeworkId, @solutionId, 0, @now, @bobUser);
     END;
 
-    DECLARE @flatPriceType AS int = 1;
+    DECLARE
+    @flatPriceType INT = 1,
+    @tieredPriceType INT = 2,
 
-    DECLARE @patientProvisioningType AS int = 1;
-    DECLARE @declarativeProvisioningType AS int = 2;
-    DECLARE @onDemandProvisioningType AS int = 3;
+    @patientProvisioningType INT = (SELECT Id FROM catalogue.ProvisioningTypes WHERE [Name] = 'Patient'),
+    @declarativeProvisioningType INT = (SELECT Id FROM catalogue.ProvisioningTypes WHERE [Name] = 'Declarative'),
+    @onDemandProvisioningType INT = (SELECT Id FROM catalogue.ProvisioningTypes WHERE [Name] = 'OnDemand'),
+    @perServiceRecipientProvisioningType INT = (Select Id FROM catalogue.ProvisioningTypes WHERE [Name] = 'PerServiceRecipient'),
 
-    DECLARE @monthTimeUnit AS int = 1;
-    DECLARE @yearTimeUnit AS int = 2;
+    @monthTimeUnit INT = 1,
+    @yearTimeUnit INT = 2,
 
-    DECLARE @patient AS smallint = -1;
-    DECLARE @bed AS smallint = -2;
-    DECLARE @consultation AS smallint = -3;
-    DECLARE @licence AS smallint = -4;
-    DECLARE @sms AS smallint = -5;
+    @CataloguePriceCalculationTypeCumulativeId INT = 2,
+    @CataloguePriceCalculationTypeSingleFixed INT = 1,
+
+    @patient SMALLINT = -1,
+    @bed SMALLINT = -2,
+    @consultation SMALLINT = -3,
+    @licence SMALLINT = -4,
+    @sms SMALLINT = -5;
 
     /* Insert prices */
+
     IF NOT EXISTS (SELECT * FROM catalogue.CataloguePrices)
     BEGIN
-     INSERT INTO catalogue.CataloguePrices(CatalogueItemId, ProvisioningTypeId, CataloguePriceTypeId, PricingUnitId, TimeUnitId, CurrencyCode, LastUpdated, Price, PublishedStatusId)
-          VALUES ('100000-001', @patientProvisioningType, @flatPriceType, @patient, @yearTimeUnit, 'GBP', @now, 99.99, 3),
-                 ('100000-001', @onDemandProvisioningType, @flatPriceType, @consultation, NULL, 'GBP', @now, 1001.010, 3),
-                 ('100001-001', @onDemandProvisioningType, @flatPriceType, @licence, NULL, 'GBP', @now, 3.142, 3),
-                 ('100002-001', @declarativeProvisioningType, @flatPriceType, @patient, @monthTimeUnit, 'GBP', @now, 4.85, 3),
-                 ('100003-001', @declarativeProvisioningType, @flatPriceType, @bed, @monthTimeUnit, 'GBP', @now, 19.987, 3),
-                 ('100004-001', @declarativeProvisioningType, @flatPriceType, @licence, @monthTimeUnit, 'GBP', @now, 10101.65, 3),
-                 ('100005-001', @onDemandProvisioningType, @flatPriceType, @licence, NULL, 'GBP', @now, 456, 3),
-                 ('100006-001', @declarativeProvisioningType, @flatPriceType, @sms, @monthTimeUnit, 'GBP', @now, 7, 3),
-                 ('100007-001', @onDemandProvisioningType, @flatPriceType, @sms, NULL, 'GBP', @now, 0.15, 3),
-                 ('100007-002', @onDemandProvisioningType, @flatPriceType, @sms, NULL, 'GBP', @now, 99.99, 3),
-                 ('99998-98', @patientProvisioningType, @flatPriceType, @licence, @yearTimeUnit, 'GBP', @now, 30000, 3),
-                 ('99999-01', @patientProvisioningType, @flatPriceType, @patient, @yearTimeUnit, 'GBP', @now, 1.25, 3),
-                 ('99999-02', @patientProvisioningType, @flatPriceType, @patient, @yearTimeUnit, 'GBP', @now, 1.55, 3),
-                 ('99999-89', @patientProvisioningType, @flatPriceType, @licence, @yearTimeUnit, 'GBP', @now, 500.49, 3);
+         DECLARE @InsertedPriceIds TABLE(
+             Id INT,
+             Price DECIMAL(18,4),
+             CataloguePriceTypeId INT
+         );
 
+        DECLARE @SolutionPrices TABLE(
+            CatalogueItemId NVARCHAR(14),
+            ProvisioningTypeId INT,
+            CataloguePriceTypeId INT,
+            PricingUnitId INT,
+            TimeUnitId INT,
+            CataloguePriceCalculationTypeId INT,
+            CurrencyCode NVARCHAR(3),
+            LastUpdated DATETIME2(0),
+            Price DECIMAL(18,4),
+            PublishedStatusId INT
+        );
+
+        INSERT INTO @SolutionPrices (CatalogueItemId, ProvisioningTypeId, CataloguePriceTypeId, PricingUnitId, TimeUnitId, CataloguePriceCalculationTypeId, CurrencyCode, LastUpdated, Price, PublishedStatusId)
+        VALUES 
+        ('100000-001', @patientProvisioningType, @flatPriceType, @patient, @yearTimeUnit, @CataloguePriceCalculationTypeSingleFixed, 'GBP', @now, 99.99, 3),
+        ('100000-001', @patientProvisioningType, @tieredPriceType, @patient, @yearTimeUnit, @CataloguePriceCalculationTypeCumulativeId, 'GBP', @now, 0.5, 3),
+        ('100000-001', @perServiceRecipientProvisioningType, @flatPriceType, @consultation, NULL, @CataloguePriceCalculationTypeSingleFixed, 'GBP', @now, 1001.010, 3),
+        ('100001-001', @onDemandProvisioningType, @flatPriceType, @licence, NULL, @CataloguePriceCalculationTypeSingleFixed, 'GBP', @now, 3.142, 3),
+        ('100002-001', @declarativeProvisioningType, @flatPriceType, @patient, @monthTimeUnit, @CataloguePriceCalculationTypeSingleFixed, 'GBP', @now, 4.85, 3),
+        ('100002-001', @perServiceRecipientProvisioningType, @tieredPriceType, @patient, @monthTimeUnit, @CataloguePriceCalculationTypeCumulativeId, 'GBP', @now, 20, 3),
+        ('100002-001', @declarativeProvisioningType, @tieredPriceType, @patient, @monthTimeUnit, @CataloguePriceCalculationTypeSingleFixed, 'GBP', @now, 10, 3),
+        ('100003-001', @perServiceRecipientProvisioningType, @flatPriceType, @bed, @monthTimeUnit, @CataloguePriceCalculationTypeSingleFixed, 'GBP', @now, 19.987, 3),
+        ('100004-001', @declarativeProvisioningType, @flatPriceType, @licence, @monthTimeUnit, @CataloguePriceCalculationTypeSingleFixed, 'GBP', @now, 10101.65, 3),
+        ('100005-001', @onDemandProvisioningType, @flatPriceType, @licence, NULL, @CataloguePriceCalculationTypeSingleFixed, 'GBP', @now, 456, 3),
+        ('100006-001', @declarativeProvisioningType, @flatPriceType, @sms, @monthTimeUnit, @CataloguePriceCalculationTypeSingleFixed, 'GBP', @now, 7, 3),
+        ('100007-001', @onDemandProvisioningType, @flatPriceType, @sms, NULL, @CataloguePriceCalculationTypeSingleFixed, 'GBP', @now, 0.15, 3),
+        ('100007-002', @onDemandProvisioningType, @tieredPriceType, @sms, NULL, @CataloguePriceCalculationTypeCumulativeId, 'GBP', @now, 6, 3),
+        ('99998-98', @patientProvisioningType, @flatPriceType, @licence, @yearTimeUnit, @CataloguePriceCalculationTypeSingleFixed, 'GBP', @now, 30000, 3),
+        ('99998-98', @patientProvisioningType, @tieredPriceType, @licence, @yearTimeUnit, @CataloguePriceCalculationTypeCumulativeId, 'GBP', @now, 0.1, 3),
+        ('99999-01', @patientProvisioningType, @flatPriceType, @patient, @yearTimeUnit, @CataloguePriceCalculationTypeSingleFixed, 'GBP', @now, 1.25, 3),
+        ('99999-02', @perServiceRecipientProvisioningType, @flatPriceType, @patient, @yearTimeUnit, @CataloguePriceCalculationTypeSingleFixed, 'GBP', @now, 1.55, 3),
+        ('99999-89', @patientProvisioningType, @flatPriceType, @licence, @yearTimeUnit, @CataloguePriceCalculationTypeSingleFixed, 'GBP', @now, 500.49, 3),
+        ('99999-89', @perServiceRecipientProvisioningType, @tieredPriceType, @licence, @yearTimeUnit, @CataloguePriceCalculationTypeCumulativeId, 'GBP', @now, 3.5, 3);
+
+	    MERGE INTO catalogue.CataloguePrices USING @SolutionPrices AS ASP ON 1 = 0
+	    WHEN NOT MATCHED THEN
+	    INSERT (CatalogueItemId, ProvisioningTypeId, CataloguePriceTypeId, PricingUnitId, TimeUnitId, CataloguePriceCalculationTypeId, CurrencyCode, LastUpdated, PublishedStatusId)
+	    VALUES(    
+	    ASP.CatalogueItemId,
+        ASP.ProvisioningTypeId,
+        ASP.CataloguePriceTypeId,
+        ASP.PricingUnitId,
+        ASP.TimeUnitId,
+        ASP.CataloguePriceCalculationTypeId,
+        ASP.CurrencyCode,
+        ASP.LastUpdated,
+        ASP.PublishedStatusId)
+	    OUTPUT INSERTED.CataloguePriceId, ASP.Price, INSERTED.CataloguePriceTypeId
+	    INTO @InsertedPriceIds (Id, Price, CataloguePriceTypeId);
+
+        --Insert flat Prices
+        INSERT INTO catalogue.CataloguePriceTiers(CataloguePriceId, LowerRange, UpperRange, Price)
+        SELECT
+            IPI.Id, 1, NULL, IPI.Price
+        FROM @InsertedPriceIds IPI
+        WHERE CataloguePriceTypeId = 1;
+
+        --Insert Tiered Prices
+        INSERT INTO catalogue.CataloguePriceTiers(CataloguePriceId, LowerRange, UpperRange, Price)
+            SELECT
+                IPI.Id AS CataloguePriceId,
+                1 AS LowerRange,
+                9,
+                IPI.Price
+            FROM @InsertedPriceIds IPI
+            WHERE CataloguePriceTypeId = 2
+        UNION ALL
+            SELECT
+                IPI.Id AS CataloguePriceId,
+                10 AS LowerRange,
+                99,
+                IPI.Price / 2
+            FROM @InsertedPriceIds IPI
+            WHERE CataloguePriceTypeId = 2
+        UNION ALL
+            SELECT
+                IPI.Id AS CataloguePriceId,
+                100 AS LowerRange,
+                NULL,
+                IPI.Price / 4
+            FROM @InsertedPriceIds IPI
+            WHERE CataloguePriceTypeId = 2
+        ORDER BY
+            CataloguePriceId, LowerRange;
      END;
 END;
 GO

@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using FluentAssertions;
 using Microsoft.EntityFrameworkCore;
+using NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.Objects.PublicBrowse;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Utils;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.TestBases;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
@@ -31,31 +32,6 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.PublicBrowse.Solution
                   Parameters,
                   testOutputHelper)
         {
-        }
-
-        [Fact]
-        public void ListPriceDetails_FlatListPriceTableDisplayed()
-        {
-            RunTest(() =>
-            {
-                PublicBrowsePages.SolutionAction.FlatListPriceTableDisplayed().Should().BeTrue();
-            });
-        }
-
-        [Fact]
-        public async Task ListPriceDetails_FlatListPricesDisplayedCorrectlyAsync()
-        {
-            await RunTestAsync(async () =>
-            {
-                var prices = PublicBrowsePages.SolutionAction.GetPrices();
-
-                await using var context = GetEndToEndDbContext();
-                var dbPrices = await context.CataloguePrices.Where(s =>
-                s.CatalogueItemId == new CatalogueItemId(99999, "001")
-                && s.PublishedStatus == PublicationStatus.Published).ToListAsync();
-
-                prices.Should().Contain(dbPrices.Select(s => s.Price.ToString()));
-            });
         }
 
         [Fact]

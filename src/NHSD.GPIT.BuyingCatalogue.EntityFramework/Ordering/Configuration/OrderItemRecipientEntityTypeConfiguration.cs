@@ -18,7 +18,6 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Configuration
                 .HasConversion(id => id.ToString(), id => CatalogueItemId.ParseExact(id));
 
             builder.Property(r => r.OdsCode).HasMaxLength(8);
-            builder.Property(r => r.DeliveryDate).HasColumnType("date");
             builder.Property(r => r.LastUpdated).HasDefaultValue(DateTime.UtcNow);
 
             builder.HasOne(r => r.Recipient)

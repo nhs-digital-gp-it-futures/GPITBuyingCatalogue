@@ -4,7 +4,6 @@
 
     // only run if there are actually unpublished items to hide
     if (document.getElementsByClassName("unpublished").length > 0) {
-
         document.getElementById(unpublishedPriceCheckboxContainer).style.display = 'block';
 
         ChangePriceDisplayStyle('none');

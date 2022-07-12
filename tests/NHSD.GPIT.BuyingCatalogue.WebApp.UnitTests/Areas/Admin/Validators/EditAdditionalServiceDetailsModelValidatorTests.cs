@@ -1,5 +1,4 @@
 ﻿using System.Linq;
-using System.Threading.Tasks;
 using AutoFixture.Xunit2;
 using FluentValidation.TestHelper;
 using Moq;
@@ -17,18 +16,18 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators
     {
         [Theory]
         [CommonAutoData]
-        public static async Task Validate_ValidModel_NoValidationErrors(
+        public static void Validate_ValidModel_NoValidationErrors(
             EditAdditionalServiceDetailsModel model,
             EditAdditionalServiceDetailsModelValidator validator)
         {
-            var result = await validator.TestValidateAsync(model);
+            var result = validator.TestValidate(model);
 
             result.ShouldNotHaveAnyValidationErrors();
         }
 
         [Theory]
         [CommonAutoData]
-        public static async Task Validate_NameNotEntered_HasError(
+        public static void Validate_NameNotEntered_HasError(
             Solution solution,
             AdditionalService additionalService,
             EditAdditionalServiceDetailsModelValidator validator)
@@ -37,7 +36,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators
 
             var model = new EditAdditionalServiceDetailsModel(solution.CatalogueItem, additionalService.CatalogueItem);
 
-            var result = await validator.TestValidateAsync(model);
+            var result = validator.TestValidate(model);
 
             result.ShouldHaveValidationErrorFor(m => m.Name)
                 .WithErrorMessage("Enter an Additional Service name");
@@ -45,7 +44,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators
 
         [Theory]
         [CommonAutoData]
-        public static async Task Validate_DescriptionNotEntered_HasError(
+        public static void Validate_DescriptionNotEntered_HasError(
             Solution solution,
             AdditionalService additionalService,
             EditAdditionalServiceDetailsModelValidator validator)
@@ -54,7 +53,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators
 
             var model = new EditAdditionalServiceDetailsModel(solution.CatalogueItem, additionalService.CatalogueItem);
 
-            var result = await validator.TestValidateAsync(model);
+            var result = validator.TestValidate(model);
 
             result.ShouldHaveValidationErrorFor(m => m.Description)
                 .WithErrorMessage("Enter an Additional Service description");
@@ -62,7 +61,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators
 
         [Theory]
         [CommonAutoData]
-        public static async Task Validate_ExistingServiceName_HasError(
+        public static void Validate_ExistingServiceName_HasError(
             Solution solution,
             [Frozen] Mock<IAdditionalServicesService> additionalServicesService,
             EditAdditionalServiceDetailsModelValidator validator)
@@ -79,7 +78,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators
                 Name = solution.AdditionalServices.Last().CatalogueItem.Name,
             };
 
-            var result = await validator.TestValidateAsync(model);
+            var result = validator.TestValidate(model);
 
             result.ShouldHaveValidationErrorFor(m => m.Name)
                 .WithErrorMessage("Additional Service name already exists. Enter a different name");
@@ -87,7 +86,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators
 
         [Theory]
         [CommonAutoData]
-        public static async Task Validate_DuplicatingSolutionName_HasError(
+        public static void Validate_DuplicatingSolutionName_HasError(
             Solution solution,
             EditAdditionalServiceDetailsModelValidator validator)
         {
@@ -99,7 +98,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators
                 Name = solution.CatalogueItem.Name,
             };
 
-            var result = await validator.TestValidateAsync(model);
+            var result = validator.TestValidate(model);
 
             result.ShouldHaveValidationErrorFor(m => m.Name)
                 .WithErrorMessage("Additional Service name cannot be the same as its Catalogue Solution");

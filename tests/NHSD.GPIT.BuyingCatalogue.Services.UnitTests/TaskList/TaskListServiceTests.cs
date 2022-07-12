@@ -1,6 +1,8 @@
-﻿using FluentAssertions;
-using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
-using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
+﻿using System.Threading.Tasks;
+using AutoFixture;
+using AutoFixture.AutoMoq;
+using AutoFixture.Idioms;
+using FluentAssertions;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Enums;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Models.TaskList;
 using NHSD.GPIT.BuyingCatalogue.Services.TaskList;
@@ -11,290 +13,266 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.TaskList
 {
     public static class TaskListServiceTests
     {
+        [Fact]
+        public static void Constructors_VerifyGuardClauses()
+        {
+            var fixture = new Fixture().Customize(new AutoMoqCustomization());
+            var assertion = new GuardClauseAssertion(fixture);
+            var constructors = typeof(TaskListService).GetConstructors();
+
+            assertion.Verify(constructors);
+        }
+
         [Theory]
         [CommonAutoData]
-        public static void NullOrder_Returns_DefaultModel(
+        public static async Task NullOrder_Returns_DefaultModel(
             TaskListService service)
         {
             var expected = new OrderTaskList();
 
-            var actual = service.GetTaskListStatusModelForOrder(null);
+            var actual = await service.GetTaskListStatusModelForOrder(null);
 
             actual.Should().BeEquivalentTo(expected);
         }
 
-        [Theory]
-        [CommonAutoData]
-        public static void CompleteOrder_AllStatuses_Correct(
-            Order order,
-            OrderItem solutionOrderItem,
-            OrderItem associatedServiceOrderItem,
-            OrderItem additionalServiceOrderItem,
-            TaskListService service)
+        [Fact]
+        public static void SetOrderTaskList_NullModel_Returns()
         {
-            order.ConfirmedFundingSource = true;
-            solutionOrderItem.CatalogueItem.CatalogueItemType = CatalogueItemType.Solution;
-            associatedServiceOrderItem.CatalogueItem.CatalogueItemType = CatalogueItemType.AssociatedService;
-            additionalServiceOrderItem.CatalogueItem.CatalogueItemType = CatalogueItemType.AdditionalService;
-            order.AddOrUpdateOrderItem(solutionOrderItem);
-            order.AddOrUpdateOrderItem(associatedServiceOrderItem);
-            order.AddOrUpdateOrderItem(additionalServiceOrderItem);
+            var expected = new OrderTaskList()
+            {
+                DescriptionStatus = TaskProgress.Completed,
+                OrderingPartyStatus = TaskProgress.NotStarted,
+            };
 
-            var actual = service.GetTaskListStatusModelForOrder(order);
+            var model = new OrderTaskList();
 
-            actual.DescriptionStatus.Should().Be(TaskProgress.Completed);
-            actual.OrderingPartyStatus.Should().Be(TaskProgress.Completed);
-            actual.SupplierStatus.Should().Be(TaskProgress.Completed);
-            actual.CommencementDateStatus.Should().Be(TaskProgress.Completed);
-            actual.CatalogueSolutionsStatus.Should().Be(TaskProgress.Completed);
-            actual.AdditionalServiceStatus.Should().Be(TaskProgress.Completed);
-            actual.AssociatedServiceStatus.Should().Be(TaskProgress.Completed);
-            actual.FundingSourceStatus.Should().Be(TaskProgress.Completed);
-            actual.ReviewAndCompleteStatus.Should().Be(TaskProgress.NotStarted);
+            TaskListService.SetOrderTaskList(TaskListOrderSections.Description, model);
+
+            model.Should().BeEquivalentTo(expected);
         }
 
-        [Theory]
-        [CommonAutoData]
-        public static void NoOrderingParty_OrderingPartyStatus_NotStarted(
-            Order order,
-            TaskListService service)
+        [Fact]
+        public static void SetOrderTaskList_OrderingPartyCompleted_Returns()
         {
-            order.OrderingPartyContact = null;
+            var expected = new OrderTaskList()
+            {
+                DescriptionStatus = TaskProgress.Completed,
+                OrderingPartyStatus = TaskProgress.Completed,
+                SupplierStatus = TaskProgress.NotStarted,
+            };
 
-            var actual = service.GetTaskListStatusModelForOrder(order);
+            var model = new OrderTaskList();
 
-            actual.OrderingPartyStatus.Should().Be(TaskProgress.NotStarted);
+            var completedSections = TaskListOrderSections.Description | TaskListOrderSections.OrderingParty;
+
+            TaskListService.SetOrderTaskList(completedSections, model);
+
+            model.Should().BeEquivalentTo(expected);
         }
 
-        [Theory]
-        [CommonAutoData]
-        public static void NoSupplier_SupplierStatus_NotStarted(
-            Order order,
-            TaskListService service)
+        [Fact]
+        public static void SetOrderTaskList_SupplierInProgress_Returns()
         {
-            order.Supplier = null;
+            var expected = new OrderTaskList()
+            {
+                DescriptionStatus = TaskProgress.Completed,
+                OrderingPartyStatus = TaskProgress.Completed,
+                SupplierStatus = TaskProgress.InProgress,
+            };
 
-            var actual = service.GetTaskListStatusModelForOrder(order);
+            var model = new OrderTaskList();
 
-            actual.SupplierStatus.Should().Be(TaskProgress.NotStarted);
+            var completedSections = TaskListOrderSections.Description | TaskListOrderSections.OrderingParty | TaskListOrderSections.Supplier;
+
+            TaskListService.SetOrderTaskList(completedSections, model);
+
+            model.Should().BeEquivalentTo(expected);
         }
 
-        [Theory]
-        [CommonAutoData]
-        public static void NoSupplierContact_SupplierStatus_InProgress(
-            Order order,
-            TaskListService service)
+        [Fact]
+        public static void SetOrderTaskList_Supplier_PreviousSectionNotCompleted_Returns()
         {
-            order.SupplierContactId = null;
+            var expected = new OrderTaskList()
+            {
+                DescriptionStatus = TaskProgress.Completed,
+                OrderingPartyStatus = TaskProgress.NotStarted,
+            };
 
-            var actual = service.GetTaskListStatusModelForOrder(order);
+            var model = new OrderTaskList();
 
-            actual.SupplierStatus.Should().Be(TaskProgress.InProgress);
+            var completedSections = TaskListOrderSections.Description | TaskListOrderSections.Supplier;
+
+            TaskListService.SetOrderTaskList(completedSections, model);
+
+            model.Should().BeEquivalentTo(expected);
         }
 
-        [Theory]
-        [CommonAutoData]
-        public static void NoSupplier_NoOrderingParty_SupplierStatus_CannotStart(
-            Order order,
-            TaskListService service)
+        [Fact]
+        public static void SetOrderTaskList_SupplierComplete_Returns()
         {
-            order.Supplier = null;
-            order.OrderingPartyContact = null;
+            var expected = new OrderTaskList()
+            {
+                DescriptionStatus = TaskProgress.Completed,
+                OrderingPartyStatus = TaskProgress.Completed,
+                SupplierStatus = TaskProgress.Completed,
+                CommencementDateStatus = TaskProgress.NotStarted,
+            };
 
-            var actual = service.GetTaskListStatusModelForOrder(order);
+            var model = new OrderTaskList();
 
-            actual.SupplierStatus.Should().Be(TaskProgress.CannotStart);
+            var completedSections =
+                TaskListOrderSections.Description
+                | TaskListOrderSections.OrderingParty
+                | TaskListOrderSections.Supplier
+                | TaskListOrderSections.SupplierContact;
+
+            TaskListService.SetOrderTaskList(completedSections, model);
+
+            model.Should().BeEquivalentTo(expected);
         }
 
-        [Theory]
-        [CommonAutoData]
-        public static void NoCommencementDate_CommencementDateStatus_NotStarted(
-            Order order,
-            TaskListService service)
+        [Fact]
+        public static void SetOrderTaskList_CommencementDateComplete_Returns()
         {
-            order.CommencementDate = null;
+            var expected = new OrderTaskList()
+            {
+                DescriptionStatus = TaskProgress.Completed,
+                OrderingPartyStatus = TaskProgress.Completed,
+                SupplierStatus = TaskProgress.Completed,
+                CommencementDateStatus = TaskProgress.Completed,
+                SolutionOrService = TaskProgress.NotStarted,
+            };
 
-            var actual = service.GetTaskListStatusModelForOrder(order);
+            var model = new OrderTaskList();
 
-            actual.CommencementDateStatus.Should().Be(TaskProgress.NotStarted);
+            var completedSections =
+                TaskListOrderSections.Description
+                | TaskListOrderSections.OrderingParty
+                | TaskListOrderSections.Supplier
+                | TaskListOrderSections.SupplierContact
+                | TaskListOrderSections.CommencementDate;
+
+            TaskListService.SetOrderTaskList(completedSections, model);
+
+            model.Should().BeEquivalentTo(expected);
         }
 
-        [Theory]
-        [CommonAutoData]
-        public static void NoCommencementDate_NoSupplierContact_CommencementDateStatus_CannotStart(
-            Order order,
-            TaskListService service)
+        [Fact]
+        public static void SetOrderTaskList_SolutionInProgress_Returns()
         {
-            order.CommencementDate = null;
-            order.SupplierContactId = null;
+            var expected = new OrderTaskList()
+            {
+                DescriptionStatus = TaskProgress.Completed,
+                OrderingPartyStatus = TaskProgress.Completed,
+                SupplierStatus = TaskProgress.Completed,
+                CommencementDateStatus = TaskProgress.Completed,
+                SolutionOrService = TaskProgress.InProgress,
+            };
 
-            var actual = service.GetTaskListStatusModelForOrder(order);
+            var model = new OrderTaskList();
 
-            actual.CommencementDateStatus.Should().Be(TaskProgress.CannotStart);
+            var completedSections =
+                TaskListOrderSections.Description
+                | TaskListOrderSections.OrderingParty
+                | TaskListOrderSections.Supplier
+                | TaskListOrderSections.SupplierContact
+                | TaskListOrderSections.CommencementDate
+                | TaskListOrderSections.SolutionOrServiceInProgress;
+
+            TaskListService.SetOrderTaskList(completedSections, model);
+
+            model.Should().BeEquivalentTo(expected);
         }
 
-        [Theory]
-        [CommonAutoData]
-        public static void NoSolutions_WithAssociatedServices_CatalogueSolutionStatus_Optional(
-            Order order,
-            OrderItem orderItem,
-            TaskListService service)
+        [Fact]
+        public static void SetOrderTaskList_SolutionCompleted_Returns()
         {
-            orderItem.CatalogueItem.CatalogueItemType = CatalogueItemType.AssociatedService;
-            order.AddOrUpdateOrderItem(orderItem);
+            var expected = new OrderTaskList()
+            {
+                DescriptionStatus = TaskProgress.Completed,
+                OrderingPartyStatus = TaskProgress.Completed,
+                SupplierStatus = TaskProgress.Completed,
+                CommencementDateStatus = TaskProgress.Completed,
+                SolutionOrService = TaskProgress.Completed,
+                FundingSource = TaskProgress.NotStarted,
+            };
 
-            var actual = service.GetTaskListStatusModelForOrder(order);
+            var model = new OrderTaskList();
 
-            actual.CatalogueSolutionsStatus.Should().Be(TaskProgress.Optional);
+            var completedSections =
+                TaskListOrderSections.Description
+                | TaskListOrderSections.OrderingParty
+                | TaskListOrderSections.Supplier
+                | TaskListOrderSections.SupplierContact
+                | TaskListOrderSections.CommencementDate
+                | TaskListOrderSections.SolutionOrServiceInProgress
+                | TaskListOrderSections.SolutionOrService;
+
+            TaskListService.SetOrderTaskList(completedSections, model);
+
+            model.Should().BeEquivalentTo(expected);
         }
 
-        [Theory]
-        [CommonAutoData]
-        public static void NoSolutions_NoAssociatedServices_CatalogueSolutionStatus_NoStarted(
-            Order order,
-            TaskListService service)
+        [Fact]
+        public static void SetOrderTaskList_FundingInProgress_Returns()
         {
-            var actual = service.GetTaskListStatusModelForOrder(order);
+            var expected = new OrderTaskList()
+            {
+                DescriptionStatus = TaskProgress.Completed,
+                OrderingPartyStatus = TaskProgress.Completed,
+                SupplierStatus = TaskProgress.Completed,
+                CommencementDateStatus = TaskProgress.Completed,
+                SolutionOrService = TaskProgress.Completed,
+                FundingSource = TaskProgress.InProgress,
+            };
 
-            actual.CatalogueSolutionsStatus.Should().Be(TaskProgress.NotStarted);
+            var model = new OrderTaskList();
+
+            var completedSections =
+                TaskListOrderSections.Description
+                | TaskListOrderSections.OrderingParty
+                | TaskListOrderSections.Supplier
+                | TaskListOrderSections.SupplierContact
+                | TaskListOrderSections.CommencementDate
+                | TaskListOrderSections.SolutionOrServiceInProgress
+                | TaskListOrderSections.SolutionOrService
+                | TaskListOrderSections.FundingSourceInProgress;
+
+            TaskListService.SetOrderTaskList(completedSections, model);
+
+            model.Should().BeEquivalentTo(expected);
         }
 
-        [Theory]
-        [CommonAutoData]
-        public static void NoSolutions_NoAssociatedServices_NoCommencementDate_CatalogueSolutionStatus_CannotStart(
-             Order order,
-             TaskListService service)
+        [Fact]
+        public static void SetOrderTaskList_FundingComplete_Returns()
         {
-            order.CommencementDate = null;
+            var expected = new OrderTaskList()
+            {
+                DescriptionStatus = TaskProgress.Completed,
+                OrderingPartyStatus = TaskProgress.Completed,
+                SupplierStatus = TaskProgress.Completed,
+                CommencementDateStatus = TaskProgress.Completed,
+                SolutionOrService = TaskProgress.Completed,
+                FundingSource = TaskProgress.Completed,
+                ReviewAndCompleteStatus = TaskProgress.NotStarted,
+            };
 
-            var actual = service.GetTaskListStatusModelForOrder(order);
+            var model = new OrderTaskList();
 
-            actual.CatalogueSolutionsStatus.Should().Be(TaskProgress.CannotStart);
-        }
+            var completedSections =
+                TaskListOrderSections.Description
+                | TaskListOrderSections.OrderingParty
+                | TaskListOrderSections.Supplier
+                | TaskListOrderSections.SupplierContact
+                | TaskListOrderSections.CommencementDate
+                | TaskListOrderSections.SolutionOrServiceInProgress
+                | TaskListOrderSections.SolutionOrService
+                | TaskListOrderSections.FundingSourceInProgress
+                | TaskListOrderSections.FundingSource;
 
-        [Theory]
-        [CommonAutoData]
-        public static void NoAdditionalServices_AdditionalServiceStatus_Optional(
-            Order order,
-            OrderItem orderItem,
-            TaskListService service)
-        {
-            orderItem.CatalogueItem.CatalogueItemType = CatalogueItemType.Solution;
-            order.AddOrUpdateOrderItem(orderItem);
+            TaskListService.SetOrderTaskList(completedSections, model);
 
-            var actual = service.GetTaskListStatusModelForOrder(order);
-
-            actual.AdditionalServiceStatus.Should().Be(TaskProgress.Optional);
-        }
-
-        [Theory]
-        [CommonAutoData]
-        public static void NoAdditionalServices_NoSolutions_AdditionalServiceStatus_CannotStart(
-            Order order,
-            TaskListService service)
-        {
-            var actual = service.GetTaskListStatusModelForOrder(order);
-
-            actual.AdditionalServiceStatus.Should().Be(TaskProgress.CannotStart);
-        }
-
-        [Theory]
-        [CommonAutoData]
-        public static void NoAssociatedServices_AssociatedServiceStatus_Optional(
-            Order order,
-            OrderItem orderItem,
-            TaskListService service)
-        {
-            orderItem.CatalogueItem.CatalogueItemType = CatalogueItemType.Solution;
-            order.AddOrUpdateOrderItem(orderItem);
-
-            var actual = service.GetTaskListStatusModelForOrder(order);
-
-            actual.AssociatedServiceStatus.Should().Be(TaskProgress.Optional);
-        }
-
-        [Theory]
-        [CommonAutoData]
-        public static void NoAssociatedServices_NoSolutions_AssociatedServiceStatus_NoStarted(
-            Order order,
-            TaskListService service)
-        {
-            var actual = service.GetTaskListStatusModelForOrder(order);
-
-            actual.AssociatedServiceStatus.Should().Be(TaskProgress.NotStarted);
-        }
-
-        [Theory]
-        [CommonAutoData]
-        public static void NoAssociatedServices_NoSolutions_NoCommencementDate_AssociatedServiceStatus_CannotStart(
-            Order order,
-            TaskListService service)
-        {
-            order.CommencementDate = null;
-
-            var actual = service.GetTaskListStatusModelForOrder(order);
-
-            actual.AssociatedServiceStatus.Should().Be(TaskProgress.CannotStart);
-        }
-
-        [Theory]
-        [CommonAutoData]
-        public static void WithSolutions_NoAssociatedServices_FundingSourceStatus_NotStarted(
-            Order order,
-            OrderItem orderItem,
-            TaskListService service)
-        {
-            orderItem.CatalogueItem.CatalogueItemType = CatalogueItemType.Solution;
-            order.AddOrUpdateOrderItem(orderItem);
-
-            order.FundingSourceOnlyGms = null;
-
-            var actual = service.GetTaskListStatusModelForOrder(order);
-
-            actual.FundingSourceStatus.Should().Be(TaskProgress.NotStarted);
-        }
-
-        [Theory]
-        [CommonAutoData]
-        public static void NoSolutions_WithAssociatedServices_FundingSourceStatus_NotStarted(
-            Order order,
-            OrderItem orderItem,
-            TaskListService service)
-        {
-            orderItem.CatalogueItem.CatalogueItemType = CatalogueItemType.AssociatedService;
-            order.AddOrUpdateOrderItem(orderItem);
-            order.FundingSourceOnlyGms = null;
-
-            var actual = service.GetTaskListStatusModelForOrder(order);
-
-            actual.FundingSourceStatus.Should().Be(TaskProgress.NotStarted);
-        }
-
-        [Theory]
-        [CommonAutoData]
-        public static void NoSolutions_NoAssociatedServices_FundingSourceStatus_CannotStart(
-            Order order,
-            TaskListService service)
-        {
-            order.FundingSourceOnlyGms = null;
-
-            var actual = service.GetTaskListStatusModelForOrder(order);
-
-            actual.FundingSourceStatus.Should().Be(TaskProgress.CannotStart);
-        }
-
-        [Theory]
-        [CommonAutoData]
-        public static void NoFundingSource_ReviewAndCompleteStatus_CannotStart(
-            Order order,
-            TaskListService service)
-        {
-            order.FundingSourceOnlyGms = null;
-            order.ConfirmedFundingSource = null;
-
-            var actual = service.GetTaskListStatusModelForOrder(order);
-
-            actual.ReviewAndCompleteStatus.Should().Be(TaskProgress.CannotStart);
+            model.Should().BeEquivalentTo(expected);
         }
     }
 }

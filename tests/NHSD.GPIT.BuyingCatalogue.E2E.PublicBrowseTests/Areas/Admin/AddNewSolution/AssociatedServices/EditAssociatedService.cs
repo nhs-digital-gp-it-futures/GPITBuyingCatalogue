@@ -94,8 +94,8 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.AddNewSolution
             CommonActions.GoBackLinkDisplayed().Should().BeTrue();
             CommonActions.ElementIsDisplayed(Objects.Admin.CommonObjects.SaveButton).Should().BeTrue();
             CommonActions.ElementIsDisplayed(AssociatedServicesObjects.AssociatedServiceDashboardTable).Should().BeTrue();
-            CommonActions.ElementIsDisplayed(AssociatedServicesObjects.AssociatedServiceRelatedSolutionsTable).Should().BeFalse();
-            CommonActions.ElementIsDisplayed(AssociatedServicesObjects.AssociatedServiceRelatedSolutionsInset).Should().BeTrue();
+            CommonActions.ElementIsDisplayed(AssociatedServicesObjects.AssociatedServiceRelatedSolutionsTable).Should().BeTrue();
+            CommonActions.ElementIsDisplayed(AssociatedServicesObjects.AssociatedServiceRelatedSolutionsInset).Should().BeFalse();
         }
 
         [Fact]
@@ -223,6 +223,8 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.AddNewSolution
         {
             await using var context = GetEndToEndDbContext();
             var item = await context.CatalogueItems.FirstAsync(c => c.CatalogueItemType == CatalogueItemType.AssociatedService && c.Id == IncompleteAssociatedServiceId);
+            var prices = await context.CataloguePrices.Where(cp => cp.CatalogueItemId == IncompleteAssociatedServiceId).ToListAsync();
+            prices.ForEach(p => p.PublishedStatus = PublicationStatus.Unpublished);
             item.PublishedStatus = PublicationStatus.Draft;
             await context.SaveChangesAsync();
 

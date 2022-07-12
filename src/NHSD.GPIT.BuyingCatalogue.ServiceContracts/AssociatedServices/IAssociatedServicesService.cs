@@ -12,7 +12,11 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.AssociatedServices
 
         Task<List<CatalogueItem>> GetPublishedAssociatedServicesForSupplier(int? supplierId);
 
+        Task<List<CatalogueItem>> GetPublishedAssociatedServicesForSolution(CatalogueItemId? catalogueItemId);
+
         Task<CatalogueItem> GetAssociatedService(CatalogueItemId associatedServiceId);
+
+        Task<CatalogueItem> GetAssociatedServiceWithCataloguePrices(CatalogueItemId associatedServiceId);
 
         Task<bool> AssociatedServiceExistsWithNameForSupplier(
             string additionalServiceName,

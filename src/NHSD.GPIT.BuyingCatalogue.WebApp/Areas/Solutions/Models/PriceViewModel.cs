@@ -1,4 +1,5 @@
-﻿using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
+﻿using System.Linq;
+using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models
 {
@@ -6,7 +7,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models
     {
         public PriceViewModel(CataloguePrice cp)
         {
-            Price = cp.Price;
+            Price = cp.PriceTiers.FirstOrDefault()?.Price;
             Unit = cp.ToPriceUnitString();
         }
 

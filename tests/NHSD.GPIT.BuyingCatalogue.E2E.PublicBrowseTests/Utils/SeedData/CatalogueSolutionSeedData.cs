@@ -51,11 +51,6 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
                     CatalogueItemType = CatalogueItemType.Solution,
                     Created = DateTime.UtcNow,
                     Name = "DFOCVC Solution Full",
-                    SupplierServiceAssociations = new List<SupplierServiceAssociation>
-                    {
-                        new SupplierServiceAssociation { AssociatedServiceId = new CatalogueItemId(99999, "S-999") },
-                        new SupplierServiceAssociation { AssociatedServiceId = new CatalogueItemId(99999, "S-998") },
-                    },
                     Solution = new Solution
                     {
                         CatalogueItemId = new CatalogueItemId(99999, "001"),
@@ -269,41 +264,63 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
                     {
                         new()
                         {
-                            CataloguePriceId = 15,
+                            CataloguePriceId = 7,
                             CatalogueItemId = new CatalogueItemId(99999, "001"),
                             ProvisioningType = ProvisioningType.Patient,
                             CataloguePriceType = CataloguePriceType.Flat,
                             PublishedStatus = PublicationStatus.Published,
-                            IsLocked = true,
+                            CataloguePriceCalculationType = CataloguePriceCalculationType.SingleFixed,
                             PricingUnit = new PricingUnit
                             {
-                                Id = 15,
-                                TierName = "Test Tier",
+                                Id = 7,
+                                RangeDescription = "Test Tier",
                                 Description = "per test patient",
                             },
                             TimeUnit = TimeUnit.PerYear,
                             CurrencyCode = "GBP",
-                            Price = 999.9999M,
                             LastUpdated = DateTime.UtcNow,
+                            CataloguePriceTiers = new List<CataloguePriceTier>
+                            {
+                                new()
+                                {
+                                    Id = 10,
+                                    CataloguePriceId = 7,
+                                    LowerRange = 1,
+                                    UpperRange = null,
+                                    Price = 999.9999M,
+                                    LastUpdated = DateTime.UtcNow,
+                                },
+                            },
                         },
                         new()
                         {
-                            CataloguePriceId = 18,
+                            CataloguePriceId = 8,
                             CatalogueItemId = new CatalogueItemId(99999, "001"),
                             ProvisioningType = ProvisioningType.Patient,
                             CataloguePriceType = CataloguePriceType.Flat,
                             PublishedStatus = PublicationStatus.Draft,
-                            IsLocked = false,
+                            CataloguePriceCalculationType = CataloguePriceCalculationType.SingleFixed,
                             PricingUnit = new PricingUnit
                             {
-                                Id = 18,
-                                TierName = "Test Tier",
+                                Id = 8,
+                                RangeDescription = "Test Tier",
                                 Description = "per test patient",
                             },
                             TimeUnit = TimeUnit.PerYear,
                             CurrencyCode = "GBP",
-                            Price = 999.9999M,
                             LastUpdated = DateTime.UtcNow,
+                            CataloguePriceTiers = new List<CataloguePriceTier>
+                            {
+                                new()
+                                {
+                                    Id = 11,
+                                    CataloguePriceId = 8,
+                                    LowerRange = 1,
+                                    UpperRange = null,
+                                    Price = 999.9999M,
+                                    LastUpdated = DateTime.UtcNow,
+                                },
+                            },
                         },
                     },
                 },
@@ -661,22 +678,33 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
                     {
                         new()
                         {
-                            CataloguePriceId = 5,
+                            CataloguePriceId = 9,
                             CatalogueItemId = new CatalogueItemId(99997, "001"),
                             ProvisioningType = ProvisioningType.Patient,
                             CataloguePriceType = CataloguePriceType.Flat,
                             PublishedStatus = PublicationStatus.Published,
-                            IsLocked = true,
+                            CataloguePriceCalculationType = CataloguePriceCalculationType.SingleFixed,
                             PricingUnit = new PricingUnit
                             {
-                                Id = 5,
-                                TierName = "Test Tier",
+                                Id = 9,
+                                RangeDescription = "Test Tier",
                                 Description = "per test patient",
                             },
                             TimeUnit = TimeUnit.PerYear,
                             CurrencyCode = "GBP",
-                            Price = 999.9999M,
                             LastUpdated = DateTime.UtcNow,
+                            CataloguePriceTiers = new List<CataloguePriceTier>
+                            {
+                                new()
+                                {
+                                    Id = 12,
+                                    CataloguePriceId = 9,
+                                    LowerRange = 1,
+                                    UpperRange = null,
+                                    Price = 999.9999M,
+                                    LastUpdated = DateTime.UtcNow,
+                                },
+                            },
                         },
                     },
                 },
@@ -857,19 +885,30 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
                             CataloguePriceId = 1,
                             CatalogueItemId = new CatalogueItemId(99998, "001"),
                             ProvisioningType = ProvisioningType.Patient,
+                            CataloguePriceCalculationType = CataloguePriceCalculationType.Volume,
                             CataloguePriceType = CataloguePriceType.Flat,
                             PublishedStatus = PublicationStatus.Published,
-                            IsLocked = true,
                             PricingUnit = new PricingUnit
                             {
                                 Id = 1,
-                                TierName = "Test Tier",
-                                Description = "per test patient",
+                                RangeDescription = "Patients",
+                                Description = "per flat test patient",
                             },
                             TimeUnit = TimeUnit.PerYear,
                             CurrencyCode = "GBP",
-                            Price = 999.9999M,
                             LastUpdated = DateTime.UtcNow,
+                            CataloguePriceTiers = new List<CataloguePriceTier>
+                            {
+                                new()
+                                {
+                                    Id = 1,
+                                    CataloguePriceId = 1,
+                                    LowerRange = 1,
+                                    UpperRange = null,
+                                    Price = 999.9999M,
+                                    LastUpdated = DateTime.UtcNow,
+                                },
+                            },
                         },
                         new()
                         {
@@ -877,18 +916,30 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
                             CatalogueItemId = new CatalogueItemId(99998, "001"),
                             ProvisioningType = ProvisioningType.OnDemand,
                             CataloguePriceType = CataloguePriceType.Flat,
+                            CataloguePriceCalculationType = CataloguePriceCalculationType.Volume,
                             PublishedStatus = PublicationStatus.Published,
-                            IsLocked = true,
+                            CataloguePriceQuantityCalculationType = CataloguePriceQuantityCalculationType.PerServiceRecipient,
                             PricingUnit = new PricingUnit
                             {
                                 Id = 2,
-                                TierName = "Test Tier",
-                                Description = "per test on demand",
+                                RangeDescription = "Patients",
+                                Description = "per flat test on demand",
                             },
                             TimeUnit = TimeUnit.PerYear,
                             CurrencyCode = "GBP",
-                            Price = 999.9999M,
                             LastUpdated = DateTime.UtcNow,
+                            CataloguePriceTiers = new List<CataloguePriceTier>
+                            {
+                                new()
+                                {
+                                    Id = 2,
+                                    CataloguePriceId = 2,
+                                    LowerRange = 1,
+                                    UpperRange = null,
+                                    Price = 999.9999M,
+                                    LastUpdated = DateTime.UtcNow,
+                                },
+                            },
                         },
                         new()
                         {
@@ -896,18 +947,200 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
                             CatalogueItemId = new CatalogueItemId(99998, "001"),
                             ProvisioningType = ProvisioningType.Declarative,
                             CataloguePriceType = CataloguePriceType.Flat,
+                            CataloguePriceCalculationType = CataloguePriceCalculationType.Volume,
                             PublishedStatus = PublicationStatus.Published,
-                            IsLocked = true,
+                            CataloguePriceQuantityCalculationType = CataloguePriceQuantityCalculationType.PerServiceRecipient,
                             PricingUnit = new PricingUnit
                             {
                                 Id = 3,
-                                TierName = "Test Tier",
-                                Description = "per test declarative",
+                                RangeDescription = "Patients",
+                                Description = "per flat test declarative",
                             },
                             TimeUnit = TimeUnit.PerYear,
                             CurrencyCode = "GBP",
-                            Price = 999.9999M,
                             LastUpdated = DateTime.UtcNow,
+                            CataloguePriceTiers = new List<CataloguePriceTier>
+                            {
+                                new()
+                                {
+                                    Id = 999,
+                                    CataloguePriceId = 3,
+                                    LowerRange = 1,
+                                    UpperRange = null,
+                                    Price = 999.9999M,
+                                    LastUpdated = DateTime.UtcNow,
+                                },
+                            },
+                        },
+                        new()
+                        {
+                            CataloguePriceId = 4,
+                            CatalogueItemId = new CatalogueItemId(99998, "001"),
+                            ProvisioningType = ProvisioningType.Patient,
+                            CataloguePriceType = CataloguePriceType.Tiered,
+                            CataloguePriceCalculationType = CataloguePriceCalculationType.Cumulative,
+                            PublishedStatus = PublicationStatus.Published,
+                            PricingUnit = new PricingUnit
+                            {
+                                Id = 4,
+                                RangeDescription = "Patients",
+                                Description = "per tiered cumulative test patient",
+                            },
+                            TimeUnit = TimeUnit.PerYear,
+                            CurrencyCode = "GBP",
+                            LastUpdated = DateTime.UtcNow,
+                            CataloguePriceTiers = new List<CataloguePriceTier>
+                            {
+                                new()
+                                {
+                                    Id = 3,
+                                    CataloguePriceId = 4,
+                                    LowerRange = 1,
+                                    UpperRange = 89999,
+                                    Price = 999.9999M,
+                                    LastUpdated = DateTime.UtcNow,
+                                },
+                                new()
+                                {
+                                    Id = 4,
+                                    CataloguePriceId = 4,
+                                    LowerRange = 90000,
+                                    UpperRange = 899999,
+                                    LastUpdated = DateTime.UtcNow,
+                                },
+                                new()
+                                {
+                                    Id = 5,
+                                    CataloguePriceId = 4,
+                                    LowerRange = 900000,
+                                    UpperRange = null,
+                                    LastUpdated = DateTime.UtcNow,
+                                },
+                            },
+                        },
+                        new()
+                        {
+                            CataloguePriceId = 5,
+                            CatalogueItemId = new CatalogueItemId(99998, "001"),
+                            ProvisioningType = ProvisioningType.Patient,
+                            CataloguePriceType = CataloguePriceType.Tiered,
+                            CataloguePriceCalculationType = CataloguePriceCalculationType.SingleFixed,
+                            PublishedStatus = PublicationStatus.Published,
+                            PricingUnit = new PricingUnit
+                            {
+                                Id = 5,
+                                RangeDescription = "Patients",
+                                Description = "per tiered single fixed test patient",
+                            },
+                            TimeUnit = TimeUnit.PerYear,
+                            CurrencyCode = "GBP",
+                            LastUpdated = DateTime.UtcNow,
+                            CataloguePriceTiers = new List<CataloguePriceTier>
+                            {
+                                new()
+                                {
+                                    Id = 6,
+                                    CataloguePriceId = 5,
+                                    LowerRange = 1,
+                                    UpperRange = 89999,
+                                    Price = 999.9999M,
+                                    LastUpdated = DateTime.UtcNow,
+                                },
+                                new()
+                                {
+                                    Id = 7,
+                                    CataloguePriceId = 5,
+                                    LowerRange = 90000,
+                                    UpperRange = 899999,
+                                    LastUpdated = DateTime.UtcNow,
+                                },
+                                new()
+                                {
+                                    Id = 8,
+                                    CataloguePriceId = 5,
+                                    LowerRange = 900000,
+                                    UpperRange = null,
+                                    LastUpdated = DateTime.UtcNow,
+                                },
+                            },
+                        },
+                        new()
+                        {
+                            CataloguePriceId = 27,
+                            CatalogueItemId = new CatalogueItemId(99998, "001"),
+                            ProvisioningType = ProvisioningType.Patient,
+                            CataloguePriceType = CataloguePriceType.Tiered,
+                            CataloguePriceCalculationType = CataloguePriceCalculationType.Cumulative,
+                            PublishedStatus = PublicationStatus.Draft,
+                            PricingUnit = new PricingUnit
+                            {
+                                Id = 23,
+                                RangeDescription = "Patients",
+                                Description = "per tiered single fixed test patient Maximum Tiers Unpublished",
+                            },
+                            TimeUnit = TimeUnit.PerYear,
+                            CurrencyCode = "GBP",
+                            LastUpdated = DateTime.UtcNow,
+                            CataloguePriceTiers = new List<CataloguePriceTier>
+                            {
+                                new()
+                                {
+                                    Id = 38,
+                                    CataloguePriceId = 27,
+                                    LowerRange = 1,
+                                    UpperRange = 9999,
+                                    Price = 999.9999M,
+                                    LastUpdated = DateTime.UtcNow,
+                                },
+                                new()
+                                {
+                                    Id = 39,
+                                    CataloguePriceId = 27,
+                                    LowerRange = 10000,
+                                    UpperRange = 49000,
+                                    LastUpdated = DateTime.UtcNow,
+                                },
+                                new()
+                                {
+                                    Id = 40,
+                                    CataloguePriceId = 27,
+                                    LowerRange = 50000,
+                                    UpperRange = 99999,
+                                    LastUpdated = DateTime.UtcNow,
+                                },
+                                new()
+                                {
+                                    Id = 41,
+                                    CataloguePriceId = 27,
+                                    LowerRange = 100000,
+                                    UpperRange = 149999,
+                                    LastUpdated = DateTime.UtcNow,
+                                },
+                                new()
+                                {
+                                    Id = 42,
+                                    CataloguePriceId = 27,
+                                    LowerRange = 150000,
+                                    UpperRange = null,
+                                    LastUpdated = DateTime.UtcNow,
+                                },
+                                new()
+                                {
+                                    Id = 43,
+                                    CataloguePriceId = 27,
+                                    LowerRange = 150000,
+                                    UpperRange = null,
+                                    LastUpdated = DateTime.UtcNow,
+                                },
+                                new()
+                                {
+                                    Id = 44,
+                                    CataloguePriceId = 27,
+                                    LowerRange = 150000,
+                                    UpperRange = null,
+                                    LastUpdated = DateTime.UtcNow,
+                                },
+                            },
                         },
                     },
                 },
@@ -1086,22 +1319,34 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
                     {
                         new()
                         {
-                            CataloguePriceId = 4,
+                            CataloguePriceId = 6,
                             CatalogueItemId = new CatalogueItemId(99998, "002"),
                             ProvisioningType = ProvisioningType.Declarative,
                             CataloguePriceType = CataloguePriceType.Flat,
                             PublishedStatus = PublicationStatus.Published,
-                            IsLocked = true,
+                            CataloguePriceCalculationType = CataloguePriceCalculationType.SingleFixed,
+                            CataloguePriceQuantityCalculationType = CataloguePriceQuantityCalculationType.PerSolutionOrService,
                             PricingUnit = new PricingUnit
                             {
-                                Id = 4,
-                                TierName = "Test Tier",
+                                Id = 6,
+                                RangeDescription = "Test Tier",
                                 Description = "Per Test",
                             },
                             TimeUnit = TimeUnit.PerYear,
                             CurrencyCode = "GBP",
-                            Price = 999.9999M,
                             LastUpdated = DateTime.UtcNow,
+                            CataloguePriceTiers = new List<CataloguePriceTier>
+                            {
+                                new()
+                                {
+                                    Id = 9,
+                                    CataloguePriceId = 6,
+                                    LowerRange = 1,
+                                    UpperRange = null,
+                                    Price = 999.9999M,
+                                    LastUpdated = DateTime.UtcNow,
+                                },
+                            },
                         },
                     },
                 },

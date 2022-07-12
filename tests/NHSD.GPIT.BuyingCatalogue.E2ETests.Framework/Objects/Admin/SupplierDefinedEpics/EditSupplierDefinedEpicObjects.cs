@@ -9,7 +9,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.Objects.Admin.SupplierDef
 
         public static By RelatedItemsInset => ByExtensions.DataTestId("epic-related-items-inset");
 
-        public static new By StatusInputError => By.Id("edit-supplier-defined-epic-error");
+        public new static By StatusInputError => By.Id("edit-supplier-defined-epic-error");
 
         public static By DeleteLink => By.LinkText("Delete Supplier defined Epic");
     }

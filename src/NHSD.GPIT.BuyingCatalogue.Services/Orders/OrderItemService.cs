@@ -1,124 +1,189 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Linq.Expressions;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
-using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Models;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Orders;
-using ServiceRecipient = NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models.ServiceRecipient;
 
 namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
 {
-    public sealed class OrderItemService : IOrderItemService
+    public class OrderItemService : IOrderItemService
     {
         private readonly BuyingCatalogueDbContext dbContext;
-        private readonly IServiceRecipientService serviceRecipientService;
-        private readonly IOrderService orderService;
 
-        public OrderItemService(
-            BuyingCatalogueDbContext dbContext,
-            IServiceRecipientService serviceRecipientService,
-            IOrderService orderService)
+        private readonly IOrderService orderService;
+        private readonly IOrderItemFundingService orderItemFundingService;
+
+        public OrderItemService(BuyingCatalogueDbContext dbContext, IOrderService orderService, IOrderItemFundingService orderItemFundingService)
         {
             this.dbContext = dbContext ?? throw new ArgumentNullException(nameof(dbContext));
-            this.serviceRecipientService = serviceRecipientService ?? throw new ArgumentNullException(nameof(serviceRecipientService));
             this.orderService = orderService ?? throw new ArgumentNullException(nameof(orderService));
+            this.orderItemFundingService = orderItemFundingService ?? throw new ArgumentNullException(nameof(orderItemFundingService));
         }
 
-        public async Task Create(CallOffId callOffId, string internalOrgId, CreateOrderItemModel model)
+        public async Task AddOrderItems(string internalOrgId, CallOffId callOffId, IEnumerable<CatalogueItemId> itemIds)
         {
-            if (model is null)
-                throw new ArgumentNullException(nameof(model));
-
-            var order = await orderService.GetOrderWithDefaultDeliveryDatesAndOrderItems(callOffId, internalOrgId);
-
-            var catalogueItemId = model.CatalogueItemId;
-            var catalogueItem = await dbContext.FindAsync<CatalogueItem>(catalogueItemId);
-            var serviceRecipients = await AddOrUpdateServiceRecipients(model);
-
-            var defaultDeliveryDate = order.DefaultDeliveryDates.SingleOrDefault(d => d.CatalogueItemId == catalogueItemId);
-            var estimationPeriod = catalogueItem.CatalogueItemType.InferEstimationPeriod(model.CataloguePrice.ProvisioningType, model.EstimationPeriod);
-
-            var item = order.AddOrUpdateOrderItem(new OrderItem
+            if (itemIds == null)
             {
-                CatalogueItem = catalogueItem,
-                DefaultDeliveryDate = defaultDeliveryDate?.DeliveryDate,
-                EstimationPeriod = estimationPeriod,
-                OrderId = order.Id,
-                PriceId = model.CataloguePrice.CataloguePriceId,
-                Price = model.AgreedPrice,
-                Created = DateTime.UtcNow,
-            });
+                throw new ArgumentNullException(nameof(itemIds));
+            }
 
-            item.SetRecipients(model.ServiceRecipients.Select(r => new OrderItemRecipient
+            var order = await orderService.GetOrderWithOrderItems(callOffId, internalOrgId);
+
+            if (order == null)
             {
-                DeliveryDate = r.DeliveryDate,
-                Quantity = r.Quantity.GetValueOrDefault(),
-                Recipient = serviceRecipients[r.OdsCode],
-            }));
+                return;
+            }
 
-            if (defaultDeliveryDate is not null)
-                dbContext.DefaultDeliveryDates.Remove(defaultDeliveryDate);
+            foreach (var id in itemIds)
+            {
+                if (order.OrderItem(id) != null)
+                {
+                    continue;
+                }
+
+                var catalogueItem = dbContext.CatalogueItems.Single(x => x.Id == id);
+
+                dbContext.OrderItems.Add(new OrderItem
+                {
+                    OrderId = order.Id,
+                    CatalogueItemId = id,
+                    CatalogueItem = catalogueItem,
+                    Created = DateTime.UtcNow,
+                });
+            }
 
             await dbContext.SaveChangesAsync();
         }
 
-        public async Task<List<OrderItem>> GetOrderItems(CallOffId callOffId, string internalOrgId, CatalogueItemType? catalogueItemType)
+        public async Task DeleteOrderItems(string internalOrgId, CallOffId callOffId, IEnumerable<CatalogueItemId> itemIds)
         {
-            Expression<Func<Order, IEnumerable<OrderItem>>> orderItems = catalogueItemType is null
-                ? o => o.OrderItems
-                : o => o.OrderItems.Where(i => i.CatalogueItem.CatalogueItemType == catalogueItemType);
+            if (itemIds == null)
+            {
+                throw new ArgumentNullException(nameof(itemIds));
+            }
 
-            if (!await dbContext.Orders.AnyAsync(o => o.Id == callOffId.Id))
-                return null;
+            var order = await orderService.GetOrderWithOrderItems(callOffId, internalOrgId);
 
-            return await dbContext.Orders
-                .Where(o => o.Id == callOffId.Id && o.OrderingParty.InternalIdentifier == internalOrgId)
-                .Include(orderItems).ThenInclude(i => i.CatalogueItem)
-                .Include(orderItems).ThenInclude(i => i.OrderItemRecipients).ThenInclude(r => r.Recipient)
-                .Include(orderItems).ThenInclude(i => i.CataloguePrice).ThenInclude(p => p.PricingUnit)
-                .SelectMany(orderItems)
-                .AsNoTracking()
-                .ToListAsync();
-        }
+            if (order == null)
+            {
+                return;
+            }
 
-        public Task<OrderItem> GetOrderItem(CallOffId callOffId, string internalOrgId, CatalogueItemId catalogueItemId)
-        {
-            Expression<Func<Order, IEnumerable<OrderItem>>> orderItems = o =>
-                o.OrderItems.Where(i => i.CatalogueItem.Id == catalogueItemId);
+            foreach (var id in itemIds)
+            {
+                var orderItem = order.OrderItem(id);
 
-            return dbContext.Orders
-                .Where(o => o.Id == callOffId.Id && o.OrderingParty.InternalIdentifier == internalOrgId)
-                .Include(orderItems).ThenInclude(i => i.CatalogueItem)
-                .Include(orderItems).ThenInclude(i => i.OrderItemRecipients).ThenInclude(r => r.Recipient)
-                .Include(orderItems).ThenInclude(i => i.CataloguePrice).ThenInclude(p => p.PricingUnit)
-                .SelectMany(orderItems)
-                .SingleOrDefaultAsync();
-        }
+                if (orderItem == null)
+                {
+                    continue;
+                }
 
-        public async Task DeleteOrderItem(CallOffId callOffId,  string internalOrgId, CatalogueItemId catalogueItemId)
-        {
-            var order = await dbContext.Orders
-                .Where(o => o.Id == callOffId.Id && o.OrderingParty.InternalIdentifier == internalOrgId)
-                .Include(o => o.OrderItems)
-                .Include(o => o.OrderItems).ThenInclude(i => i.CatalogueItem).ThenInclude(a => a.AdditionalService)
-                .SingleAsync();
-
-            order.DeleteOrderItemAndUpdateProgress(catalogueItemId);
+                dbContext.OrderItems.Remove(orderItem);
+            }
 
             await dbContext.SaveChangesAsync();
         }
 
-        private Task<IReadOnlyDictionary<string, ServiceRecipient>> AddOrUpdateServiceRecipients(CreateOrderItemModel model)
-        {
-            var serviceRecipients = model.ServiceRecipients.Select(s => new ServiceRecipient { OdsCode = s.OdsCode, Name = s.Name });
+        public Task<OrderItem> GetOrderItem(CallOffId callOffId, string internalOrgId, CatalogueItemId catalogueItemId) =>
+            dbContext.OrderItems.AsNoTracking()
+                .Include(oi => oi.OrderItemFunding)
+                .Include(oi => oi.CatalogueItem)
+                .Include(oi => oi.OrderItemPrice).ThenInclude(ip => ip.OrderItemPriceTiers)
+                .Include(oi => oi.OrderItemRecipients).ThenInclude(ir => ir.Recipient)
+                .SingleOrDefaultAsync(oi =>
+                    oi.OrderId == callOffId.Id
+                    && oi.CatalogueItemId == catalogueItemId
+                    && oi.Order.OrderingParty.InternalIdentifier == internalOrgId);
 
-            return serviceRecipientService.AddOrUpdateServiceRecipients(serviceRecipients);
+        public async Task SetOrderItemFunding(CallOffId callOffId, string internalOrgId, CatalogueItemId catalogueItemId)
+        {
+            var item = await GetOrderItemTracked(callOffId, internalOrgId, catalogueItemId);
+            var fundingType = await orderItemFundingService.GetFundingType(item);
+
+            switch (fundingType.IsForcedFunding())
+            {
+                case true when item.FundingType != fundingType:
+                    await SaveOrUpdateOrderItemFunding(item, callOffId, catalogueItemId, fundingType);
+                    break;
+
+                case false when item.IsForcedFunding:
+                    item.OrderItemFunding = null;
+                    await dbContext.SaveChangesAsync();
+                    break;
+            }
+        }
+
+        public async Task UpdateOrderItemFunding(CallOffId callOffId, string internalOrgId, CatalogueItemId catalogueItemId, OrderItemFundingType selectedFundingType)
+        {
+            var item = await GetOrderItemTracked(callOffId, internalOrgId, catalogueItemId);
+
+            await SaveOrUpdateOrderItemFunding(item, callOffId, catalogueItemId, selectedFundingType);
+        }
+
+        public async Task SetOrderItemEstimationPeriod(CallOffId callOffId, string internalOrgId, CatalogueItemId catalogueItemId, CataloguePrice price)
+        {
+            if (price is null)
+                throw new ArgumentNullException(nameof(price));
+
+            var orderItem = await dbContext.OrderItems
+                .SingleOrDefaultAsync(oi =>
+                    oi.OrderId == callOffId.Id
+                    && oi.CatalogueItemId == catalogueItemId
+                    && oi.Order.OrderingParty.InternalIdentifier == internalOrgId);
+
+            orderItem.EstimationPeriod = price.ProvisioningType switch
+            {
+                ProvisioningType.Patient => TimeUnit.PerMonth,
+                ProvisioningType.OnDemand => price.BillingPeriod,
+                ProvisioningType.Declarative or ProvisioningType.PerServiceRecipient or _ => TimeUnit.PerYear,
+            };
+
+            await dbContext.SaveChangesAsync();
+        }
+
+        private Task<OrderItem> GetOrderItemTracked(CallOffId callOffId, string internalOrgId, CatalogueItemId catalogueItemId) =>
+            dbContext.OrderItems
+                .Include(oi => oi.OrderItemFunding)
+                .Include(oi => oi.CatalogueItem)
+                .Include(oi => oi.OrderItemPrice).ThenInclude(ip => ip.OrderItemPriceTiers)
+                .Include(oi => oi.OrderItemRecipients).ThenInclude(ir => ir.Recipient)
+                .SingleOrDefaultAsync(oi =>
+                    oi.OrderId == callOffId.Id
+                    && oi.CatalogueItemId == catalogueItemId
+                    && oi.Order.OrderingParty.InternalIdentifier == internalOrgId);
+
+        private async Task SaveOrUpdateOrderItemFunding(
+            OrderItem item,
+            CallOffId callOffId,
+            CatalogueItemId catalogueItemId,
+            OrderItemFundingType selectedFundingType)
+        {
+            if (item is null)
+                throw new ArgumentNullException(nameof(item));
+
+            if (item.FundingType == selectedFundingType)
+                return;
+
+            if (item.OrderItemFunding is null)
+            {
+                item.OrderItemFunding = new OrderItemFunding
+                {
+                    OrderId = callOffId.Id,
+                    CatalogueItemId = catalogueItemId,
+                    OrderItemFundingType = selectedFundingType,
+                };
+            }
+            else
+            {
+                item.OrderItemFunding.OrderItemFundingType = selectedFundingType;
+            }
+
+            await dbContext.SaveChangesAsync();
         }
     }
 }

@@ -11,7 +11,7 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models
     {
         public Order()
         {
-            DefaultDeliveryDates = new HashSet<DefaultDeliveryDate>();
+            OrderItems = new HashSet<OrderItem>();
         }
 
         public int Id { get; set; }
@@ -35,9 +35,11 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models
 
         public int? MaximumTerm { get; set; }
 
-        public bool? FundingSourceOnlyGms { get; set; }
+        public bool AssociatedServicesOnly { get; set; }
 
-        public bool? ConfirmedFundingSource { get; set; }
+        public OrderTriageValue? OrderTriageValue { get; set; }
+
+        public CatalogueItemId? SolutionId { get; set; }
 
         public DateTime Created { get; set; } = DateTime.UtcNow;
 
@@ -61,8 +63,8 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models
 
         public Contact SupplierContact { get; set; }
 
-        public ICollection<DefaultDeliveryDate> DefaultDeliveryDates { get; set; }
+        public ICollection<OrderItem> OrderItems { get; set; }
 
-        public IReadOnlyList<OrderItem> OrderItems => orderItems.AsReadOnly();
+        public CatalogueItem Solution { get; set; }
     }
 }

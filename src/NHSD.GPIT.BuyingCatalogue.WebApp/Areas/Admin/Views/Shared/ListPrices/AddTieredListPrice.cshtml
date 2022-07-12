@@ -1,0 +1,125 @@
+﻿@using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.ListPriceModels
+@model AddTieredListPriceModel
+
+@{
+    ViewBag.Title = "Add a tiered list price";
+}
+
+<partial name="Partials/_BackLink" model="Model" />
+<div class="nhsuk-grid-row">
+    <div class="nhsuk-grid-column-two-thirds">
+        <nhs-validation-summary RadioId="@nameof(Model.SelectedProvisioningType),@nameof(Model.SelectedCalculationType),@nameof(Model.OnDemandQuantityCalculationType),@nameof(Model.DeclarativeQuantityCalculationType)" />
+        <nhs-page-title
+            title="@ViewBag.Title"
+            caption="@Model.CatalogueItemName"
+            advice="Provide the following information about the pricing model for your @(Model.CatalogueItemType.Name()).">
+        </nhs-page-title>
+
+        <form method="post">
+            <input type="hidden" asp-for="BackLink" />
+            <input type="hidden" asp-for="CataloguePriceId" />
+            <input type="hidden" asp-for="CatalogueItemId" />
+            <input type="hidden" asp-for="CatalogueItemName" />
+            <input type="hidden" asp-for="CatalogueItemType" />
+            <input type="hidden" asp-for="ServiceId" />
+
+            <nhs-fieldset-form-label asp-for="SelectedProvisioningType" label-text="Provisioning type" size="Medium">
+                <nhs-radio-button-container>
+                    @{
+                        var provisioningTypes = new SelectList(Model.AvailableProvisioningTypes, "Value", "Text").ToList();
+                        var timeUnitsSelectList = new SelectList(Model.AvailableBillingPeriods, "Value", "Text");
+                    }
+                    <nhs-radio-button asp-for="SelectedProvisioningType"
+                                      value="provisioningTypes[0]"
+                                      value-name="Value"
+                                      display-name="Text"
+                                      index="0" />
+
+                    <nhs-radio-button asp-for="SelectedProvisioningType"
+                                      value="provisioningTypes[1]"
+                                      value-name="Value"
+                                      display-name="Text"
+                                      index="1">
+                        <nhs-select asp-for="PerServiceRecipientBillingPeriod"
+                                    asp-items="timeUnitsSelectList"
+                                    label-text="Billing period (optional)"
+                                    label-hint="Select if it’s a recurring payment either per month or per year."
+                                    use-default-value="false" />
+                    </nhs-radio-button>
+
+                    <nhs-radio-button asp-for="SelectedProvisioningType"
+                                      value="provisioningTypes[2]"
+                                      value-name="Value"
+                                      display-name="Text"
+                                      index="2">
+
+                        <nhs-fieldset-form-label asp-for="DeclarativeQuantityCalculationType" label-text="How are quantities for this price calculated?" size="Small">
+                            <nhs-radio-buttons asp-for="DeclarativeQuantityCalculationType"
+                                               values="@Model.AvailableQuantityCalculationTypes.Cast<object>()"
+                                               display-name="Name"
+                                               value-name="Value"/>
+                        </nhs-fieldset-form-label>
+
+                        <nhs-select asp-for="DeclarativeBillingPeriod"
+                                    asp-items="timeUnitsSelectList"
+                                    label-text="Billing period (optional)"
+                                    label-hint="Select if it’s a recurring payment either per month or per year."
+                                    use-default-value="false" />
+                    </nhs-radio-button>
+
+                    <nhs-radio-button asp-for="SelectedProvisioningType"
+                                      value="provisioningTypes[3]"
+                                      value-name="Value"
+                                      display-name="Text"
+                                      index="3">
+
+                        <nhs-fieldset-form-label asp-for="OnDemandQuantityCalculationType"  label-text="How are quantities for this price calculated?" size="Small">
+                            <nhs-radio-buttons asp-for="OnDemandQuantityCalculationType"
+                                               values="@Model.AvailableQuantityCalculationTypes.Cast<object>()"
+                                               display-name="Name"
+                                               value-name="Value"/>
+                        </nhs-fieldset-form-label>
+
+                        <nhs-select asp-for="OnDemandBillingPeriod"
+                                    asp-items="timeUnitsSelectList"
+                                    label-text="Billing period (optional)"
+                                    label-hint="Select if it’s a recurring payment either per month or per year."
+                                    use-default-value="false"/>
+                    </nhs-radio-button>
+                </nhs-radio-button-container>
+            </nhs-fieldset-form-label>
+
+            <nhs-fieldset-form-label asp-for="SelectedCalculationType" label-text="Calculation type" size="Medium">
+                    <nhs-radio-buttons asp-for="SelectedCalculationType"
+                                        values="@Model.AvailableCalculationTypes.Cast<object>()"
+                                        display-name="Name"
+                                        value-name="Value"
+                                        hint-name="Advice" />
+            </nhs-fieldset-form-label>
+
+            <nhs-input
+                label-text="Unit"
+                label-hint="For example, per consultation, per practice, per licence."
+                asp-for="UnitDescription" />
+
+			<nhs-input
+                label-text="Range definition"
+                label-hint="For example, patients, users, licences."
+                asp-for="RangeDefinition" />
+
+            <nhs-textarea
+                label-text="Unit definition (optional)"
+                label-hint="For example, if the unit is per day, between what hours?"
+                asp-for="UnitDefinition"
+                character-count="false" />
+
+            <nhs-submit-button />
+        </form>
+
+        @if (Model.CataloguePriceId is not null)
+        {
+            <vc:nhs-delete-button url="@Model.DeleteListPriceUrl"
+                text="Delete list price"></vc:nhs-delete-button>
+        }
+    </div>
+</div>

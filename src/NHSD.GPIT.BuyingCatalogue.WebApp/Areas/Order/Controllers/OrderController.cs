@@ -1,12 +1,13 @@
 ﻿using System;
+using System.Linq;
 using System.Runtime.InteropServices;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.Framework.Settings;
-using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Enums;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Models.TaskList;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Orders;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Organisations;
@@ -56,7 +57,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
                     new { internalOrgId, callOffId });
             }
 
-            var sectionStatuses = taskListService.GetTaskListStatusModelForOrder(order);
+            var sectionStatuses = await taskListService.GetTaskListStatusModelForOrder(order.Id);
 
             var orderModel = new OrderModel(internalOrgId, order, sectionStatuses)
             {
@@ -75,32 +76,45 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
         }
 
         [HttpGet("~/order/organisation/{internalOrgId}/order/ready-to-start")]
-        public async Task<IActionResult> ReadyToStart(string internalOrgId, TriageOption? option = null, FundingSource? fundingSource = null)
+        public async Task<IActionResult> ReadyToStart(string internalOrgId, OrderTriageValue? option = null, CatalogueItemType? orderType = null)
         {
+            string GetBacklink(string internalOrgId, OrderTriageValue? option = null, CatalogueItemType? orderType = null)
+            {
+                if (orderType == CatalogueItemType.AssociatedService)
+                {
+                    if (User.GetSecondaryOrganisationInternalIdentifiers().Any())
+                        return Url.Action(nameof(OrderTriageController.SelectOrganisation), typeof(OrderTriageController).ControllerName(), new { internalOrgId, orderType });
+
+                    return Url.Action(nameof(OrderTriageController.OrderItemType), typeof(OrderTriageController).ControllerName(), new { internalOrgId, orderType });
+                }
+
+                return Url.Action(
+                        nameof(OrderTriageController.TriageSelection),
+                        typeof(OrderTriageController).ControllerName(),
+                        new { internalOrgId, option, selected = true, orderType });
+            }
+
             var organisation = await organisationsService.GetOrganisationByInternalIdentifier(internalOrgId);
 
             var model = new ReadyToStartModel(organisation)
             {
                 Option = option,
-                BackLink = Url.Action(
-                    nameof(OrderTriageController.TriageFunding),
-                    typeof(OrderTriageController).ControllerName(),
-                    new { internalOrgId, option, selected = true, fundingSource }),
+                BackLink = GetBacklink(internalOrgId, option, orderType),
             };
 
             return View(model);
         }
 
         [HttpPost("~/order/organisation/{internalOrgId}/order/ready-to-start")]
-        public IActionResult ReadyToStart(string internalOrgId, ReadyToStartModel model, TriageOption? option = null, FundingSource? fundingSource = null)
+        public IActionResult ReadyToStart(string internalOrgId, ReadyToStartModel model, OrderTriageValue? option = null, CatalogueItemType? orderType = null)
         {
             return RedirectToAction(
                 nameof(NewOrder),
-                new { internalOrgId, option, fundingSource });
+                new { internalOrgId, option, orderType });
         }
 
         [HttpGet("~/order/organisation/{internalOrgId}/order/neworder")]
-        public async Task<IActionResult> NewOrder(string internalOrgId, TriageOption? option = null, FundingSource? fundingSource = null)
+        public async Task<IActionResult> NewOrder(string internalOrgId, OrderTriageValue? option = null, CatalogueItemType? orderType = null)
         {
             var organisation = await organisationsService.GetOrganisationByInternalIdentifier(internalOrgId);
 
@@ -109,11 +123,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
                 DescriptionUrl = Url.Action(
                     nameof(OrderDescriptionController.NewOrderDescription),
                     typeof(OrderDescriptionController).ControllerName(),
-                    new { internalOrgId, option, fundingSource }),
-                BackLink = Url.Action(
-                    nameof(OrderController.ReadyToStart),
-                    typeof(OrderController).ControllerName(),
-                    new { internalOrgId, option, fundingSource }),
+                    new { internalOrgId, option, orderType }),
+                BackLink = Url.Action(nameof(ReadyToStart), new { internalOrgId, option, orderType }),
             };
 
             return View("Order", orderModel);
@@ -135,20 +146,19 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
                         nameof(Order),
                         typeof(OrderController).ControllerName(),
                         new { internalOrgId, callOffId }),
-
                 Title = order.OrderStatus switch
                 {
-                    OrderStatus.Completed => $"Order confirmed for {callOffId}",
+                    OrderStatus.Completed => $"Order confirmed",
                     _ => order.CanComplete()
-                        ? $"Review order summary for {callOffId}"
-                        : $"Order summary for {callOffId}",
+                        ? $"Review and complete your order summary"
+                        : $"Order summary",
                 },
 
                 AdviceText = order.OrderStatus switch
                 {
-                    OrderStatus.Completed => "This order has been confirmed and can no longer be changed. You can use the button to get a copy of the order summary.",
+                    OrderStatus.Completed => "This order has been confirmed and can no longer be changed.",
                     _ => order.CanComplete()
-                        ? "Review your order summary and confirm the content is correct. Once confirmed, you'll be unable to make changes."
+                        ? "Review your order summary before completing it. Once the order summary is completed, you'll be unable to make changes."
                         : "This is what's been added to your order so far. You must complete all mandatory steps before you can confirm your order.",
                 },
             };

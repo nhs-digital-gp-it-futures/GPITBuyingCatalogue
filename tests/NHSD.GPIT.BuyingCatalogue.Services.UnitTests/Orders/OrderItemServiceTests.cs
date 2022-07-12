@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using AutoFixture;
@@ -6,9 +7,12 @@ using AutoFixture.AutoMoq;
 using AutoFixture.Idioms;
 using AutoFixture.Xunit2;
 using FluentAssertions;
-using Microsoft.EntityFrameworkCore;
+using LinqKit;
+using Moq;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework;
+using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
+using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Orders;
 using NHSD.GPIT.BuyingCatalogue.Services.Orders;
 using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.AutoFixtureCustomisations;
 using Xunit;
@@ -29,63 +33,416 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Orders
 
         [Theory]
         [InMemoryDbAutoData]
-        public static async Task DeleteOrderItem_RemovesOrderItem(
-            [Frozen] BuyingCatalogueDbContext context,
-            Order order,
-            OrderItem orderItem1,
-            OrderItem orderItem2,
-            OrderItem orderItem3,
-            bool fundingSource,
+        public static void AddOrderItems_ItemIdsAreNull_ThrowsException(
+            string internalOrgId,
+            CallOffId callOffId,
             OrderItemService service)
         {
-            order.FundingSourceOnlyGms = fundingSource;
-            order.AddOrUpdateOrderItem(orderItem1);
-            order.AddOrUpdateOrderItem(orderItem2);
-            order.AddOrUpdateOrderItem(orderItem3);
-
-            await context.Orders.AddAsync(order);
-            await context.SaveChangesAsync();
-
-            await service.DeleteOrderItem(order.CallOffId, order.OrderingParty.InternalIdentifier, orderItem2.CatalogueItemId);
-
-            var updatedOrder = await context.Orders.FirstOrDefaultAsync();
-
-            updatedOrder.Should().NotBeNull();
-            updatedOrder.OrderItems.Should().Contain(o => o.CatalogueItemId == orderItem1.CatalogueItemId);
-            updatedOrder.OrderItems.Should().NotContain(o => o.CatalogueItemId == orderItem2.CatalogueItemId);
-            updatedOrder.OrderItems.Should().Contain(o => o.CatalogueItemId == orderItem3.CatalogueItemId);
-            updatedOrder.FundingSourceOnlyGms.Should().Be(fundingSource);
+            FluentActions
+                .Awaiting(() => service.AddOrderItems(internalOrgId, callOffId, null))
+                .Should().ThrowAsync<ArgumentNullException>();
         }
 
         [Theory]
         [InMemoryDbAutoData]
-        public static async Task DeleteOrderItem_AllItemsRemoved_RemovesFundingSource(
-            [Frozen] BuyingCatalogueDbContext context,
+        public static async Task AddOrderItems_NoOrder_NoActionTaken(
+            string internalOrgId,
+            CallOffId callOffId,
+            List<CatalogueItemId> itemIds,
             Order order,
-            OrderItem orderItem,
-            bool fundingSource,
+            [Frozen] BuyingCatalogueDbContext context,
+            [Frozen] Mock<IOrderService> mockOrderService,
             OrderItemService service)
         {
-            order.FundingSourceOnlyGms = fundingSource;
-            order.AddOrUpdateOrderItem(orderItem);
-
-            await context.Orders.AddAsync(order);
+            itemIds.ForEach(x => context.CatalogueItems.Add(new CatalogueItem { Id = x, Name = $"{x}" }));
             await context.SaveChangesAsync();
 
-            await service.DeleteOrderItem(order.CallOffId, order.OrderingParty.InternalIdentifier, orderItem.CatalogueItemId);
+            mockOrderService
+                .Setup(x => x.GetOrderWithOrderItems(callOffId, internalOrgId))
+                .ReturnsAsync((Order)null);
 
-            var updatedOrder = await context.Orders.AsAsyncEnumerable().FirstOrDefaultAsync();
+            await service.AddOrderItems(internalOrgId, callOffId, itemIds);
 
-            updatedOrder.Should().NotBeNull();
-            updatedOrder.OrderItems.Should().NotContain(o => o.CatalogueItemId == orderItem.CatalogueItemId);
-            updatedOrder.FundingSourceOnlyGms.Should().BeNull();
+            mockOrderService.VerifyAll();
+
+            itemIds.ForEach(x =>
+            {
+                var actual = context.OrderItems.FirstOrDefault(o => o.OrderId == order.Id && o.CatalogueItemId == x);
+
+                actual.Should().BeNull();
+            });
         }
 
         [Theory]
         [InMemoryDbAutoData]
-        public static Task Create_NullModel_ThrowsException(OrderItemService service)
+        public static async Task AddOrderItems_AddsOrderItemsToDatabase(
+            string internalOrgId,
+            CallOffId callOffId,
+            List<CatalogueItemId> itemIds,
+            Order order,
+            [Frozen] BuyingCatalogueDbContext context,
+            [Frozen] Mock<IOrderService> mockOrderService,
+            OrderItemService service)
         {
-            return Assert.ThrowsAsync<ArgumentNullException>(() => service.Create(default, null, null));
+            itemIds.ForEach(x => context.CatalogueItems.Add(new CatalogueItem { Id = x, Name = $"{x}" }));
+            await context.SaveChangesAsync();
+
+            mockOrderService
+                .Setup(x => x.GetOrderWithOrderItems(callOffId, internalOrgId))
+                .ReturnsAsync(order);
+
+            await service.AddOrderItems(internalOrgId, callOffId, itemIds);
+
+            mockOrderService.VerifyAll();
+
+            itemIds.ForEach(x =>
+            {
+                var actual = context.OrderItems.FirstOrDefault(o => o.OrderId == order.Id && o.CatalogueItemId == x);
+
+                actual.Should().NotBeNull();
+            });
+        }
+
+        [Theory]
+        [InMemoryDbAutoData]
+        public static async Task AddOrderItems_WithExistingItems_AddsOrderItemsToDatabase(
+            string internalOrgId,
+            CallOffId callOffId,
+            List<CatalogueItemId> itemIds,
+            Order order,
+            [Frozen] BuyingCatalogueDbContext context,
+            [Frozen] Mock<IOrderService> mockOrderService,
+            OrderItemService service)
+        {
+            itemIds.ForEach(x => context.CatalogueItems.Add(new CatalogueItem { Id = x, Name = $"{x}" }));
+
+            await context.SaveChangesAsync();
+
+            order.OrderItems.First().CatalogueItem.Id = itemIds.First();
+
+            mockOrderService
+                .Setup(x => x.GetOrderWithOrderItems(callOffId, internalOrgId))
+                .ReturnsAsync(order);
+
+            await service.AddOrderItems(internalOrgId, callOffId, itemIds);
+
+            mockOrderService.VerifyAll();
+
+            itemIds.ForEach(x =>
+            {
+                var actual = context.OrderItems.FirstOrDefault(o => o.OrderId == order.Id && o.CatalogueItem.Id == x);
+
+                if (x == itemIds.First())
+                {
+                    actual.Should().BeNull();
+                }
+                else
+                {
+                    actual.Should().NotBeNull();
+                }
+            });
+        }
+
+        [Theory]
+        [InMemoryDbAutoData]
+        public static void DeleteOrderItems_ItemIdsAreNull_ThrowsException(
+            string internalOrgId,
+            CallOffId callOffId,
+            OrderItemService service)
+        {
+            FluentActions
+                .Awaiting(() => service.DeleteOrderItems(internalOrgId, callOffId, null))
+                .Should().ThrowAsync<ArgumentNullException>();
+        }
+
+        [Theory]
+        [InMemoryDbAutoData]
+        public static async Task DeleteOrderItems_NoOrder_NoActionTaken(
+            string internalOrgId,
+            CallOffId callOffId,
+            Order order,
+            [Frozen] BuyingCatalogueDbContext context,
+            [Frozen] Mock<IOrderService> mockOrderService,
+            OrderItemService service)
+        {
+            context.Orders.Add(order);
+
+            await context.SaveChangesAsync();
+
+            mockOrderService
+                .Setup(x => x.GetOrderWithOrderItems(callOffId, internalOrgId))
+                .ReturnsAsync((Order)null);
+
+            var itemIds = order.OrderItems.Select(x => x.CatalogueItemId).ToList();
+
+            await service.DeleteOrderItems(internalOrgId, callOffId, itemIds);
+
+            mockOrderService.VerifyAll();
+
+            itemIds.ForEach(x =>
+            {
+                var actual = context.OrderItems.FirstOrDefault(o => o.OrderId == order.Id && o.CatalogueItemId == x);
+
+                actual.Should().NotBeNull();
+            });
+        }
+
+        [Theory]
+        [InMemoryDbAutoData]
+        public static async Task DeleteOrderItems_WithOrder_ItemIdsMissing_NoActionTaken(
+            string internalOrgId,
+            CallOffId callOffId,
+            Order order,
+            List<CatalogueItemId> itemIds,
+            [Frozen] BuyingCatalogueDbContext context,
+            [Frozen] Mock<IOrderService> mockOrderService,
+            OrderItemService service)
+        {
+            context.Orders.Add(order);
+
+            await context.SaveChangesAsync();
+
+            mockOrderService
+                .Setup(x => x.GetOrderWithOrderItems(callOffId, internalOrgId))
+                .ReturnsAsync(order);
+
+            await service.DeleteOrderItems(internalOrgId, callOffId, itemIds);
+
+            mockOrderService.VerifyAll();
+
+            order.OrderItems.Select(x => x.CatalogueItemId).ForEach(x =>
+            {
+                var actual = context.OrderItems.FirstOrDefault(o => o.OrderId == order.Id && o.CatalogueItemId == x);
+
+                actual.Should().NotBeNull();
+            });
+        }
+
+        [Theory]
+        [InMemoryDbAutoData]
+        public static async Task SetOrderItemFunding_NoFunding_ShouldHaveForcedFunding_SetsForcedFunding(
+            Order order,
+            [Frozen] BuyingCatalogueDbContext context,
+            [Frozen] Mock<IOrderItemFundingService> mockOrderItemFundingService,
+            OrderItemService orderItemService)
+        {
+            const OrderItemFundingType expected = OrderItemFundingType.NoFundingRequired;
+
+            var item = order.OrderItems.First();
+
+            item.OrderItemFunding = null;
+            item.OrderItemPrice.OrderItemPriceTiers.ForEach(x => x.Price = 0);
+
+            context.Orders.Add(order);
+
+            await context.SaveChangesAsync();
+
+            mockOrderItemFundingService
+                .Setup(x => x.GetFundingType(item))
+                .ReturnsAsync(expected);
+
+            await orderItemService.SetOrderItemFunding(order.CallOffId, order.OrderingParty.InternalIdentifier, item.CatalogueItemId);
+
+            mockOrderItemFundingService.VerifyAll();
+
+            var actual = context.OrderItems.FirstOrDefault(o => o.OrderId == item.OrderId && o.CatalogueItemId == item.CatalogueItemId);
+
+            actual?.OrderItemFunding.Should().NotBeNull();
+            actual?.OrderItemFunding.OrderItemFundingType.Should().Be(expected);
+        }
+
+        [Theory]
+        [InMemoryDbAutoData]
+        public static async Task SetOrderItemFunding_HasNoFundingRequired_PriceAdded_ChangedToLocalFundingOonly(
+            Order order,
+            [Frozen] BuyingCatalogueDbContext context,
+            [Frozen] Mock<IOrderItemFundingService> mockOrderItemFundingService,
+            OrderItemService orderItemService)
+        {
+            const OrderItemFundingType expected = OrderItemFundingType.LocalFundingOnly;
+
+            var item = order.OrderItems.First();
+
+            item.OrderItemFunding.OrderItemFundingType = OrderItemFundingType.NoFundingRequired;
+
+            context.Orders.Add(order);
+
+            await context.SaveChangesAsync();
+
+            mockOrderItemFundingService
+                .Setup(x => x.GetFundingType(item))
+                .ReturnsAsync(expected);
+
+            await orderItemService.SetOrderItemFunding(order.CallOffId, order.OrderingParty.InternalIdentifier, item.CatalogueItemId);
+
+            mockOrderItemFundingService.VerifyAll();
+
+            var actual = context.OrderItems.FirstOrDefault(o => o.OrderId == item.OrderId && o.CatalogueItemId == item.CatalogueItemId);
+
+            actual?.OrderItemFunding.Should().NotBeNull();
+            actual?.OrderItemFunding.OrderItemFundingType.Should().Be(expected);
+        }
+
+        [Theory]
+        [InMemoryDbAutoData]
+        public static async Task SetOrderItemFunding_ForcedFunding_ShouldNotHaveForcedFunding_DeletesFunding(
+            Order order,
+            [Frozen] BuyingCatalogueDbContext context,
+            [Frozen] Mock<IOrderItemFundingService> mockOrderItemFundingService,
+            OrderItemService orderItemService)
+        {
+            var item = order.OrderItems.First();
+
+            item.OrderItemFunding.OrderItemFundingType = OrderItemFundingType.NoFundingRequired;
+
+            context.Orders.Add(order);
+
+            await context.SaveChangesAsync();
+
+            mockOrderItemFundingService
+                .Setup(x => x.GetFundingType(item))
+                .ReturnsAsync(OrderItemFundingType.None);
+
+            await orderItemService.SetOrderItemFunding(order.CallOffId, order.OrderingParty.InternalIdentifier, item.CatalogueItemId);
+
+            mockOrderItemFundingService.VerifyAll();
+
+            var actual = context.OrderItems.FirstOrDefault(o => o.OrderId == item.OrderId && o.CatalogueItemId == item.CatalogueItemId);
+
+            actual?.OrderItemFunding.Should().BeNull();
+        }
+
+        [Theory]
+        [InMemoryDbAutoData]
+        public static async Task SetOrderItemFunding_NoFunding_ShouldNotHaveForcedFunding_NoFundingSet(
+            Order order,
+            [Frozen] BuyingCatalogueDbContext context,
+            [Frozen] Mock<IOrderItemFundingService> mockOrderItemFundingService,
+            OrderItemService orderItemService)
+        {
+            var item = order.OrderItems.First();
+
+            item.OrderItemFunding = null;
+
+            context.Orders.Add(order);
+
+            await context.SaveChangesAsync();
+
+            mockOrderItemFundingService
+                .Setup(x => x.GetFundingType(item))
+                .ReturnsAsync(OrderItemFundingType.None);
+
+            await orderItemService.SetOrderItemFunding(order.CallOffId, order.OrderingParty.InternalIdentifier, item.CatalogueItemId);
+
+            mockOrderItemFundingService.VerifyAll();
+
+            var actual = context.OrderItems.FirstOrDefault(o => o.OrderId == item.OrderId && o.CatalogueItemId == item.CatalogueItemId);
+
+            actual?.OrderItemFunding.Should().BeNull();
+        }
+
+        [Theory]
+        [InMemoryDbAutoData]
+        public static async Task SetOrderItemEstimationPeriod_EstimationPeriodSetCorrectly_Patient(
+            Order order,
+            [Frozen] BuyingCatalogueDbContext context,
+            OrderItemService orderItemService)
+        {
+            var item = order.OrderItems.First();
+
+            var price = item.CatalogueItem.CataloguePrices.First();
+
+            price.ProvisioningType = ProvisioningType.Patient;
+
+            item.EstimationPeriod = null;
+
+            context.Orders.Add(order);
+
+            await context.SaveChangesAsync();
+
+            await orderItemService.SetOrderItemEstimationPeriod(order.CallOffId, order.OrderingParty.InternalIdentifier, item.CatalogueItemId, price);
+
+            var actual = context.OrderItems.FirstOrDefault(o => o.OrderId == item.OrderId && o.CatalogueItemId == item.CatalogueItemId);
+
+            actual.EstimationPeriod.Should().Be(TimeUnit.PerMonth);
+        }
+
+        [Theory]
+        [InMemoryDbAutoData]
+        public static async Task SetOrderItemEstimationPeriod_EstimationPeriodSetCorrectly_Declarative(
+            Order order,
+            [Frozen] BuyingCatalogueDbContext context,
+            OrderItemService orderItemService)
+        {
+            var item = order.OrderItems.First();
+
+            var price = item.CatalogueItem.CataloguePrices.First();
+
+            price.ProvisioningType = ProvisioningType.Declarative;
+
+            item.EstimationPeriod = null;
+
+            context.Orders.Add(order);
+
+            await context.SaveChangesAsync();
+
+            await orderItemService.SetOrderItemEstimationPeriod(order.CallOffId, order.OrderingParty.InternalIdentifier, item.CatalogueItemId, price);
+
+            var actual = context.OrderItems.FirstOrDefault(o => o.OrderId == item.OrderId && o.CatalogueItemId == item.CatalogueItemId);
+
+            actual.EstimationPeriod.Should().Be(TimeUnit.PerYear);
+        }
+
+        [Theory]
+        [InMemoryDbAutoData]
+        public static async Task SetOrderItemEstimationPeriod_EstimationPeriodSetCorrectly_PerServiceRecipient(
+            Order order,
+            [Frozen] BuyingCatalogueDbContext context,
+            OrderItemService orderItemService)
+        {
+            var item = order.OrderItems.First();
+
+            var price = item.CatalogueItem.CataloguePrices.First();
+
+            price.ProvisioningType = ProvisioningType.PerServiceRecipient;
+
+            item.EstimationPeriod = null;
+
+            context.Orders.Add(order);
+
+            await context.SaveChangesAsync();
+
+            await orderItemService.SetOrderItemEstimationPeriod(order.CallOffId, order.OrderingParty.InternalIdentifier, item.CatalogueItemId, price);
+
+            var actual = context.OrderItems.FirstOrDefault(o => o.OrderId == item.OrderId && o.CatalogueItemId == item.CatalogueItemId);
+
+            actual.EstimationPeriod.Should().Be(TimeUnit.PerYear);
+        }
+
+        [Theory]
+        [InMemoryDbAutoData]
+        public static async Task SetOrderItemEstimationPeriod_EstimationPeriodSetCorrectly_OnDemand(
+            Order order,
+            [Frozen] BuyingCatalogueDbContext context,
+            OrderItemService orderItemService)
+        {
+            var item = order.OrderItems.First();
+
+            var price = item.CatalogueItem.CataloguePrices.First();
+
+            price.ProvisioningType = ProvisioningType.OnDemand;
+
+            item.EstimationPeriod = null;
+
+            context.Orders.Add(order);
+
+            await context.SaveChangesAsync();
+
+            await orderItemService.SetOrderItemEstimationPeriod(order.CallOffId, order.OrderingParty.InternalIdentifier, item.CatalogueItemId, price);
+
+            var actual = context.OrderItems.FirstOrDefault(o => o.OrderId == item.OrderId && o.CatalogueItemId == item.CatalogueItemId);
+
+            actual.EstimationPeriod.Should().Be(price.BillingPeriod);
         }
     }
 }

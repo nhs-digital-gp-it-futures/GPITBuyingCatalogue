@@ -50,12 +50,13 @@ function ReplaceFilterAndAddBinders(html) {
     const filterForm = "filter-form";
     const SubmitButtonId = "Submit";
 
-    const formContainer = document.getElementById(filterContainer);
     const form = document.getElementById(filterForm);
 
-    form.parentNode.removeChild(form);
-
-    formContainer.innerHTML = html;
+    form.innerHTML = html;
+    form.onsubmit = (e) => {
+        e.preventDefault();
+        return false;
+    };
 
     const submitButton = document.getElementById(SubmitButtonId);
 
@@ -63,7 +64,7 @@ function ReplaceFilterAndAddBinders(html) {
     submitButton.addEventListener('click', generateQueryParam);
 
     document.querySelectorAll(NhsRadiosInput).forEach(item => {
-        item.addEventListener('click', reload)
+        item.addEventListener('click', reload);
     });
 
     RefireDomContentLoadedEvent();
@@ -176,7 +177,7 @@ function reselectCapabilityAndEpicsFiltersAndFrameworkFilter() {
             if (capability === FoundationCapabilitiesId || (!capability.includes(EpicSplitCharacter) && !capability.includes(SupplierSplitCharacter))) {
                 CheckCheckboxWithHiddenInputValue(capability);
             }
-            else {                
+            else {
                 const epics = capability.split(SupplierSplitCharacter).map(s => s.split(EpicSplitCharacter)).flat();
 
                 epics.forEach(epic => {
@@ -214,7 +215,7 @@ function CheckCheckboxWithHiddenInputValue(value) {
         .parentNode
         .querySelector(NhsukCheckboxesInput) as HTMLInputElement;
 
-        input.click();
+    input.click();
 }
 
 function GetSelectedFramework() {
@@ -223,7 +224,6 @@ function GetSelectedFramework() {
     let selectedFramework = "All";
 
     for (let i = 0; i < radioInputs.length; i++) {
-
         const input = radioInputs[i] as HTMLInputElement;
 
         if (input.checked) {

@@ -14,6 +14,7 @@ using NHSD.GPIT.BuyingCatalogue.EntityFramework.Organisations.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Users.Models;
 using NHSD.GPIT.BuyingCatalogue.Framework.Constants;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Csv;
+using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Frameworks;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Models;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Models.AdminManageOrders;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Orders;
@@ -64,26 +65,34 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
             Solution solution,
             FrameworkSolution[] frameworkSolutions,
             EntityFramework.Ordering.Models.Order order,
+            EntityFramework.Catalogue.Models.Framework framework,
             [Frozen] Mock<IOrderAdminService> orderAdminService,
+            [Frozen] Mock<IFrameworkService> mockFrameworkService,
             ManageOrdersController controller)
         {
             solution.FrameworkSolutions = frameworkSolutions;
 
             orderItem.CatalogueItem = solution.CatalogueItem;
 
-            order.AddOrUpdateOrderItem(orderItem);
+            order.OrderItems.Add(orderItem);
+
             order.OrderingParty = organisation;
             order.LastUpdatedByUser = user;
             order.Supplier = supplier;
-            var expectedModel = new ViewOrderModel(order);
 
             orderAdminService.Setup(s => s.GetOrder(order.CallOffId))
                 .ReturnsAsync(order);
 
+            mockFrameworkService
+                .Setup(x => x.GetFramework(order.Id))
+                .ReturnsAsync(framework);
+
             var result = (await controller.ViewOrder(order.CallOffId)).As<ViewResult>();
 
+            var expected = new ViewOrderModel(order, framework);
+
             result.Should().NotBeNull();
-            result.Model.Should().BeEquivalentTo(expectedModel, opt => opt.Excluding(m => m.BackLink));
+            result.Model.Should().BeEquivalentTo(expected, opt => opt.Excluding(m => m.BackLink));
         }
 
         [Theory]

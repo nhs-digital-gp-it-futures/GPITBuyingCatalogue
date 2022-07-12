@@ -1,5 +1,4 @@
-﻿using System.Threading.Tasks;
-using AutoFixture.Xunit2;
+﻿using AutoFixture.Xunit2;
 using FluentValidation.TestHelper;
 using Moq;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
@@ -15,7 +14,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators
     {
         [Theory]
         [CommonAutoData]
-        public static async Task Validate_WhenPublishedSolutionHasMultipleHostingTypes_NoValidationErrors(
+        public static void Validate_WhenPublishedSolutionHasMultipleHostingTypes_NoValidationErrors(
             Solution solution,
             DeleteHostingTypeConfirmationModel model,
             [Frozen] Mock<ISolutionsService> solutionsService,
@@ -27,14 +26,14 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators
             solutionsService.Setup(s => s.GetSolutionThin(model.SolutionId))
                 .ReturnsAsync(catalogueItem);
 
-            var result = await validator.TestValidateAsync(model);
+            var result = validator.TestValidate(model);
 
             result.ShouldNotHaveValidationErrorFor(m => m);
         }
 
         [Theory]
         [CommonAutoData]
-        public static async Task Validate_WhenPublishedSolutionHasOneHostingType_SetsModelError(
+        public static void Validate_WhenPublishedSolutionHasOneHostingType_SetsModelError(
             Solution solution,
             [Frozen] Mock<ISolutionsService> solutionsService,
             DeleteHostingTypeConfirmationModelValidator validator)
@@ -55,7 +54,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators
             solutionsService.Setup(s => s.GetSolutionThin(model.SolutionId))
                 .ReturnsAsync(catalogueItem);
 
-            var result = await validator.TestValidateAsync(model);
+            var result = validator.TestValidate(model);
 
             result.ShouldHaveValidationErrorFor(m => m)
                 .WithErrorMessage(DeleteHostingTypeConfirmationModelValidator.ErrorMessage);
@@ -63,7 +62,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators
 
         [Theory]
         [CommonAutoData]
-        public static async Task Validate_WhenUnpublishedSolutionHasMultipleHostingTypes_NoValidationErrors(
+        public static void Validate_WhenUnpublishedSolutionHasMultipleHostingTypes_NoValidationErrors(
             Solution solution,
             DeleteHostingTypeConfirmationModel model,
             [Frozen] Mock<ISolutionsService> solutionsService,
@@ -75,14 +74,14 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators
             solutionsService.Setup(s => s.GetSolutionThin(model.SolutionId))
                 .ReturnsAsync(catalogueItem);
 
-            var result = await validator.TestValidateAsync(model);
+            var result = validator.TestValidate(model);
 
             result.ShouldNotHaveValidationErrorFor(m => m);
         }
 
         [Theory]
         [CommonAutoData]
-        public static async Task Validate_WhenUnpublishedSolutionHasOneHostingType_NoValidationErrors(
+        public static void Validate_WhenUnpublishedSolutionHasOneHostingType_NoValidationErrors(
             Solution solution,
             [Frozen] Mock<ISolutionsService> solutionsService,
             DeleteHostingTypeConfirmationModelValidator validator)
@@ -103,7 +102,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators
             solutionsService.Setup(s => s.GetSolutionThin(model.SolutionId))
                 .ReturnsAsync(catalogueItem);
 
-            var result = await validator.TestValidateAsync(model);
+            var result = validator.TestValidate(model);
 
             result.ShouldNotHaveValidationErrorFor(m => m);
         }

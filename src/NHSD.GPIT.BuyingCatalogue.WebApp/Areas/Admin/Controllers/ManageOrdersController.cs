@@ -9,6 +9,7 @@ using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.Framework.Settings;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Csv;
+using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Frameworks;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Models;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Orders;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Pdf;
@@ -23,6 +24,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
     [Route("admin/manage-orders")]
     public class ManageOrdersController : Controller
     {
+        private readonly IFrameworkService frameworkService;
         private readonly IOrderAdminService orderAdminService;
         private readonly IOrderService orderService;
         private readonly ICsvService csvService;
@@ -30,12 +32,14 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
         private readonly PdfSettings pdfSettings;
 
         public ManageOrdersController(
+            IFrameworkService frameworkService,
             IOrderAdminService orderAdminService,
             IOrderService orderService,
             ICsvService csvService,
             IPdfService pdfService,
             PdfSettings pdfSettings)
         {
+            this.frameworkService = frameworkService ?? throw new ArgumentNullException(nameof(frameworkService));
             this.orderAdminService = orderAdminService ?? throw new ArgumentNullException(nameof(orderAdminService));
             this.orderService = orderService ?? throw new ArgumentNullException(nameof(orderService));
             this.csvService = csvService ?? throw new ArgumentNullException(nameof(csvService));
@@ -83,8 +87,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
         public async Task<IActionResult> ViewOrder(CallOffId callOffId, string returnUrl = null)
         {
             var order = await orderAdminService.GetOrder(callOffId);
+            var framework = await frameworkService.GetFramework(order?.Id ?? 0);
 
-            var model = new ViewOrderModel(order)
+            var model = new ViewOrderModel(order, framework)
             {
                 BackLink = returnUrl ?? Url.Action(nameof(Index)),
             };

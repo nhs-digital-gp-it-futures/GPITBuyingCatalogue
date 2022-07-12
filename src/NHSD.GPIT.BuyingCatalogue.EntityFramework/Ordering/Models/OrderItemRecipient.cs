@@ -3,7 +3,7 @@ using NHSD.GPIT.BuyingCatalogue.EntityFramework.Users.Models;
 
 namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models
 {
-    public sealed partial class OrderItemRecipient : IAudited
+    public sealed class OrderItemRecipient : IAudited
     {
         public int OrderId { get; set; }
 
@@ -11,9 +11,7 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models
 
         public string OdsCode { get; set; }
 
-        public int Quantity { get; set; }
-
-        public DateTime? DeliveryDate { get; set; }
+        public int? Quantity { get; set; }
 
         public DateTime LastUpdated { get; set; }
 

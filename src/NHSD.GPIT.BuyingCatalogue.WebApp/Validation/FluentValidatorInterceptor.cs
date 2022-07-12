@@ -1,8 +1,10 @@
-﻿using System.Linq;
+﻿using System.Collections.Generic;
+using System.Linq;
 using FluentValidation;
 using FluentValidation.AspNetCore;
 using FluentValidation.Results;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.ModelBinding;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.Validation
 {
@@ -13,11 +15,16 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Validation
             if (!result.Errors.Any())
                 return result;
 
-            var delimitedErrors = result.Errors.Where(e => e.PropertyName.Contains('|')).ToList();
-            if (!delimitedErrors.Any())
-                return result;
+            var errors = GetDistinctErrors(actionContext.ModelState, result.Errors).ToList();
 
-            var validationErrors = result.Errors.Except(delimitedErrors).ToList();
+            var delimitedErrors = errors.Where(e => e.PropertyName.Contains('|')).ToList();
+            if (!delimitedErrors.Any())
+            {
+                result.Errors.Clear();
+                result.Errors.AddRange(errors);
+            }
+
+            var validationErrors = errors.Except(delimitedErrors).ToList();
             foreach (var delimitedError in delimitedErrors)
             {
                 foreach (var propertyName in delimitedError.PropertyName.Split('|'))
@@ -37,11 +44,22 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Validation
 
             result.Errors.Clear();
             result.Errors.AddRange(validationErrors);
-
             return result;
         }
 
         public IValidationContext BeforeAspNetValidation(ActionContext actionContext, IValidationContext commonContext)
             => commonContext;
+
+        private IEnumerable<ValidationFailure> GetDistinctErrors(ModelStateDictionary modelStateDictionary, List<ValidationFailure> failures)
+        {
+            var modelStateFailures = modelStateDictionary.Where(e => e.Value.ValidationState == ModelValidationState.Invalid).ToList();
+            foreach (var failure in failures)
+            {
+                if (modelStateFailures.Any(e => string.Equals(e.Key, failure.PropertyName, System.StringComparison.OrdinalIgnoreCase)))
+                    continue;
+
+                yield return failure;
+            }
+        }
     }
 }

@@ -37,13 +37,14 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Orders
         public static async Task CreateOrder_UpdatesDatabase(
             [Frozen] BuyingCatalogueDbContext context,
             string description,
+            OrderTriageValue orderTriageValue,
             Organisation organisation,
             OrderService service)
         {
             await context.Organisations.AddAsync(organisation);
             await context.SaveChangesAsync();
 
-            await service.CreateOrder(description, organisation.InternalIdentifier);
+            await service.CreateOrder(description, organisation.InternalIdentifier, orderTriageValue, false);
 
             var order = await context.Orders.Include(o => o.OrderingParty).SingleAsync();
             order.Description.Should().Be(description);
@@ -190,6 +191,28 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Orders
             var results = await service.GetUserOrders(userId);
 
             results.Should().BeEquivalentTo(orders);
+        }
+
+        [Theory]
+        [InMemoryDbAutoData]
+        public static async Task SetSolutionId_UpdatesDatabase(
+            Order order,
+            CatalogueItemId solutionId,
+            [Frozen] BuyingCatalogueDbContext context,
+            OrderService service)
+        {
+            order.SolutionId = null;
+            order.Solution = null;
+
+            context.Orders.Add(order);
+
+            await context.SaveChangesAsync();
+
+            (await context.Orders.SingleAsync(x => x.Id == order.Id)).SolutionId.Should().BeNull();
+
+            await service.SetSolutionId(order.OrderingParty.InternalIdentifier, order.CallOffId, solutionId);
+
+            (await context.Orders.SingleAsync(x => x.Id == order.Id)).SolutionId.Should().Be(solutionId);
         }
     }
 }

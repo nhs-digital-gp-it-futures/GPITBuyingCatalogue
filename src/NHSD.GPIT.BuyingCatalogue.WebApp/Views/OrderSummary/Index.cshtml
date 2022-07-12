@@ -1,11 +1,9 @@
 ﻿@using System.Linq
-@using NHSD.GPIT.BuyingCatalogue.EntityFramework.Extensions
 @using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models
+@using NHSD.GPIT.BuyingCatalogue.Framework.Calculations
 @model NHSD.GPIT.BuyingCatalogue.WebApp.Models.OrderSummaryModel;
 @{
-    Layout = "";
-    ViewBag.Title = Model.Title;
-    var itemId = 0;
+	Layout = "";
 }
 
 <!DOCTYPE html>
@@ -38,6 +36,14 @@
     <meta name="robots" content="noindex">
     <meta name="googlebot" content="noindex">
     <style>
+        @@media print {
+            @@page {
+                size: A4 landscape;
+                max-height:100%;
+                max-width:100%
+            }
+        }
+
         .nhsuk-table-responsive th {
             font-size: 1em;
             white-space: normal;
@@ -46,157 +52,252 @@
         .nhsuk-table-responsive td {
             font-size: 1em;
         }
+
+        h3 {
+            border-bottom: 1px solid lightgray;
+            width: 100%;
+        }
+
+        .pdf-container {
+            -webkit-break-inside: avoid;
+            break-inside: avoid;
+        }
+
+        table {
+            -webkit-break-inside: auto;
+            break-inside: auto;
+        }
+
+        td, thead th {
+            border: 0;
+            padding-top: 4px;
+            padding-right: 12px;
+            padding-bottom: 0;
+        }
+
+        th {
+            white-space: nowrap;
+        }
+
+        tr {
+            -ms-break-after: auto;
+            -webkit-break-after: auto;
+            -webkit-break-inside: avoid;
+            break-after: auto;
+            break-inside: avoid;
+        }
+
+        tbody tr:nth-child(odd) {
+            background-color: #F8F8F8;
+        }
+
+        tbody tr.totals {
+            background-color: #FFFFFF;
+        }
+
+        td:last-child {
+            padding-right: 0;
+        }
+
+        .total {
+            border-top: 1px solid lightgray;
+            font-weight: 600;
+        }
+
+        .numeric {
+            text-align: right;
+        }
+
+        .pdf-summary-list {
+            -webkit-break-inside: avoid;
+            break-inside: avoid;
+            display: table;
+            font-size: 1.1875rem;
+            font-weight: 400;
+            line-height: 1.47368;
+            margin-bottom: 40px;
+            table-layout: fixed;
+            vertical-align: top;
+            width: 100%;
+        }
+
+        .pdf-summary-list-row {
+            display: table-row;
+            margin-bottom: 32px;
+        }
+
+        .pdf-summary-list-row div {
+            display: table-cell;
+            padding-top: 0;
+            padding-right: 24px;
+            padding-bottom: 0;
+            width: 50%;
+        }
+
+        .pdf-summary-list-row div:first-child {
+            font-weight: 600;
+            width: 30%;
+        }
     </style>
 </head>
 <body class="nhsuk-bc-print">
-    <div class="nhsuk-width-container">
-        <main class="nhsuk-main-wrapper" id="maincontent">
-            <div class="nhsuk-grid-row">
-                <div class="nhsuk-grid-column-two-thirds">
-                    <nhs-validation-summary />
-                    <nhs-page-title title="Call-off Order Form"
-                                    advice="@Model.AdviceText" 
-                                    caption="@ViewBag.Title"/>
+<div class="nhsuk-width-container">
+    <main class="nhsuk-main-wrapper" id="maincontent">
+        <div class="nhsuk-grid-row">
+            <div class="nhsuk-grid-column-two-thirds">
+                <nhs-page-title title="Order summary"
+                                caption="@Model.Order.CallOffId"
+                                advice="This is the information that has been added to this order." />
+            </div>
+        </div>
+
+        <div class="nhsuk-grid-row">
+            <div class="nhsuk-grid-column-full">
+                
+                <pdf-summary-list>
+                    <pdf-summary-list-row label-text="Order ID">
+                        @Model.Order.CallOffId
+                    </pdf-summary-list-row>
+
+                    <pdf-summary-list-row label-text="Description">
+                        @Model.Order.Description
+                    </pdf-summary-list-row>
+
+                    <pdf-summary-list-row label-text="Date order summary created">
+                        @DateTime.UtcNow.ToLongDateString()
+                    </pdf-summary-list-row>
+
+                    @if (Model.Order.OrderStatus == OrderStatus.Completed
+                        && Model.Order.Completed.HasValue)
+                    {
+                        <pdf-summary-list-row label-text="Date order summary completed">
+                            @Model.Order.Completed.Value.ToLongDateString()
+                        </pdf-summary-list-row>
+                    }
+
+                    @if (Model.Order.OrderingPartyContact != null)
+                    {
+                        <pdf-summary-list-row label-text="Call-off ordering party">
+                            @Model.Order.OrderingPartyContact.FirstName @Model.Order.OrderingPartyContact.LastName <br/>
+                            @Model.Order.OrderingParty.Name (@Model.Order.OrderingParty.ExternalIdentifier)<br/>
+                            <vc:nhs-address address="@Model.Order.OrderingParty.Address"/>
+                        </pdf-summary-list-row>
+                    }
+
+                    @if (Model.Order.Supplier != null
+                        && Model.Order.SupplierContact != null)
+                    {
+                        <pdf-summary-list-row label-text="Supplier">
+                            @Model.Order.SupplierContact.FirstName @Model.Order.SupplierContact.LastName <br/>
+                            @Model.Order.Supplier.Name <br/>
+                            <vc:nhs-address address="@Model.Order.Supplier.Address"/>
+                        </pdf-summary-list-row>
+                    }
+
+                    @if (Model.Order.CommencementDate != null)
+                    {
+                        <pdf-summary-list-row label-text="Commencement date">
+                            @Model.Order.CommencementDate?.ToLongDateString()
+                        </pdf-summary-list-row>
+                    }
+
+                    @if (Model.Order.InitialPeriod != null)
+                    {
+                        <pdf-summary-list-row label-text="Initial period">
+                            @($"{Model.Order.InitialPeriod} Months")
+                        </pdf-summary-list-row>
+                    }
+
+                    @if (Model.Order.MaximumTerm != null)
+                    {
+                        <pdf-summary-list-row label-text="Maximum term">
+                            @($"{Model.Order.MaximumTerm} Months")
+                        </pdf-summary-list-row>
+
+                        if (Model.Order.CommencementDate != null)
+                        {
+                            <pdf-summary-list-row label-text="End date">
+                                @Model.Order.EndDate
+                            </pdf-summary-list-row>
+                        }
+                    }
+                </pdf-summary-list>
+
+                <div style="page-break-after: always"></div>
+
+                @{
+                    var pagesSoFar = 0;
+                }
+
+                <nhs-page-title title="Items added to this order"/>
+
+                @if (Model.Order.GetSolution() != null)
+                {
+                    <h2>Catalogue Solution</h2>
+                    <partial name="OrderItem"
+                             model="new OrderSummaryItemModel(Model.Order.GetSolution(), Model.Order.ServiceInstanceItems)"/>
+                    PageBreak(++pagesSoFar);
+                }
+
+                @if (Model.Order.GetAdditionalServices().Any())
+                {
+                    <h2>Additional Services</h2>
+                    @foreach (var service in Model.Order.GetAdditionalServices())
+                    {
+                        <partial name="OrderItem"
+                                 model="new OrderSummaryItemModel(service, Model.Order.ServiceInstanceItems)"/>
+                        PageBreak(++pagesSoFar);
+                    }
+                }
+
+                @if (Model.Order.GetAssociatedServices().Any())
+                {
+                    <h2>Associated Services</h2>
+                    @foreach (var service in Model.Order.GetAssociatedServices())
+                    {
+                        <partial name="OrderItem"
+                                 model="new OrderSummaryItemModel(service, Model.Order.ServiceInstanceItems)"/>
+                        PageBreak(++pagesSoFar);
+                    }
+                }
+                
+                <br/>
+
+                <div class="pdf-container">
+                    <nhs-page-title title="Totals for this order"/>
+                    <h3>Totals</h3>
+
+                    <pdf-summary-list>
+                        <pdf-summary-list-row label-text="Total one-off cost">
+                            @($"£{Model.Order.TotalOneOffCost():N2}")
+                        </pdf-summary-list-row>
+                        
+                        <pdf-summary-list-row label-text="Total monthly cost">
+                            @($"£{Model.Order.TotalMonthlyCost():N2}")
+                        </pdf-summary-list-row>
+                        
+                        <pdf-summary-list-row label-text="Total annual cost">
+                            @($"£{Model.Order.TotalAnnualCost():N2}")
+                        </pdf-summary-list-row>
+
+                        <pdf-summary-list-row label-text="Total cost of contract (@(Model.Order.MaximumTerm ?? 0) months)">
+                            @($"£{Model.Order.TotalCost():N2}")
+                        </pdf-summary-list-row>
+                    </pdf-summary-list>
                 </div>
             </div>
-            <div class="nhsuk-grid-row">
-                <div class="nhsuk-grid-column-full">
-                    <nhs-summary-list>
-                        <nhs-summary-list-row label-text="Date order summary created">
-                            @DateTime.UtcNow.ToLongDateString()
-                        </nhs-summary-list-row>
-                        @if (Model.Order.OrderStatus == OrderStatus.Completed)
-                        {
-                            <nhs-summary-list-row label-text="Date order summary completed">
-                                @Model.Order.Completed.Value.ToLongDateString()
-                            </nhs-summary-list-row>
-                        }
-						@if (Model.Order.OrderingPartyContact != null)
-						{
-							<nhs-summary-list-row label-text="Call-off Ordering Party">
-								@Model.Order.OrderingPartyContact.FirstName @Model.Order.OrderingPartyContact.LastName <br />
-								@Model.Order.OrderingParty.Name<br />
-								@Model.Order.OrderingParty.ExternalIdentifier<br />
-								<vc:nhs-address address="@Model.Order.OrderingParty.Address" />
-							</nhs-summary-list-row>
-						}
-						@if (Model.Order.Supplier != null && Model.Order.SupplierContact != null)
-						{
-							<nhs-summary-list-row label-text="Supplier">
-								@Model.Order.SupplierContact.FirstName @Model.Order.SupplierContact.LastName <br/>
-								@Model.Order.Supplier.Name <br/>
-								<vc:nhs-address address="@Model.Order.Supplier.Address" />
-							</nhs-summary-list-row>
-						}
-						@if (Model.Order.CommencementDate != null)
-						{
-						<nhs-summary-list-row label-text="Commencement date of the Call-off Agreement">
-							@(Model.Order.CommencementDate?.ToLongDateString())
-						</nhs-summary-list-row>
-						}
-						@if (Model.Order.InitialPeriod != null)
-						{
-							<nhs-summary-list-row label-text="Initial period for the Call-off Agreement">
-								@($"{Model.Order.InitialPeriod} Months")
-							</nhs-summary-list-row>
-						}
-						@if (Model.Order.MaximumTerm != null)
-						{
-							<nhs-summary-list-row label-text="Maximum term for the Call-off Agreement">
-								@($"{Model.Order.MaximumTerm} Months")
-							</nhs-summary-list-row>
-						}
-                    </nhs-summary-list>
-
-                    <div style="page-break-after:always"></div>
-
-                    <h2>Order items (one-off cost)</h2>
-                    <p>The following items carry a one-off cost for the duration of this Call-off Agreement. They're the Associated Services in this order you can use as and when required.</p>
-                    <nhs-table>
-                        <nhs-table-column>Recipient name (ODS code)</nhs-table-column>
-                        <nhs-table-column>Item ID</nhs-table-column>
-                        <nhs-table-column>Item name</nhs-table-column>
-                        <nhs-table-column>Price unit of order (£)</nhs-table-column>
-                        <nhs-table-column>Quantity</nhs-table-column>
-                        <nhs-table-column>Item cost (£)</nhs-table-column>
-                        @foreach (var orderItem in Model.Order.OrderItems.Where(oi => oi.CostType == CostType.OneOff))
-                        {
-                            @foreach (var recipient in orderItem.OrderItemRecipients)
-                            {
-                                <nhs-table-row-container>
-                                    <nhs-table-cell>@recipient.Recipient.Name</nhs-table-cell>
-                                    <nhs-table-cell>@($"{Model.Order.CallOffId}-{recipient.Recipient.OdsCode}-{itemId++}")</nhs-table-cell>
-                                    <nhs-table-cell>@orderItem.CatalogueItem.Name</nhs-table-cell>
-                                    <nhs-table-cell>@orderItem.Price.Value.ToString("N") @orderItem.CataloguePrice.PricingUnit.Description</nhs-table-cell>
-                                    <nhs-table-cell>@recipient.Quantity</nhs-table-cell>
-                                    <nhs-table-cell>@((recipient.Quantity * orderItem.Price).Value.ToString("N"))</nhs-table-cell>
-                                </nhs-table-row-container>
-                            }
-                        }
-                    </nhs-table>
-                    <nhs-summary-list>
-                        <nhs-summary-list-row label-text="Total one off cost (indicative)">
-                            @Model.Order.OrderItems.Where(oi => oi.CostType == CostType.OneOff).Sum(oi => oi.OrderItemRecipients.Sum(r => r.Quantity * oi.Price)).Value.ToString("N")
-                        </nhs-summary-list-row>
-                    </nhs-summary-list>
-
-                    <div style="page-break-after:always"></div>
-
-                    <h2>Order items (recurring cost)</h2>
-                    <p>The following items carry a recurring annual cost for the duration of this Call-off Agreement. They're the Catalogue Solutions, Additional Services and Associated Services in this order that you'll be charged for at a monthly rate.</p>
-                    <nhs-table>
-                        <nhs-table-column>Recipient name (ODS code)</nhs-table-column>
-                        <nhs-table-column>Item ID/name</nhs-table-column>
-                        <nhs-table-column>Service instance ID</nhs-table-column>
-                        <nhs-table-column>Price unit of order (£)</nhs-table-column>
-                        <nhs-table-column>Quantity/period</nhs-table-column>
-                        <nhs-table-column>Planned delivery date</nhs-table-column>
-                        <nhs-table-column>Item cost per year (£)</nhs-table-column>
-                        @foreach (var orderItem in Model.Order.OrderItems.Where(oi => oi.CostType == CostType.Recurring))
-                        {
-                            @foreach (var recipient in orderItem.OrderItemRecipients)
-                            {
-                                <nhs-table-row-container>
-                                    <nhs-table-cell>@recipient.Recipient.Name</nhs-table-cell>
-                                    <nhs-table-cell>
-                                        @($"{Model.Order.CallOffId}-{recipient.Recipient.OdsCode}-{itemId++}") <br />
-                                        @orderItem.CatalogueItem.Name
-                                    </nhs-table-cell>
-                                    <nhs-table-cell>
-                                        @(Model.Order.ServiceInstanceItems.FirstOrDefault(
-                                            si => si.OdsCode == recipient.Recipient.OdsCode
-                                            && si.CatalogueItemId == orderItem.CatalogueItemId)?.ServiceInstanceId)
-                                    </nhs-table-cell>
-                                    <nhs-table-cell>@orderItem.Price.Value.ToString("N") @orderItem.CataloguePrice.PricingUnit.Description</nhs-table-cell>
-                                    <nhs-table-cell>@($"{recipient.Quantity} {orderItem.EstimationPeriod?.Description()}")</nhs-table-cell>
-                                    <nhs-table-cell>@recipient.DeliveryDate?.ToLongDateString()</nhs-table-cell>
-                                    <nhs-table-cell>@((recipient.Quantity * orderItem.Price).Value.ToString("N"))</nhs-table-cell>
-                                </nhs-table-row-container>
-                            }
-                        }
-                    </nhs-table>
-                    <nhs-summary-list>
-                        <nhs-summary-list-row label-text="Total cost for one year (indicative)">
-                            @Model.Order.OrderItems.Where(oi => oi.CostType == CostType.Recurring).Sum(oi => oi.OrderItemRecipients.Sum(r => r.Quantity * oi.Price)).Value.ToString("N")
-                        </nhs-summary-list-row>
-                        <nhs-summary-list-row label-text="Total monthly cost(indicitive)">
-                            @((Model.Order.OrderItems.Where(oi => oi.CostType == CostType.Recurring).Sum(oi => oi.OrderItemRecipients.Sum(r => r.Quantity * oi.Price)).Value/ 12).ToString("N"))
-                        </nhs-summary-list-row>
-                    </nhs-summary-list>
-                    <nhs-summary-list>
-                        <nhs-summary-list-row label-text="Total cost of contract (indicative)">
-                            @((Model.Order.OrderItems.Where(oi => oi.CostType == CostType.OneOff).Sum(oi => oi.OrderItemRecipients.Sum(r => r.Quantity * oi.Price)).Value
-                        + (Model.Order.OrderItems.Where(oi => oi.CostType == CostType.Recurring).Sum(oi => oi.OrderItemRecipients.Sum(r => r.Quantity * oi.Price)) * 3).Value)
-                        .ToString("N"))
-                            <p>
-                                This is the total estimated cost for the entire duration of the Call-off Agreement, which is usually 3 years.
-                                The figure is made up of the one-off costs and the estimated yearly cost multiplied by 3.
-                            </p>
-                        </nhs-summary-list-row>
-                    </nhs-summary-list>
-                </div>
-            </div>
-        </main>
-    </div>
+        </div>
+    </main>
+</div>
 </body>
 </html>
+
+@{
+    void PageBreak(int current)
+    {
+        if (current >= Model.Order.OrderItems.Count)
+            return;
+
+        <div style="page-break-after: always"></div>
+    }
+}

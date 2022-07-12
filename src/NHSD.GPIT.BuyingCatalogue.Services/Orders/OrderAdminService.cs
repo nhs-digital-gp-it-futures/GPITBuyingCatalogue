@@ -27,15 +27,15 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
 
         public async Task<Order> GetOrder(CallOffId callOffId)
         {
-            var order = await dbContext
-                .Orders
+            var order = await dbContext.Orders
                 .Include(o => o.LastUpdatedByUser)
                 .Include(o => o.OrderingParty)
                 .Include(o => o.Supplier)
-                .Include(o => o.OrderItems)
-                .ThenInclude(o => o.CatalogueItem.Solution.FrameworkSolutions)
-                .ThenInclude(fs => fs.Framework)
+                .Include(o => o.OrderItems).ThenInclude(oi => oi.CatalogueItem)
+                .Include(o => o.OrderItems).ThenInclude(oi => oi.OrderItemFunding)
+                .Include(o => o.OrderItems).ThenInclude(oi => oi.OrderItemPrice).ThenInclude(oip => oip.OrderItemPriceTiers)
                 .AsNoTracking()
+                .AsSplitQuery()
                 .SingleOrDefaultAsync(o => o.Id == callOffId.Id);
 
             return order;

@@ -10,6 +10,18 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.RandomData
             return string.Join(string.Empty, faker.Random.AlphaNumeric(numChars));
         }
 
+        public static string RandomPrice(decimal maxValue)
+        {
+            var faker = new Faker("en_GB");
+            return faker.Commerce.Price(0.0001M, maxValue, 4).ToString();
+        }
+
+        public static string RandomPriceBetweenRange(decimal minValue, decimal maxValue)
+        {
+            var faker = new Faker("en_GB");
+            return faker.Commerce.Price(0.0001M, maxValue, 4).ToString();
+        }
+
         public static string RandomUrl(int numChars)
         {
             var faker = new Faker("en_GB");
@@ -28,7 +40,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.RandomData
             var faker = new Faker("en_GB");
             var email = faker.Internet.Email();
             var length = numChars - email.Length;
-            if(length > 0)
+            if (length > 0)
                 return string.Join(string.Empty, faker.Random.AlphaNumeric(numChars - email.Length), email);
 
             return email;

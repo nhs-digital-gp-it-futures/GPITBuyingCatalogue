@@ -1,0 +1,94 @@
+﻿@using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models
+@using NHSD.GPIT.BuyingCatalogue.EntityFramework.Extensions
+@using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models
+@using NHSD.GPIT.BuyingCatalogue.WebApp.Extensions;
+@model OrderItem
+
+@{
+    var totalCost = Model.TotalCost();
+	var subTotalDescription = $"£{totalCost:N2} {Model.OrderItemPrice.BillingPeriod?.Description() ?? string.Empty}";
+    var hasServiceRecipientQuantities = Model.OrderItemPrice.IsPerServiceRecipient();
+}
+
+<nhs-expander colour-mode="BlackAndWhite"
+              label-text="@Model.CatalogueItem.Name"
+              secondary-text-title="Subtotal: "
+              secondary-text="@subTotalDescription"
+			  open="true"
+			  bold-title="true">
+    @if (Model.OrderItemRecipients.Any())
+    {
+        <br/>
+        <nhs-table label-text="Service Recipients" catches-errors="false">
+            <nhs-table-column>Recipient</nhs-table-column>
+            <nhs-table-column>ODS code</nhs-table-column>
+            <nhs-table-column>Item ID</nhs-table-column>
+            <nhs-table-column>Service instance ID</nhs-table-column>
+            <nhs-table-column>Quantity</nhs-table-column>
+
+			@foreach(var serviceRecipient in Model.OrderItemRecipients)
+            {
+                <nhs-table-row-container>
+                    <nhs-table-cell>@serviceRecipient.Recipient.Name</nhs-table-cell>
+                    <nhs-table-cell>@serviceRecipient.Recipient.OdsCode</nhs-table-cell>
+                    <nhs-table-cell>@($"{Model.Order.CallOffId}-{serviceRecipient.Recipient.OdsCode}-{ViewContext.HttpContext.NextLineId()}")</nhs-table-cell>
+                    <nhs-table-cell>@Model.Order.ServiceInstanceItems.First(p => p.OdsCode == serviceRecipient.Recipient.OdsCode).ServiceInstanceId</nhs-table-cell>
+                    <nhs-table-cell>
+                        @if (hasServiceRecipientQuantities)
+                        {
+                            @(serviceRecipient.Quantity.HasValue ? $"{serviceRecipient.Quantity:N0}" : "-")
+                        }
+                        else
+                        {
+                            @("N/A")
+                        }
+                    </nhs-table-cell>
+                </nhs-table-row-container>
+            }
+        </nhs-table>
+    }
+
+    @if (Model.OrderItemPrice.OrderItemPriceTiers.Any())
+    {
+        var billingPeriod = Model.OrderItemPrice.BillingPeriod?.Description() ?? "one-off";
+
+        <br />
+        <nhs-table label-text="Pricing" catches-errors="false">
+            @if (Model.OrderItemPrice.CataloguePriceType == CataloguePriceType.Flat)
+            {
+                <nhs-table-column>Price per unit</nhs-table-column>
+                <nhs-table-column>Quantity</nhs-table-column>
+                <nhs-table-column>Total cost (@billingPeriod)</nhs-table-column>
+
+                var price = Model.OrderItemPrice.OrderItemPriceTiers.First();
+                <nhs-table-row-container>
+                    <nhs-table-cell>£@price.Price.ToString("N4") @Model.OrderItemPrice.ToPriceUnitString()</nhs-table-cell>
+                    <nhs-table-cell>@($"{Model.TotalQuantity:N0}")</nhs-table-cell>
+                    <nhs-table-cell>£@totalCost.ToString("N2")</nhs-table-cell>
+                </nhs-table-row-container>
+            } else
+            {
+                var tiers = Model.OrderItemPrice.CalculateTotalCostPerTier(Model.TotalQuantity).Select((t, i) => (t, i));
+
+                <nhs-table-column>Pricing tier</nhs-table-column>
+                <nhs-table-column>Price per unit</nhs-table-column>
+                <nhs-table-column>Quantity</nhs-table-column>
+                <nhs-table-column>Total cost (@billingPeriod)</nhs-table-column>
+
+                @foreach(var (tier, index) in tiers)
+                {
+                    var price = Model.OrderItemPrice.OrderItemPriceTiers.ElementAt(index);
+                    <nhs-table-row-container>
+                        <nhs-table-cell>Tier @tier.Id</nhs-table-cell>
+                        <nhs-table-cell>£@price.Price.ToString("N4") @Model.OrderItemPrice.ToPriceUnitString()</nhs-table-cell>
+                        <nhs-table-cell>@($"{tier.Quantity:N0}")</nhs-table-cell>
+                        <nhs-table-cell>£@tier.Cost.ToString("N2")</nhs-table-cell>
+                    </nhs-table-row-container>
+                }
+            }
+        </nhs-table>
+    }
+
+    <br />
+    <b>@Model.FundingTypeDescription</b>
+</nhs-expander>

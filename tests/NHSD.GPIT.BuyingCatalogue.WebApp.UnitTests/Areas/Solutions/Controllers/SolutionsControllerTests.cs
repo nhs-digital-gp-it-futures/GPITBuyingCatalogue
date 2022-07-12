@@ -808,7 +808,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Controllers
             CatalogueItemContentStatus contentStatus)
         {
             var catalogueItem = solution.CatalogueItem;
-            mockService.Setup(s => s.GetSolutionWithListPrices(It.IsAny<CatalogueItemId>()))
+            mockService.Setup(s => s.GetSolutionWithCataloguePrice(It.IsAny<CatalogueItemId>()))
                 .ReturnsAsync(catalogueItem);
 
             mockService.Setup(s => s.GetContentStatusForCatalogueItem(catalogueItem.Id))
@@ -816,8 +816,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Controllers
 
             await controller.ListPrice(catalogueItem.Id);
 
-            mockService.Verify(s => s.GetSolutionWithListPrices(catalogueItem.Id));
-            mockService.Verify(s => s.GetContentStatusForCatalogueItem(catalogueItem.Id));
+            mockService.VerifyAll();
         }
 
         [Theory]
@@ -827,7 +826,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Controllers
             SolutionsController controller,
             CatalogueItemId id)
         {
-            mockService.Setup(s => s.GetSolutionWithListPrices(id))
+            mockService.Setup(s => s.GetSolutionWithCataloguePrice(id))
                 .ReturnsAsync(default(CatalogueItem));
 
             var actual = (await controller.ListPrice(id)).As<BadRequestObjectResult>();
@@ -848,7 +847,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Controllers
             catalogueItem.PublishedStatus = PublicationStatus.Published;
             var mockSolutionListPriceModel = new ListPriceModel(catalogueItem, contentStatus);
 
-            mockService.Setup(s => s.GetSolutionWithListPrices(catalogueItem.Id))
+            mockService.Setup(s => s.GetSolutionWithCataloguePrice(catalogueItem.Id))
                 .ReturnsAsync(catalogueItem);
 
             mockService.Setup(s => s.GetContentStatusForCatalogueItem(catalogueItem.Id))

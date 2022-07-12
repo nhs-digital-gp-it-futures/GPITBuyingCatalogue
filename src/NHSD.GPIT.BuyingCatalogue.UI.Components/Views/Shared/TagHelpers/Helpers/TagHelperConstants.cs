@@ -55,6 +55,7 @@
         internal const string ComboboxOptions = "combobox-options";
         internal const string ValueName = "value-name";
         internal const string DisplayName = "display-name";
+        internal const string HintName = "hint-name";
         internal const string Values = "values";
         internal const string Value = "value";
         internal const string ConditionalContextName = "ConditionalContext";
@@ -89,6 +90,7 @@
         internal const string RadioItemInputClass = "nhsuk-radios__input";
         internal const string RadioLabelClass = "nhsuk-radios__label";
         internal const string NhsRadios = "nhsuk-radios";
+        internal const string NhsRadiosHint = "nhsuk-radios__hint";
         internal const string NhsRadiosParentContainerConditional = "nhsuk-radios--conditional";
         internal const string NhsRadiosChildConditional = "nhsuk-radios__conditional";
         internal const string NhsRadiosChildConditionalHidden = "nhsuk-radios__conditional--hidden";
@@ -120,5 +122,7 @@
         internal const string LabelEmbedHtml = "use-embedded-html";
         internal const string CharacterCountName = "character-count";
         internal const string MaxCharacterLength = "max-character-length";
+        internal const string UseDefaultValue = "use-default-value";
+        internal const string NoBordersName = "no-borders";
     }
 }

@@ -14,12 +14,15 @@ namespace NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.TagHelpers.Detail
         [HtmlAttributeName(TagHelperConstants.LabelTextName)]
         public string LabelText { get; set; }
 
+        [HtmlAttributeName(DetailsAndExpanderTagHelperBuilders.BoldTitle)]
+        public bool BoldTitle { get; set; }
+
         public override async Task ProcessAsync(TagHelperContext context, TagHelperOutput output)
         {
             output.TagName = "details";
             output.TagMode = TagMode.StartTagAndEndTag;
 
-            var summary = DetailsAndExpanderTagHelperBuilders.GetSummaryLabelBuilder(LabelText);
+            var summary = DetailsAndExpanderTagHelperBuilders.GetSummaryLabelBuilder(LabelText, BoldTitle);
 
             var textItem = DetailsAndExpanderTagHelperBuilders.GetTextItem();
 

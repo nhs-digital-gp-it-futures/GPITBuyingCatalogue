@@ -1,12 +1,17 @@
 ﻿using System;
-using NHSD.GPIT.BuyingCatalogue.EntityFramework.Extensions;
+using System.Collections.Generic;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Users.Models;
 
 namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models
 {
-    public sealed class CataloguePrice : IAudited
+    public sealed partial class CataloguePrice : IAudited
     {
+        public CataloguePrice()
+        {
+            CataloguePriceTiers = new HashSet<CataloguePriceTier>();
+        }
+
         public int CataloguePriceId { get; set; }
 
         public CatalogueItemId CatalogueItemId { get; set; }
@@ -21,10 +26,6 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models
 
         public AspNetUser LastUpdatedByUser { get; set; }
 
-        public decimal? Price { get; set; }
-
-        public bool IsLocked { get; set; }
-
         public PublicationStatus PublishedStatus { get; set; }
 
         public CatalogueItem CatalogueItem { get; set; }
@@ -35,16 +36,12 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models
 
         public ProvisioningType ProvisioningType { get; set; }
 
+        public CataloguePriceCalculationType CataloguePriceCalculationType { get; set; }
+
+        public CataloguePriceQuantityCalculationType? CataloguePriceQuantityCalculationType { get; set; }
+
         public TimeUnit? TimeUnit { get; set; }
 
-        public override string ToString()
-        {
-            return $"£{Price.Value:N4} {PricingUnit?.Description}".Trim();
-        }
-
-        public string ToPriceUnitString()
-        {
-            return $"{PricingUnit?.Description ?? string.Empty} {(TimeUnit.HasValue ? TimeUnit.Value.Description() : string.Empty)}".Trim();
-        }
+        public ICollection<CataloguePriceTier> CataloguePriceTiers { get; set; }
     }
 }

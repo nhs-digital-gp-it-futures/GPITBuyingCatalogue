@@ -1,53 +1,64 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
+using NHSD.GPIT.BuyingCatalogue.EntityFramework.Extensions;
 
 namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models
 {
     public sealed partial class OrderItem
     {
-        private readonly List<OrderItemRecipient> recipients = new();
-        private DateTime lastUpdated = DateTime.UtcNow;
+        public bool IsReadyForReview =>
+            (OrderItemRecipients?.Any() ?? false)
+            && OrderItemPrice != null
+            && TotalQuantity > 0;
 
-        public CostType CostType =>
-            CatalogueItem.CatalogueItemType == CatalogueItemType.AssociatedService &&
-            CataloguePrice.ProvisioningType == ProvisioningType.Declarative
-                ? CostType.OneOff
-                : CostType.Recurring;
+        public bool IsForcedFunding => FundingType.IsForcedFunding();
 
-        public void SetRecipients(IEnumerable<OrderItemRecipient> itemRecipients)
+        public OrderItemFundingType FundingType => OrderItemFunding?.OrderItemFundingType ?? OrderItemFundingType.None;
+
+        public string FundingTypeDescription
         {
-            recipients.Clear();
-            recipients.AddRange(itemRecipients);
-            Updated();
+            get
+            {
+                var itemType = CatalogueItem?.CatalogueItemType.DisplayName() ?? string.Empty;
+
+                return FundingType switch
+                {
+                    OrderItemFundingType.None => $"Funding information has not been entered for this {itemType}.",
+                    OrderItemFundingType.CentralFunding => $"This {itemType} is being paid for using central funding.",
+                    OrderItemFundingType.LocalFunding => $"This {itemType} is being paid for using local funding.",
+                    OrderItemFundingType.LocalFundingOnly => $"This {itemType} is being paid for using local funding.",
+                    OrderItemFundingType.MixedFunding => $"This {itemType} is being paid for using a mix of central and local funding.",
+                    OrderItemFundingType.NoFundingRequired => $"This {itemType} does not require funding.",
+                    _ => throw new ArgumentOutOfRangeException(),
+                };
+            }
         }
 
-        public decimal CalculateTotalCostPerYear()
+        public int TotalQuantity
         {
-            return OrderItemRecipients.Sum(r => r.CalculateTotalCostPerYear(
-                Price.GetValueOrDefault(),
-                CataloguePrice.TimeUnit ?? EstimationPeriod));
+            get
+            {
+                if (OrderItemPrice == null)
+                    return 0;
+
+                return OrderItemPrice.IsPerServiceRecipient()
+                    ? OrderItemRecipients?.Sum(x => x.Quantity ?? 0) ?? 0
+                    : Quantity ?? 0;
+            }
         }
 
-        public bool Equals(OrderItem other)
+        public bool AllQuantitiesEntered
         {
-            if (other is null)
-                return false;
+            get
+            {
+                if (OrderItemPrice == null)
+                    return false;
 
-            if (ReferenceEquals(this, other))
-                return true;
-
-            return CatalogueItem.Equals(other.CatalogueItem) && OrderId == other.OrderId;
+                return OrderItemPrice.IsPerServiceRecipient()
+                    ? OrderItemRecipients?.All(x => x.Quantity.HasValue) ?? false
+                    : Quantity.HasValue;
+            }
         }
-
-        public override bool Equals(object obj) => Equals(obj as OrderItem);
-
-        public override int GetHashCode()
-        {
-            return HashCode.Combine(OrderId, CatalogueItem);
-        }
-
-        private void Updated() => lastUpdated = DateTime.UtcNow;
     }
 }

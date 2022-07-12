@@ -2,18 +2,21 @@
 using System.Threading.Tasks;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
-using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Models;
 
 namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.Orders
 {
     public interface IOrderItemService
     {
-        Task Create(CallOffId callOffId, string internalOrgId, CreateOrderItemModel model);
+        Task AddOrderItems(string internalOrgId, CallOffId callOffId, IEnumerable<CatalogueItemId> itemIds);
 
-        Task<List<OrderItem>> GetOrderItems(CallOffId callOffId, string internalOrgId, CatalogueItemType? catalogueItemType);
+        Task DeleteOrderItems(string internalOrgId, CallOffId callOffId, IEnumerable<CatalogueItemId> itemIds);
 
-        Task<OrderItem> GetOrderItem(CallOffId callOffId, string internalOrgId, CatalogueItemId catalogueItemId);
+        public Task<OrderItem> GetOrderItem(CallOffId callOffId, string internalOrgId, CatalogueItemId catalogueItemId);
 
-        Task DeleteOrderItem(CallOffId callOffId,  string internalOrgId, CatalogueItemId catalogueItemId);
+        public Task UpdateOrderItemFunding(CallOffId callOffId, string internalOrgId, CatalogueItemId catalogueItemId, OrderItemFundingType selectedFundingType);
+
+        public Task SetOrderItemFunding(CallOffId callOffId, string internalOrgId, CatalogueItemId catalogueItemId);
+
+        public Task SetOrderItemEstimationPeriod(CallOffId callOffId, string internalOrgId, CatalogueItemId catalogueItemId, CataloguePrice price);
     }
 }

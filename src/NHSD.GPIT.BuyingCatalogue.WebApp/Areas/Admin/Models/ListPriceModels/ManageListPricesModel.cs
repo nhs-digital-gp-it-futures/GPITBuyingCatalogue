@@ -1,78 +1,54 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
-using NHSD.GPIT.BuyingCatalogue.EntityFramework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
-using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Enums;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Models;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.ListPriceModels
 {
-    public sealed class ManageListPricesModel : NavBaseModel
+    public class ManageListPricesModel : NavBaseModel
     {
-        private readonly CatalogueItem catalogueItem;
-
-        public ManageListPricesModel()
+        public ManageListPricesModel(
+            ICollection<CataloguePrice> prices)
         {
+            TieredPrices = prices.Where(p => p.CataloguePriceType == CataloguePriceType.Tiered).ToList();
+            FlatPrices = prices.Where(p => p.CataloguePriceType == CataloguePriceType.Flat).ToList();
         }
 
-        public ManageListPricesModel(CatalogueItem catalogueItem)
+        public ManageListPricesModel(
+            CatalogueItem catalogueItem,
+            ICollection<CataloguePrice> prices)
+        : this(prices)
         {
-            this.catalogueItem = catalogueItem;
-            CataloguePrices = catalogueItem.CataloguePrices
-                .OrderBy(cp => cp.IsLocked)
-                .ThenByDescending(cp => cp.PublishedStatus)
-                .ToList();
+            CatalogueItemId = catalogueItem.Id;
+            CatalogueItemName = catalogueItem.Name;
+            CatalogueItemType = catalogueItem.CatalogueItemType;
         }
 
-        public ManageListPricesModel(CatalogueItem catalogueItem, CatalogueItemId parentCatalogueItemId)
-            : this(catalogueItem)
+        public ManageListPricesModel(
+            CatalogueItem solution,
+            CatalogueItem service,
+            ICollection<CataloguePrice> prices)
+        : this(prices)
         {
-            SolutionId = parentCatalogueItemId;
-
-            if (catalogueItem.CatalogueItemType == CatalogueItemType.AdditionalService)
-                AdditionalServiceId = catalogueItem.Id;
-
-            if (catalogueItem.CatalogueItemType == CatalogueItemType.AssociatedService)
-                AssociatedServiceId = catalogueItem.Id;
-
-            SolutionType = catalogueItem.CatalogueItemType.DisplayName();
+            CatalogueItemId = solution.Id;
+            ServiceId = service.Id;
+            CatalogueItemName = service.Name;
+            CatalogueItemType = service.CatalogueItemType;
         }
 
-        public CatalogueItemId CatalogueItemId => catalogueItem.Id;
+        public CatalogueItemId ServiceId { get; set; }
 
-        public string CatalogueName => catalogueItem.Name;
+        public CatalogueItemId CatalogueItemId { get; set; }
 
-        public ICollection<CataloguePrice> CataloguePrices { get; }
+        public string CatalogueItemName { get; set; }
 
-        // This is only used for routing for Associated and Additional services
-        public CatalogueItemId SolutionId { get; init; }
+        public CatalogueItemType CatalogueItemType { get; set; }
 
-        public CatalogueItemId? AdditionalServiceId { get; init; }
+        public IList<CataloguePrice> TieredPrices { get; set; }
 
-        public CatalogueItemId? AssociatedServiceId { get; init; }
+        public IList<CataloguePrice> FlatPrices { get; set; }
 
-        public string SolutionType { get; init; }
-
-        public bool ShowUnpublishedPrices { get; } // Only used for the checkbox component. value is not actually used server side;
-
-        public string AddLink { get; init; }
-
-        public string EditPriceActionName { get; set; }
-
-        public string EditPriceStatusActionName { get; set; }
-
-        public string ControllerName { get; set; }
-
-        public TaskProgress Status()
-        {
-            if (CataloguePrices is null || !CataloguePrices.Any())
-                return TaskProgress.NotStarted;
-
-            if (CataloguePrices.Any(cp => cp.PublishedStatus == PublicationStatus.Published))
-                return TaskProgress.Completed;
-
-            return TaskProgress.InProgress;
-        }
+        public string AddListPriceUrl { get; set; }
     }
 }

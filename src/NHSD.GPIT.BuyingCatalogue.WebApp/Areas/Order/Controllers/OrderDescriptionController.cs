@@ -2,14 +2,13 @@
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
-using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Enums;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Orders;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Organisations;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Users;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.OrderDescription;
-using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.OrderTriage;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
 {
@@ -19,7 +18,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
     public sealed class OrderDescriptionController : Controller
     {
         private readonly IOrderService orderService;
-        private readonly IFundingSourceService fundingSourceService;
         private readonly IOrderDescriptionService orderDescriptionService;
         private readonly IOrganisationsService organisationsService;
         private readonly IUsersService usersService;
@@ -28,14 +26,12 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
             IOrderService orderService,
             IOrderDescriptionService orderDescriptionService,
             IOrganisationsService organisationsService,
-            IUsersService usersService,
-            IFundingSourceService fundingSourceService)
+            IUsersService usersService)
         {
             this.orderService = orderService ?? throw new ArgumentNullException(nameof(orderService));
             this.orderDescriptionService = orderDescriptionService ?? throw new ArgumentNullException(nameof(orderDescriptionService));
             this.organisationsService = organisationsService ?? throw new ArgumentNullException(nameof(organisationsService));
             this.usersService = usersService ?? throw new ArgumentNullException(nameof(usersService));
-            this.fundingSourceService = fundingSourceService ?? throw new ArgumentNullException(nameof(fundingSourceService));
         }
 
         [HttpGet]
@@ -69,7 +65,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
         }
 
         [HttpGet("~/organisation/{internalOrgId}/order/neworder/description")]
-        public async Task<IActionResult> NewOrderDescription(string internalOrgId, TriageOption? option = null, FundingSource? fundingSource = null)
+        public async Task<IActionResult> NewOrderDescription(string internalOrgId, OrderTriageValue? option = null, CatalogueItemType? orderType = null)
         {
             var user = await usersService.GetUser(User.UserId());
             var organisation = await organisationsService.GetOrganisation(user?.PrimaryOrganisationId ?? 0);
@@ -79,21 +75,21 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
                 BackLink = Url.Action(
                     nameof(OrderController.NewOrder),
                     typeof(OrderController).ControllerName(),
-                    new { internalOrgId, option, fundingSource }),
+                    new { internalOrgId, option, orderType }),
             };
 
             return View("OrderDescription", descriptionModel);
         }
 
         [HttpPost("~/organisation/{internalOrgId}/order/neworder/description")]
-        public async Task<IActionResult> NewOrderDescription(string internalOrgId, OrderDescriptionModel model, FundingSource? fundingSource = null)
+        public async Task<IActionResult> NewOrderDescription(string internalOrgId, OrderDescriptionModel model, OrderTriageValue? option = null, CatalogueItemType? orderType = null)
         {
             if (!ModelState.IsValid)
                 return View("OrderDescription", model);
 
-            var order = await orderService.CreateOrder(model.Description, model.InternalOrgId);
-            if (fundingSource != null)
-                await fundingSourceService.SetFundingSource(order.CallOffId, internalOrgId, fundingSource!.Value.IsCentralFunding(), false);
+            var isAssociatedServiceOnly = orderType is CatalogueItemType.AssociatedService;
+
+            var order = await orderService.CreateOrder(model.Description, model.InternalOrgId, option, isAssociatedServiceOnly);
 
             return RedirectToAction(
                 nameof(OrderController.Order),

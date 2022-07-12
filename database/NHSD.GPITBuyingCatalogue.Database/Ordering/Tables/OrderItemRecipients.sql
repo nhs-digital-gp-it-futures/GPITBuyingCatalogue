@@ -3,7 +3,7 @@
     OrderId int NOT NULL,
     CatalogueItemId nvarchar(14) NOT NULL,
     OdsCode nvarchar(8) NOT NULL,
-    Quantity int NOT NULL CONSTRAINT ServiceRecipient_PositiveQuantity CHECK (Quantity > 0),
+    Quantity int NULL CONSTRAINT ServiceRecipient_PositiveQuantity CHECK (Quantity > 0),
     DeliveryDate date NULL,
     LastUpdated datetime2(7) DEFAULT GETUTCDATE() NOT NULL,
     LastUpdatedBy int NULL,

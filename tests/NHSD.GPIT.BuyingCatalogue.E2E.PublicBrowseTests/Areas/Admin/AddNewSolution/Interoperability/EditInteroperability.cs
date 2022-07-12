@@ -20,7 +20,8 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.AddNewSolution.Interope
         private static readonly Dictionary<string, string> Parameters = new()
         {
             {
-                nameof(SolutionId), SolutionId.ToString()
+                nameof(SolutionId),
+                SolutionId.ToString()
             },
         };
 

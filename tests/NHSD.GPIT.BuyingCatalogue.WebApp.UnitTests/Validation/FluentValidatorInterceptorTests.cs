@@ -104,6 +104,32 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Validation
 
         [Theory]
         [CommonAutoData]
+        public static void AfterValidation_DuplicatedProperties_DeduplicatesErrors(
+            ActionContext actionContext,
+            IValidationContext validationContext,
+            ValidationResult validationResult,
+            FluentValidatorInterceptor interceptor)
+        {
+            var expectedValidationErrors = new List<ValidationFailure>
+            {
+                new("SomeProperty3", "some-error3"),
+            };
+
+            validationResult.Errors.Clear();
+            validationResult.Errors.Add(new("SomeProperty1", "some-error1"));
+            validationResult.Errors.Add(new("SomeProperty3", "some-error3"));
+
+            actionContext.ModelState.Clear();
+            actionContext.ModelState.AddModelError("SomeProperty1", "MVC Error");
+
+            var result = interceptor.AfterAspNetValidation(actionContext, validationContext, validationResult);
+
+            result.Errors.Should().HaveCount(1);
+            result.Errors.Should().BeEquivalentTo(expectedValidationErrors);
+        }
+
+        [Theory]
+        [CommonAutoData]
         public static void AfterValidation_FormattedMessagePlaceholderValues(
             ActionContext actionContext,
             IValidationContext validationContext,

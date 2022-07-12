@@ -1,6 +1,5 @@
 ﻿using System;
 using FluentAssertions;
-using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.AutoFixtureCustomisations;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.CommencementDate;
 using Xunit;
@@ -16,18 +15,19 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.Commence
         [CommonAutoData]
         public static void WithValidArguments_PropertiesCorrectlySet(
             string internalOrgId,
-            CallOffId callOffId,
+            EntityFramework.Ordering.Models.Order order,
             DateTime commencementDate)
         {
-            var model = new CommencementDateModel(internalOrgId, callOffId, commencementDate, InitialPeriod, MaximumTerm);
+            order.CommencementDate = commencementDate;
+            var model = new CommencementDateModel(internalOrgId, order);
 
             model.Title.Should().Be("Timescales for Call-off Agreement");
             model.InternalOrgId.Should().Be(internalOrgId);
-            model.Day.Should().Be(commencementDate.Day.ToString("00"));
-            model.Month.Should().Be(commencementDate.Month.ToString("00"));
-            model.Year.Should().Be(commencementDate.Year.ToString("00"));
-            model.InitialPeriodValue.Should().Be(InitialPeriod);
-            model.MaximumTermValue.Should().Be(MaximumTerm);
+            model.Day.Should().Be(order.CommencementDate!.Value.Day.ToString("00"));
+            model.Month.Should().Be(order.CommencementDate!.Value.Month.ToString("00"));
+            model.Year.Should().Be(order.CommencementDate!.Value.Year.ToString("00"));
+            model.InitialPeriodValue.Should().Be(order.InitialPeriod);
+            model.MaximumTermValue.Should().Be(order.MaximumTerm);
         }
 
         [Theory]

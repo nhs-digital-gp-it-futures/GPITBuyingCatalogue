@@ -22,7 +22,7 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Utils
             WebApplicationConnector connector,
             Type controller,
             string methodName,
-            IDictionary<string, string> parameters,
+            IDictionary<string, string>? parameters,
             string buyerEmail,
             ITestOutputHelper? testOutputHelper = null)
             : base(

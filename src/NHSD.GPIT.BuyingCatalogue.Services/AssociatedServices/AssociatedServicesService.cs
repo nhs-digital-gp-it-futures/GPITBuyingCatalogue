@@ -49,15 +49,41 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.AssociatedServices
                 .ToListAsync();
         }
 
+        public async Task<List<CatalogueItem>> GetPublishedAssociatedServicesForSolution(CatalogueItemId? catalogueItemId)
+        {
+            if (catalogueItemId is null)
+            {
+                return new List<CatalogueItem>();
+            }
+
+            return await dbContext.SupplierServiceAssociations
+                .Include(x => x.AssociatedService)
+                .ThenInclude(x => x.CatalogueItem)
+                .Where(x => x.CatalogueItemId == catalogueItemId)
+                .Select(x => x.AssociatedService.CatalogueItem)
+                .Where(x => x.PublishedStatus == PublicationStatus.Published)
+                .OrderBy(x => x.Name)
+                .ToListAsync();
+        }
+
         public Task<CatalogueItem> GetAssociatedService(CatalogueItemId associatedServiceId)
         {
             return dbContext.CatalogueItems
                 .Include(i => i.AssociatedService)
                 .Include(i => i.Supplier)
-                .Include(i => i.CataloguePrices).ThenInclude(cp => cp.PricingUnit)
                 .Where(i => i.Id == associatedServiceId)
                 .FirstOrDefaultAsync();
         }
+
+        public async Task<CatalogueItem> GetAssociatedServiceWithCataloguePrices(CatalogueItemId associatedServiceId)
+            => await dbContext.CatalogueItems
+                .Include(i => i.AssociatedService)
+                .Include(i => i.Supplier)
+                .Include(i => i.CataloguePrices)
+                .ThenInclude(cp => cp.CataloguePriceTiers)
+                .Include(i => i.CataloguePrices)
+                .ThenInclude(cp => cp.PricingUnit)
+                .SingleOrDefaultAsync(i => i.Id == associatedServiceId);
 
         // checks to see if this associated services' name is unique for the supplier
         public Task<bool> AssociatedServiceExistsWithNameForSupplier(

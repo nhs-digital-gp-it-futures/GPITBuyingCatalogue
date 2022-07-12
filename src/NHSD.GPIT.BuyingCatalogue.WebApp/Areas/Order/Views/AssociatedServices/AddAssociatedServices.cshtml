@@ -1,0 +1,27 @@
+﻿@model NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.SolutionSelection.AssociatedServices.AddAssociatedServicesModel
+@{
+    ViewBag.Title = "Do you want to add any Associated Services to your order?";
+}
+
+<partial name="Partials/_BackLink" model="Model" />
+
+<div class="nhsuk-grid-row">
+    <div class="nhsuk-grid-column-full">
+        <nhs-validation-summary RadioId="AdditionalServicesRequired"/>
+
+        <nhs-page-title title="@ViewBag.Title"
+                        caption="Order @Model.CallOffId"
+                        advice="These are products that support the implementation of a solution and can be bought independently. For example, training or data migration or arranging the merging or splitting of existing practices."/>
+
+        <form method="post">
+            <nhs-fieldset-form-label asp-for="@Model"
+                                     size="Medium">
+                <nhs-yesno-radio-buttons asp-for="AdditionalServicesRequired" />
+            </nhs-fieldset-form-label>
+        
+            <div class="nhsuk-u-margin-top-9">
+                <nhs-submit-button/>
+            </div>
+        </form>
+    </div>
+</div>

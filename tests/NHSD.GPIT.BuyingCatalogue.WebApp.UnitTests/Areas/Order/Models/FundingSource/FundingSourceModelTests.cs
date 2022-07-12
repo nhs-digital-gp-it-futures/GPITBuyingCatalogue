@@ -1,8 +1,8 @@
-﻿using System.Collections.Generic;
+﻿using System.Linq;
+using AutoFixture.Xunit2;
 using FluentAssertions;
-using Microsoft.AspNetCore.Mvc.Rendering;
+using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.AutoFixtureCustomisations;
-using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.FundingSource;
 using Xunit;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.FundingSource
@@ -11,16 +11,40 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.FundingS
     {
         [Theory]
         [CommonAutoData]
-        public static void AvailableFundingSources_Expected(
-            FundingSourceModel model)
+        public static void FundingSource_WithArguments_FundingNull_SetsCorrectly(
+            string internalOrgId,
+            [Frozen] CallOffId callOffId,
+            EntityFramework.Ordering.Models.Order order)
         {
-            var selectList = new List<SelectListItem>
-            {
-                new("Central funding", ServiceContracts.Enums.FundingSource.Central.ToString()),
-                new("Local funding", ServiceContracts.Enums.FundingSource.Local.ToString()),
-            };
+            var orderItem = order.OrderItems.First();
 
-            model.AvailableFundingSources.Should().BeEquivalentTo(selectList);
+            orderItem.OrderItemFunding = null;
+
+            var model = new WebApp.Areas.Order.Models.FundingSources.FundingSource(internalOrgId, callOffId, order, orderItem);
+
+            model.Title.Should().Be("Funding source");
+            model.CallOffId.Should().Be(callOffId);
+            model.InternalOrgId.Should().Be(internalOrgId);
+            model.Caption.Should().Be(orderItem.CatalogueItem.Name);
+            model.SelectedFundingType.Should().Be(OrderItemFundingType.None);
+        }
+
+        [Theory]
+        [CommonAutoData]
+        public static void FundingSource_WithArguments_FundingSet_SetsCorrectly(
+            string internalOrgId,
+            [Frozen] CallOffId callOffId,
+            EntityFramework.Ordering.Models.Order order)
+        {
+            var orderItem = order.OrderItems.First();
+
+            var model = new WebApp.Areas.Order.Models.FundingSources.FundingSource(internalOrgId, callOffId, order, orderItem);
+
+            model.Title.Should().Be("Funding source");
+            model.CallOffId.Should().Be(callOffId);
+            model.InternalOrgId.Should().Be(internalOrgId);
+            model.Caption.Should().Be(orderItem.CatalogueItem.Name);
+            model.SelectedFundingType.Should().Be(orderItem.FundingType);
         }
     }
 }

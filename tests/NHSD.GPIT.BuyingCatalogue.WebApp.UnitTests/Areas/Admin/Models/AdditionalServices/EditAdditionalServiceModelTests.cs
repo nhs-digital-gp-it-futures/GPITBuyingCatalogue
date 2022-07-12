@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-using FluentAssertions;
+﻿using FluentAssertions;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Enums;
 using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.AutoFixtureCustomisations;
@@ -40,33 +39,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Models.Addition
             var model = new EditAdditionalServiceModel(solution.CatalogueItem, additionalService.CatalogueItem);
 
             model.DetailsStatus.Should().Be(TaskProgress.NotStarted);
-        }
-
-        [Theory]
-        [CommonAutoData]
-        public static void ListPriceStatus_WithCataloguePrices_ReturnsCompleted(
-            List<CataloguePrice> cataloguePrices,
-            CatalogueItem catalogueItem,
-            AdditionalService additionalService)
-        {
-            additionalService.CatalogueItem.CataloguePrices = cataloguePrices;
-
-            var model = new EditAdditionalServiceModel(catalogueItem, additionalService.CatalogueItem);
-
-            model.ListPriceStatus.Should().Be(TaskProgress.Completed);
-        }
-
-        [Theory]
-        [CommonAutoData]
-        public static void ListPriceStatus_WithNoCataloguePrices_ReturnsCompleted(
-            CatalogueItem catalogueItem,
-            AdditionalService additionalService)
-        {
-            additionalService.CatalogueItem.CataloguePrices = new HashSet<CataloguePrice>();
-
-            var model = new EditAdditionalServiceModel(catalogueItem, additionalService.CatalogueItem);
-
-            model.ListPriceStatus.Should().Be(TaskProgress.NotStarted);
         }
     }
 }

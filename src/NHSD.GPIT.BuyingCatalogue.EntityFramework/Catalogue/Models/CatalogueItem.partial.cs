@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-using System.Linq;
+﻿using System.Linq;
 using System.Text.Json;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 
@@ -32,16 +31,5 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models
         public string AdditionalServiceDescription(CatalogueItemId catalogueItemId) => Supplier?.CatalogueItems
             .FirstOrDefault(c => c.Id == catalogueItemId)
             ?.AdditionalService?.FullDescription;
-
-        public IEnumerable<CataloguePrice> DuplicateListPrices(
-            ProvisioningType provisioningType,
-            decimal? price,
-            string unitDescription,
-            TimeUnit? timeUnit)
-            => CataloguePrices.Where(cp =>
-                    string.Equals(cp.PricingUnit.Description, unitDescription)
-                    && cp.Price == price
-                    && cp.ProvisioningType == provisioningType
-                    && cp.TimeUnit == timeUnit);
     }
 }

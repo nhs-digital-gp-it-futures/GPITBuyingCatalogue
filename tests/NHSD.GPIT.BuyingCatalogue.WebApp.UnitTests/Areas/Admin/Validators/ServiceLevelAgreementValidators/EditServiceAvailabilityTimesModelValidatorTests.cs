@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Threading.Tasks;
 using AutoFixture.Xunit2;
 using FluentValidation.TestHelper;
 using Moq;
@@ -17,7 +16,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators.Serv
     {
         [Theory]
         [CommonAutoData]
-        public static async Task Validate_SupportTypeNotEntered_SetsModelError(
+        public static void Validate_SupportTypeNotEntered_SetsModelError(
             EditServiceAvailabilityTimesModelValidator validator)
         {
             var model = new EditServiceAvailabilityTimesModel
@@ -27,7 +26,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators.Serv
                 Until = DateTime.UtcNow.AddMinutes(5),
             };
 
-            var result = await validator.TestValidateAsync(model);
+            var result = validator.TestValidate(model);
 
             result.ShouldHaveValidationErrorFor(m => m.SupportType)
                 .WithErrorMessage("Enter a type of support");
@@ -35,7 +34,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators.Serv
 
         [Theory]
         [CommonAutoData]
-        public static async Task Validate_FromNotEntered_SetsModelError(
+        public static void Validate_FromNotEntered_SetsModelError(
             EditServiceAvailabilityTimesModelValidator validator)
         {
             var model = new EditServiceAvailabilityTimesModel
@@ -45,7 +44,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators.Serv
                 Until = DateTime.UtcNow,
             };
 
-            var result = await validator.TestValidateAsync(model);
+            var result = validator.TestValidate(model);
 
             result.ShouldHaveValidationErrorFor(m => m.From)
                 .WithErrorMessage("Enter a from time");
@@ -53,7 +52,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators.Serv
 
         [Theory]
         [CommonAutoData]
-        public static async Task Validate_UntilNotEntered_SetsModelError(
+        public static void Validate_UntilNotEntered_SetsModelError(
             EditServiceAvailabilityTimesModelValidator validator)
         {
             var model = new EditServiceAvailabilityTimesModel
@@ -63,7 +62,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators.Serv
                 From = DateTime.UtcNow,
             };
 
-            var result = await validator.TestValidateAsync(model);
+            var result = validator.TestValidate(model);
 
             result.ShouldHaveValidationErrorFor(m => m.Until)
                 .WithErrorMessage("Enter an until time");
@@ -71,7 +70,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators.Serv
 
         [Theory]
         [CommonAutoData]
-        public static async Task Validate_ApplicableDAysNotEntered_SetsModelError(
+        public static void Validate_ApplicableDAysNotEntered_SetsModelError(
             EditServiceAvailabilityTimesModelValidator validator)
         {
             var model = new EditServiceAvailabilityTimesModel
@@ -81,7 +80,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators.Serv
                 Until = DateTime.UtcNow.AddMinutes(5),
             };
 
-            var result = await validator.TestValidateAsync(model);
+            var result = validator.TestValidate(model);
 
             result.ShouldHaveValidationErrorFor(m => m.ApplicableDays)
                 .WithErrorMessage("Enter the applicable days");
@@ -89,7 +88,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators.Serv
 
         [Theory]
         [CommonAutoData]
-        public static async Task Validate_AddDuplicateAvailabilityTimes_SetsModelError(
+        public static void Validate_AddDuplicateAvailabilityTimes_SetsModelError(
             ServiceAvailabilityTimes serviceAvailabilityTimes,
             [Frozen] Mock<IServiceLevelAgreementsService> serviceLevelAgreementsService,
             EditServiceAvailabilityTimesModelValidator validator)
@@ -116,7 +115,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators.Serv
                 ApplicableDays = serviceAvailabilityTimes.ApplicableDays,
             };
 
-            var result = await validator.TestValidateAsync(model);
+            var result = validator.TestValidate(model);
 
             result.ShouldHaveAnyValidationError()
                 .WithErrorMessage("Service availability time with these details already exists");
@@ -124,7 +123,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators.Serv
 
         [Theory]
         [CommonAutoData]
-        public static async Task Validate_EditExistingServiceAvailabilityTime_NoModelError(
+        public static void Validate_EditExistingServiceAvailabilityTime_NoModelError(
             ServiceAvailabilityTimes serviceAvailabilityTimes,
             [Frozen] Mock<IServiceLevelAgreementsService> serviceLevelAgreementsService,
             EditServiceAvailabilityTimesModelValidator validator)
@@ -151,7 +150,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators.Serv
                 ApplicableDays = serviceAvailabilityTimes.ApplicableDays,
             };
 
-            var result = await validator.TestValidateAsync(model);
+            var result = validator.TestValidate(model);
 
             result.ShouldNotHaveValidationErrorFor(m => m);
         }

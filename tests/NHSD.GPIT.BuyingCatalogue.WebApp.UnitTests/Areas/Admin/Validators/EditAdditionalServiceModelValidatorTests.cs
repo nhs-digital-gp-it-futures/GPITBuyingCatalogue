@@ -74,29 +74,5 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators
             result.ShouldHaveValidationErrorFor(m => m.SelectedPublicationStatus)
                 .WithErrorMessage("Complete all mandatory sections before publishing");
         }
-
-        [Theory]
-        [CommonAutoData]
-        public static void Validate_MissingListPrices_SetsModelError(
-            Solution solution,
-            AdditionalService additionalService,
-            EditAdditionalServiceModelValidator validator)
-        {
-            additionalService.CatalogueItem.PublishedStatus = PublicationStatus.Draft;
-            additionalService.CatalogueItem.CataloguePrices = new HashSet<CataloguePrice>();
-
-            var model = new EditAdditionalServiceModel(solution.CatalogueItem, additionalService.CatalogueItem)
-            {
-                SelectedPublicationStatus = PublicationStatus.Published,
-            };
-
-            var result = validator.TestValidate(model);
-
-            model.DetailsStatus.Should().Be(TaskProgress.Completed);
-            model.CapabilitiesStatus.Should().Be(TaskProgress.Completed);
-            model.ListPriceStatus.Should().Be(TaskProgress.NotStarted);
-            result.ShouldHaveValidationErrorFor(m => m.SelectedPublicationStatus)
-                .WithErrorMessage("Complete all mandatory sections before publishing");
-        }
     }
 }

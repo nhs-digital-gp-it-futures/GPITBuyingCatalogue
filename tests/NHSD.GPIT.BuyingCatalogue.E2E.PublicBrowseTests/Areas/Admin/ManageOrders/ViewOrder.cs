@@ -157,36 +157,87 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.ManageOrders
         }
 
         [Fact]
-        public void Funding_NotConfirmed_AsExpected()
+        public void Funding_NotStarted_AsExpected()
         {
             using var context = GetEndToEndDbContext();
-            var order = context.Orders.Single(o => o.Id == CallOffId.Id);
+            var orderItem = context.Orders
+                .Include(o => o.OrderItems)
+                .ThenInclude(oi => oi.OrderItemFunding)
+                .Where(o => o.Id == CallOffId.Id)
+                .Select(o => o.OrderItems.First())
+                .Single();
 
-            order.ConfirmedFundingSource = false;
+            orderItem.OrderItemFunding = null;
+
             context.SaveChangesAs(UserSeedData.SueId);
 
             Driver.Navigate().Refresh();
 
-            CommonActions.ElementTextEqualTo(ViewOrderObjects.FundingType, "Not selected".FormatForComparison()).Should().BeTrue();
+            RunTest(() =>
+            {
+                CommonActions.ElementTextEqualTo(ViewOrderObjects.FundingType, "None specified".FormatForComparison()).Should().BeTrue();
+            });
         }
 
-        [Theory]
-        [InlineData(true, "Central funding")]
-        [InlineData(false, "Local funding")]
-        public void Funding_AsExpected(
-            bool fundingOnlyGms,
-            string expectedFundingSource)
+        [Fact]
+        public void Funding_CentalFunding_AsExpected()
         {
             using var context = GetEndToEndDbContext();
-            var order = context.Orders.Single(o => o.Id == CallOffId.Id);
+            var orderItem = context.Orders
+                .Include(o => o.OrderItems)
+                .ThenInclude(oi => oi.OrderItemFunding)
+                .Where(o => o.Id == CallOffId.Id)
+                .Select(o => o.OrderItems.First())
+                .Single();
 
-            order.FundingSourceOnlyGms = fundingOnlyGms;
-            order.ConfirmedFundingSource = true;
+            if (orderItem.OrderItemFunding is null)
+                SetOrderItemFunding(orderItem);
+
+            orderItem.OrderItemFunding.OrderItemFundingType = OrderItemFundingType.CentralFunding;
+
+            context.SaveChangesAs(UserSeedData.SueId);
+
+            Driver.Navigate().Refresh();
+            RunTest(() =>
+            {
+                CommonActions.ElementTextEqualTo(ViewOrderObjects.FundingType, "Central".FormatForComparison()).Should().BeTrue();
+            });
+        }
+
+        [Fact]
+        public void Funding_LocalFunding_AsExpected()
+        {
+            using var context = GetEndToEndDbContext();
+            var orderItem = context.Orders
+                .Include(o => o.OrderItems)
+                .ThenInclude(oi => oi.OrderItemFunding)
+                .Where(o => o.Id == CallOffId.Id)
+                .Select(o => o.OrderItems.First())
+                .Single();
+
+            if (orderItem.OrderItemFunding is null)
+                SetOrderItemFunding(orderItem);
+
+            orderItem.OrderItemFunding.OrderItemFundingType = OrderItemFundingType.LocalFunding;
+
             context.SaveChangesAs(UserSeedData.SueId);
 
             Driver.Navigate().Refresh();
 
-            CommonActions.ElementTextEqualTo(ViewOrderObjects.FundingType, expectedFundingSource.FormatForComparison()).Should().BeTrue();
+            RunTest(() =>
+            {
+                CommonActions.ElementTextEqualTo(ViewOrderObjects.FundingType, "Local".FormatForComparison()).Should().BeTrue();
+            });
+        }
+
+        private static void SetOrderItemFunding(OrderItem item)
+        {
+            item.OrderItemFunding = new OrderItemFunding
+            {
+                OrderId = item.OrderId,
+                CatalogueItemId = item.CatalogueItemId,
+                OrderItem = item,
+            };
         }
     }
 }

@@ -1,0 +1,28 @@
+﻿@model NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.OrderTriage.OrderItemTypeModel
+@{
+    ViewBag.Title = "What do you want to order?";
+}
+
+<div>
+    <partial name="Partials/_BackLink" model="Model" />
+    <div class="nhsuk-grid-row nhsuk-u-margin-bottom-6">
+        <div class="nhsuk-grid-column-two-thirds">
+            <nhs-validation-summary RadioId="@nameof(Model.SelectedOrderItemType)" />
+            <nhs-page-title title="@ViewBag.Title"
+                            caption="@Model.OrganisationName"
+                            advice="If you want to order both, select Catalogue Solution and you'll be able to add Associated Services afterwards."/>
+
+            <form method="post">
+                <nhs-fieldset-form-label asp-for="SelectedOrderItemType">
+                    <nhs-radio-buttons asp-for="SelectedOrderItemType"
+                                        values="Model.AvailableOrderItemTypes.Cast<object>()"
+                                        display-name="Name"
+                                        value-name="Value"
+                                        hint-name="Advice" />
+                </nhs-fieldset-form-label>
+                    
+                <nhs-submit-button />
+            </form>
+        </div>
+    </div>
+</div>

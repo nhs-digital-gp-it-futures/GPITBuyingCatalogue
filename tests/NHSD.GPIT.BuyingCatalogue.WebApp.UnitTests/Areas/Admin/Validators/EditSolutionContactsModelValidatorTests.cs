@@ -1,5 +1,4 @@
 ﻿using System.Linq;
-using System.Threading.Tasks;
 using AutoFixture;
 using FluentValidation.TestHelper;
 using MoreLinq;
@@ -14,24 +13,24 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators
     {
         [Theory]
         [CommonAutoData]
-        public static async Task Validate_ValidRequest_NoValidationErrors(
+        public static void Validate_ValidRequest_NoValidationErrors(
             EditSolutionContactsModel model,
             EditSolutionContactsModelValidator validator)
         {
-            var result = await validator.TestValidateAsync(model);
+            var result = validator.TestValidate(model);
 
             result.ShouldNotHaveValidationErrorFor(EditSolutionContactsModelValidator.ErrorElementName);
         }
 
         [Theory]
         [CommonAutoData]
-        public static async Task Validate_NoSelectedContacts_SetsModelError(
+        public static void Validate_NoSelectedContacts_SetsModelError(
             EditSolutionContactsModel model,
             EditSolutionContactsModelValidator validator)
         {
             model.AvailableSupplierContacts.ForEach(c => c.Selected = false);
 
-            var result = await validator.TestValidateAsync(model);
+            var result = validator.TestValidate(model);
 
             result.ShouldHaveValidationErrorFor(EditSolutionContactsModelValidator.ErrorElementName)
                 .WithErrorMessage("Select a supplier contact");
@@ -39,7 +38,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators
 
         [Theory]
         [CommonAutoData]
-        public static async Task Validate_MoreThan2SelectedContacts_SetsModelError(
+        public static void Validate_MoreThan2SelectedContacts_SetsModelError(
             Fixture fixture,
             EditSolutionContactsModelValidator validator)
         {
@@ -48,7 +47,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators
                 AvailableSupplierContacts = fixture.Build<AvailableSupplierContact>().With(c => c.Selected, true).CreateMany(3).ToList(),
             };
 
-            var result = await validator.TestValidateAsync(model);
+            var result = validator.TestValidate(model);
 
             result.ShouldHaveValidationErrorFor(EditSolutionContactsModelValidator.ErrorElementName)
                 .WithErrorMessage("You can only select up to two supplier contacts");

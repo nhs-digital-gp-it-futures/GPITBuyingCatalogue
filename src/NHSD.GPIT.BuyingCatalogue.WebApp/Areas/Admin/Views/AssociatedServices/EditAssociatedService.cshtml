@@ -33,11 +33,14 @@
                 <nhs-table-cell>Price</nhs-table-cell>
                 <nhs-table-cell>Yes</nhs-table-cell>
                 <nhs-table-cell><nhs-tag status-enum="@Model.ListPriceStatus" /></nhs-table-cell>
-                <nhs-table-cell><a asp-action="@nameof(AssociatedServicesController.ManageListPrices)"
-                   asp-controller="@typeof(AssociatedServicesController).ControllerName()"
-                   asp-route-solutionId="@Model.SolutionId"
-                   asp-route-associatedServiceId="@Model.AssociatedServiceId"
-                   style="white-space: nowrap;">Edit</a></nhs-table-cell>
+                <nhs-table-cell>
+                    <a asp-controller="@typeof(AssociatedServiceListPriceController).ControllerName()"
+                       asp-action="@nameof(AssociatedServiceListPriceController.Index)"
+                       asp-route-solutionId="@Model.SolutionId"
+                       asp-route-associatedServiceId="@Model.AssociatedServiceId">
+                        Edit
+                    </a>
+                </nhs-table-cell>
             </nhs-table-row-container>
         </nhs-table>
 

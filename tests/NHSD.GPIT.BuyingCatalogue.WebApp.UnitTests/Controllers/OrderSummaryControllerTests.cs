@@ -46,11 +46,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Controllers
 
             orderServiceMock.Setup(s => s.GetOrderForSummary(order.CallOffId, internalOrgId)).ReturnsAsync(order);
 
-            var expectedViewData = new OrderSummaryModel(order)
-            {
-                AdviceText = "This order has been completed and can no longer be changed.",
-                Title = $"Order completed for {order.CallOffId}",
-            };
+            var expectedViewData = new OrderSummaryModel(order);
 
             var actualResult = await controller.Index(internalOrgId, order.CallOffId);
 
@@ -70,38 +66,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Controllers
 
             orderServiceMock.Setup(s => s.GetOrderForSummary(order.CallOffId, internalOrgId)).ReturnsAsync(order);
 
-            var expectedViewData = new OrderSummaryModel(order)
-            {
-                AdviceText = "This is what's been added to your order so far. You must complete all mandatory steps before you can confirm your order.",
-                Title = $"Order summary for {order.CallOffId}",
-            };
-
-            var actualResult = await controller.Index(internalOrgId, order.CallOffId);
-
-            actualResult.Should().BeOfType<ViewResult>();
-            actualResult.As<ViewResult>().ViewData.Model.Should().BeEquivalentTo(expectedViewData);
-        }
-
-        [Theory]
-        [CommonAutoData]
-        public static async Task Get_Index_InProgress_Completable_Order_ReturnsExpectedResult(
-            string internalOrgId,
-            Order order,
-            OrderItem orderItem,
-            [Frozen] Mock<IOrderService> orderServiceMock,
-            OrderSummaryController controller)
-        {
-            order.OrderStatus = OrderStatus.InProgress;
-            orderItem.CatalogueItem.CatalogueItemType = EntityFramework.Catalogue.Models.CatalogueItemType.Solution;
-            order.AddOrUpdateOrderItem(orderItem);
-
-            orderServiceMock.Setup(s => s.GetOrderForSummary(order.CallOffId, internalOrgId)).ReturnsAsync(order);
-
-            var expectedViewData = new OrderSummaryModel(order)
-            {
-                AdviceText = "Review your order summary and confirm the content is correct. Once confirmed, you'll be unable to make changes.",
-                Title = $"Review order summary for {order.CallOffId}",
-            };
+            var expectedViewData = new OrderSummaryModel(order);
 
             var actualResult = await controller.Index(internalOrgId, order.CallOffId);
 

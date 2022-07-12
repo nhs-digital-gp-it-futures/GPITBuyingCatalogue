@@ -15,6 +15,8 @@
 :r ./InsertFrameworks.sql
 :r ./InsertCapabilities.sql
 :r ./InsertCataloguePriceTypes.sql
+:r ./InsertCataloguePriceCalculationTypes.sql
+:r ./InsertCataloguePriceQuantityCalculationTypes.sql
 :r ./InsertEpics.sql
 :r ./InsertPricingUnits.sql
 :r ./InsertProvisioningTypes.sql
@@ -24,6 +26,8 @@
 :r ./InsertStandardsCapabilities.sql
 
 :r ./InsertOrderStatuses.sql
+:r ./InsertOrderTriageValues.sql
+:r ./InsertOrderItemFundingTypes.sql
 :r ./InsertTimeUnits.sql
 :r ./InsertSolutions.sql
 :r ./InsertAdditionalServices.sql
@@ -45,3 +49,4 @@
 :r ./ProdLikeData/MergeCataloguePrices.sql
 
 :r ./OrderSeedData/InsertTestOrderSeedData.sql
+:r ./InsertSupplierServiceAssociations.sql

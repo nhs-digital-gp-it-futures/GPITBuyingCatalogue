@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 using AutoFixture.Xunit2;
 using FluentValidation.TestHelper;
 using Moq;
@@ -18,7 +17,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators.Supp
     {
         [Theory]
         [CommonAutoData]
-        public static async Task Validate_FromActiveToInactive_WithReferencedItems(
+        public static void Validate_FromActiveToInactive_WithReferencedItems(
             Epic epic,
             List<CatalogueItem> itemsReferencingEpic,
             EditSupplierDefinedEpicModel model,
@@ -35,7 +34,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators.Supp
             service.Setup(s => s.GetItemsReferencingEpic(model.Id))
                 .ReturnsAsync(itemsReferencingEpic);
 
-            var result = await validator.TestValidateAsync(model);
+            var result = validator.TestValidate(model);
 
             result.ShouldHaveValidationErrorFor(m => m.IsActive)
                 .WithErrorMessage("This supplier defined Epic cannot be set to inactive as it is referenced by another solution or service");
@@ -43,7 +42,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators.Supp
 
         [Theory]
         [CommonAutoData]
-        public static async Task Validate_FromActiveToInactive_NoReferencedItems(
+        public static void Validate_FromActiveToInactive_NoReferencedItems(
             Epic epic,
             EditSupplierDefinedEpicModel model,
             [Frozen] Mock<ISupplierDefinedEpicsService> service,
@@ -59,7 +58,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators.Supp
             service.Setup(s => s.GetItemsReferencingEpic(model.Id))
                 .ReturnsAsync(Array.Empty<CatalogueItem>().ToList());
 
-            var result = await validator.TestValidateAsync(model);
+            var result = validator.TestValidate(model);
 
             result.ShouldNotHaveValidationErrorFor(m => m.IsActive);
             service.Verify(s => s.GetItemsReferencingEpic(model.Id), Times.Once());
@@ -67,7 +66,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators.Supp
 
         [Theory]
         [CommonAutoData]
-        public static async Task Validate_FromInactiveToInactive_NoModelError(
+        public static void Validate_FromInactiveToInactive_NoModelError(
             Epic epic,
             EditSupplierDefinedEpicModel model,
             [Frozen] Mock<ISupplierDefinedEpicsService> service,
@@ -80,7 +79,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators.Supp
             service.Setup(s => s.GetEpic(model.Id))
                 .ReturnsAsync(epic);
 
-            var result = await validator.TestValidateAsync(model);
+            var result = validator.TestValidate(model);
 
             result.ShouldNotHaveValidationErrorFor(m => m.IsActive);
             service.Verify(s => s.GetItemsReferencingEpic(model.Id), Times.Never());

@@ -18,7 +18,7 @@
 .suggestion-search-container {
     z-index: 1; /* [9] */
     display: inline-block;
-    width:95%;
+    width: 95%;
 
     @include mq($until: tablet) {
         display: inline;
@@ -229,13 +229,13 @@
     margin-top: 4px
 }
 
-.suggestion-search-wrap-search{
-    margin-bottom:20px;
+.suggestion-search-wrap-search {
+    margin-bottom: 20px;
 }
 
 .suggestion-search-wrap-form {
     display: flex;
-    width:100%;
+    width: 100%;
 }
 
 .suggestion-search-search__submit {
@@ -254,7 +254,6 @@
     padding-left: 7px;
     padding-right: 7px;
 
-
     .nhsuk-icon__search {
         fill: #ffffff;
     }
@@ -266,4 +265,3 @@
         border: 1px solid #fff;
     }
 }
-

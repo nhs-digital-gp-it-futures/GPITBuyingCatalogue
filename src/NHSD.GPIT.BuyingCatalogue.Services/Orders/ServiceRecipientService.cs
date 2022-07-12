@@ -1,60 +1,47 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Microsoft.EntityFrameworkCore;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework;
-using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Orders;
 
 namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
 {
-    public sealed class ServiceRecipientService : IServiceRecipientService
+    public class ServiceRecipientService : IServiceRecipientService
     {
         private readonly BuyingCatalogueDbContext context;
 
-        public ServiceRecipientService(BuyingCatalogueDbContext context) =>
-            this.context = context ?? throw new ArgumentNullException(nameof(context));
-
-        public async Task<List<ServiceRecipient>> GetAllOrderItemRecipients(CallOffId callOffId, string internalOrgId)
+        public ServiceRecipientService(BuyingCatalogueDbContext context)
         {
-            if (!await context.Orders.AnyAsync(o => o.Id == callOffId.Id))
-                return null;
-
-            return await context.Orders
-                .Where(o => o.Id == callOffId.Id && o.OrderingParty.InternalIdentifier == internalOrgId)
-                .SelectMany(o => o.OrderItems)
-                .Where(o => o.CatalogueItem.CatalogueItemType == CatalogueItemType.Solution)
-                .SelectMany(o => o.OrderItemRecipients)
-                .Select(r => new { r.Recipient.OdsCode, r.Recipient.Name })
-                .Distinct()
-                .OrderBy(r => r.Name)
-                .Select(r => new ServiceRecipient { OdsCode = r.OdsCode, Name = r.Name })
-                .AsNoTracking()
-                .ToListAsync();
+            this.context = context ?? throw new ArgumentNullException(nameof(context));
         }
 
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Performance", "CA1841:Prefer Dictionary.Contains methods", Justification = "'Contains' is used for LINQ to SQL Query")]
-        public async Task<IReadOnlyDictionary<string, ServiceRecipient>> AddOrUpdateServiceRecipients(
-            IEnumerable<ServiceRecipient> recipients)
+        public async Task AddServiceRecipient(ServiceRecipientDto recipient)
         {
-            var requestRecipients = recipients.ToDictionary(r => r.OdsCode);
+            if (recipient == null)
+            {
+                throw new ArgumentNullException(nameof(recipient));
+            }
 
-            var existingServiceRecipients = await context.ServiceRecipients
-                .Where(s => requestRecipients.Keys.Contains(s.OdsCode))
-                .ToListAsync();
+            var serviceRecipient = context.ServiceRecipients
+                .FirstOrDefault(x => x.OdsCode == recipient.OdsCode);
 
-            foreach (var recipient in existingServiceRecipients)
-                recipient.Name = requestRecipients[recipient.OdsCode].Name;
+            if (serviceRecipient == null)
+            {
+                serviceRecipient = new ServiceRecipient
+                {
+                    OdsCode = recipient.OdsCode,
+                };
 
-            var newServiceRecipients = requestRecipients.Values.Where(p => !existingServiceRecipients.Any(p2 => p2.OdsCode == p.OdsCode));
+                context.ServiceRecipients.Add(serviceRecipient);
+            }
 
-            // ReSharper disable once MethodHasAsyncOverload
-            // Non-async method recommended over async version for most cases (see EF Core docs)
-            context.ServiceRecipients.AddRange(newServiceRecipients);
+            if (serviceRecipient.Name != recipient.Name)
+            {
+                serviceRecipient.Name = recipient.Name;
 
-            return existingServiceRecipients.Union(newServiceRecipients).ToDictionary(r => r.OdsCode);
+                await context.SaveChangesAsync();
+            }
         }
     }
 }

@@ -73,9 +73,17 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.AdditionalServices
                     .ThenInclude(cie => cie.Epic)
                 .SingleOrDefaultAsync(ci => ci.Id == additionalServiceId);
 
-        public Task<List<CatalogueItem>> GetAdditionalServicesBySolutionId(CatalogueItemId catalogueItemId)
-            => BaseQuery(catalogueItemId)
-                .ToListAsync();
+        public async Task<List<CatalogueItem>> GetAdditionalServicesBySolutionId(CatalogueItemId? catalogueItemId, bool publishedOnly = false)
+        {
+            if (!catalogueItemId.HasValue)
+            {
+                return new List<CatalogueItem>();
+            }
+
+            return publishedOnly
+                ? await BaseQuery(catalogueItemId.Value).Where(x => x.PublishedStatus == PublicationStatus.Published).ToListAsync()
+                : await BaseQuery(catalogueItemId.Value).ToListAsync();
+        }
 
         public Task<List<CatalogueItem>> GetAdditionalServicesBySolutionIds(IEnumerable<CatalogueItemId> solutionIds)
         {
@@ -84,7 +92,6 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.AdditionalServices
                 .Include(i => i.CatalogueItemEpics)
                 .Include(i => i.Supplier)
                 .Include(i => i.AdditionalService)
-                .Include(i => i.CataloguePrices).ThenInclude(cp => cp.PricingUnit)
                 .Where(i => solutionIds.Contains(i.AdditionalService.SolutionId)
                     && i.CatalogueItemType == CatalogueItemType.AdditionalService
                     && i.PublishedStatus == PublicationStatus.Published)
@@ -105,13 +112,19 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.AdditionalServices
                     && add.CatalogueItem.Name == additionalServiceName
                     && add.CatalogueItemId != currentCatalogueItemId);
 
-        private IQueryable<CatalogueItem> BaseQuery(CatalogueItemId catalogueItemId) => dbContext.CatalogueItems
+        private IQueryable<CatalogueItem> BaseQuery(CatalogueItemId catalogueItemId)
+        {
+            return dbContext.CatalogueItems
                 .Include(i => i.AdditionalService)
                 .Include(i => i.CatalogueItemCapabilities)
                 .Include(i => i.CatalogueItemEpics)
                 .Include(i => i.Supplier)
-                .Include(i => i.CataloguePrices).ThenInclude(cp => cp.PricingUnit)
-                .Where(i => i.AdditionalService.SolutionId == catalogueItemId && i.CatalogueItemType == CatalogueItemType.AdditionalService)
+                .Include(ci => ci.CataloguePrices).ThenInclude(cp => cp.PricingUnit)
+                .Include(ci => ci.CataloguePrices).ThenInclude(cp => cp.CataloguePriceTiers)
+                .AsSplitQuery()
+                .Where(i => i.AdditionalService.SolutionId == catalogueItemId
+                    && i.CatalogueItemType == CatalogueItemType.AdditionalService)
                 .OrderBy(i => i.Name);
+        }
     }
 }

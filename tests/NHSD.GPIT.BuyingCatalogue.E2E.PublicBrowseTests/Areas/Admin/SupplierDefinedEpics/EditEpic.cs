@@ -16,6 +16,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.SupplierDefinedEpics
     public sealed class EditEpic : AuthorityTestBase, IClassFixture<LocalWebApplicationFactory>
     {
         private const string EpicId = "S00001";
+
         private static readonly Dictionary<string, string> Parameters = new()
         {
             { nameof(EpicId), EpicId },

@@ -12,7 +12,7 @@ namespace NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.AutoFixtureCustomisations
     {
         public void Customize(IFixture fixture)
         {
-            ISpecimenBuilder ComposerTransformation(ICustomizationComposer<CatalogueItem> composer) => composer
+            static ISpecimenBuilder ComposerTransformation(ICustomizationComposer<CatalogueItem> composer) => composer
                 .FromFactory(new CatalogueItemSpecimenBuilder())
                 .Without(i => i.AdditionalService)
                 .Without(i => i.AssociatedService)

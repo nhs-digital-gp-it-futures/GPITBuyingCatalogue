@@ -7,71 +7,31 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models
 {
     public sealed partial class Order
     {
-        private readonly List<DefaultDeliveryDate> defaultDeliveryDates = new();
-        private readonly List<OrderItem> orderItems = new();
         private readonly List<ServiceInstanceItem> serviceInstanceItems = new();
 
         private DateTime? completed;
 
         public IReadOnlyList<ServiceInstanceItem> ServiceInstanceItems => serviceInstanceItems.AsReadOnly();
 
-        public decimal CalculateCostPerYear(CostType costType)
+        // TODO: remove with csv
+        public string ApproximateFundingType
         {
-            return OrderItems.Where(i => i.CostType == costType).Sum(i => i.CalculateTotalCostPerYear());
+            get
+            {
+                return OrderItems.All(x => x.FundingType is OrderItemFundingType.LocalFunding or OrderItemFundingType.LocalFundingOnly)
+                    ? "Local"
+                    : "Central";
+            }
         }
 
-        public decimal CalculateTotalOwnershipCost()
-        {
-            const int defaultContractLength = 3;
-
-            return CalculateCostPerYear(CostType.OneOff) + (defaultContractLength * CalculateCostPerYear(CostType.Recurring));
-        }
+        public string EndDate => CommencementDate.HasValue && MaximumTerm.HasValue
+            ? $"{CommencementDate?.AddMonths(MaximumTerm.Value).AddDays(-1):dd MMMM yyyy}"
+            : string.Empty;
 
         public void Complete()
         {
             OrderStatus = OrderStatus.Completed;
             completed = DateTime.UtcNow;
-        }
-
-        public DeliveryDateResult SetDefaultDeliveryDate(CatalogueItemId catalogueItemId, DateTime date)
-        {
-            var result = DeliveryDateResult.Updated;
-
-            var existingDate = DefaultDeliveryDates.SingleOrDefault(d => d.CatalogueItemId == catalogueItemId);
-            if (existingDate is null)
-            {
-                existingDate = new DefaultDeliveryDate
-                {
-                    CatalogueItemId = catalogueItemId,
-                    OrderId = Id,
-                };
-
-                DefaultDeliveryDates.Add(existingDate);
-                result = DeliveryDateResult.Added;
-            }
-
-            existingDate.DeliveryDate = date;
-            return result;
-        }
-
-        public OrderItem AddOrUpdateOrderItem(OrderItem orderItem)
-        {
-            if (orderItem is null)
-                throw new ArgumentNullException(nameof(orderItem));
-
-            var existingItem = orderItems.SingleOrDefault(o => o.Equals(orderItem));
-            if (existingItem is null)
-            {
-                orderItems.Add(orderItem);
-
-                return orderItem;
-            }
-
-            existingItem.EstimationPeriod = orderItem.EstimationPeriod;
-            existingItem.PriceId = orderItem.PriceId;
-            existingItem.Price = orderItem.Price;
-
-            return existingItem;
         }
 
         public bool CanComplete()
@@ -82,19 +42,48 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models
                 && Supplier is not null
                 && CommencementDate is not null
                 && (HasSolution() || HasAssociatedService())
-                && FundingSourceOnlyGms.HasValue
+                && OrderItems.Count > 0
+                && OrderItems.All(oi => oi.OrderItemFunding is not null)
                 && OrderStatus != OrderStatus.Completed;
         }
 
-        public void DeleteOrderItemAndUpdateProgress(CatalogueItemId catalogueItemId)
+        public OrderItem OrderItem(CatalogueItemId catalogueItemId)
         {
-            orderItems.RemoveAll(o => o.CatalogueItem.Id == catalogueItemId
-                || o.CatalogueItem.AdditionalService?.SolutionId == catalogueItemId);
+            return OrderItems.SingleOrDefault(x => x.CatalogueItem.Id == catalogueItemId);
+        }
 
-            if (orderItems.Count == 0)
-            {
-                FundingSourceOnlyGms = null;
-            }
+        public OrderItem GetSolution()
+        {
+            return OrderItems
+                .FirstOrDefault(x => x.CatalogueItem.CatalogueItemType == CatalogueItemType.Solution);
+        }
+
+        public OrderItem GetAdditionalService(CatalogueItemId catalogueItemId)
+        {
+            return OrderItems
+                .FirstOrDefault(x => x.CatalogueItem.CatalogueItemType == CatalogueItemType.AdditionalService
+                    && x.CatalogueItem.Id == catalogueItemId);
+        }
+
+        public IEnumerable<OrderItem> GetAdditionalServices()
+        {
+            return OrderItems
+                .Where(x => x.CatalogueItem.CatalogueItemType == CatalogueItemType.AdditionalService)
+                .OrderBy(x => x.CatalogueItem.Name);
+        }
+
+        public OrderItem GetAssociatedService(CatalogueItemId catalogueItemId)
+        {
+            return OrderItems
+                .FirstOrDefault(x => x.CatalogueItem.CatalogueItemType == CatalogueItemType.AssociatedService
+                    && x.CatalogueItem.Id == catalogueItemId);
+        }
+
+        public IEnumerable<OrderItem> GetAssociatedServices()
+        {
+            return OrderItems
+                .Where(x => x.CatalogueItem.CatalogueItemType == CatalogueItemType.AssociatedService)
+                .OrderBy(x => x.CatalogueItem.Name);
         }
 
         public bool HasAssociatedService()

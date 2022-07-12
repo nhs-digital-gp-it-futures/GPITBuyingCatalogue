@@ -29,6 +29,17 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
             var additionalServices = AdditionalServicesSeedData.GetAdditionalServices(catalogueSolutions);
             context.AddRange(additionalServices);
 
+            foreach (var supplierId in new[] { 99999, 99998 })
+            {
+                foreach (var solution in catalogueSolutions.Where(x => x.SupplierId == supplierId))
+                {
+                    foreach (var service in associatedServices.Where(x => x.SupplierId == supplierId))
+                    {
+                        context.SupplierServiceAssociations.Add(new SupplierServiceAssociation(solution.Id, service.Id));
+                    }
+                }
+            }
+
             context.SaveChanges();
 
             List<FrameworkSolution> frameworkSolutions = new()
@@ -56,14 +67,25 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
                     PricingUnit = new PricingUnit
                     {
                         Id = -1,
-                        TierName = "patient",
+                        RangeDescription = "patients",
                         Description = "per patient",
                     },
                     CurrencyCode = "GBP",
-                    Price = 100.01M,
                     ProvisioningType = ProvisioningType.Patient,
                     TimeUnit = TimeUnit.PerYear,
                     LastUpdated = DateTime.UtcNow,
+                    CataloguePriceTiers = new List<CataloguePriceTier>
+                    {
+                        new()
+                        {
+                            Id = -1,
+                            CataloguePriceId = -1,
+                            LowerRange = 1,
+                            UpperRange = null,
+                            Price = 100.01M,
+                            LastUpdated = DateTime.UtcNow,
+                        },
+                    },
                 },
                 new CataloguePrice
                 {
@@ -72,14 +94,25 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
                     PricingUnit = new PricingUnit
                     {
                         Id = -2,
-                        TierName = "thing",
+                        RangeDescription = "things",
                         Description = "per thing",
                     },
                     CurrencyCode = "GBP",
-                    Price = 0.01M,
                     ProvisioningType = ProvisioningType.Declarative,
                     TimeUnit = TimeUnit.PerYear,
                     LastUpdated = DateTime.UtcNow,
+                    CataloguePriceTiers = new List<CataloguePriceTier>
+                    {
+                        new()
+                        {
+                            Id = -2,
+                            CataloguePriceId = -2,
+                            LowerRange = 1,
+                            UpperRange = null,
+                            Price = 100.01M,
+                            LastUpdated = DateTime.UtcNow,
+                        },
+                    },
                 },
             };
             context.AddRange(prices);
@@ -114,8 +147,8 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
             // Frameworks
             List<EntityFramework.Catalogue.Models.Framework> frameworks = new()
             {
-                new EntityFramework.Catalogue.Models.Framework { Id = "NHSDGP001", Name = "NHS Digital GP IT Futures Framework 1", ShortName = "GP IT Futures", Owner = "NHS Digital" },
-                new EntityFramework.Catalogue.Models.Framework { Id = "DFOCVC001", Name = "Digital First Online Consultation and Video Consultation Framework 1", ShortName = "DFOCVC", Owner = "NHS England" },
+                new EntityFramework.Catalogue.Models.Framework { Id = "NHSDGP001", Name = "NHS Digital GP IT Futures Framework 1", ShortName = "GP IT Futures", Owner = "NHS Digital", LocalFundingOnly = false },
+                new EntityFramework.Catalogue.Models.Framework { Id = "DFOCVC001", Name = "Digital First Online Consultation and Video Consultation Framework 1", ShortName = "DFOCVC", Owner = "NHS England", LocalFundingOnly = true },
             };
             context.AddRange(frameworks);
 

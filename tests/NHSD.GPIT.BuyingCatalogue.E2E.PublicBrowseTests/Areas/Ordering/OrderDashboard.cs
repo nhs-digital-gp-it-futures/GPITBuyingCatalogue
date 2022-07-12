@@ -8,6 +8,7 @@ using NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.TestBases;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers;
+using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers.SolutionSelection;
 using Xunit;
 using Objects = NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.Objects;
 
@@ -56,7 +57,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering
                 .Should().BeTrue();
 
             CommonActions.ElementTextEqualTo(
-                Objects.Ordering.OrderSummary.LastUpdatedEndNote,
+                Objects.Ordering.OrderDashboard.LastUpdatedEndNote,
                 $"Order last updated by Sue Smith on {DateTime.UtcNow.ToString("dd MMMM yyyy")}");
         }
 
@@ -69,6 +70,67 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering
                     typeof(DashboardController),
                     nameof(DashboardController.Organisation))
                     .Should().BeTrue();
+        }
+
+        [Fact]
+        public void OrderDashboard_ClickSolutionSelection_SectionNotStarted_ExpectedResult()
+        {
+            var completedSectionOrder = new CallOffId(90004, 1);
+
+            var completedSectionParameters = new Dictionary<string, string>()
+            {
+                { nameof(InternalOrgId), InternalOrgId },
+                { nameof(CallOffId), completedSectionOrder.ToString() },
+            };
+
+            NavigateToUrl(typeof(OrderController), nameof(OrderController.Order), completedSectionParameters);
+
+            CommonActions.ClickLinkElement(Objects.Ordering.OrderDashboard.SolutionSelectionLink);
+
+            CommonActions.PageLoadedCorrectGetIndex(
+                typeof(CatalogueSolutionsController),
+                nameof(CatalogueSolutionsController.SelectSolution))
+                .Should().BeTrue();
+        }
+
+        [Fact]
+        public void OrderDashboard_ClickSolutionSelection_SectionInProgress_ExpectedResult()
+        {
+            var callOffId = new CallOffId(90013, 1);
+
+            var parameters = new Dictionary<string, string>
+            {
+                { nameof(InternalOrgId), InternalOrgId },
+                { nameof(CallOffId), $"{callOffId}" },
+            };
+
+            NavigateToUrl(typeof(OrderController), nameof(OrderController.Order), parameters);
+
+            CommonActions.ClickLinkElement(Objects.Ordering.OrderDashboard.SolutionSelectionLink);
+
+            CommonActions.PageLoadedCorrectGetIndex(
+                typeof(TaskListController),
+                nameof(TaskListController.TaskList)).Should().BeTrue();
+        }
+
+        [Fact]
+        public void OrderDashboard_ClickSolutionSelection_SectionCompleted_ExpectedResult()
+        {
+            var callOffId = new CallOffId(90009, 1);
+
+            var parameters = new Dictionary<string, string>
+            {
+                { nameof(InternalOrgId), InternalOrgId },
+                { nameof(CallOffId), $"{callOffId}" },
+            };
+
+            NavigateToUrl(typeof(OrderController), nameof(OrderController.Order), parameters);
+
+            CommonActions.ClickLinkElement(Objects.Ordering.OrderDashboard.SolutionSelectionLink);
+
+            CommonActions.PageLoadedCorrectGetIndex(
+                typeof(ReviewSolutionsController),
+                nameof(ReviewSolutionsController.ReviewSolutions)).Should().BeTrue();
         }
     }
 }

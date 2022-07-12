@@ -1,4 +1,6 @@
-﻿using FluentAssertions;
+﻿using System.Collections.Generic;
+using System.Linq;
+using FluentAssertions;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.AutoFixtureCustomisations;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.ListPriceModels;
@@ -10,14 +12,19 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Models.ListPric
     {
         [Theory]
         [CommonAutoData]
-        public static void Construct_ValidCatalogueItem_SetsPropertiesAsExpected(
-            CatalogueItem catalogueItem)
+        public static void Constructing_AssignsProperties(
+            CatalogueItem catalogueItem,
+            ICollection<CataloguePrice> prices)
         {
-            var manageListPricesModel = new ManageListPricesModel(catalogueItem);
+            var flatPrices = prices.Where(p => p.CataloguePriceType == CataloguePriceType.Flat).ToList();
+            var tieredPrices = prices.Where(p => p.CataloguePriceType == CataloguePriceType.Tiered).ToList();
 
-            manageListPricesModel.CataloguePrices.Should().BeEquivalentTo(catalogueItem.CataloguePrices);
-            manageListPricesModel.CatalogueItemId.Should().Be(catalogueItem.Id);
-            manageListPricesModel.CatalogueName.Should().Be(catalogueItem.Name);
+            var model = new ManageListPricesModel(catalogueItem, prices);
+
+            model.CatalogueItemId.Should().Be(catalogueItem.Id);
+            model.CatalogueItemName.Should().Be(catalogueItem.Name);
+            model.FlatPrices.Should().BeEquivalentTo(flatPrices);
+            model.TieredPrices.Should().BeEquivalentTo(tieredPrices);
         }
     }
 }

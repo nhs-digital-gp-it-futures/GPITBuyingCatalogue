@@ -10,13 +10,19 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Extensions
         {
             return provisioningType switch
             {
-                ProvisioningType.Patient => TimeUnit.PerMonth,
                 ProvisioningType.Declarative => TimeUnit.PerYear,
                 ProvisioningType.OnDemand => estimationPeriod,
+                ProvisioningType.Patient => TimeUnit.PerMonth,
+                ProvisioningType.PerServiceRecipient => TimeUnit.PerMonth,
                 _ => throw new ArgumentOutOfRangeException(nameof(provisioningType)),
             };
         }
 
         public static string Name(this ProvisioningType provisioningType) => provisioningType.AsString(EnumFormat.DisplayName);
+
+        public static bool IsPerServiceRecipient(this ProvisioningType provisioningType)
+        {
+            return provisioningType is ProvisioningType.Patient or ProvisioningType.PerServiceRecipient;
+        }
     }
 }
