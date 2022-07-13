@@ -14,6 +14,13 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering.Triage
         {
         }
 
+        public void SelectOrderTriage(OrderTriageValue option, bool identified = true)
+        {
+            SelectTriageOrderValue(option);
+            SelectIdentifiedOrder(identified);
+            ReadyToStart();
+        }
+
         /// <summary>
         /// Select the order triage value.
         /// </summary>
