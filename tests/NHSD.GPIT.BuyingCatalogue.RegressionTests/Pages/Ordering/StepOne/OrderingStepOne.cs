@@ -18,14 +18,11 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering.StepOne
            : base(driver, commonActions)
         {
             TextGenerators = new TextGenerators(driver);
-            OrderingPages = new OrderingPages(driver, commonActions);
         }
 
         public TextGenerators TextGenerators { get; set; }
 
-        public OrderingPages OrderingPages { get; set; }
-
-        public void StepOnePrepareOrder()
+       /* public void StepOnePrepareOrder()
         {
             OrderingPages.TaskList.OrderDescriptionTask();
             AddOrderDescription();
@@ -34,7 +31,7 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering.StepOne
             AddCallOffOrderingPartyContactDetails();
 
             OrderingPages.TaskList.SupplierInformationAndContactDetailsTask();
-        }
+        }*/
 
         public void AddOrderDescription()
         {
