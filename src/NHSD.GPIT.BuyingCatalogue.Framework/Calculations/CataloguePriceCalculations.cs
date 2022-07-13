@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Interfaces;
@@ -12,7 +11,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Framework.Calculations
         public static decimal CalculateTotalCost(this IPrice price, int quantity)
         {
             if (price == null)
-                throw new ArgumentNullException(nameof(price));
+                return decimal.Zero;
 
             return price.CataloguePriceCalculationType switch
             {
@@ -25,7 +24,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Framework.Calculations
         public static IList<PriceCalculationModel> CalculateTotalCostPerTier(this IPrice price, int quantity)
         {
             if (price == null)
-                throw new ArgumentNullException(nameof(price));
+                return new List<PriceCalculationModel>();
 
             return price.CataloguePriceCalculationType switch
             {

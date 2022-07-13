@@ -87,7 +87,7 @@
             break-inside: avoid;
         }
 
-        tbody tr:nth-child(odd) {
+        tbody tr:nth-child(even) {
             background-color: #F8F8F8;
         }
 
@@ -231,12 +231,15 @@
 
                 <nhs-page-title title="Items added to this order"/>
 
-                @if (Model.Order.GetSolution() != null)
+                @if (Model.Order.GetSolutions().Any())
                 {
-                    <h2>Catalogue Solution</h2>
-                    <partial name="OrderItem"
-                             model="new OrderSummaryItemModel(Model.Order.GetSolution(), Model.Order.ServiceInstanceItems)"/>
-                    PageBreak(++pagesSoFar);
+                    <h2>@(Model.Order.GetSolutions().Count() > 1 ? "Catalogue Solutions" : "Catalogue Solution")</h2>
+                    @foreach (var solution in Model.Order.GetSolutions())
+                    {
+                        <partial name="OrderItem"
+                                 model="new OrderSummaryItemModel(solution, Model.Order.ServiceInstanceItems)"/>
+                        PageBreak(++pagesSoFar);
+                    }
                 }
 
                 @if (Model.Order.GetAdditionalServices().Any())

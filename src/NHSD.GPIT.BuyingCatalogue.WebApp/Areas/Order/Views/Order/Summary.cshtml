@@ -19,10 +19,11 @@
 <partial name="Partials/_BackLink" model="Model" />
 
 @{
-    var solution = Model.Order.GetSolution();
+    var solutions = Model.Order.GetSolutions().ToList();
     var additionalServices = Model.Order.GetAdditionalServices().ToList();
     var associatedServices = Model.Order.GetAssociatedServices().ToList();
     var contractTerm = Model.Order.MaximumTerm.HasValue ? $" ({Model.Order.MaximumTerm} months)" : string.Empty;
+    var solutionsTitle = solutions.Count > 1 ? "Catalogue Solutions" : "Catalogue Solution";
 }
 
 <div class="nhsuk-grid-row">
@@ -104,10 +105,13 @@
         else
         {
             <br/>
-            @if (solution != null)
+            @if (solutions.Any())
             {
-                <h3 id="catalogue-solutions-title">Catalogue Solution</h3>
-                <partial name="_OrderItemSummary" model="solution"/>
+                <h3 id="catalogue-solutions-title">@solutionsTitle</h3>
+                @foreach (var solution in solutions)
+                {
+                    <partial name="_OrderItemSummary" model="solution"/>
+                }
             }
 
             @if (additionalServices.Any())
