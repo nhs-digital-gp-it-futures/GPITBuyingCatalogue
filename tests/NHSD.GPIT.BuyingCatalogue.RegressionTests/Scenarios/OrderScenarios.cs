@@ -33,5 +33,22 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
 
             OrderingPages.OrderingTriage.ReadyToStart();
         }
+
+        [Fact]
+        public void OrderWithSolutionUnder40K()
+        {
+            OrderingPages.OrderingDashboard.CreateNewOrder();
+
+            OrderingPages.OrderType.ChooseOrderType(EntityFramework.Catalogue.Models.CatalogueItemType.Solution);
+
+            OrderingPages.OrderingTriage.SelectOrderTriage(EntityFramework.Ordering.Models.OrderTriageValue.Under40K);
+
+            OrderingPages.TaskList.OrderDescriptionTask();
+            //OrderingPages.TaskList.OrderDescriptionField();
+
+           // OrderingPages.TaskList.CallOffOrderingPartyContactDetailsTask();
+           // OrderingPages.TaskList.CallOffOrderingPartyContactDetails();
+           // OrderingPages.TaskList.SupplierContactDetailsTask();
+        }
     }
 }
