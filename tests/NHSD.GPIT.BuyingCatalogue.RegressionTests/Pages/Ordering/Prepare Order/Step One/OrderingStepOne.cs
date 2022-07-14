@@ -16,13 +16,9 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering.StepOne
     {
         public OrderingStepOne(IWebDriver driver, CommonActions commonActions)
            : base(driver, commonActions)
-        {
-            TextGenerators = new TextGenerators(driver);
+        {            
         }
-
-        public TextGenerators TextGenerators { get; set; }
-
-       /* public void StepOnePrepareOrder()
+        /* public void StepOnePrepareOrder()
         {
             OrderingPages.TaskList.OrderDescriptionTask();
             AddOrderDescription();
@@ -56,6 +52,6 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering.StepOne
             CommonActions.PageLoadedCorrectGetIndex(
                typeof(OrderController),
                nameof(OrderController.Order)).Should().BeTrue();
-        }
+        }               
     }
 }

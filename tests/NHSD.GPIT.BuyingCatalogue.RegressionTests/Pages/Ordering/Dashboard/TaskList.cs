@@ -40,7 +40,7 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering.Dashboard
                     .Should().BeTrue();
         }
 
-        public void SupplierInformationAndContactDetailsTask()
+        public void SupplierInformationTask()
         {
             CommonActions.ClickLinkElement(SupplierObjects.SupplierContactDetailsLink);
 
@@ -48,6 +48,24 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering.Dashboard
                 typeof(SupplierController),
                 nameof(SupplierController.SelectSupplier))
                     .Should().BeTrue();
+        }
+
+        public void SupplierContactDetailsTask()
+        {
+            CommonActions.ClickLinkElement(SupplierObjects.CreateNewContactLink);
+
+            CommonActions.PageLoadedCorrectGetIndex(
+                typeof(SupplierController),
+                nameof(SupplierController.NewContact)).Should().BeTrue();
+        }
+
+        public void TimescalesForCallOffAgreementTask()
+        {
+            CommonActions.ClickLinkElement(CommencementDate.TimescalesForCallOffAgreement);
+
+            CommonActions.PageLoadedCorrectGetIndex(
+                typeof(CommencementDateController),
+                nameof(CommencementDateController.CommencementDate)).Should().BeTrue();
         }
     }
 }

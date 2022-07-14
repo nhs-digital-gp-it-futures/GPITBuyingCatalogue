@@ -43,14 +43,20 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
 
             OrderingPages.OrderingTriage.SelectOrderTriage(EntityFramework.Ordering.Models.OrderTriageValue.Under40K);
 
-
             OrderingPages.TaskList.OrderDescriptionTask();
             OrderingPages.OrderingStepOne.AddOrderDescription();
 
             OrderingPages.TaskList.CallOffOrderingPartyContactDetailsTask();
             OrderingPages.OrderingStepOne.AddCallOffOrderingPartyContactDetails();
 
-            OrderingPages.TaskList.SupplierInformationAndContactDetailsTask();
+            OrderingPages.TaskList.SupplierInformationTask();
+            OrderingPages.OrderingStepTwo.AddSupplierInformation();
+
+            OrderingPages.TaskList.SupplierContactDetailsTask();
+            OrderingPages.OrderingStepTwo.AddSupplierContactDetails();
+
+            OrderingPages.TaskList.TimescalesForCallOffAgreementTask();
+            OrderingPages.OrderingStepTwo.TimescalesForCallOffAgreementDetails();
         }
     }
 }
