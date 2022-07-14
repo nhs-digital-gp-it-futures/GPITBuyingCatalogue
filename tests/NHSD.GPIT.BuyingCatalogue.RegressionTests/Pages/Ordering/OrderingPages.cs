@@ -1,6 +1,7 @@
 ﻿using NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.Actions.Common;
 using NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering.Dashboard;
 using NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering.StepOne;
+using NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering.StepTwo;
 using NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering.Triage;
 using OpenQA.Selenium;
 
@@ -15,6 +16,7 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering
             OrderingTriage = new OrderingTriage(driver, commonActions);
             TaskList = new TaskList(driver, commonActions);
             OrderingStepOne = new OrderingStepOne(driver, commonActions);
+            OrderingStepTwo = new OrderingStepTwo(driver, commonActions);
         }
 
         internal OrderingDashboard OrderingDashboard { get; }
@@ -26,5 +28,31 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering
         internal TaskList TaskList { get; }
 
         internal OrderingStepOne OrderingStepOne { get; }
+
+        internal OrderingStepTwo OrderingStepTwo { get; }
+
+
+        public void StepOnePrepareOrder()
+        {
+            TaskList.OrderDescriptionTask();
+            OrderingStepOne.AddOrderDescription();
+
+            TaskList.CallOffOrderingPartyContactDetailsTask();
+            OrderingStepOne.AddCallOffOrderingPartyContactDetails();
+
+            TaskList.SupplierInformationAndContactDetailsTask();
+            OrderingStepOne.SelectSupplierWithOneContactWithoutCreatingContact();
+
+            TaskList.TimescalesForCallOffAgreementTask();
+            OrderingStepOne.AddTimescaleForCallOffAgreement();
+        }
+
+        public void StepTwoAddSolutionsAndServices()
+        {
+            TaskList.SelectSolutionsAndServicesTask();
+            OrderingStepTwo.SelectSolution();
+
+            TaskList.SelectFundingSourcesTask();
+        }
     }
 }
