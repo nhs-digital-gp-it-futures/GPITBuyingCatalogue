@@ -22,7 +22,7 @@
     var solutions = Model.Order.GetSolutions().ToList();
     var additionalServices = Model.Order.GetAdditionalServices().ToList();
     var associatedServices = Model.Order.GetAssociatedServices().ToList();
-    var contractTerm = Model.Order.MaximumTerm.HasValue ? $" ({Model.Order.MaximumTerm} months)" : string.Empty;
+    var contractTerm = Model.Order.MaximumTerm.HasValue ? $" ({Model.Order.MaximumTerm} months)" : " (estimated)";
     var solutionsTitle = solutions.Count > 1 ? "Catalogue Solutions" : "Catalogue Solution";
 }
 
@@ -148,6 +148,15 @@
                 
                 <nhs-summary-list-row label-text="@($"Total cost of contract{contractTerm}:")" data-test-id="total-cost-summary">
                     £@($"{Model.Order.TotalCost():N2}")
+                    @if (!Model.Order.MaximumTerm.HasValue)
+                    {
+                        <br/>
+                        <br/>
+                        <p>
+                            This is the total estimated cost for the entire duration of the Call-off Agreement, which is usually 3 years.
+                            The figure is made up of the one-off costs and the yearly cost multiplied by 3.
+                        </p>
+                    }
                 </nhs-summary-list-row>
             </nhs-summary-list>
         }

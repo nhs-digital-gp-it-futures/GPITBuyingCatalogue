@@ -93,13 +93,10 @@ namespace NHSD.GPIT.BuyingCatalogue.Framework.Calculations
 
         public static decimal TotalCost(this Order order)
         {
-            if (order?.MaximumTerm is null)
-            {
-                return decimal.Zero;
-            }
+            var maximumTerm = order?.MaximumTerm ?? 36;
 
             return order.TotalOneOffCost()
-                + (order.TotalMonthlyCost() * order.MaximumTerm!.Value);
+                + (order.TotalMonthlyCost() * maximumTerm);
         }
 
         public static decimal TotalCost(this OrderItem orderItem)
