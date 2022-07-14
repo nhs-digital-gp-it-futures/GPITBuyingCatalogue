@@ -14,24 +14,12 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering.StepOne
 {
     public class OrderingStepOne : PageBase
     {
+        private const string SupplierName = "NotEmis Health";
+
         public OrderingStepOne(IWebDriver driver, CommonActions commonActions)
-           : base(driver, commonActions)
+            : base(driver, commonActions)
         {
-            TextGenerators = new TextGenerators(driver);
         }
-
-        public TextGenerators TextGenerators { get; set; }
-
-       /* public void StepOnePrepareOrder()
-        {
-            OrderingPages.TaskList.OrderDescriptionTask();
-            AddOrderDescription();
-
-            OrderingPages.TaskList.CallOffOrderingPartyContactDetailsTask();
-            AddCallOffOrderingPartyContactDetails();
-
-            OrderingPages.TaskList.SupplierInformationAndContactDetailsTask();
-        }*/
 
         public void AddOrderDescription()
         {
@@ -56,6 +44,54 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering.StepOne
             CommonActions.PageLoadedCorrectGetIndex(
                typeof(OrderController),
                nameof(OrderController.Order)).Should().BeTrue();
+        }
+
+        public void SelectSupplierWithOneContactWithoutCreatingContact()
+        {
+            CommonActions.AutoCompleteAddValue(SupplierObjects.SupplierAutoComplete, SupplierName);
+
+            CommonActions.ClickSave();
+
+            CommonActions.PageLoadedCorrectGetIndex(
+               typeof(SupplierController),
+               nameof(SupplierController.SelectSupplier)).Should().BeTrue();
+
+            CommonActions.ClickSave();
+
+            CommonActions.PageLoadedCorrectGetIndex(
+               typeof(SupplierController),
+               nameof(SupplierController.ConfirmSupplier)).Should().BeTrue();
+
+            CommonActions.ClickSave();
+
+            //here there is one contact(not need to select) and we don't create new contact
+
+            CommonActions.PageLoadedCorrectGetIndex(
+               typeof(SupplierController),
+               nameof(SupplierController.Supplier)).Should().BeTrue();
+
+            CommonActions.ClickSave();
+
+            CommonActions.PageLoadedCorrectGetIndex(
+               typeof(OrderController),
+               nameof(OrderController.Order)).Should().BeTrue();
+        }
+
+        public void AddTimescaleForCallOffAgreement()
+        {
+            TextGenerators.DateInputAddDateSoon(
+                CommencementDate.CommencementDateDayInput,
+                CommencementDate.CommencementDateMonthInput,
+                CommencementDate.CommencementDateYearInput);
+
+            var initialPeriod = TextGenerators.NumberInputAddRandomNumber(CommencementDate.InitialPeriodInput, 1, 6);
+            TextGenerators.NumberInputAddRandomNumber(CommencementDate.MaximumTermInput, initialPeriod + 1, 12);
+
+            CommonActions.ClickSave();
+
+            CommonActions.PageLoadedCorrectGetIndex(
+              typeof(OrderController),
+              nameof(OrderController.Order)).Should().BeTrue();
         }
     }
 }
