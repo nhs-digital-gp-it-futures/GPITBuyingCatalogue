@@ -276,9 +276,24 @@
                         <pdf-summary-list-row label-text="Total annual cost">
                             @($"£{Model.Order.TotalAnnualCost():N2}")
                         </pdf-summary-list-row>
+                        
+                        @{
+                            var term = Model.Order.MaximumTerm.HasValue
+                                ? $"({Model.Order.MaximumTerm.Value} months)"
+                                : "(estimated)";
+                        }
 
-                        <pdf-summary-list-row label-text="Total cost of contract (@(Model.Order.MaximumTerm ?? 0) months)">
+                        <pdf-summary-list-row label-text="Total cost of contract @term">
                             @($"£{Model.Order.TotalCost():N2}")
+                            @if (!Model.Order.MaximumTerm.HasValue)
+                            {
+                                <br/>
+                                <br/>
+                                <p>
+                                    This is the total estimated cost for the entire duration of the Call-off Agreement, which is usually 3 years.
+                                    The figure is made up of the one-off costs and the yearly cost multiplied by 3.
+                                </p>
+                            }
                         </pdf-summary-list-row>
                     </pdf-summary-list>
                 </div>
