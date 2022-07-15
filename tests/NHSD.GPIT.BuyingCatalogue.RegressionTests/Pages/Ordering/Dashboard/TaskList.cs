@@ -80,5 +80,15 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering.Dashboard
                 nameof(FundingSourceController.FundingSources))
                     .Should().BeTrue();
         }
+
+        public void ReviewAndCompleteOrderTask()
+        {
+            CommonActions.ClickLinkElement(OrderSummaryObjects.ReviewAndCompleteOrderLink);
+
+            CommonActions.PageLoadedCorrectGetIndex(
+               typeof(OrderController),
+               nameof(OrderController.Summary))
+                   .Should().BeTrue();
+        }
     }
 }
