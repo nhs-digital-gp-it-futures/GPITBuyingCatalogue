@@ -9,7 +9,7 @@
     var totalCost = totalCosts.Sum(tc => tc.Cost);
     var billingPeriod = Model.OrderItemPrice.BillingPeriod?.Description() ?? string.Empty;
     var hasTieredPricing = Model.OrderItemPrice.CataloguePriceType == CataloguePriceType.Tiered;
-    var hasServiceRecipientQuantities = Model.OrderItemPrice.IsPerServiceRecipient();
+    var hasServiceRecipientQuantities = Model.OrderItemPrice?.IsPerServiceRecipient() ?? false;
 }
 
 <nhs-expander label-text="@Model.CatalogueItem.Name"
