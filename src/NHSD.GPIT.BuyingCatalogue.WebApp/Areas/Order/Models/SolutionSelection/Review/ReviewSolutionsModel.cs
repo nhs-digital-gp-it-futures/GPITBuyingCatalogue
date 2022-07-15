@@ -17,7 +17,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.SolutionSelection.
             InternalOrgId = internalOrgId;
             Order = order;
             AllOrderItems = order.OrderItems;
-            CatalogueSolution = order.GetSolution();
+            CatalogueSolutions = order.GetSolutions().ToList();
             AdditionalServices = order.GetAdditionalServices().ToList();
             AssociatedServices = order.GetAssociatedServices().ToList();
             ContractLength = order.MaximumTerm ?? 0;
@@ -28,7 +28,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.SolutionSelection.
 
         public EntityFramework.Ordering.Models.Order Order { get; set; }
 
-        public OrderItem CatalogueSolution { get; set; }
+        public List<OrderItem> CatalogueSolutions { get; set; }
 
         public List<OrderItem> AdditionalServices { get; set; }
 

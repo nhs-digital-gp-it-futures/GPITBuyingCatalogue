@@ -6,8 +6,8 @@
 
 @{
     var totalCost = Model.TotalCost();
-	var subTotalDescription = $"£{totalCost:N2} {Model.OrderItemPrice.BillingPeriod?.Description() ?? string.Empty}";
-    var hasServiceRecipientQuantities = Model.OrderItemPrice.IsPerServiceRecipient();
+	var subTotalDescription = $"£{totalCost:N2} {Model.OrderItemPrice?.BillingPeriod?.Description() ?? string.Empty}";
+    var hasServiceRecipientQuantities = Model.OrderItemPrice?.IsPerServiceRecipient() ?? false;
 }
 
 <nhs-expander colour-mode="BlackAndWhite"
@@ -48,7 +48,7 @@
         </nhs-table>
     }
 
-    @if (Model.OrderItemPrice.OrderItemPriceTiers.Any())
+    @if (Model.OrderItemPrice?.OrderItemPriceTiers.Any() ?? false)
     {
         var billingPeriod = Model.OrderItemPrice.BillingPeriod?.Description() ?? "one-off";
 

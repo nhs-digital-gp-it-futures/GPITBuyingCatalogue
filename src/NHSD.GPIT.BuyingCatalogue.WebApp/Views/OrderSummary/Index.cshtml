@@ -1,7 +1,7 @@
 ﻿@using System.Linq
 @using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models
 @using NHSD.GPIT.BuyingCatalogue.Framework.Calculations
-@model NHSD.GPIT.BuyingCatalogue.WebApp.Models.OrderSummaryModel;
+@model NHSD.GPIT.BuyingCatalogue.WebApp.Models.OrderSummaryModel
 @{
 	Layout = "";
 }
@@ -87,7 +87,7 @@
             break-inside: avoid;
         }
 
-        tbody tr:nth-child(odd) {
+        tbody tr:nth-child(even) {
             background-color: #F8F8F8;
         }
 
@@ -225,18 +225,17 @@
 
                 <div style="page-break-after: always"></div>
 
-                @{
-                    var pagesSoFar = 0;
-                }
-
                 <nhs-page-title title="Items added to this order"/>
 
-                @if (Model.Order.GetSolution() != null)
+                @if (Model.Order.GetSolutions().Any())
                 {
-                    <h2>Catalogue Solution</h2>
-                    <partial name="OrderItem"
-                             model="new OrderSummaryItemModel(Model.Order.GetSolution(), Model.Order.ServiceInstanceItems)"/>
-                    PageBreak(++pagesSoFar);
+                    <h2>@(Model.Order.GetSolutions().Count() > 1 ? "Catalogue Solutions" : "Catalogue Solution")</h2>
+                    @foreach (var solution in Model.Order.GetSolutions())
+                    {
+                        <partial name="OrderItem"
+                                 model="new OrderSummaryItemModel(solution, Model.Order.ServiceInstanceItems)"/>
+                        <div style="page-break-after: always"></div>
+                    }
                 }
 
                 @if (Model.Order.GetAdditionalServices().Any())
@@ -246,7 +245,7 @@
                     {
                         <partial name="OrderItem"
                                  model="new OrderSummaryItemModel(service, Model.Order.ServiceInstanceItems)"/>
-                        PageBreak(++pagesSoFar);
+                        <div style="page-break-after: always"></div>
                     }
                 }
 
@@ -257,12 +256,10 @@
                     {
                         <partial name="OrderItem"
                                  model="new OrderSummaryItemModel(service, Model.Order.ServiceInstanceItems)"/>
-                        PageBreak(++pagesSoFar);
+                        <div style="page-break-after: always"></div>
                     }
                 }
                 
-                <br/>
-
                 <div class="pdf-container">
                     <nhs-page-title title="Totals for this order"/>
                     <h3>Totals</h3>
@@ -279,9 +276,24 @@
                         <pdf-summary-list-row label-text="Total annual cost">
                             @($"£{Model.Order.TotalAnnualCost():N2}")
                         </pdf-summary-list-row>
+                        
+                        @{
+                            var term = Model.Order.MaximumTerm.HasValue
+                                ? $"({Model.Order.MaximumTerm.Value} months)"
+                                : "(estimated)";
+                        }
 
-                        <pdf-summary-list-row label-text="Total cost of contract (@(Model.Order.MaximumTerm ?? 0) months)">
+                        <pdf-summary-list-row label-text="Total cost of contract @term">
                             @($"£{Model.Order.TotalCost():N2}")
+                            @if (!Model.Order.MaximumTerm.HasValue)
+                            {
+                                <br/>
+                                <br/>
+                                <p>
+                                    This is the total estimated cost for the entire duration of the Call-off Agreement, which is usually 3 years.
+                                    The figure is made up of the one-off costs and the yearly cost multiplied by 3.
+                                </p>
+                            }
                         </pdf-summary-list-row>
                     </pdf-summary-list>
                 </div>
@@ -291,13 +303,3 @@
 </div>
 </body>
 </html>
-
-@{
-    void PageBreak(int current)
-    {
-        if (current >= Model.Order.OrderItems.Count)
-            return;
-
-        <div style="page-break-after: always"></div>
-    }
-}

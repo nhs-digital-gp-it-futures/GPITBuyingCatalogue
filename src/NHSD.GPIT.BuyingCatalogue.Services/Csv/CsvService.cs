@@ -53,6 +53,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Csv
                     ProductId = oir.OrderItem.CatalogueItemId.ToString(),
                     ProductName = oir.OrderItem.CatalogueItem.Name,
                     ProductType = oir.OrderItem.CatalogueItem.CatalogueItemType.DisplayName(),
+                    ProductTypeId = (int)oir.OrderItem.CatalogueItem.CatalogueItemType,
 
                     // TODO: Stop this reporting incorrectly when quantity is (erroneously) defined at both order item & recipient level
                     QuantityOrdered = oir.Quantity ?? oir.OrderItem.Quantity ?? 0,
@@ -66,10 +67,12 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Csv
                     Framework = frameworkId,
                     InitialTerm = oir.OrderItem.Order.InitialPeriod,
                     MaximumTerm = oir.OrderItem.Order.MaximumTerm,
-                }).ToListAsync();
+                })
+                .OrderBy(o => o.ProductTypeId).ThenBy(o => o.ServiceRecipientName)
+                .ToListAsync();
 
             for (int i = 0; i < items.Count; i++)
-                items[i].ServiceRecipientItemId = $"{items[i].CallOffId}-{items[i].ServiceRecipientId}-{i + 1}";
+                items[i].ServiceRecipientItemId = $"{items[i].CallOffId}-{items[i].ServiceRecipientId}-{i}";
 
             await WriteRecordsAsync<FullOrderCsvModel, FullOrderCsvModelMap>(stream, items);
         }
@@ -97,6 +100,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Csv
                     ProductId = oir.OrderItem.CatalogueItemId.ToString(),
                     ProductName = oir.OrderItem.CatalogueItem.Name,
                     ProductType = oir.OrderItem.CatalogueItem.CatalogueItemType.DisplayName(),
+                    ProductTypeId = (int)oir.OrderItem.CatalogueItem.CatalogueItemType,
 
                     // TODO: Stop this reporting incorrectly when quantity is (erroneously) defined at both order item & recipient level
                     QuantityOrdered = oir.Quantity ?? oir.OrderItem.Quantity ?? 0,
