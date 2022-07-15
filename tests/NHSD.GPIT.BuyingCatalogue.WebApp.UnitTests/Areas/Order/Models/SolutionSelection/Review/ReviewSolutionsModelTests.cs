@@ -21,7 +21,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.Solution
             var model = new ReviewSolutionsModel(order, internalOrgId);
 
             model.CallOffId.Should().BeEquivalentTo(order.CallOffId);
-            model.CatalogueSolution.Should().BeEquivalentTo(order.OrderItems.First());
+            model.CatalogueSolutions.Should().BeEquivalentTo(order.OrderItems);
             model.AdditionalServices.Should().BeEmpty();
             model.AssociatedServices.Should().BeEmpty();
             model.AllOrderItems.Should().HaveCount(1);
@@ -42,7 +42,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.Solution
             var model = new ReviewSolutionsModel(order, internalOrgId);
 
             model.CallOffId.Should().BeEquivalentTo(order.CallOffId);
-            model.CatalogueSolution.Should().BeEquivalentTo(order.OrderItems.First());
+            model.CatalogueSolutions.Should().HaveCount(1);
             model.AdditionalServices.Should().HaveCount(1);
             model.AssociatedServices.Should().BeEmpty();
             model.AllOrderItems.Should().HaveCount(2);
@@ -63,7 +63,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.Solution
             var model = new ReviewSolutionsModel(order, internalOrgId);
 
             model.CallOffId.Should().BeEquivalentTo(order.CallOffId);
-            model.CatalogueSolution.Should().BeEquivalentTo(order.OrderItems.First());
+            model.CatalogueSolutions.Should().HaveCount(1);
             model.AdditionalServices.Should().BeEmpty();
             model.AssociatedServices.Should().HaveCount(1);
             model.AllOrderItems.Should().HaveCount(2);

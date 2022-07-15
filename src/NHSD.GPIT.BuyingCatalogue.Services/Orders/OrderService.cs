@@ -90,9 +90,9 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
                     .ThenInclude(i => i.OrderItemFunding)
                 .Include(o => o.OrderItems)
                     .ThenInclude(i => i.OrderItemPrice)
-                    .ThenInclude(ip => ip.OrderItemPriceTiers)
+                    .ThenInclude(ip => ip.OrderItemPriceTiers.OrderBy(ip => ip.LowerRange))
                 .Include(o => o.OrderItems)
-                    .ThenInclude(i => i.OrderItemRecipients)
+                    .ThenInclude(i => i.OrderItemRecipients.OrderBy(i => i.Recipient.Name))
                     .ThenInclude(r => r.Recipient)
                 .AsSplitQuery()
                 .SingleOrDefaultAsync();
@@ -143,8 +143,8 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
                 .Include(o => o.LastUpdatedByUser)
                 .Include(o => o.OrderItems).ThenInclude(i => i.CatalogueItem).ThenInclude(ci => ci.Solution).ThenInclude(s => s.FrameworkSolutions).ThenInclude(fs => fs.Framework)
                 .Include(o => o.OrderItems).ThenInclude(i => i.OrderItemFunding)
-                .Include(o => o.OrderItems).ThenInclude(i => i.OrderItemPrice).ThenInclude(ip => ip.OrderItemPriceTiers)
-                .Include(o => o.OrderItems).ThenInclude(i => i.OrderItemRecipients).ThenInclude(r => r.Recipient)
+                .Include(o => o.OrderItems).ThenInclude(i => i.OrderItemPrice).ThenInclude(ip => ip.OrderItemPriceTiers.OrderBy(pt => pt.LowerRange))
+                .Include(o => o.OrderItems).ThenInclude(i => i.OrderItemRecipients.OrderBy(i => i.Recipient.Name)).ThenInclude(r => r.Recipient)
                 .AsSplitQuery()
                 .SingleOrDefaultAsync(o =>
                     o.Id == callOffId.Id

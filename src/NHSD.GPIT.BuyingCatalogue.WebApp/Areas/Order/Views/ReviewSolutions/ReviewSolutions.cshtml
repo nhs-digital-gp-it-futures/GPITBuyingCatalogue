@@ -14,6 +14,8 @@
     var editLinkTitle = Model.AssociatedServicesOnly
         ? "Edit Associated Services"
         : "Edit solution and services";
+
+    var solutionsTitle = Model.CatalogueSolutions.Count > 1 ? "Catalogue Solutions" : "Catalogue Solution";
 }
 
 <partial name="Partials/_BackLink" model="Model" />
@@ -24,17 +26,20 @@
 						caption="Order @Model.CallOffId"
 						advice="@advice"/>
 
-        <vc:nhs-action-link text="@editLinkTitle" 
+        <vc:nhs-action-link text="@editLinkTitle"
                             url="@Url.Action(
                                      nameof(TaskListController.TaskList),
                                      typeof(TaskListController).ControllerName(),
                                      new { Model.InternalOrgId, Model.CallOffId })" />
 		<hr />
 
-		@if (Model.CatalogueSolution != null)
+		@if (Model.CatalogueSolutions.Any())
 		{
-			<h2 id="catalogue-solutions-title">Catalogue Solution</h2>
-			<partial name="_ReviewExpander" model="Model.CatalogueSolution" />
+		    <h2 id="catalogue-solutions-title">@solutionsTitle</h2>
+		    @foreach (var solution in Model.CatalogueSolutions)
+		    {
+		        <partial name="_ReviewExpander" model="solution" />
+		    }
 		}
 
 		@if (Model.AdditionalServices.Any())
@@ -75,11 +80,11 @@
             </nhs-summary-list-row>
 		</nhs-summary-list>
 
-        <vc:nhs-secondary-button text="Continue" 
-                                 use-primary-colour="true" 
+        <vc:nhs-secondary-button text="Continue"
+                                 use-primary-colour="true"
                                  url="@Url.Action(
-                                          nameof(OrderController.Order), 
-                                          typeof(OrderController).ControllerName(), 
+                                          nameof(OrderController.Order),
+                                          typeof(OrderController).ControllerName(),
                                           new { Model.InternalOrgId, Model.CallOffId })"/>
 	</div>
 </div>

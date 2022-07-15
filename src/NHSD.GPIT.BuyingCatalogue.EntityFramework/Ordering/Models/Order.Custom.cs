@@ -58,6 +58,13 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models
                 .FirstOrDefault(x => x.CatalogueItem.CatalogueItemType == CatalogueItemType.Solution);
         }
 
+        public IEnumerable<OrderItem> GetSolutions()
+        {
+            return OrderItems
+                .Where(x => x.CatalogueItem.CatalogueItemType == CatalogueItemType.Solution)
+                .OrderBy(x => x.CatalogueItem.Name);
+        }
+
         public OrderItem GetAdditionalService(CatalogueItemId catalogueItemId)
         {
             return OrderItems

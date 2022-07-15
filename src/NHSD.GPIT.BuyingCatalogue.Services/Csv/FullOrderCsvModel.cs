@@ -31,6 +31,9 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Csv
 
         public string ProductType { get; set; }
 
+        // Used only for ordering the items correctly, is not to be displayed in the CSV
+        public int ProductTypeId { get; set; }
+
         public int QuantityOrdered { get; set; }
 
         public string UnitOfOrder { get; set; }
