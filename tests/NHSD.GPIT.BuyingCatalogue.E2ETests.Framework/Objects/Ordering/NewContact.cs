@@ -4,6 +4,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.Objects.Ordering
 {
     public static class NewContact
     {
+        public static By AddNewContactLink => By.LinkText("Add a new contact");
         public static By FirstNameInput => By.Id("FirstName");
 
         public static By FirstNameError => By.Id("FirstName-error");
