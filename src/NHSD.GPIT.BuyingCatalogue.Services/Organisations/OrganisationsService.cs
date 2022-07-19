@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using EnumsNET;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Organisations.Models;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Organisations;
@@ -13,11 +14,14 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Organisations
     public sealed class OrganisationsService : IOrganisationsService
     {
         private readonly BuyingCatalogueDbContext dbContext;
+        private readonly ILogger<OrganisationsService> logger;
 
         public OrganisationsService(
-            BuyingCatalogueDbContext dbContext)
+            BuyingCatalogueDbContext dbContext,
+            ILogger<OrganisationsService> logger)
         {
             this.dbContext = dbContext ?? throw new ArgumentNullException(nameof(dbContext));
+            this.logger = logger ?? throw new ArgumentNullException(nameof(logger));
         }
 
         public async Task<IList<Organisation>> GetAllOrganisations()
@@ -50,6 +54,29 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Organisations
             await dbContext.SaveChangesAsync();
 
             return (organisation.Id, null);
+        }
+
+        public async Task UpdateCcgOrganisation(OdsOrganisation organisation)
+        {
+            if (organisation == null)
+            {
+                throw new ArgumentNullException(nameof(organisation));
+            }
+
+            var existing = await dbContext.Organisations
+                .FirstOrDefaultAsync(x => x.ExternalIdentifier == organisation.OdsCode);
+
+            if (existing == null)
+            {
+                logger.LogWarning("No organisation found for ODS code {OdsCode}.", organisation.OdsCode);
+                return;
+            }
+
+            existing.Name = organisation.OrganisationName;
+            existing.Address = organisation.Address;
+            existing.PrimaryRoleId = organisation.PrimaryRoleId;
+
+            await dbContext.SaveChangesAsync();
         }
 
         public async Task<Organisation> GetOrganisation(int id)

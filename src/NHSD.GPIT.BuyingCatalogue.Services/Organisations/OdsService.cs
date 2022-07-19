@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Flurl;
 using Flurl.Http;
 using Microsoft.Extensions.Caching.Memory;
+using Microsoft.Extensions.Logging;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Addresses.Models;
 using NHSD.GPIT.BuyingCatalogue.Framework.Settings;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Models;
@@ -17,13 +18,19 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Organisations
         private const int DefaultCacheDuration = 60;
 
         private readonly OdsSettings settings;
+        private readonly ILogger<OdsService> logger;
         private readonly IMemoryCache memoryCache;
         private readonly MemoryCacheEntryOptions memoryCacheOptions;
         private readonly IOrganisationsService organisationsService;
 
-        public OdsService(OdsSettings settings, IMemoryCache memoryCache, IOrganisationsService organisationsService)
+        public OdsService(
+            OdsSettings settings,
+            ILogger<OdsService> logger,
+            IMemoryCache memoryCache,
+            IOrganisationsService organisationsService)
         {
             this.settings = settings ?? throw new ArgumentNullException(nameof(settings));
+            this.logger = logger ?? throw new ArgumentNullException(nameof(logger));
             this.memoryCache = memoryCache ?? throw new ArgumentNullException(nameof(memoryCache));
             this.organisationsService = organisationsService ?? throw new ArgumentNullException(nameof(organisationsService));
 
@@ -119,6 +126,20 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Organisations
             memoryCache.Set(key, costCentres, memoryCacheOptions);
 
             return costCentres;
+        }
+
+        public async Task UpdateOrganisationDetails(string odsCode)
+        {
+            var (organisation, errorMessage) = await GetOrganisationByOdsCode(odsCode);
+
+            if (!string.IsNullOrWhiteSpace(errorMessage)
+                || organisation == null)
+            {
+                logger.LogWarning("No spine entry found for ODS code {OdsCode}", odsCode);
+                return;
+            }
+
+            await organisationsService.UpdateCcgOrganisation(organisation);
         }
 
         private static string GetPrimaryRoleId(OdsResponseOrganisation organisation)

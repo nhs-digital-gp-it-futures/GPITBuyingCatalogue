@@ -18,6 +18,8 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.Organisations
 
         Task<(int OrganisationId, string Error)> AddCcgOrganisation(OdsOrganisation odsOrganisation, bool agreementSigned);
 
+        Task UpdateCcgOrganisation(OdsOrganisation organisation);
+
         Task UpdateCatalogueAgreementSigned(int organisationId, bool signed);
 
         Task<List<Organisation>> GetUnrelatedOrganisations(int organisationId);

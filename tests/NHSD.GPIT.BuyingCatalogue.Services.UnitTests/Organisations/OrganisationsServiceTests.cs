@@ -90,6 +90,69 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Organisations
 
         [Theory]
         [InMemoryDbAutoData]
+        public static void UpdateCcgOrganisation_OrganisationIsNull_ThrowsException(
+            OrganisationsService service)
+        {
+            FluentActions
+                .Awaiting(() => service.UpdateCcgOrganisation(null))
+                .Should().ThrowAsync<ArgumentNullException>();
+        }
+
+        [Theory]
+        [InMemoryDbAutoData]
+        public static async Task UpdateCcgOrganisation_OrganisationNotInDatabase_NoActionTaken(
+            OdsOrganisation organisation,
+            [Frozen] BuyingCatalogueDbContext dbContext,
+            OrganisationsService service)
+        {
+            var existing = await dbContext.Organisations
+                .FirstOrDefaultAsync(x => x.ExternalIdentifier == organisation.OdsCode);
+
+            existing.Should().BeNull();
+
+            await service.UpdateCcgOrganisation(organisation);
+
+            var actual = await dbContext.Organisations
+                .FirstOrDefaultAsync(x => x.ExternalIdentifier == organisation.OdsCode);
+
+            actual.Should().BeNull();
+        }
+
+        [Theory]
+        [InMemoryDbAutoData]
+        public static async Task UpdateCcgOrganisation_OrganisationInDatabase_ValuesUpdated(
+            Organisation organisation,
+            OdsOrganisation newOrganisation,
+            [Frozen] BuyingCatalogueDbContext dbContext,
+            OrganisationsService service)
+        {
+            dbContext.Organisations.Add(organisation);
+
+            await dbContext.SaveChangesAsync();
+
+            var existing = await dbContext.Organisations
+                .FirstOrDefaultAsync(x => x.ExternalIdentifier == organisation.ExternalIdentifier);
+
+            existing.Should().NotBeNull();
+            existing!.Name.Should().Be(organisation.Name);
+            existing.Address.Should().Be(organisation.Address);
+            existing.PrimaryRoleId.Should().Be(organisation.PrimaryRoleId);
+
+            newOrganisation.OdsCode = organisation.ExternalIdentifier;
+
+            await service.UpdateCcgOrganisation(newOrganisation);
+
+            var actual = await dbContext.Organisations
+                .FirstOrDefaultAsync(x => x.ExternalIdentifier == organisation.ExternalIdentifier);
+
+            actual.Should().NotBeNull();
+            actual!.Name.Should().Be(newOrganisation.OrganisationName);
+            actual.Address.Should().Be(newOrganisation.Address);
+            actual.PrimaryRoleId.Should().Be(newOrganisation.PrimaryRoleId);
+        }
+
+        [Theory]
+        [InMemoryDbAutoData]
         public static async Task GetOrganisationsBySearchTerm_CorrectResultsReturned(
             [Frozen] BuyingCatalogueDbContext context,
             string searchTerm,
