@@ -132,11 +132,12 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
                 .SingleOrDefaultAsync();
         }
 
-        public Task<Order> GetOrderForSummary(CallOffId callOffId, string internalOrgId)
+        public async Task<Order> GetOrderForSummary(CallOffId callOffId, string internalOrgId)
         {
-            return dbContext.Orders
+            var output = await dbContext.Orders
                 .Include(o => o.OrderingParty)
                 .Include(o => o.OrderingPartyContact)
+                .Include(o => o.Solution)
                 .Include(o => o.Supplier)
                 .Include(o => o.SupplierContact)
                 .Include(o => o.ServiceInstanceItems)
@@ -145,10 +146,22 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
                 .Include(o => o.OrderItems).ThenInclude(i => i.OrderItemFunding)
                 .Include(o => o.OrderItems).ThenInclude(i => i.OrderItemPrice).ThenInclude(ip => ip.OrderItemPriceTiers.OrderBy(pt => pt.LowerRange))
                 .Include(o => o.OrderItems).ThenInclude(i => i.OrderItemRecipients.OrderBy(i => i.Recipient.Name)).ThenInclude(r => r.Recipient)
+                .AsNoTracking()
                 .AsSplitQuery()
                 .SingleOrDefaultAsync(o =>
                     o.Id == callOffId.Id
                     && o.OrderingParty.InternalIdentifier == internalOrgId);
+
+            var supplier = output?.Completed.HasValue ?? false
+                ? await dbContext.Suppliers.TemporalAsOf(output.Completed.Value).SingleOrDefaultAsync(x => x.Id == output.SupplierId)
+                : null;
+
+            if (supplier != null)
+            {
+                output.Supplier = supplier;
+            }
+
+            return output;
         }
 
         public async Task<PagedList<Order>> GetPagedOrders(int organisationId, PageOptions options, string search = null)

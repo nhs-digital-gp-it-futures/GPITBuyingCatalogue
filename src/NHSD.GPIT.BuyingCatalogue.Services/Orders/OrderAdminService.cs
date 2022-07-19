@@ -38,6 +38,18 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
                 .AsSplitQuery()
                 .SingleOrDefaultAsync(o => o.Id == callOffId.Id);
 
+            if (order?.Completed.HasValue ?? false)
+            {
+                var supplier = await dbContext.Suppliers
+                    .TemporalAsOf(order.Completed.Value)
+                    .SingleOrDefaultAsync(x => x.Id == order.SupplierId);
+
+                if (supplier != null)
+                {
+                    order.Supplier = supplier;
+                }
+            }
+
             return order;
         }
 
