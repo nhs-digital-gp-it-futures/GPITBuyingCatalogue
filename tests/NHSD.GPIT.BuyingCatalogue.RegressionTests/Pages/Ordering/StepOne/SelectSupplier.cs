@@ -14,9 +14,9 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering.StepOne
 {
     public class SelectSupplier : PageBase
     {
-        private const string SupplierName = "NotEmis Health";
+        private const string SupplierName = "EMIS Health";
 
-        public SelectSupplier(IWebDriver driver, CommonActions commonActions) 
+        public SelectSupplier(IWebDriver driver, CommonActions commonActions)
             : base(driver, commonActions)
         {
         }

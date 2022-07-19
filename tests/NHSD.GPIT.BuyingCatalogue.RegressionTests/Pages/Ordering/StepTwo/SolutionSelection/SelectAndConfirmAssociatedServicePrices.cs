@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading.Tasks;
 using FluentAssertions;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.Actions.Common;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.Objects.Ordering.Prices;
@@ -11,11 +12,11 @@ using OpenQA.Selenium;
 
 namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering.StepTwo.SolutionSelection
 {
-    public class SelectAndConfirmPrices : PageBase
+    public class SelectAndConfirmAssociatedServicePrices : PageBase
     {
-        private const decimal MaxPrice = 1.26M;
+        private const decimal MaxPrice = 252.50M;
 
-        public SelectAndConfirmPrices(IWebDriver driver, CommonActions commonActions)
+        public SelectAndConfirmAssociatedServicePrices(IWebDriver driver, CommonActions commonActions)
             : base(driver, commonActions)
         {
         }

@@ -43,9 +43,23 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
 
             OrderingPages.OrderingTriage.SelectOrderTriage(EntityFramework.Ordering.Models.OrderTriageValue.Under40K);
 
-            OrderingPages.StepOnePrepareOrder();
+            OrderingPages.StepOnePrepareOrder(false);
 
             OrderingPages.StepTwoAddSolutionsAndServices();
+        }
+
+        [Fact]
+        public void OrderWithSolutionAndAssociatedServiceUnder40K()
+        {
+            OrderingPages.OrderingDashboard.CreateNewOrder();
+
+            OrderingPages.OrderType.ChooseOrderType(EntityFramework.Catalogue.Models.CatalogueItemType.Solution);
+
+            OrderingPages.OrderingTriage.SelectOrderTriage(EntityFramework.Ordering.Models.OrderTriageValue.Under40K);
+
+            OrderingPages.StepOnePrepareOrder(false);
+
+            OrderingPages.StepTwoAddSolutionsAndServices(null, "Automated Arrivals – Engineering Half Day");
         }
     }
 }
