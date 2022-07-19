@@ -36,6 +36,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Csv
             var frameworkId = framework?.Id ?? string.Empty;
             var fundingType = await GetFundingType(orderId);
             var prices = await GetPrices(orderId);
+            var (supplierId, supplierName) = await GetSupplierDetails(orderId);
 
             var items = await dbContext.OrderItemRecipients
                 .AsNoTracking()
@@ -48,8 +49,8 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Csv
                     CommencementDate = oir.OrderItem.Order.CommencementDate,
                     ServiceRecipientId = oir.Recipient.OdsCode,
                     ServiceRecipientName = oir.Recipient.Name,
-                    SupplierId = $"{oir.OrderItem.Order.SupplierId ?? 0}",
-                    SupplierName = oir.OrderItem.Order.Supplier.Name,
+                    SupplierId = $"{supplierId}",
+                    SupplierName = supplierName,
                     ProductId = oir.OrderItem.CatalogueItemId.ToString(),
                     ProductName = oir.OrderItem.CatalogueItem.Name,
                     ProductType = oir.OrderItem.CatalogueItem.CatalogueItemType.DisplayName(),
@@ -83,6 +84,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Csv
             var frameworkId = framework?.Id ?? string.Empty;
             var fundingType = await GetFundingType(orderId);
             var prices = await GetPrices(orderId);
+            var (supplierId, supplierName) = await GetSupplierDetails(orderId);
 
             var items = await dbContext.OrderItemRecipients
                 .AsNoTracking()
@@ -95,8 +97,8 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Csv
                     CommencementDate = oir.OrderItem.Order.CommencementDate,
                     ServiceRecipientId = oir.Recipient.OdsCode,
                     ServiceRecipientName = oir.Recipient.Name,
-                    SupplierId = oir.OrderItem.Order.SupplierId.Value,
-                    SupplierName = oir.OrderItem.Order.Supplier.Name,
+                    SupplierId = supplierId,
+                    SupplierName = supplierName,
                     ProductId = oir.OrderItem.CatalogueItemId.ToString(),
                     ProductName = oir.OrderItem.CatalogueItem.Name,
                     ProductType = oir.OrderItem.CatalogueItem.CatalogueItemType.DisplayName(),
@@ -179,6 +181,27 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Csv
                 .ToDictionaryAsync(
                     x => x.CatalogueItemId,
                     x => x.OrderItemPrice?.OrderItemPriceTiers?.FirstOrDefault()?.Price ?? decimal.Zero);
+        }
+
+        private async Task<(int SupplierId, string SupplierName)> GetSupplierDetails(int orderId)
+        {
+            var order = await dbContext.Orders
+                .Include(x => x.Supplier)
+                .AsNoTracking()
+                .SingleOrDefaultAsync(x => x.Id == orderId);
+
+            if (order == null)
+            {
+                return (0, string.Empty);
+            }
+
+            var output = order.Completed.HasValue
+                ? await dbContext.Suppliers.TemporalAsOf(order.Completed.Value).SingleOrDefaultAsync(x => x.Id == order.SupplierId)
+                : order.Supplier;
+
+            output ??= order.Supplier;
+
+            return (output?.Id ?? 0, output?.Name ?? string.Empty);
         }
     }
 }

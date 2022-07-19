@@ -10,6 +10,7 @@ using FluentAssertions;
 using Microsoft.EntityFrameworkCore;
 using Moq;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework;
+using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Identity;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Organisations.Models;
@@ -67,6 +68,58 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Orders
 
             // Although soft deleted, there is a query filter on the context to exclude soft deleted orders
             updatedOrder.Should().BeNull();
+        }
+
+        [Theory]
+        [InMemoryDbAutoData]
+        public static async Task GetOrderForSummary_CompletedOrder_ReturnsExpectedResultsAsAtCompletionDate(
+            Order order,
+            Supplier supplier,
+            [Frozen] BuyingCatalogueDbContext context,
+            OrderService service)
+        {
+            const string junk = "Junk";
+
+            order.SupplierId = supplier.Id;
+            order.Supplier = supplier;
+
+            context.Suppliers.Add(supplier);
+            context.Orders.Add(order);
+
+            await context.SaveChangesAsync();
+
+            var result = await service.GetOrderForSummary(order.CallOffId, order.OrderingParty.InternalIdentifier);
+
+            result.Supplier.Address.Should().BeEquivalentTo(supplier.Address);
+
+            order.Complete();
+
+            await context.SaveChangesAsync();
+
+            supplier.Address.County += junk;
+            supplier.Address.Country += junk;
+            supplier.Address.Line1 += junk;
+            supplier.Address.Line2 += junk;
+            supplier.Address.Line3 += junk;
+            supplier.Address.Line4 += junk;
+            supplier.Address.Line5 += junk;
+            supplier.Address.Postcode += junk;
+            supplier.Address.Town += junk;
+
+            await context.SaveChangesAsync();
+
+            var actual = await service.GetOrderForSummary(order.CallOffId, order.OrderingParty.InternalIdentifier);
+
+            actual.Supplier.Address.Should().NotBeEquivalentTo(supplier.Address);
+            actual.Supplier.Address.County.Should().Be(supplier.Address.County.Replace(junk, string.Empty));
+            actual.Supplier.Address.Country.Should().Be(supplier.Address.Country.Replace(junk, string.Empty));
+            actual.Supplier.Address.Line1.Should().Be(supplier.Address.Line1.Replace(junk, string.Empty));
+            actual.Supplier.Address.Line2.Should().Be(supplier.Address.Line2.Replace(junk, string.Empty));
+            actual.Supplier.Address.Line3.Should().Be(supplier.Address.Line3.Replace(junk, string.Empty));
+            actual.Supplier.Address.Line4.Should().Be(supplier.Address.Line4.Replace(junk, string.Empty));
+            actual.Supplier.Address.Line5.Should().Be(supplier.Address.Line5.Replace(junk, string.Empty));
+            actual.Supplier.Address.Postcode.Should().Be(supplier.Address.Postcode.Replace(junk, string.Empty));
+            actual.Supplier.Address.Town.Should().Be(supplier.Address.Town.Replace(junk, string.Empty));
         }
 
         [Theory]
