@@ -57,6 +57,13 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
 
             OrderingPages.TaskList.TimescalesForCallOffAgreementTask();
             OrderingPages.OrderingStepTwo.TimescalesForCallOffAgreementDetails();
+
+            OrderingPages.TaskList.SelectSolutionTask();
+            OrderingPages.SelectCatalogueSolution.SelectCatalogueSolution_SelectSolution();
+            OrderingPages.SelectCatalogueSolutionRecipients.SelectCatalogueSolutionRecipients_SelectionMade();
+            OrderingPages.Price.CatalogueSolutionConfirmPrice();
+            OrderingPages.Quantity.SelectServiceRecipientQuantity_CatalogueSolution();
+            OrderingPages.ReviewSolutions.ReviewSolution();
         }
     }
 }

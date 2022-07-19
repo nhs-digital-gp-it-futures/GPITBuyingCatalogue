@@ -59,8 +59,10 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering.StepTwo
 
         public void TimescalesForCallOffAgreementDetails()
         {
-            const int initialPeriod = 3;
-            const int maximumTerm = 12;
+            Random random = new Random();
+
+            int initialPeriod = random.Next(1, 6);
+            int maximumTerm = random.Next(initialPeriod,12);
 
             var date = TextGenerators.DateInputAddDateSoon(
                 CommencementDate.CommencementDateDayInput,
