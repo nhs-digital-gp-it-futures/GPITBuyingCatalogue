@@ -22,11 +22,21 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering.StepTwo
 
         public void AddFundingSources()
         {
-            var names = new List<string>
+            var editLinksCount = CommonActions.NumberOfElementsDisplayed(FundingSources.EditLink);
+            var names = new List<string>();
+            if (editLinksCount == 1)
             {
-                "Emis Web GP",
-                "Automated Arrivals – Engineering Half Day",
-            };
+                names.Add("Emis Web GP");
+            }
+            else if (editLinksCount == 2)
+            {
+                names.AddRange(new List<string> { "Emis Web GP", "Automated Arrivals – Engineering Half Day" });
+            }
+            else
+            {
+                names.AddRange(new List<string> { "Emis Web GP", "Automated Arrivals – Engineering Half Day", "Automated Arrivals" });
+            }
+
             foreach (var name in names)
             {
                 CommonActions.ClickLinkElement(ByExtensions.DataTestId(name.Trim().Replace(' ', '-')));

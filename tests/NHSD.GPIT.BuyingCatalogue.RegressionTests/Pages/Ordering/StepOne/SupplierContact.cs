@@ -14,7 +14,7 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering.StepOne
 {
     public class SupplierContact : PageBase
     {
-        public SupplierContact(IWebDriver driver, CommonActions commonActions) 
+        public SupplierContact(IWebDriver driver, CommonActions commonActions)
             : base(driver, commonActions)
         {
         }
