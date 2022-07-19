@@ -16,31 +16,20 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering.StepTwo.Solut
 {
     public class SelectCatalogueSolution : PageBase
     {
-        private const string SolutionName = "NotEmis Web GP";
-        private const bool HasAssociatedServices = false;
+        private const string SolutionName = "Emis Web GP";
 
         public SelectCatalogueSolution(IWebDriver driver, CommonActions commonActions)
             : base(driver, commonActions)
         {
         }
 
-        public void SelectSolution(bool withAdditionalService)
+        public void SelectSolution(string? additionalService)
         {
             CommonActions.ClickRadioButtonWithText(SolutionName);
-
-            if (withAdditionalService)
-            {
+            if (!string.IsNullOrWhiteSpace(additionalService))
                 CommonActions.ClickFirstCheckbox();
-            }
 
             CommonActions.ClickSave();
-
-        }
-
-        public bool ProvidesAssociatedService()
-        {
-            // check the solution against the db
-            return false;
         }
     }
 }

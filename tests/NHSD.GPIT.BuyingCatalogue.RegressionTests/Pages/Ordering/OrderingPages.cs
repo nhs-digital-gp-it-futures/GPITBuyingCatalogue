@@ -4,13 +4,15 @@ using NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering.StepOne;
 using NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering.StepTwo;
 using NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering.StepTwo.SolutionSelection;
 using NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering.Triage;
+using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers;
 using OpenQA.Selenium;
 
 namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering
 {
     public class OrderingPages
     {
-        public OrderingPages(IWebDriver driver, CommonActions commonActions)
+        public OrderingPages(IWebDriver driver, CommonActions commonActions, LocalWebApplicationFactory factory
+)
         {
             OrderingDashboard = new OrderingDashboard(driver, commonActions);
             OrderType = new OrderType.OrderType(driver, commonActions);
@@ -25,7 +27,13 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering
             SelectAndConfirmPrices = new SelectAndConfirmPrices(driver, commonActions);
             Quantity = new Quantity(driver, commonActions);
             SolutionAndServicesReview = new SolutionAndServicesReview(driver, commonActions);
+            AssociatedService = new AssociatedService(driver, commonActions);
+            SelectAssociatedServiceRecipents = new SelectAssociatedServiceRecipents(driver, commonActions);
+            SelectAndConfirmAssociatedServicePrices = new SelectAndConfirmAssociatedServicePrices(driver, commonActions);
+            Factory = factory;
         }
+
+        internal LocalWebApplicationFactory Factory { get; private set; }
 
         internal OrderingDashboard OrderingDashboard { get; }
 
@@ -53,6 +61,12 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering
 
         internal SolutionAndServicesReview SolutionAndServicesReview { get; }
 
+        internal AssociatedService AssociatedService { get; }
+
+        internal SelectAssociatedServiceRecipents SelectAssociatedServiceRecipents { get; }
+
+        internal SelectAndConfirmAssociatedServicePrices SelectAndConfirmAssociatedServicePrices { get; }
+
         public void StepOnePrepareOrder(bool addNewSupplierContact = false)
         {
             TaskList.OrderDescriptionTask();
@@ -69,18 +83,32 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering
             OrderingStepOne.AddTimescaleForCallOffAgreement();
         }
 
-        public void StepTwoAddSolutionsAndServices(bool withAdditionalService = false)
+        public void StepTwoAddSolutionsAndServices(string? additionalService = null, string? associatedService = null)
         {
             TaskList.SelectSolutionsAndServicesTask();
 
-            SelectCatalogueSolution.SelectSolution(withAdditionalService);
+            SelectCatalogueSolution.SelectSolution(additionalService);
             SelectCatalogueSolutionServiceRecipients.AddCatalogueSolutionServiceRecipient();
             SelectAndConfirmPrices.SelectAndConfirmPrice();
-            Quantity.AddQuantity();
+            Quantity.AddPracticeListSize();
 
-            if (SelectCatalogueSolution.ProvidesAssociatedService())
+            using var dbContext = Factory.DbContext;
+
+            var hasAssociatedServices = dbContext.SupplierServiceAssociations.Any(ssa => ssa.CatalogueItem.Name == "Emis Web GP");
+
+            if (hasAssociatedServices)
             {
-                // if provide assoc service navigates to a page to select if we want an assoc or not
+                if (!string.IsNullOrWhiteSpace(associatedService))
+                {
+                        AssociatedService.AddAssociatedService("Yes");
+                        SelectAssociatedServiceRecipents.AddServiceRecipient();
+                        SelectAndConfirmAssociatedServicePrices.SelectAndConfirmPrice();
+                        Quantity.AddUnitQuantity();
+                }
+                else
+                {
+                    AssociatedService.AddAssociatedService();
+                }
             }
 
             SolutionAndServicesReview.ReviewSolutionAndServices();

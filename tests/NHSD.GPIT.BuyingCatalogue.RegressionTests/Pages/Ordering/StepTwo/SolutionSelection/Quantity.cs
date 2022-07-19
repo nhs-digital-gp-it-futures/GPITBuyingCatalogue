@@ -18,13 +18,23 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering.StepTwo.Solut
         {
         }
 
-        public void AddQuantity()
+        public void AddPracticeListSize()
         {
             CommonActions.PageLoadedCorrectGetIndex(
              typeof(QuantityController),
              nameof(QuantityController.SelectServiceRecipientQuantity)).Should().BeTrue();
 
             TextGenerators.NumberInputAddRandomNumber(QuantityObjects.InputQuantityInput(0), 50, 1000);
+            CommonActions.ClickSave();
+        }
+
+        public void AddUnitQuantity()
+        {
+            CommonActions.PageLoadedCorrectGetIndex(
+             typeof(QuantityController),
+             nameof(QuantityController.SelectQuantity)).Should().BeTrue();
+
+            TextGenerators.NumberInputAddRandomNumber(QuantityObjects.QuantityInput, 50, 1000);
             CommonActions.ClickSave();
         }
     }
