@@ -10,6 +10,7 @@ using AutoFixture.Xunit2;
 using FluentAssertions;
 using Flurl.Http.Testing;
 using Microsoft.Extensions.Caching.Memory;
+using Microsoft.Extensions.Logging;
 using Moq;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Addresses.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Organisations.Models;
@@ -87,7 +88,11 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Organisations
 
             var settings = new OdsSettings();
 
-            var service = new OdsService(settings, memoryCacheMock.Object, new Mock<IOrganisationsService>().Object);
+            var service = new OdsService(
+                settings,
+                new Mock<ILogger<OdsService>>().Object,
+                memoryCacheMock.Object,
+                new Mock<IOrganisationsService>().Object);
 
             (OdsOrganisation org, string error) = await service.GetOrganisationByOdsCode(odsCode);
 
@@ -118,7 +123,11 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Organisations
                 BuyerOrganisationRoleIds = new[] { "RO98", "RO177", "RO213", "RO272" },
             };
 
-            var service = new OdsService(settings, memoryCacheMock.Object, new Mock<IOrganisationsService>().Object);
+            var service = new OdsService(
+                settings,
+                new Mock<ILogger<OdsService>>().Object,
+                memoryCacheMock.Object,
+                new Mock<IOrganisationsService>().Object);
 
             (OdsOrganisation org, string error) = await service.GetOrganisationByOdsCode(OdsCode);
 
@@ -150,7 +159,11 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Organisations
                 BuyerOrganisationRoleIds = new[] { "X123" },
             };
 
-            var service = new OdsService(settings, memoryCacheMock.Object, new Mock<IOrganisationsService>().Object);
+            var service = new OdsService(
+                settings,
+                new Mock<ILogger<OdsService>>().Object,
+                memoryCacheMock.Object,
+                new Mock<IOrganisationsService>().Object);
 
             (OdsOrganisation org, string error) = await service.GetOrganisationByOdsCode(OdsCode);
 
@@ -179,7 +192,11 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Organisations
                 ApiBaseUrl = new Uri("https://spineservice"),
             };
 
-            var service = new OdsService(settings, memoryCacheMock.Object, new Mock<IOrganisationsService>().Object);
+            var service = new OdsService(
+                settings,
+                new Mock<ILogger<OdsService>>().Object,
+                memoryCacheMock.Object,
+                new Mock<IOrganisationsService>().Object);
 
             (OdsOrganisation org, string error) = await service.GetOrganisationByOdsCode(OdsCode);
 
@@ -214,7 +231,11 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Organisations
 
             var settings = new OdsSettings();
 
-            var service = new OdsService(settings, memoryCacheMock.Object, new Mock<IOrganisationsService>().Object);
+            var service = new OdsService(
+                settings,
+                new Mock<ILogger<OdsService>>().Object,
+                memoryCacheMock.Object,
+                new Mock<IOrganisationsService>().Object);
 
             var result = await service.GetServiceRecipientsByParentInternalIdentifier(odsCode);
 
@@ -255,7 +276,11 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Organisations
             var organisation = new Organisation { ExternalIdentifier = odsCode };
             organisationServiceMock.Setup(m => m.GetOrganisationByInternalIdentifier(It.IsAny<string>())).ReturnsAsync(organisation);
 
-            var service = new OdsService(settings, memoryCacheMock.Object, organisationServiceMock.Object);
+            var service = new OdsService(
+                settings,
+                new Mock<ILogger<OdsService>>().Object,
+                memoryCacheMock.Object,
+                organisationServiceMock.Object);
 
             var result = await service.GetServiceRecipientsByParentInternalIdentifier(odsCode);
 
@@ -301,7 +326,11 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Organisations
             var organisation = new Organisation { ExternalIdentifier = odsCode };
             organisationServiceMock.Setup(m => m.GetOrganisationByInternalIdentifier(It.IsAny<string>())).ReturnsAsync(organisation);
 
-            var service = new OdsService(settings, memoryCacheMock.Object, organisationServiceMock.Object);
+            var service = new OdsService(
+                settings,
+                new Mock<ILogger<OdsService>>().Object,
+                memoryCacheMock.Object,
+                organisationServiceMock.Object);
 
             var result = await service.GetServiceRecipientsByParentInternalIdentifier(odsCode);
 
@@ -343,7 +372,11 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Organisations
             var organisation = new Organisation { ExternalIdentifier = odsCode };
             organisationServiceMock.Setup(m => m.GetOrganisationByInternalIdentifier(It.IsAny<string>())).ReturnsAsync(organisation);
 
-            var service = new OdsService(settings, memoryCacheMock.Object, organisationServiceMock.Object);
+            var service = new OdsService(
+                settings,
+                new Mock<ILogger<OdsService>>().Object,
+                memoryCacheMock.Object,
+                organisationServiceMock.Object);
 
             var result = await service.GetServiceRecipientsByParentInternalIdentifier(odsCode);
 
@@ -379,7 +412,11 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Organisations
             var organisation = new Organisation { ExternalIdentifier = odsCode };
             organisationServiceMock.Setup(m => m.GetOrganisationByInternalIdentifier(It.IsAny<string>())).ReturnsAsync(organisation);
 
-            var service = new OdsService(settings, memoryCacheMock.Object, organisationServiceMock.Object);
+            var service = new OdsService(
+                settings,
+                new Mock<ILogger<OdsService>>().Object,
+                memoryCacheMock.Object,
+                organisationServiceMock.Object);
 
             var result = await service.GetServiceRecipientsByParentInternalIdentifier(odsCode);
 
@@ -443,6 +480,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Organisations
 
             await new OdsService(
                 settings,
+                new Mock<ILogger<OdsService>>().Object,
                 mockMemoryCache.Object,
                 mockOrganisationsService.Object).UpdateOrganisationDetails(odsCode);
 
