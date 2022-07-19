@@ -11,8 +11,7 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering
 {
     public class OrderingPages
     {
-        public OrderingPages(IWebDriver driver, CommonActions commonActions, LocalWebApplicationFactory factory
-)
+        public OrderingPages(IWebDriver driver, CommonActions commonActions, LocalWebApplicationFactory factory)
         {
             OrderingDashboard = new OrderingDashboard(driver, commonActions);
             OrderType = new OrderType.OrderType(driver, commonActions);
@@ -30,6 +29,8 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering
             AssociatedService = new AssociatedService(driver, commonActions);
             SelectAssociatedServiceRecipents = new SelectAssociatedServiceRecipents(driver, commonActions);
             SelectAndConfirmAssociatedServicePrices = new SelectAndConfirmAssociatedServicePrices(driver, commonActions);
+            SelectAdditionalServiceRecipients = new SelectAdditionalServiceRecipients(driver, commonActions);
+            SelectAndConfirmAdditionalServicePrice = new SelectAndConfirmAdditionalServicePrice(driver, commonActions);
             Factory = factory;
         }
 
@@ -67,6 +68,10 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering
 
         internal SelectAndConfirmAssociatedServicePrices SelectAndConfirmAssociatedServicePrices { get; }
 
+        internal SelectAdditionalServiceRecipients SelectAdditionalServiceRecipients { get; }
+
+        internal SelectAndConfirmAdditionalServicePrice SelectAndConfirmAdditionalServicePrice { get; }
+
         public void StepOnePrepareOrder(bool addNewSupplierContact = false)
         {
             TaskList.OrderDescriptionTask();
@@ -93,6 +98,15 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering
             Quantity.AddPracticeListSize();
 
             using var dbContext = Factory.DbContext;
+
+            var hasAdditionalService = dbContext.AdditionalServices.Any(a => a.Solution.CatalogueItem.Name == "Emis Web GP");
+
+            if (hasAdditionalService && !string.IsNullOrWhiteSpace(additionalService))
+            {
+                SelectAdditionalServiceRecipients.AddServiceRecipients();
+                SelectAndConfirmAdditionalServicePrice.SelectAndConfirmPrice();
+                Quantity.AddUnitQuantity();
+            }
 
             var hasAssociatedServices = dbContext.SupplierServiceAssociations.Any(ssa => ssa.CatalogueItem.Name == "Emis Web GP");
 

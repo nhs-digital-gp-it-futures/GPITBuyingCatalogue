@@ -27,7 +27,10 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering.StepTwo.Solut
         {
             CommonActions.ClickRadioButtonWithText(SolutionName);
             if (!string.IsNullOrWhiteSpace(additionalService))
+            {
+
                 CommonActions.ClickFirstCheckbox();
+            }
 
             CommonActions.ClickSave();
         }
