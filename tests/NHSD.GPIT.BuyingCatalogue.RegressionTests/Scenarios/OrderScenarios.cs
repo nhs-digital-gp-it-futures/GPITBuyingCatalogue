@@ -9,6 +9,10 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
     {
         private const string InternalOrgId = "CG-03F";
 
+        private const string SupplierName = "EMIS Health";
+        private const string SolutionName = "Anywhere Consult";
+        private const string AssociatedServiceName = "Anywhere Consult – Integrated Device";
+
         private static readonly Dictionary<string, string> Parameters =
             new()
             {
@@ -45,9 +49,9 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
 
             OrderingPages.StartOrder.ReadyToStart();
 
-            OrderingPages.StepOnePrepareOrder(false);
+            OrderingPages.StepOnePrepareOrder(SupplierName, false);
 
-            OrderingPages.StepTwoAddSolutionsAndServices();
+            OrderingPages.StepTwoAddSolutionsAndServices(SolutionName);
         }
 
         [Fact]
@@ -61,9 +65,9 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
 
             OrderingPages.StartOrder.ReadyToStart();
 
-            OrderingPages.StepOnePrepareOrder(false);
+            OrderingPages.StepOnePrepareOrder(SupplierName, false);
 
-            OrderingPages.StepTwoAddSolutionsAndServices("Automated Arrivals", "Automated Arrivals – Engineering Half Day");
+            OrderingPages.StepTwoAddSolutionsAndServices(solutionName: SolutionName, associatedService: AssociatedServiceName);
         }
 
         [Fact]
@@ -75,9 +79,9 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
 
             OrderingPages.StartOrder.ReadyToStart();
 
-            OrderingPages.StepOnePrepareOrder(false);
+            OrderingPages.StepOnePrepareOrder(SupplierName, false);
 
-            OrderingPages.StepTwoAddSolutionsAndServices("Automated Arrivals", "Automated Arrivals – Engineering Half Day");
+            OrderingPages.StepTwoAddSolutionsAndServices(SolutionName, "Automated Arrivals", "Automated Arrivals – Engineering Half Day");
         }
     }
 }

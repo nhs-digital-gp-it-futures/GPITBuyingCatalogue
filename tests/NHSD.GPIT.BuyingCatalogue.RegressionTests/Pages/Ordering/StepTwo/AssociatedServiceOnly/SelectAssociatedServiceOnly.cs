@@ -13,31 +13,31 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering.StepTwo.Assoc
 {
     public class SelectAssociatedServiceOnly : PageBase
     {
-        private const string SolutionName = "Anywhere Consult";
-
         public SelectAssociatedServiceOnly(IWebDriver driver, CommonActions commonActions)
             : base(driver, commonActions)
         {
         }
 
-        public void SelectAssociatedServices()
+        public void SelectAssociatedServices(string solutionName, string associatedService)
         {
-            SelectSolutionForAssociatedService();
-            SelectAssociatedServiceOfSolution();
+            SelectSolutionForAssociatedService(solutionName);
+            SelectAssociatedServiceOfSolution(associatedService);
         }
 
-        private void SelectSolutionForAssociatedService()
+        private void SelectSolutionForAssociatedService(string solutionName)
         {
-            CommonActions.ClickRadioButtonWithText(SolutionName);
+            CommonActions.ClickRadioButtonWithText(solutionName);
             CommonActions.ClickSave();
         }
 
-        private void SelectAssociatedServiceOfSolution()
+        private void SelectAssociatedServiceOfSolution(string associatedService)
         {
             CommonActions.PageLoadedCorrectGetIndex(
             typeof(AssociatedServicesController),
             nameof(AssociatedServicesController.SelectAssociatedServices))
             .Should().BeTrue();
+
+            //TODO: if there is no assoc service or there is only one
 
             CommonActions.ClickFirstCheckbox();
             CommonActions.ClickSave();

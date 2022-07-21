@@ -14,16 +14,14 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering.StepOne
 {
     public class SelectSupplier : PageBase
     {
-        private const string SupplierName = "EMIS Health";
-
         public SelectSupplier(IWebDriver driver, CommonActions commonActions)
             : base(driver, commonActions)
         {
         }
 
-        public void SelectAndConfirmSupplier()
+        public void SelectAndConfirmSupplier(string supplierName)
         {
-            CommonActions.AutoCompleteAddValue(SupplierObjects.SupplierAutoComplete, SupplierName);
+            CommonActions.AutoCompleteAddValue(SupplierObjects.SupplierAutoComplete, supplierName);
 
             CommonActions.ClickSave();
 
