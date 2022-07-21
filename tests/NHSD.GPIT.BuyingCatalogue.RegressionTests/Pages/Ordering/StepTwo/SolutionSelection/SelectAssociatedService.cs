@@ -12,9 +12,9 @@ using OpenQA.Selenium;
 
 namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering.StepTwo.SolutionSelection
 {
-    public class AssociatedService : PageBase
+    public class SelectAssociatedService : PageBase
     {
-        public AssociatedService(IWebDriver driver, CommonActions commonActions)
+        public SelectAssociatedService(IWebDriver driver, CommonActions commonActions)
             : base(driver, commonActions)
         {
         }
