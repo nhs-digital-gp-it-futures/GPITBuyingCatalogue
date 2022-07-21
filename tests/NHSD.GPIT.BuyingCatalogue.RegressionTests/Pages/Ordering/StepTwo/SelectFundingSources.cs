@@ -13,9 +13,9 @@ using OpenQA.Selenium;
 
 namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering.StepTwo
 {
-    public class OrderingStepTwo : PageBase
+    public class SelectFundingSources : PageBase
     {
-        public OrderingStepTwo(IWebDriver driver, CommonActions commonActions)
+        public SelectFundingSources(IWebDriver driver, CommonActions commonActions)
             : base(driver, commonActions)
         {
         }
@@ -30,7 +30,7 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering.StepTwo
             }
             else if (editLinksCount == 2)
             {
-                names.AddRange(new List<string> { "Emis Web GP", "Automated Arrivals – Engineering Half Day" });
+                names.AddRange(new List<string> { "Anywhere Consult", "Anywhere Consult – Integrated Device" });
             }
             else
             {

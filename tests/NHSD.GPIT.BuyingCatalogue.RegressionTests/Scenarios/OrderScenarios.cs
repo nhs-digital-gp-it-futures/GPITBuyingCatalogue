@@ -31,7 +31,7 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
 
             OrderingPages.OrderingTriage.SelectIdentifiedOrder();
 
-            OrderingPages.OrderingTriage.ReadyToStart();
+            OrderingPages.StartOrder.ReadyToStart();
         }
 
         [Fact]
@@ -42,6 +42,8 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
             OrderingPages.OrderType.ChooseOrderType(EntityFramework.Catalogue.Models.CatalogueItemType.Solution);
 
             OrderingPages.OrderingTriage.SelectOrderTriage(EntityFramework.Ordering.Models.OrderTriageValue.Under40K);
+
+            OrderingPages.StartOrder.ReadyToStart();
 
             OrderingPages.StepOnePrepareOrder(false);
 
@@ -56,6 +58,22 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
             OrderingPages.OrderType.ChooseOrderType(EntityFramework.Catalogue.Models.CatalogueItemType.Solution);
 
             OrderingPages.OrderingTriage.SelectOrderTriage(EntityFramework.Ordering.Models.OrderTriageValue.Under40K);
+
+            OrderingPages.StartOrder.ReadyToStart();
+
+            OrderingPages.StepOnePrepareOrder(false);
+
+            OrderingPages.StepTwoAddSolutionsAndServices("Automated Arrivals", "Automated Arrivals – Engineering Half Day");
+        }
+
+        [Fact]
+        public void OrderAssociatedServiceOnly()
+        {
+            OrderingPages.OrderingDashboard.CreateNewOrder();
+
+            OrderingPages.OrderType.ChooseOrderType(EntityFramework.Catalogue.Models.CatalogueItemType.AssociatedService);
+
+            OrderingPages.StartOrder.ReadyToStart();
 
             OrderingPages.StepOnePrepareOrder(false);
 

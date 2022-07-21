@@ -4,12 +4,13 @@ using System.Linq;
 using System.Text;
 using FluentAssertions;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.Actions.Common;
+using NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.Objects.Common;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.Objects.Ordering.Quantity;
 using NHSD.GPIT.BuyingCatalogue.RegressionTests.Utils;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers.SolutionSelection;
 using OpenQA.Selenium;
 
-namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering.StepTwo.SolutionSelection
+namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering.StepTwo
 {
     public class Quantity : PageBase
     {
@@ -18,7 +19,17 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering.StepTwo.Solut
         {
         }
 
-        public void AddPracticeListSize()
+        public void AddQuantity()
+        {
+            var perServiceRecipient = CommonActions.ElementIsDisplayed(ByExtensions.DataTestId("perServiceRecipient"));
+
+            if (perServiceRecipient)
+                AddPracticeListSize();
+            else
+                AddUnitQuantity();
+        }
+
+        private void AddPracticeListSize()
         {
             CommonActions.PageLoadedCorrectGetIndex(
              typeof(QuantityController),
@@ -28,7 +39,7 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering.StepTwo.Solut
             CommonActions.ClickSave();
         }
 
-        public void AddUnitQuantity()
+        private void AddUnitQuantity()
         {
             CommonActions.PageLoadedCorrectGetIndex(
              typeof(QuantityController),

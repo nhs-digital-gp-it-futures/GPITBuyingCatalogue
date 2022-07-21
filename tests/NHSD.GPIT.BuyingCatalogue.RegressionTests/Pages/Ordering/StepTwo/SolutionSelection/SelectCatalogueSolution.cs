@@ -16,19 +16,26 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering.StepTwo.Solut
 {
     public class SelectCatalogueSolution : PageBase
     {
-        private const string SolutionName = "Emis Web GP";
+        private const string SolutionName = "Anywhere Consult";
 
-        public SelectCatalogueSolution(IWebDriver driver, CommonActions commonActions)
+        public SelectCatalogueSolution(IWebDriver driver, CommonActions commonActions, LocalWebApplicationFactory factory)
             : base(driver, commonActions)
         {
+            Factory = factory;
         }
+
+        internal LocalWebApplicationFactory Factory { get; private set; }
 
         public void SelectSolution(string? additionalService)
         {
-            CommonActions.ClickRadioButtonWithText(SolutionName);
-            if (!string.IsNullOrWhiteSpace(additionalService))
-            {
+            using var dbContext = Factory.DbContext;
 
+            var hasAdditionalService = dbContext.AdditionalServices.Any(a => a.Solution.CatalogueItem.Name == "Anywhere Consult");
+
+            CommonActions.ClickRadioButtonWithText(SolutionName);
+
+            if (hasAdditionalService && !string.IsNullOrWhiteSpace(additionalService))
+            {
                 CommonActions.ClickFirstCheckbox();
             }
 
