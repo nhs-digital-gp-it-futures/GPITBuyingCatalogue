@@ -16,8 +16,6 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering.StepTwo.Solut
 {
     public class SelectCatalogueSolution : PageBase
     {
-        private const string SolutionName = "Anywhere Consult";
-
         public SelectCatalogueSolution(IWebDriver driver, CommonActions commonActions, LocalWebApplicationFactory factory)
             : base(driver, commonActions)
         {
@@ -26,17 +24,17 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering.StepTwo.Solut
 
         internal LocalWebApplicationFactory Factory { get; private set; }
 
-        public void SelectSolution(string? additionalService)
+        public void SelectSolution(string solutionName, string? additionalService)
         {
             using var dbContext = Factory.DbContext;
 
-            var hasAdditionalService = dbContext.AdditionalServices.Any(a => a.Solution.CatalogueItem.Name == "Anywhere Consult");
+            var hasAdditionalService = dbContext.AdditionalServices.Any(a => a.Solution.CatalogueItem.Name == solutionName);
 
-            CommonActions.ClickRadioButtonWithText(SolutionName);
+            CommonActions.ClickRadioButtonWithText(solutionName);
 
             if (hasAdditionalService && !string.IsNullOrWhiteSpace(additionalService))
             {
-                CommonActions.ClickFirstCheckbox();
+                CommonActions.ClickCheckboxByLabel(additionalService);
             }
 
             CommonActions.ClickSave();

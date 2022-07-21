@@ -88,7 +88,7 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering
 
         internal IWebDriver Driver { get; }
 
-        public void StepOnePrepareOrder(bool addNewSupplierContact = false)
+        public void StepOnePrepareOrder(string supplierName, bool addNewSupplierContact = false)
         {
             TaskList.OrderDescriptionTask();
             OrderingStepOne.AddOrderDescription();
@@ -97,20 +97,20 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering
             OrderingStepOne.AddCallOffOrderingPartyContactDetails();
 
             TaskList.SupplierInformationAndContactDetailsTask();
-            SelectSupplier.SelectAndConfirmSupplier();
+            SelectSupplier.SelectAndConfirmSupplier(supplierName);
             SupplierContact.ConfirmContact(addNewSupplierContact);
 
             TaskList.TimescalesForCallOffAgreementTask();
             OrderingStepOne.AddTimescaleForCallOffAgreement();
         }
 
-        public void StepTwoAddSolutionsAndServices(string? additionalService = null, string? associatedService = null)
+        public void StepTwoAddSolutionsAndServices(string solutionName, string? additionalService = null, string? associatedService = null)
         {
             using var dbContext = Factory.DbContext;
 
-            var hasAdditionalService = dbContext.AdditionalServices.Any(a => a.Solution.CatalogueItem.Name == "Anywhere Consult");
+            var hasAdditionalService = dbContext.AdditionalServices.Any(a => a.Solution.CatalogueItem.Name == solutionName);
 
-            var hasAssociatedServices = dbContext.SupplierServiceAssociations.Any(ssa => ssa.CatalogueItem.Name == "Anywhere Consult");
+            var hasAssociatedServices = dbContext.SupplierServiceAssociations.Any(ssa => ssa.CatalogueItem.Name == solutionName);
 
             var orderID = Driver.Url.Split('/').Last().Split('-')[0].Replace("C0", string.Empty);
             var isAssociatedServiceOnlyOrder = dbContext.Orders.Any(o => string.Equals(o.Id.ToString(), orderID) && o.AssociatedServicesOnly);
@@ -119,7 +119,7 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering
 
             if (!isAssociatedServiceOnlyOrder)
             {
-                SelectCatalogueSolution.SelectSolution(additionalService);
+                SelectCatalogueSolution.SelectSolution(solutionName, additionalService);
 
                 SelectCatalogueSolutionServiceRecipients.AddCatalogueSolutionServiceRecipient();
                 SelectAndConfirmPrices.SelectAndConfirmPrice();
@@ -136,7 +136,7 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering
                 {
                     if (!string.IsNullOrWhiteSpace(associatedService))
                     {
-                        SelectAssociatedService.AddAssociatedService("Yes");
+                        SelectAssociatedService.AddAssociatedService("Yes", associatedService);
                         SelectAssociatedServiceRecipents.AddServiceRecipient();
                         SelectAndConfirmAssociatedServicePrices.SelectAndConfirmPrice();
                         Quantity.AddQuantity();
@@ -149,7 +149,7 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering
             }
             else
             {
-                SelectAssociatedServiceOnly.SelectAssociatedServices();
+                SelectAssociatedServiceOnly.SelectAssociatedServices(solutionName, associatedService);
                 SelectAssociatedServiceRecipientOnly.AddServiceRecipient();
                 SelectAndConfirmAssociatedServiceOnlyPrices.SelectAndConfirmPrice();
                 Quantity.AddQuantity();
