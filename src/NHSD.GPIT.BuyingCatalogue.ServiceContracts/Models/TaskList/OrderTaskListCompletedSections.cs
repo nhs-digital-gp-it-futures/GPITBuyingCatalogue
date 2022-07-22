@@ -14,6 +14,8 @@
 
         public bool SolutionsCompleted { get; set; }
 
+        public bool HasAssociatedServices { get; set; }
+
         public bool FundingInProgress { get; set; }
 
         public bool FundingCompleted { get; set; }

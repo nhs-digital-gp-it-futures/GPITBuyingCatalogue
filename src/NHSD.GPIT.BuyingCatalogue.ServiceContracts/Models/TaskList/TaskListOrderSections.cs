@@ -14,12 +14,22 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.Models.TaskList
         SolutionOrService = 32,
         FundingSourceInProgress = 64,
         FundingSource = 128,
-        DescriptionComplete = Description,
+        ImplementationPlanInProgress = 256,
+        ImplementationPlan = 512,
+        AssociatedServiceBillingInProgress = 1024,
+        AssociatedServiceBilling = 2048,
+        AssociatedServiceBillingNotApplicable = 4096,
+        DataProcessingInformationInProgress = 8192,
+        DataProcessingInformation = 16384,
+
         OrderingPartyComplete = OrderingParty,
         SupplierComplete = Supplier | OrderingPartyComplete,
         SupplierContactComplete = SupplierContact | SupplierComplete,
         CommencementDateComplete = CommencementDate | SupplierContactComplete,
         SolutionOrServiceComplete = SolutionOrService | SolutionOrServiceInProgress | CommencementDateComplete,
         FundingSourceComplete = FundingSource | FundingSourceInProgress | SolutionOrServiceComplete,
+        ImplementationPlanComplete = ImplementationPlan | ImplementationPlanInProgress | FundingSourceComplete,
+        AssociatedServiceBillingComplete = AssociatedServiceBilling | AssociatedServiceBillingInProgress | ImplementationPlanComplete,
+        DataProcessingInformationCompleted = DataProcessingInformation | DataProcessingInformationInProgress | ImplementationPlanComplete,
     }
 }

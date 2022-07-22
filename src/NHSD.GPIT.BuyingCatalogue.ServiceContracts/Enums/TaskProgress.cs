@@ -7,5 +7,6 @@
         Optional,
         InProgress,
         Completed,
+        NotApplicable,
     }
 }

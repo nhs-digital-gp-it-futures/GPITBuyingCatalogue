@@ -114,6 +114,7 @@ namespace NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.TagHelpers.Tags
         {
             var selectedColourClass = progress switch
             {
+                TaskProgress.NotApplicable => TagColour.White,
                 TaskProgress.NotStarted => TagColour.Grey,
                 TaskProgress.CannotStart => TagColour.Grey,
                 TaskProgress.Optional => TagColour.White,
@@ -124,6 +125,7 @@ namespace NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.TagHelpers.Tags
 
             var tagText = progress switch
             {
+                TaskProgress.NotApplicable => "Not applicable",
                 TaskProgress.NotStarted => "Not started",
                 TaskProgress.CannotStart => "Cannot start yet",
                 TaskProgress.Optional => "Optional",

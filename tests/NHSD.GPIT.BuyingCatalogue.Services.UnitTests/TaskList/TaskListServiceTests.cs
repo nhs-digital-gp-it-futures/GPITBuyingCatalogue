@@ -254,7 +254,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.TaskList
                 CommencementDateStatus = TaskProgress.Completed,
                 SolutionOrService = TaskProgress.Completed,
                 FundingSource = TaskProgress.Completed,
-                ReviewAndCompleteStatus = TaskProgress.NotStarted,
+                ImplementationPlan = TaskProgress.NotStarted,
             };
 
             var model = new OrderTaskList();
@@ -269,6 +269,265 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.TaskList
                 | TaskListOrderSections.SolutionOrService
                 | TaskListOrderSections.FundingSourceInProgress
                 | TaskListOrderSections.FundingSource;
+
+            TaskListService.SetOrderTaskList(completedSections, model);
+
+            model.Should().BeEquivalentTo(expected);
+        }
+
+        [Fact]
+        public static void SetOrderTaskList_ImplementationPlan_InProgress()
+        {
+            var expected = new OrderTaskList()
+            {
+                DescriptionStatus = TaskProgress.Completed,
+                OrderingPartyStatus = TaskProgress.Completed,
+                SupplierStatus = TaskProgress.Completed,
+                CommencementDateStatus = TaskProgress.Completed,
+                SolutionOrService = TaskProgress.Completed,
+                FundingSource = TaskProgress.Completed,
+                ImplementationPlan = TaskProgress.InProgress,
+            };
+
+            var model = new OrderTaskList();
+
+            var completedSections =
+                TaskListOrderSections.Description
+                | TaskListOrderSections.OrderingParty
+                | TaskListOrderSections.Supplier
+                | TaskListOrderSections.SupplierContact
+                | TaskListOrderSections.CommencementDate
+                | TaskListOrderSections.SolutionOrServiceInProgress
+                | TaskListOrderSections.SolutionOrService
+                | TaskListOrderSections.FundingSourceInProgress
+                | TaskListOrderSections.FundingSource
+                | TaskListOrderSections.ImplementationPlanInProgress;
+
+            TaskListService.SetOrderTaskList(completedSections, model);
+
+            model.Should().BeEquivalentTo(expected);
+        }
+
+        [Fact]
+        public static void SetOrderTaskList_ImplementationPlan_Complete()
+        {
+            var expected = new OrderTaskList()
+            {
+                DescriptionStatus = TaskProgress.Completed,
+                OrderingPartyStatus = TaskProgress.Completed,
+                SupplierStatus = TaskProgress.Completed,
+                CommencementDateStatus = TaskProgress.Completed,
+                SolutionOrService = TaskProgress.Completed,
+                FundingSource = TaskProgress.Completed,
+                ImplementationPlan = TaskProgress.Completed,
+                AssociatedServiceBilling = TaskProgress.NotStarted,
+            };
+
+            var model = new OrderTaskList();
+
+            var completedSections =
+                TaskListOrderSections.Description
+                | TaskListOrderSections.OrderingParty
+                | TaskListOrderSections.Supplier
+                | TaskListOrderSections.SupplierContact
+                | TaskListOrderSections.CommencementDate
+                | TaskListOrderSections.SolutionOrServiceInProgress
+                | TaskListOrderSections.SolutionOrService
+                | TaskListOrderSections.FundingSourceInProgress
+                | TaskListOrderSections.FundingSource
+                | TaskListOrderSections.ImplementationPlanInProgress
+                | TaskListOrderSections.ImplementationPlan;
+
+            TaskListService.SetOrderTaskList(completedSections, model);
+
+            model.Should().BeEquivalentTo(expected);
+        }
+
+        [Fact]
+        public static void SetOrderTaskList_AssociatedServiceBilling_InProgress()
+        {
+            var expected = new OrderTaskList()
+            {
+                DescriptionStatus = TaskProgress.Completed,
+                OrderingPartyStatus = TaskProgress.Completed,
+                SupplierStatus = TaskProgress.Completed,
+                CommencementDateStatus = TaskProgress.Completed,
+                SolutionOrService = TaskProgress.Completed,
+                FundingSource = TaskProgress.Completed,
+                ImplementationPlan = TaskProgress.Completed,
+                AssociatedServiceBilling = TaskProgress.InProgress,
+            };
+
+            var model = new OrderTaskList();
+
+            var completedSections =
+                TaskListOrderSections.Description
+                | TaskListOrderSections.OrderingParty
+                | TaskListOrderSections.Supplier
+                | TaskListOrderSections.SupplierContact
+                | TaskListOrderSections.CommencementDate
+                | TaskListOrderSections.SolutionOrServiceInProgress
+                | TaskListOrderSections.SolutionOrService
+                | TaskListOrderSections.FundingSourceInProgress
+                | TaskListOrderSections.FundingSource
+                | TaskListOrderSections.ImplementationPlanInProgress
+                | TaskListOrderSections.ImplementationPlan
+                | TaskListOrderSections.AssociatedServiceBillingInProgress;
+
+            TaskListService.SetOrderTaskList(completedSections, model);
+
+            model.Should().BeEquivalentTo(expected);
+        }
+
+        [Fact]
+        public static void SetOrderTaskList_AssociatedServiceBilling_Completed()
+        {
+            var expected = new OrderTaskList()
+            {
+                DescriptionStatus = TaskProgress.Completed,
+                OrderingPartyStatus = TaskProgress.Completed,
+                SupplierStatus = TaskProgress.Completed,
+                CommencementDateStatus = TaskProgress.Completed,
+                SolutionOrService = TaskProgress.Completed,
+                FundingSource = TaskProgress.Completed,
+                ImplementationPlan = TaskProgress.Completed,
+                AssociatedServiceBilling = TaskProgress.Completed,
+                DataProcessingInformation = TaskProgress.NotStarted,
+            };
+
+            var model = new OrderTaskList();
+
+            var completedSections =
+                TaskListOrderSections.Description
+                | TaskListOrderSections.OrderingParty
+                | TaskListOrderSections.Supplier
+                | TaskListOrderSections.SupplierContact
+                | TaskListOrderSections.CommencementDate
+                | TaskListOrderSections.SolutionOrServiceInProgress
+                | TaskListOrderSections.SolutionOrService
+                | TaskListOrderSections.FundingSourceInProgress
+                | TaskListOrderSections.FundingSource
+                | TaskListOrderSections.ImplementationPlanInProgress
+                | TaskListOrderSections.ImplementationPlan
+                | TaskListOrderSections.AssociatedServiceBillingInProgress
+                | TaskListOrderSections.AssociatedServiceBilling;
+
+            TaskListService.SetOrderTaskList(completedSections, model);
+
+            model.Should().BeEquivalentTo(expected);
+        }
+
+        [Fact]
+        public static void SetOrderTaskList_AssociatedServiceBilling_NotApplicable()
+        {
+            var expected = new OrderTaskList()
+            {
+                DescriptionStatus = TaskProgress.Completed,
+                OrderingPartyStatus = TaskProgress.Completed,
+                SupplierStatus = TaskProgress.Completed,
+                CommencementDateStatus = TaskProgress.Completed,
+                SolutionOrService = TaskProgress.Completed,
+                FundingSource = TaskProgress.Completed,
+                ImplementationPlan = TaskProgress.Completed,
+                AssociatedServiceBilling = TaskProgress.NotApplicable,
+                DataProcessingInformation = TaskProgress.NotStarted,
+            };
+
+            var model = new OrderTaskList();
+
+            var completedSections =
+                TaskListOrderSections.Description
+                | TaskListOrderSections.OrderingParty
+                | TaskListOrderSections.Supplier
+                | TaskListOrderSections.SupplierContact
+                | TaskListOrderSections.CommencementDate
+                | TaskListOrderSections.SolutionOrServiceInProgress
+                | TaskListOrderSections.SolutionOrService
+                | TaskListOrderSections.FundingSourceInProgress
+                | TaskListOrderSections.FundingSource
+                | TaskListOrderSections.ImplementationPlanInProgress
+                | TaskListOrderSections.ImplementationPlan
+                | TaskListOrderSections.AssociatedServiceBillingNotApplicable;
+
+            TaskListService.SetOrderTaskList(completedSections, model);
+
+            model.Should().BeEquivalentTo(expected);
+        }
+
+        [Fact]
+        public static void SetOrderTaskList_DataProcessingInformation_InProgress()
+        {
+            var expected = new OrderTaskList()
+            {
+                DescriptionStatus = TaskProgress.Completed,
+                OrderingPartyStatus = TaskProgress.Completed,
+                SupplierStatus = TaskProgress.Completed,
+                CommencementDateStatus = TaskProgress.Completed,
+                SolutionOrService = TaskProgress.Completed,
+                FundingSource = TaskProgress.Completed,
+                ImplementationPlan = TaskProgress.Completed,
+                AssociatedServiceBilling = TaskProgress.Completed,
+                DataProcessingInformation = TaskProgress.InProgress,
+            };
+
+            var model = new OrderTaskList();
+
+            var completedSections =
+                TaskListOrderSections.Description
+                | TaskListOrderSections.OrderingParty
+                | TaskListOrderSections.Supplier
+                | TaskListOrderSections.SupplierContact
+                | TaskListOrderSections.CommencementDate
+                | TaskListOrderSections.SolutionOrServiceInProgress
+                | TaskListOrderSections.SolutionOrService
+                | TaskListOrderSections.FundingSourceInProgress
+                | TaskListOrderSections.FundingSource
+                | TaskListOrderSections.ImplementationPlanInProgress
+                | TaskListOrderSections.ImplementationPlan
+                | TaskListOrderSections.AssociatedServiceBillingInProgress
+                | TaskListOrderSections.AssociatedServiceBilling
+                | TaskListOrderSections.DataProcessingInformationInProgress;
+
+            TaskListService.SetOrderTaskList(completedSections, model);
+
+            model.Should().BeEquivalentTo(expected);
+        }
+
+        [Fact]
+        public static void SetOrderTaskList_DataProcessingInformation_Completed()
+        {
+            var expected = new OrderTaskList()
+            {
+                DescriptionStatus = TaskProgress.Completed,
+                OrderingPartyStatus = TaskProgress.Completed,
+                SupplierStatus = TaskProgress.Completed,
+                CommencementDateStatus = TaskProgress.Completed,
+                SolutionOrService = TaskProgress.Completed,
+                FundingSource = TaskProgress.Completed,
+                ImplementationPlan = TaskProgress.Completed,
+                AssociatedServiceBilling = TaskProgress.Completed,
+                DataProcessingInformation = TaskProgress.Completed,
+                ReviewAndCompleteStatus = TaskProgress.NotStarted,
+            };
+
+            var model = new OrderTaskList();
+
+            var completedSections =
+                TaskListOrderSections.Description
+                | TaskListOrderSections.OrderingParty
+                | TaskListOrderSections.Supplier
+                | TaskListOrderSections.SupplierContact
+                | TaskListOrderSections.CommencementDate
+                | TaskListOrderSections.SolutionOrServiceInProgress
+                | TaskListOrderSections.SolutionOrService
+                | TaskListOrderSections.FundingSourceInProgress
+                | TaskListOrderSections.FundingSource
+                | TaskListOrderSections.ImplementationPlanInProgress
+                | TaskListOrderSections.ImplementationPlan
+                | TaskListOrderSections.AssociatedServiceBillingInProgress
+                | TaskListOrderSections.AssociatedServiceBilling
+                | TaskListOrderSections.DataProcessingInformationInProgress
+                | TaskListOrderSections.DataProcessingInformation;
 
             TaskListService.SetOrderTaskList(completedSections, model);
 

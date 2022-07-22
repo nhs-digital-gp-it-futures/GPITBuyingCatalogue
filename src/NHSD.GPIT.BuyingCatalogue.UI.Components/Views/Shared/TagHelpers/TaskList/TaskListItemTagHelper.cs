@@ -22,6 +22,9 @@ namespace NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.TagHelpers.TaskLi
         [HtmlAttributeName(TagHelperConstants.LabelTextName)]
         public string LabelText { get; set; }
 
+        [HtmlAttributeName(TagHelperConstants.LabelHintName)]
+        public string LabelHint { get; set; }
+
         [HtmlAttributeName(ItemUrlName)]
         public string Url { get; set; }
 
@@ -37,7 +40,7 @@ namespace NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.TagHelpers.TaskLi
 
             var taskNameSpan = GetTaskNameSpanBuilder();
 
-            if (Status == TaskProgress.CannotStart)
+            if (Status is TaskProgress.CannotStart or TaskProgress.NotApplicable)
             {
                 taskNameSpan.InnerHtml.Append(LabelText);
             }
@@ -47,10 +50,12 @@ namespace NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.TagHelpers.TaskLi
             }
 
             var statusTag = GetNhsTagBuilder(context);
+            var labelHint = GetLabelHintBuilder();
 
             output.Content
                 .AppendHtml(taskNameSpan)
-                .AppendHtml(statusTag);
+                .AppendHtml(statusTag)
+                .AppendHtml(labelHint);
         }
 
         private static TagBuilder GetTaskNameSpanBuilder()
@@ -70,7 +75,9 @@ namespace NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.TagHelpers.TaskLi
 
             builder.MergeAttribute(TagHelperConstants.AriaDescribedBy, TagBuilder.CreateSanitizedId($"{LabelText}-status", "_"));
 
-            builder.InnerHtml.Append(LabelText);
+            builder
+                .InnerHtml
+                .Append(LabelText);
 
             return builder;
         }
@@ -86,6 +93,7 @@ namespace NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.TagHelpers.TaskLi
             {
                 ChosenTagColour = Status switch
                 {
+                    TaskProgress.NotApplicable => NhsTagsTagHelper.TagColour.White,
                     TaskProgress.Completed => NhsTagsTagHelper.TagColour.Green,
                     TaskProgress.InProgress => NhsTagsTagHelper.TagColour.Yellow,
                     TaskProgress.Optional => NhsTagsTagHelper.TagColour.White,
@@ -94,6 +102,7 @@ namespace NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.TagHelpers.TaskLi
 
                 TagText = Status switch
                 {
+                    TaskProgress.NotApplicable => "Not applicable",
                     TaskProgress.CannotStart => "Cannot start yet",
                     TaskProgress.Optional => "Optional",
                     TaskProgress.InProgress => "In&nbsp;progress",
@@ -115,6 +124,25 @@ namespace NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.TagHelpers.TaskLi
             nhsTag.Process(context, nhsTagOutput);
 
             builder.InnerHtml.AppendHtml(nhsTagOutput);
+
+            return builder;
+        }
+
+        private TagBuilder GetLabelHintBuilder()
+        {
+            if (string.IsNullOrWhiteSpace(LabelHint))
+                return null;
+
+            var breakRow = new TagBuilder("br") { TagRenderMode = TagRenderMode.SelfClosing };
+            var builder = new TagBuilder(TagHelperConstants.Span);
+
+            const string textColour = "color: #4c6272";
+            builder.MergeAttribute(TagHelperConstants.Style, textColour);
+
+            builder
+                .InnerHtml
+                .AppendHtml(breakRow)
+                .Append(LabelHint);
 
             return builder;
         }

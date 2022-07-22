@@ -26,21 +26,29 @@
                 <nhs-task-list>
                     <nhs-task-list-section label-text="Prepare order">
                         <nhs-task-list-item label-text="Order description"
+                                            label-hint="Provide a description of your order."
+                                            data-test-id="test-order-description"
                                             url="@Model.DescriptionUrl"
                                             status="@Model.SectionStatuses.DescriptionStatus" />
                         <nhs-task-list-item label-text="Call-off Ordering Party contact details"
+                                            label-hint="Provide information about the primary contact for your order."
+                                            data-test-id="test-calloff-party"
                                             url="@Url.Action(
                                                 nameof(OrderingPartyController.OrderingParty),
                                                 typeof(OrderingPartyController).ControllerName(),
                                                 new { Model.InternalOrgId, Model.CallOffId})"
                                             status="@Model.SectionStatuses.OrderingPartyStatus" />
                         <nhs-task-list-item label-text="Supplier information and contact details"
+                                            label-hint="Find the supplier you want to order from and select a supplier contact."
+                                            data-test-id="test-supplier-contact"
                                             url="@Url.Action(
                                                 nameof(SupplierController.Supplier),
                                                 typeof(SupplierController).ControllerName(),
                                                 new { Model.InternalOrgId, Model.CallOffId})"
                                             status="@Model.SectionStatuses.SupplierStatus" />
                         <nhs-task-list-item label-text="Timescales for Call-off Agreement"
+                                            label-hint="Provide the approximate start date, the length of the contract and its initial period."
+                                            data-test-id="test-timescales"
                                             url="@Url.Action(
                                                 nameof(CommencementDateController.CommencementDate),
                                                 typeof(CommencementDateController).ControllerName(),
@@ -49,17 +57,49 @@
                     </nhs-task-list-section>
                     <nhs-task-list-section label-text="Add solutions and services">
                         <nhs-task-list-item label-text="Select solutions and services"
+                                            label-hint="Add Service Recipients, prices and quantities for what you’re ordering."
+                                            data-test-id="test-solutions-and-services"
                                             url="@SolutionSelectionUrlTarget(Model.SectionStatuses.SolutionOrService)"
                                             status="@Model.SectionStatuses.SolutionOrService" />
-						<nhs-task-list-item label-text="Select funding sources"
+                        <nhs-task-list-item label-text="Select funding sources"
+                                            label-hint="Review how you’ll be paying for your order."
+                                            data-test-id="test-funding-sources"
                                             url="@Url.Action(
                                                     nameof(FundingSourceController.FundingSources),
                                                     typeof(FundingSourceController).ControllerName(),
                                                     new { Model.InternalOrgId, Model.CallOffId })"
                                             status="@Model.SectionStatuses.FundingSource" />
                     </nhs-task-list-section>
+                    <nhs-task-list-section label-text="Complete contract">
+                        <nhs-task-list-item label-text="Implementation plan milestones"
+                                            label-hint="Select if you’re using the standard implementation plan milestones or have agreed a bespoke one."
+                                            data-test-id="test-implementation-milestones"
+                                            url="@Url.Action(
+                                                    nameof(OrderController.Order),
+                                                    typeof(OrderController).ControllerName(),
+                                                    new { Model.InternalOrgId, Model.CallOffId })"
+                                            status="@Model.SectionStatuses.ImplementationPlan" />
+                        <nhs-task-list-item label-text="Associated Service billing and requirements"
+                                            label-hint="Select how you’d like to be billed for any Associated Services in your order."
+                                            data-test-id="test-associated-service-billing"
+                                            url="@Url.Action(
+                                                    nameof(OrderController.Order),
+                                                    typeof(OrderController).ControllerName(),
+                                                    new { Model.InternalOrgId, Model.CallOffId })"
+                                            status="@Model.SectionStatuses.AssociatedServiceBilling" />
+                        <nhs-task-list-item label-text="Data processing information"
+                                            label-hint="Select if you want to make any changes to the default data processing information."
+                                            data-test-id="test-data-processing-info"
+                                            url="@Url.Action(
+                                                    nameof(OrderController.Order),
+                                                    typeof(OrderController).ControllerName(),
+                                                    new { Model.InternalOrgId, Model.CallOffId })"
+                                            status="@Model.SectionStatuses.DataProcessingInformation" />
+                    </nhs-task-list-section>
                     <nhs-task-list-section label-text="Complete order">
                         <nhs-task-list-item label-text="Review and complete order"
+                                            label-hint="Check the information you’ve provided is correct and complete your order."
+                                            data-test-id="test-review-and-complete-order"
                                             url="@Url.Action(
                                                     nameof(OrderController.Summary),
                                                     typeof(OrderController).ControllerName(),
