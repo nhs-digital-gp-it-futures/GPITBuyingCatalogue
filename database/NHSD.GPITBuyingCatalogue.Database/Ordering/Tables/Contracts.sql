@@ -10,5 +10,7 @@
     SysEndTime datetime2(0) GENERATED ALWAYS AS ROW END NOT NULL,
     PERIOD FOR SYSTEM_TIME (SysStartTime, SysEndTime),
     CONSTRAINT PK_Contracts PRIMARY KEY (Id),
+    CONSTRAINT FK_Contracts_ImplementationPlan FOREIGN KEY (ImplementationPlanId) REFERENCES ordering.ImplementationPlans(Id),
+    CONSTRAINT FK_Contracts_DataProcessingPlan FOREIGN KEY (DataProcessingPlanId) REFERENCES ordering.DataProcessingPlans(Id),
     CONSTRAINT FK_Contracts_LastUpdatedBy FOREIGN KEY (LastUpdatedBy) REFERENCES users.AspNetUsers(Id)
 ) WITH (SYSTEM_VERSIONING = ON (HISTORY_TABLE = ordering.Contracts_History));
