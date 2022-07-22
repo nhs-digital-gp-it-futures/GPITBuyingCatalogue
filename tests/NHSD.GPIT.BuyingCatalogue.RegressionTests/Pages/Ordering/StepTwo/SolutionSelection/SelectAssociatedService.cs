@@ -39,12 +39,6 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering.StepTwo.Solut
 
                 CommonActions.ClickSave();
             }
-            else
-            {
-                CommonActions.PageLoadedCorrectGetIndex(
-                typeof(OrderController),
-                nameof(OrderController.Order)).Should().BeTrue();
-            }
         }
     }
 }

@@ -159,7 +159,7 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering
             SolutionAndServicesReview.ReviewSolutionAndServices();
 
             TaskList.SelectFundingSourcesTask();
-            SelectFundingSources.AddFundingSources();
+            SelectFundingSources.AddFundingSources(solutionName, additionalService, associatedService, isAssociatedServiceOnlyOrder);
 
             TaskList.ReviewAndCompleteOrderTask();
         }
