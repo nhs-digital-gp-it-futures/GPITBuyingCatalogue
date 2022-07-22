@@ -1,4 +1,5 @@
 ﻿using NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.Actions.Common;
+using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering.Dashboard;
 using NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering.StepOne;
 using NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering.StepTwo;
@@ -88,7 +89,7 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering
 
         internal IWebDriver Driver { get; }
 
-        public void StepOnePrepareOrder(string supplierName, bool addNewSupplierContact = false)
+        public void StepOnePrepareOrder(string supplierName, bool addNewSupplierContact = false, OrderTriageValue orderTriage = OrderTriageValue.Under40K)
         {
             TaskList.OrderDescriptionTask();
             OrderingStepOne.AddOrderDescription();
@@ -101,7 +102,7 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering
             SupplierContact.ConfirmContact(addNewSupplierContact);
 
             TaskList.TimescalesForCallOffAgreementTask();
-            OrderingStepOne.AddTimescaleForCallOffAgreement();
+            OrderingStepOne.AddTimescaleForCallOffAgreement(orderTriage);
         }
 
         public void StepTwoAddSolutionsAndServices(string solutionName, string? additionalService = null, string? associatedService = null)
