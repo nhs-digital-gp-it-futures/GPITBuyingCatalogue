@@ -20,21 +20,23 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering.StepTwo
         {
         }
 
-        public void AddFundingSources()
+        public void AddFundingSources(string solutionName, string? additionalService, string? associatedService, bool isAssociatedServiceOnly)
         {
-            var editLinksCount = CommonActions.NumberOfElementsDisplayed(FundingSources.EditLink);
             var names = new List<string>();
-            if (editLinksCount == 1)
+
+            if (isAssociatedServiceOnly)
             {
-                names.Add("Emis Web GP");
-            }
-            else if (editLinksCount == 2)
-            {
-                names.AddRange(new List<string> { "Anywhere Consult", "Anywhere Consult – Integrated Device" });
+                names.Add(associatedService);
             }
             else
             {
-                names.AddRange(new List<string> { "Emis Web GP", "Automated Arrivals – Engineering Half Day", "Automated Arrivals" });
+                names.Add(solutionName);
+
+                if (!string.IsNullOrWhiteSpace(additionalService))
+                    names.Add(additionalService);
+
+                if (!string.IsNullOrWhiteSpace(associatedService))
+                    names.Add(associatedService);
             }
 
             foreach (var name in names)
