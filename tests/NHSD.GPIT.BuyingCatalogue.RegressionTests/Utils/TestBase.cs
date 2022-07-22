@@ -42,7 +42,7 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Utils
             Wait = new WebDriverWait(Driver, TimeSpan.FromSeconds(10));
             uri = new Uri(factory.RootUri);
 
-            OrderingPages = new OrderingPages(Driver, CommonActions);
+            OrderingPages = new OrderingPages(Driver, CommonActions, factory);
 
             NavigateToUrl(urlArea);
         }

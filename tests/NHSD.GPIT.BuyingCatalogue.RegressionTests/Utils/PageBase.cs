@@ -9,10 +9,13 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Utils
         {
             CommonActions = commonActions;
             Driver = driver;
+            TextGenerators = new TextGenerators(driver);
         }
 
         internal CommonActions CommonActions { get; }
 
         internal IWebDriver Driver { get; private set; }
+
+        internal TextGenerators TextGenerators { get; private set; }
     }
 }

@@ -5,6 +5,8 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.Objects.Ordering
 {
     public static class FundingSources
     {
+        public static By SelectFundingSourcesLink => By.LinkText("Select funding sources");
+
         public static By EditableFundingSourcesTable => ByExtensions.DataTestId("funding-sources-items-editable");
 
         public static By LocalOnlyFundingSourcesTable => ByExtensions.DataTestId("funding-sources-items-local-only");

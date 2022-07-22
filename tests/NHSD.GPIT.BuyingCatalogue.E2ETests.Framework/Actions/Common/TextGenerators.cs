@@ -10,6 +10,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.Actions.Common
         {
         }
 
+
         /// <summary>
         /// Generates Random Text for TextArea's and TextInputs to the Target Length.
         /// </summary>
@@ -104,6 +105,16 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.Actions.Common
             Driver.FindElement(targetYearField).SendKeys(date.Year.ToString());
 
             return date;
+        }
+
+        public int NumberInputAddRandomNumber(By targetField, int lowerRange = 0, int upperRange = int.MaxValue)
+        {
+            Driver.FindElement(targetField).Clear();
+            var random = new Random();
+            var number = random.Next(lowerRange, upperRange);
+
+            Driver.FindElement(targetField).SendKeys(number.ToString());
+            return number;
         }
     }
 }

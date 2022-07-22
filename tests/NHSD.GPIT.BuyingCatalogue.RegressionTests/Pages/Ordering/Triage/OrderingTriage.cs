@@ -14,6 +14,12 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering.Triage
         {
         }
 
+        public void SelectOrderTriage(OrderTriageValue option, bool identified = true)
+        {
+            SelectTriageOrderValue(option);
+            SelectIdentifiedOrder(identified);
+        }
+
         /// <summary>
         /// Select the order triage value.
         /// </summary>
@@ -56,18 +62,6 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering.Triage
             {
                 SelectIdentifiedOrder_NoCorrectPage();
             }
-        }
-
-        /// <summary>
-        /// The user is ready to start.
-        /// </summary>
-        public void ReadyToStart()
-        {
-            CommonActions.ClickSave();
-
-            CommonActions.PageLoadedCorrectGetIndex(
-                typeof(OrderController),
-                nameof(OrderController.NewOrder));
         }
 
         /********************************************************************
