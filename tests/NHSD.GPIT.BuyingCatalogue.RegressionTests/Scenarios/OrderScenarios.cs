@@ -166,5 +166,37 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
 
             OrderingPages.StepTwoAddSolutionsAndServices(solutionName: SolutionName, associatedService: AssociatedServiceName);
         }
+
+        [Fact]
+        public void OrderWithSolutionAndAdditionalServiceOver250K()
+        {
+            OrderingPages.OrderingDashboard.CreateNewOrder();
+
+            OrderingPages.OrderType.ChooseOrderType(CatalogueItemType.Solution);
+
+            OrderingPages.OrderingTriage.SelectOrderTriage(OrderTriageValue.Over250K);
+
+            OrderingPages.StartOrder.ReadyToStart();
+
+            OrderingPages.StepOnePrepareOrder(SupplierName, false, OrderTriageValue.Over250K);
+
+            OrderingPages.StepTwoAddSolutionsAndServices("Emis Web GP", additionalService: "Automated Arrivals");
+        }
+
+        [Fact]
+        public void OrderWithSolutionAdditionalAndAssociatedServiceOver250K()
+        {
+            OrderingPages.OrderingDashboard.CreateNewOrder();
+
+            OrderingPages.OrderType.ChooseOrderType(CatalogueItemType.Solution);
+
+            OrderingPages.OrderingTriage.SelectOrderTriage(OrderTriageValue.Over250K);
+
+            OrderingPages.StartOrder.ReadyToStart();
+
+            OrderingPages.StepOnePrepareOrder(SupplierName, false, OrderTriageValue.Over250K);
+
+            OrderingPages.StepTwoAddSolutionsAndServices("Emis Web GP", additionalService: "Automated Arrivals", associatedService: "Automated Arrivals – Engineering Half Day");
+        }
     }
 }
