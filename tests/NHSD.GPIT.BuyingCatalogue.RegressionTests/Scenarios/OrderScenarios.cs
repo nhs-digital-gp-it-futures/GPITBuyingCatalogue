@@ -13,6 +13,7 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
         private const string SupplierName = "EMIS Health";
         private const string SolutionName = "Anywhere Consult";
         private const string AssociatedServiceName = "Anywhere Consult – Integrated Device";
+        private const string AdditionalServiceName = "Automated Arrivals";
 
         private static readonly Dictionary<string, string> Parameters =
             new()
@@ -62,13 +63,29 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
 
             OrderingPages.OrderType.ChooseOrderType(EntityFramework.Catalogue.Models.CatalogueItemType.Solution);
 
-            OrderingPages.OrderingTriage.SelectOrderTriage(EntityFramework.Ordering.Models.OrderTriageValue.Under40K);
+            OrderingPages.OrderingTriage.SelectOrderTriage(OrderTriageValue.Under40K);
 
             OrderingPages.StartOrder.ReadyToStart();
 
-            OrderingPages.StepOnePrepareOrder(SupplierName, false);
+            OrderingPages.StepOnePrepareOrder(SupplierName, false, OrderTriageValue.Under40K);
 
             OrderingPages.StepTwoAddSolutionsAndServices(solutionName: SolutionName, associatedService: AssociatedServiceName);
+        }
+
+        [Fact]
+        public void OrderWithSolutionAndAdditionalServiceUnder40K()
+        {
+            OrderingPages.OrderingDashboard.CreateNewOrder();
+
+            OrderingPages.OrderType.ChooseOrderType(EntityFramework.Catalogue.Models.CatalogueItemType.Solution);
+
+            OrderingPages.OrderingTriage.SelectOrderTriage(OrderTriageValue.Under40K);
+
+            OrderingPages.StartOrder.ReadyToStart();
+
+            OrderingPages.StepOnePrepareOrder(SupplierName, false, OrderTriageValue.Under40K);
+
+            OrderingPages.StepTwoAddSolutionsAndServices("Emis Web GP", additionalService: "Automated Arrivals");
         }
 
         [Fact]
