@@ -1,4 +1,5 @@
-﻿using NHSD.GPIT.BuyingCatalogue.RegressionTests.Utils;
+﻿using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
+using NHSD.GPIT.BuyingCatalogue.RegressionTests.Utils;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers;
 using Xunit;
 using Xunit.Abstractions;
@@ -31,7 +32,7 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
 
             OrderingPages.OrderType.ChooseOrderType(EntityFramework.Catalogue.Models.CatalogueItemType.Solution);
 
-            OrderingPages.OrderingTriage.SelectTriageOrderValue(EntityFramework.Ordering.Models.OrderTriageValue.Over250K);
+            OrderingPages.OrderingTriage.SelectTriageOrderValue(OrderTriageValue.Over250K);
 
             OrderingPages.OrderingTriage.SelectIdentifiedOrder();
 
@@ -45,11 +46,11 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
 
             OrderingPages.OrderType.ChooseOrderType(EntityFramework.Catalogue.Models.CatalogueItemType.Solution);
 
-            OrderingPages.OrderingTriage.SelectOrderTriage(EntityFramework.Ordering.Models.OrderTriageValue.Under40K);
+            OrderingPages.OrderingTriage.SelectOrderTriage(OrderTriageValue.Under40K);
 
             OrderingPages.StartOrder.ReadyToStart();
 
-            OrderingPages.StepOnePrepareOrder(SupplierName, false);
+            OrderingPages.StepOnePrepareOrder(SupplierName, false, OrderTriageValue.Under40K);
 
             OrderingPages.StepTwoAddSolutionsAndServices(SolutionName);
         }
