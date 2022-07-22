@@ -1,12 +1,10 @@
 ﻿using NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.Actions.Common;
-using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering.Dashboard;
 using NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering.StepOne;
 using NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering.StepTwo;
 using NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering.StepTwo.AssociatedServiceOnly;
 using NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering.StepTwo.SolutionSelection;
 using NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering.Triage;
-using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers;
 using OpenQA.Selenium;
 
 namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering
@@ -23,7 +21,7 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering
             OrderingStepOne = new OrderingStepOne(driver, commonActions);
             SelectFundingSources = new SelectFundingSources(driver, commonActions);
             SelectSupplier = new SelectSupplier(driver, commonActions);
-            SupplierContact = new SupplierContact(driver, commonActions);
+            SupplierContacts = new SupplierContacts(driver, commonActions);
             SelectCatalogueSolution = new SelectCatalogueSolution(driver, commonActions, factory);
             SelectCatalogueSolutionServiceRecipients = new SelectCatalogueSolutionServiceRecipients(driver, commonActions);
             SelectAndConfirmPrices = new SelectAndConfirmPrices(driver, commonActions);
@@ -59,7 +57,7 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering
 
         internal SelectSupplier SelectSupplier { get; }
 
-        internal SupplierContact SupplierContact { get; }
+        internal SupplierContacts SupplierContacts { get; }
 
         internal SelectCatalogueSolution SelectCatalogueSolution { get; }
 
@@ -89,7 +87,11 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering
 
         internal IWebDriver Driver { get; }
 
-        public void StepOnePrepareOrder(string supplierName, bool addNewSupplierContact = false, OrderTriageValue orderTriage = OrderTriageValue.Under40K)
+        public void StepOnePrepareOrder(
+            string supplierName,
+            bool addNewSupplierContact = false,
+            EntityFramework.Ordering.Models.OrderTriageValue orderTriage = EntityFramework.Ordering.Models.OrderTriageValue.Under40K,
+            EntityFramework.Catalogue.Models.CatalogueItemType itemType = EntityFramework.Catalogue.Models.CatalogueItemType.Solution)
         {
             TaskList.OrderDescriptionTask();
             OrderingStepOne.AddOrderDescription();
@@ -99,10 +101,10 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering
 
             TaskList.SupplierInformationAndContactDetailsTask();
             SelectSupplier.SelectAndConfirmSupplier(supplierName);
-            SupplierContact.ConfirmContact(addNewSupplierContact);
+            SupplierContacts.ConfirmContact(addNewSupplierContact);
 
             TaskList.TimescalesForCallOffAgreementTask();
-            OrderingStepOne.AddTimescaleForCallOffAgreement(orderTriage);
+            OrderingStepOne.AddTimescaleForCallOffAgreement(orderTriage, itemType);
         }
 
         public void StepTwoAddSolutionsAndServices(string solutionName, string? additionalService = null, string? associatedService = null)
