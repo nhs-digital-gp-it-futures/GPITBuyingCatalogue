@@ -12,9 +12,9 @@ using OpenQA.Selenium;
 
 namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering.StepOne
 {
-    public class SupplierContact : PageBase
+    public class SupplierContacts : PageBase
     {
-        public SupplierContact(IWebDriver driver, CommonActions commonActions)
+        public SupplierContacts(IWebDriver driver, CommonActions commonActions)
             : base(driver, commonActions)
         {
         }
