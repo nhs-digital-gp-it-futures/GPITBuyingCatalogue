@@ -57,6 +57,22 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
         }
 
         [Fact]
+        public void CatalogueSolutionOnlyBetween40KTo250K()
+        {
+            OrderingPages.OrderingDashboard.CreateNewOrder();
+
+            OrderingPages.OrderType.ChooseOrderType(EntityFramework.Catalogue.Models.CatalogueItemType.Solution);
+
+            OrderingPages.OrderingTriage.SelectOrderTriage(OrderTriageValue.Between40KTo250K);
+
+            OrderingPages.StartOrder.ReadyToStart();
+
+            OrderingPages.StepOnePrepareOrder(SupplierName, false, OrderTriageValue.Between40KTo250K);
+
+            OrderingPages.StepTwoAddSolutionsAndServices(SolutionName);
+        }
+
+        [Fact]
         public void OrderWithSolutionAndAssociatedServiceUnder40K()
         {
             OrderingPages.OrderingDashboard.CreateNewOrder();
