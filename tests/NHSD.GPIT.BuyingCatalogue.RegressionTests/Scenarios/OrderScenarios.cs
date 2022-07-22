@@ -81,7 +81,7 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
 
             OrderingPages.StepOnePrepareOrder(SupplierName, false);
 
-            OrderingPages.StepTwoAddSolutionsAndServices(SolutionName, "Automated Arrivals", "Automated Arrivals – Engineering Half Day");
+            OrderingPages.StepTwoAddSolutionsAndServices(solutionName: SolutionName, associatedService: AssociatedServiceName);
         }
     }
 }
