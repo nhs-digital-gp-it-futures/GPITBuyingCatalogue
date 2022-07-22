@@ -136,7 +136,8 @@ namespace NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.TagHelpers.TaskLi
             var breakRow = new TagBuilder("br") { TagRenderMode = TagRenderMode.SelfClosing };
             var builder = new TagBuilder(TagHelperConstants.Span);
 
-            builder.MergeAttribute("style", "color:	#4c6272");
+            const string textColour = "color: #4c6272";
+            builder.MergeAttribute(TagHelperConstants.Style, textColour);
 
             builder
                 .InnerHtml

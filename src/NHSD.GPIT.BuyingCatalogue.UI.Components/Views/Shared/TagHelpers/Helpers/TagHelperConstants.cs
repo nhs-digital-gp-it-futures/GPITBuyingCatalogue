@@ -43,6 +43,7 @@
         internal const string AriaExpanded = "aria-expanded";
         internal const string AriaLive = "aria-live";
         internal const string Class = "class";
+        internal const string Style = "style";
         internal const string PathD = "d";
         internal const string Source = "src";
 
