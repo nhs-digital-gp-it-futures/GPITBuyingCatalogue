@@ -6,6 +6,11 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models
 {
     public class DataProcessingPlan : IAudited
     {
+        public DataProcessingPlan()
+        {
+            Steps = new List<DataProcessingPlanStep>();
+        }
+
         public int Id { get; set; }
 
         public bool IsDefault { get; set; }
