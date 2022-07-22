@@ -11,7 +11,7 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Configuration
             builder.ToTable("ImplementationPlanAcceptanceCriteria", Schemas.Ordering);
 
             builder.HasKey(x => x.Id).HasName("PK_ImplementationPlanAcceptanceCriteria");
-            builder.Property(x => x.MilestoneId).IsRequired().HasField("ImplementationPlanMilestoneId");
+            builder.Property(x => x.MilestoneId).IsRequired().HasColumnName("ImplementationPlanMilestoneId");
 
             builder.Property(x => x.Description).IsRequired().HasMaxLength(1000);
 
