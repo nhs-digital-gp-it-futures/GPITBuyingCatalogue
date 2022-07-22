@@ -26,14 +26,13 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Contracts
                 .AsSplitQuery()
                 .SingleOrDefaultAsync(x => x.OrderId == orderId);
 
-            if (output == null)
-            {
-                output = new Contract { OrderId = orderId };
+            if (output != null) return output;
 
-                dbContext.Contracts.Add(output);
+            output = new Contract { OrderId = orderId };
 
-                await dbContext.SaveChangesAsync();
-            }
+            dbContext.Contracts.Add(output);
+
+            await dbContext.SaveChangesAsync();
 
             return output;
         }
@@ -48,6 +47,20 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Contracts
             }
 
             contract.ImplementationPlanId = implementationPlanId;
+
+            await dbContext.SaveChangesAsync();
+        }
+
+        public async Task SetDataProcessingPlanId(int orderId, int? dataProcessingPlanId)
+        {
+            var contract = await dbContext.Contracts.SingleOrDefaultAsync(x => x.OrderId == orderId);
+
+            if (contract == null)
+            {
+                return;
+            }
+
+            contract.DataProcessingPlanId = dataProcessingPlanId;
 
             await dbContext.SaveChangesAsync();
         }

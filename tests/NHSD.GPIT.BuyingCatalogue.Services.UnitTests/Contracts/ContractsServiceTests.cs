@@ -107,5 +107,43 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Contracts
             actual.Should().NotBeNull();
             actual!.ImplementationPlanId.Should().Be(implementationPlanId);
         }
+
+        [Theory]
+        [InMemoryDbAutoData]
+        public static async Task SetDataProcessingPlanId_ContractDoesNotExist_NoActionTaken(
+            int orderId,
+            [Frozen] BuyingCatalogueDbContext dbContext,
+            ContractsService service)
+        {
+            var existing = await dbContext.Contracts.FirstOrDefaultAsync(x => x.OrderId == orderId);
+
+            existing.Should().BeNull();
+
+            await service.SetDataProcessingPlanId(orderId, null);
+
+            var actual = await dbContext.Contracts.FirstOrDefaultAsync(x => x.OrderId == orderId);
+
+            actual.Should().BeNull();
+        }
+
+        [Theory]
+        [InMemoryDbAutoData]
+        public static async Task SetDataProcessingPlanId_ContractExists_ExpectedResult(
+            int orderId,
+            int dataProcessingPlanId,
+            [Frozen] BuyingCatalogueDbContext dbContext,
+            ContractsService service)
+        {
+            dbContext.Contracts.Add(new Contract { OrderId = orderId });
+
+            await dbContext.SaveChangesAsync();
+
+            await service.SetDataProcessingPlanId(orderId, dataProcessingPlanId);
+
+            var actual = await dbContext.Contracts.FirstOrDefaultAsync(x => x.OrderId == orderId);
+
+            actual.Should().NotBeNull();
+            actual!.DataProcessingPlanId.Should().Be(dataProcessingPlanId);
+        }
     }
 }

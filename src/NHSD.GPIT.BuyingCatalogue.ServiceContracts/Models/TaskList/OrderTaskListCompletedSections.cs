@@ -21,6 +21,8 @@
         public bool FundingCompleted { get; set; }
 
         public bool HasImplementationPlan { get; set; }
+        
+        public bool DataProcessingPlanCompleted { get; set; }
 
         public bool OrderCompleted { get; set; }
     }

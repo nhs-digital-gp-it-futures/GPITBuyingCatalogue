@@ -8,6 +8,11 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
     {
         internal static void Initialize(BuyingCatalogueDbContext context)
         {
+            var dataProcessingPlan = new DataProcessingPlan { IsDefault = true, };
+
+            context.DataProcessingPlans.Add(dataProcessingPlan);
+            context.SaveChanges();
+
             var plan = new ImplementationPlan
             {
                 IsDefault = true,

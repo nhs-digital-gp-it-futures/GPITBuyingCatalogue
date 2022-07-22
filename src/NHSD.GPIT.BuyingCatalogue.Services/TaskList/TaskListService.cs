@@ -86,7 +86,6 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.TaskList
                 var cs when cs.HasFlag(TaskListOrderSections.DataProcessingInformationCompleted)
                     && (cs.HasFlag(TaskListOrderSections.AssociatedServiceBillingComplete)
                         || cs.HasFlag(TaskListOrderSections.AssociatedServiceBillingNotApplicable)) => TaskProgress.Completed,
-                var cs when cs.HasFlag(TaskListOrderSections.DataProcessingInformationInProgress) => TaskProgress.InProgress,
                 var cs when (
                         cs.HasFlag(TaskListOrderSections.AssociatedServiceBillingNotApplicable)
                         && cs.HasFlag(TaskListOrderSections.ImplementationPlanComplete))
@@ -153,6 +152,9 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.TaskList
 
             if (orderStatuses.HasImplementationPlan)
                 completedSections |= TaskListOrderSections.ImplementationPlanComplete;
+                
+            if (orderStatuses.DataProcessingPlanCompleted)
+                completedSections |= TaskListOrderSections.DataProcessingInformation;
 
             return completedSections;
         }
@@ -214,6 +216,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.TaskList
                 FundingInProgress = order.OrderItems.Any(oi => oi.OrderItemFunding != null),
                 FundingCompleted = order.OrderItems.All(oi => oi.OrderItemFunding != null),
                 HasImplementationPlan = contract?.ImplementationPlanId != null,
+                DataProcessingPlanCompleted = await dbContext.Contracts.AnyAsync(p => p.OrderId == orderId && p.DataProcessingPlan != null),
                 OrderCompleted = order.Completed != null,
             };
         }

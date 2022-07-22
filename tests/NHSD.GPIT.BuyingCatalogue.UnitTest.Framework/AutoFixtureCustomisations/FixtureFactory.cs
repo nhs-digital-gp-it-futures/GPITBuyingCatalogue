@@ -1,6 +1,7 @@
 ﻿using System.Linq;
 using AutoFixture;
 using AutoFixture.AutoMoq;
+using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.AutoFixtureCustomisations.Contracts;
 
 namespace NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.AutoFixtureCustomisations
 {
@@ -53,6 +54,10 @@ namespace NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.AutoFixtureCustomisations
             new HttpClientCustomization(),
             new AbstractValidatorCustomizations(),
             new RecursiveErrorsCustomisation(),
+
+            // Contracts
+            new ContractCustomization(),
+            new DataProcessingPlanCustomization(),
         };
 
         internal static IFixture Create() => Create(Customizations);

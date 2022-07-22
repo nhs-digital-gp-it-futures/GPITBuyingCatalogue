@@ -1,4 +1,4 @@
-﻿IF UPPER('$(INSERT_TEST_DATA)') = 'TRUE' AND NOT EXISTS (SELECT * FROM ordering.ImplementationPlans WHERE IsDefault = 1)
+﻿IF NOT EXISTS (SELECT * FROM ordering.ImplementationPlans WHERE IsDefault = 1)
 BEGIN
 
 declare @planId int = 0

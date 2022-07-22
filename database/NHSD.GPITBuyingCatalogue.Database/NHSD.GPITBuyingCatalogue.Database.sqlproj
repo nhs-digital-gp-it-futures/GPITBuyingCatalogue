@@ -72,7 +72,6 @@
     <Folder Include="Security\" />
     <Folder Include="Security\Users" />
     <Folder Include="Security\Logins" />
-    <Folder Include="PostDeployment" />
     <Folder Include="Security\Roles" />
     <Folder Include="PostDeployment\IntegrationTests" />
     <Folder Include="Security\Schemas" />
@@ -368,6 +367,7 @@
     </ArtifactReference>
   </ItemGroup>
   <ItemGroup>
+    <Content Include="PostDeployment\InsertDefaultDataProcessingPlan.sql" />
     <Content Include="PostDeployment\InsertOrderTriageValues.sql" />
   </ItemGroup>
   <PropertyGroup>
