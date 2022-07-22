@@ -1,4 +1,5 @@
-﻿using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
+﻿using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
+using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.RegressionTests.Utils;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers;
 using Xunit;
@@ -31,7 +32,7 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
         {
             OrderingPages.OrderingDashboard.CreateNewOrder();
 
-            OrderingPages.OrderType.ChooseOrderType(EntityFramework.Catalogue.Models.CatalogueItemType.Solution);
+            OrderingPages.OrderType.ChooseOrderType(CatalogueItemType.Solution);
 
             OrderingPages.OrderingTriage.SelectTriageOrderValue(OrderTriageValue.Over250K);
 
@@ -45,7 +46,7 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
         {
             OrderingPages.OrderingDashboard.CreateNewOrder();
 
-            OrderingPages.OrderType.ChooseOrderType(EntityFramework.Catalogue.Models.CatalogueItemType.Solution);
+            OrderingPages.OrderType.ChooseOrderType(CatalogueItemType.Solution);
 
             OrderingPages.OrderingTriage.SelectOrderTriage(OrderTriageValue.Under40K);
 
@@ -93,7 +94,7 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
         {
             OrderingPages.OrderingDashboard.CreateNewOrder();
 
-            OrderingPages.OrderType.ChooseOrderType(EntityFramework.Catalogue.Models.CatalogueItemType.Solution);
+            OrderingPages.OrderType.ChooseOrderType(CatalogueItemType.Solution);
 
             OrderingPages.OrderingTriage.SelectOrderTriage(OrderTriageValue.Under40K);
 
@@ -125,7 +126,7 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
         {
             OrderingPages.OrderingDashboard.CreateNewOrder();
 
-            OrderingPages.OrderType.ChooseOrderType(EntityFramework.Catalogue.Models.CatalogueItemType.Solution);
+            OrderingPages.OrderType.ChooseOrderType(CatalogueItemType.Solution);
 
             OrderingPages.OrderingTriage.SelectOrderTriage(OrderTriageValue.Under40K);
 
@@ -137,15 +138,79 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
         }
 
         [Fact]
+        public void OrderWithSolutionAdditionalAndAssociatedServiceUnder40K()
+        {
+            OrderingPages.OrderingDashboard.CreateNewOrder();
+
+            OrderingPages.OrderType.ChooseOrderType(CatalogueItemType.Solution);
+
+            OrderingPages.OrderingTriage.SelectOrderTriage(OrderTriageValue.Under40K);
+
+            OrderingPages.StartOrder.ReadyToStart();
+
+            OrderingPages.StepOnePrepareOrder(SupplierName, false, OrderTriageValue.Under40K);
+
+            OrderingPages.StepTwoAddSolutionsAndServices("Emis Web GP", additionalService: "Automated Arrivals", associatedService: "Automated Arrivals – Engineering Half Day");
+        }
+
+        [Fact]
         public void OrderAssociatedServiceOnly()
         {
             OrderingPages.OrderingDashboard.CreateNewOrder();
 
-            OrderingPages.OrderType.ChooseOrderType(EntityFramework.Catalogue.Models.CatalogueItemType.AssociatedService);
+            OrderingPages.OrderType.ChooseOrderType(CatalogueItemType.AssociatedService);
 
             OrderingPages.StartOrder.ReadyToStart();
 
-            OrderingPages.StepOnePrepareOrder(SupplierName, false);
+            OrderingPages.StepOnePrepareOrder(SupplierName, false, itemType: CatalogueItemType.AssociatedService);
+
+            OrderingPages.StepTwoAddSolutionsAndServices(solutionName: SolutionName, associatedService: AssociatedServiceName);
+        }
+
+        [Fact]
+        public void OrderWithSolutionAndAdditionalServiceBetween40Kand250K()
+        {
+            OrderingPages.OrderingDashboard.CreateNewOrder();
+
+            OrderingPages.OrderType.ChooseOrderType(CatalogueItemType.Solution);
+
+            OrderingPages.OrderingTriage.SelectOrderTriage(OrderTriageValue.Between40KTo250K);
+
+            OrderingPages.StartOrder.ReadyToStart();
+
+            OrderingPages.StepOnePrepareOrder(SupplierName, false, OrderTriageValue.Between40KTo250K);
+
+            OrderingPages.StepTwoAddSolutionsAndServices("Emis Web GP", additionalService: "Automated Arrivals");
+        }
+
+        [Fact]
+        public void OrderWithSolutionAdditionalAndAssociatedServiceBetween40Kand250K()
+        {
+            OrderingPages.OrderingDashboard.CreateNewOrder();
+
+            OrderingPages.OrderType.ChooseOrderType(CatalogueItemType.Solution);
+
+            OrderingPages.OrderingTriage.SelectOrderTriage(OrderTriageValue.Between40KTo250K);
+
+            OrderingPages.StartOrder.ReadyToStart();
+
+            OrderingPages.StepOnePrepareOrder(SupplierName, false, OrderTriageValue.Between40KTo250K);
+
+            OrderingPages.StepTwoAddSolutionsAndServices("Emis Web GP", additionalService: "Automated Arrivals", associatedService: "Automated Arrivals – Engineering Half Day");
+        }
+
+        [Fact]
+        public void OrderWithSolutionAndAssociatedServiceBetween40Kand250K()
+        {
+            OrderingPages.OrderingDashboard.CreateNewOrder();
+
+            OrderingPages.OrderType.ChooseOrderType(CatalogueItemType.Solution);
+
+            OrderingPages.OrderingTriage.SelectOrderTriage(OrderTriageValue.Between40KTo250K);
+
+            OrderingPages.StartOrder.ReadyToStart();
+
+            OrderingPages.StepOnePrepareOrder(SupplierName, false, OrderTriageValue.Between40KTo250K);
 
             OrderingPages.StepTwoAddSolutionsAndServices(solutionName: SolutionName, associatedService: AssociatedServiceName);
         }
