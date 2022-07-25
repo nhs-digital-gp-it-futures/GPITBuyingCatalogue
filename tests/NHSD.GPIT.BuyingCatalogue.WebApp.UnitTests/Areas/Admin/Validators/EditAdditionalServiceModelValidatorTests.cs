@@ -48,7 +48,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators
             model.CapabilitiesStatus.Should().Be(TaskProgress.Completed);
             model.ListPriceStatus.Should().Be(TaskProgress.Completed);
             result.ShouldHaveValidationErrorFor(m => m.SelectedPublicationStatus)
-                .WithErrorMessage("Complete all mandatory sections before publishing");
+                .WithErrorMessage(EditAdditionalServiceModelValidator.CompleteAllMandatorySections);
         }
 
         [Theory]
@@ -72,7 +72,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators
             model.CapabilitiesStatus.Should().Be(TaskProgress.NotStarted);
             model.ListPriceStatus.Should().Be(TaskProgress.Completed);
             result.ShouldHaveValidationErrorFor(m => m.SelectedPublicationStatus)
-                .WithErrorMessage("Complete all mandatory sections before publishing");
+                .WithErrorMessage(EditAdditionalServiceModelValidator.CompleteAllMandatorySections);
         }
     }
 }

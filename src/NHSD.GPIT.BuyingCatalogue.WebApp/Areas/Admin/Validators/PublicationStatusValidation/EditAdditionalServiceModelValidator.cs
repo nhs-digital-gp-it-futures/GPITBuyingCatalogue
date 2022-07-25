@@ -7,11 +7,14 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Validators.PublicationSta
 {
     public class EditAdditionalServiceModelValidator : AbstractValidator<EditAdditionalServiceModel>
     {
+
+        public const string CompleteAllMandatorySections = "Complete all mandatory sections before publishing";
+
         public EditAdditionalServiceModelValidator()
         {
             RuleFor(m => m)
                 .Must(HaveCompletedAllMandatorySections)
-                .WithMessage("Complete all mandatory sections before publishing")
+                .WithMessage(CompleteAllMandatorySections)
                 .OverridePropertyName(m => m.SelectedPublicationStatus);
         }
 
