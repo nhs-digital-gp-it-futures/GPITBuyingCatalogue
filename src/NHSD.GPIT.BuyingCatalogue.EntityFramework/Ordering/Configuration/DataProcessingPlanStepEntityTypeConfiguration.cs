@@ -16,6 +16,10 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Configuration
 
             builder.Property(x => x.Details).IsRequired().HasMaxLength(1000);
 
+            builder.HasOne(x => x.Plan)
+                .WithMany(x => x.Steps)
+                .HasForeignKey(x => x.PlanId);
+
             builder.HasOne(x => x.Category)
                 .WithOne();
         }

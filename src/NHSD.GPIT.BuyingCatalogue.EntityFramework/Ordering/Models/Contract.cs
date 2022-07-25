@@ -22,9 +22,9 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models
 
         public int? LastUpdatedBy { get; set; }
 
-        public ImplementationPlan ImplementationPlan { get; set; }
+        public virtual ImplementationPlan ImplementationPlan { get; set; }
 
-        public DataProcessingPlan DataProcessingPlan { get; set; }
+        public virtual DataProcessingPlan DataProcessingPlan { get; set; }
 
         public ICollection<ContractBillingItem> BillingItems { get; set; }
     }

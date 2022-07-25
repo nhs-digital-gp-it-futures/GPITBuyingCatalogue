@@ -18,6 +18,8 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models
 
         public int? LastUpdatedBy { get; set; }
 
+        public ICollection<Contract> Contracts { get; set; }
+
         public ICollection<DataProcessingPlanStep> Steps { get; set; }
     }
 }

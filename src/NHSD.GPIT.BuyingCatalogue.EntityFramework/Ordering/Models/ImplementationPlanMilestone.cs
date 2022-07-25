@@ -24,6 +24,8 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models
 
         public int? LastUpdatedBy { get; set; }
 
+        public virtual ImplementationPlan Plan { get; set; }
+
         public ICollection<ImplementationPlanAcceptanceCriteria> AcceptanceCriteria { get; set; }
     }
 }

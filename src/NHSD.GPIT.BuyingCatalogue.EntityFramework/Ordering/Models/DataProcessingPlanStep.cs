@@ -16,6 +16,8 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models
 
         public int? LastUpdatedBy { get; set; }
 
-        public DataProcessingPlanCategory Category { get; set; }
+        public virtual DataProcessingPlan Plan { get; set; }
+
+        public virtual DataProcessingPlanCategory Category { get; set; }
     }
 }

@@ -16,6 +16,10 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Configuration
             builder.Property(x => x.Order).IsRequired();
             builder.Property(x => x.Title).IsRequired().HasMaxLength(1000);
             builder.Property(x => x.PaymentTrigger).IsRequired().HasMaxLength(1000);
+
+            builder.HasOne(x => x.Plan)
+                .WithMany(x => x.Milestones)
+                .HasForeignKey(x => x.PlanId);
         }
     }
 }

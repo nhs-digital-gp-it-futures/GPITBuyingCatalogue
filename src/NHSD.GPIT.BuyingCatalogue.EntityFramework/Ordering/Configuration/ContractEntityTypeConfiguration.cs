@@ -15,11 +15,11 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Configuration
             builder.Property(x => x.OrderId).IsRequired();
 
             builder.HasOne(x => x.DataProcessingPlan)
-                .WithMany()
+                .WithMany(x => x.Contracts)
                 .HasForeignKey(x => x.DataProcessingPlanId);
 
             builder.HasOne(x => x.ImplementationPlan)
-                .WithMany()
+                .WithMany(x => x.Contracts)
                 .HasForeignKey(x => x.ImplementationPlanId);
         }
     }

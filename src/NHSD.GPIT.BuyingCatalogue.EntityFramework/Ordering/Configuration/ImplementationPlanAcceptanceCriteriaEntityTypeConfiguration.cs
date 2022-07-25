@@ -14,6 +14,10 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Configuration
             builder.Property(x => x.MilestoneId).IsRequired().HasColumnName("ImplementationPlanMilestoneId");
 
             builder.Property(x => x.Description).IsRequired().HasMaxLength(1000);
+
+            builder.HasOne(x => x.Milestone)
+                .WithMany(x => x.AcceptanceCriteria)
+                .HasForeignKey(x => x.MilestoneId);
         }
     }
 }
