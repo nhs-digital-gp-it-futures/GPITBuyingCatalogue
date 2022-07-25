@@ -39,7 +39,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators
             var result = validator.TestValidate(model);
 
             result.ShouldHaveValidationErrorFor(m => m.Name)
-                .WithErrorMessage("Enter an Additional Service name");
+                .WithErrorMessage(EditAdditionalServiceDetailsModelValidator.EnterAdditionalServiceName);
         }
 
         [Theory]
@@ -56,7 +56,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators
             var result = validator.TestValidate(model);
 
             result.ShouldHaveValidationErrorFor(m => m.Description)
-                .WithErrorMessage("Enter an Additional Service description");
+                .WithErrorMessage(EditAdditionalServiceDetailsModelValidator.EnterAdditionalServiceDescription);
         }
 
         [Theory]
@@ -81,7 +81,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators
             var result = validator.TestValidate(model);
 
             result.ShouldHaveValidationErrorFor(m => m.Name)
-                .WithErrorMessage("Additional Service name already exists. Enter a different name");
+                .WithErrorMessage(EditAdditionalServiceDetailsModelValidator.AdditionalServiceNameAlreadyExists);
         }
 
         [Theory]
@@ -101,7 +101,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators
             var result = validator.TestValidate(model);
 
             result.ShouldHaveValidationErrorFor(m => m.Name)
-                .WithErrorMessage("Additional Service name cannot be the same as its Catalogue Solution");
+                .WithErrorMessage(EditAdditionalServiceDetailsModelValidator.AdditionalServiceNameSameAsCatalogueSolutionName);
         }
     }
 }

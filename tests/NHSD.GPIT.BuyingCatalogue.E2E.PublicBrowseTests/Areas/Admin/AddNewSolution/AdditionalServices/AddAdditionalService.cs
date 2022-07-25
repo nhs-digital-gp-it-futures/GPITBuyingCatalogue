@@ -93,34 +93,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.AddNewSolution.Addition
         }
 
         [Fact]
-        public async Task AddAdditionalService_NameAlreadyExists()
-        {
-            await using var context = GetEndToEndDbContext();
-
-            var additionalService = await context
-                .CatalogueItems
-                .Where(ci => ci.CatalogueItemType == CatalogueItemType.AdditionalService)
-                .FirstAsync(ci => ci.SupplierId == SolutionId.SupplierId);
-
-            CommonActions.ElementAddValue(CommonSelectors.Name, additionalService.Name);
-
-            TextGenerators.TextInputAddText(CommonSelectors.Description, 1000);
-
-            CommonActions.ClickSave();
-
-            CommonActions.PageLoadedCorrectGetIndex(
-                typeof(AdditionalServicesController),
-                nameof(AdditionalServicesController.AddAdditionalService))
-                .Should()
-                .BeTrue();
-
-            CommonActions.ErrorSummaryDisplayed().Should().BeTrue();
-            CommonActions.ErrorSummaryLinksExist().Should().BeTrue();
-            CommonActions.ElementShowingCorrectErrorMessage(CommonSelectors.Name, "Additional Service name already exists. Enter a different name.");
-        }
-
-        [Fact]
-        public void AddAdditionalService_MandatoryDataMissing()
+        public void AddAdditionalService_InvalidModelState()
         {
             CommonActions.ClickSave();
 
@@ -129,6 +102,8 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.AddNewSolution.Addition
                 nameof(AdditionalServicesController.AddAdditionalService))
                 .Should()
                 .BeTrue();
+
+            CommonActions.ElementIsDisplayed(CommonSelectors.Name).Should().BeTrue();
 
             CommonActions.ErrorSummaryDisplayed().Should().BeTrue();
             CommonActions.ErrorSummaryLinksExist().Should().BeTrue();

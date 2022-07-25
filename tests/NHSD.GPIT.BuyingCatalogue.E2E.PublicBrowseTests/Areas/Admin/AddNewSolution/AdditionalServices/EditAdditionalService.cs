@@ -108,9 +108,8 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.AddNewSolution.Addition
                 .Should()
                 .BeTrue();
 
-            CommonActions.ElementShowingCorrectErrorMessage(
-                AdditionalServicesObjects.PublicationStatusInputError,
-                "Complete all mandatory sections before publishing");
+            CommonActions.ElementIsDisplayed(
+                AdditionalServicesObjects.PublicationStatusInputError);
         }
 
         [Fact]
