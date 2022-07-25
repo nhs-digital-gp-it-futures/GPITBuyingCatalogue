@@ -6,6 +6,11 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Validators
 {
     public sealed class EditAdditionalServiceDetailsModelValidator : AbstractValidator<EditAdditionalServiceDetailsModel>
     {
+        public const string AdditionalServiceNameAlreadyExists = "Additional Service name already exists. Enter a different name";
+        public const string EnterAdditionalServiceName = "Enter an Additional Service name";
+        public const string AdditionalServiceNameSameAsCatalogueSolutionName = "Additional Service name cannot be the same as its Catalogue Solution";
+        public const string EnterAdditionalServiceDescription = "Enter an Additional Service description";
+
         private readonly IAdditionalServicesService additionalServicesService;
 
         public EditAdditionalServiceDetailsModelValidator(IAdditionalServicesService additionalServicesService)
@@ -14,18 +19,18 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Validators
 
             RuleFor(m => m)
                 .Must(NotBeADuplicateService)
-                .WithMessage("Additional Service name already exists. Enter a different name")
+                .WithMessage(AdditionalServiceNameAlreadyExists)
                 .OverridePropertyName(m => m.Name);
 
             RuleFor(m => m.Name)
                 .NotEmpty()
-                .WithMessage("Enter an Additional Service name")
+                .WithMessage(EnterAdditionalServiceName)
                 .NotEqual(m => m.CatalogueItemName)
-                .WithMessage("Additional Service name cannot be the same as its Catalogue Solution");
+                .WithMessage(AdditionalServiceNameSameAsCatalogueSolutionName);
 
             RuleFor(m => m.Description)
                 .NotEmpty()
-                .WithMessage("Enter an Additional Service description");
+                .WithMessage(EnterAdditionalServiceDescription);
         }
 
         private bool NotBeADuplicateService(EditAdditionalServiceDetailsModel model)
