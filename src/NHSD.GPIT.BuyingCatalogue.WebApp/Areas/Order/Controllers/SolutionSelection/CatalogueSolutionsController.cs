@@ -389,15 +389,12 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers.SolutionSelec
             bool returnToTaskList = false)
         {
             var order = await orderService.GetOrderThin(callOffId, internalOrgId);
+            var solutionId = order.GetSolutionId();
             var solutions = await solutionsService.GetSupplierSolutions(order.SupplierId);
 
             var additionalServices = includeAdditionalServices
                 ? await additionalServicesService.GetAdditionalServicesBySolutionIds(solutions.Select(x => x.Id))
                 : new List<CatalogueItem>();
-
-            var solutionId = order.AssociatedServicesOnly
-                ? order.SolutionId
-                : order.GetSolution()?.CatalogueItemId;
 
             var backLink = returnToTaskList
                 ? Url.Action(nameof(TaskListController.TaskList), typeof(TaskListController).ControllerName(), new { internalOrgId, callOffId })

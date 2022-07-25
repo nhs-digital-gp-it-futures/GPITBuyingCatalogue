@@ -46,9 +46,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers.SolutionSelec
                 order,
                 new RouteValues(internalOrgId, callOffId) { Source = source });
 
-            var solutionId = order.AssociatedServicesOnly
-                ? order.SolutionId
-                : order.GetSolution()?.CatalogueItemId;
+            var solutionId = order.GetSolutionId();
 
             var additionalServices = order.AssociatedServicesOnly
                 ? new List<CatalogueItem>()

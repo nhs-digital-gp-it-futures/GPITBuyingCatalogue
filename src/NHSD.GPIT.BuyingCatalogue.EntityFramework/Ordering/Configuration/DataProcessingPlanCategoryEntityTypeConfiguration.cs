@@ -13,11 +13,6 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Configuration
             builder.HasKey(x => x.Id).HasName("PK_DataProcessingPlanCategories");
 
             builder.Property(x => x.Description).IsRequired().HasMaxLength(1000);
-
-            builder.HasOne(x => x.LastUpdatedByUser)
-                .WithMany()
-                .HasForeignKey(x => x.LastUpdatedBy)
-                .HasConstraintName("FK_DataProcessingPlanCategories_LastUpdatedBy");
         }
     }
 }
