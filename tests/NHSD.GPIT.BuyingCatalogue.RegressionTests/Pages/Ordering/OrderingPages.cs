@@ -1,6 +1,7 @@
 ﻿using NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.Actions.Common;
 using NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering.Dashboard;
 using NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering.StepOne;
+using NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering.StepThree;
 using NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering.StepTwo;
 using NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering.StepTwo.AssociatedServiceOnly;
 using NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering.StepTwo.SolutionSelection;
@@ -35,6 +36,7 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering
             SelectAssociatedServiceOnly = new SelectAssociatedServiceOnly(driver, commonActions);
             SelectAssociatedServiceRecipientOnly = new SelectAssociatedServiceRecipientOnly(driver, commonActions);
             SelectAndConfirmAssociatedServiceOnlyPrices = new SelectAndConfirmAssociatedServiceOnlyPrices(driver, commonActions);
+            OrderingStepThree = new OrderingStepThree(driver, commonActions);
             Factory = factory;
             Driver = driver;
         }
@@ -84,6 +86,7 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering
         internal SelectAssociatedServiceRecipientOnly SelectAssociatedServiceRecipientOnly { get; }
 
         internal SelectAndConfirmAssociatedServiceOnlyPrices SelectAndConfirmAssociatedServiceOnlyPrices { get; }
+        internal OrderingStepThree OrderingStepThree { get; }
 
         internal IWebDriver Driver { get; }
 
@@ -162,8 +165,12 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering
 
             TaskList.SelectFundingSourcesTask();
             SelectFundingSources.AddFundingSources(solutionName, additionalService, associatedService, isAssociatedServiceOnlyOrder);
+        }
 
+        public void StepThreeReviewAndCompleteOrder()
+        {
             TaskList.ReviewAndCompleteOrderTask();
+            OrderingStepThree.ReviewAndCompleteOrder();
         }
     }
 }
