@@ -152,7 +152,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.TaskList
 
             if (orderStatuses.HasImplementationPlan)
                 completedSections |= TaskListOrderSections.ImplementationPlanComplete;
-                
+
             if (orderStatuses.DataProcessingPlanCompleted)
                 completedSections |= TaskListOrderSections.DataProcessingInformation;
 
@@ -216,7 +216,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.TaskList
                 FundingInProgress = order.OrderItems.Any(oi => oi.OrderItemFunding != null),
                 FundingCompleted = order.OrderItems.All(oi => oi.OrderItemFunding != null),
                 HasImplementationPlan = contract?.ImplementationPlanId != null,
-                DataProcessingPlanCompleted = await dbContext.Contracts.AnyAsync(p => p.OrderId == orderId && p.DataProcessingPlan != null),
+                DataProcessingPlanCompleted = contract?.DataProcessingPlan != null,
                 OrderCompleted = order.Completed != null,
             };
         }
