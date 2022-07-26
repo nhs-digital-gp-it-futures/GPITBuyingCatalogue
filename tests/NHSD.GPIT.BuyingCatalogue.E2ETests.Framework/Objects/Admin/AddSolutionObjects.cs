@@ -38,5 +38,11 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.Objects.Admin
         public static By ConnectivityDropdown => By.Id("SelectedConnectionSpeed");
 
         public static By ResolutionDropdown => By.Id("SelectedScreenResolution");
+
+        public static By SolutionNameError => By.Id("SolutionName-error");
+
+        public static By SupplierNameError => By.Id("SupplierId-error");
+
+        public static By SolutionFrameworkError => By.Id("solution-error");
     }
 }

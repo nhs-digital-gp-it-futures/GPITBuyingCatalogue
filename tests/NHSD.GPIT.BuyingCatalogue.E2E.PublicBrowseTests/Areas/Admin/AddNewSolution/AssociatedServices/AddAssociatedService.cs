@@ -3,6 +3,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using FluentAssertions;
 using Microsoft.EntityFrameworkCore;
+using NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.Objects.Admin.AssociatedServices;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.Objects.Common;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Utils;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.TestBases;
@@ -100,35 +101,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.AddNewSolution
         }
 
         [Fact]
-        public async Task AddAssociatedService_NameAlreadyExists()
-        {
-            await using var context = GetEndToEndDbContext();
-
-            var associatedService = await context
-                .CatalogueItems
-                .Where(ci => ci.CatalogueItemType == CatalogueItemType.AssociatedService)
-                .FirstAsync(ci => ci.SupplierId == SolutionId.SupplierId);
-
-            CommonActions.ElementAddValue(CommonSelectors.Name, associatedService.Name);
-
-            TextGenerators.TextInputAddText(CommonSelectors.Description, 1000);
-            TextGenerators.TextInputAddText(CommonSelectors.OrderGuidance, 1000);
-
-            CommonActions.ClickSave();
-
-            CommonActions.PageLoadedCorrectGetIndex(
-                typeof(AssociatedServicesController),
-                nameof(AssociatedServicesController.AddAssociatedService))
-                .Should()
-                .BeTrue();
-
-            CommonActions.ErrorSummaryDisplayed().Should().BeTrue();
-            CommonActions.ErrorSummaryLinksExist().Should().BeTrue();
-            CommonActions.ElementShowingCorrectErrorMessage(CommonSelectors.Name, "Associated Service name already exists. Enter a different name.");
-        }
-
-        [Fact]
-        public void AddAssociatedService_MandatoryDataMissing()
+        public void AddAssociatedService_InvalidModelState_HasErrors()
         {
             CommonActions.ClickSave();
 
@@ -140,6 +113,10 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.AddNewSolution
 
             CommonActions.ErrorSummaryDisplayed().Should().BeTrue();
             CommonActions.ErrorSummaryLinksExist().Should().BeTrue();
+
+            CommonActions.ElementIsDisplayed(AssociatedServicesObjects.AssociatedServiceNameError).Should().BeTrue();
+            CommonActions.ElementIsDisplayed(AssociatedServicesObjects.AssociatedServiceDescriptionError).Should().BeTrue();
+            CommonActions.ElementIsDisplayed(AssociatedServicesObjects.OrderGuidanceError).Should().BeTrue();
         }
     }
 }

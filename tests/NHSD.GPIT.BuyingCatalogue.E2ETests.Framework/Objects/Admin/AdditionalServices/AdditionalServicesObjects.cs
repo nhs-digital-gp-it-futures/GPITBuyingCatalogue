@@ -10,5 +10,9 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.Objects.Admin.AdditionalS
         public static By AdditionalServicesTableDashboard => ByExtensions.DataTestId("additional-service-dashboard-table");
 
         public static By PublicationStatusInputError => By.Id("edit-additional-service-error");
+
+        public static By AdditionalServiceNameError => By.Id("Name-error");
+
+        public static By AdditionalServiceDescriptionError => By.Id("Description-error");
     }
 }
