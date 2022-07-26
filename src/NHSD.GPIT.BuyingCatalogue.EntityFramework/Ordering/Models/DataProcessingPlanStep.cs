@@ -1,5 +1,4 @@
 ﻿using System;
-using NHSD.GPIT.BuyingCatalogue.EntityFramework.Users.Models;
 
 namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models
 {
@@ -17,10 +16,8 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models
 
         public int? LastUpdatedBy { get; set; }
 
-        public AspNetUser LastUpdatedByUser { get; set; }
+        public virtual DataProcessingPlan Plan { get; set; }
 
-        public DataProcessingPlan Plan { get; set; }
-
-        public DataProcessingPlanCategory Category { get; set; }
+        public virtual DataProcessingPlanCategory Category { get; set; }
     }
 }

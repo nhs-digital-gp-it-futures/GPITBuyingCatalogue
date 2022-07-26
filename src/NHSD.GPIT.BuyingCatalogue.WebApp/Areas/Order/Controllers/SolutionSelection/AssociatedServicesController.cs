@@ -261,12 +261,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers.SolutionSelec
             RoutingSource? source = RoutingSource.Dashboard)
         {
             var order = await orderService.GetOrderThin(callOffId, internalOrgId);
-
-            var solutionId = order.AssociatedServicesOnly
-                ? order.SolutionId
-                : order.GetSolution().CatalogueItemId;
-
-            var associatedServices = await associatedServicesService.GetPublishedAssociatedServicesForSolution(solutionId);
+            var associatedServices = await associatedServicesService.GetPublishedAssociatedServicesForSolution(order.GetSolutionId());
 
             var route = routingService.GetRoute(
                 RoutingPoint.SelectAssociatedServicesBackLink,

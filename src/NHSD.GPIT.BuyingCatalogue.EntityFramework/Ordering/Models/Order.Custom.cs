@@ -47,6 +47,13 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models
                 && OrderStatus != OrderStatus.Completed;
         }
 
+        public CatalogueItemId? GetSolutionId()
+        {
+            return AssociatedServicesOnly
+                ? SolutionId
+                : GetSolution()?.CatalogueItemId;
+        }
+
         public OrderItem OrderItem(CatalogueItemId catalogueItemId)
         {
             return OrderItems.SingleOrDefault(x => x.CatalogueItem.Id == catalogueItemId);

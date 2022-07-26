@@ -11,26 +11,15 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Configuration
             builder.ToTable("ImplementationPlanMilestones", Schemas.Ordering);
 
             builder.HasKey(x => x.Id).HasName("PK_ImplementationPlanMilestones");
-            builder.Property(x => x.PlanId).IsRequired();
+            builder.Property(x => x.PlanId).IsRequired().HasColumnName("ImplementationPlanId");
 
             builder.Property(x => x.Order).IsRequired();
             builder.Property(x => x.Title).IsRequired().HasMaxLength(1000);
             builder.Property(x => x.PaymentTrigger).IsRequired().HasMaxLength(1000);
 
             builder.HasOne(x => x.Plan)
-                .WithMany()
-                .HasForeignKey(x => x.PlanId)
-                .HasConstraintName("FK_ImplementationPlanMilestones_Plan");
-
-            builder.HasOne(x => x.LastUpdatedByUser)
-                .WithMany()
-                .HasForeignKey(x => x.LastUpdatedBy)
-                .HasConstraintName("FK_ImplementationPlanMilestones_LastUpdatedBy");
-
-            builder.HasMany(x => x.AcceptanceCriteria)
-                .WithOne(x => x.Milestone)
-                .HasForeignKey(x => x.MilestoneId)
-                .HasConstraintName("FK_ImplementationPlanAcceptanceCriteria_Milestone");
+                .WithMany(x => x.Milestones)
+                .HasForeignKey(x => x.PlanId);
         }
     }
 }

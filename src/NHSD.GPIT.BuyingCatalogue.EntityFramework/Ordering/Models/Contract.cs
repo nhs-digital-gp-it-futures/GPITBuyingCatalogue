@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using NHSD.GPIT.BuyingCatalogue.EntityFramework.Users.Models;
 
 namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models
 {
@@ -23,11 +22,9 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models
 
         public int? LastUpdatedBy { get; set; }
 
-        public AspNetUser LastUpdatedByUser { get; set; }
+        public virtual ImplementationPlan ImplementationPlan { get; set; }
 
-        public ImplementationPlan ImplementationPlan { get; set; }
-
-        public DataProcessingPlan DataProcessingPlan { get; set; }
+        public virtual DataProcessingPlan DataProcessingPlan { get; set; }
 
         public ICollection<ContractBillingItem> BillingItems { get; set; }
     }

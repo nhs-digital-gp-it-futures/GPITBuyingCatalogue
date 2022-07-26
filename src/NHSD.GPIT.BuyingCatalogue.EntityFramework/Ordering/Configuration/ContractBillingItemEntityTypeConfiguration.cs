@@ -18,25 +18,13 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Configuration
             builder.Property(x => x.MilestoneId).HasColumnName("ImplementationPlanMilestoneId");
             builder.Property(x => x.Quantity).IsRequired();
 
-            builder.HasOne(x => x.LastUpdatedByUser)
-                .WithMany()
-                .HasForeignKey(x => x.LastUpdatedBy)
-                .HasConstraintName("FK_ContractBillingItems_LastUpdatedBy");
-
-            builder.HasOne(x => x.Contract)
-                .WithMany()
-                .HasForeignKey(x => x.ContractId)
-                .HasConstraintName("FK_ContractBillingItems_Contract");
-
             builder.HasOne(x => x.OrderItem)
                 .WithMany()
-                .HasForeignKey(x => new { x.OrderId, x.CatalogueItemId })
-                .HasConstraintName("FK_ContractBillingItems_OrderItem");
+                .HasForeignKey(x => new { x.OrderId, x.CatalogueItemId });
 
             builder.HasOne(x => x.Milestone)
                 .WithMany()
-                .HasForeignKey(x => x.MilestoneId)
-                .HasConstraintName("FK_ContractBillingItems_Milestone");
+                .HasForeignKey(x => x.MilestoneId);
         }
     }
 }
