@@ -24,7 +24,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators
             var result = validator.TestValidate(model);
 
             result.ShouldHaveValidationErrorFor(m => m.Name)
-                .WithErrorMessage("Enter a name");
+                .WithErrorMessage(AddAssociatedServiceModelValidator.EnterAssociatedServiceName);
         }
 
         [Theory]
@@ -40,7 +40,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators
             var result = validator.TestValidate(model);
 
             result.ShouldHaveValidationErrorFor(m => m.Description)
-                .WithErrorMessage("Enter a description");
+                .WithErrorMessage(AddAssociatedServiceModelValidator.EnterAssociatedServiceDescription);
         }
 
         [Theory]
@@ -56,7 +56,32 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators
             var result = validator.TestValidate(model);
 
             result.ShouldHaveValidationErrorFor(m => m.OrderGuidance)
-                .WithErrorMessage("Enter order guidance");
+                .WithErrorMessage(AddAssociatedServiceModelValidator.EnterOrderGuidance);
+        }
+
+        [Theory]
+        [CommonInlineAutoData(null, null, null)]
+        public static void Validate_DataMissing_SetsModelError(
+            string name,
+            string description,
+            string orderGuidance,
+            AddAssociatedServiceModel model,
+            AddAssociatedServiceModelValidator validator)
+        {
+            model.Name = name;
+            model.Description = description;
+            model.OrderGuidance = orderGuidance;
+
+            var result = validator.TestValidate(model);
+
+            result.ShouldHaveValidationErrorFor(m => m.Name)
+                .WithErrorMessage(AddAssociatedServiceModelValidator.EnterAssociatedServiceName);
+
+            result.ShouldHaveValidationErrorFor(m => m.Description)
+                .WithErrorMessage(AddAssociatedServiceModelValidator.EnterAssociatedServiceDescription);
+
+            result.ShouldHaveValidationErrorFor(m => m.OrderGuidance)
+                .WithErrorMessage(AddAssociatedServiceModelValidator.EnterOrderGuidance);
         }
 
         [Theory]
@@ -72,7 +97,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators
             var result = validator.TestValidate(model);
 
             result.ShouldHaveValidationErrorFor(m => m.Name)
-                .WithErrorMessage("Associated Service name already exists. Enter a different name");
+                .WithErrorMessage(AddAssociatedServiceModelValidator.AssociatedServiceNameAlreadyExists);
         }
 
         [Theory]

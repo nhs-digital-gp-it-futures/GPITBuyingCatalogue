@@ -3,6 +3,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using FluentAssertions;
 using Microsoft.EntityFrameworkCore;
+using NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.Objects.Admin.AdditionalServices;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.Objects.Common;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Utils;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.TestBases;
@@ -103,10 +104,11 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.AddNewSolution.Addition
                 .Should()
                 .BeTrue();
 
-            CommonActions.ElementIsDisplayed(CommonSelectors.Name).Should().BeTrue();
-
             CommonActions.ErrorSummaryDisplayed().Should().BeTrue();
             CommonActions.ErrorSummaryLinksExist().Should().BeTrue();
+
+            CommonActions.ElementIsDisplayed(AdditionalServicesObjects.AdditionalServiceNameError).Should().BeTrue();
+            CommonActions.ElementIsDisplayed(AdditionalServicesObjects.AdditionalServiceDescriptionError).Should().BeTrue();
         }
     }
 }
