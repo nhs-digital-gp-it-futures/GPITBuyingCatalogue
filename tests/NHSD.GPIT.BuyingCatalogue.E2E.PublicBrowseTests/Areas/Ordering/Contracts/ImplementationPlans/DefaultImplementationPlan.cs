@@ -88,9 +88,11 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering.Contracts.Implementa
 
             var context = GetEndToEndDbContext();
 
+            var defaultPlan = context.ImplementationPlans.Single(x => x.IsDefault);
             var contract = context.Contracts.Single(x => x.OrderId == OrderId);
 
-            contract.ImplementationPlanId.Should().BeNull();
+            contract.ImplementationPlanId.Should().NotBeNull();
+            contract.ImplementationPlanId.Should().NotBe(defaultPlan.Id);
         }
 
         public void Dispose()

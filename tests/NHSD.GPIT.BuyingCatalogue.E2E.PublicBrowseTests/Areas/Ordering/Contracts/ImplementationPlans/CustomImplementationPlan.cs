@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using System.Collections.Generic;
 using FluentAssertions;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Utils;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.TestBases;
@@ -11,7 +9,7 @@ using Xunit;
 
 namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering.Contracts.ImplementationPlans
 {
-    public class CustomImplementationPlan : BuyerTestBase, IClassFixture<LocalWebApplicationFactory>, IDisposable
+    public class CustomImplementationPlan : BuyerTestBase, IClassFixture<LocalWebApplicationFactory>
     {
         private const int OrderId = 90001;
         private const string InternalOrgId = "CG-03F";
@@ -41,32 +39,11 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering.Contracts.Implementa
         [Fact]
         public void CustomImplementationPlan_ClickSave_ExpectedResult()
         {
-            CommonActions.ClickSave();
+            CommonActions.ClickContinue();
 
             CommonActions.PageLoadedCorrectGetIndex(
                 typeof(OrderController),
                 nameof(OrderController.Order)).Should().BeTrue();
-
-            var context = GetEndToEndDbContext();
-
-            var contract = context.Contracts.Single(x => x.OrderId == OrderId);
-            var defaultPlan = context.ImplementationPlans.Single(x => x.IsDefault);
-
-            contract.ImplementationPlanId.Should().NotBeNull();
-            contract.ImplementationPlanId.Should().NotBe(defaultPlan.Id);
-        }
-
-        public void Dispose()
-        {
-            var context = GetEndToEndDbContext();
-            var contract = context.Contracts.FirstOrDefault(x => x.OrderId == OrderId);
-
-            if (contract != null)
-            {
-                context.Contracts.Remove(contract);
-            }
-
-            context.SaveChanges();
         }
     }
 }

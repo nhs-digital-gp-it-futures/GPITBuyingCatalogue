@@ -3,7 +3,7 @@
 <partial name="Partials/_BackLink" model="Model" />
 
 <div class="nhsuk-grid-row">
-    <div class="nhsuk-grid-column-full">
+    <div class="nhsuk-grid-column-two-thirds">
         <nhs-page-title title="Bespoke implementation plan milestones"
                         caption="Order @Model.CallOffId"
                         advice="Document the implementation plan milestones you've agreed with the supplier."/>
@@ -20,8 +20,11 @@
             </p>
         </div>
         
-        <form method="post">
-            <nhs-submit-button/>
-        </form>
+        <vc:nhs-secondary-button text="Continue"
+                                 use-primary-colour="true"
+                                 url="@Url.Action(
+                                          nameof(OrderController.Order),
+                                          typeof(OrderController).ControllerName(),
+                                          new { Model.InternalOrgId, Model.CallOffId })"/>
     </div>
 </div>

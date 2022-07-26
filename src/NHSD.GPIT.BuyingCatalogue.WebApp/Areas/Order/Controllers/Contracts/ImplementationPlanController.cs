@@ -51,17 +51,27 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers.Contracts
                     await GetDefaultViewModel(internalOrgId, callOffId));
             }
 
+            var order = await orderService.GetOrderThin(callOffId, internalOrgId);
+            var defaultPlan = await implementationPlanService.GetDefaultImplementationPlan();
+
             if (model.UseDefaultMilestones!.Value)
             {
-                var order = await orderService.GetOrderThin(callOffId, internalOrgId);
-                var defaultPlan = await implementationPlanService.GetDefaultImplementationPlan();
-
                 await contractsService.SetImplementationPlanId(order.Id, defaultPlan?.Id);
 
                 return new RedirectToActionResult(
                     nameof(OrderController.Order),
                     typeof(OrderController).ControllerName(),
                     new { internalOrgId, callOffId });
+            }
+
+            var contract = await contractsService.GetContract(order.Id);
+
+            if (contract.ImplementationPlanId == null
+                || contract.ImplementationPlanId == defaultPlan?.Id)
+            {
+                var plan = await implementationPlanService.CreateImplementationPlan();
+
+                await contractsService.SetImplementationPlanId(order.Id, plan.Id);
             }
 
             return new RedirectToActionResult(
@@ -84,27 +94,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers.Contracts
             };
 
             return View("~/Areas/Order/Views/Contracts/CustomImplementationPlan.cshtml", model);
-        }
-
-        [HttpPost("custom")]
-        public async Task<IActionResult> CustomImplementationPlan(string internalOrgId, CallOffId callOffId, CustomImplementationPlanModel model)
-        {
-            var order = await orderService.GetOrderThin(callOffId, internalOrgId);
-            var contract = await contractsService.GetContract(order.Id);
-            var defaultPlan = await implementationPlanService.GetDefaultImplementationPlan();
-
-            if (contract.ImplementationPlanId == null
-                || contract.ImplementationPlanId == defaultPlan?.Id)
-            {
-                var plan = await implementationPlanService.CreateImplementationPlan();
-
-                await contractsService.SetImplementationPlanId(order.Id, plan.Id);
-            }
-
-            return RedirectToAction(
-                nameof(OrderController.Order),
-                typeof(OrderController).ControllerName(),
-                new { internalOrgId, callOffId });
         }
 
         private async Task<DefaultImplementationPlanModel> GetDefaultViewModel(string internalOrgId, CallOffId callOffId)
