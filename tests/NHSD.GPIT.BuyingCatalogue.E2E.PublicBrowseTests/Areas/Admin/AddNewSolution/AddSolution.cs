@@ -2,6 +2,7 @@
 using System.Threading.Tasks;
 using FluentAssertions;
 using Microsoft.EntityFrameworkCore;
+using NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.Objects.Admin;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Utils;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.TestBases;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
@@ -68,17 +69,8 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.AddNewSolution
         }
 
         [Fact]
-        public async Task AddSolution_SolutionWithDuplicateName_ThrowsError()
+        public void AddSolution_SolutionModelStateInvalid_ThrowsErrors()
         {
-            await using var context = GetEndToEndDbContext();
-            var existingSolution = await context.CatalogueItems.FirstOrDefaultAsync();
-
-            CommonActions.ElementAddValue(Objects.Admin.AddSolutionObjects.SolutionName, existingSolution.Name);
-
-            CommonActions.SelectDropDownItem(Objects.Admin.AddSolutionObjects.SupplierName, 0);
-
-            CommonActions.ClickFirstCheckbox();
-
             CommonActions.ClickSave();
 
             CommonActions.PageLoadedCorrectGetIndex(
@@ -87,8 +79,10 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.AddNewSolution
 
             CommonActions.ErrorSummaryDisplayed().Should().BeTrue();
             CommonActions.ErrorSummaryLinksExist().Should().BeTrue();
-            CommonActions.ElementShowingCorrectErrorMessage("SolutionName", "A solution with this name already exists")
-                .Should().BeTrue();
+
+            CommonActions.ElementIsDisplayed(AddSolutionObjects.SolutionNameError).Should().BeTrue();
+            CommonActions.ElementIsDisplayed(AddSolutionObjects.SupplierNameError).Should().BeTrue();
+            CommonActions.ElementIsDisplayed(AddSolutionObjects.SolutionFrameworkError).Should().BeTrue();
         }
     }
 }

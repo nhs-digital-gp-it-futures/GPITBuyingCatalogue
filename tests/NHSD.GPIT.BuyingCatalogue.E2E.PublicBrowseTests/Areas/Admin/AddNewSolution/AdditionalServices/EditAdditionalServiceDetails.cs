@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using FluentAssertions;
 using Microsoft.EntityFrameworkCore;
+using NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.Objects.Admin.AdditionalServices;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.Objects.Common;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Utils;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.TestBases;
@@ -60,7 +61,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.AddNewSolution.Addition
             additionalService.AdditionalService.FullDescription.Should().Be(description);
         }
 
-        [Fact]
+        [Fact]//////////////////////////////////////////////////////////////////////////////////////////////////
         public void EditAdditionalServiceDetails_MissingDataThrowsError()
         {
             CommonActions.ClearInputElement(CommonSelectors.Name);
@@ -75,54 +76,10 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.AddNewSolution.Addition
 
             CommonActions.ErrorSummaryDisplayed().Should().BeTrue();
             CommonActions.ErrorSummaryLinksExist().Should().BeTrue();
+
+            CommonActions.ElementIsDisplayed(AdditionalServicesObjects.AdditionalServiceNameError).Should().BeTrue();
+            CommonActions.ElementIsDisplayed(AdditionalServicesObjects.AdditionalServiceDescriptionError).Should().BeTrue();
         }
 
-        [Fact]
-        public async Task EditAdditionalServiceDetails_DuplicateNameOfService()
-        {
-            await using var context = GetEndToEndDbContext();
-            var catalogueItems = await context.CatalogueItems
-                .Where(ci => ci.AdditionalService.Solution.CatalogueItemId == SolutionId && ci.Id != AdditionalServiceId)
-                .ToListAsync();
-
-            var name = catalogueItems.OrderBy(_ => Guid.NewGuid()).First().Name;
-
-            CommonActions.ClearInputElement(CommonSelectors.Name);
-
-            CommonActions.ElementAddValue(CommonSelectors.Name, name);
-
-            CommonActions.ClickSave();
-
-            CommonActions.PageLoadedCorrectGetIndex(
-                typeof(AdditionalServicesController),
-                nameof(AdditionalServicesController.EditAdditionalServiceDetails))
-                .Should().BeTrue();
-
-            CommonActions.ErrorSummaryDisplayed().Should().BeTrue();
-            CommonActions.ErrorSummaryLinksExist().Should().BeTrue();
-            CommonActions.ElementShowingCorrectErrorMessage(CommonSelectors.Name, "Additional Service name already exists. Enter a different name.");
-        }
-
-        [Fact]
-        public async Task EditAdditionalServiceDetails_DuplicateSolutionName()
-        {
-            await using var context = GetEndToEndDbContext();
-            var catalogueItem = await context.CatalogueItems.SingleAsync(ci => ci.Id == SolutionId);
-
-            CommonActions.ClearInputElement(CommonSelectors.Name);
-
-            CommonActions.ElementAddValue(CommonSelectors.Name, catalogueItem.Name);
-
-            CommonActions.ClickSave();
-
-            CommonActions.PageLoadedCorrectGetIndex(
-                typeof(AdditionalServicesController),
-                nameof(AdditionalServicesController.EditAdditionalServiceDetails))
-                .Should().BeTrue();
-
-            CommonActions.ErrorSummaryDisplayed().Should().BeTrue();
-            CommonActions.ErrorSummaryLinksExist().Should().BeTrue();
-            CommonActions.ElementShowingCorrectErrorMessage(CommonSelectors.Name, "Additional Service name already exists. Enter a different name.");
-        }
     }
 }

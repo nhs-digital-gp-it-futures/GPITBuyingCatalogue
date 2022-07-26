@@ -24,7 +24,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators
             var result = validator.TestValidate(model);
 
             result.ShouldHaveValidationErrorFor($"{nameof(SolutionModel.Frameworks)}[0].Selected")
-                .WithErrorMessage("Select the framework(s) your solution is available from");
+                .WithErrorMessage(SolutionModelValidator.SelectFrameworkSolutionIsAvailableFrom);
         }
 
         [Theory]
@@ -52,7 +52,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators
 
             result
                 .ShouldHaveValidationErrorFor(m => m.SupplierId)
-                .WithErrorMessage("Select a supplier name");
+                .WithErrorMessage(SolutionModelValidator.SelectSupplierName);
         }
 
         [Theory]
@@ -78,7 +78,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators
 
             result
                 .ShouldHaveValidationErrorFor(m => m.SolutionName)
-                .WithErrorMessage("Enter a solution name");
+                .WithErrorMessage(SolutionModelValidator.EnterSolutionName);
         }
 
         [Theory]
@@ -93,7 +93,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators
 
             result
                 .ShouldHaveValidationErrorFor(m => m.SolutionName)
-                .WithErrorMessage("Solution name cannot be more than 255 characters");
+                .WithErrorMessage(SolutionModelValidator.SolutionNameNoMoreThan255Characters);
         }
 
         [Theory]
@@ -110,7 +110,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators
 
             var result = validator.TestValidate(model);
 
-            result.ShouldHaveValidationErrorFor(m => m.SolutionName);
+            result.ShouldHaveValidationErrorFor(m => m.SolutionName)
+                .WithErrorMessage(SolutionModelValidator.SolutionNameAlreadyExists);
         }
 
         [Theory]
