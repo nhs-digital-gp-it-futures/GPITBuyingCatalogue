@@ -21,7 +21,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators.Clie
             var result = validator.TestValidate(model);
 
             result.ShouldHaveValidationErrorFor(m => m.Description)
-                .WithErrorMessage("Enter supported operating systems information");
+                .WithErrorMessage(OperatingSystemsModelValidator.EnterSupportedOperatingSystems);
         }
 
         [Theory]

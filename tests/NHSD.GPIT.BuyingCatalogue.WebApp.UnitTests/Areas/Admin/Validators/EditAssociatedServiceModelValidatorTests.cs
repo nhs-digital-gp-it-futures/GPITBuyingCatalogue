@@ -51,7 +51,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators
             model.DetailsStatus.Should().Be(TaskProgress.NotStarted);
             model.ListPriceStatus.Should().Be(TaskProgress.Completed);
             result.ShouldHaveValidationErrorFor(m => m.SelectedPublicationStatus)
-                .WithErrorMessage("Complete all mandatory sections before publishing");
+                .WithErrorMessage(EditAssociatedServiceModelValidator.UncompletedMandatorySectionsError);
         }
 
         [Theory]
@@ -76,7 +76,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators
             var result = validator.TestValidate(model);
 
             result.ShouldHaveValidationErrorFor(m => m.SelectedPublicationStatus)
-                .WithErrorMessage("This Associated Service cannot be unpublished as it is referenced by at least one solution");
+                .WithErrorMessage(EditAssociatedServiceModelValidator.AssociatedServiceCannotBeUnpublishedError);
         }
 
         [Theory]

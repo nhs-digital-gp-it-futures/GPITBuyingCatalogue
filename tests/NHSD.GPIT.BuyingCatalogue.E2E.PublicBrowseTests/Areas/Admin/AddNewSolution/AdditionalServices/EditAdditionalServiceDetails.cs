@@ -61,7 +61,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.AddNewSolution.Addition
             additionalService.AdditionalService.FullDescription.Should().Be(description);
         }
 
-        [Fact]//////////////////////////////////////////////////////////////////////////////////////////////////
+        [Fact]
         public void EditAdditionalServiceDetails_MissingDataThrowsError()
         {
             CommonActions.ClearInputElement(CommonSelectors.Name);

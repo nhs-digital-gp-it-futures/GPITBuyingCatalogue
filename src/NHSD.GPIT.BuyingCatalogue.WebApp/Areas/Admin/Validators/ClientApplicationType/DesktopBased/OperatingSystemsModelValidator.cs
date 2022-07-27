@@ -5,11 +5,13 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Validators.ClientApplicat
 {
     public sealed class OperatingSystemsModelValidator : AbstractValidator<OperatingSystemsModel>
     {
+        public const string EnterSupportedOperatingSystems = "Enter supported operating systems information";
+
         public OperatingSystemsModelValidator()
         {
             RuleFor(m => m.Description)
                 .NotEmpty()
-                .WithMessage("Enter supported operating systems information");
+                .WithMessage(EnterSupportedOperatingSystems);
         }
     }
 }

@@ -5,11 +5,13 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Validators.ClientApplicat
 {
     public sealed class PlugInsOrExtensionsModelValidator : AbstractValidator<PlugInsOrExtensionsModel>
     {
+        public const string PluginsOrExtensionsRequiredError = "Select yes if any plug-ins or extensions are required";
+
         public PlugInsOrExtensionsModelValidator()
         {
             RuleFor(m => m.PlugInsRequired)
                 .NotEmpty()
-                .WithMessage("Select yes if any plug-ins or extensions are required");
+                .WithMessage(PluginsOrExtensionsRequiredError);
         }
     }
 }

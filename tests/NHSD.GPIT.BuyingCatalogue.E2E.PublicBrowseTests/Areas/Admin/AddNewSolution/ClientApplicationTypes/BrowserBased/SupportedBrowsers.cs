@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using FluentAssertions;
 using Microsoft.EntityFrameworkCore;
+using NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.Objects.Admin;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Utils;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.TestBases;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
@@ -60,26 +61,20 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.AddNewSolution.ClientAp
             clientApplication.MobileResponsive.Should().BeTrue();
         }
 
-        [Theory]
-        [InlineData(true, false)]
-        [InlineData(false, true)]
-        [InlineData(false, false)]
-        public void SupportedBrowsers_ErrorThrownMissingMandatory(bool browserSelected, bool responsiveSelected)
+        [Fact]
+        public void SupportedBrowsers_ErrorThrownMissingMandatory()
         {
-            if (browserSelected)
-            {
-                CommonActions.ClickFirstCheckbox();
-            }
-
-            if (responsiveSelected)
-            {
-                CommonActions.ClickRadioButtonWithText("Yes");
-            }
-
             CommonActions.ClickSave();
+
+            CommonActions.PageLoadedCorrectGetIndex(
+                typeof(BrowserBasedController),
+                nameof(BrowserBasedController.SupportedBrowsers)).Should().BeTrue();
 
             CommonActions.ErrorSummaryDisplayed().Should().BeTrue();
             CommonActions.ErrorSummaryLinksExist().Should().BeTrue();
+
+            CommonActions.ElementIsDisplayed(SupportedBrowsersAndResponsiveness.SelectSupportedBrowsersError).Should().BeTrue();
+            CommonActions.ElementIsDisplayed(SupportedBrowsersAndResponsiveness.MobileResponsiveError).Should().BeTrue();
         }
 
         [Fact]

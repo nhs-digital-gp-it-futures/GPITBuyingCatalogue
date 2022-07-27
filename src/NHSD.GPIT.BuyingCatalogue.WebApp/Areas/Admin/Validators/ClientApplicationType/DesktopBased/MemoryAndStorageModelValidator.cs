@@ -5,19 +5,25 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Validators.ClientApplicat
 {
     public sealed class MemoryAndStorageModelValidator : AbstractValidator<MemoryAndStorageModel>
     {
+        public const string SelectMinimumMemorySizeError = "Select a minimum memory size";
+
+        public const string StorageSpaceInformationError = "Enter storage space information";
+
+        public const string ProcessingPowerInformationError = "Enter processing power information";
+
         public MemoryAndStorageModelValidator()
         {
             RuleFor(m => m.SelectedMemorySize)
                 .NotEmpty()
-                .WithMessage("Select a minimum memory size");
+                .WithMessage(SelectMinimumMemorySizeError);
 
             RuleFor(m => m.StorageSpace)
                 .NotEmpty()
-                .WithMessage("Enter storage space information");
+                .WithMessage(StorageSpaceInformationError);
 
             RuleFor(m => m.ProcessingPower)
                 .NotEmpty()
-                .WithMessage("Enter processing power information");
+                .WithMessage(ProcessingPowerInformationError);
         }
     }
 }
