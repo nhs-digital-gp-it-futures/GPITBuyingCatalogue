@@ -455,45 +455,6 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.TaskList
         }
 
         [Fact]
-        public static void SetOrderTaskList_DataProcessingInformation_InProgress()
-        {
-            var expected = new OrderTaskList()
-            {
-                DescriptionStatus = TaskProgress.Completed,
-                OrderingPartyStatus = TaskProgress.Completed,
-                SupplierStatus = TaskProgress.Completed,
-                CommencementDateStatus = TaskProgress.Completed,
-                SolutionOrService = TaskProgress.Completed,
-                FundingSource = TaskProgress.Completed,
-                ImplementationPlan = TaskProgress.Completed,
-                AssociatedServiceBilling = TaskProgress.Completed,
-                DataProcessingInformation = TaskProgress.InProgress,
-            };
-
-            var model = new OrderTaskList();
-
-            var completedSections =
-                TaskListOrderSections.Description
-                | TaskListOrderSections.OrderingParty
-                | TaskListOrderSections.Supplier
-                | TaskListOrderSections.SupplierContact
-                | TaskListOrderSections.CommencementDate
-                | TaskListOrderSections.SolutionOrServiceInProgress
-                | TaskListOrderSections.SolutionOrService
-                | TaskListOrderSections.FundingSourceInProgress
-                | TaskListOrderSections.FundingSource
-                | TaskListOrderSections.ImplementationPlanInProgress
-                | TaskListOrderSections.ImplementationPlan
-                | TaskListOrderSections.AssociatedServiceBillingInProgress
-                | TaskListOrderSections.AssociatedServiceBilling
-                | TaskListOrderSections.DataProcessingInformationInProgress;
-
-            TaskListService.SetOrderTaskList(completedSections, model);
-
-            model.Should().BeEquivalentTo(expected);
-        }
-
-        [Fact]
         public static void SetOrderTaskList_DataProcessingInformation_Completed()
         {
             var expected = new OrderTaskList()

@@ -8,5 +8,7 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.Contracts
         Task<Contract> GetContract(int orderId);
 
         Task SetImplementationPlanId(int orderId, int? implementationPlanId);
+
+        Task SetDataProcessingPlanId(int orderId, int? dataProcessingPlanId);
     }
 }

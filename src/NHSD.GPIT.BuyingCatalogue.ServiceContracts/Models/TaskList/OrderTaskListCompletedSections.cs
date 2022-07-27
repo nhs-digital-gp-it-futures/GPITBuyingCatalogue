@@ -22,6 +22,8 @@
 
         public bool HasImplementationPlan { get; set; }
 
+        public bool DataProcessingPlanCompleted { get; set; }
+
         public bool OrderCompleted { get; set; }
     }
 }

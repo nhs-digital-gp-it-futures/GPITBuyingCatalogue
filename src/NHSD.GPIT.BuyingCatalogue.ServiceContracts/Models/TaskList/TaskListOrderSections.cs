@@ -30,6 +30,6 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.Models.TaskList
         FundingSourceComplete = FundingSource | FundingSourceInProgress | SolutionOrServiceComplete,
         ImplementationPlanComplete = ImplementationPlan | ImplementationPlanInProgress | FundingSourceComplete,
         AssociatedServiceBillingComplete = AssociatedServiceBilling | AssociatedServiceBillingInProgress | ImplementationPlanComplete,
-        DataProcessingInformationCompleted = DataProcessingInformation | DataProcessingInformationInProgress | ImplementationPlanComplete,
+        DataProcessingInformationCompleted = DataProcessingInformation | ImplementationPlanComplete,
     }
 }
