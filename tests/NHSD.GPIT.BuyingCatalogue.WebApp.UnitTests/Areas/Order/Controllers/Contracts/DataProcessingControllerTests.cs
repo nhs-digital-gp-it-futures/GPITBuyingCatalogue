@@ -45,7 +45,10 @@ public class DataProcessingControllerTests
 
         var result = (await controller.Index(internalOrgId, callOffId)).As<ViewResult>();
 
-        var expectedModel = new DataProcessingPlanModel(contract.DataProcessingPlan);
+        var expectedModel = new DataProcessingPlanModel(contract.DataProcessingPlan)
+        {
+            CallOffId = callOffId,
+        };
 
         result.Should().NotBeNull();
         result.Model.Should().BeEquivalentTo(expectedModel, opt => opt.Excluding(m => m.BackLink));
@@ -67,7 +70,10 @@ public class DataProcessingControllerTests
         service.Setup(s => s.GetContract(callOffId.Id))
             .ReturnsAsync(contract);
 
-        var expectedModel = new DataProcessingPlanModel(contract.DataProcessingPlan);
+        var expectedModel = new DataProcessingPlanModel(contract.DataProcessingPlan)
+        {
+            CallOffId = callOffId,
+        };
 
         var result = (await controller.Index(internalOrgId, callOffId)).As<ViewResult>();
 

@@ -37,6 +37,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers.Contracts
 
             var model = new DataProcessingPlanModel(contract.DataProcessingPlan)
             {
+                CallOffId = callOffId,
                 BackLink = Url.Action(
                     nameof(OrderController.Order),
                     typeof(OrderController).ControllerName(),
