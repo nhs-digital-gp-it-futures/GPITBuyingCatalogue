@@ -21,7 +21,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators.Clie
             var result = validator.TestValidate(model);
 
             result.ShouldHaveValidationErrorFor(m => m.PlugInsRequired)
-                .WithErrorMessage("Select yes if any plug-ins or extensions are required");
+                .WithErrorMessage(PlugInsOrExtensionsModelValidator.PluginsOrExtensionsRequiredError);
         }
 
         [Theory]

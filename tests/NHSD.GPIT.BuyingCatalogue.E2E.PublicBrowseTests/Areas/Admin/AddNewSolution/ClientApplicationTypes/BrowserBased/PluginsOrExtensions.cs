@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using FluentAssertions;
 using Microsoft.EntityFrameworkCore;
+using NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.Objects.Marketing;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Utils;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.TestBases;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
@@ -60,8 +61,14 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.AddNewSolution.ClientAp
         {
             CommonActions.ClickSave();
 
+            CommonActions.PageLoadedCorrectGetIndex(
+                typeof(BrowserBasedController),
+                nameof(BrowserBasedController.PlugInsOrExtensions)).Should().BeTrue();
+
             CommonActions.ErrorSummaryDisplayed().Should().BeTrue();
             CommonActions.ErrorSummaryLinksExist().Should().BeTrue();
+
+            CommonActions.ElementIsDisplayed(CommonSelectors.PluginsOrExtensionsError).Should().BeTrue();
         }
 
         public void Dispose()

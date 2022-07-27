@@ -21,7 +21,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators.Clie
             var result = validator.TestValidate(model);
 
             result.ShouldHaveValidationErrorFor(m => m.MobileResponsive)
-                .WithErrorMessage("Select yes if your Catalogue Solution is mobile responsive");
+                .WithErrorMessage(SupportedBrowsersModelValidator.SolutionMobileResponsiveError);
         }
 
         [Theory]
@@ -47,6 +47,26 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators.Clie
 
             result.ShouldHaveValidationErrorFor("Browsers[0].Checked")
                 .WithErrorMessage(SupportedBrowsersModelValidator.MandatoryRequiredMessage);
+        }
+
+        [Theory]
+        [CommonInlineAutoData("")]
+        [CommonInlineAutoData(null)]
+        public static void Validate_AllDataMissing_HasErrors(
+            string mobileResponsive,
+            SupportedBrowsersModel model,
+            SupportedBrowsersModelValidator validator)
+        {
+            model.MobileResponsive = mobileResponsive;
+            model.Browsers = new SupportedBrowserModel[0];
+
+            var result = validator.TestValidate(model);
+
+            result.ShouldHaveValidationErrorFor("Browsers[0].Checked")
+                .WithErrorMessage(SupportedBrowsersModelValidator.MandatoryRequiredMessage);
+
+            result.ShouldHaveValidationErrorFor(m => m.MobileResponsive)
+               .WithErrorMessage(SupportedBrowsersModelValidator.SolutionMobileResponsiveError);
         }
 
         [Theory]

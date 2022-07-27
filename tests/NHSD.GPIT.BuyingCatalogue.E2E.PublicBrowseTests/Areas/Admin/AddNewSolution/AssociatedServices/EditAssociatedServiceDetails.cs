@@ -2,6 +2,7 @@
 using System.Threading.Tasks;
 using FluentAssertions;
 using Microsoft.EntityFrameworkCore;
+using NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.Objects.Admin.AssociatedServices;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.Objects.Common;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Utils;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.TestBases;
@@ -64,7 +65,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.AddNewSolution.Associat
         }
 
         [Fact]
-        public void EditAssociatedServiceDetails_MissingDataThrowsError()
+        public void EditAssociatedServiceDetails_InvalidModelState_ThrowsErrors()
         {
             CommonActions.ClearInputElement(CommonSelectors.Name);
             CommonActions.ClearInputElement(CommonSelectors.Description);
@@ -79,31 +80,10 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.AddNewSolution.Associat
 
             CommonActions.ErrorSummaryDisplayed().Should().BeTrue();
             CommonActions.ErrorSummaryLinksExist().Should().BeTrue();
-        }
 
-        [Fact]
-        public async Task EditAssociatedServiceDetails_DuplicateNameOfService()
-        {
-            await using var context = GetEndToEndDbContext();
-
-            var existingAssociatedService = await context
-                .CatalogueItems
-                .SingleOrDefaultAsync(ci => ci.Id == ExistingAssociatedServiceId);
-
-            var name = existingAssociatedService.Name;
-
-            CommonActions.ElementAddValue(CommonSelectors.Name, name);
-
-            CommonActions.ClickSave();
-
-            CommonActions.PageLoadedCorrectGetIndex(
-                typeof(AssociatedServicesController),
-                nameof(AssociatedServicesController.EditAssociatedServiceDetails))
-                .Should().BeTrue();
-
-            CommonActions.ErrorSummaryDisplayed().Should().BeTrue();
-            CommonActions.ErrorSummaryLinksExist().Should().BeTrue();
-            CommonActions.ElementShowingCorrectErrorMessage(CommonSelectors.Name, "Associated Service name already exists. Enter a different name.");
+            CommonActions.ElementIsDisplayed(AssociatedServicesObjects.AssociatedServiceNameError).Should().BeTrue();
+            CommonActions.ElementIsDisplayed(AssociatedServicesObjects.AssociatedServiceDescriptionError).Should().BeTrue();
+            CommonActions.ElementIsDisplayed(AssociatedServicesObjects.OrderGuidanceError).Should().BeTrue();
         }
     }
 }
