@@ -6,6 +6,12 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Validators
 {
     public class EditAssociatedServiceDetailsModelValidator : AbstractValidator<EditAssociatedServiceDetailsModel>
     {
+
+        public const string NameError = "Enter a name";
+        public const string DescriptionError = "Enter a description";
+        public const string OrderGuidanceError = "Enter order guidance";
+        public const string NameAlreadyExistsError = "Associated Service name already exists. Enter a different name";
+
         private readonly IAssociatedServicesService associatedServicesService;
 
         public EditAssociatedServiceDetailsModelValidator(IAssociatedServicesService associatedServicesService)
@@ -14,19 +20,19 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Validators
 
             RuleFor(m => m.Name)
                 .NotEmpty()
-                .WithMessage("Enter a name");
+                .WithMessage(NameError);
 
             RuleFor(m => m.Description)
                 .NotEmpty()
-                .WithMessage("Enter a description");
+                .WithMessage(DescriptionError);
 
             RuleFor(m => m.OrderGuidance)
                 .NotEmpty()
-                .WithMessage("Enter order guidance");
+                .WithMessage(OrderGuidanceError);
 
             RuleFor(m => m)
                 .Must(NotBeADuplicateServiceName)
-                .WithMessage("Associated Service name already exists. Enter a different name")
+                .WithMessage(NameAlreadyExistsError)
                 .OverridePropertyName(m => m.Name);
         }
 

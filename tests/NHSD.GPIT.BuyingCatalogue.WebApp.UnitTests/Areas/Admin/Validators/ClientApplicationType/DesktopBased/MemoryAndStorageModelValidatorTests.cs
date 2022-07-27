@@ -21,7 +21,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators.Clie
             var result = validator.TestValidate(model);
 
             result.ShouldHaveValidationErrorFor(m => m.SelectedMemorySize)
-                .WithErrorMessage("Select a minimum memory size");
+                .WithErrorMessage(MemoryAndStorageModelValidator.SelectMinimumMemorySizeError);
         }
 
         [Theory]
@@ -37,7 +37,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators.Clie
             var result = validator.TestValidate(model);
 
             result.ShouldHaveValidationErrorFor(m => m.StorageSpace)
-                .WithErrorMessage("Enter storage space information");
+                .WithErrorMessage(MemoryAndStorageModelValidator.StorageSpaceInformationError);
         }
 
         [Theory]
@@ -53,7 +53,35 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators.Clie
             var result = validator.TestValidate(model);
 
             result.ShouldHaveValidationErrorFor(m => m.ProcessingPower)
-                .WithErrorMessage("Enter processing power information");
+                .WithErrorMessage(MemoryAndStorageModelValidator.ProcessingPowerInformationError);
+        }
+
+        [Theory]
+        [CommonInlineAutoData(null, null, null)]
+        [CommonInlineAutoData("", "", "")]
+        public static void Validate_AllDataNullOrEmpty_SetsModelError(
+            string selectedMemorySize,
+            string storageSpace,
+            string processingPower,
+            MemoryAndStorageModel model,
+            MemoryAndStorageModelValidator validator)
+        {
+            model.SelectedMemorySize = selectedMemorySize;
+            model.StorageSpace = storageSpace;
+            model.ProcessingPower = processingPower;
+
+            var result = validator.TestValidate(model);
+
+
+            result.ShouldHaveValidationErrorFor(m => m.SelectedMemorySize)
+                .WithErrorMessage(MemoryAndStorageModelValidator.SelectMinimumMemorySizeError);
+
+            result.ShouldHaveValidationErrorFor(m => m.StorageSpace)
+                .WithErrorMessage(MemoryAndStorageModelValidator.StorageSpaceInformationError);
+
+
+            result.ShouldHaveValidationErrorFor(m => m.ProcessingPower)
+                .WithErrorMessage(MemoryAndStorageModelValidator.ProcessingPowerInformationError);
         }
 
         [Theory]

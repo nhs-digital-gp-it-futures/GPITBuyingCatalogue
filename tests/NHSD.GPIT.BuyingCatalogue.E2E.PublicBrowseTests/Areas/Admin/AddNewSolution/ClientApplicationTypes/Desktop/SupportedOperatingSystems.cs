@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using FluentAssertions;
 using Microsoft.EntityFrameworkCore;
+using NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.Objects.Admin;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Utils;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.TestBases;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
@@ -55,18 +56,19 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.AddNewSolution.ClientAp
         }
 
         [Fact]
-        public void SupportedOperatingSystems_ErrorThrownMissingMandatory()
+        public void SupportedOperatingSystems_MissingMandatory_ErrorThrown()
         {
             CommonActions.ClickSave();
+
+            CommonActions.PageLoadedCorrectGetIndex(
+                typeof(DesktopBasedController),
+                nameof(DesktopBasedController.OperatingSystems))
+                .Should().BeTrue();
 
             CommonActions.ErrorSummaryDisplayed().Should().BeTrue();
             CommonActions.ErrorSummaryLinksExist().Should().BeTrue();
 
-            CommonActions.ElementShowingCorrectErrorMessage(
-                "Description",
-                "Enter supported operating systems information")
-                .Should()
-                .BeTrue();
+            CommonActions.ElementIsDisplayed(DesktopApplicationObjects.OperatingSystemsDescriptionError).Should().BeTrue();
         }
 
         [Fact]

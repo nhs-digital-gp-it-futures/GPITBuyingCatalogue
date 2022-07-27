@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using FluentAssertions;
 using Microsoft.EntityFrameworkCore;
+using NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.Objects.Admin;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Utils;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.TestBases;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
@@ -65,25 +66,21 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.AddNewSolution.ClientAp
         }
 
         [Fact]
-        public void MemoryAndStorage_ErrorThrownMissingMandatory()
+        public void MemoryAndStorage_MissingMandatory_ErrorsThrown()
         {
             CommonActions.ClickSave();
+
+            CommonActions.PageLoadedCorrectGetIndex(
+                typeof(DesktopBasedController),
+                nameof(DesktopBasedController.MemoryAndStorage))
+                .Should().BeTrue();
 
             CommonActions.ErrorSummaryDisplayed().Should().BeTrue();
             CommonActions.ErrorSummaryLinksExist().Should().BeTrue();
 
-            Dictionary<string, string> expectedErrors = new()
-            {
-                { "SelectedMemorySize", "Select a minimum memory size" },
-                { "StorageSpace", "Enter storage space information" },
-                { "ProcessingPower", "Enter processing power information" },
-            };
-
-            expectedErrors.All(s => CommonActions.ElementShowingCorrectErrorMessage(
-                s.Key,
-                s.Value))
-                .Should()
-                .BeTrue();
+            CommonActions.ElementIsDisplayed(DesktopApplicationObjects.MemorySizeError).Should().BeTrue();
+            CommonActions.ElementIsDisplayed(DesktopApplicationObjects.StorageSpaceError).Should().BeTrue();
+            CommonActions.ElementIsDisplayed(DesktopApplicationObjects.ProcessingPowerError).Should().BeTrue();
         }
 
         [Fact]

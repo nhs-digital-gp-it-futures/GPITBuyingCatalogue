@@ -33,5 +33,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.Objects.Marketing
         public static By StorageDescriptionTextArea => By.Id("StorageDescription");
 
         public static By MinimumCpuTextArea => By.Id("MinimumCpu");
+
+        public static By PluginsOrExtensionsError => By.Id("plug-ins-or-extensions-error");
     }
 }
