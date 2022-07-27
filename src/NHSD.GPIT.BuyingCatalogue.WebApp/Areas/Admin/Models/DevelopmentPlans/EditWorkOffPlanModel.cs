@@ -45,12 +45,12 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.DevelopmentPlans
 
         public CatalogueItemId SolutionId { get; init; }
 
-        public string SelectedStandard { get; init; }
+        public string SelectedStandard { get; set; }
 
         public IList<Standard> Standards { get; set; }
 
         [StringLength(300)]
-        public string Details { get; init; }
+        public string Details { get; set; }
 
         public string Day { get; set; }
 
