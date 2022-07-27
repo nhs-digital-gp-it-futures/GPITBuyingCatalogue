@@ -98,6 +98,7 @@
     <Folder Include="Ordering\TemporalTables" />
     <Folder Include="Users\TemporalTables" />
     <Folder Include="PostDeployment\OrderSeedData" />
+    <Folder Include="PostDeployment\" />
   </ItemGroup>
   <ItemGroup>
     <Build Include="Security\Users\NHSD.sql" />
@@ -248,22 +249,14 @@
     <Build Include="Ordering\Tables\OrderItemFundingTypes.sql" />
     <Build Include="Catalogue\Tables\CataloguePriceTiers.sql" />
     <Build Include="Catalogue\TemporalTables\CataloguePriceTiers_History.sql" />
-    <Build Include="Ordering\Tables\Contracts.sql" />
-    <Build Include="Ordering\TemporalTables\Contracts_History.sql" />
-    <Build Include="Ordering\Tables\ContractBillingItems.sql" />
     <Build Include="Ordering\Tables\ImplementationPlans.sql" />
     <Build Include="Ordering\TemporalTables\ImplementationPlans_HIstory.sql" />
-    <Build Include="Ordering\TemporalTables\ContractBillingItems_History.sql" />
     <Build Include="Ordering\Tables\ImplementationPlanMilestones.sql" />
     <Build Include="Ordering\TemporalTables\ImplementationPlanMilestones_History.sql" />
     <Build Include="Ordering\Tables\ImplementationPlanAcceptanceCriteria.sql" />
     <Build Include="Ordering\TemporalTables\ImplementationPlanAcceptanceCriteria_History.sql" />
-    <Build Include="Ordering\Tables\DataProcessingPlans.sql" />
-    <Build Include="Ordering\TemporalTables\DataProcessingPlans_History.sql" />
-    <Build Include="Ordering\Tables\DataProcessingPlanSteps.sql" />
-    <Build Include="Ordering\Tables\DataProcessingPlanCategories.sql" />
-    <Build Include="Ordering\TemporalTables\DataProcessingPlanCategories_History.sql" />
-    <Build Include="Ordering\TemporalTables\DataProcessingPlanSteps_History.sql" />
+    <Build Include="Ordering\Tables\ContractFlags.sql" />
+    <Build Include="Ordering\TemporalTables\ContractFlags_History.sql" />
   </ItemGroup>
   <ItemGroup>
     <SqlCmdVariable Include="CREATE_EA_USER">
@@ -367,7 +360,6 @@
     </ArtifactReference>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="PostDeployment\InsertDefaultDataProcessingPlan.sql" />
     <Content Include="PostDeployment\InsertOrderTriageValues.sql" />
   </ItemGroup>
   <PropertyGroup>

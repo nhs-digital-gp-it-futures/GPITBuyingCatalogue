@@ -202,7 +202,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.TaskList
                 return null;
             }
 
-            var contract = await dbContext.Contracts.FirstOrDefaultAsync(x => x.OrderId == order.Id);
+            var contract = await dbContext.ContractFlags.SingleOrDefaultAsync(x => x.OrderId == orderId);
 
             return new OrderTaskListCompletedSections
             {
@@ -215,8 +215,8 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.TaskList
                 HasAssociatedServices = order.OrderItems.Any(oi => oi.CatalogueItem.CatalogueItemType is CatalogueItemType.AssociatedService),
                 FundingInProgress = order.OrderItems.Any(oi => oi.OrderItemFunding != null),
                 FundingCompleted = order.OrderItems.All(oi => oi.OrderItemFunding != null),
-                HasImplementationPlan = contract?.ImplementationPlanId != null,
-                DataProcessingPlanCompleted = contract?.DataProcessingPlanId != null,
+                HasImplementationPlan = contract?.UseDefaultImplementationPlan != null,
+                DataProcessingPlanCompleted = contract?.UseDefaultDataProcessing != null,
                 OrderCompleted = order.Completed != null,
             };
         }

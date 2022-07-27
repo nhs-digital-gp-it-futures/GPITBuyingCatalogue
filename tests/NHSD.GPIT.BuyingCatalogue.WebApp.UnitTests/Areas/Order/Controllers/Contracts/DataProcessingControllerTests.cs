@@ -10,7 +10,6 @@ using Moq;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Contracts;
-using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Orders.Contracts;
 using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.AutoFixtureCustomisations;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers.Contracts;
@@ -36,7 +35,7 @@ public class DataProcessingControllerTests
     public static async Task Get_ReturnsViewWithModel(
         string internalOrgId,
         CallOffId callOffId,
-        Contract contract,
+        ContractFlags contract,
         [Frozen] Mock<IContractsService> service,
         DataProcessingPlanController controller)
     {
@@ -45,7 +44,7 @@ public class DataProcessingControllerTests
 
         var result = (await controller.Index(internalOrgId, callOffId)).As<ViewResult>();
 
-        var expectedModel = new DataProcessingPlanModel(contract.DataProcessingPlan)
+        var expectedModel = new DataProcessingPlanModel(contract)
         {
             CallOffId = callOffId,
         };
@@ -59,18 +58,16 @@ public class DataProcessingControllerTests
     public static async Task Get_ExistingDataProcessing_ReturnsViewWithModel(
         string internalOrgId,
         CallOffId callOffId,
-        Contract contract,
-        DataProcessingPlan dataProcessingPlan,
+        ContractFlags contract,
         [Frozen] Mock<IContractsService> service,
         DataProcessingPlanController controller)
     {
-        dataProcessingPlan.IsDefault = true;
-        contract.DataProcessingPlan = dataProcessingPlan;
+        contract.UseDefaultDataProcessing = false;
 
         service.Setup(s => s.GetContract(callOffId.Id))
             .ReturnsAsync(contract);
 
-        var expectedModel = new DataProcessingPlanModel(contract.DataProcessingPlan)
+        var expectedModel = new DataProcessingPlanModel(contract)
         {
             CallOffId = callOffId,
         };
@@ -102,29 +99,19 @@ public class DataProcessingControllerTests
     public static async Task Post_UseDefaultPlan_SetsDefaultPlan(
         string internalOrgId,
         CallOffId callOffId,
-        Contract contract,
-        DataProcessingPlan plan,
         DataProcessingPlanModel model,
-        [Frozen] Mock<IDataProcessingPlanService> dataProcessingService,
         [Frozen] Mock<IContractsService> contractsService,
         DataProcessingPlanController controller)
     {
-        contract.DataProcessingPlanId = null;
         model.UseDefaultDataProcessing = true;
 
-        contractsService.Setup(s => s.GetContract(callOffId.Id))
-            .ReturnsAsync(contract);
-
-        dataProcessingService.Setup(s => s.GetDefaultDataProcessingPlan())
-            .ReturnsAsync(plan);
+        contractsService
+            .Setup(x => x.UseDefaultDataProcessing(callOffId.Id, true))
+            .Verifiable();
 
         var result = (await controller.Index(internalOrgId, callOffId, model)).As<RedirectToActionResult>();
 
-        dataProcessingService.Verify(
-            s => s.GetDefaultDataProcessingPlan());
-
-        contractsService.Verify(
-            s => s.SetDataProcessingPlanId(callOffId.Id, plan.Id));
+        contractsService.VerifyAll();
 
         result.Should().NotBeNull();
         result.ActionName.Should().Be(nameof(OrderController.Order));
@@ -141,29 +128,19 @@ public class DataProcessingControllerTests
     public static async Task Post_UseCustomPlan_SetsPlan(
         string internalOrgId,
         CallOffId callOffId,
-        Contract contract,
-        DataProcessingPlan plan,
         DataProcessingPlanModel model,
-        [Frozen] Mock<IDataProcessingPlanService> dataProcessingService,
         [Frozen] Mock<IContractsService> contractsService,
         DataProcessingPlanController controller)
     {
-        contract.DataProcessingPlanId = null;
         model.UseDefaultDataProcessing = false;
 
-        contractsService.Setup(s => s.GetContract(callOffId.Id))
-            .ReturnsAsync(contract);
-
-        dataProcessingService.Setup(s => s.CreateDataProcessingPlan())
-            .ReturnsAsync(plan);
+        contractsService
+            .Setup(x => x.UseDefaultDataProcessing(callOffId.Id, false))
+            .Verifiable();
 
         var result = (await controller.Index(internalOrgId, callOffId, model)).As<RedirectToActionResult>();
 
-        dataProcessingService.Verify(
-            s => s.CreateDataProcessingPlan());
-
-        contractsService.Verify(
-            s => s.SetDataProcessingPlanId(callOffId.Id, plan.Id));
+        contractsService.VerifyAll();
 
         result.Should().NotBeNull();
         result.ActionName.Should().Be(nameof(DataProcessingPlanController.BespokeDataProcessingPlan));

@@ -52,11 +52,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers.Contracts
             }
 
             var order = await orderService.GetOrderThin(callOffId, internalOrgId);
-            var defaultPlan = await implementationPlanService.GetDefaultImplementationPlan();
 
             if (model.UseDefaultMilestones!.Value)
             {
-                await contractsService.SetImplementationPlanId(order.Id, defaultPlan?.Id);
+                await contractsService.UseDefaultImplementationPlan(order.Id, true);
 
                 return new RedirectToActionResult(
                     nameof(OrderController.Order),
@@ -64,15 +63,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers.Contracts
                     new { internalOrgId, callOffId });
             }
 
-            var contract = await contractsService.GetContract(order.Id);
-
-            if (contract.ImplementationPlanId == null
-                || contract.ImplementationPlanId == defaultPlan?.Id)
-            {
-                var plan = await implementationPlanService.CreateImplementationPlan();
-
-                await contractsService.SetImplementationPlanId(order.Id, plan.Id);
-            }
+            await contractsService.UseDefaultImplementationPlan(order.Id, false);
 
             return new RedirectToActionResult(
                 nameof(CustomImplementationPlan),
@@ -103,10 +94,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers.Contracts
             var catalogueItem = await solutionsService.GetSolutionThin(order.GetSolutionId().GetValueOrDefault());
             var defaultPlan = await implementationPlanService.GetDefaultImplementationPlan();
 
-            var selected = contract?.ImplementationPlan == null
-                ? (bool?)null
-                : contract.ImplementationPlan.Id == defaultPlan.Id;
-
             return new DefaultImplementationPlanModel
             {
                 BackLink = Url.Action(
@@ -116,7 +103,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers.Contracts
                 CallOffId = callOffId,
                 Solution = catalogueItem?.Solution,
                 Plan = defaultPlan,
-                UseDefaultMilestones = selected,
+                UseDefaultMilestones = contract?.UseDefaultImplementationPlan,
             };
         }
     }
