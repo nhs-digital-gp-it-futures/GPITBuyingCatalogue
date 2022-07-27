@@ -10,6 +10,16 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Validators.DevelopmentPla
 {
     public sealed class EditWorkOffPlanValidator : AbstractValidator<EditWorkOffPlanModel>
     {
+        public const string NoStandardSelectedError = "Select a Standard";
+        public const string NoDetailsError = "Enter Work-off Plan item details";
+        public const string NoDateDayError = "Agreed completion date must include a day";
+        public const string NoDateMonthError = "Agreed completion date must include a month";
+        public const string NoDateYearError = "Agreed completion date must include a year";
+        public const string DateErrorYearSize = "Year must be four numbers";
+        public const string DateIncorrectFormatError = "Enter an agreed completion date in a valid format";
+        public const string DuplicateWorkOffPlanError = "A Work-Off Plan with these details already exists";
+        public const string DateInPastError = "Agreed completion date must be in the future or within the last 12 weeks";
+
         private readonly IDevelopmentPlansService developmentPlansService;
 
         public EditWorkOffPlanValidator(IDevelopmentPlansService developmentPlansService)
@@ -19,32 +29,49 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Validators.DevelopmentPla
 
             RuleFor(wp => wp.SelectedStandard)
                 .NotEmpty()
-                .WithMessage("Select a Standard");
+                .WithMessage(NoStandardSelectedError);
 
             RuleFor(wp => wp.Details)
                 .NotEmpty()
-                .WithMessage("Enter Work-off Plan item details");
+                .WithMessage(NoDetailsError);
 
             RuleFor(wp => wp.Day)
                 .NotEmpty()
-                .WithMessage("Agreed completion date must include a day");
+                .WithMessage(NoDateDayError)
+                .Must(d =>
+                {
+                    if (int.TryParse(d, out int value))
+                        return int.Parse(d) <= 31;
+                    else
+                        return false;
+                })
+                .WithMessage(DateIncorrectFormatError);
 
             RuleFor(wp => wp.Month)
                 .NotEmpty()
                 .Unless(wp => string.IsNullOrWhiteSpace(wp.Day))
                 .OverridePropertyName(wp => wp.Day)
-                .WithMessage("Agreed completion date must include a month");
+                .WithMessage(NoDateMonthError)
+                .Must(m =>
+                {
+                    if (int.TryParse(m, out int value))
+                        return int.Parse(m) <= 12;
+                    else
+                        return false;
+                })
+                .Unless(wp => int.TryParse(wp.Day, out int value))
+                .OverridePropertyName(wp => wp.Day)
+                .WithMessage(DateIncorrectFormatError);
 
             RuleFor(wp => wp.Year)
                 .NotEmpty()
                 .Unless(wp => string.IsNullOrWhiteSpace(wp.Month))
                 .OverridePropertyName(wp => wp.Day)
-                .WithMessage("Agreed completion date must include a year");
-
-            RuleFor(wp => wp.Year)
+                .WithMessage(NoDateYearError)
                 .Length(4)
+                .Unless(wp => string.IsNullOrWhiteSpace(wp.Month))
                 .OverridePropertyName(wp => wp.Day)
-                .WithMessage("Year must be four numbers");
+                .WithMessage(DateErrorYearSize);
 
             RuleFor(wp => wp)
                 .Must(IsValidDate)
@@ -53,18 +80,16 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Validators.DevelopmentPla
                     || string.IsNullOrWhiteSpace(wp.Month)
                     || string.IsNullOrWhiteSpace(wp.Year))
                 .OverridePropertyName(wp => wp.Day)
-                .WithMessage("Enter an agreed completion date in a valid format");
-
-            RuleFor(wp => wp)
+                .WithMessage(DateIncorrectFormatError)
                 .Must(NotBeDuplicateWorkOffPlan)
                 .Unless(wp => !IsValidDate(wp))
                 .OverridePropertyName(wp => wp.Details, wp => wp.SelectedStandard)
-                .WithMessage("A Work-Off Plan with these details already exists");
+                .WithMessage(DuplicateWorkOffPlanError);
 
             Transform(wp => wp, wp => ParseDate(wp))
                 .GreaterThanOrEqualTo(DateTime.Today.AddDays(-84))
                 .Unless(wp => !IsValidDate(wp))
-                .WithMessage("Agreed completion date must be in the future or within the last 12 weeks")
+                .WithMessage(DateInPastError)
                 .OverridePropertyName(wp => wp.Day);
         }
 
