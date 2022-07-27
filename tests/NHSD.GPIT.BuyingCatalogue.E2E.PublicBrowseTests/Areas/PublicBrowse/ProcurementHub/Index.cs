@@ -90,11 +90,6 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.PublicBrowse.ProcurementHub
         {
             RunTest(() =>
             {
-                CommonActions.ElementAddValue(ProcurementHubObjects.FullNameInput, string.Empty);
-                CommonActions.ElementAddValue(ProcurementHubObjects.EmailAddressInput, string.Empty);
-                CommonActions.ElementAddValue(ProcurementHubObjects.OrganisationNameInput, string.Empty);
-                CommonActions.ElementAddValue(ProcurementHubObjects.OdsCodeInput, string.Empty);
-
                 CommonActions.ClickSave();
 
                 CommonActions.PageLoadedCorrectGetIndex(
@@ -104,50 +99,12 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.PublicBrowse.ProcurementHub
                 CommonActions.ErrorSummaryDisplayed().Should().BeTrue();
                 CommonActions.ErrorSummaryLinksExist().Should().BeTrue();
 
-                CommonActions.ElementShowingCorrectErrorMessage(
-                    ProcurementHubObjects.FullNameError,
-                    ProcurementHubDetailsModelValidator.FullNameMissingErrorMessage).Should().BeTrue();
-
-                CommonActions.ElementShowingCorrectErrorMessage(
-                    ProcurementHubObjects.EmailAddressError,
-                    ProcurementHubDetailsModelValidator.EmailAddressMissingErrorMessage).Should().BeTrue();
-
-                CommonActions.ElementShowingCorrectErrorMessage(
-                    ProcurementHubObjects.OrganisationNameError,
-                    ProcurementHubDetailsModelValidator.OrganisationNameMissingErrorMessage).Should().BeTrue();
-
-                CommonActions.ElementShowingCorrectErrorMessage(
-                    ProcurementHubObjects.QueryError,
-                    ProcurementHubDetailsModelValidator.QueryMissingErrorMessage).Should().BeTrue();
-
-                CommonActions.ElementShowingCorrectErrorMessage(
-                    ProcurementHubObjects.HasReadPrivacyPolicyError,
-                    $"Error:{ProcurementHubDetailsModelValidator.PrivacyPolicyErrorMessage}").Should().BeTrue();
-            });
-        }
-
-        [Fact]
-        public void Index_InvalidEmailAddress_ThrowsError()
-        {
-            RunTest(() =>
-            {
-                TextGenerators.TextInputAddText(ProcurementHubObjects.FullNameInput, 10);
-                TextGenerators.TextInputAddText(ProcurementHubObjects.EmailAddressInput, 10);
-                TextGenerators.TextInputAddText(ProcurementHubObjects.OrganisationNameInput, 10);
-                CommonActions.ClickCheckboxByLabel(PrivacyPolicyLabelText);
-
-                CommonActions.ClickSave();
-
-                CommonActions.PageLoadedCorrectGetIndex(
-                    typeof(ProcurementHubController),
-                    nameof(ProcurementHubController.Index)).Should().BeTrue();
-
-                CommonActions.ErrorSummaryDisplayed().Should().BeTrue();
-                CommonActions.ErrorSummaryLinksExist().Should().BeTrue();
-
-                CommonActions.ElementShowingCorrectErrorMessage(
-                    ProcurementHubObjects.EmailAddressError,
-                    ProcurementHubDetailsModelValidator.EmailAddressWrongFormatErrorMessage).Should().BeTrue();
+                CommonActions.ElementIsDisplayed(ProcurementHubObjects.FullNameError).Should().BeTrue();
+                CommonActions.ElementIsDisplayed(ProcurementHubObjects.EmailAddressError).Should().BeTrue();
+                CommonActions.ElementIsDisplayed(ProcurementHubObjects.OrganisationNameError).Should().BeTrue();
+                CommonActions.ElementIsDisplayed(ProcurementHubObjects.QueryError).Should().BeTrue();
+                CommonActions.ElementIsDisplayed(ProcurementHubObjects.HasReadPrivacyPolicyError).Should().BeTrue();
+                CommonActions.ElementIsDisplayed(ProcurementHubObjects.EmailAddressError).Should().BeTrue();
             });
         }
 

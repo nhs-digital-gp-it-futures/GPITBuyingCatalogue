@@ -70,51 +70,11 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.PublicBrowse.Registration
                 CommonActions.ErrorSummaryDisplayed().Should().BeTrue();
                 CommonActions.ErrorSummaryLinksExist().Should().BeTrue();
 
-                CommonActions.ElementShowingCorrectErrorMessage(
-                    RegistrationObjects.FullNameError,
-                    RegistrationDetailsModelValidator.FullNameErrorMessage).Should().BeTrue();
-
-                CommonActions.ElementShowingCorrectErrorMessage(
-                    RegistrationObjects.TelephoneNumberError,
-                    RegistrationDetailsModelValidator.TelephoneNumberErrorMessage).Should().BeTrue();
-
-                CommonActions.ElementShowingCorrectErrorMessage(
-                    RegistrationObjects.EmailAddressError,
-                    RegistrationDetailsModelValidator.EmailAddressMissingErrorMessage).Should().BeTrue();
-
-                CommonActions.ElementShowingCorrectErrorMessage(
-                    RegistrationObjects.OrganisationNameError,
-                    RegistrationDetailsModelValidator.OrganisationNameErrorMessage).Should().BeTrue();
-
-                CommonActions.ElementShowingCorrectErrorMessage(
-                    RegistrationObjects.HasReadPrivacyPolicyError,
-                    $"Error:{RegistrationDetailsModelValidator.PrivacyPolicyErrorMessage}").Should().BeTrue();
-            });
-        }
-
-        [Fact]
-        public void Details_InvalidEmailAddress_ThrowsError()
-        {
-            RunTest(() =>
-            {
-                TextGenerators.TextInputAddText(RegistrationObjects.FullNameInput, 10);
-                TextGenerators.TextInputAddText(RegistrationObjects.TelephoneNumberInput, 10);
-                TextGenerators.TextInputAddText(RegistrationObjects.EmailAddressInput, 10);
-                TextGenerators.TextInputAddText(RegistrationObjects.OrganisationNameInput, 10);
-                CommonActions.ClickCheckboxByLabel(PrivacyPolicyLabelText);
-
-                CommonActions.ClickSave();
-
-                CommonActions.PageLoadedCorrectGetIndex(
-                    typeof(RegistrationController),
-                    nameof(RegistrationController.Details)).Should().BeTrue();
-
-                CommonActions.ErrorSummaryDisplayed().Should().BeTrue();
-                CommonActions.ErrorSummaryLinksExist().Should().BeTrue();
-
-                CommonActions.ElementShowingCorrectErrorMessage(
-                    RegistrationObjects.EmailAddressError,
-                    RegistrationDetailsModelValidator.EmailAddressWrongFormatErrorMessage).Should().BeTrue();
+                CommonActions.ElementIsDisplayed(RegistrationObjects.FullNameError).Should().BeTrue();
+                CommonActions.ElementIsDisplayed(RegistrationObjects.TelephoneNumberError).Should().BeTrue();
+                CommonActions.ElementIsDisplayed(RegistrationObjects.EmailAddressError).Should().BeTrue();
+                CommonActions.ElementIsDisplayed(RegistrationObjects.OrganisationNameError).Should().BeTrue();
+                CommonActions.ElementIsDisplayed(RegistrationObjects.HasReadPrivacyPolicyError).Should().BeTrue();
             });
         }
 
