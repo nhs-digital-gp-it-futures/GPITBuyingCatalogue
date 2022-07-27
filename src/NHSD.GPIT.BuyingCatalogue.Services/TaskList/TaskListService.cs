@@ -216,7 +216,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.TaskList
                 FundingInProgress = order.OrderItems.Any(oi => oi.OrderItemFunding != null),
                 FundingCompleted = order.OrderItems.All(oi => oi.OrderItemFunding != null),
                 HasImplementationPlan = contract?.ImplementationPlanId != null,
-                DataProcessingPlanCompleted = contract?.DataProcessingPlan != null,
+                DataProcessingPlanCompleted = contract?.DataProcessingPlanId != null,
                 OrderCompleted = order.Completed != null,
             };
         }

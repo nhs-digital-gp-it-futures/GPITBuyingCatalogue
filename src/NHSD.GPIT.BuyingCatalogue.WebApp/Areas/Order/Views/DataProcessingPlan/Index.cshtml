@@ -11,6 +11,7 @@
                         advice="Make sure you've contacted the supplier and reviewed how they process personal data."
                         caption="Order @Model.CallOffId" />
         <form method="post">
+            <input type="hidden" asp-for="BackLink" />
             <nhs-fieldset-form-label
                 label-text="Do you want to proceed using the supplier's default data processing information?"
                 size="Medium"
@@ -22,7 +23,7 @@
                 </nhs-radio-buttons>
             </nhs-fieldset-form-label>
 
-            <nhs-submit-button />
+            <nhs-submit-button/>
         </form>
     </div>
 </div>
