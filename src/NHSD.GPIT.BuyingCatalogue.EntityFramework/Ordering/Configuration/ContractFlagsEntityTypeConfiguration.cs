@@ -13,6 +13,10 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Configuration
             builder.HasKey(x => x.Id).HasName("PK_ContractFlags");
 
             builder.Property(x => x.OrderId).IsRequired();
+
+            builder.HasOne(x => x.Order)
+                .WithOne(x => x.ContractFlags)
+                .HasForeignKey<ContractFlags>(x => x.OrderId);
         }
     }
 }

@@ -1,6 +1,8 @@
-﻿namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models
+﻿using System;
+
+namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models
 {
-    public class ContractFlags
+    public class ContractFlags : IAudited
     {
         public int Id { get; set; }
 
@@ -13,5 +15,11 @@
         public bool? UseDefaultDataProcessing { get; set; }
 
         public bool? UseDefaultImplementationPlan { get; set; }
+
+        public int? LastUpdatedBy { get; set; }
+
+        public DateTime LastUpdated { get; set; }
+
+        public virtual Order Order { get; set; }
     }
 }

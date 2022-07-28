@@ -186,6 +186,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.TaskList
         private async Task<OrderTaskListCompletedSections> GetOrderSectionFlags(int orderId)
         {
             var order = await dbContext.Orders
+                .Include(x => x.ContractFlags)
                 .Include(x => x.OrderItems).ThenInclude(x => x.CatalogueItem)
                 .Include(x => x.OrderItems).ThenInclude(x => x.OrderItemFunding)
                 .Include(x => x.OrderItems).ThenInclude(x => x.OrderItemPrice)
@@ -202,8 +203,6 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.TaskList
                 return null;
             }
 
-            var contract = await dbContext.ContractFlags.SingleOrDefaultAsync(x => x.OrderId == orderId);
-
             return new OrderTaskListCompletedSections
             {
                 OrderContactDetailsCompleted = order.OrderingPartyContact != null,
@@ -215,8 +214,8 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.TaskList
                 HasAssociatedServices = order.OrderItems.Any(oi => oi.CatalogueItem.CatalogueItemType is CatalogueItemType.AssociatedService),
                 FundingInProgress = order.OrderItems.Any(oi => oi.OrderItemFunding != null),
                 FundingCompleted = order.OrderItems.All(oi => oi.OrderItemFunding != null),
-                HasImplementationPlan = contract?.UseDefaultImplementationPlan != null,
-                DataProcessingPlanCompleted = contract?.UseDefaultDataProcessing != null,
+                HasImplementationPlan = order.ContractFlags?.UseDefaultImplementationPlan != null,
+                DataProcessingPlanCompleted = order.ContractFlags?.UseDefaultDataProcessing != null,
                 OrderCompleted = order.Completed != null,
             };
         }
