@@ -87,9 +87,17 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.AddNewSolution.Interope
         {
             CommonActions.ClickSave();
 
-            CommonActions.ErrorSummaryDisplayed().Should().BeTrue();
+            CommonActions.PageLoadedCorrectGetIndex(
+                typeof(InteroperabilityController),
+                nameof(InteroperabilityController.AddGpConnectIntegration))
+                .Should().BeTrue();
 
+            CommonActions.ErrorSummaryDisplayed().Should().BeTrue();
             CommonActions.ErrorSummaryLinksExist().Should().BeTrue();
+
+            CommonActions.ElementIsDisplayed(InteroperabilityObjects.SelectedIntegrationTypeError).Should().BeTrue();
+            CommonActions.ElementIsDisplayed(InteroperabilityObjects.SelectedProviderOrConsumerError).Should().BeTrue();
+            CommonActions.ElementIsDisplayed(InteroperabilityObjects.AdditionalInformationError).Should().BeTrue();
         }
 
         public void Dispose()

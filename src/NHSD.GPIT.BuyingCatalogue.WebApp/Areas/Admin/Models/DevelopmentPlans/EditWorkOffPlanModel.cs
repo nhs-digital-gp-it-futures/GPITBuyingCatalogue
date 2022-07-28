@@ -41,7 +41,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.DevelopmentPlans
 
         public int? WorkOffPlanId { get; init; }
 
-        public string SolutionName { get; init; }
+        public string SolutionName { get; set; }
 
         public CatalogueItemId SolutionId { get; init; }
 

@@ -37,7 +37,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.Import
         }
 
         [Fact]
-        public void ImportGpPracticeList_NoInput_ThrowsError()
+        public void ImportGpPracticeList_InvalidModelState_ThrowsError()
         {
             CommonActions.ClickSave();
 
@@ -48,28 +48,8 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.Import
             CommonActions.ErrorSummaryDisplayed().Should().BeTrue();
             CommonActions.ErrorSummaryLinksExist().Should().BeTrue();
 
-            CommonActions.ElementShowingCorrectErrorMessage(
-                ImportObjects.CsvUrlError,
-                ImportGpPracticeListModelValidator.CSvUrlErrorMessage).Should().BeTrue();
-        }
-
-        [Fact]
-        public void ImportGpPracticeList_InvalidUrl_ThrowsError()
-        {
-            TextGenerators.TextInputAddText(ImportObjects.CsvUrlInput, 20);
-
-            CommonActions.ClickSave();
-
-            CommonActions.PageLoadedCorrectGetIndex(
-                typeof(ImportController),
-                nameof(ImportController.ImportGpPracticeList)).Should().BeTrue();
-
-            CommonActions.ErrorSummaryDisplayed().Should().BeTrue();
-            CommonActions.ErrorSummaryLinksExist().Should().BeTrue();
-
-            CommonActions.ElementShowingCorrectErrorMessage(
-                ImportObjects.CsvUrlError,
-                FluentValidationExtensions.InvalidUrlPrefixErrorMessage).Should().BeTrue();
+            CommonActions.ElementIsDisplayed(
+                ImportObjects.CsvUrlError).Should().BeTrue();
         }
 
         [Fact]

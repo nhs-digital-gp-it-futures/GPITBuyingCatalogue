@@ -80,40 +80,17 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.ListPrices.Base.Tiered
         }
 
         [Fact]
-        public void Submit_NoInput_ThrowsError()
+        public void Submit_InvalidModelState_ThrowsError()
         {
             CommonActions.ClickSave();
 
             CommonActions.ErrorSummaryDisplayed().Should().BeTrue();
             CommonActions.ErrorSummaryLinksExist().Should().BeTrue();
 
-            CommonActions.ElementShowingCorrectErrorMessage(ListPriceObjects.ProvisioningTypeInputError, "Error: Select a provisioning type").Should().BeTrue();
-            CommonActions.ElementShowingCorrectErrorMessage(ListPriceObjects.CalculationTypeInputError, "Error: Select a calculation type").Should().BeTrue();
-            CommonActions.ElementShowingCorrectErrorMessage(ListPriceObjects.UnitDescriptionInputError, "Enter a unit").Should().BeTrue();
-            CommonActions.ElementShowingCorrectErrorMessage(ListPriceObjects.RangeDefinitionInputError, "Enter a range definition").Should().BeTrue();
-        }
-
-        [Fact]
-        public void Submit_Duplicate_ThrowsError()
-        {
-            var catalogueItem = GetCatalogueItemWithPrices(CatalogueItemId);
-            var price = catalogueItem.CataloguePrices.First(p => p.CataloguePriceType == CataloguePriceType.Tiered);
-
-            CommonActions.ClickRadioButtonWithValue(price.ProvisioningType.ToString());
-            CommonActions.ClickRadioButtonWithValue(price.CataloguePriceCalculationType.ToString());
-
-            CommonActions.ElementAddValue(ListPriceObjects.UnitDescriptionInput, price.PricingUnit.Description);
-            CommonActions.ElementAddValue(ListPriceObjects.RangeDefinitionInput, price.PricingUnit.RangeDescription);
-
-            CommonActions.ClickSave();
-
-            CommonActions.ErrorSummaryDisplayed().Should().BeTrue();
-            CommonActions.ErrorSummaryLinksExist().Should().BeTrue();
-
-            CommonActions.ElementShowingCorrectErrorMessage(ListPriceObjects.ProvisioningTypeInputError, "Error: A list price with these details already exists").Should().BeTrue();
-            CommonActions.ElementShowingCorrectErrorMessage(ListPriceObjects.CalculationTypeInputError, "Error: A list price with these details already exists").Should().BeTrue();
-            CommonActions.ElementShowingCorrectErrorMessage(ListPriceObjects.UnitDescriptionInputError, "A list price with these details already exists").Should().BeTrue();
-            CommonActions.ElementShowingCorrectErrorMessage(ListPriceObjects.RangeDefinitionInputError, "A list price with these details already exists").Should().BeTrue();
+            CommonActions.ElementIsDisplayed(ListPriceObjects.ProvisioningTypeInputError).Should().BeTrue();
+            CommonActions.ElementIsDisplayed(ListPriceObjects.CalculationTypeInputError).Should().BeTrue();
+            CommonActions.ElementIsDisplayed(ListPriceObjects.UnitDescriptionInputError).Should().BeTrue();
+            CommonActions.ElementIsDisplayed(ListPriceObjects.RangeDefinitionInputError).Should().BeTrue();
         }
 
         [Fact]

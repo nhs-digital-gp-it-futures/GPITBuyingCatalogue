@@ -5,19 +5,23 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Validators.Interoperabili
 {
     public class AddEditGpConnectIntegrationValidator : AbstractValidator<AddEditGpConnectIntegrationModel>
     {
+        public const string SelectIntegrationTypeError = "Select integration type";
+        public const string SelectProviderOrConsumerError = "Select if your system is a provider or consumer";
+        public const string AdditionalInformationError = "Enter additional information";
+
         public AddEditGpConnectIntegrationValidator()
         {
             RuleFor(i => i.SelectedIntegrationType)
                 .NotNull()
-                .WithMessage("Select integration type");
+                .WithMessage(SelectIntegrationTypeError);
 
             RuleFor(i => i.SelectedProviderOrConsumer)
                 .NotNull()
-                .WithMessage("Select if your system is a provider or consumer");
+                .WithMessage(SelectProviderOrConsumerError);
 
             RuleFor(i => i.AdditionalInformation)
                 .NotEmpty()
-                .WithMessage("Enter additional information");
+                .WithMessage(AdditionalInformationError);
         }
     }
 }

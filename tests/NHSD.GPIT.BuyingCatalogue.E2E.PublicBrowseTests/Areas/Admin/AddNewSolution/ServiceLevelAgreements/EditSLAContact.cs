@@ -18,11 +18,6 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.AddNewSolution.ServiceL
 {
     public sealed class EditSLAContact : AuthorityTestBase, IClassFixture<LocalWebApplicationFactory>, IDisposable
     {
-        private const string ChannelErrorNoInput = "Enter a contact channel";
-        private const string ContactInformationNoInput = "Enter contact information";
-        private const string FromNoInput = "Error: Enter a from time";
-        private const string DuplicateContact = "A contact with these details already exists";
-
         private const int ContactId = 2;
         private const int ContactSinglePublishedId = 1;
         private static readonly CatalogueItemId SolutionId = new(99998, "002");
@@ -117,7 +112,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.AddNewSolution.ServiceL
         }
 
         [Fact]
-        public void AddSLAContact_NoInput_ErrorThrown()
+        public void AddSLAContact_InvalidModelState_ErrorsThrown()
         {
             CommonActions.ClearInputElement(SLAContactObjects.Channel);
             CommonActions.ClearInputElement(SLAContactObjects.ContactInformation);
@@ -136,108 +131,17 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.AddNewSolution.ServiceL
             CommonActions.ErrorSummaryLinksExist().Should().BeTrue();
 
             CommonActions
-                .ElementShowingCorrectErrorMessage(SLAContactObjects.ChannelError, ChannelErrorNoInput)
+                .ElementIsDisplayed(SLAContactObjects.ChannelError)
                 .Should()
                 .BeTrue();
 
             CommonActions
-                .ElementShowingCorrectErrorMessage(SLAContactObjects.ContactInformationError, ContactInformationNoInput)
+                .ElementIsDisplayed(SLAContactObjects.ContactInformationError)
                 .Should()
                 .BeTrue();
 
             CommonActions
-                .ElementShowingCorrectErrorMessage(SLAContactObjects.TimeInputError, FromNoInput)
-                .Should()
-                .BeTrue();
-        }
-
-        [Fact]
-        public void EditSLAContact_DuplicateContact_ErrorThrown()
-        {
-            using var context = GetEndToEndDbContext();
-            var serviceLevelAgreement = context.ServiceLevelAgreements.Include(p => p.Contacts).First(p => p.SolutionId == SolutionId);
-
-            var contact = new SlaContact()
-            {
-                SolutionId = new CatalogueItemId(99998, "002"),
-                Channel = "This is a Channel 2",
-                ContactInformation = "This is Contact Information 2",
-                TimeFrom = DateTime.UtcNow,
-                TimeUntil = DateTime.UtcNow.AddHours(5),
-            };
-
-            serviceLevelAgreement.Contacts.Add(contact);
-            context.SaveChanges();
-
-            var parameters = new Dictionary<string, string>
-            {
-                { nameof(SolutionId), SolutionId.ToString() },
-                { nameof(ContactId), contact.Id.ToString() },
-            };
-
-            Driver.Navigate().Refresh();
-
-            CommonActions.ElementAddValue(SLAContactObjects.Channel, contact.Channel);
-            CommonActions.ElementAddValue(SLAContactObjects.ContactInformation, contact.ContactInformation);
-
-            CommonActions.ClickSave();
-
-            CommonActions.PageLoadedCorrectGetIndex(
-                typeof(ServiceLevelAgreementsController),
-                nameof(ServiceLevelAgreementsController.EditContact))
-                .Should()
-                .BeTrue();
-
-            CommonActions.ErrorSummaryDisplayed().Should().BeTrue();
-            CommonActions.ErrorSummaryLinksExist().Should().BeTrue();
-
-            CommonActions
-                .ElementShowingCorrectErrorMessage(SLAContactObjects.ChannelError, DuplicateContact)
-                .Should()
-                .BeTrue();
-
-            CommonActions
-                .ElementShowingCorrectErrorMessage(SLAContactObjects.ContactInformationError, DuplicateContact)
-                .Should()
-                .BeTrue();
-        }
-
-        [Fact]
-        public async Task EditSLAContact_DuplicateContactWithApplicableDays_ErrorThrown()
-        {
-            await using var context = GetEndToEndDbContext();
-            var existingContact = await context.SlaContacts.SingleAsync(slac => slac.Id == 3);
-            existingContact.ApplicableDays = "Test";
-
-            await context.SaveChangesAsync();
-
-            CommonActions.ElementAddValue(SLAContactObjects.Channel, existingContact.Channel);
-            CommonActions.ElementAddValue(SLAContactObjects.ContactInformation, existingContact.ContactInformation);
-            CommonActions.ElementAddValue(SLAContactObjects.ApplicableDays, existingContact.ApplicableDays);
-
-            CommonActions.ClickSave();
-
-            CommonActions.PageLoadedCorrectGetIndex(
-                typeof(ServiceLevelAgreementsController),
-                nameof(ServiceLevelAgreementsController.EditContact))
-                .Should()
-                .BeTrue();
-
-            CommonActions.ErrorSummaryDisplayed().Should().BeTrue();
-            CommonActions.ErrorSummaryLinksExist().Should().BeTrue();
-
-            CommonActions
-                .ElementShowingCorrectErrorMessage(SLAContactObjects.ChannelError, DuplicateContact)
-                .Should()
-                .BeTrue();
-
-            CommonActions
-                .ElementShowingCorrectErrorMessage(SLAContactObjects.ContactInformationError, DuplicateContact)
-                .Should()
-                .BeTrue();
-
-            CommonActions
-                .ElementShowingCorrectErrorMessage(SLAContactObjects.ApplicableDaysError, DuplicateContact)
+                .ElementIsDisplayed(SLAContactObjects.TimeInputError)
                 .Should()
                 .BeTrue();
         }

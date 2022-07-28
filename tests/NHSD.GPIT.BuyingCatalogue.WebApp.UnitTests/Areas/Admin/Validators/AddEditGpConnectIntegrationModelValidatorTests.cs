@@ -37,7 +37,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators
             var result = validator.TestValidate(model);
 
             result.ShouldHaveValidationErrorFor(m => m.SelectedIntegrationType)
-                .WithErrorMessage("Select integration type");
+                .WithErrorMessage(AddEditGpConnectIntegrationValidator.SelectIntegrationTypeError);
         }
 
         [Theory]
@@ -53,7 +53,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators
             var result = validator.TestValidate(model);
 
             result.ShouldHaveValidationErrorFor(m => m.SelectedProviderOrConsumer)
-                .WithErrorMessage("Select if your system is a provider or consumer");
+                .WithErrorMessage(AddEditGpConnectIntegrationValidator.SelectProviderOrConsumerError);
         }
 
         [Theory]
@@ -69,7 +69,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators
             var result = validator.TestValidate(model);
 
             result.ShouldHaveValidationErrorFor(m => m.AdditionalInformation)
-                .WithErrorMessage("Enter additional information");
+                .WithErrorMessage(AddEditGpConnectIntegrationValidator.AdditionalInformationError);
         }
     }
 }
