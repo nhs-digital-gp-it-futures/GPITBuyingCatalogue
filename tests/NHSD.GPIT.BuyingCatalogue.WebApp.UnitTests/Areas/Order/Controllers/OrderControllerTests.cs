@@ -17,11 +17,9 @@ using NHSD.GPIT.BuyingCatalogue.EntityFramework.Organisations.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Users.Models;
 using NHSD.GPIT.BuyingCatalogue.Framework.Constants;
 using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
-using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Models.TaskList;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Orders;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Organisations;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Pdf;
-using NHSD.GPIT.BuyingCatalogue.ServiceContracts.TaskList;
 using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.AutoFixtureCustomisations;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.Order;
@@ -49,19 +47,16 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers
             string internalOrgId,
             EntityFramework.Ordering.Models.Order order,
             AspNetUser aspNetUser,
-            OrderTaskList orderTaskList,
             [Frozen] Mock<IOrderService> orderServiceMock,
-            [Frozen] Mock<ITaskListService> taskListServiceMock,
             OrderController controller)
         {
             order.LastUpdatedByUser = aspNetUser;
             order.OrderStatus = OrderStatus.InProgress;
 
+            var orderTaskList = new OrderTaskList(order);
             var expectedViewData = new OrderModel(internalOrgId, order, orderTaskList) { DescriptionUrl = "testUrl" };
 
-            orderServiceMock.Setup(s => s.GetOrderThin(order.CallOffId, internalOrgId)).ReturnsAsync(order);
-
-            taskListServiceMock.Setup(s => s.GetTaskListStatusModelForOrder(order.Id)).ReturnsAsync(orderTaskList);
+            orderServiceMock.Setup(s => s.GetOrderForTaskListStatuses(order.CallOffId, internalOrgId)).ReturnsAsync(order);
 
             var actualResult = await controller.Order(internalOrgId, order.CallOffId);
 
@@ -79,7 +74,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers
         {
             order.OrderStatus = OrderStatus.Completed;
 
-            orderServiceMock.Setup(s => s.GetOrderThin(order.CallOffId, internalOrgId)).ReturnsAsync(order);
+            orderServiceMock.Setup(s => s.GetOrderForTaskListStatuses(order.CallOffId, internalOrgId)).ReturnsAsync(order);
 
             var actualResult = await controller.Order(internalOrgId, order.CallOffId);
 

@@ -164,6 +164,28 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
             return output;
         }
 
+        public async Task<Order> GetOrderForTaskListStatuses(CallOffId callOffId, string internalOrgId)
+        {
+            var order = await dbContext.Orders
+                .Include(x => x.ContractFlags)
+                .Include(x => x.LastUpdatedByUser)
+                .Include(x => x.OrderItems).ThenInclude(x => x.CatalogueItem)
+                .Include(x => x.OrderItems).ThenInclude(x => x.OrderItemFunding)
+                .Include(x => x.OrderItems).ThenInclude(x => x.OrderItemPrice)
+                .Include(x => x.OrderItems).ThenInclude(x => x.OrderItemRecipients)
+                .Include(x => x.OrderingPartyContact)
+                .Include(x => x.OrderingParty)
+                .Include(x => x.Supplier)
+                .Include(x => x.SupplierContact)
+                .AsSplitQuery()
+                .AsNoTracking()
+                .SingleOrDefaultAsync(x =>
+                    x.Id == callOffId.Id
+                    && x.OrderingParty.InternalIdentifier == internalOrgId);
+
+            return order;
+        }
+
         public async Task<PagedList<Order>> GetPagedOrders(int organisationId, PageOptions options, string search = null)
         {
             options ??= new PageOptions();
