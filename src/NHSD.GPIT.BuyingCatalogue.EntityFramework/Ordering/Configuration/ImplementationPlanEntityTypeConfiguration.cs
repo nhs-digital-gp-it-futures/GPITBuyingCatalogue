@@ -13,10 +13,6 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Configuration
             builder.HasKey(x => x.Id).HasName("PK_ImplementationPlans");
 
             builder.Property(x => x.IsDefault).IsRequired();
-
-            builder.HasMany(x => x.Contracts)
-                .WithOne(x => x.ImplementationPlan)
-                .HasForeignKey(x => x.ImplementationPlanId);
         }
     }
 }

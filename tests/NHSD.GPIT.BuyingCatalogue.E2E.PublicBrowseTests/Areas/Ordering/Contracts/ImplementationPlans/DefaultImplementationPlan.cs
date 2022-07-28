@@ -68,12 +68,9 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering.Contracts.Implementa
                 typeof(OrderController),
                 nameof(OrderController.Order)).Should().BeTrue();
 
-            var context = GetEndToEndDbContext();
+            var flags = GetEndToEndDbContext().ContractFlags.Single(x => x.OrderId == OrderId);
 
-            var defaultPlan = context.ImplementationPlans.Single(x => x.IsDefault);
-            var contract = context.Contracts.Single(x => x.OrderId == OrderId);
-
-            contract.ImplementationPlanId.Should().Be(defaultPlan.Id);
+            flags.UseDefaultImplementationPlan.Should().BeTrue();
         }
 
         [Fact]
@@ -86,23 +83,19 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering.Contracts.Implementa
                 typeof(ImplementationPlanController),
                 nameof(ImplementationPlanController.CustomImplementationPlan)).Should().BeTrue();
 
-            var context = GetEndToEndDbContext();
+            var flags = GetEndToEndDbContext().ContractFlags.Single(x => x.OrderId == OrderId);
 
-            var defaultPlan = context.ImplementationPlans.Single(x => x.IsDefault);
-            var contract = context.Contracts.Single(x => x.OrderId == OrderId);
-
-            contract.ImplementationPlanId.Should().NotBeNull();
-            contract.ImplementationPlanId.Should().NotBe(defaultPlan.Id);
+            flags.UseDefaultImplementationPlan.Should().BeFalse();
         }
 
         public void Dispose()
         {
             var context = GetEndToEndDbContext();
-            var contract = context.Contracts.FirstOrDefault(x => x.OrderId == OrderId);
+            var contract = context.ContractFlags.FirstOrDefault(x => x.OrderId == OrderId);
 
             if (contract != null)
             {
-                context.Contracts.Remove(contract);
+                context.ContractFlags.Remove(contract);
             }
 
             context.SaveChanges();

@@ -111,15 +111,7 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework
 
         public DbSet<OrderItemPriceTier> OrderItemPriceTiers { get; set; }
 
-        public DbSet<Contract> Contracts { get; set; }
-
-        public DbSet<ContractBillingItem> ContractBillingItems { get; set; }
-
-        public DbSet<DataProcessingPlan> DataProcessingPlans { get; set; }
-
-        public DbSet<DataProcessingPlanStep> DataProcessingPlanSteps { get; set; }
-
-        public DbSet<DataProcessingPlanCategory> DataProcessingPlanCategories { get; set; }
+        public DbSet<ContractFlags> ContractFlags { get; set; }
 
         public DbSet<ImplementationPlan> ImplementationPlans { get; set; }
 

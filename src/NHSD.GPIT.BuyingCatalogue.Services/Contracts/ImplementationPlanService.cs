@@ -16,20 +16,6 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Contracts
             this.dbContext = dbContext ?? throw new ArgumentNullException(nameof(dbContext));
         }
 
-        public async Task<ImplementationPlan> CreateImplementationPlan()
-        {
-            var plan = new ImplementationPlan
-            {
-                IsDefault = false,
-            };
-
-            dbContext.ImplementationPlans.Add(plan);
-
-            await dbContext.SaveChangesAsync();
-
-            return plan;
-        }
-
         public async Task<ImplementationPlan> GetDefaultImplementationPlan()
         {
             return await dbContext.ImplementationPlans

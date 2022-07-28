@@ -5,7 +5,7 @@ using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 
 namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models
 {
-    public sealed partial class Order
+    public partial class Order
     {
         private readonly List<ServiceInstanceItem> serviceInstanceItems = new();
 

@@ -26,19 +26,6 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Contracts
 
         [Theory]
         [InMemoryDbAutoData]
-        public static async Task CreateImplementationPlan_CreatesNewImplementationPlan(
-            [Frozen] BuyingCatalogueDbContext dbContext,
-            ImplementationPlanService service)
-        {
-            dbContext.ImplementationPlans.Should().BeEmpty();
-
-            var plan = await service.CreateImplementationPlan();
-
-            dbContext.ImplementationPlans.Should().BeEquivalentTo(new[] { plan });
-        }
-
-        [Theory]
-        [InMemoryDbAutoData]
         public static async Task GetDefaultImplementationPlan_NoPlanExists_ReturnsNull(
             ImplementationPlanService service)
         {

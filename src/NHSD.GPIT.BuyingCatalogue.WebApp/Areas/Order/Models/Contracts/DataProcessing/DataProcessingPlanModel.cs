@@ -6,19 +6,15 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.Contracts.DataProc
 
 public class DataProcessingPlanModel : NavBaseModel
 {
-    public const string NoOptionText =
-        "No, I've agreed variations to the default data processing information with the supplier";
+    public const string NoOptionText = "No, I've agreed variations to the default data processing information with the supplier";
 
     public DataProcessingPlanModel()
     {
     }
 
-    public DataProcessingPlanModel(DataProcessingPlan plan)
+    public DataProcessingPlanModel(ContractFlags contract)
     {
-        if (plan != null)
-        {
-            UseDefaultDataProcessing = plan.IsDefault;
-        }
+        UseDefaultDataProcessing = contract?.UseDefaultDataProcessing;
     }
 
     public CallOffId CallOffId { get; set; }

@@ -16,53 +16,73 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Contracts
             this.dbContext = dbContext ?? throw new ArgumentNullException(nameof(dbContext));
         }
 
-        public async Task<Contract> GetContract(int orderId)
+        public async Task<ContractFlags> GetContract(int orderId)
         {
-            var output = await dbContext.Contracts
-                .Include(x => x.BillingItems)
-                .Include(x => x.ImplementationPlan).ThenInclude(x => x.Milestones).ThenInclude(x => x.AcceptanceCriteria)
-                .Include(x => x.DataProcessingPlan).ThenInclude(x => x.Steps).ThenInclude(x => x.Category)
-                .AsNoTracking()
-                .AsSplitQuery()
-                .SingleOrDefaultAsync(x => x.OrderId == orderId);
+            var output = await dbContext.ContractFlags.SingleOrDefaultAsync(x => x.OrderId == orderId);
 
-            if (output != null) return output;
+            if (output != null)
+            {
+                return output;
+            }
 
-            output = new Contract { OrderId = orderId };
+            output = new ContractFlags
+            {
+                OrderId = orderId,
+            };
 
-            dbContext.Contracts.Add(output);
+            dbContext.ContractFlags.Add(output);
 
             await dbContext.SaveChangesAsync();
 
             return output;
         }
 
-        public async Task SetImplementationPlanId(int orderId, int? implementationPlanId)
+        public async Task HasSpecificRequirements(int orderId, bool value)
         {
-            var contract = await dbContext.Contracts.SingleOrDefaultAsync(x => x.OrderId == orderId);
+            var flags = await dbContext.ContractFlags.SingleOrDefaultAsync(x => x.OrderId == orderId);
 
-            if (contract == null)
+            if (flags != null)
             {
-                return;
+                flags.HasSpecificRequirements = value;
+
+                await dbContext.SaveChangesAsync();
             }
-
-            contract.ImplementationPlanId = implementationPlanId;
-
-            await dbContext.SaveChangesAsync();
         }
 
-        public async Task SetDataProcessingPlanId(int orderId, int? dataProcessingPlanId)
+        public async Task UseDefaultBilling(int orderId, bool value)
         {
-            var contract = await dbContext.Contracts.SingleOrDefaultAsync(x => x.OrderId == orderId);
+            var flags = await dbContext.ContractFlags.SingleOrDefaultAsync(x => x.OrderId == orderId);
 
-            if (contract == null)
+            if (flags != null)
             {
-                return;
+                flags.UseDefaultBilling = value;
+
+                await dbContext.SaveChangesAsync();
             }
+        }
 
-            contract.DataProcessingPlanId = dataProcessingPlanId;
+        public async Task UseDefaultDataProcessing(int orderId, bool value)
+        {
+            var flags = await dbContext.ContractFlags.SingleOrDefaultAsync(x => x.OrderId == orderId);
 
-            await dbContext.SaveChangesAsync();
+            if (flags != null)
+            {
+                flags.UseDefaultDataProcessing = value;
+
+                await dbContext.SaveChangesAsync();
+            }
+        }
+
+        public async Task UseDefaultImplementationPlan(int orderId, bool value)
+        {
+            var flags = await dbContext.ContractFlags.SingleOrDefaultAsync(x => x.OrderId == orderId);
+
+            if (flags != null)
+            {
+                flags.UseDefaultImplementationPlan = value;
+
+                await dbContext.SaveChangesAsync();
+            }
         }
     }
 }

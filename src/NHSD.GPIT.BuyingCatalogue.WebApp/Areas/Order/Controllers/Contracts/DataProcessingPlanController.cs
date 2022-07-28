@@ -5,7 +5,6 @@ using Microsoft.AspNetCore.Mvc;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Contracts;
-using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Orders.Contracts;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.Contracts.DataProcessing;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers.Contracts
@@ -15,17 +14,11 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers.Contracts
     [Route("order/organisation/{internalOrgId}/order/{callOffId}/data-processing-plan")]
     public class DataProcessingPlanController : Controller
     {
-        private readonly IDataProcessingPlanService dataProcessingPlanService;
         private readonly IContractsService contractsService;
 
-        public DataProcessingPlanController(
-            IDataProcessingPlanService dataProcessingPlanService,
-            IContractsService contractsService)
+        public DataProcessingPlanController(IContractsService contractsService)
         {
-            this.dataProcessingPlanService = dataProcessingPlanService
-                ?? throw new ArgumentNullException(nameof(dataProcessingPlanService));
-            this.contractsService = contractsService
-                ?? throw new ArgumentNullException(nameof(contractsService));
+            this.contractsService = contractsService ?? throw new ArgumentNullException(nameof(contractsService));
         }
 
         [HttpGet("default")]
@@ -35,7 +28,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers.Contracts
         {
             var contract = await contractsService.GetContract(callOffId.Id);
 
-            var model = new DataProcessingPlanModel(contract.DataProcessingPlan)
+            var model = new DataProcessingPlanModel(contract)
             {
                 CallOffId = callOffId,
                 BackLink = Url.Action(
@@ -58,10 +51,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers.Contracts
                 return View(model);
             }
 
-            var defaultPlan = await dataProcessingPlanService.GetDefaultDataProcessingPlan();
             if (model.UseDefaultDataProcessing!.Value)
             {
-                await contractsService.SetDataProcessingPlanId(callOffId.Id, defaultPlan.Id);
+                await contractsService.UseDefaultDataProcessing(callOffId.Id, true);
 
                 return RedirectToAction(
                     nameof(OrderController.Order),
@@ -69,14 +61,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers.Contracts
                     new { internalOrgId, callOffId });
             }
 
-            var contract = await contractsService.GetContract(callOffId.Id);
-            if (contract.DataProcessingPlanId == null
-                || contract.DataProcessingPlanId == defaultPlan?.Id)
-            {
-                var dataProcessingPlan = await dataProcessingPlanService.CreateDataProcessingPlan();
-
-                await contractsService.SetDataProcessingPlanId(callOffId.Id, dataProcessingPlan.Id);
-            }
+            await contractsService.UseDefaultDataProcessing(callOffId.Id, false);
 
             return RedirectToAction(
                 nameof(BespokeDataProcessingPlan),

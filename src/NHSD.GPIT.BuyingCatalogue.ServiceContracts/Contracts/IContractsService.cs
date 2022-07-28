@@ -5,10 +5,14 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.Contracts
 {
     public interface IContractsService
     {
-        Task<Contract> GetContract(int orderId);
+        Task<ContractFlags> GetContract(int orderId);
 
-        Task SetImplementationPlanId(int orderId, int? implementationPlanId);
+        Task HasSpecificRequirements(int orderId, bool value);
 
-        Task SetDataProcessingPlanId(int orderId, int? dataProcessingPlanId);
+        Task UseDefaultBilling(int orderId, bool value);
+
+        Task UseDefaultDataProcessing(int orderId, bool value);
+
+        Task UseDefaultImplementationPlan(int orderId, bool value);
     }
 }
