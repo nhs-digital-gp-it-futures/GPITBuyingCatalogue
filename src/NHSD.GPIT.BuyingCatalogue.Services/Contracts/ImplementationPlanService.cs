@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework;
@@ -19,7 +20,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Contracts
         public async Task<ImplementationPlan> GetDefaultImplementationPlan()
         {
             return await dbContext.ImplementationPlans
-                .Include(x => x.Milestones)
+                .Include(x => x.Milestones.OrderBy(m => m.Order))
                 .ThenInclude(x => x.AcceptanceCriteria)
                 .FirstOrDefaultAsync(x => x.IsDefault == true);
         }

@@ -117,7 +117,7 @@
 
             @if (Model.CallOffId != default)
             {
-                <vc:nhs-secondary-button text="Preview order summary"
+                <vc:nhs-secondary-button text="Preview order"
                                          url="@Url.Action(
                                                   nameof(OrderController.Summary),
                                                   typeof(OrderController).ControllerName(),

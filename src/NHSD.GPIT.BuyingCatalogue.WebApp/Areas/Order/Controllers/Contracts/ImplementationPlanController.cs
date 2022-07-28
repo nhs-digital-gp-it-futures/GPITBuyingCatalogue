@@ -36,9 +36,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers.Contracts
         [HttpGet("default")]
         public async Task<IActionResult> DefaultImplementationPlan(string internalOrgId, CallOffId callOffId)
         {
-            return View(
-                "~/Areas/Order/Views/Contracts/DefaultImplementationPlan.cshtml",
-                await GetDefaultViewModel(internalOrgId, callOffId));
+            return View(await GetDefaultViewModel(internalOrgId, callOffId));
         }
 
         [HttpPost("default")]
@@ -46,16 +44,12 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers.Contracts
         {
             if (!ModelState.IsValid)
             {
-                return View(
-                    "~/Areas/Order/Views/Contracts/DefaultImplementationPlan.cshtml",
-                    await GetDefaultViewModel(internalOrgId, callOffId));
+                return View(await GetDefaultViewModel(internalOrgId, callOffId));
             }
-
-            var order = await orderService.GetOrderThin(callOffId, internalOrgId);
 
             if (model.UseDefaultMilestones!.Value)
             {
-                await contractsService.UseDefaultImplementationPlan(order.Id, true);
+                await contractsService.UseDefaultImplementationPlan(callOffId.Id, true);
 
                 return new RedirectToActionResult(
                     nameof(OrderController.Order),
@@ -63,7 +57,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers.Contracts
                     new { internalOrgId, callOffId });
             }
 
-            await contractsService.UseDefaultImplementationPlan(order.Id, false);
+            await contractsService.UseDefaultImplementationPlan(callOffId.Id, false);
 
             return new RedirectToActionResult(
                 nameof(CustomImplementationPlan),
@@ -84,7 +78,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers.Contracts
                 InternalOrgId = internalOrgId,
             };
 
-            return View("~/Areas/Order/Views/Contracts/CustomImplementationPlan.cshtml", model);
+            return View(model);
         }
 
         private async Task<DefaultImplementationPlanModel> GetDefaultViewModel(string internalOrgId, CallOffId callOffId)

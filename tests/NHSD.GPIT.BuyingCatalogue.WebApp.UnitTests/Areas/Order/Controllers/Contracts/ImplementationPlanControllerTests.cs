@@ -162,28 +162,19 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Con
         [CommonAutoData]
         public static async Task Post_DefaultImplementationPlan_UseDefaultMilestones_ReturnsExpectedResult(
             string internalOrgId,
-            EntityFramework.Ordering.Models.Order order,
+            CallOffId callOffId,
             DefaultImplementationPlanModel model,
-            [Frozen] Mock<IOrderService> mockOrderService,
             [Frozen] Mock<IContractsService> mockContractsService,
             ImplementationPlanController controller)
         {
-            order.OrderItems.ForEach(x => x.CatalogueItem.CatalogueItemType = CatalogueItemType.AssociatedService);
-            order.OrderItems.First().CatalogueItem.CatalogueItemType = CatalogueItemType.Solution;
-
-            mockOrderService
-                .Setup(s => s.GetOrderThin(order.CallOffId, internalOrgId))
-                .ReturnsAsync(order);
-
             mockContractsService
-                .Setup(x => x.UseDefaultImplementationPlan(order.Id, true))
+                .Setup(x => x.UseDefaultImplementationPlan(callOffId.Id, true))
                 .Verifiable();
 
             model.UseDefaultMilestones = true;
 
-            var result = await controller.DefaultImplementationPlan(internalOrgId, order.CallOffId, model);
+            var result = await controller.DefaultImplementationPlan(internalOrgId, callOffId, model);
 
-            mockOrderService.VerifyAll();
             mockContractsService.VerifyAll();
 
             var actualResult = result.Should().BeOfType<RedirectToActionResult>().Subject;
@@ -193,7 +184,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Con
             actualResult.RouteValues.Should().BeEquivalentTo(new RouteValueDictionary
             {
                 { "internalOrgId", internalOrgId },
-                { "callOffId", order.CallOffId },
+                { "callOffId", callOffId },
             });
         }
 
@@ -201,25 +192,19 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Con
         [CommonAutoData]
         public static async Task Post_DefaultImplementationPlan_DoNotUseDefaultMilestones_ReturnsExpectedResult(
             string internalOrgId,
-            EntityFramework.Ordering.Models.Order order,
+            CallOffId callOffId,
             DefaultImplementationPlanModel model,
-            [Frozen] Mock<IOrderService> mockOrderService,
             [Frozen] Mock<IContractsService> mockContractsService,
             ImplementationPlanController controller)
         {
             model.UseDefaultMilestones = false;
 
-            mockOrderService
-                .Setup(x => x.GetOrderThin(order.CallOffId, internalOrgId))
-                .ReturnsAsync(order);
-
             mockContractsService
-                .Setup(x => x.UseDefaultImplementationPlan(order.Id, false))
+                .Setup(x => x.UseDefaultImplementationPlan(callOffId.Id, false))
                 .Verifiable();
 
-            var result = await controller.DefaultImplementationPlan(internalOrgId, order.CallOffId, model);
+            var result = await controller.DefaultImplementationPlan(internalOrgId, callOffId, model);
 
-            mockOrderService.VerifyAll();
             mockContractsService.VerifyAll();
 
             var actualResult = result.Should().BeOfType<RedirectToActionResult>().Subject;
@@ -229,7 +214,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Con
             actualResult.RouteValues.Should().BeEquivalentTo(new RouteValueDictionary
             {
                 { "internalOrgId", internalOrgId },
-                { "callOffId", order.CallOffId },
+                { "callOffId", callOffId },
             });
         }
 

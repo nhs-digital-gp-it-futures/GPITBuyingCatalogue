@@ -1,0 +1,165 @@
+﻿@using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models
+@model NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.Contracts.Review.ReviewContractModel
+
+<partial name="Partials/_BackLink" model="Model" />
+
+<div class="nhsuk-grid-row">
+    <div class="nhsuk-grid-column-full">
+        <nhs-page-title title="Contract overview"
+                        caption="Order @Model.CallOffId"
+                        advice="@Model.AdviceText"/>
+        
+        <nhs-expander label-text="Implementation plan"
+                      id="implementation-plan-expander"
+                      colour-mode="BlackAndWhite" open="true" bold-title="true">
+            <div class="nhsuk-u-margin-top-3">
+                <nhs-summary-list>
+                    <nhs-summary-list-row label-text="Use default implementation plan?">
+                        @Model.UseDefaultImplementationPlan.ToYesNo()
+                    </nhs-summary-list-row>
+                </nhs-summary-list>
+            </div>
+
+            @if (Model.UseDefaultImplementationPlan)
+            {
+                <partial name="ImplementationPlan" model="Model.DefaultPlan"/>
+            }
+            else
+            {
+                <nhs-inset-text id="bespoke-implementation-plan">
+                    Requirements are documented in Appendix 1.
+                </nhs-inset-text>
+            }
+        </nhs-expander>
+        
+        @if (Model.Order.HasAssociatedService())
+        {
+            <nhs-expander label-text="Associated Services billing and requirements"
+                          id="associated-services-expander"
+                          colour-mode="BlackAndWhite" open="true" bold-title="true">
+
+                <div class="nhsuk-u-margin-top-3">
+                    <h3>Associated Services billing</h3>
+                    <nhs-summary-list>
+                        <nhs-summary-list-row label-text="Use default billing?">
+                            @((!Model.HasBespokeBilling).ToYesNo())
+                        </nhs-summary-list-row>
+                    </nhs-summary-list>
+                </div>
+
+                @if (Model.HasBespokeBilling)
+                {
+                    <nhs-inset-text id="bespoke-billing">
+                        Requirements are documented in section 1 of Appendix 2.
+                    </nhs-inset-text>
+                }
+                else
+                {
+                    <div class="nhsuk-u-margin-bottom-6" id="default-billing">
+                        <nhs-table>
+                            <nhs-table-column>Name</nhs-table-column>
+                            <nhs-table-column>Quantity</nhs-table-column>
+                            <nhs-table-column>Payment trigger</nhs-table-column>
+                            @foreach (var service in Model.Order.GetAssociatedServices())
+                            {
+                                <nhs-table-row-container>
+                                    <nhs-table-cell>@service.CatalogueItem.Name</nhs-table-cell>
+                                    <nhs-table-cell>@($"{service.TotalQuantity:N0} {service.OrderItemPrice?.RangeDescription}")</nhs-table-cell>
+                                    <nhs-table-cell>@Model.BillingPaymentTrigger</nhs-table-cell>
+                                </nhs-table-row-container>
+                            }
+                        </nhs-table>
+                    </div>
+                }
+
+                <div class="nhsuk-u-margin-top-3">
+                    <h3>Associated Services requirements</h3>
+                    <nhs-summary-list>
+                        <nhs-summary-list-row label-text="Any specific requirements?">
+                            @Model.HasSpecificRequirements.ToYesNo()
+                        </nhs-summary-list-row>
+                    </nhs-summary-list>
+                </div>
+
+                @if (Model.HasSpecificRequirements)
+                {
+                    <nhs-inset-text id="has-specific-requirements">
+                        Requirements are documented in section 2 of Appendix 2.
+                    </nhs-inset-text>
+                }
+            </nhs-expander>
+        }
+        
+        <nhs-expander label-text="Data processing plan"
+                      id="data-processing-expander"
+                      colour-mode="BlackAndWhite" open="true" bold-title="true">
+            <div class="nhsuk-u-margin-top-3">
+                <nhs-summary-list>
+                    <nhs-summary-list-row label-text="Use default data processing plan?">
+                        @Model.UseDefaultDataProcessing.ToYesNo()
+                    </nhs-summary-list-row>
+                </nhs-summary-list>
+            </div>
+            
+            @if (!Model.UseDefaultDataProcessing)
+            {
+                <nhs-inset-text id="bespoke-data-processing">
+                    Requirements are documented in Appendix 3.
+                </nhs-inset-text>
+            }
+        </nhs-expander>
+        
+        <div class="nhsuk-u-margin-top-9">
+            @if (Model.Order.OrderStatus == OrderStatus.InProgress)
+            {
+                <h3>Preview order</h3>
+                <p>You can download and review your order with colleagues before marking it complete.</p>
+            }
+            else
+            {
+                <h3>Order summary</h3>
+                <p>You can download and review your order summary here.</p>
+            }
+
+            <vc:nhs-secondary-button text="Download order PDF"
+                                     use-primary-colour="false"
+                                     url="@Url.Action(
+                                              nameof(OrderController.Download),
+                                              typeof(OrderController).ControllerName(),
+                                              new { Model.InternalOrgId, Model.CallOffId })"/>
+        </div>
+                                 
+        <div class="nhsuk-u-margin-top-3">
+            @if (Model.Order.OrderStatus == OrderStatus.InProgress
+                && Model.Order.CanComplete())
+            {
+                <h3>Complete order</h3>
+                <p>If you're happy with your order, you can mark it complete. Once you've done this, you'll be unable to make changes.</p>
+                <form method="post">
+                    <nhs-submit-button text="Complete order" />
+                </form>
+            }
+            else
+            {
+                if (Model.Order.OrderStatus == OrderStatus.InProgress)
+                {
+                    <vc:nhs-secondary-button text="Continue"
+                                             use-primary-colour="true"
+                                             url="@Url.Action(
+                                                      nameof(OrderController.Summary),
+                                                      typeof(OrderController).ControllerName(),
+                                                      new { Model.InternalOrgId, Model.CallOffId })"/>
+                }
+                else
+                {
+                    <vc:nhs-secondary-button text="Continue"
+                                             use-primary-colour="true"
+                                             url="@Url.Action(
+                                                      nameof(DashboardController.Organisation),
+                                                      typeof(DashboardController).ControllerName(),
+                                                      new { Model.InternalOrgId })"/>
+                }
+            }
+        </div>
+    </div>
+</div>

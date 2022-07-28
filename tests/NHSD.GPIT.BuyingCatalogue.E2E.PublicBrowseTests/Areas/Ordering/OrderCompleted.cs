@@ -1,11 +1,16 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.IO;
+using System.Linq;
+using System.Threading.Tasks;
 using FluentAssertions;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.Objects.Common;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.Objects.Ordering;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.Utils.Files;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Utils;
+using NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.Extensions;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.TestBases;
+using NHSD.GPIT.BuyingCatalogue.EntityFramework;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Controllers;
@@ -13,10 +18,11 @@ using Xunit;
 
 namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering
 {
-    public class OrderCompleted : BuyerTestBase, IClassFixture<LocalWebApplicationFactory>
+    public class OrderCompleted : BuyerTestBase, IClassFixture<LocalWebApplicationFactory>, IDisposable
     {
+        private const int OrderId = 90010;
         private const string InternalOrgId = "CG-03F";
-        private static readonly CallOffId CallOffId = new(90010, 1);
+        private static readonly CallOffId CallOffId = new(OrderId, 1);
 
         private static readonly Dictionary<string, string> Parameters = new()
         {
@@ -34,9 +40,89 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering
         {
             CommonActions.GoBackLinkDisplayed().Should().BeTrue();
             CommonActions.ElementIsDisplayed(CommonSelectors.Header1).Should().BeTrue();
+            CommonActions.ElementIsDisplayed(OrderCompletedObjects.SupportingDocuments).Should().BeFalse();
+            CommonActions.ElementIsDisplayed(OrderCompletedObjects.HasBespokeBilling).Should().BeFalse();
+            CommonActions.ElementIsDisplayed(OrderCompletedObjects.HasBespokeDataProcessing).Should().BeFalse();
+            CommonActions.ElementIsDisplayed(OrderCompletedObjects.HasBespokeImplementationPlan).Should().BeFalse();
             CommonActions.ElementIsDisplayed(OrderCompletedObjects.DownloadPdfButton).Should().BeTrue();
             CommonActions.ElementIsDisplayed(OrderCompletedObjects.ReturnToDashboardButton).Should().BeTrue();
             CommonActions.ElementIsDisplayed(OrderCompletedObjects.ContactProcurementLink).Should().BeTrue();
+        }
+
+        [Fact]
+        public async Task OrderCompleted_WithBespokeBilling_SupportingDocumentsDisplayed()
+        {
+            var context = GetEndToEndDbContext();
+
+            var flags = context.GetContractFlags(OrderId);
+
+            flags.UseDefaultBilling = false;
+
+            await context.SaveChangesAsync();
+
+            Driver.Navigate().Refresh();
+
+            CommonActions.ElementIsDisplayed(OrderCompletedObjects.SupportingDocuments).Should().BeTrue();
+            CommonActions.ElementIsDisplayed(OrderCompletedObjects.HasBespokeBilling).Should().BeTrue();
+            CommonActions.ElementIsDisplayed(OrderCompletedObjects.HasBespokeDataProcessing).Should().BeFalse();
+            CommonActions.ElementIsDisplayed(OrderCompletedObjects.HasBespokeImplementationPlan).Should().BeFalse();
+        }
+
+        [Fact]
+        public async Task OrderCompleted_WithBespokeDataProcessing_SupportingDocumentsDisplayed()
+        {
+            var context = GetEndToEndDbContext();
+
+            var flags = context.GetContractFlags(OrderId);
+
+            flags.UseDefaultDataProcessing = false;
+
+            await context.SaveChangesAsync();
+
+            Driver.Navigate().Refresh();
+
+            CommonActions.ElementIsDisplayed(OrderCompletedObjects.SupportingDocuments).Should().BeTrue();
+            CommonActions.ElementIsDisplayed(OrderCompletedObjects.HasBespokeBilling).Should().BeFalse();
+            CommonActions.ElementIsDisplayed(OrderCompletedObjects.HasBespokeDataProcessing).Should().BeTrue();
+            CommonActions.ElementIsDisplayed(OrderCompletedObjects.HasBespokeImplementationPlan).Should().BeFalse();
+        }
+
+        [Fact]
+        public async Task OrderCompleted_WithBespokeImplementationPlan_SupportingDocumentsDisplayed()
+        {
+            var context = GetEndToEndDbContext();
+
+            var flags = context.GetContractFlags(OrderId);
+
+            flags.UseDefaultImplementationPlan = false;
+
+            await context.SaveChangesAsync();
+
+            Driver.Navigate().Refresh();
+
+            CommonActions.ElementIsDisplayed(OrderCompletedObjects.SupportingDocuments).Should().BeTrue();
+            CommonActions.ElementIsDisplayed(OrderCompletedObjects.HasBespokeBilling).Should().BeFalse();
+            CommonActions.ElementIsDisplayed(OrderCompletedObjects.HasBespokeDataProcessing).Should().BeFalse();
+            CommonActions.ElementIsDisplayed(OrderCompletedObjects.HasBespokeImplementationPlan).Should().BeTrue();
+        }
+
+        [Fact]
+        public async Task OrderCompleted_WithSpecificRequirements_SupportingDocumentsDisplayed()
+        {
+            var context = GetEndToEndDbContext();
+
+            var flags = context.GetContractFlags(OrderId);
+
+            flags.HasSpecificRequirements = true;
+
+            await context.SaveChangesAsync();
+
+            Driver.Navigate().Refresh();
+
+            CommonActions.ElementIsDisplayed(OrderCompletedObjects.SupportingDocuments).Should().BeTrue();
+            CommonActions.ElementIsDisplayed(OrderCompletedObjects.HasBespokeBilling).Should().BeTrue();
+            CommonActions.ElementIsDisplayed(OrderCompletedObjects.HasBespokeDataProcessing).Should().BeFalse();
+            CommonActions.ElementIsDisplayed(OrderCompletedObjects.HasBespokeImplementationPlan).Should().BeFalse();
         }
 
         [Fact]
@@ -91,6 +177,20 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering
             CommonActions.PageLoadedCorrectGetIndex(
                 typeof(DashboardController),
                 nameof(DashboardController.Organisation)).Should().BeTrue();
+        }
+
+        public void Dispose()
+        {
+            var context = GetEndToEndDbContext();
+
+            var flags = context.GetContractFlags(OrderId);
+
+            flags.HasSpecificRequirements = null;
+            flags.UseDefaultBilling = null;
+            flags.UseDefaultDataProcessing = null;
+            flags.UseDefaultImplementationPlan = null;
+
+            context.SaveChanges();
         }
     }
 }

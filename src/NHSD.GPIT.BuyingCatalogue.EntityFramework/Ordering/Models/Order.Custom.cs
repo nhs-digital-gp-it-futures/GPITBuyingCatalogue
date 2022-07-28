@@ -7,6 +7,9 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models
 {
     public partial class Order
     {
+        public const string LocalFunding = "Local";
+        public const string CentralFunding = "Central";
+
         private readonly List<ServiceInstanceItem> serviceInstanceItems = new();
 
         private DateTime? completed;
@@ -19,8 +22,8 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models
             get
             {
                 return OrderItems.All(x => x.FundingType is OrderItemFundingType.LocalFunding or OrderItemFundingType.LocalFundingOnly)
-                    ? "Local"
-                    : "Central";
+                    ? LocalFunding
+                    : CentralFunding;
             }
         }
 

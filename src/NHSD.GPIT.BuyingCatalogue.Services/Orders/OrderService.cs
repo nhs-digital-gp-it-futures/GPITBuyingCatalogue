@@ -135,6 +135,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
         public async Task<Order> GetOrderForSummary(CallOffId callOffId, string internalOrgId)
         {
             var output = await dbContext.Orders
+                .Include(x => x.ContractFlags)
                 .Include(o => o.OrderingParty)
                 .Include(o => o.OrderingPartyContact)
                 .Include(o => o.Solution)
@@ -145,7 +146,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
                 .Include(o => o.OrderItems).ThenInclude(i => i.CatalogueItem).ThenInclude(ci => ci.Solution).ThenInclude(s => s.FrameworkSolutions).ThenInclude(fs => fs.Framework)
                 .Include(o => o.OrderItems).ThenInclude(i => i.OrderItemFunding)
                 .Include(o => o.OrderItems).ThenInclude(i => i.OrderItemPrice).ThenInclude(ip => ip.OrderItemPriceTiers.OrderBy(pt => pt.LowerRange))
-                .Include(o => o.OrderItems).ThenInclude(i => i.OrderItemRecipients.OrderBy(i => i.Recipient.Name)).ThenInclude(r => r.Recipient)
+                .Include(o => o.OrderItems).ThenInclude(i => i.OrderItemRecipients.OrderBy(r => r.Recipient.Name)).ThenInclude(r => r.Recipient)
                 .AsNoTracking()
                 .AsSplitQuery()
                 .SingleOrDefaultAsync(o =>
