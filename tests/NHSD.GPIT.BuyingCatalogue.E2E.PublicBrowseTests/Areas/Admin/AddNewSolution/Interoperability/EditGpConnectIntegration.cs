@@ -78,9 +78,11 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.AddNewSolution.Interope
         }
 
         [Fact]
-        public void EditGpConnectIntegration_MissingAdditionalInfoValue()
+        public void EditGpConnectIntegration_MandatoryDataMissing_ThrowsErrors()
         {
-            TextGenerators.TextInputAddText(CommonSelectors.AdditionalInfoTextArea, 0);
+            CommonActions.AutoCompleteAddValue(InteroperabilityObjects.SelectedIntegrationType, "Please select");
+            CommonActions.AutoCompleteAddValue(InteroperabilityObjects.SelectedProviderOrConsumer, "Please Select");
+            CommonActions.ClearInputElement(InteroperabilityObjects.AdditionalInformation);
 
             CommonActions.ClickSave();
 
@@ -91,6 +93,10 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.AddNewSolution.Interope
 
             CommonActions.ErrorSummaryDisplayed().Should().BeTrue();
             CommonActions.ErrorSummaryLinksExist().Should().BeTrue();
+
+            CommonActions.ElementIsDisplayed(InteroperabilityObjects.SelectedIntegrationTypeError).Should().BeTrue();
+            CommonActions.ElementIsDisplayed(InteroperabilityObjects.SelectedProviderOrConsumerError).Should().BeTrue();
+            CommonActions.ElementIsDisplayed(InteroperabilityObjects.AdditionalInformationError).Should().BeTrue();
         }
 
         [Fact]

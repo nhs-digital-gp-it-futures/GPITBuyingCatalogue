@@ -35,7 +35,11 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.Objects.Admin.ListPrices
 
         public static By DeclarativeQuantityCalculationRadioButtons => By.Id("declarative-quantity-calculation-type");
 
+        public static By DeclarativeQuantityCalculationError => By.Id("declarative-quantity-calculation-type-error");
+
         public static By OnDemandQuantityCalculationRadioButtons => By.Id("on-demand-quantity-calculation-type");
+
+        public static By OnDemandQuantityCalculationError => By.Id("on-demand-quantity-calculation-type-error");
 
         public static By CalculationTypeInput => By.Id("selected-calculation-type");
 

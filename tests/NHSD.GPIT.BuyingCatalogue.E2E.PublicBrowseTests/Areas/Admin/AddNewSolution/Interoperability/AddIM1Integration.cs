@@ -82,7 +82,11 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.AddNewSolution.Interope
         {
             CommonActions.ClickGoBackLink();
 
-            CommonActions.PageLoadedCorrectGetIndex(typeof(InteroperabilityController), nameof(InteroperabilityController.Interoperability)).Should().BeTrue();
+            CommonActions.PageLoadedCorrectGetIndex(
+                typeof(InteroperabilityController),
+                nameof(InteroperabilityController.Interoperability))
+                .Should()
+                .BeTrue();
         }
 
         [Fact]
@@ -90,9 +94,19 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.AddNewSolution.Interope
         {
             CommonActions.ClickSave();
 
-            CommonActions.ErrorSummaryDisplayed().Should().BeTrue();
+            CommonActions.PageLoadedCorrectGetIndex(
+                typeof(InteroperabilityController),
+                nameof(InteroperabilityController.AddIm1Integration))
+                .Should()
+                .BeTrue();
 
+            CommonActions.ErrorSummaryDisplayed().Should().BeTrue();
             CommonActions.ErrorSummaryLinksExist().Should().BeTrue();
+
+            CommonActions.ElementIsDisplayed(InteroperabilityObjects.SelectedIntegrationTypeError).Should().BeTrue();
+            CommonActions.ElementIsDisplayed(InteroperabilityObjects.SelectedProviderOrConsumerError).Should().BeTrue();
+            CommonActions.ElementIsDisplayed(InteroperabilityObjects.IntegratesWithError).Should().BeTrue();
+            CommonActions.ElementIsDisplayed(InteroperabilityObjects.DescriptionError).Should().BeTrue();
         }
 
         public void Dispose()

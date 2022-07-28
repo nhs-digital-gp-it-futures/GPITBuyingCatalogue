@@ -37,31 +37,13 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Validators.DevelopmentPla
 
             RuleFor(wp => wp.Day)
                 .NotEmpty()
-                .WithMessage(NoDateDayError)
-                .Must(d =>
-                {
-                    if (int.TryParse(d, out int value))
-                        return int.Parse(d) <= 31;
-                    else
-                        return false;
-                })
-                .WithMessage(DateIncorrectFormatError);
+                .WithMessage(NoDateDayError);
 
             RuleFor(wp => wp.Month)
                 .NotEmpty()
                 .Unless(wp => string.IsNullOrWhiteSpace(wp.Day))
                 .OverridePropertyName(wp => wp.Day)
-                .WithMessage(NoDateMonthError)
-                .Must(m =>
-                {
-                    if (int.TryParse(m, out int value))
-                        return int.Parse(m) <= 12;
-                    else
-                        return false;
-                })
-                .Unless(wp => int.TryParse(wp.Day, out int value))
-                .OverridePropertyName(wp => wp.Day)
-                .WithMessage(DateIncorrectFormatError);
+                .WithMessage(NoDateMonthError);
 
             RuleFor(wp => wp.Year)
                 .NotEmpty()
@@ -80,7 +62,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Validators.DevelopmentPla
                     || string.IsNullOrWhiteSpace(wp.Month)
                     || string.IsNullOrWhiteSpace(wp.Year))
                 .OverridePropertyName(wp => wp.Day)
-                .WithMessage(DateIncorrectFormatError)
+                .WithMessage(DateIncorrectFormatError);
+
+            RuleFor(wp => wp)
                 .Must(NotBeDuplicateWorkOffPlan)
                 .Unless(wp => !IsValidDate(wp))
                 .OverridePropertyName(wp => wp.Details, wp => wp.SelectedStandard)
@@ -92,6 +76,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Validators.DevelopmentPla
                 .WithMessage(DateInPastError)
                 .OverridePropertyName(wp => wp.Day);
         }
+
+
 
         private static bool IsValidDate(EditWorkOffPlanModel model) =>
             DateTime.TryParseExact($"{model.Day}/{model.Month}/{model.Year}", "d/M/yyyy", CultureInfo.InvariantCulture, DateTimeStyles.AssumeUniversal, out _);

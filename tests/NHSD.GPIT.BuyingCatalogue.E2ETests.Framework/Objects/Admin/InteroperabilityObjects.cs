@@ -9,5 +9,19 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.Objects.Admin
         public static By SelectedProviderOrConsumer => By.Id(nameof(SelectedProviderOrConsumer));
 
         public static By IntegratesWith => By.Id(nameof(IntegratesWith));
+
+        public static By AdditionalInformation => By.Id("AdditionalInformation");
+
+        public static By Description => By.Id("Description");
+
+        public static By SelectedIntegrationTypeError => By.Id("SelectedIntegrationType-error");
+
+        public static By SelectedProviderOrConsumerError => By.Id("SelectedProviderOrConsumer-error");
+
+        public static By AdditionalInformationError => By.Id("AdditionalInformation-error");
+
+        public static By IntegratesWithError => By.Id("IntegratesWith-error");
+
+        public static By DescriptionError => By.Id("Description-error");
     }
 }

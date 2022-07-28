@@ -24,7 +24,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators.Serv
             var result = validator.TestValidate(model);
 
             result.ShouldHaveValidationErrorFor(m => m.Channel)
-                .WithErrorMessage("Enter a contact channel");
+                .WithErrorMessage(EditSLAContactModelValidator.ContactChannelError);
         }
 
         [Theory]
@@ -38,7 +38,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators.Serv
             var result = validator.TestValidate(model);
 
             result.ShouldHaveValidationErrorFor(m => m.ContactInformation)
-                .WithErrorMessage("Enter contact information");
+                .WithErrorMessage(EditSLAContactModelValidator.ContactInformationError);
         }
 
         [Theory]
@@ -52,7 +52,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators.Serv
             var result = validator.TestValidate(model);
 
             result.ShouldHaveValidationErrorFor(m => m.From)
-                .WithErrorMessage("Enter a from time");
+                .WithErrorMessage(EditSLAContactModelValidator.EnterFromTimeError);
         }
 
         [Theory]
@@ -66,7 +66,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators.Serv
             var result = validator.TestValidate(model);
 
             result.ShouldHaveValidationErrorFor(m => m.Until)
-                .WithErrorMessage("Enter an until time");
+                .WithErrorMessage(EditSLAContactModelValidator.EnterUntilTimeError);
         }
 
         [Theory]
