@@ -5,23 +5,28 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Validators.Interoperabili
 {
     public sealed class AddEditIm1IntegrationValidator : AbstractValidator<AddEditIm1IntegrationModel>
     {
+        public const string SelectIntegrationTypeError = "Select integration type";
+        public const string SelectProviderOrConsumerError = "Select if your system is a provider or consumer";
+        public const string IntegratesWithError = "Enter the system being integrated with";
+        public const string DescriptionError = "Enter a description";
+
         public AddEditIm1IntegrationValidator()
         {
             RuleFor(i => i.SelectedIntegrationType)
                 .NotNull()
-                .WithMessage("Select integration type");
+                .WithMessage(SelectIntegrationTypeError);
 
             RuleFor(i => i.SelectedProviderOrConsumer)
                 .NotNull()
-                .WithMessage("Select if your system is a provider or consumer");
+                .WithMessage(SelectProviderOrConsumerError);
 
             RuleFor(i => i.IntegratesWith)
                 .NotEmpty()
-                .WithMessage("Enter the system being integrated with");
+                .WithMessage(IntegratesWithError);
 
             RuleFor(i => i.Description)
                 .NotEmpty()
-                .WithMessage("Enter a description");
+                .WithMessage(DescriptionError);
         }
     }
 }

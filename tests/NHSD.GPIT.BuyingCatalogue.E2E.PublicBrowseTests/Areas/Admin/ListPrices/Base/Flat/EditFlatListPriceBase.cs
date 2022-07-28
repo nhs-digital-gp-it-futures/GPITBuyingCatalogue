@@ -149,10 +149,10 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.ListPrices.Base.Flat
             CommonActions.ErrorSummaryDisplayed().Should().BeTrue();
             CommonActions.ErrorSummaryLinksExist().Should().BeTrue();
 
-            CommonActions.ElementShowingCorrectErrorMessage(ListPriceObjects.ProvisioningTypeInputError, "Error: A list price with these details already exists").Should().BeTrue();
-            CommonActions.ElementShowingCorrectErrorMessage(ListPriceObjects.UnitDescriptionInputError, "A list price with these details already exists").Should().BeTrue();
-            CommonActions.ElementShowingCorrectErrorMessage(ListPriceObjects.PriceInputError, "A list price with these details already exists").Should().BeTrue();
-            CommonActions.ElementShowingCorrectErrorMessage(ListPriceObjects.CalculationTypeInputError, "Error: A list price with these details already exists").Should().BeTrue();
+            CommonActions.ElementIsDisplayed(ListPriceObjects.ProvisioningTypeInputError).Should().BeTrue();
+            CommonActions.ElementIsDisplayed(ListPriceObjects.UnitDescriptionInputError).Should().BeTrue();
+            CommonActions.ElementIsDisplayed(ListPriceObjects.PriceInputError).Should().BeTrue();
+            CommonActions.ElementIsDisplayed(ListPriceObjects.CalculationTypeInputError).Should().BeTrue();
         }
 
         [Fact]

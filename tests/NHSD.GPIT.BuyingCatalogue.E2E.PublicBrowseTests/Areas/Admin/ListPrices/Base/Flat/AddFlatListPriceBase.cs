@@ -83,7 +83,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.ListPrices.Base.Flat
         }
 
         [Fact]
-        public void Submit_NoInput_ThrowsError()
+        public void Submit_InvalidModelState_ThrowsError()
         {
             CommonActions.ClickSave();
 
@@ -94,40 +94,20 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.ListPrices.Base.Flat
             CommonActions.ErrorSummaryDisplayed().Should().BeTrue();
             CommonActions.ErrorSummaryLinksExist().Should().BeTrue();
 
-            CommonActions.ElementShowingCorrectErrorMessage(ListPriceObjects.ProvisioningTypeInputError, "Error: Select a provisioning type").Should().BeTrue();
-            CommonActions.ElementShowingCorrectErrorMessage(ListPriceObjects.PublicationStatusInputError, "Error: Select a publication status").Should().BeTrue();
-            CommonActions.ElementShowingCorrectErrorMessage(ListPriceObjects.UnitDescriptionInputError, "Enter a unit").Should().BeTrue();
-            CommonActions.ElementShowingCorrectErrorMessage(ListPriceObjects.PriceInputError, "Enter a price").Should().BeTrue();
-            CommonActions.ElementShowingCorrectErrorMessage(ListPriceObjects.RangeDefinitionInputError, "Enter a pluralised unit").Should().BeTrue();
-        }
+            CommonActions.ElementIsDisplayed(ListPriceObjects.ProvisioningTypeInputError).Should().BeTrue();
+            CommonActions.ElementIsDisplayed(ListPriceObjects.CalculationTypeInput).Should().BeTrue();
+            CommonActions.ElementIsDisplayed(ListPriceObjects.PriceInputError).Should().BeTrue();
+            CommonActions.ElementIsDisplayed(ListPriceObjects.UnitDescriptionInputError).Should().BeTrue();
+            CommonActions.ElementIsDisplayed(ListPriceObjects.RangeDefinitionInputError).Should().BeTrue();
+            CommonActions.ElementIsDisplayed(ListPriceObjects.PublicationStatusInputError).Should().BeTrue();
 
-        [Fact]
-        public void Submit_Duplicate_ThrowsError()
-        {
-            var catalogueItem = GetCatalogueItemWithPrices(CatalogueItemId);
-            var price = catalogueItem.CataloguePrices.First(p => p.CataloguePriceType == CataloguePriceType.Flat);
-
-            CommonActions.ClickRadioButtonWithValue(price.ProvisioningType.ToString());
-            CommonActions.ClickRadioButtonWithValue(price.PublishedStatus.ToString());
-            CommonActions.ClickRadioButtonWithValue(price.CataloguePriceCalculationType.ToString());
-
-            CommonActions.ElementAddValue(ListPriceObjects.UnitDescriptionInput, price.PricingUnit.Description);
-            CommonActions.ElementAddValue(ListPriceObjects.PriceInput, price.CataloguePriceTiers.First().Price.ToString());
-            CommonActions.ElementAddValue(ListPriceObjects.RangeDefinitionInput, price.PricingUnit.RangeDescription);
-
+            CommonActions.ClickRadioButtonWithText("Declarative");
             CommonActions.ClickSave();
+            CommonActions.ElementIsDisplayed(ListPriceObjects.DeclarativeQuantityCalculationError).Should().BeTrue();
 
-            CommonActions.PageLoadedCorrectGetIndex(
-                Controller,
-                ActionName).Should().BeTrue();
-
-            CommonActions.ErrorSummaryDisplayed().Should().BeTrue();
-            CommonActions.ErrorSummaryLinksExist().Should().BeTrue();
-
-            CommonActions.ElementShowingCorrectErrorMessage(ListPriceObjects.ProvisioningTypeInputError, "Error: A list price with these details already exists").Should().BeTrue();
-            CommonActions.ElementShowingCorrectErrorMessage(ListPriceObjects.UnitDescriptionInputError, "A list price with these details already exists").Should().BeTrue();
-            CommonActions.ElementShowingCorrectErrorMessage(ListPriceObjects.PriceInputError, "A list price with these details already exists").Should().BeTrue();
-            CommonActions.ElementShowingCorrectErrorMessage(ListPriceObjects.CalculationTypeInputError, "Error: A list price with these details already exists").Should().BeTrue();
+            CommonActions.ClickRadioButtonWithText("On demand");
+            CommonActions.ClickSave();
+            CommonActions.ElementIsDisplayed(ListPriceObjects.OnDemandQuantityCalculationError).Should().BeTrue();
         }
 
         [Fact]

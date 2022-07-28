@@ -9,7 +9,13 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Validators.ServiceLevelAg
 {
     public sealed class EditSLAContactModelValidator : AbstractValidator<EditSLAContactModel>
     {
+        public const string ContactChannelError = "Enter a contact channel";
+        public const string ContactInformationError = "Enter contact information";
+        public const string EnterFromTimeError = "Enter a from time";
+        public const string EnterUntilTimeError = "Enter an until time";
+
         internal const string DuplicateContactErrorMessage = "A contact with these details already exists";
+
         private readonly IServiceLevelAgreementsService serviceLevelAgreementsService;
 
         public EditSLAContactModelValidator(IServiceLevelAgreementsService serviceLevelAgreementsService)
@@ -36,20 +42,20 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Validators.ServiceLevelAg
 
             RuleFor(slac => slac.Channel)
                 .NotEmpty()
-                .WithMessage("Enter a contact channel");
+                .WithMessage(ContactChannelError);
 
             RuleFor(slac => slac.ContactInformation)
                 .NotEmpty()
-                .WithMessage("Enter contact information");
+                .WithMessage(ContactInformationError);
 
             RuleFor(slac => slac.From)
                 .NotEmpty()
-                .WithMessage("Enter a from time");
+                .WithMessage(EnterFromTimeError);
 
             RuleFor(slac => slac.Until)
                 .NotEmpty()
                 .Unless(slac => !slac.From.HasValue)
-                .WithMessage("Enter an until time");
+                .WithMessage(EnterUntilTimeError);
         }
 
         private bool NotBeDuplicateContact(EditSLAContactModel model)

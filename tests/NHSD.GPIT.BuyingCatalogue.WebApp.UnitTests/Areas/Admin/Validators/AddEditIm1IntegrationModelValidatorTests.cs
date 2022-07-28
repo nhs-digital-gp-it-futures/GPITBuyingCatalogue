@@ -39,7 +39,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators
             var result = validator.TestValidate(model);
 
             result.ShouldHaveValidationErrorFor(m => m.SelectedIntegrationType)
-                .WithErrorMessage("Select integration type");
+                .WithErrorMessage(AddEditIm1IntegrationValidator.SelectIntegrationTypeError);
         }
 
         [Theory]
@@ -56,7 +56,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators
             var result = validator.TestValidate(model);
 
             result.ShouldHaveValidationErrorFor(m => m.SelectedProviderOrConsumer)
-                .WithErrorMessage("Select if your system is a provider or consumer");
+                .WithErrorMessage(AddEditIm1IntegrationValidator.SelectProviderOrConsumerError);
         }
 
         [Theory]
@@ -73,7 +73,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators
             var result = validator.TestValidate(model);
 
             result.ShouldHaveValidationErrorFor(m => m.Description)
-                .WithErrorMessage("Enter a description");
+                .WithErrorMessage(AddEditIm1IntegrationValidator.DescriptionError);
         }
 
         [Theory]
@@ -90,7 +90,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators
             var result = validator.TestValidate(model);
 
             result.ShouldHaveValidationErrorFor(m => m.IntegratesWith)
-                .WithErrorMessage("Enter the system being integrated with");
+                .WithErrorMessage(AddEditIm1IntegrationValidator.IntegratesWithError);
         }
     }
 }

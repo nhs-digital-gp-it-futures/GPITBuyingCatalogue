@@ -81,9 +81,12 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.AddNewSolution.Interope
         }
 
         [Fact]
-        public void EditIm1Integration_MissingIntegratesWithValue()
+        public void EditIm1Integration_MandatoryDataMissing_ThrownErrors()
         {
-            TextGenerators.TextInputAddText(InteroperabilityObjects.IntegratesWith, 0);
+            CommonActions.AutoCompleteAddValue(InteroperabilityObjects.SelectedIntegrationType, "Please select");
+            CommonActions.AutoCompleteAddValue(InteroperabilityObjects.SelectedProviderOrConsumer, "Please select");
+            CommonActions.ClearInputElement(InteroperabilityObjects.IntegratesWith);
+            CommonActions.ClearInputElement(InteroperabilityObjects.Description);
 
             CommonActions.ClickSave();
 
@@ -94,6 +97,11 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.AddNewSolution.Interope
 
             CommonActions.ErrorSummaryDisplayed().Should().BeTrue();
             CommonActions.ErrorSummaryLinksExist().Should().BeTrue();
+
+            CommonActions.ElementIsDisplayed(InteroperabilityObjects.SelectedIntegrationTypeError).Should().BeTrue();
+            CommonActions.ElementIsDisplayed(InteroperabilityObjects.SelectedProviderOrConsumerError).Should().BeTrue();
+            CommonActions.ElementIsDisplayed(InteroperabilityObjects.IntegratesWithError).Should().BeTrue();
+            CommonActions.ElementIsDisplayed(InteroperabilityObjects.DescriptionError).Should().BeTrue();
         }
 
         [Fact]
