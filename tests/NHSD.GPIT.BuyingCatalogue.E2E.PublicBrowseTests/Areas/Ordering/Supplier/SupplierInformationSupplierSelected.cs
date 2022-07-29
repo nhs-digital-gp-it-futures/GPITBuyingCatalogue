@@ -73,9 +73,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering.Supplier
             CommonActions.ErrorSummaryDisplayed().Should().BeTrue();
             CommonActions.ErrorSummaryLinksExist().Should().BeTrue();
 
-            CommonActions.ElementShowingCorrectErrorMessage(
-                SupplierObjects.SupplierContactRadioErrorMessage,
-                $"Error:{SupplierModelValidator.ContactNotSelectedErrorMessage}").Should().BeTrue();
+            CommonActions.ElementIsDisplayed(SupplierObjects.SupplierContactRadioErrorMessage).Should().BeTrue();
         }
 
         [Fact]

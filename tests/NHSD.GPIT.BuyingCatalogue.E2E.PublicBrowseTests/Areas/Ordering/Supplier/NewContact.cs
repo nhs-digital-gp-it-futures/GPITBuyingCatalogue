@@ -60,12 +60,12 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering.Supplier
 
             CommonActions.ClickSave();
 
-            CommonActions.PageLoadedCorrectGetIndex(
+           CommonActions.PageLoadedCorrectGetIndex(
                 typeof(SupplierController),
                 nameof(SupplierController.NewContact)).Should().BeTrue();
 
-            CommonActions.ErrorSummaryDisplayed().Should().BeTrue();
-            CommonActions.ErrorSummaryLinksExist().Should().BeTrue();
+           CommonActions.ErrorSummaryDisplayed().Should().BeTrue();
+           CommonActions.ErrorSummaryLinksExist().Should().BeTrue();
 
             CommonActions.ElementShowingCorrectErrorMessage(
                 NewContactObjects.FirstNameError,
