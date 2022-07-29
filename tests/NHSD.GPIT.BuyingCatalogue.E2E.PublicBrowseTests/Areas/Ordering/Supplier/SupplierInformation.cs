@@ -84,9 +84,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering.Supplier
             CommonActions.ErrorSummaryDisplayed().Should().BeTrue();
             CommonActions.ErrorSummaryLinksExist().Should().BeTrue();
 
-            CommonActions.ElementShowingCorrectErrorMessage(
-                SupplierObjects.SupplierAutoCompleteError,
-                SelectSupplierModelValidator.SupplierMissingErrorMessage).Should().BeTrue();
+            CommonActions.ElementIsDisplayed(SupplierObjects.SupplierAutoCompleteError).Should().BeTrue();
         }
 
         [Fact]

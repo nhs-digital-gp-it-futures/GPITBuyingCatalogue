@@ -93,21 +93,6 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.PublicBrowse.Homepage
         }
 
         [Fact]
-        public void ContactUs_InvalidEmailFormat_ErrorSummary()
-        {
-            RunTest(() =>
-            {
-                TextGenerators.TextInputAddText(ContactUsObjects.EmailAddressInput, 20);
-
-                CommonActions.ClickSave();
-
-                CommonActions.ErrorSummaryDisplayed().Should().BeTrue();
-                CommonActions.ErrorSummaryLinksExist().Should().BeTrue();
-                CommonActions.ElementShowingCorrectErrorMessage(ContactUsObjects.EmailAddressInputError, "Enter an email address in the correct format, like name@example.com").Should().BeTrue();
-            });
-        }
-
-        [Fact]
         public void ContactUs_ValidInput_Redirects()
         {
             RunTest(() =>
