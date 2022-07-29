@@ -70,7 +70,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.Order
             SetSectionOneStatus(order);
             SetSectionTwoStatus(order);
             SetSectionThreeStatus(order);
-            SetSectionFourStatus();
+            SetSectionFourStatus(order);
         }
 
         private void SetSectionOneStatus(EntityFramework.Ordering.Models.Order order)
@@ -108,15 +108,15 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.Order
             else
                 SolutionOrService = TaskProgress.Completed;
 
-            if (SolutionOrService is not TaskProgress.Completed)
-                return;
-
-            if (order.OrderItems.All(oi => oi.OrderItemFunding != null))
-                FundingSource = TaskProgress.Completed;
-            else if (order.OrderItems.All(oi => oi.OrderItemFunding == null))
-                FundingSource = TaskProgress.NotStarted;
-            else
-                FundingSource = TaskProgress.InProgress;
+            FundingSource = SolutionOrService switch
+            {
+                TaskProgress.NotStarted => TaskProgress.CannotStart,
+                TaskProgress.InProgress when order.OrderItems.All(oi => oi.OrderItemFunding == null) => TaskProgress.CannotStart,
+                TaskProgress.Completed when order.OrderItems.All(oi => oi.OrderItemFunding != null) => TaskProgress.Completed,
+                _ => order.OrderItems.Any(oi => oi.OrderItemFunding != null)
+                    ? TaskProgress.InProgress
+                    : TaskProgress.NotStarted,
+            };
         }
 
         private void SetSectionThreeStatus(EntityFramework.Ordering.Models.Order order)
@@ -151,11 +151,14 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.Order
             }
         }
 
-        private void SetSectionFourStatus()
+        private void SetSectionFourStatus(EntityFramework.Ordering.Models.Order order)
         {
-            ReviewAndCompleteStatus = DataProcessingInformation is TaskProgress.Completed
-                ? TaskProgress.NotStarted
-                : TaskProgress.CannotStart;
+            if (order.Completed != null)
+                ReviewAndCompleteStatus = TaskProgress.Completed;
+            else if (DataProcessingInformation is TaskProgress.Completed)
+                ReviewAndCompleteStatus = TaskProgress.NotStarted;
+            else
+                ReviewAndCompleteStatus = TaskProgress.CannotStart;
         }
     }
 }

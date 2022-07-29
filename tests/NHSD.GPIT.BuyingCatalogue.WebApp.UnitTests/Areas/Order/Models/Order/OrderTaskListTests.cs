@@ -155,6 +155,7 @@ public class OrderTaskListTests
         OrderItem orderItem,
         Solution solution)
     {
+        orderItem.OrderItemFunding = null;
         orderItem.OrderItemPrice = null;
 
         var order = new EntityFramework.Ordering.Models.Order
@@ -256,6 +257,54 @@ public class OrderTaskListTests
             SolutionOrService = TaskProgress.Completed,
             FundingSource = TaskProgress.Completed,
             ImplementationPlan = TaskProgress.NotStarted,
+            AssociatedServiceBilling = TaskProgress.NotApplicable,
+        };
+
+        var model = new OrderTaskList(order);
+
+        model.Should().BeEquivalentTo(expectedModel);
+    }
+
+    [Theory]
+    [CommonAutoData]
+    public static void Construct_FundingSources_InProgress(
+        string description,
+        Contact orderingPartyContact,
+        EntityFramework.Catalogue.Models.Supplier supplier,
+        Contact supplierContact,
+        DateTime commencementDate,
+        OrderItem solutionOrderItem,
+        Solution solution,
+        OrderItem additionalServiceOrderItem,
+        AdditionalService additionalService)
+    {
+        var order = new EntityFramework.Ordering.Models.Order
+        {
+            Description = description,
+            OrderingPartyContact = orderingPartyContact,
+            Supplier = supplier,
+            SupplierContact = supplierContact,
+            CommencementDate = commencementDate,
+        };
+
+        solutionOrderItem.CatalogueItem = solution.CatalogueItem;
+        additionalServiceOrderItem.CatalogueItem = additionalService.CatalogueItem;
+
+        additionalServiceOrderItem.OrderItemPrice = null;
+        additionalServiceOrderItem.OrderItemFunding = null;
+
+        order.OrderItems.Add(solutionOrderItem);
+        order.OrderItems.Add(additionalServiceOrderItem);
+
+        var expectedModel = new OrderTaskList
+        {
+            DescriptionStatus = TaskProgress.Completed,
+            OrderingPartyStatus = TaskProgress.Completed,
+            SupplierStatus = TaskProgress.Completed,
+            CommencementDateStatus = TaskProgress.Completed,
+            SolutionOrService = TaskProgress.InProgress,
+            FundingSource = TaskProgress.InProgress,
+            ImplementationPlan = TaskProgress.CannotStart,
             AssociatedServiceBilling = TaskProgress.NotApplicable,
         };
 
@@ -447,6 +496,55 @@ public class OrderTaskListTests
             AssociatedServiceBilling = TaskProgress.NotApplicable,
             DataProcessingInformation = TaskProgress.Completed,
             ReviewAndCompleteStatus = TaskProgress.NotStarted,
+        };
+
+        var model = new OrderTaskList(order);
+
+        model.Should().BeEquivalentTo(expectedModel);
+    }
+
+    [Theory]
+    [CommonAutoData]
+    public static void Construct_Completed(
+        string description,
+        Contact orderingPartyContact,
+        EntityFramework.Catalogue.Models.Supplier supplier,
+        Contact supplierContact,
+        DateTime commencementDate,
+        OrderItem orderItem,
+        Solution solution)
+    {
+        var order = new EntityFramework.Ordering.Models.Order
+        {
+            Description = description,
+            OrderingPartyContact = orderingPartyContact,
+            Supplier = supplier,
+            SupplierContact = supplierContact,
+            CommencementDate = commencementDate,
+            ContractFlags = new()
+            {
+                UseDefaultImplementationPlan = true,
+                UseDefaultDataProcessing = true,
+            },
+        };
+
+        order.Complete();
+
+        orderItem.CatalogueItem = solution.CatalogueItem;
+        order.OrderItems.Add(orderItem);
+
+        var expectedModel = new OrderTaskList
+        {
+            DescriptionStatus = TaskProgress.Completed,
+            OrderingPartyStatus = TaskProgress.Completed,
+            SupplierStatus = TaskProgress.Completed,
+            CommencementDateStatus = TaskProgress.Completed,
+            SolutionOrService = TaskProgress.Completed,
+            FundingSource = TaskProgress.Completed,
+            ImplementationPlan = TaskProgress.Completed,
+            AssociatedServiceBilling = TaskProgress.NotApplicable,
+            DataProcessingInformation = TaskProgress.Completed,
+            ReviewAndCompleteStatus = TaskProgress.Completed,
         };
 
         var model = new OrderTaskList(order);
