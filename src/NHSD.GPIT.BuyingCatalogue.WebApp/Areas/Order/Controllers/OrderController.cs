@@ -8,13 +8,10 @@ using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.Framework.Settings;
-using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Models.TaskList;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Orders;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Organisations;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Pdf;
-using NHSD.GPIT.BuyingCatalogue.ServiceContracts.TaskList;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.Order;
-using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.OrderTriage;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Controllers;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
@@ -25,20 +22,17 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
     public sealed class OrderController : Controller
     {
         private readonly IOrderService orderService;
-        private readonly ITaskListService taskListService;
         private readonly IOrganisationsService organisationsService;
         private readonly IPdfService pdfService;
         private readonly PdfSettings pdfSettings;
 
         public OrderController(
             IOrderService orderService,
-            ITaskListService taskListService,
             IOrganisationsService organisationsService,
             IPdfService pdfService,
             PdfSettings pdfSettings)
         {
             this.orderService = orderService ?? throw new ArgumentNullException(nameof(orderService));
-            this.taskListService = taskListService ?? throw new ArgumentNullException(nameof(taskListService));
             this.organisationsService = organisationsService ?? throw new ArgumentNullException(nameof(organisationsService));
             this.pdfService = pdfService ?? throw new ArgumentNullException(nameof(pdfService));
             this.pdfSettings = pdfSettings ?? throw new ArgumentNullException(nameof(pdfSettings));
@@ -47,7 +41,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
         [HttpGet]
         public async Task<IActionResult> Order(string internalOrgId, CallOffId callOffId)
         {
-            var order = await orderService.GetOrderThin(callOffId, internalOrgId);
+            var order = await orderService.GetOrderForTaskListStatuses(callOffId, internalOrgId);
 
             if (order.OrderStatus == OrderStatus.Completed)
             {
@@ -57,9 +51,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
                     new { internalOrgId, callOffId });
             }
 
-            var sectionStatuses = await taskListService.GetTaskListStatusModelForOrder(order.Id);
-
-            var orderModel = new OrderModel(internalOrgId, order, sectionStatuses)
+            var orderModel = new OrderModel(
+                internalOrgId,
+                order,
+                new(order))
             {
                 DescriptionUrl = Url.Action(
                     nameof(OrderDescriptionController.OrderDescription),
