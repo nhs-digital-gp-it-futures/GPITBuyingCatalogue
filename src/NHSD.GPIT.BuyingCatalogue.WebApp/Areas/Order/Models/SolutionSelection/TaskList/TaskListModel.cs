@@ -10,6 +10,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.SolutionSelection.
 {
     public class TaskListModel : NavBaseModel
     {
+        private const string Add = "Add";
+        private const string Change = "Change";
+
         private readonly Dictionary<CatalogueItemId, TaskListOrderItemModel> taskModels = new();
 
         public TaskListModel()
@@ -80,9 +83,13 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.SolutionSelection.
 
         public IEnumerable<OrderItem> AdditionalServices { get; set; }
 
+        public string AdditionalServicesActionText => $"{(AdditionalServices?.Any() ?? false ? Change : Add)} Additional Services";
+
         public bool AssociatedServicesAvailable { get; set; }
 
         public IEnumerable<OrderItem> AssociatedServices { get; set; }
+
+        public string AssociatedServicesActionText => $"{(AssociatedServices?.Any() ?? false ? Change : Add)} Associated Services";
 
         public TaskProgress Progress
         {

@@ -121,5 +121,45 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.Solution
 
             model.OrderItemModel(solution.CatalogueItemId).Should().NotBeNull();
         }
+
+        [Theory]
+        [CommonAutoData]
+        public static void WithAdditionalServices_SetsActionText(
+            TaskListModel model)
+        {
+            model.AdditionalServices.Should().HaveCountGreaterThan(0);
+
+            model.AdditionalServicesActionText.Should().Be("Change Additional Services");
+        }
+
+        [Theory]
+        [CommonAutoData]
+        public static void WithNoAdditionalServices_SetsActionText(
+            TaskListModel model)
+        {
+            model.AdditionalServices = null;
+
+            model.AdditionalServicesActionText.Should().Be("Add Additional Services");
+        }
+
+        [Theory]
+        [CommonAutoData]
+        public static void WithAssociatedServices_SetsActionText(
+            TaskListModel model)
+        {
+            model.AssociatedServices.Should().HaveCountGreaterThan(0);
+
+            model.AssociatedServicesActionText.Should().Be("Change Associated Services");
+        }
+
+        [Theory]
+        [CommonAutoData]
+        public static void WithNoAssociatedServicesSetsActionText(
+            TaskListModel model)
+        {
+            model.AssociatedServices = null;
+
+            model.AssociatedServicesActionText.Should().Be("Add Associated Services");
+        }
     }
 }
