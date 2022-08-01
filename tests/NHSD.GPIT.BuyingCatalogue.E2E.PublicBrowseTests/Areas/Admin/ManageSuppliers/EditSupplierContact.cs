@@ -100,11 +100,13 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.ManageSuppliers
         }
 
         [Fact]
-        public async Task EditSupplierContact_DuplicateDetails_ThrowsError()
+        public void EditSupplierContact_DuplicateDetails_ThrowsError()
         {
-            await using var context = GetEndToEndDbContext();
-
-            var contact = await context.SupplierContacts.FirstAsync(sc => sc.Id == OtherContactId);
+            CommonActions.ClearInputElement(Objects.Admin.ManageSuppliers.ManageSuppliers.EditSupplierContactFirstName);
+            CommonActions.ClearInputElement(Objects.Admin.ManageSuppliers.ManageSuppliers.EditSupplierContactLastName);
+            CommonActions.ClearInputElement(Objects.Admin.ManageSuppliers.ManageSuppliers.EditSupplierContactDepartment);
+            CommonActions.ClearInputElement(Objects.Admin.ManageSuppliers.ManageSuppliers.EditSupplierContactPhoneNumber);
+            CommonActions.ClearInputElement(Objects.Admin.ManageSuppliers.ManageSuppliers.EditSupplierContactEmail);
 
             CommonActions.ElementAddValue(SupplierContactObjects.FirstNameInput, contact.FirstName);
             CommonActions.ElementAddValue(SupplierContactObjects.LastNameInput, contact.LastName);

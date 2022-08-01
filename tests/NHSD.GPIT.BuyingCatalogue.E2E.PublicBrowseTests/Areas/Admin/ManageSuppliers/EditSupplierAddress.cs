@@ -68,21 +68,17 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.ManageSuppliers
             CommonActions.ErrorSummaryDisplayed().Should().BeTrue();
             CommonActions.ErrorSummaryLinksExist().Should().BeTrue();
 
-            CommonActions.ElementShowingCorrectErrorMessage(
-                Objects.Admin.ManageSuppliers.ManageSuppliers.EditSupplierAddressAddressLine1Error,
-                "Enter a building or street").Should().BeTrue();
+            CommonActions.ElementIsDisplayed(
+                Objects.Admin.ManageSuppliers.ManageSuppliers.EditSupplierAddressAddressLine1Error).Should().BeTrue();
 
-            CommonActions.ElementShowingCorrectErrorMessage(
-                Objects.Admin.ManageSuppliers.ManageSuppliers.EditSupplierAddressTownError,
-                "Enter a town or city").Should().BeTrue();
+            CommonActions.ElementIsDisplayed(
+                Objects.Admin.ManageSuppliers.ManageSuppliers.EditSupplierAddressTownError).Should().BeTrue();
 
-            CommonActions.ElementShowingCorrectErrorMessage(
-                Objects.Admin.ManageSuppliers.ManageSuppliers.EditSupplierAddressPostcodeError,
-                "Enter a postcode").Should().BeTrue();
+            CommonActions.ElementIsDisplayed(
+                Objects.Admin.ManageSuppliers.ManageSuppliers.EditSupplierAddressPostcodeError).Should().BeTrue();
 
-            CommonActions.ElementShowingCorrectErrorMessage(
-                Objects.Admin.ManageSuppliers.ManageSuppliers.EditSupplierAddressCountryError,
-                "Enter a country").Should().BeTrue();
+            CommonActions.ElementIsDisplayed(
+                Objects.Admin.ManageSuppliers.ManageSuppliers.EditSupplierAddressCountryError).Should().BeTrue();
         }
 
         [Fact]

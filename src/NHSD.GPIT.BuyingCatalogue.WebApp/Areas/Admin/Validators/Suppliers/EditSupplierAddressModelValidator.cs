@@ -5,23 +5,28 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Validators.Suppliers
 {
     public sealed class EditSupplierAddressModelValidator : AbstractValidator<EditSupplierAddressModel>
     {
+        public const string AddressLine1Error = "Enter a building or street";
+        public const string TownOrCityError = "Enter a town or city";
+        public const string PostcodeError = "Enter a postcode";
+        public const string CountryError = "Enter a postcode";
+
         public EditSupplierAddressModelValidator()
         {
             RuleFor(m => m.AddressLine1)
                 .NotEmpty()
-                .WithMessage("Enter a building or street");
+                .WithMessage(AddressLine1Error);
 
             RuleFor(m => m.Town)
                 .NotEmpty()
-                .WithMessage("Enter a town or city");
+                .WithMessage(TownOrCityError);
 
             RuleFor(m => m.PostCode)
                 .NotEmpty()
-                .WithMessage("Enter a postcode");
+                .WithMessage(PostcodeError);
 
             RuleFor(m => m.Country)
                 .NotEmpty()
-                .WithMessage("Enter a country");
+                .WithMessage(CountryError);
         }
     }
 }

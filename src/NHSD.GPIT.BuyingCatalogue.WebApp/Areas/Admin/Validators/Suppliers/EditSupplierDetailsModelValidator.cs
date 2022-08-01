@@ -8,6 +8,13 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Validators.Suppliers
 {
     public class EditSupplierDetailsModelValidator : AbstractValidator<EditSupplierDetailsModel>
     {
+        public const string EnterSupplierNameError = "Enter a supplier name";
+        public const string EnterSupplierLegalNameError = "Enter a supplier legal name";
+        public const string DuplicateSupplierNameError = "Supplier name already exists. Enter a different name";
+        public const string DuplicateSupplierLegalNameError = "Supplier legal name already exists. Enter a different name";
+        public const string EnterPrefixToUrlError = "Enter a prefix to the URL, either http or https";
+        public const string EnterValidUrlError = "Enter a valid URL";
+
         private readonly ISuppliersService suppliersService;
 
         public EditSupplierDetailsModelValidator(
@@ -18,11 +25,11 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Validators.Suppliers
 
             RuleFor(m => m.SupplierName)
                 .NotEmpty()
-                .WithMessage("Enter a supplier name");
+                .WithMessage(EnterSupplierNameError);
 
             RuleFor(m => m.SupplierLegalName)
                 .NotEmpty()
-                .WithMessage("Enter a supplier legal name");
+                .WithMessage(EnterSupplierLegalNameError);
 
             RuleFor(m => m.SupplierWebsite)
                 .IsValidUrl(urlValidator)
@@ -30,12 +37,12 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Validators.Suppliers
 
             RuleFor(m => m)
                 .Must(NotBeADuplicateSupplierName)
-                .WithMessage("Supplier name already exists. Enter a different name")
+                .WithMessage(DuplicateSupplierNameError)
                 .OverridePropertyName(m => m.SupplierName);
 
             RuleFor(m => m)
                 .Must(NotBeADuplicateSupplierLegalName)
-                .WithMessage("Supplier legal name already exists. Enter a different name")
+                .WithMessage(DuplicateSupplierLegalNameError)
                 .OverridePropertyName(m => m.SupplierLegalName);
         }
 

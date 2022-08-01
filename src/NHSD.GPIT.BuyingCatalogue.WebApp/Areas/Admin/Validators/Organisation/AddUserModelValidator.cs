@@ -9,6 +9,12 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Validators.Organisation
 {
     public sealed class AddUserModelValidator : AbstractValidator<AddUserModel>
     {
+        public const string FirstNameError = "Enter a first name";
+        public const string LastNameError = "Enter a last name";
+        public const string NoEmailError = "Enter an email address";
+        public const string EmailFormatError = "Enter an email address in the correct format, like name@example.com";
+        public const string UserAlreadyExistsError = "A user with this email address is already registered on the Buying Catalogue";
+
         private readonly IUsersService usersService;
 
         public AddUserModelValidator(IUsersService usersService)
@@ -17,19 +23,19 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Validators.Organisation
 
             RuleFor(m => m.FirstName)
                 .NotEmpty()
-                .WithMessage("Enter a first name");
+                .WithMessage(FirstNameError);
 
             RuleFor(m => m.LastName)
                 .NotEmpty()
-                .WithMessage("Enter a last name");
+                .WithMessage(LastNameError);
 
             RuleFor(m => m.EmailAddress)
                 .NotEmpty()
-                .WithMessage("Enter an email address")
+                .WithMessage(NoEmailError)
                 .EmailAddress()
-                .WithMessage("Enter an email address in the correct format, like name@example.com")
+                .WithMessage(EmailFormatError)
                 .Must(NotBeDuplicateUserEmail)
-                .WithMessage("A user with this email address is already registered on the Buying Catalogue");
+                .WithMessage(UserAlreadyExistsError);
         }
 
         private bool NotBeDuplicateUserEmail(string emailAddress) => !usersService.EmailAddressExists(emailAddress).GetAwaiter().GetResult();

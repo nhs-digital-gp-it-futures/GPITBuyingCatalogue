@@ -17,12 +17,6 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.Organisations
     {
         private const int OrganisationId = 2;
 
-        private const string FirstNameRequired = "Enter a first name";
-        private const string LastNameRequired = "Enter a last name";
-        private const string EmailAddressRequired = "Enter an email address";
-        private const string EmailFormatIncorrect = "Enter an email address in the correct format, like name@example.com";
-        private const string EmailAlreadyExists = "A user with this email address is already registered on the Buying Catalogue";
-
         private static readonly Dictionary<string, string> Parameters = new()
         {
             { nameof(OrganisationId), OrganisationId.ToString() },
@@ -80,7 +74,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.Organisations
         }
 
         [Fact]
-        public void AddUser_EmptyInput_ThrowsErrors()
+        public void AddUser_NoInput_ThrowsErrors()
         {
             CommonActions.ClickSave();
 
@@ -93,55 +87,9 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.Organisations
             CommonActions.ErrorSummaryDisplayed().Should().BeTrue();
             CommonActions.ErrorSummaryLinksExist().Should().BeTrue();
 
-            CommonActions.ElementShowingCorrectErrorMessage(AddUserObjects.FirstNameError, FirstNameRequired).Should().BeTrue();
-            CommonActions.ElementShowingCorrectErrorMessage(AddUserObjects.LastNameError, LastNameRequired).Should().BeTrue();
-            CommonActions.ElementShowingCorrectErrorMessage(AddUserObjects.EmailError, EmailAddressRequired).Should().BeTrue();
-        }
-
-        [Fact]
-        public void AddUser_EmailIncorrectFormat_ThrowsError()
-        {
-            var user = GenerateUser.Generate();
-
-            AdminPages.AddUser.EnterFirstName(user.FirstName);
-            AdminPages.AddUser.EnterLastName(user.LastName);
-            AdminPages.AddUser.EnterEmailAddress("test");
-
-            CommonActions.ClickSave();
-
-            CommonActions.PageLoadedCorrectGetIndex(
-                typeof(OrganisationsController),
-                nameof(OrganisationsController.AddUser))
-                .Should()
-                .BeTrue();
-
-            CommonActions.ErrorSummaryDisplayed().Should().BeTrue();
-            CommonActions.ErrorSummaryLinksExist().Should().BeTrue();
-
-            CommonActions.ElementShowingCorrectErrorMessage(AddUserObjects.EmailError, EmailFormatIncorrect).Should().BeTrue();
-        }
-
-        [Fact]
-        public async Task AddUser_EmailAlreadyExists_ThrowsError()
-        {
-            var user = await CreateUser();
-
-            AdminPages.AddUser.EnterFirstName(user.FirstName);
-            AdminPages.AddUser.EnterLastName(user.LastName);
-            AdminPages.AddUser.EnterEmailAddress(user.Email);
-
-            CommonActions.ClickSave();
-
-            CommonActions.PageLoadedCorrectGetIndex(
-                typeof(OrganisationsController),
-                nameof(OrganisationsController.AddUser))
-                .Should()
-                .BeTrue();
-
-            CommonActions.ErrorSummaryDisplayed().Should().BeTrue();
-            CommonActions.ErrorSummaryLinksExist().Should().BeTrue();
-
-            CommonActions.ElementShowingCorrectErrorMessage(AddUserObjects.EmailError, EmailAlreadyExists).Should().BeTrue();
+            CommonActions.ElementIsDisplayed(AddUserObjects.EmailError).Should().BeTrue();
+            CommonActions.ElementIsDisplayed(AddUserObjects.FirstNameError).Should().BeTrue();
+            CommonActions.ElementIsDisplayed(AddUserObjects.LastNameError).Should().BeTrue();
         }
 
         private async Task<AspNetUser> CreateUser(bool isEnabled = true)

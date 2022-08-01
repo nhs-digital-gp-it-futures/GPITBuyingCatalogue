@@ -22,7 +22,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators.Supp
             var result = validator.TestValidate(model);
 
             result.ShouldHaveValidationErrorFor(m => m.SelectedCapabilityId)
-                .WithErrorMessage("Select a Capability");
+                .WithErrorMessage(SupplierDefinedEpicBaseModelValidator.CapabilityError);
         }
 
         [Theory]
@@ -38,7 +38,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators.Supp
             var result = validator.TestValidate(model);
 
             result.ShouldHaveValidationErrorFor(m => m.Name)
-                .WithErrorMessage("Enter an Epic name");
+                .WithErrorMessage(SupplierDefinedEpicBaseModelValidator.EpicNameError);
         }
 
         [Theory]
@@ -54,7 +54,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators.Supp
             var result = validator.TestValidate(model);
 
             result.ShouldHaveValidationErrorFor(m => m.Description)
-                .WithErrorMessage("Enter a description");
+                .WithErrorMessage(SupplierDefinedEpicBaseModelValidator.DescriptionError);
         }
 
         [Theory]
@@ -68,7 +68,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators.Supp
             var result = validator.TestValidate(model);
 
             result.ShouldHaveValidationErrorFor(m => m.IsActive)
-                .WithErrorMessage("Select a status");
+                .WithErrorMessage(SupplierDefinedEpicBaseModelValidator.StatusError);
         }
 
         [Theory]
@@ -97,7 +97,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators.Supp
                 nameof(model.IsActive));
 
             result.ShouldHaveValidationErrorFor(expectedErrorProperty)
-                .WithErrorMessage("A supplier defined Epic with these details already exists");
+                .WithErrorMessage(SupplierDefinedEpicBaseModelValidator.SupplierDefinedEpicAlreadyExists);
         }
 
         [Theory]

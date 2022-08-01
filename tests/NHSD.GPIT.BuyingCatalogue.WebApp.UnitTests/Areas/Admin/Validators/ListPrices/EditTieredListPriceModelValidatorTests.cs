@@ -187,6 +187,28 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators.List
 
         [Theory]
         [CommonAutoData]
+        public static void Validate_Duplicate_SetsModelError(
+            EditTieredListPriceModel model,
+            [Frozen] Mock<IListPriceService> service,
+            EditTieredListPriceModelValidator validator)
+        {
+            service.Setup(s => s.HasDuplicateTieredPrice(
+                model.CatalogueItemId,
+                model.CataloguePriceId,
+                model.SelectedProvisioningType.Value,
+                model.SelectedCalculationType.Value,
+                model.UnitDescription,
+                model.RangeDefinition))
+                .ReturnsAsync(true);
+
+            var result = validator.TestValidate(model);
+
+            result.ShouldHaveValidationErrorFor("SelectedProvisioningType|SelectedCalculationType|UnitDescription|RangeDefinition")
+                .WithErrorMessage(SharedListPriceValidationErrors.DuplicateListPriceError);
+        }
+
+        [Theory]
+        [CommonAutoData]
         public static void Validate_Valid_NoModelErrors(
             Solution solution,
             CataloguePrice price,

@@ -9,6 +9,14 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Validators
 {
     public sealed class EditContactModelValidator : AbstractValidator<EditContactModel>
     {
+        public const string FirstNameError = "Enter a first name";
+        public const string LastNameError = "Enter a last name";
+        public const string PhoneNumberError = "Enter a phone number";
+        public const string DepartmentNameError = "Enter a department name";
+        public const string NoEmailError = "Enter an email address";
+        public const string EmailFormatError = "Enter an email address in the correct format, like name@example.com";
+        public const string ContactAlreadyExistsError = "A contact with these contact details already exists for this supplier";
+
         public const string DuplicateContactErrorMessage = "A contact with these contact details already exists for this supplier";
 
         private readonly ISuppliersService suppliersService;

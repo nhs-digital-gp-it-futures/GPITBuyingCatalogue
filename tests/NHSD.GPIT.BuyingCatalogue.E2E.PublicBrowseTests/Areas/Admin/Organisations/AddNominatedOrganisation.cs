@@ -51,7 +51,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.Organisations
         [Fact]
         public void AddNominatedOrganisation_ClickContinue_DisplaysValidationErrors()
         {
-            CommonActions.ClickLinkElement(CommonSelectors.SubmitButton);
+            CommonActions.ClickSave();
 
             CommonActions.PageLoadedCorrectGetIndex(
                 typeof(OrganisationsController),
@@ -60,9 +60,8 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.Organisations
             CommonActions.ErrorSummaryDisplayed().Should().BeTrue();
             CommonActions.ErrorSummaryLinksExist().Should().BeTrue();
 
-            CommonActions.ElementShowingCorrectErrorMessage(
-                NominatedOrganisationObjects.SelectedOrganisationError,
-                AddNominatedOrganisationModelValidator.OrganisationMissingError).Should().BeTrue();
+            CommonActions.ElementIsDisplayed(
+                NominatedOrganisationObjects.SelectedOrganisationError).Should().BeTrue();
         }
 
         [Fact]

@@ -49,53 +49,37 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.SupplierDefinedEpics
         }
 
         [Fact]
-        public void AddEpic_NoInput_ThrowsError()
+        public void AddEpic_NoInput_ThrowsErrors()
         {
             CommonActions.ClickSave();
+
+            CommonActions.PageLoadedCorrectGetIndex(
+               typeof(SupplierDefinedEpicsController),
+               nameof(SupplierDefinedEpicsController.AddEpic))
+               .Should().BeTrue();
 
             CommonActions.ErrorSummaryDisplayed().Should().BeTrue();
             CommonActions.ErrorSummaryLinksExist().Should().BeTrue();
 
-            CommonActions.ElementShowingCorrectErrorMessage(
-                AddSupplierDefinedEpicObjects.CapabilityInputError,
-                "Select a Capability")
+            CommonActions.ElementIsDisplayed(
+                AddSupplierDefinedEpicObjects.CapabilityInputError)
                 .Should()
                 .BeTrue();
 
-            CommonActions.ElementShowingCorrectErrorMessage(
-                AddSupplierDefinedEpicObjects.NameInputError,
-                "Enter an Epic name")
+            CommonActions.ElementIsDisplayed(
+                AddSupplierDefinedEpicObjects.NameInputError)
                 .Should()
                 .BeTrue();
 
-            CommonActions.ElementShowingCorrectErrorMessage(
-                AddSupplierDefinedEpicObjects.DescriptionInputError,
-                "Enter a description")
+            CommonActions.ElementIsDisplayed(
+                AddSupplierDefinedEpicObjects.DescriptionInputError)
                 .Should()
                 .BeTrue();
 
-            CommonActions.ElementShowingCorrectErrorMessage(
-                AddSupplierDefinedEpicObjects.StatusInputError,
-                "Error: Select a status")
+            CommonActions.ElementIsDisplayed(
+                AddSupplierDefinedEpicObjects.StatusInputError)
                 .Should()
                 .BeTrue();
-        }
-
-        [Fact]
-        public void AddEpic_DuplicatesExistingEpic_ThrowsError()
-        {
-            using var context = GetEndToEndDbContext();
-            var epic = context.Epics.Single(e => e.Id == "S00001");
-
-            CommonActions.ElementAddValue(AddSupplierDefinedEpicObjects.NameInput, epic.Name);
-            CommonActions.ElementAddValue(AddSupplierDefinedEpicObjects.DescriptionInput, epic.Description);
-            CommonActions.SelectDropDownItemByValue(AddSupplierDefinedEpicObjects.CapabilityInput, epic.CapabilityId.ToString());
-            CommonActions.ClickRadioButtonWithValue(epic.IsActive.ToString());
-
-            CommonActions.ClickSave();
-
-            CommonActions.ErrorSummaryDisplayed().Should().BeTrue();
-            CommonActions.ErrorSummaryLinksExist().Should().BeTrue();
         }
 
         [Fact]

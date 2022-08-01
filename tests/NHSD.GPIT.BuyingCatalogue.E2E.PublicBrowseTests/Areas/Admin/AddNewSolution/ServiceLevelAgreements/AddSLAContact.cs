@@ -69,7 +69,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.AddNewSolution.ServiceL
         }
 
         [Fact]
-        public void AddSLAContact_NoInput_ErrorThrown()
+        public void AddSLAContact_InvalidModelState_ErrorThrown()
         {
             CommonActions.ClickSave();
 
@@ -96,34 +96,8 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.AddNewSolution.ServiceL
                 .ElementIsDisplayed(SLAContactObjects.TimeInputError)
                 .Should()
                 .BeTrue();
-        }
 
-        [Fact]
-        public void AddSLAContact_FromIncorrectFormat_ErrorThrown()
-        {
             CommonActions.ElementAddValue(SLAContactObjects.From, "12");
-
-            CommonActions.ClickSave();
-
-            CommonActions.PageLoadedCorrectGetIndex(
-                typeof(ServiceLevelAgreementsController),
-                nameof(ServiceLevelAgreementsController.AddContact))
-                .Should()
-                .BeTrue();
-
-            CommonActions.ErrorSummaryDisplayed().Should().BeTrue();
-            CommonActions.ErrorSummaryLinksExist().Should().BeTrue();
-
-            CommonActions
-                .ElementShowingCorrectErrorMessage(SLAContactObjects.TimeInputError, TimeInvalidFormat)
-                .Should()
-                .BeTrue();
-        }
-
-        [Fact]
-        public void AddSLAContact_UntilIncorrectFormat_ErrorThrown()
-        {
-            CommonActions.ElementAddValue(SLAContactObjects.From, "12:30");
             CommonActions.ElementAddValue(SLAContactObjects.Until, "13");
 
             CommonActions.ClickSave();
@@ -134,11 +108,8 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.AddNewSolution.ServiceL
                 .Should()
                 .BeTrue();
 
-            CommonActions.ErrorSummaryDisplayed().Should().BeTrue();
-            CommonActions.ErrorSummaryLinksExist().Should().BeTrue();
-
             CommonActions
-                .ElementShowingCorrectErrorMessage(SLAContactObjects.TimeInputError, TimeInvalidFormat)
+                .ElementIsDisplayed(SLAContactObjects.TimeInputError)
                 .Should()
                 .BeTrue();
         }
