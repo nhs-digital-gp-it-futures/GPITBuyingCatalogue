@@ -5,7 +5,6 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
-using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Contacts;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Contracts;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.Contracts.AssociatedServicesBilling;
 
@@ -123,7 +122,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers.Contracts
 
             await contractsService.HasSpecificRequirements(callOffId.Id, model.HasSpecificRequirements!.Value);
 
-            if (model.HasSpecificRequirements is false)
+            if (model.HasSpecificRequirements is true)
             {
                 return RedirectToAction(
                     nameof(BespokeRequirements),
@@ -145,7 +144,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers.Contracts
                 BackLink = Url.Action(
                     nameof(SpecificRequirements),
                     typeof(AssociatedServicesBillingController).ControllerName(),
-                    new { internalOrgId, callOffId }),
+                    new { internalOrgId, callOffId, fromBespoke }),
             };
 
             return View(model);

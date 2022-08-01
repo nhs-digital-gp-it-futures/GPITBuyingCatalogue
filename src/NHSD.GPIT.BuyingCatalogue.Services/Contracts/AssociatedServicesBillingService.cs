@@ -5,9 +5,9 @@ using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
-using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Contacts;
+using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Contracts;
 
-namespace NHSD.GPIT.BuyingCatalogue.Services.Contacts
+namespace NHSD.GPIT.BuyingCatalogue.Services.Contracts
 {
     public sealed class AssociatedServicesBillingService : IAssociatedServicesBillingService
     {

@@ -1,7 +1,7 @@
 ﻿using FluentValidation;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.Contracts.AssociatedServicesBilling;
 
-namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Validators.AssociatedServicesBilling
+namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Contracts.Validators.AssociatedServicesBilling
 {
     public class ReviewBillingModelValidator : AbstractValidator<ReviewBillingModel>
     {

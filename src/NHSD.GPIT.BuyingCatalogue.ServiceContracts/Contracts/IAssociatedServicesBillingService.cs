@@ -1,11 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using System.Collections.Generic;
 using System.Threading.Tasks;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 
-namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.Contacts
+namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.Contracts
 {
     public interface IAssociatedServicesBillingService
     {
