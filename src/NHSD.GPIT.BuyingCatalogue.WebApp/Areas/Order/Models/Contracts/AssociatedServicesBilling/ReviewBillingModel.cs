@@ -18,12 +18,12 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.Contracts.Associat
             CallOffId = callOffId;
             AssociatedServiceOrderItems = associatedServiceOrderItems;
             UseDefaultBilling = contractFlags.UseDefaultBilling;
-            TargetMilestone = targetMilestone;
+            TargetMilestoneName = targetMilestone.Title;
         }
 
         public CallOffId CallOffId { get; set; }
 
-        public ImplementationPlanMilestone TargetMilestone { get; set; }
+        public string TargetMilestoneName { get; set; }
 
         public List<OrderItem> AssociatedServiceOrderItems { get; set; }
 

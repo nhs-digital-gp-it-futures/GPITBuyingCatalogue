@@ -56,7 +56,11 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers.Contracts
         public async Task<IActionResult> ReviewBilling(string internalOrgId, CallOffId callOffId, ReviewBillingModel model)
         {
             if (!ModelState.IsValid)
+            {
+                var associatedServiceItems = await associatedServicesBillingService.GetAssociatedServiceOrderItems(internalOrgId, callOffId);
+                model.AssociatedServiceOrderItems = associatedServiceItems;
                 return View(model);
+            }
 
             await contractsService.UseDefaultBilling(callOffId.Id, model.UseDefaultBilling!.Value);
 

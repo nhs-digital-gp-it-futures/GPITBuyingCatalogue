@@ -26,7 +26,7 @@
                 <nhs-table-row-container>
                     <nhs-table-cell>@item.CatalogueItem.Name</nhs-table-cell>
                     <nhs-table-cell>@item.TotalQuantity</nhs-table-cell>
-                    <nhs-table-cell>@Model.TargetMilestone.Title</nhs-table-cell>
+                    <nhs-table-cell>@Model.TargetMilestoneName</nhs-table-cell>
                 </nhs-table-row-container>
             }
         </nhs-table>
@@ -40,6 +40,8 @@
                                    value-name="Value"
                                    display-name="Text"/>
             </nhs-fieldset-form-label>
+
+            <input type="hidden" asp-for="TargetMilestoneName" />
         
             <div class="nhsuk-u-margin-top-9">
                 <nhs-submit-button/>
