@@ -128,17 +128,11 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.ListPrices.Base.Flat
         }
 
         [Fact]
-        public void Submit_Duplicate_ThrowsError()
+        public void Submit_InvalidModelState_ThrowsError()
         {
-            var catalogueItem = GetCatalogueItemWithPrices(CatalogueItemId);
-            var price = catalogueItem.CataloguePrices.First(p => p.CataloguePriceType == CataloguePriceType.Flat && p.CataloguePriceId != CataloguePriceId);
-
-            CommonActions.ClickRadioButtonWithValue(price.ProvisioningType.ToString());
-            CommonActions.ClickRadioButtonWithValue(price.PublishedStatus.ToString());
-            CommonActions.ClickRadioButtonWithValue(price.CataloguePriceCalculationType.ToString());
-
-            CommonActions.ElementAddValue(ListPriceObjects.UnitDescriptionInput, price.PricingUnit.Description);
-            CommonActions.ElementAddValue(ListPriceObjects.PriceInput, price.CataloguePriceTiers.First().Price.ToString());
+            CommonActions.ClearInputElement(ListPriceObjects.PriceInput);
+            CommonActions.ClearInputElement(ListPriceObjects.UnitDescriptionInput);
+            CommonActions.ClearInputElement(ListPriceObjects.RangeDefinitionInput);
 
             CommonActions.ClickSave();
 
@@ -149,10 +143,9 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.ListPrices.Base.Flat
             CommonActions.ErrorSummaryDisplayed().Should().BeTrue();
             CommonActions.ErrorSummaryLinksExist().Should().BeTrue();
 
-            CommonActions.ElementIsDisplayed(ListPriceObjects.ProvisioningTypeInputError).Should().BeTrue();
-            CommonActions.ElementIsDisplayed(ListPriceObjects.UnitDescriptionInputError).Should().BeTrue();
             CommonActions.ElementIsDisplayed(ListPriceObjects.PriceInputError).Should().BeTrue();
-            CommonActions.ElementIsDisplayed(ListPriceObjects.CalculationTypeInputError).Should().BeTrue();
+            CommonActions.ElementIsDisplayed(ListPriceObjects.UnitDescriptionInputError).Should().BeTrue();
+            CommonActions.ElementIsDisplayed(ListPriceObjects.RangeDefinitionInputError).Should().BeTrue();
         }
 
         [Fact]

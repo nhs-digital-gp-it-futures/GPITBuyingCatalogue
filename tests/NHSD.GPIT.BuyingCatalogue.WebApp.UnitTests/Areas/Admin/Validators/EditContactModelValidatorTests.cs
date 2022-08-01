@@ -36,7 +36,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators
             var result = validator.TestValidate(model);
 
             result.ShouldHaveValidationErrorFor(m => m.FirstName)
-                .WithErrorMessage("Enter a first name");
+                .WithErrorMessage(EditContactModelValidator.FirstNameError);
         }
 
         [Theory]
@@ -62,7 +62,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators
             var result = validator.TestValidate(model);
 
             result.ShouldHaveValidationErrorFor(m => m.LastName)
-                .WithErrorMessage("Enter a last name");
+                .WithErrorMessage(EditContactModelValidator.LastNameError);
         }
 
         [Theory]
@@ -88,7 +88,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators
             var result = validator.TestValidate(model);
 
             result.ShouldHaveValidationErrorFor(m => m.PhoneNumber)
-                .WithErrorMessage("Enter a phone number");
+                .WithErrorMessage(EditContactModelValidator.PhoneNumberError);
         }
 
         [Theory]
@@ -114,7 +114,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators
             var result = validator.TestValidate(model);
 
             result.ShouldHaveValidationErrorFor(m => m.Department)
-                .WithErrorMessage("Enter a department name");
+                .WithErrorMessage(EditContactModelValidator.DepartmentNameError);
         }
 
         [Theory]
@@ -140,7 +140,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators
             var result = validator.TestValidate(model);
 
             result.ShouldHaveValidationErrorFor(m => m.Email)
-                .WithErrorMessage("Enter an email address");
+                .WithErrorMessage(EditContactModelValidator.NoEmailError);
         }
 
         [Theory]
@@ -164,7 +164,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators
             var result = validator.TestValidate(model);
 
             result.ShouldHaveValidationErrorFor(m => m.Email)
-                .WithErrorMessage("Enter an email address in the correct format, like name@example.com");
+                .WithErrorMessage(EditContactModelValidator.EmailFormatError);
         }
 
         [Theory]
@@ -193,7 +193,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators
             var result = validator.TestValidate(model);
 
             result.ShouldHaveValidationErrorFor("edit-contact")
-                .WithErrorMessage("A contact with these contact details already exists for this supplier");
+                .WithErrorMessage(EditContactModelValidator.ContactAlreadyExistsError);
         }
 
         [Theory]
@@ -246,7 +246,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators
             var result = validator.TestValidate(model);
 
             result.ShouldHaveValidationErrorFor("edit-contact")
-                .WithErrorMessage("A contact with these contact details already exists for this supplier");
+                .WithErrorMessage(EditContactModelValidator.ContactAlreadyExistsError);
         }
 
         [Theory]

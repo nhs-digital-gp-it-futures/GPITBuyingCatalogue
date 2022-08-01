@@ -100,17 +100,13 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.ManageSuppliers
         }
 
         [Fact]
-        public async Task EditSupplierContact_DuplicateDetails_ThrowsError()
+        public void EditSupplierContact_DuplicateDetails_ThrowsError()
         {
-            await using var context = GetEndToEndDbContext();
-
-            var contact = await context.SupplierContacts.FirstAsync(sc => sc.Id == OtherContactId);
-
-            CommonActions.ElementAddValue(Objects.Admin.ManageSuppliers.ManageSuppliers.EditSupplierContactFirstName, contact.FirstName);
-            CommonActions.ElementAddValue(Objects.Admin.ManageSuppliers.ManageSuppliers.EditSupplierContactLastName, contact.LastName);
-            CommonActions.ElementAddValue(Objects.Admin.ManageSuppliers.ManageSuppliers.EditSupplierContactDepartment, contact.Department);
-            CommonActions.ElementAddValue(Objects.Admin.ManageSuppliers.ManageSuppliers.EditSupplierContactPhoneNumber, contact.PhoneNumber);
-            CommonActions.ElementAddValue(Objects.Admin.ManageSuppliers.ManageSuppliers.EditSupplierContactEmail, contact.Email);
+            CommonActions.ClearInputElement(Objects.Admin.ManageSuppliers.ManageSuppliers.EditSupplierContactFirstName);
+            CommonActions.ClearInputElement(Objects.Admin.ManageSuppliers.ManageSuppliers.EditSupplierContactLastName);
+            CommonActions.ClearInputElement(Objects.Admin.ManageSuppliers.ManageSuppliers.EditSupplierContactDepartment);
+            CommonActions.ClearInputElement(Objects.Admin.ManageSuppliers.ManageSuppliers.EditSupplierContactPhoneNumber);
+            CommonActions.ClearInputElement(Objects.Admin.ManageSuppliers.ManageSuppliers.EditSupplierContactEmail);
 
             CommonActions.ClickSave();
 
@@ -123,9 +119,28 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.ManageSuppliers
             CommonActions.ErrorSummaryDisplayed().Should().BeTrue();
             CommonActions.ErrorSummaryLinksExist().Should().BeTrue();
 
-            CommonActions.ElementShowingCorrectErrorMessage(
-                    Objects.Admin.ManageSuppliers.ManageSuppliers.EditSupplierContactContainerError,
-                    "Error: A contact with these contact details already exists for this supplier")
+            CommonActions.ElementIsDisplayed(
+                    Objects.Admin.ManageSuppliers.ManageSuppliers.EditSupplierContactFirstNameError)
+                .Should()
+                .BeTrue();
+
+            CommonActions.ElementIsDisplayed(
+                    Objects.Admin.ManageSuppliers.ManageSuppliers.EditSupplierContactLastNameError)
+                .Should()
+                .BeTrue();
+
+            CommonActions.ElementIsDisplayed(
+                    Objects.Admin.ManageSuppliers.ManageSuppliers.EditSupplierContactDepartmentError)
+                .Should()
+                .BeTrue();
+
+            CommonActions.ElementIsDisplayed(
+                    Objects.Admin.ManageSuppliers.ManageSuppliers.EditSupplierContactPhoneNumberError)
+                .Should()
+                .BeTrue();
+
+            CommonActions.ElementIsDisplayed(
+                    Objects.Admin.ManageSuppliers.ManageSuppliers.EditSupplierContactEmailError)
                 .Should()
                 .BeTrue();
         }

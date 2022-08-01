@@ -37,7 +37,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators.Supp
             var result = validator.TestValidate(model);
 
             result.ShouldHaveValidationErrorFor(m => m.IsActive)
-                .WithErrorMessage("This supplier defined Epic cannot be set to inactive as it is referenced by another solution or service");
+                .WithErrorMessage(EditSupplierDefinedEpicModelValidator.SupplierCannotBeSetInactive);
         }
 
         [Theory]
@@ -83,6 +83,29 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators.Supp
 
             result.ShouldNotHaveValidationErrorFor(m => m.IsActive);
             service.Verify(s => s.GetItemsReferencingEpic(model.Id), Times.Never());
+        }
+
+        [Theory]
+        [CommonAutoData]
+        public static void Validate_DuplicateExistingEpic_NoModelError(
+            Epic epic,
+            EditSupplierDefinedEpicModel model,
+            [Frozen] Mock<ISupplierDefinedEpicsService> service,
+            EditSupplierDefinedEpicModelValidator validator)
+        {
+            model.Id = epic.Id;
+            model.SelectedCapabilityId = epic.CapabilityId;
+            model.Description = epic.Description;
+            model.Name = epic.Name;
+            model.IsActive = epic.IsActive;
+
+            service.Setup(s => s.EpicExists(epic.Id, epic.CapabilityId, epic.Name, epic.Description, epic.IsActive))
+                .ReturnsAsync(true);
+
+            var result = validator.TestValidate(model);
+
+            result.ShouldHaveValidationErrorFor("SelectedCapabilityId|Name|Description|IsActive")
+                .WithErrorMessage(EditSupplierDefinedEpicModelValidator.SupplierDefinedEpicAlreadyExists);
         }
     }
 }

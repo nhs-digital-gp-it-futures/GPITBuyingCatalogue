@@ -69,32 +69,6 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.Users
         }
 
         [Fact]
-        public void AccountType_UserNotInNhsDigital_ClickAdmin_ThenSubmit_DisplaysErrorMessage()
-        {
-            var context = GetEndToEndDbContext();
-            var user = context.AspNetUsers.Single(x => x.Id == UserId);
-            user.PrimaryOrganisationId = OrganisationConstants.NhsDigitalOrganisationId + 1;
-            context.SaveChanges();
-
-            Driver.Navigate().Refresh();
-
-            CommonActions.ClickRadioButtonWithText("Admin");
-
-            CommonActions.ClickLinkElement(CommonSelectors.SubmitButton);
-
-            CommonActions.PageLoadedCorrectGetIndex(
-                typeof(UsersController),
-                nameof(UsersController.AccountType)).Should().BeTrue();
-
-            CommonActions.ErrorSummaryDisplayed().Should().BeTrue();
-            CommonActions.ErrorSummaryLinksExist().Should().BeTrue();
-
-            CommonActions.ElementShowingCorrectErrorMessage(
-                UserObjects.AccountTypeRadioButtonsError,
-                $"Error: {AccountTypeModelValidator.MustBelongToNhsDigitalErrorMessage}").Should().BeTrue();
-        }
-
-        [Fact]
         public void AccountType_ClickBuyer_ThenSubmit_SetsValuesAndDisplaysCorrectPage()
         {
             CommonActions.ClickRadioButtonWithText("Buyer");
