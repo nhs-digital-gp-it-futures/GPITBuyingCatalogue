@@ -14,11 +14,11 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Validators.Cont
             SpecificRequirementsModel model,
             SpecificRequirmentsModelValidator validator)
         {
-            model.HasSpecificRequirements = null;
+            model.ProceedWithoutSpecificRequirements = null;
 
             var result = validator.TestValidate(model);
 
-            result.ShouldHaveValidationErrorFor(m => m.HasSpecificRequirements)
+            result.ShouldHaveValidationErrorFor(m => m.ProceedWithoutSpecificRequirements)
                 .WithErrorMessage(SpecificRequirmentsModelValidator.NoSelectionErrorMessage);
         }
 
@@ -30,7 +30,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Validators.Cont
             SpecificRequirementsModel model,
             SpecificRequirmentsModelValidator validator)
         {
-            model.HasSpecificRequirements = hasSpecificRequirements;
+            model.ProceedWithoutSpecificRequirements = hasSpecificRequirements;
 
             var result = validator
                 .TestValidate(model);

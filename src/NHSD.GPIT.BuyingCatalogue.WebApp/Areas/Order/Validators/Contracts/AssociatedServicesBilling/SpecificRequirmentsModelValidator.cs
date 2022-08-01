@@ -9,7 +9,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Contracts.Validators.Asso
 
         public SpecificRequirmentsModelValidator()
         {
-            RuleFor(x => x.HasSpecificRequirements)
+            RuleFor(x => x.ProceedWithoutSpecificRequirements)
                 .NotNull()
                 .WithMessage(NoSelectionErrorMessage);
         }

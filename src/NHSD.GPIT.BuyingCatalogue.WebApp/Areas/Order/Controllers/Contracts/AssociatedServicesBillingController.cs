@@ -120,9 +120,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers.Contracts
             if (!ModelState.IsValid)
                 return View(model);
 
-            await contractsService.HasSpecificRequirements(callOffId.Id, model.HasSpecificRequirements!.Value);
+            await contractsService.HasSpecificRequirements(callOffId.Id, !model.ProceedWithoutSpecificRequirements!.Value);
 
-            if (model.HasSpecificRequirements is true)
+            if (model.ProceedWithoutSpecificRequirements is false)
             {
                 return RedirectToAction(
                     nameof(BespokeRequirements),

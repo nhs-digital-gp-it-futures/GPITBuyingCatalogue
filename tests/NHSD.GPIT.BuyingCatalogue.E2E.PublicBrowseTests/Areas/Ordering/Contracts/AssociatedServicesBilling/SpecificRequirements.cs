@@ -81,9 +81,9 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering.Contracts.Associated
         }
 
         [Fact]
-        public void SpecificRequirements_SelectYes_ClickSave_ExpectedResult()
+        public void SpecificRequirements_SelectNo_ClickSave_ExpectedResult()
         {
-            CommonActions.ClickRadioButtonWithText("Yes");
+            CommonActions.ClickRadioButtonWithText(SpecificRequirementsModel.NoOptionText);
             CommonActions.ClickSave();
 
             CommonActions.PageLoadedCorrectGetIndex(
@@ -96,9 +96,9 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering.Contracts.Associated
         }
 
         [Fact]
-        public void SpecificRequirements_SelectNo_ClickSave_ExpectedResult()
+        public void SpecificRequirements_SelectYes_ClickSave_ExpectedResult()
         {
-            CommonActions.ClickRadioButtonWithText(SpecificRequirementsModel.NoOptionText);
+            CommonActions.ClickRadioButtonWithText("Yes");
             CommonActions.ClickSave();
 
             CommonActions.PageLoadedCorrectGetIndex(

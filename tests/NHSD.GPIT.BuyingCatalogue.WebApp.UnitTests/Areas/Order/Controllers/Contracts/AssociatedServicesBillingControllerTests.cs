@@ -230,7 +230,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Con
             var expected = new SpecificRequirementsModel
             {
                 CallOffId = callOffId,
-                HasSpecificRequirements = contract.HasSpecificRequirements,
+                ProceedWithoutSpecificRequirements = !contract.HasSpecificRequirements,
             };
 
             var actualResult = result.Should().BeOfType<ViewResult>().Subject;
@@ -261,7 +261,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Con
             var expected = new SpecificRequirementsModel
             {
                 CallOffId = callOffId,
-                HasSpecificRequirements = contract.HasSpecificRequirements,
+                ProceedWithoutSpecificRequirements = !contract.HasSpecificRequirements,
             };
 
             var actualResult = result.Should().BeOfType<ViewResult>().Subject;
@@ -281,7 +281,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Con
             AssociatedServicesBillingController controller)
         {
             model.CallOffId = callOffId;
-            model.HasSpecificRequirements = null;
+            model.ProceedWithoutSpecificRequirements = null;
 
             controller.ModelState.AddModelError("key", "errorMessage");
 
@@ -290,7 +290,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Con
             var expected = new SpecificRequirementsModel
             {
                 CallOffId = callOffId,
-                HasSpecificRequirements = null,
+                ProceedWithoutSpecificRequirements = null,
             };
 
             var actualResult = result.Should().BeOfType<ViewResult>().Subject;
@@ -308,7 +308,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Con
             AssociatedServicesBillingController controller)
         {
             model.CallOffId = callOffId;
-            model.HasSpecificRequirements = false;
+            model.ProceedWithoutSpecificRequirements = true;
 
             mockContractsService.Setup(c => c.HasSpecificRequirements(callOffId.Id, false))
                 .Verifiable();
@@ -338,7 +338,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Con
             AssociatedServicesBillingController controller)
         {
             model.CallOffId = callOffId;
-            model.HasSpecificRequirements = true;
+            model.ProceedWithoutSpecificRequirements = false;
 
             mockContractsService.Setup(c => c.HasSpecificRequirements(callOffId.Id, true))
                 .Verifiable();
@@ -369,7 +369,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Con
             AssociatedServicesBillingController controller)
         {
             model.CallOffId = callOffId;
-            model.HasSpecificRequirements = true;
+            model.ProceedWithoutSpecificRequirements = false;
 
             mockContractsService.Setup(c => c.HasSpecificRequirements(callOffId.Id, true))
                 .Verifiable();
