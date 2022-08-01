@@ -7,6 +7,12 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Validators.SupplierDefine
 {
     public sealed class SupplierDefinedEpicBaseModelValidator : AbstractValidator<SupplierDefinedEpicBaseModel>
     {
+        public const string CapabilityError = "Select a Capability";
+        public const string EpicNameError = "Enter an Epic name";
+        public const string DescriptionError = "Enter a description";
+        public const string StatusError = "Select a status";
+        public const string SupplierDefinedEpicAlreadyExists = "A supplier defined Epic with these details already exists";
+
         private readonly ISupplierDefinedEpicsService supplierDefinedEpicsService;
 
         public SupplierDefinedEpicBaseModelValidator(
@@ -16,23 +22,23 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Validators.SupplierDefine
 
             RuleFor(m => m.SelectedCapabilityId)
                 .NotNull()
-                .WithMessage("Select a Capability");
+                .WithMessage(CapabilityError);
 
             RuleFor(m => m.Name)
                 .NotEmpty()
-                .WithMessage("Enter an Epic name");
+                .WithMessage(EpicNameError);
 
             RuleFor(m => m.Description)
                 .NotEmpty()
-                .WithMessage("Enter a description");
+                .WithMessage(DescriptionError);
 
             RuleFor(m => m.IsActive)
                 .NotNull()
-                .WithMessage("Select a status");
+                .WithMessage(StatusError);
 
             RuleFor(m => m)
                 .Must(NotBeADuplicateEpic)
-                .WithMessage("A supplier defined Epic with these details already exists")
+                .WithMessage(SupplierDefinedEpicAlreadyExists)
                 .When(m => m.SelectedCapabilityId.HasValue && m.IsActive.HasValue)
                 .OverridePropertyName(
                     m => m.SelectedCapabilityId,

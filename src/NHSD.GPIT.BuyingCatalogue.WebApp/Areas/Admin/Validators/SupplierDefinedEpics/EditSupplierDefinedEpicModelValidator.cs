@@ -6,6 +6,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Validators.SupplierDefine
 {
     public sealed class EditSupplierDefinedEpicModelValidator : AbstractValidator<EditSupplierDefinedEpicModel>
     {
+        public const string SupplierDefinedEpicAlreadyExists = "A supplier defined Epic with these details already exists";
+        public const string SupplierCannotBeSetInactive = "This supplier defined Epic cannot be set to inactive as it is referenced by another solution or service";
+
         private readonly ISupplierDefinedEpicsService supplierDefinedEpicsService;
 
         public EditSupplierDefinedEpicModelValidator(
@@ -17,7 +20,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Validators.SupplierDefine
 
             RuleFor(m => m.IsActive)
                 .Must(NotBeReferencedByAnySolutions)
-                .WithMessage("This supplier defined Epic cannot be set to inactive as it is referenced by another solution or service")
+                .WithMessage(SupplierCannotBeSetInactive)
                 .When(m => m.IsActive == false);
         }
 

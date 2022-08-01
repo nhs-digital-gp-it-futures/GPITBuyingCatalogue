@@ -8,6 +8,14 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Validators
 {
     public sealed class EditContactModelValidator : AbstractValidator<EditContactModel>
     {
+        public const string FirstNameError = "Enter a first name";
+        public const string LastNameError = "Enter a last name";
+        public const string PhoneNumberError = "Enter a phone number";
+        public const string DepartmentNameError = "Enter a department name";
+        public const string NoEmailError = "Enter an email address";
+        public const string EmailFormatError = "Enter an email address in the correct format, like name@example.com";
+        public const string ContactAlreadyExistsError = "A contact with these contact details already exists for this supplier";
+
         private readonly ISuppliersService suppliersService;
 
         public EditContactModelValidator(ISuppliersService suppliersService)
@@ -16,29 +24,29 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Validators
 
             RuleFor(m => m.FirstName)
                 .NotEmpty()
-                .WithMessage("Enter a first name");
+                .WithMessage(FirstNameError);
 
             RuleFor(m => m.LastName)
                 .NotEmpty()
-                .WithMessage("Enter a last name");
+                .WithMessage(LastNameError);
 
             RuleFor(m => m.PhoneNumber)
                 .NotEmpty()
-                .WithMessage("Enter a phone number");
+                .WithMessage(PhoneNumberError);
 
             RuleFor(m => m.Department)
                 .NotEmpty()
-                .WithMessage("Enter a department name");
+                .WithMessage(DepartmentNameError);
 
             RuleFor(m => m.Email)
                 .NotEmpty()
-                .WithMessage("Enter an email address")
+                .WithMessage(NoEmailError)
                 .EmailAddress()
-                .WithMessage("Enter an email address in the correct format, like name@example.com");
+                .WithMessage(EmailFormatError);
 
             RuleFor(m => m)
                 .Must(NotBeADuplicateContact)
-                .WithMessage("A contact with these contact details already exists for this supplier")
+                .WithMessage(ContactAlreadyExistsError)
                 .OverridePropertyName("edit-contact");
         }
 

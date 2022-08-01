@@ -40,7 +40,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators
             var result = validator.TestValidate(model);
 
             result.ShouldHaveValidationErrorFor(m => m.SupplierWebsite)
-                .WithErrorMessage("Enter a prefix to the URL, either http or https");
+                .WithErrorMessage(EditSupplierDetailsModelValidator.EnterPrefixToUrlError);
         }
 
         [Theory]
@@ -57,7 +57,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators
             var result = validator.TestValidate(model);
 
             result.ShouldHaveValidationErrorFor(m => m.SupplierWebsite)
-                .WithErrorMessage("Enter a valid URL");
+                .WithErrorMessage(EditSupplierDetailsModelValidator.EnterValidUrlError);
         }
 
         [Theory]
@@ -116,7 +116,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators
             var result = validator.TestValidate(model);
 
             result.ShouldHaveValidationErrorFor(m => m.SupplierName)
-                .WithErrorMessage("Supplier name already exists. Enter a different name");
+                .WithErrorMessage(EditSupplierDetailsModelValidator.DuplicateSupplierNameError);
         }
 
         [Theory]
@@ -182,7 +182,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators
             var result = validator.TestValidate(model);
 
             result.ShouldHaveValidationErrorFor(m => m.SupplierLegalName)
-                .WithErrorMessage("Supplier legal name already exists. Enter a different name");
+                .WithErrorMessage(EditSupplierDetailsModelValidator.DuplicateSupplierLegalNameError);
         }
 
         [Theory]
@@ -223,7 +223,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators
             var result = validator.TestValidate(model);
 
             result.ShouldHaveValidationErrorFor(m => m.SupplierName)
-                .WithErrorMessage("Enter a supplier name");
+                .WithErrorMessage(EditSupplierDetailsModelValidator.EnterSupplierNameError);
         }
 
         [Theory]
@@ -241,7 +241,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators
             var result = validator.TestValidate(model);
 
             result.ShouldHaveValidationErrorFor(m => m.SupplierLegalName)
-                .WithErrorMessage("Enter a supplier legal name");
+                .WithErrorMessage(EditSupplierDetailsModelValidator.EnterSupplierLegalNameError);
         }
     }
 }

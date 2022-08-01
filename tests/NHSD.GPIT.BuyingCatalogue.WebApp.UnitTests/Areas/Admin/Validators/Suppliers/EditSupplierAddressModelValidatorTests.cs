@@ -23,7 +23,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators.Supp
             var result = validator.TestValidate(model);
 
             result.ShouldHaveValidationErrorFor(m => m.AddressLine1)
-                .WithErrorMessage("Enter a building or street");
+                .WithErrorMessage(EditSupplierAddressModelValidator.AddressLine1Error);
         }
 
         [Theory]
@@ -41,7 +41,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators.Supp
             var result = validator.TestValidate(model);
 
             result.ShouldHaveValidationErrorFor(m => m.Town)
-                .WithErrorMessage("Enter a town or city");
+                .WithErrorMessage(EditSupplierAddressModelValidator.TownOrCityError);
         }
 
         [Theory]
@@ -59,7 +59,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators.Supp
             var result = validator.TestValidate(model);
 
             result.ShouldHaveValidationErrorFor(m => m.PostCode)
-                .WithErrorMessage("Enter a postcode");
+                .WithErrorMessage(EditSupplierAddressModelValidator.PostcodeError);
         }
 
         [Theory]
@@ -77,7 +77,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators.Supp
             var result = validator.TestValidate(model);
 
             result.ShouldHaveValidationErrorFor(m => m.Country)
-                .WithErrorMessage("Enter a country");
+                .WithErrorMessage(EditSupplierAddressModelValidator.CountryError);
         }
 
         [Theory]

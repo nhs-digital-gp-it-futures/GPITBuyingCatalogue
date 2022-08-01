@@ -24,7 +24,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators.Orga
             var result = validator.TestValidate(model);
 
             result.ShouldHaveValidationErrorFor(m => m.FirstName)
-                .WithErrorMessage("Enter a first name");
+                .WithErrorMessage(AddUserModelValidator.FirstNameError);
         }
 
         [Theory]
@@ -40,7 +40,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators.Orga
             var result = validator.TestValidate(model);
 
             result.ShouldHaveValidationErrorFor(m => m.LastName)
-                .WithErrorMessage("Enter a last name");
+                .WithErrorMessage(AddUserModelValidator.LastNameError);
         }
 
         [Theory]
@@ -56,7 +56,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators.Orga
             var result = validator.TestValidate(model);
 
             result.ShouldHaveValidationErrorFor(m => m.EmailAddress)
-                .WithErrorMessage("Enter an email address");
+                .WithErrorMessage(AddUserModelValidator.NoEmailError);
         }
 
         [Theory]
@@ -71,7 +71,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators.Orga
             var result = validator.TestValidate(model);
 
             result.ShouldHaveValidationErrorFor(model => model.EmailAddress)
-                .WithErrorMessage("Enter an email address in the correct format, like name@example.com");
+                .WithErrorMessage(AddUserModelValidator.EmailFormatError);
         }
 
         [Theory]
@@ -92,7 +92,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators.Orga
             var result = validator.TestValidate(model);
 
             result.ShouldHaveValidationErrorFor(model => model.EmailAddress)
-                .WithErrorMessage("A user with this email address is already registered on the Buying Catalogue");
+                .WithErrorMessage(AddUserModelValidator.UserAlreadyExistsError);
         }
 
         [Theory]

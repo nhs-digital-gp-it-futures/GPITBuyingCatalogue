@@ -65,9 +65,8 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.ListPrices.Base.Tiered
             CommonActions.ErrorSummaryDisplayed().Should().BeTrue();
             CommonActions.ErrorSummaryLinksExist().Should().BeTrue();
 
-            CommonActions.ElementShowingCorrectErrorMessage(
-                ListPriceTypeObjects.SelectedCataloguePriceTypeError,
-                "Error: Select a price type").Should().BeTrue();
+            CommonActions.ElementIsDisplayed(ListPriceTypeObjects.SelectedCataloguePriceTypeError)
+                .Should().BeTrue();
         }
 
         [Theory]

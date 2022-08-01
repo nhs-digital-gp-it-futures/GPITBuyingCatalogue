@@ -82,16 +82,22 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.ListPrices.Base.Tiered
         }
 
         [Fact]
-        public void ClickSubmit_NoInput_ThrowsError()
+        public void ClickSubmit_InvalidModelState_ThrowsError()
         {
             CommonActions.ClickSave();
 
             CommonActions.ErrorSummaryDisplayed().Should().BeTrue();
             CommonActions.ErrorSummaryLinksExist().Should().BeTrue();
 
-            CommonActions.ElementShowingCorrectErrorMessage(AddTieredPriceTierObjects.PriceInputError, "Enter a price").Should().BeTrue();
-            CommonActions.ElementShowingCorrectErrorMessage(AddTieredPriceTierObjects.LowerRangeInputError, "Enter a lower range").Should().BeTrue();
-            CommonActions.ElementShowingCorrectErrorMessage(AddTieredPriceTierObjects.RangeTypeInputError, "Error: Select how you want to define the upper range").Should().BeTrue();
+            CommonActions.ElementIsDisplayed(AddTieredPriceTierObjects.PriceInputError).Should().BeTrue();
+            CommonActions.ElementIsDisplayed(AddTieredPriceTierObjects.LowerRangeInputError).Should().BeTrue();
+            CommonActions.ElementIsDisplayed(AddTieredPriceTierObjects.RangeTypeInputError).Should().BeTrue();
+
+            CommonActions.ClickRadioButtonWithText("Set upper range");
+
+            CommonActions.ClickSave();
+
+            CommonActions.ElementIsDisplayed(AddTieredPriceTierObjects.UpperRangeInputError).Should().BeTrue();
         }
 
         [Fact]
@@ -126,21 +132,6 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.ListPrices.Base.Tiered
             CommonActions.PageLoadedCorrectGetIndex(
                 Controller,
                 "EditTieredListPrice").Should().BeTrue();
-        }
-
-        [Fact]
-        public void ClickSubmit_NoUpperRange_ThrowsError()
-        {
-            CommonActions.ClickRadioButtonWithText("Set upper range");
-
-            CommonActions.ClickSave();
-
-            CommonActions.ErrorSummaryDisplayed().Should().BeTrue();
-            CommonActions.ErrorSummaryLinksExist().Should().BeTrue();
-
-            CommonActions.ElementShowingCorrectErrorMessage(AddTieredPriceTierObjects.PriceInputError, "Enter a price").Should().BeTrue();
-            CommonActions.ElementShowingCorrectErrorMessage(AddTieredPriceTierObjects.LowerRangeInputError, "Enter a lower range").Should().BeTrue();
-            CommonActions.ElementShowingCorrectErrorMessage(AddTieredPriceTierObjects.UpperRangeInputError, "Enter an upper range").Should().BeTrue();
         }
     }
 }
