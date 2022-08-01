@@ -138,9 +138,13 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.Order
             {
                 AssociatedServiceBilling = TaskProgress.NotApplicable;
             }
-            else if (order.ContractFlags?.HasSpecificRequirements is null && order.ContractFlags?.UseDefaultBilling is null)
+            else if (ImplementationPlan != TaskProgress.Completed)
             {
                 AssociatedServiceBilling = TaskProgress.CannotStart;
+            }
+            else if (order.ContractFlags?.HasSpecificRequirements is null && order.ContractFlags?.UseDefaultBilling is null)
+            {
+                AssociatedServiceBilling = TaskProgress.NotStarted;
             }
             else if (order.ContractFlags?.HasSpecificRequirements is null && order.ContractFlags?.UseDefaultBilling is not null)
             {
