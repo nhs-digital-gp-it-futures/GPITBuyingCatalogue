@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using Microsoft.AspNetCore.Mvc.Rendering;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Models;
@@ -18,10 +17,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.Contracts.Implemen
 
         public bool? UseDefaultMilestones { get; set; }
 
-        public IList<SelectListItem> Options => new List<SelectListItem>
+        public IList<SelectableRadioOption<bool>> Options => new List<SelectableRadioOption<bool>>
         {
-            new("Yes", $"{true}"),
-            new(NoOptionText, $"{false}"),
+            new("Yes", true),
+            new(NoOptionText, false),
         };
 
         public string SupplierImplementationPlan => Solution?.ImplementationDetail ?? "The supplier has not provided a standard implementation plan. You should contact them to discuss this.";

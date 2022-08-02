@@ -14,7 +14,9 @@
                         advice="Make you’re happy with the payment schedule for your Associated Services."/>
 
         <nhs-inset-text>
-             Charges commence on achievement of Milestone 1, but payments will not be made until Milestone 2 is achieved.
+            <p>
+                Charges commence on achievement of Milestone 1, but payments will not be made until Milestone 2 is achieved.
+            </p>
         </nhs-inset-text>
 
         <nhs-table label-text="Associated Services billing">
@@ -30,23 +32,24 @@
                 </nhs-table-row-container>
             }
         </nhs-table>
-
-        <form method="post">
-            <nhs-fieldset-form-label asp-for="@Model"
-                                     label-text="Do you want to proceed using these milestones?"
-                                     size="Medium">
-                <nhs-radio-buttons asp-for="UseDefaultBilling" 
-                                   values="Model.Options.Cast<object>()"
-                                   value-name="Value"
-                                   display-name="Text"/>
-            </nhs-fieldset-form-label>
-
-            <input type="hidden" asp-for="TargetMilestoneName" />
         
-            <div class="nhsuk-u-margin-top-9">
-                <nhs-submit-button/>
-            </div>
-        </form>
+        <div class="nhsuk-u-margin-top-9">
+            <form method="post">
+                <nhs-fieldset-form-label asp-for="@Model"
+                                         label-text="Do you want to proceed using these milestones?"
+                                         size="Medium">
+                    <nhs-radio-buttons asp-for="UseDefaultBilling" 
+                                       values="Model.Options.Cast<object>()"
+                                       value-name="Value"
+                                       display-name="Text"/>
+                </nhs-fieldset-form-label>
 
+                <input type="hidden" asp-for="TargetMilestoneName" />
+        
+                <div class="nhsuk-u-margin-top-9">
+                    <nhs-submit-button/>
+                </div>
+            </form>
+        </div>
     </div>
 </div>
