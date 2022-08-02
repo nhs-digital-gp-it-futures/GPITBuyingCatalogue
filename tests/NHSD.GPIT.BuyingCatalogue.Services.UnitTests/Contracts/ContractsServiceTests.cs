@@ -73,6 +73,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Contracts
             [Frozen] BuyingCatalogueDbContext dbContext,
             ContractsService service)
         {
+            contractFlags.Order = null;
             contractFlags.OrderId = orderId;
             contractFlags.HasSpecificRequirements = null;
 
@@ -97,6 +98,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Contracts
             [Frozen] BuyingCatalogueDbContext dbContext,
             ContractsService service)
         {
+            contractFlags.Order = null;
             contractFlags.OrderId = orderId;
             contractFlags.UseDefaultBilling = null;
 
@@ -121,6 +123,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Contracts
             [Frozen] BuyingCatalogueDbContext dbContext,
             ContractsService service)
         {
+            contractFlags.Order = null;
             contractFlags.OrderId = orderId;
             contractFlags.UseDefaultDataProcessing = null;
 
@@ -145,6 +148,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Contracts
             [Frozen] BuyingCatalogueDbContext dbContext,
             ContractsService service)
         {
+            contractFlags.Order = null;
             contractFlags.OrderId = orderId;
             contractFlags.UseDefaultImplementationPlan = null;
 

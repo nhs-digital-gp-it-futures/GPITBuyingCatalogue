@@ -51,10 +51,12 @@ namespace NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.TagHelpers.TaskLi
 
             var statusTag = GetNhsTagBuilder(context);
             var labelHint = GetLabelHintBuilder();
+            var breakRow = new TagBuilder("br") { TagRenderMode = TagRenderMode.SelfClosing };
 
             output.Content
                 .AppendHtml(taskNameSpan)
                 .AppendHtml(statusTag)
+                .AppendHtml(breakRow)
                 .AppendHtml(labelHint);
         }
 
@@ -86,7 +88,6 @@ namespace NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.TagHelpers.TaskLi
         {
             var builder = new TagBuilder(TagHelperConstants.Div);
 
-            builder.AddCssClass($"{TagHelperConstants.NhsMarginRight}-9");
             builder.AddCssClass(TagHelperContainerClass);
 
             var nhsTag = new NhsTagsTagHelper
@@ -133,16 +134,13 @@ namespace NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.TagHelpers.TaskLi
             if (string.IsNullOrWhiteSpace(LabelHint))
                 return null;
 
-            var breakRow = new TagBuilder("br") { TagRenderMode = TagRenderMode.SelfClosing };
             var builder = new TagBuilder(TagHelperConstants.Span);
 
             const string textColour = "color: #4c6272";
             builder.MergeAttribute(TagHelperConstants.Style, textColour);
+            builder.AddCssClass("bc-c-task-list__task-hint");
 
-            builder
-                .InnerHtml
-                .AppendHtml(breakRow)
-                .Append(LabelHint);
+            builder.InnerHtml.Append(LabelHint);
 
             return builder;
         }

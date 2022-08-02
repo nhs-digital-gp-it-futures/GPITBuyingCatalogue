@@ -121,8 +121,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.Order
 
         private void SetSectionThreeStatus(EntityFramework.Ordering.Models.Order order)
         {
-            var hasAssociatedServices = HasAssociatedServices(order);
-
+            // Default Implementation Plan
             if (FundingSource is TaskProgress.Completed)
             {
                 ImplementationPlan = order.ContractFlags?.UseDefaultImplementationPlan != null
@@ -130,17 +129,33 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.Order
                     : TaskProgress.NotStarted;
             }
 
-            if (!hasAssociatedServices)
+            // Associated Services Billing
+            if (SolutionOrService != TaskProgress.Completed)
+            {
+                AssociatedServiceBilling = TaskProgress.CannotStart;
+            }
+            else if (!HasAssociatedServices(order))
             {
                 AssociatedServiceBilling = TaskProgress.NotApplicable;
             }
-            else if (ImplementationPlan is TaskProgress.Completed)
+            else if (ImplementationPlan != TaskProgress.Completed)
             {
-                AssociatedServiceBilling = order.ContractFlags?.UseDefaultBilling != null
-                    ? TaskProgress.Completed
-                    : TaskProgress.NotStarted;
+                AssociatedServiceBilling = TaskProgress.CannotStart;
+            }
+            else if (order.ContractFlags?.HasSpecificRequirements is null && order.ContractFlags?.UseDefaultBilling is null)
+            {
+                AssociatedServiceBilling = TaskProgress.NotStarted;
+            }
+            else if (order.ContractFlags?.HasSpecificRequirements is null && order.ContractFlags?.UseDefaultBilling is not null)
+            {
+                AssociatedServiceBilling = TaskProgress.InProgress;
+            }
+            else
+            {
+                AssociatedServiceBilling = TaskProgress.Completed;
             }
 
+            // Data Processing
             if ((AssociatedServiceBilling is TaskProgress.Completed)
                 || (AssociatedServiceBilling is TaskProgress.NotApplicable
                     && ImplementationPlan is TaskProgress.Completed))

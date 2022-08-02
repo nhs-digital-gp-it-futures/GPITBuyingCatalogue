@@ -10,12 +10,16 @@
 }
 
 .bc-c-task-list__task {
-    display: table;
-    @include nhsuk-font(24, $weight: bold);
+    @include nhsuk-font(32, $weight: bold);
+
+    span{
+        display: inline;
+    }
 }
 
 .bc-c-task-list__task-number {
-    display: table-cell;
+
+    margin-right:10px;
 
     @include govuk-media-query($from: tablet) {
         min-width: govuk-spacing(6);
@@ -63,4 +67,9 @@
         margin-bottom: 0;
         margin-top: 0;
     }
+}
+
+.bc-c-task-list__task-hint{
+    display: inline-block;
+    max-width:75%;
 }
