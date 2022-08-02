@@ -22,7 +22,7 @@ public class OrderTaskListTests
         {
             DescriptionStatus = TaskProgress.Completed,
             OrderingPartyStatus = TaskProgress.NotStarted,
-            AssociatedServiceBilling = TaskProgress.NotApplicable,
+            AssociatedServiceBilling = TaskProgress.CannotStart,
         };
         var model = new OrderTaskList(order);
 
@@ -46,7 +46,7 @@ public class OrderTaskListTests
             DescriptionStatus = TaskProgress.Completed,
             OrderingPartyStatus = TaskProgress.Completed,
             SupplierStatus = TaskProgress.NotStarted,
-            AssociatedServiceBilling = TaskProgress.NotApplicable,
+            AssociatedServiceBilling = TaskProgress.CannotStart,
         };
 
         var model = new OrderTaskList(order);
@@ -73,7 +73,7 @@ public class OrderTaskListTests
             DescriptionStatus = TaskProgress.Completed,
             OrderingPartyStatus = TaskProgress.Completed,
             SupplierStatus = TaskProgress.InProgress,
-            AssociatedServiceBilling = TaskProgress.NotApplicable,
+            AssociatedServiceBilling = TaskProgress.CannotStart,
         };
 
         var model = new OrderTaskList(order);
@@ -103,7 +103,7 @@ public class OrderTaskListTests
             OrderingPartyStatus = TaskProgress.Completed,
             SupplierStatus = TaskProgress.Completed,
             CommencementDateStatus = TaskProgress.NotStarted,
-            AssociatedServiceBilling = TaskProgress.NotApplicable,
+            AssociatedServiceBilling = TaskProgress.CannotStart,
         };
 
         var model = new OrderTaskList(order);
@@ -136,7 +136,7 @@ public class OrderTaskListTests
             SupplierStatus = TaskProgress.Completed,
             CommencementDateStatus = TaskProgress.Completed,
             SolutionOrService = TaskProgress.NotStarted,
-            AssociatedServiceBilling = TaskProgress.NotApplicable,
+            AssociatedServiceBilling = TaskProgress.CannotStart,
         };
 
         var model = new OrderTaskList(order);
@@ -177,7 +177,7 @@ public class OrderTaskListTests
             SupplierStatus = TaskProgress.Completed,
             CommencementDateStatus = TaskProgress.Completed,
             SolutionOrService = TaskProgress.InProgress,
-            AssociatedServiceBilling = TaskProgress.NotApplicable,
+            AssociatedServiceBilling = TaskProgress.CannotStart,
         };
 
         var model = new OrderTaskList(order);
@@ -305,7 +305,7 @@ public class OrderTaskListTests
             SolutionOrService = TaskProgress.InProgress,
             FundingSource = TaskProgress.InProgress,
             ImplementationPlan = TaskProgress.CannotStart,
-            AssociatedServiceBilling = TaskProgress.NotApplicable,
+            AssociatedServiceBilling = TaskProgress.CannotStart,
         };
 
         var model = new OrderTaskList(order);
@@ -430,6 +430,7 @@ public class OrderTaskListTests
             {
                 UseDefaultImplementationPlan = true,
                 UseDefaultBilling = true,
+                HasSpecificRequirements = false,
             },
         };
 
