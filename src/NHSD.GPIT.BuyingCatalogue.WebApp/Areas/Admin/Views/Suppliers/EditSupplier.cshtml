@@ -73,6 +73,12 @@
                                    display-name="Display"
                                    value-name="Value" />
             </nhs-fieldset-form-label>
+            <input type="hidden" asp-for="CurrentStatus" />
+            <input type="hidden" asp-for="SupplierId" />
+            <input type="hidden" asp-for="DetailsStatus" />
+            <input type="hidden" asp-for="AddressStatus" />
+            <input type="hidden" asp-for="ContactsStatus" />
+            <input type="hidden" asp-for="SupplierName" />
 
             <nhs-submit-button />
         </form>

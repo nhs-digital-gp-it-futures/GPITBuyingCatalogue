@@ -8,6 +8,12 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Validators.ServiceLevelAg
 {
     public class AddEditServiceLevelModelValidator : AbstractValidator<AddEditServiceLevelModel>
     {
+        public const string ServiceLevelDuplicateError = "Service level with these details already exists";
+        public const string NoTypeOfServiceError = "Enter a type of service";
+        public const string NoServiceLevelError = "Enter a service level";
+        public const string NoServiceLevelMeasuresError = "Enter how service levels are measured";
+        public const string NoServiceCreditsAppliedError = "Select if service credits are applied";
+
         private readonly IServiceLevelAgreementsService serviceLevelAgreementsService;
 
         public AddEditServiceLevelModelValidator(IServiceLevelAgreementsService serviceLevelAgreementsService)
@@ -16,7 +22,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Validators.ServiceLevelAg
 
             RuleFor(m => m)
                 .Must(NotBeADuplicateServiceLevel)
-                .WithMessage("Service level with these details already exists")
+                .WithMessage(ServiceLevelDuplicateError)
                 .Unless(m => m.CreditsApplied is null)
                 .OverridePropertyName(
                     m => m.ServiceType,
@@ -26,19 +32,19 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Validators.ServiceLevelAg
 
             RuleFor(m => m.ServiceType)
                 .NotEmpty()
-                .WithMessage("Enter a type of service");
+                .WithMessage(NoTypeOfServiceError);
 
             RuleFor(m => m.ServiceLevel)
                 .NotEmpty()
-                .WithMessage("Enter a service level");
+                .WithMessage(NoServiceLevelError);
 
             RuleFor(m => m.HowMeasured)
                 .NotEmpty()
-                .WithMessage("Enter how service levels are measured");
+                .WithMessage(NoServiceLevelMeasuresError);
 
             RuleFor(m => m.CreditsApplied)
                 .NotNull()
-                .WithMessage("Select if service credits are applied");
+                .WithMessage(NoServiceCreditsAppliedError);
         }
 
         private bool NotBeADuplicateServiceLevel(AddEditServiceLevelModel model)

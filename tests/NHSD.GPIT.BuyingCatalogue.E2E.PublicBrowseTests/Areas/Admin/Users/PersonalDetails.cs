@@ -62,11 +62,11 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.Users
         }
 
         [Fact]
-        public void PersonalDetails_BlankValues_ClickSave_DisplaysErrorMessage()
+        public void PersonalDetails_NoInputs_DisplaysErrorMessages()
         {
-            CommonActions.ElementAddValue(UserObjects.FirstNameInput, string.Empty);
-            CommonActions.ElementAddValue(UserObjects.LastNameInput, string.Empty);
-            CommonActions.ElementAddValue(UserObjects.EmailInput, string.Empty);
+            CommonActions.ClearInputElement(UserObjects.FirstNameInput);
+            CommonActions.ClearInputElement(UserObjects.LastNameInput);
+            CommonActions.ClearInputElement(UserObjects.EmailInput);
 
             CommonActions.ClickLinkElement(CommonObjects.SaveButton);
 
@@ -77,58 +77,14 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.Users
             CommonActions.ErrorSummaryDisplayed().Should().BeTrue();
             CommonActions.ErrorSummaryLinksExist().Should().BeTrue();
 
-            CommonActions.ElementShowingCorrectErrorMessage(
-                UserObjects.FirstNameInputError,
-                PersonalDetailsModelValidator.FirstNameMissingErrorMessage).Should().BeTrue();
+            CommonActions.ElementIsDisplayed(
+                UserObjects.FirstNameInputError).Should().BeTrue();
 
-            CommonActions.ElementShowingCorrectErrorMessage(
-                UserObjects.LastNameInputError,
-                PersonalDetailsModelValidator.LastNameMissingErrorMessage).Should().BeTrue();
+            CommonActions.ElementIsDisplayed(
+                UserObjects.LastNameInputError).Should().BeTrue();
 
-            CommonActions.ElementShowingCorrectErrorMessage(
-                UserObjects.EmailInputError,
-                PersonalDetailsModelValidator.EmailMissingErrorMessage).Should().BeTrue();
-        }
-
-        [Fact]
-        public void PersonalDetails_EmailWrongFormat_ClickSave_DisplaysErrorMessage()
-        {
-            CommonActions.ElementAddValue(UserObjects.EmailInput, "email address");
-
-            CommonActions.ClickLinkElement(CommonObjects.SaveButton);
-
-            CommonActions.PageLoadedCorrectGetIndex(
-                typeof(UsersController),
-                nameof(UsersController.PersonalDetails)).Should().BeTrue();
-
-            CommonActions.ErrorSummaryDisplayed().Should().BeTrue();
-            CommonActions.ErrorSummaryLinksExist().Should().BeTrue();
-
-            CommonActions.ElementShowingCorrectErrorMessage(
-                UserObjects.EmailInputError,
-                PersonalDetailsModelValidator.EmailWrongFormatErrorMessage).Should().BeTrue();
-        }
-
-        [Fact]
-        public void PersonalDetails_EmailInUse_ClickSave_DisplaysErrorMessage()
-        {
-            var context = GetEndToEndDbContext();
-            var user = context.AspNetUsers.FirstOrDefault(x => x.Id != UserId);
-
-            CommonActions.ElementAddValue(UserObjects.EmailInput, user!.Email);
-
-            CommonActions.ClickLinkElement(CommonObjects.SaveButton);
-
-            CommonActions.PageLoadedCorrectGetIndex(
-                typeof(UsersController),
-                nameof(UsersController.PersonalDetails)).Should().BeTrue();
-
-            CommonActions.ErrorSummaryDisplayed().Should().BeTrue();
-            CommonActions.ErrorSummaryLinksExist().Should().BeTrue();
-
-            CommonActions.ElementShowingCorrectErrorMessage(
-                UserObjects.EmailInputError,
-                PersonalDetailsModelValidator.EmailInUseErrorMessage).Should().BeTrue();
+            CommonActions.ElementIsDisplayed(
+                UserObjects.EmailInputError).Should().BeTrue();
         }
 
         private AspNetUser GetUser() => GetEndToEndDbContext().AspNetUsers.Single(x => x.Id == UserId);

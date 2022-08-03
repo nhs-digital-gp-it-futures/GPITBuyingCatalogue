@@ -72,35 +72,11 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
         [HttpPost("{supplierId}")]
         public async Task<IActionResult> EditSupplier(int supplierId, EditSupplierModel model)
         {
-            var supplier = await suppliersService.GetSupplier(supplierId);
-
-            if (supplier.IsActive == model.SupplierStatus) // status hasn't changed
-                RedirectToAction(nameof(Index), typeof(SuppliersController).ControllerName());
-
-            var supplierStatus = new EditSupplierModel(supplier)
-            {
-                BackLink = Url.Action(
-                    nameof(Index),
-                    typeof(SuppliersController).ControllerName()),
-            };
-
-            if (model.SupplierStatus && !(supplierStatus.AddressStatus && supplierStatus.DetailsStatus && supplierStatus.ContactsStatus))
-                ModelState.AddModelError(nameof(model.SupplierStatus), "Mandatory section incomplete");
-
-            if (!model.SupplierStatus)
-            {
-                var catalogueItems = await suppliersService.GetAllSolutionsForSupplier(supplierId);
-
-                if (catalogueItems.Any(ci => ci.PublishedStatus == PublicationStatus.Published))
-                {
-                    ModelState.AddModelError(
-                        nameof(model.SupplierStatus),
-                        $"Cannot set to inactive while {catalogueItems.Count(ci => ci.PublishedStatus == PublicationStatus.Published)} solutions for this supplier are still published");
-                }
-            }
-
             if (!ModelState.IsValid)
-                return View(supplierStatus);
+                return View(model);
+
+            if (model.CurrentStatus == model.SupplierStatus) // status hasn't changed
+                RedirectToAction(nameof(Index), typeof(SuppliersController).ControllerName());
 
             await suppliersService.UpdateSupplierActiveStatus(supplierId, model.SupplierStatus);
 

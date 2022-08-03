@@ -19,7 +19,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Validators
             var result = validator.TestValidate(model);
 
             result.ShouldHaveValidationErrorFor(m => m.Contact.FirstName)
-                .WithErrorMessage("Enter a first name");
+                .WithErrorMessage(OrderingPartyModelValidator.FirstNameErrorMessage);
         }
 
         [Theory]
@@ -33,7 +33,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Validators
             var result = validator.TestValidate(model);
 
             result.ShouldHaveValidationErrorFor(m => m.Contact.LastName)
-                .WithErrorMessage("Enter a last name");
+                .WithErrorMessage(OrderingPartyModelValidator.LastNameErrorMessage);
         }
 
         [Theory]
@@ -47,7 +47,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Validators
             var result = validator.TestValidate(model);
 
             result.ShouldHaveValidationErrorFor(m => m.Contact.TelephoneNumber)
-                .WithErrorMessage("Enter a telephone number");
+                .WithErrorMessage(OrderingPartyModelValidator.PhoneNumberErrorMessage);
         }
 
         [Theory]
@@ -61,7 +61,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Validators
             var result = validator.TestValidate(model);
 
             result.ShouldHaveValidationErrorFor(m => m.Contact.EmailAddress)
-                .WithErrorMessage("Enter an email address");
+                .WithErrorMessage(OrderingPartyModelValidator.NoEmailAddressErrorMessage);
         }
 
         [Theory]
@@ -75,7 +75,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Validators
             var result = validator.TestValidate(model);
 
             result.ShouldHaveValidationErrorFor(m => m.Contact.EmailAddress)
-                .WithErrorMessage("Enter an email address in the correct format, like name@example.com");
+                .WithErrorMessage(OrderingPartyModelValidator.InvalidEmailAddressFormatErrorMessage);
         }
 
         [Theory]

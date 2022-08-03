@@ -164,28 +164,6 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.AddNewSolution
             context.SaveChanges();
         }
 
-        [Fact]
-        public void AddAssociatedService_Unpublish_ActiveSolutions_ValidationError()
-        {
-
-            CommonActions.ClickRadioButtonWithValue(PublicationStatus.Unpublished.ToString());
-
-            CommonActions.ClickSave();
-
-            CommonActions.PageLoadedCorrectGetIndex(
-                typeof(AssociatedServicesController),
-                nameof(AssociatedServicesController.EditAssociatedService))
-                .Should().BeTrue();
-
-            CommonActions.ErrorSummaryDisplayed().Should().BeTrue();
-            CommonActions.ErrorSummaryLinksExist().Should().BeTrue();
-
-            CommonActions.ElementIsDisplayed(
-                AssociatedServicesObjects.PublicationStatusInputError)
-                .Should()
-                .BeTrue();
-        }
-
         [Theory]
         [MemberData(nameof(PublicationStatusesTestCases))]
         public async Task EditAssociatedService_DisplaysPublicationStatuses(
@@ -234,17 +212,12 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.AddNewSolution
                 .Should()
                 .BeTrue();
 
-            CommonActions.ErrorSummaryDisplayed()
-                .Should()
-                .BeTrue();
+            CommonActions.ErrorSummaryDisplayed().Should().BeTrue();
 
-            CommonActions.ErrorSummaryLinksExist()
-                .Should()
-                .BeTrue();
+            CommonActions.ErrorSummaryLinksExist().Should().BeTrue();
 
-            CommonActions.ElementShowingCorrectErrorMessage(
-                AssociatedServicesObjects.PublicationStatusInputError,
-                "Complete all mandatory sections before publishing");
+            CommonActions.ElementIsDisplayed(
+                AssociatedServicesObjects.PublicationStatusInputError);
         }
 
         [Fact]

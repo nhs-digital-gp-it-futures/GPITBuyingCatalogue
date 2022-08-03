@@ -6,6 +6,8 @@ using NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.Objects.Common;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Utils;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.TestBases;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers;
+using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.SupplierModels;
+using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Validators.Suppliers;
 using Xunit;
 using Objects = NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.Objects;
 
@@ -84,43 +86,8 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.ManageSuppliers
         }
 
         [Fact]
-        public async Task EditSupplier_SupplierHasPublishedSolutions_TryToSetInactive_ThrowsError()
-        {
-            await using var context = GetEndToEndDbContext();
-
-            var countOfSupplierPublishedSolutions = await context.CatalogueItems
-                .CountAsync(s =>
-                s.SupplierId == SupplierId
-                && s.PublishedStatus == EntityFramework.Catalogue.Models.PublicationStatus.Published);
-
-            var expectedErrorMessage = $"Error : Cannot set to inactive while {countOfSupplierPublishedSolutions} solutions for this supplier are still published";
-
-            CommonActions.ClickRadioButtonWithText("Inactive");
-
-            CommonActions.ClickSave();
-
-            CommonActions
-                .PageLoadedCorrectGetIndex(
-                    typeof(SuppliersController),
-                    nameof(SuppliersController.EditSupplier))
-                .Should()
-                .BeTrue();
-
-            CommonActions.ErrorSummaryDisplayed().Should().BeTrue();
-            CommonActions.ErrorSummaryLinksExist().Should().BeTrue();
-
-            CommonActions.ElementShowingCorrectErrorMessage(
-                    Objects.Admin.ManageSuppliers.ManageSuppliers.EditSupplierSupplierStatusErrorMessage,
-                    expectedErrorMessage)
-                .Should()
-                .BeTrue();
-        }
-
-        [Fact]
         public void EditSupplier_InactiveSupplier_TryToSetActive_NotAllMandatoryFieldsCompleted_ThrowsError()
         {
-            const string expectedErrorMessage = "Error: Mandatory section incomplete";
-
             NavigateToUrl(typeof(SuppliersController), nameof(SuppliersController.EditSupplier), parameters: InactiveSupplierParameters);
 
             CommonActions.ClickRadioButtonWithText("Active");
@@ -137,9 +104,8 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.ManageSuppliers
             CommonActions.ErrorSummaryDisplayed().Should().BeTrue();
             CommonActions.ErrorSummaryLinksExist().Should().BeTrue();
 
-            CommonActions.ElementShowingCorrectErrorMessage(
-                Objects.Admin.ManageSuppliers.ManageSuppliers.EditSupplierSupplierStatusErrorMessage,
-                expectedErrorMessage)
+            CommonActions.ElementIsDisplayed(
+                Objects.Admin.EditSupplierObjects.MandatorySectionsMissingError)
                 .Should()
                 .BeTrue();
         }

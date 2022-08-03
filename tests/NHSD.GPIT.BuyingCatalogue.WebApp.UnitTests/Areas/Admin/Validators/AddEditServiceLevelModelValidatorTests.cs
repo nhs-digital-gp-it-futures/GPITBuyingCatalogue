@@ -27,7 +27,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators
             var result = validator.TestValidate(model);
 
             result.ShouldHaveValidationErrorFor(m => m.ServiceType)
-                .WithErrorMessage("Enter a type of service");
+                .WithErrorMessage(AddEditServiceLevelModelValidator.NoTypeOfServiceError);
         }
 
         [Theory]
@@ -45,7 +45,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators
             var result = validator.TestValidate(model);
 
             result.ShouldHaveValidationErrorFor(m => m.ServiceLevel)
-                .WithErrorMessage("Enter a service level");
+                .WithErrorMessage(AddEditServiceLevelModelValidator.NoServiceLevelError);
         }
 
         [Theory]
@@ -63,7 +63,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators
             var result = validator.TestValidate(model);
 
             result.ShouldHaveValidationErrorFor(m => m.HowMeasured)
-                .WithErrorMessage("Enter how service levels are measured");
+                .WithErrorMessage(AddEditServiceLevelModelValidator.NoServiceLevelMeasuresError);
         }
 
         [Theory]
@@ -81,7 +81,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators
             var result = validator.TestValidate(model);
 
             result.ShouldHaveValidationErrorFor(m => m.CreditsApplied)
-                .WithErrorMessage("Select if service credits are applied");
+                .WithErrorMessage(AddEditServiceLevelModelValidator.NoServiceCreditsAppliedError);
         }
 
         [Theory]
@@ -109,7 +109,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators
             var result = validator.TestValidate(model);
 
             result.ShouldHaveAnyValidationError()
-                .WithErrorMessage("Service level with these details already exists");
+                .WithErrorMessage(AddEditServiceLevelModelValidator.ServiceLevelDuplicateError);
         }
     }
 }
