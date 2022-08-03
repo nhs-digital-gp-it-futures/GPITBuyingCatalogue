@@ -7,7 +7,7 @@
 <div class="nhsuk-grid-row">
     <div class="nhsuk-grid-column-two-thirds">
         <nhs-validation-summary />
-        
+
         @{
             ViewBag.Title = Model.Progress == TaskProgress.Completed
                 ? "Edit solutions and services"
@@ -21,7 +21,7 @@
         <nhs-page-title title="@ViewBag.Title"
                         caption="Order @Model!.CallOffId"
                         advice="@advice" />
-        
+
         <div id="SolutionDetails" class="nhsuk-u-margin-bottom-9">
             <h2>Catalogue Solution</h2>
             <vc:nhs-action-link text="Change Catalogue Solution"
@@ -50,11 +50,13 @@
                 <h2>Additional Services</h2>
                 @if (Model.AdditionalServicesAvailable)
                 {
-                    <vc:nhs-action-link text="Change Additional Services"
-                                        url="@Url.Action(
-                                                 nameof(AdditionalServicesController.EditAdditionalServices),
-                                                 typeof(AdditionalServicesController).ControllerName(),
-                                                 new { Model.InternalOrgId, Model.CallOffId })"/>
+                    <span data-test-id="additional-services-action">
+                        <vc:nhs-action-link text="@Model.AdditionalServicesActionText"
+                                            url="@Url.Action(
+                                                     nameof(AdditionalServicesController.EditAdditionalServices),
+                                                     typeof(AdditionalServicesController).ControllerName(),
+                                                     new { Model.InternalOrgId, Model.CallOffId })"/>
+                    </span>
                 }
                 else
                 {
@@ -70,16 +72,18 @@
                 }
             </div>
         }
-        
+
         <div id="AssociatedServiceDetails" class="nhsuk-u-margin-bottom-9">
             <h2>Associated Services</h2>
             @if (Model.AssociatedServicesAvailable)
             {
-                <vc:nhs-action-link text="Change Associated Services"
-                                    url="@Url.Action(
-                                             nameof(AssociatedServicesController.EditAssociatedServices),
-                                             typeof(AssociatedServicesController).ControllerName(),
-                                             new { Model.InternalOrgId, Model.CallOffId })"/>
+                <span data-test-id="associated-services-action">
+                    <vc:nhs-action-link text="@Model.AssociatedServicesActionText"
+                                        url="@Url.Action(
+                                                 nameof(AssociatedServicesController.EditAssociatedServices),
+                                                 typeof(AssociatedServicesController).ControllerName(),
+                                                 new { Model.InternalOrgId, Model.CallOffId })"/>
+                </span>
             }
             else
             {
@@ -94,8 +98,8 @@
                 </div>
             }
         </div>
-        
-        <vc:nhs-secondary-button text="Continue" 
+
+        <vc:nhs-secondary-button text="Continue"
                                  url="@Model.BackLink"
                                  use-primary-colour="true"/>
     </div>
