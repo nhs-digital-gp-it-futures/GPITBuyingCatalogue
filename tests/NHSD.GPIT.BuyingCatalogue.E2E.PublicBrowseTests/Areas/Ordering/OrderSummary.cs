@@ -10,11 +10,9 @@ using NHSD.GPIT.BuyingCatalogue.EntityFramework;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Users.Models;
-using NHSD.GPIT.BuyingCatalogue.Framework.Calculations;
 using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers;
 using Xunit;
-using Objects = NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.Objects;
 
 namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering
 {
@@ -77,8 +75,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering
             CommonActions.ElementIsDisplayed(OrderSummaryObjects.OneYearCostSummary).Should().BeTrue();
             CommonActions.ElementIsDisplayed(OrderSummaryObjects.TotalCostSummary).Should().BeTrue();
 
-            CommonActions.ElementIsDisplayed(OrderSummaryObjects.DownloadPdfButton).Should().BeTrue();
-            CommonActions.SaveButtonDisplayed().Should().BeTrue();
+            CommonActions.ContinueButtonDisplayed().Should().BeTrue();
 
             RemoveOrder(order);
         }
@@ -317,13 +314,6 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering
             };
 
             return addedAssociatedService;
-        }
-
-        private OrderItemPrice GetTieredPrice()
-        {
-            var tierPrice = GetPrice(CataloguePriceType.Tiered);
-
-            return new OrderItemPrice(tierPrice);
         }
 
         private OrderItemPrice GetFlatPrice()

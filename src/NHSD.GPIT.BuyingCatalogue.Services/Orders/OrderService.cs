@@ -135,6 +135,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
         public async Task<Order> GetOrderForSummary(CallOffId callOffId, string internalOrgId)
         {
             var output = await dbContext.Orders
+                .Include(x => x.ContractFlags)
                 .Include(o => o.OrderingParty)
                 .Include(o => o.OrderingPartyContact)
                 .Include(o => o.Solution)
@@ -145,7 +146,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
                 .Include(o => o.OrderItems).ThenInclude(i => i.CatalogueItem).ThenInclude(ci => ci.Solution).ThenInclude(s => s.FrameworkSolutions).ThenInclude(fs => fs.Framework)
                 .Include(o => o.OrderItems).ThenInclude(i => i.OrderItemFunding)
                 .Include(o => o.OrderItems).ThenInclude(i => i.OrderItemPrice).ThenInclude(ip => ip.OrderItemPriceTiers.OrderBy(pt => pt.LowerRange))
-                .Include(o => o.OrderItems).ThenInclude(i => i.OrderItemRecipients.OrderBy(i => i.Recipient.Name)).ThenInclude(r => r.Recipient)
+                .Include(o => o.OrderItems).ThenInclude(i => i.OrderItemRecipients.OrderBy(r => r.Recipient.Name)).ThenInclude(r => r.Recipient)
                 .AsNoTracking()
                 .AsSplitQuery()
                 .SingleOrDefaultAsync(o =>
@@ -162,6 +163,28 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
             }
 
             return output;
+        }
+
+        public async Task<Order> GetOrderForTaskListStatuses(CallOffId callOffId, string internalOrgId)
+        {
+            var order = await dbContext.Orders
+                .Include(x => x.ContractFlags)
+                .Include(x => x.LastUpdatedByUser)
+                .Include(x => x.OrderItems).ThenInclude(x => x.CatalogueItem)
+                .Include(x => x.OrderItems).ThenInclude(x => x.OrderItemFunding)
+                .Include(x => x.OrderItems).ThenInclude(x => x.OrderItemPrice)
+                .Include(x => x.OrderItems).ThenInclude(x => x.OrderItemRecipients)
+                .Include(x => x.OrderingPartyContact)
+                .Include(x => x.OrderingParty)
+                .Include(x => x.Supplier)
+                .Include(x => x.SupplierContact)
+                .AsSplitQuery()
+                .AsNoTracking()
+                .SingleOrDefaultAsync(x =>
+                    x.Id == callOffId.Id
+                    && x.OrderingParty.InternalIdentifier == internalOrgId);
+
+            return order;
         }
 
         public async Task<PagedList<Order>> GetPagedOrders(int organisationId, PageOptions options, string search = null)

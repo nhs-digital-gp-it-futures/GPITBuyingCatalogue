@@ -73,20 +73,10 @@ namespace NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.TagHelpers.TaskLi
             builder.AddCssClass(TaskListHeaderClass);
 
             var span = GetHeaderSpanBuilder(context);
-            var label = GetLabelTextBuilder();
 
             builder.InnerHtml
                 .AppendHtml(span)
-                .AppendHtml(label);
-
-            return builder;
-        }
-
-        private TagBuilder GetLabelTextBuilder()
-        {
-            var builder = new TagBuilder(TagHelperConstants.Div);
-
-            builder.InnerHtml.Append(LabelText);
+                .Append(LabelText);
 
             return builder;
         }

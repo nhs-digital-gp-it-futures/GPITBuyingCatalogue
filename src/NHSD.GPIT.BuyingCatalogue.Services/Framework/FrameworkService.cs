@@ -25,14 +25,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Framework
                 .AsNoTracking()
                 .SingleOrDefaultAsync(x => x.Id == orderId);
 
-            if (order == null)
-            {
-                return null;
-            }
-
-            var solutionId = order.AssociatedServicesOnly
-                ? order.SolutionId
-                : order.GetSolution()?.CatalogueItemId;
+            var solutionId = order?.GetSolutionId();
 
             if (solutionId == null)
             {

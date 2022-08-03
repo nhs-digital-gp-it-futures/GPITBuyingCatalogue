@@ -54,7 +54,7 @@
     {
         @foreach (var recipient in Model.OrderItem.OrderItemRecipients)
         {
-            <tr>
+            <tr class="alternating">
                 <td>
                     @recipient.Recipient.Name
                 </td>
@@ -134,7 +134,7 @@
 
                 @foreach (var (tier, index) in tiers.Select((x, i) => (x, i)))
                 {
-                    <tr>
+                    <tr class="alternating"> 
                         <td>
                             Tier @(index + 1)
                         </td>
