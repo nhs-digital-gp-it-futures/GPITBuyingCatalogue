@@ -9,6 +9,12 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Validators.ServiceLevelAg
 {
     public sealed class EditServiceAvailabilityTimesModelValidator : AbstractValidator<EditServiceAvailabilityTimesModel>
     {
+        public const string ServiceAvailabilityTimeDuplicateError = "Service availability time with these details already exists";
+        public const string NoTypeOfSupportError = "Enter a type of support";
+        public const string NoFromTimeError = "Enter a from time";
+        public const string NoUntilTimeError = "Enter an until time";
+        public const string NoApplicableDaysError = "Enter the applicable days";
+
         private readonly IServiceLevelAgreementsService serviceLevelAgreementsService;
 
         public EditServiceAvailabilityTimesModelValidator(IServiceLevelAgreementsService serviceLevelAgreementsService)
@@ -17,7 +23,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Validators.ServiceLevelAg
 
             RuleFor(m => m)
                 .Must(NotBeADuplicateServiceAvailabilityTime)
-                .WithMessage("Service availability time with these details already exists")
+                .WithMessage(ServiceAvailabilityTimeDuplicateError)
                 .OverridePropertyName(
                     m => m.SupportType,
                     m => m.ApplicableDays,
@@ -26,20 +32,20 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Validators.ServiceLevelAg
 
             RuleFor(m => m.SupportType)
                 .NotEmpty()
-                .WithMessage("Enter a type of support");
+                .WithMessage(NoTypeOfSupportError);
 
             RuleFor(m => m.From)
                 .NotEmpty()
-                .WithMessage("Enter a from time");
+                .WithMessage(NoFromTimeError);
 
             RuleFor(m => m.Until)
                 .NotEmpty()
-                .WithMessage("Enter an until time")
+                .WithMessage(NoUntilTimeError)
                 .Unless(m => !m.From.HasValue);
 
             RuleFor(m => m.ApplicableDays)
                 .NotEmpty()
-                .WithMessage("Enter the applicable days");
+                .WithMessage(NoApplicableDaysError);
         }
 
         private static bool IsTimeEquals(DateTime first, DateTime second)

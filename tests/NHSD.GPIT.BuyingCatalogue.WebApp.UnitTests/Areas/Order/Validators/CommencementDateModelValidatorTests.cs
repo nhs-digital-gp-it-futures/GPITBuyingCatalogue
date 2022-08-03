@@ -26,6 +26,22 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Validators
 
         [Theory]
         [CommonAutoData]
+        public static void Validate_CommencementDateDayOnly_ThrowsValidationError(
+            CommencementDateModel model,
+            CommencementDateModelValidator validator)
+        {
+            model.Day = "01";
+            model.Month = string.Empty;
+            model.Year = string.Empty;
+
+            var result = validator.TestValidate(model);
+
+            result.ShouldHaveValidationErrorFor(m => m.Day)
+                .WithErrorMessage(CommencementDateModelValidator.CommencementDateMonthMissingErrorMessage);
+        }
+
+        [Theory]
+        [CommonAutoData]
         public static void Validate_CommencementDateMonthMissing_ThrowsValidationError(
             CommencementDateModel model,
             CommencementDateModelValidator validator)
@@ -135,6 +151,64 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Validators
             var result = validator.TestValidate(model);
 
             result.ShouldNotHaveValidationErrorFor(x => x.Day);
+        }
+
+        [Theory]
+        [CommonAutoData]
+        public static void Validate_CommencementDateInThePast_ValidationError(
+            CommencementDateModel model,
+            CommencementDateModelValidator validator)
+        {
+            model.Day = "01";
+            model.Month = "01";
+            model.Year = DateTime.UtcNow.AddYears(-1).Year.ToString();
+
+            var result = validator.TestValidate(model);
+
+            result.ShouldHaveValidationErrorFor(x => x.Day)
+                .WithErrorMessage(CommencementDateModelValidator.CommencementDateInThePastErrorMessage);
+        }
+
+        [Theory]
+        [CommonInlineAutoData(null, null)]
+        [CommonInlineAutoData("", "")]
+        [CommonInlineAutoData(" ", " ")]
+        public static void Validate_InitialPeriodAndMaximumTermNotEntered_ThrowsValidationError(
+            string initialPeriod,
+            string maximumTerm,
+            CommencementDateModel model,
+            CommencementDateModelValidator validator)
+        {
+            model.InitialPeriod = initialPeriod;
+            model.MaximumTerm = maximumTerm;
+
+            var result = validator.TestValidate(model);
+
+            result.ShouldHaveValidationErrorFor(m => m.InitialPeriod)
+                .WithErrorMessage(CommencementDateModelValidator.InitialPeriodMissingErrorMessage);
+
+            result.ShouldHaveValidationErrorFor(m => m.MaximumTerm)
+                .WithErrorMessage(CommencementDateModelValidator.MaximumTermMissingErrorMessage);
+        }
+
+        [Theory]
+        [CommonInlineAutoData("A", "B")]
+        public static void Validate_InitialPeriodAndMaximumTermNonNumeric_ThrowsValidationError(
+            string initialPeriod,
+            string maximumTerm,
+            CommencementDateModel model,
+            CommencementDateModelValidator validator)
+        {
+            model.InitialPeriod = initialPeriod;
+            model.MaximumTerm = maximumTerm;
+
+            var result = validator.TestValidate(model);
+
+            result.ShouldHaveValidationErrorFor(m => m.InitialPeriod)
+                .WithErrorMessage(CommencementDateModelValidator.InitialPeriodNotANumberErrorMessage);
+
+            result.ShouldHaveValidationErrorFor(m => m.MaximumTerm)
+                .WithErrorMessage(CommencementDateModelValidator.MaximumTermNotANumberErrorMessage);
         }
 
         [Theory]
@@ -249,6 +323,51 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Validators
 
             result.ShouldHaveValidationErrorFor(m => m.MaximumTerm)
                 .WithErrorMessage(CommencementDateModelValidator.MaximumTermTooLowErrorMessage);
+        }
+
+        [Theory]
+        [CommonInlineAutoData(-1, -1)]
+        [CommonInlineAutoData(0, 0)]
+        public static void Validate_InitialPeriodAndMaximumTermTooLow_ThrowsValidationError(
+            string initialPeriod,
+            string maximumTerm,
+            CommencementDateModel model,
+            CommencementDateModelValidator validator)
+        {
+            model.InitialPeriod = initialPeriod;
+            model.MaximumTerm = maximumTerm;
+
+            var result = validator.TestValidate(model);
+
+            result.ShouldHaveValidationErrorFor(i => i.InitialPeriod)
+                .WithErrorMessage(CommencementDateModelValidator.InitialPeriodTooLowErrorMessage);
+
+            result.ShouldHaveValidationErrorFor(m => m.MaximumTerm)
+                .WithErrorMessage(CommencementDateModelValidator.MaximumTermTooLowErrorMessage);
+        }
+
+        [Theory]
+        [CommonInlineAutoData(CommencementDateModelValidator.MaximumInitialPeriod + 1, 37, OrderTriageValue.Over250K, 36)]
+        [CommonInlineAutoData(CommencementDateModelValidator.MaximumInitialPeriod + 1, 13, OrderTriageValue.Under40K, 12)]
+        public static void Validate_InitialPeriodAndMaximumTermTooHigh_ThrowsValidationError(
+            string initialPeriod,
+            string maximumTerm,
+            OrderTriageValue orderTriage,
+            string maxTerm,
+            CommencementDateModel model,
+            CommencementDateModelValidator validator)
+        {
+            model.InitialPeriod = initialPeriod;
+            model.MaximumTerm = maximumTerm;
+            model.OrderTriageValue = orderTriage;
+
+            var result = validator.TestValidate(model);
+
+            result.ShouldHaveValidationErrorFor(i => i.InitialPeriod)
+                .WithErrorMessage(CommencementDateModelValidator.InitialPeriodTooHighErrorMessage);
+
+            result.ShouldHaveValidationErrorFor(m => m.MaximumTerm)
+                .WithErrorMessage(string.Format(CommencementDateModelValidator.MaximumTermTooHighErrorMessage, maxTerm));
         }
 
         [Theory]

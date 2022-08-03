@@ -108,7 +108,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.Users
         }
 
         [Fact]
-        public void Organisation_Admin_SelectOtherOrganisation_ClickContinue_ExpectedResult()
+        public void Organisation_Admin_SelectOtherOrganisation_ClickContinue_ThrowsError()
         {
             CommonActions.AutoCompleteAddValue(UserObjects.SelectedOrganisation, ValidOrganisationName);
             CommonActions.ClickLinkElement(UserObjects.AutoCompleteResult(0));
@@ -121,9 +121,8 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.Users
             CommonActions.ErrorSummaryDisplayed().Should().BeTrue();
             CommonActions.ErrorSummaryLinksExist().Should().BeTrue();
 
-            CommonActions.ElementShowingCorrectErrorMessage(
-                UserObjects.SelectedOrganisationError,
-                OrganisationModelValidator.MustBelongToNhsDigitalErrorMessage).Should().BeTrue();
+            CommonActions.ElementIsDisplayed(
+                UserObjects.SelectedOrganisationError).Should().BeTrue();
         }
 
         [Fact]

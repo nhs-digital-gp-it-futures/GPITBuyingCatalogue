@@ -18,5 +18,13 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.Objects.Ordering
         public static By EmailAddressInput => By.Id("Contact_EmailAddress");
 
         public static By PhoneNumberInput => By.Id("Contact_TelephoneNumber");
+
+        public static By FirstNameInputError => By.Id("Contact_FirstName-error");
+
+        public static By LastNameInputError => By.Id("Contact_LastName-error");
+
+        public static By PhoneNumberInputError => By.Id("Contact_TelephoneNumber-error");
+
+        public static By EmailAddressInputError => By.Id("Contact_EmailAddress-error");
     }
 }

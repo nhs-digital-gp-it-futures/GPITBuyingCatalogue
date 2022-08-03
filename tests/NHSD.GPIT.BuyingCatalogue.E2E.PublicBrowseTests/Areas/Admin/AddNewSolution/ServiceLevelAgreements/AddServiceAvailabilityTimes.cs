@@ -95,9 +95,15 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.AddNewSolution.ServiceL
         }
 
         [Fact]
-        public void AddAvailabilityTimes_ClickSave_NoInput()
+        public void AddAvailabilityTimes_ClickSave_NoInput_ThrowsErrors()
         {
             CommonActions.ClickSave();
+
+            CommonActions.PageLoadedCorrectGetIndex(
+                typeof(ServiceLevelAgreementsController),
+                nameof(ServiceLevelAgreementsController.AddServiceAvailabilityTimes))
+                .Should()
+                .BeTrue();
 
             CommonActions.ErrorSummaryDisplayed()
                 .Should()
@@ -107,109 +113,17 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.AddNewSolution.ServiceL
                 .Should()
                 .BeTrue();
 
-            CommonActions.ElementShowingCorrectErrorMessage(ServiceAvailabilityTimesObjects.SupportTypeInputError, "Enter a type of support")
+            CommonActions.ElementIsDisplayed(ServiceAvailabilityTimesObjects.SupportTypeInputError)
                 .Should()
                 .BeTrue();
 
-            CommonActions.ElementShowingCorrectErrorMessage(ServiceAvailabilityTimesObjects.ApplicableDaysInputError, "Enter the applicable days")
+            CommonActions.ElementIsDisplayed(ServiceAvailabilityTimesObjects.ApplicableDaysInputError)
                 .Should()
                 .BeTrue();
 
-            CommonActions.ElementShowingCorrectErrorMessage(ServiceAvailabilityTimesObjects.TimeInputError, "Error: Enter a from time")
+            CommonActions.ElementIsDisplayed(ServiceAvailabilityTimesObjects.TimeInputError)
                 .Should()
                 .BeTrue();
-        }
-
-        [Fact]
-        public async Task AddAvailabilityTimes_ClickSave_Duplicate()
-        {
-            await using var context = GetEndToEndDbContext();
-            var serviceAvailabilityTime = await context.ServiceAvailabilityTimes.SingleAsync(t => t.Id == 1);
-
-            CommonActions.ElementAddValue(ServiceAvailabilityTimesObjects.SupportTypeInput, serviceAvailabilityTime.Category);
-            CommonActions.ElementAddValue(ServiceAvailabilityTimesObjects.ApplicableDaysInput, serviceAvailabilityTime.ApplicableDays);
-            CommonActions.ElementAddValue(ServiceAvailabilityTimesObjects.FromInput, serviceAvailabilityTime.TimeFrom.ToString("HH:mm"));
-            CommonActions.ElementAddValue(ServiceAvailabilityTimesObjects.UntilInput, serviceAvailabilityTime.TimeUntil.ToString("HH:mm"));
-
-            CommonActions.ClickSave();
-
-            CommonActions.ErrorSummaryDisplayed()
-                .Should()
-                .BeTrue();
-
-            CommonActions.ErrorSummaryLinksExist()
-                .Should()
-                .BeTrue();
-
-            CommonActions.ElementShowingCorrectErrorMessage(ServiceAvailabilityTimesObjects.SupportTypeInputError, "Service availability time with these details already exists")
-                .Should()
-                .BeTrue();
-
-            CommonActions.ElementShowingCorrectErrorMessage(ServiceAvailabilityTimesObjects.ApplicableDaysInputError, "Service availability time with these details already exists")
-                .Should()
-                .BeTrue();
-
-            CommonActions.ElementShowingCorrectErrorMessage(ServiceAvailabilityTimesObjects.TimeInputError, "Error: Service availability time with these details already exists")
-                .Should()
-                .BeTrue();
-        }
-
-        [Fact]
-        public void AddAvailabilityTimes_ClickSave_InvalidFromFormat()
-        {
-            var currentDate = DateTime.UtcNow;
-
-            var fromTime = currentDate.AddMinutes(-5).ToString("HH");
-            var untilTime = currentDate.ToString("HH:mm");
-
-            TextGenerators.TextInputAddText(ServiceAvailabilityTimesObjects.SupportTypeInput, 20);
-            TextGenerators.TextInputAddText(ServiceAvailabilityTimesObjects.ApplicableDaysInput, 20);
-
-            CommonActions.ElementAddValue(ServiceAvailabilityTimesObjects.FromInput, fromTime);
-            CommonActions.ElementAddValue(ServiceAvailabilityTimesObjects.UntilInput, untilTime);
-
-            CommonActions.ClickSave();
-
-            CommonActions.ErrorSummaryDisplayed()
-                .Should()
-                .BeTrue();
-
-            CommonActions.ErrorSummaryLinksExist()
-                .Should()
-                .BeTrue();
-
-            CommonActions.ElementShowingCorrectErrorMessage(ServiceAvailabilityTimesObjects.TimeInputError, $"Error: Enter time in the correct format")
-                 .Should()
-                 .BeTrue();
-        }
-
-        [Fact]
-        public void AddAvailabilityTimes_ClickSave_InvalidUntilFormat()
-        {
-            var currentDate = DateTime.UtcNow;
-
-            var fromTime = currentDate.AddMinutes(-5).ToString("HH:mm");
-            var untilTime = currentDate.ToString("HH");
-
-            TextGenerators.TextInputAddText(ServiceAvailabilityTimesObjects.SupportTypeInput, 20);
-            TextGenerators.TextInputAddText(ServiceAvailabilityTimesObjects.ApplicableDaysInput, 20);
-
-            CommonActions.ElementAddValue(ServiceAvailabilityTimesObjects.FromInput, fromTime);
-            CommonActions.ElementAddValue(ServiceAvailabilityTimesObjects.UntilInput, untilTime);
-
-            CommonActions.ClickSave();
-
-            CommonActions.ErrorSummaryDisplayed()
-                .Should()
-                .BeTrue();
-
-            CommonActions.ErrorSummaryLinksExist()
-                .Should()
-                .BeTrue();
-
-            CommonActions.ElementShowingCorrectErrorMessage(ServiceAvailabilityTimesObjects.TimeInputError, $"Error: Enter time in the correct format")
-                 .Should()
-                 .BeTrue();
         }
     }
 }

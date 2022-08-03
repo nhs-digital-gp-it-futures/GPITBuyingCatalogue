@@ -45,7 +45,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.Users
         }
 
         [Fact]
-        public void Add_BlankValues_ClickSave_DisplaysErrorMessage()
+        public void Add_InvalidModelState_DisplaysErrorMessage()
         {
             CommonActions.ClickLinkElement(CommonSelectors.SubmitButton);
 
@@ -56,66 +56,20 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.Users
             CommonActions.ErrorSummaryDisplayed().Should().BeTrue();
             CommonActions.ErrorSummaryLinksExist().Should().BeTrue();
 
-            CommonActions.ElementShowingCorrectErrorMessage(
-                UserObjects.SelectedOrganisationError,
-                AddModelValidator.OrganisationMissingErrorMessage).Should().BeTrue();
+            CommonActions.ElementIsDisplayed(
+                UserObjects.SelectedOrganisationError).Should().BeTrue();
 
-            CommonActions.ElementShowingCorrectErrorMessage(
-                UserObjects.FirstNameInputError,
-                AddModelValidator.FirstNameMissingErrorMessage).Should().BeTrue();
+            CommonActions.ElementIsDisplayed(
+                UserObjects.FirstNameInputError).Should().BeTrue();
 
-            CommonActions.ElementShowingCorrectErrorMessage(
-                UserObjects.LastNameInputError,
-                AddModelValidator.LastNameMissingErrorMessage).Should().BeTrue();
+            CommonActions.ElementIsDisplayed(
+                UserObjects.LastNameInputError).Should().BeTrue();
 
-            CommonActions.ElementShowingCorrectErrorMessage(
-                UserObjects.EmailInputError,
-                AddModelValidator.EmailMissingErrorMessage).Should().BeTrue();
+            CommonActions.ElementIsDisplayed(
+                UserObjects.EmailInputError).Should().BeTrue();
 
-            CommonActions.ElementShowingCorrectErrorMessage(
-                UserObjects.AccountTypeRadioButtonsError,
-                $"Error: {AddModelValidator.AccountTypeMissingErrorMessage}").Should().BeTrue();
-        }
-
-        [Fact]
-        public void Add_EmailWrongFormat_ClickSave_DisplaysErrorMessage()
-        {
-            CommonActions.ElementAddValue(UserObjects.EmailInput, "email address");
-
-            CommonActions.ClickLinkElement(CommonSelectors.SubmitButton);
-
-            CommonActions.PageLoadedCorrectGetIndex(
-                typeof(UsersController),
-                nameof(UsersController.Add)).Should().BeTrue();
-
-            CommonActions.ErrorSummaryDisplayed().Should().BeTrue();
-            CommonActions.ErrorSummaryLinksExist().Should().BeTrue();
-
-            CommonActions.ElementShowingCorrectErrorMessage(
-                UserObjects.EmailInputError,
-                PersonalDetailsModelValidator.EmailWrongFormatErrorMessage).Should().BeTrue();
-        }
-
-        [Fact]
-        public void Add_EmailInUse_ClickSave_DisplaysErrorMessage()
-        {
-            var context = GetEndToEndDbContext();
-            var existingEmailAddress = context.AspNetUsers.First().Email;
-
-            CommonActions.ElementAddValue(UserObjects.EmailInput, existingEmailAddress);
-
-            CommonActions.ClickLinkElement(CommonSelectors.SubmitButton);
-
-            CommonActions.PageLoadedCorrectGetIndex(
-                typeof(UsersController),
-                nameof(UsersController.Add)).Should().BeTrue();
-
-            CommonActions.ErrorSummaryDisplayed().Should().BeTrue();
-            CommonActions.ErrorSummaryLinksExist().Should().BeTrue();
-
-            CommonActions.ElementShowingCorrectErrorMessage(
-                UserObjects.EmailInputError,
-                AddModelValidator.EmailInUseErrorMessage).Should().BeTrue();
+            CommonActions.ElementIsDisplayed(
+                UserObjects.AccountTypeRadioButtonsError).Should().BeTrue();
         }
 
         [Fact]
@@ -139,31 +93,6 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.Users
             CommonActions.PageLoadedCorrectGetIndex(
                 typeof(UsersController),
                 nameof(UsersController.Index)).Should().BeTrue();
-        }
-
-        [Fact]
-        public void Add_Admin_NotInNhsDigital_ClickSave_DisplaysErrorMessage()
-        {
-            var organisationName = GetEndToEndDbContext()
-                .Organisations
-                .First(x => x.Name != NhsDigitalOrganisationName)
-                .Name;
-
-            CommonActions.AutoCompleteAddValue(UserObjects.SelectedOrganisation, organisationName);
-            CommonActions.ClickLinkElement(UserObjects.AutoCompleteResult(0));
-            CommonActions.ClickRadioButtonWithText("Admin");
-            CommonActions.ClickLinkElement(CommonSelectors.SubmitButton);
-
-            CommonActions.PageLoadedCorrectGetIndex(
-                typeof(UsersController),
-                nameof(UsersController.Add)).Should().BeTrue();
-
-            CommonActions.ErrorSummaryDisplayed().Should().BeTrue();
-            CommonActions.ErrorSummaryLinksExist().Should().BeTrue();
-
-            CommonActions.ElementShowingCorrectErrorMessage(
-                UserObjects.AccountTypeRadioButtonsError,
-                $"Error: {AddModelValidator.MustBelongToNhsDigitalErrorMessage}").Should().BeTrue();
         }
 
         [Fact]

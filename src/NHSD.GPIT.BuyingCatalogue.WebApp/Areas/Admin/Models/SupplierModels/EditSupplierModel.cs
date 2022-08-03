@@ -25,22 +25,26 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.SupplierModels
 
             SupplierStatus = supplier.IsActive;
 
+            CurrentStatus = supplier.IsActive;
+
             SupplierName = supplier.Name;
         }
 
         public static IEnumerable<object> EditSupplierRadioOptions =>
             new List<object> { new { Display = "Active", Value = true }, new { Display = "Inactive", Value = false } };
 
-        public bool SupplierStatus { get; init; }
+        public bool SupplierStatus { get; set; }
 
-        public bool DetailsStatus { get; }
+        public bool CurrentStatus { get; set; }
 
-        public bool AddressStatus { get; }
+        public bool DetailsStatus { get; set; }
 
-        public bool ContactsStatus { get; }
+        public bool AddressStatus { get; set; }
 
-        public int SupplierId { get; }
+        public bool ContactsStatus { get; set; }
 
-        public string SupplierName { get; }
+        public int SupplierId { get; set; }
+
+        public string SupplierName { get; set; }
     }
 }
