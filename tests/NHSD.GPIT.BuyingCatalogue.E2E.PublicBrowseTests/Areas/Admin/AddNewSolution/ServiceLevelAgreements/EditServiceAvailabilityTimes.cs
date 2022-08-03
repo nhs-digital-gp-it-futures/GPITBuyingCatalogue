@@ -136,7 +136,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.AddNewSolution.ServiceL
         }
 
         [Fact]
-        public void EditAvailabilityTimes_ClickSave_NoInput()
+        public void EditAvailabilityTimes_ClickSave_NoInput_ThrowsErrors()
         {
             CommonActions.ClearInputElement(ServiceAvailabilityTimesObjects.SupportTypeInput);
             CommonActions.ClearInputElement(ServiceAvailabilityTimesObjects.ApplicableDaysInput);
@@ -144,6 +144,12 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.AddNewSolution.ServiceL
             CommonActions.ClearInputElement(ServiceAvailabilityTimesObjects.UntilInput);
 
             CommonActions.ClickSave();
+
+            CommonActions.PageLoadedCorrectGetIndex(
+                typeof(ServiceLevelAgreementsController),
+                nameof(ServiceLevelAgreementsController.EditServiceAvailabilityTimes))
+                .Should()
+                .BeTrue();
 
             CommonActions.ErrorSummaryDisplayed()
                 .Should()
@@ -153,15 +159,15 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.AddNewSolution.ServiceL
                 .Should()
                 .BeTrue();
 
-            CommonActions.ElementShowingCorrectErrorMessage(ServiceAvailabilityTimesObjects.SupportTypeInputError, "Enter a type of support")
+            CommonActions.ElementIsDisplayed(ServiceAvailabilityTimesObjects.SupportTypeInputError)
                 .Should()
                 .BeTrue();
 
-            CommonActions.ElementShowingCorrectErrorMessage(ServiceAvailabilityTimesObjects.ApplicableDaysInputError, "Enter the applicable days")
+            CommonActions.ElementIsDisplayed(ServiceAvailabilityTimesObjects.ApplicableDaysInputError)
                 .Should()
                 .BeTrue();
 
-            CommonActions.ElementShowingCorrectErrorMessage(ServiceAvailabilityTimesObjects.TimeInputError, "Error: Enter a from time")
+            CommonActions.ElementIsDisplayed(ServiceAvailabilityTimesObjects.TimeInputError)
                 .Should()
                 .BeTrue();
         }
@@ -176,64 +182,6 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.AddNewSolution.ServiceL
                 nameof(ServiceLevelAgreementsController.EditServiceLevelAgreement))
                 .Should()
                 .BeTrue();
-        }
-
-        [Fact]
-        public void EditAvailabilityTimes_ClickSave_InvalidFromFormat()
-        {
-            var currentDate = DateTime.UtcNow;
-
-            var fromTime = currentDate.AddMinutes(-5).ToString("HH");
-            var untilTime = currentDate.ToString("HH:mm");
-
-            TextGenerators.TextInputAddText(ServiceAvailabilityTimesObjects.SupportTypeInput, 20);
-            TextGenerators.TextInputAddText(ServiceAvailabilityTimesObjects.ApplicableDaysInput, 20);
-
-            CommonActions.ElementAddValue(ServiceAvailabilityTimesObjects.FromInput, fromTime);
-            CommonActions.ElementAddValue(ServiceAvailabilityTimesObjects.UntilInput, untilTime);
-
-            CommonActions.ClickSave();
-
-            CommonActions.ErrorSummaryDisplayed()
-                .Should()
-                .BeTrue();
-
-            CommonActions.ErrorSummaryLinksExist()
-                .Should()
-                .BeTrue();
-
-            CommonActions.ElementShowingCorrectErrorMessage(ServiceAvailabilityTimesObjects.TimeInputError, $"Error: Enter time in the correct format")
-                 .Should()
-                 .BeTrue();
-        }
-
-        [Fact]
-        public void EditAvailabilityTimes_ClickSave_InvalidUntilFormat()
-        {
-            var currentDate = DateTime.UtcNow;
-
-            var fromTime = currentDate.AddMinutes(-5).ToString("HH:mm");
-            var untilTime = currentDate.ToString("HH");
-
-            TextGenerators.TextInputAddText(ServiceAvailabilityTimesObjects.SupportTypeInput, 20);
-            TextGenerators.TextInputAddText(ServiceAvailabilityTimesObjects.ApplicableDaysInput, 20);
-
-            CommonActions.ElementAddValue(ServiceAvailabilityTimesObjects.FromInput, fromTime);
-            CommonActions.ElementAddValue(ServiceAvailabilityTimesObjects.UntilInput, untilTime);
-
-            CommonActions.ClickSave();
-
-            CommonActions.ErrorSummaryDisplayed()
-                .Should()
-                .BeTrue();
-
-            CommonActions.ErrorSummaryLinksExist()
-                .Should()
-                .BeTrue();
-
-            CommonActions.ElementShowingCorrectErrorMessage(ServiceAvailabilityTimesObjects.TimeInputError, $"Error: Enter time in the correct format")
-                 .Should()
-                 .BeTrue();
         }
 
         public void Dispose()

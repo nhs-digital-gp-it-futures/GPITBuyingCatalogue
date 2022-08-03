@@ -93,9 +93,15 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.AddNewSolution.ServiceL
         }
 
         [Fact]
-        public void AddServiceLevel_ClickSave_NoInput()
+        public void AddServiceLevel_ClickSave_NoInput_ThrowsErrors()
         {
             CommonActions.ClickSave();
+
+            CommonActions.PageLoadedCorrectGetIndex(
+                typeof(ServiceLevelAgreementsController),
+                nameof(ServiceLevelAgreementsController.AddServiceLevel))
+                .Should()
+                .BeTrue();
 
             CommonActions.ErrorSummaryDisplayed()
                 .Should()
@@ -105,57 +111,19 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.AddNewSolution.ServiceL
                 .Should()
                 .BeTrue();
 
-            CommonActions.ElementShowingCorrectErrorMessage(ServiceLevelObjects.ServiceTypeError, "Enter a type of service")
+            CommonActions.ElementIsDisplayed(ServiceLevelObjects.ServiceTypeError)
                 .Should()
                 .BeTrue();
 
-            CommonActions.ElementShowingCorrectErrorMessage(ServiceLevelObjects.ServiceLevelError, "Enter a service level")
+            CommonActions.ElementIsDisplayed(ServiceLevelObjects.ServiceLevelError)
                 .Should()
                 .BeTrue();
 
-            CommonActions.ElementShowingCorrectErrorMessage(ServiceLevelObjects.HowMeasuredError, "Enter how service levels are measured")
+            CommonActions.ElementIsDisplayed(ServiceLevelObjects.HowMeasuredError)
                 .Should()
                 .BeTrue();
 
-            CommonActions.ElementShowingCorrectErrorMessage(ServiceLevelObjects.CreditsRadioListError, "Error: Select if service credits are applied")
-                .Should()
-                .BeTrue();
-        }
-
-        [Fact]
-        public void AddServiceLevel_ClickSave_Duplicate()
-        {
-            using var context = GetEndToEndDbContext();
-            var serviceLevel = context.SlaServiceLevels.First(sl => sl.SolutionId == SolutionId);
-
-            CommonActions.ElementAddValue(ServiceLevelObjects.ServiceTypeInput, serviceLevel.TypeOfService);
-            CommonActions.ElementAddValue(ServiceLevelObjects.ServiceLevelInput, serviceLevel.ServiceLevel);
-            CommonActions.ElementAddValue(ServiceLevelObjects.HowMeasuredInput, serviceLevel.HowMeasured);
-            CommonActions.ClickRadioButtonWithText(serviceLevel.ServiceCredits.ToYesNo());
-
-            CommonActions.ClickSave();
-
-            CommonActions.ErrorSummaryDisplayed()
-                .Should()
-                .BeTrue();
-
-            CommonActions.ErrorSummaryLinksExist()
-                .Should()
-                .BeTrue();
-
-            CommonActions.ElementShowingCorrectErrorMessage(ServiceLevelObjects.ServiceTypeError, "Service level with these details already exists")
-                .Should()
-                .BeTrue();
-
-            CommonActions.ElementShowingCorrectErrorMessage(ServiceLevelObjects.ServiceLevelError, "Service level with these details already exists")
-                .Should()
-                .BeTrue();
-
-            CommonActions.ElementShowingCorrectErrorMessage(ServiceLevelObjects.HowMeasuredError, "Service level with these details already exists")
-                .Should()
-                .BeTrue();
-
-            CommonActions.ElementShowingCorrectErrorMessage(ServiceLevelObjects.CreditsRadioListError, "Error: Service level with these details already exists")
+            CommonActions.ElementIsDisplayed(ServiceLevelObjects.CreditsRadioListError)
                 .Should()
                 .BeTrue();
         }

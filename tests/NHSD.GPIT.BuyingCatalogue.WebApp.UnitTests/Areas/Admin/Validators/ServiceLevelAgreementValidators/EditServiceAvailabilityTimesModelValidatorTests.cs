@@ -29,7 +29,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators.Serv
             var result = validator.TestValidate(model);
 
             result.ShouldHaveValidationErrorFor(m => m.SupportType)
-                .WithErrorMessage("Enter a type of support");
+                .WithErrorMessage(EditServiceAvailabilityTimesModelValidator.NoTypeOfSupportError);
         }
 
         [Theory]
@@ -47,7 +47,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators.Serv
             var result = validator.TestValidate(model);
 
             result.ShouldHaveValidationErrorFor(m => m.From)
-                .WithErrorMessage("Enter a from time");
+                .WithErrorMessage(EditServiceAvailabilityTimesModelValidator.NoFromTimeError);
         }
 
         [Theory]
@@ -65,7 +65,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators.Serv
             var result = validator.TestValidate(model);
 
             result.ShouldHaveValidationErrorFor(m => m.Until)
-                .WithErrorMessage("Enter an until time");
+                .WithErrorMessage(EditServiceAvailabilityTimesModelValidator.NoUntilTimeError);
         }
 
         [Theory]
@@ -83,7 +83,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators.Serv
             var result = validator.TestValidate(model);
 
             result.ShouldHaveValidationErrorFor(m => m.ApplicableDays)
-                .WithErrorMessage("Enter the applicable days");
+                .WithErrorMessage(EditServiceAvailabilityTimesModelValidator.NoApplicableDaysError);
         }
 
         [Theory]
@@ -118,7 +118,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators.Serv
             var result = validator.TestValidate(model);
 
             result.ShouldHaveAnyValidationError()
-                .WithErrorMessage("Service availability time with these details already exists");
+                .WithErrorMessage(EditServiceAvailabilityTimesModelValidator.ServiceAvailabilityTimeDuplicateError);
         }
 
         [Theory]

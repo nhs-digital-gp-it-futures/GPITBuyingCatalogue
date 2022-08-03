@@ -68,31 +68,10 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering
             CommonActions.ErrorSummaryDisplayed().Should().BeTrue();
             CommonActions.ErrorSummaryLinksExist().Should().BeTrue();
 
-            CommonActions.ElementShowingCorrectErrorMessage("Contact.FirstName", "Enter a first name").Should().BeTrue();
-            CommonActions.ElementShowingCorrectErrorMessage("Contact.LastName", "Enter a last name").Should().BeTrue();
-            CommonActions.ElementShowingCorrectErrorMessage("Contact.EmailAddress", "Enter an email address").Should().BeTrue();
-            CommonActions.ElementShowingCorrectErrorMessage("Contact.TelephoneNumber", "Enter a telephone number").Should().BeTrue();
-        }
-
-        [Fact]
-        public void OrderingPartyInformation_EmailInputIncorrect_ThrowsError()
-        {
-            TextGenerators.TextInputAddText(Objects.Ordering.CalloffPartyInformation.FirstNameInput, 100);
-            TextGenerators.TextInputAddText(Objects.Ordering.CalloffPartyInformation.LastNameInput, 100);
-            TextGenerators.TextInputAddText(Objects.Ordering.CalloffPartyInformation.EmailAddressInput, 256);
-            TextGenerators.TextInputAddText(Objects.Ordering.CalloffPartyInformation.PhoneNumberInput, 35);
-
-            CommonActions.ClickSave();
-
-            CommonActions.PageLoadedCorrectGetIndex(
-                typeof(OrderingPartyController),
-                nameof(OrderingPartyController.OrderingParty)).Should().BeTrue();
-
-            CommonActions.ErrorSummaryDisplayed().Should().BeTrue();
-            CommonActions.ErrorSummaryLinksExist().Should().BeTrue();
-
-            CommonActions.ElementShowingCorrectErrorMessage("Contact.EmailAddress", "Enter an email address in the correct format, like name@example.com")
-                .Should().BeTrue();
+            CommonActions.ElementIsDisplayed(Objects.Ordering.CalloffPartyInformation.FirstNameInputError).Should().BeTrue();
+            CommonActions.ElementIsDisplayed(Objects.Ordering.CalloffPartyInformation.LastNameInputError).Should().BeTrue();
+            CommonActions.ElementIsDisplayed(Objects.Ordering.CalloffPartyInformation.EmailAddressInputError).Should().BeTrue();
+            CommonActions.ElementIsDisplayed(Objects.Ordering.CalloffPartyInformation.PhoneNumberInputError).Should().BeTrue();
         }
 
         [Fact]
