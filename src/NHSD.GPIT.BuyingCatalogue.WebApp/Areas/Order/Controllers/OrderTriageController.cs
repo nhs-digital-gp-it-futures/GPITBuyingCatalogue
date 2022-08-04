@@ -180,12 +180,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
         [HttpPost("{option}")]
         public IActionResult TriageSelection(string internalOrgId, TriageDueDiligenceModel model, OrderTriageValue? option, CatalogueItemType? orderType = null)
         {
-            if (!model.Selected.HasValue)
-            {
-                var (_, _, validationError) = GetTriageSelectionContent(option!.Value);
-                ModelState.AddModelError(nameof(model.Selected), validationError);
-            }
-
             if (!ModelState.IsValid)
                 return View(model);
 

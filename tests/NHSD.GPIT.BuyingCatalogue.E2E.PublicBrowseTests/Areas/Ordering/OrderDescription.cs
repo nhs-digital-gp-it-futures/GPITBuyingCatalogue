@@ -74,7 +74,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering
             CommonActions.ErrorSummaryDisplayed().Should().BeTrue();
             CommonActions.ErrorSummaryLinksExist().Should().BeTrue();
 
-            CommonActions.ElementShowingCorrectErrorMessage("Description", "Enter an order description")
+            CommonActions.ElementIsDisplayed(Objects.Ordering.OrderDescription.DescriptionInputError)
                 .Should().BeTrue();
         }
 

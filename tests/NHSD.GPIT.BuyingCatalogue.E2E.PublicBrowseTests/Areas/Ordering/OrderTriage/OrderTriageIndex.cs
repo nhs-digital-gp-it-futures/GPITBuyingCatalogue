@@ -105,12 +105,14 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering.OrderTriage
         {
             CommonActions.ClickSave();
 
+            CommonActions.PageLoadedCorrectGetIndex(
+                typeof(OrderTriageController),
+                nameof(OrderTriageController.Index)).Should().BeTrue();
+
             CommonActions.ErrorSummaryDisplayed().Should().BeTrue();
             CommonActions.ErrorSummaryLinksExist().Should().BeTrue();
 
-            CommonActions.ElementShowingCorrectErrorMessage(
-                OrderTriageObjects.OrderValueError,
-                "Error: Select the approximate value of your order, or ‘I’m not sure’ if you do not know")
+            CommonActions.ElementIsDisplayed(OrderTriageObjects.OrderValueError)
                 .Should()
                 .BeTrue();
         }
