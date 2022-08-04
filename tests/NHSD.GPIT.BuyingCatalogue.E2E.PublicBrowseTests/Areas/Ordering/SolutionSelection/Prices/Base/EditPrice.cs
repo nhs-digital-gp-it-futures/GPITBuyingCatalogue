@@ -40,7 +40,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering.SolutionSelection.Pr
         }
 
         [Fact]
-        public void EditPrice_PriceIsBlank_Error()
+        public void EditPrice_NoInputs_ThrowsError()
         {
             CommonActions.ClearInputElement(ConfirmPriceObjects.AgreedPriceInput(0));
             CommonActions.ClickSave();
@@ -52,85 +52,8 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering.SolutionSelection.Pr
             CommonActions.ErrorSummaryDisplayed().Should().BeTrue();
             CommonActions.ErrorSummaryLinksExist().Should().BeTrue();
 
-            CommonActions.ElementTextEqualTo(
-                ConfirmPriceObjects.AgreedPriceInputError(0),
-                PricingTierModelValidator.PriceNotEnteredErrorMessage).Should().BeTrue();
-        }
-
-        [Fact]
-        public void EditPrice_PriceNotANumber_Error()
-        {
-            CommonActions.ElementAddValue(ConfirmPriceObjects.AgreedPriceInput(0), "abc");
-            CommonActions.ClickSave();
-
-            CommonActions.PageLoadedCorrectGetIndex(
-                typeof(PricesController),
-                nameof(PricesController.EditPrice)).Should().BeTrue();
-
-            CommonActions.ErrorSummaryDisplayed().Should().BeTrue();
-            CommonActions.ErrorSummaryLinksExist().Should().BeTrue();
-
-            CommonActions.ElementTextEqualTo(
-                ConfirmPriceObjects.AgreedPriceInputError(0),
-                PricingTierModelValidator.PriceNotNumericErrorMessage).Should().BeTrue();
-        }
-
-        [Fact]
-        public void EditPrice_PriceNegative_Error()
-        {
-            CommonActions.ElementAddValue(ConfirmPriceObjects.AgreedPriceInput(0), "-1");
-            CommonActions.ClickSave();
-
-            CommonActions.PageLoadedCorrectGetIndex(
-                typeof(PricesController),
-                nameof(PricesController.EditPrice)).Should().BeTrue();
-
-            CommonActions.ErrorSummaryDisplayed().Should().BeTrue();
-            CommonActions.ErrorSummaryLinksExist().Should().BeTrue();
-
-            CommonActions.ElementTextEqualTo(
-                ConfirmPriceObjects.AgreedPriceInputError(0),
-                PricingTierModelValidator.PriceNegativeErrorMessage).Should().BeTrue();
-        }
-
-        [Fact]
-        public void EditPrice_PriceHasMoreThanFourDecimalPlaces_Error()
-        {
-            CommonActions.ElementAddValue(ConfirmPriceObjects.AgreedPriceInput(0), "1.00001");
-            CommonActions.ClickSave();
-
-            CommonActions.PageLoadedCorrectGetIndex(
-                typeof(PricesController),
-                nameof(PricesController.EditPrice)).Should().BeTrue();
-
-            CommonActions.ErrorSummaryDisplayed().Should().BeTrue();
-            CommonActions.ErrorSummaryLinksExist().Should().BeTrue();
-
-            CommonActions.ElementTextEqualTo(
-                ConfirmPriceObjects.AgreedPriceInputError(0),
-                PricingTierModelValidator.PriceNotWithinFourDecimalPlacesErrorMessage).Should().BeTrue();
-        }
-
-        [Theory]
-        [InlineData(1000)]
-        [InlineData(10000000.0001)]
-        [InlineData(9999999.9999)]
-        [InlineData(int.MaxValue)]
-        public void EditPrice_PriceHigherThanListPrice_Error(decimal value)
-        {
-            CommonActions.ElementAddValue(ConfirmPriceObjects.AgreedPriceInput(0), $"{value}");
-            CommonActions.ClickSave();
-
-            CommonActions.PageLoadedCorrectGetIndex(
-                typeof(PricesController),
-                nameof(PricesController.EditPrice)).Should().BeTrue();
-
-            CommonActions.ErrorSummaryDisplayed().Should().BeTrue();
-            CommonActions.ErrorSummaryLinksExist().Should().BeTrue();
-
-            CommonActions.ElementTextContains(
-                ConfirmPriceObjects.AgreedPriceInputError(0),
-                PricingTierModelValidator.PriceHigherThanListPriceErrorMessage).Should().BeTrue();
+            CommonActions.ElementIsDisplayed(
+                ConfirmPriceObjects.AgreedPriceInputError(0)).Should().BeTrue();
         }
 
         [Fact]
