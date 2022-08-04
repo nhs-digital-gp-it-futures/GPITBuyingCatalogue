@@ -21,6 +21,8 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.Orders
 
         public Task<Order> GetOrderForSummary(CallOffId callOffId, string internalOrgId);
 
+        public Task<Order> GetOrderForTaskListStatuses(CallOffId callOffId, string internalOrgId);
+
         public Task<PagedList<Order>> GetPagedOrders(int organisationId, PageOptions options, string search = null);
 
         public Task<IList<SearchFilterModel>> GetOrdersBySearchTerm(int organisationId, string searchTerm);

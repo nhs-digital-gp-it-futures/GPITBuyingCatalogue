@@ -1,20 +1,18 @@
-﻿@using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
-@using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers.FundingSource
-@using NHSD.GPIT.BuyingCatalogue.Framework.Extensions
+﻿@using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers.FundingSource
 @using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers.SolutionSelection;
 @using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Enums;
 @using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Routing
+@using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers.Contracts
 @model NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.Order.OrderModel
-@{
-    ViewBag.Title = Model.Title;
-}
 
 <div data-test-id="@Model.CallOffId-page">
     <partial name="Partials/_BackLink" model="Model" />
+
     <div class="nhsuk-grid-row nhsuk-u-margin-bottom-6">
-        <div class="nhsuk-grid-column-full">
+        <div class="nhsuk-grid-column-two-thirds">
             <nhs-validation-summary />
-            <nhs-page-title title="@ViewBag.Title"
+
+            <nhs-page-title title="@Model.Title"
                             advice="@Model.TitleAdvice"
 							caption = "@Model.OrganisationName" />
 
@@ -26,86 +24,148 @@
                 <nhs-task-list>
                     <nhs-task-list-section label-text="Prepare order">
                         <nhs-task-list-item label-text="Order description"
+                                            label-hint="Provide a description of your order."
+                                            data-test-id="test-order-description"
                                             url="@Model.DescriptionUrl"
                                             status="@Model.SectionStatuses.DescriptionStatus" />
+
                         <nhs-task-list-item label-text="Call-off Ordering Party contact details"
+                                            label-hint="Provide information about the primary contact for your order."
+                                            data-test-id="test-calloff-party"
                                             url="@Url.Action(
-                                                nameof(OrderingPartyController.OrderingParty),
-                                                typeof(OrderingPartyController).ControllerName(),
-                                                new { Model.InternalOrgId, Model.CallOffId})"
+                                                     nameof(OrderingPartyController.OrderingParty),
+                                                     typeof(OrderingPartyController).ControllerName(),
+                                                     new { Model.InternalOrgId, Model.CallOffId})"
                                             status="@Model.SectionStatuses.OrderingPartyStatus" />
+
                         <nhs-task-list-item label-text="Supplier information and contact details"
+                                            label-hint="Find the supplier you want to order from and select a supplier contact."
+                                            data-test-id="test-supplier-contact"
                                             url="@Url.Action(
-                                                nameof(SupplierController.Supplier),
-                                                typeof(SupplierController).ControllerName(),
-                                                new { Model.InternalOrgId, Model.CallOffId})"
+                                                     nameof(SupplierController.Supplier),
+                                                     typeof(SupplierController).ControllerName(),
+                                                     new { Model.InternalOrgId, Model.CallOffId})"
                                             status="@Model.SectionStatuses.SupplierStatus" />
+
                         <nhs-task-list-item label-text="Timescales for Call-off Agreement"
+                                            label-hint="Provide the approximate start date, the length of the contract and its initial period."
+                                            data-test-id="test-timescales"
                                             url="@Url.Action(
-                                                nameof(CommencementDateController.CommencementDate),
-                                                typeof(CommencementDateController).ControllerName(),
-                                                new { Model.InternalOrgId, Model.CallOffId})"
+                                                     nameof(CommencementDateController.CommencementDate),
+                                                     typeof(CommencementDateController).ControllerName(),
+                                                     new { Model.InternalOrgId, Model.CallOffId})"
                                             status="@Model.SectionStatuses.CommencementDateStatus" />
                     </nhs-task-list-section>
+
                     <nhs-task-list-section label-text="Add solutions and services">
                         <nhs-task-list-item label-text="Select solutions and services"
+                                            label-hint="Add Service Recipients, prices and quantities for what you’re ordering."
+                                            data-test-id="test-solutions-and-services"
                                             url="@SolutionSelectionUrlTarget(Model.SectionStatuses.SolutionOrService)"
                                             status="@Model.SectionStatuses.SolutionOrService" />
-						<nhs-task-list-item label-text="Select funding sources"
+
+                        <nhs-task-list-item label-text="Select funding sources"
+                                            label-hint="Review how you’ll be paying for your order."
+                                            data-test-id="test-funding-sources"
                                             url="@Url.Action(
-                                                    nameof(FundingSourceController.FundingSources),
-                                                    typeof(FundingSourceController).ControllerName(),
-                                                    new { Model.InternalOrgId, Model.CallOffId })"
+                                                     nameof(FundingSourceController.FundingSources),
+                                                     typeof(FundingSourceController).ControllerName(),
+                                                     new { Model.InternalOrgId, Model.CallOffId })"
                                             status="@Model.SectionStatuses.FundingSource" />
                     </nhs-task-list-section>
+
+                    <nhs-task-list-section label-text="Complete contract">
+                        <nhs-task-list-item label-text="Implementation plan milestones"
+                                            label-hint="Select if you’re using the standard implementation plan milestones or have agreed a bespoke one."
+                                            data-test-id="test-implementation-milestones"
+                                            url="@Url.Action(
+                                                     nameof(ImplementationPlanController.DefaultImplementationPlan),
+                                                     typeof(ImplementationPlanController).ControllerName(),
+                                                     new { Model.InternalOrgId, Model.CallOffId })"
+                                            status="@Model.SectionStatuses.ImplementationPlan" />
+
+                        <nhs-task-list-item label-text="Associated Service billing and requirements"
+                                            label-hint="Select how you’d like to be billed for any Associated Services in your order."
+                                            data-test-id="test-associated-service-billing"
+                                            url="@Url.Action(
+                                                     nameof(AssociatedServicesBillingController.ReviewBilling),
+                                                     typeof(AssociatedServicesBillingController).ControllerName(),
+                                                     new { Model.InternalOrgId, Model.CallOffId })"
+                                            status="@Model.SectionStatuses.AssociatedServiceBilling" />
+
+                        <nhs-task-list-item label-text="Data processing information"
+                                            label-hint="Select if you want to make any changes to the default data processing information."
+                                            data-test-id="test-data-processing-info"
+                                            url="@Url.Action(
+                                                    nameof(DataProcessingPlanController.Index),
+                                                    typeof(DataProcessingPlanController).ControllerName(),
+                                                    new { Model.InternalOrgId, Model.CallOffId })"
+                                            status="@Model.SectionStatuses.DataProcessingInformation" />
+                    </nhs-task-list-section>
+
                     <nhs-task-list-section label-text="Complete order">
                         <nhs-task-list-item label-text="Review and complete order"
+                                            label-hint="Check the information you’ve provided is correct and complete your order."
+                                            data-test-id="test-review-and-complete-order"
                                             url="@Url.Action(
-                                                    nameof(OrderController.Summary),
-                                                    typeof(OrderController).ControllerName(),
-                                                    new { Model.InternalOrgId, Model.CallOffId })"
+                                                     nameof(OrderController.Summary),
+                                                     typeof(OrderController).ControllerName(),
+                                                     new { Model.InternalOrgId, Model.CallOffId })"
                                             status="@Model.SectionStatuses.ReviewAndCompleteStatus" />
                     </nhs-task-list-section>
                 </nhs-task-list>
 
             @if (Model.CallOffId != default)
             {
-                <vc:nhs-secondary-button text="Preview order summary"
-                                         url="@Url.Action(nameof(OrderController.Summary), typeof(OrderController).ControllerName(), new { Model.InternalOrgId, Model.CallOffId })"
+                <vc:nhs-secondary-button text="Preview order"
+                                         url="@Url.Action(
+                                                  nameof(OrderController.Summary),
+                                                  typeof(OrderController).ControllerName(),
+                                                  new { Model.InternalOrgId, Model.CallOffId })"
                                          use-primary-colour="false"/>
+
                 <br/>
+                
                 <vc:nhs-delete-button text="Delete order"
-                                      url="@Url.Action(nameof(DeleteOrderController.DeleteOrder), typeof(DeleteOrderController).ControllerName(), new { Model.InternalOrgId, Model.CallOffId })"/>
+                                      url="@Url.Action(
+                                               nameof(DeleteOrderController.DeleteOrder),
+                                               typeof(DeleteOrderController).ControllerName(),
+                                               new { Model.InternalOrgId, Model.CallOffId })"/>
             }
 
-            @if (Model.LastUpdated is not null && !string.IsNullOrWhiteSpace(Model.LastUpdatedByUserName))
+            @if (Model.LastUpdated is not null
+                && !string.IsNullOrWhiteSpace(Model.LastUpdatedByUserName))
             {
-                <nhs-endnote data-test-id="last-updated-endnote">Order last updated by @Model.LastUpdatedByUserName on @Model.LastUpdated!.Value.ToString("dd MMMM yyyy")</nhs-endnote>
+                <nhs-endnote data-test-id="last-updated-endnote">
+                    Order last updated by @Model.LastUpdatedByUserName on @($"{Model.LastUpdated:dd MMMM yyyy}")
+                </nhs-endnote>
             }
         </div>
     </div>
 </div>
 
 @{
-	string SolutionSelectionUrlTarget(TaskProgress solutionSelectionProgress) =>
-				solutionSelectionProgress switch
-				{
-					TaskProgress.NotStarted =>
-						Url.Action(
-							nameof(CatalogueSolutionsController.SelectSolution),
-							typeof(CatalogueSolutionsController).ControllerName(),
-							new { Model.InternalOrgId, Model.CallOffId }),
-					TaskProgress.InProgress =>
-						Url.Action(
-							nameof(TaskListController.TaskList),
-							typeof(TaskListController).ControllerName(),
-							new { Model.InternalOrgId, Model.CallOffId, Source = RoutingSource.Dashboard }),
-					TaskProgress.Completed =>
-						Url.Action(
-							nameof(ReviewSolutionsController.ReviewSolutions),
-							typeof(ReviewSolutionsController).ControllerName(),
-							new { Model.InternalOrgId, Model.CallOffId }),
-					TaskProgress.CannotStart => string.Empty,
-					_ => throw new ArgumentException("Orders solution selection currently in a status that it should not be able to be in."),
-				};
+	string SolutionSelectionUrlTarget(TaskProgress progress) => progress switch
+	{
+		TaskProgress.NotStarted => Url.Action(
+		    nameof(CatalogueSolutionsController.SelectSolution),
+		    typeof(CatalogueSolutionsController).ControllerName(),
+		    new { Model.InternalOrgId, Model.CallOffId }),
+
+		TaskProgress.InProgress => Url.Action(
+			nameof(TaskListController.TaskList),
+			typeof(TaskListController).ControllerName(),
+			new { Model.InternalOrgId, Model.CallOffId, Source = RoutingSource.Dashboard }),
+
+		TaskProgress.Completed => Url.Action(
+		    nameof(ReviewSolutionsController.ReviewSolutions),
+		    typeof(ReviewSolutionsController).ControllerName(),
+		    new { Model.InternalOrgId, Model.CallOffId }),
+
+		TaskProgress.CannotStart => string.Empty,
+	    TaskProgress.NotApplicable => string.Empty,
+	    TaskProgress.Optional => string.Empty,
+
+	    _ => throw new ArgumentException("Orders solution selection currently in a status that it should not be able to be in."),
+	};
 }

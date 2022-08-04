@@ -8,6 +8,7 @@ using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.AssociatedServices;
+using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Contracts;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Orders;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Routing;
 using NHSD.GPIT.BuyingCatalogue.UI.Components.TagHelpers;
@@ -28,17 +29,20 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers.SolutionSelec
         private readonly IOrderItemService orderItemService;
         private readonly IOrderService orderService;
         private readonly IRoutingService routingService;
+        private readonly IContractsService contractsService;
 
         public AssociatedServicesController(
             IAssociatedServicesService associatedServicesService,
             IOrderItemService orderItemService,
             IOrderService orderService,
-            IRoutingService routingService)
+            IRoutingService routingService,
+            IContractsService contractsService)
         {
             this.associatedServicesService = associatedServicesService ?? throw new ArgumentNullException(nameof(associatedServicesService));
             this.orderItemService = orderItemService ?? throw new ArgumentNullException(nameof(orderItemService));
             this.orderService = orderService ?? throw new ArgumentNullException(nameof(orderService));
             this.routingService = routingService ?? throw new ArgumentNullException(nameof(routingService));
+            this.contractsService = contractsService ?? throw new ArgumentNullException(nameof(contractsService));
         }
 
         [HttpGet("add")]
@@ -234,12 +238,24 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers.SolutionSelec
                     new { internalOrgId, callOffId });
             }
 
-            if (model.ToRemove?.Any() ?? false)
+            var removingServices = model.ToRemove?.Any() ?? false;
+            var addingServices = model.ToAdd?.Any() ?? false;
+
+            if (removingServices)
             {
                 await orderItemService.DeleteOrderItems(internalOrgId, callOffId, model.ToRemove.Select(x => x.CatalogueItemId));
             }
 
-            if (!(model.ToAdd?.Any() ?? false))
+            if (removingServices && !addingServices)
+            {
+                var order = await orderService.GetOrderWithOrderItems(callOffId, internalOrgId);
+                if (!order.HasAssociatedService())
+                {
+                    await contractsService.RemoveBillingAndRequirements(callOffId.Id);
+                }
+            }
+
+            if (!addingServices)
             {
                 return RedirectToAction(
                     nameof(TaskListController.TaskList),
@@ -261,12 +277,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers.SolutionSelec
             RoutingSource? source = RoutingSource.Dashboard)
         {
             var order = await orderService.GetOrderThin(callOffId, internalOrgId);
-
-            var solutionId = order.AssociatedServicesOnly
-                ? order.SolutionId
-                : order.GetSolution().CatalogueItemId;
-
-            var associatedServices = await associatedServicesService.GetPublishedAssociatedServicesForSolution(solutionId);
+            var associatedServices = await associatedServicesService.GetPublishedAssociatedServicesForSolution(order.GetSolutionId());
 
             var route = routingService.GetRoute(
                 RoutingPoint.SelectAssociatedServicesBackLink,

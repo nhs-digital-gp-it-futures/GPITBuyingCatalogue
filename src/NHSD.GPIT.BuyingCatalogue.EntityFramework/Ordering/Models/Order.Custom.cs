@@ -5,8 +5,11 @@ using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 
 namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models
 {
-    public sealed partial class Order
+    public partial class Order
     {
+        public const string LocalFunding = "Local";
+        public const string CentralFunding = "Central";
+
         private readonly List<ServiceInstanceItem> serviceInstanceItems = new();
 
         private DateTime? completed;
@@ -19,8 +22,8 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models
             get
             {
                 return OrderItems.All(x => x.FundingType is OrderItemFundingType.LocalFunding or OrderItemFundingType.LocalFundingOnly)
-                    ? "Local"
-                    : "Central";
+                    ? LocalFunding
+                    : CentralFunding;
             }
         }
 
@@ -45,6 +48,13 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models
                 && OrderItems.Count > 0
                 && OrderItems.All(oi => oi.OrderItemFunding is not null)
                 && OrderStatus != OrderStatus.Completed;
+        }
+
+        public CatalogueItemId? GetSolutionId()
+        {
+            return AssociatedServicesOnly
+                ? SolutionId
+                : GetSolution()?.CatalogueItemId;
         }
 
         public OrderItem OrderItem(CatalogueItemId catalogueItemId)

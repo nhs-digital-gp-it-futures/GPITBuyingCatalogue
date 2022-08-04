@@ -1,5 +1,4 @@
-﻿using System.Linq;
-using System.Security.Claims;
+﻿using System.Security.Claims;
 using System.Threading.Tasks;
 using AutoFixture;
 using AutoFixture.AutoMoq;
@@ -8,7 +7,6 @@ using AutoFixture.Xunit2;
 using FluentAssertions;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.AspNetCore.Routing;
 using Moq;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
@@ -17,11 +15,9 @@ using NHSD.GPIT.BuyingCatalogue.EntityFramework.Organisations.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Users.Models;
 using NHSD.GPIT.BuyingCatalogue.Framework.Constants;
 using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
-using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Models.TaskList;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Orders;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Organisations;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Pdf;
-using NHSD.GPIT.BuyingCatalogue.ServiceContracts.TaskList;
 using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.AutoFixtureCustomisations;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.Order;
@@ -49,19 +45,16 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers
             string internalOrgId,
             EntityFramework.Ordering.Models.Order order,
             AspNetUser aspNetUser,
-            OrderTaskList orderTaskList,
             [Frozen] Mock<IOrderService> orderServiceMock,
-            [Frozen] Mock<ITaskListService> taskListServiceMock,
             OrderController controller)
         {
             order.LastUpdatedByUser = aspNetUser;
             order.OrderStatus = OrderStatus.InProgress;
 
+            var orderTaskList = new OrderTaskList(order);
             var expectedViewData = new OrderModel(internalOrgId, order, orderTaskList) { DescriptionUrl = "testUrl" };
 
-            orderServiceMock.Setup(s => s.GetOrderThin(order.CallOffId, internalOrgId)).ReturnsAsync(order);
-
-            taskListServiceMock.Setup(s => s.GetTaskListStatusModelForOrder(order.Id)).ReturnsAsync(orderTaskList);
+            orderServiceMock.Setup(s => s.GetOrderForTaskListStatuses(order.CallOffId, internalOrgId)).ReturnsAsync(order);
 
             var actualResult = await controller.Order(internalOrgId, order.CallOffId);
 
@@ -79,7 +72,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers
         {
             order.OrderStatus = OrderStatus.Completed;
 
-            orderServiceMock.Setup(s => s.GetOrderThin(order.CallOffId, internalOrgId)).ReturnsAsync(order);
+            orderServiceMock.Setup(s => s.GetOrderForTaskListStatuses(order.CallOffId, internalOrgId)).ReturnsAsync(order);
 
             var actualResult = await controller.Order(internalOrgId, order.CallOffId);
 
@@ -110,39 +103,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers
 
         [Theory]
         [CommonAutoData]
-        public static async Task Post_Summary_CannotComplete_ReturnsErrorResult(
-            string internalOrgId,
-            EntityFramework.Ordering.Models.Order order,
-            [Frozen] Mock<IOrderService> orderServiceMock,
-            OrderController controller)
-        {
-            order.Description = null;
-
-            orderServiceMock
-                .Setup(s => s.GetOrderForSummary(order.CallOffId, internalOrgId))
-                .ReturnsAsync(order);
-
-            var actualResult = await controller.Summary(internalOrgId, order.CallOffId, new SummaryModel());
-
-            orderServiceMock.VerifyAll();
-
-            actualResult.Should().BeOfType<ViewResult>();
-            actualResult.As<ViewResult>().ViewData.ModelState.ValidationState.Should().Be(ModelValidationState.Invalid);
-
-            actualResult.As<ViewResult>()
-                .ViewData.ModelState.Keys.Single()
-                .Should()
-                .Be("Order");
-
-            actualResult.As<ViewResult>()
-                .ViewData.ModelState.Values.Single()
-                .Errors.Single()
-                .ErrorMessage.Should()
-                .Be("Your order is incomplete. Please go back to the order and check again");
-        }
-
-        [Theory]
-        [CommonAutoData]
         public static async Task Get_ReadyToStart_ReturnsView(
             Organisation organisation,
             [Frozen] Mock<IOrganisationsService> service,
@@ -158,18 +118,24 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers
 
         [Theory]
         [CommonAutoData]
-        public static void Get_Completed_ReturnsExpectedResult(
+        public static async Task Get_Completed_ReturnsExpectedResult(
             string internalOrgId,
-            CallOffId callOffId,
+            EntityFramework.Ordering.Models.Order order,
+            [Frozen] Mock<IOrderService> orderService,
             OrderController systemUnderTest)
         {
-            var result = systemUnderTest.Completed(internalOrgId, callOffId);
+            orderService
+                .Setup(x => x.GetOrderForSummary(order.CallOffId, internalOrgId))
+                .ReturnsAsync(order);
 
-            result.Should().BeOfType<ViewResult>();
-            var model = result.As<ViewResult>().Model.Should().BeAssignableTo<CompletedModel>().Subject;
+            var result = await systemUnderTest.Completed(internalOrgId, order.CallOffId);
+
+            var actual = result.Should().BeOfType<ViewResult>().Subject;
+            var model = actual.Model.Should().BeAssignableTo<CompletedModel>().Subject;
 
             model.InternalOrgId.Should().Be(internalOrgId);
-            model.CallOffId.Should().Be(callOffId);
+            model.CallOffId.Should().Be(order.CallOffId);
+            model.Order.Should().Be(order);
         }
 
         [Theory]

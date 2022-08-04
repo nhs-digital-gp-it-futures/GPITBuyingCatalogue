@@ -10,10 +10,11 @@ variables:
   - group: dev-acr-secrets
 
 trigger:
-- feature/solution-selection
+- develop
 
 pr:
-- feature/solution-selection
+- develop
+- feature/*
 
 jobs:
 - job: version
@@ -33,11 +34,11 @@ jobs:
 - job: dockerBuildAndPush
   displayName: Run all tests and build & push docker containers to the ACR
   variables:
-    dacpacTag: dacpac-$[ dependencies.version.outputs['setVersionStep.semVer'] ] 
-    semVer: $[ dependencies.version.outputs['setVersionStep.semVer'] ]   
-    ${{ if eq(variables['Build.SourceBranchName'], 'main') }}: 
+    dacpacTag: dacpac-$[ dependencies.version.outputs['setVersionStep.semVer'] ]
+    semVer: $[ dependencies.version.outputs['setVersionStep.semVer'] ]
+    ${{ if eq(variables['Build.SourceBranchName'], 'main') }}:
       latestTag: latest
-    ${{ if ne(variables['Build.SourceBranchName'], 'main') }}: 
+    ${{ if ne(variables['Build.SourceBranchName'], 'main') }}:
       latestTag: latestbuild
 
   dependsOn: version
@@ -50,7 +51,7 @@ jobs:
     inputs:
       version: $(dotnetVersion)
       includePreviewVersions: false
-  
+
   - task: DotNetCoreCLI@2
     displayName: 'Run dotnet restore'
     inputs:
@@ -64,13 +65,13 @@ jobs:
     displayName: 'Install Node.js'
     inputs:
       versionSpec: '14.x'
- 
+
   - task: Npm@1
     displayName: 'Run npm install'
     inputs:
       command: 'install'
       workingDir: 'src/NHSD.GPIT.BuyingCatalogue.WebApp'
-      
+
   - task: DotNetCoreCLI@2
     displayName: 'Run dotnet build'
     inputs:
@@ -82,7 +83,7 @@ jobs:
     displayName: 'Run gulp min'
     inputs:
       gulpFile: 'src/NHSD.GPIT.BuyingCatalogue.WebApp/gulpfile.js'
-      targets: 'min'      
+      targets: 'min'
       workingDirectory: 'src/NHSD.GPIT.BuyingCatalogue.WebApp'
 
   - task: DotNetCoreCLI@2
@@ -120,7 +121,7 @@ jobs:
   - publish: $(build.artifactStagingDirectory)/screen-shots
     displayName: Publish screen shots
     condition: failed()
-    artifact: screen-shots 
+    artifact: screen-shots
 
   - task: DockerInstaller@0
     inputs:
@@ -146,17 +147,17 @@ jobs:
         $release = "$(semVer)"
         mkdir $(Build.ArtifactStagingDirectory)/code
         $release | Out-File $(Build.ArtifactStagingDirectory)/code/release.txt
-        
+
   - publish: $(build.artifactStagingDirectory)/code
     artifact: code-version
 
 - job: buildDatabaseDacpacs
   displayName: Build all Dacpacs and push
-  variables:    
-    semVer: $[ dependencies.version.outputs['setVersionStep.semVer'] ]   
-    ${{ if eq(variables['Build.SourceBranchName'], 'main') }}: 
+  variables:
+    semVer: $[ dependencies.version.outputs['setVersionStep.semVer'] ]
+    ${{ if eq(variables['Build.SourceBranchName'], 'main') }}:
       latestTag: latest
-    ${{ if ne(variables['Build.SourceBranchName'], 'main') }}: 
+    ${{ if ne(variables['Build.SourceBranchName'], 'main') }}:
       latestTag: latestbuild
 
   dependsOn: dockerBuildAndPush
@@ -187,12 +188,12 @@ jobs:
 
   - publish: $(build.artifactStagingDirectory)/dacpacs
     artifact: dacpacs
-  
+
 - job: createBuildArtifact
   displayName: Create Build Artifact
   pool:
-    vmImage: 'ubuntu-latest'  
-    
+    vmImage: 'ubuntu-latest'
+
   steps:
   - task: CopyFiles@2
     displayName: Build Artifact - Code
@@ -204,4 +205,4 @@ jobs:
       OverWrite: true
 
   - publish: $(build.artifactStagingDirectory)/terraform
-    artifact: build-artifact 
+    artifact: build-artifact

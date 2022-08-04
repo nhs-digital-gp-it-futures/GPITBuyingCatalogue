@@ -1,5 +1,5 @@
 ﻿@using System.Linq
-@using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models
+@using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers.Contracts
 @model NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.Order.SummaryModel;
 @{
 	ViewBag.Title = Model.Title;
@@ -162,31 +162,13 @@
         }
 
         <br />
-        <div class="nhsuk-grid-row">
-            <div class="nhsuk-grid-column-two-thirds">
-                <vc:nhs-secondary-button text="Download order summary PDF"
-                                         use-primary-colour="false"
-                                         url="@Url.Action(
-                                                  nameof(OrderController.Download),
-                                                  typeof(OrderController).ControllerName(),
-                                                  new { Model.InternalOrgId, Model.Order.CallOffId })" />
-
-                @if (Model.Order.OrderStatus == OrderStatus.InProgress && Model.Order.CanComplete())
-                {
-                    <br />
-                    <form method="post">
-                        <nhs-submit-button text="Complete order summary" />
-                    </form>
-                }
-                else
-                {
-                    <br />
-                    <vc:nhs-secondary-button text="Continue"
-                                             use-primary-colour="true"
-                                             url="@Model.BackLink"/>
-                }
-            </div>
-        </div>
+        
+        <vc:nhs-secondary-button text="Continue"
+                                 use-primary-colour="true"
+                                 url="@Url.Action(
+                                          nameof(ReviewContractController.ContractSummary),
+                                          typeof(ReviewContractController).ControllerName(),
+                                          new { Model.InternalOrgId, Model.Order.CallOffId })"/>
     </div>
 </div>
 

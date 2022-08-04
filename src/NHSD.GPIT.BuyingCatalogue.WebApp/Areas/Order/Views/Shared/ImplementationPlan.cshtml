@@ -1,0 +1,49 @@
+﻿@using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models
+@model NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models.ImplementationPlan
+@{
+    var milestones = Model?.Milestones ?? new List<ImplementationPlanMilestone>();
+}
+
+@if (milestones.Any())
+{
+    <div class="nhsuk-u-margin-bottom-9">
+        <nhs-table label-text="Milestones and payment triggers">
+            <nhs-table-column>Milestone</nhs-table-column>
+            <nhs-table-column>Payment trigger</nhs-table-column>
+            @foreach (var milestone in milestones)
+            {
+                <nhs-table-row-container>
+                    <nhs-table-cell>@milestone.Title</nhs-table-cell>
+                    <nhs-table-cell>@milestone.PaymentTrigger</nhs-table-cell>
+                </nhs-table-row-container>
+            }
+        </nhs-table>
+    </div>
+
+    @foreach (var (milestone, index) in milestones.Select((x, i) => (x, i)))
+    {
+        var className = index == milestones.Count - 1
+            ? string.Empty
+            : "nhsuk-u-margin-bottom-9";
+
+        <div class="@className">
+            <nhs-table label-text="@milestone.Title">
+                <nhs-table-column>Acceptance Criteria</nhs-table-column>
+                @foreach (var criterion in milestone.AcceptanceCriteria)
+                {
+                    <nhs-table-row-container>
+                        <nhs-table-cell>@criterion.Description</nhs-table-cell>
+                    </nhs-table-row-container>
+                }
+            </nhs-table>
+        </div>
+    }
+}
+else
+{
+    <nhs-inset-text>
+        <p>
+            No implementation plan has been defined.
+        </p>
+    </nhs-inset-text>
+}

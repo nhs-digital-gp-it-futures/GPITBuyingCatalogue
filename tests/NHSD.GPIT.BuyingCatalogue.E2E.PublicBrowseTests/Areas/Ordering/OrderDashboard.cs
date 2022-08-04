@@ -39,22 +39,65 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering
         public async Task OrderDashboard_AllSectionsDisplayed()
         {
             await using var context = GetEndToEndDbContext();
-            var organisation = await context.Organisations.SingleAsync(o => o.InternalIdentifier == Parameters["InternalOrgId"]);
+            var organisation =
+                await context.Organisations.SingleAsync(o => o.InternalIdentifier == Parameters["InternalOrgId"]);
 
-            CommonActions.PageTitle().Should().BeEquivalentTo($"Order {CallOffId}-{organisation.Name}".FormatForComparison());
+            CommonActions.PageTitle()
+                .Should()
+                .BeEquivalentTo($"Order {CallOffId}-{organisation.Name}".FormatForComparison());
             CommonActions.GoBackLinkDisplayed().Should().BeTrue();
 
             CommonActions.ElementIsDisplayed(Objects.Ordering.OrderDashboard.TaskList)
-                .Should().BeTrue();
+                .Should()
+                .BeTrue();
 
             CommonActions.ElementIsDisplayed(Objects.Ordering.OrderDashboard.OrderDescriptionLink)
-                .Should().BeTrue();
+                .Should()
+                .BeTrue();
 
             CommonActions.ElementIsDisplayed(Objects.Ordering.OrderDashboard.OrderDescriptionStatus)
-                .Should().BeTrue();
+                .Should()
+                .BeTrue();
+
+            CommonActions.ElementIsDisplayed(Objects.Ordering.OrderDashboard.CallOffParty)
+                .Should()
+                .BeTrue();
+
+            CommonActions.ElementIsDisplayed(Objects.Ordering.OrderDashboard.SupplierContact)
+                .Should()
+                .BeTrue();
+
+            CommonActions.ElementIsDisplayed(Objects.Ordering.OrderDashboard.Timescales)
+                .Should()
+                .BeTrue();
+
+            CommonActions.ElementIsDisplayed(Objects.Ordering.OrderDashboard.SolutionsAndServices)
+                .Should()
+                .BeTrue();
+
+            CommonActions.ElementIsDisplayed(Objects.Ordering.OrderDashboard.FundingSources)
+                .Should()
+                .BeTrue();
+
+            CommonActions.ElementIsDisplayed(Objects.Ordering.OrderDashboard.ImplementationMilestones)
+                .Should()
+                .BeTrue();
+
+            CommonActions.ElementIsDisplayed(Objects.Ordering.OrderDashboard.AssociatedServiceBilling)
+                .Should()
+                .BeTrue();
+
+            CommonActions.ElementIsDisplayed(Objects.Ordering.OrderDashboard.DataProcessingInformation)
+                .Should()
+                .BeTrue();
+
+            CommonActions.ElementIsDisplayed(Objects.Ordering.OrderDashboard.ReviewOrder)
+                .Should()
+                .BeTrue();
 
             CommonActions.ElementIsDisplayed(Objects.Ordering.OrderDashboard.LastUpdatedEndNote)
-                .Should().BeTrue();
+                .Should()
+                .BeTrue();
 
             CommonActions.ElementTextEqualTo(
                 Objects.Ordering.OrderDashboard.LastUpdatedEndNote,

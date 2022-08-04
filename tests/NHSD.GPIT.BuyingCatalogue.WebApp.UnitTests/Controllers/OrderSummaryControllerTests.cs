@@ -7,6 +7,7 @@ using FluentAssertions;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
+using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Contracts;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Orders;
 using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.AutoFixtureCustomisations;
 using NHSD.GPIT.BuyingCatalogue.WebApp.ActionFilters;
@@ -39,6 +40,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Controllers
         public static async Task Get_Index_CompleteOrder_ReturnsExpectedResult(
             string internalOrgId,
             Order order,
+            ImplementationPlan defaultPlan,
+            [Frozen] Mock<IImplementationPlanService> implementationPlanService,
             [Frozen] Mock<IOrderService> orderServiceMock,
             OrderSummaryController controller)
         {
@@ -46,7 +49,11 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Controllers
 
             orderServiceMock.Setup(s => s.GetOrderForSummary(order.CallOffId, internalOrgId)).ReturnsAsync(order);
 
-            var expectedViewData = new OrderSummaryModel(order);
+            implementationPlanService
+                .Setup(x => x.GetDefaultImplementationPlan())
+                .ReturnsAsync(defaultPlan);
+
+            var expectedViewData = new OrderSummaryModel(order, defaultPlan);
 
             var actualResult = await controller.Index(internalOrgId, order.CallOffId);
 
@@ -59,6 +66,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Controllers
         public static async Task Get_Index_InProgress_InCompletable_Order_ReturnsExpectedResult(
             string internalOrgId,
             Order order,
+            ImplementationPlan defaultPlan,
+            [Frozen] Mock<IImplementationPlanService> implementationPlanService,
             [Frozen] Mock<IOrderService> orderServiceMock,
             OrderSummaryController controller)
         {
@@ -66,7 +75,11 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Controllers
 
             orderServiceMock.Setup(s => s.GetOrderForSummary(order.CallOffId, internalOrgId)).ReturnsAsync(order);
 
-            var expectedViewData = new OrderSummaryModel(order);
+            implementationPlanService
+                .Setup(x => x.GetDefaultImplementationPlan())
+                .ReturnsAsync(defaultPlan);
+
+            var expectedViewData = new OrderSummaryModel(order, defaultPlan);
 
             var actualResult = await controller.Index(internalOrgId, order.CallOffId);
 

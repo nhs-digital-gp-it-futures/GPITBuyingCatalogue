@@ -7,7 +7,7 @@ using NHSD.GPIT.BuyingCatalogue.EntityFramework.Users.Models;
 
 namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models
 {
-    public sealed partial class Order : IAudited
+    public partial class Order : IAudited
     {
         public Order()
         {
@@ -66,5 +66,7 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models
         public ICollection<OrderItem> OrderItems { get; set; }
 
         public CatalogueItem Solution { get; set; }
+
+        public virtual ContractFlags ContractFlags { get; set; }
     }
 }

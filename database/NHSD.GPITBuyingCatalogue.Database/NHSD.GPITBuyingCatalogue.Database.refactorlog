@@ -7,4 +7,18 @@
     <Property Name="ParentElementType" Value="SqlTable" />
     <Property Name="NewName" Value="IsActive" />
   </Operation>
+  <Operation Name="Rename Refactor" Key="1ccf0e5b-5e39-4fc6-96f0-a2be48280772" ChangeDateTime="07/22/2022 09:44:50">
+    <Property Name="ElementName" Value="[ordering].[ImplementationPlanMilestones].[Description]" />
+    <Property Name="ElementType" Value="SqlSimpleColumn" />
+    <Property Name="ParentElementName" Value="[ordering].[ImplementationPlanMilestones]" />
+    <Property Name="ParentElementType" Value="SqlTable" />
+    <Property Name="NewName" Value="PaymentTrigger" />
+  </Operation>
+  <Operation Name="Rename Refactor" Key="2d28268b-07f4-49fc-85a1-63b1c03611c7" ChangeDateTime="07/22/2022 09:45:05">
+    <Property Name="ElementName" Value="[ordering].[ImplementationPlanMilestones_History].[Description]" />
+    <Property Name="ElementType" Value="SqlSimpleColumn" />
+    <Property Name="ParentElementName" Value="[ordering].[ImplementationPlanMilestones_History]" />
+    <Property Name="ParentElementType" Value="SqlTable" />
+    <Property Name="NewName" Value="PaymentTrigger" />
+  </Operation>
 </Operations>
