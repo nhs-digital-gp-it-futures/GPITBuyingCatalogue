@@ -7,6 +7,10 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.Contracts
     {
         Task<ContractFlags> GetContract(int orderId);
 
+        Task RemoveContract(int orderId);
+
+        Task RemoveBillingAndRequirements(int orderId);
+
         Task HasSpecificRequirements(int orderId, bool value);
 
         Task UseDefaultBilling(int orderId, bool value);

@@ -38,8 +38,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.Order
 
         private static bool HasAssociatedServices(EntityFramework.Ordering.Models.Order order) =>
             order.AssociatedServicesOnly
-            || order.OrderItems.Any(
-                oi => oi.CatalogueItem.CatalogueItemType == CatalogueItemType.AssociatedService);
+            || order.HasAssociatedService();
 
         private static bool SolutionsSelected(EntityFramework.Ordering.Models.Order order)
         {
@@ -122,7 +121,12 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.Order
         private void SetSectionThreeStatus(EntityFramework.Ordering.Models.Order order)
         {
             // Default Implementation Plan
-            if (FundingSource is TaskProgress.Completed)
+            if (FundingSource is not TaskProgress.Completed
+                && order.ContractFlags?.UseDefaultImplementationPlan != null)
+            {
+                ImplementationPlan = TaskProgress.InProgress;
+            }
+            else if (FundingSource is TaskProgress.Completed)
             {
                 ImplementationPlan = order.ContractFlags?.UseDefaultImplementationPlan != null
                     ? TaskProgress.Completed
@@ -130,7 +134,13 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.Order
             }
 
             // Associated Services Billing
-            if (SolutionOrService != TaskProgress.Completed)
+            if (SolutionOrService is TaskProgress.InProgress
+                && (order.ContractFlags?.HasSpecificRequirements != null
+                    || order.ContractFlags?.UseDefaultBilling != null))
+            {
+                AssociatedServiceBilling = TaskProgress.InProgress;
+            }
+            else if (SolutionOrService != TaskProgress.Completed)
             {
                 AssociatedServiceBilling = TaskProgress.CannotStart;
             }
@@ -142,20 +152,25 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.Order
             {
                 AssociatedServiceBilling = TaskProgress.CannotStart;
             }
-            else if (order.ContractFlags?.HasSpecificRequirements is null && order.ContractFlags?.UseDefaultBilling is null)
-            {
-                AssociatedServiceBilling = TaskProgress.NotStarted;
-            }
-            else if (order.ContractFlags?.HasSpecificRequirements is null && order.ContractFlags?.UseDefaultBilling is not null)
-            {
-                AssociatedServiceBilling = TaskProgress.InProgress;
-            }
             else
             {
-                AssociatedServiceBilling = TaskProgress.Completed;
+                AssociatedServiceBilling = order.ContractFlags?.HasSpecificRequirements switch
+                {
+                    null when order.ContractFlags?.UseDefaultBilling is null => TaskProgress.NotStarted,
+                    null when order.ContractFlags?.UseDefaultBilling is not null => TaskProgress.InProgress,
+                    _ => TaskProgress.Completed,
+                };
             }
 
             // Data Processing
+            if ((FundingSource is not TaskProgress.Completed
+                    || (AssociatedServiceBilling is not TaskProgress.Completed
+                        && AssociatedServiceBilling is not TaskProgress.NotApplicable))
+                && order.ContractFlags?.UseDefaultDataProcessing != null)
+            {
+                DataProcessingInformation = TaskProgress.InProgress;
+            }
+            else
             if ((AssociatedServiceBilling is TaskProgress.Completed)
                 || (AssociatedServiceBilling is TaskProgress.NotApplicable
                     && ImplementationPlan is TaskProgress.Completed))

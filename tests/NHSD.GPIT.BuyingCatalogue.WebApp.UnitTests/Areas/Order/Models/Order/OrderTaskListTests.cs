@@ -56,6 +56,26 @@ public class OrderTaskListTests
 
     [Theory]
     [CommonAutoData]
+    public static void Construct_OrderingPartyNotCompleted(
+        string description)
+    {
+        var order = new EntityFramework.Ordering.Models.Order
+        {
+            Description = description, OrderingPartyContact = null,
+        };
+
+        var expectedModel = new OrderTaskList
+        {
+            DescriptionStatus = TaskProgress.Completed, OrderingPartyStatus = TaskProgress.NotStarted,
+        };
+
+        var model = new OrderTaskList(order);
+
+        model.Should().BeEquivalentTo(expectedModel);
+    }
+
+    [Theory]
+    [CommonAutoData]
     public static void Construct_Supplier_InProgress(
         string description,
         Contact orderingPartyContact,
@@ -315,6 +335,55 @@ public class OrderTaskListTests
 
     [Theory]
     [CommonAutoData]
+    public static void Construct_FundingSourceInProgress_WithImplementationPlan(
+        string description,
+        Contact orderingPartyContact,
+        EntityFramework.Catalogue.Models.Supplier supplier,
+        Contact supplierContact,
+        DateTime commencementDate,
+        OrderItem solutionOrderItem,
+        Solution solution,
+        OrderItem additionalServiceOrderItem,
+        AdditionalService additionalService)
+    {
+        var order = new EntityFramework.Ordering.Models.Order
+        {
+            Description = description,
+            OrderingPartyContact = orderingPartyContact,
+            Supplier = supplier,
+            SupplierContact = supplierContact,
+            CommencementDate = commencementDate,
+            ContractFlags = new()
+            {
+                UseDefaultImplementationPlan = true,
+            },
+        };
+
+        solutionOrderItem.CatalogueItem = solution.CatalogueItem;
+        additionalServiceOrderItem.CatalogueItem = additionalService.CatalogueItem;
+        additionalServiceOrderItem.OrderItemFunding = null;
+        order.OrderItems.Add(solutionOrderItem);
+        order.OrderItems.Add(additionalServiceOrderItem);
+
+        var expectedModel = new OrderTaskList
+        {
+            DescriptionStatus = TaskProgress.Completed,
+            OrderingPartyStatus = TaskProgress.Completed,
+            SupplierStatus = TaskProgress.Completed,
+            CommencementDateStatus = TaskProgress.Completed,
+            SolutionOrService = TaskProgress.Completed,
+            FundingSource = TaskProgress.InProgress,
+            ImplementationPlan = TaskProgress.InProgress,
+            AssociatedServiceBilling = TaskProgress.NotApplicable,
+        };
+
+        var model = new OrderTaskList(order);
+
+        model.Should().BeEquivalentTo(expectedModel);
+    }
+
+    [Theory]
+    [CommonAutoData]
     public static void Construct_ImplementationPlan_NoAssociatedServices(
         string description,
         Contact orderingPartyContact,
@@ -459,6 +528,150 @@ public class OrderTaskListTests
 
     [Theory]
     [CommonAutoData]
+    public static void Construct_OrderChanged_InProgressAssociatedServiceBilling(
+        string description,
+        Contact orderingPartyContact,
+        EntityFramework.Catalogue.Models.Supplier supplier,
+        Contact supplierContact,
+        DateTime commencementDate,
+        OrderItem solutionOrderItem,
+        Solution solution,
+        OrderItem associatedServiceOrderItem,
+        AssociatedService associatedService)
+    {
+        var order = new EntityFramework.Ordering.Models.Order
+        {
+            Description = description,
+            OrderingPartyContact = orderingPartyContact,
+            Supplier = supplier,
+            SupplierContact = supplierContact,
+            CommencementDate = commencementDate,
+            ContractFlags = new()
+            {
+                UseDefaultImplementationPlan = true,
+                UseDefaultBilling = true,
+                HasSpecificRequirements = false,
+            },
+        };
+
+        solutionOrderItem.CatalogueItem = solution.CatalogueItem;
+        associatedServiceOrderItem.CatalogueItem = associatedService.CatalogueItem;
+        associatedServiceOrderItem.OrderItemPrice = null;
+        order.OrderItems.Add(solutionOrderItem);
+        order.OrderItems.Add(associatedServiceOrderItem);
+
+        var expectedModel = new OrderTaskList
+        {
+            DescriptionStatus = TaskProgress.Completed,
+            OrderingPartyStatus = TaskProgress.Completed,
+            SupplierStatus = TaskProgress.Completed,
+            CommencementDateStatus = TaskProgress.Completed,
+            SolutionOrService = TaskProgress.InProgress,
+            FundingSource = TaskProgress.InProgress,
+            ImplementationPlan = TaskProgress.InProgress,
+            AssociatedServiceBilling = TaskProgress.InProgress,
+        };
+
+        var model = new OrderTaskList(order);
+
+        model.Should().BeEquivalentTo(expectedModel);
+    }
+
+    [Theory]
+    [CommonAutoData]
+    public static void Construct_AssociatedServiceBilling_ImplementationPlanNotCompleted(
+        string description,
+        Contact orderingPartyContact,
+        EntityFramework.Catalogue.Models.Supplier supplier,
+        Contact supplierContact,
+        DateTime commencementDate,
+        OrderItem solutionOrderItem,
+        Solution solution,
+        OrderItem associatedServiceOrderItem,
+        AssociatedService associatedService)
+    {
+        var order = new EntityFramework.Ordering.Models.Order
+        {
+            Description = description,
+            OrderingPartyContact = orderingPartyContact,
+            Supplier = supplier,
+            SupplierContact = supplierContact,
+            CommencementDate = commencementDate,
+        };
+
+        solutionOrderItem.CatalogueItem = solution.CatalogueItem;
+        associatedServiceOrderItem.CatalogueItem = associatedService.CatalogueItem;
+        order.OrderItems.Add(solutionOrderItem);
+        order.OrderItems.Add(associatedServiceOrderItem);
+
+        var expectedModel = new OrderTaskList
+        {
+            DescriptionStatus = TaskProgress.Completed,
+            OrderingPartyStatus = TaskProgress.Completed,
+            SupplierStatus = TaskProgress.Completed,
+            CommencementDateStatus = TaskProgress.Completed,
+            SolutionOrService = TaskProgress.Completed,
+            FundingSource = TaskProgress.Completed,
+            ImplementationPlan = TaskProgress.NotStarted,
+            AssociatedServiceBilling = TaskProgress.CannotStart,
+        };
+
+        var model = new OrderTaskList(order);
+
+        model.Should().BeEquivalentTo(expectedModel);
+    }
+
+    [Theory]
+    [CommonAutoData]
+    public static void Construct_AssociatedServiceBilling_InProgress(
+        string description,
+        Contact orderingPartyContact,
+        EntityFramework.Catalogue.Models.Supplier supplier,
+        Contact supplierContact,
+        DateTime commencementDate,
+        OrderItem solutionOrderItem,
+        Solution solution,
+        OrderItem associatedServiceOrderItem,
+        AssociatedService associatedService)
+    {
+        var order = new EntityFramework.Ordering.Models.Order
+        {
+            Description = description,
+            OrderingPartyContact = orderingPartyContact,
+            Supplier = supplier,
+            SupplierContact = supplierContact,
+            CommencementDate = commencementDate,
+            ContractFlags = new()
+            {
+                UseDefaultImplementationPlan = true,
+                UseDefaultBilling = true,
+            },
+        };
+
+        solutionOrderItem.CatalogueItem = solution.CatalogueItem;
+        associatedServiceOrderItem.CatalogueItem = associatedService.CatalogueItem;
+        order.OrderItems.Add(solutionOrderItem);
+        order.OrderItems.Add(associatedServiceOrderItem);
+
+        var expectedModel = new OrderTaskList
+        {
+            DescriptionStatus = TaskProgress.Completed,
+            OrderingPartyStatus = TaskProgress.Completed,
+            SupplierStatus = TaskProgress.Completed,
+            CommencementDateStatus = TaskProgress.Completed,
+            SolutionOrService = TaskProgress.Completed,
+            FundingSource = TaskProgress.Completed,
+            ImplementationPlan = TaskProgress.Completed,
+            AssociatedServiceBilling = TaskProgress.InProgress,
+        };
+
+        var model = new OrderTaskList(order);
+
+        model.Should().BeEquivalentTo(expectedModel);
+    }
+
+    [Theory]
+    [CommonAutoData]
     public static void Construct_DataProcessingPlan(
         string description,
         Contact orderingPartyContact,
@@ -497,6 +710,57 @@ public class OrderTaskListTests
             AssociatedServiceBilling = TaskProgress.NotApplicable,
             DataProcessingInformation = TaskProgress.Completed,
             ReviewAndCompleteStatus = TaskProgress.NotStarted,
+        };
+
+        var model = new OrderTaskList(order);
+
+        model.Should().BeEquivalentTo(expectedModel);
+    }
+
+    [Theory]
+    [CommonAutoData]
+    public static void Construct_DataProcessingPlan_InProgress(
+        string description,
+        Contact orderingPartyContact,
+        EntityFramework.Catalogue.Models.Supplier supplier,
+        Contact supplierContact,
+        DateTime commencementDate,
+        OrderItem solutionOrderItem,
+        Solution solution,
+        OrderItem additionalServiceOrderItem,
+        AdditionalService additionalService)
+    {
+        var order = new EntityFramework.Ordering.Models.Order
+        {
+            Description = description,
+            OrderingPartyContact = orderingPartyContact,
+            Supplier = supplier,
+            SupplierContact = supplierContact,
+            CommencementDate = commencementDate,
+            ContractFlags = new()
+            {
+                UseDefaultImplementationPlan = true,
+                UseDefaultDataProcessing = true,
+            },
+        };
+
+        solutionOrderItem.CatalogueItem = solution.CatalogueItem;
+        additionalServiceOrderItem.CatalogueItem = additionalService.CatalogueItem;
+        additionalServiceOrderItem.OrderItemFunding = null;
+        order.OrderItems.Add(solutionOrderItem);
+        order.OrderItems.Add(additionalServiceOrderItem);
+
+        var expectedModel = new OrderTaskList
+        {
+            DescriptionStatus = TaskProgress.Completed,
+            OrderingPartyStatus = TaskProgress.Completed,
+            SupplierStatus = TaskProgress.Completed,
+            CommencementDateStatus = TaskProgress.Completed,
+            SolutionOrService = TaskProgress.Completed,
+            FundingSource = TaskProgress.InProgress,
+            ImplementationPlan = TaskProgress.InProgress,
+            AssociatedServiceBilling = TaskProgress.NotApplicable,
+            DataProcessingInformation = TaskProgress.InProgress,
         };
 
         var model = new OrderTaskList(order);
