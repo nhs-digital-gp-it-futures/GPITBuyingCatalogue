@@ -15,6 +15,7 @@ using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.AdditionalServices;
+using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Contracts;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Orders;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Routing;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions;
@@ -877,6 +878,22 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
 
         [Theory]
         [CommonAutoData]
+        public static async Task Post_ConfirmSolutionChanges_ClearsContract(
+            string internalOrgId,
+            CallOffId callOffId,
+            ConfirmServiceChangesModel model,
+            [Frozen] Mock<IContractsService> mockContractsService,
+            CatalogueSolutionsController controller)
+        {
+            model.ConfirmChanges = true;
+
+            var result = await controller.ConfirmSolutionChanges(internalOrgId, callOffId, model);
+
+            mockContractsService.Verify(s => s.RemoveContract(callOffId.Id), Times.Once());
+        }
+
+        [Theory]
+        [CommonAutoData]
         public static async Task Get_ConfirmSolutionChangesAssociatedServicesOnly_ReturnsExpectedResult(
             string internalOrgId,
             CallOffId callOffId,
@@ -992,6 +1009,22 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
                 { "callOffId", callOffId },
                 { "source", RoutingSource.EditSolution },
             });
+        }
+
+        [Theory]
+        [CommonAutoData]
+        public static async Task Post_ConfirmSolutionChangesAssociatedServicesOnly_ClearsContract(
+            string internalOrgId,
+            CallOffId callOffId,
+            ConfirmServiceChangesModel model,
+            [Frozen] Mock<IContractsService> mockContractsService,
+            CatalogueSolutionsController controller)
+        {
+            model.ConfirmChanges = true;
+
+            var result = await controller.ConfirmSolutionChangesAssociatedServicesOnly(internalOrgId, callOffId, model);
+
+            mockContractsService.Verify(s => s.RemoveContract(callOffId.Id), Times.Once());
         }
     }
 }

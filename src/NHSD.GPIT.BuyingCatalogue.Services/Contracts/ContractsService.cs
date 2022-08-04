@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Mvc.Formatters;
 using Microsoft.EntityFrameworkCore;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
@@ -35,6 +36,28 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Contracts
             await dbContext.SaveChangesAsync();
 
             return output;
+        }
+
+        public async Task RemoveContract(int orderId)
+        {
+            var contract = await GetContract(orderId);
+
+            contract.UseDefaultImplementationPlan = null;
+            contract.UseDefaultBilling = null;
+            contract.HasSpecificRequirements = null;
+            contract.UseDefaultDataProcessing = null;
+
+            await dbContext.SaveChangesAsync();
+        }
+
+        public async Task RemoveBillingAndRequirements(int orderId)
+        {
+            var contract = await GetContract(orderId);
+
+            contract.UseDefaultBilling = null;
+            contract.HasSpecificRequirements = null;
+
+            await dbContext.SaveChangesAsync();
         }
 
         public async Task HasSpecificRequirements(int orderId, bool value)

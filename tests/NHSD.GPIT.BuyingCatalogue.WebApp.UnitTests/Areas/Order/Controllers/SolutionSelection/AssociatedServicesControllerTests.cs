@@ -15,6 +15,7 @@ using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.AssociatedServices;
+using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Contracts;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Orders;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Routing;
 using NHSD.GPIT.BuyingCatalogue.UI.Components.TagHelpers;
@@ -593,6 +594,85 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
                 { "callOffId", callOffId },
                 { "catalogueItemId", model.ToAdd.First().CatalogueItemId },
             });
+        }
+
+        [Theory]
+        [CommonAutoData]
+        public static async Task Post_ConfirmAssociatedServiceChanges_RemovingLastService_ClearsContractSection(
+            string internalOrgId,
+            CallOffId callOffId,
+            ConfirmServiceChangesModel model,
+            EntityFramework.Ordering.Models.Order order,
+            List<CatalogueItemId> toRemove,
+            [Frozen] Mock<IOrderService> mockOrderService,
+            [Frozen] Mock<IContractsService> mockContractsService,
+            AssociatedServicesController controller)
+        {
+            order.OrderItems = new List<OrderItem>();
+            model.ConfirmChanges = true;
+            model.ToRemove = toRemove.Select(x => new ServiceModel { CatalogueItemId = x, IsSelected = true }).ToList();
+            model.ToAdd = new List<ServiceModel>();
+
+            mockOrderService.Setup(s => s.GetOrderWithOrderItems(callOffId, internalOrgId))
+                .ReturnsAsync(order);
+
+            _ = await controller.ConfirmAssociatedServiceChanges(internalOrgId, callOffId, model);
+
+            mockContractsService.Verify(s => s.RemoveBillingAndRequirements(callOffId.Id), Times.Once());
+        }
+
+        [Theory]
+        [CommonAutoData]
+        public static async Task Post_ConfirmAssociatedServiceChanges_RemovingAService_PreservesContract(
+            string internalOrgId,
+            CallOffId callOffId,
+            ConfirmServiceChangesModel model,
+            EntityFramework.Ordering.Models.Order order,
+            OrderItem orderItem,
+            AssociatedService associatedService,
+            List<CatalogueItemId> toRemove,
+            [Frozen] Mock<IOrderService> mockOrderService,
+            [Frozen] Mock<IContractsService> mockContractsService,
+            AssociatedServicesController controller)
+        {
+            orderItem.CatalogueItem = associatedService.CatalogueItem;
+            order.OrderItems = new List<OrderItem> { orderItem };
+            model.ConfirmChanges = true;
+            model.ToRemove = toRemove.Select(x => new ServiceModel { CatalogueItemId = x, IsSelected = true }).ToList();
+            model.ToAdd = new List<ServiceModel>();
+
+            mockOrderService.Setup(s => s.GetOrderWithOrderItems(callOffId, internalOrgId))
+                .ReturnsAsync(order);
+
+            _ = await controller.ConfirmAssociatedServiceChanges(internalOrgId, callOffId, model);
+
+            mockContractsService.Verify(s => s.RemoveBillingAndRequirements(callOffId.Id), Times.Never());
+        }
+
+        [Theory]
+        [CommonAutoData]
+        public static async Task Post_ConfirmAssociatedServiceChanges_RemovingAndAdding_PreservesContract(
+            string internalOrgId,
+            CallOffId callOffId,
+            ConfirmServiceChangesModel model,
+            EntityFramework.Ordering.Models.Order order,
+            List<CatalogueItemId> toRemove,
+            List<CatalogueItemId> toAdd,
+            [Frozen] Mock<IOrderService> mockOrderService,
+            [Frozen] Mock<IContractsService> mockContractsService,
+            AssociatedServicesController controller)
+        {
+            order.OrderItems = new List<OrderItem>();
+            model.ConfirmChanges = true;
+            model.ToRemove = toRemove.Select(x => new ServiceModel { CatalogueItemId = x, IsSelected = true }).ToList();
+            model.ToAdd = toAdd.Select(x => new ServiceModel { CatalogueItemId = x, IsSelected = true }).ToList();
+
+            mockOrderService.Setup(s => s.GetOrderWithOrderItems(callOffId, internalOrgId))
+                .ReturnsAsync(order);
+
+            _ = await controller.ConfirmAssociatedServiceChanges(internalOrgId, callOffId, model);
+
+            mockContractsService.Verify(s => s.RemoveBillingAndRequirements(callOffId.Id), Times.Never());
         }
     }
 }

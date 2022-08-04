@@ -8,6 +8,7 @@ using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.AdditionalServices;
+using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Contracts;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Orders;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Routing;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions;
@@ -26,17 +27,20 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers.SolutionSelec
         private readonly IOrderItemService orderItemService;
         private readonly IOrderService orderService;
         private readonly ISolutionsService solutionsService;
+        private readonly IContractsService contractsService;
 
         public CatalogueSolutionsController(
             IAdditionalServicesService additionalServicesService,
             IOrderItemService orderItemService,
             IOrderService orderService,
-            ISolutionsService solutionsService)
+            ISolutionsService solutionsService,
+            IContractsService contractsService)
         {
             this.additionalServicesService = additionalServicesService ?? throw new ArgumentNullException(nameof(additionalServicesService));
             this.orderItemService = orderItemService ?? throw new ArgumentNullException(nameof(orderItemService));
             this.orderService = orderService ?? throw new ArgumentNullException(nameof(orderService));
             this.solutionsService = solutionsService ?? throw new ArgumentNullException(nameof(solutionsService));
+            this.contractsService = contractsService ?? throw new ArgumentNullException(nameof(contractsService));
         }
 
         [HttpGet("select")]
@@ -293,6 +297,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers.SolutionSelec
                     new { internalOrgId, callOffId });
             }
 
+            await contractsService.RemoveContract(callOffId.Id);
             await orderItemService.DeleteOrderItems(internalOrgId, callOffId, model.ToRemove.Select(x => x.CatalogueItemId));
             await orderItemService.AddOrderItems(internalOrgId, callOffId, model.ToAdd.Select(x => x.CatalogueItemId));
 
@@ -372,6 +377,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers.SolutionSelec
                     new { internalOrgId, callOffId });
             }
 
+            await contractsService.RemoveContract(callOffId.Id);
             await orderItemService.DeleteOrderItems(internalOrgId, callOffId, model.ToRemove.Select(x => x.CatalogueItemId));
             await orderService.SetSolutionId(internalOrgId, callOffId, model.ToAdd.First().CatalogueItemId);
 
