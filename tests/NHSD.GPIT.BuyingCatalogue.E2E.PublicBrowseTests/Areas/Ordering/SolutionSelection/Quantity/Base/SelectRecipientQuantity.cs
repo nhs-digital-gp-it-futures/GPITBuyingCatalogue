@@ -47,7 +47,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering.SolutionSelection.Qu
         }
 
         [Fact]
-        public void SelectServiceRecipientQuantity_QuantityIsBlank_Error()
+        public void SelectServiceRecipientQuantity_NoInputs_ThrowsError()
         {
             CommonActions.ClearInputElement(QuantityObjects.InputQuantityInput(0));
             CommonActions.ClickSave();

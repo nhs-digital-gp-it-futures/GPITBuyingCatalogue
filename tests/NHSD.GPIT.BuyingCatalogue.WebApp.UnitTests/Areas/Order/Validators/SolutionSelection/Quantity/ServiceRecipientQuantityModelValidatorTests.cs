@@ -27,6 +27,54 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Validators.Solu
         }
 
         [Theory]
+        [CommonInlineAutoData("abc")]
+        public static void Validate_InputQuantityNotNumeric_ThrowsValidationError(
+            string inputQuantity,
+            ServiceRecipientQuantityModel model,
+            ServiceRecipientQuantityModelValidator validator)
+        {
+            model.Quantity = 0;
+            model.InputQuantity = inputQuantity;
+
+            var result = validator.TestValidate(model);
+
+            result.ShouldHaveValidationErrorFor(x => x.InputQuantity)
+                .WithErrorMessage(ServiceRecipientQuantityModelValidator.ValueNotNumericErrorMessage);
+        }
+
+        [Theory]
+        [CommonInlineAutoData(-1)]
+        public static void Validate_InputQuantityNegativeNumber_ThrowsValidationError(
+            string inputQuantity,
+            ServiceRecipientQuantityModel model,
+            ServiceRecipientQuantityModelValidator validator)
+        {
+            model.Quantity = 0;
+            model.InputQuantity = inputQuantity;
+
+            var result = validator.TestValidate(model);
+
+            result.ShouldHaveValidationErrorFor(x => x.InputQuantity)
+                .WithErrorMessage(ServiceRecipientQuantityModelValidator.ValueNegativeErrorMessage);
+        }
+
+        [Theory]
+        [CommonInlineAutoData(1.5)]
+        public static void Validate_InputQuantityNotIntegerNumber_ThrowsValidationError(
+            string inputQuantity,
+            ServiceRecipientQuantityModel model,
+            ServiceRecipientQuantityModelValidator validator)
+        {
+            model.Quantity = 0;
+            model.InputQuantity = inputQuantity;
+
+            var result = validator.TestValidate(model);
+
+            result.ShouldHaveValidationErrorFor(x => x.InputQuantity)
+                .WithErrorMessage(ServiceRecipientQuantityModelValidator.ValueNotAnIntegerErrorMessage);
+        }
+
+        [Theory]
         [CommonInlineAutoData("1")]
         [CommonInlineAutoData("1234")]
         [CommonInlineAutoData("999999")]
