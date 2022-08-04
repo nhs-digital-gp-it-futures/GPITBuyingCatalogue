@@ -4,6 +4,7 @@ using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Enums;
 using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.AutoFixtureCustomisations;
+using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.Order;
 using Xunit;
 
@@ -567,6 +568,61 @@ public class OrderTaskListTests
             SupplierStatus = TaskProgress.Completed,
             CommencementDateStatus = TaskProgress.Completed,
             SolutionOrService = TaskProgress.InProgress,
+            FundingSource = TaskProgress.InProgress,
+            ImplementationPlan = TaskProgress.InProgress,
+            AssociatedServiceBilling = TaskProgress.InProgress,
+        };
+
+        var model = new OrderTaskList(order);
+
+        model.Should().BeEquivalentTo(expectedModel);
+    }
+
+    [Theory]
+    [CommonAutoData]
+    public static void Construct_AssociatedServiceBilling_FundingSourceInnProgress(
+        string description,
+        Contact orderingPartyContact,
+        EntityFramework.Catalogue.Models.Supplier supplier,
+        Contact supplierContact,
+        DateTime commencementDate,
+        OrderItem solutionOrderItem,
+        Solution solution,
+        OrderItem associatedServiceOrderItem,
+        AssociatedService associatedService,
+        OrderItem additionalServiceOrderItem,
+        AdditionalService additionalService)
+    {
+        var order = new EntityFramework.Ordering.Models.Order
+        {
+            Description = description,
+            OrderingPartyContact = orderingPartyContact,
+            Supplier = supplier,
+            SupplierContact = supplierContact,
+            CommencementDate = commencementDate,
+            ContractFlags = new()
+            {
+                UseDefaultImplementationPlan = true,
+                UseDefaultBilling = true,
+                HasSpecificRequirements = false,
+            },
+        };
+
+        solutionOrderItem.CatalogueItem = solution.CatalogueItem;
+        associatedServiceOrderItem.CatalogueItem = associatedService.CatalogueItem;
+        additionalServiceOrderItem.CatalogueItem = additionalService.CatalogueItem;
+        additionalServiceOrderItem.OrderItemFunding = null;
+        order.OrderItems.Add(solutionOrderItem);
+        order.OrderItems.Add(associatedServiceOrderItem);
+        order.OrderItems.Add(additionalServiceOrderItem);
+
+        var expectedModel = new OrderTaskList
+        {
+            DescriptionStatus = TaskProgress.Completed,
+            OrderingPartyStatus = TaskProgress.Completed,
+            SupplierStatus = TaskProgress.Completed,
+            CommencementDateStatus = TaskProgress.Completed,
+            SolutionOrService = TaskProgress.Completed,
             FundingSource = TaskProgress.InProgress,
             ImplementationPlan = TaskProgress.InProgress,
             AssociatedServiceBilling = TaskProgress.InProgress,

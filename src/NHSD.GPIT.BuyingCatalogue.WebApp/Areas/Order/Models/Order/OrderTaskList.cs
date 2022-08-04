@@ -134,7 +134,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.Order
             }
 
             // Associated Services Billing
-            if (SolutionOrService is TaskProgress.InProgress
+            if ((SolutionOrService == TaskProgress.InProgress
+                    || ImplementationPlan == TaskProgress.InProgress)
                 && (order.ContractFlags?.HasSpecificRequirements != null
                     || order.ContractFlags?.UseDefaultBilling != null))
             {
