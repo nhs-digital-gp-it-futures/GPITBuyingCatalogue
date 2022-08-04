@@ -21,7 +21,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Validators
             var result = validator.TestValidate(model);
 
             result.ShouldHaveValidationErrorFor(m => m.Description)
-                .WithErrorMessage("Enter an order description");
+                .WithErrorMessage(OrderDescriptionModelValidator.OrderDescriptionErrorMessage);
         }
 
         [Theory]

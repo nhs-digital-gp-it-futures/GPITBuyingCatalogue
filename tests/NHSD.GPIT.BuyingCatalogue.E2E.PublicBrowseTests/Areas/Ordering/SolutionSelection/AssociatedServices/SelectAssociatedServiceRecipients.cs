@@ -88,9 +88,8 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering.SolutionSelection.As
             CommonActions.ErrorSummaryDisplayed().Should().BeTrue();
             CommonActions.ErrorSummaryLinksExist().Should().BeTrue();
 
-            CommonActions.ElementShowingCorrectErrorMessage(
-                ServiceRecipientObjects.SelectedRecipientErrorMessage,
-                $"Error:{SelectRecipientsModelValidator.NoSelectionMadeErrorMessage}").Should().BeTrue();
+            CommonActions.ElementIsDisplayed(ServiceRecipientObjects.SelectedRecipientErrorMessage)
+                .Should().BeTrue();
         }
 
         [Fact]

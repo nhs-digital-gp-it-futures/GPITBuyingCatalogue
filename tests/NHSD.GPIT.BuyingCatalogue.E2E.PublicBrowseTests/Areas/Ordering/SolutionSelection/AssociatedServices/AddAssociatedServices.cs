@@ -59,9 +59,8 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering.SolutionSelection.As
             CommonActions.ErrorSummaryDisplayed().Should().BeTrue();
             CommonActions.ErrorSummaryLinksExist().Should().BeTrue();
 
-            CommonActions.ElementShowingCorrectErrorMessage(
-                AssociatedServicesObjects.AdditionalServicesRequiredErrorMessage,
-                $"Error:{AddAssociatedServicesModelValidator.AdditionalServicesRequiredMissingErrorMessage}").Should().BeTrue();
+            CommonActions.ElementIsDisplayed(
+                AssociatedServicesObjects.AdditionalServicesRequiredErrorMessage).Should().BeTrue();
         }
 
         [Fact]

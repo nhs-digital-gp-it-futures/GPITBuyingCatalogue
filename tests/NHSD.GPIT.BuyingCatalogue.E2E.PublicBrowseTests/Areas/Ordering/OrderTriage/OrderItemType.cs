@@ -47,10 +47,14 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering.OrderTriage
         {
             CommonActions.ClickSave();
 
+            CommonActions.PageLoadedCorrectGetIndex(
+                typeof(OrderTriageController),
+                nameof(OrderTriageController.OrderItemType)).Should().BeTrue();
+
             CommonActions.ErrorSummaryDisplayed().Should().BeTrue();
             CommonActions.ErrorSummaryLinksExist().Should().BeTrue();
 
-            CommonActions.ElementShowingCorrectErrorMessage(OrderItemTypeObjects.OrderItemTypeInputError, "Error: Select Catalogue Solution or Associated Service").Should().BeTrue();
+            CommonActions.ElementIsDisplayed(OrderItemTypeObjects.OrderItemTypeInputError).Should().BeTrue();
         }
 
         [Fact]

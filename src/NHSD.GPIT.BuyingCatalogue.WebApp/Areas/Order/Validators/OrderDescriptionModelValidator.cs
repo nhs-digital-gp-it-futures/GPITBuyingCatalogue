@@ -5,11 +5,13 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Validators
 {
     public sealed class OrderDescriptionModelValidator : AbstractValidator<OrderDescriptionModel>
     {
+        public const string OrderDescriptionErrorMessage = "Enter an order description";
+
         public OrderDescriptionModelValidator()
         {
             RuleFor(m => m.Description)
                 .NotEmpty()
-                .WithMessage("Enter an order description");
+                .WithMessage(OrderDescriptionErrorMessage);
         }
     }
 }
