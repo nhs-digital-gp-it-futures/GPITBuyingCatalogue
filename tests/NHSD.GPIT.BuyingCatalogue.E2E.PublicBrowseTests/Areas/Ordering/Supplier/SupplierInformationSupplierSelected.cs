@@ -11,7 +11,6 @@ using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Validators.Supplier;
 using Xunit;
-using Objects = NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.Objects;
 
 namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering.Supplier
 {
@@ -100,11 +99,11 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering.Supplier
                 typeof(SupplierController),
                 nameof(SupplierController.NewContact)).Should().BeTrue();
 
-            TextGenerators.TextInputAddText(Objects.Ordering.NewContact.FirstNameInput, 20);
-            TextGenerators.TextInputAddText(Objects.Ordering.NewContact.LastNameInput, 20);
-            TextGenerators.TextInputAddText(Objects.Ordering.NewContact.DepartmentInput, 20);
-            TextGenerators.TextInputAddText(Objects.Ordering.NewContact.PhoneNumberInput, 20);
-            TextGenerators.EmailInputAddText(Objects.Ordering.NewContact.EmailInput, 50);
+            TextGenerators.TextInputAddText(NewContactObjects.FirstNameInput, 20);
+            TextGenerators.TextInputAddText(NewContactObjects.LastNameInput, 20);
+            TextGenerators.TextInputAddText(NewContactObjects.DepartmentInput, 20);
+            TextGenerators.TextInputAddText(NewContactObjects.PhoneNumberInput, 20);
+            TextGenerators.EmailInputAddText(NewContactObjects.EmailInput, 50);
 
             CommonActions.ClickSave();
 

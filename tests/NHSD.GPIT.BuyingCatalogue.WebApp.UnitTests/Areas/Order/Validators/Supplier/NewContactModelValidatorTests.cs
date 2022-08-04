@@ -10,24 +10,61 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Validators.Supp
     {
         [Theory]
         [CommonAutoData]
-        public static void Validate_ValuesMissing_ThrowsValidationError(
+        public static void Validate_PersonalDetailsMissing_ThrowsValidationError(
             NewContactModel model,
             NewContactModelValidator systemUnderTest)
         {
             model.FirstName = null;
             model.LastName = null;
-            model.Email = null;
+            model.Department = null;
 
             var result = systemUnderTest.TestValidate(model);
 
             result.ShouldHaveValidationErrorFor(x => x.FirstName)
-                .WithErrorMessage(NewContactModelValidator.FirstNameErrorMessage);
+                .WithErrorMessage(NewContactModelValidator.PersonalDetailsMissingErrorMessage);
+        }
+
+        [Theory]
+        [CommonAutoData]
+        public static void Validate_FirstNameMissing_ThrowsValidationError(
+            NewContactModel model,
+            NewContactModelValidator systemUnderTest)
+        {
+            model.FirstName = null;
+
+            var result = systemUnderTest.TestValidate(model);
+
+            result.ShouldHaveValidationErrorFor(x => x.FirstName)
+                .WithErrorMessage(NewContactModelValidator.FirstNameMissingErrorMessage);
+        }
+
+        [Theory]
+        [CommonAutoData]
+        public static void Validate_LastNameMissing_ThrowsValidationError(
+            NewContactModel model,
+            NewContactModelValidator systemUnderTest)
+        {
+            model.LastName = null;
+
+            var result = systemUnderTest.TestValidate(model);
 
             result.ShouldHaveValidationErrorFor(x => x.LastName)
-                .WithErrorMessage(NewContactModelValidator.LastNameErrorMessage);
+                .WithErrorMessage(NewContactModelValidator.LastNameMissingErrorMessage);
+        }
 
-            result.ShouldHaveValidationErrorFor(x => x.Email)
-                .WithErrorMessage(NewContactModelValidator.EmailErrorMessage);
+        [Theory]
+        [CommonAutoData]
+        public static void Validate_ContactDetailsMissing_ThrowsValidationError(
+            NewContactModel model,
+            NewContactModelValidator systemUnderTest)
+        {
+            model.Email = null;
+            model.PhoneNumber = null;
+
+            var result = systemUnderTest.TestValidate(model);
+
+            result.ShouldHaveValidationErrorFor(x => x.PhoneNumber)
+                .WithErrorMessage(NewContactModelValidator.ContactDetailsMissingErrorMessage);
         }
 
         [Theory]
@@ -42,7 +79,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Validators.Supp
             var result = systemUnderTest.TestValidate(model);
 
             result.ShouldHaveValidationErrorFor(x => x.Email)
-                .WithErrorMessage(NewContactModelValidator.EmailWrongFormatErrorMessage);
+                .WithErrorMessage(NewContactModelValidator.EmailAddressFormatErrorMessage);
         }
     }
 }

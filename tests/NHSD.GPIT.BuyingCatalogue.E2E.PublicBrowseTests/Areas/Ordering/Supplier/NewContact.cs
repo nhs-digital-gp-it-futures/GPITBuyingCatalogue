@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using FluentAssertions;
+using NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.Objects.Ordering;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Utils;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.TestBases;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
@@ -8,7 +9,6 @@ using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Validators.Supplier;
 using Xunit;
-using Objects = NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.Objects;
 
 namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering.Supplier
 {
@@ -24,11 +24,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering.Supplier
         };
 
         public NewContact(LocalWebApplicationFactory factory)
-            : base(
-                  factory,
-                  typeof(SupplierController),
-                  nameof(SupplierController.NewContact),
-                  Parameters)
+            : base(factory, typeof(SupplierController), nameof(SupplierController.NewContact), Parameters)
         {
         }
 
@@ -37,11 +33,11 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering.Supplier
         {
             CommonActions.PageTitle().Should().BeEquivalentTo($"Add a contact - Order {CallOffId}".FormatForComparison());
             CommonActions.GoBackLinkDisplayed().Should().BeTrue();
-            CommonActions.ElementIsDisplayed(Objects.Ordering.NewContact.FirstNameInput).Should().BeTrue();
-            CommonActions.ElementIsDisplayed(Objects.Ordering.NewContact.LastNameInput).Should().BeTrue();
-            CommonActions.ElementIsDisplayed(Objects.Ordering.NewContact.DepartmentInput).Should().BeTrue();
-            CommonActions.ElementIsDisplayed(Objects.Ordering.NewContact.PhoneNumberInput).Should().BeTrue();
-            CommonActions.ElementIsDisplayed(Objects.Ordering.NewContact.EmailInput).Should().BeTrue();
+            CommonActions.ElementIsDisplayed(NewContactObjects.FirstNameInput).Should().BeTrue();
+            CommonActions.ElementIsDisplayed(NewContactObjects.LastNameInput).Should().BeTrue();
+            CommonActions.ElementIsDisplayed(NewContactObjects.DepartmentInput).Should().BeTrue();
+            CommonActions.ElementIsDisplayed(NewContactObjects.PhoneNumberInput).Should().BeTrue();
+            CommonActions.ElementIsDisplayed(NewContactObjects.EmailInput).Should().BeTrue();
             CommonActions.SaveButtonDisplayed().Should().BeTrue();
         }
 
@@ -56,13 +52,11 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering.Supplier
         }
 
         [Fact]
-        public void NewContact_NoValues_ExpectedResult()
+        public void NewContact_NoPersonalDetails_ExpectedResult()
         {
-            TextGenerators.TextInputAddText(Objects.Ordering.NewContact.FirstNameInput, 0);
-            TextGenerators.TextInputAddText(Objects.Ordering.NewContact.LastNameInput, 0);
-            TextGenerators.TextInputAddText(Objects.Ordering.NewContact.DepartmentInput, 0);
-            TextGenerators.TextInputAddText(Objects.Ordering.NewContact.PhoneNumberInput, 0);
-            TextGenerators.TextInputAddText(Objects.Ordering.NewContact.EmailInput, 0);
+            TextGenerators.TextInputAddText(NewContactObjects.FirstNameInput, 0);
+            TextGenerators.TextInputAddText(NewContactObjects.LastNameInput, 0);
+            TextGenerators.TextInputAddText(NewContactObjects.DepartmentInput, 0);
 
             CommonActions.ClickSave();
 
@@ -74,24 +68,74 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering.Supplier
             CommonActions.ErrorSummaryLinksExist().Should().BeTrue();
 
             CommonActions.ElementShowingCorrectErrorMessage(
-                Objects.Ordering.NewContact.FirstNameError,
-                NewContactModelValidator.FirstNameErrorMessage).Should().BeTrue();
+                NewContactObjects.FirstNameError,
+                NewContactModelValidator.PersonalDetailsMissingErrorMessage).Should().BeTrue();
+        }
+
+        [Fact]
+        public void NewContact_NoFirstName_ExpectedResult()
+        {
+            TextGenerators.TextInputAddText(NewContactObjects.FirstNameInput, 0);
+            TextGenerators.TextInputAddText(NewContactObjects.LastNameInput, 20);
+
+            CommonActions.ClickSave();
+
+            CommonActions.PageLoadedCorrectGetIndex(
+                typeof(SupplierController),
+                nameof(SupplierController.NewContact)).Should().BeTrue();
+
+            CommonActions.ErrorSummaryDisplayed().Should().BeTrue();
+            CommonActions.ErrorSummaryLinksExist().Should().BeTrue();
 
             CommonActions.ElementShowingCorrectErrorMessage(
-                Objects.Ordering.NewContact.LastNameError,
-                NewContactModelValidator.LastNameErrorMessage).Should().BeTrue();
+                NewContactObjects.FirstNameError,
+                NewContactModelValidator.FirstNameMissingErrorMessage).Should().BeTrue();
+        }
+
+        [Fact]
+        public void NewContact_NoLastName_ExpectedResult()
+        {
+            TextGenerators.TextInputAddText(NewContactObjects.FirstNameInput, 20);
+            TextGenerators.TextInputAddText(NewContactObjects.LastNameInput, 0);
+
+            CommonActions.ClickSave();
+
+            CommonActions.PageLoadedCorrectGetIndex(
+                typeof(SupplierController),
+                nameof(SupplierController.NewContact)).Should().BeTrue();
+
+            CommonActions.ErrorSummaryDisplayed().Should().BeTrue();
+            CommonActions.ErrorSummaryLinksExist().Should().BeTrue();
 
             CommonActions.ElementShowingCorrectErrorMessage(
-                Objects.Ordering.NewContact.EmailError,
-                NewContactModelValidator.EmailErrorMessage).Should().BeTrue();
+                NewContactObjects.LastNameError,
+                NewContactModelValidator.LastNameMissingErrorMessage).Should().BeTrue();
+        }
+
+        [Fact]
+        public void NewContact_NoContactDetails_ExpectedResult()
+        {
+            TextGenerators.TextInputAddText(NewContactObjects.PhoneNumberInput, 0);
+            TextGenerators.TextInputAddText(NewContactObjects.EmailInput, 0);
+
+            CommonActions.ClickSave();
+
+            CommonActions.PageLoadedCorrectGetIndex(
+                typeof(SupplierController),
+                nameof(SupplierController.NewContact)).Should().BeTrue();
+
+            CommonActions.ErrorSummaryDisplayed().Should().BeTrue();
+            CommonActions.ErrorSummaryLinksExist().Should().BeTrue();
+
+            CommonActions.ElementShowingCorrectErrorMessage(
+                NewContactObjects.PhoneNumberError,
+                NewContactModelValidator.ContactDetailsMissingErrorMessage).Should().BeTrue();
         }
 
         [Fact]
         public void NewContact_EmailAddressWrongFormat_ExpectedResult()
         {
-            TextGenerators.TextInputAddText(Objects.Ordering.NewContact.FirstNameInput, 20);
-            TextGenerators.TextInputAddText(Objects.Ordering.NewContact.LastNameInput, 20);
-            TextGenerators.TextInputAddText(Objects.Ordering.NewContact.EmailInput, 20);
+            TextGenerators.TextInputAddText(NewContactObjects.EmailInput, 20);
 
             CommonActions.ClickSave();
 
@@ -103,14 +147,15 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering.Supplier
             CommonActions.ErrorSummaryLinksExist().Should().BeTrue();
 
             CommonActions.ElementShowingCorrectErrorMessage(
-                Objects.Ordering.NewContact.EmailError,
-                NewContactModelValidator.EmailWrongFormatErrorMessage).Should().BeTrue();
+                NewContactObjects.EmailError,
+                NewContactModelValidator.EmailAddressFormatErrorMessage).Should().BeTrue();
         }
 
         [Fact]
         public void NewContact_AcceptableValues_ExpectedResult()
         {
             using var context = GetEndToEndDbContext();
+
             var organisationId = context.Organisations.First(o => o.InternalIdentifier == InternalOrgId).Id;
 
             var order = new Order
@@ -145,9 +190,9 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering.Supplier
                 nameof(SupplierController.NewContact),
                 parameters);
 
-            TextGenerators.TextInputAddText(Objects.Ordering.NewContact.FirstNameInput, 20);
-            TextGenerators.TextInputAddText(Objects.Ordering.NewContact.LastNameInput, 20);
-            TextGenerators.EmailInputAddText(Objects.Ordering.NewContact.EmailInput, 50);
+            TextGenerators.TextInputAddText(NewContactObjects.FirstNameInput, 20);
+            TextGenerators.TextInputAddText(NewContactObjects.LastNameInput, 20);
+            TextGenerators.EmailInputAddText(NewContactObjects.EmailInput, 50);
 
             CommonActions.ClickSave();
 
@@ -160,6 +205,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering.Supplier
         public void NewContact_AcceptableValues_EditContact_ExpectedResult()
         {
             using var context = GetEndToEndDbContext();
+
             var organisationId = context.Organisations.First(o => o.InternalIdentifier == InternalOrgId).Id;
 
             var order = new Order
@@ -194,11 +240,11 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering.Supplier
                 nameof(SupplierController.NewContact),
                 parameters);
 
-            var firstName = TextGenerators.TextInputAddText(Objects.Ordering.NewContact.FirstNameInput, 20);
-            var lastName = TextGenerators.TextInputAddText(Objects.Ordering.NewContact.LastNameInput, 20);
-            var department = TextGenerators.TextInputAddText(Objects.Ordering.NewContact.DepartmentInput, 20);
-            var phoneNumber = TextGenerators.TextInputAddText(Objects.Ordering.NewContact.PhoneNumberInput, 20);
-            var email = TextGenerators.EmailInputAddText(Objects.Ordering.NewContact.EmailInput, 50);
+            var firstName = TextGenerators.TextInputAddText(NewContactObjects.FirstNameInput, 20);
+            var lastName = TextGenerators.TextInputAddText(NewContactObjects.LastNameInput, 20);
+            var department = TextGenerators.TextInputAddText(NewContactObjects.DepartmentInput, 20);
+            var phoneNumber = TextGenerators.TextInputAddText(NewContactObjects.PhoneNumberInput, 20);
+            var email = TextGenerators.EmailInputAddText(NewContactObjects.EmailInput, 50);
 
             CommonActions.ClickSave();
 
@@ -211,17 +257,17 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering.Supplier
                 nameof(SupplierController.NewContact),
                 parameters);
 
-            CommonActions.ElementIsDisplayed(Objects.Ordering.NewContact.FirstNameInput).Should().BeTrue();
-            CommonActions.ElementIsDisplayed(Objects.Ordering.NewContact.LastNameInput).Should().BeTrue();
-            CommonActions.ElementIsDisplayed(Objects.Ordering.NewContact.DepartmentInput).Should().BeTrue();
-            CommonActions.ElementIsDisplayed(Objects.Ordering.NewContact.PhoneNumberInput).Should().BeTrue();
-            CommonActions.ElementIsDisplayed(Objects.Ordering.NewContact.EmailInput).Should().BeTrue();
+            CommonActions.ElementIsDisplayed(NewContactObjects.FirstNameInput).Should().BeTrue();
+            CommonActions.ElementIsDisplayed(NewContactObjects.LastNameInput).Should().BeTrue();
+            CommonActions.ElementIsDisplayed(NewContactObjects.DepartmentInput).Should().BeTrue();
+            CommonActions.ElementIsDisplayed(NewContactObjects.PhoneNumberInput).Should().BeTrue();
+            CommonActions.ElementIsDisplayed(NewContactObjects.EmailInput).Should().BeTrue();
 
-            CommonActions.InputValueEqualTo(Objects.Ordering.NewContact.FirstNameInput, firstName).Should().BeTrue();
-            CommonActions.InputValueEqualTo(Objects.Ordering.NewContact.LastNameInput, lastName).Should().BeTrue();
-            CommonActions.InputValueEqualTo(Objects.Ordering.NewContact.DepartmentInput, department).Should().BeTrue();
-            CommonActions.InputValueEqualTo(Objects.Ordering.NewContact.PhoneNumberInput, phoneNumber).Should().BeTrue();
-            CommonActions.InputValueEqualTo(Objects.Ordering.NewContact.EmailInput, email).Should().BeTrue();
+            CommonActions.InputValueEqualTo(NewContactObjects.FirstNameInput, firstName).Should().BeTrue();
+            CommonActions.InputValueEqualTo(NewContactObjects.LastNameInput, lastName).Should().BeTrue();
+            CommonActions.InputValueEqualTo(NewContactObjects.DepartmentInput, department).Should().BeTrue();
+            CommonActions.InputValueEqualTo(NewContactObjects.PhoneNumberInput, phoneNumber).Should().BeTrue();
+            CommonActions.InputValueEqualTo(NewContactObjects.EmailInput, email).Should().BeTrue();
         }
     }
 }

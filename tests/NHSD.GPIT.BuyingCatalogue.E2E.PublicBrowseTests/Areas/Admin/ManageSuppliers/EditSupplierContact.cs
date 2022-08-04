@@ -3,14 +3,15 @@ using System.Linq;
 using System.Threading.Tasks;
 using FluentAssertions;
 using Microsoft.EntityFrameworkCore;
+using NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.Objects.Admin.ManageSuppliers;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.Objects.Common;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Utils;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.TestBases;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers;
+using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Validators;
 using OpenQA.Selenium;
 using Xunit;
-using Objects = NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.Objects;
 
 namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.ManageSuppliers
 {
@@ -22,26 +23,20 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.ManageSuppliers
         private const int OtherContactId = 2;
         private static readonly CatalogueItemId ReferencingSolutionId = new(99998, "001");
 
-        private static readonly Dictionary<string, string> Parameters =
-            new()
-            {
-                { nameof(SupplierId), SupplierId.ToString() },
-                { nameof(ContactId), ContactId.ToString() },
-            };
+        private static readonly Dictionary<string, string> Parameters = new()
+        {
+            { nameof(SupplierId), SupplierId.ToString() },
+            { nameof(ContactId), ContactId.ToString() },
+        };
 
-        private static readonly Dictionary<string, string> ReferencedContactParameters =
-            new()
-            {
-                { nameof(SupplierId), SupplierId.ToString() },
-                { nameof(ContactId), ReferencedContactId.ToString() },
-            };
+        private static readonly Dictionary<string, string> ReferencedContactParameters = new()
+        {
+            { nameof(SupplierId), SupplierId.ToString() },
+            { nameof(ContactId), ReferencedContactId.ToString() },
+        };
 
         public EditSupplierContact(LocalWebApplicationFactory factory)
-            : base(
-                  factory,
-                  typeof(SuppliersController),
-                  nameof(SuppliersController.EditSupplierContact),
-                  Parameters)
+            : base(factory, typeof(SuppliersController), nameof(SuppliersController.EditSupplierContact), Parameters)
         {
         }
 
@@ -52,14 +47,14 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.ManageSuppliers
             CommonActions.GoBackLinkDisplayed().Should().BeTrue();
 
             CommonActions.ElementIsDisplayed(CommonSelectors.Header1).Should().BeTrue();
-            CommonActions.ElementIsDisplayed(Objects.Admin.ManageSuppliers.ManageSuppliers.EditSupplierContactFirstName).Should().BeTrue();
-            CommonActions.ElementIsDisplayed(Objects.Admin.ManageSuppliers.ManageSuppliers.EditSupplierContactLastName).Should().BeTrue();
-            CommonActions.ElementIsDisplayed(Objects.Admin.ManageSuppliers.ManageSuppliers.EditSupplierContactDepartment).Should().BeTrue();
-            CommonActions.ElementIsDisplayed(Objects.Admin.ManageSuppliers.ManageSuppliers.EditSupplierContactPhoneNumber).Should().BeTrue();
-            CommonActions.ElementIsDisplayed(Objects.Admin.ManageSuppliers.ManageSuppliers.EditSupplierContactEmail).Should().BeTrue();
-            CommonActions.ElementIsDisplayed(Objects.Admin.ManageSuppliers.ManageSuppliers.EditSupplierContactReferencingSolutionsTable).Should().BeFalse();
-            CommonActions.ElementIsDisplayed(Objects.Admin.ManageSuppliers.ManageSuppliers.EditSupplierContactNoReferencingSolutionsInset).Should().BeTrue();
-            CommonActions.ElementIsDisplayed(Objects.Admin.ManageSuppliers.ManageSuppliers.EditSupplierContactDeleteLink).Should().BeTrue();
+            CommonActions.ElementIsDisplayed(SupplierContactObjects.FirstNameInput).Should().BeTrue();
+            CommonActions.ElementIsDisplayed(SupplierContactObjects.LastNameInput).Should().BeTrue();
+            CommonActions.ElementIsDisplayed(SupplierContactObjects.DepartmentInput).Should().BeTrue();
+            CommonActions.ElementIsDisplayed(SupplierContactObjects.PhoneNumberInput).Should().BeTrue();
+            CommonActions.ElementIsDisplayed(SupplierContactObjects.EmailInput).Should().BeTrue();
+            CommonActions.ElementIsDisplayed(SupplierContactObjects.ReferencingSolutionsTable).Should().BeFalse();
+            CommonActions.ElementIsDisplayed(SupplierContactObjects.NoReferencingSolutionsInset).Should().BeTrue();
+            CommonActions.ElementIsDisplayed(SupplierContactObjects.DeleteLink).Should().BeTrue();
         }
 
         [Fact]
@@ -67,24 +62,31 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.ManageSuppliers
         {
             AddSupplierContactToSolutionIfNotExists();
 
-            NavigateToUrl(typeof(SuppliersController), nameof(SuppliersController.EditSupplierContact), ReferencedContactParameters);
+            NavigateToUrl(
+                typeof(SuppliersController),
+                nameof(SuppliersController.EditSupplierContact),
+                ReferencedContactParameters);
 
-            CommonActions.ElementIsDisplayed(Objects.Admin.ManageSuppliers.ManageSuppliers.EditSupplierContactReferencingSolutionsTable).Should().BeTrue();
-            CommonActions.ElementIsDisplayed(Objects.Admin.ManageSuppliers.ManageSuppliers.EditSupplierContactNoReferencingSolutionsInset).Should().BeFalse();
-            CommonActions.ElementIsDisplayed(Objects.Admin.ManageSuppliers.ManageSuppliers.EditSupplierContactDeleteLink).Should().BeFalse();
+            CommonActions.ElementIsDisplayed(SupplierContactObjects.ReferencingSolutionsTable).Should().BeTrue();
+            CommonActions.ElementIsDisplayed(SupplierContactObjects.NoReferencingSolutionsInset).Should().BeFalse();
+            CommonActions.ElementIsDisplayed(SupplierContactObjects.DeleteLink).Should().BeFalse();
         }
 
         [Fact]
-        public void EditSupplierContact_ReferencedConstact_LinkGoesToEditSupplierDetailsForSolution()
+        public void EditSupplierContact_ReferencedContact_LinkGoesToEditSupplierDetailsForSolution()
         {
             AddSupplierContactToSolutionIfNotExists();
 
-            NavigateToUrl(typeof(SuppliersController), nameof(SuppliersController.EditSupplierContact), ReferencedContactParameters);
+            NavigateToUrl(
+                typeof(SuppliersController),
+                nameof(SuppliersController.EditSupplierContact),
+                ReferencedContactParameters);
 
             CommonActions.ClickLinkElement(By.LinkText("Edit"));
 
-            CommonActions.PageLoadedCorrectGetIndex(typeof(CatalogueSolutionsController), nameof(CatalogueSolutionsController.EditSupplierDetails))
-                .Should().BeTrue();
+            CommonActions.PageLoadedCorrectGetIndex(
+                typeof(CatalogueSolutionsController),
+                nameof(CatalogueSolutionsController.EditSupplierDetails)).Should().BeTrue();
         }
 
         [Fact]
@@ -93,10 +95,8 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.ManageSuppliers
             CommonActions.ClickGoBackLink();
 
             CommonActions.PageLoadedCorrectGetIndex(
-                    typeof(SuppliersController),
-                    nameof(SuppliersController.ManageSupplierContacts))
-                .Should()
-                .BeTrue();
+                typeof(SuppliersController),
+                nameof(SuppliersController.ManageSupplierContacts)).Should().BeTrue();
         }
 
         [Fact]
@@ -106,46 +106,40 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.ManageSuppliers
 
             var contact = await context.SupplierContacts.FirstAsync(sc => sc.Id == OtherContactId);
 
-            CommonActions.ElementAddValue(Objects.Admin.ManageSuppliers.ManageSuppliers.EditSupplierContactFirstName, contact.FirstName);
-            CommonActions.ElementAddValue(Objects.Admin.ManageSuppliers.ManageSuppliers.EditSupplierContactLastName, contact.LastName);
-            CommonActions.ElementAddValue(Objects.Admin.ManageSuppliers.ManageSuppliers.EditSupplierContactDepartment, contact.Department);
-            CommonActions.ElementAddValue(Objects.Admin.ManageSuppliers.ManageSuppliers.EditSupplierContactPhoneNumber, contact.PhoneNumber);
-            CommonActions.ElementAddValue(Objects.Admin.ManageSuppliers.ManageSuppliers.EditSupplierContactEmail, contact.Email);
+            CommonActions.ElementAddValue(SupplierContactObjects.FirstNameInput, contact.FirstName);
+            CommonActions.ElementAddValue(SupplierContactObjects.LastNameInput, contact.LastName);
+            CommonActions.ElementAddValue(SupplierContactObjects.DepartmentInput, contact.Department);
+            CommonActions.ElementAddValue(SupplierContactObjects.PhoneNumberInput, contact.PhoneNumber);
+            CommonActions.ElementAddValue(SupplierContactObjects.EmailInput, contact.Email);
 
             CommonActions.ClickSave();
 
             CommonActions.PageLoadedCorrectGetIndex(
-                    typeof(SuppliersController),
-                    nameof(SuppliersController.EditSupplierContact))
-                .Should()
-                .BeTrue();
+                typeof(SuppliersController),
+                nameof(SuppliersController.EditSupplierContact)).Should().BeTrue();
 
             CommonActions.ErrorSummaryDisplayed().Should().BeTrue();
             CommonActions.ErrorSummaryLinksExist().Should().BeTrue();
 
             CommonActions.ElementShowingCorrectErrorMessage(
-                    Objects.Admin.ManageSuppliers.ManageSuppliers.EditSupplierContactContainerError,
-                    "Error: A contact with these contact details already exists for this supplier")
-                .Should()
-                .BeTrue();
+                SupplierContactObjects.ContainerError,
+                $"Error: {EditContactModelValidator.DuplicateContactErrorMessage}").Should().BeTrue();
         }
 
         [Fact]
         public async Task EditSupplierContact_ChangeValues_ExpectedResult()
         {
-            var firstName = TextGenerators.TextInputAddText(Objects.Admin.ManageSuppliers.ManageSuppliers.EditSupplierContactFirstName, 35);
-            var lastName = TextGenerators.TextInputAddText(Objects.Admin.ManageSuppliers.ManageSuppliers.EditSupplierContactLastName, 35);
-            var department = TextGenerators.TextInputAddText(Objects.Admin.ManageSuppliers.ManageSuppliers.EditSupplierContactDepartment, 50);
-            var phoneNumber = TextGenerators.TextInputAddText(Objects.Admin.ManageSuppliers.ManageSuppliers.EditSupplierContactPhoneNumber, 35);
-            var email = TextGenerators.EmailInputAddText(Objects.Admin.ManageSuppliers.ManageSuppliers.EditSupplierContactEmail, 255);
+            var firstName = TextGenerators.TextInputAddText(SupplierContactObjects.FirstNameInput, 35);
+            var lastName = TextGenerators.TextInputAddText(SupplierContactObjects.LastNameInput, 35);
+            var department = TextGenerators.TextInputAddText(SupplierContactObjects.DepartmentInput, 50);
+            var phoneNumber = TextGenerators.TextInputAddText(SupplierContactObjects.PhoneNumberInput, 35);
+            var email = TextGenerators.EmailInputAddText(SupplierContactObjects.EmailInput, 255);
 
             CommonActions.ClickSave();
 
             CommonActions.PageLoadedCorrectGetIndex(
-                    typeof(SuppliersController),
-                    nameof(SuppliersController.ManageSupplierContacts))
-                .Should()
-                .BeTrue();
+                typeof(SuppliersController),
+                nameof(SuppliersController.ManageSupplierContacts)).Should().BeTrue();
 
             await using var context = GetEndToEndDbContext();
 
@@ -160,13 +154,16 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.ManageSuppliers
 
         private async void AddSupplierContactToSolutionIfNotExists()
         {
-            using var context = GetEndToEndDbContext();
+            await using var context = GetEndToEndDbContext();
 
-            var contact = await context.SupplierContacts.SingleAsync(sc => sc.Id == ReferencedContactId);
+            var contact = await context.SupplierContacts
+                .SingleAsync(sc => sc.Id == ReferencedContactId);
 
-            var solution = await context.CatalogueItems.Include(ci => ci.CatalogueItemContacts).SingleAsync(ci => ci.Id == ReferencingSolutionId);
+            var solution = await context.CatalogueItems
+                .Include(ci => ci.CatalogueItemContacts)
+                .SingleAsync(ci => ci.Id == ReferencingSolutionId);
 
-            if (!solution.CatalogueItemContacts.Any(cic => cic.Id == ReferencedContactId))
+            if (solution.CatalogueItemContacts.All(x => x.Id != ReferencedContactId))
             {
                 solution.CatalogueItemContacts.Add(contact);
 
