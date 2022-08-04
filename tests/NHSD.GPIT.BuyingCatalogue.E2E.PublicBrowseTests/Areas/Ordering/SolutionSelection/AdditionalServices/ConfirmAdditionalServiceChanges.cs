@@ -75,7 +75,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering.SolutionSelection.Ad
         }
 
         [Fact]
-        public void ConfirmAdditionalServiceChanges_ClickSave_ExpectedResult()
+        public void ConfirmAdditionalServiceChanges_ClickSave_ThrowsError()
         {
             CommonActions.ClickSave();
 
@@ -86,9 +86,8 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering.SolutionSelection.Ad
             CommonActions.ErrorSummaryDisplayed().Should().BeTrue();
             CommonActions.ErrorSummaryLinksExist().Should().BeTrue();
 
-            CommonActions.ElementShowingCorrectErrorMessage(
-                ConfirmServiceChangesObjects.ConfirmChangesError,
-                $"Error:{ConfirmServiceChangesModelValidator.ErrorMessage}").Should().BeTrue();
+            CommonActions.ElementIsDisplayed(
+                ConfirmServiceChangesObjects.ConfirmChangesError).Should().BeTrue();
 
             ExistingService.Should().NotBeNull();
             NewService.Should().BeNull();

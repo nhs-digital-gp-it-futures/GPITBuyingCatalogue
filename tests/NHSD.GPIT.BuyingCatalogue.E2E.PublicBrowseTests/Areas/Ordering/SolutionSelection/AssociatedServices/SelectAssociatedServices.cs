@@ -86,34 +86,6 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering.SolutionSelection.As
         }
 
         [Fact]
-        public void SelectAssociatedServices_NoSelectionMade_AssociatedServicesOnly_ExpectedResult()
-        {
-            var context = GetEndToEndDbContext();
-
-            var order = context.Orders.Single(x => x.Id == OrderId);
-
-            order.AssociatedServicesOnly = true;
-            order.SolutionId = new CatalogueItemId(99998, "001");
-
-            context.SaveChanges();
-
-            Driver.Navigate().Refresh();
-
-            CommonActions.ClickSave();
-
-            CommonActions.PageLoadedCorrectGetIndex(
-                typeof(AssociatedServicesController),
-                nameof(AssociatedServicesController.SelectAssociatedServices)).Should().BeTrue();
-
-            CommonActions.ErrorSummaryDisplayed().Should().BeTrue();
-            CommonActions.ErrorSummaryLinksExist().Should().BeTrue();
-
-            CommonActions.ElementShowingCorrectErrorMessage(
-                AssociatedServicesObjects.SelectedServicesErrorMessage,
-                $"Error:{SelectServicesModelValidator.NoSelectionMadeErrorMessage}").Should().BeTrue();
-        }
-
-        [Fact]
         public void SelectAssociatedServices_NoSelectionMade_ExpectedResult()
         {
             CommonActions.ClickSave();

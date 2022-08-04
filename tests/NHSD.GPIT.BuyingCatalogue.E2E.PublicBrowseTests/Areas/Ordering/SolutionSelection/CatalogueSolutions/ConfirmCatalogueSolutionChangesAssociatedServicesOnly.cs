@@ -73,7 +73,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering.SolutionSelection.Ca
         }
 
         [Fact]
-        public void ConfirmCatalogueSolutionChanges_ClickSave_ExpectedResult()
+        public void ConfirmCatalogueSolutionChanges_NoSelection_ThrowsError()
         {
             CommonActions.ClickSave();
 
@@ -84,9 +84,8 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering.SolutionSelection.Ca
             CommonActions.ErrorSummaryDisplayed().Should().BeTrue();
             CommonActions.ErrorSummaryLinksExist().Should().BeTrue();
 
-            CommonActions.ElementShowingCorrectErrorMessage(
-                ConfirmServiceChangesObjects.ConfirmChangesError,
-                $"Error:{ConfirmServiceChangesModelValidator.ErrorMessage}").Should().BeTrue();
+            CommonActions.ElementIsDisplayed(ConfirmServiceChangesObjects.ConfirmChangesError)
+                .Should().BeTrue();
 
             GetSolution().Id.Should().Be(ExistingSolutionId);
             ExistingService.Should().NotBeNull();

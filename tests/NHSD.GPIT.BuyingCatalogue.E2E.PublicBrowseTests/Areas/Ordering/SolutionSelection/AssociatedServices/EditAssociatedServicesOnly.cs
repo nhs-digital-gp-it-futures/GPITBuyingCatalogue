@@ -106,9 +106,8 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering.SolutionSelection.As
             CommonActions.ErrorSummaryDisplayed().Should().BeTrue();
             CommonActions.ErrorSummaryLinksExist().Should().BeTrue();
 
-            CommonActions.ElementShowingCorrectErrorMessage(
-                AssociatedServicesObjects.SelectedServicesErrorMessage,
-                $"Error:{SelectServicesModelValidator.NoSelectionMadeErrorMessage}").Should().BeTrue();
+            CommonActions.ElementIsDisplayed(AssociatedServicesObjects.SelectedServicesErrorMessage)
+                .Should().BeTrue();
 
             ExistingService.Should().NotBeNull();
             NewService.Should().BeNull();

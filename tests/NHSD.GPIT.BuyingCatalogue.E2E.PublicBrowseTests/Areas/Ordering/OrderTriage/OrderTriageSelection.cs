@@ -193,12 +193,14 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering.OrderTriage
         {
             CommonActions.ClickSave();
 
+            CommonActions.PageLoadedCorrectGetIndex(
+                typeof(OrderTriageController),
+                nameof(OrderTriageController.TriageSelection)).Should().BeTrue();
+
             CommonActions.ErrorSummaryDisplayed().Should().BeTrue();
             CommonActions.ErrorSummaryLinksExist().Should().BeTrue();
 
-            CommonActions.ElementShowingCorrectErrorMessage(
-                OrderTriageObjects.DueDiligenceError,
-                "Error: Select yes if you’ve identified what you want to order")
+            CommonActions.ElementIsDisplayed(OrderTriageObjects.DueDiligenceError)
                 .Should()
                 .BeTrue();
         }
