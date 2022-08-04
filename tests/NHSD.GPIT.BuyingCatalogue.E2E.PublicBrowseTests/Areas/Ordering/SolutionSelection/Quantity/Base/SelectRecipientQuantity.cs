@@ -59,63 +59,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering.SolutionSelection.Qu
             CommonActions.ErrorSummaryDisplayed().Should().BeTrue();
             CommonActions.ErrorSummaryLinksExist().Should().BeTrue();
 
-            CommonActions.ElementTextEqualTo(
-                QuantityObjects.InputQuantityInputError(0),
-                ServiceRecipientQuantityModelValidator.ValueNotEnteredErrorMessage).Should().BeTrue();
-        }
-
-        [Fact]
-        public void SelectServiceRecipientQuantity_QuantityNotANumber_Error()
-        {
-            CommonActions.ElementAddValue(QuantityObjects.InputQuantityInput(0), "abc");
-            CommonActions.ClickSave();
-
-            CommonActions.PageLoadedCorrectGetIndex(
-                typeof(QuantityController),
-                nameof(QuantityController.SelectServiceRecipientQuantity)).Should().BeTrue();
-
-            CommonActions.ErrorSummaryDisplayed().Should().BeTrue();
-            CommonActions.ErrorSummaryLinksExist().Should().BeTrue();
-
-            CommonActions.ElementTextEqualTo(
-                QuantityObjects.InputQuantityInputError(0),
-                ServiceRecipientQuantityModelValidator.ValueNotNumericErrorMessage).Should().BeTrue();
-        }
-
-        [Fact]
-        public void SelectServiceRecipientQuantity_QuantityNegative_Error()
-        {
-            CommonActions.ElementAddValue(QuantityObjects.InputQuantityInput(0), "-1");
-            CommonActions.ClickSave();
-
-            CommonActions.PageLoadedCorrectGetIndex(
-                typeof(QuantityController),
-                nameof(QuantityController.SelectServiceRecipientQuantity)).Should().BeTrue();
-
-            CommonActions.ErrorSummaryDisplayed().Should().BeTrue();
-            CommonActions.ErrorSummaryLinksExist().Should().BeTrue();
-
-            CommonActions.ElementTextEqualTo(
-                QuantityObjects.InputQuantityInputError(0),
-                ServiceRecipientQuantityModelValidator.ValueNegativeErrorMessage).Should().BeTrue();
-        }
-
-        [Fact]
-        public void SelectServiceRecipientQuantity_QuantityHasDecimalPlaces_Error()
-        {
-            CommonActions.ElementAddValue(QuantityObjects.InputQuantityInput(0), "1.1");
-            CommonActions.ClickSave();
-
-            CommonActions.PageLoadedCorrectGetIndex(
-                typeof(QuantityController),
-                nameof(QuantityController.SelectServiceRecipientQuantity)).Should().BeTrue();
-
-            CommonActions.ErrorSummaryDisplayed().Should().BeTrue();
-            CommonActions.ErrorSummaryLinksExist().Should().BeTrue();
-
-            CommonActions.ElementTextEqualTo(
-                QuantityObjects.InputQuantityInputError(0),
-                ServiceRecipientQuantityModelValidator.ValueNotAnIntegerErrorMessage).Should().BeTrue();
+            CommonActions.ElementIsDisplayed(QuantityObjects.InputQuantityInputError(0)).Should().BeTrue();
         }
 
         [Fact]

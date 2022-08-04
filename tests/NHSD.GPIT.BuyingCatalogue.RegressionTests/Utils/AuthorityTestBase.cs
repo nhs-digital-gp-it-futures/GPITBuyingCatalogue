@@ -6,13 +6,13 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Utils
     public abstract class AuthorityTestBase : TestBase
     {
         protected AuthorityTestBase(
-            WebApplicationConnector connector,
+            LocalWebApplicationFactory factory,
             Type controller,
             string methodName,
             IDictionary<string, string>? parameters = null,
             ITestOutputHelper? testOutputHelper = null)
             : base(
-                  connector,
+                  factory,
                   testOutputHelper,
                   UrlGenerator.GenerateUrlFromMethod(controller, methodName, parameters))
         {
@@ -20,14 +20,14 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Utils
         }
 
         protected AuthorityTestBase(
-            WebApplicationConnector connector,
+            LocalWebApplicationFactory factory,
             Type controller,
             string methodName,
             IDictionary<string, string> parameters,
             string buyerEmail,
             ITestOutputHelper? testOutputHelper = null)
             : base(
-                  connector,
+                  factory,
                   testOutputHelper,
                   UrlGenerator.GenerateUrlFromMethod(controller, methodName, parameters))
         {

@@ -58,53 +58,18 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering.Supplier
         [Fact]
         public void NewContact_NoValues_ExpectedResult()
         {
-            TextGenerators.TextInputAddText(Objects.Ordering.NewContact.FirstNameInput, 0);
-            TextGenerators.TextInputAddText(Objects.Ordering.NewContact.LastNameInput, 0);
-            TextGenerators.TextInputAddText(Objects.Ordering.NewContact.DepartmentInput, 0);
-            TextGenerators.TextInputAddText(Objects.Ordering.NewContact.PhoneNumberInput, 0);
-            TextGenerators.TextInputAddText(Objects.Ordering.NewContact.EmailInput, 0);
+           CommonActions.ClickSave();
 
-            CommonActions.ClickSave();
-
-            CommonActions.PageLoadedCorrectGetIndex(
+           CommonActions.PageLoadedCorrectGetIndex(
                 typeof(SupplierController),
                 nameof(SupplierController.NewContact)).Should().BeTrue();
 
-            CommonActions.ErrorSummaryDisplayed().Should().BeTrue();
-            CommonActions.ErrorSummaryLinksExist().Should().BeTrue();
+           CommonActions.ErrorSummaryDisplayed().Should().BeTrue();
+           CommonActions.ErrorSummaryLinksExist().Should().BeTrue();
 
-            CommonActions.ElementShowingCorrectErrorMessage(
-                Objects.Ordering.NewContact.FirstNameError,
-                NewContactModelValidator.FirstNameErrorMessage).Should().BeTrue();
-
-            CommonActions.ElementShowingCorrectErrorMessage(
-                Objects.Ordering.NewContact.LastNameError,
-                NewContactModelValidator.LastNameErrorMessage).Should().BeTrue();
-
-            CommonActions.ElementShowingCorrectErrorMessage(
-                Objects.Ordering.NewContact.EmailError,
-                NewContactModelValidator.EmailErrorMessage).Should().BeTrue();
-        }
-
-        [Fact]
-        public void NewContact_EmailAddressWrongFormat_ExpectedResult()
-        {
-            TextGenerators.TextInputAddText(Objects.Ordering.NewContact.FirstNameInput, 20);
-            TextGenerators.TextInputAddText(Objects.Ordering.NewContact.LastNameInput, 20);
-            TextGenerators.TextInputAddText(Objects.Ordering.NewContact.EmailInput, 20);
-
-            CommonActions.ClickSave();
-
-            CommonActions.PageLoadedCorrectGetIndex(
-                typeof(SupplierController),
-                nameof(SupplierController.NewContact)).Should().BeTrue();
-
-            CommonActions.ErrorSummaryDisplayed().Should().BeTrue();
-            CommonActions.ErrorSummaryLinksExist().Should().BeTrue();
-
-            CommonActions.ElementShowingCorrectErrorMessage(
-                Objects.Ordering.NewContact.EmailError,
-                NewContactModelValidator.EmailWrongFormatErrorMessage).Should().BeTrue();
+           CommonActions.ElementIsDisplayed(Objects.Ordering.NewContact.FirstNameError).Should().BeTrue();
+           CommonActions.ElementIsDisplayed(Objects.Ordering.NewContact.LastNameError).Should().BeTrue();
+           CommonActions.ElementIsDisplayed(Objects.Ordering.NewContact.EmailError).Should().BeTrue();
         }
 
         [Fact]

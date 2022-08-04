@@ -4,6 +4,8 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.Objects.Ordering
 {
     public static class CommencementDate
     {
+        public static By TimescalesForCallOffLink => By.LinkText("Timescales for Call-off Agreement");
+
         public static By CommencementDateDayInput => By.Id("Day");
 
         public static By CommencementDateMonthInput => By.Id("Month");

@@ -53,63 +53,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering.SolutionSelection.Qu
             CommonActions.ErrorSummaryDisplayed().Should().BeTrue();
             CommonActions.ErrorSummaryLinksExist().Should().BeTrue();
 
-            CommonActions.ElementTextEqualTo(
-                QuantityObjects.QuantityInputError,
-                SelectOrderItemQuantityModelValidator.QuantityNotEnteredErrorMessage).Should().BeTrue();
-        }
-
-        [Fact]
-        public void SelectQuantity_QuantityNotANumber_Error()
-        {
-            CommonActions.ElementAddValue(QuantityObjects.QuantityInput, "abc");
-            CommonActions.ClickSave();
-
-            CommonActions.PageLoadedCorrectGetIndex(
-                typeof(QuantityController),
-                nameof(QuantityController.SelectQuantity)).Should().BeTrue();
-
-            CommonActions.ErrorSummaryDisplayed().Should().BeTrue();
-            CommonActions.ErrorSummaryLinksExist().Should().BeTrue();
-
-            CommonActions.ElementTextEqualTo(
-                QuantityObjects.QuantityInputError,
-                SelectOrderItemQuantityModelValidator.QuantityNotANumberErrorMessage).Should().BeTrue();
-        }
-
-        [Fact]
-        public void SelectQuantity_QuantityNegative_Error()
-        {
-            CommonActions.ElementAddValue(QuantityObjects.QuantityInput, "-1");
-            CommonActions.ClickSave();
-
-            CommonActions.PageLoadedCorrectGetIndex(
-                typeof(QuantityController),
-                nameof(QuantityController.SelectQuantity)).Should().BeTrue();
-
-            CommonActions.ErrorSummaryDisplayed().Should().BeTrue();
-            CommonActions.ErrorSummaryLinksExist().Should().BeTrue();
-
-            CommonActions.ElementTextEqualTo(
-                QuantityObjects.QuantityInputError,
-                SelectOrderItemQuantityModelValidator.QuantityNegativeErrorMessage).Should().BeTrue();
-        }
-
-        [Fact]
-        public void SelectQuantity_QuantityHasDecimalPlaces_Error()
-        {
-            CommonActions.ElementAddValue(QuantityObjects.QuantityInput, "1.1");
-            CommonActions.ClickSave();
-
-            CommonActions.PageLoadedCorrectGetIndex(
-                typeof(QuantityController),
-                nameof(QuantityController.SelectQuantity)).Should().BeTrue();
-
-            CommonActions.ErrorSummaryDisplayed().Should().BeTrue();
-            CommonActions.ErrorSummaryLinksExist().Should().BeTrue();
-
-            CommonActions.ElementTextEqualTo(
-                QuantityObjects.QuantityInputError,
-                SelectOrderItemQuantityModelValidator.QuantityNotAWholeNumberErrorMessage).Should().BeTrue();
+            CommonActions.ElementIsDisplayed(QuantityObjects.QuantityInputError).Should().BeTrue();
         }
 
         [Fact]

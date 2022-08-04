@@ -67,13 +67,8 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.PublicBrowse.NominateOrganisa
                 CommonActions.ErrorSummaryDisplayed().Should().BeTrue();
                 CommonActions.ErrorSummaryLinksExist().Should().BeTrue();
 
-                CommonActions.ElementShowingCorrectErrorMessage(
-                    NominateOrganisationObjects.OrganisationNameError,
-                    NominateOrganisationDetailsModelValidator.OrganisationNameErrorMessage).Should().BeTrue();
-
-                CommonActions.ElementShowingCorrectErrorMessage(
-                    NominateOrganisationObjects.HasReadPrivacyPolicyError,
-                    $"Error:{NominateOrganisationDetailsModelValidator.HasReadPrivacyPolicyErrorMessage}").Should().BeTrue();
+                CommonActions.ElementIsDisplayed(NominateOrganisationObjects.OrganisationNameError).Should().BeTrue();
+                CommonActions.ElementIsDisplayed(NominateOrganisationObjects.HasReadPrivacyPolicyError).Should().BeTrue();
             });
         }
 

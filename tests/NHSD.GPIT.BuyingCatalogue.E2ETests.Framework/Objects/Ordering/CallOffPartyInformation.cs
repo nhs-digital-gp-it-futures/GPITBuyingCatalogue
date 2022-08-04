@@ -5,6 +5,8 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.Objects.Ordering
 {
     public static class CalloffPartyInformation
     {
+        public static By CallOffOrderingPartyContactDetailsLink => By.LinkText("Call-off Ordering Party contact details");
+
         public static By OrganisationName => ByExtensions.DataTestId("organisation-name");
 
         public static By OrganisationOdsCode => ByExtensions.DataTestId("organisation-ods-code");
