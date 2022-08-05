@@ -15,12 +15,11 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Validators
         {
             RuleFor(m => m.Selected)
                 .NotNull()
-                .WithMessage(CorrectErrorMessage);
+                .WithMessage(model => CorrectErrorMessage(model));
         }
 
-        private string CorrectErrorMessage(TriageDueDiligenceModel model, bool? selected)
+        private static string CorrectErrorMessage(TriageDueDiligenceModel model)
         {
-            _ = selected;
             return model.Option switch
             {
                 OrderTriageValue.Under40K => NoSelectionUnder40kErrorMessage,
