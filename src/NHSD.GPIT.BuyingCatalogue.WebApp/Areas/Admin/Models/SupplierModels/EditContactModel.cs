@@ -1,12 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
-using NHSD.GPIT.BuyingCatalogue.WebApp.Models;
+using NHSD.GPIT.BuyingCatalogue.WebApp.Models.Shared;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.SupplierModels
 {
-    public sealed class EditContactModel : NavBaseModel
+    public sealed class EditContactModel : ContactModel
     {
         public const string AddContactAdvice = "Provide the following details to add a new contact for this supplier.";
         public const string EditContactAdvice = "Provide details for this contact for {0}.";
@@ -51,21 +50,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.SupplierModels
         public int? ContactId { get; init; }
 
         public int SupplierId { get; init; }
-
-        [StringLength(35)]
-        public string FirstName { get; init; }
-
-        [StringLength(35)]
-        public string LastName { get; init; }
-
-        [StringLength(255)]
-        public string Email { get; init; }
-
-        [StringLength(35)]
-        public string PhoneNumber { get; init; }
-
-        [StringLength(50)]
-        public string Department { get; init; }
 
         public string Caption { get; init; }
 

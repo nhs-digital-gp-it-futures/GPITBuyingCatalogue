@@ -7,7 +7,7 @@ using NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.TestBases;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers;
-using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Validators.Supplier;
+using NHSD.GPIT.BuyingCatalogue.WebApp.Validation.Shared;
 using Xunit;
 
 namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering.Supplier
@@ -69,7 +69,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering.Supplier
 
             CommonActions.ElementShowingCorrectErrorMessage(
                 NewContactObjects.FirstNameError,
-                NewContactModelValidator.PersonalDetailsMissingErrorMessage).Should().BeTrue();
+                ContactModelValidator.PersonalDetailsMissingErrorMessage).Should().BeTrue();
         }
 
         [Fact]
@@ -89,7 +89,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering.Supplier
 
             CommonActions.ElementShowingCorrectErrorMessage(
                 NewContactObjects.FirstNameError,
-                NewContactModelValidator.FirstNameMissingErrorMessage).Should().BeTrue();
+                ContactModelValidator.FirstNameMissingErrorMessage).Should().BeTrue();
         }
 
         [Fact]
@@ -109,7 +109,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering.Supplier
 
             CommonActions.ElementShowingCorrectErrorMessage(
                 NewContactObjects.LastNameError,
-                NewContactModelValidator.LastNameMissingErrorMessage).Should().BeTrue();
+                ContactModelValidator.LastNameMissingErrorMessage).Should().BeTrue();
         }
 
         [Fact]
@@ -129,7 +129,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering.Supplier
 
             CommonActions.ElementShowingCorrectErrorMessage(
                 NewContactObjects.PhoneNumberError,
-                NewContactModelValidator.ContactDetailsMissingErrorMessage).Should().BeTrue();
+                ContactModelValidator.ContactDetailsMissingErrorMessage).Should().BeTrue();
         }
 
         [Fact]
@@ -148,7 +148,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering.Supplier
 
             CommonActions.ElementShowingCorrectErrorMessage(
                 NewContactObjects.EmailError,
-                NewContactModelValidator.EmailAddressFormatErrorMessage).Should().BeTrue();
+                ContactModelValidator.EmailAddressFormatErrorMessage).Should().BeTrue();
         }
 
         [Fact]

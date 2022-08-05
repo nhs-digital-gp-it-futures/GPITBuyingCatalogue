@@ -9,7 +9,7 @@ using NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.Objects.Common;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Utils;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.TestBases;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers;
-using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Validators;
+using NHSD.GPIT.BuyingCatalogue.WebApp.Validation.Shared;
 using Xunit;
 
 namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.ManageSuppliers
@@ -75,7 +75,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.ManageSuppliers
 
             CommonActions.ElementShowingCorrectErrorMessage(
                 SupplierContactObjects.FirstNameError,
-                EditContactModelValidator.PersonalDetailsMissingErrorMessage).Should().BeTrue();
+                ContactModelValidator.PersonalDetailsMissingErrorMessage).Should().BeTrue();
         }
 
         [Fact]
@@ -95,7 +95,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.ManageSuppliers
 
             CommonActions.ElementShowingCorrectErrorMessage(
                 SupplierContactObjects.FirstNameError,
-                EditContactModelValidator.FirstNameMissingErrorMessage).Should().BeTrue();
+                ContactModelValidator.FirstNameMissingErrorMessage).Should().BeTrue();
         }
 
         [Fact]
@@ -115,7 +115,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.ManageSuppliers
 
             CommonActions.ElementShowingCorrectErrorMessage(
                 SupplierContactObjects.LastNameError,
-                EditContactModelValidator.LastNameMissingErrorMessage).Should().BeTrue();
+                ContactModelValidator.LastNameMissingErrorMessage).Should().BeTrue();
         }
 
         [Fact]
@@ -132,7 +132,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.ManageSuppliers
 
             CommonActions.ElementShowingCorrectErrorMessage(
                 SupplierContactObjects.PhoneNumberError,
-                EditContactModelValidator.ContactDetailsMissingErrorMessage).Should().BeTrue();
+                ContactModelValidator.ContactDetailsMissingErrorMessage).Should().BeTrue();
         }
 
         [Fact]

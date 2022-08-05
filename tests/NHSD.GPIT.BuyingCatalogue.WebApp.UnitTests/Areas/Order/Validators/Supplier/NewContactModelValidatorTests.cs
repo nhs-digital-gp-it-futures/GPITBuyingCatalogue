@@ -2,6 +2,7 @@
 using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.AutoFixtureCustomisations;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.Supplier;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Validators.Supplier;
+using NHSD.GPIT.BuyingCatalogue.WebApp.Validation.Shared;
 using Xunit;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Validators.Supplier
@@ -21,7 +22,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Validators.Supp
             var result = systemUnderTest.TestValidate(model);
 
             result.ShouldHaveValidationErrorFor(x => x.FirstName)
-                .WithErrorMessage(NewContactModelValidator.PersonalDetailsMissingErrorMessage);
+                .WithErrorMessage(ContactModelValidator.PersonalDetailsMissingErrorMessage);
         }
 
         [Theory]
@@ -35,7 +36,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Validators.Supp
             var result = systemUnderTest.TestValidate(model);
 
             result.ShouldHaveValidationErrorFor(x => x.FirstName)
-                .WithErrorMessage(NewContactModelValidator.FirstNameMissingErrorMessage);
+                .WithErrorMessage(ContactModelValidator.FirstNameMissingErrorMessage);
         }
 
         [Theory]
@@ -49,7 +50,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Validators.Supp
             var result = systemUnderTest.TestValidate(model);
 
             result.ShouldHaveValidationErrorFor(x => x.LastName)
-                .WithErrorMessage(NewContactModelValidator.LastNameMissingErrorMessage);
+                .WithErrorMessage(ContactModelValidator.LastNameMissingErrorMessage);
         }
 
         [Theory]
@@ -64,7 +65,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Validators.Supp
             var result = systemUnderTest.TestValidate(model);
 
             result.ShouldHaveValidationErrorFor(x => x.PhoneNumber)
-                .WithErrorMessage(NewContactModelValidator.ContactDetailsMissingErrorMessage);
+                .WithErrorMessage(ContactModelValidator.ContactDetailsMissingErrorMessage);
         }
 
         [Theory]
@@ -79,7 +80,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Validators.Supp
             var result = systemUnderTest.TestValidate(model);
 
             result.ShouldHaveValidationErrorFor(x => x.Email)
-                .WithErrorMessage(NewContactModelValidator.EmailAddressFormatErrorMessage);
+                .WithErrorMessage(ContactModelValidator.EmailAddressFormatErrorMessage);
         }
     }
 }
