@@ -177,9 +177,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators
         {
             workOffPlanModel.SelectedStandard = model.StandardId;
             workOffPlanModel.Details = model.Details;
-            workOffPlanModel.Day = model.CompletionDate.ToString().Split('/')[0];
-            workOffPlanModel.Month = model.CompletionDate.ToString().Split('/')[1];
-            workOffPlanModel.Year = model.CompletionDate.ToString().Split('/')[2].Split(' ')[0];
+            workOffPlanModel.Day = DateTime.UtcNow.Day.ToString();
+            workOffPlanModel.Month = DateTime.UtcNow.Month.ToString();
+            workOffPlanModel.Year = DateTime.UtcNow.Year.ToString();
 
             mockdevelopmentPlansService.Setup(x => x.SaveWorkOffPlan(workOffPlanModel.SolutionId, model));
 
