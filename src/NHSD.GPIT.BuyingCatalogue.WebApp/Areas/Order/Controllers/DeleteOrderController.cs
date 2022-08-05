@@ -40,6 +40,17 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
         [HttpPost]
         public async Task<IActionResult> DeleteOrder(string internalOrgId, CallOffId callOffId, DeleteOrderModel model)
         {
+            if (!ModelState.IsValid)
+                return View(model);
+
+            if (!model.SelectedOption.Value)
+            {
+                return RedirectToAction(
+                    nameof(OrderController.Order),
+                    typeof(OrderController).ControllerName(),
+                    new { internalOrgId, callOffId });
+            }
+
             await orderService.DeleteOrder(callOffId, internalOrgId);
 
             return RedirectToAction(

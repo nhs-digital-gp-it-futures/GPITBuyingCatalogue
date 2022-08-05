@@ -6,6 +6,6 @@
 
         public string Text { get; set; }
 
-        public bool UsePrimaryColour { get; set; }
+        public string ButtonClass { get; set; }
     }
 }
