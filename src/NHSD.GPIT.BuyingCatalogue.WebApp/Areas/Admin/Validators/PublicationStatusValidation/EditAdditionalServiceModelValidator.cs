@@ -7,7 +7,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Validators.PublicationSta
 {
     public class EditAdditionalServiceModelValidator : AbstractValidator<EditAdditionalServiceModel>
     {
-
         public const string CompleteAllMandatorySections = "Complete all mandatory sections before publishing";
 
         public EditAdditionalServiceModelValidator()

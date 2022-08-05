@@ -77,8 +77,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Validators.DevelopmentPla
                 .OverridePropertyName(wp => wp.Day);
         }
 
-
-
         private static bool IsValidDate(EditWorkOffPlanModel model) =>
             DateTime.TryParseExact($"{model.Day}/{model.Month}/{model.Year}", "d/M/yyyy", CultureInfo.InvariantCulture, DateTimeStyles.AssumeUniversal, out _);
 

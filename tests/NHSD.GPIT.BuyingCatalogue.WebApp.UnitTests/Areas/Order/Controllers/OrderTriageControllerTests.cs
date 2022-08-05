@@ -209,26 +209,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers
         }
 
         [Theory]
-        [CommonInlineAutoData(OrderTriageValue.Under40K, "Select yes if you’ve identified what you want to order")]
-        [CommonInlineAutoData(OrderTriageValue.Between40KTo250K, "Select yes if you’ve carried out a competition on the Buying Catalogue")]
-        [CommonInlineAutoData(OrderTriageValue.Over250K, "Select yes if you’ve carried out an Off-Catalogue Competition with suppliers")]
-        public static void Post_TriageSelection_NoSelection_AddsModelError(
-            OrderTriageValue option,
-            string expectedErrorMessage,
-            string internalOrgId,
-            TriageDueDiligenceModel model,
-            OrderTriageController controller)
-        {
-            model.Selected = null;
-
-            _ = controller.TriageSelection(internalOrgId, model, option);
-
-            var modelStateErrors = controller.ModelState.Values.SelectMany(mse => mse.Errors.Select(e => e.ErrorMessage));
-
-            modelStateErrors.Should().Contain(expectedErrorMessage);
-        }
-
-        [Theory]
         [CommonAutoData]
         public static void Post_TriageSelection_InvalidModelState_ReturnsView(
             string internalOrgId,

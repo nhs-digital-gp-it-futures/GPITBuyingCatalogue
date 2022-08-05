@@ -1,8 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using AutoFixture.Xunit2;
 using FluentValidation.TestHelper;
 using Moq;
@@ -156,7 +153,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators
             EditWorkOffPlanValidator validator)
         {
             mockdevelopmentPlansService.Setup(x => x.GetWorkOffPlans(It.IsAny<CatalogueItemId>()))
-                .ReturnsAsync(new List<WorkOffPlan>() { model});
+                .ReturnsAsync(new List<WorkOffPlan>() { model });
 
             workOffPlanModel.SelectedStandard = model.StandardId;
             workOffPlanModel.Details = model.Details;
@@ -185,7 +182,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators
             workOffPlanModel.Year = model.CompletionDate.ToString().Split('/')[2].Split(' ')[0];
 
             mockdevelopmentPlansService.Setup(x => x.SaveWorkOffPlan(workOffPlanModel.SolutionId, model));
-
 
             var result = validator.TestValidate(workOffPlanModel);
 

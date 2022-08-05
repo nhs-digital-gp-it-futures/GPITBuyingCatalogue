@@ -6,7 +6,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Validators
 {
     public class EditAssociatedServiceDetailsModelValidator : AbstractValidator<EditAssociatedServiceDetailsModel>
     {
-
         public const string NameError = "Enter a name";
         public const string DescriptionError = "Enter a description";
         public const string OrderGuidanceError = "Enter order guidance";
