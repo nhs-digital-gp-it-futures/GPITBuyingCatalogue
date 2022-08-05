@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using System.Collections.Generic;
 using System.Threading.Tasks;
 using FluentAssertions;
 using Microsoft.EntityFrameworkCore;
@@ -80,6 +78,5 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.AddNewSolution.Addition
             CommonActions.ElementIsDisplayed(AdditionalServicesObjects.AdditionalServiceNameError).Should().BeTrue();
             CommonActions.ElementIsDisplayed(AdditionalServicesObjects.AdditionalServiceDescriptionError).Should().BeTrue();
         }
-
     }
 }

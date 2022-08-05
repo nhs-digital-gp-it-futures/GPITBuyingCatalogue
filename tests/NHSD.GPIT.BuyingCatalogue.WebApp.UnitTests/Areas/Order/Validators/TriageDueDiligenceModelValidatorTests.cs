@@ -41,16 +41,59 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Validators
 
         [Theory]
         [CommonAutoData]
-        public static void Validate_NoSelection_ThrowsError(
+        public static void Validate_Under40K_NoSelection_ThrowsError(
             TriageDueDiligenceModel model,
             TriageDueDiligenceModelValidator validator)
         {
             model.Selected = null;
+            model.Option = EntityFramework.Ordering.Models.OrderTriageValue.Under40K;
 
             var result = validator.TestValidate(model);
 
             result.ShouldHaveValidationErrorFor(m => m.Selected)
-                .WithErrorMessage(TriageDueDiligenceModelValidator.NoSelectionErrorMessage);
+                .WithErrorMessage(TriageDueDiligenceModelValidator.NoSelectionUnder40kErrorMessage);
+        }
+
+        [Theory]
+        [CommonAutoData]
+        public static void Validate_Between40KTo250K_NoSelection_ThrowsError(
+            TriageDueDiligenceModel model,
+            TriageDueDiligenceModelValidator validator)
+        {
+            model.Selected = null;
+            model.Option = EntityFramework.Ordering.Models.OrderTriageValue.Between40KTo250K;
+
+            var result = validator.TestValidate(model);
+
+            result.ShouldHaveValidationErrorFor(m => m.Selected)
+                .WithErrorMessage(TriageDueDiligenceModelValidator.NoSelectionBetween40kTo250KErrorMessage);
+        }
+
+        [Theory]
+        [CommonAutoData]
+        public static void Validate_Over250K_NoSelection_ThrowsError(
+            TriageDueDiligenceModel model,
+            TriageDueDiligenceModelValidator validator)
+        {
+            model.Selected = null;
+            model.Option = EntityFramework.Ordering.Models.OrderTriageValue.Over250K;
+
+            var result = validator.TestValidate(model);
+
+            result.ShouldHaveValidationErrorFor(m => m.Selected)
+                .WithErrorMessage(TriageDueDiligenceModelValidator.NoSelectionOver250KErrorMessage);
+        }
+
+        [Theory]
+        [CommonAutoData]
+        public static void Validate_OptionIsNull_NoSelection_ThrowsError(
+            TriageDueDiligenceModel model,
+            TriageDueDiligenceModelValidator validator)
+        {
+            model.Selected = null;
+            model.Option = null;
+
+            Assert.Throws<FormatException>(() => validator.TestValidate(model));
         }
     }
 }

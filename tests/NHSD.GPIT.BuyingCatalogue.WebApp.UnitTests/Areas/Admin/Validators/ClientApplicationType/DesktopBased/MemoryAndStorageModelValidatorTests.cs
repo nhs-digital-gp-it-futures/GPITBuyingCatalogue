@@ -72,13 +72,11 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators.Clie
 
             var result = validator.TestValidate(model);
 
-
             result.ShouldHaveValidationErrorFor(m => m.SelectedMemorySize)
                 .WithErrorMessage(MemoryAndStorageModelValidator.SelectMinimumMemorySizeError);
 
             result.ShouldHaveValidationErrorFor(m => m.StorageSpace)
                 .WithErrorMessage(MemoryAndStorageModelValidator.StorageSpaceInformationError);
-
 
             result.ShouldHaveValidationErrorFor(m => m.ProcessingPower)
                 .WithErrorMessage(MemoryAndStorageModelValidator.ProcessingPowerInformationError);

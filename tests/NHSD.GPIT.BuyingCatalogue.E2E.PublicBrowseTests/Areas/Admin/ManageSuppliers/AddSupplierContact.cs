@@ -99,7 +99,6 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.ManageSuppliers
                     Objects.Admin.ManageSuppliers.ManageSuppliers.EditSupplierContactDepartmentError)
                 .Should()
                 .BeTrue();
-
         }
 
         [Fact]
