@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Organisations.Models;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Caching;
@@ -10,6 +12,8 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Organisations
 {
     public class GpPracticeImportService : IGpPracticeImportService
     {
+        private const string TruncateStatement = "TRUNCATE TABLE [organisations].[GpPracticeSize]";
+
         private readonly BuyingCatalogueDbContext dbContext;
         private readonly IGpPracticeCache gpPracticeCache;
         private readonly IGpPracticeProvider gpPracticeProvider;
@@ -51,53 +55,33 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Organisations
 
         private async Task<ImportGpPracticeListResult> Import(IEnumerable<GpPractice> gpPractices)
         {
-            var total = 0;
-            var updated = 0;
-            var extractDate = DateTime.MinValue;
-
-            foreach (var gpPractice in gpPractices)
+            if (dbContext.Database.IsRelational())
             {
-                total++;
-
-                if (extractDate == DateTime.MinValue)
-                {
-                    extractDate = gpPractice.EXTRACT_DATE;
-                }
-
-                var current = await dbContext.GpPracticeSizes.FindAsync(gpPractice.CODE);
-
-                if (current == null)
-                {
-                    dbContext.GpPracticeSizes.Add(new GpPracticeSize
-                    {
-                        OdsCode = gpPractice.CODE,
-                        NumberOfPatients = gpPractice.NUMBER_OF_PATIENTS,
-                        ExtractDate = gpPractice.EXTRACT_DATE,
-                    });
-
-                    updated++;
-                }
-                else
-                {
-                    if (current.ExtractDate >= gpPractice.EXTRACT_DATE)
-                        continue;
-
-                    current.NumberOfPatients = gpPractice.NUMBER_OF_PATIENTS;
-                    current.ExtractDate = gpPractice.EXTRACT_DATE;
-
-                    updated++;
-                }
+                await dbContext.Database.ExecuteSqlRawAsync(TruncateStatement);
+            }
+            else
+            {
+                // Slower method that only runs for tests against in-memory db
+                dbContext.GpPracticeSizes.RemoveRange(dbContext.GpPracticeSizes);
             }
 
+            await dbContext.GpPracticeSizes.AddRangeAsync(gpPractices.Select(x => new GpPracticeSize
+            {
+                OdsCode = x.CODE,
+                NumberOfPatients = x.NUMBER_OF_PATIENTS,
+                ExtractDate = x.EXTRACT_DATE,
+            }));
+
             await dbContext.SaveChangesAsync();
+
             gpPracticeCache.RemoveAll();
 
             return new ImportGpPracticeListResult
             {
                 Outcome = ImportGpPracticeListOutcome.Success,
-                TotalRecords = total,
-                TotalRecordsUpdated = updated,
-                ExtractDate = extractDate,
+                TotalRecords = dbContext.GpPracticeSizes.Count(),
+                TotalRecordsUpdated = dbContext.GpPracticeSizes.Count(),
+                ExtractDate = dbContext.GpPracticeSizes.FirstOrDefault()?.ExtractDate ?? DateTime.Today,
             };
         }
     }
