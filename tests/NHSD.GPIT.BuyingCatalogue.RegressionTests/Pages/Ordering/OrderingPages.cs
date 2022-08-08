@@ -118,8 +118,7 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering
 
             var hasAssociatedServices = dbContext.SupplierServiceAssociations.Any(ssa => ssa.CatalogueItem.Name == solutionName);
 
-            var orderID = Driver.Url.Split('/').Last().Split('-')[0].Replace("C0", string.Empty);
-            var isAssociatedServiceOnlyOrder = dbContext.Orders.Any(o => string.Equals(o.Id.ToString(), orderID) && o.AssociatedServicesOnly);
+            var isAssociatedServiceOnlyOrder = IsAssociatedServiceOnly();
 
             TaskList.SelectSolutionsAndServicesTask(isAssociatedServiceOnlyOrder);
 
@@ -171,6 +170,19 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering
         {
             TaskList.ReviewAndCompleteOrderTask();
             OrderingStepThree.ReviewAndCompleteOrder();
+        }
+
+        public void EditSolutionAndServices()
+        {
+            TaskList.SelectSolutionsAndServicesTask(IsAssociatedServiceOnly());
+        }
+
+        private bool IsAssociatedServiceOnly()
+        {
+            using var dbContext = Factory.DbContext;
+            var orderID = Driver.Url.Split('/').Last().Split('-')[0].Replace("C0", string.Empty);
+
+            return dbContext.Orders.Any(o => string.Equals(o.Id.ToString(), orderID) && o.AssociatedServicesOnly);
         }
     }
 }

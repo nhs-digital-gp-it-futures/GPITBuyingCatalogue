@@ -272,5 +272,26 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
 
             OrderingPages.StepThreeReviewAndCompleteOrder();
         }
+
+        [Theory]
+        [InlineData(true)]
+        public void OrderWithSolutionUnder40K_EditSolution(bool editSolution)
+        {
+            OrderingPages.OrderingDashboard.CreateNewOrder();
+
+            OrderingPages.OrderType.ChooseOrderType(CatalogueItemType.Solution);
+
+            OrderingPages.OrderingTriage.SelectOrderTriage(OrderTriageValue.Under40K);
+
+            OrderingPages.StartOrder.ReadyToStart();
+
+            OrderingPages.StepOnePrepareOrder(SupplierName, false, OrderTriageValue.Under40K);
+
+            OrderingPages.StepTwoAddSolutionsAndServices(SolutionName);
+
+            OrderingPages.EditSolutionAndServices();
+
+            OrderingPages.StepThreeReviewAndCompleteOrder();
+        }
     }
 }
