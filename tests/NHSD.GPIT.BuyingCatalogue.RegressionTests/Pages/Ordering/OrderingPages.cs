@@ -23,7 +23,7 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering
             SelectFundingSources = new SelectFundingSources(driver, commonActions);
             SelectSupplier = new SelectSupplier(driver, commonActions);
             SupplierContacts = new SupplierContacts(driver, commonActions);
-            SelectCatalogueSolution = new SelectCatalogueSolution(driver, commonActions, factory);
+            SelectEditCatalogueSolution = new SelectEditCatalogueSolution(driver, commonActions, factory);
             SelectCatalogueSolutionServiceRecipients = new SelectCatalogueSolutionServiceRecipients(driver, commonActions);
             SelectAndConfirmPrices = new SelectAndConfirmPrices(driver, commonActions);
             Quantity = new Quantity(driver, commonActions);
@@ -61,7 +61,7 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering
 
         internal SupplierContacts SupplierContacts { get; }
 
-        internal SelectCatalogueSolution SelectCatalogueSolution { get; }
+        internal SelectEditCatalogueSolution SelectEditCatalogueSolution { get; }
 
         internal SelectCatalogueSolutionServiceRecipients SelectCatalogueSolutionServiceRecipients { get; }
 
@@ -125,7 +125,7 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering
 
             if (!isAssociatedServiceOnlyOrder)
             {
-                SelectCatalogueSolution.SelectSolution(solutionName, additionalService);
+                SelectEditCatalogueSolution.SelectSolution(solutionName, additionalService);
 
                 SelectCatalogueSolutionServiceRecipients.AddCatalogueSolutionServiceRecipient();
                 SelectAndConfirmPrices.SelectAndConfirmPrice();
@@ -173,9 +173,50 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering
             OrderingStepThree.ReviewAndCompleteOrder();
         }
 
-        public void EditSolutionAndServices()
+        public void EditSolution(string newSolutionName, string newAdditionalServiceName = "", string newAssociatedService = "")
         {
-            TaskList.SelectSolutionsAndServicesTask(IsAssociatedServiceOnly());
+            using var dbContext = Factory.DbContext;
+
+            var hasAdditionalService = dbContext.AdditionalServices.Any(a => a.Solution.CatalogueItem.Name == newSolutionName);
+
+            var hasAssociatedServices = dbContext.SupplierServiceAssociations.Any(ssa => ssa.CatalogueItem.Name == newSolutionName);
+
+            var isAssociatedServiceOnlyOrder = IsAssociatedServiceOnly();
+
+            TaskList.EditSolutionsAndServicesTask();
+
+            SelectEditCatalogueSolution.EditSolution(newSolutionName, newAdditionalServiceName);
+
+            SelectCatalogueSolutionServiceRecipients.AddCatalogueSolutionServiceRecipient();
+            SelectAndConfirmPrices.SelectAndConfirmPrice();
+            Quantity.AddQuantity();
+
+            if (hasAdditionalService && !string.IsNullOrWhiteSpace(newAdditionalServiceName))
+            {
+                SelectAdditionalServiceRecipients.AddServiceRecipients();
+                SelectAndConfirmAdditionalServicePrice.SelectAndConfirmPrice();
+                Quantity.AddQuantity();
+            }
+
+            if (hasAssociatedServices)
+            {
+                if (!string.IsNullOrWhiteSpace(newAssociatedService))
+                {
+                    SelectAssociatedService.AddAssociatedService("Yes", newAssociatedService);
+                    SelectAssociatedServiceRecipents.AddServiceRecipientEditVersion();
+                    SelectAndConfirmAssociatedServicePrices.SelectAndConfirmPrice();
+                    Quantity.AddQuantity();
+                }
+                else
+                {
+                    SelectAssociatedService.AddAssociatedService();
+                }
+            }
+
+            SolutionAndServicesReview.ReviewSolutionAndServices();
+
+            TaskList.SelectFundingSourcesTask();
+            SelectFundingSources.AddFundingSources(newSolutionName, newAdditionalServiceName, newAssociatedService, isAssociatedServiceOnlyOrder);
         }
 
         private bool IsAssociatedServiceOnly()

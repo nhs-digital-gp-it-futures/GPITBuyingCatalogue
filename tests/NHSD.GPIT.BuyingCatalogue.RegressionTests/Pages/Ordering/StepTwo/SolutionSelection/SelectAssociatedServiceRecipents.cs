@@ -26,5 +26,16 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering.StepTwo.Solut
 
             CommonActions.ClickSave();
         }
+
+        public void AddServiceRecipientEditVersion()
+        {
+            CommonActions.PageLoadedCorrectGetIndex(
+                 typeof(ServiceRecipientsController),
+                 nameof(ServiceRecipientsController.AddServiceRecipients)).Should().BeTrue();
+
+            CommonActions.ClickFirstCheckbox();
+
+            CommonActions.ClickSave();
+        }
     }
 }

@@ -14,7 +14,7 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering.StepTwo.Solut
 {
     public class SelectAndConfirmAdditionalServicePrice : PageBase
     {
-        private const decimal MaxPrice = 35.51M;
+        private const decimal MaxPrice = 0.07M;
 
         public SelectAndConfirmAdditionalServicePrice(IWebDriver driver, CommonActions commonActions)
             : base(driver, commonActions)

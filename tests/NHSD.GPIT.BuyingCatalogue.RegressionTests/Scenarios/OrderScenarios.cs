@@ -15,6 +15,8 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
         private const string SolutionName = "Anywhere Consult";
         private const string AssociatedServiceName = "Anywhere Consult – Integrated Device";
         private const string AdditionalServiceName = "Automated Arrivals";
+        private const string NewSolutionName = "Emis Web GP";
+        private const string NewAdditionalServiceName = "EMIS Mobile";
 
         private static readonly Dictionary<string, string> Parameters =
             new()
@@ -288,7 +290,27 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
 
             OrderingPages.StepTwoAddSolutionsAndServices(SolutionName);
 
-            OrderingPages.EditSolutionAndServices();
+            OrderingPages.EditSolution(NewSolutionName);
+
+            OrderingPages.StepThreeReviewAndCompleteOrder();
+        }
+
+        [Fact]
+        public void OrderWithSolutionUnder40K_EditSolution_WithAdditionalService()
+        {
+            OrderingPages.OrderingDashboard.CreateNewOrder();
+
+            OrderingPages.OrderType.ChooseOrderType(CatalogueItemType.Solution);
+
+            OrderingPages.OrderingTriage.SelectOrderTriage(OrderTriageValue.Under40K);
+
+            OrderingPages.StartOrder.ReadyToStart();
+
+            OrderingPages.StepOnePrepareOrder(SupplierName, false, OrderTriageValue.Under40K);
+
+            OrderingPages.StepTwoAddSolutionsAndServices(SolutionName);
+
+            OrderingPages.EditSolution(NewSolutionName, NewAdditionalServiceName);
 
             OrderingPages.StepThreeReviewAndCompleteOrder();
         }
