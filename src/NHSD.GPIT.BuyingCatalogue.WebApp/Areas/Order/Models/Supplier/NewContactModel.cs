@@ -1,9 +1,9 @@
-﻿using System.ComponentModel.DataAnnotations;
-using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
+﻿using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
+using NHSD.GPIT.BuyingCatalogue.WebApp.Models.Shared;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.Supplier
 {
-    public class NewContactModel : OrderingBaseModel
+    public class NewContactModel : ContactModel
     {
         public NewContactModel()
         {
@@ -22,19 +22,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.Supplier
 
         public string SupplierName { get; set; }
 
-        [StringLength(35)]
-        public string FirstName { get; set; }
-
-        [StringLength(35)]
-        public string LastName { get; set; }
-
-        [StringLength(50)]
-        public string Department { get; set; }
-
-        [StringLength(35)]
-        public string PhoneNumber { get; set; }
-
-        [StringLength(255)]
-        public string Email { get; set; }
+        public string Title { get; set; }
     }
 }

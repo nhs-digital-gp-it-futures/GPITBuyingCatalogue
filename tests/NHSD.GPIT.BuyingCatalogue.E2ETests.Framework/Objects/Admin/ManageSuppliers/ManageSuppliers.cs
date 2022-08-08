@@ -72,34 +72,6 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.Objects.Admin.ManageSuppl
 
         public static By ManageSupplierContinueButton => By.LinkText("Continue");
 
-        public static By EditSupplierContactFirstName => By.Id("FirstName");
-
-        public static By EditSupplierContactFirstNameError => By.Id("FirstName-error");
-
-        public static By EditSupplierContactLastName => By.Id("LastName");
-
-        public static By EditSupplierContactLastNameError => By.Id("LastName-error");
-
-        public static By EditSupplierContactDepartment => By.Id("Department");
-
-        public static By EditSupplierContactDepartmentError => By.Id("Department-error");
-
-        public static By EditSupplierContactPhoneNumber => By.Id("PhoneNumber");
-
-        public static By EditSupplierContactPhoneNumberError => By.Id("PhoneNumber-error");
-
-        public static By EditSupplierContactEmail => By.Id("Email");
-
-        public static By EditSupplierContactEmailError => By.Id("Email-error");
-
-        public static By EditSupplierContactContainerError => By.Id("edit-contact-error");
-
-        public static By EditSupplierContactReferencingSolutionsTable => ByExtensions.DataTestId("supplier-contact-related-solutions-table");
-
-        public static By EditSupplierContactNoReferencingSolutionsInset => ByExtensions.DataTestId("no-related-solutions-inset");
-
-        public static By EditSupplierContactDeleteLink => By.LinkText("Delete contact");
-
         public static By DeleteSupplierContactCancelLink => By.LinkText("Cancel");
 
         public static By SearchBar => By.Id("suppliers-suggestion-search");

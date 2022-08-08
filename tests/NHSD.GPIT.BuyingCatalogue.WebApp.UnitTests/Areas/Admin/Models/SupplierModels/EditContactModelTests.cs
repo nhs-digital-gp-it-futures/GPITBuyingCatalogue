@@ -48,8 +48,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Models.Supplier
         {
             var actual = new EditContactModel(supplier);
 
-            actual.Title.Should().Be("Add a contact");
-            actual.SupplierName.Should().Be(supplier.Name);
+            actual.SupplierId.Should().Be(supplier.Id);
+            actual.Caption.Should().Be(supplier.Name);
+            actual.Advice.Should().Be(EditContactModel.AddContactAdvice);
         }
 
         [Theory]
@@ -68,9 +69,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Models.Supplier
             actual.Email.Should().Be(contact.Email);
             actual.PhoneNumber.Should().Be(contact.PhoneNumber);
             actual.Department.Should().Be(contact.Department);
-            actual.Title.Should().Be($"{contact.FirstName} {contact.LastName} contact details");
-            actual.SupplierName.Should().Be(supplier.Name);
             actual.SolutionsReferencingThisContact.Should().NotBeEmpty().And.HaveCount(solutions.Count);
+            actual.Caption.Should().Be(contact.NameOrDepartment);
+            actual.Advice.Should().Be(string.Format(EditContactModel.EditContactAdvice, supplier.Name));
         }
     }
 }

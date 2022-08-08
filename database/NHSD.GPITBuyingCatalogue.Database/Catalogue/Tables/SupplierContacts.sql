@@ -2,9 +2,9 @@
 (
      Id int IDENTITY(1, 1) NOT NULL,
      SupplierId int NOT NULL,
-     FirstName nvarchar(35) NOT NULL,
-     LastName nvarchar(35) NOT NULL,
-     Email nvarchar(255) NOT NULL,
+     FirstName nvarchar(35) NULL,
+     LastName nvarchar(35) NULL,
+     Email nvarchar(255) NULL,
      PhoneNumber nvarchar(35) NULL,
      Department nvarchar(50) NULL,
      LastUpdated datetime2(7) CONSTRAINT DF_SupplierContacts_LastUpdated DEFAULT GETUTCDATE() NOT NULL,

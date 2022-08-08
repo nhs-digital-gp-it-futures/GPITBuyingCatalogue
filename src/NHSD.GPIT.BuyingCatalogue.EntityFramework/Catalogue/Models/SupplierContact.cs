@@ -4,7 +4,7 @@ using NHSD.GPIT.BuyingCatalogue.EntityFramework.Users.Models;
 
 namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models
 {
-    public sealed class SupplierContact : IAudited
+    public sealed partial class SupplierContact : IAudited
     {
         public const int TemporaryContactId = -1;
 

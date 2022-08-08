@@ -1,8 +1,8 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using Microsoft.AspNetCore.Mvc.Rendering;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
+using NHSD.GPIT.BuyingCatalogue.WebApp.Models;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.Supplier
 {
@@ -31,22 +31,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.Supplier
 
         public List<SupplierContact> Contacts { get; set; }
 
-        public List<SelectListItem> FormattedContacts => Contacts?
-            .Select(x => new SelectListItem(FormatSupplierContact(x), $"{x?.Id}"))
+        public List<SelectableRadioOption<int?>> FormattedContacts => Contacts?
+            .Select(x => new SelectableRadioOption<int?>(x.Description, x.Id))
             .ToList();
 
         public SupplierContact TemporaryContact => Contacts?.FirstOrDefault(x => x?.Id == SupplierContact.TemporaryContactId);
-
-        private static string FormatSupplierContact(SupplierContact contact)
-        {
-            if (contact == null)
-                return string.Empty;
-
-            var output = $"{contact.FirstName} {contact.LastName}";
-
-            return string.IsNullOrWhiteSpace(contact.Department)
-                ? output
-                : $"{output} ({contact.Department})";
-        }
     }
 }

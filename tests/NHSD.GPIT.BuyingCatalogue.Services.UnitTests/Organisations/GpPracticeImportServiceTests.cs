@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using AutoFixture;
 using AutoFixture.AutoMoq;
@@ -149,7 +150,13 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Organisations
             result.Outcome.Should().Be(ImportGpPracticeListOutcome.Success);
             result.ExtractDate.Should().Be(ExtractDate);
             result.TotalRecords.Should().Be(1);
-            result.TotalRecordsUpdated.Should().Be(0);
+            result.TotalRecordsUpdated.Should().Be(1);
+
+            var actual = dbContext.GpPracticeSizes.Single();
+
+            actual.ExtractDate.Should().Be(CsvData.EXTRACT_DATE);
+            actual.NumberOfPatients.Should().Be(CsvData.NUMBER_OF_PATIENTS);
+            actual.OdsCode.Should().Be(CsvData.CODE);
         }
 
         [Theory]
@@ -177,7 +184,13 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Organisations
             result.Outcome.Should().Be(ImportGpPracticeListOutcome.Success);
             result.ExtractDate.Should().Be(ExtractDate);
             result.TotalRecords.Should().Be(1);
-            result.TotalRecordsUpdated.Should().Be(0);
+            result.TotalRecordsUpdated.Should().Be(1);
+
+            var actual = dbContext.GpPracticeSizes.Single();
+
+            actual.ExtractDate.Should().Be(CsvData.EXTRACT_DATE);
+            actual.NumberOfPatients.Should().Be(CsvData.NUMBER_OF_PATIENTS);
+            actual.OdsCode.Should().Be(CsvData.CODE);
         }
     }
 }

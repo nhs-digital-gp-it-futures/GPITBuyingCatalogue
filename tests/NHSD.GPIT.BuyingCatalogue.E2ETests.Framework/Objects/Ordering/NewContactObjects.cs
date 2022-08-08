@@ -2,7 +2,7 @@
 
 namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.Objects.Ordering
 {
-    public static class NewContact
+    public static class NewContactObjects
     {
         public static By FirstNameInput => By.Id("FirstName");
 
@@ -15,6 +15,8 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.Objects.Ordering
         public static By DepartmentInput => By.Id("Department");
 
         public static By PhoneNumberInput => By.Id("PhoneNumber");
+
+        public static By PhoneNumberError => By.Id("PhoneNumber-error");
 
         public static By EmailInput => By.Id("Email");
 
