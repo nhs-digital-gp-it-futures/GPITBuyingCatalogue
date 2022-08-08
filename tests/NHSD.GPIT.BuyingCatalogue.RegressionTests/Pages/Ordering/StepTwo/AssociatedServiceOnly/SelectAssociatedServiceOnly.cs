@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using FluentAssertions;
+﻿using FluentAssertions;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.Actions.Common;
 using NHSD.GPIT.BuyingCatalogue.RegressionTests.Utils;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers.SolutionSelection;
@@ -37,8 +32,7 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering.StepTwo.Assoc
             nameof(AssociatedServicesController.SelectAssociatedServices))
             .Should().BeTrue();
 
-            //TODO: if there is no assoc service or there is only one
-
+            // TODO: if there is no assoc service or there is only one
             CommonActions.ClickFirstCheckbox();
             CommonActions.ClickSave();
         }

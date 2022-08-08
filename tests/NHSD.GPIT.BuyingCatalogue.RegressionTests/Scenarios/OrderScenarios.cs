@@ -273,9 +273,8 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
             OrderingPages.StepThreeReviewAndCompleteOrder();
         }
 
-        [Theory]
-        [InlineData(true)]
-        public void OrderWithSolutionUnder40K_EditSolution(bool editSolution)
+        [Fact]
+        public void OrderWithSolutionUnder40K_EditSolution()
         {
             OrderingPages.OrderingDashboard.CreateNewOrder();
 

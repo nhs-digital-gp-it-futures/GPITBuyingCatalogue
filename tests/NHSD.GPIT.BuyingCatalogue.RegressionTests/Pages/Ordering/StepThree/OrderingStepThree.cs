@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using FluentAssertions;
+﻿using FluentAssertions;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.Actions.Common;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.Objects.Ordering;
 using NHSD.GPIT.BuyingCatalogue.RegressionTests.Utils;
@@ -14,7 +9,7 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering.StepThree
 {
     public class OrderingStepThree : PageBase
     {
-        public OrderingStepThree(IWebDriver driver, CommonActions commonActions) 
+        public OrderingStepThree(IWebDriver driver, CommonActions commonActions)
             : base(driver, commonActions)
         {
         }

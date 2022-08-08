@@ -86,6 +86,7 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering
         internal SelectAssociatedServiceRecipientOnly SelectAssociatedServiceRecipientOnly { get; }
 
         internal SelectAndConfirmAssociatedServiceOnlyPrices SelectAndConfirmAssociatedServiceOnlyPrices { get; }
+
         internal OrderingStepThree OrderingStepThree { get; }
 
         internal IWebDriver Driver { get; }
@@ -110,7 +111,7 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering
             OrderingStepOne.AddTimescaleForCallOffAgreement(orderTriage, itemType);
         }
 
-        public void StepTwoAddSolutionsAndServices(string solutionName, string? additionalService = null, string? associatedService = null)
+        public void StepTwoAddSolutionsAndServices(string solutionName, string additionalService = "", string associatedService = "")
         {
             using var dbContext = Factory.DbContext;
 

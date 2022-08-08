@@ -40,17 +40,17 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering.StepOne
 
         public void AddNewContact()
         {
-            CommonActions.ClickLinkElement(NewContact.AddNewContactLink);
+            CommonActions.ClickLinkElement(NewContactObjects.AddNewContactLink);
 
             CommonActions.PageLoadedCorrectGetIndex(
                typeof(SupplierController),
                nameof(SupplierController.NewContact)).Should().BeTrue();
 
-            TextGenerators.TextInputAddText(NewContact.FirstNameInput, 10);
-            TextGenerators.TextInputAddText(NewContact.LastNameInput, 10);
-            TextGenerators.TextInputAddText(NewContact.DepartmentInput, 10);
-            TextGenerators.TextInputAddText(NewContact.PhoneNumberInput, 10);
-            TextGenerators.TextInputAddText(NewContact.EmailInput, 10);
+            TextGenerators.TextInputAddText(NewContactObjects.FirstNameInput, 10);
+            TextGenerators.TextInputAddText(NewContactObjects.LastNameInput, 10);
+            TextGenerators.TextInputAddText(NewContactObjects.DepartmentInput, 10);
+            TextGenerators.TextInputAddText(NewContactObjects.PhoneNumberInput, 10);
+            TextGenerators.TextInputAddText(NewContactObjects.EmailInput, 10);
 
             CommonActions.ClickSave();
 
