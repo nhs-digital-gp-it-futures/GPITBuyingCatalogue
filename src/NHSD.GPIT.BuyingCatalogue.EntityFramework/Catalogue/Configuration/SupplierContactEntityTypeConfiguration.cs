@@ -14,25 +14,14 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Configuration
             builder.HasKey(c => c.Id);
 
             builder.Property(c => c.Id).UseIdentityColumn();
-            builder.Property(c => c.Email)
-                .IsRequired()
-                .HasMaxLength(255);
 
-            builder.Property(c => c.FirstName)
-                .IsRequired()
-                .HasMaxLength(35);
+            builder.Property(c => c.SupplierId).IsRequired();
 
-            builder.Property(c => c.LastName)
-                .IsRequired()
-                .HasMaxLength(35);
-
-            builder.Property(c => c.PhoneNumber).HasMaxLength(35);
+            builder.Property(c => c.FirstName).HasMaxLength(35);
+            builder.Property(c => c.LastName).HasMaxLength(35);
             builder.Property(c => c.Department).HasMaxLength(50);
-            builder.Property(c => c.SupplierId)
-                .IsRequired()
-                .HasMaxLength(6);
-
-            builder.Property(s => s.LastUpdated).HasDefaultValue(DateTime.UtcNow);
+            builder.Property(c => c.PhoneNumber).HasMaxLength(35);
+            builder.Property(c => c.Email).HasMaxLength(255);
 
             builder.HasOne<Supplier>()
                 .WithMany(s => s.SupplierContacts)
