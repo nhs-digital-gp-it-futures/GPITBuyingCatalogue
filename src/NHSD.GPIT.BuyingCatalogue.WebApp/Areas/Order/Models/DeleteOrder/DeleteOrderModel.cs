@@ -1,4 +1,6 @@
-﻿using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
+﻿using System.Collections.Generic;
+using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
+using NHSD.GPIT.BuyingCatalogue.WebApp.Models;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.DeleteOrder
 {
@@ -10,7 +12,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.DeleteOrder
 
         public DeleteOrderModel(string internalOrgId, EntityFramework.Ordering.Models.Order order)
         {
-            Title = $"Delete order {order.CallOffId}?";
             Description = order.Description;
             CallOffId = order.CallOffId;
             InternalOrgId = internalOrgId;
@@ -19,5 +20,13 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.DeleteOrder
         public string Description { get; set; }
 
         public CallOffId CallOffId { get; set; }
+
+        public bool? SelectedOption { get; set; }
+
+        public IList<SelectableRadioOption<bool>> AvailableOptions => new List<SelectableRadioOption<bool>>
+        {
+            new("Yes, I want to delete this order", true),
+            new("No, I do not want to delete this order", false),
+        };
     }
 }

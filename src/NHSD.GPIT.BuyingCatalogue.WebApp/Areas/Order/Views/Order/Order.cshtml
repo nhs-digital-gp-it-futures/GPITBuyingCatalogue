@@ -5,6 +5,10 @@
 @using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers.Contracts
 @model NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.Order.OrderModel
 
+@{
+    ViewBag.Title = Model.Title;
+}
+
 <div data-test-id="@Model.CallOffId-page">
     <partial name="Partials/_BackLink" model="Model" />
 
@@ -12,7 +16,7 @@
         <div class="nhsuk-grid-column-two-thirds">
             <nhs-validation-summary />
 
-            <nhs-page-title title="@Model.Title"
+            <nhs-page-title title="@ViewBag.Title"
                             advice="@Model.TitleAdvice"
 							caption = "@Model.OrganisationName" />
 
@@ -122,15 +126,16 @@
                                                   nameof(OrderController.Summary),
                                                   typeof(OrderController).ControllerName(),
                                                   new { Model.InternalOrgId, Model.CallOffId })"
-                                         use-primary-colour="false"/>
+                                         type="Secondary"/>
 
                 <br/>
-                
-                <vc:nhs-delete-button text="Delete order"
-                                      url="@Url.Action(
-                                               nameof(DeleteOrderController.DeleteOrder),
-                                               typeof(DeleteOrderController).ControllerName(),
-                                               new { Model.InternalOrgId, Model.CallOffId })"/>
+
+                <vc:nhs-secondary-button text="Delete order"
+                            url="@Url.Action(
+                                    nameof(DeleteOrderController.DeleteOrder),
+                                    typeof(DeleteOrderController).ControllerName(),
+                                    new { Model.InternalOrgId, Model.CallOffId })"
+                            type="Delete"/>
             }
 
             @if (Model.LastUpdated is not null

@@ -122,7 +122,7 @@
             }
 
             <vc:nhs-secondary-button text="Download order PDF"
-                                     use-primary-colour="false"
+                                     type="Secondary"
                                      url="@Url.Action(
                                               nameof(OrderController.Download),
                                               typeof(OrderController).ControllerName(),
@@ -144,7 +144,7 @@
                 if (Model.Order.OrderStatus == OrderStatus.InProgress)
                 {
                     <vc:nhs-secondary-button text="Continue"
-                                             use-primary-colour="true"
+                                             type="Primary"
                                              url="@Url.Action(
                                                       nameof(OrderController.Summary),
                                                       typeof(OrderController).ControllerName(),
@@ -153,7 +153,7 @@
                 else
                 {
                     <vc:nhs-secondary-button text="Continue"
-                                             use-primary-colour="true"
+                                             type="Primary"
                                              url="@Url.Action(
                                                       nameof(DashboardController.Organisation),
                                                       typeof(DashboardController).ControllerName(),

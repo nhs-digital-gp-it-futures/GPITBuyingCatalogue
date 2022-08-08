@@ -101,14 +101,14 @@
 
         <div class="nhsuk-u-margin-bottom-6">
             <vc:nhs-secondary-button text="Download order PDF"
-                                     use-primary-colour="false"
+                                     type="Secondary"
                                      url="@Url.Action(
                                               nameof(OrderController.Download),
                                               typeof(OrderController).ControllerName(),
                                               new { Model!.InternalOrgId, Model.CallOffId })" />
             <br/>
             <vc:nhs-secondary-button text="Return to orders dashboard"
-                                     use-primary-colour="true"
+                                     type="Primary"
                                      url="@Model.BackLink" />
         </div>
                                  

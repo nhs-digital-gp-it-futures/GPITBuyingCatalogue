@@ -39,12 +39,14 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers
 
         [Theory]
         [CommonAutoData]
-        public static async Task Get_DeleteOrder_ReturnsExpectedResult(
+        public static async Task Get_DeleteOrder_InProgress_ReturnsExpectedResult(
             string internalOrgId,
             EntityFramework.Ordering.Models.Order order,
             [Frozen] Mock<IOrderService> orderServiceMock,
             DeleteOrderController controller)
         {
+            order.OrderStatus = OrderStatus.InProgress;
+
             var expectedViewData = new DeleteOrderModel(internalOrgId, order);
 
             orderServiceMock.Setup(s => s.GetOrderThin(order.CallOffId, internalOrgId)).ReturnsAsync(order);
@@ -57,6 +59,27 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers
 
         [Theory]
         [CommonAutoData]
+        public static async Task Get_DeleteOrder_Completed_Redirects(
+            string internalOrgId,
+            EntityFramework.Ordering.Models.Order order,
+            [Frozen] Mock<IOrderService> orderServiceMock,
+            DeleteOrderController controller)
+        {
+            order.OrderStatus = OrderStatus.Completed;
+
+            orderServiceMock.Setup(s => s.GetOrderThin(order.CallOffId, internalOrgId)).ReturnsAsync(order);
+
+            var actualResult = await controller.DeleteOrder(internalOrgId, order.CallOffId);
+
+            actualResult.Should().BeOfType<RedirectToActionResult>();
+            actualResult.As<RedirectToActionResult>().ActionName.Should().Be(nameof(OrderController.Summary));
+            actualResult.As<RedirectToActionResult>().ControllerName.Should().Be(typeof(OrderController).ControllerName());
+            actualResult.As<RedirectToActionResult>().RouteValues.Should().BeEquivalentTo(new RouteValueDictionary { { "internalOrgId", internalOrgId }, { "callOffId", order.CallOffId } });
+            orderServiceMock.Verify(o => o.DeleteOrder(order.CallOffId, internalOrgId), Times.Never);
+        }
+
+        [Theory]
+        [CommonAutoData]
         public static async Task Post_DeleteOrder_Deletes_CorrectlyRedirects(
             string internalOrgId,
             CallOffId callOffId,
@@ -64,6 +87,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers
             [Frozen] Mock<IOrderService> orderServiceMock,
             DeleteOrderController controller)
         {
+            model.SelectedOption = true;
+
             var actualResult = await controller.DeleteOrder(internalOrgId, callOffId, model);
 
             actualResult.Should().BeOfType<RedirectToActionResult>();
@@ -71,6 +96,26 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers
             actualResult.As<RedirectToActionResult>().ControllerName.Should().Be(typeof(DashboardController).ControllerName());
             actualResult.As<RedirectToActionResult>().RouteValues.Should().BeEquivalentTo(new RouteValueDictionary { { "internalOrgId", internalOrgId } });
             orderServiceMock.Verify(o => o.DeleteOrder(callOffId, internalOrgId), Times.Once);
+        }
+
+        [Theory]
+        [CommonAutoData]
+        public static async Task Post_DeleteOrder_DoesNotDelete_CorrectlyRedirects(
+            string internalOrgId,
+            CallOffId callOffId,
+            DeleteOrderModel model,
+            [Frozen] Mock<IOrderService> orderServiceMock,
+            DeleteOrderController controller)
+        {
+            model.SelectedOption = false;
+
+            var actualResult = await controller.DeleteOrder(internalOrgId, callOffId, model);
+
+            actualResult.Should().BeOfType<RedirectToActionResult>();
+            actualResult.As<RedirectToActionResult>().ActionName.Should().Be(nameof(OrderController.Order));
+            actualResult.As<RedirectToActionResult>().ControllerName.Should().Be(typeof(OrderController).ControllerName());
+            actualResult.As<RedirectToActionResult>().RouteValues.Should().BeEquivalentTo(new RouteValueDictionary { { "internalOrgId", internalOrgId }, { "callOffId", callOffId } });
+            orderServiceMock.Verify(o => o.DeleteOrder(callOffId, internalOrgId), Times.Never);
         }
     }
 }

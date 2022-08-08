@@ -15,8 +15,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.DeleteOr
         {
             var model = new DeleteOrderModel(internalOrgId, order);
 
-            model.Title.Should().Be($"Delete order {order.CallOffId}?");
             model.Description.Should().Be(order.Description);
+            model.CallOffId.Should().Be(order.CallOffId);
+            model.InternalOrgId.Should().Be(internalOrgId);
         }
     }
 }

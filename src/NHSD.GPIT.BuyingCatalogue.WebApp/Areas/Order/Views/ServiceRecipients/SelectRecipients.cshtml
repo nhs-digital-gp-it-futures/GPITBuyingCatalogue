@@ -39,7 +39,7 @@
                                           typeof(ServiceRecipientsController).ControllerName(),
                                           new { Model.InternalOrgId, Model.CallOffId, Model.CatalogueItemId, Model.SelectionMode })"
                                  text="@Model.SelectionCaption"
-                                 use-primary-colour="false" />
+                                 type="Secondary" />
         
         <form method="post">
             <input type="hidden" asp-for="@Model.AssociatedServicesOnly" />
