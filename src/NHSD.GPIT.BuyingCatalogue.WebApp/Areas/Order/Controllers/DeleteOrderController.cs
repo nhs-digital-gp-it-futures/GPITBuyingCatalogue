@@ -26,6 +26,14 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
         {
             var order = await orderService.GetOrderThin(callOffId, internalOrgId);
 
+            if (order.OrderStatus == OrderStatus.Completed)
+            {
+                return RedirectToAction(
+                    nameof(OrderController.Summary),
+                    typeof(OrderController).ControllerName(),
+                    new { internalOrgId, callOffId });
+            }
+
             var model = new DeleteOrderModel(internalOrgId, order)
             {
                 BackLink = Url.Action(

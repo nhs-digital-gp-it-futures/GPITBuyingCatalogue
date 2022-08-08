@@ -39,12 +39,14 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers
 
         [Theory]
         [CommonAutoData]
-        public static async Task Get_DeleteOrder_ReturnsExpectedResult(
+        public static async Task Get_DeleteOrder_InProgress_ReturnsExpectedResult(
             string internalOrgId,
             EntityFramework.Ordering.Models.Order order,
             [Frozen] Mock<IOrderService> orderServiceMock,
             DeleteOrderController controller)
         {
+            order.OrderStatus = OrderStatus.InProgress;
+
             var expectedViewData = new DeleteOrderModel(internalOrgId, order);
 
             orderServiceMock.Setup(s => s.GetOrderThin(order.CallOffId, internalOrgId)).ReturnsAsync(order);
@@ -53,6 +55,27 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers
 
             actualResult.Should().BeOfType<ViewResult>();
             actualResult.As<ViewResult>().ViewData.Model.Should().BeEquivalentTo(expectedViewData, opt => opt.Excluding(m => m.BackLink));
+        }
+
+        [Theory]
+        [CommonAutoData]
+        public static async Task Get_DeleteOrder_Completed_Redirects(
+            string internalOrgId,
+            EntityFramework.Ordering.Models.Order order,
+            [Frozen] Mock<IOrderService> orderServiceMock,
+            DeleteOrderController controller)
+        {
+            order.OrderStatus = OrderStatus.Completed;
+
+            orderServiceMock.Setup(s => s.GetOrderThin(order.CallOffId, internalOrgId)).ReturnsAsync(order);
+
+            var actualResult = await controller.DeleteOrder(internalOrgId, order.CallOffId);
+
+            actualResult.Should().BeOfType<RedirectToActionResult>();
+            actualResult.As<RedirectToActionResult>().ActionName.Should().Be(nameof(OrderController.Summary));
+            actualResult.As<RedirectToActionResult>().ControllerName.Should().Be(typeof(OrderController).ControllerName());
+            actualResult.As<RedirectToActionResult>().RouteValues.Should().BeEquivalentTo(new RouteValueDictionary { { "internalOrgId", internalOrgId }, { "callOffId", order.CallOffId } });
+            orderServiceMock.Verify(o => o.DeleteOrder(order.CallOffId, internalOrgId), Times.Never);
         }
 
         [Theory]
