@@ -7,5 +7,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.Objects.Ordering.Contract
         public static By UseDefaultBillingError => By.Id("review-billing-error");
 
         public static By HasSpecificRequirementsError => By.Id("specific-requirements-error");
+
+        public static By AssociatedServiceBillingAndRequirementsLink => By.LinkText("Associated Service billing and requirements");
     }
 }

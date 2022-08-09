@@ -5,5 +5,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.Objects.Ordering.Contract
     public static class ImplementationPlanObjects
     {
         public static By UseDefaultMilestonesError => By.Id("default-implementation-plan-error");
+
+        public static By ImplementationPlanMilestonesLink => By.LinkText("Implementation plan milestones");
     }
 }

@@ -5,9 +5,11 @@ using System.Text;
 using FluentAssertions;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.Actions.Common;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.Objects.Ordering;
+using NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.Objects.Ordering.Contracts;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.Objects.Ordering.SolutionSelection;
 using NHSD.GPIT.BuyingCatalogue.RegressionTests.Utils;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers;
+using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers.Contracts;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers.FundingSource;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers.SolutionSelection;
 using OpenQA.Selenium;
@@ -103,6 +105,36 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering.Dashboard
             CommonActions.PageLoadedCorrectGetIndex(
                 typeof(FundingSourceController),
                 nameof(FundingSourceController.FundingSources))
+                    .Should().BeTrue();
+        }
+
+        public void ImplementationPlanMilestonesTask()
+        {
+            CommonActions.ClickLinkElement(ImplementationPlanObjects.ImplementationPlanMilestonesLink);
+
+            CommonActions.PageLoadedCorrectGetIndex(
+                typeof(ImplementationPlanController),
+                nameof(ImplementationPlanController.DefaultImplementationPlan))
+                    .Should().BeTrue();
+        }
+
+        public void AssociatedServiceBillingAndRequirementsTask()
+        {
+            CommonActions.ClickLinkElement(AssociatedServicesBillingObjects.AssociatedServiceBillingAndRequirementsLink);
+
+            CommonActions.PageLoadedCorrectGetIndex(
+                typeof(AssociatedServicesBillingController),
+                nameof(AssociatedServicesBillingController.ReviewBilling))
+                    .Should().BeTrue();
+        }
+
+        public void DataProcessingInformationTask()
+        {
+            CommonActions.ClickLinkElement(DataProcessingPlanObjects.DataProcessingInformationLink);
+
+            CommonActions.PageLoadedCorrectGetIndex(
+                typeof(DataProcessingPlanController),
+                nameof(DataProcessingPlanController.Index))
                     .Should().BeTrue();
         }
 

@@ -5,4 +5,6 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.Objects.Ordering.Contract
 public static class DataProcessingPlanObjects
 {
     public static By UseDefaultDataProcessingError => By.Id("use-default-data-processing-error");
+
+    public static By DataProcessingInformationLink => By.LinkText("Data processing information");
 }

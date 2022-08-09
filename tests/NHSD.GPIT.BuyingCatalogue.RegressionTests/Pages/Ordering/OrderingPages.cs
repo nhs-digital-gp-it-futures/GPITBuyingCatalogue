@@ -37,6 +37,7 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering
             SelectAssociatedServiceRecipientOnly = new SelectAssociatedServiceRecipientOnly(driver, commonActions);
             SelectAndConfirmAssociatedServiceOnlyPrices = new SelectAndConfirmAssociatedServiceOnlyPrices(driver, commonActions);
             OrderingStepThree = new OrderingStepThree(driver, commonActions);
+            OrderingStepFour = new OrderingStepFour(driver, commonActions);
             Factory = factory;
             Driver = driver;
         }
@@ -88,6 +89,8 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering
         internal SelectAndConfirmAssociatedServiceOnlyPrices SelectAndConfirmAssociatedServiceOnlyPrices { get; }
 
         internal OrderingStepThree OrderingStepThree { get; }
+
+        internal OrderingStepFour OrderingStepFour { get; }
 
         internal IWebDriver Driver { get; }
 
@@ -167,10 +170,32 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering
             SelectFundingSources.AddFundingSources(solutionName, additionalService, associatedService, isAssociatedServiceOnlyOrder);
         }
 
-        public void StepThreeReviewAndCompleteOrder()
+        public void StepThreeCompleteContract()
+        {
+            TaskList.ImplementationPlanMilestonesTask();
+            OrderingStepThree.SelectImplementationPlan();
+
+            using var dbContext = Factory.DbContext;
+            var orderID = Driver.Url.Split('/').Last().Split('-')[0].Replace("C0", string.Empty);
+
+            var isOrderWithAssociatedService = dbContext.Orders
+                .Any(o => string.Equals(o.Id.ToString(), orderID) &&
+                o.OrderItems.Any(i => i.CatalogueItem.CatalogueItemType == EntityFramework.Catalogue.Models.CatalogueItemType.AssociatedService));
+
+            if (isOrderWithAssociatedService)
+            {
+                TaskList.AssociatedServiceBillingAndRequirementsTask();
+                OrderingStepThree.SelectAssociatedServicesBilling();
+            }
+
+            TaskList.DataProcessingInformationTask();
+            OrderingStepThree.SelectPersonalDataProcessingInformation();
+        }
+
+        public void StepFourReviewAndCompleteOrder()
         {
             TaskList.ReviewAndCompleteOrderTask();
-            OrderingStepThree.ReviewAndCompleteOrder();
+            OrderingStepFour.ReviewAndCompleteOrder();
         }
 
         public void EditSolution(string newSolutionName, string newAdditionalServiceName = "", string newAssociatedService = "")

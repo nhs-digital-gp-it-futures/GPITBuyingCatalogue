@@ -58,7 +58,9 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
 
             OrderingPages.StepTwoAddSolutionsAndServices(SolutionName);
 
-            OrderingPages.StepThreeReviewAndCompleteOrder();
+            OrderingPages.StepThreeCompleteContract();
+
+            OrderingPages.StepFourReviewAndCompleteOrder();
         }
 
         [Fact]
@@ -76,7 +78,9 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
 
             OrderingPages.StepTwoAddSolutionsAndServices(solutionName: SolutionName, associatedService: AssociatedServiceName);
 
-            OrderingPages.StepThreeReviewAndCompleteOrder();
+            OrderingPages.StepThreeCompleteContract();
+
+            OrderingPages.StepFourReviewAndCompleteOrder();
         }
 
         [Fact]
@@ -94,7 +98,9 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
 
             OrderingPages.StepTwoAddSolutionsAndServices("Emis Web GP", additionalService: "Automated Arrivals");
 
-            OrderingPages.StepThreeReviewAndCompleteOrder();
+            OrderingPages.StepThreeCompleteContract();
+
+            OrderingPages.StepFourReviewAndCompleteOrder();
         }
 
         [Fact]
@@ -112,7 +118,9 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
 
             OrderingPages.StepTwoAddSolutionsAndServices("Emis Web GP", additionalService: "Automated Arrivals", associatedService: "Automated Arrivals – Engineering Half Day");
 
-            OrderingPages.StepThreeReviewAndCompleteOrder();
+            OrderingPages.StepThreeCompleteContract();
+
+            OrderingPages.StepFourReviewAndCompleteOrder();
         }
 
         [Fact]
@@ -130,7 +138,9 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
 
             OrderingPages.StepTwoAddSolutionsAndServices(SolutionName);
 
-            OrderingPages.StepThreeReviewAndCompleteOrder();
+            OrderingPages.StepThreeCompleteContract();
+
+            OrderingPages.StepFourReviewAndCompleteOrder();
         }
 
         [Fact]
@@ -148,7 +158,9 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
 
             OrderingPages.StepTwoAddSolutionsAndServices("Emis Web GP", additionalService: "Automated Arrivals");
 
-            OrderingPages.StepThreeReviewAndCompleteOrder();
+            OrderingPages.StepThreeCompleteContract();
+
+            OrderingPages.StepFourReviewAndCompleteOrder();
         }
 
         [Fact]
@@ -166,7 +178,9 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
 
             OrderingPages.StepTwoAddSolutionsAndServices(solutionName: SolutionName, associatedService: AssociatedServiceName);
 
-            OrderingPages.StepThreeReviewAndCompleteOrder();
+            OrderingPages.StepThreeCompleteContract();
+
+            OrderingPages.StepFourReviewAndCompleteOrder();
         }
 
         [Fact]
@@ -184,7 +198,9 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
 
             OrderingPages.StepTwoAddSolutionsAndServices("Emis Web GP", additionalService: "Automated Arrivals", associatedService: "Automated Arrivals – Engineering Half Day");
 
-            OrderingPages.StepThreeReviewAndCompleteOrder();
+            OrderingPages.StepThreeCompleteContract();
+
+            OrderingPages.StepFourReviewAndCompleteOrder();
         }
 
         [Fact]
@@ -202,7 +218,9 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
 
             OrderingPages.StepTwoAddSolutionsAndServices(SolutionName);
 
-            OrderingPages.StepThreeReviewAndCompleteOrder();
+            OrderingPages.StepThreeCompleteContract();
+
+            OrderingPages.StepFourReviewAndCompleteOrder();
         }
 
         [Fact]
@@ -220,7 +238,9 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
 
             OrderingPages.StepTwoAddSolutionsAndServices(solutionName: SolutionName, associatedService: AssociatedServiceName);
 
-            OrderingPages.StepThreeReviewAndCompleteOrder();
+            OrderingPages.StepThreeCompleteContract();
+
+            OrderingPages.StepFourReviewAndCompleteOrder();
         }
 
         [Fact]
@@ -238,7 +258,9 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
 
             OrderingPages.StepTwoAddSolutionsAndServices("Emis Web GP", additionalService: "Automated Arrivals");
 
-            OrderingPages.StepThreeReviewAndCompleteOrder();
+            OrderingPages.StepThreeCompleteContract();
+
+            OrderingPages.StepFourReviewAndCompleteOrder();
         }
 
         [Fact]
@@ -256,7 +278,9 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
 
             OrderingPages.StepTwoAddSolutionsAndServices("Emis Web GP", additionalService: "Automated Arrivals", associatedService: "Automated Arrivals – Engineering Half Day");
 
-            OrderingPages.StepThreeReviewAndCompleteOrder();
+            OrderingPages.StepThreeCompleteContract();
+
+            OrderingPages.StepFourReviewAndCompleteOrder();
         }
 
         [Fact]
@@ -272,7 +296,9 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
 
             OrderingPages.StepTwoAddSolutionsAndServices(solutionName: SolutionName, associatedService: AssociatedServiceName);
 
-            OrderingPages.StepThreeReviewAndCompleteOrder();
+            OrderingPages.StepThreeCompleteContract();
+
+            OrderingPages.StepFourReviewAndCompleteOrder();
         }
 
         [Fact]
@@ -292,7 +318,9 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
 
             OrderingPages.EditSolution(NewSolutionName);
 
-            OrderingPages.StepThreeReviewAndCompleteOrder();
+            OrderingPages.StepThreeCompleteContract();
+
+            OrderingPages.StepFourReviewAndCompleteOrder();
         }
 
         [Fact]
@@ -312,7 +340,9 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
 
             OrderingPages.EditSolution(NewSolutionName, NewAdditionalServiceName);
 
-            OrderingPages.StepThreeReviewAndCompleteOrder();
+            OrderingPages.StepThreeCompleteContract();
+
+            OrderingPages.StepFourReviewAndCompleteOrder();
         }
     }
 }
