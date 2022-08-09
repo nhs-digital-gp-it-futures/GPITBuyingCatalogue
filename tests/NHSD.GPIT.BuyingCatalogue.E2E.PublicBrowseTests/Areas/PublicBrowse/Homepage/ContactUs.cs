@@ -84,11 +84,11 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.PublicBrowse.Homepage
                 CommonActions.ErrorSummaryDisplayed().Should().BeTrue();
                 CommonActions.ErrorSummaryLinksExist().Should().BeTrue();
 
-                CommonActions.ElementShowingCorrectErrorMessage(ContactUsObjects.ContactMethodInputError, "Error: Select your reason for contacting us").Should().BeTrue();
-                CommonActions.ElementShowingCorrectErrorMessage(ContactUsObjects.FullNameInputError, "Enter a full name").Should().BeTrue();
-                CommonActions.ElementShowingCorrectErrorMessage(ContactUsObjects.MessageInputError, "Enter your message for us").Should().BeTrue();
-                CommonActions.ElementShowingCorrectErrorMessage(ContactUsObjects.EmailAddressInputError, "Enter an email address").Should().BeTrue();
-                CommonActions.ElementShowingCorrectErrorMessage(ContactUsObjects.PrivacyPolicyInputError, "Error: Confirm you have read and understood the privacy policy").Should().BeTrue();
+                CommonActions.ElementIsDisplayed(ContactUsObjects.ContactMethodInputError).Should().BeTrue();
+                CommonActions.ElementIsDisplayed(ContactUsObjects.FullNameInputError).Should().BeTrue();
+                CommonActions.ElementIsDisplayed(ContactUsObjects.MessageInputError).Should().BeTrue();
+                CommonActions.ElementIsDisplayed(ContactUsObjects.EmailAddressInputError).Should().BeTrue();
+                CommonActions.ElementIsDisplayed(ContactUsObjects.PrivacyPolicyInputError).Should().BeTrue();
             });
         }
 

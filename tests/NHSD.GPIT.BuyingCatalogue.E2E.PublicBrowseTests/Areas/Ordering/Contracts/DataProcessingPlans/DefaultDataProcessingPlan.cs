@@ -53,9 +53,8 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering.Contracts.DataProces
             CommonActions.ErrorSummaryDisplayed().Should().BeTrue();
             CommonActions.ErrorSummaryLinksExist().Should().BeTrue();
 
-            CommonActions.ElementShowingCorrectErrorMessage(
-                DataProcessingPlanObjects.UseDefaultDataProcessingError,
-                $"Error:{DataProcessingPlanModelValidator.DefaultDataProcessingNullErrorMessage}").Should().BeTrue();
+            CommonActions.ElementIsDisplayed(
+                DataProcessingPlanObjects.UseDefaultDataProcessingError).Should().BeTrue();
         }
 
         [Fact]

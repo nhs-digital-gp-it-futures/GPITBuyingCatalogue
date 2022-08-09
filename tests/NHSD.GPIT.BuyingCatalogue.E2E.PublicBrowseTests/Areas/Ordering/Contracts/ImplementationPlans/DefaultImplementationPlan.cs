@@ -53,9 +53,8 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering.Contracts.Implementa
             CommonActions.ErrorSummaryDisplayed().Should().BeTrue();
             CommonActions.ErrorSummaryLinksExist().Should().BeTrue();
 
-            CommonActions.ElementShowingCorrectErrorMessage(
-                ImplementationPlanObjects.UseDefaultMilestonesError,
-                $"Error:{DefaultImplementationPlanModelValidator.NoSelectionErrorMessage}").Should().BeTrue();
+            CommonActions.ElementIsDisplayed(
+                ImplementationPlanObjects.UseDefaultMilestonesError).Should().BeTrue();
         }
 
         [Fact]

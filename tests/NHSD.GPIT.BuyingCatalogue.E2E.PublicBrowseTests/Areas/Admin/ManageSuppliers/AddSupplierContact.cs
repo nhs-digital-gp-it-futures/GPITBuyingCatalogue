@@ -71,7 +71,6 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.ManageSuppliers
 
             CommonActions.ErrorSummaryDisplayed().Should().BeTrue();
             CommonActions.ErrorSummaryLinksExist().Should().BeTrue();
-
             CommonActions.ElementIsDisplayed(
                 SupplierContactObjects.FirstNameError).Should().BeTrue();
 

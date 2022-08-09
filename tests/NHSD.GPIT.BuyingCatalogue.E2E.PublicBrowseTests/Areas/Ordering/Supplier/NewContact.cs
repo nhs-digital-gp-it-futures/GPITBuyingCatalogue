@@ -52,103 +52,28 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering.Supplier
         }
 
         [Fact]
-        public void NewContact_NoPersonalDetails_ExpectedResult()
+        public void NewContact_NoInputs_ExpectedResult()
         {
             TextGenerators.TextInputAddText(NewContactObjects.FirstNameInput, 0);
             TextGenerators.TextInputAddText(NewContactObjects.LastNameInput, 0);
             TextGenerators.TextInputAddText(NewContactObjects.DepartmentInput, 0);
-
-            CommonActions.ClickSave();
-
-           CommonActions.PageLoadedCorrectGetIndex(
-                typeof(SupplierController),
-                nameof(SupplierController.NewContact)).Should().BeTrue();
-
-           CommonActions.ErrorSummaryDisplayed().Should().BeTrue();
-           CommonActions.ErrorSummaryLinksExist().Should().BeTrue();
-
-            CommonActions.ElementShowingCorrectErrorMessage(
-                NewContactObjects.FirstNameError,
-                ContactModelValidator.PersonalDetailsMissingErrorMessage).Should().BeTrue();
-        }
-
-        [Fact]
-        public void NewContact_NoFirstName_ExpectedResult()
-        {
-            TextGenerators.TextInputAddText(NewContactObjects.FirstNameInput, 0);
-            TextGenerators.TextInputAddText(NewContactObjects.LastNameInput, 20);
-
-            CommonActions.ClickSave();
-
-            CommonActions.PageLoadedCorrectGetIndex(
-                typeof(SupplierController),
-                nameof(SupplierController.NewContact)).Should().BeTrue();
-
-            CommonActions.ErrorSummaryDisplayed().Should().BeTrue();
-            CommonActions.ErrorSummaryLinksExist().Should().BeTrue();
-
-            CommonActions.ElementShowingCorrectErrorMessage(
-                NewContactObjects.FirstNameError,
-                ContactModelValidator.FirstNameMissingErrorMessage).Should().BeTrue();
-        }
-
-        [Fact]
-        public void NewContact_NoLastName_ExpectedResult()
-        {
-            TextGenerators.TextInputAddText(NewContactObjects.FirstNameInput, 20);
-            TextGenerators.TextInputAddText(NewContactObjects.LastNameInput, 0);
-
-            CommonActions.ClickSave();
-
-            CommonActions.PageLoadedCorrectGetIndex(
-                typeof(SupplierController),
-                nameof(SupplierController.NewContact)).Should().BeTrue();
-
-            CommonActions.ErrorSummaryDisplayed().Should().BeTrue();
-            CommonActions.ErrorSummaryLinksExist().Should().BeTrue();
-
-            CommonActions.ElementShowingCorrectErrorMessage(
-                NewContactObjects.LastNameError,
-                ContactModelValidator.LastNameMissingErrorMessage).Should().BeTrue();
-        }
-
-        [Fact]
-        public void NewContact_NoContactDetails_ExpectedResult()
-        {
             TextGenerators.TextInputAddText(NewContactObjects.PhoneNumberInput, 0);
             TextGenerators.TextInputAddText(NewContactObjects.EmailInput, 0);
 
             CommonActions.ClickSave();
 
             CommonActions.PageLoadedCorrectGetIndex(
-                typeof(SupplierController),
-                nameof(SupplierController.NewContact)).Should().BeTrue();
+                 typeof(SupplierController),
+                 nameof(SupplierController.NewContact)).Should().BeTrue();
 
             CommonActions.ErrorSummaryDisplayed().Should().BeTrue();
             CommonActions.ErrorSummaryLinksExist().Should().BeTrue();
 
-            CommonActions.ElementShowingCorrectErrorMessage(
-                NewContactObjects.PhoneNumberError,
-                ContactModelValidator.ContactDetailsMissingErrorMessage).Should().BeTrue();
-        }
+            CommonActions.ElementIsDisplayed(
+                NewContactObjects.FirstNameError).Should().BeTrue();
 
-        [Fact]
-        public void NewContact_EmailAddressWrongFormat_ExpectedResult()
-        {
-            TextGenerators.TextInputAddText(NewContactObjects.EmailInput, 20);
-
-            CommonActions.ClickSave();
-
-            CommonActions.PageLoadedCorrectGetIndex(
-                typeof(SupplierController),
-                nameof(SupplierController.NewContact)).Should().BeTrue();
-
-            CommonActions.ErrorSummaryDisplayed().Should().BeTrue();
-            CommonActions.ErrorSummaryLinksExist().Should().BeTrue();
-
-            CommonActions.ElementShowingCorrectErrorMessage(
-                NewContactObjects.EmailError,
-                ContactModelValidator.EmailAddressFormatErrorMessage).Should().BeTrue();
+            CommonActions.ElementIsDisplayed(
+                NewContactObjects.PhoneNumberError).Should().BeTrue();
         }
 
         [Fact]
