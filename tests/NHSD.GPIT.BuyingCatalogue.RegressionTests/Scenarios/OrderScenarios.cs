@@ -27,7 +27,7 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
         {
         }
 
-        [Fact]
+       /* [Fact]
         public void FirstTest_DoesThing()
         {
 
@@ -35,6 +35,6 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
             int b = 2;
 
             // BuyerUsername.Should().Be("abc");
-        }
+        }*/
     }
 }

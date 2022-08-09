@@ -18,7 +18,7 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
         {
         }
 
-        [Fact]
+       /* [Fact]
         public void PBTest_DoesThing()
         {
 
@@ -27,6 +27,6 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
 
             // uri.ToString().Should().Be("abc");
 
-        }
+        }*/
     }
 }

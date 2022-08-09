@@ -9,7 +9,6 @@ using NHSD.GPIT.BuyingCatalogue.E2ETests.Utils;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.TestBases;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers;
-using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Validators;
 using OpenQA.Selenium;
 using Xunit;
 
@@ -100,19 +99,13 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.ManageSuppliers
         }
 
         [Fact]
-        public void EditSupplierContact_DuplicateDetails_ThrowsError()
+        public void EditSupplierContact_NoInputs_ThrowsError()
         {
-            CommonActions.ClearInputElement(Objects.Admin.ManageSuppliers.ManageSuppliers.EditSupplierContactFirstName);
-            CommonActions.ClearInputElement(Objects.Admin.ManageSuppliers.ManageSuppliers.EditSupplierContactLastName);
-            CommonActions.ClearInputElement(Objects.Admin.ManageSuppliers.ManageSuppliers.EditSupplierContactDepartment);
-            CommonActions.ClearInputElement(Objects.Admin.ManageSuppliers.ManageSuppliers.EditSupplierContactPhoneNumber);
-            CommonActions.ClearInputElement(Objects.Admin.ManageSuppliers.ManageSuppliers.EditSupplierContactEmail);
-
-            CommonActions.ElementAddValue(SupplierContactObjects.FirstNameInput, contact.FirstName);
-            CommonActions.ElementAddValue(SupplierContactObjects.LastNameInput, contact.LastName);
-            CommonActions.ElementAddValue(SupplierContactObjects.DepartmentInput, contact.Department);
-            CommonActions.ElementAddValue(SupplierContactObjects.PhoneNumberInput, contact.PhoneNumber);
-            CommonActions.ElementAddValue(SupplierContactObjects.EmailInput, contact.Email);
+            CommonActions.ClearInputElement(SupplierContactObjects.FirstNameInput);
+            CommonActions.ClearInputElement(SupplierContactObjects.LastNameInput);
+            CommonActions.ClearInputElement(SupplierContactObjects.DepartmentInput);
+            CommonActions.ClearInputElement(SupplierContactObjects.PhoneNumberInput);
+            CommonActions.ClearInputElement(SupplierContactObjects.EmailInput);
 
             CommonActions.ClickSave();
 
@@ -123,9 +116,11 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.ManageSuppliers
             CommonActions.ErrorSummaryDisplayed().Should().BeTrue();
             CommonActions.ErrorSummaryLinksExist().Should().BeTrue();
 
-            CommonActions.ElementShowingCorrectErrorMessage(
-                SupplierContactObjects.ContainerError,
-                $"Error: {EditContactModelValidator.DuplicateContactErrorMessage}").Should().BeTrue();
+            CommonActions.ElementIsDisplayed(
+                SupplierContactObjects.FirstNameError).Should().BeTrue();
+
+            CommonActions.ElementIsDisplayed(
+                SupplierContactObjects.PhoneNumberError).Should().BeTrue();
         }
 
         [Fact]

@@ -9,7 +9,6 @@ using NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.Objects.Common;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Utils;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.TestBases;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers;
-using NHSD.GPIT.BuyingCatalogue.WebApp.Validation.Shared;
 using Xunit;
 
 namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.ManageSuppliers
@@ -62,7 +61,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.ManageSuppliers
         }
 
         [Fact]
-        public void AddSupplierContact_NoPersonalDetails_ThrowsError()
+        public void AddSupplierContact_NoInputs_ThrowsError()
         {
             CommonActions.ClickSave();
 
@@ -73,117 +72,11 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.ManageSuppliers
             CommonActions.ErrorSummaryDisplayed().Should().BeTrue();
             CommonActions.ErrorSummaryLinksExist().Should().BeTrue();
 
-            CommonActions.ElementShowingCorrectErrorMessage(
-                SupplierContactObjects.FirstNameError,
-                ContactModelValidator.PersonalDetailsMissingErrorMessage).Should().BeTrue();
-        }
+            CommonActions.ElementIsDisplayed(
+                SupplierContactObjects.FirstNameError).Should().BeTrue();
 
-        [Fact]
-        public void AddSupplierContact_NoFirstName_ThrowsError()
-        {
-            TextGenerators.TextInputAddText(SupplierContactObjects.FirstNameInput, 0);
-            TextGenerators.TextInputAddText(SupplierContactObjects.LastNameInput, 20);
-
-            CommonActions.ClickSave();
-
-            CommonActions.PageLoadedCorrectGetIndex(
-                typeof(SuppliersController),
-                nameof(SuppliersController.AddSupplierContact)).Should().BeTrue();
-
-            CommonActions.ErrorSummaryDisplayed().Should().BeTrue();
-            CommonActions.ErrorSummaryLinksExist().Should().BeTrue();
-
-            CommonActions.ElementShowingCorrectErrorMessage(
-                SupplierContactObjects.FirstNameError,
-                ContactModelValidator.FirstNameMissingErrorMessage).Should().BeTrue();
-        }
-
-        [Fact]
-        public void AddSupplierContact_NoLastName_ThrowsError()
-        {
-            TextGenerators.TextInputAddText(SupplierContactObjects.FirstNameInput, 20);
-            TextGenerators.TextInputAddText(SupplierContactObjects.LastNameInput, 0);
-
-            CommonActions.ClickSave();
-
-            CommonActions.PageLoadedCorrectGetIndex(
-                typeof(SuppliersController),
-                nameof(SuppliersController.AddSupplierContact)).Should().BeTrue();
-
-            CommonActions.ErrorSummaryDisplayed().Should().BeTrue();
-            CommonActions.ErrorSummaryLinksExist().Should().BeTrue();
-
-            CommonActions.ElementShowingCorrectErrorMessage(
-                SupplierContactObjects.LastNameError,
-                ContactModelValidator.LastNameMissingErrorMessage).Should().BeTrue();
-        }
-
-        [Fact]
-        public void AddSupplierContact_NoContactDetails_ThrowsError()
-        {
-            CommonActions.ClickSave();
-
-            CommonActions.PageLoadedCorrectGetIndex(
-                typeof(SuppliersController),
-                nameof(SuppliersController.AddSupplierContact)).Should().BeTrue();
-
-            CommonActions.ErrorSummaryDisplayed().Should().BeTrue();
-            CommonActions.ErrorSummaryLinksExist().Should().BeTrue();
-
-            CommonActions.ElementShowingCorrectErrorMessage(
-                SupplierContactObjects.PhoneNumberError,
-                ContactModelValidator.ContactDetailsMissingErrorMessage).Should().BeTrue();
-        }
-
-        [Fact]
-        public void AddSupplierContact_InputIncorrectEmailValue_ThrowsError()
-        {
-            TextGenerators.TextInputAddText(SupplierContactObjects.EmailInput, 255);
-
-            CommonActions.ClickSave();
-
-            CommonActions.PageLoadedCorrectGetIndex(
-                typeof(SuppliersController),
-                nameof(SuppliersController.AddSupplierContact)).Should().BeTrue();
-
-            CommonActions.ErrorSummaryDisplayed().Should().BeTrue();
-            CommonActions.ErrorSummaryLinksExist().Should().BeTrue();
-
-            CommonActions.ElementShowingCorrectErrorMessage(
-                SupplierContactObjects.EmailError,
-                "Enter an email address in the correct format, like name@example.com").Should().BeTrue();
-        }
-
-        [Fact]
-        public async Task AddSupplierContact_DuplicateDetails_ThrowsError()
-        {
-            NavigateToUrl(
-                typeof(SuppliersController),
-                nameof(SuppliersController.AddSupplierContact),
-                DuplicateParameters);
-
-            await using var context = GetEndToEndDbContext();
-
-            var contact = await context.SupplierContacts.FirstAsync(sc => sc.SupplierId == DuplicateSupplierId);
-
-            CommonActions.ElementAddValue(SupplierContactObjects.FirstNameInput, contact.FirstName);
-            CommonActions.ElementAddValue(SupplierContactObjects.LastNameInput, contact.LastName);
-            CommonActions.ElementAddValue(SupplierContactObjects.DepartmentInput, contact.Department);
-            CommonActions.ElementAddValue(SupplierContactObjects.PhoneNumberInput, contact.PhoneNumber);
-            CommonActions.ElementAddValue(SupplierContactObjects.EmailInput, contact.Email);
-
-            CommonActions.ClickSave();
-
-            CommonActions.PageLoadedCorrectGetIndex(
-                typeof(SuppliersController),
-                nameof(SuppliersController.AddSupplierContact)).Should().BeTrue();
-
-            CommonActions.ErrorSummaryDisplayed().Should().BeTrue();
-            CommonActions.ErrorSummaryLinksExist().Should().BeTrue();
-
-            CommonActions.ElementShowingCorrectErrorMessage(
-                SupplierContactObjects.ContainerError,
-                "Error: A contact with these contact details already exists for this supplier").Should().BeTrue();
+            CommonActions.ElementIsDisplayed(
+                SupplierContactObjects.PhoneNumberError).Should().BeTrue();
         }
 
         [Fact]
