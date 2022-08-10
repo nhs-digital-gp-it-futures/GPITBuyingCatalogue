@@ -83,7 +83,7 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering.Dashboard
             }
         }
 
-        public void EditSolutionsAndServicesTask()
+        public void EditSolutionsAndServicesTask(bool isAssociatedServiceOnly)
         {
             CommonActions.ClickLinkElement(CatalogueSolutionObjects.SelectSolutionsAndServicesLink);
 
@@ -91,7 +91,14 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering.Dashboard
              typeof(ReviewSolutionsController),
              nameof(ReviewSolutionsController.ReviewSolutions)).Should().BeTrue();
 
-            CommonActions.ClickLinkElement(ReviewSolutionsObjects.EditSolutionAndServicesLink);
+            if (isAssociatedServiceOnly)
+            {
+                CommonActions.ClickLinkElement(ReviewSolutionsObjects.EditAssociatedServicesLink);
+            }
+            else
+            {
+                CommonActions.ClickLinkElement(ReviewSolutionsObjects.EditSolutionAndServicesLink);
+            }
 
             CommonActions.PageLoadedCorrectGetIndex(
              typeof(TaskListController),

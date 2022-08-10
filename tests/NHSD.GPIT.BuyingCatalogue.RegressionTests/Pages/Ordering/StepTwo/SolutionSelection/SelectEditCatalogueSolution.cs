@@ -30,7 +30,7 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering.StepTwo.Solut
         {
             CommonActions.ClickRadioButtonWithText(solutionName);
 
-            if (HasAdditionalService(solutionName) && !string.IsNullOrWhiteSpace(additionalService))
+            if (SolutionHasAdditionalService(solutionName) && !string.IsNullOrWhiteSpace(additionalService))
             {
                 CommonActions.ClickCheckboxByLabel(additionalService);
             }
@@ -50,9 +50,66 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering.StepTwo.Solut
 
             CommonActions.ClickSave();
 
-            var hasAdditionalService = HasAdditionalService(newSolutionName);
+            var hasAdditionalService = SolutionHasAdditionalService(newSolutionName);
 
             ConfirmSolutionChanges(hasAdditionalService, newAdditionalServiceName);
+        }
+
+        public void EditAdditionalService(string solutionName, string oldAdditionalService, string newAdditionalService, bool hasTheOrderAdditionalService)
+        {
+            if (SolutionHasAdditionalService(solutionName))
+            {
+                if (hasTheOrderAdditionalService)
+                {
+                    CommonActions.ClickLinkElement(ReviewSolutionsObjects.ChangeAdditionalServiceLink);
+
+                    CommonActions.PageLoadedCorrectGetIndex(
+                      typeof(AdditionalServicesController),
+                      nameof(AdditionalServicesController.EditAdditionalServices)).Should().BeTrue();
+
+                    CommonActions.ClickCheckboxByLabel(oldAdditionalService);
+                }
+                else
+                {
+                    CommonActions.ClickLinkElement(ReviewSolutionsObjects.AddAdditionalServiceLink);
+
+                    CommonActions.PageLoadedCorrectGetIndex(
+                      typeof(AdditionalServicesController),
+                      nameof(AdditionalServicesController.EditAdditionalServices)).Should().BeTrue();
+                }
+
+                CommonActions.ClickCheckboxByLabel(newAdditionalService);
+
+                CommonActions.ClickSave();
+
+                if (hasTheOrderAdditionalService)
+                    ConfirmAdditionalServiceChanges();
+            }
+            else
+            {
+                CommonActions.ClickContinue();
+
+                CommonActions.PageLoadedCorrectGetIndex(
+                  typeof(ReviewSolutionsController),
+                  nameof(ReviewSolutionsController.ReviewSolutions)).Should().BeTrue();
+
+                CommonActions.ClickContinue();
+
+                CommonActions.PageLoadedCorrectGetIndex(
+                  typeof(OrderController),
+                  nameof(OrderController.Order)).Should().BeTrue();
+            }
+        }
+
+        private void ConfirmAdditionalServiceChanges()
+        {
+            CommonActions.PageLoadedCorrectGetIndex(
+                  typeof(AdditionalServicesController),
+                  nameof(AdditionalServicesController.ConfirmAdditionalServiceChanges)).Should().BeTrue();
+
+            CommonActions.ClickFirstRadio();
+
+            CommonActions.ClickSave();
         }
 
         private void ConfirmSolutionChanges(bool hasAdditionalService, string newAdditionalServiceName)
@@ -80,7 +137,7 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering.StepTwo.Solut
             }
         }
 
-        private bool HasAdditionalService(string solutionName)
+        private bool SolutionHasAdditionalService(string solutionName)
         {
             using var dbContext = Factory.DbContext;
             return dbContext.AdditionalServices.Any(a => a.Solution.CatalogueItem.Name == solutionName);
