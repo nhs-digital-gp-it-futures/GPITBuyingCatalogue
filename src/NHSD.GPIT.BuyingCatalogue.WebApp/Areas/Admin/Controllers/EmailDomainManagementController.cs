@@ -28,4 +28,23 @@ public class EmailDomainManagementController : Controller
 
         return View(model);
     }
+
+    [HttpGet("add")]
+    public IActionResult AddEmailDomain()
+    {
+        var model = new AddEmailDomainModel { BackLink = Url.Action(nameof(Index)) };
+
+        return View(model);
+    }
+
+    [HttpPost("add")]
+    public async Task<IActionResult> AddEmailDomain(AddEmailDomainModel model)
+    {
+        if (!ModelState.IsValid)
+            return View(model);
+
+        await emailDomainService.AddAllowedDomain(model.EmailDomain);
+
+        return RedirectToAction(nameof(Index));
+    }
 }

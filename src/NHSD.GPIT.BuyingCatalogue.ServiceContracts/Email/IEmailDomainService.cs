@@ -11,4 +11,6 @@ public interface IEmailDomainService
     Task AddAllowedDomain(string domain);
 
     Task RemoveAllowedDomain(int id);
+
+    Task<bool> Exists(string domain);
 }

@@ -10,6 +10,7 @@ public class EmailDomainEntityTypeConfiguration : IEntityTypeConfiguration<Email
     {
         builder.ToTable("EmailDomains", Schemas.Users);
 
+        builder.HasKey(d => d.Id);
         builder.Property(d => d.Id).ValueGeneratedOnAdd();
 
         builder.Property(d => d.Domain).IsRequired().HasMaxLength(50);

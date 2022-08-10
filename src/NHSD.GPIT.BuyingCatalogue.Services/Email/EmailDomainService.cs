@@ -39,4 +39,7 @@ public class EmailDomainService : IEmailDomainService
 
         await dbContext.SaveChangesAsync();
     }
+
+    public Task<bool> Exists(string domain)
+        => dbContext.EmailDomains.AsNoTracking().AnyAsync(d => d.Domain == domain);
 }

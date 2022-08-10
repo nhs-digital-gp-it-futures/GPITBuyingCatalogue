@@ -25,11 +25,12 @@
     <div class="nhsuk-grid-column-two-thirds">
         <nhs-page-title title="@ViewBag.Title" advice="Add or delete email domains that a user can register with."/>
 
-        <vc:nhs-action-link text="Add an email domain" url="#"></vc:nhs-action-link>
+        <vc:nhs-action-link text="Add an email domain"
+                            url="@Url.Action(nameof(EmailDomainManagementController.AddEmailDomain), typeof(EmailDomainManagementController).ControllerName())" />
 
         @if (!Model.EmailDomains.Any())
         {
-            <p>No email domains have been added yet</p>
+            <p>No email domains have been added yet.</p>
         }
         else
         {
