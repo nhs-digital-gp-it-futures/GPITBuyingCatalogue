@@ -10,9 +10,9 @@
 
         <nhs-page-title title="@ViewBag.Title"
                         advice="Manage solutions, organisations, users and orders on the Buying Catalogue." />
-        
+
         <hr>
-        
+
         <h2>Manage solutions</h2>
         <ul>
             <li>
@@ -24,7 +24,7 @@
                 <p>Add new supplier defined Epics and edit ones that are already published.</p>
             </li>
         </ul>
-        
+
         <h2>Manage organisations</h2>
         <ul>
             <li>
@@ -42,6 +42,11 @@
             <li>
                 <a href="@Url.Action(nameof(UsersController.Index), typeof(UsersController).ControllerName())">Manage all users</a>
                 <p>Add a new user or edit the details for one that's already been created.</p>
+            </li>
+
+            <li>
+                <a href="@Url.Action(nameof(EmailDomainManagementController.Index), typeof(EmailDomainManagementController).ControllerName())">Manage allowed email domains</a>
+                <p>Add or delete email domains that a user can register with.</p>
             </li>
         </ul>
 
