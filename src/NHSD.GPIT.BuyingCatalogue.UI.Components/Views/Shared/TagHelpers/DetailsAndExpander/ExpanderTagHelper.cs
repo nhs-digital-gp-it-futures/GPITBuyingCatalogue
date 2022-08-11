@@ -15,6 +15,7 @@ namespace NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.TagHelpers.Detail
         public const string OpenName = "open";
 
         private const string ExpanderClass = "nhsuk-expander";
+        private const string ExpanderIndexClass = "nhsuk-expander-index";
         private const string ExpanderBlackAndWhite = "nhsuk-expander-black-and-white";
 
         public enum ExpanderColourMode
@@ -22,6 +23,9 @@ namespace NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.TagHelpers.Detail
             Normal = 0,
             BlackAndWhite = 1,
         }
+
+        [HtmlAttributeName(TagHelperConstants.HeadingTextName)]
+        public string HeadingText { get; set; }
 
         [HtmlAttributeName(TagHelperConstants.LabelTextName)]
         public string LabelText { get; set; }
@@ -56,14 +60,14 @@ namespace NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.TagHelpers.Detail
             output.TagMode = TagMode.StartTagAndEndTag;
 
             var summary = string.IsNullOrWhiteSpace(SecondaryTextTitle)
-                ? DetailsAndExpanderTagHelperBuilders.GetSummaryLabelBuilder(LabelText, BoldTitle)
+                ? DetailsAndExpanderTagHelperBuilders.GetSummaryLabelBuilder(HeadingText, LabelText, BoldTitle)
                 : DetailsAndExpanderTagHelperBuilders.GetSummaryLabelBuilderWithSecondaryInformation(LabelText, SecondaryTextTitle, SecondaryText, BoldTitle);
 
             var textItem = DetailsAndExpanderTagHelperBuilders.GetTextItem();
 
             var children = await output.GetChildContentAsync();
 
-            var classAttribute = $"{DetailsAndExpanderTagHelperBuilders.DetailsClass} {ExpanderClass}";
+            var classAttribute = $"{DetailsAndExpanderTagHelperBuilders.DetailsClass} {ExpanderClass} {ExpanderIndexClass}";
             if (ColourMode == ExpanderColourMode.BlackAndWhite)
                 classAttribute += $" {ExpanderBlackAndWhite}";
 

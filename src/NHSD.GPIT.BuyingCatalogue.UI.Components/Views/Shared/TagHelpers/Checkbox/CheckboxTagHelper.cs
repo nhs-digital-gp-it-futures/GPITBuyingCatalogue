@@ -37,6 +37,9 @@ namespace NHSD.GPIT.BuyingCatalogue.UI.Components.TagHelpers
         [HtmlAttributeName(TagHelperConstants.LabelEmbedHtml)]
         public bool EmbedHtml { get; set; } = false;
 
+        [HtmlAttributeName(TagHelperConstants.SubGroupName)]
+        public string SubGroup { get; set; }
+
         public override async Task ProcessAsync(TagHelperContext context, TagHelperOutput output)
         {
             output.TagName = TagHelperConstants.Div;
@@ -46,6 +49,11 @@ namespace NHSD.GPIT.BuyingCatalogue.UI.Components.TagHelpers
 
             var label = GetCheckboxLabelBuilder();
             var input = GetCheckboxInputBuilder();
+
+            if (!string.IsNullOrWhiteSpace(SubGroup))
+            {
+                input.Attributes.Add("subgroup", SubGroup.Replace(" ", string.Empty));
+            }
 
             bool isSelected = input.Attributes.TryGetValue("checked", out string _);
 
