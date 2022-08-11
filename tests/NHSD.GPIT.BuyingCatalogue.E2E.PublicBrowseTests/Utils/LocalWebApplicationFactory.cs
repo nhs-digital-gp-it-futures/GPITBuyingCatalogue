@@ -211,6 +211,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils
                     BuyingCatalogueSeedData.Initialize(bcDb);
                     OrderSeedData.Initialize(bcDb);
                     ContractSeedData.Initialize(bcDb);
+                    EmailDomainSeedData.Initialize(bcDb);
                 }
                 catch (Exception ex)
                 {

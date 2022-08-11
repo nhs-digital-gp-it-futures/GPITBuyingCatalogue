@@ -30,11 +30,11 @@
 
         @if (!Model.EmailDomains.Any())
         {
-            <p>No email domains have been added yet.</p>
+            <p data-test-id="no-domains-text">No email domains have been added yet.</p>
         }
         else
         {
-            <nhs-table label-text="Allowed email domains">
+            <nhs-table label-text="Allowed email domains" data-test-id="domains-table">
                 <nhs-table-column>Domain</nhs-table-column>
                 <nhs-table-column>Action</nhs-table-column>
 

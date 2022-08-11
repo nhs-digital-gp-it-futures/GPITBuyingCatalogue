@@ -88,6 +88,21 @@ public static class EmailDomainManagementControllerTests
 
     [Theory]
     [CommonAutoData]
+    public static async Task Get_DeleteEmailAddress_IdNotFound(
+        int id,
+        [Frozen] Mock<IEmailDomainService> service,
+        EmailDomainManagementController controller)
+    {
+        service.Setup(s => s.GetAllowedDomain(id)).ReturnsAsync((EmailDomain)null);
+
+        var result = (await controller.DeleteEmailDomain(id)).As<RedirectToActionResult>();
+
+        result.Should().NotBeNull();
+        result.ActionName.Should().Be(nameof(controller.Index));
+    }
+
+    [Theory]
+    [CommonAutoData]
     public static async Task Get_DeleteEmailDomain_ReturnsViewWithModel(
         int id,
         EmailDomain emailDomain,
