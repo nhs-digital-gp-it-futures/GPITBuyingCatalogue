@@ -97,5 +97,6 @@ public static class AddEmailDomainModelValidatorTests
 
         var result = validator.TestValidate(model);
 
-        result.ShouldNotHaveAnyValidationErrors(); }
+        result.ShouldNotHaveAnyValidationErrors();
+    }
 }
