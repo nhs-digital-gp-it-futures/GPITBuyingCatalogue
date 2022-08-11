@@ -11,7 +11,7 @@ public class AddEmailDomainModelValidator : AbstractValidator<AddEmailDomainMode
     public const char EmailCharacter = '@';
     public const string EmailDomainInvalid = "Enter an email domain in a valid format, for example, @nhs.net";
     public const string DuplicateEmailDomain = "This email domain has already been added to the allow list";
-    public const string TooManyWildcards = "Only one wildcard is allowed";
+    public const string TooManyWildcards = "Only one level of subdomain can be added. Remove any extra asterisks (*)";
 
     private readonly IEmailDomainService emailDomainService;
 
@@ -24,10 +24,10 @@ public class AddEmailDomainModelValidator : AbstractValidator<AddEmailDomainMode
             .WithMessage(EmailDomainInvalid)
             .Must(m => m.StartsWith(EmailCharacter))
             .WithMessage(EmailDomainInvalid)
-            .Must(NotBeADuplicate)
-            .WithMessage(DuplicateEmailDomain)
             .Must(HaveOneWildcard)
-            .WithMessage(TooManyWildcards);
+            .WithMessage(TooManyWildcards)
+            .Must(NotBeADuplicate)
+            .WithMessage(DuplicateEmailDomain);
     }
 
     private static bool HaveOneWildcard(string emailDomain)

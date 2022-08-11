@@ -8,9 +8,11 @@ public interface IEmailDomainService
 {
     Task<IEnumerable<EmailDomain>> GetAllowedDomains();
 
+    Task<EmailDomain> GetAllowedDomain(int id);
+
     Task AddAllowedDomain(string domain);
 
-    Task RemoveAllowedDomain(int id);
+    Task DeleteAllowedDomain(int id);
 
     Task<bool> Exists(string domain);
 }

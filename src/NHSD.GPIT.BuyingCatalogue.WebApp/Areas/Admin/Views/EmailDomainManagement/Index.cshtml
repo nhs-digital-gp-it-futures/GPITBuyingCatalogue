@@ -43,7 +43,7 @@
                     <nhs-table-row-container>
                         <nhs-table-cell>@emailDomain.Domain</nhs-table-cell>
                         <nhs-table-cell>
-                            <a href="#">Delete</a>
+                            <a href="@Url.Action(nameof(EmailDomainManagementController.DeleteEmailDomain), new{ emailDomain.Id })">Delete</a>
                         </nhs-table-cell>
                     </nhs-table-row-container>
                 }

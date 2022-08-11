@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework;
@@ -21,6 +20,9 @@ public class EmailDomainService : IEmailDomainService
     public async Task<IEnumerable<EmailDomain>> GetAllowedDomains()
         => await dbContext.EmailDomains.AsNoTracking().ToListAsync();
 
+    public async Task<EmailDomain> GetAllowedDomain(int id)
+        => await dbContext.EmailDomains.AsNoTracking().FirstOrDefaultAsync(d => d.Id == id);
+
     public async Task AddAllowedDomain(string domain)
     {
         dbContext.EmailDomains.Add(new EmailDomain(domain));
@@ -28,10 +30,9 @@ public class EmailDomainService : IEmailDomainService
         await dbContext.SaveChangesAsync();
     }
 
-    public async Task RemoveAllowedDomain(int id)
+    public async Task DeleteAllowedDomain(int id)
     {
-        var emailDomain = dbContext.EmailDomains.FirstOrDefault(d => d.Id == id);
-
+        var emailDomain = await GetAllowedDomain(id);
         if (emailDomain == null)
             return;
 

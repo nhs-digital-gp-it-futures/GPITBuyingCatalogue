@@ -47,4 +47,22 @@ public class EmailDomainManagementController : Controller
 
         return RedirectToAction(nameof(Index));
     }
+
+    [HttpGet("delete")]
+    public async Task<IActionResult> DeleteEmailDomain(int id)
+    {
+        var emailDomain = await emailDomainService.GetAllowedDomain(id);
+
+        var model = new DeleteEmailDomainModel(emailDomain) { BackLink = Url.Action(nameof(Index)) };
+
+        return View(model);
+    }
+
+    [HttpPost("delete")]
+    public async Task<IActionResult> DeleteEmailDomain(int id, DeleteEmailDomainModel model)
+    {
+        await emailDomainService.DeleteAllowedDomain(id);
+
+        return RedirectToAction(nameof(Index));
+    }
 }
