@@ -1,24 +1,16 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using FluentAssertions;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
+using NHSD.GPIT.BuyingCatalogue.Framework.Constants;
 using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.AutoFixtureCustomisations;
-using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models;
+using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models.Filters;
 using Xunit;
 
-namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Models
+namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Models.Filters
 {
     public static class FilterCapabilitiesModelTests
     {
-        [Fact]
-        public static void Constructor_NullCapabilities_ThrowsException()
-        {
-            FluentActions
-                .Invoking(() => new FilterCapabilitiesModel(null))
-                .Should().Throw<ArgumentNullException>();
-        }
-
         [Theory]
         [CommonAutoData]
         public static void Constructor_PropertiesAreSetCorrectly(
@@ -26,11 +18,11 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Models
         {
             var model = new FilterCapabilitiesModel(capabilities);
 
-            model.Categories.Should().BeEquivalentTo(capabilities.Select(x => x.Category));
-            model.TotalCapabilities.Should().Be(capabilities.Count);
-            model.Items.Should().BeEquivalentTo(capabilities.Select(x => new SelectionModel
+            model.Groups.Should().BeEquivalentTo(capabilities.Select(x => x.Category));
+            model.Total.Should().Be(capabilities.Count);
+            model.SelectedItems.Should().BeEquivalentTo(capabilities.Select(x => new SelectionModel
             {
-                Id = x.Id,
+                Id = $"{x.Id}",
                 Selected = false,
             }));
         }
@@ -40,15 +32,15 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Models
         public static void Constructor_WithSelectedIds_PropertiesAreSetCorrectly(
             List<Capability> capabilities)
         {
-            var selectedIds = $"{capabilities.First().Id}{FilterCapabilitiesModel.FilterDelimiter}{capabilities.Last().Id}";
+            var selectedIds = $"{capabilities.First().Id}{FilterConstants.Delimiter}{capabilities.Last().Id}";
 
             var model = new FilterCapabilitiesModel(capabilities, selectedIds);
 
-            model.Categories.Should().BeEquivalentTo(capabilities.Select(x => x.Category));
-            model.TotalCapabilities.Should().Be(capabilities.Count);
-            model.Items.Should().BeEquivalentTo(capabilities.Select(x => new SelectionModel
+            model.Groups.Should().BeEquivalentTo(capabilities.Select(x => x.Category));
+            model.Total.Should().Be(capabilities.Count);
+            model.SelectedItems.Should().BeEquivalentTo(capabilities.Select(x => new SelectionModel
             {
-                Id = x.Id,
+                Id = $"{x.Id}",
                 Selected = x.Id == capabilities.First().Id || x.Id == capabilities.Last().Id,
             }));
         }
@@ -64,7 +56,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Models
             {
                 var expected = capabilities.Where(x => x.Category.Id == category.Id);
 
-                model.Capabilities(category.Id).Should().BeEquivalentTo(expected);
+                model.Items(category.Id).Should().BeEquivalentTo(expected);
             }
         }
     }
