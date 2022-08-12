@@ -1,5 +1,6 @@
 ﻿using System.Linq;
 using FluentAssertions;
+using Microsoft.EntityFrameworkCore;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.Objects.Admin.EmailDomainManagement;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Utils;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.TestBases;
@@ -61,8 +62,12 @@ public class AddEmailDomain : AuthorityTestBase, IClassFixture<LocalWebApplicati
             .BeTrue();
 
         using var context = GetEndToEndDbContext();
+        var domain = context.EmailDomains.AsNoTracking().FirstOrDefault(d => d.Domain == emailDomain);
 
-        context.EmailDomains.Should().Contain(p => p.Domain == emailDomain);
+        domain.Should().NotBeNull();
+
+        context.EmailDomains.Remove(domain!);
+        context.SaveChanges();
     }
 
     [Fact]

@@ -3,6 +3,7 @@ using System.Linq;
 using FluentAssertions;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Utils;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.TestBases;
+using NHSD.GPIT.BuyingCatalogue.EntityFramework.Users.Models;
 using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers;
 using Xunit;
@@ -61,6 +62,20 @@ public class DeleteEmailDomain : AuthorityTestBase, IClassFixture<LocalWebApplic
     [Fact]
     public void ClickSubmit_NavigatesCorrectly()
     {
+        var domain = new EmailDomain("@gmail.com");
+
+        using var context = GetEndToEndDbContext();
+        context.EmailDomains.Add(domain);
+        context.SaveChanges();
+
+        context.EmailDomains.Count().Should().BeGreaterThan(1);
+
+        var parameters = new Dictionary<string, string> { { nameof(domain.Id), domain.Id.ToString() }, };
+        NavigateToUrl(
+            typeof(EmailDomainManagementController),
+            nameof(EmailDomainManagementController.DeleteEmailDomain),
+            parameters);
+
         CommonActions.ClickSave();
 
         CommonActions.PageLoadedCorrectGetIndex(
@@ -69,8 +84,6 @@ public class DeleteEmailDomain : AuthorityTestBase, IClassFixture<LocalWebApplic
             .Should()
             .BeTrue();
 
-        using var context = GetEndToEndDbContext();
-
-        context.EmailDomains.Count().Should().Be(0);
+        context.EmailDomains.Count().Should().Be(1);
     }
 }
