@@ -29,8 +29,15 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers
         }
 
         [HttpPost("filter-capabilities")]
-        public IActionResult FilterCapabilities(FilterCapabilitiesModel model)
+        public async Task<IActionResult> FilterCapabilities(FilterCapabilitiesModel model)
         {
+            if (!ModelState.IsValid)
+            {
+                var capabilities = await capabilitiesService.GetCapabilities();
+
+                return View(new FilterCapabilitiesModel(capabilities));
+            }
+
             var selectedIds = string.Join(
                 FilterCapabilitiesModel.FilterDelimiter,
                 model.Items.Where(x => x.Selected).Select(x => x.Id));

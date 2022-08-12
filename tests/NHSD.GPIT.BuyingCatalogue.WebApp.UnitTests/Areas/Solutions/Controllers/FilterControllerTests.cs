@@ -83,13 +83,37 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Controllers
 
         [Theory]
         [CommonAutoData]
-        public static void Post_FilterCapabilities_NoSelectedItems_ReturnsExpectedResult(
+        public static async Task Post_FilterCapabilities_WithModelErrors_ReturnsExpectedResult(
+            FilterCapabilitiesModel model,
+            List<Capability> capabilities,
+            [Frozen] Mock<ICapabilitiesService> capabilitiesService,
+            FilterController controller)
+        {
+            controller.ModelState.AddModelError("key", "errorMessage");
+
+            capabilitiesService
+                .Setup(s => s.GetCapabilities())
+                .ReturnsAsync(capabilities);
+
+            var result = await controller.FilterCapabilities(model);
+
+            capabilitiesService.VerifyAll();
+
+            var actualResult = result.Should().BeOfType<ViewResult>().Subject;
+            var expected = new FilterCapabilitiesModel(capabilities);
+
+            actualResult.Model.Should().BeEquivalentTo(expected);
+        }
+
+        [Theory]
+        [CommonAutoData]
+        public static async Task Post_FilterCapabilities_NoSelectedItems_ReturnsExpectedResult(
             FilterCapabilitiesModel model,
             FilterController controller)
         {
             model.Items.ForEach(x => x.Selected = false);
 
-            var result = controller.FilterCapabilities(model);
+            var result = await controller.FilterCapabilities(model);
 
             var actualResult = result.Should().BeOfType<RedirectToActionResult>().Subject;
 
@@ -103,7 +127,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Controllers
 
         [Theory]
         [CommonAutoData]
-        public static void Post_FilterCapabilities_WithSelectedItems_ReturnsExpectedResult(
+        public static async Task Post_FilterCapabilities_WithSelectedItems_ReturnsExpectedResult(
             FilterCapabilitiesModel model,
             FilterController controller)
         {
@@ -113,7 +137,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Controllers
                 FilterCapabilitiesModel.FilterDelimiter,
                 model.Items.Select(x => x.Id));
 
-            var result = controller.FilterCapabilities(model);
+            var result = await controller.FilterCapabilities(model);
 
             var actualResult = result.Should().BeOfType<RedirectToActionResult>().Subject;
 
