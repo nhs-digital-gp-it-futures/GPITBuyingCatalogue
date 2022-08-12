@@ -14,11 +14,11 @@ using OpenQA.Selenium;
 
 namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering.StepTwo.SolutionSelection
 {
-    public class SelectAndConfirmAssociatedServicePrices : PageBase
+    public class SelectEditAndConfirmAdditionalServicePrice : PageBase
     {
-        private const decimal MaxPrice = 252.50M;
+        private const decimal MaxPrice = 0.07M;
 
-        public SelectAndConfirmAssociatedServicePrices(IWebDriver driver, CommonActions commonActions, LocalWebApplicationFactory factory)
+        public SelectEditAndConfirmAdditionalServicePrice(IWebDriver driver, CommonActions commonActions, LocalWebApplicationFactory factory)
             : base(driver, commonActions)
         {
             Factory = factory;
@@ -32,9 +32,9 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering.StepTwo.Solut
             ConfirmPrice();
         }
 
-        public void EditAssociatedServicePrice(string associatedServiceName)
+        public void EditAdditionalServicePrice(string additionalServiceName)
         {
-            CommonActions.ClickLinkElement(ReviewSolutionsObjects.EditCatalogueItemPriceLink(GetCatalogueSolutionID(associatedServiceName)));
+            CommonActions.ClickLinkElement(ReviewSolutionsObjects.EditCatalogueItemPriceLink(GetAdditionalServiceID(additionalServiceName)));
 
             CommonActions.PageLoadedCorrectGetIndex(
              typeof(PricesController),
@@ -83,13 +83,13 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering.StepTwo.Solut
             CommonActions.ClickSave();
         }
 
-        private string GetCatalogueSolutionID(string associatedServiceName)
+        private string GetAdditionalServiceID(string additionalServiceName)
         {
-            using var dbContext = Factory.DbContext;
+            using var db = Factory.DbContext;
 
-            var associatedService = dbContext.AssociatedServices.SingleOrDefault(i => i.CatalogueItem.Name == associatedServiceName);
+            var additionalService = db.AdditionalServices.SingleOrDefault(a => a.CatalogueItem.Name == additionalServiceName);
 
-            return (associatedService != null) ? associatedService.CatalogueItemId.ToString() : string.Empty;
+            return (additionalService != null) ? additionalService.CatalogueItemId.ToString() : string.Empty;
         }
     }
 }

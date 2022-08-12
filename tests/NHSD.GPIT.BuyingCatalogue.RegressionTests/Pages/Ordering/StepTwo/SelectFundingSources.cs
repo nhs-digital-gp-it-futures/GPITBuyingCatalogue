@@ -20,7 +20,7 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering.StepTwo
         {
         }
 
-        public void AddFundingSources(string solutionName, string additionalService, string associatedService, bool isAssociatedServiceOnly)
+        public void AddFundingSources(string solutionName, string associatedService, bool isAssociatedServiceOnly, string additionalService = "")
         {
             var names = new List<string>();
 

@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 using FluentAssertions;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.Actions.Common;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.Objects.Ordering.Prices;
@@ -14,11 +13,11 @@ using OpenQA.Selenium;
 
 namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering.StepTwo.SolutionSelection
 {
-    public class SelectAndConfirmAssociatedServicePrices : PageBase
+    public class SelectEditAndConfirmPrices : PageBase
     {
-        private const decimal MaxPrice = 252.50M;
+        private const decimal MaxPrice = 1.26M;
 
-        public SelectAndConfirmAssociatedServicePrices(IWebDriver driver, CommonActions commonActions, LocalWebApplicationFactory factory)
+        public SelectEditAndConfirmPrices(IWebDriver driver, CommonActions commonActions, LocalWebApplicationFactory factory)
             : base(driver, commonActions)
         {
             Factory = factory;
@@ -32,9 +31,9 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering.StepTwo.Solut
             ConfirmPrice();
         }
 
-        public void EditAssociatedServicePrice(string associatedServiceName)
+        public void EditCatalogueSolutionPrice(string solutionName)
         {
-            CommonActions.ClickLinkElement(ReviewSolutionsObjects.EditCatalogueItemPriceLink(GetCatalogueSolutionID(associatedServiceName)));
+            CommonActions.ClickLinkElement(ReviewSolutionsObjects.EditCatalogueItemPriceLink(GetCatalogueSolutionID(solutionName)));
 
             CommonActions.PageLoadedCorrectGetIndex(
              typeof(PricesController),
@@ -83,13 +82,13 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering.StepTwo.Solut
             CommonActions.ClickSave();
         }
 
-        private string GetCatalogueSolutionID(string associatedServiceName)
+        private string GetCatalogueSolutionID(string solutionName)
         {
             using var dbContext = Factory.DbContext;
 
-            var associatedService = dbContext.AssociatedServices.SingleOrDefault(i => i.CatalogueItem.Name == associatedServiceName);
+            var solution = dbContext.Solutions.SingleOrDefault(i => i.CatalogueItem.Name == solutionName);
 
-            return (associatedService != null) ? associatedService.CatalogueItemId.ToString() : string.Empty;
+            return (solution != null) ? solution.CatalogueItemId.ToString() : string.Empty;
         }
     }
 }

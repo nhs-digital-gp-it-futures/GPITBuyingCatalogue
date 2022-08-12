@@ -18,6 +18,12 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.Objects.Ordering.Solution
 
         public static By ChangeCatalogueSolutionLink => By.LinkText("Change Catalogue Solution");
 
+        public static By EditCatalogueItemServiceRecipientLink(string catalogueItemID) => By.Id($"ServiceRecipients_{catalogueItemID}");
+
+        public static By EditCatalogueItemPriceLink(string catalogueItemID) => By.Id($"Price_{catalogueItemID}");
+
+        public static By EditCatalogueItemQuantiyLink(string catalogueItemID) => By.Id($"Quantity_{catalogueItemID}");
+
         public static By ChangeAdditionalServiceLink => By.LinkText("Change Additional Services");
 
         public static By AddAdditionalServiceLink => By.LinkText("Add Additional Services");

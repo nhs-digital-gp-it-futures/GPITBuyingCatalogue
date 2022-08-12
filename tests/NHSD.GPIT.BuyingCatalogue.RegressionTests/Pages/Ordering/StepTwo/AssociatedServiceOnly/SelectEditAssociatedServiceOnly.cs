@@ -37,6 +37,33 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering.StepTwo.Assoc
             SelectAssociatedServiceOfSolution(newAssociatedService);
         }
 
+        public void EditAssociatedServiceOnly(string newAssociatedService, string oldAssociatedService)
+        {
+            CommonActions.ClickLinkElement(ReviewSolutionsObjects.ChangeAssociatedServiceLink);
+
+            CommonActions.PageLoadedCorrectGetIndex(
+             typeof(AssociatedServicesController),
+             nameof(AssociatedServicesController.EditAssociatedServices)).Should().BeTrue();
+
+            CommonActions.ClickCheckboxByLabel(oldAssociatedService);
+            CommonActions.ClickCheckboxByLabel(newAssociatedService);
+
+            CommonActions.ClickSave();
+
+            ConfirmAssociatedServicesChanges();
+        }
+
+        private void ConfirmAssociatedServicesChanges()
+        {
+            CommonActions.PageLoadedCorrectGetIndex(
+             typeof(AssociatedServicesController),
+             nameof(AssociatedServicesController.ConfirmAssociatedServiceChanges)).Should().BeTrue();
+
+            CommonActions.ClickFirstRadio();
+
+            CommonActions.ClickSave();
+        }
+
         private void ConfirmSolutionChanges()
         {
             CommonActions.PageLoadedCorrectGetIndex(

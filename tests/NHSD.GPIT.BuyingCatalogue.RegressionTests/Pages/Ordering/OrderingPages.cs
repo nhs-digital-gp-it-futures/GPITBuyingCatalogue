@@ -25,15 +25,15 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering
             SelectSupplier = new SelectSupplier(driver, commonActions);
             SupplierContacts = new SupplierContacts(driver, commonActions);
             SelectEditCatalogueSolution = new SelectEditCatalogueSolution(driver, commonActions, factory);
-            SelectCatalogueSolutionServiceRecipients = new SelectCatalogueSolutionServiceRecipients(driver, commonActions);
-            SelectAndConfirmPrices = new SelectAndConfirmPrices(driver, commonActions);
-            Quantity = new Quantity(driver, commonActions);
+            SelectEditCatalogueSolutionServiceRecipients = new SelectEditCatalogueSolutionServiceRecipients(driver, commonActions, factory);
+            SelectEditAndConfirmPrices = new SelectEditAndConfirmPrices(driver, commonActions, factory);
+            Quantity = new Quantity(driver, commonActions, factory);
             SolutionAndServicesReview = new SolutionAndServicesReview(driver, commonActions);
             SelectEditAssociatedService = new SelectEditAssociatedService(driver, commonActions, factory);
-            SelectAssociatedServiceRecipents = new SelectAssociatedServiceRecipents(driver, commonActions);
-            SelectAndConfirmAssociatedServicePrices = new SelectAndConfirmAssociatedServicePrices(driver, commonActions);
-            SelectAdditionalServiceRecipients = new SelectAdditionalServiceRecipients(driver, commonActions);
-            SelectAndConfirmAdditionalServicePrice = new SelectAndConfirmAdditionalServicePrice(driver, commonActions);
+            SelectEditAssociatedServiceRecipents = new SelectEditAssociatedServiceRecipents(driver, commonActions, factory);
+            SelectAndConfirmAssociatedServicePrices = new SelectAndConfirmAssociatedServicePrices(driver, commonActions, factory);
+            SelectEditAdditionalServiceRecipients = new SelectEditAdditionalServiceRecipients(driver, commonActions, factory);
+            SelectEditAndConfirmAdditionalServicePrice = new SelectEditAndConfirmAdditionalServicePrice(driver, commonActions, factory);
             SelectEditAssociatedServiceOnly = new SelectEditAssociatedServiceOnly(driver, commonActions);
             SelectAssociatedServiceRecipientOnly = new SelectAssociatedServiceRecipientOnly(driver, commonActions);
             SelectAndConfirmAssociatedServiceOnlyPrices = new SelectAndConfirmAssociatedServiceOnlyPrices(driver, commonActions);
@@ -65,9 +65,9 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering
 
         internal SelectEditCatalogueSolution SelectEditCatalogueSolution { get; }
 
-        internal SelectCatalogueSolutionServiceRecipients SelectCatalogueSolutionServiceRecipients { get; }
+        internal SelectEditCatalogueSolutionServiceRecipients SelectEditCatalogueSolutionServiceRecipients { get; }
 
-        internal SelectAndConfirmPrices SelectAndConfirmPrices { get; }
+        internal SelectEditAndConfirmPrices SelectEditAndConfirmPrices { get; }
 
         internal Quantity Quantity { get; }
 
@@ -75,13 +75,13 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering
 
         internal SelectEditAssociatedService SelectEditAssociatedService { get; }
 
-        internal SelectAssociatedServiceRecipents SelectAssociatedServiceRecipents { get; }
+        internal SelectEditAssociatedServiceRecipents SelectEditAssociatedServiceRecipents { get; }
 
         internal SelectAndConfirmAssociatedServicePrices SelectAndConfirmAssociatedServicePrices { get; }
 
-        internal SelectAdditionalServiceRecipients SelectAdditionalServiceRecipients { get; }
+        internal SelectEditAdditionalServiceRecipients SelectEditAdditionalServiceRecipients { get; }
 
-        internal SelectAndConfirmAdditionalServicePrice SelectAndConfirmAdditionalServicePrice { get; }
+        internal SelectEditAndConfirmAdditionalServicePrice SelectEditAndConfirmAdditionalServicePrice { get; }
 
         internal SelectEditAssociatedServiceOnly SelectEditAssociatedServiceOnly { get; }
 
@@ -117,7 +117,7 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering
 
         public void StepTwoAddSolutionsAndServices(string solutionName, string additionalService = "", string associatedService = "")
         {
-            var isAssociatedServiceOnlyOrder = IsAssociatedServiceOnly();
+            var isAssociatedServiceOnlyOrder = IsAssociatedServiceOnlyOrder();
 
             TaskList.SelectSolutionsAndServicesTask(isAssociatedServiceOnlyOrder);
 
@@ -125,14 +125,14 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering
             {
                 SelectEditCatalogueSolution.SelectSolution(solutionName, additionalService);
 
-                SelectCatalogueSolutionServiceRecipients.AddCatalogueSolutionServiceRecipient();
-                SelectAndConfirmPrices.SelectAndConfirmPrice();
+                SelectEditCatalogueSolutionServiceRecipients.AddCatalogueSolutionServiceRecipient();
+                SelectEditAndConfirmPrices.SelectAndConfirmPrice();
                 Quantity.AddQuantity();
 
                 if (HasAdditionalService(solutionName) && !string.IsNullOrWhiteSpace(additionalService))
                 {
-                    SelectAdditionalServiceRecipients.AddServiceRecipients();
-                    SelectAndConfirmAdditionalServicePrice.SelectAndConfirmPrice();
+                    SelectEditAdditionalServiceRecipients.AddServiceRecipients();
+                    SelectEditAndConfirmAdditionalServicePrice.SelectAndConfirmPrice();
                     Quantity.AddQuantity();
                 }
 
@@ -141,7 +141,7 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering
                     if (!string.IsNullOrWhiteSpace(associatedService))
                     {
                         SelectEditAssociatedService.AddAssociatedService("Yes", associatedService);
-                        SelectAssociatedServiceRecipents.AddServiceRecipient();
+                        SelectEditAssociatedServiceRecipents.AddServiceRecipient();
                         SelectAndConfirmAssociatedServicePrices.SelectAndConfirmPrice();
                         Quantity.AddQuantity();
                     }
@@ -162,7 +162,7 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering
             SolutionAndServicesReview.ReviewSolutionAndServices();
 
             TaskList.SelectFundingSourcesTask();
-            SelectFundingSources.AddFundingSources(solutionName, additionalService, associatedService, isAssociatedServiceOnlyOrder);
+            SelectFundingSources.AddFundingSources(solutionName, associatedService, isAssociatedServiceOnlyOrder, additionalService);
         }
 
         public void StepThreeCompleteContract()
@@ -195,7 +195,7 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering
 
         public void EditCatalogueSolution(string newSolutionName, string newAdditionalServiceName = "", string newAssociatedService = "")
         {
-            var isAssociatedServiceOnlyOrder = IsAssociatedServiceOnly();
+            var isAssociatedServiceOnlyOrder = IsAssociatedServiceOnlyOrder();
 
             TaskList.EditSolutionsAndServicesTask(isAssociatedServiceOnlyOrder);
 
@@ -210,14 +210,14 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering
             {
                 SelectEditCatalogueSolution.EditSolution(newSolutionName, newAdditionalServiceName);
 
-                SelectCatalogueSolutionServiceRecipients.AddCatalogueSolutionServiceRecipient();
-                SelectAndConfirmPrices.SelectAndConfirmPrice();
+                SelectEditCatalogueSolutionServiceRecipients.AddCatalogueSolutionServiceRecipient();
+                SelectEditAndConfirmPrices.SelectAndConfirmPrice();
                 Quantity.AddQuantity();
 
                 if (HasAdditionalService(newSolutionName) && !string.IsNullOrWhiteSpace(newAdditionalServiceName))
                 {
-                    SelectAdditionalServiceRecipients.AddServiceRecipients();
-                    SelectAndConfirmAdditionalServicePrice.SelectAndConfirmPrice();
+                    SelectEditAdditionalServiceRecipients.AddServiceRecipients();
+                    SelectEditAndConfirmAdditionalServicePrice.SelectAndConfirmPrice();
                     Quantity.AddQuantity();
                 }
 
@@ -226,7 +226,7 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering
                     if (!string.IsNullOrWhiteSpace(newAssociatedService))
                     {
                         SelectEditAssociatedService.AddAssociatedService("Yes", newAssociatedService);
-                        SelectAssociatedServiceRecipents.AddServiceRecipient();
+                        SelectEditAssociatedServiceRecipents.AddServiceRecipient();
                         SelectAndConfirmAssociatedServicePrices.SelectAndConfirmPrice();
                         Quantity.AddQuantity();
                     }
@@ -240,12 +240,12 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering
             SolutionAndServicesReview.ReviewSolutionAndServices();
 
             TaskList.SelectFundingSourcesTask();
-            SelectFundingSources.AddFundingSources(newSolutionName, newAdditionalServiceName, newAssociatedService, isAssociatedServiceOnlyOrder);
+            SelectFundingSources.AddFundingSources(newSolutionName, newAssociatedService, isAssociatedServiceOnlyOrder, newAdditionalServiceName);
         }
 
         public void EditAdditionalService(string solutionName, string newAdditionalService, string newAssociatedService = "", string oldAdditionalService = "")
         {
-            var isAssociatedServiceOnlyOrder = IsAssociatedServiceOnly();
+            var isAssociatedServiceOnlyOrder = IsAssociatedServiceOnlyOrder();
 
             TaskList.EditSolutionsAndServicesTask(isAssociatedServiceOnlyOrder);
 
@@ -258,8 +258,8 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering
 
             if (HasAdditionalService(solutionName) && !string.IsNullOrWhiteSpace(newAdditionalService))
             {
-                SelectAdditionalServiceRecipients.AddServiceRecipients();
-                SelectAndConfirmAdditionalServicePrice.SelectAndConfirmPrice();
+                SelectEditAdditionalServiceRecipients.AddServiceRecipients();
+                SelectEditAndConfirmAdditionalServicePrice.SelectAndConfirmPrice();
                 Quantity.AddQuantity();
             }
 
@@ -268,7 +268,7 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering
                 if (!string.IsNullOrWhiteSpace(newAssociatedService))
                 {
                     SelectEditAssociatedService.AddAssociatedService("Yes", newAssociatedService);
-                    SelectAssociatedServiceRecipents.AddServiceRecipient();
+                    SelectEditAssociatedServiceRecipents.AddServiceRecipient();
                     SelectAndConfirmAssociatedServicePrices.SelectAndConfirmPrice();
                     Quantity.AddQuantity();
                 }
@@ -283,13 +283,13 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering
                 SolutionAndServicesReview.ReviewSolutionAndServices();
 
                 TaskList.SelectFundingSourcesTask();
-                SelectFundingSources.AddFundingSources(solutionName, newAdditionalService, newAssociatedService, isAssociatedServiceOnlyOrder);
+                SelectFundingSources.AddFundingSources(solutionName, newAssociatedService, isAssociatedServiceOnlyOrder, newAdditionalService);
             }
         }
 
         public void EditAssociatedService(string solutionName, string newAssociatedServiceName, string additionalServiceName = "", string oldAssociatedServiceName = "")
         {
-            var isAssociatedServiceOnlyOrder = IsAssociatedServiceOnly();
+            var isAssociatedServiceOnlyOrder = IsAssociatedServiceOnlyOrder();
 
             TaskList.EditSolutionsAndServicesTask(isAssociatedServiceOnlyOrder);
 
@@ -297,7 +297,7 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering
 
             if (HasAssociatedServices(solutionName) && !string.IsNullOrWhiteSpace(newAssociatedServiceName))
             {
-                SelectAssociatedServiceRecipents.AddServiceRecipient();
+                SelectEditAssociatedServiceRecipents.AddServiceRecipient();
                 SelectAndConfirmAssociatedServicePrices.SelectAndConfirmPrice();
                 Quantity.AddQuantity();
             }
@@ -305,10 +305,83 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering
             SolutionAndServicesReview.ReviewSolutionAndServices();
 
             TaskList.SelectFundingSourcesTask();
-            SelectFundingSources.AddFundingSources(solutionName, additionalServiceName, newAssociatedServiceName, isAssociatedServiceOnlyOrder);
+            SelectFundingSources.AddFundingSources(solutionName, newAssociatedServiceName, isAssociatedServiceOnlyOrder, additionalServiceName);
         }
 
-        private bool IsAssociatedServiceOnly()
+        public void EditAssociatedServiceOnly(string solutionName, string newAssociatedServiceName, string oldAssociatedServiceName)
+        {
+            var isAssociatedServiceOnlyOrder = IsAssociatedServiceOnlyOrder();
+
+            TaskList.EditSolutionsAndServicesTask(isAssociatedServiceOnlyOrder);
+
+            SelectEditAssociatedServiceOnly.EditAssociatedServiceOnly(newAssociatedServiceName, oldAssociatedServiceName);
+
+            SelectAssociatedServiceRecipientOnly.AddServiceRecipient();
+            SelectAndConfirmAssociatedServiceOnlyPrices.SelectAndConfirmPrice();
+            Quantity.AddQuantity();
+
+            SolutionAndServicesReview.ReviewSolutionAndServices();
+
+            TaskList.SelectFundingSourcesTask();
+            SelectFundingSources.AddFundingSources(solutionName, newAssociatedServiceName, isAssociatedServiceOnlyOrder);
+        }
+
+        public void EditCatalogueSolutionServiceRecipient(string solutionName)
+        {
+            TaskList.EditSolutionsAndServicesTask(IsAssociatedServiceOnlyOrder());
+
+            SelectEditCatalogueSolutionServiceRecipients.EditCatalogueSolutionServiceRecipient(solutionName);
+
+            Quantity.EditQuantity(solutionName);
+        }
+
+        public void EditCatalogueSolutionPrice(string solutionName)
+        {
+            TaskList.EditSolutionsAndServicesTask(IsAssociatedServiceOnlyOrder());
+
+            SelectEditAndConfirmPrices.EditCatalogueSolutionPrice(solutionName);
+        }
+
+        public void EditAdditionalServiceRecipient(string additionalServiceName)
+        {
+            TaskList.EditSolutionsAndServicesTask(IsAssociatedServiceOnlyOrder());
+
+            SelectEditAdditionalServiceRecipients.EditAdditionalServiceRecipient(additionalServiceName);
+
+            Quantity.EditQuantity(additionalServiceName);
+        }
+
+        public void EditAdditionalServicePrice(string additionalServiceName)
+        {
+            TaskList.EditSolutionsAndServicesTask(IsAssociatedServiceOnlyOrder());
+
+            SelectEditAndConfirmAdditionalServicePrice.EditAdditionalServicePrice(additionalServiceName);
+        }
+
+        public void EditCatalogueItemQuantity(string catalogueItemName)
+        {
+            TaskList.EditSolutionsAndServicesTask(IsAssociatedServiceOnlyOrder());
+
+            Quantity.EditQuantity(catalogueItemName);
+        }
+
+        public void EditAssociatedServiceRecipient(string associatedServiceName)
+        {
+            TaskList.EditSolutionsAndServicesTask(IsAssociatedServiceOnlyOrder());
+
+            SelectEditAssociatedServiceRecipents.EditServiceRecipient(associatedServiceName);
+
+            Quantity.EditQuantity(associatedServiceName);
+        }
+
+        public void EditAssociatedServicePrice(string associatedServiceName)
+        {
+            TaskList.EditSolutionsAndServicesTask(IsAssociatedServiceOnlyOrder());
+
+            SelectAndConfirmAssociatedServicePrices.EditAssociatedServicePrice(associatedServiceName);
+        }
+
+        private bool IsAssociatedServiceOnlyOrder()
         {
             using var dbContext = Factory.DbContext;
             var orderID = Driver.Url.Split('/').Last().Split('-')[0].Replace("C0", string.Empty);
