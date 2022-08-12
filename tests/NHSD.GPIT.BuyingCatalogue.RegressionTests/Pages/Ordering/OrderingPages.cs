@@ -31,12 +31,12 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering
             SolutionAndServicesReview = new SolutionAndServicesReview(driver, commonActions);
             SelectEditAssociatedService = new SelectEditAssociatedService(driver, commonActions, factory);
             SelectEditAssociatedServiceRecipents = new SelectEditAssociatedServiceRecipents(driver, commonActions, factory);
-            SelectAndConfirmAssociatedServicePrices = new SelectAndConfirmAssociatedServicePrices(driver, commonActions, factory);
+            SelectEditAndConfirmAssociatedServicePrices = new SelectEditAndConfirmAssociatedServicePrices(driver, commonActions, factory);
             SelectEditAdditionalServiceRecipients = new SelectEditAdditionalServiceRecipients(driver, commonActions, factory);
             SelectEditAndConfirmAdditionalServicePrice = new SelectEditAndConfirmAdditionalServicePrice(driver, commonActions, factory);
             SelectEditAssociatedServiceOnly = new SelectEditAssociatedServiceOnly(driver, commonActions);
-            SelectAssociatedServiceRecipientOnly = new SelectAssociatedServiceRecipientOnly(driver, commonActions);
-            SelectAndConfirmAssociatedServiceOnlyPrices = new SelectAndConfirmAssociatedServiceOnlyPrices(driver, commonActions);
+            SelectEditAssociatedServiceRecipientOnly = new SelectEditAssociatedServiceRecipientOnly(driver, commonActions, factory);
+            SelectEditAndConfirmAssociatedServiceOnlyPrices = new SelectEditAndConfirmAssociatedServiceOnlyPrices(driver, commonActions, factory);
             OrderingStepThree = new OrderingStepThree(driver, commonActions);
             OrderingStepFour = new OrderingStepFour(driver, commonActions);
             Factory = factory;
@@ -77,7 +77,7 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering
 
         internal SelectEditAssociatedServiceRecipents SelectEditAssociatedServiceRecipents { get; }
 
-        internal SelectAndConfirmAssociatedServicePrices SelectAndConfirmAssociatedServicePrices { get; }
+        internal SelectEditAndConfirmAssociatedServicePrices SelectEditAndConfirmAssociatedServicePrices { get; }
 
         internal SelectEditAdditionalServiceRecipients SelectEditAdditionalServiceRecipients { get; }
 
@@ -85,9 +85,9 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering
 
         internal SelectEditAssociatedServiceOnly SelectEditAssociatedServiceOnly { get; }
 
-        internal SelectAssociatedServiceRecipientOnly SelectAssociatedServiceRecipientOnly { get; }
+        internal SelectEditAssociatedServiceRecipientOnly SelectEditAssociatedServiceRecipientOnly { get; }
 
-        internal SelectAndConfirmAssociatedServiceOnlyPrices SelectAndConfirmAssociatedServiceOnlyPrices { get; }
+        internal SelectEditAndConfirmAssociatedServiceOnlyPrices SelectEditAndConfirmAssociatedServiceOnlyPrices { get; }
 
         internal OrderingStepThree OrderingStepThree { get; }
 
@@ -142,7 +142,7 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering
                     {
                         SelectEditAssociatedService.AddAssociatedService("Yes", associatedService);
                         SelectEditAssociatedServiceRecipents.AddServiceRecipient();
-                        SelectAndConfirmAssociatedServicePrices.SelectAndConfirmPrice();
+                        SelectEditAndConfirmAssociatedServicePrices.SelectAndConfirmPrice();
                         Quantity.AddQuantity();
                     }
                     else
@@ -154,8 +154,8 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering
             else
             {
                 SelectEditAssociatedServiceOnly.SelectAssociatedServices(solutionName, associatedService);
-                SelectAssociatedServiceRecipientOnly.AddServiceRecipient();
-                SelectAndConfirmAssociatedServiceOnlyPrices.SelectAndConfirmPrice();
+                SelectEditAssociatedServiceRecipientOnly.AddServiceRecipient();
+                SelectEditAndConfirmAssociatedServiceOnlyPrices.SelectAndConfirmPrice();
                 Quantity.AddQuantity();
             }
 
@@ -202,8 +202,8 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering
             if (isAssociatedServiceOnlyOrder)
             {
                 SelectEditAssociatedServiceOnly.EditSolutionForAssociatedService(newSolutionName, newAssociatedService);
-                SelectAssociatedServiceRecipientOnly.AddServiceRecipient();
-                SelectAndConfirmAssociatedServiceOnlyPrices.SelectAndConfirmPrice();
+                SelectEditAssociatedServiceRecipientOnly.AddServiceRecipient();
+                SelectEditAndConfirmAssociatedServiceOnlyPrices.SelectAndConfirmPrice();
                 Quantity.AddQuantity();
             }
             else
@@ -227,7 +227,7 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering
                     {
                         SelectEditAssociatedService.AddAssociatedService("Yes", newAssociatedService);
                         SelectEditAssociatedServiceRecipents.AddServiceRecipient();
-                        SelectAndConfirmAssociatedServicePrices.SelectAndConfirmPrice();
+                        SelectEditAndConfirmAssociatedServicePrices.SelectAndConfirmPrice();
                         Quantity.AddQuantity();
                     }
                     else
@@ -269,7 +269,7 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering
                 {
                     SelectEditAssociatedService.AddAssociatedService("Yes", newAssociatedService);
                     SelectEditAssociatedServiceRecipents.AddServiceRecipient();
-                    SelectAndConfirmAssociatedServicePrices.SelectAndConfirmPrice();
+                    SelectEditAndConfirmAssociatedServicePrices.SelectAndConfirmPrice();
                     Quantity.AddQuantity();
                 }
                 else
@@ -298,7 +298,7 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering
             if (HasAssociatedServices(solutionName) && !string.IsNullOrWhiteSpace(newAssociatedServiceName))
             {
                 SelectEditAssociatedServiceRecipents.AddServiceRecipient();
-                SelectAndConfirmAssociatedServicePrices.SelectAndConfirmPrice();
+                SelectEditAndConfirmAssociatedServicePrices.SelectAndConfirmPrice();
                 Quantity.AddQuantity();
             }
 
@@ -316,8 +316,8 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering
 
             SelectEditAssociatedServiceOnly.EditAssociatedServiceOnly(newAssociatedServiceName, oldAssociatedServiceName);
 
-            SelectAssociatedServiceRecipientOnly.AddServiceRecipient();
-            SelectAndConfirmAssociatedServiceOnlyPrices.SelectAndConfirmPrice();
+            SelectEditAssociatedServiceRecipientOnly.AddServiceRecipient();
+            SelectEditAndConfirmAssociatedServiceOnlyPrices.SelectAndConfirmPrice();
             Quantity.AddQuantity();
 
             SolutionAndServicesReview.ReviewSolutionAndServices();
@@ -378,7 +378,23 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering
         {
             TaskList.EditSolutionsAndServicesTask(IsAssociatedServiceOnlyOrder());
 
-            SelectAndConfirmAssociatedServicePrices.EditAssociatedServicePrice(associatedServiceName);
+            SelectEditAndConfirmAssociatedServicePrices.EditAssociatedServicePrice(associatedServiceName);
+        }
+
+        public void EditAssociatedServiceOnlyServiceRecipients(string associatedServiceName)
+        {
+            TaskList.EditSolutionsAndServicesTask(IsAssociatedServiceOnlyOrder());
+
+            SelectEditAssociatedServiceRecipientOnly.EditServiceRecipient(associatedServiceName);
+
+            Quantity.EditQuantity(associatedServiceName);
+        }
+
+        public void EditAssociatedServiceOnlyPrice(string associatedServiceName)
+        {
+            TaskList.EditSolutionsAndServicesTask(IsAssociatedServiceOnlyOrder());
+
+            SelectEditAndConfirmAssociatedServiceOnlyPrices.EditPrice(associatedServiceName);
         }
 
         private bool IsAssociatedServiceOnlyOrder()

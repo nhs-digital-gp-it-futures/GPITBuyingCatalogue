@@ -14,11 +14,11 @@ using OpenQA.Selenium;
 
 namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering.StepTwo.SolutionSelection
 {
-    public class SelectAndConfirmAssociatedServicePrices : PageBase
+    public class SelectEditAndConfirmAssociatedServicePrices : PageBase
     {
         private const decimal MaxPrice = 252.50M;
 
-        public SelectAndConfirmAssociatedServicePrices(IWebDriver driver, CommonActions commonActions, LocalWebApplicationFactory factory)
+        public SelectEditAndConfirmAssociatedServicePrices(IWebDriver driver, CommonActions commonActions, LocalWebApplicationFactory factory)
             : base(driver, commonActions)
         {
             Factory = factory;
@@ -34,7 +34,7 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering.StepTwo.Solut
 
         public void EditAssociatedServicePrice(string associatedServiceName)
         {
-            CommonActions.ClickLinkElement(ReviewSolutionsObjects.EditCatalogueItemPriceLink(GetCatalogueSolutionID(associatedServiceName)));
+            CommonActions.ClickLinkElement(ReviewSolutionsObjects.EditCatalogueItemPriceLink(GetAssociatedServiceID(associatedServiceName)));
 
             CommonActions.PageLoadedCorrectGetIndex(
              typeof(PricesController),
@@ -83,7 +83,7 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering.StepTwo.Solut
             CommonActions.ClickSave();
         }
 
-        private string GetCatalogueSolutionID(string associatedServiceName)
+        private string GetAssociatedServiceID(string associatedServiceName)
         {
             using var dbContext = Factory.DbContext;
 

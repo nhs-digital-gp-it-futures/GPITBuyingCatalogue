@@ -32,20 +32,6 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
         }
 
         [Fact]
-        public void FirstTest_DoesThing()
-        {
-            OrderingPages.OrderingDashboard.CreateNewOrder();
-
-            OrderingPages.OrderType.ChooseOrderType(CatalogueItemType.Solution);
-
-            OrderingPages.OrderingTriage.SelectTriageOrderValue(OrderTriageValue.Over250K);
-
-            OrderingPages.OrderingTriage.SelectIdentifiedOrder();
-
-            OrderingPages.StartOrder.ReadyToStart();
-        }
-
-        [Fact]
         public void OrderWithSolutionUnder40K()
         {
             OrderingPages.OrderingDashboard.CreateNewOrder();
@@ -775,6 +761,66 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
             OrderingPages.StepOnePrepareOrder(SupplierName, false, OrderTriageValue.Under40K);
 
             OrderingPages.StepTwoAddSolutionsAndServices(NewSolutionName, associatedService: NewAssociatedServiceName);
+
+            OrderingPages.EditCatalogueItemQuantity(NewAssociatedServiceName);
+
+            OrderingPages.StepThreeCompleteContract();
+
+            OrderingPages.StepFourReviewAndCompleteOrder();
+        }
+
+        [Fact]
+        public void OrderAssociatedServiceOnly_EditAssociatedServiceRecipients()
+        {
+            OrderingPages.OrderingDashboard.CreateNewOrder();
+
+            OrderingPages.OrderType.ChooseOrderType(CatalogueItemType.AssociatedService);
+
+            OrderingPages.StartOrder.ReadyToStart();
+
+            OrderingPages.StepOnePrepareOrder(SupplierName, false, itemType: CatalogueItemType.AssociatedService);
+
+            OrderingPages.StepTwoAddSolutionsAndServices(solutionName: NewSolutionName, associatedService: NewAssociatedServiceName);
+
+            OrderingPages.EditAssociatedServiceOnlyServiceRecipients(NewAssociatedServiceName);
+
+            OrderingPages.StepThreeCompleteContract();
+
+            OrderingPages.StepFourReviewAndCompleteOrder();
+        }
+
+        [Fact]
+        public void OrderAssociatedServiceOnly_EditAssociatedServicePrice()
+        {
+            OrderingPages.OrderingDashboard.CreateNewOrder();
+
+            OrderingPages.OrderType.ChooseOrderType(CatalogueItemType.AssociatedService);
+
+            OrderingPages.StartOrder.ReadyToStart();
+
+            OrderingPages.StepOnePrepareOrder(SupplierName, false, itemType: CatalogueItemType.AssociatedService);
+
+            OrderingPages.StepTwoAddSolutionsAndServices(solutionName: NewSolutionName, associatedService: NewAssociatedServiceName);
+
+            OrderingPages.EditAssociatedServiceOnlyPrice(NewAssociatedServiceName);
+
+            OrderingPages.StepThreeCompleteContract();
+
+            OrderingPages.StepFourReviewAndCompleteOrder();
+        }
+
+        [Fact]
+        public void OrderAssociatedServiceOnly_EditAssociatedServiceQuantity()
+        {
+            OrderingPages.OrderingDashboard.CreateNewOrder();
+
+            OrderingPages.OrderType.ChooseOrderType(CatalogueItemType.AssociatedService);
+
+            OrderingPages.StartOrder.ReadyToStart();
+
+            OrderingPages.StepOnePrepareOrder(SupplierName, false, itemType: CatalogueItemType.AssociatedService);
+
+            OrderingPages.StepTwoAddSolutionsAndServices(solutionName: NewSolutionName, associatedService: NewAssociatedServiceName);
 
             OrderingPages.EditCatalogueItemQuantity(NewAssociatedServiceName);
 
