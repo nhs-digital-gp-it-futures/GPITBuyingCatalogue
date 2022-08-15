@@ -1,7 +1,6 @@
 ﻿@model NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.OrderDescription.OrderDescriptionModel;
-@{
-    ViewBag.Title = Model.Title;
-}
+
+<script type="text/javascript" src="@Url.Content("~/js/PreventMultipleRequests.min.js")" asp-append-version="true"></script>
 
 <div data-test-id="description-page">
     <partial name="Partials/_BackLink" model="Model" />
@@ -9,7 +8,7 @@
     <div class="nhsuk-grid-row">
         <div class="nhsuk-grid-column-two-thirds">
             <nhs-validation-summary />
-            <nhs-page-title title="@ViewBag.Title"
+            <nhs-page-title title="@Model.Title"
                             caption="@Model.Caption"
                             advice="@Model.Advice" />
             <form method="post">
