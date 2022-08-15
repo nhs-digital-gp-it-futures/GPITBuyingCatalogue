@@ -22,7 +22,7 @@ namespace NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.TagHelpers.Detail
             output.TagName = "details";
             output.TagMode = TagMode.StartTagAndEndTag;
 
-            var summary = DetailsAndExpanderTagHelperBuilders.GetSummaryLabelBuilder(LabelText, BoldTitle);
+            var summary = DetailsAndExpanderTagHelperBuilders.GetSummaryLabelBuilder(string.Empty, LabelText, BoldTitle);
 
             var textItem = DetailsAndExpanderTagHelperBuilders.GetTextItem();
 

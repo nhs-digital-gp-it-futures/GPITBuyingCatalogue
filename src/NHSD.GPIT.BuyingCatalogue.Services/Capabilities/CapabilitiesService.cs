@@ -20,7 +20,11 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Capabilities
             this.dbContext = dbContext ?? throw new ArgumentNullException(nameof(dbContext));
         }
 
-        public Task<List<Capability>> GetCapabilities() => dbContext.Capabilities.AsNoTracking().ToListAsync();
+        public Task<List<Capability>> GetCapabilities() => dbContext.Capabilities.AsNoTracking()
+            .Include(x => x.Category)
+            .OrderBy(x => x.Category.Name)
+            .ThenBy(x => x.Name)
+            .ToListAsync();
 
         public Task<List<CapabilityCategory>> GetCapabilitiesByCategory()
             => dbContext

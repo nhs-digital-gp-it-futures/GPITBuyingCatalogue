@@ -125,5 +125,7 @@
         internal const string MaxCharacterLength = "max-character-length";
         internal const string UseDefaultValue = "use-default-value";
         internal const string NoBordersName = "no-borders";
+        internal const string HeadingTextName = "heading-text";
+        internal const string SubGroupName = "sub-group";
     }
 }

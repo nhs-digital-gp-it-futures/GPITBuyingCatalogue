@@ -19,3 +19,38 @@
 .nhsuk-details__summary-text_secondary {
     float: right;
 }
+
+.nhsuk-expander-index {
+    margin-bottom: 40px;
+}
+
+.nhsuk-expander-index .nhsuk-details__summary {
+    padding-top: 40px;
+}
+
+.nhsuk-expander-index .nhsuk-details__summary .nhsuk-details__summary-text {
+    text-decoration: none;
+}
+
+.nhsuk-expander-index .nhsuk-details__summary .nhsuk-details__summary-text__letter {
+    background-color: #005eb8;
+    color: white;
+    text-decoration: none;
+    padding: 8px 16px;
+    font-size: 2rem;
+    text-align: center;
+    line-height: 1.25;
+    position: absolute;
+    margin-bottom: 0;
+    top: -32px;
+    left: -1px;
+}
+
+.nhsuk-expander-index .nhsuk-details__summary .nhsuk-details__summary-text .nhsuk-details_summary-subtext {
+    color: #212b32;
+    display: block;
+}
+
+.nhsuk-expander-index .nhsuk-checkboxes__input + .nhsuk-checkboxes__label::before {
+    box-sizing: inherit;
+}
