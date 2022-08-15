@@ -347,6 +347,7 @@
     <None Include="PostDeployment\InsertSupplierServiceAssociations.sql" />
     <None Include="PostDeployment\InsertOrderItemFundingTypes.sql" />
     <None Include="PostDeployment\InsertDefaultImplementationPlan.sql" />
+    <None Include="PostDeployment\InsertAllowedEmailDomains.sql" />
   </ItemGroup>
   <ItemGroup>
     <PostDeploy Include="PostDeployment\PostDeployment.sql" />

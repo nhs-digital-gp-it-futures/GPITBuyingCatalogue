@@ -5,6 +5,7 @@
 :r ./CreateExecutiveAgencyUser.sql
 :r ./CreateTestUsers.sql
 
+:r ./InsertAllowedEmailDomains.sql
 :r ./InsertCapabilityStatuses.sql
 :r ./InsertCapabilityCategories.sql
 :r ./InsertCompliancyLevels.sql
