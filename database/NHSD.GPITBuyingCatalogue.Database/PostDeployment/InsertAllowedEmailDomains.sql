@@ -4,5 +4,7 @@
         ('@nhs.net'),
         ('@nhs.uk'),
         ('@*.nhs.net'),
-        ('@*.nhs.uk');
+        ('@*.nhs.uk'),
+        ('@bjss.com'),
+        ('@sparck.io');
 GO
