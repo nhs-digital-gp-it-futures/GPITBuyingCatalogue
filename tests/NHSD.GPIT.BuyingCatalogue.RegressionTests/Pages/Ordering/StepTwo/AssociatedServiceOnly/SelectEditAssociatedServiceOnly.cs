@@ -20,6 +20,19 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering.StepTwo.Assoc
             SelectAssociatedServiceOfSolution(associatedService);
         }
 
+        public void SelectAssociatedServices(string solutionName, IEnumerable<string>? associatedServices)
+        {
+            SelectSolutionForAssociatedService(solutionName);
+
+            if (associatedServices != default && associatedServices.All(a => a != string.Empty))
+            {
+                foreach (var associatedService in associatedServices)
+                {
+                    SelectAssociatedServiceOfSolution(associatedService);
+                }
+            }
+        }
+
         public void EditSolutionForAssociatedService(string newSolutionName, string newAssociatedService)
         {
             CommonActions.ClickLinkElement(ReviewSolutionsObjects.ChangeCatalogueSolutionLink);

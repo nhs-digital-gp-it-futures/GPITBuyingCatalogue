@@ -23,7 +23,7 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering.StepTwo.Solut
 
         internal LocalWebApplicationFactory Factory { get; private set; }
 
-        public void AddAssociatedService(string preference = "No", string? associatedService = null)
+        public void AddAssociatedService(string preference = "No", string associatedService = "")
         {
             CommonActions.PageLoadedCorrectGetIndex(
                   typeof(AssociatedServicesController),
@@ -40,6 +40,34 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering.StepTwo.Solut
                  nameof(AssociatedServicesController.SelectAssociatedServices)).Should().BeTrue();
 
                 CommonActions.ClickCheckboxByLabel(associatedService);
+
+                CommonActions.ClickSave();
+            }
+        }
+
+        public void AddAssociatedServices(IEnumerable<string>? associatedServices, string preference = "No")
+        {
+            CommonActions.PageLoadedCorrectGetIndex(
+                  typeof(AssociatedServicesController),
+                  nameof(AssociatedServicesController.AddAssociatedServices)).Should().BeTrue();
+
+            CommonActions.ClickRadioButtonWithText(preference);
+
+            CommonActions.ClickSave();
+
+            if (preference == "Yes")
+            {
+                CommonActions.PageLoadedCorrectGetIndex(
+                 typeof(AssociatedServicesController),
+                 nameof(AssociatedServicesController.SelectAssociatedServices)).Should().BeTrue();
+
+                if (associatedServices != default && associatedServices.All(a => !string.IsNullOrWhiteSpace(a)))
+                {
+                    foreach (var associatedService in associatedServices)
+                    {
+                        CommonActions.ClickCheckboxByLabel(associatedService);
+                    }
+                }
 
                 CommonActions.ClickSave();
             }
@@ -89,7 +117,6 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering.StepTwo.Solut
                   typeof(OrderController),
                   nameof(OrderController.Order)).Should().BeTrue();
             }
-
         }
 
         private void ConfirmAssociatedServiceChanges()

@@ -38,6 +38,23 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering.StepTwo.Solut
             CommonActions.ClickSave();
         }
 
+        public void SelectSolution(string solutionName, IEnumerable<string>? additionalServices)
+        {
+            CommonActions.ClickRadioButtonWithText(solutionName);
+            if (SolutionHasAdditionalService(solutionName) && additionalServices != default)
+            {
+                foreach (var additionalService in additionalServices)
+                {
+                    if (!string.IsNullOrWhiteSpace(additionalService))
+                    {
+                        CommonActions.ClickCheckboxByLabel(additionalService);
+                    }
+                }
+            }
+
+            CommonActions.ClickSave();
+        }
+
         public void EditSolution(string newSolutionName, string newAdditionalServiceName)
         {
             CommonActions.ClickLinkElement(ReviewSolutionsObjects.ChangeCatalogueSolutionLink);

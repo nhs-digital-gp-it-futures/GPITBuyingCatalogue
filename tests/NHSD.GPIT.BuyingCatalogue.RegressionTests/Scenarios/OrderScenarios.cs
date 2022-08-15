@@ -828,5 +828,131 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
 
             OrderingPages.StepFourReviewAndCompleteOrder();
         }
+
+        [Fact]
+        public void OrderWithSolutionAndAdditionalServicesUnder40K_MultipleAdditionalServices()
+        {
+            OrderingPages.OrderingDashboard.CreateNewOrder();
+
+            OrderingPages.OrderType.ChooseOrderType(CatalogueItemType.Solution);
+
+            OrderingPages.OrderingTriage.SelectOrderTriage(OrderTriageValue.Under40K);
+
+            OrderingPages.StartOrder.ReadyToStart();
+
+            OrderingPages.StepOnePrepareOrder(SupplierName, false, OrderTriageValue.Under40K);
+
+            OrderingPages.StepTwoAddSolutionsAndServices(
+                solutionName: NewSolutionName,
+                additionalServices: new List<string>()
+                {
+                    "Automated Arrivals",
+                    "Document Management",
+                });
+
+            OrderingPages.StepThreeCompleteContract();
+
+            OrderingPages.StepFourReviewAndCompleteOrder();
+        }
+
+        [Fact]
+        public void OrderWithSolutionAdditionalAndAssociatedServicesUnder40K_MultipleAdditionalServices_OneAssociatedService()
+        {
+            OrderingPages.OrderingDashboard.CreateNewOrder();
+
+            OrderingPages.OrderType.ChooseOrderType(CatalogueItemType.Solution);
+
+            OrderingPages.OrderingTriage.SelectOrderTriage(OrderTriageValue.Under40K);
+
+            OrderingPages.StartOrder.ReadyToStart();
+
+            OrderingPages.StepOnePrepareOrder(SupplierName, false, OrderTriageValue.Under40K);
+
+            OrderingPages.StepTwoAddSolutionsAndServices(
+                solutionName: NewSolutionName,
+                additionalServices: new List<string>()
+                {
+                    "Automated Arrivals",
+                    "Document Management",
+                },
+                AssociatedServiceNameForWebGP);
+
+            OrderingPages.StepThreeCompleteContract();
+
+            OrderingPages.StepFourReviewAndCompleteOrder();
+        }
+
+        [Fact]
+        public void OrderWithSolutionAdditionalAndAssociatedServiceUnder40K_MultipleAssociatedServices_OneAdditionalService()
+        {
+            OrderingPages.OrderingDashboard.CreateNewOrder();
+
+            OrderingPages.OrderType.ChooseOrderType(CatalogueItemType.Solution);
+
+            OrderingPages.OrderingTriage.SelectOrderTriage(OrderTriageValue.Under40K);
+
+            OrderingPages.StartOrder.ReadyToStart();
+
+            OrderingPages.StepOnePrepareOrder(SupplierName, false, OrderTriageValue.Under40K);
+
+            OrderingPages.StepTwoAddSolutionsAndServices(
+                solutionName: NewSolutionName,
+                additionalService: AdditionalServiceName,
+                associatedServices: new List<string> { NewAssociatedServiceName, AssociatedServiceNameForWebGP });
+
+            OrderingPages.StepThreeCompleteContract();
+
+            OrderingPages.StepFourReviewAndCompleteOrder();
+        }
+
+        [Fact]
+        public void OrderWithSolutionAndAssociatedServiceUnder40K_MultipleAssociatedServices()
+        {
+            OrderingPages.OrderingDashboard.CreateNewOrder();
+
+            OrderingPages.OrderType.ChooseOrderType(CatalogueItemType.Solution);
+
+            OrderingPages.OrderingTriage.SelectOrderTriage(OrderTriageValue.Under40K);
+
+            OrderingPages.StartOrder.ReadyToStart();
+
+            OrderingPages.StepOnePrepareOrder(SupplierName, false, OrderTriageValue.Under40K);
+
+            OrderingPages.StepTwoAddSolutionsAndServices(
+                solutionName: NewSolutionName,
+                additionalService: string.Empty,
+                associatedServices: new List<string> { NewAssociatedServiceName, AssociatedServiceNameForWebGP });
+
+            OrderingPages.StepThreeCompleteContract();
+
+            OrderingPages.StepFourReviewAndCompleteOrder();
+        }
+
+        [Fact]
+        public void OrderWithSolutionAdditionalAndAssociatedServiceUnder40K_MultipleAdditionalServices_MultipleAssociatedServices()
+        {
+            OrderingPages.OrderingDashboard.CreateNewOrder();
+
+            OrderingPages.OrderType.ChooseOrderType(CatalogueItemType.Solution);
+
+            OrderingPages.OrderingTriage.SelectOrderTriage(OrderTriageValue.Under40K);
+
+            OrderingPages.StartOrder.ReadyToStart();
+
+            OrderingPages.StepOnePrepareOrder(SupplierName, false, OrderTriageValue.Under40K);
+
+            OrderingPages.StepTwoAddSolutionsAndServices(
+                solutionName: NewSolutionName,
+                additionalServices: new List<string>()
+                {
+                    AdditionalServiceName,
+                    NewAdditionalServiceName,
+                },
+                associatedServices: new List<string> { NewAssociatedServiceName, AssociatedServiceNameForWebGP });
+
+            OrderingPages.StepThreeCompleteContract();
+
+            OrderingPages.StepFourReviewAndCompleteOrder();
+        }
     }
 }
