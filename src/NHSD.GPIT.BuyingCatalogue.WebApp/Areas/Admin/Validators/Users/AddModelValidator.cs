@@ -1,4 +1,5 @@
 ﻿using FluentValidation;
+using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Email;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Identity;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Organisations;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Users;
@@ -12,6 +13,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Validators.Users
         public const string EmailInUseErrorMessage = "A user with this email address already exists on the Buying Catalogue.";
         public const string EmailMissingErrorMessage = "Enter an email address";
         public const string EmailWrongFormatErrorMessage = "Enter an email address in the correct format, like name@example.com";
+        public const string EmailDomainInvalid = "This email domain cannot be used to register a new user account as it is not on the allow list";
         public const string FirstNameMissingErrorMessage = "Enter a first name";
         public const string LastNameMissingErrorMessage = "Enter a last name";
         public const string MustBelongToNhsDigitalErrorMessage = "Admins must be a member of NHS Digital";
@@ -19,7 +21,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Validators.Users
 
         private readonly IUsersService usersService;
 
-        public AddModelValidator(IUsersService usersService)
+        public AddModelValidator(
+            IUsersService usersService,
+            IEmailDomainService emailDomainService)
         {
             this.usersService = usersService;
 
@@ -41,7 +45,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Validators.Users
                 .EmailAddress()
                 .WithMessage(EmailWrongFormatErrorMessage)
                 .Must(NotBeDuplicateUserEmail)
-                .WithMessage(EmailInUseErrorMessage);
+                .WithMessage(EmailInUseErrorMessage)
+                .Must(email => emailDomainService.IsAllowed(email).GetAwaiter().GetResult())
+                .WithMessage(EmailDomainInvalid);
 
             RuleFor(x => x.SelectedAccountType)
                 .NotEmpty()

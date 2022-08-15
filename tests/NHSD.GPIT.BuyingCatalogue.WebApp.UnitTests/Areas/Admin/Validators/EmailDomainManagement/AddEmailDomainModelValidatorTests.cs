@@ -84,6 +84,26 @@ public static class AddEmailDomainModelValidatorTests
     }
 
     [Theory]
+    [CommonInlineAutoData("@*")]
+    [CommonInlineAutoData("@*/nhs.net")]
+    public static void Validate_InvalidFormat_SetsModelError(
+        string emailDomain,
+        AddEmailDomainModel model,
+        [Frozen] Mock<IEmailDomainService> service,
+        AddEmailDomainModelValidator validator)
+    {
+        model.EmailDomain = emailDomain;
+
+        service.Setup(s => s.Exists(It.IsAny<string>()))
+            .ReturnsAsync(true);
+
+        var result = validator.TestValidate(model);
+
+        result.ShouldHaveValidationErrorFor(m => m.EmailDomain)
+            .WithErrorMessage(AddEmailDomainModelValidator.EmailDomainInvalid);
+    }
+
+    [Theory]
     [CommonAutoData]
     public static void Validate_Valid_NoModelErrors(
         AddEmailDomainModel model,

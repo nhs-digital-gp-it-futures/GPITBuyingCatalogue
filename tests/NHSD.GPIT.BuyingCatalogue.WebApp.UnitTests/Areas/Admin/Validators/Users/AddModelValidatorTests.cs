@@ -1,6 +1,7 @@
 ﻿using AutoFixture.Xunit2;
 using FluentValidation.TestHelper;
 using Moq;
+using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Email;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Identity;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Organisations;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Users;
@@ -105,6 +106,24 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators.User
 
         [Theory]
         [CommonAutoData]
+        public static void Validate_InvalidEmailDomain_SetsModelError(
+            [Frozen] Mock<IEmailDomainService> mockEmailDomainService,
+            AddModel model,
+            AddModelValidator validator)
+        {
+            model.Email = EmailAddress;
+
+            mockEmailDomainService.Setup(s => s.IsAllowed(EmailAddress))
+                .ReturnsAsync(false);
+
+            var result = validator.TestValidate(model);
+
+            result.ShouldHaveValidationErrorFor(m => m.Email)
+                .WithErrorMessage(AddModelValidator.EmailDomainInvalid);
+        }
+
+        [Theory]
+        [CommonAutoData]
         public static void Validate_EmailInUse_SetsModelError(
             [Frozen] Mock<IUsersService> mockUsersService,
             AddModel model,
@@ -178,6 +197,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators.User
         [CommonAutoData]
         public static void Validate_EverythingOk_NoModelErrors(
             [Frozen] Mock<IUsersService> mockUsersService,
+            [Frozen] Mock<IEmailDomainService> mockEmailDomainService,
             AddModel model,
             AddModelValidator validator)
         {
@@ -187,6 +207,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators.User
             mockUsersService
                 .Setup(x => x.EmailAddressExists(EmailAddress, 0))
                 .ReturnsAsync(false);
+
+            mockEmailDomainService
+                .Setup(x => x.IsAllowed(EmailAddress))
+                .ReturnsAsync(true);
 
             var result = validator.TestValidate(model);
 
