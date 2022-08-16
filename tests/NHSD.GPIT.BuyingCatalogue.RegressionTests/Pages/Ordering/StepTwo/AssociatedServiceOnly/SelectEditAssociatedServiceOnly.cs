@@ -35,7 +35,7 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering.StepTwo.Assoc
             }
         }
 
-        public void EditSolutionForAssociatedService(string newSolutionName, string newAssociatedService)
+        public void EditSolutionForAssociatedService(string newSolutionName, IEnumerable<string>? newAssociatedServices)
         {
             CommonActions.ClickLinkElement(ReviewSolutionsObjects.ChangeCatalogueSolutionLink);
 
@@ -49,7 +49,13 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering.StepTwo.Assoc
 
             ConfirmSolutionChanges();
 
-            SelectAssociatedServiceOfSolution(newAssociatedService);
+            if (newAssociatedServices != default && newAssociatedServices.All(a => a != string.Empty))
+            {
+                foreach (var associatedService in newAssociatedServices)
+                {
+                    SelectAssociatedServiceOfSolution(associatedService);
+                }
+            }
 
             CommonActions.ClickSave();
         }

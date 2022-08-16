@@ -1077,12 +1077,231 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
 
             OrderingPages.StartOrder.ReadyToStart();
 
-            OrderingPages.StepOnePrepareOrder(SupplierName, false, OrderTriageValue.Under40K);
+            OrderingPages.StepOnePrepareOrder(SupplierName, false, itemType: CatalogueItemType.AssociatedService);
 
             OrderingPages.StepTwoAddSolutionsAndServices(
                 solutionName: NewSolutionName,
                 associatedService: AssociatedServiceNameForWebGP,
                 multipleServiceRecipients: true);
+
+            OrderingPages.StepThreeCompleteContract();
+
+            OrderingPages.StepFourReviewAndCompleteOrder();
+        }
+
+        [Fact]
+        public void OrderAssociatedServiceOnly_MultipleAssociatedServices_EditCatalogueSolution()
+        {
+            OrderingPages.OrderingDashboard.CreateNewOrder();
+
+            OrderingPages.OrderType.ChooseOrderType(CatalogueItemType.AssociatedService);
+
+            OrderingPages.StartOrder.ReadyToStart();
+
+            OrderingPages.StepOnePrepareOrder(SupplierName, false, itemType: CatalogueItemType.AssociatedService);
+
+            OrderingPages.StepTwoAddSolutionsAndServices(solutionName: SolutionName, associatedService: AssociatedServiceName);
+
+            OrderingPages.EditCatalogueSolution(newSolutionName: NewSolutionName, newAdditionalServiceName: string.Empty, newAssociatedServices: new List<string> { AssociatedServiceNameForWebGP, NewAssociatedServiceName });
+
+            OrderingPages.StepThreeCompleteContract();
+
+            OrderingPages.StepFourReviewAndCompleteOrder();
+        }
+
+        [Fact]
+        public void OrderWithSolutionAndAdditionalServiceUnder40K_MultipleAdditionalServices_EditCatalogueSolution()
+        {
+            OrderingPages.OrderingDashboard.CreateNewOrder();
+
+            OrderingPages.OrderType.ChooseOrderType(CatalogueItemType.Solution);
+
+            OrderingPages.OrderingTriage.SelectOrderTriage(OrderTriageValue.Under40K);
+
+            OrderingPages.StartOrder.ReadyToStart();
+
+            OrderingPages.StepOnePrepareOrder(SupplierName, false, OrderTriageValue.Under40K);
+
+            OrderingPages.StepTwoAddSolutionsAndServices(SolutionName);
+
+            OrderingPages.EditCatalogueSolution(NewSolutionName, new List<string> { AdditionalServiceName, NewAdditionalServiceName }, newAssociatedService: string.Empty);
+
+            OrderingPages.StepThreeCompleteContract();
+
+            OrderingPages.StepFourReviewAndCompleteOrder();
+        }
+
+        [Fact]
+        public void OrderWithSolutionAndAssociatedServiceUnder40K_MultipleAssociatedServices_EditCatalogueSolution()
+        {
+            OrderingPages.OrderingDashboard.CreateNewOrder();
+
+            OrderingPages.OrderType.ChooseOrderType(CatalogueItemType.Solution);
+
+            OrderingPages.OrderingTriage.SelectOrderTriage(OrderTriageValue.Under40K);
+
+            OrderingPages.StartOrder.ReadyToStart();
+
+            OrderingPages.StepOnePrepareOrder(SupplierName, false, OrderTriageValue.Under40K);
+
+            OrderingPages.StepTwoAddSolutionsAndServices(SolutionName);
+
+            OrderingPages.EditCatalogueSolution(NewSolutionName, newAdditionalServiceName: string.Empty, new List<string> { AssociatedServiceNameForWebGP, NewAssociatedServiceName });
+
+            OrderingPages.StepThreeCompleteContract();
+
+            OrderingPages.StepFourReviewAndCompleteOrder();
+        }
+
+        [Fact]
+        public void OrderWithSolutionAdditionalAndAssociatedServiceUnder40K_MultipleAdditional_MultipleAssociatedServices_EditCatalogueSolution()
+        {
+            OrderingPages.OrderingDashboard.CreateNewOrder();
+
+            OrderingPages.OrderType.ChooseOrderType(CatalogueItemType.Solution);
+
+            OrderingPages.OrderingTriage.SelectOrderTriage(OrderTriageValue.Under40K);
+
+            OrderingPages.StartOrder.ReadyToStart();
+
+            OrderingPages.StepOnePrepareOrder(SupplierName, false, OrderTriageValue.Under40K);
+
+            OrderingPages.StepTwoAddSolutionsAndServices(SolutionName);
+
+            OrderingPages.EditCatalogueSolution(NewSolutionName, new List<string> { AdditionalServiceName, NewAdditionalServiceName }, new List<string> { AssociatedServiceNameForWebGP, NewAssociatedServiceName });
+
+            OrderingPages.StepThreeCompleteContract();
+
+            OrderingPages.StepFourReviewAndCompleteOrder();
+        }
+
+        [Fact]
+        public void OrderWithSolutionUnder40K_MultipleServiceRecipients_EditCatalogueSolution()
+        {
+            OrderingPages.OrderingDashboard.CreateNewOrder();
+
+            OrderingPages.OrderType.ChooseOrderType(CatalogueItemType.Solution);
+
+            OrderingPages.OrderingTriage.SelectOrderTriage(OrderTriageValue.Under40K);
+
+            OrderingPages.StartOrder.ReadyToStart();
+
+            OrderingPages.StepOnePrepareOrder(SupplierName, false, OrderTriageValue.Under40K);
+
+            OrderingPages.StepTwoAddSolutionsAndServices(SolutionName);
+
+            OrderingPages.EditCatalogueSolution(NewSolutionName, multipleServiceRecipients: true);
+
+            OrderingPages.StepThreeCompleteContract();
+
+            OrderingPages.StepFourReviewAndCompleteOrder();
+        }
+
+        [Fact]
+        public void OrderWithSolutionAndAdditionalServiceUnder40K_MultipleServiceRecipients_EditCatalogueSolution()
+        {
+            OrderingPages.OrderingDashboard.CreateNewOrder();
+
+            OrderingPages.OrderType.ChooseOrderType(CatalogueItemType.Solution);
+
+            OrderingPages.OrderingTriage.SelectOrderTriage(OrderTriageValue.Under40K);
+
+            OrderingPages.StartOrder.ReadyToStart();
+
+            OrderingPages.StepOnePrepareOrder(SupplierName, false, OrderTriageValue.Under40K);
+
+            OrderingPages.StepTwoAddSolutionsAndServices(SolutionName);
+
+            OrderingPages.EditCatalogueSolution(NewSolutionName, newAdditionalServiceNames: new List<string> { NewAdditionalServiceName, AdditionalServiceName }, newAssociatedService: string.Empty, multipleServiceRecipients: true);
+
+            OrderingPages.StepThreeCompleteContract();
+
+            OrderingPages.StepFourReviewAndCompleteOrder();
+        }
+
+        [Fact]
+        public void OrderWithSolutionAndAssociatedServiceUnder40K_MultipleServiceRecipients_EditCatalogueSolution()
+        {
+            OrderingPages.OrderingDashboard.CreateNewOrder();
+
+            OrderingPages.OrderType.ChooseOrderType(CatalogueItemType.Solution);
+
+            OrderingPages.OrderingTriage.SelectOrderTriage(OrderTriageValue.Under40K);
+
+            OrderingPages.StartOrder.ReadyToStart();
+
+            OrderingPages.StepOnePrepareOrder(SupplierName, false, OrderTriageValue.Under40K);
+
+            OrderingPages.StepTwoAddSolutionsAndServices(SolutionName);
+
+            OrderingPages.EditCatalogueSolution(NewSolutionName, newAdditionalServiceNames: null, newAssociatedServices: new List<string> { AssociatedServiceNameForWebGP, NewAssociatedServiceName }, multipleServiceRecipients: true);
+
+            OrderingPages.StepThreeCompleteContract();
+
+            OrderingPages.StepFourReviewAndCompleteOrder();
+        }
+
+        [Fact]
+        public void OrderWithSolutionAdditionalAndAssociatedServiceUnder40K_MultipleServiceRecipients_EditCatalogueSolution()
+        {
+            OrderingPages.OrderingDashboard.CreateNewOrder();
+
+            OrderingPages.OrderType.ChooseOrderType(CatalogueItemType.Solution);
+
+            OrderingPages.OrderingTriage.SelectOrderTriage(OrderTriageValue.Under40K);
+
+            OrderingPages.StartOrder.ReadyToStart();
+
+            OrderingPages.StepOnePrepareOrder(SupplierName, false, OrderTriageValue.Under40K);
+
+            OrderingPages.StepTwoAddSolutionsAndServices(SolutionName);
+
+            OrderingPages.EditCatalogueSolution(NewSolutionName, newAdditionalServiceNames: new List<string> { NewAdditionalServiceName }, newAssociatedServices: new List<string> { AssociatedServiceNameForWebGP, NewAssociatedServiceName }, multipleServiceRecipients: true);
+
+            OrderingPages.StepThreeCompleteContract();
+
+            OrderingPages.StepFourReviewAndCompleteOrder();
+        }
+
+        [Fact]
+        public void OrderWithAssociatedServiceOnly_MultipleAssociatedServices_MultipleServiceRecipients_EditCatalogueSolution()
+        {
+            OrderingPages.OrderingDashboard.CreateNewOrder();
+
+            OrderingPages.OrderType.ChooseOrderType(CatalogueItemType.AssociatedService);
+
+            OrderingPages.StartOrder.ReadyToStart();
+
+            OrderingPages.StepOnePrepareOrder(SupplierName, false, itemType: CatalogueItemType.AssociatedService);
+
+            OrderingPages.StepTwoAddSolutionsAndServices(
+                solutionName: SolutionName,
+                associatedService: AssociatedServiceName,
+                multipleServiceRecipients: true);
+
+            OrderingPages.EditCatalogueSolution(NewSolutionName, newAdditionalServiceName: string.Empty, new List<string> { AssociatedServiceNameForWebGP, NewAssociatedServiceName }, true);
+
+            OrderingPages.StepThreeCompleteContract();
+
+            OrderingPages.StepFourReviewAndCompleteOrder();
+        }
+
+        [Fact]
+        public void OrderWithSolutionAdditionalAndAssociatedServiceUnder40K_MultipleAdditionalServices_OneAssociatedService_EditCatalogueSolution()
+        {
+            OrderingPages.OrderingDashboard.CreateNewOrder();
+
+            OrderingPages.OrderType.ChooseOrderType(CatalogueItemType.Solution);
+
+            OrderingPages.OrderingTriage.SelectOrderTriage(OrderTriageValue.Under40K);
+
+            OrderingPages.StartOrder.ReadyToStart();
+
+            OrderingPages.StepOnePrepareOrder(SupplierName, false, OrderTriageValue.Under40K);
+
+            OrderingPages.StepTwoAddSolutionsAndServices(SolutionName);
+
+            OrderingPages.EditCatalogueSolution(NewSolutionName, newAdditionalServiceNames: new List<string> { NewAdditionalServiceName, AdditionalServiceName }, AssociatedServiceNameForWebGP, multipleServiceRecipients: true);
 
             OrderingPages.StepThreeCompleteContract();
 

@@ -55,7 +55,7 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering.StepTwo.Solut
             CommonActions.ClickSave();
         }
 
-        public void EditSolution(string newSolutionName, string newAdditionalServiceName)
+        public void EditSolution(string newSolutionName, IEnumerable<string>? newAdditionalServiceNames)
         {
             CommonActions.ClickLinkElement(ReviewSolutionsObjects.ChangeCatalogueSolutionLink);
 
@@ -69,7 +69,7 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering.StepTwo.Solut
 
             var hasAdditionalService = SolutionHasAdditionalService(newSolutionName);
 
-            ConfirmSolutionChanges(hasAdditionalService, newAdditionalServiceName);
+            ConfirmSolutionChanges(hasAdditionalService, newAdditionalServiceNames);
         }
 
         public void EditAdditionalService(string solutionName, string oldAdditionalService, string newAdditionalService, bool hasTheOrderAdditionalService)
@@ -129,7 +129,7 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering.StepTwo.Solut
             CommonActions.ClickSave();
         }
 
-        private void ConfirmSolutionChanges(bool hasAdditionalService, string newAdditionalServiceName)
+        private void ConfirmSolutionChanges(bool hasAdditionalService, IEnumerable<string>? newAdditionalServiceNames)
         {
             CommonActions.PageLoadedCorrectGetIndex(
              typeof(CatalogueSolutionsController),
@@ -145,9 +145,12 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering.StepTwo.Solut
                     typeof(AdditionalServicesController),
                     nameof(AdditionalServicesController.SelectAdditionalServices)).Should().BeTrue();
 
-                if (!string.IsNullOrWhiteSpace(newAdditionalServiceName))
+                if (newAdditionalServiceNames != default && newAdditionalServiceNames.All(a => !string.IsNullOrWhiteSpace(a)))
                 {
-                    CommonActions.ClickCheckboxByLabel(newAdditionalServiceName);
+                    foreach (var additionalService in newAdditionalServiceNames)
+                    {
+                        CommonActions.ClickCheckboxByLabel(additionalService);
+                    }
                 }
 
                 CommonActions.ClickSave();

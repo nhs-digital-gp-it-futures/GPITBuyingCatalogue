@@ -225,7 +225,22 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering
             OrderingStepFour.ReviewAndCompleteOrder();
         }
 
-        public void EditCatalogueSolution(string newSolutionName, string newAdditionalServiceName = "", string newAssociatedService = "")
+        public void EditCatalogueSolution(string newSolutionName, string newAdditionalServiceName = "", string newAssociatedService = "", bool multipleServiceRecipients = false)
+        {
+           EditCatalogueSolution(newSolutionName, new List<string> { newAdditionalServiceName }, new List<string> { newAssociatedService }, multipleServiceRecipients);
+        }
+
+        public void EditCatalogueSolution(string newSolutionName, IEnumerable<string>? newAdditionalServiceNames, string newAssociatedService = "", bool multipleServiceRecipients = false)
+        {
+            EditCatalogueSolution(newSolutionName, newAdditionalServiceNames, new List<string> { newAssociatedService }, multipleServiceRecipients);
+        }
+
+        public void EditCatalogueSolution(string newSolutionName, string newAdditionalServiceName, IEnumerable<string>? newAssociatedServices, bool multipleServiceRecipients = false)
+        {
+            EditCatalogueSolution(newSolutionName, new List<string> { newAdditionalServiceName }, newAssociatedServices, multipleServiceRecipients);
+        }
+
+        public void EditCatalogueSolution(string newSolutionName, IEnumerable<string>? newAdditionalServiceNames, IEnumerable<string>? newAssociatedServices, bool multipleServiceRecipients = false)
         {
             var isAssociatedServiceOnlyOrder = IsAssociatedServiceOnlyOrder();
 
@@ -233,34 +248,47 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering
 
             if (isAssociatedServiceOnlyOrder)
             {
-                SelectEditAssociatedServiceOnly.EditSolutionForAssociatedService(newSolutionName, newAssociatedService);
-                SelectEditAssociatedServiceRecipientOnly.AddServiceRecipient(false);
-                SelectEditAndConfirmAssociatedServiceOnlyPrices.SelectAndConfirmPrice();
-                Quantity.AddQuantity();
+                SelectEditAssociatedServiceOnly.EditSolutionForAssociatedService(newSolutionName, newAssociatedServices);
+
+                if (newAssociatedServices != default && newAssociatedServices.All(a => !string.IsNullOrWhiteSpace(a)))
+                {
+                    foreach (var associatedService in newAssociatedServices)
+                    {
+                        SelectEditAssociatedServiceRecipientOnly.AddServiceRecipient(multipleServiceRecipients);
+                        SelectEditAndConfirmAssociatedServiceOnlyPrices.SelectAndConfirmPrice();
+                        Quantity.AddQuantity();
+                    }
+                }
             }
             else
             {
-                SelectEditCatalogueSolution.EditSolution(newSolutionName, newAdditionalServiceName);
+                SelectEditCatalogueSolution.EditSolution(newSolutionName, newAdditionalServiceNames);
 
-                SelectEditCatalogueSolutionServiceRecipients.AddCatalogueSolutionServiceRecipient(false);
+                SelectEditCatalogueSolutionServiceRecipients.AddCatalogueSolutionServiceRecipient(multipleServiceRecipients);
                 SelectEditAndConfirmPrices.SelectAndConfirmPrice();
                 Quantity.AddQuantity();
 
-                if (HasAdditionalService(newSolutionName) && !string.IsNullOrWhiteSpace(newAdditionalServiceName))
+                if (HasAdditionalService(newSolutionName) && newAdditionalServiceNames != default && newAdditionalServiceNames.All(a => !string.IsNullOrWhiteSpace(a)))
                 {
-                    SelectEditAdditionalServiceRecipients.AddServiceRecipients();
-                    SelectEditAndConfirmAdditionalServicePrice.SelectAndConfirmPrice();
-                    Quantity.AddQuantity();
+                    foreach (var additionalService in newAdditionalServiceNames)
+                    {
+                        SelectEditAdditionalServiceRecipients.AddServiceRecipients();
+                        SelectEditAndConfirmAdditionalServicePrice.SelectAndConfirmPrice();
+                        Quantity.AddQuantity();
+                    }
                 }
 
                 if (HasAssociatedServices(newSolutionName))
                 {
-                    if (!string.IsNullOrWhiteSpace(newAssociatedService))
+                    if (newAssociatedServices != default && newAssociatedServices.All(a => !string.IsNullOrWhiteSpace(a)))
                     {
-                        SelectEditAssociatedService.AddAssociatedService("Yes", newAssociatedService);
-                        SelectEditAssociatedServiceRecipents.AddServiceRecipient();
-                        SelectEditAndConfirmAssociatedServicePrices.SelectAndConfirmPrice();
-                        Quantity.AddQuantity();
+                        SelectEditAssociatedService.AddAssociatedServices(newAssociatedServices, "Yes");
+                        foreach (var associatedService in newAssociatedServices)
+                        {
+                            SelectEditAssociatedServiceRecipents.AddServiceRecipient();
+                            SelectEditAndConfirmAssociatedServicePrices.SelectAndConfirmPrice();
+                            Quantity.AddQuantity();
+                        }
                     }
                     else
                     {
@@ -272,7 +300,7 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering
             SolutionAndServicesReview.ReviewSolutionAndServices();
 
             TaskList.SelectFundingSourcesTask();
-            SelectFundingSources.AddFundingSources(newSolutionName, newAssociatedService, isAssociatedServiceOnlyOrder, newAdditionalServiceName);
+            SelectFundingSources.AddFundingSources(newSolutionName, isAssociatedServiceOnlyOrder, newAssociatedServices, newAdditionalServiceNames);
         }
 
         public void EditAdditionalService(string solutionName, string newAdditionalService, string newAssociatedService = "", string oldAdditionalService = "")
