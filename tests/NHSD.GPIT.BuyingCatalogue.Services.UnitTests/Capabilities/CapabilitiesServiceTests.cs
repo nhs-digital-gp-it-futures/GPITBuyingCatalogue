@@ -33,6 +33,24 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Capabilities
 
         [Theory]
         [InMemoryDbAutoData]
+        public static async Task GetCapabilitiesByIds_ReturnsExpectedResult(
+            List<Capability> capabilities,
+            [Frozen] BuyingCatalogueDbContext context,
+            CapabilitiesService service)
+        {
+            context.Capabilities.AddRange(capabilities);
+            context.SaveChanges();
+
+            var capabilityIds = capabilities.Select(x => x.Id);
+            var result = await service.GetCapabilitiesByIds(capabilityIds);
+
+            result.Should().NotBeNullOrEmpty();
+            result.Count.Should().Be(capabilities.Count);
+            result.ForEach(x => capabilities.Should().Contain(c => c.Id == x.Id));
+        }
+
+        [Theory]
+        [InMemoryDbAutoData]
         public static async Task GetCapabilitiesByCategory_ReturnsCapabilityCategories(
             [Frozen] BuyingCatalogueDbContext context,
             CapabilitiesService capabilitiesService)

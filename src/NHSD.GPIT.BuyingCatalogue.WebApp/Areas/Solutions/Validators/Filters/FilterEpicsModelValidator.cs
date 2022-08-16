@@ -4,17 +4,17 @@ using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models.Filters;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Validators.Filters
 {
-    public class FilterCapabilitiesModelValidator : AbstractValidator<FilterCapabilitiesModel>
+    public class FilterEpicsModelValidator : AbstractValidator<FilterEpicsModel>
     {
-        public const string NoSelectionMadeErrorMessage = "Select a Capability";
+        public const string NoSelectionMadeErrorMessage = "Select an Epic";
 
-        public FilterCapabilitiesModelValidator()
+        public FilterEpicsModelValidator()
         {
             RuleFor(x => x)
                 .Must(HaveMadeASelection)
                 .WithMessage(NoSelectionMadeErrorMessage);
         }
 
-        private static bool HaveMadeASelection(FilterCapabilitiesModel model) => model.SelectedItems?.Any(x => x.Selected) ?? false;
+        private static bool HaveMadeASelection(FilterEpicsModel model) => model.SelectedItems?.Any(x => x.Selected) ?? false;
     }
 }
