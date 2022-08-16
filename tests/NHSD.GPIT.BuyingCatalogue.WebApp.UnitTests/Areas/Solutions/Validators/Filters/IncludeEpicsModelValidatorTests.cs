@@ -1,5 +1,4 @@
 ﻿using FluentValidation.TestHelper;
-using LinqKit;
 using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.AutoFixtureCustomisations;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models.Filters;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Validators.Filters;
@@ -7,29 +6,31 @@ using Xunit;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Validators.Filters
 {
-    public static class FilterCapabilitiesModelValidatorTests
+    public static class IncludeEpicsModelValidatorTests
     {
         [Theory]
         [CommonAutoData]
         public static void Validate_NoSelectionMade_ThrowsValidationError(
-            FilterCapabilitiesModel model,
-            FilterCapabilitiesModelValidator validator)
+            IncludeEpicsModel model,
+            IncludeEpicsModelValidator validator)
         {
-            model.SelectedItems.ForEach(x => x.Selected = false);
+            model.IncludeEpics = null;
 
             var result = validator.TestValidate(model);
 
-            result.ShouldHaveValidationErrorFor(x => x)
-                .WithErrorMessage(FilterCapabilitiesModelValidator.NoSelectionMadeErrorMessage);
+            result.ShouldHaveValidationErrorFor(x => x.IncludeEpics)
+                .WithErrorMessage(IncludeEpicsModelValidator.NoSelectionMadeErrorMessage);
         }
 
         [Theory]
-        [CommonAutoData]
+        [CommonInlineAutoData(true)]
+        [CommonInlineAutoData(false)]
         public static void Validate_SelectionMade_NoErrors(
-            FilterCapabilitiesModel model,
-            FilterCapabilitiesModelValidator validator)
+            bool value,
+            IncludeEpicsModel model,
+            IncludeEpicsModelValidator validator)
         {
-            model.SelectedItems.ForEach(x => x.Selected = true);
+            model.IncludeEpics = value;
 
             var result = validator.TestValidate(model);
 

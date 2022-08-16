@@ -40,5 +40,11 @@
     "inputFiles": [
       "wwwroot/js/accessible-autocomplete/suggestionSearchConfig.js"
     ]
+  },
+  {
+    "outputFileName": "wwwroot/js/GroupCounters.min.js",
+    "inputFiles": [
+      "wwwroot/js/GroupCounters.js"
+    ]
   }
 ]
