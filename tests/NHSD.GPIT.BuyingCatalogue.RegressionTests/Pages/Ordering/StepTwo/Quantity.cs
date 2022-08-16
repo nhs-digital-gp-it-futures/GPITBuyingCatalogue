@@ -59,7 +59,13 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering.StepTwo
              typeof(QuantityController),
              nameof(QuantityController.SelectServiceRecipientQuantity)).Should().BeTrue();
 
-            TextGenerators.NumberInputAddRandomNumber(QuantityObjects.InputQuantityInput(0), 50, 1000);
+            var count = CommonActions.NumberOfElementsDisplayed(QuantityObjects.InputQuantityPracticeListSize);
+
+            for (int i = 0; i < count; i++)
+            {
+                TextGenerators.NumberInputAddRandomNumber(QuantityObjects.InputQuantityInput(i), 50, 1000);
+            }
+
             CommonActions.ClickSave();
         }
 

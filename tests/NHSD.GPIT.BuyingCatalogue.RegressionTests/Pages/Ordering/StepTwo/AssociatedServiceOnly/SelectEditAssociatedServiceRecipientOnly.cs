@@ -22,13 +22,23 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering.StepTwo.Assoc
 
         public LocalWebApplicationFactory Factory { get; }
 
-        public void AddServiceRecipient()
+        public void AddServiceRecipient(bool multipleServiceRecipients)
         {
             CommonActions.PageLoadedCorrectGetIndex(
               typeof(ServiceRecipientsController),
               nameof(ServiceRecipientsController.AddServiceRecipients)).Should().BeTrue();
 
-            CommonActions.ClickFirstCheckbox();
+            if (multipleServiceRecipients)
+            {
+                if (!CommonActions.AllCheckBoxesSelected())
+                    CommonActions.ClickAllCheckboxes();
+
+                CommonActions.ClickSave();
+                return;
+            }
+
+            if (CommonActions.GetNumberOfSelectedCheckBoxes() == 0)
+                CommonActions.ClickFirstCheckbox();
 
             CommonActions.ClickSave();
         }

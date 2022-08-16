@@ -30,6 +30,8 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering.StepTwo.Assoc
                 {
                     SelectAssociatedServiceOfSolution(associatedService);
                 }
+
+                CommonActions.ClickSave();
             }
         }
 
@@ -48,6 +50,8 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering.StepTwo.Assoc
             ConfirmSolutionChanges();
 
             SelectAssociatedServiceOfSolution(newAssociatedService);
+
+            CommonActions.ClickSave();
         }
 
         public void EditAssociatedServiceOnly(string newAssociatedService, string oldAssociatedService)
@@ -102,7 +106,6 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering.StepTwo.Assoc
             .Should().BeTrue();
 
             CommonActions.ClickCheckboxByLabel(associatedService);
-            CommonActions.ClickSave();
         }
     }
 }

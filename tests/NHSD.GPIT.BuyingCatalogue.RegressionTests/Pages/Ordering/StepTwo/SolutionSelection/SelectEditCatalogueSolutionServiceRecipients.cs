@@ -21,13 +21,16 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering.StepTwo.Solut
 
         public LocalWebApplicationFactory Factory { get; }
 
-        public void AddCatalogueSolutionServiceRecipient()
+        public void AddCatalogueSolutionServiceRecipient(bool multipleServiceRecipients)
         {
             CommonActions.PageLoadedCorrectGetIndex(
               typeof(ServiceRecipientsController),
               nameof(ServiceRecipientsController.AddServiceRecipients)).Should().BeTrue();
 
-            CommonActions.ClickFirstCheckbox();
+            if (multipleServiceRecipients)
+                CommonActions.ClickAllCheckboxes();
+            else
+                CommonActions.ClickFirstCheckbox();
 
             CommonActions.ClickSave();
         }

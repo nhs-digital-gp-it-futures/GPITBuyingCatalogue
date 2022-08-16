@@ -115,22 +115,22 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering
             OrderingStepOne.AddTimescaleForCallOffAgreement(orderTriage, itemType);
         }
 
-        public void StepTwoAddSolutionsAndServices(string solutionName, string additionalService = "", string associatedService = "")
+        public void StepTwoAddSolutionsAndServices(string solutionName, string additionalService = "", string associatedService = "", bool multipleServiceRecipients = false)
         {
-            StepTwoAddSolutionsAndServices(solutionName, new List<string> { additionalService }, new List<string> { associatedService });
+            StepTwoAddSolutionsAndServices(solutionName, new List<string> { additionalService }, new List<string> { associatedService }, multipleServiceRecipients);
         }
 
-        public void StepTwoAddSolutionsAndServices(string solutionName, IEnumerable<string>? additionalServices, string associatedService = "")
+        public void StepTwoAddSolutionsAndServices(string solutionName, IEnumerable<string>? additionalServices, string associatedService = "", bool multipleServiceRecipients = false)
         {
-            StepTwoAddSolutionsAndServices(solutionName, additionalServices, new List<string> { associatedService });
+            StepTwoAddSolutionsAndServices(solutionName, additionalServices, new List<string> { associatedService }, multipleServiceRecipients);
         }
 
-        public void StepTwoAddSolutionsAndServices(string solutionName, string additionalService, IEnumerable<string>? associatedServices)
+        public void StepTwoAddSolutionsAndServices(string solutionName, string additionalService, IEnumerable<string>? associatedServices, bool multipleServiceRecipients = false)
         {
-            StepTwoAddSolutionsAndServices(solutionName, new List<string> { additionalService }, associatedServices);
+            StepTwoAddSolutionsAndServices(solutionName, new List<string> { additionalService }, associatedServices, multipleServiceRecipients);
         }
 
-        public void StepTwoAddSolutionsAndServices(string solutionName, IEnumerable<string>? additionalServices, IEnumerable<string>? associatedServices)
+        public void StepTwoAddSolutionsAndServices(string solutionName, IEnumerable<string>? additionalServices, IEnumerable<string>? associatedServices, bool multipleServiceRecipients = false)
         {
             var isAssociatedServiceOnlyOrder = IsAssociatedServiceOnlyOrder();
 
@@ -140,7 +140,7 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering
             {
                 SelectEditCatalogueSolution.SelectSolution(solutionName, additionalServices);
 
-                SelectEditCatalogueSolutionServiceRecipients.AddCatalogueSolutionServiceRecipient();
+                SelectEditCatalogueSolutionServiceRecipients.AddCatalogueSolutionServiceRecipient(multipleServiceRecipients);
                 SelectEditAndConfirmPrices.SelectAndConfirmPrice();
                 Quantity.AddQuantity();
 
@@ -184,7 +184,7 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering
                 {
                     foreach (var associatedService in associatedServices)
                     {
-                        SelectEditAssociatedServiceRecipientOnly.AddServiceRecipient();
+                        SelectEditAssociatedServiceRecipientOnly.AddServiceRecipient(multipleServiceRecipients);
                         SelectEditAndConfirmAssociatedServiceOnlyPrices.SelectAndConfirmPrice();
                         Quantity.AddQuantity();
                     }
@@ -234,7 +234,7 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering
             if (isAssociatedServiceOnlyOrder)
             {
                 SelectEditAssociatedServiceOnly.EditSolutionForAssociatedService(newSolutionName, newAssociatedService);
-                SelectEditAssociatedServiceRecipientOnly.AddServiceRecipient();
+                SelectEditAssociatedServiceRecipientOnly.AddServiceRecipient(false);
                 SelectEditAndConfirmAssociatedServiceOnlyPrices.SelectAndConfirmPrice();
                 Quantity.AddQuantity();
             }
@@ -242,7 +242,7 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering
             {
                 SelectEditCatalogueSolution.EditSolution(newSolutionName, newAdditionalServiceName);
 
-                SelectEditCatalogueSolutionServiceRecipients.AddCatalogueSolutionServiceRecipient();
+                SelectEditCatalogueSolutionServiceRecipients.AddCatalogueSolutionServiceRecipient(false);
                 SelectEditAndConfirmPrices.SelectAndConfirmPrice();
                 Quantity.AddQuantity();
 
@@ -348,7 +348,7 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering
 
             SelectEditAssociatedServiceOnly.EditAssociatedServiceOnly(newAssociatedServiceName, oldAssociatedServiceName);
 
-            SelectEditAssociatedServiceRecipientOnly.AddServiceRecipient();
+            SelectEditAssociatedServiceRecipientOnly.AddServiceRecipient(false);
             SelectEditAndConfirmAssociatedServiceOnlyPrices.SelectAndConfirmPrice();
             Quantity.AddQuantity();
 

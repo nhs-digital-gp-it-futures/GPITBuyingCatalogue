@@ -82,6 +82,7 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering.StepTwo.Assoc
             TextGenerators.PriceInputAddPrice(ConfirmPriceObjects.AgreedPriceInput(0), MaxPrice);
             CommonActions.ClickSave();
         }
+
         private string GetAssociatedServiceID(string associatedServiceName)
         {
             using var dbContext = Factory.DbContext;

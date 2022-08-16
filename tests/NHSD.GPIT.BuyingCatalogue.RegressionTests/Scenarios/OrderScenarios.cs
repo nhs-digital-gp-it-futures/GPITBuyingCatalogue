@@ -846,8 +846,8 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
                 solutionName: NewSolutionName,
                 additionalServices: new List<string>()
                 {
-                    "Automated Arrivals",
-                    "Document Management",
+                    AdditionalServiceName,
+                    NewAdditionalServiceName,
                 });
 
             OrderingPages.StepThreeCompleteContract();
@@ -872,8 +872,8 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
                 solutionName: NewSolutionName,
                 additionalServices: new List<string>()
                 {
-                    "Automated Arrivals",
-                    "Document Management",
+                    AdditionalServiceName,
+                    NewAdditionalServiceName,
                 },
                 AssociatedServiceNameForWebGP);
 
@@ -949,6 +949,140 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
                     NewAdditionalServiceName,
                 },
                 associatedServices: new List<string> { NewAssociatedServiceName, AssociatedServiceNameForWebGP });
+
+            OrderingPages.StepThreeCompleteContract();
+
+            OrderingPages.StepFourReviewAndCompleteOrder();
+        }
+
+        [Fact]
+        public void OrderWithAssociatedServiceOnly_MultipleAssociatedServices()
+        {
+            OrderingPages.OrderingDashboard.CreateNewOrder();
+
+            OrderingPages.OrderType.ChooseOrderType(CatalogueItemType.AssociatedService);
+
+            OrderingPages.StartOrder.ReadyToStart();
+
+            OrderingPages.StepOnePrepareOrder(SupplierName, false, itemType: CatalogueItemType.AssociatedService);
+
+            OrderingPages.StepTwoAddSolutionsAndServices(
+                solutionName: NewSolutionName,
+                additionalServices: null,
+                associatedServices: new List<string> { NewAssociatedServiceName, AssociatedServiceNameForWebGP });
+
+            OrderingPages.StepThreeCompleteContract();
+
+            OrderingPages.StepFourReviewAndCompleteOrder();
+        }
+
+        [Fact]
+        public void OrderWithSolutionUnder40K_MultipleServiceRecipients()
+        {
+            OrderingPages.OrderingDashboard.CreateNewOrder();
+
+            OrderingPages.OrderType.ChooseOrderType(CatalogueItemType.Solution);
+
+            OrderingPages.OrderingTriage.SelectOrderTriage(OrderTriageValue.Under40K);
+
+            OrderingPages.StartOrder.ReadyToStart();
+
+            OrderingPages.StepOnePrepareOrder(SupplierName, false, OrderTriageValue.Under40K);
+
+            OrderingPages.StepTwoAddSolutionsAndServices(
+                solutionName: NewSolutionName,
+                multipleServiceRecipients: true);
+
+            OrderingPages.StepThreeCompleteContract();
+
+            OrderingPages.StepFourReviewAndCompleteOrder();
+        }
+
+        [Fact]
+        public void OrderWithSolutionAndAdditionalServiceUnder40K_MultipleServiceRecipients()
+        {
+            OrderingPages.OrderingDashboard.CreateNewOrder();
+
+            OrderingPages.OrderType.ChooseOrderType(CatalogueItemType.Solution);
+
+            OrderingPages.OrderingTriage.SelectOrderTriage(OrderTriageValue.Under40K);
+
+            OrderingPages.StartOrder.ReadyToStart();
+
+            OrderingPages.StepOnePrepareOrder(SupplierName, false, OrderTriageValue.Under40K);
+
+            OrderingPages.StepTwoAddSolutionsAndServices(
+                solutionName: NewSolutionName,
+                additionalService: AdditionalServiceName,
+                multipleServiceRecipients: true);
+
+            OrderingPages.StepThreeCompleteContract();
+
+            OrderingPages.StepFourReviewAndCompleteOrder();
+        }
+
+        [Fact]
+        public void OrderWithSolutionAndAssociatedServiceUnder40K_MultipleServiceRecipients()
+        {
+            OrderingPages.OrderingDashboard.CreateNewOrder();
+
+            OrderingPages.OrderType.ChooseOrderType(CatalogueItemType.Solution);
+
+            OrderingPages.OrderingTriage.SelectOrderTriage(OrderTriageValue.Under40K);
+
+            OrderingPages.StartOrder.ReadyToStart();
+
+            OrderingPages.StepOnePrepareOrder(SupplierName, false, OrderTriageValue.Under40K);
+
+            OrderingPages.StepTwoAddSolutionsAndServices(
+                solutionName: NewSolutionName,
+                associatedService: AssociatedServiceNameForWebGP,
+                multipleServiceRecipients: true);
+
+            OrderingPages.StepThreeCompleteContract();
+
+            OrderingPages.StepFourReviewAndCompleteOrder();
+        }
+
+        [Fact]
+        public void OrderWithSolutionAdditionalAndAssociatedServiceUnder40K_MultipleServiceRecipients()
+        {
+            OrderingPages.OrderingDashboard.CreateNewOrder();
+
+            OrderingPages.OrderType.ChooseOrderType(CatalogueItemType.Solution);
+
+            OrderingPages.OrderingTriage.SelectOrderTriage(OrderTriageValue.Under40K);
+
+            OrderingPages.StartOrder.ReadyToStart();
+
+            OrderingPages.StepOnePrepareOrder(SupplierName, false, orderTriage: OrderTriageValue.Under40K);
+
+            OrderingPages.StepTwoAddSolutionsAndServices(
+                solutionName: NewSolutionName,
+                additionalService: AdditionalServiceName,
+                associatedService: AssociatedServiceNameForWebGP,
+                multipleServiceRecipients: true);
+
+            OrderingPages.StepThreeCompleteContract();
+
+            OrderingPages.StepFourReviewAndCompleteOrder();
+        }
+
+        [Fact]
+        public void OrderWithAssociatedServiceOnly_MultipleServiceRecipients()
+        {
+            OrderingPages.OrderingDashboard.CreateNewOrder();
+
+            OrderingPages.OrderType.ChooseOrderType(CatalogueItemType.AssociatedService);
+
+            OrderingPages.StartOrder.ReadyToStart();
+
+            OrderingPages.StepOnePrepareOrder(SupplierName, false, OrderTriageValue.Under40K);
+
+            OrderingPages.StepTwoAddSolutionsAndServices(
+                solutionName: NewSolutionName,
+                associatedService: AssociatedServiceNameForWebGP,
+                multipleServiceRecipients: true);
 
             OrderingPages.StepThreeCompleteContract();
 
