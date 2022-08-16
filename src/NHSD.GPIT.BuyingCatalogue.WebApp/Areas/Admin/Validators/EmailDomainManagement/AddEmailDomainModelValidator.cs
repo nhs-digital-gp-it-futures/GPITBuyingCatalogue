@@ -14,7 +14,7 @@ public class AddEmailDomainModelValidator : AbstractValidator<AddEmailDomainMode
     public const string TooManyWildcards = "Only one level of subdomain can be added. Remove any extra asterisks (*)";
 
     private static readonly Regex EmailRegex =
-        new Regex("^^@((\\*\\.)+)?([A-Za-z0-9.])+$", RegexOptions.Compiled);
+        new Regex("^@((\\*\\.)+)?([A-Za-z0-9.])+$", RegexOptions.Compiled);
 
     private readonly IEmailDomainService emailDomainService;
 
