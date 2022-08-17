@@ -72,7 +72,7 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering.StepTwo.Solut
             ConfirmSolutionChanges(hasAdditionalService, newAdditionalServiceNames);
         }
 
-        public void EditAdditionalService(string solutionName, string oldAdditionalService, string newAdditionalService, bool hasTheOrderAdditionalService)
+        public void EditAdditionalService(string solutionName, IEnumerable<string>? oldAdditionalServices, IEnumerable<string>? newAdditionalServices, bool hasTheOrderAdditionalService)
         {
             if (SolutionHasAdditionalService(solutionName))
             {
@@ -84,7 +84,13 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering.StepTwo.Solut
                       typeof(AdditionalServicesController),
                       nameof(AdditionalServicesController.EditAdditionalServices)).Should().BeTrue();
 
-                    CommonActions.ClickCheckboxByLabel(oldAdditionalService);
+                    if (oldAdditionalServices != default && oldAdditionalServices.All(a => !string.IsNullOrWhiteSpace(a)))
+                    {
+                        foreach (var oldAdditionalService in oldAdditionalServices)
+                        {
+                            CommonActions.ClickCheckboxByLabel(oldAdditionalService);
+                        }
+                    }
                 }
                 else
                 {
@@ -95,7 +101,13 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering.StepTwo.Solut
                       nameof(AdditionalServicesController.EditAdditionalServices)).Should().BeTrue();
                 }
 
-                CommonActions.ClickCheckboxByLabel(newAdditionalService);
+                if (newAdditionalServices != default && newAdditionalServices.All(a => !string.IsNullOrWhiteSpace(a)))
+                {
+                    foreach (var newAdditionalService in newAdditionalServices)
+                    {
+                        CommonActions.ClickCheckboxByLabel(newAdditionalService);
+                    }
+                }
 
                 CommonActions.ClickSave();
 

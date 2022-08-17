@@ -45,7 +45,7 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering.StepTwo.Solut
             }
         }
 
-        public void AddAssociatedServices(IEnumerable<string>? associatedServices, string preference = "No")
+        public void AddAssociatedService(IEnumerable<string>? associatedServices, string preference = "No")
         {
             CommonActions.PageLoadedCorrectGetIndex(
                   typeof(AssociatedServicesController),

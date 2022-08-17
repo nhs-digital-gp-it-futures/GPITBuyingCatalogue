@@ -1307,5 +1307,49 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
 
             OrderingPages.StepFourReviewAndCompleteOrder();
         }
+
+        [Fact]
+        public void OrderWithSolutionUnder40K_MultipleAdditionalServices_EditAdditionalService()
+        {
+            OrderingPages.OrderingDashboard.CreateNewOrder();
+
+            OrderingPages.OrderType.ChooseOrderType(CatalogueItemType.Solution);
+
+            OrderingPages.OrderingTriage.SelectOrderTriage(OrderTriageValue.Under40K);
+
+            OrderingPages.StartOrder.ReadyToStart();
+
+            OrderingPages.StepOnePrepareOrder(SupplierName, false, OrderTriageValue.Under40K);
+
+            OrderingPages.StepTwoAddSolutionsAndServices(NewSolutionName);
+
+            OrderingPages.EditAdditionalService(NewSolutionName, new List<string> { NewAdditionalServiceName, AdditionalServiceName });
+
+            OrderingPages.StepThreeCompleteContract();
+
+            OrderingPages.StepFourReviewAndCompleteOrder();
+        }
+
+        [Fact]
+        public void OrderWithSolutionAndAdditionalServiceUnder40K_MultipleAdditionalServices_EditAdditionalService()
+        {
+            OrderingPages.OrderingDashboard.CreateNewOrder();
+
+            OrderingPages.OrderType.ChooseOrderType(CatalogueItemType.Solution);
+
+            OrderingPages.OrderingTriage.SelectOrderTriage(OrderTriageValue.Under40K);
+
+            OrderingPages.StartOrder.ReadyToStart();
+
+            OrderingPages.StepOnePrepareOrder(SupplierName, false, OrderTriageValue.Under40K);
+
+            OrderingPages.StepTwoAddSolutionsAndServices(NewSolutionName, "Document Management", multipleServiceRecipients: true);
+
+            OrderingPages.EditAdditionalService(NewSolutionName, new List<string> { NewAdditionalServiceName, AdditionalServiceName }, oldAdditionalService: "Document Management");
+
+            OrderingPages.StepThreeCompleteContract();
+
+            OrderingPages.StepFourReviewAndCompleteOrder();
+        }
     }
 }
