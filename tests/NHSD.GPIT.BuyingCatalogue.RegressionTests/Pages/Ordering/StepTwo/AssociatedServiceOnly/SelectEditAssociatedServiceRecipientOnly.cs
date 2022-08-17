@@ -22,7 +22,7 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering.StepTwo.Assoc
 
         public LocalWebApplicationFactory Factory { get; }
 
-        public void AddServiceRecipient(bool multipleServiceRecipients)
+        public void AddServiceRecipient(bool multipleServiceRecipients = false)
         {
             CommonActions.PageLoadedCorrectGetIndex(
               typeof(ServiceRecipientsController),

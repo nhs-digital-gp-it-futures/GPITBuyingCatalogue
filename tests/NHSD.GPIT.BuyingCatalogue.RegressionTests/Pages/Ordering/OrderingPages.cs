@@ -144,22 +144,19 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering
                 SelectEditAndConfirmPrices.SelectAndConfirmPrice();
                 Quantity.AddQuantity();
 
-                if (HasAdditionalService(solutionName) && additionalServices != default)
+                if (HasAdditionalService(solutionName) && additionalServices != default && additionalServices.All(a => !string.IsNullOrWhiteSpace(a)))
                 {
-                    foreach (var additionalService in additionalServices)
-                    {
-                        if (!string.IsNullOrWhiteSpace(additionalService))
+                        foreach (var additionalService in additionalServices)
                         {
-                            SelectEditAdditionalServiceRecipients.AddServiceRecipients();
-                            SelectEditAndConfirmAdditionalServicePrice.SelectAndConfirmPrice();
-                            Quantity.AddQuantity();
+                                SelectEditAdditionalServiceRecipients.AddServiceRecipients();
+                                SelectEditAndConfirmAdditionalServicePrice.SelectAndConfirmPrice();
+                                Quantity.AddQuantity();
                         }
-                    }
                 }
 
                 if (HasAssociatedServices(solutionName))
                 {
-                    if ((associatedServices != default) && associatedServices.All(a => a != string.Empty))
+                    if ((associatedServices != default) && associatedServices.All(a => !string.IsNullOrWhiteSpace(a)))
                     {
                         SelectEditAssociatedService.AddAssociatedService(associatedServices, "Yes");
 
@@ -180,7 +177,7 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering
             {
                 SelectEditAssociatedServiceOnly.SelectAssociatedServices(solutionName, associatedServices);
 
-                if ((associatedServices != default) && associatedServices.All(a => a != string.Empty))
+                if ((associatedServices != default) && associatedServices.All(a => !string.IsNullOrWhiteSpace(a)))
                 {
                     foreach (var associatedService in associatedServices)
                     {
@@ -318,7 +315,12 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering
             EditAdditionalService(solutionName, newAdditionalServices, new List<string> { newAssociatedService }, new List<string> { oldAdditionalService });
         }
 
-        public void EditAdditionalService(string solutionName, IEnumerable<string> newAdditionalServices, IEnumerable<string>? newAssociatedServices, IEnumerable<string> oldAdditionalServices)
+        public void EditAdditionalService(string solutionName, string newAdditionalService, string newAssociatedService, IEnumerable<string>? oldAdditionalServices)
+        {
+            EditAdditionalService(solutionName, new List<string> { newAdditionalService }, new List<string> { newAssociatedService }, oldAdditionalServices);
+        }
+
+        public void EditAdditionalService(string solutionName, IEnumerable<string> newAdditionalServices, IEnumerable<string>? newAssociatedServices, IEnumerable<string>? oldAdditionalServices)
         {
             var isAssociatedServiceOnlyOrder = IsAssociatedServiceOnlyOrder();
 
@@ -367,41 +369,77 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering
 
         public void EditAssociatedService(string solutionName, string newAssociatedServiceName, string additionalServiceName = "", string oldAssociatedServiceName = "")
         {
+            EditAssociatedService(solutionName, new List<string> { newAssociatedServiceName }, new List<string> { additionalServiceName }, new List<string> { oldAssociatedServiceName });
+        }
+
+        public void EditAssociatedService(string solutionName, IEnumerable<string> newAssociatedServices, string additionalServiceName = "", string oldAssociatedServiceName = "")
+        {
+            EditAssociatedService(solutionName, newAssociatedServices, new List<string> { additionalServiceName }, new List<string> { oldAssociatedServiceName });
+        }
+
+        public void EditAssociatedService(string solutionName, string newAssociatedServiceName, IEnumerable<string>? oldAssociatedServices, string additionalServiceName = "")
+        {
+            EditAssociatedService(solutionName, new List<string> { newAssociatedServiceName }, new List<string> { additionalServiceName }, oldAssociatedServices);
+        }
+
+        public void EditAssociatedService(string solutionName, IEnumerable<string> newAssociatedServices, IEnumerable<string>? additionalServices, IEnumerable<string>? oldAssociatedServices)
+        {
             var isAssociatedServiceOnlyOrder = IsAssociatedServiceOnlyOrder();
 
             TaskList.EditSolutionsAndServicesTask(isAssociatedServiceOnlyOrder);
 
-            SelectEditAssociatedService.EditAssociatedService(solutionName, newAssociatedServiceName, HasTheOriginalOrderAssociatedService(), oldAssociatedServiceName);
+            SelectEditAssociatedService.EditAssociatedService(solutionName, newAssociatedServices, HasTheOriginalOrderAssociatedService(), oldAssociatedServices);
 
-            if (HasAssociatedServices(solutionName) && !string.IsNullOrWhiteSpace(newAssociatedServiceName))
+            if (HasAssociatedServices(solutionName) && newAssociatedServices.All(a => !string.IsNullOrWhiteSpace(a)))
             {
-                SelectEditAssociatedServiceRecipents.AddServiceRecipient();
-                SelectEditAndConfirmAssociatedServicePrices.SelectAndConfirmPrice();
+                foreach (var associatedService in newAssociatedServices)
+                {
+                    SelectEditAssociatedServiceRecipents.AddServiceRecipient();
+                    SelectEditAndConfirmAssociatedServicePrices.SelectAndConfirmPrice();
+                    Quantity.AddQuantity();
+                }
+            }
+
+            SolutionAndServicesReview.ReviewSolutionAndServices();
+
+            TaskList.SelectFundingSourcesTask();
+            SelectFundingSources.AddFundingSources(solutionName, isAssociatedServiceOnlyOrder, newAssociatedServices, additionalServices);
+        }
+
+        public void EditAssociatedServiceOnly(string solutionName, string newAssociatedServiceName, string oldAssociatedServiceName)
+        {
+            EditAssociatedServiceOnly(solutionName, new List<string> { newAssociatedServiceName }, new List<string> { oldAssociatedServiceName });
+        }
+
+        public void EditAssociatedServiceOnly(string solutionName, IEnumerable<string> newAssociatedServices, string oldAssociatedServiceName)
+        {
+            EditAssociatedServiceOnly(solutionName, newAssociatedServices, new List<string> { oldAssociatedServiceName });
+        }
+
+        public void EditAssociatedServiceOnly(string solutionName, string newAssociatedServiceName, IEnumerable<string> oldAssociatedServices)
+        {
+            EditAssociatedServiceOnly(solutionName, new List<string> { newAssociatedServiceName }, oldAssociatedServices);
+        }
+
+        public void EditAssociatedServiceOnly(string solutionName, IEnumerable<string> newAssociatedServices, IEnumerable<string> oldAssociatedServices)
+        {
+            var isAssociatedServiceOnlyOrder = IsAssociatedServiceOnlyOrder();
+
+            TaskList.EditSolutionsAndServicesTask(isAssociatedServiceOnlyOrder);
+
+            SelectEditAssociatedServiceOnly.EditAssociatedServiceOnly(newAssociatedServices, oldAssociatedServices);
+
+            foreach (var associatedService in newAssociatedServices)
+            {
+                SelectEditAssociatedServiceRecipientOnly.AddServiceRecipient();
+                SelectEditAndConfirmAssociatedServiceOnlyPrices.SelectAndConfirmPrice();
                 Quantity.AddQuantity();
             }
 
             SolutionAndServicesReview.ReviewSolutionAndServices();
 
             TaskList.SelectFundingSourcesTask();
-            SelectFundingSources.AddFundingSources(solutionName, newAssociatedServiceName, isAssociatedServiceOnlyOrder, additionalServiceName);
-        }
-
-        public void EditAssociatedServiceOnly(string solutionName, string newAssociatedServiceName, string oldAssociatedServiceName)
-        {
-            var isAssociatedServiceOnlyOrder = IsAssociatedServiceOnlyOrder();
-
-            TaskList.EditSolutionsAndServicesTask(isAssociatedServiceOnlyOrder);
-
-            SelectEditAssociatedServiceOnly.EditAssociatedServiceOnly(newAssociatedServiceName, oldAssociatedServiceName);
-
-            SelectEditAssociatedServiceRecipientOnly.AddServiceRecipient(false);
-            SelectEditAndConfirmAssociatedServiceOnlyPrices.SelectAndConfirmPrice();
-            Quantity.AddQuantity();
-
-            SolutionAndServicesReview.ReviewSolutionAndServices();
-
-            TaskList.SelectFundingSourcesTask();
-            SelectFundingSources.AddFundingSources(solutionName, newAssociatedServiceName, isAssociatedServiceOnlyOrder);
+            SelectFundingSources.AddFundingSources(solutionName, isAssociatedServiceOnlyOrder, newAssociatedServices, null);
         }
 
         public void EditCatalogueSolutionServiceRecipient(string solutionName)

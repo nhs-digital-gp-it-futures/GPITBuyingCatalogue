@@ -16,7 +16,7 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering.StepTwo.Assoc
 {
     public class SelectEditAndConfirmAssociatedServiceOnlyPrices : PageBase
     {
-        private const decimal MaxPrice = 435.0M;
+        private const decimal MaxPrice = 235.0M;
 
         public SelectEditAndConfirmAssociatedServiceOnlyPrices(IWebDriver driver, CommonActions commonActions, LocalWebApplicationFactory factory)
             : base(driver, commonActions)

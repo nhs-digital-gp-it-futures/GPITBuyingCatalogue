@@ -60,7 +60,7 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering.StepTwo.Assoc
             CommonActions.ClickSave();
         }
 
-        public void EditAssociatedServiceOnly(string newAssociatedService, string oldAssociatedService)
+        public void EditAssociatedServiceOnly(IEnumerable<string> newAssociatedServices, IEnumerable<string> oldAssociatedServices)
         {
             CommonActions.ClickLinkElement(ReviewSolutionsObjects.ChangeAssociatedServiceLink);
 
@@ -68,8 +68,18 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering.StepTwo.Assoc
              typeof(AssociatedServicesController),
              nameof(AssociatedServicesController.EditAssociatedServices)).Should().BeTrue();
 
-            CommonActions.ClickCheckboxByLabel(oldAssociatedService);
-            CommonActions.ClickCheckboxByLabel(newAssociatedService);
+            if (oldAssociatedServices != default && oldAssociatedServices.All(a => a != string.Empty))
+            {
+                foreach (var oldAssociatedService in oldAssociatedServices)
+                {
+                    CommonActions.ClickCheckboxByLabel(oldAssociatedService);
+                }
+            }
+
+            foreach (var newAssociatedService in newAssociatedServices)
+            {
+                CommonActions.ClickCheckboxByLabel(newAssociatedService);
+            }
 
             CommonActions.ClickSave();
 

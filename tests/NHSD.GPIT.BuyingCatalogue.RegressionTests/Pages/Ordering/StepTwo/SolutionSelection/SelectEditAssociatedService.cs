@@ -73,7 +73,7 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering.StepTwo.Solut
             }
         }
 
-        public void EditAssociatedService(string solutionName, string newAssociatedService, bool hasTheOrderAssociatedService, string oldAssociatedService = "")
+        public void EditAssociatedService(string solutionName, IEnumerable<string> newAssociatedServices, bool hasTheOrderAssociatedService, IEnumerable<string>? oldAssociatedServices)
         {
             if (SolutionHasAssociatedService(solutionName))
             {
@@ -85,7 +85,13 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering.StepTwo.Solut
                      typeof(AssociatedServicesController),
                      nameof(AssociatedServicesController.EditAssociatedServices)).Should().BeTrue();
 
-                    CommonActions.ClickCheckboxByLabel(oldAssociatedService);
+                    if (oldAssociatedServices != default && oldAssociatedServices.All(a => !string.IsNullOrWhiteSpace(a)))
+                    {
+                        foreach (var oldAssociatedService in oldAssociatedServices)
+                        {
+                            CommonActions.ClickCheckboxByLabel(oldAssociatedService);
+                        }
+                    }
                 }
                 else
                 {
@@ -96,7 +102,10 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering.StepTwo.Solut
                      nameof(AssociatedServicesController.EditAssociatedServices)).Should().BeTrue();
                 }
 
-                CommonActions.ClickCheckboxByLabel(newAssociatedService);
+                foreach (var associatedService in newAssociatedServices)
+                {
+                    CommonActions.ClickCheckboxByLabel(associatedService);
+                }
 
                 CommonActions.ClickSave();
 
