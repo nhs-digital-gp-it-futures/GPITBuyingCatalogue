@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using AutoFixture.Xunit2;
@@ -110,6 +111,99 @@ public class EmailDomainServiceTests
         EmailDomainService service)
     {
         var result = await service.Exists(domain.Domain);
+
+        result.Should().BeFalse();
+    }
+
+    [Theory]
+    [InMemoryDbAutoData]
+    public static Task IsAllowed_Null_Throws(
+        EmailDomainService service) =>
+        FluentActions.Awaiting(() => service.IsAllowed(null))
+            .Should()
+            .ThrowAsync<ArgumentNullException>();
+
+    [Theory]
+    [InMemoryDbAutoData]
+    public static async Task IsAllowed_NoAllowedDomains_False(
+        string emailAddress,
+        [Frozen] BuyingCatalogueDbContext context,
+        EmailDomainService service)
+    {
+        context.EmailDomains.RemoveRange(context.EmailDomains);
+        context.SaveChanges();
+
+        var result = await service.IsAllowed(emailAddress);
+
+        result.Should().BeFalse();
+    }
+
+    [Theory]
+    [InMemoryDbAutoData]
+    public static async Task IsAllowed_ExactMatch_True(
+        [Frozen] BuyingCatalogueDbContext context,
+        EmailDomainService service)
+    {
+        const string emailAddress = "test@nhs.net";
+        const string emailDomain = "@nhs.net";
+
+        context.EmailDomains.Add(new EmailDomain(emailDomain));
+        context.SaveChanges();
+
+        var result = await service.IsAllowed(emailAddress);
+
+        result.Should().BeTrue();
+    }
+
+    [Theory]
+    [InMemoryDbInlineAutoData("test@subdomain.nhs.net")]
+    [InMemoryDbInlineAutoData("test@another-subdomain.nhs.net")]
+    public static async Task IsAllowed_WildcardSubDomain_True(
+        string emailAddress,
+        [Frozen] BuyingCatalogueDbContext context,
+        EmailDomainService service)
+    {
+        const string emailDomain = "@*.nhs.net";
+
+        context.EmailDomains.Add(new EmailDomain(emailDomain));
+        context.SaveChanges();
+
+        var result = await service.IsAllowed(emailAddress);
+
+        result.Should().BeTrue();
+    }
+
+    [Theory]
+    [InMemoryDbInlineAutoData("test@subdomain.nhs.net")]
+    [InMemoryDbInlineAutoData("test@another-subdomain.nhs.net")]
+    public static async Task IsAllowed_SubDomainNotAllowed_True(
+        string emailAddress,
+        [Frozen] BuyingCatalogueDbContext context,
+        EmailDomainService service)
+    {
+        const string emailDomain = "@nhs.net";
+
+        context.EmailDomains.Add(new EmailDomain(emailDomain));
+        context.SaveChanges();
+
+        var result = await service.IsAllowed(emailAddress);
+
+        result.Should().BeFalse();
+    }
+
+    [Theory]
+    [InMemoryDbAutoData]
+    public static async Task IsAllowed_NoMatch_False(
+        [Frozen] BuyingCatalogueDbContext context,
+        EmailDomainService service)
+    {
+        const string emailAddress = "test@gmail.com";
+        const string emailDomain = "@nhs.net";
+
+        context.EmailDomains.Add(new EmailDomain(emailDomain));
+        context.SaveChanges();
+
+        var result = await service.IsAllowed(emailAddress);
 
         result.Should().BeFalse();
     }

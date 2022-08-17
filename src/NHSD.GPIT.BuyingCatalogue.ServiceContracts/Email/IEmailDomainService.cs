@@ -15,4 +15,6 @@ public interface IEmailDomainService
     Task DeleteAllowedDomain(int id);
 
     Task<bool> Exists(string domain);
+
+    Task<bool> IsAllowed(string emailAddress);
 }
