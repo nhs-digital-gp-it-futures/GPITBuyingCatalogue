@@ -464,6 +464,28 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
         }
 
         [Fact]
+        public void OrderWithSolutionAndAssociatedServiceUnder40K_EditAdditionalService()
+        {
+            OrderingPages.OrderingDashboard.CreateNewOrder();
+
+            OrderingPages.OrderType.ChooseOrderType(CatalogueItemType.Solution);
+
+            OrderingPages.OrderingTriage.SelectOrderTriage(OrderTriageValue.Under40K);
+
+            OrderingPages.StartOrder.ReadyToStart();
+
+            OrderingPages.StepOnePrepareOrder(SupplierName, false, OrderTriageValue.Under40K);
+
+            OrderingPages.StepTwoAddSolutionsAndServices(NewSolutionName, associatedService: NewAssociatedServiceName);
+
+            OrderingPages.EditAdditionalService(NewSolutionName, NewAdditionalServiceName);
+
+            OrderingPages.StepThreeCompleteContract();
+
+            OrderingPages.StepFourReviewAndCompleteOrder();
+        }
+
+        [Fact]
         public void OrderWithSolutionAdditionalAndAssociatedServiceUnder40K_EditAdditionalService()
         {
             OrderingPages.OrderingDashboard.CreateNewOrder();
@@ -523,6 +545,28 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
             OrderingPages.StepTwoAddSolutionsAndServices(NewSolutionName, NewAdditionalServiceName);
 
             OrderingPages.EditAssociatedService(NewSolutionName, NewAssociatedServiceName, NewAdditionalServiceName);
+
+            OrderingPages.StepThreeCompleteContract();
+
+            OrderingPages.StepFourReviewAndCompleteOrder();
+        }
+
+        [Fact]
+        public void OrderWithSolutionAndAssociatedServiceUnder40K_EditAssociatedService()
+        {
+            OrderingPages.OrderingDashboard.CreateNewOrder();
+
+            OrderingPages.OrderType.ChooseOrderType(CatalogueItemType.Solution);
+
+            OrderingPages.OrderingTriage.SelectOrderTriage(OrderTriageValue.Under40K);
+
+            OrderingPages.StartOrder.ReadyToStart();
+
+            OrderingPages.StepOnePrepareOrder(SupplierName, false, OrderTriageValue.Under40K);
+
+            OrderingPages.StepTwoAddSolutionsAndServices(NewSolutionName, associatedService: AssociatedServiceNameForWebGP);
+
+            OrderingPages.EditAssociatedService(NewSolutionName, NewAssociatedServiceName, oldAssociatedServiceName: AssociatedServiceNameForWebGP);
 
             OrderingPages.StepThreeCompleteContract();
 
@@ -1090,7 +1134,7 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
         }
 
         [Fact]
-        public void OrderAssociatedServiceOnly_MultipleAssociatedServices_EditCatalogueSolution()
+        public void OrderAssociatedServiceOnly_EditCatalogueSolution_AddMultipleAssociatedServices()
         {
             OrderingPages.OrderingDashboard.CreateNewOrder();
 
@@ -1110,7 +1154,7 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
         }
 
         [Fact]
-        public void OrderWithSolutionAndAdditionalServiceUnder40K_MultipleAdditionalServices_EditCatalogueSolution()
+        public void OrderWithSolutionUnder40K_EditCatalogueSolution_AddMultipleAdditionalServices()
         {
             OrderingPages.OrderingDashboard.CreateNewOrder();
 
@@ -1132,7 +1176,7 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
         }
 
         [Fact]
-        public void OrderWithSolutionAndAssociatedServiceUnder40K_MultipleAssociatedServices_EditCatalogueSolution()
+        public void OrderWithSolutionUnder40K_EditCatalogueSolution_AddMultipleAssociatedServices()
         {
             OrderingPages.OrderingDashboard.CreateNewOrder();
 
@@ -1154,7 +1198,7 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
         }
 
         [Fact]
-        public void OrderWithSolutionAdditionalAndAssociatedServiceUnder40K_MultipleAdditional_MultipleAssociatedServices_EditCatalogueSolution()
+        public void OrderWithSolutionUnder40K_EditCatalogueSolution_AddMultipleAdditional_AddultipleAssociatedServices()
         {
             OrderingPages.OrderingDashboard.CreateNewOrder();
 
@@ -1176,7 +1220,7 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
         }
 
         [Fact]
-        public void OrderWithSolutionUnder40K_MultipleServiceRecipients_EditCatalogueSolution()
+        public void OrderWithSolutionUnder40K_EditCatalogueSolution_AddMultipleServiceRecipients()
         {
             OrderingPages.OrderingDashboard.CreateNewOrder();
 
@@ -1198,7 +1242,7 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
         }
 
         [Fact]
-        public void OrderWithSolutionAndAdditionalServiceUnder40K_MultipleServiceRecipients_EditCatalogueSolution()
+        public void OrderWithSolutionUnder40K_EditCatalogueSolution_AddMultipleAdditionalServices_MultipleServiceRecipients()
         {
             OrderingPages.OrderingDashboard.CreateNewOrder();
 
@@ -1220,7 +1264,7 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
         }
 
         [Fact]
-        public void OrderWithSolutionAndAssociatedServiceUnder40K_MultipleServiceRecipients_EditCatalogueSolution()
+        public void OrderWithSolutionUnder40K_EditCatalogueSolution_AddMultipleAssociatedServices_MultipleServiceRecipients()
         {
             OrderingPages.OrderingDashboard.CreateNewOrder();
 
@@ -1242,7 +1286,7 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
         }
 
         [Fact]
-        public void OrderWithSolutionAdditionalAndAssociatedServiceUnder40K_MultipleServiceRecipients_EditCatalogueSolution()
+        public void OrderWithSolutionUnder40K_EditCatalogueSolution_AddMultipleAdditionalServices_AddMultipleAssociatedServices_AddMultipleServiceRecipients()
         {
             OrderingPages.OrderingDashboard.CreateNewOrder();
 
@@ -1264,7 +1308,7 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
         }
 
         [Fact]
-        public void OrderWithAssociatedServiceOnly_MultipleAssociatedServices_MultipleServiceRecipients_EditCatalogueSolution()
+        public void OrderWithAssociatedServiceOnly_EditCatalogueSolution_AddMultipleAssociatedServices_AddMultipleServiceRecipients()
         {
             OrderingPages.OrderingDashboard.CreateNewOrder();
 
@@ -1287,7 +1331,7 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
         }
 
         [Fact]
-        public void OrderWithSolutionAdditionalAndAssociatedServiceUnder40K_MultipleAdditionalServices_OneAssociatedService_EditCatalogueSolution()
+        public void OrderWithSolutionUnder40K_EditCatalogueSolution_AddMultipleAdditionalServices_AddOneAssociatedService()
         {
             OrderingPages.OrderingDashboard.CreateNewOrder();
 
@@ -1309,7 +1353,7 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
         }
 
         [Fact]
-        public void OrderWithSolutionUnder40K_MultipleAdditionalServices_EditAdditionalService()
+        public void OrderWithSolutionUnder40K_EditAdditionalService_AddMultipleAdditionalServices()
         {
             OrderingPages.OrderingDashboard.CreateNewOrder();
 
@@ -1331,7 +1375,7 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
         }
 
         [Fact]
-        public void OrderWithSolutionAndAdditionalServiceUnder40K_MultipleAdditionalServices_EditAdditionalService()
+        public void OrderWithSolutionAndAdditionalServiceUnder40K_EditAdditionalService_MultipleAdditionalServices()
         {
             OrderingPages.OrderingDashboard.CreateNewOrder();
 
@@ -1353,7 +1397,7 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
         }
 
         [Fact]
-        public void OrderWithSolutionUnder40K_MultipleAssociatedServices_EditAssociatedService()
+        public void OrderWithSolutionUnder40K_EditAssociatedService_AddMultipleAssociatedServices()
         {
             OrderingPages.OrderingDashboard.CreateNewOrder();
 
@@ -1375,7 +1419,7 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
         }
 
         [Fact]
-        public void OrderWithSolutionAndAssociatedServiceUnder40K_MultipleAssociatedServices_EditAssociatedService()
+        public void OrderWithSolutionAndAssociatedServiceUnder40K_EditAssociatedService_AddMultipleAssociatedServices()
         {
             OrderingPages.OrderingDashboard.CreateNewOrder();
 
@@ -1397,7 +1441,7 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
         }
 
         [Fact]
-        public void OrderAssociatedServiceOnly_MultipleAssociatedServices_EditAssociatedService()
+        public void OrderAssociatedServiceOnly_EditAssociatedService_AddMultipleAssociatedServices()
         {
             OrderingPages.OrderingDashboard.CreateNewOrder();
 
