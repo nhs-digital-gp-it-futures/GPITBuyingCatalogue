@@ -33,42 +33,24 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.Users
         [Fact]
         public async Task Details_AllElementsDisplayed()
         {
-            CommonActions.ElementIsDisplayed(BreadcrumbObjects.HomeBreadcrumbLink).Should().BeTrue();
-            CommonActions.ElementIsDisplayed(BreadcrumbObjects.ManageUsersBreadcrumbLink).Should().BeTrue();
+            await AssertAllFieldsPresent(isUserActive: true);
+        }
 
-            CommonActions.ElementIsDisplayed(UserObjects.FirstNameDisplay).Should().BeTrue();
-            CommonActions.ElementIsDisplayed(UserObjects.LastNameDisplay).Should().BeTrue();
-            CommonActions.ElementIsDisplayed(UserObjects.EmailDisplay).Should().BeTrue();
+        [Fact]
+        public async Task Details_InactiveUser_AllElementsDisplayed()
+        {
+            var context = GetEndToEndDbContext();
+            var user = await context.Users.SingleAsync(x => x.Id == UserId);
 
-            CommonActions.ElementIsDisplayed(UserObjects.OrganisationDisplay).Should().BeTrue();
-            CommonActions.ElementIsDisplayed(UserObjects.AccountTypeDisplay).Should().BeTrue();
-            CommonActions.ElementIsDisplayed(UserObjects.AccountStatusDisplay).Should().BeTrue();
+            user.Disabled = true;
+            await context.SaveChangesAsync();
 
-            CommonActions.ElementIsDisplayed(UserObjects.EditPersonalDetailsLink).Should().BeTrue();
-            CommonActions.ElementIsDisplayed(UserObjects.EditOrganisationLink).Should().BeTrue();
-            CommonActions.ElementIsDisplayed(UserObjects.EditAccountTypeLink).Should().BeTrue();
-            CommonActions.ElementIsDisplayed(UserObjects.EditAccountStatusLink).Should().BeTrue();
-            CommonActions.ElementIsDisplayed(UserObjects.ResetPasswordLink).Should().BeTrue();
+            Driver.Navigate().Refresh();
 
-            CommonActions.ElementExists(UserObjects.OrdersTable).Should().BeFalse();
-            CommonActions.ElementIsDisplayed(UserObjects.OrdersErrorMessage).Should().BeTrue();
+            await AssertAllFieldsPresent(isUserActive: false);
 
-            var user = await GetUser(UserId);
-
-            var organisationFunction = user.OrganisationFunction == OrganisationFunction.AuthorityName
-                ? "Admin"
-                : user.OrganisationFunction;
-
-            var accountStatus = user.Disabled
-                ? ServiceContracts.Enums.AccountStatus.Inactive.ToString()
-                : ServiceContracts.Enums.AccountStatus.Active.ToString();
-
-            CommonActions.ElementTextEqualTo(UserObjects.FirstNameDisplay, user.FirstName).Should().BeTrue();
-            CommonActions.ElementTextEqualTo(UserObjects.LastNameDisplay, user.LastName).Should().BeTrue();
-            CommonActions.ElementTextEqualTo(UserObjects.EmailDisplay, user.Email).Should().BeTrue();
-            CommonActions.ElementTextEqualTo(UserObjects.OrganisationDisplay, user.PrimaryOrganisation.Name).Should().BeTrue();
-            CommonActions.ElementTextEqualTo(UserObjects.AccountTypeDisplay, organisationFunction).Should().BeTrue();
-            CommonActions.ElementTextEqualTo(UserObjects.AccountStatusDisplay, accountStatus).Should().BeTrue();
+            user.Disabled = false;
+            await context.SaveChangesAsync();
         }
 
         [Fact]
@@ -191,6 +173,46 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.Users
             CommonActions.PageLoadedCorrectGetIndex(
                 typeof(UsersController),
                 nameof(UsersController.ResetPassword)).Should().BeTrue();
+        }
+
+        private async Task AssertAllFieldsPresent(bool isUserActive)
+        {
+            CommonActions.ElementIsDisplayed(BreadcrumbObjects.HomeBreadcrumbLink).Should().BeTrue();
+            CommonActions.ElementIsDisplayed(BreadcrumbObjects.ManageUsersBreadcrumbLink).Should().BeTrue();
+
+            CommonActions.ElementIsDisplayed(UserObjects.FirstNameDisplay).Should().BeTrue();
+            CommonActions.ElementIsDisplayed(UserObjects.LastNameDisplay).Should().BeTrue();
+            CommonActions.ElementIsDisplayed(UserObjects.EmailDisplay).Should().BeTrue();
+
+            CommonActions.ElementIsDisplayed(UserObjects.OrganisationDisplay).Should().BeTrue();
+            CommonActions.ElementIsDisplayed(UserObjects.AccountTypeDisplay).Should().BeTrue();
+            CommonActions.ElementIsDisplayed(UserObjects.AccountStatusDisplay).Should().BeTrue();
+
+            CommonActions.ElementIsDisplayed(UserObjects.EditPersonalDetailsLink).Should().BeTrue();
+            CommonActions.ElementIsDisplayed(UserObjects.EditOrganisationLink).Should().BeTrue();
+            CommonActions.ElementIsDisplayed(UserObjects.EditAccountTypeLink).Should().BeTrue();
+            CommonActions.ElementIsDisplayed(UserObjects.EditAccountStatusLink).Should().BeTrue();
+            CommonActions.ElementIsDisplayed(UserObjects.ResetPasswordLink).Should().Be(isUserActive);
+
+            CommonActions.ElementExists(UserObjects.OrdersTable).Should().BeFalse();
+            CommonActions.ElementIsDisplayed(UserObjects.OrdersErrorMessage).Should().BeTrue();
+
+            var user = await GetUser(UserId);
+
+            var organisationFunction = user.OrganisationFunction == OrganisationFunction.AuthorityName
+                ? "Admin"
+                : user.OrganisationFunction;
+
+            var accountStatus = user.Disabled
+                ? ServiceContracts.Enums.AccountStatus.Inactive.ToString()
+                : ServiceContracts.Enums.AccountStatus.Active.ToString();
+
+            CommonActions.ElementTextEqualTo(UserObjects.FirstNameDisplay, user.FirstName).Should().BeTrue();
+            CommonActions.ElementTextEqualTo(UserObjects.LastNameDisplay, user.LastName).Should().BeTrue();
+            CommonActions.ElementTextEqualTo(UserObjects.EmailDisplay, user.Email).Should().BeTrue();
+            CommonActions.ElementTextEqualTo(UserObjects.OrganisationDisplay, user.PrimaryOrganisation.Name).Should().BeTrue();
+            CommonActions.ElementTextEqualTo(UserObjects.AccountTypeDisplay, organisationFunction).Should().BeTrue();
+            CommonActions.ElementTextEqualTo(UserObjects.AccountStatusDisplay, accountStatus).Should().BeTrue();
         }
 
         private async Task<Order> GetOrder(int userId)
