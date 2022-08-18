@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using MoreLinq;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.CapabilityModels
@@ -22,6 +23,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.CapabilityModels
                 itemCapability => itemCapability.CapabilityId == capability.Id);
             MayEpics = GetEpics(catalogueItem, capability, CompliancyLevel.May);
             MustEpics = GetEpics(catalogueItem, capability, CompliancyLevel.Must);
+
+            if (!Selected)
+                MustEpics.ForEach(e => e.Selected = true);
         }
 
         public int Id { get; set; }
@@ -36,7 +40,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.CapabilityModels
 
         public IList<CapabilityEpicModel> MayEpics { get; set; } = new List<CapabilityEpicModel>();
 
-        public IList<CapabilityEpicModel> Epics => MustEpics.Concat(MayEpics).ToList();
+        public IEnumerable<CapabilityEpicModel> Epics => MustEpics.Concat(MayEpics).ToList();
 
         private static IList<CapabilityEpicModel> GetEpics(CatalogueItem catalogueItem, Capability capability, CompliancyLevel level)
         {

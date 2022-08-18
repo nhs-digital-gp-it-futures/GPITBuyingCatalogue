@@ -22,9 +22,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.CapabilityModels
                 : $"{catalogueItem.Name} Capabilities and Epics";
 
             CapabilityCategories = GetCapabilities(catalogueItem, capabilityCategories);
-
-            if (!CapabilityCategories.Any(cc => cc.Capabilities.Any(c => c.Selected)))
-                SelectMustEpics(CapabilityCategories);
         }
 
         public string Title { get; init; }
@@ -46,14 +43,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.CapabilityModels
                 .ToList();
 
             return categories;
-        }
-
-        private static void SelectMustEpics(IEnumerable<CapabilityCategoryModel> capabilityCategories)
-        {
-            foreach (var epic in capabilityCategories.SelectMany(cc => cc.Capabilities).SelectMany(c => c.MustEpics))
-            {
-                epic.Selected = true;
-            }
         }
     }
 }
