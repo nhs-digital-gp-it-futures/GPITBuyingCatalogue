@@ -61,6 +61,17 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
                 .ToListAsync();
         }
 
+        public Task<List<Supplier>> GetAllSuppliersWithAssociatedServices()
+        {
+            return dbContext.Suppliers.AsNoTracking()
+                .Include(x => x.CatalogueItems)
+                .Where(x => x.IsActive
+                        && x.CatalogueItems.Any(ci => ci.CatalogueItemType == CatalogueItemType.AssociatedService
+                            && ci.PublishedStatus == PublicationStatus.Published))
+                .OrderBy(x => x.Name)
+                .ToListAsync();
+        }
+
         public Task<Supplier> GetSupplierFromBuyingCatalogue(int id)
         {
             return dbContext.Suppliers

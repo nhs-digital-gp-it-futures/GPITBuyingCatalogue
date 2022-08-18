@@ -4,7 +4,6 @@ using Microsoft.EntityFrameworkCore;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Users.Models;
-using NHSD.GPIT.BuyingCatalogue.Framework.Calculations;
 
 namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
 {
@@ -31,6 +30,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
             AddOrderWithAddedNoContactSolutionAdditionalServiceAndAssociatedService(context);
             AddAssociatedServicesOnlyOrder(context);
             AddEmptyAssociatedServicesOnlyOrder(context);
+            AddEmptyAssociatedServicesOnlyOrderNoSupplier(context);
             AddAssociatedServicesOnlyOrderWithNoPriceOrServiceRecipients(context);
             AddAssociatedServicesOnlyOrderWithOnePopulatedOrderItem(context);
             AddOrderReadyToComplete(context);
@@ -1129,6 +1129,38 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
                     FirstName = "Bruce",
                     LastName = "Wayne",
                     Email = "bat.man@Gotham.Fake",
+                    Phone = "123456789",
+                },
+                CommencementDate = timeNow.AddDays(1),
+                InitialPeriod = 6,
+                MaximumTerm = 36,
+            };
+
+            var user = GetBuyerUser(context, order.OrderingPartyId);
+
+            context.Add(order);
+
+            context.SaveChangesAs(user.Id);
+        }
+
+        private static void AddEmptyAssociatedServicesOnlyOrderNoSupplier(BuyingCatalogueDbContext context)
+        {
+            const int orderId = 90019;
+            var timeNow = DateTime.UtcNow;
+
+            var order = new Order
+            {
+                Id = orderId,
+                AssociatedServicesOnly = true,
+                OrderingPartyId = GetOrganisationId(context),
+                Created = timeNow,
+                IsDeleted = false,
+                Description = "Associated services only",
+                OrderingPartyContact = new Contact
+                {
+                    FirstName = "Clark",
+                    LastName = "Kent",
+                    Email = "Clark.Kent@TheDailyPlanet.Fake",
                     Phone = "123456789",
                 },
                 CommencementDate = timeNow.AddDays(1),

@@ -396,7 +396,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers.SolutionSelec
         {
             var order = await orderService.GetOrderThin(callOffId, internalOrgId);
             var solutionId = order.GetSolutionId();
-            var solutions = await solutionsService.GetSupplierSolutions(order.SupplierId);
+
+            var solutions = order.AssociatedServicesOnly
+                ? await solutionsService.GetSupplierSolutionsWithAssociatedServices(order.SupplierId)
+                : await solutionsService.GetSupplierSolutions(order.SupplierId);
 
             var additionalServices = includeAdditionalServices
                 ? await additionalServicesService.GetAdditionalServicesBySolutionIds(solutions.Select(x => x.Id))

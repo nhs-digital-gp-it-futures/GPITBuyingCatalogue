@@ -187,13 +187,17 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers
         }
 
         [Theory]
-        [CommonAutoData]
+        [CommonInlineAutoData(true)]
+        [CommonInlineAutoData(false)]
         public static async Task Get_SelectSupplier_WithSupplier_RedirectsCorrectly(
+            bool associatedServicesOnly,
             string internalOrgId,
             EntityFramework.Ordering.Models.Order order,
             [Frozen] Mock<IOrderService> orderServiceMock,
             SupplierController controller)
         {
+            order.AssociatedServicesOnly = associatedServicesOnly;
+
             orderServiceMock
                 .Setup(s => s.GetOrderWithSupplier(order.CallOffId, internalOrgId))
                 .ReturnsAsync(order);
@@ -242,6 +246,47 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers
 
             model.CallOffId.Should().Be(order.CallOffId);
             model.InternalOrgId.Should().Be(internalOrgId);
+            model.AssociatedServicesOnly.Should().Be(order.AssociatedServicesOnly);
+
+            foreach (var supplier in suppliers)
+            {
+                model.Suppliers.Should().Contain(x => x.Text == supplier.Name && x.Value == $"{supplier.Id}");
+            }
+        }
+
+        [Theory]
+        [CommonAutoData]
+        public static async Task Get_SelectSupplier_AssociatedServicesOnly_NoSupplier_ReturnsExpectedResult(
+            string internalOrgId,
+            EntityFramework.Ordering.Models.Order order,
+            List<Supplier> suppliers,
+            [Frozen] Mock<IOrderService> orderService,
+            [Frozen] Mock<ISupplierService> supplierService,
+            SupplierController controller)
+        {
+            order.Supplier = null;
+            order.AssociatedServicesOnly = true;
+
+            orderService
+                .Setup(s => s.GetOrderWithSupplier(order.CallOffId, internalOrgId))
+                .ReturnsAsync(order);
+
+            supplierService
+                .Setup(x => x.GetAllSuppliersWithAssociatedServices())
+                .ReturnsAsync(suppliers);
+
+            var result = await controller.SelectSupplier(internalOrgId, order.CallOffId);
+
+            orderService.VerifyAll();
+            supplierService.VerifyAll();
+
+            var actualResult = result.Should().BeOfType<ViewResult>().Subject;
+
+            var model = actualResult.ViewData.Model.Should().BeAssignableTo<SelectSupplierModel>().Subject;
+
+            model.CallOffId.Should().Be(order.CallOffId);
+            model.InternalOrgId.Should().Be(internalOrgId);
+            model.AssociatedServicesOnly.Should().Be(order.AssociatedServicesOnly);
 
             foreach (var supplier in suppliers)
             {

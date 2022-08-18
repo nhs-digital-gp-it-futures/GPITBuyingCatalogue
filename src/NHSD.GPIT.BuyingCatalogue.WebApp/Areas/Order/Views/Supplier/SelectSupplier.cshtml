@@ -1,7 +1,4 @@
 ﻿@model NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.Supplier.SelectSupplierModel;
-@{
-    ViewBag.Title = "Select supplier";
-}
 
 <div data-test-id="supplier-search-page">
     <partial name="Partials/_BackLink" model="Model" />
@@ -10,11 +7,21 @@
         <div class="nhsuk-grid-column-two-thirds">
             <nhs-validation-summary/>
 
-            <nhs-page-title title="@ViewBag.Title"
+            <nhs-page-title title="Select supplier"
                             caption="Order @(Model.CallOffId)"
                             advice="Select the supplier you want to order from." />
 
+            @if (Model.AssociatedServicesOnly)
+            {
+                <div id="associated-services-inset">
+                    <nhs-inset-text>
+                        <p>You’ll only be able to find suppliers that offer Associated Services with their solutions.</p>
+                    </nhs-inset-text>
+                </div>
+            }
+
             <form method="post">
+                <input type="hidden" asp-for="AssociatedServicesOnly"/>
                 <nhs-auto-complete label-text="Supplier"
                                    asp-for="SelectedSupplierId"
                                    asp-items="@(new SelectList(Model.Suppliers, "Value", "Text"))"/>

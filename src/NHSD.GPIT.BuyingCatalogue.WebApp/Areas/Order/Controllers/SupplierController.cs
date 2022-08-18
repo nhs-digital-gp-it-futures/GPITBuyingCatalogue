@@ -121,12 +121,14 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
             if (order.Supplier is not null)
             {
                 return RedirectToAction(
-                    nameof(SupplierController.Supplier),
+                    nameof(Supplier),
                     typeof(SupplierController).ControllerName(),
                     new { internalOrgId, callOffId });
             }
 
-            var suppliers = await supplierService.GetAllSuppliersFromBuyingCatalogue();
+            var suppliers = order.AssociatedServicesOnly
+                ? await supplierService.GetAllSuppliersWithAssociatedServices()
+                : await supplierService.GetAllSuppliersFromBuyingCatalogue();
 
             var model = new SelectSupplierModel
             {
@@ -136,6 +138,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
                     new { internalOrgId, callOffId }),
                 CallOffId = callOffId,
                 InternalOrgId = internalOrgId,
+                AssociatedServicesOnly = order.AssociatedServicesOnly,
                 Suppliers = suppliers.Select(x => new SelectListItem(x.Name, $"{x.Id}")),
             };
 
