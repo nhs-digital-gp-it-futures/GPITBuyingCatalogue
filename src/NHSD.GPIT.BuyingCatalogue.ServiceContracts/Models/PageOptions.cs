@@ -1,4 +1,5 @@
 ﻿using System;
+using System.ComponentModel.DataAnnotations;
 
 namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.Models
 {
@@ -29,8 +30,19 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.Models
 
         public enum SortOptions
         {
+            [Display(Name = "None")]
             None,
-            Alphabetical,
+
+            [Display(Name = "A to Z")]
+            AtoZ,
+
+            [Display(Name = "Z to A")]
+            ZToA,
+
+            [Display(Name = "Framework")]
+            Framework,
+
+            [Display(Name = "Last published")]
             LastPublished,
         }
 
@@ -40,7 +52,7 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.Models
 
         public int TotalNumberOfItems { get; set; }
 
-        public SortOptions Sort { get; init; }
+        public SortOptions Sort { get; init; } = SortOptions.AtoZ;
 
         public int NumberOfPages
         {

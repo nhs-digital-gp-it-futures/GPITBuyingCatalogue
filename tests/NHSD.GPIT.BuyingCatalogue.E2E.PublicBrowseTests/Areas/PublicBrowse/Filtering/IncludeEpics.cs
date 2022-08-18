@@ -48,8 +48,8 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.PublicBrowse.Filtering
                 });
 
             CommonActions.PageLoadedCorrectGetIndex(
-                typeof(FilterController),
-                nameof(FilterController.FilterCapabilities)).Should().BeTrue();
+                typeof(SolutionsController),
+                nameof(SolutionsController.Index)).Should().BeTrue();
         }
 
         [Fact]
@@ -113,8 +113,8 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.PublicBrowse.Filtering
             CommonActions.ClickSave();
 
             CommonActions.PageLoadedCorrectGetIndex(
-                typeof(FilterController),
-                nameof(FilterController.FilterCapabilities)).Should().BeTrue();
+                typeof(SolutionsController),
+                nameof(SolutionsController.Index)).Should().BeTrue();
         }
     }
 }

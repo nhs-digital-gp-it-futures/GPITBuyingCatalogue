@@ -99,6 +99,8 @@
     <Folder Include="Users\TemporalTables" />
     <Folder Include="PostDeployment\OrderSeedData" />
     <Folder Include="PostDeployment\" />
+    <Folder Include="Catalogue\Types" />
+    <Folder Include="Catalogue\Stored Procedures" />
   </ItemGroup>
   <ItemGroup>
     <Build Include="Security\Users\NHSD.sql" />
@@ -257,8 +259,11 @@
     <Build Include="Ordering\TemporalTables\ImplementationPlanAcceptanceCriteria_History.sql" />
     <Build Include="Ordering\Tables\ContractFlags.sql" />
     <Build Include="Ordering\TemporalTables\ContractFlags_History.sql" />
-    <Build Include="PostDeployment\InsertOrderTriageValues.sql" />
+    <None Include="PostDeployment\InsertOrderTriageValues.sql" />
     <Build Include="Users\Tables\EmailDomains.sql" />
+    <Build Include="Catalogue\Types\CapabilityIds.sql" />
+    <Build Include="Catalogue\Types\EpicIds.sql" />
+    <Build Include="Catalogue\Stored Procedures\FilterCatalogueItems.sql" />
   </ItemGroup>
   <ItemGroup>
     <SqlCmdVariable Include="CREATE_EA_USER">

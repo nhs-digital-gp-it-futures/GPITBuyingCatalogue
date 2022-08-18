@@ -34,10 +34,7 @@
                        asp-action="@nameof(FilterController.FilterCapabilities)"
                        asp-controller="@typeof(FilterController).ControllerName()"
                        asp-area="@typeof(FilterController).AreaName()"
-                       asp-route-selectedIds="@Model.CapabilityIds">Capabilities</a>
-                </li>
-                <li class="nhsuk-breadcrumb__item">
-                    Epics
+                       asp-route-selectedCapabilityIds="@Model.CapabilityIds">Capabilities</a>
                 </li>
             </ol>
         </div>
@@ -53,7 +50,7 @@
 
         <hr/>
 
-        <h3>@Model.Total Epics found with this search criteria:</h3>
+        <h3>@Model.Total Epics found with this search criteria</h3>
         <h4>Capabilities selected:</h4>
 
         <ul>
@@ -68,7 +65,7 @@
         <a href="@Url.Action(
                      nameof(FilterController.FilterCapabilities),
                      typeof(FilterController).ControllerName(),
-                     new { selectedIds = Model.CapabilityIds })">Edit Capabilities</a>
+                     new { selectedCapabilityIds = Model.CapabilityIds, search = Model.SearchTerm })">Edit Capabilities</a>
 
         <hr/>
 
@@ -77,6 +74,12 @@
             <p class="selection-counter" style="display: none">
                 0 out of @Model.Total selected
             </p>
+            <vc:nhs-secondary-button type="Secondary"
+                                     text="Clear selected Epics"
+                                     url="@Url.Action(
+                nameof(FilterController.FilterEpics),
+                typeof(FilterController).ControllerName(),
+                new { selectedCapabilityIds = Model.CapabilityIds, search = Model.SearchTerm })" />
         </div>
 
         <form method="post">

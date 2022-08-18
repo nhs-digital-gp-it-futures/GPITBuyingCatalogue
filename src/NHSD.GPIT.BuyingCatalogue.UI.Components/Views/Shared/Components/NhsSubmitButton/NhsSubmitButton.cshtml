@@ -1,7 +1,5 @@
-﻿@model string
-@{
-}
+﻿@model (string text, string addOnClasses, string addOnAttributes)
 
-<button id="Submit" class="nhsuk-button" type="submit">
-    @Model
+<button id="Submit" class="@($"nhsuk-button {Model.addOnClasses}".Trim())" @Model.addOnAttributes type="submit">
+    @Model.text
 </button>

@@ -755,7 +755,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
         public static async Task Post_SetPublicationStatus_ClearsFilterCache(
             Solution solution,
             [Frozen] Mock<ISolutionsService> mockSolutionService,
-            [Frozen] Mock<IFilterCache> mockFilterCache,
             CatalogueSolutionsController controller)
         {
             var catalogueItem = solution.CatalogueItem;
@@ -767,8 +766,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
                 .ReturnsAsync(catalogueItem);
 
             await controller.SetPublicationStatus(catalogueItem.Id, manageCatalogueSolutionModel);
-
-            mockFilterCache.Verify(f => f.RemoveAll());
         }
 
         [Theory]
