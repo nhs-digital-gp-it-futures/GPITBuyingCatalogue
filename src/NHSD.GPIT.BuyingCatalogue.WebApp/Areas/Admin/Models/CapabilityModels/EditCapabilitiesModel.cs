@@ -22,26 +22,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.CapabilityModels
                 ? "Capabilities and Epics"
                 : $"{catalogueItem.Name} Capabilities and Epics";
 
-            CapabilityCategories = capabilityCategories.Where(cc => cc.Capabilities.Any()).Select(cc => new CapabilityCategoryModel
-            {
-                Name = cc.Name,
-                Description = cc.Description,
-                Capabilities = cc.Capabilities.Select(c => new CapabilityModel
-                {
-                    Id = c.Id,
-                    Name = c.Name,
-                    CapabilityRef = c.CapabilityRef,
-                    Selected = catalogueItem.CatalogueItemCapabilities.Any(itemCapability => itemCapability.CapabilityId == c.Id),
-                    Epics = c.Epics.Select(epic => new CapabilityEpicModel
-                    {
-                        Id = epic.Id,
-                        Name = epic.Name,
-                        Selected = catalogueItem.CatalogueItemEpics
-                            .Where(itemEpic => itemEpic.CapabilityId == c.Id)
-                            .Any(itemEpic => string.Equals(itemEpic.EpicId, epic.Id, StringComparison.CurrentCultureIgnoreCase)),
-                    }).OrderBy(e => e.Id).ToList(),
-                }).OrderBy(c => c.Id).ToList(),
-            }).OrderBy(cc => cc.Name).ToList();
+            CapabilityCategories = GetCapabilities(catalogueItem, capabilityCategories);
+
+            if (!CapabilityCategories.Any(cc => cc.Capabilities.Any(c => c.Selected)))
+                SelectMustEpics(CapabilityCategories);
         }
 
         public string Title { get; init; }
@@ -51,5 +35,26 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.CapabilityModels
         public string CatalogueItemType { get; init; }
 
         public IList<CapabilityCategoryModel> CapabilityCategories { get; init; }
+
+        private static IList<CapabilityCategoryModel> GetCapabilities(CatalogueItem catalogueItem, IEnumerable<CapabilityCategory> capabilityCategories)
+        {
+            var categories = capabilityCategories.Where(cc => cc.Capabilities.Any())
+                .Select(
+                    cc => new CapabilityCategoryModel(
+                        catalogueItem,
+                        cc))
+                .OrderBy(cc => cc.Name)
+                .ToList();
+
+            return categories;
+        }
+
+        private static void SelectMustEpics(IEnumerable<CapabilityCategoryModel> capabilityCategories)
+        {
+            foreach (var epic in capabilityCategories.SelectMany(cc => cc.Capabilities).SelectMany(c => c.MustEpics))
+            {
+                epic.Selected = true;
+            }
+        }
     }
 }

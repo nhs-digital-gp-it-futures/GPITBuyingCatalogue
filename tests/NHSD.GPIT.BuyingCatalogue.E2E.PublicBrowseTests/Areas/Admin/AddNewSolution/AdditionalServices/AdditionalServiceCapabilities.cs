@@ -6,6 +6,7 @@ using Microsoft.EntityFrameworkCore;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.Objects.Common;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Utils;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.TestBases;
+using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers;
@@ -87,8 +88,10 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.AddNewSolution.Addition
         {
             await using var context = GetEndToEndDbContext();
             var capability = await context.Capabilities.FirstAsync();
+            var mustEpic = capability.Epics.First(e => e.CompliancyLevel == CompliancyLevel.Must);
 
             CommonActions.ClickCheckboxByLabel($"({capability.CapabilityRef}) {capability.Name}");
+            CommonActions.ClickCheckboxByLabel($"({mustEpic.Id}) {mustEpic.Name}");
 
             CommonActions.ClickSave();
 

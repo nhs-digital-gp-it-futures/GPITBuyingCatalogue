@@ -1,11 +1,35 @@
-﻿namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.CapabilityModels
+﻿using System;
+using System.Linq;
+using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
+
+namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.CapabilityModels
 {
     public sealed class CapabilityEpicModel
     {
-        public string Id { get; init; }
+        public CapabilityEpicModel()
+        {
+        }
 
-        public string Name { get; init; }
+        public CapabilityEpicModel(
+            CatalogueItem catalogueItem,
+            Capability capability,
+            Epic epic)
+        {
+            Id = epic.Id;
+            Name = epic.Name;
+            Selected = catalogueItem.CatalogueItemEpics
+                .Where(itemEpic => itemEpic.CapabilityId == capability.Id)
+                .Any(
+                    itemEpic => string.Equals(
+                        itemEpic.EpicId,
+                        epic.Id,
+                        StringComparison.CurrentCultureIgnoreCase));
+        }
 
-        public bool Selected { get; init; }
+        public string Id { get; set; }
+
+        public string Name { get; set; }
+
+        public bool Selected { get; set; }
     }
 }
