@@ -26,18 +26,6 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering.StepTwo.Solut
 
         internal LocalWebApplicationFactory Factory { get; private set; }
 
-        public void SelectSolution(string solutionName, string? additionalService)
-        {
-            CommonActions.ClickRadioButtonWithText(solutionName);
-
-            if (SolutionHasAdditionalService(solutionName) && !string.IsNullOrWhiteSpace(additionalService))
-            {
-                CommonActions.ClickCheckboxByLabel(additionalService);
-            }
-
-            CommonActions.ClickSave();
-        }
-
         public void SelectSolution(string solutionName, IEnumerable<string>? additionalServices)
         {
             CommonActions.ClickRadioButtonWithText(solutionName);

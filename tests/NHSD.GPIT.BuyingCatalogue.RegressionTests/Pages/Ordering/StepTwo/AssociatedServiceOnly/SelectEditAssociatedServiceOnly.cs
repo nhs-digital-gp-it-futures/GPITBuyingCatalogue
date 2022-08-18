@@ -14,12 +14,6 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering.StepTwo.Assoc
         {
         }
 
-        public void SelectAssociatedServices(string solutionName, string associatedService)
-        {
-            SelectSolutionForAssociatedService(solutionName);
-            SelectAssociatedServiceOfSolution(associatedService);
-        }
-
         public void SelectAssociatedServices(string solutionName, IEnumerable<string>? associatedServices)
         {
             SelectSolutionForAssociatedService(solutionName);

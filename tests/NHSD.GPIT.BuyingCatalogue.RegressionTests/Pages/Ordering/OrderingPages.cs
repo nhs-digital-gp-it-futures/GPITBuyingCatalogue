@@ -305,19 +305,9 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering
             EditAdditionalService(solutionName, new List<string> { newAdditionalService }, new List<string> { newAssociatedService }, new List<string> { oldAdditionalService });
         }
 
-        public void EditAdditionalService(string solutionName, string newAdditionalService, IEnumerable<string>? newAssociatedServices, string oldAdditionalService = "")
-        {
-            EditAdditionalService(solutionName, new List<string> { newAdditionalService }, newAssociatedServices, new List<string> { oldAdditionalService });
-        }
-
         public void EditAdditionalService(string solutionName, IEnumerable<string> newAdditionalServices, string newAssociatedService = "", string oldAdditionalService = "")
         {
             EditAdditionalService(solutionName, newAdditionalServices, new List<string> { newAssociatedService }, new List<string> { oldAdditionalService });
-        }
-
-        public void EditAdditionalService(string solutionName, string newAdditionalService, string newAssociatedService, IEnumerable<string>? oldAdditionalServices)
-        {
-            EditAdditionalService(solutionName, new List<string> { newAdditionalService }, new List<string> { newAssociatedService }, oldAdditionalServices);
         }
 
         public void EditAdditionalService(string solutionName, IEnumerable<string> newAdditionalServices, IEnumerable<string>? newAssociatedServices, IEnumerable<string>? oldAdditionalServices)
@@ -377,11 +367,6 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering
             EditAssociatedService(solutionName, newAssociatedServices, new List<string> { additionalServiceName }, new List<string> { oldAssociatedServiceName });
         }
 
-        public void EditAssociatedService(string solutionName, string newAssociatedServiceName, IEnumerable<string>? oldAssociatedServices, string additionalServiceName = "")
-        {
-            EditAssociatedService(solutionName, new List<string> { newAssociatedServiceName }, new List<string> { additionalServiceName }, oldAssociatedServices);
-        }
-
         public void EditAssociatedService(string solutionName, IEnumerable<string> newAssociatedServices, IEnumerable<string>? additionalServices, IEnumerable<string>? oldAssociatedServices)
         {
             var isAssociatedServiceOnlyOrder = IsAssociatedServiceOnlyOrder();
@@ -414,11 +399,6 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering
         public void EditAssociatedServiceOnly(string solutionName, IEnumerable<string> newAssociatedServices, string oldAssociatedServiceName)
         {
             EditAssociatedServiceOnly(solutionName, newAssociatedServices, new List<string> { oldAssociatedServiceName });
-        }
-
-        public void EditAssociatedServiceOnly(string solutionName, string newAssociatedServiceName, IEnumerable<string> oldAssociatedServices)
-        {
-            EditAssociatedServiceOnly(solutionName, new List<string> { newAssociatedServiceName }, oldAssociatedServices);
         }
 
         public void EditAssociatedServiceOnly(string solutionName, IEnumerable<string> newAssociatedServices, IEnumerable<string> oldAssociatedServices)

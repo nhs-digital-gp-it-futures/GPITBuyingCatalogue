@@ -20,51 +20,6 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering.StepTwo
         {
         }
 
-        public void AddFundingSources(string solutionName, string associatedService, bool isAssociatedServiceOnly, string additionalService = "")
-        {
-            var names = new List<string>();
-
-            if (isAssociatedServiceOnly)
-            {
-                names.Add(associatedService);
-            }
-            else
-            {
-                names.Add(solutionName);
-
-                if (!string.IsNullOrWhiteSpace(additionalService))
-                    names.Add(additionalService);
-
-                if (!string.IsNullOrWhiteSpace(associatedService))
-                    names.Add(associatedService);
-            }
-
-            foreach (var name in names)
-            {
-                CommonActions.ClickLinkElement(ByExtensions.DataTestId(name.Trim().Replace(' ', '-')));
-
-                CommonActions.PageLoadedCorrectGetIndex(
-                    typeof(FundingSourceController),
-                    nameof(FundingSourceController.FundingSource))
-                    .Should().BeTrue();
-
-                CommonActions.ClickFirstRadio();
-
-                CommonActions.ClickSave();
-
-                CommonActions.PageLoadedCorrectGetIndex(
-                    typeof(FundingSourceController),
-                    nameof(FundingSourceController.FundingSources))
-                    .Should().BeTrue();
-            }
-
-            CommonActions.ClickSave();
-
-            CommonActions.PageLoadedCorrectGetIndex(
-              typeof(OrderController),
-              nameof(OrderController.Order)).Should().BeTrue();
-        }
-
         public void AddFundingSources(string solutionName, bool isAssociatedServiceOnly, IEnumerable<string>? associatedServices, IEnumerable<string>? additionalServices)
         {
             var names = new List<string>();
