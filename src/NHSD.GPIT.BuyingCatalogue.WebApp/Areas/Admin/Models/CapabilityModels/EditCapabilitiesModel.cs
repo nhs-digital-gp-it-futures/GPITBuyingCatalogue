@@ -1,8 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
-using EnumsNET;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
+using NHSD.GPIT.BuyingCatalogue.EntityFramework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Models;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.CapabilityModels
@@ -13,10 +12,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.CapabilityModels
         {
         }
 
-        public EditCapabilitiesModel(CatalogueItem catalogueItem, IReadOnlyList<CapabilityCategory> capabilityCategories)
+        public EditCapabilitiesModel(CatalogueItem catalogueItem, IEnumerable<CapabilityCategory> capabilityCategories)
             : this()
         {
-            CatalogueItemType = catalogueItem.CatalogueItemType.AsString(EnumFormat.DisplayName);
+            CatalogueItemType = catalogueItem.CatalogueItemType.Name();
 
             Title = catalogueItem.CatalogueItemType == EntityFramework.Catalogue.Models.CatalogueItemType.Solution
                 ? "Capabilities and Epics"

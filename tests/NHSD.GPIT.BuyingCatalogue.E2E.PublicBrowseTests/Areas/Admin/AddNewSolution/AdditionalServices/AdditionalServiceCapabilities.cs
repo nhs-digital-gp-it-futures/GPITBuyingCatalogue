@@ -87,7 +87,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.AddNewSolution.Addition
         public async Task Submit_CapabilitySelected_SavesCapability()
         {
             await using var context = GetEndToEndDbContext();
-            var capability = await context.Capabilities.FirstAsync();
+            var capability = await context.Capabilities.Include(e => e.Epics).FirstAsync();
             var mustEpic = capability.Epics.First(e => e.CompliancyLevel == CompliancyLevel.Must);
 
             CommonActions.ClickCheckboxByLabel($"({capability.CapabilityRef}) {capability.Name}");

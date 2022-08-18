@@ -6,6 +6,18 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models
 {
     public sealed class CatalogueItemCapability : IAudited
     {
+        public CatalogueItemCapability()
+        {
+        }
+
+        public CatalogueItemCapability(
+            CatalogueItemId catalogueItemId,
+            int capabilityId)
+        {
+            CatalogueItemId = catalogueItemId;
+            CapabilityId = capabilityId;
+        }
+
         public CatalogueItemId CatalogueItemId { get; set; }
 
         public int CapabilityId { get; set; }
