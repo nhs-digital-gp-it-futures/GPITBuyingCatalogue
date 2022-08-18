@@ -6,12 +6,6 @@
     ]
   },
   {
-    "outputFileName": "wwwroot/js/CatalogueSolutionsFilter.min.js",
-    "inputFiles": [
-      "wwwroot/js/CatalogueSolutionsFilter.js"
-    ]
-  },
-  {
     "outputFileName": "wwwroot/js/InactiveItemManagement.min.js",
     "inputFiles": [
       "wwwroot/js/InactiveItemManagement.js"
@@ -45,6 +39,12 @@
     "outputFileName": "wwwroot/js/GroupCounters.min.js",
     "inputFiles": [
       "wwwroot/js/GroupCounters.js"
+    ]
+  },
+  {
+    "outputFileName": "wwwroot/js/SolutionSort.min.js",
+    "inputFiles": [
+      "wwwroot/js/SolutionSort.js"
     ]
   }
 ]

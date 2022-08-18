@@ -7,12 +7,12 @@ namespace NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.Components.NhsSub
     {
         private const string DefaultButtonText = "Save and continue";
 
-        public async Task<IViewComponentResult> InvokeAsync(string text)
+        public async Task<IViewComponentResult> InvokeAsync(string text, string addOnClasses = "", string addOnAttributes = "")
         {
             if (string.IsNullOrWhiteSpace(text))
                 text = DefaultButtonText;
 
-            return await Task.FromResult(View("NhsSubmitButton", text));
+            return await Task.FromResult(View("NhsSubmitButton", (text, addOnClasses, addOnAttributes)));
         }
     }
 }

@@ -1,0 +1,4 @@
+﻿CREATE TYPE [catalogue].[EpicIds] AS TABLE
+(
+    Id NVARCHAR(10) NOT NULL PRIMARY KEY
+);

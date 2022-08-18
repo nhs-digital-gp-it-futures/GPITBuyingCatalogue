@@ -18,21 +18,27 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.Objects.PublicBrowse
 
         public static By SolutionCapabilityList => ByExtensions.DataTestId("capability-list");
 
-        public static By SortByLink => By.Id("sortby-link");
+        public static By SortBySelect => By.Id("SelectedSortOption");
+
+        public static By FilterCatalogueSolutionsLink => By.LinkText("Filter Catalogue Solutions");
+
+        public static By ClearSearchCriteriaLink => By.LinkText("Clear search criteria");
 
         public static By SolutionsLink => By.CssSelector("div.nhsuk-grid-column-two-thirds h2 a");
 
         public static By CapabilitesOverCountLink => ByExtensions.DataTestId("capabilities-overcount-link");
 
-        public static By FilterSolutionsExpander => ByExtensions.DataTestId("filter-solutions-expander");
-
-        public static By FilterSolutionsFramework => ByExtensions.DataTestId("filter-framework-details");
-
-        public static By FilterCapabilities => By.Id("filter-capabilities-details");
-
         public static By SolutionsList => By.Id("solutions-list");
 
         public static By SearchCriteriaSummary => ByExtensions.DataTestId("search-criteria-summary");
+
+        public static By SearchTermTitle => ByExtensions.DataTestId("search-term-title");
+
+        public static By SearchTermContent => ByExtensions.DataTestId("search-term-content");
+
+        public static By FilterSummaryTitle => ByExtensions.DataTestId("filter-summary-title");
+
+        public static By FilterSummaryContent => ByExtensions.DataTestId("filter-summary-content");
 
         public static By SearchBar => By.Id("marketing-suggestion-search");
 

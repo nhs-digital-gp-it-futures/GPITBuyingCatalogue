@@ -13,17 +13,17 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.UnitTests.Models
 
             pageOptions.PageNumber.Should().Be(1);
             pageOptions.PageSize.Should().Be(20);
-            pageOptions.Sort.Should().Be(PageOptions.SortOptions.None);
+            pageOptions.Sort.Should().Be(PageOptions.SortOptions.AtoZ);
             pageOptions.NumberOfPages.Should().Be(0);
             pageOptions.TotalNumberOfItems.Should().Be(0);
         }
 
         [Theory]
-        [InlineData("", "", 1, PageOptions.SortOptions.None)]
-        [InlineData("2", "", 2, PageOptions.SortOptions.None)]
-        [InlineData("", "alphabetical", 1, PageOptions.SortOptions.Alphabetical)]
+        [InlineData("", "", 1, PageOptions.SortOptions.AtoZ)]
+        [InlineData("2", "", 2, PageOptions.SortOptions.AtoZ)]
+        [InlineData("", "alphabetical", 1, PageOptions.SortOptions.AtoZ)]
         [InlineData("2", "lastpublished", 2, PageOptions.SortOptions.LastPublished)]
-        [InlineData("IncorrectDate", "IncorrectDate", 1, PageOptions.SortOptions.None)]
+        [InlineData("IncorrectDate", "IncorrectDate", 1, PageOptions.SortOptions.AtoZ)]
         public static void PageOptions_ValuesInConstructor_ExpectedValues(string page, string sortBy, int expectedPage, PageOptions.SortOptions expectedSort)
         {
             var pageOptions = new PageOptions(page, sortBy);

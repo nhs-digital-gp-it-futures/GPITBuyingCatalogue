@@ -33,9 +33,6 @@
                        asp-area="@typeof(FilterController).AreaName()"
                        asp-route-selectedIds="@Model.SelectedCapabilityIds">Capabilities</a>
                 </li>
-                <li class="nhsuk-breadcrumb__item">
-                    Epics or Solutions
-                </li>
             </ol>
         </div>
     </nav>
@@ -67,12 +64,13 @@
             <nhs-fieldset-form-label asp-for="@Model"
                                      label-text="Do you want to filter by Epics?">
                 <nhs-radio-button-container>
-                    @foreach (var option in Model.Options)
+                    @for (int i = 0; i < Model.Options.Count();i++)
                     {
                         <nhs-radio-button asp-for="IncludeEpics"
                                           display-name="Name"
-                                          value="option"
-                                          value-name="Value"/>
+                                          value="Model.Options.ElementAt(i)"
+                                          value-name="Value"
+                                          index="i"/>
                     }
                 </nhs-radio-button-container>
             </nhs-fieldset-form-label>
