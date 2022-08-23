@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Linq;
-using LinqKit;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
@@ -75,8 +74,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.SolutionSelection.
             }
             else
             {
-                recipientQuantityModel.InputQuantity =
-                    recipient.Quantity.HasValue ? $"{recipient.Quantity}" : string.Empty;
+                recipientQuantityModel.InputQuantity = recipient.Quantity.HasValue
+                    ? $"{recipient.Quantity}"
+                    : string.Empty;
             }
 
             return recipientQuantityModel;
