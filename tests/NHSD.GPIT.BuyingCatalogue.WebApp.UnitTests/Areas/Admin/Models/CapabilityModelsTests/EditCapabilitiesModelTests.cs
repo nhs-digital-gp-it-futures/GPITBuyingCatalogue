@@ -3,6 +3,7 @@ using System.Linq;
 using EnumsNET;
 using FluentAssertions;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
+using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.AutoFixtureCustomisations;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.CapabilityModels;
@@ -40,7 +41,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Models.Capabili
                 SolutionName = solution.CatalogueItem.Name,
             };
 
-            model.Title.Should().Be($"Capabilities and Epics");
+            model.Title.Should().Be("Capabilities and Epics");
             model.SolutionName.Should().Be(solution.CatalogueItem.Name);
             model.CatalogueItemType.Should().Be(solution.CatalogueItem.CatalogueItemType.AsString(EnumFormat.DisplayName));
         }
@@ -49,21 +50,29 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Models.Capabili
         [CommonAutoData]
         public static void Constructing_WithExistingItemCapability_SetsCapabilityAsSelected(
             AdditionalService additionalService,
-            CatalogueItemCapability catalogueItemCapability,
-            CatalogueItemEpic catalogueItemEpic)
+            CatalogueItemCapability catalogueItemCapability)
         {
-            var epic = new Epic
+            var mustEpic = new Epic
             {
                 Id = "Epic1",
                 Name = "Epic 1",
                 IsActive = true,
+                CompliancyLevel = CompliancyLevel.Must,
+            };
+
+            var mayEpic = new Epic
+            {
+                Id = "Epic2",
+                Name = "Epic 2",
+                IsActive = true,
+                CompliancyLevel = CompliancyLevel.May,
             };
 
             var capability = new Capability
             {
                 Id = 1,
                 Name = "Capability 1",
-                Epics = new[] { epic },
+                Epics = new[] { mustEpic, mayEpic },
             };
 
             var capabilityCategory = new CapabilityCategory
@@ -74,11 +83,18 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Models.Capabili
             };
 
             catalogueItemCapability.CapabilityId = capability.Id;
-            catalogueItemEpic.CapabilityId = capability.Id;
-            catalogueItemEpic.EpicId = epic.Id;
 
             additionalService.CatalogueItem.CatalogueItemCapabilities.Add(catalogueItemCapability);
-            additionalService.CatalogueItem.CatalogueItemEpics.Add(catalogueItemEpic);
+            additionalService.CatalogueItem.CatalogueItemEpics.Add(
+                new(
+                    additionalService.CatalogueItemId,
+                    capability.Id,
+                    mustEpic.Id));
+            additionalService.CatalogueItem.CatalogueItemEpics.Add(
+                new(
+                    additionalService.CatalogueItemId,
+                    capability.Id,
+                    mayEpic.Id));
 
             var model = new EditCapabilitiesModel(additionalService.CatalogueItem, new List<CapabilityCategory> { capabilityCategory });
 
@@ -86,8 +102,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Models.Capabili
             model.CapabilityCategories[0].Capabilities.Should().ContainSingle();
             model.CapabilityCategories[0].Capabilities[0].Id.Should().Be(capability.Id);
             model.CapabilityCategories[0].Capabilities[0].Selected.Should().BeTrue();
-            model.CapabilityCategories[0].Capabilities[0].Epics.Should().ContainSingle();
-            model.CapabilityCategories[0].Capabilities[0].Epics[0].Selected.Should().BeTrue();
+            model.CapabilityCategories[0].Capabilities[0].Epics.Should().HaveCount(2);
+            model.CapabilityCategories[0].Capabilities[0].Epics.Should().OnlyContain(e => e.Selected);
         }
 
         [Theory]
