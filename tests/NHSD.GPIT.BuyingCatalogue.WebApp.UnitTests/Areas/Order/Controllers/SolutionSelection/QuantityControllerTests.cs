@@ -229,6 +229,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
 
             orderItem.OrderItemPrice.ProvisioningType = ProvisioningType.Patient;
             orderItem.CatalogueItem.CatalogueItemType = CatalogueItemType.Solution;
+            orderItem.OrderItemRecipients.ForEach(x => x.Quantity = null);
 
             mockOrderService
                 .Setup(x => x.GetOrderWithOrderItems(callOffId, internalOrgId))
@@ -245,9 +246,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
 
             var actualResult = result.Should().BeOfType<ViewResult>().Subject;
             var model = actualResult.Model.Should().BeOfType<SelectServiceRecipientQuantityModel>().Subject;
-            var expected = new SelectServiceRecipientQuantityModel(orderItem);
 
-            expected.ServiceRecipients.ForEach(x => x.Quantity = NumberOfPatients);
+            var expected = new SelectServiceRecipientQuantityModel(orderItem);
+            expected.ServiceRecipients.ForEach(x => x.InputQuantity = $"{NumberOfPatients}");
 
             model.Should().BeEquivalentTo(expected, x => x.Excluding(m => m.BackLink));
         }

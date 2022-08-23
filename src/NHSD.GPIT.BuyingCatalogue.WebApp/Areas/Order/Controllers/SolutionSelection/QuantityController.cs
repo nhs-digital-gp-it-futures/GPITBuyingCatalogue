@@ -200,11 +200,16 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers.SolutionSelec
         {
             foreach (var serviceRecipient in model.ServiceRecipients)
             {
+                if (!string.IsNullOrWhiteSpace(serviceRecipient.InputQuantity))
+                {
+                    continue;
+                }
+
                 var quantity = await gpPracticeCache.GetNumberOfPatients(serviceRecipient.OdsCode);
 
                 if (quantity.HasValue)
                 {
-                    serviceRecipient.Quantity = quantity.Value;
+                    serviceRecipient.InputQuantity = $"{quantity.Value}";
                 }
             }
 
