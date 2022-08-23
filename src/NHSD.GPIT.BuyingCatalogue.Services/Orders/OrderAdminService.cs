@@ -28,6 +28,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
         public async Task<Order> GetOrder(CallOffId callOffId)
         {
             var order = await dbContext.Orders
+                .IgnoreQueryFilters()
                 .Include(o => o.LastUpdatedByUser)
                 .Include(o => o.OrderingParty)
                 .Include(o => o.Supplier)
@@ -36,13 +37,13 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
                 .Include(o => o.OrderItems).ThenInclude(oi => oi.OrderItemPrice).ThenInclude(oip => oip.OrderItemPriceTiers)
                 .AsNoTracking()
                 .AsSplitQuery()
-                .SingleOrDefaultAsync(o => o.Id == callOffId.Id);
+                .FirstOrDefaultAsync(o => o.Id == callOffId.Id);
 
             if (order?.Completed.HasValue ?? false)
             {
                 var supplier = await dbContext.Suppliers
                     .TemporalAsOf(order.Completed.Value)
-                    .SingleOrDefaultAsync(x => x.Id == order.SupplierId);
+                    .FirstOrDefaultAsync(x => x.Id == order.SupplierId);
 
                 if (supplier != null)
                 {
@@ -61,7 +62,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
             if (options is null)
                 throw new ArgumentNullException(nameof(options));
 
-            var baseQuery = dbContext.Orders.AsNoTracking().AsQueryable();
+            var baseQuery = dbContext.Orders.IgnoreQueryFilters().AsNoTracking().AsQueryable();
 
             if (!string.IsNullOrWhiteSpace(search))
                 baseQuery = GetSearchTermBySearchType(baseQuery, search, searchTermType);
@@ -92,7 +93,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
             if (string.IsNullOrWhiteSpace(search))
                 throw new ArgumentException(NullOrEmptySearchExceptionMessage, nameof(search));
 
-            var baseQuery = dbContext.Orders.AsNoTracking();
+            var baseQuery = dbContext.Orders.IgnoreQueryFilters().AsNoTracking();
 
             var parsedSearch = ParseCallOffId(search);
 
@@ -131,6 +132,18 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
                 .Take(15)
                 .OrderBy(s => s.Title)
                 .ToList();
+        }
+
+        public async Task DeleteOrder(CallOffId callOffId)
+        {
+            var order = await dbContext.Orders.IgnoreQueryFilters().FirstOrDefaultAsync(o => o.Id == callOffId.Id);
+
+            if (order == null)
+                return;
+
+            order.IsDeleted = true;
+
+            await dbContext.SaveChangesAsync();
         }
 
         private static IQueryable<Order> GetSearchTermBySearchType(IQueryable<Order> baseQuery, string searchTerm, string searchTermType)

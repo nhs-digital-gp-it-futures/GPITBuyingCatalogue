@@ -1,7 +1,7 @@
 ﻿using FluentValidation;
-using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.DeleteOrder;
+using NHSD.GPIT.BuyingCatalogue.WebApp.Models;
 
-namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Validators
+namespace NHSD.GPIT.BuyingCatalogue.WebApp.Validation
 {
     public class DeleteOrderModelValidator : AbstractValidator<DeleteOrderModel>
     {
