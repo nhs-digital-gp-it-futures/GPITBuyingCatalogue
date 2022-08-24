@@ -14,7 +14,6 @@ namespace NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.AutoFixtureCustomisations
             .FromFactory(new OrderSpeciminBuilder(fixture))
                 .Without(o => o.IsDeleted)
                 .Without(o => o.LastUpdatedByUser)
-                .Without(o => o.OrderStatus)
                 .Without(o => o.OrderItems);
 
             fixture.Customize<Order>(ComposerTransformation);
@@ -37,7 +36,6 @@ namespace NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.AutoFixtureCustomisations
                 var item = new Order
                 {
                     IsDeleted = false,
-                    OrderStatus = OrderStatus.InProgress,
                 };
                 AddOrderItems(item);
 

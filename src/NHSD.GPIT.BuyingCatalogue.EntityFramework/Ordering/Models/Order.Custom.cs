@@ -12,8 +12,6 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models
 
         private readonly List<ServiceInstanceItem> serviceInstanceItems = new();
 
-        private DateTime? completed;
-
         public IReadOnlyList<ServiceInstanceItem> ServiceInstanceItems => serviceInstanceItems.AsReadOnly();
 
         // TODO: remove with csv
@@ -33,8 +31,7 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models
 
         public void Complete()
         {
-            OrderStatus = OrderStatus.Completed;
-            completed = DateTime.UtcNow;
+            Completed = DateTime.UtcNow;
         }
 
         public bool CanComplete()
