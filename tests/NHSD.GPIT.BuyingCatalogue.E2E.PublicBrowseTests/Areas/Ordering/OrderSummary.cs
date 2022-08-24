@@ -228,7 +228,6 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering
             {
                 OrderingPartyId = GetOrganisationId(context),
                 Created = timeNow,
-                OrderStatus = OrderStatus.InProgress,
                 IsDeleted = false,
                 Description = "This is an Order Description",
                 OrderingPartyContact = new Contact

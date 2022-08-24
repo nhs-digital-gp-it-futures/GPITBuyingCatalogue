@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Threading.Tasks;
 using AutoFixture;
 using AutoFixture.AutoMoq;
 using AutoFixture.Idioms;
@@ -45,7 +46,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Controllers
             [Frozen] Mock<IOrderService> orderServiceMock,
             OrderSummaryController controller)
         {
-            order.OrderStatus = OrderStatus.Completed;
+            order.Completed = DateTime.UtcNow;
 
             orderServiceMock.Setup(s => s.GetOrderForSummary(order.CallOffId, internalOrgId)).ReturnsAsync(order);
 
@@ -71,7 +72,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Controllers
             [Frozen] Mock<IOrderService> orderServiceMock,
             OrderSummaryController controller)
         {
-            order.OrderStatus = OrderStatus.InProgress;
+            order.Completed = null;
 
             orderServiceMock.Setup(s => s.GetOrderForSummary(order.CallOffId, internalOrgId)).ReturnsAsync(order);
 

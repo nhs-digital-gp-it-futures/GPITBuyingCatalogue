@@ -181,7 +181,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering.Contracts.ReviewCont
         {
             var context = GetEndToEndDbContext();
 
-            context.Database.ExecuteSqlRaw("UPDATE Orders SET OrderStatusId = 2, Completed = NULL WHERE Id = {0}", OrderId);
+            context.Database.ExecuteSqlRaw("UPDATE Orders SET Completed = NULL WHERE Id = {0}", OrderId);
 
             var flags = context.GetContractFlags(OrderId);
 

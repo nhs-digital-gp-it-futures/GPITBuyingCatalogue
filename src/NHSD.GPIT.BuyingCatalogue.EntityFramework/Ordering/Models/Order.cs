@@ -49,11 +49,20 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models
 
         public AspNetUser LastUpdatedByUser { get; set; }
 
-        public DateTime? Completed => completed;
+        public DateTime? Completed { get; set; }
 
         public bool IsDeleted { get; set; }
 
-        public OrderStatus OrderStatus { get; set; } = OrderStatus.InProgress;
+        [NotMapped]
+        public OrderStatus OrderStatus
+        {
+            get
+            {
+                return Completed.HasValue
+                    ? OrderStatus.Completed
+                    : OrderStatus.InProgress;
+            }
+        }
 
         public Organisation OrderingParty { get; set; }
 

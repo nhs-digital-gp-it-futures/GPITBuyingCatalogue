@@ -48,7 +48,6 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
                 Id = orderId,
                 OrderingPartyId = GetOrganisationId(context),
                 Created = timeNow,
-                OrderStatus = OrderStatus.InProgress,
                 IsDeleted = false,
                 Description = "This is an Order Description",
             };
@@ -70,7 +69,6 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
                 Id = orderId,
                 OrderingPartyId = GetOrganisationId(context),
                 Created = timeNow,
-                OrderStatus = OrderStatus.InProgress,
                 IsDeleted = false,
                 Description = "This is an Order Description",
             };
@@ -92,7 +90,6 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
                 Id = orderId,
                 OrderingPartyId = GetOrganisationId(context),
                 Created = timeNow,
-                OrderStatus = OrderStatus.InProgress,
                 IsDeleted = false,
                 Description = "This is an Order Description",
                 OrderingPartyContact = new Contact
@@ -121,7 +118,6 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
                 Id = orderId,
                 OrderingPartyId = GetOrganisationId(context),
                 Created = timeNow,
-                OrderStatus = OrderStatus.InProgress,
                 IsDeleted = false,
                 Description = "This is an Order Description",
                 OrderingPartyContact = new Contact
@@ -151,7 +147,6 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
                 Id = orderId,
                 OrderingPartyId = GetOrganisationId(context),
                 Created = timeNow,
-                OrderStatus = OrderStatus.InProgress,
                 IsDeleted = false,
                 Description = "This is an Order Description",
                 OrderTriageValue = OrderTriageValue.Over250K,
@@ -189,7 +184,6 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
                 Id = orderId,
                 OrderingPartyId = GetOrganisationId(context),
                 Created = timeNow,
-                OrderStatus = OrderStatus.InProgress,
                 IsDeleted = false,
                 Description = "This is an Order Description",
                 OrderingPartyContact = new Contact
@@ -227,7 +221,6 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
                 Id = orderId,
                 OrderingPartyId = GetOrganisationId(context),
                 Created = timeNow,
-                OrderStatus = OrderStatus.InProgress,
                 IsDeleted = false,
                 Description = "This is an Order Description",
                 OrderingPartyContact = new Contact
@@ -274,7 +267,6 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
                 Id = orderId,
                 OrderingPartyId = GetOrganisationId(context),
                 Created = timeNow,
-                OrderStatus = OrderStatus.InProgress,
                 IsDeleted = false,
                 Description = "This is an Order Description",
                 OrderingPartyContact = new Contact
@@ -337,7 +329,6 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
                 Id = orderId,
                 OrderingPartyId = GetOrganisationId(context),
                 Created = timeNow,
-                OrderStatus = OrderStatus.InProgress,
                 IsDeleted = false,
                 Description = "This is an Order Description",
                 OrderingPartyContact = new Contact
@@ -401,7 +392,6 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
                 Id = orderId,
                 OrderingPartyId = GetOrganisationId(context),
                 Created = timeNow,
-                OrderStatus = OrderStatus.InProgress,
                 IsDeleted = false,
                 Description = "This is an Order Description",
                 OrderingPartyContact = new Contact
@@ -468,7 +458,6 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
                 Id = orderId,
                 OrderingPartyId = GetOrganisationId(context),
                 Created = timeNow,
-                OrderStatus = OrderStatus.InProgress,
                 IsDeleted = false,
                 Description = "This is an Order Description",
                 OrderingPartyContact = new Contact
@@ -537,7 +526,6 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
                 Id = orderId,
                 OrderingPartyId = GetOrganisationId(context),
                 Created = timeNow,
-                OrderStatus = OrderStatus.InProgress,
                 IsDeleted = false,
                 Description = "This is an Order Description",
                 OrderingPartyContact = new Contact
@@ -630,7 +618,6 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
                 Id = orderId,
                 OrderingPartyId = GetOrganisationId(context),
                 Created = timeNow,
-                OrderStatus = OrderStatus.InProgress,
                 IsDeleted = false,
                 Description = "This is an Order Description",
                 OrderingPartyContact = new Contact
@@ -725,7 +712,6 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
                 Id = orderId,
                 OrderingPartyId = GetOrganisationId(context),
                 Created = timeNow,
-                OrderStatus = OrderStatus.InProgress,
                 IsDeleted = false,
                 Description = "This is an Order Description",
                 OrderingPartyContact = new Contact
@@ -768,7 +754,6 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
                 Id = orderId,
                 OrderingPartyId = GetOrganisationId(context),
                 Created = timeNow,
-                OrderStatus = OrderStatus.InProgress,
                 IsDeleted = false,
                 Description = "This is an Order Description",
                 OrderingPartyContact = new Contact
@@ -823,7 +808,6 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
                 Id = orderId,
                 OrderingPartyId = GetOrganisationId(context),
                 Created = timeNow,
-                OrderStatus = OrderStatus.InProgress,
                 IsDeleted = false,
                 Description = "This is an Order Description",
                 OrderingPartyContact = new Contact
@@ -881,7 +865,6 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
                 Id = orderId,
                 OrderingPartyId = GetOrganisationId(context),
                 Created = timeNow,
-                OrderStatus = OrderStatus.InProgress,
                 IsDeleted = false,
                 Description = "This is an Order Description",
                 OrderingPartyContact = new Contact
@@ -956,7 +939,6 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
                 Id = orderId,
                 OrderingPartyId = GetOrganisationId(context),
                 Created = timeNow,
-                OrderStatus = OrderStatus.InProgress,
                 IsDeleted = false,
                 Description = "This is an Order Description",
                 OrderingPartyContact = new Contact
@@ -1061,7 +1043,6 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
                 AssociatedServicesOnly = true,
                 OrderingPartyId = GetOrganisationId(context),
                 Created = timeNow,
-                OrderStatus = OrderStatus.InProgress,
                 IsDeleted = false,
                 Description = "Associated services only",
                 OrderingPartyContact = new Contact
@@ -1133,7 +1114,6 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
                 AssociatedServicesOnly = true,
                 OrderingPartyId = GetOrganisationId(context),
                 Created = timeNow,
-                OrderStatus = OrderStatus.InProgress,
                 IsDeleted = false,
                 Description = "Associated services only",
                 OrderingPartyContact = new Contact
@@ -1174,7 +1154,6 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
                 AssociatedServicesOnly = true,
                 OrderingPartyId = GetOrganisationId(context),
                 Created = timeNow,
-                OrderStatus = OrderStatus.InProgress,
                 IsDeleted = false,
                 Description = "Associated services only",
                 OrderingPartyContact = new Contact
@@ -1225,7 +1204,6 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
                 AssociatedServicesOnly = true,
                 OrderingPartyId = GetOrganisationId(context),
                 Created = timeNow,
-                OrderStatus = OrderStatus.InProgress,
                 IsDeleted = false,
                 Description = "Associated services only",
                 OrderingPartyContact = new Contact
@@ -1286,7 +1264,6 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
                 Id = orderId,
                 OrderingPartyId = organisationId,
                 Created = timeNow,
-                OrderStatus = OrderStatus.InProgress,
                 IsDeleted = false,
                 Description = "This is an Order Description",
                 OrderingPartyContact = new Contact

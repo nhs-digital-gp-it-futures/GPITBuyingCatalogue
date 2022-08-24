@@ -105,7 +105,6 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering
             {
                 OrderingPartyId = organisationid,
                 Created = DateTime.UtcNow,
-                OrderStatus = OrderStatus.InProgress,
                 IsDeleted = false,
                 Description = "This is an Order Description",
             };

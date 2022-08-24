@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Threading.Tasks;
 using AutoFixture;
 using AutoFixture.AutoMoq;
 using AutoFixture.Idioms;
@@ -45,7 +46,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers
             [Frozen] Mock<IOrderService> orderServiceMock,
             DeleteOrderController controller)
         {
-            order.OrderStatus = OrderStatus.InProgress;
+            order.Completed = null;
 
             var expectedViewData = new DeleteOrderModel(internalOrgId, order);
 
@@ -65,7 +66,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers
             [Frozen] Mock<IOrderService> orderServiceMock,
             DeleteOrderController controller)
         {
-            order.OrderStatus = OrderStatus.Completed;
+            order.Completed = DateTime.UtcNow;
 
             orderServiceMock.Setup(s => s.GetOrderThin(order.CallOffId, internalOrgId)).ReturnsAsync(order);
 

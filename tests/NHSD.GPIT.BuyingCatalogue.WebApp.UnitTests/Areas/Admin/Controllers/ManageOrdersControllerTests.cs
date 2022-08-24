@@ -1,4 +1,5 @@
-﻿using System.Security.Claims;
+﻿using System;
+using System.Security.Claims;
 using System.Threading.Tasks;
 using AutoFixture;
 using AutoFixture.AutoMoq;
@@ -105,7 +106,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
             byte[] fileContents,
             ManageOrdersController controller)
         {
-            order.OrderStatus = OrderStatus.Completed;
+            order.Completed = DateTime.UtcNow;
 
             orderServiceMock
                 .Setup(s => s.GetOrderForSummary(order.CallOffId, internalOrgId))
@@ -138,7 +139,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
             byte[] fileContents,
             ManageOrdersController controller)
         {
-            order.OrderStatus = OrderStatus.InProgress;
+            order.Completed = null;
 
             orderServiceMock
                 .Setup(s => s.GetOrderForSummary(order.CallOffId, internalOrgId))
