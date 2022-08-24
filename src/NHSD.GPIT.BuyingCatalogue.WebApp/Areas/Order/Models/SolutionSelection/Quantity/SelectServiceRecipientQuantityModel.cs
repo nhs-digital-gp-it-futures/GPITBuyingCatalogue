@@ -74,6 +74,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.SolutionSelection.
             }
             else
             {
+                recipientQuantityModel.Quantity = recipient.Quantity ?? 0;
                 recipientQuantityModel.InputQuantity = recipient.Quantity.HasValue
                     ? $"{recipient.Quantity}"
                     : string.Empty;

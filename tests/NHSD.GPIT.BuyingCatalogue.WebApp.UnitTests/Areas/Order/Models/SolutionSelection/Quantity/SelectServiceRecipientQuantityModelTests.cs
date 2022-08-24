@@ -38,6 +38,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.Solution
 
                 serviceRecipient.Name.Should().Be(recipient.Recipient?.Name);
                 serviceRecipient.InputQuantity.Should().Be($"{recipient.Quantity}");
+                serviceRecipient.Quantity.Should().Be(recipient.Quantity);
             }
         }
 
@@ -48,6 +49,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.Solution
             item.OrderItemPrice.ProvisioningType = ProvisioningType.PerServiceRecipient;
 
             var model = new SelectServiceRecipientQuantityModel(item);
+
+            model.ItemName.Should().Be(item.CatalogueItem.Name);
+            model.ItemType.Should().Be(item.CatalogueItem.CatalogueItemType.Description());
+            model.ServiceRecipients.Length.Should().Be(item.OrderItemRecipients.Count);
 
             foreach (var serviceRecipient in model.ServiceRecipients)
             {
