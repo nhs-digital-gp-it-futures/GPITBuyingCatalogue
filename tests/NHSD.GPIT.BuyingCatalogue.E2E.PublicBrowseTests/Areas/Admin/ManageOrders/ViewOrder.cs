@@ -181,7 +181,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.ManageOrders
         }
 
         [Fact]
-        public void Funding_CentalFunding_AsExpected()
+        public void Funding_CentralFunding_AsExpected()
         {
             using var context = GetEndToEndDbContext();
             var orderItem = context.Orders

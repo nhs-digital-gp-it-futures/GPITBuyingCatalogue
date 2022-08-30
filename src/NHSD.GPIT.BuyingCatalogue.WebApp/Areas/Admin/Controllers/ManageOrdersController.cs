@@ -15,6 +15,7 @@ using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Orders;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Pdf;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.ManageOrders;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Controllers;
+using NHSD.GPIT.BuyingCatalogue.WebApp.Models;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Models.SuggestionSearch;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
@@ -26,7 +27,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
     {
         private readonly IFrameworkService frameworkService;
         private readonly IOrderAdminService orderAdminService;
-        private readonly IOrderService orderService;
         private readonly ICsvService csvService;
         private readonly IPdfService pdfService;
         private readonly PdfSettings pdfSettings;
@@ -34,14 +34,12 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
         public ManageOrdersController(
             IFrameworkService frameworkService,
             IOrderAdminService orderAdminService,
-            IOrderService orderService,
             ICsvService csvService,
             IPdfService pdfService,
             PdfSettings pdfSettings)
         {
             this.frameworkService = frameworkService ?? throw new ArgumentNullException(nameof(frameworkService));
             this.orderAdminService = orderAdminService ?? throw new ArgumentNullException(nameof(orderAdminService));
-            this.orderService = orderService ?? throw new ArgumentNullException(nameof(orderService));
             this.csvService = csvService ?? throw new ArgumentNullException(nameof(csvService));
             this.pdfService = pdfService ?? throw new ArgumentNullException(nameof(pdfService));
             this.pdfSettings = pdfSettings ?? throw new ArgumentNullException(nameof(pdfSettings));
@@ -53,8 +51,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
             [FromQuery] string search = "",
             [FromQuery] string searchTermType = "")
         {
-            const int PageSize = 10;
-            var pageOptions = new PageOptions(page, PageSize);
+            const int pageSize = 10;
+            var pageOptions = new PageOptions(page, pageSize);
 
             var orders = await orderAdminService.GetPagedOrders(pageOptions, search, searchTermType);
 
@@ -120,7 +118,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
         [HttpGet("{callOffId}/download/pdf")]
         public async Task<IActionResult> Download(CallOffId callOffId, string internalOrgId)
         {
-            var order = await orderService.GetOrderForSummary(callOffId, internalOrgId);
+            var order = await orderAdminService.GetOrder(callOffId);
 
             var result = pdfService.Convert(OrderSummaryUri(internalOrgId, callOffId));
 
@@ -129,6 +127,32 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
                 : $"order-summary-in-progress-{callOffId}.pdf";
 
             return File(result, "application/pdf", fileName);
+        }
+
+        [HttpGet("{callOFfId}/delete")]
+        public async Task<IActionResult> DeleteOrder(CallOffId callOffId)
+        {
+            var order = await orderAdminService.GetOrder(callOffId);
+
+            var model = new DeleteOrderModel(order)
+            {
+                BackLink = Url.Action(nameof(ViewOrder), new { callOffId }),
+            };
+
+            return View(model);
+        }
+
+        [HttpPost("{callOffId}/delete")]
+        public async Task<IActionResult> DeleteOrder(CallOffId callOffId, DeleteOrderModel model)
+        {
+            if (!ModelState.IsValid)
+                return View(model);
+
+            if (!model.SelectedOption!.Value)
+                return RedirectToAction(nameof(ViewOrder), new { callOffId });
+
+            await orderAdminService.DeleteOrder(callOffId);
+            return RedirectToAction(nameof(Index));
         }
 
         private Uri OrderSummaryUri(string internalOrgId, CallOffId callOffId)
@@ -149,7 +173,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
                     : $"http://localhost{uri}";
             }
 
-            return new Uri(uri);
+            return new(uri);
         }
     }
 }

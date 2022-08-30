@@ -1,11 +1,6 @@
 ﻿@model NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.ManageOrders.ViewOrderModel
 @using EnumsNET
-@using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models
-@using NHSD.GPIT.BuyingCatalogue.Framework.Extensions
-@using NHSD.GPIT.BuyingCatalogue.EntityFramework.Extensions
 @using NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.TagHelpers.Tags
-@using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
-@using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
 @{
     ViewBag.Title = "Order summary";
 }
@@ -46,34 +41,28 @@
             </p>
         </nhs-summary-list-row>
     </nhs-summary-list>
-    
+
 
     @if (Model.OrderItems.Any())
     {
-        <div>
-            <vc:nhs-secondary-button text="Download order summary PDF"
-                                         url="@Url.Action(
-                                                  nameof(ManageOrdersController.Download),
-                                                  typeof(ManageOrdersController).ControllerName(),
-                                                  new { internalOrgId = Model.OrganisationInternalIdentifier, callOffId = Model.CallOffId })"
-                                         type="Secondary" />
-            @if(Model.OrderStatus == OrderStatus.Completed)
-            {
-                <vc:nhs-secondary-button text="Download full order CSV"
-                                             url="@Url.Action(
-                                                      nameof(ManageOrdersController.DownloadFullOrderCsv),
-                                                      typeof(ManageOrdersController).ControllerName(),
-                                                      new { externalOrgId = Model.OrganisationExternalIdentifier, callOffId = Model.CallOffId })"
-                                             type="Secondary" />
-                <vc:nhs-secondary-button text="Download patient only CSV"
-                                             url="@Url.Action(
-                                                      nameof(ManageOrdersController.DownloadPatientNumberCsv),
-                                                      typeof(ManageOrdersController).ControllerName(),
-                                                      new { externalOrgId = Model.OrganisationExternalIdentifier, callOffId = Model.CallOffId })"
-                                             type="Secondary" />
-            }
-            <br />
-        </div>
+        @if (Model.OrderStatus != OrderStatus.Deleted)
+        {
+            <div>
+                <vc:nhs-secondary-button text="Download order summary PDF"
+                                         url="@Url.Action(nameof(ManageOrdersController.Download), typeof(ManageOrdersController).ControllerName(), new { internalOrgId = Model.OrganisationInternalIdentifier, callOffId = Model.CallOffId })"
+                                         type="Secondary"/>
+                @if (Model.OrderStatus == OrderStatus.Completed)
+                {
+                    <vc:nhs-secondary-button text="Download full order CSV"
+                                             url="@Url.Action(nameof(ManageOrdersController.DownloadFullOrderCsv), typeof(ManageOrdersController).ControllerName(), new { externalOrgId = Model.OrganisationExternalIdentifier, callOffId = Model.CallOffId })"
+                                             type="Secondary"/>
+                    <vc:nhs-secondary-button text="Download patient only CSV"
+                                             url="@Url.Action(nameof(ManageOrdersController.DownloadPatientNumberCsv), typeof(ManageOrdersController).ControllerName(), new { externalOrgId = Model.OrganisationExternalIdentifier, callOffId = Model.CallOffId })"
+                                             type="Secondary"/>
+                }
+                <br/>
+            </div>
+        }
         <div data-test-id="order-items-table">
             <nhs-table label-text="Selected solutions and services">
                 <nhs-table-column>
@@ -100,19 +89,27 @@
                         <nhs-table-cell>
                             @orderItem.Framework
                         </nhs-table-cell>
-                        <nhs-table-cell>                            
+                        <nhs-table-cell>
                             <span data-test-id="funding-type">@orderItem.SelectedFundingType.Description()</span>
                         </nhs-table-cell>
                     </nhs-table-row-container>
                 }
             </nhs-table>
-    </div>
-    } else {
+        </div>
+    }
+    else
+    {
         <p data-test-id="no-order-items">No solutions or services have been added to this order yet</p>
     }
-    
+
     <vc:nhs-secondary-button text="Continue" url="@Url.Action(
-                                                    nameof(ManageOrdersController.Index),
-                                                    typeof(ManageOrdersController).ControllerName())"
-                                             type="Primary" />
+                                                      nameof(ManageOrdersController.Index),
+                                                      typeof(ManageOrdersController).ControllerName())"
+                             type="Primary" />
+    @if (Model.OrderStatus is not OrderStatus.Deleted)
+    {
+        <br/>
+        <vc:nhs-delete-button text="Delete order"
+                                 url="@Url.Action(nameof(ManageOrdersController.DeleteOrder), typeof(ManageOrdersController).ControllerName(), new { Model.CallOffId })" />
+    }
 </div>

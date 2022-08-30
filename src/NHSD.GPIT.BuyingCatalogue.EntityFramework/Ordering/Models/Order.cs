@@ -58,6 +58,9 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models
         {
             get
             {
+                if (IsDeleted)
+                    return OrderStatus.Deleted;
+
                 return Completed.HasValue
                     ? OrderStatus.Completed
                     : OrderStatus.InProgress;
