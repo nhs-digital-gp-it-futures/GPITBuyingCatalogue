@@ -37,7 +37,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering.Supplier
         [Fact]
         public void SupplierInformation_SelectSupplier_AllSectionsDisplayed()
         {
-            CommonActions.PageTitle().Should().BeEquivalentTo($"Select supplier - Order {CallOffId}".FormatForComparison());
+            CommonActions.PageTitle().Should().BeEquivalentTo($"Supplier information - Order {CallOffId}".FormatForComparison());
             CommonActions.GoBackLinkDisplayed().Should().BeTrue();
             CommonActions.ElementIsDisplayed(SupplierObjects.SupplierAutoComplete).Should().BeTrue();
             CommonActions.SaveButtonDisplayed().Should().BeTrue();
