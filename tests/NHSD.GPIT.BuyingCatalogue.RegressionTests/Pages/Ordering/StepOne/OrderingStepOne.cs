@@ -20,9 +20,9 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering.StepOne
         {
         }
 
-        public void AddOrderDescription()
+        public void AddOrderDescription(string orderDescription)
         {
-            var description = TextGenerators.TextInputAddText(OrderDescription.DescriptionInput, 20);
+            Driver.FindElement(OrderDescription.DescriptionInput).SendKeys(orderDescription);
 
             CommonActions.ClickSave();
 

@@ -97,12 +97,13 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering
 
         public void StepOnePrepareOrder(
             string supplierName,
+            string orderDescription,
             bool addNewSupplierContact = false,
             EntityFramework.Ordering.Models.OrderTriageValue orderTriage = EntityFramework.Ordering.Models.OrderTriageValue.Under40K,
             EntityFramework.Catalogue.Models.CatalogueItemType itemType = EntityFramework.Catalogue.Models.CatalogueItemType.Solution)
         {
             TaskList.OrderDescriptionTask();
-            OrderingStepOne.AddOrderDescription();
+            OrderingStepOne.AddOrderDescription(orderDescription);
 
             TaskList.CallOffOrderingPartyContactDetailsTask();
             OrderingStepOne.AddCallOffOrderingPartyContactDetails();
