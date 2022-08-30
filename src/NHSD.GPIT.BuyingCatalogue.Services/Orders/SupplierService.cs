@@ -63,12 +63,18 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
 
         public Task<List<Supplier>> GetAllSuppliersWithAssociatedServices()
         {
-            return dbContext.Suppliers.AsNoTracking()
-                .Include(x => x.CatalogueItems)
-                .Where(x => x.IsActive
-                        && x.CatalogueItems.Any(ci => ci.CatalogueItemType == CatalogueItemType.AssociatedService
-                            && ci.PublishedStatus == PublicationStatus.Published))
-                .OrderBy(x => x.Name)
+            return dbContext
+                .CatalogueItems
+                .AsNoTracking()
+                .Include(ci => ci.SupplierServiceAssociations)
+                .Include(ci => ci.Supplier)
+                .Where(ci =>
+                    ci.CatalogueItemType == CatalogueItemType.Solution
+                    && ci.PublishedStatus == PublicationStatus.Published
+                    && ci.SupplierServiceAssociations.Any())
+                .Select(ci => ci.Supplier)
+                .Where(s => s.IsActive)
+                .Distinct()
                 .ToListAsync();
         }
 

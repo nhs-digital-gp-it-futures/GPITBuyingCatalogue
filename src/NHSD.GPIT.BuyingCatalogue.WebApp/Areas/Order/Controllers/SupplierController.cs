@@ -150,7 +150,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
         {
             if (!ModelState.IsValid)
             {
-                var suppliers = await supplierService.GetAllSuppliersFromBuyingCatalogue();
+                var suppliers = model.AssociatedServicesOnly
+                    ? await supplierService.GetAllSuppliersWithAssociatedServices()
+                    : await supplierService.GetAllSuppliersFromBuyingCatalogue();
 
                 model.Suppliers = suppliers.Select(x => new SelectListItem(x.Name, $"{x.Id}"));
 

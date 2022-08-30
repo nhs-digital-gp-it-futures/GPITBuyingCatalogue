@@ -7,6 +7,7 @@ using AutoFixture.AutoMoq;
 using AutoFixture.Idioms;
 using AutoFixture.Xunit2;
 using FluentAssertions;
+using MoreLinq;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.Services.Orders;
@@ -98,7 +99,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Orders
 
         [Theory]
         [InMemoryDbAutoData]
-        public static async Task GetAllSuppliersWithAssociatedServices_MatchingSuppliers_ReturnsExpected(
+        public static async Task GetAllSuppliersWithAssociatedServices_NoServiceAssociations_ReturnsExpected(
             [Frozen] BuyingCatalogueDbContext context,
             List<CatalogueItem> catalogueItems,
             List<Supplier> suppliers,
@@ -125,8 +126,41 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Orders
 
             var results = await service.GetAllSuppliersWithAssociatedServices();
 
+            results.Should().HaveCount(0);
+        }
+
+        [Theory]
+        [InMemoryDbAutoData]
+        public static async Task GetAllSuppliersWithAssociatedServices_WithServiceAssociations_ReturnsExpected(
+            [Frozen] BuyingCatalogueDbContext dbContext,
+            List<Solution> solutions,
+            List<AssociatedService> associatedServices,
+            List<Supplier> suppliers,
+            SupplierService service)
+        {
+            solutions.ForEach(s => s.CatalogueItem.SupplierServiceAssociations = new List<SupplierServiceAssociation>());
+
+            var solution = solutions.First();
+            var associatedService = associatedServices.First();
+            var supplier = suppliers.First();
+
+            solution.CatalogueItem.SupplierServiceAssociations.Add(new(solution.CatalogueItemId, associatedService.CatalogueItemId));
+            solution.CatalogueItem.Supplier = supplier;
+            associatedService.CatalogueItem.Supplier = supplier;
+
+            supplier.IsActive = true;
+            supplier.CatalogueItems.Add(solution.CatalogueItem);
+
+            dbContext.Solutions.AddRange(solutions);
+            dbContext.AssociatedServices.AddRange(associatedService);
+            dbContext.Suppliers.AddRange(suppliers);
+
+            await dbContext.SaveChangesAsync();
+
+            var results = await service.GetAllSuppliersWithAssociatedServices();
+
             results.Should().HaveCount(1);
-            results.First().Id.Should().Be(suppliers[0].Id);
+            results[0].Should().BeEquivalentTo(supplier, opt => opt.Excluding(s => s.SupplierContacts).Excluding(s => s.CatalogueItems));
         }
     }
 }

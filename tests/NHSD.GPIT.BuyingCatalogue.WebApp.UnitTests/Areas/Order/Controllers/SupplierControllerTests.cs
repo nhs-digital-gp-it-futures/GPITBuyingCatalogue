@@ -304,6 +304,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers
         {
             controller.ModelState.AddModelError("key", "errorMessage");
 
+            model.AssociatedServicesOnly = false;
+
             mockSupplierService
                 .Setup(x => x.GetAllSuppliersFromBuyingCatalogue())
                 .ReturnsAsync(suppliers);
@@ -314,6 +316,38 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers
 
             var actualResult = result.Should().BeOfType<ViewResult>().Subject;
 
+            var actualModel = actualResult.ViewData.Model.Should().BeAssignableTo<SelectSupplierModel>().Subject;
+
+            actualModel.CallOffId.Should().Be(model.CallOffId);
+            actualModel.InternalOrgId.Should().Be(model.InternalOrgId);
+
+            foreach (var supplier in suppliers)
+            {
+                actualModel.Suppliers.Should().Contain(x => x.Text == supplier.Name && x.Value == $"{supplier.Id}");
+            }
+        }
+
+        [Theory]
+        [CommonAutoData]
+        public static async Task Post_SelectSupplier_WithModelErrors_AssociatedServicesOnly_ReturnsExpectedResult(
+            SelectSupplierModel model,
+            List<Supplier> suppliers,
+            [Frozen] Mock<ISupplierService> mockSupplierService,
+            SupplierController controller)
+        {
+            controller.ModelState.AddModelError("key", "errorMessage");
+
+            model.AssociatedServicesOnly = true;
+
+            mockSupplierService
+                .Setup(x => x.GetAllSuppliersWithAssociatedServices())
+                .ReturnsAsync(suppliers);
+
+            var result = await controller.SelectSupplier(model.InternalOrgId, model.CallOffId, model);
+
+            mockSupplierService.VerifyAll();
+
+            var actualResult = result.Should().BeOfType<ViewResult>().Subject;
             var actualModel = actualResult.ViewData.Model.Should().BeAssignableTo<SelectSupplierModel>().Subject;
 
             actualModel.CallOffId.Should().Be(model.CallOffId);

@@ -7,9 +7,9 @@
         <div class="nhsuk-grid-column-two-thirds">
             <nhs-validation-summary/>
 
-            <nhs-page-title title="Select supplier"
+            <nhs-page-title title="Supplier information"
                             caption="Order @(Model.CallOffId)"
-                            advice="Select the supplier you want to order from." />
+                            advice="Search for the supplier you want to order from." />
 
             @if (Model.AssociatedServicesOnly)
             {
@@ -22,7 +22,7 @@
 
             <form method="post">
                 <input type="hidden" asp-for="AssociatedServicesOnly"/>
-                <nhs-auto-complete label-text="Supplier"
+                <nhs-auto-complete label-text="Enter supplier name"
                                    asp-for="SelectedSupplierId"
                                    asp-items="@(new SelectList(Model.Suppliers, "Value", "Text"))"/>
                 <br/>
