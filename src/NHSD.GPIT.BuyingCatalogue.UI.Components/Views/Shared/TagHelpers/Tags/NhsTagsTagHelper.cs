@@ -159,6 +159,7 @@ namespace NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.TagHelpers.Tags
             {
                 OrderStatus.Completed => TagColour.Green,
                 OrderStatus.InProgress => TagColour.Yellow,
+                OrderStatus.Deleted => TagColour.Red,
                 _ => TagColour.Grey,
             };
 

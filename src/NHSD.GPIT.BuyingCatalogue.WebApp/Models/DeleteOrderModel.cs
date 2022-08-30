@@ -1,25 +1,24 @@
 ﻿using System.Collections.Generic;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
-using NHSD.GPIT.BuyingCatalogue.WebApp.Models;
 
-namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.DeleteOrder
+namespace NHSD.GPIT.BuyingCatalogue.WebApp.Models
 {
-    public sealed class DeleteOrderModel : OrderingBaseModel
+    public sealed class DeleteOrderModel : NavBaseModel
     {
         public DeleteOrderModel()
         {
         }
 
-        public DeleteOrderModel(string internalOrgId, EntityFramework.Ordering.Models.Order order)
+        public DeleteOrderModel(Order order)
         {
-            Description = order.Description;
             CallOffId = order.CallOffId;
-            InternalOrgId = internalOrgId;
         }
 
-        public string Description { get; set; }
-
         public CallOffId CallOffId { get; set; }
+
+        public string WarningText { get; set; }
+
+        public string AdviceText { get; set; }
 
         public bool? SelectedOption { get; set; }
 

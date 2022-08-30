@@ -14,5 +14,7 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.Orders
         Task<PagedList<AdminManageOrder>> GetPagedOrders(PageOptions options, string search = null, string searchTermType = null);
 
         Task<IList<SearchFilterModel>> GetOrdersBySearchTerm(string search);
+
+        Task DeleteOrder(CallOffId callOffId);
     }
 }
