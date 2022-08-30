@@ -414,6 +414,23 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
                 .ToListAsync();
         }
 
+        public async Task<List<CatalogueItem>> GetSupplierSolutionsWithAssociatedServices(int? supplierId)
+        {
+            return await dbContext.CatalogueItems.AsNoTracking()
+                .Include(x => x.SupplierServiceAssociations).ThenInclude(x => x.AssociatedService).ThenInclude(x => x.CatalogueItem)
+                .Include(i => i.Solution)
+                .Include(i => i.CatalogueItemCapabilities).ThenInclude(sc => sc.Capability)
+                .Include(i => i.Supplier)
+                .Where(i => i.SupplierId == supplierId.GetValueOrDefault()
+                    && i.CatalogueItemType == CatalogueItemType.Solution
+                    && i.PublishedStatus == PublicationStatus.Published
+                    && i.SupplierServiceAssociations != null
+                    && i.SupplierServiceAssociations.Any(x => x.AssociatedService != null
+                        && x.AssociatedService.CatalogueItem.PublishedStatus == PublicationStatus.Published))
+                .OrderBy(i => i.Name)
+                .ToListAsync();
+        }
+
         public async Task<IList<CatalogueItem>> GetAllSolutions(
             PublicationStatus? publicationStatus = null)
         {

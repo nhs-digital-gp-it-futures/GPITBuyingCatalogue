@@ -10,6 +10,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.Supplier
 
         public string SelectedSupplierId { get; set; }
 
+        public bool AssociatedServicesOnly { get; set; }
+
         public IEnumerable<SelectListItem> Suppliers { get; set; }
     }
 }

@@ -5,7 +5,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Validators.Supplier
 {
     public class SelectSupplierModelValidator : AbstractValidator<SelectSupplierModel>
     {
-        public const string SupplierMissingErrorMessage = "Select a supplier";
+        public const string SupplierMissingErrorMessage = "Enter a supplier name";
 
         public SelectSupplierModelValidator()
         {

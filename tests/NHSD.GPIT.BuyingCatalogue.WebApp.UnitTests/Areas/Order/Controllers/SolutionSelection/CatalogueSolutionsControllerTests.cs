@@ -263,7 +263,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
                 .ReturnsAsync(order);
 
             mockSolutionsService
-                .Setup(x => x.GetSupplierSolutions(order.SupplierId))
+                .Setup(x => x.GetSupplierSolutionsWithAssociatedServices(order.SupplierId))
                 .ReturnsAsync(supplierSolutions);
 
             var result = await controller.SelectSolutionAssociatedServicesOnly(internalOrgId, callOffId, RoutingSource.SelectAssociatedServices);
@@ -300,7 +300,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
                 .ReturnsAsync(order);
 
             mockSolutionsService
-                .Setup(x => x.GetSupplierSolutions(order.SupplierId))
+                .Setup(x => x.GetSupplierSolutionsWithAssociatedServices(order.SupplierId))
                 .ReturnsAsync(supplierSolutions);
 
             var result = await controller.SelectSolutionAssociatedServicesOnly(internalOrgId, callOffId);
@@ -338,7 +338,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
                 .ReturnsAsync(order);
 
             mockSolutionsService
-                .Setup(x => x.GetSupplierSolutions(order.SupplierId))
+                .Setup(x => x.GetSupplierSolutionsWithAssociatedServices(order.SupplierId))
                 .ReturnsAsync(supplierSolutions);
 
             controller.ModelState.AddModelError("key", "errorMessage");
@@ -584,7 +584,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
                 .ReturnsAsync(order);
 
             mockSolutionsService
-                .Setup(x => x.GetSupplierSolutions(order.SupplierId))
+                .Setup(x => x.GetSupplierSolutionsWithAssociatedServices(order.SupplierId))
                 .ReturnsAsync(solutions);
 
             var result = await controller.EditSolutionAssociatedServicesOnly(internalOrgId, order.CallOffId);
@@ -887,7 +887,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
         {
             model.ConfirmChanges = true;
 
-            var result = await controller.ConfirmSolutionChanges(internalOrgId, callOffId, model);
+            await controller.ConfirmSolutionChanges(internalOrgId, callOffId, model);
 
             mockContractsService.Verify(s => s.RemoveContract(callOffId.Id), Times.Once());
         }
@@ -1022,7 +1022,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
         {
             model.ConfirmChanges = true;
 
-            var result = await controller.ConfirmSolutionChangesAssociatedServicesOnly(internalOrgId, callOffId, model);
+            await controller.ConfirmSolutionChangesAssociatedServicesOnly(internalOrgId, callOffId, model);
 
             mockContractsService.Verify(s => s.RemoveContract(callOffId.Id), Times.Once());
         }
