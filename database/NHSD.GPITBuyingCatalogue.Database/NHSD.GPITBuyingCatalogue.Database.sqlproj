@@ -257,7 +257,7 @@
     <Build Include="Ordering\TemporalTables\ImplementationPlanAcceptanceCriteria_History.sql" />
     <Build Include="Ordering\Tables\ContractFlags.sql" />
     <Build Include="Ordering\TemporalTables\ContractFlags_History.sql" />
-    <Build Include="PostDeployment\InsertOrderTriageValues.sql" />
+    <None Include="PostDeployment\InsertOrderTriageValues.sql" />
     <Build Include="Users\Tables\EmailDomains.sql" />
   </ItemGroup>
   <ItemGroup>
