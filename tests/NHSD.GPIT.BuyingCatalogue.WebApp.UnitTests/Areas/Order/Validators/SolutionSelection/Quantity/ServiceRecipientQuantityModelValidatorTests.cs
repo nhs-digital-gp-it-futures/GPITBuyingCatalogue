@@ -100,6 +100,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Validators.Solu
             ServiceRecipientQuantityModelValidator validator)
         {
             model.Quantity = 1;
+            model.InputQuantity = string.Empty;
 
             var result = validator.TestValidate(model);
 
