@@ -10,16 +10,11 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Models
         {
         }
 
-        public OrderSummaryItemModel(OrderItem orderItem, IEnumerable<ServiceInstanceItem> serviceInstanceItems)
+        public OrderSummaryItemModel(OrderItem orderItem)
         {
             OrderItem = orderItem;
-            ServiceInstanceItems = serviceInstanceItems;
         }
 
         public OrderItem OrderItem { get; set; }
-
-        public IEnumerable<ServiceInstanceItem> ServiceInstanceItems { get; set; }
-
-        public string ServiceInstanceId(string odsCode) => ServiceInstanceItems.FirstOrDefault(x => x.OdsCode == odsCode)?.ServiceInstanceId;
     }
 }

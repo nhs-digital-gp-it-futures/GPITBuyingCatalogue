@@ -35,7 +35,6 @@
         <th>Recipient</th>
         <th>ODS Code</th>
         <th>Item ID</th>
-        <th>Instance ID</th>
 
         @if (hasServiceRecipientQuantities)
         {
@@ -63,9 +62,6 @@
                 </td>
                 <td>
                     @($"{Model.OrderItem.Order.CallOffId}-{recipient.Recipient.OdsCode}-{ViewContext.HttpContext.NextLineId()}")
-                </td>
-                <td>
-                    @Model.ServiceInstanceId(recipient.OdsCode)
                 </td>
 
                 @if (hasServiceRecipientQuantities)
@@ -134,7 +130,7 @@
 
                 @foreach (var (tier, index) in tiers.Select((x, i) => (x, i)))
                 {
-                    <tr class="alternating"> 
+                    <tr class="alternating">
                         <td>
                             Tier @(index + 1)
                         </td>
