@@ -116,5 +116,32 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.Actions.Common
             Driver.FindElement(targetField).SendKeys(number.ToString());
             return number;
         }
+
+        public string FirstNameInputAddText(By targetField, int numChars)
+        {
+            Driver.FindElement(targetField).Clear();
+            var firstName = Strings.RandomFirstName(numChars);
+            Driver.FindElement(targetField).SendKeys(firstName.ToString());
+
+            return firstName;
+        }
+
+        public string LastNameInputAddText(By targetField, int numChars)
+        {
+            Driver.FindElement(targetField).Clear();
+            var lastName = Strings.RandomLastName(numChars);
+            Driver.FindElement(targetField).SendKeys(lastName.ToString());
+
+            return lastName;
+        }
+
+        public string PhoneNumberInputAddText(By targetField, int numChars)
+        {
+            Driver.FindElement(targetField).Clear();
+            var phone = Strings.RandomPhoneNumber(numChars);
+            Driver.FindElement(targetField).SendKeys(phone.ToString());
+
+            return phone;
+        }
     }
 }

@@ -46,11 +46,11 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering.StepOne
                typeof(SupplierController),
                nameof(SupplierController.NewContact)).Should().BeTrue();
 
-            TextGenerators.TextInputAddText(NewContactObjects.FirstNameInput, 10);
-            TextGenerators.TextInputAddText(NewContactObjects.LastNameInput, 10);
+            TextGenerators.FirstNameInputAddText(NewContactObjects.FirstNameInput, 10);
+            TextGenerators.LastNameInputAddText(NewContactObjects.LastNameInput, 10);
             TextGenerators.TextInputAddText(NewContactObjects.DepartmentInput, 10);
-            TextGenerators.TextInputAddText(NewContactObjects.PhoneNumberInput, 10);
-            TextGenerators.TextInputAddText(NewContactObjects.EmailInput, 10);
+            TextGenerators.PhoneNumberInputAddText(NewContactObjects.PhoneNumberInput, 10);
+            TextGenerators.EmailInputAddText(NewContactObjects.EmailInput, 10);
 
             CommonActions.ClickSave();
 

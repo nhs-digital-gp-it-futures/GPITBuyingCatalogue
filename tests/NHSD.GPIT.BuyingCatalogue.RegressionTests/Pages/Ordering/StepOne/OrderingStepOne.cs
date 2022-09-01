@@ -33,9 +33,9 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering.StepOne
 
         public void AddCallOffOrderingPartyContactDetails()
         {
-            TextGenerators.TextInputAddText(CalloffPartyInformation.FirstNameInput, 10);
-            TextGenerators.TextInputAddText(CalloffPartyInformation.LastNameInput, 10);
-            TextGenerators.TextInputAddText(CalloffPartyInformation.PhoneNumberInput, 10);
+            TextGenerators.FirstNameInputAddText(CalloffPartyInformation.FirstNameInput, 10);
+            TextGenerators.LastNameInputAddText(CalloffPartyInformation.LastNameInput, 10);
+            TextGenerators.PhoneNumberInputAddText(CalloffPartyInformation.PhoneNumberInput, 10);
             TextGenerators.EmailInputAddText(CalloffPartyInformation.EmailAddressInput, 20);
 
             CommonActions.ClickSave();
