@@ -3,9 +3,15 @@
 @{
     ViewBag.Title = Model!.Title;
 
-    var maximumTermLimit = Model.OrderTriageValue == OrderTriageValue.Under40K
+    var isUnder40K = Model.OrderTriageValue == OrderTriageValue.Under40K;
+    var maximumTermLimit = isUnder40K
         ? 12
         : 36;
+    var recommendedPeriod = isUnder40K
+        ? 3
+        : 6;
+
+    var maximumTermHint = $"This is the maximum length the Call-off Agreement can run for{(!isUnder40K ? " each service recipient" : string.Empty)}, which includes the initial period. It cannot exceed {maximumTermLimit} months.";
 }
 
 <partial name="Partials/_BackLink" model="Model" />
@@ -14,13 +20,16 @@
         <nhs-validation-summary />
         <nhs-page-title title="@ViewBag.Title"
                         caption="Order @Model.CallOffId"
-                        advice="Provide the approximate start date and the length of the Call-off Agreement and its initial period." />
+                        advice="Provide the commencement date, initial period and maximum term for the Call-off Agreement." />
 
-        <div class="nhsuk-inset-text">
-            <span class="nhsuk-u-visually-hidden">Information: </span>
-            <p>The Call-off Agreement will extend automatically up to the maximum of 36 months unless notice to terminate is given 30 working days before the end of the initial period.</p>
-            <p>After the initial period, the Call-off Agreement can be terminated without incurring charges.</p>
-        </div>
+        @if (!isUnder40K)
+        {
+            <div class="nhsuk-inset-text">
+                <span class="nhsuk-u-visually-hidden">Information: </span>
+                <p>The Call-off Agreement will extend automatically up to a maximum of 48 months unless notice to terminate is given 30 working days before the end of the initial period.</p>
+                <p>This is to allow implementation at multiple sites over an extended period. However, no Service Recipient can receive solutions or services for more than 36 months within the 48 month period.</p>
+            </div>
+        }
 
         <form method="post">
             <input type="hidden" asp-for="@Model.BackLink" />
@@ -30,8 +39,8 @@
 
             <div class="nhsuk-u-margin-bottom-9">
                 <nhs-fieldset-form-label asp-for="@Model"
-                                         label-text="What is the approximate start date for this Call-off Agreement?"
-                                         label-hint="This is the date the items you're ordering will start being used."
+                                         label-text="What is commencement date for this Call-off Agreement?"
+                                         label-hint="This is the date you’ve agreed with the supplier that the Call-off Agreement will begin."
                                          size="ExtraSmall">
                     <nhs-date-input asp-for="@Model" day="Day" month="Month" year="Year" />
                 </nhs-fieldset-form-label>
@@ -40,14 +49,14 @@
             <div class="nhsuk-u-margin-bottom-9">
                 <nhs-bookended-input asp-for="@Model.InitialPeriod"
                                      label-text="What is the initial period for this Call-off Agreement (in months)?"
-                                     label-hint="This is the period after which the Call-off Agreement can be terminated without incurring charges. It cannot exceed 12 months."
+                                     label-hint="This is the period after which the Call-off Agreement can be terminated without incurring charges. It is recommended the initial period is @(recommendedPeriod) months."
                                      Suffix="months" />
             </div>
 
             <div class="nhsuk-u-margin-bottom-9">
                 <nhs-bookended-input asp-for="@Model.MaximumTerm"
                                      label-text="What is the maximum term for this Call-off Agreement (in months)?"
-                                     label-hint="This is the maximum length the Call-off Agreement can run for, which includes the initial period. It cannot exceed @(maximumTermLimit) months."
+                                     label-hint="@(maximumTermHint)"
                                      Suffix="months" />
             </div>
 

@@ -10,11 +10,11 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Validators
     {
         public const int MaximumInitialPeriod = 12;
 
-        public const string CommencementDateDayMissingErrorMessage = "Approximate start date must include a day";
-        public const string CommencementDateInThePastErrorMessage = "Approximate start date must be in the future";
-        public const string CommencementDateInvalidErrorMessage = "Approximate start date must be a real date";
-        public const string CommencementDateMonthMissingErrorMessage = "Approximate start date must include a month";
-        public const string CommencementDateYearMissingErrorMessage = "Approximate start date must include a year";
+        public const string CommencementDateDayMissingErrorMessage = "Commencement date must include a day";
+        public const string CommencementDateInThePastErrorMessage = "Commencement date must be in the future";
+        public const string CommencementDateInvalidErrorMessage = "Commencement date must be a real date";
+        public const string CommencementDateMonthMissingErrorMessage = "Commencement date must include a month";
+        public const string CommencementDateYearMissingErrorMessage = "Commencement date must include a year";
         public const string CommencementDateYearTooShortErrorMessage = "Year must be four numbers";
         public const string InitialPeriodMissingErrorMessage = "Enter an initial period";
         public const string InitialPeriodNotANumberErrorMessage = "Initial period must be a number";
