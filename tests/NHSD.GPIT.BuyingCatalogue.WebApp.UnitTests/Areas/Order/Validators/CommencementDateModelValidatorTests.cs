@@ -35,7 +35,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Validators
 
             var result = validator.TestValidate(model);
 
-            result.ShouldHaveValidationErrorFor(m => m.Day)
+            result.ShouldHaveValidationErrorFor(m => m.Month)
                 .WithErrorMessage(CommencementDateModelValidator.CommencementDateMonthMissingErrorMessage);
         }
 
@@ -51,7 +51,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Validators
 
             var result = validator.TestValidate(model);
 
-            result.ShouldHaveValidationErrorFor(m => m.Day)
+            result.ShouldHaveValidationErrorFor(m => m.Year)
                 .WithErrorMessage(CommencementDateModelValidator.CommencementDateYearMissingErrorMessage);
         }
 
@@ -70,7 +70,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Validators
 
             var result = validator.TestValidate(model);
 
-            result.ShouldHaveValidationErrorFor(m => m.Day)
+            result.ShouldHaveValidationErrorFor(m => m.Year)
                 .WithErrorMessage(CommencementDateModelValidator.CommencementDateYearTooShortErrorMessage);
         }
 
