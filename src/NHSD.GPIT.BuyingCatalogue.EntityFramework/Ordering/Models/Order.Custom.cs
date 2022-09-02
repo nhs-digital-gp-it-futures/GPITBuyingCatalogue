@@ -10,10 +10,6 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models
         public const string LocalFunding = "Local";
         public const string CentralFunding = "Central";
 
-        private readonly List<ServiceInstanceItem> serviceInstanceItems = new();
-
-        public IReadOnlyList<ServiceInstanceItem> ServiceInstanceItems => serviceInstanceItems.AsReadOnly();
-
         // TODO: remove with csv
         public string ApproximateFundingType
         {
