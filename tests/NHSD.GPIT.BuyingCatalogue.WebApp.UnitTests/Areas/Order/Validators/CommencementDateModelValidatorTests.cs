@@ -188,20 +188,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Validators
         }
 
         [Theory]
-        [CommonAutoData]
-        public static void Validate_InitialPeriodTooHigh_ThrowsValidationError(
-            CommencementDateModel model,
-            CommencementDateModelValidator validator)
-        {
-            model.InitialPeriod = $"{CommencementDateModelValidator.MaximumInitialPeriod + 1}";
-
-            var result = validator.TestValidate(model);
-
-            result.ShouldHaveValidationErrorFor(m => m.InitialPeriod)
-                .WithErrorMessage(CommencementDateModelValidator.InitialPeriodTooHighErrorMessage);
-        }
-
-        [Theory]
         [CommonInlineAutoData(null)]
         [CommonInlineAutoData("")]
         [CommonInlineAutoData(" ")]
@@ -279,6 +265,36 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Validators
 
             result.ShouldHaveValidationErrorFor(m => m.MaximumTerm)
                 .WithErrorMessage(string.Format(CommencementDateModelValidator.MaximumTermTooHighErrorMessage, "12"));
+        }
+
+        [Theory]
+        [CommonAutoData]
+        public static void Validate_Over250K_InitialPeriodTooHigh_ThrowsValidationError(
+            CommencementDateModel model,
+            CommencementDateModelValidator validator)
+        {
+            model.OrderTriageValue = OrderTriageValue.Over250K;
+            model.InitialPeriod = "8";
+
+            var result = validator.TestValidate(model);
+
+            result.ShouldHaveValidationErrorFor(m => m.InitialPeriod)
+                .WithErrorMessage(string.Format(CommencementDateModelValidator.InitialPeriodTooHighErrorMessage, 6));
+        }
+
+        [Theory]
+        [CommonAutoData]
+        public static void Validate_Under40K_InitialPeriodTooHigh_ThrowsValidationError(
+            CommencementDateModel model,
+            CommencementDateModelValidator validator)
+        {
+            model.OrderTriageValue = OrderTriageValue.Under40K;
+            model.InitialPeriod = "8";
+
+            var result = validator.TestValidate(model);
+
+            result.ShouldHaveValidationErrorFor(m => m.InitialPeriod)
+                .WithErrorMessage(string.Format(CommencementDateModelValidator.InitialPeriodTooHighErrorMessage, 3));
         }
 
         [Theory]

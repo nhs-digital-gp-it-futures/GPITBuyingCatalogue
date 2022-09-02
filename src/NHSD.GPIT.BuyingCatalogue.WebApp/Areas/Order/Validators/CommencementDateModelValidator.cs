@@ -8,8 +8,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Validators
 {
     public sealed class CommencementDateModelValidator : AbstractValidator<CommencementDateModel>
     {
-        public const int MaximumInitialPeriod = 12;
-
         public const string CommencementDateDayMissingErrorMessage = "Commencement date must include a day";
         public const string CommencementDateInThePastErrorMessage = "Commencement date must be in the future";
         public const string CommencementDateInvalidErrorMessage = "Commencement date must be a real date";
@@ -24,8 +22,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Validators
         public const string MaximumTermNotANumberErrorMessage = "Maximum term must be a number";
         public const string MaximumTermTooLowErrorMessage = "Maximum term must be greater than zero";
         public const string MaximumTermTooHighErrorMessage = "Maximum term cannot be more than {0} months";
-
-        public static readonly string InitialPeriodTooHighErrorMessage = $"Initial period cannot be more than {MaximumInitialPeriod} months";
+        public const string InitialPeriodTooHighErrorMessage = "Initial period cannot be more than {0} months";
 
         public CommencementDateModelValidator()
         {
@@ -59,7 +56,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Validators
             RuleFor(x => x.InitialPeriod)
                 .IsNumericAndNonZero("initial period")
                 .Must(InitialPeriodLessThanOrEqualToMaximum)
-                .WithMessage(InitialPeriodTooHighErrorMessage);
+                .WithMessage(model => string.Format(InitialPeriodTooHighErrorMessage, GetInitialPeriod(model)));
 
             RuleFor(x => x.MaximumTerm)
                 .IsNumericAndNonZero("maximum term")
@@ -69,10 +66,15 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Validators
                 .WithMessage(MaximumTermInvalidErrorMessage);
         }
 
-        internal static int GetMaximumTerm(CommencementDateModel model)
+        private static int GetMaximumTerm(CommencementDateModel model)
             => model.OrderTriageValue == OrderTriageValue.Under40K
                 ? 12
                 : 36;
+
+        private static int GetInitialPeriod(CommencementDateModel model)
+            => model.OrderTriageValue == OrderTriageValue.Under40K
+                ? 3
+                : 6;
 
         private static bool CommencementDateIsInvalid(CommencementDateModel model)
         {
@@ -83,7 +85,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Validators
         }
 
         private static bool InitialPeriodLessThanOrEqualToMaximum(CommencementDateModel model, string initialPeriod)
-            => model.InitialPeriodValue <= MaximumInitialPeriod;
+            => model.InitialPeriodValue <= GetInitialPeriod(model);
 
         private static bool MaximumTermLessThanOrEqualToMaximum(CommencementDateModel model, string initialPeriod)
             => model.MaximumTermValue <= GetMaximumTerm(model);

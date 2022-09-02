@@ -279,11 +279,11 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering
         {
             CommonActions.ElementAddValue(
                 Objects.Ordering.CommencementDate.InitialPeriodInput,
-                $"{CommencementDateModelValidator.MaximumInitialPeriod + 1}");
+                "8");
 
             CommonActions.ElementAddValue(
                 Objects.Ordering.CommencementDate.MaximumTermInput,
-                $"37");
+                "37");
 
             CommonActions.ClickSave();
 
@@ -296,7 +296,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering
 
             CommonActions.ElementShowingCorrectErrorMessage(
                 Objects.Ordering.CommencementDate.InitialPeriodError,
-                CommencementDateModelValidator.InitialPeriodTooHighErrorMessage).Should().BeTrue();
+                string.Format(CommencementDateModelValidator.InitialPeriodTooHighErrorMessage, 6)).Should().BeTrue();
 
             CommonActions.ElementShowingCorrectErrorMessage(
                 Objects.Ordering.CommencementDate.MaximumTermError,
@@ -316,7 +316,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering
 
             CommonActions.ElementAddValue(
                 Objects.Ordering.CommencementDate.InitialPeriodInput,
-                $"{CommencementDateModelValidator.MaximumInitialPeriod + 1}");
+                "6");
 
             CommonActions.ElementAddValue(
                 Objects.Ordering.CommencementDate.MaximumTermInput,
@@ -333,7 +333,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering
 
             CommonActions.ElementShowingCorrectErrorMessage(
                 Objects.Ordering.CommencementDate.InitialPeriodError,
-                CommencementDateModelValidator.InitialPeriodTooHighErrorMessage).Should().BeTrue();
+                string.Format(CommencementDateModelValidator.InitialPeriodTooHighErrorMessage, 3)).Should().BeTrue();
 
             CommonActions.ElementShowingCorrectErrorMessage(
                 Objects.Ordering.CommencementDate.MaximumTermError,
@@ -345,11 +345,11 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering
         {
             CommonActions.ElementAddValue(
                 Objects.Ordering.CommencementDate.InitialPeriodInput,
-                $"{CommencementDateModelValidator.MaximumInitialPeriod}");
+                "6");
 
             CommonActions.ElementAddValue(
                 Objects.Ordering.CommencementDate.MaximumTermInput,
-                $"{CommencementDateModelValidator.MaximumInitialPeriod}");
+                "5");
 
             CommonActions.ClickSave();
 
