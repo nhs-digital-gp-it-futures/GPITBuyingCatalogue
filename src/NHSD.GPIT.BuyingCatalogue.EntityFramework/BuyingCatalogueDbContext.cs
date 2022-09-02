@@ -81,8 +81,6 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework
 
         public DbSet<SupplierServiceAssociation> SupplierServiceAssociations { get; set; }
 
-        public DbSet<ServiceInstanceItem> ServiceInstanceItems { get; set; }
-
         public DbSet<Standard> Standards { get; set; }
 
         public DbSet<AspNetUser> AspNetUsers { get; set; }
