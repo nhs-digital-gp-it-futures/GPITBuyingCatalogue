@@ -279,7 +279,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering
         {
             CommonActions.ElementAddValue(
                 Objects.Ordering.CommencementDate.InitialPeriodInput,
-                "8");
+                $"{CommencementDateModelValidator.MaximumInitialPeriod + 1}");
 
             CommonActions.ElementAddValue(
                 Objects.Ordering.CommencementDate.MaximumTermInput,
@@ -296,7 +296,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering
 
             CommonActions.ElementShowingCorrectErrorMessage(
                 Objects.Ordering.CommencementDate.InitialPeriodError,
-                string.Format(CommencementDateModelValidator.InitialPeriodTooHighErrorMessage, 6)).Should().BeTrue();
+                CommencementDateModelValidator.InitialPeriodTooHighErrorMessage).Should().BeTrue();
 
             CommonActions.ElementShowingCorrectErrorMessage(
                 Objects.Ordering.CommencementDate.MaximumTermError,
@@ -316,7 +316,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering
 
             CommonActions.ElementAddValue(
                 Objects.Ordering.CommencementDate.InitialPeriodInput,
-                "6");
+                $"{CommencementDateModelValidator.MaximumInitialPeriod + 1}");
 
             CommonActions.ElementAddValue(
                 Objects.Ordering.CommencementDate.MaximumTermInput,
@@ -333,7 +333,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering
 
             CommonActions.ElementShowingCorrectErrorMessage(
                 Objects.Ordering.CommencementDate.InitialPeriodError,
-                string.Format(CommencementDateModelValidator.InitialPeriodTooHighErrorMessage, 3)).Should().BeTrue();
+                CommencementDateModelValidator.InitialPeriodTooHighErrorMessage).Should().BeTrue();
 
             CommonActions.ElementShowingCorrectErrorMessage(
                 Objects.Ordering.CommencementDate.MaximumTermError,
