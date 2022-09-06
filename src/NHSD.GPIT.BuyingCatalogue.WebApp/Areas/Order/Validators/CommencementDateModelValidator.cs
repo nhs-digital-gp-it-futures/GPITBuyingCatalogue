@@ -25,7 +25,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Validators
         public const string MaximumTermTooLowErrorMessage = "Maximum term must be greater than zero";
         public const string MaximumTermTooHighErrorMessage = "Maximum term cannot be more than {0} months";
 
-        public static string InitialPeriodTooHighErrorMessage = $"Initial period cannot be more than {MaximumInitialPeriod} months";
+        public static readonly string InitialPeriodTooHighErrorMessage = $"Initial period cannot be more than {MaximumInitialPeriod} months";
 
         public CommencementDateModelValidator()
         {
