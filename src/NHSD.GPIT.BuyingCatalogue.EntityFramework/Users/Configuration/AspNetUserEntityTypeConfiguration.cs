@@ -29,9 +29,6 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Users.Configuration
 
             builder.Property(u => u.NormalizedEmail).HasMaxLength(256).IsRequired();
             builder.Property(u => u.NormalizedUserName).HasMaxLength(256).IsRequired();
-            builder.Property(u => u.OrganisationFunction)
-                .IsRequired()
-                .HasMaxLength(50);
 
             builder.Property(u => u.PhoneNumber).HasMaxLength(35);
             builder.Property(u => u.PhoneNumberConfirmed).IsRequired().HasDefaultValue(0);

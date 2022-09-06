@@ -5,6 +5,8 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using MoreLinq;
+using MoreLinq.Extensions;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Organisations.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Users.Models;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Identity;
@@ -127,11 +129,13 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
                 return new NotFoundResult();
             }
 
+            var roles = await usersService.GetRoles(user);
             var orders = await orderService.GetUserOrders(userId);
 
             return View(new DetailsModel
             {
                 User = user,
+                UserRole = roles.OrderBy(r => r).First(),
                 Orders = orders.Take(NumberOfOrders).ToList(),
             });
         }
@@ -181,11 +185,12 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
                 return new NotFoundResult();
             }
 
+            var roles = await usersService.GetRoles(user);
             return View(new AccountTypeModel
             {
                 BackLink = Url.Action(nameof(Details), new { userId }),
                 Email = user.Email,
-                SelectedAccountType = user.OrganisationFunction,
+                SelectedAccountType = roles.OrderBy(r => r).First(),
             });
         }
 

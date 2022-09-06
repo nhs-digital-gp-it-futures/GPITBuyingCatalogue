@@ -4,6 +4,8 @@ using AutoFixture.Kernel;
 using Microsoft.EntityFrameworkCore;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Identity;
+using NHSD.GPIT.BuyingCatalogue.EntityFramework.Users.Models;
+using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Identity;
 
 namespace NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.AutoFixtureCustomisations
 {
@@ -42,6 +44,11 @@ namespace NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.AutoFixtureCustomisations
                 var dbContext = new BuyingCatalogueDbContext(dbContextOptions, identityService);
                 dbContext.Database.EnsureDeleted();
                 dbContext.Database.EnsureCreated();
+
+                dbContext.Roles.Add(new() { Name = OrganisationFunction.BuyerName, NormalizedName = OrganisationFunction.BuyerName.ToUpperInvariant() });
+                dbContext.Roles.Add(new() { Name = OrganisationFunction.AuthorityName, NormalizedName = OrganisationFunction.AuthorityName.ToUpperInvariant() });
+
+                dbContext.SaveChanges();
 
                 return dbContext;
             }

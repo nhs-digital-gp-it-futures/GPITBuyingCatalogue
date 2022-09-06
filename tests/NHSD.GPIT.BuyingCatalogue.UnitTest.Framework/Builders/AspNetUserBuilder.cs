@@ -139,8 +139,11 @@ namespace NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.Builders
                 PhoneNumber = phoneNumber,
                 Email = email,
                 NormalizedEmail = email.ToUpper(),
-                OrganisationFunction = OrganisationFunction.Buyer.DisplayName,
                 PrimaryOrganisationId = primaryOrganisationId,
+                AspNetUserRoles = new List<AspNetUserRole>
+                {
+                    new() { Role = new() { Name = OrganisationFunction.Buyer.DisplayName } },
+                },
             };
         }
 
@@ -161,8 +164,11 @@ namespace NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.Builders
                 PhoneNumber = phoneNumber,
                 Email = email,
                 NormalizedEmail = email.ToUpper(),
-                OrganisationFunction = OrganisationFunction.Authority.DisplayName,
                 PrimaryOrganisationId = primaryOrganisationId,
+                AspNetUserRoles = new List<AspNetUserRole>
+                {
+                    new() { Role = new() { Name = OrganisationFunction.Authority.DisplayName } },
+                },
             };
         }
 

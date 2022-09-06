@@ -10,6 +10,10 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.Users
 
         Task<List<AspNetUser>> GetAllUsers();
 
+        Task<bool> HasRole(int userId, string role);
+
+        Task<IList<string>> GetRoles(AspNetUser user);
+
         Task<List<AspNetUser>> GetAllUsersBySearchTerm(string searchTerm);
 
         Task<List<AspNetUser>> GetAllUsersForOrganisation(int organisationId);

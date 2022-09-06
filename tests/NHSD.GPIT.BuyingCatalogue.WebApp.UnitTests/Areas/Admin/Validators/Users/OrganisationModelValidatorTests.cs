@@ -1,4 +1,5 @@
-﻿using AutoFixture.Xunit2;
+﻿using System.Collections.Generic;
+using AutoFixture.Xunit2;
 using FluentValidation.TestHelper;
 using Moq;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Users.Models;
@@ -48,10 +49,12 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators.User
 
             mockUsersService
                 .Setup(x => x.GetUser(UserId))
-                .ReturnsAsync(new AspNetUser
-                {
-                    OrganisationFunction = OrganisationFunction.AuthorityName,
-                });
+                .ReturnsAsync(
+                    new AspNetUser());
+
+            mockUsersService
+                .Setup(x => x.HasRole(UserId, OrganisationFunction.AuthorityName))
+                .ReturnsAsync(true);
 
             var result = validator.TestValidate(model);
 
@@ -73,7 +76,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators.User
                 .Setup(x => x.GetUser(UserId))
                 .ReturnsAsync(new AspNetUser
                 {
-                    OrganisationFunction = OrganisationFunction.AuthorityName,
+                    AspNetUserRoles = new List<AspNetUserRole>
+                    {
+                        new() { Role = new() { Name = OrganisationFunction.AuthorityName } },
+                    },
                 });
 
             var result = validator.TestValidate(model);
@@ -95,7 +101,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators.User
                 .Setup(x => x.GetUser(UserId))
                 .ReturnsAsync(new AspNetUser
                 {
-                    OrganisationFunction = OrganisationFunction.BuyerName,
+                    AspNetUserRoles = new List<AspNetUserRole>
+                    {
+                        new() { Role = new() { Name = OrganisationFunction.BuyerName } },
+                    },
                 });
 
             var result = validator.TestValidate(model);

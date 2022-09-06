@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Identity;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Users.Models;
 using NHSD.GPIT.BuyingCatalogue.Framework.Settings;
@@ -13,20 +14,20 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Users
 {
     public sealed class CreateUserService : ICreateUserService
     {
-        private readonly BuyingCatalogueDbContext dbContext;
+        private readonly UserManager<AspNetUser> userManager;
         private readonly IPasswordService passwordService;
         private readonly IPasswordResetCallback passwordResetCallback;
         private readonly IGovNotifyEmailService govNotifyEmailService;
         private readonly RegistrationSettings settings;
 
         public CreateUserService(
-            BuyingCatalogueDbContext dbContext,
+            UserManager<AspNetUser> userManager,
             IPasswordService passwordService,
             IPasswordResetCallback passwordResetCallback,
             IGovNotifyEmailService govNotifyEmailService,
             RegistrationSettings settings)
         {
-            this.dbContext = dbContext ?? throw new ArgumentNullException(nameof(dbContext));
+            this.userManager = userManager ?? throw new ArgumentNullException(nameof(userManager));
             this.passwordService = passwordService ?? throw new ArgumentNullException(nameof(passwordService));
             this.passwordResetCallback = passwordResetCallback ?? throw new ArgumentNullException(nameof(passwordResetCallback));
             this.govNotifyEmailService = govNotifyEmailService ?? throw new ArgumentNullException(nameof(govNotifyEmailService));
@@ -48,18 +49,12 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Users
                 FirstName = firstName,
                 LastName = lastName,
                 UserName = emailAddress,
-                NormalizedUserName = emailAddress.ToUpperInvariant(),
                 Email = emailAddress,
-                NormalizedEmail = emailAddress.ToUpperInvariant(),
                 PrimaryOrganisationId = primaryOrganisationId,
-                OrganisationFunction = organisationFunction,
-                SecurityStamp = Guid.NewGuid().ToString(),
-                ConcurrencyStamp = Guid.NewGuid().ToString(),
             };
 
-            dbContext.AspNetUsers.Add(aspNetUser);
-
-            await dbContext.SaveChangesAsync();
+            await userManager.CreateAsync(aspNetUser);
+            await userManager.AddToRoleAsync(aspNetUser, organisationFunction);
 
             var token = await passwordService.GeneratePasswordResetTokenAsync(aspNetUser.Email);
 

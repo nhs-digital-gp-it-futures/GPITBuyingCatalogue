@@ -1,14 +1,17 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using AutoFixture.Xunit2;
 using FluentAssertions;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Organisations.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Users.Models;
 using NHSD.GPIT.BuyingCatalogue.Services.Users;
 using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.AutoFixtureCustomisations;
+using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.SharedMocks;
 using Xunit;
 
 namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Users
@@ -138,6 +141,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Users
         [InMemoryDbAutoData]
         public static async Task EnableOrDisableUser_DisableUser_UpdatesDatabaseCorrectly(
             [Frozen] BuyingCatalogueDbContext context,
+            [Frozen] UserManager<AspNetUser> userManager,
             Organisation organisation,
             AspNetUser user,
             UsersService service)
@@ -150,7 +154,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Users
 
             await service.EnableOrDisableUser(user.Id, true);
 
-            var actual = await context.AspNetUsers.SingleAsync(u => u.Id == user.Id);
+            var actual = await userManager.Users.SingleAsync(u => u.Id == user.Id);
 
             actual.Disabled.Should().BeTrue();
         }
@@ -159,6 +163,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Users
         [InMemoryDbAutoData]
         public static async Task EnableOrDisableUser_EnableUser_UpdatesDatabaseCorrectly(
             [Frozen] BuyingCatalogueDbContext context,
+            [Frozen] UserManager<AspNetUser> userManager,
             Organisation organisation,
             AspNetUser user,
             UsersService service)
@@ -171,7 +176,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Users
 
             await service.EnableOrDisableUser(user.Id, false);
 
-            var actual = await context.AspNetUsers.SingleAsync(u => u.Id == user.Id);
+            var actual = await userManager.Users.SingleAsync(u => u.Id == user.Id);
 
             actual.Disabled.Should().BeFalse();
         }
@@ -181,17 +186,19 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Users
         public static async Task UpdateUserAccountType_UpdatesDatabaseCorrectly(
             string accountType,
             [Frozen] BuyingCatalogueDbContext context,
+            [Frozen] UserManager<AspNetUser> userManager,
             AspNetUser user,
             UsersService service)
         {
+            context.Roles.Add(new() { Name = accountType, NormalizedName = accountType.ToUpperInvariant() });
             context.AspNetUsers.Add(user);
             await context.SaveChangesAsync();
 
             await service.UpdateUserAccountType(user.Id, accountType);
 
-            var actual = await context.AspNetUsers.SingleAsync(u => u.Id == user.Id);
+            var actual = await userManager.Users.Include(u => u.AspNetUserRoles).ThenInclude(r => r.Role).SingleAsync(u => u.Id == user.Id);
 
-            actual.OrganisationFunction.Should().Be(accountType);
+            actual.AspNetUserRoles.Select(u => u.Role).Should().Contain(x => x.Name == accountType);
         }
 
         [Theory]
@@ -201,6 +208,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Users
             string lastName,
             string email,
             [Frozen] BuyingCatalogueDbContext context,
+            [Frozen] UserManager<AspNetUser> userManager,
             AspNetUser user,
             UsersService service)
         {
@@ -209,13 +217,11 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Users
 
             await service.UpdateUserDetails(user.Id, firstName, lastName, email);
 
-            var actual = await context.AspNetUsers.SingleAsync(u => u.Id == user.Id);
+            var actual = await userManager.Users.SingleAsync(u => u.Id == user.Id);
 
             actual.FirstName.Should().Be(firstName);
             actual.LastName.Should().Be(lastName);
             actual.Email.Should().Be(email);
-            actual.NormalizedEmail.Should().Be(email.ToUpperInvariant());
-            actual.NormalizedUserName.Should().Be(email.ToUpperInvariant());
             actual.UserName.Should().Be(email);
         }
 
@@ -224,6 +230,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Users
         public static async Task UpdateUserOrganisation_UpdatesDatabaseCorrectly(
             int organisationId,
             [Frozen] BuyingCatalogueDbContext context,
+            [Frozen] UserManager<AspNetUser> userManager,
             AspNetUser user,
             UsersService service)
         {
@@ -232,7 +239,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Users
 
             await service.UpdateUserOrganisation(user.Id, organisationId);
 
-            var actual = await context.AspNetUsers.SingleAsync(u => u.Id == user.Id);
+            var actual = await userManager.Users.SingleAsync(u => u.Id == user.Id);
 
             actual.PrimaryOrganisationId.Should().Be(organisationId);
         }
