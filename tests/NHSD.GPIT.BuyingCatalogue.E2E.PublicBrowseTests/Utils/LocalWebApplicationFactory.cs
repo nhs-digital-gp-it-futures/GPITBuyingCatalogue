@@ -200,6 +200,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils
 
                 try
                 {
+                    RolesSeedData.Initialize(bcDb);
                     UserSeedData.Initialize(bcDb);
                     BuyingCatalogueSeedData.Initialize(bcDb);
                     OrderSeedData.Initialize(bcDb);

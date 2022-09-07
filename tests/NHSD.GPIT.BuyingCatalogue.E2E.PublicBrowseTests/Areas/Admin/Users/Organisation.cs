@@ -131,9 +131,11 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.Users
         {
             await using var context = GetEndToEndDbContext();
 
-            var user = await context.AspNetUsers.SingleAsync(x => x.Id == UserId);
+            var user = await context.AspNetUsers.Include(u => u.AspNetUserRoles).SingleAsync(x => x.Id == UserId);
+            var buyerRole = await context.Roles.FirstAsync(x => x.Name == OrganisationFunction.BuyerName);
 
-            user.OrganisationFunction = OrganisationFunction.BuyerName;
+            user.AspNetUserRoles.Clear();
+            user.AspNetUserRoles.Add(new() { Role = buyerRole });
             user.PrimaryOrganisationId = context.Organisations
                 .First(x => x.Name != NhsDigitalOrganisationName)
                 .Id;
@@ -158,11 +160,15 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.Users
         {
             using var context = GetEndToEndDbContext();
 
-            var user = context.AspNetUsers.Single(x => x.Id == UserId);
+            var adminRole = context.Roles.First(x => x.Name == OrganisationFunction.AuthorityName);
+
+            var user = context.AspNetUsers.Include(u => u.AspNetUserRoles).Single(x => x.Id == UserId);
             var organisation = context.Organisations.Single(x => x.Name == NhsDigitalOrganisationName);
 
+            user.AspNetUserRoles.Clear();
+            user.AspNetUserRoles.Add(new() { Role = adminRole });
+
             user.PrimaryOrganisationId = organisation.Id;
-            user.OrganisationFunction = OrganisationFunction.AuthorityName;
 
             context.SaveChanges();
         }

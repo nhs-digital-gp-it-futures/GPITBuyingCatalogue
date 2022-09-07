@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using FluentAssertions;
+using Microsoft.EntityFrameworkCore;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.Objects.Admin;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.Objects.Common;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Utils;
@@ -38,7 +39,9 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.Users
             CommonActions.ElementIsDisplayed(CommonSelectors.SubmitButton).Should().BeTrue();
 
             var user = GetUser();
-            var isAdmin = user.OrganisationFunction == OrganisationFunction.AuthorityName;
+            var userRole = user.AspNetUserRoles.Select(u => u.Role).First().Name;
+
+            var isAdmin = userRole == OrganisationFunction.AuthorityName;
 
             CommonActions.IsRadioButtonChecked(OrganisationFunction.AuthorityName).Should().Be(isAdmin);
             CommonActions.IsRadioButtonChecked(OrganisationFunction.BuyerName).Should().Be(!isAdmin);
@@ -65,7 +68,9 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.Users
                 typeof(UsersController),
                 nameof(UsersController.Details)).Should().BeTrue();
 
-            GetUser().OrganisationFunction.Should().Be(OrganisationFunction.AuthorityName);
+            var userRole = GetUser().AspNetUserRoles.Select(u => u.Role).First().Name;
+
+            userRole.Should().Be(OrganisationFunction.AuthorityName);
         }
 
         [Fact]
@@ -105,18 +110,18 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.Users
                 typeof(UsersController),
                 nameof(UsersController.Details)).Should().BeTrue();
 
-            GetUser().OrganisationFunction.Should().Be(OrganisationFunction.BuyerName);
+            var userRole = GetUser().AspNetUserRoles.Select(u => u.Role).First().Name;
+            userRole.Should().Be(OrganisationFunction.BuyerName);
         }
 
         public void Dispose()
         {
             var context = GetEndToEndDbContext();
             var user = context.AspNetUsers.Single(x => x.Id == UserId);
-            user.OrganisationFunction = OrganisationFunction.AuthorityName;
             user.PrimaryOrganisationId = OrganisationConstants.NhsDigitalOrganisationId;
             context.SaveChanges();
         }
 
-        private AspNetUser GetUser() => GetEndToEndDbContext().AspNetUsers.Single(x => x.Id == UserId);
+        private AspNetUser GetUser() => GetEndToEndDbContext().AspNetUsers.Include(u => u.AspNetUserRoles).ThenInclude(r => r.Role).Single(x => x.Id == UserId);
     }
 }

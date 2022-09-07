@@ -1,10 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using Microsoft.AspNetCore.Identity;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Addresses.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Organisations.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Users.Models;
+using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Identity;
 
 namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
 {
@@ -25,6 +27,9 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
 
         private static void AddDefaultData(BuyingCatalogueDbContext context)
         {
+            var buyerRole = context.Roles.First(r => r.Name == OrganisationFunction.BuyerName);
+            var adminRole = context.Roles.First(r => r.Name == OrganisationFunction.AuthorityName);
+
             var bobOrganisation = new Organisation
             {
                 Id = 1,
@@ -310,13 +315,13 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
                 LastName = "Smith",
                 EmailConfirmed = true,
                 CatalogueAgreementSigned = true,
-                OrganisationFunction = "Authority",
                 PrimaryOrganisation = bobOrganisation,
                 PrimaryOrganisationId = bobOrganisation.Id,
                 SecurityStamp = Guid.NewGuid().ToString(),
                 HasOptedInUserResearch = false,
                 AcceptedTermsOfUseDate = DateTime.UtcNow,
             };
+            adminUser.AspNetUserRoles.Add(new AspNetUserRole() { Role = adminRole });
             adminUser.PasswordHash = new PasswordHasher<AspNetUser>().HashPassword(adminUser, TestPassword);
 
             context.Add(adminUser);
@@ -333,13 +338,13 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
                 LastName = "Smith",
                 EmailConfirmed = true,
                 CatalogueAgreementSigned = true,
-                OrganisationFunction = "Buyer",
                 PrimaryOrganisation = sueOrganisation,
                 PrimaryOrganisationId = sueOrganisation.Id,
                 SecurityStamp = Guid.NewGuid().ToString(),
                 HasOptedInUserResearch = false,
                 AcceptedTermsOfUseDate = DateTime.UtcNow,
             };
+            buyUser.AspNetUserRoles.Add(new AspNetUserRole() { Role = buyerRole });
             buyUser.PasswordHash = new PasswordHasher<AspNetUser>().HashPassword(buyUser, TestPassword);
 
             context.Add(buyUser);
@@ -356,13 +361,13 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
                 LastName = "Smith",
                 EmailConfirmed = true,
                 CatalogueAgreementSigned = true,
-                OrganisationFunction = "Buyer",
                 PrimaryOrganisation = aliceOrganisation,
                 PrimaryOrganisationId = aliceOrganisation.Id,
                 SecurityStamp = Guid.NewGuid().ToString(),
                 HasOptedInUserResearch = true,
                 AcceptedTermsOfUseDate = DateTime.UtcNow,
             };
+            buyProxyUser.AspNetUserRoles.Add(new AspNetUserRole() { Role = buyerRole });
             buyProxyUser.PasswordHash = new PasswordHasher<AspNetUser>().HashPassword(buyProxyUser, TestPassword);
 
             context.Add(buyProxyUser);

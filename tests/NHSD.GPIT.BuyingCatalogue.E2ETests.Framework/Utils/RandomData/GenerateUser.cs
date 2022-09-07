@@ -1,6 +1,7 @@
 ﻿using Bogus;
 using Microsoft.AspNetCore.Identity;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.Utils.TestModels;
+using NHSD.GPIT.BuyingCatalogue.EntityFramework;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Users.Models;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Identity;
 
@@ -17,8 +18,10 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.Utils.RandomData
                 .Generate();
         }
 
-        public static AspNetUser GenerateAspNetUser(int organisationId, string password, bool isEnabled)
+        public static AspNetUser GenerateAspNetUser(BuyingCatalogueDbContext context, int organisationId, string password, bool isEnabled)
         {
+            var role = context.Roles.First(r => r.Name == OrganisationFunction.Buyer.DisplayName);
+
             var user = new Faker<AspNetUser>("en_GB")
                 .RuleFor(u => u.FirstName, f => f.Name.FirstName())
                 .RuleFor(u => u.LastName, f => f.Name.LastName())
@@ -37,7 +40,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.Utils.RandomData
             user.PasswordHash = new PasswordHasher<AspNetUser>().HashPassword(user, password);
             user.AspNetUserRoles = new List<AspNetUserRole>
             {
-                new() { Role = new() { Name = OrganisationFunction.Buyer.DisplayName } },
+                new() { Role = role },
             };
 
             return user;
