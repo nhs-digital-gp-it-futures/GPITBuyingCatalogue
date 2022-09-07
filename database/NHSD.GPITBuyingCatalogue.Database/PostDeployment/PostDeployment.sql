@@ -1,4 +1,6 @@
 ﻿:r ./InsertOrganisationTypes.sql
+:r ./InsertRoles.sql
+
 :r ./CreateClinicalCommissioningGroups.sql
 :r ./CreateCommissioningSupportUnits.sql
 :r ./CreateExecutiveAgency.sql
