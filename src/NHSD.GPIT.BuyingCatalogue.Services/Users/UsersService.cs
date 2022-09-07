@@ -99,8 +99,6 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Users
             user.FirstName = firstName;
             user.LastName = lastName;
             user.Email = email;
-            user.NormalizedEmail = email?.ToUpperInvariant();
-            user.NormalizedUserName = email?.ToUpperInvariant();
             user.UserName = email;
 
             await userManager.UpdateAsync(user);
