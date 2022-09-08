@@ -41,7 +41,7 @@
             <nhs-summary-list-row label-text="Description" data-test-id="order-description-summary">
                 @Model.Order.Description
             </nhs-summary-list-row>
-            
+
             <nhs-summary-list-row label-text="Date created" data-test-id="date-created-summary">
                 @($"{Model.Order.Created:dd MMMM yyyy}")
             </nhs-summary-list-row>
@@ -69,7 +69,7 @@
 
             @if (Model.Order.CommencementDate.HasValue)
             {
-                <nhs-summary-list-row label-text="Approximate start date" data-test-id="start-date-summary">
+                <nhs-summary-list-row label-text="Commencement date" data-test-id="start-date-summary">
                     @($"{Model.Order.CommencementDate.Value:dd MMMM yyyy}")
                 </nhs-summary-list-row>
             }
@@ -141,11 +141,11 @@
                 <nhs-summary-list-row label-text="Total monthly cost:" data-test-id="monthly-cost-summary">
                     £@($"{Model.Order.TotalMonthlyCost():N2}")
                 </nhs-summary-list-row>
-                
+
                 <nhs-summary-list-row label-text="Total cost for one year:" data-test-id="one-year-cost-summary">
                     £@($"{Model.Order.TotalAnnualCost():N2}")
                 </nhs-summary-list-row>
-                
+
                 <nhs-summary-list-row label-text="@($"Total cost of contract{contractTerm}:")" data-test-id="total-cost-summary">
                     £@($"{Model.Order.TotalCost():N2}")
                     @if (!Model.Order.MaximumTerm.HasValue)
@@ -162,7 +162,7 @@
         }
 
         <br />
-        
+
         <vc:nhs-secondary-button text="Continue"
                                  type="Primary"
                                  url="@Url.Action(
