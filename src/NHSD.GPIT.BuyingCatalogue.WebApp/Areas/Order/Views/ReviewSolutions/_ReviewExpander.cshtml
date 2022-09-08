@@ -7,8 +7,8 @@
 @{
 	var totalCosts = Model.OrderItemPrice.CalculateTotalCostPerTier(Model.TotalQuantity);
     var totalCost = totalCosts.Sum(tc => tc.Cost);
-    var billingPeriod = Model.OrderItemPrice.BillingPeriod?.Description() ?? string.Empty;
-    var hasTieredPricing = Model.OrderItemPrice.CataloguePriceType == CataloguePriceType.Tiered;
+    var billingPeriod = Model.OrderItemPrice?.BillingPeriod?.Description() ?? string.Empty;
+    var hasTieredPricing = Model.OrderItemPrice?.CataloguePriceType is CataloguePriceType.Tiered;
     var hasServiceRecipientQuantities = Model.OrderItemPrice?.IsPerServiceRecipient() ?? false;
 }
 
