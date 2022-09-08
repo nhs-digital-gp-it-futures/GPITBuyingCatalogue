@@ -19,7 +19,18 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models
         {
             get
             {
-                return OrderItems.All(x => x.FundingType is OrderItemFundingType.LocalFunding or OrderItemFundingType.LocalFundingOnly)
+                var fundingTypes = OrderItems
+                    .Select(x => x.FundingType)
+                    .Where(x => x != OrderItemFundingType.NoFundingRequired
+                        && x != OrderItemFundingType.None)
+                    .ToList();
+
+                if (!fundingTypes.Any())
+                {
+                    return CentralFunding;
+                }
+
+                return fundingTypes.All(x => x is OrderItemFundingType.LocalFunding or OrderItemFundingType.LocalFundingOnly)
                     ? LocalFunding
                     : CentralFunding;
             }
