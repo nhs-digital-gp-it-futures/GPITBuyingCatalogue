@@ -69,7 +69,9 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Csv
                     InitialTerm = oir.OrderItem.Order.InitialPeriod,
                     MaximumTerm = oir.OrderItem.Order.MaximumTerm,
                 })
-                .OrderBy(o => o.ProductTypeId).ThenBy(o => o.ServiceRecipientName)
+                .OrderBy(o => o.ProductTypeId)
+                .ThenBy(o => o.ProductName)
+                .ThenBy(o => o.ServiceRecipientName)
                 .ToListAsync();
 
             for (int i = 0; i < items.Count; i++)
