@@ -21,12 +21,10 @@ namespace NHSD.GPIT.BuyingCatalogue.UI.Components.TagHelpers
         private const string DateInputClass = "nhsuk-date-input";
 
         private readonly IHtmlGenerator htmlGenerator;
-        private readonly IHtmlHelper htmlHelper;
 
-        public NhsDateInputTagHelper(IHtmlGenerator htmlGenerator, IHtmlHelper htmlHelper)
+        public NhsDateInputTagHelper(IHtmlGenerator htmlGenerator)
         {
             this.htmlGenerator = htmlGenerator;
-            this.htmlHelper = htmlHelper;
         }
 
         [HtmlAttributeNotBound]
@@ -50,19 +48,19 @@ namespace NHSD.GPIT.BuyingCatalogue.UI.Components.TagHelpers
             output.TagName = TagHelperConstants.Div;
             output.TagMode = TagMode.StartTagAndEndTag;
 
-            var day = BuildInputItem(Day, "Day", DateInputWidth2Class, false);
-            var month = BuildInputItem(Month, "Month", DateInputWidth2Class, false);
-            var year = BuildInputItem(Year, "Year", DateInputWidth4Class, true);
+            var day = BuildInputItem(Day, "Day", DateInputWidth2Class);
+            var month = BuildInputItem(Month, "Month", DateInputWidth2Class);
+            var year = BuildInputItem(Year, "Year", DateInputWidth4Class, removeRightMargin: true);
 
             var id = TagBuilder.CreateSanitizedId(TagHelperFunctions.GetModelKebabNameFromFor(For), "_");
 
             List<TagHelperAttribute> attributes = new List<TagHelperAttribute>
             {
-                new TagHelperAttribute(TagHelperConstants.Id, id),
-                new TagHelperAttribute(TagHelperConstants.Class, DateInputClass),
+                new(TagHelperConstants.Id, id),
+                new(TagHelperConstants.Class, DateInputClass),
             };
 
-            attributes.ForEach(a => output.Attributes.Add(a));
+            attributes.ForEach(output.Attributes.Add);
 
             output.Content
                 .AppendHtml(day)
@@ -70,21 +68,27 @@ namespace NHSD.GPIT.BuyingCatalogue.UI.Components.TagHelpers
                 .AppendHtml(year);
 
             TagHelperFunctions.TellParentTagIfThisTagIsInError(ViewContext, context, Day);
+            TagHelperFunctions.TellParentTagIfThisTagIsInError(ViewContext, context, Month);
+            TagHelperFunctions.TellParentTagIfThisTagIsInError(ViewContext, context, Year);
         }
 
         private static TagBuilder BuildDateInputContainerItem(bool removeRightMargin)
         {
-            var inputitem = new TagBuilder(TagHelperConstants.Div);
+            var inputItem = new TagBuilder(TagHelperConstants.Div);
 
-            inputitem.AddCssClass(DateInputItemClass);
+            inputItem.AddCssClass(DateInputItemClass);
 
             if (removeRightMargin)
-                inputitem.MergeAttribute("style", "margin-right:0");
+                inputItem.MergeAttribute("style", "margin-right:0");
 
-            return inputitem;
+            return inputItem;
         }
 
-        private TagBuilder BuildInputItem(ModelExpression modelExpression, string labelText, string selectedWidthClass, bool removeRightMargin)
+        private TagBuilder BuildInputItem(
+            ModelExpression modelExpression,
+            string labelText,
+            string selectedWidthClass,
+            bool removeRightMargin = false)
         {
             var item = BuildDateInputContainerItem(removeRightMargin);
             var label = BuildDateLabel(modelExpression, labelText);
@@ -122,7 +126,9 @@ namespace NHSD.GPIT.BuyingCatalogue.UI.Components.TagHelpers
                     inputmode = "numeric",
                 });
 
-            if (TagHelperFunctions.CheckIfModelStateHasErrors(ViewContext, Day))
+            if (TagHelperFunctions.CheckIfModelStateHasErrors(ViewContext, Day)
+                || TagHelperFunctions.CheckIfModelStateHasErrors(ViewContext, Month)
+                || TagHelperFunctions.CheckIfModelStateHasErrors(ViewContext, Year))
             {
                 builder.AddCssClass(TagHelperConstants.NhsValidationInputError);
             }
