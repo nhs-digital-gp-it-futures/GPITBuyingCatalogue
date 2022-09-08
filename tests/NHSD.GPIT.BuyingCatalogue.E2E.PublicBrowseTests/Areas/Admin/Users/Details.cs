@@ -198,10 +198,11 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.Users
             CommonActions.ElementIsDisplayed(UserObjects.OrdersErrorMessage).Should().BeTrue();
 
             var user = await GetUser(UserId);
+            var userRole = user.AspNetUserRoles.Select(r => r.Role).First().Name;
 
-            var organisationFunction = user.OrganisationFunction == OrganisationFunction.AuthorityName
+            var organisationFunction = userRole == OrganisationFunction.AuthorityName
                 ? "Admin"
-                : user.OrganisationFunction;
+                : userRole;
 
             var accountStatus = user.Disabled
                 ? ServiceContracts.Enums.AccountStatus.Inactive.ToString()
@@ -230,6 +231,8 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.Users
 
             return await context.AspNetUsers
                 .Include(x => x.PrimaryOrganisation)
+                .Include(u => u.AspNetUserRoles)
+                .ThenInclude(r => r.Role)
                 .SingleAsync(x => x.Id == userId);
         }
     }

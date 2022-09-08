@@ -4,6 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Users.Models;
+using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Identity;
 
 namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
 {
@@ -1369,7 +1370,12 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
 
         private static AspNetUser GetBuyerUser(BuyingCatalogueDbContext context, int organisationId)
         {
-            return context.Users.FirstOrDefault(u => u.OrganisationFunction == "Buyer" && u.PrimaryOrganisationId == organisationId);
+            var users = context.Users.Include(u => u.AspNetUserRoles).ThenInclude(r => r.Role).Where(u => u.PrimaryOrganisationId == organisationId);
+
+            var user = users.FirstOrDefault(
+                u => u.AspNetUserRoles.Any(r => r.Role.Name == OrganisationFunction.BuyerName));
+
+            return user;
         }
     }
 }

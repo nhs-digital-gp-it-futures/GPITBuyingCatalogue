@@ -1,5 +1,8 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Users.Models;
+using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Identity;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.Models
 {
@@ -9,7 +12,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Models
         {
         }
 
-        public TermsOfUseModel(AspNetUser user, DateTime termsOfUseRevisionDate)
+        public TermsOfUseModel(
+            AspNetUser user,
+            IEnumerable<string> userRoles,
+            DateTime termsOfUseRevisionDate)
         {
             if (user is null)
                 return;
@@ -19,7 +25,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Models
                 = AlreadyAcceptedLatestTerms
                 = user.HasAcceptedLatestTermsOfUse(termsOfUseRevisionDate);
 
-            IsBuyer = user.IsBuyer();
+            IsBuyer = userRoles.Any(
+                r => string.Equals(OrganisationFunction.Buyer.DisplayName, r, StringComparison.OrdinalIgnoreCase));
 
             HasOptedInUserResearch = user.HasOptedInUserResearch;
         }

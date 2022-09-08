@@ -32,7 +32,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Authorization
         public async Task Login_LoginSuccessful()
         {
             await using var context = GetUsersContext();
-            var userEmail = (await context.AspNetUsers.FirstAsync(s => s.OrganisationFunction == "Authority")).Email;
+            var userEmail = GetAdmin().Email;
 
             AuthorizationPages.LoginActions.Login(userEmail, DefaultPassword);
 
@@ -51,7 +51,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Authorization
         public async Task Login_UnsuccessfulLogin(string user, string password)
         {
             await using var context = GetUsersContext();
-            var userEmail = user == "user" ? (await context.AspNetUsers.FirstAsync(s => s.OrganisationFunction == "Authority")).Email : user;
+            var userEmail = user == "user" ? GetAdmin().Email : user;
             var userPassword = password == "password" ? DefaultPassword : password;
 
             AuthorizationPages.LoginActions.Login(userEmail, userPassword);

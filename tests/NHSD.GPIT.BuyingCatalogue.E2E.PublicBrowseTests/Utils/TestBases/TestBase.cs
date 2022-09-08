@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Database;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.Actions.Admin;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.Actions.Authorization;
@@ -15,6 +16,8 @@ using NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.UrlGenerators;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.MemoryCache;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.Session;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
+using NHSD.GPIT.BuyingCatalogue.EntityFramework.Users.Models;
+using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Identity;
 using OpenQA.Selenium;
 using OpenQA.Selenium.Support.UI;
 using Polly;
@@ -131,7 +134,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.TestBases
                 return;
 
             using var context = GetEndToEndDbContext();
-            var user = context.AspNetUsers.First(s => s.OrganisationFunction == "Authority").UserName;
+            var user = GetAdmin().UserName;
             AuthorizationPages.LoginActions.Login(user, DefaultPassword);
         }
 
@@ -140,8 +143,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.TestBases
             if (UserAlreadyLoggedIn() || !AuthorizationPages.LoginActions.EmailAddressInputDisplayed())
                 return;
 
-            using var context = GetEndToEndDbContext();
-            var user = context.AspNetUsers.First(s => s.OrganisationFunction == "Buyer").UserName;
+            var user = GetBuyer().UserName;
             AuthorizationPages.LoginActions.Login(user, DefaultPassword);
         }
 
@@ -153,21 +155,22 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.TestBases
             AuthorizationPages.LoginActions.Login(buyerEmail, DefaultPassword);
         }
 
-        internal async Task SetValuesToSession(Dictionary<string, object> sessionValues)
-        {
-            foreach (var (key, value) in sessionValues)
-            {
-                switch (value)
-                {
-                    case string:
-                        await Session.SetStringAsync(key, value.ToString());
-                        break;
+        internal AspNetUser GetBuyer()
+            => GetUserByRole(OrganisationFunction.BuyerName).First();
 
-                    default:
-                        await Session.SetObjectAsync(key, value);
-                        break;
-                }
-            }
+        internal AspNetUser GetAdmin()
+            => GetUserByRole(OrganisationFunction.AuthorityName).First();
+
+        internal IEnumerable<AspNetUser> GetUserByRole(string role)
+        {
+            using var context = GetEndToEndDbContext();
+
+            return context
+                .AspNetUsers
+                .Include(u => u.AspNetUserRoles)
+                .ThenInclude(r => r.Role)
+                .Where(u => u.AspNetUserRoles.Any(r => r.Role.Name == role))
+                .ToList();
         }
 
         internal void InitializeSessionHandler()
@@ -183,14 +186,6 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.TestBases
         {
             MemoryCache = new MemoryCacheHandler(
                 Factory.GetMemoryCache);
-        }
-
-        internal void InitializeServiceRecipientMemoryCacheHandler(string odsCode)
-        {
-            MemoryCache = new MemoryCacheHandler(
-                Factory.GetMemoryCache);
-
-            MemoryCache.InitializeServiceRecipients(odsCode);
         }
 
         internal Task DisposeSession()

@@ -8,7 +8,8 @@ namespace NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.AutoFixtureCustomisations
         public InMemoryDbAutoDataAttribute()
             : base(() => FixtureFactory.Create(
                 new BuyingCatalogueDbContextCustomization(),
-                new InMemoryDbCustomization(Guid.NewGuid().ToString())))
+                new InMemoryDbCustomization(Guid.NewGuid().ToString()),
+                new UserManagerCustomization()))
         {
         }
     }

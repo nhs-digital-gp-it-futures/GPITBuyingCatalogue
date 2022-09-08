@@ -146,8 +146,8 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.Organisations
 
         private async Task<AspNetUser> CreateUser(bool isEnabled = true)
         {
-            var user = GenerateUser.GenerateAspNetUser(OrganisationId, DefaultPassword, isEnabled);
             await using var context = GetEndToEndDbContext();
+            var user = GenerateUser.GenerateAspNetUser(context, OrganisationId, DefaultPassword, isEnabled);
             context.Add(user);
             await context.SaveChangesAsync();
             Driver.Navigate().Refresh();

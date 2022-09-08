@@ -8,6 +8,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.UserModels
     {
         public AspNetUser User { get; set; }
 
+        public string UserRole { get; set; }
+
         public List<EntityFramework.Ordering.Models.Order> Orders { get; set; }
 
         public AccountStatus AccountStatus => User.Disabled

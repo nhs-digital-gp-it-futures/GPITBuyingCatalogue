@@ -1,7 +1,9 @@
 ﻿using Bogus;
 using Microsoft.AspNetCore.Identity;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.Utils.TestModels;
+using NHSD.GPIT.BuyingCatalogue.EntityFramework;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Users.Models;
+using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Identity;
 
 namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.Utils.RandomData
 {
@@ -16,8 +18,10 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.Utils.RandomData
                 .Generate();
         }
 
-        public static AspNetUser GenerateAspNetUser(int organisationId, string password, bool isEnabled)
+        public static AspNetUser GenerateAspNetUser(BuyingCatalogueDbContext context, int organisationId, string password, bool isEnabled)
         {
+            var role = context.Roles.First(r => r.Name == OrganisationFunction.Buyer.DisplayName);
+
             var user = new Faker<AspNetUser>("en_GB")
                 .RuleFor(u => u.FirstName, f => f.Name.FirstName())
                 .RuleFor(u => u.LastName, f => f.Name.LastName())
@@ -28,13 +32,16 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.Utils.RandomData
                 .RuleFor(u => u.Disabled, _ => !isEnabled)
                 .RuleFor(u => u.EmailConfirmed, _ => true)
                 .RuleFor(u => u.CatalogueAgreementSigned, _ => true)
-                .RuleFor(u => u.OrganisationFunction, _ => "Buyer")
                 .RuleFor(u => u.PrimaryOrganisationId, _ => organisationId)
                 .RuleFor(u => u.SecurityStamp, f => f.Random.Guid().ToString())
                 .RuleFor(u => u.PhoneNumber, f => f.Phone.PhoneNumber())
                 .RuleFor(u => u.PhoneNumberConfirmed, _ => false)
                 .Generate();
             user.PasswordHash = new PasswordHasher<AspNetUser>().HashPassword(user, password);
+            user.AspNetUserRoles = new List<AspNetUserRole>
+            {
+                new() { Role = role },
+            };
 
             return user;
         }

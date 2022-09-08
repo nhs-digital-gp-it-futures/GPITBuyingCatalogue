@@ -11,6 +11,7 @@ using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Users.Models;
 using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
+using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Identity;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers;
 using Xunit;
 
@@ -219,7 +220,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering
                 => context.Organisations.First(o => o.InternalIdentifier == internalOrgId).Id;
 
             AspNetUser GetBuyerUser(BuyingCatalogueDbContext context, int organisationId)
-                => context.Users.FirstOrDefault(u => u.OrganisationFunction == "Buyer" && u.PrimaryOrganisationId == organisationId);
+                => GetUserByRole(OrganisationFunction.BuyerName).First(u => u.PrimaryOrganisationId == organisationId);
 
             using var context = GetEndToEndDbContext();
             var timeNow = DateTime.UtcNow;

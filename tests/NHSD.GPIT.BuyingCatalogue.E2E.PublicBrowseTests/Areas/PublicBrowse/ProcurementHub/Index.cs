@@ -52,7 +52,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.PublicBrowse.ProcurementHub
             {
                 var context = GetEndToEndDbContext();
 
-                var user = context.AspNetUsers.First(s => s.OrganisationFunction == "Buyer");
+                var user = GetBuyer();
                 var organisation = context.Organisations.First(x => x.Id == user.PrimaryOrganisationId);
 
                 NavigateToUrl(
