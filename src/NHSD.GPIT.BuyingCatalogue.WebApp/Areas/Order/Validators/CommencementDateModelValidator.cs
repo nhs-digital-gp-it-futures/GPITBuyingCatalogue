@@ -36,16 +36,14 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Validators
             RuleFor(x => x.Month)
                 .NotEmpty()
                 .Unless(x => string.IsNullOrWhiteSpace(x.Day))
-                .WithMessage(CommencementDateMonthMissingErrorMessage)
-                .OverridePropertyName(x => x.Day);
+                .WithMessage(CommencementDateMonthMissingErrorMessage);
 
             RuleFor(x => x.Year)
                 .NotEmpty()
                 .Unless(x => string.IsNullOrWhiteSpace(x.Month))
                 .WithMessage(CommencementDateYearMissingErrorMessage)
                 .Length(4)
-                .WithMessage(CommencementDateYearTooShortErrorMessage)
-                .OverridePropertyName(x => x.Day);
+                .WithMessage(CommencementDateYearTooShortErrorMessage);
 
             RuleFor(x => x)
                 .Must(x => x.CommencementDate != null)
