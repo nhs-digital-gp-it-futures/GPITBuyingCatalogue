@@ -160,7 +160,7 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
 
             OrderingPages.StepThreeCompleteContract();
 
-            //OrderingPages.StepFourReviewAndCompleteOrder();
+            // OrderingPages.StepFourReviewAndCompleteOrder();
         }
 
         [Fact]
@@ -224,7 +224,7 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
 
             OrderingPages.StepTwoAddSolutionsAndServices("Emis Web GP", additionalService: "Automated Arrivals", associatedService: "Automated Arrivals – Engineering Half Day");
 
-            OrderingPages.StepThreeCompleteContract();
+            OrderingPages.StepThreeCompleteContract(false);
 
             OrderingPages.StepFourReviewAndCompleteOrder();
         }

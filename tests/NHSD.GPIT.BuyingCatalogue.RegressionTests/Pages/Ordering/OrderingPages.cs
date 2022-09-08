@@ -195,10 +195,10 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering
             SelectFundingSources.AddFundingSources(solutionName, isAssociatedServiceOnlyOrder, associatedServices, additionalServices);
         }
 
-        public void StepThreeCompleteContract()
+        public void StepThreeCompleteContract(bool isDefault = true)
         {
             TaskList.ImplementationPlanMilestonesTask();
-            OrderingStepThree.SelectImplementationPlan();
+            OrderingStepThree.SelectImplementationPlan(isDefault);
 
             using var dbContext = Factory.DbContext;
             var orderID = Driver.Url.Split('/').Last().Split('-')[0].Replace("C0", string.Empty);
@@ -210,11 +210,11 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering
             if (isOrderWithAssociatedService)
             {
                 TaskList.AssociatedServiceBillingAndRequirementsTask();
-                OrderingStepThree.SelectAssociatedServicesBilling();
+                OrderingStepThree.SelectAssociatedServicesBilling(isDefault);
             }
 
             TaskList.DataProcessingInformationTask();
-            OrderingStepThree.SelectPersonalDataProcessingInformation();
+            OrderingStepThree.SelectPersonalDataProcessingInformation(isDefault);
         }
 
         public void StepFourReviewAndCompleteOrder()
