@@ -8,7 +8,7 @@
 @model NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models.SolutionsModel;
 @{
     Layout = "~/Views/Shared/Layouts/_AllBannersLayout.cshtml";
-    ViewBag.Title = "Find Buying Catalogue Solutions";
+    ViewBag.Title = Model.TitleText;
 }
 
 @section Breadcrumbs {
@@ -66,7 +66,7 @@
 <div class="nhsuk-grid-row">
     <div class="nhsuk-grid-column-full">
         <nhs-page-title title="@ViewBag.Title"
-                        advice="Search for Catalogue Solutions that match the needs of your organisation." />
+                        advice="@Model.AdviceText" />
 
         <vc:nhs-suggestion-search id="marketing-suggestion-search"
                                   ajax-url="@Url.Action(
@@ -87,8 +87,8 @@
         @if (Model.SearchCriteriaApplied)
         {
             <hr />
-
-            <h2 data-test-id="search-criteria-summary">@Model.PageOptions.TotalNumberOfItems Catalogue @GetSolutionsDescriptor(Model.PageOptions.TotalNumberOfItems) found with this search criteria</h2>
+            <h2 data-test-id="search-criteria-summary">@(SearchSummaryTitle(Model.PageOptions.TotalNumberOfItems))</h2>
+            <br/>
 
             @if (!string.IsNullOrWhiteSpace(Model.SearchSummary.SearchTerm)){
                 <h3 data-test-id="search-term-title">Search term:</h3>
@@ -97,7 +97,7 @@
 
             @if (Model.SearchSummary.CapabilitiesAndEpics.Count > 0)
             {
-                <h3 data-test-id="filter-summary-title">@(string.IsNullOrEmpty(Model.SearchSummary.SelectedEpicIds) ? "Selected Capabilities:" : "Selected Capabilities and Epics:")</h3>
+                <h3 data-test-id="filter-summary-title">@(FilterSummaryTitle(Model.SearchSummary.SelectedEpicIds))</h3>
                 var filterContext = GetSearchSummary();
                 <ul data-test-id="filter-summary-content">
                     @foreach (var item in filterContext)
@@ -194,4 +194,12 @@
     static string GetEpicDescriptor(int numberOfEpics) => numberOfEpics == 1 ? "Epic" : "Epics";
 
     static string GetSolutionsDescriptor(int numberOfSolutions) => numberOfSolutions == 1 ? "Solution" : "Solutions";
+
+    static string FilterSummaryTitle(string selectedEpicIds) =>
+        string.IsNullOrEmpty(selectedEpicIds)
+        ? "Selected Capabilities:"
+        : "Selected Capabilities and Epics:";
+
+    static string SearchSummaryTitle(int totalNumberOfItems) => 
+        $"{totalNumberOfItems} Catalogue {GetSolutionsDescriptor(totalNumberOfItems)} found with this search criteria";
 }

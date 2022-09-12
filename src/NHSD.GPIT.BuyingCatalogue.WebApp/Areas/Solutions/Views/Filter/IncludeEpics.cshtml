@@ -5,6 +5,7 @@
 
 @{
     Layout = "~/Views/Shared/Layouts/_AllBannersLayout.cshtml";
+    ViewBag.Title = "Filter in more detail";
 }
 
 @section Breadcrumbs {
@@ -42,7 +43,7 @@
     <div class="nhsuk-grid-column-full">
         <nhs-validation-summary RadioId="IncludeEpics"/>
 
-        <nhs-page-title title="Filter in more detail"
+        <nhs-page-title title="@ViewBag.Title"
                         advice="Select Epics to filter by or view results of Catalogue Solutions with the Capabilities you previously selected."/>
 
         <nhs-inset-text>

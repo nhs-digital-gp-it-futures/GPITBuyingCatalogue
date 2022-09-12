@@ -7,6 +7,7 @@
 
 @{
     Layout = "~/Views/Shared/Layouts/_AllBannersLayout.cshtml";
+    ViewBag.Title = "Filter by Capabilities for Catalogue Solutions";
     var index = 0;
 }
 
@@ -37,7 +38,7 @@
     <div class="nhsuk-grid-column-full">
         <nhs-validation-summary/>
 
-        <nhs-page-title title="Filter by Capabilities for Catalogue Solutions"
+        <nhs-page-title title="@ViewBag.Title"
                         advice="Capabilities describe business needs. Select the ones you want a Catalogue Solution to address."/>
 
         <h2>@Model.Total Capabilities available</h2>
