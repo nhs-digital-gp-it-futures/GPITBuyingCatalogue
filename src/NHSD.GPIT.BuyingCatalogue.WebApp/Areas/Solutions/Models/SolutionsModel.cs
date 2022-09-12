@@ -13,6 +13,14 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models
     [ExcludeFromCodeCoverage]
     public class SolutionsModel
     {
+        public const string TitleNoSearch = "Find Buying Catalogue Solutions";
+        public const string TitleSearchNoResults = "No Catalogue Solutions found";
+        public const string TitleSearchResults = "Catalogue Solutions found";
+
+        public const string AdviceTextNosearch = "Search for Catalogue Solutions that match the needs of your organisation.";
+        public const string AdviceTextSearchNoresults = "There are no Catalogue Solutions that meet your search criteria.";
+        public const string AdviceTextSearchResults = "These are the Catalogue Solutions that meet your search criteria.";
+
         public SolutionsModel()
         {
         }
@@ -35,5 +43,19 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models
         public bool SearchCriteriaApplied =>
             !string.IsNullOrWhiteSpace(SearchSummary?.SelectedCapabilityIds)
             || !string.IsNullOrWhiteSpace(SearchSummary?.SearchTerm);
+
+        public string TitleText =>
+            !SearchCriteriaApplied
+                ? TitleNoSearch
+                : CatalogueItems?.Count == 0
+                   ? TitleSearchNoResults
+                   : TitleSearchResults;
+
+        public string AdviceText =>
+            !SearchCriteriaApplied
+            ? AdviceTextNosearch
+            : CatalogueItems?.Count == 0
+                ? AdviceTextSearchNoresults
+                : AdviceTextSearchResults;
     }
 }
