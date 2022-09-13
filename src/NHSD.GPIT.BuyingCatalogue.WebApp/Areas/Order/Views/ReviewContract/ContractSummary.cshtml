@@ -1,11 +1,15 @@
 ﻿@using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models
 @model NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.Contracts.Review.ReviewContractModel
 
+@{
+    ViewBag.Title = "Contract overview";
+}
+
 <partial name="Partials/_BackLink" model="Model" />
 
 <div class="nhsuk-grid-row">
     <div class="nhsuk-grid-column-full">
-        <nhs-page-title title="Contract overview"
+        <nhs-page-title title="@ViewBag.Title"
                         caption="Order @Model.CallOffId"
                         advice="@Model.AdviceText"/>
         
@@ -136,14 +140,17 @@
                 <h3>Complete order</h3>
                 <p>If you're happy with your order, you can mark it complete. Once you've done this, you'll be unable to make changes. If you've not finished with your order, you can save for later.</p>
                 <form method="post">
-                    <nhs-submit-button text="Complete order" />
-                </form>
-                <vc:nhs-secondary-button text="Save for later"
-                            type="Secondary"
-                            url="@Url.Action(
+                    <nhs-button-group>
+                        <nhs-submit-button text="Complete order" />
+                        <vc:nhs-secondary-button text="Save for later"
+                                             type="Secondary"
+                                             url="@Url.Action(
                                     nameof(DashboardController.Organisation),
                                     typeof(DashboardController).ControllerName(),
-                                    new { Model.InternalOrgId })"/>
+                                    new { Model.InternalOrgId })" />
+                    </nhs-button-group>
+                </form>
+
             }
             else
             {

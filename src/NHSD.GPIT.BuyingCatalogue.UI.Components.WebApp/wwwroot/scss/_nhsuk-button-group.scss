@@ -1,0 +1,80 @@
+﻿.nhsuk-button {
+    width: 100%;
+}
+
+.nhsuk-button-group {
+    margin-bottom: 5px;
+    display: -ms-flexbox;
+    display: -webkit-box;
+    display: flex;
+    -ms-flex-direction: column;
+    -webkit-box-orient: vertical;
+    -webkit-box-direction: normal;
+    flex-direction: column;
+    -ms-flex-align: center;
+    -webkit-box-align: center;
+    align-items: center;
+
+    .nhsuk-link {
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
+        font-weight: 400;
+        font-size: 16px;
+        font-size: 1rem;
+        line-height: 1.1875;
+        display: inline-block;
+        max-width: 100%;
+        margin-top: 5px;
+        margin-bottom: 20px;
+        text-align: center;
+    }
+
+    .nhsuk-button {
+        margin-bottom: 17px;
+    }
+}
+
+@media(min-width: 40.0625em) {
+    .nhsuk-button-group {
+        margin-bottom: 15px;
+        margin-right: -15px;
+        -ms-flex-direction: row;
+        -webkit-box-orient: horizontal;
+        -webkit-box-direction: normal;
+        flex-direction: row;
+        -ms-flex-wrap: wrap;
+        flex-wrap: wrap;
+        -ms-flex-align: baseline;
+        -webkit-box-align: baseline;
+        align-items: baseline;
+
+        .nhsuk-link {
+            font-size: 19px;
+            font-size: 1.1875rem;
+            line-height: 1;
+            text-align: left;
+        }
+
+        .nhsuk-link,
+        .nhsuk-button {
+            margin-right: 15px;
+        }
+    }
+
+    .nhsuk-button {
+        width: auto;
+    }
+}
+
+@media print {
+    .nhsuk-button-group {
+        .govuk-link {
+            font-size: 14pt;
+            line-height: 19px;
+        }
+    }
+}
+
+
+
+

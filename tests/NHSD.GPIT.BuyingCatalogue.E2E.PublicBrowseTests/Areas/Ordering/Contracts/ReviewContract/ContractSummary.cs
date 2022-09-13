@@ -39,6 +39,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering.Contracts.ReviewCont
             CommonActions.ElementIsDisplayed(ReviewContractObjects.DataProcessingExpander).Should().BeTrue();
             CommonActions.ElementIsDisplayed(ReviewContractObjects.BespokeDataProcessing).Should().BeTrue();
             CommonActions.ElementIsDisplayed(ReviewContractObjects.DownloadPdfButton).Should().BeTrue();
+            CommonActions.ElementIsDisplayed(ReviewContractObjects.SaveForLaterButton).Should().BeTrue();
             CommonActions.SaveButtonDisplayed().Should().BeTrue();
         }
 
@@ -82,6 +83,16 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering.Contracts.ReviewCont
             CommonActions.PageLoadedCorrectGetIndex(
                 typeof(OrderController),
                 nameof(OrderController.Summary)).Should().BeTrue();
+        }
+
+        [Fact]
+        public void ContractSummary_ClickSaveForLaterButton_ExpectedResult()
+        {
+            CommonActions.ClickLinkElement(ReviewContractObjects.SaveForLaterButton);
+
+            CommonActions.PageLoadedCorrectGetIndex(
+                typeof(DashboardController),
+                nameof(DashboardController.Organisation)).Should().BeTrue();
         }
 
         [Fact]
