@@ -1,38 +1,196 @@
-﻿IF NOT EXISTS (SELECT * FROM ordering.ImplementationPlans WHERE IsDefault = 1)
+﻿DECLARE @Milestones TABLE(
+	Title NVARCHAR(1000) NOT NULL,
+	[Order] INT NOT NULL,
+	PaymentTrigger NVARCHAR(1000) NOT NULL
+);
+
+DECLARE @AcceptanceCriteria TABLE(
+	[Description] NVARCHAR(1000) NOT NULL,
+	[Order] INT NOT NULL
+);
+
+INSERT INTO @Milestones
+VALUES
+('Milestone 1: Delivery date (Go Live)', 1, 'No payment.'),
+('Milestone 2: Service Stability', 2, 'Charges commence on achievement of Milestone 1, but payments will not be made until Milestone 2 is achieved.');
+
+INSERT INTO @AcceptanceCriteria
+VALUES
+('The supplier evidences to your satisfaction that the implementation plan includes all deliverables and responsibilities of you, the Service Recipient and the supplier, with appropriate time allocated for these to be met.', 1),
+('The supplier evidences to your satisfaction that the Catalogue Solution has been configured to meet the Service Recipient’s operational requirements.', 1),
+('The supplier evidences to the Service Recipient’s satisfaction that they’ve met their obligations set out in the Training Standard.', 1),
+('Where the supplier is responsible for training, they evidence to the Service Recipient’s satisfaction that end users can use the Catalogue Solution to fulfil relevant business functions.', 1),
+('The supplier evidences to the Service Recipient’s satisfaction that the Catalogue Solution can connect to and access national and other interfaces applicable to it.', 1),
+('The supplier evidences to the Service Recipient’s satisfaction that any Associated Services ordered that are applicable to implementation have been effectively provided.', 1),
+('The supplier evidences to the Service Recipient’s satisfaction that the requirements of the Data Migration Standard and Catalogue Solution Migration Process applicable to the supplier for go live have been met and that the relevant data has migrated to enable the Service Recipient to conduct their relevant business functions effectively.', 1),
+('The supplier evidences to your and the Service Recipient’s satisfaction that they will meet their obligations set out in the Service Management Standard.', 1),
+('The supplier evidences to your satisfaction that they have appropriate invoicing arrangements in place.', 1),
+('Any commercial issues identified to date are visible to both you and the supplier and an agreement on how they are to be handled has been reached between both parties.', 1),
+('Your approval that all Milestone 1 activities have been successfully completed.', 1),
+('The Service Recipient confirms that the Catalogue Solution is functioning as specified by the supplier and end users can use it effectively.', 2),
+('The supplier evidences to your and the Service Recipient’s satisfaction that all of the requirements of the Data Migration Standard and Catalogue Solution Migration Process that are applicable have been met by the supplier, and that all the relevant data has migrated to the Catalogue Solution.', 2),
+('The supplier evidences to your and the Service Recipient’s satisfaction that they’re meeting their service management obligations set out in appendix 2 of the Service Management Standard. This must be reasonably demonstrated within 10 working days of achievement of Milestone 1.', 2),
+('In relation to Type 2 Catalogue Solutions (which do not need to comply with service levels specified by NHS Digital), the supplier evidences to your and the Service Recipient’s satisfaction that the Catalogue Solution is meeting the applicable service levels.', 2),
+('Any commercial issues identified to date are visible to both you and the supplier and an agreement on how they’re to be handled has been reached between both parties.', 2),
+('Your approval that all Milestone 1 and 2 activities have been successfully completed.', 2);
+
+IF EXISTS(
+	-----------------------------------------------------------------
+	-- Finds Current milesstones that have a different title, order,
+	-- PaymentTrigger, or have yet to be added
+	------------------------------------------------------------------
+		SELECT 1
+		FROM @Milestones M
+		LEFT JOIN ordering.ImplementationPlanMilestones IPM
+			ON M.[Order] = IPM.[Order]
+			AND M.Title = IPM.Title
+			AND M.PaymentTrigger = IPM.PaymentTrigger
+		LEFT JOIN(
+			SELECT TOP 1
+			*
+			FROM ordering.ImplementationPlans IP
+			WHERE
+				IP.IsDefault = 1
+			ORDER BY
+				IP.LastUpdated DESC
+		)AS IP
+			ON IP.Id = IPM.ImplementationPlanId
+		WHERE
+		IPM.Id IS NULL
+	UNION
+	------------------------------------------------------------
+	-- Finds if any milestones have been removed from current that
+	-- exist in live
+	------------------------------------------------------------
+		SELECT 1
+		FROM ordering.ImplementationPlanMilestones IPM
+		INNER JOIN(
+			SELECT TOP 1
+			*
+			FROM ordering.ImplementationPlans IP
+			WHERE
+				IP.IsDefault = 1
+			ORDER BY
+				IP.LastUpdated DESC
+		)AS IP
+			ON IP.Id = IPM.ImplementationPlanId
+		LEFT JOIN @Milestones M
+			ON M.[Order] = IPM.[Order]
+			AND M.Title = IPM.Title
+			AND M.PaymentTrigger = IPM.PaymentTrigger
+		WHERE
+			M.Title IS NULL
+	UNION
+	----------------------------------------------------------------------
+	-- Finds Current Acceptance Critera that has a different Description,
+	-- Has moved milestones or doesn't exist
+	----------------------------------------------------------------------
+		SELECT	1
+		FROM @AcceptanceCriteria AC
+		LEFT JOIN (
+			SELECT
+				IPAC.Id,
+				IPAC.[Description],
+				IPM.[Order]
+			FROM Ordering.ImplementationPlanAcceptanceCriteria IPAC
+			INNER JOIN Ordering.ImplementationPlanMilestones IPM
+				ON IPM.Id = IPAC.ImplementationPlanMilestoneId
+			INNER JOIN (
+				SELECT TOP 1
+				*
+				FROM ordering.ImplementationPlans IP
+				WHERE
+					IP.IsDefault = 1
+				ORDER BY
+					IP.LastUpdated DESC
+			) AS IP
+				ON IP.Id = IPM.ImplementationPlanId
+		) AS IPAC
+			ON IPAC.[Description] = AC.[Description]
+			AND IPAC.[Order] = AC.[Order]
+		WHERE IPAC.Id IS NULL
+	UNION
+	--------------------------------------------------------------------
+	-- Finds if any Acceptance Criteria have been removed from current
+	-- that exist in live
+	---------------------------------------------------------------------
+		SELECT 1
+		FROM ordering.ImplementationPlanAcceptanceCriteria IPAC
+		INNER JOIN Ordering.ImplementationPlanMilestones IPM
+			ON IPM.Id = IPAC.ImplementationPlanMilestoneId
+		INNER JOIN (
+			SELECT TOP 1
+			*
+			FROM ordering.ImplementationPlans IP
+			WHERE
+				IP.IsDefault = 1
+			ORDER BY
+				IP.LastUpdated DESC
+		) AS IP
+			ON IP.Id = IPM.ImplementationPlanId
+		LEFT JOIN @AcceptanceCriteria AC
+			ON IPAC.[Description] = AC.[Description]
+			AND IPM.[Order] = AC.[Order]
+		WHERE 
+			AC.[Description] IS NULL
+)
 BEGIN
+	BEGIN TRY
+		BEGIN TRAN
 
-declare @planId int = 0
-declare @milestoneId int = 0
+		DECLARE @PlanId TABLE(
+			Id INT NOT NULL
+		);
+		DECLARE	@MilestoneIds TABLE(
+				Id INT NOT NULL,
+				[Order] INT NOT NULL
+		);
 
-insert ordering.ImplementationPlans (IsDefault, LastUpdated) select 1, GETUTCDATE()
+		------------------------------------------------------------
+		-- Insert new Implementation Plan
+		------------------------------------------------------------
+		INSERT INTO 
+		Ordering.ImplementationPlans 
+			(IsDefault, LastUpdated)
+		OUTPUT INSERTED.Id 
+			INTO @PlanId
+		VALUES 
+			(1, GETUTCDATE());
 
-set @planId = @@IDENTITY
+		------------------------------------------------------------
+		-- Insert new Milestones
+		------------------------------------------------------------
+		INSERT INTO
+		Ordering.ImplementationPlanMilestones
+		(ImplementationPlanId, [Order], Title, PaymentTrigger, LastUpdated)
+		OUTPUT INSERTED.Id, INSERTED.[Order]
+			INTO @MilestoneIds (Id, [Order])
+		SELECT
+			PID.Id,
+			M.[Order],
+			M.Title,
+			M.PaymentTrigger,
+			GETUTCDATE()
+		FROM @Milestones M, @PlanId PID;
 
-insert ordering.ImplementationPlanMilestones (ImplementationPlanId, [Order], Title, PaymentTrigger, LastUpdated) select @planId, 1, 'Milestone 1 (Go Live)', 'No payment.', GETUTCDATE()
+		------------------------------------------------------------
+		-- Insert new Acceptance Criteria
+		------------------------------------------------------------
 
-set @milestoneId = @@IDENTITY
+		INSERT INTO
+		Ordering.ImplementationPlanAcceptanceCriteria
+		(ImplementationPlanMilestoneId, [Description])
+		SELECT
+			MI.Id,
+			AC.[Description]		
+		FROM @AcceptanceCriteria AC
+		INNER JOIN @MilestoneIds MI
+			ON MI.[Order] = AC.[Order];
 
-insert ordering.ImplementationPlanAcceptanceCriteria (ImplementationPlanMilestoneId, [Description]) select @milestoneId, 'The supplier evidences to your satisfaction that the implementation plan includes all deliverables and responsibilities of you, the Service Recipient and the supplier, with appropriate time allocated for these to be met.'
-insert ordering.ImplementationPlanAcceptanceCriteria (ImplementationPlanMilestoneId, [Description]) select @milestoneId, 'The supplier evidences to your satisfaction that the Catalogue Solution has been configured to meet the Service Recipient’s operational requirements.'
-insert ordering.ImplementationPlanAcceptanceCriteria (ImplementationPlanMilestoneId, [Description]) select @milestoneId, 'The supplier evidences to the Service Recipient’s satisfaction that they’ve met their obligations set out in the Training Standard.'
-insert ordering.ImplementationPlanAcceptanceCriteria (ImplementationPlanMilestoneId, [Description]) select @milestoneId, 'Where the supplier is responsible for training, they evidence to the Service Recipient’s satisfaction that end users can use the Catalogue Solution to fulfil relevant business functions.'
-insert ordering.ImplementationPlanAcceptanceCriteria (ImplementationPlanMilestoneId, [Description]) select @milestoneId, 'The supplier evidences to the Service Recipient’s satisfaction that the Catalogue Solution can connect to and access national and other interfaces applicable to it.'
-insert ordering.ImplementationPlanAcceptanceCriteria (ImplementationPlanMilestoneId, [Description]) select @milestoneId, 'The supplier evidences to the Service Recipient’s satisfaction that any Associated Services ordered that are applicable to implementation have been effectively provided.'
-insert ordering.ImplementationPlanAcceptanceCriteria (ImplementationPlanMilestoneId, [Description]) select @milestoneId, 'The supplier evidences to the Service Recipient’s satisfaction that the requirements of the Data Migration Standard and Catalogue Solution Migration Process applicable to the supplier for go live have been met and that the relevant data has migrated to enable the Service Recipient to conduct their relevant business functions effectively.'
-insert ordering.ImplementationPlanAcceptanceCriteria (ImplementationPlanMilestoneId, [Description]) select @milestoneId, 'The supplier evidences to your and the Service Recipient’s satisfaction that they will meet their obligations set out in the Service Management Standard.'
-insert ordering.ImplementationPlanAcceptanceCriteria (ImplementationPlanMilestoneId, [Description]) select @milestoneId, 'The supplier evidences to your satisfaction that they have appropriate invoicing arrangements in place.'
-insert ordering.ImplementationPlanAcceptanceCriteria (ImplementationPlanMilestoneId, [Description]) select @milestoneId, 'Any commercial issues identified to date are visible to both you and the supplier and an agreement on how they are to be handled has been reached between both parties.'
-insert ordering.ImplementationPlanAcceptanceCriteria (ImplementationPlanMilestoneId, [Description]) select @milestoneId, 'Your approval that all Milestone 1 activities have been successfully completed.'
-
-insert ordering.ImplementationPlanMilestones (ImplementationPlanId, [Order], Title, PaymentTrigger, LastUpdated) select @planId, 2, 'Milestone 2 (Service Stability)', 'Charges commence on achievement of Milestone 1, but payments will not be made until Milestone 2 is achieved.', GETUTCDATE()
-
-set @milestoneId = @@IDENTITY
-
-insert ordering.ImplementationPlanAcceptanceCriteria (ImplementationPlanMilestoneId, [Description]) select @milestoneId, 'The Service Recipient confirms that the Catalogue Solution is functioning as specified by the supplier and end users can use it effectively.'
-insert ordering.ImplementationPlanAcceptanceCriteria (ImplementationPlanMilestoneId, [Description]) select @milestoneId, 'The supplier evidences to your and the Service Recipient’s satisfaction that all of the requirements of the Data Migration Standard and Catalogue Solution Migration Process that are applicable have been met by the supplier, and that all the relevant data has migrated to the Catalogue Solution.'
-insert ordering.ImplementationPlanAcceptanceCriteria (ImplementationPlanMilestoneId, [Description]) select @milestoneId, 'The supplier evidences to your and the Service Recipient’s satisfaction that they’re meeting their service management obligations set out in appendix 2 of the Service Management Standard. This must be reasonably demonstrated within 10 working days of achievement of Milestone 1.'
-insert ordering.ImplementationPlanAcceptanceCriteria (ImplementationPlanMilestoneId, [Description]) select @milestoneId, 'In relation to Type 2 Catalogue Solutions (which do not need to comply with service levels specified by NHS Digital), the supplier evidences to your and the Service Recipient’s satisfaction that the Catalogue Solution is meeting the applicable service levels.'
-insert ordering.ImplementationPlanAcceptanceCriteria (ImplementationPlanMilestoneId, [Description]) select @milestoneId, 'Any commercial issues identified to date are visible to both you and the supplier and an agreement on how they’re to be handled has been reached between both parties.'
-insert ordering.ImplementationPlanAcceptanceCriteria (ImplementationPlanMilestoneId, [Description]) select @milestoneId, 'Your approval that all Milestone 1 and 2 activities have been successfully completed.'
-
+		COMMIT TRAN;
+	END TRY
+	BEGIN CATCH
+		ROLLBACK;
+		THROW;
+	END CATCH
 END
