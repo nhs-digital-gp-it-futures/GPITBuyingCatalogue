@@ -1,62 +1,46 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Linq;
 using System.Threading.Tasks;
-using LinqKit;
+using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
-using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
+using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Models;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Models.FilterModels;
+using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Models.SolutionsFilterModels;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions;
+using NHSD.GPIT.BuyingCatalogue.Services.ServiceHelpers;
 
 namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
 {
     public sealed class SolutionsFilterService : ISolutionsFilterService
     {
-        private const string FoundationCapabilitiesName = "Foundation";
-        private const string FoundationCapabilitiesKey = "FC";
-        private const string AllSolutionsFrameworkKey = "All";
-        private const char CapabilitiesDelimiter = '|';
-        private const char CapabilitiesStartingCharacter = 'C';
-        private const char EpicStartingCharacter = 'E';
-        private const char SupplierNewFormatCharacter = 'N';
-        private const char SupplierStartingCharacter = 'S';
-        private const char SupplierMarkCharacter = 'X';
-        private const char DfocvcMarkCharacter = 'D';
+        private const string ColumnName = "Id";
+        private const string CapabilityParamName = "@CapabilityIds";
+        private const string CapabilityParamType = "catalogue.CapabilityIds";
+        private const string EpicParamName = "@EpicIds";
+        private const string EpicParamType = "catalogue.EpicIds";
+        private const string FilterProcName = "catalogue.FilterCatalogueItems";
 
         private readonly BuyingCatalogueDbContext dbContext;
 
         public SolutionsFilterService(BuyingCatalogueDbContext dbContext) =>
             this.dbContext = dbContext ?? throw new ArgumentNullException(nameof(dbContext));
 
-        public async Task<PagedList<CatalogueItem>> GetAllSolutionsFiltered(
+        public async Task<(IList<CatalogueItem> CatalogueItems, PageOptions Options, List<CapabilitiesAndCountModel> CapabilitiesAndCount)> GetAllSolutionsFiltered(
             PageOptions options,
-            string frameworkId = null,
-            string selectedCapabilities = null,
+            string selectedCapabilityIds = null,
+            string selectedEpicIds = null,
             string search = null)
         {
             options ??= new PageOptions();
 
-            var query = dbContext.CatalogueItems.AsNoTracking()
-                .Include(i => i.Solution)
-                .Include(i => i.Supplier)
-                .Include(i => i.CatalogueItemCapabilities).ThenInclude(cic => cic.Capability)
-                .Where(i =>
-                i.CatalogueItemType == CatalogueItemType.Solution
-                && (i.PublishedStatus == PublicationStatus.Published || i.PublishedStatus == PublicationStatus.InRemediation)
-                && i.Supplier.IsActive);
-
-            if (!string.IsNullOrWhiteSpace(frameworkId) && frameworkId != AllSolutionsFrameworkKey)
-                query = query.Where(ci => ci.Solution.FrameworkSolutions.Any(fs => fs.FrameworkId == frameworkId));
-
-            if (!string.IsNullOrWhiteSpace(selectedCapabilities))
-            {
-                var capabilitiesPredicate = BuildCapabilitiesPredicate(dbContext, selectedCapabilities);
-
-                query = query.AsExpandableEFCore().Where(capabilitiesPredicate);
-            }
+            var (query, count) = string.IsNullOrWhiteSpace(selectedCapabilityIds)
+                ? NonFilteredQuery(dbContext)
+                : await FilteredQuery(dbContext, selectedCapabilityIds, selectedEpicIds);
 
             if (!string.IsNullOrWhiteSpace(search))
                 query = query.Where(ci => ci.Supplier.Name.Contains(search) || ci.Name.Contains(search));
@@ -65,8 +49,12 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
 
             query = options.Sort switch
             {
-                PageOptions.SortOptions.LastPublished => query.OrderByDescending(ci => ci.LastPublished),
-                _ => query.OrderBy(ci => ci.Name),
+                PageOptions.SortOptions.LastPublished => query.OrderByDescending(ci => ci.LastPublished)
+                                                                .ThenBy(ci => ci.Name),
+                PageOptions.SortOptions.ZToA => query.OrderByDescending(ci => ci.Name),
+                PageOptions.SortOptions.Framework => query.OrderBy(ci => ci.Solution.FrameworkSolutions.OrderBy(fs => fs.Framework.Name).First().Framework.Name)
+                                                            .ThenBy(ci => ci.Name),
+                PageOptions.SortOptions.AtoZ or _ => query.OrderBy(ci => ci.Name),
             };
 
             if (options.PageNumber != 0)
@@ -76,145 +64,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
 
             var results = await query.ToListAsync();
 
-            return new PagedList<CatalogueItem>(results, options);
-        }
-
-        public async Task<List<KeyValuePair<EntityFramework.Catalogue.Models.Framework, int>>> GetAllFrameworksAndCountForFilter()
-        {
-            var allSolutionsCount = await dbContext.CatalogueItems.AsNoTracking()
-                .CountAsync(ci => ci.PublishedStatus == PublicationStatus.Published && ci.CatalogueItemType == CatalogueItemType.Solution);
-
-            var frameworks = await dbContext.FrameworkSolutions.AsNoTracking()
-                .Where(fs => fs.Solution.CatalogueItem.PublishedStatus == PublicationStatus.Published)
-                .Select(fs => fs.Framework)
-                .ToListAsync();
-
-            var results = frameworks
-                .GroupBy(fw => fw.Id)
-                .Select(group => new KeyValuePair<EntityFramework.Catalogue.Models.Framework, int>(group.First(), group.Count()))
-                .OrderBy(g => g.Key.ShortName)
-                .ToList();
-
-            var allSolutionsFramework = new EntityFramework.Catalogue.Models.Framework
-            {
-                Id = AllSolutionsFrameworkKey,
-                ShortName = AllSolutionsFrameworkKey,
-            };
-
-            results.Insert(0, new KeyValuePair<EntityFramework.Catalogue.Models.Framework, int>(allSolutionsFramework, allSolutionsCount));
-
-            return results;
-        }
-
-        public async Task<CategoryFilterModel> GetAllCategoriesAndCountForFilter(string frameworkId = null)
-        {
-            var query = dbContext.CatalogueItems.AsNoTracking()
-                .Include(ci => ci.CatalogueItemCapabilities)
-                .ThenInclude(cic => cic.Capability)
-                .ThenInclude(c => c.Category)
-                .Include(ci => ci.CatalogueItemEpics)
-                .ThenInclude(cie => cie.Epic)
-                .Where(ci =>
-                ci.PublishedStatus == PublicationStatus.Published
-                && ci.CatalogueItemType == CatalogueItemType.Solution
-                && ci.Supplier.IsActive);
-
-            if (!string.IsNullOrWhiteSpace(frameworkId) && frameworkId != AllSolutionsFrameworkKey)
-                query = query.Where(ci => ci.Solution.FrameworkSolutions.Any(fs => fs.FrameworkId == frameworkId));
-
-            var results = await query.ToListAsync();
-
-            var categories = results.SelectMany(ci => ci.CatalogueItemCapabilities)
-                .Select(cic => cic.Capability.Category)
-                .DistinctBy(c => c.Id)
-                .Select(c => new CapabilityCategoryFilter
-                {
-                    Name = c.Name,
-                    Description = c.Description,
-                    CategoryId = c.Id,
-                }).ToList();
-
-            var capabilities = results.SelectMany(ci => ci.CatalogueItemCapabilities)
-                .Select(cic => cic.Capability)
-                .DistinctBy(c => c.Id)
-                .ToList();
-
-            var foundationCapabilities = await dbContext.FrameworkCapabilities.AsNoTracking()
-                .Include(fc => fc.Capability)
-                .Where(fc => fc.IsFoundation)
-                .OrderBy(fc => fc.Capability.Name)
-                .ToListAsync();
-
-            bool MeetsAllFoundationCapabilities(CatalogueItem item) => foundationCapabilities
-                .All(fc => item.CatalogueItemCapabilities.Any(cic => cic.CapabilityId == fc.CapabilityId));
-
-            var countOfCatalogueItemsWithAllFoundationCapabilities = results.Count(MeetsAllFoundationCapabilities);
-
-            var foundationCapabilitiesFilter = foundationCapabilities
-                .Select(c => new CapabilitiesFilter
-                {
-                    CapabilityId = c.CapabilityId,
-                    Name = c.Capability.Name,
-                    CapabilityRef = c.Capability.CapabilityRef,
-                })
-                .ToList();
-
-            var epics = results.SelectMany(ci => ci.CatalogueItemEpics)
-                .Select(cie => cie.Epic)
-                .Where(e => e.CompliancyLevel == CompliancyLevel.May)
-                .DistinctBy(e => e.Id)
-                .ToList();
-
-            // for each category, add to its list of capabilities the capabilities that reference that category, and count how many
-            // catalogue items reference that capability
-            categories.ForEach(c => c.Capabilities.AddRange(
-                capabilities.Where(cap => cap.CategoryId == c.CategoryId)
-                    .Select(cap => new CapabilitiesFilter
-                    {
-                        CapabilityId = cap.Id,
-                        Name = cap.Name,
-                        CapabilityRef = cap.CapabilityRef,
-                        Count = results.Count(ci => ci.CatalogueItemCapabilities.Any(cic => cic.CapabilityId == cap.Id)),
-                    })));
-
-            // for each category, then each capability in that category, add to its list of epics the epics that reference that capability, and count how many
-            // catalogue items reference that epic
-            categories.ForEach(
-                c => c.Capabilities.ForEach(
-                    cap =>
-                    {
-                        var capabilityEpics = epics.Where(e => e.CapabilityId == cap.CapabilityId);
-                        var nhsDefinedEpics = capabilityEpics.Where(e => e.SupplierDefined is false);
-                        var supplierDefinedEpics = capabilityEpics.Where(e => e.SupplierDefined is true);
-                        cap.NhsDefinedEpics.AddRange(nhsDefinedEpics.Select(e => new EpicsFilter
-                        {
-                            Id = e.Id,
-                            Name = e.Name,
-                            Count = results.Where(ci => ci.CatalogueItemCapabilities.Any(cic => cic.CapabilityId == e.CapabilityId))
-                                            .Count(ci => ci.CatalogueItemEpics.Any(cie => cie.EpicId == e.Id)),
-                        })
-                            .OrderByDescending(e => e.Count)
-                            .ThenBy(e => e.Name));
-
-                        cap.SupplierDefinedEpics.AddRange(supplierDefinedEpics.Select(e => new EpicsFilter
-                        {
-                            Id = e.Id,
-                            Name = e.Name,
-                            Count = results.Where(ci => ci.CatalogueItemCapabilities.Any(cic => cic.CapabilityId == e.CapabilityId))
-                                            .Count(ci => ci.CatalogueItemEpics.Any(cie => cie.EpicId == e.Id)),
-                        })
-                            .OrderByDescending(e => e.Count)
-                            .ThenBy(e => e.Name));
-                    }));
-
-            var response = new CategoryFilterModel
-            {
-                CategoryFilters = categories,
-                FoundationCapabilities = foundationCapabilitiesFilter,
-                CountOfCatalogueItemsWithFoundationCapabilities = countOfCatalogueItemsWithAllFoundationCapabilities,
-            };
-
-            return response;
+            return (results, options, count);
         }
 
         public async Task<List<SearchFilterModel>> GetSolutionsBySearchTerm(string searchTerm, int maxToBringBack = 15)
@@ -246,136 +96,118 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
                 .ToListAsync();
         }
 
-        public async Task<Dictionary<string, int>> GetCapabilityNamesWithEpics(string capabilities)
-        {
-            if (string.IsNullOrWhiteSpace(capabilities))
-                return new Dictionary<string, int>();
-
-            var capabilityAndEpicIds = DecodeCapabilitiesFilter(capabilities);
-            var capabilityRefIds = capabilityAndEpicIds.Select(c => c.Key).ToArray();
-
-            var capabilitiesWithEpicsCount = await dbContext
-                .Capabilities
+        private static (IQueryable<CatalogueItem> Query, List<CapabilitiesAndCountModel> Count) NonFilteredQuery(BuyingCatalogueDbContext dbContext) =>
+            (dbContext.CatalogueItems
                 .AsNoTracking()
-                .Where(o => capabilityRefIds.Contains(o.CapabilityRef))
-                .ToDictionaryAsync(
-                    o => o.Name,
-                    o => capabilityAndEpicIds[o.CapabilityRef].Count);
+                .AsSplitQuery()
+                .Include(i => i.Solution)
+                    .ThenInclude(s => s.FrameworkSolutions)
+                    .ThenInclude(s => s.Framework)
+                .Include(i => i.Supplier)
+                .Include(i => i.CatalogueItemCapabilities)
+                    .ThenInclude(cic => cic.Capability)
+                .Where(i =>
+                i.CatalogueItemType == CatalogueItemType.Solution
+                && (i.PublishedStatus == PublicationStatus.Published || i.PublishedStatus == PublicationStatus.InRemediation)
+                && i.Supplier.IsActive), new List<CapabilitiesAndCountModel>());
 
-            if (capabilityAndEpicIds.ContainsKey(FoundationCapabilitiesKey))
-                capabilitiesWithEpicsCount.Add(FoundationCapabilitiesName, 0);
-
-            return capabilitiesWithEpicsCount;
-        }
-
-        public async Task<string> GetFrameworkName(string frameworkId)
+        private static async Task<(IQueryable<CatalogueItem> Query, List<CapabilitiesAndCountModel> Count)> FilteredQuery(
+            BuyingCatalogueDbContext dbContext,
+            string selectedCapabilityIds,
+            string selectedEpicIds)
         {
-            if (string.IsNullOrWhiteSpace(frameworkId))
-                return frameworkId;
+            var capabilityIds = SolutionsFilterHelper.ParseCapabilityIds(selectedCapabilityIds);
 
-            if (string.Equals(frameworkId, AllSolutionsFrameworkKey, StringComparison.OrdinalIgnoreCase))
-                return AllSolutionsFrameworkKey;
+            var epicIds = SolutionsFilterHelper.ParseEpicIds(selectedEpicIds);
 
-            var framework = await dbContext.Frameworks.AsNoTracking()
-                .FirstOrDefaultAsync(fs => fs.Id == frameworkId);
+            var capabilityParam = CreateIdListParameter(capabilityIds, CapabilityParamName, CapabilityParamType);
+            var epicParam = CreateIdListParameter(epicIds, EpicParamName, EpicParamType);
 
-            return framework?.ShortName;
-        }
+            // old school ADO.NET baby
+            using var cmd = dbContext.Database.GetDbConnection().CreateCommand();
 
-        /// <summary>
-        /// loop through the capabilities and epics and generates an EF where clause from the list.
-        /// </summary>
-        /// <param name="dbContext">the dbContext.</param>
-        /// <param name="selectedCapabilities">the pipe-delimited string of selected capabilities and epics.</param>
-        /// <returns>an Expression Starter Containing the Where Clause for the EF Query.</returns>
-        private static ExpressionStarter<CatalogueItem> BuildCapabilitiesPredicate(BuyingCatalogueDbContext dbContext, string selectedCapabilities)
-        {
-            var capabilities = DecodeCapabilitiesFilter(selectedCapabilities);
+            cmd.CommandText = FilterProcName;
+            cmd.CommandType = CommandType.StoredProcedure;
+            cmd.Parameters.Add(capabilityParam);
+            cmd.Parameters.Add(epicParam);
 
-            var predicateBuilder = PredicateBuilder.New<CatalogueItem>();
+            var wasOpen = cmd.Connection.State == ConnectionState.Open;
 
-            var foundationSolutionsCount = dbContext.FrameworkCapabilities.Count(fc => fc.IsFoundation);
+            var selectedSolutions = new List<CatalogueItemId>();
 
-            foreach ((var capabilityId, List<string> epicIds) in capabilities)
+            var capabilitiesAndCount = new List<CapabilitiesAndCountModel>();
+
+            try
             {
-                var capabilityPredicateBuilder = PredicateBuilder.New<CatalogueItem>();
+                if (!wasOpen)
+                    await cmd.Connection.OpenAsync();
 
-                capabilityPredicateBuilder = capabilityId == FoundationCapabilitiesKey
-                    ? capabilityPredicateBuilder.Or(
-                        ci => ci.CatalogueItemCapabilities.Count(
-                            cic => cic.Capability.FrameworkCapabilities.Any(fc => fc.IsFoundation)) == foundationSolutionsCount)
-                    : capabilityPredicateBuilder.Or(ci => ci.CatalogueItemCapabilities.Any(cic => cic.Capability.CapabilityRef == capabilityId));
+                using var reader = await cmd.ExecuteReaderAsync();
 
-                if (epicIds.Any())
+                // gets the list of CatalogueItemIds that meet the filter criteria
+                if (reader.HasRows)
                 {
-                    var epicPredicateBuilder = BuildEpicsPredicate(epicIds);
-
-                    capabilityPredicateBuilder = capabilityPredicateBuilder.Extend(epicPredicateBuilder, PredicateOperator.And);
+                    while (await reader.ReadAsync())
+                        selectedSolutions.Add(CatalogueItemId.ParseExact(reader.GetString(0)));
                 }
 
-                predicateBuilder = predicateBuilder.Extend(capabilityPredicateBuilder);
-            }
-
-            return predicateBuilder;
-        }
-
-        private static ExpressionStarter<CatalogueItem> BuildEpicsPredicate(IEnumerable<string> selectedEpics)
-        {
-            var epicPredicateBuilder = PredicateBuilder.New<CatalogueItem>();
-
-            return selectedEpics.Aggregate(epicPredicateBuilder, (current, epic) => current.And(ci => ci.CatalogueItemEpics.Any(cie => cie.EpicId == epic)));
-        }
-
-        private static Dictionary<string, List<string>> DecodeCapabilitiesFilter(string capabilities)
-        {
-            var output = new Dictionary<string, List<string>>();
-
-            var splitCapabilities = capabilities.Split(CapabilitiesDelimiter);
-
-            foreach (var capability in splitCapabilities)
-            {
-                if (capability == FoundationCapabilitiesKey || (!capability.ContainsIgnoreCase(SupplierStartingCharacter) && !capability.ContainsIgnoreCase(EpicStartingCharacter)))
+                // gets a list of the selected capabilities and the number of epics under them
+                if (await reader.NextResultAsync())
                 {
-                    output.Add(capability, new List<string>());
-                }
-                else
-                {
-                    var epics = capability
-                        .Split(SupplierStartingCharacter)
-                        .SelectMany(s => s.Split(EpicStartingCharacter))
-                        .ToList();
-
-                    var list = epics
-                    .Where(s => !s.StartsWith(CapabilitiesStartingCharacter))
-                    .Select(s =>
+                    if (reader.HasRows)
                     {
-                        if (s.ContainsIgnoreCase(DfocvcMarkCharacter))
-                            return DecodeDfocvcEpic(s);
-
-                        if (s.ContainsIgnoreCase(SupplierNewFormatCharacter))
-                            return DecodeNewSupplierDefinedEpic(s);
-
-                        return s.ContainsIgnoreCase(SupplierMarkCharacter)
-                            ? DecodeOldSupplierDefinedEpic(s)
-                            : DecodeNormalEpic(epics[0], s);
-                    })
-                    .ToList();
-
-                    output.Add(epics[0], list);
+                        while (await reader.ReadAsync())
+                            capabilitiesAndCount.Add(new(reader.GetInt32(0), reader.GetString(1), reader.GetInt32(2)));
+                    }
                 }
             }
+            finally
+            {
+                if (!wasOpen)
+                    await cmd.Connection.CloseAsync();
+            }
 
-            return output;
+            return (dbContext.CatalogueItems
+                .AsNoTracking()
+                .AsSplitQuery()
+                .Include(i => i.Supplier)
+                .Include(i => i.Solution)
+                    .ThenInclude(s => s.AdditionalServices
+                        .Where(adit => selectedSolutions.Contains(adit.CatalogueItemId)))
+                    .ThenInclude(adit => adit.CatalogueItem)
+                    .ThenInclude(ci => ci.CatalogueItemCapabilities)
+                    .ThenInclude(cic => cic.Capability)
+                .Include(i => i.Solution)
+                    .ThenInclude(s => s.FrameworkSolutions)
+                    .ThenInclude(fs => fs.Framework)
+                .Include(i => i.CatalogueItemCapabilities)
+                    .ThenInclude(cic => cic.Capability)
+                .Where(i =>
+                    i.CatalogueItemType == CatalogueItemType.Solution
+                    && selectedSolutions.Contains(i.Id)),
+                capabilitiesAndCount);
         }
 
-        private static string DecodeNormalEpic(string capabilityId, string encodedEpic) => $"{capabilityId}E{encodedEpic}";
+        private static SqlParameter CreateIdListParameter<T>(ICollection<T> ids, string paramName, string type)
+        {
+            var table = new DataTable();
 
-        private static string DecodeDfocvcEpic(string encodedEpic) => $"E000{encodedEpic[..2]}";
+            table.Columns.Add(ColumnName);
 
-        private static string DecodeOldSupplierDefinedEpic(string encodedEpic) => ("S0" + encodedEpic)
-            .Replace("_", "E0", StringComparison.Ordinal).Replace("X", "X0", StringComparison.OrdinalIgnoreCase);
+            foreach (var id in ids)
+            {
+                var row = table.NewRow();
 
-        private static string DecodeNewSupplierDefinedEpic(string encodedEpic)
-            => $"S{encodedEpic.Replace("N", string.Empty, StringComparison.OrdinalIgnoreCase).PadLeft(5, '0')}";
+                row[ColumnName] = id;
+
+                table.Rows.Add(row);
+            }
+
+            return new SqlParameter(paramName, SqlDbType.Structured)
+            {
+                Value = table,
+                TypeName = type,
+            };
+        }
     }
 }

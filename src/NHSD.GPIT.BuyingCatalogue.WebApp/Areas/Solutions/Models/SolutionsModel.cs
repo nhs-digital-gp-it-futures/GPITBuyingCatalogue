@@ -1,49 +1,61 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
+using NHSD.GPIT.BuyingCatalogue.EntityFramework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Models;
-using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Models.FilterModels;
+using static NHSD.GPIT.BuyingCatalogue.ServiceContracts.Models.PageOptions;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models
 {
     [ExcludeFromCodeCoverage]
     public class SolutionsModel
     {
+        public const string TitleNoSearch = "Find Buying Catalogue Solutions";
+        public const string TitleSearchNoResults = "No Catalogue Solutions found";
+        public const string TitleSearchResults = "Catalogue Solutions found";
+
+        public const string AdviceTextNosearch = "Search for Catalogue Solutions that match the needs of your organisation.";
+        public const string AdviceTextSearchNoresults = "There are no Catalogue Solutions that meet your search criteria.";
+        public const string AdviceTextSearchResults = "These are the Catalogue Solutions that meet your search criteria.";
+
         public SolutionsModel()
         {
         }
 
-        public SolutionsModel(List<KeyValuePair<EntityFramework.Catalogue.Models.Framework, int>> frameworks)
-        {
-            FrameworkFilters = frameworks
-               .Select(f =>
-               new FrameworkFilter
-               {
-                   FrameworkId = f.Key.Id,
-                   FrameworkFullName = $"{f.Key.ShortName} {(f.Key.Id == "All" ? "frameworks" : "framework")}",
-                   Count = f.Value,
-               }).ToList();
-        }
-
         public IList<CatalogueItem> CatalogueItems { get; init; }
 
-        public IList<FrameworkFilter> FrameworkFilters { get; init; } = new List<FrameworkFilter>();
+        public CatalogueFilterSearchSummary SearchSummary { get; init; }
 
-        public IList<CapabilityCategoryFilter> CategoryFilters { get; init; } = new List<CapabilityCategoryFilter>();
+        // only used for the UI component
+        public SortOptions SelectedSortOption { get; init; }
 
-        public IList<CapabilitiesFilter> FoundationCapabilities { get; init; } = new List<CapabilitiesFilter>();
+        public PageOptions PageOptions { get; set; }
 
-        public int CountOfSolutionsWithFoundationCapability { get; init; }
+        public IEnumerable<SelectListItem> SortOptions =>
+            Enum.GetValues(typeof(SortOptions))
+                .Cast<SortOptions>()
+                .Where(e => !e.Equals(PageOptions.SortOptions.None))
+                .Select(e => new SelectListItem(e.Name(), e.ToString(), e == SelectedSortOption));
 
-        public string FoundationCapabilitiesCapabilityRef => "FC";
+        public bool SearchCriteriaApplied =>
+            !string.IsNullOrWhiteSpace(SearchSummary?.SelectedCapabilityIds)
+            || !string.IsNullOrWhiteSpace(SearchSummary?.SearchTerm);
 
-        public PageOptions Options { get; init; }
+        public string TitleText =>
+            !SearchCriteriaApplied
+                ? TitleNoSearch
+                : CatalogueItems?.Count == 0
+                   ? TitleSearchNoResults
+                   : TitleSearchResults;
 
-        public string SelectedFramework { get; init; }
-
-        public string SelectedCapabilities { get; init; }
-
-        public CatalogueFilterSearchSummary SearchSummary { get; set; }
+        public string AdviceText =>
+            !SearchCriteriaApplied
+            ? AdviceTextNosearch
+            : CatalogueItems?.Count == 0
+                ? AdviceTextSearchNoresults
+                : AdviceTextSearchResults;
     }
 }

@@ -11,6 +11,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models.Filters
 
         public int Total { get; set; }
 
+        public string SearchTerm { get; set; }
+
         protected Dictionary<int, IOrderedEnumerable<T>> GroupedItems { get; set; } = new();
 
         public List<T> Items(int groupId) => GroupedItems.ContainsKey(groupId)

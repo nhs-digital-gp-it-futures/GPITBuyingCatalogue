@@ -56,7 +56,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.PublicBrowse.Filtering
                 new Dictionary<string, string>
                 {
                     { "selectedCapabilityIds", string.Join(FilterConstants.Delimiter, CapabilityIds) },
-                    { "selectedIds", string.Join(FilterConstants.Delimiter, selectedIds) },
+                    { "selectedEpicIds", string.Join(FilterConstants.Delimiter, selectedIds) },
                 });
 
             CommonActions.ElementIsDisplayed(FilterObjects.HomeBreadcrumbLink).Should().BeTrue();
@@ -129,8 +129,8 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.PublicBrowse.Filtering
             CommonActions.ClickSave();
 
             CommonActions.PageLoadedCorrectGetIndex(
-                typeof(FilterController),
-                nameof(FilterController.FilterEpics)).Should().BeTrue();
+                typeof(SolutionsController),
+                nameof(SolutionsController.Index)).Should().BeTrue();
         }
     }
 }

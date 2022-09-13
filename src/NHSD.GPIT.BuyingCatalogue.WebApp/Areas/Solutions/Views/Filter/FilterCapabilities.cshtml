@@ -7,6 +7,7 @@
 
 @{
     Layout = "~/Views/Shared/Layouts/_AllBannersLayout.cshtml";
+    ViewBag.Title = "Filter by Capabilities for Catalogue Solutions";
     var index = 0;
 }
 
@@ -28,9 +29,6 @@
                        asp-controller="@typeof(SolutionsController).ControllerName()"
                        asp-area="@typeof(SolutionsController).AreaName()">Catalogue Solutions</a>
                 </li>
-                <li class="nhsuk-breadcrumb__item">
-                    Capabilities
-                </li>
             </ol>
         </div>
     </nav>
@@ -40,11 +38,10 @@
     <div class="nhsuk-grid-column-full">
         <nhs-validation-summary/>
 
-        <nhs-page-title title="Filter by Capabilities for Catalogue Solutions"
+        <nhs-page-title title="@ViewBag.Title"
                         advice="Capabilities describe business needs. Select the ones you want a Catalogue Solution to address."/>
 
-        <hr/>
-        <h2>@Model.Total Capabilities available:</h2>
+        <h2>@Model.Total Capabilities available</h2>
         <hr/>
 
         <div class="nhsuk-u-margin-bottom-9">
@@ -52,6 +49,12 @@
             <p class="selection-counter" style="display: none">
                 0 out of @Model.Total selected
             </p>
+            <vc:nhs-secondary-button type="Secondary"
+                                    text="Clear selection"
+                                    url="@Url.Action(
+                nameof(FilterController.FilterCapabilities),
+                typeof(FilterController).ControllerName(),
+                new { search = Model.SearchTerm })" />
         </div>
 
         <form method="post">

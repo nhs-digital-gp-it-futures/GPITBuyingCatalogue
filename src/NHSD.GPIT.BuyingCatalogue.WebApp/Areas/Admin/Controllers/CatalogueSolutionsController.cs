@@ -27,20 +27,17 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
     public sealed class CatalogueSolutionsController : Controller
     {
         private readonly ISolutionsService solutionsService;
-        private readonly IFilterCache filterCache;
         private readonly ISuppliersService suppliersService;
         private readonly ICapabilitiesService capabilitiesService;
         private readonly IPublicationStatusService publicationStatusService;
 
         public CatalogueSolutionsController(
             ISolutionsService solutionsService,
-            IFilterCache filterCache,
             ISuppliersService suppliersService,
             ICapabilitiesService capabilitiesService,
             IPublicationStatusService publicationStatusService)
         {
             this.solutionsService = solutionsService ?? throw new ArgumentNullException(nameof(solutionsService));
-            this.filterCache = filterCache ?? throw new ArgumentNullException(nameof(filterCache));
             this.suppliersService = suppliersService ?? throw new ArgumentNullException(nameof(suppliersService));
             this.capabilitiesService = capabilitiesService ?? throw new ArgumentNullException(nameof(capabilitiesService));
             this.publicationStatusService = publicationStatusService ?? throw new ArgumentNullException(nameof(publicationStatusService));
@@ -137,8 +134,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
                 return View("ManageCatalogueSolution", model);
 
             var solution = await solutionsService.GetSolutionThin(solutionId);
-            if (model.SelectedPublicationStatus != solution.PublishedStatus)
-                filterCache.RemoveAll();
 
             await publicationStatusService.SetPublicationStatus(solutionId, model.SelectedPublicationStatus);
 
@@ -189,8 +184,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
                 model.SupplierId ?? default,
                 model.IsPilotSolution,
                 model.Frameworks);
-
-            filterCache.RemoveAll();
 
             return RedirectToAction(nameof(ManageCatalogueSolution), new { solutionId });
         }
@@ -380,8 +373,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
             };
 
             await capabilitiesService.AddCapabilitiesToCatalogueItem(solutionId, saveRequestModel);
-
-            filterCache.RemoveAll();
 
             return RedirectToAction(nameof(ManageCatalogueSolution), new { solutionId });
         }

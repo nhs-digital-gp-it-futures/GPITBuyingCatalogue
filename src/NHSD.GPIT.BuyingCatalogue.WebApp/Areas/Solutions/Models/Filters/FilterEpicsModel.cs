@@ -1,7 +1,9 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.Framework.Constants;
+using NHSD.GPIT.BuyingCatalogue.Services.ServiceHelpers;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models.Filters
 {
@@ -14,7 +16,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models.Filters
         public FilterEpicsModel(
             List<Capability> capabilities,
             List<Epic> epics,
-            string selectedIds = null)
+            string selectedIds = null,
+            string search = null)
         {
             Groups = capabilities;
             CapabilityIds = string.Join(FilterConstants.Delimiter, Groups.Select(x => x.Id));
@@ -23,7 +26,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models.Filters
                 x => x.Id,
                 x => epics.Where(c => c.Capability.Id == x.Id).OrderBy(c => c.Name));
 
-            var selected = selectedIds?.Split(FilterConstants.Delimiter) ?? Enumerable.Empty<string>();
+            var selected = SolutionsFilterHelper.ParseEpicIds(selectedIds);
 
             SelectedItems = epics.Select(x => new SelectionModel
             {
@@ -32,6 +35,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models.Filters
             }).ToArray();
 
             Total = epics.Count;
+
+            SearchTerm = search;
         }
 
         public string CapabilityIds { get; set; }

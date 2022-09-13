@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
-using System.Linq;
 using FluentAssertions;
+using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.AutoFixtureCustomisations;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models;
 using Xunit;
@@ -9,43 +9,50 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Models
 {
     public static class SolutionsModelTests
     {
-        [Theory]
-        [CommonAutoData]
-        public static void FrameworksAdded_ShouldAddToList(EntityFramework.Catalogue.Models.Framework framework)
+        [Fact]
+        public static void SolutionsModel_NoSearch_ReturnsTitleAndAdvice()
         {
-            var expectedCount = 10;
-
-            var frameworks = new List<KeyValuePair<EntityFramework.Catalogue.Models.Framework, int>>
+            var model = new SolutionsModel()
             {
-                new KeyValuePair<EntityFramework.Catalogue.Models.Framework, int>(framework, expectedCount),
+                SearchSummary = new ServiceContracts.Models.CatalogueFilterSearchSummary(),
             };
 
-            var model = new SolutionsModel(frameworks);
-
-            model.FrameworkFilters.Count.Should().Be(1);
-            model.FrameworkFilters.First().FrameworkId.Should().Be(framework.Id);
-            model.FrameworkFilters.First().Count.Should().Be(expectedCount);
-            model.FrameworkFilters.First().FrameworkFullName.Should().Be($"{framework.ShortName} framework");
+            model.TitleText.Should().Be(SolutionsModel.TitleNoSearch);
+            model.AdviceText.Should().Be(SolutionsModel.AdviceTextNosearch);
         }
 
         [Fact]
-        public static void FrameworksAdded_All_ShouldEndWithFrameworks()
+        public static void SolutionsModel_SearchNoResults_ReturnsTitleAndAdvice()
         {
-            var expectedCount = 10;
-
-            var framework = new EntityFramework.Catalogue.Models.Framework { Id = "All", ShortName = "All" };
-
-            var frameworks = new List<KeyValuePair<EntityFramework.Catalogue.Models.Framework, int>>
+            var model = new SolutionsModel()
             {
-                new KeyValuePair<EntityFramework.Catalogue.Models.Framework, int>(framework, expectedCount),
+                SearchSummary = new ServiceContracts.Models.CatalogueFilterSearchSummary()
+                {
+                    SearchTerm = "test",
+                },
+                CatalogueItems = new List<CatalogueItem>(),
             };
 
-            var model = new SolutionsModel(frameworks);
+            model.TitleText.Should().Be(SolutionsModel.TitleSearchNoResults);
+            model.AdviceText.Should().Be(SolutionsModel.AdviceTextSearchNoresults);
+        }
 
-            model.FrameworkFilters.Count.Should().Be(1);
-            model.FrameworkFilters.First().FrameworkId.Should().Be(framework.Id);
-            model.FrameworkFilters.First().Count.Should().Be(expectedCount);
-            model.FrameworkFilters.First().FrameworkFullName.Should().Be($"{framework.ShortName} frameworks");
+        [Theory]
+        [CommonAutoData]
+        public static void SolutionsModel_SearchWithResults_ReturnsTitleAndAdvice(
+            IList<CatalogueItem> solutions)
+        {
+            var model = new SolutionsModel()
+            {
+                SearchSummary = new ServiceContracts.Models.CatalogueFilterSearchSummary()
+                {
+                    SearchTerm = "test",
+                },
+                CatalogueItems = solutions,
+            };
+
+            model.TitleText.Should().Be(SolutionsModel.TitleSearchResults);
+            model.AdviceText.Should().Be(SolutionsModel.AdviceTextSearchResults);
         }
     }
 }

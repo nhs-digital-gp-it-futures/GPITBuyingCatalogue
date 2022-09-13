@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System.Linq;
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.AspNetCore.Mvc.ViewFeatures;
@@ -33,16 +34,23 @@ namespace NHSD.GPIT.BuyingCatalogue.UI.Components.TagHelpers
             // view components, when we'll move over to using the NhsSubmitButton View Component Explicitly
             ((IViewContextAware)viewComponentHelper).Contextualize(ViewContext);
 
-            var pageTitleFromViewComponent = await viewComponentHelper.InvokeAsync(
+            var classes = output.Attributes.TryGetAttribute("class", out var className)
+                ? className.Value.ToString()
+                : string.Empty;
+
+            var attributes = string.Join(' ', output.Attributes.Where(a => a.Name != "class").Select(a => $"{a.Name}={a.Value}"));
+
+            var submitButtonFromViewComponent = await viewComponentHelper.InvokeAsync(
                 "NhsSubmitButton",
                 new
                 {
                     text = Text,
+                    addOnClasses = classes,
+                    addOnAttributes = attributes,
                 });
 
-            output.TagName = string.Empty;
-
-            output.Content.AppendHtml(pageTitleFromViewComponent);
+            output.SuppressOutput();
+            output.PostElement.SetHtmlContent(submitButtonFromViewComponent);
         }
     }
 }

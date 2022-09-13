@@ -44,7 +44,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.PublicBrowse.Filtering
                 null,
                 new Dictionary<string, string>
                 {
-                    { "selectedIds", string.Join(FilterConstants.Delimiter, selectedIds) },
+                    { "selectedCapabilityIds", string.Join(FilterConstants.Delimiter, selectedIds) },
                 });
 
             CommonActions.ElementIsDisplayed(FilterObjects.HomeBreadcrumbLink).Should().BeTrue();
