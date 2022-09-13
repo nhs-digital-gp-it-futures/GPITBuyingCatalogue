@@ -8,6 +8,8 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.Objects.Ordering.Contract
 
         public static By CompleteOrderButton => By.LinkText("Complete order");
 
+        public static By SaveForLaterButton => By.LinkText("Save for later");
+
         public static By AssociatedServicesExpander => By.Id("associated-services-expander");
 
         public static By DataProcessingExpander => By.Id("data-processing-expander");
