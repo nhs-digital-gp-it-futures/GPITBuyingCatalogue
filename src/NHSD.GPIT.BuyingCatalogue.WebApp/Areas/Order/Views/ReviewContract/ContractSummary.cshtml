@@ -134,10 +134,16 @@
                 && Model.Order.CanComplete())
             {
                 <h3>Complete order</h3>
-                <p>If you're happy with your order, you can mark it complete. Once you've done this, you'll be unable to make changes.</p>
+                <p>If you're happy with your order, you can mark it complete. Once you've done this, you'll be unable to make changes. If you've not finished with your order, you can save for later.</p>
                 <form method="post">
                     <nhs-submit-button text="Complete order" />
                 </form>
+                <vc:nhs-secondary-button text="Save for later"
+                            type="Secondary"
+                            url="@Url.Action(
+                                    nameof(DashboardController.Organisation),
+                                    typeof(DashboardController).ControllerName(),
+                                    new { Model.InternalOrgId })"/>
             }
             else
             {
