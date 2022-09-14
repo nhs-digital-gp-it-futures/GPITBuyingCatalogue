@@ -1,0 +1,44 @@
+﻿@model NHSD.GPIT.BuyingCatalogue.WebApp.Models.DeleteOrderModel;
+@{
+    ViewBag.Title = "Are you sure you want to delete this order?";
+}
+
+<div data-test-id="delete-order-page">
+    <partial name="Partials/_BackLink" model="Model" />
+    <div class="nhsuk-grid-row">
+        <div class="nhsuk-grid-column-two-thirds">
+            <nhs-validation-summary RadioId="@nameof(Model.SelectedOption)" />
+            <nhs-page-title title="@ViewBag.Title"
+                            caption="Order @Model.CallOffId"
+                            advice="@Model.AdviceText" />
+            @if (!string.IsNullOrWhiteSpace(Model.WarningText))
+            {
+                <nhs-warning-callout label-text="Deleting an order" data-test-id="delete-warning-callout">
+                    <p>@Model.WarningText</p>
+                </nhs-warning-callout>
+            }
+
+            <form method="post">
+                <input type="hidden" asp-for="BackLink" />
+                <input type="hidden" asp-for="AdviceText"/>
+                <input type="hidden" asp-for="WarningText"/>
+                <nhs-fieldset-form-label asp-for="SelectedOption">
+                    <nhs-radio-button-container>
+                        <nhs-radio-button asp-for="SelectedOption"
+                                          value="@Model.AvailableOptions[0]"
+                                          value-name="Value"
+                                          display-name="Name"
+                                          index="0"/>
+                        <nhs-radio-button asp-for="SelectedOption"
+                                          value="@Model.AvailableOptions[1]"
+                                          value-name="Value"
+                                          display-name="Name"
+                                          index="1"/>
+                    </nhs-radio-button-container>
+                </nhs-fieldset-form-label>
+
+                <nhs-submit-button/>
+            </form>
+        </div>
+    </div>
+</div>

@@ -63,7 +63,7 @@ namespace NHSD.GPIT.BuyingCatalogue.UI.Components.TagHelpers
 
             var fieldset = GetFieldsetBuilder(formName, LabelHint);
 
-            var fieldsetheading = GetFieldSetLegendHeadingBuilder(SelectedSize, LabelText);
+            var fieldSetHeading = GetFieldSetLegendHeadingBuilder(SelectedSize, LabelText);
 
             var content = await output.GetChildContentAsync();
 
@@ -71,13 +71,13 @@ namespace NHSD.GPIT.BuyingCatalogue.UI.Components.TagHelpers
 
             var hint = TagHelperBuilders.GetLabelHintBuilder(For, labelHint, formName);
 
-            var errorMessage = BuildErrorMessage();
+            var errorMessage = BuildErrorMessage(formName);
 
             if (IsChildInError())
                 formGroup.AddCssClass(TagHelperConstants.NhsFormGroupError);
 
             fieldset.InnerHtml
-                .AppendHtml(fieldsetheading)
+                .AppendHtml(fieldSetHeading)
                 .AppendHtml(hint)
                 .AppendHtml(errorMessage)
                 .AppendHtml(content);
@@ -88,15 +88,15 @@ namespace NHSD.GPIT.BuyingCatalogue.UI.Components.TagHelpers
             TagHelperBuilders.UpdateOutputDiv(output, null, ViewContext, formGroup, false, formName, IsChildInError());
         }
 
-        private TagBuilder BuildErrorMessage()
+        private TagBuilder BuildErrorMessage(string formName)
         {
-            if (!IsChildInError())
+            if (!IsChildInError() && !TagHelperFunctions.CheckIfModelStateHasErrors(ViewContext, null, formName))
                 return null;
 
             var outerBuilder = new TagBuilder(TagHelperConstants.Span);
 
             outerBuilder.AddCssClass(TagHelperConstants.NhsErrorMessage);
-            outerBuilder.GenerateId($"{TagHelperFunctions.GetModelKebabNameFromFor(For)}-error", "_");
+            outerBuilder.GenerateId($"{formName}-error", "_");
 
             var innerBuilder = new TagBuilder(TagHelperConstants.Span);
 
@@ -104,7 +104,7 @@ namespace NHSD.GPIT.BuyingCatalogue.UI.Components.TagHelpers
             innerBuilder.InnerHtml.Append("Error: ");
 
             outerBuilder.InnerHtml.AppendHtml(innerBuilder);
-            outerBuilder.InnerHtml.Append(parentChildContext.ErrorMessage);
+            outerBuilder.InnerHtml.Append(parentChildContext.ErrorMessage ?? ViewContext.ViewData.ModelState[formName].Errors[0].ErrorMessage);
 
             return outerBuilder;
         }

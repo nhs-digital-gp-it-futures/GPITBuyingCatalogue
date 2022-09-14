@@ -40,20 +40,32 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Validators.SolutionSelect
 
         private static bool HaveAnIntegerValue(ServiceRecipientQuantityModel model)
         {
-            return model.Quantity > 0
-                || int.TryParse(model.InputQuantity, out _);
+            if (!string.IsNullOrWhiteSpace(model.InputQuantity))
+            {
+                return int.TryParse(model.InputQuantity, out _);
+            }
+
+            return model.Quantity > 0;
         }
 
         private static bool HaveAPositiveValue(ServiceRecipientQuantityModel model)
         {
-            return model.Quantity > 0
-                || int.Parse(model.InputQuantity) > 0;
+            if (!string.IsNullOrWhiteSpace(model.InputQuantity))
+            {
+                return int.Parse(model.InputQuantity) > 0;
+            }
+
+            return model.Quantity > 0;
         }
 
         private bool HaveANumericValue(ServiceRecipientQuantityModel model)
         {
-            return model.Quantity > 0
-                || decimal.TryParse(model.InputQuantity, out _);
+            if (!string.IsNullOrWhiteSpace(model.InputQuantity))
+            {
+                return decimal.TryParse(model.InputQuantity, out _);
+            }
+
+            return model.Quantity > 0;
         }
     }
 }

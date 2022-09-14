@@ -229,6 +229,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
 
             orderItem.OrderItemPrice.ProvisioningType = ProvisioningType.Patient;
             orderItem.CatalogueItem.CatalogueItemType = CatalogueItemType.Solution;
+            orderItem.OrderItemRecipients.ForEach(x => x.Quantity = null);
 
             mockOrderService
                 .Setup(x => x.GetOrderWithOrderItems(callOffId, internalOrgId))
@@ -245,9 +246,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
 
             var actualResult = result.Should().BeOfType<ViewResult>().Subject;
             var model = actualResult.Model.Should().BeOfType<SelectServiceRecipientQuantityModel>().Subject;
-            var expected = new SelectServiceRecipientQuantityModel(orderItem);
 
-            expected.ServiceRecipients.ForEach(x => x.Quantity = NumberOfPatients);
+            var expected = new SelectServiceRecipientQuantityModel(orderItem);
+            expected.ServiceRecipients.ForEach(x => x.InputQuantity = $"{NumberOfPatients}");
 
             model.Should().BeEquivalentTo(expected, x => x.Excluding(m => m.BackLink));
         }
@@ -258,7 +259,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
             string internalOrgId,
             CallOffId callOffId,
             EntityFramework.Ordering.Models.Order order,
-            [Frozen] Mock<IGpPracticeCacheService> mockCacheService,
             [Frozen] Mock<IOrderService> mockOrderService,
             QuantityController controller)
         {
@@ -284,14 +284,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
                 .Setup(x => x.GetOrderWithOrderItems(callOffId, internalOrgId))
                 .ReturnsAsync(order);
 
-            mockCacheService
-                .Setup(x => x.GetNumberOfPatients(It.IsAny<string>()))
-                .ReturnsAsync((int?)null);
-
             var result = await controller.SelectServiceRecipientQuantity(internalOrgId, callOffId, orderItem.CatalogueItemId);
 
             mockOrderService.VerifyAll();
-            mockCacheService.VerifyAll();
 
             var actualResult = result.Should().BeOfType<ViewResult>().Subject;
             var model = actualResult.Model.Should().BeOfType<SelectServiceRecipientQuantityModel>().Subject;

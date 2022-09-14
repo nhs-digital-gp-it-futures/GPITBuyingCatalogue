@@ -1,4 +1,5 @@
-﻿using System.Security.Claims;
+﻿using System;
+using System.Security.Claims;
 using System.Threading.Tasks;
 using AutoFixture;
 using AutoFixture.AutoMoq;
@@ -49,7 +50,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers
             OrderController controller)
         {
             order.LastUpdatedByUser = aspNetUser;
-            order.OrderStatus = OrderStatus.InProgress;
+            order.Completed = null;
 
             var orderTaskList = new OrderTaskList(order);
             var expectedViewData = new OrderModel(internalOrgId, order, orderTaskList) { DescriptionUrl = "testUrl" };
@@ -70,7 +71,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers
             [Frozen] Mock<IOrderService> orderServiceMock,
             OrderController controller)
         {
-            order.OrderStatus = OrderStatus.Completed;
+            order.Completed = DateTime.UtcNow;
 
             orderServiceMock.Setup(s => s.GetOrderForTaskListStatuses(order.CallOffId, internalOrgId)).ReturnsAsync(order);
 
@@ -192,7 +193,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers
             byte[] result,
             OrderController controller)
         {
-            order.OrderStatus = OrderStatus.Completed;
+            order.Completed = DateTime.UtcNow;
 
             orderServiceMock
                 .Setup(s => s.GetOrderForSummary(order.CallOffId, internalOrgId))
@@ -225,7 +226,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers
             byte[] result,
             OrderController controller)
         {
-            order.OrderStatus = OrderStatus.InProgress;
+            order.Completed = null;
 
             orderServiceMock
                 .Setup(s => s.GetOrderForSummary(order.CallOffId, internalOrgId))

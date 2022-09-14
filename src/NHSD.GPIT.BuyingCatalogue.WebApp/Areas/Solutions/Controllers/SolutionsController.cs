@@ -4,10 +4,8 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
-using NHSD.GPIT.BuyingCatalogue.Framework.Constants;
 using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.AdditionalServices;
-using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Caching;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Models;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models;
@@ -23,17 +21,14 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers
         private readonly ISolutionsService solutionsService;
         private readonly IAdditionalServicesService additionalServicesService;
         private readonly ISolutionsFilterService solutionsFilterService;
-        private readonly IFilterCache filterCache;
 
         public SolutionsController(
             ISolutionsService solutionsService,
             IAdditionalServicesService additionalServicesService,
-            IFilterCache filterCache,
             ISolutionsFilterService solutionsFilterService)
         {
             this.solutionsService = solutionsService ?? throw new ArgumentNullException(nameof(solutionsService));
             this.additionalServicesService = additionalServicesService ?? throw new ArgumentNullException(nameof(additionalServicesService));
-            this.filterCache = filterCache ?? throw new ArgumentNullException(nameof(filterCache));
             this.solutionsFilterService = solutionsFilterService ?? throw new ArgumentNullException(nameof(solutionsFilterService));
         }
 
@@ -41,64 +36,51 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers
         public async Task<IActionResult> Index(
             [FromQuery] string page,
             [FromQuery] string sortBy,
-            [FromQuery] string selectedFramework,
-            [FromQuery] string capabilities,
+            [FromQuery] string selectedCapabilityIds,
+            [FromQuery] string selectedEpicIds,
             [FromQuery] string search)
         {
-            var options = new PageOptions(page, sortBy);
+            var inputOptions = new PageOptions(page, sortBy);
 
-            var solutions = await solutionsFilterService.GetAllSolutionsFiltered(
-                options,
-                selectedFramework,
-                capabilities,
-                search);
+            var (catalogueItems, options, capabilitiesAndCount) =
+                await solutionsFilterService.GetAllSolutionsFiltered(
+                    inputOptions,
+                    selectedCapabilityIds,
+                    selectedEpicIds,
+                    search);
 
-            var frameworks = await solutionsFilterService.GetAllFrameworksAndCountForFilter();
-            var capabilitiesAndEpics = await solutionsFilterService.GetCapabilityNamesWithEpics(capabilities);
-            var frameworkShortName = await solutionsFilterService.GetFrameworkName(selectedFramework);
-
-            return View(new SolutionsModel(frameworks)
+            return View(new SolutionsModel()
             {
-                CatalogueItems = solutions.Items,
-                Options = solutions.Options,
-                SelectedFramework = selectedFramework ?? FrameworkFilterKeys.GenericCacheKey,
-                CategoryFilters = default,
-                FoundationCapabilities = default,
-                CountOfSolutionsWithFoundationCapability = default,
-                SelectedCapabilities = capabilities,
-                SearchSummary = new(capabilitiesAndEpics, frameworkShortName, search),
+                CatalogueItems = catalogueItems,
+                SelectedSortOption = options.Sort,
+                PageOptions = options,
+                SearchSummary = new CatalogueFilterSearchSummary(
+                    capabilitiesAndCount,
+                    search,
+                    selectedCapabilityIds,
+                    selectedEpicIds),
             });
         }
 
-        [HttpGet("filter")]
-        public async Task<IActionResult> LoadCatalogueSolutionsFilter([FromQuery] string selectedFramework)
-        {
-            var cacheKey = selectedFramework ?? FrameworkFilterKeys.GenericCacheKey;
-
-            var html = filterCache.Get(cacheKey);
-
-            if (html is not null)
-                return Content(html);
-
-            var frameworks = await solutionsFilterService.GetAllFrameworksAndCountForFilter();
-
-            var categories = await solutionsFilterService.GetAllCategoriesAndCountForFilter(selectedFramework);
-
-            var result = await this.RenderViewAsync(
-                "_FilterJavascript",
-                new SolutionsModel(frameworks)
+        [HttpPost]
+        public IActionResult Index(
+            SolutionsModel model,
+            [FromQuery] string page,
+            [FromQuery] string sortBy,
+            [FromQuery] string selectedCapabilityIds,
+            [FromQuery] string selectedEpicIds,
+            [FromQuery] string search) =>
+        RedirectToAction(
+                nameof(Index),
+                typeof(SolutionsController).ControllerName(),
+                new
                 {
-                    SelectedFramework = cacheKey,
-                    CategoryFilters = categories.CategoryFilters,
-                    FoundationCapabilities = categories.FoundationCapabilities,
-                    CountOfSolutionsWithFoundationCapability = categories.CountOfCatalogueItemsWithFoundationCapabilities,
-                },
-                true);
-
-            filterCache.Set(cacheKey, result);
-
-            return Content(result);
-        }
+                    page,
+                    selectedCapabilityIds,
+                    selectedEpicIds,
+                    search,
+                    sortBy = model.SelectedSortOption.ToString(),
+                });
 
         [HttpGet("search-suggestions")]
         public async Task<IActionResult> FilterSearchSuggestions([FromQuery] string search)

@@ -251,9 +251,17 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
             [Frozen] Mock<IOrderService> mockOrderService,
             UsersController controller)
         {
+            const string role = OrganisationFunction.BuyerName;
+
+            var roles = new List<string> { role };
+
             mockUsersService
                 .Setup(x => x.GetUser(UserId))
                 .ReturnsAsync(user);
+
+            mockUsersService
+                .Setup(x => x.GetRoles(user))
+                .ReturnsAsync(roles);
 
             mockOrderService
                 .Setup(x => x.GetUserOrders(UserId))
@@ -350,9 +358,17 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
             [Frozen] Mock<IUsersService> mockUsersService,
             UsersController controller)
         {
+            const string role = OrganisationFunction.BuyerName;
+
+            var roles = new List<string> { role };
+
             mockUsersService
                 .Setup(x => x.GetUser(UserId))
                 .ReturnsAsync(user);
+
+            mockUsersService
+                .Setup(x => x.GetRoles(user))
+                .ReturnsAsync(roles);
 
             var result = await controller.AccountType(UserId);
 
@@ -362,7 +378,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
             var model = actual.Model.Should().BeOfType<AccountTypeModel>().Subject;
 
             model.Email.Should().Be(user.Email);
-            model.SelectedAccountType.Should().Be(user.OrganisationFunction);
+            model.SelectedAccountType.Should().Be(role);
         }
 
         [Theory]

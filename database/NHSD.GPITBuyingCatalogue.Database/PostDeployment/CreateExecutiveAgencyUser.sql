@@ -20,15 +20,15 @@ BEGIN
 
     INSERT INTO users.AspNetUsers
     (
-        Id, UserName, NormalizedUserName, PasswordHash, 
+        Id, UserName, NormalizedUserName, PasswordHash,
         FirstName, LastName, Email, NormalizedEmail, EmailConfirmed, PhoneNumber, PhoneNumberConfirmed,
-        PrimaryOrganisationId, OrganisationFunction, CatalogueAgreementSigned, [Disabled],
+        PrimaryOrganisationId, CatalogueAgreementSigned, [Disabled],
         AccessFailedCount, ConcurrencyStamp, LockoutEnabled, SecurityStamp, TwoFactorEnabled
     )
     VALUES
     (CAST(1 AS nchar(36)), @email, @normalizedUserName, @passwordHash,
         @firstName, @lastName, @email, @normalizedUserName, 1, @phoneNumber, 1,
-        @organisationId, 'Authority', 1, 0,
+        @organisationId, 1, 0,
         0, NEWID(), 1, NEWID(), 0);
 
     SET IDENTITY_INSERT users.AspNetUsers OFF;

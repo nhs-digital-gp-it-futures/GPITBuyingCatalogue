@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
-using NHSD.GPIT.BuyingCatalogue.Framework.Constants;
+using NHSD.GPIT.BuyingCatalogue.Services.ServiceHelpers;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models.Filters
 {
@@ -11,7 +11,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models.Filters
         {
         }
 
-        public FilterCapabilitiesModel(List<Capability> capabilities, string selectedIds = null)
+        public FilterCapabilitiesModel(List<Capability> capabilities, string selectedIds = null, string search = null)
         {
             Groups = capabilities
                 .Select(x => x.Category.Id)
@@ -23,9 +23,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models.Filters
                 x => x.Id,
                 x => capabilities.Where(c => c.Category.Id == x.Id).OrderBy(c => c.Name));
 
-            var selected = selectedIds?.Split(FilterConstants.Delimiter)
-                .Where(x => int.TryParse(x, out _))
-                .Select(int.Parse) ?? Enumerable.Empty<int>();
+            var selected = SolutionsFilterHelper.ParseCapabilityIds(selectedIds);
 
             SelectedItems = capabilities.Select(x => new SelectionModel
             {
@@ -34,6 +32,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models.Filters
             }).ToArray();
 
             Total = capabilities.Count;
+
+            SearchTerm = search;
         }
     }
 }

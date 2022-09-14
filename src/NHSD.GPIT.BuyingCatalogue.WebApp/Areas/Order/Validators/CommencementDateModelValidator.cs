@@ -10,11 +10,11 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Validators
     {
         public const int MaximumInitialPeriod = 12;
 
-        public const string CommencementDateDayMissingErrorMessage = "Approximate start date must include a day";
-        public const string CommencementDateInThePastErrorMessage = "Approximate start date must be in the future";
-        public const string CommencementDateInvalidErrorMessage = "Approximate start date must be a real date";
-        public const string CommencementDateMonthMissingErrorMessage = "Approximate start date must include a month";
-        public const string CommencementDateYearMissingErrorMessage = "Approximate start date must include a year";
+        public const string CommencementDateDayMissingErrorMessage = "Commencement date must include a day";
+        public const string CommencementDateInThePastErrorMessage = "Commencement date must be in the future";
+        public const string CommencementDateInvalidErrorMessage = "Commencement date must be a real date";
+        public const string CommencementDateMonthMissingErrorMessage = "Commencement date must include a month";
+        public const string CommencementDateYearMissingErrorMessage = "Commencement date must include a year";
         public const string CommencementDateYearTooShortErrorMessage = "Year must be four numbers";
         public const string InitialPeriodMissingErrorMessage = "Enter an initial period";
         public const string InitialPeriodNotANumberErrorMessage = "Initial period must be a number";
@@ -36,16 +36,14 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Validators
             RuleFor(x => x.Month)
                 .NotEmpty()
                 .Unless(x => string.IsNullOrWhiteSpace(x.Day))
-                .WithMessage(CommencementDateMonthMissingErrorMessage)
-                .OverridePropertyName(x => x.Day);
+                .WithMessage(CommencementDateMonthMissingErrorMessage);
 
             RuleFor(x => x.Year)
                 .NotEmpty()
                 .Unless(x => string.IsNullOrWhiteSpace(x.Month))
                 .WithMessage(CommencementDateYearMissingErrorMessage)
                 .Length(4)
-                .WithMessage(CommencementDateYearTooShortErrorMessage)
-                .OverridePropertyName(x => x.Day);
+                .WithMessage(CommencementDateYearTooShortErrorMessage);
 
             RuleFor(x => x)
                 .Must(x => x.CommencementDate != null)
@@ -69,7 +67,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Validators
                 .WithMessage(MaximumTermInvalidErrorMessage);
         }
 
-        internal static int GetMaximumTerm(CommencementDateModel model)
+        private static int GetMaximumTerm(CommencementDateModel model)
             => model.OrderTriageValue == OrderTriageValue.Under40K
                 ? 12
                 : 36;

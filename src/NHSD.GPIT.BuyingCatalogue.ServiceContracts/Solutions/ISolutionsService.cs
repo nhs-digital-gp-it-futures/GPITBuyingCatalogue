@@ -68,6 +68,8 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions
 
         Task<List<CatalogueItem>> GetSupplierSolutions(int? supplierId);
 
+        Task<List<CatalogueItem>> GetSupplierSolutionsWithAssociatedServices(int? supplierId);
+
         Task<IList<CatalogueItem>> GetAllSolutions(PublicationStatus? publicationStatus = null);
 
         Task<IList<CatalogueItem>> GetAllSolutionsForSearchTerm(string searchTerm);

@@ -15,7 +15,7 @@
     LastUpdated DATETIME2 NOT NULL,
     LastUpdatedBy INT NULL,
     Completed DATETIME2 NULL ,
-    OrderStatusId INT NOT NULL,
+    OrderStatusId INT NULL,
     IsDeleted BIT NOT NULL,
     SysStartTime DATETIME2(0) NOT NULL,
     SysEndTime DATETIME2(0) NOT NULL,

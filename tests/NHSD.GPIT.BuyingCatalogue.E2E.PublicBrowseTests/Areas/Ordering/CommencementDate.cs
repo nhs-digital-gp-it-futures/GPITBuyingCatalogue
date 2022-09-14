@@ -283,7 +283,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering
 
             CommonActions.ElementAddValue(
                 Objects.Ordering.CommencementDate.MaximumTermInput,
-                $"37");
+                "37");
 
             CommonActions.ClickSave();
 
@@ -345,11 +345,11 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering
         {
             CommonActions.ElementAddValue(
                 Objects.Ordering.CommencementDate.InitialPeriodInput,
-                $"{CommencementDateModelValidator.MaximumInitialPeriod}");
+                "6");
 
             CommonActions.ElementAddValue(
                 Objects.Ordering.CommencementDate.MaximumTermInput,
-                $"{CommencementDateModelValidator.MaximumInitialPeriod}");
+                "5");
 
             CommonActions.ClickSave();
 

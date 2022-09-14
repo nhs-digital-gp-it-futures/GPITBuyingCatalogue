@@ -10,11 +10,12 @@ using AutoFixture.Xunit2;
 using FluentAssertions;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Routing;
 using Moq;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
+using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Models;
-using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Models.FilterModels;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions.Models;
 using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.AutoFixtureCustomisations;
@@ -40,98 +41,42 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Controllers
 
         [Theory]
         [CommonAutoData]
-        public static async Task Get_Index_GetsSolutionsFromService(
+        public static async Task Get_Index_NoSearch_GetsSolutionFromService(
+            Solution solution,
+            PageOptions options,
             [Frozen] Mock<ISolutionsFilterService> mockService,
             SolutionsController controller)
         {
-            var pagedList = new PagedList<CatalogueItem>(new List<CatalogueItem>(), new PageOptions(string.Empty, string.Empty));
-            var categoryModel = new CategoryFilterModel
-            {
-                CategoryFilters = new List<CapabilityCategoryFilter>(),
-                FoundationCapabilities = new List<CapabilitiesFilter>(),
-            };
+            var itemsToReturn = new List<CatalogueItem>() { solution.CatalogueItem };
 
             mockService.Setup(s => s.GetAllSolutionsFiltered(It.IsAny<PageOptions>(), null, null, null))
-                .ReturnsAsync(pagedList);
+                .ReturnsAsync((itemsToReturn, options, new List<ServiceContracts.Models.SolutionsFilterModels.CapabilitiesAndCountModel>()));
 
-            mockService.Setup(s => s.GetAllFrameworksAndCountForFilter())
-                .ReturnsAsync(new List<KeyValuePair<EntityFramework.Catalogue.Models.Framework, int>>());
+            await controller.Index(options.PageNumber.ToString(), options.Sort.ToString(), null, null, null);
 
-            mockService.Setup(s => s.GetAllCategoriesAndCountForFilter(It.IsAny<string>()))
-                .ReturnsAsync(categoryModel);
-
-            await controller.Index(null, null, null, null, null);
-
-            mockService.Verify(s => s.GetAllSolutionsFiltered(It.IsAny<PageOptions>(), null, null, null));
+            mockService.VerifyAll();
         }
 
         [Theory]
         [CommonAutoData]
-        public static async Task Get_Index_ReturnsExpectedViewResults(
-            [Frozen] Mock<ISolutionsFilterService> mockService,
+        public static void Post_Index_Redirects(
+            SolutionsModel solutionModel,
             SolutionsController controller)
         {
-            var pagedList = new PagedList<CatalogueItem>(new List<CatalogueItem>(), new PageOptions(string.Empty, string.Empty));
-            var categoryModel = new CategoryFilterModel
+            var result = controller.Index(solutionModel, null, null, null, null, null);
+
+            var actualResult = result.Should().BeOfType<RedirectToActionResult>().Subject;
+
+            actualResult.ActionName.Should().Be(nameof(SolutionsController.Index));
+            actualResult.ControllerName.Should().Be(typeof(SolutionsController).ControllerName());
+            actualResult.RouteValues.Should().BeEquivalentTo(new RouteValueDictionary
             {
-                CategoryFilters = new List<CapabilityCategoryFilter>(),
-                FoundationCapabilities = new List<CapabilitiesFilter>(),
-            };
-
-            mockService.Setup(s => s.GetAllSolutionsFiltered(It.IsAny<PageOptions>(), null, null, null))
-                .ReturnsAsync(pagedList);
-
-            mockService.Setup(s => s.GetAllFrameworksAndCountForFilter())
-                .ReturnsAsync(new List<KeyValuePair<EntityFramework.Catalogue.Models.Framework, int>>());
-
-            mockService.Setup(s => s.GetAllCategoriesAndCountForFilter(It.IsAny<string>()))
-                .ReturnsAsync(categoryModel);
-
-            var actual = (await controller.Index(null, null, null, null, null)).As<ViewResult>();
-
-            actual.Should().NotBeNull();
-            actual.ViewName.Should().BeNullOrEmpty();
-            actual.Model.Should().BeOfType(typeof(SolutionsModel));
-        }
-
-        [Theory]
-        [CommonAutoData]
-        public static async Task Get_Index_QueryParameters_CorrectResults(
-            [Frozen] Mock<ISolutionsFilterService> mockService,
-            SolutionsController controller)
-        {
-            var pagedList = new PagedList<CatalogueItem>(new List<CatalogueItem>(), new PageOptions(string.Empty, string.Empty));
-            var categoryModel = new CategoryFilterModel
-            {
-                CategoryFilters = new List<CapabilityCategoryFilter>(),
-                FoundationCapabilities = new List<CapabilitiesFilter>(),
-            };
-
-            mockService.Setup(s => s.GetAllSolutionsFiltered(It.IsAny<PageOptions>(), null, null, null))
-                .ReturnsAsync(pagedList);
-
-            mockService.Setup(s => s.GetAllFrameworksAndCountForFilter())
-                .ReturnsAsync(
-                new List<KeyValuePair<EntityFramework.Catalogue.Models.Framework, int>>
-                {
-                    new KeyValuePair<EntityFramework.Catalogue.Models.Framework, int>(
-                        new EntityFramework.Catalogue.Models.Framework { Id = "All", ShortName = "All" },
-                        10),
-                });
-
-            mockService.Setup(s => s.GetAllCategoriesAndCountForFilter(It.IsAny<string>()))
-                .ReturnsAsync(categoryModel);
-
-            var actual = (await controller.Index(null, null, null, null, null)).As<ViewResult>();
-
-            actual.Should().NotBeNull();
-            actual.ViewName.Should().BeNullOrEmpty();
-            actual.Model.Should().BeOfType(typeof(SolutionsModel));
-            actual.Model.As<SolutionsModel>().SelectedFramework.Should().Be("All");
-            actual.Model.As<SolutionsModel>().FrameworkFilters.Count.Should().Be(1);
-            actual.Model.As<SolutionsModel>().FrameworkFilters[0].FrameworkId.Should().Be("All");
-            actual.Model.As<SolutionsModel>().FrameworkFilters[0].Count.Should().Be(10);
-            actual.Model.As<SolutionsModel>().FrameworkFilters[0].FrameworkFullName.Should().Be("All frameworks");
+                { "page", null },
+                { "sortBy", solutionModel.SelectedSortOption.ToString() },
+                { "search", null },
+                { "selectedCapabilityIds", null },
+                { "selectedEpicIds", null },
+            });
         }
 
         [Theory]

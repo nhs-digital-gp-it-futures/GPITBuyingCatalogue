@@ -10,18 +10,23 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models
         public const string LocalFunding = "Local";
         public const string CentralFunding = "Central";
 
-        private readonly List<ServiceInstanceItem> serviceInstanceItems = new();
-
-        private DateTime? completed;
-
-        public IReadOnlyList<ServiceInstanceItem> ServiceInstanceItems => serviceInstanceItems.AsReadOnly();
-
         // TODO: remove with csv
         public string ApproximateFundingType
         {
             get
             {
-                return OrderItems.All(x => x.FundingType is OrderItemFundingType.LocalFunding or OrderItemFundingType.LocalFundingOnly)
+                var fundingTypes = OrderItems
+                    .Select(x => x.FundingType)
+                    .Where(x => x != OrderItemFundingType.NoFundingRequired
+                        && x != OrderItemFundingType.None)
+                    .ToList();
+
+                if (!fundingTypes.Any())
+                {
+                    return CentralFunding;
+                }
+
+                return fundingTypes.All(x => x is OrderItemFundingType.LocalFunding or OrderItemFundingType.LocalFundingOnly)
                     ? LocalFunding
                     : CentralFunding;
             }
@@ -33,8 +38,7 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models
 
         public void Complete()
         {
-            OrderStatus = OrderStatus.Completed;
-            completed = DateTime.UtcNow;
+            Completed = DateTime.UtcNow;
         }
 
         public bool CanComplete()

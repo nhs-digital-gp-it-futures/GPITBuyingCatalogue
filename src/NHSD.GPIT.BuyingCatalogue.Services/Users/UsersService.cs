@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Users.Models;
@@ -11,27 +12,42 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Users
 {
     public sealed class UsersService : IUsersService
     {
-        private readonly BuyingCatalogueDbContext dbContext;
+        private readonly UserManager<AspNetUser> userManager;
 
-        public UsersService(BuyingCatalogueDbContext dbContext)
+        public UsersService(UserManager<AspNetUser> userManager)
         {
-            this.dbContext = dbContext ?? throw new ArgumentNullException(nameof(dbContext));
+            this.userManager = userManager ?? throw new ArgumentNullException(nameof(userManager));
         }
 
         public Task<AspNetUser> GetUser(int userId)
         {
-            return dbContext.AspNetUsers
+            return userManager.Users
                 .Include(x => x.PrimaryOrganisation)
+                .Include(x => x.AspNetUserRoles)
+                .ThenInclude(x => x.Role)
                 .FirstOrDefaultAsync(u => u.Id == userId);
         }
 
         public async Task<List<AspNetUser>> GetAllUsers()
         {
-            return await dbContext.AspNetUsers
+            return await userManager.Users
                 .Include(x => x.PrimaryOrganisation)
+                .Include(x => x.AspNetUserRoles)
+                .ThenInclude(x => x.Role)
                 .OrderBy(x => x.LastName)
                 .ThenBy(x => x.FirstName)
                 .ToListAsync();
+        }
+
+        public async Task<bool> HasRole(int userId, string role)
+        {
+            var user = await GetUser(userId);
+            return await userManager.IsInRoleAsync(user, role);
+        }
+
+        public async Task<IList<string>> GetRoles(AspNetUser user)
+        {
+            return await userManager.GetRolesAsync(user);
         }
 
         public async Task<List<AspNetUser>> GetAllUsersBySearchTerm(string searchTerm)
@@ -49,56 +65,58 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Users
 
         public async Task<List<AspNetUser>> GetAllUsersForOrganisation(int organisationId)
         {
-            return await dbContext.AspNetUsers
+            return await userManager.Users
                 .Where(u => u.PrimaryOrganisationId == organisationId)
+                .Include(x => x.AspNetUserRoles)
+                .ThenInclude(x => x.Role)
                 .ToListAsync();
         }
 
         public async Task EnableOrDisableUser(int userId, bool disabled)
         {
-            var user = await dbContext.AspNetUsers.SingleAsync(u => u.Id == userId);
+            var user = await userManager.Users.SingleAsync(u => u.Id == userId);
 
             user.Disabled = disabled;
 
-            await dbContext.SaveChangesAsync();
+            await userManager.UpdateAsync(user);
         }
 
         public async Task UpdateUserAccountType(int userId, string organisationFunction)
         {
-            var user = await dbContext.AspNetUsers.SingleAsync(u => u.Id == userId);
+            var user = await userManager.Users.SingleAsync(u => u.Id == userId);
+            var userRoles = await userManager.GetRolesAsync(user);
 
-            user.OrganisationFunction = organisationFunction;
+            await userManager.RemoveFromRolesAsync(user, userRoles);
+            await userManager.AddToRoleAsync(user, organisationFunction);
 
-            await dbContext.SaveChangesAsync();
+            await userManager.UpdateAsync(user);
         }
 
         public async Task UpdateUserDetails(int userId, string firstName, string lastName, string email)
         {
-            var user = await dbContext.AspNetUsers.SingleAsync(u => u.Id == userId);
+            var user = await userManager.Users.SingleAsync(u => u.Id == userId);
 
             user.FirstName = firstName;
             user.LastName = lastName;
             user.Email = email;
-            user.NormalizedEmail = email?.ToUpperInvariant();
-            user.NormalizedUserName = email?.ToUpperInvariant();
             user.UserName = email;
 
-            await dbContext.SaveChangesAsync();
+            await userManager.UpdateAsync(user);
         }
 
         public async Task UpdateUserOrganisation(int userId, int organisationId)
         {
-            var user = await dbContext.AspNetUsers.SingleAsync(u => u.Id == userId);
+            var user = await userManager.Users.SingleAsync(u => u.Id == userId);
 
             user.PrimaryOrganisationId = organisationId;
 
-            await dbContext.SaveChangesAsync();
+            await userManager.UpdateAsync(user);
         }
 
         public async Task<bool> EmailAddressExists(string emailAddress, int userId = 0)
         {
             var testAddress = (emailAddress ?? string.Empty).ToUpperInvariant();
-            var user = await dbContext.AspNetUsers
+            var user = await userManager.Users
                 .FirstOrDefaultAsync(x => x.Id != userId && x.NormalizedEmail == testAddress);
 
             return user != null;

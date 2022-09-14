@@ -1,6 +1,4 @@
-﻿@using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
-@using NHSD.GPIT.BuyingCatalogue.Framework.Extensions
-@using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Identity
+﻿@using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Identity
 @model NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.UserModels.DetailsModel
 @{
     ViewBag.Title = "View user";
@@ -11,13 +9,13 @@
         <div class="nhsuk-width-container">
             <ol class="nhsuk-breadcrumb__list">
                 <li class="nhsuk-breadcrumb__item">
-                    <a asp-action="@nameof(HomeController.Index)" 
-                       asp-controller="@typeof(HomeController).ControllerName()" 
+                    <a asp-action="@nameof(HomeController.Index)"
+                       asp-controller="@typeof(HomeController).ControllerName()"
                        class="nhsuk-breadcrumb__link">Home</a>
                 </li>
                 <li class="nhsuk-breadcrumb__item">
-                    <a asp-action="@nameof(UsersController.Index)" 
-                       asp-controller="@typeof(UsersController).ControllerName()" 
+                    <a asp-action="@nameof(UsersController.Index)"
+                       asp-controller="@typeof(UsersController).ControllerName()"
                        class="nhsuk-breadcrumb__link">Manage users</a>
                 </li>
             </ol>
@@ -78,7 +76,7 @@
                     </nhs-table-row-container>
                 </nhs-table>
             </div>
-            
+
             <div class="nhsuk-u-margin-bottom-9">
                 <h3>Account details</h3>
                 <nhs-table>
@@ -105,9 +103,9 @@
                         </nhs-table-cell>
                         <nhs-table-cell>
                             <span data-test-id="user-account-type">
-                                @(Model.User.OrganisationFunction == OrganisationFunction.AuthorityName
+                                @(Model.UserRole == OrganisationFunction.AuthorityName
                                     ? "Admin"
-                                    : Model.User.OrganisationFunction)
+                                    : Model.UserRole)
                             </span>
                         </nhs-table-cell>
                         <nhs-table-cell style="text-align: right;">
@@ -136,15 +134,18 @@
                     </nhs-table-row-container>
                 </nhs-table>
             </div>
-            
-            <div class="nhsuk-u-margin-bottom-6">
-                <vc:nhs-secondary-button url="@Url.Action(
-                                                  nameof(UsersController.ResetPassword),
-                                                  typeof(UsersController).ControllerName(),
-                                                  new { userId = @Model.User.Id })"
-                                         text="Reset password"
-                                         type="Secondary" />
-            </div>
+
+            @if (!Model.User.Disabled)
+            {
+                <div class="nhsuk-u-margin-bottom-6">
+                    <vc:nhs-secondary-button url="@Url.Action(
+                                                      nameof(UsersController.ResetPassword),
+                                                      typeof(UsersController).ControllerName(),
+                                                      new { userId = @Model.User.Id })"
+                                             text="Reset password"
+                                             type="Secondary" />
+                </div>
+            }
         </div>
 
         <div class="nhsuk-grid-column-full">

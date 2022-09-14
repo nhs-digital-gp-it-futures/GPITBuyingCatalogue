@@ -162,7 +162,7 @@
 <nhs-page-title title="Order summary"
                 caption="@Model.Order.CallOffId"
                 advice="This is the information that has been added to this order." />
-                            
+
 <pdf-summary-list>
     <pdf-summary-list-row label-text="Order ID">
         @Model.Order.CallOffId
@@ -233,7 +233,7 @@
 </pdf-summary-list>
 
 <div style="page-break-after: always"></div>
-                                    
+
 <h1>Items added to this order</h1>
 
 @if (Model.Order.GetSolutions().Any())
@@ -242,7 +242,7 @@
     @foreach (var solution in Model.Order.GetSolutions())
     {
         <partial name="OrderItem"
-                 model="new OrderSummaryItemModel(solution, Model.Order.ServiceInstanceItems)"/>
+                 model="new OrderSummaryItemModel(solution)"/>
         <div style="page-break-after: always"></div>
     }
 }
@@ -253,7 +253,7 @@
     @foreach (var service in Model.Order.GetAdditionalServices())
     {
         <partial name="OrderItem"
-                 model="new OrderSummaryItemModel(service, Model.Order.ServiceInstanceItems)"/>
+                 model="new OrderSummaryItemModel(service)"/>
         <div style="page-break-after: always"></div>
     }
 }
@@ -264,11 +264,11 @@
     @foreach (var service in Model.Order.GetAssociatedServices())
     {
         <partial name="OrderItem"
-                 model="new OrderSummaryItemModel(service, Model.Order.ServiceInstanceItems)"/>
+                 model="new OrderSummaryItemModel(service)"/>
         <div style="page-break-after: always"></div>
     }
 }
-                                    
+
 <div class="pdf-container">
     <h1>Totals for this order</h1>
     <h3>Totals</h3>
@@ -304,7 +304,7 @@
 <div style="page-break-after: always"></div>
 
 <h1>Contract summary</h1>
-                                       
+
 @if (Model.UseDefaultImplementationPlan)
 {
     <div class="pdf-container">
@@ -364,7 +364,7 @@ else
 {
     <div class="pdf-container">
         <h3>Associated Services billing</h3>
-                                          
+
         @if (Model.UseDefaultBilling)
         {
             <table>
@@ -399,14 +399,14 @@ else
                 <p>Requirements are documented in section 1 of Appendix 2.</p>
             </div>
         }
-                                            
+
         <h3>Associated Services requirements</h3>
         <pdf-summary-list>
             <pdf-summary-list-row label-text="Any specific requirements?">
                 @Model.HasSpecificRequirements.ToYesNo()
             </pdf-summary-list-row>
         </pdf-summary-list>
-                                            
+
         @if (Model.HasSpecificRequirements)
         {
             <div class="nhsuk-u-margin-bottom-6">

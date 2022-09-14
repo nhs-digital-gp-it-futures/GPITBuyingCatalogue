@@ -41,7 +41,6 @@ namespace NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.Builders
         private string emailAddress;
         private string username;
         private int primaryOrganisationId;
-        private bool disabled;
         private bool catalogueAgreementSigned;
         private OrganisationFunction organisationFunction;
 
@@ -92,36 +91,6 @@ namespace NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.Builders
 
         public AspNetUser Build() => CreateUserByOrganisationFunction();
 
-        internal AspNetUserBuilder WithUserId(int id)
-        {
-            userId = id;
-            return this;
-        }
-
-        internal AspNetUserBuilder WithUsername(string name)
-        {
-            username = name;
-            return this;
-        }
-
-        internal AspNetUserBuilder WithOrganisationFunction(OrganisationFunction function)
-        {
-            organisationFunction = function;
-            return this;
-        }
-
-        internal AspNetUserBuilder WithDisabled(bool isDisabled)
-        {
-            disabled = isDisabled;
-            return this;
-        }
-
-        internal AspNetUserBuilder WithCatalogueAgreementSigned(bool agreementSigned)
-        {
-            catalogueAgreementSigned = agreementSigned;
-            return this;
-        }
-
         private static AspNetUser CreateBuyer(
             string userName,
             string firstName,
@@ -139,8 +108,11 @@ namespace NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.Builders
                 PhoneNumber = phoneNumber,
                 Email = email,
                 NormalizedEmail = email.ToUpper(),
-                OrganisationFunction = OrganisationFunction.Buyer.DisplayName,
                 PrimaryOrganisationId = primaryOrganisationId,
+                AspNetUserRoles = new List<AspNetUserRole>
+                {
+                    new() { Role = new() { Name = OrganisationFunction.Buyer.DisplayName } },
+                },
             };
         }
 
@@ -161,8 +133,11 @@ namespace NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.Builders
                 PhoneNumber = phoneNumber,
                 Email = email,
                 NormalizedEmail = email.ToUpper(),
-                OrganisationFunction = OrganisationFunction.Authority.DisplayName,
                 PrimaryOrganisationId = primaryOrganisationId,
+                AspNetUserRoles = new List<AspNetUserRole>
+                {
+                    new() { Role = new() { Name = OrganisationFunction.Authority.DisplayName } },
+                },
             };
         }
 
@@ -175,11 +150,6 @@ namespace NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.Builders
 
             var user = factory(this);
             user.Id = userId;
-
-            if (disabled)
-            {
-                user.Disabled = true;
-            }
 
             if (catalogueAgreementSigned)
             {

@@ -55,12 +55,6 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils
 
         private static readonly string SqlliteConnectionStringFileSystem = $"DataSource={SqlliteFileSystemFileLocation}";
 
-        private readonly string pathToServiceInstanceViewSqlFile =
-            Path.GetFullPath(Path.Combine(
-                Directory.GetCurrentDirectory(),
-                @"../../../../../database/NHSD.GPITBuyingCatalogue.Database/Ordering/Views",
-                @"ServiceInstanceItems.sql"));
-
         private readonly IHost host;
 
         private bool disposed = false;
@@ -206,7 +200,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils
 
                 try
                 {
-                    ApplyViewsAndTables(bcDb);
+                    RolesSeedData.Initialize(bcDb);
                     UserSeedData.Initialize(bcDb);
                     BuyingCatalogueSeedData.Initialize(bcDb);
                     OrderSeedData.Initialize(bcDb);
@@ -265,20 +259,6 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils
             {
                 Environment.SetEnvironmentVariable(name, value);
             }
-        }
-
-        private void ApplyViewsAndTables(EndToEndDbContext context)
-        {
-            var serviceInstanceItemsSql = File.ReadAllText(pathToServiceInstanceViewSqlFile);
-
-            if (string.IsNullOrWhiteSpace(serviceInstanceItemsSql))
-                throw new FormatException($"{nameof(serviceInstanceItemsSql)} was empty when it shouldn't be.");
-
-            // remove ordering and catalogue two part name
-            serviceInstanceItemsSql = serviceInstanceItemsSql.Replace("ordering.", string.Empty);
-            serviceInstanceItemsSql = serviceInstanceItemsSql.Replace("catalogue.", string.Empty);
-
-            context.Database.ExecuteSqlRaw(serviceInstanceItemsSql);
         }
     }
 }

@@ -99,6 +99,8 @@
     <Folder Include="Users\TemporalTables" />
     <Folder Include="PostDeployment\OrderSeedData" />
     <Folder Include="PostDeployment\" />
+    <Folder Include="Catalogue\Types" />
+    <Folder Include="Catalogue\Stored Procedures" />
   </ItemGroup>
   <ItemGroup>
     <Build Include="Security\Users\NHSD.sql" />
@@ -259,6 +261,9 @@
     <Build Include="Ordering\TemporalTables\ContractFlags_History.sql" />
     <None Include="PostDeployment\InsertOrderTriageValues.sql" />
     <Build Include="Users\Tables\EmailDomains.sql" />
+    <Build Include="Catalogue\Types\CapabilityIds.sql" />
+    <Build Include="Catalogue\Types\EpicIds.sql" />
+    <Build Include="Catalogue\Stored Procedures\FilterCatalogueItems.sql" />
   </ItemGroup>
   <ItemGroup>
     <SqlCmdVariable Include="CREATE_EA_USER">
@@ -361,6 +366,9 @@
       <SuppressMissingDependenciesErrors>False</SuppressMissingDependenciesErrors>
       <DatabaseVariableLiteralValue>master</DatabaseVariableLiteralValue>
     </ArtifactReference>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="PostDeployment\InsertRoles.sql" />
   </ItemGroup>
   <PropertyGroup>
     <PreBuildEvent>

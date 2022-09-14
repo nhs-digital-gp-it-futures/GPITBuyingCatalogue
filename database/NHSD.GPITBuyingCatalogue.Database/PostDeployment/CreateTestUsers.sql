@@ -48,13 +48,19 @@ BEGIN
     INSERT INTO users.AspNetUsers
     (
         Id, UserName, NormalizedUserName, Email, NormalizedEmail, AccessFailedCount, ConcurrencyStamp, PhoneNumber,
-        EmailConfirmed, LockoutEnabled, PasswordHash, PhoneNumberConfirmed, SecurityStamp, TwoFactorEnabled, 
-        FirstName, LastName, PrimaryOrganisationId, OrganisationFunction, [Disabled], CatalogueAgreementSigned, AcceptedTermsOfUseDate
+        EmailConfirmed, LockoutEnabled, PasswordHash, PhoneNumberConfirmed, SecurityStamp, TwoFactorEnabled,
+        FirstName, LastName, PrimaryOrganisationId, [Disabled], CatalogueAgreementSigned, AcceptedTermsOfUseDate
     )
     VALUES
-    (@aliceId, @aliceEmail, @aliceNormalizedEmail, @aliceEmail, @aliceNormalizedEmail, 0, NEWID(), @phoneNumber, 1, 1, @alicePassword, 0, 'NNJ4SLBPCVUDKXAQXJHCBKQTFEYUAPBC', 0, 'Alice', 'Smith', @aliceOrganisationId, 'Buyer', 0, 1, GETUTCDATE()),
-    (@bobId, @bobEmail, @bobNormalizedEmail, @bobEmail, @bobNormalizedEmail, 0, NEWID(), @phoneNumber, 1, 1, @bobPassword, 0, 'OBDOPOU5YQ5WQXCR3DITKL6L5IDPYHHJ', 0, 'Bob', 'Smith', @bobOrganisationId, 'Authority', 0, 1, GETUTCDATE()),
-    (@sueId, @sueEmail, @sueNormalizedEmail, @sueEmail, @sueNormalizedEmail, 0, NEWID(), @phoneNumber, 1, 1, @suePassword, 0, 'NNJ4SLBPCVUDKXAQXJHCBKQTFEYUAPBC', 0, 'Sue', 'Smith', @sueOrganisationId, 'Buyer', 0, 1, GETUTCDATE());
+    (@aliceId, @aliceEmail, @aliceNormalizedEmail, @aliceEmail, @aliceNormalizedEmail, 0, NEWID(), @phoneNumber, 1, 1, @alicePassword, 0, 'NNJ4SLBPCVUDKXAQXJHCBKQTFEYUAPBC', 0, 'Alice', 'Smith', @aliceOrganisationId, 0, 1, GETUTCDATE()),
+    (@bobId, @bobEmail, @bobNormalizedEmail, @bobEmail, @bobNormalizedEmail, 0, NEWID(), @phoneNumber, 1, 1, @bobPassword, 0, 'OBDOPOU5YQ5WQXCR3DITKL6L5IDPYHHJ', 0, 'Bob', 'Smith', @bobOrganisationId, 0, 1, GETUTCDATE()),
+    (@sueId, @sueEmail, @sueNormalizedEmail, @sueEmail, @sueNormalizedEmail, 0, NEWID(), @phoneNumber, 1, 1, @suePassword, 0, 'NNJ4SLBPCVUDKXAQXJHCBKQTFEYUAPBC', 0, 'Sue', 'Smith', @sueOrganisationId, 0, 1, GETUTCDATE());
+
+    DECLARE @BuyerRoleId INT = (SELECT [Id] FROM users.AspNetRoles WHERE [Name] = 'Buyer');
+    DECLARE @AdminRoleId INT = (SELECT [Id] FROM users.AspNetRoles WHERE [Name] = 'Authority');
+
+    INSERT INTO users.AspNetUserRoles(RoleId, UserId) VALUES (@BuyerRoleId, @aliceId), (@BuyerRoleId, @sueId);
+    INSERT INTO users.AspNetUserRoles(RoleId, UserId) VALUES (@AdminRoleId, @bobId);
 
     SET IDENTITY_INSERT users.AspNetUsers OFF;
 

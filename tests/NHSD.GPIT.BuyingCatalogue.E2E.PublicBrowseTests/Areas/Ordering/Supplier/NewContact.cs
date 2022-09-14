@@ -162,7 +162,6 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering.Supplier
             {
                 OrderingPartyId = organisationId,
                 Created = System.DateTime.UtcNow,
-                OrderStatus = OrderStatus.InProgress,
                 IsDeleted = false,
                 Description = "This is an Order Description",
                 OrderingPartyContact = new Contact
@@ -212,7 +211,6 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering.Supplier
             {
                 OrderingPartyId = organisationId,
                 Created = System.DateTime.UtcNow,
-                OrderStatus = OrderStatus.InProgress,
                 IsDeleted = false,
                 Description = "This is an Order Description",
                 OrderingPartyContact = new Contact

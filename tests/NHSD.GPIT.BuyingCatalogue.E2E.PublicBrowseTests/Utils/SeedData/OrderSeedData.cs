@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Users.Models;
-using NHSD.GPIT.BuyingCatalogue.Framework.Calculations;
+using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Identity;
 
 namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
 {
@@ -31,6 +31,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
             AddOrderWithAddedNoContactSolutionAdditionalServiceAndAssociatedService(context);
             AddAssociatedServicesOnlyOrder(context);
             AddEmptyAssociatedServicesOnlyOrder(context);
+            AddEmptyAssociatedServicesOnlyOrderNoSupplier(context);
             AddAssociatedServicesOnlyOrderWithNoPriceOrServiceRecipients(context);
             AddAssociatedServicesOnlyOrderWithOnePopulatedOrderItem(context);
             AddOrderReadyToComplete(context);
@@ -48,7 +49,6 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
                 Id = orderId,
                 OrderingPartyId = GetOrganisationId(context),
                 Created = timeNow,
-                OrderStatus = OrderStatus.InProgress,
                 IsDeleted = false,
                 Description = "This is an Order Description",
             };
@@ -70,7 +70,6 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
                 Id = orderId,
                 OrderingPartyId = GetOrganisationId(context),
                 Created = timeNow,
-                OrderStatus = OrderStatus.InProgress,
                 IsDeleted = false,
                 Description = "This is an Order Description",
             };
@@ -92,7 +91,6 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
                 Id = orderId,
                 OrderingPartyId = GetOrganisationId(context),
                 Created = timeNow,
-                OrderStatus = OrderStatus.InProgress,
                 IsDeleted = false,
                 Description = "This is an Order Description",
                 OrderingPartyContact = new Contact
@@ -121,7 +119,6 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
                 Id = orderId,
                 OrderingPartyId = GetOrganisationId(context),
                 Created = timeNow,
-                OrderStatus = OrderStatus.InProgress,
                 IsDeleted = false,
                 Description = "This is an Order Description",
                 OrderingPartyContact = new Contact
@@ -151,7 +148,6 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
                 Id = orderId,
                 OrderingPartyId = GetOrganisationId(context),
                 Created = timeNow,
-                OrderStatus = OrderStatus.InProgress,
                 IsDeleted = false,
                 Description = "This is an Order Description",
                 OrderTriageValue = OrderTriageValue.Over250K,
@@ -189,7 +185,6 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
                 Id = orderId,
                 OrderingPartyId = GetOrganisationId(context),
                 Created = timeNow,
-                OrderStatus = OrderStatus.InProgress,
                 IsDeleted = false,
                 Description = "This is an Order Description",
                 OrderingPartyContact = new Contact
@@ -227,7 +222,6 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
                 Id = orderId,
                 OrderingPartyId = GetOrganisationId(context),
                 Created = timeNow,
-                OrderStatus = OrderStatus.InProgress,
                 IsDeleted = false,
                 Description = "This is an Order Description",
                 OrderingPartyContact = new Contact
@@ -274,7 +268,6 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
                 Id = orderId,
                 OrderingPartyId = GetOrganisationId(context),
                 Created = timeNow,
-                OrderStatus = OrderStatus.InProgress,
                 IsDeleted = false,
                 Description = "This is an Order Description",
                 OrderingPartyContact = new Contact
@@ -337,7 +330,6 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
                 Id = orderId,
                 OrderingPartyId = GetOrganisationId(context),
                 Created = timeNow,
-                OrderStatus = OrderStatus.InProgress,
                 IsDeleted = false,
                 Description = "This is an Order Description",
                 OrderingPartyContact = new Contact
@@ -401,7 +393,6 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
                 Id = orderId,
                 OrderingPartyId = GetOrganisationId(context),
                 Created = timeNow,
-                OrderStatus = OrderStatus.InProgress,
                 IsDeleted = false,
                 Description = "This is an Order Description",
                 OrderingPartyContact = new Contact
@@ -468,7 +459,6 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
                 Id = orderId,
                 OrderingPartyId = GetOrganisationId(context),
                 Created = timeNow,
-                OrderStatus = OrderStatus.InProgress,
                 IsDeleted = false,
                 Description = "This is an Order Description",
                 OrderingPartyContact = new Contact
@@ -537,7 +527,6 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
                 Id = orderId,
                 OrderingPartyId = GetOrganisationId(context),
                 Created = timeNow,
-                OrderStatus = OrderStatus.InProgress,
                 IsDeleted = false,
                 Description = "This is an Order Description",
                 OrderingPartyContact = new Contact
@@ -630,7 +619,6 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
                 Id = orderId,
                 OrderingPartyId = GetOrganisationId(context),
                 Created = timeNow,
-                OrderStatus = OrderStatus.InProgress,
                 IsDeleted = false,
                 Description = "This is an Order Description",
                 OrderingPartyContact = new Contact
@@ -725,7 +713,6 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
                 Id = orderId,
                 OrderingPartyId = GetOrganisationId(context),
                 Created = timeNow,
-                OrderStatus = OrderStatus.InProgress,
                 IsDeleted = false,
                 Description = "This is an Order Description",
                 OrderingPartyContact = new Contact
@@ -768,7 +755,6 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
                 Id = orderId,
                 OrderingPartyId = GetOrganisationId(context),
                 Created = timeNow,
-                OrderStatus = OrderStatus.InProgress,
                 IsDeleted = false,
                 Description = "This is an Order Description",
                 OrderingPartyContact = new Contact
@@ -823,7 +809,6 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
                 Id = orderId,
                 OrderingPartyId = GetOrganisationId(context),
                 Created = timeNow,
-                OrderStatus = OrderStatus.InProgress,
                 IsDeleted = false,
                 Description = "This is an Order Description",
                 OrderingPartyContact = new Contact
@@ -881,7 +866,6 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
                 Id = orderId,
                 OrderingPartyId = GetOrganisationId(context),
                 Created = timeNow,
-                OrderStatus = OrderStatus.InProgress,
                 IsDeleted = false,
                 Description = "This is an Order Description",
                 OrderingPartyContact = new Contact
@@ -956,7 +940,6 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
                 Id = orderId,
                 OrderingPartyId = GetOrganisationId(context),
                 Created = timeNow,
-                OrderStatus = OrderStatus.InProgress,
                 IsDeleted = false,
                 Description = "This is an Order Description",
                 OrderingPartyContact = new Contact
@@ -1061,7 +1044,6 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
                 AssociatedServicesOnly = true,
                 OrderingPartyId = GetOrganisationId(context),
                 Created = timeNow,
-                OrderStatus = OrderStatus.InProgress,
                 IsDeleted = false,
                 Description = "Associated services only",
                 OrderingPartyContact = new Contact
@@ -1133,7 +1115,6 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
                 AssociatedServicesOnly = true,
                 OrderingPartyId = GetOrganisationId(context),
                 Created = timeNow,
-                OrderStatus = OrderStatus.InProgress,
                 IsDeleted = false,
                 Description = "Associated services only",
                 OrderingPartyContact = new Contact
@@ -1163,6 +1144,38 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
             context.SaveChangesAs(user.Id);
         }
 
+        private static void AddEmptyAssociatedServicesOnlyOrderNoSupplier(BuyingCatalogueDbContext context)
+        {
+            const int orderId = 90019;
+            var timeNow = DateTime.UtcNow;
+
+            var order = new Order
+            {
+                Id = orderId,
+                AssociatedServicesOnly = true,
+                OrderingPartyId = GetOrganisationId(context),
+                Created = timeNow,
+                IsDeleted = false,
+                Description = "Associated services only",
+                OrderingPartyContact = new Contact
+                {
+                    FirstName = "Clark",
+                    LastName = "Kent",
+                    Email = "Clark.Kent@TheDailyPlanet.Fake",
+                    Phone = "123456789",
+                },
+                CommencementDate = timeNow.AddDays(1),
+                InitialPeriod = 6,
+                MaximumTerm = 36,
+            };
+
+            var user = GetBuyerUser(context, order.OrderingPartyId);
+
+            context.Add(order);
+
+            context.SaveChangesAs(user.Id);
+        }
+
         private static void AddAssociatedServicesOnlyOrderWithNoPriceOrServiceRecipients(BuyingCatalogueDbContext context)
         {
             const int orderId = 90016;
@@ -1174,7 +1187,6 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
                 AssociatedServicesOnly = true,
                 OrderingPartyId = GetOrganisationId(context),
                 Created = timeNow,
-                OrderStatus = OrderStatus.InProgress,
                 IsDeleted = false,
                 Description = "Associated services only",
                 OrderingPartyContact = new Contact
@@ -1225,7 +1237,6 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
                 AssociatedServicesOnly = true,
                 OrderingPartyId = GetOrganisationId(context),
                 Created = timeNow,
-                OrderStatus = OrderStatus.InProgress,
                 IsDeleted = false,
                 Description = "Associated services only",
                 OrderingPartyContact = new Contact
@@ -1286,7 +1297,6 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
                 Id = orderId,
                 OrderingPartyId = organisationId,
                 Created = timeNow,
-                OrderStatus = OrderStatus.InProgress,
                 IsDeleted = false,
                 Description = "This is an Order Description",
                 OrderingPartyContact = new Contact
@@ -1360,7 +1370,12 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
 
         private static AspNetUser GetBuyerUser(BuyingCatalogueDbContext context, int organisationId)
         {
-            return context.Users.FirstOrDefault(u => u.OrganisationFunction == "Buyer" && u.PrimaryOrganisationId == organisationId);
+            var users = context.Users.Include(u => u.AspNetUserRoles).ThenInclude(r => r.Role).Where(u => u.PrimaryOrganisationId == organisationId);
+
+            var user = users.FirstOrDefault(
+                u => u.AspNetUserRoles.Any(r => r.Role.Name == OrganisationFunction.BuyerName));
+
+            return user;
         }
     }
 }

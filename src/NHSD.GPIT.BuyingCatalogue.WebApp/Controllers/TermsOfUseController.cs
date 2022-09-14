@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
@@ -26,7 +28,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Controllers
         public async Task<IActionResult> TermsOfUse(string returnUrl = "./")
         {
             var user = await GetUserAsync();
-            return View(new TermsOfUseModel(user, settings.RevisionDate)
+            var userRoles = await GetUserRoles(user);
+            return View(new TermsOfUseModel(user, userRoles, settings.RevisionDate)
             {
                 ReturnUrl = returnUrl,
                 IsAuthenticated = User.Identity.IsAuthenticated,
@@ -67,6 +70,14 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Controllers
             var user = await userManager.FindByIdAsync(userId);
 
             return user;
+        }
+
+        private async Task<IList<string>> GetUserRoles(AspNetUser user)
+        {
+            if (user == null)
+                return Enumerable.Empty<string>().ToList();
+
+            return await userManager.GetRolesAsync(user);
         }
     }
 }

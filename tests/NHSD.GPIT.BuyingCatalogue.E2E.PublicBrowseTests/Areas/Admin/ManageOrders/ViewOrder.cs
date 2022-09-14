@@ -142,8 +142,9 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.ManageOrders
         {
             using var context = GetEndToEndDbContext();
             var order = context.Orders.Single(o => o.Id == CallOffId.Id);
+            var completionDate = order.Completed;
 
-            order.OrderStatus = OrderStatus.InProgress;
+            order.Completed = null;
             context.SaveChangesAs(UserSeedData.SueId);
 
             Driver.Navigate().Refresh();
@@ -152,7 +153,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.ManageOrders
             CommonActions.ElementIsDisplayed(ViewOrderObjects.FullOrderCsv).Should().BeFalse();
             CommonActions.ElementIsDisplayed(ViewOrderObjects.PatientOnlyCsv).Should().BeFalse();
 
-            order.OrderStatus = OrderStatus.Completed;
+            order.Completed = completionDate;
             context.SaveChangesAs(UserSeedData.SueId);
         }
 
@@ -180,7 +181,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.ManageOrders
         }
 
         [Fact]
-        public void Funding_CentalFunding_AsExpected()
+        public void Funding_CentralFunding_AsExpected()
         {
             using var context = GetEndToEndDbContext();
             var orderItem = context.Orders

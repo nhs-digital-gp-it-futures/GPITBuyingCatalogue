@@ -1,11 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using AutoFixture;
 using AutoFixture.AutoMoq;
 using AutoFixture.Idioms;
 using AutoFixture.Xunit2;
 using FluentAssertions;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using Moq;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework;
@@ -17,6 +20,7 @@ using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Identity;
 using NHSD.GPIT.BuyingCatalogue.Services.Users;
 using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.AutoFixtureCustomisations;
 using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.Builders;
+using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.SharedMocks;
 using Xunit;
 
 namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Users
@@ -78,12 +82,14 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Users
         }
 
         [Theory]
-        [InMemoryDbAutoData]
+        [InMemoryDbInlineAutoData(OrganisationFunction.AuthorityName)]
+        [InMemoryDbInlineAutoData(OrganisationFunction.BuyerName)]
         public static async Task Create_SuccessfulApplicationUserValidation_UserAddedToDbContext(
+            string role,
             string expectedToken,
             [Frozen] Mock<IPasswordResetCallback> mockPasswordResetCallback,
             [Frozen] Mock<IPasswordService> mockPasswordService,
-            [Frozen] BuyingCatalogueDbContext dbContext,
+            [Frozen] UserManager<AspNetUser> userManager,
             CreateUserService service)
         {
             var expectedUser = CreateAspNetUser();
@@ -100,49 +106,15 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Users
                 expectedUser.FirstName,
                 expectedUser.LastName,
                 expectedUser.Email,
-                OrganisationFunction.BuyerName);
+                role);
 
-            var actual = await dbContext.AspNetUsers.SingleAsync(u => u.Id == result.Id);
-
-            actual.PrimaryOrganisationId.Should().Be(expectedUser.PrimaryOrganisationId);
-            actual.FirstName.Should().Be(expectedUser.FirstName);
-            actual.LastName.Should().Be(expectedUser.LastName);
-            actual.Email.Should().Be(expectedUser.Email);
-            actual.OrganisationFunction.Should().Be("Buyer");
-        }
-
-        [Theory]
-        [InMemoryDbAutoData]
-        public static async Task Create_SuccessfulApplicationUserValidation_AdminUser_UserAddedToDbContext(
-            string expectedToken,
-            [Frozen] Mock<IPasswordResetCallback> mockPasswordResetCallback,
-            [Frozen] Mock<IPasswordService> mockPasswordService,
-            [Frozen] BuyingCatalogueDbContext dbContext,
-            CreateUserService service)
-        {
-            var expectedUser = CreateAspNetUser();
-
-            mockPasswordResetCallback.Setup(p => p.GetPasswordResetCallback(It.IsAny<PasswordResetToken>()))
-                .Returns(new Uri("http://www.test.com"));
-
-            mockPasswordService.Setup(
-                p => p.GeneratePasswordResetTokenAsync(It.Is<string>(e => e == expectedUser.Email)))
-                .ReturnsAsync(new PasswordResetToken(expectedToken, expectedUser));
-
-            var result = await service.Create(
-                expectedUser.PrimaryOrganisationId,
-                expectedUser.FirstName,
-                expectedUser.LastName,
-                expectedUser.Email,
-                OrganisationFunction.AuthorityName);
-
-            var actual = await dbContext.AspNetUsers.SingleAsync(u => u.Id == result.Id);
+            var actual = await userManager.Users.Include(u => u.AspNetUserRoles).ThenInclude(r => r.Role).SingleAsync(u => u.Id == result.Id);
 
             actual.PrimaryOrganisationId.Should().Be(expectedUser.PrimaryOrganisationId);
             actual.FirstName.Should().Be(expectedUser.FirstName);
             actual.LastName.Should().Be(expectedUser.LastName);
             actual.Email.Should().Be(expectedUser.Email);
-            actual.OrganisationFunction.Should().Be("Authority");
+            actual.AspNetUserRoles.Select(r => r.Role).Should().Contain(x => x.Name == role);
         }
 
         [Theory]

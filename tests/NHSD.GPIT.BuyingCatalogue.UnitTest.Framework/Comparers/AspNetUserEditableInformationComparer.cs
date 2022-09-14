@@ -40,7 +40,6 @@ namespace NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.Comparers
                 && string.Equals(original.UserName, comparison.UserName, StringComparison.Ordinal)
                 && string.Equals(original.NormalizedUserName, comparison.NormalizedUserName, StringComparison.Ordinal)
                 && Equals(original.PrimaryOrganisationId, comparison.PrimaryOrganisationId)
-                && Equals(original.OrganisationFunction, comparison.OrganisationFunction)
                 && Equals(original.Disabled, comparison.Disabled)
                 && Equals(original.CatalogueAgreementSigned, comparison.CatalogueAgreementSigned);
         }
@@ -53,7 +52,6 @@ namespace NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.Comparers
                 obj.PhoneNumber,
                 obj.Email,
                 obj.PrimaryOrganisationId,
-                obj.OrganisationFunction,
                 obj.Disabled,
                 obj.CatalogueAgreementSigned);
         }

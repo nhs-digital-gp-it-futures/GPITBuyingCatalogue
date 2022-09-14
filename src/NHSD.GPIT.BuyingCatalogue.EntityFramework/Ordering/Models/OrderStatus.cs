@@ -9,5 +9,8 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models
 
         [EnumMember(Value = "In progress")]
         InProgress = 2,
+
+        [EnumMember(Value = "Deleted")]
+        Deleted = 3,
     }
 }

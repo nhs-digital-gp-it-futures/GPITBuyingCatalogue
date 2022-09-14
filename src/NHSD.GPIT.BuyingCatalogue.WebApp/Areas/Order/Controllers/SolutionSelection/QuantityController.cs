@@ -128,14 +128,16 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers.SolutionSelec
                 return View(ServiceRecipientViewName, model);
             }
 
-            await SetPracticeSizes(model);
-
             var solution = order.GetSolution();
 
             if (solution?.OrderItemPrice?.ProvisioningType is ProvisioningType.Patient
                 && solution.CatalogueItemId != catalogueItemId)
             {
-                SetPracticeSizesFromSolution(model, solution);
+                await SetPracticeSizes(model, solution);
+            }
+            else
+            {
+                await SetPracticeSizes(model);
             }
 
             return View(ServiceRecipientViewName, model);
@@ -158,7 +160,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers.SolutionSelec
                 .Select(x => new OrderItemRecipientQuantityDto
                 {
                     OdsCode = x.OdsCode,
-                    Quantity = x.Quantity > 0
+                    Quantity = string.IsNullOrWhiteSpace(x.InputQuantity)
                         ? x.Quantity
                         : int.Parse(x.InputQuantity),
                 })
@@ -176,35 +178,29 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers.SolutionSelec
             return RedirectToAction(route.ActionName, route.ControllerName, route.RouteValues);
         }
 
-        private static void SetPracticeSizesFromSolution(SelectServiceRecipientQuantityModel model, OrderItem solution)
+        private async Task SetPracticeSizes(SelectServiceRecipientQuantityModel model, OrderItem solution = null)
         {
             foreach (var serviceRecipient in model.ServiceRecipients)
             {
-                if (serviceRecipient.Quantity != 0
-                    || !string.IsNullOrWhiteSpace(serviceRecipient.InputQuantity))
+                if (serviceRecipient.Quantity > 0)
                 {
                     continue;
                 }
 
-                var existing = solution.OrderItemRecipients
-                    .FirstOrDefault(x => x.OdsCode == serviceRecipient.OdsCode);
+                var existing = solution?.OrderItemRecipients.FirstOrDefault(x => x.OdsCode == serviceRecipient.OdsCode);
 
                 if (existing?.Quantity != null)
                 {
                     serviceRecipient.InputQuantity = $"{existing.Quantity}";
                 }
-            }
-        }
-
-        private async Task SetPracticeSizes(SelectServiceRecipientQuantityModel model)
-        {
-            foreach (var serviceRecipient in model.ServiceRecipients)
-            {
-                var quantity = await gpPracticeCache.GetNumberOfPatients(serviceRecipient.OdsCode);
-
-                if (quantity.HasValue)
+                else
                 {
-                    serviceRecipient.Quantity = quantity.Value;
+                    var quantity = await gpPracticeCache.GetNumberOfPatients(serviceRecipient.OdsCode);
+
+                    if (quantity.HasValue)
+                    {
+                        serviceRecipient.InputQuantity = $"{quantity.Value}";
+                    }
                 }
             }
 

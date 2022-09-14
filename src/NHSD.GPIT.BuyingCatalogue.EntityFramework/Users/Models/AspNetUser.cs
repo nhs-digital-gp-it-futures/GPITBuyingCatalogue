@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations.Schema;
+using System.Linq;
 using Microsoft.AspNetCore.Identity;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Organisations.Models;
 
@@ -18,8 +20,6 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Users.Models
         public int PrimaryOrganisationId { get; set; }
 
         public Organisation PrimaryOrganisation { get; set; }
-
-        public string OrganisationFunction { get; set; }
 
         public bool Disabled { get; set; }
 
@@ -51,7 +51,5 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Users.Models
 
         public bool HasAcceptedLatestTermsOfUse(DateTime revisionDate)
             => AcceptedTermsOfUseDate.GetValueOrDefault() >= revisionDate;
-
-        public bool IsBuyer() => string.Equals(OrganisationFunction, "Buyer", StringComparison.OrdinalIgnoreCase);
     }
 }

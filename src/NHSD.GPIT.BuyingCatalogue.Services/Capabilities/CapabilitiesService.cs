@@ -39,7 +39,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Capabilities
             => dbContext
                 .CapabilityCategories
                 .Include(c => c.Capabilities)
-                .ThenInclude(c => c.Epics.Where(e => e.IsActive && e.CompliancyLevel == CompliancyLevel.May))
+                .ThenInclude(c => c.Epics.Where(e => e.IsActive && (e.CompliancyLevel == CompliancyLevel.May || e.CompliancyLevel == CompliancyLevel.Must)))
                 .ToListAsync();
 
         public async Task AddCapabilitiesToCatalogueItem(CatalogueItemId catalogueItemId, SaveCatalogueItemCapabilitiesModel model)
@@ -51,7 +51,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Capabilities
             var catalogueItemEpics = await dbContext.CatalogueItemEpics.Where(e => e.CatalogueItemId == catalogueItemId).ToListAsync();
 
             AddCapabilities(catalogueItemId, catalogueItemCapabilities, model);
-            await AddCapabilityEpics(catalogueItemId, catalogueItemEpics, model);
+            AddCapabilityEpics(catalogueItemId, catalogueItemEpics, model);
 
             await dbContext.SaveChangesAsync();
         }
@@ -76,14 +76,10 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Capabilities
             }
         }
 
-        private async Task AddCapabilityEpics(CatalogueItemId catalogueItemId, List<CatalogueItemEpic> existingEpics, SaveCatalogueItemCapabilitiesModel model)
+        private void AddCapabilityEpics(CatalogueItemId catalogueItemId, List<CatalogueItemEpic> existingEpics, SaveCatalogueItemCapabilitiesModel model)
         {
-            var capabilitiesWithMustEpics = (await GetCapabilitiesWithMustEpics(model.Capabilities.Select(c => c.Key).ToArray()))
-                .ToDictionary(c => c.Id, c => c.Epics.Select(e => e.Id).ToArray());
-
             var capabilitiesAndEpics = model
                 .Capabilities
-                .Concat(capabilitiesWithMustEpics)
                 .GroupBy(kvp => kvp.Key, kvp => kvp.Value)
                 .ToDictionary(
                     kvp => kvp.Key,
@@ -125,8 +121,5 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Capabilities
             if (staleEpics.Any())
                 dbContext.CatalogueItemEpics.RemoveRange(staleEpics);
         }
-
-        private Task<List<Capability>> GetCapabilitiesWithMustEpics(params int[] capabilityIds)
-            => dbContext.Capabilities.Include(c => c.Epics.Where(e => e.IsActive && e.CompliancyLevel == CompliancyLevel.Must)).Where(c => capabilityIds.Contains(c.Id)).ToListAsync();
     }
 }
