@@ -9,6 +9,19 @@ DECLARE @AcceptanceCriteria TABLE(
 	[Order] INT NOT NULL
 );
 
+-----------------------------------------------------------------
+-- Add Default plan if one doesn't exist
+-----------------------------------------------------------------
+IF NOT EXISTS(SELECT * FROM ordering.ImplementationPlans WHERE IsDefault = 1)
+BEGIN
+	INSERT ordering.ImplementationPlans (IsDefault, LastUpdated) 
+	VALUES
+		(1, GETUTCDATE());
+END
+-----------------------------------------------------------------
+-- Get Default Plan Id
+------------------------------------------------------------------
+
 DECLARE @DefaultPlanId INT =			
 (SELECT TOP 1
 	Id
@@ -17,6 +30,11 @@ WHERE
 	IP.IsDefault = 1
 ORDER BY
 	IP.LastUpdated DESC);
+
+-----------------------------------------------------------------
+-- Milestone and Acceptance Criteria Content. Match AC to Milestones
+-- By their Order value (1, 2 etc)
+------------------------------------------------------------------
 
 INSERT INTO @Milestones
 VALUES
