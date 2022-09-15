@@ -156,10 +156,11 @@ BEGIN
 
 		INSERT INTO
 		Ordering.ImplementationPlanAcceptanceCriteria
-		(ImplementationPlanMilestoneId, [Description])
+		(ImplementationPlanMilestoneId, [Description], LastUpdated)
 		SELECT
 			MI.Id,
-			AC.[Description]		
+			AC.[Description],
+            GETUTCDATE()
 		FROM @AcceptanceCriteria AC
 		INNER JOIN @MilestoneIds MI
 			ON MI.[Order] = AC.[Order];
