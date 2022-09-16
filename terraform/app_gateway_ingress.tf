@@ -8,7 +8,7 @@ module "appgateway" {
   ag_name_fragment        = "${var.project}-${var.environment}"
   ag_capacity             = local.shortenv != "preprod" && local.shortenv != "production" ? "1" : "2"
   ag_subnet_id            = azurerm_subnet.gateway.id
-  core_env                = var.core_env
+  core_env                = local.core_env
   core_url                = var.coreurl
   ssl_cert_name           = var.certname
   ssl_cert_secret_id      = trimsuffix(data.azurerm_key_vault_secret.ssl_cert.id, data.azurerm_key_vault_secret.ssl_cert.version)

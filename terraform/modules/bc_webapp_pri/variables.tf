@@ -38,29 +38,12 @@ variable "repository_name" {
 variable "always_on" {
   type = string
 }
-variable "db_name_main" {
-  type = string
-}
-
-variable "auth_pwd" {
-  type      = string
-  sensitive = true
-}
 
 variable "cert_name" {
   type      = string
 }
-variable "webapp_cname_url" {
-  type      = string
-}
-variable "aspnet_environment" {
-  type = string
-}
-variable "sqlserver_name" {
-  type = string
-}
 
-variable "sqlserver_rg" {
+variable "aspnet_environment" {
   type = string
 }
 
@@ -120,10 +103,33 @@ variable "notify_api_key" {
   type = string
 }
 
+# SQL Variables
+variable "sqlserver_name" {
+  type = string
+}
+
+variable "sqlserver_rg" {
+  type = string
+}
+
+variable "db_name_main" {
+  type = string
+}
+
+variable "sql_admin_username" {
+  type = string
+}
+
+variable "sql_admin_password" {
+  type      = string
+  sensitive = true
+}
+
 variable "hangfire_username" {
   type = string
 }
 
 variable "hangfire_password" {
   type = string
+  sensitive = true
 }

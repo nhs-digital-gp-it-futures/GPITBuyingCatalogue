@@ -82,8 +82,5 @@ variable "notify_api_key" {
 
 variable "primary_env" {
   type = string
-}
-
-variable "core_env" {
-  type = string
+  default = ""
 }

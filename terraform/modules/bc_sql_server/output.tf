@@ -9,3 +9,8 @@ output "sql_server_id" {
     value = join("", azurerm_sql_server.sql_server[*].id)
     sensitive   = false
 }
+
+output "sql_resource_group" {
+    description = "Resource group that the SQL instance belong to"
+    value       = azurerm_resource_group.sql-server.name
+}

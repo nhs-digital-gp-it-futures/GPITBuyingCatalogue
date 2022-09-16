@@ -6,18 +6,21 @@ resource "azurerm_app_service_certificate" "webapp" {
 }
 
 resource "azurerm_app_service_custom_hostname_binding" "webapp" {
-  hostname            = local.gw_webappURL
+  hostname            = var.coreurl
   app_service_name    = module.webapp.webapp_name
   resource_group_name = azurerm_resource_group.webapp.name
+  count = local.is_dr ? 1 : 0
 
   depends_on = [
     module.webapp,
   ]
 }
+
 resource "azurerm_app_service_certificate_binding" "webapp" {
-  hostname_binding_id = azurerm_app_service_custom_hostname_binding.webapp.id
+  hostname_binding_id = join("", azurerm_app_service_custom_hostname_binding.webapp[*].id)
   certificate_id      = azurerm_app_service_certificate.webapp.id
   ssl_state           = "SniEnabled"
+  count = local.is_dr ? 1 : 0
   
   depends_on = [
     azurerm_app_service_certificate.webapp,
