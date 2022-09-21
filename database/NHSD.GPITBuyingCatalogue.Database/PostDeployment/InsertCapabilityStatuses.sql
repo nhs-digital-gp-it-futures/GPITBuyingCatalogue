@@ -1,7 +1,7 @@
 ﻿MERGE INTO catalogue.CapabilityStatus AS TARGET
 USING (
 VALUES 
-(1, 'Effective')
+    (1, 'Effective')
 )
 AS SOURCE ([Id], [Name])
 ON TARGET.[Id] = SOURCE.[Id]
@@ -9,7 +9,6 @@ ON TARGET.[Id] = SOURCE.[Id]
 WHEN MATCHED 
 THEN UPDATE SET
 TARGET.[Name] = SOURCE.[Name]
-
     
 WHEN NOT MATCHED BY TARGET THEN
 INSERT ([Id], [Name])
