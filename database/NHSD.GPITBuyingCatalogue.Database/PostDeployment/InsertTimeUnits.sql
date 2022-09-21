@@ -7,7 +7,7 @@ VALUES
 AS SOURCE ([Id], [Name], [Description])
 ON TARGET.[Id] = SOURCE.[Id]
 
-WHEN MATCHED 
+WHEN MATCHED AND TARGET.[Name] <> SOURCE.[Name] OR TARGET.[Description] <> SOURCE.[Description]
 THEN UPDATE SET
 TARGET.[Name] = SOURCE.[Name],
 TARGET.[Description] = SOURCE.[Description]
