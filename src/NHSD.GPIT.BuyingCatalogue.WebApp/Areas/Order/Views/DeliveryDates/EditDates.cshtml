@@ -1,0 +1,72 @@
+﻿@using NHSD.GPIT.BuyingCatalogue.EntityFramework.Extensions
+@using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers.Contracts
+@using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models
+@model NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.Contracts.DeliveryDates.EditDatesModel
+@{
+    ViewBag.Title = $"Planned delivery dates for {Model.CatalogueItemType.Name()}";
+}
+
+<partial name="Partials/_BackLink" model="Model" />
+
+<div class="nhsuk-grid-row">
+    <div class="nhsuk-grid-column-full">
+        <nhs-validation-summary />
+
+        <nhs-page-title title="@ViewBag.Title"
+                        caption="@Model.Description"
+                        advice="Make sure the correct planned delivery dates have been applied for each of your Service Recipients." />
+                        
+        @if (Model.DeliveryDate != null)
+        {
+            <p>
+                <strong>Planned delivery date for the majority of Service Recipients:</strong>
+                @($"{Model.DeliveryDate:d MMMM yyyy}")
+                @if (Model.CatalogueItemType == CatalogueItemType.Solution)
+                {
+                    <span>&nbsp;</span>
+                    <a href="@Url.Action(
+                                 nameof(DeliveryDatesController.SelectDate),
+                                 typeof(DeliveryDatesController).ControllerName(),
+                                 new { Model.InternalOrgId, Model.CallOffId })">Edit</a>
+                }
+            </p>
+            <hr/>
+        }
+
+        <form method="post">
+            <input type="hidden" asp-for="@Model.BackLink" />
+            <input type="hidden" asp-for="@Model.CatalogueItemType" />
+            <input type="hidden" asp-for="@Model.Description" />
+            <input type="hidden" asp-for="@Model.DeliveryDate" />
+            
+            <nhs-table>
+                <nhs-table-column>Service Recipient</nhs-table-column>
+                <nhs-table-column>ODS Code</nhs-table-column>
+                <nhs-table-column>Planned Delivery Date</nhs-table-column>
+                @for (var i = 0; i < Model.Recipients.Length; i++)
+                {
+                    <nhs-table-row-container>
+                        <nhs-table-cell>
+                            <input type="hidden" asp-for="@Model.Recipients[i].Description" />
+                            @Model.Recipients[i].Description
+                        </nhs-table-cell>
+                        <nhs-table-cell>
+                            <input type="hidden" asp-for="@Model.Recipients[i].OdsCode" />
+                            @Model.Recipients[i].OdsCode
+                        </nhs-table-cell>
+                        <nhs-table-cell>
+                            <nhs-fieldset-form-label asp-for="@Model">
+                                <nhs-date-input asp-for="@Model.Recipients[i]"
+                                                day="@Model.Recipients[i].Day"
+                                                month="@Model.Recipients[i].Month"
+                                                year="@Model.Recipients[i].Year"/>
+                            </nhs-fieldset-form-label>
+                        </nhs-table-cell>
+                    </nhs-table-row-container>
+                }
+            </nhs-table>
+
+            <nhs-submit-button />
+        </form>
+    </div>
+</div>

@@ -10,6 +10,7 @@ using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Validators;
+using NHSD.GPIT.BuyingCatalogue.WebApp.Validation.Shared;
 using Xunit;
 using Objects = NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.Objects;
 
@@ -76,7 +77,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering
 
             CommonActions.ElementShowingCorrectErrorMessage(
                 Objects.Ordering.CommencementDate.CommencementDateErrorMessage,
-                $"Error:{CommencementDateModelValidator.CommencementDateDayMissingErrorMessage}").Should().BeTrue();
+                $"Error:{DateInputModelValidator.DayMissingErrorMessage}").Should().BeTrue();
         }
 
         [Fact]
@@ -99,7 +100,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering
 
             CommonActions.ElementShowingCorrectErrorMessage(
                 Objects.Ordering.CommencementDate.CommencementDateErrorMessage,
-                $"Error:{CommencementDateModelValidator.CommencementDateMonthMissingErrorMessage}").Should().BeTrue();
+                $"Error:{DateInputModelValidator.MonthMissingErrorMessage}").Should().BeTrue();
         }
 
         [Fact]
@@ -123,7 +124,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering
 
             CommonActions.ElementShowingCorrectErrorMessage(
                 Objects.Ordering.CommencementDate.CommencementDateErrorMessage,
-                $"Error:{CommencementDateModelValidator.CommencementDateYearMissingErrorMessage}").Should().BeTrue();
+                $"Error:{DateInputModelValidator.YearMissingErrorMessage}").Should().BeTrue();
         }
 
         [Theory]
@@ -151,7 +152,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering
 
             CommonActions.ElementShowingCorrectErrorMessage(
                 Objects.Ordering.CommencementDate.CommencementDateErrorMessage,
-                $"Error:{CommencementDateModelValidator.CommencementDateYearTooShortErrorMessage}").Should().BeTrue();
+                $"Error:{DateInputModelValidator.YearWrongLengthErrorMessage}").Should().BeTrue();
         }
 
         [Theory]
@@ -178,7 +179,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering
 
             CommonActions.ElementShowingCorrectErrorMessage(
                 Objects.Ordering.CommencementDate.CommencementDateErrorMessage,
-                $"Error:{CommencementDateModelValidator.CommencementDateInvalidErrorMessage}").Should().BeTrue();
+                $"Error:{DateInputModelValidator.DateInvalidErrorMessage}").Should().BeTrue();
         }
 
         [Fact]

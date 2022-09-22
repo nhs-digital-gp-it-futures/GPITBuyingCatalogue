@@ -9,12 +9,14 @@ using AutoFixture.Xunit2;
 using FluentAssertions;
 using Microsoft.EntityFrameworkCore;
 using Moq;
+using MoreLinq;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Identity;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Organisations.Models;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Models;
+using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Orders;
 using NHSD.GPIT.BuyingCatalogue.Services.Orders;
 using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.AutoFixtureCustomisations;
 using Xunit;
@@ -266,6 +268,71 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Orders
             await service.SetSolutionId(order.OrderingParty.InternalIdentifier, order.CallOffId, solutionId);
 
             (await context.Orders.SingleAsync(x => x.Id == order.Id)).SolutionId.Should().Be(solutionId);
+        }
+
+        [Theory]
+        [InMemoryDbAutoData]
+        public static async Task SetDeliveryDate_UpdatesDatabase(
+            Order order,
+            DateTime deliveryDate,
+            [Frozen] BuyingCatalogueDbContext context,
+            OrderService service)
+        {
+            order.DeliveryDate = null;
+            order.OrderItems.ForEach(x => x.OrderItemRecipients.ForEach(r => r.DeliveryDate = null));
+
+            context.Orders.Add(order);
+
+            await context.SaveChangesAsync();
+
+            var dbOrder = await context.Orders.SingleAsync(x => x.Id == order.Id);
+
+            dbOrder.DeliveryDate.Should().BeNull();
+            dbOrder.OrderItems.ForEach(x => x.OrderItemRecipients.ForEach(r => r.DeliveryDate.Should().BeNull()));
+
+            await service.SetDeliveryDate(order.OrderingParty.InternalIdentifier, order.CallOffId, deliveryDate);
+
+            dbOrder = await context.Orders.SingleAsync(x => x.Id == order.Id);
+
+            dbOrder.DeliveryDate.Should().Be(deliveryDate);
+            dbOrder.OrderItems.ForEach(x => x.OrderItemRecipients.ForEach(r => r.DeliveryDate.Should().Be(deliveryDate)));
+        }
+
+        [Theory]
+        [InMemoryDbAutoData]
+        public static async Task SetDeliveryDates_UpdatesDatabase(
+            Order order,
+            [Frozen] BuyingCatalogueDbContext context,
+            OrderService service)
+        {
+            var initialDate = DateTime.Today;
+            var newDate = initialDate.AddDays(1);
+
+            order.DeliveryDate = initialDate;
+            order.OrderItems.ForEach(x => x.OrderItemRecipients.ForEach(r => r.DeliveryDate = initialDate));
+
+            context.Orders.Add(order);
+
+            await context.SaveChangesAsync();
+
+            var dbOrder = await context.Orders.SingleAsync(x => x.Id == order.Id);
+
+            dbOrder.DeliveryDate.Should().Be(initialDate);
+            dbOrder.OrderItems.ForEach(x => x.OrderItemRecipients.ForEach(r => r.DeliveryDate.Should().Be(initialDate)));
+
+            var orderItem = order.OrderItems.First();
+            var catalogueItemId = orderItem.CatalogueItemId;
+
+            var deliveryDates = orderItem.OrderItemRecipients
+                .Select(x => new OrderDeliveryDateDto(x.OdsCode, newDate))
+                .ToList();
+
+            await service.SetDeliveryDates(order.Id, catalogueItemId, deliveryDates);
+
+            dbOrder = await context.Orders.SingleAsync(x => x.Id == order.Id);
+            orderItem = dbOrder.OrderItem(catalogueItemId);
+
+            orderItem.OrderItemRecipients.ForEach(x => x.DeliveryDate.Should().Be(newDate));
         }
     }
 }

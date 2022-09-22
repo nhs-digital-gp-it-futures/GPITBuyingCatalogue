@@ -28,6 +28,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.Order
 
         public TaskProgress FundingSource { get; set; } = TaskProgress.CannotStart;
 
+        public TaskProgress DeliveryDates { get; set; } = TaskProgress.CannotStart;
+
         public TaskProgress ImplementationPlan { get; set; } = TaskProgress.CannotStart;
 
         public TaskProgress AssociatedServiceBilling { get; set; } = TaskProgress.CannotStart;
@@ -120,13 +122,33 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.Order
 
         private void SetSectionThreeStatus(EntityFramework.Ordering.Models.Order order)
         {
+            var allDeliveryDatesEntered = order.OrderItems
+                .SelectMany(x => x.OrderItemRecipients)
+                .All(x => x.DeliveryDate != null);
+
+            var anyDeliveryDatesEntered = order.OrderItems
+                .SelectMany(x => x.OrderItemRecipients)
+                .Any(x => x.DeliveryDate != null);
+
+            // Planned Delivery Dates
+            if (FundingSource is not TaskProgress.Completed && anyDeliveryDatesEntered)
+            {
+                DeliveryDates = TaskProgress.InProgress;
+            }
+            else if (FundingSource is TaskProgress.Completed)
+            {
+                DeliveryDates = allDeliveryDatesEntered
+                    ? TaskProgress.Completed
+                    : (anyDeliveryDatesEntered ? TaskProgress.InProgress : TaskProgress.NotStarted);
+            }
+
             // Default Implementation Plan
-            if (FundingSource is not TaskProgress.Completed
+            if (DeliveryDates is not TaskProgress.Completed
                 && order.ContractFlags?.UseDefaultImplementationPlan != null)
             {
                 ImplementationPlan = TaskProgress.InProgress;
             }
-            else if (FundingSource is TaskProgress.Completed)
+            else if (DeliveryDates is TaskProgress.Completed)
             {
                 ImplementationPlan = order.ContractFlags?.UseDefaultImplementationPlan != null
                     ? TaskProgress.Completed
@@ -158,13 +180,13 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.Order
                 AssociatedServiceBilling = order.ContractFlags?.HasSpecificRequirements switch
                 {
                     null when order.ContractFlags?.UseDefaultBilling is null => TaskProgress.NotStarted,
-                    null when order.ContractFlags?.UseDefaultBilling is not null => TaskProgress.InProgress,
+                    null => TaskProgress.InProgress,
                     _ => TaskProgress.Completed,
                 };
             }
 
             // Data Processing
-            if ((FundingSource is not TaskProgress.Completed
+            if ((DeliveryDates is not TaskProgress.Completed
                     || (AssociatedServiceBilling is not TaskProgress.Completed
                         && AssociatedServiceBilling is not TaskProgress.NotApplicable))
                 && order.ContractFlags?.UseDefaultDataProcessing != null)

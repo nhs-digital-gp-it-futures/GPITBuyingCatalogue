@@ -83,6 +83,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
                 .Where(o =>
                     o.Id == callOffId.Id
                     && o.OrderingParty.InternalIdentifier == internalOrgId)
+                .Include(x => x.OrderingParty)
                 .Include(x => x.Solution)
                 .Include(o => o.OrderItems)
                     .ThenInclude(i => i.CatalogueItem)
@@ -90,9 +91,9 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
                     .ThenInclude(i => i.OrderItemFunding)
                 .Include(o => o.OrderItems)
                     .ThenInclude(i => i.OrderItemPrice)
-                    .ThenInclude(ip => ip.OrderItemPriceTiers.OrderBy(ip => ip.LowerRange))
+                    .ThenInclude(ip => ip.OrderItemPriceTiers.OrderBy(t => t.LowerRange))
                 .Include(o => o.OrderItems)
-                    .ThenInclude(i => i.OrderItemRecipients.OrderBy(i => i.Recipient.Name))
+                    .ThenInclude(i => i.OrderItemRecipients.OrderBy(oir => oir.Recipient.Name))
                     .ThenInclude(r => r.Recipient)
                 .AsSplitQuery()
                 .SingleOrDefaultAsync();
@@ -354,6 +355,43 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
                 .SingleAsync();
 
             order.SolutionId = solutionId;
+
+            await dbContext.SaveChangesAsync();
+        }
+
+        public async Task SetDeliveryDate(string internalOrgId, CallOffId callOffId, DateTime deliveryDate)
+        {
+            var order = await dbContext.Orders
+                .Where(o => o.Id == callOffId.Id
+                    && o.OrderingParty.InternalIdentifier == internalOrgId)
+                .SingleAsync();
+
+            order.DeliveryDate = deliveryDate;
+
+            var recipients = await dbContext.OrderItemRecipients
+                .Where(x => x.OrderId == order.Id)
+                .ToListAsync();
+
+            recipients.ForEach(x => x.DeliveryDate = deliveryDate);
+
+            await dbContext.SaveChangesAsync();
+        }
+
+        public async Task SetDeliveryDates(int orderId, CatalogueItemId catalogueItemId, List<OrderDeliveryDateDto> deliveryDates)
+        {
+            var recipients = await dbContext.OrderItemRecipients
+                .Where(x => x.OrderId == orderId && x.CatalogueItemId == catalogueItemId)
+                .ToListAsync();
+
+            foreach (var recipient in recipients)
+            {
+                var dto = deliveryDates.FirstOrDefault(x => x.OdsCode == recipient.OdsCode);
+
+                if (dto != null)
+                {
+                    recipient.DeliveryDate = dto.DeliveryDate;
+                }
+            }
 
             await dbContext.SaveChangesAsync();
         }
