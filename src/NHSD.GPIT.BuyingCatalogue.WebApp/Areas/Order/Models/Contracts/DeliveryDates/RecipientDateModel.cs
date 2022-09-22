@@ -1,4 +1,5 @@
-﻿using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
+﻿using System;
+using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Models.Shared;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.Contracts.DeliveryDates
@@ -9,15 +10,19 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.Contracts.Delivery
         {
         }
 
-        public RecipientDateModel(OrderItemRecipient recipient)
+        public RecipientDateModel(OrderItemRecipient recipient, DateTime commencementDate)
         {
             OdsCode = recipient.OdsCode;
             Description = recipient.Recipient.Name;
+            CommencementDate = commencementDate;
+
             SetDateFields(recipient.DeliveryDate);
         }
 
         public string OdsCode { get; set; }
 
         public string Description { get; set; }
+
+        public DateTime CommencementDate { get; set; }
     }
 }

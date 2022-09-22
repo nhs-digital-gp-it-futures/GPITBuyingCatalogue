@@ -41,8 +41,8 @@
             
             <nhs-table>
                 <nhs-table-column>Service Recipient</nhs-table-column>
-                <nhs-table-column>ODS Code</nhs-table-column>
-                <nhs-table-column>Planned Delivery Date</nhs-table-column>
+                <nhs-table-column>ODS code</nhs-table-column>
+                <nhs-table-column>Planned delivery date</nhs-table-column>
                 @for (var i = 0; i < Model.Recipients.Length; i++)
                 {
                     <nhs-table-row-container>
@@ -55,6 +55,7 @@
                             @Model.Recipients[i].OdsCode
                         </nhs-table-cell>
                         <nhs-table-cell>
+                            <input type="hidden" asp-for="@Model.Recipients[i].CommencementDate" />
                             <nhs-fieldset-form-label asp-for="@Model">
                                 <nhs-date-input asp-for="@Model.Recipients[i]"
                                                 day="@Model.Recipients[i].Day"

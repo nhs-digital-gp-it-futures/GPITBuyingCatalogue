@@ -31,6 +31,28 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Validators.Cont
         }
 
         [Theory]
+        [CommonAutoData]
+        public static void Validate_DateBeforeCommencementDate_ThrowsValidationError(
+            RecipientDateModel model,
+            RecipientDateModelValidator validator)
+        {
+            var date = DateTime.UtcNow.AddDays(1);
+
+            model.CommencementDate = date.AddDays(1);
+            model.Day = $"{date.Day}";
+            model.Month = $"{date.Month}";
+            model.Year = $"{date.Year}";
+
+            var result = validator.TestValidate(model);
+
+            var errorMessage = string.Format(
+                RecipientDateModelValidator.DeliveryDateBeforeCommencementDateErrorMessage,
+                $"{model.CommencementDate:dd MMMM yyyy}");
+
+            result.ShouldHaveValidationErrorFor(x => x.Day).WithErrorMessage(errorMessage);
+        }
+
+        [Theory]
         [CommonInlineAutoData(1)]
         [CommonInlineAutoData(10)]
         [CommonInlineAutoData(100)]
@@ -41,6 +63,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Validators.Cont
         {
             var date = DateTime.UtcNow.AddDays(daysToAdd);
 
+            model.CommencementDate = date.AddDays(-1);
             model.Day = $"{date.Day}";
             model.Month = $"{date.Month}";
             model.Year = $"{date.Year}";

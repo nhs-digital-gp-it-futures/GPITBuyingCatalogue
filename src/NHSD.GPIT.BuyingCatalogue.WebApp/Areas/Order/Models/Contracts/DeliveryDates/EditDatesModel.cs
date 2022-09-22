@@ -24,7 +24,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.Contracts.Delivery
             Description = orderItem.CatalogueItem.Name;
 
             Recipients = orderItem.OrderItemRecipients
-                .Select(x => new RecipientDateModel(x))
+                .Select(x => new RecipientDateModel(x, order.CommencementDate!.Value))
                 .ToArray();
         }
 
