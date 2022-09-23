@@ -12,8 +12,6 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models
             && OrderItemPrice != null
             && TotalQuantity > 0;
 
-        public bool IsForcedFunding => FundingType.IsForcedFunding();
-
         public OrderItemFundingType FundingType => OrderItemFunding?.OrderItemFundingType ?? OrderItemFundingType.None;
 
         public string FundingTypeDescription

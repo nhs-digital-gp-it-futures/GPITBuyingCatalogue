@@ -446,6 +446,39 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
                             new() { CapabilityId = 1, EpicId = "C1E2", StatusId = 2 },
                         },
                     PublishedStatus = PublicationStatus.Published,
+                    CataloguePrices = new List<CataloguePrice>
+                    {
+                        new()
+                        {
+                            CataloguePriceId = 31,
+                            CatalogueItemId = new CatalogueItemId(99999, "003"),
+                            ProvisioningType = ProvisioningType.Patient,
+                            CataloguePriceType = CataloguePriceType.Flat,
+                            PublishedStatus = PublicationStatus.Published,
+                            CataloguePriceCalculationType = CataloguePriceCalculationType.SingleFixed,
+                            PricingUnit = new PricingUnit
+                            {
+                                Id = 600,
+                                RangeDescription = "Test Tier",
+                                Description = "per test patient",
+                            },
+                            TimeUnit = TimeUnit.PerYear,
+                            CurrencyCode = "GBP",
+                            LastUpdated = DateTime.UtcNow,
+                            CataloguePriceTiers = new List<CataloguePriceTier>
+                            {
+                                new()
+                                {
+                                    Id = 600,
+                                    CataloguePriceId = 31,
+                                    LowerRange = 1,
+                                    UpperRange = null,
+                                    Price = 999.9999M,
+                                    LastUpdated = DateTime.UtcNow,
+                                },
+                            },
+                        },
+                    },
                 },
                 new CatalogueItem
                 {
