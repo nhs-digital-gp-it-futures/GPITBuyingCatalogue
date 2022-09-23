@@ -40,5 +40,7 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.Orders
         public Task<List<Order>> GetUserOrders(int userId);
 
         public Task SetSolutionId(string internalOrgId, CallOffId callOffId, CatalogueItemId solutionId);
+
+        public Task SetFundingSourceForForceFundedItems(string internalOrgId, CallOffId callOffId);
     }
 }

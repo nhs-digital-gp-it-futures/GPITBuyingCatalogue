@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System.Collections.Generic;
+using System.Threading.Tasks;
 using AutoFixture;
 using AutoFixture.AutoMoq;
 using AutoFixture.Idioms;
@@ -36,12 +37,17 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Fun
             string internalOrgId,
             EntityFramework.Ordering.Models.Order order,
             [Frozen] Mock<IOrderService> orderServiceMock,
+            [Frozen] Mock<IOrderFrameworkService> frameworkServiceMock,
+            EntityFramework.Catalogue.Models.Framework framework,
             FundingSourceController controller)
         {
             orderServiceMock.Setup(o => o.GetOrderWithOrderItemsForFunding(order.CallOffId, internalOrgId))
                 .ReturnsAsync(order);
 
-            var expectedViewData = new FundingSources(internalOrgId, order.CallOffId, order);
+            frameworkServiceMock.Setup(f => f.GetFrameworksForOrder(order.CallOffId, internalOrgId, order.AssociatedServicesOnly))
+                .ReturnsAsync(new List<EntityFramework.Catalogue.Models.Framework>() { framework });
+
+            var expectedViewData = new FundingSources(internalOrgId, order.CallOffId, order, 1);
 
             var actual = await controller.FundingSources(internalOrgId, order.CallOffId);
 

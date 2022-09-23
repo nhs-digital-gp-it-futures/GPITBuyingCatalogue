@@ -18,7 +18,24 @@
 						advice="Provide information on how you'll be paying for this order."
 						caption="@Model.Caption" />
 
-		@if (Model.OrderItemsSelectable.Any())
+        @if (Model.CountOfOrderFrameworks > 1)
+        {
+            <nhs-inset-text>
+                These items are available from more than one framework. You’re procuring them from the @(Model.SelectedFramework.ShortName) framework. 
+                <a href="@Url.Action(
+                            nameof(FundingSourceController.SelectFramework),
+                            typeof(FundingSourceController).ControllerName(),
+                            new { Model.InternalOrgId, Model.CallOffId })">Change framework</a>
+            </nhs-inset-text>
+        }
+        else
+        {
+            <nhs-inset-text>
+                You’re procuring these items from the @(Model.SelectedFramework.ShortName) framework.
+            </nhs-inset-text>
+        }
+
+		@if (Model.OrderItemsSelectable != null && Model.OrderItemsSelectable.Any())
 		{
 			<nhs-details label-text="What is central, local and mixed funding?">
 				<h2 class="nhsuk-heading-m">Central funding</h2>
@@ -63,7 +80,7 @@
 			</nhs-table>
 			<br/>
 		}
-		@if (Model.OrderItemsLocalOnly.Any())
+		@if (Model.OrderItemsLocalOnly != null && Model.OrderItemsLocalOnly.Any())
 		{
 			<nhs-table data-test-id="funding-sources-items-local-only"
 					   label-text="Local funding only"
@@ -88,7 +105,7 @@
 			</nhs-table>
 			<br/>
 		}
-		@if (Model.OrderItemsNoFundingRequired.Any())
+		@if (Model.OrderItemsNoFundingRequired != null && Model.OrderItemsNoFundingRequired.Any())
 		{
 			<nhs-table data-test-id="funding-sources-items-no-funding-required"
 					   label-text="No funding required"
@@ -109,12 +126,7 @@
 			</nhs-table>
 			<br/>
 		}
-		<form method="get" 
-			asp-action="@nameof(OrderController.Order)"
-			asp-controller="@typeof(OrderController).ControllerName()"
-			asp-area="@typeof(OrderController).AreaName()",
-			asp-route-internalOrgId="@Model.InternalOrgId"
-			asp-route-callOffId="@Model.CallOffId">
+		<form method="post" >
 			<nhs-submit-button text="Continue"/>
 		</form>
 	</div>
@@ -128,5 +140,7 @@
 	fundingType == OrderItemFundingType.None ? TagColour.Grey : TagColour.Green;
 
 	decimal CalculateTotalCost(OrderItem item) => item.OrderItemPrice.CalculateTotalCostForContractLength(item.TotalQuantity, Model.MaximumTerm);
+
+
 }
 

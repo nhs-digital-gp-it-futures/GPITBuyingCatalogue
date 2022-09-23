@@ -107,15 +107,14 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.Order
             else
                 SolutionOrService = TaskProgress.Completed;
 
-            FundingSource = SolutionOrService switch
-            {
-                TaskProgress.NotStarted => TaskProgress.CannotStart,
-                TaskProgress.InProgress when order.OrderItems.All(oi => oi.OrderItemFunding == null) => TaskProgress.CannotStart,
-                TaskProgress.Completed when order.OrderItems.All(oi => oi.OrderItemFunding != null) => TaskProgress.Completed,
-                _ => order.OrderItems.Any(oi => oi.OrderItemFunding != null)
-                    ? TaskProgress.InProgress
-                    : TaskProgress.NotStarted,
-            };
+            if (SolutionOrService != TaskProgress.Completed)
+                FundingSource = TaskProgress.CannotStart;
+            else if (order.SelectedFramework == null && order.OrderItems.All(oi => oi.OrderItemFunding == null))
+                FundingSource = TaskProgress.NotStarted;
+            else if (order.SelectedFramework != null && order.OrderItems.Any(oi => oi.OrderItemFunding == null))
+                FundingSource = TaskProgress.InProgress;
+            else
+                FundingSource = TaskProgress.Completed;
         }
 
         private void SetSectionThreeStatus(EntityFramework.Ordering.Models.Order order)

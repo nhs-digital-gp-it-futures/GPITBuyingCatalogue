@@ -7,6 +7,7 @@ using Microsoft.EntityFrameworkCore;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
+using NHSD.GPIT.BuyingCatalogue.Framework.Calculations;
 using NHSD.GPIT.BuyingCatalogue.Framework.Settings;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Csv;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Email;
@@ -46,22 +47,22 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
         public Task<Order> GetOrderThin(CallOffId callOffId, string internalOrgId)
         {
             return dbContext.Orders
-                .Where(o =>
-                    o.Id == callOffId.Id
-                    && o.OrderingParty.InternalIdentifier == internalOrgId)
                 .Include(o => o.OrderingParty)
                 .Include(o => o.OrderingPartyContact)
                 .Include(o => o.Supplier)
                 .Include(o => o.LastUpdatedByUser)
-                .Include(o => o.OrderItems).ThenInclude(i => i.CatalogueItem)
-                .SingleOrDefaultAsync();
+                .Include(o => o.OrderItems)
+                    .ThenInclude(i => i.CatalogueItem)
+                .Include(o => o.SelectedFramework)
+                .AsSplitQuery()
+                .SingleOrDefaultAsync(o =>
+                    o.Id == callOffId.Id
+                    && o.OrderingParty.InternalIdentifier == internalOrgId);
         }
 
         public Task<Order> GetOrderWithCatalogueItemAndPrices(CallOffId callOffId, string internalOrgId)
         {
             return dbContext.Orders
-                .Where(o => o.Id == callOffId.Id
-                    && o.OrderingParty.InternalIdentifier == internalOrgId)
                 .Include(x => x.Solution)
                 .Include(o => o.OrderItems)
                     .ThenInclude(i => i.CatalogueItem)
@@ -74,15 +75,14 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
                     .ThenInclude(i => i.OrderItemRecipients)
                     .ThenInclude(r => r.Recipient)
                 .AsSplitQuery()
-                .SingleOrDefaultAsync();
+                .SingleOrDefaultAsync(o =>
+                    o.Id == callOffId.Id
+                    && o.OrderingParty.InternalIdentifier == internalOrgId);
         }
 
         public Task<Order> GetOrderWithOrderItems(CallOffId callOffId, string internalOrgId)
         {
             return dbContext.Orders
-                .Where(o =>
-                    o.Id == callOffId.Id
-                    && o.OrderingParty.InternalIdentifier == internalOrgId)
                 .Include(x => x.Solution)
                 .Include(o => o.OrderItems)
                     .ThenInclude(i => i.CatalogueItem)
@@ -95,20 +95,16 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
                     .ThenInclude(i => i.OrderItemRecipients.OrderBy(i => i.Recipient.Name))
                     .ThenInclude(r => r.Recipient)
                 .AsSplitQuery()
-                .SingleOrDefaultAsync();
+                .SingleOrDefaultAsync(o =>
+                    o.Id == callOffId.Id
+                    && o.OrderingParty.InternalIdentifier == internalOrgId);
         }
 
         public Task<Order> GetOrderWithOrderItemsForFunding(CallOffId callOffId, string internalOrgId)
         {
             return dbContext.Orders
-                .Where(o =>
-                    o.Id == callOffId.Id
-                    && o.OrderingParty.InternalIdentifier == internalOrgId)
                 .Include(o => o.OrderItems)
                     .ThenInclude(i => i.CatalogueItem)
-                    .ThenInclude(ci => ci.Solution)
-                    .ThenInclude(s => s.FrameworkSolutions)
-                    .ThenInclude(fs => fs.Framework)
                 .Include(o => o.OrderItems)
                     .ThenInclude(i => i.OrderItemFunding)
                 .Include(o => o.OrderItems)
@@ -117,19 +113,21 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
                 .Include(o => o.OrderItems)
                     .ThenInclude(i => i.OrderItemRecipients)
                     .ThenInclude(r => r.Recipient)
+                .Include(o => o.SelectedFramework)
                 .AsSplitQuery()
-                .SingleOrDefaultAsync();
+                .SingleOrDefaultAsync(o =>
+                    o.Id == callOffId.Id
+                    && o.OrderingParty.InternalIdentifier == internalOrgId);
         }
 
         public Task<Order> GetOrderWithSupplier(CallOffId callOffId, string internalOrgId)
         {
             return dbContext.Orders
-                .Where(o =>
-                    o.Id == callOffId.Id
-                    && o.OrderingParty.InternalIdentifier == internalOrgId)
                 .Include(o => o.Supplier)
                 .Include(o => o.SupplierContact)
-                .SingleOrDefaultAsync();
+                .SingleOrDefaultAsync(o =>
+                    o.Id == callOffId.Id
+                    && o.OrderingParty.InternalIdentifier == internalOrgId);
         }
 
         public async Task<Order> GetOrderForSummary(CallOffId callOffId, string internalOrgId)
@@ -142,10 +140,19 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
                 .Include(o => o.Supplier)
                 .Include(o => o.SupplierContact)
                 .Include(o => o.LastUpdatedByUser)
-                .Include(o => o.OrderItems).ThenInclude(i => i.CatalogueItem).ThenInclude(ci => ci.Solution).ThenInclude(s => s.FrameworkSolutions).ThenInclude(fs => fs.Framework)
-                .Include(o => o.OrderItems).ThenInclude(i => i.OrderItemFunding)
-                .Include(o => o.OrderItems).ThenInclude(i => i.OrderItemPrice).ThenInclude(ip => ip.OrderItemPriceTiers.OrderBy(pt => pt.LowerRange))
-                .Include(o => o.OrderItems).ThenInclude(i => i.OrderItemRecipients.OrderBy(r => r.Recipient.Name)).ThenInclude(r => r.Recipient)
+                .Include(o => o.OrderItems)
+                    .ThenInclude(i => i.CatalogueItem)
+                    .ThenInclude(ci => ci.Solution)
+                    .ThenInclude(s => s.FrameworkSolutions)
+                    .ThenInclude(fs => fs.Framework)
+                .Include(o => o.OrderItems)
+                    .ThenInclude(i => i.OrderItemFunding)
+                .Include(o => o.OrderItems)
+                    .ThenInclude(i => i.OrderItemPrice)
+                    .ThenInclude(ip => ip.OrderItemPriceTiers.OrderBy(pt => pt.LowerRange))
+                .Include(o => o.OrderItems)
+                    .ThenInclude(i => i.OrderItemRecipients.OrderBy(r => r.Recipient.Name))
+                    .ThenInclude(r => r.Recipient)
                 .AsNoTracking()
                 .AsSplitQuery()
                 .SingleOrDefaultAsync(o =>
@@ -169,14 +176,19 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
             var order = await dbContext.Orders
                 .Include(x => x.ContractFlags)
                 .Include(x => x.LastUpdatedByUser)
-                .Include(x => x.OrderItems).ThenInclude(x => x.CatalogueItem)
-                .Include(x => x.OrderItems).ThenInclude(x => x.OrderItemFunding)
-                .Include(x => x.OrderItems).ThenInclude(x => x.OrderItemPrice)
-                .Include(x => x.OrderItems).ThenInclude(x => x.OrderItemRecipients)
+                .Include(x => x.OrderItems)
+                    .ThenInclude(x => x.CatalogueItem)
+                .Include(x => x.OrderItems)
+                    .ThenInclude(x => x.OrderItemFunding)
+                .Include(x => x.OrderItems)
+                    .ThenInclude(x => x.OrderItemPrice)
+                .Include(x => x.OrderItems)
+                    .ThenInclude(x => x.OrderItemRecipients)
                 .Include(x => x.OrderingPartyContact)
                 .Include(x => x.OrderingParty)
                 .Include(x => x.Supplier)
                 .Include(x => x.SupplierContact)
+                .Include(x => x.SelectedFramework)
                 .AsSplitQuery()
                 .AsNoTracking()
                 .SingleOrDefaultAsync(x =>
@@ -237,31 +249,30 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
         public Task<Order> GetOrderSummary(CallOffId callOffId, string internalOrgId)
         {
             return dbContext.Orders
-                .Where(o =>
-                    o.Id == callOffId.Id
-                    && o.OrderingParty.InternalIdentifier == internalOrgId)
                 .Include(o => o.OrderingParty)
                 .Include(o => o.OrderingPartyContact)
                 .Include(o => o.SupplierContact)
-                .Include(o => o.OrderItems).ThenInclude(i => i.CatalogueItem)
-                .Include(o => o.OrderItems).ThenInclude(i => i.OrderItemRecipients)
+                .Include(o => o.OrderItems)
+                    .ThenInclude(i => i.CatalogueItem)
+                .Include(o => o.OrderItems)
+                    .ThenInclude(i => i.OrderItemRecipients)
                 .AsSplitQuery()
-                .SingleOrDefaultAsync();
+                .SingleOrDefaultAsync(o =>
+                    o.Id == callOffId.Id
+                    && o.OrderingParty.InternalIdentifier == internalOrgId);
         }
 
         public Task<Order> GetOrderForStatusUpdate(CallOffId callOffId, string internalOrgId)
         {
             return dbContext.Orders
-                .Where(o =>
-                    o.Id == callOffId.Id
-                    && o.OrderingParty.InternalIdentifier == internalOrgId)
                 .Include(o => o.OrderingParty)
                 .Include(o => o.Supplier)
                 .Include(o => o.OrderItems).ThenInclude(i => i.CatalogueItem)
                 .Include(o => o.OrderItems).ThenInclude(i => i.OrderItemRecipients).ThenInclude(r => r.Recipient)
-                /*.Include(o => o.OrderItems).ThenInclude(i => i.CataloguePrice).ThenInclude(p => p.PricingUnit)*/
                 .AsSplitQuery()
-                .SingleOrDefaultAsync();
+                .SingleOrDefaultAsync(o =>
+                    o.Id == callOffId.Id
+                    && o.OrderingParty.InternalIdentifier == internalOrgId);
         }
 
         public async Task<Order> CreateOrder(string description, string internalOrgId, OrderTriageValue? orderTriageValue, bool isAssociatedServiceOnly)
@@ -349,11 +360,50 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
         public async Task SetSolutionId(string internalOrgId, CallOffId callOffId, CatalogueItemId solutionId)
         {
             var order = await dbContext.Orders
-                .Where(o => o.Id == callOffId.Id
-                    && o.OrderingParty.InternalIdentifier == internalOrgId)
-                .SingleAsync();
+                .SingleAsync(o => o.Id == callOffId.Id
+                    && o.OrderingParty.InternalIdentifier == internalOrgId);
 
             order.SolutionId = solutionId;
+
+            await dbContext.SaveChangesAsync();
+        }
+
+        public async Task SetFundingSourceForForceFundedItems(string internalOrgId, CallOffId callOffId)
+        {
+            var order =
+                await dbContext.Orders
+                .Include(o => o.OrderItems)
+                    .ThenInclude(oi => oi.OrderItemPrice)
+                    .ThenInclude(oip => oip.OrderItemPriceTiers)
+                .Include(o => o.OrderItems)
+                    .ThenInclude(oi => oi.OrderItemRecipients)
+                .Include(o => o.OrderItems)
+                    .ThenInclude(oi => oi.OrderItemFunding)
+                .Include(o => o.SelectedFramework)
+                .AsSplitQuery()
+                .SingleAsync(o =>
+                    o.Id == callOffId.Id
+                    && o.OrderingParty.InternalIdentifier == internalOrgId);
+
+            foreach (var orderItem in order.OrderItems.Where(oi => oi.OrderItemFunding is null))
+            {
+                var selectedFundingType = OrderItemFundingType.None;
+
+                if (orderItem.TotalCost() == 0)
+                    selectedFundingType = OrderItemFundingType.NoFundingRequired;
+                else if (order.SelectedFramework.LocalFundingOnly)
+                    selectedFundingType = OrderItemFundingType.LocalFundingOnly;
+
+                if (selectedFundingType != OrderItemFundingType.None)
+                {
+                    orderItem.OrderItemFunding = new OrderItemFunding
+                    {
+                        OrderId = callOffId.Id,
+                        CatalogueItemId = orderItem.CatalogueItemId,
+                        OrderItemFundingType = selectedFundingType,
+                    };
+                }
+            }
 
             await dbContext.SaveChangesAsync();
         }

@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System.Collections.Generic;
+using System.Linq;
 using FluentAssertions;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
@@ -14,13 +15,16 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.FundingS
         [CommonAutoData]
         public static void WithValidArguments_AssociatedServicesOnly_SetsCorrectly(
             string internalOrgId,
-            EntityFramework.Ordering.Models.Order order)
+            EntityFramework.Ordering.Models.Order order,
+            EntityFramework.Catalogue.Models.Framework framework)
         {
             order.OrderItems.First().CatalogueItem.CatalogueItemType = CatalogueItemType.AssociatedService;
 
             order.OrderItems = order.OrderItems.Where(oi => oi.CatalogueItem.CatalogueItemType == CatalogueItemType.AssociatedService).ToList();
 
-            var model = new FundingSources(internalOrgId, order.CallOffId, order);
+            var frameworkList = new List<EntityFramework.Catalogue.Models.Framework>() { framework };
+
+            var model = new FundingSources(internalOrgId, order.CallOffId, order, frameworkList.Count);
 
             model.Title.Should().Be("Funding sources");
             model.CallOffId.Should().Be(order.CallOffId);
@@ -28,6 +32,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.FundingS
             model.Caption.Should().Be($"Order {order.CallOffId}");
             model.OrderItemsLocalOnly.Should().BeEmpty();
             model.OrderItemsSelectable.Should().NotBeEmpty().And.HaveCount(order.OrderItems.Count);
+            model.CountOfOrderFrameworks.Should().Be(frameworkList.Count);
         }
 
         [Theory]
@@ -35,6 +40,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.FundingS
         public static void WithValidArguments_CatalogueSolution_LocalFundingOnly_SetsCorrectly(
             string internalOrgId,
             EntityFramework.Ordering.Models.Order order,
+            EntityFramework.Catalogue.Models.Framework framework,
             Solution solution)
         {
             order.OrderItems.First().CatalogueItem.CatalogueItemType = CatalogueItemType.Solution;
@@ -43,7 +49,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.FundingS
 
             order.OrderItems = order.OrderItems.Where(oi => oi.CatalogueItem.CatalogueItemType == CatalogueItemType.Solution).ToList();
 
-            var model = new FundingSources(internalOrgId, order.CallOffId, order);
+            var frameworkList = new List<EntityFramework.Catalogue.Models.Framework>() { framework };
+
+            var model = new FundingSources(internalOrgId, order.CallOffId, order, frameworkList.Count);
 
             model.Title.Should().Be("Funding sources");
             model.CallOffId.Should().Be(order.CallOffId);
@@ -51,6 +59,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.FundingS
             model.Caption.Should().Be($"Order {order.CallOffId}");
             model.OrderItemsLocalOnly.Should().NotBeEmpty().And.HaveCount(order.OrderItems.Count);
             model.OrderItemsSelectable.Should().BeEmpty();
+            model.CountOfOrderFrameworks.Should().Be(frameworkList.Count);
         }
 
         [Theory]
@@ -65,7 +74,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.FundingS
             order.OrderItems.ToList().ForEach(oi => oi.OrderItemFunding.OrderItemFundingType = OrderItemFundingType.LocalFundingOnly);
             order.OrderItems.First().CatalogueItem.Solution = solution;
 
-            var model = new FundingSources(internalOrgId, order.CallOffId, order);
+            var model = new FundingSources(internalOrgId, order.CallOffId, order, 1);
 
             model.Title.Should().Be("Funding sources");
             model.CallOffId.Should().Be(order.CallOffId);
@@ -73,6 +82,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.FundingS
             model.Caption.Should().Be($"Order {order.CallOffId}");
             model.OrderItemsLocalOnly.Should().NotBeEmpty().And.HaveCount(order.OrderItems.Count);
             model.OrderItemsSelectable.Should().BeEmpty();
+            model.CountOfOrderFrameworks.Should().Be(1);
         }
 
         [Theory]
@@ -90,7 +100,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.FundingS
 
             order.OrderItems = order.OrderItems.Where(oi => oi.CatalogueItem.CatalogueItemType == CatalogueItemType.Solution).ToList();
 
-            var model = new FundingSources(internalOrgId, order.CallOffId, order);
+            var model = new FundingSources(internalOrgId, order.CallOffId, order, 1);
 
             model.Title.Should().Be("Funding sources");
             model.CallOffId.Should().Be(order.CallOffId);
@@ -98,6 +108,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.FundingS
             model.Caption.Should().Be($"Order {order.CallOffId}");
             model.OrderItemsLocalOnly.Should().BeEmpty();
             model.OrderItemsSelectable.Should().NotBeEmpty().And.HaveCount(order.OrderItems.Count);
+            model.CountOfOrderFrameworks.Should().Be(1);
         }
 
         [Theory]
@@ -112,7 +123,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.FundingS
             order.OrderItems.Where(oi => oi.CatalogueItem.CatalogueItemType != CatalogueItemType.Solution).ToList().ForEach(oi => oi.CatalogueItem.CatalogueItemType = CatalogueItemType.AssociatedService);
             order.OrderItems.First().CatalogueItem.Solution = solution;
 
-            var model = new FundingSources(internalOrgId, order.CallOffId, order);
+            var model = new FundingSources(internalOrgId, order.CallOffId, order, 1);
 
             model.Title.Should().Be("Funding sources");
             model.CallOffId.Should().Be(order.CallOffId);
@@ -120,6 +131,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.FundingS
             model.Caption.Should().Be($"Order {order.CallOffId}");
             model.OrderItemsLocalOnly.Should().NotBeEmpty().And.HaveCount(1);
             model.OrderItemsSelectable.Should().NotBeEmpty().And.HaveCount(order.OrderItems.Count - 1);
+            model.CountOfOrderFrameworks.Should().Be(1);
         }
     }
 }
