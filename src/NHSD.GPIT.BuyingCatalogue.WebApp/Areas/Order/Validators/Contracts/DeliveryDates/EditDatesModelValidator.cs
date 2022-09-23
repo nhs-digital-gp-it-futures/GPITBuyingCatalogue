@@ -7,7 +7,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Validators.Contracts.Deli
     {
         public EditDatesModelValidator()
         {
-            RuleForEach(x => x.Recipients).SetValidator(new RecipientDateModelValidator());
+            RuleForEach(x => x.Recipients)
+                .Cascade(CascadeMode.Continue)
+                .SetValidator(new RecipientDateModelValidator());
         }
     }
 }
