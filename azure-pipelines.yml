@@ -31,163 +31,163 @@ jobs:
   - script: echo semVer $(setVersionStep.semVer)
     name: echovar
 
-# - job: dockerBuildAndPush
-#   displayName: Run all tests and build & push docker containers to the ACR
-#   variables:
-#     dacpacTag: dacpac-$[ dependencies.version.outputs['setVersionStep.semVer'] ]
-#     semVer: $[ dependencies.version.outputs['setVersionStep.semVer'] ]
-#     ${{ if eq(variables['Build.SourceBranchName'], 'main') }}:
-#       latestTag: latest
-#     ${{ if ne(variables['Build.SourceBranchName'], 'main') }}:
-#       latestTag: latestbuild
+- job: dockerBuildAndPush
+  displayName: Run all tests and build & push docker containers to the ACR
+  variables:
+    dacpacTag: dacpac-$[ dependencies.version.outputs['setVersionStep.semVer'] ]
+    semVer: $[ dependencies.version.outputs['setVersionStep.semVer'] ]
+    ${{ if eq(variables['Build.SourceBranchName'], 'main') }}:
+      latestTag: latest
+    ${{ if ne(variables['Build.SourceBranchName'], 'main') }}:
+      latestTag: latestbuild
 
-#   dependsOn: version
-#   pool:
-#     vmImage: 'ubuntu-latest'
+  dependsOn: version
+  pool:
+    vmImage: 'ubuntu-latest'
 
-#   steps:
-#   - task: UseDotNet@2
-#     displayName: 'Use DotNet $(dotnetVersion)'
-#     inputs:
-#       version: $(dotnetVersion)
-#       includePreviewVersions: false
+  steps:
+  - task: UseDotNet@2
+    displayName: 'Use DotNet $(dotnetVersion)'
+    inputs:
+      version: $(dotnetVersion)
+      includePreviewVersions: false
 
-#   - task: DotNetCoreCLI@2
-#     displayName: 'Run dotnet restore'
-#     inputs:
-#       command: restore
-#       projects: '**/*Tests.csproj'
-#       feedsToUse: config
-#       nugetConfigPath: 'NuGet.config'
-#       arguments: '-v n'
+  - task: DotNetCoreCLI@2
+    displayName: 'Run dotnet restore'
+    inputs:
+      command: restore
+      projects: '**/*Tests.csproj'
+      feedsToUse: config
+      nugetConfigPath: 'NuGet.config'
+      arguments: '-v n'
 
-#   - task: NodeTool@0
-#     displayName: 'Install Node.js'
-#     inputs:
-#       versionSpec: '14.x'
+  - task: NodeTool@0
+    displayName: 'Install Node.js'
+    inputs:
+      versionSpec: '14.x'
 
-#   - task: Npm@1
-#     displayName: 'Run npm install'
-#     inputs:
-#       command: 'install'
-#       workingDir: 'src/NHSD.GPIT.BuyingCatalogue.WebApp'
+  - task: Npm@1
+    displayName: 'Run npm install'
+    inputs:
+      command: 'install'
+      workingDir: 'src/NHSD.GPIT.BuyingCatalogue.WebApp'
 
-#   - task: DotNetCoreCLI@2
-#     displayName: 'Run dotnet build'
-#     inputs:
-#       command: build
-#       projects: '**/*Tests.csproj'
-#       arguments: '--no-restore --configuration $(buildConfiguration)'
+  - task: DotNetCoreCLI@2
+    displayName: 'Run dotnet build'
+    inputs:
+      command: build
+      projects: '**/*Tests.csproj'
+      arguments: '--no-restore --configuration $(buildConfiguration)'
 
-#   - task: gulp@0
-#     displayName: 'Run gulp min'
-#     inputs:
-#       gulpFile: 'src/NHSD.GPIT.BuyingCatalogue.WebApp/gulpfile.js'
-#       targets: 'min'
-#       workingDirectory: 'src/NHSD.GPIT.BuyingCatalogue.WebApp'
+  - task: gulp@0
+    displayName: 'Run gulp min'
+    inputs:
+      gulpFile: 'src/NHSD.GPIT.BuyingCatalogue.WebApp/gulpfile.js'
+      targets: 'min'
+      workingDirectory: 'src/NHSD.GPIT.BuyingCatalogue.WebApp'
 
-#   - task: DotNetCoreCLI@2
-#     displayName: 'Run unit tests'
-#     inputs:
-#       command: test
-#       projects: '**/*UnitTests.csproj'
-#       arguments: '-v n --no-build --configuration $(buildConfiguration) -- xunit.parallelizeTestCollections=true'
+  - task: DotNetCoreCLI@2
+    displayName: 'Run unit tests'
+    inputs:
+      command: test
+      projects: '**/*UnitTests.csproj'
+      arguments: '-v n --no-build --configuration $(buildConfiguration) -- xunit.parallelizeTestCollections=true'
 
-#   - task: DotNetCoreCLI@2
-#     displayName: 'Run Integration Tests'
-#     inputs:
-#       command: test
-#       projects: '**/*IntegrationTests.csproj'
-#       arguments: '-v n --no-build --configuration $(buildConfiguration) -- xunit.parallelizeTestCollections=true'
+  - task: DotNetCoreCLI@2
+    displayName: 'Run Integration Tests'
+    inputs:
+      command: test
+      projects: '**/*IntegrationTests.csproj'
+      arguments: '-v n --no-build --configuration $(buildConfiguration) -- xunit.parallelizeTestCollections=true'
 
-#   - task: PowerShell@2
-#     displayName: Create screen shots folder
-#     condition: failed()
-#     inputs:
-#       targetType: 'inline'
-#       script: |        
-#         mkdir $(Build.ArtifactStagingDirectory)/screen-shots
+  - task: PowerShell@2
+    displayName: Create screen shots folder
+    condition: failed()
+    inputs:
+      targetType: 'inline'
+      script: |        
+        mkdir $(Build.ArtifactStagingDirectory)/screen-shots
 
-#   - task: CopyFiles@2
-#     displayName: Copy screen shots
-#     condition: failed()
-#     inputs:
-#       SourceFolder: 'tests/**/ScreenShots'
-#       Contents: '*'
-#       TargetFolder: '$(build.artifactStagingDirectory)/screen-shots'
-#       CleanTargetFolder: false
-#       OverWrite: true
+  - task: CopyFiles@2
+    displayName: Copy screen shots
+    condition: failed()
+    inputs:
+      SourceFolder: 'tests/**/ScreenShots'
+      Contents: '*'
+      TargetFolder: '$(build.artifactStagingDirectory)/screen-shots'
+      CleanTargetFolder: false
+      OverWrite: true
 
-#   - publish: $(build.artifactStagingDirectory)/screen-shots
-#     displayName: Publish screen shots
-#     condition: failed()
-#     artifact: screen-shots
+  - publish: $(build.artifactStagingDirectory)/screen-shots
+    displayName: Publish screen shots
+    condition: failed()
+    artifact: screen-shots
 
-#   - task: DockerInstaller@0
-#     inputs:
-#       dockerVersion: $(dockerVersion)
+  - task: DockerInstaller@0
+    inputs:
+      dockerVersion: $(dockerVersion)
 
-#   - task: Docker@2
-#     displayName: 'Docker: Build and Push'
-#     condition: succeeded()
-#     inputs:
-#       containerRegistry: 'gpitfuturesdevacr'
-#       repository: 'nhsd/buying-catalogue/nhsdgpitbuyingcataloguewebapp'
-#       command: 'buildAndPush'
-#       Dockerfile: 'src/**/NHSD.GPIT.BuyingCatalogue.WebApp/Dockerfile'
-#       buildContext: './'
-#       tags: |
-#         $(semVer)
-#         $(latestTag)
+  - task: Docker@2
+    displayName: 'Docker: Build and Push'
+    condition: succeeded()
+    inputs:
+      containerRegistry: 'gpitfuturesdevacr'
+      repository: 'nhsd/buying-catalogue/nhsdgpitbuyingcataloguewebapp'
+      command: 'buildAndPush'
+      Dockerfile: 'src/**/NHSD.GPIT.BuyingCatalogue.WebApp/Dockerfile'
+      buildContext: './'
+      tags: |
+        $(semVer)
+        $(latestTag)
 
-#   - task: PowerShell@2
-#     inputs:
-#       targetType: 'inline'
-#       script: |
-#         $release = "$(semVer)"
-#         mkdir $(Build.ArtifactStagingDirectory)/code
-#         $release | Out-File $(Build.ArtifactStagingDirectory)/code/release.txt
+  - task: PowerShell@2
+    inputs:
+      targetType: 'inline'
+      script: |
+        $release = "$(semVer)"
+        mkdir $(Build.ArtifactStagingDirectory)/code
+        $release | Out-File $(Build.ArtifactStagingDirectory)/code/release.txt
 
-#   - publish: $(build.artifactStagingDirectory)/code
-#     artifact: code-version
+  - publish: $(build.artifactStagingDirectory)/code
+    artifact: code-version
 
-# - job: buildDatabaseDacpacs
-#   displayName: Build all Dacpacs and push
-#   variables:
-#     semVer: $[ dependencies.version.outputs['setVersionStep.semVer'] ]
-#     ${{ if eq(variables['Build.SourceBranchName'], 'main') }}:
-#       latestTag: latest
-#     ${{ if ne(variables['Build.SourceBranchName'], 'main') }}:
-#       latestTag: latestbuild
+- job: buildDatabaseDacpacs
+  displayName: Build all Dacpacs and push
+  variables:
+    semVer: $[ dependencies.version.outputs['setVersionStep.semVer'] ]
+    ${{ if eq(variables['Build.SourceBranchName'], 'main') }}:
+      latestTag: latest
+    ${{ if ne(variables['Build.SourceBranchName'], 'main') }}:
+      latestTag: latestbuild
 
-#   dependsOn: dockerBuildAndPush
-#   pool:
-#     vmImage: 'ubuntu-latest'
+  dependsOn: dockerBuildAndPush
+  pool:
+    vmImage: 'ubuntu-latest'
 
-#   steps:
-#   - task: Docker@2
-#     displayName: 'Docker: Build Dacpacs'
-#     condition: succeeded()
-#     inputs:
-#       containerRegistry: 'gpitfuturesdevacr'
-#       repository: 'nhsd/buying-catalogue/nhsdgpitbuyingcataloguewebapp'
-#       command: 'build'
-#       Dockerfile: 'database/**/NHSD.GPITBuyingCatalogue.Database.Deployment/Docker/Dockerfile.Pipeline'
-#       buildContext: './'
-#       tags: |
-#         $(semVer)
-#         $(latestTag)
+  steps:
+  - task: Docker@2
+    displayName: 'Docker: Build Dacpacs'
+    condition: succeeded()
+    inputs:
+      containerRegistry: 'gpitfuturesdevacr'
+      repository: 'nhsd/buying-catalogue/nhsdgpitbuyingcataloguewebapp'
+      command: 'build'
+      Dockerfile: 'database/**/NHSD.GPITBuyingCatalogue.Database.Deployment/Docker/Dockerfile.Pipeline'
+      buildContext: './'
+      tags: |
+        $(semVer)
+        $(latestTag)
 
-#   - pwsh: |
-#       $id=docker images --filter "label=dacpac=true" -q | Select-Object -First 1
-#       docker create --name dacpaccontainer $id      
-#       mkdir $(Build.ArtifactStagingDirectory)/dacpacs
-#       docker cp dacpaccontainer:/deploy-db/. $(Build.ArtifactStagingDirectory)/dacpacs
-#       docker rm dacpaccontainer
-#     displayName: 'Copy DACPACs'
+  - pwsh: |
+      $id=docker images --filter "label=dacpac=true" -q | Select-Object -First 1
+      docker create --name dacpaccontainer $id      
+      mkdir $(Build.ArtifactStagingDirectory)/dacpacs
+      docker cp dacpaccontainer:/deploy-db/. $(Build.ArtifactStagingDirectory)/dacpacs
+      docker rm dacpaccontainer
+    displayName: 'Copy DACPACs'
 
-#   - publish: $(build.artifactStagingDirectory)/dacpacs
-#     artifact: dacpacs
+  - publish: $(build.artifactStagingDirectory)/dacpacs
+    artifact: dacpacs
 
 - job: createBuildArtifact
   displayName: Create Build Artifact
