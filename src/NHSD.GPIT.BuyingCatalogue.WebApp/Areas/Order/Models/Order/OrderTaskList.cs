@@ -64,6 +64,20 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.Order
                 && x.AllQuantitiesEntered);
         }
 
+        private static bool SomeSolutionsCompleted(EntityFramework.Ordering.Models.Order order)
+        {
+            if (!order.OrderItems.Any())
+            {
+                return false;
+            }
+
+            return order.OrderItems.Any(x =>
+                x.CatalogueItem != null
+                && x.OrderItemPrice != null
+                && (x.OrderItemRecipients?.Any() ?? false)
+                && x.AllQuantitiesEntered);
+        }
+
         private void SetStatusFlags(EntityFramework.Ordering.Models.Order order)
         {
             SetSectionOneStatus(order);
@@ -107,7 +121,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.Order
             else
                 SolutionOrService = TaskProgress.Completed;
 
-            if (!SolutionsSelected(order))
+            if (!SolutionsSelected(order) || !SomeSolutionsCompleted(order))
                 FundingSource = TaskProgress.CannotStart;
             else if (order.SelectedFramework == null && order.OrderItems.All(oi => oi.OrderItemFunding == null))
                 FundingSource = TaskProgress.NotStarted;
