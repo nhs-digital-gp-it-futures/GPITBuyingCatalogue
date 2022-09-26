@@ -127,7 +127,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers.FundingSource
                     new { internalOrgId, callOffId });
             }
 
-            await orderFrameworkService.SetSelectedFrameworkForOrder(callOffId, internalOrgId, model.SelectedFramework.Id);
+            await orderFrameworkService.UpdateFundingSourceAndSetSelectedFrameworkForOrder(callOffId, internalOrgId, model.SelectedFramework.Id);
 
             return RedirectToAction(
                 nameof(FundingSources),

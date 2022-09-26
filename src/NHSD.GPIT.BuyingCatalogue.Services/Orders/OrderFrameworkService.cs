@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
+using MoreLinq;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
@@ -36,6 +37,35 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
                 && o.OrderingParty.InternalIdentifier == internalOrgId);
 
             order.SelectedFrameworkId = frameworkId;
+
+            await dbContext.SaveChangesAsync();
+        }
+
+        public async Task UpdateFundingSourceAndSetSelectedFrameworkForOrder(
+            CallOffId callOffId,
+            string internalOrgId,
+            string frameworkId)
+        {
+            var order = await dbContext.Orders
+                .Include(o => o.SelectedFramework)
+                .Include(o => o.OrderItems)
+                    .ThenInclude(oi => oi.OrderItemFunding)
+                .SingleOrDefaultAsync(
+                o => o.Id == callOffId.Id
+                && o.OrderingParty.InternalIdentifier == internalOrgId);
+
+            var selectedFramework = await dbContext.Frameworks.SingleAsync(f => f.Id == frameworkId);
+
+            if (selectedFramework.LocalFundingOnly != order.SelectedFramework.LocalFundingOnly)
+            {
+                order.OrderItems.ForEach(oi =>
+                {
+                    if (oi.OrderItemFunding.OrderItemFundingType != OrderItemFundingType.NoFundingRequired)
+                        oi.OrderItemFunding = null;
+                });
+            }
+
+            order.SelectedFramework = selectedFramework;
 
             await dbContext.SaveChangesAsync();
         }
