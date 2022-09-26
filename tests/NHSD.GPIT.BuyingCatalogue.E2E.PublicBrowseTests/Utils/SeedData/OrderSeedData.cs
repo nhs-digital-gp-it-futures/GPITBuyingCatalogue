@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Linq;
+using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
@@ -10,6 +11,9 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
 {
     internal static class OrderSeedData
     {
+        private const string DFOCVC = "DFOCVC001";
+        private const string GPITFUTURES = "NHSDGP001";
+
         internal static void Initialize(BuyingCatalogueDbContext context)
         {
             AddOrderAtDescriptionStage(context);
@@ -320,7 +324,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
             context.SaveChangesAs(user.Id);
         }
 
-        private static void AddOrderWithAddedCatalogueSolution(BuyingCatalogueDbContext context)
+        private static async void AddOrderWithAddedCatalogueSolution(BuyingCatalogueDbContext context)
         {
             const int orderId = 90005;
             var timeNow = DateTime.UtcNow;
@@ -350,6 +354,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
                 CommencementDate = DateTime.UtcNow.AddDays(1),
                 InitialPeriod = 6,
                 MaximumTerm = 36,
+                SelectedFramework = await GetFramework(context, DFOCVC),
             };
 
             var price = context.CatalogueItems
@@ -368,7 +373,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
                 CatalogueItem = context.CatalogueItems.Single(c => c.Id == new CatalogueItemId(99999, "001")),
                 OrderItemFunding = new OrderItemFunding
                 {
-                    CatalogueItemId = new CatalogueItemId(99998, "001"),
+                    CatalogueItemId = new CatalogueItemId(99999, "001"),
                     OrderId = orderId,
                     OrderItemFundingType = OrderItemFundingType.LocalFundingOnly,
                 },
@@ -383,7 +388,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
             context.SaveChangesAs(user.Id);
         }
 
-        private static void AddOrderWithAddedCatalogueSolutionNoFundingRequired(BuyingCatalogueDbContext context)
+        private static async void AddOrderWithAddedCatalogueSolutionNoFundingRequired(BuyingCatalogueDbContext context)
         {
             const int orderId = 90015;
             var timeNow = DateTime.UtcNow;
@@ -413,6 +418,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
                 CommencementDate = DateTime.UtcNow.AddDays(1),
                 InitialPeriod = 6,
                 MaximumTerm = 36,
+                SelectedFramework = await GetFramework(context, GPITFUTURES),
             };
 
             var price = context.CatalogueItems
@@ -434,7 +440,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
                 CatalogueItem = context.CatalogueItems.Single(c => c.Id == new CatalogueItemId(99999, "001")),
                 OrderItemFunding = new OrderItemFunding
                 {
-                    CatalogueItemId = new CatalogueItemId(99998, "001"),
+                    CatalogueItemId = new CatalogueItemId(99999, "001"),
                     OrderId = orderId,
                     OrderItemFundingType = OrderItemFundingType.NoFundingRequired,
                 },
@@ -449,7 +455,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
             context.SaveChangesAs(user.Id);
         }
 
-        private static void AddOrderWithAddedNoContactCatalogueSolution(BuyingCatalogueDbContext context)
+        private static async void AddOrderWithAddedNoContactCatalogueSolution(BuyingCatalogueDbContext context)
         {
             const int orderId = 90006;
             var timeNow = DateTime.UtcNow;
@@ -479,6 +485,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
                 CommencementDate = timeNow.AddDays(1),
                 InitialPeriod = 6,
                 MaximumTerm = 36,
+                SelectedFramework = await GetFramework(context, GPITFUTURES),
             };
 
             var user = GetBuyerUser(context, order.OrderingPartyId);
@@ -1376,6 +1383,11 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
                 u => u.AspNetUserRoles.Any(r => r.Role.Name == OrganisationFunction.BuyerName));
 
             return user;
+        }
+
+        private static async Task<EntityFramework.Catalogue.Models.Framework> GetFramework(BuyingCatalogueDbContext context, string frameworkId)
+        {
+            return await context.Frameworks.SingleAsync(f => f.Id == frameworkId);
         }
     }
 }

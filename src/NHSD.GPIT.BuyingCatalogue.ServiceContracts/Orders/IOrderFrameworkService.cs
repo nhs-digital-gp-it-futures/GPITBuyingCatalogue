@@ -12,9 +12,5 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.Orders
         public Task SetSelectedFrameworkForOrder(CallOffId callOffId, string internalOrgId, string frameworkId);
 
         public Task UpdateFundingSourceAndSetSelectedFrameworkForOrder(CallOffId callOffId, string internalOrgId, string frameworkId);
-
-
-
-        
     }
 }
