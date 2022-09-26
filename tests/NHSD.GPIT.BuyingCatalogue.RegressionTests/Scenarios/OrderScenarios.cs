@@ -404,6 +404,26 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
         }
 
         [Fact]
+        public void OrderAssociatedServiceOnlyWithStepThreeCustomRoute()
+        {
+            string orderDescription = "OrderAssociatedServiceOnlyWithStepThreeCustomRoute";
+
+            OrderingPages.OrderingDashboard.CreateNewOrder();
+
+            OrderingPages.OrderType.ChooseOrderType(CatalogueItemType.AssociatedService);
+
+            OrderingPages.StartOrder.ReadyToStart();
+
+            OrderingPages.StepOnePrepareOrder(SupplierName, orderDescription, false, itemType: CatalogueItemType.AssociatedService);
+
+            OrderingPages.StepTwoAddSolutionsAndServices(solutionName: SolutionName, associatedService: AssociatedServiceName);
+
+            OrderingPages.StepThreeCompleteContract(false);
+
+            OrderingPages.StepFourReviewAndCompleteOrder();
+        }
+
+        [Fact]
         public void OrderWithSolutionUnder40K_EditCatalogueSolution()
         {
             string orderDescription = "OrderWithSolutionUnder40K_EditCatalogueSolution";
