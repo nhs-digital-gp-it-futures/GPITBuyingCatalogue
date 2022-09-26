@@ -104,6 +104,7 @@
                         <nhs-table-column>Epic type</nhs-table-column>
                         @foreach (var epic in epics)
                         {
+                            index = Model.EpicSelectedItemsMap[epic.Id];
                             <nhs-table-row-container>
                                 <nhs-table-cell>
                                     <nhs-checkbox-container>
@@ -117,7 +118,6 @@
                                     @(epic.SupplierDefined ? "Supplier defined" : "NHS defined")
                                 </nhs-table-cell>
                             </nhs-table-row-container>
-                            index++;
                         }
                     </nhs-table>
                 </nhs-expander>
