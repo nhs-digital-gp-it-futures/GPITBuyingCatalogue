@@ -1,11 +1,18 @@
-﻿IF NOT EXISTS (SELECT * FROM organisations.OrganisationTypes WHERE Identifier = 'CG')
-INSERT INTO organisations.OrganisationTypes (Id, Name, Identifier)
-VALUES
-(1, 'Clinical Commissioning Group', 'CG');
-GO
+﻿MERGE INTO organisations.OrganisationTypes AS TARGET
+USING (
+VALUES 
+    (1, 'Clinical Commissioning Group', 'CG'),
+    (2, 'Executive Agency', 'EA')
+)
+AS SOURCE ([Id], [Name], [Identifier])
+ON TARGET.[Identifier] = SOURCE.[Identifier]
 
-IF NOT EXISTS (SELECT * FROM organisations.OrganisationTypes WHERE Identifier = 'EA')
-INSERT INTO organisations.OrganisationTypes (Id, Name, Identifier)
-VALUES
-(2, 'Executive Agency', 'EA');
+WHEN MATCHED AND TARGET.[Name] <> SOURCE.[Name] OR TARGET.[Id] <> SOURCE.[Id]
+THEN UPDATE SET
+TARGET.[Id] = SOURCE.[Id],
+TARGET.[Name] = SOURCE.[Name]
+    
+WHEN NOT MATCHED BY TARGET THEN
+INSERT ([Id], [Name], [Identifier])
+VALUES (SOURCE.[Id], SOURCE.[Name],SOURCE.[Identifier]);
 GO
