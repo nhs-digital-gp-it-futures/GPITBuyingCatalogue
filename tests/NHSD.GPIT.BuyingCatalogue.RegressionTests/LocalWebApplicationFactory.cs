@@ -180,6 +180,14 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests
             SetEnvironmentVariable("DOTNET_USE_POLLING_FILE_WATCHER", "true");
 
             SetEnvironmentVariable("SESSION_IDLE_TIMEOUT", "60");
+
+            SetEnvironmentVariable("RegressionBuyerUsername", "suesmith@email.com");
+
+            SetEnvironmentVariable("RegressionBuyerPassword", "Pass123$");
+
+            SetEnvironmentVariable("RegressionAdminUsername", "bobsmith@email.com");
+
+            SetEnvironmentVariable("RegressionAdminPassword", "Pass123$");
         }
 
         private static void SetEnvironmentVariable(string name, string value)
