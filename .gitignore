@@ -374,3 +374,4 @@ _remote_state.tf
 
 # Mac specific files
 .DS_Store
+.terraform.lock.hcl
