@@ -4,8 +4,11 @@
     {
         ConfirmPrice,
         ConfirmPriceBackLink,
+        EditDeliveryDates,
+        EditDeliveryDatesBackLink,
         EditPrice,
         EditPriceBackLink,
+        MatchDeliveryDates,
         SelectAdditionalServices,
         SelectAssociatedServicesBackLink,
         SelectPriceBackLink,

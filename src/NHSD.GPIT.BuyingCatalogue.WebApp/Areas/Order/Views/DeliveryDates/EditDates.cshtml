@@ -20,14 +20,19 @@
         {
             <p>
                 <strong>Planned delivery date for the majority of Service Recipients:</strong>
-                @($"{Model.DeliveryDate:d MMMM yyyy}")
+                @($"{Model.DeliveryDate:dd MMMM yyyy}")
                 @if (Model.CatalogueItemType == CatalogueItemType.Solution)
                 {
+                    var returnUrl = @Url.Action(
+                        nameof(DeliveryDatesController.EditDates),
+                        typeof(DeliveryDatesController).ControllerName(),
+                        new { Model.InternalOrgId, Model.CallOffId, Model.CatalogueItemId, Model.Source });
+
                     <span>&nbsp;</span>
                     <a href="@Url.Action(
                                  nameof(DeliveryDatesController.SelectDate),
                                  typeof(DeliveryDatesController).ControllerName(),
-                                 new { Model.InternalOrgId, Model.CallOffId })">Edit</a>
+                                 new { Model.InternalOrgId, Model.CallOffId, returnUrl })">Edit</a>
                 }
             </p>
             <hr/>
@@ -38,6 +43,7 @@
             <input type="hidden" asp-for="@Model.CatalogueItemType" />
             <input type="hidden" asp-for="@Model.Description" />
             <input type="hidden" asp-for="@Model.DeliveryDate" />
+            <input type="hidden" asp-for="@Model.Source" />
             
             <nhs-table>
                 <nhs-table-column>Service Recipient</nhs-table-column>
