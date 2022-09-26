@@ -107,7 +107,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.Order
             else
                 SolutionOrService = TaskProgress.Completed;
 
-            if (SolutionOrService != TaskProgress.Completed)
+            if (!SolutionsSelected(order))
                 FundingSource = TaskProgress.CannotStart;
             else if (order.SelectedFramework == null && order.OrderItems.All(oi => oi.OrderItemFunding == null))
                 FundingSource = TaskProgress.NotStarted;
