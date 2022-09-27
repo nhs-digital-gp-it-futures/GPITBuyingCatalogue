@@ -4,6 +4,7 @@ using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.AutoFixtureCustomisations;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.CommencementDate;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Validators;
+using NHSD.GPIT.BuyingCatalogue.WebApp.Validation.Shared;
 using Xunit;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Validators
@@ -21,7 +22,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Validators
             var result = validator.TestValidate(model);
 
             result.ShouldHaveValidationErrorFor(m => m.Day)
-                .WithErrorMessage(CommencementDateModelValidator.CommencementDateDayMissingErrorMessage);
+                .WithErrorMessage(DateInputModelValidator.DayMissingErrorMessage);
         }
 
         [Theory]
@@ -36,7 +37,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Validators
             var result = validator.TestValidate(model);
 
             result.ShouldHaveValidationErrorFor(m => m.Month)
-                .WithErrorMessage(CommencementDateModelValidator.CommencementDateMonthMissingErrorMessage);
+                .WithErrorMessage(DateInputModelValidator.MonthMissingErrorMessage);
         }
 
         [Theory]
@@ -52,7 +53,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Validators
             var result = validator.TestValidate(model);
 
             result.ShouldHaveValidationErrorFor(m => m.Year)
-                .WithErrorMessage(CommencementDateModelValidator.CommencementDateYearMissingErrorMessage);
+                .WithErrorMessage(DateInputModelValidator.YearMissingErrorMessage);
         }
 
         [Theory]
@@ -71,7 +72,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Validators
             var result = validator.TestValidate(model);
 
             result.ShouldHaveValidationErrorFor(m => m.Year)
-                .WithErrorMessage(CommencementDateModelValidator.CommencementDateYearTooShortErrorMessage);
+                .WithErrorMessage(DateInputModelValidator.YearWrongLengthErrorMessage);
         }
 
         [Theory]
@@ -91,7 +92,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Validators
             var result = validator.TestValidate(model);
 
             result.ShouldHaveValidationErrorFor(m => m.Day)
-                .WithErrorMessage(CommencementDateModelValidator.CommencementDateInvalidErrorMessage);
+                .WithErrorMessage(DateInputModelValidator.DateInvalidErrorMessage);
         }
 
         [Theory]

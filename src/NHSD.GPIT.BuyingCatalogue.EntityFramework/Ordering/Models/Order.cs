@@ -41,6 +41,8 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models
 
         public CatalogueItemId? SolutionId { get; set; }
 
+        public DateTime? DeliveryDate { get; set; }
+
         public DateTime Created { get; set; } = DateTime.UtcNow;
 
         public DateTime LastUpdated { get; set; }

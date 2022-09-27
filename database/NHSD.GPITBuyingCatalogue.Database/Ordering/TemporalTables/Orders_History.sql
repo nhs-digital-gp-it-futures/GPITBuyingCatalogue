@@ -22,5 +22,6 @@
     InitialPeriod INT NULL,
     MaximumTerm INT NULL,
     AssociatedServicesOnly BIT NULL, 
-    [SolutionId] NVARCHAR(14) NULL
+    [SolutionId] NVARCHAR(14) NULL,
+    DeliveryDate DATE NULL,
 );

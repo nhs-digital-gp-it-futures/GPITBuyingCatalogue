@@ -40,5 +40,9 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.Orders
         public Task<List<Order>> GetUserOrders(int userId);
 
         public Task SetSolutionId(string internalOrgId, CallOffId callOffId, CatalogueItemId solutionId);
+
+        public Task SetDeliveryDate(string internalOrgId, CallOffId callOffId, DateTime deliveryDate);
+
+        public Task SetDeliveryDates(int orderId, CatalogueItemId catalogueItemId, List<OrderDeliveryDateDto> deliveryDates);
     }
 }

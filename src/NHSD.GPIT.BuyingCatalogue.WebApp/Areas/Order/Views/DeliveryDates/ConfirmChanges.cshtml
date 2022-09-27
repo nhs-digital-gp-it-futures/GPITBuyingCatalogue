@@ -1,0 +1,67 @@
+﻿@model NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.Contracts.DeliveryDates.ConfirmChangesModel
+@{
+    ViewBag.Title = "Are you sure you want to change your planned delivery date?";
+}
+
+<partial name="Partials/_BackLink" model="Model" />
+
+<div class="nhsuk-grid-row">
+    <div class="nhsuk-grid-column-full">
+        <nhs-validation-summary RadioId="ConfirmChanges" />
+
+        <nhs-page-title title="@ViewBag.Title"
+                        caption="Order @Model.CallOffId"
+                        advice="The new date will be applied to all the Service Recipients in your order." />
+
+        <nhs-warning-callout label-text="Changing a planned delivery date"> 
+            <p>
+                Changing a planned delivery date that was previously entered for the majority of
+                your Service Recipients means the new date will initially be applied to all recipients.
+            </p>
+            <p>
+                You'll then be able to change it for any recipients with a different planned delivery date.
+            </p>
+        </nhs-warning-callout>
+        
+        <h3>
+            Changes to your planned delivery date
+        </h3>
+        <p>
+            You've made the following changes:
+        </p>
+        
+        <h4>Added:</h4>
+        <ul>
+            <li>@($"{Model.NewDeliveryDate:d MMMM yyyy}")</li>
+        </ul>
+        
+        <h4>Removed:</h4>
+        <ul>
+            <li>@($"{Model.CurrentDeliveryDate:d MMMM yyyy}")</li>
+        </ul>
+
+        <hr/>
+
+        <form method="post">
+            <input type="hidden" asp-for="@Model.BackLink" />
+            <input type="hidden" asp-for="@Model.CurrentDeliveryDate" />
+            <input type="hidden" asp-for="@Model.NewDeliveryDate" />
+
+            <div class="nhsuk-u-margin-bottom-9">
+                <nhs-fieldset-form-label asp-for="@Model"
+                                         label-text="Do you want to confirm your changes?">
+                    <nhs-radio-button-container>
+                        @foreach (var option in Model.Options)
+                        {
+                            <nhs-radio-button asp-for="ConfirmChanges"
+                                              display-text="@option.Name"
+                                              value="@option.Value"/>
+                        }
+                    </nhs-radio-button-container>
+                </nhs-fieldset-form-label>
+            </div>
+
+            <nhs-submit-button />
+        </form>
+    </div>
+</div>
