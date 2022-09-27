@@ -51,7 +51,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
             await commencementDateService.SetCommencementDate(
                 callOffId,
                 internalOrgId,
-                model.CommencementDate!.Value,
+                model.Date!.Value,
                 model.InitialPeriodValue,
                 model.MaximumTermValue);
 

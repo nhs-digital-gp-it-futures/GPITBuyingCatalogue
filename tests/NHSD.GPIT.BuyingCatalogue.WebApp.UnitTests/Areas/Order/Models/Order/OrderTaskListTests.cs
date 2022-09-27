@@ -1,5 +1,7 @@
 ﻿using System;
+using System.Linq;
 using FluentAssertions;
+using MoreLinq;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Enums;
@@ -177,6 +179,7 @@ public class OrderTaskListTests
     {
         orderItem.OrderItemFunding = null;
         orderItem.OrderItemPrice = null;
+        orderItem.OrderItemRecipients.ForEach(x => x.DeliveryDate = null);
 
         var order = new EntityFramework.Ordering.Models.Order
         {
@@ -217,6 +220,8 @@ public class OrderTaskListTests
         Solution solution)
     {
         orderItem.OrderItemFunding = null;
+        orderItem.OrderItemRecipients.ForEach(x => x.DeliveryDate = null);
+
         var order = new EntityFramework.Ordering.Models.Order
         {
             Description = description,
@@ -266,6 +271,8 @@ public class OrderTaskListTests
         };
 
         orderItem.CatalogueItem = solution.CatalogueItem;
+        orderItem.OrderItemRecipients.ForEach(x => x.DeliveryDate = null);
+
         order.OrderItems.Add(orderItem);
 
         var expectedModel = new OrderTaskList
@@ -276,7 +283,7 @@ public class OrderTaskListTests
             CommencementDateStatus = TaskProgress.Completed,
             SolutionOrService = TaskProgress.Completed,
             FundingSource = TaskProgress.Completed,
-            ImplementationPlan = TaskProgress.NotStarted,
+            DeliveryDates = TaskProgress.NotStarted,
             AssociatedServiceBilling = TaskProgress.NotApplicable,
         };
 
@@ -358,7 +365,7 @@ public class OrderTaskListTests
         };
 
         solutionOrderItem.CatalogueItem = solution.CatalogueItem;
-        additionalServiceOrderItem.CatalogueItem = additionalService.CatalogueItem;
+        solutionOrderItem.OrderItemRecipients.ForEach(x => x.DeliveryDate = null);
 
         additionalServiceOrderItem.OrderItemFunding = null;
         solutionOrderItem.OrderItemFunding = null;
@@ -412,8 +419,12 @@ public class OrderTaskListTests
         };
 
         solutionOrderItem.CatalogueItem = solution.CatalogueItem;
+        solutionOrderItem.OrderItemRecipients.ForEach(x => x.DeliveryDate = null);
+
         additionalServiceOrderItem.CatalogueItem = additionalService.CatalogueItem;
         additionalServiceOrderItem.OrderItemFunding = null;
+        additionalServiceOrderItem.OrderItemRecipients.ForEach(x => x.DeliveryDate = null);
+
         order.OrderItems.Add(solutionOrderItem);
         order.OrderItems.Add(additionalServiceOrderItem);
 
@@ -432,6 +443,91 @@ public class OrderTaskListTests
         var model = new OrderTaskList(order);
 
         model.Should().BeEquivalentTo(expectedModel);
+    }
+
+    [Theory]
+    [CommonAutoData]
+    public static void Construct_DeliveryDates_NotStarted(
+        string description,
+        Contact orderingPartyContact,
+        EntityFramework.Catalogue.Models.Supplier supplier,
+        Contact supplierContact,
+        DateTime commencementDate,
+        OrderItem orderItem,
+        Solution solution)
+    {
+        var order = new EntityFramework.Ordering.Models.Order
+        {
+            Description = description,
+            OrderingPartyContact = orderingPartyContact,
+            Supplier = supplier,
+            SupplierContact = supplierContact,
+            CommencementDate = commencementDate,
+        };
+
+        orderItem.CatalogueItem = solution.CatalogueItem;
+        orderItem.OrderItemRecipients.ForEach(x => x.DeliveryDate = null);
+
+        order.OrderItems.Add(orderItem);
+
+        var expected = new OrderTaskList
+        {
+            DescriptionStatus = TaskProgress.Completed,
+            OrderingPartyStatus = TaskProgress.Completed,
+            SupplierStatus = TaskProgress.Completed,
+            CommencementDateStatus = TaskProgress.Completed,
+            SolutionOrService = TaskProgress.Completed,
+            FundingSource = TaskProgress.Completed,
+            DeliveryDates = TaskProgress.NotStarted,
+            AssociatedServiceBilling = TaskProgress.NotApplicable,
+        };
+
+        var actual = new OrderTaskList(order);
+
+        actual.Should().BeEquivalentTo(expected);
+    }
+
+    [Theory]
+    [CommonAutoData]
+    public static void Construct_DeliveryDates_InProgress(
+        string description,
+        Contact orderingPartyContact,
+        EntityFramework.Catalogue.Models.Supplier supplier,
+        Contact supplierContact,
+        DateTime commencementDate,
+        OrderItem orderItem,
+        Solution solution)
+    {
+        var order = new EntityFramework.Ordering.Models.Order
+        {
+            Description = description,
+            OrderingPartyContact = orderingPartyContact,
+            Supplier = supplier,
+            SupplierContact = supplierContact,
+            CommencementDate = commencementDate,
+        };
+
+        orderItem.CatalogueItem = solution.CatalogueItem;
+        orderItem.OrderItemRecipients.ForEach(x => x.DeliveryDate = null);
+        orderItem.OrderItemRecipients.First().DeliveryDate = DateTime.UtcNow;
+
+        order.OrderItems.Add(orderItem);
+
+        var expected = new OrderTaskList
+        {
+            DescriptionStatus = TaskProgress.Completed,
+            OrderingPartyStatus = TaskProgress.Completed,
+            SupplierStatus = TaskProgress.Completed,
+            CommencementDateStatus = TaskProgress.Completed,
+            SolutionOrService = TaskProgress.Completed,
+            FundingSource = TaskProgress.Completed,
+            DeliveryDates = TaskProgress.InProgress,
+            AssociatedServiceBilling = TaskProgress.NotApplicable,
+        };
+
+        var actual = new OrderTaskList(order);
+
+        actual.Should().BeEquivalentTo(expected);
     }
 
     [Theory]
@@ -469,6 +565,7 @@ public class OrderTaskListTests
             CommencementDateStatus = TaskProgress.Completed,
             SolutionOrService = TaskProgress.Completed,
             FundingSource = TaskProgress.Completed,
+            DeliveryDates = TaskProgress.Completed,
             ImplementationPlan = TaskProgress.Completed,
             AssociatedServiceBilling = TaskProgress.NotApplicable,
             DataProcessingInformation = TaskProgress.NotStarted,
@@ -517,6 +614,7 @@ public class OrderTaskListTests
             SupplierStatus = TaskProgress.Completed,
             CommencementDateStatus = TaskProgress.Completed,
             SolutionOrService = TaskProgress.Completed,
+            DeliveryDates = TaskProgress.Completed,
             FundingSource = TaskProgress.Completed,
             ImplementationPlan = TaskProgress.Completed,
             AssociatedServiceBilling = TaskProgress.NotStarted,
@@ -568,6 +666,7 @@ public class OrderTaskListTests
             CommencementDateStatus = TaskProgress.Completed,
             SolutionOrService = TaskProgress.Completed,
             FundingSource = TaskProgress.Completed,
+            DeliveryDates = TaskProgress.Completed,
             ImplementationPlan = TaskProgress.Completed,
             AssociatedServiceBilling = TaskProgress.Completed,
             DataProcessingInformation = TaskProgress.NotStarted,
@@ -624,6 +723,7 @@ public class OrderTaskListTests
             CommencementDateStatus = TaskProgress.Completed,
             SolutionOrService = TaskProgress.InProgress,
             FundingSource = TaskProgress.InProgress,
+            DeliveryDates = TaskProgress.InProgress,
             ImplementationPlan = TaskProgress.InProgress,
             AssociatedServiceBilling = TaskProgress.InProgress,
         };
@@ -681,6 +781,7 @@ public class OrderTaskListTests
             CommencementDateStatus = TaskProgress.Completed,
             SolutionOrService = TaskProgress.Completed,
             FundingSource = TaskProgress.InProgress,
+            DeliveryDates = TaskProgress.InProgress,
             ImplementationPlan = TaskProgress.InProgress,
             AssociatedServiceBilling = TaskProgress.InProgress,
         };
@@ -725,6 +826,7 @@ public class OrderTaskListTests
             CommencementDateStatus = TaskProgress.Completed,
             SolutionOrService = TaskProgress.Completed,
             FundingSource = TaskProgress.Completed,
+            DeliveryDates = TaskProgress.Completed,
             ImplementationPlan = TaskProgress.NotStarted,
             AssociatedServiceBilling = TaskProgress.CannotStart,
         };
@@ -774,6 +876,7 @@ public class OrderTaskListTests
             CommencementDateStatus = TaskProgress.Completed,
             SolutionOrService = TaskProgress.Completed,
             FundingSource = TaskProgress.Completed,
+            DeliveryDates = TaskProgress.Completed,
             ImplementationPlan = TaskProgress.Completed,
             AssociatedServiceBilling = TaskProgress.InProgress,
         };
@@ -819,6 +922,7 @@ public class OrderTaskListTests
             CommencementDateStatus = TaskProgress.Completed,
             SolutionOrService = TaskProgress.Completed,
             FundingSource = TaskProgress.Completed,
+            DeliveryDates = TaskProgress.Completed,
             ImplementationPlan = TaskProgress.Completed,
             AssociatedServiceBilling = TaskProgress.NotApplicable,
             DataProcessingInformation = TaskProgress.Completed,
@@ -873,6 +977,7 @@ public class OrderTaskListTests
             CommencementDateStatus = TaskProgress.Completed,
             SolutionOrService = TaskProgress.Completed,
             FundingSource = TaskProgress.InProgress,
+            DeliveryDates = TaskProgress.InProgress,
             ImplementationPlan = TaskProgress.InProgress,
             AssociatedServiceBilling = TaskProgress.NotApplicable,
             DataProcessingInformation = TaskProgress.InProgress,
@@ -921,6 +1026,7 @@ public class OrderTaskListTests
             CommencementDateStatus = TaskProgress.Completed,
             SolutionOrService = TaskProgress.Completed,
             FundingSource = TaskProgress.Completed,
+            DeliveryDates = TaskProgress.Completed,
             ImplementationPlan = TaskProgress.Completed,
             AssociatedServiceBilling = TaskProgress.NotApplicable,
             DataProcessingInformation = TaskProgress.Completed,

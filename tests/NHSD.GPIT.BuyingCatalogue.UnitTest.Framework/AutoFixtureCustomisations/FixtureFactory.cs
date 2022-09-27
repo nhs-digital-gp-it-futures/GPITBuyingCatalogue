@@ -53,6 +53,8 @@ namespace NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.AutoFixtureCustomisations
             new HttpClientCustomization(),
             new AbstractValidatorCustomizations(),
             new RecursiveErrorsCustomisation(),
+            new RecipientDateModelCustomization(),
+            new SelectDateModelCustomization(),
         };
 
         internal static IFixture Create() => Create(Customizations);
