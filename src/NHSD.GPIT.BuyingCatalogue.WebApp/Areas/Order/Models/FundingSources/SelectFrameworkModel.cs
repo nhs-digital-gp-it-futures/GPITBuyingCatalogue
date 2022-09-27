@@ -6,6 +6,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.FundingSources
 {
     public sealed class SelectFrameworkModel : OrderingBaseModel
     {
+        public const string TitleText = "Select a framework";
+
         public SelectFrameworkModel()
         {
         }
@@ -19,7 +21,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.FundingSources
 
             SetFrameworks(frameworks);
 
-            Title = "Select a framework";
+            Title = TitleText;
             Caption = $"Order {order.CallOffId}";
         }
 

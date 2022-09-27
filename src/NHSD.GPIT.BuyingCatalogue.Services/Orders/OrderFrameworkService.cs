@@ -58,7 +58,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
 
             if (selectedFramework.LocalFundingOnly != order.SelectedFramework.LocalFundingOnly)
             {
-                order.OrderItems.ForEach(oi =>
+                order.OrderItems.Where(oi => oi.OrderItemFunding != null).ForEach(oi =>
                 {
                     if (oi.OrderItemFunding.OrderItemFundingType != OrderItemFundingType.NoFundingRequired)
                         oi.OrderItemFunding = null;

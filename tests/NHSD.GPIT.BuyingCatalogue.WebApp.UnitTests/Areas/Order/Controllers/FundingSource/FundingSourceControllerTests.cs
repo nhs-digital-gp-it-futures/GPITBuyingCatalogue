@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using AutoFixture;
 using AutoFixture.AutoMoq;
@@ -29,6 +30,102 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Fun
             var constructors = typeof(FundingSourceController).GetConstructors();
 
             assertion.Verify(constructors);
+        }
+
+        [Theory]
+        [CommonAutoData]
+        public static async Task Get_SelectFramework_OnlyOneFramework_Redirects(
+            string internalOrgId,
+            EntityFramework.Ordering.Models.Order order,
+            EntityFramework.Catalogue.Models.Framework framework,
+            [Frozen] Mock<IOrderFrameworkService> orderFrameworkMock,
+            [Frozen] Mock<IOrderService> orderServiceMock,
+            FundingSourceController controller)
+        {
+            orderServiceMock.Setup(o => o.GetOrderThin(order.CallOffId, internalOrgId))
+                .ReturnsAsync(order);
+
+            orderFrameworkMock.Setup(f => f.GetFrameworksForOrder(order.CallOffId, internalOrgId, order.AssociatedServicesOnly))
+                .ReturnsAsync(new List<EntityFramework.Catalogue.Models.Framework>() { framework });
+
+            var actual = await controller.SelectFramework(internalOrgId, order.CallOffId);
+
+            var actualResult = actual.Should().BeOfType<RedirectToActionResult>().Subject;
+            actualResult.ActionName.Should().Be(nameof(FundingSourceController.FundingSources));
+            actualResult.ControllerName.Should().Be(typeof(FundingSourceController).ControllerName());
+            actualResult.RouteValues.Should().BeEquivalentTo(new RouteValueDictionary
+            {
+                { "internalOrgId", internalOrgId },
+                { "callOffId", order.CallOffId },
+            });
+
+            orderServiceMock.VerifyAll();
+            orderFrameworkMock.VerifyAll();
+        }
+
+        [Theory]
+        [CommonAutoData]
+        public static async Task Get_SelectFramework_Multipleframeworks_Redirects(
+            string internalOrgId,
+            EntityFramework.Ordering.Models.Order order,
+            List<EntityFramework.Catalogue.Models.Framework> frameworks,
+            [Frozen] Mock<IOrderFrameworkService> orderFrameworkMock,
+            [Frozen] Mock<IOrderService> orderServiceMock,
+            FundingSourceController controller)
+        {
+            orderServiceMock.Setup(o => o.GetOrderThin(order.CallOffId, internalOrgId))
+                .ReturnsAsync(order);
+
+            orderFrameworkMock.Setup(f => f.GetFrameworksForOrder(order.CallOffId, internalOrgId, order.AssociatedServicesOnly))
+                .ReturnsAsync(frameworks);
+
+            var expectedModel = new SelectFrameworkModel(order, frameworks);
+
+            var actual = await controller.SelectFramework(internalOrgId, order.CallOffId);
+
+            orderServiceMock.VerifyAll();
+            orderFrameworkMock.VerifyAll();
+
+            actual.Should().BeOfType<ViewResult>();
+            actual.As<ViewResult>().ViewData.Model
+                .Should()
+                .BeEquivalentTo(expectedModel, opt => opt.Excluding(m => m.BackLink).Excluding(m => m.BackLinkText));
+        }
+
+        [Theory]
+        [CommonAutoData]
+        public static async Task Post_SelectFramework_NoFramework_RedirectsOnly(
+            string internalOrgId,
+            EntityFramework.Ordering.Models.Order order,
+            List<EntityFramework.Catalogue.Models.Framework> frameworks,
+            [Frozen] Mock<IOrderFrameworkService> orderFrameworkMock,
+            [Frozen] Mock<IOrderService> orderServiceMock,
+            FundingSourceController controller)
+        {
+            order.SelectedFramework = null;
+            order.SelectedFrameworkId = null;
+
+            orderServiceMock.Setup(o => o.GetOrderThin(order.CallOffId, internalOrgId))
+                .ReturnsAsync(order);
+
+            var model = new SelectFrameworkModel(order, frameworks)
+            {
+                SelectedFramework = order.SelectedFrameworkId,
+            };
+
+            var actual = await controller.SelectFramework(model, internalOrgId, order.CallOffId);
+
+            var actualResult = actual.Should().BeOfType<RedirectToActionResult>().Subject;
+            actualResult.ActionName.Should().Be(nameof(FundingSourceController.FundingSources));
+            actualResult.ControllerName.Should().Be(typeof(FundingSourceController).ControllerName());
+            actualResult.RouteValues.Should().BeEquivalentTo(new RouteValueDictionary
+            {
+                { "internalOrgId", internalOrgId },
+                { "callOffId", order.CallOffId },
+            });
+
+            orderServiceMock.VerifyAll();
+            orderFrameworkMock.VerifyAll();
         }
 
         [Theory]

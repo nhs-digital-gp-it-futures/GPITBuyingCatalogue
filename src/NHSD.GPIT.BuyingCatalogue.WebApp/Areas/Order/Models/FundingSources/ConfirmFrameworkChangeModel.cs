@@ -4,6 +4,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.FundingSources
 {
     public sealed class ConfirmFrameworkChangeModel : OrderingBaseModel
     {
+        public const string TitleText = "Are you sure you want to change your procurement framework?";
+
         public ConfirmFrameworkChangeModel()
         {
         }
@@ -12,7 +14,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.FundingSources
             EntityFramework.Ordering.Models.Order order,
             EntityFramework.Catalogue.Models.Framework selectedFramework)
         {
-            Title = "Are you sure you want to change your procurement framework?";
+            Title = TitleText;
             Caption = $"Order {order.CallOffId}";
 
             CurrentFramework = order.SelectedFramework;
