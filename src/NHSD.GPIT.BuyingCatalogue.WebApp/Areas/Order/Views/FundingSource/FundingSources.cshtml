@@ -46,7 +46,7 @@
 					<nhs-table-cell>@item.FundingType.Description()</nhs-table-cell>
 					<nhs-table-cell><nhs-tag text="@FormatFundingType(item.FundingType)" colour="@FormatFundingTypeColour(item.FundingType)"></nhs-tag></nhs-table-cell>
 					<nhs-table-cell>
-						<a asp-controller="@typeof(FundingSourceController).ControllerName()"
+						<a data-test-id="@item.CatalogueItem.Name.Trim().Replace(' ', '-')" asp-controller="@typeof(FundingSourceController).ControllerName()"
 							asp-action="@nameof(FundingSourceController.FundingSource)"
 							asp-route-internalOrgId="@Model.InternalOrgId"
 							asp-route-callOffId="@Model.CallOffId"

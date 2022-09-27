@@ -10,6 +10,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.Actions.Common
         {
         }
 
+
         /// <summary>
         /// Generates Random Text for TextArea's and TextInputs to the Target Length.
         /// </summary>
@@ -104,6 +105,43 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.Actions.Common
             Driver.FindElement(targetYearField).SendKeys(date.Year.ToString());
 
             return date;
+        }
+
+        public int NumberInputAddRandomNumber(By targetField, int lowerRange = 0, int upperRange = int.MaxValue)
+        {
+            Driver.FindElement(targetField).Clear();
+            var random = new Random();
+            var number = random.Next(lowerRange, upperRange);
+
+            Driver.FindElement(targetField).SendKeys(number.ToString());
+            return number;
+        }
+
+        public string FirstNameInputAddText(By targetField, int numChars)
+        {
+            Driver.FindElement(targetField).Clear();
+            var firstName = Strings.RandomFirstName(numChars);
+            Driver.FindElement(targetField).SendKeys(firstName.ToString());
+
+            return firstName;
+        }
+
+        public string LastNameInputAddText(By targetField, int numChars)
+        {
+            Driver.FindElement(targetField).Clear();
+            var lastName = Strings.RandomLastName(numChars);
+            Driver.FindElement(targetField).SendKeys(lastName.ToString());
+
+            return lastName;
+        }
+
+        public string PhoneNumberInputAddText(By targetField, int numChars)
+        {
+            Driver.FindElement(targetField).Clear();
+            var phone = Strings.RandomPhoneNumber(numChars);
+            Driver.FindElement(targetField).SendKeys(phone.ToString());
+
+            return phone;
         }
     }
 }

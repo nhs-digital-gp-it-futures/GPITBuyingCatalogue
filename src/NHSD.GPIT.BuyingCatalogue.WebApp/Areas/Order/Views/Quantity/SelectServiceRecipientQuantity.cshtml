@@ -5,7 +5,7 @@
 
 <partial name="Partials/_BackLink" model="Model" />
 
-<div class="nhsuk-grid-row">
+<div class="nhsuk-grid-row" data-test-id="perServiceRecipient">
     <div class="nhsuk-grid-column-two-thirds">
         <nhs-validation-summary />
 
@@ -72,7 +72,8 @@
                             {
                                 <div style="text-align: right">
                                     <nhs-input asp-for="@Model.ServiceRecipients[i].InputQuantity"
-                                               input-width="Five"/>
+                                               input-width="Five"
+                                               data-test-id="input_quantity"/>
                                 </div>
                             }
                         </nhs-table-cell>
