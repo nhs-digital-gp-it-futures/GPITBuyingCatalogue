@@ -9,7 +9,7 @@ resource "azurerm_resource_group" "sql-server" {
   }
 }
 
-resource "azurerm_sql_server" "sql_server" {
+resource "azurerm_mssql_server" "sql_server" {
   name                         = var.sqlsvr_name
   resource_group_name          = azurerm_resource_group.sql-server.name
   location                     = var.region

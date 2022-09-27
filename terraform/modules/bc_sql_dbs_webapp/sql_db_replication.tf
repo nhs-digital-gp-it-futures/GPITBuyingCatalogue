@@ -1,4 +1,4 @@
-data "azurerm_sql_server" "sql_replica_server" {
+data "azurerm_mssql_server" "sql_replica_server" {
   name                = var.sqlsvr_replica_name
   resource_group_name = var.rg_replica_name
   count               = var.enable_replica
@@ -12,7 +12,7 @@ resource "azurerm_sql_failover_group" "sql_bapi_primary_fog" {
   databases           = [azurerm_mssql_database.sql_main_primary.id]
   
   partner_servers {
-    id = data.azurerm_sql_server.sql_replica_server[0].id
+    id = data.azurerm_mssql_server.sql_replica_server[0].id
   }
   
   read_write_endpoint_failover_policy {
