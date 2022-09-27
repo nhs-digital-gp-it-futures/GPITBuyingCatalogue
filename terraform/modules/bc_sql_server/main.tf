@@ -10,14 +10,15 @@ resource "azurerm_resource_group" "sql-server" {
 }
 
 resource "azurerm_mssql_server" "sql_server" {
-  name                         = var.sqlsvr_name
-  resource_group_name          = azurerm_resource_group.sql-server.name
-  location                     = var.region
-  version                      = var.sql_version
-  administrator_login          = var.sql_admin_username
-  administrator_login_password = var.sql_admin_password
+  name                          = var.sqlsvr_name
+  resource_group_name           = azurerm_resource_group.sql-server.name
+  location                      = var.region
+  version                       = var.sql_version
+  administrator_login           = var.sql_admin_username
+  administrator_login_password  = var.sql_admin_password
+  public_network_access_enabled = false
   tags = {
-    environment                = var.environment,
-    architecture               = "new"
+    environment                 = var.environment,
+    architecture                = "new"
   }
 }
