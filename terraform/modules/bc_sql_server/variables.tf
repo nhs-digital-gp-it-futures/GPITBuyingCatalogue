@@ -7,9 +7,6 @@ variable "project" {
 variable "region" {
   type = string
 }
-variable "rg_name" {
-  type = string
-}
 variable "sqlsvr_name" {
   type = string
 }

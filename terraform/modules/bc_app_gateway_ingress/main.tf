@@ -74,7 +74,7 @@ resource "azurerm_application_gateway" "app_gateway" {
     name                           = "${var.ag_name_fragment}-appgateway-httpslstn"
     frontend_ip_configuration_name = "${var.ag_name_fragment}-appgateway-feip"
     frontend_port_name             = "${var.ag_name_fragment}-appgateway-feporthttps"
-    protocol                       = "HTTPS"
+    protocol                       = "Https"
     ssl_certificate_name           = var.ssl_cert_name
   }
 
