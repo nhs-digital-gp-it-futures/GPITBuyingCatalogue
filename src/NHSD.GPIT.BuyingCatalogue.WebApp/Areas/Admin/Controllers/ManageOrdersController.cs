@@ -134,7 +134,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
         {
             var order = await orderAdminService.GetOrder(callOffId);
 
-            var model = new DeleteOrderModel(order)
+            var model = new Models.ManageOrders.DeleteOrderModel(order)
             {
                 BackLink = Url.Action(nameof(ViewOrder), new { callOffId }),
             };
@@ -143,15 +143,12 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
         }
 
         [HttpPost("{callOffId}/delete")]
-        public async Task<IActionResult> DeleteOrder(CallOffId callOffId, DeleteOrderModel model)
+        public async Task<IActionResult> DeleteOrder(CallOffId callOffId, Models.ManageOrders.DeleteOrderModel model)
         {
             if (!ModelState.IsValid)
                 return View(model);
 
-            if (!model.SelectedOption!.Value)
-                return RedirectToAction(nameof(ViewOrder), new { callOffId });
-
-            await orderAdminService.DeleteOrder(callOffId);
+            await orderAdminService.DeleteOrder(callOffId, model.NameOfRequester, model.NameOfApprover, model.ApprovalDate!.Value);
             return RedirectToAction(nameof(Index));
         }
 

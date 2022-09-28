@@ -134,7 +134,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
                 .ToList();
         }
 
-        public async Task DeleteOrder(CallOffId callOffId)
+        public async Task DeleteOrder(CallOffId callOffId, string nameOfRequester, string nameOfApprover, DateTime dateOfApproval)
         {
             var order = await dbContext.Orders.IgnoreQueryFilters().FirstOrDefaultAsync(o => o.Id == callOffId.Id);
 
@@ -142,6 +142,12 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
                 return;
 
             order.IsDeleted = true;
+            order.OrderDeletionApproval = new OrderDeletionApproval()
+            {
+                NameOfRequester = nameOfRequester,
+                NameOfApprover = nameOfApprover,
+                DateOfApproval = dateOfApproval,
+            };
 
             await dbContext.SaveChangesAsync();
         }

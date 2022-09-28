@@ -205,7 +205,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
             [Frozen] Mock<IOrderAdminService> orderAdminService,
             ManageOrdersController controller)
         {
-            var expectedModel = new DeleteOrderModel(order);
+            var expectedModel = new WebApp.Areas.Admin.Models.ManageOrders.DeleteOrderModel(order);
 
             orderAdminService.Setup(s => s.GetOrder(order.CallOffId))
                 .ReturnsAsync(order);
@@ -220,7 +220,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
         [CommonAutoData]
         public static async Task Post_DeleteOrder_InvalidModelState(
             CallOffId callOffId,
-            DeleteOrderModel model,
+            WebApp.Areas.Admin.Models.ManageOrders.DeleteOrderModel model,
             ManageOrdersController controller)
         {
             controller.ModelState.AddModelError("some-key", "some-error");
@@ -235,15 +235,15 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
         [CommonAutoData]
         public static async Task Post_DeleteOrder_ConfirmedDelete(
             CallOffId callOffId,
-            DeleteOrderModel model,
+            WebApp.Areas.Admin.Models.ManageOrders.DeleteOrderModel model,
             [Frozen] Mock<IOrderAdminService> orderAdminService,
             ManageOrdersController controller)
         {
-            model.SelectedOption = true;
+           // model.SelectedOption = true;
 
             var result = (await controller.DeleteOrder(callOffId, model)).As<RedirectToActionResult>();
 
-            orderAdminService.Verify(s => s.DeleteOrder(callOffId), Times.Once());
+            orderAdminService.Verify(s => s.DeleteOrder(callOffId, model.NameOfRequester, model.NameOfApprover, model.ApprovalDate.Value), Times.Once());
 
             result.Should().NotBeNull();
             result.ActionName.Should().Be(nameof(controller.Index));
@@ -253,15 +253,15 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
         [CommonAutoData]
         public static async Task Post_DeleteOrder_DeleteNotConfirmed(
             CallOffId callOffId,
-            DeleteOrderModel model,
+            WebApp.Areas.Admin.Models.ManageOrders.DeleteOrderModel model,
             [Frozen] Mock<IOrderAdminService> orderAdminService,
             ManageOrdersController controller)
         {
-            model.SelectedOption = false;
+           // model.SelectedOption = false;
 
             var result = (await controller.DeleteOrder(callOffId, model)).As<RedirectToActionResult>();
 
-            orderAdminService.Verify(s => s.DeleteOrder(callOffId), Times.Never());
+            orderAdminService.Verify(s => s.DeleteOrder(callOffId,model.NameOfRequester, model.NameOfApprover, model.ApprovalDate.Value), Times.Never());
 
             result.Should().NotBeNull();
             result.ActionName.Should().Be(nameof(controller.ViewOrder));

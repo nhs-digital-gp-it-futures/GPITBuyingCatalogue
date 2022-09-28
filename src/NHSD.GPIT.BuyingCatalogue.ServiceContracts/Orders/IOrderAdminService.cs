@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Models;
@@ -15,6 +16,6 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.Orders
 
         Task<IList<SearchFilterModel>> GetOrdersBySearchTerm(string search);
 
-        Task DeleteOrder(CallOffId callOffId);
+        Task DeleteOrder(CallOffId callOffId, string nameOfRequester, string nameOfApprover, DateTime dateOfApproval);
     }
 }
