@@ -407,5 +407,15 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
 
             await dbContext.SaveChangesAsync();
         }
+
+        public async Task DeleteSelectedFramework(string internalOrgId, CallOffId callOffId)
+        {
+            var order = await dbContext.Orders
+                .SingleAsync(o => o.Id == callOffId.Id && o.OrderingParty.InternalIdentifier == internalOrgId);
+
+            order.SelectedFrameworkId = null;
+
+            await dbContext.SaveChangesAsync();
+        }
     }
 }
