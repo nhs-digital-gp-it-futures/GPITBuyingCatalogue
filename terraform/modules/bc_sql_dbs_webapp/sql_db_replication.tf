@@ -4,14 +4,13 @@ data "azurerm_mssql_server" "sql_replica_server" {
   count               = var.enable_replica
 }
 
-resource "azurerm_sql_failover_group" "sql_bapi_primary_fog" {
+resource "azurerm_mssql_failover_group" "sql_bapi_primary_fog" {
   name                = "${var.project}-${var.environment}-sql-fog-bapi-primary"
   count               = var.enable_replica
-  resource_group_name = var.rg_name
-  server_name         = var.sqlsvr_name
+  server_id           = var.server_id
   databases           = [azurerm_mssql_database.sql_main_primary.id]
   
-  partner_servers {
+  partner_server {
     id = data.azurerm_mssql_server.sql_replica_server[0].id
   }
   
