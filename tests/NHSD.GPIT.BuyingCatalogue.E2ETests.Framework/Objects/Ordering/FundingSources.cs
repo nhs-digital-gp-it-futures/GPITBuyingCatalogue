@@ -16,5 +16,9 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.Objects.Ordering
         public static By FundingSource => By.Id("funding-source");
 
         public static By FundingSourceError => By.Id("funding-source-error");
+
+        public static By SelectFramework => By.Id("selected-framework");
+
+        public static By SelectFrameworkError => By.Id("selected-framework-error");
     }
 }

@@ -43,6 +43,10 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.Actions.Common
         public void ClickFirstRadio() =>
             Driver.FindElements(By.CssSelector("input[type=radio]")).First().Click();
 
+        public void ClickFirstUnselectedRadio() =>
+            Driver.FindElements(CommonSelectors.RadioButtonItems)
+            .Where(r => !r.Selected).First().Click();
+
         public void ClickAllCheckboxes() =>
             Driver.FindElements(By.CssSelector("input[type=checkbox]")).ToList().ForEach(element => element.Click());
 
@@ -61,6 +65,11 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.Actions.Common
             Driver
                 .FindElements(CommonSelectors.RadioButtonItems)
                 .Select(e => e.Text);
+
+        public IEnumerable<string> GetRadioButtonsOptionsIds() =>
+            Driver
+            .FindElements(CommonSelectors.RadioButtonInputs)
+            .Select(e => e.GetAttribute("Value"));
 
         public bool IsRadioButtonChecked(string radioButtonValue) =>
             Driver
