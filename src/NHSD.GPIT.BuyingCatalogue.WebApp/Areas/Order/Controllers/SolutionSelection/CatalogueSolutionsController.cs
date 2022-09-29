@@ -299,6 +299,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers.SolutionSelec
 
             await contractsService.RemoveContract(callOffId.Id);
             await orderItemService.DeleteOrderItems(internalOrgId, callOffId, model.ToRemove.Select(x => x.CatalogueItemId));
+            await orderService.DeleteSelectedFramework(internalOrgId, callOffId);
             await orderItemService.AddOrderItems(internalOrgId, callOffId, model.ToAdd.Select(x => x.CatalogueItemId));
 
             var catalogueItemId = model.ToAdd.First().CatalogueItemId;
@@ -379,6 +380,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers.SolutionSelec
 
             await contractsService.RemoveContract(callOffId.Id);
             await orderItemService.DeleteOrderItems(internalOrgId, callOffId, model.ToRemove.Select(x => x.CatalogueItemId));
+            await orderService.DeleteSelectedFramework(internalOrgId, callOffId);
             await orderService.SetSolutionId(internalOrgId, callOffId, model.ToAdd.First().CatalogueItemId);
 
             return RedirectToAction(

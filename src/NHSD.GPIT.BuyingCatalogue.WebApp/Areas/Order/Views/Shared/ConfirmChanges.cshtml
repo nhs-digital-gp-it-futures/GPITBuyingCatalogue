@@ -35,6 +35,7 @@
         
         <form method="post">
             <input type="hidden" asp-for="CatalogueItemType"/>
+            <input type="hidden" asp-for="BackLink" />
             
             <nhs-warning-callout label-text="Changing @article @Model.CatalogueItemType.Name()">
                 Changing @article @Model.CatalogueItemType.Name() will remove any Service Recipients, quantities and prices you've previously @calloutSuffix
