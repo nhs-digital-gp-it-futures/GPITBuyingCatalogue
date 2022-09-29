@@ -28,14 +28,14 @@ resource "azurerm_mssql_server" "sql_server" {
 
 resource "azurerm_mssql_firewall_rule" "sql_azure_services" {
   name                = "azure_services"
-  server_id         = azurerm_mssql_server.sql_server.id
+  server_id           = azurerm_mssql_server.sql_server.id
   start_ip_address    = "0.0.0.0"
   end_ip_address      = "0.0.0.0"
 }
 
 resource "azurerm_mssql_firewall_rule" "sql_bjss_vpn" {
   name                = "AllowBjssVpn"
-  server_id         = azurerm_mssql_server.sql_server.id
+  server_id           = azurerm_mssql_server.sql_server.id
   start_ip_address    = var.bjssvpn
   end_ip_address      = var.bjssvpn
 }
