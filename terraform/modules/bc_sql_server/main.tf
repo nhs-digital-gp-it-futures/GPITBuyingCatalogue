@@ -14,7 +14,6 @@ resource "azurerm_mssql_server" "sql_server" {
   version                       = var.sql_version
   administrator_login           = var.sql_admin_username
   administrator_login_password  = var.sql_admin_password
-  public_network_access_enabled = false
   
   azuread_administrator {
     login_username              = var.sqladmins
