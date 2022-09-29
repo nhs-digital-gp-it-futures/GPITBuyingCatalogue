@@ -52,6 +52,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
                 new FrameworkSolution { FrameworkId = "NHSDGP001", SolutionId = new CatalogueItemId(99999, "005"), IsFoundation = false, LastUpdated = DateTime.UtcNow },
                 new FrameworkSolution { FrameworkId = "NHSDGP001", SolutionId = new CatalogueItemId(99997, "001"), IsFoundation = true, LastUpdated = DateTime.UtcNow },
                 new FrameworkSolution { FrameworkId = "NHSDGP001", SolutionId = new CatalogueItemId(99998, "001"), IsFoundation = true, LastUpdated = DateTime.UtcNow },
+                new FrameworkSolution { FrameworkId = "DFOCVC001", SolutionId = new CatalogueItemId(99998, "001"), IsFoundation = true, LastUpdated = DateTime.UtcNow },
                 new FrameworkSolution { FrameworkId = "NHSDGP001", SolutionId = new CatalogueItemId(99998, "002"), IsFoundation = false, LastUpdated = DateTime.UtcNow },
             };
             context.AddRange(frameworkSolutions);

@@ -20,5 +20,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.Objects.Ordering
         public static By SelectFramework => By.Id("selected-framework");
 
         public static By SelectFrameworkError => By.Id("selected-framework-error");
+
+        public static By ConfirmChangeError => By.Id("confirm-changes-error");
     }
 }

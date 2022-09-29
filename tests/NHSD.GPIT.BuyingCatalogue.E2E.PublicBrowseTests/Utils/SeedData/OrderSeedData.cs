@@ -381,6 +381,19 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
                 },
             };
 
+            var recipients = context.ServiceRecipients.ToList();
+
+            recipients.ForEach(r =>
+            {
+                var recipient = new OrderItemRecipient
+                {
+                    Recipient = r,
+                    Quantity = 1000,
+                };
+
+                addedSolution.OrderItemRecipients.Add(recipient);
+            });
+
             var user = GetBuyerUser(context, order.OrderingPartyId);
 
             order.OrderItems.Add(addedSolution);
@@ -437,6 +450,19 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
                 Quantity = 10,
                 CatalogueItem = await context.CatalogueItems.SingleAsync(c => c.Id == new CatalogueItemId(99999, "003")),
             };
+
+            var recipients = context.ServiceRecipients.ToList();
+
+            recipients.ForEach(r =>
+            {
+                var recipient = new OrderItemRecipient
+                {
+                    Recipient = r,
+                    Quantity = 1000,
+                };
+
+                addedSolution.OrderItemRecipients.Add(recipient);
+            });
 
             var user = GetBuyerUser(context, order.OrderingPartyId);
 
@@ -979,7 +1005,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
             context.SaveChangesAs(user.Id);
         }
 
-        private static void AddOrderReadyToComplete(BuyingCatalogueDbContext context)
+        private static async void AddOrderReadyToComplete(BuyingCatalogueDbContext context)
         {
             const int orderId = 90009;
             var timeNow = DateTime.UtcNow;
@@ -1007,6 +1033,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
                     Phone = "123456789",
                 },
                 CommencementDate = timeNow.AddDays(1),
+                SelectedFramework = await GetFramework(context, GPITFUTURES),
             };
 
             var user = GetBuyerUser(context, order.OrderingPartyId);

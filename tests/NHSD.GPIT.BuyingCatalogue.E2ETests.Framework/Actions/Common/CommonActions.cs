@@ -43,8 +43,11 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.Actions.Common
         public void ClickFirstRadio() =>
             Driver.FindElements(By.CssSelector("input[type=radio]")).First().Click();
 
+        public void ClickLastRadio() =>
+            Driver.FindElements(By.CssSelector("input[type=radio]")).Last().Click();
+
         public void ClickFirstUnselectedRadio() =>
-            Driver.FindElements(CommonSelectors.RadioButtonItems)
+            Driver.FindElements(CommonSelectors.RadioButtonInputs)
             .Where(r => !r.Selected).First().Click();
 
         public void ClickAllCheckboxes() =>
