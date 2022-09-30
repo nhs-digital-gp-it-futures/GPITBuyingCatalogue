@@ -170,8 +170,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators
                 .WithErrorMessage(DeleteOrderModelValidator.NameOfRequesterMissingErrorMessage);
         }
 
- 
-
         [Theory]
         [CommonAutoData]
         public static void Validate_ValidModel_NoValidationError(
