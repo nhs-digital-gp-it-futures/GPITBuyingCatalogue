@@ -16,6 +16,6 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.Orders
 
         Task<IList<SearchFilterModel>> GetOrdersBySearchTerm(string search);
 
-        Task DeleteOrder(CallOffId callOffId, string nameOfRequester, string nameOfApprover, DateTime dateOfApproval);
+        Task DeleteOrder(CallOffId callOffId, string nameOfRequester, string nameOfApprover, DateTime? dateOfApproval);
     }
 }
