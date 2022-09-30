@@ -1,5 +1,5 @@
 resource "azurerm_mssql_database" "sql_main_primary_replica" {
-  name                = "BuyingCatalogue${var.db_name}${var.environment}"
+  name                = "BuyingCatalogue-${var.environment}"
   count               = var.enable_replica
   create_mode         = "OnlineSecondary"
   server_id           = data.azurerm_sql_server.sql_replica_server[0].id

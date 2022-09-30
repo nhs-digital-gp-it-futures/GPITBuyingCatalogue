@@ -1,15 +1,17 @@
-resource "azurerm_key_vault" "keyvault" {
-  name                            = "gpitf-${var.environment}-kv"
-  resource_group_name             = azurerm_resource_group.keyvault.name
-  location                        = var.region
-  tenant_id                       = var.tenant_id
-  enabled_for_disk_encryption     = "true"
-  sku_name                        = "standard"
-  enabled_for_template_deployment = "true"
-  purge_protection_enabled        = "false"
+module "keyvault" {
+  source                    = "./modules/keyvault"
 
-  tags = {
-    environment  = var.environment,
-    architecture = "new"
-  }
+  count = !local.is_dr ? 1 : 0
+
+  environment               = var.environment
+  region                    = var.region
+  tenant_id                 = var.tenant_id
+  principal_id              = azurerm_user_assigned_identity.managed_id.principal_id
+  project                   = var.project
+  pjtcode                   = var.pjtcode
+  core_env                  = local.core_env
+  keyvault_core_id          = data.azurerm_key_vault.keyvault_core.id
+  kv_sqlusername            = var.kv_sqlusername
+  kv_sql_hangfire_username  = var.kv_sql_hangfire_username
+  kv_access_group           = var.kv_access_group
 }

@@ -14,13 +14,8 @@ module "webapp" {
   acr_rg           = "gpitfutures-dev-rg-acr"
   repository_name  = "nhsd/buying-catalogue/nhsdgpitbuyingcataloguewebapp"
   always_on        = local.shortenv != "production" ? "false" : "true"
-  db_name_main     = module.sql_databases_pri.sql_main_dbname # in cluster "bc-${var.environment}-bapi"  
-  auth_pwd         = azurerm_key_vault_secret.sqladminpassword.value
   cert_name        = var.certname
-  webapp_cname_url = local.gw_webappURL  
   aspnet_environment = var.environment
-  sqlserver_name = module.sql_server_pri.sql_server_name
-  sqlserver_rg = azurerm_resource_group.sql-server.name
   instrumentation_key = azurerm_application_insights.appinsights.instrumentation_key
   primary_vpn = var.primary_vpn
   app_gateway_ip = module.appgateway.appgateway_pip_ipaddress
@@ -32,10 +27,17 @@ module "webapp" {
   docker_registry_server_username = data.azurerm_container_registry.acr.admin_username
   docker_registry_server_password = data.azurerm_container_registry.acr.admin_password
   create_slot = local.shortenv == "preprod" || local.shortenv == "production" ? 1 : 0 
-  create_host_binding = local.coreEnv == "dev" ? 1 : 0 
+  create_host_binding = local.core_env == "dev" ? 1 : 0
   ssl_thumbprint = data.azurerm_key_vault_certificate.ssl_cert.thumbprint
   notify_api_key = var.notify_api_key
-  hangfire_username = azurerm_key_vault_secret.sqlhangfireusername.value
-  hangfire_password = azurerm_key_vault_secret.sqlhangfirepassword.value
+
+  # SQL Vars
+  sqlserver_name      = local.is_dr ? "${var.project}-${var.primary_env}-sql-primary" : join("", module.sql_server_pri[*].sql_server_name)
+  sqlserver_rg        = local.is_dr ? "${var.project}-${var.primary_env}-rg-sql-server" : join("", module.sql_server_pri[*].sql_resource_group)
+  db_name_main        = local.is_dr ? "BuyingCatalogue-${var.primary_env}" : join("", module.sql_databases_pri[*].sql_main_dbname) # in cluster "bc-${var.environment}-bapi"
+  sql_admin_username  = local.is_dr ? data.azurerm_key_vault_secret.sqladminusername[0].value : join("", module.keyvault[*].sqladminusername)
+  sql_admin_password  = local.is_dr ? data.azurerm_key_vault_secret.sqladminpassword[0].value : join("", module.keyvault[*].sqladminpassword)
+  hangfire_username   = local.is_dr ? data.azurerm_key_vault_secret.sqlhangfireusername[0].value : join("", module.keyvault[*].sqlhangfireusername)
+  hangfire_password   = local.is_dr ? data.azurerm_key_vault_secret.sqlhangfirepassword[0].value : join("", module.keyvault[*].sqlhangfirepassword)
   depends_on = [module.sql_server_pri]
 }

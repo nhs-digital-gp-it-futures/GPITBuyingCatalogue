@@ -35,6 +35,27 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.RandomData
             return faker.Rant.Review();
         }
 
+        public static string RandomFirstName(int numChars)
+        {
+            var faker = new Faker("en_GB");
+            return faker.Name.FirstName();
+
+        }
+
+        public static string RandomLastName(int numChars)
+        {
+            var faker = new Faker("en_GB");
+            return faker.Name.LastName();
+
+        }
+
+        public static string RandomPhoneNumber(int numChars)
+        {
+            var faker = new Faker("en_GB");
+            return faker.Phone.PhoneNumber();
+
+        }       
+
         public static string RandomEmail(int numChars)
         {
             var faker = new Faker("en_GB");

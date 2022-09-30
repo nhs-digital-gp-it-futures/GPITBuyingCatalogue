@@ -33,7 +33,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Framework.UnitTests.Calculations
 
             var result = orderItem.OrderItemPrice.CalculateTotalCost(orderItem.TotalQuantity);
 
-            result.Should().Be(orderItemRecipient.Quantity * tier.Price);
+            result.Should().Be(tier.Price);
         }
 
         [Theory]
@@ -62,7 +62,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Framework.UnitTests.Calculations
 
             var result = orderItem.OrderItemPrice.CalculateTotalCostPerTier(orderItem.TotalQuantity);
 
-            var expected = new PriceCalculationModel(1, expectedQuantity, expectedQuantity * expectedPrice);
+            var expected = new PriceCalculationModel(1, expectedQuantity, expectedPrice);
 
             result.Should()
                 .NotBeEmpty()
@@ -173,7 +173,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Framework.UnitTests.Calculations
 
             var result = orderItem.OrderItemPrice.CalculateTotalCost(orderItem.TotalQuantity);
 
-            result.Should().Be(quantity * expected);
+            result.Should().Be(expected);
         }
 
         [Theory]
@@ -434,21 +434,21 @@ namespace NHSD.GPIT.BuyingCatalogue.Framework.UnitTests.Calculations
             {
                 new List<PriceCalculationModel>()
                 {
-                    new PriceCalculationModel(1, quantity, quantity * 3.14M),
+                    new PriceCalculationModel(1, quantity, 3.14M),
                     new PriceCalculationModel(2, 0, 0M),
                     new PriceCalculationModel(3, 0, 0M),
                 },
                 new List<PriceCalculationModel>()
                 {
                     new PriceCalculationModel(1, 0, 0),
-                    new PriceCalculationModel(2, quantity, quantity * 2M),
+                    new PriceCalculationModel(2, quantity, 2M),
                     new PriceCalculationModel(3, 0, 0M),
                 },
                 new List<PriceCalculationModel>()
                 {
                     new PriceCalculationModel(1, 0, 0M),
                     new PriceCalculationModel(2, 0, 0M),
-                    new PriceCalculationModel(3, quantity, quantity * 1.5M),
+                    new PriceCalculationModel(3, quantity, 1.5M),
                 },
             };
 

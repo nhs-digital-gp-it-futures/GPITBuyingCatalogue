@@ -106,7 +106,7 @@ jobs:
     inputs:
       targetType: 'inline'
       script: |        
-        mkdir $(Build.ArtifactStagingDirectory)/screen-shots        
+        mkdir $(Build.ArtifactStagingDirectory)/screen-shots
 
   - task: CopyFiles@2
     displayName: Copy screen shots

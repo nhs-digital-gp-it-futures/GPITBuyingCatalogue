@@ -79,3 +79,8 @@ variable "acr_subscription_id" {
 variable "notify_api_key" {
   type = string
 }
+
+variable "primary_env" {
+  type = string
+  default = ""
+}

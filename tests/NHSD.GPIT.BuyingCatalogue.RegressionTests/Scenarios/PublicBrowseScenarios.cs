@@ -11,22 +11,11 @@ using Xunit.Abstractions;
 
 namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
 {
-    public class PublicBrowseScenarios : AnonymousTestBase, IClassFixture<WebApplicationConnector>
+    public class PublicBrowseScenarios : AnonymousTestBase, IClassFixture<LocalWebApplicationFactory>
     {
-        public PublicBrowseScenarios(WebApplicationConnector connector, ITestOutputHelper testOutputHelper)
-           : base(connector, typeof(HomeController), nameof(HomeController.ContactUs), null, testOutputHelper)
+        public PublicBrowseScenarios(LocalWebApplicationFactory factory, ITestOutputHelper testOutputHelper)
+           : base(factory, typeof(HomeController), nameof(HomeController.ContactUs), null, testOutputHelper)
         {
-        }
-
-        [Fact]
-        public void PBTest_DoesThing()
-        {
-
-            int a = 1;
-            int b = 2;
-
-            // uri.ToString().Should().Be("abc");
-
         }
     }
 }

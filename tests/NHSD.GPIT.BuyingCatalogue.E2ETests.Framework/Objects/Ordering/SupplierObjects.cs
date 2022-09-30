@@ -5,6 +5,8 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.Objects.Ordering
 {
     public static class SupplierObjects
     {
+        public static By SupplierContactDetailsLink => By.LinkText("Supplier information and contact details");
+        
         public static By AssociatedServicesInset => By.Id("associated-services-inset");
 
         public static By SupplierAutoComplete => By.Id("SelectedSupplierId");
