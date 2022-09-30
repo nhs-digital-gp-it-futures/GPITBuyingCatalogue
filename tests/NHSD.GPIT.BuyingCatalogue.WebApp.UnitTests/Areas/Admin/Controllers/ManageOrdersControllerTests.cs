@@ -242,7 +242,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
         {
             var result = (await controller.DeleteOrder(callOffId, model)).As<RedirectToActionResult>();
 
-            orderAdminService.Verify(s => s.DeleteOrder(callOffId, model.NameOfRequester, model.NameOfApprover, model.ApprovalDate!.Value), Times.Once());
+            orderAdminService.Verify(s => s.DeleteOrder(callOffId, model.NameOfRequester, model.NameOfApprover, model.ApprovalDate ?? null), Times.Once());
 
             result.Should().NotBeNull();
             result.ActionName.Should().Be(nameof(controller.Index));

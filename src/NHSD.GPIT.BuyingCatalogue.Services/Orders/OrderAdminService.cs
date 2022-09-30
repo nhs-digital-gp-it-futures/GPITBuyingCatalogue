@@ -137,8 +137,6 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
 
         public async Task DeleteOrder(CallOffId callOffId, string nameOfRequester, string nameOfApprover, DateTime? dateOfApproval)
         {
-            callOffId.ValidateNotNull(nameof(callOffId));
-
             var order = await dbContext.Orders.IgnoreQueryFilters().FirstOrDefaultAsync(o => o.Id == callOffId.Id);
 
             if (order == null)

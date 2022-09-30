@@ -15,7 +15,6 @@ using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Orders;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Pdf;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.ManageOrders;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Controllers;
-using NHSD.GPIT.BuyingCatalogue.WebApp.Models;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Models.SuggestionSearch;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
@@ -134,7 +133,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
         {
             var order = await orderAdminService.GetOrder(callOffId);
 
-            var model = new Models.ManageOrders.DeleteOrderModel(order)
+            var model = new DeleteOrderModel(order)
             {
                 BackLink = Url.Action(nameof(ViewOrder), new { callOffId }),
             };
@@ -143,12 +142,12 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
         }
 
         [HttpPost("{callOffId}/delete")]
-        public async Task<IActionResult> DeleteOrder(CallOffId callOffId, Models.ManageOrders.DeleteOrderModel model)
+        public async Task<IActionResult> DeleteOrder(CallOffId callOffId, DeleteOrderModel model)
         {
             if (!ModelState.IsValid)
                 return View(model);
 
-            await orderAdminService.DeleteOrder(callOffId, model.NameOfRequester, model.NameOfApprover, model.ApprovalDate!.Value);
+            await orderAdminService.DeleteOrder(callOffId, model.NameOfRequester, model.NameOfApprover, model.ApprovalDate ?? null);
             return RedirectToAction(nameof(Index));
         }
 
