@@ -119,6 +119,12 @@ namespace NHSD.GPIT.BuyingCatalogue.Framework.Calculations
         private static decimal CalculateTotalCostCumulative(IPrice price, int quantity) =>
             CalculateCostCumulative(price, quantity).Sum(pcm => pcm.Cost);
 
+        private static decimal CalculateTotalCostVolume(IPrice price, int quantity) =>
+            CalculateCostVolume(price, quantity).Sum(pcm => pcm.Cost);
+
+        private static decimal CalculateTotalCostSingleFixed(IPrice price, int quantity) =>
+            CalculateCostSingleFixed(price, quantity).Sum(pcm => pcm.Cost);
+
         private static List<PriceCalculationModel> CalculateCostCumulative(IPrice price, int quantity)
         {
             var output = new List<PriceCalculationModel>();
@@ -137,10 +143,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Framework.Calculations
             return output;
         }
 
-        private static decimal CalculateTotalCostSingleFixed(IPrice price, int quantity) =>
-            CalculateCostSingleFixed(price, quantity).Sum(pcm => pcm.Cost);
-
-        private static List<PriceCalculationModel> CalculateCostSingleFixed(IPrice price, int quantity)
+        private static List<PriceCalculationModel> CalculateCostVolume(IPrice price, int quantity)
         {
             return price.PriceTiers
                 .OrderBy(x => x.LowerRange)
@@ -151,9 +154,15 @@ namespace NHSD.GPIT.BuyingCatalogue.Framework.Calculations
                 .ToList();
         }
 
-        private static decimal CalculateTotalCostVolume(IPrice price, int quantity) =>
-            CalculateCostVolume(price, quantity).Sum(pcm => pcm.Cost);
-
-        private static List<PriceCalculationModel> CalculateCostVolume(IPrice price, int quantity) => CalculateCostSingleFixed(price, quantity);
+        private static List<PriceCalculationModel> CalculateCostSingleFixed(IPrice price, int quantity)
+        {
+            return price.PriceTiers
+                .OrderBy(x => x.LowerRange)
+                .Select((x, i) => new PriceCalculationModel(
+                    i + 1,
+                    x.AppliesTo(quantity) ? quantity : 0,
+                    x.AppliesTo(quantity) ? x.Price : decimal.Zero))
+                .ToList();
+        }
     }
 }
