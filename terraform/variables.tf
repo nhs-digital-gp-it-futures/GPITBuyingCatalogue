@@ -5,9 +5,6 @@ variable "environment" {
 variable "region" {
   type = string
 }
-variable "subscription_id" {
-  type = string
-}
 
 variable "tenant_id" {
   type = string
@@ -61,10 +58,6 @@ variable "kv_access_group" {
 }
 
 variable "sql_admin_group" {
-  type = string
-}
-
-variable "cicd_range" {
   type = string
 }
 
