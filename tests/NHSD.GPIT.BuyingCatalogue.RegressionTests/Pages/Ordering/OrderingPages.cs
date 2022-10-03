@@ -8,6 +8,7 @@ using NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering.StepTwo.Associate
 using NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering.StepTwo.SolutionSelection;
 using NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering.Triage;
 using OpenQA.Selenium;
+using System.Linq;
 
 namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering
 {
@@ -191,8 +192,18 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering
 
             SolutionAndServicesReview.ReviewSolutionAndServices();
 
-            TaskList.SelectFundingSourcesTask();
-            SelectFundingSources.AddFundingSources(solutionName, isAssociatedServiceOnlyOrder, associatedServices, additionalServices);
+            var isMultiFramework = IsMultiFramework();
+
+            if (isMultiFramework)
+            {
+                TaskList.SelectFrameWork();
+                SelectFundingSources.AddFundingSources(solutionName, isAssociatedServiceOnlyOrder, associatedServices, additionalServices);
+            }
+            else
+            {
+                TaskList.SelectFundingSourcesTask();
+                SelectFundingSources.AddFundingSources(solutionName, isAssociatedServiceOnlyOrder, associatedServices, additionalServices);
+            }
         }
 
         public void StepThreeCompleteContract(bool isDefault = true)
@@ -500,6 +511,18 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering
             var orderID = Driver.Url.Split('/').Last().Split('-')[0].Replace("C0", string.Empty);
 
             return dbContext.Orders.Any(o => string.Equals(o.Id.ToString(), orderID) && o.AssociatedServicesOnly);
+        }
+
+        private bool IsMultiFramework()
+        {
+            using var dbContext = Factory.DbContext;
+            var orderID = Driver.Url.Split('/').Last().Split('-')[0].Replace("C0", string.Empty);
+
+            return dbContext.OrderItems
+               .Where(oi => string.Equals(oi.OrderId.ToString(), orderID))
+               .SelectMany(oi => oi.CatalogueItem.Solution.FrameworkSolutions.Select(fs => fs.Framework))
+               .Count() > 1;
+            
         }
 
         private bool HasAdditionalService(string solutionName)

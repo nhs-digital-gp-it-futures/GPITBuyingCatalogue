@@ -105,6 +105,19 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering.Dashboard
              nameof(TaskListController.TaskList)).Should().BeTrue();
         }
 
+        public void SelectFrameWork()
+        {
+            CommonActions.ClickLinkElement(FundingSources.SelectFundingSourcesLink);
+            CommonActions.PageLoadedCorrectGetIndex(
+                    typeof(FundingSourceController),
+                    nameof(FundingSourceController.SelectFramework))
+                .Should()
+                .BeTrue();
+
+            CommonActions.ClickLastRadio();
+            CommonActions.ClickSave();
+        }
+
         public void SelectFundingSourcesTask()
         {
             CommonActions.ClickLinkElement(FundingSources.SelectFundingSourcesLink);

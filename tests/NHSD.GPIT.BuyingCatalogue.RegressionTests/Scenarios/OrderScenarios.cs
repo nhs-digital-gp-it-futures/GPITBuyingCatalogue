@@ -13,6 +13,7 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
 
         private const string SupplierName = "EMIS Health";
         private const string SolutionName = "Anywhere Consult";
+        private const string SolutionWithMultipleFrameworks = "Video Consult";
         private const string AssociatedServiceName = "Anywhere Consult – Integrated Device";
         private const string AdditionalServiceName = "Automated Arrivals";
         private const string NewSolutionName = "Emis Web GP";
@@ -47,6 +48,28 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
             OrderingPages.StepOnePrepareOrder(SupplierName, orderDescription, false, OrderTriageValue.Under40K);
 
             OrderingPages.StepTwoAddSolutionsAndServices(SolutionName);
+
+            OrderingPages.StepThreeCompleteContract();
+
+            OrderingPages.StepFourReviewAndCompleteOrder();
+        }
+
+        [Fact]
+        public void MultipleFrameworksOrderWithSolutionUnder40K()
+        {
+            string orderDescription = "MultipleFrameworksOrderWithSolutionUnder40K";
+
+            OrderingPages.OrderingDashboard.CreateNewOrder();
+
+            OrderingPages.OrderType.ChooseOrderType(CatalogueItemType.Solution);
+
+            OrderingPages.OrderingTriage.SelectOrderTriage(OrderTriageValue.Under40K);
+
+            OrderingPages.StartOrder.ReadyToStart();
+
+            OrderingPages.StepOnePrepareOrder(SupplierName, orderDescription, false, OrderTriageValue.Under40K);
+
+            OrderingPages.StepTwoAddSolutionsAndServices(SolutionWithMultipleFrameworks);
 
             OrderingPages.StepThreeCompleteContract();
 
