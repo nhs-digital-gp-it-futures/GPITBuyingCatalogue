@@ -11,21 +11,10 @@ module "sql_server_pri" {
   sql_admin_password    = module.keyvault[0].sqladminpassword
   sqladmins             = var.sql_admin_group
   bjssvpn               = var.primary_vpn
+  subnet_backend_id     = azurerm_subnet.backend.id
 }
 
-resource "azurerm_sql_virtual_network_rule" "sqlvnetrule" {
-  name                = "${var.project}-${var.environment}-subnet-rule"
-  resource_group_name = join("", module.sql_server_pri[*].sql_resource_group)
-  server_name         = "${var.project}-${var.environment}-sql-primary"
-  subnet_id           = azurerm_subnet.backend.id
-  count               = !local.is_dr ? 1 : 0
-
-  depends_on = [
-    module.sql_server_pri
-  ]
-}
-
- module "sql_server_sec" {
+module "sql_server_sec" {
   source                = "./modules/bc_sql_server"
 
   count                 = local.shortenv == "preprod" || local.shortenv == "production" ? 1 : 0 
