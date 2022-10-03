@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc.Rendering;
+﻿using System.Collections.Generic;
+using NHSD.GPIT.BuyingCatalogue.WebApp.Models;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.FundingSources
 {
@@ -21,6 +22,13 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.FundingSources
             SelectedFramework = selectedFramework;
         }
 
+        public static IEnumerable<SelectableRadioOption<bool>> Options =>
+            new List<SelectableRadioOption<bool>>
+            {
+                new($"Yes, I want to confirm changes to the procurement framework", true),
+                new($"No, I do not want to confirm changes to the procurement framework ", false),
+            };
+
         public string Caption { get; set; }
 
         public EntityFramework.Catalogue.Models.Framework CurrentFramework { get; set; }
@@ -28,14 +36,5 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.FundingSources
         public EntityFramework.Catalogue.Models.Framework SelectedFramework { get; set; }
 
         public bool? ConfirmChanges { get; set; }
-
-        public SelectList Options => new(
-        new[]
-        {
-            new SelectListItem($"Yes, I want to confirm changes to the procurement framework", $"{true}"),
-            new SelectListItem($"No, I do not want to confirm changes to the procurement framework ", $"{false}"),
-        },
-        "Value",
-        "Text");
     }
 }

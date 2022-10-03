@@ -9,7 +9,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Validators.FundingSources
 
         public ConfirmFrameworkChangeModelValidator()
         {
-            RuleFor(cfcm => cfcm.ConfirmChanges)
+            RuleFor(m => m.ConfirmChanges)
                 .NotNull()
                 .WithMessage(ConfirmChangeErrorMessage);
         }
