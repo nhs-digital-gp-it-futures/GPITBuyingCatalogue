@@ -33,8 +33,3 @@ variable "sqladmins" {
 variable "bjssvpn" {
   type = string
 }
-
-variable "subnet_backend_id" {
-  type = string
-  default = ""
-}
