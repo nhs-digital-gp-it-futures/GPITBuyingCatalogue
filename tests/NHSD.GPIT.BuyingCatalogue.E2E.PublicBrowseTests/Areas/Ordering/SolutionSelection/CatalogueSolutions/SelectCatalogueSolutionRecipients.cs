@@ -97,7 +97,19 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering.SolutionSelection.Ca
         [Fact]
         public void SelectCatalogueSolutionRecipients_SelectionMade_ExpectedResult()
         {
-            GetSolution().OrderItemRecipients.Count.Should().Be(0);
+            var context = GetEndToEndDbContext();
+            var solution = GetSolution();
+
+            var recipients = context.OrderItemRecipients
+                .Where(x => x.OrderId == OrderId
+                    && x.CatalogueItemId == solution.CatalogueItemId)
+                .ToList();
+
+            context.OrderItemRecipients.Remove(recipients.First());
+
+            context.SaveChanges();
+
+            GetSolution().OrderItemRecipients.Count.Should().Be(2);
 
             CommonActions.ClickFirstCheckbox();
             CommonActions.ClickSave();
@@ -106,7 +118,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering.SolutionSelection.Ca
                 typeof(PricesController),
                 nameof(PricesController.EditPrice)).Should().BeTrue();
 
-            GetSolution().OrderItemRecipients.Count.Should().Be(1);
+            GetSolution().OrderItemRecipients.Count.Should().Be(3);
         }
 
         public void Dispose()

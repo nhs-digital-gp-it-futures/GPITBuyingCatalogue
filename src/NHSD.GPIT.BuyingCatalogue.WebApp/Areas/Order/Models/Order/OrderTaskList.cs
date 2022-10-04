@@ -64,6 +64,20 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.Order
                 && x.AllQuantitiesEntered);
         }
 
+        private static bool SomeSolutionsCompleted(EntityFramework.Ordering.Models.Order order)
+        {
+            if (!order.OrderItems.Any())
+            {
+                return false;
+            }
+
+            return order.OrderItems.Any(x =>
+                x.CatalogueItem != null
+                && x.OrderItemPrice != null
+                && (x.OrderItemRecipients?.Any() ?? false)
+                && x.AllQuantitiesEntered);
+        }
+
         private void SetStatusFlags(EntityFramework.Ordering.Models.Order order)
         {
             SetSectionOneStatus(order);
@@ -107,15 +121,14 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.Order
             else
                 SolutionOrService = TaskProgress.Completed;
 
-            FundingSource = SolutionOrService switch
-            {
-                TaskProgress.NotStarted => TaskProgress.CannotStart,
-                TaskProgress.InProgress when order.OrderItems.All(oi => oi.OrderItemFunding == null) => TaskProgress.CannotStart,
-                TaskProgress.Completed when order.OrderItems.All(oi => oi.OrderItemFunding != null) => TaskProgress.Completed,
-                _ => order.OrderItems.Any(oi => oi.OrderItemFunding != null)
-                    ? TaskProgress.InProgress
-                    : TaskProgress.NotStarted,
-            };
+            if (!SolutionsSelected(order) || !SomeSolutionsCompleted(order))
+                FundingSource = TaskProgress.CannotStart;
+            else if (order.SelectedFramework == null && order.OrderItems.All(oi => oi.OrderItemFunding == null))
+                FundingSource = TaskProgress.NotStarted;
+            else if (order.SelectedFramework != null && order.OrderItems.Any(oi => oi.OrderItemFunding == null))
+                FundingSource = TaskProgress.InProgress;
+            else
+                FundingSource = TaskProgress.Completed;
         }
 
         private void SetSectionThreeStatus(EntityFramework.Ordering.Models.Order order)

@@ -23,22 +23,22 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers.SolutionSelec
 
         private readonly IGpPracticeCacheService gpPracticeCache;
         private readonly IOrderService orderService;
-        private readonly IOrderItemService orderItemService;
         private readonly IOrderQuantityService orderQuantityService;
         private readonly IRoutingService routingService;
+        private readonly IOrderItemService orderItemService;
 
         public QuantityController(
             IGpPracticeCacheService gpPracticeCache,
             IOrderService orderService,
-            IOrderItemService orderItemService,
             IOrderQuantityService orderQuantityService,
-            IRoutingService routingService)
+            IRoutingService routingService,
+            IOrderItemService orderItemService)
         {
             this.gpPracticeCache = gpPracticeCache ?? throw new ArgumentNullException(nameof(gpPracticeCache));
             this.orderService = orderService ?? throw new ArgumentNullException(nameof(orderService));
-            this.orderItemService = orderItemService ?? throw new ArgumentNullException(nameof(orderItemService));
             this.orderQuantityService = orderQuantityService ?? throw new ArgumentNullException(nameof(orderQuantityService));
             this.routingService = routingService ?? throw new ArgumentNullException(nameof(routingService));
+            this.orderItemService = orderItemService ?? throw new ArgumentNullException(nameof(orderItemService));
         }
 
         [HttpGet("quantity/{catalogueItemId}/select")]
@@ -92,7 +92,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers.SolutionSelec
                 catalogueItemId,
                 int.Parse(model.Quantity));
 
-            await orderItemService.SetOrderItemFunding(callOffId, internalOrgId, catalogueItemId);
+            await orderItemService.DetectChangesInFundingAndDelete(callOffId, internalOrgId, catalogueItemId);
 
             var route = routingService.GetRoute(
                 RoutingPoint.SelectQuantity,
@@ -168,7 +168,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers.SolutionSelec
 
             await orderQuantityService.SetServiceRecipientQuantities(order.Id, catalogueItemId, quantities);
 
-            await orderItemService.SetOrderItemFunding(callOffId, internalOrgId, catalogueItemId);
+            await orderItemService.DetectChangesInFundingAndDelete(callOffId, internalOrgId, catalogueItemId);
 
             var route = routingService.GetRoute(
                 RoutingPoint.SelectQuantity,

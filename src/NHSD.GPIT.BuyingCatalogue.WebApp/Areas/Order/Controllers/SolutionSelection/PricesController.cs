@@ -188,7 +188,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers.SolutionSelec
             var order = await orderService.GetOrderThin(callOffId, internalOrgId);
 
             await orderPriceService.UpdatePrice(order.Id, catalogueItemId, model.AgreedPrices);
-            await orderItemService.SetOrderItemFunding(callOffId, internalOrgId, catalogueItemId);
+
+            await orderItemService.DetectChangesInFundingAndDelete(callOffId, internalOrgId, catalogueItemId);
 
             var route = routingService.GetRoute(
                 RoutingPoint.EditPrice,
