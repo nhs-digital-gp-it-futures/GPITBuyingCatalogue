@@ -168,6 +168,13 @@
         @Model.Order.CallOffId
     </pdf-summary-list-row>
 
+    @if (Model.Order.SelectedFramework is not null)
+    {
+        <pdf-summary-list-row label-text="Framework">
+            @Model.Order.SelectedFramework.Name
+        </pdf-summary-list-row>
+    }
+
     <pdf-summary-list-row label-text="Description">
         @Model.Order.Description
     </pdf-summary-list-row>

@@ -140,6 +140,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
                 .Include(o => o.Supplier)
                 .Include(o => o.SupplierContact)
                 .Include(o => o.LastUpdatedByUser)
+                .Include(o => o.SelectedFramework)
                 .Include(o => o.OrderItems)
                     .ThenInclude(i => i.CatalogueItem)
                     .ThenInclude(ci => ci.Solution)
