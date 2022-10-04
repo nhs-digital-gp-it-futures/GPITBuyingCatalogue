@@ -70,7 +70,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
             EntityFramework.Ordering.Models.Order order,
             EntityFramework.Catalogue.Models.Framework framework,
             [Frozen] Mock<IOrderAdminService> orderAdminService,
-            [Frozen] Mock<IFrameworkService> mockFrameworkService,
             ManageOrdersController controller)
         {
             solution.FrameworkSolutions = frameworkSolutions;
@@ -82,17 +81,14 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
             order.OrderingParty = organisation;
             order.LastUpdatedByUser = user;
             order.Supplier = supplier;
+            order.SelectedFramework = framework;
 
             orderAdminService.Setup(s => s.GetOrder(order.CallOffId))
                 .ReturnsAsync(order);
 
-            mockFrameworkService
-                .Setup(x => x.GetFramework(order.Id))
-                .ReturnsAsync(framework);
-
             var result = (await controller.ViewOrder(order.CallOffId)).As<ViewResult>();
 
-            var expected = new ViewOrderModel(order, framework);
+            var expected = new ViewOrderModel(order);
 
             result.Should().NotBeNull();
             result.Model.Should().BeEquivalentTo(expected, opt => opt.Excluding(m => m.BackLink));

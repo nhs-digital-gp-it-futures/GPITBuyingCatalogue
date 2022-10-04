@@ -14,59 +14,31 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Models.ManageOr
     {
         [Theory]
         [CommonAutoData]
-        public static void Construct_WithOrderItems_DerivesFrameworkFromSolution(
-            AspNetUser user,
-            Organisation orderingParty,
+        public static void Construct_MapsCorrectly(
+            Organisation organisation,
+            AspNetUser lastUpdatedBy,
             Supplier supplier,
-            Solution solution,
-            AssociatedService associatedService,
-            AdditionalService additionalService,
             EntityFramework.Catalogue.Models.Framework framework,
+            List<OrderItem> orderItems,
             EntityFramework.Ordering.Models.Order order)
         {
-            var orderItems = new List<OrderItem>
-            {
-                new() { CatalogueItem = solution.CatalogueItem },
-                new() { CatalogueItem = associatedService.CatalogueItem },
-                new() { CatalogueItem = additionalService.CatalogueItem },
-            };
-
-            orderItems.ForEach(oi => order.OrderItems.Add(oi));
-
-            order.LastUpdatedByUser = user;
-            order.OrderingParty = orderingParty;
+            order.LastUpdatedByUser = lastUpdatedBy;
+            order.OrderingParty = organisation;
             order.Supplier = supplier;
+            order.SelectedFramework = framework;
+            order.OrderItems = orderItems;
+            var model = new ViewOrderModel(order);
 
-            var model = new ViewOrderModel(order, framework);
-
-            model.OrderItems.Should().AllSatisfy(oi => oi.Framework.Should().Be(framework.ShortName));
-        }
-
-        [Theory]
-        [CommonAutoData]
-        public static void Construct_WithNoSolution_EmptyFrameworkName(
-            AspNetUser user,
-            Organisation orderingParty,
-            Supplier supplier,
-            AssociatedService associatedService,
-            AdditionalService additionalService,
-            EntityFramework.Ordering.Models.Order order)
-        {
-            var orderItems = new List<OrderItem>
-            {
-                new() { CatalogueItem = associatedService.CatalogueItem },
-                new() { CatalogueItem = additionalService.CatalogueItem },
-            };
-
-            orderItems.ForEach(oi => order.OrderItems.Add(oi));
-
-            order.LastUpdatedByUser = user;
-            order.OrderingParty = orderingParty;
-            order.Supplier = supplier;
-
-            var model = new ViewOrderModel(order, null);
-
-            model.OrderItems.Should().AllSatisfy(oi => oi.Framework.Should().Be(string.Empty));
+            model.CallOffId.Should().Be(order.CallOffId);
+            model.Description.Should().Be(order.Description);
+            model.LastUpdatedBy.Should().Be(order.LastUpdatedByUser.FullName);
+            model.OrganisationName.Should().Be(order.OrderingParty.Name);
+            model.OrganisationExternalIdentifier.Should().Be(order.OrderingParty.ExternalIdentifier);
+            model.OrganisationInternalIdentifier.Should().Be(order.OrderingParty.InternalIdentifier);
+            model.SupplierName.Should().Be(order.Supplier.Name);
+            model.OrderStatus.Should().Be(order.OrderStatus);
+            model.SelectedFrameworkName.Should().Be(order.SelectedFramework.Name);
+            model.OrderItems.Should().HaveCount(orderItems.Count);
         }
     }
 }

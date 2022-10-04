@@ -9,8 +9,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.ManageOrders
 
         public CatalogueItemType Type { get; set; }
 
-        public string Framework { get; set; }
-
         public OrderItemFundingType SelectedFundingType { get; set; }
     }
 }
