@@ -2,11 +2,12 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Hangfire.Server;
 using Microsoft.EntityFrameworkCore;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
-using NHSD.GPIT.BuyingCatalogue.EntityFramework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
+using NHSD.GPIT.BuyingCatalogue.Framework.Calculations;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Orders;
 
 namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
@@ -16,13 +17,11 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
         private readonly BuyingCatalogueDbContext dbContext;
 
         private readonly IOrderService orderService;
-        private readonly IOrderItemFundingService orderItemFundingService;
 
-        public OrderItemService(BuyingCatalogueDbContext dbContext, IOrderService orderService, IOrderItemFundingService orderItemFundingService)
+        public OrderItemService(BuyingCatalogueDbContext dbContext, IOrderService orderService)
         {
             this.dbContext = dbContext ?? throw new ArgumentNullException(nameof(dbContext));
             this.orderService = orderService ?? throw new ArgumentNullException(nameof(orderService));
-            this.orderItemFundingService = orderItemFundingService ?? throw new ArgumentNullException(nameof(orderItemFundingService));
         }
 
         public async Task AddOrderItems(string internalOrgId, CallOffId callOffId, IEnumerable<CatalogueItemId> itemIds)
@@ -90,39 +89,46 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
         }
 
         public Task<OrderItem> GetOrderItem(CallOffId callOffId, string internalOrgId, CatalogueItemId catalogueItemId) =>
-            dbContext.OrderItems.AsNoTracking()
+            dbContext.OrderItems
+                .AsNoTracking()
                 .Include(oi => oi.OrderItemFunding)
                 .Include(oi => oi.CatalogueItem)
-                .Include(oi => oi.OrderItemPrice).ThenInclude(ip => ip.OrderItemPriceTiers)
-                .Include(oi => oi.OrderItemRecipients).ThenInclude(ir => ir.Recipient)
+                .Include(oi => oi.OrderItemPrice)
+                    .ThenInclude(ip => ip.OrderItemPriceTiers)
+                .Include(oi => oi.OrderItemRecipients)
+                    .ThenInclude(ir => ir.Recipient)
                 .SingleOrDefaultAsync(oi =>
                     oi.OrderId == callOffId.Id
                     && oi.CatalogueItemId == catalogueItemId
                     && oi.Order.OrderingParty.InternalIdentifier == internalOrgId);
-
-        public async Task SetOrderItemFunding(CallOffId callOffId, string internalOrgId, CatalogueItemId catalogueItemId)
-        {
-            var item = await GetOrderItemTracked(callOffId, internalOrgId, catalogueItemId);
-            var fundingType = await orderItemFundingService.GetFundingType(item);
-
-            switch (fundingType.IsForcedFunding())
-            {
-                case true when item.FundingType != fundingType:
-                    await SaveOrUpdateOrderItemFunding(item, callOffId, catalogueItemId, fundingType);
-                    break;
-
-                case false when item.IsForcedFunding:
-                    item.OrderItemFunding = null;
-                    await dbContext.SaveChangesAsync();
-                    break;
-            }
-        }
 
         public async Task UpdateOrderItemFunding(CallOffId callOffId, string internalOrgId, CatalogueItemId catalogueItemId, OrderItemFundingType selectedFundingType)
         {
             var item = await GetOrderItemTracked(callOffId, internalOrgId, catalogueItemId);
 
             await SaveOrUpdateOrderItemFunding(item, callOffId, catalogueItemId, selectedFundingType);
+        }
+
+        public async Task DetectChangesInFundingAndDelete(CallOffId callOffId, string internalOrgId, CatalogueItemId catalogueItemId)
+        {
+            var item = await GetOrderItemTracked(callOffId, internalOrgId, catalogueItemId);
+
+            if (item.OrderItemFunding is null || !item.IsReadyForReview)
+                return;
+
+            var newFundingType = item.FundingType;
+
+            if (item.TotalCost() == 0)
+                newFundingType = OrderItemFundingType.NoFundingRequired;
+            else if (item.Order.SelectedFramework.LocalFundingOnly)
+                newFundingType = OrderItemFundingType.LocalFundingOnly;
+
+            if (item.FundingType == newFundingType)
+                return;
+
+            item.OrderItemFunding = null;
+
+            await dbContext.SaveChangesAsync();
         }
 
         public async Task SetOrderItemEstimationPeriod(CallOffId callOffId, string internalOrgId, CatalogueItemId catalogueItemId, CataloguePrice price)
@@ -150,8 +156,12 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
             dbContext.OrderItems
                 .Include(oi => oi.OrderItemFunding)
                 .Include(oi => oi.CatalogueItem)
-                .Include(oi => oi.OrderItemPrice).ThenInclude(ip => ip.OrderItemPriceTiers)
-                .Include(oi => oi.OrderItemRecipients).ThenInclude(ir => ir.Recipient)
+                .Include(oi => oi.OrderItemPrice)
+                    .ThenInclude(ip => ip.OrderItemPriceTiers)
+                .Include(oi => oi.OrderItemRecipients)
+                    .ThenInclude(ir => ir.Recipient)
+                .Include(oi => oi.Order)
+                    .ThenInclude(o => o.SelectedFramework)
                 .SingleOrDefaultAsync(oi =>
                     oi.OrderId == callOffId.Id
                     && oi.CatalogueItemId == catalogueItemId
