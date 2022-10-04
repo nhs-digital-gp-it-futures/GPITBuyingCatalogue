@@ -20,6 +20,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.Contracts.Delivery
             CatalogueItemId = catalogueItemId;
             DeliveryDate = order.DeliveryDate;
             Source = source;
+            DisplayEditLink = order.GetPreviousOrderItemId(catalogueItemId) == null;
 
             var orderItem = order.OrderItem(catalogueItemId);
 
@@ -44,6 +45,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.Contracts.Delivery
         public string Description { get; set; }
 
         public DateTime? DeliveryDate { get; set; }
+
+        public bool DisplayEditLink { get; set; }
 
         public RecipientDateModel[] Recipients { get; set; }
     }

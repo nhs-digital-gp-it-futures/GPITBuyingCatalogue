@@ -1,6 +1,5 @@
 ﻿@using NHSD.GPIT.BuyingCatalogue.EntityFramework.Extensions
 @using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers.Contracts
-@using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models
 @model NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.Contracts.DeliveryDates.EditDatesModel
 @{
     ViewBag.Title = $"Planned delivery dates for {Model.CatalogueItemType.Name()}";
@@ -21,7 +20,7 @@
             <p>
                 <strong>Planned delivery date for the majority of Service Recipients:</strong>
                 @($"{Model.DeliveryDate:dd MMMM yyyy}")
-                @if (Model.CatalogueItemType == CatalogueItemType.Solution)
+                @if (Model.DisplayEditLink)
                 {
                     var returnUrl = Url.Action(
                         nameof(DeliveryDatesController.EditDates),
@@ -44,6 +43,7 @@
             <input type="hidden" asp-for="@Model.CatalogueItemType" />
             <input type="hidden" asp-for="@Model.Description" />
             <input type="hidden" asp-for="@Model.DeliveryDate" />
+            <input type="hidden" asp-for="@Model.DisplayEditLink" />
             <input type="hidden" asp-for="@Model.Source" />
             
             <nhs-table>
