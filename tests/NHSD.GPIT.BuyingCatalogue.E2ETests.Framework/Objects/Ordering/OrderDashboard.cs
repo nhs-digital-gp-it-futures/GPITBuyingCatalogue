@@ -23,7 +23,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.Objects.Ordering
 
         public static By SolutionsAndServices => ByExtensions.DataTestId("test-solutions-and-services");
 
-        public static By FundingSources => ByExtensions.DataTestId("test-funding-sources");
+        public static By FundingSources => By.LinkText("Select funding sources");
 
         public static By ImplementationMilestones => ByExtensions.DataTestId("test-implementation-milestones");
 

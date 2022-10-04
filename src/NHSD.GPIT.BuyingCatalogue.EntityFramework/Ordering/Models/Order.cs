@@ -41,6 +41,8 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models
 
         public CatalogueItemId? SolutionId { get; set; }
 
+        public string SelectedFrameworkId { get; set; }
+
         public DateTime Created { get; set; } = DateTime.UtcNow;
 
         public DateTime LastUpdated { get; set; }
@@ -80,6 +82,8 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models
         public ICollection<OrderItem> OrderItems { get; set; }
 
         public CatalogueItem Solution { get; set; }
+
+        public Framework SelectedFramework { get; set; }
 
         public virtual ContractFlags ContractFlags { get; set; }
     }

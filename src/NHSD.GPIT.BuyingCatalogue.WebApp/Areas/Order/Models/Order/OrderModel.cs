@@ -26,6 +26,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.Order
 
                 LastUpdatedByUserName = order.LastUpdatedByUser.FullName;
                 LastUpdated = order.LastUpdated;
+                ShowSelectFrameworkPage = string.IsNullOrWhiteSpace(order.SelectedFrameworkId);
             }
         }
 
@@ -44,5 +45,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.Order
         public DateTime? LastUpdated { get; set; }
 
         public OrderTaskList SectionStatuses { get; set; }
+
+        public bool ShowSelectFrameworkPage { get; set; }
     }
 }

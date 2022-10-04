@@ -17,6 +17,9 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Framework
             this.dbContext = dbContext ?? throw new ArgumentNullException(nameof(dbContext));
         }
 
+        public async Task<EntityFramework.Catalogue.Models.Framework> GetFramework(string frameworkId) =>
+            await dbContext.Frameworks.SingleOrDefaultAsync(f => f.Id == frameworkId);
+
         public async Task<EntityFramework.Catalogue.Models.Framework> GetFramework(int orderId)
         {
             var order = await dbContext.Orders
