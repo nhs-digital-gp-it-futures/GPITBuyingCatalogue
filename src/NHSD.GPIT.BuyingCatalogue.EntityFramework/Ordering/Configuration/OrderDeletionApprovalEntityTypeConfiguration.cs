@@ -1,7 +1,6 @@
 ﻿using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
-using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 
 namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Configuration
@@ -15,11 +14,9 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Configuration
             builder.HasKey(a => a.Id).HasName("PK_OrderDeletionApproval");
 
             builder.Property(x => x.OrderId).IsRequired();
-
-            builder.Property(a => a.NameOfApprover);
-
-            builder.Property(a => a.NameOfRequester);
-            builder.Property(a => a.DateOfApproval);
+            builder.Property(a => a.NameOfApprover).IsRequired();
+            builder.Property(a => a.NameOfRequester).IsRequired();
+            builder.Property(a => a.DateOfApproval).IsRequired();
 
             builder.Property(a => a.LastUpdated)
                 .IsRequired()
