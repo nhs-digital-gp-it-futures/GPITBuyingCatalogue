@@ -8,6 +8,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.Contracts.Delivery
 {
     public class MatchDatesModel : NavBaseModel
     {
+        public const string YesOption = "Yes";
+        public const string NoOption = "No";
+
         public MatchDatesModel()
         {
         }
@@ -32,8 +35,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.Contracts.Delivery
 
         public IEnumerable<SelectableRadioOption<bool>> Options => new List<SelectableRadioOption<bool>>
         {
-            new("Yes", true),
-            new("No", false),
+            new(YesOption, true),
+            new(NoOption, false),
         };
     }
 }

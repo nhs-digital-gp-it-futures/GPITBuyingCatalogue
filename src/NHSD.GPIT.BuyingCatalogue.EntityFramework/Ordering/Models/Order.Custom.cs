@@ -50,6 +50,7 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models
                 && CommencementDate is not null
                 && (HasSolution() || HasAssociatedService())
                 && OrderItems.Count > 0
+                && OrderItems.All(x => x.OrderItemRecipients.All(r => r.DeliveryDate != null))
                 && OrderItems.All(oi => oi.OrderItemFunding is not null)
                 && OrderStatus != OrderStatus.Completed;
         }

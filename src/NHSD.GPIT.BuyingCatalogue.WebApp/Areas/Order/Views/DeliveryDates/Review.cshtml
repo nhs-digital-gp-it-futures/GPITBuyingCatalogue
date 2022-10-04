@@ -17,7 +17,7 @@
 
         @if (Model.DeliveryDate != null)
         {
-            var returnUrl = @Url.Action(
+            var returnUrl = Url.Action(
                 nameof(DeliveryDatesController.Review),
                 typeof(DeliveryDatesController).ControllerName(),
                 new { Model.InternalOrgId, Model.CallOffId });
@@ -26,7 +26,8 @@
                 <strong>Planned delivery date for the majority of Service Recipients:</strong>
                 @GetFormattedDate(Model.DeliveryDate)
                 <span>&nbsp;</span>
-                <a href="@Url.Action(
+                <a id="change-delivery-date-link"
+                   href="@Url.Action(
                              nameof(DeliveryDatesController.SelectDate),
                              typeof(DeliveryDatesController).ControllerName(),
                              new { Model.InternalOrgId, Model.CallOffId, returnUrl })">Edit</a>
@@ -37,9 +38,10 @@
         @if (Model.SolutionId != null)
         {
             var catalogueItemId = Model.SolutionId.Value;
+            var itemName = Model.OrderItemName(catalogueItemId);
 
             <h2>Catalogue Solution</h2>
-            <vc:nhs-action-link text="Edit planned delivery dates"
+            <vc:nhs-action-link text="Edit planned delivery dates for @itemName"
                                 url="@Url.Action(
                                          nameof(DeliveryDatesController.EditDates),
                                          typeof(DeliveryDatesController).ControllerName(),
@@ -47,7 +49,7 @@
 
             foreach (var date in Model.OrderItemDates(catalogueItemId))
             {
-                <nhs-expander label-text="@Model.OrderItemName(catalogueItemId)"
+                <nhs-expander label-text="@itemName"
                               secondary-text-title="Planned delivery date: "
                               secondary-text="@GetFormattedDate(date)"
                               bold-title="true"
@@ -74,15 +76,18 @@
 
             @foreach (var catalogueItemId in Model.AdditionalServiceIds)
             {
-                <vc:nhs-action-link text="Edit planned delivery dates"
-                                    url="@Url.Action(
-                                             nameof(DeliveryDatesController.EditDates),
-                                             typeof(DeliveryDatesController).ControllerName(),
-                                             new { Model.InternalOrgId, Model.CallOffId, catalogueItemId, source = RoutingSource.TaskList } )"/>
+                var itemName = Model.OrderItemName(catalogueItemId);
+
+                <vc:nhs-action-link data-test-id="edit-service-dates-@catalogueItemId" 
+                                text="Edit planned delivery dates for @itemName"
+                                url="@Url.Action(
+                                         nameof(DeliveryDatesController.EditDates),
+                                         typeof(DeliveryDatesController).ControllerName(),
+                                         new { Model.InternalOrgId, Model.CallOffId, catalogueItemId, source = RoutingSource.TaskList } )"/>
 
                 foreach (var date in Model.OrderItemDates(catalogueItemId))
                 {
-                    <nhs-expander label-text="@Model.OrderItemName(catalogueItemId)"
+                    <nhs-expander label-text="@itemName"
                                   secondary-text-title="Planned delivery date: "
                                   secondary-text="@GetFormattedDate(date)"
                                   bold-title="true"
@@ -110,7 +115,10 @@
 
             @foreach (var catalogueItemId in Model.AssociatedServiceIds)
             {
-                <vc:nhs-action-link text="Edit planned delivery dates"
+                var itemName = Model.OrderItemName(catalogueItemId);
+
+                <vc:nhs-action-link data-test-id="edit-service-dates-@catalogueItemId" 
+                                    text="Edit planned delivery dates for @itemName"
                                     url="@Url.Action(
                                              nameof(DeliveryDatesController.EditDates),
                                              typeof(DeliveryDatesController).ControllerName(),
@@ -118,7 +126,7 @@
 
                 foreach (var date in Model.OrderItemDates(catalogueItemId))
                 {
-                    <nhs-expander label-text="@Model.OrderItemName(catalogueItemId)"
+                    <nhs-expander label-text="@itemName"
                                   secondary-text-title="Planned delivery date: "
                                   secondary-text="@GetFormattedDate(date)"
                                   bold-title="true"

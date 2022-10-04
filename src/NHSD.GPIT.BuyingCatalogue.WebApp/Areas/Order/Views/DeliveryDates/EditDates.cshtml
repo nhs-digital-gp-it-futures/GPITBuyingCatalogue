@@ -23,13 +23,14 @@
                 @($"{Model.DeliveryDate:dd MMMM yyyy}")
                 @if (Model.CatalogueItemType == CatalogueItemType.Solution)
                 {
-                    var returnUrl = @Url.Action(
+                    var returnUrl = Url.Action(
                         nameof(DeliveryDatesController.EditDates),
                         typeof(DeliveryDatesController).ControllerName(),
                         new { Model.InternalOrgId, Model.CallOffId, Model.CatalogueItemId, Model.Source });
 
                     <span>&nbsp;</span>
-                    <a href="@Url.Action(
+                    <a id="edit-delivery-date-link"
+                       href="@Url.Action(
                                  nameof(DeliveryDatesController.SelectDate),
                                  typeof(DeliveryDatesController).ControllerName(),
                                  new { Model.InternalOrgId, Model.CallOffId, returnUrl })">Edit</a>
@@ -54,7 +55,9 @@
                     <nhs-table-row-container>
                         <nhs-table-cell>
                             <input type="hidden" asp-for="@Model.Recipients[i].Description" />
-                            @Model.Recipients[i].Description
+                            <div>
+                                @Model.Recipients[i].Description
+                            </div>
                         </nhs-table-cell>
                         <nhs-table-cell>
                             <input type="hidden" asp-for="@Model.Recipients[i].OdsCode" />

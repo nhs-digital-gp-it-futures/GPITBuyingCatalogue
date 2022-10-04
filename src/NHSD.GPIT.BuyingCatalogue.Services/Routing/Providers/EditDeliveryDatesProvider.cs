@@ -41,7 +41,10 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Routing.Providers
                 };
             }
 
-            if (order.AssociatedServicesOnly)
+            var solution = order.GetSolution();
+
+            if (order.AssociatedServicesOnly
+                || solution == null)
             {
                 return new RoutingResult
                 {
@@ -51,11 +54,18 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Routing.Providers
                 };
             }
 
-            var solution = order.GetSolution();
-            var solutionDates = solution.OrderItemRecipients.Select(x => x.DeliveryDate).Distinct().ToList();
+            var solutionDates = solution.OrderItemRecipients
+                .Select(x => x.DeliveryDate)
+                .Distinct()
+                .ToList();
 
-            if (solutionDates.Any()
-                && solutionDates.All(x => x == order.DeliveryDate))
+            var solutionOdsCodes = solution.OrderItemRecipients.Select(x => x.OdsCode);
+            var nextItemOdsCodes = order.OrderItem(catalogueItemId.Value).OrderItemRecipients.Select(x => x.OdsCode);
+            var crossOver = solutionOdsCodes.Intersect(nextItemOdsCodes);
+
+            if (!solutionDates.Any()
+                || solutionDates.All(x => x == order.DeliveryDate)
+                || !crossOver.Any())
             {
                 return new RoutingResult
                 {

@@ -35,15 +35,11 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers.Contracts
         }
 
         [HttpGet("select")]
-        public async Task<IActionResult> SelectDate(string internalOrgId, CallOffId callOffId, string deliveryDate = null, string returnUrl = null)
+        public async Task<IActionResult> SelectDate(string internalOrgId, CallOffId callOffId, string returnUrl = null)
         {
             var order = await orderService.GetOrderThin(callOffId, internalOrgId);
 
-            var currentDate = deliveryDate == null
-                ? order.DeliveryDate
-                : DateTime.ParseExact(deliveryDate, DateFormat, CultureInfo.InvariantCulture);
-
-            var model = new SelectDateModel(internalOrgId, callOffId, order.CommencementDate!.Value, currentDate)
+            var model = new SelectDateModel(internalOrgId, callOffId, order.CommencementDate!.Value, order.DeliveryDate)
             {
                 BackLink = returnUrl ?? Url.Action(
                     nameof(OrderController.Order),
@@ -97,7 +93,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers.Contracts
                 BackLink = Url.Action(
                     nameof(SelectDate),
                     typeof(DeliveryDatesController).ControllerName(),
-                    new { internalOrgId, callOffId, deliveryDate }),
+                    new { internalOrgId, callOffId }),
             };
 
             return View(model);

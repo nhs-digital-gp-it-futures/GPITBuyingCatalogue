@@ -166,7 +166,34 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Routing.Providers
 
         [Theory]
         [CommonAutoData]
-        public void Process_SubsequentOrderItemAvailable_SolutionDoesNotMatchPrimaryDeliveryDate_ExpectedResult(
+        public void Process_SubsequentOrderItemAvailable_NoCrossover_ExpectedResult(
+            string internalOrgId,
+            CallOffId callOffId,
+            Order order,
+            EditDeliveryDatesProvider provider)
+        {
+            order.SetupCatalogueSolution();
+
+            var catalogueItemId = order.OrderItems.First().CatalogueItemId;
+            var result = provider.Process(order, new RouteValues(internalOrgId, callOffId, catalogueItemId));
+
+            catalogueItemId = order.GetAdditionalServices().First().CatalogueItemId;
+
+            var expected = new
+            {
+                InternalOrgId = internalOrgId,
+                CallOffId = callOffId,
+                catalogueItemId,
+            };
+
+            result.ActionName.Should().Be(Constants.Actions.EditDeliveryDates);
+            result.ControllerName.Should().Be(Constants.Controllers.DeliveryDates);
+            result.RouteValues.Should().BeEquivalentTo(expected);
+        }
+
+        [Theory]
+        [CommonAutoData]
+        public void Process_SubsequentOrderItemAvailable_WithCrossover_SolutionDoesNotMatchPrimaryDeliveryDate_ExpectedResult(
             string internalOrgId,
             CallOffId callOffId,
             Order order,
@@ -177,6 +204,14 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Routing.Providers
             order.SetupCatalogueSolution();
             order.DeliveryDate = deliveryDate;
             order.OrderItems.First().OrderItemRecipients.ForEach(r => r.DeliveryDate = deliveryDate.AddDays(1));
+
+            foreach (var orderItem in order.OrderItems)
+            {
+                foreach ((OrderItemRecipient recipient, var index) in orderItem.OrderItemRecipients.Select((x, i) => (x, i)))
+                {
+                    recipient.OdsCode = $"{index}";
+                }
+            }
 
             var catalogueItemId = order.OrderItems.First().CatalogueItemId;
             var result = provider.Process(order, new RouteValues(internalOrgId, callOffId, catalogueItemId));

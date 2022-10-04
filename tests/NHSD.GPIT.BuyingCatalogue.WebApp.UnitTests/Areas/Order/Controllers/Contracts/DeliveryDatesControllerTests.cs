@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using AutoFixture;
@@ -62,33 +61,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Con
             orderService.VerifyAll();
 
             var expected = new SelectDateModel(internalOrgId, callOffId, order.CommencementDate!.Value, order.DeliveryDate);
-            var actual = result.Should().BeOfType<ViewResult>().Subject;
-
-            actual.Model.Should().BeEquivalentTo(expected, x => x.Excluding(m => m.BackLink));
-        }
-
-        [Theory]
-        [CommonAutoData]
-        public static async Task Get_SelectDate_WithDeliveryDate_ReturnsExpectedResult(
-            string internalOrgId,
-            CallOffId callOffId,
-            EntityFramework.Ordering.Models.Order order,
-            DateTime deliveryDate,
-            [Frozen] Mock<IOrderService> orderService,
-            DeliveryDatesController controller)
-        {
-            orderService
-                .Setup(x => x.GetOrderThin(callOffId, internalOrgId))
-                .ReturnsAsync(order);
-
-            var result = await controller.SelectDate(
-                internalOrgId,
-                callOffId,
-                deliveryDate.ToString(DeliveryDatesController.DateFormat));
-
-            orderService.VerifyAll();
-
-            var expected = new SelectDateModel(internalOrgId, callOffId, order.CommencementDate!.Value, deliveryDate);
             var actual = result.Should().BeOfType<ViewResult>().Subject;
 
             actual.Model.Should().BeEquivalentTo(expected, x => x.Excluding(m => m.BackLink));

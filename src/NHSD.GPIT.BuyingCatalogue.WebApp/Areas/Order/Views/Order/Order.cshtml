@@ -68,6 +68,12 @@
                                             url="@SolutionSelectionUrlTarget(Model.SectionStatuses.SolutionOrService)"
                                             status="@Model.SectionStatuses.SolutionOrService" />
 
+                        <nhs-task-list-item label-text="Planned delivery dates"
+                                            label-hint="Enter the planned delivery dates for the items you're ordering."
+                                            data-test-id="test-planned-delivery-dates"
+                                            url="@DeliveryDatesUrlTarget(Model.SectionStatuses.DeliveryDates)"
+                                            status="@Model.SectionStatuses.DeliveryDates" />
+
                         <nhs-task-list-item label-text="Select funding sources"
                                             label-hint="Review how you’ll be paying for your order."
                                             data-test-id="test-funding-sources"
@@ -79,12 +85,6 @@
                     </nhs-task-list-section>
 
                     <nhs-task-list-section label-text="Complete contract">
-                        <nhs-task-list-item label-text="Planned delivery dates"
-                                            label-hint="Enter the planned delivery dates for the items you're ordering'."
-                                            data-test-id="test-planned-delivery-dates"
-                                            url="@DeliveryDatesUrlTarget(Model.SectionStatuses.DeliveryDates)"
-                                            status="@Model.SectionStatuses.DeliveryDates" />
-
                         <nhs-task-list-item label-text="Implementation plan milestones"
                                             label-hint="Select if you’re using the standard implementation plan milestones or have agreed bespoke ones."
                                             data-test-id="test-implementation-milestones"
