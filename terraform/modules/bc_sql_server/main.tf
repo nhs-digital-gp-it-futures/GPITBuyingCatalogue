@@ -39,9 +39,3 @@ resource "azurerm_mssql_firewall_rule" "sql_bjss_vpn" {
   start_ip_address    = var.bjssvpn
   end_ip_address      = var.bjssvpn
 }
-
-resource "azurerm_mssql_virtual_network_rule" "sqlvnetrule" {
-  name                  = "${var.project}-${var.environment}-subnet-rule"
-  server_id             = azurerm_mssql_server.sql_server.id
-  subnet_id             = var.subnet_backend_id
-}
