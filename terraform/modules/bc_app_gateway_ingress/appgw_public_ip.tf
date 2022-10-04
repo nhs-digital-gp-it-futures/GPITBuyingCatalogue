@@ -6,6 +6,7 @@ resource "azurerm_public_ip" "pip_app_gateway" {
   allocation_method   = "Static"
   sku                 = "Standard"
   count               = var.core_env != "dev" ? 1 : 0
+  zones               = ["1", "2", "3"]
   tags = {
     environment       = var.environment,
     architecture      = "new"
