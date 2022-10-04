@@ -25,20 +25,17 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
     [Route("admin/manage-orders")]
     public class ManageOrdersController : Controller
     {
-        private readonly IFrameworkService frameworkService;
         private readonly IOrderAdminService orderAdminService;
         private readonly ICsvService csvService;
         private readonly IPdfService pdfService;
         private readonly PdfSettings pdfSettings;
 
         public ManageOrdersController(
-            IFrameworkService frameworkService,
             IOrderAdminService orderAdminService,
             ICsvService csvService,
             IPdfService pdfService,
             PdfSettings pdfSettings)
         {
-            this.frameworkService = frameworkService ?? throw new ArgumentNullException(nameof(frameworkService));
             this.orderAdminService = orderAdminService ?? throw new ArgumentNullException(nameof(orderAdminService));
             this.csvService = csvService ?? throw new ArgumentNullException(nameof(csvService));
             this.pdfService = pdfService ?? throw new ArgumentNullException(nameof(pdfService));
@@ -85,9 +82,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
         public async Task<IActionResult> ViewOrder(CallOffId callOffId, string returnUrl = null)
         {
             var order = await orderAdminService.GetOrder(callOffId);
-            var framework = await frameworkService.GetFramework(order?.Id ?? 0);
 
-            var model = new ViewOrderModel(order, framework)
+            var model = new ViewOrderModel(order)
             {
                 BackLink = returnUrl ?? Url.Action(nameof(Index)),
             };

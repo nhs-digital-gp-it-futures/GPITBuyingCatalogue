@@ -5,6 +5,8 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.Objects.Admin.ManageOrder
 {
     public static class ViewOrderObjects
     {
+        public static By FrameworkSection => ByExtensions.DataTestId("view-order-framework");
+
         public static By OrganisationSection => ByExtensions.DataTestId("view-order-organisation");
 
         public static By DescriptionSection => ByExtensions.DataTestId("view-order-description");
