@@ -55,6 +55,8 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models
 
         public bool IsDeleted { get; set; }
 
+        public virtual OrderDeletionApproval OrderDeletionApproval { get; set; }
+
         [NotMapped]
         public OrderStatus OrderStatus
         {

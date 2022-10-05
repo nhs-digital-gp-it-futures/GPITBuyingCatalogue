@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Orders;
-using NHSD.GPIT.BuyingCatalogue.WebApp.Models;
+using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.DeleteOrder;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
 {
@@ -14,11 +14,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
     [Route("order/organisation/{internalOrgId}/order/{callOffId}/delete-order")]
     public sealed class DeleteOrderController : Controller
     {
-        internal const string AdviceText = "The order will be permanently deleted from your organisation’s dashboard.";
-
-        internal const string WarningText =
-            "Deleting an order is permanent and any information you’ve already inputted will be lost. Once you’ve deleted your order, you’ll not be able to retrieve it and will have to start a new one.";
-
         private readonly IOrderService orderService;
 
         public DeleteOrderController(IOrderService orderService)
@@ -45,8 +40,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
                     nameof(OrderController.Order),
                     typeof(OrderController).ControllerName(),
                     new { internalOrgId, callOffId }),
-                AdviceText = AdviceText,
-                WarningText = WarningText,
             };
 
             return View(model);

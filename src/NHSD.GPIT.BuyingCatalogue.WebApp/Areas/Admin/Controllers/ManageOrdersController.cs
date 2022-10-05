@@ -15,7 +15,6 @@ using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Orders;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Pdf;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.ManageOrders;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Controllers;
-using NHSD.GPIT.BuyingCatalogue.WebApp.Models;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Models.SuggestionSearch;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
@@ -137,6 +136,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
             var model = new DeleteOrderModel(order)
             {
                 BackLink = Url.Action(nameof(ViewOrder), new { callOffId }),
+                OrderCreationDate = order.Created,
             };
 
             return View(model);
@@ -148,10 +148,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
             if (!ModelState.IsValid)
                 return View(model);
 
-            if (!model.SelectedOption!.Value)
-                return RedirectToAction(nameof(ViewOrder), new { callOffId });
-
-            await orderAdminService.DeleteOrder(callOffId);
+            await orderAdminService.DeleteOrder(callOffId, model.NameOfRequester, model.NameOfApprover, model.ApprovalDate ?? null);
             return RedirectToAction(nameof(Index));
         }
 
