@@ -171,7 +171,7 @@
     @if (Model.Order.SelectedFramework is not null)
     {
         <pdf-summary-list-row label-text="Framework">
-            @Model.Order.SelectedFramework.Name
+            @Model.Order.SelectedFramework.ShortName
         </pdf-summary-list-row>
     }
 

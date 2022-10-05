@@ -17,7 +17,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.ManageOrders
             OrganisationInternalIdentifier = order.OrderingParty.InternalIdentifier;
             SupplierName = order.Supplier?.Name;
             OrderStatus = order.OrderStatus;
-            SelectedFrameworkName = order.SelectedFramework?.Name;
+            SelectedFrameworkName = order.SelectedFramework?.ShortName;
             OrderItems = order.OrderItems?.Select(oi => new AdminViewOrderItem
             {
                 Name = oi.CatalogueItem.Name,

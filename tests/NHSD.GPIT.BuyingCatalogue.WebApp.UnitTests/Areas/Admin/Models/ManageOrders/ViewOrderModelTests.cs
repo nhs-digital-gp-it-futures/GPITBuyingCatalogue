@@ -37,7 +37,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Models.ManageOr
             model.OrganisationInternalIdentifier.Should().Be(order.OrderingParty.InternalIdentifier);
             model.SupplierName.Should().Be(order.Supplier.Name);
             model.OrderStatus.Should().Be(order.OrderStatus);
-            model.SelectedFrameworkName.Should().Be(order.SelectedFramework.Name);
+            model.SelectedFrameworkName.Should().Be(order.SelectedFramework.ShortName);
             model.OrderItems.Should().HaveCount(orderItems.Count);
         }
     }
