@@ -126,8 +126,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.Order
                     : (anyDeliveryDatesEntered ? TaskProgress.InProgress : TaskProgress.NotStarted);
             }
 
-            FundingSource = SolutionOrService switch
+            FundingSource = DeliveryDates switch
             {
+                TaskProgress.CannotStart => TaskProgress.CannotStart,
                 TaskProgress.NotStarted => TaskProgress.CannotStart,
                 TaskProgress.InProgress when order.OrderItems.All(oi => oi.OrderItemFunding == null) => TaskProgress.CannotStart,
                 TaskProgress.Completed when order.OrderItems.All(oi => oi.OrderItemFunding != null) => TaskProgress.Completed,

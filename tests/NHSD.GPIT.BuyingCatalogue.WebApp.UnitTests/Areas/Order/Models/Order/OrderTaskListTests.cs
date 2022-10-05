@@ -242,7 +242,6 @@ public class OrderTaskListTests
             CommencementDateStatus = TaskProgress.Completed,
             SolutionOrService = TaskProgress.Completed,
             DeliveryDates = TaskProgress.NotStarted,
-            FundingSource = TaskProgress.NotStarted,
             AssociatedServiceBilling = TaskProgress.NotApplicable,
         };
 
@@ -284,8 +283,6 @@ public class OrderTaskListTests
             CommencementDateStatus = TaskProgress.Completed,
             SolutionOrService = TaskProgress.Completed,
             DeliveryDates = TaskProgress.NotStarted,
-            FundingSource = TaskProgress.Completed,
-            ImplementationPlan = TaskProgress.NotStarted,
             AssociatedServiceBilling = TaskProgress.NotApplicable,
         };
 
@@ -334,9 +331,6 @@ public class OrderTaskListTests
             SupplierStatus = TaskProgress.Completed,
             CommencementDateStatus = TaskProgress.Completed,
             SolutionOrService = TaskProgress.InProgress,
-            FundingSource = TaskProgress.InProgress,
-            ImplementationPlan = TaskProgress.CannotStart,
-            AssociatedServiceBilling = TaskProgress.CannotStart,
         };
 
         var model = new OrderTaskList(order);
@@ -388,7 +382,6 @@ public class OrderTaskListTests
             CommencementDateStatus = TaskProgress.Completed,
             SolutionOrService = TaskProgress.Completed,
             DeliveryDates = TaskProgress.NotStarted,
-            FundingSource = TaskProgress.InProgress,
             ImplementationPlan = TaskProgress.InProgress,
             AssociatedServiceBilling = TaskProgress.NotApplicable,
         };
@@ -431,8 +424,6 @@ public class OrderTaskListTests
             CommencementDateStatus = TaskProgress.Completed,
             SolutionOrService = TaskProgress.Completed,
             DeliveryDates = TaskProgress.NotStarted,
-            FundingSource = TaskProgress.Completed,
-            ImplementationPlan = TaskProgress.NotStarted,
             AssociatedServiceBilling = TaskProgress.NotApplicable,
         };
 
@@ -475,8 +466,7 @@ public class OrderTaskListTests
             CommencementDateStatus = TaskProgress.Completed,
             SolutionOrService = TaskProgress.Completed,
             DeliveryDates = TaskProgress.InProgress,
-            FundingSource = TaskProgress.Completed,
-            ImplementationPlan = TaskProgress.NotStarted,
+            FundingSource = TaskProgress.InProgress,
             AssociatedServiceBilling = TaskProgress.NotApplicable,
         };
 
@@ -674,8 +664,8 @@ public class OrderTaskListTests
             CommencementDateStatus = TaskProgress.Completed,
             SolutionOrService = TaskProgress.InProgress,
             DeliveryDates = TaskProgress.Completed,
-            FundingSource = TaskProgress.InProgress,
-            ImplementationPlan = TaskProgress.InProgress,
+            FundingSource = TaskProgress.Completed,
+            ImplementationPlan = TaskProgress.Completed,
             AssociatedServiceBilling = TaskProgress.InProgress,
         };
 
