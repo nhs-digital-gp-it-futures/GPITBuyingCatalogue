@@ -117,6 +117,29 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators
         }
 
         [Theory]
+        [CommonInlineAutoData(-59)]
+        [CommonInlineAutoData(-20)]
+        [CommonInlineAutoData(-1)]
+        public static void Validate_ApprovalDateBeforeOrderCreation_ThrowsValidationError(
+            int days,
+            DeleteOrderModel model,
+            DeleteOrderModelValidator validator)
+        {
+            var now = DateTime.UtcNow;
+            var date = now.AddDays(days);
+
+            model.OrderCreationDate = now;
+            model.ApprovalDay = date.Day.ToString();
+            model.ApprovalMonth = date.Month.ToString();
+            model.ApprovalYear = date.Year.ToString();
+
+            var result = validator.TestValidate(model);
+
+            result.ShouldHaveValidationErrorFor(m => m.ApprovalDay)
+                .WithErrorMessage(string.Format(DeleteOrderModelValidator.ApprovalDateBeforeOrderCreationErrorMessage, now.ToLongDateString()));
+        }
+
+        [Theory]
         [CommonInlineAutoData(0)]
         [CommonInlineAutoData(-1)]
         [CommonInlineAutoData(-20)]
@@ -125,11 +148,13 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators
             DeleteOrderModel model,
             DeleteOrderModelValidator validator)
         {
-            var date = DateTime.UtcNow.AddDays(days);
+            var now = DateTime.UtcNow;
+            model.OrderCreationDate = now.AddDays(-20);
 
-            model.ApprovalDay = date.Day.ToString();
-            model.ApprovalMonth = date.Month.ToString();
-            model.ApprovalYear = date.Year.ToString();
+            var approvalDate = now.AddDays(days);
+            model.ApprovalDay = approvalDate.Day.ToString();
+            model.ApprovalMonth = approvalDate.Month.ToString();
+            model.ApprovalYear = approvalDate.Year.ToString();
 
             var result = validator.TestValidate(model);
 
@@ -178,6 +203,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators
         {
             var validDate = DateTime.UtcNow.AddDays(-1).Date;
 
+            model.OrderCreationDate = validDate;
             model.ApprovalDay = validDate.Day.ToString();
             model.ApprovalMonth = validDate.Month.ToString();
             model.ApprovalYear = validDate.Year.ToString();

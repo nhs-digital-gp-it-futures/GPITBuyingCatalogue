@@ -14,6 +14,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Validators
         public const string ApprovalDateYearTooShortErrorMessage = "Year must be four numbers";
         public const string NameOfApproverMissingErrorMessage = "Name of the person approving the delete is required";
         public const string NameOfRequesterMissingErrorMessage = "Name of the person requesting the delete is required";
+        public const string ApprovalDateBeforeOrderCreationErrorMessage = "Date must be on or after the date the order was created ({0})";
 
         public DeleteOrderModelValidator()
         {
@@ -40,7 +41,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Validators
                 .Must(x => x.ApprovalDate <= DateTime.UtcNow.Date)
                 .Unless(ApprovalDateIsInvalid)
                 .WithMessage(ApprovalDateInTheFutureErrorMessage)
-                .OverridePropertyName(wp => wp.ApprovalDay);
+                .Must(x => x.ApprovalDate >= x.OrderCreationDate.Date)
+                .Unless(ApprovalDateIsInvalid)
+                .WithMessage(x => string.Format(ApprovalDateBeforeOrderCreationErrorMessage, x.OrderCreationDate.ToLongDateString()))
+                .OverridePropertyName(x => x.ApprovalDay);
 
             RuleFor(x => x.NameOfApprover)
                 .NotEmpty()

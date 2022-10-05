@@ -42,6 +42,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.ManageOrders
         [StringLength(4)]
         public string ApprovalYear { get; set; }
 
+        public DateTime OrderCreationDate { get; set; }
+
         public DateTime? ApprovalDate
         {
             get

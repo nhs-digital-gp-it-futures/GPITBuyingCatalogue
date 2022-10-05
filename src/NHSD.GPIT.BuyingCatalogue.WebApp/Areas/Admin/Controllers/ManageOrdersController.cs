@@ -136,6 +136,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
             var model = new DeleteOrderModel(order)
             {
                 BackLink = Url.Action(nameof(ViewOrder), new { callOffId }),
+                OrderCreationDate = order.Created,
             };
 
             return View(model);
