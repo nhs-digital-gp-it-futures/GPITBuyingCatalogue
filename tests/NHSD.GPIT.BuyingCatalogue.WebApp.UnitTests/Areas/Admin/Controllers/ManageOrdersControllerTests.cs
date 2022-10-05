@@ -214,7 +214,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
             var result = (await controller.DeleteOrder(order.CallOffId)).As<ViewResult>();
 
             result.Should().NotBeNull();
-            result.Model.Should().BeEquivalentTo(expectedModel, opt => opt.Excluding(m => m.BackLink));
+            result.Model.Should().BeEquivalentTo(expectedModel, opt => opt.Excluding(m => m.BackLink).Excluding(m => m.OrderCreationDate));
         }
 
         [Theory]
