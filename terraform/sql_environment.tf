@@ -4,6 +4,7 @@ module "sql_server_pri" {
   count                 = !local.is_dr ? 1 : 0
   environment           = var.environment
   region                = var.region
+  resource_group        = azurerm_resource_group.sql-server.name
   project               = var.project
   sqlsvr_name           = "${var.project}-${var.environment}-sql-primary"
   sql_version           = "12.0"
@@ -31,6 +32,7 @@ module "sql_server_sec" {
   
   environment           = var.environment
   region                = local.sql_region2
+  resource_group        = azurerm_resource_group.sql-server.name
   project               = var.project
   sqlsvr_name           = "${var.project}-${var.environment}-sql-secondary"
   sql_version           = "12.0"

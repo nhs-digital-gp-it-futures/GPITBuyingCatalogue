@@ -26,6 +26,7 @@ using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.ManageOrders;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Models;
 using Xunit;
+using DeleteOrderModel = NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.ManageOrders.DeleteOrderModel;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
 {
@@ -209,7 +210,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
             var result = (await controller.DeleteOrder(order.CallOffId)).As<ViewResult>();
 
             result.Should().NotBeNull();
-            result.Model.Should().BeEquivalentTo(expectedModel, opt => opt.Excluding(m => m.BackLink));
+            result.Model.Should().BeEquivalentTo(expectedModel, opt => opt.Excluding(m => m.BackLink).Excluding(m => m.OrderCreationDate));
         }
 
         [Theory]
@@ -235,34 +236,12 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
             [Frozen] Mock<IOrderAdminService> orderAdminService,
             ManageOrdersController controller)
         {
-            model.SelectedOption = true;
-
             var result = (await controller.DeleteOrder(callOffId, model)).As<RedirectToActionResult>();
 
-            orderAdminService.Verify(s => s.DeleteOrder(callOffId), Times.Once());
+            orderAdminService.Verify(s => s.DeleteOrder(callOffId, model.NameOfRequester, model.NameOfApprover, model.ApprovalDate ?? null), Times.Once());
 
             result.Should().NotBeNull();
             result.ActionName.Should().Be(nameof(controller.Index));
-        }
-
-        [Theory]
-        [CommonAutoData]
-        public static async Task Post_DeleteOrder_DeleteNotConfirmed(
-            CallOffId callOffId,
-            DeleteOrderModel model,
-            [Frozen] Mock<IOrderAdminService> orderAdminService,
-            ManageOrdersController controller)
-        {
-            model.SelectedOption = false;
-
-            var result = (await controller.DeleteOrder(callOffId, model)).As<RedirectToActionResult>();
-
-            orderAdminService.Verify(s => s.DeleteOrder(callOffId), Times.Never());
-
-            result.Should().NotBeNull();
-            result.ActionName.Should().Be(nameof(controller.ViewOrder));
-            result.RouteValues.Should()
-                .BeEquivalentTo(new RouteValueDictionary { { nameof(callOffId), callOffId } });
         }
 
         private static void SetControllerHttpContext(ControllerBase controller)
