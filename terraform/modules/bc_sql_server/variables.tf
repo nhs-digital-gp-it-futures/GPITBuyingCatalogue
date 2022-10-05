@@ -10,6 +10,10 @@ variable "region" {
   type = string
 }
 
+variable "resource_group" {
+  type = string
+}
+
 variable "sqlsvr_name" {
   type = string
 }

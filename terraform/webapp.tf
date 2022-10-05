@@ -26,7 +26,7 @@ module "webapp" {
 
   # SQL Vars
   sqlserver_name      = local.is_dr ? "${var.project}-${var.primary_env}-sql-primary" : join("", module.sql_server_pri[*].sql_server_name)
-  sqlserver_rg        = local.is_dr ? "${var.project}-${var.primary_env}-rg-sql-server" : join("", module.sql_server_pri[*].sql_resource_group)
+  sqlserver_rg        = local.is_dr ? "${var.project}-${var.primary_env}-rg-sql-server" : azurerm_resource_group.sql-server.name
   db_name_main        = local.is_dr ? "BuyingCatalogue-${var.primary_env}" : join("", module.sql_databases_pri[*].sql_main_dbname) # in cluster "bc-${var.environment}-bapi"
   sql_admin_username  = local.is_dr ? data.azurerm_key_vault_secret.sqladminusername[0].value : join("", module.keyvault[*].sqladminusername)
   sql_admin_password  = local.is_dr ? data.azurerm_key_vault_secret.sqladminpassword[0].value : join("", module.keyvault[*].sqladminpassword)

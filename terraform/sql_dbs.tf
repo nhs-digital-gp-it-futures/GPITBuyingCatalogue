@@ -8,7 +8,7 @@ module "sql_databases_pri" {
   sql_collation         = "SQL_Latin1_General_CP1_CI_AS"
 
   enable_replica        = local.shortenv == "preprod" || local.shortenv == "production" ? 1 : 0 
-  rg_replica_name       = join("", module.sql_server_pri[*].sql_resource_group)
+  rg_replica_name       = azurerm_resource_group.sql-server.name
   sqlsvr_replica_name   = "${var.project}-${var.environment}-sql-secondary"
   
   core_env              = local.core_env
