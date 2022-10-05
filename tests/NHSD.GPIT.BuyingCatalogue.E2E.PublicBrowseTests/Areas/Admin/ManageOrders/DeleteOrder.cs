@@ -77,9 +77,9 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.ManageOrders
         {
             CommonActions.ElementAddValue(DeleteOrderObjects.NameOfRequester, "Test");
             CommonActions.ElementAddValue(DeleteOrderObjects.NameOfApprover, "Test");
-            CommonActions.ElementAddValue(DeleteOrderObjects.DateOfApprovalDayInput, "01");
-            CommonActions.ElementAddValue(DeleteOrderObjects.DateOfApprovalMonthInput, "01");
-            CommonActions.ElementAddValue(DeleteOrderObjects.DateOfApprovalYearInput, "2022");
+            CommonActions.ElementAddValue(DeleteOrderObjects.DateOfApprovalDayInput, DateTime.Now.Day.ToString("00"));
+            CommonActions.ElementAddValue(DeleteOrderObjects.DateOfApprovalMonthInput, DateTime.Now.Month.ToString("00"));
+            CommonActions.ElementAddValue(DeleteOrderObjects.DateOfApprovalYearInput, DateTime.Now.Year.ToString("0000"));
 
             CommonActions.ClickSave();
 
