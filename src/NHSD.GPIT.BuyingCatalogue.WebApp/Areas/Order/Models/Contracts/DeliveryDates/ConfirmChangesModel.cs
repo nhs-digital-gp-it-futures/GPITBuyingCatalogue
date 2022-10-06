@@ -7,6 +7,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.Contracts.Delivery
 {
     public class ConfirmChangesModel : NavBaseModel
     {
+        public const string YesOption = "Yes, I want to confirm changes to my planned delivery date";
+        public const string NoOption = "No, I do no want to confirm changes to my planned delivery date";
+
         public ConfirmChangesModel()
         {
         }
@@ -31,8 +34,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.Contracts.Delivery
 
         public IEnumerable<SelectableRadioOption<bool>> Options => new List<SelectableRadioOption<bool>>
         {
-            new("Yes, I want to confirm changes to my planned delivery date", true),
-            new("No, I do no want to confirm changes to my planned delivery date", false),
+            new(YesOption, true),
+            new(NoOption, false),
         };
     }
 }

@@ -2,6 +2,7 @@
 using System.Linq;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
+using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Routing;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Models;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.Contracts.DeliveryDates
@@ -12,11 +13,14 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.Contracts.Delivery
         {
         }
 
-        public EditDatesModel(EntityFramework.Ordering.Models.Order order, CatalogueItemId catalogueItemId)
+        public EditDatesModel(EntityFramework.Ordering.Models.Order order, CatalogueItemId catalogueItemId, RoutingSource? source = null)
         {
             InternalOrgId = order.OrderingParty.InternalIdentifier;
             CallOffId = order.CallOffId;
+            CatalogueItemId = catalogueItemId;
             DeliveryDate = order.DeliveryDate;
+            Source = source;
+            DisplayEditLink = order.GetPreviousOrderItemId(catalogueItemId) == null;
 
             var orderItem = order.OrderItem(catalogueItemId);
 
@@ -32,11 +36,17 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.Contracts.Delivery
 
         public CallOffId CallOffId { get; set; }
 
+        public CatalogueItemId CatalogueItemId { get; set; }
+
         public CatalogueItemType CatalogueItemType { get; set; }
+
+        public RoutingSource? Source { get; set; }
 
         public string Description { get; set; }
 
         public DateTime? DeliveryDate { get; set; }
+
+        public bool DisplayEditLink { get; set; }
 
         public RecipientDateModel[] Recipients { get; set; }
     }

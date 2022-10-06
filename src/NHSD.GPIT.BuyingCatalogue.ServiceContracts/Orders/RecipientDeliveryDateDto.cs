@@ -2,13 +2,13 @@
 
 namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.Orders
 {
-    public class OrderDeliveryDateDto
+    public class RecipientDeliveryDateDto
     {
-        public OrderDeliveryDateDto()
+        public RecipientDeliveryDateDto()
         {
         }
 
-        public OrderDeliveryDateDto(string odsCode, DateTime deliveryDate)
+        public RecipientDeliveryDateDto(string odsCode, DateTime deliveryDate)
         {
             OdsCode = odsCode;
             DeliveryDate = deliveryDate;

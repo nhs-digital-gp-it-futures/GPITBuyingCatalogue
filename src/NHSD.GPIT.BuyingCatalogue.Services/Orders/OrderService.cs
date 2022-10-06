@@ -358,42 +358,5 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
 
             await dbContext.SaveChangesAsync();
         }
-
-        public async Task SetDeliveryDate(string internalOrgId, CallOffId callOffId, DateTime deliveryDate)
-        {
-            var order = await dbContext.Orders
-                .Where(o => o.Id == callOffId.Id
-                    && o.OrderingParty.InternalIdentifier == internalOrgId)
-                .SingleAsync();
-
-            order.DeliveryDate = deliveryDate;
-
-            var recipients = await dbContext.OrderItemRecipients
-                .Where(x => x.OrderId == order.Id)
-                .ToListAsync();
-
-            recipients.ForEach(x => x.DeliveryDate = deliveryDate);
-
-            await dbContext.SaveChangesAsync();
-        }
-
-        public async Task SetDeliveryDates(int orderId, CatalogueItemId catalogueItemId, List<OrderDeliveryDateDto> deliveryDates)
-        {
-            var recipients = await dbContext.OrderItemRecipients
-                .Where(x => x.OrderId == orderId && x.CatalogueItemId == catalogueItemId)
-                .ToListAsync();
-
-            foreach (var recipient in recipients)
-            {
-                var dto = deliveryDates.FirstOrDefault(x => x.OdsCode == recipient.OdsCode);
-
-                if (dto != null)
-                {
-                    recipient.DeliveryDate = dto.DeliveryDate;
-                }
-            }
-
-            await dbContext.SaveChangesAsync();
-        }
     }
 }

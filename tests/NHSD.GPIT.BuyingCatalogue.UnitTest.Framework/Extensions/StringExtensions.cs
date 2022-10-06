@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 
-namespace NHSD.GPIT.BuyingCatalogue.UnitTest.Framework
+namespace NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.Extensions
 {
     public static class StringExtensions
     {

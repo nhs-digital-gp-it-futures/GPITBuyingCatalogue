@@ -7,8 +7,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Validators.Contracts.Deli
 {
     public class RecipientDateModelValidator : AbstractValidator<RecipientDateModel>
     {
-        public const string DeliveryDateInThePastErrorMessage = "Planned delivery date must be in the future";
-        public const string DeliveryDateBeforeCommencementDateErrorMessage = "Planned delivery date must be on or after your commencement date ({0})";
+        public const string DeliveryDateInThePastErrorMessage = "Date for {0} must be in the future";
+        public const string DeliveryDateBeforeCommencementDateErrorMessage = "Date for {0} must be on or after your commencement date ({1})";
 
         public RecipientDateModelValidator()
         {
@@ -17,11 +17,19 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Validators.Contracts.Deli
             RuleFor(x => x)
                 .Must(x => x.Date > DateTime.UtcNow.Date)
                 .Unless(x => !x.IsValid)
-                .WithMessage(DeliveryDateInThePastErrorMessage)
+                .WithMessage(x => string.Format(DeliveryDateInThePastErrorMessage, x.Description))
                 .Must(x => x.Date >= x.CommencementDate)
                 .Unless(x => !x.IsValid)
-                .WithMessage(x => string.Format(DeliveryDateBeforeCommencementDateErrorMessage, $"{x.CommencementDate:dd MMMM yyyy}"))
+                .WithMessage(x => CommencementDateErrorMessage(x.Description, x.CommencementDate))
                 .OverridePropertyName(x => x.Day);
+        }
+
+        public static string CommencementDateErrorMessage(string description, DateTime commencementDate)
+        {
+            return string.Format(
+                DeliveryDateBeforeCommencementDateErrorMessage,
+                description,
+                $"{commencementDate:dd MMMM yyyy}");
         }
     }
 }
