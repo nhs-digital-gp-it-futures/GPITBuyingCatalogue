@@ -6,6 +6,7 @@ using Microsoft.EntityFrameworkCore;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
+using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Models;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Models.AdminManageOrders;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Models.FilterModels;
@@ -32,6 +33,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
                 .Include(o => o.LastUpdatedByUser)
                 .Include(o => o.OrderingParty)
                 .Include(o => o.Supplier)
+                .Include(o => o.SelectedFramework)
                 .Include(o => o.OrderItems).ThenInclude(oi => oi.CatalogueItem)
                 .Include(o => o.OrderItems).ThenInclude(oi => oi.OrderItemFunding)
                 .Include(o => o.OrderItems).ThenInclude(oi => oi.OrderItemPrice).ThenInclude(oip => oip.OrderItemPriceTiers)
@@ -134,7 +136,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
                 .ToList();
         }
 
-        public async Task DeleteOrder(CallOffId callOffId)
+        public async Task DeleteOrder(CallOffId callOffId, string nameOfRequester, string nameOfApprover, DateTime? dateOfApproval)
         {
             var order = await dbContext.Orders.IgnoreQueryFilters().FirstOrDefaultAsync(o => o.Id == callOffId.Id);
 
@@ -142,6 +144,17 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
                 return;
 
             order.IsDeleted = true;
+
+            nameOfRequester.ValidateNotNull(nameof(nameOfRequester));
+            nameOfApprover.ValidateNotNull(nameof(nameOfApprover));
+            dateOfApproval.ValidateNotNull(nameof(dateOfApproval));
+
+            order.OrderDeletionApproval = new OrderDeletionApproval()
+            {
+                NameOfRequester = nameOfRequester,
+                NameOfApprover = nameOfApprover,
+                DateOfApproval = dateOfApproval.Value,
+            };
 
             await dbContext.SaveChangesAsync();
         }
