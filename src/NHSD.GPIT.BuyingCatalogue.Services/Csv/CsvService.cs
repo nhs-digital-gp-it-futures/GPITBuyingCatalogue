@@ -38,6 +38,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Csv
             var (supplierId, supplierName) = await GetSupplierDetails(orderId);
 
             var items = await dbContext.OrderItemRecipients
+                .Include(x => x.OrderItem).ThenInclude(x => x.OrderItemFunding)
                 .AsNoTracking()
                 .Where(oir => oir.OrderId == orderId)
                 .Select(oir => new FullOrderCsvModel
@@ -86,6 +87,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Csv
             var (supplierId, supplierName) = await GetSupplierDetails(orderId);
 
             var items = await dbContext.OrderItemRecipients
+                .Include(x => x.OrderItem).ThenInclude(x => x.FundingType)
                 .AsNoTracking()
                 .Where(oir => oir.OrderId == orderId)
                 .Select(oir => new PatientOrderCsvModel
