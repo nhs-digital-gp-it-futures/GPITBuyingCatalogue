@@ -2,6 +2,7 @@
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
+using MoreLinq;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Users.Models;
@@ -35,6 +36,8 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
             AddOrderWithAddedAssociatedServiceAndOrderItemPrice(context);
             AddOrderWithAddedAssociatedServiceAndServiceRecipientPrice(context);
             AddOrderWithAddedNoContactSolutionAdditionalServiceAndAssociatedService(context);
+            AddOrderWithMixtureOfServicesAndMatchingPlannedDeliveryDates(context);
+            AddOrderWithMixtureOfServicesAndDifferingPlannedDeliveryDates(context);
             AddAssociatedServicesOnlyOrder(context);
             AddEmptyAssociatedServicesOnlyOrder(context);
             AddEmptyAssociatedServicesOnlyOrderNoSupplier(context);
@@ -785,7 +788,8 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
                     Email = "bat.man@Gotham.Fake",
                     Phone = "123456789",
                 },
-                CommencementDate = timeNow.AddDays(1),
+                CommencementDate = timeNow.AddDays(1).Date,
+                DeliveryDate = timeNow.AddDays(2).Date,
             };
 
             var user = GetBuyerUser(context, order.OrderingPartyId);
@@ -836,11 +840,18 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
                 {
                     Recipient = r,
                     Quantity = 1000,
+                    DeliveryDate = timeNow.AddDays(1).Date,
                 };
 
                 addedSinglePriceCatalogueSolution.OrderItemRecipients.Add(recipient);
                 addedMultiplePriceCatalogueSolution.OrderItemRecipients.Add(recipient);
-                addedAdditionalSolution.OrderItemRecipients.Add(recipient);
+
+                addedAdditionalSolution.OrderItemRecipients.Add(new OrderItemRecipient
+                {
+                    Recipient = r,
+                    Quantity = 1000,
+                    DeliveryDate = timeNow.AddDays(2).Date,
+                });
             });
 
             order.OrderItems.Add(addedSinglePriceCatalogueSolution);
@@ -1005,6 +1016,123 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
             context.SaveChangesAs(user.Id);
         }
 
+        private static void AddOrderWithMixtureOfServicesAndMatchingPlannedDeliveryDates(BuyingCatalogueDbContext context)
+        {
+            const int orderId = 90020;
+            var timeNow = DateTime.UtcNow;
+
+            var order = new Order
+            {
+                Id = orderId,
+                OrderingPartyId = GetOrganisationId(context),
+                Created = timeNow,
+                IsDeleted = false,
+                Description = "This is an Order Description",
+                OrderingPartyContact = new Contact
+                {
+                    FirstName = "Clark",
+                    LastName = "Kent",
+                    Email = "Clark.Kent@TheDailyPlanet.Fake",
+                    Phone = "123456789",
+                },
+                SupplierId = 99998,
+                SupplierContact = new Contact
+                {
+                    FirstName = "Bruce",
+                    LastName = "Wayne",
+                    Email = "bat.man@Gotham.Fake",
+                    Phone = "123456789",
+                },
+                CommencementDate = timeNow.AddDays(2).Date,
+                DeliveryDate = timeNow.AddDays(3).Date,
+            };
+
+            var user = GetBuyerUser(context, order.OrderingPartyId);
+            var solution = context.CatalogueItems.Single(c => c.Id == new CatalogueItemId(99998, "001"));
+            var additionalService = context.CatalogueItems.Single(c => c.Id == new CatalogueItemId(99998, "001A99"));
+            var associatedService = context.CatalogueItems.Single(c => c.Id == new CatalogueItemId(99998, "S-999"));
+
+            order.OrderItems.Add(new OrderItem { Created = DateTime.UtcNow, OrderId = orderId, CatalogueItem = solution });
+            order.OrderItems.Add(new OrderItem { Created = DateTime.UtcNow, OrderId = orderId, CatalogueItem = additionalService });
+            order.OrderItems.Add(new OrderItem { Created = DateTime.UtcNow, OrderId = orderId, CatalogueItem = associatedService });
+
+            var recipients = context.ServiceRecipients.ToList();
+
+            recipients.ForEach(r => order.OrderItems.ToList().ForEach(x => x.OrderItemRecipients.Add(new OrderItemRecipient
+            {
+                Recipient = r,
+                OdsCode = r.OdsCode,
+                DeliveryDate = timeNow.AddDays(3).Date,
+            })));
+
+            context.Add(order);
+
+            context.SaveChangesAs(user.Id);
+        }
+
+        private static void AddOrderWithMixtureOfServicesAndDifferingPlannedDeliveryDates(BuyingCatalogueDbContext context)
+        {
+            const int orderId = 90021;
+            var timeNow = DateTime.UtcNow;
+
+            var order = new Order
+            {
+                Id = orderId,
+                OrderingPartyId = GetOrganisationId(context),
+                Created = timeNow,
+                IsDeleted = false,
+                Description = "This is an Order Description",
+                OrderingPartyContact = new Contact
+                {
+                    FirstName = "Clark",
+                    LastName = "Kent",
+                    Email = "Clark.Kent@TheDailyPlanet.Fake",
+                    Phone = "123456789",
+                },
+                SupplierId = 99998,
+                SupplierContact = new Contact
+                {
+                    FirstName = "Bruce",
+                    LastName = "Wayne",
+                    Email = "bat.man@Gotham.Fake",
+                    Phone = "123456789",
+                },
+                CommencementDate = timeNow.AddDays(2).Date,
+                DeliveryDate = timeNow.AddDays(3).Date,
+            };
+
+            var user = GetBuyerUser(context, order.OrderingPartyId);
+            var solution = context.CatalogueItems.Single(c => c.Id == new CatalogueItemId(99998, "001"));
+            var additionalService = context.CatalogueItems.Single(c => c.Id == new CatalogueItemId(99998, "001A99"));
+            var associatedService = context.CatalogueItems.Single(c => c.Id == new CatalogueItemId(99998, "S-999"));
+
+            var solutionItem = new OrderItem { Created = DateTime.UtcNow, OrderId = orderId, CatalogueItem = solution };
+
+            order.OrderItems.Add(new OrderItem { Created = DateTime.UtcNow, OrderId = orderId, CatalogueItem = additionalService });
+            order.OrderItems.Add(new OrderItem { Created = DateTime.UtcNow, OrderId = orderId, CatalogueItem = associatedService });
+
+            context.ServiceRecipients.ForEach(r =>
+            {
+                order.OrderItems.ToList().ForEach(x => x.OrderItemRecipients.Add(new OrderItemRecipient
+                {
+                    Recipient = r,
+                    DeliveryDate = timeNow.AddDays(3).Date,
+                }));
+
+                solutionItem.OrderItemRecipients.Add(new OrderItemRecipient
+                {
+                    Recipient = r,
+                    DeliveryDate = timeNow.AddDays(2).Date,
+                });
+            });
+
+            order.OrderItems.Add(solutionItem);
+
+            context.Add(order);
+
+            context.SaveChangesAs(user.Id);
+        }
+
         private static async void AddOrderReadyToComplete(BuyingCatalogueDbContext context)
         {
             const int orderId = 90009;
@@ -1032,7 +1160,8 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
                     Email = "bat.man@Gotham.Fake",
                     Phone = "123456789",
                 },
-                CommencementDate = timeNow.AddDays(1),
+                CommencementDate = timeNow.AddDays(1).Date,
+                DeliveryDate = timeNow.AddDays(1).Date,
                 SelectedFramework = await GetFramework(context, GPITFUTURES),
             };
 
@@ -1061,6 +1190,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
                 {
                     Recipient = r,
                     Quantity = 1000,
+                    DeliveryDate = timeNow.AddDays(1).Date,
                 };
 
                 addedSolution.OrderItemRecipients.Add(recipient);

@@ -241,7 +241,7 @@ public class OrderTaskListTests
             SupplierStatus = TaskProgress.Completed,
             CommencementDateStatus = TaskProgress.Completed,
             SolutionOrService = TaskProgress.Completed,
-            FundingSource = TaskProgress.NotStarted,
+            DeliveryDates = TaskProgress.NotStarted,
             AssociatedServiceBilling = TaskProgress.NotApplicable,
         };
 
@@ -282,7 +282,6 @@ public class OrderTaskListTests
             SupplierStatus = TaskProgress.Completed,
             CommencementDateStatus = TaskProgress.Completed,
             SolutionOrService = TaskProgress.Completed,
-            FundingSource = TaskProgress.Completed,
             DeliveryDates = TaskProgress.NotStarted,
             AssociatedServiceBilling = TaskProgress.NotApplicable,
         };
@@ -379,10 +378,7 @@ public class OrderTaskListTests
             OrderingPartyStatus = TaskProgress.Completed,
             SupplierStatus = TaskProgress.Completed,
             CommencementDateStatus = TaskProgress.Completed,
-            SolutionOrService = TaskProgress.Completed,
-            FundingSource = TaskProgress.InProgress,
-            ImplementationPlan = TaskProgress.CannotStart,
-            AssociatedServiceBilling = TaskProgress.NotApplicable,
+            SolutionOrService = TaskProgress.InProgress,
         };
 
         var model = new OrderTaskList(order);
@@ -435,7 +431,7 @@ public class OrderTaskListTests
             SupplierStatus = TaskProgress.Completed,
             CommencementDateStatus = TaskProgress.Completed,
             SolutionOrService = TaskProgress.Completed,
-            FundingSource = TaskProgress.InProgress,
+            DeliveryDates = TaskProgress.NotStarted,
             ImplementationPlan = TaskProgress.InProgress,
             AssociatedServiceBilling = TaskProgress.NotApplicable,
         };
@@ -477,7 +473,6 @@ public class OrderTaskListTests
             SupplierStatus = TaskProgress.Completed,
             CommencementDateStatus = TaskProgress.Completed,
             SolutionOrService = TaskProgress.Completed,
-            FundingSource = TaskProgress.Completed,
             DeliveryDates = TaskProgress.NotStarted,
             AssociatedServiceBilling = TaskProgress.NotApplicable,
         };
@@ -520,8 +515,8 @@ public class OrderTaskListTests
             SupplierStatus = TaskProgress.Completed,
             CommencementDateStatus = TaskProgress.Completed,
             SolutionOrService = TaskProgress.Completed,
-            FundingSource = TaskProgress.Completed,
             DeliveryDates = TaskProgress.InProgress,
+            FundingSource = TaskProgress.InProgress,
             AssociatedServiceBilling = TaskProgress.NotApplicable,
         };
 
@@ -722,9 +717,9 @@ public class OrderTaskListTests
             SupplierStatus = TaskProgress.Completed,
             CommencementDateStatus = TaskProgress.Completed,
             SolutionOrService = TaskProgress.InProgress,
-            FundingSource = TaskProgress.InProgress,
-            DeliveryDates = TaskProgress.InProgress,
-            ImplementationPlan = TaskProgress.InProgress,
+            DeliveryDates = TaskProgress.Completed,
+            FundingSource = TaskProgress.Completed,
+            ImplementationPlan = TaskProgress.Completed,
             AssociatedServiceBilling = TaskProgress.InProgress,
         };
 
@@ -769,9 +764,12 @@ public class OrderTaskListTests
         associatedServiceOrderItem.CatalogueItem = associatedService.CatalogueItem;
         additionalServiceOrderItem.CatalogueItem = additionalService.CatalogueItem;
         additionalServiceOrderItem.OrderItemFunding = null;
+
         order.OrderItems.Add(solutionOrderItem);
         order.OrderItems.Add(associatedServiceOrderItem);
         order.OrderItems.Add(additionalServiceOrderItem);
+
+        order.OrderItems.ForEach(x => x.OrderItemRecipients.ForEach(r => r.DeliveryDate = commencementDate.AddDays(1)));
 
         var expectedModel = new OrderTaskList
         {
@@ -780,8 +778,8 @@ public class OrderTaskListTests
             SupplierStatus = TaskProgress.Completed,
             CommencementDateStatus = TaskProgress.Completed,
             SolutionOrService = TaskProgress.Completed,
+            DeliveryDates = TaskProgress.Completed,
             FundingSource = TaskProgress.InProgress,
-            DeliveryDates = TaskProgress.InProgress,
             ImplementationPlan = TaskProgress.InProgress,
             AssociatedServiceBilling = TaskProgress.InProgress,
         };
@@ -976,8 +974,8 @@ public class OrderTaskListTests
             SupplierStatus = TaskProgress.Completed,
             CommencementDateStatus = TaskProgress.Completed,
             SolutionOrService = TaskProgress.Completed,
+            DeliveryDates = TaskProgress.Completed,
             FundingSource = TaskProgress.InProgress,
-            DeliveryDates = TaskProgress.InProgress,
             ImplementationPlan = TaskProgress.InProgress,
             AssociatedServiceBilling = TaskProgress.NotApplicable,
             DataProcessingInformation = TaskProgress.InProgress,

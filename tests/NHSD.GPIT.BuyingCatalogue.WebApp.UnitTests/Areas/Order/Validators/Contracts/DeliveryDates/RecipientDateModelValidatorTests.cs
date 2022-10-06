@@ -25,9 +25,12 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Validators.Cont
             model.Year = $"{date.Year}";
 
             var result = validator.TestValidate(model);
+            var errorMessage = string.Format(
+                RecipientDateModelValidator.DeliveryDateInThePastErrorMessage,
+                model.Description);
 
             result.ShouldHaveValidationErrorFor(x => x.Day)
-                .WithErrorMessage(RecipientDateModelValidator.DeliveryDateInThePastErrorMessage);
+                .WithErrorMessage(errorMessage);
         }
 
         [Theory]
@@ -47,6 +50,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Validators.Cont
 
             var errorMessage = string.Format(
                 RecipientDateModelValidator.DeliveryDateBeforeCommencementDateErrorMessage,
+                model.Description,
                 $"{model.CommencementDate:dd MMMM yyyy}");
 
             result.ShouldHaveValidationErrorFor(x => x.Day).WithErrorMessage(errorMessage);

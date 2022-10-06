@@ -11,6 +11,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Models.Shared
 
         public string Year { get; set; }
 
+        public string Description { get; set; }
+
         public DateTime? Date
         {
             get

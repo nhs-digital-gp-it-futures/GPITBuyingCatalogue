@@ -21,8 +21,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.Contracts.Delivery
 
         public string OdsCode { get; set; }
 
-        public string Description { get; set; }
-
         public DateTime CommencementDate { get; set; }
     }
 }

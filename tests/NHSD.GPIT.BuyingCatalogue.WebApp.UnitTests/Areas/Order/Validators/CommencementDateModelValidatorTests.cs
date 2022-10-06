@@ -4,97 +4,12 @@ using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.AutoFixtureCustomisations;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.CommencementDate;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Validators;
-using NHSD.GPIT.BuyingCatalogue.WebApp.Validation.Shared;
 using Xunit;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Validators
 {
     public static class CommencementDateModelValidatorTests
     {
-        [Theory]
-        [CommonAutoData]
-        public static void Validate_CommencementDateDayMissing_ThrowsValidationError(
-            CommencementDateModel model,
-            CommencementDateModelValidator validator)
-        {
-            model.Day = string.Empty;
-
-            var result = validator.TestValidate(model);
-
-            result.ShouldHaveValidationErrorFor(m => m.Day)
-                .WithErrorMessage(DateInputModelValidator.DayMissingErrorMessage);
-        }
-
-        [Theory]
-        [CommonAutoData]
-        public static void Validate_CommencementDateMonthMissing_ThrowsValidationError(
-            CommencementDateModel model,
-            CommencementDateModelValidator validator)
-        {
-            model.Day = "01";
-            model.Month = string.Empty;
-
-            var result = validator.TestValidate(model);
-
-            result.ShouldHaveValidationErrorFor(m => m.Month)
-                .WithErrorMessage(DateInputModelValidator.MonthMissingErrorMessage);
-        }
-
-        [Theory]
-        [CommonAutoData]
-        public static void Validate_CommencementDateYearMissing_ThrowsValidationError(
-            CommencementDateModel model,
-            CommencementDateModelValidator validator)
-        {
-            model.Day = "01";
-            model.Month = "01";
-            model.Year = string.Empty;
-
-            var result = validator.TestValidate(model);
-
-            result.ShouldHaveValidationErrorFor(m => m.Year)
-                .WithErrorMessage(DateInputModelValidator.YearMissingErrorMessage);
-        }
-
-        [Theory]
-        [CommonInlineAutoData("1")]
-        [CommonInlineAutoData("12")]
-        [CommonInlineAutoData("123")]
-        public static void Validate_CommencementDateYearTooShort_ThrowsValidationError(
-            string year,
-            CommencementDateModel model,
-            CommencementDateModelValidator validator)
-        {
-            model.Day = "01";
-            model.Month = "01";
-            model.Year = year;
-
-            var result = validator.TestValidate(model);
-
-            result.ShouldHaveValidationErrorFor(m => m.Year)
-                .WithErrorMessage(DateInputModelValidator.YearWrongLengthErrorMessage);
-        }
-
-        [Theory]
-        [CommonInlineAutoData("99", "01", "2022")]
-        [CommonInlineAutoData("01", "99", "2022")]
-        public static void Validate_InvalidCommencementDate_ThrowsValidationError(
-            string day,
-            string month,
-            string year,
-            CommencementDateModel model,
-            CommencementDateModelValidator validator)
-        {
-            model.Day = day;
-            model.Month = month;
-            model.Year = year;
-
-            var result = validator.TestValidate(model);
-
-            result.ShouldHaveValidationErrorFor(m => m.Day)
-                .WithErrorMessage(DateInputModelValidator.DateInvalidErrorMessage);
-        }
-
         [Theory]
         [CommonInlineAutoData(-59)]
         [CommonInlineAutoData(-20)]

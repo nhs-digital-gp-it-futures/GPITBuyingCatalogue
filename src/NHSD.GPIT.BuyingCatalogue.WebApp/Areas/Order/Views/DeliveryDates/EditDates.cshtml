@@ -1,6 +1,5 @@
 ﻿@using NHSD.GPIT.BuyingCatalogue.EntityFramework.Extensions
 @using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers.Contracts
-@using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models
 @model NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.Contracts.DeliveryDates.EditDatesModel
 @{
     ViewBag.Title = $"Planned delivery dates for {Model.CatalogueItemType.Name()}";
@@ -20,14 +19,20 @@
         {
             <p>
                 <strong>Planned delivery date for the majority of Service Recipients:</strong>
-                @($"{Model.DeliveryDate:d MMMM yyyy}")
-                @if (Model.CatalogueItemType == CatalogueItemType.Solution)
+                @($"{Model.DeliveryDate:dd MMMM yyyy}")
+                @if (Model.DisplayEditLink)
                 {
+                    var returnUrl = Url.Action(
+                        nameof(DeliveryDatesController.EditDates),
+                        typeof(DeliveryDatesController).ControllerName(),
+                        new { Model.InternalOrgId, Model.CallOffId, Model.CatalogueItemId, Model.Source });
+
                     <span>&nbsp;</span>
-                    <a href="@Url.Action(
+                    <a id="edit-delivery-date-link"
+                       href="@Url.Action(
                                  nameof(DeliveryDatesController.SelectDate),
                                  typeof(DeliveryDatesController).ControllerName(),
-                                 new { Model.InternalOrgId, Model.CallOffId })">Edit</a>
+                                 new { Model.InternalOrgId, Model.CallOffId, returnUrl })">Edit</a>
                 }
             </p>
             <hr/>
@@ -38,6 +43,8 @@
             <input type="hidden" asp-for="@Model.CatalogueItemType" />
             <input type="hidden" asp-for="@Model.Description" />
             <input type="hidden" asp-for="@Model.DeliveryDate" />
+            <input type="hidden" asp-for="@Model.DisplayEditLink" />
+            <input type="hidden" asp-for="@Model.Source" />
             
             <nhs-table>
                 <nhs-table-column>Service Recipient</nhs-table-column>
@@ -48,7 +55,9 @@
                     <nhs-table-row-container>
                         <nhs-table-cell>
                             <input type="hidden" asp-for="@Model.Recipients[i].Description" />
-                            @Model.Recipients[i].Description
+                            <div>
+                                @Model.Recipients[i].Description
+                            </div>
                         </nhs-table-cell>
                         <nhs-table-cell>
                             <input type="hidden" asp-for="@Model.Recipients[i].OdsCode" />

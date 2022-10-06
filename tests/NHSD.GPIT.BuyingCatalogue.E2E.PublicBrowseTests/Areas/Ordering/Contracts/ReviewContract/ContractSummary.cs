@@ -140,7 +140,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering.Contracts.ReviewCont
 
             CommonActions.PageLoadedCorrectGetIndex(
                 typeof(OrderController),
-                nameof(OrderController.Summary)).Should().BeTrue();
+                nameof(OrderController.Order)).Should().BeTrue();
         }
 
         [Fact]

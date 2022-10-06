@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using AutoFixture;
@@ -12,12 +11,13 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Routing;
 using Moq;
 using MoreLinq;
-using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
+using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Contracts;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Orders;
+using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Routing;
 using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.AutoFixtureCustomisations;
-using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers;
+using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers.Contracts;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.Contracts.DeliveryDates;
 using Xunit;
@@ -68,33 +68,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Con
 
         [Theory]
         [CommonAutoData]
-        public static async Task Get_SelectDate_WithDeliveryDate_ReturnsExpectedResult(
-            string internalOrgId,
-            CallOffId callOffId,
-            EntityFramework.Ordering.Models.Order order,
-            DateTime deliveryDate,
-            [Frozen] Mock<IOrderService> orderService,
-            DeliveryDatesController controller)
-        {
-            orderService
-                .Setup(x => x.GetOrderThin(callOffId, internalOrgId))
-                .ReturnsAsync(order);
-
-            var result = await controller.SelectDate(
-                internalOrgId,
-                callOffId,
-                deliveryDate.ToString(DeliveryDatesController.DateFormat));
-
-            orderService.VerifyAll();
-
-            var expected = new SelectDateModel(internalOrgId, callOffId, order.CommencementDate!.Value, deliveryDate);
-            var actual = result.Should().BeOfType<ViewResult>().Subject;
-
-            actual.Model.Should().BeEquivalentTo(expected, x => x.Excluding(m => m.BackLink));
-        }
-
-        [Theory]
-        [CommonAutoData]
         public static async Task Post_SelectDate_WithModelErrors_ReturnsExpectedResult(
             string internalOrgId,
             CallOffId callOffId,
@@ -116,14 +89,14 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Con
             CallOffId callOffId,
             SelectDateModel model,
             EntityFramework.Ordering.Models.Order order,
+            [Frozen] Mock<IDeliveryDateService> deliveryDatesService,
             [Frozen] Mock<IOrderService> orderService,
             DeliveryDatesController controller)
         {
-            order.OrderItems.ForEach(x => x.CatalogueItem.CatalogueItemType = CatalogueItemType.AdditionalService);
-            order.OrderItems.First().CatalogueItem.CatalogueItemType = CatalogueItemType.Solution;
+            order.SetupCatalogueSolution();
             order.DeliveryDate = null;
 
-            orderService
+            deliveryDatesService
                 .Setup(x => x.SetDeliveryDate(internalOrgId, callOffId, model.Date.Value))
                 .Verifiable();
 
@@ -133,6 +106,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Con
 
             var result = await controller.SelectDate(internalOrgId, callOffId, model);
 
+            deliveryDatesService.VerifyAll();
             orderService.VerifyAll();
 
             var actual = result.Should().BeOfType<RedirectToActionResult>().Subject;
@@ -154,11 +128,11 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Con
             CallOffId callOffId,
             SelectDateModel model,
             EntityFramework.Ordering.Models.Order order,
+            [Frozen] Mock<IDeliveryDateService> deliveryDatesService,
             [Frozen] Mock<IOrderService> orderService,
             DeliveryDatesController controller)
         {
-            order.OrderItems.ForEach(x => x.CatalogueItem.CatalogueItemType = CatalogueItemType.AdditionalService);
-            order.OrderItems.First().CatalogueItem.CatalogueItemType = CatalogueItemType.Solution;
+            order.SetupCatalogueSolution();
             order.DeliveryDate = model.Date;
 
             orderService
@@ -168,6 +142,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Con
             var result = await controller.SelectDate(internalOrgId, callOffId, model);
 
             orderService.VerifyAll();
+            deliveryDatesService.VerifyNoOtherCalls();
 
             var actual = result.Should().BeOfType<RedirectToActionResult>().Subject;
 
@@ -175,7 +150,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Con
             actual.ControllerName.Should().Be(typeof(DeliveryDatesController).ControllerName());
             actual.RouteValues.Should().BeEquivalentTo(new RouteValueDictionary
             {
-                { "internalOrgId", internalOrgId },
+                { "InternalOrgId", internalOrgId },
                 { "callOffId", callOffId },
                 { "catalogueItemId", order.OrderItems.First().CatalogueItemId },
             });
@@ -191,8 +166,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Con
             [Frozen] Mock<IOrderService> orderService,
             DeliveryDatesController controller)
         {
-            order.OrderItems.ForEach(x => x.CatalogueItem.CatalogueItemType = CatalogueItemType.AdditionalService);
-            order.OrderItems.First().CatalogueItem.CatalogueItemType = CatalogueItemType.Solution;
+            order.SetupCatalogueSolution();
             order.DeliveryDate = model.Date!.Value.AddDays(1);
 
             orderService
@@ -272,8 +246,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Con
             var result = await controller.ConfirmChanges(internalOrgId, callOffId, model);
             var actual = result.Should().BeOfType<RedirectToActionResult>().Subject;
 
-            actual.ActionName.Should().Be(nameof(OrderController.Order));
-            actual.ControllerName.Should().Be(typeof(OrderController).ControllerName());
+            actual.ActionName.Should().Be(nameof(DeliveryDatesController.Review));
+            actual.ControllerName.Should().Be(typeof(DeliveryDatesController).ControllerName());
             actual.RouteValues.Should().BeEquivalentTo(new RouteValueDictionary
             {
                 { "internalOrgId", internalOrgId },
@@ -288,14 +262,14 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Con
             CallOffId callOffId,
             ConfirmChangesModel model,
             EntityFramework.Ordering.Models.Order order,
+            [Frozen] Mock<IDeliveryDateService> deliveryDatesService,
             [Frozen] Mock<IOrderService> orderService,
             DeliveryDatesController controller)
         {
+            order.SetupCatalogueSolution();
             model.ConfirmChanges = true;
-            order.OrderItems.ForEach(x => x.CatalogueItem.CatalogueItemType = CatalogueItemType.AdditionalService);
-            order.OrderItems.First().CatalogueItem.CatalogueItemType = CatalogueItemType.Solution;
 
-            orderService
+            deliveryDatesService
                 .Setup(x => x.SetDeliveryDate(internalOrgId, callOffId, model.NewDeliveryDate))
                 .Verifiable();
 
@@ -305,6 +279,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Con
 
             var result = await controller.ConfirmChanges(internalOrgId, callOffId, model);
 
+            deliveryDatesService.VerifyAll();
             orderService.VerifyAll();
 
             var actual = result.Should().BeOfType<RedirectToActionResult>().Subject;
@@ -313,8 +288,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Con
             actual.ControllerName.Should().Be(typeof(DeliveryDatesController).ControllerName());
             actual.RouteValues.Should().BeEquivalentTo(new RouteValueDictionary
             {
-                { "internalOrgId", internalOrgId },
-                { "callOffId", callOffId },
+                { "internalOrgId", model.InternalOrgId },
+                { "callOffId", model.CallOffId },
                 { "catalogueItemId", order.OrderItems.First().CatalogueItemId },
             });
         }
@@ -328,9 +303,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Con
             [Frozen] Mock<IOrderService> orderService,
             DeliveryDatesController controller)
         {
+            order.SetupCatalogueSolution();
             order.OrderItems.ForEach(x => x.OrderItemRecipients.ForEach(r => r.Recipient = new ServiceRecipient { Name = "Recipient Name" }));
-            order.OrderItems.ForEach(x => x.CatalogueItem.CatalogueItemType = CatalogueItemType.AdditionalService);
-            order.OrderItems.First().CatalogueItem.CatalogueItemType = CatalogueItemType.Solution;
 
             var catalogueItemId = order.OrderItems.First().CatalogueItemId;
 
@@ -372,27 +346,41 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Con
             CallOffId callOffId,
             EntityFramework.Ordering.Models.Order order,
             EditDatesModel model,
+            [Frozen] Mock<IDeliveryDateService> deliveryDatesService,
             [Frozen] Mock<IOrderService> orderService,
+            [Frozen] Mock<IRoutingService> routingService,
             DeliveryDatesController controller)
         {
-            order.OrderItems.ForEach(x => x.CatalogueItem.CatalogueItemType = CatalogueItemType.AdditionalService);
-            order.OrderItems.First().CatalogueItem.CatalogueItemType = CatalogueItemType.Solution;
+            order.SetupCatalogueSolution();
 
             var catalogueItemId = order.OrderItems.First().CatalogueItemId;
 
             orderService
-                .Setup(x => x.GetOrderThin(callOffId, internalOrgId))
+                .Setup(x => x.GetOrderWithOrderItems(callOffId, internalOrgId))
                 .ReturnsAsync(order);
 
-            var deliveryDates = new List<OrderDeliveryDateDto>();
+            var deliveryDates = new List<RecipientDeliveryDateDto>();
+            var routeValues = new RouteValues();
 
-            orderService
-                .Setup(x => x.SetDeliveryDates(order.Id, catalogueItemId, It.IsAny<List<OrderDeliveryDateDto>>()))
-                .Callback<int, CatalogueItemId, List<OrderDeliveryDateDto>>((_, _, x) => deliveryDates = x);
+            deliveryDatesService
+                .Setup(x => x.SetDeliveryDates(order.Id, catalogueItemId, It.IsAny<List<RecipientDeliveryDateDto>>()))
+                .Callback<int, CatalogueItemId, List<RecipientDeliveryDateDto>>((_, _, x) => deliveryDates = x);
+
+            routingService
+                .Setup(x => x.GetRoute(RoutingPoint.EditDeliveryDates, order, It.IsAny<RouteValues>()))
+                .Callback<RoutingPoint, EntityFramework.Ordering.Models.Order, RouteValues>((_, _, x) => routeValues = x)
+                .Returns(new RoutingResult
+                {
+                    ActionName = "action",
+                    ControllerName = "controller",
+                    RouteValues = new { internalOrgId, callOffId },
+                });
 
             var result = await controller.EditDates(internalOrgId, callOffId, catalogueItemId, model);
 
+            deliveryDatesService.VerifyAll();
             orderService.VerifyAll();
+            routingService.VerifyAll();
 
             deliveryDates.Count.Should().Be(model.Recipients.Length);
 
@@ -402,15 +390,177 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Con
                 recipient.Date.Should().Be(deliveryDate.DeliveryDate);
             }
 
+            routeValues.InternalOrgId.Should().Be(internalOrgId);
+            routeValues.CallOffId.Should().Be(callOffId);
+            routeValues.CatalogueItemId.Should().Be(catalogueItemId);
+            routeValues.Source.Should().Be(model.Source);
+
             var actual = result.Should().BeOfType<RedirectToActionResult>().Subject;
 
-            actual.ActionName.Should().Be(nameof(OrderController.Order));
-            actual.ControllerName.Should().Be(typeof(OrderController).ControllerName());
+            actual.ActionName.Should().Be("action");
+            actual.ControllerName.Should().Be("controller");
             actual.RouteValues.Should().BeEquivalentTo(new RouteValueDictionary
             {
                 { "internalOrgId", internalOrgId },
                 { "callOffId", callOffId },
             });
+        }
+
+        [Theory]
+        [CommonAutoData]
+        public static async Task Get_MatchDates_ReturnsExpectedResult(
+            string internalOrgId,
+            CallOffId callOffId,
+            EntityFramework.Ordering.Models.Order order,
+            [Frozen] Mock<IOrderService> orderService,
+            DeliveryDatesController controller)
+        {
+            order.SetupCatalogueSolution();
+
+            var catalogueItem = order.OrderItems.ElementAt(1).CatalogueItem;
+
+            orderService
+                .Setup(x => x.GetOrderWithOrderItems(callOffId, internalOrgId))
+                .ReturnsAsync(order);
+
+            var result = await controller.MatchDates(internalOrgId, callOffId, catalogueItem.Id);
+
+            orderService.VerifyAll();
+
+            var expected = new MatchDatesModel(internalOrgId, callOffId, catalogueItem);
+            var actual = result.Should().BeOfType<ViewResult>().Subject;
+
+            actual.Model.Should().BeEquivalentTo(expected, x => x.Excluding(m => m.BackLink));
+        }
+
+        [Theory]
+        [CommonAutoData]
+        public static async Task Post_MatchDates_WithModelErrors_ReturnsExpectedResult(
+            string internalOrgId,
+            CallOffId callOffId,
+            CatalogueItemId catalogueItemId,
+            MatchDatesModel model,
+            DeliveryDatesController controller)
+        {
+            controller.ModelState.AddModelError("key", "errorMessage");
+
+            var result = await controller.MatchDates(internalOrgId, callOffId, catalogueItemId, model);
+            var actual = result.Should().BeOfType<ViewResult>().Subject;
+
+            actual.Model.Should().BeEquivalentTo(model, x => x.Excluding(m => m.BackLink));
+        }
+
+        [Theory]
+        [CommonAutoData]
+        public static async Task Post_MatchDates_MatchDatesIsTrue_ReturnsExpectedResult(
+            string internalOrgId,
+            CallOffId callOffId,
+            EntityFramework.Ordering.Models.Order order,
+            MatchDatesModel model,
+            [Frozen] Mock<IOrderService> orderService,
+            [Frozen] Mock<IDeliveryDateService> deliveryDateService,
+            DeliveryDatesController controller)
+        {
+            model.MatchDates = true;
+            order.SetupCatalogueSolution();
+
+            var solutionId = order.OrderItems.ElementAt(0).CatalogueItemId;
+            var catalogueItemId = order.OrderItems.ElementAt(1).CatalogueItemId;
+
+            orderService
+                .Setup(x => x.GetOrderWithOrderItems(callOffId, internalOrgId))
+                .ReturnsAsync(order);
+
+            deliveryDateService
+                .Setup(x => x.MatchDeliveryDates(order.Id, solutionId, catalogueItemId))
+                .Verifiable();
+
+            var result = await controller.MatchDates(internalOrgId, callOffId, catalogueItemId, model);
+
+            orderService.VerifyAll();
+            deliveryDateService.VerifyAll();
+
+            var actual = result.Should().BeOfType<RedirectToActionResult>().Subject;
+
+            actual.ActionName.Should().Be(nameof(DeliveryDatesController.EditDates));
+            actual.ControllerName.Should().Be(typeof(DeliveryDatesController).ControllerName());
+            actual.RouteValues.Should().BeEquivalentTo(new RouteValueDictionary
+            {
+                { "internalOrgId", internalOrgId },
+                { "callOffId", callOffId },
+                { "catalogueItemId", catalogueItemId },
+            });
+        }
+
+        [Theory]
+        [CommonAutoData]
+        public static async Task Post_MatchDates_MatchDatesIsFalse_ReturnsExpectedResult(
+            string internalOrgId,
+            CallOffId callOffId,
+            EntityFramework.Ordering.Models.Order order,
+            MatchDatesModel model,
+            [Frozen] Mock<IOrderService> orderService,
+            [Frozen] Mock<IDeliveryDateService> deliveryDateService,
+            DeliveryDatesController controller)
+        {
+            model.MatchDates = false;
+            order.SetupCatalogueSolution();
+
+            var catalogueItemId = order.OrderItems.ElementAt(1).CatalogueItemId;
+            var orderItem = order.OrderItem(catalogueItemId);
+
+            orderService
+                .Setup(x => x.GetOrderWithOrderItems(callOffId, internalOrgId))
+                .ReturnsAsync(order);
+
+            var recipientDates = new List<RecipientDeliveryDateDto>();
+
+            deliveryDateService
+                .Setup(x => x.SetDeliveryDates(order.Id, catalogueItemId, It.IsAny<List<RecipientDeliveryDateDto>>()))
+                .Callback<int, CatalogueItemId, List<RecipientDeliveryDateDto>>((_, _, x) => recipientDates = x);
+
+            var result = await controller.MatchDates(internalOrgId, callOffId, catalogueItemId, model);
+
+            orderService.VerifyAll();
+            deliveryDateService.VerifyAll();
+
+            recipientDates.Count.Should().Be(orderItem.OrderItemRecipients.Count);
+            recipientDates.Select(x => x.OdsCode).Should().BeEquivalentTo(orderItem.OrderItemRecipients.Select(x => x.OdsCode));
+            recipientDates.ForEach(x => x.DeliveryDate.Should().Be(order.DeliveryDate));
+
+            var actual = result.Should().BeOfType<RedirectToActionResult>().Subject;
+
+            actual.ActionName.Should().Be(nameof(DeliveryDatesController.EditDates));
+            actual.ControllerName.Should().Be(typeof(DeliveryDatesController).ControllerName());
+            actual.RouteValues.Should().BeEquivalentTo(new RouteValueDictionary
+            {
+                { "internalOrgId", internalOrgId },
+                { "callOffId", callOffId },
+                { "catalogueItemId", catalogueItemId },
+            });
+        }
+
+        [Theory]
+        [CommonAutoData]
+        public static async Task Get_Review_ReturnsExpectedResult(
+            string internalOrgId,
+            CallOffId callOffId,
+            EntityFramework.Ordering.Models.Order order,
+            [Frozen] Mock<IOrderService> orderService,
+            DeliveryDatesController controller)
+        {
+            orderService
+                .Setup(x => x.GetOrderWithOrderItems(callOffId, internalOrgId))
+                .ReturnsAsync(order);
+
+            var result = await controller.Review(internalOrgId, callOffId);
+
+            orderService.VerifyAll();
+
+            var expected = new ReviewModel(order);
+            var actual = result.Should().BeOfType<ViewResult>().Subject;
+
+            actual.Model.Should().BeEquivalentTo(expected, x => x.Excluding(m => m.BackLink));
         }
     }
 }
