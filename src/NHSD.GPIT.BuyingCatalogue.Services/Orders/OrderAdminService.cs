@@ -33,6 +33,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
                 .Include(o => o.LastUpdatedByUser)
                 .Include(o => o.OrderingParty)
                 .Include(o => o.Supplier)
+                .Include(o => o.SelectedFramework)
                 .Include(o => o.OrderItems).ThenInclude(oi => oi.CatalogueItem)
                 .Include(o => o.OrderItems).ThenInclude(oi => oi.OrderItemFunding)
                 .Include(o => o.OrderItems).ThenInclude(oi => oi.OrderItemPrice).ThenInclude(oip => oip.OrderItemPriceTiers)

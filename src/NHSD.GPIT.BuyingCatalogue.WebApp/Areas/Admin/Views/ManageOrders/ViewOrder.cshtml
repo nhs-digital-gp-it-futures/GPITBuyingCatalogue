@@ -11,6 +11,13 @@
                     caption="@Model.CallOffId"
                     advice="View information about this order." />
     <nhs-summary-list>
+        @if (Model.SelectedFrameworkName is not null) {
+            <nhs-summary-list-row label-text="Framework">
+                <p data-test-id="view-order-framework">
+                    @Model.SelectedFrameworkName
+                </p>
+            </nhs-summary-list-row>
+        }
         <nhs-summary-list-row label-text="Organisation">
             <p data-test-id="view-order-organisation">
                 @Model.OrganisationName
@@ -72,9 +79,6 @@
                     Type of solution or service
                 </nhs-table-column>
                 <nhs-table-column>
-                    Solution framework
-                </nhs-table-column>
-                <nhs-table-column>
                     Funding type
                 </nhs-table-column>
                 @foreach (var orderItem in Model.OrderItems)
@@ -85,9 +89,6 @@
                         </nhs-table-cell>
                         <nhs-table-cell>
                             @orderItem.Type.AsString(EnumFormat.DisplayName)
-                        </nhs-table-cell>
-                        <nhs-table-cell>
-                            @orderItem.Framework
                         </nhs-table-cell>
                         <nhs-table-cell>
                             <span data-test-id="funding-type">@orderItem.SelectedFundingType.Description()</span>
