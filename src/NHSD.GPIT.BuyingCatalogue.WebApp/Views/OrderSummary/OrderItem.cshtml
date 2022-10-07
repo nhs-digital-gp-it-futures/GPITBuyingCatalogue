@@ -33,8 +33,9 @@
     <thead>
     <tr>
         <th>Recipient</th>
-        <th>ODS Code</th>
+        <th>ODS code</th>
         <th>Item ID</th>
+        <th>Planned delivery date</th>
 
         @if (hasServiceRecipientQuantities)
         {
@@ -53,6 +54,10 @@
     {
         @foreach (var recipient in Model.OrderItem.OrderItemRecipients)
         {
+            var deliveryDate = recipient.DeliveryDate.HasValue
+                ? $"{recipient.DeliveryDate.Value:dd MMMM yyyy}"
+                : "No date entered";
+
             <tr class="alternating">
                 <td>
                     @recipient.Recipient.Name
@@ -62,6 +67,9 @@
                 </td>
                 <td>
                     @($"{Model.OrderItem.Order.CallOffId}-{recipient.Recipient.OdsCode}-{ViewContext.HttpContext.NextLineId()}")
+                </td>
+                <td>
+                    @deliveryDate
                 </td>
 
                 @if (hasServiceRecipientQuantities)
@@ -77,6 +85,7 @@
             && Model.OrderItem.OrderItemRecipients.Count > 1)
         {
             <tr class="totals">
+                <td/>
                 <td/>
                 <td/>
                 <td/>
