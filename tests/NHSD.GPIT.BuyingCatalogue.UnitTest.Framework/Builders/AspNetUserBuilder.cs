@@ -111,7 +111,7 @@ namespace NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.Builders
                 PrimaryOrganisationId = primaryOrganisationId,
                 AspNetUserRoles = new List<AspNetUserRole>
                 {
-                    new() { Role = new() { Name = OrganisationFunction.Buyer.DisplayName } },
+                    new() { Role = new() { Name = OrganisationFunction.Buyer.Name } },
                 },
             };
         }
@@ -136,7 +136,7 @@ namespace NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.Builders
                 PrimaryOrganisationId = primaryOrganisationId,
                 AspNetUserRoles = new List<AspNetUserRole>
                 {
-                    new() { Role = new() { Name = OrganisationFunction.Authority.DisplayName } },
+                    new() { Role = new() { Name = OrganisationFunction.Authority.Name } },
                 },
             };
         }
@@ -145,7 +145,7 @@ namespace NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.Builders
         {
             if (!ApplicationUserFactory.TryGetValue(organisationFunction, out var factory))
             {
-                throw new InvalidOperationException($"Unknown type of user '{organisationFunction?.DisplayName}'");
+                throw new InvalidOperationException($"Unknown type of user '{organisationFunction?.Name}'");
             }
 
             var user = factory(this);

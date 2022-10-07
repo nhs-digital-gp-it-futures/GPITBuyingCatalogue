@@ -41,10 +41,10 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.Users
             var user = GetUser();
             var userRole = user.AspNetUserRoles.Select(u => u.Role).First().Name;
 
-            var isAdmin = userRole == OrganisationFunction.AuthorityName;
+            var isAdmin = userRole == OrganisationFunction.Authority.Name;
 
-            CommonActions.IsRadioButtonChecked(OrganisationFunction.AuthorityName).Should().Be(isAdmin);
-            CommonActions.IsRadioButtonChecked(OrganisationFunction.BuyerName).Should().Be(!isAdmin);
+            CommonActions.IsRadioButtonChecked(OrganisationFunction.Authority.Name).Should().Be(isAdmin);
+            CommonActions.IsRadioButtonChecked(OrganisationFunction.Buyer.Name).Should().Be(!isAdmin);
         }
 
         [Fact]
@@ -70,7 +70,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.Users
 
             var userRole = GetUser().AspNetUserRoles.Select(u => u.Role).First().Name;
 
-            userRole.Should().Be(OrganisationFunction.AuthorityName);
+            userRole.Should().Be(OrganisationFunction.Authority.Name);
         }
 
         [Fact]
@@ -111,7 +111,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.Users
                 nameof(UsersController.Details)).Should().BeTrue();
 
             var userRole = GetUser().AspNetUserRoles.Select(u => u.Role).First().Name;
-            userRole.Should().Be(OrganisationFunction.BuyerName);
+            userRole.Should().Be(OrganisationFunction.Buyer.Name);
         }
 
         public void Dispose()

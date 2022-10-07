@@ -27,8 +27,8 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
 
         private static void AddDefaultData(BuyingCatalogueDbContext context)
         {
-            var buyerRole = context.Roles.First(r => r.Name == OrganisationFunction.BuyerName);
-            var adminRole = context.Roles.First(r => r.Name == OrganisationFunction.AuthorityName);
+            var buyerRole = context.Roles.First(r => r.Name == OrganisationFunction.Buyer.Name);
+            var adminRole = context.Roles.First(r => r.Name == OrganisationFunction.Authority.Name);
 
             var bobOrganisation = new Organisation
             {

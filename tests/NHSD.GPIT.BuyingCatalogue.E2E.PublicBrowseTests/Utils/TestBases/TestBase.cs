@@ -156,10 +156,10 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.TestBases
         }
 
         internal AspNetUser GetBuyer()
-            => GetUserByRole(OrganisationFunction.BuyerName).First();
+            => GetUserByRole(OrganisationFunction.Buyer.Name).First();
 
         internal AspNetUser GetAdmin()
-            => GetUserByRole(OrganisationFunction.AuthorityName).First();
+            => GetUserByRole(OrganisationFunction.Authority.Name).First();
 
         internal IEnumerable<AspNetUser> GetUserByRole(string role)
         {

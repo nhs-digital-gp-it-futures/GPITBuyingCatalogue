@@ -7,9 +7,9 @@ public class RolesSeedData
 {
     internal static void Initialize(BuyingCatalogueDbContext context)
     {
-        context.Roles.Add(new() { Name = OrganisationFunction.AuthorityName, NormalizedName = OrganisationFunction.AuthorityName.ToUpperInvariant() });
-        context.Roles.Add(new() { Name = OrganisationFunction.BuyerName, NormalizedName = OrganisationFunction.BuyerName.ToUpperInvariant() });
-
+        context.Roles.Add(new() { Name = OrganisationFunction.Authority.Name, NormalizedName = OrganisationFunction.Authority.Name.ToUpperInvariant() });
+        context.Roles.Add(new() { Name = OrganisationFunction.Buyer.Name, NormalizedName = OrganisationFunction.Buyer.Name.ToUpperInvariant() });
+        context.Roles.Add(new() { Name = OrganisationFunction.AccountManager.Name, NormalizedName = OrganisationFunction.AccountManager.Name.ToUpperInvariant() });
         context.SaveChanges();
     }
 }

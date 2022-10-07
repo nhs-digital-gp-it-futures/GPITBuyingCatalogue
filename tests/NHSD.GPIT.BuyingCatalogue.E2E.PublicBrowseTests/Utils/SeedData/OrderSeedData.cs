@@ -1524,7 +1524,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
             var users = context.Users.Include(u => u.AspNetUserRoles).ThenInclude(r => r.Role).Where(u => u.PrimaryOrganisationId == organisationId);
 
             var user = users.FirstOrDefault(
-                u => u.AspNetUserRoles.Any(r => r.Role.Name == OrganisationFunction.BuyerName));
+                u => u.AspNetUserRoles.Any(r => r.Role.Name == OrganisationFunction.Buyer.Name));
 
             return user;
         }

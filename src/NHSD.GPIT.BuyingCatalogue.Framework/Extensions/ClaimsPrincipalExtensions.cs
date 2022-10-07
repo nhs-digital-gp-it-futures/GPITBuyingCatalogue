@@ -45,12 +45,12 @@ namespace NHSD.GPIT.BuyingCatalogue.Framework.Extensions
 
         public static bool IsAdmin(this ClaimsPrincipal user)
         {
-            return HasOrganisationClaim(user, OrganisationFunction.Authority.DisplayName);
+            return HasOrganisationClaim(user, OrganisationFunction.Authority.Name);
         }
 
         public static bool IsBuyer(this ClaimsPrincipal user)
         {
-            return HasOrganisationClaim(user, OrganisationFunction.Buyer.DisplayName);
+            return HasOrganisationClaim(user, OrganisationFunction.Buyer.Name);
         }
 
         public static int UserId(this ClaimsPrincipal user)
