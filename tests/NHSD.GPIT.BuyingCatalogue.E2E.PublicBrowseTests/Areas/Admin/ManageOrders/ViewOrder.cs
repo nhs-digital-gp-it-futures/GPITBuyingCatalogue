@@ -40,6 +40,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.ManageOrders
             CommonActions.GoBackLinkDisplayed().Should().BeTrue();
             CommonActions.ContinueButtonDisplayed().Should().BeTrue();
 
+            CommonActions.ElementIsDisplayed(ViewOrderObjects.FrameworkSection).Should().BeTrue();
             CommonActions.ElementIsDisplayed(ViewOrderObjects.OrganisationSection).Should().BeTrue();
             CommonActions.ElementIsDisplayed(ViewOrderObjects.DescriptionSection).Should().BeTrue();
             CommonActions.ElementIsDisplayed(ViewOrderObjects.LastUpdatedBySection).Should().BeTrue();
@@ -52,6 +53,25 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.ManageOrders
 
             CommonActions.ElementIsDisplayed(ViewOrderObjects.OrdersItemsTable).Should().BeTrue();
             CommonActions.ElementIsDisplayed(ViewOrderObjects.NoOrderItems).Should().BeFalse();
+        }
+
+        [Fact]
+        public void NoFramework()
+        {
+            var context = GetEndToEndDbContext();
+            var order = context.Orders.Include(o => o.SelectedFramework).First(o => o.Id == CallOffId.Id);
+            var frameworkId = order.SelectedFrameworkId;
+
+            order.SelectedFramework = null;
+
+            context.SaveChanges();
+
+            Driver.Navigate().Refresh();
+
+            CommonActions.ElementIsDisplayed(ViewOrderObjects.FrameworkSection).Should().BeFalse();
+
+            order.SelectedFrameworkId = frameworkId;
+            context.SaveChanges();
         }
 
         [Fact]

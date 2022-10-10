@@ -21,19 +21,15 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Csv
     public class CsvService : ICsvService
     {
         private readonly BuyingCatalogueDbContext dbContext;
-        private readonly IFrameworkService frameworkService;
 
-        public CsvService(BuyingCatalogueDbContext dbContext, IFrameworkService frameworkService)
+        public CsvService(BuyingCatalogueDbContext dbContext)
         {
             this.dbContext = dbContext ?? throw new ArgumentNullException(nameof(dbContext));
-            this.frameworkService = frameworkService ?? throw new ArgumentNullException(nameof(frameworkService));
         }
 
         public async Task CreateFullOrderCsvAsync(int orderId, MemoryStream stream)
         {
             var billingPeriods = await GetBillingPeriods(orderId);
-            var framework = await frameworkService.GetFramework(orderId);
-            var frameworkId = framework?.Id ?? string.Empty;
             var fundingType = await GetFundingType(orderId);
             var prices = await GetPrices(orderId);
             var (supplierId, supplierName) = await GetSupplierDetails(orderId);
@@ -65,7 +61,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Csv
                     OrderType = (int)oir.OrderItem.OrderItemPrice.ProvisioningType,
                     M1Planned = oir.OrderItem.Order.CommencementDate,
                     FundingType = fundingType,
-                    Framework = frameworkId,
+                    Framework = oir.OrderItem.Order.SelectedFrameworkId,
                     InitialTerm = oir.OrderItem.Order.InitialPeriod,
                     MaximumTerm = oir.OrderItem.Order.MaximumTerm,
                 })
@@ -82,8 +78,6 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Csv
 
         public async Task<int> CreatePatientNumberCsvAsync(int orderId, MemoryStream stream)
         {
-            var framework = await frameworkService.GetFramework(orderId);
-            var frameworkId = framework?.Id ?? string.Empty;
             var fundingType = await GetFundingType(orderId);
             var prices = await GetPrices(orderId);
             var (supplierId, supplierName) = await GetSupplierDetails(orderId);
@@ -112,7 +106,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Csv
                     Price = prices[oir.OrderItem.CatalogueItemId],
                     FundingType = fundingType,
                     M1Planned = oir.OrderItem.Order.CommencementDate,
-                    Framework = frameworkId,
+                    Framework = oir.OrderItem.Order.SelectedFrameworkId,
                     InitialTerm = oir.OrderItem.Order.InitialPeriod,
                     MaximumTerm = oir.OrderItem.Order.MaximumTerm,
                 }).ToListAsync();

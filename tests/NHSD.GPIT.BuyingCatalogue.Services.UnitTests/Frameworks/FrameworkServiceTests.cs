@@ -29,153 +29,15 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Frameworks
 
         [Theory]
         [InMemoryDbAutoData]
-        public static async Task GetFramework_NoOrderFound_ReturnsNull(FrameworkService service)
-        {
-            var result = await service.GetFramework(0);
-
-            result.Should().BeNull();
-        }
-
-        [Theory]
-        [InMemoryDbAutoData]
-        public static async Task GetFramework_NoSolutionId_ReturnsNull(
-            Order order,
-            [Frozen] BuyingCatalogueDbContext dbContext,
-            FrameworkService service)
-        {
-            order.AssociatedServicesOnly = false;
-            order.OrderItems.ForEach(x => x.CatalogueItem.CatalogueItemType = CatalogueItemType.AdditionalService);
-
-            dbContext.Orders.Add(order);
-
-            await dbContext.SaveChangesAsync();
-
-            var result = await service.GetFramework(order.Id);
-
-            result.Should().BeNull();
-        }
-
-        [Theory]
-        [InMemoryDbAutoData]
-        public static async Task GetFramework_NoSolutionId_AssociatedServicesOnly_ReturnsNull(
-            Order order,
-            [Frozen] BuyingCatalogueDbContext dbContext,
-            FrameworkService service)
-        {
-            order.AssociatedServicesOnly = true;
-            order.SolutionId = null;
-            order.OrderItems.ForEach(x => x.CatalogueItem.CatalogueItemType = CatalogueItemType.AssociatedService);
-
-            dbContext.Orders.Add(order);
-
-            await dbContext.SaveChangesAsync();
-
-            var result = await service.GetFramework(order.Id);
-
-            result.Should().BeNull();
-        }
-
-        [Theory]
-        [InMemoryDbAutoData]
-        public static async Task GetFramework_SolutionExists_CovidFrameworkOnly_ReturnsNull(
-            Order order,
-            [Frozen] BuyingCatalogueDbContext dbContext,
-            FrameworkService service)
-        {
-            order.AssociatedServicesOnly = false;
-            order.OrderItems.ForEach(x => x.CatalogueItem.CatalogueItemType = CatalogueItemType.AdditionalService);
-            order.OrderItems.First().CatalogueItem.CatalogueItemType = CatalogueItemType.Solution;
-
-            dbContext.Orders.Add(order);
-            dbContext.FrameworkSolutions.Add(new FrameworkSolution
-            {
-                SolutionId = order.OrderItems.First().CatalogueItemId,
-                FrameworkId = FrameworkService.CovidFrameworkId,
-            });
-
-            await dbContext.SaveChangesAsync();
-
-            var result = await service.GetFramework(order.Id);
-
-            result.Should().BeNull();
-        }
-
-        [Theory]
-        [InMemoryDbAutoData]
-        public static async Task GetFramework_SolutionExists_CovidFrameworkOnly_AssociatedServicesOnly_ReturnsNull(
-            Order order,
-            CatalogueItemId solutionId,
-            [Frozen] BuyingCatalogueDbContext dbContext,
-            FrameworkService service)
-        {
-            order.AssociatedServicesOnly = true;
-            order.OrderItems.ForEach(x => x.CatalogueItem.CatalogueItemType = CatalogueItemType.AssociatedService);
-            order.SolutionId = solutionId;
-
-            dbContext.Orders.Add(order);
-            dbContext.FrameworkSolutions.Add(new FrameworkSolution
-            {
-                SolutionId = solutionId,
-                FrameworkId = FrameworkService.CovidFrameworkId,
-            });
-
-            await dbContext.SaveChangesAsync();
-
-            var result = await service.GetFramework(order.Id);
-
-            result.Should().BeNull();
-        }
-
-        [Theory]
-        [InMemoryDbAutoData]
-        public static async Task GetFramework_SolutionExists_ReturnsExpectedResult(
-            Order order,
+        public static async Task GetFramework_ReturnsExpected(
             EntityFramework.Catalogue.Models.Framework framework,
             [Frozen] BuyingCatalogueDbContext dbContext,
             FrameworkService service)
         {
-            order.AssociatedServicesOnly = false;
-            order.OrderItems.ForEach(x => x.CatalogueItem.CatalogueItemType = CatalogueItemType.AdditionalService);
-            order.OrderItems.First().CatalogueItem.CatalogueItemType = CatalogueItemType.Solution;
-
-            dbContext.Orders.Add(order);
             dbContext.Frameworks.Add(framework);
-            dbContext.FrameworkSolutions.Add(new FrameworkSolution
-            {
-                SolutionId = order.OrderItems.First().CatalogueItemId,
-                FrameworkId = framework.Id,
-            });
-
             await dbContext.SaveChangesAsync();
 
-            var result = await service.GetFramework(order.Id);
-
-            result.Should().BeEquivalentTo(framework);
-        }
-
-        [Theory]
-        [InMemoryDbAutoData]
-        public static async Task GetFramework_SolutionExists_AssociatedServicesOnly_ReturnsExpectedResult(
-            Order order,
-            EntityFramework.Catalogue.Models.Framework framework,
-            [Frozen] BuyingCatalogueDbContext dbContext,
-            FrameworkService service)
-        {
-            order.AssociatedServicesOnly = true;
-            order.OrderItems.ForEach(x => x.CatalogueItem.CatalogueItemType = CatalogueItemType.AssociatedService);
-            order.SolutionId = order.Solution.Id;
-
-            dbContext.Orders.Add(order);
-            dbContext.Frameworks.Add(framework);
-            dbContext.FrameworkSolutions.Add(new FrameworkSolution
-            {
-                SolutionId = order.SolutionId.Value,
-                FrameworkId = framework.Id,
-            });
-
-            await dbContext.SaveChangesAsync();
-
-            var result = await service.GetFramework(order.Id);
+            var result = await service.GetFramework(framework.Id);
 
             result.Should().BeEquivalentTo(framework);
         }
