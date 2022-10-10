@@ -434,6 +434,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
                     Phone = "123456789",
                 },
                 CommencementDate = DateTime.UtcNow.AddDays(1),
+                DeliveryDate = DateTime.Today.AddDays(2),
                 InitialPeriod = 6,
                 MaximumTerm = 36,
             };
@@ -462,6 +463,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
                 {
                     Recipient = r,
                     Quantity = 1000,
+                    DeliveryDate = DateTime.Today.AddDays(2),
                 };
 
                 addedSolution.OrderItemRecipients.Add(recipient);
@@ -1018,7 +1020,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
 
         private static void AddOrderWithMixtureOfServicesAndMatchingPlannedDeliveryDates(BuyingCatalogueDbContext context)
         {
-            const int orderId = 90020;
+            const int orderId = 90022;
             var timeNow = DateTime.UtcNow;
 
             var order = new Order
@@ -1072,7 +1074,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
 
         private static void AddOrderWithMixtureOfServicesAndDifferingPlannedDeliveryDates(BuyingCatalogueDbContext context)
         {
-            const int orderId = 90021;
+            const int orderId = 90023;
             var timeNow = DateTime.UtcNow;
 
             var order = new Order

@@ -18,17 +18,21 @@ public class OrderTaskListTests
     public static void Construct_DescriptionOnly(
         string description)
     {
-        var order = new EntityFramework.Ordering.Models.Order { Description = description };
+        var order = new EntityFramework.Ordering.Models.Order
+        {
+            Description = description,
+        };
 
-        var expectedModel = new OrderTaskList
+        var expected = new OrderTaskList
         {
             DescriptionStatus = TaskProgress.Completed,
             OrderingPartyStatus = TaskProgress.NotStarted,
-            AssociatedServiceBilling = TaskProgress.CannotStart,
+            AssociatedServiceBilling = TaskProgress.NotApplicable,
         };
+
         var model = new OrderTaskList(order);
 
-        model.Should().BeEquivalentTo(expectedModel);
+        model.Should().BeEquivalentTo(expected);
     }
 
     [Theory]
@@ -43,17 +47,17 @@ public class OrderTaskListTests
             OrderingPartyContact = orderingPartyContact,
         };
 
-        var expectedModel = new OrderTaskList
+        var expected = new OrderTaskList
         {
             DescriptionStatus = TaskProgress.Completed,
             OrderingPartyStatus = TaskProgress.Completed,
             SupplierStatus = TaskProgress.NotStarted,
-            AssociatedServiceBilling = TaskProgress.CannotStart,
+            AssociatedServiceBilling = TaskProgress.NotApplicable,
         };
 
         var model = new OrderTaskList(order);
 
-        model.Should().BeEquivalentTo(expectedModel);
+        model.Should().BeEquivalentTo(expected);
     }
 
     [Theory]
@@ -66,14 +70,16 @@ public class OrderTaskListTests
             Description = description, OrderingPartyContact = null,
         };
 
-        var expectedModel = new OrderTaskList
+        var expected = new OrderTaskList
         {
-            DescriptionStatus = TaskProgress.Completed, OrderingPartyStatus = TaskProgress.NotStarted,
+            DescriptionStatus = TaskProgress.Completed,
+            OrderingPartyStatus = TaskProgress.NotStarted,
+            AssociatedServiceBilling = TaskProgress.NotApplicable,
         };
 
         var model = new OrderTaskList(order);
 
-        model.Should().BeEquivalentTo(expectedModel);
+        model.Should().BeEquivalentTo(expected);
     }
 
     [Theory]
@@ -90,17 +96,17 @@ public class OrderTaskListTests
             Supplier = supplier,
         };
 
-        var expectedModel = new OrderTaskList
+        var expected = new OrderTaskList
         {
             DescriptionStatus = TaskProgress.Completed,
             OrderingPartyStatus = TaskProgress.Completed,
             SupplierStatus = TaskProgress.InProgress,
-            AssociatedServiceBilling = TaskProgress.CannotStart,
+            AssociatedServiceBilling = TaskProgress.NotApplicable,
         };
 
         var model = new OrderTaskList(order);
 
-        model.Should().BeEquivalentTo(expectedModel);
+        model.Should().BeEquivalentTo(expected);
     }
 
     [Theory]
@@ -119,18 +125,18 @@ public class OrderTaskListTests
             SupplierContact = supplierContact,
         };
 
-        var expectedModel = new OrderTaskList
+        var expected = new OrderTaskList
         {
             DescriptionStatus = TaskProgress.Completed,
             OrderingPartyStatus = TaskProgress.Completed,
             SupplierStatus = TaskProgress.Completed,
             CommencementDateStatus = TaskProgress.NotStarted,
-            AssociatedServiceBilling = TaskProgress.CannotStart,
+            AssociatedServiceBilling = TaskProgress.NotApplicable,
         };
 
         var model = new OrderTaskList(order);
 
-        model.Should().BeEquivalentTo(expectedModel);
+        model.Should().BeEquivalentTo(expected);
     }
 
     [Theory]
@@ -151,19 +157,19 @@ public class OrderTaskListTests
             CommencementDate = commencementDate,
         };
 
-        var expectedModel = new OrderTaskList
+        var expected = new OrderTaskList
         {
             DescriptionStatus = TaskProgress.Completed,
             OrderingPartyStatus = TaskProgress.Completed,
             SupplierStatus = TaskProgress.Completed,
             CommencementDateStatus = TaskProgress.Completed,
             SolutionOrService = TaskProgress.NotStarted,
-            AssociatedServiceBilling = TaskProgress.CannotStart,
+            AssociatedServiceBilling = TaskProgress.NotApplicable,
         };
 
         var model = new OrderTaskList(order);
 
-        model.Should().BeEquivalentTo(expectedModel);
+        model.Should().BeEquivalentTo(expected);
     }
 
     [Theory]
@@ -193,19 +199,15 @@ public class OrderTaskListTests
         orderItem.CatalogueItem = solution.CatalogueItem;
         order.OrderItems.Add(orderItem);
 
-        var expectedModel = new OrderTaskList
+        var expected = new SectionOneCompleted
         {
-            DescriptionStatus = TaskProgress.Completed,
-            OrderingPartyStatus = TaskProgress.Completed,
-            SupplierStatus = TaskProgress.Completed,
-            CommencementDateStatus = TaskProgress.Completed,
             SolutionOrService = TaskProgress.InProgress,
-            AssociatedServiceBilling = TaskProgress.CannotStart,
+            AssociatedServiceBilling = TaskProgress.NotApplicable,
         };
 
         var model = new OrderTaskList(order);
 
-        model.Should().BeEquivalentTo(expectedModel);
+        model.Should().BeEquivalentTo(expected);
     }
 
     [Theory]
@@ -234,12 +236,8 @@ public class OrderTaskListTests
         orderItem.CatalogueItem = solution.CatalogueItem;
         order.OrderItems.Add(orderItem);
 
-        var expectedModel = new OrderTaskList
+        var expected = new SectionOneCompleted
         {
-            DescriptionStatus = TaskProgress.Completed,
-            OrderingPartyStatus = TaskProgress.Completed,
-            SupplierStatus = TaskProgress.Completed,
-            CommencementDateStatus = TaskProgress.Completed,
             SolutionOrService = TaskProgress.Completed,
             DeliveryDates = TaskProgress.NotStarted,
             AssociatedServiceBilling = TaskProgress.NotApplicable,
@@ -247,7 +245,7 @@ public class OrderTaskListTests
 
         var model = new OrderTaskList(order);
 
-        model.Should().BeEquivalentTo(expectedModel);
+        model.Should().BeEquivalentTo(expected);
     }
 
     [Theory]
@@ -275,20 +273,17 @@ public class OrderTaskListTests
 
         order.OrderItems.Add(orderItem);
 
-        var expectedModel = new OrderTaskList
+        var expected = new SectionOneCompleted
         {
-            DescriptionStatus = TaskProgress.Completed,
-            OrderingPartyStatus = TaskProgress.Completed,
-            SupplierStatus = TaskProgress.Completed,
-            CommencementDateStatus = TaskProgress.Completed,
             SolutionOrService = TaskProgress.Completed,
             DeliveryDates = TaskProgress.NotStarted,
+            FundingSource = TaskProgress.InProgress,
             AssociatedServiceBilling = TaskProgress.NotApplicable,
         };
 
         var model = new OrderTaskList(order);
 
-        model.Should().BeEquivalentTo(expectedModel);
+        model.Should().BeEquivalentTo(expected);
     }
 
     [Theory]
@@ -322,13 +317,10 @@ public class OrderTaskListTests
         order.OrderItems.Add(solutionOrderItem);
         order.OrderItems.Add(additionalServiceOrderItem);
 
-        var expectedModel = new OrderTaskList
+        var expected = new SectionOneCompleted
         {
-            DescriptionStatus = TaskProgress.Completed,
-            OrderingPartyStatus = TaskProgress.Completed,
-            SupplierStatus = TaskProgress.Completed,
-            CommencementDateStatus = TaskProgress.Completed,
             SolutionOrService = TaskProgress.Completed,
+            DeliveryDates = TaskProgress.Completed,
             FundingSource = TaskProgress.NotStarted,
             ImplementationPlan = TaskProgress.CannotStart,
             AssociatedServiceBilling = TaskProgress.NotApplicable,
@@ -336,7 +328,7 @@ public class OrderTaskListTests
 
         var model = new OrderTaskList(order);
 
-        model.Should().BeEquivalentTo(expectedModel);
+        model.Should().BeEquivalentTo(expected);
     }
 
     [Theory]
@@ -350,7 +342,6 @@ public class OrderTaskListTests
         OrderItem solutionOrderItem,
         Solution solution,
         OrderItem additionalServiceOrderItem,
-        AdditionalService additionalService,
         EntityFramework.Catalogue.Models.Framework framework)
     {
         var order = new EntityFramework.Ordering.Models.Order
@@ -364,26 +355,24 @@ public class OrderTaskListTests
         };
 
         solutionOrderItem.CatalogueItem = solution.CatalogueItem;
-        solutionOrderItem.OrderItemRecipients.ForEach(x => x.DeliveryDate = null);
+        solutionOrderItem.OrderItemRecipients.ForEach(x => x.DeliveryDate = commencementDate.AddDays(1));
 
         additionalServiceOrderItem.OrderItemFunding = null;
-        solutionOrderItem.OrderItemFunding = null;
 
         order.OrderItems.Add(solutionOrderItem);
         order.OrderItems.Add(additionalServiceOrderItem);
 
-        var expectedModel = new OrderTaskList
+        var expected = new SectionOneCompleted
         {
-            DescriptionStatus = TaskProgress.Completed,
-            OrderingPartyStatus = TaskProgress.Completed,
-            SupplierStatus = TaskProgress.Completed,
-            CommencementDateStatus = TaskProgress.Completed,
-            SolutionOrService = TaskProgress.InProgress,
+            SolutionOrService = TaskProgress.Completed,
+            DeliveryDates = TaskProgress.Completed,
+            FundingSource = TaskProgress.InProgress,
+            AssociatedServiceBilling = TaskProgress.NotApplicable,
         };
 
         var model = new OrderTaskList(order);
 
-        model.Should().BeEquivalentTo(expectedModel);
+        model.Should().BeEquivalentTo(expected);
     }
 
     [Theory]
@@ -424,21 +413,18 @@ public class OrderTaskListTests
         order.OrderItems.Add(solutionOrderItem);
         order.OrderItems.Add(additionalServiceOrderItem);
 
-        var expectedModel = new OrderTaskList
+        var expected = new SectionOneCompleted
         {
-            DescriptionStatus = TaskProgress.Completed,
-            OrderingPartyStatus = TaskProgress.Completed,
-            SupplierStatus = TaskProgress.Completed,
-            CommencementDateStatus = TaskProgress.Completed,
             SolutionOrService = TaskProgress.Completed,
             DeliveryDates = TaskProgress.NotStarted,
+            FundingSource = TaskProgress.InProgress,
             ImplementationPlan = TaskProgress.InProgress,
             AssociatedServiceBilling = TaskProgress.NotApplicable,
         };
 
         var model = new OrderTaskList(order);
 
-        model.Should().BeEquivalentTo(expectedModel);
+        model.Should().BeEquivalentTo(expected);
     }
 
     [Theory]
@@ -462,16 +448,13 @@ public class OrderTaskListTests
         };
 
         orderItem.CatalogueItem = solution.CatalogueItem;
+        orderItem.OrderItemFunding = null;
         orderItem.OrderItemRecipients.ForEach(x => x.DeliveryDate = null);
 
         order.OrderItems.Add(orderItem);
 
-        var expected = new OrderTaskList
+        var expected = new SectionOneCompleted
         {
-            DescriptionStatus = TaskProgress.Completed,
-            OrderingPartyStatus = TaskProgress.Completed,
-            SupplierStatus = TaskProgress.Completed,
-            CommencementDateStatus = TaskProgress.Completed,
             SolutionOrService = TaskProgress.Completed,
             DeliveryDates = TaskProgress.NotStarted,
             AssociatedServiceBilling = TaskProgress.NotApplicable,
@@ -508,12 +491,8 @@ public class OrderTaskListTests
 
         order.OrderItems.Add(orderItem);
 
-        var expected = new OrderTaskList
+        var expected = new SectionOneCompleted
         {
-            DescriptionStatus = TaskProgress.Completed,
-            OrderingPartyStatus = TaskProgress.Completed,
-            SupplierStatus = TaskProgress.Completed,
-            CommencementDateStatus = TaskProgress.Completed,
             SolutionOrService = TaskProgress.Completed,
             DeliveryDates = TaskProgress.InProgress,
             FundingSource = TaskProgress.InProgress,
@@ -534,6 +513,7 @@ public class OrderTaskListTests
         Contact supplierContact,
         DateTime commencementDate,
         OrderItem orderItem,
+        EntityFramework.Catalogue.Models.Framework framework,
         Solution solution)
     {
         var order = new EntityFramework.Ordering.Models.Order
@@ -543,6 +523,7 @@ public class OrderTaskListTests
             Supplier = supplier,
             SupplierContact = supplierContact,
             CommencementDate = commencementDate,
+            SelectedFramework = framework,
             ContractFlags = new()
             {
                 UseDefaultImplementationPlan = true,
@@ -550,17 +531,12 @@ public class OrderTaskListTests
         };
 
         orderItem.CatalogueItem = solution.CatalogueItem;
+        orderItem.OrderItemRecipients.ForEach(x => x.DeliveryDate = commencementDate.AddDays(1));
+
         order.OrderItems.Add(orderItem);
 
-        var expectedModel = new OrderTaskList
+        var expected = new SectionTwoCompleted
         {
-            DescriptionStatus = TaskProgress.Completed,
-            OrderingPartyStatus = TaskProgress.Completed,
-            SupplierStatus = TaskProgress.Completed,
-            CommencementDateStatus = TaskProgress.Completed,
-            SolutionOrService = TaskProgress.Completed,
-            FundingSource = TaskProgress.Completed,
-            DeliveryDates = TaskProgress.Completed,
             ImplementationPlan = TaskProgress.Completed,
             AssociatedServiceBilling = TaskProgress.NotApplicable,
             DataProcessingInformation = TaskProgress.NotStarted,
@@ -568,7 +544,7 @@ public class OrderTaskListTests
 
         var model = new OrderTaskList(order);
 
-        model.Should().BeEquivalentTo(expectedModel);
+        model.Should().BeEquivalentTo(expected);
     }
 
     [Theory]
@@ -580,6 +556,7 @@ public class OrderTaskListTests
         Contact supplierContact,
         DateTime commencementDate,
         OrderItem solutionOrderItem,
+        EntityFramework.Catalogue.Models.Framework framework,
         Solution solution,
         OrderItem associatedServiceOrderItem,
         AssociatedService associatedService)
@@ -591,6 +568,7 @@ public class OrderTaskListTests
             Supplier = supplier,
             SupplierContact = supplierContact,
             CommencementDate = commencementDate,
+            SelectedFramework = framework,
             ContractFlags = new()
             {
                 UseDefaultImplementationPlan = true,
@@ -602,22 +580,15 @@ public class OrderTaskListTests
         order.OrderItems.Add(solutionOrderItem);
         order.OrderItems.Add(associatedServiceOrderItem);
 
-        var expectedModel = new OrderTaskList
+        var expected = new SectionTwoCompleted
         {
-            DescriptionStatus = TaskProgress.Completed,
-            OrderingPartyStatus = TaskProgress.Completed,
-            SupplierStatus = TaskProgress.Completed,
-            CommencementDateStatus = TaskProgress.Completed,
-            SolutionOrService = TaskProgress.Completed,
-            DeliveryDates = TaskProgress.Completed,
-            FundingSource = TaskProgress.Completed,
             ImplementationPlan = TaskProgress.Completed,
             AssociatedServiceBilling = TaskProgress.NotStarted,
         };
 
         var model = new OrderTaskList(order);
 
-        model.Should().BeEquivalentTo(expectedModel);
+        model.Should().BeEquivalentTo(expected);
     }
 
     [Theory]
@@ -630,6 +601,7 @@ public class OrderTaskListTests
         DateTime commencementDate,
         OrderItem solutionOrderItem,
         Solution solution,
+        EntityFramework.Catalogue.Models.Framework framework,
         OrderItem associatedServiceOrderItem,
         AssociatedService associatedService)
     {
@@ -640,6 +612,7 @@ public class OrderTaskListTests
             Supplier = supplier,
             SupplierContact = supplierContact,
             CommencementDate = commencementDate,
+            SelectedFramework = framework,
             ContractFlags = new()
             {
                 UseDefaultImplementationPlan = true,
@@ -653,15 +626,8 @@ public class OrderTaskListTests
         order.OrderItems.Add(solutionOrderItem);
         order.OrderItems.Add(associatedServiceOrderItem);
 
-        var expectedModel = new OrderTaskList
+        var expected = new SectionTwoCompleted
         {
-            DescriptionStatus = TaskProgress.Completed,
-            OrderingPartyStatus = TaskProgress.Completed,
-            SupplierStatus = TaskProgress.Completed,
-            CommencementDateStatus = TaskProgress.Completed,
-            SolutionOrService = TaskProgress.Completed,
-            FundingSource = TaskProgress.Completed,
-            DeliveryDates = TaskProgress.Completed,
             ImplementationPlan = TaskProgress.Completed,
             AssociatedServiceBilling = TaskProgress.Completed,
             DataProcessingInformation = TaskProgress.NotStarted,
@@ -669,7 +635,7 @@ public class OrderTaskListTests
 
         var model = new OrderTaskList(order);
 
-        model.Should().BeEquivalentTo(expectedModel);
+        model.Should().BeEquivalentTo(expected);
     }
 
     [Theory]
@@ -705,27 +671,23 @@ public class OrderTaskListTests
         solutionOrderItem.CatalogueItem = solution.CatalogueItem;
         associatedServiceOrderItem.CatalogueItem = associatedService.CatalogueItem;
         associatedServiceOrderItem.OrderItemPrice = null;
+
         order.OrderItems.Add(solutionOrderItem);
         order.OrderItems.Add(associatedServiceOrderItem);
 
         associatedServiceOrderItem.OrderItemFunding = null;
 
-        var expectedModel = new OrderTaskList
+        var expected = new SectionTwoCompleted
         {
-            DescriptionStatus = TaskProgress.Completed,
-            OrderingPartyStatus = TaskProgress.Completed,
-            SupplierStatus = TaskProgress.Completed,
-            CommencementDateStatus = TaskProgress.Completed,
             SolutionOrService = TaskProgress.InProgress,
-            DeliveryDates = TaskProgress.Completed,
-            FundingSource = TaskProgress.Completed,
-            ImplementationPlan = TaskProgress.Completed,
+            FundingSource = TaskProgress.InProgress,
+            ImplementationPlan = TaskProgress.InProgress,
             AssociatedServiceBilling = TaskProgress.InProgress,
         };
 
         var model = new OrderTaskList(order);
 
-        model.Should().BeEquivalentTo(expectedModel);
+        model.Should().BeEquivalentTo(expected);
     }
 
     [Theory]
@@ -771,14 +733,8 @@ public class OrderTaskListTests
 
         order.OrderItems.ForEach(x => x.OrderItemRecipients.ForEach(r => r.DeliveryDate = commencementDate.AddDays(1)));
 
-        var expectedModel = new OrderTaskList
+        var expected = new SectionTwoCompleted
         {
-            DescriptionStatus = TaskProgress.Completed,
-            OrderingPartyStatus = TaskProgress.Completed,
-            SupplierStatus = TaskProgress.Completed,
-            CommencementDateStatus = TaskProgress.Completed,
-            SolutionOrService = TaskProgress.Completed,
-            DeliveryDates = TaskProgress.Completed,
             FundingSource = TaskProgress.InProgress,
             ImplementationPlan = TaskProgress.InProgress,
             AssociatedServiceBilling = TaskProgress.InProgress,
@@ -786,7 +742,7 @@ public class OrderTaskListTests
 
         var model = new OrderTaskList(order);
 
-        model.Should().BeEquivalentTo(expectedModel);
+        model.Should().BeEquivalentTo(expected);
     }
 
     [Theory]
@@ -798,6 +754,7 @@ public class OrderTaskListTests
         Contact supplierContact,
         DateTime commencementDate,
         OrderItem solutionOrderItem,
+        EntityFramework.Catalogue.Models.Framework framework,
         Solution solution,
         OrderItem associatedServiceOrderItem,
         AssociatedService associatedService)
@@ -809,6 +766,7 @@ public class OrderTaskListTests
             Supplier = supplier,
             SupplierContact = supplierContact,
             CommencementDate = commencementDate,
+            SelectedFramework = framework,
         };
 
         solutionOrderItem.CatalogueItem = solution.CatalogueItem;
@@ -816,22 +774,15 @@ public class OrderTaskListTests
         order.OrderItems.Add(solutionOrderItem);
         order.OrderItems.Add(associatedServiceOrderItem);
 
-        var expectedModel = new OrderTaskList
+        var expected = new SectionTwoCompleted
         {
-            DescriptionStatus = TaskProgress.Completed,
-            OrderingPartyStatus = TaskProgress.Completed,
-            SupplierStatus = TaskProgress.Completed,
-            CommencementDateStatus = TaskProgress.Completed,
-            SolutionOrService = TaskProgress.Completed,
-            FundingSource = TaskProgress.Completed,
-            DeliveryDates = TaskProgress.Completed,
             ImplementationPlan = TaskProgress.NotStarted,
             AssociatedServiceBilling = TaskProgress.CannotStart,
         };
 
         var model = new OrderTaskList(order);
 
-        model.Should().BeEquivalentTo(expectedModel);
+        model.Should().BeEquivalentTo(expected);
     }
 
     [Theory]
@@ -843,6 +794,7 @@ public class OrderTaskListTests
         Contact supplierContact,
         DateTime commencementDate,
         OrderItem solutionOrderItem,
+        EntityFramework.Catalogue.Models.Framework framework,
         Solution solution,
         OrderItem associatedServiceOrderItem,
         AssociatedService associatedService)
@@ -854,6 +806,7 @@ public class OrderTaskListTests
             Supplier = supplier,
             SupplierContact = supplierContact,
             CommencementDate = commencementDate,
+            SelectedFramework = framework,
             ContractFlags = new()
             {
                 UseDefaultImplementationPlan = true,
@@ -866,22 +819,15 @@ public class OrderTaskListTests
         order.OrderItems.Add(solutionOrderItem);
         order.OrderItems.Add(associatedServiceOrderItem);
 
-        var expectedModel = new OrderTaskList
+        var expected = new SectionTwoCompleted
         {
-            DescriptionStatus = TaskProgress.Completed,
-            OrderingPartyStatus = TaskProgress.Completed,
-            SupplierStatus = TaskProgress.Completed,
-            CommencementDateStatus = TaskProgress.Completed,
-            SolutionOrService = TaskProgress.Completed,
-            FundingSource = TaskProgress.Completed,
-            DeliveryDates = TaskProgress.Completed,
             ImplementationPlan = TaskProgress.Completed,
             AssociatedServiceBilling = TaskProgress.InProgress,
         };
 
         var model = new OrderTaskList(order);
 
-        model.Should().BeEquivalentTo(expectedModel);
+        model.Should().BeEquivalentTo(expected);
     }
 
     [Theory]
@@ -893,6 +839,7 @@ public class OrderTaskListTests
         Contact supplierContact,
         DateTime commencementDate,
         OrderItem orderItem,
+        EntityFramework.Catalogue.Models.Framework framework,
         Solution solution)
     {
         var order = new EntityFramework.Ordering.Models.Order
@@ -902,6 +849,7 @@ public class OrderTaskListTests
             Supplier = supplier,
             SupplierContact = supplierContact,
             CommencementDate = commencementDate,
+            SelectedFramework = framework,
             ContractFlags = new()
             {
                 UseDefaultImplementationPlan = true,
@@ -912,15 +860,8 @@ public class OrderTaskListTests
         orderItem.CatalogueItem = solution.CatalogueItem;
         order.OrderItems.Add(orderItem);
 
-        var expectedModel = new OrderTaskList
+        var expected = new SectionTwoCompleted
         {
-            DescriptionStatus = TaskProgress.Completed,
-            OrderingPartyStatus = TaskProgress.Completed,
-            SupplierStatus = TaskProgress.Completed,
-            CommencementDateStatus = TaskProgress.Completed,
-            SolutionOrService = TaskProgress.Completed,
-            FundingSource = TaskProgress.Completed,
-            DeliveryDates = TaskProgress.Completed,
             ImplementationPlan = TaskProgress.Completed,
             AssociatedServiceBilling = TaskProgress.NotApplicable,
             DataProcessingInformation = TaskProgress.Completed,
@@ -929,7 +870,7 @@ public class OrderTaskListTests
 
         var model = new OrderTaskList(order);
 
-        model.Should().BeEquivalentTo(expectedModel);
+        model.Should().BeEquivalentTo(expected);
     }
 
     [Theory]
@@ -967,14 +908,8 @@ public class OrderTaskListTests
         order.OrderItems.Add(solutionOrderItem);
         order.OrderItems.Add(additionalServiceOrderItem);
 
-        var expectedModel = new OrderTaskList
+        var expected = new SectionTwoCompleted
         {
-            DescriptionStatus = TaskProgress.Completed,
-            OrderingPartyStatus = TaskProgress.Completed,
-            SupplierStatus = TaskProgress.Completed,
-            CommencementDateStatus = TaskProgress.Completed,
-            SolutionOrService = TaskProgress.Completed,
-            DeliveryDates = TaskProgress.Completed,
             FundingSource = TaskProgress.InProgress,
             ImplementationPlan = TaskProgress.InProgress,
             AssociatedServiceBilling = TaskProgress.NotApplicable,
@@ -983,7 +918,7 @@ public class OrderTaskListTests
 
         var model = new OrderTaskList(order);
 
-        model.Should().BeEquivalentTo(expectedModel);
+        model.Should().BeEquivalentTo(expected);
     }
 
     [Theory]
@@ -995,6 +930,7 @@ public class OrderTaskListTests
         Contact supplierContact,
         DateTime commencementDate,
         OrderItem orderItem,
+        EntityFramework.Catalogue.Models.Framework framework,
         Solution solution)
     {
         var order = new EntityFramework.Ordering.Models.Order
@@ -1004,6 +940,7 @@ public class OrderTaskListTests
             Supplier = supplier,
             SupplierContact = supplierContact,
             CommencementDate = commencementDate,
+            SelectedFramework = framework,
             ContractFlags = new()
             {
                 UseDefaultImplementationPlan = true,
@@ -1016,15 +953,8 @@ public class OrderTaskListTests
         orderItem.CatalogueItem = solution.CatalogueItem;
         order.OrderItems.Add(orderItem);
 
-        var expectedModel = new OrderTaskList
+        var expected = new SectionTwoCompleted
         {
-            DescriptionStatus = TaskProgress.Completed,
-            OrderingPartyStatus = TaskProgress.Completed,
-            SupplierStatus = TaskProgress.Completed,
-            CommencementDateStatus = TaskProgress.Completed,
-            SolutionOrService = TaskProgress.Completed,
-            FundingSource = TaskProgress.Completed,
-            DeliveryDates = TaskProgress.Completed,
             ImplementationPlan = TaskProgress.Completed,
             AssociatedServiceBilling = TaskProgress.NotApplicable,
             DataProcessingInformation = TaskProgress.Completed,
@@ -1033,6 +963,27 @@ public class OrderTaskListTests
 
         var model = new OrderTaskList(order);
 
-        model.Should().BeEquivalentTo(expectedModel);
+        model.Should().BeEquivalentTo(expected);
+    }
+
+    private class SectionOneCompleted : OrderTaskList
+    {
+        public SectionOneCompleted()
+        {
+            DescriptionStatus = TaskProgress.Completed;
+            OrderingPartyStatus = TaskProgress.Completed;
+            SupplierStatus = TaskProgress.Completed;
+            CommencementDateStatus = TaskProgress.Completed;
+        }
+    }
+
+    private class SectionTwoCompleted : SectionOneCompleted
+    {
+        public SectionTwoCompleted()
+        {
+            SolutionOrService = TaskProgress.Completed;
+            FundingSource = TaskProgress.Completed;
+            DeliveryDates = TaskProgress.Completed;
+        }
     }
 }

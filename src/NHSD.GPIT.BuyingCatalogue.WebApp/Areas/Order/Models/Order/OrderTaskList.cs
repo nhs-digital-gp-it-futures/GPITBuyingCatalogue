@@ -4,7 +4,7 @@ using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Enums;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.Order
 {
-    public struct OrderTaskList
+    public class OrderTaskList
     {
         public OrderTaskList()
         {
@@ -80,6 +80,35 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.Order
                 && x.AllQuantitiesEntered);
         }
 
+        private static bool AllDeliveryDatesEntered(EntityFramework.Ordering.Models.Order order)
+        {
+            var recipients = order.OrderItems
+                .SelectMany(x => x.OrderItemRecipients)
+                .ToList();
+
+            return recipients.Any()
+                && recipients.All(x => x.DeliveryDate != null);
+        }
+
+        private static bool AnyDeliveryDatesEntered(EntityFramework.Ordering.Models.Order order)
+        {
+            return order.OrderItems
+                .SelectMany(x => x.OrderItemRecipients)
+                .Any(x => x.DeliveryDate != null);
+        }
+
+        private static bool AllFundingSourcesEntered(EntityFramework.Ordering.Models.Order order)
+        {
+            return order.SelectedFramework != null
+                && order.OrderItems.Any()
+                && order.OrderItems.All(x => x.OrderItemFunding != null);
+        }
+
+        private static bool AnyFundingSourcesEntered(EntityFramework.Ordering.Models.Order order)
+        {
+            return order.OrderItems.Any(x => x.OrderItemFunding != null);
+        }
+
         private void SetStatusFlags(EntityFramework.Ordering.Models.Order order)
         {
             SetSectionOneStatus(order);
@@ -123,45 +152,23 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.Order
             else
                 SolutionOrService = TaskProgress.Completed;
 
-            if (!SolutionsSelected(order) || !SomeSolutionsCompleted(order))
-                FundingSource = TaskProgress.CannotStart;
-            else if (order.SelectedFramework == null && order.OrderItems.All(oi => oi.OrderItemFunding == null))
-                FundingSource = TaskProgress.NotStarted;
-            else if (order.SelectedFramework != null && order.OrderItems.Any(oi => oi.OrderItemFunding == null))
-                FundingSource = TaskProgress.InProgress;
-            else
-                FundingSource = TaskProgress.Completed;
-        }
-
-        private void SetSectionThreeStatus(EntityFramework.Ordering.Models.Order order)
-        {
-            var allDeliveryDatesEntered = order.OrderItems
-                .SelectMany(x => x.OrderItemRecipients)
-                .All(x => x.DeliveryDate != null);
-
-            var anyDeliveryDatesEntered = order.OrderItems
-                .SelectMany(x => x.OrderItemRecipients)
-                .Any(x => x.DeliveryDate != null);
-
-            // Planned Delivery Dates
             if (SolutionOrService is TaskProgress.Completed
-                || anyDeliveryDatesEntered)
+                || AnyDeliveryDatesEntered(order))
             {
-                DeliveryDates = allDeliveryDatesEntered
+                DeliveryDates = AllDeliveryDatesEntered(order)
                     ? TaskProgress.Completed
-                    : (anyDeliveryDatesEntered ? TaskProgress.InProgress : TaskProgress.NotStarted);
+                    : (AnyDeliveryDatesEntered(order) ? TaskProgress.InProgress : TaskProgress.NotStarted);
             }
 
-            FundingSource = DeliveryDates switch
+            if (DeliveryDates != TaskProgress.Completed
+                && !AnyFundingSourcesEntered(order))
             {
-                TaskProgress.CannotStart => TaskProgress.CannotStart,
-                TaskProgress.NotStarted => TaskProgress.CannotStart,
-                TaskProgress.InProgress when order.OrderItems.All(oi => oi.OrderItemFunding == null) => TaskProgress.CannotStart,
-                TaskProgress.Completed when order.OrderItems.All(oi => oi.OrderItemFunding != null) => TaskProgress.Completed,
-                _ => order.OrderItems.Any(oi => oi.OrderItemFunding != null)
-                    ? TaskProgress.InProgress
-                    : TaskProgress.NotStarted,
-            };
+                return;
+            }
+
+            FundingSource = AllFundingSourcesEntered(order)
+                ? TaskProgress.Completed
+                : (AnyFundingSourcesEntered(order) ? TaskProgress.InProgress : TaskProgress.NotStarted);
         }
 
         private void SetSectionThreeStatus(EntityFramework.Ordering.Models.Order order)
@@ -180,47 +187,46 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.Order
             }
 
             // Associated Services Billing
-            if ((SolutionOrService == TaskProgress.InProgress
-                    || ImplementationPlan == TaskProgress.InProgress)
-                && (order.ContractFlags?.HasSpecificRequirements != null
-                    || order.ContractFlags?.UseDefaultBilling != null))
-            {
-                AssociatedServiceBilling = TaskProgress.InProgress;
-            }
-            else if (SolutionOrService != TaskProgress.Completed)
-            {
-                AssociatedServiceBilling = TaskProgress.CannotStart;
-            }
-            else if (!HasAssociatedServices(order))
+            if (!HasAssociatedServices(order))
             {
                 AssociatedServiceBilling = TaskProgress.NotApplicable;
             }
-            else if (ImplementationPlan != TaskProgress.Completed)
-            {
-                AssociatedServiceBilling = TaskProgress.CannotStart;
-            }
             else
             {
-                AssociatedServiceBilling = order.ContractFlags?.HasSpecificRequirements switch
+                if ((FundingSource == TaskProgress.InProgress || ImplementationPlan == TaskProgress.InProgress)
+                    && (order.ContractFlags?.HasSpecificRequirements != null || order.ContractFlags?.UseDefaultBilling != null))
                 {
-                    null when order.ContractFlags?.UseDefaultBilling is null => TaskProgress.NotStarted,
-                    null => TaskProgress.InProgress,
-                    _ => TaskProgress.Completed,
-                };
+                    AssociatedServiceBilling = TaskProgress.InProgress;
+                }
+                else if (FundingSource != TaskProgress.Completed)
+                {
+                    AssociatedServiceBilling = TaskProgress.CannotStart;
+                }
+                else if (ImplementationPlan != TaskProgress.Completed)
+                {
+                    AssociatedServiceBilling = TaskProgress.CannotStart;
+                }
+                else
+                {
+                    AssociatedServiceBilling = order.ContractFlags?.HasSpecificRequirements switch
+                    {
+                        null when order.ContractFlags?.UseDefaultBilling is null => TaskProgress.NotStarted,
+                        null => TaskProgress.InProgress,
+                        _ => TaskProgress.Completed,
+                    };
+                }
             }
 
             // Data Processing
             if ((FundingSource is not TaskProgress.Completed
-                    || (AssociatedServiceBilling is not TaskProgress.Completed
-                        && AssociatedServiceBilling is not TaskProgress.NotApplicable))
+                    || (AssociatedServiceBilling is not TaskProgress.Completed && AssociatedServiceBilling is not TaskProgress.NotApplicable))
                 && order.ContractFlags?.UseDefaultDataProcessing != null)
             {
                 DataProcessingInformation = TaskProgress.InProgress;
             }
             else
             if ((AssociatedServiceBilling is TaskProgress.Completed)
-                || (AssociatedServiceBilling is TaskProgress.NotApplicable
-                    && ImplementationPlan is TaskProgress.Completed))
+                || (AssociatedServiceBilling is TaskProgress.NotApplicable && ImplementationPlan is TaskProgress.Completed))
             {
                 DataProcessingInformation = order.ContractFlags?.UseDefaultDataProcessing != null
                     ? TaskProgress.Completed

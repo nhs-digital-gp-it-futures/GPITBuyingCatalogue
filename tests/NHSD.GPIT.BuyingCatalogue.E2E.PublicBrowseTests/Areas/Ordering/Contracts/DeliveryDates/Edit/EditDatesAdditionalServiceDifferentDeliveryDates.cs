@@ -8,7 +8,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering.Contracts.DeliveryDa
 {
     public class EditDatesAdditionalServiceDifferentDeliveryDates : EditDates
     {
-        private const int OrderId = 90021;
+        private const int OrderId = 90023;
         private const string InternalOrgId = "CG-03F";
         private const string ItemName = "E2E Multiple Prices Additional Service";
         private const string ItemType = "Additional Service";

@@ -8,7 +8,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering.Contracts.DeliveryDa
 {
     public class EditDatesCatalogueSolutionSameDeliveryDates : EditDates
     {
-        private const int OrderId = 90020;
+        private const int OrderId = 90022;
         private const string InternalOrgId = "CG-03F";
         private const string ItemName = "E2E With Contact Multiple Prices";
         private const string ItemType = "Catalogue Solution";
