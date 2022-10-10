@@ -80,5 +80,23 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Contracts
 
             await dbContext.SaveChangesAsync();
         }
+
+        public async Task ResetDeliveryDates(int orderId, DateTime commencementDate)
+        {
+            var order = await dbContext.Orders.FirstAsync(x => x.Id == orderId);
+
+            if (order.DeliveryDate < commencementDate)
+            {
+                order.DeliveryDate = null;
+            }
+
+            var recipients = await dbContext.OrderItemRecipients
+                .Where(x => x.OrderId == orderId && x.DeliveryDate < commencementDate)
+                .ToListAsync();
+
+            recipients.ForEach(x => x.DeliveryDate = null);
+
+            await dbContext.SaveChangesAsync();
+        }
     }
 }

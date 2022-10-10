@@ -3,6 +3,9 @@
 @model NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.Contracts.DeliveryDates.EditDatesModel
 @{
     ViewBag.Title = $"Planned delivery dates for {Model.CatalogueItemType.Name()}";
+    var deliveryDate = Model.DeliveryDate.HasValue
+        ? $"{Model.DeliveryDate:dd MMMM yyyy}"
+        : "No date entered";
 }
 
 <partial name="Partials/_BackLink" model="Model" />
@@ -15,28 +18,25 @@
                         caption="@Model.Description"
                         advice="Make sure the correct planned delivery dates have been applied for each of your Service Recipients." />
                         
-        @if (Model.DeliveryDate != null)
-        {
-            <p>
-                <strong>Planned delivery date for the majority of Service Recipients:</strong>
-                @($"{Model.DeliveryDate:dd MMMM yyyy}")
-                @if (Model.DisplayEditLink)
-                {
-                    var returnUrl = Url.Action(
-                        nameof(DeliveryDatesController.EditDates),
-                        typeof(DeliveryDatesController).ControllerName(),
-                        new { Model.InternalOrgId, Model.CallOffId, Model.CatalogueItemId, Model.Source });
+        <p>
+            <strong>Planned delivery date for the majority of Service Recipients:</strong>
+            @deliveryDate
+            @if (Model.DisplayEditLink)
+            {
+                var returnUrl = Url.Action(
+                    nameof(DeliveryDatesController.EditDates),
+                    typeof(DeliveryDatesController).ControllerName(),
+                    new { Model.InternalOrgId, Model.CallOffId, Model.CatalogueItemId, Model.Source });
 
-                    <span>&nbsp;</span>
-                    <a id="edit-delivery-date-link"
-                       href="@Url.Action(
-                                 nameof(DeliveryDatesController.SelectDate),
-                                 typeof(DeliveryDatesController).ControllerName(),
-                                 new { Model.InternalOrgId, Model.CallOffId, returnUrl })">Edit</a>
-                }
-            </p>
-            <hr/>
-        }
+                <span>&nbsp;</span>
+                <a id="edit-delivery-date-link"
+                   href="@Url.Action(
+                             nameof(DeliveryDatesController.SelectDate),
+                             typeof(DeliveryDatesController).ControllerName(),
+                             new { Model.InternalOrgId, Model.CallOffId, returnUrl })">Edit</a>
+            }
+        </p>
+        <hr/>
 
         <form method="post">
             <input type="hidden" asp-for="@Model.BackLink" />

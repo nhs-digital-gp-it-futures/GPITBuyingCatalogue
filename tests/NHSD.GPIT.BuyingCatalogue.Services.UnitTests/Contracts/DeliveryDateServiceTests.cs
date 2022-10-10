@@ -150,5 +150,60 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Contracts
 
             orderItem.OrderItemRecipients.ForEach(x => x.DeliveryDate.Should().Be(initialDate));
         }
+
+        [Theory]
+        [InMemoryDbAutoData]
+        public static async Task ResetDeliveryDates_AllRecipientsAffected_UpdatesDatabase(
+            Order order,
+            [Frozen] BuyingCatalogueDbContext context,
+            DeliveryDateService service)
+        {
+            order.DeliveryDate = DateTime.Today;
+            order.OrderItems.ForEach(x => x.OrderItemRecipients.ForEach(r => r.DeliveryDate = DateTime.Today));
+
+            context.Orders.Add(order);
+
+            await context.SaveChangesAsync();
+
+            var dbOrder = await context.Orders.FirstAsync(x => x.Id == order.Id);
+
+            dbOrder.DeliveryDate.Should().Be(DateTime.Today);
+            dbOrder.OrderItems.ForEach(x => x.OrderItemRecipients.ForEach(r => r.DeliveryDate.Should().Be(DateTime.Today)));
+
+            await service.ResetDeliveryDates(order.Id, DateTime.Today.AddDays(1));
+
+            dbOrder.DeliveryDate.Should().BeNull();
+            dbOrder.OrderItems.ForEach(x => x.OrderItemRecipients.ForEach(r => r.DeliveryDate.Should().BeNull()));
+        }
+
+        [Theory]
+        [InMemoryDbAutoData]
+        public static async Task ResetDeliveryDates_SomeRecipientsAffected_UpdatesDatabase(
+            Order order,
+            [Frozen] BuyingCatalogueDbContext context,
+            DeliveryDateService service)
+        {
+            order.DeliveryDate = DateTime.Today;
+            order.OrderItems.ForEach(x => x.OrderItemRecipients.ForEach(r => r.DeliveryDate = DateTime.Today));
+            order.OrderItems.First().OrderItemRecipients.ForEach(x => x.DeliveryDate = DateTime.Today.AddDays(1));
+
+            context.Orders.Add(order);
+
+            await context.SaveChangesAsync();
+
+            var dbOrder = await context.Orders.FirstAsync(x => x.Id == order.Id);
+
+            dbOrder.DeliveryDate.Should().Be(DateTime.Today);
+            dbOrder.OrderItems.ElementAt(0).OrderItemRecipients.ForEach(x => x.DeliveryDate.Should().Be(DateTime.Today.AddDays(1)));
+            dbOrder.OrderItems.ElementAt(1).OrderItemRecipients.ForEach(x => x.DeliveryDate.Should().Be(DateTime.Today));
+            dbOrder.OrderItems.ElementAt(2).OrderItemRecipients.ForEach(x => x.DeliveryDate.Should().Be(DateTime.Today));
+
+            await service.ResetDeliveryDates(order.Id, DateTime.Today.AddDays(1));
+
+            dbOrder.DeliveryDate.Should().BeNull();
+            dbOrder.OrderItems.ElementAt(0).OrderItemRecipients.ForEach(x => x.DeliveryDate.Should().Be(DateTime.Today.AddDays(1)));
+            dbOrder.OrderItems.ElementAt(1).OrderItemRecipients.ForEach(x => x.DeliveryDate.Should().BeNull());
+            dbOrder.OrderItems.ElementAt(2).OrderItemRecipients.ForEach(x => x.DeliveryDate.Should().BeNull());
+        }
     }
 }
