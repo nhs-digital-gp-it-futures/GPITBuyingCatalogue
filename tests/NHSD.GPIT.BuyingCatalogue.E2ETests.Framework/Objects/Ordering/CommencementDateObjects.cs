@@ -25,5 +25,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.Objects.Ordering
         public static By MaximumTermInput => By.Id("MaximumTerm");
 
         public static By MaximumTermError => By.Id("MaximumTerm-error");
+
+        public static By TimescalesForCallOffLink => By.LinkText("Timescales for Call-off Agreement");
     }
 }
