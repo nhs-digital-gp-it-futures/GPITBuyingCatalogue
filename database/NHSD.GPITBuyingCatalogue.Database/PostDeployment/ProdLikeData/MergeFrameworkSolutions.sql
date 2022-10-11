@@ -19,9 +19,8 @@ BEGIN
     INSERT INTO #FrameworkSolutions (FrameworkId, SolutionId, IsFoundation, LastUpdated, LastUpdatedBy) 
          VALUES (N'NHSDGP001', N'10000-001', 1, CAST(N'2020-03-25T07:30:18.1133333' AS datetime2), @bobUser),
                 (N'NHSDGP001', N'10000-002', 0, CAST(N'2020-04-06T10:50:03.2166667' AS datetime2), @bobUser),
-                (N'NHSDGP001', N'10000-054', 0, CAST(N'2020-04-03T12:25:59.0566667' AS datetime2), @bobUser),
-                (N'NHSDGP001', N'10000-062', 0, CAST(N'2020-04-06T10:53:50.6266667' AS datetime2), @bobUser),
-                (N'DFOCVC001', N'10000-062', 0, CAST(N'2020-04-06T10:53:50.6266667' AS datetime2), @bobUser),
+                (N'DFOCVC001', N'10000-054', 0, CAST(N'2020-04-03T12:25:59.0566667' AS datetime2), @bobUser),
+                (N'NHSDGP001', N'10000-062', 0, CAST(N'2020-04-06T10:53:50.6266667' AS datetime2), @bobUser),                
                 (N'NHSDGP001', N'10004-001', 0, CAST(N'2020-03-26T12:13:20.0866667' AS datetime2), @bobUser),
                 (N'NHSDGP001', N'10004-002', 0, CAST(N'2020-03-30T13:14:43.1666667' AS datetime2), @bobUser),
                 (N'NHSDGP001', N'10007-002', 0, CAST(N'2020-03-25T11:40:44.2900000' AS datetime2), @bobUser),

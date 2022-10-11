@@ -12,10 +12,9 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
         private const string InternalOrgId = "CG-03F";
 
         private const string SupplierName = "EMIS Health";
-        private const string SupplierNameForLocalFundingOnly = "AccuRx Limited";
         private const string SolutionName = "Anywhere Consult";
         private const string SolutionWithMultipleFrameworks = "Video Consult";
-        private const string SolutionForLocalfundingonly = "AccuRx";
+        private const string SolutionForLocalfundingonly = "Online and Video Consult";
         private const string AssociatedServiceName = "Anywhere Consult – Integrated Device";
         private const string AdditionalServiceName = "Automated Arrivals";
         private const string NewSolutionName = "Emis Web GP";
@@ -69,7 +68,7 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
 
             OrderingPages.StartOrder.ReadyToStart();
 
-            OrderingPages.StepOnePrepareOrder(SupplierNameForLocalFundingOnly, orderDescription, false, OrderTriageValue.Under40K);
+            OrderingPages.StepOnePrepareOrder(SupplierName, orderDescription, false, OrderTriageValue.Under40K);
 
             OrderingPages.StepTwoAddSolutionsAndServices(SolutionForLocalfundingonly);
 
