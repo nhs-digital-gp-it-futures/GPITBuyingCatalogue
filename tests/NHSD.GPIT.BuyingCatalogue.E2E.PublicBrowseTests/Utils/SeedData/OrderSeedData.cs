@@ -1046,6 +1046,8 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
                     Phone = "123456789",
                 },
                 CommencementDate = timeNow.AddDays(2).Date,
+                InitialPeriod = 3,
+                MaximumTerm = 12,
                 DeliveryDate = timeNow.AddDays(3).Date,
             };
 
