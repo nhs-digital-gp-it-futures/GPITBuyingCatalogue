@@ -30,16 +30,16 @@
             You've made the following changes to your order:
         </p>
 
+        <h4>Removed:</h4>
+        <ul>
+            <li>@($"{Model.CurrentDate:dd MMMM yyyy}")</li>
+        </ul>
+
         <h4>Added:</h4>
         <ul>
             <li>@($"{Model.NewDate:dd MMMM yyyy}")</li>
         </ul>
 
-        <h4>Removed:</h4>
-        <ul>
-            <li>@($"{Model.CurrentDate:dd MMMM yyyy}")</li>
-        </ul>
-        
         <nhs-inset-text>
             <p>This will affect @($"{Model.AffectedPlannedDeliveryDates:N0}") of the @($"{Model.TotalPlannedDeliveryDates:N0}") planned delivery dates you've already entered.</p>
         </nhs-inset-text>

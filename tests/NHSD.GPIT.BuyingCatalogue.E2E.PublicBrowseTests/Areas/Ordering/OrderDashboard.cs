@@ -8,6 +8,7 @@ using NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.TestBases;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers;
+using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers.Contracts;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers.FundingSource;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers.SolutionSelection;
 using Xunit;
@@ -73,6 +74,10 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering
                 .BeTrue();
 
             CommonActions.ElementIsDisplayed(Objects.Ordering.OrderDashboard.SolutionsAndServices)
+                .Should()
+                .BeTrue();
+
+            CommonActions.ElementIsDisplayed(Objects.Ordering.OrderDashboard.PlannedDeliveryDates)
                 .Should()
                 .BeTrue();
 
@@ -175,6 +180,46 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering
             CommonActions.PageLoadedCorrectGetIndex(
                 typeof(ReviewSolutionsController),
                 nameof(ReviewSolutionsController.ReviewSolutions)).Should().BeTrue();
+        }
+
+        [Fact]
+        public void OrderDashboard_ClickDeliveryDates_NoDeliveryDatesEntered_ExpectedResult()
+        {
+            var callOffId = new CallOffId(90005, 1);
+
+            var parameters = new Dictionary<string, string>
+            {
+                { nameof(InternalOrgId), InternalOrgId },
+                { nameof(CallOffId), $"{callOffId}" },
+            };
+
+            NavigateToUrl(typeof(OrderController), nameof(OrderController.Order), parameters);
+
+            CommonActions.ClickLinkElement(Objects.Ordering.OrderDashboard.PlannedDeliveryDates);
+
+            CommonActions.PageLoadedCorrectGetIndex(
+                typeof(DeliveryDatesController),
+                nameof(DeliveryDatesController.SelectDate)).Should().BeTrue();
+        }
+
+        [Fact]
+        public void OrderDashboard_ClickDeliveryDates_DeliveryDatesEntered_ExpectedResult()
+        {
+            var callOffId = new CallOffId(90020, 1);
+
+            var parameters = new Dictionary<string, string>
+            {
+                { nameof(InternalOrgId), InternalOrgId },
+                { nameof(CallOffId), $"{callOffId}" },
+            };
+
+            NavigateToUrl(typeof(OrderController), nameof(OrderController.Order), parameters);
+
+            CommonActions.ClickLinkElement(Objects.Ordering.OrderDashboard.PlannedDeliveryDates);
+
+            CommonActions.PageLoadedCorrectGetIndex(
+                typeof(DeliveryDatesController),
+                nameof(DeliveryDatesController.Review)).Should().BeTrue();
         }
 
         [Fact]
