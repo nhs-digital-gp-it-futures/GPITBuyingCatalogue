@@ -1,4 +1,5 @@
-﻿using NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.Actions.Common;
+﻿using Microsoft.EntityFrameworkCore;
+using NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.Actions.Common;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering.Dashboard;
 using NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering.StepOne;
@@ -201,8 +202,16 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering
             }
             else
             {
-                TaskList.SelectFundingSourcesTask();
-                SelectFundingSources.AddFundingSources(solutionName, isAssociatedServiceOnlyOrder, associatedServices, additionalServices);
+                var isLocalFundingOnly = IsLocalFundingOnly();
+                if (isLocalFundingOnly)
+                {
+                    TaskList.SelectLocalFundingSourcesTask();
+                }
+                else
+                {
+                    TaskList.SelectFundingSourcesTask();
+                    SelectFundingSources.AddFundingSources(solutionName, isAssociatedServiceOnlyOrder, associatedServices, additionalServices);
+                }
             }
         }
 
@@ -518,11 +527,30 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering
             using var dbContext = Factory.DbContext;
             var orderID = Driver.Url.Split('/').Last().Split('-')[0].Replace("C0", string.Empty);
 
-            return dbContext.OrderItems
-               .Where(oi => string.Equals(oi.OrderId.ToString(), orderID))
-               .SelectMany(oi => oi.CatalogueItem.Solution.FrameworkSolutions.Select(fs => fs.Framework))
-               .Count() > 1;
-            
+
+            var frameworks = dbContext.OrderItems
+             .Where(oi => string.Equals(oi.OrderId.ToString(), orderID))
+             .SelectMany(oi => oi.CatalogueItem.Solution.FrameworkSolutions.Select(fs => fs.Framework)).ToList();
+
+            return frameworks.Count() > 1;
+        }
+
+        private bool IsLocalFundingOnly()
+        {
+            using var dbContext = Factory.DbContext;
+            var orderID = Driver.Url.Split('/').Last().Split('-')[0].Replace("C0", string.Empty);
+
+            var frameworks = dbContext.OrderItems
+             .Where(oi => string.Equals(oi.OrderId.ToString(), orderID))
+             .SelectMany(oi => oi.CatalogueItem.Solution.FrameworkSolutions.Select(fs => fs.Framework)).ToList();
+
+            if (frameworks.Count == 0 || frameworks.Count > 1)
+            {
+                return false;
+            }
+
+            var framework = frameworks.FirstOrDefault();
+            return framework.LocalFundingOnly;
         }
 
         private bool HasAdditionalService(string solutionName)

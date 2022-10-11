@@ -128,6 +128,22 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering.Dashboard
                     .Should().BeTrue();
         }
 
+        public void SelectLocalFundingSourcesTask()
+        {
+            CommonActions.ClickLinkElement(FundingSources.SelectFundingSourcesLink);
+
+            CommonActions.PageLoadedCorrectGetIndex(
+                typeof(FundingSourceController),
+                nameof(FundingSourceController.FundingSources))
+                    .Should().BeTrue();
+
+            CommonActions.ClickSave();
+
+            CommonActions.PageLoadedCorrectGetIndex(
+              typeof(OrderController),
+              nameof(OrderController.Order)).Should().BeTrue();
+        }
+
         public void ImplementationPlanMilestonesTask()
         {
             CommonActions.ClickLinkElement(ImplementationPlanObjects.ImplementationPlanMilestonesLink);
