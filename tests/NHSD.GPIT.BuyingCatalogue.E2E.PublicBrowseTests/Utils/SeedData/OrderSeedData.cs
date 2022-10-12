@@ -43,6 +43,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
             AddOrderReadyToComplete(context);
             AddCompletedOrder(context, 90010, GetOrganisationId(context));
             AddCompletedOrder(context, 90011, GetOrganisationId(context, "CG-15F"));
+            AddCompletedOrder(context, 90022, GetOrganisationId(context), true);
         }
 
         private static void AddOrderAtDescriptionStage(BuyingCatalogueDbContext context)
@@ -1438,7 +1439,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
             context.SaveChangesAs(user.Id);
         }
 
-        private static void AddCompletedOrder(BuyingCatalogueDbContext context, int orderId, int organisationId)
+        private static void AddCompletedOrder(BuyingCatalogueDbContext context, int orderId, int organisationId, bool isAccountManager = false)
         {
             var timeNow = DateTime.UtcNow;
 
@@ -1468,7 +1469,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
                 CommencementDate = timeNow.AddDays(1),
             };
 
-            var user = GetBuyerUser(context, order.OrderingPartyId);
+            var user = isAccountManager ? GetAccountManagerUser(context, order.OrderingPartyId) : GetBuyerUser(context, order.OrderingPartyId);
 
             var price = context.CatalogueItems
                 .Where(c => c.Id == new CatalogueItemId(99998, "001"))
@@ -1521,10 +1522,20 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
 
         private static AspNetUser GetBuyerUser(BuyingCatalogueDbContext context, int organisationId)
         {
+            return GetUser(context, organisationId, OrganisationFunction.Buyer.Name);
+        }
+
+        private static AspNetUser GetAccountManagerUser(BuyingCatalogueDbContext context, int organisationId)
+        {
+            return GetUser(context, organisationId, OrganisationFunction.AccountManager.Name);
+        }
+
+        private static AspNetUser GetUser(BuyingCatalogueDbContext context, int organisationId, string role)
+        {
             var users = context.Users.Include(u => u.AspNetUserRoles).ThenInclude(r => r.Role).Where(u => u.PrimaryOrganisationId == organisationId);
 
             var user = users.FirstOrDefault(
-                u => u.AspNetUserRoles.Any(r => r.Role.Name == OrganisationFunction.Buyer.Name));
+                u => u.AspNetUserRoles.Any(r => r.Role.Name == role));
 
             return user;
         }

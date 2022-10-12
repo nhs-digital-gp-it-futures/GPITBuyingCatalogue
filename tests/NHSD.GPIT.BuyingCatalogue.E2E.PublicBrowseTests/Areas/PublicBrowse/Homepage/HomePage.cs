@@ -145,6 +145,27 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.PublicBrowse.Homepage
         }
 
         [Fact]
+        public void HomePage_AccountManager_ClickManageOrders_ExpectedResult()
+        {
+            RunTest(() =>
+            {
+                NavigateToUrl(
+                    typeof(AccountController),
+                    nameof(AccountController.Login));
+
+                AccountManagerLogin();
+
+                CommonActions.ClickLinkElement(Objects.Home.HomeSelectors.ManageOrdersLink);
+
+                CommonActions.PageLoadedCorrectGetIndex(
+                        typeof(DashboardController),
+                        nameof(DashboardController.Organisation))
+                    .Should()
+                    .BeTrue();
+            });
+        }
+
+        [Fact]
         public void HomePage_Authority_ClickManageOrders_ExpectedResult()
         {
             RunTest(() =>
@@ -188,6 +209,32 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.PublicBrowse.Homepage
                 nameof(HomeController.NotAuthorized))
                 .Should()
                 .BeTrue();
+
+                CommonActions.PageTitle().Should().Be("You're not logged in as an admin".FormatForComparison());
+                CommonActions.LedeText().Should().Be("Only users with an admin account can access this section of the Buying Catalogue.".FormatForComparison());
+            });
+        }
+
+        [Fact]
+        public void HomePage_AccountManager_AdminDashboard_ExpectedResult()
+        {
+            RunTest(() =>
+            {
+                NavigateToUrl(
+                    typeof(AccountController),
+                    nameof(AccountController.Login));
+
+                AccountManagerLogin();
+
+                NavigateToUrl(
+                    typeof(WebApp.Areas.Admin.Controllers.HomeController),
+                    nameof(WebApp.Areas.Admin.Controllers.HomeController.Index));
+
+                CommonActions.PageLoadedCorrectGetIndex(
+                        typeof(HomeController),
+                        nameof(HomeController.NotAuthorized))
+                    .Should()
+                    .BeTrue();
 
                 CommonActions.PageTitle().Should().Be("You're not logged in as an admin".FormatForComparison());
                 CommonActions.LedeText().Should().Be("Only users with an admin account can access this section of the Buying Catalogue.".FormatForComparison());

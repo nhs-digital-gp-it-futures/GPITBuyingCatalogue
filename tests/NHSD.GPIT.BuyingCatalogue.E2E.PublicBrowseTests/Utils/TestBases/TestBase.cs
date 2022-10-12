@@ -147,6 +147,15 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.TestBases
             AuthorizationPages.LoginActions.Login(user, DefaultPassword);
         }
 
+        internal void AccountManagerLogin()
+        {
+            if (UserAlreadyLoggedIn() || !AuthorizationPages.LoginActions.EmailAddressInputDisplayed())
+                return;
+
+            var user = GetAccountManager().UserName;
+            AuthorizationPages.LoginActions.Login(user, DefaultPassword);
+        }
+
         internal void BuyerLogin(string buyerEmail)
         {
             if (UserAlreadyLoggedIn() || !AuthorizationPages.LoginActions.EmailAddressInputDisplayed())
@@ -160,6 +169,9 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.TestBases
 
         internal AspNetUser GetAdmin()
             => GetUserByRole(OrganisationFunction.Authority.Name).First();
+
+        internal AspNetUser GetAccountManager()
+            => GetUserByRole(OrganisationFunction.AccountManager.Name).First();
 
         internal IEnumerable<AspNetUser> GetUserByRole(string role)
         {

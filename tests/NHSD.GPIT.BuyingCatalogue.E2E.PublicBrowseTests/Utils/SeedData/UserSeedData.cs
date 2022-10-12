@@ -16,6 +16,8 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
         internal const int BobId = 2;
         internal const int SueId = 3;
         internal const int AliceId = 4;
+        internal const int DaveId = 5;
+
 
         private const string TestPassword = "Th1sIsP4ssword!";
 
@@ -29,6 +31,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
         {
             var buyerRole = context.Roles.First(r => r.Name == OrganisationFunction.Buyer.Name);
             var adminRole = context.Roles.First(r => r.Name == OrganisationFunction.Authority.Name);
+            var accountManagerRole = context.Roles.First(r => r.Name == OrganisationFunction.AccountManager.Name);
 
             var bobOrganisation = new Organisation
             {
@@ -371,6 +374,29 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
             buyProxyUser.PasswordHash = new PasswordHasher<AspNetUser>().HashPassword(buyProxyUser, TestPassword);
 
             context.Add(buyProxyUser);
+
+            var accountManagerUser = new AspNetUser
+            {
+                Id = DaveId,
+                Email = "DaveSmith@email.com",
+                NormalizedEmail = "DAVESMITH@EMAIL.COM",
+                UserName = "DaveSmith@email.com",
+                NormalizedUserName = "DAVESMITH@EMAIL.COM",
+                Disabled = false,
+                FirstName = "Dave",
+                LastName = "Smith",
+                EmailConfirmed = true,
+                CatalogueAgreementSigned = true,
+                PrimaryOrganisation = sueOrganisation,
+                PrimaryOrganisationId = sueOrganisation.Id,
+                SecurityStamp = Guid.NewGuid().ToString(),
+                HasOptedInUserResearch = false,
+                AcceptedTermsOfUseDate = DateTime.UtcNow,
+            };
+            accountManagerUser.AspNetUserRoles.Add(new AspNetUserRole() { Role = accountManagerRole });
+            accountManagerUser.PasswordHash = new PasswordHasher<AspNetUser>().HashPassword(accountManagerUser, TestPassword);
+
+            context.Add(accountManagerUser);
         }
     }
 }
