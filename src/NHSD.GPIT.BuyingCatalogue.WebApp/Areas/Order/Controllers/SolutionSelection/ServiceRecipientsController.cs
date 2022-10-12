@@ -40,7 +40,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers.SolutionSelec
             CallOffId callOffId,
             CatalogueItemId catalogueItemId,
             SelectionMode? selectionMode = null,
-            RoutingSource? source = null)
+            RoutingSource? source = null,
+            string[] importedRecipients = null)
         {
             var order = await orderService.GetOrderWithOrderItems(callOffId, internalOrgId);
             var orderItem = order.OrderItem(catalogueItemId);
@@ -51,7 +52,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers.SolutionSelec
                 order,
                 new RouteValues(internalOrgId, callOffId, catalogueItemId) { Source = source, });
 
-            var model = new SelectRecipientsModel(orderItem, serviceRecipients, selectionMode)
+            var model = new SelectRecipientsModel(orderItem, serviceRecipients, selectionMode, importedRecipients)
             {
                 BackLink = Url.Action(route.ActionName, route.ControllerName, route.RouteValues),
                 InternalOrgId = internalOrgId,
@@ -103,7 +104,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers.SolutionSelec
             CallOffId callOffId,
             CatalogueItemId catalogueItemId,
             SelectionMode? selectionMode = null,
-            RoutingSource? source = null)
+            RoutingSource? source = null,
+            string[] importedRecipients = null)
         {
             var order = await orderService.GetOrderWithOrderItems(callOffId, internalOrgId);
             var orderItem = order.OrderItem(catalogueItemId);
@@ -114,7 +116,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers.SolutionSelec
                 order,
                 new RouteValues(internalOrgId, callOffId, catalogueItemId) { Source = source, });
 
-            var model = new SelectRecipientsModel(orderItem, serviceRecipients, selectionMode)
+            var model = new SelectRecipientsModel(orderItem, serviceRecipients, selectionMode, importedRecipients)
             {
                 BackLink = Url.Action(route.ActionName, route.ControllerName, route.RouteValues),
                 InternalOrgId = internalOrgId,

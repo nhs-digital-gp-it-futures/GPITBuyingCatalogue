@@ -23,7 +23,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.SolutionSelection.
         public SelectRecipientsModel(
             OrderItem orderItem,
             List<ServiceRecipientModel> serviceRecipients,
-            SelectionMode? selectionMode)
+            SelectionMode? selectionMode,
+            string[] importedRecipients = null)
         {
             this.selectionMode = selectionMode;
             ServiceRecipients = serviceRecipients;
@@ -46,7 +47,20 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.SolutionSelection.
                     break;
 
                 case null:
-                    SetSelectionsFromOrderItem(orderItem);
+                    if (importedRecipients?.Length > 0)
+                    {
+                        ServiceRecipients.Where(sr => importedRecipients.Contains(sr.OdsCode))
+                            .ToList()
+                            .ForEach(x => x.Selected = true);
+
+                        SelectionMode = SelectionMode.None;
+                        SelectionCaption = SelectNone;
+                    }
+                    else
+                    {
+                        SetSelectionsFromOrderItem(orderItem);
+                    }
+
                     break;
 
                 default:

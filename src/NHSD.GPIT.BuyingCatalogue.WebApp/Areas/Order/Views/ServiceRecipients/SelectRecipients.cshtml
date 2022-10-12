@@ -1,6 +1,13 @@
 ﻿@using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers.SolutionSelection;
 @using NHSD.GPIT.BuyingCatalogue.EntityFramework.Extensions
 @using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models
+@using NHSD.GPIT.BuyingCatalogue.UI.Components.TagHelpers
+@using NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.Components.ActionLink
+@using NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.Components.NhsSecondaryButton
+@using NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.TagHelpers.Table
+@using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.SolutionSelection.ServiceRecipients
+@using Microsoft.AspNetCore.Mvc.TagHelpers
+@using ValidationSummaryTagHelper = Microsoft.AspNetCore.Mvc.TagHelpers.ValidationSummaryTagHelper
 @model NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.SolutionSelection.ServiceRecipients.SelectRecipientsModel;
 @{
     ViewBag.Title = $"Service Recipients for {Model.ItemType.Name()}";
@@ -8,6 +15,10 @@
     var actionName = Model.IsAdding
         ? nameof(ServiceRecipientsController.AddServiceRecipients)
         : nameof(ServiceRecipientsController.EditServiceRecipients);
+
+    var serviceRecipientsImportMode = Model.IsAdding
+        ? ServiceRecipientImportMode.Add
+        : ServiceRecipientImportMode.Edit;
 }
 
 <partial name="Partials/_BackLink" model="Model" />
@@ -15,14 +26,20 @@
 <div class="nhsuk-grid-row">
     <div class="nhsuk-grid-column-full">
         <nhs-validation-summary />
-        
+
         <nhs-page-title title="@ViewBag.Title"
                         caption="@Model!.ItemName"
-                        advice="Select the organisations you want to receive this @(Model.ItemType.Name())." />
+                        advice="Manually select the organisations you want to receive this @(Model.ItemType.Name()) or import them using a CSV file." />
+
+        <vc:nhs-action-link text="Import Service Recipients"
+                            url="@Url.Action(
+                                     nameof(ImportServiceRecipientsController.Index),
+                                     typeof(ImportServiceRecipientsController).ControllerName(),
+                                     new { Model.InternalOrgId, Model.CallOffId, Model.CatalogueItemId, importMode = serviceRecipientsImportMode })" />
 
         @if (Model.PreSelected && Model.ItemType != CatalogueItemType.Solution)
         {
-            var itemType = Model.AssociatedServicesOnly 
+            var itemType = Model.AssociatedServicesOnly
                 ? "first Associated Service"
                 : "Catalogue Solution";
 
@@ -40,7 +57,7 @@
                                           new { Model.InternalOrgId, Model.CallOffId, Model.CatalogueItemId, Model.SelectionMode })"
                                  text="@Model.SelectionCaption"
                                  type="Secondary" />
-        
+
         <form method="post">
             <input type="hidden" asp-for="@Model.AssociatedServicesOnly" />
             <input type="hidden" asp-for="@Model.BackLink" />
