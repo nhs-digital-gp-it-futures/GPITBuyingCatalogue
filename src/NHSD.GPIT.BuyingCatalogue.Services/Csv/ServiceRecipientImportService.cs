@@ -27,14 +27,6 @@ public class ServiceRecipientImportService : CsvServiceBase, IServiceRecipientIm
         await WriteRecordsAsync<ServiceRecipientImportModel, ServiceRecipientImportModelMap>(stream, recipients);
     }
 
-    /// <summary>
-    /// Reads the Service Recipient data from the specified Stream
-    /// </summary>
-    /// <param name="stream">The <see cref="Stream"/>.</param>
-    /// <returns>
-    /// Null if the file format was invalid.<br/>
-    /// Alternatively, a <see cref="List{T}"/> containing zero or more <see cref="ServiceRecipientImportModel"/>.
-    /// </returns>
     public async Task<IList<ServiceRecipientImportModel>> ReadFromStream(Stream stream)
     {
         using var streamReader = new StreamReader(stream);
