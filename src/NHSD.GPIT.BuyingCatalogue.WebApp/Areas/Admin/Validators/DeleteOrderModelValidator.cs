@@ -12,8 +12,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Validators
         public const string ApprovalDateMonthMissingErrorMessage = "Approval date must include a month";
         public const string ApprovalDateYearMissingErrorMessage = "Approval date must include a year";
         public const string ApprovalDateYearTooShortErrorMessage = "Year must be four numbers";
-        public const string NameOfApproverMissingErrorMessage = "Name of the person approving the delete is required";
-        public const string NameOfRequesterMissingErrorMessage = "Name of the person requesting the delete is required";
+        public const string NameOfApproverMissingErrorMessage = "Enter who approved the deletion";
+        public const string NameOfRequesterMissingErrorMessage = "Enter who requested the deletion";
         public const string ApprovalDateBeforeOrderCreationErrorMessage = "Date must be on or after the date the order was created ({0})";
 
         public DeleteOrderModelValidator()
