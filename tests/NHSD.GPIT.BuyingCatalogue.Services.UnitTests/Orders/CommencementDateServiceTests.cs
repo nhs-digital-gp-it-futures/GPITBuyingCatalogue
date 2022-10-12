@@ -32,8 +32,8 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Orders
             [Frozen] BuyingCatalogueDbContext context,
             Order order,
             DateTime commencementDate,
-            int? initialPeriod,
-            int? maximumTerm,
+            int initialPeriod,
+            int maximumTerm,
             CommencementDateService service)
         {
             context.Orders.Add(order);

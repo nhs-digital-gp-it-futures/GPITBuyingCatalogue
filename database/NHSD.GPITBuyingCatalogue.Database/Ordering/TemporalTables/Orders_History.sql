@@ -23,5 +23,6 @@
     MaximumTerm INT NULL,
     AssociatedServicesOnly BIT NULL, 
     [SolutionId] NVARCHAR(14) NULL,
-    SelectedFrameworkId NVARCHAR(10) NULL
+    SelectedFrameworkId NVARCHAR(10) NULL,
+    DeliveryDate DATE NULL,
 );

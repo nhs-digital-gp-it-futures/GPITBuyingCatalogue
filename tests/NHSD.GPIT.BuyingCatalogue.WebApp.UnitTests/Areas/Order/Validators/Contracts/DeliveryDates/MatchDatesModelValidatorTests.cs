@@ -1,0 +1,40 @@
+﻿using FluentValidation.TestHelper;
+using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.AutoFixtureCustomisations;
+using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.Contracts.DeliveryDates;
+using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Validators.Contracts.DeliveryDates;
+using Xunit;
+
+namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Validators.Contracts.DeliveryDates
+{
+    public static class MatchDatesModelValidatorTests
+    {
+        [Theory]
+        [CommonAutoData]
+        public static void Validate_MatchDatesIsNull_ThrowsValidationError(
+            MatchDatesModel model,
+            MatchDatesModelValidator validator)
+        {
+            model.MatchDates = null;
+
+            var result = validator.TestValidate(model);
+
+            result.ShouldHaveValidationErrorFor(x => x.MatchDates)
+                .WithErrorMessage(MatchDatesModelValidator.NoSelectionMadeErrorMessage);
+        }
+
+        [Theory]
+        [CommonInlineAutoData(true)]
+        [CommonInlineAutoData(false)]
+        public static void Validate_MatchDatesIsNotNull_NoErrors(
+            bool matchDates,
+            MatchDatesModel model,
+            MatchDatesModelValidator validator)
+        {
+            model.MatchDates = matchDates;
+
+            var result = validator.TestValidate(model);
+
+            result.ShouldNotHaveAnyValidationErrors();
+        }
+    }
+}

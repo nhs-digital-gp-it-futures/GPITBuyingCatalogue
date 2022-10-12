@@ -13,6 +13,8 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models
 
         public int? Quantity { get; set; }
 
+        public DateTime? DeliveryDate { get; set; }
+
         public DateTime LastUpdated { get; set; }
 
         public int? LastUpdatedBy { get; set; }
