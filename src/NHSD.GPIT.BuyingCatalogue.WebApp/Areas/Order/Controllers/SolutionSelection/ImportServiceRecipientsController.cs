@@ -112,11 +112,13 @@ public class ImportServiceRecipientsController : Controller
     {
         var cacheKey = new ServiceRecipientCacheKey(User.UserId(), internalOrgId, callOffId, catalogueItemId);
         var cachedRecipients = importService.GetCached(cacheKey);
+        if (cachedRecipients is null)
+            return RedirectToAction(nameof(Index), new { internalOrgId, callOffId, catalogueItemId });
+
         var organisationServiceRecipients =
             await odsService.GetServiceRecipientsByParentInternalIdentifier(internalOrgId);
 
         var mismatchedOdsCodes = GetMismatchedOdsCodes(cachedRecipients, organisationServiceRecipients).ToList();
-
         if (mismatchedOdsCodes.Any())
         {
             var catalogueItemName = await catalogueItemService.GetCatalogueItemName(catalogueItemId);
@@ -151,6 +153,8 @@ public class ImportServiceRecipientsController : Controller
         ValidateOdsModel model,
         ServiceRecipientImportMode? importMode = ServiceRecipientImportMode.Edit)
     {
+        _ = model;
+
         return RedirectToAction(
             nameof(ValidateNames),
             new
@@ -168,6 +172,9 @@ public class ImportServiceRecipientsController : Controller
     {
         var cacheKey = new ServiceRecipientCacheKey(User.UserId(), internalOrgId, callOffId, catalogueItemId);
         var cachedRecipients = importService.GetCached(cacheKey);
+        if (cachedRecipients is null)
+            return RedirectToAction(nameof(Index), new { internalOrgId, callOffId, catalogueItemId });
+
         var organisationServiceRecipients =
             await odsService.GetServiceRecipientsByParentInternalIdentifier(internalOrgId);
 
