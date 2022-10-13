@@ -43,7 +43,6 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
             AddOrderReadyToComplete(context);
             AddCompletedOrder(context, 90010, GetOrganisationId(context));
             AddCompletedOrder(context, 90011, GetOrganisationId(context, "CG-15F"));
-            AddOrderByAccountManager(context);
         }
 
         private static void AddOrderAtDescriptionStage(BuyingCatalogueDbContext context)
