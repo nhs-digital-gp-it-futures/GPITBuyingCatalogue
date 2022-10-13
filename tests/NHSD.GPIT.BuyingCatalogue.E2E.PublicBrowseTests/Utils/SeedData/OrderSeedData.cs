@@ -43,7 +43,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
             AddOrderReadyToComplete(context);
             AddCompletedOrder(context, 90010, GetOrganisationId(context));
             AddCompletedOrder(context, 90011, GetOrganisationId(context, "CG-15F"));
-            AddCompletedOrder(context, 90022, GetOrganisationId(context), true);
+            AddOrderByAccountManager(context);
         }
 
         private static void AddOrderAtDescriptionStage(BuyingCatalogueDbContext context)
@@ -1439,7 +1439,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
             context.SaveChangesAs(user.Id);
         }
 
-        private static void AddCompletedOrder(BuyingCatalogueDbContext context, int orderId, int organisationId, bool isAccountManager = false)
+        private static void AddCompletedOrder(BuyingCatalogueDbContext context, int orderId, int organisationId)
         {
             var timeNow = DateTime.UtcNow;
 
@@ -1469,7 +1469,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
                 CommencementDate = timeNow.AddDays(1),
             };
 
-            var user = isAccountManager ? GetAccountManagerUser(context, order.OrderingPartyId) : GetBuyerUser(context, order.OrderingPartyId);
+            var user = GetBuyerUser(context, order.OrderingPartyId);
 
             var price = context.CatalogueItems
                 .Where(c => c.Id == new CatalogueItemId(99998, "001"))
@@ -1509,6 +1509,27 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
             order.Complete();
 
             order.OrderItems.Add(addedSolution);
+
+            context.Add(order);
+
+            context.SaveChangesAs(user.Id);
+        }
+
+        private static void AddOrderByAccountManager(BuyingCatalogueDbContext context)
+        {
+            const int orderId = 90022;
+            var timeNow = DateTime.UtcNow;
+
+            var order = new Order
+            {
+                Id = orderId,
+                OrderingPartyId = GetOrganisationId(context),
+                Created = timeNow,
+                IsDeleted = false,
+                Description = "This is an Order Description",
+            };
+
+            var user = GetBuyerUser(context, order.OrderingPartyId);
 
             context.Add(order);
 
