@@ -99,6 +99,20 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
                 },
             };
 
+            var daveOrganisation = new Organisation
+            {
+                Id = 176,
+                Name = "South West North Commissioning Hub",
+                Address = new Address 
+                    { Line1 = "NHS ENGLAND", Line2 = "QUARRY HOUSE", Line3 = "QUARRY HILL", Town = "LEEDS", County = "WEST YORKSHIRE", Postcode = "LS2 7UE", Country = "ENGLAND" },
+                InternalIdentifier = "CG-15H",
+                ExternalIdentifier = "15H",
+                OrganisationType = OrganisationType.CCG,
+                PrimaryRoleId = "RO98",
+                CatalogueAgreementSigned = false,
+                LastUpdated = DateTime.UtcNow,
+            };
+
             // Organisations
             List<Organisation> organisations = new()
             {
@@ -295,7 +309,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
                 new Organisation { Id = 174, Name = "South East – H&J Commissioning Hub", Address = new Address { Line1 = "C/O NHS ENGLAND", Line2 = "1W09, 1ST FLOOR, QUARRY HOUSE", Line3 = "QUARRY HILL", Town = "LEEDS", Postcode = "LS2 7UA", Country = "ENGLAND" }, PrimaryRoleId = "RO98", CatalogueAgreementSigned = false, LastUpdated = DateTime.UtcNow, ExternalIdentifier = "97T", InternalIdentifier = "CG-97T", OrganisationType = OrganisationType.CCG },
                 new Organisation { Id = 173, Name = "South East Commissioning Hub", Address = new Address { Line1 = "C/O NHS ENGLAND, 1W09, 1ST FLOOR", Line2 = "QUARRY HOUSE", Line3 = "QUARRY HILL", Town = "LEEDS", County = "WEST YORKSHIRE", Postcode = "LS2 7UE", Country = "ENGLAND" }, PrimaryRoleId = "RO98", CatalogueAgreementSigned = false, LastUpdated = DateTime.UtcNow, ExternalIdentifier = "14G", InternalIdentifier = "CG-14G", OrganisationType = OrganisationType.CCG },
                 new Organisation { Id = 175, Name = "South West Commissioning Hub", Address = new Address { Line1 = "C/O NHS ENGLAND, 1W09, 1ST FLOOR", Line2 = "QUARRY HOUSE", Line3 = "QUARRY HILL", Town = "LEEDS", County = "WEST YORKSHIRE", Postcode = "LS2 7UE", Country = "ENGLAND" }, PrimaryRoleId = "RO98", CatalogueAgreementSigned = false, LastUpdated = DateTime.UtcNow, ExternalIdentifier = "14F", InternalIdentifier = "CG-14F", OrganisationType = OrganisationType.CCG },
-                new Organisation { Id = 176, Name = "South West North Commissioning Hub", Address = new Address { Line1 = "NHS ENGLAND", Line2 = "QUARRY HOUSE", Line3 = "QUARRY HILL", Town = "LEEDS", County = "WEST YORKSHIRE", Postcode = "LS2 7UE", Country = "ENGLAND" }, PrimaryRoleId = "RO98", CatalogueAgreementSigned = false, LastUpdated = DateTime.UtcNow, ExternalIdentifier = "15H", InternalIdentifier = "CG-15H", OrganisationType = OrganisationType.CCG },
+                daveOrganisation,
                 new Organisation { Id = 178, Name = "South West South – H&J Commissioning Hub", Address = new Address { Line1 = "C/O NHS ENGLAND", Line2 = "1W09, 1ST FLOOR, QUARRY HOUSE", Line3 = "QUARRY HILL", Town = "LEEDS", County = "WEST YORKSHIRE", Postcode = "LS2 7UE", Country = "ENGLAND" }, PrimaryRoleId = "RO98", CatalogueAgreementSigned = false, LastUpdated = DateTime.UtcNow, ExternalIdentifier = "14T", InternalIdentifier = "CG-14T", OrganisationType = OrganisationType.CCG },
                 new Organisation { Id = 177, Name = "South West South Commissioning Hub", Address = new Address { Line1 = "NHS ENGLAND", Line2 = "QUARRY HOUSE", Line3 = "QUARRY HILL", Town = "LEEDS", County = "WEST YORKSHIRE", Postcode = "LS2 7UE", Country = "ENGLAND" }, PrimaryRoleId = "RO98", CatalogueAgreementSigned = false, LastUpdated = DateTime.UtcNow, ExternalIdentifier = "15G", InternalIdentifier = "CG-15G", OrganisationType = OrganisationType.CCG },
                 new Organisation { Id = 179, Name = "Wessex Commissioning Hub", Address = new Address { Line1 = "C/O NHS ENGLAND", Line2 = "1W09, 1ST FLOOR, QUARRY HOUSE", Line3 = "QUARRY HILL", Town = "LEEDS", County = "WEST YORKSHIRE", Postcode = "LS2 7UE", Country = "ENGLAND" }, PrimaryRoleId = "RO98", CatalogueAgreementSigned = false, LastUpdated = DateTime.UtcNow, ExternalIdentifier = "13N", InternalIdentifier = "CG-13N", OrganisationType = OrganisationType.CCG },
@@ -387,8 +401,8 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
                 LastName = "Smith",
                 EmailConfirmed = true,
                 CatalogueAgreementSigned = true,
-                PrimaryOrganisation = sueOrganisation,
-                PrimaryOrganisationId = sueOrganisation.Id,
+                PrimaryOrganisation = daveOrganisation,
+                PrimaryOrganisationId = daveOrganisation.Id,
                 SecurityStamp = Guid.NewGuid().ToString(),
                 HasOptedInUserResearch = false,
                 AcceptedTermsOfUseDate = DateTime.UtcNow,
