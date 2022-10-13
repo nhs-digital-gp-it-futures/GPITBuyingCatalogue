@@ -145,24 +145,6 @@ public class ImportServiceRecipientsController : Controller
             });
     }
 
-    [HttpPost("validate-ods")]
-    public IActionResult ValidateOds(
-        string internalOrgId,
-        CallOffId callOffId,
-        CatalogueItemId catalogueItemId,
-        ValidateOdsModel model,
-        ServiceRecipientImportMode? importMode = ServiceRecipientImportMode.Edit)
-    {
-        _ = model;
-
-        return RedirectToAction(
-            nameof(ValidateNames),
-            new
-            {
-                internalOrgId, callOffId, catalogueItemId, importMode,
-            });
-    }
-
     [HttpGet("validate-names")]
     public async Task<IActionResult> ValidateNames(
         string internalOrgId,
