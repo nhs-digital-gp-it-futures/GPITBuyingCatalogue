@@ -1529,7 +1529,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
                 Description = "This is an Order Description",
             };
 
-            var user = GetBuyerUser(context, order.OrderingPartyId);
+            var user = GetAccountManagerUser(context, order.OrderingPartyId);
 
             context.Add(order);
 
