@@ -197,9 +197,6 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering
             TaskList.SelectPlannedDeliveryDatesTask();
             PlannedDeliveryDates.SetDefaultPlannedDeliveryDate(DateTime.Today.AddDays(7));
 
-            TaskList.SelectFundingSourcesTask();
-            SelectFundingSources.AddFundingSources(solutionName, isAssociatedServiceOnlyOrder, associatedServices, additionalServices);
-
             var isMultiFramework = IsMultiFramework();
 
             if (isMultiFramework)
