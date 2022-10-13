@@ -193,7 +193,7 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering
             }
 
             SolutionAndServicesReview.ReviewSolutionAndServices();
-            
+
             TaskList.SelectPlannedDeliveryDatesTask();
             PlannedDeliveryDates.SetDefaultPlannedDeliveryDate(DateTime.Today.AddDays(7));
 

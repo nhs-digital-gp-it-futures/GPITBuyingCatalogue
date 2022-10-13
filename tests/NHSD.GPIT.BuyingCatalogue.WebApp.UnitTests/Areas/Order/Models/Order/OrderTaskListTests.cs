@@ -358,7 +358,6 @@ public class OrderTaskListTests
         solutionOrderItem.OrderItemRecipients.ForEach(x => x.DeliveryDate = commencementDate.AddDays(1));
 
         additionalServiceOrderItem.OrderItemFunding = null;
-        solutionOrderItem.OrderItemFunding = null;
 
         order.OrderItems.Add(solutionOrderItem);
         order.OrderItems.Add(additionalServiceOrderItem);
