@@ -8,9 +8,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.Commence
 {
     public static class CommencementDateModelTests
     {
-        private const int InitialPeriod = 3;
-        private const int MaximumTerm = 12;
-
         [Theory]
         [CommonAutoData]
         public static void WithValidArguments_PropertiesCorrectlySet(
@@ -21,7 +18,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.Commence
             order.CommencementDate = commencementDate;
             var model = new CommencementDateModel(internalOrgId, order);
 
-            model.Title.Should().Be("Timescales for Call-off Agreement");
             model.InternalOrgId.Should().Be(internalOrgId);
             model.Day.Should().Be(order.CommencementDate!.Value.Day.ToString("00"));
             model.Month.Should().Be(order.CommencementDate!.Value.Month.ToString("00"));
@@ -41,7 +37,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.Commence
             model.Month = date.Month.ToString();
             model.Year = date.Year.ToString();
 
-            var deliveryDate = model.CommencementDate!.Value;
+            var deliveryDate = model.Date!.Value;
 
             deliveryDate.Day.Should().Be(date.Day);
             deliveryDate.Month.Should().Be(date.Month);
@@ -55,7 +51,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.Commence
         {
             model.Day = model.Month = model.Year = null;
 
-            model.CommencementDate.HasValue.Should().BeFalse();
+            model.Date.HasValue.Should().BeFalse();
         }
     }
 }

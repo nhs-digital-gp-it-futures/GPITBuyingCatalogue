@@ -43,6 +43,8 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models
 
         public string SelectedFrameworkId { get; set; }
 
+        public DateTime? DeliveryDate { get; set; }
+
         public DateTime Created { get; set; } = DateTime.UtcNow;
 
         public DateTime LastUpdated { get; set; }
@@ -54,6 +56,8 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models
         public DateTime? Completed { get; set; }
 
         public bool IsDeleted { get; set; }
+
+        public virtual OrderDeletionApproval OrderDeletionApproval { get; set; }
 
         [NotMapped]
         public OrderStatus OrderStatus

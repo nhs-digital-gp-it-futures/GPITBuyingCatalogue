@@ -152,6 +152,10 @@
             font-weight: 600;
             width: 30%;
         }
+
+        .nhsuk-main-wrapper {
+            padding-top: 5px;
+        }
     </style>
 </head>
 <body class="nhsuk-bc-print">
@@ -160,13 +164,19 @@
 <div class="nhsuk-grid-row">
 <div class="nhsuk-grid-column-full">
 <nhs-page-title title="Order summary"
-                caption="@Model.Order.CallOffId"
-                advice="This is the information that has been added to this order." />
+                caption="Order @Model.Order.CallOffId"/>
 
 <pdf-summary-list>
     <pdf-summary-list-row label-text="Order ID">
         @Model.Order.CallOffId
     </pdf-summary-list-row>
+
+    @if (Model.Order.SelectedFramework is not null)
+    {
+        <pdf-summary-list-row label-text="Framework">
+            @Model.Order.SelectedFramework.ShortName
+        </pdf-summary-list-row>
+    }
 
     <pdf-summary-list-row label-text="Description">
         @Model.Order.Description
@@ -372,7 +382,7 @@ else
                 <tr>
                     <th>Name</th>
                     <th>Quantity</th>
-                    <th>Payment Trigger</th>
+                    <th>Payment trigger</th>
                 </tr>
                 </thead>
                 <tbody>

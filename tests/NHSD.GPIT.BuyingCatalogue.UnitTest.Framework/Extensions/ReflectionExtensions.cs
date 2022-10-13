@@ -2,7 +2,7 @@
 using FluentAssertions;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions;
 
-namespace NHSD.GPIT.BuyingCatalogue.UnitTest.Framework
+namespace NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.Extensions
 {
     public static class ReflectionExtensions
     {

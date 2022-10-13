@@ -1,4 +1,4 @@
-data "azurerm_sql_server" "sql_server" {
+data "azurerm_mssql_server" "sql_server" {
   name                = var.sqlserver_name
   resource_group_name = var.sqlserver_rg
 }

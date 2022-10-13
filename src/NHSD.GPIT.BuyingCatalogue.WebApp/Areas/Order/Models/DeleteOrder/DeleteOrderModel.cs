@@ -1,7 +1,8 @@
 ﻿using System.Collections.Generic;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
+using NHSD.GPIT.BuyingCatalogue.WebApp.Models;
 
-namespace NHSD.GPIT.BuyingCatalogue.WebApp.Models
+namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.DeleteOrder
 {
     public sealed class DeleteOrderModel : NavBaseModel
     {
@@ -9,16 +10,12 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Models
         {
         }
 
-        public DeleteOrderModel(Order order)
+        public DeleteOrderModel(EntityFramework.Ordering.Models.Order order)
         {
             CallOffId = order.CallOffId;
         }
 
         public CallOffId CallOffId { get; set; }
-
-        public string WarningText { get; set; }
-
-        public string AdviceText { get; set; }
 
         public bool? SelectedOption { get; set; }
 

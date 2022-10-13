@@ -15,7 +15,6 @@ using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Orders;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Pdf;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.ManageOrders;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Controllers;
-using NHSD.GPIT.BuyingCatalogue.WebApp.Models;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Models.SuggestionSearch;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
@@ -25,20 +24,17 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
     [Route("admin/manage-orders")]
     public class ManageOrdersController : Controller
     {
-        private readonly IFrameworkService frameworkService;
         private readonly IOrderAdminService orderAdminService;
         private readonly ICsvService csvService;
         private readonly IPdfService pdfService;
         private readonly PdfSettings pdfSettings;
 
         public ManageOrdersController(
-            IFrameworkService frameworkService,
             IOrderAdminService orderAdminService,
             ICsvService csvService,
             IPdfService pdfService,
             PdfSettings pdfSettings)
         {
-            this.frameworkService = frameworkService ?? throw new ArgumentNullException(nameof(frameworkService));
             this.orderAdminService = orderAdminService ?? throw new ArgumentNullException(nameof(orderAdminService));
             this.csvService = csvService ?? throw new ArgumentNullException(nameof(csvService));
             this.pdfService = pdfService ?? throw new ArgumentNullException(nameof(pdfService));
@@ -85,9 +81,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
         public async Task<IActionResult> ViewOrder(CallOffId callOffId, string returnUrl = null)
         {
             var order = await orderAdminService.GetOrder(callOffId);
-            var framework = await frameworkService.GetFramework(order?.Id ?? 0);
 
-            var model = new ViewOrderModel(order, framework)
+            var model = new ViewOrderModel(order)
             {
                 BackLink = returnUrl ?? Url.Action(nameof(Index)),
             };
@@ -137,6 +132,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
             var model = new DeleteOrderModel(order)
             {
                 BackLink = Url.Action(nameof(ViewOrder), new { callOffId }),
+                OrderCreationDate = order.Created,
             };
 
             return View(model);
@@ -148,10 +144,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
             if (!ModelState.IsValid)
                 return View(model);
 
-            if (!model.SelectedOption!.Value)
-                return RedirectToAction(nameof(ViewOrder), new { callOffId });
-
-            await orderAdminService.DeleteOrder(callOffId);
+            await orderAdminService.DeleteOrder(callOffId, model.NameOfRequester, model.NameOfApprover, model.ApprovalDate ?? null);
             return RedirectToAction(nameof(Index));
         }
 

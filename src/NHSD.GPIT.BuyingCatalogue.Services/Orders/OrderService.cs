@@ -83,6 +83,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
         public Task<Order> GetOrderWithOrderItems(CallOffId callOffId, string internalOrgId)
         {
             return dbContext.Orders
+                .Include(x => x.OrderingParty)
                 .Include(x => x.Solution)
                 .Include(o => o.OrderItems)
                     .ThenInclude(i => i.CatalogueItem)
@@ -90,9 +91,9 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
                     .ThenInclude(i => i.OrderItemFunding)
                 .Include(o => o.OrderItems)
                     .ThenInclude(i => i.OrderItemPrice)
-                    .ThenInclude(ip => ip.OrderItemPriceTiers.OrderBy(ip => ip.LowerRange))
+                    .ThenInclude(ip => ip.OrderItemPriceTiers.OrderBy(t => t.LowerRange))
                 .Include(o => o.OrderItems)
-                    .ThenInclude(i => i.OrderItemRecipients.OrderBy(i => i.Recipient.Name))
+                    .ThenInclude(i => i.OrderItemRecipients.OrderBy(oir => oir.Recipient.Name))
                     .ThenInclude(r => r.Recipient)
                 .AsSplitQuery()
                 .SingleOrDefaultAsync(o =>
@@ -140,6 +141,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
                 .Include(o => o.Supplier)
                 .Include(o => o.SupplierContact)
                 .Include(o => o.LastUpdatedByUser)
+                .Include(o => o.SelectedFramework)
                 .Include(o => o.OrderItems)
                     .ThenInclude(i => i.CatalogueItem)
                     .ThenInclude(ci => ci.Solution)

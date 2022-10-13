@@ -1,23 +1,32 @@
+resource "azurerm_mssql_server" "sql_server" {
+  name                          = var.sqlsvr_name
+  resource_group_name           = var.resource_group
+  location                      = var.region
+  version                       = var.sql_version
+  administrator_login           = var.sql_admin_username
+  administrator_login_password  = var.sql_admin_password
+  
+  azuread_administrator {
+    login_username              = var.sqladmins
+    object_id                   = var.sqladmins
+  }
 
-
-resource "azurerm_resource_group" "sql-server" {
-  name           = "${var.project}-${var.environment}-rg-sql-server"
-  location       = var.region
   tags = {
-    environment  = var.environment,
-    architecture = "new"
+    environment                 = var.environment,
+    architecture                = "new"
   }
 }
 
-resource "azurerm_sql_server" "sql_server" {
-  name                         = var.sqlsvr_name
-  resource_group_name          = azurerm_resource_group.sql-server.name
-  location                     = var.region
-  version                      = var.sql_version
-  administrator_login          = var.sql_admin_username
-  administrator_login_password = var.sql_admin_password
-  tags = {
-    environment                = var.environment,
-    architecture               = "new"
-  }
+resource "azurerm_mssql_firewall_rule" "sql_azure_services" {
+  name                = "azure_services"
+  server_id           = azurerm_mssql_server.sql_server.id
+  start_ip_address    = "0.0.0.0"
+  end_ip_address      = "0.0.0.0"
+}
+
+resource "azurerm_mssql_firewall_rule" "sql_bjss_vpn" {
+  name                = "AllowBjssVpn"
+  server_id           = azurerm_mssql_server.sql_server.id
+  start_ip_address    = var.bjssvpn
+  end_ip_address      = var.bjssvpn
 }

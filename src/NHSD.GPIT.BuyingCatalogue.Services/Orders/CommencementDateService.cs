@@ -3,7 +3,6 @@ using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
-using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Orders;
 
 namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
@@ -20,17 +19,13 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
         public async Task SetCommencementDate(
             CallOffId callOffId,
             string internalOrgId,
-            DateTime? commencementDate,
-            int? initialPeriod,
-            int? maximumTerm)
+            DateTime commencementDate,
+            int initialPeriod,
+            int maximumTerm)
         {
-            commencementDate.ValidateNotNull(nameof(commencementDate));
-            initialPeriod.ValidateNotNull(nameof(initialPeriod));
-            maximumTerm.ValidateNotNull(nameof(maximumTerm));
+            var order = await dbContext.Orders.FirstAsync(o => o.Id == callOffId.Id && o.OrderingParty.InternalIdentifier == internalOrgId);
 
-            var order = await dbContext.Orders.SingleAsync(o => o.Id == callOffId.Id && o.OrderingParty.InternalIdentifier == internalOrgId);
-
-            order.CommencementDate = commencementDate!.Value;
+            order.CommencementDate = commencementDate;
             order.InitialPeriod = initialPeriod;
             order.MaximumTerm = maximumTerm;
 

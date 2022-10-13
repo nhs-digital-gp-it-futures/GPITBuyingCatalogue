@@ -26,6 +26,8 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
                 throw new ArgumentNullException(nameof(recipients));
             }
 
+            var deliveryDate = context.Orders.SingleOrDefault(x => x.Id == orderId)?.DeliveryDate;
+
             foreach (var recipient in recipients)
             {
                 await serviceRecipientService.AddServiceRecipient(recipient);
@@ -42,6 +44,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
                         OrderId = orderId,
                         CatalogueItemId = catalogueItemId,
                         OdsCode = recipient.OdsCode,
+                        DeliveryDate = deliveryDate,
                     });
                 }
             }
@@ -55,6 +58,8 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
             {
                 throw new ArgumentNullException(nameof(recipients));
             }
+
+            var deliveryDate = context.Orders.SingleOrDefault(x => x.Id == orderId)?.DeliveryDate;
 
             var existingRecipients = context.OrderItemRecipients
                 .Where(x => x.OrderId == orderId
@@ -74,6 +79,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
                         OrderId = orderId,
                         CatalogueItemId = catalogueItemId,
                         OdsCode = recipient.OdsCode,
+                        DeliveryDate = deliveryDate,
                     });
                 }
             }

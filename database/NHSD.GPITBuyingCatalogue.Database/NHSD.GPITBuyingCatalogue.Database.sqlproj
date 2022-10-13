@@ -264,6 +264,7 @@
     <Build Include="Catalogue\Types\CapabilityIds.sql" />
     <Build Include="Catalogue\Types\EpicIds.sql" />
     <Build Include="Catalogue\Stored Procedures\FilterCatalogueItems.sql" />
+    <Build Include="Ordering\Tables\OrderDeletionApprovals.sql" />
   </ItemGroup>
   <ItemGroup>
     <SqlCmdVariable Include="CREATE_EA_USER">

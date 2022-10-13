@@ -4,6 +4,7 @@ module "sql_server_pri" {
   count                 = !local.is_dr ? 1 : 0
   environment           = var.environment
   region                = var.region
+  resource_group        = azurerm_resource_group.sql-server.name
   project               = var.project
   sqlsvr_name           = "${var.project}-${var.environment}-sql-primary"
   sql_version           = "12.0"
@@ -13,10 +14,9 @@ module "sql_server_pri" {
   bjssvpn               = var.primary_vpn
 }
 
-resource "azurerm_sql_virtual_network_rule" "sqlvnetrule" {
+resource "azurerm_mssql_virtual_network_rule" "sqlvnetrule" {
   name                = "${var.project}-${var.environment}-subnet-rule"
-  resource_group_name = join("", module.sql_server_pri[*].sql_resource_group)
-  server_name         = "${var.project}-${var.environment}-sql-primary"
+  server_id           = join("", module.sql_server_pri[*].sql_server_id)
   subnet_id           = azurerm_subnet.backend.id
   count               = !local.is_dr ? 1 : 0
 
@@ -25,13 +25,14 @@ resource "azurerm_sql_virtual_network_rule" "sqlvnetrule" {
   ]
 }
 
- module "sql_server_sec" {
+module "sql_server_sec" {
   source                = "./modules/bc_sql_server"
 
   count                 = local.shortenv == "preprod" || local.shortenv == "production" ? 1 : 0 
   
   environment           = var.environment
   region                = local.sql_region2
+  resource_group        = azurerm_resource_group.sql-server.name
   project               = var.project
   sqlsvr_name           = "${var.project}-${var.environment}-sql-secondary"
   sql_version           = "12.0"

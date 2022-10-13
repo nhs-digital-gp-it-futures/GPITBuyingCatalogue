@@ -1,5 +1,4 @@
-﻿using Microsoft.EntityFrameworkCore;
-using NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.Actions.Common;
+﻿using NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.Actions.Common;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering.Dashboard;
 using NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering.StepOne;
@@ -9,7 +8,6 @@ using NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering.StepTwo.Associate
 using NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering.StepTwo.SolutionSelection;
 using NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering.Triage;
 using OpenQA.Selenium;
-using System.Linq;
 
 namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering
 {
@@ -23,6 +21,7 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering
             StartOrder = new StartOrder(driver, commonActions);
             TaskList = new TaskList(driver, commonActions);
             OrderingStepOne = new OrderingStepOne(driver, commonActions);
+            PlannedDeliveryDates = new PlannedDeliveryDates(driver, commonActions);
             SelectFundingSources = new SelectFundingSources(driver, commonActions);
             SelectSupplier = new SelectSupplier(driver, commonActions);
             SupplierContacts = new SupplierContacts(driver, commonActions);
@@ -58,6 +57,8 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering
         internal TaskList TaskList { get; }
 
         internal OrderingStepOne OrderingStepOne { get; }
+
+        internal PlannedDeliveryDates PlannedDeliveryDates { get; }
 
         internal SelectFundingSources SelectFundingSources { get; }
 
@@ -192,6 +193,12 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering
             }
 
             SolutionAndServicesReview.ReviewSolutionAndServices();
+            
+            TaskList.SelectPlannedDeliveryDatesTask();
+            PlannedDeliveryDates.SetDefaultPlannedDeliveryDate(DateTime.Today.AddDays(7));
+
+            TaskList.SelectFundingSourcesTask();
+            SelectFundingSources.AddFundingSources(solutionName, isAssociatedServiceOnlyOrder, associatedServices, additionalServices);
 
             var isMultiFramework = IsMultiFramework();
 

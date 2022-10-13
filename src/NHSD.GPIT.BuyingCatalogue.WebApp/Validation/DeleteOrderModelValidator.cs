@@ -1,5 +1,5 @@
 ﻿using FluentValidation;
-using NHSD.GPIT.BuyingCatalogue.WebApp.Models;
+using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.DeleteOrder;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.Validation
 {

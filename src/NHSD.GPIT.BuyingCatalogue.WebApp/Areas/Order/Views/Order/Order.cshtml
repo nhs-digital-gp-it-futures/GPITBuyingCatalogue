@@ -18,12 +18,12 @@
 
             <nhs-page-title title="@ViewBag.Title"
                             advice="@Model.TitleAdvice"
-							caption = "@Model.OrganisationName" />
+                            caption = "@Model.OrganisationName" />
 
-				@if (!string.IsNullOrWhiteSpace(Model.Description)){
-					<h2 class="nhsuk-heading-s">Description</h2>
-					<p>@Model.Description</p>
-				}
+                @if (!string.IsNullOrWhiteSpace(Model.Description)){
+                    <h2 class="nhsuk-heading-s">Description</h2>
+                    <p>@Model.Description</p>
+                }
 
                 <nhs-task-list>
                     <nhs-task-list-section label-text="Prepare order">
@@ -67,6 +67,12 @@
                                             data-test-id="test-solutions-and-services"
                                             url="@SolutionSelectionUrlTarget(Model.SectionStatuses.SolutionOrService)"
                                             status="@Model.SectionStatuses.SolutionOrService" />
+
+                        <nhs-task-list-item label-text="Planned delivery dates"
+                                            label-hint="Enter the planned delivery dates for the items you're ordering."
+                                            data-test-id="test-planned-delivery-dates"
+                                            url="@DeliveryDatesUrlTarget(Model.SectionStatuses.DeliveryDates)"
+                                            status="@Model.SectionStatuses.DeliveryDates" />
 
                         <nhs-task-list-item label-text="Select funding sources"
                                             label-hint="Review how you’ll be paying for your order."
@@ -118,14 +124,18 @@
 
             @if (Model.CallOffId != default)
             {
-                <vc:nhs-secondary-button text="Preview order"
-                                         url="@Url.Action(
-                                                  nameof(OrderController.Summary),
-                                                  typeof(OrderController).ControllerName(),
-                                                  new { Model.InternalOrgId, Model.CallOffId })"
-                                         type="Secondary"/>
+                <nhs-button-group>
+                    <vc:nhs-secondary-button text="Preview order"
+                                             url="@Url.Action(
+                                                      nameof(OrderController.Summary),
+                                                      typeof(OrderController).ControllerName(),
+                                                      new { Model.InternalOrgId, Model.CallOffId })"
+                                             type="Secondary"/>
 
-                <br/>
+                    <vc:nhs-secondary-button text="Save for later"
+                                     url="@Model.BackLink"
+                                     type="Secondary" />
+                </nhs-button-group>
 
                 <vc:nhs-secondary-button text="Delete order"
                             url="@Url.Action(
@@ -147,6 +157,30 @@
 </div>
 
 @{
+    string DeliveryDatesUrlTarget(TaskProgress progress) => progress switch
+    {
+        TaskProgress.NotStarted => Url.Action(
+            nameof(DeliveryDatesController.SelectDate),
+            typeof(DeliveryDatesController).ControllerName(),
+            new { Model.InternalOrgId, Model.CallOffId }),
+        
+        TaskProgress.InProgress => Url.Action(
+            nameof(DeliveryDatesController.Review),
+            typeof(DeliveryDatesController).ControllerName(),
+            new { Model.InternalOrgId, Model.CallOffId }),
+
+        TaskProgress.Completed => Url.Action(
+            nameof(DeliveryDatesController.Review),
+            typeof(DeliveryDatesController).ControllerName(),
+            new { Model.InternalOrgId, Model.CallOffId }),
+
+        TaskProgress.CannotStart => string.Empty,
+        TaskProgress.NotApplicable => string.Empty,
+        TaskProgress.Optional => string.Empty,
+
+        _ => throw new ArgumentException("Planned delivery dates currently in a status that it should not be able to be in."),
+    };
+
     string SolutionSelectionUrlTarget(TaskProgress progress) => progress switch
     {
         TaskProgress.NotStarted => Url.Action(

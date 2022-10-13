@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.Html;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 
-namespace NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.Components.Address
+namespace NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.Components.NhsAddress
 {
     public sealed class NhsAddressViewComponent : ViewComponent
     {
@@ -16,31 +16,27 @@ namespace NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.Components.Addres
             if (address is null)
                 throw new ArgumentNullException(nameof(address));
 
-            return new HtmlString(ProcessAdressBreakRowSeperatedString(address));
+            return new HtmlString(ProcessAddressBreakRowSeperatedString(address));
         }
 
-        private static string ProcessAdressBreakRowSeperatedString(EntityFramework.Addresses.Models.Address address)
+        private static string ProcessAddressBreakRowSeperatedString(EntityFramework.Addresses.Models.Address address)
         {
             var addressProperties = address.GetType().GetProperties().Where(a => a.PropertyType == typeof(string));
 
-            List<string> values = new List<string>();
+            var values = addressProperties.Select(property => property.GetValue(address)?.ToString()).Where(propertyValue => !string.IsNullOrWhiteSpace(propertyValue)).ToList();
 
-            foreach (var property in addressProperties)
-            {
-                var propertyValue = property.GetValue(address)?.ToString();
-
-                if (!string.IsNullOrWhiteSpace(propertyValue))
-                    values.Add(propertyValue);
-            }
-
-            var builder = new TagBuilder("p");
+            var builder = new TagBuilder("span");
 
             var breakRow = new TagBuilder("br") { TagRenderMode = TagRenderMode.SelfClosing };
 
-            foreach (string value in values)
+            for (var i = 0; i < values.Count; i++)
             {
-                builder.InnerHtml.Append(value);
-                builder.InnerHtml.AppendHtml(breakRow);
+                var value = values[i];
+                builder.InnerHtml.Append(value!);
+                if (i < (values.Count - 1))
+                {
+                    builder.InnerHtml.AppendHtml(breakRow);
+                }
             }
 
             using var writer = new System.IO.StringWriter();

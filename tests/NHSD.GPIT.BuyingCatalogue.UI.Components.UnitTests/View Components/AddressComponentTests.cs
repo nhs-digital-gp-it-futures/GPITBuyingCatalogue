@@ -1,7 +1,7 @@
 ﻿using System;
 using Microsoft.AspNetCore.Html;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Addresses.Models;
-using NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.Components.Address;
+using NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.Components.NhsAddress;
 using Xunit;
 
 namespace NHSD.GPIT.BuyingCatalogue.UI.Components.UnitTests.View_Components
@@ -16,7 +16,7 @@ namespace NHSD.GPIT.BuyingCatalogue.UI.Components.UnitTests.View_Components
                 ViewComponentContext = ViewComponentContextSetup.GetViewComponentContext(),
             };
 
-            const string expectedResult = "<p>1 John Street<br />Test Area<br />TestingTon<br />County Test<br />T3ST 3ST<br />United Kingdom<br /></p>";
+            const string expectedResult = "<span>1 John Street<br />Test Area<br />TestingTon<br />County Test<br />T3ST 3ST<br />United Kingdom</span>";
 
             var model = new Address
             {
@@ -45,7 +45,7 @@ namespace NHSD.GPIT.BuyingCatalogue.UI.Components.UnitTests.View_Components
                 ViewComponentContext = ViewComponentContextSetup.GetViewComponentContext(),
             };
 
-            const string expectedResult = "<p></p>";
+            const string expectedResult = "<span></span>";
 
             var model = new Address();
 

@@ -20,17 +20,21 @@
     {
         <br/>
         <nhs-table label-text="Service Recipients" catches-errors="false">
-            <nhs-table-column>Recipient</nhs-table-column>
-            <nhs-table-column>ODS code</nhs-table-column>
+            <nhs-table-column>Recipient (ODS code)</nhs-table-column>
             <nhs-table-column>Item ID</nhs-table-column>
+            <nhs-table-column>Planned delivery date</nhs-table-column>
             <nhs-table-column>Quantity</nhs-table-column>
 
 			@foreach(var serviceRecipient in Model.OrderItemRecipients)
-            {
+			{
+			    var deliveryDate = serviceRecipient.DeliveryDate.HasValue
+			        ? $"{serviceRecipient.DeliveryDate.Value:dd MMMM yyyy}"
+			        : "No date entered";
+
                 <nhs-table-row-container>
-                    <nhs-table-cell>@serviceRecipient.Recipient.Name</nhs-table-cell>
-                    <nhs-table-cell>@serviceRecipient.Recipient.OdsCode</nhs-table-cell>
+                    <nhs-table-cell>@serviceRecipient.Recipient.Name (@serviceRecipient.Recipient.OdsCode)</nhs-table-cell>
                     <nhs-table-cell>@($"{Model.Order.CallOffId}-{serviceRecipient.Recipient.OdsCode}-{ViewContext.HttpContext.NextLineId()}")</nhs-table-cell>
+                    <nhs-table-cell>@deliveryDate</nhs-table-cell>
                     <nhs-table-cell>
                         @if (hasServiceRecipientQuantities)
                         {

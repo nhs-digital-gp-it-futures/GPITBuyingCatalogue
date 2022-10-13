@@ -7,7 +7,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.ManageOrders
 {
     public class ViewOrderModel : NavBaseModel
     {
-        public ViewOrderModel(EntityFramework.Ordering.Models.Order order, EntityFramework.Catalogue.Models.Framework framework)
+        public ViewOrderModel(EntityFramework.Ordering.Models.Order order)
         {
             CallOffId = order.CallOffId;
             Description = order.Description;
@@ -17,18 +17,20 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.ManageOrders
             OrganisationInternalIdentifier = order.OrderingParty.InternalIdentifier;
             SupplierName = order.Supplier?.Name;
             OrderStatus = order.OrderStatus;
+            SelectedFrameworkName = order.SelectedFramework?.ShortName;
             OrderItems = order.OrderItems?.Select(oi => new AdminViewOrderItem
             {
                 Name = oi.CatalogueItem.Name,
                 Type = oi.CatalogueItem.CatalogueItemType,
                 SelectedFundingType = oi.FundingType,
-                Framework = framework?.ShortName ?? string.Empty,
             });
         }
 
         public CallOffId CallOffId { get; set; }
 
         public string OrganisationName { get; set; }
+
+        public string SelectedFrameworkName { get; set; }
 
         public string OrganisationInternalIdentifier { get; set; }
 

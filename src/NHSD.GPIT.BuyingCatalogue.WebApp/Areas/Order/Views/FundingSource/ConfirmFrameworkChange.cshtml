@@ -1,4 +1,9 @@
-﻿@model NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.FundingSources.ConfirmFrameworkChangeModel
+@using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.FundingSources
+@using Microsoft.AspNetCore.Mvc.TagHelpers
+@using NHSD.GPIT.BuyingCatalogue.UI.Components.TagHelpers
+@using NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.TagHelpers.WarningCallout
+@using ValidationSummaryTagHelper = Microsoft.AspNetCore.Mvc.TagHelpers.ValidationSummaryTagHelper
+@model NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.FundingSources.ConfirmFrameworkChangeModel
 @{
     ViewBag.Title = Model.Title;
 }
@@ -30,12 +35,12 @@
             <hr />
 
         <form method="post">
-            <nhs-fieldset-form-label asp-for="ConfirmChanges" 
+            <nhs-fieldset-form-label asp-for="ConfirmChanges"
                                      label-text="Do you want to confirm your changes?"
                                      size="Small">
                 <nhs-radio-buttons asp-for="ConfirmChanges"
-                                   values="@Model.Options"
-                                   display-name="Text"
+                                   values="@ConfirmFrameworkChangeModel.Options.Cast<object>()"
+                                   display-name="Name"
                                    value-name="Value" />
             </nhs-fieldset-form-label>
             <input type="hidden" asp-for="CurrentFramework.Id" />

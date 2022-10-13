@@ -55,7 +55,7 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering.Dashboard
 
         public void TimescalesForCallOffAgreementTask()
         {
-            CommonActions.ClickLinkElement(CommencementDate.TimescalesForCallOffLink);
+            CommonActions.ClickLinkElement(CommencementDateObjects.TimescalesForCallOffLink);
 
             CommonActions.PageLoadedCorrectGetIndex(
                 typeof(CommencementDateController),
@@ -116,6 +116,15 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering.Dashboard
 
             CommonActions.ClickLastRadio();
             CommonActions.ClickSave();
+        }
+
+        public void SelectPlannedDeliveryDatesTask()
+        {
+            CommonActions.ClickLinkElement(OrderDashboard.PlannedDeliveryDates);
+
+            CommonActions.PageLoadedCorrectGetIndex(
+                typeof(DeliveryDatesController),
+                nameof(DeliveryDatesController.SelectDate)).Should().BeTrue();
         }
 
         public void SelectFundingSourcesTask()

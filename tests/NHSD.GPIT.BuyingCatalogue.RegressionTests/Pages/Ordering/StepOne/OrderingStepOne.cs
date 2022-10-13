@@ -48,12 +48,12 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering.StepOne
         public void AddTimescaleForCallOffAgreement(OrderTriageValue orderTriage, CatalogueItemType itemType)
         {
             TextGenerators.DateInputAddDateSoon(
-                CommencementDate.CommencementDateDayInput,
-                CommencementDate.CommencementDateMonthInput,
-                CommencementDate.CommencementDateYearInput);
+                CommencementDateObjects.CommencementDateDayInput,
+                CommencementDateObjects.CommencementDateMonthInput,
+                CommencementDateObjects.CommencementDateYearInput);
 
             var upperRange = 0;
-            var initialPeriod = TextGenerators.NumberInputAddRandomNumber(CommencementDate.InitialPeriodInput, 1, 6);
+            var initialPeriod = TextGenerators.NumberInputAddRandomNumber(CommencementDateObjects.InitialPeriodInput, 1, 6);
 
             if (itemType == CatalogueItemType.AssociatedService)
             {
@@ -71,7 +71,7 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering.StepOne
                 }
             }
 
-            TextGenerators.NumberInputAddRandomNumber(CommencementDate.MaximumTermInput, initialPeriod + 1, upperRange);
+            TextGenerators.NumberInputAddRandomNumber(CommencementDateObjects.MaximumTermInput, initialPeriod + 1, upperRange);
 
             CommonActions.ClickSave();
 
