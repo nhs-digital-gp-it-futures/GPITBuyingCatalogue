@@ -18,8 +18,8 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.Objects.Admin.ManageOrder
 
         public static By DateOfApprovalYearInput => By.Id("ApprovalYear");
 
-        public static By DeleteRequestNameError => By.PartialLinkText("requesting the delete is required");
-        public static By DeleteApproveNameError => By.PartialLinkText("approving the delete is required");
+        public static By DeleteRequestNameError => By.PartialLinkText("Enter who requested the deletion");
+        public static By DeleteApproveNameError => By.PartialLinkText("Enter who approved the deletion");
         public static By DeleteDayMissingError => By.PartialLinkText(DeleteOrderModelValidator.ApprovalDateDayMissingErrorMessage);
         public static By DeleteMonthMissingError => By.PartialLinkText(DeleteOrderModelValidator.ApprovalDateMonthMissingErrorMessage);
         public static By DeleteYearMissingError => By.PartialLinkText(DeleteOrderModelValidator.ApprovalDateYearMissingErrorMessage);
