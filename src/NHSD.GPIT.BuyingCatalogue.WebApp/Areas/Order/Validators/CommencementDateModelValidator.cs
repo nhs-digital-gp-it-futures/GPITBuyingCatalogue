@@ -3,6 +3,7 @@ using FluentValidation;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.CommencementDate;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Validation;
+using NHSD.GPIT.BuyingCatalogue.WebApp.Validation.Shared;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Validators
 {
@@ -10,12 +11,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Validators
     {
         public const int MaximumInitialPeriod = 12;
 
-        public const string CommencementDateDayMissingErrorMessage = "Commencement date must include a day";
         public const string CommencementDateInThePastErrorMessage = "Commencement date must be in the future";
-        public const string CommencementDateInvalidErrorMessage = "Commencement date must be a real date";
-        public const string CommencementDateMonthMissingErrorMessage = "Commencement date must include a month";
-        public const string CommencementDateYearMissingErrorMessage = "Commencement date must include a year";
-        public const string CommencementDateYearTooShortErrorMessage = "Year must be four numbers";
         public const string InitialPeriodMissingErrorMessage = "Enter an initial period";
         public const string InitialPeriodNotANumberErrorMessage = "Initial period must be a number";
         public const string InitialPeriodTooLowErrorMessage = "Initial period must be greater than zero";
@@ -29,30 +25,13 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Validators
 
         public CommencementDateModelValidator()
         {
-            RuleFor(x => x.Day)
-                .NotEmpty()
-                .WithMessage(CommencementDateDayMissingErrorMessage);
+            Include(new DateInputModelValidator());
 
-            RuleFor(x => x.Month)
-                .NotEmpty()
-                .Unless(x => string.IsNullOrWhiteSpace(x.Day))
-                .WithMessage(CommencementDateMonthMissingErrorMessage);
-
-            RuleFor(x => x.Year)
-                .NotEmpty()
-                .Unless(x => string.IsNullOrWhiteSpace(x.Month))
-                .WithMessage(CommencementDateYearMissingErrorMessage)
-                .Length(4)
-                .WithMessage(CommencementDateYearTooShortErrorMessage);
-
-            RuleFor(x => x)
-                .Must(x => x.CommencementDate != null)
-                .Unless(CommencementDateIsInvalid)
-                .WithMessage(CommencementDateInvalidErrorMessage)
-                .Must(x => x.CommencementDate > DateTime.UtcNow.Date)
-                .Unless(CommencementDateIsInvalid)
+            RuleFor(x => x.Date)
+                .Must(x => x > DateTime.UtcNow.Date)
+                .Unless(x => x.Date == null)
                 .WithMessage(CommencementDateInThePastErrorMessage)
-                .OverridePropertyName(wp => wp.Day);
+                .OverridePropertyName(x => x.Day);
 
             RuleFor(x => x.InitialPeriod)
                 .IsNumericAndNonZero("initial period")
@@ -71,14 +50,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Validators
             => model.OrderTriageValue == OrderTriageValue.Under40K
                 ? 12
                 : 36;
-
-        private static bool CommencementDateIsInvalid(CommencementDateModel model)
-        {
-            return string.IsNullOrWhiteSpace(model.Day)
-                || string.IsNullOrWhiteSpace(model.Month)
-                || string.IsNullOrWhiteSpace(model.Year)
-                || model.Year.Length != 4;
-        }
 
         private static bool InitialPeriodLessThanOrEqualToMaximum(CommencementDateModel model, string initialPeriod)
             => model.InitialPeriodValue <= MaximumInitialPeriod;

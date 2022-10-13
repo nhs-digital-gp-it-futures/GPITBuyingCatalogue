@@ -58,6 +58,7 @@ namespace NHSD.GPIT.BuyingCatalogue.UI.Components.TagHelpers
             {
                 new(TagHelperConstants.Id, id),
                 new(TagHelperConstants.Class, DateInputClass),
+                new(TagHelperConstants.Style, "white-space:nowrap;"),
             };
 
             attributes.ForEach(output.Attributes.Add);
