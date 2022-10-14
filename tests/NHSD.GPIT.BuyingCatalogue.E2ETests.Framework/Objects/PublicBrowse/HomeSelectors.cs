@@ -11,5 +11,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.Objects.Home
         public static By NominateOrganisationLink => By.Id("nominate-organisation-link");
 
         public static By ContactUsLink => By.LinkText("Contact us");
+
+        public static By TechInnovationLink => By.LinkText("Tech Innovation framework");
     }
 }
