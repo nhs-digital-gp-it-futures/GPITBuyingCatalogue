@@ -2,6 +2,7 @@
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
+using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Email;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Models;
 
@@ -59,10 +60,18 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Controllers
         [HttpGet("unauthorized")]
         public IActionResult NotAuthorized() => View();
 
+        [HttpGet("tech-innovation")]
+        public IActionResult TechInnovationFramework() => View(new NavBaseModel
+        {
+            BackLink = Url.Action(
+                nameof(Index),
+                typeof(HomeController).ControllerName()),
+        });
+
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error(int? statusCode = null, string error = null)
         {
-            if (statusCode.HasValue && statusCode == 404)
+            if (statusCode is 404)
             {
                 var feature = HttpContext.Features.Get<IStatusCodeReExecuteFeature>();
                 ViewData["BadUrl"] = $"Incorrect url {feature?.OriginalPath}";
