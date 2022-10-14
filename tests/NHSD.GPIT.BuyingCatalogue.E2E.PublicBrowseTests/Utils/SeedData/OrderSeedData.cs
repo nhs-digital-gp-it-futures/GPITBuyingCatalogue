@@ -46,6 +46,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
             AddOrderReadyToComplete(context);
             AddCompletedOrder(context, 90010, GetOrganisationId(context));
             AddCompletedOrder(context, 90011, GetOrganisationId(context, "CG-15F"));
+            AddOrderByAccountManager(context);
         }
 
         private static void AddOrderAtDescriptionStage(BuyingCatalogueDbContext context)
@@ -1648,6 +1649,27 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
             context.SaveChangesAs(user.Id);
         }
 
+        private static void AddOrderByAccountManager(BuyingCatalogueDbContext context)
+        {
+            const int orderId = 95000;
+            var timeNow = DateTime.UtcNow;
+
+            var order = new Order
+            {
+                Id = orderId,
+                OrderingPartyId = GetOrganisationId(context, "CG-15H"),
+                Created = timeNow,
+                IsDeleted = false,
+                Description = "This is an Order Description",
+            };
+
+            var user = GetAccountManagerUser(context, order.OrderingPartyId);
+
+            context.Add(order);
+
+            context.SaveChangesAs(user.Id);
+        }
+
         private static int GetOrganisationId(BuyingCatalogueDbContext context, string internalOrgId = "CG-03F")
         {
             return context.Organisations.First(o => o.InternalIdentifier == internalOrgId).Id;
@@ -1655,10 +1677,20 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
 
         private static AspNetUser GetBuyerUser(BuyingCatalogueDbContext context, int organisationId)
         {
+            return GetUser(context, organisationId, OrganisationFunction.Buyer.Name);
+        }
+
+        private static AspNetUser GetAccountManagerUser(BuyingCatalogueDbContext context, int organisationId)
+        {
+            return GetUser(context, organisationId, OrganisationFunction.AccountManager.Name);
+        }
+
+        private static AspNetUser GetUser(BuyingCatalogueDbContext context, int organisationId, string role)
+        {
             var users = context.Users.Include(u => u.AspNetUserRoles).ThenInclude(r => r.Role).Where(u => u.PrimaryOrganisationId == organisationId);
 
             var user = users.FirstOrDefault(
-                u => u.AspNetUserRoles.Any(r => r.Role.Name == OrganisationFunction.BuyerName));
+                u => u.AspNetUserRoles.Any(r => r.Role.Name == role));
 
             return user;
         }

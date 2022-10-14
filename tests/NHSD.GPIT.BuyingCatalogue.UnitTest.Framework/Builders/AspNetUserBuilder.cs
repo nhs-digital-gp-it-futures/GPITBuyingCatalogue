@@ -32,6 +32,16 @@ namespace NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.Builders
                             builder.emailAddress,
                             builder.primaryOrganisationId)
                 },
+                {
+                    OrganisationFunction.AccountManager, builder =>
+                        CreateAccountManager(
+                            builder.username,
+                            builder.firstName,
+                            builder.lastName,
+                            builder.phoneNumber,
+                            builder.emailAddress,
+                            builder.primaryOrganisationId)
+                },
             };
 
         private int userId;
@@ -111,7 +121,7 @@ namespace NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.Builders
                 PrimaryOrganisationId = primaryOrganisationId,
                 AspNetUserRoles = new List<AspNetUserRole>
                 {
-                    new() { Role = new() { Name = OrganisationFunction.Buyer.DisplayName } },
+                    new() { Role = new() { Name = OrganisationFunction.Buyer.Name } },
                 },
             };
         }
@@ -136,7 +146,32 @@ namespace NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.Builders
                 PrimaryOrganisationId = primaryOrganisationId,
                 AspNetUserRoles = new List<AspNetUserRole>
                 {
-                    new() { Role = new() { Name = OrganisationFunction.Authority.DisplayName } },
+                    new() { Role = new() { Name = OrganisationFunction.Authority.Name } },
+                },
+            };
+        }
+
+        private static AspNetUser CreateAccountManager(
+            string userName,
+            string firstName,
+            string lastName,
+            string phoneNumber,
+            string email,
+            int primaryOrganisationId)
+        {
+            return new AspNetUser
+            {
+                UserName = userName,
+                NormalizedUserName = userName.ToUpper(),
+                FirstName = firstName,
+                LastName = lastName,
+                PhoneNumber = phoneNumber,
+                Email = email,
+                NormalizedEmail = email.ToUpper(),
+                PrimaryOrganisationId = primaryOrganisationId,
+                AspNetUserRoles = new List<AspNetUserRole>
+                {
+                    new() { Role = new() { Name = OrganisationFunction.AccountManager.Name } },
                 },
             };
         }
@@ -145,7 +180,7 @@ namespace NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.Builders
         {
             if (!ApplicationUserFactory.TryGetValue(organisationFunction, out var factory))
             {
-                throw new InvalidOperationException($"Unknown type of user '{organisationFunction?.DisplayName}'");
+                throw new InvalidOperationException($"Unknown type of user '{organisationFunction?.Name}'");
             }
 
             var user = factory(this);

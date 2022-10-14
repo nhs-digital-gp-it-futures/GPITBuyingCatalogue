@@ -251,7 +251,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
             [Frozen] Mock<IOrderService> mockOrderService,
             UsersController controller)
         {
-            const string role = OrganisationFunction.BuyerName;
+            string role = OrganisationFunction.Buyer.Name;
 
             var roles = new List<string> { role };
 
@@ -358,7 +358,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
             [Frozen] Mock<IUsersService> mockUsersService,
             UsersController controller)
         {
-            const string role = OrganisationFunction.BuyerName;
+            string role = OrganisationFunction.Buyer.Name;
 
             var roles = new List<string> { role };
 

@@ -51,7 +51,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Users
                     "a",
                     "b",
                     emailAddress,
-                    OrganisationFunction.BuyerName));
+                    OrganisationFunction.Buyer.Name));
         }
 
         [Theory]
@@ -76,14 +76,15 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Users
                 "Test",
                 "Smith",
                 "a.b@c.com",
-                OrganisationFunction.BuyerName);
+                OrganisationFunction.Buyer.Name);
 
             actual.Id.Should().Be(1);
         }
 
         [Theory]
-        [InMemoryDbInlineAutoData(OrganisationFunction.AuthorityName)]
-        [InMemoryDbInlineAutoData(OrganisationFunction.BuyerName)]
+        [InMemoryDbInlineAutoData("Authority")]
+        [InMemoryDbInlineAutoData("Buyer")]
+        [InMemoryDbInlineAutoData("AccountManager")]
         public static async Task Create_SuccessfulApplicationUserValidation_UserAddedToDbContext(
             string role,
             string expectedToken,
@@ -141,7 +142,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Users
                 expectedUser.FirstName,
                 expectedUser.LastName,
                 expectedUser.Email,
-                OrganisationFunction.BuyerName);
+                OrganisationFunction.Buyer.Name);
 
             mockEmailService.Verify(e => e.SendEmailAsync(
                 expectedUser.Email,

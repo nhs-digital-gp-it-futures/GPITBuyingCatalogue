@@ -48,13 +48,19 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp
                     "AdminOnly",
                     policy => policy.RequireClaim(
                         "organisationFunction",
-                        new[] { OrganisationFunction.AuthorityName }));
+                        new[] { OrganisationFunction.Authority.Name }));
 
                 options.AddPolicy(
                     "Buyer",
                     policy => policy.RequireClaim(
                         "organisationFunction",
-                        new[] { OrganisationFunction.BuyerName }));
+                        new[] { OrganisationFunction.Buyer.Name, OrganisationFunction.AccountManager.Name }));
+
+                options.AddPolicy(
+                    "AccountManager",
+                    policy => policy.RequireClaim(
+                        "organisationFunction",
+                        new[] { OrganisationFunction.AccountManager.Name }));
             });
         }
 

@@ -53,7 +53,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators.User
                     new AspNetUser());
 
             mockUsersService
-                .Setup(x => x.HasRole(UserId, OrganisationFunction.AuthorityName))
+                .Setup(x => x.HasRole(UserId, OrganisationFunction.Authority.Name))
                 .ReturnsAsync(true);
 
             var result = validator.TestValidate(model);
@@ -78,7 +78,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators.User
                 {
                     AspNetUserRoles = new List<AspNetUserRole>
                     {
-                        new() { Role = new() { Name = OrganisationFunction.AuthorityName } },
+                        new() { Role = new() { Name = OrganisationFunction.Authority.Name } },
                     },
                 });
 
@@ -103,7 +103,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators.User
                 {
                     AspNetUserRoles = new List<AspNetUserRole>
                     {
-                        new() { Role = new() { Name = OrganisationFunction.BuyerName } },
+                        new() { Role = new() { Name = OrganisationFunction.Buyer.Name } },
                     },
                 });
 
