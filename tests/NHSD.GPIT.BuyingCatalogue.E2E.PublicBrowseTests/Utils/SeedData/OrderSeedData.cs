@@ -1517,7 +1517,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
 
         private static void AddOrderByAccountManager(BuyingCatalogueDbContext context)
         {
-            const int orderId = 90022;
+            const int orderId = 95000;
             var timeNow = DateTime.UtcNow;
 
             var order = new Order
