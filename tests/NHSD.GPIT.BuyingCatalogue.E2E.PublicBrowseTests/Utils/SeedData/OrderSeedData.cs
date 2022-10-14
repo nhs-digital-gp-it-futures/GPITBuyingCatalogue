@@ -1523,7 +1523,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
             var order = new Order
             {
                 Id = orderId,
-                OrderingPartyId = GetOrganisationId(context),
+                OrderingPartyId = GetOrganisationId(context, "CG-15H"),
                 Created = timeNow,
                 IsDeleted = false,
                 Description = "This is an Order Description",
