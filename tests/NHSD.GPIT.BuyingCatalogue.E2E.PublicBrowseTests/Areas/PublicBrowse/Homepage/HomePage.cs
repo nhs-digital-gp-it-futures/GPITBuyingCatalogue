@@ -124,6 +124,19 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.PublicBrowse.Homepage
         }
 
         [Fact]
+        public void HomePage_ClickTechInnovationFramework_ExpectedResult()
+        {
+            RunTest(() =>
+            {
+                CommonActions.ClickLinkElement(Objects.Home.HomeSelectors.TechInnovationLink);
+
+                CommonActions.PageLoadedCorrectGetIndex(
+                        typeof(HomeController),
+                        nameof(HomeController.TechInnovationFramework)).Should().BeTrue();
+            });
+        }
+
+        [Fact]
         public void HomePage_Buyer_ClickManageOrders_ExpectedResult()
         {
             RunTest(() =>
