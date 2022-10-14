@@ -18,12 +18,12 @@
 
             <nhs-page-title title="@ViewBag.Title"
                             advice="@Model.TitleAdvice"
-							caption = "@Model.OrganisationName" />
+                            caption = "@Model.OrganisationName" />
 
-				@if (!string.IsNullOrWhiteSpace(Model.Description)){
-					<h2 class="nhsuk-heading-s">Description</h2>
-					<p>@Model.Description</p>
-				}
+                @if (!string.IsNullOrWhiteSpace(Model.Description)){
+                    <h2 class="nhsuk-heading-s">Description</h2>
+                    <p>@Model.Description</p>
+                }
 
                 <nhs-task-list>
                     <nhs-task-list-section label-text="Prepare order">
@@ -182,11 +182,11 @@
     };
 
     string SolutionSelectionUrlTarget(TaskProgress progress) => progress switch
-	{
-		TaskProgress.NotStarted => Url.Action(
-		    nameof(CatalogueSolutionsController.SelectSolution),
-		    typeof(CatalogueSolutionsController).ControllerName(),
-		    new { Model.InternalOrgId, Model.CallOffId }),
+    {
+        TaskProgress.NotStarted => Url.Action(
+            nameof(CatalogueSolutionsController.SelectSolution),
+            typeof(CatalogueSolutionsController).ControllerName(),
+            new { Model.InternalOrgId, Model.CallOffId }),
 
         TaskProgress.InProgress => Url.Action(
             nameof(TaskListController.TaskList),
