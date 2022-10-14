@@ -220,7 +220,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering
                 => context.Organisations.First(o => o.InternalIdentifier == internalOrgId).Id;
 
             AspNetUser GetBuyerUser(BuyingCatalogueDbContext context, int organisationId)
-                => GetUserByRole(OrganisationFunction.BuyerName).First(u => u.PrimaryOrganisationId == organisationId);
+                => GetUserByRole(OrganisationFunction.Buyer.Name).First(u => u.PrimaryOrganisationId == organisationId);
 
             using var context = GetEndToEndDbContext();
             var timeNow = DateTime.UtcNow;

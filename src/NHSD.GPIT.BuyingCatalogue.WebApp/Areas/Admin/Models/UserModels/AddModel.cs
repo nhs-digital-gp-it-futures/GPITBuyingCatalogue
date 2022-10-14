@@ -21,8 +21,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.UserModels
 
         public IList<SelectListItem> AccountTypeOptions => new List<SelectListItem>
         {
-            new(OrganisationFunction.BuyerName, $"{OrganisationFunction.BuyerName}"),
-            new("Admin", $"{OrganisationFunction.AuthorityName}"),
+            new(OrganisationFunction.Buyer.DisplayName, $"{OrganisationFunction.Buyer.Name}"),
+            new(OrganisationFunction.AccountManager.DisplayName, $"{OrganisationFunction.AccountManager.Name}"),
+            new(OrganisationFunction.Authority.DisplayName, $"{OrganisationFunction.Authority.Name}"),
         };
 
         public IEnumerable<SelectListItem> Organisations { get; set; }

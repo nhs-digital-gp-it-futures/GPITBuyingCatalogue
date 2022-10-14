@@ -26,7 +26,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Validators.Users
 
         private bool BelongToCorrectOrganisation(int userId, string accountType)
         {
-            if (accountType != OrganisationFunction.AuthorityName)
+            if (accountType != OrganisationFunction.Authority.Name)
                 return true;
 
             var user = usersService.GetUser(userId).Result;

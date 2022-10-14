@@ -103,9 +103,7 @@
                         </nhs-table-cell>
                         <nhs-table-cell>
                             <span data-test-id="user-account-type">
-                                @(Model.UserRole == OrganisationFunction.AuthorityName
-                                    ? "Admin"
-                                    : Model.UserRole)
+                                @(Model.UserRole)
                             </span>
                         </nhs-table-cell>
                         <nhs-table-cell style="text-align: right;">

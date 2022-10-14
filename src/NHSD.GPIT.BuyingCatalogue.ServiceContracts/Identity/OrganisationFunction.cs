@@ -6,32 +6,33 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.Identity
 {
     public sealed class OrganisationFunction : IEquatable<OrganisationFunction>
     {
-        public const string AuthorityName = "Authority";
-        public const string BuyerName = "Buyer";
+        public static readonly OrganisationFunction Authority = new(1, "Authority", "Admin");
+        public static readonly OrganisationFunction Buyer = new(2, "Buyer", "Buyer");
+        public static readonly OrganisationFunction AccountManager = new(3, "AccountManager", "Account Manager");
 
-        public static readonly OrganisationFunction Authority = new(1, AuthorityName);
-        public static readonly OrganisationFunction Buyer = new(2, BuyerName);
+        private static readonly IEnumerable<OrganisationFunction> Values = new[] { Authority, Buyer, AccountManager };
 
-        private static readonly IEnumerable<OrganisationFunction> Values = new[] { Authority, Buyer };
-
-        private OrganisationFunction(int value, string displayName)
+        private OrganisationFunction(int value, string name, string displayName)
         {
             Value = value;
+            Name = name ?? throw new ArgumentNullException(nameof(name));
             DisplayName = displayName ?? throw new ArgumentNullException(nameof(displayName));
         }
 
         public int Value { get; }
 
+        public string Name { get; }
+
         public string DisplayName { get; }
 
-        public static OrganisationFunction FromDisplayName(string displayName)
+        public static OrganisationFunction FromName(string name)
         {
-            if (displayName is null)
+            if (string.IsNullOrWhiteSpace(name))
             {
-                throw new ArgumentNullException(nameof(displayName));
+                throw new ArgumentNullException(nameof(name));
             }
 
-            return Values.SingleOrDefault(o => string.Equals(o.DisplayName, displayName, StringComparison.OrdinalIgnoreCase));
+            return Values.SingleOrDefault(o => string.Equals(o.Name, name, StringComparison.OrdinalIgnoreCase));
         }
 
         public override bool Equals(object obj)

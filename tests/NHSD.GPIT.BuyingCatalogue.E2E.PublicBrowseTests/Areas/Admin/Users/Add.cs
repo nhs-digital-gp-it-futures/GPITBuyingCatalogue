@@ -183,6 +183,29 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.Users
                 nameof(UsersController.Index)).Should().BeTrue();
         }
 
+        [Fact]
+        public void Add_AccountManager_ClickSave_DisplaysCorrectPage()
+        {
+            var context = GetEndToEndDbContext();
+
+            var organisationName = context.Organisations
+                .First(x => x.Name != NhsDigitalOrganisationName)
+                .Name;
+
+            CommonActions.AutoCompleteAddValue(UserObjects.SelectedOrganisation, organisationName);
+            CommonActions.ClickLinkElement(UserObjects.AutoCompleteResult(0));
+            CommonActions.ElementAddValue(UserObjects.FirstNameInput, Strings.RandomString(10));
+            CommonActions.ElementAddValue(UserObjects.LastNameInput, Strings.RandomString(10));
+            CommonActions.ElementAddValue(UserObjects.EmailInput, ValidEmailAddress);
+            CommonActions.ClickRadioButtonWithText("Account Manager");
+
+            CommonActions.ClickLinkElement(CommonSelectors.SubmitButton);
+
+            CommonActions.PageLoadedCorrectGetIndex(
+                typeof(UsersController),
+                nameof(UsersController.Index)).Should().BeTrue();
+        }
+
         public void Dispose()
         {
             var context = GetEndToEndDbContext();

@@ -58,7 +58,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Validators.Users
 
         private static bool BelongToCorrectOrganisation(string accountType, string selectedOrganisationId)
         {
-            if (accountType != OrganisationFunction.AuthorityName)
+            if (accountType != OrganisationFunction.Authority.Name)
                 return true;
 
             return selectedOrganisationId == $"{OrganisationConstants.NhsDigitalOrganisationId}";
