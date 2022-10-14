@@ -34,20 +34,22 @@ public class ServiceRecipientImportService : CsvServiceBase, IServiceRecipientIm
 
         csvReader.Context.RegisterClassMap<ServiceRecipientImportModelMap>();
 
-        IAsyncEnumerable<ServiceRecipientImportModel> records;
+        List<ServiceRecipientImportModel> records;
         try
         {
-            records = csvReader.GetRecordsAsync<ServiceRecipientImportModel>();
+            records = await csvReader
+                .GetRecordsAsync<ServiceRecipientImportModel>()
+                .ToListAsync();
         }
         catch (HeaderValidationException)
         {
             return null;
         }
 
-        return await records.ToListAsync();
+        return records;
     }
 
-    public void StoreOrUpdate(ServiceRecipientCacheKey cacheKey, IList<ServiceRecipientImportModel> importedServiceRecipients)
+    public void Store(ServiceRecipientCacheKey cacheKey, IList<ServiceRecipientImportModel> importedServiceRecipients)
         => memoryCache.Set(cacheKey.ToString(), importedServiceRecipients, TimeSpan.FromMinutes(10));
 
     public void Clear(ServiceRecipientCacheKey cacheKey)

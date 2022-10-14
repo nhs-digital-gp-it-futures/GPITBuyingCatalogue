@@ -90,7 +90,7 @@ public class ImportServiceRecipientsController : Controller
             return View(model);
         }
 
-        importService.StoreOrUpdate(
+        importService.Store(
             new(
                 User.UserId(),
                 internalOrgId,
@@ -113,7 +113,7 @@ public class ImportServiceRecipientsController : Controller
         var cacheKey = new ServiceRecipientCacheKey(User.UserId(), internalOrgId, callOffId, catalogueItemId);
         var cachedRecipients = importService.GetCached(cacheKey);
         if (cachedRecipients is null)
-            return RedirectToAction(nameof(Index), new { internalOrgId, callOffId, catalogueItemId });
+            return RedirectToAction(nameof(Index), new { internalOrgId, callOffId, catalogueItemId, importMode });
 
         var organisationServiceRecipients =
             await odsService.GetServiceRecipientsByParentInternalIdentifier(internalOrgId);
@@ -155,7 +155,7 @@ public class ImportServiceRecipientsController : Controller
         var cacheKey = new ServiceRecipientCacheKey(User.UserId(), internalOrgId, callOffId, catalogueItemId);
         var cachedRecipients = importService.GetCached(cacheKey);
         if (cachedRecipients is null)
-            return RedirectToAction(nameof(Index), new { internalOrgId, callOffId, catalogueItemId });
+            return RedirectToAction(nameof(Index), new { internalOrgId, callOffId, catalogueItemId, importMode });
 
         var organisationServiceRecipients =
             await odsService.GetServiceRecipientsByParentInternalIdentifier(internalOrgId);
@@ -225,10 +225,7 @@ public class ImportServiceRecipientsController : Controller
             typeof(ServiceRecipientsController).ControllerName(),
             new
             {
-                internalOrgId,
-                callOffId,
-                catalogueItemId,
-                importedRecipients = validOdsCodes,
+                internalOrgId, callOffId, catalogueItemId, importedRecipients = validOdsCodes,
             });
     }
 
