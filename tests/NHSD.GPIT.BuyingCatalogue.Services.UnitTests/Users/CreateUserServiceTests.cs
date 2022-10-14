@@ -84,6 +84,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Users
         [Theory]
         [InMemoryDbInlineAutoData("Authority")]
         [InMemoryDbInlineAutoData("Buyer")]
+        [InMemoryDbInlineAutoData("AccountManager")]
         public static async Task Create_SuccessfulApplicationUserValidation_UserAddedToDbContext(
             string role,
             string expectedToken,

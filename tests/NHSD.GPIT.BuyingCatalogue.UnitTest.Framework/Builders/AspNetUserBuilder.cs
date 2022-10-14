@@ -32,6 +32,16 @@ namespace NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.Builders
                             builder.emailAddress,
                             builder.primaryOrganisationId)
                 },
+                {
+                    OrganisationFunction.AccountManager, builder =>
+                        CreateAccountManager(
+                            builder.username,
+                            builder.firstName,
+                            builder.lastName,
+                            builder.phoneNumber,
+                            builder.emailAddress,
+                            builder.primaryOrganisationId)
+                },
             };
 
         private int userId;
@@ -137,6 +147,31 @@ namespace NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.Builders
                 AspNetUserRoles = new List<AspNetUserRole>
                 {
                     new() { Role = new() { Name = OrganisationFunction.Authority.Name } },
+                },
+            };
+        }
+
+        private static AspNetUser CreateAccountManager(
+            string userName,
+            string firstName,
+            string lastName,
+            string phoneNumber,
+            string email,
+            int primaryOrganisationId)
+        {
+            return new AspNetUser
+            {
+                UserName = userName,
+                NormalizedUserName = userName.ToUpper(),
+                FirstName = firstName,
+                LastName = lastName,
+                PhoneNumber = phoneNumber,
+                Email = email,
+                NormalizedEmail = email.ToUpper(),
+                PrimaryOrganisationId = primaryOrganisationId,
+                AspNetUserRoles = new List<AspNetUserRole>
+                {
+                    new() { Role = new() { Name = OrganisationFunction.AccountManager.Name } },
                 },
             };
         }

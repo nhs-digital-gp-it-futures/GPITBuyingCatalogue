@@ -94,6 +94,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Framework.UnitTests.Extensions
 
             Assert.True(user.IsAdmin());
             Assert.False(user.IsBuyer());
+            Assert.False(user.IsAccountManager());
         }
 
         [Fact]
@@ -110,6 +111,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Framework.UnitTests.Extensions
             var user = CreatePrincipal("organisationFunction", "Buyer");
 
             Assert.False(user.IsAdmin());
+            Assert.False(user.IsAccountManager());
             Assert.True(user.IsBuyer());
         }
 
@@ -119,6 +121,24 @@ namespace NHSD.GPIT.BuyingCatalogue.Framework.UnitTests.Extensions
             var user = CreatePrincipal("UnrelatedClaim", "True");
 
             Assert.False(user.IsBuyer());
+        }
+
+        [Fact]
+        public static void IsAccountManager_True_WithClaim()
+        {
+            var user = CreatePrincipal("organisationFunction", "AccountManager");
+
+            Assert.True(user.IsAccountManager());
+            Assert.False(user.IsAdmin());
+            Assert.False(user.IsBuyer());
+        }
+
+        [Fact]
+        public static void IsAccountManager_False_WithoutClaim()
+        {
+            var user = CreatePrincipal("UnrelatedClaim", "True");
+
+            Assert.False(user.IsAccountManager());
         }
 
         [Fact]

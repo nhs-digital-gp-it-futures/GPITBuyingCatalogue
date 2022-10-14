@@ -27,7 +27,7 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.Identity
 
         public static OrganisationFunction FromName(string name)
         {
-            if (name is null)
+            if (string.IsNullOrWhiteSpace(name))
             {
                 throw new ArgumentNullException(nameof(name));
             }
