@@ -262,6 +262,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering
                         Recipient = r,
                         Quantity = 1000,
                         CatalogueItemId = itemId,
+                        DeliveryDate = timeNow.AddDays(2).Date,
                     };
 
                 foreach (var orderItem in orderItems)

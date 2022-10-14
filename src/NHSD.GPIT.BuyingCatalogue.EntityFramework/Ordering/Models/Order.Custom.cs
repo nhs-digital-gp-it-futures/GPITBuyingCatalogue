@@ -50,6 +50,7 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models
                 && CommencementDate is not null
                 && (HasSolution() || HasAssociatedService())
                 && OrderItems.Count > 0
+                && OrderItems.All(x => x.OrderItemRecipients.All(r => r.DeliveryDate != null))
                 && OrderItems.All(oi => oi.OrderItemFunding is not null)
                 && OrderStatus != OrderStatus.Completed;
         }
@@ -59,6 +60,54 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models
             return AssociatedServicesOnly
                 ? SolutionId
                 : GetSolution()?.CatalogueItemId;
+        }
+
+        public List<CatalogueItemId> GetOrderItemIds()
+        {
+            var output = new List<CatalogueItemId>();
+            var solution = GetSolution();
+
+            if (solution != null)
+            {
+                output.Add(solution.CatalogueItemId);
+            }
+
+            output.AddRange(GetAdditionalServices().Select(x => x.CatalogueItemId));
+            output.AddRange(GetAssociatedServices().Select(x => x.CatalogueItemId));
+
+            return output;
+        }
+
+        public CatalogueItemId? GetNextOrderItemId(CatalogueItemId current)
+        {
+            var allIds = GetOrderItemIds();
+
+            if (!allIds.Contains(current))
+            {
+                return null;
+            }
+
+            var index = allIds.IndexOf(current);
+
+            return allIds.Count > (index + 1)
+                ? allIds[index + 1]
+                : null;
+        }
+
+        public CatalogueItemId? GetPreviousOrderItemId(CatalogueItemId current)
+        {
+            var allIds = GetOrderItemIds();
+
+            if (!allIds.Contains(current))
+            {
+                return null;
+            }
+
+            var index = allIds.IndexOf(current);
+
+            return index > 0
+                ? allIds[index - 1]
+                : null;
         }
 
         public OrderItem OrderItem(CatalogueItemId catalogueItemId)
