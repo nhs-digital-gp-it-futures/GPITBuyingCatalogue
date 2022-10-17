@@ -132,7 +132,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.Users
             await using var context = GetEndToEndDbContext();
 
             var user = await context.AspNetUsers.Include(u => u.AspNetUserRoles).SingleAsync(x => x.Id == UserId);
-            var buyerRole = await context.Roles.FirstAsync(x => x.Name == OrganisationFunction.BuyerName);
+            var buyerRole = await context.Roles.FirstAsync(x => x.Name == OrganisationFunction.Buyer.Name);
 
             user.AspNetUserRoles.Clear();
             user.AspNetUserRoles.Add(new() { Role = buyerRole });
@@ -160,7 +160,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.Users
         {
             using var context = GetEndToEndDbContext();
 
-            var adminRole = context.Roles.First(x => x.Name == OrganisationFunction.AuthorityName);
+            var adminRole = context.Roles.First(x => x.Name == OrganisationFunction.Authority.Name);
 
             var user = context.AspNetUsers.Include(u => u.AspNetUserRoles).Single(x => x.Id == UserId);
             var organisation = context.Organisations.Single(x => x.Name == NhsDigitalOrganisationName);

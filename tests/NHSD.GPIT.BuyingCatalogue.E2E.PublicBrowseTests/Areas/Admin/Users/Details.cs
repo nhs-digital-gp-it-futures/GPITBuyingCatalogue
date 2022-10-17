@@ -200,9 +200,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.Users
             var user = await GetUser(UserId);
             var userRole = user.AspNetUserRoles.Select(r => r.Role).First().Name;
 
-            var organisationFunction = userRole == OrganisationFunction.AuthorityName
-                ? "Admin"
-                : userRole;
+            var organisationFunction = OrganisationFunction.FromName(userRole).DisplayName;
 
             var accountStatus = user.Disabled
                 ? ServiceContracts.Enums.AccountStatus.Inactive.ToString()

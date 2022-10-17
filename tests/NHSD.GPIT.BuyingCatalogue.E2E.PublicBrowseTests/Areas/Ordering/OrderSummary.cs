@@ -220,7 +220,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering
                 => context.Organisations.First(o => o.InternalIdentifier == internalOrgId).Id;
 
             AspNetUser GetBuyerUser(BuyingCatalogueDbContext context, int organisationId)
-                => GetUserByRole(OrganisationFunction.BuyerName).First(u => u.PrimaryOrganisationId == organisationId);
+                => GetUserByRole(OrganisationFunction.Buyer.Name).First(u => u.PrimaryOrganisationId == organisationId);
 
             using var context = GetEndToEndDbContext();
             var timeNow = DateTime.UtcNow;
@@ -262,6 +262,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering
                         Recipient = r,
                         Quantity = 1000,
                         CatalogueItemId = itemId,
+                        DeliveryDate = timeNow.AddDays(2).Date,
                     };
 
                 foreach (var orderItem in orderItems)

@@ -20,6 +20,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Framework.UnitTests.Identity
         [Theory]
         [InlineData("Buyer")]
         [InlineData("Authority")]
+        [InlineData("AccountManager")]
         public static async Task GenerateClaimsAsync_ClaimsSetBasedOnAuthorityAndFirstLastName(string organisationFunction)
         {
             var user = new AspNetUser { Id = 97, UserName = "Foo", FirstName = "Fred", LastName = "Smith" };

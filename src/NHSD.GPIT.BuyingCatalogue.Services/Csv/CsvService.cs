@@ -15,26 +15,30 @@ using NHSD.GPIT.BuyingCatalogue.EntityFramework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Csv;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Frameworks;
+using NHSD.GPIT.BuyingCatalogue.ServiceContracts.FundingTypes;
 
 namespace NHSD.GPIT.BuyingCatalogue.Services.Csv
 {
     public class CsvService : CsvServiceBase, ICsvService
     {
         private readonly BuyingCatalogueDbContext dbContext;
+        private readonly IFundingTypeService fundingTypeService;
 
-        public CsvService(BuyingCatalogueDbContext dbContext)
+        public CsvService(BuyingCatalogueDbContext dbContext, IFundingTypeService fundingTypeService)
         {
             this.dbContext = dbContext ?? throw new ArgumentNullException(nameof(dbContext));
+            this.fundingTypeService = fundingTypeService ?? throw new ArgumentNullException(nameof(fundingTypeService));
         }
 
         public async Task CreateFullOrderCsvAsync(int orderId, MemoryStream stream)
         {
             var billingPeriods = await GetBillingPeriods(orderId);
-            var fundingType = await GetFundingType(orderId);
+            var fundingTypes = await GetFundingTypes(orderId);
             var prices = await GetPrices(orderId);
             var (supplierId, supplierName) = await GetSupplierDetails(orderId);
 
             var items = await dbContext.OrderItemRecipients
+                .Include(x => x.OrderItem).ThenInclude(x => x.OrderItemFunding)
                 .AsNoTracking()
                 .Where(oir => oir.OrderId == orderId)
                 .Select(oir => new FullOrderCsvModel
@@ -59,8 +63,8 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Csv
                     EstimationPeriod = TimeUnitDescription(oir.OrderItem.EstimationPeriod),
                     Price = prices[oir.OrderItem.CatalogueItemId],
                     OrderType = (int)oir.OrderItem.OrderItemPrice.ProvisioningType,
-                    M1Planned = oir.OrderItem.Order.CommencementDate,
-                    FundingType = fundingType,
+                    M1Planned = oir.DeliveryDate,
+                    FundingType = fundingTypeService.GetFundingType(fundingTypes, oir.OrderItem.FundingType).Description(),
                     Framework = oir.OrderItem.Order.SelectedFrameworkId,
                     InitialTerm = oir.OrderItem.Order.InitialPeriod,
                     MaximumTerm = oir.OrderItem.Order.MaximumTerm,
@@ -78,11 +82,12 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Csv
 
         public async Task<int> CreatePatientNumberCsvAsync(int orderId, MemoryStream stream)
         {
-            var fundingType = await GetFundingType(orderId);
+            var fundingTypes = await GetFundingTypes(orderId);
             var prices = await GetPrices(orderId);
             var (supplierId, supplierName) = await GetSupplierDetails(orderId);
 
             var items = await dbContext.OrderItemRecipients
+                .Include(x => x.OrderItem).ThenInclude(x => x.OrderItemFunding)
                 .AsNoTracking()
                 .Where(oir => oir.OrderId == orderId)
                 .Select(oir => new PatientOrderCsvModel
@@ -104,8 +109,8 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Csv
                     QuantityOrdered = oir.Quantity ?? oir.OrderItem.Quantity ?? 0,
                     UnitOfOrder = oir.OrderItem.OrderItemPrice.Description,
                     Price = prices[oir.OrderItem.CatalogueItemId],
-                    FundingType = fundingType,
-                    M1Planned = oir.OrderItem.Order.CommencementDate,
+                    FundingType = fundingTypeService.GetFundingType(fundingTypes, oir.OrderItem.FundingType).Description(),
+                    M1Planned = oir.DeliveryDate,
                     Framework = oir.OrderItem.Order.SelectedFrameworkId,
                     InitialTerm = oir.OrderItem.Order.InitialPeriod,
                     MaximumTerm = oir.OrderItem.Order.MaximumTerm,
@@ -135,15 +140,15 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Csv
                     x => x.OrderItemPrice?.BillingPeriod);
         }
 
-        private async Task<string> GetFundingType(int orderId)
+        private async Task<List<OrderItemFundingType>> GetFundingTypes(int orderId)
         {
-            var order = await dbContext.Orders
-                .Include(x => x.OrderItems)
-                .ThenInclude(x => x.OrderItemFunding)
+            return await dbContext.OrderItems
+                .Include(x => x.OrderItemFunding)
                 .AsNoTracking()
-                .SingleOrDefaultAsync(x => x.Id == orderId);
-
-            return order?.ApproximateFundingType;
+                .Where(x => x.OrderId == orderId)
+                .Select(x => x.OrderItemFunding.OrderItemFundingType)
+                .Distinct()
+                .ToListAsync();
         }
 
         private async Task<Dictionary<CatalogueItemId, decimal>> GetPrices(int orderId)

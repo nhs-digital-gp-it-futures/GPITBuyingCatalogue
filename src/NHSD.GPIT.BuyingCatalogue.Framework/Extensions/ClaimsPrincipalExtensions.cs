@@ -45,12 +45,17 @@ namespace NHSD.GPIT.BuyingCatalogue.Framework.Extensions
 
         public static bool IsAdmin(this ClaimsPrincipal user)
         {
-            return HasOrganisationClaim(user, OrganisationFunction.Authority.DisplayName);
+            return HasOrganisationClaim(user, OrganisationFunction.Authority.Name);
         }
 
         public static bool IsBuyer(this ClaimsPrincipal user)
         {
-            return HasOrganisationClaim(user, OrganisationFunction.Buyer.DisplayName);
+            return HasOrganisationClaim(user, OrganisationFunction.Buyer.Name);
+        }
+
+        public static bool IsAccountManager(this ClaimsPrincipal user)
+        {
+            return HasOrganisationClaim(user, OrganisationFunction.AccountManager.Name);
         }
 
         public static int UserId(this ClaimsPrincipal user)
@@ -70,7 +75,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Framework.Extensions
             return claim is not null ? claim.Value : string.Empty;
         }
 
-        private static bool HasOrganisationClaim(ClaimsPrincipal user, string displayName) =>
-            GetClaimValue(user, Constants.CatalogueClaims.OrganisationFunction).EqualsIgnoreCase(displayName);
+        private static bool HasOrganisationClaim(ClaimsPrincipal user, string name) =>
+            GetClaimValue(user, Constants.CatalogueClaims.OrganisationFunction).EqualsIgnoreCase(name);
     }
 }

@@ -168,7 +168,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators.User
             var model = new AddModel
             {
                 SelectedOrganisationId = $"{OrganisationConstants.NhsDigitalOrganisationId + 1}",
-                SelectedAccountType = OrganisationFunction.AuthorityName,
+                SelectedAccountType = OrganisationFunction.Authority.Name,
             };
 
             var result = validator.TestValidate(model);
@@ -185,7 +185,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators.User
             var model = new AddModel
             {
                 SelectedOrganisationId = $"{OrganisationConstants.NhsDigitalOrganisationId}",
-                SelectedAccountType = OrganisationFunction.AuthorityName,
+                SelectedAccountType = OrganisationFunction.Authority.Name,
             };
 
             var result = validator.TestValidate(model);
@@ -202,7 +202,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators.User
             AddModelValidator validator)
         {
             model.Email = EmailAddress;
-            model.SelectedAccountType = OrganisationFunction.BuyerName;
+            model.SelectedAccountType = OrganisationFunction.Buyer.Name;
 
             mockUsersService
                 .Setup(x => x.EmailAddressExists(EmailAddress, 0))

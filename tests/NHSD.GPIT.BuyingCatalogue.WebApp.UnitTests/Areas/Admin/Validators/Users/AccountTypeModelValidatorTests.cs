@@ -42,7 +42,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators.User
         {
             var model = new AccountTypeModel
             {
-                SelectedAccountType = OrganisationFunction.BuyerName,
+                SelectedAccountType = OrganisationFunction.Buyer.Name,
             };
 
             var result = validator.TestValidate(model);
@@ -58,7 +58,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators.User
         {
             var model = new AccountTypeModel
             {
-                SelectedAccountType = OrganisationFunction.AuthorityName,
+                SelectedAccountType = OrganisationFunction.Authority.Name,
                 UserId = UserId,
             };
 
@@ -82,7 +82,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators.User
         {
             var model = new AccountTypeModel
             {
-                SelectedAccountType = OrganisationFunction.AuthorityName,
+                SelectedAccountType = OrganisationFunction.Authority.Name,
                 UserId = UserId,
             };
 

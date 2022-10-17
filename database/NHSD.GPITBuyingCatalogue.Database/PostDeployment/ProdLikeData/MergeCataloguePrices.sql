@@ -49,8 +49,8 @@ BEGIN
     -- Solutions per patient
     INSERT INTO @CataloguePrice (CataloguePriceId, CatalogueItemId, ProvisioningTypeId, CataloguePriceTypeId, PricingUnitId, TimeUnitId, CataloguePriceCalculationTypeId, CurrencyCode, LastUpdated, Price, PublishedStatusId) 
          VALUES (1001, N'10000-001', 1, 1, @patient, 2, 1, 'GBP', GETUTCDATE(), 1.26, 3),
-                (1002, N'10000-054', 1, 1, @patient, 2, 1, 'GBP', GETUTCDATE(), 0.15, 3),
-                (1003, N'10000-062', 1, 1, @patient, 2, 1, 'GBP', GETUTCDATE(), 0.02, 3),
+                (1002, N'10000-054', 1, 1, @patient, 2, 1, 'GBP', GETUTCDATE(), 5.15, 3),
+                (1003, N'10000-062', 1, 1, @patient, 2, 1, 'GBP', GETUTCDATE(), 5.02, 3),
                 (1004, N'10004-001', 1, 1, @patient, 2, 1, 'GBP', GETUTCDATE(), 0.22, 3),
                 (1005, N'10004-002', 1, 1, @patient, 2, 1, 'GBP', GETUTCDATE(), 0.19, 3),
                 (1006, N'10007-002', 1, 1, @patient, 2, 1, 'GBP', GETUTCDATE(), 0.14, 3),
@@ -61,7 +61,7 @@ BEGIN
                 (1011, N'10047-001', 1, 1, @patient, 2, 1, 'GBP', GETUTCDATE(), 0.84, 3),
                 (1012, N'10052-002', 1, 1, @patient, 2, 1, 'GBP', GETUTCDATE(), 1.26, 3),
                 (1013, N'10059-001', 1, 1, @patient, 2, 1, 'GBP', GETUTCDATE(), 0.14, 3),
-                (1014, N'10030-001', 1, 1, @patient, 2, 1, 'GBP', GETUTCDATE(), 0, 3),
+                (1014, N'10030-001', 1, 1, @patient, 2, 1, 'GBP', GETUTCDATE(), 10.0, 3),
                 (1015, N'10033-001', 1, 1, @patient, 2, 1, 'GBP', GETUTCDATE(), 1.26, 3),
                 (1016, N'10062-001', 1, 1, @patient, 2, 1, 'GBP', GETUTCDATE(), 0.3, 3),
                 (1094, N'10063-002', 1, 1, @patient, 2, 1, 'GBP', GETUTCDATE(), 0.3, 3),

@@ -55,7 +55,7 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering.Dashboard
 
         public void TimescalesForCallOffAgreementTask()
         {
-            CommonActions.ClickLinkElement(CommencementDate.TimescalesForCallOffLink);
+            CommonActions.ClickLinkElement(CommencementDateObjects.TimescalesForCallOffLink);
 
             CommonActions.PageLoadedCorrectGetIndex(
                 typeof(CommencementDateController),
@@ -105,6 +105,28 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering.Dashboard
              nameof(TaskListController.TaskList)).Should().BeTrue();
         }
 
+        public void SelectFrameWork()
+        {
+            CommonActions.ClickLinkElement(FundingSources.SelectFundingSourcesLink);
+            CommonActions.PageLoadedCorrectGetIndex(
+                    typeof(FundingSourceController),
+                    nameof(FundingSourceController.SelectFramework))
+                .Should()
+                .BeTrue();
+
+            CommonActions.ClickLastRadio();
+            CommonActions.ClickSave();
+        }
+
+        public void SelectPlannedDeliveryDatesTask()
+        {
+            CommonActions.ClickLinkElement(OrderDashboard.PlannedDeliveryDates);
+
+            CommonActions.PageLoadedCorrectGetIndex(
+                typeof(DeliveryDatesController),
+                nameof(DeliveryDatesController.SelectDate)).Should().BeTrue();
+        }
+
         public void SelectFundingSourcesTask()
         {
             CommonActions.ClickLinkElement(FundingSources.SelectFundingSourcesLink);
@@ -113,6 +135,22 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering.Dashboard
                 typeof(FundingSourceController),
                 nameof(FundingSourceController.FundingSources))
                     .Should().BeTrue();
+        }
+
+        public void SelectLocalFundingSourcesTask()
+        {
+            CommonActions.ClickLinkElement(FundingSources.SelectFundingSourcesLink);
+
+            CommonActions.PageLoadedCorrectGetIndex(
+                typeof(FundingSourceController),
+                nameof(FundingSourceController.FundingSources))
+                    .Should().BeTrue();
+
+            CommonActions.ClickSave();
+
+            CommonActions.PageLoadedCorrectGetIndex(
+              typeof(OrderController),
+              nameof(OrderController.Order)).Should().BeTrue();
         }
 
         public void ImplementationPlanMilestonesTask()

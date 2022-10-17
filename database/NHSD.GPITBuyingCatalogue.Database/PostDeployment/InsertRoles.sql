@@ -1,6 +1,6 @@
 ﻿DECLARE @Roles AS TABLE (RoleName NVARCHAR(50));
 
-INSERT INTO @Roles VALUES ('Buyer'), ('Authority');
+INSERT INTO @Roles VALUES ('Buyer'), ('Authority'), ('AccountManager');
 
 MERGE INTO users.AspNetRoles AS TARGET
     USING @Roles AS SOURCE

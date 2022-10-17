@@ -26,7 +26,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Models
                 = user.HasAcceptedLatestTermsOfUse(termsOfUseRevisionDate);
 
             IsBuyer = userRoles.Any(
-                r => string.Equals(OrganisationFunction.Buyer.DisplayName, r, StringComparison.OrdinalIgnoreCase));
+                r => string.Equals(OrganisationFunction.Buyer.Name, r, StringComparison.OrdinalIgnoreCase));
 
             HasOptedInUserResearch = user.HasOptedInUserResearch;
         }

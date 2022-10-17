@@ -26,7 +26,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Validators.Users
 
         private bool BelongToCorrectOrganisation(int userId, string organisationId)
         {
-            var hasRole = usersService.HasRole(userId, OrganisationFunction.AuthorityName).GetAwaiter().GetResult();
+            var hasRole = usersService.HasRole(userId, OrganisationFunction.Authority.Name).GetAwaiter().GetResult();
             if (!hasRole)
                 return true;
 

@@ -41,10 +41,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.Users
             var user = GetUser();
             var userRole = user.AspNetUserRoles.Select(u => u.Role).First().Name;
 
-            var isAdmin = userRole == OrganisationFunction.AuthorityName;
-
-            CommonActions.IsRadioButtonChecked(OrganisationFunction.AuthorityName).Should().Be(isAdmin);
-            CommonActions.IsRadioButtonChecked(OrganisationFunction.BuyerName).Should().Be(!isAdmin);
+            CheckRadioButtons(userRole == OrganisationFunction.Authority.Name, userRole == OrganisationFunction.Buyer.Name, userRole == OrganisationFunction.AccountManager.Name);
         }
 
         [Fact]
@@ -70,7 +67,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.Users
 
             var userRole = GetUser().AspNetUserRoles.Select(u => u.Role).First().Name;
 
-            userRole.Should().Be(OrganisationFunction.AuthorityName);
+            userRole.Should().Be(OrganisationFunction.Authority.Name);
         }
 
         [Fact]
@@ -111,7 +108,22 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.Users
                 nameof(UsersController.Details)).Should().BeTrue();
 
             var userRole = GetUser().AspNetUserRoles.Select(u => u.Role).First().Name;
-            userRole.Should().Be(OrganisationFunction.BuyerName);
+            userRole.Should().Be(OrganisationFunction.Buyer.Name);
+        }
+
+        [Fact]
+        public void AccountType_ClickAccountManager_ThenSubmit_SetsValuesAndDisplaysCorrectPage()
+        {
+            CommonActions.ClickRadioButtonWithText("Account Manager");
+
+            CommonActions.ClickLinkElement(CommonSelectors.SubmitButton);
+
+            CommonActions.PageLoadedCorrectGetIndex(
+                typeof(UsersController),
+                nameof(UsersController.Details)).Should().BeTrue();
+
+            var userRole = GetUser().AspNetUserRoles.Select(u => u.Role).First().Name;
+            userRole.Should().Be(OrganisationFunction.AccountManager.Name);
         }
 
         public void Dispose()
@@ -123,5 +135,12 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.Users
         }
 
         private AspNetUser GetUser() => GetEndToEndDbContext().AspNetUsers.Include(u => u.AspNetUserRoles).ThenInclude(r => r.Role).Single(x => x.Id == UserId);
+
+        private void CheckRadioButtons(bool isAuth, bool isBuyer, bool isAM)
+        {
+            CommonActions.IsRadioButtonChecked(OrganisationFunction.Authority.Name).Should().Be(isAuth);
+            CommonActions.IsRadioButtonChecked(OrganisationFunction.Buyer.Name).Should().Be(isBuyer);
+            CommonActions.IsRadioButtonChecked(OrganisationFunction.AccountManager.Name).Should().Be(isAM);
+        }
     }
 }

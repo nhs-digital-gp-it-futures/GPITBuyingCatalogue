@@ -1,7 +1,7 @@
 ﻿@using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models
 @model NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.CommencementDate.CommencementDateModel;
 @{
-    ViewBag.Title = Model!.Title;
+    ViewBag.Title = "Timescales for Call-off Agreement";
 
     var isUnder40K = Model.OrderTriageValue == OrderTriageValue.Under40K;
     var maximumTermLimit = isUnder40K
@@ -35,7 +35,6 @@
         <form method="post">
             <input type="hidden" asp-for="@Model.BackLink" />
             <input type="hidden" asp-for="@Model.BackLinkText" />
-            <input type="hidden" asp-for="@Model.Title" />
             <input type="hidden" asp-for="@Model.OrderTriageValue" />
 
             <div class="nhsuk-u-margin-bottom-9">

@@ -21,6 +21,7 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering
             StartOrder = new StartOrder(driver, commonActions);
             TaskList = new TaskList(driver, commonActions);
             OrderingStepOne = new OrderingStepOne(driver, commonActions);
+            PlannedDeliveryDates = new PlannedDeliveryDates(driver, commonActions);
             SelectFundingSources = new SelectFundingSources(driver, commonActions);
             SelectSupplier = new SelectSupplier(driver, commonActions);
             SupplierContacts = new SupplierContacts(driver, commonActions);
@@ -56,6 +57,8 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering
         internal TaskList TaskList { get; }
 
         internal OrderingStepOne OrderingStepOne { get; }
+
+        internal PlannedDeliveryDates PlannedDeliveryDates { get; }
 
         internal SelectFundingSources SelectFundingSources { get; }
 
@@ -191,8 +194,29 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering
 
             SolutionAndServicesReview.ReviewSolutionAndServices();
 
-            TaskList.SelectFundingSourcesTask();
-            SelectFundingSources.AddFundingSources(solutionName, isAssociatedServiceOnlyOrder, associatedServices, additionalServices);
+            TaskList.SelectPlannedDeliveryDatesTask();
+            PlannedDeliveryDates.SetDefaultPlannedDeliveryDate(DateTime.Today.AddDays(7));
+
+            var isMultiFramework = IsMultiFramework();
+
+            if (isMultiFramework)
+            {
+                TaskList.SelectFrameWork();
+                SelectFundingSources.AddFundingSources(solutionName, isAssociatedServiceOnlyOrder, associatedServices, additionalServices);
+            }
+            else
+            {
+                var isLocalFundingOnly = IsLocalFundingOnly();
+                if (isLocalFundingOnly)
+                {
+                    TaskList.SelectLocalFundingSourcesTask();
+                }
+                else
+                {
+                    TaskList.SelectFundingSourcesTask();
+                    SelectFundingSources.AddFundingSources(solutionName, isAssociatedServiceOnlyOrder, associatedServices, additionalServices);
+                }
+            }
         }
 
         public void StepThreeCompleteContract(bool isDefault = true)
@@ -500,6 +524,37 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering
             var orderID = Driver.Url.Split('/').Last().Split('-')[0].Replace("C0", string.Empty);
 
             return dbContext.Orders.Any(o => string.Equals(o.Id.ToString(), orderID) && o.AssociatedServicesOnly);
+        }
+
+        private bool IsMultiFramework()
+        {
+            using var dbContext = Factory.DbContext;
+            var orderID = Driver.Url.Split('/').Last().Split('-')[0].Replace("C0", string.Empty);
+
+
+            var frameworks = dbContext.OrderItems
+             .Where(oi => string.Equals(oi.OrderId.ToString(), orderID))
+             .SelectMany(oi => oi.CatalogueItem.Solution.FrameworkSolutions.Select(fs => fs.Framework)).ToList();
+
+            return frameworks.Count() > 1;
+        }
+
+        private bool IsLocalFundingOnly()
+        {
+            using var dbContext = Factory.DbContext;
+            var orderID = Driver.Url.Split('/').Last().Split('-')[0].Replace("C0", string.Empty);
+
+            var frameworks = dbContext.OrderItems
+             .Where(oi => string.Equals(oi.OrderId.ToString(), orderID))
+             .SelectMany(oi => oi.CatalogueItem.Solution.FrameworkSolutions.Select(fs => fs.Framework)).ToList();
+
+            if (frameworks.Count == 0 || frameworks.Count > 1)
+            {
+                return false;
+            }
+
+            var framework = frameworks.FirstOrDefault();
+            return framework.LocalFundingOnly;
         }
 
         private bool HasAdditionalService(string solutionName)
