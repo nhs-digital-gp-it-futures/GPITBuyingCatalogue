@@ -49,7 +49,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.SolutionSelection.
                 case null:
                     if (importedRecipients?.Length > 0)
                     {
-                        ServiceRecipients.Where(sr => importedRecipients.Contains(sr.OdsCode))
+                        ServiceRecipients.Where(
+                                sr => importedRecipients.Select(x => x.ToUpperInvariant()).Contains(sr.OdsCode))
                             .ToList()
                             .ForEach(x => x.Selected = true);
 

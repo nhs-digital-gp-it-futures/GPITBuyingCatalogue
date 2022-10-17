@@ -33,6 +33,7 @@ public class ValidateNamesModel : NavBaseModel
                     importedServiceRecipients.First(x => string.Equals(x.OdsCode, r.OrgId)).Organisation,
                     r.Name,
                     r.OrgId))
+            .DistinctBy(x => x.OdsCode)
             .ToList();
     }
 

@@ -5,7 +5,6 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using MoreLinq.Extensions;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.CatalogueItems;
@@ -44,7 +43,8 @@ public class ImportServiceRecipientsController : Controller
         IOdsService odsService)
     {
         this.importService = importService ?? throw new ArgumentNullException(nameof(importService));
-        this.catalogueItemService = catalogueItemService ?? throw new ArgumentNullException(nameof(catalogueItemService));
+        this.catalogueItemService =
+            catalogueItemService ?? throw new ArgumentNullException(nameof(catalogueItemService));
         this.odsService = odsService ?? throw new ArgumentNullException(nameof(odsService));
     }
 
@@ -81,7 +81,8 @@ public class ImportServiceRecipientsController : Controller
         if (!ModelState.IsValid)
             return View(model);
 
-        IList<ServiceRecipientImportModel> importedServiceRecipients = await importService.ReadFromStream(model.File.OpenReadStream());
+        IList<ServiceRecipientImportModel> importedServiceRecipients =
+            await importService.ReadFromStream(model.File.OpenReadStream());
         var (validatedSuccessfully, error) = ValidateServiceRecipients(importedServiceRecipients);
 
         if (!validatedSuccessfully)
@@ -157,15 +158,9 @@ public class ImportServiceRecipientsController : Controller
             return RedirectToAction(nameof(Index), new { internalOrgId, callOffId, catalogueItemId, importMode });
 
         var organisationServiceRecipients =
-            await odsService.GetServiceRecipientsByParentInternalIdentifier(internalOrgId);
+            (await odsService.GetServiceRecipientsByParentInternalIdentifier(internalOrgId)).ToList();
 
-        var mismatchedRecipients = organisationServiceRecipients.Where(
-            r => cachedRecipients.Any(
-                x => string.Equals(r.OrgId, x.OdsCode, StringComparison.OrdinalIgnoreCase) && !string.Equals(
-                    r.Name,
-                    x.Organisation,
-                    StringComparison.OrdinalIgnoreCase)))
-            .ToList();
+        var mismatchedRecipients = GetMismatchedNames(cachedRecipients, organisationServiceRecipients);
 
         if (mismatchedRecipients.Any())
         {
@@ -180,12 +175,13 @@ public class ImportServiceRecipientsController : Controller
                 mismatchedRecipients)
             {
                 BackLink = Url.Action(
-                    nameof(ValidateOds),
+                    GetNameValidationBacklink(cachedRecipients, organisationServiceRecipients),
                     new { internalOrgId, callOffId, catalogueItemId, importMode }),
             };
             return View(model);
         }
 
+        var validOdsCodes = GetValidOdsCodes(cachedRecipients, organisationServiceRecipients);
         importService.Clear(cacheKey);
         return RedirectToAction(
             GetServiceRecipientRedirectAction(importMode!.Value),
@@ -195,7 +191,7 @@ public class ImportServiceRecipientsController : Controller
                 internalOrgId,
                 callOffId,
                 catalogueItemId,
-                importedRecipients = cachedRecipients.Select(r => r.OdsCode).ToArray(),
+                importedRecipients = string.Join(',', validOdsCodes),
             });
     }
 
@@ -212,19 +208,16 @@ public class ImportServiceRecipientsController : Controller
         var organisationServiceRecipients =
             await odsService.GetServiceRecipientsByParentInternalIdentifier(internalOrgId);
 
-        importService.Clear(cacheKey);
+        var validOdsCodes = GetValidOdsCodes(cachedRecipients, organisationServiceRecipients);
 
-        var validOdsCodes = cachedRecipients.ExceptBy(model.NameDiscrepancies.Select(x => x.OdsCode), x => x.OdsCode)
-            .ExceptBy(GetMismatchedOdsCodes(cachedRecipients, organisationServiceRecipients), x => x.OdsCode)
-            .Select(x => x.OdsCode)
-            .ToArray();
+        importService.Clear(cacheKey);
 
         return RedirectToAction(
             GetServiceRecipientRedirectAction(importMode!.Value),
             typeof(ServiceRecipientsController).ControllerName(),
             new
             {
-                internalOrgId, callOffId, catalogueItemId, importedRecipients = validOdsCodes,
+                internalOrgId, callOffId, catalogueItemId, importedRecipients = string.Join(',', validOdsCodes),
             });
     }
 
@@ -267,14 +260,50 @@ public class ImportServiceRecipientsController : Controller
             ? nameof(ServiceRecipientsController.AddServiceRecipients)
             : nameof(ServiceRecipientsController.EditServiceRecipients);
 
-    private static IEnumerable<ServiceRecipientImportModel> GetMismatchedOdsCodes(
+    private static List<ServiceRecipientImportModel> GetMismatchedOdsCodes(
         IEnumerable<ServiceRecipientImportModel> importedServiceRecipients,
         IEnumerable<ServiceRecipient> serviceRecipients)
         => importedServiceRecipients.Where(
             r => serviceRecipients.All(
-                x => !string.Equals(x.OrgId, r.OdsCode, StringComparison.OrdinalIgnoreCase)));
+                x => !string.Equals(x.OrgId, r.OdsCode, StringComparison.OrdinalIgnoreCase))).ToList();
 
-    private static (bool Validated, string Error) ValidateServiceRecipients(IList<ServiceRecipientImportModel> importedRecipients)
+    private static List<ServiceRecipient> GetMismatchedNames(
+        IEnumerable<ServiceRecipientImportModel> importedServiceRecipients,
+        IEnumerable<ServiceRecipient> serviceRecipients)
+        => serviceRecipients.Where(
+            r => importedServiceRecipients.Any(
+                x => string.Equals(r.OrgId, x.OdsCode, StringComparison.OrdinalIgnoreCase) && !string.Equals(
+                    r.Name,
+                    x.Organisation,
+                    StringComparison.OrdinalIgnoreCase))).ToList();
+
+    private static string GetNameValidationBacklink(
+        IEnumerable<ServiceRecipientImportModel> importedServiceRecipients,
+        IEnumerable<ServiceRecipient> serviceRecipients) =>
+        GetMismatchedOdsCodes(importedServiceRecipients, serviceRecipients).Any()
+            ? nameof(ValidateOds)
+            : nameof(Index);
+
+    private static string[] GetValidOdsCodes(
+        IEnumerable<ServiceRecipientImportModel> importedServiceRecipients,
+        IEnumerable<ServiceRecipient> serviceRecipients)
+    {
+        var importedRecipients = importedServiceRecipients.ToList();
+        var organisationRecipients = serviceRecipients.ToList();
+
+        var mismatchedOdsCodes = GetMismatchedOdsCodes(importedRecipients, organisationRecipients).Select(x => x.OdsCode);
+        var mismatchedNames = GetMismatchedNames(importedRecipients, organisationRecipients).Select(x => x.OrgId);
+
+        var validOdsCodes = importedRecipients.ExceptBy(mismatchedNames, x => x.OdsCode)
+            .ExceptBy(mismatchedOdsCodes, x => x.OdsCode)
+            .Select(x => x.OdsCode)
+            .ToArray();
+
+        return validOdsCodes;
+    }
+
+    private static (bool Validated, string Error) ValidateServiceRecipients(
+        IList<ServiceRecipientImportModel> importedRecipients)
     {
         if (importedRecipients == null)
         {

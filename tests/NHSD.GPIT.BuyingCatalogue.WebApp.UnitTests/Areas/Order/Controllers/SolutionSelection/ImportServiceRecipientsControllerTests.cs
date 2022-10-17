@@ -368,7 +368,7 @@ public static class ImportServiceRecipientsControllerTests
                     { nameof(internalOrgId), internalOrgId },
                     { nameof(callOffId), callOffId },
                     { nameof(catalogueItemId), catalogueItemId },
-                    { nameof(importedRecipients), importedRecipients.Select(s => s.OdsCode).ToArray() },
+                    { nameof(importedRecipients), string.Join(',', importedRecipients.Select(s => s.OdsCode)) },
                 });
     }
 
@@ -436,7 +436,7 @@ public static class ImportServiceRecipientsControllerTests
                     { nameof(internalOrgId), internalOrgId },
                     { nameof(callOffId), callOffId },
                     { nameof(catalogueItemId), catalogueItemId },
-                    { nameof(importedRecipients), importedRecipients.Skip(2).Select(x => x.OdsCode).ToArray() },
+                    { nameof(importedRecipients), string.Join(',', importedRecipients.Skip(2).Select(x => x.OdsCode)) },
                 });
     }
 
