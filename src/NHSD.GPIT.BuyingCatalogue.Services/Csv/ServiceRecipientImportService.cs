@@ -5,6 +5,7 @@ using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using CsvHelper;
+using CsvHelper.Configuration;
 using Microsoft.Extensions.Caching.Memory;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Csv;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Models;
@@ -30,7 +31,10 @@ public class ServiceRecipientImportService : CsvServiceBase, IServiceRecipientIm
     public async Task<IList<ServiceRecipientImportModel>> ReadFromStream(Stream stream)
     {
         using var streamReader = new StreamReader(stream);
-        using var csvReader = new CsvReader(streamReader, new(CultureInfo.InvariantCulture));
+        using var csvReader = new CsvReader(streamReader, new(CultureInfo.InvariantCulture)
+        {
+            TrimOptions = TrimOptions.Trim,
+        });
 
         csvReader.Context.RegisterClassMap<ServiceRecipientImportModelMap>();
 
