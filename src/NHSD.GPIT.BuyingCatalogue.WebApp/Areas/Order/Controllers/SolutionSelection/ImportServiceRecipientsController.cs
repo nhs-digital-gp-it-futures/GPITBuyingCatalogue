@@ -136,7 +136,6 @@ public class ImportServiceRecipientsController : Controller
             return View(model);
         }
 
-        importService.Clear(cacheKey);
         return RedirectToAction(
             nameof(ValidateNames),
             new

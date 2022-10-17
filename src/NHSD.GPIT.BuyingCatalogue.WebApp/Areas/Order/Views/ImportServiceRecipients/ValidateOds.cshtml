@@ -12,22 +12,24 @@
                         caption="@Model.CatalogueItemName"
                         advice="We cannot import all the Service Recipients in your CSV file." />
 
-        <nhs-table label-text="Failed imports">
-            <nhs-table-column>Service Recipient</nhs-table-column>
-            <nhs-table-column>ODS Code</nhs-table-column>
+        <div data-test-id="validate-ods-table">
+            <nhs-table label-text="Failed imports">
+                <nhs-table-column>Service Recipient</nhs-table-column>
+                <nhs-table-column>ODS code</nhs-table-column>
 
-            @for (var i = 0; i < Model.InvalidServiceRecipients.Count; i++)
-            {
-                var local = i;
-                <nhs-table-row-container>
-                    <input type="hidden" asp-for="InvalidServiceRecipients[local].Organisation" />
-                    <input type="hidden" asp-for="InvalidServiceRecipients[local].OdsCode" />
+                @for (var i = 0; i < Model.InvalidServiceRecipients.Count; i++)
+                {
+                    var local = i;
+                    <nhs-table-row-container>
+                        <input type="hidden" asp-for="InvalidServiceRecipients[local].Organisation" />
+                        <input type="hidden" asp-for="InvalidServiceRecipients[local].OdsCode" />
 
-                    <nhs-table-cell>@Model.InvalidServiceRecipients[local].Organisation</nhs-table-cell>
-                    <nhs-table-cell>@Model.InvalidServiceRecipients[local].OdsCode</nhs-table-cell>
-                </nhs-table-row-container>
-            }
-        </nhs-table>
+                        <nhs-table-cell>@Model.InvalidServiceRecipients[local].Organisation</nhs-table-cell>
+                        <nhs-table-cell>@Model.InvalidServiceRecipients[local].OdsCode</nhs-table-cell>
+                    </nhs-table-row-container>
+                }
+            </nhs-table>
+        </div>
 
         <h2>Why have these Service Recipients failed to import?</h2>
         <p>We’ve not been able to match your ODS codes with the ones we have on record. This is because either:</p>
