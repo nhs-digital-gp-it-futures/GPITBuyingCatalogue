@@ -31,6 +31,13 @@
                         caption="@Model!.ItemName"
                         advice="Manually select the organisations you want to receive this @(Model.ItemType.Name()) or import them using a CSV file." />
 
+        @if (Model.HasImportedRecipients)
+        {
+            <nhs-inset-text>
+                Your Service Recipients have been imported successfully. If you need to make changes, you can do so manually or re-import them.
+            </nhs-inset-text>
+        }
+
         <vc:nhs-action-link text="Import Service Recipients"
                             url="@Url.Action(
                                      nameof(ImportServiceRecipientsController.Index),
@@ -67,6 +74,7 @@
             <input type="hidden" asp-for="@Model.SelectionCaption" />
             <input type="hidden" asp-for="@Model.SelectionMode" />
             <input type="hidden" asp-for="@Model.Source" />
+            <input type="hidden" asp-for="HasImportedRecipients" />
 
             <nhs-table>
                 <nhs-table-column>Organisation</nhs-table-column>

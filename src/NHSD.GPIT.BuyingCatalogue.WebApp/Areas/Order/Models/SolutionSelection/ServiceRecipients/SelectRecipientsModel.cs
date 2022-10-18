@@ -49,6 +49,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.SolutionSelection.
                 case null:
                     if (importedRecipients?.Length > 0)
                     {
+                        HasImportedRecipients = true;
                         ServiceRecipients.Where(
                                 sr => importedRecipients.Select(x => x.ToUpperInvariant()).Contains(sr.OdsCode))
                             .ToList()
@@ -92,6 +93,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.SolutionSelection.
         public RoutingSource? Source { get; set; }
 
         public bool IsAdding { get; set; } = true;
+
+        public bool HasImportedRecipients { get; set; }
 
         public List<ServiceRecipientDto> GetSelectedItems()
         {

@@ -300,14 +300,20 @@ public static class ImportServiceRecipientsControllerTests
             .ToList();
         importedServiceRecipients.First().Organisation = "MISMATCH";
 
+        var serviceRecipient = serviceRecipients.First();
+
+        var mismatchedNames = new List<(string, string, string)>
+        {
+            ("MISMATCH", serviceRecipient.Name, serviceRecipient.OrgId),
+        };
+
         var expectedModel = new ValidateNamesModel(
             internalOrgId,
             callOffId,
             catalogueItemId,
             catalogueItemName,
             importMode,
-            importedServiceRecipients,
-            serviceRecipients.Take(1).ToList());
+            mismatchedNames);
 
         importService.Setup(s => s.GetCached(It.IsAny<ServiceRecipientCacheKey>()))
             .Returns(importedServiceRecipients);
@@ -394,13 +400,12 @@ public static class ImportServiceRecipientsControllerTests
         importedRecipients.First().Organisation = "MISMATCH";
         importedRecipients.Skip(1).First().OdsCode = "MISMATCH";
 
-        var mismatchedRecipients = serviceRecipients.Where(
-                r => importedRecipients.Any(
-                    x => string.Equals(r.OrgId, x.OdsCode, StringComparison.OrdinalIgnoreCase) && !string.Equals(
-                        r.Name,
-                        x.Organisation,
-                        StringComparison.OrdinalIgnoreCase)))
-            .ToList();
+        var firstServiceRecipient = serviceRecipients.First();
+
+        var mismatchedNames = new List<(string, string, string)>
+        {
+            ("MISMATCH", firstServiceRecipient.Name, firstServiceRecipient.OrgId),
+        };
 
         var model = new ValidateNamesModel(
             internalOrgId,
@@ -408,8 +413,7 @@ public static class ImportServiceRecipientsControllerTests
             catalogueItemId,
             catalogueItemName,
             importMode,
-            importedRecipients,
-            mismatchedRecipients);
+            mismatchedNames);
 
         importService.Setup(s => s.GetCached(It.IsAny<ServiceRecipientCacheKey>()))
             .Returns(importedRecipients);

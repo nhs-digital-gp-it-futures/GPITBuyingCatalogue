@@ -1,7 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
-using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Csv;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.SolutionSelection.ServiceRecipients;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Models;
 
@@ -19,8 +18,7 @@ public class ValidateNamesModel : NavBaseModel
         CatalogueItemId catalogueItemId,
         string catalogueItemName,
         ServiceRecipientImportMode importMode,
-        IEnumerable<ServiceRecipientImportModel> importedServiceRecipients,
-        IEnumerable<NHSD.GPIT.BuyingCatalogue.ServiceContracts.Models.ServiceRecipient> mismatchedServiceRecipients)
+        IEnumerable<(string Expected, string Actual, string OdsCode)> mismatchedNames)
     {
         InternalOrgId = internalOrgId;
         CallOffId = callOffId;
@@ -28,13 +26,7 @@ public class ValidateNamesModel : NavBaseModel
         CatalogueItemName = catalogueItemName;
         ImportMode = importMode;
 
-        NameDiscrepancies = mismatchedServiceRecipients.Select(
-                r => new ServiceRecipientNameDiscrepancy(
-                    importedServiceRecipients.First(x => string.Equals(x.OdsCode, r.OrgId)).Organisation,
-                    r.Name,
-                    r.OrgId))
-            .DistinctBy(x => x.OdsCode)
-            .ToList();
+        NameDiscrepancies = mismatchedNames.Select(p => new ServiceRecipientNameDiscrepancy(p.Expected, p.Actual, p.OdsCode)).ToList();
     }
 
     public string InternalOrgId { get; set; }
