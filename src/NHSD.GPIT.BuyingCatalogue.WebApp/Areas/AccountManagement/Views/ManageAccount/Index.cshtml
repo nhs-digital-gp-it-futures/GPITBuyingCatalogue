@@ -1,0 +1,67 @@
+﻿@using NHSD.GPIT.BuyingCatalogue.Framework.Extensions
+@using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.AccountManagement.Controllers
+@using NHSD.GPIT.BuyingCatalogue.WebApp.Controllers
+@model NHSD.GPIT.BuyingCatalogue.WebApp.Areas.AccountManagement.Models.ManageAccountModel
+@{
+    ViewBag.Title = "Organisation details";
+}
+@section Breadcrumbs {
+    <nav class="nhsuk-breadcrumb" aria-label="Breadcrumb">
+        <div class="nhsuk-width-container">
+            <ol class="nhsuk-breadcrumb__list">
+                <li class="nhsuk-breadcrumb__item">
+                    <a asp-action="@nameof(HomeController.Index)" 
+                       asp-controller="@typeof(HomeController).ControllerName()" 
+                       class="nhsuk-breadcrumb__link">Home</a>
+                </li>
+            </ol>
+        </div>
+    </nav>
+}
+<div data-test-id="organisation-page">
+    <nhs-page-title title="@ViewBag.Title"
+                    caption="@Model!.Organisation.Name"
+                    advice="These are the details for the organisation and its users." />
+    <nhs-summary-list>
+        <nhs-summary-list-row label-text="ODS code">
+            <p data-test-id="org-page-external-identifier">
+                @Model.Organisation.ExternalIdentifier
+            </p>
+        </nhs-summary-list-row>
+        <nhs-summary-list-row label-text="Primary role ID">
+            <p>
+                @Model.Organisation.PrimaryRoleId
+            </p>
+        </nhs-summary-list-row>
+        <nhs-summary-list-row label-text="Business address">
+            <div data-test-id="org-page-address">
+                <vc:nhs-address address="@Model.OrganisationAddress" />
+            </div>
+        </nhs-summary-list-row>
+    </nhs-summary-list>
+
+    <h2>Further details</h2>
+    <ul>
+        <li>
+            <a href="@Url.Action(
+                         nameof(ManageAccountController.Users),
+                         typeof(ManageAccountController).ControllerName(),
+                         new { organisationId = @Model.Organisation.Id })"><strong>User accounts</strong></a>
+            <p>Add, edit and view user accounts for @Model.Organisation.Name.</p>
+        </li>
+        <li>
+            <a href="@Url.Action(
+                         nameof(ManageAccountController.RelatedOrganisations),
+                         typeof(ManageAccountController).ControllerName(),
+                         new { organisationId = @Model.Organisation.Id })"><strong>Related organisations</strong></a>
+            <p>View and remove organisations that @Model.Organisation.Name can act on behalf of.</p>
+        </li>
+        <li>
+            <a href="@Url.Action(
+                         nameof(ManageAccountController.NominatedOrganisations),
+                         typeof(ManageAccountController).ControllerName(),
+                         new { organisationId = @Model.Organisation.Id })"><strong>Nominated organisations</strong></a>
+            <p>Add, remove and view organisations that can act on behalf of @Model.Organisation.Name.</p>
+        </li>
+    </ul>
+</div>
