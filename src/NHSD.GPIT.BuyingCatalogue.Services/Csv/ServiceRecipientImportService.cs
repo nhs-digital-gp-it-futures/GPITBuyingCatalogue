@@ -34,6 +34,7 @@ public class ServiceRecipientImportService : CsvServiceBase, IServiceRecipientIm
         using var csvReader = new CsvReader(streamReader, new(CultureInfo.InvariantCulture)
         {
             TrimOptions = TrimOptions.Trim,
+            ShouldSkipRecord = args => args.Record.All(string.IsNullOrWhiteSpace),
         });
 
         csvReader.Context.RegisterClassMap<ServiceRecipientImportModelMap>();
@@ -43,6 +44,7 @@ public class ServiceRecipientImportService : CsvServiceBase, IServiceRecipientIm
         {
             records = await csvReader
                 .GetRecordsAsync<ServiceRecipientImportModel>()
+                .Where(x => !string.IsNullOrWhiteSpace(x.Organisation) && !string.IsNullOrWhiteSpace(x.OdsCode))
                 .ToListAsync();
         }
         catch (HeaderValidationException)
