@@ -19,7 +19,7 @@
                                  url="@Url.Action( nameof(ImportServiceRecipientsController.DownloadTemplate), typeof(ImportServiceRecipientsController).ControllerName(), new { Model.InternalOrgId, Model.CallOffId, Model.CatalogueItemId })"/>
 
         <p>
-            Add your Service Recipients to a template and import them into your order.
+            Add your Service Recipients to a template and import them for @Model.CatalogueItemName.
             You’ll be able to edit them later.
             If you import Service Recipients more than once, they’ll be overwritten each time.
         </p>

@@ -397,8 +397,8 @@ public static class ImportServiceRecipientsControllerTests
             .Select(r => new ServiceRecipientImportModel { Organisation = r.Name, OdsCode = r.OrgId, })
             .ToList();
 
-        importedRecipients.First().Organisation = "MISMATCH";
-        importedRecipients.Skip(1).First().OdsCode = "MISMATCH";
+        importedRecipients.First().OdsCode = "MISMATCH";
+        importedRecipients.Skip(1).First().Organisation = "MISMATCH";
 
         var firstServiceRecipient = serviceRecipients.First();
 
@@ -440,7 +440,7 @@ public static class ImportServiceRecipientsControllerTests
                     { nameof(internalOrgId), internalOrgId },
                     { nameof(callOffId), callOffId },
                     { nameof(catalogueItemId), catalogueItemId },
-                    { nameof(importedRecipients), string.Join(',', importedRecipients.Skip(2).Select(x => x.OdsCode)) },
+                    { nameof(importedRecipients), string.Join(',', importedRecipients.Skip(1).Select(x => x.OdsCode)) },
                 });
     }
 

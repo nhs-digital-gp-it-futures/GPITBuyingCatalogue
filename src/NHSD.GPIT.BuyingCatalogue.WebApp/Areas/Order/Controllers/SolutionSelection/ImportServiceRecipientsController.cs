@@ -298,11 +298,9 @@ public class ImportServiceRecipientsController : Controller
 
         var validOdsCodes = organisationRecipients.Where(
                 x => importedRecipients.Any(
-                    r => string.Equals(x.OrgId, r.OdsCode, StringComparison.OrdinalIgnoreCase) && string.Equals(
-                        x.Name,
-                        r.Organisation,
-                        StringComparison.OrdinalIgnoreCase)))
+                    r => string.Equals(x.OrgId, r.OdsCode, StringComparison.OrdinalIgnoreCase)))
             .Select(x => x.OrgId)
+            .Distinct()
             .ToArray();
 
         return validOdsCodes;
