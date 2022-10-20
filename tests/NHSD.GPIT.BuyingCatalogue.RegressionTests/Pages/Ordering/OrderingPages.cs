@@ -38,6 +38,7 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering
             SelectEditAssociatedServiceOnly = new SelectEditAssociatedServiceOnly(driver, commonActions);
             SelectEditAssociatedServiceRecipientOnly = new SelectEditAssociatedServiceRecipientOnly(driver, commonActions, factory);
             SelectEditAndConfirmAssociatedServiceOnlyPrices = new SelectEditAndConfirmAssociatedServiceOnlyPrices(driver, commonActions, factory);
+            SelectSolutionAndServices = new SelectSolutionAndServices(driver, commonActions);
             OrderingStepThree = new OrderingStepThree(driver, commonActions);
             OrderingStepFour = new OrderingStepFour(driver, commonActions);
             Factory = factory;
@@ -87,6 +88,8 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering
         internal SelectEditAndConfirmAdditionalServicePrice SelectEditAndConfirmAdditionalServicePrice { get; }
 
         internal SelectEditAssociatedServiceOnly SelectEditAssociatedServiceOnly { get; }
+
+        internal SelectSolutionAndServices SelectSolutionAndServices { get; }
 
         internal SelectEditAssociatedServiceRecipientOnly SelectEditAssociatedServiceRecipientOnly { get; }
 
@@ -195,7 +198,7 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering
             SolutionAndServicesReview.ReviewSolutionAndServices();
 
             TaskList.SelectPlannedDeliveryDatesTask();
-            PlannedDeliveryDates.SetDefaultPlannedDeliveryDate(DateTime.Today.AddDays(7));
+            PlannedDeliveryDates.PlannedDeliveryDate(solutionName, isAssociatedServiceOnlyOrder, associatedServices, additionalServices);
 
             var isMultiFramework = IsMultiFramework();
 

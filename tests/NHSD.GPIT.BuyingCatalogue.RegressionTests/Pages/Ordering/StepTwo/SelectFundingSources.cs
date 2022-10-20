@@ -22,37 +22,7 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering.StepTwo
 
         public void AddFundingSources(string solutionName, bool isAssociatedServiceOnly, IEnumerable<string>? associatedServices, IEnumerable<string>? additionalServices)
         {
-            var names = new List<string>();
-
-            if (isAssociatedServiceOnly)
-            {
-                if (associatedServices != default && associatedServices.All(a => a != string.Empty))
-                {
-                    foreach (var associatedService in associatedServices)
-                    {
-                        names.Add(associatedService);
-                    }
-                }
-            }
-            else
-            {
-                names.Add(solutionName);
-                if (additionalServices != default && additionalServices.All(a => a != string.Empty))
-                {
-                    foreach (var additionalService in additionalServices)
-                    {
-                            names.Add(additionalService);
-                    }
-                }
-
-                if (associatedServices != default && associatedServices.All(a => a != string.Empty))
-                {
-                    foreach (var associatedService in associatedServices)
-                    {
-                        names.Add(associatedService);
-                    }
-                }
-            }
+           var names = SelectSolutionAndServices.SelectSolutionServices(solutionName, isAssociatedServiceOnly, associatedServices, additionalServices);
 
             foreach (var name in names)
             {
