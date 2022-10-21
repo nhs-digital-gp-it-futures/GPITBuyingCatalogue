@@ -1,4 +1,4 @@
-﻿@model NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.OrganisationModels.AddNominatedOrganisationModel
+﻿@model NHSD.GPIT.BuyingCatalogue.WebApp.Models.OrganisationModels.AddNominatedOrganisationModel
 @{
     ViewBag.Title = "Nominate an organisation";
 }
@@ -25,7 +25,9 @@
                                    asp-items="@(new SelectList(Model.PotentialOrganisations, "Value", "Text"))" />
             </div>
 
-            <nhs-submit-button text="Save and continue" />
+            <nhs-submit-button text="Save and continue" formaction='@Url.Action(
+                                                                        nameof(OrganisationController.AddNominatedOrganisation),
+                                                                        ViewContext.RouteData.Values["controller"].ToString())' />
         </form>
     </div>
 </div>

@@ -1,11 +1,9 @@
 ﻿using System;
-using System.Threading;
-using System.Threading.Tasks;
 using FluentValidation;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Users;
-using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.OrganisationModels;
+using NHSD.GPIT.BuyingCatalogue.WebApp.Models.OrganisationModels;
 
-namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Validators.Organisation
+namespace NHSD.GPIT.BuyingCatalogue.WebApp.Validation.Organisation
 {
     public sealed class AddUserModelValidator : AbstractValidator<AddUserModel>
     {

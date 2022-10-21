@@ -3,9 +3,8 @@ using System.Collections.Generic;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Addresses.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Organisations.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Users.Models;
-using NHSD.GPIT.BuyingCatalogue.WebApp.Models;
 
-namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.OrganisationModels
+namespace NHSD.GPIT.BuyingCatalogue.WebApp.Models.OrganisationModels
 {
     public sealed class DetailsModel : NavBaseModel
     {
@@ -30,5 +29,11 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.OrganisationModels
         public Address OrganisationAddress => Organisation.Address;
 
         public string CatalogueAgreementText { get; set; }
+
+        public List<string> BreadcrumbList { get; set; }
+
+        public string ControllerName { get; set; }
+
+        public string HomeLink { get; set; }
     }
 }

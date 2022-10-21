@@ -1,6 +1,5 @@
-﻿@using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
-@using NHSD.GPIT.BuyingCatalogue.Framework.Extensions
-@model NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.OrganisationModels.UserStatusModel
+﻿@using NHSD.GPIT.BuyingCatalogue.Framework.Extensions
+@model NHSD.GPIT.BuyingCatalogue.WebApp.Models.OrganisationModels.UserStatusModel
 @{
     ViewBag.Title = Model!.IsActive ? "Deactivate user account" : "Activate user account";
 }
@@ -22,12 +21,14 @@
 
         <form method="post">
             <input type="hidden" asp-for="IsActive"/>
-            <nhs-submit-button text="Continue"/>
+            <nhs-submit-button text="Continue" formaction='@Url.Action(
+                                                              nameof(OrganisationController.UserStatus),
+                                                              ViewContext.RouteData.Values["controller"].ToString())' />
         </form>
 
         <a href="@Url.Action(
-                     nameof(OrganisationsController.Users),
-                     typeof(OrganisationsController).ControllerName(),
+                     nameof(OrganisationController.Users),
+                     ViewContext.RouteData.Values["controller"].ToString(),
                      new { Model.OrganisationId, Model.UserId })">Cancel</a>
     </div>
 </div>

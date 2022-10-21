@@ -1,4 +1,8 @@
-﻿@model NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.OrganisationModels.AddUserModel
+﻿@using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.AccountManagement.Controllers
+@using Microsoft.AspNetCore.Mvc.TagHelpers
+@using NHSD.GPIT.BuyingCatalogue.UI.Components.TagHelpers
+@using ValidationSummaryTagHelper = Microsoft.AspNetCore.Mvc.TagHelpers.ValidationSummaryTagHelper
+@model NHSD.GPIT.BuyingCatalogue.WebApp.Models.OrganisationModels.AddUserModel
 @{
     ViewBag.Title = "Add a new user";
 }
@@ -27,7 +31,10 @@
                     label-text="Last name" />
 
                 <div data-test-id="add-user-button">
-                    <nhs-submit-button />
+                    <nhs-submit-button 
+                        formaction='@Url.Action(
+                                        nameof(OrganisationController.AddUser),
+                                        ViewContext.RouteData.Values["controller"].ToString())' />
                 </div>
             </form>
         </div>

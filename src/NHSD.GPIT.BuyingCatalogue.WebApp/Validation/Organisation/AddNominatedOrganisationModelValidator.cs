@@ -1,7 +1,7 @@
 ﻿using FluentValidation;
-using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.OrganisationModels;
+using NHSD.GPIT.BuyingCatalogue.WebApp.Models.OrganisationModels;
 
-namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Validators.Organisation
+namespace NHSD.GPIT.BuyingCatalogue.WebApp.Validation.Organisation
 {
     public class AddNominatedOrganisationModelValidator : AbstractValidator<AddNominatedOrganisationModel>
     {

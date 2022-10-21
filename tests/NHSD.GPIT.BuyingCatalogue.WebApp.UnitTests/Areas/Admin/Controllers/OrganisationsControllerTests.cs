@@ -19,8 +19,10 @@ using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Users;
 using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.AutoFixtureCustomisations;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.OrganisationModels;
+using NHSD.GPIT.BuyingCatalogue.WebApp.Models.OrganisationModels;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Models.SuggestionSearch;
 using Xunit;
+using OrganisationModel = NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.OrganisationModels.OrganisationModel;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
 {

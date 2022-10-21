@@ -1,7 +1,10 @@
-﻿@using NHSD.GPIT.BuyingCatalogue.Framework.Extensions
-@using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.AccountManagement.Controllers
-@using NHSD.GPIT.BuyingCatalogue.WebApp.Controllers
-@model NHSD.GPIT.BuyingCatalogue.WebApp.Areas.AccountManagement.Models.ManageAccountModel
+﻿@model NHSD.GPIT.BuyingCatalogue.WebApp.Models.OrganisationModels.DetailsModel
+@using NHSD.GPIT.BuyingCatalogue.Framework.Extensions
+@using NHSD.GPIT.BuyingCatalogue.UI.Components.TagHelpers
+@using NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.Components.NhsAddress
+@using NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.TagHelpers.SummaryList
+@using Microsoft.AspNetCore.Http
+@using Microsoft.AspNetCore.Mvc.TagHelpers
 @{
     ViewBag.Title = "Organisation details";
 }
@@ -10,10 +13,16 @@
         <div class="nhsuk-width-container">
             <ol class="nhsuk-breadcrumb__list">
                 <li class="nhsuk-breadcrumb__item">
-                    <a asp-action="@nameof(HomeController.Index)" 
-                       asp-controller="@typeof(HomeController).ControllerName()" 
-                       class="nhsuk-breadcrumb__link">Home</a>
+                    <a href="@Model.HomeLink"
+                   class="nhsuk-breadcrumb__link">Home</a>
                 </li>
+                @if(User.IsAdmin()){
+                    <li class="nhsuk-breadcrumb__item">
+                        <a asp-action="@nameof(OrganisationController.Index)"
+                           asp-controller="@ViewContext.RouteData.Values["controller"]"
+                           class="nhsuk-breadcrumb__link">Manage buyer organisations</a>
+                    </li>
+                }
             </ol>
         </div>
     </nav>
@@ -44,24 +53,25 @@
     <ul>
         <li>
             <a href="@Url.Action(
-                         nameof(ManageAccountController.Users),
-                         typeof(ManageAccountController).ControllerName(),
+                         nameof(OrganisationController.Users),
+                         ViewContext.RouteData.Values["controller"].ToString(),
                          new { organisationId = @Model.Organisation.Id })"><strong>User accounts</strong></a>
             <p>Add, edit and view user accounts for @Model.Organisation.Name.</p>
         </li>
         <li>
             <a href="@Url.Action(
-                         nameof(ManageAccountController.RelatedOrganisations),
-                         typeof(ManageAccountController).ControllerName(),
+                         nameof(OrganisationController.RelatedOrganisations),
+                         ViewContext.RouteData.Values["controller"].ToString(),
                          new { organisationId = @Model.Organisation.Id })"><strong>Related organisations</strong></a>
             <p>View and remove organisations that @Model.Organisation.Name can act on behalf of.</p>
         </li>
         <li>
             <a href="@Url.Action(
-                         nameof(ManageAccountController.NominatedOrganisations),
-                         typeof(ManageAccountController).ControllerName(),
+                         nameof(OrganisationController.NominatedOrganisations),
+                         ViewContext.RouteData.Values["controller"].ToString(),
                          new { organisationId = @Model.Organisation.Id })"><strong>Nominated organisations</strong></a>
             <p>Add, remove and view organisations that can act on behalf of @Model.Organisation.Name.</p>
         </li>
     </ul>
 </div>
+

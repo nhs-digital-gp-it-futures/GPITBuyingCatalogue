@@ -22,6 +22,26 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Models\OrganisationModels\AddAnOrganisationErrorModel.cs" />
+    <Compile Remove="Models\OrganisationModels\CreateOrganisationModel.cs" />
+    <Compile Remove="Models\OrganisationModels\EditConfirmationModel.cs" />
+    <Compile Remove="Models\OrganisationModels\EditOrganisationModel.cs" />
+    <Compile Remove="Models\OrganisationModels\FindOrganisationModel.cs" />
+    <Compile Remove="Models\OrganisationModels\IndexModel.cs" />
+    <Compile Remove="Models\OrganisationModels\SelectOrganisationModel.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Remove="Views\Shared\Organisation\Create.cshtml" />
+    <Content Remove="Views\Shared\Organisation\EditConfirmation.cshtml" />
+    <Content Remove="Views\Shared\Organisation\EditOrganisation.cshtml" />
+    <Content Remove="Views\Shared\Organisation\Error.cshtml" />
+    <Content Remove="Views\Shared\Organisation\Find.cshtml" />
+    <Content Remove="Views\Shared\Organisation\Index.cshtml" />
+    <Content Remove="Views\Shared\Organisation\Select.cshtml" />
+  </ItemGroup>
+
+  <ItemGroup>
     <AssemblyAttribute Include="System.Runtime.CompilerServices.InternalsVisibleToAttribute">
       <_Parameter1>$(AssemblyName).UnitTests</_Parameter1>
       <!-- We use the value of AssemblyName to declare the value of the attribute -->
