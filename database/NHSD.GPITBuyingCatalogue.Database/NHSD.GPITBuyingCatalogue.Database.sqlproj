@@ -372,12 +372,19 @@
   </ItemGroup>
   <ItemGroup>
     <Build Include="OdsOrganisations\Tables\OdsOrganisations.sql" />
-    <Build Include="OdsOrganisations\Tables\Relationships.sql" />
+    <Build Include="OdsOrganisations\Tables\OrganisationRelationships.sql" />
     <Build Include="OdsOrganisations\Tables\RelationshipTypes.sql" />
-    <Build Include="OdsOrganisations\Tables\Roles.sql" />
+    <Build Include="OdsOrganisations\Tables\OrganisationRoles.sql" />
     <Build Include="OdsOrganisations\Tables\RoleTypes.sql" />
     <Build Include="OdsOrganisations\Tables\Journal.sql" />
     <None Include="Security\Schemas\ods_organisations.sql" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="PostDeployment\OdsOrganisationsSeedData\InsertOdsOrganisations.sql" />
+    <None Include="PostDeployment\OdsOrganisationsSeedData\InsertOrganisationRelationships.sql" />
+    <None Include="PostDeployment\OdsOrganisationsSeedData\InsertOrganisationRoles.sql" />
+    <None Include="PostDeployment\OdsOrganisationsSeedData\InsertRelationshipTypes.sql" />
+    <None Include="PostDeployment\OdsOrganisationsSeedData\InsertRoleTypes.sql" />
   </ItemGroup>
   <PropertyGroup>
     <PreBuildEvent>

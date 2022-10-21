@@ -2,14 +2,14 @@
 (
     [OrganisationId]        INT           NOT NULL PRIMARY KEY,
     [Name]                  NVARCHAR(255) NOT NULL,
-    [AddressLine1]          NVARCHAR(255) NOT NULL,
-    [AddressLine2]          NVARCHAR(255) NOT NULL,
-    [AddressLine3]          NVARCHAR(255) NOT NULL,
-    [Town]                  NVARCHAR(100) NOT NULL,
-    [County]                NVARCHAR(100) NOT NULL,
+    [AddressLine1]          NVARCHAR(255) NULL,
+    [AddressLine2]          NVARCHAR(255) NULL,
+    [AddressLine3]          NVARCHAR(255) NULL,
+    [AddressLine4]          NVARCHAR(255) NULL,
+    [AddressLine5]          NVARCHAR(255) NULL,
+    [Town]                  NVARCHAR(100) NULL,
+    [County]                NVARCHAR(100) NULL,
+    [Postcode]              NVARCHAR(10)  NULL,
+    [Country]               NVARCHAR(100) NULL,
     [Status]                NVARCHAR(100) NOT NULL,
-    [UniqueRoleId]          INT           NOT NULL,
-    [RoleId]                INT           NOT NULL,
-    CONSTRAINT FK_OdsOrganisations_UniqueRole FOREIGN KEY (UniqueRoleId)    REFERENCES [ods_organisations].[Roles] (UniqueRoleId),
-    CONSTRAINT FK_OdsOrganisations_Role       FOREIGN KEY (RoleId)          REFERENCES [ods_organisations].[RoleTypes] (RoleId)
 )
