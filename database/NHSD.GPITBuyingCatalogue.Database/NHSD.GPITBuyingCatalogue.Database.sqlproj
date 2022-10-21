@@ -74,7 +74,6 @@
     <Folder Include="Security\Logins" />
     <Folder Include="Security\Roles" />
     <Folder Include="PostDeployment\IntegrationTests" />
-    <Folder Include="Security\Schemas" />
     <Folder Include="PostDeployment\ProdLikeData" />
     <Folder Include="PreDeployment" />
     <Folder Include="Ordering" />
@@ -370,6 +369,15 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="PostDeployment\InsertRoles.sql" />
+  </ItemGroup>
+  <ItemGroup>
+    <Build Include="OdsOrganisations\Tables\OdsOrganisations.sql" />
+    <Build Include="OdsOrganisations\Tables\Relationships.sql" />
+    <Build Include="OdsOrganisations\Tables\RelationshipTypes.sql" />
+    <Build Include="OdsOrganisations\Tables\Roles.sql" />
+    <Build Include="OdsOrganisations\Tables\RoleTypes.sql" />
+    <Build Include="OdsOrganisations\Tables\Journal.sql" />
+    <None Include="Security\Schemas\ods_organisations.sql" />
   </ItemGroup>
   <PropertyGroup>
     <PreBuildEvent>
