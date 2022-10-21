@@ -31,7 +31,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
         {
         }
 
-
         // This method is required by the base class
         public override Task<IActionResult> Index()
         {
