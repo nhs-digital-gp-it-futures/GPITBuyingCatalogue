@@ -222,6 +222,17 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering
             }
         }
 
+       // public void EditPlannedDeliveryDate(string solutionName, IEnumerable<string>? additionalServices, IEnumerable<string>? associatedServices, bool editplanneddeliverydate = true)
+        public void EditPlannedDeliveryDate(string solutionName, string additionalService, string associatedService, bool editplanneddeliverydate = true)
+        {
+            //EditPlannedDeliveryDate(solutionName, new List<string> { additionalService }, new List<string> { associatedService }, editplanneddeliverydate);
+            var isAssociatedServiceOnlyOrder = IsAssociatedServiceOnlyOrder();
+
+            TaskList.EditPlannedDeliveryDateTask();
+            PlannedDeliveryDates.EditPlannedDeliveryDateRout(solutionName, isAssociatedServiceOnlyOrder, additionalService, associatedService, editplanneddeliverydate);
+           // PlannedDeliveryDates.EditPlannedDeliveryDateRout(solutionName, isAssociatedServiceOnlyOrder, additionalServices, associatedServices, editplanneddeliverydate);
+        }
+
         public void StepThreeCompleteContract(bool isDefault = true)
         {
             TaskList.ImplementationPlanMilestonesTask();
