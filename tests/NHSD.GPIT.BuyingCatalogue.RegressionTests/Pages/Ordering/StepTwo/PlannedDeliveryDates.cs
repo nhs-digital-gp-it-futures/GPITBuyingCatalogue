@@ -43,7 +43,7 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering.StepTwo
                 nameof(OrderController.Order)).Should().BeTrue();
         }
 
-        public void EditPlannedDeliveryDate(string solutionName, bool isAssociatedServiceOnly, string associatedServices, string additionalServices, bool editplanneddeliverydate)
+        public void EditPlannedDeliveryDateRout(string solutionName, bool isAssociatedServiceOnly, string associatedServices, string additionalServices, bool editplanneddeliverydate)
         {
             CommonActions.ClickLinkElement(DeliveryDatesObjects.ReviewChangeDeliveryDateLink);
 
