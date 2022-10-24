@@ -5,6 +5,7 @@ using NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering.StepOne;
 using NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering.StepThree;
 using NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering.StepTwo;
 using NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering.StepTwo.AssociatedServiceOnly;
+using NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering.StepTwo.DeliveryDates;
 using NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering.StepTwo.SolutionSelection;
 using NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering.Triage;
 using OpenQA.Selenium;
@@ -226,8 +227,16 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering
         {
             var isAssociatedServiceOnlyOrder = IsAssociatedServiceOnlyOrder();
 
-            TaskList.EditPlannedDeliveryDateTask();
-            PlannedDeliveryDates.EditPlannedDeliveryDate(solutionName, isAssociatedServiceOnlyOrder, additionalService, associatedService, editplanneddeliverydate);
+            if (!isAssociatedServiceOnlyOrder)
+            {
+                TaskList.EditPlannedDeliveryDateTask();
+                PlannedDeliveryDates.EditPlannedDeliveryDate(solutionName, isAssociatedServiceOnlyOrder, additionalService, associatedService, editplanneddeliverydate);                
+            }
+            else
+            {
+                TaskList.EditPlannedDeliveryDateTask();
+                PlannedDeliveryDates.EditPlannedDeliveryDate(solutionName, isAssociatedServiceOnlyOrder, additionalService, associatedService, editplanneddeliverydate);
+            }
         }
 
         public void StepThreeCompleteContract(bool isDefault = true)

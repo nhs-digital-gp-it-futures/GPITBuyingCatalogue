@@ -474,6 +474,28 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
         }
 
         [Fact]
+        public void EditPlannedDeliveryDateOrderAssociatedServiceOnly()
+        {
+            string orderDescription = "EditPlannedDeliveryDateOrderAssociatedServiceOnly";
+
+            OrderingPages.OrderingDashboard.CreateNewOrder();
+
+            OrderingPages.OrderType.ChooseOrderType(CatalogueItemType.AssociatedService);
+
+            OrderingPages.StartOrder.ReadyToStart();
+
+            OrderingPages.StepOnePrepareOrder(SupplierName, orderDescription, false, itemType: CatalogueItemType.AssociatedService);
+
+            OrderingPages.StepTwoAddSolutionsAndServices(solutionName: SolutionName, associatedService: AssociatedServiceName);
+
+            OrderingPages.EditPlannedDeliveryDate("Anywhere Consult", "Anywhere Consult – Integrated Device", " ",true);
+
+            OrderingPages.StepThreeCompleteContract();
+
+            OrderingPages.StepFourReviewAndCompleteOrder();
+        }
+
+        [Fact]
         public void OrderAssociatedServiceOnlyWithStepThreeCustomRoute()
         {
             string orderDescription = "OrderAssociatedServiceOnlyWithStepThreeCustomRoute";

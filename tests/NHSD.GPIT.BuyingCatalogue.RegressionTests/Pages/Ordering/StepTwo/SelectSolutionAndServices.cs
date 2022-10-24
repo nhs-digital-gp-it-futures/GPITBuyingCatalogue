@@ -57,37 +57,14 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering.StepTwo
             return names;
         }
 
-        public static List<string> EditPlannedDeliveryDateSelectSolutionServices(bool isAssociatedServiceOnly, IEnumerable<string>? associatedServices, IEnumerable<string>? additionalServices)
+        public static List<string> EditPlannedDeliveryDateSelectSolutionServices(bool isAssociatedServiceOnly,string associatedServices, string additionalServices)
         {
             var names = new List<string>();
 
-            if (isAssociatedServiceOnly)
+            if (additionalServices is not null && associatedServices is not null)
             {
-                if (associatedServices != default && associatedServices.All(a => a != string.Empty))
-                {
-                    foreach (var associatedService in associatedServices)
-                    {
-                        names.Add(associatedService);
-                    }
-                }
-            }
-            else
-            {
-                if (additionalServices != default && additionalServices.All(a => a != string.Empty))
-                {
-                    foreach (var additionalService in additionalServices)
-                    {
-                        names.Add(additionalService);
-                    }
-                }
-
-                if (associatedServices != default && associatedServices.All(a => a != string.Empty))
-                {
-                    foreach (var associatedService in associatedServices)
-                    {
-                        names.Add(associatedService);
-                    }
-                }
+                names.Add((string)additionalServices);
+                names.Add((string)associatedServices);
             }
 
             return names;
