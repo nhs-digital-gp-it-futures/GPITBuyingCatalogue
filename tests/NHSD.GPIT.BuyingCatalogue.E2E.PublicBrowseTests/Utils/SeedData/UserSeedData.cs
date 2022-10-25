@@ -17,8 +17,6 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
         internal const int SueId = 3;
         internal const int AliceId = 4;
         internal const int DaveId = 5;
-
-
         private const string TestPassword = "Th1sIsP4ssword!";
 
         internal static void Initialize(BuyingCatalogueDbContext context)

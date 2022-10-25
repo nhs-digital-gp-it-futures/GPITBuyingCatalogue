@@ -158,7 +158,6 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.ManageOrders
             CommonActions.ErrorSummaryDisplayed().Should().BeTrue();
             CommonActions.ErrorSummaryLinksExist().Should().BeTrue();
 
-
             CommonActions.ElementIsDisplayed(DeleteOrderObjects.DeleteYearMissingError).Should().BeTrue();
         }
 

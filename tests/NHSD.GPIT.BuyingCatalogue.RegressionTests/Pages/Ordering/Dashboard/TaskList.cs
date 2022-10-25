@@ -127,6 +127,15 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering.Dashboard
                 nameof(DeliveryDatesController.SelectDate)).Should().BeTrue();
         }
 
+        public void EditPlannedDeliveryDateTask()
+        {
+            CommonActions.ClickLinkElement(OrderDashboard.PlannedDeliveryDates);
+
+            CommonActions.PageLoadedCorrectGetIndex(
+                typeof(DeliveryDatesController),
+                nameof(DeliveryDatesController.Review)).Should().BeTrue();
+        }
+
         public void SelectFundingSourcesTask()
         {
             CommonActions.ClickLinkElement(FundingSources.SelectFundingSourcesLink);
