@@ -3,14 +3,14 @@
         DECLARE @odsOrganisationRoles AS TABLE
                                          (
                                              [Id]      INT             NOT NULL,
-                                             [OrganisationId]    INT             NOT NULL,
+                                             [OrganisationId]    NVARCHAR(8)     NOT NULL,
                                              [RoleId]            NVARCHAR(10)    NOT NULL,
                                              [IsPrimaryRole]     BIT             NOT NULL
                                          );
 
         INSERT INTO @odsOrganisationRoles ([Id], [OrganisationId], [RoleId], [IsPrimaryRole])
         VALUES
-            (300736, 0, 'RO261', 1);
+            (300736, 'QWO', 'RO261', 1);
 
 
         MERGE INTO [ods_organisations].[OrganisationRoles] AS TARGET

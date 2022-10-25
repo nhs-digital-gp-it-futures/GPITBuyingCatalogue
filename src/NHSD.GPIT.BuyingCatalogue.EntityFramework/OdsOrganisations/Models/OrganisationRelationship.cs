@@ -6,9 +6,9 @@ public class OrganisationRelationship
 
     public string RelationshipTypeId { get; set; }
 
-    public int OwnerOrganisationId { get; set; }
+    public string OwnerOrganisationId { get; set; }
 
-    public int TargetOrganisationId { get; set; }
+    public string TargetOrganisationId { get; set; }
 
     public virtual OdsOrganisation OwnerOrganisation { get; set; }
 

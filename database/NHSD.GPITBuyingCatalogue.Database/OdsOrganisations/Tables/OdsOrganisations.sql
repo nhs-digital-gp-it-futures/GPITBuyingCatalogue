@@ -1,6 +1,6 @@
 ﻿CREATE TABLE [ods_organisations].[OdsOrganisations]
 (
-    [Id]                    INT           NOT NULL IDENTITY(1,1) PRIMARY KEY,
+    [Id]                    NVARCHAR(8)   NOT NULL PRIMARY KEY,
     [Name]                  NVARCHAR(255) NOT NULL,
     [AddressLine1]          NVARCHAR(255) NULL,
     [AddressLine2]          NVARCHAR(255) NULL,

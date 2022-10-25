@@ -4,22 +4,22 @@
                                                  (
                                                      [Id]               INT             NOT NULL PRIMARY KEY,
                                                      [RelTypeId]                 NVARCHAR(10)    NOT NULL,
-                                                     [TargetOrganisationId]      INT             NOT NULL,
-                                                     [OwnerOrganisationId]       INT             NOT NULL
+                                                     [TargetOrganisationId]      NVARCHAR(8)     NOT NULL,
+                                                     [OwnerOrganisationId]       NVARCHAR(8)     NOT NULL
                                                  );
 
         INSERT INTO @odsOrganisationRelationships ([Id], [RelTypeId], [TargetOrganisationId], [OwnerOrganisationId])
         VALUES
-            (671770, 'RE5', 1, 0),
-            (673037, 'RE5', 2, 0),
-            (673106, 'RE5', 3, 0),
-            (668185, 'RE5', 4, 0),
-            (667123, 'RE5', 5, 0),
-            (667129, 'RE5', 6, 0),
-            (667130, 'RE5', 7, 0),
-            (671458, 'RE5', 8, 0),
-            (671483, 'RE5', 9, 0),
-            (667172, 'RE5', 10, 0);
+            (671770, 'RE5', '8JW88', 'QWO'),
+            (673037, 'RE5', '8D133', 'QWO'),
+            (673106, 'RE5', '8D696', 'QWO'),
+            (668185, 'RE5', '8D969', 'QWO'),
+            (667123, 'RE5', '8AR17', 'QWO'),
+            (667129, 'RE5', '8AR26', 'QWO'),
+            (667130, 'RE5', '8AR27', 'QWO'),
+            (671458, 'RE5', '8E138', 'QWO'),
+            (671483, 'RE5', '8E241', 'QWO'),
+            (667172, 'RE5', '8AR79', 'QWO');
 
         MERGE INTO [ods_organisations].[OrganisationRelationships] AS TARGET
         USING @odsOrganisationRelationships AS SOURCE

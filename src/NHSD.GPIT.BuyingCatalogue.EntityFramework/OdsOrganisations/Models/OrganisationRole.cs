@@ -4,7 +4,7 @@ public class OrganisationRole
 {
     public int Id { get; set; }
 
-    public int OrganisationId { get; set; }
+    public string OrganisationId { get; set; }
 
     public string RoleId { get; set; }
 
