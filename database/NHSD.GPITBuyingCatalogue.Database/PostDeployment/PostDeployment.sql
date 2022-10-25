@@ -1,6 +1,12 @@
 ﻿:r ./InsertOrganisationTypes.sql
 :r ./InsertRoles.sql
 
+:r ./OdsOrganisationsSeedData/InsertOdsOrganisations.sql
+:r ./OdsOrganisationsSeedData/InsertRoleTypes.sql
+:r ./OdsOrganisationsSeedData/InsertRelationshipTypes.sql
+:r ./OdsOrganisationsSeedData/InsertOrganisationRoles.sql
+:r ./OdsOrganisationsSeedData/InsertOrganisationRelationships.sql
+
 :r ./CreateClinicalCommissioningGroups.sql
 :r ./CreateCommissioningSupportUnits.sql
 :r ./CreateExecutiveAgency.sql
