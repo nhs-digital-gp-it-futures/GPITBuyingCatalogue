@@ -227,16 +227,8 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering
         {
             var isAssociatedServiceOnlyOrder = IsAssociatedServiceOnlyOrder();
 
-            if (!isAssociatedServiceOnlyOrder)
-            {
-                TaskList.EditPlannedDeliveryDateTask();
-                PlannedDeliveryDates.EditPlannedDeliveryDate(solutionName, isAssociatedServiceOnlyOrder, additionalService, associatedService, editplanneddeliverydate);                
-            }
-            else
-            {
-                TaskList.EditPlannedDeliveryDateTask();
-                PlannedDeliveryDates.EditPlannedDeliveryDate(solutionName, isAssociatedServiceOnlyOrder, additionalService, associatedService, editplanneddeliverydate);
-            }
+            TaskList.EditPlannedDeliveryDateTask();
+            PlannedDeliveryDates.EditPlannedDeliveryDate(solutionName, isAssociatedServiceOnlyOrder, additionalService, associatedService, editplanneddeliverydate);
         }
 
         public void StepThreeCompleteContract(bool isDefault = true)
