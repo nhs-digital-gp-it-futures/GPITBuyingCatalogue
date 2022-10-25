@@ -2,7 +2,7 @@
 
 public class OrganisationRole
 {
-    public int UniqueRoleId { get; set; }
+    public int Id { get; set; }
 
     public int OrganisationId { get; set; }
 

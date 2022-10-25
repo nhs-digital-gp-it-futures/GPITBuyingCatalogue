@@ -11,7 +11,6 @@ public class OdsOrganisationEntityTypeConfiguration : IEntityTypeConfiguration<O
         builder.ToTable("OdsOrganisations", schema: "ods_organisations");
 
         builder.HasKey(x => x.Id);
-        builder.Property(x => x.Id).HasColumnName("OrganisationId");
 
         builder.Property(x => x.Name).IsRequired().HasMaxLength(255);
 
@@ -26,6 +25,6 @@ public class OdsOrganisationEntityTypeConfiguration : IEntityTypeConfiguration<O
         builder.Property(x => x.Country).HasMaxLength(100);
         builder.Property(x => x.Postcode).HasMaxLength(10);
 
-        builder.Property(x => x.Status).IsRequired().HasMaxLength(100);
+        builder.Property(x => x.IsActive).IsRequired();
     }
 }

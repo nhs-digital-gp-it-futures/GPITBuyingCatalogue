@@ -2,7 +2,7 @@
 
 public class OrganisationRelationship
 {
-    public int UniqueRelationshipId { get; set; }
+    public int Id { get; set; }
 
     public string RelationshipTypeId { get; set; }
 

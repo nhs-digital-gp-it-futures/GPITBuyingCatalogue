@@ -10,7 +10,7 @@ public class OrganisationRoleEntityTypeConfiguration : IEntityTypeConfiguration<
     {
         builder.ToTable("OrganisationRoles", schema: "ods_organisations");
 
-        builder.HasKey(x => x.UniqueRoleId);
+        builder.HasKey(x => x.Id);
 
         builder.HasOne(x => x.Organisation)
             .WithMany()

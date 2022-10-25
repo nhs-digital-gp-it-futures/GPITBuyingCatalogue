@@ -2,11 +2,11 @@
     BEGIN
         DECLARE @odsRelationshipTypes AS TABLE
                                          (
-                                             [RelTypeId]        NVARCHAR(10)    NOT NULL PRIMARY KEY,
+                                             [Id]               NVARCHAR(10)    NOT NULL PRIMARY KEY,
                                              [Description]      NVARCHAR(100)   NOT NULL
                                          );
 
-        INSERT INTO @odsRelationshipTypes ([RelTypeId], [Description])
+        INSERT INTO @odsRelationshipTypes ([Id], [Description])
         VALUES
             ('RE6','IS OPERATED BY'),
             ('RE5','IS LOCATED IN THE GEOGRAPHY OF'),
@@ -19,12 +19,12 @@
 
         MERGE INTO [ods_organisations].[RelationshipTypes] AS TARGET
         USING @odsRelationshipTypes AS SOURCE
-        ON TARGET.[RelTypeId] = SOURCE.[RelTypeId]
+        ON TARGET.[Id] = SOURCE.[Id]
         WHEN MATCHED THEN
-            UPDATE SET TARGET.[RelTypeId] = SOURCE.[RelTypeId],
+            UPDATE SET TARGET.[Id] = SOURCE.[Id],
                        TARGET.[Description] = SOURCE.[Description]
         WHEN NOT MATCHED BY TARGET THEN
-            INSERT ([RelTypeId], [Description])
-            VALUES (SOURCE.[RelTypeId], SOURCE.[Description]);
+            INSERT ([Id], [Description])
+            VALUES (SOURCE.[Id], SOURCE.[Description]);
     END;
 GO

@@ -2,27 +2,27 @@
     BEGIN
         DECLARE @odsOrganisationRoles AS TABLE
                                          (
-                                             [UniqueRoleId]      INT             NOT NULL,
+                                             [Id]      INT             NOT NULL,
                                              [OrganisationId]    INT             NOT NULL,
                                              [RoleId]            NVARCHAR(10)    NOT NULL,
                                              [IsPrimaryRole]     BIT             NOT NULL
                                          );
 
-        INSERT INTO @odsOrganisationRoles ([UniqueRoleId], [OrganisationId], [RoleId], [IsPrimaryRole])
+        INSERT INTO @odsOrganisationRoles ([Id], [OrganisationId], [RoleId], [IsPrimaryRole])
         VALUES
             (300736, 0, 'RO261', 1);
 
 
         MERGE INTO [ods_organisations].[OrganisationRoles] AS TARGET
         USING @odsOrganisationRoles AS SOURCE
-        ON TARGET.[UniqueRoleId] = SOURCE.[UniqueRoleId]
+        ON TARGET.[Id] = SOURCE.[Id]
         WHEN MATCHED THEN
-            UPDATE SET TARGET.[UniqueRoleId] = SOURCE.[UniqueRoleId],
+            UPDATE SET TARGET.[Id] = SOURCE.[Id],
                        TARGET.[OrganisationId] = SOURCE.[OrganisationId],
                        TARGET.[RoleId] = SOURCE.[RoleId],
                        TARGET.[IsPrimaryRole] = SOURCE.[IsPrimaryRole]
         WHEN NOT MATCHED BY TARGET THEN
-            INSERT ([UniqueRoleId], [OrganisationId], [RoleId], [IsPrimaryRole])
-            VALUES (SOURCE.[UniqueRoleId], SOURCE.[OrganisationId], SOURCE.[RoleId], SOURCE.[IsPrimaryRole]);
+            INSERT ([Id], [OrganisationId], [RoleId], [IsPrimaryRole])
+            VALUES (SOURCE.[Id], SOURCE.[OrganisationId], SOURCE.[RoleId], SOURCE.[IsPrimaryRole]);
     END;
 GO

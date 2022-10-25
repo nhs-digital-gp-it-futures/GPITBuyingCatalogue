@@ -11,7 +11,6 @@ public class RelationshipTypeEntityTypeConfiguration : IEntityTypeConfiguration<
         builder.ToTable("RelationshipTypes", schema: "ods_organisations");
 
         builder.HasKey(x => x.Id);
-        builder.Property(x => x.Id).HasColumnName("RelTypeId");
 
         builder.Property(x => x.Description).IsRequired().HasMaxLength(100);
     }

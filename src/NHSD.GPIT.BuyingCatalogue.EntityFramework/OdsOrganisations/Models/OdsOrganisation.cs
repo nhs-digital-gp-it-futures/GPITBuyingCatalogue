@@ -26,7 +26,7 @@ public class OdsOrganisation
 
     public string Country { get; set; }
 
-    public string Status { get; set; }
+    public bool IsActive { get; set; }
 
     public virtual ICollection<OrganisationRelationship> Related { get; set; }
 

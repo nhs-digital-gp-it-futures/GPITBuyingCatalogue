@@ -2,13 +2,13 @@
     BEGIN
         DECLARE @odsOrganisationRelationships AS TABLE
                                                  (
-                                                     [UniqueRelId]               INT             NOT NULL PRIMARY KEY,
+                                                     [Id]               INT             NOT NULL PRIMARY KEY,
                                                      [RelTypeId]                 NVARCHAR(10)    NOT NULL,
                                                      [TargetOrganisationId]      INT             NOT NULL,
                                                      [OwnerOrganisationId]       INT             NOT NULL
                                                  );
 
-        INSERT INTO @odsOrganisationRelationships ([UniqueRelId], [RelTypeId], [TargetOrganisationId], [OwnerOrganisationId])
+        INSERT INTO @odsOrganisationRelationships ([Id], [RelTypeId], [TargetOrganisationId], [OwnerOrganisationId])
         VALUES
             (671770, 'RE5', 1, 0),
             (673037, 'RE5', 2, 0),
@@ -23,14 +23,14 @@
 
         MERGE INTO [ods_organisations].[OrganisationRelationships] AS TARGET
         USING @odsOrganisationRelationships AS SOURCE
-        ON TARGET.[UniqueRelId] = SOURCE.[UniqueRelId]
+        ON TARGET.[Id] = SOURCE.[Id]
         WHEN MATCHED THEN
-            UPDATE SET TARGET.[UniqueRelId] = SOURCE.[UniqueRelId],
+            UPDATE SET TARGET.[Id] = SOURCE.[Id],
                        TARGET.[RelTypeId] = SOURCE.[RelTypeId],
                        TARGET.[TargetOrganisationId] = SOURCE.[TargetOrganisationId],
                        TARGET.[OwnerOrganisationId] = SOURCE.[OwnerOrganisationId]
         WHEN NOT MATCHED BY TARGET THEN
-            INSERT ([UniqueRelId], [RelTypeId], [TargetOrganisationId], [OwnerOrganisationId])
-            VALUES (SOURCE.[UniqueRelId], SOURCE.[RelTypeId], SOURCE.[TargetOrganisationId], SOURCE.[OwnerOrganisationId]);
+            INSERT ([Id], [RelTypeId], [TargetOrganisationId], [OwnerOrganisationId])
+            VALUES (SOURCE.[Id], SOURCE.[RelTypeId], SOURCE.[TargetOrganisationId], SOURCE.[OwnerOrganisationId]);
     END;
 GO
