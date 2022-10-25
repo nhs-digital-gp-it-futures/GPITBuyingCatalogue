@@ -19,7 +19,7 @@ using NHSD.GPIT.BuyingCatalogue.ServiceContracts.FundingTypes;
 
 namespace NHSD.GPIT.BuyingCatalogue.Services.Csv
 {
-    public class CsvService : ICsvService
+    public class CsvService : CsvServiceBase, ICsvService
     {
         private readonly BuyingCatalogueDbContext dbContext;
         private readonly IFundingTypeService fundingTypeService;
@@ -128,27 +128,6 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Csv
         }
 
         private static string TimeUnitDescription(TimeUnit? timeUnit) => timeUnit?.Description() ?? string.Empty;
-
-        private static async Task WriteRecordsAsync<TEntity, TClassMap>(MemoryStream stream, IEnumerable<TEntity> items)
-            where TClassMap : ClassMap<TEntity>
-        {
-            if (stream is null)
-                throw new ArgumentNullException(nameof(stream));
-
-            if (items is null)
-            {
-                throw new ArgumentNullException(nameof(items));
-            }
-
-            using var writer = new StreamWriter(stream, Encoding.UTF8, leaveOpen: true);
-            using var csvWriter = new CsvWriter(writer, CultureInfo.CurrentCulture);
-
-            csvWriter.Context.TypeConverterOptionsCache.AddOptions<DateTime?>(new TypeConverterOptions { Formats = new[] { "dd/MM/yyyy" } });
-
-            csvWriter.Context.RegisterClassMap<TClassMap>();
-
-            await csvWriter.WriteRecordsAsync(items);
-        }
 
         private async Task<Dictionary<CatalogueItemId, TimeUnit?>> GetBillingPeriods(int orderId)
         {

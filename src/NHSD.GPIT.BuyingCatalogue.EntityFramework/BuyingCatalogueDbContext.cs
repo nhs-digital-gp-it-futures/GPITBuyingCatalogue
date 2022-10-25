@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Identity;
+using NHSD.GPIT.BuyingCatalogue.EntityFramework.OdsOrganisations.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Organisations.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Users.Models;
@@ -49,27 +50,19 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework
 
         public DbSet<CatalogueItemCapability> CatalogueItemCapabilities { get; set; }
 
-        public DbSet<CatalogueItemCapabilityStatus> CatalogueItemCapabilityStatus { get; set; }
-
         public DbSet<CatalogueItemEpic> CatalogueItemEpics { get; set; }
 
         public DbSet<CataloguePrice> CataloguePrices { get; set; }
 
         public DbSet<CataloguePriceTier> CataloguePriceTiers { get; set; }
 
-        public DbSet<FrameworkCapability> FrameworkCapabilities { get; set; }
-
         public DbSet<Framework> Frameworks { get; set; }
-
-        public DbSet<FrameworkSolution> FrameworkSolutions { get; set; }
 
         public DbSet<GpPracticeSize> GpPracticeSizes { get; set; }
 
         public DbSet<MarketingContact> MarketingContacts { get; set; }
 
         public DbSet<Order> Orders { get; set; }
-
-        public DbSet<PricingUnit> PricingUnits { get; set; }
 
         public DbSet<ServiceRecipient> ServiceRecipients { get; set; }
 
@@ -118,6 +111,16 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework
         public DbSet<ImplementationPlanAcceptanceCriteria> ImplementationPlanAcceptanceCriteria { get; set; }
 
         public DbSet<EmailDomain> EmailDomains { get; set; }
+
+        public DbSet<OdsOrganisation> OdsOrganisations { get; set; }
+
+        public DbSet<OrganisationRelationship> OrganisationRelationships { get; set; }
+
+        public DbSet<OrganisationRole> OrganisationRoles { get; set; }
+
+        public DbSet<RoleType> OrganisationRoleTypes { get; set; }
+
+        public DbSet<RelationshipType> OrganisationRelationshipTypes { get; set; }
 
         public override Task<int> SaveChangesAsync(bool acceptAllChangesOnSuccess, CancellationToken cancellationToken = default)
         {

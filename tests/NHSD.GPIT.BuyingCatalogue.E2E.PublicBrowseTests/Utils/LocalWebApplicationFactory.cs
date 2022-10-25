@@ -24,6 +24,7 @@ using NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.Services;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Identity;
+using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Csv;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Validation;
 using NHSD.GPIT.BuyingCatalogue.WebApp;
 using OpenQA.Selenium;
@@ -149,6 +150,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils
                 webHost.ConfigureTestServices(services =>
                 {
                     services.AddSingleton<IUrlValidator, StubbedUrlValidator>();
+                    services.AddSingleton<IServiceRecipientImportService, StubbedServiceRecipientImportService>();
                 });
                 webHost.UseUrls($"{LocalhostBaseAddress}:0");
             });
