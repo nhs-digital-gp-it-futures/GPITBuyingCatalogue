@@ -2,13 +2,13 @@
     BEGIN
         DECLARE @odsOrganisationRelationships AS TABLE
                                                  (
-                                                     [Id]               INT             NOT NULL PRIMARY KEY,
-                                                     [RelTypeId]                 NVARCHAR(10)    NOT NULL,
-                                                     [TargetOrganisationId]      NVARCHAR(8)     NOT NULL,
-                                                     [OwnerOrganisationId]       NVARCHAR(8)     NOT NULL
+                                                     [Id]                           INT             NOT NULL PRIMARY KEY,
+                                                     [RelationshipTypeId]           NVARCHAR(10)    NOT NULL,
+                                                     [TargetOrganisationId]         NVARCHAR(8)     NOT NULL,
+                                                     [OwnerOrganisationId]          NVARCHAR(8)     NOT NULL
                                                  );
 
-        INSERT INTO @odsOrganisationRelationships ([Id], [RelTypeId], [TargetOrganisationId], [OwnerOrganisationId])
+        INSERT INTO @odsOrganisationRelationships ([Id], [RelationshipTypeId], [TargetOrganisationId], [OwnerOrganisationId])
         VALUES
             (671770, 'RE5', '8JW88', 'QWO'),
             (673037, 'RE5', '8D133', 'QWO'),
@@ -26,11 +26,11 @@
         ON TARGET.[Id] = SOURCE.[Id]
         WHEN MATCHED THEN
             UPDATE SET TARGET.[Id] = SOURCE.[Id],
-                       TARGET.[RelTypeId] = SOURCE.[RelTypeId],
+                       TARGET.[RelationshipTypeId] = SOURCE.[RelationshipTypeId],
                        TARGET.[TargetOrganisationId] = SOURCE.[TargetOrganisationId],
                        TARGET.[OwnerOrganisationId] = SOURCE.[OwnerOrganisationId]
         WHEN NOT MATCHED BY TARGET THEN
-            INSERT ([Id], [RelTypeId], [TargetOrganisationId], [OwnerOrganisationId])
-            VALUES (SOURCE.[Id], SOURCE.[RelTypeId], SOURCE.[TargetOrganisationId], SOURCE.[OwnerOrganisationId]);
+            INSERT ([Id], [RelationshipTypeId], [TargetOrganisationId], [OwnerOrganisationId])
+            VALUES (SOURCE.[Id], SOURCE.[RelationshipTypeId], SOURCE.[TargetOrganisationId], SOURCE.[OwnerOrganisationId]);
     END;
 GO

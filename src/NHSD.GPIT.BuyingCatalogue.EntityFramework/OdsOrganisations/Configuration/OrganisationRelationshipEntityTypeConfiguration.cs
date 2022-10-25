@@ -11,7 +11,6 @@ public class OrganisationRelationshipEntityTypeConfiguration : IEntityTypeConfig
         builder.ToTable("OrganisationRelationships", schema: "ods_organisations");
 
         builder.HasKey(x => x.Id);
-        builder.Property(x => x.RelationshipTypeId).HasColumnName("RelTypeId");
 
         builder.HasOne(x => x.RelationshipType)
             .WithMany()
