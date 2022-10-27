@@ -123,22 +123,22 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering
             OrderingStepOne.AddTimescaleForCallOffAgreement(orderTriage, itemType);
         }
 
-        public void StepTwoAddSolutionsAndServices(string solutionName, string additionalService = "", string associatedService = "", bool multipleServiceRecipients = false)
+        public void StepTwoAddSolutionsAndServices(string solutionName, string additionalService = "", string associatedService = "", bool multipleServiceRecipients = false, bool importServiceRecipients = false)
         {
-            StepTwoAddSolutionsAndServices(solutionName, new List<string> { additionalService }, new List<string> { associatedService }, multipleServiceRecipients);
+            StepTwoAddSolutionsAndServices(solutionName, new List<string> { additionalService }, new List<string> { associatedService }, multipleServiceRecipients, importServiceRecipients);
         }
 
-        public void StepTwoAddSolutionsAndServices(string solutionName, IEnumerable<string>? additionalServices, string associatedService = "", bool multipleServiceRecipients = false)
+        public void StepTwoAddSolutionsAndServices(string solutionName, IEnumerable<string>? additionalServices, string associatedService = "", bool multipleServiceRecipients = false, bool importServiceRecipients = false)
         {
-            StepTwoAddSolutionsAndServices(solutionName, additionalServices, new List<string> { associatedService }, multipleServiceRecipients);
+            StepTwoAddSolutionsAndServices(solutionName, additionalServices, new List<string> { associatedService }, multipleServiceRecipients, importServiceRecipients);
         }
 
-        public void StepTwoAddSolutionsAndServices(string solutionName, string additionalService, IEnumerable<string>? associatedServices, bool multipleServiceRecipients = false)
+        public void StepTwoAddSolutionsAndServices(string solutionName, string additionalService, IEnumerable<string>? associatedServices, bool multipleServiceRecipients = false, bool importServiceRecipients = false)
         {
-            StepTwoAddSolutionsAndServices(solutionName, new List<string> { additionalService }, associatedServices, multipleServiceRecipients);
+            StepTwoAddSolutionsAndServices(solutionName, new List<string> { additionalService }, associatedServices, multipleServiceRecipients, importServiceRecipients);
         }
 
-        public void StepTwoAddSolutionsAndServices(string solutionName, IEnumerable<string>? additionalServices, IEnumerable<string>? associatedServices, bool multipleServiceRecipients = false)
+        public void StepTwoAddSolutionsAndServices(string solutionName, IEnumerable<string>? additionalServices, IEnumerable<string>? associatedServices, bool multipleServiceRecipients = false, bool importServiceRecipients = false)
         {
             var isAssociatedServiceOnlyOrder = IsAssociatedServiceOnlyOrder();
 
@@ -148,7 +148,15 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering
             {
                 SelectEditCatalogueSolution.SelectSolution(solutionName, additionalServices);
 
-                SelectEditCatalogueSolutionServiceRecipients.AddCatalogueSolutionServiceRecipient(multipleServiceRecipients);
+                if (importServiceRecipients == false)
+                {
+                    SelectEditCatalogueSolutionServiceRecipients.AddCatalogueSolutionServiceRecipient(multipleServiceRecipients);
+                }
+                else
+                {
+                    SelectEditCatalogueSolutionServiceRecipients.ImportServiceRecipients(importServiceRecipients);
+                }
+
                 SelectEditAndConfirmPrices.SelectAndConfirmPrice();
                 Quantity.AddQuantity();
 

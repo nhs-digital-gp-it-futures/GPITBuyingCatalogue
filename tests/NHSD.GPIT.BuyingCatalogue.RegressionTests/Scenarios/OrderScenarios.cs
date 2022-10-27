@@ -1337,6 +1337,30 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
         }
 
         [Fact]
+        public void OrderWithSolutionUnder40K_ImportServiceRecipients()
+        {
+            string orderDescription = "OrderWithSolutionUnder40K_ImportServiceRecipients";
+
+            OrderingPages.OrderingDashboard.CreateNewOrder();
+
+            OrderingPages.OrderType.ChooseOrderType(CatalogueItemType.Solution);
+
+            OrderingPages.OrderingTriage.SelectOrderTriage(OrderTriageValue.Under40K);
+
+            OrderingPages.StartOrder.ReadyToStart();
+
+            OrderingPages.StepOnePrepareOrder(SupplierName, orderDescription, false, OrderTriageValue.Under40K);
+
+            OrderingPages.StepTwoAddSolutionsAndServices(
+                solutionName: NewSolutionName,
+                importServiceRecipients: true);
+
+            OrderingPages.StepThreeCompleteContract();
+
+            OrderingPages.StepFourReviewAndCompleteOrder();
+        }
+
+        [Fact]
         public void OrderWithSolutionAndAdditionalServiceUnder40K_MultipleServiceRecipients()
         {
             string orderDescription = "OrderWithSolutionAndAdditionalServiceUnder40K_MultipleServiceRecipients";
