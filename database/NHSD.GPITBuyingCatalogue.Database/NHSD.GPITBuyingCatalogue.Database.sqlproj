@@ -377,7 +377,7 @@
     <Build Include="OdsOrganisations\Tables\OrganisationRoles.sql" />
     <Build Include="OdsOrganisations\Tables\RoleTypes.sql" />
     <Build Include="OdsOrganisations\Tables\Journal.sql" />
-    <None Include="Security\Schemas\ods_organisations.sql" />
+    <Build Include="Security\Schemas\ods_organisations.sql" />
   </ItemGroup>
   <ItemGroup>
     <None Include="PostDeployment\OdsOrganisationsSeedData\InsertOdsOrganisations.sql" />
