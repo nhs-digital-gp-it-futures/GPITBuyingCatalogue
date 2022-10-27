@@ -44,7 +44,7 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering.StepTwo.Solut
 
             CommonActions.ClickLinkElement(ServiceRecipientObjects.ImportServiceRecipients);
 
-            var importFile = Path.GetFullPath("valid_service_recipients.csv");
+            var importFile = CommonActions.GetRecipientImportCsv("valid_service_recipients.csv");
 
             CommonActions.UploadFile(ServiceRecipientObjects.ImportRecipientsFileInput, importFile);
 

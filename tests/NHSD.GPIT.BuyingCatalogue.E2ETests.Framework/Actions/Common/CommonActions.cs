@@ -141,6 +141,9 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.Actions.Common
             return SelectDropDownItem(targetField, new Random().Next(1, optionsCount));
         }
 
+        public string GetRecipientImportCsv(string fileName)
+            => Path.GetFullPath(Path.Combine("ServiceRecipientsTestData", fileName));
+
         // Input Element Actions
         public void UploadFile(By targetElement, string filePath)
             => Driver.FindElement(targetElement).SendKeys(filePath);
