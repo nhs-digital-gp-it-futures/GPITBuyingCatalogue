@@ -154,7 +154,7 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering
                 }
                 else
                 {
-                    SelectEditCatalogueSolutionServiceRecipients.ImportServiceRecipients(importServiceRecipients);
+                    SelectEditCatalogueSolutionServiceRecipients.ImportServiceRecipients();
                 }
 
                 SelectEditAndConfirmPrices.SelectAndConfirmPrice();

@@ -142,6 +142,9 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.Actions.Common
         }
 
         // Input Element Actions
+        public void UploadFile(By targetElement, string filePath)
+            => Driver.FindElement(targetElement).SendKeys(filePath);
+
         public void ClearInputElement(By targetElement) =>
             Driver.FindElement(targetElement).Clear();
 
