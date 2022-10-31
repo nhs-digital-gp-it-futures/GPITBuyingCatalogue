@@ -45,7 +45,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering
             CommonActions.ElementIsDisplayed(Objects.Ordering.OrderDescription.DescriptionInput).Should().BeTrue();
 
             await using var context = GetEndToEndDbContext();
-            var order = await context.Orders.SingleAsync(o => o.Id == CallOffId.Id);
+            var order = await context.Orders.SingleAsync(o => o.Id == CallOffId.OrderNumber);
 
             CommonActions.InputValueEqualTo(Objects.Ordering.OrderDescription.DescriptionInput, order.Description);
         }
@@ -90,7 +90,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering
                 nameof(OrderController.Order)).Should().BeTrue();
 
             await using var context = GetEndToEndDbContext();
-            var order = await context.Orders.SingleAsync(o => o.Id == CallOffId.Id);
+            var order = await context.Orders.SingleAsync(o => o.Id == CallOffId.OrderNumber);
 
             order.Description.Should().BeEquivalentTo(description);
         }

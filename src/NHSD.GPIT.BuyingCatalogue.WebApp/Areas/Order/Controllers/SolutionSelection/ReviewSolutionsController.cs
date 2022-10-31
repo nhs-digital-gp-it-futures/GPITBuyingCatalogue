@@ -24,7 +24,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers.SolutionSelec
         [HttpGet]
         public async Task<IActionResult> ReviewSolutions(string internalOrgId, CallOffId callOffId)
         {
-            var order = await orderService.GetOrderWithOrderItems(callOffId, internalOrgId);
+            var order = (await orderService.GetOrderWithOrderItems(callOffId, internalOrgId)).Order;
 
             var model = new ReviewSolutionsModel(order, internalOrgId)
             {

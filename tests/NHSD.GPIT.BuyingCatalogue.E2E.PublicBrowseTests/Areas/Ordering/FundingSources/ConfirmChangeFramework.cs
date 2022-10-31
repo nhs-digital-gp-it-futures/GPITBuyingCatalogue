@@ -124,7 +124,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering.FundingSources
                 using var dbcontext = GetEndToEndDbContext();
 
                 var order = await dbcontext.Orders
-                    .SingleAsync(o => o.Id == CallOffId.Id
+                    .SingleAsync(o => o.Id == CallOffId.OrderNumber
                                 && o.OrderingParty.InternalIdentifier == InternalOrgId);
 
                 order.SelectedFrameworkId.Should().Be(SelectedFrameworkId);
@@ -160,7 +160,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering.FundingSources
             using var dbcontext = GetEndToEndDbContext();
 
             var order = await dbcontext.Orders
-                .SingleAsync(o => o.Id == CallOffId.Id
+                .SingleAsync(o => o.Id == CallOffId.OrderNumber
                             && o.OrderingParty.InternalIdentifier == InternalOrgId);
 
             order.SelectedFrameworkId = "DFOCVC001";

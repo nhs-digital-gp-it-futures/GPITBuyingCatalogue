@@ -26,7 +26,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers.Contracts
             string internalOrgId,
             CallOffId callOffId)
         {
-            var contract = await contractsService.GetContract(callOffId.Id);
+            var contract = await contractsService.GetContract(callOffId.OrderNumber);
 
             var model = new DataProcessingPlanModel(contract)
             {
@@ -53,7 +53,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers.Contracts
 
             if (model.UseDefaultDataProcessing!.Value)
             {
-                await contractsService.UseDefaultDataProcessing(callOffId.Id, true);
+                await contractsService.UseDefaultDataProcessing(callOffId.OrderNumber, true);
 
                 return RedirectToAction(
                     nameof(OrderController.Order),
@@ -61,7 +61,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers.Contracts
                     new { internalOrgId, callOffId });
             }
 
-            await contractsService.UseDefaultDataProcessing(callOffId.Id, false);
+            await contractsService.UseDefaultDataProcessing(callOffId.OrderNumber, false);
 
             return RedirectToAction(
                 nameof(BespokeDataProcessingPlan),

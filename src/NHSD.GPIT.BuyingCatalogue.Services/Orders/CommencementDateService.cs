@@ -23,7 +23,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
             int initialPeriod,
             int maximumTerm)
         {
-            var order = await dbContext.Orders.FirstAsync(o => o.Id == callOffId.Id && o.OrderingParty.InternalIdentifier == internalOrgId);
+            var order = await dbContext.Orders.FirstAsync(o => o.OrderNumber == callOffId.OrderNumber && o.OrderingParty.InternalIdentifier == internalOrgId);
 
             order.CommencementDate = commencementDate;
             order.InitialPeriod = initialPeriod;

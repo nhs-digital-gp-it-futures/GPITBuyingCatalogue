@@ -87,7 +87,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering
 
             using var context = GetEndToEndDbContext();
 
-            var order = context.Orders.Where(o => o.Id == CallOffId.Id).Count().Should().Be(0);
+            var order = context.Orders.Where(o => o.Id == CallOffId.OrderNumber).Count().Should().Be(0);
         }
 
         [Fact]
@@ -112,7 +112,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering
         {
             using var context = GetEndToEndDbContext();
 
-            context.Database.ExecuteSqlInterpolated($"UPDATE Orders SET IsDeleted = 0 WHERE Id = {CallOffId.Id}");
+            context.Database.ExecuteSqlInterpolated($"UPDATE Orders SET IsDeleted = 0 WHERE Id = {CallOffId.OrderNumber}");
         }
     }
 }

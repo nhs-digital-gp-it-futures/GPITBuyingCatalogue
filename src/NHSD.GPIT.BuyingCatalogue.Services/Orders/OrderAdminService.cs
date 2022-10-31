@@ -39,7 +39,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
                 .Include(o => o.OrderItems).ThenInclude(oi => oi.OrderItemPrice).ThenInclude(oip => oip.OrderItemPriceTiers)
                 .AsNoTracking()
                 .AsSplitQuery()
-                .FirstOrDefaultAsync(o => o.Id == callOffId.Id);
+                .FirstOrDefaultAsync(o => o.Id == callOffId.OrderNumber);
 
             if (order?.Completed.HasValue ?? false)
             {
@@ -138,7 +138,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
 
         public async Task DeleteOrder(CallOffId callOffId, string nameOfRequester, string nameOfApprover, DateTime? dateOfApproval)
         {
-            var order = await dbContext.Orders.IgnoreQueryFilters().FirstOrDefaultAsync(o => o.Id == callOffId.Id);
+            var order = await dbContext.Orders.IgnoreQueryFilters().FirstOrDefaultAsync(o => o.Id == callOffId.OrderNumber);
 
             if (order == null)
                 return;

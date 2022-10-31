@@ -11,6 +11,10 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Configuration
         {
             builder.ToTable("Orders", Schemas.Ordering);
 
+            builder.HasKey(x => x.Id).HasName("PK_Orders");
+
+            builder.Property(x => x.OrderNumber).IsRequired();
+            builder.Property(x => x.Revision).IsRequired();
             builder.Property(o => o.Completed);
             builder.Property(o => o.CommencementDate).HasColumnType("date");
             builder.Property(o => o.Created).HasDefaultValue(DateTime.UtcNow);

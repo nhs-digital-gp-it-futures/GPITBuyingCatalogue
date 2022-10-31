@@ -39,22 +39,22 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers.SolutionSelec
         [HttpGet]
         public async Task<IActionResult> TaskList(string internalOrgId, CallOffId callOffId, RoutingSource? source = null)
         {
-            var order = await orderService.GetOrderWithCatalogueItemAndPrices(callOffId, internalOrgId);
+            var wrapper = await orderService.GetOrderWithCatalogueItemAndPrices(callOffId, internalOrgId);
 
             var route = routingService.GetRoute(
                 RoutingPoint.TaskListBackLink,
-                order,
+                wrapper.Order,
                 new RouteValues(internalOrgId, callOffId) { Source = source });
 
-            var solutionId = order.GetSolutionId();
+            var solutionId = wrapper.SolutionId;
 
-            var additionalServices = order.AssociatedServicesOnly
+            var additionalServices = wrapper.Order.AssociatedServicesOnly
                 ? new List<CatalogueItem>()
                 : await additionalServicesService.GetAdditionalServicesBySolutionId(solutionId, publishedOnly: true);
 
             var associatedServices = await associatedServicesService.GetPublishedAssociatedServicesForSolution(solutionId);
 
-            return View(new TaskListModel(internalOrgId, callOffId, order)
+            return View(new TaskListModel(internalOrgId, callOffId, wrapper)
             {
                 BackLink = Url.Action(route.ActionName, route.ControllerName, route.RouteValues),
                 AdditionalServicesAvailable = additionalServices.Any(),

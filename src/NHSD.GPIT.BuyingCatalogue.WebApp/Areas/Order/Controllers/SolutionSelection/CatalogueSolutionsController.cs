@@ -46,13 +46,21 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers.SolutionSelec
         [HttpGet("select")]
         public async Task<IActionResult> SelectSolution(string internalOrgId, CallOffId callOffId)
         {
-            var order = await orderService.GetOrderThin(callOffId, internalOrgId);
+            var order = (await orderService.GetOrderThin(callOffId, internalOrgId)).Order;
 
             if (order.AssociatedServicesOnly)
             {
                 return RedirectToAction(
                     nameof(SelectSolutionAssociatedServicesOnly),
                     typeof(CatalogueSolutionsController).ControllerName(),
+                    new { internalOrgId, callOffId });
+            }
+
+            if (order.Revision > 1)
+            {
+                return RedirectToAction(
+                    nameof(TaskListController.TaskList),
+                    typeof(TaskListController).ControllerName(),
                     new { internalOrgId, callOffId });
             }
 
@@ -86,7 +94,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers.SolutionSelec
         [HttpGet("select/associated-services-only")]
         public async Task<IActionResult> SelectSolutionAssociatedServicesOnly(string internalOrgId, CallOffId callOffId, RoutingSource? source = null)
         {
-            var order = await orderService.GetOrderThin(callOffId, internalOrgId);
+            var order = (await orderService.GetOrderThin(callOffId, internalOrgId)).Order;
 
             if (order.SolutionId is not null
                 && source != RoutingSource.SelectAssociatedServices)
@@ -125,7 +133,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers.SolutionSelec
         [HttpGet("edit")]
         public async Task<IActionResult> EditSolution(string internalOrgId, CallOffId callOffId)
         {
-            var order = await orderService.GetOrderThin(callOffId, internalOrgId);
+            var order = (await orderService.GetOrderThin(callOffId, internalOrgId)).Order;
 
             if (order.AssociatedServicesOnly)
             {
@@ -159,7 +167,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers.SolutionSelec
                 return View(SelectViewName, model);
             }
 
-            var order = await orderService.GetOrderWithOrderItems(callOffId, internalOrgId);
+            var order = (await orderService.GetOrderWithOrderItems(callOffId, internalOrgId)).Order;
             var solution = order.GetSolution();
             var catalogueItemId = CatalogueItemId.ParseExact(model.SelectedCatalogueSolutionId);
 
@@ -215,7 +223,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers.SolutionSelec
             }
 
             var catalogueItemId = CatalogueItemId.ParseExact(model.SelectedCatalogueSolutionId);
-            var order = await orderService.GetOrderWithOrderItems(callOffId, internalOrgId);
+            var order = (await orderService.GetOrderWithOrderItems(callOffId, internalOrgId)).Order;
 
             if (order.Solution.Id == catalogueItemId)
             {
@@ -234,7 +242,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers.SolutionSelec
         [HttpGet("confirm-changes")]
         public async Task<IActionResult> ConfirmSolutionChanges(string internalOrgId, CallOffId callOffId, CatalogueItemId catalogueItemId)
         {
-            var order = await orderService.GetOrderWithOrderItems(callOffId, internalOrgId);
+            var order = (await orderService.GetOrderWithOrderItems(callOffId, internalOrgId)).Order;
             var solution = order.GetSolution();
             var newSolution = await solutionsService.GetSolutionThin(catalogueItemId);
 
@@ -297,7 +305,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers.SolutionSelec
                     new { internalOrgId, callOffId });
             }
 
-            await contractsService.RemoveContract(callOffId.Id);
+            await contractsService.RemoveContract(callOffId.OrderNumber);
             await orderItemService.DeleteOrderItems(internalOrgId, callOffId, model.ToRemove.Select(x => x.CatalogueItemId));
             await orderService.DeleteSelectedFramework(internalOrgId, callOffId);
             await orderItemService.AddOrderItems(internalOrgId, callOffId, model.ToAdd.Select(x => x.CatalogueItemId));
@@ -322,7 +330,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers.SolutionSelec
         [HttpGet("confirm-changes/associated-services-only")]
         public async Task<IActionResult> ConfirmSolutionChangesAssociatedServicesOnly(string internalOrgId, CallOffId callOffId, CatalogueItemId catalogueItemId)
         {
-            var order = await orderService.GetOrderWithOrderItems(callOffId, internalOrgId);
+            var order = (await orderService.GetOrderWithOrderItems(callOffId, internalOrgId)).Order;
             var newSolution = await solutionsService.GetSolutionThin(catalogueItemId);
 
             var toAdd = new[]
@@ -378,7 +386,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers.SolutionSelec
                     new { internalOrgId, callOffId });
             }
 
-            await contractsService.RemoveContract(callOffId.Id);
+            await contractsService.RemoveContract(callOffId.OrderNumber);
             await orderItemService.DeleteOrderItems(internalOrgId, callOffId, model.ToRemove.Select(x => x.CatalogueItemId));
             await orderService.DeleteSelectedFramework(internalOrgId, callOffId);
             await orderService.SetSolutionId(internalOrgId, callOffId, model.ToAdd.First().CatalogueItemId);
@@ -396,7 +404,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers.SolutionSelec
             bool includeAdditionalServices = true,
             bool returnToTaskList = false)
         {
-            var order = await orderService.GetOrderThin(callOffId, internalOrgId);
+            var order = (await orderService.GetOrderThin(callOffId, internalOrgId)).Order;
             var solutionId = order.GetSolutionId();
 
             var solutions = order.AssociatedServicesOnly

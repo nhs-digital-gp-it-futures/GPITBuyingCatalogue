@@ -16,8 +16,12 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models
 
         public int Id { get; set; }
 
+        public int OrderNumber { get; set; }
+
+        public int Revision { get; set; }
+
         [NotMapped]
-        public CallOffId CallOffId => new(Id, 1);
+        public CallOffId CallOffId => new(OrderNumber, Revision);
 
         public string Description { get; set; }
 

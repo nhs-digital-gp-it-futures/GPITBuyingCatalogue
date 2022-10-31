@@ -168,7 +168,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Con
             ImplementationPlanController controller)
         {
             mockContractsService
-                .Setup(x => x.UseDefaultImplementationPlan(callOffId.Id, true))
+                .Setup(x => x.UseDefaultImplementationPlan(callOffId.OrderNumber, true))
                 .Verifiable();
 
             model.UseDefaultMilestones = true;
@@ -200,7 +200,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Con
             model.UseDefaultMilestones = false;
 
             mockContractsService
-                .Setup(x => x.UseDefaultImplementationPlan(callOffId.Id, false))
+                .Setup(x => x.UseDefaultImplementationPlan(callOffId.OrderNumber, false))
                 .Verifiable();
 
             var result = await controller.DefaultImplementationPlan(internalOrgId, callOffId, model);

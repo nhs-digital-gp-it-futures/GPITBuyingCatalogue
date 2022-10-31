@@ -33,7 +33,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
             string frameworkId)
         {
             var order = await dbContext.Orders.SingleOrDefaultAsync(
-                o => o.Id == callOffId.Id
+                o => o.Id == callOffId.OrderNumber
                 && o.OrderingParty.InternalIdentifier == internalOrgId);
 
             order.SelectedFrameworkId = frameworkId;
@@ -51,7 +51,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
                 .Include(o => o.OrderItems)
                     .ThenInclude(oi => oi.OrderItemFunding)
                 .SingleOrDefaultAsync(
-                o => o.Id == callOffId.Id
+                o => o.Id == callOffId.OrderNumber
                 && o.OrderingParty.InternalIdentifier == internalOrgId);
 
             var selectedFramework = await dbContext.Frameworks.SingleAsync(f => f.Id == frameworkId);
@@ -72,7 +72,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
 
         private async Task<IList<EntityFramework.Catalogue.Models.Framework>> FindFrameworksFromAssociatedOnlySolution(CallOffId callOffId, string internalOrgId) =>
             await dbContext.Orders
-                .Where(o => o.Id == callOffId.Id
+                .Where(o => o.Id == callOffId.OrderNumber
                        && o.OrderingParty.InternalIdentifier == internalOrgId)
             .SelectMany(o => o.Solution.Solution.FrameworkSolutions.Select(fs => fs.Framework))
             .OrderBy(f => f.Name)
@@ -80,7 +80,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
 
         private async Task<IList<EntityFramework.Catalogue.Models.Framework>> FindFrameworksFromCatalgoueSolution(CallOffId callOffId, string internalOrgId) =>
             await dbContext.OrderItems
-                .Where(oi => oi.OrderId == callOffId.Id
+                .Where(oi => oi.OrderId == callOffId.OrderNumber
                        && oi.Order.OrderingParty.InternalIdentifier == internalOrgId
                        && oi.CatalogueItem.CatalogueItemType == CatalogueItemType.Solution)
                 .SelectMany(oi => oi.CatalogueItem.Solution.FrameworkSolutions.Select(fs => fs.Framework))

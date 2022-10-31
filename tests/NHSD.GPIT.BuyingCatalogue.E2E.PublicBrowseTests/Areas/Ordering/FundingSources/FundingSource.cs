@@ -91,7 +91,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering.FundingSources
 
                 var orderItemSaved = await dbcontext.OrderItems
                 .Include(oi => oi.OrderItemFunding)
-                .FirstOrDefaultAsync(oi => oi.OrderId == CallOffId.Id && oi.CatalogueItemId == CatalogueItemId);
+                .FirstOrDefaultAsync(oi => oi.OrderId == CallOffId.OrderNumber && oi.CatalogueItemId == CatalogueItemId);
 
                 orderItemSaved?.FundingType.Should().Be(OrderItemFundingType.MixedFunding);
             });
@@ -102,7 +102,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering.FundingSources
             using var dbcontext = GetEndToEndDbContext();
 
             var orderItem = dbcontext.OrderItems
-                .Include(oi => oi.OrderItemFunding).FirstOrDefault(oi => oi.OrderId == CallOffId.Id && oi.CatalogueItemId == CatalogueItemId);
+                .Include(oi => oi.OrderItemFunding).FirstOrDefault(oi => oi.OrderId == CallOffId.OrderNumber && oi.CatalogueItemId == CatalogueItemId);
 
             orderItem.OrderItemFunding = null;
 

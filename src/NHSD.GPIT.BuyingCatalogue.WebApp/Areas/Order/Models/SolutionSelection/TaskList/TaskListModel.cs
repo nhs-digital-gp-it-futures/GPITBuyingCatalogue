@@ -4,6 +4,7 @@ using System.Linq;
 using MoreLinq;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Enums;
+using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Orders;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Models;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.SolutionSelection.TaskList
@@ -22,23 +23,23 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.SolutionSelection.
         public TaskListModel(
             string internalOrgId,
             CallOffId callOffId,
-            EntityFramework.Ordering.Models.Order order)
+            OrderWrapper wrapper)
         {
-            if (order == null)
+            if (wrapper == null)
             {
-                throw new ArgumentNullException(nameof(order));
+                throw new ArgumentNullException(nameof(wrapper));
             }
 
             InternalOrgId = internalOrgId;
             CallOffId = callOffId;
-            AssociatedServicesOnly = order.AssociatedServicesOnly;
-            CatalogueSolution = order.GetSolution();
-            AdditionalServices = order.GetAdditionalServices();
-            AssociatedServices = order.GetAssociatedServices();
+            AssociatedServicesOnly = wrapper.AssociatedServicesOnly;
+            CatalogueSolution = wrapper.Solution;
+            AdditionalServices = wrapper.AdditionalServices();
+            AssociatedServices = wrapper.AssociatedServices();
 
-            if (order.AssociatedServicesOnly)
+            if (wrapper.AssociatedServicesOnly)
             {
-                SolutionName = order.Solution?.Name;
+                SolutionName = wrapper.Order.Solution?.Name;
             }
 
             if (CatalogueSolution != null)

@@ -167,7 +167,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering.Supplier
             var order = context.Orders
                 .Include(o => o.Supplier)
                 .Include(o => o.SupplierContact)
-                .Single(o => o.Id == CallOffId.Id);
+                .Single(o => o.Id == CallOffId.OrderNumber);
 
             order.SupplierContact = null;
 
@@ -183,7 +183,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering.Supplier
             var order = await context.Orders
                 .Include(o => o.Supplier).ThenInclude(s => s.SupplierContacts)
                 .Include(o => o.SupplierContact)
-                .SingleAsync(o => o.Id == CallOffId.Id);
+                .SingleAsync(o => o.Id == CallOffId.OrderNumber);
 
             var contact = order.Supplier.SupplierContacts.First();
 

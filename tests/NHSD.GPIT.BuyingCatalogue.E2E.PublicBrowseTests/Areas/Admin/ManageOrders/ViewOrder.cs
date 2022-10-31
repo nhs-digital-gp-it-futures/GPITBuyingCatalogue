@@ -59,7 +59,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.ManageOrders
         public void NoFramework()
         {
             var context = GetEndToEndDbContext();
-            var order = context.Orders.Include(o => o.SelectedFramework).First(o => o.Id == CallOffId.Id);
+            var order = context.Orders.Include(o => o.SelectedFramework).First(o => o.Id == CallOffId.OrderNumber);
             var frameworkId = order.SelectedFrameworkId;
 
             order.SelectedFramework = null;
@@ -133,7 +133,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.ManageOrders
         public void NoSupplier_CorrectSupplierSection()
         {
             using var context = GetEndToEndDbContext();
-            var order = context.Orders.Include(o => o.Supplier).Single(o => o.Id == CallOffId.Id);
+            var order = context.Orders.Include(o => o.Supplier).Single(o => o.Id == CallOffId.OrderNumber);
             var supplierId = order.Supplier.Id;
 
             order.SupplierId = null;
@@ -151,7 +151,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.ManageOrders
         public void Supplier_CorrectSupplierSection()
         {
             using var context = GetEndToEndDbContext();
-            var order = context.Orders.Include(o => o.Supplier).Single(o => o.Id == CallOffId.Id);
+            var order = context.Orders.Include(o => o.Supplier).Single(o => o.Id == CallOffId.OrderNumber);
             var supplier = order.Supplier;
 
             CommonActions.ElementTextEqualTo(ViewOrderObjects.SupplierSection, supplier.Name.FormatForComparison()).Should().BeTrue();
@@ -161,7 +161,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.ManageOrders
         public void InProgressOrder_NoCsvButtons()
         {
             using var context = GetEndToEndDbContext();
-            var order = context.Orders.Single(o => o.Id == CallOffId.Id);
+            var order = context.Orders.Single(o => o.Id == CallOffId.OrderNumber);
             var completionDate = order.Completed;
 
             order.Completed = null;
@@ -184,7 +184,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.ManageOrders
             var orderItem = context.Orders
                 .Include(o => o.OrderItems)
                 .ThenInclude(oi => oi.OrderItemFunding)
-                .Where(o => o.Id == CallOffId.Id)
+                .Where(o => o.Id == CallOffId.OrderNumber)
                 .Select(o => o.OrderItems.First())
                 .Single();
 
@@ -207,7 +207,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.ManageOrders
             var orderItem = context.Orders
                 .Include(o => o.OrderItems)
                 .ThenInclude(oi => oi.OrderItemFunding)
-                .Where(o => o.Id == CallOffId.Id)
+                .Where(o => o.Id == CallOffId.OrderNumber)
                 .Select(o => o.OrderItems.First())
                 .Single();
 
@@ -232,7 +232,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.ManageOrders
             var orderItem = context.Orders
                 .Include(o => o.OrderItems)
                 .ThenInclude(oi => oi.OrderItemFunding)
-                .Where(o => o.Id == CallOffId.Id)
+                .Where(o => o.Id == CallOffId.OrderNumber)
                 .Select(o => o.OrderItems.First())
                 .Single();
 

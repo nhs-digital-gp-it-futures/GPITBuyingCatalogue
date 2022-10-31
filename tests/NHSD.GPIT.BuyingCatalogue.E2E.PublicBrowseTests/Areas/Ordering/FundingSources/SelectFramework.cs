@@ -70,11 +70,11 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering.FundingSources
                 await using var dbcontext = GetEndToEndDbContext();
 
                 var order = await dbcontext.Orders
-                    .SingleAsync(o => o.Id == CallOffIdSingleFramework.Id
+                    .SingleAsync(o => o.Id == CallOffIdSingleFramework.OrderNumber
                                 && o.OrderingParty.InternalIdentifier == InternalOrgId);
 
                 var framework = await dbcontext.Orders
-                    .Where(o => o.Id == CallOffIdSingleFramework.Id
+                    .Where(o => o.Id == CallOffIdSingleFramework.OrderNumber
                                 && o.OrderingParty.InternalIdentifier == InternalOrgId)
                     .SelectMany(o => o.OrderItems
                                     .Where(oi =>
@@ -96,7 +96,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering.FundingSources
                 await using var dbcontext = GetEndToEndDbContext();
 
                 var frameworks = await dbcontext.Orders
-                    .Where(o => o.Id == CallOffIdMultipleFrameworks.Id
+                    .Where(o => o.Id == CallOffIdMultipleFrameworks.OrderNumber
                                 && o.OrderingParty.InternalIdentifier == InternalOrgId)
                     .SelectMany(o => o.OrderItems
                                     .Where(oi =>
@@ -165,7 +165,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering.FundingSources
                 using var dbcontext = GetEndToEndDbContext();
 
                 var order = await dbcontext.Orders
-                    .SingleAsync(o => o.Id == CallOffIdMultipleFrameworks.Id
+                    .SingleAsync(o => o.Id == CallOffIdMultipleFrameworks.OrderNumber
                                 && o.OrderingParty.InternalIdentifier == InternalOrgId);
 
                 order.SelectedFrameworkId.Should().Be(optionId);
@@ -226,7 +226,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering.FundingSources
             using var dbcontext = GetEndToEndDbContext();
 
             var order = await dbcontext.Orders
-                .SingleAsync(o => o.Id == callOffId.Id
+                .SingleAsync(o => o.Id == callOffId.OrderNumber
                             && o.OrderingParty.InternalIdentifier == InternalOrgId);
 
             order.SelectedFrameworkId = null;

@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Hangfire.Server;
 using Microsoft.EntityFrameworkCore;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
@@ -31,7 +30,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
                 throw new ArgumentNullException(nameof(itemIds));
             }
 
-            var order = await orderService.GetOrderWithOrderItems(callOffId, internalOrgId);
+            var order = (await orderService.GetOrderWithOrderItems(callOffId, internalOrgId)).Order;
 
             if (order == null)
             {
@@ -66,7 +65,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
                 throw new ArgumentNullException(nameof(itemIds));
             }
 
-            var order = await orderService.GetOrderWithOrderItems(callOffId, internalOrgId);
+            var order = (await orderService.GetOrderWithOrderItems(callOffId, internalOrgId)).Order;
 
             if (order == null)
             {
@@ -98,7 +97,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
                 .Include(oi => oi.OrderItemRecipients)
                     .ThenInclude(ir => ir.Recipient)
                 .SingleOrDefaultAsync(oi =>
-                    oi.OrderId == callOffId.Id
+                    oi.OrderId == callOffId.OrderNumber
                     && oi.CatalogueItemId == catalogueItemId
                     && oi.Order.OrderingParty.InternalIdentifier == internalOrgId);
 
@@ -138,7 +137,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
 
             var orderItem = await dbContext.OrderItems
                 .SingleOrDefaultAsync(oi =>
-                    oi.OrderId == callOffId.Id
+                    oi.OrderId == callOffId.OrderNumber
                     && oi.CatalogueItemId == catalogueItemId
                     && oi.Order.OrderingParty.InternalIdentifier == internalOrgId);
 
@@ -163,7 +162,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
                 .Include(oi => oi.Order)
                     .ThenInclude(o => o.SelectedFramework)
                 .SingleOrDefaultAsync(oi =>
-                    oi.OrderId == callOffId.Id
+                    oi.OrderId == callOffId.OrderNumber
                     && oi.CatalogueItemId == catalogueItemId
                     && oi.Order.OrderingParty.InternalIdentifier == internalOrgId);
 
@@ -183,7 +182,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
             {
                 item.OrderItemFunding = new OrderItemFunding
                 {
-                    OrderId = callOffId.Id,
+                    OrderId = callOffId.OrderNumber,
                     CatalogueItemId = catalogueItemId,
                     OrderItemFundingType = selectedFundingType,
                 };

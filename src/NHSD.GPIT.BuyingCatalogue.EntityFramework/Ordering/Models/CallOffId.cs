@@ -19,7 +19,7 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models
         private static readonly Lazy<Regex> Regex = new(() => new Regex(Pattern, RegexOptions.Compiled));
 
         [JsonConstructor]
-        public CallOffId(int id, byte revision)
+        public CallOffId(int id, int revision)
         {
             if (id is < 0 or > MaxId)
                 throw new ArgumentOutOfRangeException(nameof(id), id, $"Value must be between 0 and {MaxId}");
@@ -27,13 +27,13 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models
             if (revision > MaxRevision)
                 throw new ArgumentOutOfRangeException(nameof(revision), revision, $"Value must be less than {MaxRevision}");
 
-            Id = id;
+            OrderNumber = id;
             Revision = revision;
         }
 
-        public int Id { get; }
+        public int OrderNumber { get; }
 
-        public byte Revision { get; }
+        public int Revision { get; }
 
         public static bool operator ==(CallOffId left, CallOffId right)
         {
@@ -59,7 +59,7 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models
 
         public bool Equals(CallOffId other)
         {
-            return Id == other.Id;
+            return OrderNumber == other.OrderNumber;
         }
 
         public override bool Equals(object obj)
@@ -69,12 +69,12 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models
 
         public override int GetHashCode()
         {
-            return Id;
+            return (OrderNumber * 100) + Revision;
         }
 
         public override string ToString()
         {
-            return Invariant($"C{Id:D6}-{Revision:D2}");
+            return Invariant($"C{OrderNumber:D6}-{Revision:D2}");
         }
     }
 }

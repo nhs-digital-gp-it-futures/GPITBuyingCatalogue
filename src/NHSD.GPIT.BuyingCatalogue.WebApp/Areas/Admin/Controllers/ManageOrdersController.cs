@@ -94,7 +94,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
         public async Task<IActionResult> DownloadFullOrderCsv(CallOffId callOffId, string externalOrgId)
         {
             using var memoryStream = new MemoryStream();
-            await csvService.CreateFullOrderCsvAsync(callOffId.Id, memoryStream);
+            await csvService.CreateFullOrderCsvAsync(callOffId.OrderNumber, memoryStream);
             memoryStream.Position = 0;
 
             return File(memoryStream.ToArray(), "application/octet-stream", $"{callOffId}_{externalOrgId}_full.csv");
@@ -104,7 +104,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
         public async Task<IActionResult> DownloadPatientNumberCsv(CallOffId callOffId, string externalOrgId)
         {
             using var memoryStream = new MemoryStream();
-            await csvService.CreatePatientNumberCsvAsync(callOffId.Id, memoryStream);
+            await csvService.CreatePatientNumberCsvAsync(callOffId.OrderNumber, memoryStream);
             memoryStream.Position = 0;
 
             return File(memoryStream.ToArray(), "application/octet-stream", $"{callOffId}_{externalOrgId}_patient.csv");

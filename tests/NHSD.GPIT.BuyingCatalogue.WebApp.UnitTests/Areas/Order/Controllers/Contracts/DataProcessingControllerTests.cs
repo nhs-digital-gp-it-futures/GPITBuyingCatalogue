@@ -39,7 +39,7 @@ public class DataProcessingControllerTests
         [Frozen] Mock<IContractsService> service,
         DataProcessingPlanController controller)
     {
-        service.Setup(s => s.GetContract(callOffId.Id))
+        service.Setup(s => s.GetContract(callOffId.OrderNumber))
             .ReturnsAsync(contract);
 
         var result = (await controller.Index(internalOrgId, callOffId)).As<ViewResult>();
@@ -64,7 +64,7 @@ public class DataProcessingControllerTests
     {
         contract.UseDefaultDataProcessing = false;
 
-        service.Setup(s => s.GetContract(callOffId.Id))
+        service.Setup(s => s.GetContract(callOffId.OrderNumber))
             .ReturnsAsync(contract);
 
         var expectedModel = new DataProcessingPlanModel(contract)
@@ -106,7 +106,7 @@ public class DataProcessingControllerTests
         model.UseDefaultDataProcessing = true;
 
         contractsService
-            .Setup(x => x.UseDefaultDataProcessing(callOffId.Id, true))
+            .Setup(x => x.UseDefaultDataProcessing(callOffId.OrderNumber, true))
             .Verifiable();
 
         var result = (await controller.Index(internalOrgId, callOffId, model)).As<RedirectToActionResult>();
@@ -135,7 +135,7 @@ public class DataProcessingControllerTests
         model.UseDefaultDataProcessing = false;
 
         contractsService
-            .Setup(x => x.UseDefaultDataProcessing(callOffId.Id, false))
+            .Setup(x => x.UseDefaultDataProcessing(callOffId.OrderNumber, false))
             .Verifiable();
 
         var result = (await controller.Index(internalOrgId, callOffId, model)).As<RedirectToActionResult>();

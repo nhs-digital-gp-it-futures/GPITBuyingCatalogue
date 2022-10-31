@@ -1,6 +1,8 @@
 ﻿CREATE TABLE ordering.Orders_History
 (
     Id INT NOT NULL,
+    [OrderNumber] INT NOT NULL,
+    Revision INT NOT NULL,
     CallOffId NVARCHAR(4000) NOT NULL,
     [Description] NVARCHAR(100) NOT NULL,
     OrderingPartyId INT NOT NULL,

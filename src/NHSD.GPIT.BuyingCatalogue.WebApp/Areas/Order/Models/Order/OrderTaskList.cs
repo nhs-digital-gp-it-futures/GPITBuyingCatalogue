@@ -1,19 +1,24 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Enums;
+using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Orders;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.Order
 {
     public class OrderTaskList
     {
+        private OrderWrapper wrapper;
+
         public OrderTaskList()
         {
         }
 
-        public OrderTaskList(
-            EntityFramework.Ordering.Models.Order order)
+        public OrderTaskList(OrderWrapper wrapper)
         {
-            SetStatusFlags(order);
+            this.wrapper = wrapper ?? throw new ArgumentNullException(nameof(wrapper));
+
+            SetStatusFlags(wrapper.Order);
         }
 
         public TaskProgress DescriptionStatus { get; set; } = TaskProgress.NotStarted;
@@ -119,7 +124,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.Order
 
         private void SetSectionOneStatus(EntityFramework.Ordering.Models.Order order)
         {
-            DescriptionStatus = TaskProgress.Completed;
+            DescriptionStatus = wrapper.HasPreviousVersions
+                ? TaskProgress.Amended
+                : TaskProgress.Completed;
 
             OrderingPartyStatus =
                 order.OrderingPartyContact != null ? TaskProgress.Completed : TaskProgress.NotStarted;

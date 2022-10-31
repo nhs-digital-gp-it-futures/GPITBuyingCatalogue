@@ -22,9 +22,10 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Contracts
         public async Task SetDeliveryDate(string internalOrgId, CallOffId callOffId, DateTime deliveryDate)
         {
             var order = await dbContext.Orders
-                .Where(o => o.Id == callOffId.Id
+                .Where(o => o.OrderNumber == callOffId.OrderNumber
+                    && o.Revision == callOffId.Revision
                     && o.OrderingParty.InternalIdentifier == internalOrgId)
-                .SingleAsync();
+                .FirstAsync();
 
             order.DeliveryDate = deliveryDate;
 

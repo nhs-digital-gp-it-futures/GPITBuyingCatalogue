@@ -38,7 +38,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers.Contracts
 
             var targetMilestone = implementationPlan.Milestones.OrderBy(ms => ms.Order).LastOrDefault();
 
-            var contractFlags = await contractsService.GetContract(callOffId.Id);
+            var contractFlags = await contractsService.GetContract(callOffId.OrderNumber);
 
             var model = new ReviewBillingModel(callOffId, targetMilestone, contractFlags, associatedServiceItems)
             {
@@ -61,7 +61,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers.Contracts
                 return View(model);
             }
 
-            await contractsService.UseDefaultBilling(callOffId.Id, model.UseDefaultBilling!.Value);
+            await contractsService.UseDefaultBilling(callOffId.OrderNumber, model.UseDefaultBilling!.Value);
 
             if (model.UseDefaultBilling is false)
             {
@@ -94,7 +94,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers.Contracts
         [HttpGet("requirements")]
         public async Task<IActionResult> SpecificRequirements(string internalOrgId, CallOffId callOffId, [FromQuery] bool? fromBespoke = false)
         {
-            var contractFlags = await contractsService.GetContract(callOffId.Id);
+            var contractFlags = await contractsService.GetContract(callOffId.OrderNumber);
 
             var goBackLink = fromBespoke!.Value ?
                 Url.Action(
@@ -120,7 +120,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers.Contracts
             if (!ModelState.IsValid)
                 return View(model);
 
-            await contractsService.HasSpecificRequirements(callOffId.Id, !model.ProceedWithoutSpecificRequirements!.Value);
+            await contractsService.HasSpecificRequirements(callOffId.OrderNumber, !model.ProceedWithoutSpecificRequirements!.Value);
 
             if (model.ProceedWithoutSpecificRequirements is false)
             {

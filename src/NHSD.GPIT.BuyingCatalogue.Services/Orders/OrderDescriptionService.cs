@@ -21,8 +21,13 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
         {
             description.ValidateNotNullOrWhiteSpace(nameof(description));
 
-            var order = await dbContext.Orders.SingleAsync(o => o.Id == callOffId.Id && o.OrderingParty.InternalIdentifier == internalOrgId);
+            var order = await dbContext.Orders
+                .FirstAsync(o => o.OrderNumber == callOffId.OrderNumber
+                    && o.Revision == callOffId.Revision
+                    && o.OrderingParty.InternalIdentifier == internalOrgId);
+
             order.Description = description;
+
             await dbContext.SaveChangesAsync();
         }
     }

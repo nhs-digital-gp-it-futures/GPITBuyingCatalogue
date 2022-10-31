@@ -137,7 +137,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering
 
             using var updatedContext = GetEndToEndDbContext();
             var updatedOrder = updatedContext.Orders.Include(o => o.OrderingPartyContact)
-                .Single(o => o.Id == callOffId.Id);
+                .Single(o => o.Id == callOffId.OrderNumber);
 
             updatedOrder.OrderingPartyContact.FirstName.Should().BeEquivalentTo(firstName);
             updatedOrder.OrderingPartyContact.LastName.Should().BeEquivalentTo(lastName);

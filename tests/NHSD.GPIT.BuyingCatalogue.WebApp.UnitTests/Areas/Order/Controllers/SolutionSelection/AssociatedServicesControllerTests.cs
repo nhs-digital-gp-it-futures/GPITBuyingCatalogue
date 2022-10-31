@@ -618,7 +618,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
 
             _ = await controller.ConfirmAssociatedServiceChanges(internalOrgId, callOffId, model);
 
-            mockContractsService.Verify(s => s.RemoveBillingAndRequirements(callOffId.Id), Times.Once());
+            mockContractsService.Verify(s => s.RemoveBillingAndRequirements(callOffId.OrderNumber), Times.Once());
         }
 
         [Theory]
@@ -646,7 +646,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
 
             _ = await controller.ConfirmAssociatedServiceChanges(internalOrgId, callOffId, model);
 
-            mockContractsService.Verify(s => s.RemoveBillingAndRequirements(callOffId.Id), Times.Never());
+            mockContractsService.Verify(s => s.RemoveBillingAndRequirements(callOffId.OrderNumber), Times.Never());
         }
 
         [Theory]
@@ -672,7 +672,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
 
             _ = await controller.ConfirmAssociatedServiceChanges(internalOrgId, callOffId, model);
 
-            mockContractsService.Verify(s => s.RemoveBillingAndRequirements(callOffId.Id), Times.Never());
+            mockContractsService.Verify(s => s.RemoveBillingAndRequirements(callOffId.OrderNumber), Times.Never());
         }
     }
 }

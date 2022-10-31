@@ -62,7 +62,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Con
                 .Setup(i => i.GetDefaultImplementationPlan())
                 .ReturnsAsync(defaultPlan);
 
-            mockContractsService.Setup(c => c.GetContract(callOffId.Id))
+            mockContractsService.Setup(c => c.GetContract(callOffId.OrderNumber))
                 .ReturnsAsync(contract);
 
             var result = await controller.ReviewBilling(internalOrgId, callOffId);
@@ -138,7 +138,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Con
             model.TargetMilestoneName = defaultPlan.Milestones.OrderBy(m => m.Order).LastOrDefault().Title;
             model.AssociatedServiceOrderItems = null;
 
-            mockContractsService.Setup(c => c.UseDefaultBilling(callOffId.Id, true))
+            mockContractsService.Setup(c => c.UseDefaultBilling(callOffId.OrderNumber, true))
                 .Verifiable();
 
             var result = await controller.ReviewBilling(internalOrgId, callOffId, model);
@@ -172,7 +172,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Con
             model.TargetMilestoneName = defaultPlan.Milestones.OrderBy(m => m.Order).LastOrDefault().Title;
             model.AssociatedServiceOrderItems = null;
 
-            mockContractsService.Setup(c => c.UseDefaultBilling(callOffId.Id, false))
+            mockContractsService.Setup(c => c.UseDefaultBilling(callOffId.OrderNumber, false))
                 .Verifiable();
 
             var result = await controller.ReviewBilling(internalOrgId, callOffId, model);
@@ -220,7 +220,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Con
             [Frozen] Mock<IContractsService> mockContractsService,
             AssociatedServicesBillingController controller)
         {
-            mockContractsService.Setup(c => c.GetContract(callOffId.Id))
+            mockContractsService.Setup(c => c.GetContract(callOffId.OrderNumber))
                 .ReturnsAsync(contract);
 
             var result = await controller.SpecificRequirements(internalOrgId, callOffId, false);
@@ -251,7 +251,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Con
             [Frozen] Mock<IContractsService> mockContractsService,
             AssociatedServicesBillingController controller)
         {
-            mockContractsService.Setup(c => c.GetContract(callOffId.Id))
+            mockContractsService.Setup(c => c.GetContract(callOffId.OrderNumber))
                 .ReturnsAsync(contract);
 
             var result = await controller.SpecificRequirements(internalOrgId, callOffId, true);
@@ -310,7 +310,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Con
             model.CallOffId = callOffId;
             model.ProceedWithoutSpecificRequirements = true;
 
-            mockContractsService.Setup(c => c.HasSpecificRequirements(callOffId.Id, false))
+            mockContractsService.Setup(c => c.HasSpecificRequirements(callOffId.OrderNumber, false))
                 .Verifiable();
 
             var result = await controller.SpecificRequirements(internalOrgId, callOffId, model);
@@ -340,7 +340,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Con
             model.CallOffId = callOffId;
             model.ProceedWithoutSpecificRequirements = false;
 
-            mockContractsService.Setup(c => c.HasSpecificRequirements(callOffId.Id, true))
+            mockContractsService.Setup(c => c.HasSpecificRequirements(callOffId.OrderNumber, true))
                 .Verifiable();
 
             var result = await controller.SpecificRequirements(internalOrgId, callOffId, model);
@@ -371,7 +371,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Con
             model.CallOffId = callOffId;
             model.ProceedWithoutSpecificRequirements = false;
 
-            mockContractsService.Setup(c => c.HasSpecificRequirements(callOffId.Id, true))
+            mockContractsService.Setup(c => c.HasSpecificRequirements(callOffId.OrderNumber, true))
                 .Verifiable();
 
             var result = await controller.SpecificRequirements(internalOrgId, callOffId, model, true);

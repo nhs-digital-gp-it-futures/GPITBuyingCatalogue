@@ -94,7 +94,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers
             organisationsService.Setup(s => s.GetOrganisationByInternalIdentifier(internalOrgId))
                 .ReturnsAsync(organisation);
 
-            var expectedViewData = new OrderModel(internalOrgId, null, new OrderTaskList(), organisation.Name) { DescriptionUrl = "testUrl" };
+            var expectedViewData = new OrderModel(internalOrgId, null, new OrderTaskListModel(), organisation.Name) { DescriptionUrl = "testUrl" };
 
             var actualResult = await controller.NewOrder(internalOrgId);
 

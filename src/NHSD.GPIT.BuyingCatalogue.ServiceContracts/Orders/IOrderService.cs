@@ -9,11 +9,11 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.Orders
 {
     public interface IOrderService
     {
-        public Task<Order> GetOrderThin(CallOffId callOffId, string internalOrgId);
+        public Task<OrderWrapper> GetOrderThin(CallOffId callOffId, string internalOrgId);
 
-        public Task<Order> GetOrderWithCatalogueItemAndPrices(CallOffId callOffId, string internalOrgId);
+        public Task<OrderWrapper> GetOrderWithCatalogueItemAndPrices(CallOffId callOffId, string internalOrgId);
 
-        public Task<Order> GetOrderWithOrderItems(CallOffId callOffId, string internalOrgId);
+        public Task<OrderWrapper> GetOrderWithOrderItems(CallOffId callOffId, string internalOrgId);
 
         public Task<Order> GetOrderWithOrderItemsForFunding(CallOffId callOffId, string internalOrgId);
 
@@ -21,7 +21,7 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.Orders
 
         public Task<Order> GetOrderForSummary(CallOffId callOffId, string internalOrgId);
 
-        public Task<Order> GetOrderForTaskListStatuses(CallOffId callOffId, string internalOrgId);
+        public Task<OrderWrapper> GetOrderForTaskListStatuses(CallOffId callOffId, string internalOrgId);
 
         public Task<PagedList<Order>> GetPagedOrders(int organisationId, PageOptions options, string search = null);
 

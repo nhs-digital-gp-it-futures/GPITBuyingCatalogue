@@ -43,9 +43,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers.SolutionSelec
             RoutingSource? source = null,
             string importedRecipients = null)
         {
-            var order = await orderService.GetOrderWithOrderItems(callOffId, internalOrgId);
+            var wrapper = await orderService.GetOrderWithOrderItems(callOffId, internalOrgId);
+            var order = wrapper.Order;
             var orderItem = order.OrderItem(catalogueItemId);
-            var serviceRecipients = await GetServiceRecipients(internalOrgId);
+            var serviceRecipients = await GetServiceRecipients(internalOrgId, catalogueItemId, wrapper);
 
             var route = routingService.GetRoute(
                 RoutingPoint.SelectServiceRecipientsBackLink,
@@ -85,7 +86,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers.SolutionSelec
                 return View("SelectRecipients", model);
             }
 
-            var order = await orderService.GetOrderWithCatalogueItemAndPrices(callOffId, internalOrgId);
+            var order = (await orderService.GetOrderWithCatalogueItemAndPrices(callOffId, internalOrgId)).Order;
 
             await orderItemRecipientService.AddOrderItemRecipients(
                 order.Id,
@@ -109,9 +110,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers.SolutionSelec
             RoutingSource? source = null,
             string importedRecipients = null)
         {
-            var order = await orderService.GetOrderWithOrderItems(callOffId, internalOrgId);
-            var orderItem = order.OrderItem(catalogueItemId);
-            var serviceRecipients = await GetServiceRecipients(internalOrgId);
+            var wrapper = await orderService.GetOrderWithOrderItems(callOffId, internalOrgId);
+            var order = wrapper.Order;
+            var orderItem = wrapper.OrderItem(catalogueItemId);
+            var serviceRecipients = await GetServiceRecipients(internalOrgId, catalogueItemId, wrapper);
 
             var route = routingService.GetRoute(
                 RoutingPoint.SelectServiceRecipientsBackLink,
@@ -145,7 +147,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers.SolutionSelec
                 return View("SelectRecipients", model);
             }
 
-            var order = await orderService.GetOrderWithCatalogueItemAndPrices(callOffId, internalOrgId);
+            var order = (await orderService.GetOrderWithCatalogueItemAndPrices(callOffId, internalOrgId)).Order;
 
             await orderItemRecipientService.UpdateOrderItemRecipients(
                 order.Id,
@@ -160,11 +162,11 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers.SolutionSelec
             return RedirectToAction(route.ActionName, route.ControllerName, route.RouteValues);
         }
 
-        private async Task<List<ServiceRecipientModel>> GetServiceRecipients(string internalOrgId)
+        private async Task<List<ServiceRecipientModel>> GetServiceRecipients(string internalOrgId, CatalogueItemId catalogueItemId, OrderWrapper wrapper)
         {
             var recipients = await odsService.GetServiceRecipientsByParentInternalIdentifier(internalOrgId);
 
-            return recipients
+            var output = recipients
                 .OrderBy(x => x.Name)
                 .Select(x => new ServiceRecipientModel
                 {
@@ -172,6 +174,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers.SolutionSelec
                     OdsCode = x.OrgId,
                 })
                 .ToList();
+
+            output.RemoveAll(x => wrapper.HasPreviousServiceRecipientFor(catalogueItemId, x.OdsCode));
+
+            return output;
         }
     }
 }

@@ -98,11 +98,13 @@ namespace NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.TagHelpers.TaskLi
                     TaskProgress.Completed => NhsTagsTagHelper.TagColour.Green,
                     TaskProgress.InProgress => NhsTagsTagHelper.TagColour.Yellow,
                     TaskProgress.Optional => NhsTagsTagHelper.TagColour.White,
+                    TaskProgress.Amended => NhsTagsTagHelper.TagColour.Orange,
                     _ => NhsTagsTagHelper.TagColour.Grey,
                 },
 
                 TagText = Status switch
                 {
+                    TaskProgress.Amended => "Amended",
                     TaskProgress.NotApplicable => "Not applicable",
                     TaskProgress.CannotStart => "Cannot start yet",
                     TaskProgress.Optional => "Optional",
