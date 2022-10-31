@@ -36,21 +36,6 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering.StepTwo.Solut
             CommonActions.ClickSave();
         }
 
-        public void ImportServiceRecipients()
-        {
-            CommonActions.PageLoadedCorrectGetIndex(
-              typeof(ServiceRecipientsController),
-              nameof(ServiceRecipientsController.AddServiceRecipients)).Should().BeTrue();
-
-            CommonActions.ClickLinkElement(ServiceRecipientObjects.ImportServiceRecipients);
-
-            var importFile = CommonActions.GetRecipientImportCsv("valid_service_recipients.csv");
-
-            CommonActions.UploadFile(ServiceRecipientObjects.ImportRecipientsFileInput, importFile);
-
-            CommonActions.ClickSave();
-        }
-
         public void EditCatalogueSolutionServiceRecipient(string solutionName)
         {
             CommonActions.ClickLinkElement(ReviewSolutionsObjects.EditCatalogueItemServiceRecipientLink(GetCatalogueSolutionID(solutionName)));

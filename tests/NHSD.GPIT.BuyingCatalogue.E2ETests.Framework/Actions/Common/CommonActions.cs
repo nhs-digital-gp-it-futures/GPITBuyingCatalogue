@@ -142,7 +142,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.Actions.Common
         }
 
         public string GetRecipientImportCsv(string fileName)
-            => Path.GetFullPath(Path.Combine("ServiceRecipientsTestData", fileName));
+            => Path.GetFullPath(Path.Combine("ServiceRecipientTestData", fileName));
 
         // Input Element Actions
         public void UploadFile(By targetElement, string filePath)
