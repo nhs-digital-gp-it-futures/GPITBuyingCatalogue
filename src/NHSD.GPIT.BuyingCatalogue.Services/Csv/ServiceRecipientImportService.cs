@@ -3,9 +3,13 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
 using System.Linq;
+using System.Text;
+using System.Text.Json;
+using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 using CsvHelper;
 using CsvHelper.Configuration;
+using Microsoft.Extensions.Caching.Distributed;
 using Microsoft.Extensions.Caching.Memory;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Csv;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Models;
@@ -14,11 +18,11 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Csv;
 
 public class ServiceRecipientImportService : CsvServiceBase, IServiceRecipientImportService
 {
-    private readonly IMemoryCache memoryCache;
+    private readonly IDistributedCache distributedCache;
 
-    public ServiceRecipientImportService(IMemoryCache memoryCache)
+    public ServiceRecipientImportService(IDistributedCache distributedCache)
     {
-        this.memoryCache = memoryCache ?? throw new ArgumentNullException(nameof(memoryCache));
+        this.distributedCache = distributedCache ?? throw new ArgumentNullException(nameof(distributedCache));
     }
 
     public async Task CreateServiceRecipientTemplate(MemoryStream stream)
@@ -55,20 +59,33 @@ public class ServiceRecipientImportService : CsvServiceBase, IServiceRecipientIm
         return records;
     }
 
-    public void Store(ServiceRecipientCacheKey cacheKey, IList<ServiceRecipientImportModel> importedServiceRecipients)
-        => memoryCache.Set(cacheKey.ToString(), importedServiceRecipients, TimeSpan.FromMinutes(10));
-
-    public void Clear(ServiceRecipientCacheKey cacheKey)
+    public async Task Store(ServiceRecipientCacheKey cacheKey, IList<ServiceRecipientImportModel> importedServiceRecipients)
     {
-        var key = cacheKey.ToString();
-        if (!memoryCache.TryGetValue(key, out _))
-        {
-            return;
-        }
+        var serializedRecipients = JsonSerializer.Serialize(importedServiceRecipients);
 
-        memoryCache.Remove(key);
+        await distributedCache.SetStringAsync(
+            cacheKey.ToString(),
+            serializedRecipients,
+            new DistributedCacheEntryOptions() { AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(10) });
     }
 
-    public IList<ServiceRecipientImportModel> GetCached(ServiceRecipientCacheKey cacheKey)
-        => memoryCache.Get<List<ServiceRecipientImportModel>>(cacheKey.ToString());
+    public async Task Clear(ServiceRecipientCacheKey cacheKey)
+    {
+        var key = cacheKey.ToString();
+        var cachedValue = await distributedCache.GetStringAsync(key);
+
+        if (string.IsNullOrWhiteSpace(cachedValue))
+            return;
+
+        await distributedCache.RemoveAsync(key);
+    }
+
+    public async Task<IList<ServiceRecipientImportModel>> GetCached(ServiceRecipientCacheKey cacheKey)
+    {
+        var value = await distributedCache.GetStringAsync(cacheKey.ToString());
+        if (string.IsNullOrWhiteSpace(value))
+            return null;
+
+        return JsonSerializer.Deserialize<List<ServiceRecipientImportModel>>(value);
+    }
 }
