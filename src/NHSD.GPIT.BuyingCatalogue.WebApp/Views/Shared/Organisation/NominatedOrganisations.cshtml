@@ -40,7 +40,7 @@
                                      ViewContext.RouteData.Values["controller"].ToString(),
                                      new { Model.OrganisationId })" 
                             text="Nominate an organisation") />
-
+        <input type="hidden" asp-for="@Model.HomeLink" />
         <h3>Nominated organisations</h3>
 
         @if (Model.NominatedOrganisations.Any())

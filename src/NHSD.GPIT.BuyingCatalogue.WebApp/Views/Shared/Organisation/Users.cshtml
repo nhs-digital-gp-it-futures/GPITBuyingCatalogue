@@ -43,7 +43,7 @@
                                      new { Model.OrganisationId })" />
 
         <h3>Existing users</h3>
-
+        <input type="hidden" asp-for="@Model.HomeLink" />
         @if (Model.Users.Any())
         {
             <div data-test-id="users-table">

@@ -19,6 +19,7 @@ using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Users;
 using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.AutoFixtureCustomisations;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.OrganisationModels;
+using NHSD.GPIT.BuyingCatalogue.WebApp.Controllers;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Models.OrganisationModels;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Models.SuggestionSearch;
 using Xunit;
@@ -240,7 +241,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
             mockUsersService.VerifyAll();
 
             result.Should().NotBeNull();
-            result.ViewName.Should().BeNullOrEmpty();
+            result.ViewName.Should().Be(typeof(OrganisationController).ControllerName() + "/" + nameof(OrganisationController.Users));
 
             var model = result.Model.Should().BeAssignableTo<UsersModel>().Subject;
 
@@ -265,7 +266,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
             mockOrganisationsService.VerifyAll();
 
             result.Should().NotBeNull();
-            result.ViewName.Should().BeNullOrEmpty();
+            result.ViewName.Should().Be(typeof(OrganisationController).ControllerName() + "/" + nameof(OrganisationController.AddUser));
 
             var model = result.Model.Should().BeAssignableTo<AddUserModel>().Subject;
 
@@ -284,7 +285,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
             var result = (await controller.AddUser(organisationId, model)).As<ViewResult>();
 
             result.Should().NotBeNull();
-            result.ViewName.Should().BeNull();
+            result.ViewName.Should().Be(typeof(OrganisationController).ControllerName() + "/" + nameof(OrganisationController.AddUser));
 
             var actualModel = result.Model.Should().BeAssignableTo<AddUserModel>().Subject;
 
@@ -310,7 +311,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
             mockCreateBuyerService.VerifyAll();
 
             result.Should().NotBeNull();
-            result.ControllerName.Should().Be(typeof(OrganisationsController).ControllerName());
             result.ActionName.Should().Be(nameof(OrganisationsController.Users));
         }
 
@@ -337,7 +337,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
             mockUsersService.VerifyAll();
 
             result.Should().NotBeNull();
-            result.ViewName.Should().BeNull();
+            result.ViewName.Should().Be(typeof(OrganisationController).ControllerName() + "/" + nameof(OrganisationController.UserStatus));
 
             var model = result.Model.Should().BeAssignableTo<UserStatusModel>().Subject;
 
@@ -390,7 +390,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
             mockOrganisationsService.VerifyAll();
 
             result.Should().NotBeNull();
-            result.ViewName.Should().BeNullOrEmpty();
+            result.ViewName.Should().Be(typeof(OrganisationController).ControllerName() + "/" + nameof(OrganisationController.RelatedOrganisations));
 
             var model = result.Model.Should().BeAssignableTo<RelatedOrganisationsModel>().Subject;
 
@@ -420,7 +420,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
             mockOrganisationsService.VerifyAll();
 
             result.Should().NotBeNull();
-            result.ViewName.Should().BeNullOrEmpty();
+            result.ViewName.Should().Be(typeof(OrganisationController).ControllerName() + "/" + nameof(OrganisationController.RemoveRelatedOrganisation));
 
             var model = result.Model.Should().BeAssignableTo<RemoveRelatedOrganisationModel>().Subject;
 
@@ -480,7 +480,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
             mockOrganisationsService.VerifyAll();
 
             result.Should().NotBeNull();
-            result.ViewName.Should().BeNullOrEmpty();
+            result.ViewName.Should().Be(typeof(OrganisationController).ControllerName() + "/" + nameof(OrganisationController.NominatedOrganisations));
 
             var model = result.Model.Should().BeAssignableTo<NominatedOrganisationsModel>().Subject;
 
@@ -520,7 +520,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
             mockOrganisationsService.VerifyAll();
 
             result.Should().NotBeNull();
-            result.ViewName.Should().BeNullOrEmpty();
+            result.ViewName.Should().Be(typeof(OrganisationController).ControllerName() + "/" + nameof(OrganisationController.AddNominatedOrganisation));
 
             var model = result.Model.Should().BeAssignableTo<AddNominatedOrganisationModel>().Subject;
             var expected = new SelectListItem(potentialOrganisation.Name, $"{potentialOrganisation.Id}");
@@ -562,7 +562,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
             var result = (await controller.AddNominatedOrganisation(organisation.Id, model)).As<ViewResult>();
 
             result.Should().NotBeNull();
-            result.ViewName.Should().BeNull();
+            result.ViewName.Should().Be(typeof(OrganisationController).ControllerName() + "/" + nameof(OrganisationController.AddNominatedOrganisation));
 
             var actualModel = result.Model.Should().BeAssignableTo<AddNominatedOrganisationModel>().Subject;
 
@@ -612,7 +612,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
             mockOrganisationsService.VerifyAll();
 
             result.Should().NotBeNull();
-            result.ViewName.Should().BeNullOrEmpty();
+            result.ViewName.Should().Be(typeof(OrganisationController).ControllerName() + "/" + nameof(OrganisationController.RemoveNominatedOrganisation));
 
             var model = result.Model.Should().BeAssignableTo<RemoveNominatedOrganisationModel>().Subject;
 

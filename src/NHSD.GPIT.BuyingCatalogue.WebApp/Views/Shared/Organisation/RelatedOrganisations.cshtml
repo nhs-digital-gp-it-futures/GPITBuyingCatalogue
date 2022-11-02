@@ -36,7 +36,7 @@
                         advice="View and remove organisations that @Model.OrganisationName can act on behalf of." />
 
         <h3>Related organisations</h3>
-
+            <input type="hidden" asp-for="@Model.HomeLink" />
         @if (Model.RelatedOrganisations.Any())
         {
             <div data-test-id="related-organisations-table">

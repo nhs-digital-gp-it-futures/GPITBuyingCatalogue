@@ -267,7 +267,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Controllers
 
         private string GetHomeLink()
         {
-            return "/" + ControllerContext.RouteData.Values["area"];
+            return "/" + ControllerContext?.RouteData?.Values["area"];
         }
     }
 }

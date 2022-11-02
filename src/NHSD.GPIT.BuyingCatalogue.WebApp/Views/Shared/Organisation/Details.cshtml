@@ -27,6 +27,7 @@
         </div>
     </nav>
 }
+
 <div data-test-id="organisation-page">
     <nhs-page-title title="@ViewBag.Title"
                     caption="@Model!.Organisation.Name"
@@ -48,7 +49,7 @@
             </div>
         </nhs-summary-list-row>
     </nhs-summary-list>
-
+    <input type="hidden" asp-for="@Model.HomeLink" />
     <h2>Further details</h2>
     <ul>
         <li>
