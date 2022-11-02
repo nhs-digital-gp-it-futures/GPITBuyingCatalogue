@@ -10,7 +10,13 @@ variables:
   - group: dev-acr-secrets
 
 trigger:
-- develop
+  branches:
+    include:
+    - develop
+  paths:
+    exclude:
+    - '**/BuyingCatalogueFunction*'
+    - '**/OrganisationImporter*'
 
 pr:
 - develop
