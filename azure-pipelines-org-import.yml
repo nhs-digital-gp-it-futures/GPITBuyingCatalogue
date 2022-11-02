@@ -31,14 +31,14 @@ jobs:
         displayName: Build solution
         inputs:
           command: "build"
-          projects: 'NHSD.GPIT.OrganisationImport'
+          projects: 'NHSD.GPIT.OrganisationImport.sln'
           arguments: "--configuration $(buildConfiguration)"
 
       - task: DotNetCoreCLI@2
         displayName: Run tests
         inputs:
           command: "test"
-          projects: 'NHSD.GPIT.OrganisationImport'
+          projects: 'NHSD.GPIT.OrganisationImport.sln'
           arguments: "--no-build --configuration $(buildConfiguration) -- xunit.parallelizeTestCollections=true"
 
       - ${{ each project in parameters.publishProjects }}:
