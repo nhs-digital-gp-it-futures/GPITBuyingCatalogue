@@ -142,7 +142,7 @@ public static class ImportServiceRecipientsControllerTests
         ImportServiceRecipientsController controller)
     {
         importService.Setup(s => s.GetCached(It.IsAny<ServiceRecipientCacheKey>()))
-            .Returns((IList<ServiceRecipientImportModel>)null);
+            .ReturnsAsync((IList<ServiceRecipientImportModel>)null);
 
         var result = (await controller.ValidateOds(internalOrgId, callOffId, catalogueItemId, importMode))
             .As<RedirectToActionResult>();
@@ -190,7 +190,7 @@ public static class ImportServiceRecipientsControllerTests
             importedServiceRecipients.Take(1).ToList());
 
         importService.Setup(s => s.GetCached(It.IsAny<ServiceRecipientCacheKey>()))
-            .Returns(importedServiceRecipients);
+            .ReturnsAsync(importedServiceRecipients);
 
         catalogueItemService.Setup(s => s.GetCatalogueItemName(catalogueItemId))
             .ReturnsAsync(catalogueItemName);
@@ -226,7 +226,7 @@ public static class ImportServiceRecipientsControllerTests
             .ToList();
 
         importService.Setup(s => s.GetCached(It.IsAny<ServiceRecipientCacheKey>()))
-            .Returns(importedServiceRecipients);
+            .ReturnsAsync(importedServiceRecipients);
 
         odsService.Setup(s => s.GetServiceRecipientsByParentInternalIdentifier(internalOrgId))
             .ReturnsAsync(serviceRecipients);
@@ -261,7 +261,7 @@ public static class ImportServiceRecipientsControllerTests
         ImportServiceRecipientsController controller)
     {
         importService.Setup(s => s.GetCached(It.IsAny<ServiceRecipientCacheKey>()))
-            .Returns((IList<ServiceRecipientImportModel>)null);
+            .ReturnsAsync((IList<ServiceRecipientImportModel>)null);
 
         var result = (await controller.ValidateNames(internalOrgId, callOffId, catalogueItemId, importMode))
             .As<RedirectToActionResult>();
@@ -316,7 +316,7 @@ public static class ImportServiceRecipientsControllerTests
             mismatchedNames);
 
         importService.Setup(s => s.GetCached(It.IsAny<ServiceRecipientCacheKey>()))
-            .Returns(importedServiceRecipients);
+            .ReturnsAsync(importedServiceRecipients);
 
         catalogueItemService.Setup(s => s.GetCatalogueItemName(catalogueItemId))
             .ReturnsAsync(catalogueItemName);
@@ -353,7 +353,7 @@ public static class ImportServiceRecipientsControllerTests
             .ToList();
 
         importService.Setup(s => s.GetCached(It.IsAny<ServiceRecipientCacheKey>()))
-            .Returns(importedRecipients);
+            .ReturnsAsync(importedRecipients);
 
         odsService.Setup(s => s.GetServiceRecipientsByParentInternalIdentifier(internalOrgId))
             .ReturnsAsync(serviceRecipients);
@@ -416,7 +416,7 @@ public static class ImportServiceRecipientsControllerTests
             mismatchedNames);
 
         importService.Setup(s => s.GetCached(It.IsAny<ServiceRecipientCacheKey>()))
-            .Returns(importedRecipients);
+            .ReturnsAsync(importedRecipients);
 
         catalogueItemService.Setup(s => s.GetCatalogueItemName(catalogueItemId))
             .ReturnsAsync(catalogueItemName);
