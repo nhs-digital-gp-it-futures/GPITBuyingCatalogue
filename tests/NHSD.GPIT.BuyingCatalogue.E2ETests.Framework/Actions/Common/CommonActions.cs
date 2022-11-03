@@ -313,7 +313,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.Actions.Common
             // checks every segment in actionUrl, that doesn't start with a "{" (%7B) against the same positioned element in driverUrl.
             // if any don't match, will return false, else true.
             return !actionUrl.Segments
-                .Where((t, i) => !t.StartsWith("%7B") && driverUrl.Segments[i] != t)
+                .Where((t, i) => !t.StartsWith("%7B") && driverUrl.Segments[i].ToLower() != t.ToLower())
                 .Any();
         }
 
