@@ -40,7 +40,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers.SolutionSelec
             CallOffId callOffId,
             CatalogueItemId catalogueItemId,
             SelectionMode? selectionMode = null,
-            RoutingSource? source = null)
+            RoutingSource? source = null,
+            string importedRecipients = null)
         {
             var order = await orderService.GetOrderWithOrderItems(callOffId, internalOrgId);
             var orderItem = order.OrderItem(catalogueItemId);
@@ -51,7 +52,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers.SolutionSelec
                 order,
                 new RouteValues(internalOrgId, callOffId, catalogueItemId) { Source = source, });
 
-            var model = new SelectRecipientsModel(orderItem, serviceRecipients, selectionMode)
+            var splitImportedRecipients = importedRecipients?.Split(',', StringSplitOptions.RemoveEmptyEntries);
+            var model = new SelectRecipientsModel(orderItem, serviceRecipients, selectionMode, splitImportedRecipients)
             {
                 BackLink = Url.Action(route.ActionName, route.ControllerName, route.RouteValues),
                 InternalOrgId = internalOrgId,
@@ -65,7 +67,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers.SolutionSelec
                 ? order.GetAssociatedServices().FirstOrDefault()
                 : order.GetSolution();
 
-            model.PreSelectRecipients(baseOrderItem);
+            if (splitImportedRecipients is null)
+                model.PreSelectRecipients(baseOrderItem);
 
             return View("SelectRecipients", model);
         }
@@ -103,7 +106,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers.SolutionSelec
             CallOffId callOffId,
             CatalogueItemId catalogueItemId,
             SelectionMode? selectionMode = null,
-            RoutingSource? source = null)
+            RoutingSource? source = null,
+            string importedRecipients = null)
         {
             var order = await orderService.GetOrderWithOrderItems(callOffId, internalOrgId);
             var orderItem = order.OrderItem(catalogueItemId);
@@ -114,7 +118,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers.SolutionSelec
                 order,
                 new RouteValues(internalOrgId, callOffId, catalogueItemId) { Source = source, });
 
-            var model = new SelectRecipientsModel(orderItem, serviceRecipients, selectionMode)
+            var splitImportedRecipients = importedRecipients?.Split(',', StringSplitOptions.RemoveEmptyEntries);
+            var model = new SelectRecipientsModel(orderItem, serviceRecipients, selectionMode, splitImportedRecipients)
             {
                 BackLink = Url.Action(route.ActionName, route.ControllerName, route.RouteValues),
                 InternalOrgId = internalOrgId,

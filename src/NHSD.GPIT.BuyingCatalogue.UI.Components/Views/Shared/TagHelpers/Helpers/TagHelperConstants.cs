@@ -63,6 +63,7 @@
         internal const string ColumnNameContextName = "ColumnNamesContext";
         internal const string CellColumnContextName = "CellColumnContext";
         internal const string Javascript = "text/javascript";
+        internal const string InputTypeFile = "file";
 
         /* Classes */
         internal const string NhsErrorMessage = "nhsuk-error-message";
@@ -75,6 +76,7 @@
         internal const string GovUkCharacterCountMessage = "govuk-character-count__message";
         internal const string GovUkCharacterCount = "govuk-character-count";
         internal const string GovUkJsCharacterCount = "govuk-js-character-count";
+        internal const string GovUkFileUploadInput = "govuk-file-upload";
         internal const string NhsList = "nhsuk-list";
         internal const string NhsValidationInputError = "nhsuk-input--error";
         internal const string NhsBackLinkLink = "nhsuk-back-link__link";
@@ -127,5 +129,7 @@
         internal const string NoBordersName = "no-borders";
         internal const string HeadingTextName = "heading-text";
         internal const string SubGroupName = "sub-group";
+
+        internal const string FileType = "file-type";
     }
 }
