@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using FluentAssertions;
-using NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.Objects.Admin;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.Objects.Common;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.Objects.Common.Organisation;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.Utils.RandomData;
@@ -11,12 +10,12 @@ using NHSD.GPIT.BuyingCatalogue.E2ETests.Utils;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.TestBases;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Users.Models;
 using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
-using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers;
+using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.AccountManagement.Controllers;
 using Xunit;
 
-namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.Organisations
+namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.AccountManagement
 {
-    public class Users : AuthorityTestBase, IClassFixture<LocalWebApplicationFactory>, IDisposable
+    public class Users : AccountManagerTestBase, IClassFixture<LocalWebApplicationFactory>, IDisposable
     {
         private const int OrganisationId = 2;
 
@@ -26,7 +25,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.Organisations
         };
 
         public Users(LocalWebApplicationFactory factory)
-            : base(factory, typeof(OrganisationsController), nameof(OrganisationsController.Users), Parameters)
+            : base(factory, typeof(ManageAccountController), nameof(ManageAccountController.Users), Parameters)
         {
         }
 
@@ -34,7 +33,6 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.Organisations
         public void Users_WithNoUsers_AllElementsDisplayed()
         {
             CommonActions.ElementIsDisplayed(BreadcrumbObjects.HomeBreadcrumbLink).Should().BeTrue();
-            CommonActions.ElementIsDisplayed(CommonObjects.ManageBuyerOrganisationsBreadcrumbLink).Should().BeTrue();
             CommonActions.ElementIsDisplayed(BreadcrumbObjects.OrganisationDetailsBreadcrumbLink).Should().BeTrue();
             CommonActions.ElementIsDisplayed(CommonSelectors.Header1).Should().BeTrue();
             CommonActions.ElementIsDisplayed(OrganisationUsersObjects.AddUserLink).Should().BeTrue();
@@ -49,7 +47,6 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.Organisations
             var user = await AddUser();
 
             CommonActions.ElementIsDisplayed(BreadcrumbObjects.HomeBreadcrumbLink).Should().BeTrue();
-            CommonActions.ElementIsDisplayed(CommonObjects.ManageBuyerOrganisationsBreadcrumbLink).Should().BeTrue();
             CommonActions.ElementIsDisplayed(BreadcrumbObjects.OrganisationDetailsBreadcrumbLink).Should().BeTrue();
             CommonActions.ElementIsDisplayed(CommonSelectors.Header1).Should().BeTrue();
             CommonActions.ElementIsDisplayed(OrganisationUsersObjects.AddUserLink).Should().BeTrue();
@@ -68,18 +65,10 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.Organisations
             CommonActions.ClickLinkElement(BreadcrumbObjects.HomeBreadcrumbLink);
 
             CommonActions.PageLoadedCorrectGetIndex(
-                typeof(HomeController),
-                nameof(HomeController.Index)).Should().BeTrue();
-        }
-
-        [Fact]
-        public void Users_ClickManageBuyerOrganisationsBreadcrumbLink_DisplaysCorrectPage()
-        {
-            CommonActions.ClickLinkElement(CommonObjects.ManageBuyerOrganisationsBreadcrumbLink);
-
-            CommonActions.PageLoadedCorrectGetIndex(
-                typeof(OrganisationsController),
-                nameof(OrganisationsController.Index)).Should().BeTrue();
+                    typeof(HomeController),
+                    nameof(HomeController.Index))
+                .Should()
+                .BeTrue();
         }
 
         [Fact]
@@ -88,8 +77,8 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.Organisations
             CommonActions.ClickLinkElement(BreadcrumbObjects.OrganisationDetailsBreadcrumbLink);
 
             CommonActions.PageLoadedCorrectGetIndex(
-                typeof(OrganisationsController),
-                nameof(OrganisationsController.Details)).Should().BeTrue();
+                typeof(ManageAccountController),
+                nameof(ManageAccountController.Details)).Should().BeTrue();
         }
 
         [Fact]
@@ -98,8 +87,8 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.Organisations
             CommonActions.ClickLinkElement(OrganisationUsersObjects.AddUserLink);
 
             CommonActions.PageLoadedCorrectGetIndex(
-                typeof(OrganisationsController),
-                nameof(OrganisationsController.AddUser)).Should().BeTrue();
+                typeof(ManageAccountController),
+                nameof(ManageAccountController.AddUser)).Should().BeTrue();
         }
 
         [Fact]
@@ -110,8 +99,8 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.Organisations
             CommonActions.ClickLinkElement(OrganisationUsersObjects.UserStatusLink);
 
             CommonActions.PageLoadedCorrectGetIndex(
-                typeof(OrganisationsController),
-                nameof(OrganisationsController.UserStatus)).Should().BeTrue();
+                typeof(ManageAccountController),
+                nameof(ManageAccountController.UserStatus)).Should().BeTrue();
         }
 
         [Fact]
@@ -120,8 +109,8 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.Organisations
             CommonActions.ClickLinkElement(OrganisationUsersObjects.ContinueLink);
 
             CommonActions.PageLoadedCorrectGetIndex(
-                typeof(OrganisationsController),
-                nameof(OrganisationsController.Details)).Should().BeTrue();
+                typeof(ManageAccountController),
+                nameof(ManageAccountController.Details)).Should().BeTrue();
         }
 
         public void Dispose()

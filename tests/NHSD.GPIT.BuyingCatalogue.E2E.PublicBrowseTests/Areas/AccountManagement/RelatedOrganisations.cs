@@ -3,18 +3,17 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using FluentAssertions;
-using NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.Objects.Admin;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.Objects.Common;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.Objects.Common.Organisation;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Utils;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.TestBases;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Organisations.Models;
-using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers;
+using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.AccountManagement.Controllers;
 using Xunit;
 
-namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.Organisations
+namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.AccountManagement
 {
-    public class RelatedOrganisations : AuthorityTestBase, IClassFixture<LocalWebApplicationFactory>, IDisposable
+    public class RelatedOrganisations : AccountManagerTestBase, IClassFixture<LocalWebApplicationFactory>, IDisposable
     {
         private const int OrganisationId = 2;
         private const int RelatedOrganisationId = 3;
@@ -25,7 +24,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.Organisations
         };
 
         public RelatedOrganisations(LocalWebApplicationFactory factory)
-            : base(factory, typeof(OrganisationsController), nameof(OrganisationsController.RelatedOrganisations), Parameters)
+            : base(factory, typeof(ManageAccountController), nameof(ManageAccountController.RelatedOrganisations), Parameters)
         {
         }
 
@@ -33,7 +32,6 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.Organisations
         public void RelatedOrganisations_WithNoRelatedOrganisations_AllElementsDisplayed()
         {
             CommonActions.ElementIsDisplayed(BreadcrumbObjects.HomeBreadcrumbLink).Should().BeTrue();
-            CommonActions.ElementIsDisplayed(CommonObjects.ManageBuyerOrganisationsBreadcrumbLink).Should().BeTrue();
             CommonActions.ElementIsDisplayed(BreadcrumbObjects.OrganisationDetailsBreadcrumbLink).Should().BeTrue();
             CommonActions.ElementIsDisplayed(CommonSelectors.Header1).Should().BeTrue();
             CommonActions.ElementExists(RelatedOrganisationObjects.RelatedOrganisationsTable).Should().BeFalse();
@@ -47,7 +45,6 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.Organisations
             var organisation = await AddRelatedOrganisation();
 
             CommonActions.ElementIsDisplayed(BreadcrumbObjects.HomeBreadcrumbLink).Should().BeTrue();
-            CommonActions.ElementIsDisplayed(CommonObjects.ManageBuyerOrganisationsBreadcrumbLink).Should().BeTrue();
             CommonActions.ElementIsDisplayed(BreadcrumbObjects.OrganisationDetailsBreadcrumbLink).Should().BeTrue();
             CommonActions.ElementIsDisplayed(CommonSelectors.Header1).Should().BeTrue();
             CommonActions.ElementIsDisplayed(RelatedOrganisationObjects.RelatedOrganisationsTable).Should().BeTrue();
@@ -70,23 +67,13 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.Organisations
         }
 
         [Fact]
-        public void RelatedOrganisations_ClickManageBuyerOrganisationsBreadcrumbLink_DisplaysCorrectPage()
-        {
-            CommonActions.ClickLinkElement(CommonObjects.ManageBuyerOrganisationsBreadcrumbLink);
-
-            CommonActions.PageLoadedCorrectGetIndex(
-                typeof(OrganisationsController),
-                nameof(OrganisationsController.Index)).Should().BeTrue();
-        }
-
-        [Fact]
         public void RelatedOrganisations_ClickOrganisationDetailsBreadcrumbLink_DisplaysCorrectPage()
         {
             CommonActions.ClickLinkElement(BreadcrumbObjects.OrganisationDetailsBreadcrumbLink);
 
             CommonActions.PageLoadedCorrectGetIndex(
-                typeof(OrganisationsController),
-                nameof(OrganisationsController.Details)).Should().BeTrue();
+                typeof(ManageAccountController),
+                nameof(ManageAccountController.Details)).Should().BeTrue();
         }
 
         [Fact]
@@ -97,8 +84,8 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.Organisations
             CommonActions.ClickLinkElement(RelatedOrganisationObjects.RemoveRelatedOrganisationLink);
 
             CommonActions.PageLoadedCorrectGetIndex(
-                typeof(OrganisationsController),
-                nameof(OrganisationsController.RemoveRelatedOrganisation)).Should().BeTrue();
+                typeof(ManageAccountController),
+                nameof(ManageAccountController.RemoveRelatedOrganisation)).Should().BeTrue();
         }
 
         [Fact]
@@ -109,8 +96,8 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.Organisations
             CommonActions.ClickLinkElement(RelatedOrganisationObjects.ContinueLink);
 
             CommonActions.PageLoadedCorrectGetIndex(
-                typeof(OrganisationsController),
-                nameof(OrganisationsController.Details)).Should().BeTrue();
+                typeof(ManageAccountController),
+                nameof(ManageAccountController.Details)).Should().BeTrue();
         }
 
         public void Dispose()

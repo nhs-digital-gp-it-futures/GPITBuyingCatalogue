@@ -2,7 +2,7 @@
 using OpenQA.Selenium;
 using SeleniumExtras.PageObjects;
 
-namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.Objects.Admin
+namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.Objects.Common.Organisation
 {
     public class NominatedOrganisationObjects
     {

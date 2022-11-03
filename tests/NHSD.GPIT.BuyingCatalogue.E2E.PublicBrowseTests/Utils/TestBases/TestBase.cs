@@ -6,6 +6,7 @@ using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Database;
+using NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.Actions.AccountManagement;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.Actions.Admin;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.Actions.Authorization;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.Actions.Common;
@@ -83,6 +84,8 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.TestBases
         internal Actions.Admin.ActionCollection AdminPages { get; }
 
         internal Actions.Ordering.ActionCollection OrderingPages { get; }
+
+        internal Actions.AccountManagement.ActionCollection AccountManagementPages { get; }
 
         internal TextGenerators TextGenerators { get; }
 

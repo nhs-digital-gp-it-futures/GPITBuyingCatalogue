@@ -94,7 +94,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.Users
         [Fact]
         public void ClickManageUsersBreadcrumbLink_DisplaysCorrectPage()
         {
-            CommonActions.ClickLinkElement(BreadcrumbObjects.ManageUsersBreadcrumbLink);
+            CommonActions.ClickLinkElement(CommonObjects.ManageUsersBreadcrumbLink);
 
             CommonActions.PageLoadedCorrectGetIndex(
                 typeof(UsersController),
@@ -178,7 +178,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.Users
         private async Task AssertAllFieldsPresent(bool isUserActive)
         {
             CommonActions.ElementIsDisplayed(BreadcrumbObjects.HomeBreadcrumbLink).Should().BeTrue();
-            CommonActions.ElementIsDisplayed(BreadcrumbObjects.ManageUsersBreadcrumbLink).Should().BeTrue();
+            CommonActions.ElementIsDisplayed(CommonObjects.ManageUsersBreadcrumbLink).Should().BeTrue();
 
             CommonActions.ElementIsDisplayed(UserObjects.FirstNameDisplay).Should().BeTrue();
             CommonActions.ElementIsDisplayed(UserObjects.LastNameDisplay).Should().BeTrue();

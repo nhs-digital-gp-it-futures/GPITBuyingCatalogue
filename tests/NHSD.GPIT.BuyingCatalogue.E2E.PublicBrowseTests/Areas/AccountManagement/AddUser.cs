@@ -8,12 +8,12 @@ using NHSD.GPIT.BuyingCatalogue.E2ETests.Utils;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.TestBases;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Users.Models;
 using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
-using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers;
+using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.AccountManagement.Controllers;
 using Xunit;
 
-namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.Organisations
+namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.AccountManagement
 {
-    public sealed class AddUser : AuthorityTestBase, IClassFixture<LocalWebApplicationFactory>
+    public sealed class AddUser : AccountManagerTestBase, IClassFixture<LocalWebApplicationFactory>
     {
         private const int OrganisationId = 2;
 
@@ -31,8 +31,8 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.Organisations
         public AddUser(LocalWebApplicationFactory factory)
             : base(
                   factory,
-                  typeof(OrganisationsController),
-                  nameof(OrganisationsController.AddUser),
+                  typeof(ManageAccountController),
+                  nameof(ManageAccountController.AddUser),
                   Parameters)
         {
         }
@@ -59,8 +59,8 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.Organisations
             CommonActions.ClickGoBackLink();
 
             CommonActions.PageLoadedCorrectGetIndex(
-                typeof(OrganisationsController),
-                nameof(OrganisationsController.Users)).Should().BeTrue();
+                typeof(ManageAccountController),
+                nameof(ManageAccountController.Users)).Should().BeTrue();
         }
 
         [Fact]
@@ -75,8 +75,8 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.Organisations
             CommonActions.ClickSave();
 
             CommonActions.PageLoadedCorrectGetIndex(
-                typeof(OrganisationsController),
-                nameof(OrganisationsController.Users)).Should().BeTrue();
+                typeof(ManageAccountController),
+                nameof(ManageAccountController.Users)).Should().BeTrue();
         }
 
         [Fact]
@@ -85,8 +85,8 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.Organisations
             CommonActions.ClickSave();
 
             CommonActions.PageLoadedCorrectGetIndex(
-                typeof(OrganisationsController),
-                nameof(OrganisationsController.AddUser))
+                typeof(ManageAccountController),
+                nameof(ManageAccountController.AddUser))
                 .Should()
                 .BeTrue();
 
@@ -103,15 +103,15 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.Organisations
         {
             var user = GenerateUser.Generate();
 
-            AdminPages.AddUser.EnterFirstName(user.FirstName);
-            AdminPages.AddUser.EnterLastName(user.LastName);
-            AdminPages.AddUser.EnterEmailAddress("test");
+            AccountManagementPages.AddUser.EnterFirstName(user.FirstName);
+            AccountManagementPages.AddUser.EnterLastName(user.LastName);
+            AccountManagementPages.AddUser.EnterEmailAddress("test");
 
             CommonActions.ClickSave();
 
             CommonActions.PageLoadedCorrectGetIndex(
-                typeof(OrganisationsController),
-                nameof(OrganisationsController.AddUser))
+                typeof(ManageAccountController),
+                nameof(ManageAccountController.AddUser))
                 .Should()
                 .BeTrue();
 
@@ -126,15 +126,15 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.Organisations
         {
             var user = await CreateUser();
 
-            AdminPages.AddUser.EnterFirstName(user.FirstName);
-            AdminPages.AddUser.EnterLastName(user.LastName);
-            AdminPages.AddUser.EnterEmailAddress(user.Email);
+            AccountManagementPages.AddUser.EnterFirstName(user.FirstName);
+            AccountManagementPages.AddUser.EnterLastName(user.LastName);
+            AccountManagementPages.AddUser.EnterEmailAddress(user.Email);
 
             CommonActions.ClickSave();
 
             CommonActions.PageLoadedCorrectGetIndex(
-                typeof(OrganisationsController),
-                nameof(OrganisationsController.AddUser))
+                typeof(ManageAccountController),
+                nameof(ManageAccountController.AddUser))
                 .Should()
                 .BeTrue();
 

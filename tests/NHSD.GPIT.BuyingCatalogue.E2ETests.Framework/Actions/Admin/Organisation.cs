@@ -11,16 +11,6 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.Actions.Admin
         {
         }
 
-        public IEnumerable<string> GetAddress()
-        {
-            return Driver.FindElements(Objects.Admin.OrganisationObjects.AddressLines).Select(s => s.Text);
-        }
-
-        public string GetOdsCode()
-        {
-            return Driver.FindElement(Objects.Admin.OrganisationObjects.OdsCode).Text;
-        }
-
         public bool AddUserButtonDisplayed()
         {
             return ElementDisplayed(Objects.Admin.OrganisationObjects.AddUserButton);

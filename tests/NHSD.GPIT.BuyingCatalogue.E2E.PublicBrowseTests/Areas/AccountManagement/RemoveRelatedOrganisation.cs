@@ -3,18 +3,17 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using FluentAssertions;
-using NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.Objects.Admin;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.Objects.Common;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.Objects.Common.Organisation;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Utils;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.TestBases;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Organisations.Models;
-using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers;
+using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.AccountManagement.Controllers;
 using Xunit;
 
-namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.Organisations
+namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.AccountManagement
 {
-    public class RemoveRelatedOrganisation : AuthorityTestBase, IClassFixture<LocalWebApplicationFactory>, IDisposable
+    public class RemoveRelatedOrganisation : AccountManagerTestBase, IClassFixture<LocalWebApplicationFactory>, IDisposable
     {
         private const int OrganisationId = 2;
         private const int RelatedOrganisationId = 3;
@@ -26,7 +25,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.Organisations
         };
 
         public RemoveRelatedOrganisation(LocalWebApplicationFactory factory)
-            : base(factory, typeof(OrganisationsController), nameof(OrganisationsController.RemoveRelatedOrganisation), Parameters)
+            : base(factory, typeof(ManageAccountController), nameof(ManageAccountController.RemoveRelatedOrganisation), Parameters)
         {
         }
 
@@ -35,7 +34,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.Organisations
         {
             await AddRelatedOrganisation();
 
-            CommonActions.ElementIsDisplayed(CommonObjects.GoBackLink).Should().BeTrue();
+            CommonActions.ElementIsDisplayed(CommonSelectors.GoBackLink).Should().BeTrue();
             CommonActions.ElementIsDisplayed(CommonSelectors.Header1).Should().BeTrue();
             CommonActions.ElementIsDisplayed(CommonSelectors.SubmitButton).Should().BeTrue();
             CommonActions.ElementIsDisplayed(RelatedOrganisationObjects.CancelLink).Should().BeTrue();
@@ -46,11 +45,11 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.Organisations
         {
             await AddRelatedOrganisation();
 
-            CommonActions.ClickLinkElement(CommonObjects.GoBackLink);
+            CommonActions.ClickLinkElement(CommonSelectors.GoBackLink);
 
             CommonActions.PageLoadedCorrectGetIndex(
-                typeof(OrganisationsController),
-                nameof(OrganisationsController.RelatedOrganisations)).Should().BeTrue();
+                typeof(ManageAccountController),
+                nameof(ManageAccountController.RelatedOrganisations)).Should().BeTrue();
         }
 
         [Fact]
@@ -61,8 +60,8 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.Organisations
             CommonActions.ClickLinkElement(RelatedOrganisationObjects.CancelLink);
 
             CommonActions.PageLoadedCorrectGetIndex(
-                typeof(OrganisationsController),
-                nameof(OrganisationsController.RelatedOrganisations)).Should().BeTrue();
+                typeof(ManageAccountController),
+                nameof(ManageAccountController.RelatedOrganisations)).Should().BeTrue();
         }
 
         [Fact]
@@ -73,8 +72,8 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.Organisations
             CommonActions.ClickLinkElement(CommonSelectors.SubmitButton);
 
             CommonActions.PageLoadedCorrectGetIndex(
-                typeof(OrganisationsController),
-                nameof(OrganisationsController.RelatedOrganisations)).Should().BeTrue();
+                typeof(ManageAccountController),
+                nameof(ManageAccountController.RelatedOrganisations)).Should().BeTrue();
 
             await using var context = GetEndToEndDbContext();
 

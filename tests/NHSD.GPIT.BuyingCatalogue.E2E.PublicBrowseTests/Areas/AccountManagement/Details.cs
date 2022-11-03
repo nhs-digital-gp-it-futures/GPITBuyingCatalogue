@@ -3,16 +3,16 @@ using System.Linq;
 using System.Threading.Tasks;
 using FluentAssertions;
 using Microsoft.EntityFrameworkCore;
-using NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.Objects.Admin;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.Objects.Common;
+using NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.Objects.Common.Organisation;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Utils;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.TestBases;
-using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers;
+using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.AccountManagement.Controllers;
 using Xunit;
 
-namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.Organisations
+namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.AccountManagement
 {
-    public sealed class Details : AuthorityTestBase, IClassFixture<LocalWebApplicationFactory>
+    public sealed class Details : AccountManagerTestBase, IClassFixture<LocalWebApplicationFactory>
     {
         private const int OrganisationId = 2;
 
@@ -24,8 +24,8 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.Organisations
         public Details(LocalWebApplicationFactory factory)
             : base(
                   factory,
-                  typeof(OrganisationsController),
-                  nameof(OrganisationsController.Details),
+                  typeof(ManageAccountController),
+                  nameof(ManageAccountController.Details),
                   Parameters)
         {
         }
@@ -36,7 +36,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.Organisations
             await using var context = GetEndToEndDbContext();
             var dbAddress = (await context.Organisations.SingleAsync(s => s.Id == OrganisationId)).Address;
 
-            var pageAddress = AdminPages.Details.GetAddress().ToList();
+            var pageAddress = AccountManagementPages.Details.GetAddress().ToList();
 
             foreach (var prop in dbAddress.GetType().GetProperties())
             {
@@ -54,7 +54,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.Organisations
             await using var context = GetEndToEndDbContext();
             var dbOdsCode = (await context.Organisations.SingleAsync(s => s.Id == OrganisationId)).ExternalIdentifier;
 
-            var pageOdsCode = AdminPages.Details.GetOdsCode();
+            var pageOdsCode = AccountManagementPages.Details.GetOdsCode();
 
             pageOdsCode.Should().Be(dbOdsCode);
         }
@@ -63,9 +63,9 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.Organisations
         public void Details_AllLinksDisplayed()
         {
             CommonActions.ElementIsDisplayed(BreadcrumbObjects.HomeBreadcrumbLink).Should().BeTrue();
-            CommonActions.ElementIsDisplayed(CommonObjects.ManageBuyerOrganisationsBreadcrumbLink).Should().BeTrue();
-            CommonActions.ElementIsDisplayed(OrganisationObjects.UserAccountsLink).Should().BeTrue();
-            CommonActions.ElementIsDisplayed(OrganisationObjects.RelatedOrganisationsLink).Should().BeTrue();
+            CommonActions.ElementIsDisplayed(DetailsObjects.UserAccountsLink).Should().BeTrue();
+            CommonActions.ElementIsDisplayed(DetailsObjects.RelatedOrganisationsLink).Should().BeTrue();
+            CommonActions.ElementIsDisplayed(DetailsObjects.NominatedOrganisationsLink).Should().BeTrue();
         }
 
         [Fact]
@@ -79,33 +79,33 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.Organisations
         }
 
         [Fact]
-        public void Details_ClickManageBuyerOrganisationsBreadcrumbLink_ExpectedResult()
-        {
-            CommonActions.ClickLinkElement(CommonObjects.ManageBuyerOrganisationsBreadcrumbLink);
-
-            CommonActions.PageLoadedCorrectGetIndex(
-                typeof(OrganisationsController),
-                nameof(OrganisationsController.Index)).Should().BeTrue();
-        }
-
-        [Fact]
         public void Details_ClickUserAccountsLink_ExpectedResult()
         {
-            CommonActions.ClickLinkElement(OrganisationObjects.UserAccountsLink);
+            CommonActions.ClickLinkElement(DetailsObjects.UserAccountsLink);
 
             CommonActions.PageLoadedCorrectGetIndex(
-                typeof(OrganisationsController),
-                nameof(OrganisationsController.Users)).Should().BeTrue();
+                typeof(ManageAccountController),
+                nameof(ManageAccountController.Users)).Should().BeTrue();
         }
 
         [Fact]
         public void Details_ClickRelatedOrganisationsLink_ExpectedResult()
         {
-            CommonActions.ClickLinkElement(OrganisationObjects.RelatedOrganisationsLink);
+            CommonActions.ClickLinkElement(DetailsObjects.RelatedOrganisationsLink);
 
             CommonActions.PageLoadedCorrectGetIndex(
-                typeof(OrganisationsController),
-                nameof(OrganisationsController.RelatedOrganisations)).Should().BeTrue();
+                typeof(ManageAccountController),
+                nameof(ManageAccountController.RelatedOrganisations)).Should().BeTrue();
+        }
+
+        [Fact]
+        public void Details_ClickNominatedOrganisationsLink_ExpectedResult()
+        {
+            CommonActions.ClickLinkElement(DetailsObjects.NominatedOrganisationsLink);
+
+            CommonActions.PageLoadedCorrectGetIndex(
+                typeof(ManageAccountController),
+                nameof(ManageAccountController.NominatedOrganisations)).Should().BeTrue();
         }
     }
 }

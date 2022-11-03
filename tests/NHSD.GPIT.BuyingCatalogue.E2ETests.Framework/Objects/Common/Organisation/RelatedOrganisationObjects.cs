@@ -1,7 +1,7 @@
 ﻿using NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.Objects.Common;
 using OpenQA.Selenium;
 
-namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.Objects.Admin
+namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.Objects.Common.Organisation
 {
     public class RelatedOrganisationObjects
     {

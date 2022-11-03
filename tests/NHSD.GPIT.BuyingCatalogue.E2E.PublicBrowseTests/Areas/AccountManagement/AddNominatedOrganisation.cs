@@ -4,19 +4,17 @@ using System.Linq;
 using System.Threading.Tasks;
 using FluentAssertions;
 using Microsoft.EntityFrameworkCore;
-using NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.Objects.Admin;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.Objects.Common;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.Objects.Common.Organisation;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Utils;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.TestBases;
-using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers;
-using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Validators.Organisation;
+using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.AccountManagement.Controllers;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Validation.Organisation;
 using Xunit;
 
-namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.Organisations
+namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.AccountManagement
 {
-    public class AddNominatedOrganisation : AuthorityTestBase, IClassFixture<LocalWebApplicationFactory>, IDisposable
+    public class AddNominatedOrganisation : AccountManagerTestBase, IClassFixture<LocalWebApplicationFactory>, IDisposable
     {
         private const int OrganisationId = 1;
         private const string ValidOrganisationName = "NHS Leeds CCG";
@@ -27,14 +25,14 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.Organisations
         };
 
         public AddNominatedOrganisation(LocalWebApplicationFactory factory)
-            : base(factory, typeof(OrganisationsController), nameof(OrganisationsController.AddNominatedOrganisation), Parameters)
+            : base(factory, typeof(ManageAccountController), nameof(ManageAccountController.AddNominatedOrganisation), Parameters)
         {
         }
 
         [Fact]
         public void AddNominatedOrganisation_AllElementsDisplayed()
         {
-            CommonActions.ElementIsDisplayed(CommonObjects.GoBackLink).Should().BeTrue();
+            CommonActions.ElementIsDisplayed(CommonSelectors.GoBackLink).Should().BeTrue();
             CommonActions.ElementIsDisplayed(CommonSelectors.Header1).Should().BeTrue();
             CommonActions.ElementIsDisplayed(NominatedOrganisationObjects.SelectedOrganisation).Should().BeTrue();
             CommonActions.ElementIsDisplayed(CommonSelectors.SubmitButton).Should().BeTrue();
@@ -43,11 +41,11 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.Organisations
         [Fact]
         public void AddNominatedOrganisation_ClickGoBackLink_DisplaysCorrectPage()
         {
-            CommonActions.ClickLinkElement(CommonObjects.GoBackLink);
+            CommonActions.ClickLinkElement(CommonSelectors.GoBackLink);
 
             CommonActions.PageLoadedCorrectGetIndex(
-                typeof(OrganisationsController),
-                nameof(OrganisationsController.NominatedOrganisations)).Should().BeTrue();
+                typeof(ManageAccountController),
+                nameof(ManageAccountController.NominatedOrganisations)).Should().BeTrue();
         }
 
         [Fact]
@@ -56,8 +54,8 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.Organisations
             CommonActions.ClickLinkElement(CommonSelectors.SubmitButton);
 
             CommonActions.PageLoadedCorrectGetIndex(
-                typeof(OrganisationsController),
-                nameof(OrganisationsController.AddNominatedOrganisation)).Should().BeTrue();
+                typeof(ManageAccountController),
+                nameof(ManageAccountController.AddNominatedOrganisation)).Should().BeTrue();
 
             CommonActions.ErrorSummaryDisplayed().Should().BeTrue();
             CommonActions.ErrorSummaryLinksExist().Should().BeTrue();
@@ -101,8 +99,8 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.Organisations
             CommonActions.ClickLinkElement(CommonSelectors.SubmitButton);
 
             CommonActions.PageLoadedCorrectGetIndex(
-                typeof(OrganisationsController),
-                nameof(OrganisationsController.NominatedOrganisations)).Should().BeTrue();
+                typeof(ManageAccountController),
+                nameof(ManageAccountController.NominatedOrganisations)).Should().BeTrue();
 
             existingRelationships = await context.RelatedOrganisations
                 .Where(x => x.RelatedOrganisationId == OrganisationId)
