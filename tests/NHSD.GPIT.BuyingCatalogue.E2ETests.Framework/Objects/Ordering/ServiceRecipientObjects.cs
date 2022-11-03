@@ -11,5 +11,9 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.Objects.Ordering
         public static By SelectAllLink => By.LinkText("Select all");
 
         public static By SelectNoneLink => By.LinkText("Select none");
+
+        public static By ImportServiceRecipients => By.LinkText("Import Service Recipients");
+
+        public static By ImportRecipientsFileInput => By.Id("File");
     }
 }

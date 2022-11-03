@@ -100,6 +100,10 @@
     <Folder Include="PostDeployment\" />
     <Folder Include="Catalogue\Types" />
     <Folder Include="Catalogue\Stored Procedures" />
+    <Folder Include="Security\Schemas\" />
+    <Folder Include="OdsOrganisations\" />
+    <Folder Include="OdsOrganisations\Tables\" />
+    <Folder Include="PostDeployment\OdsOrganisationsSeedData\" />
   </ItemGroup>
   <ItemGroup>
     <Build Include="Security\Users\NHSD.sql" />
