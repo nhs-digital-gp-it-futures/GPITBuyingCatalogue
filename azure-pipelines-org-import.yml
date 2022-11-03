@@ -55,7 +55,7 @@ jobs:
         inputs:
           command: "publish"
           projects: "src/OrganisationImporter"
-          arguments: "--no-build --configuration $(buildConfiguration) -o $(Build.ArtifactStagingDirectory)/OrganisationImporter -r win-x64"
+          arguments: "--configuration $(buildConfiguration) -o $(Build.ArtifactStagingDirectory)/OrganisationImporter -r win-x64 --no-self-contained"
           publishWebProjects: false
           modifyOutputPath: false
 
