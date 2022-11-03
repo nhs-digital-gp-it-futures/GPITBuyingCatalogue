@@ -53,6 +53,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.TestBases
             MarketingPages = new MarketingPageActions(Driver).PageActions;
             AuthorizationPages = new AuthorizationPages(Driver).PageActions;
             AdminPages = new AdminPages(Driver).PageActions;
+            AccountManagementPages = new AccountManagementPages(Driver).PageActions;
             OrderingPages = new OrderingPages(Driver).PageActions;
             CommonActions = new Actions.Common.CommonActions(Driver);
             Wait = new WebDriverWait(Driver, TimeSpan.FromSeconds(10));
