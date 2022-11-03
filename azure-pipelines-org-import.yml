@@ -41,16 +41,25 @@ jobs:
           projects: 'NHSD.GPIT.OrganisationImport.sln'
           arguments: "--no-build --configuration $(buildConfiguration) -- xunit.parallelizeTestCollections=true"
 
-      - ${{ each project in parameters.publishProjects }}:
-        - task: DotNetCoreCLI@2
-          displayName: Publish ${{ project }}
-          inputs:
-            command: "publish"
-            projects: "src/${{ project }}"
-            arguments: "--no-build --configuration $(buildConfiguration) -o $(Build.ArtifactStagingDirectory)/${{ project }}"
-            publishWebProjects: false
-            modifyOutputPath: false
+      - task: DotNetCoreCLI@2
+        displayName: Publish BuyingCatalogueFunction
+        inputs:
+          command: "publish"
+          projects: "src/BuyingCatalogueFunction"
+          arguments: "--no-build --configuration $(buildConfiguration) -o $(Build.ArtifactStagingDirectory)/BuyingCatalogueFunction"
+          publishWebProjects: false
+          modifyOutputPath: false
 
+      - task: DotNetCoreCLI@2
+        displayName: Publish OrganisationImporter
+        inputs:
+          command: "publish"
+          projects: "src/OrganisationImporter"
+          arguments: "--no-build --configuration $(buildConfiguration) -o $(Build.ArtifactStagingDirectory)/OrganisationImporter -r win-x64"
+          publishWebProjects: false
+          modifyOutputPath: false
+
+      - ${{ each project in parameters.publishProjects }}:
         - task: PublishBuildArtifacts@1
           displayName: Package ${{ project }}
           inputs:
